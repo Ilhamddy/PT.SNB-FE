@@ -13,7 +13,8 @@ exports.signup = (req, res) => {
   User.create({
     username: req.body.username,
     email: req.body.email,
-    password: bcrypt.hashSync(req.body.password, 8)
+    password: bcrypt.hashSync(req.body.password, 8),
+    acces: req.body.acces
   })
     .then(user => {
       if (req.body.roles) {
@@ -57,13 +58,15 @@ exports.signin = (req, res) => {
       );
 
       if (!passwordIsValid) {
-        return res.status(401).send({
+        return res.status(200).send({
           accessToken: null,
-          message: "Invalid Password!"
+          message: "Invalid Password!",
+          data: "Invalid Password!",
+          status:"errors"
         });
       }
 
-      var token = jwt.sign({ id: user.id }, config.secret, {
+      var token = jwt.sign({ id: user.id,acces:user.acces }, config.secret, {
         expiresIn: 86400 // 24 hours
       });
 
@@ -77,11 +80,12 @@ exports.signin = (req, res) => {
           username: user.username,
           email: user.email,
           roles: authorities,
-          accessToken: token
+          accessToken: token,
+          status:"success"
         });
       });
     })
     .catch(err => {
-      res.status(500).send({ message: err.message });
+      res.status(500).send({ message: err.message, status:"errors" });
     });
 };
