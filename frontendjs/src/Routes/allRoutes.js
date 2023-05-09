@@ -240,6 +240,7 @@ import UserProfile from "../pages/Authentication/user-profile";
 
 import FileManager from "../pages/FileManager";
 import ToDoList from "../pages/ToDo";
+// Pasien
 import PasienLama from "../app/Registrasi/PasienLama";
 
 const authProtectedRoutes = [
