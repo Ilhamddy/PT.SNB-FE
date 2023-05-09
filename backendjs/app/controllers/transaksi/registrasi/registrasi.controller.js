@@ -19,6 +19,7 @@ const allSelect = (req, res) => {
         res.status(200).send({
             data: result.rows,
             status: "success",
+            success: true,
         });
         // res.status(200).json(result.rows);
 
@@ -44,6 +45,7 @@ const addPost = (req, res) => {
                     res.status(200).send({
                         data: result.rows,
                         status: "success",
+                        success: true,
                     });
                     // res.status(200).json(result.rows);
             
