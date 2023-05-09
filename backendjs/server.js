@@ -33,9 +33,10 @@ app.get("/", (req, res) => {
 require('./app/routes/auth.routes')(app);
 require('./app/routes/user.routes')(app);
 require('./app/routes/master/agama.routes')(app);
+require('./app/routes/transaksi/registrasi.routes')(app);
 
 // set port, listen for requests
-const PORT = process.env.PORT || 8085;
+const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });
