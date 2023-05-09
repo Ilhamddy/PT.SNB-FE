@@ -5,6 +5,9 @@ const Role = db.role;
 
 const Op = db.Sequelize.Op;
 
+const pool = require("../config/dbcon.query");
+const queries = require('../queries/setting/mapsesions');
+
 var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
 
@@ -14,7 +17,7 @@ exports.signup = (req, res) => {
     username: req.body.username,
     email: req.body.email,
     password: bcrypt.hashSync(req.body.password, 8),
-    acces: req.body.acces
+    objectaccesmodulfk: req.body.objectaccesmodulfk
   })
     .then(user => {
       if (req.body.roles) {
@@ -62,30 +65,66 @@ exports.signin = (req, res) => {
           accessToken: null,
           message: "Invalid Password!",
           data: "Invalid Password!",
-          status:"errors"
+          status: "errors"
         });
       }
 
-      var token = jwt.sign({ id: user.id,acces:user.acces }, config.secret, {
-        expiresIn: 86400 // 24 hours
-      });
+      try {
+        pool.query(queries.getSesions, [user.objectaccesmodulfk], (error, result) => {
+          if (error) throw error;
+          // res.status(200).json(result.rows);
+          var resHead=[];
+          
+          for (let i = 0; i < result.rows.length; i++) {
+            
+            if(i==0){
+              let tempresChild = [{ nourut: result.rows[i].nourut,reportdisplay:result.rows[i].reportdisplay,link:result.rows[i].link}]
+              let tempresHead = { id: result.rows[i].idhead,head:result.rows[i].head,child:tempresChild}
+              resHead.push(tempresHead)
+            }else{
+              for (let x = 0; x < resHead.length; x++) {
+                
+                if(resHead[x].id==result.rows[i].idhead){
+                  let tempresChild = { nourut: result.rows[i].nourut,reportdisplay:result.rows[i].reportdisplay,link:result.rows[i].link}
+                  resHead[x].child.push(tempresChild)
+                  break;
+                }else{
+                  let tempresChild = [{ nourut: result.rows[i].nourut,reportdisplay:result.rows[i].reportdisplay,link:result.rows[i].link}]
+                  let tempresHead = { id: result.rows[i].idhead,head:result.rows[i].head,child:tempresChild}
+                  resHead.push(tempresHead)
+                  break;
+                }
+                // console.log(resHead[x].child)
+              }
+            }
+          }
 
-      var authorities = [];
-      user.getRoles().then(roles => {
-        for (let i = 0; i < roles.length; i++) {
-          authorities.push("ROLE_" + roles[i].name.toUpperCase());
-        }
-        res.status(200).send({
-          id: user.id,
-          username: user.username,
-          email: user.email,
-          roles: authorities,
-          accessToken: token,
-          status:"success"
+          var token = jwt.sign({ id: user.id, sesion: resHead }, config.secret, {
+            expiresIn: 86400 // 24 hours
+          });
+
+          var authorities = [];
+          user.getRoles().then(roles => {
+            for (let i = 0; i < roles.length; i++) {
+              authorities.push("ROLE_" + roles[i].name.toUpperCase());
+            }
+            res.status(200).send({
+              id: user.id,
+              username: user.username,
+              email: user.email,
+              roles: authorities,
+              accessToken: token,
+              status: "success",
+              // sesion: resHead
+            });
+          });
         });
-      });
+      } catch (e) {
+        res.status(500).send({ message: e, status: "errors" });
+      }
+
     })
     .catch(err => {
-      res.status(500).send({ message: err.message, status:"errors" });
+      res.status(500).send({ message: err.message, status: "errors" });
     });
 };
