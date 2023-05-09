@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from "prop-types";
 import { Collapse, Container } from 'reactstrap';
-import logoSm from "../../assets/images/logo-sm.png";
+import logoSm from "../../assets/images/sn.png";
 import withRouter from '../../Components/Common/withRouter';
 
 //i18n

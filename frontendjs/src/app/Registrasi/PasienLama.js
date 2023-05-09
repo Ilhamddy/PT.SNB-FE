@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import UiContent from "../../Components/Common/UiContent";
 
@@ -7,14 +7,41 @@ import BreadCrumb from '../../Components/Common/BreadCrumb';
 import { Card, CardBody, Col, Container, DropdownItem, DropdownMenu, DropdownToggle, Input, Label, Row, UncontrolledDropdown } from 'reactstrap';
 import PreviewCardHeaderNew from '../../Components/Common/PreviewCardHeaderNew';
 
+// Import Table Data
+// import { BaseExample } from '../../../src/pages/Tables/GridTables/GridTablesData';
+
+import { Grid, _ } from 'gridjs-react';
+
+import {
+    getRegistrasiList,
+
+} from "../../store/registrasi/action";
+
+//redux
+import { useSelector, useDispatch } from "react-redux";
 
 const PasienLama = () => {
-    document.title="Pasien Lama";
+    const dispatch = useDispatch();
+
+    // const { registrasiList, isRegistrasiCreated, isRegistrasiSuccess, error } = useSelector((state) => ({
+    //     registrasiList: state.Registrasi.RegistrasiList,
+    //     isRegistrasiCreated: state.Registrasi.isRegistrasiCreated,
+    //     isRegistrasiSuccess: state.Registrasi.isRegistrasiSuccess,
+    //     error: state.Registrasi.error,
+    // }));
+
+    // useEffect(() => {
+    //     if (registrasiList && !registrasiList.length) {
+    //         dispatch(getRegistrasiList());
+    //     }
+    // }, [dispatch, registrasiList]);
+
+    document.title = "Pasien Lama";
     return (
         <React.Fragment>
             <UiContent />
             <div className="page-content">
-            
+
                 <Container fluid>
                     <BreadCrumb title="Pasien Lama" pageTitle="Forms" />
 
@@ -23,153 +50,9 @@ const PasienLama = () => {
                             <Card>
                                 <PreviewCardHeaderNew title="Daftar Pasien Lama" />
 
-                                <CardBody className="card-body">
-                                    <div className="live-preview">
-                                        <Row className="gy-4">
-                                            <Col xxl={3} md={6}>
-                                                <div>
-                                                    <Label htmlFor="basiInput" className="form-label">Basic Input</Label>
-                                                    <Input type="password" className="form-control" id="basiInput" />
-                                                </div>
-                                            </Col>
-
-                                            <Col xxl={3} md={6}>
-                                                <div>
-                                                    <Label htmlFor="labelInput" className="form-label">Input with Label</Label>
-                                                    <Input type="password" className="form-control" id="labelInput" />
-                                                </div>
-                                            </Col>
-
-                                            <Col xxl={3} md={6}>
-                                                <div>
-                                                    <Label htmlFor="placeholderInput" className="form-label">Input with Placeholder</Label>
-                                                    <Input type="password" className="form-control" id="placeholderInput" placeholder="Placeholder" />
-                                                </div>
-                                            </Col>
-
-                                            <Col xxl={3} md={6}>
-                                                <div>
-                                                    <Label htmlFor="valueInput" className="form-label">Input with Value</Label>
-                                                    <Input type="text" className="form-control" id="valueInput" defaultValue="Input value" />
-                                                </div>
-                                            </Col>
-
-                                            <Col xxl={3} md={6}>
-                                                <div>
-                                                    <Label htmlFor="readonlyPlaintext" className="form-label">Readonly Plain Text Input</Label>
-                                                    <Input type="text" className="form-control-plaintext" id="readonlyPlaintext" defaultValue="Readonly input" readOnly />
-                                                </div>
-                                            </Col>
-
-                                            <Col xxl={3} md={6}>
-                                                <div>
-                                                    <Label htmlFor="readonlyInput" className="form-label">Readonly Input</Label>
-                                                    <Input type="text" className="form-control" id="readonlyInput" defaultValue="Readonly input" readOnly />
-                                                </div>
-                                            </Col>
-
-                                            <Col xxl={3} md={6}>
-                                                <div>
-                                                    <Label htmlFor="disabledInput" className="form-label">Disabled Input</Label>
-                                                    <Input type="text" className="form-control" id="disabledInput" defaultValue="Disabled input" disabled />
-                                                </div>
-                                            </Col>
-
-                                            <Col xxl={3} md={6}>
-                                                <div>
-                                                    <Label htmlFor="iconInput" className="form-label">Input with Icon</Label>
-                                                    <div className="form-icon">
-                                                        <Input type="email" className="form-control form-control-icon" id="iconInput" placeholder="example@gmail.com" />
-                                                        <i className="ri-mail-unread-line"></i>
-                                                    </div>
-                                                </div>
-                                            </Col>
-
-                                            <Col xxl={3} md={6}>
-                                                <div>
-                                                    <Label htmlFor="iconrightInput" className="form-label">Input with Icon Right</Label>
-                                                    <div className="form-icon right">
-                                                        <Input type="email" className="form-control form-control-icon" id="iconrightInput" placeholder="example@gmail.com" />
-                                                        <i className="ri-mail-unread-line"></i>
-                                                    </div>
-                                                </div>
-                                            </Col>
-
-                                            <Col xxl={3} md={6}>
-                                                <div>
-                                                    <Label htmlFor="exampleInputdate" className="form-label">Input Date</Label>
-                                                    <Input type="date" className="form-control" id="exampleInputdate" />
-                                                </div>
-                                            </Col>
-
-                                            <Col xxl={3} md={6}>
-                                                <div>
-                                                    <Label htmlFor="exampleInputtime" className="form-label">Input Time</Label>
-                                                    <Input type="time" className="form-control" id="exampleInputtime" />
-                                                </div>
-                                            </Col>
-
-                                            <Col xxl={3} md={6}>
-                                                <div>
-                                                    <Label htmlFor="exampleInputpassword" className="form-label">Input Password</Label>
-                                                    <Input type="password" className="form-control" id="exampleInputpassword" defaultValue="44512465" />
-                                                </div>
-                                            </Col>
-
-                                            <Col xxl={3} md={6}>
-                                                <div>
-                                                    <Label htmlFor="exampleFormControlTextarea5" className="form-label">Example Textarea</Label>
-                                                    <textarea className="form-control" id="exampleFormControlTextarea5" rows="3"></textarea>
-                                                </div>
-                                            </Col>
-
-                                            <Col xxl={3} md={6}>
-                                                <div>
-                                                    <Label htmlFor="formtextInput" className="form-label">Form Text</Label>
-                                                    <Input type="password" className="form-control" id="formtextInput" />
-                                                    <div id="passwordHelpBlock" className="form-text">
-                                                        Must be 8-20 characters long.
-                                                    </div>
-                                                </div>
-                                            </Col>
-
-                                            <Col xxl={3} md={6}>
-                                                <div>
-                                                    <Label htmlFor="colorPicker" className="form-label">Color Picker</Label>
-                                                    <Input type="color" className="form-control form-control-color w-100" id="colorPicker" defaultValue="#364574" />
-                                                </div>
-                                            </Col>
-
-                                            <Col xxl={3} md={6}>
-                                                <div>
-                                                    <Label htmlFor="borderInput" className="form-label">Input Border Style</Label>
-                                                    <Input type="text" className="form-control border-dashed" id="borderInput" placeholder="Enter your name" />
-                                                </div>
-                                            </Col>
-
-                                            <Col xxl={3} md={6}>
-                                                <Label htmlFor="exampleDataList" className="form-label">Datalist example</Label>
-                                                <Input className="form-control" list="datalistOptions" id="exampleDataList" placeholder="Search your country..." />
-                                                <datalist id="datalistOptions">
-                                                    <option defaultValue="Switzerland"> </option>
-                                                    <option defaultValue="New York"> </option>
-                                                    <option defaultValue="France"> </option>
-                                                    <option defaultValue="Spain"> </option>
-                                                    <option defaultValue="Chicago"> </option>
-                                                    <option defaultValue="Bulgaria"> </option>
-                                                    <option defaultValue="Hong Kong"> </option>
-                                                </datalist>
-                                            </Col>
-
-                                            <Col xxl={3} md={6}>
-                                                <div>
-                                                    <Label htmlFor="exampleInputrounded" className="form-label">Rounded Input</Label>
-                                                    <Input type="text" className="form-control rounded-pill" id="exampleInputrounded" placeholder="Enter your name" />
-                                                </div>
-                                            </Col>
-
-                                        </Row>
-
+                                <CardBody>
+                                    <div id="table-gridjs">
+                                        <BaseExample />
                                     </div>
                                 </CardBody>
                             </Card>
@@ -188,3 +71,45 @@ const PasienLama = () => {
 }
 
 export default PasienLama;
+
+const BaseExample = () => {
+    return (
+        <React.Fragment>
+            <Grid
+                data={data}
+                columns={[{
+                    name: 'ID',
+                    formatter: (cell) => _(<span className="fw-semibold">{cell}</span>)
+                },
+                    "Name",
+                {
+                    name: 'Email',
+                    formatter: (cell) => _(<a href="/#"> {cell} </a>)
+                },
+                    "Position", "Company", "Country",
+                {
+                    name: 'Actions',
+                    width: '120px',
+                    formatter: (cell) => _(<a href='/#' className='text-reset text-decoration-underline'> Details </a>)
+                },
+                ]}
+                search={true}
+                sort={true}
+                pagination={{ enabled: true, limit: 5, }}
+            />
+        </React.Fragment>
+    );
+};
+
+const data = [
+    ["01", "Jonathan", "jonathan@example.com", "Senior Implementation Architect", "Hauck Inc", "Holy See"],
+    ["02", "Harold", "harold@example.com", "Forward Creative Coordinator", "Metz Inc", "Iran"],
+    ["03", "Shannon", "shannon@example.com", "Legacy Functionality Associate", "Zemlak Group", "South Georgia"],
+    ["04", "Robert", "robert@example.com", "Product Accounts Technician", "Hoeger", "San Marino"],
+    ["05", "Noel", "noel@example.com", "Customer Data Director", "Howell - Rippin", "Germany"],
+    ["06", "Traci", "traci@example.com", "Corporate Identity Director", "Koelpin - Goldner", "Vanuatu"],
+    ["07", "Kerry", "kerry@example.com", "Lead Applications Associate", "Feeney, Langworth and Tremblay", "Niger"],
+    ["08", "Patsy", "patsy@example.com", "Dynamic Assurance Director", "Streich Group", "Niue"],
+    ["09", "Cathy", "cathy@example.com", "Customer Data Director", "Ebert, Schamberger and Johnston", "Mexico"],
+    ["10", "Tyrone", "tyrone@example.com", "Senior Response Liaison", "Raynor, Rolfson and Daugherty", "Qatar"],
+];

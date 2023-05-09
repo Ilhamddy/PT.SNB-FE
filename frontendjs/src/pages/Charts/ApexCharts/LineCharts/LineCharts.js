@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactApexChart from "react-apexcharts";
 import { seriesData } from "../series";
-import logoSm from "../../../../assets/images/logo-sm.png";
+import logoSm from "../../../../assets/images/sn.png";
 
 import getChartColorsArray from "../../../../Components/Common/ChartsDynamicColor";
 
