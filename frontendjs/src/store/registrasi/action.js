@@ -1,21 +1,21 @@
 import {
-    GET_REGISTRASI_LIST,
-    API_RESPONSE_SUCCESS,
-    API_RESPONSE_ERROR,
-   
+    REGISTRASI_CREATE, 
+    REGISTRASI_CREATE_ERROR, 
+    REGISTRASI_CREATE_SUCCESS,   
 } from "./actionType";
 
 // common success
-export const RegistrasiApiResponseSuccess = (actionType, data) => ({
-    type: API_RESPONSE_SUCCESS,
-    payload: { actionType, data },
+export const registrasiCreate = (data) => ({
+    type: REGISTRASI_CREATE,
+    payload: { data },
 });
 // common error
-export const RegistrasiApiResponseError = (actionType, error) => ({
-    type: API_RESPONSE_ERROR,
-    payload: { actionType, error },
+export const registrasiCreateSuccess = (result) => ({
+    type: REGISTRASI_CREATE_SUCCESS,
+    payload: { result },
 });
 
-export const getRegistrasiList = () => ({
-    type: GET_REGISTRASI_LIST,
+export const registrasiCreateError = (error) => ({
+    type: REGISTRASI_CREATE_ERROR,
+    payload: { error },
 });
