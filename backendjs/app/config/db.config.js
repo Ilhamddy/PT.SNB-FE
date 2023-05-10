@@ -1,14 +1,11 @@
+const dotenv = require('dotenv').config();
 
 module.exports = {
-    HOST: "103.149.177.11",
-    USER: "postgres",
-    PASSWORD: "@b3rd1k4r1@",
-    DB: "standart_v1",
-    // HOST: "localhost",
-    // USER: "postgres",
-    // PASSWORD: "@b3rd1k4r1@",
-    // DB: "standart_v1",
-    dialect: "postgres",
+    HOST: process.env.API_HOST,
+    USER: process.env.API_USER,
+    PASSWORD: process.env.API_PASSWORD,
+    DB: process.env.API_DB,
+    dialect: process.env.API_USER,
     PORT: 5432,
     pool: {
       max: 5,
