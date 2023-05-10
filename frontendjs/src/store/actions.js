@@ -49,3 +49,5 @@ export * from "./todos/action"
 export * from "./job/action";
 //API Key
 export * from "./apikey/action";
+
+export * from "./registrasi/action";

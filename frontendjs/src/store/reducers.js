@@ -71,6 +71,8 @@ import Jobs from './job/reducer'
 //API Key
 import APIKey from "./apikey/reducer";
 
+import Registrasi from "./registrasi/reducer";
+
 const rootReducer = combineReducers({
     // public
     Layout,
@@ -99,7 +101,8 @@ const rootReducer = combineReducers({
     FileManager,
     Todos,
     Jobs,
-    APIKey
+    APIKey,
+    Registrasi,
 });
 
 export default rootReducer;
