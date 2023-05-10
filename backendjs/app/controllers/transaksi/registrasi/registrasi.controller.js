@@ -2,29 +2,29 @@ const pool = require("../../../config/dbcon.query");
 const queries = require('../../../queries/transaksi/registrasi.queries');
 
 const allSelect = (req, res) => {
-    var data = [
-        ["01", "Jonathan", "jonathan@example.com", "Senior Implementation Architect", "Hauck Inc", "Holy See"],
-        ["02", "Harold", "harold@example.com", "Forward Creative Coordinator", "Metz Inc", "Iran"],
-        ["03", "Shannon", "shannon@example.com", "Legacy Functionality Associate", "Zemlak Group", "South Georgia"],
-        ["04", "Robert", "robert@example.com", "Product Accounts Technician", "Hoeger", "San Marino"],
-        ["05", "Noel", "noel@example.com", "Customer Data Director", "Howell - Rippin", "Germany"],
-        ["06", "Traci", "traci@example.com", "Corporate Identity Director", "Koelpin - Goldner", "Vanuatu"],
-        ["07", "Kerry", "kerry@example.com", "Lead Applications Associate", "Feeney, Langworth and Tremblay", "Niger"],
-        ["08", "Patsy", "patsy@example.com", "Dynamic Assurance Director", "Streich Group", "Niue"],
-        ["09", "Cathy", "cathy@example.com", "Customer Data Director", "Ebert, Schamberger and Johnston", "Mexico"],
-        ["10", "Tyrone", "tyrone@example.com", "Senior Response Liaison", "Raynor, Rolfson and Daugherty", "Qatar"],
-    ];
-    res.status(200).json(data);
-    // pool.query(queries.getAll, (error, result) => {
-    //     if (error) throw error;
-    //     res.status(200).send({
-    //         data: result.rows,
-    //         status: "success",
-    //         success: true,
-    //     });
+    // var data = [
+    //     ["01", "Jonathan", "jonathan@example.com", "Senior Implementation Architect", "Hauck Inc", "Holy See"],
+    //     ["02", "Harold", "harold@example.com", "Forward Creative Coordinator", "Metz Inc", "Iran"],
+    //     ["03", "Shannon", "shannon@example.com", "Legacy Functionality Associate", "Zemlak Group", "South Georgia"],
+    //     ["04", "Robert", "robert@example.com", "Product Accounts Technician", "Hoeger", "San Marino"],
+    //     ["05", "Noel", "noel@example.com", "Customer Data Director", "Howell - Rippin", "Germany"],
+    //     ["06", "Traci", "traci@example.com", "Corporate Identity Director", "Koelpin - Goldner", "Vanuatu"],
+    //     ["07", "Kerry", "kerry@example.com", "Lead Applications Associate", "Feeney, Langworth and Tremblay", "Niger"],
+    //     ["08", "Patsy", "patsy@example.com", "Dynamic Assurance Director", "Streich Group", "Niue"],
+    //     ["09", "Cathy", "cathy@example.com", "Customer Data Director", "Ebert, Schamberger and Johnston", "Mexico"],
+    //     ["10", "Tyrone", "tyrone@example.com", "Senior Response Liaison", "Raynor, Rolfson and Daugherty", "Qatar"],
+    // ];
+    // res.status(200).json(data);
+    pool.query(queries.getAll, (error, result) => {
+        if (error) throw error;
+        res.status(200).send({
+            data: result.rows,
+            status: "success",
+            success: true,
+        });
         
 
-    // });
+    });
 };
 
 const addPost = (req, res) => {
