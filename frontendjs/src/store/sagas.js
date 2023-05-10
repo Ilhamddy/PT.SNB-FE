@@ -63,6 +63,8 @@ import jobSaga from "./job/saga";
 //API Key
 import APIKeysaga from "./apikey/saga";
 
+import registrasiSaga from "./registrasi/saga";
+
 export default function* rootSaga() {
   yield all([
     //public
@@ -91,6 +93,7 @@ export default function* rootSaga() {
     fork(fileManager),
     fork(todos),
     fork(jobSaga),
-    fork(APIKeysaga)
+    fork(APIKeysaga),
+    fork(registrasiSaga),
   ]);
 }

@@ -202,7 +202,7 @@ const Navdata = () => {
             ],
         },
         {
-            id: "Registrasi",
+            id: "registrasi",
             label: "Registrasi",
             icon: "lab la-delicious",
             link: "/#",
@@ -215,10 +215,10 @@ const Navdata = () => {
             stateVariables: isRegistrasi,
             subItems: [
                 {
-                    id: "Zm9ybXMtcGFzaWVuLWxhbWE=",
-                    label: "Pasien Lama",
-                    link: "/Zm9ybXMtcGFzaWVuLWxhbWE=",
-                    parentId: "Registrasi",
+                    id: "registrasi-pasien-baru",
+                    label: "Pasien Baru",
+                    link: "/registrasi/pasien-baru",
+                    parentId: "registrasi",
                 },
             ],
         },

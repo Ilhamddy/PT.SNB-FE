@@ -242,6 +242,7 @@ import FileManager from "../pages/FileManager";
 import ToDoList from "../pages/ToDo";
 // Pasien
 import PasienLama from "../app/Registrasi/PasienLama";
+import RegistrasiForm from "../pages/Registrasi/RegistrasiForm/RegistrasiForm";
 
 const authProtectedRoutes = [
   { path: "/dashboard-analytics", component: <DashboardAnalytics /> },
@@ -455,6 +456,9 @@ const authProtectedRoutes = [
 
   // Registrasi
   { path: "/Zm9ybXMtcGFzaWVuLWxhbWE=", component: <PasienLama /> },
+
+
+  {path: "/registrasi/pasien-baru", component: <RegistrasiForm />}
 ];
 
 const publicRoutes = [
