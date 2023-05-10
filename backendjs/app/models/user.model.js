@@ -9,9 +9,9 @@ module.exports = (sequelize, Sequelize) => {
       password: {
         type: Sequelize.STRING
       },
-      objectaccesmodulfk: {
-        type: Sequelize.STRING
-      }
+      // objectaccesmodulfk: {
+      //   type: Sequelize.STRING
+      // }
     });
   
     return User;

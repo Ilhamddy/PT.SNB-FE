@@ -1,8 +1,6 @@
 const getSesions =
-    "select sm2.reportdisplay as head,sm2.id as idhead, sc.reportdisplay,sc.link,sc.nourut "+
-    "from s_modulaplikasi sm join s_menumodulaplikasi sm2 on sm.id=sm2.objekmodulaplikasiid "+
-    "join s_childmenumodulaplikasi sc on sc.objekmenumodulaplikasiid =sm2.id "+
-    "where sm.id= $1 order by sm2.nourut,sc.nourut ";
+    "select r.name,r.permission  from user_roles as ur "+
+    "join roles as r on r.id=ur.roleid where ur.userid =$1 and ur.statusenabled =true ";
 
 module.exports = {
     getSesions

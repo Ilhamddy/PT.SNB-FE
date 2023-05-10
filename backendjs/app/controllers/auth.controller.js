@@ -17,7 +17,7 @@ exports.signup = (req, res) => {
     username: req.body.username,
     email: req.body.email,
     password: bcrypt.hashSync(req.body.password, 8),
-    objectaccesmodulfk: req.body.objectaccesmodulfk
+    // objectaccesmodulfk: req.body.objectaccesmodulfk
   })
     .then(user => {
       if (req.body.roles) {
@@ -70,34 +70,34 @@ exports.signin = (req, res) => {
       }
 
       try {
-        pool.query(queries.getSesions, [user.objectaccesmodulfk], (error, result) => {
+        pool.query(queries.getSesions, [user.id], (error, result) => {
           if (error) throw error;
           // res.status(200).json(result.rows);
-          var resHead=[];
+          var resHead=result.rows;
           
-          for (let i = 0; i < result.rows.length; i++) {
+          // for (let i = 0; i < result.rows.length; i++) {
             
-            if(i==0){
-              let tempresChild = [{ nourut: result.rows[i].nourut,reportdisplay:result.rows[i].reportdisplay,link:result.rows[i].link}]
-              let tempresHead = { id: result.rows[i].idhead,head:result.rows[i].head,child:tempresChild}
-              resHead.push(tempresHead)
-            }else{
-              for (let x = 0; x < resHead.length; x++) {
+          //   if(i==0){
+          //     let tempresChild = [{ nourut: result.rows[i].nourut,reportdisplay:result.rows[i].reportdisplay,link:result.rows[i].link}]
+          //     let tempresHead = { id: result.rows[i].idhead,head:result.rows[i].head,child:tempresChild}
+          //     resHead.push(tempresHead)
+          //   }else{
+          //     for (let x = 0; x < resHead.length; x++) {
                 
-                if(resHead[x].id==result.rows[i].idhead){
-                  let tempresChild = { nourut: result.rows[i].nourut,reportdisplay:result.rows[i].reportdisplay,link:result.rows[i].link}
-                  resHead[x].child.push(tempresChild)
-                  break;
-                }else{
-                  let tempresChild = [{ nourut: result.rows[i].nourut,reportdisplay:result.rows[i].reportdisplay,link:result.rows[i].link}]
-                  let tempresHead = { id: result.rows[i].idhead,head:result.rows[i].head,child:tempresChild}
-                  resHead.push(tempresHead)
-                  break;
-                }
-                // console.log(resHead[x].child)
-              }
-            }
-          }
+          //       if(resHead[x].id==result.rows[i].idhead){
+          //         let tempresChild = { nourut: result.rows[i].nourut,reportdisplay:result.rows[i].reportdisplay,link:result.rows[i].link}
+          //         resHead[x].child.push(tempresChild)
+          //         break;
+          //       }else{
+          //         let tempresChild = [{ nourut: result.rows[i].nourut,reportdisplay:result.rows[i].reportdisplay,link:result.rows[i].link}]
+          //         let tempresHead = { id: result.rows[i].idhead,head:result.rows[i].head,child:tempresChild}
+          //         resHead.push(tempresHead)
+          //         break;
+          //       }
+          //       // console.log(resHead[x].child)
+          //     }
+          //   }
+          // }
 
           var token = jwt.sign({ id: user.id, sesion: resHead }, config.secret, {
             expiresIn: 86400 // 24 hours test
@@ -112,9 +112,10 @@ exports.signin = (req, res) => {
               id: user.id,
               username: user.username,
               email: user.email,
-              roles: authorities,
+              // roles: authorities,
               accessToken: token,
               status: "success",
+              success: true,
               // sesion: resHead
             });
           });

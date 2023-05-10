@@ -27,38 +27,65 @@ const allSelect = (req, res) => {
 };
 
 const addPost = (req, res) => {
-    const { nocm, namapasien,noidentitas ,nobpjs ,nohp } = req.body;
+    const { namapasien, noidentitas, nobpjs, nohp } = req.body;
     // check if username exist
     // pool.query(queries.checkUserNameExist, [username], (error, result) => {
     //     if (result.rows.length) {
     //         res.send("user already exist.");
     //     } else {
     // add tabel
-    pool.query(
-        queries.addPost, [nocm, namapasien,noidentitas ,nobpjs ,nohp],
-        (error, result) => {
-            if (error) {
-                throw error
-            }else{
-                pool.query(queries.getAll, (error, result) => {
-                    if (error) throw error;
-                    res.status(200).send({
-                        data: result.rows,
-                        status: "success",
-                        success: true,
-                    });
-                    // res.status(200).json(result.rows);
-            
-                });
+    pool.query(queries.checkNewNumber, (error, result) => {
+        if (error) {
+            throw error
+        } else {
+            let nocm = result.rows[0].new_number + 1
+            let new_number = result.rows[0].new_number + 1
+            for (let x = result.rows[0].new_number.toString().length; x < result.rows[0].extention; x++) {
+                nocm = '0' + nocm;
             }
-            
-            // res.status(201).send("Username Created Succesfully!.");
+            // res.status(200).send({
+            //     data: nocm,
+            //     status: "success",
+            //     success: true,
+            // });
+
+            pool.query(
+                queries.addPost, [nocm,namapasien, noidentitas, nobpjs, nohp],
+                (error, result) => {
+                    if (error) {
+                        throw error
+                    } else {
+                        pool.query(queries.getPasienByNocm, [nocm], (error, result) => {
+                            if (error){
+                                 throw error
+                            }else{
+                                pool.query(queries.updateRunning_number, [new_number], (error, resultUpdate) =>{
+                                    if(error){
+                                         throw error
+                                    }else{
+                                        res.status(200).send({
+                                            data: result.rows,
+                                            status: "success",
+                                            success: true,
+                                        });
+                                    }
+                                    
+                                })
+                                
+                            }
+                            
+                            // res.status(200).json(result.rows);
+
+                        });
+                    }
+                }
+            )
         }
-    )
-    // }
 
 
-    // })
+    });
+
+
 }
 
 module.exports = {
