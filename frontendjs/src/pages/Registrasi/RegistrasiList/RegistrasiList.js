@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Card, CardBody, Col, Container, Row } from 'reactstrap';
+import { Card, CardBody, CardHeader, Col, Container, Row } from 'reactstrap';
 import { useSelector, useDispatch } from "react-redux";
 import { registrasiGetList } from '../../../store/actions';
 import BreadCrumb from '../../../Components/Common/BreadCrumb';
@@ -67,7 +67,9 @@ const RegistrasiList = () => {
                     <Row>
                         <Col lg={12}>
                             <Card>
-                                <PreviewCardHeaderNew title="Daftar Pasien Lama" />
+                                <CardHeader className="align-items-center d-flex">
+                                    <h4 className="card-title mb-0 flex-grow-1">Daftar Pasien Lama</h4>
+                                </CardHeader>
 
                                 <CardBody>
                                     <div id="table-gridjs">

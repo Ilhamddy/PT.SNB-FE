@@ -33,8 +33,13 @@ const Registrasi = (state = INIT_STATE, action) => {
     switch (action.type) {
         case REGISTRASI_RESET_FORM: {
             return {
-                ...state.registrasiSave,
-                newData: null,
+                ...state,
+                registrasiGet:{
+                    ...INIT_STATE.registrasiGet,
+                },
+                registrasiSave: {
+                    ...INIT_STATE.registrasiSave,
+                }
             }
         }
 

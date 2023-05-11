@@ -149,8 +149,8 @@ const RegistrasiForm = (props) => {
                                                         validation.touched.nobpjs && validation.errors.nobpjs ? true : false
                                                     }
                                                 />
-                                                {validation.touched.namapasien && validation.errors.namapasien ? (
-                                                    <FormFeedback type="invalid"><div>{validation.errors.namapasien}</div></FormFeedback>
+                                                {validation.touched.nobpjs && validation.errors.nobpjs ? (
+                                                    <FormFeedback type="invalid"><div>{validation.errors.nobpjs}</div></FormFeedback>
                                                 ) : null}
                                             </div>
                                         </Col>
