@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import * as Yup from "yup";
 import { Button, Card, CardBody, CardHeader, Col, Container, Form, FormFeedback, Input, Label, Row } from "reactstrap";
 import BreadCrumb from "../../../Components/Common/BreadCrumb";
-import { registrasiSave, registrasiResetForm, registrasiSetData, registrasiGet } from "../../../store/actions";
+import { registrasiSave, registrasiResetForm, registrasiGet } from "../../../store/actions";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {  useCallback, useEffect } from "react";

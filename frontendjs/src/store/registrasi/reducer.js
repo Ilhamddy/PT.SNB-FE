@@ -2,7 +2,6 @@ import {
     REGISTRASI_SAVE,
     REGISTRASI_SAVE_SUCCESS,
     REGISTRASI_SAVE_ERROR,
-    REGISTRASI_SET_DATA,
     REGISTRASI_LIST_GET,
     REGISTRASI_LIST_GET_ERROR,
     REGISTRASI_LIST_GET_SUCCESS,
@@ -36,13 +35,6 @@ const Registrasi = (state = INIT_STATE, action) => {
             return {
                 ...state.registrasiSave,
                 newData: null,
-            }
-        }
-        case REGISTRASI_SET_DATA: {
-            console.log({action})
-            return {
-                ...state,
-                editData: action.payload,
             }
         }
 

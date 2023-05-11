@@ -1,15 +1,5 @@
-import React, { useEffect, useState } from 'react';
-
-
-//import Components
-import { Card, CardBody, Col, Container, DropdownItem, DropdownMenu, DropdownToggle, Input, Label, Row, UncontrolledDropdown } from 'reactstrap';
-
-// Import Table Data
-// import { BaseExample } from '../../../src/pages/Tables/GridTables/GridTablesData';
-
-import { Grid, _ } from 'gridjs-react';
-
-//redux
+import React, { useEffect } from 'react';
+import { Card, CardBody, Col, Container, Row } from 'reactstrap';
 import { useSelector, useDispatch } from "react-redux";
 import { registrasiGetList } from '../../../store/actions';
 import BreadCrumb from '../../../Components/Common/BreadCrumb';
