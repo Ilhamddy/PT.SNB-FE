@@ -117,8 +117,8 @@ const getPasienById = (req, res) => {
                 let tempres=""
                 for (var i = 0; i < result.rows.length; ++i){
                     if (result.rows[i] !== undefined) {
-                        tempres = { id: result.rows[i].id,nocm:result.rows[i].nocm,namapasien:result.rows[i].nocm,
-                        noidentitas:result.rows[i].nocm,nobpjs:result.rows[i].nocm,nohp:result.rows[i].nocm}
+                        tempres = { id: result.rows[i].id,nocm:result.rows[i].nocm,namapasien:result.rows[i].namapasien,
+                        noidentitas:result.rows[i].noidentitas,nobpjs:result.rows[i].nobpjs,nohp:result.rows[i].nohp}
                    
                     }
                 }
