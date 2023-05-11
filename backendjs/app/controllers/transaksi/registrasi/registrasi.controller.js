@@ -88,9 +88,9 @@ const updatePasienById = (req, res) => {
                             success: true,
                         });
                     }
-        
+
                 })
-                
+
             }
 
         })
@@ -101,8 +101,33 @@ const updatePasienById = (req, res) => {
     }
 }
 
+const getPasienById = (req, res) => {
+    const id = parseInt(req.params.id);
+    pool.query(queries.getPasienById, [id], (error, result) => {
+        if (error) {
+            throw error
+        } else {
+            if (result.rows.length==0) {
+                res.status(201).send({
+                    data: [],
+                    status: "Data Tidak Ada",
+                    success: true,
+                });
+            } else {
+                res.status(200).send({
+                    data: result.rows,
+                    status: "success",
+                    success: true,
+                });
+            }
+        }
+
+    })
+}
+
 module.exports = {
     allSelect,
     addPost,
-    updatePasienById
+    updatePasienById,
+    getPasienById
 };

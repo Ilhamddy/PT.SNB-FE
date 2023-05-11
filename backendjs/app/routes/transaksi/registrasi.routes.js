@@ -28,5 +28,11 @@ module.exports = function (app) {
         controller.updatePasienById
     );
 
+    app.get(
+        "/api/transaksi/registrasi/pasien/:id",
+        [authJwt.verifyToken],
+        controller.getPasienById
+    );
+
 
 };
