@@ -1,5 +1,4 @@
 import {
-    REGISTRASI_SET_DATA,
     REGISTRASI_SAVE, 
     REGISTRASI_SAVE_ERROR, 
     REGISTRASI_SAVE_SUCCESS,
@@ -14,12 +13,7 @@ import {
 
 export const registrasiResetForm = () => ({
     type: REGISTRASI_RESET_FORM,
-})
-
-export const registrasiSetData = (data) => ({
-    type: REGISTRASI_SET_DATA,
-    payload: data,
-})
+});
 
 // common success
 export const registrasiSave = (data, history) => ({
