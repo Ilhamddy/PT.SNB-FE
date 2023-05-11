@@ -107,15 +107,24 @@ const getPasienById = (req, res) => {
         if (error) {
             throw error
         } else {
-            if (result.rows.length==0) {
+            if (result.rows.length == 0) {
                 res.status(201).send({
-                    data: [],
+                    data: "",
                     status: "Data Tidak Ada",
                     success: true,
                 });
             } else {
+                let tempres=""
+                for (var i = 0; i < result.rows.length; ++i){
+                    if (result.rows[i] !== undefined) {
+                        tempres = { id: result.rows[i].id,nocm:result.rows[i].nocm,namapasien:result.rows[i].nocm,
+                        noidentitas:result.rows[i].nocm,nobpjs:result.rows[i].nocm,nohp:result.rows[i].nocm}
+                   
+                    }
+                }
+                
                 res.status(200).send({
-                    data: result.rows,
+                    data: tempres,
                     status: "success",
                     success: true,
                 });
