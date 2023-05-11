@@ -1,21 +1,62 @@
 import {
-    REGISTRASI_CREATE, 
-    REGISTRASI_CREATE_ERROR, 
-    REGISTRASI_CREATE_SUCCESS,   
+    REGISTRASI_SAVE, 
+    REGISTRASI_SAVE_ERROR, 
+    REGISTRASI_SAVE_SUCCESS,
+    REGISTRASI_LIST_GET,
+    REGISTRASI_LIST_GET_ERROR,
+    REGISTRASI_LIST_GET_SUCCESS,
+    REGISTRASI_RESET_FORM,
+    REGISTRASI_GET,
+    REGISTRASI_GET_SUCCESS,
+    REGISTRASI_GET_ERROR,
 } from "./actionType";
 
-// common success
-export const registrasiCreate = (data) => ({
-    type: REGISTRASI_CREATE,
-    payload: { data },
-});
-// common error
-export const registrasiCreateSuccess = (result) => ({
-    type: REGISTRASI_CREATE_SUCCESS,
-    payload: { result },
+export const registrasiResetForm = () => ({
+    type: REGISTRASI_RESET_FORM,
 });
 
-export const registrasiCreateError = (error) => ({
-    type: REGISTRASI_CREATE_ERROR,
-    payload: { error },
+// common success
+export const registrasiSave = (data, history) => ({
+    type: REGISTRASI_SAVE,
+    payload: { data, history },
+});
+// common error
+export const registrasiSaveSuccess = (data, history) => ({
+    type: REGISTRASI_SAVE_SUCCESS,
+    payload: { data, history},
+});
+
+export const registrasiSaveError = (error) => ({
+    type: REGISTRASI_SAVE_ERROR,
+    payload: error,
+});
+
+
+export const registrasiGetList = () => ({
+    type: REGISTRASI_LIST_GET,
+});
+
+export const registrasiGetListSuccess = (data) => ({
+    type: REGISTRASI_LIST_GET_SUCCESS,
+    payload: data,
+});
+
+export const registrasiGetListError = (error) => ({
+    type: REGISTRASI_LIST_GET_ERROR,
+    payload: error,
+});
+
+export const registrasiGet = (id) => ({
+    type: REGISTRASI_GET,
+    payload: {id},
+});
+
+export const registrasiGetSuccess = (data) => ({
+    type: REGISTRASI_GET_SUCCESS,
+    payload: data,
+});
+
+export const registrasiGetError = (error) => ({
+    type: REGISTRASI_GET_ERROR,
+    payload: error,
 });

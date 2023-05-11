@@ -215,9 +215,15 @@ const Navdata = () => {
             stateVariables: isRegistrasi,
             subItems: [
                 {
+                    id: "registrasi-pasien-lama",
+                    label: "Pasien Lama",
+                    link: "/registrasi/pasien-lama",
+                    parentId: "registrasi",
+                },
+                {
                     id: "registrasi-pasien-baru",
                     label: "Pasien Baru",
-                    link: "/registrasi/pasien-baru",
+                    link: "/registrasi/pasien",
                     parentId: "registrasi",
                 },
             ],
