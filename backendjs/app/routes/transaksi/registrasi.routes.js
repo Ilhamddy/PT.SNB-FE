@@ -33,6 +33,11 @@ module.exports = function (app) {
         [authJwt.verifyToken],
         controller.getPasienById
     );
-
+    
+    app.get(
+        "/api/transaksi/registrasi/daftar-pasien-lama-or",
+        [authJwt.verifyToken],
+        controller.getAllByOr
+    );
 
 };

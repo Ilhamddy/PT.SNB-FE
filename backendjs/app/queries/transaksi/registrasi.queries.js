@@ -1,5 +1,5 @@
 const getAll =
-    "select id,nocm ,namapasien ,noidentitas ,nobpjs ,nohp  from m_pasien";
+    "select id,nocm ,namapasien ,noidentitas ,nobpjs ,nohp, to_char(tgllahir,'yyyy-MM-dd')tgllahir, alamatrmh  from m_pasien";
 
 const addPost =
     "insert into  m_pasien (nocm,namapasien,noidentitas ,nobpjs ,nohp) values ($1,$2,$3,$4,$5)";
@@ -12,7 +12,13 @@ const updateRunning_number = "update running_number set new_number = $1 where id
 
 const updatePasienById = "update m_pasien set namapasien=$1,noidentitas=$2 ,nobpjs=$3 ,nohp=$4 where id = $5";
 
-const getPasienById = "select id,nocm ,namapasien ,noidentitas ,nobpjs ,nohp  from m_pasien where id = $1";
+const getPasienById = "select id,nocm ,namapasien ,noidentitas ,nobpjs ,nohp, tgllahir  from m_pasien where id = $1";
+
+// const getAllByOr = 
+//     "select id,nocm ,namapasien ,noidentitas ,nobpjs ,nohp,"+
+//     " to_char(tgllahir,'yyyy-MM-dd')tgllahir, alamatrmh  from m_pasien ";
+const getAllByOr = `select id,nocm ,namapasien ,noidentitas ,nobpjs ,nohp,to_char(tgllahir,'yyyy-MM-dd')tgllahir, alamatrmh  from m_pasien`;
+
 
 module.exports = {
     getAll,
@@ -21,5 +27,6 @@ module.exports = {
     getPasienByNocm,
     updateRunning_number,
     updatePasienById,
-    getPasienById
+    getPasienById,
+    getAllByOr
 };

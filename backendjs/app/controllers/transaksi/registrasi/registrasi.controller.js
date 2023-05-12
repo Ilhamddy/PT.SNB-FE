@@ -114,15 +114,17 @@ const getPasienById = (req, res) => {
                     success: true,
                 });
             } else {
-                let tempres=""
-                for (var i = 0; i < result.rows.length; ++i){
+                let tempres = ""
+                for (var i = 0; i < result.rows.length; ++i) {
                     if (result.rows[i] !== undefined) {
-                        tempres = { id: result.rows[i].id,nocm:result.rows[i].nocm,namapasien:result.rows[i].namapasien,
-                        noidentitas:result.rows[i].noidentitas,nobpjs:result.rows[i].nobpjs,nohp:result.rows[i].nohp}
-                   
+                        tempres = {
+                            id: result.rows[i].id, nocm: result.rows[i].nocm, namapasien: result.rows[i].namapasien,
+                            noidentitas: result.rows[i].noidentitas, nobpjs: result.rows[i].nobpjs, nohp: result.rows[i].nohp
+                        }
+
                     }
                 }
-                
+
                 res.status(200).send({
                     data: tempres,
                     status: "success",
@@ -134,9 +136,50 @@ const getPasienById = (req, res) => {
     })
 }
 
+const getAllByOr = (req, res) => {
+    const nocm = req.query.nocm;
+    // let query = queries.getAllByOr + ` where nocm ilike '%` + nocm + `%'` + ` or namapasien ilike '%` + nocm + `%' limit 200`
+    let query = queries.getAllByOr + ` where nocm ilike '%${nocm}%'  or namapasien ilike '%${nocm}%'`
+    // res.status(200).send({
+    //     data: query,
+    //     status: "success",
+    //     success: true,
+    // });
+    pool.query(query, (error, result) => {
+        if (error) {
+            error
+        } else {
+            res.status(200).send({
+                data: result.rows,
+                status: "success",
+                success: true,
+            });
+        }
+    })
+    // res.status(200).send({
+    //     data: queries.getAllByOr,
+    //     status: "success",
+    //     success: true,
+    // });
+
+    // pool.query(queries.getAllByOr,[nocm], (error, result) => {
+    //     if (error){
+    //         error
+    //     } else{
+    //         res.status(200).send({
+    //             data: result.rows,
+    //             status: "success",
+    //             success: true,
+    //         });
+    //     }
+
+    // });
+};
+
 module.exports = {
     allSelect,
     addPost,
     updatePasienById,
-    getPasienById
+    getPasienById,
+    getAllByOr
 };
