@@ -223,7 +223,7 @@ const Navdata = () => {
                 {
                     id: "registrasi-pasien-baru",
                     label: "Pasien Baru",
-                    link: "/registrasi/pasien",
+                    link: "/registrasi/pasien-baru",
                     parentId: "registrasi",
                 },
             ],

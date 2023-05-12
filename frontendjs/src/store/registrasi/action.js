@@ -9,6 +9,9 @@ import {
     REGISTRASI_GET,
     REGISTRASI_GET_SUCCESS,
     REGISTRASI_GET_ERROR,
+    REGISTRASI_LIST_BYOR_GET,
+    REGISTRASI_LIST_BYOR_GET_SUCCESS,
+    REGISTRASI_LIST_BYOR_GET_ERROR
 } from "./actionType";
 
 export const registrasiResetForm = () => ({
@@ -32,8 +35,9 @@ export const registrasiSaveError = (error) => ({
 });
 
 
-export const registrasiGetList = () => ({
+export const registrasiGetList = (nocm) => ({
     type: REGISTRASI_LIST_GET,
+    payload: {nocm},
 });
 
 export const registrasiGetListSuccess = (data) => ({
@@ -43,6 +47,21 @@ export const registrasiGetListSuccess = (data) => ({
 
 export const registrasiGetListError = (error) => ({
     type: REGISTRASI_LIST_GET_ERROR,
+    payload: error,
+});
+
+export const registrasiGetListByOr = (nocm) => ({
+    type: REGISTRASI_LIST_BYOR_GET,
+    payload: {nocm},
+});
+
+export const registrasiGetListByOrSuccess = (data) => ({
+    type: REGISTRASI_LIST_BYOR_GET_SUCCESS,
+    payload: data,
+});
+
+export const registrasiGetListByOrError = (error) => ({
+    type: REGISTRASI_LIST_BYOR_GET_ERROR,
     payload: error,
 });
 

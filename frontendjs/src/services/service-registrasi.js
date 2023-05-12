@@ -6,6 +6,10 @@ export default class ServiceRegistrasi {
     getAllPasien = async () => {
         return await api.get("/transaksi/registrasi/daftar-pasien-lama");
     }
+    
+    getAllPasienByOr = async (nocm) => {
+        return await api.get(`/transaksi/registrasi/daftar-pasien-lama-or?&nocm=${nocm}`);
+    }
 
     getPasien = async (id) => {
         return await api.get(`/transaksi/registrasi/pasien/${id}`);
