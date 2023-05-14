@@ -15,6 +15,8 @@ import classnames from "classnames";
 //import images
 import userDummy from "../../../assets/images/users/user-dummy-img.jpg";
 
+import patient from "../../../assets/images/users/icons8-patient-64.png";
+
 const RegistrasiList = () => {
     const dispatch = useDispatch();
 
@@ -54,10 +56,10 @@ const RegistrasiList = () => {
     };
 
     const handleFilter = (e) => {
-        if (e.keyCode === 13 ) {
+        if (e.keyCode === 13) {
             console.log(search)
             // useEffect(() => {
-                dispatch(registrasiGetList(search));
+            dispatch(registrasiGetList(search));
             // }, [dispatch]);
         }
     }
@@ -259,7 +261,7 @@ const RegistrasiList = () => {
                                 <CardHeader className="align-items-center d-flex">
                                     <div className="live-preview">
                                         <Row>
-                                            <Col lg={12}>
+                                            <Col>
                                                 <h4 className="card-title mb-0 flex-grow-1 mb-3">Daftar Pasien Lama</h4>
                                             </Col>
                                         </Row>
@@ -273,8 +275,8 @@ const RegistrasiList = () => {
                                             <div className="d-flex justify-content-sm-end">
                                                 <div className="search-box ms-2">
                                                     <input type="text" className="form-control search"
-                                                    onChange={event => setSearch(event.target.value)} 
-                                                    onKeyDown={handleFilter} placeholder="Search..."/>
+                                                        onChange={event => setSearch(event.target.value)}
+                                                        onKeyDown={handleFilter} placeholder="Search..." />
                                                     <i className="ri-search-line search-icon"></i>
                                                 </div>
                                             </div>
