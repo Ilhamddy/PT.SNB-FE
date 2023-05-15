@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect,useState } from 'react';
 import UiContent from '../../../Components/Common/UiContent';
 import BreadCrumb from '../../../Components/Common/BreadCrumb';
 import withRouter from "../../../Components/Common/withRouter";
@@ -16,9 +16,22 @@ import Flatpickr from "react-flatpickr";
 //import images
 import progileBg from '../../../assets/images/profile-bg.jpg';
 
+import Select from "react-select";
+import { useSelector, useDispatch } from "react-redux";
+import { masterGet } from '../../../store/master/action';
+
 const PasienBaru = () => {
     document.title = "Profile Pasien Baru";
+    const dispatch = useDispatch();
+    const { data, loading, error } = useSelector((state) => ({
+        data: state.Master.masterGet.data,
+        loading: state.Master.masterGet.loading,
+        error: state.Master.masterGet.error,
+    }));
 
+    useEffect(() => {
+        dispatch(masterGet());
+    }, [dispatch]);
     // Card Header Tabs
     const [cardHeaderTab, setcardHeaderTab] = useState("1");
     const cardHeaderToggle = (tab) => {
@@ -26,6 +39,26 @@ const PasienBaru = () => {
             setcardHeaderTab(tab);
         }
     };
+
+
+    const [companyType, setcompanyType] = useState(null);
+
+    const companytypes = [
+        {
+            options: [
+                { label: "Select type", value: "Select type" },
+                { label: "All", value: "All" },
+                { label: "Merchandising", value: "Merchandising" },
+                { label: "Manufacturing", value: "Manufacturing" },
+                { label: "Partnership", value: "Partnership" },
+                { label: "Corporation", value: "Corporation" },
+            ],
+        },
+    ];
+
+    function handlecompanyType(companyType) {
+        setcompanyType(companyType);
+    }
     return (
         <React.Fragment>
             <div className="page-content">
@@ -59,7 +92,7 @@ const PasienBaru = () => {
                                 </div>
                                 <CardBody>
                                     <TabContent activeTab={cardHeaderTab} className="text-muted">
-                                    {/* <Form className="gy-4"
+                                        {/* <Form className="gy-4"
                                                 action="#"> */}
                                         <TabPane tabId="1" id="home2">
                                             <Form className="gy-4"
@@ -111,12 +144,32 @@ const PasienBaru = () => {
                                                                     </Col>
                                                                     <Col xxl={6} md={6}>
                                                                         <div>
-                                                                            <select className="form-select mb-3" aria-label="Default select example">
-                                                                                <option >Select your Status </option>
-                                                                                <option value="1">Declined Payment</option>
-                                                                                <option value="2">Delivery Error</option>
-                                                                                <option value="3">Wrong Amount</option>
-                                                                            </select>
+                                                                            <Select
+                                                                                name="choices-single-default"
+                                                                                id="choices-single-default"
+                                                                                // styles={{
+                                                                                //     control: (baseStyles, state) => ({
+                                                                                //       ...baseStyles,
+                                                                                //       borderColor: state.isFocused ? 'blue' : 'black',
+
+                                                                                //     }),
+                                                                                //   }}
+                                                                                value={companyType}
+                                                                                onChange={() => {
+                                                                                    handlecompanyType();
+                                                                                }}
+                                                                                options={companytypes}
+                                                                                theme={(theme) => ({
+                                                                                    ...theme,
+                                                                                    borderRadius: 0,
+                                                                                    colors: {
+                                                                                        ...theme.colors,
+                                                                                        text: 'orangered',
+                                                                                        primary25: '#48dbfb',
+                                                                                        primary: '#48dbfb',
+                                                                                    },
+                                                                                })}
+                                                                            />
                                                                         </div>
                                                                     </Col>
                                                                     <Col xxl={6} md={6}>
@@ -576,9 +629,9 @@ const PasienBaru = () => {
                                         </TabPane>
 
                                         <TabPane tabId="2" id="profile2">
-                                        <Form className="gy-4"
+                                            <Form className="gy-4"
                                                 action="#">
-                                                    <Row>
+                                                <Row>
                                                     <Col lg={4}>
                                                         <Card style={{ backgroundColor: "#f1f2f6" }}>
                                                             <CardHeader style={{ backgroundColor: "#dfe4ea" }}>
@@ -788,8 +841,8 @@ const PasienBaru = () => {
                                                             </CardBody>
                                                         </Card>
                                                     </Col>
-                                                    </Row>
-                                                </Form>
+                                                </Row>
+                                            </Form>
                                         </TabPane>
                                         {/* </Form> */}
                                     </TabContent>

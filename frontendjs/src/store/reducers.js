@@ -73,6 +73,8 @@ import APIKey from "./apikey/reducer";
 
 import Registrasi from "./registrasi/reducer";
 
+import Master from "./master/reducer";
+
 const rootReducer = combineReducers({
     // public
     Layout,
@@ -103,6 +105,7 @@ const rootReducer = combineReducers({
     Jobs,
     APIKey,
     Registrasi,
+    Master
 });
 
 export default rootReducer;

@@ -1,0 +1,3 @@
+export const MASTER_GET = "MASTER_GET";
+export const MASTER_GET_SUCCESS = "MASTER_GET_SUCCESS";
+export const MASTER_GET_ERROR = "MASTER_GET_ERROR";

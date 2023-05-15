@@ -5,7 +5,11 @@ const allSelect = (req, res) => {
     
     pool.query(queries.getAll, (error, result) => {
         if (error) throw error;
-        res.status(200).json(result.rows);
+        res.status(201).send({
+            data: result.rows,
+            status: "success",
+            success: true,
+        });
       
     });
 };
