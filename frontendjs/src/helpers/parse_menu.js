@@ -5,5 +5,5 @@ export const getUserPermissions = () => {
 
     const decodedToken = JSON.parse(atob(authUser.accessToken.split('.')[1]));
 
-    return decodedToken.sesion[0].permission || [];
+    return decodedToken.sesion[0]?.permission || [];
 }
