@@ -4,7 +4,7 @@ const api = new APIClient();
 
 export default class ServiceMaster {
     getAllMaster = async () => {
-        return await api.get("/master/agama");
+        return await api.get("/master/combobox");
     }
     
 }

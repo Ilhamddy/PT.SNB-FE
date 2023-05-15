@@ -1,4 +1,4 @@
-import React, { useEffect,useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import UiContent from '../../../Components/Common/UiContent';
 import BreadCrumb from '../../../Components/Common/BreadCrumb';
 import withRouter from "../../../Components/Common/withRouter";
@@ -14,7 +14,7 @@ import {
 import Flatpickr from "react-flatpickr";
 
 //import images
-import progileBg from '../../../assets/images/profile-bg.jpg';
+import progileBg from '../../../assets/images/profile-bg-2.jpg';
 
 import Select from "react-select";
 import { useSelector, useDispatch } from "react-redux";
@@ -23,8 +23,18 @@ import { masterGet } from '../../../store/master/action';
 const PasienBaru = () => {
     document.title = "Profile Pasien Baru";
     const dispatch = useDispatch();
-    const { data, loading, error } = useSelector((state) => ({
-        data: state.Master.masterGet.data,
+    const { data, dataJenisKelamin, dataTitle, dataGD, dataKebangsaan,
+         dataPerkawinan,dataPendidikan,dataPekerjaan,dataEtnis,dataBahasa, loading, error } = useSelector((state) => ({
+        data: state.Master.masterGet.data.agama,
+        dataJenisKelamin: state.Master.masterGet.data.jeniskelamin,
+        dataTitle: state.Master.masterGet.data.title,
+        dataGD: state.Master.masterGet.data.golongandarah,
+        dataKebangsaan: state.Master.masterGet.data.kebangsaan,
+        dataPerkawinan: state.Master.masterGet.data.perkawinan,
+        dataPendidikan: state.Master.masterGet.data.pendidikan,
+        dataPekerjaan: state.Master.masterGet.data.pekerjaan,
+        dataEtnis: state.Master.masterGet.data.etnis,
+        dataBahasa: state.Master.masterGet.data.bahasa,
         loading: state.Master.masterGet.loading,
         error: state.Master.masterGet.error,
     }));
@@ -42,19 +52,6 @@ const PasienBaru = () => {
 
 
     const [companyType, setcompanyType] = useState(null);
-
-    const companytypes = [
-        {
-            options: [
-                { label: "Select type", value: "Select type" },
-                { label: "All", value: "All" },
-                { label: "Merchandising", value: "Merchandising" },
-                { label: "Manufacturing", value: "Manufacturing" },
-                { label: "Partnership", value: "Partnership" },
-                { label: "Corporation", value: "Corporation" },
-            ],
-        },
-    ];
 
     function handlecompanyType(companyType) {
         setcompanyType(companyType);
@@ -147,18 +144,11 @@ const PasienBaru = () => {
                                                                             <Select
                                                                                 name="choices-single-default"
                                                                                 id="choices-single-default"
-                                                                                // styles={{
-                                                                                //     control: (baseStyles, state) => ({
-                                                                                //       ...baseStyles,
-                                                                                //       borderColor: state.isFocused ? 'blue' : 'black',
-
-                                                                                //     }),
-                                                                                //   }}
                                                                                 value={companyType}
                                                                                 onChange={() => {
                                                                                     handlecompanyType();
                                                                                 }}
-                                                                                options={companytypes}
+                                                                                options={dataJenisKelamin}
                                                                                 theme={(theme) => ({
                                                                                     ...theme,
                                                                                     borderRadius: 0,
@@ -179,12 +169,25 @@ const PasienBaru = () => {
                                                                     </Col>
                                                                     <Col xxl={6} md={6}>
                                                                         <div>
-                                                                            <select className="form-select mb-3" aria-label="Default select example">
-                                                                                <option >Select your Status </option>
-                                                                                <option value="1">Declined Payment</option>
-                                                                                <option value="2">Delivery Error</option>
-                                                                                <option value="3">Wrong Amount</option>
-                                                                            </select>
+                                                                            <Select
+                                                                                name="choices-single-default"
+                                                                                id="choices-single-default"
+                                                                                // value={companyType}
+                                                                                // onChange={() => {
+                                                                                //     handlecompanyType();
+                                                                                // }}
+                                                                                options={dataTitle}
+                                                                                theme={(theme) => ({
+                                                                                    ...theme,
+                                                                                    borderRadius: 0,
+                                                                                    colors: {
+                                                                                        ...theme.colors,
+                                                                                        text: 'orangered',
+                                                                                        primary25: '#48dbfb',
+                                                                                        primary: '#48dbfb',
+                                                                                    },
+                                                                                })}
+                                                                            />
                                                                         </div>
                                                                     </Col>
                                                                     <Col xxl={6} md={6}>
@@ -198,7 +201,8 @@ const PasienBaru = () => {
                                                                                 className="form-control"
                                                                                 options={{
                                                                                     dateFormat: "Y-m-d",
-                                                                                    defaultDate: ["2022-01-20"]
+                                                                                    defaultDate: "today",
+                                                                                    maxDate: "today"
                                                                                 }}
                                                                             />
                                                                         </div>
@@ -210,12 +214,25 @@ const PasienBaru = () => {
                                                                     </Col>
                                                                     <Col xxl={6} md={6}>
                                                                         <div>
-                                                                            <select className="form-select mb-3" aria-label="Default select example">
-                                                                                <option >Select your Status </option>
-                                                                                <option value="1">Declined Payment</option>
-                                                                                <option value="2">Delivery Error</option>
-                                                                                <option value="3">Wrong Amount</option>
-                                                                            </select>
+                                                                            <Select
+                                                                                name="choices-single-default"
+                                                                                id="choices-single-default"
+                                                                                // value={companyType}
+                                                                                // onChange={() => {
+                                                                                //     handlecompanyType();
+                                                                                // }}
+                                                                                options={data}
+                                                                                theme={(theme) => ({
+                                                                                    ...theme,
+                                                                                    borderRadius: 0,
+                                                                                    colors: {
+                                                                                        ...theme.colors,
+                                                                                        text: 'orangered',
+                                                                                        primary25: '#48dbfb',
+                                                                                        primary: '#48dbfb',
+                                                                                    },
+                                                                                })}
+                                                                            />
                                                                         </div>
                                                                     </Col>
                                                                     <Col xxl={6} md={6}>
@@ -225,12 +242,25 @@ const PasienBaru = () => {
                                                                     </Col>
                                                                     <Col xxl={6} md={6}>
                                                                         <div>
-                                                                            <select className="form-select mb-3" aria-label="Default select example">
-                                                                                <option >Select your Status </option>
-                                                                                <option value="1">Declined Payment</option>
-                                                                                <option value="2">Delivery Error</option>
-                                                                                <option value="3">Wrong Amount</option>
-                                                                            </select>
+                                                                            <Select
+                                                                                name="choices-single-default"
+                                                                                id="choices-single-default"
+                                                                                // value={companyType}
+                                                                                // onChange={() => {
+                                                                                //     handlecompanyType();
+                                                                                // }}
+                                                                                options={dataGD}
+                                                                                theme={(theme) => ({
+                                                                                    ...theme,
+                                                                                    borderRadius: 0,
+                                                                                    colors: {
+                                                                                        ...theme.colors,
+                                                                                        text: 'orangered',
+                                                                                        primary25: '#48dbfb',
+                                                                                        primary: '#48dbfb',
+                                                                                    },
+                                                                                })}
+                                                                            />
                                                                         </div>
                                                                     </Col>
                                                                     <Col xxl={6} md={6}>
@@ -240,12 +270,25 @@ const PasienBaru = () => {
                                                                     </Col>
                                                                     <Col xxl={6} md={6}>
                                                                         <div>
-                                                                            <select className="form-select mb-3" aria-label="Default select example">
-                                                                                <option >Select your Status </option>
-                                                                                <option value="1">Declined Payment</option>
-                                                                                <option value="2">Delivery Error</option>
-                                                                                <option value="3">Wrong Amount</option>
-                                                                            </select>
+                                                                            <Select
+                                                                                name="choices-single-default"
+                                                                                id="choices-single-default"
+                                                                                // value={companyType}
+                                                                                // onChange={() => {
+                                                                                //     handlecompanyType();
+                                                                                // }}
+                                                                                options={dataKebangsaan}
+                                                                                theme={(theme) => ({
+                                                                                    ...theme,
+                                                                                    borderRadius: 0,
+                                                                                    colors: {
+                                                                                        ...theme.colors,
+                                                                                        text: 'orangered',
+                                                                                        primary25: '#48dbfb',
+                                                                                        primary: '#48dbfb',
+                                                                                    },
+                                                                                })}
+                                                                            />
                                                                         </div>
                                                                     </Col>
                                                                     <Col xxl={6} md={6}>
@@ -255,12 +298,25 @@ const PasienBaru = () => {
                                                                     </Col>
                                                                     <Col xxl={6} md={6}>
                                                                         <div>
-                                                                            <select className="form-select mb-3" aria-label="Default select example">
-                                                                                <option >Select your Status </option>
-                                                                                <option value="1">Declined Payment</option>
-                                                                                <option value="2">Delivery Error</option>
-                                                                                <option value="3">Wrong Amount</option>
-                                                                            </select>
+                                                                            <Select
+                                                                                name="choices-single-default"
+                                                                                id="choices-single-default"
+                                                                                // value={companyType}
+                                                                                // onChange={() => {
+                                                                                //     handlecompanyType();
+                                                                                // }}
+                                                                                options={dataPerkawinan}
+                                                                                theme={(theme) => ({
+                                                                                    ...theme,
+                                                                                    borderRadius: 0,
+                                                                                    colors: {
+                                                                                        ...theme.colors,
+                                                                                        text: 'orangered',
+                                                                                        primary25: '#48dbfb',
+                                                                                        primary: '#48dbfb',
+                                                                                    },
+                                                                                })}
+                                                                            />
                                                                         </div>
                                                                     </Col>
                                                                     <Col xxl={6} md={6}>
@@ -270,12 +326,25 @@ const PasienBaru = () => {
                                                                     </Col>
                                                                     <Col xxl={6} md={6}>
                                                                         <div>
-                                                                            <select className="form-select mb-3" aria-label="Default select example">
-                                                                                <option >Select your Status </option>
-                                                                                <option value="1">Declined Payment</option>
-                                                                                <option value="2">Delivery Error</option>
-                                                                                <option value="3">Wrong Amount</option>
-                                                                            </select>
+                                                                            <Select
+                                                                                name="choices-single-default"
+                                                                                id="choices-single-default"
+                                                                                // value={companyType}
+                                                                                // onChange={() => {
+                                                                                //     handlecompanyType();
+                                                                                // }}
+                                                                                options={dataPendidikan}
+                                                                                theme={(theme) => ({
+                                                                                    ...theme,
+                                                                                    borderRadius: 0,
+                                                                                    colors: {
+                                                                                        ...theme.colors,
+                                                                                        text: 'orangered',
+                                                                                        primary25: '#48dbfb',
+                                                                                        primary: '#48dbfb',
+                                                                                    },
+                                                                                })}
+                                                                            />
                                                                         </div>
                                                                     </Col>
                                                                     <Col xxl={6} md={6}>
@@ -285,12 +354,25 @@ const PasienBaru = () => {
                                                                     </Col>
                                                                     <Col xxl={6} md={6}>
                                                                         <div>
-                                                                            <select className="form-select mb-3" aria-label="Default select example">
-                                                                                <option >Select your Status </option>
-                                                                                <option value="1">Declined Payment</option>
-                                                                                <option value="2">Delivery Error</option>
-                                                                                <option value="3">Wrong Amount</option>
-                                                                            </select>
+                                                                            <Select
+                                                                                name="choices-single-default"
+                                                                                id="choices-single-default"
+                                                                                // value={companyType}
+                                                                                // onChange={() => {
+                                                                                //     handlecompanyType();
+                                                                                // }}
+                                                                                options={dataPekerjaan}
+                                                                                theme={(theme) => ({
+                                                                                    ...theme,
+                                                                                    borderRadius: 0,
+                                                                                    colors: {
+                                                                                        ...theme.colors,
+                                                                                        text: 'orangered',
+                                                                                        primary25: '#48dbfb',
+                                                                                        primary: '#48dbfb',
+                                                                                    },
+                                                                                })}
+                                                                            />
                                                                         </div>
                                                                     </Col>
                                                                     <Col xxl={6} md={6}>
@@ -300,12 +382,25 @@ const PasienBaru = () => {
                                                                     </Col>
                                                                     <Col xxl={6} md={6}>
                                                                         <div>
-                                                                            <select className="form-select mb-3" aria-label="Default select example">
-                                                                                <option >Select your Status </option>
-                                                                                <option value="1">Declined Payment</option>
-                                                                                <option value="2">Delivery Error</option>
-                                                                                <option value="3">Wrong Amount</option>
-                                                                            </select>
+                                                                            <Select
+                                                                                name="choices-single-default"
+                                                                                id="choices-single-default"
+                                                                                // value={companyType}
+                                                                                // onChange={() => {
+                                                                                //     handlecompanyType();
+                                                                                // }}
+                                                                                options={dataEtnis}
+                                                                                theme={(theme) => ({
+                                                                                    ...theme,
+                                                                                    borderRadius: 0,
+                                                                                    colors: {
+                                                                                        ...theme.colors,
+                                                                                        text: 'orangered',
+                                                                                        primary25: '#48dbfb',
+                                                                                        primary: '#48dbfb',
+                                                                                    },
+                                                                                })}
+                                                                            />
                                                                         </div>
                                                                     </Col>
                                                                     <Col xxl={6} md={6}>
@@ -315,12 +410,25 @@ const PasienBaru = () => {
                                                                     </Col>
                                                                     <Col xxl={6} md={6}>
                                                                         <div>
-                                                                            <select className="form-select mb-3" aria-label="Default select example">
-                                                                                <option >Select your Status </option>
-                                                                                <option value="1">Declined Payment</option>
-                                                                                <option value="2">Delivery Error</option>
-                                                                                <option value="3">Wrong Amount</option>
-                                                                            </select>
+                                                                            <Select
+                                                                                name="choices-single-default"
+                                                                                id="choices-single-default"
+                                                                                // value={companyType}
+                                                                                // onChange={() => {
+                                                                                //     handlecompanyType();
+                                                                                // }}
+                                                                                options={dataBahasa}
+                                                                                theme={(theme) => ({
+                                                                                    ...theme,
+                                                                                    borderRadius: 0,
+                                                                                    colors: {
+                                                                                        ...theme.colors,
+                                                                                        text: 'orangered',
+                                                                                        primary25: '#48dbfb',
+                                                                                        primary: '#48dbfb',
+                                                                                    },
+                                                                                })}
+                                                                            />
                                                                         </div>
                                                                     </Col>
                                                                 </Row>
@@ -361,7 +469,7 @@ const PasienBaru = () => {
                                                                                 <Input
                                                                                     id="rt"
                                                                                     name="rt"
-                                                                                    type="text"
+                                                                                    type="number"
                                                                                     placeholder="RT"
 
                                                                                 />
@@ -370,7 +478,7 @@ const PasienBaru = () => {
                                                                                 <Input
                                                                                     id="rw"
                                                                                     name="rw"
-                                                                                    type="text"
+                                                                                    type="number"
                                                                                     placeholder="RW"
 
                                                                                 />
