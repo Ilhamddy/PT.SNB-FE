@@ -14,8 +14,8 @@ const ProfileDropdown = () => {
     const [userName, setUserName] = useState("Admin");
 
     useEffect(() => {
-        if (sessionStorage.getItem("authUser")) {
-            const obj = JSON.parse(sessionStorage.getItem("authUser"));
+        if (localStorage.getItem("authUser")) {
+            const obj = JSON.parse(localStorage.getItem("authUser"));
             setUserName(process.env.REACT_APP_DEFAULTAUTH === "fake" ? obj.username === undefined ? user.first_name ? user.first_name : obj.data.first_name : "Admin" || "Admin" :
                 process.env.REACT_APP_DEFAULTAUTH === "firebase" ? obj.providerData[0].email : "Admin"
             );

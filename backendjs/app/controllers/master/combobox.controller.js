@@ -9,6 +9,7 @@ const queriespendidikan = require('../../queries/master/pendidikan/pendidikan.qu
 const queriesPekerjaan = require('../../queries/master/pekerjaan/pekerjaan.queries');
 const queriesEtnis = require('../../queries/master/etnis/etnis.queries');
 const queriesBahasa = require('../../queries/master/bahasa/bahasa.queries');
+const queriesDesa = require('../../queries/master/desa/desa.queries');
 
 const selectComboBox = (req, res) => {
     try {
@@ -52,17 +53,23 @@ const selectComboBox = (req, res) => {
                                                                                     if (error) {
                                                                                         throw error;
                                                                                     } else {
-                                                                                        let tempres = {
-                                                                                            agama: result.rows, jeniskelamin: resultJk.rows, title: resultTitle.rows,
-                                                                                            golongandarah: resultGD.rows, kebangsaan: resultKeb.rows,
-                                                                                            perkawinan:resultPerkawinan.rows, pendidikan: resultPendidikan.rows,
-                                                                                            pekerjaan: resultPekerjaan.rows, etnis: resultEtnis.rows,
-                                                                                            bahasa: resultBahasa.rows
-                                                                                        }
-                                                                                        res.status(201).send({
-                                                                                            data: tempres,
-                                                                                            status: "success",
-                                                                                            success: true,
+                                                                                        pool.query(queriesDesa.getAll, (error, resultDesa) => {
+                                                                                            if (error) {
+                                                                                                throw error;
+                                                                                            } else {
+                                                                                                let tempres = {
+                                                                                                    agama: result.rows, jeniskelamin: resultJk.rows, title: resultTitle.rows,
+                                                                                                    golongandarah: resultGD.rows, kebangsaan: resultKeb.rows,
+                                                                                                    perkawinan: resultPerkawinan.rows, pendidikan: resultPendidikan.rows,
+                                                                                                    pekerjaan: resultPekerjaan.rows, etnis: resultEtnis.rows,
+                                                                                                    bahasa: resultBahasa.rows, desa: resultDesa.rows
+                                                                                                }
+                                                                                                res.status(201).send({
+                                                                                                    data: tempres,
+                                                                                                    status: "success",
+                                                                                                    success: true,
+                                                                                                });
+                                                                                            }
                                                                                         });
                                                                                     }
                                                                                 });
@@ -90,7 +97,59 @@ const selectComboBox = (req, res) => {
     }
 
 };
+
+const desaKelurahan = (req, res) => {
+    try {
+        var strArray = req.query.param.split(",");
+        let desa = req.query.param
+        let kecamatan = ''
+        if (strArray.length > 1) {
+            desa = strArray[0];
+            kecamatan = strArray[1];
+        }
+        let query = queriesDesa.getAll + ` where md.namadesakelurahan ilike '%${desa}%' and mk.namakecamatan ilike '%${kecamatan}%' order by md.namadesakelurahan limit 20`
+        pool.query(query, (error, result) => {
+            if (error) {
+                error
+            } else {
+                res.status(200).send({
+                    data: result.rows,
+                    status: "success",
+                    success: true,
+                });
+            }
+        })
+    } catch (error) {
+        res.status(200).send({
+            data: [],
+            status: "error",
+            success: true,
+        });
+    }
+}
+const getKecamatan = (req, res) => {
+    try {
+        pool.query(queriesDesa.getKecamatan, (error, result) => {
+            if (error) {
+                error
+            } else {
+                res.status(200).send({
+                    data: result.rows,
+                    status: "success",
+                    success: true,
+                });
+            }
+        })
+    } catch (error) {
+        res.status(200).send({
+            data: [],
+            status: "error",
+            success: true,
+        });
+    }
+}
 module.exports = {
     selectComboBox,
-
+    desaKelurahan,
+    getKecamatan
 };

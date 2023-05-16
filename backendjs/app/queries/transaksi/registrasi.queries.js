@@ -2,7 +2,7 @@ const getAll =
     "select id,nocm ,namapasien ,noidentitas ,nobpjs ,nohp, to_char(tgllahir,'yyyy-MM-dd')tgllahir, alamatrmh  from m_pasien";
 
 const addPost =
-    "insert into  m_pasien (nocm,namapasien,noidentitas ,nobpjs ,nohp) values ($1,$2,$3,$4,$5)";
+    "insert into  m_pasien (nocm,namapasien,noidentitas) values ($1,$2,$3)";
 
 const checkNewNumber = "select new_number,extention from running_number where id =1";
 

@@ -1,5 +1,5 @@
 export const getUserPermissions = () => {
-    const authUser = JSON.parse(sessionStorage.getItem('authUser'));
+    const authUser = JSON.parse(localStorage.getItem('authUser'));
 
     if (!authUser.accessToken) return;
 

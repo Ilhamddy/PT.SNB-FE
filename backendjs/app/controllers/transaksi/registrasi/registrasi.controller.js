@@ -13,7 +13,7 @@ const allSelect = (req, res) => {
 };
 
 const addPost = (req, res) => {
-    const { namapasien, noidentitas, nobpjs, nohp } = req.body;
+    const { namapasien, noidentitas } = req.body;
     // check if username exist
     // pool.query(queries.checkUserNameExist, [username], (error, result) => {
     //     if (result.rows.length) {
@@ -36,7 +36,7 @@ const addPost = (req, res) => {
             // });
 
             pool.query(
-                queries.addPost, [nocm, namapasien, noidentitas, nobpjs, nohp],
+                queries.addPost, [nocm, namapasien, noidentitas],
                 (error, result) => {
                     if (error) {
                         throw error

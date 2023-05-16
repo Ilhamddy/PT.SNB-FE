@@ -21,6 +21,7 @@ const INIT_STATE = {
         newData: null,
         loading: false,
         error: null,
+        success: false
     },
     registrasiList:{
         data: [],
@@ -127,6 +128,7 @@ const Registrasi = (state = INIT_STATE, action) => {
                     ...state.registrasiSave,
                     newData: action.payload,
                     loading: false,
+                    success: true,
                 }
             }
         }

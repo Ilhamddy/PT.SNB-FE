@@ -15,6 +15,18 @@ module.exports = function(app) {
       [authJwt.verifyToken],
       controller.selectComboBox
     );
+
+    app.get(
+      "/api/master/desa-kelurahan",
+      [authJwt.verifyToken],
+      controller.desaKelurahan
+    );
+
+    app.get(
+      "/api/master/kecamatan",
+      [authJwt.verifyToken],
+      controller.getKecamatan
+    );
   
   
   };

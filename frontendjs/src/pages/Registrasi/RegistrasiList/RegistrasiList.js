@@ -117,8 +117,8 @@ const RegistrasiList = () => {
             sortable: false,
             cell: (data) => {
                 return (
-                    // <Link to={`/registrasi/pasien/${data.id}`}>Details</Link>
-                    <button className="btn btn-sm btn-soft-info" onClick={() => handleClick(data)}>View</button>
+                    <Link to={`/registrasi/pasien/${data.id}`}>Details</Link>
+                    // <button className="btn btn-sm btn-soft-info" onClick={() => handleClick(data)}>View</button>
                 );
             },
         },
