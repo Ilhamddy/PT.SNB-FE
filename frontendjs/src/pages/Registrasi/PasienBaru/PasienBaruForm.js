@@ -3,7 +3,7 @@ import UiContent from '../../../Components/Common/UiContent';
 import BreadCrumb from '../../../Components/Common/BreadCrumb';
 import withRouter from "../../../Components/Common/withRouter";
 import classnames from "classnames";
-import { useFormik } from "formik";
+import { useFormik, yupToFormErrors } from "formik";
 import * as Yup from "yup";
 import { ToastContainer, toast } from 'react-toastify';
 import {
@@ -95,11 +95,35 @@ const PasienBaru = () => {
             namapasien: newData?.namapasien ?? "",
             noidentitas: newData?.noidentitas ?? "",
             jeniskelamin: newData?.jeniskelamin ?? "",
+            titlepasien: newData?.titlepasien ?? "",
+            agama: newData?.agama ?? "",
+            goldarah: newData?.goldarah ?? "",
+            kebangsaan: newData?.kebangsaan ??"",
+            statusperkawinan: newData?.statusperkawinan ??"",
+            pendidikan: newData?.pendidikan ??"",
+            pekerjaan: newData?.pekerjaan ?? "",
+            suku: newData?.suku ??"",
+            bahasa: newData?.bahasa??"",
+            alamatktp: newData?.alamatktp??"",
+            rt: newData?.rt??"",
+            rw: newData?.rw??""
         },
         validationSchema: Yup.object({
             namapasien: Yup.string().required("Nama pasien wajib diisi"),
             noidentitas: Yup.string().required("Nomor identitas wajib diisi"),
             jeniskelamin: Yup.string().required("Jenis Kelamin wajib diisi"),
+            titlepasien: Yup.string().required("Title Pasien wajib diisi"),
+            agama: Yup.string().required("Agama wajib diisi"),
+            goldarah: Yup.string().required("Golongan Darah wajib diisi"),
+            kebangsaan: Yup.string().required("Kebangsaan wajib diisi"),
+            statusperkawinan: Yup.string().required("Status Perkawinan wajib diisi"),
+            pendidikan: Yup.string().required("Pendidikan wajib diisi"),
+            pekerjaan: Yup.string().required("Pekerjaan wajib diisi"),
+            suku: Yup.string().required("Suku wajib diisi"),
+            bahasa: Yup.string().required("Bahasa wajib diisi"),
+            alamatktp: Yup.string().required("Alamat wajib diisi"),
+            rt: Yup.string().required("RT wajib diisi"),
+            rw: Yup.string().required("RW wajib diisi")
         }),
         onSubmit: (values) => {
             // dispatch(registrasiSave(values, ''));
@@ -230,23 +254,6 @@ const PasienBaru = () => {
                                                                                 className={`input ${validation.errors.jeniskelamin ? "is-invalid" : ""}`}
                                                                                 onChange={value => validation.setFieldValue('jeniskelamin', value.value)} 
                                                                             />
-                                                                                {/* <Select
-                                                                                name="jeniskelamin"
-                                                                                id="jeniskelamin"
-                                                                                value={validation.values.jeniskelamin || ""}
-                                                                            onChange={value => validation.setFieldValue('jeniskelamin', value.value)}
-                                                                                options={dataJenisKelamin}
-                                                                                theme={(theme) => ({
-                                                                                    ...theme,
-                                                                                    borderRadius: 0,
-                                                                                    colors: {
-                                                                                        ...theme.colors,
-                                                                                        text: 'orangered',
-                                                                                        primary25: '#48dbfb',
-                                                                                        primary: '#48dbfb',
-                                                                                    },
-                                                                                })}
-                                                                            /> */}
                                                                             {validation.touched.jeniskelamin && validation.errors.jeniskelamin ? (
                                                                                 <FormFeedback type="invalid"><div>{validation.errors.jeniskelamin}</div></FormFeedback>
                                                                             ) : null}
@@ -259,25 +266,17 @@ const PasienBaru = () => {
                                                                     </Col>
                                                                     <Col xxl={6} md={6}>
                                                                         <div>
-                                                                            <Select
-                                                                                name="choices-single-default"
-                                                                                id="choices-single-default"
-                                                                                // value={companyType}
-                                                                                // onChange={() => {
-                                                                                //     handlecompanyType();
-                                                                                // }}
+                                                                        <CustomSelect 
+                                                                                id="titlepasien"
+                                                                                name="titlepasien" 
                                                                                 options={dataTitle}
-                                                                                theme={(theme) => ({
-                                                                                    ...theme,
-                                                                                    borderRadius: 0,
-                                                                                    colors: {
-                                                                                        ...theme.colors,
-                                                                                        text: 'orangered',
-                                                                                        primary25: '#48dbfb',
-                                                                                        primary: '#48dbfb',
-                                                                                    },
-                                                                                })}
+                                                                                value={validation.values.titlepasien || ""}
+                                                                                className={`input ${validation.errors.titlepasien ? "is-invalid" : ""}`}
+                                                                                onChange={value => validation.setFieldValue('titlepasien', value.value)} 
                                                                             />
+                                                                            {validation.touched.titlepasien && validation.errors.titlepasien ? (
+                                                                                <FormFeedback type="invalid"><div>{validation.errors.titlepasien}</div></FormFeedback>
+                                                                            ) : null}
                                                                         </div>
                                                                     </Col>
                                                                     <Col xxl={6} md={6}>
@@ -304,25 +303,17 @@ const PasienBaru = () => {
                                                                     </Col>
                                                                     <Col xxl={6} md={6}>
                                                                         <div>
-                                                                            <Select
-                                                                                name="choices-single-default"
-                                                                                id="choices-single-default"
-                                                                                // value={companyType}
-                                                                                // onChange={() => {
-                                                                                //     handlecompanyType();
-                                                                                // }}
+                                                                            <CustomSelect 
+                                                                                id="agama"
+                                                                                name="agama" 
                                                                                 options={data}
-                                                                                theme={(theme) => ({
-                                                                                    ...theme,
-                                                                                    borderRadius: 0,
-                                                                                    colors: {
-                                                                                        ...theme.colors,
-                                                                                        text: 'orangered',
-                                                                                        primary25: '#48dbfb',
-                                                                                        primary: '#48dbfb',
-                                                                                    },
-                                                                                })}
+                                                                                value={validation.values.agama || ""}
+                                                                                className={`input ${validation.errors.agama ? "is-invalid" : ""}`}
+                                                                                onChange={value => validation.setFieldValue('agama', value.value)} 
                                                                             />
+                                                                            {validation.touched.agama && validation.errors.agama ? (
+                                                                                <FormFeedback type="invalid"><div>{validation.errors.agama}</div></FormFeedback>
+                                                                            ) : null}
                                                                         </div>
                                                                     </Col>
                                                                     <Col xxl={6} md={6}>
@@ -332,25 +323,17 @@ const PasienBaru = () => {
                                                                     </Col>
                                                                     <Col xxl={6} md={6}>
                                                                         <div>
-                                                                            <Select
-                                                                                name="choices-single-default"
-                                                                                id="choices-single-default"
-                                                                                // value={companyType}
-                                                                                // onChange={() => {
-                                                                                //     handlecompanyType();
-                                                                                // }}
-                                                                                options={dataGD}
-                                                                                theme={(theme) => ({
-                                                                                    ...theme,
-                                                                                    borderRadius: 0,
-                                                                                    colors: {
-                                                                                        ...theme.colors,
-                                                                                        text: 'orangered',
-                                                                                        primary25: '#48dbfb',
-                                                                                        primary: '#48dbfb',
-                                                                                    },
-                                                                                })}
+                                                                            <CustomSelect 
+                                                                                id="goldarah"
+                                                                                name="goldarah" 
+                                                                                options={data}
+                                                                                value={validation.values.goldarah || ""}
+                                                                                className={`input ${validation.errors.goldarah ? "is-invalid" : ""}`}
+                                                                                onChange={value => validation.setFieldValue('goldarah', value.value)} 
                                                                             />
+                                                                            {validation.touched.goldarah && validation.errors.goldarah ? (
+                                                                                <FormFeedback type="invalid"><div>{validation.errors.goldarah}</div></FormFeedback>
+                                                                            ) : null}
                                                                         </div>
                                                                     </Col>
                                                                     <Col xxl={6} md={6}>
@@ -360,25 +343,17 @@ const PasienBaru = () => {
                                                                     </Col>
                                                                     <Col xxl={6} md={6}>
                                                                         <div>
-                                                                            <Select
-                                                                                name="choices-single-default"
-                                                                                id="choices-single-default"
-                                                                                // value={companyType}
-                                                                                // onChange={() => {
-                                                                                //     handlecompanyType();
-                                                                                // }}
+                                                                            <CustomSelect 
+                                                                                id="kebangsaan"
+                                                                                name="kebangsaan" 
                                                                                 options={dataKebangsaan}
-                                                                                theme={(theme) => ({
-                                                                                    ...theme,
-                                                                                    borderRadius: 0,
-                                                                                    colors: {
-                                                                                        ...theme.colors,
-                                                                                        text: 'orangered',
-                                                                                        primary25: '#48dbfb',
-                                                                                        primary: '#48dbfb',
-                                                                                    },
-                                                                                })}
+                                                                                value={validation.values.kebangsaan || ""}
+                                                                                className={`input ${validation.errors.kebangsaan ? "is-invalid" : ""}`}
+                                                                                onChange={value => validation.setFieldValue('kebangsaan', value.value)} 
                                                                             />
+                                                                            {validation.touched.kebangsaan && validation.errors.kebangsaan ? (
+                                                                                <FormFeedback type="invalid"><div>{validation.errors.kebangsaan}</div></FormFeedback>
+                                                                            ) : null}
                                                                         </div>
                                                                     </Col>
                                                                     <Col xxl={6} md={6}>
@@ -388,25 +363,17 @@ const PasienBaru = () => {
                                                                     </Col>
                                                                     <Col xxl={6} md={6}>
                                                                         <div>
-                                                                            <Select
-                                                                                name="choices-single-default"
-                                                                                id="choices-single-default"
-                                                                                // value={companyType}
-                                                                                // onChange={() => {
-                                                                                //     handlecompanyType();
-                                                                                // }}
+                                                                            <CustomSelect 
+                                                                                id="statusperkawinan"
+                                                                                name="statusperkawinan" 
                                                                                 options={dataPerkawinan}
-                                                                                theme={(theme) => ({
-                                                                                    ...theme,
-                                                                                    borderRadius: 0,
-                                                                                    colors: {
-                                                                                        ...theme.colors,
-                                                                                        text: 'orangered',
-                                                                                        primary25: '#48dbfb',
-                                                                                        primary: '#48dbfb',
-                                                                                    },
-                                                                                })}
+                                                                                value={validation.values.statusperkawinan || ""}
+                                                                                className={`input ${validation.errors.statusperkawinan ? "is-invalid" : ""}`}
+                                                                                onChange={value => validation.setFieldValue('statusperkawinan', value.value)} 
                                                                             />
+                                                                            {validation.touched.statusperkawinan && validation.errors.statusperkawinan ? (
+                                                                                <FormFeedback type="invalid"><div>{validation.errors.statusperkawinan}</div></FormFeedback>
+                                                                            ) : null}
                                                                         </div>
                                                                     </Col>
                                                                     <Col xxl={6} md={6}>
@@ -416,25 +383,17 @@ const PasienBaru = () => {
                                                                     </Col>
                                                                     <Col xxl={6} md={6}>
                                                                         <div>
-                                                                            <Select
-                                                                                name="choices-single-default"
-                                                                                id="choices-single-default"
-                                                                                // value={companyType}
-                                                                                // onChange={() => {
-                                                                                //     handlecompanyType();
-                                                                                // }}
+                                                                             <CustomSelect 
+                                                                                id="pendidikan"
+                                                                                name="pendidikan" 
                                                                                 options={dataPendidikan}
-                                                                                theme={(theme) => ({
-                                                                                    ...theme,
-                                                                                    borderRadius: 0,
-                                                                                    colors: {
-                                                                                        ...theme.colors,
-                                                                                        text: 'orangered',
-                                                                                        primary25: '#48dbfb',
-                                                                                        primary: '#48dbfb',
-                                                                                    },
-                                                                                })}
+                                                                                value={validation.values.pendidikan || ""}
+                                                                                className={`input ${validation.errors.pendidikan ? "is-invalid" : ""}`}
+                                                                                onChange={value => validation.setFieldValue('pendidikan', value.value)} 
                                                                             />
+                                                                            {validation.touched.pendidikan && validation.errors.pendidikan ? (
+                                                                                <FormFeedback type="invalid"><div>{validation.errors.pendidikan}</div></FormFeedback>
+                                                                            ) : null}
                                                                         </div>
                                                                     </Col>
                                                                     <Col xxl={6} md={6}>
@@ -444,25 +403,17 @@ const PasienBaru = () => {
                                                                     </Col>
                                                                     <Col xxl={6} md={6}>
                                                                         <div>
-                                                                            <Select
-                                                                                name="choices-single-default"
-                                                                                id="choices-single-default"
-                                                                                // value={companyType}
-                                                                                // onChange={() => {
-                                                                                //     handlecompanyType();
-                                                                                // }}
+                                                                            <CustomSelect 
+                                                                                id="pekerjaan"
+                                                                                name="pekerjaan" 
                                                                                 options={dataPekerjaan}
-                                                                                theme={(theme) => ({
-                                                                                    ...theme,
-                                                                                    borderRadius: 0,
-                                                                                    colors: {
-                                                                                        ...theme.colors,
-                                                                                        text: 'orangered',
-                                                                                        primary25: '#48dbfb',
-                                                                                        primary: '#48dbfb',
-                                                                                    },
-                                                                                })}
+                                                                                value={validation.values.pekerjaan || ""}
+                                                                                className={`input ${validation.errors.pekerjaan ? "is-invalid" : ""}`}
+                                                                                onChange={value => validation.setFieldValue('pekerjaan', value.value)} 
                                                                             />
+                                                                            {validation.touched.pekerjaan && validation.errors.pekerjaan ? (
+                                                                                <FormFeedback type="invalid"><div>{validation.errors.pekerjaan}</div></FormFeedback>
+                                                                            ) : null}
                                                                         </div>
                                                                     </Col>
                                                                     <Col xxl={6} md={6}>
@@ -472,25 +423,17 @@ const PasienBaru = () => {
                                                                     </Col>
                                                                     <Col xxl={6} md={6}>
                                                                         <div>
-                                                                            <Select
-                                                                                name="choices-single-default"
-                                                                                id="choices-single-default"
-                                                                                // value={companyType}
-                                                                                // onChange={() => {
-                                                                                //     handlecompanyType();
-                                                                                // }}
+                                                                            <CustomSelect 
+                                                                                id="suku"
+                                                                                name="suku" 
                                                                                 options={dataEtnis}
-                                                                                theme={(theme) => ({
-                                                                                    ...theme,
-                                                                                    borderRadius: 0,
-                                                                                    colors: {
-                                                                                        ...theme.colors,
-                                                                                        text: 'orangered',
-                                                                                        primary25: '#48dbfb',
-                                                                                        primary: '#48dbfb',
-                                                                                    },
-                                                                                })}
+                                                                                value={validation.values.suku || ""}
+                                                                                className={`input ${validation.errors.suku ? "is-invalid" : ""}`}
+                                                                                onChange={value => validation.setFieldValue('suku', value.value)} 
                                                                             />
+                                                                            {validation.touched.suku && validation.errors.suku ? (
+                                                                                <FormFeedback type="invalid"><div>{validation.errors.suku}</div></FormFeedback>
+                                                                            ) : null}
                                                                         </div>
                                                                     </Col>
                                                                     <Col xxl={6} md={6}>
@@ -500,25 +443,17 @@ const PasienBaru = () => {
                                                                     </Col>
                                                                     <Col xxl={6} md={6}>
                                                                         <div>
-                                                                            <Select
-                                                                                name="choices-single-default"
-                                                                                id="choices-single-default"
-                                                                                // value={companyType}
-                                                                                // onChange={() => {
-                                                                                //     handlecompanyType();
-                                                                                // }}
-                                                                                options={dataBahasa}
-                                                                                theme={(theme) => ({
-                                                                                    ...theme,
-                                                                                    borderRadius: 0,
-                                                                                    colors: {
-                                                                                        ...theme.colors,
-                                                                                        text: 'orangered',
-                                                                                        primary25: '#48dbfb',
-                                                                                        primary: '#48dbfb',
-                                                                                    },
-                                                                                })}
+                                                                            <CustomSelect 
+                                                                                id="bahasa"
+                                                                                name="bahasa" 
+                                                                                options={dataEtnis}
+                                                                                value={validation.values.bahasa || ""}
+                                                                                className={`input ${validation.errors.bahasa ? "is-invalid" : ""}`}
+                                                                                onChange={value => validation.setFieldValue('bahasa', value.value)} 
                                                                             />
+                                                                            {validation.touched.bahasa && validation.errors.bahasa ? (
+                                                                                <FormFeedback type="invalid"><div>{validation.errors.bahasa}</div></FormFeedback>
+                                                                            ) : null}
                                                                         </div>
                                                                     </Col>
                                                                 </Row>
@@ -539,13 +474,21 @@ const PasienBaru = () => {
                                                                     </Col>
                                                                     <Col xxl={6} md={6}>
                                                                         <div>
-                                                                            <textarea
+                                                                        <Input
                                                                                 id="alamatktp"
                                                                                 name="alamatktp"
-                                                                                type="text"
-                                                                                placeholder="Masukkan Alamat KTP"
-
+                                                                                type="textarea"
+                                                                                placeholder="Masukkan Alamat pasien"
+                                                                                onChange={validation.handleChange}
+                                                                                onBlur={validation.handleBlur}
+                                                                                value={validation.values.alamatktp || ""}
+                                                                                invalid={
+                                                                                    validation.touched.alamatktp && validation.errors.alamatktp ? true : false
+                                                                                }
                                                                             />
+                                                                            {validation.touched.alamatktp && validation.errors.alamatktp ? (
+                                                                                <FormFeedback type="invalid"><div>{validation.errors.alamatktp}</div></FormFeedback>
+                                                                            ) : null}
                                                                         </div>
                                                                     </Col>
                                                                     <Col xxl={6} md={6}>
@@ -556,22 +499,38 @@ const PasienBaru = () => {
                                                                     <Col xxl={6} md={6}>
                                                                         <div className="row">
                                                                             <div className="col-sm">
-                                                                                <Input
-                                                                                    id="rt"
-                                                                                    name="rt"
-                                                                                    type="number"
-                                                                                    placeholder="RT"
-
-                                                                                />
+                                                                            <Input
+                                                                                id="rt"
+                                                                                name="rt"
+                                                                                type="input"
+                                                                                placeholder="RT"
+                                                                                onChange={validation.handleChange}
+                                                                                onBlur={validation.handleBlur}
+                                                                                value={validation.values.rt || ""}
+                                                                                invalid={
+                                                                                    validation.touched.rt && validation.errors.rt ? true : false
+                                                                                }
+                                                                            />
+                                                                            {validation.touched.rt && validation.errors.rt ? (
+                                                                                <FormFeedback type="invalid"><div>{validation.errors.rt}</div></FormFeedback>
+                                                                            ) : null}
                                                                             </div>
                                                                             <div className="col-sm">
-                                                                                <Input
-                                                                                    id="rw"
-                                                                                    name="rw"
-                                                                                    type="number"
-                                                                                    placeholder="RW"
-
-                                                                                />
+                                                                            <Input
+                                                                                id="rw"
+                                                                                name="rw"
+                                                                                type="input"
+                                                                                placeholder="RW"
+                                                                                onChange={validation.handleChange}
+                                                                                onBlur={validation.handleBlur}
+                                                                                value={validation.values.rw || ""}
+                                                                                invalid={
+                                                                                    validation.touched.rw && validation.errors.rw ? true : false
+                                                                                }
+                                                                            />
+                                                                            {validation.touched.rw && validation.errors.rw ? (
+                                                                                <FormFeedback type="invalid"><div>{validation.errors.rw}</div></FormFeedback>
+                                                                            ) : null}
                                                                             </div>
                                                                         </div>
                                                                     </Col>
