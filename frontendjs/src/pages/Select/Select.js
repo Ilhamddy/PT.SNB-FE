@@ -1,12 +1,13 @@
 import React from 'react';
 import Select from 'react-select';
-const CustomSelect = ({ onChange, options, value, className}) =>{
+const CustomSelect = ({ onChange, options, value, className, ...rest}) =>{
     const defaultValue = (options,value)=>{
         return options ? options.find(option=>option.value === value):""
     }
     return(
         <div className={className}>
             <Select 
+                {...rest}
                 value={defaultValue(options,value)}
                 onChange={value=>onChange(value)}
                 options={options}
