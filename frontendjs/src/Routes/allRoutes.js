@@ -245,6 +245,7 @@ import PasienLama from "../app/Registrasi/PasienLama";
 import RegistrasiForm from "../pages/Registrasi/RegistrasiForm/RegistrasiForm";
 import RegistrasiList from "../pages/Registrasi/RegistrasiList/RegistrasiList";
 import PasienBaruForm from "../pages/Registrasi/PasienBaru/PasienBaruForm";
+import RegistrasiPasien from "../pages/Registrasi/RegistrasiPasien/RegistrasiPasien";
 
 const authProtectedRoutes = [
   { path: "/dashboard-analytics", component: <DashboardAnalytics /> },
@@ -462,7 +463,8 @@ const authProtectedRoutes = [
 
   {path: "/registrasi/pasien/:id", component: <RegistrasiForm />},
   {path: "/registrasi/pasien-lama", component: <RegistrasiList />},
-  {path: "/registrasi/pasien-baru", component: <PasienBaruForm />}
+  {path: "/registrasi/pasien-baru", component: <PasienBaruForm />},
+  {path: "/registrasi/pasien-ruangan/:id", component: <RegistrasiPasien />},
 ];
 
 const publicRoutes = [

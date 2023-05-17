@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import {
     Card, CardBody, CardHeader, Col, Container, Row, Nav, NavItem,
     NavLink, TabContent, TabPane, Button, Label, Input, Table
@@ -8,7 +8,7 @@ import { registrasiGetList, registrasiGetListByOr } from '../../../store/actions
 import BreadCrumb from '../../../Components/Common/BreadCrumb';
 import PreviewCardHeaderNew from '../../../Components/Common/PreviewCardHeaderNew';
 import UiContent from '../../../Components/Common/UiContent';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from "react-router-dom";
 import withRouter from '../../../Components/Common/withRouter';
 import DataTable from 'react-data-table-component';
 import classnames from "classnames";
@@ -17,9 +17,11 @@ import userDummy from "../../../assets/images/users/user-dummy-img.jpg";
 
 import patient from "../../../assets/images/users/icons8-patient-64.png";
 
+import { ToastContainer, toast } from 'react-toastify';
+
 const RegistrasiList = () => {
     const dispatch = useDispatch();
-
+    const history = useNavigate();
     const { data, loading, error } = useSelector((state) => ({
         data: state.Registrasi.registrasiList.data,
         loading: state.Registrasi.registrasiList.loading,
@@ -45,6 +47,8 @@ const RegistrasiList = () => {
     const [nohp, setnohp] = useState(null);
     const [alamat, setalamat] = useState(null);
     const [search, setSearch] = useState('')
+    const [idcmfk, setidcmfk] = useState(null);
+    const [statusNotif, setstatusNotif] = useState(false);
 
     const handleClick = (e) => {
         setnamaPasien(e.namapasien)
@@ -52,7 +56,23 @@ const RegistrasiList = () => {
         setnorm(e.nocm)
         setnohp(e.nohp)
         setalamat(e.alamatrmh)
+        setidcmfk(e.id)
         console.log('this is:', e.namapasien);
+    };
+
+    const defaultnotify = (pesan) => toast(pesan, { position: "top-right", hideProgressBar: false, className: 'bg-warning text-white', progress: undefined });
+
+    const handleClickButton = (e) => {
+        if (idcmfk === null){
+            defaultnotify('Pasien Belum Dipilih')
+            return
+        }
+            
+        
+        if(e==='registrasi'){
+            history(`/registrasi/pasien-ruangan/${idcmfk}`);
+        }
+         
     };
 
     const handleFilter = (e) => {
@@ -117,8 +137,8 @@ const RegistrasiList = () => {
             sortable: false,
             cell: (data) => {
                 return (
-                    <Link to={`/registrasi/pasien/${data.id}`}>Details</Link>
-                    // <button className="btn btn-sm btn-soft-info" onClick={() => handleClick(data)}>View</button>
+                    // <Link to={`/registrasi/pasien/${data.id}`}>Details</Link>
+                    <button className="btn btn-sm btn-soft-info" onClick={() => handleClick(data)}>View</button>
                 );
             },
         },
@@ -132,7 +152,6 @@ const RegistrasiList = () => {
 
                 <Container fluid>
                     <BreadCrumb title="Pasien Lama" pageTitle="Forms" />
-
                     <Row>
                         <Col lg={3}>
                             <Card>
@@ -220,13 +239,15 @@ const RegistrasiList = () => {
                                         <TabPane tabId="3" id="messages-1" >
                                             <div className="live-preview">
                                                 <div className="d-flex flex-wrap gap-2">
-                                                    <Button color="info" className="btn-animation" data-text="Registrasi"> <span>Registrasi</span> </Button>
+                                                    <Button color="info" className="btn-animation" data-text="Registrasi" onClick={() => handleClickButton('registrasi')}><span>Registrasi</span></Button>
+
                                                     <Button color="info" className="btn-animation" data-text="Edit Data Pasien"> <span>Edit Data Pasien</span> </Button>
                                                     <Button color="info" className="btn-animation" data-text="[BPJS] Cek Kepesertaan"> <span>[BPJS] Cek Kepesertaan</span> </Button>
                                                     <Button color="info" className="btn-animation" data-text="[BPJS] Cek Rujukan"> <span>[BPJS] Cek Rujukan</span> </Button>
                                                     <Button color="info" className="btn-animation" data-text="[BPJS] Buat Surkon/SPRI"> <span>[BPJS] Buat Surkon/SPRI</span> </Button>
                                                     <Button color="info" className="btn-animation" data-text="Cetak Kartu Pasien"> <span>Cetak Kartu Pasien</span> </Button>
                                                     <Button color="info" className="btn-animation" data-text="Cetak Label Pasien"> <span>Cetak Label Pasien</span> </Button>
+                                                    <ToastContainer autoClose={2000} />
                                                 </div>
                                             </div>
 
