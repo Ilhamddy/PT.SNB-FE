@@ -13,12 +13,9 @@ export const isAllowedAccess = (userPermissions, permissionList) => {
 
   for (let j = 0; j < permissionList.length; j++) {
     if (obj[permissionList[j]]) {
-        console.log({permissionList, userPermissions}, true);
       return true;
     }
   }
-
-  console.log({permissionList, userPermissions}, false);
 
   return false;
 }
