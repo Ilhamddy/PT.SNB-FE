@@ -222,11 +222,14 @@ const PasienBaru = () => {
                                                                     </Col>
                                                                     <Col xxl={6} md={6}>
                                                                         <div>
-                                                                            <CustomSelect id="jeniskelamin"
-                                                                                name="jeniskelamin" options={dataJenisKelamin}
+                                                                            <CustomSelect 
+                                                                                id="jeniskelamin"
+                                                                                name="jeniskelamin" 
+                                                                                options={dataJenisKelamin}
                                                                                 value={validation.values.jeniskelamin || ""}
-                                                                                className={'input'}
-                                                                                onChange={value => validation.setFieldValue('jeniskelamin', value.value)} />
+                                                                                className={`input ${validation.errors.jeniskelamin ? "is-invalid" : ""}`}
+                                                                                onChange={value => validation.setFieldValue('jeniskelamin', value.value)} 
+                                                                            />
                                                                                 {/* <Select
                                                                                 name="jeniskelamin"
                                                                                 id="jeniskelamin"
