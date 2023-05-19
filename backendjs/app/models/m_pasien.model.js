@@ -54,6 +54,24 @@ module.exports = (sequelize, Sequelize) => {
         objectdesakelurahanktpfk: {
             type: Sequelize.INTEGER
         },
+        objectnegaraktpfk:{
+            type: Sequelize.INTEGER
+        },
+        alamatdomisili: {
+            type: Sequelize.STRING
+        },
+        rtdomisili: {
+            type: Sequelize.STRING
+        },
+        rwdomisili: {
+            type: Sequelize.STRING
+        },
+        objectdesakelurahandomisilifk: {
+            type: Sequelize.INTEGER
+        },
+        objectnegaradomisilifk:{
+            type: Sequelize.INTEGER
+        },
         statusenabled: {
             type: Sequelize.BOOLEAN,
             defaultValue: true

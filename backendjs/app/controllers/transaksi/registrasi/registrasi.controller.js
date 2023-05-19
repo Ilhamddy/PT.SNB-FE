@@ -209,6 +209,7 @@ const savePasien = (req, res) => {
                 rtktp: req.body.rt,
                 rwktp: req.body.rw,
                 objectdesakelurahanktpfk: req.body.desa,
+                objectnegaraktpfk:req.body.negara,
                 statusenabled: true
             }).then(result => {
                 running_Number.update({ new_number: new_number }, {
