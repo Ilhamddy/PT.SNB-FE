@@ -1,5 +1,8 @@
 const pool = require("../../../config/dbcon.query");
 const queries = require('../../../queries/transaksi/registrasi.queries');
+const db = require("../../../models");
+const M_pasien = db.m_pasien
+const running_Number = db.running_number
 
 const allSelect = (req, res) => {
     pool.query(queries.getAll, (error, result) => {
@@ -176,10 +179,61 @@ const getAllByOr = (req, res) => {
     // });
 };
 
+const savePasien = (req, res) => {
+    try {
+        running_Number.findAll({
+            where: {
+                id: 1
+            }
+          }).then(getNocm => {
+            let nocm = getNocm[0].new_number + 1
+            let new_number = getNocm[0].new_number + 1
+            for (let x = getNocm[0].new_number.toString().length; x < getNocm[0].extention; x++) {
+                nocm = '0' + nocm;
+            }
+            M_pasien.create({
+                nocm: nocm,
+                namapasien: req.body.namapasien,
+                noidentitas: req.body.noidentitas,
+                objectjeniskelaminfk: req.body.jeniskelamin,
+                objecttitlefk: req.body.titlepasien,
+                objectagamafk: req.body.agama,
+                objectgolongandarahfk: req.body.goldarah,
+                objectkebangsaanfk: req.body.kebangsaan,
+                objectstatusperkawinanfk: req.body.statusperkawinan,
+                objectpendidikanfk: req.body.pendidikan,
+                objectpekerjaanfk: req.body.pekerjaan,
+                objectetnisfk: req.body.suku,
+                objectbahasafk: req.body.bahasa,
+                alamatrmh: req.body.alamatktp,
+                rtktp: req.body.rt,
+                rwktp: req.body.rw,
+                objectdesakelurahanktpfk: req.body.desa,
+                statusenabled: true
+            }).then(result => {
+                running_Number.update({ new_number: new_number }, {
+                      where: {
+                    id: 1
+                      }
+                    });
+                res.status(200).send({
+                    data: result,
+                    status: "success",
+                    success: true,
+                });
+            }).catch(err => {
+                res.status(500).send({ message: err.message });
+            });
+          });
+    } catch (error) {
+        res.status(500).send({ message: error });
+    }
+}
 module.exports = {
     allSelect,
     addPost,
     updatePasienById,
     getPasienById,
-    getAllByOr
+    getAllByOr,
+    savePasien
 };

@@ -10,6 +10,7 @@ const queriesPekerjaan = require('../../queries/master/pekerjaan/pekerjaan.queri
 const queriesEtnis = require('../../queries/master/etnis/etnis.queries');
 const queriesBahasa = require('../../queries/master/bahasa/bahasa.queries');
 const queriesDesa = require('../../queries/master/desa/desa.queries');
+const queriesNegara = require('../../queries/master/negara/negara.queries');
 
 const selectComboBox = (req, res) => {
     try {
@@ -53,20 +54,26 @@ const selectComboBox = (req, res) => {
                                                                                     if (error) {
                                                                                         throw error;
                                                                                     } else {
-                                                                                   
-                                                                                                let tempres = {
-                                                                                                    agama: result.rows, jeniskelamin: resultJk.rows, title: resultTitle.rows,
-                                                                                                    golongandarah: resultGD.rows, kebangsaan: resultKeb.rows,
-                                                                                                    perkawinan: resultPerkawinan.rows, pendidikan: resultPendidikan.rows,
-                                                                                                    pekerjaan: resultPekerjaan.rows, etnis: resultEtnis.rows,
-                                                                                                    bahasa: resultBahasa.rows
-                                                                                                }
-                                                                                                res.status(201).send({
-                                                                                                    data: tempres,
-                                                                                                    status: "success",
-                                                                                                    success: true,
-                                                                                                });
-                                                                                     
+                                                                                        pool.query(queriesNegara.getAll, (error, resultNegara) => {
+                                                                                            if (error) {
+                                                                                                throw error;
+                                                                                            } else {
+                                                                                           
+                                                                                                        let tempres = {
+                                                                                                            agama: result.rows, jeniskelamin: resultJk.rows, title: resultTitle.rows,
+                                                                                                            golongandarah: resultGD.rows, kebangsaan: resultKeb.rows,
+                                                                                                            perkawinan: resultPerkawinan.rows, pendidikan: resultPendidikan.rows,
+                                                                                                            pekerjaan: resultPekerjaan.rows, etnis: resultEtnis.rows,
+                                                                                                            bahasa: resultBahasa.rows, negara:resultNegara.rows
+                                                                                                        }
+                                                                                                        res.status(201).send({
+                                                                                                            data: tempres,
+                                                                                                            status: "success",
+                                                                                                            success: true,
+                                                                                                        });
+                                                                                             
+                                                                                            }
+                                                                                        });
                                                                                     }
                                                                                 });
                                                                             }

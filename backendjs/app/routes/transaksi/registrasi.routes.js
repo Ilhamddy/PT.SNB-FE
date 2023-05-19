@@ -19,7 +19,7 @@ module.exports = function (app) {
     app.post(
         "/api/transaksi/registrasi/pasien-baru",
         [authJwt.verifyToken],
-        controller.addPost
+        controller.savePasien
     );
 
     app.put(
