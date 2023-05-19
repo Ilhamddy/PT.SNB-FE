@@ -12,7 +12,7 @@ import userDummy from "../../../assets/images/users/user-dummy-img.jpg";
 
 const RegistrasiPasien = () => {
     const { id } = useParams();
-
+    document.title = "Registrasi Pasien";
     return (
         <div className="page-content">
             <Container fluid>

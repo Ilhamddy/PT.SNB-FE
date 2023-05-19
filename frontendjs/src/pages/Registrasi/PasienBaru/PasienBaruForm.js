@@ -116,7 +116,8 @@ const PasienBaru = () => {
             kecamatan: newData?.kecamatan ?? "",
             kota: newData?.kota ?? "",
             provinsi: newData?.provinsi ?? "",
-            pos: newData?.pos ?? ""
+            pos: newData?.pos ?? "",
+            negara: newData?.negara ??""
         },
         validationSchema: Yup.object({
             namapasien: Yup.string().required("Nama pasien wajib diisi"),
@@ -135,7 +136,7 @@ const PasienBaru = () => {
             rt: Yup.string().required("RT wajib diisi"),
             rw: Yup.string().required("RW wajib diisi"),
             desa: Yup.string().required("Desa wajib diisi"),
-            // kecamatan: Yup.string().required("Kecamatan wajib diisi"),
+            negara: Yup.string().required("negara wajib diisi"),
         }),
         onSubmit: (values) => {
             dispatch(registrasiSave(values, ''));
