@@ -29,7 +29,7 @@ const PasienBaru = () => {
     const dispatch = useDispatch();
     const { data, dataJenisKelamin, dataTitle, dataGD, dataKebangsaan,
         dataPerkawinan, dataPendidikan, dataPekerjaan, dataEtnis, dataBahasa, dataDesa,
-        dataKecamatan, loading, error, newData, loadingSave, success, errorSave } = useSelector((state) => ({
+        dataNegara, loading, error, newData, loadingSave, success, errorSave } = useSelector((state) => ({
             data: state.Master.masterGet.data.agama,
             dataJenisKelamin: state.Master.masterGet.data.jeniskelamin,
             dataTitle: state.Master.masterGet.data.title,
@@ -41,7 +41,7 @@ const PasienBaru = () => {
             dataEtnis: state.Master.masterGet.data.etnis,
             dataBahasa: state.Master.masterGet.data.bahasa,
             dataDesa: state.Master.desaGet.data,
-            dataKecamatan: state.Master.kecamatanGet.data,
+            dataNegara: state.Master.masterGet.data.negara,
             newData: state.Registrasi.registrasiSave.newData,
             loadingSave: state.Registrasi.registrasiSave.loading,
             errorSave: state.Registrasi.registrasiSave.error,
@@ -53,7 +53,7 @@ const PasienBaru = () => {
     useEffect(() => {
         dispatch(masterGet());
         dispatch(desaGet(''));
-        dispatch(kecamatanGet())
+        // dispatch(kecamatanGet())
     }, [dispatch]);
 
     useEffect(() => {
@@ -71,14 +71,19 @@ const PasienBaru = () => {
 
 
     const [companyType, setcompanyType] = useState(null);
-    const [desa, setDesa] = useState(null);
+    const [kecamatan, setKecamatan] = useState(null);
 
     function handlecompanyType(companyType) {
         setcompanyType(companyType);
         console.log(companyType);
     }
-    const handleChange = (selected) => {
-        console.log(selected.value);
+    const handleChangeDesa = (selected) => {
+        validation.setFieldValue('desa', selected.value)
+        validation.setFieldValue('kecamatan', selected.namakecamatan)
+        validation.setFieldValue('kota', selected.namakabupaten)
+        validation.setFieldValue('provinsi', selected.namaprovinsi)
+        validation.setFieldValue('pos', selected.kodepos)
+        // console.log(selected);
     };
     const handleDesa = characterEntered => {
         if (characterEntered.length > 3) {
@@ -98,15 +103,20 @@ const PasienBaru = () => {
             titlepasien: newData?.titlepasien ?? "",
             agama: newData?.agama ?? "",
             goldarah: newData?.goldarah ?? "",
-            kebangsaan: newData?.kebangsaan ??"",
-            statusperkawinan: newData?.statusperkawinan ??"",
-            pendidikan: newData?.pendidikan ??"",
+            kebangsaan: newData?.kebangsaan ?? "",
+            statusperkawinan: newData?.statusperkawinan ?? "",
+            pendidikan: newData?.pendidikan ?? "",
             pekerjaan: newData?.pekerjaan ?? "",
-            suku: newData?.suku ??"",
-            bahasa: newData?.bahasa??"",
-            alamatktp: newData?.alamatktp??"",
-            rt: newData?.rt??"",
-            rw: newData?.rw??""
+            suku: newData?.suku ?? "",
+            bahasa: newData?.bahasa ?? "",
+            alamatktp: newData?.alamatktp ?? "",
+            rt: newData?.rt ?? "",
+            rw: newData?.rw ?? "",
+            desa: newData?.desa ?? "",
+            kecamatan: newData?.kecamatan ?? "",
+            kota: newData?.kota ?? "",
+            provinsi: newData?.provinsi ?? "",
+            pos: newData?.pos ?? ""
         },
         validationSchema: Yup.object({
             namapasien: Yup.string().required("Nama pasien wajib diisi"),
@@ -123,11 +133,13 @@ const PasienBaru = () => {
             bahasa: Yup.string().required("Bahasa wajib diisi"),
             alamatktp: Yup.string().required("Alamat wajib diisi"),
             rt: Yup.string().required("RT wajib diisi"),
-            rw: Yup.string().required("RW wajib diisi")
+            rw: Yup.string().required("RW wajib diisi"),
+            desa: Yup.string().required("Desa wajib diisi"),
+            // kecamatan: Yup.string().required("Kecamatan wajib diisi"),
         }),
         onSubmit: (values) => {
-            // dispatch(registrasiSave(values, ''));
-            console.log(values)
+            dispatch(registrasiSave(values, ''));
+            // console.log(values)
         }
     });
 
@@ -246,13 +258,13 @@ const PasienBaru = () => {
                                                                     </Col>
                                                                     <Col xxl={6} md={6}>
                                                                         <div>
-                                                                            <CustomSelect 
+                                                                            <CustomSelect
                                                                                 id="jeniskelamin"
-                                                                                name="jeniskelamin" 
+                                                                                name="jeniskelamin"
                                                                                 options={dataJenisKelamin}
                                                                                 value={validation.values.jeniskelamin || ""}
                                                                                 className={`input ${validation.errors.jeniskelamin ? "is-invalid" : ""}`}
-                                                                                onChange={value => validation.setFieldValue('jeniskelamin', value.value)} 
+                                                                                onChange={value => validation.setFieldValue('jeniskelamin', value.value)}
                                                                             />
                                                                             {validation.touched.jeniskelamin && validation.errors.jeniskelamin ? (
                                                                                 <FormFeedback type="invalid"><div>{validation.errors.jeniskelamin}</div></FormFeedback>
@@ -266,13 +278,13 @@ const PasienBaru = () => {
                                                                     </Col>
                                                                     <Col xxl={6} md={6}>
                                                                         <div>
-                                                                        <CustomSelect 
+                                                                            <CustomSelect
                                                                                 id="titlepasien"
-                                                                                name="titlepasien" 
+                                                                                name="titlepasien"
                                                                                 options={dataTitle}
                                                                                 value={validation.values.titlepasien || ""}
                                                                                 className={`input ${validation.errors.titlepasien ? "is-invalid" : ""}`}
-                                                                                onChange={value => validation.setFieldValue('titlepasien', value.value)} 
+                                                                                onChange={value => validation.setFieldValue('titlepasien', value.value)}
                                                                             />
                                                                             {validation.touched.titlepasien && validation.errors.titlepasien ? (
                                                                                 <FormFeedback type="invalid"><div>{validation.errors.titlepasien}</div></FormFeedback>
@@ -303,13 +315,13 @@ const PasienBaru = () => {
                                                                     </Col>
                                                                     <Col xxl={6} md={6}>
                                                                         <div>
-                                                                            <CustomSelect 
+                                                                            <CustomSelect
                                                                                 id="agama"
-                                                                                name="agama" 
+                                                                                name="agama"
                                                                                 options={data}
                                                                                 value={validation.values.agama || ""}
                                                                                 className={`input ${validation.errors.agama ? "is-invalid" : ""}`}
-                                                                                onChange={value => validation.setFieldValue('agama', value.value)} 
+                                                                                onChange={value => validation.setFieldValue('agama', value.value)}
                                                                             />
                                                                             {validation.touched.agama && validation.errors.agama ? (
                                                                                 <FormFeedback type="invalid"><div>{validation.errors.agama}</div></FormFeedback>
@@ -323,13 +335,13 @@ const PasienBaru = () => {
                                                                     </Col>
                                                                     <Col xxl={6} md={6}>
                                                                         <div>
-                                                                            <CustomSelect 
+                                                                            <CustomSelect
                                                                                 id="goldarah"
-                                                                                name="goldarah" 
-                                                                                options={data}
+                                                                                name="goldarah"
+                                                                                options={dataGD}
                                                                                 value={validation.values.goldarah || ""}
                                                                                 className={`input ${validation.errors.goldarah ? "is-invalid" : ""}`}
-                                                                                onChange={value => validation.setFieldValue('goldarah', value.value)} 
+                                                                                onChange={value => validation.setFieldValue('goldarah', value.value)}
                                                                             />
                                                                             {validation.touched.goldarah && validation.errors.goldarah ? (
                                                                                 <FormFeedback type="invalid"><div>{validation.errors.goldarah}</div></FormFeedback>
@@ -343,13 +355,14 @@ const PasienBaru = () => {
                                                                     </Col>
                                                                     <Col xxl={6} md={6}>
                                                                         <div>
-                                                                            <CustomSelect 
+                                                                            <CustomSelect
                                                                                 id="kebangsaan"
-                                                                                name="kebangsaan" 
+                                                                                name="kebangsaan"
                                                                                 options={dataKebangsaan}
                                                                                 value={validation.values.kebangsaan || ""}
                                                                                 className={`input ${validation.errors.kebangsaan ? "is-invalid" : ""}`}
-                                                                                onChange={value => validation.setFieldValue('kebangsaan', value.value)} 
+                                                                                onChange={value => validation.setFieldValue('kebangsaan', value.value)}
+                                                                           
                                                                             />
                                                                             {validation.touched.kebangsaan && validation.errors.kebangsaan ? (
                                                                                 <FormFeedback type="invalid"><div>{validation.errors.kebangsaan}</div></FormFeedback>
@@ -363,13 +376,13 @@ const PasienBaru = () => {
                                                                     </Col>
                                                                     <Col xxl={6} md={6}>
                                                                         <div>
-                                                                            <CustomSelect 
+                                                                            <CustomSelect
                                                                                 id="statusperkawinan"
-                                                                                name="statusperkawinan" 
+                                                                                name="statusperkawinan"
                                                                                 options={dataPerkawinan}
                                                                                 value={validation.values.statusperkawinan || ""}
                                                                                 className={`input ${validation.errors.statusperkawinan ? "is-invalid" : ""}`}
-                                                                                onChange={value => validation.setFieldValue('statusperkawinan', value.value)} 
+                                                                                onChange={value => validation.setFieldValue('statusperkawinan', value.value)}
                                                                             />
                                                                             {validation.touched.statusperkawinan && validation.errors.statusperkawinan ? (
                                                                                 <FormFeedback type="invalid"><div>{validation.errors.statusperkawinan}</div></FormFeedback>
@@ -383,13 +396,13 @@ const PasienBaru = () => {
                                                                     </Col>
                                                                     <Col xxl={6} md={6}>
                                                                         <div>
-                                                                             <CustomSelect 
+                                                                            <CustomSelect
                                                                                 id="pendidikan"
-                                                                                name="pendidikan" 
+                                                                                name="pendidikan"
                                                                                 options={dataPendidikan}
                                                                                 value={validation.values.pendidikan || ""}
                                                                                 className={`input ${validation.errors.pendidikan ? "is-invalid" : ""}`}
-                                                                                onChange={value => validation.setFieldValue('pendidikan', value.value)} 
+                                                                                onChange={value => validation.setFieldValue('pendidikan', value.value)}
                                                                             />
                                                                             {validation.touched.pendidikan && validation.errors.pendidikan ? (
                                                                                 <FormFeedback type="invalid"><div>{validation.errors.pendidikan}</div></FormFeedback>
@@ -403,13 +416,13 @@ const PasienBaru = () => {
                                                                     </Col>
                                                                     <Col xxl={6} md={6}>
                                                                         <div>
-                                                                            <CustomSelect 
+                                                                            <CustomSelect
                                                                                 id="pekerjaan"
-                                                                                name="pekerjaan" 
+                                                                                name="pekerjaan"
                                                                                 options={dataPekerjaan}
                                                                                 value={validation.values.pekerjaan || ""}
                                                                                 className={`input ${validation.errors.pekerjaan ? "is-invalid" : ""}`}
-                                                                                onChange={value => validation.setFieldValue('pekerjaan', value.value)} 
+                                                                                onChange={value => validation.setFieldValue('pekerjaan', value.value)}
                                                                             />
                                                                             {validation.touched.pekerjaan && validation.errors.pekerjaan ? (
                                                                                 <FormFeedback type="invalid"><div>{validation.errors.pekerjaan}</div></FormFeedback>
@@ -423,13 +436,13 @@ const PasienBaru = () => {
                                                                     </Col>
                                                                     <Col xxl={6} md={6}>
                                                                         <div>
-                                                                            <CustomSelect 
+                                                                            <CustomSelect
                                                                                 id="suku"
-                                                                                name="suku" 
+                                                                                name="suku"
                                                                                 options={dataEtnis}
                                                                                 value={validation.values.suku || ""}
                                                                                 className={`input ${validation.errors.suku ? "is-invalid" : ""}`}
-                                                                                onChange={value => validation.setFieldValue('suku', value.value)} 
+                                                                                onChange={value => validation.setFieldValue('suku', value.value)}
                                                                             />
                                                                             {validation.touched.suku && validation.errors.suku ? (
                                                                                 <FormFeedback type="invalid"><div>{validation.errors.suku}</div></FormFeedback>
@@ -443,13 +456,13 @@ const PasienBaru = () => {
                                                                     </Col>
                                                                     <Col xxl={6} md={6}>
                                                                         <div>
-                                                                            <CustomSelect 
+                                                                            <CustomSelect
                                                                                 id="bahasa"
-                                                                                name="bahasa" 
-                                                                                options={dataEtnis}
+                                                                                name="bahasa"
+                                                                                options={dataBahasa}
                                                                                 value={validation.values.bahasa || ""}
                                                                                 className={`input ${validation.errors.bahasa ? "is-invalid" : ""}`}
-                                                                                onChange={value => validation.setFieldValue('bahasa', value.value)} 
+                                                                                onChange={value => validation.setFieldValue('bahasa', value.value)}
                                                                             />
                                                                             {validation.touched.bahasa && validation.errors.bahasa ? (
                                                                                 <FormFeedback type="invalid"><div>{validation.errors.bahasa}</div></FormFeedback>
@@ -474,7 +487,7 @@ const PasienBaru = () => {
                                                                     </Col>
                                                                     <Col xxl={6} md={6}>
                                                                         <div>
-                                                                        <Input
+                                                                            <Input
                                                                                 id="alamatktp"
                                                                                 name="alamatktp"
                                                                                 type="textarea"
@@ -499,38 +512,38 @@ const PasienBaru = () => {
                                                                     <Col xxl={6} md={6}>
                                                                         <div className="row">
                                                                             <div className="col-sm">
-                                                                            <Input
-                                                                                id="rt"
-                                                                                name="rt"
-                                                                                type="input"
-                                                                                placeholder="RT"
-                                                                                onChange={validation.handleChange}
-                                                                                onBlur={validation.handleBlur}
-                                                                                value={validation.values.rt || ""}
-                                                                                invalid={
-                                                                                    validation.touched.rt && validation.errors.rt ? true : false
-                                                                                }
-                                                                            />
-                                                                            {validation.touched.rt && validation.errors.rt ? (
-                                                                                <FormFeedback type="invalid"><div>{validation.errors.rt}</div></FormFeedback>
-                                                                            ) : null}
+                                                                                <Input
+                                                                                    id="rt"
+                                                                                    name="rt"
+                                                                                    type="input"
+                                                                                    placeholder="RT"
+                                                                                    onChange={validation.handleChange}
+                                                                                    onBlur={validation.handleBlur}
+                                                                                    value={validation.values.rt || ""}
+                                                                                    invalid={
+                                                                                        validation.touched.rt && validation.errors.rt ? true : false
+                                                                                    }
+                                                                                />
+                                                                                {validation.touched.rt && validation.errors.rt ? (
+                                                                                    <FormFeedback type="invalid"><div>{validation.errors.rt}</div></FormFeedback>
+                                                                                ) : null}
                                                                             </div>
                                                                             <div className="col-sm">
-                                                                            <Input
-                                                                                id="rw"
-                                                                                name="rw"
-                                                                                type="input"
-                                                                                placeholder="RW"
-                                                                                onChange={validation.handleChange}
-                                                                                onBlur={validation.handleBlur}
-                                                                                value={validation.values.rw || ""}
-                                                                                invalid={
-                                                                                    validation.touched.rw && validation.errors.rw ? true : false
-                                                                                }
-                                                                            />
-                                                                            {validation.touched.rw && validation.errors.rw ? (
-                                                                                <FormFeedback type="invalid"><div>{validation.errors.rw}</div></FormFeedback>
-                                                                            ) : null}
+                                                                                <Input
+                                                                                    id="rw"
+                                                                                    name="rw"
+                                                                                    type="input"
+                                                                                    placeholder="RW"
+                                                                                    onChange={validation.handleChange}
+                                                                                    onBlur={validation.handleBlur}
+                                                                                    value={validation.values.rw || ""}
+                                                                                    invalid={
+                                                                                        validation.touched.rw && validation.errors.rw ? true : false
+                                                                                    }
+                                                                                />
+                                                                                {validation.touched.rw && validation.errors.rw ? (
+                                                                                    <FormFeedback type="invalid"><div>{validation.errors.rw}</div></FormFeedback>
+                                                                                ) : null}
                                                                             </div>
                                                                         </div>
                                                                     </Col>
@@ -541,24 +554,19 @@ const PasienBaru = () => {
                                                                     </Col>
                                                                     <Col xxl={6} md={6}>
                                                                         <div>
-                                                                            <Select
-                                                                                name="choices-single-default"
-                                                                                id="choices-single-default"
-                                                                                // value={companyType}
-                                                                                onChange={handleChange}
-                                                                                onInputChange={handleDesa}
+                                                                            <CustomSelect
+                                                                                id="desa"
+                                                                                name="desa"
                                                                                 options={dataDesa}
-                                                                                theme={(theme) => ({
-                                                                                    ...theme,
-                                                                                    borderRadius: 0,
-                                                                                    colors: {
-                                                                                        ...theme.colors,
-                                                                                        text: 'orangered',
-                                                                                        primary25: '#48dbfb',
-                                                                                        primary: '#48dbfb',
-                                                                                    },
-                                                                                })}
+                                                                                value={validation.values.desa || ""}
+                                                                                className={`input ${validation.errors.desa ? "is-invalid" : ""}`}
+                                                                                // onChange={value => validation.setFieldValue('desa', value.value)} 
+                                                                                onChange={handleChangeDesa}
+                                                                                onInputChange={handleDesa}
                                                                             />
+                                                                            {validation.touched.desa && validation.errors.desa ? (
+                                                                                <FormFeedback type="invalid"><div>{validation.errors.desa}</div></FormFeedback>
+                                                                            ) : null}
                                                                         </div>
                                                                     </Col>
                                                                     <Col xxl={6} md={6}>
@@ -568,24 +576,13 @@ const PasienBaru = () => {
                                                                     </Col>
                                                                     <Col xxl={6} md={6}>
                                                                         <div>
-                                                                            <Select
-                                                                                name="choices-single-default"
-                                                                                id="choices-single-default"
-                                                                                // value={companyType}
-                                                                                // onChange={() => {
-                                                                                //     handlecompanyType();
-                                                                                // }}
-                                                                                options={dataKecamatan}
-                                                                                theme={(theme) => ({
-                                                                                    ...theme,
-                                                                                    borderRadius: 0,
-                                                                                    colors: {
-                                                                                        ...theme.colors,
-                                                                                        text: 'orangered',
-                                                                                        primary25: '#48dbfb',
-                                                                                        primary: '#48dbfb',
-                                                                                    },
-                                                                                })}
+                                                                            <Input
+                                                                                id="kecamatan"
+                                                                                name="kecamatan"
+                                                                                type="input"
+                                                                                placeholder="Kecamatan"
+                                                                                value={validation.values.kecamatan || ""}
+                                                                                disabled
                                                                             />
                                                                         </div>
                                                                     </Col>
@@ -596,12 +593,14 @@ const PasienBaru = () => {
                                                                     </Col>
                                                                     <Col xxl={6} md={6}>
                                                                         <div>
-                                                                            <select className="form-select mb-3" aria-label="Default select example">
-                                                                                <option >Select your Status </option>
-                                                                                <option value="1">Declined Payment</option>
-                                                                                <option value="2">Delivery Error</option>
-                                                                                <option value="3">Wrong Amount</option>
-                                                                            </select>
+                                                                            <Input
+                                                                                id="kota"
+                                                                                name="kota"
+                                                                                type="input"
+                                                                                placeholder="kota"
+                                                                                value={validation.values.kota || ""}
+                                                                                disabled
+                                                                            />
                                                                         </div>
                                                                     </Col>
                                                                     <Col xxl={6} md={6}>
@@ -611,12 +610,14 @@ const PasienBaru = () => {
                                                                     </Col>
                                                                     <Col xxl={6} md={6}>
                                                                         <div>
-                                                                            <select className="form-select mb-3" aria-label="Default select example">
-                                                                                <option >Select your Status </option>
-                                                                                <option value="1">Declined Payment</option>
-                                                                                <option value="2">Delivery Error</option>
-                                                                                <option value="3">Wrong Amount</option>
-                                                                            </select>
+                                                                            <Input
+                                                                                id="pos"
+                                                                                name="pos"
+                                                                                type="input"
+                                                                                placeholder="pos"
+                                                                                value={validation.values.pos || ""}
+                                                                                disabled
+                                                                            />
                                                                         </div>
                                                                     </Col>
                                                                     <Col xxl={6} md={6}>
@@ -626,12 +627,14 @@ const PasienBaru = () => {
                                                                     </Col>
                                                                     <Col xxl={6} md={6}>
                                                                         <div>
-                                                                            <select className="form-select mb-3" aria-label="Default select example">
-                                                                                <option >Select your Status </option>
-                                                                                <option value="1">Declined Payment</option>
-                                                                                <option value="2">Delivery Error</option>
-                                                                                <option value="3">Wrong Amount</option>
-                                                                            </select>
+                                                                            <Input
+                                                                                id="provinsi"
+                                                                                name="provinsi"
+                                                                                type="input"
+                                                                                placeholder="provinsi"
+                                                                                value={validation.values.provinsi || ""}
+                                                                                disabled
+                                                                            />
                                                                         </div>
                                                                     </Col>
                                                                     <Col xxl={6} md={6}>
@@ -641,12 +644,17 @@ const PasienBaru = () => {
                                                                     </Col>
                                                                     <Col xxl={6} md={6}>
                                                                         <div>
-                                                                            <select className="form-select mb-3" aria-label="Default select example">
-                                                                                <option >Select your Status </option>
-                                                                                <option value="1">Declined Payment</option>
-                                                                                <option value="2">Delivery Error</option>
-                                                                                <option value="3">Wrong Amount</option>
-                                                                            </select>
+                                                                        <CustomSelect
+                                                                                id="negara"
+                                                                                name="negara"
+                                                                                options={dataNegara}
+                                                                                value={validation.values.negara || ""}
+                                                                                className={`input ${validation.errors.negara ? "is-invalid" : ""}`}
+                                                                                onChange={value => validation.setFieldValue('negara', value.value)}
+                                                                            />
+                                                                            {validation.touched.negara && validation.errors.negara ? (
+                                                                                <FormFeedback type="invalid"><div>{validation.errors.bahasa}</div></FormFeedback>
+                                                                            ) : null}
                                                                         </div>
                                                                     </Col>
                                                                 </Row>
