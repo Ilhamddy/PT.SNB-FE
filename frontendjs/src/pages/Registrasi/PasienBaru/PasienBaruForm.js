@@ -331,7 +331,7 @@ const PasienBaru = () => {
                                                                     </Col>
                                                                     <Col xxl={6} md={6}>
                                                                         <div className="mt-2">
-                                                                            <Label style={{ color: "black" }} htmlFor="tempatlahir" className="form-label">Tempat Lahir</Label>
+                                                                            <Label style={{ color: "black" }} htmlFor="tgllahir" className="form-label">Tempat Lahir</Label>
                                                                         </div>
                                                                     </Col>
                                                                     <Col xxl={6} md={6}>

@@ -14,5 +14,9 @@ export default class ServiceMaster {
     getKecamatan = async (desa) => {
         return await api.get(`/master/kecamatan`);
     }
+
+    getComboRegistrasi = async (desa) => {
+        return await api.get(`/master/combobox-registrasi`);
+    }
     
 }

@@ -27,6 +27,12 @@ module.exports = function(app) {
       [authJwt.verifyToken],
       controller.getKecamatan
     );
+
+    app.get(
+      "/api/master/combobox-registrasi",
+      [authJwt.verifyToken],
+      controller.comboRegistrasi
+    );
   
   
   };

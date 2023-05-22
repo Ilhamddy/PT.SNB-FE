@@ -7,7 +7,11 @@ import {
     DESA_GET_ERROR,
     KECAMATAN_GET,
     KECAMATAN_GET_SUCCESS,
-    KECAMATAN_GET_ERROR
+    KECAMATAN_GET_ERROR,
+    OMBO_REGISTRASI_GET,
+    COMBO_REGISTRASI_GET_SUCCESS,
+    COMBO_REGISTRASI_GET_ERROR,
+    COMBO_REGISTRASI_GET
 } from "./actionType";
 
 const INIT_STATE = {
@@ -22,6 +26,11 @@ const INIT_STATE = {
         error: null,
     },
     kecamatanGet: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    comboRegistrasiGet: {
         data: [],
         loading: false,
         error: null,
@@ -123,6 +132,39 @@ const Master = (state = INIT_STATE, action) => {
                 ...state,
                 kecamatanGet: {
                     ...state.kecamatanGet,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case COMBO_REGISTRASI_GET: {
+            return {
+                ...state,
+                comboRegistrasiGet: {
+                    ...state.comboRegistrasiGet,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case COMBO_REGISTRASI_GET_SUCCESS: {
+            return {
+                ...state,
+                comboRegistrasiGet: {
+                    ...state.comboRegistrasiGet,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case COMBO_REGISTRASI_GET_ERROR: {
+            return {
+                ...state,
+                comboRegistrasiGet: {
+                    ...state.comboRegistrasiGet,
                     loading: false,
                     error: action.error,
                 }

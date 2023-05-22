@@ -7,7 +7,10 @@ import {
     DESA_GET_ERROR,
     KECAMATAN_GET,
     KECAMATAN_GET_SUCCESS,
-    KECAMATAN_GET_ERROR
+    KECAMATAN_GET_ERROR,
+    COMBO_REGISTRASI_GET,
+    COMBO_REGISTRASI_GET_SUCCESS,
+    COMBO_REGISTRASI_GET_ERROR
 } from "./actionType";
 
 export const masterGet = () => ({
@@ -50,5 +53,19 @@ export const kecamatanGetSuccess = (data) => ({
 
 export const kecamatanGetError = (error) => ({
     type: KECAMATAN_GET_ERROR,
+    payload: error,
+});
+
+export const comboRegistrasiGet = () => ({
+    type: COMBO_REGISTRASI_GET
+});
+
+export const comboRegistrasiGetSuccess = (data) => ({
+    type: COMBO_REGISTRASI_GET_SUCCESS,
+    payload: data,
+});
+
+export const comboRegistrasiGetError = (error) => ({
+    type: COMBO_REGISTRASI_GET_ERROR,
     payload: error,
 });

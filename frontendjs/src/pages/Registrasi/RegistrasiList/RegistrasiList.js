@@ -71,6 +71,8 @@ const RegistrasiList = () => {
         
         if(e==='registrasi'){
             history(`/registrasi/pasien-ruangan/${idcmfk}`);
+        }else if(e==='edit'){
+            history(`/registrasi/pasien/${idcmfk}`);
         }
          
     };
@@ -241,7 +243,7 @@ const RegistrasiList = () => {
                                                 <div className="d-flex flex-wrap gap-2">
                                                     <Button color="info" className="btn-animation" data-text="Registrasi" onClick={() => handleClickButton('registrasi')}><span>Registrasi</span></Button>
 
-                                                    <Button color="info" className="btn-animation" data-text="Edit Data Pasien"> <span>Edit Data Pasien</span> </Button>
+                                                    <Button color="info" className="btn-animation" data-text="Edit Data Pasien" onClick={() => handleClickButton('edit')}> <span>Edit Data Pasien</span> </Button>
                                                     <Button color="info" className="btn-animation" data-text="[BPJS] Cek Kepesertaan"> <span>[BPJS] Cek Kepesertaan</span> </Button>
                                                     <Button color="info" className="btn-animation" data-text="[BPJS] Cek Rujukan"> <span>[BPJS] Cek Rujukan</span> </Button>
                                                     <Button color="info" className="btn-animation" data-text="[BPJS] Buat Surkon/SPRI"> <span>[BPJS] Buat Surkon/SPRI</span> </Button>

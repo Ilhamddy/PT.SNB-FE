@@ -11,6 +11,11 @@ const queriesEtnis = require('../../queries/master/etnis/etnis.queries');
 const queriesBahasa = require('../../queries/master/bahasa/bahasa.queries');
 const queriesDesa = require('../../queries/master/desa/desa.queries');
 const queriesNegara = require('../../queries/master/negara/negara.queries');
+const quriesInstalasi = require('../../queries/master/instalasi/instalasi.queries')
+const quriesUnit = require('../../queries/master/unit/unit.queries')
+const quriesAsalRujukan = require('../../queries/master/asalrujukan/asalrujukan.queries')
+const quriesJenisPenjamin = require('../../queries/master/jenisPenjamin/jenispenjamin.queries')
+const queriesRekanan = require('../../queries/master/rekanan/rekanan.queries')
 
 const selectComboBox = (req, res) => {
     try {
@@ -58,20 +63,20 @@ const selectComboBox = (req, res) => {
                                                                                             if (error) {
                                                                                                 throw error;
                                                                                             } else {
-                                                                                           
-                                                                                                        let tempres = {
-                                                                                                            agama: result.rows, jeniskelamin: resultJk.rows, title: resultTitle.rows,
-                                                                                                            golongandarah: resultGD.rows, kebangsaan: resultKeb.rows,
-                                                                                                            perkawinan: resultPerkawinan.rows, pendidikan: resultPendidikan.rows,
-                                                                                                            pekerjaan: resultPekerjaan.rows, etnis: resultEtnis.rows,
-                                                                                                            bahasa: resultBahasa.rows, negara:resultNegara.rows
-                                                                                                        }
-                                                                                                        res.status(201).send({
-                                                                                                            data: tempres,
-                                                                                                            status: "success",
-                                                                                                            success: true,
-                                                                                                        });
-                                                                                             
+
+                                                                                                let tempres = {
+                                                                                                    agama: result.rows, jeniskelamin: resultJk.rows, title: resultTitle.rows,
+                                                                                                    golongandarah: resultGD.rows, kebangsaan: resultKeb.rows,
+                                                                                                    perkawinan: resultPerkawinan.rows, pendidikan: resultPendidikan.rows,
+                                                                                                    pekerjaan: resultPekerjaan.rows, etnis: resultEtnis.rows,
+                                                                                                    bahasa: resultBahasa.rows, negara: resultNegara.rows
+                                                                                                }
+                                                                                                res.status(201).send({
+                                                                                                    data: tempres,
+                                                                                                    status: "success",
+                                                                                                    success: true,
+                                                                                                });
+
                                                                                             }
                                                                                         });
                                                                                     }
@@ -151,8 +156,46 @@ const getKecamatan = (req, res) => {
         });
     }
 }
+const comboRegistrasi = (req, res) => {
+    try {
+        pool.query(quriesInstalasi.getAll, (error, result) => {
+            if (error) throw error;
+            pool.query(quriesUnit.getAll, (error, result2) => {
+                if (error) throw error;
+                pool.query(quriesAsalRujukan.getAll, (error, result3) => {
+                    if (error) throw error;
+                    pool.query(quriesJenisPenjamin.getAll, (error, result4) => {
+                        if (error) throw error;
+                        pool.query(queriesRekanan.getAll, (error, result5) => {
+                            if (error) throw error;
+                            let tempres = { instalasi: result.rows,unit:result2.rows,asalrujukan:result3.rows,
+                            jenispenjamin:result4.rows, rekanan:result5.rows }
+                            res.status(200).send({
+                                data: tempres,
+                                status: "success",
+                                success: true,
+                            });
+                
+                        })
+            
+                    })
+        
+                })
+    
+            })
+
+        })
+    } catch (error) {
+        res.status(200).send({
+            data: [],
+            status: "error",
+            success: true,
+        });
+    }
+}
 module.exports = {
     selectComboBox,
     desaKelurahan,
-    getKecamatan
+    getKecamatan,
+    comboRegistrasi
 };
