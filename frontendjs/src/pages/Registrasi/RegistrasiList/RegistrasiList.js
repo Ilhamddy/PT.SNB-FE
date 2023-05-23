@@ -57,7 +57,7 @@ const RegistrasiList = () => {
         setnohp(e.nohp)
         setalamat(e.alamatrmh)
         setidcmfk(e.id)
-        console.log('this is:', e.namapasien);
+        // console.log('this is:', e.namapasien);
     };
 
     const defaultnotify = (pesan) => toast(pesan, { position: "top-right", hideProgressBar: false, className: 'bg-warning text-white', progress: undefined });
@@ -79,7 +79,7 @@ const RegistrasiList = () => {
 
     const handleFilter = (e) => {
         if (e.keyCode === 13) {
-            console.log(search)
+            // console.log(search)
             // useEffect(() => {
             dispatch(registrasiGetList(search));
             // }, [dispatch]);
@@ -178,18 +178,18 @@ const RegistrasiList = () => {
                                             </NavLink>
                                         </NavItem>
                                         <NavItem>
-                                            <NavItem>
+                                            {/* <NavItem> */}
                                                 <NavLink style={{ cursor: "pointer" }} className={classnames({ active: pillsTab === "2", })} onClick={() => { pillsToggle("2"); }} >
                                                     Riwayat
                                                 </NavLink>
-                                            </NavItem>
+                                            {/* </NavItem> */}
                                         </NavItem>
                                         <NavItem>
-                                            <NavItem>
+                                            {/* <NavItem> */}
                                                 <NavLink style={{ cursor: "pointer" }} className={classnames({ active: pillsTab === "3", })} onClick={() => { pillsToggle("3"); }} >
                                                     Action
                                                 </NavLink>
-                                            </NavItem>
+                                            {/* </NavItem> */}
                                         </NavItem>
                                     </Nav>
 

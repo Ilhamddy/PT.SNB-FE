@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState,useCallback } from 'react';
 import withRouter from "../../../Components/Common/withRouter";
 import { useParams } from "react-router-dom";
 import {
@@ -62,7 +62,7 @@ const RegistrasiPasien = (props) => {
     const validation = useFormik({
         enableReinitialize: true,
         initialValues: {
-            id: newData?.id ?? undefined,
+            id: newData?.id ?? id,
             tglregistrasi: newData?.tglregistrasi ?? "",
             unittujuan: newData?.unittujuan ?? "",
             rujukanasal: newData?.rujukanasal ?? "",
@@ -84,12 +84,22 @@ const RegistrasiPasien = (props) => {
             // penjamin: Yup.string().required("Penjamin wajib diisi"),
         }),
         onSubmit: (values) => {
-            dispatch(registrasiSaveRuangan(values, props.router.navigate));
+            console.log(values)
+            // dispatch(registrasiSaveRuangan(values, props.router.navigate));
         }
     });
 
     const [date, setDate] = useState("");
-    // console.log(validation.errors)
+    const notifyError = useCallback(() => {
+        return toast("Terjadi kesalahan", { position: "top-right", hideProgressBar: false, className: 'bg-danger text-white' });
+    }, []);
+    
+    useEffect(() =>{
+        if (errorSave) {
+            notifyError();
+        }
+    },[errorSave,notifyError])
+
     useEffect(() => {
         return () => {
 
