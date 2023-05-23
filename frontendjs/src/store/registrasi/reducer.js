@@ -9,6 +9,9 @@ import {
     REGISTRASI_GET,
     REGISTRASI_GET_SUCCESS,
     REGISTRASI_GET_ERROR,
+    REGISTRASI_SAVE_RUANGAN,
+    REGISTRASI_SAVE_RUANGAN_SUCCESS,
+    REGISTRASI_SAVE_RUANGAN_ERROR,
 } from "./actionType";
 
 const INIT_STATE = {
@@ -27,6 +30,12 @@ const INIT_STATE = {
         data: [],
         loading: false,
         error: null,
+    },
+    registrasiSaveRuangan: {
+        newData: null,
+        loading: false,
+        error: null,
+        success: false
     },
 };
 
@@ -138,6 +147,40 @@ const Registrasi = (state = INIT_STATE, action) => {
                 ...state,
                 registrasiSave: {
                     ...state.registrasiSave,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case REGISTRASI_SAVE_RUANGAN: {
+            return {
+                ...state,
+                registrasiSaveRuangan: {
+                    ...state.registrasiSaveRuangan,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case REGISTRASI_SAVE_RUANGAN_SUCCESS: {
+            return {
+                ...state,
+                registrasiSaveRuangan: {
+                    ...state.registrasiSaveRuangan,
+                    newData: action.payload,
+                    loading: false,
+                    success: true,
+                }
+            }
+        }
+
+        case REGISTRASI_SAVE_RUANGAN_ERROR: {
+            return {
+                ...state,
+                registrasiSaveRuangan: {
+                    ...state.registrasiSaveRuangan,
                     loading: false,
                     error: action.error,
                 }

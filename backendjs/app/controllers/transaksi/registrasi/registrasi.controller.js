@@ -1,8 +1,10 @@
 const pool = require("../../../config/dbcon.query");
+const uuid = require('uuid')
 const queries = require('../../../queries/transaksi/registrasi.queries');
 const db = require("../../../models");
 const M_pasien = db.m_pasien
 const running_Number = db.running_number
+const t_daftarpasien = db.t_daftarpasien
 
 const allSelect = (req, res) => {
     pool.query(queries.getAll, (error, result) => {
@@ -122,7 +124,8 @@ const getPasienById = (req, res) => {
                     if (result.rows[i] !== undefined) {
                         tempres = {
                             id: result.rows[i].id, nocm: result.rows[i].nocm, namapasien: result.rows[i].namapasien,
-                            noidentitas: result.rows[i].noidentitas, nobpjs: result.rows[i].nobpjs, nohp: result.rows[i].nohp
+                            noidentitas: result.rows[i].noidentitas, nobpjs: result.rows[i].nobpjs, nohp: result.rows[i].nohp,
+                            tgllahir: result.rows[i].tgllahir
                         }
 
                     }
@@ -185,7 +188,7 @@ const savePasien = (req, res) => {
             where: {
                 id: 1
             }
-          }).then(getNocm => {
+        }).then(getNocm => {
             let nocm = getNocm[0].new_number + 1
             let new_number = getNocm[0].new_number + 1
             for (let x = getNocm[0].new_number.toString().length; x < getNocm[0].extention; x++) {
@@ -209,14 +212,14 @@ const savePasien = (req, res) => {
                 rtktp: req.body.rt,
                 rwktp: req.body.rw,
                 objectdesakelurahanktpfk: req.body.desa,
-                objectnegaraktpfk:req.body.negara,
+                objectnegaraktpfk: req.body.negara,
                 statusenabled: true
             }).then(result => {
                 running_Number.update({ new_number: new_number }, {
-                      where: {
-                    id: 1
-                      }
-                    });
+                    where: {
+                        id: 1
+                    }
+                });
                 res.status(200).send({
                     data: result,
                     status: "success",
@@ -225,7 +228,68 @@ const savePasien = (req, res) => {
             }).catch(err => {
                 res.status(500).send({ message: err.message });
             });
-          });
+        });
+    } catch (error) {
+        res.status(500).send({ message: error });
+    }
+}
+function formatDate(date) {
+    var d = new Date(date),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
+
+    if (month.length < 2)
+        month = '0' + month;
+    if (day.length < 2)
+        day = '0' + day;
+
+    return [year, month, day].join('-');
+}
+const saveRegistrasiPasien = (req, res) => {
+    try {
+        let norec = uuid.v4().substring(0, 32)
+        let today = new Date();
+        let todayMonth = '' + (today.getMonth() + 1)
+        if (todayMonth.length < 2)
+            todayMonth = '0' + todayMonth;
+        let todaystart = formatDate(today)
+        let todayend = formatDate(today) + ' 23:59'
+        let query = `select count(norec) from t_daftarpasien
+        where tglregistrasi between '${todaystart}' and '${todayend}'`
+        pool.query(query, (error, resultCount) => {
+            if (error) throw error;
+            let noregistrasi = parseFloat(resultCount.rows[0].count) + 1
+            for (let x = resultCount.rows[0].count.toString().length; x < 4; x++) {
+                noregistrasi = '0' + noregistrasi;
+            }
+
+            t_daftarpasien.create({
+                norec: norec,
+                nocmfk: req.body.id,
+                noregistrasi: today.getFullYear() + todayMonth.toString() + noregistrasi,
+                tglregistrasi: req.body.tglregistrasi,
+                objectunitlastfk: req.body.unittujuan,
+                objectdokterpemeriksafk: req.body.dokterpemeriksa,
+                objectpegawaifk: req.body.pegawaifk,
+                objectkelasfk: req.body.kelasfk,
+                objectjenispenjaminfk: req.body.jenispenjamin,
+                tglpulang: req.body.tglregistrasi,
+                objectasalrujukanfk: req.body.rujukanasal,
+                objectinstalasifk: req.body.tujkunjungan,
+                statusenabled: true
+            }).then(result => {
+
+                res.status(200).send({
+                    data: result,
+                    status: "success",
+                    success: true,
+                });
+            }).catch(err => {
+                res.status(500).send({ message: err.message });
+            });
+        })
+
     } catch (error) {
         res.status(500).send({ message: error });
     }
@@ -236,5 +300,6 @@ module.exports = {
     updatePasienById,
     getPasienById,
     getAllByOr,
-    savePasien
+    savePasien,
+    saveRegistrasiPasien
 };

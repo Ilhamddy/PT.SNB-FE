@@ -11,7 +11,10 @@ import {
     REGISTRASI_GET_ERROR,
     REGISTRASI_LIST_BYOR_GET,
     REGISTRASI_LIST_BYOR_GET_SUCCESS,
-    REGISTRASI_LIST_BYOR_GET_ERROR
+    REGISTRASI_LIST_BYOR_GET_ERROR,
+    REGISTRASI_SAVE_RUANGAN, 
+    REGISTRASI_SAVE_RUANGAN_ERROR, 
+    REGISTRASI_SAVE_RUANGAN_SUCCESS,
 } from "./actionType";
 
 export const registrasiResetForm = () => ({
@@ -77,5 +80,21 @@ export const registrasiGetSuccess = (data) => ({
 
 export const registrasiGetError = (error) => ({
     type: REGISTRASI_GET_ERROR,
+    payload: error,
+});
+
+// common success
+export const registrasiSaveRuangan = (data, history) => ({
+    type: REGISTRASI_SAVE_RUANGAN,
+    payload: { data, history },
+});
+// common error
+export const registrasiSaveRuanganSuccess = (data, history) => ({
+    type: REGISTRASI_SAVE_RUANGAN_SUCCESS,
+    payload: { data, history},
+});
+
+export const registrasiSaveRuanganError = (error) => ({
+    type: REGISTRASI_SAVE_RUANGAN_ERROR,
     payload: error,
 });

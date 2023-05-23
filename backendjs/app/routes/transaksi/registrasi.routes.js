@@ -39,5 +39,10 @@ module.exports = function (app) {
         [authJwt.verifyToken],
         controller.getAllByOr
     );
-
+    
+    app.post(
+        "/api/transaksi/registrasi/save-daftar-pasien",
+        [authJwt.verifyToken],
+        controller.saveRegistrasiPasien
+    );
 };

@@ -22,4 +22,8 @@ export default class ServiceRegistrasi {
     updatePasien = async (params) => {
        return await api.put("/transaksi/registrasi/update-pasien", params);
     }
+
+    saveRegistrasiDaftarPasien = async (params) => {
+        return await api.create("/transaksi/registrasi/save-daftar-pasien", params);
+    }
 }

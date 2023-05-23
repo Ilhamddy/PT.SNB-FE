@@ -20,7 +20,7 @@ import { useSelector, useDispatch } from "react-redux";
 import classnames from "classnames";
 
 import { comboRegistrasiGet } from '../../../store/master/action';
-import { registrasiResetForm, registrasiGet } from "../../../store/actions";
+import { registrasiResetForm, registrasiGet, registrasiSaveRuangan } from "../../../store/actions";
 
 const RegistrasiPasien = () => {
     const { id } = useParams();
@@ -47,7 +47,9 @@ const RegistrasiPasien = () => {
     const { datas, data, loading, error, newData, loadingSave, success, errorSave } = useSelector((state) => ({
 
         data: state.Master.comboRegistrasiGet.data,
-        success: state.Registrasi.registrasiSave.success,
+        success: state.Registrasi.registrasiSaveRuangan.success,
+        loadingSave: state.Registrasi.registrasiSaveRuangan.loading,
+        errorSave: state.Registrasi.registrasiSaveRuangan.error,
         loading: state.Master.comboRegistrasiGet.loading,
         error: state.Master.comboRegistrasiGet.error,
         datas: state.Registrasi.registrasiGet.data,
@@ -63,23 +65,32 @@ const RegistrasiPasien = () => {
             id: newData?.id ?? undefined,
             tglregistrasi: newData?.tglregistrasi ?? "",
             unittujuan: newData?.unittujuan ?? "",
-            asalrujukan: newData?.asalrujukan ?? "",
+            rujukanasal: newData?.rujukanasal ?? "",
             jenispenjamin: newData?.jenispenjamin ?? "",
-            namapasien: datas?.namapasien ?? ""
+            penjamin: newData?.penjamin ?? "",
+            tujkunjungan: newData?.tujkunjungan ?? "",
+            namapasien: datas?.namapasien ?? "",
+            nocm: datas?.nocm ?? "",
+            nobpjs: datas?.nobpjs ?? "",
+            noidentitas: datas?.noidentitas ?? "",
+            tgllahir: datas?.tgllahir ?? "",
         },
         validationSchema: Yup.object({
             tglregistrasi: Yup.string().required("Tanggal Registrasi wajib diisi"),
             tujkunjungan: Yup.string().required("Tujuan Kunjungan wajib diisi"),
             unittujuan: Yup.string().required("Unit wajib diisi"),
-            asalrujukan: Yup.string().required("Asal Rujukan wajib diisi"),
+            rujukanasal: Yup.string().required("Asal Rujukan wajib diisi"),
             jenispenjamin: Yup.string().required("Jenis Penjamin wajib diisi"),
+            // penjamin: Yup.string().required("Penjamin wajib diisi"),
         }),
         onSubmit: (values) => {
-            // dispatch(registrasiSave(values, ''));
-            // console.log(values)
+            dispatch(registrasiSaveRuangan(values, ''));
+            console.log(validation.errors) 
         }
     });
 
+    const [date, setDate] = useState("");
+    // console.log(validation.errors)
     useEffect(() => {
         return () => {
 
@@ -96,6 +107,15 @@ const RegistrasiPasien = () => {
         setdataUnit(newArray)
 
     }
+
+    const handleBeginOnChange = (newBeginValue) => {
+        var dateString = new Date(newBeginValue.getTime() - (newBeginValue.getTimezoneOffset() * 60000))
+            .toISOString()
+            .split("T")[0];
+        validation.setFieldValue('tglregistrasi', dateString)
+        console.log(dateString)
+    }
+
 
     return (
         <div className="page-content">
@@ -136,6 +156,44 @@ const RegistrasiPasien = () => {
                                         </NavLink>
                                     </NavItem>
                                 </Nav>
+
+                                <TabContent activeTab={pillsTab} className="text-muted">
+                                    <TabPane tabId="1" id="home-1">
+                                        <Card>
+                                            <CardBody>
+                                                <div className="table-responsive">
+                                                    <Table className="table-borderless mb-0">
+                                                        <tbody>
+                                                            <tr>
+                                                                <th className="ps-0" scope="row">NoRM :</th>
+                                                                <td className="text-muted">{validation.values.nocm}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th className="ps-0" scope="row">Tgllahir :</th>
+                                                                <td className="text-muted">{validation.values.tgllahir}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th className="ps-0" scope="row">No BPJS :</th>
+                                                                <td className="text-muted">{validation.values.nobpjs}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th className="ps-0" scope="row">No Identitas :</th>
+                                                                <td className="text-muted">{validation.values.noidentitas}</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </Table>
+                                                </div>
+                                            </CardBody>
+                                        </Card>
+                                    </TabPane>
+                                    <TabPane tabId="2" id="home-2">
+                                        <Card>
+                                            <CardBody>
+
+                                            </CardBody>
+                                        </Card>
+                                    </TabPane>
+                                </TabContent>
                             </CardBody>
                         </Card>
                     </Col>
@@ -174,6 +232,10 @@ const RegistrasiPasien = () => {
                                                         <Col xxl={6} md={6}>
                                                             <div>
                                                                 <Flatpickr
+                                                                    // value={validation.values.tglregistrasi || ""}
+                                                                    onChange={([newDate]) => {
+                                                                        handleBeginOnChange(newDate);
+                                                                    }}
                                                                     className="form-control"
                                                                     options={{
                                                                         dateFormat: "Y-m-d",
@@ -297,8 +359,9 @@ const RegistrasiPasien = () => {
                                                 </CardBody>
                                             </Card>
                                         </Col>
-                                        <Col lg={12} style={{textAlign:'right'}}>
-                                        <Button color="info" className="rounded-pill"> SIMPAN </Button>
+                                        <Col lg={12} style={{ textAlign: 'right' }}>
+                                            <Button type="submit" color="info" className="rounded-pill" disabled={loadingSave}> SIMPAN </Button>
+
                                         </Col>
                                     </Row>
                                 </CardBody>
