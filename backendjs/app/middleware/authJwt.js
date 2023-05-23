@@ -4,15 +4,20 @@ const db = require("../models");
 const User = db.user;
 
 verifyToken = (req, res, next) => {
-  let token = req.headers["x-access-token"];
-
-  if (!token) {
+  // let token = req.headers["x-access-token"];
+  let bearerHeader = req.headers['authorization'];
+  
+  if (!bearerHeader) {
     return res.status(403).send({
       message: "No token provided!"
     });
   }
-
-  jwt.verify(token, config.secret, (err, decoded) => {
+  let bearer = bearerHeader.split(' ');
+  let bearerToken = bearer[1]
+  // return res.status(403).send({
+  //   message: bearer
+  // });
+  jwt.verify(bearerToken, config.secret, (err, decoded) => {
     if (err) {
       return res.status(401).send({
         message: "Unauthorized!"

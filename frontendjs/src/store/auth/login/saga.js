@@ -12,6 +12,8 @@ import {
   postSocialLogin,
 } from "../../../helpers/fakebackend_helper";
 
+import {setAuthorization} from "../../../helpers/api_helper";
+
 const fireBaseBackend = getFirebaseBackend();
 
 function* loginUser({ payload: { user, history } }) {
@@ -49,6 +51,7 @@ function* loginUser({ payload: { user, history } }) {
         yield put(loginSuccess(response));
         history('/dashboard')
         localStorage.setItem("authUser", JSON.stringify(response));
+        setAuthorization(JSON.parse(localStorage.getItem("authUser")).accessToken);
       } else {
         yield put(apiError(response));
       }
