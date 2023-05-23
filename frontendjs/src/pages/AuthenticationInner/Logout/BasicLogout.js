@@ -43,7 +43,7 @@ const BasicLogout = () => {
                                                     <h5>You are Logged Out</h5>
                                                     <p className="text-muted">Thank you for using <span className="fw-semibold">velzon</span> admin template</p>
                                                     <div className="mt-4">
-                                                        <Link to="/auth-signin-basic" className="btn btn-success w-100">Sign In</Link>
+                                                        <Link to="/login-based" className="btn btn-success w-100">Sign In</Link>
                                                     </div>
                                                 </div>
                                             </CardBody>

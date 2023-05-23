@@ -7,9 +7,9 @@ axios.defaults.baseURL = api.API_URL;
 axios.defaults.headers.post["Content-Type"] = "application/json";
 
 // content type
-// const token = JSON.parse(localStorage.getItem("authUser")) ? JSON.parse(localStorage.getItem("authUser")).accessToken : null;
-// if(token)
-// axios.defaults.headers.common["Authorization"] = "Bearer " + token;
+const token = JSON.parse(localStorage.getItem("authUser")) ? JSON.parse(localStorage.getItem("authUser")).accessToken : null;
+if (token)
+  axios.defaults.headers.common["Authorization"] = "Bearer " + token;
 
 // intercepting to capture errors
 axios.interceptors.response.use(
@@ -17,9 +17,10 @@ axios.interceptors.response.use(
     return response.data ? response.data : response;
   },
   function (error) {
+    // console.log(error.response.status)
     // Any status codes that falls outside the range of 2xx cause this function to trigger
     let message;
-    switch (error.status) {
+    switch (error.response.status) {
       case 500:
         message = "Internal Server Error";
         break;
@@ -27,6 +28,10 @@ axios.interceptors.response.use(
         message = "Invalid credentials";
         break;
       case 404:
+        message = "Sorry! the data you are looking for could not be found";
+        break;
+      case 403:
+        window.location = '/auth-logout-basic'
         message = "Sorry! the data you are looking for could not be found";
         break;
       default:
