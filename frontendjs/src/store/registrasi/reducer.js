@@ -182,7 +182,7 @@ const Registrasi = (state = INIT_STATE, action) => {
                 registrasiSaveRuangan: {
                     ...state.registrasiSaveRuangan,
                     loading: false,
-                    error: action.error,
+                    error: action.payload,
                 }
             }
         }

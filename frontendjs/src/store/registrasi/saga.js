@@ -66,18 +66,17 @@ function* onGetRegistrasi({payload: {id}}) {
     }
 }
 
-function* onSaveRegistrasiRuangan({payload: { data, history}}) {
+function* onSaveRegistrasiRuangan({ payload: { data, history} }) {
     try {
         let response = null;
         if (data.id) {
             response = yield call(serviceRegistrasi.saveRegistrasiDaftarPasien, data);
-        } 
-        // else {
-        //     response = yield call(serviceRegistrasi.createPasienBaru, data);
-        // }
+        } else {
+            response = yield call(serviceRegistrasi.createPasienBaru, data);
+        }
         
         yield put(registrasiSaveRuanganSuccess(response.data));
-        // history("/registrasi/pasien-lama")
+        history("/registrasi/pasien-lama")
     } catch (error) {
         yield put(registrasiSaveRuanganError(error));
     }

@@ -22,7 +22,7 @@ import classnames from "classnames";
 import { comboRegistrasiGet } from '../../../store/master/action';
 import { registrasiResetForm, registrasiGet, registrasiSaveRuangan } from "../../../store/actions";
 
-const RegistrasiPasien = () => {
+const RegistrasiPasien = (props) => {
     const { id } = useParams();
     document.title = "Registrasi Pasien";
     const dispatch = useDispatch();
@@ -84,8 +84,7 @@ const RegistrasiPasien = () => {
             // penjamin: Yup.string().required("Penjamin wajib diisi"),
         }),
         onSubmit: (values) => {
-            dispatch(registrasiSaveRuangan(values, ''));
-            console.log(validation.errors) 
+            dispatch(registrasiSaveRuangan(values, props.router.navigate));
         }
     });
 
@@ -113,9 +112,7 @@ const RegistrasiPasien = () => {
             .toISOString()
             .split("T")[0];
         validation.setFieldValue('tglregistrasi', dateString)
-        console.log(dateString)
     }
-
 
     return (
         <div className="page-content">
@@ -232,7 +229,7 @@ const RegistrasiPasien = () => {
                                                         <Col xxl={6} md={6}>
                                                             <div>
                                                                 <Flatpickr
-                                                                    // value={validation.values.tglregistrasi || ""}
+                                                                    value={validation.values.tglregistrasi || ""}
                                                                     onChange={([newDate]) => {
                                                                         handleBeginOnChange(newDate);
                                                                     }}
