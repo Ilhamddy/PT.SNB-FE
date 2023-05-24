@@ -261,20 +261,7 @@ const RegistrasiPasien = (props) => {
                                     </Alert>
                                 </>
                             ) : null}
-
-                            <Modal id="showModal" isOpen={modal} toggle={toggle} centered>
-                                <BuktiPendaftaran />
-                                {/* <ModalHeader className="bg-light p-3" toggle={toggle}>
-                                    Bukti Pendaftaran
-                                </ModalHeader>
-                                <Button
-                                    className="invoice-print-button"
-                                    variant="contained"
-                                    onClick={() => window.print()}
-                                >
-                                    Print
-                                </Button> */}
-                            </Modal>
+                            <BuktiPendaftaran isOpen={modal} toggle={toggle} centered />
                             <Card>
                                 <CardHeader style={{ backgroundColor: "#dfe4ea" }}>
                                     <h4 className="card-title mb-0">Registrasi</h4>
