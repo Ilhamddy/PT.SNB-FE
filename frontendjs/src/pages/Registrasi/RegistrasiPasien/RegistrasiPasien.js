@@ -1,12 +1,14 @@
-import React, { useEffect, useState,useCallback } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import withRouter from "../../../Components/Common/withRouter";
 import { useParams } from "react-router-dom";
 import {
     Card, CardBody, CardHeader, Col, Container, Row, Nav, NavItem,
     NavLink, TabContent, TabPane, Button, Label, Input, Table, Form,
-    FormFeedback, Alert
+    FormFeedback, Alert, Modal,
+    ModalHeader, ModalBody
 } from 'reactstrap';
 import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import BreadCrumb from '../../../Components/Common/BreadCrumb';
 //Import Flatepicker
 import Flatpickr from "react-flatpickr";
@@ -21,12 +23,24 @@ import classnames from "classnames";
 
 import { comboRegistrasiGet } from '../../../store/master/action';
 import { registrasiResetForm, registrasiGet, registrasiSaveRuangan } from "../../../store/actions";
+import BuktiPendaftaran from '../../Print/BuktiPendaftaran';
+
+
 
 const RegistrasiPasien = (props) => {
     const { id } = useParams();
     document.title = "Registrasi Pasien";
     const dispatch = useDispatch();
+    const [modal, setModal] = useState(false);
 
+
+    const toggle = useCallback(() => {
+        if (modal) {
+            setModal(false);
+        } else {
+            setModal(true);
+        }
+    }, [modal]);
 
 
     // Pills Tabs
@@ -70,14 +84,14 @@ const RegistrasiPasien = (props) => {
             jenispenjamin: newData?.jenispenjamin ?? "",
             penjamin: newData?.penjamin ?? "",
             tujkunjungan: newData?.tujkunjungan ?? "",
-            dokter: newData?.dokter??"",
-            penanggungjawab: newData?.penanggungjawab??"",
+            dokter: newData?.dokter ?? "",
+            penanggungjawab: newData?.penanggungjawab ?? "",
             namapasien: datas?.namapasien ?? "",
             nocm: datas?.nocm ?? "",
             nobpjs: datas?.nobpjs ?? "",
             noidentitas: datas?.noidentitas ?? "",
             tgllahir: datas?.tgllahir ?? "",
-            
+
         },
         validationSchema: Yup.object({
             tglregistrasi: Yup.string().required("Tanggal Registrasi wajib diisi"),
@@ -95,26 +109,27 @@ const RegistrasiPasien = (props) => {
         }
     });
 
-    const [date, setDate] = useState("");
+    const [messageNewData, setmessageNewData] = useState("");
     const notifyError = useCallback(() => {
         return toast("Terjadi kesalahan", { position: "top-right", hideProgressBar: false, className: 'bg-danger text-white' });
     }, []);
 
-    const notifySuccess = useCallback(() => {
-        return toast("newData.data.daftarPasien.noregistrasi", { position: "top-right", hideProgressBar: false, className: 'bg-success text-white' });
+    const notifySuccess = useCallback((t) => {
+        return toast(t, { position: "top-right", hideProgressBar: false, className: 'bg-success text-white' });
     }, []);
-    
-    useEffect(() =>{
+
+    useEffect(() => {
         // console.log('massukkk')
         if (errorSave) {
             notifyError();
         }
-    },[errorSave,notifyError])
+    }, [errorSave, notifyError])
 
     useEffect(() => {
-        
+
         if (newData !== null) {
-            notifySuccess()
+            setmessageNewData(newData.data.daftarPasien.noregistrasi + ' Nomor Antrean Dokter ' + newData.data.antreanPemeriksaan.noantrian)
+            notifySuccess('Nomor Registrasi Pasien ' + newData.data.daftarPasien.noregistrasi)
             console.log(newData)
         }
     }, [newData, notifySuccess])
@@ -147,7 +162,7 @@ const RegistrasiPasien = (props) => {
         validation.setFieldValue('penjamin', data)
         console.log(validation.values.penjamin)
         // setSelectedOptions(data);
-      }
+    }
 
     return (
         <div className="page-content">
@@ -237,15 +252,29 @@ const RegistrasiPasien = (props) => {
                         }}
                             className="gy-4"
                             action="#">
-                            {/* {success ? (
+                            {success && success ? (
                                 <>
                                     {toast("Registrasi Pasien Berhasil.....", { position: "top-right", hideProgressBar: false, className: 'bg-success text-white', progress: undefined, toastId: "" })}
                                     <ToastContainer autoClose={2000} limit={1} />
                                     <Alert color="success" >
-                                        Registrasi Pasien Berhasil.....
+                                        Registrasi Pasien Berhasil, dengan nomor registrasi {messageNewData}
                                     </Alert>
                                 </>
-                            ) : null} */}
+                            ) : null}
+
+                            <Modal id="showModal" isOpen={modal} toggle={toggle} centered>
+                                <BuktiPendaftaran />
+                                {/* <ModalHeader className="bg-light p-3" toggle={toggle}>
+                                    Bukti Pendaftaran
+                                </ModalHeader>
+                                <Button
+                                    className="invoice-print-button"
+                                    variant="contained"
+                                    onClick={() => window.print()}
+                                >
+                                    Print
+                                </Button> */}
+                            </Modal>
                             <Card>
                                 <CardHeader style={{ backgroundColor: "#dfe4ea" }}>
                                     <h4 className="card-title mb-0">Registrasi</h4>
@@ -434,7 +463,17 @@ const RegistrasiPasien = (props) => {
                                         </Col>
                                         <Col lg={12} style={{ textAlign: 'right' }}>
                                             <Button type="submit" color="info" className="rounded-pill" disabled={loadingSave}> SIMPAN </Button>
-                                            <ToastContainer autoClose={2000} limit={1} />
+                                            <Button
+                                                type="button"
+                                                className="btn btn-primary add-btn"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#showModal"
+                                                id="create-btn"
+                                                onClick={() => { toggle(); }}
+                                            >
+                                                <i className="ri-add-line align-bottom me-1"></i> 
+                                                print
+                                            </Button>
                                         </Col>
                                     </Row>
                                 </CardBody>
