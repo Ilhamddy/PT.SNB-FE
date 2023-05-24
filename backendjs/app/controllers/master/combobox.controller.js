@@ -16,6 +16,8 @@ const quriesUnit = require('../../queries/master/unit/unit.queries')
 const quriesAsalRujukan = require('../../queries/master/asalrujukan/asalrujukan.queries')
 const quriesJenisPenjamin = require('../../queries/master/jenisPenjamin/jenispenjamin.queries')
 const queriesRekanan = require('../../queries/master/rekanan/rekanan.queries')
+const queriesHubunganKeluarga = require('../../queries/master/hubunganKeluarga/hubunganKeluarga.queries')
+const queriesPegawai = require('../../queries/master/pegawai/pegawai.queries')
 
 const selectComboBox = (req, res) => {
     try {
@@ -168,13 +170,22 @@ const comboRegistrasi = (req, res) => {
                         if (error) throw error;
                         pool.query(queriesRekanan.getAll, (error, result5) => {
                             if (error) throw error;
-                            let tempres = { instalasi: result.rows,unit:result2.rows,asalrujukan:result3.rows,
-                            jenispenjamin:result4.rows, rekanan:result5.rows }
-                            res.status(200).send({
-                                data: tempres,
-                                status: "success",
-                                success: true,
-                            });
+                            pool.query(queriesHubunganKeluarga.getAll, (error, result6) => {
+                                if (error) throw error;
+                                pool.query(queriesPegawai.getAll, (error, result7) => {
+                                    if (error) throw error;
+                                    let tempres = { instalasi: result.rows,unit:result2.rows,asalrujukan:result3.rows,
+                                    jenispenjamin:result4.rows, rekanan:result5.rows,hubungankeluarga:result6.rows,
+                                    pegawai: result7.rows }
+                                    res.status(200).send({
+                                        data: tempres,
+                                        status: "success",
+                                        success: true,
+                                    });
+                        
+                                })
+                    
+                            })
                 
                         })
             

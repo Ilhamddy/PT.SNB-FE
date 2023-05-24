@@ -47,6 +47,7 @@ const RegistrasiPasien = (props) => {
     const { datas, data, loading, error, newData, loadingSave, success, errorSave } = useSelector((state) => ({
 
         data: state.Master.comboRegistrasiGet.data,
+        newData: state.Registrasi.registrasiSaveRuangan.newData,
         success: state.Registrasi.registrasiSaveRuangan.success,
         loadingSave: state.Registrasi.registrasiSaveRuangan.loading,
         errorSave: state.Registrasi.registrasiSaveRuangan.error,
@@ -69,11 +70,14 @@ const RegistrasiPasien = (props) => {
             jenispenjamin: newData?.jenispenjamin ?? "",
             penjamin: newData?.penjamin ?? "",
             tujkunjungan: newData?.tujkunjungan ?? "",
+            dokter: newData?.dokter??"",
+            penanggungjawab: newData?.penanggungjawab??"",
             namapasien: datas?.namapasien ?? "",
             nocm: datas?.nocm ?? "",
             nobpjs: datas?.nobpjs ?? "",
             noidentitas: datas?.noidentitas ?? "",
             tgllahir: datas?.tgllahir ?? "",
+            
         },
         validationSchema: Yup.object({
             tglregistrasi: Yup.string().required("Tanggal Registrasi wajib diisi"),
@@ -81,11 +85,13 @@ const RegistrasiPasien = (props) => {
             unittujuan: Yup.string().required("Unit wajib diisi"),
             rujukanasal: Yup.string().required("Asal Rujukan wajib diisi"),
             jenispenjamin: Yup.string().required("Jenis Penjamin wajib diisi"),
-            // penjamin: Yup.string().required("Penjamin wajib diisi"),
+            penjamin: Yup.array().required("Penjamin wajib diisi"),
+            dokter: Yup.string().required("Dokter wajib diisi"),
+            penanggungjawab: Yup.string().required("Penanggung jawab wajib diisi"),
         }),
         onSubmit: (values) => {
-            console.log(values)
-            // dispatch(registrasiSaveRuangan(values, props.router.navigate));
+            // console.log(values)
+            dispatch(registrasiSaveRuangan(values, ''));
         }
     });
 
@@ -93,12 +99,25 @@ const RegistrasiPasien = (props) => {
     const notifyError = useCallback(() => {
         return toast("Terjadi kesalahan", { position: "top-right", hideProgressBar: false, className: 'bg-danger text-white' });
     }, []);
+
+    const notifySuccess = useCallback(() => {
+        return toast("newData.data.daftarPasien.noregistrasi", { position: "top-right", hideProgressBar: false, className: 'bg-success text-white' });
+    }, []);
     
     useEffect(() =>{
+        // console.log('massukkk')
         if (errorSave) {
             notifyError();
         }
     },[errorSave,notifyError])
+
+    useEffect(() => {
+        
+        if (newData !== null) {
+            notifySuccess()
+            console.log(newData)
+        }
+    }, [newData, notifySuccess])
 
     useEffect(() => {
         return () => {
@@ -123,6 +142,12 @@ const RegistrasiPasien = (props) => {
             .split("T")[0];
         validation.setFieldValue('tglregistrasi', dateString)
     }
+
+    function handleSelect(data) {
+        validation.setFieldValue('penjamin', data)
+        console.log(validation.values.penjamin)
+        // setSelectedOptions(data);
+      }
 
     return (
         <div className="page-content">
@@ -212,15 +237,15 @@ const RegistrasiPasien = (props) => {
                         }}
                             className="gy-4"
                             action="#">
-                            {success ? (
+                            {/* {success ? (
                                 <>
-                                    {toast("Your Redirect To Login Page...", { position: "top-right", hideProgressBar: false, className: 'bg-success text-white', progress: undefined, toastId: "" })}
+                                    {toast("Registrasi Pasien Berhasil.....", { position: "top-right", hideProgressBar: false, className: 'bg-success text-white', progress: undefined, toastId: "" })}
                                     <ToastContainer autoClose={2000} limit={1} />
                                     <Alert color="success" >
-                                        Pasien berhasil di simpan, silahkan lanjutkan Registrasi...
+                                        Registrasi Pasien Berhasil.....
                                     </Alert>
                                 </>
-                            ) : null}
+                            ) : null} */}
                             <Card>
                                 <CardHeader style={{ backgroundColor: "#dfe4ea" }}>
                                     <h4 className="card-title mb-0">Registrasi</h4>
@@ -239,7 +264,7 @@ const RegistrasiPasien = (props) => {
                                                         <Col xxl={6} md={6}>
                                                             <div>
                                                                 <Flatpickr
-                                                                    value={validation.values.tglregistrasi || ""}
+                                                                    // value={validation.values.tglregistrasi || ""}
                                                                     onChange={([newDate]) => {
                                                                         handleBeginOnChange(newDate);
                                                                     }}
@@ -354,11 +379,52 @@ const RegistrasiPasien = (props) => {
                                                                     options={data.rekanan}
                                                                     value={validation.values.penjamin || ""}
                                                                     className={`input ${validation.errors.penjamin ? "is-invalid" : ""}`}
-                                                                    onChange={value => validation.setFieldValue('penjamin', value.value)}
+                                                                    // onChange={value => validation.setFieldValue('penjamin', value.value)}
+                                                                    onChange={handleSelect}
                                                                     isMulti={true}
                                                                 />
                                                                 {validation.touched.penjamin && validation.errors.penjamin ? (
                                                                     <FormFeedback type="invalid"><div>{validation.errors.penjamin}</div></FormFeedback>
+                                                                ) : null}
+                                                            </div>
+                                                        </Col>
+                                                        <Col xxl={6} md={6}>
+                                                            <div className="mt-2">
+                                                                <Label style={{ color: "black" }} htmlFor="dokter" className="form-label">Dokter Penanggung Jawab</Label>
+                                                            </div>
+                                                        </Col>
+                                                        <Col xxl={6} md={6}>
+                                                            <div>
+                                                                <CustomSelect
+                                                                    id="dokter"
+                                                                    name="dokter"
+                                                                    options={data.pegawai}
+                                                                    value={validation.values.dokter || ""}
+                                                                    className={`input ${validation.errors.dokter ? "is-invalid" : ""}`}
+                                                                    onChange={value => validation.setFieldValue('dokter', value.value)}
+                                                                />
+                                                                {validation.touched.dokter && validation.errors.dokter ? (
+                                                                    <FormFeedback type="invalid"><div>{validation.errors.dokter}</div></FormFeedback>
+                                                                ) : null}
+                                                            </div>
+                                                        </Col>
+                                                        <Col xxl={6} md={6}>
+                                                            <div className="mt-2">
+                                                                <Label style={{ color: "black" }} htmlFor="dokter" className="form-label">Penanggung Jawab Pasien</Label>
+                                                            </div>
+                                                        </Col>
+                                                        <Col xxl={6} md={6}>
+                                                            <div>
+                                                                <CustomSelect
+                                                                    id="penanggungjawab"
+                                                                    name="penanggungjawab"
+                                                                    options={data.hubungankeluarga}
+                                                                    value={validation.values.penanggungjawab || ""}
+                                                                    className={`input ${validation.errors.penanggungjawab ? "is-invalid" : ""}`}
+                                                                    onChange={value => validation.setFieldValue('penanggungjawab', value.value)}
+                                                                />
+                                                                {validation.touched.penanggungjawab && validation.errors.penanggungjawab ? (
+                                                                    <FormFeedback type="invalid"><div>{validation.errors.penanggungjawab}</div></FormFeedback>
                                                                 ) : null}
                                                             </div>
                                                         </Col>
@@ -368,7 +434,7 @@ const RegistrasiPasien = (props) => {
                                         </Col>
                                         <Col lg={12} style={{ textAlign: 'right' }}>
                                             <Button type="submit" color="info" className="rounded-pill" disabled={loadingSave}> SIMPAN </Button>
-
+                                            <ToastContainer autoClose={2000} limit={1} />
                                         </Col>
                                     </Row>
                                 </CardBody>

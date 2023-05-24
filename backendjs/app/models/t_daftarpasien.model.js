@@ -43,7 +43,16 @@ module.exports = (sequelize, Sequelize) => {
         objectpenjaminfk:{
             type: Sequelize.INTEGER
         },
+        objectpenjamin2fk:{
+            type: Sequelize.INTEGER
+        },
+        objectpenjamin3fk:{
+            type: Sequelize.INTEGER
+        },
         objectinstalasifk:{
+            type:Sequelize.INTEGER
+        },
+        objectpjpasienfk:{
             type:Sequelize.INTEGER
         }
     }, {

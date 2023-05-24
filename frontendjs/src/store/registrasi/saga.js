@@ -76,7 +76,7 @@ function* onSaveRegistrasiRuangan({ payload: { data, history} }) {
         }
         
         yield put(registrasiSaveRuanganSuccess(response.data));
-        history("/registrasi/pasien-lama")
+        // history("/registrasi/pasien-lama")
     } catch (error) {
         yield put(registrasiSaveRuanganError(error));
     }

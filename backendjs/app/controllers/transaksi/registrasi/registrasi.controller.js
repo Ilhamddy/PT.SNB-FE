@@ -5,6 +5,7 @@ const db = require("../../../models");
 const M_pasien = db.m_pasien
 const running_Number = db.running_number
 const t_daftarpasien = db.t_daftarpasien
+const t_antreanpemeriksaan = db.t_antreanpemeriksaan
 
 const allSelect = (req, res) => {
     pool.query(queries.getAll, (error, result) => {
@@ -246,52 +247,162 @@ function formatDate(date) {
 
     return [year, month, day].join('-');
 }
-const saveRegistrasiPasien = (req, res) => {
+const saveRegistrasiPasien2 = (req, res) => {
     try {
         let norec = uuid.v4().substring(0, 32)
+        let objectpenjaminfk = null
+        let objectpenjamin2fk = null
+        let objectpenjamin3fk = null
+        for (let x = 0; x < req.body.penjamin.length; x++) {
+            if (x == 0)
+                objectpenjaminfk = req.body.penjamin[x].value
+        }
         let today = new Date();
         let todayMonth = '' + (today.getMonth() + 1)
         if (todayMonth.length < 2)
             todayMonth = '0' + todayMonth;
         let todaystart = formatDate(today)
         let todayend = formatDate(today) + ' 23:59'
-        let query = `select count(norec) from t_daftarpasien
-        where tglregistrasi between '${todaystart}' and '${todayend}'`
-        pool.query(query, (error, resultCount) => {
+
+        let queryNoAntrian = `select count(noantrian)  from t_antreanpemeriksaan ta
+        join m_pegawai mp on mp.id=ta.objectdokterpemeriksafk where ta.objectdokterpemeriksafk='${req.body.dokter}' 
+        and ta.tglmasuk between '${todaystart}' and '${todayend}'`
+        pool.query(queryNoAntrian, (error, resultCountNoantrianDokter) => {
             if (error) throw error;
-            let noregistrasi = parseFloat(resultCount.rows[0].count) + 1
-            for (let x = resultCount.rows[0].count.toString().length; x < 4; x++) {
-                noregistrasi = '0' + noregistrasi;
-            }
+            let noantrian = parseFloat(resultCountNoantrianDokter.rows[0].count) + 1
+            let query = `select count(norec) from t_daftarpasien
+            where tglregistrasi between '${todaystart}' and '${todayend}'`
+            pool.query(query, (error, resultCount) => {
+                if (error) throw error;
+                let noregistrasi = parseFloat(resultCount.rows[0].count) + 1
+                for (let x = resultCount.rows[0].count.toString().length; x < 4; x++) {
+                    noregistrasi = '0' + noregistrasi;
+                }
 
-            t_daftarpasien.create({
-                norec: norec,
-                nocmfk: req.body.id,
-                noregistrasi: today.getFullYear() + todayMonth.toString() + noregistrasi,
-                tglregistrasi: req.body.tglregistrasi,
-                objectunitlastfk: req.body.unittujuan,
-                objectdokterpemeriksafk: req.body.dokterpemeriksa,
-                objectpegawaifk: req.body.pegawaifk,
-                objectkelasfk: req.body.kelasfk,
-                objectjenispenjaminfk: req.body.jenispenjamin,
-                tglpulang: req.body.tglregistrasi,
-                objectasalrujukanfk: req.body.rujukanasal,
-                objectinstalasifk: req.body.tujkunjungan,
-                statusenabled: true
-            }).then(result => {
-
-                res.status(200).send({
-                    data: result,
-                    status: "success",
-                    success: true,
+                t_daftarpasien.create({
+                    norec: norec,
+                    nocmfk: req.body.id,
+                    noregistrasi: today.getFullYear() + todayMonth.toString() + noregistrasi,
+                    tglregistrasi: req.body.tglregistrasi,
+                    objectunitlastfk: req.body.unittujuan,
+                    objectdokterpemeriksafk: req.body.dokter,
+                    objectpegawaifk: req.body.pegawaifk,
+                    objectkelasfk: req.body.kelasfk,
+                    objectjenispenjaminfk: req.body.jenispenjamin,
+                    tglpulang: req.body.tglregistrasi,
+                    objectasalrujukanfk: req.body.rujukanasal,
+                    objectinstalasifk: req.body.tujkunjungan,
+                    objectpenjaminfk: objectpenjaminfk,
+                    objectpenjamin2fk: objectpenjamin2fk,
+                    objectpenjamin3fk: objectpenjamin3fk,
+                    objectpjpasienfk: req.body.penanggungjawab,
+                    statusenabled: true
+                }).then(result => {
+                    let norec = uuid.v4().substring(0, 32)
+                    t_antreanpemeriksaan.create({
+                        norec: norec,
+                        noregistrasif: result.norec,
+                        tglmasuk: req.body.tglregistrasi,
+                        tglpulang: req.body.tglregistrasi,
+                        objectdokterpemeriksafk: req.body.dokter,
+                        noantrian: noantrian,
+                        statusenabled: true
+                    }).then(result2 => {
+                        let tempres = { instalasi: result, unit: result2 }
+                        res.status(200).send({
+                            data: tempres,
+                            status: "success",
+                            success: true,
+                        });
+                    }).catch(err => {
+                        res.status(500).send({ message: err.message });
+                    });
+                }).catch(err => {
+                    res.status(500).send({ message: err.message });
                 });
-            }).catch(err => {
-                res.status(500).send({ message: err.message });
-            });
+            })
         })
 
     } catch (error) {
         res.status(500).send({ message: error });
+    }
+}
+async function saveRegistrasiPasien(req, res) {
+
+    try {
+        let norecDP = uuid.v4().substring(0, 32)
+        let objectpenjaminfk = null
+        let objectpenjamin2fk = null
+        let objectpenjamin3fk = null
+        for (let x = 0; x < req.body.penjamin.length; x++) {
+            if (x == 0)
+                objectpenjaminfk = req.body.penjamin[x].value
+        }
+        let today = new Date();
+        let todayMonth = '' + (today.getMonth() + 1)
+        if (todayMonth.length < 2)
+            todayMonth = '0' + todayMonth;
+        let todaystart = formatDate(today)
+        let todayend = formatDate(today) + ' 23:59'
+        let queryNoAntrian = `select count(noantrian)  from t_antreanpemeriksaan ta
+        join m_pegawai mp on mp.id=ta.objectdokterpemeriksafk where ta.objectdokterpemeriksafk='${req.body.dokter}' 
+        and ta.tglmasuk between '${todaystart}' and '${todayend}'`
+
+        var resultCountNoantrianDokter = await pool.query(queryNoAntrian);
+        let noantrian = parseFloat(resultCountNoantrianDokter.rows[0].count) + 1
+        let query = `select count(norec) from t_daftarpasien
+            where tglregistrasi between '${todaystart}' and '${todayend}'`
+        var resultCount = await pool.query(query);
+        let noregistrasi = parseFloat(resultCount.rows[0].count) + 1
+        for (let x = resultCount.rows[0].count.toString().length; x < 4; x++) {
+            noregistrasi = '0' + noregistrasi;
+        }
+
+        transaction = await db.sequelize.transaction();
+        const daftarPasien = await db.t_daftarpasien.create({
+            norec: norecDP,
+            nocmfk: req.body.id,
+            noregistrasi: today.getFullYear() + todayMonth.toString() + noregistrasi,
+            tglregistrasi: req.body.tglregistrasi,
+            objectunitlastfk: req.body.unittujuan,
+            objectdokterpemeriksafk: req.body.dokter,
+            objectpegawaifk: req.body.pegawaifk,
+            objectkelasfk: req.body.kelasfk,
+            objectjenispenjaminfk: req.body.jenispenjamin,
+            tglpulang: req.body.tglregistrasi,
+            objectasalrujukanfk: req.body.rujukanasal,
+            objectinstalasifk: req.body.tujkunjungan,
+            objectpenjaminfk: objectpenjaminfk,
+            objectpenjamin2fk: objectpenjamin2fk,
+            objectpenjamin3fk: objectpenjamin3fk,
+            objectpjpasienfk: req.body.penanggungjawab,
+            statusenabled: true
+        }, { transaction });
+
+        let norecAP = uuid.v4().substring(0, 32)
+        const antreanPemeriksaan = await db.t_antreanpemeriksaan.create({
+            norec: norecAP,
+            noregistrasifk: norecDP,
+            tglmasuk: req.body.tglregistrasi,
+            tglpulang: req.body.tglregistrasi,
+            objectdokterpemeriksafk: req.body.dokter,
+            noantrian: noantrian,
+            statusenabled: true
+        }, { transaction });
+        // console.log(resultCountNoantrianDokter);
+        await transaction.commit();
+        let tempres = { daftarPasien: daftarPasien, antreanPemeriksaan:antreanPemeriksaan }
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+        });
+    } catch (error) {
+        // console.log(error);
+        if(transaction) {
+            await transaction.rollback();
+            res.status(500).send({ message: error });
+         }
     }
 }
 module.exports = {
