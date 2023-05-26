@@ -51,4 +51,23 @@ module.exports = function (app) {
         [authJwt.verifyToken],
         controller.getPasienNoregistrasi
     );
+
+    app.get(
+        "/api/transaksi/registrasi/daftar-pasien-rawat-jalan",
+        [authJwt.verifyToken],
+        controller.getDaftarPasienRawatJalan
+    );
+
+    app.get(
+        "/api/transaksi/registrasi/daftar-pasien-registrasi",
+        [authJwt.verifyToken],
+        controller.getDaftarPasienRegistrasi
+    );
+
+    app.get(
+        "/api/transaksi/registrasi/widget-daftar-pasien-registrasi",
+        [authJwt.verifyToken],
+        controller.getWidgetDaftarPasienRJ
+    );
+
 };

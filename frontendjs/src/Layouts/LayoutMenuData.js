@@ -8,6 +8,7 @@ const Navdata = () => {
     //state data
     const [isDashboard, setIsDashboard] = useState(false);
     const [isRegistrasi, setIsRegistrasi] = useState(false);
+    const [isListDaftarPasien, setListDaftarPasien] = useState(false);
     const [isApps, setIsApps] = useState(false);
     const [isAuth, setIsAuth] = useState(false);
     const [isPages, setIsPages] = useState(false);
@@ -81,6 +82,9 @@ const Navdata = () => {
         if (iscurrentState !== 'Registrasi') {
             setIsRegistrasi(false);
         }
+        if (iscurrentState !== 'ListDaftarPasien') {
+            setListDaftarPasien(false);
+        }
         if (iscurrentState !== 'Apps') {
             setIsApps(false);
         }
@@ -126,6 +130,7 @@ const Navdata = () => {
         iscurrentState,
         isDashboard,
         isRegistrasi,
+        isListDaftarPasien,
         isApps,
         isAuth,
         isPages,
@@ -197,6 +202,38 @@ const Navdata = () => {
                         ]);
                     }
                 },
+            ],
+        },
+        {
+            id: "listdaftarpasien",
+            label: "ListDaftarPasien",
+            icon: "lab la-delicious",
+            link: "/#",
+            click: function (e) {
+                e.preventDefault();
+                setListDaftarPasien(!isListDaftarPasien);
+                setIscurrentState('ListDaftarPasien');
+                updateIconSidebar(e);
+            },
+            stateVariables: isListDaftarPasien,
+            isAllowed: () => {
+                return isAllowedAccess(getUserPermissions(), [
+                    "REGISTRASI_VIEW",
+                ]);
+            },
+            subItems: [
+                {
+                    id: "registrasi-pasien-lama",
+                    label: "Daftar Pasien Rawat Jalan",
+                    link: "/listdaftarpasien/daftar-pasien-rj",
+                    parentId: "listdaftarpasien",
+                    isAllowed: () => {
+                        return isAllowedAccess(getUserPermissions(), [
+                            "REGISTRASI_VIEW",
+                        ]);
+                    }
+                },
+                
             ],
         },
     ];

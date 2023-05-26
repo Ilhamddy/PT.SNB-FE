@@ -342,6 +342,9 @@ async function saveRegistrasiPasien(req, res) {
         let todayMonth = '' + (today.getMonth() + 1)
         if (todayMonth.length < 2)
             todayMonth = '0' + todayMonth;
+        let todayDate = '' + (today.getDate() + 1)
+        if (todayDate.length < 2)
+            todayDate = '0' + todayDate;
         let todaystart = formatDate(today)
         let todayend = formatDate(today) + ' 23:59'
         let queryNoAntrian = `select count(noantrian)  from t_antreanpemeriksaan ta
@@ -362,7 +365,7 @@ async function saveRegistrasiPasien(req, res) {
         const daftarPasien = await db.t_daftarpasien.create({
             norec: norecDP,
             nocmfk: req.body.id,
-            noregistrasi: today.getFullYear() + todayMonth.toString() + noregistrasi,
+            noregistrasi: today.getFullYear() + todayMonth.toString()+ todayDate.toString() + noregistrasi,
             tglregistrasi: req.body.tglregistrasi,
             objectunitlastfk: req.body.unittujuan,
             objectdokterpemeriksafk: req.body.dokter,
@@ -392,7 +395,7 @@ async function saveRegistrasiPasien(req, res) {
         }, { transaction });
         // console.log(resultCountNoantrianDokter);
         await transaction.commit();
-        let tempres = { daftarPasien: daftarPasien, antreanPemeriksaan:antreanPemeriksaan }
+        let tempres = { daftarPasien: daftarPasien, antreanPemeriksaan: antreanPemeriksaan }
         res.status(200).send({
             data: tempres,
             status: "success",
@@ -400,15 +403,16 @@ async function saveRegistrasiPasien(req, res) {
         });
     } catch (error) {
         // console.log(error);
-        if(transaction) {
+        if (transaction) {
             await transaction.rollback();
             res.status(500).send({ message: error });
-         }
+        }
     }
 }
 
 const getPasienNoregistrasi = (req, res) => {
     const id = parseInt(req.params.noregistrasi);
+    console.log(id);
     pool.query(queries.getPasienByNoregistrasi, [id], (error, result) => {
         if (error) {
             throw error
@@ -427,10 +431,10 @@ const getPasienNoregistrasi = (req, res) => {
                             noregistrasi: result.rows[i].noregistrasi,
                             namapasien: result.rows[i].namapasien,
                             tglregistrasi: result.rows[i].tglregistrasi,
-                            nocm:result.rows[i].nocm,
-                            namaunit:result.rows[i].namaunit,
-                            noantrian:result.rows[i].noantrian,
-                            namadokter:result.rows[i].namadokter
+                            nocm: result.rows[i].nocm,
+                            namaunit: result.rows[i].namaunit,
+                            noantrian: result.rows[i].noantrian,
+                            namadokter: result.rows[i].namadokter
                         }
 
                     }
@@ -446,6 +450,135 @@ const getPasienNoregistrasi = (req, res) => {
 
     })
 }
+const getDaftarPasienRegistrasi = (req, res) => {
+    const noregistrasi = req.query.noregistrasi;
+    // console.log(req.query.tglregistrasi)
+    // return
+    let tglregistrasi = ""
+    if (req.query.tglregistrasi !== undefined) {
+        console.log("masukkk")
+        tglregistrasi = ` and td.tglregistrasi between '${req.query.tglregistrasi}' and '${req.query.tglregistrasi} + ' 23:59'' `;
+
+    }
+    let query = queries.getDaftarPasienRegistrasi + `  where mi.id = 1 and td.noregistrasi ilike '%${noregistrasi}%'
+    ${tglregistrasi}`
+    // res.status(200).send({
+    //     data: query,
+    //     status: "success",
+    //     success: true,
+    // });
+    pool.query(query, (error, result) => {
+        if (error) {
+            error
+        } else {
+            res.status(200).send({
+                data: result.rows,
+                status: "success",
+                success: true,
+            });
+        }
+    })
+}
+
+async function getDaftarPasienRawatJalan(req, res) {
+    const noregistrasi = req.query.noregistrasi;
+    let tglregistrasi = ""
+    if (req.query.tglregistrasi !== undefined) {
+        console.log("masukkk")
+        tglregistrasi = ` and td.tglregistrasi between '${req.query.tglregistrasi}'
+         and '${req.query.tglregistrasi} + ' 23:59'' `;
+
+    }
+    // let query = queries.getAllByOr + ` where nocm ilike '%` + nocm + `%'` + ` or namapasien ilike '%` + nocm + `%' limit 200`
+    let query = queries.getDaftarPasienRawatJalan + `  where td.noregistrasi ilike '%${noregistrasi}%'
+    ${tglregistrasi}`
+
+    var resultCountNoantrianDokter = await pool.query(query);
+
+    res.status(200).send({
+        data: resultCountNoantrianDokter.rows,
+        status: "success",
+        success: true,
+    });
+
+}
+
+async function getWidgetDaftarPasienRJ(req, res) {
+    const noregistrasi = req.query.noregistrasi;
+    let tglregistrasi = ""
+    if (req.query.tglregistrasi !== undefined) {
+        console.log("masukkk")
+        tglregistrasi = ` and td.tglregistrasi between '${req.query.tglregistrasi}'
+         and '${req.query.tglregistrasi} + ' 23:59'' `;
+
+    }
+    // let query = queries.getAllByOr + ` where nocm ilike '%` + nocm + `%'` + ` or namapasien ilike '%` + nocm + `%' limit 200`
+    let query = queries.getDaftarPasienRawatJalan + `  where td.noregistrasi ilike '%${noregistrasi}%'
+    ${tglregistrasi}`
+
+    var resultCountNoantrianDokter = await pool.query(query);
+    let totalBP = 0
+    let totalSP = 0
+    let totalSSP = 0
+    for (let x = 0; x < resultCountNoantrianDokter.rowCount; x++) {
+        if (resultCountNoantrianDokter.rows[x].tasikid == 3 || resultCountNoantrianDokter.rows[x].tasikid == null) {
+            totalBP = totalBP + 1
+        } else if (resultCountNoantrianDokter.rows[x].tasikid == 4) {
+            totalSP = totalSP + 1
+        } else {
+            totalSSP = totalSSP + 1
+        }
+    }
+    const taskWidgets = [
+        {
+            id: 1,
+            label: "Total Pasien Belum Diperiksa",
+            counter: totalBP,
+            badge: "ri-arrow-up-line",
+            badgeClass: "success",
+            percentage: "17.32 %",
+            icon: "/static/media/belum_diperiksa.e20a218e3948b9af679029f7ba8f446a.svg",
+            iconClass: "info",
+            decimals: 1,
+            prefix: "",
+            suffix: "k",
+        },
+        {
+            id: 2,
+            label: "Total Pasien Sedang Diperiksa",
+            counter: totalSP,
+            badge: "ri-arrow-down-line",
+            badgeClass: "danger",
+            percentage: "0.87 %",
+            icon: "/static/media/sedang_diperiksa.cadd6dd90748170e517f94d4254f3798.svg",
+            iconClass: "warning",
+            decimals: 1,
+            prefix: "",
+            suffix: "k",
+        },
+        {
+            id: 3,
+            label: "Total Pasien Selesai Diperiksa",
+            counter: totalSSP,
+            badge: "ri-arrow-down-line",
+            badgeClass: "danger",
+            percentage: "2.52 %",
+            icon: "/static/media/sudah-periksa.f5c060ee6cb8e425fcb5a24f66e85d49.svg",
+            iconClass: "success",
+            decimals: 2,
+            prefix: "",
+            suffix: "K",
+        },
+
+    ];
+
+    res.status(200).send({
+        data: taskWidgets,
+        status: "success",
+        success: true,
+    });
+
+}
 module.exports = {
     allSelect,
     addPost,
@@ -454,5 +587,8 @@ module.exports = {
     getAllByOr,
     savePasien,
     saveRegistrasiPasien,
-    getPasienNoregistrasi
+    getPasienNoregistrasi,
+    getDaftarPasienRawatJalan,
+    getDaftarPasienRegistrasi,
+    getWidgetDaftarPasienRJ
 };

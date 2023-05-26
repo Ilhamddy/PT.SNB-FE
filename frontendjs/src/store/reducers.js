@@ -73,6 +73,8 @@ import APIKey from "./apikey/reducer";
 
 import Registrasi from "./registrasi/reducer";
 
+import DaftarPasien from "./daftarPasien/reducer";
+
 import Master from "./master/reducer";
 
 const rootReducer = combineReducers({
@@ -105,7 +107,8 @@ const rootReducer = combineReducers({
     Jobs,
     APIKey,
     Registrasi,
-    Master
+    Master,
+    DaftarPasien
 });
 
 export default rootReducer;

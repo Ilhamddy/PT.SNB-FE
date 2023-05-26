@@ -140,6 +140,7 @@ const RegistrasiPasien = (props) => {
     useEffect(() => {
 
         if (newData !== null) {
+            console.log(newData.data.daftarPasien.noregistrasi)
             settempNoregistrasi("/bukti-pendaftaran/"+newData.data.daftarPasien.noregistrasi)
             setmessageNewData(newData.data.daftarPasien.noregistrasi + ' Nomor Antrean Dokter ' + newData.data.antreanPemeriksaan.noantrian)
             notifySuccess('Nomor Registrasi Pasien ' + newData.data.daftarPasien.noregistrasi)

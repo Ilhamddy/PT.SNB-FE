@@ -25,6 +25,7 @@ axios.interceptors.response.use(
         message = "Internal Server Error";
         break;
       case 401:
+        window.location = '/auth-logout-basic'
         message = "Invalid credentials";
         break;
       case 404:

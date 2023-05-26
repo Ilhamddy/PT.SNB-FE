@@ -28,6 +28,24 @@ left join m_pegawai mp2 on mp2.id=ta.objectdokterpemeriksafk
 //     " to_char(tgllahir,'yyyy-MM-dd')tgllahir, alamatrmh  from m_pasien ";
 const getAllByOr = `select id,nocm ,namapasien ,noidentitas ,nobpjs ,nohp,to_char(tgllahir,'yyyy-MM-dd')tgllahir, alamatrmh  from m_pasien`;
 
+const getDaftarPasienRawatJalan = `select mj.jenispenjamin,ta.taskid,mi.namainstalasi,mp.nocm,td.noregistrasi,mp.namapasien,
+to_char(td.tglregistrasi,'yyyy-MM-dd') as tglregistrasi,mu.namaunit,
+mp2.reportdisplay || '-' ||ta.noantrian as noantrian,mp2.namalengkap as namadokter  from t_daftarpasien td 
+join m_pasien mp on mp.id=td.nocmfk 
+join t_antreanpemeriksaan ta on ta.noregistrasifk =td.norec
+join m_unit mu on mu.id=ta.objectunitfk 
+left join m_pegawai mp2 on mp2.id=ta.objectdokterpemeriksafk 
+join m_instalasi mi on mi.id=mu.objectinstalasifk
+join m_jenispenjamin mj on mj.id=td.objectjenispenjaminfk`;
+
+const getDaftarPasienRegistrasi = `select mi.namainstalasi,mp.nocm,td.noregistrasi,mp.namapasien,
+to_char(td.tglregistrasi,'yyyy-MM-dd') as tglregistrasi,mu.namaunit,
+mp2.reportdisplay || '-' ||ta.noantrian as noantrian,mp2.namalengkap as namadokter  from t_daftarpasien td 
+join m_pasien mp on mp.id=td.nocmfk 
+join t_antreanpemeriksaan ta on ta.noregistrasifk =td.norec
+join m_unit mu on mu.id=ta.objectunitfk 
+left join m_pegawai mp2 on mp2.id=ta.objectdokterpemeriksafk 
+join m_instalasi mi on mi.id=mu.objectinstalasifk`;
 
 module.exports = {
     getAll,
@@ -38,5 +56,7 @@ module.exports = {
     updatePasienById,
     getPasienById,
     getAllByOr,
-    getPasienByNoregistrasi
+    getPasienByNoregistrasi,
+    getDaftarPasienRawatJalan,
+    getDaftarPasienRegistrasi
 };

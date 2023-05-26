@@ -67,6 +67,8 @@ import registrasiSaga from "./registrasi/saga";
 
 import masterSaga from "./master/saga";
 
+import daftarPasien from "./daftarPasien/saga"
+
 export default function* rootSaga() {
   yield all([
     //public
@@ -97,6 +99,7 @@ export default function* rootSaga() {
     fork(jobSaga),
     fork(APIKeysaga),
     fork(registrasiSaga),
-    fork(masterSaga)
+    fork(masterSaga),
+    fork(daftarPasien)
   ]);
 }

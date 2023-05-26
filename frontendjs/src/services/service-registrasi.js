@@ -30,4 +30,12 @@ export default class ServiceRegistrasi {
     getPasienByNoregistrasi = async (noregistrasi) => {
         return await api.get(`/transaksi/registrasi/pasien-noregistrasi/${noregistrasi}`);
     }
+
+    getDaftarPasienRJ = async (param) => {
+        return await api.get(`/transaksi/registrasi/daftar-pasien-rawat-jalan?&noregistrasi=${param}`);
+    }
+
+    getWidgetDaftarPasienRJ = async (param) => {
+        return await api.get(`/transaksi/registrasi/widget-daftar-pasien-registrasi?&noregistrasi=${param}`);
+    }
 }
