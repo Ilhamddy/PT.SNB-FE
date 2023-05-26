@@ -386,6 +386,7 @@ async function saveRegistrasiPasien(req, res) {
             tglmasuk: req.body.tglregistrasi,
             tglpulang: req.body.tglregistrasi,
             objectdokterpemeriksafk: req.body.dokter,
+            objectunitfk: req.body.unittujuan,
             noantrian: noantrian,
             statusenabled: true
         }, { transaction });
@@ -405,6 +406,46 @@ async function saveRegistrasiPasien(req, res) {
          }
     }
 }
+
+const getPasienNoregistrasi = (req, res) => {
+    const id = parseInt(req.params.noregistrasi);
+    pool.query(queries.getPasienByNoregistrasi, [id], (error, result) => {
+        if (error) {
+            throw error
+        } else {
+            if (result.rows.length == 0) {
+                res.status(201).send({
+                    data: "",
+                    status: "Data Tidak Ada",
+                    success: true,
+                });
+            } else {
+                let tempres = ""
+                for (var i = 0; i < result.rows.length; ++i) {
+                    if (result.rows[i] !== undefined) {
+                        tempres = {
+                            noregistrasi: result.rows[i].noregistrasi,
+                            namapasien: result.rows[i].namapasien,
+                            tglregistrasi: result.rows[i].tglregistrasi,
+                            nocm:result.rows[i].nocm,
+                            namaunit:result.rows[i].namaunit,
+                            noantrian:result.rows[i].noantrian,
+                            namadokter:result.rows[i].namadokter
+                        }
+
+                    }
+                }
+
+                res.status(200).send({
+                    data: tempres,
+                    status: "success",
+                    success: true,
+                });
+            }
+        }
+
+    })
+}
 module.exports = {
     allSelect,
     addPost,
@@ -412,5 +453,6 @@ module.exports = {
     getPasienById,
     getAllByOr,
     savePasien,
-    saveRegistrasiPasien
+    saveRegistrasiPasien,
+    getPasienNoregistrasi
 };

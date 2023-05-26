@@ -26,4 +26,8 @@ export default class ServiceRegistrasi {
     saveRegistrasiDaftarPasien = async (params) => {
         return await api.create("/transaksi/registrasi/save-daftar-pasien", params);
     }
+
+    getPasienByNoregistrasi = async (noregistrasi) => {
+        return await api.get(`/transaksi/registrasi/pasien-noregistrasi/${noregistrasi}`);
+    }
 }

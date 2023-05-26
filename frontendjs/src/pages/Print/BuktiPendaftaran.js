@@ -15,12 +15,12 @@ const BuktiPendaftaran = (props) => {
         pri.print();
     }
 
-    const printContent = <div><h5 className="card-title mb-5">Profile Pasien</h5></div>
+    const printContent = <div><h5 className="card-title mb-5">Profile Pasien xx</h5></div>
 
     return (
         <>  
             <Modal id="showModal" isOpen={props.isOpen} toggle={props.toggle} centered>
-                <ModalHeader className="bg-light p-3">
+                <ModalHeader className="bg-light p-3" toggle={props.toggle}>
                     Bukti Pendaftaran
                 </ModalHeader>
                 <ModalBody id="divcontents">
@@ -34,7 +34,7 @@ const BuktiPendaftaran = (props) => {
                     Print
                 </Button>
             </Modal>
-            <iframe id="print-content" title="Profil Pasien">
+            <iframe id="print-content" title="Profil Pasien" hidden={true}>
                 {printContent}
             </iframe>
         </>

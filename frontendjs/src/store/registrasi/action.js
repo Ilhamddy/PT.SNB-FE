@@ -15,6 +15,10 @@ import {
     REGISTRASI_SAVE_RUANGAN, 
     REGISTRASI_SAVE_RUANGAN_ERROR, 
     REGISTRASI_SAVE_RUANGAN_SUCCESS,
+    REGISTRASI_NOREGISTRASI_GET,
+    REGISTRASI_NOREGISTRASI_GET_SUCCESS,
+    REGISTRASI_NOREGISTRASI_GET_ERROR,
+    REGISTRASI_NOREGISTRASI_RESET_FORM,
 } from "./actionType";
 
 export const registrasiResetForm = () => ({
@@ -81,6 +85,25 @@ export const registrasiGetSuccess = (data) => ({
 export const registrasiGetError = (error) => ({
     type: REGISTRASI_GET_ERROR,
     payload: error,
+});
+
+export const registrasiNoregistrasiGet = (noregistrasi) => ({
+    type: REGISTRASI_NOREGISTRASI_GET,
+    payload: {noregistrasi},
+});
+
+export const registrasiNoregistrasiGetSuccess = (data) => ({
+    type: REGISTRASI_NOREGISTRASI_GET_SUCCESS,
+    payload: data,
+});
+
+export const registrasiNoregistrasiGetError = (error) => ({
+    type: REGISTRASI_NOREGISTRASI_GET_ERROR,
+    payload: error,
+});
+
+export const registrasiNoregistrasiResetForm = () => ({
+    type: REGISTRASI_NOREGISTRASI_RESET_FORM,
 });
 
 // common success

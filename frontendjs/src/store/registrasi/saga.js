@@ -6,7 +6,8 @@ import {
     REGISTRASI_LIST_GET,
     REGISTRASI_SAVE,
     REGISTRASI_LIST_BYOR_GET,
-    REGISTRASI_SAVE_RUANGAN
+    REGISTRASI_SAVE_RUANGAN,
+    REGISTRASI_NOREGISTRASI_GET
 } from "./actionType";
 import {
     registrasiGetError,
@@ -18,7 +19,9 @@ import {
     registrasiGetListByOrError,
     registrasiGetListByOrSuccess,
     registrasiSaveRuanganSuccess,
-    registrasiSaveRuanganError
+    registrasiSaveRuanganError,
+    registrasiNoregistrasiGetError,
+    registrasiNoregistrasiGetSuccess
 } from "./action";
 
 const serviceRegistrasi = new ServiceRegistrasi();
@@ -82,6 +85,15 @@ function* onSaveRegistrasiRuangan({ payload: { data, history} }) {
     }
 }
 
+function* onGetRegistrasiNoregistrasi({payload: {noregistrasi}}) {
+    try {
+        const response = yield call(serviceRegistrasi.getPasienByNoregistrasi, noregistrasi);
+        yield put(registrasiNoregistrasiGetSuccess(response.data));
+    } catch (error) {
+        yield put(registrasiNoregistrasiGetError(error));
+    }
+}
+
 export function* watchSaveRegistrasi() {
     yield takeEvery(REGISTRASI_SAVE, onSaveRegistrasi);
 }
@@ -102,13 +114,18 @@ export function* watchSaveRegistrasiRuangan() {
     yield takeEvery(REGISTRASI_SAVE_RUANGAN, onSaveRegistrasiRuangan);
 }
 
+export function* watchGetRegistrasiNoregistrasi() {
+    yield takeEvery(REGISTRASI_NOREGISTRASI_GET, onGetRegistrasiNoregistrasi);
+}
+
 function* registrasiSaga() {
     yield all([
         fork(watchSaveRegistrasi),
         fork(watchGetRegistrasiList),
         fork(watchGetRegistrasi),
         fork(watchGetRegistrasiListByOr),
-        fork(watchSaveRegistrasiRuangan)
+        fork(watchSaveRegistrasiRuangan),
+        fork(watchGetRegistrasiNoregistrasi)
     ]);
 }
 

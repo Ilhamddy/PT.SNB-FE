@@ -12,6 +12,10 @@ import {
     REGISTRASI_SAVE_RUANGAN,
     REGISTRASI_SAVE_RUANGAN_SUCCESS,
     REGISTRASI_SAVE_RUANGAN_ERROR,
+    REGISTRASI_NOREGISTRASI_GET,
+    REGISTRASI_NOREGISTRASI_GET_SUCCESS,
+    REGISTRASI_NOREGISTRASI_GET_ERROR,
+    REGISTRASI_NOREGISTRASI_RESET_FORM
 } from "./actionType";
 
 const INIT_STATE = {
@@ -36,6 +40,11 @@ const INIT_STATE = {
         loading: false,
         error: null,
         success: false
+    },
+    registrasiNoregistrasiGet: {
+        data: null,
+        loading: false,
+        error: null,
     },
 };
 
@@ -183,6 +192,51 @@ const Registrasi = (state = INIT_STATE, action) => {
                     ...state.registrasiSaveRuangan,
                     loading: false,
                     error: action.payload,
+                }
+            }
+        }
+
+        case REGISTRASI_NOREGISTRASI_GET: {
+            return {
+                ...state,
+                registrasiNoregistrasiGet: {
+                    ...state.registrasiNoregistrasiGet,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case REGISTRASI_NOREGISTRASI_GET_SUCCESS: {
+            return {
+                ...state,
+                registrasiNoregistrasiGet: {
+                    ...state.registrasiNoregistrasiGet,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case REGISTRASI_NOREGISTRASI_GET_ERROR: {
+            return {
+                ...state,
+                registrasiNoregistrasiGet: {
+                    ...state.registrasiNoregistrasiGet,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case REGISTRASI_NOREGISTRASI_RESET_FORM: {
+            return {
+                ...state,
+                registrasiNoregistrasiGet:{
+                    ...INIT_STATE.registrasiNoregistrasiGet,
+                },
+                registrasiSaveRuangan: {
+                    ...INIT_STATE.registrasiSaveRuangan,
                 }
             }
         }

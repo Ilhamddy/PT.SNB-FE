@@ -246,6 +246,7 @@ import RegistrasiForm from "../pages/Registrasi/RegistrasiForm/RegistrasiForm";
 import RegistrasiList from "../pages/Registrasi/RegistrasiList/RegistrasiList";
 import PasienBaruForm from "../pages/Registrasi/PasienBaru/PasienBaruForm";
 import RegistrasiPasien from "../pages/Registrasi/RegistrasiPasien/RegistrasiPasien";
+import BuktiPendaftaran3 from "../pages/Print/BuktiPendaftaran3";
 
 const authProtectedRoutes = [
   { path: "/dashboard-analytics", component: <DashboardAnalytics /> },
@@ -465,6 +466,7 @@ const authProtectedRoutes = [
   {path: "/registrasi/pasien-lama", component: <RegistrasiList />},
   {path: "/registrasi/pasien-baru", component: <PasienBaruForm />},
   {path: "/registrasi/pasien-ruangan/:id", component: <RegistrasiPasien />},
+  {path: "/bukti-pendaftaran/:noregistrasi", component: <BuktiPendaftaran3 />},
 ];
 
 const publicRoutes = [

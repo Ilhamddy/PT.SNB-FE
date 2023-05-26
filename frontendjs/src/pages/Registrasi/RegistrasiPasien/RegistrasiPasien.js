@@ -22,8 +22,11 @@ import { useSelector, useDispatch } from "react-redux";
 import classnames from "classnames";
 
 import { comboRegistrasiGet } from '../../../store/master/action';
-import { registrasiResetForm, registrasiGet, registrasiSaveRuangan } from "../../../store/actions";
+import { registrasiNoregistrasiResetForm, registrasiGet, registrasiSaveRuangan } from "../../../store/actions";
 import BuktiPendaftaran from '../../Print/BuktiPendaftaran';
+
+import BuktiPendaftaran2 from '../../Print/BuktiPendaftaran2';
+import BuktiPendaftaran3 from '../../Print/BuktiPendaftaran3';
 
 
 
@@ -32,6 +35,8 @@ const RegistrasiPasien = (props) => {
     document.title = "Registrasi Pasien";
     const dispatch = useDispatch();
     const [modal, setModal] = useState(false);
+    const [cardRegistrasi, setcardRegistrasi] = useState(false);
+    const [cardBuktiPendaftaran, setcardBuktiPendaftaran] = useState(true);
 
 
     const toggle = useCallback(() => {
@@ -70,6 +75,12 @@ const RegistrasiPasien = (props) => {
         datas: state.Registrasi.registrasiGet.data,
 
     }));
+    useEffect(() => {
+        return () => {
+
+            dispatch(registrasiNoregistrasiResetForm());
+        }
+    }, [dispatch])
     // const [test, setTest] = useState(datas);
     // setTest(test)
     // console.log(datas)
@@ -110,6 +121,7 @@ const RegistrasiPasien = (props) => {
     });
 
     const [messageNewData, setmessageNewData] = useState("");
+    const [tempNoregistrasi, settempNoregistrasi] = useState("");
     const notifyError = useCallback(() => {
         return toast("Terjadi kesalahan", { position: "top-right", hideProgressBar: false, className: 'bg-danger text-white' });
     }, []);
@@ -128,18 +140,14 @@ const RegistrasiPasien = (props) => {
     useEffect(() => {
 
         if (newData !== null) {
+            settempNoregistrasi("/bukti-pendaftaran/"+newData.data.daftarPasien.noregistrasi)
             setmessageNewData(newData.data.daftarPasien.noregistrasi + ' Nomor Antrean Dokter ' + newData.data.antreanPemeriksaan.noantrian)
             notifySuccess('Nomor Registrasi Pasien ' + newData.data.daftarPasien.noregistrasi)
-            console.log(newData)
+            // console.log(newData)
         }
     }, [newData, notifySuccess])
 
-    useEffect(() => {
-        return () => {
-
-            dispatch(registrasiResetForm());
-        }
-    }, [dispatch])
+    
     const [dataUnit, setdataUnit] = useState([]);
     const handleChangeTujuan = (selected) => {
         validation.setFieldValue('tujkunjungan', selected.value)
@@ -163,6 +171,52 @@ const RegistrasiPasien = (props) => {
         console.log(validation.values.penjamin)
         // setSelectedOptions(data);
     }
+    const [isLoading, setIsLoading] = useState(true);
+    const handleMessage = (event) => {
+        if (event.data.action === 'receipt-loaded') {
+            setIsLoading(false);
+        }
+    };
+    const printIframe = (id) => {
+        const iframe = document.frames
+            ? document.frames[id]
+            : document.getElementById(id);
+        const iframeWindow = iframe.contentWindow || iframe;
+
+        iframe.focus();
+        iframeWindow.print();
+
+        return false;
+    };
+    useEffect(() => {
+        window.addEventListener('message', handleMessage);
+
+        return () => {
+            window.removeEventListener('message', handleMessage);
+        };
+    }, []);
+    const handleClickButton = (e) => {
+
+        if (e === 'registrasi') {
+            // setcardRegistrasi(false)
+            // setcardBuktiPendaftaran(true)
+        } else if (e === 'buktiPendaftaran') {
+            // setcardRegistrasi(true)
+            // setcardBuktiPendaftaran(false)
+            let id = 'receipt'
+            const iframe = document.frames
+                ? document.frames[id]
+                : document.getElementById(id);
+            const iframeWindow = iframe.contentWindow || iframe;
+
+            iframe.focus();
+            iframeWindow.print();
+
+            return false;
+
+        }
+
+    };
 
     return (
         <div className="page-content">
@@ -200,6 +254,11 @@ const RegistrasiPasien = (props) => {
                                     <NavItem>
                                         <NavLink style={{ cursor: "pointer" }} className={classnames({ active: pillsTab === "2", })} onClick={() => { pillsToggle("2"); }} >
                                             Riwayat
+                                        </NavLink>
+                                    </NavItem>
+                                    <NavItem>
+                                        <NavLink style={{ cursor: "pointer" }} className={classnames({ active: pillsTab === "3", })} onClick={() => { pillsToggle("3"); }} >
+                                            Action
                                         </NavLink>
                                     </NavItem>
                                 </Nav>
@@ -240,6 +299,20 @@ const RegistrasiPasien = (props) => {
                                             </CardBody>
                                         </Card>
                                     </TabPane>
+                                    <TabPane tabId="3" id="home-3">
+                                        <Card>
+                                            <CardBody>
+                                                <div className="live-preview">
+                                                    <div className="d-flex flex-wrap gap-2">
+                                                        <Button color="info" className="btn-animation" data-text="Registrasi" onClick={() => handleClickButton('registrasi')}><span>Registrasi</span></Button>
+                                                        <Button color="info" className="btn-animation" data-text="Bukti Pendaftaran" onClick={() => handleClickButton('buktiPendaftaran')}> <span>Bukti Pendaftaran</span> </Button>
+
+
+                                                    </div>
+                                                </div>
+                                            </CardBody>
+                                        </Card>
+                                    </TabPane>
                                 </TabContent>
                             </CardBody>
                         </Card>
@@ -261,7 +334,7 @@ const RegistrasiPasien = (props) => {
                                     </Alert>
                                 </>
                             ) : null}
-                            <BuktiPendaftaran isOpen={modal} toggle={toggle} centered />
+                            {/* <BuktiPendaftaran isOpen={modal} toggle={toggle} centered /> */}
                             <Card>
                                 <CardHeader style={{ backgroundColor: "#dfe4ea" }}>
                                     <h4 className="card-title mb-0">Registrasi</h4>
@@ -450,7 +523,7 @@ const RegistrasiPasien = (props) => {
                                         </Col>
                                         <Col lg={12} style={{ textAlign: 'right' }}>
                                             <Button type="submit" color="info" className="rounded-pill" disabled={loadingSave}> SIMPAN </Button>
-                                            <Button
+                                            {/* <Button
                                                 type="button"
                                                 className="btn btn-primary add-btn"
                                                 data-bs-toggle="modal"
@@ -458,13 +531,29 @@ const RegistrasiPasien = (props) => {
                                                 id="create-btn"
                                                 onClick={() => { toggle(); }}
                                             >
-                                                <i className="ri-add-line align-bottom me-1"></i> 
+                                                <i className="ri-add-line align-bottom me-1"></i>
                                                 print
-                                            </Button>
+                                            </Button> */}
                                         </Col>
                                     </Row>
                                 </CardBody>
                             </Card>
+                            {/* <div hidden={cardBuktiPendaftaran}>
+                            <BuktiPendaftaran2/>
+                            </div> */}
+                            <iframe
+                                id="receipt"
+                                src={tempNoregistrasi}//"/bukti-pendaftaran/"
+                                style={{ display: 'none' }}
+                                title="Receipt"
+                            />
+                            {/* <iframe
+                                id="receipt"
+                                style={{ display: 'none' }}
+                                title="Receipt"
+                            >
+                                <BuktiPendaftaran3/>
+                            </iframe> */}
                         </Form>
                     </Col>
                 </Row>

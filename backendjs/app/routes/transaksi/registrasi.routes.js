@@ -45,4 +45,10 @@ module.exports = function (app) {
         [authJwt.verifyToken],
         controller.saveRegistrasiPasien
     );
+
+    app.get(
+        "/api/transaksi/registrasi/pasien-noregistrasi/:noregistrasi",
+        [authJwt.verifyToken],
+        controller.getPasienNoregistrasi
+    );
 };
