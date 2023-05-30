@@ -102,7 +102,7 @@ const RegistrasiPasien = (props) => {
             nobpjs: datas?.nobpjs ?? "",
             noidentitas: datas?.noidentitas ?? "",
             tgllahir: datas?.tgllahir ?? "",
-
+            kelas: newData?.kelas ?? "",
         },
         validationSchema: Yup.object({
             tglregistrasi: Yup.string().required("Tanggal Registrasi wajib diisi"),
@@ -113,6 +113,10 @@ const RegistrasiPasien = (props) => {
             penjamin: Yup.array().required("Penjamin wajib diisi"),
             dokter: Yup.string().required("Dokter wajib diisi"),
             penanggungjawab: Yup.string().required("Penanggung jawab wajib diisi"),
+            kelas: Yup.string().when("tujkunjungan",{
+                is:(val) => val ==="2",
+                then: Yup.string().required("Kelas Harus di isi")
+            })
         }),
         onSubmit: (values) => {
             // console.log(values)
@@ -405,6 +409,26 @@ const RegistrasiPasien = (props) => {
                                                                 />
                                                                 {validation.touched.unittujuan && validation.errors.unittujuan ? (
                                                                     <FormFeedback type="invalid"><div>{validation.errors.unittujuan}</div></FormFeedback>
+                                                                ) : null}
+                                                            </div>
+                                                        </Col>
+                                                        <Col xxl={6} md={6}>
+                                                            <div className="mt-2">
+                                                                <Label style={{ color: "black" }} htmlFor="kelas" className="form-label">Kelas</Label>
+                                                            </div>
+                                                        </Col>
+                                                        <Col xxl={6} md={6}>
+                                                            <div>
+                                                                <CustomSelect
+                                                                    id="kelas"
+                                                                    name="kelas"
+                                                                    options={data.kelas}
+                                                                    value={validation.values.kelas || ""}
+                                                                    className={`input ${validation.errors.kelas ? "is-invalid" : ""}`}
+                                                                    onChange={value => validation.setFieldValue('kelas', value.value)}
+                                                                />
+                                                                {validation.touched.kelas && validation.errors.kelas ? (
+                                                                    <FormFeedback type="invalid"><div>{validation.errors.kelas}</div></FormFeedback>
                                                                 ) : null}
                                                             </div>
                                                         </Col>

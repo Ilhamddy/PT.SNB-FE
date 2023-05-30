@@ -70,4 +70,10 @@ module.exports = function (app) {
         controller.getWidgetDaftarPasienRJ
     );
 
+    app.get(
+        "/api/transaksi/emr/emr-header",
+        [authJwt.verifyToken],
+        controller.getHeaderEmr
+    );
+
 };

@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import {
     Card, CardBody, CardHeader, Col, Container, Row, Nav, NavItem,
-    NavLink, TabContent, TabPane, Button, Label, Input, Table
+    NavLink, TabContent, TabPane, Button, Label, Input, Table,
+    DropdownItem, DropdownMenu, DropdownToggle, UncontrolledDropdown
 } from 'reactstrap';
 import { useSelector, useDispatch } from "react-redux";
 import withRouter from '../../../Components/Common/withRouter';
@@ -15,7 +16,7 @@ import CountUp from "react-countup";
 
 import { daftarPasienRJGet, widgetdaftarPasienRJGet } from '../../../store/actions';
 // Imported Images
-import pac from "../../../assets/images/svg/crypto-icons/belum_diperiksa.svg";
+import pac from "../../../assets/images/sudah-periksa.png";
 //import images
 import userDummy from "../../../assets/images/users/user-dummy-img.jpg";
 
@@ -51,16 +52,28 @@ const DaftarPasienRJ = () => {
     }
 
     const columns = [
-        // {
-        //     name: <span className='font-weight-bold fs-13'>Detail</span>,
-        //     sortable: false,
-        //     cell: (data) => {
-        //         return (
-        //             // <Link to={`/registrasi/pasien/${data.id}`}>Details</Link>
-        //             <button className="btn btn-sm btn-soft-info" onClick={() => handleClick(data)}>View</button>
-        //         );
-        //     },
-        // },
+        {
+            name: <span className='font-weight-bold fs-13'>Detail</span>,
+            sortable: false,
+            cell: (data) => {
+                return (
+                    <div className="hstack gap-3 flex-wrap">
+                        <Link to={`/emr-pasien/${data.norecdp}/${data.norecta}`} className="link-success fs-15"><i className="ri-edit-2-line"></i></Link>
+                      
+                        <UncontrolledDropdown className="dropdown d-inline-block">
+                            <DropdownToggle className="btn btn-soft-secondary btn-sm" tag="button">
+                                <i className="ri-apps-2-line"></i>
+                            </DropdownToggle>
+                            <DropdownMenu className="dropdown-menu-end">
+                                <DropdownItem href="#!"><i className="ri-eye-fill align-bottom me-2 text-muted"></i>View</DropdownItem>
+                                <DropdownItem className='edit-item-btn'><i className="ri-pencil-fill align-bottom me-2 text-muted"></i>Edit</DropdownItem>
+                                <DropdownItem className='remove-item-btn'> <i className="ri-delete-bin-fill align-bottom me-2 text-muted"></i> Delete </DropdownItem>
+                            </DropdownMenu>
+                        </UncontrolledDropdown>
+                    </div>
+                );
+            },
+        },
         {
             name: <span className='font-weight-bold fs-13'>Tgl Registrasi</span>,
             selector: row => row.tglregistrasi,
@@ -115,9 +128,32 @@ const DaftarPasienRJ = () => {
     ];
 
     const handleClick = (e) => {
-       
+
         // console.log('this is:', e.namapasien);
     };
+
+
+    const DisplayData = data.map(
+        (info, i) => {
+            return (
+                <tr key={i}>
+                    <td>{info.tglregistrasi}</td>
+                    <td>{info.noregistrasi}</td>
+                    <td>{info.nocm}</td>
+                    <td>{info.namapasien}</td>
+                    <td>{info.namaunit}</td>
+                    <td>{info.namadokter}</td>
+                    <td>{info.jenispenjamin}</td>
+                    <td>
+                        <div className="hstack gap-3 flex-wrap">
+                            <Link to="#" className="link-success fs-15"><i className="ri-edit-2-line"></i></Link>
+                            <Link to="#" className="link-danger fs-15"><i className="ri-delete-bin-line"></i></Link>
+                        </div>
+                    </td>
+                </tr>
+            )
+        }
+    )
 
     return (
         <React.Fragment>
@@ -216,6 +252,35 @@ const DaftarPasienRJ = () => {
 
                             </Card>
                         </Col>
+                        {/* <Col xl={9}>
+                            <Card>
+                                <CardBody>
+                                    <div className="table-responsive mt-4 mt-xl-0" >
+                                        <Table className="table-light table-striped table-nowrap align-middle mb-0">
+                                            <thead className="table-primary" style={{position:'sticky',top:0, overflow:'auto',maxHeight:'160px'}}>
+                                                <tr>
+                                                    <th scope="col">Tgl Registrasi</th>
+                                                    <th scope="col">No Registrasi</th>
+                                                    <th scope="col">NoRM</th>
+                                                    <th scope="col">Nama Pasien</th>
+                                                    <th scope="col">Poliklinik</th>
+                                                    <th scope="col">DPJP</th>
+                                                    <th scope="col">Jenis Pasien</th>
+                                                    <th scope="col">Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+
+
+                                                {DisplayData}
+
+                                            </tbody>
+                                        
+                                        </Table>
+                                    </div>
+                                </CardBody>
+                            </Card>
+                        </Col> */}
                     </Row>
                 </Container>
             </div>

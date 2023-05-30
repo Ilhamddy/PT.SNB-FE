@@ -324,7 +324,7 @@ const BasicTables = () => {
                                             </Col>
 
                                             <Col xl={6}>
-                                                <div className="table-responsive mt-4 mt-xl-0">
+                                                <div className="table-responsive mt-4 mt-lg-0">
                                                     <Table className="table-success table-striped table-nowrap align-middle mb-0">
                                                         <thead>
                                                             <tr>

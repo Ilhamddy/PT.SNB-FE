@@ -77,6 +77,8 @@ import DaftarPasien from "./daftarPasien/reducer";
 
 import Master from "./master/reducer";
 
+import Emr from "./emr/reducer";
+
 const rootReducer = combineReducers({
     // public
     Layout,
@@ -108,7 +110,8 @@ const rootReducer = combineReducers({
     APIKey,
     Registrasi,
     Master,
-    DaftarPasien
+    DaftarPasien,
+    Emr
 });
 
 export default rootReducer;

@@ -69,6 +69,8 @@ import masterSaga from "./master/saga";
 
 import daftarPasien from "./daftarPasien/saga"
 
+import emrSaga from "./emr/saga";
+
 export default function* rootSaga() {
   yield all([
     //public
@@ -100,6 +102,7 @@ export default function* rootSaga() {
     fork(APIKeysaga),
     fork(registrasiSaga),
     fork(masterSaga),
-    fork(daftarPasien)
+    fork(daftarPasien),
+    fork(emrSaga)
   ]);
 }

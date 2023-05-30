@@ -53,3 +53,5 @@ export * from "./apikey/action";
 export * from "./registrasi/action";
 
 export * from "./daftarPasien/action"
+
+export * from "./emr/action"
