@@ -140,8 +140,8 @@ const RegistrasiPasien = (props) => {
             })
         }),
         onSubmit: (values) => {
-            console.log(values)
-            // dispatch(registrasiSaveRuangan(values, ''));
+            // console.log(values)
+            dispatch(registrasiSaveRuangan(values, ''));
         }
     });
 

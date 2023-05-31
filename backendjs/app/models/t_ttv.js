@@ -6,10 +6,10 @@ module.exports = (sequelize, Sequelize) => {
             primaryKey: true,
             type: Sequelize.CHAR(32)
         },
-        // statusenabled: {
-        //     type: Sequelize.BOOLEAN,
-        //     defaultValue: true
-        // },
+        statusenabled: {
+            type: Sequelize.BOOLEAN,
+            defaultValue: true
+        },
         objectemrfk:{
             type: Sequelize.CHAR(32)
         },
