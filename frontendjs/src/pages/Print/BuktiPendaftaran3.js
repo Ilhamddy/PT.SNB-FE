@@ -10,7 +10,7 @@ import {
 } from "reactstrap";
 import classnames from "classnames";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
-import Barcode from 'react-barcode';
+// import Barcode from 'react-barcode';
 import withRouter from '../../Components/Common/withRouter';
 import { useParams } from "react-router-dom";
 import { registrasiNoregistrasiResetForm, registrasiNoregistrasiGet } from "../../store/actions";
