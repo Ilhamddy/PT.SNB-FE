@@ -109,7 +109,7 @@ const BuktiPendaftaran3 = (props) => {
                                                 <p className="text-muted mb-2 text-uppercase fw-semibold">: {tempData.namadokter}</p>
                                             </Col>
                                         </Row>
-                                        <Barcode value={tempData.noregistrasi} />,
+                                        {/* <Barcode value={tempData.noregistrasi} />, */}
                                     </CardBody>
                                 </Col>
                             </Row>
