@@ -614,7 +614,7 @@ async function getWidgetDaftarPasienRJ(req, res) {
 
 async function getHeaderEmr(req, res) {
     const norecta = req.query.norecta;
-    let query = queries.getHeaderEmr + `  where ta.norec ilike '%${norecta}%'`
+    let query = queries.getHeaderEmr + ` where ta.norec ilike '%${norecta}%'`
 
 
     try {
