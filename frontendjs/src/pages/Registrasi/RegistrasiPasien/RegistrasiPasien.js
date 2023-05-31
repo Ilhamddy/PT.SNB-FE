@@ -35,8 +35,9 @@ const RegistrasiPasien = (props) => {
     document.title = "Registrasi Pasien";
     const dispatch = useDispatch();
     const [modal, setModal] = useState(false);
-    const [cardRegistrasi, setcardRegistrasi] = useState(false);
+    const [cardRegistrasi, setcardRegistrasi] = useState(true);
     const [cardBuktiPendaftaran, setcardBuktiPendaftaran] = useState(true);
+    const [isRanap, setisRanap] = useState(false);
 
 
     const toggle = useCallback(() => {
@@ -103,6 +104,8 @@ const RegistrasiPasien = (props) => {
             noidentitas: datas?.noidentitas ?? "",
             tgllahir: datas?.tgllahir ?? "",
             kelas: newData?.kelas ?? "",
+            kamar: newData?.kamar ?? "",
+            tempattidur: newData?.tempattidur ?? "",
         },
         validationSchema: Yup.object({
             tglregistrasi: Yup.string().required("Tanggal Registrasi wajib diisi"),
@@ -113,14 +116,32 @@ const RegistrasiPasien = (props) => {
             penjamin: Yup.array().required("Penjamin wajib diisi"),
             dokter: Yup.string().required("Dokter wajib diisi"),
             penanggungjawab: Yup.string().required("Penanggung jawab wajib diisi"),
-            kelas: Yup.string().when("tujkunjungan",{
-                is:(val) => val ==="2",
-                then: Yup.string().required("Kelas Harus di isi")
+            // kelas: Yup.string().when("tujkunjungan",{
+            //     is:(val) => val ==="2",
+            //     then: Yup.string().required("Kelas Harus di isi")
+            // })
+            kelas: Yup.string().when("tujkunjungan", (tujkunjungan, schema) => {
+                if (tujkunjungan[0] === '2') {
+                    return schema
+                        .required("Kelas Harus di isi")
+                } else return schema
+            }),
+            kamar: Yup.string().when("kelas", (kelas, schema) => {
+                if (kelas[0] !== undefined) {
+                    return schema
+                        .required("Kamar Harus di isi")
+                } else return schema
+            }),
+            tempattidur: Yup.string().when("kamar", (kamar, schema) => {
+                if (kamar[0] !== undefined) {
+                    return schema
+                        .required("Tempat Tidur Harus di isi")
+                } else return schema
             })
         }),
         onSubmit: (values) => {
-            // console.log(values)
-            dispatch(registrasiSaveRuangan(values, ''));
+            console.log(values)
+            // dispatch(registrasiSaveRuangan(values, ''));
         }
     });
 
@@ -145,20 +166,26 @@ const RegistrasiPasien = (props) => {
 
         if (newData !== null) {
             console.log(newData.data.daftarPasien.noregistrasi)
-            settempNoregistrasi("/bukti-pendaftaran/"+newData.data.daftarPasien.noregistrasi)
+            settempNoregistrasi("/bukti-pendaftaran/" + newData.data.daftarPasien.noregistrasi)
             setmessageNewData(newData.data.daftarPasien.noregistrasi + ' Nomor Antrean Dokter ' + newData.data.antreanPemeriksaan.noantrian)
             notifySuccess('Nomor Registrasi Pasien ' + newData.data.daftarPasien.noregistrasi)
             // console.log(newData)
         }
     }, [newData, notifySuccess])
 
-    
+
     const [dataUnit, setdataUnit] = useState([]);
     const handleChangeTujuan = (selected) => {
         validation.setFieldValue('tujkunjungan', selected.value)
         var newArray = data.unit.filter(function (el) {
             return el.objectinstalasifk === selected.value;
         });
+        // console.log(selected.value)
+        // if(selected.value===2){
+            validation.setFieldValue('kelas',"")
+            validation.setFieldValue('kamar',"")
+            validation.setFieldValue('tempattidur',"")
+        // }
         validation.setFieldValue('unittujuan', "")
         setdataUnit(newArray)
 
@@ -222,7 +249,7 @@ const RegistrasiPasien = (props) => {
         }
 
     };
-
+// console.log(validation.values.tujkunjungan)
     return (
         <div className="page-content">
             <Container fluid>
@@ -412,26 +439,71 @@ const RegistrasiPasien = (props) => {
                                                                 ) : null}
                                                             </div>
                                                         </Col>
-                                                        <Col xxl={6} md={6}>
-                                                            <div className="mt-2">
-                                                                <Label style={{ color: "black" }} htmlFor="kelas" className="form-label">Kelas</Label>
-                                                            </div>
-                                                        </Col>
-                                                        <Col xxl={6} md={6}>
-                                                            <div>
-                                                                <CustomSelect
-                                                                    id="kelas"
-                                                                    name="kelas"
-                                                                    options={data.kelas}
-                                                                    value={validation.values.kelas || ""}
-                                                                    className={`input ${validation.errors.kelas ? "is-invalid" : ""}`}
-                                                                    onChange={value => validation.setFieldValue('kelas', value.value)}
-                                                                />
-                                                                {validation.touched.kelas && validation.errors.kelas ? (
-                                                                    <FormFeedback type="invalid"><div>{validation.errors.kelas}</div></FormFeedback>
-                                                                ) : null}
-                                                            </div>
-                                                        </Col>
+                                                        {validation.values.tujkunjungan===2 ? (
+                                                            <>
+                                                                <Col xxl={6} md={6}>
+                                                                    <div className="mt-2">
+                                                                        <Label style={{ color: "black" }} htmlFor="kelas" className="form-label">Kelas</Label>
+                                                                    </div>
+                                                                </Col>
+                                                                <Col xxl={6} md={6}>
+                                                                    <div>
+                                                                        <CustomSelect
+                                                                            id="kelas"
+                                                                            name="kelas"
+                                                                            options={data.kelas}
+                                                                            value={validation.values.kelas || ""}
+                                                                            className={`input ${validation.errors.kelas ? "is-invalid" : ""}`}
+                                                                            onChange={value => validation.setFieldValue('kelas', value.value)}
+                                                                        />
+                                                                        {validation.touched.kelas && validation.errors.kelas ? (
+                                                                            <FormFeedback type="invalid"><div>{validation.errors.kelas}</div></FormFeedback>
+                                                                        ) : null}
+                                                                    </div>
+                                                                </Col>
+                                                                <Col xxl={6} md={6}>
+                                                                    <div className="mt-2">
+                                                                        <Label style={{ color: "black" }} htmlFor="kamar" className="form-label">Kamar</Label>
+                                                                    </div>
+                                                                </Col>
+                                                                <Col xxl={6} md={6}>
+                                                                    <div>
+                                                                        <CustomSelect
+                                                                            id="kamar"
+                                                                            name="kamar"
+                                                                            options={data.kamar}
+                                                                            value={validation.values.kamar || ""}
+                                                                            className={`input ${validation.errors.kamar ? "is-invalid" : ""}`}
+                                                                            onChange={value => validation.setFieldValue('kamar', value.value)}
+                                                                        />
+                                                                        {validation.touched.kamar && validation.errors.kamar ? (
+                                                                            <FormFeedback type="invalid"><div>{validation.errors.kamar}</div></FormFeedback>
+                                                                        ) : null}
+                                                                    </div>
+                                                                </Col>
+                                                                <Col xxl={6} md={6}>
+                                                                    <div className="mt-2">
+                                                                        <Label style={{ color: "black" }} htmlFor="tempattidur" className="form-label">No Tempat Tidur</Label>
+                                                                    </div>
+                                                                </Col>
+                                                                <Col xxl={6} md={6}>
+                                                                    <div>
+                                                                        <CustomSelect
+                                                                            id="tempattidur"
+                                                                            name="tempattidur"
+                                                                            options={data.tempattidur}
+                                                                            value={validation.values.tempattidur || ""}
+                                                                            className={`input ${validation.errors.tempattidur ? "is-invalid" : ""}`}
+                                                                            onChange={value => validation.setFieldValue('tempattidur', value.value)}
+                                                                        />
+                                                                        {validation.touched.tempattidur && validation.errors.tempattidur ? (
+                                                                            <FormFeedback type="invalid"><div>{validation.errors.tempattidur}</div></FormFeedback>
+                                                                        ) : null}
+                                                                    </div>
+                                                                </Col>
+                                                            </>
+                                                        ) : null}
+
                                                         <Col xxl={6} md={6}>
                                                             <div className="mt-2">
                                                                 <Label style={{ color: "black" }} htmlFor="rujukanasal" className="form-label">Rujukan Asal</Label>

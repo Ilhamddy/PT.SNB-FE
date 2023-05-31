@@ -360,7 +360,12 @@ async function saveRegistrasiPasien(req, res) {
         for (let x = resultCount.rows[0].count.toString().length; x < 4; x++) {
             noregistrasi = '0' + noregistrasi;
         }
-
+        if (req.body.kelas === "")
+            req.body.kelas = 6
+        if (req.body.kamar === "")
+            req.body.kamar = null
+        if (req.body.tempattidur === "")
+            req.body.kamar = null
         transaction = await db.sequelize.transaction();
         const daftarPasien = await db.t_daftarpasien.create({
             norec: norecDP,
@@ -370,7 +375,7 @@ async function saveRegistrasiPasien(req, res) {
             objectunitlastfk: req.body.unittujuan,
             objectdokterpemeriksafk: req.body.dokter,
             objectpegawaifk: req.body.pegawaifk,
-            objectkelasfk: req.body.kelasfk,
+            objectkelasfk: req.body.kelas,
             objectjenispenjaminfk: req.body.jenispenjamin,
             tglpulang: req.body.tglregistrasi,
             objectasalrujukanfk: req.body.rujukanasal,
@@ -391,6 +396,9 @@ async function saveRegistrasiPasien(req, res) {
             objectdokterpemeriksafk: req.body.dokter,
             objectunitfk: req.body.unittujuan,
             noantrian: noantrian,
+            objectkamarfk: req.body.kamar,
+            objectkelasfk: req.body.kelas,
+            nobed: req.body.tempattidur,
             statusenabled: true
         }, { transaction });
         // console.log(resultCountNoantrianDokter);
