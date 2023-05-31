@@ -16,17 +16,10 @@ module.exports = (sequelize, Sequelize) => {
         idlabel:{
             type: Sequelize.INTEGER
         },
-        objectdaftarpasienfk:{
-            type: Sequelize.INTEGER
+        objectantreanpemeriksaanfk:{
+            type: Sequelize.CHAR(32)
         },
         objectpegawaifk:{
-            type: Sequelize.INTEGER
-        },
-        isedit:{
-            type: Sequelize.BOOLEAN,
-            defaultValue: true
-        },
-        objectemrfk:{
             type: Sequelize.INTEGER
         },
         tglisi:{

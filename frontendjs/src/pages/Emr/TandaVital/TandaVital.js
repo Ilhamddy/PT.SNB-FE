@@ -2,25 +2,42 @@ import React, { useEffect, useState, useCallback } from 'react';
 import {
     Card, CardBody, CardHeader, Col, Container, Row, Nav, NavItem,
     NavLink, TabContent, TabPane, Button, Label, Input, Table,
-    FormFeedback, Form
+    FormFeedback, Form, DropdownItem, DropdownMenu, DropdownToggle, UncontrolledDropdown
 } from 'reactstrap';
 import { useSelector, useDispatch } from "react-redux";
 import BreadCrumb from '../../../Components/Common/BreadCrumb';
 import UiContent from '../../../Components/Common/UiContent';
 import { Link, useNavigate } from "react-router-dom";
-import { emrHeaderGet, emrResetForm } from "../../../store/actions";
+import { emrTtvSave, emrResetForm, emrTtvGet } from "../../../store/actions";
 import { useParams } from "react-router-dom";
 import classnames from "classnames";
 import { useFormik, yupToFormErrors } from "formik";
 import * as Yup from "yup";
+import DataTable from 'react-data-table-component';
 
 const TandaVital = () => {
     const { norecdp, norecap } = useParams();
     const dispatch = useDispatch();
-    const { editData } = useSelector((state) => ({
-
-
+    const { editData, newData, loading, error, success, dataTtv, loadingTtv, successTtv } = useSelector((state) => ({
+        newData: state.Emr.emrTtvSave.newData,
+        success: state.Emr.emrTtvSave.success,
+        loading: state.Emr.emrTtvSave.loading,
+        errorSave: state.Emr.emrTtvSave.error,
+        dataTtv: state.Emr.emrTtvGet.data,
+        loadingTtv: state.Emr.emrTtvGet.loading,
+        successTtv: state.Emr.emrTtvGet.success,
     }));
+    useEffect(() => {
+        if (norecdp) {
+            dispatch(emrTtvGet(norecdp));
+        }
+    }, [norecdp, dispatch])
+    useEffect(() => {
+        return () => {
+            dispatch(emrResetForm());
+        }
+    }, [dispatch])
+    
     const validation = useFormik({
         enableReinitialize: true,
         initialValues: {
@@ -37,6 +54,8 @@ const TandaVital = () => {
             spo2: editData?.spo2 ?? '',
             pernapasan: editData?.pernapasan ?? '',
             keadaanumum: editData?.keadaanumum ?? '',
+            idlabel: 1,
+            label: 'TTV'
         },
         validationSchema: Yup.object({
             tinggibadan: Yup.string().required("Tinggi Badan wajib diisi"),
@@ -58,11 +77,153 @@ const TandaVital = () => {
             // })
         }),
         onSubmit: (values) => {
-            console.log(validation.errors)
-            // dispatch(registrasiSaveRuangan(values, ''));
+            // console.log(validation.errors)
+            dispatch(emrTtvSave(values, ''));
         }
     })
-    console.log(validation.errors)
+    const tableCustomStyles = {
+        headRow: {
+            style: {
+                color: '#223336',
+                backgroundColor: '#48dbfb',
+            },
+        },
+        rows: {
+            style: {
+                color: "black",
+                backgroundColor: "#f1f2f6"
+            },
+
+        }
+    }
+    const columns = [
+        {
+            name: <span className='font-weight-bold fs-13'>Detail</span>,
+            sortable: false,
+            cell: (dataTtv) => {
+                return (
+                    <div className="hstack gap-3 flex-wrap">
+
+                        <UncontrolledDropdown className="dropdown d-inline-block">
+                            <DropdownToggle className="btn btn-soft-secondary btn-sm" tag="button">
+                                <i className="ri-apps-2-line"></i>
+                            </DropdownToggle>
+                            <DropdownMenu className="dropdown-menu-end">
+                                <DropdownItem href="#!"><i className="ri-eye-fill align-bottom me-2 text-muted"></i>View</DropdownItem>
+                                <DropdownItem className='edit-item-btn'><i className="ri-pencil-fill align-bottom me-2 text-muted"></i>Edit</DropdownItem>
+                                <DropdownItem className='remove-item-btn'> <i className="ri-delete-bin-fill align-bottom me-2 text-muted"></i> Delete </DropdownItem>
+                            </DropdownMenu>
+                        </UncontrolledDropdown>
+                    </div>
+                );
+            },
+        },
+        {
+            name: <span className='font-weight-bold fs-13'>No</span>,
+            selector: row => row.no,
+            sortable: true,
+            width: "130px"
+        },
+        {
+            name: <span className='font-weight-bold fs-13'>No. Registrasi</span>,
+            // selector: row => row.noregistrasi,
+            sortable: true,
+            selector: row => (<button className="btn btn-sm btn-soft-info" onClick={() => handleClick(dataTtv)}>{row.noregistrasi}</button>),
+            width: "130px"
+        },
+        {
+            name: <span className='font-weight-bold fs-13'>Tgl Registrasi</span>,
+            selector: row => row.tglregistrasi,
+            sortable: true,
+            width: "100px"
+        },
+        {
+
+            name: <span className='font-weight-bold fs-13'>Unit</span>,
+            selector: row => row.namaunit,
+            sortable: true,
+            width: "150px"
+        },
+        {
+
+            name: <span className='font-weight-bold fs-13'>TB</span>,
+            selector: row => row.tinggibadan,
+            sortable: true,
+            width: "150px"
+        },
+        {
+
+            name: <span className='font-weight-bold fs-13'>BB</span>,
+            selector: row => row.beratbadan,
+            sortable: true
+        },
+        {
+
+            name: <span className='font-weight-bold fs-13'>T.Darah</span>,
+            selector: row => row.tekanandarah,
+            sortable: true
+        },
+        {
+
+            name: <span className='font-weight-bold fs-13'>Pernapasan</span>,
+            selector: row => row.pernapasan,
+            sortable: true
+        },
+        {
+
+            name: <span className='font-weight-bold fs-13'>Suhu</span>,
+            selector: row => row.suhu,
+            sortable: true
+        },
+        {
+
+            name: <span className='font-weight-bold fs-13'>Nadi</span>,
+            selector: row => row.nadi,
+            sortable: true
+        },
+        {
+
+            name: <span className='font-weight-bold fs-13'>SpO2</span>,
+            selector: row => row.spo2,
+            sortable: true
+        },
+        {
+
+            name: <span className='font-weight-bold fs-13'>K. Umum</span>,
+            selector: row => row.tekanandarah,
+            sortable: true
+        },
+        {
+
+            name: <span className='font-weight-bold fs-13'>GCS(EMV)</span>,
+            selector: row => row.tekanandarah,
+            sortable: true
+        },
+        {
+
+            name: <span className='font-weight-bold fs-13'>Alergi</span>,
+            selector: row => row.alergi,
+            sortable: true
+        },
+        {
+
+            name: <span className='font-weight-bold fs-13'>Nama PPA</span>,
+            selector: row => row.tekanandarah,
+            sortable: true
+        },
+        {
+
+            name: <span className='font-weight-bold fs-13'>PPA</span>,
+            selector: row => row.tekanandarah,
+            sortable: true
+        },
+    ];
+
+    const handleClick = (e) => {
+
+        // console.log('this is:', e.namapasien);
+    };
+
     return (
         <React.Fragment>
             <Row className="gy-4">
@@ -401,6 +562,24 @@ const TandaVital = () => {
                         <Col xxl={12} sm={12}>
                             <Button type="submit" color="info" className="rounded-pill"> SIMPAN </Button>
                             <Button type="button" color="danger" className="rounded-pill" > BATAL </Button>
+                        </Col>
+
+                        <Col xxl={12} sm={12}>
+                            <Card>
+                                <CardBody>
+                                    <div id="table-gridjs">
+                                        <DataTable
+                                            fixedHeader
+                                            fixedHeaderScrollHeight="400px"
+                                            columns={columns}
+                                            pagination
+                                            data={dataTtv}
+                                            progressPending={loadingTtv}
+                                            customStyles={tableCustomStyles}
+                                        />
+                                    </div>
+                                </CardBody>
+                            </Card>
                         </Col>
 
                     </Row>

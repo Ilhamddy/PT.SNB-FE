@@ -18,7 +18,7 @@ const getPasienByNoregistrasi = `select mp.nocm,td.noregistrasi,mp.namapasien,
 to_char(td.tglregistrasi,'yyyy-MM-dd'),mu.namaunit,
 mp2.reportdisplay || '-' ||ta.noantrian as noantrian,mp2.namalengkap as namadokter  from t_daftarpasien td 
 join m_pasien mp on mp.id=td.nocmfk 
-join t_antreanpemeriksaan ta on ta.noregistrasifk =td.norec
+join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk =td.norec
 join m_unit mu on mu.id=ta.objectunitfk 
 left join m_pegawai mp2 on mp2.id=ta.objectdokterpemeriksafk 
  where td.noregistrasi = $1`;
@@ -32,7 +32,7 @@ const getDaftarPasienRawatJalan = `select td.norec as norecdp,ta.norec as norect
 to_char(td.tglregistrasi,'yyyy-MM-dd') as tglregistrasi,mu.namaunit,
 mp2.reportdisplay || '-' ||ta.noantrian as noantrian,mp2.namalengkap as namadokter  from t_daftarpasien td 
 join m_pasien mp on mp.id=td.nocmfk 
-join t_antreanpemeriksaan ta on ta.noregistrasifk =td.norec
+join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk =td.norec
 join m_unit mu on mu.id=ta.objectunitfk 
 left join m_pegawai mp2 on mp2.id=ta.objectdokterpemeriksafk 
 join m_instalasi mi on mi.id=mu.objectinstalasifk
@@ -42,7 +42,7 @@ const getDaftarPasienRegistrasi = `select mi.namainstalasi,mp.nocm,td.noregistra
 to_char(td.tglregistrasi,'yyyy-MM-dd') as tglregistrasi,mu.namaunit,
 mp2.reportdisplay || '-' ||ta.noantrian as noantrian,mp2.namalengkap as namadokter  from t_daftarpasien td 
 join m_pasien mp on mp.id=td.nocmfk 
-join t_antreanpemeriksaan ta on ta.noregistrasifk =td.norec
+join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk =td.norec
 join m_unit mu on mu.id=ta.objectunitfk 
 left join m_pegawai mp2 on mp2.id=ta.objectdokterpemeriksafk 
 join m_instalasi mi on mi.id=mu.objectinstalasifk`;
@@ -52,7 +52,7 @@ mj2.jeniskelamin,td.norec as norecdp,ta.norec as norecta,mj.jenispenjamin,ta.tas
 to_char(mp.tgllahir,'dd Month YYYY') as tgllahir,mu.namaunit,
 mp2.reportdisplay || '-' ||ta.noantrian as noantrian,mp2.namalengkap as namadokter  from t_daftarpasien td 
 join m_pasien mp on mp.id=td.nocmfk 
-join t_antreanpemeriksaan ta on ta.noregistrasifk =td.norec
+join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk =td.norec
 join m_unit mu on mu.id=ta.objectunitfk 
 left join m_pegawai mp2 on mp2.id=ta.objectdokterpemeriksafk 
 join m_instalasi mi on mi.id=mu.objectinstalasifk

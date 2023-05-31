@@ -1,9 +1,10 @@
 import { call, put, takeEvery, all, fork } from "redux-saga/effects";
 import ServiceEmr from "../../services/service-emr";
 
-import { EMR_HEADER_GET } from "./actionType";
+import { EMR_HEADER_GET,EMR_TTV_SAVE,EMR_TTV_GET } from "./actionType";
 
-import { emrHeaderGetSuccess,emrHeaderGetError } from "./action";
+import { emrHeaderGetSuccess,emrHeaderGetError,emrTtvSaveSuccess,emrTtvSaveError,
+emrTtvGetSuccess,emrTtvGetError } from "./action";
 
 const serviceEmr = new ServiceEmr();
 
@@ -20,10 +21,44 @@ export function* watchGetEmrHeader() {
     yield takeEvery(EMR_HEADER_GET, onGetEmrHeader);
 }
 
+function* onSaveEmrTtv({payload: { data, history}}) {
+    try {
+        let response = null;
+        if (data.id) {
+            response = yield call(serviceEmr.saveTTV, data);
+        } else {
+            response = yield call(serviceEmr.saveTTV, data);
+        }
+        
+        yield put(emrTtvSaveSuccess(response.data));
+        // history("/registrasi/pasien-lama")
+    } catch (error) {
+        yield put(emrTtvSaveError(error));
+    }
+}
+
+export function* watchSaveEmrTtv() {
+    yield takeEvery(EMR_TTV_SAVE, onSaveEmrTtv);
+}
+
+function* onGetEmrTtv({payload: {param}}) {
+    try {
+        const response = yield call(serviceEmr.getTtvList, param);
+        yield put(emrTtvGetSuccess(response.data));
+    } catch (error) {
+        yield put(emrTtvGetError(error));
+    }
+}
+
+export function* watchGetEmrTtv() {
+    yield takeEvery(EMR_TTV_GET, onGetEmrTtv);
+}
 
 function* emrSaga() {
     yield all([
-        fork(watchGetEmrHeader)
+        fork(watchGetEmrHeader),
+        fork(watchSaveEmrTtv),
+        fork(watchGetEmrTtv)
     ]);
 }
 

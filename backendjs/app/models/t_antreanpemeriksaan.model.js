@@ -5,48 +5,48 @@ module.exports = (sequelize, Sequelize) => {
             autoIncrement: true,
             primaryKey: true,
             type: Sequelize.CHAR(32)
-          },
-        noregistrasifk:{
+        },
+        objectdaftarpasienfk: {
             type: Sequelize.CHAR(32)
         },
         statusenabled: {
             type: Sequelize.BOOLEAN,
             // defaultValue: true
         },
-        tglregistrasi:{
+        tglregistrasi: {
             type: 'TIMESTAMP'
         },
-        objectasalrujukanfk:{
+        objectasalrujukanfk: {
             type: Sequelize.INTEGER
         },
-        objectkamarfk:{
+        objectkamarfk: {
             type: Sequelize.INTEGER
         },
-        objectkelasfk:{
+        objectkelasfk: {
             type: Sequelize.INTEGER
         },
-        noantrian:{
+        noantrian: {
             type: Sequelize.INTEGER
         },
-        nobed:{
-          type: Sequelize.INTEGER  
-        },
-        objectdokterpemeriksafk:{
+        nobed: {
             type: Sequelize.INTEGER
         },
-        objectunitfk:{
+        objectdokterpemeriksafk: {
             type: Sequelize.INTEGER
         },
-        statuskunjungan:{
+        objectunitfk: {
+            type: Sequelize.INTEGER
+        },
+        statuskunjungan: {
             type: Sequelize.STRING
         },
-        statuspanggil:{
+        statuspanggil: {
             type: Sequelize.INTEGER
         },
-        tglmasuk:{
+        tglmasuk: {
             type: 'TIMESTAMP'
         },
-        tglkeluar:{
+        tglkeluar: {
             type: 'TIMESTAMP'
         },
     }, {

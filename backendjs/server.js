@@ -35,6 +35,7 @@ require('./app/routes/user.routes')(app);
 require('./app/routes/master/agama.routes')(app);
 require('./app/routes/transaksi/registrasi.routes')(app);
 require('./app/routes/master/master.routes')(app);
+require('./app/routes/transaksi/emr.routes')(app);
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8000;

@@ -20,7 +20,7 @@ const EmrHeader = () => {
 
     useEffect(() => {
         if (norecap) {
-            dispatch(emrHeaderGet(norecap));
+            dispatch(emrHeaderGet(norecap + `&norecdp=${norecdp}`));
         }
     }, [norecap, dispatch])
 
@@ -30,9 +30,6 @@ const EmrHeader = () => {
         }
     }, [dispatch])
 
-    
-
-    
 
     return (
         <React.Fragment>
@@ -71,14 +68,11 @@ const EmrHeader = () => {
                     <Card className="card-animate card-warning">
                         <CardBody>
                             <div className="d-flex justify-content-between">
-                                <div>
-                                    <p className="fw-medium text-muted mb-0">test</p>
-                                    <h2 className="mt-4 ff-secondary fw-semibold">
-                                        <span className="counter-value" style={{ fontSize: "5rem" }}>
-
-                                        </span>
-                                    </h2>
-
+                                <div className="flex-shrink-0 mt-sm-0 mt-3">
+                                    <h6><span className="fw-semibold">{editData.tekanandarah} mmhg</span><span className="fw-semibold" style={{color:"red"}}> T.Darah</span></h6>
+                                    <h6><span className="fw-semibold">{editData.pernapasan} X/menit</span><span className="fw-semibold" style={{color:"red"}}> Pernapasan</span></h6>
+                                    <h6><span className="fw-semibold">{editData.suhu} °C</span><span className="fw-semibold" style={{color:"red"}}> Suhu</span></h6>
+                                    <h6 className="mb-0"><span className="fw-semibold">{editData.nadi} X/menit</span><span className="fw-semibold" style={{color:"red"}}> Nadi</span></h6>
                                 </div>
 
                             </div>
@@ -89,14 +83,10 @@ const EmrHeader = () => {
                     <Card className="card-animate card-warning">
                         <CardBody>
                             <div className="d-flex justify-content-between">
-                                <div>
-                                    <p className="fw-medium text-muted mb-0">test</p>
-                                    <h2 className="mt-4 ff-secondary fw-semibold">
-                                        <span className="counter-value" style={{ fontSize: "5rem" }}>
-
-                                        </span>
-                                    </h2>
-
+                                <div className="flex-shrink-0 mt-sm-0 mt-3">
+                                    <h6><span className="fw-semibold">{editData.spo2} %</span><span className="fw-semibold" style={{color:"red"}}> SpO2</span></h6>
+                                    <h6><span className="fw-semibold">{editData.keadaanumum}</span><span className="fw-semibold" style={{color:"red"}}> Keadaan Umum</span></h6>
+                                   
                                 </div>
 
                             </div>
@@ -107,21 +97,18 @@ const EmrHeader = () => {
                     <Card className="card-animate card-warning">
                         <CardBody>
                             <div className="d-flex justify-content-between">
-                                <div>
-                                    <p className="fw-medium text-muted mb-0">test</p>
-                                    <h2 className="mt-4 ff-secondary fw-semibold">
-                                        <span className="counter-value" style={{ fontSize: "5rem" }}>
-
-                                        </span>
-                                    </h2>
-
+                                <div className="flex-shrink-0 mt-sm-0 mt-3">
+                                    <h6><span className="fw-semibold">{editData.beratbadan}</span><span className="fw-semibold" style={{color:"red"}}> Berat Badan</span></h6>
+                                    <h6><span className="fw-semibold">{editData.tinggibadan}</span><span className="fw-semibold" style={{color:"red"}}> Tinggi Badan</span></h6>
+                                    <h6><span className="fw-semibold">{editData.alergi}</span><span className="fw-semibold" style={{color:"red"}}> Alergi</span></h6>
+                                   
                                 </div>
 
                             </div>
                         </CardBody>
                     </Card>
                 </Col>
-                
+
             </Row>
         </React.Fragment>
     )

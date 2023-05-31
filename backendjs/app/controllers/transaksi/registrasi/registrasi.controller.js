@@ -506,7 +506,7 @@ async function getDaftarPasienRawatJalan(req, res) {
         pool.query(query, (error, resultCountNoantrianDokter) => {
             if (error) {
                 res.status(522).send({
-                    status: "Connection Time Out",
+                    status: error,
                     success: true,
                 });
             } else {

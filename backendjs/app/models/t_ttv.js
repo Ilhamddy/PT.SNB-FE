@@ -53,7 +53,7 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.INTEGER
         },
         isedit:{
-            type: Sequelize.BOOL
+            type: Sequelize.BOOLEAN
         },
         objectttvfk:{
             type: Sequelize.INTEGER
