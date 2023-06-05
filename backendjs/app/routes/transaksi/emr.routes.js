@@ -26,4 +26,9 @@ module.exports = function (app) {
         [authJwt.verifyToken],
         controller.getHeaderEmr
     );
+    app.post(
+        "/api/transaksi/emr/edit-emr-pasien-ttv",
+        [authJwt.verifyToken],
+        controller.editEmrPasienTtv
+    );
 }

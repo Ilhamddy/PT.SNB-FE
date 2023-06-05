@@ -14,4 +14,8 @@ export default class ServiceEmr {
     getTtvList = async (param) => {
         return await api.get(`/transaksi/emr/getList-ttv?norecdp=${param}`);
     }
+
+    editTTV = async (params) => {
+        return await api.create("/transaksi/emr/edit-emr-pasien-ttv", params);
+    }
 }

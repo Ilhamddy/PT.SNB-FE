@@ -172,8 +172,58 @@ async function getHeaderEmr(req, res) {
 
 }
 
+async function editEmrPasienTtv(req, res) {
+    res.status(500).send({ message: 'masuk' });
+    return
+    const resultEmrPasien = await queryPromise1(req.body.norecap, req.body.idlabel);
+    try {
+
+        transaction = await db.sequelize.transaction();
+        let norec = uuid.v4().substring(0, 32)
+
+        if (resultEmrPasien.rowCount != 0) {
+            norec = resultEmrPasien.rows[0].norec
+        } else {
+            const emrPasien = await db.t_emrpasien.create({
+                norec: norec,
+                statusenabled: true,
+                label: req.body.label,
+                idlabel: req.body.idlabel,
+                objectantreanpemeriksaanfk: req.body.norecap,
+                objectpegawaifk: req.userId,
+                tglisi: new Date()
+            }, { transaction });
+        }
+        let norecttv = uuid.v4().substring(0, 32)
+        const ttv = await db.t_ttv.create({
+            norec: norecttv,
+            statusenabled: true,
+            objectemrfk: norec,
+            tinggibadan: req.body.tinggibadan,
+            beratbadan: req.body.beratbadan,
+            suhu: req.body.suhu,
+            tglisi: new Date()
+        }, { transaction });
+
+        await transaction.commit();
+        let tempres = { ttv: ttv }
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+        });
+    } catch (error) {
+        // console.log(error);
+        if (transaction) {
+            await transaction.rollback();
+            res.status(500).send({ message: error });
+        }
+    }
+}
+
 module.exports = {
     saveEmrPasienTtv,
     getListTtv,
-    getHeaderEmr
+    getHeaderEmr,
+    editEmrPasienTtv
 };

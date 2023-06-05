@@ -24,8 +24,10 @@ export function* watchGetEmrHeader() {
 function* onSaveEmrTtv({payload: { data, history}}) {
     try {
         let response = null;
-        if (data.id) {
-            response = yield call(serviceEmr.saveTTV, data);
+        console.log(data)
+        if (data.norec!=='') {
+            response = yield call(serviceEmr.editTTV, data);
+            // console.log('testiiinng')
         } else {
             response = yield call(serviceEmr.saveTTV, data);
         }

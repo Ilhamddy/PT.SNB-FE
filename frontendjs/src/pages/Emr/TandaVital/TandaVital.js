@@ -41,10 +41,17 @@ const TandaVital = () => {
         }
     }, [dispatch])
 
+    useEffect(() => {
+        if (newData !== null) {
+            dispatch(emrTtvGet(norecdp));
+        }
+    }, [newData,norecdp, dispatch])
+
     const validation = useFormik({
         enableReinitialize: true,
         initialValues: {
             norecap: editData?.norecap ?? norecap,
+            norec: editData?.norec ?? '',
             tinggibadan: editData?.tinggibadan ?? '',
             suhu: editData?.suhu ?? '',
             gcse: editData?.gcse ?? '',
@@ -132,8 +139,14 @@ const TandaVital = () => {
             name: <span className='font-weight-bold fs-13'>No. Registrasi</span>,
             // selector: row => row.noregistrasi,
             sortable: true,
-            selector: row => (<button className="btn btn-sm btn-soft-info" onClick={() => handleClick(dataTtv)}>{row.noregistrasi}</button>),
-            width: "130px"
+            // selector: row => (<button className="btn btn-sm btn-soft-info" onClick={() => handleClick(dataTtv)}>{row.noregistrasi}</button>),
+            width: "140px",
+            cell: (data) => {
+                return (
+                    // <Link to={`/registrasi/pasien/${data.id}`}>Details</Link>
+                    <button type='button' className="btn btn-sm btn-soft-info" onClick={() => handleClick(data)}>{data.noregistrasi}</button>
+                );
+            },
         },
         {
             name: <span className='font-weight-bold fs-13'>Tgl Registrasi</span>,
@@ -224,8 +237,19 @@ const TandaVital = () => {
     ];
 
     const handleClick = (e) => {
-
-        // console.log('this is:', e.namapasien);
+        validation.setFieldValue('tinggibadan', e.tinggibadan)
+        validation.setFieldValue('suhu', e.suhu)
+        validation.setFieldValue('gcse', e.gcse)
+        validation.setFieldValue('gcsm', e.gcsm)
+        validation.setFieldValue('gcsv', e.gcsv)
+        validation.setFieldValue('beratbadan', e.beratbadan)
+        validation.setFieldValue('nadi', e.nadi)
+        validation.setFieldValue('alergi', e.alergi)
+        validation.setFieldValue('tekanandarah', e.tekanandarah)
+        validation.setFieldValue('spo2', e.spo2)
+        validation.setFieldValue('pernapasan', e.pernapasan)
+        validation.setFieldValue('keadaanumum', e.keadaanumum)
+        validation.setFieldValue('norec', e.norec)
     };
     const handleClickReset = (e) => {
         validation.setFieldValue('tinggibadan', '')
@@ -240,6 +264,7 @@ const TandaVital = () => {
         validation.setFieldValue('spo2', '')
         validation.setFieldValue('pernapasan', '')
         validation.setFieldValue('keadaanumum', '')
+        validation.setFieldValue('norec', '')
     };
 
     return (
@@ -589,7 +614,7 @@ const TandaVital = () => {
                             </Button>
                             <UncontrolledTooltip placement="top" target="tooltipTop" > SIMPAN Tanda-Tanda Vital </UncontrolledTooltip>
 
-                            <Button type="reset" color="danger" className="rounded-pill" placement="top" id="tooltipTop2">
+                            <Button type="button" color="danger" className="rounded-pill" placement="top" id="tooltipTop2" onClick={handleClickReset}>
                                 BATAL
                             </Button>
                             <UncontrolledTooltip placement="top" target="tooltipTop2" > BATAL Tanda-Tanda Vital </UncontrolledTooltip>
