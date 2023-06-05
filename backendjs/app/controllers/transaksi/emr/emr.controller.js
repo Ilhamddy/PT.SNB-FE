@@ -26,6 +26,7 @@ queryPromise2 = (query) => {
         });
     });
 };
+
 async function saveEmrPasienTtv(req, res) {
     // res.status(500).send({ message: req.userId });
     // return
@@ -56,6 +57,15 @@ async function saveEmrPasienTtv(req, res) {
             tinggibadan: req.body.tinggibadan,
             beratbadan: req.body.beratbadan,
             suhu: req.body.suhu,
+            e: req.body.gcse,
+            m: req.body.gcsm,
+            v: req.body.gcsv,
+            nadi: req.body.nadi,
+            alergi: req.body.alergi,
+            spo2: req.body.spo2,
+            pernapasan: req.body.pernapasan,
+            keadaanumum: req.body.keadaanumum,
+            tekanandarah:req.body.tekanandarah,
             tglisi: new Date()
         }, { transaction });
 
@@ -173,27 +183,14 @@ async function getHeaderEmr(req, res) {
 }
 
 async function editEmrPasienTtv(req, res) {
-    res.status(500).send({ message: 'masuk' });
-    return
-    const resultEmrPasien = await queryPromise1(req.body.norecap, req.body.idlabel);
+    // res.status(500).send({ message: 'masuk' });
+    // return
     try {
 
         transaction = await db.sequelize.transaction();
         let norec = uuid.v4().substring(0, 32)
 
-        if (resultEmrPasien.rowCount != 0) {
-            norec = resultEmrPasien.rows[0].norec
-        } else {
-            const emrPasien = await db.t_emrpasien.create({
-                norec: norec,
-                statusenabled: true,
-                label: req.body.label,
-                idlabel: req.body.idlabel,
-                objectantreanpemeriksaanfk: req.body.norecap,
-                objectpegawaifk: req.userId,
-                tglisi: new Date()
-            }, { transaction });
-        }
+       
         let norecttv = uuid.v4().substring(0, 32)
         const ttv = await db.t_ttv.create({
             norec: norecttv,
