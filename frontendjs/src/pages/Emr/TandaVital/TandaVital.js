@@ -52,6 +52,7 @@ const TandaVital = () => {
         initialValues: {
             norecap: editData?.norecap ?? norecap,
             norec: editData?.norec ?? '',
+            objectemrfk: editData?.objectemrfk ??'',
             tinggibadan: editData?.tinggibadan ?? '',
             suhu: editData?.suhu ?? '',
             gcse: editData?.gcse ?? '',
@@ -239,9 +240,9 @@ const TandaVital = () => {
     const handleClick = (e) => {
         validation.setFieldValue('tinggibadan', e.tinggibadan)
         validation.setFieldValue('suhu', e.suhu)
-        validation.setFieldValue('gcse', e.gcse)
-        validation.setFieldValue('gcsm', e.gcsm)
-        validation.setFieldValue('gcsv', e.gcsv)
+        validation.setFieldValue('gcse', e.e)
+        validation.setFieldValue('gcsm', e.m)
+        validation.setFieldValue('gcsv', e.v)
         validation.setFieldValue('beratbadan', e.beratbadan)
         validation.setFieldValue('nadi', e.nadi)
         validation.setFieldValue('alergi', e.alergi)
@@ -250,6 +251,8 @@ const TandaVital = () => {
         validation.setFieldValue('pernapasan', e.pernapasan)
         validation.setFieldValue('keadaanumum', e.keadaanumum)
         validation.setFieldValue('norec', e.norec)
+        validation.setFieldValue('objectemrfk',e.objectemrfk)
+        console.log(e)
     };
     const handleClickReset = (e) => {
         validation.setFieldValue('tinggibadan', '')
@@ -265,6 +268,7 @@ const TandaVital = () => {
         validation.setFieldValue('pernapasan', '')
         validation.setFieldValue('keadaanumum', '')
         validation.setFieldValue('norec', '')
+        validation.setFieldValue('objectemrfk','')
     };
 
     return (

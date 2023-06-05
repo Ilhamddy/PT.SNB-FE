@@ -104,7 +104,7 @@ async function getListTtv(req, res) {
     join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk=dp.norec
     join t_emrpasien te on te.objectantreanpemeriksaanfk=ta.norec 
     join t_ttv tt on tt.objectemrfk =te.norec
-    join m_unit mu on mu.id=ta.objectunitfk   where dp.nocmfk='${nocmfk}'
+    join m_unit mu on mu.id=ta.objectunitfk   where dp.nocmfk='${nocmfk}' and tt.statusenabled=true
     `);
     res.status(200).send({
         data: resultList.rows,
@@ -188,19 +188,39 @@ async function editEmrPasienTtv(req, res) {
     try {
 
         transaction = await db.sequelize.transaction();
-        let norec = uuid.v4().substring(0, 32)
-
-       
+      
         let norecttv = uuid.v4().substring(0, 32)
         const ttv = await db.t_ttv.create({
             norec: norecttv,
             statusenabled: true,
-            objectemrfk: norec,
+            objectemrfk: req.body.objectemrfk,
             tinggibadan: req.body.tinggibadan,
             beratbadan: req.body.beratbadan,
             suhu: req.body.suhu,
+            e: req.body.gcse,
+            m: req.body.gcsm,
+            v: req.body.gcsv,
+            nadi: req.body.nadi,
+            alergi: req.body.alergi,
+            spo2: req.body.spo2,
+            pernapasan: req.body.pernapasan,
+            keadaanumum: req.body.keadaanumum,
+            tekanandarah:req.body.tekanandarah,
+            isedit:true,
+            objectttvfk:req.body.norec,
             tglisi: new Date()
         }, { transaction });
+
+        const ttvupdate = await db.t_ttv.update({
+            statusenabled: false,
+            tglisi: new Date()
+        }, {
+            where: {
+                norec: req.body.norec
+            }
+        }, { transaction });
+
+       
 
         await transaction.commit();
         let tempres = { ttv: ttv }
