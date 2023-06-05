@@ -3,7 +3,7 @@ import {
     Card, CardBody, CardHeader, Col, Container, Row, Nav, NavItem,
     NavLink, TabContent, TabPane, Button, Label, Input, Table,
     FormFeedback, Form, DropdownItem, DropdownMenu, DropdownToggle, UncontrolledDropdown,
-    Alert
+    UncontrolledTooltip
 } from 'reactstrap';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -11,7 +11,7 @@ import { useSelector, useDispatch } from "react-redux";
 import BreadCrumb from '../../../Components/Common/BreadCrumb';
 import UiContent from '../../../Components/Common/UiContent';
 import { Link, useNavigate } from "react-router-dom";
-import { emrTtvSave, emrResetForm, emrTtvGet } from "../../../store/actions";
+import { emrTtvSave, emrResetForm, emrTtvGet, resetRegisterFlag } from "../../../store/actions";
 import { useParams } from "react-router-dom";
 import classnames from "classnames";
 import { useFormik, yupToFormErrors } from "formik";
@@ -40,7 +40,7 @@ const TandaVital = () => {
             dispatch(emrResetForm());
         }
     }, [dispatch])
-    
+
     const validation = useFormik({
         enableReinitialize: true,
         initialValues: {
@@ -79,9 +79,10 @@ const TandaVital = () => {
             //     then: Yup.string().required('I am required now the checkbox is checked')
             // })
         }),
-        onSubmit: (values) => {
+        onSubmit: (values, { resetForm }) => {
             // console.log(validation.errors)
             dispatch(emrTtvSave(values, ''));
+            resetForm({ values: '' })
         }
     })
     const tableCustomStyles = {
@@ -226,6 +227,20 @@ const TandaVital = () => {
 
         // console.log('this is:', e.namapasien);
     };
+    const handleClickReset = (e) => {
+        validation.setFieldValue('tinggibadan', '')
+        validation.setFieldValue('suhu', '')
+        validation.setFieldValue('gcse', '')
+        validation.setFieldValue('gcsm', '')
+        validation.setFieldValue('gcsv', '')
+        validation.setFieldValue('beratbadan', '')
+        validation.setFieldValue('nadi', '')
+        validation.setFieldValue('alergi', '')
+        validation.setFieldValue('tekanandarah', '')
+        validation.setFieldValue('spo2', '')
+        validation.setFieldValue('pernapasan', '')
+        validation.setFieldValue('keadaanumum', '')
+    };
 
     return (
         <React.Fragment>
@@ -238,12 +253,12 @@ const TandaVital = () => {
                     }}
                     className="gy-4"
                     action="#">
-                        {success && success ? (
-                                <>
-                                    {toast("Tanda Vital Berhasil Disimpan.....", { position: "top-right", hideProgressBar: false, className: 'bg-success text-white', progress: undefined, toastId: "" })}
-                                    <ToastContainer autoClose={2000} limit={1} />
-                                </>
-                            ) : null}
+                    {success && success ? (
+                        <>
+                            {toast("Tanda Vital Berhasil Disimpan.....", { position: "top-right", hideProgressBar: false, className: 'bg-success text-white', progress: undefined, toastId: "" })}
+                            <ToastContainer autoClose={2000} limit={1} />
+                        </>
+                    ) : null}
                     <Row>
 
                         <Col xxl={3} sm={6}>
@@ -569,8 +584,16 @@ const TandaVital = () => {
                             </Row>
                         </Col>
                         <Col xxl={12} sm={12}>
-                            <Button type="submit" color="info" className="rounded-pill"> SIMPAN </Button>
-                            {/* <Button type="button" color="danger" className="rounded-pill" > BATAL </Button> */}
+                            <Button type="submit" color="info" className="rounded-pill" placement="top" id="tooltipTop">
+                                SIMPAN
+                            </Button>
+                            <UncontrolledTooltip placement="top" target="tooltipTop" > SIMPAN Tanda-Tanda Vital </UncontrolledTooltip>
+
+                            <Button type="reset" color="danger" className="rounded-pill" placement="top" id="tooltipTop2">
+                                BATAL
+                            </Button>
+                            <UncontrolledTooltip placement="top" target="tooltipTop2" > BATAL Tanda-Tanda Vital </UncontrolledTooltip>
+                           
                         </Col>
 
                         <Col xxl={12} sm={12}>

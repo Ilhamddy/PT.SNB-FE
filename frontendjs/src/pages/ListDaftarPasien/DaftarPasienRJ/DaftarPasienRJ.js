@@ -2,7 +2,8 @@ import React, { useEffect, useState, useCallback } from 'react';
 import {
     Card, CardBody, CardHeader, Col, Container, Row, Nav, NavItem,
     NavLink, TabContent, TabPane, Button, Label, Input, Table,
-    DropdownItem, DropdownMenu, DropdownToggle, UncontrolledDropdown
+    DropdownItem, DropdownMenu, DropdownToggle, UncontrolledDropdown,
+    UncontrolledTooltip
 } from 'reactstrap';
 import { useSelector, useDispatch } from "react-redux";
 import withRouter from '../../../Components/Common/withRouter';
@@ -58,10 +59,12 @@ const DaftarPasienRJ = () => {
             cell: (data) => {
                 return (
                     <div className="hstack gap-3 flex-wrap">
-                        <Link to={`/emr-pasien/${data.norecdp}/${data.norecta}`} className="link-success fs-15"><i className="ri-edit-2-line"></i></Link>
-                      
+                        <Link to={`/emr-pasien/${data.norecdp}/${data.norecta}`} className="link-success fs-15" id="tooltipTop"><i className="ri-edit-2-line"></i></Link>
+                        <UncontrolledTooltip placement="top" target="tooltipTop" > Pengkajian Pasien </UncontrolledTooltip>
+
+
                         <UncontrolledDropdown className="dropdown d-inline-block">
-                            <DropdownToggle className="btn btn-soft-secondary btn-sm" tag="button">
+                            <DropdownToggle className="btn btn-soft-secondary btn-sm" tag="button" id="tooltipTop2">
                                 <i className="ri-apps-2-line"></i>
                             </DropdownToggle>
                             <DropdownMenu className="dropdown-menu-end">
@@ -70,6 +73,7 @@ const DaftarPasienRJ = () => {
                                 <DropdownItem className='remove-item-btn'> <i className="ri-delete-bin-fill align-bottom me-2 text-muted"></i> Delete </DropdownItem>
                             </DropdownMenu>
                         </UncontrolledDropdown>
+                        <UncontrolledTooltip placement="top" target="tooltipTop2" > Menu </UncontrolledTooltip>
                     </div>
                 );
             },
