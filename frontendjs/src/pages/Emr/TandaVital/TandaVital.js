@@ -242,13 +242,13 @@ const TandaVital = () => {
         {
 
             name: <span className='font-weight-bold fs-13'>K. Umum</span>,
-            selector: row => row.tekanandarah,
+            selector: row => row.keadaanumum,
             sortable: true
         },
         {
 
             name: <span className='font-weight-bold fs-13'>GCS(EMV)</span>,
-            selector: row => row.tekanandarah,
+            selector: row => row.namagcs,
             sortable: true
         },
         {
@@ -257,18 +257,18 @@ const TandaVital = () => {
             selector: row => row.alergi,
             sortable: true
         },
-        {
+        // {
 
-            name: <span className='font-weight-bold fs-13'>Nama PPA</span>,
-            selector: row => row.tekanandarah,
-            sortable: true
-        },
-        {
+        //     name: <span className='font-weight-bold fs-13'>Nama PPA</span>,
+        //     selector: row => row.tekanandarah,
+        //     sortable: true
+        // },
+        // {
 
-            name: <span className='font-weight-bold fs-13'>PPA</span>,
-            selector: row => row.tekanandarah,
-            sortable: true
-        },
+        //     name: <span className='font-weight-bold fs-13'>PPA</span>,
+        //     selector: row => row.tekanandarah,
+        //     sortable: true
+        // },
     ];
 
     const handleClick = (e) => {

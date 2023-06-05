@@ -116,12 +116,13 @@ async function getListTtv(req, res) {
     to_char(dp.tglregistrasi,'yyyy-MM-dd') as tglregistrasi,tt.norec, tt.objectemrfk, tt.tinggibadan,
     tt.beratbadan, tt.suhu,tt.e, tt.m, tt.v, tt.nadi, tt.alergi, tt.tekanandarah, tt.spo2, 
     tt.pernapasan,tt.keadaanumum, tt.objectpegawaifk, tt.isedit, tt.objectttvfk, tt.tglisi,
-    mu.namaunit
+    mu.namaunit,mr.reportdisplay as namagcs
             FROM t_daftarpasien dp 
     join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk=dp.norec
     join t_emrpasien te on te.objectantreanpemeriksaanfk=ta.norec 
     join t_ttv tt on tt.objectemrfk =te.norec
-    join m_unit mu on mu.id=ta.objectunitfk   where dp.nocmfk='${nocmfk}' and tt.statusenabled=true
+    join m_unit mu on mu.id=ta.objectunitfk
+    left join m_range mr on mr.id=tt.objectgcsfk where dp.nocmfk='${nocmfk}' and tt.statusenabled=true
     `);
     res.status(200).send({
         data: resultList.rows,
@@ -153,12 +154,13 @@ async function getHeaderEmr(req, res) {
             to_char(dp.tglregistrasi,'yyyy-MM-dd') as tglregistrasi,tt.norec, tt.objectemrfk, tt.tinggibadan,
             tt.beratbadan, tt.suhu,tt.e, tt.m, tt.v, tt.nadi, tt.alergi, tt.tekanandarah, tt.spo2, 
             tt.pernapasan,tt.keadaanumum, tt.objectpegawaifk, tt.isedit, tt.objectttvfk, tt.tglisi,
-            mu.namaunit
+            mu.namaunit,mr.reportdisplay as namagcs
                     FROM t_daftarpasien dp 
             join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk=dp.norec
             join t_emrpasien te on te.objectantreanpemeriksaanfk=ta.norec 
             join t_ttv tt on tt.objectemrfk =te.norec
-            join m_unit mu on mu.id=ta.objectunitfk where dp.norec='${req.query.norecdp}' order by tt.tglisi 
+            join m_unit mu on mu.id=ta.objectunitfk
+            left join m_range mr on mr.id=tt.objectgcsfk where dp.norec='${req.query.norecdp}' order by tt.tglisi 
             desc limit 1
             `);
             
@@ -183,6 +185,7 @@ async function getHeaderEmr(req, res) {
                     spo2: resultTtv.rows[0].spo2,
                     pernapasan: resultTtv.rows[0].pernapasan,
                     keadaanumum: resultTtv.rows[0].keadaanumum,
+                    namagcs:resultTtv.rows[0].namagcs,
                 }
 
             }

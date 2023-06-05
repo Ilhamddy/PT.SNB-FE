@@ -86,7 +86,7 @@ const EmrHeader = () => {
                                 <div className="flex-shrink-0 mt-sm-0 mt-3">
                                     <h6><span className="fw-semibold">{editData.spo2} %</span><span className="fw-semibold" style={{color:"red"}}> SpO2</span></h6>
                                     <h6><span className="fw-semibold">{editData.keadaanumum}</span><span className="fw-semibold" style={{color:"red"}}> Keadaan Umum</span></h6>
-                                   
+                                    <h6><span className="fw-semibold">{editData.namagcs}</span><span className="fw-semibold" style={{color:"red"}}> Kesadaran</span></h6>
                                 </div>
 
                             </div>
