@@ -2,8 +2,11 @@ import React, { useEffect, useState, useCallback } from 'react';
 import {
     Card, CardBody, CardHeader, Col, Container, Row, Nav, NavItem,
     NavLink, TabContent, TabPane, Button, Label, Input, Table,
-    FormFeedback, Form, DropdownItem, DropdownMenu, DropdownToggle, UncontrolledDropdown
+    FormFeedback, Form, DropdownItem, DropdownMenu, DropdownToggle, UncontrolledDropdown,
+    Alert
 } from 'reactstrap';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { useSelector, useDispatch } from "react-redux";
 import BreadCrumb from '../../../Components/Common/BreadCrumb';
 import UiContent from '../../../Components/Common/UiContent';
@@ -235,6 +238,12 @@ const TandaVital = () => {
                     }}
                     className="gy-4"
                     action="#">
+                        {success && success ? (
+                                <>
+                                    {toast("Tanda Vital Berhasil Disimpan.....", { position: "top-right", hideProgressBar: false, className: 'bg-success text-white', progress: undefined, toastId: "" })}
+                                    <ToastContainer autoClose={2000} limit={1} />
+                                </>
+                            ) : null}
                     <Row>
 
                         <Col xxl={3} sm={6}>
@@ -561,7 +570,7 @@ const TandaVital = () => {
                         </Col>
                         <Col xxl={12} sm={12}>
                             <Button type="submit" color="info" className="rounded-pill"> SIMPAN </Button>
-                            <Button type="button" color="danger" className="rounded-pill" > BATAL </Button>
+                            {/* <Button type="button" color="danger" className="rounded-pill" > BATAL </Button> */}
                         </Col>
 
                         <Col xxl={12} sm={12}>
