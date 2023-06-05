@@ -32,7 +32,23 @@ async function saveEmrPasienTtv(req, res) {
     // return
     const resultEmrPasien = await queryPromise1(req.body.norecap, req.body.idlabel);
     try {
-
+        let rate = req.body.gcse+req.body.gcsm+req.body.gcsv
+        let idgcs=null
+        if(rate<=3){
+            idgcs = 33
+        }else if(rate===4){
+            idgcs = 32
+        }else if(rate>=5 && rate<=6){
+            idgcs = 31
+        }else if(rate>=7 && rate<=9){
+            idgcs = 30
+        }else if(rate>=10 && rate<=11){
+            idgcs = 29
+        }else if(rate>=12 && rate<=13){
+            idgcs = 28
+        }else if(rate>=14 && rate<=15){
+            idgcs = 27
+        }
         transaction = await db.sequelize.transaction();
         let norec = uuid.v4().substring(0, 32)
 
@@ -66,7 +82,8 @@ async function saveEmrPasienTtv(req, res) {
             pernapasan: req.body.pernapasan,
             keadaanumum: req.body.keadaanumum,
             tekanandarah:req.body.tekanandarah,
-            tglisi: new Date()
+            tglisi: new Date(),
+            objectgcsfk:idgcs,
         }, { transaction });
 
         await transaction.commit();
@@ -186,7 +203,23 @@ async function editEmrPasienTtv(req, res) {
     // res.status(500).send({ message: 'masuk' });
     // return
     try {
-
+        let rate = req.body.gcse+req.body.gcsm+req.body.gcsv
+        let idgcs=null
+        if(rate<=3){
+            idgcs = 33
+        }else if(rate===4){
+            idgcs = 32
+        }else if(rate>=5 && rate<=6){
+            idgcs = 31
+        }else if(rate>=7 && rate<=9){
+            idgcs = 30
+        }else if(rate>=10 && rate<=11){
+            idgcs = 29
+        }else if(rate>=12 && rate<=13){
+            idgcs = 28
+        }else if(rate>=14 && rate<=15){
+            idgcs = 27
+        }
         transaction = await db.sequelize.transaction();
       
         let norecttv = uuid.v4().substring(0, 32)
@@ -208,12 +241,13 @@ async function editEmrPasienTtv(req, res) {
             tekanandarah:req.body.tekanandarah,
             isedit:true,
             objectttvfk:req.body.norec,
+            objectgcsfk:idgcs,
             tglisi: new Date()
         }, { transaction });
 
         const ttvupdate = await db.t_ttv.update({
             statusenabled: false,
-            tglisi: new Date()
+            // tglisi: new Date()
         }, {
             where: {
                 norec: req.body.norec

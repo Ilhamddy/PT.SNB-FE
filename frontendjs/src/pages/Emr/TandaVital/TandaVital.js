@@ -45,14 +45,16 @@ const TandaVital = () => {
         if (newData !== null) {
             dispatch(emrTtvGet(norecdp));
         }
-    }, [newData,norecdp, dispatch])
+    }, [newData, norecdp, dispatch])
 
+    const [hasilGcs, sethasilGcs] = useState('');
+    const [rate, setRate] = useState(0);
     const validation = useFormik({
         enableReinitialize: true,
         initialValues: {
             norecap: editData?.norecap ?? norecap,
             norec: editData?.norec ?? '',
-            objectemrfk: editData?.objectemrfk ??'',
+            objectemrfk: editData?.objectemrfk ?? '',
             tinggibadan: editData?.tinggibadan ?? '',
             suhu: editData?.suhu ?? '',
             gcse: editData?.gcse ?? '',
@@ -66,12 +68,13 @@ const TandaVital = () => {
             pernapasan: editData?.pernapasan ?? '',
             keadaanumum: editData?.keadaanumum ?? '',
             idlabel: 1,
-            label: 'TTV'
+            label: 'TTV',
+            idgcs: editData?.idgcs?? ''
         },
         validationSchema: Yup.object({
             tinggibadan: Yup.string().required("Tinggi Badan wajib diisi"),
             suhu: Yup.string().required("Suhu wajib diisi"),
-            gcse: Yup.string().required("E wajib diisi"),
+            // gcse: Yup.string().required("E wajib diisi"),
             gcsm: Yup.string().required("M wajib diisi"),
             gcsv: Yup.string().required("V wajib diisi"),
             beratbadan: Yup.string().required("Berat Badan wajib diisi"),
@@ -81,11 +84,42 @@ const TandaVital = () => {
             spo2: Yup.string().required("SpO2 wajib diisi"),
             pernapasan: Yup.string().required("Pernapasan wajib diisi"),
             keadaanumum: Yup.string().required("Keadaan Umum wajib diisi"),
-            // aCheckbox: Yup.boolean('Select this checkbox please'),
-            // keadaanumum: Yup.string().when("aCheckbox", {
-            //     is: (aCheckbox) => aCheckbox === true,
-            //     then: Yup.string().required('I am required now the checkbox is checked')
-            // })
+            gcse: Yup.string().when("gcsm", (gcsm, schema) => {
+                if (validation.values.gcse === '' || validation.values.gcse === null) {
+                    return schema
+                        .required("E wajib diisi")
+                } else {
+                    let tempgcse = validation.values.gcse === '' || validation.values.gcse === null ? 0 : validation.values.gcse
+                    let tempgcsm = validation.values.gcsm === '' || validation.values.gcsm === null ? 0 : validation.values.gcsm
+                    let tempgcsv = validation.values.gcsv === '' || validation.values.gcsv === null ? 0 : validation.values.gcsv
+                    setRate(tempgcse + tempgcsm + tempgcsv)
+                    return schema
+                }
+            }),
+            // gcsm: Yup.string().when("gcsv", (gcsv, schema) => {
+            //     if (validation.values.gcsm === '' || validation.values.gcsm === null) {
+            //         return schema
+            //             .required("M wajib diisi")
+            //     } else {
+            //         let tempgcse = validation.values.gcse === '' || validation.values.gcse === null ? 0 : validation.values.gcse
+            //         let tempgcsm = validation.values.gcsm === '' || validation.values.gcsm === null ? 0 : validation.values.gcsm
+            //         let tempgcsv = validation.values.gcsv === '' || validation.values.gcsv === null ? 0 : validation.values.gcsv
+            //         setRate(tempgcse + tempgcsm + tempgcsv)
+            //         return schema
+            //     }
+            // }),
+            // gcsv: Yup.string().when("keadaanumum", (keadaanumum, schema) => {
+            //     if (validation.values.gcsv === '' || validation.values.gcsv === null) {
+            //         return schema
+            //             .required("V wajib diisi")
+            //     } else {
+            //         let tempgcse = validation.values.gcse === '' || validation.values.gcse === null ? 0 : validation.values.gcse
+            //         let tempgcsm = validation.values.gcsm === '' || validation.values.gcsm === null ? 0 : validation.values.gcsm
+            //         let tempgcsv = validation.values.gcsv === '' || validation.values.gcsv === null ? 0 : validation.values.gcsv
+            //         setRate(tempgcse + tempgcsm + tempgcsv)
+            //         return schema
+            //     }
+            // }),
         }),
         onSubmit: (values, { resetForm }) => {
             // console.log(validation.errors)
@@ -251,7 +285,7 @@ const TandaVital = () => {
         validation.setFieldValue('pernapasan', e.pernapasan)
         validation.setFieldValue('keadaanumum', e.keadaanumum)
         validation.setFieldValue('norec', e.norec)
-        validation.setFieldValue('objectemrfk',e.objectemrfk)
+        validation.setFieldValue('objectemrfk', e.objectemrfk)
         console.log(e)
     };
     const handleClickReset = (e) => {
@@ -268,8 +302,28 @@ const TandaVital = () => {
         validation.setFieldValue('pernapasan', '')
         validation.setFieldValue('keadaanumum', '')
         validation.setFieldValue('norec', '')
-        validation.setFieldValue('objectemrfk','')
+        validation.setFieldValue('objectemrfk', '')
     };
+    
+    
+    useEffect(() => {
+        if(rate<=3){
+            sethasilGcs('Coma')
+        }else if(rate===4){
+            sethasilGcs('Semi-coma')
+        }else if(rate>=5 && rate<=6){
+            sethasilGcs('Sopor')
+        }else if(rate>=7 && rate<=9){
+            sethasilGcs('Somnolen')
+        }else if(rate>=10 && rate<=11){
+            sethasilGcs('Delirium')
+        }else if(rate>=12 && rate<=13){
+            sethasilGcs('Apatis')
+        }else if(rate>=14 && rate<=15){
+            sethasilGcs('Cosposmentis')
+        }
+        console.log(rate)
+      }, [rate]);
 
     return (
         <React.Fragment>
@@ -353,7 +407,7 @@ const TandaVital = () => {
                                                     id="gcse"
                                                     name="gcse"
                                                     type="number"
-                                                    placeholder="E"
+                                                    placeholder="0"
                                                     onChange={validation.handleChange}
                                                     onBlur={validation.handleBlur}
                                                     value={validation.values.gcse || ""}
@@ -372,7 +426,7 @@ const TandaVital = () => {
                                                     id="gcsm"
                                                     name="gcsm"
                                                     type="number"
-                                                    placeholder="M"
+                                                    placeholder="0"
                                                     onChange={validation.handleChange}
                                                     onBlur={validation.handleBlur}
                                                     value={validation.values.gcsm || ""}
@@ -391,7 +445,7 @@ const TandaVital = () => {
                                                     id="gcsv"
                                                     name="gcsv"
                                                     type="number"
-                                                    placeholder="V"
+                                                    placeholder="0"
                                                     onChange={validation.handleChange}
                                                     onBlur={validation.handleBlur}
                                                     value={validation.values.gcsv || ""}
@@ -406,6 +460,17 @@ const TandaVital = () => {
                                             </div>
                                         </Col>
                                     </Row>
+                                </Col>
+                                <Col lg={6} sm={6}></Col>
+                                <Col lg={6} sm={6}>
+                                    <Input
+                                        type="text"
+                                        className="form-control bg-light border-0"
+                                        id="totalamountInput"
+                                        placeholder="Hasil GCS"
+                                        readOnly
+                                        value={hasilGcs}
+                                    />
                                 </Col>
                             </Row>
                         </Col>
@@ -622,7 +687,7 @@ const TandaVital = () => {
                                 BATAL
                             </Button>
                             <UncontrolledTooltip placement="top" target="tooltipTop2" > BATAL Tanda-Tanda Vital </UncontrolledTooltip>
-                           
+
                         </Col>
 
                         <Col xxl={12} sm={12}>

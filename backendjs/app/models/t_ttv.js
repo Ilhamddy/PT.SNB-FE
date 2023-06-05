@@ -58,6 +58,9 @@ module.exports = (sequelize, Sequelize) => {
         objectttvfk:{
             type: Sequelize.INTEGER
         },
+        objectgcsfk:{
+            type: Sequelize.INTEGER
+        },
         tglisi:{
             type: 'TIMESTAMP'
         },
