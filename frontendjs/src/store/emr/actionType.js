@@ -11,3 +11,11 @@ export const EMR_TTV_SAVE_ERROR = "EMR_TTV_SAVE_ERROR";
 export const EMR_TTV_GET = "EMR_TTV_GET";
 export const EMR_TTV_GET_SUCCESS = "EMR_TTV_GET_SUCCESS";
 export const EMR_TTV_GET_ERROR = "EMR_TTV_GET_ERROR";
+
+export const EMR_SAVE = "EMR_SAVE";
+export const EMR_SAVE_SUCCESS = "EMR_SAVE_SUCCESS";
+export const EMR_SAVE_ERROR = "EMR_SAVE_ERROR";
+
+export const EMR_GET = "EMR_GET";
+export const EMR_GET_SUCCESS = "EMR_GET_SUCCESS";
+export const EMR_GET_ERROR = "EMR_GET_ERROR";

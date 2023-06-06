@@ -225,9 +225,16 @@ const savePasien = (req, res) => {
                     data: result,
                     status: "success",
                     success: true,
+                    msg:'Simpan Berhasil',
+                    code:200
                 });
             }).catch(err => {
-                res.status(500).send({ message: err.message });
+                res.status(201).send({
+                    status: err,
+                    success: false,
+                    msg:'Simpan Gagal',
+                    code:201
+                });
             });
         });
     } catch (error) {
@@ -328,7 +335,13 @@ const saveRegistrasiPasien2 = (req, res) => {
     }
 }
 async function saveRegistrasiPasien(req, res) {
-
+    res.status(201).send({
+        status: 'err',
+        success: false,
+        msg:'Simpan Gagal',
+        code:201
+    });
+    return
     try {
         let norecDP = uuid.v4().substring(0, 32)
         let objectpenjaminfk = null
@@ -365,7 +378,7 @@ async function saveRegistrasiPasien(req, res) {
         if (req.body.kamar === "")
             req.body.kamar = null
         if (req.body.tempattidur === "")
-            req.body.kamar = null
+            req.body.tempattidur = null
         transaction = await db.sequelize.transaction();
         const daftarPasien = await db.t_daftarpasien.create({
             norec: norecDP,
@@ -390,7 +403,7 @@ async function saveRegistrasiPasien(req, res) {
         let norecAP = uuid.v4().substring(0, 32)
         const antreanPemeriksaan = await db.t_antreanpemeriksaan.create({
             norec: norecAP,
-            noregistrasifk: norecDP,
+            objectdaftarpasienfk: norecDP,
             tglmasuk: req.body.tglregistrasi,
             tglpulang: req.body.tglregistrasi,
             objectdokterpemeriksafk: req.body.dokter,
@@ -408,12 +421,19 @@ async function saveRegistrasiPasien(req, res) {
             data: tempres,
             status: "success",
             success: true,
+            msg:'Simpan Berhasil',
+            code:200
         });
     } catch (error) {
         // console.log(error);
         if (transaction) {
             await transaction.rollback();
-            res.status(500).send({ message: error });
+            res.status(201).send({
+                status: error,
+                success: false,
+                msg:'Simpan Gagal',
+                code:201
+            });
         }
     }
 }

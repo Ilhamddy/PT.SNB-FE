@@ -8,7 +8,13 @@ import {
     EMR_TTV_SAVE_ERROR,
     EMR_TTV_GET,
     EMR_TTV_GET_SUCCESS,
-    EMR_TTV_GET_ERROR
+    EMR_TTV_GET_ERROR,
+    EMR_SAVE,
+    EMR_SAVE_SUCCESS,
+    EMR_SAVE_ERROR,
+    EMR_GET,
+    EMR_GET_SUCCESS,
+    EMR_GET_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -28,6 +34,17 @@ const INIT_STATE = {
         loading: false,
         error: null,
     },
+    emrSave: {
+        newData: null,
+        loading: false,
+        error: null,
+        success: false
+    },
+    emrGet: {
+        data: [],
+        loading: false,
+        error: null,
+    },
 };
 
 const Emr = (state = INIT_STATE, action) => {
@@ -43,6 +60,12 @@ const Emr = (state = INIT_STATE, action) => {
                 },
                 emrTtvGet:{
                     ...INIT_STATE.emrTtvGet,
+                },
+                emrSave:{
+                    ...INIT_STATE.emrSave
+                },
+                emrGet:{
+                    ...INIT_STATE.emrGet,
                 },
             }
         }
@@ -141,6 +164,73 @@ const Emr = (state = INIT_STATE, action) => {
                 ...state,
                 emrTtvGet: {
                     ...state.emrTtvGet,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case EMR_SAVE: {
+            return {
+                ...state,
+                emrSave: {
+                    ...state.emrSave,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case EMR_SAVE_SUCCESS: {
+            return {
+                ...state,
+                emrSave: {
+                    ...state.emrSave,
+                    newData: action.payload,
+                    loading: false,
+                    success: true,
+                }
+            }
+        }
+
+        case EMR_SAVE_ERROR: {
+            return {
+                ...state,
+                emrSave: {
+                    ...state.emrSave,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case EMR_GET: {
+            return {
+                ...state,
+                emrGet: {
+                    ...state.emrGet,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case EMR_GET_SUCCESS: {
+            return {
+                ...state,
+                emrGet: {
+                    ...state.emrGet,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case EMR_GET_ERROR: {
+            return {
+                ...state,
+                emrGet: {
+                    ...state.emrGet,
                     loading: false,
                     error: action.error,
                 }

@@ -147,31 +147,18 @@ const RegistrasiPasien = (props) => {
 
     const [messageNewData, setmessageNewData] = useState("");
     const [tempNoregistrasi, settempNoregistrasi] = useState("");
-    const notifyError = useCallback(() => {
-        return toast("Terjadi kesalahan", { position: "top-right", hideProgressBar: false, className: 'bg-danger text-white' });
-    }, []);
+    
 
-    const notifySuccess = useCallback((t) => {
-        return toast(t, { position: "top-right", hideProgressBar: false, className: 'bg-success text-white' });
-    }, []);
+    // useEffect(() => {
 
-    useEffect(() => {
-        // console.log('massukkk')
-        if (errorSave) {
-            notifyError();
-        }
-    }, [errorSave, notifyError])
-
-    useEffect(() => {
-
-        if (newData !== null) {
-            console.log(newData.data.daftarPasien.noregistrasi)
-            settempNoregistrasi("/bukti-pendaftaran/" + newData.data.daftarPasien.noregistrasi)
-            setmessageNewData(newData.data.daftarPasien.noregistrasi + ' Nomor Antrean Dokter ' + newData.data.antreanPemeriksaan.noantrian)
-            notifySuccess('Nomor Registrasi Pasien ' + newData.data.daftarPasien.noregistrasi)
-            // console.log(newData)
-        }
-    }, [newData, notifySuccess])
+    //     if (newData !== null) {
+    //         console.log(newData.data.daftarPasien.noregistrasi)
+    //         settempNoregistrasi("/bukti-pendaftaran/" + newData.data.daftarPasien.noregistrasi)
+    //         setmessageNewData(newData.data.daftarPasien.noregistrasi + ' Nomor Antrean Dokter ' + newData.data.antreanPemeriksaan.noantrian)
+    //         notifySuccess('Nomor Registrasi Pasien ' + newData.data.daftarPasien.noregistrasi)
+    //         // console.log(newData)
+    //     }
+    // }, [newData, notifySuccess])
 
 
     const [dataUnit, setdataUnit] = useState([]);
@@ -252,6 +239,7 @@ const RegistrasiPasien = (props) => {
 // console.log(validation.values.tujkunjungan)
     return (
         <div className="page-content">
+             <ToastContainer closeButton={false} />
             <Container fluid>
                 <BreadCrumb title="Registrasi Pasien" pageTitle="Registrasi Pasien" />
                 <Row>
@@ -357,7 +345,7 @@ const RegistrasiPasien = (props) => {
                         }}
                             className="gy-4"
                             action="#">
-                            {success && success ? (
+                            {/* {success && success ? (
                                 <>
                                     {toast("Registrasi Pasien Berhasil.....", { position: "top-right", hideProgressBar: false, className: 'bg-success text-white', progress: undefined, toastId: "" })}
                                     <ToastContainer autoClose={2000} limit={1} />
@@ -365,7 +353,7 @@ const RegistrasiPasien = (props) => {
                                         Registrasi Pasien Berhasil, dengan nomor registrasi {messageNewData}
                                     </Alert>
                                 </>
-                            ) : null}
+                            ) : null} */}
                             {/* <BuktiPendaftaran isOpen={modal} toggle={toggle} centered /> */}
                             <Card>
                                 <CardHeader style={{ backgroundColor: "#dfe4ea" }}>

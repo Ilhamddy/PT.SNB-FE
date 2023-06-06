@@ -183,6 +183,7 @@ const PasienBaru = () => {
 
     return (
         <React.Fragment>
+            <ToastContainer closeButton={false} />
             <div className="page-content">
                 <Container fluid>
                     <div className="position-relative mx-n4 mt-n4">
@@ -224,7 +225,7 @@ const PasienBaru = () => {
                                             }}
                                                 className="gy-4"
                                                 action="#">
-                                                {success ? (
+                                                {/* {success ? (
                                                     <>
                                                         {toast("Your Redirect To Login Page...", { position: "top-right", hideProgressBar: false, className: 'bg-success text-white', progress: undefined, toastId: "" })}
                                                         <ToastContainer autoClose={2000} limit={1} />
@@ -232,7 +233,7 @@ const PasienBaru = () => {
                                                             Pasien berhasil di simpan, silahkan lanjutkan Registrasi...
                                                         </Alert>
                                                     </>
-                                                ) : null}
+                                                ) : null} */}
                                                 <Row>
                                                     <Col lg={4}>
                                                         <Card style={{ backgroundColor: "#f1f2f6" }}>

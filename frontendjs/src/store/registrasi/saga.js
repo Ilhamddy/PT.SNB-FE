@@ -24,6 +24,9 @@ import {
     registrasiNoregistrasiGetSuccess
 } from "./action";
 
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 const serviceRegistrasi = new ServiceRegistrasi();
 
 function* onSaveRegistrasi({payload: { data, history}}) {
@@ -36,9 +39,15 @@ function* onSaveRegistrasi({payload: { data, history}}) {
         }
         
         yield put(registrasiSaveSuccess(response.data));
+        if(response.code===200){
+            toast.success(response.msg, { autoClose: 3000 });
+        }else{
+            toast.error(response.msg, { autoClose: 3000 });
+        }
         history("/registrasi/pasien-lama")
     } catch (error) {
         yield put(registrasiSaveError(error));
+        toast.error(error, { autoClose: 3000 });
     }
 }
 
@@ -79,9 +88,17 @@ function* onSaveRegistrasiRuangan({ payload: { data, history} }) {
         }
         
         yield put(registrasiSaveRuanganSuccess(response.data));
+        console.log(response.code)
+        if(response.code===200){
+            console.log('masukkk')
+            toast.success('testtt', { autoClose: 3000 });
+        }else{
+            toast.error(response.msg, { autoClose: 3000 });
+        }
         // history("/registrasi/pasien-lama")
     } catch (error) {
         yield put(registrasiSaveRuanganError(error));
+        toast.error(error, { autoClose: 3000 });
     }
 }
 

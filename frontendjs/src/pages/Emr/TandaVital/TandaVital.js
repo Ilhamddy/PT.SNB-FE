@@ -131,7 +131,7 @@ const TandaVital = () => {
         headRow: {
             style: {
                 color: '#ffffff',
-                backgroundColor: '#e67e22',
+                backgroundColor: '#B57602',
             },
         },
         rows: {
@@ -143,27 +143,7 @@ const TandaVital = () => {
         }
     }
     const columns = [
-        {
-            name: <span className='font-weight-bold fs-13'>Detail</span>,
-            sortable: false,
-            cell: (dataTtv) => {
-                return (
-                    <div className="hstack gap-3 flex-wrap">
-
-                        <UncontrolledDropdown className="dropdown d-inline-block">
-                            <DropdownToggle className="btn btn-soft-secondary btn-sm" tag="button">
-                                <i className="ri-apps-2-line"></i>
-                            </DropdownToggle>
-                            <DropdownMenu className="dropdown-menu-end">
-                                <DropdownItem href="#!"><i className="ri-eye-fill align-bottom me-2 text-muted"></i>View</DropdownItem>
-                                <DropdownItem className='edit-item-btn'><i className="ri-pencil-fill align-bottom me-2 text-muted"></i>Edit</DropdownItem>
-                                <DropdownItem className='remove-item-btn'> <i className="ri-delete-bin-fill align-bottom me-2 text-muted"></i> Delete </DropdownItem>
-                            </DropdownMenu>
-                        </UncontrolledDropdown>
-                    </div>
-                );
-            },
-        },
+       
         {
             name: <span className='font-weight-bold fs-13'>No</span>,
             selector: row => row.no,
@@ -187,7 +167,7 @@ const TandaVital = () => {
             name: <span className='font-weight-bold fs-13'>Tgl Registrasi</span>,
             selector: row => row.tglregistrasi,
             sortable: true,
-            width: "100px"
+            width: "120px"
         },
         {
 
@@ -327,6 +307,7 @@ const TandaVital = () => {
 
     return (
         <React.Fragment>
+            <ToastContainer closeButton={false} />
             <Row className="gy-4">
                 <Form
                     onSubmit={(e) => {
@@ -336,12 +317,12 @@ const TandaVital = () => {
                     }}
                     className="gy-4"
                     action="#">
-                    {success && success ? (
+                    {/* {success && success ? (
                         <>
                             {toast("Tanda Vital Berhasil Disimpan.....", { position: "top-right", hideProgressBar: false, className: 'bg-success text-white', progress: undefined, toastId: "" })}
-                            <ToastContainer autoClose={2000} limit={1} />
+                            <ToastContainer autoClose={2000} limit={1}/>
                         </>
-                    ) : null}
+                    ) : null} */}
                     <Row>
 
                         <Col xxl={3} sm={6}>

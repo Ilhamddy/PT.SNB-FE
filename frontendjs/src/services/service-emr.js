@@ -18,4 +18,16 @@ export default class ServiceEmr {
     editTTV = async (params) => {
         return await api.create("/transaksi/emr/edit-emr-pasien-ttv", params);
     }
+
+    saveCPPT = async (params) => {
+        return await api.create("/transaksi/emr/save-emr-pasien-cppt", params);
+    }
+
+    editCPPT = async (params) => {
+        return await api.create("/transaksi/emr/edit-emr-pasien-cppt", params);
+    }
+
+    getCpptList = async (param) => {
+        return await api.get(`/transaksi/emr/getList-cppt?norecdp=${param}`);
+    }
 }

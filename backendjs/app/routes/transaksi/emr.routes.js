@@ -31,4 +31,22 @@ module.exports = function (app) {
         [authJwt.verifyToken],
         controller.editEmrPasienTtv
     );
+
+    app.post(
+        "/api/transaksi/emr/save-emr-pasien-cppt",
+        [authJwt.verifyToken],
+        controller.saveEmrPasienCppt
+    );
+
+    app.get(
+        "/api/transaksi/emr/getList-cppt",
+        [authJwt.verifyToken],
+        controller.getListCppt
+    );
+
+    app.post(
+        "/api/transaksi/emr/edit-emr-pasien-cppt",
+        [authJwt.verifyToken],
+        controller.editEmrPasienCppt
+    );
 }

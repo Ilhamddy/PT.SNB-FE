@@ -45,6 +45,10 @@ const EmrBody = () => {
             id: 3,
             label: "Tabulasi 2",
         },
+        {
+            id: 4,
+            label: "Penunjang",
+        },
 
     ];
     const taskRJ = [

@@ -22,8 +22,8 @@ import logoLight from "../../assets/images/svg/login-new.svg";
 //Import config
 import { facebook, google } from "../../config";
 import withRouter from '../../Components/Common/withRouter';
-
-//import images
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Login = (props) => {
     const dispatch = useDispatch();
@@ -125,6 +125,7 @@ const Login = (props) => {
                                             <p className="text-muted">Sign in to continue to HMS.</p>
                                         </div>
                                         {errorMsg && errorMsg ? (<Alert color="danger"> {errorMsg} </Alert>) : null}
+                                    
                                         <div className="p-2 mt-4">
                                             <Form
                                                 onSubmit={(e) => {
@@ -135,7 +136,7 @@ const Login = (props) => {
                                                 action="#">
 
                                                 <div className="mb-3">
-                                                <Label htmlFor="username" className="form-label">Username </Label>
+                                                    <Label htmlFor="username" className="form-label">Username </Label>
                                                     <Input
                                                         name="first_name"
                                                         type="text"
