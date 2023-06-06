@@ -39,8 +39,8 @@ const DaftarPasienRJ = () => {
     const tableCustomStyles = {
         headRow: {
             style: {
-                color: '#223336',
-                backgroundColor: '#48dbfb',
+                color: '#ffffff',
+                backgroundColor: '#e67e22',
             },
         },
         rows: {

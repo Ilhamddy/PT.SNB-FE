@@ -11,6 +11,7 @@ import { emrHeaderGet, emrResetForm } from "../../../store/actions";
 import { useParams } from "react-router-dom";
 import classnames from "classnames";
 import TandaVital from '../TandaVital/TandaVital';
+import Cppt from '../Cppt/Cppt';
 
 const EmrBody = () => {
     const { norecdp, norecap } = useParams();
@@ -98,6 +99,15 @@ const EmrBody = () => {
                                             <Card>
                                                 <CardBody>
                                                     <TandaVital/>
+                                                </CardBody>
+                                            </Card>
+                                        </TabPane>
+                                    </TabContent>
+                                    <TabContent activeTab={pillsTabRj} className="text-muted">
+                                        <TabPane tabId="2" id="ttv-2">
+                                            <Card>
+                                                <CardBody>
+                                                    <Cppt/>
                                                 </CardBody>
                                             </Card>
                                         </TabPane>
