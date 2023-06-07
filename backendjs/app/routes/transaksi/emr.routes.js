@@ -31,7 +31,7 @@ module.exports = function (app) {
         [authJwt.verifyToken],
         controller.editEmrPasienTtv
     );
-
+// cppt
     app.post(
         "/api/transaksi/emr/save-emr-pasien-cppt",
         [authJwt.verifyToken],
@@ -49,4 +49,38 @@ module.exports = function (app) {
         [authJwt.verifyToken],
         controller.editEmrPasienCppt
     );
+     // end
+
+    // diagnosa
+    app.get(
+        "/api/transaksi/emr/getList-diagnosa-sepuluh",
+        [authJwt.verifyToken],
+        controller.getListDiagnosa10
+    );
+    app.get(
+        "/api/transaksi/emr/getList-diagnosa-sembilan",
+        [authJwt.verifyToken],
+        controller.getListDiagnosa9
+    );
+    app.get(
+        "/api/transaksi/emr/getList-diagnosa-combo",
+        [authJwt.verifyToken],
+        controller.getListComboDiagnosa
+    );
+    app.post(
+        "/api/transaksi/emr/save-emr-pasien-diagnosa",
+        [authJwt.verifyToken],
+        controller.saveEmrPasienDiagnosa
+    );
+    app.get(
+        "/api/transaksi/emr/getList-diagnosax-pasien",
+        [authJwt.verifyToken],
+        controller.getListDiagnosaPasien
+    );
+    app.get(
+        "/api/transaksi/emr/getList-diagnosaix-pasien",
+        [authJwt.verifyToken],
+        controller.getListDiagnosaIxPasien
+    );
+    // end
 }

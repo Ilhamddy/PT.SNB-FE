@@ -30,4 +30,20 @@ export default class ServiceEmr {
     getCpptList = async (param) => {
         return await api.get(`/transaksi/emr/getList-cppt?norecdp=${param}`);
     }
+
+    getComboEmr = async (param) => {
+        return await api.get(`/transaksi/emr/getList-diagnosa-combo`);
+    }
+
+    getDiagnosa10 = async (param) => {
+        return await api.get(`/transaksi/emr/getList-diagnosa-sepuluh?namadiagnosa=${param}`);
+    }
+
+    getDiagnosa9 = async (param) => {
+        return await api.get(`/transaksi/emr/getList-diagnosa-sembilan?namadiagnosa=${param}`);
+    }
+
+    saveDiagnosa = async (params) => {
+        return await api.create("/transaksi/emr/save-emr-pasien-diagnosa", params);
+    }
 }

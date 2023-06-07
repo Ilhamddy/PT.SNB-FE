@@ -14,7 +14,22 @@ import {
     EMR_SAVE_ERROR,
     EMR_GET,
     EMR_GET_SUCCESS,
-    EMR_GET_ERROR
+    EMR_GET_ERROR,
+    EMR_COMBO_GET,
+    EMR_COMBO_GET_SUCCESS,
+    EMR_COMBO_GET_ERROR,
+    EMR_DIAGNOSAX_GET,
+    EMR_DIAGNOSAX_GET_SUCCESS,
+    EMR_DIAGNOSAX_GET_ERROR,
+    EMR_DIAGNOSAIX_GET,
+    EMR_DIAGNOSAIX_GET_SUCCESS,
+    EMR_DIAGNOSAIX_GET_ERROR,
+    EMR_DIAGNOSAX_SAVE,
+    EMR_DIAGNOSAX_SAVE_SUCCESS,
+    EMR_DIAGNOSAX_SAVE_ERROR,
+    EMR_DIAGNOSAIX_SAVE,
+    EMR_DIAGNOSAIX_SAVE_SUCCESS,
+    EMR_DIAGNOSAIX_SAVE_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -45,6 +60,33 @@ const INIT_STATE = {
         loading: false,
         error: null,
     },
+    emrComboGet: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    emrDiagnosaxGet: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    emrDiagnosaixGet: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    emrDiagnosaxSave: {
+        newData: null,
+        loading: false,
+        error: null,
+        success: false
+    },
+    emrDiagnosaixSave: {
+        newData: null,
+        loading: false,
+        error: null,
+        success: false
+    },
 };
 
 const Emr = (state = INIT_STATE, action) => {
@@ -67,6 +109,21 @@ const Emr = (state = INIT_STATE, action) => {
                 emrGet:{
                     ...INIT_STATE.emrGet,
                 },
+                emrComboGet:{
+                    ...INIT_STATE.emrComboGet,
+                },
+                emrDiagnosaxGet:{
+                    ...INIT_STATE.emrDiagnosaxGet,
+                },
+                emrDiagnosaixGet:{
+                    ...INIT_STATE.emrDiagnosaixGet,
+                },
+                emrDiagnosaxSave:{
+                    ...INIT_STATE.emrDiagnosaxSave
+                },
+                emrDiagnosaixSave:{
+                    ...INIT_STATE.emrDiagnosaixSave
+                }
             }
         }
 
@@ -237,6 +294,172 @@ const Emr = (state = INIT_STATE, action) => {
             }
         }
 
+        case EMR_COMBO_GET: {
+            return {
+                ...state,
+                emrComboGet: {
+                    ...state.emrComboGet,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case EMR_COMBO_GET_SUCCESS: {
+            return {
+                ...state,
+                emrComboGet: {
+                    ...state.emrComboGet,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case EMR_COMBO_GET_ERROR: {
+            return {
+                ...state,
+                emrComboGet: {
+                    ...state.emrComboGet,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case EMR_DIAGNOSAX_GET: {
+            return {
+                ...state,
+                emrDiagnosaxGet: {
+                    ...state.emrDiagnosaxGet,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case EMR_DIAGNOSAX_GET_SUCCESS: {
+            return {
+                ...state,
+                emrDiagnosaxGet: {
+                    ...state.emrDiagnosaxGet,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case EMR_DIAGNOSAX_GET_ERROR: {
+            return {
+                ...state,
+                emrDiagnosaxGet: {
+                    ...state.emrDiagnosaxGet,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case EMR_DIAGNOSAIX_GET: {
+            return {
+                ...state,
+                emrDiagnosaixGet: {
+                    ...state.emrDiagnosaixGet,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case EMR_DIAGNOSAIX_GET_SUCCESS: {
+            return {
+                ...state,
+                emrDiagnosaixGet: {
+                    ...state.emrDiagnosaixGet,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case EMR_DIAGNOSAIX_GET_ERROR: {
+            return {
+                ...state,
+                emrDiagnosaixGet: {
+                    ...state.emrDiagnosaixGet,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case EMR_DIAGNOSAX_SAVE: {
+            return {
+                ...state,
+                emrDiagnosaxSave: {
+                    ...state.emrDiagnosaxSave,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case EMR_DIAGNOSAX_SAVE_SUCCESS: {
+            return {
+                ...state,
+                emrDiagnosaxSave: {
+                    ...state.emrDiagnosaxSave,
+                    newData: action.payload,
+                    loading: false,
+                    success: true,
+                }
+            }
+        }
+
+        case EMR_DIAGNOSAX_SAVE_ERROR: {
+            return {
+                ...state,
+                emrDiagnosaxSave: {
+                    ...state.emrDiagnosaxSave,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case EMR_DIAGNOSAIX_SAVE: {
+            return {
+                ...state,
+                emrDiagnosaixSave: {
+                    ...state.emrDiagnosaixSave,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case EMR_DIAGNOSAIX_SAVE_SUCCESS: {
+            return {
+                ...state,
+                emrDiagnosaixSave: {
+                    ...state.emrDiagnosaixSave,
+                    newData: action.payload,
+                    loading: false,
+                    success: true,
+                }
+            }
+        }
+
+        case EMR_DIAGNOSAIX_SAVE_ERROR: {
+            return {
+                ...state,
+                emrDiagnosaixSave: {
+                    ...state.emrDiagnosaixSave,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
 
         default: {
             return { ...state };

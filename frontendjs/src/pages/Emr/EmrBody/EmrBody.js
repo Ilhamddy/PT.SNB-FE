@@ -9,9 +9,13 @@ import UiContent from '../../../Components/Common/UiContent';
 import { Link, useNavigate } from "react-router-dom";
 import { emrHeaderGet, emrResetForm } from "../../../store/actions";
 import { useParams } from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import classnames from "classnames";
 import TandaVital from '../TandaVital/TandaVital';
 import Cppt from '../Cppt/Cppt';
+import Diagnosa from '../Diagnosa/index';
 
 const EmrBody = () => {
     const { norecdp, norecap } = useParams();
@@ -60,10 +64,15 @@ const EmrBody = () => {
             id: 2,
             label: "CPPT",
         },
+        {
+            id: 3,
+            label: "Diagnosa",
+        },
     ];
     
     return (
         <React.Fragment>
+            <ToastContainer closeButton={false} />
             <Row>
                 <Col xxl={12}>
                     <Card>
@@ -112,6 +121,15 @@ const EmrBody = () => {
                                             <Card>
                                                 <CardBody>
                                                     <Cppt/>
+                                                </CardBody>
+                                            </Card>
+                                        </TabPane>
+                                    </TabContent>
+                                    <TabContent activeTab={pillsTabRj} className="text-muted">
+                                        <TabPane tabId="3" id="diagnosa-3">
+                                            <Card>
+                                                <CardBody>
+                                                    <Diagnosa/>
                                                 </CardBody>
                                             </Card>
                                         </TabPane>

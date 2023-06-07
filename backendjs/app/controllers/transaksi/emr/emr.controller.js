@@ -6,6 +6,7 @@ const db = require("../../../models");
 const t_emrpasien = db.t_emrpasien
 const t_ttv = db.t_ttv
 const t_cppt = db.t_cppt
+const t_diagnosapasien = db.t_diagnosapasien
 
 queryPromise1 = (norecta, idlabel) => {
     return new Promise((resolve, reject) => {
@@ -449,6 +450,156 @@ async function editEmrPasienCppt(req, res) {
     }
 }
 
+async function getListDiagnosa10(req, res) {
+
+    const result = await queryPromise2(`SELECT id as value,kodeexternal || ' - '|| reportdisplay as label
+        FROM m_icdx where reportdisplay ilike '%${req.query.namadiagnosa}%' limit 10
+    `);
+    if (result.rowCount === 0) {
+        res.status(201).send({
+            data: [],
+            status: "success",
+            success: true,
+        });
+        return
+    }
+    
+    res.status(200).send({
+        data: result.rows,
+        status: "success",
+        success: true,
+    });
+}
+
+async function getListDiagnosa9(req, res) {
+
+    const result = await queryPromise2(`SELECT id as value,kodeexternal || ' - '||reportdisplay as label
+        FROM m_icdix where reportdisplay ilike '%${req.query.namadiagnosa}%' limit 10
+    `);
+    if (result.rowCount === 0) {
+        res.status(201).send({
+            data: [],
+            status: "success",
+            success: true,
+        });
+        return
+    }
+    
+    res.status(200).send({
+        data: result.rows,
+        status: "success",
+        success: true,
+    });
+}
+
+async function getListComboDiagnosa(req, res) {
+
+    const result = await queryPromise2(`SELECT id as value,reportdisplay as label
+        FROM m_tipediagnosa
+    `);
+    const result2 = await queryPromise2(`SELECT id as value,reportdisplay as label
+        FROM m_jeniskasus
+    `);
+  
+    let tempres = { tipediagnosa: result.rows, jeniskasus:result2.rows }
+    res.status(200).send({
+        data: tempres,
+        status: "success",
+        success: true,
+    });
+}
+
+async function saveEmrPasienDiagnosa(req, res) {
+    // res.status(500).send({ message: req.userId });
+    // return
+    try {
+
+        transaction = await db.sequelize.transaction();
+       
+        let norec = uuid.v4().substring(0, 32)
+        const diagnosapasien = await db.t_diagnosapasien.create({
+            norec: norec,
+            statusenabled: true,
+            objectantreanpemeriksaanfk: req.body.norecap,
+            objecttipediagnosafk: req.body.tipediagnosa,
+            objecticdxfk: req.body.kodediagnosa,
+            objectjeniskasusfk: req.body.kasuspenyakit,
+            keterangan: req.body.keteranganicd10,
+            tglinput: new Date(),
+        }, { transaction });
+
+        await transaction.commit();
+        let tempres = { diagnosapasien: diagnosapasien }
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+            msg: 'Simpan Berhasil',
+            code: 200
+        });
+    } catch (error) {
+        // console.log(error);
+        if (transaction) {
+            await transaction.rollback();
+            res.status(201).send({
+                status: error,
+                success: false,
+                msg: 'Simpan Gagal',
+                code: 201
+            });
+        }
+    }
+}
+
+async function getListDiagnosaPasien(req, res) {
+
+    const resultNocmfk = await queryPromise2(`SELECT nocmfk
+        FROM t_daftarpasien where norec='${req.query.norecdp}'
+    `);
+    if (resultNocmfk.rowCount === 0) {
+        res.status(500).send({ message: 'Data Tidak Ada' });
+        return
+    }
+    let nocmfk = resultNocmfk.rows[0].nocmfk
+    const resultList = await queryPromise2(`SELECT row_number() OVER (ORDER BY td.norec) AS no,dp.noregistrasi,
+    to_char(dp.tglregistrasi,'yyyy-MM-dd') as tglregistrasi,td.norec
+            FROM t_daftarpasien dp 
+    join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk=dp.norec
+    join t_diagnosapasien td  on td.objectantreanpemeriksaanfk =ta.norec
+    join m_unit mu on mu.id=ta.objectunitfk where dp.nocmfk='${nocmfk}' and td.statusenabled=true
+    `);
+    res.status(200).send({
+        data: resultList.rows,
+        status: "success",
+        success: true,
+    });
+}
+
+async function getListDiagnosaIxPasien(req, res) {
+
+    const resultNocmfk = await queryPromise2(`SELECT nocmfk
+        FROM t_daftarpasien where norec='${req.query.norecdp}'
+    `);
+    if (resultNocmfk.rowCount === 0) {
+        res.status(500).send({ message: 'Data Tidak Ada' });
+        return
+    }
+    let nocmfk = resultNocmfk.rows[0].nocmfk
+    const resultList = await queryPromise2(`SELECT row_number() OVER (ORDER BY td.norec) AS no,dp.noregistrasi,
+    to_char(dp.tglregistrasi,'yyyy-MM-dd') as tglregistrasi,td.norec
+            FROM t_daftarpasien dp 
+    join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk=dp.norec
+    join t_diagnosatindakan td  on td.objectantreanpemeriksaanfk =ta.norec
+    join m_unit mu on mu.id=ta.objectunitfk where dp.nocmfk='${nocmfk}' and td.statusenabled=true
+    `);
+    res.status(200).send({
+        data: resultList.rows,
+        status: "success",
+        success: true,
+    });
+}
+
+
 module.exports = {
     saveEmrPasienTtv,
     getListTtv,
@@ -456,5 +607,11 @@ module.exports = {
     editEmrPasienTtv,
     saveEmrPasienCppt,
     getListCppt,
-    editEmrPasienCppt
+    editEmrPasienCppt,
+    getListDiagnosa10,
+    getListDiagnosa9,
+    getListComboDiagnosa,
+    saveEmrPasienDiagnosa,
+    getListDiagnosaPasien,
+    getListDiagnosaIxPasien
 };
