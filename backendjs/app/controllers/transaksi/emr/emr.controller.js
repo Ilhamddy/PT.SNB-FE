@@ -33,21 +33,21 @@ async function saveEmrPasienTtv(req, res) {
     // return
     const resultEmrPasien = await queryPromise1(req.body.norecap, req.body.idlabel);
     try {
-        let rate = req.body.gcse+req.body.gcsm+req.body.gcsv
-        let idgcs=null
-        if(rate<=3){
+        let rate = req.body.gcse + req.body.gcsm + req.body.gcsv
+        let idgcs = null
+        if (rate <= 3) {
             idgcs = 33
-        }else if(rate===4){
+        } else if (rate === 4) {
             idgcs = 32
-        }else if(rate>=5 && rate<=6){
+        } else if (rate >= 5 && rate <= 6) {
             idgcs = 31
-        }else if(rate>=7 && rate<=9){
+        } else if (rate >= 7 && rate <= 9) {
             idgcs = 30
-        }else if(rate>=10 && rate<=11){
+        } else if (rate >= 10 && rate <= 11) {
             idgcs = 29
-        }else if(rate>=12 && rate<=13){
+        } else if (rate >= 12 && rate <= 13) {
             idgcs = 28
-        }else if(rate>=14 && rate<=15){
+        } else if (rate >= 14 && rate <= 15) {
             idgcs = 27
         }
         transaction = await db.sequelize.transaction();
@@ -82,9 +82,9 @@ async function saveEmrPasienTtv(req, res) {
             spo2: req.body.spo2,
             pernapasan: req.body.pernapasan,
             keadaanumum: req.body.keadaanumum,
-            tekanandarah:req.body.tekanandarah,
+            tekanandarah: req.body.tekanandarah,
             tglisi: new Date(),
-            objectgcsfk:idgcs,
+            objectgcsfk: idgcs,
         }, { transaction });
 
         await transaction.commit();
@@ -93,8 +93,8 @@ async function saveEmrPasienTtv(req, res) {
             data: tempres,
             status: "success",
             success: true,
-            msg:'Simpan Data Tanda Vital Berhasil',
-            code:200
+            msg: 'Simpan Data Tanda Vital Berhasil',
+            code: 200
         });
     } catch (error) {
         // console.log(error);
@@ -103,8 +103,8 @@ async function saveEmrPasienTtv(req, res) {
             res.status(201).send({
                 status: "false",
                 success: false,
-                msg:'Simpan Data Tanda Vital Gagal',
-                code:201
+                msg: 'Simpan Data Tanda Vital Gagal',
+                code: 201
             });
         }
     }
@@ -171,7 +171,28 @@ async function getHeaderEmr(req, res) {
             left join m_range mr on mr.id=tt.objectgcsfk where dp.norec='${req.query.norecdp}' order by tt.tglisi 
             desc limit 1
             `);
-            
+        let beratbadan = ''
+        let tinggibadan = ''
+        let suhu = ''
+        let nadi = ''
+        let alergi = ''
+        let tekanandarah = ''
+        let spo2 = ''
+        let pernapasan = ''
+        let keadaanumum = ''
+        let namagcs = ''
+        for (var i = 0; i < resultTtv.rows.length; ++i) {
+            beratbadan = resultTtv.rows[0].beratbadan,
+            tinggibadan = resultTtv.rows[0].tinggibadan,
+            suhu = resultTtv.rows[0].suhu,
+            nadi = resultTtv.rows[0].nadi,
+            alergi = resultTtv.rows[0].alergi,
+            tekanandarah = resultTtv.rows[0].tekanandarah,
+            spo2 = resultTtv.rows[0].spo2,
+            pernapasan = resultTtv.rows[0].pernapasan,
+            keadaanumum = resultTtv.rows[0].keadaanumum,
+            namagcs = resultTtv.rows[0].namagcs
+        }
         let tempres = ""
         for (var i = 0; i < resultCountNoantrianDokter.rows.length; ++i) {
             if (resultCountNoantrianDokter.rows[i] !== undefined) {
@@ -184,16 +205,16 @@ async function getHeaderEmr(req, res) {
                     namarekanan: resultCountNoantrianDokter.rows[i].namarekanan,
                     ruanganta: resultCountNoantrianDokter.rows[i].ruanganta,
                     noregistrasi: resultCountNoantrianDokter.rows[i].noregistrasi,
-                    beratbadan: resultTtv.rows[0].beratbadan,
-                    tinggibadan: resultTtv.rows[0].tinggibadan,
-                    suhu: resultTtv.rows[0].suhu,
-                    nadi: resultTtv.rows[0].nadi,
-                    alergi: resultTtv.rows[0].alergi,
-                    tekanandarah: resultTtv.rows[0].tekanandarah,
-                    spo2: resultTtv.rows[0].spo2,
-                    pernapasan: resultTtv.rows[0].pernapasan,
-                    keadaanumum: resultTtv.rows[0].keadaanumum,
-                    namagcs:resultTtv.rows[0].namagcs,
+                    beratbadan: beratbadan,
+                    tinggibadan: tinggibadan,
+                    suhu: suhu,
+                    nadi: nadi,
+                    alergi: alergi,
+                    tekanandarah: tekanandarah,
+                    spo2: spo2,
+                    pernapasan: pernapasan,
+                    keadaanumum: keadaanumum,
+                    namagcs: namagcs,
                 }
 
             }
@@ -212,28 +233,28 @@ async function getHeaderEmr(req, res) {
 
 async function editEmrPasienTtv(req, res) {
     // res.status(500).send({ message: 'error',msg:'Edit Data Tanda Vital Gagal'  });
-   
+
     // return
     try {
-        let rate = req.body.gcse+req.body.gcsm+req.body.gcsv
-        let idgcs=null
-        if(rate<=3){
+        let rate = req.body.gcse + req.body.gcsm + req.body.gcsv
+        let idgcs = null
+        if (rate <= 3) {
             idgcs = 33
-        }else if(rate===4){
+        } else if (rate === 4) {
             idgcs = 32
-        }else if(rate>=5 && rate<=6){
+        } else if (rate >= 5 && rate <= 6) {
             idgcs = 31
-        }else if(rate>=7 && rate<=9){
+        } else if (rate >= 7 && rate <= 9) {
             idgcs = 30
-        }else if(rate>=10 && rate<=11){
+        } else if (rate >= 10 && rate <= 11) {
             idgcs = 29
-        }else if(rate>=12 && rate<=13){
+        } else if (rate >= 12 && rate <= 13) {
             idgcs = 28
-        }else if(rate>=14 && rate<=15){
+        } else if (rate >= 14 && rate <= 15) {
             idgcs = 27
         }
         transaction = await db.sequelize.transaction();
-      
+
         let norecttv = uuid.v4().substring(0, 32)
         const ttv = await db.t_ttv.create({
             norec: norecttv,
@@ -250,10 +271,10 @@ async function editEmrPasienTtv(req, res) {
             spo2: req.body.spo2,
             pernapasan: req.body.pernapasan,
             keadaanumum: req.body.keadaanumum,
-            tekanandarah:req.body.tekanandarah,
-            isedit:true,
-            objectttvfk:req.body.norec,
-            objectgcsfk:idgcs,
+            tekanandarah: req.body.tekanandarah,
+            isedit: true,
+            objectttvfk: req.body.norec,
+            objectgcsfk: idgcs,
             tglisi: new Date()
         }, { transaction });
 
@@ -266,7 +287,7 @@ async function editEmrPasienTtv(req, res) {
             }
         }, { transaction });
 
-       
+
 
         await transaction.commit();
         let tempres = { ttv: ttv }
@@ -274,8 +295,8 @@ async function editEmrPasienTtv(req, res) {
             data: tempres,
             status: "success",
             success: true,
-            msg:'Edit Data Tanda Vital Berhasil',
-            code:200
+            msg: 'Edit Data Tanda Vital Berhasil',
+            code: 200
         });
     } catch (error) {
         // console.log(error);
@@ -284,8 +305,8 @@ async function editEmrPasienTtv(req, res) {
             res.status(201).send({
                 status: error,
                 success: false,
-                msg:'Edit Data Tanda Vital Gagal',
-                code:201
+                msg: 'Edit Data Tanda Vital Gagal',
+                code: 201
             });
         }
     }
@@ -296,7 +317,7 @@ async function saveEmrPasienCppt(req, res) {
     // return
     const resultEmrPasien = await queryPromise1(req.body.norecap, req.body.idlabel);
     try {
-        
+
         transaction = await db.sequelize.transaction();
         let norec = uuid.v4().substring(0, 32)
 
@@ -331,8 +352,8 @@ async function saveEmrPasienCppt(req, res) {
             data: tempres,
             status: "success",
             success: true,
-            msg:'Simpan Berhasil',
-            code:200
+            msg: 'Simpan Berhasil',
+            code: 200
         });
     } catch (error) {
         // console.log(error);
@@ -341,8 +362,8 @@ async function saveEmrPasienCppt(req, res) {
             res.status(201).send({
                 status: "false",
                 success: false,
-                msg:'Simpan Gagal',
-                code:201
+                msg: 'Simpan Gagal',
+                code: 201
             });
         }
     }
@@ -379,7 +400,7 @@ async function editEmrPasienCppt(req, res) {
     // return
     try {
         transaction = await db.sequelize.transaction();
-      
+
         let noreccppt = uuid.v4().substring(0, 32)
         const cppt = await db.t_cppt.create({
             norec: noreccppt,
@@ -389,8 +410,8 @@ async function editEmrPasienCppt(req, res) {
             objective: req.body.objective,
             assesment: req.body.assesment,
             plan: req.body.plan,
-            isedit:true,
-            objectcpptfk:req.body.norec,
+            isedit: true,
+            objectcpptfk: req.body.norec,
             tglisi: new Date()
         }, { transaction });
 
@@ -403,7 +424,7 @@ async function editEmrPasienCppt(req, res) {
             }
         }, { transaction });
 
-       
+
 
         await transaction.commit();
         let tempres = { cppt: cppt }
@@ -411,8 +432,8 @@ async function editEmrPasienCppt(req, res) {
             data: tempres,
             status: "success",
             success: true,
-            msg:'Edit Berhasil',
-            code:200
+            msg: 'Edit Berhasil',
+            code: 200
         });
     } catch (error) {
         // console.log(error);
@@ -421,8 +442,8 @@ async function editEmrPasienCppt(req, res) {
             res.status(201).send({
                 status: "false",
                 success: false,
-                msg:'Edit Gagal',
-                code:201
+                msg: 'Edit Gagal',
+                code: 201
             });
         }
     }
