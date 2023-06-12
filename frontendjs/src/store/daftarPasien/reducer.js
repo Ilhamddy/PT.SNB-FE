@@ -5,7 +5,13 @@ import {
    DAFTARPASIEN_RJ_GET_ERROR,
    WIDGET_DAFTARPASIEN_RJ_GET,
    WIDGET_DAFTARPASIEN_RJ_GET_SUCCESS,
-   WIDGET_DAFTARPASIEN_RJ_GET_ERROR
+   WIDGET_DAFTARPASIEN_RJ_GET_ERROR,
+   WIDGET_DAFTARPASIEN_RI_GET,
+   WIDGET_DAFTARPASIEN_RI_GET_SUCCESS,
+   WIDGET_DAFTARPASIEN_RI_GET_ERROR,
+   DAFTARPASIEN_RI_GET,
+   DAFTARPASIEN_RI_GET_SUCCESS,
+   DAFTARPASIEN_RI_GET_ERROR,
 } from "./actionType";
 
 const INIT_STATE = {
@@ -19,6 +25,16 @@ const INIT_STATE = {
         loading: false,
         error: null,
     },
+    widgetdaftarPasienRIGet: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    daftarPasienRIGet: {
+        data: [],
+        loading: false,
+        error: null,
+    },
 };
 
 const DaftarPasien = (state = INIT_STATE, action) => {
@@ -28,6 +44,9 @@ const DaftarPasien = (state = INIT_STATE, action) => {
                 ...state,
                 daftarPasienRJGet:{
                     ...INIT_STATE.daftarPasienRJGet,
+                },
+                daftarPasienRIGet:{
+                    ...INIT_STATE.daftarPasienRIGet,
                 },
             }
         }
@@ -92,6 +111,72 @@ const DaftarPasien = (state = INIT_STATE, action) => {
                 ...state,
                 widgetdaftarPasienRJGet: {
                     ...state.widgetdaftarPasienRJGet,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case WIDGET_DAFTARPASIEN_RI_GET: {
+            return {
+                ...state,
+                widgetdaftarPasienRIGet: {
+                    ...state.widgetdaftarPasienRIGet,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case WIDGET_DAFTARPASIEN_RI_GET_SUCCESS: {
+            return {
+                ...state,
+                widgetdaftarPasienRIGet: {
+                    ...state.widgetdaftarPasienRIGet,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case WIDGET_DAFTARPASIEN_RI_GET_ERROR: {
+            return {
+                ...state,
+                widgetdaftarPasienRIGet: {
+                    ...state.widgetdaftarPasienRIGet,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case DAFTARPASIEN_RI_GET: {
+            return {
+                ...state,
+                daftarPasienRIGet: {
+                    ...state.daftarPasienRIGet,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case DAFTARPASIEN_RI_GET_SUCCESS: {
+            return {
+                ...state,
+                daftarPasienRIGet: {
+                    ...state.daftarPasienRIGet,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case DAFTARPASIEN_RI_GET_ERROR: {
+            return {
+                ...state,
+                daftarPasienRIGet: {
+                    ...state.daftarPasienRIGet,
                     loading: false,
                     error: action.error,
                 }

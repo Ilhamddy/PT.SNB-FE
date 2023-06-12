@@ -70,7 +70,17 @@ module.exports = function (app) {
         controller.getWidgetDaftarPasienRJ
     );
 
+    app.get(
+        "/api/transaksi/registrasi/widget-daftar-pasien-registrasi-inap",
+        [authJwt.verifyToken],
+        controller.getWidgetDaftarPasienRI
+    );
 
+    app.get(
+        "/api/transaksi/registrasi/daftar-pasien-rawat-inap",
+        [authJwt.verifyToken],
+        controller.getDaftarPasienRawatInap
+    );
     
 
 };

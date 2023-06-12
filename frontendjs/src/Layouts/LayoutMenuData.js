@@ -233,7 +233,17 @@ const Navdata = () => {
                         ]);
                     }
                 },
-                
+                {
+                    id: "registrasi-pasien-lama",
+                    label: "Daftar Pasien Rawat Inap",
+                    link: "/listdaftarpasien/daftar-pasien-ri",
+                    parentId: "listdaftarpasien",
+                    isAllowed: () => {
+                        return isAllowedAccess(getUserPermissions(), [
+                            "REGISTRASI_VIEW",
+                        ]);
+                    }
+                },
             ],
         },
     ];

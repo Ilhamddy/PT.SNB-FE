@@ -1,13 +1,20 @@
 import { call, put, takeEvery, all, fork } from "redux-saga/effects";
 import ServiceRegistrasi from "../../services/service-registrasi";
 
-import { DAFTARPASIEN_RJ_GET,WIDGET_DAFTARPASIEN_RJ_GET } from "./actionType";
+import {
+    DAFTARPASIEN_RJ_GET, WIDGET_DAFTARPASIEN_RJ_GET,
+    WIDGET_DAFTARPASIEN_RI_GET, DAFTARPASIEN_RI_GET
+} from "./actionType";
 
-import { daftarPasienRJGetSuccess,daftarPasienRJGetError,widgetdaftarPasienRJGetSuccess,widgetdaftarPasienRJGetError } from "./action";
+import {
+    daftarPasienRJGetSuccess, daftarPasienRJGetError, widgetdaftarPasienRJGetSuccess, widgetdaftarPasienRJGetError,
+    widgetdaftarPasienRIGetSuccess, widgetdaftarPasienRIGetError,
+    daftarPasienRIGetSuccess, daftarPasienRIGetError
+} from "./action";
 
 const serviceRegistrasi = new ServiceRegistrasi();
 
-function* onGetDaftarPasienRJ({payload: {param}}) {
+function* onGetDaftarPasienRJ({ payload: { param } }) {
     try {
         const response = yield call(serviceRegistrasi.getDaftarPasienRJ, param);
         yield put(daftarPasienRJGetSuccess(response.data));
@@ -21,7 +28,7 @@ export function* watchGetDaftarPasienRJ() {
     yield takeEvery(DAFTARPASIEN_RJ_GET, onGetDaftarPasienRJ);
 }
 
-function* onGetWidgetDaftarPasienRJ({payload: {param}}) {
+function* onGetWidgetDaftarPasienRJ({ payload: { param } }) {
     try {
         const response = yield call(serviceRegistrasi.getWidgetDaftarPasienRJ, param);
         yield put(widgetdaftarPasienRJGetSuccess(response.data));
@@ -35,11 +42,41 @@ export function* watchGetWidgetDaftarPasienRJ() {
     yield takeEvery(WIDGET_DAFTARPASIEN_RJ_GET, onGetWidgetDaftarPasienRJ);
 }
 
+function* onGetWidgetDaftarPasienRI({ payload: { param } }) {
+    try {
+        const response = yield call(serviceRegistrasi.getWidgetDaftarPasienRI, param);
+        yield put(widgetdaftarPasienRIGetSuccess(response.data));
+    } catch (error) {
+        yield put(widgetdaftarPasienRIGetError(error));
+    }
+}
+
+
+export function* watchGetWidgetDaftarPasienRI() {
+    yield takeEvery(WIDGET_DAFTARPASIEN_RI_GET, onGetWidgetDaftarPasienRI);
+}
+
+function* onGetDaftarPasienRI({ payload: { param } }) {
+    try {
+        const response = yield call(serviceRegistrasi.getDaftarPasienRI, param);
+        yield put(daftarPasienRIGetSuccess(response.data));
+    } catch (error) {
+        yield put(daftarPasienRIGetError(error));
+    }
+}
+
+
+export function* watchGetDaftarPasienRI() {
+    yield takeEvery(DAFTARPASIEN_RI_GET, onGetDaftarPasienRI);
+}
+
 
 function* daftarPasienSaga() {
     yield all([
         fork(watchGetDaftarPasienRJ),
-        fork(watchGetWidgetDaftarPasienRJ)
+        fork(watchGetWidgetDaftarPasienRJ),
+        fork(watchGetWidgetDaftarPasienRI),
+        fork(watchGetDaftarPasienRI)
     ]);
 }
 

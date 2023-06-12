@@ -26,8 +26,11 @@ db.sequelize = sequelize;
 
 db.user = require("../models/user.model.js")(sequelize, Sequelize);
 db.role = require("../models/role.model.js")(sequelize, Sequelize);
+// master
 db.m_pasien = require("../models/m_pasien.model.js")(sequelize, Sequelize);
 db.running_number = require("../models/running_number.model.js")(sequelize,Sequelize);
+db.m_tempattidur = require("../models/m_tempattidur.js")(sequelize,Sequelize);
+// transaksi
 db.t_daftarpasien = require("../models/t_daftarpasien.model.js")(sequelize,Sequelize);
 db.t_antreanpemeriksaan = require("../models/t_antreanpemeriksaan.model.js")(sequelize,Sequelize);
 db.t_emrpasien = require("../models/t_emrpasien.js")(sequelize,Sequelize);

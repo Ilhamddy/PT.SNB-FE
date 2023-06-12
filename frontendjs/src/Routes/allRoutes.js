@@ -249,6 +249,7 @@ import RegistrasiPasien from "../pages/Registrasi/RegistrasiPasien/RegistrasiPas
 import BuktiPendaftaran3 from "../pages/Print/BuktiPendaftaran3";
 import DaftarPasienRJ from "../pages/ListDaftarPasien/DaftarPasienRJ/DaftarPasienRJ";
 import Emr from "../pages/Emr";
+import DaftarPasienRI from "../pages/ListDaftarPasien/DaftarPasienRI/DaftarPasienRI";
 
 const authProtectedRoutes = [
   { path: "/dashboard-analytics", component: <DashboardAnalytics /> },
@@ -470,7 +471,8 @@ const authProtectedRoutes = [
   {path: "/registrasi/pasien-ruangan/:id", component: <RegistrasiPasien />},
   {path: "/bukti-pendaftaran/:noregistrasi", component: <BuktiPendaftaran3 />},
   {path: "/listdaftarpasien/daftar-pasien-rj", component: <DaftarPasienRJ />},
-  {path:"/emr-pasien/:norecdp/:norecap", component:<Emr/>}
+  {path:"/emr-pasien/:norecdp/:norecap", component:<Emr/>},
+  {path: "/listdaftarpasien/daftar-pasien-ri", component: <DaftarPasienRI />},
 ];
 
 const publicRoutes = [

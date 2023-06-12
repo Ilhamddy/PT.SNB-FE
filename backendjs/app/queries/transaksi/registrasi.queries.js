@@ -61,6 +61,22 @@ left join m_jeniskelamin mj2 on mj2.id=mp.objectjeniskelaminfk
 left join m_rekanan mr on mr.id=td.objectpenjaminfk
 left join m_unit mu2 on mu2.id=ta.objectunitfk `;
 
+const widgetgetDaftarPasienRawatInap = `select objectstatusbedfk  from m_tempattidur mt where statusenabled =true`;
+
+const getDaftarPasienRawatInap = `select td.norec as norecdp,ta.norec as norecta,mj.jenispenjamin,ta.taskid,mi.namainstalasi,mp.nocm,td.noregistrasi,mp.namapasien,
+to_char(td.tglregistrasi,'yyyy-MM-dd') as tglregistrasi,mu.namaunit,
+mp2.reportdisplay || '-' ||ta.noantrian as noantrian,mp2.namalengkap as namadokter,
+mk.reportdisplay as kamar, mt.reportdisplay as nobed from t_daftarpasien td 
+join m_pasien mp on mp.id=td.nocmfk 
+join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk =td.norec
+join m_unit mu on mu.id=ta.objectunitfk 
+left join m_pegawai mp2 on mp2.id=ta.objectdokterpemeriksafk 
+join m_instalasi mi on mi.id=mu.objectinstalasifk
+join m_jenispenjamin mj on mj.id=td.objectjenispenjaminfk
+join m_kamar mk on ta.objectkamarfk =mk.id
+join m_tempattidur mt on ta.nobed = mt.id
+where td.tglpulang is null`;
+
 module.exports = {
     getAll,
     addPost,
@@ -73,5 +89,7 @@ module.exports = {
     getPasienByNoregistrasi,
     getDaftarPasienRawatJalan,
     getDaftarPasienRegistrasi,
-    getHeaderEmr
+    getHeaderEmr,
+    widgetgetDaftarPasienRawatInap,
+    getDaftarPasienRawatInap
 };

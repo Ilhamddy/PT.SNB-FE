@@ -82,6 +82,15 @@ const RegistrasiPasien = (props) => {
             dispatch(registrasiNoregistrasiResetForm());
         }
     }, [dispatch])
+    useEffect(() => {
+        if (data) {
+            var newArray = data.tempattidur.filter(function (el) {
+                return el.objectstatusbedfk === 2;
+            });
+            setdataTT(newArray)
+            // console.log(newArray)
+        }
+    }, [data, dispatch])
     // const [test, setTest] = useState(datas);
     // setTest(test)
     // console.log(datas)
@@ -163,6 +172,7 @@ const RegistrasiPasien = (props) => {
 
 
     const [dataUnit, setdataUnit] = useState([]);
+    const [dataTT, setdataTT] = useState([]);
     const handleChangeTujuan = (selected) => {
         validation.setFieldValue('tujkunjungan', selected.value)
         var newArray = data.unit.filter(function (el) {
@@ -188,7 +198,7 @@ const RegistrasiPasien = (props) => {
 
     function handleSelect(data) {
         validation.setFieldValue('penjamin', data)
-        console.log(validation.values.penjamin)
+        // console.log(validation.values.penjamin)
         // setSelectedOptions(data);
     }
     const [isLoading, setIsLoading] = useState(true);
@@ -482,7 +492,7 @@ const RegistrasiPasien = (props) => {
                                                                         <CustomSelect
                                                                             id="tempattidur"
                                                                             name="tempattidur"
-                                                                            options={data.tempattidur}
+                                                                            options={dataTT}
                                                                             value={validation.values.tempattidur || ""}
                                                                             className={`input ${validation.errors.tempattidur ? "is-invalid" : ""}`}
                                                                             onChange={value => validation.setFieldValue('tempattidur', value.value)}
