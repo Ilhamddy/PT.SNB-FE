@@ -82,5 +82,25 @@ module.exports = function (app) {
         [authJwt.verifyToken],
         controller.getListDiagnosaIxPasien
     );
+    app.post(
+        "/api/transaksi/emr/save-emr-pasien-diagnosaix",
+        [authJwt.verifyToken],
+        controller.saveEmrPasienDiagnosaix
+    );
+    app.delete(
+        "/api/transaksi/emr/delete-emr-pasien-diagnosax/:norec",
+        [authJwt.verifyToken],
+        controller.deleteEmrPasienDiagnosax
+    );
+    app.delete(
+        "/api/transaksi/emr/delete-emr-pasien-diagnosaix/:norec",
+        [authJwt.verifyToken],
+        controller.deleteEmrPasienDiagnosaix
+    );
     // end
+    app.post(
+        "/api/transaksi/emr/save-emr-pasien-konsul",
+        [authJwt.verifyToken],
+        controller.saveEmrPasienKonsul
+    );
 }

@@ -214,7 +214,7 @@ const savePasien = (req, res) => {
                 rwktp: req.body.rw,
                 objectdesakelurahanktpfk: req.body.desa,
                 objectnegaraktpfk: req.body.negara,
-                statusenabled: true
+                statusenabled: true,
             }).then(result => {
                 running_Number.update({ new_number: new_number }, {
                     where: {
@@ -335,13 +335,6 @@ const saveRegistrasiPasien2 = (req, res) => {
     }
 }
 async function saveRegistrasiPasien(req, res) {
-    res.status(201).send({
-        status: 'err',
-        success: false,
-        msg:'Simpan Gagal',
-        code:201
-    });
-    return
     try {
         let norecDP = uuid.v4().substring(0, 32)
         let objectpenjaminfk = null
@@ -387,7 +380,7 @@ async function saveRegistrasiPasien(req, res) {
             tglregistrasi: req.body.tglregistrasi,
             objectunitlastfk: req.body.unittujuan,
             objectdokterpemeriksafk: req.body.dokter,
-            objectpegawaifk: req.body.pegawaifk,
+            objectpegawaifk: req.idPegawai,
             objectkelasfk: req.body.kelas,
             objectjenispenjaminfk: req.body.jenispenjamin,
             tglpulang: req.body.tglregistrasi,
@@ -397,7 +390,7 @@ async function saveRegistrasiPasien(req, res) {
             objectpenjamin2fk: objectpenjamin2fk,
             objectpenjamin3fk: objectpenjamin3fk,
             objectpjpasienfk: req.body.penanggungjawab,
-            statusenabled: true
+            statusenabled: true,
         }, { transaction });
 
         let norecAP = uuid.v4().substring(0, 32)
@@ -412,7 +405,8 @@ async function saveRegistrasiPasien(req, res) {
             objectkamarfk: req.body.kamar,
             objectkelasfk: req.body.kelas,
             nobed: req.body.tempattidur,
-            statusenabled: true
+            statusenabled: true,
+            objectpegawaifk: req.idPegawai,
         }, { transaction });
         // console.log(resultCountNoantrianDokter);
         await transaction.commit();
@@ -511,15 +505,34 @@ const getDaftarPasienRegistrasi = (req, res) => {
 async function getDaftarPasienRawatJalan(req, res) {
     const noregistrasi = req.query.noregistrasi;
     let tglregistrasi = ""
-    if (req.query.tglregistrasi !== undefined) {
-        console.log("masukkk")
-        tglregistrasi = ` and td.tglregistrasi between '${req.query.tglregistrasi}'
-         and '${req.query.tglregistrasi} + ' 23:59'' `;
-
+    if (req.query.start !== undefined) {
+        
+        tglregistrasi = ` and td.tglregistrasi between '${req.query.start}'
+         and '${req.query.end} 23:59' `;
+    }else{
+        // console.log('massuukk')
+        let today = new Date();
+        let todayMonth = '' + (today.getMonth() + 1)
+        if (todayMonth.length < 2)
+            todayMonth = '0' + todayMonth;
+        let todaystart = formatDate(today)
+        let todayend = formatDate(today) + ' 23:59'
+        tglregistrasi = ` and td.tglregistrasi between '${todaystart}'
+        and '${todayend}' `;
+    }
+    let taskid = ""
+   
+    if (req.query.taskid !== undefined) {
+        if(req.query.taskid==='2'){
+            console.log(req.query.taskid)
+            taskid = ` and ta.taskid=4`;
+        }else if (req.query.taskid==='3'){
+            taskid = ` and ta.taskid in (5,6,7,8,9)`;
+        }
     }
     // let query = queries.getAllByOr + ` where nocm ilike '%` + nocm + `%'` + ` or namapasien ilike '%` + nocm + `%' limit 200`
     let query = queries.getDaftarPasienRawatJalan + `  where td.noregistrasi ilike '%${noregistrasi}%'
-    ${tglregistrasi}`
+    ${tglregistrasi} ${taskid}`
 
 
     try {
@@ -547,16 +560,34 @@ async function getDaftarPasienRawatJalan(req, res) {
 async function getWidgetDaftarPasienRJ(req, res) {
     const noregistrasi = req.query.noregistrasi;
     let tglregistrasi = ""
-    if (req.query.tglregistrasi !== undefined) {
-        console.log("masukkk")
-        tglregistrasi = ` and td.tglregistrasi between '${req.query.tglregistrasi}'
-         and '${req.query.tglregistrasi} + ' 23:59'' `;
+    if (req.query.start !== undefined) {
+        // console.log("masukkk")
+        tglregistrasi = ` and td.tglregistrasi between '${req.query.start}'
+         and '${req.query.end} 23:59'`;
 
+    }else{
+        let today = new Date();
+        let todayMonth = '' + (today.getMonth() + 1)
+        if (todayMonth.length < 2)
+            todayMonth = '0' + todayMonth;
+        let todaystart = formatDate(today)
+        let todayend = formatDate(today) + ' 23:59'
+        tglregistrasi = ` and td.tglregistrasi between '${todaystart}'
+        and '${todayend}' `;
+    }
+    let taskid = ""
+   
+    if (req.query.taskid !== undefined) {
+        if(req.query.taskid==='2'){
+            console.log(req.query.taskid)
+            taskid = ` and ta.taskid=4`;
+        }else if (req.query.taskid==='3'){
+            taskid = ` and ta.taskid in (5,6,7,8,9)`;
+        }
     }
     // let query = queries.getAllByOr + ` where nocm ilike '%` + nocm + `%'` + ` or namapasien ilike '%` + nocm + `%' limit 200`
     let query = queries.getDaftarPasienRawatJalan + `  where td.noregistrasi ilike '%${noregistrasi}%'
-    ${tglregistrasi}`
-
+    ${tglregistrasi} ${taskid}`
 
     pool.query(query, (error, resultCountNoantrianDokter) => {
         if (error) {
@@ -581,7 +612,7 @@ async function getWidgetDaftarPasienRJ(req, res) {
             const taskWidgets = [
                 {
                     id: 1,
-                    label: "Total Pasien Belum Diperiksa",
+                    label: "Belum Diperiksa",
                     counter: totalBP,
                     badge: "ri-arrow-up-line",
                     badgeClass: "success",
@@ -594,7 +625,7 @@ async function getWidgetDaftarPasienRJ(req, res) {
                 },
                 {
                     id: 2,
-                    label: "Total Pasien Sedang Diperiksa",
+                    label: "Sedang Diperiksa",
                     counter: totalSP,
                     badge: "ri-arrow-down-line",
                     badgeClass: "danger",
@@ -607,7 +638,7 @@ async function getWidgetDaftarPasienRJ(req, res) {
                 },
                 {
                     id: 3,
-                    label: "Total Pasien Selesai Diperiksa",
+                    label: "Selesai Diperiksa",
                     counter: totalSSP,
                     badge: "ri-arrow-down-line",
                     badgeClass: "danger",

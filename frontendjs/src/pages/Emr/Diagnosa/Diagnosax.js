@@ -18,13 +18,22 @@ import * as Yup from "yup";
 import DataTable from 'react-data-table-component';
 import CustomSelect from '../../Select/Select';
 
-import { emrDiagnosaxSave, emrResetForm, emrComboGet, emrDiagnosaxGet } from "../../../store/actions";
+import { emrDiagnosaxSave, emrResetForm, emrComboGet, emrDiagnosaxGet, emrListDiagnosaxGet,
+deleteDiagnosax } from "../../../store/actions";
+import DeleteModalCustom from '../../../Components/Common/DeleteModalCustom';
 
 const Diagnosax = () => {
     const { norecdp, norecap } = useParams();
     const dispatch = useDispatch();
+
+    //delete order
+    const [deleteModal, setDeleteModal] = useState(false);
+    const [product, setProduct] = useState(null);
+    
+
+
     const { editData, newData, loading, error, success, dataCombo, loadingCombo, successCombo, dataDiagnosa,
-        loadingDiagnosa, successDiagnosa } = useSelector((state) => ({
+        loadingDiagnosa, successDiagnosa, dataRiwayat, loadingRiwayat, successRiwayat,successDelete,newDataDelete } = useSelector((state) => ({
             newData: state.Emr.emrDiagnosaxSave.newData,
             success: state.Emr.emrDiagnosaxSave.success,
             loading: state.Emr.emrDiagnosaxSave.loading,
@@ -34,6 +43,11 @@ const Diagnosax = () => {
             dataDiagnosa: state.Emr.emrDiagnosaxGet.data,
             loadingDiagnosa: state.Emr.emrDiagnosaxGet.loading,
             successDiagnosa: state.Emr.emrDiagnosaxGet.success,
+            dataRiwayat: state.Emr.emrListDiagnosaxGet.data,
+            loadingRiwayat: state.Emr.emrListDiagnosaxGet.loading,
+            successRiwayat: state.Emr.emrListDiagnosaxGet.success,
+            newDataDelete:state.Emr.deleteDiagnosax.newData,
+            successDelete: state.Emr.deleteDiagnosax.success
         }));
 
     useEffect(() => {
@@ -45,13 +59,16 @@ const Diagnosax = () => {
         if (norecdp) {
             dispatch(emrComboGet(norecdp, 'combo'));
             dispatch(emrDiagnosaxGet('', 'diagnosa10'));
+            dispatch(emrListDiagnosaxGet(norecdp));
         }
     }, [norecdp, dispatch])
     useEffect(() => {
         if (newData !== null) {
-            // dispatch(emrGet(norecdp,'cppt'));
+            dispatch(emrListDiagnosaxGet(norecdp));
+        }else if(newDataDelete === true){
+            dispatch(emrListDiagnosaxGet(norecdp));
         }
-    }, [newData, norecdp, dispatch])
+    }, [newData, norecdp,newDataDelete, dispatch])
     const validation = useFormik({
         enableReinitialize: true,
         initialValues: {
@@ -71,27 +88,28 @@ const Diagnosax = () => {
             keteranganicd10: Yup.string().required("Keterangan Belum Diisi"),
         }),
         onSubmit: (values, { resetForm }) => {
-            console.log(values)
             dispatch(emrDiagnosaxSave(values, ''));
             resetForm({ values: '' })
         }
     })
-    const handleClick = (e) => {
-        // validation.setFieldValue('subjective', e.subjective)
-        // validation.setFieldValue('objective', e.objective)
-        // validation.setFieldValue('assesment', e.assesment)
-        // validation.setFieldValue('plan', e.plan)
-        // validation.setFieldValue('norec', e.norec)
-        // validation.setFieldValue('objectemrfk', e.objectemrfk)
-        console.log(e)
+    const onClickDelete = (product) => {
+        setProduct(product);
+        setDeleteModal(true);
     };
+
+    const handleDeleteOrder = () => {
+        if (product) {
+            dispatch(deleteDiagnosax(product.norec));
+            setDeleteModal(false);
+        }
+    };
+ 
     const handleClickReset = (e) => {
-        // validation.setFieldValue('subjective', '')
-        // validation.setFieldValue('objective', '')
-        // validation.setFieldValue('assesment', '')
-        // validation.setFieldValue('plan', '')
-        // validation.setFieldValue('norec', '')
-        // validation.setFieldValue('objectemrfk', '')
+        validation.setFieldValue('tipediagnosa', '')
+        validation.setFieldValue('kodediagnosa', '')
+        validation.setFieldValue('kasuspenyakit', '')
+        validation.setFieldValue('keteranganicd10', '')
+
 
     };
     const tableCustomStyles = {
@@ -110,7 +128,23 @@ const Diagnosax = () => {
         }
     }
     const columns = [
-
+        {
+            name: <span className='font-weight-bold fs-13'>Detail</span>,
+            sortable: false,
+            cell: (data) => {
+                return (
+                    <div className="hstack gap-3 flex-wrap">
+                        <UncontrolledDropdown className="dropdown d-inline-block">
+                            <DropdownToggle className="btn btn-soft-secondary btn-sm" tag="button" id="tooltipTop2" type="button" onClick={() => onClickDelete(data)}>
+                                <i className="ri-delete-bin-2-line"></i>
+                            </DropdownToggle>
+                        </UncontrolledDropdown>
+                        <UncontrolledTooltip placement="top" target="tooltipTop2" > Delete </UncontrolledTooltip>
+                    </div>
+                );
+            },
+            width: "50px"
+        },
         {
             name: <span className='font-weight-bold fs-13'>No</span>,
             selector: row => row.no,
@@ -119,16 +153,16 @@ const Diagnosax = () => {
         },
         {
             name: <span className='font-weight-bold fs-13'>No. Registrasi</span>,
-            // selector: row => row.noregistrasi,
+            selector: row => row.noregistrasi,
             sortable: true,
             // selector: row => (<button className="btn btn-sm btn-soft-info" onClick={() => handleClick(dataTtv)}>{row.noregistrasi}</button>),
             width: "140px",
-            cell: (data) => {
-                return (
-                    // <Link to={`/registrasi/pasien/${data.id}`}>Details</Link>
-                    <button type='button' className="btn btn-sm btn-soft-info" onClick={() => handleClick(data)}>{data.noregistrasi}</button>
-                );
-            },
+            // cell: (data) => {
+            //     return (
+            //         // <Link to={`/registrasi/pasien/${data.id}`}>Details</Link>
+            //         <button type='button' className="btn btn-sm btn-soft-info" onClick={() => handleClick(data)}>{data.noregistrasi}</button>
+            //     );
+            // },
         },
         {
             name: <span className='font-weight-bold fs-13'>Tgl Registrasi</span>,
@@ -145,15 +179,21 @@ const Diagnosax = () => {
         },
         {
 
-            name: <span className='font-weight-bold fs-13'>Kode Diagnosa</span>,
-            selector: row => row.kodediagnosa,
+            name: <span className='font-weight-bold fs-13'>Diagnosa</span>,
+            selector: row => row.label,
             sortable: true,
             width: "150px"
         },
         {
 
-            name: <span className='font-weight-bold fs-13'>Deskripsi</span>,
-            selector: row => row.reportdisplay,
+            name: <span className='font-weight-bold fs-13'>Tipe Diagnosa</span>,
+            selector: row => row.tipediagnosa,
+            sortable: true
+        },
+        {
+
+            name: <span className='font-weight-bold fs-13'>Kasus</span>,
+            selector: row => row.jeniskasus,
             sortable: true
         },
         {
@@ -167,15 +207,22 @@ const Diagnosax = () => {
     return (
         <React.Fragment>
             {/* <ToastContainer closeButton={false} /> */}
+            <DeleteModalCustom
+                show={deleteModal}
+                onDeleteClick={handleDeleteOrder}
+                onCloseClick={() => setDeleteModal(false)}
+                msgHDelete='Apa Kamu Yakin ?'
+                msgBDelete='Yakin ingin menghapus data ini?'
+            />
             <Row className="gy-4">
                 <Form
-                onSubmit={(e) => {
-                    e.preventDefault();
-                    validation.handleSubmit();
-                    return false;
-                }}
-                className="gy-4"
-                action="#">
+                    onSubmit={(e) => {
+                        e.preventDefault();
+                        validation.handleSubmit();
+                        return false;
+                    }}
+                    className="gy-4"
+                    action="#">
                     <Row>
                         <Col lg={5}>
                             <Card>
@@ -287,15 +334,18 @@ const Diagnosax = () => {
                         </Col>
                         <Col lg={7}>
                             <Card>
+                                <CardHeader style={{ backgroundColor: "#B57602" }}>
+                                    <h4 className="card-title mb-0" style={{ color: '#ffffff' }}>Riwayat ICD 10</h4>
+                                </CardHeader>
                                 <CardBody>
                                     <div id="table-gridjs">
                                         <DataTable
                                             fixedHeader
-                                            fixedHeaderScrollHeight="400px"
+                                            fixedHeaderScrollHeight="330px"
                                             columns={columns}
                                             pagination
-                                            // data={dataTtv}
-                                            progressPending={loading}
+                                            data={dataRiwayat}
+                                            progressPending={loadingRiwayat}
                                             customStyles={tableCustomStyles}
                                         />
                                     </div>

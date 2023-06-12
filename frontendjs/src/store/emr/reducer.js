@@ -29,7 +29,22 @@ import {
     EMR_DIAGNOSAX_SAVE_ERROR,
     EMR_DIAGNOSAIX_SAVE,
     EMR_DIAGNOSAIX_SAVE_SUCCESS,
-    EMR_DIAGNOSAIX_SAVE_ERROR
+    EMR_DIAGNOSAIX_SAVE_ERROR,
+    EMR_LISTDIAGNOSAX_GET,
+    EMR_LISTDIAGNOSAX_GET_SUCCESS,
+    EMR_LISTDIAGNOSAX_GET_ERROR,
+    EMR_LISTDIAGNOSAIX_GET,
+    EMR_LISTDIAGNOSAIX_GET_SUCCESS,
+    EMR_LISTDIAGNOSAIX_GET_ERROR,
+    DELETE_DIAGNOSAX,
+    DELETE_DIAGNOSAX_SUCCESS,
+    DELETE_DIAGNOSAX_ERROR,
+    DELETE_DIAGNOSAIX,
+    DELETE_DIAGNOSAIX_SUCCESS,
+    DELETE_DIAGNOSAIX_ERROR,
+    KONSUL_SAVE,
+    KONSUL_SAVE_SUCCESS,
+    KONSUL_SAVE_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -87,6 +102,34 @@ const INIT_STATE = {
         error: null,
         success: false
     },
+    emrListDiagnosaxGet: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    emrListDiagnosaixGet: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    deleteDiagnosax: {
+        newData: null,
+        loading: false,
+        error: null,
+        success: false
+    },
+    deleteDiagnosaix: {
+        newData: null,
+        loading: false,
+        error: null,
+        success: false
+    },
+    konsulSave: {
+        newData: null,
+        loading: false,
+        error: null,
+        success: false
+    },
 };
 
 const Emr = (state = INIT_STATE, action) => {
@@ -123,7 +166,22 @@ const Emr = (state = INIT_STATE, action) => {
                 },
                 emrDiagnosaixSave:{
                     ...INIT_STATE.emrDiagnosaixSave
-                }
+                },
+                emrListDiagnosaxGet:{
+                    ...INIT_STATE.emrListDiagnosaxGet
+                },
+                emrListDiagnosaixGet:{
+                    ...INIT_STATE.emrListDiagnosaixGet
+                },
+                deleteDiagnosax:{
+                    ...INIT_STATE.deleteDiagnosax
+                },
+                deleteDiagnosaix:{
+                    ...INIT_STATE.deleteDiagnosaix
+                },
+                konsulSave:{
+                    ...INIT_STATE.konsulSave
+                },
             }
         }
 
@@ -455,6 +513,174 @@ const Emr = (state = INIT_STATE, action) => {
                 ...state,
                 emrDiagnosaixSave: {
                     ...state.emrDiagnosaixSave,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case EMR_LISTDIAGNOSAX_GET: {
+            return {
+                ...state,
+                emrListDiagnosaxGet: {
+                    ...state.emrListDiagnosaxGet,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case EMR_LISTDIAGNOSAX_GET_SUCCESS: {
+            return {
+                ...state,
+                emrListDiagnosaxGet: {
+                    ...state.emrListDiagnosaxGet,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case EMR_LISTDIAGNOSAX_GET_ERROR: {
+            return {
+                ...state,
+                emrListDiagnosaxGet: {
+                    ...state.emrListDiagnosaxGet,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case EMR_LISTDIAGNOSAIX_GET: {
+            return {
+                ...state,
+                emrListDiagnosaixGet: {
+                    ...state.emrListDiagnosaixGet,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case EMR_LISTDIAGNOSAIX_GET_SUCCESS: {
+            return {
+                ...state,
+                emrListDiagnosaixGet: {
+                    ...state.emrListDiagnosaixGet,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case EMR_LISTDIAGNOSAIX_GET_ERROR: {
+            return {
+                ...state,
+                emrListDiagnosaixGet: {
+                    ...state.emrListDiagnosaixGet,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case DELETE_DIAGNOSAX: {
+            return {
+                ...state,
+                deleteDiagnosax: {
+                    ...state.deleteDiagnosax,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case DELETE_DIAGNOSAX_SUCCESS: {
+            return {
+                ...state,
+                deleteDiagnosax: {
+                    ...state.deleteDiagnosax,
+                    newData: action.payload,
+                    loading: false,
+                    success: true,
+                }
+            }
+        }
+
+        case DELETE_DIAGNOSAX_ERROR: {
+            return {
+                ...state,
+                deleteDiagnosax: {
+                    ...state.deleteDiagnosax,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case DELETE_DIAGNOSAIX: {
+            return {
+                ...state,
+                deleteDiagnosaix: {
+                    ...state.deleteDiagnosaix,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case DELETE_DIAGNOSAIX_SUCCESS: {
+            return {
+                ...state,
+                deleteDiagnosaix: {
+                    ...state.deleteDiagnosaix,
+                    newData: action.payload,
+                    loading: false,
+                    success: true,
+                }
+            }
+        }
+
+        case DELETE_DIAGNOSAIX_ERROR: {
+            return {
+                ...state,
+                deleteDiagnosaix: {
+                    ...state.deleteDiagnosaix,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case KONSUL_SAVE: {
+            return {
+                ...state,
+                konsulSave: {
+                    ...state.konsulSave,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case KONSUL_SAVE_SUCCESS: {
+            return {
+                ...state,
+                konsulSave: {
+                    ...state.konsulSave,
+                    newData: action.payload,
+                    loading: false,
+                    success: true,
+                }
+            }
+        }
+
+        case KONSUL_SAVE_ERROR: {
+            return {
+                ...state,
+                konsulSave: {
+                    ...state.konsulSave,
                     loading: false,
                     error: action.error,
                 }

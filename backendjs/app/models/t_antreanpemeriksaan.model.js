@@ -37,6 +37,9 @@ module.exports = (sequelize, Sequelize) => {
         objectunitfk: {
             type: Sequelize.INTEGER
         },
+        objectunitasalfk:{
+            type:Sequelize.INTEGER
+        },
         statuskunjungan: {
             type: Sequelize.STRING
         },

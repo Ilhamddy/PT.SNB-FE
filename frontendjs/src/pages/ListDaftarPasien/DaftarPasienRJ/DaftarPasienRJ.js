@@ -11,6 +11,9 @@ import BreadCrumb from '../../../Components/Common/BreadCrumb';
 import UiContent from '../../../Components/Common/UiContent';
 import { Link, useNavigate } from "react-router-dom";
 import DataTable from 'react-data-table-component';
+import Flatpickr from "react-flatpickr";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import { taskWidgets } from '../../../common/data';
 import CountUp from "react-countup";
@@ -20,22 +23,34 @@ import { daftarPasienRJGet, widgetdaftarPasienRJGet } from '../../../store/actio
 import pac from "../../../assets/images/sudah-periksa.png";
 //import images
 import userDummy from "../../../assets/images/users/user-dummy-img.jpg";
+import KonsulModal from '../../../Components/Common/KonsulModal';
+import { comboRegistrasiGet } from '../../../store/master/action';
 
 const DaftarPasienRJ = () => {
     document.title = "Daftar Pasien Rawat Jalan";
     const dispatch = useDispatch();
     const history = useNavigate();
-    const { data, datawidget, loading, error } = useSelector((state) => ({
+    const { data, datawidget, loading, error,dataCombo,loadingCombo,errorCombo } = useSelector((state) => ({
         data: state.DaftarPasien.daftarPasienRJGet.data,
         datawidget: state.DaftarPasien.widgetdaftarPasienRJGet.data,
         loading: state.DaftarPasien.daftarPasienRJGet.loading,
         error: state.DaftarPasien.daftarPasienRJGet.error,
+        dataCombo: state.Master.comboRegistrasiGet.data,
+        loadingCombo: state.Master.comboRegistrasiGet.loading,
+        errorCombo: state.Master.comboRegistrasiGet.error,
     }));
+    const current = new Date();
+    const [dateStart, setdateStart] = useState(`${current.getFullYear()}-${current.getMonth()+1}-${current.getDate()}`);
+    const [dateEnd, setdateEnd] = useState(`${current.getFullYear()}-${current.getMonth()+1}-${current.getDate()}`);
+    const [search, setSearch] = useState('')
+
+
     useEffect(() => {
         dispatch(daftarPasienRJGet(''));
         dispatch(widgetdaftarPasienRJGet(''));
+        dispatch(comboRegistrasiGet());
     }, [dispatch]);
-
+ 
     const tableCustomStyles = {
         headRow: {
             style: {
@@ -68,9 +83,8 @@ const DaftarPasienRJ = () => {
                                 <i className="ri-apps-2-line"></i>
                             </DropdownToggle>
                             <DropdownMenu className="dropdown-menu-end">
-                                <DropdownItem href="#!"><i className="ri-eye-fill align-bottom me-2 text-muted"></i>View</DropdownItem>
-                                <DropdownItem className='edit-item-btn'><i className="ri-pencil-fill align-bottom me-2 text-muted"></i>Edit</DropdownItem>
-                                <DropdownItem className='remove-item-btn'> <i className="ri-delete-bin-fill align-bottom me-2 text-muted"></i> Delete </DropdownItem>
+                                <DropdownItem href="#!" onClick={() => handleClickKonsul(data)}><i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>Konsul Antar Unit</DropdownItem>
+                               
                             </DropdownMenu>
                         </UncontrolledDropdown>
                         <UncontrolledTooltip placement="top" target="tooltipTop2" > Menu </UncontrolledTooltip>
@@ -135,6 +149,12 @@ const DaftarPasienRJ = () => {
 
         // console.log('this is:', e.namapasien);
     };
+    const [idPencarian, setidPencarian] = useState(1);
+    const [namaPencarian, setnamaPencarian] = useState('Belum Diperiksa');
+    const handleClickCard = (e) => {
+        setidPencarian(e.id)
+        setnamaPencarian(e.label)
+    };
 
 
     const DisplayData = data.map(
@@ -158,9 +178,62 @@ const DaftarPasienRJ = () => {
             )
         }
     )
+    const handleBeginOnChangeStart = (newBeginValue) => {
+        var dateString = new Date(newBeginValue.getTime() - (newBeginValue.getTimezoneOffset() * 60000))
+            .toISOString()
+            .split("T")[0];
+        setdateStart(dateString)
+    }
+    const handleBeginOnChangeEnd = (newBeginValue) => {
+        var dateString = new Date(newBeginValue.getTime() - (newBeginValue.getTimezoneOffset() * 60000))
+            .toISOString()
+            .split("T")[0];
+        setdateEnd(dateString)
+    }
 
+    const handleClickCari = ()=>{
+        dispatch(daftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}`));
+        dispatch(widgetdaftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}`));
+    }
+    const handleFilter = (e) => {
+        if (e.keyCode === 13) {
+            // console.log(search)
+            // useEffect(() => {
+            dispatch(daftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}`));
+            dispatch(widgetdaftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}`));
+            // }, [dispatch]);
+        }
+    }
+    const [konsulModal, setkonsulModal] = useState(false);
+    const [dataUnit, setdataUnit] = useState([]);
+    const [dataDokter, setdataDokter] = useState([]);
+    const [tempNorecAp, settempNorecAp] = useState('');
+    const handleClickKonsul = (e) => {
+        setkonsulModal(true);
+        // console.log(dataCombo.unit)
+        var newArray = dataCombo.unit.filter(function (el) {
+            return el.objectinstalasifk === 1;
+        });
+        setdataUnit(newArray)
+        setdataDokter(dataCombo.pegawai)
+        settempNorecAp(e.norecta)
+    };
+    const handleSimpanKonsul = () => {
+        // if (product) {
+            setkonsulModal(false);
+        // }
+    };
     return (
         <React.Fragment>
+            <ToastContainer closeButton={false} />
+            <KonsulModal
+                show={konsulModal}
+                onSimpanClick={handleSimpanKonsul}
+                onCloseClick={() => setkonsulModal(false)}
+                tempNorecAp={tempNorecAp}
+                dataUnit={dataUnit}
+                dataDokter={dataDokter}
+            />
             <UiContent />
             <div className="page-content">
                 <Container fluid>
@@ -173,7 +246,7 @@ const DaftarPasienRJ = () => {
                                     <CardBody>
                                         <div className="d-flex justify-content-between">
                                             <div>
-                                                <p className="fw-medium text-muted mb-0">{item.label}</p>
+                                                <p className="fw-medium text-muted mb-0">Total Pasien {item.label}</p>
                                                 <h2 className="mt-4 ff-secondary fw-semibold">
                                                     <span className="counter-value" style={{ fontSize: "5rem" }}>
                                                         <CountUp
@@ -200,6 +273,11 @@ const DaftarPasienRJ = () => {
                                             </div>
                                         </div>
                                     </CardBody>
+                                    <div className="card-footer" style={{ backgroundColor: '#e67e22' }}>
+                                        <div className="text-center">
+                                            <Link to="#" className="link-light" onClick={() => handleClickCard(item)}>View <i className="ri-arrow-right-s-line align-middle lh-1"></i></Link>
+                                        </div>
+                                    </div>
                                 </Card>
                             </Col>
                         ))}
@@ -224,7 +302,7 @@ const DaftarPasienRJ = () => {
                                     <div className="live-preview">
                                         <Row>
                                             <Col>
-                                                <h4 className="card-title mb-0 flex-grow-1 mb-3">Daftar Pasien Rawat Jalan</h4>
+                                                <h4 className="card-title mb-0 flex-grow-1 mb-3">Daftar Pasien Rawat Jalan <span style={{ color: '#e67e22' }}>{namaPencarian}</span></h4>
                                             </Col>
                                         </Row>
                                     </div>
@@ -232,8 +310,65 @@ const DaftarPasienRJ = () => {
                                 </CardHeader>
 
                                 <CardBody>
+                                    <div className='mb-2'>
+                                        <Row>
+                                            <Col sm={4}>
+                                                <div className="input-group">
+                                                    <Flatpickr
+                                                        className="form-control border-0 fs-5 dash-filter-picker shadow"
+                                                        options={{
+                                                            // mode: "range",
+                                                            dateFormat: "Y-m-d",
+                                                            defaultDate: "today"
+                                                        }}
+                                                        value={dateStart}
+                                                        onChange={([dateStart]) => {
+                                                            handleBeginOnChangeStart(dateStart);
+                                                        }}
+                                                    />
+                                                    <div className="input-group-text bg-secondary border-secondary text-white"><i className="ri-calendar-2-line"></i></div>
+                                                </div>
+                                            </Col>
+                                            <Col lg={1}><h4>s/d</h4></Col>
+                                            <Col sm={4}>
+                                                <div className="input-group">
+                                                    <Flatpickr
+                                                        className="form-control border-0 fs-5 dash-filter-picker shadow"
+                                                        options={{
+                                                            // mode: "range",
+                                                            dateFormat: "Y-m-d",
+                                                            defaultDate: "today"
+                                                        }}
+                                                        value={dateEnd}
+                                                        onChange={([dateEnd]) => {
+                                                            handleBeginOnChangeEnd(dateEnd);
+                                                        }}
+                                                    />
+                                                    <div className="input-group-text bg-secondary border-secondary text-white"><i className="ri-calendar-2-line"></i></div>
+                                                </div>
+                                            </Col>
+                                            <Col lg={3}>
+                                                <div className="d-flex justify-content-sm-end">
+                                                    <div className="search-box ms-2">
+                                                        <input type="text" className="form-control search"
+                                                            placeholder="Search..." onChange={event => setSearch(event.target.value)}
+                                                            onKeyDown={handleFilter} />
+                                                        <i className="ri-search-line search-icon"></i>
+                                                    </div>
+                                                </div>
+                                            </Col>
+                                            <Col lg={3}>
+                                                <Button type="button" className="rounded-pill" placement="top" id="tooltipTopPencarian"  onClick={handleClickCari}>
+                                                CARI
+                                            </Button>
+                                            <UncontrolledTooltip placement="top" target="tooltipTopPencarian" > Pencarian </UncontrolledTooltip>
+                                            </Col>
+                                        </Row>
+                                    </div>
+
+
                                     <div id="table-gridjs">
-                                        <Col className="col-sm">
+                                        {/* <Col className="col-sm">
                                             <div className="d-flex justify-content-sm-end">
                                                 <div className="search-box ms-2">
                                                     <input type="text" className="form-control search"
@@ -241,7 +376,7 @@ const DaftarPasienRJ = () => {
                                                     <i className="ri-search-line search-icon"></i>
                                                 </div>
                                             </div>
-                                        </Col>
+                                        </Col> */}
                                         <DataTable
                                             fixedHeader
                                             fixedHeaderScrollHeight="400px"

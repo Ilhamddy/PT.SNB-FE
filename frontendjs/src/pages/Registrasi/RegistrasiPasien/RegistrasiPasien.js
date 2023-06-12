@@ -85,12 +85,13 @@ const RegistrasiPasien = (props) => {
     // const [test, setTest] = useState(datas);
     // setTest(test)
     // console.log(datas)
-
+    const current = new Date();
+    const [dateStart, setdateStart] = useState(`${current.getFullYear()}-${current.getMonth()+1}-${current.getDate()}`);
     const validation = useFormik({
         enableReinitialize: true,
         initialValues: {
             id: newData?.id ?? id,
-            tglregistrasi: newData?.tglregistrasi ?? "",
+            tglregistrasi: newData?.tglregistrasi ?? dateStart,
             unittujuan: newData?.unittujuan ?? "",
             rujukanasal: newData?.rujukanasal ?? "",
             jenispenjamin: newData?.jenispenjamin ?? "",
@@ -236,7 +237,7 @@ const RegistrasiPasien = (props) => {
         }
 
     };
-// console.log(validation.values.tujkunjungan)
+    
     return (
         <div className="page-content">
              <ToastContainer closeButton={false} />
@@ -374,15 +375,17 @@ const RegistrasiPasien = (props) => {
                                                             <div>
                                                                 <Flatpickr
                                                                     // value={validation.values.tglregistrasi || ""}
-                                                                    onChange={([newDate]) => {
-                                                                        handleBeginOnChange(newDate);
-                                                                    }}
+                                                                   
                                                                     className="form-control"
                                                                     options={{
                                                                         dateFormat: "Y-m-d",
                                                                         defaultDate: "today",
                                                                         maxDate: "today",
                                                                         minDate: "today"
+                                                                    }}
+                                                                    value={dateStart}
+                                                                    onChange={([newDate]) => {
+                                                                        handleBeginOnChange(newDate);
                                                                     }}
                                                                 />
                                                             </div>

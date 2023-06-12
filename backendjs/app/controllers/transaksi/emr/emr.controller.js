@@ -7,7 +7,21 @@ const t_emrpasien = db.t_emrpasien
 const t_ttv = db.t_ttv
 const t_cppt = db.t_cppt
 const t_diagnosapasien = db.t_diagnosapasien
+const t_diagnosatindakan = db.t_diagnosatindakan
 
+function formatDate(date) {
+    var d = new Date(date),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
+
+    if (month.length < 2)
+        month = '0' + month;
+    if (day.length < 2)
+        day = '0' + day;
+
+    return [year, month, day].join('-');
+}
 queryPromise1 = (norecta, idlabel) => {
     return new Promise((resolve, reject) => {
         pool.query(`select norec from t_emrpasien where objectantreanpemeriksaanfk='${norecta}' and idlabel='${idlabel}'`, (error, results) => {
@@ -86,6 +100,7 @@ async function saveEmrPasienTtv(req, res) {
             tekanandarah: req.body.tekanandarah,
             tglisi: new Date(),
             objectgcsfk: idgcs,
+            objectpegawaifk: req.idPegawai
         }, { transaction });
 
         await transaction.commit();
@@ -184,15 +199,15 @@ async function getHeaderEmr(req, res) {
         let namagcs = ''
         for (var i = 0; i < resultTtv.rows.length; ++i) {
             beratbadan = resultTtv.rows[0].beratbadan,
-            tinggibadan = resultTtv.rows[0].tinggibadan,
-            suhu = resultTtv.rows[0].suhu,
-            nadi = resultTtv.rows[0].nadi,
-            alergi = resultTtv.rows[0].alergi,
-            tekanandarah = resultTtv.rows[0].tekanandarah,
-            spo2 = resultTtv.rows[0].spo2,
-            pernapasan = resultTtv.rows[0].pernapasan,
-            keadaanumum = resultTtv.rows[0].keadaanumum,
-            namagcs = resultTtv.rows[0].namagcs
+                tinggibadan = resultTtv.rows[0].tinggibadan,
+                suhu = resultTtv.rows[0].suhu,
+                nadi = resultTtv.rows[0].nadi,
+                alergi = resultTtv.rows[0].alergi,
+                tekanandarah = resultTtv.rows[0].tekanandarah,
+                spo2 = resultTtv.rows[0].spo2,
+                pernapasan = resultTtv.rows[0].pernapasan,
+                keadaanumum = resultTtv.rows[0].keadaanumum,
+                namagcs = resultTtv.rows[0].namagcs
         }
         let tempres = ""
         for (var i = 0; i < resultCountNoantrianDokter.rows.length; ++i) {
@@ -276,7 +291,8 @@ async function editEmrPasienTtv(req, res) {
             isedit: true,
             objectttvfk: req.body.norec,
             objectgcsfk: idgcs,
-            tglisi: new Date()
+            tglisi: new Date(),
+            objectpegawaifk: req.idPegawai
         }, { transaction });
 
         const ttvupdate = await db.t_ttv.update({
@@ -345,6 +361,7 @@ async function saveEmrPasienCppt(req, res) {
             assesment: req.body.assesment,
             plan: req.body.plan,
             tglisi: new Date(),
+            objectpegawaifk: req.idPegawai
         }, { transaction });
 
         await transaction.commit();
@@ -413,7 +430,8 @@ async function editEmrPasienCppt(req, res) {
             plan: req.body.plan,
             isedit: true,
             objectcpptfk: req.body.norec,
-            tglisi: new Date()
+            tglisi: new Date(),
+            objectpegawaifk: req.idPegawai
         }, { transaction });
 
         const cpptupdate = await db.t_cppt.update({
@@ -463,7 +481,7 @@ async function getListDiagnosa10(req, res) {
         });
         return
     }
-    
+
     res.status(200).send({
         data: result.rows,
         status: "success",
@@ -484,7 +502,7 @@ async function getListDiagnosa9(req, res) {
         });
         return
     }
-    
+
     res.status(200).send({
         data: result.rows,
         status: "success",
@@ -500,8 +518,8 @@ async function getListComboDiagnosa(req, res) {
     const result2 = await queryPromise2(`SELECT id as value,reportdisplay as label
         FROM m_jeniskasus
     `);
-  
-    let tempres = { tipediagnosa: result.rows, jeniskasus:result2.rows }
+
+    let tempres = { tipediagnosa: result.rows, jeniskasus: result2.rows }
     res.status(200).send({
         data: tempres,
         status: "success",
@@ -515,7 +533,7 @@ async function saveEmrPasienDiagnosa(req, res) {
     try {
 
         transaction = await db.sequelize.transaction();
-       
+
         let norec = uuid.v4().substring(0, 32)
         const diagnosapasien = await db.t_diagnosapasien.create({
             norec: norec,
@@ -526,6 +544,7 @@ async function saveEmrPasienDiagnosa(req, res) {
             objectjeniskasusfk: req.body.kasuspenyakit,
             keterangan: req.body.keteranganicd10,
             tglinput: new Date(),
+            objectpegawaifk: req.idPegawai
         }, { transaction });
 
         await transaction.commit();
@@ -562,11 +581,16 @@ async function getListDiagnosaPasien(req, res) {
     }
     let nocmfk = resultNocmfk.rows[0].nocmfk
     const resultList = await queryPromise2(`SELECT row_number() OVER (ORDER BY td.norec) AS no,dp.noregistrasi,
-    to_char(dp.tglregistrasi,'yyyy-MM-dd') as tglregistrasi,td.norec
+    to_char(dp.tglregistrasi,'yyyy-MM-dd') as tglregistrasi,td.norec, mi.kodeexternal ||' - '|| mi.reportdisplay as label,
+    mi.id as value, td.keterangan,td.objecttipediagnosafk,mt.reportdisplay as tipediagnosa,
+    td.objectjeniskasusfk, jk.reportdisplay as jeniskasus, mu.namaunit
             FROM t_daftarpasien dp 
     join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk=dp.norec
     join t_diagnosapasien td  on td.objectantreanpemeriksaanfk =ta.norec
-    join m_unit mu on mu.id=ta.objectunitfk where dp.nocmfk='${nocmfk}' and td.statusenabled=true
+    join m_unit mu on mu.id=ta.objectunitfk
+    join m_tipediagnosa mt on mt.id=td.objecttipediagnosafk
+    join m_jeniskasus jk on jk.id=td.objectjeniskasusfk
+    join m_icdx mi on mi.id=td.objecticdxfk where dp.nocmfk='${nocmfk}' and td.statusenabled=true
     `);
     res.status(200).send({
         data: resultList.rows,
@@ -586,17 +610,210 @@ async function getListDiagnosaIxPasien(req, res) {
     }
     let nocmfk = resultNocmfk.rows[0].nocmfk
     const resultList = await queryPromise2(`SELECT row_number() OVER (ORDER BY td.norec) AS no,dp.noregistrasi,
-    to_char(dp.tglregistrasi,'yyyy-MM-dd') as tglregistrasi,td.norec
+    to_char(dp.tglregistrasi,'yyyy-MM-dd') as tglregistrasi,td.norec,mu.namaunit,
+    mi.kodeexternal ||' - '|| mi.reportdisplay as label,
+    mi.id as value, td.keterangan
             FROM t_daftarpasien dp 
     join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk=dp.norec
     join t_diagnosatindakan td  on td.objectantreanpemeriksaanfk =ta.norec
-    join m_unit mu on mu.id=ta.objectunitfk where dp.nocmfk='${nocmfk}' and td.statusenabled=true
+    join m_unit mu on mu.id=ta.objectunitfk
+    join m_icdix mi on mi.id=td.objecticdixfk where dp.nocmfk='${nocmfk}' and td.statusenabled=true
     `);
     res.status(200).send({
         data: resultList.rows,
         status: "success",
         success: true,
     });
+}
+
+async function saveEmrPasienDiagnosaix(req, res) {
+    // res.status(500).send({ message: req.userId });
+    // return
+    try {
+
+        transaction = await db.sequelize.transaction();
+
+        let norec = uuid.v4().substring(0, 32)
+        const diagnosatindakan = await db.t_diagnosatindakan.create({
+            norec: norec,
+            statusenabled: true,
+            objectantreanpemeriksaanfk: req.body.norecap,
+            objecticdixfk: req.body.kodediagnosa9,
+            keterangan: req.body.keteranganicd9,
+            tglinput: new Date(),
+            objectpegawaifk: req.idPegawai
+        }, { transaction });
+
+        await transaction.commit();
+        let tempres = { diagnosatindakan: diagnosatindakan }
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+            msg: 'Simpan Berhasil',
+            code: 200
+        });
+    } catch (error) {
+        // console.log(error);
+        if (transaction) {
+            await transaction.rollback();
+            res.status(201).send({
+                status: error,
+                success: false,
+                msg: 'Simpan Gagal',
+                code: 201
+            });
+        }
+    }
+}
+
+async function deleteEmrPasienDiagnosax(req, res) {
+
+    // res.status(500).send({ message: req.query });
+    // return
+    try {
+
+        transaction = await db.sequelize.transaction();
+        const t_diagnosapasien = await db.t_diagnosapasien.update({
+            statusenabled: false,
+            // tglisi: new Date()
+        }, {
+            where: {
+                norec: req.params.norec
+            }
+        }, { transaction });
+
+
+        await transaction.commit();
+
+        res.status(200).send({
+            data: "success",
+            status: "success",
+            success: true,
+            msg: 'Delete Berhasil',
+            code: 200
+        });
+    } catch (error) {
+        // console.log(error);
+        if (transaction) {
+            await transaction.rollback();
+            res.status(201).send({
+                status: error,
+                success: false,
+                msg: 'Delete Gagal',
+                code: 201
+            });
+        }
+    }
+}
+
+async function deleteEmrPasienDiagnosaix(req, res) {
+
+    // res.status(500).send({ message: req.query });
+    // return
+    try {
+
+        transaction = await db.sequelize.transaction();
+        const t_diagnosatindakan = await db.t_diagnosatindakan.update({
+            statusenabled: false,
+            // tglisi: new Date()
+        }, {
+            where: {
+                norec: req.params.norec
+            }
+        }, { transaction });
+
+
+        await transaction.commit();
+
+        res.status(200).send({
+            data: "success",
+            status: "success",
+            success: true,
+            msg: 'Delete Berhasil',
+            code: 200
+        });
+    } catch (error) {
+        // console.log(error);
+        if (transaction) {
+            await transaction.rollback();
+            res.status(201).send({
+                status: error,
+                success: false,
+                msg: 'Delete Gagal',
+                code: 201
+            });
+        }
+    }
+}
+
+async function saveEmrPasienKonsul(req, res) {
+    // res.status(500).send({ message: req.body });
+    // return
+    try {
+        transaction = await db.sequelize.transaction();
+        const resultNocmfk = await queryPromise2(`SELECT norec,objectdaftarpasienfk,objectunitfk
+        FROM t_antreanpemeriksaan where norec='${req.body.norecap}'
+    `);
+    
+        if (resultNocmfk.rowCount === 0) {
+            res.status(500).send({ message: 'Data Tidak Ada' });
+            return
+        }
+        let today = new Date();
+        let todayMonth = '' + (today.getMonth() + 1)
+        if (todayMonth.length < 2)
+            todayMonth = '0' + todayMonth;
+        let todayDate = '' + (today.getDate() + 1)
+        if (todayDate.length < 2)
+            todayDate = '0' + todayDate;
+        let todaystart = formatDate(today)
+        let todayend = formatDate(today) + ' 23:59'
+       
+        let queryNoAntrian = `select count(noantrian)  from t_antreanpemeriksaan ta
+        join m_pegawai mp on mp.id=ta.objectdokterpemeriksafk where ta.objectdokterpemeriksafk='${req.body.doktertujuan}' 
+        and ta.tglmasuk between '${todaystart}' and '${todayend}'`
+        
+        var resultCountNoantrianDokter = await pool.query(queryNoAntrian);
+        let noantrian = parseFloat(resultCountNoantrianDokter.rows[0].count) + 1
+
+
+
+        let norec = uuid.v4().substring(0, 32)
+        const antreanPemeriksaan = await db.t_antreanpemeriksaan.create({
+            norec: norec,
+            objectdaftarpasienfk: resultNocmfk.rows[0].objectdaftarpasienfk,
+            tglmasuk: new Date(),
+            tglpulang: new Date(),
+            objectdokterpemeriksafk: req.body.doktertujuan,
+            objectunitfk: req.body.unittujuan,
+            objectunitasalfk:resultNocmfk.rows[0].objectunitfk,
+            noantrian: noantrian,
+            statusenabled: true,
+            objectpegawaifk: req.idPegawai,
+        }, { transaction });
+
+        await transaction.commit();
+        let tempres = { antreanPemeriksaan: antreanPemeriksaan }
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+            msg: 'Simpan Berhasil',
+            code: 200
+        });
+    } catch (error) {
+        // console.log(error);
+        if (transaction) {
+            await transaction.rollback();
+            res.status(201).send({
+                status: error,
+                success: false,
+                msg: 'Simpan Gagal',
+                code: 201
+            });
+        }
+    }
 }
 
 
@@ -613,5 +830,9 @@ module.exports = {
     getListComboDiagnosa,
     saveEmrPasienDiagnosa,
     getListDiagnosaPasien,
-    getListDiagnosaIxPasien
+    getListDiagnosaIxPasien,
+    saveEmrPasienDiagnosaix,
+    deleteEmrPasienDiagnosax,
+    deleteEmrPasienDiagnosaix,
+    saveEmrPasienKonsul
 };

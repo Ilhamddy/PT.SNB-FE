@@ -68,7 +68,6 @@ const Cppt = () => {
             plan: Yup.string().required("Subjective Belum Diisi"),
         }),
         onSubmit: (values, { resetForm }) => {
-            console.log(values)
             dispatch(emrSave(values, ''));
             resetForm({ values: '' })
         }

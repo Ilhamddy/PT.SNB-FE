@@ -18,19 +18,26 @@ import * as Yup from "yup";
 import DataTable from 'react-data-table-component';
 import CustomSelect from '../../Select/Select';
 
-import { emrDiagnosaixSave, emrResetForm, emrComboGet, emrDiagnosaixGet } from "../../../store/actions";
+import { emrDiagnosaixSave, emrResetForm, emrDiagnosaixGet,
+    emrListDiagnosaixGet,deleteDiagnosaix } from "../../../store/actions";
+import DeleteModalCustom from '../../../Components/Common/DeleteModalCustom';
 
 const Diagnosaix = () => {
     const { norecdp, norecap } = useParams();
     const dispatch = useDispatch();
     const { editData, newData, loading, error, success, dataCombo, loadingCombo, successCombo, dataDiagnosa,
-        loadingDiagnosa, successDiagnosa } = useSelector((state) => ({
+        loadingDiagnosa, successDiagnosa,dataRiwayat,loadingRiwayat,successRiwayat,
+        newDataDelete } = useSelector((state) => ({
             newData: state.Emr.emrDiagnosaixSave.newData,
             success: state.Emr.emrDiagnosaixSave.success,
             loading: state.Emr.emrDiagnosaixSave.loading,
             dataDiagnosa: state.Emr.emrDiagnosaixGet.data,
             loadingDiagnosa: state.Emr.emrDiagnosaixGet.loading,
             successDiagnosa: state.Emr.emrDiagnosaixGet.success,
+            dataRiwayat: state.Emr.emrListDiagnosaixGet.data,
+            loadingRiwayat: state.Emr.emrListDiagnosaixGet.loading,
+            successRiwayat: state.Emr.emrListDiagnosaixGet.success,
+            newDataDelete:state.Emr.deleteDiagnosaix.newData,
         }));
 
     useEffect(() => {
@@ -41,20 +48,29 @@ const Diagnosaix = () => {
     useEffect(() => {
         if (norecdp) {
             dispatch(emrDiagnosaixGet('', 'diagnosa9'));
+            dispatch(emrListDiagnosaixGet(norecdp))
         }
     }, [norecdp, dispatch])
+    useEffect(() => {
+        if (newData !== null) {
+            dispatch(emrListDiagnosaixGet(norecdp));
+        }else if(newDataDelete === true){
+            dispatch(emrListDiagnosaixGet(norecdp));
+        }
+    }, [newData, norecdp,newDataDelete, dispatch])
     const validation = useFormik({
         enableReinitialize: true,
         initialValues: {
             norecap: editData?.norecap ?? norecap,
             norec: editData?.norec ?? '',
-            tipediagnosa: editData?.tipediagnosa ?? '',
+            kodediagnosa9: editData?.kodediagnosa9 ?? '',
+            keteranganicd9:editData?.keteranganicd9??'',
             idlabel: 3,
             label: 'DIAGNOSA',
         },
         validationSchema: Yup.object({
-            tipediagnosa: Yup.string().required("Tipe Diagnosa Belum Diisi"),
-
+            kodediagnosa9: Yup.string().required("Diagnosa Belum Diisi"),
+            keteranganicd9: Yup.string().required("Ketrangan Belum Diisi"),
         }),
         onSubmit: (values, { resetForm }) => {
             console.log(values)
@@ -62,22 +78,24 @@ const Diagnosaix = () => {
             resetForm({ values: '' })
         }
     })
-    const handleClick = (e) => {
-        // validation.setFieldValue('subjective', e.subjective)
-        // validation.setFieldValue('objective', e.objective)
-        // validation.setFieldValue('assesment', e.assesment)
-        // validation.setFieldValue('plan', e.plan)
-        // validation.setFieldValue('norec', e.norec)
-        // validation.setFieldValue('objectemrfk', e.objectemrfk)
-        console.log(e)
+
+    //delete order
+    const [deleteModal, setDeleteModal] = useState(false);
+    const [product, setProduct] = useState(null);
+    const onClickDelete = (product) => {
+        setProduct(product);
+        setDeleteModal(true);
+    };
+
+    const handleDeleteOrder = () => {
+        if (product) {
+            dispatch(deleteDiagnosaix(product.norec));
+            setDeleteModal(false);
+        }
     };
     const handleClickReset = (e) => {
-        // validation.setFieldValue('subjective', '')
-        // validation.setFieldValue('objective', '')
-        // validation.setFieldValue('assesment', '')
-        // validation.setFieldValue('plan', '')
-        // validation.setFieldValue('norec', '')
-        // validation.setFieldValue('objectemrfk', '')
+        validation.setFieldValue('kodediagnosa9', '')
+        validation.setFieldValue('keteranganicd9', '')
 
     };
     const tableCustomStyles = {
@@ -96,7 +114,23 @@ const Diagnosaix = () => {
         }
     }
     const columns = [
-
+        {
+            name: <span className='font-weight-bold fs-13'>Detail</span>,
+            sortable: false,
+            cell: (data) => {
+                return (
+                    <div className="hstack gap-3 flex-wrap">
+                        <UncontrolledDropdown className="dropdown d-inline-block">
+                            <DropdownToggle className="btn btn-soft-secondary btn-sm" tag="button" id="tooltipTop2" type="button" onClick={() => onClickDelete(data)}>
+                                <i className="ri-delete-bin-2-line"></i>
+                            </DropdownToggle>
+                        </UncontrolledDropdown>
+                        <UncontrolledTooltip placement="top" target="tooltipTop2" > Delete </UncontrolledTooltip>
+                    </div>
+                );
+            },
+            width: "50px"
+        },
         {
             name: <span className='font-weight-bold fs-13'>No</span>,
             selector: row => row.no,
@@ -105,16 +139,11 @@ const Diagnosaix = () => {
         },
         {
             name: <span className='font-weight-bold fs-13'>No. Registrasi</span>,
-            // selector: row => row.noregistrasi,
+            selector: row => row.noregistrasi,
             sortable: true,
             // selector: row => (<button className="btn btn-sm btn-soft-info" onClick={() => handleClick(dataTtv)}>{row.noregistrasi}</button>),
             width: "140px",
-            cell: (data) => {
-                return (
-                    // <Link to={`/registrasi/pasien/${data.id}`}>Details</Link>
-                    <button type='button' className="btn btn-sm btn-soft-info" onClick={() => handleClick(data)}>{data.noregistrasi}</button>
-                );
-            },
+          
         },
         {
             name: <span className='font-weight-bold fs-13'>Tgl Registrasi</span>,
@@ -131,16 +160,10 @@ const Diagnosaix = () => {
         },
         {
 
-            name: <span className='font-weight-bold fs-13'>Kode Diagnosa</span>,
-            selector: row => row.kodediagnosa,
+            name: <span className='font-weight-bold fs-13'>Diagnosa</span>,
+            selector: row => row.label,
             sortable: true,
             width: "150px"
-        },
-        {
-
-            name: <span className='font-weight-bold fs-13'>Deskripsi</span>,
-            selector: row => row.reportdisplay,
-            sortable: true
         },
         {
 
@@ -152,9 +175,23 @@ const Diagnosaix = () => {
     ];
     return (
         <React.Fragment>
+            <DeleteModalCustom
+                show={deleteModal}
+                onDeleteClick={handleDeleteOrder}
+                onCloseClick={() => setDeleteModal(false)}
+                msgHDelete='Apa Kamu Yakin ?'
+                msgBDelete='Yakin ingin menghapus data ini?'
+            />
             {/* <ToastContainer closeButton={false} /> */}
             <Row className="gy-4">
-                <Form>
+                <Form
+                onSubmit={(e) => {
+                    e.preventDefault();
+                    validation.handleSubmit();
+                    return false;
+                }}
+                className="gy-4"
+                action="#">
                     <Row>
                         <Col lg={5}>
                         <Card>
@@ -209,21 +246,36 @@ const Diagnosaix = () => {
                                                 ) : null}
                                             </div>
                                         </Col>
+                                        <Col xxl={12} sm={12}>
+                                            <Button type="submit" color="info" className="rounded-pill" placement="top" id="tooltipTop">
+                                                SIMPAN
+                                            </Button>
+                                            <UncontrolledTooltip placement="top" target="tooltipTop" > SIMPAN CPPT </UncontrolledTooltip>
+
+                                            <Button type="button" color="danger" className="rounded-pill" placement="top" id="tooltipTop2" onClick={handleClickReset}>
+                                                BATAL
+                                            </Button>
+                                            <UncontrolledTooltip placement="top" target="tooltipTop2" > BATAL CPPT </UncontrolledTooltip>
+
+                                        </Col>
                                     </Row>
                                 </CardBody>
                             </Card>
                         </Col>
                         <Col lg={7}>
                             <Card>
+                            <CardHeader style={{ backgroundColor: "#B57602" }}>
+                                    <h4 className="card-title mb-0" style={{ color: '#ffffff' }}>Riwayat ICD 9</h4>
+                                </CardHeader>
                                 <CardBody>
                                     <div id="table-gridjs">
                                         <DataTable
                                             fixedHeader
-                                            fixedHeaderScrollHeight="400px"
+                                            fixedHeaderScrollHeight="350px"
                                             columns={columns}
                                             pagination
-                                            // data={dataTtv}
-                                            progressPending={loading}
+                                            data={dataRiwayat}
+                                            progressPending={loadingRiwayat}
                                             customStyles={tableCustomStyles}
                                         />
                                     </div>

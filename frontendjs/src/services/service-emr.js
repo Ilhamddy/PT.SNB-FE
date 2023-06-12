@@ -46,4 +46,28 @@ export default class ServiceEmr {
     saveDiagnosa = async (params) => {
         return await api.create("/transaksi/emr/save-emr-pasien-diagnosa", params);
     }
+
+    getListDiagnosa10 = async (param) => {
+        return await api.get(`/transaksi/emr/getList-diagnosax-pasien?norecdp=${param}`);
+    }
+    
+    saveDiagnosaix = async (params) => {
+        return await api.create("/transaksi/emr/save-emr-pasien-diagnosaix", params);
+    }
+
+    getListDiagnosa9 = async (param) => {
+        return await api.get(`/transaksi/emr/getList-diagnosaix-pasien?norecdp=${param}`);
+    }
+
+    deleteDiagnosax = async (params) => {
+        return await api.delete(`/transaksi/emr/delete-emr-pasien-diagnosax/${params}`);
+    }
+
+    deleteDiagnosaix = async (params) => {
+        return await api.delete(`/transaksi/emr/delete-emr-pasien-diagnosaix/${params}`);
+    }
+
+    saveKonsul = async (params) => {
+        return await api.create("/transaksi/emr/save-emr-pasien-konsul", params);
+    }
 }

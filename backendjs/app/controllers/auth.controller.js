@@ -99,7 +99,7 @@ exports.signin = (req, res) => {
           //   }
           // }
 
-          var token = jwt.sign({ id: user.id, sesion: resHead }, config.secret, {
+          var token = jwt.sign({ id: user.id, sesion: resHead,idpegawai: user.objectpegawaifk, }, config.secret, {
             expiresIn: 86400 // 24 hours test
           });
 

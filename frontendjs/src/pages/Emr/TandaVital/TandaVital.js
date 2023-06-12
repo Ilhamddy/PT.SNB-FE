@@ -302,7 +302,6 @@ const TandaVital = () => {
         }else if(rate>=14 && rate<=15){
             sethasilGcs('Cosposmentis')
         }
-        console.log(rate)
       }, [rate]);
 
     return (

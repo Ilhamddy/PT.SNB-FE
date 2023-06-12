@@ -1,18 +1,28 @@
 import { call, put, takeEvery, all, fork } from "redux-saga/effects";
 import ServiceEmr from "../../services/service-emr";
 
-import { EMR_HEADER_GET, EMR_TTV_SAVE, EMR_TTV_GET, EMR_SAVE, EMR_GET,
-EMR_COMBO_GET, EMR_DIAGNOSAX_GET, EMR_DIAGNOSAIX_GET,
-EMR_DIAGNOSAX_SAVE,EMR_DIAGNOSAIX_SAVE } from "./actionType";
+import {
+    EMR_HEADER_GET, EMR_TTV_SAVE, EMR_TTV_GET, EMR_SAVE, EMR_GET,
+    EMR_COMBO_GET, EMR_DIAGNOSAX_GET, EMR_DIAGNOSAIX_GET,
+    EMR_DIAGNOSAX_SAVE, EMR_DIAGNOSAIX_SAVE,
+    EMR_LISTDIAGNOSAX_GET, EMR_LISTDIAGNOSAIX_GET,
+    DELETE_DIAGNOSAX,DELETE_DIAGNOSAIX,
+    KONSUL_SAVE
+} from "./actionType";
 
 import {
     emrHeaderGetSuccess, emrHeaderGetError, emrTtvSaveSuccess, emrTtvSaveError,
     emrTtvGetSuccess, emrTtvGetError, emrSaveSuccess, emrSaveError,
-    emrGetSuccess, emrGetError,emrComboGetSuccess,emrComboGetError,
-    emrDiagnosaxGetSuccess,emrDiagnosaxGetError,
-    emrDiagnosaixGetSuccess,emrDiagnosaixGetError,
-    emrDiagnosaxSaveSuccess,emrDiagnosaxSaveError,
-    emrDiagnosaixSaveSuccess,emrDiagnosaixSaveError
+    emrGetSuccess, emrGetError, emrComboGetSuccess, emrComboGetError,
+    emrDiagnosaxGetSuccess, emrDiagnosaxGetError,
+    emrDiagnosaixGetSuccess, emrDiagnosaixGetError,
+    emrDiagnosaxSaveSuccess, emrDiagnosaxSaveError,
+    emrDiagnosaixSaveSuccess, emrDiagnosaixSaveError,
+    emrListDiagnosaxGetSuccess, emrListDiagnosaxGetError,
+    emrListDiagnosaixGetSuccess, emrListDiagnosaixGetError,
+    deleteDiagnosaxSuccess, deleteDiagnosaxError,
+    deleteDiagnosaixSuccess, deleteDiagnosaixError,
+    konsulSaveSuccess,konsulSaveError
 } from "./action";
 
 import { toast } from 'react-toastify';
@@ -36,8 +46,6 @@ export function* watchGetEmrHeader() {
 function* onSaveEmrTtv({ payload: { data, history } }) {
     let response = null;
     try {
-        
-        console.log(data)
         if (data.norec !== '') {
             response = yield call(serviceEmr.editTTV, data);
             // console.log('testiiinng')
@@ -46,12 +54,12 @@ function* onSaveEmrTtv({ payload: { data, history } }) {
         }
 
         yield put(emrTtvSaveSuccess(response.data));
-        if(response.code===200){
+        if (response.code === 200) {
             toast.success(response.msg, { autoClose: 3000 });
-        }else{
+        } else {
             toast.error(response.msg, { autoClose: 3000 });
         }
-        
+
         // history("/registrasi/pasien-lama")
     } catch (error) {
         yield put(emrTtvSaveError(error));
@@ -79,7 +87,6 @@ export function* watchGetEmrTtv() {
 function* onSaveEmr({ payload: { data, history } }) {
     try {
         let response = null;
-        console.log(data)
         if (data.idlabel === 2) {
             if (data.norec !== '') {
                 response = yield call(serviceEmr.editCPPT, data);
@@ -89,11 +96,11 @@ function* onSaveEmr({ payload: { data, history } }) {
             }
         }
 
-        
+
         yield put(emrSaveSuccess(response.data));
-        if(response.code===200){
+        if (response.code === 200) {
             toast.success(response.msg, { autoClose: 3000 });
-        }else{
+        } else {
             toast.error(response.msg, { autoClose: 3000 });
         }
         // history("/registrasi/pasien-lama")
@@ -142,9 +149,9 @@ export function* watchGetComboEmr() {
 function* onGetDiagnosaxEmr({ payload: { param, data } }) {
     try {
         let response = null;
-       
-            response = yield call(serviceEmr.getDiagnosa10, param);
-       
+
+        response = yield call(serviceEmr.getDiagnosa10, param);
+
         yield put(emrDiagnosaxGetSuccess(response.data));
     } catch (error) {
         yield put(emrDiagnosaxGetError(error));
@@ -158,9 +165,9 @@ export function* watchGetDiagnosaxEmr() {
 function* onGetDiagnosaxiEmr({ payload: { param, data } }) {
     try {
         let response = null;
-       
-            response = yield call(serviceEmr.getDiagnosa9, param);
-       
+
+        response = yield call(serviceEmr.getDiagnosa9, param);
+
         yield put(emrDiagnosaixGetSuccess(response.data));
     } catch (error) {
         yield put(emrDiagnosaixGetError(error));
@@ -174,20 +181,19 @@ export function* watchGetDiagnosaxiEmr() {
 function* onSaveEmrDiagnosax({ payload: { data, history } }) {
     try {
         let response = null;
-        console.log(data)
-            if (data.norec !== '') {
-                response = yield call(serviceEmr.saveDiagnosa, data);
-                // console.log('testiiinng')
-            } else {
-                response = yield call(serviceEmr.saveDiagnosa, data);
-            }
-        
+        if (data.norec !== '') {
+            response = yield call(serviceEmr.saveDiagnosa, data);
+            // console.log('testiiinng')
+        } else {
+            response = yield call(serviceEmr.saveDiagnosa, data);
+        }
 
-        
+
+
         yield put(emrDiagnosaxSaveSuccess(response.data));
-        if(response.code===200){
+        if (response.code === 200) {
             toast.success(response.msg, { autoClose: 3000 });
-        }else{
+        } else {
             toast.error(response.msg, { autoClose: 3000 });
         }
         // history("/registrasi/pasien-lama")
@@ -205,19 +211,19 @@ function* onSaveEmrDiagnosaix({ payload: { data, history } }) {
     try {
         let response = null;
         console.log(data)
-            if (data.norec !== '') {
-                response = yield call(serviceEmr.saveDiagnosa, data);
-                // console.log('testiiinng')
-            } else {
-                response = yield call(serviceEmr.saveDiagnosa, data);
-            }
-        
+        if (data.norec !== '') {
+            response = yield call(serviceEmr.saveDiagnosaix, data);
+            // console.log('testiiinng')
+        } else {
+            response = yield call(serviceEmr.saveDiagnosaix, data);
+        }
 
-        
+
+
         yield put(emrDiagnosaixSaveSuccess(response.data));
-        if(response.code===200){
+        if (response.code === 200) {
             toast.success(response.msg, { autoClose: 3000 });
-        }else{
+        } else {
             toast.error(response.msg, { autoClose: 3000 });
         }
         // history("/registrasi/pasien-lama")
@@ -231,6 +237,102 @@ export function* watchSaveEmrDiagnosaix() {
     yield takeEvery(EMR_DIAGNOSAIX_SAVE, onSaveEmrDiagnosaix);
 }
 
+function* onGetEmrListDiagnosax({ payload: { param } }) {
+    try {
+        let response = null;
+        response = yield call(serviceEmr.getListDiagnosa10, param);
+
+        yield put(emrListDiagnosaxGetSuccess(response.data));
+    } catch (error) {
+        yield put(emrListDiagnosaxGetError(error));
+    }
+}
+
+export function* watchGetEmrListDiagnosax() {
+    yield takeEvery(EMR_LISTDIAGNOSAX_GET, onGetEmrListDiagnosax);
+}
+
+function* onGetEmrListDiagnosaix({ payload: { param } }) {
+    try {
+        let response = null;
+        response = yield call(serviceEmr.getListDiagnosa9, param);
+
+        yield put(emrListDiagnosaixGetSuccess(response.data));
+    } catch (error) {
+        yield put(emrListDiagnosaixGetError(error));
+    }
+}
+
+export function* watchGetEmrListDiagnosaix() {
+    yield takeEvery(EMR_LISTDIAGNOSAIX_GET, onGetEmrListDiagnosaix);
+}
+
+function* deleteDiagnosax({ payload: product }) {
+    try {
+        const response = yield call(serviceEmr.deleteDiagnosax, product);
+        yield put(deleteDiagnosaxSuccess(response.data));
+        if (response.code === 200) {
+            toast.success(response.msg, { autoClose: 3000 });
+        } else {
+            toast.error(response.msg, { autoClose: 3000 });
+        }
+    } catch (error) {
+        yield put(deleteDiagnosaxError(error));
+        toast.error("Delete Gagal", { autoClose: 3000 });
+    }
+}
+
+export function* watchDeleteDiagnosax() {
+    yield takeEvery(DELETE_DIAGNOSAX, deleteDiagnosax);
+}
+
+function* deleteDiagnosaix({ payload: product }) {
+    try {
+        const response = yield call(serviceEmr.deleteDiagnosaix, product);
+        yield put(deleteDiagnosaixSuccess(response.data));
+        if (response.code === 200) {
+            toast.success(response.msg, { autoClose: 3000 });
+        } else {
+            toast.error(response.msg, { autoClose: 3000 });
+        }
+    } catch (error) {
+        yield put(deleteDiagnosaixError(error));
+        toast.error("Delete Gagal", { autoClose: 3000 });
+    }
+}
+
+export function* watchdeleteDiagnosaix() {
+    yield takeEvery(DELETE_DIAGNOSAIX, deleteDiagnosaix);
+}
+
+function* onKonsulSave({ payload: { data, history } }) {
+    try {
+        let response = null;
+        if (data.norec !== '') {
+            response = yield call(serviceEmr.saveKonsul, data);
+        } else {
+            response = yield call(serviceEmr.saveKonsul, data);
+        }
+
+
+
+        yield put(konsulSaveSuccess(response.data));
+        if (response.code === 200) {
+            toast.success(response.msg, { autoClose: 3000 });
+        } else {
+            toast.error(response.msg, { autoClose: 3000 });
+        }
+        // history("/registrasi/pasien-lama")
+    } catch (error) {
+        yield put(konsulSaveError(error));
+        toast.error(error, { autoClose: 3000 });
+    }
+}
+
+export function* watchonKonsulSave() {
+    yield takeEvery(KONSUL_SAVE, onKonsulSave);
+}
+
 function* emrSaga() {
     yield all([
         fork(watchGetEmrHeader),
@@ -242,7 +344,12 @@ function* emrSaga() {
         fork(watchGetDiagnosaxEmr),
         fork(watchGetDiagnosaxiEmr),
         fork(watchSaveEmrDiagnosax),
-        fork(watchSaveEmrDiagnosaix)
+        fork(watchSaveEmrDiagnosaix),
+        fork(watchGetEmrListDiagnosax),
+        fork(watchGetEmrListDiagnosaix),
+        fork(watchDeleteDiagnosax),
+        fork(watchdeleteDiagnosaix),
+        fork(watchonKonsulSave)
     ]);
 }
 

@@ -29,7 +29,22 @@ import {
     EMR_DIAGNOSAX_SAVE_ERROR,
     EMR_DIAGNOSAIX_SAVE,
     EMR_DIAGNOSAIX_SAVE_SUCCESS,
-    EMR_DIAGNOSAIX_SAVE_ERROR
+    EMR_DIAGNOSAIX_SAVE_ERROR,
+    EMR_LISTDIAGNOSAX_GET,
+    EMR_LISTDIAGNOSAX_GET_SUCCESS,
+    EMR_LISTDIAGNOSAX_GET_ERROR,
+    EMR_LISTDIAGNOSAIX_GET,
+    EMR_LISTDIAGNOSAIX_GET_SUCCESS,
+    EMR_LISTDIAGNOSAIX_GET_ERROR,
+    DELETE_DIAGNOSAX,
+    DELETE_DIAGNOSAX_SUCCESS,
+    DELETE_DIAGNOSAX_ERROR,
+    DELETE_DIAGNOSAIX,
+    DELETE_DIAGNOSAIX_SUCCESS,
+    DELETE_DIAGNOSAIX_ERROR,
+    KONSUL_SAVE,
+    KONSUL_SAVE_SUCCESS,
+    KONSUL_SAVE_ERROR
 } from "./actionType";
 
 export const emrResetForm = () => ({
@@ -60,7 +75,7 @@ export const emrTtvSave = (data, history) => ({
 // common error
 export const emrTtvSaveSuccess = (data, history) => ({
     type: EMR_TTV_SAVE_SUCCESS,
-    payload: { data, history},
+    payload: { data, history },
 });
 
 export const emrTtvSaveError = (error) => ({
@@ -91,7 +106,7 @@ export const emrSave = (data, history) => ({
 // common error
 export const emrSaveSuccess = (data, history) => ({
     type: EMR_SAVE_SUCCESS,
-    payload: { data, history},
+    payload: { data, history },
 });
 
 export const emrSaveError = (error) => ({
@@ -99,9 +114,9 @@ export const emrSaveError = (error) => ({
     payload: error,
 });
 
-export const emrGet = (param,data) => ({
+export const emrGet = (param, data) => ({
     type: EMR_GET,
-    payload: { param ,data},
+    payload: { param, data },
 });
 
 export const emrGetSuccess = (data) => ({
@@ -114,9 +129,9 @@ export const emrGetError = (error) => ({
     payload: error,
 });
 
-export const emrComboGet = (param,data) => ({
+export const emrComboGet = (param, data) => ({
     type: EMR_COMBO_GET,
-    payload: { param ,data},
+    payload: { param, data },
 });
 
 export const emrComboGetSuccess = (data) => ({
@@ -129,9 +144,9 @@ export const emrComboGetError = (error) => ({
     payload: error,
 });
 
-export const emrDiagnosaxGet = (param,data) => ({
+export const emrDiagnosaxGet = (param, data) => ({
     type: EMR_DIAGNOSAX_GET,
-    payload: { param ,data},
+    payload: { param, data },
 });
 
 export const emrDiagnosaxGetSuccess = (data) => ({
@@ -144,9 +159,9 @@ export const emrDiagnosaxGetError = (error) => ({
     payload: error,
 });
 // Diagnosaxi
-export const emrDiagnosaixGet = (param,data) => ({
+export const emrDiagnosaixGet = (param, data) => ({
     type: EMR_DIAGNOSAIX_GET,
-    payload: { param ,data},
+    payload: { param, data },
 });
 
 export const emrDiagnosaixGetSuccess = (data) => ({
@@ -168,7 +183,7 @@ export const emrDiagnosaxSave = (data, history) => ({
 // common error
 export const emrDiagnosaxSaveSuccess = (data, history) => ({
     type: EMR_DIAGNOSAX_SAVE_SUCCESS,
-    payload: { data, history},
+    payload: { data, history },
 });
 
 export const emrDiagnosaxSaveError = (error) => ({
@@ -185,10 +200,89 @@ export const emrDiagnosaixSave = (data, history) => ({
 // common error
 export const emrDiagnosaixSaveSuccess = (data, history) => ({
     type: EMR_DIAGNOSAIX_SAVE_SUCCESS,
-    payload: { data, history},
+    payload: { data, history },
 });
 
 export const emrDiagnosaixSaveError = (error) => ({
     type: EMR_DIAGNOSAIX_SAVE_ERROR,
+    payload: error,
+});
+
+export const emrListDiagnosaxGet = (param) => ({
+    type: EMR_LISTDIAGNOSAX_GET,
+    payload: { param },
+});
+
+export const emrListDiagnosaxGetSuccess = (data) => ({
+    type: EMR_LISTDIAGNOSAX_GET_SUCCESS,
+    payload: data,
+});
+
+export const emrListDiagnosaxGetError = (error) => ({
+    type: EMR_LISTDIAGNOSAX_GET_ERROR,
+    payload: error,
+});
+
+export const emrListDiagnosaixGet = (param) => ({
+    type: EMR_LISTDIAGNOSAIX_GET,
+    payload: { param },
+});
+
+export const emrListDiagnosaixGetSuccess = (data) => ({
+    type: EMR_LISTDIAGNOSAIX_GET_SUCCESS,
+    payload: data,
+});
+
+export const emrListDiagnosaixGetError = (error) => ({
+    type: EMR_LISTDIAGNOSAIX_GET_ERROR,
+    payload: error,
+});
+
+// delete
+export const deleteDiagnosax = param => ({
+    type: DELETE_DIAGNOSAX,
+    payload: param,
+});
+// common error
+export const deleteDiagnosaxSuccess = (data, history) => ({
+    type: DELETE_DIAGNOSAX_SUCCESS,
+    payload: { data, history },
+});
+
+export const deleteDiagnosaxError = error => ({
+    type: DELETE_DIAGNOSAX_ERROR,
+    payload: error,
+});
+
+// delete
+export const deleteDiagnosaix = param => ({
+    type: DELETE_DIAGNOSAIX,
+    payload: param,
+});
+// common error
+export const deleteDiagnosaixSuccess = (data, history) => ({
+    type: DELETE_DIAGNOSAIX_SUCCESS,
+    payload: { data, history },
+});
+
+export const deleteDiagnosaixError = error => ({
+    type: DELETE_DIAGNOSAIX_ERROR,
+    payload: error,
+});
+// Konsul
+// common success
+export const konsulSave = (data, history) => ({
+    type: KONSUL_SAVE,
+    payload: { data, history },
+});
+
+// common error
+export const konsulSaveSuccess = (data, history) => ({
+    type: KONSUL_SAVE_SUCCESS,
+    payload: { data, history },
+});
+
+export const konsulSaveError = (error) => ({
+    type: KONSUL_SAVE_ERROR,
     payload: error,
 });
