@@ -1,5 +1,5 @@
 const getAll =
-    "SELECT id as value, namakamar as label, objectunitfk,objectkelasfk  as label FROM m_kamar where statusenabled=true";
+    "SELECT id as value, reportdisplay as label, objectunitfk,objectkelasfk FROM m_kamar where statusenabled=true";
 
 module.exports = {
     getAll

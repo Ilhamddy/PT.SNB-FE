@@ -83,7 +83,7 @@ const RegistrasiPasien = (props) => {
         }
     }, [dispatch])
     useEffect(() => {
-        if (data) {
+        if (data !== []) {
             var newArray = data.tempattidur.filter(function (el) {
                 return el.objectstatusbedfk === 2;
             });
@@ -95,7 +95,7 @@ const RegistrasiPasien = (props) => {
     // setTest(test)
     // console.log(datas)
     const current = new Date();
-    const [dateStart, setdateStart] = useState(`${current.getFullYear()}-${current.getMonth()+1}-${current.getDate()}`);
+    const [dateStart, setdateStart] = useState(`${current.getFullYear()}-${current.getMonth() + 1}-${current.getDate()}`);
     const validation = useFormik({
         enableReinitialize: true,
         initialValues: {
@@ -157,19 +157,6 @@ const RegistrasiPasien = (props) => {
 
     const [messageNewData, setmessageNewData] = useState("");
     const [tempNoregistrasi, settempNoregistrasi] = useState("");
-    
-
-    // useEffect(() => {
-
-    //     if (newData !== null) {
-    //         console.log(newData.data.daftarPasien.noregistrasi)
-    //         settempNoregistrasi("/bukti-pendaftaran/" + newData.data.daftarPasien.noregistrasi)
-    //         setmessageNewData(newData.data.daftarPasien.noregistrasi + ' Nomor Antrean Dokter ' + newData.data.antreanPemeriksaan.noantrian)
-    //         notifySuccess('Nomor Registrasi Pasien ' + newData.data.daftarPasien.noregistrasi)
-    //         // console.log(newData)
-    //     }
-    // }, [newData, notifySuccess])
-
 
     const [dataUnit, setdataUnit] = useState([]);
     const [dataTT, setdataTT] = useState([]);
@@ -180,13 +167,42 @@ const RegistrasiPasien = (props) => {
         });
         // console.log(selected.value)
         // if(selected.value===2){
-            validation.setFieldValue('kelas',"")
-            validation.setFieldValue('kamar',"")
-            validation.setFieldValue('tempattidur',"")
+        validation.setFieldValue('kelas', "")
+        validation.setFieldValue('kamar', "")
+        validation.setFieldValue('tempattidur', "")
         // }
         validation.setFieldValue('unittujuan', "")
         setdataUnit(newArray)
 
+    }
+    const handleChangeUnitTujuan = (selected) => {
+        validation.setFieldValue('unittujuan', selected.value)
+        validation.setFieldValue('kelas', "")
+        validation.setFieldValue('kamar', "")
+        validation.setFieldValue('tempattidur', "")
+        setdataKamar([])
+        setdataTT([])
+    }
+    const [dataKamar, setdataKamar] = useState([]);
+    const handleChangeKelas = (selected) => {
+        validation.setFieldValue('kelas', selected.value)
+        var newArray = data.kamar.filter(function (item) {
+            if (item.objectkelasfk === selected.value && item.objectunitfk === validation.values.unittujuan)
+                return true;
+            return false;
+        });
+        setdataKamar(newArray)
+        setdataTT([])
+    }
+    const handleChangeKamar = (selected) => {
+        validation.setFieldValue('kamar', selected.value)
+        var newArray = data.tempattidur.filter(function (item) {
+            if (item.objectkamarfk === selected.value && item.objectstatusbedfk === 2)
+                return true;
+            return false;
+        });
+        console.log(newArray)
+        setdataTT(newArray)
     }
 
     const handleBeginOnChange = (newBeginValue) => {
@@ -247,10 +263,10 @@ const RegistrasiPasien = (props) => {
         }
 
     };
-    
+
     return (
         <div className="page-content">
-             <ToastContainer closeButton={false} />
+            <ToastContainer closeButton={false} />
             <Container fluid>
                 <BreadCrumb title="Registrasi Pasien" pageTitle="Registrasi Pasien" />
                 <Row>
@@ -385,7 +401,7 @@ const RegistrasiPasien = (props) => {
                                                             <div>
                                                                 <Flatpickr
                                                                     // value={validation.values.tglregistrasi || ""}
-                                                                   
+
                                                                     className="form-control"
                                                                     options={{
                                                                         dateFormat: "Y-m-d",
@@ -433,14 +449,15 @@ const RegistrasiPasien = (props) => {
                                                                     options={dataUnit}
                                                                     value={validation.values.unittujuan || ""}
                                                                     className={`input ${validation.errors.unittujuan ? "is-invalid" : ""}`}
-                                                                    onChange={value => validation.setFieldValue('unittujuan', value.value)}
+                                                                    // onChange={value => validation.setFieldValue('unittujuan', value.value)}
+                                                                    onChange={handleChangeUnitTujuan}
                                                                 />
                                                                 {validation.touched.unittujuan && validation.errors.unittujuan ? (
                                                                     <FormFeedback type="invalid"><div>{validation.errors.unittujuan}</div></FormFeedback>
                                                                 ) : null}
                                                             </div>
                                                         </Col>
-                                                        {validation.values.tujkunjungan===2 ? (
+                                                        {validation.values.tujkunjungan === 2 ? (
                                                             <>
                                                                 <Col xxl={6} md={6}>
                                                                     <div className="mt-2">
@@ -455,7 +472,8 @@ const RegistrasiPasien = (props) => {
                                                                             options={data.kelas}
                                                                             value={validation.values.kelas || ""}
                                                                             className={`input ${validation.errors.kelas ? "is-invalid" : ""}`}
-                                                                            onChange={value => validation.setFieldValue('kelas', value.value)}
+                                                                            // onChange={value => validation.setFieldValue('kelas', value.value)}
+                                                                            onChange={handleChangeKelas}
                                                                         />
                                                                         {validation.touched.kelas && validation.errors.kelas ? (
                                                                             <FormFeedback type="invalid"><div>{validation.errors.kelas}</div></FormFeedback>
@@ -472,10 +490,11 @@ const RegistrasiPasien = (props) => {
                                                                         <CustomSelect
                                                                             id="kamar"
                                                                             name="kamar"
-                                                                            options={data.kamar}
+                                                                            options={dataKamar}
                                                                             value={validation.values.kamar || ""}
                                                                             className={`input ${validation.errors.kamar ? "is-invalid" : ""}`}
-                                                                            onChange={value => validation.setFieldValue('kamar', value.value)}
+                                                                            // onChange={value => validation.setFieldValue('kamar', value.value)}
+                                                                            onChange={handleChangeKamar}
                                                                         />
                                                                         {validation.touched.kamar && validation.errors.kamar ? (
                                                                             <FormFeedback type="invalid"><div>{validation.errors.kamar}</div></FormFeedback>

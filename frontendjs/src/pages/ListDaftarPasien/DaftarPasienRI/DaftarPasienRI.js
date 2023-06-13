@@ -17,9 +17,10 @@ import 'react-toastify/dist/ReactToastify.css';
 import CountUp from "react-countup";
 import userDummy from "../../../assets/images/users/user-dummy-img.jpg";
 
-import { widgetdaftarPasienRIGet,daftarPasienRIGet,daftarPasienResetForm } from '../../../store/actions';
+import { widgetdaftarPasienRIGet, daftarPasienRIGet, daftarPasienResetForm } from '../../../store/actions';
 import { comboRegistrasiGet } from '../../../store/master/action';
 import CustomSelect from '../../Select/Select';
+import KonsulModal from '../../../Components/Common/KonsulModal';
 
 const DaftarPasienRI = () => {
     document.title = "Daftar Pasien Rawat Inap";
@@ -44,7 +45,8 @@ const DaftarPasienRI = () => {
         }
     }, [dispatch])
     useEffect(() => {
-        if (dataCombo) {
+        console.log(dataCombo)
+        if (dataCombo.length > 0) {
             var newArray = dataCombo.unit.filter(function (el) {
                 return el.objectinstalasifk === 2;
             });
@@ -65,7 +67,7 @@ const DaftarPasienRI = () => {
     function handleSelectSingle(selectedSingle) {
         setSelectedSingle(selectedSingle);
     }
-    const handleClickCari = ()=>{
+    const handleClickCari = () => {
         // dispatch(daftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}`));
         // dispatch(widgetdaftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}`));
     }
@@ -102,7 +104,7 @@ const DaftarPasienRI = () => {
                             </DropdownToggle>
                             <DropdownMenu className="dropdown-menu-end">
                                 <DropdownItem href="#!" onClick={() => handleClickKonsul(data)}><i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>Konsul Antar Unit</DropdownItem>
-                               
+
                             </DropdownMenu>
                         </UncontrolledDropdown>
                         <UncontrolledTooltip placement="top" target="tooltipTop2" > Menu </UncontrolledTooltip>
@@ -166,18 +168,36 @@ const DaftarPasienRI = () => {
 
         // console.log('this is:', e.namapasien);
     };
+    const [konsulModal, setkonsulModal] = useState(false);
+    const [dataUnitKonsul, setdataUnitKonsul] = useState([]);
+    const [dataDokter, setdataDokter] = useState([]);
+    const [tempNorecAp, settempNorecAp] = useState('');
     const handleClickKonsul = (e) => {
-        // setkonsulModal(true);
+        setkonsulModal(true);
         // console.log(dataCombo.unit)
         var newArray = dataCombo.unit.filter(function (el) {
             return el.objectinstalasifk === 1;
         });
-        // setdataUnit(newArray)
-        // setdataDokter(dataCombo.pegawai)
-        // settempNorecAp(e.norecta)
+        setdataUnitKonsul(newArray)
+        setdataDokter(dataCombo.pegawai)
+        settempNorecAp(e.norecta)
+    };
+    const handleSimpanKonsul = () => {
+        // if (product) {
+        setkonsulModal(false);
+        // }
     };
     return (
         <React.Fragment>
+            <ToastContainer closeButton={false} />
+            <KonsulModal
+                show={konsulModal}
+                onSimpanClick={handleSimpanKonsul}
+                onCloseClick={() => setkonsulModal(false)}
+                tempNorecAp={tempNorecAp}
+                dataUnit={dataUnit}
+                dataDokter={dataDokter}
+            />
             <UiContent />
             <div className="page-content">
                 <Container fluid>
@@ -268,24 +288,24 @@ const DaftarPasienRI = () => {
                                             </Col>
                                             <Col sm={4}>
                                                 {/* <div className="d-flex justify-content-sm-end"> */}
-                                                    <div className="search-box ms-2">
-                                                        <input type="text" className="form-control search"
-                                                            placeholder="Search..." onChange={event => setSearch(event.target.value)}
-                                                            onKeyDown={handleFilter} />
-                                                        <i className="ri-search-line search-icon"></i>
-                                                    </div>
+                                                <div className="search-box ms-2">
+                                                    <input type="text" className="form-control search"
+                                                        placeholder="Search..." onChange={event => setSearch(event.target.value)}
+                                                        onKeyDown={handleFilter} />
+                                                    <i className="ri-search-line search-icon"></i>
+                                                </div>
                                                 {/* </div> */}
                                             </Col>
                                             <Col lg={3}>
-                                                <Button type="button" className="rounded-pill" placement="top" id="tooltipTopPencarian"  onClick={handleClickCari}>
-                                                CARI
-                                            </Button>
-                                            <UncontrolledTooltip placement="top" target="tooltipTopPencarian" > Pencarian </UncontrolledTooltip>
+                                                <Button type="button" className="rounded-pill" placement="top" id="tooltipTopPencarian" onClick={handleClickCari}>
+                                                    CARI
+                                                </Button>
+                                                <UncontrolledTooltip placement="top" target="tooltipTopPencarian" > Pencarian </UncontrolledTooltip>
                                             </Col>
                                         </Row>
                                     </div>
                                     <div id="table-gridjs">
-                                    <DataTable
+                                        <DataTable
                                             fixedHeader
                                             fixedHeaderScrollHeight="400px"
                                             columns={columns}
