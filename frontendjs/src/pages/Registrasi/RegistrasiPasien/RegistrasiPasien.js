@@ -82,15 +82,15 @@ const RegistrasiPasien = (props) => {
             dispatch(registrasiNoregistrasiResetForm());
         }
     }, [dispatch])
-    useEffect(() => {
-        if (data !== []) {
-            var newArray = data.tempattidur.filter(function (el) {
-                return el.objectstatusbedfk === 2;
-            });
-            setdataTT(newArray)
-            // console.log(newArray)
-        }
-    }, [data, dispatch])
+    // useEffect(() => {
+    //     if (data !== []) {
+    //         var newArray = data.tempattidur.filter(function (el) {
+    //             return el.objectstatusbedfk === 2;
+    //         });
+    //         setdataTT(newArray)
+    //         // console.log(newArray)
+    //     }
+    // }, [data, dispatch])
     // const [test, setTest] = useState(datas);
     // setTest(test)
     // console.log(datas)
