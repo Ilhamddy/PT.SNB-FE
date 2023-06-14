@@ -45,10 +45,9 @@ const DaftarPasienRI = () => {
         }
     }, [dispatch])
     useEffect(() => {
-        console.log(dataCombo)
-        if (dataCombo.length > 0) {
+        if (dataCombo !== []) {
             var newArray = dataCombo.unit.filter(function (el) {
-                return el.objectinstalasifk === 2;
+                return el.objectinstalasifk === 1;
             });
             setdataUnit(newArray)
         }

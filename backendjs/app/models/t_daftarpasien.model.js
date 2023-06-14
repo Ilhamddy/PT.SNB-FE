@@ -54,6 +54,9 @@ module.exports = (sequelize, Sequelize) => {
         },
         objectpjpasienfk:{
             type:Sequelize.INTEGER
+        },
+        objectstatuspulangfk:{
+            type:Sequelize.INTEGER
         }
     }, {
         tableName: "t_daftarpasien", // relation "user" does not exist

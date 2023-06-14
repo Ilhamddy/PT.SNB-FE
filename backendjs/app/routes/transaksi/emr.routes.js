@@ -103,4 +103,17 @@ module.exports = function (app) {
         [authJwt.verifyToken],
         controller.saveEmrPasienKonsul
     );
+
+    app.post(
+        "/api/transaksi/emr/save-emr-pasien-updatetaskid",
+        [authJwt.verifyToken],
+        controller.updateTaskid
+    );
+
+    app.post(
+        "/api/transaksi/emr/save-emr-pasien-updatestatuspulangrj",
+        [authJwt.verifyToken],
+        controller.updateStatusPulangRJ
+    );
+    
 }

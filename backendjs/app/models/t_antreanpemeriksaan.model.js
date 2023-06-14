@@ -46,6 +46,9 @@ module.exports = (sequelize, Sequelize) => {
         statuspanggil: {
             type: Sequelize.INTEGER
         },
+        taskid: {
+            type: Sequelize.INTEGER
+        },
         tglmasuk: {
             type: 'TIMESTAMP'
         },

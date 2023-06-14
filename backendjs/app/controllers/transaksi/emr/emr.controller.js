@@ -755,7 +755,7 @@ async function saveEmrPasienKonsul(req, res) {
         const resultNocmfk = await queryPromise2(`SELECT norec,objectdaftarpasienfk,objectunitfk
         FROM t_antreanpemeriksaan where norec='${req.body.norecap}'
     `);
-    
+
         if (resultNocmfk.rowCount === 0) {
             res.status(500).send({ message: 'Data Tidak Ada' });
             return
@@ -769,11 +769,11 @@ async function saveEmrPasienKonsul(req, res) {
             todayDate = '0' + todayDate;
         let todaystart = formatDate(today)
         let todayend = formatDate(today) + ' 23:59'
-       
+
         let queryNoAntrian = `select count(noantrian)  from t_antreanpemeriksaan ta
         join m_pegawai mp on mp.id=ta.objectdokterpemeriksafk where ta.objectdokterpemeriksafk='${req.body.doktertujuan}' 
         and ta.tglmasuk between '${todaystart}' and '${todayend}'`
-        
+
         var resultCountNoantrianDokter = await pool.query(queryNoAntrian);
         let noantrian = parseFloat(resultCountNoantrianDokter.rows[0].count) + 1
 
@@ -787,7 +787,7 @@ async function saveEmrPasienKonsul(req, res) {
             tglpulang: new Date(),
             objectdokterpemeriksafk: req.body.doktertujuan,
             objectunitfk: req.body.unittujuan,
-            objectunitasalfk:resultNocmfk.rows[0].objectunitfk,
+            objectunitasalfk: resultNocmfk.rows[0].objectunitfk,
             noantrian: noantrian,
             statusenabled: true,
             objectpegawaifk: req.idPegawai,
@@ -816,6 +816,82 @@ async function saveEmrPasienKonsul(req, res) {
     }
 }
 
+async function updateTaskid(req, res) {
+    try {
+        transaction = await db.sequelize.transaction();
+        
+        const antreanpemeriksaan = await db.t_antreanpemeriksaan.update({
+            taskid: req.body.taskid
+        }, {
+            where: {
+                norec: req.body.norec
+            }
+        }, { transaction });
+        console.log(antreanpemeriksaan);
+        await transaction.commit();
+        let tempres = { antreanpemeriksaan: antreanpemeriksaan }
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+            msg: 'Panggil Berhasil',
+            code: 200
+        });
+    } catch (error) {
+        // console.log(error);
+        if (transaction) {
+            await transaction.rollback();
+            res.status(201).send({
+                status: error,
+                success: false,
+                msg: 'Panggil Gagal',
+                code: 201
+            });
+        }
+    }
+}
+
+async function updateStatusPulangRJ(req, res) {
+    try {
+        transaction = await db.sequelize.transaction();
+        
+        const daftarpasien = await db.t_daftarpasien.update({
+            objectstatuspulangfk: req.body.statuspulang,
+            tglpulang:new Date()
+        }, {
+            where: {
+                norec: req.body.norec
+            }
+        }, { transaction });
+        const antreanpemeriksaan = await db.t_antreanpemeriksaan.update({
+            taskid: 5
+        }, {
+            where: {
+                norec: req.body.norecta
+            }
+        }, { transaction });
+        await transaction.commit();
+        let tempres = { daftarpasien: daftarpasien,antreanpemeriksaan:antreanpemeriksaan }
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+            msg: 'Simpan Status Pulang Berhasil',
+            code: 200
+        });
+    } catch (error) {
+        // console.log(error);
+        if (transaction) {
+            await transaction.rollback();
+            res.status(201).send({
+                status: error,
+                success: false,
+                msg: 'Simpan Status Pulang Gagal',
+                code: 201
+            });
+        }
+    }
+}
 
 module.exports = {
     saveEmrPasienTtv,
@@ -834,5 +910,7 @@ module.exports = {
     saveEmrPasienDiagnosaix,
     deleteEmrPasienDiagnosax,
     deleteEmrPasienDiagnosaix,
-    saveEmrPasienKonsul
+    saveEmrPasienKonsul,
+    updateTaskid,
+    updateStatusPulangRJ
 };

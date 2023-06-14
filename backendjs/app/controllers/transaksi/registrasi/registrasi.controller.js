@@ -466,7 +466,7 @@ async function saveRegistrasiPasien(req, res) {
 
 const getPasienNoregistrasi = (req, res) => {
     const id = parseInt(req.params.noregistrasi);
-    console.log(id);
+    // console.log(id);
     pool.query(queries.getPasienByNoregistrasi, [id], (error, result) => {
         if (error) {
             throw error
@@ -510,7 +510,7 @@ const getDaftarPasienRegistrasi = (req, res) => {
     // return
     let tglregistrasi = ""
     if (req.query.tglregistrasi !== undefined) {
-        console.log("masukkk")
+        // console.log("masukkk")
         tglregistrasi = ` and td.tglregistrasi between '${req.query.tglregistrasi}' and '${req.query.tglregistrasi} + ' 23:59'' `;
 
     }
@@ -556,7 +556,7 @@ async function getDaftarPasienRawatJalan(req, res) {
 
     if (req.query.taskid !== undefined) {
         if (req.query.taskid === '2') {
-            console.log(req.query.taskid)
+            // console.log(req.query.taskid)
             taskid = ` and ta.taskid=4`;
         } else if (req.query.taskid === '3') {
             taskid = ` and ta.taskid in (5,6,7,8,9)`;
@@ -564,8 +564,8 @@ async function getDaftarPasienRawatJalan(req, res) {
     }
     // let query = queries.getAllByOr + ` where nocm ilike '%` + nocm + `%'` + ` or namapasien ilike '%` + nocm + `%' limit 200`
     let query = queries.getDaftarPasienRawatJalan + `  where td.noregistrasi ilike '%${noregistrasi}%'
-    ${tglregistrasi} ${taskid}`
-
+    ${tglregistrasi} ${taskid} and td.objectinstalasifk =1`
+   
 
     try {
         pool.query(query, (error, resultCountNoantrianDokter) => {
@@ -611,7 +611,7 @@ async function getWidgetDaftarPasienRJ(req, res) {
     // let query = queries.getAllByOr + ` where nocm ilike '%` + nocm + `%'` + ` or namapasien ilike '%` + nocm + `%' limit 200`
     let query = queries.getDaftarPasienRawatJalan + `  where td.noregistrasi ilike '%${noregistrasi}%'
     ${tglregistrasi} and td.objectinstalasifk =1`
-
+    // console.log(query)
     pool.query(query, (error, resultCountNoantrianDokter) => {
         if (error) {
             res.status(522).send({
@@ -624,10 +624,11 @@ async function getWidgetDaftarPasienRJ(req, res) {
             let totalSP = 0
             let totalSSP = 0
             for (let x = 0; x < resultCountNoantrianDokter.rowCount; x++) {
-                if (resultCountNoantrianDokter.rows[x].tasikid == 3 || resultCountNoantrianDokter.rows[x].tasikid == null) {
+                if (resultCountNoantrianDokter.rows[x].taskid == 3 || resultCountNoantrianDokter.rows[x].taskid == null) {
                     totalBP = totalBP + 1
-                } else if (resultCountNoantrianDokter.rows[x].tasikid == 4) {
+                } else if (resultCountNoantrianDokter.rows[x].taskid == 4) {
                     totalSP = totalSP + 1
+                    
                 } else {
                     totalSSP = totalSSP + 1
                 }

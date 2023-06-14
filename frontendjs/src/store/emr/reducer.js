@@ -44,7 +44,13 @@ import {
     DELETE_DIAGNOSAIX_ERROR,
     KONSUL_SAVE,
     KONSUL_SAVE_SUCCESS,
-    KONSUL_SAVE_ERROR
+    KONSUL_SAVE_ERROR,
+    UPDATE_TASKID,
+    UPDATE_TASKID_SUCCESS,
+    UPDATE_TASKID_ERROR,
+    UPDATE_STATUSPULANGRJ,
+    UPDATE_STATUSPULANGRJ_SUCCESS,
+    UPDATE_STATUSPULANGRJ_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -130,6 +136,18 @@ const INIT_STATE = {
         error: null,
         success: false
     },
+    updateTaskId: {
+        newData: null,
+        loading: false,
+        error: null,
+        success: false
+    },
+    updateStatusPulangRJ: {
+        newData: null,
+        loading: false,
+        error: null,
+        success: false
+    },
 };
 
 const Emr = (state = INIT_STATE, action) => {
@@ -182,6 +200,12 @@ const Emr = (state = INIT_STATE, action) => {
                 konsulSave:{
                     ...INIT_STATE.konsulSave
                 },
+                updateTaskId:{
+                    ...INIT_STATE.updateTaskId
+                },
+                updateStatusPulangRJ:{
+                    ...INIT_STATE.updateStatusPulangRJ
+                }
             }
         }
 
@@ -681,6 +705,74 @@ const Emr = (state = INIT_STATE, action) => {
                 ...state,
                 konsulSave: {
                     ...state.konsulSave,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case UPDATE_TASKID: {
+            return {
+                ...state,
+                updateTaskId: {
+                    ...state.updateTaskId,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case UPDATE_TASKID_SUCCESS: {
+            return {
+                ...state,
+                updateTaskId: {
+                    ...state.updateTaskId,
+                    newData: action.payload,
+                    loading: false,
+                    success: true,
+                }
+            }
+        }
+
+        case UPDATE_TASKID_ERROR: {
+            return {
+                ...state,
+                updateTaskId: {
+                    ...state.updateTaskId,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case UPDATE_STATUSPULANGRJ: {
+            return {
+                ...state,
+                updateStatusPulangRJ: {
+                    ...state.updateStatusPulangRJ,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case UPDATE_STATUSPULANGRJ_SUCCESS: {
+            return {
+                ...state,
+                updateStatusPulangRJ: {
+                    ...state.updateStatusPulangRJ,
+                    newData: action.payload,
+                    loading: false,
+                    success: true,
+                }
+            }
+        }
+
+        case UPDATE_STATUSPULANGRJ_ERROR: {
+            return {
+                ...state,
+                updateStatusPulangRJ: {
+                    ...state.updateStatusPulangRJ,
                     loading: false,
                     error: action.error,
                 }

@@ -70,4 +70,12 @@ export default class ServiceEmr {
     saveKonsul = async (params) => {
         return await api.create("/transaksi/emr/save-emr-pasien-konsul", params);
     }
+
+    updateTaskId = async (params) => {
+        return await api.create("/transaksi/emr/save-emr-pasien-updatetaskid", params);
+    }
+
+    updateStatusPulangRJ = async (params) => {
+        return await api.create("/transaksi/emr/save-emr-pasien-updatestatuspulangrj", params);
+    }
 }

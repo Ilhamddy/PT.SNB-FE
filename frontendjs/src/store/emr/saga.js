@@ -7,7 +7,7 @@ import {
     EMR_DIAGNOSAX_SAVE, EMR_DIAGNOSAIX_SAVE,
     EMR_LISTDIAGNOSAX_GET, EMR_LISTDIAGNOSAIX_GET,
     DELETE_DIAGNOSAX,DELETE_DIAGNOSAIX,
-    KONSUL_SAVE
+    KONSUL_SAVE, UPDATE_TASKID,UPDATE_STATUSPULANGRJ
 } from "./actionType";
 
 import {
@@ -22,7 +22,9 @@ import {
     emrListDiagnosaixGetSuccess, emrListDiagnosaixGetError,
     deleteDiagnosaxSuccess, deleteDiagnosaxError,
     deleteDiagnosaixSuccess, deleteDiagnosaixError,
-    konsulSaveSuccess,konsulSaveError
+    konsulSaveSuccess,konsulSaveError,
+    updateTaskIdSuccess,updateTaskIdError,
+    updateStatusPulangRJSuccess,updateStatusPulangRJError
 } from "./action";
 
 import { toast } from 'react-toastify';
@@ -333,6 +335,59 @@ export function* watchonKonsulSave() {
     yield takeEvery(KONSUL_SAVE, onKonsulSave);
 }
 
+function* onUpdateTaskId({ payload: { data, history } }) {
+    try {
+        let response = null;
+        if (data.norec !== '') {
+            response = yield call(serviceEmr.updateTaskId, data);
+        } else {
+            response = yield call(serviceEmr.updateTaskId, data);
+        }
+
+        yield put(updateTaskIdSuccess(response.data));
+        if (response.code === 200) {
+            toast.success(response.msg, { autoClose: 3000 });
+        } else {
+            toast.error(response.msg, { autoClose: 3000 });
+        }
+        // history("/registrasi/pasien-lama")
+    } catch (error) {
+        yield put(updateTaskIdError(error));
+        toast.error(error, { autoClose: 3000 });
+    }
+}
+
+export function* watchonUpdateTaskId() {
+    yield takeEvery(UPDATE_TASKID, onUpdateTaskId);
+}
+
+function* onUpdateStatusPulangRJ({ payload: { data, history } }) {
+    try {
+        let response = null;
+        if (data.norec !== '') {
+            response = yield call(serviceEmr.updateStatusPulangRJ, data);
+        } else {
+            response = yield call(serviceEmr.updateStatusPulangRJ, data);
+        }
+
+        yield put(updateStatusPulangRJSuccess(response.data));
+        if (response.code === 200) {
+            toast.success(response.msg, { autoClose: 3000 });
+        } else {
+            toast.error(response.msg, { autoClose: 3000 });
+        }
+        // history("/registrasi/pasien-lama")
+    } catch (error) {
+        yield put(updateStatusPulangRJError(error));
+        toast.error(error, { autoClose: 3000 });
+    }
+}
+
+export function* watchonUpdateStatusPulangRJ() {
+    yield takeEvery(UPDATE_STATUSPULANGRJ, onUpdateStatusPulangRJ);
+}
+
+
 function* emrSaga() {
     yield all([
         fork(watchGetEmrHeader),
@@ -349,7 +404,9 @@ function* emrSaga() {
         fork(watchGetEmrListDiagnosaix),
         fork(watchDeleteDiagnosax),
         fork(watchdeleteDiagnosaix),
-        fork(watchonKonsulSave)
+        fork(watchonKonsulSave),
+        fork(watchonUpdateTaskId),
+        fork(watchonUpdateStatusPulangRJ)
     ]);
 }
 

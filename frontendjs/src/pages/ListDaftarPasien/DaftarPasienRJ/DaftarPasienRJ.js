@@ -18,19 +18,20 @@ import 'react-toastify/dist/ReactToastify.css';
 import { taskWidgets } from '../../../common/data';
 import CountUp from "react-countup";
 
-import { daftarPasienRJGet, widgetdaftarPasienRJGet } from '../../../store/actions';
+import { daftarPasienRJGet, widgetdaftarPasienRJGet, updateTaskId } from '../../../store/actions';
 // Imported Images
 import pac from "../../../assets/images/sudah-periksa.png";
 //import images
 import userDummy from "../../../assets/images/users/user-dummy-img.jpg";
 import KonsulModal from '../../../Components/Common/KonsulModal';
 import { comboRegistrasiGet } from '../../../store/master/action';
+import StatusPulangModal from '../../../Components/Common/StatusPulangModal';
 
 const DaftarPasienRJ = () => {
     document.title = "Daftar Pasien Rawat Jalan";
     const dispatch = useDispatch();
     const history = useNavigate();
-    const { data, datawidget, loading, error,dataCombo,loadingCombo,errorCombo } = useSelector((state) => ({
+    const { data, datawidget, loading, error, dataCombo, loadingCombo, errorCombo, successUpdateTaskId } = useSelector((state) => ({
         data: state.DaftarPasien.daftarPasienRJGet.data,
         datawidget: state.DaftarPasien.widgetdaftarPasienRJGet.data,
         loading: state.DaftarPasien.daftarPasienRJGet.loading,
@@ -38,10 +39,11 @@ const DaftarPasienRJ = () => {
         dataCombo: state.Master.comboRegistrasiGet.data,
         loadingCombo: state.Master.comboRegistrasiGet.loading,
         errorCombo: state.Master.comboRegistrasiGet.error,
+        successUpdateTaskId: state.Emr.updateTaskId.success
     }));
     const current = new Date();
-    const [dateStart, setdateStart] = useState(`${current.getFullYear()}-${current.getMonth()+1}-${current.getDate()}`);
-    const [dateEnd, setdateEnd] = useState(`${current.getFullYear()}-${current.getMonth()+1}-${current.getDate()}`);
+    const [dateStart, setdateStart] = useState(`${current.getFullYear()}-${current.getMonth() + 1}-${current.getDate()}`);
+    const [dateEnd, setdateEnd] = useState(`${current.getFullYear()}-${current.getMonth() + 1}-${current.getDate()}`);
     const [search, setSearch] = useState('')
 
 
@@ -50,7 +52,7 @@ const DaftarPasienRJ = () => {
         dispatch(widgetdaftarPasienRJGet(''));
         dispatch(comboRegistrasiGet());
     }, [dispatch]);
- 
+
     const tableCustomStyles = {
         headRow: {
             style: {
@@ -84,7 +86,8 @@ const DaftarPasienRJ = () => {
                             </DropdownToggle>
                             <DropdownMenu className="dropdown-menu-end">
                                 <DropdownItem href="#!" onClick={() => handleClickKonsul(data)}><i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>Konsul Antar Unit</DropdownItem>
-                               
+                                <DropdownItem href="#!" onClick={() => handleClickPanggil(data)}><i className="ri-volume-up-fill align-bottom me-2 text-muted"></i>Panggil</DropdownItem>
+                                <DropdownItem href="#!" onClick={() => handleClickPulang(data)}><i className="ri-run-line align-bottom me-2 text-muted"></i>Pulang</DropdownItem>
                             </DropdownMenu>
                         </UncontrolledDropdown>
                         <UncontrolledTooltip placement="top" target="tooltipTop2" > Menu </UncontrolledTooltip>
@@ -154,6 +157,16 @@ const DaftarPasienRJ = () => {
     const handleClickCard = (e) => {
         setidPencarian(e.id)
         setnamaPencarian(e.label)
+        if (e.id === 1) {
+            dispatch(daftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=1`));
+            dispatch(widgetdaftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=1`));
+        } else if (e.id === 2) {
+            dispatch(daftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=2`));
+            dispatch(widgetdaftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=2`));
+        } else if (e.id === 3) {
+            dispatch(daftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=3`));
+            dispatch(widgetdaftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=3`));
+        }
     };
 
 
@@ -191,7 +204,7 @@ const DaftarPasienRJ = () => {
         setdateEnd(dateString)
     }
 
-    const handleClickCari = ()=>{
+    const handleClickCari = () => {
         dispatch(daftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}`));
         dispatch(widgetdaftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}`));
     }
@@ -208,6 +221,7 @@ const DaftarPasienRJ = () => {
     const [dataUnit, setdataUnit] = useState([]);
     const [dataDokter, setdataDokter] = useState([]);
     const [tempNorecAp, settempNorecAp] = useState('');
+    const [tempNorecDp, settempNorecDp] = useState('');
     const handleClickKonsul = (e) => {
         setkonsulModal(true);
         // console.log(dataCombo.unit)
@@ -218,11 +232,25 @@ const DaftarPasienRJ = () => {
         setdataDokter(dataCombo.pegawai)
         settempNorecAp(e.norecta)
     };
+    const handleClickPanggil = (e) => {
+        let temp = {
+            norec: e.norecta,
+            taskid: 4
+        }
+        dispatch(updateTaskId(temp));
+    };
+    const handleClickPulang = (e) => {
+        setstatusPulangModal(true);
+        settempNorecDp(e.norecdp)
+        settempNorecAp(e.norecta)
+    }
+    const [statusPulangModal, setstatusPulangModal] = useState(false);
     const handleSimpanKonsul = () => {
         // if (product) {
-            setkonsulModal(false);
+        setkonsulModal(false);
         // }
     };
+   
     return (
         <React.Fragment>
             <ToastContainer closeButton={false} />
@@ -233,6 +261,14 @@ const DaftarPasienRJ = () => {
                 tempNorecAp={tempNorecAp}
                 dataUnit={dataUnit}
                 dataDokter={dataDokter}
+            />
+            <StatusPulangModal
+                show={statusPulangModal}
+                // onSimpanClick={handleSimpanKonsul}
+                onCloseClick={() => setstatusPulangModal(false)}
+                tempNorecDp={tempNorecDp}
+                dataStatusPulang={dataCombo.statuspulang}
+                tempNorecAp={tempNorecAp}
             />
             <UiContent />
             <div className="page-content">
@@ -358,10 +394,10 @@ const DaftarPasienRJ = () => {
                                                 </div>
                                             </Col>
                                             <Col lg={3}>
-                                                <Button type="button" className="rounded-pill" placement="top" id="tooltipTopPencarian"  onClick={handleClickCari}>
-                                                CARI
-                                            </Button>
-                                            <UncontrolledTooltip placement="top" target="tooltipTopPencarian" > Pencarian </UncontrolledTooltip>
+                                                <Button type="button" className="rounded-pill" placement="top" id="tooltipTopPencarian" onClick={handleClickCari}>
+                                                    CARI
+                                                </Button>
+                                                <UncontrolledTooltip placement="top" target="tooltipTopPencarian" > Pencarian </UncontrolledTooltip>
                                             </Col>
                                         </Row>
                                     </div>

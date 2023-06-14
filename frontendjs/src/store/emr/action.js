@@ -44,7 +44,13 @@ import {
     DELETE_DIAGNOSAIX_ERROR,
     KONSUL_SAVE,
     KONSUL_SAVE_SUCCESS,
-    KONSUL_SAVE_ERROR
+    KONSUL_SAVE_ERROR,
+    UPDATE_TASKID,
+    UPDATE_TASKID_SUCCESS,
+    UPDATE_TASKID_ERROR,
+    UPDATE_STATUSPULANGRJ,
+    UPDATE_STATUSPULANGRJ_SUCCESS,
+    UPDATE_STATUSPULANGRJ_ERROR
 } from "./actionType";
 
 export const emrResetForm = () => ({
@@ -284,5 +290,40 @@ export const konsulSaveSuccess = (data, history) => ({
 
 export const konsulSaveError = (error) => ({
     type: KONSUL_SAVE_ERROR,
+    payload: error,
+});
+
+// common success
+export const updateTaskId = (data, history) => ({
+    type: UPDATE_TASKID,
+    payload: { data, history },
+});
+
+// common error
+export const updateTaskIdSuccess = (data, history) => ({
+    type: UPDATE_TASKID_SUCCESS,
+    payload: { data, history },
+});
+
+export const updateTaskIdError = (error) => ({
+    type: UPDATE_TASKID_ERROR,
+    payload: error,
+});
+
+
+// common success
+export const updateStatusPulangRJ = (data, history) => ({
+    type: UPDATE_STATUSPULANGRJ,
+    payload: { data, history },
+});
+
+// common error
+export const updateStatusPulangRJSuccess = (data, history) => ({
+    type: UPDATE_STATUSPULANGRJ_SUCCESS,
+    payload: { data, history },
+});
+
+export const updateStatusPulangRJError = (error) => ({
+    type: UPDATE_STATUSPULANGRJ_ERROR,
     payload: error,
 });

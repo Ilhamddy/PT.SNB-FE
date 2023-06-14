@@ -35,6 +35,13 @@ const EmrBody = () => {
             setpillsTabRj(tab);
         }
     };
+    // Pills Tabs
+    const [pillsTabRi, setpillsTabRi] = useState("1");
+    const pillsToggleRi = (tab) => {
+        if (pillsTabRi !== tab) {
+            setpillsTabRi(tab);
+        }
+    };
 
     const taskWidgets = [
         {
@@ -43,11 +50,11 @@ const EmrBody = () => {
         },
         {
             id: 2,
-            label: "Tabulasi 2",
+            label: "Rawat Inap",
         },
         {
             id: 3,
-            label: "Tabulasi 2",
+            label: "Input Tindakan",
         },
         {
             id: 4,
@@ -56,6 +63,20 @@ const EmrBody = () => {
 
     ];
     const taskRJ = [
+        {
+            id: 1,
+            label: "TTV",
+        },
+        {
+            id: 2,
+            label: "CPPT",
+        },
+        {
+            id: 3,
+            label: "Diagnosa",
+        },
+    ];
+    const taskRI = [
         {
             id: 1,
             label: "TTV",
@@ -139,9 +160,46 @@ const EmrBody = () => {
                             </TabPane>
                             <TabPane tabId="2" id="home-1">
                                 <Card>
-                                    <CardBody>
-
-                                    </CardBody>
+                                <div className="card-header align-items-center d-flex">
+                                        <div className="flex-shrink-0 ms-2">
+                                            <Nav tabs className="nav justify-content-end nav-tabs-custom rounded card-header-tabs border-bottom-0">
+                                                {taskRI.map((item, key) => (
+                                                    <NavItem key={key}>
+                                                        <NavLink style={{ cursor: "pointer" }} className={classnames({ active: pillsTabRi === `${item.id}`, })} onClick={() => { pillsToggleRi(`${item.id}`); }}>
+                                                            <span className="fw-semibold">{item.label}</span>
+                                                        </NavLink>
+                                                    </NavItem>
+                                                ))}
+                                            </Nav>
+                                        </div>
+                                    </div>
+                                    <TabContent activeTab={pillsTabRi} className="text-muted">
+                                        <TabPane tabId="1" id="ttv-1">
+                                            <Card>
+                                                <CardBody>
+                                                    <TandaVital/>
+                                                </CardBody>
+                                            </Card>
+                                        </TabPane>
+                                    </TabContent>
+                                    <TabContent activeTab={pillsTabRi} className="text-muted">
+                                        <TabPane tabId="2" id="ttv-2">
+                                            <Card>
+                                                <CardBody>
+                                                    <Cppt/>
+                                                </CardBody>
+                                            </Card>
+                                        </TabPane>
+                                    </TabContent>
+                                    <TabContent activeTab={pillsTabRi} className="text-muted">
+                                        <TabPane tabId="3" id="diagnosa-3">
+                                            <Card>
+                                                <CardBody>
+                                                    <Diagnosa/>
+                                                </CardBody>
+                                            </Card>
+                                        </TabPane>
+                                    </TabContent>
                                 </Card>
                             </TabPane>
                             <TabPane tabId="3" id="home-1">
