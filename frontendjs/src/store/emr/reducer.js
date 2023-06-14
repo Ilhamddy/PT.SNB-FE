@@ -50,7 +50,13 @@ import {
     UPDATE_TASKID_ERROR,
     UPDATE_STATUSPULANGRJ,
     UPDATE_STATUSPULANGRJ_SUCCESS,
-    UPDATE_STATUSPULANGRJ_ERROR
+    UPDATE_STATUSPULANGRJ_ERROR,
+    COMBO_HISTORY_UNIT_GET,
+    COMBO_HISTORY_UNIT_GET_SUCCESS,
+    COMBO_HISTORY_UNIT_GET_ERROR,
+    COMBO_TINDAKAN_GET,
+    COMBO_TINDAKAN_GET_SUCCESS,
+    COMBO_TINDAKAN_GET_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -148,6 +154,16 @@ const INIT_STATE = {
         error: null,
         success: false
     },
+    comboHistoryUnitGet: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    comboTindakanGet: {
+        data: [],
+        loading: false,
+        error: null,
+    },
 };
 
 const Emr = (state = INIT_STATE, action) => {
@@ -205,6 +221,12 @@ const Emr = (state = INIT_STATE, action) => {
                 },
                 updateStatusPulangRJ:{
                     ...INIT_STATE.updateStatusPulangRJ
+                },
+                comboHistoryUnitGet:{
+                    ...INIT_STATE.comboHistoryUnitGet
+                },
+                comboTindakanGet:{
+                    ...INIT_STATE.comboTindakanGet
                 }
             }
         }
@@ -773,6 +795,72 @@ const Emr = (state = INIT_STATE, action) => {
                 ...state,
                 updateStatusPulangRJ: {
                     ...state.updateStatusPulangRJ,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case COMBO_HISTORY_UNIT_GET: {
+            return {
+                ...state,
+                comboHistoryUnitGet: {
+                    ...state.comboHistoryUnitGet,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case COMBO_HISTORY_UNIT_GET_SUCCESS: {
+            return {
+                ...state,
+                comboHistoryUnitGet: {
+                    ...state.comboHistoryUnitGet,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case COMBO_HISTORY_UNIT_GET_ERROR: {
+            return {
+                ...state,
+                comboHistoryUnitGet: {
+                    ...state.comboHistoryUnitGet,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case COMBO_TINDAKAN_GET: {
+            return {
+                ...state,
+                comboTindakanGet: {
+                    ...state.comboTindakanGet,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case COMBO_TINDAKAN_GET_SUCCESS: {
+            return {
+                ...state,
+                comboTindakanGet: {
+                    ...state.comboTindakanGet,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case COMBO_TINDAKAN_GET_ERROR: {
+            return {
+                ...state,
+                comboTindakanGet: {
+                    ...state.comboTindakanGet,
                     loading: false,
                     error: action.error,
                 }

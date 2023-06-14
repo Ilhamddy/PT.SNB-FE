@@ -20,7 +20,7 @@ async function getListAntreanPemeriksaan(req, res) {
     const norecdp = req.params.norec;
     // console.log(req.query.norecdp)
     try {
-        const resultlistantreanpemeriksaan = await queryPromise2(`select ta.norec, mu.id as value,mu.reportdisplay as label from t_antreanpemeriksaan ta 
+        const resultlistantreanpemeriksaan = await queryPromise2(`select ta.norec, mu.id as value,mu.reportdisplay as label,objectkelasfk from t_antreanpemeriksaan ta 
         join m_unit mu on mu.id=ta.objectunitfk  where ta.objectdaftarpasienfk= '${norecdp}'
         `);
 
@@ -38,7 +38,34 @@ async function getListAntreanPemeriksaan(req, res) {
 
 }
 
+async function getListProdukToKelasToUnit(req, res) {
+    const objectkelasfk = req.query.objectkelasfk;
+    const objectunitfk = req.query.objectunitfk;
+    // console.log(objectunitfk)
+    try {
+        const resultlistantreanpemeriksaan = await queryPromise2(`select mp.namaproduk as label,mp.id as value,mth.objectkelasfk,mm.objectunitfk,mu.reportdisplay,mth.totalharga  from m_mapunittoproduk mm
+        join m_produk mp on mp.id=mm.objectprodukfk
+        join m_unit mu on mu.id=mm.objectunitfk
+        join m_totalhargaprodukbykelas mth on mth.objectmapunittoprodukfk=mm.id and mth.objectprodukfk=mp.id
+        where mth.objectkelasfk =${objectkelasfk} and mm.objectunitfk =${objectunitfk} 
+        and mp.namaproduk ilike '%${req.query.namaproduk}%'`);
+
+        let tempres = resultlistantreanpemeriksaan.rows
+       
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+        });
+
+    } catch (error) {
+        res.status(500).send({ message: error });
+    }
+
+}
+
 
 module.exports = {
-    getListAntreanPemeriksaan
+    getListAntreanPemeriksaan,
+    getListProdukToKelasToUnit
 };

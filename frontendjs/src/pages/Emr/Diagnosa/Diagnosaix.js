@@ -98,6 +98,13 @@ const Diagnosaix = () => {
         validation.setFieldValue('keteranganicd9', '')
 
     };
+    const handleDiagnosa = characterEntered => {
+        if (characterEntered.length > 3) {
+            // useEffect(() => {
+            dispatch(emrDiagnosaixGet(characterEntered, 'diagnosa9'));
+            // }, [dispatch]);
+        }
+    };
     const tableCustomStyles = {
         headRow: {
             style: {
@@ -214,6 +221,7 @@ const Diagnosaix = () => {
                                                     value={validation.values.kodediagnosa9 || ""}
                                                     className={`input ${validation.errors.kodediagnosa9 ? "is-invalid" : ""}`}
                                                     onChange={value => validation.setFieldValue('kodediagnosa9', value.value)}
+                                                    onInputChange={handleDiagnosa}
                                                 />
                                                 {validation.touched.kodediagnosa9 && validation.errors.kodediagnosa9 ? (
                                                     <FormFeedback type="invalid"><div>{validation.errors.kodediagnosa9}</div></FormFeedback>

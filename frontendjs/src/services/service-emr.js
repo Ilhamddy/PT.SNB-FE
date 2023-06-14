@@ -78,4 +78,11 @@ export default class ServiceEmr {
     updateStatusPulangRJ = async (params) => {
         return await api.create("/transaksi/emr/save-emr-pasien-updatestatuspulangrj", params);
     }
+
+    getComboHistoryUnit = async (param) => {
+        return await api.get(`/transaksi/tindakan/list-antreanpemeriksaan/${param}`);
+    }
+    getComboTindakan = async (param) => {
+        return await api.get(`/transaksi/tindakan/list-produk-tokelas-tounit?objectkelasfk=${param}`);
+    }
 }

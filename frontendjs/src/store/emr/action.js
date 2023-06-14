@@ -50,7 +50,13 @@ import {
     UPDATE_TASKID_ERROR,
     UPDATE_STATUSPULANGRJ,
     UPDATE_STATUSPULANGRJ_SUCCESS,
-    UPDATE_STATUSPULANGRJ_ERROR
+    UPDATE_STATUSPULANGRJ_ERROR,
+    COMBO_HISTORY_UNIT_GET,
+    COMBO_HISTORY_UNIT_GET_SUCCESS,
+    COMBO_HISTORY_UNIT_GET_ERROR,
+    COMBO_TINDAKAN_GET,
+    COMBO_TINDAKAN_GET_SUCCESS,
+    COMBO_TINDAKAN_GET_ERROR
 } from "./actionType";
 
 export const emrResetForm = () => ({
@@ -325,5 +331,35 @@ export const updateStatusPulangRJSuccess = (data, history) => ({
 
 export const updateStatusPulangRJError = (error) => ({
     type: UPDATE_STATUSPULANGRJ_ERROR,
+    payload: error,
+});
+
+export const comboHistoryUnitGet = (param, data) => ({
+    type: COMBO_HISTORY_UNIT_GET,
+    payload: { param, data },
+});
+
+export const comboHistoryUnitGetSuccess = (data) => ({
+    type: COMBO_HISTORY_UNIT_GET_SUCCESS,
+    payload: data,
+});
+
+export const comboHistoryUnitGetError = (error) => ({
+    type: COMBO_HISTORY_UNIT_GET_ERROR,
+    payload: error,
+});
+
+export const comboTindakanGet = (param, data) => ({
+    type: COMBO_TINDAKAN_GET,
+    payload: { param, data },
+});
+
+export const comboTindakanGetGetSuccess = (data) => ({
+    type: COMBO_TINDAKAN_GET_SUCCESS,
+    payload: data,
+});
+
+export const comboTindakanGetGetError = (error) => ({
+    type: COMBO_TINDAKAN_GET_ERROR,
     payload: error,
 });

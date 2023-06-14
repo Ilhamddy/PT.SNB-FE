@@ -369,7 +369,7 @@ async function saveRegistrasiPasien(req, res) {
             noregistrasi = '0' + noregistrasi;
         }
         if (req.body.kelas === "")
-            req.body.kelas = 6
+            req.body.kelas = 0
         if (req.body.kamar === "")
             req.body.kamar = null
         if (req.body.tempattidur === "")

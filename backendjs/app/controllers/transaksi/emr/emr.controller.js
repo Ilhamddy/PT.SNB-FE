@@ -471,7 +471,7 @@ async function editEmrPasienCppt(req, res) {
 async function getListDiagnosa10(req, res) {
 
     const result = await queryPromise2(`SELECT id as value,kodeexternal || ' - '|| reportdisplay as label
-        FROM m_icdx where reportdisplay ilike '%${req.query.namadiagnosa}%' limit 10
+        FROM m_icdx where reportdisplay ilike '%${req.query.namadiagnosa}%' or kodeexternal ilike '%${req.query.namadiagnosa}%' limit 10
     `);
     if (result.rowCount === 0) {
         res.status(201).send({
@@ -492,7 +492,7 @@ async function getListDiagnosa10(req, res) {
 async function getListDiagnosa9(req, res) {
 
     const result = await queryPromise2(`SELECT id as value,kodeexternal || ' - '||reportdisplay as label
-        FROM m_icdix where reportdisplay ilike '%${req.query.namadiagnosa}%' limit 10
+        FROM m_icdix where reportdisplay ilike '%${req.query.namadiagnosa}%' or kodeexternal ilike '%${req.query.namadiagnosa}%' limit 10
     `);
     if (result.rowCount === 0) {
         res.status(201).send({

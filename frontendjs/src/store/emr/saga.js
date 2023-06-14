@@ -6,8 +6,9 @@ import {
     EMR_COMBO_GET, EMR_DIAGNOSAX_GET, EMR_DIAGNOSAIX_GET,
     EMR_DIAGNOSAX_SAVE, EMR_DIAGNOSAIX_SAVE,
     EMR_LISTDIAGNOSAX_GET, EMR_LISTDIAGNOSAIX_GET,
-    DELETE_DIAGNOSAX,DELETE_DIAGNOSAIX,
-    KONSUL_SAVE, UPDATE_TASKID,UPDATE_STATUSPULANGRJ
+    DELETE_DIAGNOSAX, DELETE_DIAGNOSAIX,
+    KONSUL_SAVE, UPDATE_TASKID, UPDATE_STATUSPULANGRJ,
+    COMBO_HISTORY_UNIT_GET, COMBO_TINDAKAN_GET
 } from "./actionType";
 
 import {
@@ -22,9 +23,11 @@ import {
     emrListDiagnosaixGetSuccess, emrListDiagnosaixGetError,
     deleteDiagnosaxSuccess, deleteDiagnosaxError,
     deleteDiagnosaixSuccess, deleteDiagnosaixError,
-    konsulSaveSuccess,konsulSaveError,
-    updateTaskIdSuccess,updateTaskIdError,
-    updateStatusPulangRJSuccess,updateStatusPulangRJError
+    konsulSaveSuccess, konsulSaveError,
+    updateTaskIdSuccess, updateTaskIdError,
+    updateStatusPulangRJSuccess, updateStatusPulangRJError,
+    comboHistoryUnitGetSuccess, comboHistoryUnitGetError,
+    comboTindakanGetGetSuccess, comboTindakanGetGetError
 } from "./action";
 
 import { toast } from 'react-toastify';
@@ -387,6 +390,35 @@ export function* watchonUpdateStatusPulangRJ() {
     yield takeEvery(UPDATE_STATUSPULANGRJ, onUpdateStatusPulangRJ);
 }
 
+function* onGetComboHistoryUnit({ payload: { param, data } }) {
+    try {
+        let response = null;
+        response = yield call(serviceEmr.getComboHistoryUnit, param);
+
+        yield put(comboHistoryUnitGetSuccess(response.data));
+    } catch (error) {
+        yield put(comboHistoryUnitGetError(error));
+    }
+}
+
+export function* watchonGetComboHistoryUnit() {
+    yield takeEvery(COMBO_HISTORY_UNIT_GET, onGetComboHistoryUnit);
+}
+
+function* onGetComboTindakan({ payload: { param, data } }) {
+    try {
+        let response = null;
+        response = yield call(serviceEmr.getComboTindakan, param);
+
+        yield put(comboTindakanGetGetSuccess(response.data));
+    } catch (error) {
+        yield put(comboTindakanGetGetError(error));
+    }
+}
+
+export function* watchonGetComboTindakan() {
+    yield takeEvery(COMBO_TINDAKAN_GET, onGetComboTindakan);
+}
 
 function* emrSaga() {
     yield all([
@@ -406,7 +438,9 @@ function* emrSaga() {
         fork(watchdeleteDiagnosaix),
         fork(watchonKonsulSave),
         fork(watchonUpdateTaskId),
-        fork(watchonUpdateStatusPulangRJ)
+        fork(watchonUpdateStatusPulangRJ),
+        fork(watchonGetComboHistoryUnit),
+        fork(watchonGetComboTindakan)
     ]);
 }
 

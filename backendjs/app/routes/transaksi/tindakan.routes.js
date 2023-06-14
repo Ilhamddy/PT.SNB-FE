@@ -15,5 +15,11 @@ module.exports = function (app) {
         [authJwt.verifyToken],
         controller.getListAntreanPemeriksaan
     );
+
+    app.get(
+        "/api/transaksi/tindakan/list-produk-tokelas-tounit",
+        [authJwt.verifyToken],
+        controller.getListProdukToKelasToUnit
+    );
     
 }
