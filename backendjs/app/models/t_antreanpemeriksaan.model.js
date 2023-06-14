@@ -43,9 +43,6 @@ module.exports = (sequelize, Sequelize) => {
         statuskunjungan: {
             type: Sequelize.STRING
         },
-        statuspanggil: {
-            type: Sequelize.INTEGER
-        },
         taskid: {
             type: Sequelize.INTEGER
         },

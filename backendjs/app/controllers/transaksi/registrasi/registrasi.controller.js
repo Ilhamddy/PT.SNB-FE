@@ -429,18 +429,25 @@ async function saveRegistrasiPasien(req, res) {
             norec: norecAP,
             objectdaftarpasienfk: norecDP,
             tglmasuk: req.body.tglregistrasi,
-            tglpulang: req.body.tglregistrasi,
+            tglkeluar: req.body.tglregistrasi,
             objectdokterpemeriksafk: req.body.dokter,
             objectunitfk: req.body.unittujuan,
             noantrian: noantrian,
             objectkamarfk: req.body.kamar,
             objectkelasfk: req.body.kelas,
             nobed: req.body.tempattidur,
-            statusenabled: true,
-            objectpegawaifk: req.idPegawai,
+            statusenabled: true
         }, { transaction });
-        // console.log(resultCountNoantrianDokter);
-
+        // console.log(antreanPemeriksaan);
+        if (req.body.tujkunjungan === 2) {
+            const ttp = await db.m_tempattidur.update({
+                objectstatusbedfk: 1
+            }, {
+                where: {
+                    id: req.body.tempattidur
+                }
+            }, { transaction });
+        }
         await transaction.commit();
         let tempres = { daftarPasien: daftarPasien, antreanPemeriksaan: antreanPemeriksaan }
         res.status(200).send({
