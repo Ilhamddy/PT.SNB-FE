@@ -26,12 +26,13 @@ const DaftarPasienRI = () => {
     document.title = "Daftar Pasien Rawat Inap";
     const dispatch = useDispatch();
     const history = useNavigate();
-    const { data, datawidget, loading, error, dataCombo } = useSelector((state) => ({
+    const { data, datawidget, loading, error, dataCombo,loadingCombo } = useSelector((state) => ({
         data: state.DaftarPasien.daftarPasienRIGet.data,
         datawidget: state.DaftarPasien.widgetdaftarPasienRIGet.data,
         loading: state.DaftarPasien.daftarPasienRIGet.loading,
         error: state.DaftarPasien.daftarPasienRIGet.error,
         dataCombo: state.Master.comboRegistrasiGet.data,
+        loadingCombo: state.Master.comboRegistrasiGet.loading,
     }));
     const [dataUnit, setdataUnit] = useState([]);
     useEffect(() => {
@@ -44,14 +45,16 @@ const DaftarPasienRI = () => {
             dispatch(daftarPasienResetForm());
         }
     }, [dispatch])
-    useEffect(() => {
-        if (dataCombo !== []) {
-            var newArray = dataCombo.unit.filter(function (el) {
-                return el.objectinstalasifk === 1;
-            });
-            setdataUnit(newArray)
-        }
-    }, [dataCombo, dispatch])
+    // useEffect(() => {
+    //     if (dataCombo.length > 0) {
+    //         console.log(dataCombo)
+    //         console.log('masuk'+dataCombo)
+    //         var newArray = dataCombo.unit.filter(function (el) {
+    //             return el.objectinstalasifk === 1;
+    //         });
+    //         setdataUnit(newArray)
+    //     }
+    // }, [dataCombo,loadingCombo])
     const [search, setSearch] = useState('')
     const handleFilter = (e) => {
         if (e.keyCode === 13) {
@@ -278,7 +281,7 @@ const DaftarPasienRI = () => {
                                                 <CustomSelect
                                                     id="doktertujuan"
                                                     name="doktertujuan"
-                                                    options={dataUnit}
+                                                    options={dataCombo.unit}
                                                     value={selectedSingle}
                                                     onChange={() => {
                                                         handleSelectSingle();
