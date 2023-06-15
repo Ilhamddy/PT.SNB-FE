@@ -436,6 +436,7 @@ async function saveRegistrasiPasien(req, res) {
             objectkamarfk: req.body.kamar,
             objectkelasfk: req.body.kelas,
             nobed: req.body.tempattidur,
+            taskid:3,
             statusenabled: true
         }, { transaction });
         // console.log(antreanPemeriksaan);
@@ -567,7 +568,11 @@ async function getDaftarPasienRawatJalan(req, res) {
             taskid = ` and ta.taskid=4`;
         } else if (req.query.taskid === '3') {
             taskid = ` and ta.taskid in (5,6,7,8,9)`;
+        }else if(req.query.taskid==='1'){
+            taskid = ` and ta.taskid=3`;
         }
+    }else{
+        taskid = ` and ta.taskid=3`;
     }
     // let query = queries.getAllByOr + ` where nocm ilike '%` + nocm + `%'` + ` or namapasien ilike '%` + nocm + `%' limit 200`
     let query = queries.getDaftarPasienRawatJalan + `  where td.noregistrasi ilike '%${noregistrasi}%'

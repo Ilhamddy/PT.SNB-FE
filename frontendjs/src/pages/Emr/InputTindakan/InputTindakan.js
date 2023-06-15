@@ -22,18 +22,18 @@ import { comboHistoryUnitGet, comboTindakanGet } from "../../../store/actions";
 const InputTindakan = () => {
     const { norecdp, norecap } = useParams();
     const dispatch = useDispatch();
-    const { editData, newData, loading, error, success,dataCombo,loadingCombo,successCombo,
-        dataTindakan,loadingTindakan,successTindakan } = useSelector((state) => ({
-        // newData: state.Emr.emrTtvSave.newData,
-        // success: state.Emr.emrTtvSave.success,
-        // loading: state.Emr.emrTtvSave.loading,
-        dataCombo: state.Emr.comboHistoryUnitGet.data,
-        loadingCombo: state.Emr.comboHistoryUnitGet.loading,
-        successCombo: state.Emr.comboHistoryUnitGet.success,
-        dataTindakan: state.Emr.comboTindakanGet.data,
-        loadingTindakan: state.Emr.comboTindakanGet.loading,
-        successTindakan: state.Emr.comboTindakanGet.success,
-    }));
+    const { editData, newData, loading, error, success, dataCombo, loadingCombo, successCombo,
+        dataTindakan, loadingTindakan, successTindakan } = useSelector((state) => ({
+            // newData: state.Emr.emrTtvSave.newData,
+            // success: state.Emr.emrTtvSave.success,
+            // loading: state.Emr.emrTtvSave.loading,
+            dataCombo: state.Emr.comboHistoryUnitGet.data,
+            loadingCombo: state.Emr.comboHistoryUnitGet.loading,
+            successCombo: state.Emr.comboHistoryUnitGet.success,
+            dataTindakan: state.Emr.comboTindakanGet.data,
+            loadingTindakan: state.Emr.comboTindakanGet.loading,
+            successTindakan: state.Emr.comboTindakanGet.success,
+        }));
     useEffect(() => {
         if (norecdp) {
             dispatch(comboHistoryUnitGet(norecdp));
@@ -42,21 +42,28 @@ const InputTindakan = () => {
     const handleTindakan = characterEntered => {
         if (characterEntered.length > 3) {
             // useEffect(() => {
-            dispatch(comboTindakanGet(validation.values.objectkelasfk+'&objectunitfk='+validation.values.unitlast+'&namaproduk='+characterEntered));
+            dispatch(comboTindakanGet(validation.values.objectkelasfk + '&objectunitfk=' + validation.values.unitlast + '&namaproduk=' + characterEntered));
             // }, [dispatch]);
         }
     };
+    const handleTindakanSelcted = (selected)=>{
+        validation.setFieldValue('tindakan', selected.value)
+        setHarga(selected.totalharga)
+    }
     const handleUnitLast = (selected) => {
         validation.setFieldValue('unitlast', selected.value)
         validation.setFieldValue('objectkelasfk', selected.objectkelasfk)
     };
+    const [count, setCount] = useState(0);
+    const [harga, setHarga] = useState(0);
     const validation = useFormik({
         enableReinitialize: true,
         initialValues: {
             norecap: editData?.norecap ?? norecap,
             norec: editData?.norec ?? '',
             unitlast: editData?.unitlast ?? '',
-            objectkelasfk: editData?.objectkelasfk ?? ''
+            objectkelasfk: editData?.objectkelasfk ?? '',
+            quantity: editData?.quantity ?? ''
         },
         validationSchema: Yup.object({
             unitlast: Yup.string().required("Unit Belum Dipilih"),
@@ -115,9 +122,9 @@ const InputTindakan = () => {
                                             options={dataTindakan}
                                             value={validation.values.tindakan || ""}
                                             className={`input ${validation.errors.tindakan ? "is-invalid" : ""}`}
-                                            onChange={value => validation.setFieldValue('tindakan', value.value)}
+                                            onChange={handleTindakanSelcted}
                                             onInputChange={handleTindakan}
-                                       />
+                                        />
                                         {validation.touched.tindakan && validation.errors.tindakan ? (
                                             <FormFeedback type="invalid"><div>{validation.errors.tindakan}</div></FormFeedback>
                                         ) : null}
@@ -153,52 +160,45 @@ const InputTindakan = () => {
                                 </Col>
                                 <Col lg={12}>
                                     <Row>
-                                        <Col lg={3} sm={6}>
+                                        <Col lg={4} sm={6}>
                                             <div className="mt-2">
-                                                <Label style={{ color: "black" }} htmlFor="qty" className="form-label fw-semibold">Qty</Label>
+                                                <Label style={{ color: "black" }} htmlFor="qty" className="form-label fw-semibold">Quantity</Label>
                                             </div>
                                         </Col>
-                                        <Col lg={3} sm={6} className="mt-1">
+                                        <Col lg={2} sm={6} className="mt-1">
                                             <div>
-                                                <Input
-                                                    id="qty"
-                                                    name="qty"
-                                                    type="number"
-                                                    placeholder="Qty"
-                                                    onChange={validation.handleChange}
-                                                    onBlur={validation.handleBlur}
-                                                    value={validation.values.qty || ""}
-                                                    invalid={
-                                                        validation.touched.qty && validation.errors.qty ? true : false
-                                                    }
-                                                />
-                                                {validation.touched.qty && validation.errors.qty ? (
-                                                    <FormFeedback type="invalid"><div>{validation.errors.qty}</div></FormFeedback>
-                                                ) : null}
+                                                <div className="input-step">
+                                                    <button type="button" className="minus" onClick={() => setCount(count > 0 ? (count - 1) : count)}>
+                                                        –
+                                                    </button>
+                                                    <Input
+                                                        type="number"
+                                                        className="product-quantity"
+                                                        id="product-qty-1"
+                                                        value={count}
+                                                        readOnly
+                                                    />
+                                                    <button type="button" className="plus" onClick={() => setCount(count + 1)}>
+                                                        +
+                                                    </button>
+                                                </div>
                                             </div>
                                         </Col>
-                                        <Col lg={3} sm={6}>
-                                            <div className="mt-2">
+                                        {/* <Col lg={2} sm={6}> */}
+                                            {/* <div className="mt-2">
                                                 <Label style={{ color: "black" }} htmlFor="tinggibadan" className="form-label fw-semibold">Harga</Label>
-                                            </div>
-                                        </Col>
-                                        <Col lg={3} sm={6} className="mt-1">
+                                            </div> */}
+                                        {/* </Col> */}
+                                        <Col lg={4} sm={6} className="mt-1 ms-4">
                                             <div>
                                                 <Input
-                                                    id="Harga"
-                                                    name="Harga"
-                                                    type="number"
-                                                    placeholder="Harga"
-                                                    onChange={validation.handleChange}
-                                                    onBlur={validation.handleBlur}
-                                                    value={validation.values.Harga || ""}
-                                                    invalid={
-                                                        validation.touched.Harga && validation.errors.Harga ? true : false
-                                                    }
+                                                    type="text"
+                                                    className="form-control bg-light border-0 product-line-price"
+                                                    id="harga"
+                                                    placeholder="Rp.0.00"
+                                                    value={"Rp "+harga*count}
+                                                    readOnly
                                                 />
-                                                {validation.touched.Harga && validation.errors.Harga ? (
-                                                    <FormFeedback type="invalid"><div>{validation.errors.Harga}</div></FormFeedback>
-                                                ) : null}
                                             </div>
                                         </Col>
                                     </Row>
