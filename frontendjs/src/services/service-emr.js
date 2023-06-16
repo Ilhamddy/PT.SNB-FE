@@ -93,4 +93,8 @@ export default class ServiceEmr {
     getComboNamaPelaksana = async (param) => {
         return await api.get(`/transaksi/tindakan/list-nama-pelaksana${param}`);
     }
+
+    saveTindakan = async (params) => {
+        return await api.create("/transaksi/tindakan/save-tindakan-pasien", params);
+    }
 }

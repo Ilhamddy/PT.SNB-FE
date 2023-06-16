@@ -38,6 +38,10 @@ db.t_ttv = require("../models/t_ttv.js")(sequelize,Sequelize);
 db.t_cppt = require("../models/t_cppt.js")(sequelize,Sequelize);
 db.t_diagnosapasien = require("../models/t_diagnosapasien.js")(sequelize,Sequelize);
 db.t_diagnosatindakan = require("../models/t_diagnosatindakan.js")(sequelize,Sequelize);
+db.t_pelayananpasien = require("../models/t_pelayananpasien.js")(sequelize,Sequelize);
+db.t_pelayananpasiendetail = require("../models/t_pelayananpasiendetail.js")(sequelize,Sequelize);
+db.t_pelayananpasienpetugas = require("../models/t_pelayananpasienpetugas.js")(sequelize,Sequelize);
+
 
 db.role.belongsToMany(db.user, {
   through: "user_roles",
