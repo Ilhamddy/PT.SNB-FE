@@ -263,7 +263,7 @@ const RegistrasiPasien = (props) => {
         }
 
     };
-
+    console.log(validation.errors)
     return (
         <div className="page-content">
             <ToastContainer closeButton={false} />

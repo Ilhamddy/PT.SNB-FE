@@ -62,7 +62,10 @@ import {
     COMBO_JENIS_PELAKSANA_GET_ERROR,
     COMBO_NAMA_PELAKSANA_GET,
     COMBO_NAMA_PELAKSANA_GET_SUCCESS,
-    COMBO_NAMA_PELAKSANA_GET_ERROR
+    COMBO_NAMA_PELAKSANA_GET_ERROR,
+    TINDAKAN_SAVE,
+    TINDAKAN_SAVE_SUCCESS,
+    TINDAKAN_SAVE_ERROR,
 } from "./actionType";
 
 const INIT_STATE = {
@@ -180,6 +183,12 @@ const INIT_STATE = {
         loading: false,
         error: null,
     },
+    tindakanSave:{
+        newData: null,
+        loading: false,
+        error: null,
+        success: false
+    }
 };
 
 const Emr = (state = INIT_STATE, action) => {
@@ -249,6 +258,9 @@ const Emr = (state = INIT_STATE, action) => {
                 },
                 comboNamaPelaksanaGet:{
                     ...INIT_STATE.comboNamaPelaksanaGet
+                },
+                tindakanSave:{
+                    ...INIT_STATE.tindakanSave
                 }
             }
         }
@@ -949,6 +961,40 @@ const Emr = (state = INIT_STATE, action) => {
                 ...state,
                 comboNamaPelaksanaGet: {
                     ...state.comboNamaPelaksanaGet,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case TINDAKAN_SAVE: {
+            return {
+                ...state,
+                tindakanSave: {
+                    ...state.tindakanSave,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case TINDAKAN_SAVE_SUCCESS: {
+            return {
+                ...state,
+                tindakanSave: {
+                    ...state.tindakanSave,
+                    newData: action.payload,
+                    loading: false,
+                    success: true,
+                }
+            }
+        }
+
+        case TINDAKAN_SAVE_ERROR: {
+            return {
+                ...state,
+                tindakanSave: {
+                    ...state.tindakanSave,
                     loading: false,
                     error: action.error,
                 }

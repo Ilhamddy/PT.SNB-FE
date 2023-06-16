@@ -62,7 +62,10 @@ import {
     COMBO_JENIS_PELAKSANA_GET_ERROR,
     COMBO_NAMA_PELAKSANA_GET,
     COMBO_NAMA_PELAKSANA_GET_SUCCESS,
-    COMBO_NAMA_PELAKSANA_GET_ERROR
+    COMBO_NAMA_PELAKSANA_GET_ERROR,
+    TINDAKAN_SAVE,
+    TINDAKAN_SAVE_SUCCESS,
+    TINDAKAN_SAVE_ERROR,
 } from "./actionType";
 
 export const emrResetForm = () => ({
@@ -397,5 +400,23 @@ export const comboNamaPelaksanaGetSuccess = (data) => ({
 
 export const comboNamaPelaksanaGetError = (error) => ({
     type: COMBO_NAMA_PELAKSANA_GET_ERROR,
+    payload: error,
+});
+
+// SAVE TINDAKAN
+// common success
+export const tindakanSave = (data, history) => ({
+    type: TINDAKAN_SAVE,
+    payload: { data, history },
+});
+
+// common error
+export const tindakanSaveSuccess = (data, history) => ({
+    type: TINDAKAN_SAVE_SUCCESS,
+    payload: { data, history },
+});
+
+export const tindakanSaveError = (error) => ({
+    type: TINDAKAN_SAVE_ERROR,
     payload: error,
 });

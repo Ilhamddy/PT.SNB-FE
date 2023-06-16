@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import {
     Card, CardBody, CardHeader, Col, Container, Row, Nav, NavItem,
     NavLink, TabContent, TabPane, Button, Label, Input, Table,
@@ -18,15 +18,16 @@ import * as Yup from "yup";
 import CustomSelect from '../../Select/Select';
 import Flatpickr from "react-flatpickr";
 
-import { comboHistoryUnitGet, comboTindakanGet, comboJenisPelaksanaGet, comboNamaPelaksanaGet } from "../../../store/actions";
+import { comboHistoryUnitGet, comboTindakanGet, comboJenisPelaksanaGet, comboNamaPelaksanaGet,
+tindakanSave,emrResetForm } from "../../../store/actions";
 const InputTindakan = () => {
     const { norecdp, norecap } = useParams();
     const dispatch = useDispatch();
     const { editData, newData, loading, error, success, dataCombo, loadingCombo, successCombo,
         dataTindakan, loadingTindakan, successTindakan, dataJenisPelaksana,dataNamaPelaksana } = useSelector((state) => ({
-            // newData: state.Emr.emrTtvSave.newData,
-            // success: state.Emr.emrTtvSave.success,
-            // loading: state.Emr.emrTtvSave.loading,
+            newData: state.Emr.tindakanSave.newData,
+            success: state.Emr.tindakanSave.success,
+            loading: state.Emr.tindakanSave.loading,
             dataCombo: state.Emr.comboHistoryUnitGet.data,
             loadingCombo: state.Emr.comboHistoryUnitGet.loading,
             successCombo: state.Emr.comboHistoryUnitGet.success,
@@ -43,6 +44,7 @@ const InputTindakan = () => {
             dispatch(comboNamaPelaksanaGet(''));
         }
     }, [norecdp, dispatch])
+  
     const handleTindakan = characterEntered => {
         if (characterEntered.length > 3) {
             // useEffect(() => {
@@ -50,55 +52,176 @@ const InputTindakan = () => {
             // }, [dispatch]);
         }
     };
+    const hargaRef = useRef(0);
+
     const handleTindakanSelcted = (selected) => {
         validation.setFieldValue('tindakan', selected.value)
         setHarga(selected.totalharga)
+        hargaRef.current = selected.totalharga 
+
     }
     const handleUnitLast = (selected) => {
         validation.setFieldValue('unitlast', selected.value)
         validation.setFieldValue('objectkelasfk', selected.objectkelasfk)
     };
-    const [count, setCount] = useState(0);
+    const handleClickKurang = (e) => {
+        if(e===2){
+            setshowPelaksana2(false)
+            validation.setFieldValue('jenispelaksana2', '')
+            validation.setFieldValue('namapelaksana2', '')
+        }else if(e===3){
+            setshowPelaksana3(false)
+            validation.setFieldValue('jenispelaksana3', '')
+            validation.setFieldValue('namapelaksana3', '')
+        }else if(e===4){
+            setshowPelaksana4(false)
+            validation.setFieldValue('jenispelaksana4', '')
+            validation.setFieldValue('namapelaksana4', '')
+        }else if(e===5){
+            setshowPelaksana5(false)
+            validation.setFieldValue('jenispelaksana5', '')
+            validation.setFieldValue('namapelaksana5', '')
+        }else if(e===6){
+            setshowPelaksana6(false)
+            validation.setFieldValue('jenispelaksana6', '')
+            validation.setFieldValue('namapelaksana6', '')
+        }else if(e===7){
+            setshowPelaksana7(false)
+            validation.setFieldValue('jenispelaksana7', '')
+            validation.setFieldValue('namapelaksana7', '')
+        }else if(e===8){
+            setshowPelaksana8(false)
+            validation.setFieldValue('jenispelaksana8', '')
+            validation.setFieldValue('namapelaksana8', '')
+        }
+    }
+    const [count, setCount] = useState(1);
     const [harga, setHarga] = useState(0);
     const current = new Date();
     const [dateStart, setdateStart] = useState(`${current.getFullYear()}-${current.getMonth() + 1}-${current.getDate()} ${current.getHours()}:${current.getMinutes()}`);
     const validation = useFormik({
         enableReinitialize: true,
         initialValues: {
-            norecap: editData?.norecap ?? norecap,
-            norec: editData?.norec ?? '',
-            unitlast: editData?.unitlast ?? '',
-            objectkelasfk: editData?.objectkelasfk ?? '',
-            quantity: editData?.quantity ?? '',
-            tindakan: editData?.tindakan ?? '',
-            jenispelaksana1: editData?.jenispelaksana1 ?? '',
-            jenispelaksana2: editData?.jenispelaksana2 ?? '',
-            jenispelaksana3: editData?.jenispelaksana3 ?? '',
-            jenispelaksana4: editData?.jenispelaksana4 ?? '',
-            jenispelaksana5: editData?.jenispelaksana5 ?? '',
-            jenispelaksana6: editData?.jenispelaksana6 ?? '',
-            jenispelaksana7: editData?.jenispelaksana7 ?? '',
-            jenispelaksana8: editData?.jenispelaksana8 ?? '',
-            namapelaksana1: editData?.namapelaksana1 ?? '',
-            namapelaksana2: editData?.namapelaksana2 ?? '',
-            namapelaksana3: editData?.namapelaksana3 ?? '',
-            namapelaksana4: editData?.namapelaksana4 ?? '',
-            namapelaksana5: editData?.namapelaksana5 ?? '',
-            namapelaksana6: editData?.namapelaksana6 ?? '',
-            namapelaksana7: editData?.namapelaksana7 ?? '',
-            namapelaksana8: editData?.namapelaksana8 ?? '',
+            norecap: newData?.norecap ?? norecap,
+            norec: newData?.norec ?? '',
+            unitlast: newData?.unitlast ?? '',
+            objectkelasfk: newData?.objectkelasfk ?? '',
+            quantity: newData?.quantity ?? count,
+            tindakan: newData?.tindakan ?? '',
+            hargaproduk: newData?.hargaproduk ?? hargaRef,
+            tglinput: newData?.tglinput ?? dateStart,
+            jenispelaksana1: newData?.jenispelaksana1 ?? '',
+            jenispelaksana2: newData?.jenispelaksana2 ?? '',
+            jenispelaksana3: newData?.jenispelaksana3 ?? '',
+            jenispelaksana4: newData?.jenispelaksana4 ?? '',
+            jenispelaksana5: newData?.jenispelaksana5 ?? '',
+            jenispelaksana6: newData?.jenispelaksana6 ?? '',
+            jenispelaksana7: newData?.jenispelaksana7 ?? '',
+            jenispelaksana8: newData?.jenispelaksana8 ?? '',
+            namapelaksana1: newData?.namapelaksana1 ?? '',
+            namapelaksana2: newData?.namapelaksana2 ?? '',
+            namapelaksana3: newData?.namapelaksana3 ?? '',
+            namapelaksana4: newData?.namapelaksana4 ?? '',
+            namapelaksana5: newData?.namapelaksana5 ?? '',
+            namapelaksana6: newData?.namapelaksana6 ?? '',
+            namapelaksana7: newData?.namapelaksana7 ?? '',
+            namapelaksana8: newData?.namapelaksana8 ?? '',
         },
         validationSchema: Yup.object({
             unitlast: Yup.string().required("Unit Belum Dipilih"),
             tindakan: Yup.string().required("Tindakan Belum Dipilih"),
-            jenispelaksana1: Yup.string().required("jenispelaksana Belum Dipilih"),
+            tglinput: Yup.string().required("Tanggal Input wajib diisi"),
+            jenispelaksana1: Yup.string().required("jenispelaksana 1 Belum Dipilih"),
+            namapelaksana1: Yup.string().required("Nama Pelaksana 1 Harus diisi"),
+            jenispelaksana2: Yup.string().when('namapelaksana1', (namapelaksana1, schema) => {
+                if (showPelaksana2 === true) {
+                    return schema
+                        .required("Jenis Pelaksana Harus di isi")
+                } else return schema
+            }),
+            namapelaksana2: Yup.string().when("jenispelaksana2", (jenispelaksana2, schema) => {
+                if (showPelaksana2 === true) {
+                    return schema
+                        .required("Nama Pelaksana Harus di isi")
+                } else return schema
+            }),
+            jenispelaksana3: Yup.string().when('namapelaksana1', (namapelaksana1, schema) => {
+                if (showPelaksana3 === true) {
+                    return schema
+                        .required("Jenis Pelaksana Harus di isi")
+                } else return schema
+            }),
+            namapelaksana3: Yup.string().when("jenispelaksana2", (jenispelaksana2, schema) => {
+                if (showPelaksana3 === true) {
+                    return schema
+                        .required("Nama Pelaksana Harus di isi")
+                } else return schema
+            }),
+            jenispelaksana4: Yup.string().when('namapelaksana1', (namapelaksana1, schema) => {
+                if (showPelaksana4 === true) {
+                    return schema
+                        .required("Jenis Pelaksana Harus di isi")
+                } else return schema
+            }),
+            namapelaksana4: Yup.string().when("jenispelaksana2", (jenispelaksana2, schema) => {
+                if (showPelaksana4 === true) {
+                    return schema
+                        .required("Nama Pelaksana Harus di isi")
+                } else return schema
+            }),
+            jenispelaksana5: Yup.string().when('namapelaksana1', (namapelaksana1, schema) => {
+                if (showPelaksana5 === true) {
+                    return schema
+                        .required("Jenis Pelaksana Harus di isi")
+                } else return schema
+            }),
+            namapelaksana5: Yup.string().when("jenispelaksana2", (jenispelaksana2, schema) => {
+                if (showPelaksana5 === true) {
+                    return schema
+                        .required("Nama Pelaksana Harus di isi")
+                } else return schema
+            }),
+            jenispelaksana6: Yup.string().when('namapelaksana1', (namapelaksana1, schema) => {
+                if (showPelaksana6 === true) {
+                    return schema
+                        .required("Jenis Pelaksana Harus di isi")
+                } else return schema
+            }),
+            namapelaksana6: Yup.string().when("jenispelaksana2", (jenispelaksana2, schema) => {
+                if (showPelaksana6 === true) {
+                    return schema
+                        .required("Nama Pelaksana Harus di isi")
+                } else return schema
+            }),
+            jenispelaksana7: Yup.string().when('namapelaksana1', (namapelaksana1, schema) => {
+                if (showPelaksana7 === true) {
+                    return schema
+                        .required("Jenis Pelaksana Harus di isi")
+                } else return schema
+            }),
+            namapelaksana7: Yup.string().when("jenispelaksana2", (jenispelaksana2, schema) => {
+                if (showPelaksana7 === true) {
+                    return schema
+                        .required("Nama Pelaksana Harus di isi")
+                } else return schema
+            }),
+           
         }),
         onSubmit: (values, { resetForm }) => {
-            // console.log(validation.errors)
-            // dispatch(emrTtvSave(values, ''));
+            console.log(values)
+            // dispatch(tindakanSave(values, ''));
             resetForm({ values: '' })
         }
     })
+    console.log(validation.errors)
+    const handleBeginOnChangeTglInput = (newBeginValue) => {
+        var dateString = new Date(newBeginValue.getTime() - (newBeginValue.getTimezoneOffset() * 60000))
+            .toISOString()
+            .split("T")[0];
+        // setdateStart(dateString)
+        validation.setFieldValue('tglinput', dateString)
+    }
+
     const [showPelaksana1, setshowPelaksana1] = useState(true);
     const [showPelaksana2, setshowPelaksana2] = useState(false);
     const [showPelaksana3, setshowPelaksana3] = useState(false);
@@ -171,7 +294,7 @@ const InputTindakan = () => {
                             <Row>
                                 <Col lg={4} md={4}>
                                     <div className="mt-2">
-                                        <Label style={{ color: "black" }} htmlFor="tipediagnosa" className="form-label">Tanggal Tindakan</Label>
+                                        <Label style={{ color: "black" }} htmlFor="tanggal" className="form-label">Tanggal Tindakan</Label>
                                     </div>
                                 </Col>
                                 <Col lg={8} md={8}>
@@ -185,9 +308,9 @@ const InputTindakan = () => {
                                                 defaultDate: "today"
                                             }}
                                             value={dateStart}
-                                        // onChange={([dateStart]) => {
-                                        //     handleBeginOnChangeStart(dateStart);
-                                        // }}
+                                        onChange={([newDate]) => {
+                                            handleBeginOnChangeTglInput(newDate);
+                                        }}
                                         />
                                         <div className="input-group-text bg-secondary border-secondary text-white"><i className="ri-calendar-2-line"></i></div>
                                     </div>
@@ -275,7 +398,7 @@ const InputTindakan = () => {
                                                     <Row>
                                                         <Col lg={5} md={4}>
                                                             <div className="mt-2">
-                                                                <Label style={{ color: "black" }} htmlFor="jenispelaksana" className="form-label">Nama Pelaksana</Label>
+                                                                <Label style={{ color: "black" }} htmlFor="namapelaksana1" className="form-label">Nama Pelaksana</Label>
                                                             </div>
                                                         </Col>
                                                         <Col lg={7} sm={6}>
@@ -285,7 +408,7 @@ const InputTindakan = () => {
                                                                     name="namapelaksana1"
                                                                     options={dataNamaPelaksana}
                                                                     value={validation.values.namapelaksana1 || ""}
-                                                                    className={`input ${validation.errors.tindakan1 ? "is-invalid" : ""}`}
+                                                                    className={`input ${validation.errors.namapelaksana1 ? "is-invalid" : ""}`}
                                                                     onChange={value => validation.setFieldValue('namapelaksana1', value.value)}
                                                                 />
                                                                 {validation.touched.namapelaksana1 && validation.errors.namapelaksana1 ? (
@@ -315,7 +438,7 @@ const InputTindakan = () => {
                                                     <Row>
                                                         <Col lg={4} md={4}>
                                                             <div className="mt-2">
-                                                                <Label style={{ color: "black" }} htmlFor="jenispelaksana" className="form-label">Jenis Pelaksana</Label>
+                                                                <Label style={{ color: "black" }} htmlFor="jenispelaksana2" className="form-label">Jenis Pelaksana</Label>
                                                             </div>
                                                         </Col>
                                                         <Col lg={8} sm={6}>
@@ -339,21 +462,21 @@ const InputTindakan = () => {
                                                     <Row>
                                                         <Col lg={5} md={4}>
                                                             <div className="mt-2">
-                                                                <Label style={{ color: "black" }} htmlFor="jenispelaksana" className="form-label">Nama Pelaksana</Label>
+                                                                <Label style={{ color: "black" }} htmlFor="namapelaksana2" className="form-label">Nama Pelaksana</Label>
                                                             </div>
                                                         </Col>
                                                         <Col lg={7} sm={6}>
                                                             <div>
                                                                 <CustomSelect
-                                                                    id="namapelaksana1"
-                                                                    name="namapelaksana1"
+                                                                    id="namapelaksana2"
+                                                                    name="namapelaksana2"
                                                                     options={dataNamaPelaksana}
-                                                                    value={validation.values.namapelaksana1 || ""}
-                                                                    className={`input ${validation.errors.namapelaksana1 ? "is-invalid" : ""}`}
-                                                                    onChange={value => validation.setFieldValue('namapelaksana1', value.value)}
+                                                                    value={validation.values.namapelaksana2 || ""}
+                                                                    className={`input ${validation.errors.namapelaksana2 ? "is-invalid" : ""}`}
+                                                                    onChange={value => validation.setFieldValue('namapelaksana2', value.value)}
                                                                 />
-                                                                {validation.touched.namapelaksana1 && validation.errors.namapelaksana1 ? (
-                                                                    <FormFeedback type="invalid"><div>{validation.errors.namapelaksana1}</div></FormFeedback>
+                                                                {validation.touched.namapelaksana2 && validation.errors.namapelaksana2 ? (
+                                                                    <FormFeedback type="invalid"><div>{validation.errors.namapelaksana2}</div></FormFeedback>
                                                                 ) : null}
                                                             </div>
                                                         </Col>
@@ -365,7 +488,7 @@ const InputTindakan = () => {
                                                     </Button>
                                                 </Col>
                                                 <Col lg={1}>
-                                                    <Button type="button" color="danger" className="rounded-pill" placement="top" onClick={() => setshowPelaksana2(false)}>
+                                                    <Button type="button" color="danger" className="rounded-pill" placement="top" onClick={() => handleClickKurang(2)}>
                                                         -
                                                     </Button>
                                                 </Col>
@@ -381,7 +504,7 @@ const InputTindakan = () => {
                                                     <Row>
                                                         <Col lg={4} md={4}>
                                                             <div className="mt-2">
-                                                                <Label style={{ color: "black" }} htmlFor="jenispelaksana" className="form-label">Jenis Pelaksana</Label>
+                                                                <Label style={{ color: "black" }} htmlFor="jenispelaksana3" className="form-label">Jenis Pelaksana</Label>
                                                             </div>
                                                         </Col>
                                                         <Col lg={8} sm={6}>
@@ -405,7 +528,7 @@ const InputTindakan = () => {
                                                     <Row>
                                                         <Col lg={5} md={4}>
                                                             <div className="mt-2">
-                                                                <Label style={{ color: "black" }} htmlFor="jenispelaksana" className="form-label">Nama Pelaksana</Label>
+                                                                <Label style={{ color: "black" }} htmlFor="namapelaksana3" className="form-label">Nama Pelaksana</Label>
                                                             </div>
                                                         </Col>
                                                         <Col lg={7} sm={6}>
@@ -431,7 +554,7 @@ const InputTindakan = () => {
                                                     </Button>
                                                 </Col>
                                                 <Col lg={1}>
-                                                    <Button type="button" color="danger" className="rounded-pill" placement="top" onClick={() => setshowPelaksana3(false)}>
+                                                    <Button type="button" color="danger" className="rounded-pill" placement="top" onClick={() => handleClickKurang(3)}>
                                                         -
                                                     </Button>
                                                 </Col>
@@ -447,7 +570,7 @@ const InputTindakan = () => {
                                                     <Row>
                                                         <Col lg={4} md={4}>
                                                             <div className="mt-2">
-                                                                <Label style={{ color: "black" }} htmlFor="jenispelaksana" className="form-label">Jenis Pelaksana</Label>
+                                                                <Label style={{ color: "black" }} htmlFor="jenispelaksana4" className="form-label">Jenis Pelaksana</Label>
                                                             </div>
                                                         </Col>
                                                         <Col lg={8} sm={6}>
@@ -471,7 +594,7 @@ const InputTindakan = () => {
                                                     <Row>
                                                         <Col lg={5} md={4}>
                                                             <div className="mt-2">
-                                                                <Label style={{ color: "black" }} htmlFor="jenispelaksana" className="form-label">Nama Pelaksana</Label>
+                                                                <Label style={{ color: "black" }} htmlFor="namapelaksana4" className="form-label">Nama Pelaksana</Label>
                                                             </div>
                                                         </Col>
                                                         <Col lg={7} sm={6}>
@@ -497,7 +620,7 @@ const InputTindakan = () => {
                                                     </Button>
                                                 </Col>
                                                 <Col lg={1}>
-                                                    <Button type="button" color="danger" className="rounded-pill" placement="top" onClick={() => setshowPelaksana4(false)}>
+                                                    <Button type="button" color="danger" className="rounded-pill" placement="top" onClick={() => handleClickKurang(4)}>
                                                         -
                                                     </Button>
                                                 </Col>
@@ -513,7 +636,7 @@ const InputTindakan = () => {
                                                     <Row>
                                                         <Col lg={4} md={4}>
                                                             <div className="mt-2">
-                                                                <Label style={{ color: "black" }} htmlFor="jenispelaksana" className="form-label">Jenis Pelaksana</Label>
+                                                                <Label style={{ color: "black" }} htmlFor="jenispelaksana5" className="form-label">Jenis Pelaksana</Label>
                                                             </div>
                                                         </Col>
                                                         <Col lg={8} sm={6}>
@@ -537,7 +660,7 @@ const InputTindakan = () => {
                                                     <Row>
                                                         <Col lg={5} md={4}>
                                                             <div className="mt-2">
-                                                                <Label style={{ color: "black" }} htmlFor="jenispelaksana" className="form-label">Nama Pelaksana</Label>
+                                                                <Label style={{ color: "black" }} htmlFor="namapelaksana5" className="form-label">Nama Pelaksana</Label>
                                                             </div>
                                                         </Col>
                                                         <Col lg={7} sm={6}>
@@ -563,7 +686,7 @@ const InputTindakan = () => {
                                                     </Button>
                                                 </Col>
                                                 <Col lg={1}>
-                                                    <Button type="button" color="danger" className="rounded-pill" placement="top" onClick={() => setshowPelaksana5(false)}>
+                                                    <Button type="button" color="danger" className="rounded-pill" placement="top" onClick={() => handleClickKurang(5)}>
                                                         -
                                                     </Button>
                                                 </Col>
@@ -579,7 +702,7 @@ const InputTindakan = () => {
                                                     <Row>
                                                         <Col lg={4} md={4}>
                                                             <div className="mt-2">
-                                                                <Label style={{ color: "black" }} htmlFor="jenispelaksana" className="form-label">Jenis Pelaksana</Label>
+                                                                <Label style={{ color: "black" }} htmlFor="jenispelaksana6" className="form-label">Jenis Pelaksana</Label>
                                                             </div>
                                                         </Col>
                                                         <Col lg={8} sm={6}>
@@ -603,7 +726,7 @@ const InputTindakan = () => {
                                                     <Row>
                                                         <Col lg={5} md={4}>
                                                             <div className="mt-2">
-                                                                <Label style={{ color: "black" }} htmlFor="jenispelaksana" className="form-label">Nama Pelaksana</Label>
+                                                                <Label style={{ color: "black" }} htmlFor="namapelaksana6" className="form-label">Nama Pelaksana</Label>
                                                             </div>
                                                         </Col>
                                                         <Col lg={7} sm={6}>
@@ -629,7 +752,7 @@ const InputTindakan = () => {
                                                     </Button>
                                                 </Col>
                                                 <Col lg={1}>
-                                                    <Button type="button" color="danger" className="rounded-pill" placement="top" onClick={() => setshowPelaksana6(false)}>
+                                                    <Button type="button" color="danger" className="rounded-pill" placement="top" onClick={() => handleClickKurang(6)}>
                                                         -
                                                     </Button>
                                                 </Col>
@@ -645,7 +768,7 @@ const InputTindakan = () => {
                                                     <Row>
                                                         <Col lg={4} md={4}>
                                                             <div className="mt-2">
-                                                                <Label style={{ color: "black" }} htmlFor="jenispelaksana" className="form-label">Jenis Pelaksana</Label>
+                                                                <Label style={{ color: "black" }} htmlFor="jenispelaksana7" className="form-label">Jenis Pelaksana</Label>
                                                             </div>
                                                         </Col>
                                                         <Col lg={8} sm={6}>
@@ -669,7 +792,7 @@ const InputTindakan = () => {
                                                     <Row>
                                                         <Col lg={5} md={4}>
                                                             <div className="mt-2">
-                                                                <Label style={{ color: "black" }} htmlFor="jenispelaksana" className="form-label">Nama Pelaksana</Label>
+                                                                <Label style={{ color: "black" }} htmlFor="namapelaksana7" className="form-label">Nama Pelaksana</Label>
                                                             </div>
                                                         </Col>
                                                         <Col lg={7} sm={6}>
@@ -695,7 +818,7 @@ const InputTindakan = () => {
                                                     </Button>
                                                 </Col>
                                                 <Col lg={1}>
-                                                    <Button type="button" color="danger" className="rounded-pill" placement="top" onClick={() => setshowPelaksana7(false)}>
+                                                    <Button type="button" color="danger" className="rounded-pill" placement="top" onClick={() => handleClickKurang(7)}>
                                                         -
                                                     </Button>
                                                 </Col>
@@ -704,6 +827,13 @@ const InputTindakan = () => {
                                     </>
                                 ) : null}
                             </Row>
+                        </Col>
+                        <Col xxl={12} sm={12}>
+                            <Button type="submit" color="info" className="rounded-pill" placement="top" >
+                                SIMPAN
+                            </Button>
+                           
+                           
                         </Col>
                     </Row>
                 </Form>

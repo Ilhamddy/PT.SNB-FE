@@ -9,7 +9,8 @@ import {
     DELETE_DIAGNOSAX, DELETE_DIAGNOSAIX,
     KONSUL_SAVE, UPDATE_TASKID, UPDATE_STATUSPULANGRJ,
     COMBO_HISTORY_UNIT_GET, COMBO_TINDAKAN_GET,
-    COMBO_JENIS_PELAKSANA_GET,COMBO_NAMA_PELAKSANA_GET
+    COMBO_JENIS_PELAKSANA_GET,COMBO_NAMA_PELAKSANA_GET,
+    TINDAKAN_SAVE
 } from "./actionType";
 
 import {
@@ -30,7 +31,8 @@ import {
     comboHistoryUnitGetSuccess, comboHistoryUnitGetError,
     comboTindakanGetGetSuccess, comboTindakanGetGetError,
     comboJenisPelaksanaGetSuccess,comboJenisPelaksanaGetError,
-    comboNamaPelaksanaGetSuccess,comboNamaPelaksanaGetError
+    comboNamaPelaksanaGetSuccess,comboNamaPelaksanaGetError,
+    tindakanSaveSuccess,tindakanSaveError
 } from "./action";
 
 import { toast } from 'react-toastify';
@@ -453,6 +455,34 @@ export function* watchonGetComboNamaPelaksana() {
     yield takeEvery(COMBO_NAMA_PELAKSANA_GET, onGetComboNamaPelaksana);
 }
 
+function* onTindakanSave({ payload: { data, history } }) {
+    try {
+        let response = null;
+        if (data.norec !== '') {
+            response = yield call(serviceEmr.saveTindakan, data);
+        } else {
+            response = yield call(serviceEmr.saveTindakan, data);
+        }
+
+
+
+        yield put(tindakanSaveSuccess(response.data));
+        if (response.code === 200) {
+            toast.success(response.msg, { autoClose: 3000 });
+        } else {
+            toast.error(response.msg, { autoClose: 3000 });
+        }
+        // history("/registrasi/pasien-lama")
+    } catch (error) {
+        yield put(tindakanSaveError(error));
+        toast.error(error, { autoClose: 3000 });
+    }
+}
+
+export function* watchonTindakanSave() {
+    yield takeEvery(TINDAKAN_SAVE, onTindakanSave);
+}
+
 function* emrSaga() {
     yield all([
         fork(watchGetEmrHeader),
@@ -475,7 +505,8 @@ function* emrSaga() {
         fork(watchonGetComboHistoryUnit),
         fork(watchonGetComboTindakan),
         fork(watchonGetComboJenisPelaksana),
-        fork(watchonGetComboNamaPelaksana)
+        fork(watchonGetComboNamaPelaksana),
+        fork(watchonTindakanSave)
     ]);
 }
 
