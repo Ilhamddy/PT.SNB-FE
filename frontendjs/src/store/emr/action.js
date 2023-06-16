@@ -56,7 +56,13 @@ import {
     COMBO_HISTORY_UNIT_GET_ERROR,
     COMBO_TINDAKAN_GET,
     COMBO_TINDAKAN_GET_SUCCESS,
-    COMBO_TINDAKAN_GET_ERROR
+    COMBO_TINDAKAN_GET_ERROR,
+    COMBO_JENIS_PELAKSANA_GET,
+    COMBO_JENIS_PELAKSANA_GET_SUCCESS,
+    COMBO_JENIS_PELAKSANA_GET_ERROR,
+    COMBO_NAMA_PELAKSANA_GET,
+    COMBO_NAMA_PELAKSANA_GET_SUCCESS,
+    COMBO_NAMA_PELAKSANA_GET_ERROR
 } from "./actionType";
 
 export const emrResetForm = () => ({
@@ -361,5 +367,35 @@ export const comboTindakanGetGetSuccess = (data) => ({
 
 export const comboTindakanGetGetError = (error) => ({
     type: COMBO_TINDAKAN_GET_ERROR,
+    payload: error,
+});
+
+export const comboJenisPelaksanaGet = (param, data) => ({
+    type: COMBO_JENIS_PELAKSANA_GET,
+    payload: { param, data },
+});
+
+export const comboJenisPelaksanaGetSuccess = (data) => ({
+    type: COMBO_JENIS_PELAKSANA_GET_SUCCESS,
+    payload: data,
+});
+
+export const comboJenisPelaksanaGetError = (error) => ({
+    type: COMBO_JENIS_PELAKSANA_GET_ERROR,
+    payload: error,
+});
+
+export const comboNamaPelaksanaGet = (param, data) => ({
+    type: COMBO_NAMA_PELAKSANA_GET,
+    payload: { param, data },
+});
+
+export const comboNamaPelaksanaGetSuccess = (data) => ({
+    type: COMBO_NAMA_PELAKSANA_GET_SUCCESS,
+    payload: data,
+});
+
+export const comboNamaPelaksanaGetError = (error) => ({
+    type: COMBO_NAMA_PELAKSANA_GET_ERROR,
     payload: error,
 });

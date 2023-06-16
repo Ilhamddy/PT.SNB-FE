@@ -56,7 +56,13 @@ import {
     COMBO_HISTORY_UNIT_GET_ERROR,
     COMBO_TINDAKAN_GET,
     COMBO_TINDAKAN_GET_SUCCESS,
-    COMBO_TINDAKAN_GET_ERROR
+    COMBO_TINDAKAN_GET_ERROR,
+    COMBO_JENIS_PELAKSANA_GET,
+    COMBO_JENIS_PELAKSANA_GET_SUCCESS,
+    COMBO_JENIS_PELAKSANA_GET_ERROR,
+    COMBO_NAMA_PELAKSANA_GET,
+    COMBO_NAMA_PELAKSANA_GET_SUCCESS,
+    COMBO_NAMA_PELAKSANA_GET_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -164,6 +170,16 @@ const INIT_STATE = {
         loading: false,
         error: null,
     },
+    comboJenisPelaksanaGet: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    comboNamaPelaksanaGet: {
+        data: [],
+        loading: false,
+        error: null,
+    },
 };
 
 const Emr = (state = INIT_STATE, action) => {
@@ -227,6 +243,12 @@ const Emr = (state = INIT_STATE, action) => {
                 },
                 comboTindakanGet:{
                     ...INIT_STATE.comboTindakanGet
+                },
+                comboJenisPelaksanaGet:{
+                    ...INIT_STATE.comboJenisPelaksanaGet
+                },
+                comboNamaPelaksanaGet:{
+                    ...INIT_STATE.comboNamaPelaksanaGet
                 }
             }
         }
@@ -861,6 +883,72 @@ const Emr = (state = INIT_STATE, action) => {
                 ...state,
                 comboTindakanGet: {
                     ...state.comboTindakanGet,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case COMBO_JENIS_PELAKSANA_GET: {
+            return {
+                ...state,
+                comboJenisPelaksanaGet: {
+                    ...state.comboJenisPelaksanaGet,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case COMBO_JENIS_PELAKSANA_GET_SUCCESS: {
+            return {
+                ...state,
+                comboJenisPelaksanaGet: {
+                    ...state.comboJenisPelaksanaGet,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case COMBO_JENIS_PELAKSANA_GET_ERROR: {
+            return {
+                ...state,
+                comboJenisPelaksanaGet: {
+                    ...state.comboJenisPelaksanaGet,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case COMBO_NAMA_PELAKSANA_GET: {
+            return {
+                ...state,
+                comboNamaPelaksanaGet: {
+                    ...state.comboNamaPelaksanaGet,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case COMBO_NAMA_PELAKSANA_GET_SUCCESS: {
+            return {
+                ...state,
+                comboNamaPelaksanaGet: {
+                    ...state.comboNamaPelaksanaGet,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case COMBO_NAMA_PELAKSANA_GET_ERROR: {
+            return {
+                ...state,
+                comboNamaPelaksanaGet: {
+                    ...state.comboNamaPelaksanaGet,
                     loading: false,
                     error: action.error,
                 }

@@ -21,5 +21,17 @@ module.exports = function (app) {
         [authJwt.verifyToken],
         controller.getListProdukToKelasToUnit
     );
+
+    app.get(
+        "/api/transaksi/tindakan/list-jenis-pelaksana",
+        [authJwt.verifyToken],
+        controller.getListJenisPelaksana
+    );
+
+    app.get(
+        "/api/transaksi/tindakan/list-nama-pelaksana",
+        [authJwt.verifyToken],
+        controller.getListNamaPelaksana
+    );
     
 }

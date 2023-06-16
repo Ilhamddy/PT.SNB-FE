@@ -85,4 +85,12 @@ export default class ServiceEmr {
     getComboTindakan = async (param) => {
         return await api.get(`/transaksi/tindakan/list-produk-tokelas-tounit?objectkelasfk=${param}`);
     }
+
+    getComboJenisPelaksana = async (param) => {
+        return await api.get(`/transaksi/tindakan/list-jenis-pelaksana${param}`);
+    }
+
+    getComboNamaPelaksana = async (param) => {
+        return await api.get(`/transaksi/tindakan/list-nama-pelaksana${param}`);
+    }
 }

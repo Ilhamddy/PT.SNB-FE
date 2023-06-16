@@ -116,7 +116,7 @@ const EmrBody = () => {
                 <Col xxl={12}>
                     <Card>
                         <div className="card-header align-items-center d-flex">
-                            <div className="flex-shrink-0 ms-2">
+                            {/* <div className="flex-shrink-0 ms-2"> */}
                                 <Nav tabs className="nav justify-content-end nav-tabs-custom rounded card-header-tabs border-bottom-0">
                                     {taskWidgets.map((item, key) => (
                                         <NavItem key={key}>
@@ -127,7 +127,7 @@ const EmrBody = () => {
                                     ))}
                                 </Nav>
 
-                            </div>
+                            {/* </div> */}
                         </div>
                         {/* <CardBody> */}
                         <TabContent activeTab={pillsTab} className="text-muted">

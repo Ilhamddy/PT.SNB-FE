@@ -8,7 +8,8 @@ import {
     EMR_LISTDIAGNOSAX_GET, EMR_LISTDIAGNOSAIX_GET,
     DELETE_DIAGNOSAX, DELETE_DIAGNOSAIX,
     KONSUL_SAVE, UPDATE_TASKID, UPDATE_STATUSPULANGRJ,
-    COMBO_HISTORY_UNIT_GET, COMBO_TINDAKAN_GET
+    COMBO_HISTORY_UNIT_GET, COMBO_TINDAKAN_GET,
+    COMBO_JENIS_PELAKSANA_GET,COMBO_NAMA_PELAKSANA_GET
 } from "./actionType";
 
 import {
@@ -27,7 +28,9 @@ import {
     updateTaskIdSuccess, updateTaskIdError,
     updateStatusPulangRJSuccess, updateStatusPulangRJError,
     comboHistoryUnitGetSuccess, comboHistoryUnitGetError,
-    comboTindakanGetGetSuccess, comboTindakanGetGetError
+    comboTindakanGetGetSuccess, comboTindakanGetGetError,
+    comboJenisPelaksanaGetSuccess,comboJenisPelaksanaGetError,
+    comboNamaPelaksanaGetSuccess,comboNamaPelaksanaGetError
 } from "./action";
 
 import { toast } from 'react-toastify';
@@ -420,6 +423,36 @@ export function* watchonGetComboTindakan() {
     yield takeEvery(COMBO_TINDAKAN_GET, onGetComboTindakan);
 }
 
+function* onGetComboJenisPelaksana({ payload: { param, data } }) {
+    try {
+        let response = null;
+        response = yield call(serviceEmr.getComboJenisPelaksana, param);
+
+        yield put(comboJenisPelaksanaGetSuccess(response.data));
+    } catch (error) {
+        yield put(comboJenisPelaksanaGetError(error));
+    }
+}
+
+export function* watchonGetComboJenisPelaksana() {
+    yield takeEvery(COMBO_JENIS_PELAKSANA_GET, onGetComboJenisPelaksana);
+}
+
+function* onGetComboNamaPelaksana({ payload: { param, data } }) {
+    try {
+        let response = null;
+        response = yield call(serviceEmr.getComboNamaPelaksana, param);
+
+        yield put(comboNamaPelaksanaGetSuccess(response.data));
+    } catch (error) {
+        yield put(comboNamaPelaksanaGetError(error));
+    }
+}
+
+export function* watchonGetComboNamaPelaksana() {
+    yield takeEvery(COMBO_NAMA_PELAKSANA_GET, onGetComboNamaPelaksana);
+}
+
 function* emrSaga() {
     yield all([
         fork(watchGetEmrHeader),
@@ -440,7 +473,9 @@ function* emrSaga() {
         fork(watchonUpdateTaskId),
         fork(watchonUpdateStatusPulangRJ),
         fork(watchonGetComboHistoryUnit),
-        fork(watchonGetComboTindakan)
+        fork(watchonGetComboTindakan),
+        fork(watchonGetComboJenisPelaksana),
+        fork(watchonGetComboNamaPelaksana)
     ]);
 }
 

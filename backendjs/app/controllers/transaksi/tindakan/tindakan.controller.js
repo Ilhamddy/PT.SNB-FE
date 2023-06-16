@@ -64,8 +64,50 @@ async function getListProdukToKelasToUnit(req, res) {
 
 }
 
+async function getListJenisPelaksana(req, res) {
+   
+    try {
+        const resultlistantreanpemeriksaan = await queryPromise2(`select id as value,reportdisplay as label
+        from m_jenispelaksana mj where statusenabled=true`);
+
+        let tempres = resultlistantreanpemeriksaan.rows
+       
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+        });
+
+    } catch (error) {
+        res.status(500).send({ message: error });
+    }
+
+}
+
+async function getListNamaPelaksana(req, res) {
+   
+    try {
+        const resultlistantreanpemeriksaan = await queryPromise2(`select id as value, namalengkap as label from m_pegawai mp
+        where statusenabled=true`);
+
+        let tempres = resultlistantreanpemeriksaan.rows
+       
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+        });
+
+    } catch (error) {
+        res.status(500).send({ message: error });
+    }
+
+}
+
 
 module.exports = {
     getListAntreanPemeriksaan,
-    getListProdukToKelasToUnit
+    getListProdukToKelasToUnit,
+    getListJenisPelaksana,
+    getListNamaPelaksana
 };
