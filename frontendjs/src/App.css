@@ -43,16 +43,14 @@
   }
 }
 
-@media print {
-  body * {
-    visibility:hidden;
+@media print and (width: 5cm) and (height: 5cm) {
+  #receipt {
+    margin: 3cm;
   }
-  #printSection, #printSection * {
-    visibility:visible;
-  }
-  #printSection {
-    position:absolute;
-    left:0;
-    top:0;
-  }
+}
+
+@page {
+  size: auto;
+  size: A3;
+  margin: 0mm;
 }
