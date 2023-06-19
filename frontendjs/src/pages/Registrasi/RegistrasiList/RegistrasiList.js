@@ -106,6 +106,16 @@ const RegistrasiList = () => {
 
     const columns = [
         {
+            name: <span className='font-weight-bold fs-13'>Detail</span>,
+            sortable: false,
+            cell: (data) => {
+                return (
+                    // <Link to={`/registrasi/pasien/${data.id}`}>Details</Link>
+                    <button className="btn btn-sm btn-soft-info" onClick={() => handleClick(data)}>View</button>
+                );
+            },
+        },
+        {
             name: <span className='font-weight-bold fs-13'>No. RM</span>,
             selector: row => row.nocm,
             sortable: true
@@ -134,16 +144,7 @@ const RegistrasiList = () => {
             selector: row => row.tgllahir,
             sortable: false
         },
-        {
-            name: <span className='font-weight-bold fs-13'>Detail</span>,
-            sortable: false,
-            cell: (data) => {
-                return (
-                    // <Link to={`/registrasi/pasien/${data.id}`}>Details</Link>
-                    <button className="btn btn-sm btn-soft-info" onClick={() => handleClick(data)}>View</button>
-                );
-            },
-        },
+
     ];
 
 

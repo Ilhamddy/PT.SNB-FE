@@ -1,6 +1,7 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import withRouter from "../../../Components/Common/withRouter";
 import { useParams } from "react-router-dom";
+import { jsPDF } from "jspdf";
 import {
     Card, CardBody, CardHeader, Col, Container, Row, Nav, NavItem,
     NavLink, TabContent, TabPane, Button, Label, Input, Table, Form,
@@ -156,7 +157,7 @@ const RegistrasiPasien = (props) => {
     });
 
     const [messageNewData, setmessageNewData] = useState("");
-    const [tempNoregistrasi, settempNoregistrasi] = useState("");
+    const [tempNoregistrasi, settempNoregistrasi] = useState("20");
 
     const [dataUnit, setdataUnit] = useState([]);
     const [dataTT, setdataTT] = useState([]);
@@ -213,7 +214,8 @@ const RegistrasiPasien = (props) => {
     }
 
     function handleSelect(data) {
-        validation.setFieldValue('penjamin', data)
+		
+        validation.setFieldValue('penjamin', [])
         // console.log(validation.values.penjamin)
         // setSelectedOptions(data);
     }
@@ -227,6 +229,7 @@ const RegistrasiPasien = (props) => {
         const iframe = document.frames
             ? document.frames[id]
             : document.getElementById(id);
+		
         const iframeWindow = iframe.contentWindow || iframe;
 
         iframe.focus();
@@ -241,6 +244,7 @@ const RegistrasiPasien = (props) => {
             window.removeEventListener('message', handleMessage);
         };
     }, []);
+	const refIframe = useRef(null)
     const handleClickButton = (e) => {
 
         if (e === 'registrasi') {
@@ -249,21 +253,36 @@ const RegistrasiPasien = (props) => {
         } else if (e === 'buktiPendaftaran') {
             // setcardRegistrasi(true)
             // setcardBuktiPendaftaran(false)
-            let id = 'receipt'
-            const iframe = document.frames
-                ? document.frames[id]
-                : document.getElementById(id);
-            const iframeWindow = iframe.contentWindow || iframe;
+			var doc = new jsPDF({
+				orientation: "landscape",
+				unit: "mm",
+				format: [30, 30]
+			})
+			// doc.autoPrint
 
-            iframe.focus();
-            iframeWindow.print();
+			doc.text('20', 20, 20)
+			doc.autoPrint();
+			//This is a key for printing
+			doc.output('');
+            // const iframe = 	refIframe.current;
+            // const iframeWindow = iframe.contentWindow ;
+			// iframeWindow.document.write('<body>30</body>');
+            // iframe.focus();
+            // iframeWindow.print();
 
             return false;
 
         }
-
     };
-    console.log(validation.errors)
+
+	useEffect(() => {
+		success && setpillsTab("3")
+	}, [success])
+
+	const optionPenjamin = data
+		.rekanan?.filter((rekanan) => rekanan.objectjenispenjaminfk === validation.values.jenispenjamin) 
+		?? [];
+
     return (
         <div className="page-content">
             <ToastContainer closeButton={false} />
@@ -285,7 +304,6 @@ const RegistrasiPasien = (props) => {
                                         onChange={validation.handleChange}
                                         onBlur={validation.handleBlur}
                                         value={validation.values.namapasien || ""}
-
                                     />
                                 </div>
                             </CardBody>
@@ -353,8 +371,6 @@ const RegistrasiPasien = (props) => {
                                                     <div className="d-flex flex-wrap gap-2">
                                                         <Button color="info" className="btn-animation" data-text="Registrasi" onClick={() => handleClickButton('registrasi')}><span>Registrasi</span></Button>
                                                         <Button color="info" className="btn-animation" data-text="Bukti Pendaftaran" onClick={() => handleClickButton('buktiPendaftaran')}> <span>Bukti Pendaftaran</span> </Button>
-
-
                                                     </div>
                                                 </div>
                                             </CardBody>
@@ -565,7 +581,10 @@ const RegistrasiPasien = (props) => {
                                                                     options={data.jenispenjamin}
                                                                     value={validation.values.jenispenjamin || ""}
                                                                     className={`input ${validation.errors.jenispenjamin ? "is-invalid" : ""}`}
-                                                                    onChange={value => validation.setFieldValue('jenispenjamin', value.value)}
+                                                                    onChange={value => {
+																		validation.setFieldValue('jenispenjamin', value.value); 
+																		validation.setFieldValue('penjamin', "");
+																	}}	
                                                                 />
                                                                 {validation.touched.jenispenjamin && validation.errors.jenispenjamin ? (
                                                                     <FormFeedback type="invalid"><div>{validation.errors.jenispenjamin}</div></FormFeedback>
@@ -582,12 +601,12 @@ const RegistrasiPasien = (props) => {
                                                                 <CustomSelect
                                                                     id="penjamin"
                                                                     name="penjamin"
-                                                                    options={data.rekanan}
+                                                                    options={optionPenjamin}
                                                                     value={validation.values.penjamin || ""}
                                                                     className={`input ${validation.errors.penjamin ? "is-invalid" : ""}`}
                                                                     // onChange={value => validation.setFieldValue('penjamin', value.value)}
                                                                     onChange={handleSelect}
-                                                                    isMulti={true}
+                                                                    isMulti
                                                                 />
                                                                 {validation.touched.penjamin && validation.errors.penjamin ? (
                                                                     <FormFeedback type="invalid"><div>{validation.errors.penjamin}</div></FormFeedback>
@@ -639,7 +658,7 @@ const RegistrasiPasien = (props) => {
                                             </Card>
                                         </Col>
                                         <Col lg={12} style={{ textAlign: 'right' }}>
-                                            <Button type="submit" color="info" className="rounded-pill" disabled={loadingSave}> SIMPAN </Button>
+                                            {!success && <Button type="submit" color="info" className="rounded-pill" disabled={loadingSave}> SIMPAN </Button>}
                                             {/* <Button
                                                 type="button"
                                                 className="btn btn-primary add-btn"
@@ -660,10 +679,15 @@ const RegistrasiPasien = (props) => {
                             </div> */}
                             <iframe
                                 id="receipt"
-                                src={tempNoregistrasi}//"/bukti-pendaftaran/"
+                                // src={"50"}//"/bukti-pendaftaran/"	
                                 style={{ display: 'none' }}
                                 title="Receipt"
-                            />
+								ref={refIframe}
+								width={"50"}
+								height={"50"}
+                            >
+								
+							</iframe>
                             {/* <iframe
                                 id="receipt"
                                 style={{ display: 'none' }}
