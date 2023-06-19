@@ -1,0 +1,12 @@
+
+
+.fit-content-width{
+    width: fit-content;
+}
+
+
+@media print {
+    .print-content-pendaftaran{
+        display: block;
+    }
+}

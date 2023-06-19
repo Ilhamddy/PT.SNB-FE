@@ -40,6 +40,13 @@ const RegistrasiPasien = (props) => {
     const [cardBuktiPendaftaran, setcardBuktiPendaftaran] = useState(true);
     const [isRanap, setisRanap] = useState(false);
 
+	const [messageNewData, setmessageNewData] = useState("");
+    const [tempNoregistrasi, settempNoregistrasi] = useState("20");
+	const [isPrintOpen, setIsPrintOpen] = useState(false);
+
+    const [dataUnit, setdataUnit] = useState([]);
+    const [dataTT, setdataTT] = useState([]);
+    const refPrint = useRef(null)
 
     const toggle = useCallback(() => {
         if (modal) {
@@ -83,18 +90,8 @@ const RegistrasiPasien = (props) => {
             dispatch(registrasiNoregistrasiResetForm());
         }
     }, [dispatch])
-    // useEffect(() => {
-    //     if (data !== []) {
-    //         var newArray = data.tempattidur.filter(function (el) {
-    //             return el.objectstatusbedfk === 2;
-    //         });
-    //         setdataTT(newArray)
-    //         // console.log(newArray)
-    //     }
-    // }, [data, dispatch])
-    // const [test, setTest] = useState(datas);
-    // setTest(test)
-    // console.log(datas)
+
+	
     const current = new Date();
     const [dateStart, setdateStart] = useState(`${current.getFullYear()}-${current.getMonth() + 1}-${current.getDate()}`);
     const validation = useFormik({
@@ -156,11 +153,7 @@ const RegistrasiPasien = (props) => {
         }
     });
 
-    const [messageNewData, setmessageNewData] = useState("");
-    const [tempNoregistrasi, settempNoregistrasi] = useState("20");
 
-    const [dataUnit, setdataUnit] = useState([]);
-    const [dataTT, setdataTT] = useState([]);
     const handleChangeTujuan = (selected) => {
         validation.setFieldValue('tujkunjungan', selected.value)
         var newArray = data.unit.filter(function (el) {
@@ -245,35 +238,46 @@ const RegistrasiPasien = (props) => {
         };
     }, []);
 	const refIframe = useRef(null)
-    const handleClickButton = (e) => {
 
+    const handleRegistrasi = (e) => {
         if (e === 'registrasi') {
             // setcardRegistrasi(false)
             // setcardBuktiPendaftaran(true)
-        } else if (e === 'buktiPendaftaran') {
-            // setcardRegistrasi(true)
-            // setcardBuktiPendaftaran(false)
-			var doc = new jsPDF({
-				orientation: "landscape",
-				unit: "mm",
-				format: [30, 30]
-			})
-			// doc.autoPrint
-
-			doc.text('20', 20, 20)
-			doc.autoPrint();
-			//This is a key for printing
-			doc.output('');
-            // const iframe = 	refIframe.current;
-            // const iframeWindow = iframe.contentWindow ;
-			// iframeWindow.document.write('<body>30</body>');
-            // iframe.focus();
-            // iframeWindow.print();
-
-            return false;
-
-        }
+        } 
     };
+
+    const handlePrint = () => {
+        setIsPrintOpen(true);
+        setTimeout(() => {
+            if(!refPrint.current) {
+                setIsPrintOpen(false)
+                return
+            }
+            let w = refPrint.current.offsetWidth;
+            let h = refPrint.current.offsetHeight;
+            let doc = new jsPDF({
+                orientation: 'landscape',
+                unit: "mm",
+                format: [w + 80, h + 80]
+            });
+            let source = refPrint.current;
+            doc.html(
+                source,
+                {
+                    callback: () => {
+                        doc.autoPrint();
+                        doc.output("dataurlnewwindow");
+                        setIsPrintOpen(false)
+                    },
+                    margin: 15,
+                    html2canvas: {
+                        width: w,
+                        height: h 
+                    }
+                }
+            );
+        }, 500)
+    }
 
 	useEffect(() => {
 		success && setpillsTab("3")
@@ -369,8 +373,8 @@ const RegistrasiPasien = (props) => {
                                             <CardBody>
                                                 <div className="live-preview">
                                                     <div className="d-flex flex-wrap gap-2">
-                                                        <Button color="info" className="btn-animation" data-text="Registrasi" onClick={() => handleClickButton('registrasi')}><span>Registrasi</span></Button>
-                                                        <Button color="info" className="btn-animation" data-text="Bukti Pendaftaran" onClick={() => handleClickButton('buktiPendaftaran')}> <span>Bukti Pendaftaran</span> </Button>
+                                                        <Button color="info" className="btn-animation" data-text="Registrasi" onClick={() => handleRegistrasi()}><span>Registrasi</span></Button>
+                                                        <Button color="info" className="btn-animation" data-text="Bukti Pendaftaran" onClick={() => handlePrint()}> <span>Bukti Pendaftaran</span> </Button>
                                                     </div>
                                                 </div>
                                             </CardBody>
@@ -675,8 +679,8 @@ const RegistrasiPasien = (props) => {
                                 </CardBody>
                             </Card>
                             {/* <div hidden={cardBuktiPendaftaran}>
-                            <BuktiPendaftaran2/>
                             </div> */}
+
                             <iframe
                                 id="receipt"
                                 // src={"50"}//"/bukti-pendaftaran/"	
@@ -699,6 +703,13 @@ const RegistrasiPasien = (props) => {
                     </Col>
                 </Row>
             </Container>
+			<BuktiPendaftaran2 
+                toggle={() => setIsPrintOpen(false)}
+                isOpen={isPrintOpen}
+                refPrint={refPrint}
+
+			/>
+
         </div>
     )
 }
