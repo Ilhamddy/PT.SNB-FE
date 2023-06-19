@@ -208,8 +208,8 @@ const InputTindakan = () => {
            
         }),
         onSubmit: (values, { resetForm }) => {
-            console.log(values)
-            // dispatch(tindakanSave(values, ''));
+            // console.log(values)
+            dispatch(tindakanSave(values, ''));
             resetForm({ values: '' })
         }
     })
@@ -234,6 +234,7 @@ const InputTindakan = () => {
     const [showPelaksana10, setshowPelaksana10] = useState(false);
     return (
         <React.Fragment>
+            {/* <ToastContainer closeButton={false} /> */}
             <Row className="gy-4">
                 <Form
                     onSubmit={(e) => {

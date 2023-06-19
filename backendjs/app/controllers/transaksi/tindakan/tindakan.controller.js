@@ -172,6 +172,8 @@ console.log('masasuukkk')
             data: tempres,
             status: "success",
             success: true,
+            msg: 'Simpan Berhasil',
+            code: 200
         });
 
     } catch (error) {
