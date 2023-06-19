@@ -18,13 +18,15 @@ import * as Yup from "yup";
 import CustomSelect from '../../Select/Select';
 import Flatpickr from "react-flatpickr";
 
-import { comboHistoryUnitGet, comboTindakanGet, comboJenisPelaksanaGet, comboNamaPelaksanaGet,
-tindakanSave,emrResetForm } from "../../../store/actions";
+import {
+    comboHistoryUnitGet, comboTindakanGet, comboJenisPelaksanaGet, comboNamaPelaksanaGet,
+    tindakanSave, emrResetForm
+} from "../../../store/actions";
 const InputTindakan = () => {
     const { norecdp, norecap } = useParams();
     const dispatch = useDispatch();
     const { editData, newData, loading, error, success, dataCombo, loadingCombo, successCombo,
-        dataTindakan, loadingTindakan, successTindakan, dataJenisPelaksana,dataNamaPelaksana } = useSelector((state) => ({
+        dataTindakan, loadingTindakan, successTindakan, dataJenisPelaksana, dataNamaPelaksana } = useSelector((state) => ({
             newData: state.Emr.tindakanSave.newData,
             success: state.Emr.tindakanSave.success,
             loading: state.Emr.tindakanSave.loading,
@@ -44,7 +46,7 @@ const InputTindakan = () => {
             dispatch(comboNamaPelaksanaGet(''));
         }
     }, [norecdp, dispatch])
-  
+
     const handleTindakan = characterEntered => {
         if (characterEntered.length > 3) {
             // useEffect(() => {
@@ -53,11 +55,11 @@ const InputTindakan = () => {
         }
     };
     const hargaRef = useRef(0);
-
+    const countRef = useRef(1);
     const handleTindakanSelcted = (selected) => {
         validation.setFieldValue('tindakan', selected.value)
         setHarga(selected.totalharga)
-        hargaRef.current = selected.totalharga 
+        hargaRef.current = selected.totalharga
 
     }
     const handleUnitLast = (selected) => {
@@ -65,31 +67,31 @@ const InputTindakan = () => {
         validation.setFieldValue('objectkelasfk', selected.objectkelasfk)
     };
     const handleClickKurang = (e) => {
-        if(e===2){
+        if (e === 2) {
             setshowPelaksana2(false)
             validation.setFieldValue('jenispelaksana2', '')
             validation.setFieldValue('namapelaksana2', '')
-        }else if(e===3){
+        } else if (e === 3) {
             setshowPelaksana3(false)
             validation.setFieldValue('jenispelaksana3', '')
             validation.setFieldValue('namapelaksana3', '')
-        }else if(e===4){
+        } else if (e === 4) {
             setshowPelaksana4(false)
             validation.setFieldValue('jenispelaksana4', '')
             validation.setFieldValue('namapelaksana4', '')
-        }else if(e===5){
+        } else if (e === 5) {
             setshowPelaksana5(false)
             validation.setFieldValue('jenispelaksana5', '')
             validation.setFieldValue('namapelaksana5', '')
-        }else if(e===6){
+        } else if (e === 6) {
             setshowPelaksana6(false)
             validation.setFieldValue('jenispelaksana6', '')
             validation.setFieldValue('namapelaksana6', '')
-        }else if(e===7){
+        } else if (e === 7) {
             setshowPelaksana7(false)
             validation.setFieldValue('jenispelaksana7', '')
             validation.setFieldValue('namapelaksana7', '')
-        }else if(e===8){
+        } else if (e === 8) {
             setshowPelaksana8(false)
             validation.setFieldValue('jenispelaksana8', '')
             validation.setFieldValue('namapelaksana8', '')
@@ -97,6 +99,21 @@ const InputTindakan = () => {
     }
     const [count, setCount] = useState(1);
     const [harga, setHarga] = useState(0);
+
+    const onClickCount = (temp) => {
+        if (temp === 'min') {
+            console.log(temp)
+            if (count > 0) {
+                setCount(count - 1)
+                validation.setFieldValue('quantity', count - 1)
+            }
+        } else {
+            setCount(count + 1)
+            validation.setFieldValue('quantity', count + 1)
+        }
+
+    }
+
     const current = new Date();
     const [dateStart, setdateStart] = useState(`${current.getFullYear()}-${current.getMonth() + 1}-${current.getDate()} ${current.getHours()}:${current.getMinutes()}`);
     const validation = useFormik({
@@ -106,7 +123,7 @@ const InputTindakan = () => {
             norec: newData?.norec ?? '',
             unitlast: newData?.unitlast ?? '',
             objectkelasfk: newData?.objectkelasfk ?? '',
-            quantity: newData?.quantity ?? count,
+            quantity: newData?.quantity ?? 1,
             tindakan: newData?.tindakan ?? '',
             hargaproduk: newData?.hargaproduk ?? hargaRef,
             tglinput: newData?.tglinput ?? dateStart,
@@ -205,7 +222,7 @@ const InputTindakan = () => {
                         .required("Nama Pelaksana Harus di isi")
                 } else return schema
             }),
-           
+
         }),
         onSubmit: (values, { resetForm }) => {
             // console.log(values)
@@ -309,9 +326,9 @@ const InputTindakan = () => {
                                                 defaultDate: "today"
                                             }}
                                             value={dateStart}
-                                        onChange={([newDate]) => {
-                                            handleBeginOnChangeTglInput(newDate);
-                                        }}
+                                            onChange={([newDate]) => {
+                                                handleBeginOnChangeTglInput(newDate);
+                                            }}
                                         />
                                         <div className="input-group-text bg-secondary border-secondary text-white"><i className="ri-calendar-2-line"></i></div>
                                     </div>
@@ -326,7 +343,7 @@ const InputTindakan = () => {
                                         <Col lg={4} sm={6} className="mt-1">
                                             <div>
                                                 <div className="input-step">
-                                                    <button type="button" className="minus" onClick={() => setCount(count > 0 ? (count - 1) : count)}>
+                                                    <button type="button" className="minus" onClick={() => onClickCount('min')}>
                                                         –
                                                     </button>
                                                     <Input
@@ -336,7 +353,7 @@ const InputTindakan = () => {
                                                         value={count}
                                                         readOnly
                                                     />
-                                                    <button type="button" className="plus" onClick={() => setCount(count + 1)}>
+                                                    <button type="button" className="plus" onClick={() => onClickCount('plus')}>
                                                         +
                                                     </button>
                                                 </div>
@@ -833,8 +850,8 @@ const InputTindakan = () => {
                             <Button type="submit" color="info" className="rounded-pill" placement="top" >
                                 SIMPAN
                             </Button>
-                           
-                           
+
+
                         </Col>
                     </Row>
                 </Form>

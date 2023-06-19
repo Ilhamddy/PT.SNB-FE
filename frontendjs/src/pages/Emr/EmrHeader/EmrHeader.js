@@ -58,14 +58,14 @@ const EmrHeader = () => {
 
                         <SwiperSlide style={{ maxWidth: "400px" }}>
                             <div>
-                                <Card className="card-animate" style={{ backgroundColor: '#B57602' }}>
+                                <Card className="card-animate" style={{ backgroundColor: '#bdc3c7' }}>
                                     <CardBody>
                                         <div className="d-flex justify-content-between">
                                             <div className="flex-shrink-0 mt-sm-0 mt-3">
-                                                <h6><span className="fw-semibold text-light">{editData.namapasien}</span></h6>
-                                                <h6><span className="fw-semibold text-light">{editData.tgllahir}</span></h6>
-                                                <h6><span className="fw-semibold text-light">{editData.umur}</span></h6>
-                                                <h6 className="mb-0"><span className="fw-semibold text-light">{editData.jeniskelamin}</span></h6>
+                                                <h6><span className="fw-semibold text-black">{editData.namapasien}</span></h6>
+                                                <h6><span className="fw-semibold text-black">{editData.tgllahir}</span></h6>
+                                                <h6><span className="fw-semibold text-black">{editData.umur}</span></h6>
+                                                <h6 className="mb-0"><span className="fw-semibold text-black">{editData.jeniskelamin}</span></h6>
                                             </div>
 
                                         </div>
@@ -75,14 +75,14 @@ const EmrHeader = () => {
                         </SwiperSlide>
                         <SwiperSlide style={{ maxWidth: "400px" }}>
                             <div>
-                                <Card className="card-animate" style={{ backgroundColor: '#B57602' }}>
+                                <Card className="card-animate" style={{ backgroundColor: '#bdc3c7' }}>
                                     <CardBody>
                                         <div className="d-flex justify-content-between">
                                             <div className="flex-shrink-0 mt-sm-0 mt-3">
-                                                <h6><span className="fw-semibold text-light">{editData.nocm}</span></h6>
-                                                <h6><span className="fw-semibold text-light">{editData.noregistrasi}</span></h6>
-                                                <h6><span className="fw-semibold text-light">{editData.ruanganta}</span></h6>
-                                                <h6 className="mb-0"><span className="fw-semibold text-light">{editData.namarekanan}</span></h6>
+                                                <h6><span className="fw-semibold text-black">{editData.nocm}</span></h6>
+                                                <h6><span className="fw-semibold text-black">{editData.noregistrasi}</span></h6>
+                                                <h6><span className="fw-semibold text-black">{editData.ruanganta}</span></h6>
+                                                <h6 className="mb-0"><span className="fw-semibold text-black">{editData.namarekanan}</span></h6>
                                             </div>
 
                                         </div>
@@ -92,7 +92,7 @@ const EmrHeader = () => {
                         </SwiperSlide>
                         <SwiperSlide style={{ maxWidth: "400px" }}>
                             <div>
-                                <Card className="card-animate" style={{ backgroundColor: '#ECB349' }}>
+                                <Card className="card-animate" style={{ backgroundColor: '#bdc3c7' }}>
                                     <CardBody>
                                         <div className="d-flex align-items-center">
                                             <div className="flex-grow-1">
@@ -140,7 +140,7 @@ const EmrHeader = () => {
                         </SwiperSlide>
                         <SwiperSlide style={{ maxWidth: "400px" }}>
                             <div>
-                                <Card className="card-animate" style={{ backgroundColor: '#ECB349' }}>
+                                <Card className="card-animate" style={{ backgroundColor: '#bdc3c7' }}>
                                     <CardBody>
                                         <div className="d-flex align-items-center">
                                             <div className="flex-grow-1">
@@ -174,7 +174,7 @@ const EmrHeader = () => {
                         </SwiperSlide>
                         <SwiperSlide style={{ maxWidth: "400px" }}>
                             <div>
-                                <Card className="card-animate" style={{ backgroundColor: '#ECB349' }}>
+                                <Card className="card-animate" style={{ backgroundColor: '#bdc3c7' }}>
                                     <CardBody>
                                         <div className="d-flex align-items-center">
                                             <div className="flex-grow-1">

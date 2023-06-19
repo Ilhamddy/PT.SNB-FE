@@ -105,7 +105,7 @@ async function getListNamaPelaksana(req, res) {
 }
 
 async function saveTindakanPasien(req, res) {
-console.log('masasuukkk')
+    console.log('masasuukkk')
     try {
         transaction = await db.sequelize.transaction();
         var newArray = [{ objectjenispelaksana: req.body.jenispelaksana1, objectnamapelaksana: req.body.namapelaksana1 }];
@@ -133,9 +133,9 @@ console.log('masasuukkk')
         const pelayananpasien = await db.t_pelayananpasien.create({
             norec: norecpp,
             objectantreanpemeriksaanfk: req.body.norecap,
-            harga: req.body.hargaproduk,
+            harga: req.body.hargaproduk.current,
             qty: req.body.quantity,
-            total: req.body.quantity * req.body.hargaproduk,
+            total: req.body.quantity * req.body.hargaproduk.current,
             tglinput: req.body.tglinput,
             objectprodukfk: req.body.tindakan,
             objectpegawaifk: req.idPegawai,
@@ -149,7 +149,7 @@ console.log('masasuukkk')
                 objectpelayananpasienfk: norecpp,
                 objectkomponenprodukfk: resultlistantreanpemeriksaan.rows[x].objectkomponenprodukfk,
                 harga: resultlistantreanpemeriksaan.rows[x].harga,
-
+                qty: req.body.quantity,
             }, { transaction });
 
         }
@@ -190,11 +190,61 @@ console.log('masasuukkk')
 
 }
 
+async function getListTagihan(req, res) {
+
+    try {
+        const resultlist = await queryPromise2(`select
+            mu.namaunit,
+            tp.tglinput,
+            mp.namaproduk,
+            tp.norec,
+            tp.harga,
+            tp.qty,
+            tp.discount,
+            '' as petugas
+        from
+            t_daftarpasien td
+        join t_antreanpemeriksaan ta on
+            td.norec = ta.objectdaftarpasienfk
+        join m_unit mu on
+            mu.id = ta.objectunitfk
+        join t_pelayananpasien tp on
+            tp.objectantreanpemeriksaanfk = ta.norec
+        join m_produk mp on
+            mp.id = tp.objectprodukfk
+        where
+            td.noregistrasi = '202306200002'
+            and tp.statusenabled = true`);
+
+        for (var i = 0; i < resultlist.rows.length; ++i) {
+            const resultlistPetugas = await queryPromise2(`select
+                tp.norec,mp.namalengkap 
+            from
+                t_pelayananpasienpetugas tp
+            join m_pegawai mp on mp.id=tp.objectpegawaifk 
+            where tp.statusenabled = true and tp.objectpelayananpasienfk='${resultlist.rows[i].norec}'`);
+            resultlist.rows[i].petugas = resultlistPetugas.rows
+        }
+        let tempres = resultlist.rows
+
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+        });
+
+    } catch (error) {
+        res.status(500).send({ message: error });
+    }
+
+}
+
 
 module.exports = {
     getListAntreanPemeriksaan,
     getListProdukToKelasToUnit,
     getListJenisPelaksana,
     getListNamaPelaksana,
-    saveTindakanPasien
+    saveTindakanPasien,
+    getListTagihan
 };
