@@ -17,6 +17,7 @@ import TandaVital from '../TandaVital/TandaVital';
 import Cppt from '../Cppt/Cppt';
 import Diagnosa from '../Diagnosa/index';
 import InputTindakan from '../InputTindakan/InputTindakan';
+import Tagihan from '../Tagihan/Tagihan';
 
 const EmrBody = () => {
     const { norecdp, norecap } = useParams();
@@ -105,7 +106,7 @@ const EmrBody = () => {
         },
         {
             id: 2,
-            label: "Rincian Billing",
+            label: "Tagihan",
         },
     ];
 
@@ -248,7 +249,7 @@ const EmrBody = () => {
                                         <TabPane tabId="2" id="ttv-2">
                                             <Card>
                                                 <CardBody>
-
+                                                    <Tagihan/>
                                                 </CardBody>
                                             </Card>
                                         </TabPane>

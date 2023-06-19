@@ -39,5 +39,11 @@ module.exports = function (app) {
         [authJwt.verifyToken],
         controller.saveTindakanPasien
     );
+
+    app.get(
+        "/api/transaksi/tindakan/list-tagihan",
+        [authJwt.verifyToken],
+        controller.getListTagihan
+    );
     
 }

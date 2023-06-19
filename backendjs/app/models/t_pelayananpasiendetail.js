@@ -18,7 +18,10 @@ module.exports = (sequelize, Sequelize) => {
         },
         harga:{
             type: Sequelize.FLOAT
-        }
+        },
+        qty:{
+            type: Sequelize.INTEGER
+        },
     }, {
         tableName: "t_pelayananpasiendetail", // relation "user" does not exist
         createdAt: false,
