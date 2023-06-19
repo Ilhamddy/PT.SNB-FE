@@ -26,13 +26,6 @@ const BuktiPendaftaran = (props) => {
                 <ModalBody id="divcontents">
                     {printContent}
                 </ModalBody>
-                <Button
-                    className="invoice-print-button"
-                    variant="contained"
-                    onClick={handleSelect}
-                >
-                    Print
-                </Button>
             </Modal>
             <iframe id="print-content" title="Profil Pasien" hidden={true}>
                 {printContent}
