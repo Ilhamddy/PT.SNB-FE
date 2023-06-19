@@ -66,6 +66,9 @@ import {
     TINDAKAN_SAVE,
     TINDAKAN_SAVE_SUCCESS,
     TINDAKAN_SAVE_ERROR,
+    LIST_TAGIHAN,
+    LIST_TAGIHAN_SUCCESS,
+    LIST_TAGIHAN_ERROR
 } from "./actionType";
 
 export const emrResetForm = () => ({
@@ -418,5 +421,20 @@ export const tindakanSaveSuccess = (data, history) => ({
 
 export const tindakanSaveError = (error) => ({
     type: TINDAKAN_SAVE_ERROR,
+    payload: error,
+});
+
+export const listTagihanGet = (param) => ({
+    type: LIST_TAGIHAN,
+    payload: { param },
+});
+
+export const listTagihanGetSuccess = (data) => ({
+    type: LIST_TAGIHAN_SUCCESS,
+    payload: data,
+});
+
+export const listTagihanGetError = (error) => ({
+    type: LIST_TAGIHAN_ERROR,
     payload: error,
 });

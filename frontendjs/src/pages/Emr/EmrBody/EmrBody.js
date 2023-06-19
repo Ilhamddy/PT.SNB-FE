@@ -249,7 +249,7 @@ const EmrBody = () => {
                                         <TabPane tabId="2" id="ttv-2">
                                             <Card>
                                                 <CardBody>
-                                                    <Tagihan/>
+                                                    <Tagihan show={pillsTabBilling}/>
                                                 </CardBody>
                                             </Card>
                                         </TabPane>

@@ -10,7 +10,7 @@ import {
     KONSUL_SAVE, UPDATE_TASKID, UPDATE_STATUSPULANGRJ,
     COMBO_HISTORY_UNIT_GET, COMBO_TINDAKAN_GET,
     COMBO_JENIS_PELAKSANA_GET,COMBO_NAMA_PELAKSANA_GET,
-    TINDAKAN_SAVE
+    TINDAKAN_SAVE, LIST_TAGIHAN
 } from "./actionType";
 
 import {
@@ -32,7 +32,8 @@ import {
     comboTindakanGetGetSuccess, comboTindakanGetGetError,
     comboJenisPelaksanaGetSuccess,comboJenisPelaksanaGetError,
     comboNamaPelaksanaGetSuccess,comboNamaPelaksanaGetError,
-    tindakanSaveSuccess,tindakanSaveError
+    tindakanSaveSuccess,tindakanSaveError,
+    listTagihanGetSuccess,listTagihanGetError
 } from "./action";
 
 import { toast } from 'react-toastify';
@@ -483,6 +484,22 @@ export function* watchonTindakanSave() {
     yield takeEvery(TINDAKAN_SAVE, onTindakanSave);
 }
 
+function* onListTagihan({ payload: { param } }) {
+    try {
+        let response = null;
+        response = yield call(serviceEmr.getListTagihan, param);
+
+        yield put(listTagihanGetSuccess(response.data));
+    } catch (error) {
+        yield put(listTagihanGetError(error));
+    }
+}
+
+export function* watchonListTagihan() {
+    yield takeEvery(LIST_TAGIHAN, onListTagihan);
+}
+
+
 function* emrSaga() {
     yield all([
         fork(watchGetEmrHeader),
@@ -506,7 +523,8 @@ function* emrSaga() {
         fork(watchonGetComboTindakan),
         fork(watchonGetComboJenisPelaksana),
         fork(watchonGetComboNamaPelaksana),
-        fork(watchonTindakanSave)
+        fork(watchonTindakanSave),
+        fork(watchonListTagihan)
     ]);
 }
 
