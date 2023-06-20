@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
 import withRouter from "../../../Components/Common/withRouter";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { jsPDF } from "jspdf";
 import {
     Card, CardBody, CardHeader, Col, Container, Row, Nav, NavItem,
@@ -47,6 +47,7 @@ const RegistrasiPasien = (props) => {
     const [dataUnit, setdataUnit] = useState([]);
     const [dataTT, setdataTT] = useState([]);
     const refPrint = useRef(null)
+    const navigate = useNavigate();
 
     const toggle = useCallback(() => {
         if (modal) {
@@ -206,7 +207,7 @@ const RegistrasiPasien = (props) => {
         validation.setFieldValue('tglregistrasi', dateString)
     }
 
-    function handleSelect(data) {
+    function handleSelectPenjamin(data) {
 		
         validation.setFieldValue('penjamin', [])
         // console.log(validation.values.penjamin)
@@ -279,9 +280,15 @@ const RegistrasiPasien = (props) => {
         }, 500)
     }
 
+
 	useEffect(() => {
-		success && setpillsTab("3")
+        if(success && validation.jenispenjamin.isasuransi){
+            navigate(`/input-jenis-penjamin/${id}`);
+        }else if(success){
+            setpillsTab("3");
+        }
 	}, [success])
+
 
 	const optionPenjamin = data
 		.rekanan?.filter((rekanan) => rekanan.objectjenispenjaminfk === validation.values.jenispenjamin) 
@@ -586,9 +593,9 @@ const RegistrasiPasien = (props) => {
                                                                     value={validation.values.jenispenjamin || ""}
                                                                     className={`input ${validation.errors.jenispenjamin ? "is-invalid" : ""}`}
                                                                     onChange={value => {
-																		validation.setFieldValue('jenispenjamin', value.value); 
-																		validation.setFieldValue('penjamin', "");
-																	}}	
+                                                                        validation.setFieldValue('jenispenjamin', value.value); 
+                                                                        validation.setFieldValue('penjamin', "");
+                                                                    }}	
                                                                 />
                                                                 {validation.touched.jenispenjamin && validation.errors.jenispenjamin ? (
                                                                     <FormFeedback type="invalid"><div>{validation.errors.jenispenjamin}</div></FormFeedback>
@@ -609,7 +616,7 @@ const RegistrasiPasien = (props) => {
                                                                     value={validation.values.penjamin || ""}
                                                                     className={`input ${validation.errors.penjamin ? "is-invalid" : ""}`}
                                                                     // onChange={value => validation.setFieldValue('penjamin', value.value)}
-                                                                    onChange={handleSelect}
+                                                                    onChange={handleSelectPenjamin}
                                                                     isMulti
                                                                 />
                                                                 {validation.touched.penjamin && validation.errors.penjamin ? (
@@ -663,17 +670,6 @@ const RegistrasiPasien = (props) => {
                                         </Col>
                                         <Col lg={12} style={{ textAlign: 'right' }}>
                                             {!success && <Button type="submit" color="info" className="rounded-pill" disabled={loadingSave}> SIMPAN </Button>}
-                                            {/* <Button
-                                                type="button"
-                                                className="btn btn-primary add-btn"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#showModal"
-                                                id="create-btn"
-                                                onClick={() => { toggle(); }}
-                                            >
-                                                <i className="ri-add-line align-bottom me-1"></i>
-                                                print
-                                            </Button> */}
                                         </Col>
                                     </Row>
                                 </CardBody>
@@ -703,12 +699,12 @@ const RegistrasiPasien = (props) => {
                     </Col>
                 </Row>
             </Container>
-			<BuktiPendaftaran2 
+            <BuktiPendaftaran2 
                 toggle={() => setIsPrintOpen(false)}
                 isOpen={isPrintOpen}
                 refPrint={refPrint}
 
-			/>
+            />
 
         </div>
     )
