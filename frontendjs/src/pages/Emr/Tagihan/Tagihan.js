@@ -18,13 +18,31 @@ import * as Yup from "yup";
 import CustomSelect from '../../Select/Select';
 import Flatpickr from "react-flatpickr";
 import DataTable from 'react-data-table-component';
-
-
-const Tagihan = () => {
+import { listTagihanGet } from "../../../store/actions";
+import PropTypes from "prop-types";
+const Tagihan = ({ show }) => {
     const { norecdp, norecap } = useParams();
     const dispatch = useDispatch();
+    const { dataTagihan, loadingTagihan, successTagihan } = useSelector((state) => ({
 
+        dataTagihan: state.Emr.listTagihanGet.data,
+        loadingTagihan: state.Emr.listTagihanGet.loading,
+        successTagihan: state.Emr.listTagihanGet.success,
 
+    }));
+    useEffect(() => {
+        if(show==='2'){
+            if (norecdp) {
+                dispatch(listTagihanGet(norecdp));
+            }
+        }
+        
+    }, [show,norecdp, dispatch])
+    // useEffect(() => {
+    //     if (norecdp) {
+    //         dispatch(listTagihanGet(norecdp));
+    //     }
+    // }, [norecdp, dispatch])
     const tableCustomStyles = {
         headRow: {
             style: {
@@ -40,6 +58,105 @@ const Tagihan = () => {
 
         }
     }
+    const columns = [
+        {
+            name: <span className='font-weight-bold fs-13'>Detail</span>,
+            sortable: false,
+            cell: (data) => {
+                return (
+                    <div className="hstack gap-3 flex-wrap">
+                        <UncontrolledDropdown className="dropdown d-inline-block">
+                            {/* <DropdownToggle className="btn btn-soft-secondary btn-sm" tag="button" id="tooltipTop2" type="button" onClick={() => onClickDelete(data)}>
+                                <i className="ri-delete-bin-2-line"></i>
+                            </DropdownToggle> */}
+                        </UncontrolledDropdown>
+                        <UncontrolledTooltip placement="top" target="tooltipTop2" > Delete </UncontrolledTooltip>
+                    </div>
+                );
+            },
+            width: "50px"
+        },
+        {
+            name: <span className='font-weight-bold fs-13'>No</span>,
+            selector: row => row.no,
+            sortable: true,
+            width: "50px"
+        },
+        {
+            name: <span className='font-weight-bold fs-13'>Tgl Layanan</span>,
+            selector: row => row.tglinput,
+            sortable: true,
+            // selector: row => (<button className="btn btn-sm btn-soft-info" onClick={() => handleClick(dataTtv)}>{row.noregistrasi}</button>),
+            width: "140px",
+            // cell: (data) => {
+            //     return (
+            //         // <Link to={`/registrasi/pasien/${data.id}`}>Details</Link>
+            //         <button type='button' className="btn btn-sm btn-soft-info" onClick={() => handleClick(data)}>{data.noregistrasi}</button>
+            //     );
+            // },
+        },
+        {
+
+            name: <span className='font-weight-bold fs-13'>Unit</span>,
+            selector: row => row.namaunit,
+            sortable: true,
+            width: "150px"
+        },
+        {
+
+            name: <span className='font-weight-bold fs-13'>Tindakan</span>,
+            selector: row => row.namaproduk,
+            sortable: true,
+            width: "150px"
+        },
+        {
+
+            name: <span className='font-weight-bold fs-13'>Petugas</span>,
+            selector: row => row.petugas,
+            sortable: true,
+            width: "250px",
+        },
+        {
+
+            name: <span className='font-weight-bold fs-13'>Harga</span>,
+            selector: row => row.harga,
+            sortable: true,
+            width: "100px"
+        },
+        {
+
+            name: <span className='font-weight-bold fs-13'>Qty</span>,
+            selector: row => row.qty,
+            sortable: true,
+            width: "100px"
+        },{
+
+            name: <span className='font-weight-bold fs-13'>Jasa</span>,
+            selector: row => row.jasa,
+            sortable: true,
+            width: "100px"
+        },{
+
+            name: <span className='font-weight-bold fs-13'>Cito</span>,
+            selector: row => row.statuscito,
+            sortable: true,
+            width: "100px"
+        },
+        {
+
+            name: <span className='font-weight-bold fs-13'>Discount</span>,
+            selector: row => row.discount,
+            sortable: true,
+            width: "100px"
+        },{
+
+            name: <span className='font-weight-bold fs-13'>Total</span>,
+            selector: row => row.total,
+            sortable: true,
+            width: "100px"
+        },
+
+    ];
     return (
         <React.Fragment>
             <Row className="gy-4">
@@ -53,10 +170,10 @@ const Tagihan = () => {
                             <DataTable
                                 fixedHeader
                                 fixedHeaderScrollHeight="330px"
-                                // columns={columns}
+                                columns={columns}
                                 pagination
-                                // data={dataRiwayat}
-                                // progressPending={loadingRiwayat}
+                                data={dataTagihan}
+                                progressPending={loadingTagihan}
                                 customStyles={tableCustomStyles}
                             />
                         </div>
@@ -66,5 +183,10 @@ const Tagihan = () => {
         </React.Fragment>
     )
 }
+
+Tagihan.propTypes = {
+    show: PropTypes.any,
+  };
+
 
 export default (Tagihan)

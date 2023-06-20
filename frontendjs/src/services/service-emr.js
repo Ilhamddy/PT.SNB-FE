@@ -97,4 +97,8 @@ export default class ServiceEmr {
     saveTindakan = async (params) => {
         return await api.create("/transaksi/tindakan/save-tindakan-pasien", params);
     }
+
+    getListTagihan = async (param) => {
+        return await api.get(`/transaksi/tindakan/list-tagihan?norecdp=${param}`);
+    }
 }

@@ -66,6 +66,9 @@ import {
     TINDAKAN_SAVE,
     TINDAKAN_SAVE_SUCCESS,
     TINDAKAN_SAVE_ERROR,
+    LIST_TAGIHAN,
+    LIST_TAGIHAN_SUCCESS,
+    LIST_TAGIHAN_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -188,7 +191,12 @@ const INIT_STATE = {
         loading: false,
         error: null,
         success: false
-    }
+    },
+    listTagihanGet: {
+        data: [],
+        loading: false,
+        error: null,
+    },
 };
 
 const Emr = (state = INIT_STATE, action) => {
@@ -261,6 +269,9 @@ const Emr = (state = INIT_STATE, action) => {
                 },
                 tindakanSave:{
                     ...INIT_STATE.tindakanSave
+                },
+                listTagihanGet:{
+                    ...INIT_STATE.listTagihanGet
                 }
             }
         }
@@ -995,6 +1006,39 @@ const Emr = (state = INIT_STATE, action) => {
                 ...state,
                 tindakanSave: {
                     ...state.tindakanSave,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case LIST_TAGIHAN: {
+            return {
+                ...state,
+                listTagihanGet: {
+                    ...state.listTagihanGet,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case LIST_TAGIHAN_SUCCESS: {
+            return {
+                ...state,
+                listTagihanGet: {
+                    ...state.listTagihanGet,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case LIST_TAGIHAN_ERROR: {
+            return {
+                ...state,
+                listTagihanGet: {
+                    ...state.listTagihanGet,
                     loading: false,
                     error: action.error,
                 }

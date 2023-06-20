@@ -193,15 +193,18 @@ async function saveTindakanPasien(req, res) {
 async function getListTagihan(req, res) {
 
     try {
-        const resultlist = await queryPromise2(`select
+        const resultlist = await queryPromise2(`select row_number() OVER (ORDER BY tp.norec) AS no,
             mu.namaunit,
-            tp.tglinput,
+            to_char(tp.tglinput,'yyyy-MM-dd HH:mm') as tglinput,
             mp.namaproduk,
             tp.norec,
             tp.harga,
             tp.qty,
             tp.discount,
-            '' as petugas
+            tp.jasa,
+            '' as petugas,
+            case when tp.iscito=true then '✓' else '✕' end as statuscito,
+            tp.total
         from
             t_daftarpasien td
         join t_antreanpemeriksaan ta on
@@ -213,7 +216,7 @@ async function getListTagihan(req, res) {
         join m_produk mp on
             mp.id = tp.objectprodukfk
         where
-            td.noregistrasi = '202306200002'
+            td.norec = '${req.query.norecdp}'
             and tp.statusenabled = true`);
 
         for (var i = 0; i < resultlist.rows.length; ++i) {
@@ -223,7 +226,11 @@ async function getListTagihan(req, res) {
                 t_pelayananpasienpetugas tp
             join m_pegawai mp on mp.id=tp.objectpegawaifk 
             where tp.statusenabled = true and tp.objectpelayananpasienfk='${resultlist.rows[i].norec}'`);
-            resultlist.rows[i].petugas = resultlistPetugas.rows
+            let tempPetugas = ''
+            for (var x = 0; x < resultlistPetugas.rows.length; ++x) {
+                tempPetugas = tempPetugas +resultlistPetugas.rows[x].namalengkap +', '
+            }
+            resultlist.rows[i].petugas = tempPetugas
         }
         let tempres = resultlist.rows
 

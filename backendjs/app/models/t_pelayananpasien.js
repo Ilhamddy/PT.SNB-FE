@@ -42,7 +42,14 @@ module.exports = (sequelize, Sequelize) => {
         },
         objectkelasfk:{
             type:Sequelize.INTEGER
-        }
+        },
+        jasa:{
+            type:Sequelize.INTEGER
+        },
+        iscito: {
+            type: Sequelize.BOOLEAN,
+            defaultValue: false
+        },
     }, {
         tableName: "t_pelayananpasien", // relation "user" does not exist
         createdAt: false,

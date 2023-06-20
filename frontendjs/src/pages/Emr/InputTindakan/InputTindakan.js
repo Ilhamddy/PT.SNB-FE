@@ -102,7 +102,6 @@ const InputTindakan = () => {
 
     const onClickCount = (temp) => {
         if (temp === 'min') {
-            console.log(temp)
             if (count > 0) {
                 setCount(count - 1)
                 validation.setFieldValue('quantity', count - 1)
@@ -230,7 +229,6 @@ const InputTindakan = () => {
             resetForm({ values: '' })
         }
     })
-    console.log(validation.errors)
     const handleBeginOnChangeTglInput = (newBeginValue) => {
         var dateString = new Date(newBeginValue.getTime() - (newBeginValue.getTimezoneOffset() * 60000))
             .toISOString()
