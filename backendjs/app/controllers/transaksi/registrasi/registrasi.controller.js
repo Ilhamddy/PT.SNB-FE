@@ -474,6 +474,7 @@ async function saveRegistrasiPasien(req, res) {
 const savePenjaminFK = async (req, res) => {
     try{
         transaction = await db.sequelize.transaction;
+        let norecPFK = uuid.v4().substring(0, 32);
 
     } catch(error){
             await transaction.rollback();
@@ -870,6 +871,7 @@ module.exports = {
     getAllByOr,
     savePasien,
     saveRegistrasiPasien,
+    savePenjaminFK,
     getPasienNoregistrasi,
     getDaftarPasienRawatJalan,
     getDaftarPasienRegistrasi,

@@ -54,7 +54,6 @@ queryPromise2 = (query) => {
 
 async function generateSignature(req, res) {
     try {
-        
         let tempres = 'test'
         generateAuthHeaders()
         res.status(200).send({

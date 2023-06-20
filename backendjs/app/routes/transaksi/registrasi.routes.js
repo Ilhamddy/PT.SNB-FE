@@ -46,6 +46,12 @@ module.exports = function (app) {
         controller.saveRegistrasiPasien
     );
 
+    app.post(
+        "/api/transaksi/registrasi/save-penjamin-fk",
+        [authJwt.verifyToken],
+        controller.savePenjaminFK
+    );
+
     app.get(
         "/api/transaksi/registrasi/pasien-noregistrasi/:noregistrasi",
         [authJwt.verifyToken],

@@ -37,7 +37,7 @@ const CheckBoxAndRadio = () => {
                                                         </Label>
                                                     </div>
                                                     <div className="form-check">
-                                                        <Input className="form-check-input" type="checkbox" id="formCheck2" defaultChecked />                                                           /
+                                                        <Input className="form-check-input" type="checkbox" id="formCheck2" defaultChecked />                                                           
                                                         <Label className="form-check-label" htmlFor="formCheck2">
                                                             Checked checkbox
                                                         </Label>
