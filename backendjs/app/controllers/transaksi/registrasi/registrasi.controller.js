@@ -355,7 +355,7 @@ async function saveRegistrasiPasien(req, res) {
             todayDate = '0' + todayDate;
         let todaystart = formatDate(today)
         let todayend = formatDate(today) + ' 23:59'
-        let queryNoAntrian = `select count(noantrian)  from t_antreanpemeriksaan ta
+        let queryNoAntrian = `select count(noantrian) from t_antreanpemeriksaan ta
         join m_pegawai mp on mp.id=ta.objectdokterpemeriksafk where ta.objectdokterpemeriksafk='${req.body.dokter}' 
         and ta.tglmasuk between '${todaystart}' and '${todayend}'`
 
@@ -382,7 +382,6 @@ async function saveRegistrasiPasien(req, res) {
             where objectstatusbedfk =1 and id=${req.body.tempattidur}`
             
             let resqueryCekBed = await pool.query(queryCekBed);
-          
             if (resqueryCekBed.rowCount === 1) {
                 await transaction.rollback();
                 res.status(201).send({
@@ -469,6 +468,21 @@ async function saveRegistrasiPasien(req, res) {
                 code: 201
             });
         }
+    }
+}
+
+const savePenjaminFK = async (req, res) => {
+    try{
+        transaction = await db.sequelize.transaction;
+
+    } catch(error){
+            await transaction.rollback();
+            res.status(201).send({
+                status: error,
+                success: false,
+                msg: 'Simpan Gagal',
+                code: 201
+            });
     }
 }
 

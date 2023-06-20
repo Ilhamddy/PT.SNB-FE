@@ -250,6 +250,7 @@ import BuktiPendaftaran3 from "../pages/Print/BuktiPendaftaran3";
 import DaftarPasienRJ from "../pages/ListDaftarPasien/DaftarPasienRJ/DaftarPasienRJ";
 import Emr from "../pages/Emr";
 import DaftarPasienRI from "../pages/ListDaftarPasien/DaftarPasienRI/DaftarPasienRI";
+import RegistrasiPenjaminFK from "../pages/Registrasi/RegistrasiPenjaminFK/RegistrasiPenjaminFK";
 
 const authProtectedRoutes = [
   { path: "/dashboard-analytics", component: <DashboardAnalytics /> },
@@ -469,6 +470,7 @@ const authProtectedRoutes = [
   {path: "/registrasi/pasien-lama", component: <RegistrasiList />},
   {path: "/registrasi/pasien-baru", component: <PasienBaruForm />},
   {path: "/registrasi/pasien-ruangan/:id", component: <RegistrasiPasien />},
+  {path: "/registrasi/input-penjamin/:id", component: <RegistrasiPenjaminFK />},
   {path: "/bukti-pendaftaran/:noregistrasi", component: <BuktiPendaftaran3 />},
   {path: "/listdaftarpasien/daftar-pasien-rj", component: <DaftarPasienRJ />},
   {path:"/emr-pasien/:norecdp/:norecap", component:<Emr/>},
@@ -512,7 +514,6 @@ const publicRoutes = [
   { path: "/auth-pass-change-basic", component: <BasicPasswCreate /> },
   { path: "/auth-pass-change-cover", component: <CoverPasswCreate /> },
   { path: "/auth-offline", component: <Offlinepage /> },
-
 ];
 
 export { authProtectedRoutes, publicRoutes };
