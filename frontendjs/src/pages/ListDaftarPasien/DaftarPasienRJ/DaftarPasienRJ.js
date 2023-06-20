@@ -383,7 +383,7 @@ const DaftarPasienRJ = () => {
                                                     <div className="input-group-text bg-secondary border-secondary text-white"><i className="ri-calendar-2-line"></i></div>
                                                 </div>
                                             </Col>
-                                            <Col lg={3}>
+                                            <Col lg={2}>
                                                 <div className="d-flex justify-content-sm-end">
                                                     <div className="search-box ms-2">
                                                         <input type="text" className="form-control search"
@@ -393,7 +393,7 @@ const DaftarPasienRJ = () => {
                                                     </div>
                                                 </div>
                                             </Col>
-                                            <Col lg={3}>
+                                            <Col lg={1}>
                                                 <Button type="button" className="rounded-pill" placement="top" id="tooltipTopPencarian" onClick={handleClickCari}>
                                                     CARI
                                                 </Button>

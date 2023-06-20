@@ -252,6 +252,9 @@ import Emr from "../pages/Emr";
 import DaftarPasienRI from "../pages/ListDaftarPasien/DaftarPasienRI/DaftarPasienRI";
 import RegistrasiPenjaminFK from "../pages/Registrasi/RegistrasiPenjaminFK/RegistrasiPenjaminFK";
 
+// rekammedis
+import KendaliDokumen from "../pages/RekamMedis/KendaliDokumen/KendaliDokumen";
+
 const authProtectedRoutes = [
   { path: "/dashboard-analytics", component: <DashboardAnalytics /> },
   { path: "/dashboard-crm", component: <DashboardCrm /> },
@@ -475,6 +478,9 @@ const authProtectedRoutes = [
   {path: "/listdaftarpasien/daftar-pasien-rj", component: <DaftarPasienRJ />},
   {path:"/emr-pasien/:norecdp/:norecap", component:<Emr/>},
   {path: "/listdaftarpasien/daftar-pasien-ri", component: <DaftarPasienRI />},
+  
+  // rekam medis
+  {path:"/rekammedis/kendalidokumen", component:<KendaliDokumen/>}
 ];
 
 const publicRoutes = [

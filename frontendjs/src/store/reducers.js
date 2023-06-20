@@ -79,6 +79,8 @@ import Master from "./master/reducer";
 
 import Emr from "./emr/reducer";
 
+import KendaliDokumen from "./kendaliDokumen/reducer";
+
 const rootReducer = combineReducers({
     // public
     Layout,
@@ -111,7 +113,8 @@ const rootReducer = combineReducers({
     Registrasi,
     Master,
     DaftarPasien,
-    Emr
+    Emr,
+    KendaliDokumen
 });
 
 export default rootReducer;

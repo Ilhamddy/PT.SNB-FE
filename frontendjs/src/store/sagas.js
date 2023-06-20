@@ -70,6 +70,9 @@ import masterSaga from "./master/saga";
 import daftarPasien from "./daftarPasien/saga"
 
 import emrSaga from "./emr/saga";
+import kendaliDokumenSaga from "./kendaliDokumen/saga";
+
+
 
 export default function* rootSaga() {
   yield all([
@@ -103,6 +106,7 @@ export default function* rootSaga() {
     fork(registrasiSaga),
     fork(masterSaga),
     fork(daftarPasien),
-    fork(emrSaga)
+    fork(emrSaga),
+    fork(kendaliDokumenSaga)
   ]);
 }
