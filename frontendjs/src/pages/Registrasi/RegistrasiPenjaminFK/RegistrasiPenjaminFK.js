@@ -73,7 +73,6 @@ const RegistrasiPenjaminFK = () => {
 
         },
         validationSchema: Yup.object({
-            nokartu: Yup.string().required("No kartu wajib di isi"),
             jenisrujukan: Yup.string().required("Jenis rujukan wajib di isi"),
             nokartu: Yup.string().required("No kartu wajib di isi"),
             tanggalsep: Yup.string().required("Tanggal SEP wajib di isi"),
