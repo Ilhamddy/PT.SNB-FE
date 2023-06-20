@@ -9,6 +9,7 @@ const Navdata = () => {
     const [isDashboard, setIsDashboard] = useState(false);
     const [isRegistrasi, setIsRegistrasi] = useState(false);
     const [isListDaftarPasien, setListDaftarPasien] = useState(false);
+    const [isRekamMedis, setRekamMedis] = useState(false);
     const [isApps, setIsApps] = useState(false);
     const [isAuth, setIsAuth] = useState(false);
     const [isPages, setIsPages] = useState(false);
@@ -131,6 +132,7 @@ const Navdata = () => {
         isDashboard,
         isRegistrasi,
         isListDaftarPasien,
+        isRekamMedis,
         isApps,
         isAuth,
         isPages,
@@ -246,6 +248,37 @@ const Navdata = () => {
                 },
             ],
         },
+        {
+            id: "rekammedis",
+            label: "Rekam Medis",
+            icon: "lab la-delicious",
+            link: "/#",
+            click: function (e) {
+                e.preventDefault();
+                setRekamMedis(!isRekamMedis);
+                setIscurrentState('isRekamMedis');
+                updateIconSidebar(e);
+            },
+            stateVariables: isRekamMedis,
+            isAllowed: () => {
+                return isAllowedAccess(getUserPermissions(), [
+                    "REGISTRASI_VIEW",
+                ]);
+            },
+            subItems: [
+                {
+                    id: "rekammedis-kendalidokumen",
+                    label: "Kendali Dokumen",
+                    link: "/rekammedis/kendalidokumen",
+                    parentId: "rekammedis",
+                    isAllowed: () => {
+                        return isAllowedAccess(getUserPermissions(), [
+                            "REGISTRASI_VIEW",
+                        ]);
+                    }
+                },
+            ]
+        }
     ];
     return <React.Fragment>{menuItems}</React.Fragment>;
 };

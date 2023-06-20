@@ -217,7 +217,7 @@ async function getListTagihan(req, res) {
             mp.id = tp.objectprodukfk
         where
             td.norec = '${req.query.norecdp}'
-            and tp.statusenabled = true`);
+            and tp.statusenabled = true order by tp.tglinput desc`);
 
         for (var i = 0; i < resultlist.rows.length; ++i) {
             const resultlistPetugas = await queryPromise2(`select

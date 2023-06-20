@@ -51,7 +51,7 @@ module.exports = (sequelize, Sequelize) => {
         },
         tglkeluar: {
             type: 'TIMESTAMP'
-        },
+        }
     }, {
         tableName: "t_antreanpemeriksaan", // relation "user" does not exist
         createdAt: false,
