@@ -3,8 +3,6 @@ const uuid = require('uuid')
 const queries = require('../../../queries/transaksi/registrasi.queries');
 const db = require("../../../models");
 
-const t_antreanpemeriksaan = db.t_antreanpemeriksaan
-
 function formatDate(date) {
     var d = new Date(date),
         month = '' + (d.getMonth() + 1),
@@ -66,7 +64,7 @@ async function getListDaftarDokumenRekammedis(req, res) {
         const resultlistantreanpemeriksaan = await queryPromise2(`select dp.noregistrasi,mu.namaunit,ta.norec as norecap,
         mp.namapasien,mp.nocm, mrm.statuskendali,mp.objectstatuskendalirmfk as objectstatuskendalirmfkmp,
         trm.objectstatuskendalirmfk as objectstatuskendalirmfkap,
-        dp.objectunitlastfk from t_daftarpasien dp
+        dp.objectunitlastfk, trm.norec as norectrm from t_daftarpasien dp
         join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk=dp.norec
         and ta.objectunitfk =dp.objectunitlastfk 
         join m_unit mu on mu.id=dp.objectunitlastfk
@@ -196,16 +194,44 @@ async function saveDokumenRekammedis(req, res) {
         
         transaction = await db.sequelize.transaction();
         
+        if(req.body.idpencarian===1){
+            let norec = uuid.v4().substring(0, 32)
+            const t_rm_lokasidokumen = await db.t_rm_lokasidokumen.create({
+                norec: norec,
+                objectantreanpemeriksaanfk: req.body.norecap,
+                objectunitfk: req.body.objectunittujuan,
+                objectstatuskendalirmfk: 1
+            }, { transaction });
+            await transaction.commit();
+            res.status(200).send({
+                data: t_rm_lokasidokumen,
+                status: "success",
+                success: true,
+                msg: 'Berhasil',
+                code: 200
+            });
+        }else if(req.body.idpencarian===2){
+            console.log('masukk')
+            const t_rm_lokasidokumen = await db.t_rm_lokasidokumen.update({
+                objectstatuskendalirmfk:5
+            }, {
+                where: {
+                    norec: req.body.norectrm
+                }
+            }, { transaction });
+            await transaction.commit();
+            res.status(200).send({
+                data: t_rm_lokasidokumen,
+                status: "success",
+                success: true,
+                msg: 'Berhasil',
+                code: 200
+            });
+        }
         
-        await transaction.commit();
-        let tempres = { ttv: req.body }
-        res.status(200).send({
-            data: tempres,
-            status: "success",
-            success: true,
-            msg: 'Berhasil',
-            code: 200
-        });
+        
+        // let tempres = { statu: t_rm_lokasidokumen }
+       
     } catch (error) {
         // console.log(error);
         if (transaction) {
