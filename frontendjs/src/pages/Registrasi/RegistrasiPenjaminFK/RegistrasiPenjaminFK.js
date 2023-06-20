@@ -34,7 +34,7 @@ const RegistrasiPenjaminFK = () => {
 
     const jenisPeserta = [ //dummy data
         { value: "1", label: "Poli Eksklusif" },
-        { value: "2", label: "COB" },
+        { value: "2", label: "Cobas" },
         { value: "3", label: "Katarak" }
     ]
 
@@ -58,7 +58,6 @@ const RegistrasiPenjaminFK = () => {
             id: id,
             nokartu: "",
             jenisrujukan: "",
-            nokartu: "",
             tanggalsep: "",
             tujuankunjungan: "",
             dpjppmelayani: "",
