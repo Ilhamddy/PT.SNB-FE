@@ -10,7 +10,10 @@ import {
     KECAMATAN_GET_ERROR,
     COMBO_REGISTRASI_GET,
     COMBO_REGISTRASI_GET_SUCCESS,
-    COMBO_REGISTRASI_GET_ERROR
+    COMBO_REGISTRASI_GET_ERROR,
+    COMBO_ASURANSI_GET,
+    COMBO_ASURANSI_GET_SUCCESS,
+    COMBO_ASURANSI_GET_ERROR,
 } from "./actionType";
 
 export const masterGet = () => ({
@@ -67,5 +70,19 @@ export const comboRegistrasiGetSuccess = (data) => ({
 
 export const comboRegistrasiGetError = (error) => ({
     type: COMBO_REGISTRASI_GET_ERROR,
+    payload: error,
+});
+
+export const comboAsuransiGet = () => ({
+    type: COMBO_ASURANSI_GET,
+});
+
+export const comboAsuransiGetSuccess = (data) => ({
+    type: COMBO_ASURANSI_GET_SUCCESS,
+    payload: data,
+});
+
+export const comboAsuransiGetError = (error) => ({
+    type: COMBO_ASURANSI_GET_ERROR,
     payload: error,
 });

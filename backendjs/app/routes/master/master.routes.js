@@ -33,6 +33,12 @@ module.exports = function(app) {
       [authJwt.verifyToken],
       controller.comboRegistrasi
     );
+
+    app.get(
+      "/api/master/combobox-asuransi",
+      [authJwt.verifyToken],
+      controller.comboAsuransi
+    );
   
   
   };

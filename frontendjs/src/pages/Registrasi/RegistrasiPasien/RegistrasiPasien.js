@@ -282,12 +282,13 @@ const RegistrasiPasien = (props) => {
 
 
 	useEffect(() => {
-        if(success && validation.jenispenjamin.isasuransi){
+        const isasuransi = validation?.jenispenjamin?.isasuransi ?? true;
+        if(success && isasuransi){
             navigate(`/input-jenis-penjamin/${id}`);
         }else if(success){
             setpillsTab("3");
         }
-	}, [success, id, navigate, validation.jenispenjamin.isasuransi])
+	}, [success, id, navigate, validation?.jenispenjamin?.isasuransi])
 
 
 	const optionPenjamin = data
