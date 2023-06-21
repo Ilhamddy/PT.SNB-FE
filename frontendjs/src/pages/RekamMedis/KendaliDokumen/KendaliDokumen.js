@@ -21,13 +21,13 @@ import DataTable from 'react-data-table-component';
 import CountUp from "react-countup";
 import {
     daftarDokumenRekammedisGet, widgetdaftarDokumenRekammedisGet,
-    saveDokumenRekammedis
+    saveDokumenRekammedis,kendaliDokumenResetForm
 } from '../../../store/actions';
 
 const KendaliDokumen = () => {
     document.title = "Daftar Dokumen Rekammedis";
     const dispatch = useDispatch();
-    const { data, loading, error, datawidget } = useSelector((state) => ({
+    const { data, loading, error, datawidget,newData } = useSelector((state) => ({
         data: state.KendaliDokumen.daftarDokumenRekammedisGet.data,
         loading: state.KendaliDokumen.daftarDokumenRekammedisGet.loading,
         error: state.KendaliDokumen.daftarDokumenRekammedisGet.error,
@@ -38,19 +38,31 @@ const KendaliDokumen = () => {
         errorSave: state.KendaliDokumen.saveDokumenRekammedis.error,
     }));
     useEffect(() => {
+        return () => {
+            dispatch(kendaliDokumenResetForm());
+        }
+    }, [dispatch])
+    useEffect(() => {
         dispatch(daftarDokumenRekammedisGet(''));
         dispatch(widgetdaftarDokumenRekammedisGet(''));
 
     }, [dispatch]);
+    
     const clickCheckBox = (e) => {
         let tempValue = {
             norecap: e.norecap,
             objectstatuskendalirmfkap: e.objectstatuskendalirmfkap,
             objectunittujuan: e.objectunitlastfk,
-            idpencarian: idPencarian
+            idpencarian: idPencarian,
+            norectrm: e.norectrm
         }
-        console.log(tempValue)
-        // dispatch(saveDokumenRekammedis(tempValue));
+        // console.log(tempValue)
+        if (idPencarian === 3) {
+            toast.error('Dokumen Sudah Kembali', { autoClose: 3000 });
+        } else {
+            dispatch(saveDokumenRekammedis(tempValue));
+        }
+
     };
     const tableCustomStyles = {
         headRow: {
@@ -183,6 +195,12 @@ const KendaliDokumen = () => {
     };
     const [idPencarian, setidPencarian] = useState(1);
     const [namaPencarian, setnamaPencarian] = useState('Belum Dikirim');
+    useEffect(() => {
+        if (newData !== null) {
+            dispatch(daftarDokumenRekammedisGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}`));
+            dispatch(widgetdaftarDokumenRekammedisGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}`));
+        }
+    }, [newData,search,dateStart,dateEnd,idPencarian, dispatch])
     return (
         <React.Fragment>
             <ToastContainer closeButton={false} />

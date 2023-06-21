@@ -41,6 +41,7 @@ db.t_diagnosatindakan = require("../models/t_diagnosatindakan.js")(sequelize,Seq
 db.t_pelayananpasien = require("../models/t_pelayananpasien.js")(sequelize,Sequelize);
 db.t_pelayananpasiendetail = require("../models/t_pelayananpasiendetail.js")(sequelize,Sequelize);
 db.t_pelayananpasienpetugas = require("../models/t_pelayananpasienpetugas.js")(sequelize,Sequelize);
+db.t_rm_lokasidokumen = require("../models/t_rm_lokasidokumen.js")(sequelize,Sequelize);
 
 
 db.role.belongsToMany(db.user, {
