@@ -287,7 +287,7 @@ const RegistrasiPasien = (props) => {
         }else if(success){
             setpillsTab("3");
         }
-	}, [success, id, navigate, validation.jenispenjamin.isasuransi])
+	}, [success, id, navigate, validation?.jenispenjamin?.isasuransi])
 
 
 	const optionPenjamin = data

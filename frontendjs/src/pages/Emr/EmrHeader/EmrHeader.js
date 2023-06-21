@@ -29,7 +29,7 @@ const EmrHeader = () => {
         if (norecap) {
             dispatch(emrHeaderGet(norecap + `&norecdp=${norecdp}`));
         }
-    }, [norecap, dispatch])
+    }, [norecap, norecdp, dispatch])
 
     useEffect(() => {
         return () => {

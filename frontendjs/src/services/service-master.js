@@ -19,4 +19,7 @@ export default class ServiceMaster {
         return await api.get(`/master/combobox-registrasi`);
     }
     
+    getComboAsuransi = async (asuransi) => {
+        return await api.get(`/master/combobox-asuransi`);
+    }
 }

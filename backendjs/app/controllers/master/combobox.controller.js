@@ -21,6 +21,7 @@ const queriesPegawai = require('../../queries/master/pegawai/pegawai.queries')
 const queriesKelas = require('../../queries/master/kelas/kelas.queries')
 const queriesKamar = require('../../queries/master/kamar/kamar.queries')
 const queriesTempatTidur = require('../../queries/master/tempattidur/tempattidur.queires')
+const queriesStatusKecelakaan = require('../../queries/master/statuskecelakaan/statuskecelakaan.queries')
 
 const selectComboBox = (req, res) => {
     try {
@@ -68,7 +69,6 @@ const selectComboBox = (req, res) => {
                                                                                             if (error) {
                                                                                                 throw error;
                                                                                             } else {
-
                                                                                                 let tempres = {
                                                                                                     agama: result.rows, jeniskelamin: resultJk.rows, title: resultTitle.rows,
                                                                                                     golongandarah: resultGD.rows, kebangsaan: resultKeb.rows,
@@ -226,9 +226,36 @@ const comboRegistrasi = (req, res) => {
         });
     }
 }
+
+const comboAsuransi = (req, res) => {
+    try {
+        pool.query(queriesStatusKecelakaan.getAll, (error, result) => {
+            if (error){ 
+                throw error;
+            } else  {
+                let tempres = {
+                    statuskecelakaan: result.rows
+                }
+                res.status(200).send({
+                    data: tempres,
+                    status: "success",
+                    success: true,
+                });
+            }
+        }) 
+    } catch (error) {
+        console.error(error.message)
+        res.status(500).send({
+            data: [],
+            status: "error",
+            success: false,
+        });
+    }
+}
 module.exports = {
     selectComboBox,
     desaKelurahan,
     getKecamatan,
-    comboRegistrasi
+    comboRegistrasi,
+    comboAsuransi
 };

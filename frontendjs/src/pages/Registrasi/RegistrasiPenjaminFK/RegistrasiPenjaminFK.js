@@ -15,7 +15,8 @@ import BreadCrumb from "../../../Components/Common/BreadCrumb";
 import Flatpickr from "react-flatpickr";
 import CustomSelect from "../../Select/Select";
 import { emrDiagnosaxGet, emrListDiagnosaxGet } from "../../../store/actions";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { comboAsuransiGet } from "../../../store/master/action";
 
 
 const RegistrasiPenjaminFK = () => {
@@ -24,6 +25,11 @@ const RegistrasiPenjaminFK = () => {
 
     const [pillsTab, setpillsTab] = useState("1");
     const dispatch = useDispatch();
+
+    const {  dataDiagnosa, statusKecelakaan: statusKecelakaanOpt } = useSelector((state) => ({
+        dataDiagnosa: state.Emr.emrDiagnosaxGet.data,
+        statusKecelakaan: state.Master.comboAsuransiGet.data.statuskecelakaan
+    }));
 
     const penjaminLakaLantas = [ //dummy data
         { value: "1", label: "Jasa Raharja" },
@@ -103,10 +109,16 @@ const RegistrasiPenjaminFK = () => {
             setcardHeaderTab(tab);
         }
     }
-    useEffect(() => {
-        dispatch(emrDiagnosaxGet("con", 'diagnosa10'));
-    }, [id, dispatch]);
 
+    const handleDiagnosa = characterEntered => {
+        if (characterEntered.length > 3) {
+            dispatch(emrDiagnosaxGet(characterEntered, 'diagnosa10'));
+        }
+    };
+
+    useEffect(() => {
+        dispatch(comboAsuransiGet());
+    }, [dispatch])
 
     //component
     const PilihRujukan = (
@@ -364,15 +376,19 @@ const RegistrasiPenjaminFK = () => {
                                 <CustomSelect
                                     id="diagnosarujukan"
                                     name="diagnosarujukan"
-                                    onChange={() => {
-                                        
-                                    }}
+                                    onInputChange={handleDiagnosa}
+                                    options={dataDiagnosa}
+                                    className={`input ${validation.errors.diagnosarujukan ? "is-invalid" : ""}`}
+                                    onChange={(e) => validation.setFieldValue("diagnosarujukan", e.value)}
                                 />
                                 {validation.touched.diagnosarujukan && validation.errors.diagnosarujukan ? (
                                     <FormFeedback type="invalid"><div>{validation.errors.diagnosarujukan}</div></FormFeedback>
                                 ) : null}
                             </Col>
-                            <CustomCheckbox data={checkedJenisPes} setData={setcheckedJenisPes}/>
+                            <CustomCheckbox 
+                                data={checkedJenisPes} 
+                                setData={setcheckedJenisPes}
+                                checkboxName={"jenispeserta"}/>
                             <Col xxl={6} md={6}>
                                 <div className="mt-2">
                                     <Label style={{ color: "black" }} htmlFor="jenispeserta" className="form-label">Jenis Peserta</Label>
@@ -448,6 +464,9 @@ const RegistrasiPenjaminFK = () => {
                                 <CustomSelect
                                     id="statuskecelakaan"
                                     name="statuskecelakaan"
+                                    options={statusKecelakaanOpt}
+                                    className={`input ${validation.errors.statuskecelakaan ? "is-invalid" : ""}`}
+                                    onChange={(e) => validation.setFieldValue("statuskecelakaan", e.value)}
                                 />
                                 {validation.touched.statuskecelakaan && validation.errors.statuskecelakaan ? (
                                     <FormFeedback type="invalid"><div>{validation.errors.statuskecelakaan}</div></FormFeedback>
@@ -461,142 +480,151 @@ const RegistrasiPenjaminFK = () => {
     )
 
     const BodyLakaLantas = (
-        <Row>
-            <Col lg={6}>
-                <Card>
-                    <CardBody>
+        <>
+            <div className="ms-3">
+                Laka Lantas
+            </div>
+            <Row key={0}>
+                <Col lg={6}>
+                    <Card>
+                        <CardBody>
 
-                        <Row className="gy-4">
-                            <Col xxl={6} md={6}>
-                                <div className="mt-2">
-                                    <Label style={{ color: "black" }} htmlFor="inputprovinsi" className="form-label">Provinsi</Label>
-                                </div>
-                            </Col>
-                            <Col xxl={6} md={6}>
-                                <CustomSelect
-                                    id="inputprovinsi"
-                                    name="inputprovinsi"
-                                />
-                                {validation.touched.inputprovinsi && validation.errors.inputprovinsi ? (
-                                    <FormFeedback type="invalid"><div>{validation.errors.inputprovinsi}</div></FormFeedback>
-                                ) : null}
-                            </Col>
-                            <Col xxl={6} md={6}>
-                                <div className="mt-2">
-                                    <Label style={{ color: "black" }} htmlFor="inputkota" className="form-label">Kota</Label>
-                                </div>
-                            </Col>
-                            <Col xxl={6} md={6}>
-                                <CustomSelect
-                                    id="inputkota"
-                                    name="inputkota"
-                                />
-                                {validation.touched.inputkota && validation.errors.inputkota ? (
-                                    <FormFeedback type="invalid"><div>{validation.errors.inputkota}</div></FormFeedback>
-                                ) : null}
-                            </Col>
-                            <Col xxl={6} md={6}>
-                                <div className="mt-2">
-                                    <Label style={{ color: "black" }} htmlFor="inputkecamatan" className="form-label">Kecamatan</Label>
-                                </div>
-                            </Col>
-                            <Col xxl={6} md={6}>
-                                <CustomSelect
-                                    id="inputkecamatan"
-                                    name="inputkecamatan"
-                                />
-                                {validation.touched.inputkecamatan && validation.errors.inputkecamatan ? (
-                                    <FormFeedback type="invalid"><div>{validation.errors.inputkecamatan}</div></FormFeedback>
-                                ) : null}
-                            </Col>
-                            <Card>
-                                <CardHeader>
-                                    <CardTitle tag="h5">Penjamin Laka Lantas</CardTitle>
-                                </CardHeader>
-                                <CardBody>
-                                    <CustomCheckbox data={checkedLakaLantas} setData={setCheckedLakaLantas}/>
-                                </CardBody>
-                            </Card>
-                        </Row>
-                    </CardBody>
-                </Card>
-            </Col> 
-            <Col lg={6}>
-                <Card>
-                    <CardBody>    
-                        <Row className="gy-4">
-                            <Col xxl={6} md={6}>
-                                <div className="mt-2">
-                                    <Label style={{ color: "black" }} htmlFor="tanggallakalantas" className="form-label">Tanggal Laka Lantas</Label>
-                                </div>
-                            </Col>
-                            <Col xxl={6} md={6}>
-                                <div>
-                                    <Flatpickr
-                                        className="form-control"
-                                        options={{
-                                            dateFormat: "Y-m-d",
-                                            defaultDate: "today",
-                                            maxDate: "today",
-                                            minDate: "today"
-                                        }}
-                                        onChange={([newDate]) => {
-                                            
-                                        }}
+                            <Row className="gy-4">
+                                <Col xxl={6} md={6}>
+                                    <div className="mt-2">
+                                        <Label style={{ color: "black" }} htmlFor="inputprovinsi" className="form-label">Provinsi</Label>
+                                    </div>
+                                </Col>
+                                <Col xxl={6} md={6}>
+                                    <CustomSelect
+                                        id="inputprovinsi"
+                                        name="inputprovinsi"
                                     />
-                                </div>
-                            </Col>
-                            <Col xxl={6} md={6}>
-                                <div className="mt-2">
-                                    <Label style={{ color: "black" }} htmlFor="nosepsuplesi" className="form-label">No SEP Suplesi</Label>
-                                </div>
-                            </Col>
+                                    {validation.touched.inputprovinsi && validation.errors.inputprovinsi ? (
+                                        <FormFeedback type="invalid"><div>{validation.errors.inputprovinsi}</div></FormFeedback>
+                                    ) : null}
+                                </Col>
+                                <Col xxl={6} md={6}>
+                                    <div className="mt-2">
+                                        <Label style={{ color: "black" }} htmlFor="inputkota" className="form-label">Kota</Label>
+                                    </div>
+                                </Col>
+                                <Col xxl={6} md={6}>
+                                    <CustomSelect
+                                        id="inputkota"
+                                        name="inputkota"
+                                    />
+                                    {validation.touched.inputkota && validation.errors.inputkota ? (
+                                        <FormFeedback type="invalid"><div>{validation.errors.inputkota}</div></FormFeedback>
+                                    ) : null}
+                                </Col>
+                                <Col xxl={6} md={6}>
+                                    <div className="mt-2">
+                                        <Label style={{ color: "black" }} htmlFor="inputkecamatan" className="form-label">Kecamatan</Label>
+                                    </div>
+                                </Col>
+                                <Col xxl={6} md={6}>
+                                    <CustomSelect
+                                        id="inputkecamatan"
+                                        name="inputkecamatan"
+                                    />
+                                    {validation.touched.inputkecamatan && validation.errors.inputkecamatan ? (
+                                        <FormFeedback type="invalid"><div>{validation.errors.inputkecamatan}</div></FormFeedback>
+                                    ) : null}
+                                </Col>
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle tag="h5">Penjamin Laka Lantas</CardTitle>
+                                    </CardHeader>
+                                    <CardBody>
+                                        <CustomCheckbox 
+                                            data={checkedLakaLantas} 
+                                            setData={setCheckedLakaLantas}
+                                            checkboxName={"penjaminlakalantas"}/>
+                                    </CardBody>
+                                </Card>
+                            </Row>
+                        </CardBody>
+                    </Card>
+                </Col> 
+                <Col lg={6}>
+                    <Card>
+                        <CardBody>    
+                            <Row className="gy-4">
+                                <Col xxl={6} md={6}>
+                                    <div className="mt-2">
+                                        <Label style={{ color: "black" }} htmlFor="tanggallakalantas" className="form-label">Tanggal Laka Lantas</Label>
+                                    </div>
+                                </Col>
+                                <Col xxl={6} md={6}>
+                                    <div>
+                                        <Flatpickr
+                                            className="form-control"
+                                            options={{
+                                                dateFormat: "Y-m-d",
+                                                defaultDate: "today",
+                                                maxDate: "today",
+                                                minDate: "today"
+                                            }}
+                                            onChange={([newDate]) => {
+                                                
+                                            }}
+                                        />
+                                    </div>
+                                </Col>
+                                <Col xxl={6} md={6}>
+                                    <div className="mt-2">
+                                        <Label style={{ color: "black" }} htmlFor="nosepsuplesi" className="form-label">No SEP Suplesi</Label>
+                                    </div>
+                                </Col>
 
-                            <Col xxl={6} md={6}>
-                                <Input
-                                    id="nosepsuplesi"
-                                    name="nosepsuplesi"
-                                    type="number"
-                                    placeholder="No SEP Suplesi"
-                                    onChange={validation.handleChange}
-                                    onBlur={validation.handleBlur}
-                                    value={validation.values.nosepsuplesi || ""}
-                                    invalid={
-                                        validation.touched.nosepsuplesi && validation.errors.nosepsuplesi ? true : false
-                                    }
-                                />
-                                {validation.touched.nosepsuplesi && validation.errors.nosepsuplesi ? (
-                                    <FormFeedback type="invalid"><div>{validation.errors.nosepsuplesi}</div></FormFeedback>
-                                ) : null}
-                            </Col>
-                            <Col xxl={6} md={6}>
-                                <div className="mt-2">
-                                    <Label style={{ color: "black" }} htmlFor="keteranganlaka" className="form-label">Keterangan</Label>
-                                </div>
-                            </Col>
-                            <Col xxl={6} md={6}>
-                                <Input
-                                    id="keteranganlaka"
-                                    name="keteranganlaka"
-                                    type="string"
-                                    placeholder="Keterangan"
-                                    onChange={validation.handleChange}
-                                    onBlur={validation.handleBlur}
-                                    value={validation.values.keteranganlaka || ""}
-                                    invalid={
-                                        validation.touched.keteranganlaka && validation.errors.keteranganlaka ? true : false
-                                    }
-                                />
-                                {validation.touched.keteranganlaka && validation.errors.keteranganlaka ? (
-                                    <FormFeedback type="invalid"><div>{validation.errors.keteranganlaka}</div></FormFeedback>
-                                ) : null}
-                            </Col>
-                        </Row>
-                    </CardBody>
-                </Card>
-            </Col> 
-        </Row>
+                                <Col xxl={6} md={6}>
+                                    <Input
+                                        id="nosepsuplesi"
+                                        name="nosepsuplesi"
+                                        type="number"
+                                        placeholder="No SEP Suplesi"
+                                        onChange={validation.handleChange}
+                                        onBlur={validation.handleBlur}
+                                        value={validation.values.nosepsuplesi || ""}
+                                        invalid={
+                                            validation.touched.nosepsuplesi && validation.errors.nosepsuplesi ? true : false
+                                        }
+                                    />
+                                    {validation.touched.nosepsuplesi && validation.errors.nosepsuplesi ? (
+                                        <FormFeedback type="invalid"><div>{validation.errors.nosepsuplesi}</div></FormFeedback>
+                                    ) : null}
+                                </Col>
+                                <Col xxl={6} md={6}>
+                                    <div className="mt-2">
+                                        <Label style={{ color: "black" }} htmlFor="keteranganlaka" className="form-label">Keterangan</Label>
+                                    </div>
+                                </Col>
+                                <Col xxl={6} md={6}>
+                                    <Input
+                                        id="keteranganlaka"
+                                        name="keteranganlaka"
+                                        type="string"
+                                        placeholder="Keterangan"
+                                        onChange={validation.handleChange}
+                                        onBlur={validation.handleBlur}
+                                        value={validation.values.keteranganlaka || ""}
+                                        invalid={
+                                            validation.touched.keteranganlaka && validation.errors.keteranganlaka ? true : false
+                                        }
+                                    />
+                                    {validation.touched.keteranganlaka && validation.errors.keteranganlaka ? (
+                                        <FormFeedback type="invalid"><div>{validation.errors.keteranganlaka}</div></FormFeedback>
+                                    ) : null}
+                                </Col>
+                            </Row>
+                        </CardBody>
+                    </Card>
+                </Col> 
+            </Row>
+        </>
     )
+
 
     const BodyBPJSRujukan = (
         <>
@@ -605,10 +633,10 @@ const RegistrasiPenjaminFK = () => {
                 <Button color="info" className="rounded-pill" >Pilih Rujukan</Button>
             </Col>
             {DetailBPJS}
-            <div className="ms-3">
-                Laka Lantas
-            </div>
-            {BodyLakaLantas}
+            
+            {validation.values.statuskecelakaan !== "" && validation.values.statuskecelakaan !== 1
+                ? BodyLakaLantas : <></>
+            }
             <Col lg={12} style={{ textAlign: 'right' }} className="mr-3 me-3">
                 <Button type="submit" color="info" className="rounded-pill" >Pilih Rujukan</Button>
             </Col>
@@ -722,47 +750,54 @@ const RegistrasiPenjaminFK = () => {
     )
 }
 
-const CustomCheckbox = ({data, setData}) => {
+const CustomCheckbox = ({data, setData, checkboxName}) => {
     const handleChangeCheckBox = (val)=>{
         const newData = [...data]
         const dataVal = newData.find((dataVal) => dataVal.value === val) 
         dataVal.checked = !dataVal.checked
         setData(newData)
     }
+    const oddData = data.filter((_, indexVal) => Math.abs(indexVal % 2) === 1)
+    const evenData = data.filter((_, indexVal) => indexVal % 2 === 0 )
+
     return(
         <Row className="mt-3">
             <Col xxl={6} md={6}>
                 {
-                    data.map((dataVal, indexVal) => Math.abs(indexVal % 2) === 1 ? <></> :
+                    evenData.map((dataVal, indexVal) => (
                         <div className="form-check ms-2" key={dataVal.value}>
                             <Input 
                                 className="form-check-input" 
                                 type="checkbox" 
-                                id="formCheck1" 
+                                id={`formcheck-1-${checkboxName}${indexVal}`} 
                                 checked={dataVal.checked} 
                                 onChange={e => handleChangeCheckBox(dataVal.value)}/>
-                            <Label className="form-check-label" htmlFor="formCheck1" style={{ color: "black" }} >
+                            <Label className="form-check-label" 
+                                htmlFor={`formcheck-1-${checkboxName}${indexVal}`} 
+                                style={{ color: "black" }} >
                                 {dataVal.label}
                             </Label>
                         </div>
-                    )
+                    ))
                 }
             </Col>
             <Col xxl={6} md={6}>
                 {
-                    data.map((dataVal, indexVal) => indexVal % 2 === 0 ? <></> :
+                    oddData.map((dataVal, indexVal) => (
                         <div className="form-check ms-2" key={dataVal.value}>
                             <Input 
                                 className="form-check-input" 
                                 type="checkbox" 
-                                id="formCheck1" 
+                                id={`formcheck-2-${checkboxName}${indexVal}`} 
                                 checked={dataVal.checked} 
                                 onChange={e => handleChangeCheckBox(dataVal.value)}/>
-                            <Label className="form-check-label" htmlFor="formCheck1" style={{ color: "black" }} >
+                            <Label className="form-check-label" 
+                                htmlFor={`formcheck-2-${checkboxName}${indexVal}`} 
+                                style={{ color: "black" }} >
                                 {dataVal.label}
                             </Label>
                         </div>
-                    )
+                    ))
                 }
             </Col>
         </Row>

@@ -114,9 +114,7 @@ const Diagnosax = () => {
     };
     const handleDiagnosa = characterEntered => {
         if (characterEntered.length > 3) {
-            // useEffect(() => {
             dispatch(emrDiagnosaxGet(characterEntered, 'diagnosa10'));
-            // }, [dispatch]);
         }
     };
     const tableCustomStyles = {

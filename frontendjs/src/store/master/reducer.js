@@ -11,7 +11,10 @@ import {
     OMBO_REGISTRASI_GET,
     COMBO_REGISTRASI_GET_SUCCESS,
     COMBO_REGISTRASI_GET_ERROR,
-    COMBO_REGISTRASI_GET
+    COMBO_REGISTRASI_GET,
+    COMBO_ASURANSI_GET,
+    COMBO_ASURANSI_GET_SUCCESS,
+    COMBO_ASURANSI_GET_ERROR,
 } from "./actionType";
 
 const INIT_STATE = {
@@ -31,6 +34,11 @@ const INIT_STATE = {
         error: null,
     },
     comboRegistrasiGet: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    comboAsuransiGet: {
         data: [],
         loading: false,
         error: null,
@@ -165,6 +173,39 @@ const Master = (state = INIT_STATE, action) => {
                 ...state,
                 comboRegistrasiGet: {
                     ...state.comboRegistrasiGet,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case COMBO_ASURANSI_GET: {
+            return {
+                ...state,
+                comboAsuransiGet: {
+                    ...state.comboAsuransiGet,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case COMBO_ASURANSI_GET_SUCCESS: {
+            return {
+                ...state,
+                comboAsuransiGet: {
+                    ...state.comboAsuransiGet,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case COMBO_ASURANSI_GET_ERROR: {
+            return {
+                ...state,
+                comboAsuransiGet: {
+                    ...state.comboAsuransiGet,
                     loading: false,
                     error: action.error,
                 }
