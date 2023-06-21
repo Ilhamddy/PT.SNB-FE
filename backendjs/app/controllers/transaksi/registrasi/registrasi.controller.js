@@ -471,19 +471,58 @@ async function saveRegistrasiPasien(req, res) {
     }
 }
 
+const getRegistrasiPasienNorec = async (req, res) => {
+    try {
+        const norec = req.params.norec;
+        transaction = await db.sequelize.transaction();
+        
+        const ruanganpasien = await db
+            .t_daftarpasien
+            .findOne({ where: { norec: norec } });
+        
+        if(ruanganpasien === null){
+            res.status(404).send({
+                data: [],
+                success: false,
+                msg: 'Data Kosong',
+                code: 404
+            });
+            return
+        }
+
+        
+        res.status(200).send({
+            data: ruanganpasien,
+            success: true,
+            msg: 'Data Berhasil',
+            code: 200
+        })
+    }catch (error) {
+        if (transaction) {
+            await transaction.rollback();
+            res.status(500).send({
+                status: error,
+                success: false,
+                msg: 'Simpan Gagal',
+                code: 500
+            });
+        }
+    }
+}
+
 const savePenjaminFK = async (req, res) => {
     try{
         transaction = await db.sequelize.transaction;
         let norecPFK = uuid.v4().substring(0, 32);
 
     } catch(error){
-            await transaction.rollback();
-            res.status(201).send({
-                status: error,
-                success: false,
-                msg: 'Simpan Gagal',
-                code: 201
-            });
+        await transaction.rollback();
+        res.status(201).send({
+            status: error,
+            success: false,
+            msg: 'Simpan Gagal',
+            code: 201
+        });
     }
 }
 
@@ -870,6 +909,7 @@ module.exports = {
     getPasienById,
     getAllByOr,
     savePasien,
+    getRegistrasiPasienNorec,
     saveRegistrasiPasien,
     savePenjaminFK,
     getPasienNoregistrasi,

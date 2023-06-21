@@ -473,7 +473,7 @@ const authProtectedRoutes = [
   {path: "/registrasi/pasien-lama", component: <RegistrasiList />},
   {path: "/registrasi/pasien-baru", component: <PasienBaruForm />},
   {path: "/registrasi/pasien-ruangan/:id", component: <RegistrasiPasien />},
-  {path: "/registrasi/input-penjamin/:id", component: <RegistrasiPenjaminFK />},
+  {path: "/registrasi/input-penjamin/:id/:norec", component: <RegistrasiPenjaminFK />},
   {path: "/bukti-pendaftaran/:noregistrasi", component: <BuktiPendaftaran3 />},
   {path: "/listdaftarpasien/daftar-pasien-rj", component: <DaftarPasienRJ />},
   {path:"/emr-pasien/:norecdp/:norecap", component:<Emr/>},

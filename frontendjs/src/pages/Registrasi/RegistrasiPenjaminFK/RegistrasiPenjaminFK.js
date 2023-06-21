@@ -14,21 +14,23 @@ import {
 import BreadCrumb from "../../../Components/Common/BreadCrumb";
 import Flatpickr from "react-flatpickr";
 import CustomSelect from "../../Select/Select";
-import { emrDiagnosaxGet, emrListDiagnosaxGet } from "../../../store/actions";
+import { emrDiagnosaxGet, emrListDiagnosaxGet, registrasiGet, registrasiRuanganNorecGet } from "../../../store/actions";
 import { useDispatch, useSelector } from "react-redux";
-import { comboAsuransiGet } from "../../../store/master/action";
+import { comboAsuransiGet, comboRegistrasiGet } from "../../../store/master/action";
 
 
 const RegistrasiPenjaminFK = () => {
-    const { id } = useParams();
+    const { id, norec } = useParams();
     const [cardHeaderTab, setcardHeaderTab] = useState("1")
 
     const [pillsTab, setpillsTab] = useState("1");
     const dispatch = useDispatch();
 
-    const {  dataDiagnosa, statusKecelakaan: statusKecelakaanOpt } = useSelector((state) => ({
+    const {  dataDiagnosa, statusKecelakaan: statusKecelakaanOpt, data, dataUser } = useSelector((state) => ({
         dataDiagnosa: state.Emr.emrDiagnosaxGet.data,
-        statusKecelakaan: state.Master.comboAsuransiGet.data.statuskecelakaan
+        data: state.Master.comboRegistrasiGet.data,
+        statusKecelakaan: state.Master.comboAsuransiGet.data.statuskecelakaan,
+        dataUser: state.Registrasi.registrasiGet.data,
     }));
 
     const penjaminLakaLantas = [ //dummy data
@@ -40,7 +42,7 @@ const RegistrasiPenjaminFK = () => {
 
     const jenisPeserta = [ //dummy data
         { value: "1", label: "Poli Eksklusif" },
-        { value: "2", label: "Cobas" },
+        { value: "2", label: "COB" },
         { value: "3", label: "Katarak" }
     ]
 
@@ -76,7 +78,6 @@ const RegistrasiPenjaminFK = () => {
             notelepon: "",
             catatan: "",
             statuskecelakaan: "",
-
         },
         validationSchema: Yup.object({
             jenisrujukan: Yup.string().required("Jenis rujukan wajib di isi"),
@@ -118,7 +119,15 @@ const RegistrasiPenjaminFK = () => {
 
     useEffect(() => {
         dispatch(comboAsuransiGet());
-    }, [dispatch])
+        dispatch(comboRegistrasiGet());
+        if (id) {
+            dispatch(registrasiGet(id));
+        }
+        norec && dispatch(registrasiRuanganNorecGet(norec));
+
+    }, [dispatch, id, norec])
+
+
 
     //component
     const PilihRujukan = (
@@ -242,6 +251,8 @@ const RegistrasiPenjaminFK = () => {
                                     <CustomSelect
                                         id="tujuankunjungan"
                                         name="tujuankunjungan"
+                                        options={data.instalasi}
+                                        onChange={(e) => validation.setFieldValue("tujuankunjungan  ", e.value)}
                                     />
                                     {validation.touched.tujuankunjungan && validation.errors.tujuankunjungan ? (
                                         <FormFeedback type="invalid"><div>{validation.errors.tujuankunjungan}</div></FormFeedback>
@@ -683,10 +694,57 @@ const RegistrasiPenjaminFK = () => {
                                     </NavItem>
                                     <NavItem>
                                         <NavLink style={{ cursor: "pointer" }} className={classnames({ active: pillsTab === "3", })} onClick={() => { pillsToggle("3"); }} >
-                                            Action
+                                            Hist. SEP
                                         </NavLink>
                                     </NavItem>
                                 </Nav>
+                                <TabContent activeTab={pillsTab} className="text-muted">
+                                    <TabPane tabId="1" id="home-1">
+                                        <Card>
+                                            <CardBody>
+                                                <div className="table-responsive">
+                                                    <Table className="table-borderless mb-0">
+                                                        <tbody>
+                                                            <tr>
+                                                                <th className="ps-0" scope="row">NoRM :</th>
+                                                                <td className="text-muted">{dataUser?.nocm}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th className="ps-0" scope="row">Tgllahir :</th>
+                                                                <td className="text-muted">{dataUser?.tgllahir}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th className="ps-0" scope="row">No BPJS :</th>
+                                                                <td className="text-muted">{dataUser?.nobpjs}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th className="ps-0" scope="row">No Identitas :</th>
+                                                                <td className="text-muted">{dataUser?.noidentitas}</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </Table>
+                                                </div>
+                                            </CardBody>
+                                        </Card>
+                                    </TabPane>
+                                    <TabPane tabId="2" id="home-2">
+                                        <Card>
+                                            <CardBody>
+
+                                            </CardBody>
+                                        </Card>
+                                    </TabPane>
+                                    <TabPane tabId="3" id="home-3">
+                                        <Card>
+                                            <CardBody>
+                                                <div className="live-preview">
+                                                    <div className="d-flex flex-wrap gap-2">
+                                                    </div>
+                                                </div>
+                                            </CardBody>
+                                        </Card>
+                                    </TabPane>
+                                </TabContent>
                             </CardBody>
                         </Card>
                     </Col>

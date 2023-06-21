@@ -15,6 +15,10 @@ export default class ServiceRegistrasi {
         return await api.get(`/transaksi/registrasi/pasien/${id}`);
     }
 
+    getRegistrasiPasienNorec = async (norec) => {
+        return await api.get(`/transaksi/registrasi/daftar-pasien-ruangan/${norec}`);
+    }
+    
     createPasienBaru = async (params) => {
         return await api.create("/transaksi/registrasi/pasien-baru", params);
     }

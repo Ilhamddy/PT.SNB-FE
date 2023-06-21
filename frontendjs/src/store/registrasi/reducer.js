@@ -15,7 +15,10 @@ import {
     REGISTRASI_NOREGISTRASI_GET,
     REGISTRASI_NOREGISTRASI_GET_SUCCESS,
     REGISTRASI_NOREGISTRASI_GET_ERROR,
-    REGISTRASI_NOREGISTRASI_RESET_FORM
+    REGISTRASI_NOREGISTRASI_RESET_FORM,
+    REGISTRASI_RUANGAN_NOREC_GET,
+    REGISTRASI_RUANGAN_NOREC_GET_SUCCESS,
+    REGISTRASI_RUANGAN_NOREC_GET_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -42,6 +45,11 @@ const INIT_STATE = {
         success: false
     },
     registrasiNoregistrasiGet: {
+        data: null,
+        loading: false,
+        error: null,
+    },
+    registrasiRuangNorecGet: {
         data: null,
         loading: false,
         error: null,
@@ -237,6 +245,39 @@ const Registrasi = (state = INIT_STATE, action) => {
                 },
                 registrasiSaveRuangan: {
                     ...INIT_STATE.registrasiSaveRuangan,
+                }
+            }
+        }
+
+        case REGISTRASI_RUANGAN_NOREC_GET: {
+            return {
+                ...state,
+                registrasiRuangNorecGet: {
+                    ...state.registrasiRuangNorecGet,
+                    loading: true,
+                    error: null
+                }
+            }
+        }
+
+        case REGISTRASI_RUANGAN_NOREC_GET_SUCCESS: {
+            return {
+                ...state,
+                registrasiRuangNorecGet: {
+                    ...state.registrasiRuangNorecGet,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case REGISTRASI_RUANGAN_NOREC_GET_ERROR: {
+            return {
+                ...state,
+                registrasiRuangNorecGet: {
+                    ...state.registrasiRuangNorecGet,
+                    loading: false,
+                    error: action.error,
                 }
             }
         }

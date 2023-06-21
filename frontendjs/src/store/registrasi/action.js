@@ -19,6 +19,9 @@ import {
     REGISTRASI_NOREGISTRASI_GET_SUCCESS,
     REGISTRASI_NOREGISTRASI_GET_ERROR,
     REGISTRASI_NOREGISTRASI_RESET_FORM,
+    REGISTRASI_RUANGAN_NOREC_GET,
+    REGISTRASI_RUANGAN_NOREC_GET_SUCCESS,
+    REGISTRASI_RUANGAN_NOREC_GET_ERROR,
 } from "./actionType";
 
 export const registrasiResetForm = () => ({
@@ -119,5 +122,20 @@ export const registrasiSaveRuanganSuccess = (data, history) => ({
 
 export const registrasiSaveRuanganError = (error) => ({
     type: REGISTRASI_SAVE_RUANGAN_ERROR,
+    payload: error,
+});
+
+export const registrasiRuanganNorecGet = (norec) => ({
+    type: REGISTRASI_RUANGAN_NOREC_GET,
+    payload: {norec: norec}
+});
+
+export const registrasiRuanganNorecGetSuccess = (data) => ({
+    type: REGISTRASI_RUANGAN_NOREC_GET_SUCCESS,
+    payload: data,
+});
+
+export const registrasiRuanganNorecGetError = (error) => ({
+    type: REGISTRASI_RUANGAN_NOREC_GET_ERROR,
     payload: error,
 });

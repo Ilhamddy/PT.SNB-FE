@@ -41,6 +41,7 @@ join m_instalasi mi on mi.id=mu.objectinstalasifk
 join m_jenispenjamin mj on mj.id=td.objectjenispenjaminfk
 left join t_rm_lokasidokumen trm on trm.objectantreanpemeriksaanfk=ta.norec`;
 
+
 const getDaftarPasienRegistrasi = `select mi.namainstalasi,mp.nocm,td.noregistrasi,mp.namapasien,
 to_char(td.tglregistrasi,'yyyy-MM-dd') as tglregistrasi,mu.namaunit,
 mp2.reportdisplay || '-' ||ta.noantrian as noantrian,mp2.namalengkap as namadokter  from t_daftarpasien td 
@@ -79,6 +80,7 @@ join m_jenispenjamin mj on mj.id=td.objectjenispenjaminfk
 join m_kamar mk on ta.objectkamarfk =mk.id
 join m_tempattidur mt on ta.nobed = mt.id
 where td.tglpulang is null`;
+
 
 module.exports = {
     getAll,

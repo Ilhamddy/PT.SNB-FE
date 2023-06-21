@@ -7,7 +7,8 @@ import {
     REGISTRASI_SAVE,
     REGISTRASI_LIST_BYOR_GET,
     REGISTRASI_SAVE_RUANGAN,
-    REGISTRASI_NOREGISTRASI_GET
+    REGISTRASI_NOREGISTRASI_GET,
+    REGISTRASI_RUANGAN_NOREC_GET
 } from "./actionType";
 import {
     registrasiGetError,
@@ -21,7 +22,9 @@ import {
     registrasiSaveRuanganSuccess,
     registrasiSaveRuanganError,
     registrasiNoregistrasiGetError,
-    registrasiNoregistrasiGetSuccess
+    registrasiNoregistrasiGetSuccess,
+    registrasiRuanganNorecGetSuccess,
+    registrasiRuanganNorecGetError
 } from "./action";
 
 import { toast } from 'react-toastify';
@@ -78,6 +81,17 @@ function* onGetRegistrasi({payload: {id}}) {
     }
 }
 
+function* onGetRegistrasiNorec({payload: {norec}}) {
+    try {
+        console.log("get")
+        const response = yield call(serviceRegistrasi.getRegistrasiPasienNorec, norec);
+        yield put(registrasiRuanganNorecGetSuccess(response.data));
+    } catch (error) {
+        yield put(registrasiRuanganNorecGetError(error));
+    }
+}
+
+
 function* onSaveRegistrasiRuangan({ payload: { data, history} }) {
     try {
         let response = null;
@@ -90,12 +104,10 @@ function* onSaveRegistrasiRuangan({ payload: { data, history} }) {
         yield put(registrasiSaveRuanganSuccess(response.data));
         console.log(response.code)
         if(response.code===200){
-            // console.log('masukkk')
             toast.success(response.msg, { autoClose: 3000 });
         }else{
             toast.error(response.msg, { autoClose: 3000 });
         }
-        // history("/registrasi/pasien-lama")
     } catch (error) {
         yield put(registrasiSaveRuanganError(error));
         toast.error(error, { autoClose: 3000 });
@@ -135,6 +147,10 @@ export function* watchGetRegistrasiNoregistrasi() {
     yield takeEvery(REGISTRASI_NOREGISTRASI_GET, onGetRegistrasiNoregistrasi);
 }
 
+export function* watchGetRegistrasiNorec() {
+    yield takeEvery(REGISTRASI_RUANGAN_NOREC_GET, onGetRegistrasiNorec);
+}
+
 function* registrasiSaga() {
     yield all([
         fork(watchSaveRegistrasi),
@@ -142,8 +158,9 @@ function* registrasiSaga() {
         fork(watchGetRegistrasi),
         fork(watchGetRegistrasiListByOr),
         fork(watchSaveRegistrasiRuangan),
-        fork(watchGetRegistrasiNoregistrasi)
+        fork(watchGetRegistrasiNoregistrasi),
+        fork(watchGetRegistrasiNorec)
     ]);
 }
 
-export default registrasiSaga;
+export default registrasiSaga

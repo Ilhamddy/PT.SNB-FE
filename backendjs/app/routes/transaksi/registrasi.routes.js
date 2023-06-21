@@ -46,6 +46,12 @@ module.exports = function (app) {
         controller.saveRegistrasiPasien
     );
 
+    app.get(
+        "/api/transaksi/registrasi/daftar-pasien-ruangan/:norec",
+        [authJwt.verifyToken],
+        controller.getRegistrasiPasienNorec
+    )
+
     app.post(
         "/api/transaksi/registrasi/save-penjamin-fk",
         [authJwt.verifyToken],

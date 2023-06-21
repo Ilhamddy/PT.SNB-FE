@@ -73,17 +73,15 @@ const RegistrasiPasien = (props) => {
     }, [id, dispatch]);
 
 
-    const { datas, data, loading, error, newData, loadingSave, success, errorSave } = useSelector((state) => ({
-
+    const { datas, data, loading, error, newData, loadingSave, successReg, errorSave } = useSelector((state) => ({
         data: state.Master.comboRegistrasiGet.data,
         newData: state.Registrasi.registrasiSaveRuangan.newData,
-        success: state.Registrasi.registrasiSaveRuangan.success,
+        successReg: state.Registrasi.registrasiSaveRuangan.success,
         loadingSave: state.Registrasi.registrasiSaveRuangan.loading,
         errorSave: state.Registrasi.registrasiSaveRuangan.error,
         loading: state.Master.comboRegistrasiGet.loading,
         error: state.Master.comboRegistrasiGet.error,
         datas: state.Registrasi.registrasiGet.data,
-
     }));
     useEffect(() => {
         return () => {
@@ -233,7 +231,6 @@ const RegistrasiPasien = (props) => {
     };
     useEffect(() => {
         window.addEventListener('message', handleMessage);
-
         return () => {
             window.removeEventListener('message', handleMessage);
         };
@@ -282,13 +279,14 @@ const RegistrasiPasien = (props) => {
 
 
 	useEffect(() => {
-        const isasuransi = validation?.jenispenjamin?.isasuransi ?? true;
-        if(success && isasuransi){
-            navigate(`/input-jenis-penjamin/${id}`);
-        }else if(success){
+        const isAsuransi = validation.values.jenispenjamin === 2;
+        if(successReg && isAsuransi && newData){
+            navigate(`/registrasi/input-penjamin/${id}/${newData.data.daftarPasien.norec}`);
+        }else if(successReg){
             setpillsTab("3");
         }
-	}, [success, id, navigate, validation?.jenispenjamin?.isasuransi])
+	}, [successReg, id, navigate,
+        newData, validation?.jenispenjamin?.isasuransi])
 
 
 	const optionPenjamin = data
@@ -670,7 +668,7 @@ const RegistrasiPasien = (props) => {
                                             </Card>
                                         </Col>
                                         <Col lg={12} style={{ textAlign: 'right' }}>
-                                            {!success && <Button type="submit" color="info" className="rounded-pill" disabled={loadingSave}> SIMPAN </Button>}
+                                            {!successReg && <Button type="submit" color="info" className="rounded-pill" disabled={loadingSave}> SIMPAN </Button>}
                                         </Col>
                                     </Row>
                                 </CardBody>
