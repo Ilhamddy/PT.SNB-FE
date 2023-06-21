@@ -227,6 +227,23 @@ async function saveDokumenRekammedis(req, res) {
                 msg: 'Berhasil',
                 code: 200
             });
+        }else if(req.body.idpencarian===4){
+            // ini untuk dokumen diterima di poliklinik
+            const t_rm_lokasidokumen = await db.t_rm_lokasidokumen.update({
+                objectstatuskendalirmfk:2
+            }, {
+                where: {
+                    norec: req.body.norectrm
+                }
+            }, { transaction });
+            await transaction.commit();
+            res.status(200).send({
+                data: t_rm_lokasidokumen,
+                status: "success",
+                success: true,
+                msg: 'Berhasil',
+                code: 200
+            });
         }
         
         

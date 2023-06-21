@@ -18,7 +18,10 @@ import 'react-toastify/dist/ReactToastify.css';
 import { taskWidgets } from '../../../common/data';
 import CountUp from "react-countup";
 
-import { daftarPasienRJGet, widgetdaftarPasienRJGet, updateTaskId } from '../../../store/actions';
+import {
+    daftarPasienRJGet, widgetdaftarPasienRJGet, updateTaskId,
+    saveDokumenRekammedis,kendaliDokumenResetForm
+} from '../../../store/actions';
 // Imported Images
 import pac from "../../../assets/images/sudah-periksa.png";
 //import images
@@ -31,7 +34,8 @@ const DaftarPasienRJ = () => {
     document.title = "Daftar Pasien Rawat Jalan";
     const dispatch = useDispatch();
     const history = useNavigate();
-    const { data, datawidget, loading, error, dataCombo, loadingCombo, errorCombo, successUpdateTaskId } = useSelector((state) => ({
+    const { data, datawidget, loading, error, dataCombo, loadingCombo, errorCombo, successUpdateTaskId,
+        newDataDokumen, successDokumen } = useSelector((state) => ({
         data: state.DaftarPasien.daftarPasienRJGet.data,
         datawidget: state.DaftarPasien.widgetdaftarPasienRJGet.data,
         loading: state.DaftarPasien.daftarPasienRJGet.loading,
@@ -39,13 +43,19 @@ const DaftarPasienRJ = () => {
         dataCombo: state.Master.comboRegistrasiGet.data,
         loadingCombo: state.Master.comboRegistrasiGet.loading,
         errorCombo: state.Master.comboRegistrasiGet.error,
-        successUpdateTaskId: state.Emr.updateTaskId.success
+        successUpdateTaskId: state.Emr.updateTaskId.success,
+        newDataDokumen: state.KendaliDokumen.saveDokumenRekammedis.newData,
+        successDokumen: state.KendaliDokumen.saveDokumenRekammedis.success,
     }));
     const current = new Date();
     const [dateStart, setdateStart] = useState(`${current.getFullYear()}-${current.getMonth() + 1}-${current.getDate()}`);
     const [dateEnd, setdateEnd] = useState(`${current.getFullYear()}-${current.getMonth() + 1}-${current.getDate()}`);
     const [search, setSearch] = useState('')
-
+    useEffect(() => {
+        return () => {
+            dispatch(kendaliDokumenResetForm());
+        }
+    }, [dispatch])
 
     useEffect(() => {
         dispatch(daftarPasienRJGet(''));
@@ -68,7 +78,17 @@ const DaftarPasienRJ = () => {
 
         }
     }
+    const clickCheckBox = (e) => {
+        let tempValue = {
+            idpencarian: 4,
+            norectrm: e.norectrm
+        }
+        // console.log(tempValue)
 
+        dispatch(saveDokumenRekammedis(tempValue));
+
+
+    };
     const columns = [
         {
             name: <span className='font-weight-bold fs-13'>Detail</span>,
@@ -76,8 +96,19 @@ const DaftarPasienRJ = () => {
             cell: (data) => {
                 return (
                     <div className="hstack gap-3 flex-wrap">
-                        <Link to={`/emr-pasien/${data.norecdp}/${data.norecta}`} className="link-success fs-15" id="tooltipTop"><i className="ri-edit-2-line"></i></Link>
-                        <UncontrolledTooltip placement="top" target="tooltipTop" > Pengkajian Pasien </UncontrolledTooltip>
+                        {data.objectstatuskendalirmfkap === 1 ? (
+                            <>
+                                <Link to="#" onClick={() => { clickCheckBox(data) }} className="text-danger fs-15" id="tooltipTopDokumen"><i className="bx bx-check-circle"></i></Link>
+                                <UncontrolledTooltip placement="top" target="tooltipTopDokumen" > Belum Diterima </UncontrolledTooltip>
+
+                            </>
+                        ) :
+                            <>
+                                <Link to={`/emr-pasien/${data.norecdp}/${data.norecta}`} className="link-success fs-15" id="tooltipTop"><i className="ri-edit-2-line"></i></Link>
+                                <UncontrolledTooltip placement="top" target="tooltipTop" > Pengkajian Pasien </UncontrolledTooltip>
+                            </>
+                        }
+
 
 
                         <UncontrolledDropdown className="dropdown d-inline-block">
@@ -250,7 +281,13 @@ const DaftarPasienRJ = () => {
         setkonsulModal(false);
         // }
     };
-   
+    useEffect(() => {
+        console.log('masukkkkk')
+        if (newDataDokumen !== null) {
+            dispatch(daftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}`));
+            dispatch(widgetdaftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}`));
+        }
+    }, [newDataDokumen, search, dateStart, dateEnd, idPencarian, dispatch])
     return (
         <React.Fragment>
             <ToastContainer closeButton={false} />
