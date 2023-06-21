@@ -18,6 +18,7 @@ import Cppt from '../Cppt/Cppt';
 import Diagnosa from '../Diagnosa/index';
 import InputTindakan from '../InputTindakan/InputTindakan';
 import Tagihan from '../Tagihan/Tagihan';
+import OrderRadiologi from '../Penunjang/Radiologi/OrderRadiologi/OrderRadiologi';
 
 const EmrBody = () => {
     const { norecdp, norecap } = useParams();
@@ -49,6 +50,13 @@ const EmrBody = () => {
     const pillsToggleBilling = (tab) => {
         if (pillsTabBilling !== tab) {
             setpillsTabBilling(tab);
+        }
+    };
+    // Pills Penunjang
+    const [pillsTabPenunjang, setpillsTabPenunjang] = useState("1");
+    const pillsTogglePenunjang = (tab) => {
+        if (pillsTabPenunjang !== tab) {
+            setpillsTabPenunjang(tab);
         }
     };
 
@@ -109,6 +117,16 @@ const EmrBody = () => {
             label: "Tagihan",
         },
     ];
+    const taskPenunjang = [
+        {
+            id: 1,
+            label: "Laboratorium",
+        },
+        {
+            id: 2,
+            label: "Radiologi",
+        },
+    ];
 
     return (
         <React.Fragment>
@@ -118,15 +136,15 @@ const EmrBody = () => {
                     <Card>
                         <div className="card-header align-items-center d-flex">
                             {/* <div className="flex-shrink-0 ms-2"> */}
-                                <Nav tabs className="nav justify-content-end nav-tabs-custom rounded card-header-tabs border-bottom-0">
-                                    {taskWidgets.map((item, key) => (
-                                        <NavItem key={key}>
-                                            <NavLink style={{ cursor: "pointer" }} className={classnames({ active: pillsTab === `${item.id}`, })} onClick={() => { pillsToggle(`${item.id}`); }}>
-                                                <span className="fw-semibold">{item.label}</span>
-                                            </NavLink>
-                                        </NavItem>
-                                    ))}
-                                </Nav>
+                            <Nav tabs className="nav justify-content-end nav-tabs-custom rounded card-header-tabs border-bottom-0">
+                                {taskWidgets.map((item, key) => (
+                                    <NavItem key={key}>
+                                        <NavLink style={{ cursor: "pointer" }} className={classnames({ active: pillsTab === `${item.id}`, })} onClick={() => { pillsToggle(`${item.id}`); }}>
+                                            <span className="fw-semibold">{item.label}</span>
+                                        </NavLink>
+                                    </NavItem>
+                                ))}
+                            </Nav>
 
                             {/* </div> */}
                         </div>
@@ -249,7 +267,43 @@ const EmrBody = () => {
                                         <TabPane tabId="2" id="ttv-2">
                                             <Card>
                                                 <CardBody>
-                                                    <Tagihan show={pillsTabBilling}/>
+                                                    <Tagihan show={pillsTabBilling} />
+                                                </CardBody>
+                                            </Card>
+                                        </TabPane>
+                                    </TabContent>
+                                </Card>
+                            </TabPane>
+
+                            <TabPane tabId="4" id="home-1">
+                                <Card>
+                                    <div className="card-header align-items-center d-flex">
+                                        <div className="flex-shrink-0 ms-2">
+                                            <Nav tabs className="nav justify-content-end nav-tabs-custom rounded card-header-tabs border-bottom-0">
+                                                {taskPenunjang.map((item, key) => (
+                                                    <NavItem key={key}>
+                                                        <NavLink style={{ cursor: "pointer" }} className={classnames({ active: pillsTabPenunjang === `${item.id}`, })} onClick={() => { pillsTogglePenunjang(`${item.id}`); }}>
+                                                            <span className="fw-semibold">{item.label}</span>
+                                                        </NavLink>
+                                                    </NavItem>
+                                                ))}
+                                            </Nav>
+                                        </div>
+                                    </div>
+                                    <TabContent activeTab={pillsTabPenunjang} className="text-muted">
+                                        <TabPane tabId="1" id="penunjang-1">
+                                            <Card>
+                                                <CardBody>
+
+                                                </CardBody>
+                                            </Card>
+                                        </TabPane>
+                                    </TabContent>
+                                    <TabContent activeTab={pillsTabPenunjang} className="text-muted">
+                                        <TabPane tabId="2" id="penunjang-2">
+                                            <Card>
+                                                <CardBody>
+                                                    <OrderRadiologi />
                                                 </CardBody>
                                             </Card>
                                         </TabPane>
