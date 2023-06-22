@@ -23,7 +23,7 @@ import { useSelector, useDispatch } from "react-redux";
 import classnames from "classnames";
 
 import { comboRegistrasiGet } from '../../../store/master/action';
-import { registrasiNoregistrasiResetForm, registrasiGet, registrasiSaveRuangan } from "../../../store/actions";
+import { registrasiNoregistrasiResetForm, registrasiGet, registrasiSaveRuangan, registrasiNoBPJSGet } from "../../../store/actions";
 import BuktiPendaftaran from '../../Print/BuktiPendaftaran';
 
 import BuktiPendaftaran2 from '../../Print/BuktiPendaftaran2';
@@ -280,7 +280,7 @@ const RegistrasiPasien = (props) => {
 
 	useEffect(() => {
         const isAsuransi = validation.values.jenispenjamin === 2;
-        if(successReg && isAsuransi && newData){
+        if(successReg && isAsuransi && newData?.data?.daftarPasien?.norec){
             navigate(`/registrasi/input-penjamin/${id}/${newData.data.daftarPasien.norec}`);
         }else if(successReg){
             setpillsTab("3");
@@ -292,6 +292,12 @@ const RegistrasiPasien = (props) => {
 	const optionPenjamin = data
 		.rekanan?.filter((rekanan) => rekanan.objectjenispenjaminfk === validation.values.jenispenjamin) 
 		?? [];
+
+    useEffect(() => {
+        if(datas?.nobpjs){
+            dispatch(registrasiNoBPJSGet(datas.nobpjs));    
+        }
+    }, [datas?.nobpjs, dispatch])
 
     return (
         <div className="page-content">

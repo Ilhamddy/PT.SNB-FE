@@ -9,14 +9,15 @@ import * as Yup from "yup";
 import { ToastContainer } from "react-toastify";
 import {
     Card, CardBody, CardHeader, Col, Container, Row, Nav, NavItem,
-    NavLink, Input, Form, TabContent, TabPane, Table, Label, FormFeedback, Button, CardTitle,
+    NavLink, Input, Form, TabContent, TabPane, Table, Label, FormFeedback, Button, CardTitle, Modal, ModalHeader, ModalBody,
 } from 'reactstrap';
 import BreadCrumb from "../../../Components/Common/BreadCrumb";
 import Flatpickr from "react-flatpickr";
 import CustomSelect from "../../Select/Select";
-import { emrDiagnosaxGet, emrListDiagnosaxGet, registrasiGet, registrasiRuanganNorecGet } from "../../../store/actions";
+import { emrDiagnosaxGet, emrListDiagnosaxGet, registrasiGet, registrasiNoBPJSGet, registrasiRuanganNorecGet } from "../../../store/actions";
 import { useDispatch, useSelector } from "react-redux";
 import { comboAsuransiGet, comboRegistrasiGet } from "../../../store/master/action";
+import "./RegistrasiPenjaminFK.scss";
 
 
 const RegistrasiPenjaminFK = () => {
@@ -24,14 +25,21 @@ const RegistrasiPenjaminFK = () => {
     const [cardHeaderTab, setcardHeaderTab] = useState("1")
 
     const [pillsTab, setpillsTab] = useState("1");
+    const [isOpenRujukan, setIsOpenModalRujukan] = useState(false);
+    const [isOpenRI, setIsOpenRI] = useState(false);
     const dispatch = useDispatch();
 
-    const {  dataDiagnosa, statusKecelakaan: statusKecelakaanOpt, data, dataUser } = useSelector((state) => ({
+    const {  dataDiagnosa, statusKecelakaan: statusKecelakaanOpt
+        , data, dataUser, dataBpjs, dataRuangDaftar } = useSelector((state) => ({
         dataDiagnosa: state.Emr.emrDiagnosaxGet.data,
         data: state.Master.comboRegistrasiGet.data,
         statusKecelakaan: state.Master.comboAsuransiGet.data.statuskecelakaan,
         dataUser: state.Registrasi.registrasiGet.data,
+        dataBpjs: state.Registrasi.registrasiNoBpjsGet.data,
+        dataRuangDaftar: state.Registrasi.registrasiRuangNorecGet.data,
     }));
+
+    
 
     const penjaminLakaLantas = [ //dummy data
         { value: "1", label: "Jasa Raharja" },
@@ -59,7 +67,6 @@ const RegistrasiPenjaminFK = () => {
         }))
 
 
-
     const validation = useFormik({
         enableReinitialize: true,
         initialValues: {
@@ -79,7 +86,21 @@ const RegistrasiPenjaminFK = () => {
             notelepon: "",
             catatan: "",
             statuskecelakaan: "",
+            provinsilakalantas: "",
+            kotalakalantas: "",
+            kecamatanlakalantas: "",
+            tanggallakalantas: "",
+            nosepsuplesi: "",
+            keteranganlakalantas: "", 
+            tanggallakakerja: "",
+            nolaporanpolisi: "",
+            keteranganlakakerja: "",
+            provinsilakakerja: "",
+            kotalakakerja: "",
+            kecamatanlakakerja: "",
+            
         },
+
         validationSchema: Yup.object({
             jenisrujukan: Yup.string().required("Jenis rujukan wajib di isi"),
             nokartu: Yup.string().required("No kartu wajib di isi"),
@@ -93,9 +114,82 @@ const RegistrasiPenjaminFK = () => {
             dpjppemberi: Yup.string().required("DPJP pemberi wajib di isi"),
             diagnosarujukan: Yup.string().required("Diagnosa rujukan wajib di isi"),
             jenispeserta: Yup.string().required("Jenis peserta wajib di isi"),
-            notelepon: Yup.string().required("No telepon wajib di isi"),
+            notelepon: Yup.string().matches(RegExp('^\\d+$'), 'Harus angka')
+                .required("No telepon wajib di isi"),
             catatan: Yup.string().required("Catatan wajib di isi"),
             statuskecelakaan: Yup.string().required("Status kecelakaan wajib di isi"),
+            provinsilakalantas: Yup.string().when("statuskecelakaan", (statuskecelakaan, schema) => {
+                if (statuskecelakaan[0] === '2' || statuskecelakaan[0] === '4') {
+                    return schema
+                        .required("provinsi harus Harus di isi")
+                } else return schema
+            }),
+            kotalakalantas: Yup.string().when("statuskecelakaan", (statuskecelakaan, schema) => {
+                if (statuskecelakaan[0] === '2' || statuskecelakaan[0] === '4') {
+                    return schema
+                        .required("kota harus Harus di isi")
+                } else return schema
+            }),
+            kecamatanlakalantas: Yup.string().when("statuskecelakaan", (statuskecelakaan, schema) => {
+                if (statuskecelakaan[0] === '2' || statuskecelakaan[0] === '4') {
+                    return schema
+                        .required("kecamatan harus Harus di isi")
+                    } else return schema
+            }),       
+            tanggallakalantas: Yup.string().when("statuskecelakaan", (statuskecelakaan, schema) => {
+                if (statuskecelakaan[0] === '2' || statuskecelakaan[0] === '4') {
+                    return schema
+                        .required("tanggal harus Harus di isi")
+                } else return schema
+            }),
+            nosepsuplesi: Yup.string().when("statuskecelakaan", (statuskecelakaan, schema) => {
+                if (statuskecelakaan[0] === '2' || statuskecelakaan[0] === '4') {
+                    return schema
+                        .required("No epsuplesi harus Harus di isi")
+                } else return schema
+            }),
+            keteranganlakalantas: Yup.string().when("statuskecelakaan", (statuskecelakaan, schema) => {
+                if (statuskecelakaan[0] === '2' || statuskecelakaan[0] === '4') {
+                    return schema
+                        .required("Keterangan harus Harus di isi")
+                } else return schema
+            }),
+            tanggallakakerja: Yup.string().when("statuskecelakaan", (statuskecelakaan, schema) => {
+                if (statuskecelakaan[0] === '3' || statuskecelakaan[0] === '4') {
+                    return schema
+                        .required("Keterangan harus Harus di isi")
+                } else return schema
+            }),
+            nolaporanpolisi: Yup.string().when("statuskecelakaan", (statuskecelakaan, schema) => {
+                if (statuskecelakaan[0] === '3' || statuskecelakaan[0] === '4') {
+                    return schema
+                        .required("No laporan polisi harus Harus di isi")
+                } else return schema
+            }),
+            keteranganlakakerja: Yup.string().when("statuskecelakaan", (statuskecelakaan, schema) => {
+                if (statuskecelakaan[0] === '3' || statuskecelakaan[0] === '4') {
+                    return schema
+                        .required("Keterangan harus Harus di isi")
+                } else return schema
+            }),
+            provinsilakakerja: Yup.string().when("statuskecelakaan", (statuskecelakaan, schema) => {
+                if (statuskecelakaan[0] === '3' || statuskecelakaan[0] === '4') {
+                    return schema
+                        .required("Provinsi harus Harus di isi")
+                } else return schema
+            }),
+            kotalakakerja: Yup.string().when("statuskecelakaan", (statuskecelakaan, schema) => {
+                if (statuskecelakaan[0] === '3' || statuskecelakaan[0] === '4') {
+                    return schema
+                        .required("Kota harus Harus di isi")
+                } else return schema
+            }),
+            kecamatanlakakerja: Yup.string().when("statuskecelakaan", (statuskecelakaan, schema) => {
+                if (statuskecelakaan[0] === '3' || statuskecelakaan[0] === '4') {
+                    return schema
+                        .required("Kecamatan harus Harus di isi")
+                } else return schema
+            })
         }),
         onSubmit: (values) => {
 
@@ -126,8 +220,41 @@ const RegistrasiPenjaminFK = () => {
             dispatch(registrasiGet(id));
         }
         norec && dispatch(registrasiRuanganNorecGet(norec));
-
     }, [dispatch, id, norec])
+
+    useEffect(() => {
+        if(dataUser?.nobpjs){
+            dispatch(registrasiNoBPJSGet(dataUser.nobpjs));
+            
+        }
+    }, [dataUser, dispatch])
+
+    useEffect(() => {
+        if(dataRuangDaftar?.objectinstalasifk){
+            validation.setFieldValue("tujuankunjungan", dataRuangDaftar.objectinstalasifk);
+            validation.setFieldValue("asalrujukan", dataRuangDaftar.objectasalrujukanfk);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [dataRuangDaftar, validation?.setFieldValue])
+
+    //klinik 3, puskesmas 1, rumahsakit 2
+    useEffect(() => {
+        if(dataRuangDaftar?.objectinstalasifk && dataBpjs){
+            setIsOpenModalRujukan(true);
+            return
+        }
+        if(dataUser?.objectunitfk !== 1) return;
+        const tujuanSebelum = Number(dataBpjs?.rujukanklinik?.rujukan?.pelayanan?.kode 
+            || dataBpjs?.rujukanrs?.rujukan?.pelayanan?.kode || 1);
+        const sepSebelum = Number(dataBpjs?.histori?.histori?.[0].jnsPelayanan || 1) ;
+        const isSepSebelumRI = sepSebelum === 2;
+        const isTujuanSebelumRI = tujuanSebelum === 2;
+        if(isTujuanSebelumRI && !isSepSebelumRI){
+            setIsOpenRI(true);
+            return
+        }
+        setIsOpenRI(false);
+    }, [dataBpjs, dataRuangDaftar, dataUser])
 
 
 
@@ -217,7 +344,7 @@ const RegistrasiPenjaminFK = () => {
                                     <Input
                                         id="norujukan"
                                         name="norujukan"
-                                        type="number"
+                                        type="string"
                                         placeholder="Masukkan No Rujukan"
                                         className="form-control"
                                         onChange={validation.handleChange}
@@ -255,6 +382,7 @@ const RegistrasiPenjaminFK = () => {
                                         name="tujuankunjungan"
                                         options={data.instalasi}
                                         onChange={(e) => validation.setFieldValue("tujuankunjungan  ", e.value)}
+                                        value={validation.values.tujuankunjungan || ""}
                                     />
                                     {validation.touched.tujuankunjungan && validation.errors.tujuankunjungan ? (
                                         <FormFeedback type="invalid"><div>{validation.errors.tujuankunjungan}</div></FormFeedback>
@@ -284,13 +412,12 @@ const RegistrasiPenjaminFK = () => {
                             </Col>
                             <Col xxl={6} md={6}>
                                 <div>
-                                    <Input
+                                    <CustomSelect
                                         id="asalrujukan"
                                         name="asalrujukan"
-                                        type="string"
                                         placeholder="Asal Rujukan"
-                                        onChange={validation.handleChange}
-                                        onBlur={validation.handleBlur}
+                                        options={data.asalrujukan}
+                                        onChange={(e) => validation.setFieldValue("asalrujukan  ", e.value)}
                                         value={validation.values.asalrujukan || ""}
                                         invalid={
                                             validation.touched.asalrujukan && validation.errors.asalrujukan ? true : false
@@ -333,7 +460,7 @@ const RegistrasiPenjaminFK = () => {
                                     <Input
                                         id="nosuratkontrol"
                                         name="nosuratkontrol"
-                                        type="number"
+                                        type="string"
                                         placeholder="No Surat Kontrol"
                                         onChange={validation.handleChange}
                                         onBlur={validation.handleBlur}
@@ -433,7 +560,7 @@ const RegistrasiPenjaminFK = () => {
                                 <Input
                                     id="notelepon"
                                     name="notelepon"
-                                    type="number"
+                                    type="string"
                                     placeholder="No Telepon"
                                     onChange={validation.handleChange}
                                     onBlur={validation.handleBlur}
@@ -505,44 +632,44 @@ const RegistrasiPenjaminFK = () => {
                             <Row className="gy-4">
                                 <Col xxl={6} md={6}>
                                     <div className="mt-2">
-                                        <Label style={{ color: "black" }} htmlFor="inputprovinsi" className="form-label">Provinsi</Label>
+                                        <Label style={{ color: "black" }} htmlFor="provinsilakalantas" className="form-label">Provinsi</Label>
                                     </div>
                                 </Col>
                                 <Col xxl={6} md={6}>
                                     <CustomSelect
-                                        id="inputprovinsi"
-                                        name="inputprovinsi"
+                                        id="provinsilakalantas"
+                                        name="provinsilakalantas"
                                     />
-                                    {validation.touched.inputprovinsi && validation.errors.inputprovinsi ? (
-                                        <FormFeedback type="invalid"><div>{validation.errors.inputprovinsi}</div></FormFeedback>
+                                    {validation.touched.provinsilakalantas && validation.errors.provinsilakalantas ? (
+                                        <FormFeedback type="invalid"><div>{validation.errors.provinsilakalantas}</div></FormFeedback>
                                     ) : null}
                                 </Col>
                                 <Col xxl={6} md={6}>
                                     <div className="mt-2">
-                                        <Label style={{ color: "black" }} htmlFor="inputkota" className="form-label">Kota</Label>
+                                        <Label style={{ color: "black" }} htmlFor="kotalakalantas" className="form-label">Kota</Label>
                                     </div>
                                 </Col>
                                 <Col xxl={6} md={6}>
                                     <CustomSelect
-                                        id="inputkota"
-                                        name="inputkota"
+                                        id="kotalakalantas"
+                                        name="kotalakalantas"
                                     />
-                                    {validation.touched.inputkota && validation.errors.inputkota ? (
-                                        <FormFeedback type="invalid"><div>{validation.errors.inputkota}</div></FormFeedback>
+                                    {validation.touched.kotalakalantas && validation.errors.kotalakalantas ? (
+                                        <FormFeedback type="invalid"><div>{validation.errors.kotalakalantas}</div></FormFeedback>
                                     ) : null}
                                 </Col>
                                 <Col xxl={6} md={6}>
                                     <div className="mt-2">
-                                        <Label style={{ color: "black" }} htmlFor="inputkecamatan" className="form-label">Kecamatan</Label>
+                                        <Label style={{ color: "black" }} htmlFor="kecamatanlakalantas" className="form-label">Kecamatan</Label>
                                     </div>
                                 </Col>
                                 <Col xxl={6} md={6}>
                                     <CustomSelect
-                                        id="inputkecamatan"
-                                        name="inputkecamatan"
+                                        id="kecamatanlakalantas"
+                                        name="kecamatanlakalantas"
                                     />
-                                    {validation.touched.inputkecamatan && validation.errors.inputkecamatan ? (
-                                        <FormFeedback type="invalid"><div>{validation.errors.inputkecamatan}</div></FormFeedback>
+                                    {validation.touched.kecamatanlakalantas && validation.errors.kecamatanlakalantas ? (
+                                        <FormFeedback type="invalid"><div>{validation.errors.kecamatanlakalantas}</div></FormFeedback>
                                     ) : null}
                                 </Col>
                                 <Card>
@@ -610,24 +737,154 @@ const RegistrasiPenjaminFK = () => {
                                 </Col>
                                 <Col xxl={6} md={6}>
                                     <div className="mt-2">
-                                        <Label style={{ color: "black" }} htmlFor="keteranganlaka" className="form-label">Keterangan</Label>
+                                        <Label style={{ color: "black" }} htmlFor="keteranganlakalantas" className="form-label">Keterangan</Label>
                                     </div>
                                 </Col>
                                 <Col xxl={6} md={6}>
                                     <Input
-                                        id="keteranganlaka"
-                                        name="keteranganlaka"
+                                        id="keteranganlakalantas"
+                                        name="keteranganlakalantas"
                                         type="string"
                                         placeholder="Keterangan"
                                         onChange={validation.handleChange}
                                         onBlur={validation.handleBlur}
-                                        value={validation.values.keteranganlaka || ""}
+                                        value={validation.values.keteranganlakalantas || ""}
                                         invalid={
-                                            validation.touched.keteranganlaka && validation.errors.keteranganlaka ? true : false
+                                            validation.touched.keteranganlakalantas && validation.errors.keteranganlakalantas ? true : false
                                         }
                                     />
-                                    {validation.touched.keteranganlaka && validation.errors.keteranganlaka ? (
-                                        <FormFeedback type="invalid"><div>{validation.errors.keteranganlaka}</div></FormFeedback>
+                                    {validation.touched.keteranganlakalantas && validation.errors.keteranganlakalantas ? (
+                                        <FormFeedback type="invalid"><div>{validation.errors.keteranganlakalantas}</div></FormFeedback>
+                                    ) : null}
+                                </Col>
+                            </Row>
+                        </CardBody>
+                    </Card>
+                </Col> 
+            </Row>
+        </>
+    )
+
+    const BodyLakaKerja = (
+        <>
+            <div className="ms-3">
+                Laka Kerja
+            </div>
+            <Row key={0}>
+                <Col lg={6}>
+                    <Card>
+                        <CardBody>
+                            <Row className="gy-4">
+                                <Col xxl={6} md={6}>
+                                    <div className="mt-2">
+                                        <Label style={{ color: "black" }} htmlFor="tanggalkejadian" className="form-label">Tanggal kejadian</Label>
+                                    </div>
+                                </Col>
+                                <Col xxl={6} md={6}>
+                                    <div>
+                                        <Flatpickr
+                                            className="form-control"
+                                            options={{
+                                                dateFormat: "Y-m-d",
+                                                defaultDate: "today",
+                                                maxDate: "today",
+                                                minDate: "today"
+                                            }}
+                                            onChange={([newDate]) => {
+                                                
+                                            }}
+                                        />
+                                    </div>
+                                </Col>
+                                <Col xxl={6} md={6}>
+                                    <div className="mt-2">
+                                        <Label style={{ color: "black" }} htmlFor="nolaporanpolisi" className="form-label">No laporan polisi</Label>
+                                    </div>
+                                </Col>
+                                <Col xxl={6} md={6}>
+                                    <Input
+                                        id="nolaporanpolisi"
+                                        name="nolaporanpolisi"
+                                        type="number"
+                                        placeholder="No Laporan Polisi"
+                                        onChange={validation.handleChange}
+                                        onBlur={validation.handleBlur}
+                                        value={validation.values.nolaporanpolisi || ""}
+                                        invalid={
+                                            validation.touched.nolaporanpolisi && validation.errors.nolaporanpolisi ? true : false
+                                        }
+                                    />
+                                    {validation.touched.nolaporanpolisi && validation.errors.nolaporanpolisi ? (
+                                        <FormFeedback type="invalid"><div>{validation.errors.nolaporanpolisi}</div></FormFeedback>
+                                    ) : null}
+                                </Col>
+
+                                <Col xxl={6} md={6}>
+                                    <Input
+                                        id="keteranganlakakerja"
+                                        name="keteranganlakakerja"
+                                        type="number"
+                                        placeholder="Keterangan"
+                                        onChange={validation.handleChange}
+                                        onBlur={validation.handleBlur}
+                                        value={validation.values.keteranganlakakerja || ""}
+                                        invalid={
+                                            validation.touched.keteranganlakakerja && validation.errors.keteranganlakakerja ? true : false
+                                        }
+                                    />
+                                    {validation.touched.keteranganlakakerja && validation.errors.keteranganlakakerja ? (
+                                        <FormFeedback type="invalid"><div>{validation.errors.keteranganlakakerja}</div></FormFeedback>
+                                    ) : null}
+                                </Col>
+                            </Row>
+                        </CardBody>
+                    </Card>
+                </Col> 
+                <Col lg={6}>
+                    <Card>
+                        <CardBody>    
+                            <Row className="gy-4">
+                                <Col xxl={6} md={6}>
+                                    <div className="mt-2">
+                                        <Label style={{ color: "black" }} htmlFor="provinsilakakerja" className="form-label">Provinsi</Label>
+                                    </div>
+                                </Col>
+                                <Col xxl={6} md={6}>
+                                    <CustomSelect
+                                        id="provinsilakakerja"
+                                        name="provinsilakakerja"
+                                        
+                                    />
+                                    {validation.touched.provinsilakakerja && validation.errors.provinsilakakerja ? (
+                                        <FormFeedback type="invalid"><div>{validation.errors.provinsilakakerja}</div></FormFeedback>
+                                    ) : null}
+                                </Col>
+                                <Col xxl={6} md={6}>
+                                    <div className="mt-2">
+                                        <Label style={{ color: "black" }} htmlFor="kotalakakerja" className="form-label">Kota</Label>
+                                    </div>
+                                </Col>
+                                <Col xxl={6} md={6}>
+                                    <CustomSelect
+                                        id="kotalakakerja"
+                                        name="kotalakakerja"
+                                    />
+                                    {validation.touched.kotalakakerja && validation.errors.kotalakakerja ? (
+                                        <FormFeedback type="invalid"><div>{validation.errors.kotalakakerja}</div></FormFeedback>
+                                    ) : null}
+                                </Col>
+                                <Col xxl={6} md={6}>
+                                    <div className="mt-2">
+                                        <Label style={{ color: "black" }} htmlFor="inputkecamatan" className="form-label">Kecamatan</Label>
+                                    </div>
+                                </Col>
+                                <Col xxl={6} md={6}>
+                                    <CustomSelect
+                                        id="kecamatanlakakerja"
+                                        name="kecamatanlakakerja"
+                                    />
+                                    {validation.touched.kecamatanlakakerja && validation.errors.kecamatanlakakerja ? (
+                                        <FormFeedback type="invalid"><div>{validation.errors.kecamatanlakakerja}</div></FormFeedback>
                                     ) : null}
                                 </Col>
                             </Row>
@@ -647,17 +904,23 @@ const RegistrasiPenjaminFK = () => {
             </Col>
             {DetailBPJS}
             
-            {validation.values.statuskecelakaan !== "" && validation.values.statuskecelakaan !== 1
+            {validation.values.statuskecelakaan !== "" && validation.values.statuskecelakaan === 2
                 ? BodyLakaLantas : <></>
             }
+            {validation.values.statuskecelakaan !== "" && validation.values.statuskecelakaan === 3
+                ? BodyLakaKerja : <></>
+            }
+            {validation.values.statuskecelakaan !== "" && validation.values.statuskecelakaan === 4
+                ? <>{BodyLakaKerja}{BodyLakaLantas}</> : <></>
+            }
             <Col lg={12} style={{ textAlign: 'right' }} className="mr-3 me-3">
-                <Button type="submit" color="info" className="rounded-pill" >Pilih Rujukan</Button>
+                <Button type="submit" color="info" className="rounded-pill bg-success" >Simpan</Button>
             </Col>
         </>
     )
 
     return(
-        <div className="page-content">
+        <div className="page-content registrasi-penjamin-fk">
             <ToastContainer closeButton={false} />
             <Container fluid>
                 <BreadCrumb title="Registrasi Pasien" pageTitle="Registrasi Pasien" />
@@ -739,10 +1002,7 @@ const RegistrasiPenjaminFK = () => {
                                     <TabPane tabId="3" id="home-3">
                                         <Card>
                                             <CardBody>
-                                                <div className="live-preview">
-                                                    <div className="d-flex flex-wrap gap-2">
-                                                    </div>
-                                                </div>
+                                                <ListDataBPJS dataBpjsHis={dataBpjs?.histori?.histori || []} />
                                             </CardBody>
                                         </Card>
                                     </TabPane>
@@ -806,6 +1066,105 @@ const RegistrasiPenjaminFK = () => {
                     </Col>
                 </Row>
             </Container>
+            <ModalRujukan 
+                isOpen={isOpenRujukan}
+                toggle={() => setIsOpenModalRujukan(false)}
+                dataBpjsSpr={dataBpjs?.spr?.list || []}
+                dataBpjsHis={dataBpjs?.histori?.histori || []}
+                setRujKartu={(noRuj, noKar) => {
+                    validation.setFieldValue("norujukan", noRuj);
+                    validation.setFieldValue("nokartu", noKar);
+                }}
+            />
+        </div>
+    )
+}
+
+const ModalRujukan = ({isOpen, toggle, dataBpjsSpr, dataBpjsHis, setRujKartu}) => {
+    const dataBpjsSprPertama = dataBpjsSpr?.[0] || {};
+    const dataBpjsHisPertama = dataBpjsHis?.find((bpjsHis) => 
+        bpjsHis.noSep === dataBpjsSprPertama.noSepAsalKontrol) || {};
+    return (
+        <Modal id="showModal" className="modal-registrasi-penjamin-fk" 
+            isOpen={isOpen} 
+            toggle={toggle} 
+            centered>
+            <ModalBody id="divcontents">
+                <div className='w-100 parent-none'>
+                <table className="w-100">
+                    <thead className="w-100">
+                        <tr className="w-100">
+                            <th scope="col">No Rujukan</th>
+                            <th scope="col">no Kartu</th>
+                        </tr>
+                    </thead>
+                    <tbody className="w-100 table-hover-click"
+                        onClick={() => {
+                                setRujKartu(dataBpjsHisPertama.noRujukan, dataBpjsHisPertama.noKartu)
+                                toggle();
+                            }}>
+                        <tr className="w-100">
+                            <td className="text-muted">{dataBpjsHisPertama.noRujukan}</td>
+                            <td className="text-muted">{dataBpjsHisPertama.noKartu}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                </div>
+            </ModalBody>
+        </Modal>
+    )
+}
+
+const ModalRI = ({isOpen, toggle}) => {
+    return (
+        <Modal id="showModal" className="modal-registrasi-penjamin-fk" 
+            isOpen={isOpen} 
+            toggle={toggle} 
+            centered>
+            <ModalBody id="divcontents">
+                <div className='w-100 parent-none'>
+                <p>
+                    SEP Sebelumnya bukan RI
+                </p>
+                </div>
+            </ModalBody>
+        </Modal>
+    )
+}
+
+const ListDataBPJS = ({dataBpjsHis}) => {
+    return(
+        <div className="table-responsive">
+            <Table className="table-borderless mb-0 ">
+                {
+                    dataBpjsHis?.map((histori, indexHis) => (
+                        <tbody key={indexHis}>
+                            <tr>
+                                <td className="text-muted">{histori.noRujukan}</td>
+                            </tr>
+                            <tr>
+                                <td className="text-muted">{}</td>
+                            </tr>
+                            <tr>
+                                <td className="text-muted">{histori.poli}</td>
+                            </tr>
+                            <tr>
+                                <td className="text-muted">{histori.tglSep}</td>
+                            </tr>
+                            <tr>
+                                <td className="text-muted">{histori.noSep}</td>
+                            </tr>
+                            <tr>
+                                <td className="text-muted">{histori.diagnosa}</td>
+                            </tr>
+                            <tr>
+                                <td className="text-muted">{histori.ppkPelayanan}</td>
+                            </tr>
+                        </tbody>
+                    ))
+                }
+                
+            </Table>
         </div>
     )
 }

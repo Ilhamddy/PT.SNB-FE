@@ -50,4 +50,8 @@ export default class ServiceRegistrasi {
     getDaftarPasienRI = async (param) => {
         return await api.get(`/transaksi/registrasi/daftar-pasien-rawat-inap?&noregistrasi=${param}`);
     }
+
+    getListBPJS = async (nobpjs) => {
+        return await api.get(`/transaksi/bridging/bpjs/monitoring/HistoriPelayanan/NoKartu/${nobpjs}`);
+    }
 }

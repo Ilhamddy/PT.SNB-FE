@@ -393,13 +393,13 @@ async function saveRegistrasiPasien(req, res) {
                 return
             }
             tglpulang = null
-            const ttp = await db.m_tempattidur.update({
-                objectstatusbedfk: 1
-            }, {
-                where: {
-                    id: req.body.tempattidur
-                }
-            }, { transaction });
+            // const ttp = await db.m_tempattidur.update({
+            //     objectstatusbedfk: 1
+            // }, {
+            //     where: {
+            //         id: req.body.tempattidur
+            //     }
+            // }, { transaction });
         }
 
         
@@ -460,6 +460,7 @@ async function saveRegistrasiPasien(req, res) {
     } catch (error) {
         // console.log(error);
         if (transaction) {
+            console.error(error);
             await transaction.rollback();
             res.status(201).send({
                 status: error,
@@ -472,15 +473,16 @@ async function saveRegistrasiPasien(req, res) {
 }
 
 const getRegistrasiPasienNorec = async (req, res) => {
+    let transaction = await db.sequelize.transaction();
+
     try {
         const norec = req.params.norec;
-        transaction = await db.sequelize.transaction();
         
-        const ruanganpasien = await db
-            .t_daftarpasien
-            .findOne({ where: { norec: norec } });
-        
-        if(ruanganpasien === null){
+        const ruanganpasien = await pool
+            .query("select * from t_daftarpasien where norec = $1", [norec])
+
+
+        if(ruanganpasien.rows.length === 0){
             res.status(404).send({
                 data: [],
                 success: false,
@@ -489,23 +491,24 @@ const getRegistrasiPasienNorec = async (req, res) => {
             });
             return
         }
-
         
         res.status(200).send({
-            data: ruanganpasien,
+            data: ruanganpasien.rows[0],
             success: true,
             msg: 'Data Berhasil',
             code: 200
         })
     }catch (error) {
+        console.error("error query", error);
         if (transaction) {
-            await transaction.rollback();
             res.status(500).send({
                 status: error,
                 success: false,
                 msg: 'Simpan Gagal',
                 code: 500
             });
+            await transaction.rollback();
+
         }
     }
 }
@@ -550,7 +553,8 @@ const getPasienNoregistrasi = (req, res) => {
                             nocm: result.rows[i].nocm,
                             namaunit: result.rows[i].namaunit,
                             noantrian: result.rows[i].noantrian,
-                            namadokter: result.rows[i].namadokter
+                            namadokter: result.rows[i].namadokter,
+                            objectasalrujukanfk: result.rows[i].objectasalrujukanfk
                         }
 
                     }

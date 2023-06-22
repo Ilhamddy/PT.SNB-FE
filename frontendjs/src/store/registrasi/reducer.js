@@ -18,7 +18,10 @@ import {
     REGISTRASI_NOREGISTRASI_RESET_FORM,
     REGISTRASI_RUANGAN_NOREC_GET,
     REGISTRASI_RUANGAN_NOREC_GET_SUCCESS,
-    REGISTRASI_RUANGAN_NOREC_GET_ERROR
+    REGISTRASI_RUANGAN_NOREC_GET_ERROR,
+    REGISTRASI_NO_BPJS_GET,
+    REGISTRASI_NO_BPJS_GET_SUCCESS,
+    REGISTRASI_NO_BPJS_GET_ERROR,
 } from "./actionType";
 
 const INIT_STATE = {
@@ -50,6 +53,11 @@ const INIT_STATE = {
         error: null,
     },
     registrasiRuangNorecGet: {
+        data: null,
+        loading: false,
+        error: null,
+    },
+    registrasiNoBpjsGet: {
         data: null,
         loading: false,
         error: null,
@@ -276,6 +284,39 @@ const Registrasi = (state = INIT_STATE, action) => {
                 ...state,
                 registrasiRuangNorecGet: {
                     ...state.registrasiRuangNorecGet,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case REGISTRASI_NO_BPJS_GET:{
+            return {
+                ...state,
+                registrasiNoBpjsGet: {
+                    ...state.registrasiNoBpjsGet,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case REGISTRASI_NO_BPJS_GET_SUCCESS:{
+            return {
+                ...state,
+                registrasiNoBpjsGet: {
+                    ...state.registrasiNoBpjsGet,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case REGISTRASI_NO_BPJS_GET_ERROR:{
+            return {
+                ...state,
+                registrasiNoBpjsGet: {
+                    ...state.registrasiNoBpjsGet,
                     loading: false,
                     error: action.error,
                 }

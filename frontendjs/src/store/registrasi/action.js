@@ -22,6 +22,10 @@ import {
     REGISTRASI_RUANGAN_NOREC_GET,
     REGISTRASI_RUANGAN_NOREC_GET_SUCCESS,
     REGISTRASI_RUANGAN_NOREC_GET_ERROR,
+    REGISTRASI_NO_BPJS_GET,
+    REGISTRASI_NO_BPJS_GET_SUCCESS,
+    REGISTRASI_NO_BPJS_GET_ERROR,
+
 } from "./actionType";
 
 export const registrasiResetForm = () => ({
@@ -137,5 +141,20 @@ export const registrasiRuanganNorecGetSuccess = (data) => ({
 
 export const registrasiRuanganNorecGetError = (error) => ({
     type: REGISTRASI_RUANGAN_NOREC_GET_ERROR,
+    payload: error,
+});
+
+export const registrasiNoBPJSGet = (nobpjs) => ({
+    type: REGISTRASI_NO_BPJS_GET,
+    payload: {nobpjs: nobpjs},
+});
+
+export const registrasiNoBPJSGetSuccess = (data) => ({
+    type: REGISTRASI_NO_BPJS_GET_SUCCESS,
+    payload: data,
+});
+
+export const registrasiNoBPJSGetError = (error) => ({
+    type: REGISTRASI_NO_BPJS_GET_ERROR,
     payload: error,
 });

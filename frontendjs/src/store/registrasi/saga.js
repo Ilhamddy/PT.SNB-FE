@@ -8,7 +8,8 @@ import {
     REGISTRASI_LIST_BYOR_GET,
     REGISTRASI_SAVE_RUANGAN,
     REGISTRASI_NOREGISTRASI_GET,
-    REGISTRASI_RUANGAN_NOREC_GET
+    REGISTRASI_RUANGAN_NOREC_GET,
+    REGISTRASI_NO_BPJS_GET
 } from "./actionType";
 import {
     registrasiGetError,
@@ -24,7 +25,10 @@ import {
     registrasiNoregistrasiGetError,
     registrasiNoregistrasiGetSuccess,
     registrasiRuanganNorecGetSuccess,
-    registrasiRuanganNorecGetError
+    registrasiRuanganNorecGetError,
+    registrasiNoBPJSGetSuccess,
+    registrasiNoBPJSGetError
+
 } from "./action";
 
 import { toast } from 'react-toastify';
@@ -123,6 +127,15 @@ function* onGetRegistrasiNoregistrasi({payload: {noregistrasi}}) {
     }
 }
 
+function* onGetRegistrasiNoBPJS({payload: {nobpjs}}) {
+    try {
+        const response = yield call(serviceRegistrasi.getListBPJS, nobpjs);
+        yield put(registrasiNoBPJSGetSuccess(response.data));
+    } catch (error) {
+        yield put(registrasiNoBPJSGetError(error));
+    }
+}
+
 export function* watchSaveRegistrasi() {
     yield takeEvery(REGISTRASI_SAVE, onSaveRegistrasi);
 }
@@ -151,6 +164,10 @@ export function* watchGetRegistrasiNorec() {
     yield takeEvery(REGISTRASI_RUANGAN_NOREC_GET, onGetRegistrasiNorec);
 }
 
+export function* watchGetRegistrasiNoBPJS() {
+    yield takeEvery(REGISTRASI_NO_BPJS_GET, onGetRegistrasiNoBPJS);
+}
+
 function* registrasiSaga() {
     yield all([
         fork(watchSaveRegistrasi),
@@ -159,7 +176,8 @@ function* registrasiSaga() {
         fork(watchGetRegistrasiListByOr),
         fork(watchSaveRegistrasiRuangan),
         fork(watchGetRegistrasiNoregistrasi),
-        fork(watchGetRegistrasiNorec)
+        fork(watchGetRegistrasiNorec),
+        fork(watchGetRegistrasiNoBPJS)
     ]);
 }
 

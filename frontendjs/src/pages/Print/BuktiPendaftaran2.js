@@ -41,13 +41,6 @@ const BuktiPendaftaran2 = ({refPrint, isOpen, toggle}) => {
                     </div>  
                 </div>
             </ModalBody>
-            {/* <Button
-                className="invoice-print-button"
-                variant="contained"
-                onClick={handleSelect}
-            >
-                Print
-            </Button> */}
         </Modal>
     )
 }
