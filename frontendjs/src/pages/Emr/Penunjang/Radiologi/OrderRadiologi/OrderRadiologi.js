@@ -19,7 +19,8 @@ import CustomSelect from '../../../../Select/Select';
 import BreadCrumb from '../../../../../Components/Common/BreadCrumb';
 import DataTable from 'react-data-table-component';
 import {
-    comboHistoryUnitGet, comboTindakanGet, emrResetForm
+    comboHistoryUnitGet, comboTindakanGet, emrResetForm,
+    saveOrderPelayananRadiologi,daftarOrderRadiologiGet
 } from "../../../../../store/actions";
 
 const OrderRadiologi = () => {
@@ -27,21 +28,26 @@ const OrderRadiologi = () => {
     const dispatch = useDispatch();
 
     const { editData, newData, loading, error, success, dataCombo, loadingCombo, successCombo,
-        dataTindakan, loadingTindakan, successTindakan } = useSelector((state) => ({
-            // newData: state.Emr.tindakanSave.newData,
-            // success: state.Emr.tindakanSave.success,
-            // loading: state.Emr.tindakanSave.loading,
+        dataTindakan, loadingTindakan, successTindakan,
+        dataOrder, loadingOrder, successOrder } = useSelector((state) => ({
+            newData: state.Radiologi.saveOrderPelayananRadiologi.newData,
+            success: state.Radiologi.saveOrderPelayananRadiologi.success,
+            loading: state.Radiologi.saveOrderPelayananRadiologi.loading,
             dataCombo: state.Emr.comboHistoryUnitGet.data,
             loadingCombo: state.Emr.comboHistoryUnitGet.loading,
             successCombo: state.Emr.comboHistoryUnitGet.success,
             dataTindakan: state.Emr.comboTindakanGet.data,
             loadingTindakan: state.Emr.comboTindakanGet.loading,
             successTindakan: state.Emr.comboTindakanGet.success,
+            dataOrder: state.Radiologi.daftarOrderRadiologiGet.data,
+            loadingOrder: state.Radiologi.daftarOrderRadiologiGet.loading,
+            successOrder: state.Radiologi.daftarOrderRadiologiGet.success,
         }));
     useEffect(() => {
         if (norecdp) {
             dispatch(comboHistoryUnitGet(norecdp));
-            dispatch(comboTindakanGet('0&objectunitfk=13&namaproduk='));
+            dispatch(comboTindakanGet('8&objectunitfk=13&namaproduk='));
+            dispatch(daftarOrderRadiologiGet(norecdp))
         }
     }, [norecdp, dispatch])
     const current = new Date();
@@ -50,12 +56,15 @@ const OrderRadiologi = () => {
         enableReinitialize: true,
         initialValues: {
             norecap: newData?.norecap ?? norecap,
-
+            tindakan: newData?.tindakan ?? '',
+            namatindakan: newData?.namatindakan??'',
+            keterangan:newData?.keterangan??''
         },
         validationSchema: Yup.object({
             tindakan: Yup.string().required("Tindakan Belum Dipilih"),
             unitasal: Yup.string().required("Unit Asal Belum Dipilih"),
             namatindakan: Yup.string().required("Nama Tindakan Asal Belum Dipilih"),
+           
         }),
         onSubmit: (values, { resetForm }) => {
             console.log(values)
@@ -72,7 +81,7 @@ const OrderRadiologi = () => {
     }
     const [count, setCount] = useState(1);
     const [harga, setHarga] = useState(0);
-    
+
     const onClickCount = (temp) => {
         if (temp === 'min') {
             if (count > 0) {
@@ -97,38 +106,54 @@ const OrderRadiologi = () => {
     const handleTindakan = characterEntered => {
         if (characterEntered.length > 3) {
             // useEffect(() => {
-            dispatch(comboTindakanGet('0&objectunitfk=13&namaproduk=' + characterEntered));
+            dispatch(comboTindakanGet('8&objectunitfk=13&namaproduk=' + characterEntered));
             // }, [dispatch]);
         }
     };
-    const tempOrder = [
-     
-    ];
+
+    const [searches, setSearches] = useState([])
     const onClickTambah = () => {
         if (validation.values.tindakan === '') {
             toast.error('Tindakan Belum Diisi', { autoClose: 3000 });
             return
         }
-        console.log(tempOrder)
+
         let tempValue = {
-            id:tempOrder.length+1,
+            id: searches.length + 1,
             tindakan: validation.values.tindakan,
             namatindakan: validation.values.namatindakan,
             qty: count,
             harga: hargaRef.current,
             total: hargaRef.current * count
         }
+        setSearches(searches => searches.concat(tempValue))
+        console.log(searches)
         validation.setFieldValue('tindakan', '')
         validation.setFieldValue('namatindakan', '')
         setCount(1)
         hargaRef.current = 0
         setHarga(0)
-        
-        tempOrder.push(tempValue)
-        // console.log(tempOrder)
-        // dispatch(saveDokumenRekammedis(tempValue));
-
     }
+    const onClickSimpan = ()=>{
+        if(searches.length===0){
+            toast.error('Tindakan Belum Diisi...');
+            return
+        }
+        let tempValue = {
+            norecap: norecap,
+            objectunitasal: validation.values.unitasal,
+            listtindakan: searches,
+            keterangan: validation.values.keterangan
+        }
+        // console.log(searches)
+        dispatch(saveOrderPelayananRadiologi(tempValue));
+    }
+    useEffect(() => {
+        if (newData !== null) {
+            setSearches([])
+            dispatch(daftarOrderRadiologiGet(norecdp))
+        }
+    }, [newData,norecdp, dispatch])
     const tableCustomStyles = {
         headRow: {
             style: {
@@ -168,6 +193,55 @@ const OrderRadiologi = () => {
 
             name: <span className='font-weight-bold fs-13'>Total</span>,
             selector: row => row.total,
+            sortable: true,
+            // width: "250px",
+        },
+    ];
+    const columnsRiwayat = [
+        {
+            name: <span className='font-weight-bold fs-13'>Noregistrasi</span>,
+            selector: row => row.noregistrasi,
+            sortable: true,
+            width: "130px"
+        },
+        {
+            name: <span className='font-weight-bold fs-13'>Tgl Order</span>,
+            selector: row => row.tglinput,
+            sortable: true,
+            width: "150px"
+        },
+        {
+
+            name: <span className='font-weight-bold fs-13'>No Order</span>,
+            selector: row => row.nomororder,
+            sortable: true,
+            width: "150px"
+        },
+        {
+
+            name: <span className='font-weight-bold fs-13'>Dokter Order</span>,
+            selector: row => row.namalengkap,
+            sortable: true,
+            width: "150px"
+        },
+        {
+
+            name: <span className='font-weight-bold fs-13'>Nama Unit</span>,
+            selector: row => row.namaunit,
+            sortable: true,
+            width: "150px",
+        },
+        {
+
+            name: <span className='font-weight-bold fs-13'>Nama Produk</span>,
+            selector: row => row.namaproduk,
+            sortable: true,
+            // width: "250px",
+        },
+        {
+
+            name: <span className='font-weight-bold fs-13'>Keterangan</span>,
+            selector: row => row.keterangan,
             sortable: true,
             // width: "250px",
         },
@@ -324,7 +398,7 @@ const OrderRadiologi = () => {
                                 </Col>
                             </Row>
                         </Col>
-                        <Col lg={8}>
+                        <Col lg={8} className="gy-2">
                             <Card>
                                 <CardHeader style={{ backgroundColor: "#e67e22" }}>
                                     <h4 className="card-title mb-0" style={{ color: '#ffffff' }}>Daftar Order Tindakan</h4>
@@ -332,11 +406,10 @@ const OrderRadiologi = () => {
                                 <CardBody>
                                     <div id="table-gridjs">
                                         <DataTable
-                                            fixedHeader
-                                            fixedHeaderScrollHeight="330px"
+                                        fixedHeader
                                             columns={columns}
                                             pagination
-                                            data={tempOrder}
+                                            data={searches}
                                             progressPending={loading}
                                             customStyles={tableCustomStyles}
                                         />
@@ -344,7 +417,74 @@ const OrderRadiologi = () => {
                                 </CardBody>
                             </Card>
                         </Col>
-                        <Col lg={4}></Col>
+                        <Col lg={4}>
+                            <Col lg={10} sm={10} className="mt-1">
+                                <div>
+                                    <Input
+                                    style={{ height: '300px' }}
+                                        id="keterangan"
+                                        name="keterangan"
+                                        type="textarea"
+                                        placeholder="Keterangan Order"
+                                        onChange={validation.handleChange}
+                                        onBlur={validation.handleBlur}
+                                        value={validation.values.keterangan || ""}
+                                        invalid={
+                                            validation.touched.keterangan && validation.errors.keterangan ? true : false
+                                        }
+                                    />
+                                    {validation.touched.keterangan && validation.errors.keterangan ? (
+                                        <FormFeedback type="invalid"><div>{validation.errors.keterangan}</div></FormFeedback>
+                                    ) : null}
+                                </div>
+                            </Col>
+                            <Col lg={2} sm={2} className="mt-1">
+                                <div className="d-flex flex-wrap gap-2 justify-content-md-start">
+                                    <Button type="button" color="info" className="rounded-pill" placement="top"
+                                    onClick={() => onClickSimpan()}>
+                                        Simpan
+                                    </Button>
+                                </div>
+                            </Col>
+                        </Col>
+                        <Col lg={12} className="gy-2">
+                            <Card>
+                                <CardHeader style={{ backgroundColor: "#e67e22" }}>
+                                    <h4 className="card-title mb-0" style={{ color: '#ffffff' }}>Riwayat Order Tindakan</h4>
+                                </CardHeader>
+                                <CardBody>
+                                    <div id="table-gridjs">
+                                        <DataTable
+                                        fixedHeader
+                                            columns={columnsRiwayat}
+                                            pagination
+                                            data={dataOrder}
+                                            progressPending={loadingOrder}
+                                            customStyles={tableCustomStyles}
+                                        />
+                                    </div>
+                                </CardBody>
+                            </Card>
+                        </Col>
+                        <Col lg={12} className="gy-2">
+                            <Card>
+                                <CardHeader style={{ backgroundColor: "#e67e22" }}>
+                                    <h4 className="card-title mb-0" style={{ color: '#ffffff' }}>Hasil Radiologi</h4>
+                                </CardHeader>
+                                <CardBody>
+                                    <div id="table-gridjs">
+                                        <DataTable
+                                        fixedHeader
+                                            columns={columns}
+                                            pagination
+                                            // data={searches}
+                                            progressPending={loading}
+                                            customStyles={tableCustomStyles}
+                                        />
+                                    </div>
+                                </CardBody>
+                            </Card>
+                        </Col>
                     </Row>
                 </Form>
             </Row>

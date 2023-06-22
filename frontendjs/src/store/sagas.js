@@ -71,6 +71,7 @@ import daftarPasien from "./daftarPasien/saga"
 
 import emrSaga from "./emr/saga";
 import kendaliDokumenSaga from "./kendaliDokumen/saga";
+import radiologiSaga from "./radiologi/saga";
 
 
 
@@ -107,6 +108,7 @@ export default function* rootSaga() {
     fork(masterSaga),
     fork(daftarPasien),
     fork(emrSaga),
-    fork(kendaliDokumenSaga)
+    fork(kendaliDokumenSaga),
+    fork(radiologiSaga)
   ]);
 }
