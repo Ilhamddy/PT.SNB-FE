@@ -10,6 +10,7 @@ const Navdata = () => {
     const [isRegistrasi, setIsRegistrasi] = useState(false);
     const [isListDaftarPasien, setListDaftarPasien] = useState(false);
     const [isRekamMedis, setRekamMedis] = useState(false);
+    const [isRadiologi, setRadiologi] = useState(false);
     const [isApps, setIsApps] = useState(false);
     const [isAuth, setIsAuth] = useState(false);
     const [isPages, setIsPages] = useState(false);
@@ -271,6 +272,37 @@ const Navdata = () => {
                     label: "Kendali Dokumen",
                     link: "/rekammedis/kendalidokumen",
                     parentId: "rekammedis",
+                    isAllowed: () => {
+                        return isAllowedAccess(getUserPermissions(), [
+                            "REGISTRASI_VIEW",
+                        ]);
+                    }
+                },
+            ]
+        },
+        {
+            id: "radiologi",
+            label: "Radiologi",
+            icon: "lab la-delicious",
+            link: "/#",
+            click: function (e) {
+                e.preventDefault();
+                setRadiologi(!isRadiologi);
+                setIscurrentState('isRadiologi');
+                updateIconSidebar(e);
+            },
+            stateVariables: isRadiologi,
+            isAllowed: () => {
+                return isAllowedAccess(getUserPermissions(), [
+                    "REGISTRASI_VIEW",
+                ]);
+            },
+            subItems: [
+                {
+                    id: "radiologi-daftarorderradiologi",
+                    label: "Daftar Order Radiologi",
+                    link: "/radiologi/daftarorderradiologi",
+                    parentId: "radiologi",
                     isAllowed: () => {
                         return isAllowedAccess(getUserPermissions(), [
                             "REGISTRASI_VIEW",

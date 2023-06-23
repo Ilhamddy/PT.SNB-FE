@@ -28,8 +28,8 @@ module.exports = (sequelize, Sequelize) => {
         objectunitasalfk:{
             type: Sequelize.INTEGER
         },
-        isverif:{
-            type:Sequelize.BOOLEAN
+        objectstatusveriffk:{
+            type:Sequelize.INTEGER
         },
         keterangan:{
             type:Sequelize.STRING

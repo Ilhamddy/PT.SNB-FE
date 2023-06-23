@@ -255,6 +255,10 @@ import RegistrasiPenjaminFK from "../pages/Registrasi/RegistrasiPenjaminFK/Regis
 // rekammedis
 import KendaliDokumen from "../pages/RekamMedis/KendaliDokumen/KendaliDokumen";
 
+
+// radiologi
+import DaftarOrderRadiologi from "../pages/Radiologi/DaftarOrderRadiologi/DaftarOrderRadiologi";
+
 const authProtectedRoutes = [
   { path: "/dashboard-analytics", component: <DashboardAnalytics /> },
   { path: "/dashboard-crm", component: <DashboardCrm /> },
@@ -480,7 +484,10 @@ const authProtectedRoutes = [
   {path: "/listdaftarpasien/daftar-pasien-ri", component: <DaftarPasienRI />},
   
   // rekam medis
-  {path:"/rekammedis/kendalidokumen", component:<KendaliDokumen/>}
+  {path:"/rekammedis/kendalidokumen", component:<KendaliDokumen/>},
+
+  // radiologi
+  {path:"/radiologi/daftarorderradiologi", component:<DaftarOrderRadiologi/>}
 ];
 
 const publicRoutes = [

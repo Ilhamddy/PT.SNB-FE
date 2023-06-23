@@ -22,8 +22,8 @@ module.exports = (sequelize, Sequelize) => {
         harga:{
             type:Sequelize.FLOAT
         },
-        isverif:{
-            type:Sequelize.BOOLEAN
+        objectstatusveriffk:{
+            type:Sequelize.INTEGER
         },
         objectpelayananpasienfk:{
             type: Sequelize.CHAR(32)
