@@ -5,7 +5,10 @@ import {
     SAVE_ORDER_PELAYANAN_RADIOLOGI_ERROR,
     DAFTAR_ORDER_RADIOLOGI_GET,
     DAFTAR_ORDER_RADIOLOGI_GET_ERROR,
-    DAFTAR_ORDER_RADIOLOGI_GET_SUCCESS
+    DAFTAR_ORDER_RADIOLOGI_GET_SUCCESS,
+    WIDGET_DAFTAR_ORDER_RADIOLOGI_GET,
+    WIDGET_DAFTAR_ORDER_RADIOLOGI_GET_SUCCESS,
+    WIDGET_DAFTAR_ORDER_RADIOLOGI_GET_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -20,7 +23,11 @@ const INIT_STATE = {
         loading: false,
         error: null,
     },
-   
+    widgetdaftarOrderRadiologiGet: {
+        data: [],
+        loading: false,
+        error: null,
+    },
 }
 
 const Radiologi = (state = INIT_STATE, action) => {
@@ -33,6 +40,9 @@ const Radiologi = (state = INIT_STATE, action) => {
                 },
                 daftarOrderRadiologiGet:{
                     ...INIT_STATE.daftarOrderRadiologiGet
+                },
+                widgetdaftarOrderRadiologiGet:{
+                    ...INIT_STATE.widgetdaftarOrderRadiologiGet
                 }
             }
         }
@@ -99,6 +109,39 @@ const Radiologi = (state = INIT_STATE, action) => {
                 ...state,
                 daftarOrderRadiologiGet: {
                     ...state.daftarOrderRadiologiGet,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case WIDGET_DAFTAR_ORDER_RADIOLOGI_GET: {
+            return {
+                ...state,
+                widgetdaftarOrderRadiologiGet: {
+                    ...state.widgetdaftarOrderRadiologiGet,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case WIDGET_DAFTAR_ORDER_RADIOLOGI_GET_SUCCESS: {
+            return {
+                ...state,
+                widgetdaftarOrderRadiologiGet: {
+                    ...state.widgetdaftarOrderRadiologiGet,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case WIDGET_DAFTAR_ORDER_RADIOLOGI_GET_ERROR: {
+            return {
+                ...state,
+                widgetdaftarOrderRadiologiGet: {
+                    ...state.widgetdaftarOrderRadiologiGet,
                     loading: false,
                     error: action.error,
                 }

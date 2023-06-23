@@ -393,7 +393,13 @@ async function saveRegistrasiPasien(req, res) {
                 return
             }
             tglpulang = null
-
+            // const ttp = await db.m_tempattidur.update({
+            //     objectstatusbedfk: 1
+            // }, {
+            //     where: {
+            //         id: req.body.tempattidur
+            //     }
+            // }, { transaction });
         }
 
         
@@ -467,7 +473,8 @@ async function saveRegistrasiPasien(req, res) {
 }
 
 const getRegistrasiPasienNorec = async (req, res) => {
-    transaction = await db.sequelize.transaction();
+    let transaction = await db.sequelize.transaction();
+
     try {
         const norec = req.params.norec;
         
@@ -506,116 +513,13 @@ const getRegistrasiPasienNorec = async (req, res) => {
     }
 }
 
-const saveRegistrasiPenjaminFK = async (req, res) => {
+const savePenjaminFK = async (req, res) => {
     try{
         transaction = await db.sequelize.transaction;
-        let norecPenjaminFK = uuid.v4().substring(0, 32)
-        let objectpenjaminfk = null
-        const dataDummy = {
-            id: '3',
-            norecdp: "8d13bb7a-26ec-4a02-9588-689531de",
-            nokartu: '0001503919326',
-            jenisrujukan: 'abc',
-            tanggalsep: '2023-06-23',
-            norujukan: '030304020423P000587',
-            penjamin: 2,
-            tujuankunjungan: 1,
-            dpjpmelayani: 11,
-            asalrujukan: 2,
-            tanggalrujukan: '2023-06-22',
-            nosuratkontrol: '0303R0010623K004935',
-            dpjppemberi: 'Dr. Arkademi, Sp.PD',
-            diagnosarujukan: 110,
-            jenispeserta: 'dis',
-            notelepon: '089607721357',
-            catatan: 'catatan awal',
-            statuskecelakaan: 1,
-            provinsilakalantas: '',
-            kotalakalantas: '',
-            kecamatanlakalantas: '',
-            tanggallakalantas: '',
-            nosepsuplesi: '',
-            keteranganlakalantas: '',
-            tanggallakakerja: '',
-            nolaporanpolisi: '',
-            keteranganlakakerja: '',
-            provinsilakakerja: '',
-            kotalakakerja: '',
-            kecamatanlakakerja: ''
-          }
+        let norecPFK = uuid.v4().substring(0, 32);
 
-        
-        const daftarPasien = await db.t_kepesertaanasuransi.create({
-
-            norec: norecPenjaminFK,
-            objectdaftarpasienfk: dataDummy.norecdp,
-            objectpenjaminfk: dataDummy.penjamin,
-            no_kartu: dataDummy.nokartu,
-            jenisrujukan: dataDummy.jenisrujukan,
-            tglsep: dataDummy.tanggalsep,
-            no_rujukan: dataDummy.norujukan,
-            no_sep: dataDummy.norujukan,
-            tujuankunjungan: dataDummy.tujuankunjungan,
-            objectdpjpfk: dataDummy.dpjpmelayani,
-            asalrujukan: dataDummy.asalrujukan,
-            tglrujukan: dataDummy.tanggalrujukan,
-            no_skdp: dataDummy.nosuratkontrol,
-            dpjppemberisurat: dataDummy.dpjppemberi,
-            objectdiagnosarujukanfk: dataDummy.diagnosarujukan,
-            jenispeserta: dataDummy.jenispeserta,
-            no_telp: dataDummy.notelepon,
-            catatan: dataDummy.catatan,
-            // objectstatuskecelakaanfk:{
-            // },
-            // ll_objectprovinsifk: {
-            // },
-            // ll_objectkabupatenfk: {
-            // },
-            // ll_objectkecamatanfk: {
-            // },
-            // ll_tgl: {
-            // },
-            // ll_suplesi: {
-            // },
-            // ll_keterangan: {
-            // },
-            // lk_tglkejadian: {
-            // },
-            // lk_nolaporan: {
-            // },
-            // lk_objectprovinsifk: {
-            // },
-            // lk_objectkabupatenfk: {
-            // },
-            // lk_objectkecamatanfk: {
-            // },
-            // lk_keterangan: {
-            // },
-            // ll_isjasaraharja: {
-            // },
-            // ll_isjasaraharja:{
-            // },
-            // ll_isbpjstk:{
-            // },
-            // ll_istaspen:{
-            // },
-            // ll_isaskes:{
-            // }
-        }, { transaction: transaction });
-
-        
-        await transaction.commit();
-        let tempres = { daftarPasien: daftarPasien, antreanPemeriksaan: antreanPemeriksaan }
-        res.status(200).send({
-            data: tempres,
-            status: "success",
-            success: true,
-            msg: 'Simpan Berhasil',
-            code: 200
-        });
-        console.log(req.body);
     } catch(error){
-        console.error("error query", error);``
+        await transaction.rollback();
         res.status(201).send({
             status: error,
             success: false,
@@ -1011,7 +915,7 @@ module.exports = {
     savePasien,
     getRegistrasiPasienNorec,
     saveRegistrasiPasien,
-    saveRegistrasiPenjaminFK,
+    savePenjaminFK,
     getPasienNoregistrasi,
     getDaftarPasienRawatJalan,
     getDaftarPasienRegistrasi,

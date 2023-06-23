@@ -166,7 +166,7 @@ async function getWidgetListDaftarOrderRadiologi(req, res) {
         join m_pegawai mp on mp.id=to2.objectpegawaifk 
         join m_unit mu ON mu.id=ta.objectunitfk 
         join m_statusverif ms on ms.id=to2.objectstatusveriffk
-        where td.norec='${req.query.norecdp}' and to2.objectjenisorderfk=2 ${tglregistrasi}
+        where to2.objectjenisorderfk=2 ${tglregistrasi}
         `);
 
         let totalBelum = 0
@@ -184,7 +184,7 @@ async function getWidgetListDaftarOrderRadiologi(req, res) {
         const taskWidgets = [
             {
                 id: 1,
-                label: "Belum Dikirim",
+                label: "Belum Verif",
                 counter: totalBelum,
                 badge: "ri-arrow-up-line",
                 badgeClass: "success",
@@ -197,7 +197,7 @@ async function getWidgetListDaftarOrderRadiologi(req, res) {
             },
             {
                 id: 2,
-                label: "Sedang Dipinjam",
+                label: "Sudah Verif",
                 counter: totalVerif,
                 badge: "ri-arrow-down-line",
                 badgeClass: "danger",
@@ -210,7 +210,7 @@ async function getWidgetListDaftarOrderRadiologi(req, res) {
             },
             {
                 id: 3,
-                label: "Sudah Kembali",
+                label: "Ditolak",
                 counter: totalTolak,
                 badge: "ri-arrow-down-line",
                 badgeClass: "danger",
