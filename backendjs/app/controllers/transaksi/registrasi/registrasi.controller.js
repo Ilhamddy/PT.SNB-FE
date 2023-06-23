@@ -513,7 +513,7 @@ const getRegistrasiPasienNorec = async (req, res) => {
     }
 }
 
-const savePenjaminFK = async (req, res) => {
+const saveRegistrasiPenjaminFK = async (req, res) => {
     try{
         transaction = await db.sequelize.transaction();
         let norecPenjaminFK = uuid.v4().substring(0, 32)
@@ -986,7 +986,7 @@ module.exports = {
     savePasien,
     getRegistrasiPasienNorec,
     saveRegistrasiPasien,
-    savePenjaminFK,
+    saveRegistrasiPenjaminFK,
     getPasienNoregistrasi,
     getDaftarPasienRawatJalan,
     getDaftarPasienRegistrasi,
