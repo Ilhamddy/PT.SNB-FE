@@ -19,7 +19,7 @@ import CustomSelect from '../../../../Select/Select';
 import BreadCrumb from '../../../../../Components/Common/BreadCrumb';
 import DataTable from 'react-data-table-component';
 import {
-    comboHistoryUnitGet, comboTindakanGet, emrResetForm,
+    comboHistoryUnitGet, comboTindakanGet, radiologiResetForm,
     saveOrderPelayananRadiologi,daftarOrderRadiologiGet
 } from "../../../../../store/actions";
 
@@ -72,6 +72,11 @@ const OrderRadiologi = () => {
             resetForm({ values: '' })
         }
     })
+    useEffect(() => {
+        return () => {
+            dispatch(radiologiResetForm());
+        }
+    }, [dispatch])
     const handleBeginOnChangeTglInput = (newBeginValue) => {
         var dateString = new Date(newBeginValue.getTime() - (newBeginValue.getTimezoneOffset() * 60000))
             .toISOString()

@@ -393,7 +393,13 @@ async function saveRegistrasiPasien(req, res) {
                 return
             }
             tglpulang = null
-
+            // const ttp = await db.m_tempattidur.update({
+            //     objectstatusbedfk: 1
+            // }, {
+            //     where: {
+            //         id: req.body.tempattidur
+            //     }
+            // }, { transaction });
         }
 
         
@@ -467,7 +473,8 @@ async function saveRegistrasiPasien(req, res) {
 }
 
 const getRegistrasiPasienNorec = async (req, res) => {
-    transaction = await db.sequelize.transaction();
+    let transaction = await db.sequelize.transaction();
+
     try {
         const norec = req.params.norec;
         
@@ -506,7 +513,7 @@ const getRegistrasiPasienNorec = async (req, res) => {
     }
 }
 
-const saveRegistrasiPenjaminFK = async (req, res) => {
+const savePenjaminFK = async (req, res) => {
     try{
         transaction = await db.sequelize.transaction();
         let norecPenjaminFK = uuid.v4().substring(0, 32)
@@ -582,7 +589,7 @@ const saveRegistrasiPenjaminFK = async (req, res) => {
         });
         console.log(req.body);
     } catch(error){
-        console.error("error query", error);``
+        await transaction.rollback();
         res.status(201).send({
             status: error,
             success: false,
@@ -979,7 +986,7 @@ module.exports = {
     savePasien,
     getRegistrasiPasienNorec,
     saveRegistrasiPasien,
-    saveRegistrasiPenjaminFK,
+    savePenjaminFK,
     getPasienNoregistrasi,
     getDaftarPasienRawatJalan,
     getDaftarPasienRegistrasi,

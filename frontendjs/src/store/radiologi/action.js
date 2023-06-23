@@ -5,7 +5,10 @@ import {
     SAVE_ORDER_PELAYANAN_RADIOLOGI_ERROR,
     DAFTAR_ORDER_RADIOLOGI_GET,
     DAFTAR_ORDER_RADIOLOGI_GET_ERROR,
-    DAFTAR_ORDER_RADIOLOGI_GET_SUCCESS
+    DAFTAR_ORDER_RADIOLOGI_GET_SUCCESS,
+    WIDGET_DAFTAR_ORDER_RADIOLOGI_GET,
+    WIDGET_DAFTAR_ORDER_RADIOLOGI_GET_SUCCESS,
+    WIDGET_DAFTAR_ORDER_RADIOLOGI_GET_ERROR
 } from "./actionType";
 
 export const radiologiResetForm = () => ({
@@ -40,5 +43,20 @@ export const daftarOrderRadiologiGetSuccess = (data) => ({
 
 export const daftarOrderRadiologiGetError = (error) => ({
     type: DAFTAR_ORDER_RADIOLOGI_GET_ERROR,
+    payload: error,
+});
+
+export const widgetdaftarOrderRadiologiGet = (param) => ({
+    type: WIDGET_DAFTAR_ORDER_RADIOLOGI_GET,
+    payload: { param },
+});
+
+export const widgetdaftarOrderRadiologiGetSuccess = (data) => ({
+    type: WIDGET_DAFTAR_ORDER_RADIOLOGI_GET_SUCCESS,
+    payload: data,
+});
+
+export const widgetdaftarOrderRadiologiGetError = (error) => ({
+    type: WIDGET_DAFTAR_ORDER_RADIOLOGI_GET_ERROR,
     payload: error,
 });

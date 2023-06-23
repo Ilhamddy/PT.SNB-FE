@@ -11,4 +11,8 @@ export default class ServiceRadiologi {
     getDaftarOrderRadiologi = async (param) => {
         return await api.get(`/transaksi/radiologi/getlist-histori-order?norecdp=${param}`);
     }
+
+    getWidgetDaftarOrderRadiologi = async (param) => {
+        return await api.get(`/transaksi/radiologi/widget-daftar-order-radiologi?noregistrasi=${param}`);
+    }
 }
