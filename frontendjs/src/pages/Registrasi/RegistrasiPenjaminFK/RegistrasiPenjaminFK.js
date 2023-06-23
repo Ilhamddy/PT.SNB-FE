@@ -14,7 +14,7 @@ import {
 import BreadCrumb from "../../../Components/Common/BreadCrumb";
 import Flatpickr from "react-flatpickr";
 import CustomSelect from "../../Select/Select";
-import { emrDiagnosaxGet, emrListDiagnosaxGet, registrasiGet, registrasiNoBPJSGet, registrasiRuanganNorecGet } from "../../../store/actions";
+import { emrDiagnosaxGet, emrListDiagnosaxGet, registrasiGet, registrasiNoBPJSGet, registrasiRuanganNorecGet, registrasiSavePenjaminFK } from "../../../store/actions";
 import { useDispatch, useSelector } from "react-redux";
 import { comboAsuransiGet, comboRegistrasiGet } from "../../../store/master/action";
 import "./RegistrasiPenjaminFK.scss";
@@ -39,7 +39,7 @@ const RegistrasiPenjaminFK = () => {
         dataRuangDaftar: state.Registrasi.registrasiRuangNorecGet.data,
     }));
 
-    
+
 
     const penjaminLakaLantas = [ //dummy data
         { value: "1", label: "Jasa Raharja" },
@@ -71,12 +71,13 @@ const RegistrasiPenjaminFK = () => {
         enableReinitialize: true,
         initialValues: {
             id: id,
+            norecdp: norec,
             nokartu: "",
-            jenisrujukan: "",
+            jenisrujukan: "abc",
             tanggalsep: "",
             norujukan: "",
             tujuankunjungan: "",
-            dpjppmelayani: "",
+            dpjpmelayani: "",
             asalrujukan: "",
             tanggalrujukan: "",
             nosuratkontrol: "",
@@ -107,7 +108,7 @@ const RegistrasiPenjaminFK = () => {
             tanggalsep: Yup.string().required("Tanggal SEP wajib di isi"),
             norujukan: Yup.string().required("No rujukan wajib di isi"),
             tujuankunjungan: Yup.string().required("Tujuan kunjungan wajib di isi"),
-            dpjppmelayani: Yup.string().required("DPJP pelayani wajib di isi"),
+            dpjpmelayani: Yup.string().required("DPJP pelayani wajib di isi"),
             asalrujukan: Yup.string().required("Asal rujukan wajib di isi"),
             tanggalrujukan: Yup.string().required("Tanggal rujukan wajib di isi"),
             nosuratkontrol: Yup.string().required("No surat kontrol wajib di isi"),
@@ -143,6 +144,7 @@ const RegistrasiPenjaminFK = () => {
                 } else return schema
             }),
             nosepsuplesi: Yup.string().when("statuskecelakaan", (statuskecelakaan, schema) => {
+                console.log("no sep", statuskecelakaan)
                 if (statuskecelakaan[0] === '2' || statuskecelakaan[0] === '4') {
                     return schema
                         .required("No epsuplesi harus Harus di isi")
@@ -192,9 +194,21 @@ const RegistrasiPenjaminFK = () => {
             })
         }),
         onSubmit: (values) => {
-
+            if(values){
+                console.log("regis")
+                dispatch(registrasiSavePenjaminFK(values))
+            }
         }
     });
+
+    console.log(validation.errors)
+
+    const handleDateChange = (field, newBeginValue) => {
+        var dateString = new Date(newBeginValue.getTime() - (newBeginValue.getTimezoneOffset() * 60000))
+            .toISOString()
+            .split("T")[0];
+        validation.setFieldValue(field, dateString)
+    }
 
     const pillsToggle = (tab) => {
         if (pillsTab !== tab) {
@@ -229,13 +243,19 @@ const RegistrasiPenjaminFK = () => {
         }
     }, [dataUser, dispatch])
 
-    useEffect(() => {
-        if(dataRuangDaftar?.objectinstalasifk){
-            validation.setFieldValue("tujuankunjungan", dataRuangDaftar.objectinstalasifk);
-            validation.setFieldValue("asalrujukan", dataRuangDaftar.objectasalrujukanfk);
-        }
+    const handleAsalRujukan = (val) => {validation.setFieldValue("asalrujukan", val);}
+    const handleTujuanKunjungan = (val) => {validation.setFieldValue("tujuankunjungan", val);}
+    const handleTujuanDPJPMelayani = (val) => { validation.setFieldValue("dpjpmelayani", val);}
+
+    useEffect(() => {   
+        dataRuangDaftar?.objectinstalasifk 
+            && handleTujuanKunjungan(dataRuangDaftar.objectinstalasifk)
+        dataRuangDaftar?.objectasalrujukanfk 
+            && handleAsalRujukan(dataRuangDaftar.objectasalrujukanfk);
+        dataRuangDaftar?.objectdokterpemeriksafk 
+            && handleTujuanDPJPMelayani(dataRuangDaftar.objectdokterpemeriksafk);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [dataRuangDaftar, validation?.setFieldValue])
+    }, [dataRuangDaftar])
 
     //klinik 3, puskesmas 1, rumahsakit 2
     useEffect(() => {
@@ -314,7 +334,7 @@ const RegistrasiPenjaminFK = () => {
                         <Row className="gy-4">
                             <Col xxl={6} md={6}>
                                 <div className="mt-2">
-                                    <Label style={{ color: "black" }} htmlFor="tglregistrasi" className="form-label">Tanggal SEP</Label>
+                                    <Label style={{ color: "black" }} htmlFor="tanggalsep" className="form-label">Tanggal SEP</Label>
                                 </div>
                             </Col>
                             <Col xxl={6} md={6}>
@@ -322,6 +342,7 @@ const RegistrasiPenjaminFK = () => {
                                     <Flatpickr
                                         // value={validation.values.tglregistrasi || ""}
                                         className="form-control"
+                                        id="tanggalsep"
                                         options={{
                                             dateFormat: "Y-m-d",
                                             defaultDate: "today",
@@ -329,7 +350,7 @@ const RegistrasiPenjaminFK = () => {
                                             minDate: "today"
                                         }}
                                         onChange={([newDate]) => {
-                                            
+                                            handleDateChange("tanggalsep", newDate)
                                         }}
                                     />
                                 </div>
@@ -381,7 +402,9 @@ const RegistrasiPenjaminFK = () => {
                                         id="tujuankunjungan"
                                         name="tujuankunjungan"
                                         options={data.instalasi}
-                                        onChange={(e) => validation.setFieldValue("tujuankunjungan  ", e.value)}
+                                        onChange={(e) => {
+                                            handleTujuanKunjungan(e.value)
+                                        }}
                                         value={validation.values.tujuankunjungan || ""}
                                     />
                                     {validation.touched.tujuankunjungan && validation.errors.tujuankunjungan ? (
@@ -399,9 +422,12 @@ const RegistrasiPenjaminFK = () => {
                                     <CustomSelect
                                         id="dpjppmelayani"
                                         name="dpjppmelayani"
+                                        options={data.pegawai}
+                                        onChange={(e) => {handleTujuanDPJPMelayani(e.value)}}
+                                        value={validation.values.dpjpmelayani || ""}
                                     />
-                                    {validation.touched.dpjppmelayani && validation.errors.dpjppmelayani ? (
-                                        <FormFeedback type="invalid"><div>{validation.errors.dpjppmelayani}</div></FormFeedback>
+                                    {validation.touched.dpjpmelayani && validation.errors.dpjpmelayani ? (
+                                        <FormFeedback type="invalid"><div>{validation.errors.dpjpmelayani}</div></FormFeedback>
                                     ) : null}
                                 </div>
                             </Col>
@@ -417,7 +443,9 @@ const RegistrasiPenjaminFK = () => {
                                         name="asalrujukan"
                                         placeholder="Asal Rujukan"
                                         options={data.asalrujukan}
-                                        onChange={(e) => validation.setFieldValue("asalrujukan  ", e.value)}
+                                        onChange={(e) => {
+                                            handleAsalRujukan(e.value);
+                                        }}
                                         value={validation.values.asalrujukan || ""}
                                         invalid={
                                             validation.touched.asalrujukan && validation.errors.asalrujukan ? true : false
@@ -438,14 +466,13 @@ const RegistrasiPenjaminFK = () => {
                                     <Flatpickr
                                         // value={validation.values.tglregistrasi || ""}
                                         className="form-control"
+                                        id="tanggalrujukan"
                                         options={{
                                             dateFormat: "Y-m-d",
-                                            defaultDate: "today",
-                                            maxDate: "today",
-                                            minDate: "today"
+                                            defaultDate: "today"
                                         }}
                                         onChange={([newDate]) => {
-                                            
+                                            handleDateChange("tanggalrujukan", newDate)
                                         }}
                                     />
                                 </div>
@@ -899,9 +926,9 @@ const RegistrasiPenjaminFK = () => {
     const BodyBPJSRujukan = (
         <>
             {PilihRujukan}
-            <Col lg={12} style={{ textAlign: 'left' }} className="ms-2">
+            {/* <Col lg={12} style={{ textAlign: 'left' }} className="ms-2">
                 <Button color="info" className="rounded-pill" >Pilih Rujukan</Button>
-            </Col>
+            </Col> */}
             {DetailBPJS}
             
             {validation.values.statuskecelakaan !== "" && validation.values.statuskecelakaan === 2
@@ -913,9 +940,7 @@ const RegistrasiPenjaminFK = () => {
             {validation.values.statuskecelakaan !== "" && validation.values.statuskecelakaan === 4
                 ? <>{BodyLakaKerja}{BodyLakaLantas}</> : <></>
             }
-            <Col lg={12} style={{ textAlign: 'right' }} className="mr-3 me-3">
-                <Button type="submit" color="info" className="rounded-pill bg-success" >Simpan</Button>
-            </Col>
+
         </>
     )
 
@@ -1043,6 +1068,9 @@ const RegistrasiPenjaminFK = () => {
                                 <TabContent activeTab={cardHeaderTab} className="text-muted">
                                     <TabPane tabId="1" id="home-1">
                                         {BodyBPJSRujukan}
+                                        <Col lg={12} style={{ textAlign: 'right' }} className="mr-3 me-3">
+                                            <Button type="submit" color="info" className="rounded-pill bg-success" >Simpan</Button>
+                                        </Col>
                                     </TabPane>
 
                                     <TabPane tabId="2" id="home-1">
@@ -1071,9 +1099,11 @@ const RegistrasiPenjaminFK = () => {
                 toggle={() => setIsOpenModalRujukan(false)}
                 dataBpjsSpr={dataBpjs?.spr?.list || []}
                 dataBpjsHis={dataBpjs?.histori?.histori || []}
-                setRujKartu={(noRuj, noKar) => {
+                setRujKartu={(noRuj, noKar, noSur, namaDok) => {
                     validation.setFieldValue("norujukan", noRuj);
                     validation.setFieldValue("nokartu", noKar);
+                    validation.setFieldValue("nosuratkontrol", noSur);
+                    validation.setFieldValue("dpjppemberi", namaDok)
                 }}
             />
         </div>
@@ -1100,7 +1130,11 @@ const ModalRujukan = ({isOpen, toggle, dataBpjsSpr, dataBpjsHis, setRujKartu}) =
                     </thead>
                     <tbody className="w-100 table-hover-click"
                         onClick={() => {
-                                setRujKartu(dataBpjsHisPertama.noRujukan, dataBpjsHisPertama.noKartu)
+                                setRujKartu(dataBpjsHisPertama.noRujukan, 
+                                    dataBpjsHisPertama.noKartu, 
+                                    dataBpjsSprPertama.noSuratKontrol,
+                                    dataBpjsSprPertama.namaDokter
+                                );
                                 toggle();
                             }}>
                         <tr className="w-100">

@@ -22,6 +22,9 @@ import {
     REGISTRASI_NO_BPJS_GET,
     REGISTRASI_NO_BPJS_GET_SUCCESS,
     REGISTRASI_NO_BPJS_GET_ERROR,
+    REGISTRASI_SAVE_PENJAMIN_FK,
+    REGISTRASI_SAVE_PENJAMIN_FK_SUCCESS,
+    REGISTRASI_SAVE_PENJAMIN_FK_ERROR,
 } from "./actionType";
 
 const INIT_STATE = {
@@ -61,6 +64,12 @@ const INIT_STATE = {
         data: null,
         loading: false,
         error: null,
+    },
+    registrasiSavePenjaminFK: {
+        newData: null,
+        loading: false,
+        error: null,
+        success: false
     },
 };
 
@@ -318,6 +327,41 @@ const Registrasi = (state = INIT_STATE, action) => {
                 registrasiNoBpjsGet: {
                     ...state.registrasiNoBpjsGet,
                     loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case REGISTRASI_SAVE_PENJAMIN_FK: {
+            return {
+                ...state,
+                registrasiSavePenjaminFK: {
+                    ...state.registrasiSavePenjaminFK,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case REGISTRASI_SAVE_PENJAMIN_FK_SUCCESS: {
+            return {
+                ...state,
+                registrasiSavePenjaminFK: {
+                    ...state.registrasiSavePenjaminFK,
+                    data: action.payload,
+                    loading: false,
+                    success: true
+                }
+            }
+        }
+
+        case REGISTRASI_SAVE_PENJAMIN_FK_ERROR: {
+            return {
+                ...state,
+                registrasiSavePenjaminFK: {
+                    ...state.registrasiSavePenjaminFK,
+                    loading: false,
+                    success: false,
                     error: action.error,
                 }
             }

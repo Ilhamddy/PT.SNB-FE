@@ -54,4 +54,8 @@ export default class ServiceRegistrasi {
     getListBPJS = async (nobpjs) => {
         return await api.get(`/transaksi/bridging/bpjs/monitoring/HistoriPelayanan/NoKartu/${nobpjs}`);
     }
+
+    saveRegistrasiPenjaminFK = async (params) => {
+        return await api.create("/transaksi/registrasi/save-penjamin-fk", params);
+    }
 }

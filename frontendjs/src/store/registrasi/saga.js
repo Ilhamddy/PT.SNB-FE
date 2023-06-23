@@ -9,7 +9,8 @@ import {
     REGISTRASI_SAVE_RUANGAN,
     REGISTRASI_NOREGISTRASI_GET,
     REGISTRASI_RUANGAN_NOREC_GET,
-    REGISTRASI_NO_BPJS_GET
+    REGISTRASI_NO_BPJS_GET,
+    REGISTRASI_SAVE_PENJAMIN_FK
 } from "./actionType";
 import {
     registrasiGetError,
@@ -27,7 +28,9 @@ import {
     registrasiRuanganNorecGetSuccess,
     registrasiRuanganNorecGetError,
     registrasiNoBPJSGetSuccess,
-    registrasiNoBPJSGetError
+    registrasiNoBPJSGetError,
+    registrasiSavePenjaminFKSuccess,
+    registrasiSavePenjaminFKError
 
 } from "./action";
 
@@ -118,6 +121,17 @@ function* onSaveRegistrasiRuangan({ payload: { data, history} }) {
     }
 }
 
+function* onRegistrasiSavePenjaminFK({payload: {data}}){
+    try {
+        console.log("save")
+        console.log("payload", data)
+        const response = yield call(serviceRegistrasi.saveRegistrasiPenjaminFK, data);
+        yield put(registrasiSavePenjaminFKSuccess(response.data));
+    } catch (error) {
+        yield put(registrasiSavePenjaminFKError(error));
+    }
+}
+
 function* onGetRegistrasiNoregistrasi({payload: {noregistrasi}}) {
     try {
         const response = yield call(serviceRegistrasi.getPasienByNoregistrasi, noregistrasi);
@@ -168,6 +182,10 @@ export function* watchGetRegistrasiNoBPJS() {
     yield takeEvery(REGISTRASI_NO_BPJS_GET, onGetRegistrasiNoBPJS);
 }
 
+export function* watchRegistrasiSavePenjaminFK() {
+    yield takeEvery(REGISTRASI_SAVE_PENJAMIN_FK, onRegistrasiSavePenjaminFK);
+}
+
 function* registrasiSaga() {
     yield all([
         fork(watchSaveRegistrasi),
@@ -177,7 +195,8 @@ function* registrasiSaga() {
         fork(watchSaveRegistrasiRuangan),
         fork(watchGetRegistrasiNoregistrasi),
         fork(watchGetRegistrasiNorec),
-        fork(watchGetRegistrasiNoBPJS)
+        fork(watchGetRegistrasiNoBPJS),
+        fork(watchRegistrasiSavePenjaminFK)
     ]);
 }
 

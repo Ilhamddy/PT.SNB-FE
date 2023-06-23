@@ -96,6 +96,7 @@ async function getHistoryBPJS(req, res) {
     let dataSPR = null;
     let dataRujukanKlinik = null;
     let dataRujukanRS = null;
+    let dataNomorKartu = null;
     let tanggalData = formatDate(new Date())
     let tanggal60Hari = formatDate(new Date(
         (new Date()).getTime() - (50 * 24 * 60 * 60 * 1000)

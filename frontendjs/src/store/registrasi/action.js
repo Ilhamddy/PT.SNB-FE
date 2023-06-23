@@ -25,7 +25,9 @@ import {
     REGISTRASI_NO_BPJS_GET,
     REGISTRASI_NO_BPJS_GET_SUCCESS,
     REGISTRASI_NO_BPJS_GET_ERROR,
-
+    REGISTRASI_SAVE_PENJAMIN_FK,
+    REGISTRASI_SAVE_PENJAMIN_FK_SUCCESS,
+    REGISTRASI_SAVE_PENJAMIN_FK_ERROR,
 } from "./actionType";
 
 export const registrasiResetForm = () => ({
@@ -156,5 +158,20 @@ export const registrasiNoBPJSGetSuccess = (data) => ({
 
 export const registrasiNoBPJSGetError = (error) => ({
     type: REGISTRASI_NO_BPJS_GET_ERROR,
+    payload: error,
+});
+
+export const registrasiSavePenjaminFK = (data) => ({
+    type: REGISTRASI_SAVE_PENJAMIN_FK,
+    payload: { data },
+});
+
+export const registrasiSavePenjaminFKSuccess = (data) => ({
+    type: REGISTRASI_SAVE_PENJAMIN_FK_SUCCESS,
+    payload: data,
+});
+
+export const registrasiSavePenjaminFKError = (error) => ({
+    type: REGISTRASI_SAVE_PENJAMIN_FK_ERROR,
     payload: error,
 });

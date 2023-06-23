@@ -55,7 +55,7 @@ module.exports = function (app) {
     app.post(
         "/api/transaksi/registrasi/save-penjamin-fk",
         [authJwt.verifyToken],
-        controller.savePenjaminFK
+        controller.saveRegistrasiPenjaminFK
     );
 
     app.get(
@@ -93,6 +93,12 @@ module.exports = function (app) {
         [authJwt.verifyToken],
         controller.getDaftarPasienRawatInap
     );
+
+    app.get(
+        "/api/transaksi/registrasi/save-registrasi-penjamin-fk",
+        [authJwt.verifyToken],
+        controller.saveRegistrasiPenjaminFK
+    )
     
 
 };
