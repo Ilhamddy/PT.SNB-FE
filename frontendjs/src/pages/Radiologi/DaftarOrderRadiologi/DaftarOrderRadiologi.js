@@ -107,70 +107,44 @@ const DaftarOrderRadiologi = () => {
     }
     const columns = [
         {
-            name: <span className='font-weight-bold fs-13'>Detail</span>,
-            sortable: false,
-            cell: (data) => {
-                return (
-                    <div className="hstack gap-3 flex-wrap">
-                        
-
-
-
-                        
-                    </div>
-                );
-            },
-        },
-        {
-            name: <span className='font-weight-bold fs-13'>Tgl Registrasi</span>,
-            selector: row => row.tglregistrasi,
+            name: <span className='font-weight-bold fs-13'>Noregistrasi</span>,
+            selector: row => row.noregistrasi,
             sortable: true,
             width: "130px"
         },
         {
-            name: <span className='font-weight-bold fs-13'>No. Registrasi</span>,
-            // selector: row => row.noregistrasi,
-            sortable: true,
-            selector: row => (<button className="btn btn-sm btn-soft-info" onClick={() => handleClick(data)}>{row.noregistrasi}</button>),
-            // cell: (data) => {
-            //     return (
-            //         // <Link to={`/registrasi/pasien/${data.id}`}>Details</Link>
-            //         <button className="btn btn-sm btn-soft-info" onClick={() => handleClick(data)}>View</button>
-            //     );
-            // },
-            width: "130px"
-        },
-        {
-            name: <span className='font-weight-bold fs-13'>No. RM</span>,
-            selector: row => row.nocm,
-            sortable: true,
-            width: "100px"
-        },
-        {
-
-            name: <span className='font-weight-bold fs-13'>Nama Pasien</span>,
-            selector: row => row.namapasien,
+            name: <span className='font-weight-bold fs-13'>Tgl Order</span>,
+            selector: row => row.tglinput,
             sortable: true,
             width: "150px"
         },
         {
 
-            name: <span className='font-weight-bold fs-13'>Poliklinik</span>,
+            name: <span className='font-weight-bold fs-13'>No Order</span>,
+            selector: row => row.nomororder,
+            sortable: true,
+            width: "150px"
+        },
+        {
+
+            name: <span className='font-weight-bold fs-13'>Dokter Order</span>,
+            selector: row => row.namalengkap,
+            sortable: true,
+            width: "150px"
+        },
+        {
+
+            name: <span className='font-weight-bold fs-13'>Nama Unit</span>,
             selector: row => row.namaunit,
             sortable: true,
-            width: "150px"
+            width: "150px",
         },
         {
 
-            name: <span className='font-weight-bold fs-13'>DPJP Tujuan</span>,
-            selector: row => row.namadokter,
-            sortable: true
-        },
-        {
-
-            name: <span className='font-weight-bold fs-13'>Jenis Pasein</span>,
-            selector: row => row.jenispenjamin,
-            sortable: true
+            name: <span className='font-weight-bold fs-13'>Keterangan</span>,
+            selector: row => row.keterangan,
+            sortable: true,
+            // width: "250px",
         },
     ];
     return (
