@@ -508,7 +508,7 @@ const getRegistrasiPasienNorec = async (req, res) => {
 
 const saveRegistrasiPenjaminFK = async (req, res) => {
     try{
-        transaction = await db.sequelize.transaction;
+        transaction = await db.sequelize.transaction();
         let norecPenjaminFK = uuid.v4().substring(0, 32)
         let objectpenjaminfk = null
         const dataDummy = {
@@ -543,10 +543,10 @@ const saveRegistrasiPenjaminFK = async (req, res) => {
             kotalakakerja: '',
             kecamatanlakakerja: ''
           }
+        console.log(transaction)
 
         
         const daftarPasien = await db.t_kepesertaanasuransi.create({
-
             norec: norecPenjaminFK,
             objectdaftarpasienfk: dataDummy.norecdp,
             objectpenjaminfk: dataDummy.penjamin,
