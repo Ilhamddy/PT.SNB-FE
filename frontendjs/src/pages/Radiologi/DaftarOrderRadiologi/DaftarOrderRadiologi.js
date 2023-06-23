@@ -20,16 +20,19 @@ import BreadCrumb from '../../../Components/Common/BreadCrumb';
 import DataTable from 'react-data-table-component';
 import CountUp from "react-countup";
 import {
-    widgetdaftarOrderRadiologiGet,radiologiResetForm
+    widgetdaftarOrderRadiologiGet, radiologiResetForm,
+    listdaftarOrderRadiologiGet
 } from '../../../store/actions';
-
+import userDummy from "../../../assets/images/users/user-dummy-img.jpg";
 const DaftarOrderRadiologi = () => {
     document.title = "Daftar Order Radiologi";
     const dispatch = useDispatch();
-    const { data, datawidget, loading, error} = useSelector((state) => ({
-        // data: state.DaftarPasien.daftarPasienRJGet.data,
+    const { data, datawidget, loading, error } = useSelector((state) => ({
+        data: state.Radiologi.listdaftarOrderRadiologiGet.data,
+        loading: state.Radiologi.listdaftarOrderRadiologiGet.loading,
+        error: state.Radiologi.listdaftarOrderRadiologiGet.error,
         datawidget: state.Radiologi.widgetdaftarOrderRadiologiGet.data,
-       
+
     }));
     useEffect(() => {
         return () => {
@@ -38,7 +41,7 @@ const DaftarOrderRadiologi = () => {
     }, [dispatch])
     useEffect(() => {
         dispatch(widgetdaftarOrderRadiologiGet(''));
-       
+        dispatch(listdaftarOrderRadiologiGet(''));
     }, [dispatch]);
     const handleClickCard = (e) => {
         // setidPencarian(e.id)
@@ -54,6 +57,122 @@ const DaftarOrderRadiologi = () => {
         //     dispatch(widgetdaftarDokumenRekammedisGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=3`));
         // }
     };
+    const current = new Date();
+    const [dateStart, setdateStart] = useState(`${current.getFullYear()}-${current.getMonth() + 1}-${current.getDate()}`);
+    const [dateEnd, setdateEnd] = useState(`${current.getFullYear()}-${current.getMonth() + 1}-${current.getDate()}`);
+    const [search, setSearch] = useState('')
+    const handleBeginOnChangeStart = (newBeginValue) => {
+        var dateString = new Date(newBeginValue.getTime() - (newBeginValue.getTimezoneOffset() * 60000))
+            .toISOString()
+            .split("T")[0];
+        setdateStart(dateString)
+    }
+    const handleBeginOnChangeEnd = (newBeginValue) => {
+        var dateString = new Date(newBeginValue.getTime() - (newBeginValue.getTimezoneOffset() * 60000))
+            .toISOString()
+            .split("T")[0];
+        setdateEnd(dateString)
+    }
+
+    const handleClickCari = () => {
+        // dispatch(daftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}`));
+        // dispatch(widgetdaftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}`));
+    }
+    const handleFilter = (e) => {
+        if (e.keyCode === 13) {
+            
+            // dispatch(daftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}`));
+            // dispatch(widgetdaftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}`));
+        
+        }
+    }
+    const handleClick = (e) => {
+
+        // console.log('this is:', e.namapasien);
+    };
+    const tableCustomStyles = {
+        headRow: {
+            style: {
+                color: '#ffffff',
+                backgroundColor: '#e67e22',
+            },
+        },
+        rows: {
+            style: {
+                color: "black",
+                backgroundColor: "#f1f2f6"
+            },
+
+        }
+    }
+    const columns = [
+        {
+            name: <span className='font-weight-bold fs-13'>Detail</span>,
+            sortable: false,
+            cell: (data) => {
+                return (
+                    <div className="hstack gap-3 flex-wrap">
+                        
+
+
+
+                        
+                    </div>
+                );
+            },
+        },
+        {
+            name: <span className='font-weight-bold fs-13'>Tgl Registrasi</span>,
+            selector: row => row.tglregistrasi,
+            sortable: true,
+            width: "130px"
+        },
+        {
+            name: <span className='font-weight-bold fs-13'>No. Registrasi</span>,
+            // selector: row => row.noregistrasi,
+            sortable: true,
+            selector: row => (<button className="btn btn-sm btn-soft-info" onClick={() => handleClick(data)}>{row.noregistrasi}</button>),
+            // cell: (data) => {
+            //     return (
+            //         // <Link to={`/registrasi/pasien/${data.id}`}>Details</Link>
+            //         <button className="btn btn-sm btn-soft-info" onClick={() => handleClick(data)}>View</button>
+            //     );
+            // },
+            width: "130px"
+        },
+        {
+            name: <span className='font-weight-bold fs-13'>No. RM</span>,
+            selector: row => row.nocm,
+            sortable: true,
+            width: "100px"
+        },
+        {
+
+            name: <span className='font-weight-bold fs-13'>Nama Pasien</span>,
+            selector: row => row.namapasien,
+            sortable: true,
+            width: "150px"
+        },
+        {
+
+            name: <span className='font-weight-bold fs-13'>Poliklinik</span>,
+            selector: row => row.namaunit,
+            sortable: true,
+            width: "150px"
+        },
+        {
+
+            name: <span className='font-weight-bold fs-13'>DPJP Tujuan</span>,
+            selector: row => row.namadokter,
+            sortable: true
+        },
+        {
+
+            name: <span className='font-weight-bold fs-13'>Jenis Pasein</span>,
+            selector: row => row.jenispenjamin,
+            sortable: true
+        },
+    ];
     return (
         <React.Fragment>
             <ToastContainer closeButton={false} />
@@ -62,7 +181,7 @@ const DaftarOrderRadiologi = () => {
                 <Container fluid>
                     <BreadCrumb title="Daftar Order Radiologi" pageTitle="Forms" />
                     <Row>
-                    {datawidget.map((item, key) => (
+                        {datawidget.map((item, key) => (
                             <Col xxl={4} sm={6} key={key}>
                                 <Card className="card-animate">
                                     <CardBody>
@@ -104,7 +223,112 @@ const DaftarOrderRadiologi = () => {
                             </Col>
                         ))}
 
+                        <Col lg={3}>
+                            <Card>
+                                <CardBody>
+                                    <h5 className="card-title mb-5">Profile Pasien</h5>
+                                    <div className="text-center">
+                                        <img src={userDummy}
+                                            className="rounded-circle avatar-xl img-thumbnail user-profile-image"
+                                            alt="user-profile" />
+                                        <h5 className="fs-17 mb-1">Testing</h5>
+                                        <p className="text-muted mb-0">Testing</p>
+                                    </div>
+                                </CardBody>
+                            </Card>
+                        </Col>
+                        <Col lg={9}>
+                            <Card>
+                                <CardHeader className="align-items-center d-flex">
+                                    <div className="live-preview">
+                                        <Row>
+                                            <Col>
+                                                <h4 className="card-title mb-0 flex-grow-1 mb-3">Daftar Order Radiologi <span style={{ color: '#e67e22' }}></span></h4>
+                                            </Col>
+                                        </Row>
+                                    </div>
+                                </CardHeader>
+                                <CardBody>
+                                    <div className='mb-2'>
+                                        <Row>
+                                            <Col sm={4}>
+                                                <div className="input-group">
+                                                    <Flatpickr
+                                                        className="form-control border-0 fs-5 dash-filter-picker shadow"
+                                                        options={{
+                                                            // mode: "range",
+                                                            dateFormat: "Y-m-d",
+                                                            defaultDate: "today"
+                                                        }}
+                                                        value={dateStart}
+                                                        onChange={([dateStart]) => {
+                                                            handleBeginOnChangeStart(dateStart);
+                                                        }}
+                                                    />
+                                                    <div className="input-group-text bg-secondary border-secondary text-white"><i className="ri-calendar-2-line"></i></div>
+                                                </div>
+                                            </Col>
+                                            <Col lg={1}><h4>s/d</h4></Col>
+                                            <Col sm={4}>
+                                                <div className="input-group">
+                                                    <Flatpickr
+                                                        className="form-control border-0 fs-5 dash-filter-picker shadow"
+                                                        options={{
+                                                            // mode: "range",
+                                                            dateFormat: "Y-m-d",
+                                                            defaultDate: "today"
+                                                        }}
+                                                        value={dateEnd}
+                                                        onChange={([dateEnd]) => {
+                                                            handleBeginOnChangeEnd(dateEnd);
+                                                        }}
+                                                    />
+                                                    <div className="input-group-text bg-secondary border-secondary text-white"><i className="ri-calendar-2-line"></i></div>
+                                                </div>
+                                            </Col>
+                                            <Col lg={2}>
+                                                <div className="d-flex justify-content-sm-end">
+                                                    <div className="search-box ms-2">
+                                                        <input type="text" className="form-control search"
+                                                            placeholder="Search..." onChange={event => setSearch(event.target.value)}
+                                                            onKeyDown={handleFilter} />
+                                                        <i className="ri-search-line search-icon"></i>
+                                                    </div>
+                                                </div>
+                                            </Col>
+                                            <Col lg={1}>
+                                                <Button type="button" className="rounded-pill" placement="top" id="tooltipTopPencarian" onClick={handleClickCari}>
+                                                    CARI
+                                                </Button>
+                                                <UncontrolledTooltip placement="top" target="tooltipTopPencarian" > Pencarian </UncontrolledTooltip>
+                                            </Col>
+                                        </Row>
+                                    </div>
 
+                                    <div id="table-gridjs">
+                                        {/* <Col className="col-sm">
+                                            <div className="d-flex justify-content-sm-end">
+                                                <div className="search-box ms-2">
+                                                    <input type="text" className="form-control search"
+                                                        placeholder="Search..." />
+                                                    <i className="ri-search-line search-icon"></i>
+                                                </div>
+                                            </div>
+                                        </Col> */}
+                                        <DataTable
+                                            fixedHeader
+                                            fixedHeaderScrollHeight="400px"
+                                            columns={columns}
+                                            pagination
+                                            data={data}
+                                            progressPending={loading}
+                                            customStyles={tableCustomStyles}
+                                        />
+                                    </div>
+
+                                </CardBody>
+                            </Card>
+                        </Col>
                     </Row>
                 </Container>
             </div>

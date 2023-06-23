@@ -4,13 +4,15 @@ import ServiceRadiologi from "../../services/service-radiologi";
 import {
     SAVE_ORDER_PELAYANAN_RADIOLOGI,
     DAFTAR_ORDER_RADIOLOGI_GET,
-    WIDGET_DAFTAR_ORDER_RADIOLOGI_GET
+    WIDGET_DAFTAR_ORDER_RADIOLOGI_GET,
+    LIST_DAFTAR_ORDER_RADIOLOGI_GET
 } from "./actionType";
 
 import {
     saveOrderPelayananRadiologiSuccess,saveOrderPelayananRadiologiError,
     daftarOrderRadiologiGetSuccess,daftarOrderRadiologiGetError,
-    widgetdaftarOrderRadiologiGetSuccess,widgetdaftarOrderRadiologiGetError
+    widgetdaftarOrderRadiologiGetSuccess,widgetdaftarOrderRadiologiGetError,
+    listdaftarOrderRadiologiGetSuccess,listdaftarOrderRadiologiGetError
 } from "./action";
 
 
@@ -74,11 +76,26 @@ export function* watchonwidgetdaftarOrderRadiologi() {
     yield takeEvery(WIDGET_DAFTAR_ORDER_RADIOLOGI_GET, onwidgetdaftarOrderRadiologi);
 }
 
+function* onlistDaftarOrderRadiologi({ payload: { param } }) {
+    try {
+        const response = yield call(serviceRadiologi.getListDaftarOrderRadiologi, param);
+        yield put(listdaftarOrderRadiologiGetSuccess(response.data));
+    } catch (error) {
+        yield put(listdaftarOrderRadiologiGetError(error));
+    }
+}
+
+
+export function* watchonlistDaftarOrderRadiologi() {
+    yield takeEvery(LIST_DAFTAR_ORDER_RADIOLOGI_GET, onlistDaftarOrderRadiologi);
+}
+
 function* radiologiSaga() {
     yield all([
         fork(watchonsaveOrderPelayanan),
         fork(watchondaftarOrderRadiologi),
-        fork(watchonwidgetdaftarOrderRadiologi)
+        fork(watchonwidgetdaftarOrderRadiologi),
+        fork(watchonlistDaftarOrderRadiologi)
     ]);
 }
 
