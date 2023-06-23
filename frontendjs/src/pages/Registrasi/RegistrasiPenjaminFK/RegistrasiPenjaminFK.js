@@ -76,6 +76,7 @@ const RegistrasiPenjaminFK = () => {
             jenisrujukan: "abc",
             tanggalsep: "",
             norujukan: "",
+            penjamin: 1,
             tujuankunjungan: "",
             dpjpmelayani: "",
             asalrujukan: "",

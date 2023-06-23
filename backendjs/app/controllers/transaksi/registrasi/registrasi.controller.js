@@ -515,9 +515,79 @@ const getRegistrasiPasienNorec = async (req, res) => {
 
 const savePenjaminFK = async (req, res) => {
     try{
-        transaction = await db.sequelize.transaction;
-        let norecPFK = uuid.v4().substring(0, 32);
+        transaction = await db.sequelize.transaction();
+        let norecPenjaminFK = uuid.v4().substring(0, 32)
+        let objectpenjaminfk = null
+        const dataForm = req.body
+        
+        const daftarPasien = await db.t_kepesertaanasuransi.create({
+            norec: norecPenjaminFK,
+            objectdaftarpasienfk: dataDummy.norecdp,
+            objectpenjaminfk: dataDummy.penjamin,
+            no_kartu: dataDummy.nokartu,
+            jenisrujukan: dataDummy.jenisrujukan,
+            tglsep: dataDummy.tanggalsep,
+            no_rujukan: dataDummy.norujukan,
+            no_sep: dataDummy.norujukan,
+            tujuankunjungan: dataDummy.tujuankunjungan,
+            objectdpjpfk: dataDummy.dpjpmelayani,
+            asalrujukan: dataDummy.asalrujukan,
+            tglrujukan: dataDummy.tanggalrujukan,
+            no_skdp: dataDummy.nosuratkontrol,
+            dpjppemberisurat: dataDummy.dpjppemberi,
+            objectdiagnosarujukanfk: dataDummy.diagnosarujukan,
+            jenispeserta: dataDummy.jenispeserta,
+            no_telp: dataDummy.notelepon,
+            catatan: dataDummy.catatan,
+            // objectstatuskecelakaanfk:{
+            // },
+            // ll_objectprovinsifk: {
+            // },
+            // ll_objectkabupatenfk: {
+            // },
+            // ll_objectkecamatanfk: {
+            // },
+            // ll_tgl: {
+            // },
+            // ll_suplesi: {
+            // },
+            // ll_keterangan: {
+            // },
+            // lk_tglkejadian: {
+            // },
+            // lk_nolaporan: {
+            // },
+            // lk_objectprovinsifk: {
+            // },
+            // lk_objectkabupatenfk: {
+            // },
+            // lk_objectkecamatanfk: {
+            // },
+            // lk_keterangan: {
+            // },
+            // ll_isjasaraharja: {
+            // },
+            // ll_isjasaraharja:{
+            // },
+            // ll_isbpjstk:{
+            // },
+            // ll_istaspen:{
+            // },
+            // ll_isaskes:{
+            // }
+        }, { transaction: transaction });
 
+        
+        await transaction.commit();
+        let tempres = { daftarPasien: daftarPasien }
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+            msg: 'Simpan Berhasil',
+            code: 200
+        });
+        console.log(req.body);
     } catch(error){
         await transaction.rollback();
         res.status(201).send({

@@ -121,9 +121,9 @@ module.exports = (sequelize, Sequelize) => {
         ll_istaspen:{
             type: Sequelize.BOOLEAN
         },
-        ll_isaskes:{
-            type: Sequelize.BOOLEAN
-        }
+        // ll_isaskes:{
+        //     type: Sequelize.BOOLEAN
+        // }
     }, {
         tableName: "t_kepesertaanasuransi", // relation "user" does not exist
         createdAt: false,
