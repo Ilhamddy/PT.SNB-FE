@@ -590,7 +590,8 @@ const saveRegistrasiPenjaminFK = async (req, res) => {
             code: 201
         });
     }
-}
+};
+
 
 const getPasienNoregistrasi = (req, res) => {
     const id = parseInt(req.params.noregistrasi);
