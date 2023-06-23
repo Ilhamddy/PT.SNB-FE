@@ -511,40 +511,7 @@ const saveRegistrasiPenjaminFK = async (req, res) => {
         transaction = await db.sequelize.transaction();
         let norecPenjaminFK = uuid.v4().substring(0, 32)
         let objectpenjaminfk = null
-        const dataDummy = {
-            id: '3',
-            norecdp: "8d13bb7a-26ec-4a02-9588-689531de",
-            nokartu: '0001503919326',
-            jenisrujukan: 'abc',
-            tanggalsep: '2023-06-23',
-            norujukan: '030304020423P000587',
-            penjamin: 2,
-            tujuankunjungan: 1,
-            dpjpmelayani: 11,
-            asalrujukan: 2,
-            tanggalrujukan: '2023-06-22',
-            nosuratkontrol: '0303R0010623K004935',
-            dpjppemberi: 'Dr. Arkademi, Sp.PD',
-            diagnosarujukan: 110,
-            jenispeserta: 'dis',
-            notelepon: '089607721357',
-            catatan: 'catatan awal',
-            statuskecelakaan: 1,
-            provinsilakalantas: '',
-            kotalakalantas: '',
-            kecamatanlakalantas: '',
-            tanggallakalantas: '',
-            nosepsuplesi: '',
-            keteranganlakalantas: '',
-            tanggallakakerja: '',
-            nolaporanpolisi: '',
-            keteranganlakakerja: '',
-            provinsilakakerja: '',
-            kotalakakerja: '',
-            kecamatanlakakerja: ''
-          }
-        console.log(transaction)
-
+        const dataForm = req.body
         
         const daftarPasien = await db.t_kepesertaanasuransi.create({
             norec: norecPenjaminFK,
@@ -605,7 +572,7 @@ const saveRegistrasiPenjaminFK = async (req, res) => {
 
         
         await transaction.commit();
-        let tempres = { daftarPasien: daftarPasien, antreanPemeriksaan: antreanPemeriksaan }
+        let tempres = { daftarPasien: daftarPasien }
         res.status(200).send({
             data: tempres,
             status: "success",
