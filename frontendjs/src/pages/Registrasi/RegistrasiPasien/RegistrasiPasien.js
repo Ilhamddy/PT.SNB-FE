@@ -280,7 +280,11 @@ const RegistrasiPasien = (props) => {
 
 	useEffect(() => {
         const isAsuransi = validation.values.jenispenjamin === 2;
-        if(successReg && isAsuransi && newData?.data?.daftarPasien?.norec){
+        const isRawatInap = validation.values.tujkunjungan === 2;
+        const isRawatJalan = validation.values.tujkunjungan === 1;
+        const isIgd = validation.values.tujkunjungan === 7;
+        const isCheckAsuransi = isRawatInap || isRawatJalan || isIgd;
+        if(successReg && isAsuransi && newData?.data?.daftarPasien?.norec && isCheckAsuransi){
             navigate(`/registrasi/input-penjamin/${id}/${newData.data.daftarPasien.norec}`);
         }else if(successReg){
             setpillsTab("3");

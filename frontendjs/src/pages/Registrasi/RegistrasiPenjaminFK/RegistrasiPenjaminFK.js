@@ -331,6 +331,7 @@ const RegistrasiPenjaminFK = () => {
     const handleTujuanKunjungan = (val) => {validation.setFieldValue("tujuankunjungan", val);}
     const handleTujuanDPJPMelayani = (val) => { validation.setFieldValue("dpjpmelayani", val);}
     const handleJenisPeserta = (val) => {validation.setFieldValue("jenispeserta", val)}
+    const handleSetNoKartu = (val) => {validation.setFieldValue("nokartu", val);}
 
     useEffect(() => {   
         dataRuangDaftar?.objectinstalasifk 
@@ -346,11 +347,14 @@ const RegistrasiPenjaminFK = () => {
         if(dataBpjs?.kepesertaan?.peserta?.jenisPeserta?.keterangan){
             handleJenisPeserta(dataBpjs?.kepesertaan?.peserta?.jenisPeserta?.keterangan);
         }
+        if(dataBpjs?.kepesertaan?.peserta?.noKartu){
+            handleSetNoKartu(dataBpjs?.kepesertaan?.peserta?.noKartu);
+        }
     }, [dataBpjs])
 
     //klinik 3, puskesmas 1, rumahsakit 2
     useEffect(() => {
-        if(dataRuangDaftar?.objectinstalasifk && dataBpjs){
+        if(dataRuangDaftar?.objectinstalasifk === 1 && dataBpjs){
             setIsOpenModalRujukan(true);
             return
         }
@@ -1309,7 +1313,7 @@ const RegistrasiPenjaminFK = () => {
                 dataBpjsHis={dataBpjs?.histori?.histori || []}
                 setRujKartu={(noRuj, noKar, noSur, namaDok) => {
                     validation.setFieldValue("norujukan", noRuj);
-                    validation.setFieldValue("nokartu", noKar);
+
                     validation.setFieldValue("nosuratkontrol", noSur);
                     validation.setFieldValue("dpjppemberi", namaDok)
                 }}
