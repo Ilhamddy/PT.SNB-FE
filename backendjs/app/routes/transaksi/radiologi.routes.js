@@ -27,5 +27,11 @@ module.exports = function (app) {
         [authJwt.verifyToken],
         controller.getWidgetListDaftarOrderRadiologi
     );
+
+    app.get(
+        "/api/transaksi/radiologi/list-daftar-order-radiologi",
+        [authJwt.verifyToken],
+        controller.getDaftarListHistoryOrder
+    );
     
 }

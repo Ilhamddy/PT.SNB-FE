@@ -8,7 +8,10 @@ import {
     DAFTAR_ORDER_RADIOLOGI_GET_SUCCESS,
     WIDGET_DAFTAR_ORDER_RADIOLOGI_GET,
     WIDGET_DAFTAR_ORDER_RADIOLOGI_GET_SUCCESS,
-    WIDGET_DAFTAR_ORDER_RADIOLOGI_GET_ERROR
+    WIDGET_DAFTAR_ORDER_RADIOLOGI_GET_ERROR,
+    LIST_DAFTAR_ORDER_RADIOLOGI_GET,
+    LIST_DAFTAR_ORDER_RADIOLOGI_GET_SUCCESS,
+    LIST_DAFTAR_ORDER_RADIOLOGI_GET_ERROR
 } from "./actionType";
 
 export const radiologiResetForm = () => ({
@@ -58,5 +61,20 @@ export const widgetdaftarOrderRadiologiGetSuccess = (data) => ({
 
 export const widgetdaftarOrderRadiologiGetError = (error) => ({
     type: WIDGET_DAFTAR_ORDER_RADIOLOGI_GET_ERROR,
+    payload: error,
+});
+
+export const listdaftarOrderRadiologiGet = (param) => ({
+    type: LIST_DAFTAR_ORDER_RADIOLOGI_GET,
+    payload: { param },
+});
+
+export const listdaftarOrderRadiologiGetSuccess = (data) => ({
+    type: LIST_DAFTAR_ORDER_RADIOLOGI_GET_SUCCESS,
+    payload: data,
+});
+
+export const listdaftarOrderRadiologiGetError = (error) => ({
+    type: LIST_DAFTAR_ORDER_RADIOLOGI_GET_ERROR,
     payload: error,
 });
