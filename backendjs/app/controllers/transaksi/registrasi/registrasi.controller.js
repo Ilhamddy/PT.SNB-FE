@@ -517,7 +517,6 @@ const saveRegistrasiPenjaminFK = async (req, res) => {
     try{
         transaction = await db.sequelize.transaction();
         let norecPenjaminFK = uuid.v4().substring(0, 32)
-        let objectpenjaminfk = null
         const dataForm = req.body
         const daftarPasien = await db.t_kepesertaanasuransi.create({
             norec: norecPenjaminFK,
