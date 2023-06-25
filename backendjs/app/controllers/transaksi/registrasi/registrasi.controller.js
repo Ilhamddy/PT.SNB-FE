@@ -519,64 +519,41 @@ const saveRegistrasiPenjaminFK = async (req, res) => {
         let norecPenjaminFK = uuid.v4().substring(0, 32)
         let objectpenjaminfk = null
         const dataForm = req.body
-        
         const daftarPasien = await db.t_kepesertaanasuransi.create({
             norec: norecPenjaminFK,
-            objectdaftarpasienfk: dataDummy.norecdp,
-            objectpenjaminfk: dataDummy.penjamin,
-            no_kartu: dataDummy.nokartu,
-            jenisrujukan: dataDummy.jenisrujukan,
-            tglsep: dataDummy.tanggalsep,
-            no_rujukan: dataDummy.norujukan,
-            no_sep: dataDummy.norujukan,
-            tujuankunjungan: dataDummy.tujuankunjungan,
-            objectdpjpfk: dataDummy.dpjpmelayani,
-            asalrujukan: dataDummy.asalrujukan,
-            tglrujukan: dataDummy.tanggalrujukan,
-            no_skdp: dataDummy.nosuratkontrol,
-            dpjppemberisurat: dataDummy.dpjppemberi,
-            objectdiagnosarujukanfk: dataDummy.diagnosarujukan,
-            jenispeserta: dataDummy.jenispeserta,
-            no_telp: dataDummy.notelepon,
-            catatan: dataDummy.catatan,
-            // objectstatuskecelakaanfk:{
-            // },
-            // ll_objectprovinsifk: {
-            // },
-            // ll_objectkabupatenfk: {
-            // },
-            // ll_objectkecamatanfk: {
-            // },
-            // ll_tgl: {
-            // },
-            // ll_suplesi: {
-            // },
-            // ll_keterangan: {
-            // },
-            // lk_tglkejadian: {
-            // },
-            // lk_nolaporan: {
-            // },
-            // lk_objectprovinsifk: {
-            // },
-            // lk_objectkabupatenfk: {
-            // },
-            // lk_objectkecamatanfk: {
-            // },
-            // lk_keterangan: {
-            // },
-            // ll_isjasaraharja: {
-            // },
-            // ll_isjasaraharja:{
-            // },
-            // ll_isbpjstk:{
-            // },
-            // ll_istaspen:{
-            // },
-            // ll_isaskes:{
-            // }
+            objectdaftarpasienfk: dataForm.norecdp,
+            objectpenjaminfk: dataForm.penjamin,
+            no_kartu: dataForm.nokartu,
+            jenisrujukan: dataForm.jenisrujukan,
+            tglsep: dataForm.tanggalsep,
+            no_rujukan: dataForm.norujukan,
+            no_sep: dataForm.norujukan,
+            tujuankunjungan: dataForm.tujuankunjungan,
+            objectdpjpfk: dataForm.dpjpmelayani,
+            asalrujukan: dataForm.asalrujukan,
+            tglrujukan: dataForm.tanggalrujukan,
+            no_skdp: dataForm.nosuratkontrol,
+            dpjppemberisurat: dataForm.dpjppemberi,
+            objectdiagnosarujukanfk: dataForm.diagnosarujukan,
+            jenispeserta: dataForm.jenispeserta,
+            no_telp: dataForm.notelepon,
+            catatan: dataForm.catatan,
+            ll_namaprovinsi: dataForm.provinsilakalantas,
+            ll_kodeprovinsi: dataForm.kprovinsilakalantas || null,
+            ll_namakabupaten: dataForm.kotalakalantas,
+            ll_kodekabupaten: dataForm.kkabupatenlakalantas || null,
+            ll_namakecamatan: dataForm.kecamatanlakalantas,
+            ll_kodekecamatan: dataForm.kkecamatanlakalantas || null,
+            ll_tgl: dataForm.tanggallakalantas,
+            ll_suplesi: dataForm.nosepsuplesi,
+            ll_keterangan: dataForm.keteranganlakalantas,
+            lk_namaprovinsi: dataForm.provinsilakalantas,
+            lk_kodeprovinsi: dataForm.kprovinsilakalantas || null,
+            lk_namakabupaten: dataForm.kotalakalantas,
+            lk_kodekabupaten: dataForm.kkabupatenlakalantas || null,
+            lk_namakecamatan: dataForm.kecamatanlakalantas,
+            lk_kodekecamatan: dataForm.kkecamatanlakalantas || null,
         }, { transaction: transaction });
-
         
         await transaction.commit();
         let tempres = { daftarPasien: daftarPasien }

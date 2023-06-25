@@ -1,11 +1,20 @@
 import { call, put, takeEvery, all, fork } from "redux-saga/effects";
 import ServiceMaster from "../../services/service-master";
-import { MASTER_GET,DESA_GET,KECAMATAN_GET,COMBO_REGISTRASI_GET, COMBO_ASURANSI_GET } from "./actionType";
+import { MASTER_GET,DESA_GET,KECAMATAN_GET,COMBO_REGISTRASI_GET, COMBO_ASURANSI_GET, PROVINSI_GET_BPJS, KABUPATEN_GET_BPJS, KECAMATAN_GET_BPJS } from "./actionType";
 import { masterGetSuccess,masterGetError,desaGetSuccess,desaGetError,kecamatanGetSuccess,kecamatanGetError,
     comboRegistrasiGetSuccess,comboRegistrasiGetError, 
     comboAsuransiGet, 
     comboAsuransiGetSuccess, 
-    comboAsuransiGetError
+    comboAsuransiGetError,
+    provinsiGetBpjs,
+    provinsiGetBpjsSuccess,
+    provinsiGetBpjsError,
+    kabupatenGetBpjs,
+    kabupatenGetBpjsSuccess,
+    kabupatenGetBpjsError,
+    kecamatanGetBpjs,
+    kecamatanGetBpjsSuccess,
+    kecamatanGetBpjsError,
 } from "./action";
 
 const serviceMaster = new ServiceMaster();
@@ -55,6 +64,34 @@ function* onGetComboAsuransi() {
     }
 }
 
+function* onGetProvinsiBpjs(){
+    try{
+        console.log("masuk")
+        const response = yield call(serviceMaster.getProvinsiBpjs);
+        yield put(provinsiGetBpjsSuccess(response.data));
+    } catch(err){
+        yield put(provinsiGetBpjsError(err));
+    }
+}
+
+function* onGetKabupatenBpjs({payload: {provinsi}}){
+    try{
+        const response = yield call(serviceMaster.getKabupatenBpjs,provinsi);
+        yield put(kabupatenGetBpjsSuccess(response.data));
+    } catch(err){
+        yield put(kabupatenGetBpjsError(err));
+    }
+}
+
+function* onGetKecamatanBpjs({payload: {kabupaten}}){
+    try{
+        const response = yield call(serviceMaster.getKecamatanBpjs,kabupaten);
+        yield put(kecamatanGetBpjsSuccess(response.data));
+    } catch(err){
+        yield put(kecamatanGetBpjsError(err));
+    }
+}
+
 export function* watchGetMaster() {
     yield takeEvery(MASTER_GET, onGetMaster);
 }
@@ -75,6 +112,18 @@ export function* watchGetComboAsuransi() {
     yield takeEvery(COMBO_ASURANSI_GET, onGetComboAsuransi);
 }
 
+export function* watchGetProvinsiBpjs(){
+    yield takeEvery(PROVINSI_GET_BPJS, onGetProvinsiBpjs);
+}
+
+export function* watchGetKabupatenBpjs(){
+    yield takeEvery(KABUPATEN_GET_BPJS,onGetKabupatenBpjs);
+}
+
+export function* watchGetKecamatanBpjs(){
+    yield takeEvery(KECAMATAN_GET_BPJS,onGetKecamatanBpjs);
+}
+
 function* masterSaga() {
     yield all([
         fork(watchGetMaster),
@@ -82,6 +131,10 @@ function* masterSaga() {
         fork(watchGetKecamatan),
         fork(watchGetComboRegistrasi),
         fork(watchGetComboAsuransi),
+        fork(watchGetProvinsiBpjs),
+        fork(watchGetKabupatenBpjs),
+        fork(watchGetKecamatanBpjs),
+
     ]);
 }
 

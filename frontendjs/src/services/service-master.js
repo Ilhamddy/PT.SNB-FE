@@ -22,4 +22,16 @@ export default class ServiceMaster {
     getComboAsuransi = async (asuransi) => {
         return await api.get(`/master/combobox-asuransi`);
     }
+
+    getProvinsiBpjs = async () => {
+        return await api.get(`/transaksi/bridging/bpjs/provinsi`);
+    }
+
+    getKabupatenBpjs = async (provinsi) => {
+        return await api.get(`/transaksi/bridging/bpjs/kabupaten/${provinsi}`);
+    }
+
+    getKecamatanBpjs = async (kabupaten) => {
+        return await api.get(`/transaksi/bridging/bpjs/kecamatan/${kabupaten}`);
+    }
 }

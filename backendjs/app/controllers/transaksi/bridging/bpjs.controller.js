@@ -159,6 +159,69 @@ async function getHistoryBPJS(req, res) {
     });
 }
 
+async function getProvinsi(req, res){
+    const [bpjs, keydecrypt] = await createBpjsInstance();
+    let dataProvinsi = null
+    try{
+        dataProvinsi = await bpjs.get(`/vclaim-rest/referensi/propinsi`)
+    }catch(e){
+        console.error("error data provinsi")
+        console.error(e)
+    }
+    const decryptDataProvinsi = JSON.parse(decrypt(dataProvinsi?.data?.response, keydecrypt));
+    const tempres = {
+        provinsi: decryptDataProvinsi
+    }
+    res.status(200).send({
+        data: tempres,
+        status: "success",
+        success: true,
+    });
+}
+
+async function getKabupaten(req, res){
+    const [bpjs, keydecrypt] = await createBpjsInstance();
+    let { provinsi } = req.params
+    let dataKabupaten = null
+    try{
+        dataKabupaten = await bpjs.get(`/vclaim-rest/referensi/kabupaten/propinsi/${provinsi}`)
+    }catch(e){
+        console.error("error data kabupaten")
+        console.error(e)
+    }
+    const decryptDataKabupaten = JSON.parse(decrypt(dataKabupaten?.data?.response, keydecrypt));
+    const tempres = {
+        kabupaten: decryptDataKabupaten
+    }
+    res.status(200).send({
+        data: tempres,
+        status: "success",
+        success: true,
+    });
+}
+
+async function getKecamatan(req, res){
+    const [bpjs, keydecrypt] = await createBpjsInstance();
+    let { kabupaten } = req.params
+    let dataKecamatan = null
+    try{
+        dataKecamatan = await bpjs.get(`/vclaim-rest/referensi/kecamatan/kabupaten/${kabupaten.padStart(4, '0')}}`)
+    }catch(e){
+        console.error("error data kecamatan")
+        console.error(e)
+    }
+    console.log('error', dataKecamatan)
+    const decryptDataKecamatan = JSON.parse(decrypt(dataKecamatan?.data?.response, keydecrypt));
+    const tempres = {
+        kecamatan: decryptDataKecamatan
+    }
+    res.status(200).send({
+        data: tempres,
+        status: "success",
+        success: true,
+    });
+}
+
 
 async function generateSignature(req, res) {
     try {
@@ -178,5 +241,8 @@ async function generateSignature(req, res) {
 
 module.exports = {
     generateSignature,
-    getHistoryBPJS
+    getHistoryBPJS,
+    getProvinsi,
+    getKabupaten,
+    getKecamatan
 };

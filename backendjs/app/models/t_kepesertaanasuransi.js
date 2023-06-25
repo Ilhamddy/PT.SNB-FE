@@ -73,13 +73,22 @@ module.exports = (sequelize, Sequelize) => {
         objectstatuskecelakaanfk:{
             type: Sequelize.INTEGER
         },
-        ll_objectprovinsifk: {
+        ll_namaprovinsi: {
+            type: Sequelize.STRING
+        },
+        ll_namakabupaten: {
+            type: Sequelize.STRING
+        },
+        ll_namakecamatan: {
+            type: Sequelize.STRING
+        },
+        ll_kodeprovinsi: {
             type: Sequelize.INTEGER
         },
-        ll_objectkabupatenfk: {
+        ll_kodekabupaten: {
             type: Sequelize.INTEGER
         },
-        ll_objectkecamatanfk: {
+        ll_kodekecamatan: {
             type: Sequelize.INTEGER
         },
         ll_tgl: {
@@ -97,13 +106,22 @@ module.exports = (sequelize, Sequelize) => {
         lk_nolaporan: {
             type: Sequelize.STRING
         },
-        lk_objectprovinsifk: {
+        lk_namaprovinsi: {
+            type: Sequelize.STRING
+        },
+        lk_namakabupaten: {
+            type: Sequelize.STRING
+        },
+        lk_namakecamatan: {
+            type: Sequelize.STRING
+        },
+        lk_kodeprovinsi: {
             type: Sequelize.INTEGER
         },
-        lk_objectkabupatenfk: {
+        lk_kodekabupaten: {
             type: Sequelize.INTEGER
         },
-        lk_objectkecamatanfk: {
+        lk_kodekecamatan: {
             type: Sequelize.INTEGER
         },
         lk_keterangan: {
@@ -121,9 +139,6 @@ module.exports = (sequelize, Sequelize) => {
         ll_istaspen:{
             type: Sequelize.BOOLEAN
         },
-        // ll_isaskes:{
-        //     type: Sequelize.BOOLEAN
-        // }
     }, {
         tableName: "t_kepesertaanasuransi", // relation "user" does not exist
         createdAt: false,

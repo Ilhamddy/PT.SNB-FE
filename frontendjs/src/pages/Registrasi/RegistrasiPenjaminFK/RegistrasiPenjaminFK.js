@@ -16,8 +16,10 @@ import Flatpickr from "react-flatpickr";
 import CustomSelect from "../../Select/Select";
 import { emrDiagnosaxGet, emrListDiagnosaxGet, registrasiGet, registrasiNoBPJSGet, registrasiRuanganNorecGet, registrasiSavePenjaminFK } from "../../../store/actions";
 import { useDispatch, useSelector } from "react-redux";
-import { comboAsuransiGet, comboRegistrasiGet } from "../../../store/master/action";
+import { comboAsuransiGet, comboRegistrasiGet, kabupatenGetBpjs, kecamatanGetBpjs, provinsiGetBpjs } from "../../../store/master/action";
 import "./RegistrasiPenjaminFK.scss";
+
+const dateNow = new Date()
 
 
 const RegistrasiPenjaminFK = () => {
@@ -29,17 +31,38 @@ const RegistrasiPenjaminFK = () => {
     const [isOpenRI, setIsOpenRI] = useState(false);
     const dispatch = useDispatch();
 
-    const {  dataDiagnosa, statusKecelakaan: statusKecelakaanOpt
-        , data, dataUser, dataBpjs, dataRuangDaftar } = useSelector((state) => ({
+    const {  dataDiagnosa, statusKecelakaan: statusKecelakaanOpt, 
+        data, 
+        dataUser, 
+        dataBpjs, 
+        dataRuangDaftar,
+        dataProvinsi,
+        dataKabupaten,
+        dataKecamatan,
+    } = useSelector((state) => ({
         dataDiagnosa: state.Emr.emrDiagnosaxGet.data,
         data: state.Master.comboRegistrasiGet.data,
         statusKecelakaan: state.Master.comboAsuransiGet.data.statuskecelakaan,
         dataUser: state.Registrasi.registrasiGet.data,
         dataBpjs: state.Registrasi.registrasiNoBpjsGet.data,
         dataRuangDaftar: state.Registrasi.registrasiRuangNorecGet.data,
+        dataProvinsi: state.Master.provinsiBpjs.data?.provinsi?.list || [],
+        dataKabupaten: state.Master.kabupatenBpjs.data?.kabupaten?.list || [],
+        dataKecamatan: state.Master.kecamatanBpjs.data?.kecamatan?.list || [],
     }));
 
-
+    const optionProv = dataProvinsi.map((item) => ({
+        value: Number(item.kode),
+        label: item.nama,
+    }));
+    const optionKab = dataKabupaten.map((item) => ({
+        value: Number(item.kode),
+        label: item.nama,
+    }));
+    const optionKec = dataKecamatan.map((item) => ({
+        value: Number(item.kode),
+        label: item.nama,
+    }));
 
     const penjaminLakaLantas = [ //dummy data
         { value: "1", label: "Jasa Raharja" },
@@ -73,14 +96,18 @@ const RegistrasiPenjaminFK = () => {
             id: id,
             norecdp: norec,
             nokartu: "",
-            jenisrujukan: "abc",
-            tanggalsep: "",
+            jenisrujukan: "",
+            tanggalsep: new Date(dateNow.getTime() - (dateNow.getTimezoneOffset() * 60000))
+                .toISOString()
+                .split("T")[0],
             norujukan: "",
             penjamin: 1,
             tujuankunjungan: "",
             dpjpmelayani: "",
             asalrujukan: "",
-            tanggalrujukan: "",
+            tanggalrujukan: new Date(dateNow.getTime() - (dateNow.getTimezoneOffset() * 60000))
+                .toISOString()
+                .split("T")[0],
             nosuratkontrol: "",
             dpjppemberi: "",
             diagnosarujukan: "",
@@ -89,18 +116,26 @@ const RegistrasiPenjaminFK = () => {
             catatan: "",
             statuskecelakaan: "",
             provinsilakalantas: "",
+            kprovinsilakalantas: "",
             kotalakalantas: "",
+            kkotalakalantas: "",
             kecamatanlakalantas: "",
-            tanggallakalantas: "",
+            tanggallakalantas: new Date(dateNow.getTime() - (dateNow.getTimezoneOffset() * 60000))
+                .toISOString()
+                .split("T")[0],
             nosepsuplesi: "",
             keteranganlakalantas: "", 
-            tanggallakakerja: "",
+            tanggallakakerja: new Date(dateNow.getTime() - (dateNow.getTimezoneOffset() * 60000))
+                .toISOString()
+                .split("T")[0],
             nolaporanpolisi: "",
             keteranganlakakerja: "",
             provinsilakakerja: "",
+            kprovinsilakakerja: "",
             kotalakakerja: "",
+            kkotalakakerja: "",
             kecamatanlakakerja: "",
-            
+            kkecamatanlakakerja: "",
         },
 
         validationSchema: Yup.object({
@@ -126,7 +161,19 @@ const RegistrasiPenjaminFK = () => {
                         .required("provinsi harus Harus di isi")
                 } else return schema
             }),
+            kprovinsilakalantas: Yup.string().when("statuskecelakaan", (statuskecelakaan, schema) => {
+                if (statuskecelakaan[0] === '2' || statuskecelakaan[0] === '4') {
+                    return schema
+                        .required("provinsi harus Harus di isi")
+                } else return schema
+            }),
             kotalakalantas: Yup.string().when("statuskecelakaan", (statuskecelakaan, schema) => {
+                if (statuskecelakaan[0] === '2' || statuskecelakaan[0] === '4') {
+                    return schema
+                        .required("kota harus Harus di isi")
+                } else return schema
+            }),
+            kkotalakalantas: Yup.string().when("statuskecelakaan", (statuskecelakaan, schema) => {
                 if (statuskecelakaan[0] === '2' || statuskecelakaan[0] === '4') {
                     return schema
                         .required("kota harus Harus di isi")
@@ -137,7 +184,13 @@ const RegistrasiPenjaminFK = () => {
                     return schema
                         .required("kecamatan harus Harus di isi")
                     } else return schema
-            }),       
+            }),
+            kkecamatanlakalantas: Yup.string().when("statuskecelakaan", (statuskecelakaan, schema) => {
+                if (statuskecelakaan[0] === '2' || statuskecelakaan[0] === '4') {
+                    return schema
+                        .required("kecamatan harus Harus di isi")
+                } else return schema
+            }),   
             tanggallakalantas: Yup.string().when("statuskecelakaan", (statuskecelakaan, schema) => {
                 if (statuskecelakaan[0] === '2' || statuskecelakaan[0] === '4') {
                     return schema
@@ -145,7 +198,6 @@ const RegistrasiPenjaminFK = () => {
                 } else return schema
             }),
             nosepsuplesi: Yup.string().when("statuskecelakaan", (statuskecelakaan, schema) => {
-                console.log("no sep", statuskecelakaan)
                 if (statuskecelakaan[0] === '2' || statuskecelakaan[0] === '4') {
                     return schema
                         .required("No epsuplesi harus Harus di isi")
@@ -181,7 +233,19 @@ const RegistrasiPenjaminFK = () => {
                         .required("Provinsi harus Harus di isi")
                 } else return schema
             }),
+            kprovinsilakakerja: Yup.string().when("statuskecelakaan", (statuskecelakaan, schema) => {
+                if (statuskecelakaan[0] === '3' || statuskecelakaan[0] === '4') {
+                    return schema
+                        .required("Provinsi harus Harus di isi")
+                } else return schema
+            }),
             kotalakakerja: Yup.string().when("statuskecelakaan", (statuskecelakaan, schema) => {
+                if (statuskecelakaan[0] === '3' || statuskecelakaan[0] === '4') {
+                    return schema
+                        .required("Kota harus Harus di isi")
+                } else return schema
+            }),
+            kkotalakakerja: Yup.string().when("statuskecelakaan", (statuskecelakaan, schema) => {
                 if (statuskecelakaan[0] === '3' || statuskecelakaan[0] === '4') {
                     return schema
                         .required("Kota harus Harus di isi")
@@ -196,13 +260,24 @@ const RegistrasiPenjaminFK = () => {
         }),
         onSubmit: (values) => {
             if(values){
-                console.log("regis")
                 dispatch(registrasiSavePenjaminFK(values))
             }
         }
     });
 
-    console.log(validation.errors)
+    const vNonBpjs = useFormik({
+        enableReinitialize: true,
+        initialValues: {
+        },
+        validationSchema: Yup.object({
+            noregistrasifk: Yup.string().required("No Registrasi harus di isi"),
+        }),
+        onSubmit: (values) => {
+            if(values){
+                // dispatch(registrasiSavePenjaminNonFK(values))
+            }
+        }
+    })
 
     const handleDateChange = (field, newBeginValue) => {
         var dateString = new Date(newBeginValue.getTime() - (newBeginValue.getTimezoneOffset() * 60000))
@@ -229,6 +304,11 @@ const RegistrasiPenjaminFK = () => {
     };
 
     useEffect(() => {
+        dispatch(provinsiGetBpjs());
+    }, [dispatch])
+
+
+    useEffect(() => {
         dispatch(comboAsuransiGet());
         dispatch(comboRegistrasiGet());
         if (id) {
@@ -244,9 +324,13 @@ const RegistrasiPenjaminFK = () => {
         }
     }, [dataUser, dispatch])
 
-    const handleAsalRujukan = (val) => {validation.setFieldValue("asalrujukan", val);}
+    const handleAsalRujukan = (val) => {
+        validation.setFieldValue("asalrujukan", val);
+        validation.setFieldValue("jenisrujukan", val)
+    }
     const handleTujuanKunjungan = (val) => {validation.setFieldValue("tujuankunjungan", val);}
     const handleTujuanDPJPMelayani = (val) => { validation.setFieldValue("dpjpmelayani", val);}
+    const handleJenisPeserta = (val) => {validation.setFieldValue("jenispeserta", val)}
 
     useEffect(() => {   
         dataRuangDaftar?.objectinstalasifk 
@@ -257,6 +341,12 @@ const RegistrasiPenjaminFK = () => {
             && handleTujuanDPJPMelayani(dataRuangDaftar.objectdokterpemeriksafk);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [dataRuangDaftar])
+
+    useEffect(() => {
+        if(dataBpjs?.kepesertaan?.peserta?.jenisPeserta?.keterangan){
+            handleJenisPeserta(dataBpjs?.kepesertaan?.peserta?.jenisPeserta?.keterangan);
+        }
+    }, [dataBpjs])
 
     //klinik 3, puskesmas 1, rumahsakit 2
     useEffect(() => {
@@ -296,6 +386,11 @@ const RegistrasiPenjaminFK = () => {
                                     <CustomSelect
                                         id="jenisrujukan"
                                         name="jenisrujukan"
+                                        options={data.instalasi}
+                                        onChange={(e) => {
+                                            handleTujuanKunjungan(e.value)
+                                        }}
+                                        value={validation.values.tujuankunjungan || ""}
                                     />
                                     {validation.touched.jenisrujukan && validation.errors.jenisrujukan ? (
                                         <FormFeedback type="invalid"><div>{validation.errors.jenisrujukan}</div></FormFeedback>
@@ -656,7 +751,6 @@ const RegistrasiPenjaminFK = () => {
                 <Col lg={6}>
                     <Card>
                         <CardBody>
-
                             <Row className="gy-4">
                                 <Col xxl={6} md={6}>
                                     <div className="mt-2">
@@ -667,6 +761,12 @@ const RegistrasiPenjaminFK = () => {
                                     <CustomSelect
                                         id="provinsilakalantas"
                                         name="provinsilakalantas"
+                                        options={optionProv}
+                                        className={`input ${validation.errors.provinsilakalantas ? "is-invalid" : ""}`}
+                                        onChange={(e) => {
+                                            validation.setFieldValue("kprovinsilakalantas", e.value);
+                                            validation.setFieldValue("provinsilakalantas", e.label);
+                                        }}
                                     />
                                     {validation.touched.provinsilakalantas && validation.errors.provinsilakalantas ? (
                                         <FormFeedback type="invalid"><div>{validation.errors.provinsilakalantas}</div></FormFeedback>
@@ -681,6 +781,22 @@ const RegistrasiPenjaminFK = () => {
                                     <CustomSelect
                                         id="kotalakalantas"
                                         name="kotalakalantas"
+                                        options={optionKab}
+                                        onMenuOpen={() => {
+                                            if (!validation.values.provinsilakalantas || !validation.values.kprovinsilakalantas) {
+                                                validation.setFieldError("kotalakalantas", "Pilih provinsi terlebih dahulu")
+                                            }else{
+                                                const chosenProv = optionProv.find((val) => 
+                                                    Number(val.value) === validation.values.kprovinsilakalantas)
+                                                if(!chosenProv) return;
+                                                dispatch(kabupatenGetBpjs(chosenProv.value))
+                                            }
+                                        }}
+                                        className={`input ${validation.errors.kotalakalantas ? "is-invalid" : ""}`}
+                                        onChange={(e) => {
+                                            validation.setFieldValue("kkotalakalantas", e.value);
+                                            validation.setFieldValue("kotalakalantas", e.label);
+                                        }}
                                     />
                                     {validation.touched.kotalakalantas && validation.errors.kotalakalantas ? (
                                         <FormFeedback type="invalid"><div>{validation.errors.kotalakalantas}</div></FormFeedback>
@@ -695,6 +811,24 @@ const RegistrasiPenjaminFK = () => {
                                     <CustomSelect
                                         id="kecamatanlakalantas"
                                         name="kecamatanlakalantas"
+                                        onMenuOpen={() => {
+                                            if (!validation.values.kotalakalantas) {
+                                                validation.setFieldError("kecamatanlakalantas", "Pilih provinsi terlebih dahulu")
+                                            }else{
+                                                const chosenKab = optionKab.find((val) => 
+                                                    Number(val.value) === validation.values.kkotalakalantas
+                                                )
+                                                console.log("chosen", chosenKab)
+                                                if(!chosenKab) return;
+                                                dispatch(kecamatanGetBpjs(chosenKab.value))
+                                            }
+                                        }}
+                                        options={optionKec}
+                                        className={`input ${validation.errors.kecamatanlakalantas ? "is-invalid" : ""}`}
+                                        onChange={(e) => {
+                                            validation.setFieldValue("kkecamatanlakalantas", e.value);
+                                            validation.setFieldValue("kecamatanlakalantas", e.label);
+                                        }}
                                     />
                                     {validation.touched.kecamatanlakalantas && validation.errors.kecamatanlakalantas ? (
                                         <FormFeedback type="invalid"><div>{validation.errors.kecamatanlakalantas}</div></FormFeedback>
@@ -750,7 +884,7 @@ const RegistrasiPenjaminFK = () => {
                                     <Input
                                         id="nosepsuplesi"
                                         name="nosepsuplesi"
-                                        type="number"
+                                        type="string"
                                         placeholder="No SEP Suplesi"
                                         onChange={validation.handleChange}
                                         onBlur={validation.handleBlur}
@@ -833,7 +967,7 @@ const RegistrasiPenjaminFK = () => {
                                     <Input
                                         id="nolaporanpolisi"
                                         name="nolaporanpolisi"
-                                        type="number"
+                                        type="string"
                                         placeholder="No Laporan Polisi"
                                         onChange={validation.handleChange}
                                         onBlur={validation.handleBlur}
@@ -846,12 +980,16 @@ const RegistrasiPenjaminFK = () => {
                                         <FormFeedback type="invalid"><div>{validation.errors.nolaporanpolisi}</div></FormFeedback>
                                     ) : null}
                                 </Col>
-
+                                <Col xxl={6} md={6}>
+                                    <div className="mt-2">
+                                        <Label style={{ color: "black" }} htmlFor="keteranganlakakerja" className="form-label">Keterangan </Label>
+                                    </div>
+                                </Col>
                                 <Col xxl={6} md={6}>
                                     <Input
                                         id="keteranganlakakerja"
                                         name="keteranganlakakerja"
-                                        type="number"
+                                        type="string"
                                         placeholder="Keterangan"
                                         onChange={validation.handleChange}
                                         onBlur={validation.handleBlur}
@@ -881,7 +1019,12 @@ const RegistrasiPenjaminFK = () => {
                                     <CustomSelect
                                         id="provinsilakakerja"
                                         name="provinsilakakerja"
-                                        
+                                        options={optionProv}
+                                        className={`input ${validation.errors.provinsilakakerja ? "is-invalid" : ""}`}
+                                        onChange={(e) => {
+                                            validation.setFieldValue("kprovinsilakakerja", e.value);
+                                            validation.setFieldValue("provinsilakakerja", e.label);
+                                        }}
                                     />
                                     {validation.touched.provinsilakakerja && validation.errors.provinsilakakerja ? (
                                         <FormFeedback type="invalid"><div>{validation.errors.provinsilakakerja}</div></FormFeedback>
@@ -896,6 +1039,22 @@ const RegistrasiPenjaminFK = () => {
                                     <CustomSelect
                                         id="kotalakakerja"
                                         name="kotalakakerja"
+                                        options={optionKab}
+                                        onMenuOpen={() => {
+                                            if (!validation.values.provinsilakakerja || !validation.values.kprovinsilakakerja) {
+                                                validation.setFieldError("provinsilakakerja", "Pilih provinsi terlebih dahulu")
+                                            }else{
+                                                const chosenProv = optionProv.find((val) => 
+                                                    Number(val.value) === validation.values.kprovinsilakakerja)
+                                                if(!chosenProv) return;
+                                                dispatch(kabupatenGetBpjs(chosenProv.value))
+                                            }
+                                        }}
+                                        className={`input ${validation.errors.kotalakakerja ? "is-invalid" : ""}`}
+                                        onChange={(e) => {
+                                            validation.setFieldValue("kkotalakakerja", e.value);
+                                            validation.setFieldValue("kotalakakerja", e.label);
+                                        }}
                                     />
                                     {validation.touched.kotalakakerja && validation.errors.kotalakakerja ? (
                                         <FormFeedback type="invalid"><div>{validation.errors.kotalakakerja}</div></FormFeedback>
@@ -910,6 +1069,22 @@ const RegistrasiPenjaminFK = () => {
                                     <CustomSelect
                                         id="kecamatanlakakerja"
                                         name="kecamatanlakakerja"
+                                        options={optionKec}
+                                        onMenuOpen={() => {
+                                            if (!validation.values.kotalakakerja) {
+                                                validation.setFieldError("kotalakakerja", "Pilih provinsi terlebih dahulu")
+                                            }else{
+                                                const chosenKab = optionKab.find((val) => 
+                                                    Number(val.value) === validation.values.kkotalakakerja)
+                                                if(!chosenKab) return;
+                                                dispatch(kecamatanGetBpjs(chosenKab.value))
+                                            }
+                                        }}
+                                        className={`input ${validation.errors.kecamatanlakakerja ? "is-invalid" : ""}`}
+                                        onChange={(e) => {
+                                            validation.setFieldValue("kkecamatanlakakerja", e.value);
+                                            validation.setFieldValue("kecamatanlakakerja", e.label);
+                                        }}
                                     />
                                     {validation.touched.kecamatanlakakerja && validation.errors.kecamatanlakakerja ? (
                                         <FormFeedback type="invalid"><div>{validation.errors.kecamatanlakakerja}</div></FormFeedback>
@@ -942,6 +1117,41 @@ const RegistrasiPenjaminFK = () => {
                 ? <>{BodyLakaKerja}{BodyLakaLantas}</> : <></>
             }
 
+        </>
+    )
+
+    const BodyNonBpjs = (
+        <>
+            <Row key={0}>
+                <Col xxl={6} md={6}>
+                    <div className="mt-2">
+                        <Label style={{ color: "black" }} htmlFor="nokartunonbpjs" className="form-label">No Kartu</Label>
+                    </div>
+                </Col>
+                <Col xxl={6} md={6}>
+                    <Input 
+                        id="nokartunonbpjs"
+                        name="nokartunonbpjs"
+                    />
+                    {vNonBpjs.touched.nokartunonbpjs && vNonBpjs.errors.nokartunonbpjs ? (
+                        <FormFeedback type="invalid"><div>{validation.errors.nokartunonbpjs}</div></FormFeedback>
+                    ) : null}
+                </Col>
+                <Col xxl={6} md={6}>
+                    <div className="mt-2">
+                        <Label style={{ color: "black" }} htmlFor="kotalakalantas" className="form-label">Besaran Platform</Label>
+                    </div>
+                </Col>
+                <Col xxl={6} md={6}>
+                    <Input
+                        id="besaranplatform"
+                        name="besaranplatform"
+                    />
+                    {vNonBpjs.touched.besaranplatform && validation.errors.besaranplatform ? (
+                        <FormFeedback type="invalid"><div>{validation.errors.besaranplatform}</div></FormFeedback>
+                    ) : null}
+                </Col>
+            </Row>
         </>
     )
 
@@ -1039,6 +1249,7 @@ const RegistrasiPenjaminFK = () => {
                     <Col lg={9}>
                         <Form onSubmit={(e) => {
                             e.preventDefault();
+                            console.log(validation.errors)
                             validation.handleSubmit();
                             return false;
                         }}
@@ -1058,11 +1269,11 @@ const RegistrasiPenjaminFK = () => {
                                                 text={"BPJS"} 
                                                 cardHeaderTab={cardHeaderTab} 
                                                 cardHeaderToggle={cardHeaderToggle}/>
-                                            <NavItemCust 
+                                            {/* <NavItemCust 
                                                 tabNumber={"2"} 
                                                 text={"Penjamin Lainnya"} 
                                                 cardHeaderTab={cardHeaderTab} 
-                                                cardHeaderToggle={cardHeaderToggle}/>
+                                                cardHeaderToggle={cardHeaderToggle}/> */}
                                         </Nav>
                                     </div>
                                 </div>
@@ -1074,12 +1285,8 @@ const RegistrasiPenjaminFK = () => {
                                         </Col>
                                     </TabPane>
 
-                                    <TabPane tabId="2" id="home-1">
-                                        <Card>
-                                            <CardBody>
-                                                body2
-                                            </CardBody>
-                                        </Card>
+                                    {/* <TabPane tabId="2" id="home-1">
+                                        {BodyNonBpjs}
                                     </TabPane>
 
                                     <TabPane tabId="3" id="home-1">
@@ -1088,7 +1295,7 @@ const RegistrasiPenjaminFK = () => {
                                                 body3
                                             </CardBody>
                                         </Card>
-                                    </TabPane>
+                                    </TabPane> */}
                                 </TabContent>
                             </Card>                            
                         </Form>
