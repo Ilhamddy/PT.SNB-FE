@@ -19,7 +19,17 @@ const PrintRekapBiaya = ({ }) => {
             name: "BMHP",
             price: 100000
         },
+        {
+            name: "BMHP",
+            price: 100000
+        },
+        {
+            name: "BMHP",
+            price: 100000
+        },
     ]
+    const totalPrice = dataRekap.reduce((total, data) => total + data.price, 0);
+    const totalAsuransi = 100000;
     return(
         <div className="kontainer-print-rekap-b">
             <div className="header-rekap">
@@ -162,6 +172,50 @@ const PrintRekapBiaya = ({ }) => {
                         </tr>
                         ))
                     }
+                </tbody>
+            </table>
+            <table className="table-data-total">
+                <tbody>
+                    <tr>
+                        <th>
+                            Total
+                        </th>
+                        <td>
+                            Rp{totalPrice}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            Diskon
+                        </th>
+                        <td>
+                            Rp{0}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            Klaim Asuransi
+                        </th>
+                        <td>
+                            Rp{totalAsuransi}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            Deposit
+                        </th>
+                        <td>
+                            Rp{0}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            Total Tagihan
+                        </th>
+                        <td>
+                            Rp{totalPrice - totalAsuransi}
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </div>

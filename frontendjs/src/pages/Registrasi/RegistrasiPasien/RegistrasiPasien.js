@@ -745,6 +745,8 @@ const RegistrasiPasien = (props) => {
             <PrintTemplate
                 ContentPrint={<PrintRekapBiaya />}
                 ref={refPrintRekapBiaya}
+                testing
+                
             />
             <PrintTemplate 
                 ContentPrint={<PrintBukti 
