@@ -22,5 +22,22 @@ module.exports = function (app) {
         [authJwt.verifyToken],
         controller.getHistoryBPJS
     );
-    
+
+    app.get(
+        "/api/transaksi/bridging/bpjs/provinsi",
+        [authJwt.verifyToken],
+        controller.getProvinsi
+    );
+
+    app.get(
+        "/api/transaksi/bridging/bpjs/kabupaten/:provinsi",
+        [authJwt.verifyToken],
+        controller.getKabupaten
+    );
+
+    app.get(
+        "/api/transaksi/bridging/bpjs/kecamatan/:kabupaten",
+        [authJwt.verifyToken],
+        controller.getKecamatan
+    );
 }

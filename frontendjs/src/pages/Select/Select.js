@@ -25,6 +25,7 @@ const CustomSelect = ({ onChange, options, value, className, ...rest}) =>{
                 value={defaultValue(options,value)}
                 onChange={value=>onChange(value)}
                 options={options}
+
                 theme={(theme) => ({
                     ...theme,
                     borderRadius: 0,

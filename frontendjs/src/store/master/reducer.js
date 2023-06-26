@@ -15,6 +15,16 @@ import {
     COMBO_ASURANSI_GET,
     COMBO_ASURANSI_GET_SUCCESS,
     COMBO_ASURANSI_GET_ERROR,
+    PROVINSI_GET_BPJS,
+    PROVINSI_GET_BPJS_SUCCESS,
+    PROVINSI_GET_BPJS_ERROR,
+    KABUPATEN_GET_BPJS,
+    KABUPATEN_GET_BPJS_SUCCESS,
+    KABUPATEN_GET_BPJS_ERROR,
+    KECAMATAN_GET_BPJS,
+    KECAMATAN_GET_BPJS_SUCCESS,
+    KECAMATAN_GET_BPJS_ERROR,
+
 } from "./actionType";
 
 const INIT_STATE = {
@@ -39,6 +49,21 @@ const INIT_STATE = {
         error: null,
     },
     comboAsuransiGet: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    provinsiBpjs: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    kabupatenBpjs: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    kecamatanBpjs: {
         data: [],
         loading: false,
         error: null,
@@ -206,6 +231,105 @@ const Master = (state = INIT_STATE, action) => {
                 ...state,
                 comboAsuransiGet: {
                     ...state.comboAsuransiGet,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case PROVINSI_GET_BPJS: {
+            return {
+                ...state,
+                provinsiBpjs: {
+                    ...state.provinsiBpjs,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case PROVINSI_GET_BPJS_SUCCESS: {
+            return {
+                ...state,
+                provinsiBpjs: {
+                    ...state.provinsiBpjs,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case PROVINSI_GET_BPJS_ERROR: {
+            return {
+                ...state,
+                provinsiBpjs: {
+                    ...state.provinsiBpjs,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case KABUPATEN_GET_BPJS: {
+            return {
+                ...state,
+                kabupatenBpjs: {
+                    ...state.kabupatenBpjs,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case KABUPATEN_GET_BPJS_SUCCESS: {
+            return {
+                ...state,
+                kabupatenBpjs: {
+                    ...state.kabupatenBpjs,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case KABUPATEN_GET_BPJS_ERROR: {
+            return {
+                ...state,
+                kabupatenBpjs: {
+                    ...state.kabupatenBpjs,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case KECAMATAN_GET_BPJS: {
+            return {
+                ...state,
+                kecamatanBpjs: {
+                    ...state.kecamatanBpjs,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case KECAMATAN_GET_BPJS_SUCCESS: {
+            return {
+                ...state,
+                kecamatanBpjs: {
+                    ...state.kecamatanBpjs,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case KECAMATAN_GET_BPJS_ERROR: {
+            return {
+                ...state,
+                kecamatanBpjs: {
+                    ...state.kecamatanBpjs,
                     loading: false,
                     error: action.error,
                 }

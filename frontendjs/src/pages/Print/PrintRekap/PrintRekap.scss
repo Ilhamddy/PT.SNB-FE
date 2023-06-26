@@ -1,0 +1,30 @@
+
+
+.kontainer-print-rekap{
+    width: 450px;
+    .judul-print-rekap{
+        width: 100%;
+        text-align: center;
+        font-size: 14px;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+    .table-print-rekap{
+        width: 100%;
+        font-size: 12px;
+        text-align: center;
+
+        .data-utama{
+            border-bottom: 1px solid black;
+
+            tr{
+                width: 100%;
+                display: flex;
+                td{
+                    display: flex;
+                    width: 33.3%;
+                }
+            }
+        }
+    }
+}
