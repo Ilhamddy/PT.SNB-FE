@@ -46,7 +46,7 @@ const PrintTemplate = forwardRef(({ContentPrint,
                 );
             }, 500);
         }
-    }, [isOpen])
+    }, [isOpen, followHeight, format, orientation, scale, testing, width])
     const handlePrint = () => {setIsOpen(true)}
     const toggle = () => setIsOpen(false);
     useImperativeHandle(ref, () => ({
