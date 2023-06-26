@@ -350,6 +350,7 @@ const RegistrasiPenjaminFK = () => {
         if(dataBpjs?.kepesertaan?.peserta?.noKartu){
             handleSetNoKartu(dataBpjs?.kepesertaan?.peserta?.noKartu);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [dataBpjs])
 
     //klinik 3, puskesmas 1, rumahsakit 2

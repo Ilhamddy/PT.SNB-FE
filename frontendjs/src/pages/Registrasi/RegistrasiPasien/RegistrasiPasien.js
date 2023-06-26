@@ -290,7 +290,7 @@ const RegistrasiPasien = (props) => {
             setpillsTab("3");
         }
 	}, [successReg, id, navigate,
-        newData, validation.values.jenispenjamin]);
+        newData, validation.values]);
 
 
 	const optionPenjamin = data
@@ -347,7 +347,6 @@ const RegistrasiPasien = (props) => {
                                         </NavLink>
                                     </NavItem>
                                 </Nav>
-
                                 <TabContent activeTab={pillsTab} className="text-muted">
                                     <TabPane tabId="1" id="home-1">
                                         <Card>
