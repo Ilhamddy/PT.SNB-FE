@@ -339,13 +339,9 @@ async function saveRegistrasiPasien(req, res) {
     try {
         transaction = await db.sequelize.transaction();
         let norecDP = uuid.v4().substring(0, 32)
-        let objectpenjaminfk = null
-        let objectpenjamin2fk = null
-        let objectpenjamin3fk = null
-        for (let x = 0; x < req.body.penjamin.length; x++) {
-            if (x == 0)
-                objectpenjaminfk = req.body.penjamin[x].value
-        }
+        let objectpenjaminfk = req.body?.penjamin?.[0]?.value
+        let objectpenjamin2fk = req.body?.penjamin?.[1]?.value
+        let objectpenjamin3fk = req.body?.penjamin?.[2]?.value
         let today = new Date();
         let todayMonth = '' + (today.getMonth() + 1)
         if (todayMonth.length < 2)

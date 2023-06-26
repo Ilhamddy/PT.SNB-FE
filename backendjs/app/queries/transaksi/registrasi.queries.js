@@ -81,6 +81,17 @@ join m_kamar mk on ta.objectkamarfk =mk.id
 join m_tempattidur mt on ta.nobed = mt.id
 where td.tglpulang is null`;
 
+const getRekapBilling = `select variabelbpjs, sum(totalharga) from (
+	select mv.reportdisplay as variabelbpjs,tp.total as totalharga, * 
+	from t_pelayananpasien tp 
+	join m_produk mp on tp.objectprodukfk = mp.id 
+	join m_variabelbpjs mv on mp.objectvariabelbpjsfk = mv.id 
+	join t_antreanpemeriksaan ta on tp.objectantreanpemeriksaanfk = ta.norec 
+	join t_daftarpasien td on ta.objectdaftarpasienfk = td.norec 
+	where td.norec = 'c7142bae-2c17-4af4-b217-136f1092'
+) aa
+group by aa.variabelbpjs`;
+
 
 module.exports = {
     getAll,
@@ -96,5 +107,6 @@ module.exports = {
     getDaftarPasienRegistrasi,
     getHeaderEmr,
     widgetgetDaftarPasienRawatInap,
-    getDaftarPasienRawatInap
+    getDaftarPasienRawatInap,
+    getRekapBilling
 };

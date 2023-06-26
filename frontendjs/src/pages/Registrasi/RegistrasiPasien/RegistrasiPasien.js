@@ -23,11 +23,15 @@ import { useSelector, useDispatch } from "react-redux";
 import classnames from "classnames";
 
 import { comboRegistrasiGet } from '../../../store/master/action';
-import { registrasiNoregistrasiResetForm, registrasiGet, registrasiSaveRuangan, registrasiNoBPJSGet } from "../../../store/actions";
+import { registrasiNoregistrasiResetForm, registrasiGet, registrasiSaveRuangan, registrasiNoBPJSGet, registrasiRuanganNorecGet } from "../../../store/actions";
 import BuktiPendaftaran from '../../Print/BuktiPendaftaran';
 
 import BuktiPendaftaran2 from '../../Print/BuktiPendaftaran2';
 import BuktiPendaftaran3 from '../../Print/BuktiPendaftaran3';
+import PrintTemplate from '../../Print/PrintTemplate/PrintTemplate';
+import PrintRekap from '../../Print/PrintRekap/PrintRekap';
+import PrintBukti from '../../Print/PrintBukti/PrintBukti';
+import PrintRekapBiaya from '../../Print/PrintRekapBiaya/PrintRekapBiaya';
 
 
 
@@ -47,6 +51,8 @@ const RegistrasiPasien = (props) => {
     const [dataUnit, setdataUnit] = useState([]);
     const [dataTT, setdataTT] = useState([]);
     const refPrint = useRef(null)
+    const refPrintBukti = useRef(null);
+    const refPrintRekapBiaya = useRef(null);
     const navigate = useNavigate();
 
     const toggle = useCallback(() => {
@@ -73,7 +79,9 @@ const RegistrasiPasien = (props) => {
     }, [id, dispatch]);
 
 
-    const { datas, data, loading, error, newData, loadingSave, successReg, errorSave } = useSelector((state) => ({
+    const { dataPas, data, loading, error, newData, loadingSave, successReg, 
+        errorSave,
+        dtRuangNorec } = useSelector((state) => ({
         data: state.Master.comboRegistrasiGet.data,
         newData: state.Registrasi.registrasiSaveRuangan.newData,
         successReg: state.Registrasi.registrasiSaveRuangan.success,
@@ -81,11 +89,11 @@ const RegistrasiPasien = (props) => {
         errorSave: state.Registrasi.registrasiSaveRuangan.error,
         loading: state.Master.comboRegistrasiGet.loading,
         error: state.Master.comboRegistrasiGet.error,
-        datas: state.Registrasi.registrasiGet.data,
+        dataPas: state.Registrasi.registrasiGet.data,
+        dtRuangNorec: state.Registrasi.registrasiRuangNorecGet.data,
     }));
     useEffect(() => {
         return () => {
-
             dispatch(registrasiNoregistrasiResetForm());
         }
     }, [dispatch])
@@ -105,11 +113,11 @@ const RegistrasiPasien = (props) => {
             tujkunjungan: newData?.tujkunjungan ?? "",
             dokter: newData?.dokter ?? "",
             penanggungjawab: newData?.penanggungjawab ?? "",
-            namapasien: datas?.namapasien ?? "",
-            nocm: datas?.nocm ?? "",
-            nobpjs: datas?.nobpjs ?? "",
-            noidentitas: datas?.noidentitas ?? "",
-            tgllahir: datas?.tgllahir ?? "",
+            namapasien: dataPas?.namapasien ?? "",
+            nocm: dataPas?.nocm ?? "",
+            nobpjs: dataPas?.nobpjs ?? "",
+            noidentitas: dataPas?.noidentitas ?? "",
+            tgllahir: dataPas?.tgllahir ?? "",
             kelas: newData?.kelas ?? "",
             kamar: newData?.kamar ?? "",
             tempattidur: newData?.tempattidur ?? "",
@@ -206,10 +214,7 @@ const RegistrasiPasien = (props) => {
     }
 
     function handleSelectPenjamin(data) {
-		
-        validation.setFieldValue('penjamin', [])
-        // console.log(validation.values.penjamin)
-        // setSelectedOptions(data);
+        validation.setFieldValue('penjamin', data)
     }
     const [isLoading, setIsLoading] = useState(true);
     const handleMessage = (event) => {
@@ -288,9 +293,11 @@ const RegistrasiPasien = (props) => {
             navigate(`/registrasi/input-penjamin/${id}/${newData.data.daftarPasien.norec}`);
         }else if(successReg){
             setpillsTab("3");
+            newData?.data?.daftarPasien?.norec
+                && dispatch(registrasiRuanganNorecGet(newData?.data?.daftarPasien?.norec));
         }
 	}, [successReg, id, navigate,
-        newData, validation.values]);
+        newData, validation.values, dispatch]);
 
 
 	const optionPenjamin = data
@@ -298,10 +305,28 @@ const RegistrasiPasien = (props) => {
 		?? [];
 
     useEffect(() => {
-        if(datas?.nobpjs){
-            dispatch(registrasiNoBPJSGet(datas.nobpjs));    
+        if(dataPas?.nobpjs){
+            dispatch(registrasiNoBPJSGet(dataPas.nobpjs));    
         }
-    }, [datas?.nobpjs, dispatch])
+    }, [dataPas?.nobpjs, dispatch])
+
+    const refPrintTemplate = useRef(null);
+    const handlePrintTemplate = () => {
+        // call the child function via the ref object
+        refPrintTemplate.current.handlePrint();
+    };
+
+    const handlePrintRekap = () => {
+        refPrintRekapBiaya.current.handlePrint();
+    };
+
+    const handlePrintBukti = () => {
+        if(!dtRuangNorec){
+            toast.error("Belum menyimpan data", { autoClose: 3000 });
+            return
+        }
+        refPrintBukti.current.handlePrint();
+    }
 
     return (
         <div className="page-content">
@@ -388,8 +413,9 @@ const RegistrasiPasien = (props) => {
                                             <CardBody>
                                                 <div className="live-preview">
                                                     <div className="d-flex flex-wrap gap-2">
-                                                        <Button color="info" className="btn-animation" data-text="Registrasi" onClick={() => handleRegistrasi()}><span>Registrasi</span></Button>
-                                                        <Button color="info" className="btn-animation" data-text="Bukti Pendaftaran" onClick={() => handlePrint()}> <span>Bukti Pendaftaran</span> </Button>
+                                                        <Button color="info" className="btn-animation" data-text="Registrasi" onClick={() => {handleRegistrasi()}}><span>Registrasi</span></Button>
+                                                        <Button color="info" className="btn-animation" data-text="Bukti Pendaftaran" onClick={() => handlePrintBukti()}> <span>Bukti Pendaftaran</span> </Button>
+                                                        <Button color="info" className="btn-animation" data-text="Print Rekap Biaya" onClick={() => {handlePrintRekap()}}><span>Print Rekap Biaya</span></Button>
                                                     </div>
                                                 </div>
                                             </CardBody>
@@ -711,9 +737,43 @@ const RegistrasiPasien = (props) => {
                 toggle={() => setIsPrintOpen(false)}
                 isOpen={isPrintOpen}
                 refPrint={refPrint}
-
             />
-
+            <PrintTemplate 
+                ContentPrint={<PrintRekap  />}
+                ref={refPrintTemplate}
+            />
+            <PrintTemplate
+                ContentPrint={<PrintRekapBiaya />}
+                ref={refPrintRekapBiaya}
+            />
+            <PrintTemplate 
+                ContentPrint={<PrintBukti 
+                    noRekam={dataPas?.nocm || ""}
+                    nama={dataPas?.namapasien?.toLowerCase() || ""}
+                    tglLahir={(new Date(dataPas?.tgllahir)).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' })}
+                    noReg={dtRuangNorec?.noregistrasi || ""}
+                    tglPendaftaran={(new Date(dtRuangNorec?.tglregistrasi)).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' })}
+                    poliTujuan={data.unit?.find(x => x.value 
+                        === dtRuangNorec?.objectunitlastfk)?.label || ""}
+                    dokterTujuan={data
+                        ?.pegawai
+                        ?.find(peg => peg.value === dtRuangNorec?.objectdokterpemeriksafk)?.label || ""}
+                    rujukanAsal={data?.asalrujukan
+                        ?.find(asl => asl.value === dtRuangNorec?.objectasalrujukanfk)?.label || ""}
+                    penjamin={data?.rekanan
+                        ?.find(rek => rek.value === dtRuangNorec?.objectpenjaminfk)?.label || ""
+                    }
+                    catatan={""}
+                    initialDoc={data
+                        ?.pegawai
+                        ?.find(x => x.value === dtRuangNorec?.objectdokterpemeriksafk)?.reportdisplay || ""}
+                    noAntrean={newData?.data?.antreanPemeriksaan?.noantrian || ""}
+                />}
+                ref={refPrintBukti}
+                orientation="landscape"
+                format={[210, 120]}
+                // testing
+            />
         </div>
     )
 }
