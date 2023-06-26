@@ -124,10 +124,10 @@ async function saveTindakanPasien(req, res) {
         if (req.body.jenispelaksana8 !== '')
             newArray.push({ objectjenispelaksana: req.body.jenispelaksana8, objectnamapelaksana: req.body.namapelaksana8 });
 
-        const resultlistantreanpemeriksaan = await queryPromise2(`select mh.harga,mh.objectkomponenprodukfk,mk.reportdisplay  from m_hargaproduk mh
+        const resultlistantreanpemeriksaan = await queryPromise2(`select mh.harga,mh.objectkomponenprodukfk,mk.reportdisplay  from m_hargaprodukperkomponen mh
         join m_totalhargaprodukbykelas mt on mt.id=mh.objecttotalhargaprodukbykelasfk
         join m_komponenproduk mk on mk.id=mh.objectkomponenprodukfk 
-        where mt.objectprodukfk =${req.body.tindakan} and mh.objectkelasfk=${req.body.objectkelasfk}`);
+        where mt.objectprodukfk =${req.body.tindakan} and mt.objectkelasfk=${req.body.objectkelasfk}`);
         let norecpp = uuid.v4().substring(0, 32)
 
         const pelayananpasien = await db.t_pelayananpasien.create({

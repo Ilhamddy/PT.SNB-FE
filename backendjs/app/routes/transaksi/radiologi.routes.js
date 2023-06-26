@@ -29,9 +29,45 @@ module.exports = function (app) {
     );
 
     app.get(
+        "/api/transaksi/radiologi/list-order-by-norecorder",
+        [authJwt.verifyToken],
+        controller.getListOrderByNorecOrder
+    );
+
+    app.get(
         "/api/transaksi/radiologi/list-daftar-order-radiologi",
         [authJwt.verifyToken],
         controller.getDaftarListHistoryOrder
+    );
+
+    app.get(
+        "/api/transaksi/radiologi/list-kamar-radiologi",
+        [authJwt.verifyToken],
+        controller.getKamarRadiologi
+    );
+
+    app.put(
+        "/api/transaksi/radiologi/update-tglrencana-radiologi",
+        [authJwt.verifyToken],
+        controller.updateTglRencanaRadiologi
+    );
+
+    app.put(
+        "/api/transaksi/radiologi/save-verifikasi-radiologi",
+        [authJwt.verifyToken],
+        controller.saveUserVerifikasi
+    );
+
+    app.put(
+        "/api/transaksi/radiologi/delete-order-pelayanan",
+        [authJwt.verifyToken],
+        controller.deleteOrderPelayanan
+    );
+
+    app.put(
+        "/api/transaksi/radiologi/delete-detail-order-pelayanan",
+        [authJwt.verifyToken],
+        controller.deleteDetailOrderPelayanan
     );
     
 }

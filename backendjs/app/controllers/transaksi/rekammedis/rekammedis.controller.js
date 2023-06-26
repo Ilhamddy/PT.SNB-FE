@@ -211,7 +211,6 @@ async function saveDokumenRekammedis(req, res) {
                 code: 200
             });
         }else if(req.body.idpencarian===2){
-            console.log('masukk')
             const t_rm_lokasidokumen = await db.t_rm_lokasidokumen.update({
                 objectstatuskendalirmfk:5
             }, {

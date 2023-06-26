@@ -1,3 +1,4 @@
+import { init } from "aos";
 import {
     RADIOLOGI_RESET_FORM,
     SAVE_ORDER_PELAYANAN_RADIOLOGI,
@@ -11,8 +12,27 @@ import {
     WIDGET_DAFTAR_ORDER_RADIOLOGI_GET_ERROR,
     LIST_DAFTAR_ORDER_RADIOLOGI_GET,
     LIST_DAFTAR_ORDER_RADIOLOGI_GET_SUCCESS,
-    LIST_DAFTAR_ORDER_RADIOLOGI_GET_ERROR
+    LIST_DAFTAR_ORDER_RADIOLOGI_GET_ERROR,
+    LIST_ORDER_BY_NOREC_GET,
+    LIST_ORDER_BY_NOREC_GET_SUCCESS,
+    LIST_ORDER_BY_NOREC_GET_ERROR,
+    LIST_KAMAR_RADIOLOGI_GET,
+    LIST_KAMAR_RADIOLOGI_GET_SUCCESS,
+    LIST_KAMAR_RADIOLOGI_GET_ERROR,
+    UPDATE_TGLRENCANA_RADIOLOGI,
+    UPDATE_TGLRENCANA_RADIOLOGI_SUCCESS,
+    UPDATE_TGLRENCANA_RADIOLOGI_ERROR,
+    SAVE_VERIFIKASI_RADIOLOGI,
+    SAVE_VERIFIKASI_RADIOLOGI_SUCCESS,
+    SAVE_VERIFIKASI_RADIOLOGI_ERROR,
+    DELETE_ORDER_PELAYANAN,
+    DELETE_ORDER_PELAYANAN_SUCCESS,
+    DELETE_ORDER_PELAYANAN_ERROR,
+    DELETE_DETAIL_ORDER_PELAYANAN,
+    DELETE_DETAIL_ORDER_PELAYANAN_SUCCESS,
+    DELETE_DETAIL_ORDER_PELAYANAN_ERROR
 } from "./actionType";
+import { DELETE_ORDER } from "../ecommerce/actionType";
 
 const INIT_STATE = {
     saveOrderPelayananRadiologi: {
@@ -36,6 +56,40 @@ const INIT_STATE = {
         loading: false,
         error: null,
     },
+    listOrderByNorecGet:{
+        data:[],
+        loading: false,
+        error: null,
+    },
+    listKamarRadiologiGet:{
+        data:[],
+        loading: false,
+        error: null, 
+    },
+    updateTglRencanaRadiologi:{
+        newData: null,
+        loading: false,
+        error: null,
+        success: false
+    },
+    saveVerifikasiRadiologi:{
+        newData: null,
+        loading: false,
+        error: null,
+        success: false
+    },
+    deleteOrderPelayanan:{
+        newData: null,
+        loading: false,
+        error: null,
+        success: false
+    },
+    deleteDetailOrderPelayanan:{
+        newData: null,
+        loading: false,
+        error: null,
+        success: false
+    },
 }
 
 const Radiologi = (state = INIT_STATE, action) => {
@@ -54,6 +108,24 @@ const Radiologi = (state = INIT_STATE, action) => {
                 },
                 listdaftarOrderRadiologiGet:{
                     ...INIT_STATE.listdaftarOrderRadiologiGet
+                },
+                listOrderByNorecGet:{
+                    ...INIT_STATE.listOrderByNorecGet
+                },
+                listKamarRadiologiGet:{
+                    ...INIT_STATE.listKamarRadiologiGet
+                },
+                updateTglRencanaRadiologi:{
+                    ...INIT_STATE.updateTglRencanaRadiologi
+                },
+                saveVerifikasiRadiologi:{
+                    ...INIT_STATE.saveVerifikasiRadiologi
+                },
+                deleteOrderPelayanan:{
+                    ...INIT_STATE.deleteOrderPelayanan
+                },
+                deleteDetailOrderPelayanan:{
+                    ...INIT_STATE.deleteDetailOrderPelayanan
                 }
             }
         }
@@ -186,6 +258,208 @@ const Radiologi = (state = INIT_STATE, action) => {
                 ...state,
                 listdaftarOrderRadiologiGet: {
                     ...state.listdaftarOrderRadiologiGet,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case LIST_ORDER_BY_NOREC_GET: {
+            return {
+                ...state,
+                listOrderByNorecGet: {
+                    ...state.listOrderByNorecGet,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case LIST_ORDER_BY_NOREC_GET_SUCCESS: {
+            return {
+                ...state,
+                listOrderByNorecGet: {
+                    ...state.listOrderByNorecGet,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case LIST_ORDER_BY_NOREC_GET_ERROR: {
+            return {
+                ...state,
+                listOrderByNorecGet: {
+                    ...state.listOrderByNorecGet,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case LIST_KAMAR_RADIOLOGI_GET: {
+            return {
+                ...state,
+                listKamarRadiologiGet: {
+                    ...state.listKamarRadiologiGet,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case LIST_KAMAR_RADIOLOGI_GET_SUCCESS: {
+            return {
+                ...state,
+                listKamarRadiologiGet: {
+                    ...state.listKamarRadiologiGet,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case LIST_KAMAR_RADIOLOGI_GET_ERROR: {
+            return {
+                ...state,
+                listKamarRadiologiGet: {
+                    ...state.listKamarRadiologiGet,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case UPDATE_TGLRENCANA_RADIOLOGI: {
+            return {
+                ...state,
+                updateTglRencanaRadiologi: {
+                    ...state.updateTglRencanaRadiologi,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case UPDATE_TGLRENCANA_RADIOLOGI_SUCCESS: {
+            return {
+                ...state,
+                updateTglRencanaRadiologi: {
+                    ...state.updateTglRencanaRadiologi,
+                    newData: action.payload,
+                    loading: false,
+                    success: true,
+                }
+            }
+        }
+
+        case UPDATE_TGLRENCANA_RADIOLOGI_ERROR: {
+            return {
+                ...state,
+                updateTglRencanaRadiologi: {
+                    ...state.updateTglRencanaRadiologi,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case SAVE_VERIFIKASI_RADIOLOGI: {
+            return {
+                ...state,
+                saveVerifikasiRadiologi: {
+                    ...state.saveVerifikasiRadiologi,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case SAVE_VERIFIKASI_RADIOLOGI_SUCCESS: {
+            return {
+                ...state,
+                saveVerifikasiRadiologi: {
+                    ...state.saveVerifikasiRadiologi,
+                    newData: action.payload,
+                    loading: false,
+                    success: true,
+                }
+            }
+        }
+
+        case SAVE_VERIFIKASI_RADIOLOGI_ERROR: {
+            return {
+                ...state,
+                saveVerifikasiRadiologi: {
+                    ...state.saveVerifikasiRadiologi,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case DELETE_ORDER_PELAYANAN: {
+            return {
+                ...state,
+                deleteOrderPelayanan: {
+                    ...state.deleteOrderPelayanan,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case DELETE_ORDER_PELAYANAN_SUCCESS: {
+            return {
+                ...state,
+                deleteOrderPelayanan: {
+                    ...state.deleteOrderPelayanan,
+                    newData: action.payload,
+                    loading: false,
+                    success: true,
+                }
+            }
+        }
+
+        case DELETE_ORDER_PELAYANAN_ERROR: {
+            return {
+                ...state,
+                deleteOrderPelayanan: {
+                    ...state.deleteOrderPelayanan,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case DELETE_DETAIL_ORDER_PELAYANAN: {
+            return {
+                ...state,
+                deleteDetailOrderPelayanan: {
+                    ...state.deleteDetailOrderPelayanan,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case DELETE_DETAIL_ORDER_PELAYANAN_SUCCESS: {
+            return {
+                ...state,
+                deleteDetailOrderPelayanan: {
+                    ...state.deleteDetailOrderPelayanan,
+                    newData: action.payload,
+                    loading: false,
+                    success: true,
+                }
+            }
+        }
+
+        case DELETE_DETAIL_ORDER_PELAYANAN_ERROR: {
+            return {
+                ...state,
+                deleteDetailOrderPelayanan: {
+                    ...state.deleteDetailOrderPelayanan,
                     loading: false,
                     error: action.error,
                 }

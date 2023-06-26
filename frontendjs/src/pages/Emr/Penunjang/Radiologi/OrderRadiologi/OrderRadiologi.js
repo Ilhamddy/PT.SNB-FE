@@ -58,7 +58,8 @@ const OrderRadiologi = () => {
             norecap: newData?.norecap ?? norecap,
             tindakan: newData?.tindakan ?? '',
             namatindakan: newData?.namatindakan??'',
-            keterangan:newData?.keterangan??''
+            keterangan:newData?.keterangan??'',
+            tglinput:newData?.tglinput??dateStart,
         },
         validationSchema: Yup.object({
             tindakan: Yup.string().required("Tindakan Belum Dipilih"),

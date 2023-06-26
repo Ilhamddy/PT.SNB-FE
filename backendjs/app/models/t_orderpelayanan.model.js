@@ -33,6 +33,9 @@ module.exports = (sequelize, Sequelize) => {
         },
         keterangan:{
             type:Sequelize.STRING
+        },
+        objectpegawaiveriffk:{
+            type:Sequelize.INTEGER
         }
     }, {
         tableName: "t_orderpelayanan", // relation "user" does not exist

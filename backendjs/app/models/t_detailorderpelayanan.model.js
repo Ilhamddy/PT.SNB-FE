@@ -30,7 +30,13 @@ module.exports = (sequelize, Sequelize) => {
         },
         qty:{
             type:Sequelize.INTEGER
-        }
+        },
+        objectkamarfk:{
+            type: Sequelize.INTEGER
+        },
+        tglperjanjian:{
+            type: 'TIMESTAMP'
+        },
     }, {
         tableName: "t_detailorderpelayanan", // relation "user" does not exist
         createdAt: false,

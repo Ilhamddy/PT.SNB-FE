@@ -21,18 +21,23 @@ import DataTable from 'react-data-table-component';
 import CountUp from "react-countup";
 import {
     widgetdaftarOrderRadiologiGet, radiologiResetForm,
-    listdaftarOrderRadiologiGet
+    listdaftarOrderRadiologiGet,deleteOrderPelayanan
 } from '../../../store/actions';
 import userDummy from "../../../assets/images/users/user-dummy-img.jpg";
+import DetailOrderModal from '../DetailOrderModal/DetailOrderModal';
+import DeleteModalCustom from '../../../Components/Common/DeleteModalCustom';
+
 const DaftarOrderRadiologi = () => {
     document.title = "Daftar Order Radiologi";
     const dispatch = useDispatch();
-    const { data, datawidget, loading, error } = useSelector((state) => ({
+    const { data, datawidget, loading, error,deleteOrder,successOrder,loadingOrder } = useSelector((state) => ({
         data: state.Radiologi.listdaftarOrderRadiologiGet.data,
         loading: state.Radiologi.listdaftarOrderRadiologiGet.loading,
         error: state.Radiologi.listdaftarOrderRadiologiGet.error,
         datawidget: state.Radiologi.widgetdaftarOrderRadiologiGet.data,
-
+        deleteOrder: state.Radiologi.deleteOrderPelayanan.newData,
+        successOrder: state.Radiologi.deleteOrderPelayanan.success,
+        loadingOrder: state.Radiologi.deleteOrderPelayanan.loading,
     }));
     useEffect(() => {
         return () => {
@@ -44,18 +49,18 @@ const DaftarOrderRadiologi = () => {
         dispatch(listdaftarOrderRadiologiGet(''));
     }, [dispatch]);
     const handleClickCard = (e) => {
-        // setidPencarian(e.id)
-        // setnamaPencarian(e.label)
-        // if (e.id === 1) {
-        //     dispatch(daftarDokumenRekammedisGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=1`));
-        //     dispatch(widgetdaftarDokumenRekammedisGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=1`));
-        // } else if (e.id === 2) {
-        //     dispatch(daftarDokumenRekammedisGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=2`));
-        //     dispatch(widgetdaftarDokumenRekammedisGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=2`));
-        // } else if (e.id === 3) {
-        //     dispatch(daftarDokumenRekammedisGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=3`));
-        //     dispatch(widgetdaftarDokumenRekammedisGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=3`));
-        // }
+        setidPencarian(e.id)
+        setnamaPencarian(e.label)
+        if (e.id === 1) {
+            dispatch(listdaftarOrderRadiologiGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=1`));
+            dispatch(widgetdaftarOrderRadiologiGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=1`));
+        } else if (e.id === 2) {
+            dispatch(listdaftarOrderRadiologiGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=2`));
+            dispatch(widgetdaftarOrderRadiologiGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=2`));
+        } else if (e.id === 3) {
+            dispatch(listdaftarOrderRadiologiGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=3`));
+            dispatch(widgetdaftarOrderRadiologiGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=3`));
+        }
     };
     const current = new Date();
     const [dateStart, setdateStart] = useState(`${current.getFullYear()}-${current.getMonth() + 1}-${current.getDate()}`);
@@ -73,17 +78,17 @@ const DaftarOrderRadiologi = () => {
             .split("T")[0];
         setdateEnd(dateString)
     }
-
+    const [idPencarian, setidPencarian] = useState(1);
+    const [namaPencarian, setnamaPencarian] = useState('Belum Verif');
     const handleClickCari = () => {
-        // dispatch(daftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}`));
-        // dispatch(widgetdaftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}`));
+        dispatch(listdaftarOrderRadiologiGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}`));
+        dispatch(widgetdaftarOrderRadiologiGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}`));
     }
     const handleFilter = (e) => {
         if (e.keyCode === 13) {
-            
-            // dispatch(daftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}`));
-            // dispatch(widgetdaftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}`));
-        
+
+            dispatch(listdaftarOrderRadiologiGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}`));
+            dispatch(widgetdaftarOrderRadiologiGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}`));
         }
     }
     const handleClick = (e) => {
@@ -105,7 +110,31 @@ const DaftarOrderRadiologi = () => {
 
         }
     }
+    const [detailModal, setdetailModal] = useState(false);
+    const [tempNorecOrder, settempNorecOrder] = useState('');
+    const clickDetail = (e) => {
+        // let tempValue = {
+        //     idpencarian: 4,
+        //     norectrm: e.norectrm
+        // }
+        // console.log(tempValue)
+        settempNorecOrder(e.norec)
+        setdetailModal(true)
+    };
     const columns = [
+        {
+            name: <span className='font-weight-bold fs-13'>Detail</span>,
+            sortable: false,
+            cell: (data) => {
+                return (
+                    <div className="hstack gap-3 flex-wrap">
+                        <Link to="#" onClick={() => { clickDetail(data) }} className="text-danger fs-15" ><i className="ri-apps-2-line"></i></Link>
+
+                    </div>
+                );
+            },
+            width: "80px"
+        },
         {
             name: <span className='font-weight-bold fs-13'>Noregistrasi</span>,
             selector: row => row.noregistrasi,
@@ -146,10 +175,53 @@ const DaftarOrderRadiologi = () => {
             sortable: true,
             // width: "250px",
         },
+        {
+
+            name: <span className='font-weight-bold fs-13'>Status</span>,
+            selector: row => row.statusverif,
+            sortable: true,
+            // width: "250px",
+        },
     ];
+    const handleSimpan = () => {
+        // if (product) {
+        setdetailModal(false);
+        // }
+    };
+    const [deleteModal, setDeleteModal] = useState(false);
+   
+    const handleTolak = () => {
+        // if (product) {
+        setdetailModal(false);
+        setDeleteModal(true);
+        // }
+    };
+    const handleDeleteOrder = () => {
+        if (tempNorecOrder) {
+            let tempValue = {
+                norec: tempNorecOrder
+            }
+            dispatch(deleteOrderPelayanan(tempValue));
+            setDeleteModal(false);
+        }
+    };
     return (
         <React.Fragment>
             <ToastContainer closeButton={false} />
+            <DetailOrderModal
+                show={detailModal}
+                onSimpanClick={handleSimpan}
+                onCloseClick={() => setdetailModal(false)}
+                tempNorec={tempNorecOrder}
+                onTolakClick={handleTolak}
+            />
+            <DeleteModalCustom
+                show={deleteModal}
+                onDeleteClick={handleDeleteOrder}
+                onCloseClick={() => setDeleteModal(false)}
+                msgHDelete='Apa Kamu Yakin ?'
+                msgBDelete='Yakin ingin menolak Order Ini?'
+            />
             <UiContent />
             <div className="page-content">
                 <Container fluid>

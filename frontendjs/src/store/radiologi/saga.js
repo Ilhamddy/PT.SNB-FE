@@ -5,14 +5,26 @@ import {
     SAVE_ORDER_PELAYANAN_RADIOLOGI,
     DAFTAR_ORDER_RADIOLOGI_GET,
     WIDGET_DAFTAR_ORDER_RADIOLOGI_GET,
-    LIST_DAFTAR_ORDER_RADIOLOGI_GET
+    LIST_DAFTAR_ORDER_RADIOLOGI_GET,
+    LIST_ORDER_BY_NOREC_GET,
+    LIST_KAMAR_RADIOLOGI_GET,
+    UPDATE_TGLRENCANA_RADIOLOGI,
+    SAVE_VERIFIKASI_RADIOLOGI,
+    DELETE_ORDER_PELAYANAN,
+    DELETE_DETAIL_ORDER_PELAYANAN
 } from "./actionType";
 
 import {
     saveOrderPelayananRadiologiSuccess,saveOrderPelayananRadiologiError,
     daftarOrderRadiologiGetSuccess,daftarOrderRadiologiGetError,
     widgetdaftarOrderRadiologiGetSuccess,widgetdaftarOrderRadiologiGetError,
-    listdaftarOrderRadiologiGetSuccess,listdaftarOrderRadiologiGetError
+    listdaftarOrderRadiologiGetSuccess,listdaftarOrderRadiologiGetError,
+    listOrderByNorecGetSuccess, listOrderByNorecGetError,
+    listKamarRadiologiGetSuccess, listKamarRadiologiGetError,
+    updateTglRencanaRadiologiSuccess,updateTglRencanaRadiologiError,
+    saveVerifikasiRadiologiSuccess,saveVerifikasiRadiologiError,
+    deleteOrderPelayananSuccess,deleteOrderPelayananError,
+    deleteDetailOrderPelayananSuccess,deleteDetailOrderPelayananError
 } from "./action";
 
 
@@ -90,12 +102,146 @@ export function* watchonlistDaftarOrderRadiologi() {
     yield takeEvery(LIST_DAFTAR_ORDER_RADIOLOGI_GET, onlistDaftarOrderRadiologi);
 }
 
+function* onListOrderByNorec({ payload: { param } }) {
+    try {
+        const response = yield call(serviceRadiologi.getListOrderByNorec, param);
+        yield put(listOrderByNorecGetSuccess(response.data));
+    } catch (error) {
+        yield put(listOrderByNorecGetError(error));
+    }
+}
+
+
+export function* watchonListOrderByNorec() {
+    yield takeEvery(LIST_ORDER_BY_NOREC_GET, onListOrderByNorec);
+}
+
+function* onListKamarRadiologiGet({ payload: { param } }) {
+    try {
+        const response = yield call(serviceRadiologi.getListKamarRadiologi, param);
+        yield put(listKamarRadiologiGetSuccess(response.data));
+    } catch (error) {
+        yield put(listKamarRadiologiGetError(error));
+    }
+}
+
+
+export function* watchonListKamarRadiologiGet() {
+    yield takeEvery(LIST_KAMAR_RADIOLOGI_GET, onListKamarRadiologiGet);
+}
+
+function* onUpdateTglRencanaRadiologi({ payload: { data, history } }) {
+    try {
+        let response = null;
+        if (data.norec !== '') {
+            response = yield call(serviceRadiologi.updateTglRencanaRadiologi, data);
+        } else {
+            response = yield call(serviceRadiologi.updateTglRencanaRadiologi, data);
+        }
+
+        yield put(updateTglRencanaRadiologiSuccess(response.data));
+        if (response.code === 200) {
+            toast.success(response.msg, { autoClose: 3000 });
+        } else {
+            toast.error(response.msg, { autoClose: 3000 });
+        }
+    } catch (error) {
+        yield put(updateTglRencanaRadiologiError(error));
+        toast.error(error, { autoClose: 3000 });
+    }
+}
+
+export function* watchonUpdateTglRencanaRadiologi() {
+    yield takeEvery(UPDATE_TGLRENCANA_RADIOLOGI, onUpdateTglRencanaRadiologi);
+}
+
+function* onSaveVerifikasiRadiologi({ payload: { data, history } }) {
+    try {
+        let response = null;
+        if (data.norec !== '') {
+            response = yield call(serviceRadiologi.saveVerifikasiRadiologiUser, data);
+        } else {
+            response = yield call(serviceRadiologi.saveVerifikasiRadiologiUser, data);
+        }
+
+        yield put(saveVerifikasiRadiologiSuccess(response.data));
+        if (response.code === 200) {
+            toast.success(response.msg, { autoClose: 3000 });
+        } else {
+            toast.error(response.msg, { autoClose: 3000 });
+        }
+    } catch (error) {
+        yield put(saveVerifikasiRadiologiError(error));
+        toast.error(error, { autoClose: 3000 });
+    }
+}
+
+export function* watchonSaveVerifikasiRadiologi() {
+    yield takeEvery(SAVE_VERIFIKASI_RADIOLOGI, onSaveVerifikasiRadiologi);
+}
+
+function* onDeleteOrderPelayanan({ payload: { data, history } }) {
+    try {
+        let response = null;
+        if (data.norec !== '') {
+            response = yield call(serviceRadiologi.deleteOrderPelayananService, data);
+        } else {
+            response = yield call(serviceRadiologi.deleteOrderPelayananService, data);
+        }
+
+        yield put(deleteOrderPelayananSuccess(response.data));
+        if (response.code === 200) {
+            toast.success(response.msg, { autoClose: 3000 });
+        } else {
+            toast.error(response.msg, { autoClose: 3000 });
+        }
+    } catch (error) {
+        yield put(deleteOrderPelayananError(error));
+        toast.error(error, { autoClose: 3000 });
+    }
+}
+
+export function* watchonDeleteOrderPelayanan() {
+    yield takeEvery(DELETE_ORDER_PELAYANAN, onDeleteOrderPelayanan);
+}
+
+function* onDeleteDetailOrderPelayanan({ payload: { data, history } }) {
+    try {
+        let response = null;
+        if (data.norec !== '') {
+            response = yield call(serviceRadiologi.deleteDetailOrderPelayananService, data);
+        } else {
+            response = yield call(serviceRadiologi.deleteDetailOrderPelayananService, data);
+        }
+
+        yield put(deleteDetailOrderPelayananSuccess(response.data));
+        if (response.code === 200) {
+            toast.success(response.msg, { autoClose: 3000 });
+        } else {
+            toast.error(response.msg, { autoClose: 3000 });
+        }
+    } catch (error) {
+        yield put(deleteDetailOrderPelayananError(error));
+        toast.error(error, { autoClose: 3000 });
+    }
+}
+
+export function* watchonDeleteDetailOrderPelayanan() {
+    yield takeEvery(DELETE_DETAIL_ORDER_PELAYANAN, onDeleteDetailOrderPelayanan);
+}
+
 function* radiologiSaga() {
     yield all([
         fork(watchonsaveOrderPelayanan),
         fork(watchondaftarOrderRadiologi),
         fork(watchonwidgetdaftarOrderRadiologi),
-        fork(watchonlistDaftarOrderRadiologi)
+        fork(watchonlistDaftarOrderRadiologi),
+        fork(watchonListOrderByNorec),
+        fork(watchonListKamarRadiologiGet),
+        fork(watchonUpdateTglRencanaRadiologi),
+        fork(watchonSaveVerifikasiRadiologi),
+        fork(watchonDeleteOrderPelayanan),
+        fork(watchonDeleteDetailOrderPelayanan)
     ]);
 }
 
