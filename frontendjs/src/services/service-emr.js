@@ -101,4 +101,8 @@ export default class ServiceEmr {
     getListTagihan = async (param) => {
         return await api.get(`/transaksi/tindakan/list-tagihan?norecdp=${param}`);
     }
+
+    getListTagihanPrint = async (norecdp) => {
+        return await api.get(`/transaksi/tindakan/list-tagihan-print?norecdp=${norecdp}`);
+    }
 }

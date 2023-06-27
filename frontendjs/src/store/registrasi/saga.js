@@ -90,7 +90,6 @@ function* onGetRegistrasi({payload: {id}}) {
 
 function* onGetRegistrasiNorec({payload: {norec}}) {
     try {
-        console.log("get")
         const response = yield call(serviceRegistrasi.getRegistrasiPasienNorec, norec);
         yield put(registrasiRuanganNorecGetSuccess(response.data));
     } catch (error) {

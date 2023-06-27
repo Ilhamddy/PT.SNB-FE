@@ -68,7 +68,10 @@ import {
     TINDAKAN_SAVE_ERROR,
     LIST_TAGIHAN,
     LIST_TAGIHAN_SUCCESS,
-    LIST_TAGIHAN_ERROR
+    LIST_TAGIHAN_ERROR,
+    LIST_TAGIHAN_PRINT,
+    LIST_TAGIHAN_PRINT_SUCCESS,
+    LIST_TAGIHAN_PRINT_ERROR,
 } from "./actionType";
 
 export const emrResetForm = () => ({
@@ -436,5 +439,20 @@ export const listTagihanGetSuccess = (data) => ({
 
 export const listTagihanGetError = (error) => ({
     type: LIST_TAGIHAN_ERROR,
+    payload: error,
+});
+
+export const listTagihanPrintGet = (norecdp) => ({
+    type: LIST_TAGIHAN_PRINT,
+    payload: { norecdp },
+});
+
+export const listTagihanPrintGetSuccess = (data) => ({
+    type: LIST_TAGIHAN_PRINT_SUCCESS,
+    payload: data,
+});
+
+export const listTagihanPrintGetError = (error) => ({
+    type: LIST_TAGIHAN_PRINT_ERROR,
     payload: error,
 });

@@ -68,7 +68,10 @@ import {
     TINDAKAN_SAVE_ERROR,
     LIST_TAGIHAN,
     LIST_TAGIHAN_SUCCESS,
-    LIST_TAGIHAN_ERROR
+    LIST_TAGIHAN_ERROR,
+    LIST_TAGIHAN_PRINT,
+    LIST_TAGIHAN_PRINT_SUCCESS,
+    LIST_TAGIHAN_PRINT_ERROR,
 } from "./actionType";
 
 const INIT_STATE = {
@@ -193,6 +196,11 @@ const INIT_STATE = {
         success: false
     },
     listTagihanGet: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    listTagihanPrintGet: {
         data: [],
         loading: false,
         error: null,
@@ -1044,6 +1052,40 @@ const Emr = (state = INIT_STATE, action) => {
                 }
             }
         }
+
+        case LIST_TAGIHAN_PRINT: {
+            return {
+                ...state,
+                listTagihanPrintGet: {
+                    ...state.listTagihanPrintGet,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case LIST_TAGIHAN_PRINT_SUCCESS: {
+            return {
+                ...state,
+                listTagihanPrintGet: {
+                    ...state.listTagihanPrintGet,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case LIST_TAGIHAN_PRINT_ERROR: {
+            return {
+                ...state,
+                listTagihanPrintGet: {
+                    ...state.listTagihanPrintGet,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+                
 
         default: {
             return { ...state };

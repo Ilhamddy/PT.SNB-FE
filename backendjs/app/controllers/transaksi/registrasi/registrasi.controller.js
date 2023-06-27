@@ -19,6 +19,17 @@ const allSelect = (req, res) => {
     });
 };
 
+let queryPromise2 = (query) => {
+    return new Promise((resolve, reject) => {
+        pool.query(query, (error, results) => {
+            if (error) {
+                return reject(error);
+            }
+            return resolve(results);
+        });
+    });
+};
+
 const addPost = (req, res) => {
     const { namapasien, noidentitas } = req.body;
     // check if username exist
@@ -457,7 +468,7 @@ async function saveRegistrasiPasien(req, res) {
         // console.log(error);
         if (transaction) {
             console.error(error);
-            await transaction.rollback();
+            // await transaction.rollback();
             res.status(201).send({
                 status: error,
                 success: false,
@@ -473,9 +484,32 @@ const getRegistrasiPasienNorec = async (req, res) => {
 
     try {
         const norec = req.params.norec;
-        
+        if(!JSON.stringify(norec)){
+            throw new Error('norec tidak boleh kosong')
+
+        }
         const ruanganpasien = await pool
-            .query("select * from t_daftarpasien where norec = $1", [norec])
+            .query(`SELECT t_daftarpasien.*,
+            json_agg(peg) as pegawai, 
+            json_agg(dok) as dokter,    
+            json_agg(mk) as kelas,
+            json_agg(mps) as pasien,
+            json_agg(mu) as unit,
+            json_agg(mka) as kamar,
+            json_agg(tap) as antrean
+                FROM 
+                t_daftarpasien
+                left join m_pegawai peg on peg.id = t_daftarpasien.objectpegawaifk    
+                left join m_pegawai dok on dok.id = t_daftarpasien.objectdokterpemeriksafk
+                left join m_kelas mk on mk.id = t_daftarpasien.objectkelasfk
+                left join m_pasien mps on mps.id = t_daftarpasien.nocmfk
+                left join m_unit mu on mu.id = t_daftarpasien.objectunitlastfk
+                left join t_antreanpemeriksaan tap on tap.objectdaftarpasienfk = t_daftarpasien.norec
+                left join m_kamar mka on mka.id = tap.objectkamarfk
+                where t_daftarpasien.norec = $1
+                group by t_daftarpasien.norec
+            `
+            , [norec])
 
 
         if(ruanganpasien.rows.length === 0){
@@ -495,7 +529,7 @@ const getRegistrasiPasienNorec = async (req, res) => {
             code: 200
         })
     }catch (error) {
-        console.error("error query", error);
+        console.error(error);
         if (transaction) {
             res.status(500).send({
                 status: error,

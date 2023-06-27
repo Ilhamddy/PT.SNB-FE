@@ -18,31 +18,34 @@ import * as Yup from "yup";
 import CustomSelect from '../../Select/Select';
 import Flatpickr from "react-flatpickr";
 import DataTable from 'react-data-table-component';
-import { listTagihanGet } from "../../../store/actions";
+import { listTagihanGet, listTagihanPrintGet, registrasiRuanganNorecGet } from "../../../store/actions";
 import PropTypes from "prop-types";
+import PrintTemplate from '../../Print/PrintTemplate/PrintTemplate';
+import PrintRekapBiaya from '../../Print/PrintRekapBiaya/PrintRekapBiaya';
 const Tagihan = ({ show }) => {
     const { norecdp, norecap } = useParams();
     const dispatch = useDispatch();
-    const { dataTagihan, loadingTagihan, successTagihan } = useSelector((state) => ({
+    const { dataTagihan, loadingTagihan, successTagihan, dataTagihanPrint,
+    dataPasienReg } = useSelector((state) => ({
 
         dataTagihan: state.Emr.listTagihanGet.data,
         loadingTagihan: state.Emr.listTagihanGet.loading,
         successTagihan: state.Emr.listTagihanGet.success,
-
+        dataTagihanPrint: state.Emr.listTagihanPrintGet.data || [],
+        dataPasienReg: state.Registrasi.registrasiRuangNorecGet.data || null,
     }));
     useEffect(() => {
         if(show==='2'){
             if (norecdp) {
                 dispatch(listTagihanGet(norecdp));
+                dispatch(listTagihanPrintGet(norecdp));
             }
         }
-        
+        norecdp && dispatch(registrasiRuanganNorecGet(norecdp))
     }, [show,norecdp, dispatch])
-    // useEffect(() => {
-    //     if (norecdp) {
-    //         dispatch(listTagihanGet(norecdp));
-    //     }
-    // }, [norecdp, dispatch])
+
+    const refPrintBilling = useRef(null);
+    
     const tableCustomStyles = {
         headRow: {
             style: {
@@ -58,6 +61,7 @@ const Tagihan = ({ show }) => {
 
         }
     }
+    
     const columns = [
         {
             name: <span className='font-weight-bold fs-13'>Detail</span>,
@@ -155,12 +159,14 @@ const Tagihan = ({ show }) => {
             sortable: true,
             width: "100px"
         },
-
     ];
+
+    const handlePrint = () => {
+        refPrintBilling.current?.handlePrint();
+    }
     return (
         <React.Fragment>
             <Row className="gy-4">
-
                 <Card>
                     <CardHeader style={{ backgroundColor: "#B57602" }}>
                         <h4 className="card-title mb-0" style={{ color: '#ffffff' }}>Rincian Tagihan</h4>
@@ -176,10 +182,24 @@ const Tagihan = ({ show }) => {
                                 progressPending={loadingTagihan}
                                 customStyles={tableCustomStyles}
                             />
+                            
                         </div>
                     </CardBody>
+                    <Button onClick={() => handlePrint()}>
+                        Print Tagihan   
+                    </Button>
                 </Card>
             </Row>
+            <PrintTemplate 
+                ContentPrint={<PrintRekapBiaya 
+                    dataRekap={dataTagihanPrint?.billing || []}
+                    dataPasien={dataPasienReg || null}
+                    />
+                    
+                }
+                ref={refPrintBilling}
+            />
+
         </React.Fragment>
     )
 }

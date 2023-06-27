@@ -31,7 +31,6 @@ import BuktiPendaftaran3 from '../../Print/BuktiPendaftaran3';
 import PrintTemplate from '../../Print/PrintTemplate/PrintTemplate';
 import PrintRekap from '../../Print/PrintRekap/PrintRekap';
 import PrintBukti from '../../Print/PrintBukti/PrintBukti';
-import PrintRekapBiaya from '../../Print/PrintRekapBiaya/PrintRekapBiaya';
 
 
 
@@ -52,7 +51,6 @@ const RegistrasiPasien = (props) => {
     const [dataTT, setdataTT] = useState([]);
     const refPrint = useRef(null)
     const refPrintBukti = useRef(null);
-    const refPrintRekapBiaya = useRef(null);
     const navigate = useNavigate();
 
     const toggle = useCallback(() => {
@@ -316,9 +314,6 @@ const RegistrasiPasien = (props) => {
         refPrintTemplate.current.handlePrint();
     };
 
-    const handlePrintRekap = () => {
-        refPrintRekapBiaya.current.handlePrint();
-    };
 
     const handlePrintBukti = () => {
         if(!dtRuangNorec){
@@ -415,7 +410,6 @@ const RegistrasiPasien = (props) => {
                                                     <div className="d-flex flex-wrap gap-2">
                                                         <Button color="info" className="btn-animation" data-text="Registrasi" onClick={() => {handleRegistrasi()}}><span>Registrasi</span></Button>
                                                         <Button color="info" className="btn-animation" data-text="Bukti Pendaftaran" onClick={() => handlePrintBukti()}> <span>Bukti Pendaftaran</span> </Button>
-                                                        <Button color="info" className="btn-animation" data-text="Print Rekap Biaya" onClick={() => {handlePrintRekap()}}><span>Print Rekap Biaya</span></Button>
                                                     </div>
                                                 </div>
                                             </CardBody>
@@ -722,13 +716,7 @@ const RegistrasiPasien = (props) => {
                             >
 								
 							</iframe>
-                            {/* <iframe
-                                id="receipt"
-                                style={{ display: 'none' }}
-                                title="Receipt"
-                            >
-                                <BuktiPendaftaran3/>
-                            </iframe> */}
+
                         </Form>
                     </Col>
                 </Row>
@@ -741,12 +729,6 @@ const RegistrasiPasien = (props) => {
             <PrintTemplate 
                 ContentPrint={<PrintRekap  />}
                 ref={refPrintTemplate}
-            />
-            <PrintTemplate
-                ContentPrint={<PrintRekapBiaya />}
-                ref={refPrintRekapBiaya}
-                testing
-                
             />
             <PrintTemplate 
                 ContentPrint={<PrintBukti 

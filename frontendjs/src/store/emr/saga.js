@@ -10,7 +10,7 @@ import {
     KONSUL_SAVE, UPDATE_TASKID, UPDATE_STATUSPULANGRJ,
     COMBO_HISTORY_UNIT_GET, COMBO_TINDAKAN_GET,
     COMBO_JENIS_PELAKSANA_GET,COMBO_NAMA_PELAKSANA_GET,
-    TINDAKAN_SAVE, LIST_TAGIHAN
+    TINDAKAN_SAVE, LIST_TAGIHAN, LIST_TAGIHAN_PRINT
 } from "./actionType";
 
 import {
@@ -33,7 +33,7 @@ import {
     comboJenisPelaksanaGetSuccess,comboJenisPelaksanaGetError,
     comboNamaPelaksanaGetSuccess,comboNamaPelaksanaGetError,
     tindakanSaveSuccess,tindakanSaveError,
-    listTagihanGetSuccess,listTagihanGetError
+    listTagihanGetSuccess,listTagihanGetError, listTagihanPrintGet, listTagihanPrintGetSuccess, listTagihanPrintGetError
 } from "./action";
 
 import { toast } from 'react-toastify';
@@ -495,10 +495,23 @@ function* onListTagihan({ payload: { param } }) {
     }
 }
 
+function* onListTagihanPrint({payload: { norecdp}}) {
+    try {
+        let response = null;
+        response = yield call(serviceEmr.getListTagihanPrint, norecdp);
+        yield put(listTagihanPrintGetSuccess(response.data));
+    } catch (error) {
+        yield put(listTagihanPrintGetError(error));
+    }
+}
+
 export function* watchonListTagihan() {
     yield takeEvery(LIST_TAGIHAN, onListTagihan);
 }
 
+export function* watchonListTagihanPrint() {
+    yield takeEvery(LIST_TAGIHAN_PRINT, onListTagihanPrint);
+}
 
 function* emrSaga() {
     yield all([
@@ -524,7 +537,8 @@ function* emrSaga() {
         fork(watchonGetComboJenisPelaksana),
         fork(watchonGetComboNamaPelaksana),
         fork(watchonTindakanSave),
-        fork(watchonListTagihan)
+        fork(watchonListTagihan),
+        fork(watchonListTagihanPrint),
     ]);
 }
 

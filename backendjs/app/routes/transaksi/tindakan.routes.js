@@ -45,5 +45,11 @@ module.exports = function (app) {
         [authJwt.verifyToken],
         controller.getListTagihan
     );
+
+    app.get(
+        "/api/transaksi/tindakan/list-tagihan-print",
+        [authJwt.verifyToken],
+        controller.getAllBillingPrint
+    );
     
 }

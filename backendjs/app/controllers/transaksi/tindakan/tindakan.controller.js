@@ -246,6 +246,42 @@ async function getListTagihan(req, res) {
 
 }
 
+const getAllBillingPrint = async (req, res) => {
+    try{
+        const norecdp = req.query.norecdp;
+        const queryBilling = `
+            select variabelbpjs, sum(totalharga) from (
+                select mv.reportdisplay as variabelbpjs,tp.total as totalharga, * 
+                from t_pelayananpasien tp 
+                join m_produk mp on tp.objectprodukfk = mp.id 
+                join m_variabelbpjs mv on mp.objectvariabelbpjsfk = mv.id 
+                join t_antreanpemeriksaan ta on tp.objectantreanpemeriksaanfk = ta.norec 
+                join t_daftarpasien td on ta.objectdaftarpasienfk = td.norec 
+                where td.norec = '${norecdp}'
+            ) aa
+            group by aa.variabelbpjs
+        `
+        const billingList = await queryPromise2(queryBilling);
+
+        let tempres = { billing: billingList?.rows || [] }
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+            msg: 'Get all billing success',
+            code: 200
+        });
+    }catch(e){
+        console.error(e)
+        res.status(201).send({
+            status: e,
+            success: false,
+            msg: 'Simpan Status Pulang Gagal',
+            code: 201
+        });
+    }
+}
+
 
 module.exports = {
     getListAntreanPemeriksaan,
@@ -253,5 +289,6 @@ module.exports = {
     getListJenisPelaksana,
     getListNamaPelaksana,
     saveTindakanPasien,
-    getListTagihan
+    getListTagihan,
+    getAllBillingPrint
 };
