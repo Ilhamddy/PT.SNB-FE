@@ -448,7 +448,7 @@ async function saveUserVerifikasi(req, res) {
 
         const t_orderpelayanan = await db.t_orderpelayanan.update({
             objectpegawaiveriffk: req.idPegawai,
-
+            objectstatusveriffk: 2,
         }, {
             where: {
                 norec: req.body.norec

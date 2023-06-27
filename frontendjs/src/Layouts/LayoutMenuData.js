@@ -309,6 +309,17 @@ const Navdata = () => {
                         ]);
                     }
                 },
+                {
+                    id: "radiologi-daftarpasienradiologi",
+                    label: "Daftar Pasien Radiologi",
+                    link: "/radiologi/daftarpasienradiologi",
+                    parentId: "radiologi",
+                    isAllowed: () => {
+                        return isAllowedAccess(getUserPermissions(), [
+                            "REGISTRASI_VIEW",
+                        ]);
+                    }
+                },
             ]
         }
     ];
