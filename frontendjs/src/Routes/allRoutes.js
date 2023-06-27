@@ -258,6 +258,10 @@ import KendaliDokumen from "../pages/RekamMedis/KendaliDokumen/KendaliDokumen";
 
 // radiologi
 import DaftarOrderRadiologi from "../pages/Radiologi/DaftarOrderRadiologi/DaftarOrderRadiologi";
+import DaftarPasienRadiologi from "../pages/Radiologi/DaftarPasienRadiologi/DaftarPasienRadiologi";
+import TransaksiPelayanRadiologi from "../pages/Radiologi/TransaksiPelayanRadiologi/TransaksiPelayanRadiologi";
+
+
 
 const authProtectedRoutes = [
   { path: "/dashboard-analytics", component: <DashboardAnalytics /> },
@@ -487,7 +491,9 @@ const authProtectedRoutes = [
   {path:"/rekammedis/kendalidokumen", component:<KendaliDokumen/>},
 
   // radiologi
-  {path:"/radiologi/daftarorderradiologi", component:<DaftarOrderRadiologi/>}
+  {path:"/radiologi/daftarorderradiologi", component:<DaftarOrderRadiologi/>},
+  {path:"/radiologi/daftarpasienradiologi", component:<DaftarPasienRadiologi/>},
+  {path:"/transaksi-pelayanan-radiologi/:norecdp/:norecap", component:<TransaksiPelayanRadiologi/>},
 ];
 
 const publicRoutes = [

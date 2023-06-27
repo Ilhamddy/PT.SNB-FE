@@ -69,5 +69,17 @@ module.exports = function (app) {
         [authJwt.verifyToken],
         controller.deleteDetailOrderPelayanan
     );
+
+    app.get(
+        "/api/transaksi/radiologi/list-daftar-pasien-radiologi",
+        [authJwt.verifyToken],
+        controller.getDaftarPasienRadiologi
+    );
+
+    app.get(
+        "/api/transaksi/radiologi/list-transaksi-pelayanan-radiologi",
+        [authJwt.verifyToken],
+        controller.getTransaksiPelayananRadiologiByNorecDp
+    );
     
 }

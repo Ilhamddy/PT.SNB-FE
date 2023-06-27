@@ -217,7 +217,7 @@ async function getHeaderEmr(req, res) {
                     namapasien: resultCountNoantrianDokter.rows[i].namapasien,
                     tgllahir: resultCountNoantrianDokter.rows[i].tgllahir,
                     jeniskelamin: resultCountNoantrianDokter.rows[i].jeniskelamin,
-                    umur: resultCountNoantrianDokter.rows[i].umur.substring(1),
+                    umur: (resultCountNoantrianDokter.rows[i].umur?resultCountNoantrianDokter.rows[i].umur.substring(1):null),
                     namarekanan: resultCountNoantrianDokter.rows[i].namarekanan,
                     ruanganta: resultCountNoantrianDokter.rows[i].ruanganta,
                     noregistrasi: resultCountNoantrianDokter.rows[i].noregistrasi,
@@ -235,6 +235,8 @@ async function getHeaderEmr(req, res) {
 
             }
         }
+        
+        
         res.status(200).send({
             data: tempres,
             status: "success",

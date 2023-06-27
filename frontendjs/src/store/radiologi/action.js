@@ -29,7 +29,13 @@ import {
     DELETE_ORDER_PELAYANAN_ERROR,
     DELETE_DETAIL_ORDER_PELAYANAN,
     DELETE_DETAIL_ORDER_PELAYANAN_SUCCESS,
-    DELETE_DETAIL_ORDER_PELAYANAN_ERROR
+    DELETE_DETAIL_ORDER_PELAYANAN_ERROR,
+    DAFTAR_PASIEN_RADIOLOGI,
+    DAFTAR_PASIEN_RADIOLOGI_SUCCESS,
+    DAFTAR_PASIEN_RADIOLOGI_ERROR,
+    LIST_PELAYANAN_RADIOLOGI_GET,
+    LIST_PELAYANAN_RADIOLOGI_GET_SUCCESS,
+    LIST_PELAYANAN_RADIOLOGI_GET_ERROR
 } from "./actionType";
 
 export const radiologiResetForm = () => ({
@@ -188,5 +194,35 @@ export const deleteDetailOrderPelayananSuccess = (data, history) => ({
 
 export const deleteDetailOrderPelayananError = (error) => ({
     type: DELETE_DETAIL_ORDER_PELAYANAN_ERROR,
+    payload: error,
+});
+
+export const daftarPasienRadiologi = (param) => ({
+    type: DAFTAR_PASIEN_RADIOLOGI,
+    payload: { param },
+});
+
+export const daftarPasienRadiologiSuccess = (data) => ({
+    type: DAFTAR_PASIEN_RADIOLOGI_SUCCESS,
+    payload: data,
+});
+
+export const daftarPasienRadiologiError = (error) => ({
+    type: DAFTAR_PASIEN_RADIOLOGI_ERROR,
+    payload: error,
+});
+
+export const listPelayananRadiologiGet = (param) => ({
+    type: LIST_PELAYANAN_RADIOLOGI_GET,
+    payload: { param },
+});
+
+export const listPelayananRadiologiGetSuccess = (data) => ({
+    type: LIST_PELAYANAN_RADIOLOGI_GET_SUCCESS,
+    payload: data,
+});
+
+export const listPelayananRadiologiGetError = (error) => ({
+    type: LIST_PELAYANAN_RADIOLOGI_GET_ERROR,
     payload: error,
 });

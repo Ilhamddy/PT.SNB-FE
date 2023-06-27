@@ -30,7 +30,13 @@ import {
     DELETE_ORDER_PELAYANAN_ERROR,
     DELETE_DETAIL_ORDER_PELAYANAN,
     DELETE_DETAIL_ORDER_PELAYANAN_SUCCESS,
-    DELETE_DETAIL_ORDER_PELAYANAN_ERROR
+    DELETE_DETAIL_ORDER_PELAYANAN_ERROR,
+    DAFTAR_PASIEN_RADIOLOGI,
+    DAFTAR_PASIEN_RADIOLOGI_SUCCESS,
+    DAFTAR_PASIEN_RADIOLOGI_ERROR,
+    LIST_PELAYANAN_RADIOLOGI_GET,
+    LIST_PELAYANAN_RADIOLOGI_GET_SUCCESS,
+    LIST_PELAYANAN_RADIOLOGI_GET_ERROR
 } from "./actionType";
 import { DELETE_ORDER } from "../ecommerce/actionType";
 
@@ -90,6 +96,16 @@ const INIT_STATE = {
         error: null,
         success: false
     },
+    daftarPasienRadiologi:{
+        data:[],
+        loading: false,
+        error: null, 
+    },
+    listPelayananRadiologiGet:{
+        data:[],
+        loading: false,
+        error: null, 
+    }
 }
 
 const Radiologi = (state = INIT_STATE, action) => {
@@ -126,6 +142,12 @@ const Radiologi = (state = INIT_STATE, action) => {
                 },
                 deleteDetailOrderPelayanan:{
                     ...INIT_STATE.deleteDetailOrderPelayanan
+                },
+                daftarPasienRadiologi:{
+                    ...INIT_STATE.daftarPasienRadiologi
+                },
+                listPelayananRadiologiGet:{
+                    ...INIT_STATE.listPelayananRadiologiGet
                 }
             }
         }
@@ -460,6 +482,72 @@ const Radiologi = (state = INIT_STATE, action) => {
                 ...state,
                 deleteDetailOrderPelayanan: {
                     ...state.deleteDetailOrderPelayanan,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case DAFTAR_PASIEN_RADIOLOGI: {
+            return {
+                ...state,
+                daftarPasienRadiologi: {
+                    ...state.daftarPasienRadiologi,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case DAFTAR_PASIEN_RADIOLOGI_SUCCESS: {
+            return {
+                ...state,
+                daftarPasienRadiologi: {
+                    ...state.daftarPasienRadiologi,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case DAFTAR_PASIEN_RADIOLOGI_ERROR: {
+            return {
+                ...state,
+                daftarPasienRadiologi: {
+                    ...state.daftarPasienRadiologi,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case LIST_PELAYANAN_RADIOLOGI_GET: {
+            return {
+                ...state,
+                listPelayananRadiologiGet: {
+                    ...state.listPelayananRadiologiGet,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case LIST_PELAYANAN_RADIOLOGI_GET_SUCCESS: {
+            return {
+                ...state,
+                listPelayananRadiologiGet: {
+                    ...state.listPelayananRadiologiGet,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case LIST_PELAYANAN_RADIOLOGI_GET_ERROR: {
+            return {
+                ...state,
+                listPelayananRadiologiGet: {
+                    ...state.listPelayananRadiologiGet,
                     loading: false,
                     error: action.error,
                 }
