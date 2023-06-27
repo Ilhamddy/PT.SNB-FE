@@ -13,7 +13,7 @@ import Flatpickr from "react-flatpickr";
 import DataTable from 'react-data-table-component';
 import {
     listOrderByNorecGet,listKamarRadiologiGet,updateTglRencanaRadiologi,saveVerifikasiRadiologi,
-    deleteDetailOrderPelayanan
+    deleteDetailOrderPelayanan,radiologiResetForm
 } from "../../../store/actions";
 
 
@@ -40,6 +40,11 @@ const DetailOrderModal = ({ show, onSimpanClick, onCloseClick,onTolakClick, temp
         successdeleteDetail: state.Radiologi.deleteDetailOrderPelayanan.success,
         loadingdeleteDetail: state.Radiologi.deleteDetailOrderPelayanan.loading,
     }));
+    useEffect(() => {
+        return () => {
+            dispatch(radiologiResetForm());
+        }
+    }, [dispatch])
     useEffect(() => {
         if (tempNorec) {
             dispatch(listOrderByNorecGet(tempNorec));

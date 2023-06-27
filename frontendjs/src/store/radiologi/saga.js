@@ -11,7 +11,9 @@ import {
     UPDATE_TGLRENCANA_RADIOLOGI,
     SAVE_VERIFIKASI_RADIOLOGI,
     DELETE_ORDER_PELAYANAN,
-    DELETE_DETAIL_ORDER_PELAYANAN
+    DELETE_DETAIL_ORDER_PELAYANAN,
+    DAFTAR_PASIEN_RADIOLOGI,
+    LIST_PELAYANAN_RADIOLOGI_GET
 } from "./actionType";
 
 import {
@@ -24,7 +26,9 @@ import {
     updateTglRencanaRadiologiSuccess,updateTglRencanaRadiologiError,
     saveVerifikasiRadiologiSuccess,saveVerifikasiRadiologiError,
     deleteOrderPelayananSuccess,deleteOrderPelayananError,
-    deleteDetailOrderPelayananSuccess,deleteDetailOrderPelayananError
+    deleteDetailOrderPelayananSuccess,deleteDetailOrderPelayananError,
+    daftarPasienRadiologiSuccess,daftarPasienRadiologiError,
+    listPelayananRadiologiGetSuccess, listPelayananRadiologiGetError
 } from "./action";
 
 
@@ -230,6 +234,34 @@ export function* watchonDeleteDetailOrderPelayanan() {
     yield takeEvery(DELETE_DETAIL_ORDER_PELAYANAN, onDeleteDetailOrderPelayanan);
 }
 
+function* onDaftarPasienRadiologi({ payload: { param } }) {
+    try {
+        const response = yield call(serviceRadiologi.getListDaftarPasienRadiologi, param);
+        yield put(daftarPasienRadiologiSuccess(response.data));
+    } catch (error) {
+        yield put(daftarPasienRadiologiError(error));
+    }
+}
+
+
+export function* watchonDaftarPasienRadiologi() {
+    yield takeEvery(DAFTAR_PASIEN_RADIOLOGI, onDaftarPasienRadiologi);
+}
+
+function* onListPelayananRadiologiGet({ payload: { param } }) {
+    try {
+        const response = yield call(serviceRadiologi.getListTransaksiPelayananRadiologi, param);
+        yield put(listPelayananRadiologiGetSuccess(response.data));
+    } catch (error) {
+        yield put(listPelayananRadiologiGetError(error));
+    }
+}
+
+
+export function* watchonListPelayananRadiologiGet() {
+    yield takeEvery(LIST_PELAYANAN_RADIOLOGI_GET, onListPelayananRadiologiGet);
+}
+
 function* radiologiSaga() {
     yield all([
         fork(watchonsaveOrderPelayanan),
@@ -241,7 +273,9 @@ function* radiologiSaga() {
         fork(watchonUpdateTglRencanaRadiologi),
         fork(watchonSaveVerifikasiRadiologi),
         fork(watchonDeleteOrderPelayanan),
-        fork(watchonDeleteDetailOrderPelayanan)
+        fork(watchonDeleteDetailOrderPelayanan),
+        fork(watchonDaftarPasienRadiologi),
+        fork(watchonListPelayananRadiologiGet)
     ]);
 }
 

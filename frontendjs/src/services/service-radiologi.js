@@ -43,4 +43,12 @@ export default class ServiceRadiologi {
     deleteDetailOrderPelayananService = async (params) => {
         return await api.put("/transaksi/radiologi/delete-detail-order-pelayanan", params);
     }
+
+    getListDaftarPasienRadiologi = async (param) => {
+        return await api.get(`/transaksi/radiologi/list-daftar-pasien-radiologi?noregistrasi=${param}`);
+    }
+
+    getListTransaksiPelayananRadiologi = async (param) => {
+        return await api.get(`/transaksi/radiologi/list-transaksi-pelayanan-radiologi?norecdp=${param}`);
+    }
 }
