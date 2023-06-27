@@ -146,7 +146,7 @@ const PrintRekapBiaya = ({ dataRekap, dataPasien }) => {
                                     {dataR.variabelbpjs}
                                 </th>
                                 <td>
-                                    Rp{dataR.sum}
+                                    Rp{dataR.sum?.toLocaleString('id-ID')}
                                 </td>
                             </tr>
                         ))
@@ -160,7 +160,7 @@ const PrintRekapBiaya = ({ dataRekap, dataPasien }) => {
                             Total
                         </th>
                         <td>
-                            Rp{totalPrice}
+                            Rp{totalPrice?.toLocaleString('id-ID')}
                         </td>
                     </tr>
                     <tr>
@@ -168,7 +168,7 @@ const PrintRekapBiaya = ({ dataRekap, dataPasien }) => {
                             Diskon
                         </th>
                         <td>
-                            Rp{totalDiscount}
+                            Rp{totalDiscount?.toLocaleString('id-ID')}
                         </td>
                     </tr>
                     <tr>
@@ -176,7 +176,7 @@ const PrintRekapBiaya = ({ dataRekap, dataPasien }) => {
                             Klaim Asuransi
                         </th>
                         <td>
-                            Rp{totalAsuransi}
+                            Rp{totalAsuransi?.toLocaleString('id-ID')}
                         </td>
                     </tr>
                     <tr>
@@ -192,7 +192,7 @@ const PrintRekapBiaya = ({ dataRekap, dataPasien }) => {
                             Total Tagihan
                         </th>
                         <td>
-                            Rp{totalPrice - totalAsuransi}
+                            Rp{(totalPrice - totalAsuransi)?.toLocaleString('id-ID')}
                         </td>
                     </tr>
                 </tbody>

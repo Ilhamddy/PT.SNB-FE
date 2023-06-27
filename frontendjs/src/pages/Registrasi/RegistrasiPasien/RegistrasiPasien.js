@@ -31,6 +31,7 @@ import BuktiPendaftaran3 from '../../Print/BuktiPendaftaran3';
 import PrintTemplate from '../../Print/PrintTemplate/PrintTemplate';
 import PrintRekap from '../../Print/PrintRekap/PrintRekap';
 import PrintBukti from '../../Print/PrintBukti/PrintBukti';
+import CustomCheckbox from '../../../Components/CustomCheckbox/CustomCheckbox';
 
 
 
@@ -322,6 +323,48 @@ const RegistrasiPasien = (props) => {
         }
         refPrintBukti.current.handlePrint();
     }
+
+    const fromApi = [{
+        label: "Label",
+        value: 0,
+        subdata: [
+            {
+                label: "Sub Label",
+                value: 0
+            },
+            {
+                label: "Sub Label",
+                value: 1
+            },
+        ]
+    },
+    {
+        label: "Label",
+        value: 1,
+        subdata: [
+            {
+                label: "Sub Label",
+                value: 5
+            },
+            {
+                label: "Sub Label",
+                value: 3
+            },
+        ]
+    }
+    ]
+
+    const [stateDummy, setStateDummy] = useState(() => fromApi.map((data) => {
+        const newData = {...data}
+        newData.checked = false;
+        newData.subdata = data.subdata.map((subdata) => {
+            const newSubdata = {...subdata}
+            newSubdata.checked = false;
+            return newSubdata;
+        });
+        return newData;
+    }))
+
 
     return (
         <div className="page-content">
@@ -699,6 +742,12 @@ const RegistrasiPasien = (props) => {
                                         <Col lg={12} style={{ textAlign: 'right' }}>
                                             {!successReg && <Button type="submit" color="info" className="rounded-pill" disabled={loadingSave}> SIMPAN </Button>}
                                         </Col>
+                                        <CustomCheckbox 
+                                            data={stateDummy}
+                                            setData={(newData) => setStateDummy(newData)}
+                                            checkboxName='checkbox-dummy-ex'
+                                        />
+
                                     </Row>
                                 </CardBody>
                             </Card>
