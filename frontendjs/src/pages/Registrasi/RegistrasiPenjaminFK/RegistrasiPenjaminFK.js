@@ -355,7 +355,6 @@ const RegistrasiPenjaminFK = () => {
 
     //klinik 3, puskesmas 1, rumahsakit 2
     useEffect(() => {
-        const pelayanan = dataBpjs?.histori?.histori?.[0].jnsPelayanan;
         const sepSebelum = Number(dataBpjs?.histori?.histori?.[0].jnsPelayanan || 1) ;
         const isSepSebelumRI = sepSebelum === 2;
         if(dataRuangDaftar?.objectinstalasifk === 1 
