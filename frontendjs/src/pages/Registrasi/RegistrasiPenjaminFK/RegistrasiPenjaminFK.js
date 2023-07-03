@@ -383,7 +383,7 @@ const RegistrasiPenjaminFK = () => {
         if(successSave && id && norec){
             navigate(`/registrasi/pasien-ruangan/${id}/${norec}`)
         }
-    }, [successSave, id, norec])
+    }, [successSave, id, norec, navigate])
 
 
     //component

@@ -208,6 +208,7 @@ const RegistrasiPasien = (props) => {
             validation.setFieldValue('dokter', dtRuangNorec?.objectdokterpemeriksafk || "");
             validation.setFieldValue('penanggungjawab', dtRuangNorec?.objectpjpasienfk || "");
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [dtRuangNorec, validation.setFieldValue, data])
 
 
