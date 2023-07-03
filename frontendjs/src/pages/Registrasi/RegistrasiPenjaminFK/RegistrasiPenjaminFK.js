@@ -28,7 +28,7 @@ const RegistrasiPenjaminFK = () => {
 
     const [pillsTab, setpillsTab] = useState("1");
     const [isOpenRujukan, setIsOpenModalRujukan] = useState(false);
-    const [isOpenRI, setIsOpenRI] = useState(false);
+    const [isOpenRJ, setIsOpenRJ] = useState(false);
     const dispatch = useDispatch();
 
     const {  dataDiagnosa, statusKecelakaan: statusKecelakaanOpt, 
@@ -355,25 +355,25 @@ const RegistrasiPenjaminFK = () => {
 
     //klinik 3, puskesmas 1, rumahsakit 2
     useEffect(() => {
-        const sepSebelum = Number(dataBpjs?.histori?.histori?.[0].jnsPelayanan || 1) ;
-        const isSepSebelumRI = sepSebelum === 2;
-        if(dataRuangDaftar?.objectinstalasifk === 1 
-            && dataBpjs 
-            && isSepSebelumRI){
+        const isSprKosong = (dataBpjs?.spr?.list || [])?.length === 0;
+        if(dataRuangDaftar?.objectinstalasifk === 2 && !isSprKosong){ // rawat inap
             setIsOpenModalRujukan(true);
             return
         }
-        if(dataUser?.objectunitfk !== 1) return;
+        if(dataUser?.objectunitfk !== 1) return; // rawat jalan
+        const dataBpjsSprPertama = dataBpjs?.spr?.list?.[0] || {};
+        const dataBpjsHisPertama = dataBpjs?.histori?.histori?.find((bpjsHis) => 
+            bpjsHis.noSep === dataBpjsSprPertama.noSepAsalKontrol) || {};
+        const sepSebelum = Number(dataBpjsHisPertama.jnsPelayanan || 1) ;
+        const isSepSebelumRI = sepSebelum === 2;
         const tujuanSebelum = Number(dataBpjs?.rujukanklinik?.rujukan?.pelayanan?.kode 
             || dataBpjs?.rujukanrs?.rujukan?.pelayanan?.kode || 1);
         const isTujuanSebelumRI = tujuanSebelum === 2;
         if(isTujuanSebelumRI && !isSepSebelumRI){
-            setIsOpenRI(true);
+            setIsOpenRJ(true);
             return
         }
-        setIsOpenRI(false);
     }, [dataBpjs, dataRuangDaftar, dataUser])
-
 
 
     //component
@@ -1309,26 +1309,25 @@ const RegistrasiPenjaminFK = () => {
                     </Col>
                 </Row>
             </Container>
-            <ModalRujukan 
+            <ModalRI 
                 isOpen={isOpenRujukan}
                 toggle={() => setIsOpenModalRujukan(false)}
                 dataBpjsSpr={dataBpjs?.spr?.list || []}
-                dataBpjsHis={dataBpjs?.histori?.histori || []}
                 setRujKartu={(noRuj, noKar, noSur, namaDok) => {
                     validation.setFieldValue("norujukan", noRuj);
-
                     validation.setFieldValue("nosuratkontrol", noSur);
                     validation.setFieldValue("dpjppemberi", namaDok)
                 }}
+            />
+            <ModalRJ
+                isOpen={isOpenRJ}
+                toggle={() => setIsOpenRJ(false)}
             />
         </div>
     )
 }
 
-const ModalRujukan = ({isOpen, toggle, dataBpjsSpr, dataBpjsHis, setRujKartu}) => {
-    const dataBpjsSprPertama = dataBpjsSpr?.[0] || {};
-    const dataBpjsHisPertama = dataBpjsHis?.find((bpjsHis) => 
-        bpjsHis.noSep === dataBpjsSprPertama.noSepAsalKontrol) || {};
+const ModalRI = ({isOpen, toggle, dataBpjsSpr, setRujKartu}) => {
     return (
         <Modal id="showModal" className="modal-registrasi-penjamin-fk" 
             isOpen={isOpen} 
@@ -1343,20 +1342,27 @@ const ModalRujukan = ({isOpen, toggle, dataBpjsSpr, dataBpjsHis, setRujKartu}) =
                             <th scope="col">no Kartu</th>
                         </tr>
                     </thead>
-                    <tbody className="w-100 table-hover-click"
-                        onClick={() => {
-                                setRujKartu(dataBpjsHisPertama.noRujukan, 
-                                    dataBpjsHisPertama.noKartu, 
-                                    dataBpjsSprPertama.noSuratKontrol,
-                                    dataBpjsSprPertama.namaDokter
-                                );
-                                toggle();
-                            }}>
-                        <tr className="w-100">
-                            <td className="text-muted">{dataBpjsHisPertama.noRujukan}</td>
-                            <td className="text-muted">{dataBpjsHisPertama.noKartu}</td>
-                        </tr>
-                    </tbody>
+                    {
+                        dataBpjsSpr.map((data, i) => (
+                            <tbody className="w-100 table-hover-click"
+                                key={i}
+                                onClick={() => {
+                                        setRujKartu(
+                                            data.noSepAsalKontrol, 
+                                            data.noKartu, 
+                                            data.noSuratKontrol,
+                                            data.namaDokter
+                                        );
+                                        toggle();
+                                    }}>
+                                <tr className="w-100">
+                                    <td className="text-muted">{data.noSepAsalKontrol}</td>
+                                    <td className="text-muted">{data.noKartu}</td>
+                                </tr>
+                            </tbody>
+                        ))
+                    }
+                    
                 </table>
                 </div>
             </ModalBody>
@@ -1364,7 +1370,7 @@ const ModalRujukan = ({isOpen, toggle, dataBpjsSpr, dataBpjsHis, setRujKartu}) =
     )
 }
 
-const ModalRI = ({isOpen, toggle}) => {
+const ModalRJ = ({isOpen, toggle}) => {
     return (
         <Modal id="showModal" className="modal-registrasi-penjamin-fk" 
             isOpen={isOpen} 

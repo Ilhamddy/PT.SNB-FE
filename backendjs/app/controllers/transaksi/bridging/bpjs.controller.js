@@ -90,7 +90,7 @@ function decrypt(message, key) {
 async function getHistoryBPJS(req, res) {
     const [bpjs, keydecrypt] = await createBpjsInstance();
     // const {nokartu} = req.params
-    let nokartu = req.params.nokartu;
+    let nokartu = '0001503919326';
     let dataHistori = null;
     let dataBpjs = null;
     let dataSPR = null;
