@@ -355,15 +355,18 @@ const RegistrasiPenjaminFK = () => {
 
     //klinik 3, puskesmas 1, rumahsakit 2
     useEffect(() => {
-        if(dataRuangDaftar?.objectinstalasifk === 1 && dataBpjs){
+        const pelayanan = dataBpjs?.histori?.histori?.[0].jnsPelayanan;
+        const sepSebelum = Number(dataBpjs?.histori?.histori?.[0].jnsPelayanan || 1) ;
+        const isSepSebelumRI = sepSebelum === 2;
+        if(dataRuangDaftar?.objectinstalasifk === 1 
+            && dataBpjs 
+            && isSepSebelumRI){
             setIsOpenModalRujukan(true);
             return
         }
         if(dataUser?.objectunitfk !== 1) return;
         const tujuanSebelum = Number(dataBpjs?.rujukanklinik?.rujukan?.pelayanan?.kode 
             || dataBpjs?.rujukanrs?.rujukan?.pelayanan?.kode || 1);
-        const sepSebelum = Number(dataBpjs?.histori?.histori?.[0].jnsPelayanan || 1) ;
-        const isSepSebelumRI = sepSebelum === 2;
         const isTujuanSebelumRI = tujuanSebelum === 2;
         if(isTujuanSebelumRI && !isSepSebelumRI){
             setIsOpenRI(true);
