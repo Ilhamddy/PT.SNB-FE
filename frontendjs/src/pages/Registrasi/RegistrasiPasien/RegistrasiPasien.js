@@ -169,28 +169,28 @@ const RegistrasiPasien = (props) => {
     useEffect(() => {
         if(dtRuangNorec && data){
             validation.setFieldValue('tujkunjungan', dtRuangNorec?.objectinstalasifk || "")
-            let newArray = data.unit.filter(function (el) {
+            let newArray = data?.unit?.filter(function (el) {
                 return el.objectinstalasifk === dtRuangNorec?.objectinstalasifk;
-            });
+            }) || [];
             const unitLastFk = dtRuangNorec?.objectunitlastfk || ""
             validation.setFieldValue('unittujuan', unitLastFk);
             setdataUnit(newArray);
             const idKelas = dtRuangNorec?.objectkelasfk || ""
             validation.setFieldValue('kelas', idKelas);
-            let newArrayKamar = data.kamar.filter(function (item) {
+            let newArrayKamar = data?.kamar?.filter(function (item) {
                 if (item.objectkelasfk === idKelas && item.objectunitfk === unitLastFk)
                     return true;
                 return false;
-            });
+            }) || [];
             setdataKamar(newArrayKamar);
             const idKamar = dtRuangNorec?.kamar?.[0]?.id || ""
             validation.setFieldValue('kamar', idKamar);
-            // let newArrayBed = data.tempattidur.filter(function (item) {
-            //     if (item.objectkamarfk === idKamar)
-            //         return true;
-            //     return false;
-            // });
-            setdataTT([]);
+            let newArrayBed = data?.tempattidur?.filter(function (item) {
+                if (item.objectkamarfk === idKamar)
+                    return true;
+                return false;
+            }) || [];
+            setdataTT(newArrayBed);
             validation.setFieldValue('tempattidur', dtRuangNorec?.antrean?.[0]?.nobed || "")
             validation.setFieldValue('rujukanasal', dtRuangNorec?.objectasalrujukanfk || "")
             validation.setFieldValue('jenispenjamin', dtRuangNorec?.objectjenispenjaminfk || "");
@@ -200,7 +200,7 @@ const RegistrasiPasien = (props) => {
             let penjamin = [penjamin1, penjamin2, penjamin3];
             penjamin = penjamin.map((item) => {
                 if(item === null) return null;
-                const rekanan = data.rekanan.find((it) => it.value === item);
+                const rekanan = data?.rekanan?.find((it) => it.value === item);
                 return rekanan || null;
             });
             penjamin = penjamin.filter((item) => item !== null)
