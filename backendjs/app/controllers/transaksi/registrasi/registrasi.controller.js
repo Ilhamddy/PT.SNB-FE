@@ -491,13 +491,11 @@ async function saveRegistrasiPasien(req, res) {
 }
 
 const getRegistrasiPasienNorec = async (req, res) => {
-    let transaction = await db.sequelize.transaction();
-
+    transaction = await db.sequelize.transaction();
     try {
         const norec = req.params.norec;
         if(!JSON.stringify(norec)){
             throw new Error('norec tidak boleh kosong')
-
         }
         const ruanganpasien = await pool
             .query(`SELECT t_daftarpasien.*,
@@ -532,7 +530,7 @@ const getRegistrasiPasienNorec = async (req, res) => {
             });
             return
         }
-        
+        await transaction.commit();
         res.status(200).send({
             data: ruanganpasien.rows[0],
             success: true,

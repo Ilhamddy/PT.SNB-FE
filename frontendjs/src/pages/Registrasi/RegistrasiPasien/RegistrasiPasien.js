@@ -185,12 +185,12 @@ const RegistrasiPasien = (props) => {
             setdataKamar(newArrayKamar);
             const idKamar = dtRuangNorec?.kamar?.[0]?.id || ""
             validation.setFieldValue('kamar', idKamar);
-            let newArrayBed = data.tempattidur.filter(function (item) {
-                if (item.objectkamarfk === idKamar)
-                    return true;
-                return false;
-            });
-            setdataTT(newArrayBed);
+            // let newArrayBed = data.tempattidur.filter(function (item) {
+            //     if (item.objectkamarfk === idKamar)
+            //         return true;
+            //     return false;
+            // });
+            setdataTT([]);
             validation.setFieldValue('tempattidur', dtRuangNorec?.antrean?.[0]?.nobed || "")
             validation.setFieldValue('rujukanasal', dtRuangNorec?.objectasalrujukanfk || "")
             validation.setFieldValue('jenispenjamin', dtRuangNorec?.objectjenispenjaminfk || "");

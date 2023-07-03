@@ -3,7 +3,7 @@ import {
     Card, CardBody, CardHeader, Col, Container, Row, Nav, NavItem,
     NavLink, TabContent, TabPane, Button, Label, Input, Table,
     FormFeedback, Form, DropdownItem, DropdownMenu, DropdownToggle, UncontrolledDropdown,
-    UncontrolledTooltip, ListGroup, ListGroupItem
+    UncontrolledTooltip, ListGroup, ListGroupItem, Dropdown
 } from 'reactstrap';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -22,6 +22,9 @@ import { listTagihanGet, listTagihanPrintGet, registrasiRuanganNorecGet } from "
 import PropTypes from "prop-types";
 import PrintTemplate from '../../Print/PrintTemplate/PrintTemplate';
 import PrintRekapBiaya from '../../Print/PrintRekapBiaya/PrintRekapBiaya';
+import SimpleBar from 'simplebar-react';
+import "./Tagihan.scss";
+
 const Tagihan = ({ show }) => {
     const { norecdp, norecap } = useParams();
     const dispatch = useDispatch();
@@ -164,13 +167,54 @@ const Tagihan = ({ show }) => {
     const handlePrint = () => {
         refPrintBilling.current?.handlePrint();
     }
+    const [isCartDropdown, setIsCartDropdown] = useState(false);
+
+    const toggleCartDropdown = () => {
+        setIsCartDropdown(!isCartDropdown);
+    };
     return (
         <React.Fragment>
-            <Row className="gy-4">
+            <Row className="gy-4 page-tagihan" >
                 <Card>
                     <CardHeader style={{ backgroundColor: "#B57602" }}>
                         <h4 className="card-title mb-0" style={{ color: '#ffffff' }}>Rincian Tagihan</h4>
                     </CardHeader>
+                    <div className='nav-isi-tagihan'>
+                        <div>
+                        </div>
+                        <Dropdown isOpen={isCartDropdown} toggle={toggleCartDropdown} className="topbar-head-dropdown ms-1 header-item">
+                            <DropdownToggle type="button" tag="button" className="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle">
+                                <i className='bx bx-shopping-bag fs-22'></i>
+                            </DropdownToggle>
+                            <DropdownMenu className="dropdown-menu-xl dropdown-menu-end p-0"
+                                aria-labelledby="page-header-cart-dropdown">
+                                <div className="p-3 border-top-0 border-start-0 border-end-0 border-dashed border">
+                                    <Row className="align-items-center">
+                                        <Col>
+                                            <h6 className="m-0 fs-16 fw-semibold"> Menu</h6>
+                                        </Col>
+                                    </Row>
+                                </div>
+                                <SimpleBar style={{ maxHeight: "300px" }}>
+                                    <div className="p-2">
+                                        <div className="text-center empty-cart" id="empty-cart" style={{ display: "none" }}>
+                                            <div className="avatar-md mx-auto my-3">
+                                                <div className="avatar-title bg-soft-info text-info fs-36 rounded-circle">
+                                                    <i className='bx bx-cart'></i>
+                                                </div>
+                                            </div>
+                                            <h5 className="mb-3">Your Cart is Empty!</h5>
+                                            <Link to="/apps-ecommerce-products" className="btn btn-success w-md mb-3">Shop Now</Link>
+                                        </div>
+                                        
+                                    </div>
+                                </SimpleBar>
+                                <Button onClick={() => handlePrint()}>
+                                    Print Tagihan   
+                                </Button>
+                            </DropdownMenu>
+                        </Dropdown>
+                    </div>
                     <CardBody>
                         <div id="table-gridjs">
                             <DataTable
@@ -185,9 +229,7 @@ const Tagihan = ({ show }) => {
                             
                         </div>
                     </CardBody>
-                    <Button onClick={() => handlePrint()}>
-                        Print Tagihan   
-                    </Button>
+
                 </Card>
             </Row>
             <PrintTemplate 
