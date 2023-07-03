@@ -217,7 +217,6 @@ async function getKecamatan(req, res){
         console.error("error data kecamatan")
         console.error(e)
     }
-    console.log('error', dataKecamatan)
     const decryptDataKecamatan = JSON.parse(decrypt(dataKecamatan?.data?.response, keydecrypt));
     const tempres = {
         kecamatan: decryptDataKecamatan

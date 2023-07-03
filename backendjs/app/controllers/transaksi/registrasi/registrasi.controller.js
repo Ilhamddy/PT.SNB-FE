@@ -755,8 +755,6 @@ async function getDaftarPasienRawatJalan(req, res) {
                     success: true,
                 });
             } else {
-                console.log(resultCountNoantrianDokter)
-
                 res.status(200).send({
                     data: resultCountNoantrianDokter.rows,
                     status: "success",
