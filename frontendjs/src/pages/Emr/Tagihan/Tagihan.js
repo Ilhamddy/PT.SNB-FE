@@ -60,7 +60,6 @@ const Tagihan = ({ show }) => {
                 color: "black",
                 backgroundColor: "#f1f2f6"
             },
-
         }
     }
     

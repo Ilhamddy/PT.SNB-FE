@@ -509,16 +509,14 @@ const getRegistrasiPasienNorec = async (req, res) => {
     try{
         transaction = await db.sequelize.transaction();
     }catch(e){
-        if (transaction) {
-            res.status(500).send({
-                status: error,
-                success: false,
-                msg: 'Simpan Gagal',
-                code: 500
-            });
-            await transaction.rollback();
-
-        }
+        res.status(500).send({
+            status: error,
+            success: false,
+            msg: 'Simpan Gagal',
+            code: 500
+        });
+        await transaction.rollback();
+        return;
     }
     try {
         const norec = req.params.norec;
