@@ -19,6 +19,7 @@ import Diagnosa from '../Diagnosa/index';
 import InputTindakan from '../InputTindakan/InputTindakan';
 import Tagihan from '../Tagihan/Tagihan';
 import OrderRadiologi from '../Penunjang/Radiologi/OrderRadiologi/OrderRadiologi';
+import OrderLaboratorium from '../Penunjang/Laboratorium/OrderLaboratorium/OrderLaboratorium';
 
 const EmrBody = () => {
     const { norecdp, norecap } = useParams();
@@ -294,7 +295,7 @@ const EmrBody = () => {
                                         <TabPane tabId="1" id="penunjang-1">
                                             <Card>
                                                 <CardBody>
-
+                                                    <OrderLaboratorium/>
                                                 </CardBody>
                                             </Card>
                                         </TabPane>

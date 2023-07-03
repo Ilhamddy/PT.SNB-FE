@@ -169,7 +169,7 @@ const DetailOrderModal = ({ show, onSimpanClick, onCloseClick,onTolakClick, temp
             sortable: true,
         },
         {
-            name: <span className='font-weight-bold fs-13'>TGL Tindakan</span>,
+            name: <span className='font-weight-bold fs-13'>Rencana Tindakan</span>,
             selector: row => row.tglinput,
             sortable: true,
         },
@@ -302,7 +302,7 @@ const DetailOrderModal = ({ show, onSimpanClick, onCloseClick,onTolakClick, temp
                                                     </Label>
                                                 </div>
                                             </Col>
-                                            <Col lg={12}>
+                                            {/* <Col lg={12}>
                                                 <Row>
                                                     <Col lg={4} sm={6}>
                                                         <div className="mt-2">
@@ -328,11 +328,7 @@ const DetailOrderModal = ({ show, onSimpanClick, onCloseClick,onTolakClick, temp
                                                             </div>
                                                         </div>
                                                     </Col>
-                                                    {/* <Col lg={2} sm={6}> */}
-                                                    {/* <div className="mt-2">
-                                                <Label style={{ color: "black" }} htmlFor="tinggibadan" className="form-label fw-semibold">Harga</Label>
-                                            </div> */}
-                                                    {/* </Col> */}
+                                                   
                                                     <Col lg={4} sm={6} className="mt-1">
                                                         <div>
                                                             <Input
@@ -346,7 +342,7 @@ const DetailOrderModal = ({ show, onSimpanClick, onCloseClick,onTolakClick, temp
                                                         </div>
                                                     </Col>
                                                 </Row>
-                                            </Col>
+                                            </Col> */}
                                             <Col lg={12}>
                                                 <div className="d-flex flex-wrap gap-2 justify-content-md-start">
                                                     <Button type="submit" color="info" className="rounded-pill" placement="top">
@@ -388,7 +384,7 @@ const DetailOrderModal = ({ show, onSimpanClick, onCloseClick,onTolakClick, temp
                                             Tutup
                                         </button>
 
-                                        <Button type="button" color="info" className="rounded-pill" placement="top" id="tooltipTop"
+                                        <Button type="button" color="info" placement="top" id="tooltipTop"
                                         onClick={() => onClickSimpan()} >
                                             SIMPAN
                                         </Button>

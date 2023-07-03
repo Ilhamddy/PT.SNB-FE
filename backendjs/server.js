@@ -40,6 +40,7 @@ require('./app/routes/transaksi/bpjs.routes')(app);
 require('./app/routes/transaksi/tindakan.routes')(app);
 require('./app/routes/transaksi/rekammedis.routes')(app);
 require('./app/routes/transaksi/radiologi.routes')(app);
+require('./app/routes/transaksi/laboratorium.routes')(app);
 
 
 // set port, listen for requests
