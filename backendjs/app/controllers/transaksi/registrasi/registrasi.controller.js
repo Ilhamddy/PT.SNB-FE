@@ -361,9 +361,9 @@ async function saveRegistrasiPasien(req, res) {
     }
     try {
         let norecDP = uuid.v4().substring(0, 32)
-        let objectpenjaminfk = req.body?.penjamin?.[0]?.value
-        let objectpenjamin2fk = req.body?.penjamin?.[1]?.value
-        let objectpenjamin3fk = req.body?.penjamin?.[2]?.value
+        let objectpenjaminfk = req.body?.penjamin?.[0]?.value || null
+        let objectpenjamin2fk = req.body?.penjamin?.[1]?.value || null
+        let objectpenjamin3fk = req.body?.penjamin?.[2]?.value || null
         let today = new Date();
         let todayMonth = '' + (today.getMonth() + 1)
         if (todayMonth.length < 2)

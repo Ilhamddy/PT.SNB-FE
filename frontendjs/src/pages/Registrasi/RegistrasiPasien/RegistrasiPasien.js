@@ -36,7 +36,7 @@ import CustomCheckbox from '../../../Components/CustomCheckbox/CustomCheckbox';
 
 
 const RegistrasiPasien = (props) => {
-    const { id } = useParams();
+    const { id, norec } = useParams();
     document.title = "Registrasi Pasien";
     const dispatch = useDispatch();
     const [modal, setModal] = useState(false);
@@ -47,6 +47,8 @@ const RegistrasiPasien = (props) => {
 	const [messageNewData, setmessageNewData] = useState("");
     const [tempNoregistrasi, settempNoregistrasi] = useState("20");
 	const [isPrintOpen, setIsPrintOpen] = useState(false);
+    const [dataKamar, setdataKamar] = useState([]);
+
 
     const [dataUnit, setdataUnit] = useState([]);
     const [dataTT, setdataTT] = useState([]);
@@ -90,6 +92,7 @@ const RegistrasiPasien = (props) => {
         error: state.Master.comboRegistrasiGet.error,
         dataPas: state.Registrasi.registrasiGet.data,
         dtRuangNorec: state.Registrasi.registrasiRuangNorecGet.data,
+        
     }));
     useEffect(() => {
         return () => {
@@ -159,10 +162,58 @@ const RegistrasiPasien = (props) => {
         }
     });
 
+    useEffect(() => {
+        norec && dispatch(registrasiRuanganNorecGet(norec));
+    }, [dispatch, norec]);
+
+    useEffect(() => {
+        if(dtRuangNorec && data){
+            validation.setFieldValue('tujkunjungan', dtRuangNorec?.objectinstalasifk || "")
+            let newArray = data.unit.filter(function (el) {
+                return el.objectinstalasifk === dtRuangNorec?.objectinstalasifk;
+            });
+            const unitLastFk = dtRuangNorec?.objectunitlastfk || ""
+            validation.setFieldValue('unittujuan', unitLastFk);
+            setdataUnit(newArray);
+            const idKelas = dtRuangNorec?.objectkelasfk || ""
+            validation.setFieldValue('kelas', idKelas);
+            let newArrayKamar = data.kamar.filter(function (item) {
+                if (item.objectkelasfk === idKelas && item.objectunitfk === unitLastFk)
+                    return true;
+                return false;
+            });
+            setdataKamar(newArrayKamar);
+            const idKamar = dtRuangNorec?.kamar?.[0]?.id || ""
+            validation.setFieldValue('kamar', idKamar);
+            let newArrayBed = data.tempattidur.filter(function (item) {
+                if (item.objectkamarfk === idKamar)
+                    return true;
+                return false;
+            });
+            setdataTT(newArrayBed);
+            validation.setFieldValue('tempattidur', dtRuangNorec?.antrean?.[0]?.nobed || "")
+            validation.setFieldValue('rujukanasal', dtRuangNorec?.objectasalrujukanfk || "")
+            validation.setFieldValue('jenispenjamin', dtRuangNorec?.objectjenispenjaminfk || "");
+            const penjamin1 = dtRuangNorec?.objectpenjaminfk || null;
+            const penjamin2 = dtRuangNorec?.objectpenjamin2fk || null;
+            const penjamin3 = dtRuangNorec?.objectpenjamin3fk || null;
+            let penjamin = [penjamin1, penjamin2, penjamin3];
+            penjamin = penjamin.map((item) => {
+                if(item === null) return null;
+                const rekanan = data.rekanan.find((it) => it.value === item);
+                return rekanan || null;
+            });
+            penjamin = penjamin.filter((item) => item !== null)
+            validation.setFieldValue('penjamin', penjamin);
+            validation.setFieldValue('dokter', dtRuangNorec?.objectdokterpemeriksafk || "");
+            validation.setFieldValue('penanggungjawab', dtRuangNorec?.objectpjpasienfk || "");
+        }
+    }, [dtRuangNorec, validation.setFieldValue, data])
+
 
     const handleChangeTujuan = (selected) => {
         validation.setFieldValue('tujkunjungan', selected.value)
-        var newArray = data.unit.filter(function (el) {
+        let newArray = data.unit.filter(function (el) {
             return el.objectinstalasifk === selected.value;
         });
         // console.log(selected.value)
@@ -183,7 +234,7 @@ const RegistrasiPasien = (props) => {
         setdataKamar([])
         setdataTT([])
     }
-    const [dataKamar, setdataKamar] = useState([]);
+    
     const handleChangeKelas = (selected) => {
         validation.setFieldValue('kelas', selected.value)
         var newArray = data.kamar.filter(function (item) {
@@ -299,9 +350,9 @@ const RegistrasiPasien = (props) => {
         newData, validation.values, dispatch]);
 
 
-	const optionPenjamin = data
-		.rekanan?.filter((rekanan) => rekanan.objectjenispenjaminfk === validation.values.jenispenjamin) 
-		?? [];
+    const optionPenjamin = data
+        .rekanan?.filter((rekanan) => rekanan.objectjenispenjaminfk === validation.values.jenispenjamin) 
+        ?? [];
 
     useEffect(() => {
         if(dataPas?.nobpjs){
@@ -665,7 +716,7 @@ const RegistrasiPasien = (props) => {
                                                                     className={`input ${validation.errors.jenispenjamin ? "is-invalid" : ""}`}
                                                                     onChange={value => {
                                                                         validation.setFieldValue('jenispenjamin', value.value); 
-                                                                        validation.setFieldValue('penjamin', "");
+                                                                        validation.setFieldValue('penjamin', []);
                                                                     }}	
                                                                 />
                                                                 {validation.touched.jenispenjamin && validation.errors.jenispenjamin ? (
@@ -684,7 +735,7 @@ const RegistrasiPasien = (props) => {
                                                                     id="penjamin"
                                                                     name="penjamin"
                                                                     options={optionPenjamin}
-                                                                    value={validation.values.penjamin || ""}
+                                                                    value={validation.values.penjamin || []}
                                                                     className={`input ${validation.errors.penjamin ? "is-invalid" : ""}`}
                                                                     // onChange={value => validation.setFieldValue('penjamin', value.value)}
                                                                     onChange={handleSelectPenjamin}
@@ -740,7 +791,7 @@ const RegistrasiPasien = (props) => {
                                             </Card>
                                         </Col>
                                         <Col lg={12} style={{ textAlign: 'right' }}>
-                                            {!successReg && <Button type="submit" color="info" className="rounded-pill" disabled={loadingSave}> SIMPAN </Button>}
+                                            {!successReg && !dtRuangNorec && <Button type="submit" color="info" className="rounded-pill" disabled={loadingSave}> SIMPAN </Button>}
                                         </Col>
                                         {/* contoh pakai checkbox */}
                                         {/* <CustomCheckbox 

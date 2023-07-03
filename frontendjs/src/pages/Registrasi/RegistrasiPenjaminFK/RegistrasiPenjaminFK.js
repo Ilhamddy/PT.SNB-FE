@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import userDummy from "../../../assets/images/users/user-dummy-img.jpg";
 import classnames from "classnames";
 import withRouter from "../../../Components/Common/withRouter";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { ToastContainer } from "react-toastify";
@@ -30,6 +30,8 @@ const RegistrasiPenjaminFK = () => {
     const [isOpenRujukan, setIsOpenModalRujukan] = useState(false);
     const [isOpenRJ, setIsOpenRJ] = useState(false);
     const dispatch = useDispatch();
+    const navigate = useNavigate();
+
 
     const {  dataDiagnosa, statusKecelakaan: statusKecelakaanOpt, 
         data, 
@@ -39,6 +41,7 @@ const RegistrasiPenjaminFK = () => {
         dataProvinsi,
         dataKabupaten,
         dataKecamatan,
+        successSave
     } = useSelector((state) => ({
         dataDiagnosa: state.Emr.emrDiagnosaxGet.data,
         data: state.Master.comboRegistrasiGet.data,
@@ -49,6 +52,7 @@ const RegistrasiPenjaminFK = () => {
         dataProvinsi: state.Master.provinsiBpjs.data?.provinsi?.list || [],
         dataKabupaten: state.Master.kabupatenBpjs.data?.kabupaten?.list || [],
         dataKecamatan: state.Master.kecamatanBpjs.data?.kecamatan?.list || [],
+        successSave: state.Registrasi.registrasiSavePenjaminFK?.success,
     }));
 
     const optionProv = dataProvinsi.map((item) => ({
@@ -374,6 +378,12 @@ const RegistrasiPenjaminFK = () => {
             return
         }
     }, [dataBpjs, dataRuangDaftar, dataUser])
+
+    useEffect(() => {
+        if(successSave && id && norec){
+            navigate(`/registrasi/pasien-ruangan/${id}/${norec}`)
+        }
+    }, [successSave, id, norec])
 
 
     //component
