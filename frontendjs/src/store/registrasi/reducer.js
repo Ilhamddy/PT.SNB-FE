@@ -328,6 +328,7 @@ const Registrasi = (state = INIT_STATE, action) => {
                     ...state.registrasiNoBpjsGet,
                     loading: false,
                     error: action.error,
+                    data: null
                 }
             }
         }

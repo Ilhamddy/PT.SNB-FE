@@ -90,7 +90,7 @@ function decrypt(message, key) {
 async function getHistoryBPJS(req, res) {
     const [bpjs, keydecrypt] = await createBpjsInstance();
     // const {nokartu} = req.params
-    let nokartu = "0001503919326"
+    let nokartu = req.params.nokartu;
     let dataHistori = null;
     let dataBpjs = null;
     let dataSPR = null;
@@ -101,7 +101,14 @@ async function getHistoryBPJS(req, res) {
     let tanggal60Hari = formatDate(new Date(
         (new Date()).getTime() - (50 * 24 * 60 * 60 * 1000)
         ))
-
+    if(!nokartu){
+        res.status(400).send({
+            message: "Nokartu tidak boleh kosong",
+            status: "error",
+            success: false
+        })
+        return;
+    }
     try{
         dataHistori = await bpjs.get(`/vclaim-rest/monitoring/HistoriPelayanan` +
             `/NoKartu/${nokartu}/tglMulai/${tanggal60Hari}/tglAkhir/${tanggalData}`,

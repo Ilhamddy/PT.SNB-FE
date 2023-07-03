@@ -347,8 +347,19 @@ const saveRegistrasiPasien2 = (req, res) => {
     }
 }
 async function saveRegistrasiPasien(req, res) {
-    try {
+    try{
         transaction = await db.sequelize.transaction();
+    }catch(e){
+        console.error(e);
+        // await transaction.rollback();
+        res.status(201).send({
+            status: JSON.stringify(e),
+            success: false,
+            msg: 'Simpan Gagal',
+            code: 201
+        });
+    }
+    try {
         let norecDP = uuid.v4().substring(0, 32)
         let objectpenjaminfk = req.body?.penjamin?.[0]?.value
         let objectpenjamin2fk = req.body?.penjamin?.[1]?.value
