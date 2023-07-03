@@ -742,11 +742,12 @@ const RegistrasiPasien = (props) => {
                                         <Col lg={12} style={{ textAlign: 'right' }}>
                                             {!successReg && <Button type="submit" color="info" className="rounded-pill" disabled={loadingSave}> SIMPAN </Button>}
                                         </Col>
-                                        <CustomCheckbox 
+                                        {/* contoh pakai checkbox */}
+                                        {/* <CustomCheckbox 
                                             data={stateDummy}
                                             setData={(newData) => setStateDummy(newData)}
                                             checkboxName='checkbox-dummy-ex'
-                                        />
+                                        /> */}
 
                                     </Row>
                                 </CardBody>
