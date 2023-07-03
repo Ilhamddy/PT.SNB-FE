@@ -7,7 +7,7 @@ import { useSelector, useDispatch } from "react-redux";
 import BreadCrumb from '../../../Components/Common/BreadCrumb';
 import UiContent from '../../../Components/Common/UiContent';
 import { Link, useNavigate } from "react-router-dom";
-import { emrHeaderGet, emrResetForm } from "../../../store/actions";
+import { emrHeaderGet, emrResetForm, listTagihanGet, listTagihanPrintGet } from "../../../store/actions";
 import { useParams } from "react-router-dom";
 import classnames from "classnames";
 import { Swiper, SwiperSlide } from 'swiper/react'
@@ -21,8 +21,10 @@ import { Autoplay, Mousewheel } from 'swiper';
 const EmrHeader = () => {
     const { norecdp, norecap } = useParams();
     const dispatch = useDispatch();
-    const { editData } = useSelector(state => ({
+    const { editData, dataTagihan, dataPasienReg } = useSelector(state => ({
         editData: state.Emr.emrHeaderGet.data,
+        dataTagihan: state.Emr.listTagihanGet.data,
+        dataPasienReg: state.Registrasi.registrasiRuangNorecGet.data || null,
     }));
 
     useEffect(() => {
@@ -37,6 +39,14 @@ const EmrHeader = () => {
         }
     }, [dispatch])
 
+    useEffect(() => {
+        if (norecdp) {
+            dispatch(listTagihanGet(norecdp));
+            dispatch(listTagihanPrintGet(norecdp));
+        }
+    }, [norecdp, dispatch])
+
+    const totalTagihan = dataTagihan.reduce((total, item) => total + item.total * item.qty, 0)
 
     return (
         <React.Fragment>
@@ -54,13 +64,24 @@ const EmrHeader = () => {
                                     <Link to="#" className="badge badge-soft-info badge-border">{editData.tgllahir}</Link>
                                     <Link to="#" className="badge badge-soft-primary badge-border">{editData.umur}</Link>
                                 </div>
+                                
                             </div>
-                            <h3 className="mb-2">
-                                <span className="counter-value" data-target="74858">
-                                    {editData.nocm}
-                                </span>
-                                <small className="text-muted fs-13"> / <Link to="#" className="badge badge-soft-danger badge-border">{editData.jeniskelamin}</Link></small></h3>
-                            <h6 className="text-muted mb-0">{editData.namapasien}</h6>
+                            <div className='d-flex justify-content-between'>
+                                <h6 className="text-muted mb-0">Total tagihan:</h6>
+                                <h6 className="text-muted mb-0">{totalTagihan}</h6>
+                            </div>
+                            <div className='d-flex justify-content-between'>
+                                <h6 className="text-muted mb-0">Deposit:</h6>
+                                <h6 className="text-muted mb-0">{0}</h6>
+                            </div>
+                            <div className='d-flex justify-content-between'>
+                                <h6 className="text-muted mb-0">Total Bayar:</h6>
+                                <h6 className="text-muted mb-0">{0}</h6>
+                            </div>
+                            <div className='d-flex justify-content-between'>
+                                <h6 className="text-muted mb-0">Sisa tagihan:</h6>
+                                <h6 className="text-muted mb-0">{totalTagihan - 0}</h6>
+                            </div>
                         </CardBody>
                     </Card>
                 </Col>
@@ -77,13 +98,18 @@ const EmrHeader = () => {
                                     <Link to="#" className="badge badge-soft-primary badge-border">{editData.namarekanan}</Link>
                                 </div>
                             </div>
-                            <h3 className="mb-2">
-                                <span className="counter-value" data-target="74858">
-                                    {editData.noregistrasi}
-                                </span>
-                                {/* <small className="text-muted fs-13">.68k</small> */}
-                            </h3>
-                            <h6 className="text-muted mb-0">{editData.ruanganta}</h6>
+                            <div className='d-flex justify-content-between'>
+                                <h6 className="text-muted mb-0">{editData.nocm} / {editData.noregistrasi}</h6>
+                            </div>
+                            <div className='d-flex justify-content-between'>
+                                <h6 className="text-muted mb-0">{dataPasienReg?.kelas?.[0]?.namakelas}</h6>
+                            </div>
+                            <div className='d-flex justify-content-between'>
+                                <h6 className="text-muted mb-0">{(new Date(dataPasienReg?.tglregistrasi))?.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' }) || "-"}</h6>
+                            </div>
+                            <div className='d-flex justify-content-between'>
+                                <h6 className="text-muted mb-0">{new Date(dataPasienReg?.tglpulang)?.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' }) || "-"}</h6>
+                            </div>
                         </CardBody>
                     </Card>
                 </Col>
@@ -96,19 +122,23 @@ const EmrHeader = () => {
                                         src="https://cdn.lordicon.com/pimvysaa.json" trigger="loop" colors="outline:#121331,primary:#b26836,secondary:#ffc738" style={{ width: "55px", height: "55px" }}>
                                     </lord-icon>
                                 </div>
-                                <div className="flex-shrink-0">
-                                    <Link to="#" className="badge badge-soft-warning badge-border">BTC</Link>
-                                    <Link to="#" className="badge badge-soft-info badge-border">ETH</Link>
-                                    <Link to="#" className="badge badge-soft-primary badge-border">USD</Link>
-                                    <Link to="#" className="badge badge-soft-danger badge-border">EUR</Link>
-                                </div>
                             </div>
-                            <h3 className="mb-2">
-                                <span className="counter-value" data-target="74858">
-                                    ini diisi tagihan{/* <CountUp start={0} end={74858} separator="," prefix="$" duration={3} /> */}
-                                </span>
-                                <small className="text-muted fs-13">.68k</small></h3>
-                            <h6 className="text-muted mb-0">ini diisi Deposit</h6>
+                            <div className='d-flex justify-content-between'>
+                                <h6 className="text-muted mb-0">Total tagihan:</h6>
+                                <h6 className="text-muted mb-0">{totalTagihan}</h6>
+                            </div>
+                            <div className='d-flex justify-content-between'>
+                                <h6 className="text-muted mb-0">Deposit:</h6>
+                                <h6 className="text-muted mb-0">{0}</h6>
+                            </div>
+                            <div className='d-flex justify-content-between'>
+                                <h6 className="text-muted mb-0">Total Bayar:</h6>
+                                <h6 className="text-muted mb-0">{0}</h6>
+                            </div>
+                            <div className='d-flex justify-content-between'>
+                                <h6 className="text-muted mb-0">Sisa tagihan:</h6>
+                                <h6 className="text-muted mb-0">{totalTagihan - 0}</h6>
+                            </div>
                         </CardBody>
                     </Card>
                 </Col>

@@ -7,7 +7,7 @@ import { useSelector, useDispatch } from "react-redux";
 import BreadCrumb from '../../../Components/Common/BreadCrumb';
 import UiContent from '../../../Components/Common/UiContent';
 import { Link, useNavigate } from "react-router-dom";
-import { emrHeaderGet, emrResetForm } from "../../../store/actions";
+import { emrHeaderGet, emrResetForm, registrasiRuanganNorecGet } from "../../../store/actions";
 import { useParams } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -128,6 +128,11 @@ const EmrBody = () => {
             label: "Radiologi",
         },
     ];
+
+    useEffect(() => {
+        norecdp && dispatch(registrasiRuanganNorecGet(norecdp))
+    }, [norecdp, dispatch])
+    
 
     return (
         <React.Fragment>

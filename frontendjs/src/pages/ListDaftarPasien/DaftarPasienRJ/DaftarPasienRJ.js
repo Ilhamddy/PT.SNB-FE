@@ -173,7 +173,7 @@ const DaftarPasienRJ = () => {
         },
         {
 
-            name: <span className='font-weight-bold fs-13'>Jenis Pasein</span>,
+            name: <span className='font-weight-bold fs-13'>Jenis Pasien</span>,
             selector: row => row.jenispenjamin,
             sortable: true
         },
