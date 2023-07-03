@@ -30,11 +30,7 @@ const TandaVital = () => {
         loadingTtv: state.Emr.emrTtvGet.loading,
         successTtv: state.Emr.emrTtvGet.success,
     }));
-    useEffect(() => {
-        if (norecdp) {
-            dispatch(emrTtvGet(norecdp));
-        }
-    }, [norecdp, dispatch])
+
     useEffect(() => {
         return () => {
             dispatch(emrResetForm());
@@ -42,7 +38,7 @@ const TandaVital = () => {
     }, [dispatch])
 
     useEffect(() => {
-        if (newData !== null) {
+        if (newData !== null && norecdp) {
             dispatch(emrTtvGet(norecdp));
         }
     }, [newData, norecdp, dispatch])
