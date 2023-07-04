@@ -282,7 +282,6 @@ const DaftarPasienRJ = () => {
         // }
     };
     useEffect(() => {
-        console.log('masukkkkk')
         if (newDataDokumen !== null) {
             dispatch(daftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}`));
             dispatch(widgetdaftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}`));
