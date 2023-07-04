@@ -72,7 +72,7 @@ import daftarPasien from "./daftarPasien/saga"
 import emrSaga from "./emr/saga";
 import kendaliDokumenSaga from "./kendaliDokumen/saga";
 import radiologiSaga from "./radiologi/saga";
-
+import laboratoriumSaga from "./laboratorium/saga";
 
 
 export default function* rootSaga() {
@@ -109,6 +109,7 @@ export default function* rootSaga() {
     fork(daftarPasien),
     fork(emrSaga),
     fork(kendaliDokumenSaga),
-    fork(radiologiSaga)
+    fork(radiologiSaga),
+    fork(laboratoriumSaga)
   ]);
 }

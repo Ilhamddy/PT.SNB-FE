@@ -59,3 +59,5 @@ export * from "./emr/action"
 export * from "./kendaliDokumen/action"
 
 export * from "./radiologi/action"
+
+export * from "./laboratorium/action"
