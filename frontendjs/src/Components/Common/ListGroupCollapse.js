@@ -45,11 +45,16 @@ const ListGroupCollapse = ({ cat, onDeleteClick, onCloseClick, msgHDelete, msgBD
     const [stateDummy, setStateDummy] = useState(() => cat.detail.map((data, index, array) => {
         const newData = {...data}
         newData.checked = false;
-        newData.subdata = data.subdata.map((subdata) => {
+        newData.subdata = data.subdata?.map((subdata) => {
             const newSubdata = {...subdata}
             newSubdata.checked = false;
+            newSubdata.subsubdata = subdata.subsubdata?.map((sub2data) => {
+                const newSub2data = {...sub2data}
+                newSub2data.checked = false;
+                return newSub2data;
+            }) || [];
             return newSubdata;
-        });
+        }) || [];
         return newData;
     }))
 
