@@ -15,4 +15,16 @@ module.exports = function (app) {
         [authJwt.verifyToken],
         controller.getDetailJenisProdukLab
     );
+
+    app.post(
+        "/api/transaksi/laboratorium/save-order-pelayanan",
+        [authJwt.verifyToken],
+        controller.saveOrderPelayanan
+    );
+
+    app.get(
+        "/api/transaksi/laboratorium/getlist-histori-order",
+        [authJwt.verifyToken],
+        controller.getListHistoryOrder
+    );
 }

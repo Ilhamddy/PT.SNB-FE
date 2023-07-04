@@ -19,7 +19,9 @@ import CustomSelect from '../../../../Select/Select';
 import BreadCrumb from '../../../../../Components/Common/BreadCrumb';
 import DataTable from 'react-data-table-component';
 import {
-    laboratoriumResetForm, widgetDetailJenisProdukGet
+    laboratoriumResetForm, widgetDetailJenisProdukGet,
+    saveOrderPelayananLaboratorium, comboHistoryUnitGet,
+    daftarOrderLaboratoriumGet
 } from "../../../../../store/actions";
 import ListGroupCollapse from '../../../../../Components/Common/ListGroupCollapse';
 
@@ -27,13 +29,20 @@ const OrderLaboratorium = () => {
     const { norecdp, norecap } = useParams();
     const dispatch = useDispatch();
     const { editData, newData, loading, error, success,
-        dataWidget, loadingWidget, successWidget } = useSelector((state) => ({
-            // newData: state.Radiologi.saveOrderPelayananRadiologi.newData,
-            // success: state.Radiologi.saveOrderPelayananRadiologi.success,
-            // loading: state.Radiologi.saveOrderPelayananRadiologi.loading,
+        dataWidget, loadingWidget, successWidget,dataCombo, loadingCombo, successCombo,
+        dataOrder, loadingOrder, successOrder } = useSelector((state) => ({
+            newData: state.Laboratorium.saveOrderPelayananLaboratorium.newData,
+            success: state.Laboratorium.saveOrderPelayananLaboratorium.success,
+            loading: state.Laboratorium.saveOrderPelayananLaboratorium.loading,
             dataWidget: state.Laboratorium.widgetDetailJenisProdukGet.data,
             loadingWidget: state.Laboratorium.widgetDetailJenisProdukGet.loading,
             successWidget: state.Laboratorium.widgetDetailJenisProdukGet.success,
+            dataCombo: state.Emr.comboHistoryUnitGet.data,
+            loadingCombo: state.Emr.comboHistoryUnitGet.loading,
+            successCombo: state.Emr.comboHistoryUnitGet.success,
+            dataOrder: state.Laboratorium.daftarOrderLaboratoriumGet.data,
+            loadingOrder: state.Laboratorium.daftarOrderLaboratoriumGet.loading,
+            successOrder: state.Laboratorium.daftarOrderLaboratoriumGet.success,
 
         }));
 
@@ -51,33 +60,134 @@ const OrderLaboratorium = () => {
         }),
         onSubmit: (values, { resetForm }) => {
             console.log(values)
-            // dispatch(tindakanSave(values, ''));
+            // dispatch(saveOrderPelayananLaboratorium(values, ''));
             resetForm({ values: '' })
         }
     })
     useEffect(() => {
         return () => {
-            dispatch(widgetDetailJenisProdukGet(''));
+            dispatch(laboratoriumResetForm());
         }
     }, [dispatch])
+   
+    useEffect(() => {
+        if (norecdp) {
+            dispatch(widgetDetailJenisProdukGet(''));
+            dispatch(comboHistoryUnitGet(norecdp));
+            dispatch(daftarOrderLaboratoriumGet(norecdp))
+        }
+    }, [norecdp, dispatch])
     const handleClickCard = (e) => {
         setcol1(true)
     };
+    const [temp, setTemp] = useState([]);
     const [col1, setcol1] = useState(false);
-    const things = {
-        idk: {
-            createdAt: new Date(),
-            title: 'thing 1'
+    const tableCustomStyles = {
+        headRow: {
+            style: {
+                color: '#ffffff',
+                backgroundColor: '#e67e22',
+            },
         },
-        another: {
-            createdAt: new Date('2010-10-10'),
-            title: 'thing 2'
-        },
-        more: {
-            createdAt: new Date('2011-11-11'),
-            title: 'thing 3'
+        rows: {
+            style: {
+                color: "black",
+                backgroundColor: "#f1f2f6"
+            },
+
         }
     }
+    const columns = [
+        {
+            name: <span className='font-weight-bold fs-13'>Pemeriksaan</span>,
+            selector: row => row.label,
+            sortable: true,
+        },
+        {
+
+            name: <span className='font-weight-bold fs-13'>Harga</span>,
+            selector: row => row.harga,
+            sortable: true,
+            // width: "150px"
+        },
+        {
+
+            name: <span className='font-weight-bold fs-13'>Qty</span>,
+            selector: row => 1,
+            sortable: true,
+            // width: "150px"
+        },
+        {
+
+            name: <span className='font-weight-bold fs-13'>Total</span>,
+            selector: row => row.harga,
+            sortable: true,
+            // width: "250px",
+        },
+    ];
+    const onClickSimpan = () => {
+        if (validation.values.unitasal === '') {
+            toast.error('Unit Belum Diisi', { autoClose: 3000 });
+            return
+        }
+        let tempValue = {
+            norecap: norecap,
+            objectunitasal: validation.values.unitasal,
+            listtindakan: temp,
+            keterangan: validation.values.keterangan
+        }
+        // console.log(tempValue)
+        dispatch(saveOrderPelayananLaboratorium(tempValue));
+    }
+    const columnsRiwayat = [
+        {
+            name: <span className='font-weight-bold fs-13'>Noregistrasi</span>,
+            selector: row => row.noregistrasi,
+            sortable: true,
+            width: "130px"
+        },
+        {
+            name: <span className='font-weight-bold fs-13'>Tgl Order</span>,
+            selector: row => row.tglinput,
+            sortable: true,
+            width: "150px"
+        },
+        {
+
+            name: <span className='font-weight-bold fs-13'>No Order</span>,
+            selector: row => row.nomororder,
+            sortable: true,
+            width: "150px"
+        },
+        {
+
+            name: <span className='font-weight-bold fs-13'>Dokter Order</span>,
+            selector: row => row.namalengkap,
+            sortable: true,
+            width: "150px"
+        },
+        {
+
+            name: <span className='font-weight-bold fs-13'>Nama Unit</span>,
+            selector: row => row.namaunit,
+            sortable: true,
+            width: "150px",
+        },
+        {
+
+            name: <span className='font-weight-bold fs-13'>Nama Produk</span>,
+            selector: row => row.namaproduk,
+            sortable: true,
+            // width: "250px",
+        },
+        {
+
+            name: <span className='font-weight-bold fs-13'>Keterangan</span>,
+            selector: row => row.keterangan,
+            sortable: true,
+            // width: "250px",
+        },
+    ];
     return (
         <React.Fragment>
             <Row className="gy-4">
@@ -89,28 +199,117 @@ const OrderLaboratorium = () => {
                     }}
                     className="gy-4"
                     action="#">
-                    <Row>
+                    <Row className="gy-2">
+                        <Col lg={12}>
+                            <Row className="gy-2">
+                                <Col lg={6}>
+                                    <Row className="gy-2">
+                                        <Col lg={4} md={4}>
+                                            <div className="mt-2">
+                                                <Label style={{ color: "black" }} htmlFor="unitasal" className="form-label">Unit Asal</Label>
+                                            </div>
+                                        </Col>
+                                        <Col lg={8} md={8}>
+                                            <div>
+                                                <CustomSelect
+                                                    id="unitasal"
+                                                    name="unitasal"
+                                                    options={dataCombo}
+                                                    value={validation.values.unitasal || ""}
+                                                    className={`input ${validation.errors.unitasal ? "is-invalid" : ""}`}
+                                                    onChange={value => validation.setFieldValue('unitasal', value.value)}
+                                                />
+                                                {validation.touched.unitasal && validation.errors.unitasal ? (
+                                                    <FormFeedback type="invalid"><div>{validation.errors.unitasal}</div></FormFeedback>
+                                                ) : null}
+                                            </div>
+                                        </Col>
+                                    </Row>
+                                </Col>
+                                <Col lg={6}></Col>
+                            </Row>
+                        </Col>
                         {Object.keys(dataWidget).map((key, index) =>
                             <Col xxl={4} sm={6} key={key}>
-                                <ListGroupCollapse key={key} cat={dataWidget[key]} index={index} />
+                                <ListGroupCollapse
+                                    key={key}
+                                    cat={dataWidget[key]} tempData={temp} index={index}
+                                    onChange={(tempData) => {
+                                        setTemp(tempData)
+                                    }} />
                             </Col>
                         )}
-                        {/* {dataWidget.map((item, key) => (
-                            <Col xxl={4} sm={6} key={key}>
-                                <Card className="card-animate">
-                                    <div className="card-footer" style={{ backgroundColor: '#e67e22' }}>
-                                        <div className="text-center">
-                                            <Link to="#" className="link-light" onClick={() => handleClickCard(item)}>{item.detailjenisproduk} <i className="ri-arrow-right-s-line align-middle lh-1"></i></Link>
-                                        </div>
+                        <Col lg={8} className="gy-2">
+                            <Card>
+                                <CardHeader style={{ backgroundColor: "#e67e22" }}>
+                                    <h4 className="card-title mb-0" style={{ color: '#ffffff' }}>Daftar Order Tindakan</h4>
+                                </CardHeader>
+                                <CardBody>
+                                    <div id="table-gridjs">
+                                        <DataTable
+                                            fixedHeader
+                                            columns={columns}
+                                            pagination
+                                            data={temp}
+                                            progressPending={loading}
+                                            customStyles={tableCustomStyles}
+                                        />
                                     </div>
-                                    <Collapse isOpen={col1} className="accordion-collapse" id="collapseOne" >
-                                        <div className="accordion-body">
-                                            Although you probably won’t get into any legal trouble if you do it just once, why risk it? If you made your subscribers a promise, you should honor that. If not, you run the risk of a drastic increase in opt outs, which will only hurt you in the long run.
-                                        </div>
-                                    </Collapse>
-                                </Card>
-                            </Col>
-                        ))} */}
+                                </CardBody>
+                            </Card>
+                        </Col>
+                        <Col lg={4}>
+                            <Row className="gy-2">
+                                <Col lg={8} sm={10} className="mt-1">
+                                    <div>
+                                        <Input
+                                            style={{ height: '200px' }}
+                                            id="keterangan"
+                                            name="keterangan"
+                                            type="textarea"
+                                            placeholder="Keterangan Order"
+                                            onChange={validation.handleChange}
+                                            onBlur={validation.handleBlur}
+                                            value={validation.values.keterangan || ""}
+                                            invalid={
+                                                validation.touched.keterangan && validation.errors.keterangan ? true : false
+                                            }
+                                        />
+                                        {validation.touched.keterangan && validation.errors.keterangan ? (
+                                            <FormFeedback type="invalid"><div>{validation.errors.keterangan}</div></FormFeedback>
+                                        ) : null}
+                                    </div>
+                                </Col>
+                                <Col lg={4} sm={2} className="mt-1">
+                                    <div className="d-flex flex-wrap gap-2 justify-content-md-start">
+                                        <Button type="button" color="info" className="rounded-pill" placement="top"
+                                            onClick={() => onClickSimpan()}>
+                                            Simpan
+                                        </Button>
+                                    </div>
+                                </Col>
+
+                            </Row>
+                        </Col>
+                        <Col lg={12} className="gy-2">
+                            <Card>
+                                <CardHeader style={{ backgroundColor: "#e67e22" }}>
+                                    <h4 className="card-title mb-0" style={{ color: '#ffffff' }}>Riwayat Order Tindakan</h4>
+                                </CardHeader>
+                                <CardBody>
+                                    <div id="table-gridjs">
+                                        <DataTable
+                                        fixedHeader
+                                            columns={columnsRiwayat}
+                                            pagination
+                                            data={dataOrder}
+                                            progressPending={loadingOrder}
+                                            customStyles={tableCustomStyles}
+                                        />
+                                    </div>
+                                </CardBody>
+                            </Card>
+                        </Col>
                     </Row>
                 </Form>
             </Row>
