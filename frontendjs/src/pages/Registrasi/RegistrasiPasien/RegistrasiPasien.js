@@ -342,7 +342,7 @@ const RegistrasiPasien = (props) => {
         const isCheckAsuransi = isRawatInap || isRawatJalan || isIgd;
         if(successReg && isAsuransi && newData?.data?.daftarPasien?.norec && isCheckAsuransi){
             navigate(`/registrasi/input-penjamin/${id}/${newData.data.daftarPasien.norec}`);
-        }else if(successReg){
+        }else if(successReg && !dtRuangNorec){
             setpillsTab("3");
             newData?.data?.daftarPasien?.norec
                 && dispatch(registrasiRuanganNorecGet(newData?.data?.daftarPasien?.norec));
