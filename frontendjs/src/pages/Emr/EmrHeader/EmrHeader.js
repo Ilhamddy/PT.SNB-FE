@@ -61,10 +61,10 @@ const EmrHeader = () => {
                                         src="https://cdn.lordicon.com/itmsnfur.json" trigger="loop" colors="primary:#405189,secondary:#0ab39c" style={{ width: "55px", height: "55px" }}>
                                     </lord-icon>
                                 </div>
-                                <div className="flex-shrink-0">
+                                {/* <div className="flex-shrink-0">
                                     <Link to="#" className="badge badge-soft-info badge-border">{}</Link>
                                     <Link to="#" className="badge badge-soft-primary badge-border">{editData.umur}</Link>
-                                </div>
+                                </div> */}
                                 
                             </div>
                             <div className='d-flex justify-content-between mb-1'>
@@ -91,9 +91,9 @@ const EmrHeader = () => {
                                          src="https://cdn.lordicon.com/yrixyrst.json" trigger="loop" colors="outline:#121331,primary:#92140c,secondary:#f9c9c0" style={{ width: "55px", height: "55px" }}>
                                     </lord-icon>
                                 </div>
-                                <div className="flex-shrink-0">
+                                {/* <div className="flex-shrink-0">
                                     <Link to="#" className="badge badge-soft-primary badge-border">{editData.namarekanan}</Link>
-                                </div>
+                                </div> */}
                             </div>
                             <div className='d-flex justify-content-between mb-1'>
                                 <h6 className="text-muted mb-0">{editData.nocm} / {editData.noregistrasi}</h6>
@@ -102,10 +102,13 @@ const EmrHeader = () => {
                                 <h6 className="text-muted mb-0">{dataPasienReg?.kelas?.[0]?.namakelas}</h6>
                             </div>
                             <div className='d-flex justify-content-between mb-1'>
-                                <h6 className="text-muted mb-0">{(new Date(dataPasienReg?.tglregistrasi))?.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' }) || "-"}</h6>
+                                <h6 className="text-muted mb-0">{'Tgl masuk: ' + (new Date(dataPasienReg?.tglregistrasi))
+                                ?.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' }) 
+                                 || "-"}</h6>
                             </div>
                             <div className='d-flex justify-content-between mb-1'>
-                                <h6 className="text-muted mb-0">{new Date(dataPasienReg?.tglpulang)?.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' }) || "-"}</h6>
+                                <h6 className="text-muted mb-0">{'Tgl Keluar: ' + new Date(dataPasienReg?.tglpulang)
+                                ?.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' }) || "-"}</h6>
                             </div>
                         </CardBody>
                     </Card>
