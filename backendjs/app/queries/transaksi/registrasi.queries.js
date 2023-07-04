@@ -93,7 +93,7 @@ const getRekapBilling = `select variabelbpjs, sum(totalharga) from (
 group by aa.variabelbpjs`;
 
 
-module.exports = {
+export default {
     getAll,
     addPost,
     checkNewNumber,

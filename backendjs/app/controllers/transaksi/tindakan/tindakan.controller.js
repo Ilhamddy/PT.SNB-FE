@@ -1,11 +1,11 @@
-const pool = require("../../../config/dbcon.query");
-const uuid = require('uuid')
-const queries = require('../../../queries/transaksi/registrasi.queries');
-const db = require("../../../models");
+import pool from "../../../config/dbcon.query";
+import * as uuid from 'uuid';
+import queries from '../../../queries/transaksi/registrasi.queries';
+import db from "../../../models";
 
 const t_antreanpemeriksaan = db.t_antreanpemeriksaan
 
-queryPromise2 = (query) => {
+const queryPromise2 = (query) => {
     return new Promise((resolve, reject) => {
         pool.query(query, (error, results) => {
             if (error) {
@@ -105,8 +105,19 @@ async function getListNamaPelaksana(req, res) {
 }
 
 async function saveTindakanPasien(req, res) {
-    try {
+    let transaction = null;
+    try{
         transaction = await db.sequelize.transaction();
+    }catch(e){
+        console.error(e)
+        res.status(201).send({
+            status: e.message,
+            success: false,
+            msg: 'Simpan Gagal',
+            code: 201
+        });
+    }
+    try {
         var newArray = [{ objectjenispelaksana: req.body.jenispelaksana1, objectnamapelaksana: req.body.namapelaksana1 }];
         if (req.body.jenispelaksana2 !== '')
             newArray.push({ objectjenispelaksana: req.body.jenispelaksana2, objectnamapelaksana: req.body.namapelaksana2 });
@@ -282,7 +293,7 @@ const getAllBillingPrint = async (req, res) => {
 }
 
 
-module.exports = {
+export default {
     getListAntreanPemeriksaan,
     getListProdukToKelasToUnit,
     getListJenisPelaksana,

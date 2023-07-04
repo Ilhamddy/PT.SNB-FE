@@ -1,4 +1,4 @@
-module.exports = (sequelize, Sequelize) => {
+export default (sequelize, Sequelize) => {
     const m_tempattidur = sequelize.define("m_tempattidur", {
         id: {
             allowNull: false,

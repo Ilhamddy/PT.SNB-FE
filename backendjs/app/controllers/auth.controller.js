@@ -1,17 +1,22 @@
-const db = require("../models");
-const config = require("../config/auth.config");
+
+//change above line to import
+import db from "../models";
+import config from "../config/auth.config";
+import pool from "../config/dbcon.query";
+import queries from '../queries/setting/mapsesions';
+import jwt from "jsonwebtoken";
+import bcrypt from "bcryptjs";
+
 const User = db.user;
 const Role = db.role;
 
 const Op = db.Sequelize.Op;
 
-const pool = require("../config/dbcon.query");
-const queries = require('../queries/setting/mapsesions');
 
-var jwt = require("jsonwebtoken");
-var bcrypt = require("bcryptjs");
 
-exports.signup = (req, res) => {
+
+
+const signup = (req, res) => {
   // Save User to Database
   User.create({
     username: req.body.username,
@@ -44,7 +49,7 @@ exports.signup = (req, res) => {
     });
 };
 
-exports.signin = (req, res) => {
+const signin = (req, res) => {
   User.findOne({
     where: {
       username: req.body.username
@@ -129,3 +134,8 @@ exports.signin = (req, res) => {
       res.status(500).send({ message: err.message, status: "errors" });
     });
 };
+
+export default {
+  signin,
+  signup
+}

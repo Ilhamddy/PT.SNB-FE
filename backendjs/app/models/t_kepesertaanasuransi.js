@@ -1,4 +1,4 @@
-module.exports = (sequelize, Sequelize) => {
+export default (sequelize, Sequelize) => {
     const t_kepesertaanasuransi = sequelize.define("t_kepesertaanasuransi", {
         norec: {
             allowNull: false,

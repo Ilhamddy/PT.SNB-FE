@@ -65,7 +65,7 @@ const DaftarPasienPulang = () => {
             name: <span className='font-weight-bold fs-13'>Tgl Registrasi</span>,
             selector: row => dateTimeLocal(new Date(row.tglregistrasi)),
             sortable: true,
-            width: "150px",
+            width: "160px",
             wrap: true
         },
         {
@@ -108,7 +108,7 @@ const DaftarPasienPulang = () => {
             name: <span className='font-weight-bold fs-13'>Tgl Pulang</span>,
             selector: row => dateTimeLocal(new Date(row.tglpulang)),
             sortable: true,
-            width: "150px",
+            width: "160px",
             wrap: true
 
         },

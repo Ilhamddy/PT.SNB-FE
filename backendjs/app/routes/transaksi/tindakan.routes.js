@@ -1,7 +1,8 @@
-const { authJwt } = require("../../middleware");
-const controller = require("../../controllers/transaksi/tindakan/tindakan.controller");
 
-module.exports = function (app) {
+import { authJwt } from "../../middleware/index.js";
+import controller from "../../controllers/transaksi/tindakan/tindakan.controller.js";
+
+export default function (app) {
     app.use(function (req, res, next) {
         res.header(
             "Access-Control-Allow-Headers",

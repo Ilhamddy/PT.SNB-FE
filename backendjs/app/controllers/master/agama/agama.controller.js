@@ -1,5 +1,5 @@
-const pool = require("../../../config/dbcon.query");
-const queries = require('../../../queries/master/agama/agama.queries.js');
+import pool from "../../../config/dbcon.query";
+import queries from '../../../queries/master/agama/agama.queries.js';
 
 const allSelect = (req, res) => {
     
@@ -16,7 +16,7 @@ const allSelect = (req, res) => {
       
     });
 };
-module.exports = {
+export default {
     allSelect,
   
 };

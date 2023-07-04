@@ -5,6 +5,6 @@ const formatDateIsoShort = (d) => {
     return d.toISOString().replace(/T.*$/, "");
 }
 
-module.exports = {
+export {
     formatDateIsoShort,
 }

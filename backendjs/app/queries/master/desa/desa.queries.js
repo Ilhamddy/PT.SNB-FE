@@ -19,7 +19,7 @@ from
 const getKecamatan=`
 select id as value, namakecamatan as label  from m_kecamatan`
 
-module.exports = {
+export default {
     getAll,
     getKecamatan
 };

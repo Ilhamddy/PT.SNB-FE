@@ -1,4 +1,4 @@
-module.exports = (sequelize, Sequelize) => {
+export default (sequelize, Sequelize) => {
     const running_Number = sequelize.define("running_number", {
         id: {
             allowNull: false,

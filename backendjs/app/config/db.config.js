@@ -1,6 +1,8 @@
-const dotenv = require('dotenv').config();
+import dotenv from "dotenv"
 
-module.exports = {
+dotenv.config();
+
+export default {
     HOST: process.env.API_HOST,
     USER: process.env.API_USER,
     PASSWORD: process.env.API_PASSWORD,

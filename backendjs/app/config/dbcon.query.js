@@ -1,7 +1,7 @@
-const config = require("../config/db.config.js");
+import config from "../config/db.config.js";
+import pg from "pg";
 
-const Pool = require("pg").Pool;
-
+const Pool = pg.Pool;
 const pool = new Pool({
     user: config.USER,
     host: config.HOST,
@@ -10,4 +10,4 @@ const pool = new Pool({
     port: config.PORT,
 });
 
-module.exports = pool;
+export default pool;

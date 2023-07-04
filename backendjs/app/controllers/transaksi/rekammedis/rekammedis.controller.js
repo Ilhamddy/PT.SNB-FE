@@ -188,12 +188,19 @@ async function getWidgetListDaftarDokumenRekammedis(req, res) {
 }
 
 async function saveDokumenRekammedis(req, res) {
- 
- 
-    try {
-        
+    let transaction = null;
+    try{
         transaction = await db.sequelize.transaction();
-        
+    }catch(e){
+        console.error(e)
+        res.status(201).send({
+            status: e.message,
+            success: false,
+            msg: 'Simpan Gagal',
+            code: 201
+        });
+    }
+    try {
         if(req.body.idpencarian===1){
             let norec = uuid.v4().substring(0, 32)
             const t_rm_lokasidokumen = await db.t_rm_lokasidokumen.create({

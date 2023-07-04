@@ -1,7 +1,7 @@
-const { authJwt } = require("../../middleware");
-const controller = require("../../controllers/master/combobox.controller");
+import { authJwt } from "../../middleware/index.js";
+import controller from "../../controllers/master/combobox.controller.js";
 
-module.exports = function(app) {
+export default function(app) {
     app.use(function(req, res, next) {
       res.header(
         "Access-Control-Allow-Headers",

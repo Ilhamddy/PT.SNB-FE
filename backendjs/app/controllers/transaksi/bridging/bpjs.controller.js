@@ -1,16 +1,12 @@
 
-
-
-const pool = require("../../../config/dbcon.query");
-const uuid = require('uuid')
-const db = require("../../../models");
-
-const t_antreanpemeriksaan = db.t_antreanpemeriksaan
-
-const LZString = require('lz-string');
-const crypto = require('crypto');
-const axios = require("axios")
+import pool from "../../../config/dbcon.query";
+import * as uuid from 'uuid';
+import db from "../../../models";
+import LZString from 'lz-string';
+import crypto from 'crypto';
+import axios from "axios";
 const algorithm = 'aes-256-cbc';
+const t_antreanpemeriksaan = db.t_antreanpemeriksaan
 
 function formatDate(date) {
     var d = new Date(date),
@@ -245,7 +241,7 @@ async function generateSignature(req, res) {
 }
 
 
-module.exports = {
+export default {
     generateSignature,
     getHistoryBPJS,
     getProvinsi,

@@ -1,4 +1,4 @@
-module.exports = (sequelize, Sequelize) => {
+export default (sequelize, Sequelize) => {
     const t_rm_lokasidokumen = sequelize.define("t_rm_lokasidokumen", {
         norec: {
             allowNull: false,

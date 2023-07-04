@@ -1,27 +1,27 @@
-const pool = require("../../config/dbcon.query");
-const queries = require('../../queries/master/agama/agama.queries.js');
-const queriesJk = require('../../queries/master/jenisKelamin/jenisKelamin.queries');
-const queriesTitle = require('../../queries/master/title/title.queries');
-const queriesGolonganDarah = require('../../queries/master/golonganDarah/golonganDarah.queries');
-const queriesKebangsaan = require('../../queries/master/kebangsaan/kebangsaan.queries');
-const queriesPerkawinan = require('../../queries/master/statusperkawinan/statusperkawinan.queries');
-const queriespendidikan = require('../../queries/master/pendidikan/pendidikan.queries');
-const queriesPekerjaan = require('../../queries/master/pekerjaan/pekerjaan.queries');
-const queriesEtnis = require('../../queries/master/etnis/etnis.queries');
-const queriesBahasa = require('../../queries/master/bahasa/bahasa.queries');
-const queriesDesa = require('../../queries/master/desa/desa.queries');
-const queriesNegara = require('../../queries/master/negara/negara.queries');
-const quriesInstalasi = require('../../queries/master/instalasi/instalasi.queries')
-const quriesUnit = require('../../queries/master/unit/unit.queries')
-const quriesAsalRujukan = require('../../queries/master/asalrujukan/asalrujukan.queries')
-const quriesJenisPenjamin = require('../../queries/master/jenisPenjamin/jenispenjamin.queries')
-const queriesRekanan = require('../../queries/master/rekanan/rekanan.queries')
-const queriesHubunganKeluarga = require('../../queries/master/hubunganKeluarga/hubunganKeluarga.queries')
-const queriesPegawai = require('../../queries/master/pegawai/pegawai.queries')
-const queriesKelas = require('../../queries/master/kelas/kelas.queries')
-const queriesKamar = require('../../queries/master/kamar/kamar.queries')
-const queriesTempatTidur = require('../../queries/master/tempattidur/tempattidur.queires')
-const queriesStatusKecelakaan = require('../../queries/master/statuskecelakaan/statuskecelakaan.queries')
+import pool from "../../config/dbcon.query";
+import queries from '../../queries/master/agama/agama.queries.js';
+import queriesJk from '../../queries/master/jenisKelamin/jenisKelamin.queries';
+import queriesTitle from '../../queries/master/title/title.queries';
+import queriesGolonganDarah from '../../queries/master/golonganDarah/golonganDarah.queries';
+import queriesKebangsaan from '../../queries/master/kebangsaan/kebangsaan.queries';
+import queriesPerkawinan from '../../queries/master/statusperkawinan/statusperkawinan.queries';
+import queriespendidikan from '../../queries/master/pendidikan/pendidikan.queries';
+import queriesPekerjaan from '../../queries/master/pekerjaan/pekerjaan.queries';
+import queriesEtnis from '../../queries/master/etnis/etnis.queries';
+import queriesBahasa from '../../queries/master/bahasa/bahasa.queries';
+import queriesDesa from '../../queries/master/desa/desa.queries';
+import queriesNegara from '../../queries/master/negara/negara.queries';
+import quriesInstalasi from '../../queries/master/instalasi/instalasi.queries'
+import quriesUnit from '../../queries/master/unit/unit.queries'
+import quriesAsalRujukan from '../../queries/master/asalrujukan/asalrujukan.queries'
+import quriesJenisPenjamin from '../../queries/master/jenisPenjamin/jenispenjamin.queries'
+import queriesRekanan from '../../queries/master/rekanan/rekanan.queries'
+import queriesHubunganKeluarga from '../../queries/master/hubunganKeluarga/hubunganKeluarga.queries'
+import queriesPegawai from '../../queries/master/pegawai/pegawai.queries'
+import queriesKelas from '../../queries/master/kelas/kelas.queries'
+import queriesKamar from '../../queries/master/kamar/kamar.queries'
+import queriesTempatTidur from '../../queries/master/tempattidur/tempattidur.queires'
+import queriesStatusKecelakaan from '../../queries/master/statuskecelakaan/statuskecelakaan.queries'
 
 const selectComboBox = (req, res) => {
     try {
@@ -252,7 +252,7 @@ const comboAsuransi = (req, res) => {
         });
     }
 }
-module.exports = {
+export default {
     selectComboBox,
     desaKelurahan,
     getKecamatan,

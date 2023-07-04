@@ -133,7 +133,7 @@ const CustomCheckbox = ({data, setData, checkboxName}) => {
                                         </div>
                                         {
                                             subDataVal.checked && subDataVal.subsubdata?.map((sub2DataVal, indexSub2dataVal) => (
-                                                <div className="form-check ms-5" key={sub2DataVal.id}>
+                                                <div className="form-check ms-4" key={sub2DataVal.id}>
                                                     <Input 
                                                         className="form-check-input" 
                                                         type="checkbox" 

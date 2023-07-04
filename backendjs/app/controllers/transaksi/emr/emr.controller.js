@@ -1,7 +1,7 @@
-const pool = require("../../../config/dbcon.query");
-const uuid = require('uuid')
-const queries = require('../../../queries/transaksi/registrasi.queries');
-const db = require("../../../models");
+import pool from "../../../config/dbcon.query";
+import * as uuid from 'uuid'
+import queries from '../../../queries/transaksi/registrasi.queries';
+import db from "../../../models";
 
 const t_emrpasien = db.t_emrpasien
 const t_ttv = db.t_ttv
@@ -22,7 +22,7 @@ function formatDate(date) {
 
     return [year, month, day].join('-');
 }
-queryPromise1 = (norecta, idlabel) => {
+const queryPromise1 = (norecta, idlabel) => {
     return new Promise((resolve, reject) => {
         pool.query(`select norec from t_emrpasien where objectantreanpemeriksaanfk='${norecta}' and idlabel='${idlabel}'`, (error, results) => {
             if (error) {
@@ -32,7 +32,7 @@ queryPromise1 = (norecta, idlabel) => {
         });
     });
 };
-queryPromise2 = (query) => {
+const queryPromise2 = (query) => {
     return new Promise((resolve, reject) => {
         pool.query(query, (error, results) => {
             if (error) {
@@ -897,7 +897,7 @@ async function updateStatusPulangRJ(req, res) {
 
 
 
-module.exports = {
+export default {
     saveEmrPasienTtv,
     getListTtv,
     getHeaderEmr,

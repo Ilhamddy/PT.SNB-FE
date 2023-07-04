@@ -1,14 +1,30 @@
-const express = require("express");
-const bodyParser = require("body-parser");
-const cors = require("cors");
+import express from "express";
+import bodyParser from "body-parser";
+import cors from "cors";
+import * as dotenv from "dotenv"
+
+import authRoutes from './app/routes/auth.routes.js';
+import userRoutes from './app/routes/user.routes.js';
+import agamaRoutes from './app/routes/master/agama.routes.js';
+import registrasiRoutes from './app/routes/transaksi/registrasi.routes.js';
+import masterRoutes from './app/routes/master/master.routes.js';
+import emrRoutes from './app/routes/transaksi/emr.routes.js';
+import bpjsRoutes from './app/routes/transaksi/bpjs.routes.js';
+import tindakanRoutes from './app/routes/transaksi/tindakan.routes.js';
+import rekammedisRoutes from './app/routes/transaksi/rekammedis.routes.js';
+import radiologiRoutes from './app/routes/transaksi/radiologi.routes.js';
+import laboratoriumRoutes from './app/routes/transaksi/laboratorium.routes.js';
+
+dotenv.config()
+
 
 const app = express();
 
 
-
-var corsOptions = {
+let corsOptions = {
   origin: "http://localhost:8081"
 };
+
 
 app.use(cors());
 // app.use((req, res, next) => {
@@ -30,18 +46,17 @@ app.get("/", (req, res) => {
 });
 
 // routes
-require('./app/routes/auth.routes')(app);
-require('./app/routes/user.routes')(app);
-require('./app/routes/master/agama.routes')(app);
-require('./app/routes/transaksi/registrasi.routes')(app);
-require('./app/routes/master/master.routes')(app);
-require('./app/routes/transaksi/emr.routes')(app);
-require('./app/routes/transaksi/bpjs.routes')(app);
-require('./app/routes/transaksi/tindakan.routes')(app);
-require('./app/routes/transaksi/rekammedis.routes')(app);
-require('./app/routes/transaksi/radiologi.routes')(app);
-require('./app/routes/transaksi/laboratorium.routes')(app);
-
+authRoutes(app);
+userRoutes(app);
+agamaRoutes(app);
+registrasiRoutes(app);
+masterRoutes(app);
+emrRoutes(app);
+bpjsRoutes(app);
+tindakanRoutes(app);
+rekammedisRoutes(app);
+radiologiRoutes(app);
+laboratoriumRoutes(app);
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8000;

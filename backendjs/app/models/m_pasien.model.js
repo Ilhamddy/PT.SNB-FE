@@ -1,4 +1,4 @@
-module.exports = (sequelize, Sequelize) => {
+export default (sequelize, Sequelize) => {
     const M_pasien = sequelize.define("m_pasien", {
         // id: {
         //     allowNull: false,

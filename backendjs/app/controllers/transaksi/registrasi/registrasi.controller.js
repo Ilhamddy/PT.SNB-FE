@@ -1,8 +1,8 @@
-const pool = require("../../../config/dbcon.query");
-const uuid = require('uuid')
-const queries = require('../../../queries/transaksi/registrasi.queries');
-const db = require("../../../models");
-const {formatDateIsoShort} = require("../../../utils/format");
+import pool from "../../../config/dbcon.query";
+import * as uuid from 'uuid'
+import queries from '../../../queries/transaksi/registrasi.queries';
+import db from "../../../models";
+import {formatDateIsoShort} from "../../../utils/format";
 const M_pasien = db.m_pasien
 const running_Number = db.running_number
 const t_daftarpasien = db.t_daftarpasien
@@ -164,7 +164,8 @@ const getAllByOr = (req, res) => {
     //     data: query,
     //     status: "success",
     //     success: true,
-    // });let taskid = ""
+    // });
+    let taskid = ""
 
     if (req.query.taskid !== undefined) {
         if (req.query.taskid === '2') {
@@ -361,6 +362,7 @@ const saveRegistrasiPasien2 = (req, res) => {
     }
 }
 async function saveRegistrasiPasien(req, res) {
+    let transaction = null;
     try{
         transaction = await db.sequelize.transaction();
     }catch(e){
@@ -608,11 +610,13 @@ const getDaftarPasienFilter = async (req, res) => {
                 left join m_kamar mka on mka.id = tap.objectkamarfk
                     WHERE 
                     t_daftarpasien.tglpulang IS NOT null
-                    AND t_daftarpasien.tglpulang BETWEEN $1 AND $2
+                    ${(filterTglStart && filterTglLast) ? 
+                        `AND t_daftarpasien.tglpulang BETWEEN '${filterTglStart}' AND '${filterTglLast}'` : ''}
+                    ${filterInstalasi ? `AND t_daftarpasien.objectinstalasifk = ${filterInstalasi}` : ''}
                     ORDER BY t_daftarpasien.tglpulang DESC
-                    LIMIT 10
+                    LIMIT 25
             `
-            , [filterTglStart, filterTglLast])
+            )
 
 
         if(daftarpasien.rows.length === 0){
@@ -1092,7 +1096,7 @@ async function getDaftarPasienRawatInap(req, res) {
 
 }
 
-module.exports = {
+export default {
     allSelect,
     addPost,
     updatePasienById,
