@@ -1,7 +1,7 @@
-const pool = require("../../../config/dbcon.query");
-const uuid = require('uuid')
-const queries = require('../../../queries/transaksi/registrasi.queries');
-const db = require("../../../models");
+import pool from "../../../config/dbcon.query";
+import * as uuid from 'uuid';
+import queries from '../../../queries/transaksi/registrasi.queries';
+import db from "../../../models";
 
 function formatDate(date) {
     var d = new Date(date),
@@ -16,7 +16,7 @@ function formatDate(date) {
 
     return [year, month, day].join('-');
 }
-queryPromise2 = (query) => {
+const queryPromise2 = (query) => {
     return new Promise((resolve, reject) => {
         pool.query(query, (error, results) => {
             if (error) {
@@ -269,7 +269,7 @@ async function saveDokumenRekammedis(req, res) {
     }
 }
 
-module.exports = {
+export default {
     getListDaftarDokumenRekammedis,
     getWidgetListDaftarDokumenRekammedis,
     saveDokumenRekammedis
