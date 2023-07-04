@@ -79,21 +79,26 @@ const ListGroupCollapse = ({ cat, tempData, index, onChange }) => {
                     tempDataD.push(sortBy[i])
                 }
             }else{
-                // if(tempData.length>0){
-                //     let sama = false
-                //     console.log('masuk hapus')
-                //     for (let x = 0; x < tempData.length; x++) {
-                //         if(tempData[x].value=== sortBy[i].value){
-                //             console.log(sortBy[i].value)
-                //             sama = true
-                //             // tempDataD.push(sortBy[i])
-                //         }
-                //     }
-                //     if (sama === false){
-                //         console.log('masuk hapus bawah')
-                //         tempDataD.splice(sortBy[i])
-                //     }
-                // }
+                if(tempData.length>0){
+                    let sama = false
+                    // console.log(tempData)
+                    // console.log(i)
+                    let endSlice = false
+                    for (let x = 0; x < tempData.length; x++) {
+                        if(tempData[x].value=== sortBy[i].value && sortBy[i].checked===false && sama === false){
+                            sama = true
+                            // tempDataD.push(sortBy[i])
+                        }
+                        if (sama === true && endSlice === false && sortBy[i].checked===false){
+                            console.log(tempDataD)
+                            console.log(x)
+                            tempDataD.splice(x)
+                            endSlice = true
+                            break
+                        }
+                    }
+                    
+                }
             }
         }
         // tempData = newArray
