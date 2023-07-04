@@ -348,7 +348,7 @@ const RegistrasiPasien = (props) => {
                 && dispatch(registrasiRuanganNorecGet(newData?.data?.daftarPasien?.norec));
         }
 	}, [successReg, id, navigate,
-        newData, validation.values, dispatch]);
+        newData, validation.values, dispatch, dtRuangNorec]);
 
 
     const optionPenjamin = data
