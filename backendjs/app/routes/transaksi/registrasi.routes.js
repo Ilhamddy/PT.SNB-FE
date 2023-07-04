@@ -101,7 +101,7 @@ module.exports = function (app) {
     )
     
     app.get(
-        "/api/transaksi/registrasi/list-daftar-pasien-ruangan/:startdate/:lastdate",
+        "/api/transaksi/registrasi/list-daftar-pasien-ruangan",
         [authJwt.verifyToken],
         controller.getDaftarPasienFilter
     )

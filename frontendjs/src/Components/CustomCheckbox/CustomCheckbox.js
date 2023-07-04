@@ -117,7 +117,7 @@ const CustomCheckbox = ({data, setData, checkboxName}) => {
                             </div>
                             {dataVal.checked &&  
                                 dataVal.subdata?.map((subDataVal, indexSubdataVal) => (
-                                    <>
+                                    <div className="d-flex flex-column" key={subDataVal.id}>
                                         <div className="form-check ms-3" key={subDataVal.id}>
                                             <Input 
                                                 className="form-check-input" 
@@ -149,7 +149,7 @@ const CustomCheckbox = ({data, setData, checkboxName}) => {
                                             ))
                                         }
                                         
-                                    </>
+                                    </div>
                                 ))
                             }
                         </div>

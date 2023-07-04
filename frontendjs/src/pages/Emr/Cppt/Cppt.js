@@ -91,21 +91,7 @@ const Cppt = () => {
 
     };
 
-    const tableCustomStyles = {
-        headRow: {
-            style: {
-                color: '#ffffff',
-                backgroundColor: '#B57602',
-            },
-        },
-        rows: {
-            style: {
-                color: "black",
-                backgroundColor: "#f1f2f6"
-            },
 
-        }
-    }
     const columns = [
       
         {
@@ -336,5 +322,21 @@ const Cppt = () => {
             </Row>
         </React.Fragment>
     )
+}
+
+const tableCustomStyles = {
+    headRow: {
+        style: {
+            color: '#ffffff',
+            backgroundColor: '#B57602',
+        },
+    },
+    rows: {
+        style: {
+            color: "black",
+            backgroundColor: "#f1f2f6"
+        },
+
+    }
 }
 export default (Cppt)

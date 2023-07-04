@@ -1,17 +1,21 @@
 import {
-   DAFTARPASIEN_RESET_FORM,
-   DAFTARPASIEN_RJ_GET,
-   DAFTARPASIEN_RJ_GET_SUCCESS,
-   DAFTARPASIEN_RJ_GET_ERROR,
-   WIDGET_DAFTARPASIEN_RJ_GET,
-   WIDGET_DAFTARPASIEN_RJ_GET_SUCCESS,
-   WIDGET_DAFTARPASIEN_RJ_GET_ERROR,
-   WIDGET_DAFTARPASIEN_RI_GET,
-   WIDGET_DAFTARPASIEN_RI_GET_SUCCESS,
-   WIDGET_DAFTARPASIEN_RI_GET_ERROR,
-   DAFTARPASIEN_RI_GET,
-   DAFTARPASIEN_RI_GET_SUCCESS,
-   DAFTARPASIEN_RI_GET_ERROR,
+    DAFTARPASIEN_RESET_FORM,
+    DAFTARPASIEN_RJ_GET,
+    DAFTARPASIEN_RJ_GET_SUCCESS,
+    DAFTARPASIEN_RJ_GET_ERROR,
+    WIDGET_DAFTARPASIEN_RJ_GET,
+    WIDGET_DAFTARPASIEN_RJ_GET_SUCCESS,
+    WIDGET_DAFTARPASIEN_RJ_GET_ERROR,
+    WIDGET_DAFTARPASIEN_RI_GET,
+    WIDGET_DAFTARPASIEN_RI_GET_SUCCESS,
+    WIDGET_DAFTARPASIEN_RI_GET_ERROR,
+    DAFTARPASIEN_RI_GET,
+    DAFTARPASIEN_RI_GET_SUCCESS,
+    DAFTARPASIEN_RI_GET_ERROR,
+    DAFTARPASIEN_PULANG_GET,
+    DAFTARPASIEN_PULANG_GET_SUCCESS,
+    DAFTARPASIEN_PULANG_GET_ERROR,
+
 } from "./actionType";
 
 const INIT_STATE = {
@@ -31,6 +35,11 @@ const INIT_STATE = {
         error: null,
     },
     daftarPasienRIGet: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    daftarPasienPulangGet: {
         data: [],
         loading: false,
         error: null,
@@ -177,6 +186,39 @@ const DaftarPasien = (state = INIT_STATE, action) => {
                 ...state,
                 daftarPasienRIGet: {
                     ...state.daftarPasienRIGet,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case DAFTARPASIEN_PULANG_GET: {
+            return {
+                ...state,
+                daftarPasienPulangGet: {
+                    ...state.daftarPasienPulangGet,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case DAFTARPASIEN_PULANG_GET_SUCCESS: {
+            return {
+                ...state,
+                daftarPasienPulangGet: {
+                    ...state.daftarPasienPulangGet,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case DAFTARPASIEN_PULANG_GET_ERROR: {
+            return {
+                ...state,
+                daftarPasienPulangGet: {
+                    ...state.daftarPasienPulangGet,
                     loading: false,
                     error: action.error,
                 }

@@ -3,7 +3,10 @@ import ServiceRegistrasi from "../../services/service-registrasi";
 
 import {
     DAFTARPASIEN_RJ_GET, WIDGET_DAFTARPASIEN_RJ_GET,
-    WIDGET_DAFTARPASIEN_RI_GET, DAFTARPASIEN_RI_GET
+    WIDGET_DAFTARPASIEN_RI_GET, DAFTARPASIEN_RI_GET,
+    DAFTARPASIEN_PULANG_GET,
+    DAFTARPASIEN_PULANG_GET_SUCCESS,
+    DAFTARPASIEN_PULANG_GET_ERROR
 } from "./actionType";
 
 import {
@@ -23,11 +26,6 @@ function* onGetDaftarPasienRJ({ payload: { param } }) {
     }
 }
 
-
-export function* watchGetDaftarPasienRJ() {
-    yield takeEvery(DAFTARPASIEN_RJ_GET, onGetDaftarPasienRJ);
-}
-
 function* onGetWidgetDaftarPasienRJ({ payload: { param } }) {
     try {
         const response = yield call(serviceRegistrasi.getWidgetDaftarPasienRJ, param);
@@ -35,11 +33,6 @@ function* onGetWidgetDaftarPasienRJ({ payload: { param } }) {
     } catch (error) {
         yield put(widgetdaftarPasienRJGetError(error));
     }
-}
-
-
-export function* watchGetWidgetDaftarPasienRJ() {
-    yield takeEvery(WIDGET_DAFTARPASIEN_RJ_GET, onGetWidgetDaftarPasienRJ);
 }
 
 function* onGetWidgetDaftarPasienRI({ payload: { param } }) {
@@ -51,11 +44,6 @@ function* onGetWidgetDaftarPasienRI({ payload: { param } }) {
     }
 }
 
-
-export function* watchGetWidgetDaftarPasienRI() {
-    yield takeEvery(WIDGET_DAFTARPASIEN_RI_GET, onGetWidgetDaftarPasienRI);
-}
-
 function* onGetDaftarPasienRI({ payload: { param } }) {
     try {
         const response = yield call(serviceRegistrasi.getDaftarPasienRI, param);
@@ -65,9 +53,34 @@ function* onGetDaftarPasienRI({ payload: { param } }) {
     }
 }
 
+function* onGetDaftarPasienPulang({ payload: { dateStart, dateEnd, instalasi, unit, search }}) {
+    try {
+        const response = yield call(serviceRegistrasi.getDaftarPasienPulang, [dateStart, dateEnd, instalasi, unit, search]);
+        yield put({ type: DAFTARPASIEN_PULANG_GET_SUCCESS, payload: response.data });
+    } catch (error) {
+        yield put({ type: DAFTARPASIEN_PULANG_GET_ERROR, payload: error });
+    }
+}
+
+export function* watchGetDaftarPasienRJ() {
+    yield takeEvery(DAFTARPASIEN_RJ_GET, onGetDaftarPasienRJ);
+}
+
+export function* watchGetWidgetDaftarPasienRJ() {
+    yield takeEvery(WIDGET_DAFTARPASIEN_RJ_GET, onGetWidgetDaftarPasienRJ);
+}
+
+
+export function* watchGetWidgetDaftarPasienRI() {
+    yield takeEvery(WIDGET_DAFTARPASIEN_RI_GET, onGetWidgetDaftarPasienRI);
+}
 
 export function* watchGetDaftarPasienRI() {
     yield takeEvery(DAFTARPASIEN_RI_GET, onGetDaftarPasienRI);
+}
+
+export function* watchGetDaftarPasienPulang() {
+    yield takeEvery(DAFTARPASIEN_PULANG_GET, onGetDaftarPasienPulang);
 }
 
 
@@ -76,7 +89,8 @@ function* daftarPasienSaga() {
         fork(watchGetDaftarPasienRJ),
         fork(watchGetWidgetDaftarPasienRJ),
         fork(watchGetWidgetDaftarPasienRI),
-        fork(watchGetDaftarPasienRI)
+        fork(watchGetDaftarPasienRI),
+        fork(watchGetDaftarPasienPulang)
     ]);
 }
 

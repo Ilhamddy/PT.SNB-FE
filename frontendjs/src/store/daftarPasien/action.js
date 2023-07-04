@@ -12,6 +12,9 @@ import {
     DAFTARPASIEN_RI_GET,
     DAFTARPASIEN_RI_GET_SUCCESS,
     DAFTARPASIEN_RI_GET_ERROR,
+    DAFTARPASIEN_PULANG_GET,
+    DAFTARPASIEN_PULANG_GET_SUCCESS,
+    DAFTARPASIEN_PULANG_GET_ERROR,
 } from "./actionType";
 
 export const daftarPasienResetForm = () => ({
@@ -75,5 +78,20 @@ export const daftarPasienRIGetSuccess = (data) => ({
 
 export const daftarPasienRIGetError = (error) => ({
     type: DAFTARPASIEN_RI_GET_ERROR,
+    payload: error,
+});
+
+export const daftarPasienPulangGet = (dateStart, dateEnd, instalasi, unit, search) => ({
+    type: DAFTARPASIEN_PULANG_GET,
+    payload: { dateStart, dateEnd, instalasi, unit, search},
+});
+
+export const daftarPasienPulangGetSuccess = (data) => ({
+    type: DAFTARPASIEN_PULANG_GET_SUCCESS,
+    payload: data,
+});
+
+export const daftarPasienPulangGetError = (error) => ({
+    type: DAFTARPASIEN_PULANG_GET_ERROR,
     payload: error,
 });

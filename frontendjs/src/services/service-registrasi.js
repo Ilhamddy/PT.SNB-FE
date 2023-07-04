@@ -58,4 +58,14 @@ export default class ServiceRegistrasi {
     saveRegistrasiPenjaminFK = async (params) => {
         return await api.create("/transaksi/registrasi/save-penjamin-fk", params);
     }
+
+    getDaftarPasienPulang = async ([dateStart, dateEnd, instalasi, unit, search]) => {
+        return await api.get(`/transaksi/registrasi/list-daftar-pasien-ruangan?` 
+            + (dateStart ? `dateStart=${dateStart}&` : ``)
+            + (dateEnd ? `dateEnd=${dateEnd}&` : ``)
+            + (instalasi ? `instalasi=${instalasi}&` : ``)
+            + (unit ? `&unit=${unit}&` : ``)
+            + (search ? `&search=${search}` : ``)
+        );
+    }
 }

@@ -260,6 +260,7 @@ import KendaliDokumen from "../pages/RekamMedis/KendaliDokumen/KendaliDokumen";
 import DaftarOrderRadiologi from "../pages/Radiologi/DaftarOrderRadiologi/DaftarOrderRadiologi";
 import DaftarPasienRadiologi from "../pages/Radiologi/DaftarPasienRadiologi/DaftarPasienRadiologi";
 import TransaksiPelayanRadiologi from "../pages/Radiologi/TransaksiPelayanRadiologi/TransaksiPelayanRadiologi";
+import DaftarPasienPulang from "../pages/Emr/DaftarPasienPulang/DaftarPasienPulang";
 
 
 
@@ -487,6 +488,7 @@ const authProtectedRoutes = [
   {path: "/listdaftarpasien/daftar-pasien-rj", component: <DaftarPasienRJ />},
   {path:"/emr-pasien/:norecdp/:norecap", component:<Emr/>},
   {path: "/listdaftarpasien/daftar-pasien-ri", component: <DaftarPasienRI />},
+  {path: "/listdaftarpasien/pulang", component: <DaftarPasienPulang />},
   
   // rekam medis
   {path:"/rekammedis/kendalidokumen", component:<KendaliDokumen/>},

@@ -581,8 +581,12 @@ const getRegistrasiPasienNorec = async (req, res) => {
 
 const getDaftarPasienFilter = async (req, res) => {
     try {
-        let filterTglLast = formatDateIsoShort(new Date(req.params.lastdate));
-        let filterTglStart = formatDateIsoShort(new Date(req.params.startdate));
+        let filterTglLast = formatDateIsoShort(new Date(req.query.dateEnd));
+        let filterTglStart = formatDateIsoShort(new Date(req.query.dateStart));
+        console.log(filterTglLast, filterTglStart)
+        let filterInstalasi = req.query.instalasi;
+        let filterUnit = req.query.unit;
+        let filterSearch = req.query.search;
         const daftarpasien = await pool
             .query(`SELECT t_daftarpasien.*,
             peg.namalengkap as namapegawai, 
@@ -612,11 +616,11 @@ const getDaftarPasienFilter = async (req, res) => {
 
 
         if(daftarpasien.rows.length === 0){
-            res.status(404).send({
+            res.status(200).send({
                 data: [],
-                success: false,
+                success: true,
                 msg: 'Data Kosong',
-                code: 404
+                code: 200
             });
             return
         }

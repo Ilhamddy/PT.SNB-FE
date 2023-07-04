@@ -311,7 +311,6 @@ const DaftarPasienRJ = () => {
                 <Container fluid>
                     <BreadCrumb title="Daftar Pasien Rawat Jalan" pageTitle="Forms" />
                     <Row>
-
                         {datawidget.map((item, key) => (
                             <Col xxl={4} sm={6} key={key}>
                                 <Card className="card-animate">
@@ -378,7 +377,6 @@ const DaftarPasienRJ = () => {
                                             </Col>
                                         </Row>
                                     </div>
-
                                 </CardHeader>
 
                                 <CardBody>
