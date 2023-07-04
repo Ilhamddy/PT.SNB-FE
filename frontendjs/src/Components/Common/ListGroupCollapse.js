@@ -61,14 +61,43 @@ const ListGroupCollapse = ({ cat, tempData, index, onChange }) => {
         setStateDummy(sortBy)
         let newArray = []
         const tempDataD = [...tempData]
+        console.log(tempData)
         for (let i = 0; i < sortBy.length; i++) {
             if (sortBy[i].checked === true){
-                
-                tempDataD.push(sortBy[i])
+                if(tempData.length>0){
+                    let sama = false
+                    for (let x = 0; x < tempData.length; x++) {
+                        if(tempData[x].value=== sortBy[i].value){
+                            sama = true
+                            // tempDataD.push(sortBy[i])
+                        }
+                    }
+                    if (sama === false){
+                        tempDataD.push(sortBy[i])
+                    }
+                }else{
+                    tempDataD.push(sortBy[i])
+                }
+            }else{
+                // if(tempData.length>0){
+                //     let sama = false
+                //     console.log('masuk hapus')
+                //     for (let x = 0; x < tempData.length; x++) {
+                //         if(tempData[x].value=== sortBy[i].value){
+                //             console.log(sortBy[i].value)
+                //             sama = true
+                //             // tempDataD.push(sortBy[i])
+                //         }
+                //     }
+                //     if (sama === false){
+                //         console.log('masuk hapus bawah')
+                //         tempDataD.splice(sortBy[i])
+                //     }
+                // }
             }
         }
         // tempData = newArray
-        console.log(tempData)
+        
         onChange(tempDataD)
     }
     return (
