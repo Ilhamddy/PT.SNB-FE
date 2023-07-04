@@ -176,7 +176,7 @@ async function saveTindakanPasien(req, res) {
 
         }
 
-        await transaction.commit();
+        transaction && await transaction.commit();
         let tempres = { pelayananpasien: pelayananpasien }
         res.status(200).send({
             data: tempres,
@@ -187,15 +187,13 @@ async function saveTindakanPasien(req, res) {
         });
 
     } catch (error) {
-        if (transaction) {
-            await transaction.rollback();
-            res.status(201).send({
-                status: error,
-                success: false,
-                msg: 'Simpan Gagal',
-                code: 201
-            });
-        }
+        transaction && await transaction.rollback();
+        res.status(201).send({
+            status: error,
+            success: false,
+            msg: 'Simpan Gagal',
+            code: 201
+        });
     }
 
 }

@@ -209,7 +209,7 @@ async function saveDokumenRekammedis(req, res) {
                 objectunitfk: req.body.objectunittujuan,
                 objectstatuskendalirmfk: 1
             }, { transaction });
-            await transaction.commit();
+            transaction && await transaction.commit();
             res.status(200).send({
                 data: t_rm_lokasidokumen,
                 status: "success",
@@ -225,7 +225,7 @@ async function saveDokumenRekammedis(req, res) {
                     norec: req.body.norectrm
                 }
             }, { transaction });
-            await transaction.commit();
+            transaction && await transaction.commit();
             res.status(200).send({
                 data: t_rm_lokasidokumen,
                 status: "success",
@@ -242,7 +242,7 @@ async function saveDokumenRekammedis(req, res) {
                     norec: req.body.norectrm
                 }
             }, { transaction });
-            await transaction.commit();
+            transaction && await transaction.commit();
             res.status(200).send({
                 data: t_rm_lokasidokumen,
                 status: "success",
@@ -257,15 +257,13 @@ async function saveDokumenRekammedis(req, res) {
        
     } catch (error) {
         // console.log(error);
-        if (transaction) {
-            await transaction.rollback();
-            res.status(201).send({
-                status: "false",
-                success: false,
-                msg: 'Gagal',
-                code: 201
-            });
-        }
+        await transaction.rollback();
+        res.status(201).send({
+            status: "false",
+            success: false,
+            msg: 'Gagal',
+            code: 201
+        });
     }
 }
 

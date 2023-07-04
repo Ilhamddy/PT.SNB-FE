@@ -567,17 +567,13 @@ const getRegistrasiPasienNorec = async (req, res) => {
             code: 200
         })
     }catch (error) {
-        console.error(error);
-        if (transaction) {
-            res.status(500).send({
-                status: error,
-                success: false,
-                msg: 'Simpan Gagal',
-                code: 500
-            });
-            await transaction.rollback();
-
-        }
+        res.status(500).send({
+            status: error,
+            success: false,
+            msg: 'Simpan Gagal',
+            code: 500
+        });
+        transaction && await transaction.rollback();
     }
 }
 
@@ -646,8 +642,19 @@ const getDaftarPasienFilter = async (req, res) => {
 }
 
 const saveRegistrasiPenjaminFK = async (req, res) => {
+    let transaction = null;
     try{
         transaction = await db.sequelize.transaction();
+    }catch(e){
+        console.error(e)
+        res.status(201).send({
+            status: e.message,
+            success: false,
+            msg: 'Simpan Gagal',
+            code: 201
+        });
+    }
+    try{
         let norecPenjaminFK = uuid.v4().substring(0, 32)
         const dataForm = req.body
         const daftarPasien = await db.t_kepesertaanasuransi.create({
@@ -696,7 +703,7 @@ const saveRegistrasiPenjaminFK = async (req, res) => {
             code: 200
         });
     } catch(error){
-        await transaction.rollback();
+        transaction && await transaction.rollback();
         res.status(201).send({
             status: error,
             success: false,

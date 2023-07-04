@@ -46,6 +46,18 @@ const queryPromise2 = (query) => {
 async function saveEmrPasienTtv(req, res) {
     // res.status(500).send({ message: req.userId });
     // return
+    let transaction = null;
+    try{
+        transaction = await db.sequelize.transaction();
+    }catch(e){
+        console.error(e)
+        res.status(201).send({
+            status: e.message,
+            success: false,
+            msg: 'Simpan Gagal',
+            code: 201
+        });
+    }
     const resultEmrPasien = await queryPromise1(req.body.norecap, req.body.idlabel);
     try {
         let rate = req.body.gcse + req.body.gcsm + req.body.gcsv
@@ -65,7 +77,6 @@ async function saveEmrPasienTtv(req, res) {
         } else if (rate >= 14 && rate <= 15) {
             idgcs = 27
         }
-        transaction = await db.sequelize.transaction();
         let norec = uuid.v4().substring(0, 32)
 
         if (resultEmrPasien.rowCount != 0) {
@@ -114,15 +125,13 @@ async function saveEmrPasienTtv(req, res) {
         });
     } catch (error) {
         // console.log(error);
-        if (transaction) {
-            await transaction.rollback();
-            res.status(201).send({
-                status: "false",
-                success: false,
-                msg: 'Simpan Data Tanda Vital Gagal',
-                code: 201
-            });
-        }
+        transaction && await transaction.rollback();
+        res.status(201).send({
+            status: "false",
+            success: false,
+            msg: 'Simpan Data Tanda Vital Gagal',
+            code: 201
+        });
     }
 }
 
@@ -253,6 +262,18 @@ async function editEmrPasienTtv(req, res) {
     // res.status(500).send({ message: 'error',msg:'Edit Data Tanda Vital Gagal'  });
 
     // return
+    let transaction = null;
+    try{
+        transaction = await db.sequelize.transaction();
+    }catch(e){
+        console.error(e)
+        res.status(201).send({
+            status: e.message,
+            success: false,
+            msg: 'Simpan Gagal',
+            code: 201
+        });
+    }
     try {
         let rate = req.body.gcse + req.body.gcsm + req.body.gcsv
         let idgcs = null
@@ -271,7 +292,6 @@ async function editEmrPasienTtv(req, res) {
         } else if (rate >= 14 && rate <= 15) {
             idgcs = 27
         }
-        transaction = await db.sequelize.transaction();
 
         let norecttv = uuid.v4().substring(0, 32)
         const ttv = await db.t_ttv.create({
@@ -319,15 +339,13 @@ async function editEmrPasienTtv(req, res) {
         });
     } catch (error) {
         // console.log(error);
-        if (transaction) {
-            await transaction.rollback();
-            res.status(201).send({
-                status: error,
-                success: false,
-                msg: 'Edit Data Tanda Vital Gagal',
-                code: 201
-            });
-        }
+        transaction && await transaction.rollback();
+        res.status(201).send({
+            status: error,
+            success: false,
+            msg: 'Edit Data Tanda Vital Gagal',
+            code: 201
+        });
     }
 }
 
@@ -335,9 +353,19 @@ async function saveEmrPasienCppt(req, res) {
     // res.status(500).send({ message: req.userId });
     // return
     const resultEmrPasien = await queryPromise1(req.body.norecap, req.body.idlabel);
-    try {
-
+    let transaction = null;
+    try{
         transaction = await db.sequelize.transaction();
+    }catch(e){
+        console.error(e)
+        res.status(201).send({
+            status: e.message,
+            success: false,
+            msg: 'Simpan Gagal',
+            code: 201
+        });
+    }
+    try {
         let norec = uuid.v4().substring(0, 32)
 
         if (resultEmrPasien.rowCount != 0) {
@@ -377,15 +405,13 @@ async function saveEmrPasienCppt(req, res) {
         });
     } catch (error) {
         // console.log(error);
-        if (transaction) {
-            await transaction.rollback();
-            res.status(201).send({
-                status: "false",
-                success: false,
-                msg: 'Simpan Gagal',
-                code: 201
-            });
-        }
+        transaction && await transaction.rollback();
+        res.status(201).send({
+            status: "false",
+            success: false,
+            msg: 'Simpan Gagal',
+            code: 201
+        });
     }
 }
 
@@ -418,8 +444,19 @@ async function getListCppt(req, res) {
 async function editEmrPasienCppt(req, res) {
     // res.status(500).send({ message: req.body });
     // return
-    try {
+    let transaction = null;
+    try{
         transaction = await db.sequelize.transaction();
+    }catch(e){
+        console.error(e)
+        res.status(201).send({
+            status: e.message,
+            success: false,
+            msg: 'Simpan Gagal',
+            code: 201
+        });
+    }
+    try {
 
         let noreccppt = uuid.v4().substring(0, 32)
         const cppt = await db.t_cppt.create({
@@ -458,15 +495,13 @@ async function editEmrPasienCppt(req, res) {
         });
     } catch (error) {
         // console.log(error);
-        if (transaction) {
-            await transaction.rollback();
-            res.status(201).send({
-                status: "false",
-                success: false,
-                msg: 'Edit Gagal',
-                code: 201
-            });
-        }
+        transaction && await transaction.rollback();
+        res.status(201).send({
+            status: "false",
+            success: false,
+            msg: 'Edit Gagal',
+            code: 201
+        });
     }
 }
 
@@ -532,10 +567,19 @@ async function getListComboDiagnosa(req, res) {
 async function saveEmrPasienDiagnosa(req, res) {
     // res.status(500).send({ message: req.userId });
     // return
-    try {
-
+    let transaction = null;
+    try{
         transaction = await db.sequelize.transaction();
-
+    }catch(e){
+        console.error(e)
+        res.status(201).send({
+            status: e.message,
+            success: false,
+            msg: 'Simpan Gagal',
+            code: 201
+        });
+    }
+    try {
         let norec = uuid.v4().substring(0, 32)
         const diagnosapasien = await db.t_diagnosapasien.create({
             norec: norec,
@@ -560,15 +604,13 @@ async function saveEmrPasienDiagnosa(req, res) {
         });
     } catch (error) {
         // console.log(error);
-        if (transaction) {
-            await transaction.rollback();
-            res.status(201).send({
-                status: error,
-                success: false,
-                msg: 'Simpan Gagal',
-                code: 201
-            });
-        }
+        transaction && await transaction.rollback();
+        res.status(201).send({
+            status: error,
+            success: false,
+            msg: 'Simpan Gagal',
+            code: 201
+        });
     }
 }
 
@@ -631,9 +673,19 @@ async function getListDiagnosaIxPasien(req, res) {
 async function saveEmrPasienDiagnosaix(req, res) {
     // res.status(500).send({ message: req.userId });
     // return
-    try {
-
+    let transaction = null;
+    try{
         transaction = await db.sequelize.transaction();
+    }catch(e){
+        console.error(e)
+        res.status(201).send({
+            status: e.message,
+            success: false,
+            msg: 'Simpan Gagal',
+            code: 201
+        });
+    }
+    try {
 
         let norec = uuid.v4().substring(0, 32)
         const diagnosatindakan = await db.t_diagnosatindakan.create({
@@ -657,15 +709,13 @@ async function saveEmrPasienDiagnosaix(req, res) {
         });
     } catch (error) {
         // console.log(error);
-        if (transaction) {
-            await transaction.rollback();
-            res.status(201).send({
-                status: error,
-                success: false,
-                msg: 'Simpan Gagal',
-                code: 201
-            });
-        }
+        transaction && await transaction.rollback();
+        res.status(201).send({
+            status: error,
+            success: false,
+            msg: 'Simpan Gagal',
+            code: 201
+        });
     }
 }
 
@@ -673,9 +723,19 @@ async function deleteEmrPasienDiagnosax(req, res) {
 
     // res.status(500).send({ message: req.query });
     // return
-    try {
-
+    let transaction = null;
+    try{
         transaction = await db.sequelize.transaction();
+    }catch(e){
+        console.error(e)
+        res.status(201).send({
+            status: e.message,
+            success: false,
+            msg: 'Simpan Gagal',
+            code: 201
+        });
+    }
+    try {
         const t_diagnosapasien = await db.t_diagnosapasien.update({
             statusenabled: false,
             // tglisi: new Date()
@@ -697,15 +757,13 @@ async function deleteEmrPasienDiagnosax(req, res) {
         });
     } catch (error) {
         // console.log(error);
-        if (transaction) {
-            await transaction.rollback();
-            res.status(201).send({
-                status: error,
-                success: false,
-                msg: 'Delete Gagal',
-                code: 201
-            });
-        }
+        await transaction.rollback();
+        res.status(201).send({
+            status: error,
+            success: false,
+            msg: 'Delete Gagal',
+            code: 201
+        });
     }
 }
 
@@ -713,9 +771,19 @@ async function deleteEmrPasienDiagnosaix(req, res) {
 
     // res.status(500).send({ message: req.query });
     // return
-    try {
-
+    let transaction = null;
+    try{
         transaction = await db.sequelize.transaction();
+    }catch(e){
+        console.error(e)
+        res.status(201).send({
+            status: e.message,
+            success: false,
+            msg: 'Simpan Gagal',
+            code: 201
+        });
+    }
+    try {
         const t_diagnosatindakan = await db.t_diagnosatindakan.update({
             statusenabled: false,
             // tglisi: new Date()
@@ -737,23 +805,32 @@ async function deleteEmrPasienDiagnosaix(req, res) {
         });
     } catch (error) {
         // console.log(error);
-        if (transaction) {
-            await transaction.rollback();
-            res.status(201).send({
-                status: error,
-                success: false,
-                msg: 'Delete Gagal',
-                code: 201
-            });
-        }
+        transaction && await transaction.rollback();
+        res.status(201).send({
+            status: error,
+            success: false,
+            msg: 'Delete Gagal',
+            code: 201
+        });
     }
 }
 
 async function saveEmrPasienKonsul(req, res) {
     // res.status(500).send({ message: req.body });
     // return
-    try {
+    let transaction = null;
+    try{
         transaction = await db.sequelize.transaction();
+    }catch(e){
+        console.error(e)
+        res.status(201).send({
+            status: e.message,
+            success: false,
+            msg: 'Simpan Gagal',
+            code: 201
+        });
+    }
+    try {
         const resultNocmfk = await queryPromise2(`SELECT norec,objectdaftarpasienfk,objectunitfk
         FROM t_antreanpemeriksaan where norec='${req.body.norecap}'
     `);
@@ -806,22 +883,30 @@ async function saveEmrPasienKonsul(req, res) {
         });
     } catch (error) {
         // console.log(error);
-        if (transaction) {
-            await transaction.rollback();
-            res.status(201).send({
-                status: error,
-                success: false,
-                msg: 'Simpan Gagal',
-                code: 201
-            });
-        }
+        transaction && await transaction.rollback();
+        res.status(201).send({
+            status: error,
+            success: false,
+            msg: 'Simpan Gagal',
+            code: 201
+        });
     }
 }
 
 async function updateTaskid(req, res) {
-    try {
+    let transaction = null;
+    try{
         transaction = await db.sequelize.transaction();
-        
+    }catch(e){
+        console.error(e)
+        res.status(201).send({
+            status: e.message,
+            success: false,
+            msg: 'Simpan Gagal',
+            code: 201
+        });
+    }
+    try {
         const antreanpemeriksaan = await db.t_antreanpemeriksaan.update({
             taskid: req.body.taskid
         }, {
@@ -841,22 +926,30 @@ async function updateTaskid(req, res) {
         });
     } catch (error) {
         // console.log(error);
-        if (transaction) {
-            await transaction.rollback();
-            res.status(201).send({
-                status: error,
-                success: false,
-                msg: 'Panggil Gagal',
-                code: 201
-            });
-        }
+        transaction && await transaction.rollback();
+        res.status(201).send({
+            status: error,
+            success: false,
+            msg: 'Panggil Gagal',
+            code: 201
+        });
     }
 }
 
 async function updateStatusPulangRJ(req, res) {
-    try {
+    let transaction = null;
+    try{
         transaction = await db.sequelize.transaction();
-        
+    }catch(e){
+        console.error(e)
+        res.status(201).send({
+            status: e.message,
+            success: false,
+            msg: 'Simpan Gagal',
+            code: 201
+        });
+    }
+    try {
         const daftarpasien = await db.t_daftarpasien.update({
             objectstatuspulangfk: req.body.statuspulang,
             tglpulang:new Date()
@@ -883,15 +976,13 @@ async function updateStatusPulangRJ(req, res) {
         });
     } catch (error) {
         // console.log(error);
-        if (transaction) {
-            await transaction.rollback();
-            res.status(201).send({
-                status: error,
-                success: false,
-                msg: 'Simpan Status Pulang Gagal',
-                code: 201
-            });
-        }
+        await transaction.rollback();
+        res.status(201).send({
+            status: error,
+            success: false,
+            msg: 'Simpan Status Pulang Gagal',
+            code: 201
+        });
     }
 }
 

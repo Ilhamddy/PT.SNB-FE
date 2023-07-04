@@ -334,9 +334,19 @@ async function getKamarRadiologi(req, res) {
 }
 
 async function updateTglRencanaRadiologi(req, res) {
-
-    try {
+    let transaction = null;
+    try{
         transaction = await db.sequelize.transaction();
+    }catch(e){
+        console.error(e)
+        res.status(201).send({
+            status: e.message,
+            success: false,
+            msg: 'Simpan Gagal',
+            code: 201
+        });
+    }
+    try {
         const t_detailorderpelayanan = await db.t_detailorderpelayanan.update({
             objectkamarfk: req.body.nokamar,
             tglperjanjian: req.body.tglinput,
@@ -356,24 +366,31 @@ async function updateTglRencanaRadiologi(req, res) {
         });
 
     } catch (error) {
-        if (transaction) {
-            await transaction.rollback();
-            res.status(201).send({
-                status: "false",
-                success: false,
-                msg: 'Gagal',
-                code: 201
-            });
-        }
+        transaction && await transaction.rollback();
+        res.status(201).send({
+            status: "false",
+            success: false,
+            msg: 'Gagal',
+            code: 201
+        });
     }
 
 }
 
 async function saveUserVerifikasi(req, res) {
-
-    try {
+    let transaction = null;
+    try{
         transaction = await db.sequelize.transaction();
-
+    }catch(e){
+        console.error(e)
+        res.status(201).send({
+            status: e.message,
+            success: false,
+            msg: 'Simpan Gagal',
+            code: 201
+        });
+    }
+    try {
         const resultlist = await queryPromise2(`select td.norec as norectd,td2.objectprodukfk,to2.objectunitasalfk,
         td.noregistrasi,to2.nomororder,td2.norec,
         mp.namalengkap, mu.namaunit,to2.keterangan,to_char(to2.tglinput,'yyyy-MM-dd HH:mm') as tglinput,
@@ -466,23 +483,31 @@ async function saveUserVerifikasi(req, res) {
         });
 
     } catch (error) {
-        if (transaction) {
-            await transaction.rollback();
-            res.status(201).send({
-                status: "false",
-                success: false,
-                msg: error,
-                code: 201
-            });
-        }
+        transaction && await transaction.rollback();
+        res.status(201).send({
+            status: "false",
+            success: false,
+            msg: error,
+            code: 201
+        });
     }
 
 }
 
 async function deleteOrderPelayanan(req, res) {
-
-    try {
+    let transaction = null;
+    try{
         transaction = await db.sequelize.transaction();
+    }catch(e){
+        console.error(e)
+        res.status(201).send({
+            status: e.message,
+            success: false,
+            msg: 'Simpan Gagal',
+            code: 201
+        });
+    }
+    try {
         const t_orderpelayanan = await db.t_orderpelayanan.update({
             objectstatusveriffk: 3,
 
@@ -516,9 +541,19 @@ async function deleteOrderPelayanan(req, res) {
 }
 
 async function deleteDetailOrderPelayanan(req, res) {
-
-    try {
+    let transaction = null;
+    try{
         transaction = await db.sequelize.transaction();
+    }catch(e){
+        console.error(e)
+        res.status(201).send({
+            status: e.message,
+            success: false,
+            msg: 'Simpan Gagal',
+            code: 201
+        });
+    }
+    try {
         const t_detailorderpelayanan = await db.t_detailorderpelayanan.update({
             statusenabled: false,
 
@@ -538,15 +573,13 @@ async function deleteDetailOrderPelayanan(req, res) {
         });
 
     } catch (error) {
-        if (transaction) {
-            await transaction.rollback();
-            res.status(201).send({
-                status: "false",
-                success: false,
-                msg: 'Gagal',
-                code: 201
-            });
-        }
+        transaction && await transaction.rollback();
+        res.status(201).send({
+            status: "false",
+            success: false,
+            msg: 'Gagal',
+            code: 201
+        });
     }
 
 }
