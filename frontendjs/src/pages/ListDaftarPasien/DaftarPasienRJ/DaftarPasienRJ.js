@@ -173,7 +173,7 @@ const DaftarPasienRJ = () => {
         },
         {
 
-            name: <span className='font-weight-bold fs-13'>Jenis Pasein</span>,
+            name: <span className='font-weight-bold fs-13'>Jenis Pasien</span>,
             selector: row => row.jenispenjamin,
             sortable: true
         },
@@ -282,7 +282,6 @@ const DaftarPasienRJ = () => {
         // }
     };
     useEffect(() => {
-        console.log('masukkkkk')
         if (newDataDokumen !== null) {
             dispatch(daftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}`));
             dispatch(widgetdaftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}`));

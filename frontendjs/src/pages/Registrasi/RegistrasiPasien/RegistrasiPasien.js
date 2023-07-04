@@ -792,7 +792,7 @@ const RegistrasiPasien = (props) => {
                                             </Card>
                                         </Col>
                                         <Col lg={12} style={{ textAlign: 'right' }}>
-                                            {!successReg && !dtRuangNorec && <Button type="submit" color="info" className="rounded-pill" disabled={loadingSave}> SIMPAN </Button>}
+                                            {!successReg && (!norec || !dtRuangNorec) && <Button type="submit" color="info" className="rounded-pill" disabled={loadingSave}> SIMPAN </Button>}
                                         </Col>
                                         {/* contoh pakai checkbox */}
                                         {/* <CustomCheckbox 

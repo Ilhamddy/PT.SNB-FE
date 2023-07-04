@@ -835,7 +835,6 @@ const RegistrasiPenjaminFK = () => {
                                                 const chosenKab = optionKab.find((val) => 
                                                     Number(val.value) === validation.values.kkotalakalantas
                                                 )
-                                                console.log("chosen", chosenKab)
                                                 if(!chosenKab) return;
                                                 dispatch(kecamatanGetBpjs(chosenKab.value))
                                             }
@@ -1266,7 +1265,6 @@ const RegistrasiPenjaminFK = () => {
                     <Col lg={9}>
                         <Form onSubmit={(e) => {
                             e.preventDefault();
-                            console.log(validation.errors)
                             validation.handleSubmit();
                             return false;
                         }}

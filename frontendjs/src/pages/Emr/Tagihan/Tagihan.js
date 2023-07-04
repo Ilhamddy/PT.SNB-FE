@@ -30,7 +30,6 @@ const Tagihan = ({ show }) => {
     const dispatch = useDispatch();
     const { dataTagihan, loadingTagihan, successTagihan, dataTagihanPrint,
     dataPasienReg } = useSelector((state) => ({
-
         dataTagihan: state.Emr.listTagihanGet.data,
         loadingTagihan: state.Emr.listTagihanGet.loading,
         successTagihan: state.Emr.listTagihanGet.success,
@@ -44,7 +43,7 @@ const Tagihan = ({ show }) => {
                 dispatch(listTagihanPrintGet(norecdp));
             }
         }
-        norecdp && dispatch(registrasiRuanganNorecGet(norecdp))
+
     }, [show,norecdp, dispatch])
 
     const refPrintBilling = useRef(null);
@@ -61,7 +60,6 @@ const Tagihan = ({ show }) => {
                 color: "black",
                 backgroundColor: "#f1f2f6"
             },
-
         }
     }
     

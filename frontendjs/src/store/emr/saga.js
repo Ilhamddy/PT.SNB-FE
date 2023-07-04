@@ -221,7 +221,6 @@ export function* watchSaveEmrDiagnosax() {
 function* onSaveEmrDiagnosaix({ payload: { data, history } }) {
     try {
         let response = null;
-        console.log(data)
         if (data.norec !== '') {
             response = yield call(serviceEmr.saveDiagnosaix, data);
             // console.log('testiiinng')

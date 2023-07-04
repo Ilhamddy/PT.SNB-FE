@@ -2,6 +2,7 @@ const pool = require("../../../config/dbcon.query");
 const uuid = require('uuid')
 const queries = require('../../../queries/transaksi/registrasi.queries');
 const db = require("../../../models");
+const {formatDateIsoShort} = require("../../../utils/format");
 const M_pasien = db.m_pasien
 const running_Number = db.running_number
 const t_daftarpasien = db.t_daftarpasien
@@ -163,7 +164,20 @@ const getAllByOr = (req, res) => {
     //     data: query,
     //     status: "success",
     //     success: true,
-    // });
+    // });let taskid = ""
+
+    if (req.query.taskid !== undefined) {
+        if (req.query.taskid === '2') {
+            // console.log(req.query.taskid)
+            taskid = ` and ta.taskid=4`;
+        } else if (req.query.taskid === '3') {
+            taskid = ` and ta.taskid in (5,6,7,8,9)`;
+        }else if(req.query.taskid==='1'){
+            taskid = ` and ta.taskid=3`;
+        }
+    }else{
+        taskid = ` and ta.taskid=3`;
+    }
     pool.query(query, (error, result) => {
         if (error) {
             error
@@ -352,12 +366,13 @@ async function saveRegistrasiPasien(req, res) {
     }catch(e){
         console.error(e);
         // await transaction.rollback();
-        res.status(201).send({
+        res.status(500).send({
             status: JSON.stringify(e),
             success: false,
-            msg: 'Simpan Gagal',
-            code: 201
+            msg: 'Error transaction',
+            code: 500
         });
+        return;
     }
     try {
         let norecDP = uuid.v4().substring(0, 32)
@@ -491,7 +506,19 @@ async function saveRegistrasiPasien(req, res) {
 }
 
 const getRegistrasiPasienNorec = async (req, res) => {
-    transaction = await db.sequelize.transaction();
+    let transaction = null;
+    try{
+        transaction = await db.sequelize.transaction();
+    }catch(e){
+        res.status(500).send({
+            status: error,
+            success: false,
+            msg: 'Simpan Gagal',
+            code: 500
+        });
+        transaction && await transaction.rollback();
+        return;
+    }
     try {
         const norec = req.params.norec;
         if(!JSON.stringify(norec)){
@@ -552,6 +579,64 @@ const getRegistrasiPasienNorec = async (req, res) => {
     }
 }
 
+const getDaftarPasienFilter = async (req, res) => {
+    try {
+        let filterTglLast = formatDateIsoShort(new Date(req.params.lastdate));
+        let filterTglStart = formatDateIsoShort(new Date(req.params.startdate));
+        const daftarpasien = await pool
+            .query(`SELECT t_daftarpasien.*,
+            peg.namalengkap as namapegawai, 
+            dok.namalengkap as namadokter,    
+            mk.namakelas as namakelas,
+            mps.namapasien as namapasien,
+            mu.namaunit as namaunit,
+            mka.namakamar as namakamar,
+            tap.noantrian as nomorantrean,
+            tap.nobed as nobed
+                FROM 
+                t_daftarpasien
+                left join m_pegawai peg on peg.id = t_daftarpasien.objectpegawaifk    
+                left join m_pegawai dok on dok.id = t_daftarpasien.objectdokterpemeriksafk
+                left join m_kelas mk on mk.id = t_daftarpasien.objectkelasfk
+                left join m_pasien mps on mps.id = t_daftarpasien.nocmfk
+                left join m_unit mu on mu.id = t_daftarpasien.objectunitlastfk
+                left join t_antreanpemeriksaan tap on tap.objectdaftarpasienfk = t_daftarpasien.norec
+                left join m_kamar mka on mka.id = tap.objectkamarfk
+                    WHERE 
+                    t_daftarpasien.tglpulang IS NOT null
+                    AND t_daftarpasien.tglpulang BETWEEN $1 AND $2
+                    ORDER BY t_daftarpasien.tglpulang DESC
+                    LIMIT 10
+            `
+            , [filterTglStart, filterTglLast])
+
+
+        if(daftarpasien.rows.length === 0){
+            res.status(404).send({
+                data: [],
+                success: false,
+                msg: 'Data Kosong',
+                code: 404
+            });
+            return
+        }
+        res.status(200).send({
+            data: daftarpasien.rows,
+            success: true,
+            msg: 'Data Berhasil',
+            code: 200
+        })
+    }catch (error) {
+        console.error(error);
+        res.status(500).send({
+            status: error,
+            success: false,
+            msg: error.message,
+            code: 500
+        });
+    }
+}
+
 const saveRegistrasiPenjaminFK = async (req, res) => {
     try{
         transaction = await db.sequelize.transaction();
@@ -602,7 +687,6 @@ const saveRegistrasiPenjaminFK = async (req, res) => {
             msg: 'Simpan Berhasil',
             code: 200
         });
-        console.log(req.body);
     } catch(error){
         await transaction.rollback();
         res.status(201).send({
@@ -617,7 +701,6 @@ const saveRegistrasiPenjaminFK = async (req, res) => {
 
 const getPasienNoregistrasi = (req, res) => {
     const id = parseInt(req.params.noregistrasi);
-    // console.log(id);
     pool.query(queries.getPasienByNoregistrasi, [id], (error, result) => {
         if (error) {
             throw error
@@ -720,7 +803,7 @@ async function getDaftarPasienRawatJalan(req, res) {
     }
     // let query = queries.getAllByOr + ` where nocm ilike '%` + nocm + `%'` + ` or namapasien ilike '%` + nocm + `%' limit 200`
     let query = queries.getDaftarPasienRawatJalan + `  where td.noregistrasi ilike '%${noregistrasi}%'
-    ${tglregistrasi} ${taskid} and td.objectinstalasifk =1 and trm.objectstatuskendalirmfk is not null`
+    ${tglregistrasi} ${taskid} and td.objectinstalasifk=1 and trm.objectstatuskendalirmfk is not null`
    
 
     try {
@@ -765,9 +848,22 @@ async function getWidgetDaftarPasienRJ(req, res) {
     }
 
     // let query = queries.getAllByOr + ` where nocm ilike '%` + nocm + `%'` + ` or namapasien ilike '%` + nocm + `%' limit 200`
+    let taskid = ""
+
+    if (req.query.taskid !== undefined) {
+        if (req.query.taskid === '2') {
+            // console.log(req.query.taskid)
+            taskid = ` and ta.taskid=4`;
+        } else if (req.query.taskid === '3') {
+            taskid = ` and ta.taskid in (5,6,7,8,9)`;
+        }else if(req.query.taskid==='1'){
+            taskid = ` and ta.taskid=3`;
+        }
+    }else{
+        taskid = ` and ta.taskid=3`;
+    }
     let query = queries.getDaftarPasienRawatJalan + `  where td.noregistrasi ilike '%${noregistrasi}%'
-    ${tglregistrasi} and td.objectinstalasifk =1`
-    // console.log(query)
+    ${tglregistrasi} and td.objectinstalasifk=1 and trm.objectstatuskendalirmfk is not null`
     pool.query(query, (error, resultCountNoantrianDokter) => {
         if (error) {
             res.status(522).send({
@@ -1008,5 +1104,6 @@ module.exports = {
     getWidgetDaftarPasienRJ,
     getHeaderEmr,
     getWidgetDaftarPasienRI,
-    getDaftarPasienRawatInap
+    getDaftarPasienRawatInap,
+    getDaftarPasienFilter
 };

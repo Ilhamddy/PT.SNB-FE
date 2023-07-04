@@ -7,7 +7,7 @@ import { useSelector, useDispatch } from "react-redux";
 import BreadCrumb from '../../../Components/Common/BreadCrumb';
 import UiContent from '../../../Components/Common/UiContent';
 import { Link, useNavigate } from "react-router-dom";
-import { emrHeaderGet, emrResetForm } from "../../../store/actions";
+import { emrHeaderGet, emrResetForm, emrTtvGet, registrasiRuanganNorecGet } from "../../../store/actions";
 import { useParams } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -31,7 +31,7 @@ const EmrBody = () => {
             setpillsTab(tab);
         }
     };
-
+    
     // Pills Tabs
     const [pillsTabRj, setpillsTabRj] = useState("1");
     const pillsToggleRj = (tab) => {
@@ -128,6 +128,14 @@ const EmrBody = () => {
             label: "Radiologi",
         },
     ];
+
+    useEffect(() => {
+        if(norecdp){
+            dispatch(registrasiRuanganNorecGet(norecdp))
+            dispatch(emrTtvGet(norecdp));
+        }
+    }, [norecdp, dispatch])
+
 
     return (
         <React.Fragment>

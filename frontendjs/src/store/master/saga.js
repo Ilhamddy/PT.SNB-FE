@@ -66,7 +66,6 @@ function* onGetComboAsuransi() {
 
 function* onGetProvinsiBpjs(){
     try{
-        console.log("masuk")
         const response = yield call(serviceMaster.getProvinsiBpjs);
         yield put(provinsiGetBpjsSuccess(response.data));
     } catch(err){

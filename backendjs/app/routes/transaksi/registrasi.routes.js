@@ -100,5 +100,10 @@ module.exports = function (app) {
         controller.saveRegistrasiPenjaminFK
     )
     
+    app.get(
+        "/api/transaksi/registrasi/list-daftar-pasien-ruangan/:startdate/:lastdate",
+        [authJwt.verifyToken],
+        controller.getDaftarPasienFilter
+    )
 
 };

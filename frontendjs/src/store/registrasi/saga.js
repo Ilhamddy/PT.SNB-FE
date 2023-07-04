@@ -108,7 +108,6 @@ function* onSaveRegistrasiRuangan({ payload: { data, history} }) {
         }
         
         yield put(registrasiSaveRuanganSuccess(response.data));
-        console.log(response.code)
         if(response.code===200){
             toast.success(response.msg, { autoClose: 3000 });
         }else{

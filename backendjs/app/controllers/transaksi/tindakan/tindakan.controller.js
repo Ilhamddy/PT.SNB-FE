@@ -105,7 +105,6 @@ async function getListNamaPelaksana(req, res) {
 }
 
 async function saveTindakanPasien(req, res) {
-    console.log('masasuukkk')
     try {
         transaction = await db.sequelize.transaction();
         var newArray = [{ objectjenispelaksana: req.body.jenispelaksana1, objectnamapelaksana: req.body.namapelaksana1 }];
