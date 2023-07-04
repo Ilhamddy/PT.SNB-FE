@@ -2,6 +2,7 @@ const pool = require("../../../config/dbcon.query");
 const uuid = require('uuid')
 const queries = require('../../../queries/transaksi/registrasi.queries');
 const db = require("../../../models");
+const {formatDateIsoShort} = require("../../../utils/format");
 const M_pasien = db.m_pasien
 const running_Number = db.running_number
 const t_daftarpasien = db.t_daftarpasien
@@ -515,7 +516,7 @@ const getRegistrasiPasienNorec = async (req, res) => {
             msg: 'Simpan Gagal',
             code: 500
         });
-        await transaction.rollback();
+        transaction && await transaction.rollback();
         return;
     }
     try {
@@ -575,6 +576,64 @@ const getRegistrasiPasienNorec = async (req, res) => {
             await transaction.rollback();
 
         }
+    }
+}
+
+const getDaftarPasienFilter = async (req, res) => {
+    try {
+        let filterTglLast = formatDateIsoShort(new Date(req.params.lastdate));
+        let filterTglStart = formatDateIsoShort(new Date(req.params.startdate));
+        const daftarpasien = await pool
+            .query(`SELECT t_daftarpasien.*,
+            peg.namalengkap as namapegawai, 
+            dok.namalengkap as namadokter,    
+            mk.namakelas as namakelas,
+            mps.namapasien as namapasien,
+            mu.namaunit as namaunit,
+            mka.namakamar as namakamar,
+            tap.noantrian as nomorantrean,
+            tap.nobed as nobed
+                FROM 
+                t_daftarpasien
+                left join m_pegawai peg on peg.id = t_daftarpasien.objectpegawaifk    
+                left join m_pegawai dok on dok.id = t_daftarpasien.objectdokterpemeriksafk
+                left join m_kelas mk on mk.id = t_daftarpasien.objectkelasfk
+                left join m_pasien mps on mps.id = t_daftarpasien.nocmfk
+                left join m_unit mu on mu.id = t_daftarpasien.objectunitlastfk
+                left join t_antreanpemeriksaan tap on tap.objectdaftarpasienfk = t_daftarpasien.norec
+                left join m_kamar mka on mka.id = tap.objectkamarfk
+                    WHERE 
+                    t_daftarpasien.tglpulang IS NOT null
+                    AND t_daftarpasien.tglpulang BETWEEN $1 AND $2
+                    ORDER BY t_daftarpasien.tglpulang DESC
+                    LIMIT 10
+            `
+            , [filterTglStart, filterTglLast])
+
+
+        if(daftarpasien.rows.length === 0){
+            res.status(404).send({
+                data: [],
+                success: false,
+                msg: 'Data Kosong',
+                code: 404
+            });
+            return
+        }
+        res.status(200).send({
+            data: daftarpasien.rows,
+            success: true,
+            msg: 'Data Berhasil',
+            code: 200
+        })
+    }catch (error) {
+        console.error(error);
+        res.status(500).send({
+            status: error,
+            success: false,
+            msg: error.message,
+            code: 500
+        });
     }
 }
 
@@ -1045,5 +1104,6 @@ module.exports = {
     getWidgetDaftarPasienRJ,
     getHeaderEmr,
     getWidgetDaftarPasienRI,
-    getDaftarPasienRawatInap
+    getDaftarPasienRawatInap,
+    getDaftarPasienFilter
 };
