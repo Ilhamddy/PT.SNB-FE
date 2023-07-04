@@ -4,7 +4,7 @@ import { Modal, ModalBody, Card, Collapse } from "reactstrap";
 import { Link, useNavigate } from "react-router-dom";
 import CustomCheckbox from "../CustomCheckbox/CustomCheckbox";
 
-const ListGroupCollapse = ({ cat, onDeleteClick, onCloseClick, msgHDelete, msgBDelete, index }) => {
+const ListGroupCollapse = ({ cat, tempData, index, onChange }) => {
     const [collapse, setcollapse] = useState(false);
     const handleClickCard = (e) => {
         if (collapse)
@@ -43,13 +43,13 @@ const ListGroupCollapse = ({ cat, onDeleteClick, onCloseClick, msgHDelete, msgBD
     ]
     const [temp, setTemp] = useState([]);
     const [stateDummy, setStateDummy] = useState(() => cat.detail.map((data, index, array) => {
-        const newData = {...data}
+        const newData = { ...data }
         newData.checked = false;
         newData.subdata = data.subdata?.map((subdata) => {
-            const newSubdata = {...subdata}
+            const newSubdata = { ...subdata }
             newSubdata.checked = false;
             newSubdata.subsubdata = subdata.subsubdata?.map((sub2data) => {
-                const newSub2data = {...sub2data}
+                const newSub2data = { ...sub2data }
                 newSub2data.checked = false;
                 return newSub2data;
             }) || [];
@@ -57,10 +57,57 @@ const ListGroupCollapse = ({ cat, onDeleteClick, onCloseClick, msgHDelete, msgBD
         }) || [];
         return newData;
     }))
-
+    function handlesortBy(sortBy) {
+        setStateDummy(sortBy)
+        let newArray = []
+        const tempDataD = [...tempData]
+        console.log(tempData)
+        for (let i = 0; i < sortBy.length; i++) {
+            if (sortBy[i].checked === true){
+                if(tempData.length>0){
+                    let sama = false
+                    for (let x = 0; x < tempData.length; x++) {
+                        if(tempData[x].value=== sortBy[i].value){
+                            sama = true
+                            // tempDataD.push(sortBy[i])
+                        }
+                    }
+                    if (sama === false){
+                        tempDataD.push(sortBy[i])
+                    }
+                }else{
+                    tempDataD.push(sortBy[i])
+                }
+            }else{
+                if(tempData.length>0){
+                    let sama = false
+                    // console.log(tempData)
+                    // console.log(i)
+                    let endSlice = false
+                    for (let x = 0; x < tempData.length; x++) {
+                        if(tempData[x].value=== sortBy[i].value && sortBy[i].checked===false && sama === false){
+                            sama = true
+                            // tempDataD.push(sortBy[i])
+                        }
+                        if (sama === true && endSlice === false && sortBy[i].checked===false){
+                            console.log(tempDataD)
+                            console.log(x)
+                            tempDataD.splice(x)
+                            endSlice = true
+                            break
+                        }
+                    }
+                    
+                }
+            }
+        }
+        // tempData = newArray
+        
+        onChange(tempDataD)
+    }
     return (
         <Card className="card-animate">
-            <div className="card-footer" style={{ backgroundColor: '#e67e22' }}>
+            <div className="card-footer" style={{ backgroundColor: '#e65d22' }}>
                 <div className="text-center">
                     <Link to="#" className="link-light" onClick={handleClickCard}>{cat.label} <i className="ri-arrow-right-s-line align-middle lh-1"></i></Link>
                 </div>
@@ -68,7 +115,9 @@ const ListGroupCollapse = ({ cat, onDeleteClick, onCloseClick, msgHDelete, msgBD
             <Collapse isOpen={collapse}>
                 <CustomCheckbox
                     data={stateDummy}
-                    setData={(newData) => setStateDummy(newData)}
+                    setData={(newData) => {
+                        handlesortBy(newData)
+                    }}
                     checkboxName={`checkbox-dummy-ex-${index}`}
                 />
             </Collapse>
@@ -77,8 +126,7 @@ const ListGroupCollapse = ({ cat, onDeleteClick, onCloseClick, msgHDelete, msgBD
 };
 
 ListGroupCollapse.propTypes = {
-    onCloseClick: PropTypes.func,
-    onDeleteClick: PropTypes.func,
+    tempData: PropTypes.any,
     show: PropTypes.any,
 };
 

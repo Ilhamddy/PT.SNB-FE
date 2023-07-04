@@ -1,5 +1,5 @@
-import { verifySignUp } from "../middleware";
-import controller from "../controllers/auth.controller";
+import { verifySignUp } from "../middleware/index.js";
+import controller from "../controllers/auth.controller.js";
 
 export default function(app) {
   app.use(function(req, res, next) {

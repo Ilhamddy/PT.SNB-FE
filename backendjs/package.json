@@ -4,7 +4,7 @@
   "description": "Node.js for JWT Authentication with Postgres",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon --experimental-specifier-resolution=node server.js",
+    "start": "nodemon --exec \"npx eslint . && node --experimental-specifier-resolution=node  server.js\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "type": "module",
@@ -32,7 +32,34 @@
     "sequelize": "^6.31.1",
     "uuid": "^9.0.0"
   },
+  "eslintConfig": {
+    "extends": [],
+    "env": {      
+      "es6": true,
+      "node": true
+    },
+    "parser": "@babel/eslint-parser",
+    "parserOptions": {
+      "requireConfigFile": false,
+      "ecmaVersion": 2020,
+      "sourceType": "module",
+      "ecmaFeatures": {
+        "jsx": true
+      }
+    },
+    "rules": {
+      "no-undef": [
+        "error"
+      ]
+    },
+    "globals": {
+    }
+  },
   "devDependencies": {
+    "@babel/core": "^7.22.6",
+    "@babel/eslint-parser": "^7.22.6",
+    "@babel/preset-react": "^7.22.5",
+    "eslint": "^8.44.0",
     "nodemon": "^2.0.22"
   }
 }

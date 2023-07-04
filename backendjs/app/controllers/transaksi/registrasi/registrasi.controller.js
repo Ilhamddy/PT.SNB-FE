@@ -513,7 +513,7 @@ const getRegistrasiPasienNorec = async (req, res) => {
         transaction = await db.sequelize.transaction();
     }catch(e){
         res.status(500).send({
-            status: error,
+            status: e,
             success: false,
             msg: 'Simpan Gagal',
             code: 500

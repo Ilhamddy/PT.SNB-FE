@@ -30,10 +30,19 @@ function formatDate(date) {
 
 async function saveOrderPelayanan(req, res) {
 
-
-    try {
-
+    let transaction = null;
+    try{
         transaction = await db.sequelize.transaction();
+    }catch(e){
+        console.error(e)
+        res.status(201).send({
+            status: e.message,
+            success: false,
+            msg: 'Simpan Gagal',
+            code: 201
+        });
+    }
+    try {
         let today = new Date();
         let todayMonth = '' + (today.getMonth() + 1)
         if (todayMonth.length < 2)
@@ -90,15 +99,13 @@ async function saveOrderPelayanan(req, res) {
 
     } catch (error) {
         // console.log(error);
-        if (transaction) {
-            await transaction.rollback();
-            res.status(201).send({
-                status: "false",
-                success: false,
-                msg: 'Gagal',
-                code: 201
-            });
-        }
+        transaction && await transaction.rollback();
+        res.status(201).send({
+            status: "false",
+            success: false,
+            msg: 'Gagal',
+            code: 201
+        });
     }
 }
 
