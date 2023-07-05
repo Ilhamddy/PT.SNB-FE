@@ -202,7 +202,7 @@ const DaftarPasienRI = () => {
                 dataUnit={dataUnit}
                 dataDokter={dataDokter}
             />
-            <StatusPulangRIModal show />
+            <StatusPulangRIModal />
             <UiContent />
             <div className="page-content">
                 <Container fluid>

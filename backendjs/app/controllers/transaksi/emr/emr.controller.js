@@ -475,7 +475,6 @@ async function editEmrPasienCppt(req, res) {
 
         const cpptupdate = await db.t_cppt.update({
             statusenabled: false,
-            // tglisi: new Date()
         }, {
             where: {
                 norec: req.body.norec

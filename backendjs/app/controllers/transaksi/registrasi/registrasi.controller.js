@@ -494,19 +494,50 @@ async function saveRegistrasiPasien(req, res) {
         });
     } catch (error) {
         // console.log(error);
-        if (transaction) {
-            console.error(error);
-            // await transaction.rollback();
-            res.status(201).send({
-                status: error,
-                success: false,
-                msg: 'Simpan Gagal',
-                code: 201
-            });
-        }
+        console.error(error);
+        transaction && await transaction.rollback();
+        res.status(201).send({
+            status: error,
+            success: false,
+            msg: 'Simpan Gagal',
+            code: 201
+        });
     }
 }
 
+const updateRegistrasiPPulang = async (req, res) => {
+    let transaction = null;
+    try{
+        transaction = await db.sequelize.transaction();
+    }catch(e){
+        console.error("Error transaction registrasiPPulang")
+        console.error(e);
+        // await transaction.rollback();
+        res.status(500).send({
+            status: JSON.stringify(e),
+            success: false,
+            msg: 'Error transaction',
+            code: 500
+        });
+        return;
+    }
+    try{
+        if(!req.body.norec){
+            throw new Error('norec tidak boleh kosong');
+        }
+        let norecDP = req.body.norec
+        
+    }catch(e){
+        console.error("Error update registrasiPPulang")
+        console.error(e);
+        res.status(500).send({
+            status: JSON.stringify(e),
+            success: false,
+            msg: 'Error update',
+            code: 500
+        });
+    }
+}
 const getRegistrasiPasienNorec = async (req, res) => {
     let transaction = null;
     try{
@@ -704,6 +735,7 @@ const saveRegistrasiPenjaminFK = async (req, res) => {
         });
     } catch(error){
         transaction && await transaction.rollback();
+        console.error(error);
         res.status(201).send({
             status: error,
             success: false,
