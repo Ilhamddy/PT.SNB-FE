@@ -24,7 +24,9 @@ import {
     KECAMATAN_GET_BPJS,
     KECAMATAN_GET_BPJS_SUCCESS,
     KECAMATAN_GET_BPJS_ERROR,
-
+    COMBO_PULANG_GET,
+    COMBO_PULANG_GET_SUCCESS,
+    COMBO_PULANG_GET_ERROR,
 } from "./actionType";
 
 const INIT_STATE = {
@@ -64,6 +66,11 @@ const INIT_STATE = {
         error: null,
     },
     kecamatanBpjs: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    comboPulangGet: {
         data: [],
         loading: false,
         error: null,
@@ -330,6 +337,39 @@ const Master = (state = INIT_STATE, action) => {
                 ...state,
                 kecamatanBpjs: {
                     ...state.kecamatanBpjs,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case COMBO_PULANG_GET: {
+            return {
+                ...state,
+                comboPulangGet: {
+                    ...state.comboPulangGet,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case COMBO_PULANG_GET_SUCCESS: {
+            return {
+                ...state,
+                comboPulangGet: {
+                    ...state.comboPulangGet,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case COMBO_PULANG_GET_ERROR: {
+            return {
+                ...state,
+                comboPulangGet: {
+                    ...state.comboPulangGet,
                     loading: false,
                     error: action.error,
                 }

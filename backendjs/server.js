@@ -17,7 +17,6 @@ import laboratoriumRoutes from './app/routes/transaksi/laboratorium.routes.js';
 
 dotenv.config()
 
-
 const app = express();
 
 

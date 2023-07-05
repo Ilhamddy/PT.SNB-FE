@@ -22,6 +22,9 @@ import queriesKelas from '../../queries/master/kelas/kelas.queries'
 import queriesKamar from '../../queries/master/kamar/kamar.queries'
 import queriesTempatTidur from '../../queries/master/tempattidur/tempattidur.queires'
 import queriesStatusKecelakaan from '../../queries/master/statuskecelakaan/statuskecelakaan.queries'
+import queriesStatusPulangRI from '../../queries/master/statuspulangri/statuspulangri.queries'
+import queriesKondisiPulangRI from '../../queries/master/kondisipulangri/kondisipulangri.queries'
+import queriesCaraPulangRI from '../../queries/master/carapulangri/carapulangri.queries'
 
 const selectComboBox = (req, res) => {
     try {
@@ -252,10 +255,49 @@ const comboAsuransi = (req, res) => {
         });
     }
 }
+
+const comboPulang = async (req, res) => {
+    try{
+        const statusPulangRI = await pool.query(queriesStatusPulangRI.getAll, []);
+        const kondisiPulangRI = await pool.query(queriesKondisiPulangRI.getAll, []);
+        const caraPulangRI = await pool.query(queriesCaraPulangRI.getAll, []);
+        const hubKeluarga = await pool.query(queriesHubunganKeluarga.getAll, []);
+        const pegawai = await pool.query(queriesPegawai.getAll, []);
+        const kelas = await pool.query(queriesKelas.getAll, []);
+        const kamar = await pool.query(queriesKamar.getAll, []);
+        const tempattidur = await pool.query(queriesTempatTidur.getAll, []);
+
+        let tempres = {
+            statuspulang: statusPulangRI.rows,
+            kondisipulang: kondisiPulangRI.rows,
+            carapulang: caraPulangRI.rows,
+            hubungankeluarga: hubKeluarga.rows,
+            pegawai: pegawai.rows,
+            kelas: kelas.rows,
+            kamar: kamar.rows,
+            tempattidur: tempattidur.rows,
+        }
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+        });
+    }catch(e){
+        console.error("get combo pulang error: ")
+        console.error(e)
+        res.status(500).send({
+            data: [],
+            status: "error",
+            success: false,
+        });
+    }
+}
+
 export default {
     selectComboBox,
     desaKelurahan,
     getKecamatan,
     comboRegistrasi,
-    comboAsuransi
+    comboAsuransi,
+    comboPulang
 };

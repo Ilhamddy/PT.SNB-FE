@@ -39,6 +39,11 @@ export default function(app) {
       [authJwt.verifyToken],
       controller.comboAsuransi
     );
-  
+
+    app.get(
+      "/api/master/combobox-pulang",
+      [authJwt.verifyToken],
+      controller.comboPulang
+    )
   
   };

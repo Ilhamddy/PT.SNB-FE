@@ -188,6 +188,7 @@ async function saveTindakanPasien(req, res) {
 
     } catch (error) {
         transaction && await transaction.rollback();
+        console.error(error)
         res.status(201).send({
             status: error,
             success: false,
