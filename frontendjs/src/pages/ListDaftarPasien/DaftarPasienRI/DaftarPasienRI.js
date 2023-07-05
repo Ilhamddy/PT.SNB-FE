@@ -21,6 +21,8 @@ import { widgetdaftarPasienRIGet, daftarPasienRIGet, daftarPasienResetForm } fro
 import { comboRegistrasiGet } from '../../../store/master/action';
 import CustomSelect from '../../Select/Select';
 import KonsulModal from '../../../Components/Common/KonsulModal';
+import StatusPulangModal from '../../../Components/Common/StatusPulangModal';
+import StatusPulangRIModal from '../../../Components/Common/StatusPulangRIModal';
 
 const DaftarPasienRI = () => {
     document.title = "Daftar Pasien Rawat Inap";
@@ -200,6 +202,7 @@ const DaftarPasienRI = () => {
                 dataUnit={dataUnit}
                 dataDokter={dataDokter}
             />
+            <StatusPulangRIModal show />
             <UiContent />
             <div className="page-content">
                 <Container fluid>

@@ -15,6 +15,8 @@ import { masterGetSuccess,masterGetError,desaGetSuccess,desaGetError,kecamatanGe
     kecamatanGetBpjs,
     kecamatanGetBpjsSuccess,
     kecamatanGetBpjsError,
+    comboPulangGetSuccess,
+    comboPulangGetError,
 } from "./action";
 
 const serviceMaster = new ServiceMaster();
@@ -91,6 +93,16 @@ function* onGetKecamatanBpjs({payload: {kabupaten}}){
     }
 }
 
+
+function* onGetComboPulang() {
+    try {
+        const response = yield call(serviceMaster.getComboPulang);
+        yield put(comboPulangGetSuccess(response.data));
+    } catch (error) {
+        yield put(comboPulangGetError(error));
+    }
+}
+
 export function* watchGetMaster() {
     yield takeEvery(MASTER_GET, onGetMaster);
 }
@@ -123,6 +135,10 @@ export function* watchGetKecamatanBpjs(){
     yield takeEvery(KECAMATAN_GET_BPJS,onGetKecamatanBpjs);
 }
 
+export function* watchGetComboPulang() {
+    yield takeEvery(COMBO_REGISTRASI_GET, onGetComboPulang);
+}
+
 function* masterSaga() {
     yield all([
         fork(watchGetMaster),
@@ -133,7 +149,7 @@ function* masterSaga() {
         fork(watchGetProvinsiBpjs),
         fork(watchGetKabupatenBpjs),
         fork(watchGetKecamatanBpjs),
-
+        fork(watchGetComboPulang),
     ]);
 }
 

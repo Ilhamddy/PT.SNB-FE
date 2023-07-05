@@ -23,6 +23,9 @@ import {
     KECAMATAN_GET_BPJS,
     KECAMATAN_GET_BPJS_SUCCESS,
     KECAMATAN_GET_BPJS_ERROR,
+    COMBO_PULANG_GET,
+    COMBO_PULANG_GET_SUCCESS,
+    COMBO_PULANG_GET_ERROR,
 } from "./actionType";
 
 export const masterGet = () => ({
@@ -137,5 +140,19 @@ export const kecamatanGetBpjsSuccess = (data) => ({
 
 export const kecamatanGetBpjsError = (error) => ({
     type: KECAMATAN_GET_BPJS_ERROR,
+    payload: error,
+});
+
+export const comboPulangGet = () => ({
+    type: COMBO_PULANG_GET,
+});
+
+export const comboPulangGetSuccess = (data) => ({
+    type: COMBO_PULANG_GET_SUCCESS,
+    payload: data,
+});
+
+export const comboPulangGetError = (error) => ({
+    type: COMBO_PULANG_GET_ERROR,
     payload: error,
 });

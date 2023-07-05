@@ -65,7 +65,6 @@ const DetailOrderModal = ({ show, onSimpanClick, onCloseClick,onTolakClick, temp
         validationSchema: Yup.object({
             namatindakan: Yup.string().required("Nama Tindakan wajib diisi"),
             nokamar: Yup.string().required("No Kamar wajib diisi"),
-
         }),
         onSubmit: (values, { resetForm }) => {
             // console.log(validation.errors)
@@ -302,47 +301,6 @@ const DetailOrderModal = ({ show, onSimpanClick, onCloseClick,onTolakClick, temp
                                                     </Label>
                                                 </div>
                                             </Col>
-                                            {/* <Col lg={12}>
-                                                <Row>
-                                                    <Col lg={4} sm={6}>
-                                                        <div className="mt-2">
-                                                            <Label style={{ color: "black" }} htmlFor="qty" className="form-label fw-semibold">Quantity</Label>
-                                                        </div>
-                                                    </Col>
-                                                    <Col lg={4} sm={6} className="mt-1">
-                                                        <div>
-                                                            <div className="input-step">
-                                                                <button type="button" className="minus" onClick={() => onClickCount('min')}>
-                                                                    –
-                                                                </button>
-                                                                <Input
-                                                                    type="number"
-                                                                    className="product-quantity"
-                                                                    id="product-qty-1"
-                                                                    value={count}
-                                                                    readOnly
-                                                                />
-                                                                <button type="button" className="plus" onClick={() => onClickCount('plus')}>
-                                                                    +
-                                                                </button>
-                                                            </div>
-                                                        </div>
-                                                    </Col>
-                                                   
-                                                    <Col lg={4} sm={6} className="mt-1">
-                                                        <div>
-                                                            <Input
-                                                                type="text"
-                                                                className="form-control bg-light border-0 product-line-price"
-                                                                id="harga"
-                                                                placeholder="Rp.0.00"
-                                                                value={"Rp " + harga * count}
-                                                                readOnly
-                                                            />
-                                                        </div>
-                                                    </Col>
-                                                </Row>
-                                            </Col> */}
                                             <Col lg={12}>
                                                 <div className="d-flex flex-wrap gap-2 justify-content-md-start">
                                                     <Button type="submit" color="info" className="rounded-pill" placement="top">
