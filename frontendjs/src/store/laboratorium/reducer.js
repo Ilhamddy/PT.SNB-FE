@@ -22,6 +22,9 @@ import {
     UPDATE_TGLRENCANA_LABORATORIUM,
     UPDATE_TGLRENCANA_LABORATORIUM_SUCCESS,
     UPDATE_TGLRENCANA_LABORATORIUM_ERROR,
+    SAVE_VERIFIKASI_LABORATORIUM,
+    SAVE_VERIFIKASI_LABORATORIUM_SUCCESS,
+    SAVE_VERIFIKASI_LABORATORIUM_ERROR,
 } from "./actionType";
 
 const INIT_STATE = {
@@ -62,6 +65,12 @@ const INIT_STATE = {
         error: null,
         success: false
     },
+    saveVerifikasiLaboratorium:{
+        newData: null,
+        loading: false,
+        error: null,
+        success: false
+    },
 }
 
 const Laboratorium = (state = INIT_STATE, action) => {
@@ -89,6 +98,9 @@ const Laboratorium = (state = INIT_STATE, action) => {
                 },
                 updateTglRencanaLaboratorium:{
                     ...INIT_STATE.updateTglRencanaLaboratorium
+                },
+                saveVerifikasiLaboratorium:{
+                    ...INIT_STATE.saveVerifikasiLaboratorium
                 }
             }
         }
@@ -320,6 +332,40 @@ const Laboratorium = (state = INIT_STATE, action) => {
                 ...state,
                 updateTglRencanaLaboratorium: {
                     ...state.updateTglRencanaLaboratorium,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case SAVE_VERIFIKASI_LABORATORIUM: {
+            return {
+                ...state,
+                saveVerifikasiLaboratorium: {
+                    ...state.saveVerifikasiLaboratorium,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case SAVE_VERIFIKASI_LABORATORIUM_SUCCESS: {
+            return {
+                ...state,
+                saveVerifikasiLaboratorium: {
+                    ...state.saveVerifikasiLaboratorium,
+                    newData: action.payload,
+                    loading: false,
+                    success: true,
+                }
+            }
+        }
+
+        case SAVE_VERIFIKASI_LABORATORIUM_ERROR: {
+            return {
+                ...state,
+                saveVerifikasiLaboratorium: {
+                    ...state.saveVerifikasiLaboratorium,
                     loading: false,
                     error: action.error,
                 }

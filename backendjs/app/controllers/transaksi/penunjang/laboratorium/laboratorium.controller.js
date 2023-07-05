@@ -433,6 +433,124 @@ async function updateTglRencanaLaboratorium(req, res) {
 
 }
 
+async function saveUserVerifikasi(req, res) {
+    let transaction = null;
+    try{
+        transaction = await db.sequelize.transaction();
+    }catch(e){
+        console.error(e)
+        res.status(201).send({
+            status: e.message,
+            success: false,
+            msg: 'Simpan Gagal',
+            code: 201
+        });
+    }
+    try {
+        const resultlist = await queryPromise2(`select td.norec as norectd,td2.objectprodukfk,to2.objectunitasalfk,
+        td.noregistrasi,to2.nomororder,td2.norec,
+        mp.namalengkap, mu.namaunit,to2.keterangan,to_char(to2.tglinput,'yyyy-MM-dd HH:mm') as tglinput,
+        mp2.namaproduk,td2.harga ,td2.iscito, td2.qty, td2.qty*td2.harga as total,
+        to_char(td2.tglperjanjian,'yyyy-MM-dd HH:mm') as tglperjanjian,
+        mpeg.namalengkap as pegawaiverif, mkr.namakamar from t_daftarpasien td 
+        join t_antreanpemeriksaan ta on td.norec =ta.objectdaftarpasienfk
+        join t_orderpelayanan to2 on to2.objectantreanpemeriksaanfk=ta.norec
+        join m_pegawai mp on mp.id=to2.objectpegawaifk 
+        join m_unit mu ON mu.id=ta.objectunitfk 
+        join t_detailorderpelayanan td2 on td2.objectorderpelayananfk=to2.norec 
+        join m_produk mp2 on mp2.id=td2.objectprodukfk 
+        left join m_pegawai mpeg on mpeg.id=to2.objectpegawaiveriffk
+        left join m_kamar mkr on mkr.id=td2.objectkamarfk
+        where to2.norec='${req.body.norec}' and td2.statusenabled=true
+        `);
+        // console.log(resultlist.rows[0].norec)
+        let tempres = resultlist.rows[0].norectd
+
+        let norecAP = uuid.v4().substring(0, 32)
+        const t_antreanpemeriksaan = await db.t_antreanpemeriksaan.create({
+            norec: norecAP,
+            objectdaftarpasienfk: resultlist.rows[0].norectd,
+            tglmasuk: req.body.tglinput,
+            tglkeluar: req.body.tglinput,
+            objectunitfk: 12,
+            objectkelasfk: 8,
+            taskid: 3,
+            statusenabled: true,
+            objectunitasalfk:resultlist.rows[0].objectunitasalfk,
+        }, { transaction });
+
+        for (let x = 0; x < resultlist.rows.length; x++) {
+            const resultlistantreanpemeriksaan = await queryPromise2(`select mh.harga,mh.objectkomponenprodukfk,mk.reportdisplay  from m_hargaprodukperkomponen mh
+        join m_totalhargaprodukbykelas mt on mt.id=mh.objecttotalhargaprodukbykelasfk
+        join m_komponenproduk mk on mk.id=mh.objectkomponenprodukfk 
+        where mt.objectprodukfk =${resultlist.rows[x].objectprodukfk} and mt.objectkelasfk=8`);
+
+            let norecpp = uuid.v4().substring(0, 32)
+
+            const pelayananpasien = await db.t_pelayananpasien.create({
+                norec: norecpp,
+                objectantreanpemeriksaanfk: norecAP,
+                harga: resultlist.rows[x].harga,
+                qty: resultlist.rows[x].qty,
+                total: resultlist.rows[x].qty * resultlist.rows[x].harga,
+                tglinput: req.body.tglinput,
+                objectprodukfk: resultlist.rows[x].objectprodukfk,
+                objectpegawaifk: req.idPegawai,
+                objectkelasfk: 8,
+
+            }, { transaction });
+            for (let i = 0; i < resultlistantreanpemeriksaan.rowCount; i++) {
+                let norecppd = uuid.v4().substring(0, 32)
+                const pelayananpasiend = await db.t_pelayananpasiendetail.create({
+                    norec: norecppd,
+                    objectpelayananpasienfk: norecpp,
+                    objectkomponenprodukfk: resultlistantreanpemeriksaan.rows[i].objectkomponenprodukfk,
+                    harga: resultlistantreanpemeriksaan.rows[i].harga,
+                    qty: resultlist.rows[x].qty,
+                }, { transaction });
+
+            }
+            // console.log(pelayananpasien.norec)
+            const t_detailorderpelayanan = await db.t_detailorderpelayanan.update({
+                objectpelayananpasienfk: pelayananpasien.norec
+            }, {
+                where: {
+                    norec: resultlist.rows[x].norec
+                }
+            }, { transaction });
+        }
+
+        const t_orderpelayanan = await db.t_orderpelayanan.update({
+            objectpegawaiveriffk: req.idPegawai,
+            objectstatusveriffk: 2,
+        }, {
+            where: {
+                norec: req.body.norec
+            }
+        }, { transaction });
+        await transaction.commit();
+
+        res.status(200).send({
+            data: t_antreanpemeriksaan,
+            status: "success",
+            success: true,
+            msg: 'Berhasil',
+            code: 200
+        });
+
+    } catch (error) {
+        transaction && await transaction.rollback();
+        console.log(error)
+        res.status(201).send({
+            status: "false",
+            success: false,
+            msg: error,
+            code: 201
+        });
+    }
+
+}
+
 export default {
     getDetailJenisProdukLab,
     saveOrderPelayanan,
@@ -440,5 +558,6 @@ export default {
     getWidgetListDaftarOrderLaboratorium,
     getDaftarListHistoryOrder,
     getListOrderByNorecOrder,
-    updateTglRencanaLaboratorium
+    updateTglRencanaLaboratorium,
+    saveUserVerifikasi
 };

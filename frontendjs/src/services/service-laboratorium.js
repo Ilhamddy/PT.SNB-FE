@@ -30,4 +30,8 @@ export default class ServiceLaboratorium {
     updateTglRencanaLaboratorium = async (params) => {
         return await api.put("/transaksi/laboratorium/update-tglrencana-laboratorium", params);
     }
+
+    saveVerifikasiLaboratoriumUser = async (params) => {
+        return await api.put("/transaksi/laboratorium/save-verifikasi-laboratorium", params);
+    }
 }
