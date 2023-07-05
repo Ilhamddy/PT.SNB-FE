@@ -28,4 +28,28 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getListHistoryOrder
     );
+
+    app.get(
+        "/api/transaksi/laboratorium/widget-daftar-order-laboratorium",
+        [authJwt.verifyToken],
+        controller.getWidgetListDaftarOrderLaboratorium
+    );
+
+    app.get(
+        "/api/transaksi/laboratorium/list-daftar-order-laboratorium",
+        [authJwt.verifyToken],
+        controller.getDaftarListHistoryOrder
+    );
+
+    app.get(
+        "/api/transaksi/laboratorium/list-order-by-norecorder",
+        [authJwt.verifyToken],
+        controller.getListOrderByNorecOrder
+    );
+
+    app.put(
+        "/api/transaksi/laboratorium/update-tglrencana-laboratorium",
+        [authJwt.verifyToken],
+        controller.updateTglRencanaLaboratorium
+    );
 }

@@ -14,4 +14,20 @@ export default class ServiceLaboratorium {
     getDaftarOrderLaboratorium = async (param) => {
         return await api.get(`/transaksi/laboratorium/getlist-histori-order?norecdp=${param}`);
     }
+
+    getWidgetDaftarOrderLaboratorium = async (param) => {
+        return await api.get(`/transaksi/laboratorium/widget-daftar-order-laboratorium?noregistrasi=${param}`);
+    }
+
+    getListDaftarOrderLaboratorium = async (param) => {
+        return await api.get(`/transaksi/laboratorium/list-daftar-order-laboratorium?noregistrasi=${param}`);
+    }
+
+    getListOrderLaboratoriumByNorec = async (param) => {
+        return await api.get(`/transaksi/laboratorium/list-order-by-norecorder?norec=${param}`);
+    }
+
+    updateTglRencanaLaboratorium = async (params) => {
+        return await api.put("/transaksi/laboratorium/update-tglrencana-laboratorium", params);
+    }
 }
