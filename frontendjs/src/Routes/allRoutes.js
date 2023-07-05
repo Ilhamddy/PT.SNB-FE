@@ -492,7 +492,7 @@ const authProtectedRoutes = [
   {path: "/listdaftarpasien/daftar-pasien-rj", component: <DaftarPasienRJ />},
   {path:"/emr-pasien/:norecdp/:norecap", component:<Emr/>},
   {path: "/listdaftarpasien/daftar-pasien-ri", component: <DaftarPasienRI />},
-  {path: "/listdaftarpasien/pulang", component: <DaftarPasienPulang />},
+  {path: "/listdaftarpasien/daftar-pasien-pulang", component: <DaftarPasienPulang />},
   
   // rekam medis
   {path:"/rekammedis/kendalidokumen", component:<KendaliDokumen/>},

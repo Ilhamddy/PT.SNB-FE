@@ -248,6 +248,17 @@ const Navdata = () => {
                         ]);
                     }
                 },
+                {
+                    id: "daftar-pasien-pulang",
+                    label: "Daftar Pasien Pulang",
+                    link: "/listdaftarpasien/daftar-pasien-pulang",
+                    parentId: "listdaftarpasien",
+                    isAllowed: () => {
+                        return isAllowedAccess(getUserPermissions(), [
+                            "REGISTRASI_VIEW",
+                        ]);
+                    }
+                },
             ],
         },
         {
