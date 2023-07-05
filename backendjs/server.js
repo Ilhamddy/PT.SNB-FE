@@ -26,6 +26,7 @@ let corsOptions = {
 };
 
 
+
 app.use(cors());
 // app.use((req, res, next) => {
 //   res.setHeader('Acces-Control-Allow-Origin', '*');

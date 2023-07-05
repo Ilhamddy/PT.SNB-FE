@@ -50,6 +50,12 @@
     "rules": {
       "no-undef": [
         "error"
+      ],
+      "no-const-assign": [
+        "error"
+      ],
+      "for-direction": [
+        "error"
       ]
     },
     "globals": {
