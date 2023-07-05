@@ -170,7 +170,7 @@ async function saveOrderPelayanan(req, res) {
         // let tempres = { statu: t_rm_lokasidokumen }
 
     } catch (error) {
-        // console.log(error);
+        console.error(error);
         await transaction.rollback();
         res.status(201).send({
             status: "false",
