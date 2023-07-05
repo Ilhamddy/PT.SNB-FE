@@ -19,7 +19,7 @@ import { comboPulangGet } from "../../store/master/action";
 
 const StatusPulangRIModal = ({ show, onSimpanClick, onCloseClick, onTolakClick, tempNorec }) => {
     const dispatch = useDispatch();
-    const { editData, comboPulang, dataKamar } = useSelector((state) => ({
+    const { comboPulang, dataKamar } = useSelector((state) => ({
         comboPulang: state.Master.comboPulangGet.data,
     }));
     useEffect(() => {
@@ -30,7 +30,7 @@ const StatusPulangRIModal = ({ show, onSimpanClick, onCloseClick, onTolakClick, 
     const validation = useFormik({
         enableReinitialize: true,
         initialValues: {
-            norec: editData?.norec ?? tempNorec,
+            norec: "",
             carakeluar: "",
             //pulang/aps 1/2/3/4
             kondisipulang: "",
@@ -117,7 +117,7 @@ const StatusPulangRIModal = ({ show, onSimpanClick, onCloseClick, onTolakClick, 
             }),
         }),
         onSubmit: (values, { resetForm }) => {
-
+            console.log(values);
         }
     })
 

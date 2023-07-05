@@ -525,8 +525,65 @@ const updateRegistrasiPPulang = async (req, res) => {
         if(!req.body.norec){
             throw new Error('norec tidak boleh kosong');
         }
-        let norecDP = req.body.norec
+        const norecDP = req.body.norec
+        const caraKeluar = req.body.carakeluar
+        const isPulangAPS = caraKeluar === 1 || caraKeluar === 2
+        const isMeninggal = caraKeluar === 4
+        const isRujuk = caraKeluar === 5
+        const isPindah = caraKeluar === 3
+        const objectBody = {
+            "carakeluar": 2,
+            "kondisipulang": 2,
+            "statuspulang": 5,
+            "tanggalpulang": "2023-07-03",
+            "pembawapulang": "disky",
+            "hubungan": 2,
+            "tanggalmeninggal": "",
+            "alasanrujuk": "",
+            "faskestujuan": "",
+            "namafaskes": "",
+            "dokterperujuk": "",
+            "unittujuan": "",
+            "kamar": "",
+            "keteranganpindah": "",
+            "kelas": "",
+            "nobed": "",
+            "tglpindah": ""
+        }
+        const objectEdit = {
+            objectcarapulangrifk: objectBody.carakeluar,
+            objectkondisipulangrifk: objectBody.kondisipulang,
+            objectstatuspulangrifk: objectBody.statuspulang,
+            pembawapulang: objectBody.pembawapulang,
+            tglpulang: objectBody.tanggalpulang,
+            tglkeluar: objectBody.tanggalpulang,
+            objecthubunganpembawapasienfk: objectBody.hubungan
+        }
+        const objectEditMeninggal = {
+            ...objectEdit, 
+            tglmeninggal: objectBody.tanggalmeninggal
+        }
+
+        const objectEditRujuk = {
+            ...objectEdit,
+            alasanrujuk: objectBody.alasanrujuk,
+            namafaskes: objectBody.namafaskes,
+            objectpjpasienfk: objectBody.dokterperujuk,
+        }
+
+        const pindah = {
+            //pindah 3
+            unittujuan: "",
+            kamar: "",
+            keteranganpindah: "",
+            kelas: "",
+            nobed: "",
+            tglpindah: "",
+        }
         
+        if(isMeninggal){
+
+        }
     }catch(e){
         console.error("Error update registrasiPPulang")
         console.error(e);
