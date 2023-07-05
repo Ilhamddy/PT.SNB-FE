@@ -9,7 +9,19 @@ import {
     SAVE_ORDER_PELAYANAN_LABORATORIUM_ERROR,
     DAFTAR_ORDER_LABORATORIUM_GET,
     DAFTAR_ORDER_LABORATORIUM_GET_SUCCESS,
-    DAFTAR_ORDER_LABORATORIUM_GET_ERROR
+    DAFTAR_ORDER_LABORATORIUM_GET_ERROR,
+    WIDGET_DAFTAR_ORDER_LABORATORIUM_GET,
+    WIDGET_DAFTAR_ORDER_LABORATORIUM_GET_SUCCESS,
+    WIDGET_DAFTAR_ORDER_LABORATORIUM_GET_ERROR,
+    LIST_DAFTAR_ORDER_LABORATORIUM_GET,
+    LIST_DAFTAR_ORDER_LABORATORIUM_GET_SUCCESS,
+    LIST_DAFTAR_ORDER_LABORATORIUM_GET_ERROR,
+    LIST_ORDER_LABORATORIUM_BY_NOREC_GET,
+    LIST_ORDER_LABORATORIUM_BY_NOREC_GET_SUCCESS,
+    LIST_ORDER_LABORATORIUM_BY_NOREC_GET_ERROR,
+    UPDATE_TGLRENCANA_LABORATORIUM,
+    UPDATE_TGLRENCANA_LABORATORIUM_SUCCESS,
+    UPDATE_TGLRENCANA_LABORATORIUM_ERROR,
 } from "./actionType";
 
 const INIT_STATE = {
@@ -29,6 +41,27 @@ const INIT_STATE = {
         loading: false,
         error: null,
     },
+    widgetdaftarOrderLaboratoriumGet: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    listdaftarOrderLaboratoriumGet: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    listOrderLaboratoriumByNorecGet:{
+        data:[],
+        loading: false,
+        error: null,
+    },
+    updateTglRencanaLaboratorium:{
+        newData: null,
+        loading: false,
+        error: null,
+        success: false
+    },
 }
 
 const Laboratorium = (state = INIT_STATE, action) => {
@@ -44,6 +77,18 @@ const Laboratorium = (state = INIT_STATE, action) => {
                 },
                 daftarOrderLaboratoriumGet:{
                     ...INIT_STATE.daftarOrderLaboratoriumGet
+                },
+                widgetdaftarOrderLaboratoriumGet:{
+                    ...INIT_STATE.widgetdaftarOrderLaboratoriumGet
+                },
+                listdaftarOrderLaboratoriumGet:{
+                    ...INIT_STATE.listdaftarOrderLaboratoriumGet
+                },
+                listOrderLaboratoriumByNorecGet:{
+                    ...INIT_STATE.listOrderLaboratoriumByNorecGet
+                },
+                updateTglRencanaLaboratorium:{
+                    ...INIT_STATE.updateTglRencanaLaboratorium
                 }
             }
         }
@@ -147,6 +192,140 @@ const Laboratorium = (state = INIT_STATE, action) => {
                 }
             }
         }
+
+        case WIDGET_DAFTAR_ORDER_LABORATORIUM_GET: {
+            return {
+                ...state,
+                widgetdaftarOrderLaboratoriumGet: {
+                    ...state.widgetdaftarOrderLaboratoriumGet,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case WIDGET_DAFTAR_ORDER_LABORATORIUM_GET_SUCCESS: {
+            return {
+                ...state,
+                widgetdaftarOrderLaboratoriumGet: {
+                    ...state.widgetdaftarOrderLaboratoriumGet,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case WIDGET_DAFTAR_ORDER_LABORATORIUM_GET_ERROR: {
+            return {
+                ...state,
+                widgetdaftarOrderLaboratoriumGet: {
+                    ...state.widgetdaftarOrderLaboratoriumGet,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case LIST_DAFTAR_ORDER_LABORATORIUM_GET: {
+            return {
+                ...state,
+                listdaftarOrderLaboratoriumGet: {
+                    ...state.listdaftarOrderLaboratoriumGet,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case LIST_DAFTAR_ORDER_LABORATORIUM_GET_SUCCESS: {
+            return {
+                ...state,
+                listdaftarOrderLaboratoriumGet: {
+                    ...state.listdaftarOrderLaboratoriumGet,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case LIST_DAFTAR_ORDER_LABORATORIUM_GET_ERROR: {
+            return {
+                ...state,
+                listdaftarOrderLaboratoriumGet: {
+                    ...state.listdaftarOrderLaboratoriumGet,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case LIST_ORDER_LABORATORIUM_BY_NOREC_GET: {
+            return {
+                ...state,
+                listOrderLaboratoriumByNorecGet: {
+                    ...state.listOrderLaboratoriumByNorecGet,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case LIST_ORDER_LABORATORIUM_BY_NOREC_GET_SUCCESS: {
+            return {
+                ...state,
+                listOrderLaboratoriumByNorecGet: {
+                    ...state.listOrderLaboratoriumByNorecGet,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case LIST_ORDER_LABORATORIUM_BY_NOREC_GET_ERROR: {
+            return {
+                ...state,
+                listOrderLaboratoriumByNorecGet: {
+                    ...state.listOrderLaboratoriumByNorecGet,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case UPDATE_TGLRENCANA_LABORATORIUM: {
+            return {
+                ...state,
+                updateTglRencanaLaboratorium: {
+                    ...state.updateTglRencanaLaboratorium,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case UPDATE_TGLRENCANA_LABORATORIUM_SUCCESS: {
+            return {
+                ...state,
+                updateTglRencanaLaboratorium: {
+                    ...state.updateTglRencanaLaboratorium,
+                    newData: action.payload,
+                    loading: false,
+                    success: true,
+                }
+            }
+        }
+
+        case UPDATE_TGLRENCANA_LABORATORIUM_ERROR: {
+            return {
+                ...state,
+                updateTglRencanaLaboratorium: {
+                    ...state.updateTglRencanaLaboratorium,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
 
         default: {
             return { ...state };

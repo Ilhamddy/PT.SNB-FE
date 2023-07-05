@@ -13,7 +13,7 @@ import {
     DELETE_ORDER_PELAYANAN,
     DELETE_DETAIL_ORDER_PELAYANAN,
     DAFTAR_PASIEN_RADIOLOGI,
-    LIST_PELAYANAN_RADIOLOGI_GET
+    LIST_PELAYANAN_RADIOLOGI_GET,
 } from "./actionType";
 
 import {
@@ -28,7 +28,7 @@ import {
     deleteOrderPelayananSuccess,deleteOrderPelayananError,
     deleteDetailOrderPelayananSuccess,deleteDetailOrderPelayananError,
     daftarPasienRadiologiSuccess,daftarPasienRadiologiError,
-    listPelayananRadiologiGetSuccess, listPelayananRadiologiGetError
+    listPelayananRadiologiGetSuccess, listPelayananRadiologiGetError,
 } from "./action";
 
 

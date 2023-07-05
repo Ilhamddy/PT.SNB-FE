@@ -4,13 +4,21 @@ import ServiceLaboratorium from "../../services/service-laboratorium";
 import {
     WIDGET_DETAIL_JENIS_PRODUK_GET,
     SAVE_ORDER_PELAYANAN_LABORATORIUM,
-    DAFTAR_ORDER_LABORATORIUM_GET
+    DAFTAR_ORDER_LABORATORIUM_GET,
+    WIDGET_DAFTAR_ORDER_LABORATORIUM_GET,
+    LIST_DAFTAR_ORDER_LABORATORIUM_GET,
+    LIST_ORDER_LABORATORIUM_BY_NOREC_GET,
+    UPDATE_TGLRENCANA_LABORATORIUM
 } from "./actionType";
 
 import {
     widgetDetailJenisProdukGetSuccess, widgetDetailJenisProdukGetError,
     saveOrderPelayananLaboratoriumSuccess, saveOrderPelayananLaboratoriumError,
-    daftarOrderLaboratoriumGetSuccess, daftarOrderLaboratoriumGetError
+    daftarOrderLaboratoriumGetSuccess, daftarOrderLaboratoriumGetError,
+    widgetdaftarOrderLaboratoriumGetSuccess, widgetdaftarOrderLaboratoriumGetError,
+    listdaftarOrderLaboratoriumGetSuccess, listdaftarOrderLaboratoriumGetError,
+    listOrderLaboratoriumByNorecGetSuccess, listOrderLaboratoriumByNorecGetError,
+    updateTglRencanaLaboratoriumSuccess, updateTglRencanaLaboratoriumError
 } from "./action";
 
 import { toast } from 'react-toastify';
@@ -73,13 +81,82 @@ export function* watchondaftarOrderLaboratorium() {
     yield takeEvery(DAFTAR_ORDER_LABORATORIUM_GET, ondaftarOrderLaboratorium);
 }
 
+function* onwidgetdaftarOrderLaboratorium({ payload: { param } }) {
+    try {
+        const response = yield call(serviceLaboratorium.getWidgetDaftarOrderLaboratorium, param);
+        yield put(widgetdaftarOrderLaboratoriumGetSuccess(response.data));
+    } catch (error) {
+        yield put(widgetdaftarOrderLaboratoriumGetError(error));
+    }
+}
+
+
+export function* watchonwidgetdaftarOrderLaboratorium() {
+    yield takeEvery(WIDGET_DAFTAR_ORDER_LABORATORIUM_GET, onwidgetdaftarOrderLaboratorium);
+}
+
+function* onlistDaftarOrderLaboratorium({ payload: { param } }) {
+    try {
+        const response = yield call(serviceLaboratorium.getListDaftarOrderLaboratorium, param);
+        yield put(listdaftarOrderLaboratoriumGetSuccess(response.data));
+    } catch (error) {
+        yield put(listdaftarOrderLaboratoriumGetError(error));
+    }
+}
+
+
+export function* watchonlistDaftarOrderLaboratorium() {
+    yield takeEvery(LIST_DAFTAR_ORDER_LABORATORIUM_GET, onlistDaftarOrderLaboratorium);
+}
+
+function* onListOrderLaboratoriumByNorec({ payload: { param } }) {
+    try {
+        const response = yield call(serviceLaboratorium.getListOrderLaboratoriumByNorec, param);
+        yield put(listOrderLaboratoriumByNorecGetSuccess(response.data));
+    } catch (error) {
+        yield put(listOrderLaboratoriumByNorecGetError(error));
+    }
+}
+
+
+export function* watchonListOrderLaboratoriumByNorec() {
+    yield takeEvery(LIST_ORDER_LABORATORIUM_BY_NOREC_GET, onListOrderLaboratoriumByNorec);
+}
+
+function* onUpdateTglRencanaLaboratorium({ payload: { data, history } }) {
+    try {
+        let response = null;
+        if (data.norec !== '') {
+            response = yield call(serviceLaboratorium.updateTglRencanaLaboratorium, data);
+        } else {
+            response = yield call(serviceLaboratorium.updateTglRencanaLaboratorium, data);
+        }
+
+        yield put(updateTglRencanaLaboratoriumSuccess(response.data));
+        if (response.code === 200) {
+            toast.success(response.msg, { autoClose: 3000 });
+        } else {
+            toast.error(response.msg, { autoClose: 3000 });
+        }
+    } catch (error) {
+        yield put(updateTglRencanaLaboratoriumError(error));
+        toast.error(error, { autoClose: 3000 });
+    }
+}
+
+export function* watchonUpdateTglRencanaLaboratorium() {
+    yield takeEvery(UPDATE_TGLRENCANA_LABORATORIUM, onUpdateTglRencanaLaboratorium);
+}
 
 function* laboratoriumSaga() {
     yield all([
         fork(watchonwidgetDetailJenisProdukGet),
         fork(watchonsaveOrderPelayanan),
-        fork(watchondaftarOrderLaboratorium)
-       
+        fork(watchondaftarOrderLaboratorium),
+        fork(watchonwidgetdaftarOrderLaboratorium),
+        fork(watchonlistDaftarOrderLaboratorium),
+        fork(watchonListOrderLaboratoriumByNorec),
+        fork(watchonUpdateTglRencanaLaboratorium)
     ]);
 }
 

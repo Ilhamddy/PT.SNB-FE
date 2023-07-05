@@ -262,6 +262,10 @@ import DaftarPasienRadiologi from "../pages/Radiologi/DaftarPasienRadiologi/Daft
 import TransaksiPelayanRadiologi from "../pages/Radiologi/TransaksiPelayanRadiologi/TransaksiPelayanRadiologi";
 import DaftarPasienPulang from "../pages/Emr/DaftarPasienPulang/DaftarPasienPulang";
 
+// Laboratorium
+import DaftarOrderLaboratorium from "../pages/Laboratorium/DaftarOrderLaboratorium/DaftarOrderLaboratorium";
+
+
 
 
 const authProtectedRoutes = [
@@ -497,6 +501,9 @@ const authProtectedRoutes = [
   {path:"/radiologi/daftarorderradiologi", component:<DaftarOrderRadiologi/>},
   {path:"/radiologi/daftarpasienradiologi", component:<DaftarPasienRadiologi/>},
   {path:"/transaksi-pelayanan-radiologi/:norecdp/:norecap", component:<TransaksiPelayanRadiologi/>},
+
+  // laboratorium
+  {path:"/laboratorium/daftarorderlaboratorium", component:<DaftarOrderLaboratorium/>}
 ];
 
 const publicRoutes = [
