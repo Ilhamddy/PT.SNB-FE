@@ -79,4 +79,8 @@ export default class ServiceRegistrasi {
             + (faskesType ? `&faskesType=${faskesType}` : ``)
         );
     }
+
+    getDaftarPasienNorec = async (norec) => {
+        return await api.get(`/transaksi/registrasi/daftar-pasien-ruangan/${norec}`);
+    }
 }

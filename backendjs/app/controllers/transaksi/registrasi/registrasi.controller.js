@@ -525,7 +525,11 @@ const updateRegistrasiPPulang = async (req, res) => {
         if(!req.body.norec){
             throw new Error('norec tidak boleh kosong');
         }
+        if(!req.body.norecAP){
+            throw new Error('norecAP tidak boleh kosong');
+        }
         const norecDP = req.body.norec
+        const norecAP = req.body.norecAP
         const caraKeluar = req.body.carakeluar
         const isPulangOrAPS = caraKeluar === 1 || caraKeluar === 2
         const isMeninggal = caraKeluar === 4
@@ -540,6 +544,9 @@ const updateRegistrasiPPulang = async (req, res) => {
             tglpulang: objectBody.tanggalpulang,
             tglkeluar: objectBody.tanggalpulang,
             objecthubunganpembawapasienfk: objectBody.hubungan
+        }
+        const objectEditAP = {
+            tglkeluar: objectBody.tanggalpulang,
         }
         const objectEditMeninggal = {
             ...objectEdit, 
@@ -568,6 +575,7 @@ const updateRegistrasiPPulang = async (req, res) => {
         }
 
         const objectEditPindahAp = {
+            ...objectEditAP,
             objectketeranganranapfk: objectBody.keteranganpindah,
             objectkelasfk: objectBody.kelas,
             objectkamarfk: objectBody.kamar,
@@ -578,20 +586,32 @@ const updateRegistrasiPPulang = async (req, res) => {
         let updatedBody = null;
         let updatedBodyAp = null;
         if(isPulangOrAPS){
-            const updateRegistrasi = await db.t_daftarpasien.update(objectEdit, {
+            await db.t_daftarpasien.update(objectEdit, {
                 where: {
                     norec: norecDP
+                }
+            }, { transaction });
+            await db.t_antreanpemeriksaan.update(objectEditAP, {
+                where: {
+                    norec: norecAP
                 }
             }, { transaction });
             updatedBody = objectEdit
+            updatedBodyAp = objectEditAP
             await transaction.commit();
         }else if(isMeninggal){
-            const updateRegistrasi = await db.t_daftarpasien.update(objectEditMeninggal, {
+            await db.t_daftarpasien.update(objectEditMeninggal, {
                 where: {
                     norec: norecDP
                 }
             }, { transaction });
+            const updateAntrean = await db.t_antreanpemeriksaan.update(objectEditAP, {
+                where: {
+                    norec: norecAP
+                }
+            }, { transaction });
             updatedBody = objectEditMeninggal
+            updatedBodyAp = objectEditAP
             await transaction.commit();
         }else if(isRujuk){
             const updateRegistrasi = await db.t_daftarpasien.update(objectEditRujuk, {
@@ -599,7 +619,13 @@ const updateRegistrasiPPulang = async (req, res) => {
                     norec: norecDP
                 }
             }, { transaction });
+            const updateAntrean = await db.t_antreanpemeriksaan.update(objectEditAP, {
+                where: {
+                    norec: norecAP
+                }
+            }, { transaction });
             updatedBody = objectEditRujuk
+            updatedBodyAp = objectEditAP
             await transaction.commit();
         }else if(isPindah){
             const updateRegistrasi = await db.t_daftarpasien.update(objectEditPindahDp, {
@@ -607,17 +633,21 @@ const updateRegistrasiPPulang = async (req, res) => {
                     norec: norecDP
                 }
             }, { transaction });
+            const updateAntrean = await db.t_antreanpemeriksaan.update(objectEditPindahAp, {
+                where: {
+                    norec: norecAP
+                }
+            }, { transaction });
             updatedBody = objectEditPindahDp
-            // const updateRegistrasiAp = await db.t_antreanpemeriksaan.update(objectEditPindahAp, {
-            //     where: {
-            //         noregistrasi: norecAP
-            //     }
-            // }, { transaction });
             updatedBodyAp = objectEditPindahAp
             await transaction.commit();
 
         }else{
             throw new Error('cara keluar tidak ditemukan')
+        }
+        if(updatedBody && updatedBodyAp){
+            updatedBody.norec = norecDP
+            updatedBodyAp.norec = norecAP
         }
         let tempres = { updatedBody, updatedBodyAp}
         res.status(200).send({

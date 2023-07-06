@@ -21,6 +21,10 @@ import {
     LIST_FASKES_GET,
     LIST_FASKES_GET_SUCCESS,
     LIST_FASKES_GET_ERROR,
+    DAFTARPASIEN_NOREC_GET,
+    DAFTARPASIEN_NOREC_GET_SUCCESS,
+    DAFTARPASIEN_NOREC_GET_ERROR,
+    DAFTARPASIEN_NOREC_GET_RESET,
 } from "./actionType";
 
 const INIT_STATE = {
@@ -58,6 +62,11 @@ const INIT_STATE = {
         data: [],
         loading: false,
         error: null,    
+    },
+    daftarPasienNoRecGet: {
+        data: [],
+        loading: false,
+        error: null,
     },
 };
 
@@ -302,6 +311,51 @@ const DaftarPasien = (state = INIT_STATE, action) => {
                     ...state.listFaskesGet,
                     loading: false,
                     error: action.error,
+                }
+            }
+        }
+
+        case DAFTARPASIEN_NOREC_GET: {
+            return {
+                ...state,
+                daftarPasienNoRecGet: {
+                    ...state.daftarPasienNoRecGet,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case DAFTARPASIEN_NOREC_GET_SUCCESS: {
+            return {
+                ...state,
+                daftarPasienNoRecGet: {
+                    ...state.daftarPasienNoRecGet,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case DAFTARPASIEN_NOREC_GET_ERROR: {
+            return {
+                ...state,
+                daftarPasienNoRecGet: {
+                    ...state.daftarPasienNoRecGet,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case DAFTARPASIEN_NOREC_GET_RESET: {
+            return {
+                ...state,
+                daftarPasienNoRecGet: {
+                    ...state.daftarPasienNoRecGet,
+                    data: [],
+                    loading: false,
+                    error: null,
                 }
             }
         }

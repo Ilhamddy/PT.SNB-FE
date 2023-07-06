@@ -21,6 +21,10 @@ import {
     LIST_FASKES_GET,
     LIST_FASKES_GET_SUCCESS,
     LIST_FASKES_GET_ERROR,
+    DAFTARPASIEN_NOREC_GET,
+    DAFTARPASIEN_NOREC_GET_SUCCESS,
+    DAFTARPASIEN_NOREC_GET_ERROR,
+    DAFTARPASIEN_NOREC_GET_RESET,
 } from "./actionType";
 
 export const daftarPasienResetForm = () => ({
@@ -133,4 +137,24 @@ export const listFaskesSuccess = (data) => ({
 export const listFaskesError = (error) => ({
     type: LIST_FASKES_GET_ERROR,
     payload: error,
+});
+
+export const daftarPasienNorecGet = (norec) => ({
+    type: DAFTARPASIEN_NOREC_GET,
+    payload: { norec },
+});
+
+export const daftarPasienNorecGetSuccess = (data) => ({
+    type: DAFTARPASIEN_NOREC_GET_SUCCESS,
+    payload: data,
+});
+
+export const daftarPasienNorecGetError = (error) => ({
+    type: DAFTARPASIEN_NOREC_GET_ERROR,
+    payload: error,
+});
+
+export const daftarPasienNorecGetReset = () => ({
+    type: DAFTARPASIEN_NOREC_GET_RESET,
+    payload: {},
 });

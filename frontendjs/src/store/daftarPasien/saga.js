@@ -9,7 +9,8 @@ import {
     DAFTARPASIEN_PULANG_GET_ERROR,
     DAFTARPASIEN_RI_PULANG_SAVE_ERROR,
     DAFTARPASIEN_RI_PULANG_SAVE,
-    LIST_FASKES_GET
+    LIST_FASKES_GET,
+    DAFTARPASIEN_NOREC_GET,
 } from "./actionType";
 
 import {
@@ -19,6 +20,8 @@ import {
     daftarPasienRIPulangSaveSuccess,
     listFaskesSuccess,
     listFaskesError,
+    daftarPasienNorecGetSuccess,
+    daftarPasienNorecGetError,
 } from "./action";
 import { toast } from "react-toastify";
 
@@ -82,6 +85,16 @@ function* saveDaftarPasienPulang({ payload: {data, callback} }) {
     }
 }
 
+function* daftarPasienNorecGet({ payload: { norec } }) {
+    try {
+        const response = yield call(serviceRegistrasi.getDaftarPasienNorec, norec);
+        yield put(daftarPasienNorecGetSuccess(response.data));
+    } catch (error) {
+        console.error(error)
+        yield put(daftarPasienNorecGetError(error));
+    }
+}
+
 
 function* onGetListFaskes({ payload: { qfaskes, faskesType } }) {
     try {
@@ -121,6 +134,10 @@ export function* watchGetListFaskes() {
     yield takeEvery(LIST_FASKES_GET, onGetListFaskes);
 }
 
+export function* watchDaftarPasienNorecGet(){
+    yield takeEvery(DAFTARPASIEN_NOREC_GET, daftarPasienNorecGet);
+}
+
 
 function* daftarPasienSaga() {
     yield all([
@@ -131,6 +148,7 @@ function* daftarPasienSaga() {
         fork(watchGetDaftarPasienPulang),
         fork(watchSaveDaftarPasienPulang),
         fork(watchGetListFaskes),
+        fork(watchDaftarPasienNorecGet),
     ]);
 }
 
