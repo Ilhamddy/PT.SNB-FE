@@ -12,17 +12,18 @@ import * as Yup from "yup";
 import Flatpickr from "react-flatpickr";
 import {
     listOrderByNorecGet,listKamarRadiologiGet,updateTglRencanaRadiologi,saveVerifikasiRadiologi,
-    deleteDetailOrderPelayanan,radiologiResetForm, daftarPasienRIPulangSave, listFaskesGet, daftarPasienNorecGet
+    deleteDetailOrderPelayanan,radiologiResetForm, daftarPasienRIPulangSave, listFaskesGet, daftarPasienNorecGet, antreanPasienNorecGet
 } from "../../store/actions";
 import { comboPulangGet } from "../../store/master/action";
 
 
 const StatusPulangRIModal = ({ norecdp, norecAP, toggle }) => {
     const dispatch = useDispatch();
-    const { comboPulang, dataFaskes, dataReg } = useSelector((state) => ({
+    const { comboPulang, dataFaskes, dataReg, antreanSebelum } = useSelector((state) => ({
         comboPulang: state.Master.comboPulangGet.data,
         dataFaskes: state.DaftarPasien.listFaskesGet.data,
-        dataReg: state.DaftarPasien.daftarPasienNoRecGet.data
+        dataReg: state.DaftarPasien.daftarPasienNoRecGet.data,
+        antreanSebelum: state.DaftarPasien.antreanNoRecGet.data,
     }));
     const isBPJS = dataReg.objectpenjaminfk === 2 
         || dataReg.objectpenjaminfk2 === 2 
@@ -57,6 +58,7 @@ const StatusPulangRIModal = ({ norecdp, norecAP, toggle }) => {
             keteranganpindah: "",
             kelas: "",
             nobed: "",
+            nobedsebelum: "",
         },
         validationSchema: Yup.object({
             carakeluar: Yup.string().required("Cara Keluar Harus diisi"),
@@ -127,6 +129,10 @@ const StatusPulangRIModal = ({ norecdp, norecAP, toggle }) => {
         }
     })
 
+    useEffect(() => {
+        validation.setFieldValue("nobedsebelum", antreanSebelum.nobed || "")
+    }, [validation.setFieldValue, antreanSebelum])
+
     let arKamar = comboPulang?.kamar?.filter(function (item) {
         if (item.objectkelasfk === validation.values.kelas 
             && item.objectunitfk === validation.values.unittujuan)
@@ -176,6 +182,11 @@ const StatusPulangRIModal = ({ norecdp, norecAP, toggle }) => {
             dispatch(listFaskesGet(characterEntered, validation.values.faskestujuan));
         }
     };
+
+    useEffect(() => {
+        norecdp && dispatch(daftarPasienNorecGet(norecdp));
+        norecAP && dispatch(antreanPasienNorecGet(norecAP));
+    }, [dispatch, norecAP, norecdp])
 
     const IsiRujukKiri = (
         <>
@@ -420,9 +431,7 @@ const StatusPulangRIModal = ({ norecdp, norecAP, toggle }) => {
         </>
     )
 
-    useEffect(() => {
-        norecdp && dispatch(daftarPasienNorecGet(norecdp))
-    }, [dispatch, norecdp])
+
     
     const IsiPindahKiri = (
         <>

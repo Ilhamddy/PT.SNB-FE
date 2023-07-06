@@ -505,6 +505,32 @@ async function saveRegistrasiPasien(req, res) {
     }
 }
 
+const getNoAntrean = async (req, res) => {
+    try {
+        let query = `
+        select nobed,objectkamarfk from t_antreanpemeriksaan
+            where 
+            t_antreanpemeriksaan.norec='${req.params.norec}'`
+        const antrean = await pool.query(query, [])
+        res.status(200).send({
+            data: antrean.rows?.[0] || [],
+            status: 'success',
+            success: true,
+            msg: 'get berhasil',
+            code: 200
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(201).send({
+            status: error,
+            success: false,
+            msg: 'get gagal',
+            code: 201
+        });
+    }
+}
+
+
 const updateRegistrasiPPulang = async (req, res) => {
     let transaction = null;
     try{
@@ -536,6 +562,8 @@ const updateRegistrasiPPulang = async (req, res) => {
         const isRujuk = caraKeluar === 5
         const isPindah = caraKeluar === 3
         const objectBody = req.body
+        console.log("nobed", objectBody.nobed)
+        console.log("nobedsebelum", objectBody.nobedsebelum)
         const objectEdit = {
             objectcarapulangrifk: objectBody.carakeluar,
             objectkondisipulangrifk: objectBody.kondisipulang,
@@ -628,16 +656,22 @@ const updateRegistrasiPPulang = async (req, res) => {
             updatedBodyAp = objectEditAP
             await transaction.commit();
         }else if(isPindah){
-            const updateRegistrasi = await db.t_daftarpasien.update(objectEditPindahDp, {
+            await db.t_daftarpasien.update(objectEditPindahDp, {
                 where: {
                     norec: norecDP
                 }
             }, { transaction });
-            const updateAntrean = await db.t_antreanpemeriksaan.update(objectEditPindahAp, {
+            await db.t_antreanpemeriksaan.update(objectEditPindahAp, {
                 where: {
                     norec: norecAP
                 }
             }, { transaction });
+            await db.m_tempattidur.update({
+                objectstatusbedfk: 2
+            }, { where: { id: objectBody.nobedsebelum } }, { transaction });
+            await db.m_tempattidur.update({
+                objectstatusbedfk: 1
+            }, { where: { id: objectBody.nobed } }, { transaction });
             updatedBody = objectEditPindahDp
             updatedBodyAp = objectEditPindahAp
             await transaction.commit();
@@ -657,6 +691,7 @@ const updateRegistrasiPPulang = async (req, res) => {
             msg: 'Update Pulang Berhasil',
             code: 200
         });
+        
     }catch(e){
         console.error("Error update registrasiPPulang")
         console.error(e);
@@ -1283,5 +1318,6 @@ export default {
     getWidgetDaftarPasienRI,
     getDaftarPasienRawatInap,
     getDaftarPasienFilter,
-    updateRegistrasiPPulang
+    updateRegistrasiPPulang,
+    getNoAntrean
 };

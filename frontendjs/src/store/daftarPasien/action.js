@@ -25,6 +25,10 @@ import {
     DAFTARPASIEN_NOREC_GET_SUCCESS,
     DAFTARPASIEN_NOREC_GET_ERROR,
     DAFTARPASIEN_NOREC_GET_RESET,
+    ANTREAN_NOREC_GET,
+    ANTREAN_NOREC_GET_SUCCESS,
+    ANTREAN_NOREC_GET_ERROR,
+    ANTREAN_NOREC_GET_RESET,
 } from "./actionType";
 
 export const daftarPasienResetForm = () => ({
@@ -156,5 +160,25 @@ export const daftarPasienNorecGetError = (error) => ({
 
 export const daftarPasienNorecGetReset = () => ({
     type: DAFTARPASIEN_NOREC_GET_RESET,
+    payload: {},
+});
+
+export const antreanPasienNorecGet = (norec) => ({
+    type: ANTREAN_NOREC_GET,
+    payload: { norec },
+});
+
+export const antreanPasienNorecGetSuccess = (data) => ({
+    type: ANTREAN_NOREC_GET_SUCCESS,
+    payload: data,
+});
+
+export const antreanPasienNorecGetError = (error) => ({
+    type: ANTREAN_NOREC_GET_ERROR,  
+    payload: error,
+});
+
+export const antreanPasienNorecGetReset = () => ({
+    type: ANTREAN_NOREC_GET_RESET,
     payload: {},
 });
