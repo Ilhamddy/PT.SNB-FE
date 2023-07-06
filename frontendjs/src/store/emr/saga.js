@@ -10,7 +10,8 @@ import {
     KONSUL_SAVE, UPDATE_TASKID, UPDATE_STATUSPULANGRJ,
     COMBO_HISTORY_UNIT_GET, COMBO_TINDAKAN_GET,
     COMBO_JENIS_PELAKSANA_GET,COMBO_NAMA_PELAKSANA_GET,
-    TINDAKAN_SAVE, LIST_TAGIHAN, LIST_TAGIHAN_PRINT
+    TINDAKAN_SAVE, LIST_TAGIHAN, LIST_TAGIHAN_PRINT,
+    COMBO_TINDAKAN_RADIOLOGI_GET
 } from "./actionType";
 
 import {
@@ -33,7 +34,8 @@ import {
     comboJenisPelaksanaGetSuccess,comboJenisPelaksanaGetError,
     comboNamaPelaksanaGetSuccess,comboNamaPelaksanaGetError,
     tindakanSaveSuccess,tindakanSaveError,
-    listTagihanGetSuccess,listTagihanGetError, listTagihanPrintGet, listTagihanPrintGetSuccess, listTagihanPrintGetError
+    listTagihanGetSuccess,listTagihanGetError, listTagihanPrintGet, listTagihanPrintGetSuccess, listTagihanPrintGetError,
+    comboTindakanRadiologiGetGetSuccess, comboTindakanRadiologiGetGetError
 } from "./action";
 
 import { toast } from 'react-toastify';
@@ -425,6 +427,21 @@ export function* watchonGetComboTindakan() {
     yield takeEvery(COMBO_TINDAKAN_GET, onGetComboTindakan);
 }
 
+function* onGetComboTindakanRadiologi({ payload: { param, data } }) {
+    try {
+        let response = null;
+        response = yield call(serviceEmr.getComboTindakan, param);
+
+        yield put(comboTindakanRadiologiGetGetSuccess(response.data));
+    } catch (error) {
+        yield put(comboTindakanRadiologiGetGetError(error));
+    }
+}
+
+export function* watchonGetComboTindakanRadiologi() {
+    yield takeEvery(COMBO_TINDAKAN_RADIOLOGI_GET, onGetComboTindakanRadiologi);
+}
+
 function* onGetComboJenisPelaksana({ payload: { param, data } }) {
     try {
         let response = null;
@@ -538,6 +555,7 @@ function* emrSaga() {
         fork(watchonTindakanSave),
         fork(watchonListTagihan),
         fork(watchonListTagihanPrint),
+        fork(watchonGetComboTindakanRadiologi)
     ]);
 }
 

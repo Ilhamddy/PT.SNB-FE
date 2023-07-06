@@ -8,7 +8,8 @@ import {
     WIDGET_DAFTAR_ORDER_LABORATORIUM_GET,
     LIST_DAFTAR_ORDER_LABORATORIUM_GET,
     LIST_ORDER_LABORATORIUM_BY_NOREC_GET,
-    UPDATE_TGLRENCANA_LABORATORIUM
+    UPDATE_TGLRENCANA_LABORATORIUM,
+    SAVE_VERIFIKASI_LABORATORIUM
 } from "./actionType";
 
 import {
@@ -18,7 +19,8 @@ import {
     widgetdaftarOrderLaboratoriumGetSuccess, widgetdaftarOrderLaboratoriumGetError,
     listdaftarOrderLaboratoriumGetSuccess, listdaftarOrderLaboratoriumGetError,
     listOrderLaboratoriumByNorecGetSuccess, listOrderLaboratoriumByNorecGetError,
-    updateTglRencanaLaboratoriumSuccess, updateTglRencanaLaboratoriumError
+    updateTglRencanaLaboratoriumSuccess, updateTglRencanaLaboratoriumError,
+    saveVerifikasiLaboratoriumSuccess, saveVerifikasiLaboratoriumError
 } from "./action";
 
 import { toast } from 'react-toastify';
@@ -148,6 +150,31 @@ export function* watchonUpdateTglRencanaLaboratorium() {
     yield takeEvery(UPDATE_TGLRENCANA_LABORATORIUM, onUpdateTglRencanaLaboratorium);
 }
 
+function* onSaveVerifikasiLaboratorium({ payload: { data, history } }) {
+    try {
+        let response = null;
+        if (data.norec !== '') {
+            response = yield call(serviceLaboratorium.saveVerifikasiLaboratoriumUser, data);
+        } else {
+            response = yield call(serviceLaboratorium.saveVerifikasiLaboratoriumUser, data);
+        }
+
+        yield put(saveVerifikasiLaboratoriumSuccess(response.data));
+        if (response.code === 200) {
+            toast.success(response.msg, { autoClose: 3000 });
+        } else {
+            toast.error(response.msg, { autoClose: 3000 });
+        }
+    } catch (error) {
+        yield put(saveVerifikasiLaboratoriumError(error));
+        toast.error(error, { autoClose: 3000 });
+    }
+}
+
+export function* watchonSaveVerifikasiLaboratorium() {
+    yield takeEvery(SAVE_VERIFIKASI_LABORATORIUM, onSaveVerifikasiLaboratorium);
+}
+
 function* laboratoriumSaga() {
     yield all([
         fork(watchonwidgetDetailJenisProdukGet),
@@ -156,7 +183,8 @@ function* laboratoriumSaga() {
         fork(watchonwidgetdaftarOrderLaboratorium),
         fork(watchonlistDaftarOrderLaboratorium),
         fork(watchonListOrderLaboratoriumByNorec),
-        fork(watchonUpdateTglRencanaLaboratorium)
+        fork(watchonUpdateTglRencanaLaboratorium),
+        fork(watchonSaveVerifikasiLaboratorium)
     ]);
 }
 

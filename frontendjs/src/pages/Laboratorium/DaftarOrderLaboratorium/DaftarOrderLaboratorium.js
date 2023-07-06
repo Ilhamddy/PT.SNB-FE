@@ -23,9 +23,11 @@ import userDummy from "../../../assets/images/users/user-dummy-img.jpg";
 // import DetailOrderModal from '../DetailOrderModal/DetailOrderModal';
 // import DeleteModalCustom from '../../../Components/Common/DeleteModalCustom';
 import {
-    widgetdaftarOrderLaboratoriumGet, laboratoriumResetForm, listdaftarOrderLaboratoriumGet
+    widgetdaftarOrderLaboratoriumGet, laboratoriumResetForm, listdaftarOrderLaboratoriumGet,
+    deleteOrderPelayanan
 } from '../../../store/actions';
 import DetailOrderModal from '../../Laboratorium/DetailOrderModal/DetailOrderModal';
+import DeleteModalCustom from '../../../Components/Common/DeleteModalCustom';
 
 const DaftarOrderLaboratorium = () => {
     document.title = "Daftar Order Laboratorium"
@@ -191,6 +193,15 @@ const DaftarOrderLaboratorium = () => {
         // }
     };
     const [deleteModal, setDeleteModal] = useState(false);
+    const handleDeleteOrder = () => {
+        if (tempNorecOrder) {
+            let tempValue = {
+                norec: tempNorecOrder
+            }
+            dispatch(deleteOrderPelayanan(tempValue));
+            setDeleteModal(false);
+        }
+    };
     return (
         <React.Fragment>
             <ToastContainer closeButton={false} />
@@ -200,6 +211,13 @@ const DaftarOrderLaboratorium = () => {
             onCloseClick={() => setdetailModal(false)}
             tempNorec={tempNorecOrder}
             onTolakClick={handleTolak}/>
+            <DeleteModalCustom
+                show={deleteModal}
+                onDeleteClick={handleDeleteOrder}
+                onCloseClick={() => setDeleteModal(false)}
+                msgHDelete='Apa Kamu Yakin ?'
+                msgBDelete='Yakin ingin menolak Order Ini?'
+            />
             <UiContent />
             <div className="page-content">
                 <Container fluid>

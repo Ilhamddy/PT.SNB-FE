@@ -21,6 +21,9 @@ import {
     UPDATE_TGLRENCANA_LABORATORIUM,
     UPDATE_TGLRENCANA_LABORATORIUM_SUCCESS,
     UPDATE_TGLRENCANA_LABORATORIUM_ERROR,
+    SAVE_VERIFIKASI_LABORATORIUM,
+    SAVE_VERIFIKASI_LABORATORIUM_SUCCESS,
+    SAVE_VERIFIKASI_LABORATORIUM_ERROR,
 } from "./actionType";
 
 export const laboratoriumResetForm = () => ({
@@ -130,5 +133,20 @@ export const updateTglRencanaLaboratoriumSuccess = (data, history) => ({
 
 export const updateTglRencanaLaboratoriumError = (error) => ({
     type: UPDATE_TGLRENCANA_LABORATORIUM_ERROR,
+    payload: error,
+});
+
+export const saveVerifikasiLaboratorium = (data, history) => ({
+    type: SAVE_VERIFIKASI_LABORATORIUM,
+    payload: { data, history },
+});
+// common error
+export const saveVerifikasiLaboratoriumSuccess = (data, history) => ({
+    type: SAVE_VERIFIKASI_LABORATORIUM_SUCCESS,
+    payload: { data, history },
+});
+
+export const saveVerifikasiLaboratoriumError = (error) => ({
+    type: SAVE_VERIFIKASI_LABORATORIUM_ERROR,
     payload: error,
 });

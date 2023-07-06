@@ -52,4 +52,10 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.updateTglRencanaLaboratorium
     );
+
+    app.put(
+        "/api/transaksi/laboratorium/save-verifikasi-laboratorium",
+        [authJwt.verifyToken],
+        controller.saveUserVerifikasi
+    );
 }

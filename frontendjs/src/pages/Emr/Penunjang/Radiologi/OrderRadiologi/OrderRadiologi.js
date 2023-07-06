@@ -19,7 +19,7 @@ import CustomSelect from '../../../../Select/Select';
 import BreadCrumb from '../../../../../Components/Common/BreadCrumb';
 import DataTable from 'react-data-table-component';
 import {
-    comboHistoryUnitGet, comboTindakanGet, radiologiResetForm,
+    comboHistoryUnitGet, comboTindakanRadiologiGet, radiologiResetForm,
     saveOrderPelayananRadiologi,daftarOrderRadiologiGet
 } from "../../../../../store/actions";
 
@@ -36,9 +36,9 @@ const OrderRadiologi = () => {
             dataCombo: state.Emr.comboHistoryUnitGet.data,
             loadingCombo: state.Emr.comboHistoryUnitGet.loading,
             successCombo: state.Emr.comboHistoryUnitGet.success,
-            dataTindakan: state.Emr.comboTindakanGet.data,
-            loadingTindakan: state.Emr.comboTindakanGet.loading,
-            successTindakan: state.Emr.comboTindakanGet.success,
+            dataTindakan: state.Emr.comboTindakanRadiologiGet.data,
+            loadingTindakan: state.Emr.comboTindakanRadiologiGet.loading,
+            successTindakan: state.Emr.comboTindakanRadiologiGet.success,
             dataOrder: state.Radiologi.daftarOrderRadiologiGet.data,
             loadingOrder: state.Radiologi.daftarOrderRadiologiGet.loading,
             successOrder: state.Radiologi.daftarOrderRadiologiGet.success,
@@ -46,7 +46,7 @@ const OrderRadiologi = () => {
     useEffect(() => {
         if (norecdp) {
             dispatch(comboHistoryUnitGet(norecdp));
-            dispatch(comboTindakanGet('8&objectunitfk=13&namaproduk='));
+            dispatch(comboTindakanRadiologiGet('8&objectunitfk=13&namaproduk='));
             dispatch(daftarOrderRadiologiGet(norecdp))
         }
     }, [norecdp, dispatch])
@@ -112,7 +112,7 @@ const OrderRadiologi = () => {
     const handleTindakan = characterEntered => {
         if (characterEntered.length > 3) {
             // useEffect(() => {
-            dispatch(comboTindakanGet('8&objectunitfk=13&namaproduk=' + characterEntered));
+            dispatch(comboTindakanRadiologiGet('8&objectunitfk=13&namaproduk=' + characterEntered));
             // }, [dispatch]);
         }
     };

@@ -12,7 +12,7 @@ import * as Yup from "yup";
 import Flatpickr from "react-flatpickr";
 import DataTable from 'react-data-table-component';
 import {
-    listOrderLaboratoriumByNorecGet,updateTglRencanaLaboratorium,saveVerifikasiRadiologi,
+    listOrderLaboratoriumByNorecGet,updateTglRencanaLaboratorium,saveVerifikasiLaboratorium,
     deleteDetailOrderPelayanan,laboratoriumResetForm
 } from "../../../store/actions";
 
@@ -29,9 +29,9 @@ const DetailOrderModal = ({ show, onSimpanClick, onCloseClick,onTolakClick, temp
         dataOrder: state.Laboratorium.listOrderLaboratoriumByNorecGet.data,
         loadingOrder: state.Laboratorium.listOrderLaboratoriumByNorecGet.loading,
         successOrder: state.Laboratorium.listOrderLaboratoriumByNorecGet.success,
-        // updateVerifikasi: state.Radiologi.saveVerifikasiRadiologi.newData,
-        // successVerifikasi: state.Radiologi.saveVerifikasiRadiologi.success,
-        // loadingVerifikasi: state.Radiologi.saveVerifikasiRadiologi.loading,
+        updateVerifikasi: state.Laboratorium.saveVerifikasiLaboratorium.newData,
+        successVerifikasi: state.Laboratorium.saveVerifikasiLaboratorium.success,
+        loadingVerifikasi: state.Laboratorium.saveVerifikasiLaboratorium.loading,
         // deleteDetail: state.Radiologi.deleteDetailOrderPelayanan.newData,
         // successdeleteDetail: state.Radiologi.deleteDetailOrderPelayanan.success,
         // loadingdeleteDetail: state.Radiologi.deleteDetailOrderPelayanan.loading,
@@ -58,10 +58,10 @@ const DetailOrderModal = ({ show, onSimpanClick, onCloseClick,onTolakClick, temp
         },
         validationSchema: Yup.object({
             namatindakan: Yup.string().required("Nama Tindakan wajib diisi"),
+            // nokamar: Yup.string().required("No Kamar wajib diisi"),
 
         }),
         onSubmit: (values, { resetForm }) => {
-            console.log(validation.errors)
             dispatch(updateTglRencanaLaboratorium(values,''));
             resetForm({ values: '' })
         }
@@ -125,7 +125,7 @@ const DetailOrderModal = ({ show, onSimpanClick, onCloseClick,onTolakClick, temp
             cell: (data) => {
                 return (
                     // <Link to={`/registrasi/pasien/${data.id}`}>Details</Link>
-                    <button className="btn btn-sm btn-soft-info" onClick={() => handleClick(data)}>{data.namaproduk}</button>
+                    <button className="btn btn-sm btn-soft-info" type="button" onClick={() => handleClick(data)}>{data.namaproduk}</button>
                 );
             },
         },
@@ -183,7 +183,7 @@ const DetailOrderModal = ({ show, onSimpanClick, onCloseClick,onTolakClick, temp
             norec: tempNorec,
             tglinput:validation.values.tglinput
         }
-        // dispatch(saveVerifikasiRadiologi(tempValue));
+        dispatch(saveVerifikasiLaboratorium(tempValue));
     }
     const onClickDelete = (e) => {
         // setProduct(product);
@@ -191,7 +191,7 @@ const DetailOrderModal = ({ show, onSimpanClick, onCloseClick,onTolakClick, temp
         let tempValue = {
             norec: e.norec
         }
-        // dispatch(deleteDetailOrderPelayanan(tempValue))
+        dispatch(deleteDetailOrderPelayanan(tempValue))
     };
     return (
         <Modal isOpen={show} toggle={onCloseClick} centered={true} size="xl">

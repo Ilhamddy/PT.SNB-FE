@@ -31,7 +31,7 @@ export default (sequelize, Sequelize) => {
         tglinput:{
             type: 'TIMESTAMP'
         },
-        objectstrukpelayananfk:{
+        objectnotapelayananpasienfk:{
             type:Sequelize.CHAR(32)
         },
         objectprodukfk:{

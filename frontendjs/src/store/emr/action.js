@@ -57,6 +57,9 @@ import {
     COMBO_TINDAKAN_GET,
     COMBO_TINDAKAN_GET_SUCCESS,
     COMBO_TINDAKAN_GET_ERROR,
+    COMBO_TINDAKAN_RADIOLOGI_GET,
+    COMBO_TINDAKAN_RADIOLOGI_GET_SUCCESS,
+    COMBO_TINDAKAN_RADIOLOGI_GET_ERROR,
     COMBO_JENIS_PELAKSANA_GET,
     COMBO_JENIS_PELAKSANA_GET_SUCCESS,
     COMBO_JENIS_PELAKSANA_GET_ERROR,
@@ -376,6 +379,21 @@ export const comboTindakanGetGetSuccess = (data) => ({
 
 export const comboTindakanGetGetError = (error) => ({
     type: COMBO_TINDAKAN_GET_ERROR,
+    payload: error,
+});
+
+export const comboTindakanRadiologiGet = (param, data) => ({
+    type: COMBO_TINDAKAN_RADIOLOGI_GET,
+    payload: { param, data },
+});
+
+export const comboTindakanRadiologiGetGetSuccess = (data) => ({
+    type: COMBO_TINDAKAN_RADIOLOGI_GET_SUCCESS,
+    payload: data,
+});
+
+export const comboTindakanRadiologiGetGetError = (error) => ({
+    type: COMBO_TINDAKAN_RADIOLOGI_GET_ERROR,
     payload: error,
 });
 

@@ -57,6 +57,9 @@ import {
     COMBO_TINDAKAN_GET,
     COMBO_TINDAKAN_GET_SUCCESS,
     COMBO_TINDAKAN_GET_ERROR,
+    COMBO_TINDAKAN_RADIOLOGI_GET,
+    COMBO_TINDAKAN_RADIOLOGI_GET_SUCCESS,
+    COMBO_TINDAKAN_RADIOLOGI_GET_ERROR,
     COMBO_JENIS_PELAKSANA_GET,
     COMBO_JENIS_PELAKSANA_GET_SUCCESS,
     COMBO_JENIS_PELAKSANA_GET_ERROR,
@@ -179,6 +182,11 @@ const INIT_STATE = {
         loading: false,
         error: null,
     },
+    comboTindakanRadiologiGet: {
+        data: [],
+        loading: false,
+        error: null,
+    },
     comboJenisPelaksanaGet: {
         data: [],
         loading: false,
@@ -280,6 +288,9 @@ const Emr = (state = INIT_STATE, action) => {
                 },
                 listTagihanGet:{
                     ...INIT_STATE.listTagihanGet
+                },
+                comboTindakanRadiologiGet:{
+                    ...INIT_STATE.comboTindakanRadiologiGet
                 }
             }
         }
@@ -914,6 +925,39 @@ const Emr = (state = INIT_STATE, action) => {
                 ...state,
                 comboTindakanGet: {
                     ...state.comboTindakanGet,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case COMBO_TINDAKAN_RADIOLOGI_GET: {
+            return {
+                ...state,
+                comboTindakanRadiologiGet: {
+                    ...state.comboTindakanRadiologiGet,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case COMBO_TINDAKAN_RADIOLOGI_GET_SUCCESS: {
+            return {
+                ...state,
+                comboTindakanRadiologiGet: {
+                    ...state.comboTindakanRadiologiGet,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case COMBO_TINDAKAN_RADIOLOGI_GET_ERROR: {
+            return {
+                ...state,
+                comboTindakanRadiologiGet: {
+                    ...state.comboTindakanRadiologiGet,
                     loading: false,
                     error: action.error,
                 }
