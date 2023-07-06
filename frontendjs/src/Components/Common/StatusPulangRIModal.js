@@ -154,7 +154,6 @@ const StatusPulangRIModal = ({ norecdp, norecAP, toggle }) => {
     const handleBeginOnChangeTglInput = (name, newBeginValue) => {
         var dateString = new Date(newBeginValue.getTime() - (newBeginValue.getTimezoneOffset() * 60000))
             .toISOString()
-            .split("T")[0];
         validation.setFieldValue(name, dateString)
     }
     const [count, setCount] = useState(1);
@@ -400,7 +399,7 @@ const StatusPulangRIModal = ({ norecdp, norecAP, toggle }) => {
                         id="tanggalpulang"
                         className="form-control border-0 fs-5 dash-filter-picker shadow"
                         options={{
-                            //  enableTime: true,
+                            enableTime: true,
                             // mode: "range",
                             dateFormat: "Y-m-d H:i",
                             defaultDate: "today"
