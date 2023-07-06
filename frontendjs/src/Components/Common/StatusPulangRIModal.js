@@ -15,6 +15,7 @@ import {
     deleteDetailOrderPelayanan,radiologiResetForm, daftarPasienRIPulangSave, listFaskesGet, daftarPasienNorecGet, antreanPasienNorecGet
 } from "../../store/actions";
 import { comboPulangGet } from "../../store/master/action";
+import { useNavigate } from "react-router-dom";
 
 
 const StatusPulangRIModal = ({ norecdp, norecAP, toggle }) => {
@@ -32,6 +33,7 @@ const StatusPulangRIModal = ({ norecdp, norecAP, toggle }) => {
         dispatch(comboPulangGet());
     }, [dispatch]);
     const current = new Date();
+    const navigate = useNavigate()
     const [dateStart, setdateStart] = useState(`${current.getFullYear()}-${current.getMonth() + 1}-${current.getDate()} ${current.getHours()}:${current.getMinutes()}`);
     const validation = useFormik({
         enableReinitialize: true,
@@ -124,13 +126,17 @@ const StatusPulangRIModal = ({ norecdp, norecAP, toggle }) => {
             }),
         }),
         onSubmit: (values, { resetForm }) => {
-            dispatch(daftarPasienRIPulangSave(values, () => toggle()));
+            dispatch(daftarPasienRIPulangSave(values, () => {
+                toggle();
+                navigate("/listdaftarpasien/daftar-pasien-pulang");
+            }));
             resetForm()
         }
     })
 
     useEffect(() => {
         validation.setFieldValue("nobedsebelum", antreanSebelum.nobed || "")
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [validation.setFieldValue, antreanSebelum])
 
     let arKamar = comboPulang?.kamar?.filter(function (item) {
