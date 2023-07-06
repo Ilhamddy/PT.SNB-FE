@@ -22,6 +22,21 @@ function formatDate(date) {
     return [year, month, day].join('-');
 }
 
+async function generateSignature(req, res) {
+    try {
+        let tempres = 'test'
+        tempres = generateAuthHeaders()
+        res.status(200).send({
+            data: "kosong",
+            status: "success",
+            success: true,
+        });
+
+    } catch (error) {
+        res.status(500).send({ message: JSON.stringify(error) });
+    }
+}
+
 async function generateAuthHeaders () {
 
 
@@ -225,20 +240,40 @@ async function getKecamatan(req, res){
 }
 
 
-async function generateSignature(req, res) {
-    try {
-        let tempres = 'test'
-        tempres = generateAuthHeaders()
-        res.status(200).send({
-            data: "kosong",
-            status: "success",
-            success: true,
-        });
+async function getFaskes(req, res){
+    const [bpjs, keydecrypt] = await createBpjsInstance();
+    let { qfaskes, faskesType } = req.query
 
-    } catch (error) {
-        res.status(500).send({ message: JSON.stringify(error) });
+    qfaskes = decodeURIComponent(qfaskes)
+    let dataFaskes = null
+    console.log(qfaskes, faskesType)
+    try{
+        dataFaskes = await bpjs.get(`/vclaim-rest/referensi/faskes/${qfaskes}/${faskesType}`)
+        
+    }catch(e){
+        console.error("error data kecamatan")
+        console.error(e)
     }
+    const decryptFaskes = JSON.parse(decrypt(dataFaskes?.data?.response, keydecrypt));
+    let faskesLabel = decryptFaskes?.faskes?.map((faskes) => {
+        return {
+            label: faskes.nama,
+            value: faskes.nama,
+            kode: faskes.kode
+        }
+    }) || []
+    const tempres = {
+        faskes: faskesLabel
+    }
+    res.status(200).send({
+        data: tempres,
+        status: "success",
+        success: true,
+    });
 }
+
+
+
 
 
 export default {
@@ -246,5 +281,6 @@ export default {
     getHistoryBPJS,
     getProvinsi,
     getKabupaten,
-    getKecamatan
+    getKecamatan,
+    getFaskes
 };

@@ -15,7 +15,12 @@ import {
     DAFTARPASIEN_PULANG_GET,
     DAFTARPASIEN_PULANG_GET_SUCCESS,
     DAFTARPASIEN_PULANG_GET_ERROR,
-
+    DAFTARPASIEN_RI_PULANG_SAVE,
+    DAFTARPASIEN_RI_PULANG_SAVE_SUCCESS,
+    DAFTARPASIEN_RI_PULANG_SAVE_ERROR,
+    LIST_FASKES_GET,
+    LIST_FASKES_GET_SUCCESS,
+    LIST_FASKES_GET_ERROR,
 } from "./actionType";
 
 const INIT_STATE = {
@@ -43,6 +48,16 @@ const INIT_STATE = {
         data: [],
         loading: false,
         error: null,
+    },
+    daftarPasienRIPulangSave: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    listFaskesGet: {
+        data: [],
+        loading: false,
+        error: null,    
     },
 };
 
@@ -219,6 +234,72 @@ const DaftarPasien = (state = INIT_STATE, action) => {
                 ...state,
                 daftarPasienPulangGet: {
                     ...state.daftarPasienPulangGet,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case DAFTARPASIEN_RI_PULANG_SAVE: {
+            return {
+                ...state,
+                daftarPasienRIPulangSave: {
+                    ...state.daftarPasienRIPulangSave,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case DAFTARPASIEN_RI_PULANG_SAVE_SUCCESS: {
+            return {
+                ...state,
+                daftarPasienRIPulangSave: {
+                    ...state.daftarPasienRIPulangSave,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case DAFTARPASIEN_RI_PULANG_SAVE_ERROR: {
+            return {
+                ...state,
+                daftarPasienRIPulangSave: {
+                    ...state.daftarPasienRIPulangSave,
+                    loading: false,
+                    error: action.payload,
+                }
+            }
+        }
+
+        case LIST_FASKES_GET: {
+            return {
+                ...state,
+                listFaskesGet: {
+                    ...state.listFaskesGet,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case LIST_FASKES_GET_SUCCESS: {
+            return {
+                ...state,
+                listFaskesGet: {
+                    ...state.listFaskesGet,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case LIST_FASKES_GET_ERROR: {
+            return {
+                ...state,
+                listFaskesGet: {
+                    ...state.listFaskesGet,
                     loading: false,
                     error: action.error,
                 }

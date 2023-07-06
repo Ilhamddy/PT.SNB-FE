@@ -28,6 +28,7 @@ const DaftarPasienRI = () => {
     document.title = "Daftar Pasien Rawat Inap";
     const dispatch = useDispatch();
     const history = useNavigate();
+    const [norecPulangRI, setNorecPulangRI] = useState("");
     const { data, datawidget, loading, error, dataCombo,loadingCombo } = useSelector((state) => ({
         data: state.DaftarPasien.daftarPasienRIGet.data,
         datawidget: state.DaftarPasien.widgetdaftarPasienRIGet.data,
@@ -108,7 +109,7 @@ const DaftarPasienRI = () => {
                             </DropdownToggle>
                             <DropdownMenu className="dropdown-menu-end">
                                 <DropdownItem href="#!" onClick={() => handleClickKonsul(data)}><i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>Konsul Antar Unit</DropdownItem>
-
+                                <DropdownItem href="#!" onClick={() => setNorecPulangRI(data.norecdp)}><i className="ri-run-line align-bottom me-2 text-muted"></i>Pulang</DropdownItem>
                             </DropdownMenu>
                         </UncontrolledDropdown>
                         <UncontrolledTooltip placement="top" target="tooltipTop2" > Menu </UncontrolledTooltip>
@@ -202,7 +203,9 @@ const DaftarPasienRI = () => {
                 dataUnit={dataUnit}
                 dataDokter={dataDokter}
             />
-            <StatusPulangRIModal />
+            <StatusPulangRIModal 
+                norecdp={!!norecPulangRI} 
+                toggle={() => setNorecPulangRI("")} />
             <UiContent />
             <div className="page-content">
                 <Container fluid>
