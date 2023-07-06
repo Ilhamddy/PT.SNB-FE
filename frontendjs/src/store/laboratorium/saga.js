@@ -9,7 +9,9 @@ import {
     LIST_DAFTAR_ORDER_LABORATORIUM_GET,
     LIST_ORDER_LABORATORIUM_BY_NOREC_GET,
     UPDATE_TGLRENCANA_LABORATORIUM,
-    SAVE_VERIFIKASI_LABORATORIUM
+    SAVE_VERIFIKASI_LABORATORIUM,
+    DAFTAR_PASIEN_LABORATORIUM,
+    LIST_PELAYANAN_LABORATORIUM_GET
 } from "./actionType";
 
 import {
@@ -20,7 +22,9 @@ import {
     listdaftarOrderLaboratoriumGetSuccess, listdaftarOrderLaboratoriumGetError,
     listOrderLaboratoriumByNorecGetSuccess, listOrderLaboratoriumByNorecGetError,
     updateTglRencanaLaboratoriumSuccess, updateTglRencanaLaboratoriumError,
-    saveVerifikasiLaboratoriumSuccess, saveVerifikasiLaboratoriumError
+    saveVerifikasiLaboratoriumSuccess, saveVerifikasiLaboratoriumError,
+    daftarPasienLaboratoriumSuccess, daftarPasienLaboratoriumError,
+    listPelayananLaboratoriumGetSuccess, listPelayananLaboratoriumGetError
 } from "./action";
 
 import { toast } from 'react-toastify';
@@ -175,6 +179,34 @@ export function* watchonSaveVerifikasiLaboratorium() {
     yield takeEvery(SAVE_VERIFIKASI_LABORATORIUM, onSaveVerifikasiLaboratorium);
 }
 
+function* onDaftarPasienLaboratorium({ payload: { param } }) {
+    try {
+        const response = yield call(serviceLaboratorium.getListDaftarPasienLaboratorium, param);
+        yield put(daftarPasienLaboratoriumSuccess(response.data));
+    } catch (error) {
+        yield put(daftarPasienLaboratoriumError(error));
+    }
+}
+
+
+export function* watchonDaftarPasienLaboratorium() {
+    yield takeEvery(DAFTAR_PASIEN_LABORATORIUM, onDaftarPasienLaboratorium);
+}
+
+function* onListPelayananLaboratoriumGet({ payload: { param } }) {
+    try {
+        const response = yield call(serviceLaboratorium.getListTransaksiPelayananLaboratorium, param);
+        yield put(listPelayananLaboratoriumGetSuccess(response.data));
+    } catch (error) {
+        yield put(listPelayananLaboratoriumGetError(error));
+    }
+}
+
+
+export function* watchonListPelayananLaboratoriumGet() {
+    yield takeEvery(LIST_PELAYANAN_LABORATORIUM_GET, onListPelayananLaboratoriumGet);
+}
+
 function* laboratoriumSaga() {
     yield all([
         fork(watchonwidgetDetailJenisProdukGet),
@@ -184,7 +216,9 @@ function* laboratoriumSaga() {
         fork(watchonlistDaftarOrderLaboratorium),
         fork(watchonListOrderLaboratoriumByNorec),
         fork(watchonUpdateTglRencanaLaboratorium),
-        fork(watchonSaveVerifikasiLaboratorium)
+        fork(watchonSaveVerifikasiLaboratorium),
+        fork(watchonDaftarPasienLaboratorium),
+        fork(watchonListPelayananLaboratoriumGet)
     ]);
 }
 

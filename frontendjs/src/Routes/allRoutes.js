@@ -264,6 +264,8 @@ import DaftarPasienPulang from "../pages/Emr/DaftarPasienPulang/DaftarPasienPula
 
 // Laboratorium
 import DaftarOrderLaboratorium from "../pages/Laboratorium/DaftarOrderLaboratorium/DaftarOrderLaboratorium";
+import DaftarPasienLaboratorium from "../pages/Laboratorium/DaftarPasienLaboratorium/DaftarPasienLaboratorium";
+import TransaksiPelayanLaboratorium from "../pages/Laboratorium/TransaksiPelayanLaboratorium/TransaksiPelayanLaboratorium";
 
 
 
@@ -503,7 +505,9 @@ const authProtectedRoutes = [
   {path:"/transaksi-pelayanan-radiologi/:norecdp/:norecap", component:<TransaksiPelayanRadiologi/>},
 
   // laboratorium
-  {path:"/laboratorium/daftarorderlaboratorium", component:<DaftarOrderLaboratorium/>}
+  {path:"/laboratorium/daftarorderlaboratorium", component:<DaftarOrderLaboratorium/>},
+  {path:"/laboratorium/daftarpasienlaboratorium", component:<DaftarPasienLaboratorium/>},
+  {path:"/transaksi-pelayanan-laboratorium/:norecdp/:norecap", component:<TransaksiPelayanLaboratorium/>},
 ];
 
 const publicRoutes = [

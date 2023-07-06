@@ -58,4 +58,16 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.saveUserVerifikasi
     );
+
+    app.get(
+        "/api/transaksi/laboratorium/list-daftar-pasien-laboratorium",
+        [authJwt.verifyToken],
+        controller.getDaftarPasienLaboratorium
+    );
+
+    app.get(
+        "/api/transaksi/laboratorium/list-transaksi-pelayanan-laboratorium",
+        [authJwt.verifyToken],
+        controller.getTransaksiPelayananLaboratoriumByNorecDp
+    );
 }

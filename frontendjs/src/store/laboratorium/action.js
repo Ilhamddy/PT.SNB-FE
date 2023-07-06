@@ -24,6 +24,12 @@ import {
     SAVE_VERIFIKASI_LABORATORIUM,
     SAVE_VERIFIKASI_LABORATORIUM_SUCCESS,
     SAVE_VERIFIKASI_LABORATORIUM_ERROR,
+    DAFTAR_PASIEN_LABORATORIUM,
+    DAFTAR_PASIEN_LABORATORIUM_SUCCESS,
+    DAFTAR_PASIEN_LABORATORIUM_ERROR,
+    LIST_PELAYANAN_LABORATORIUM_GET,
+    LIST_PELAYANAN_LABORATORIUM_GET_SUCCESS,
+    LIST_PELAYANAN_LABORATORIUM_GET_ERROR
 } from "./actionType";
 
 export const laboratoriumResetForm = () => ({
@@ -148,5 +154,35 @@ export const saveVerifikasiLaboratoriumSuccess = (data, history) => ({
 
 export const saveVerifikasiLaboratoriumError = (error) => ({
     type: SAVE_VERIFIKASI_LABORATORIUM_ERROR,
+    payload: error,
+});
+
+export const daftarPasienLaboratorium = (param) => ({
+    type: DAFTAR_PASIEN_LABORATORIUM,
+    payload: { param },
+});
+
+export const daftarPasienLaboratoriumSuccess = (data) => ({
+    type: DAFTAR_PASIEN_LABORATORIUM_SUCCESS,
+    payload: data,
+});
+
+export const daftarPasienLaboratoriumError = (error) => ({
+    type: DAFTAR_PASIEN_LABORATORIUM_ERROR,
+    payload: error,
+});
+
+export const listPelayananLaboratoriumGet = (param) => ({
+    type: LIST_PELAYANAN_LABORATORIUM_GET,
+    payload: { param },
+});
+
+export const listPelayananLaboratoriumGetSuccess = (data) => ({
+    type: LIST_PELAYANAN_LABORATORIUM_GET_SUCCESS,
+    payload: data,
+});
+
+export const listPelayananLaboratoriumGetError = (error) => ({
+    type: LIST_PELAYANAN_LABORATORIUM_GET_ERROR,
     payload: error,
 });

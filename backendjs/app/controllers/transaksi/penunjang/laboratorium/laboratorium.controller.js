@@ -551,6 +551,110 @@ async function saveUserVerifikasi(req, res) {
 
 }
 
+async function getDaftarPasienLaboratorium(req, res) {
+
+    try {
+        const noregistrasi = req.query.noregistrasi;
+        let tglregistrasi = ""
+        if (req.query.start !== undefined) {
+
+            tglregistrasi = ` and ta.tglmasuk between '${req.query.start}'
+         and '${req.query.end} 23:59' `;
+        } else {
+            // console.log('massuukk')
+            let today = new Date();
+            let todayMonth = '' + (today.getMonth() + 1)
+            if (todayMonth.length < 2)
+                todayMonth = '0' + todayMonth;
+            let todaystart = formatDate(today)
+            let todayend = formatDate(today) + ' 23:59'
+            tglregistrasi = ` and ta.tglmasuk between '${todaystart}'
+        and '${todayend}' `;
+        }
+        const resultlist = await queryPromise2(`select mu2.namaunit as unitasal,ta.tglmasuk,td.norec as norecdp,ta.norec as norecta,mj.jenispenjamin,ta.taskid,mi.namainstalasi,mp.nocm,td.noregistrasi,mp.namapasien,
+        to_char(td.tglregistrasi,'yyyy-MM-dd') as tglregistrasi,mu.namaunit,
+        mp2.reportdisplay || '-' ||ta.noantrian as noantrian,mp2.namalengkap as namadokter,
+        trm.objectstatuskendalirmfk as objectstatuskendalirmfkap, 
+        trm.norec as norectrm,to_char(td.tglpulang,'yyyy-MM-dd') as tglpulang from t_daftarpasien td 
+        join m_pasien mp on mp.id=td.nocmfk 
+        join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk =td.norec
+        join m_unit mu on mu.id=ta.objectunitfk 
+        left join m_pegawai mp2 on mp2.id=ta.objectdokterpemeriksafk 
+        join m_instalasi mi on mi.id=mu.objectinstalasifk
+        join m_jenispenjamin mj on mj.id=td.objectjenispenjaminfk
+        left join t_rm_lokasidokumen trm on trm.objectantreanpemeriksaanfk=ta.norec
+        left join m_unit mu2 on mu2.id=ta.objectunitasalfk 
+        where td.noregistrasi ilike '%${noregistrasi}%'
+        ${tglregistrasi} and mu.objectinstalasifk =4
+        `);
+
+
+        let tempres = resultlist.rows
+
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+        });
+
+    } catch (error) {
+        res.status(500).send({ message: error });
+    }
+
+}
+
+async function getTransaksiPelayananLaboratoriumByNorecDp(req, res) {
+
+    try {
+        
+        const resultlist = await queryPromise2(`select row_number() OVER (ORDER BY tp.norec) AS no,
+        mu.namaunit,
+        to_char(tp.tglinput,'yyyy-MM-dd HH:mm') as tglinput,
+        mp.namaproduk,
+        tp.norec,
+        tp.harga,
+        tp.qty,
+        tp.discount,
+        tp.jasa,
+        '' as petugas,
+        case when tp.iscito=true then '✓' else '✕' end as statuscito,
+        tp.total,
+        mp2.namalengkap as pegawaipengirim,
+        mu2.namaunit as unitpengirim,
+        td2.tglperjanjian,to2.nomororder
+    from
+        t_daftarpasien td
+    join t_antreanpemeriksaan ta on
+        td.norec = ta.objectdaftarpasienfk
+    join m_unit mu on
+        mu.id = ta.objectunitfk
+    join t_pelayananpasien tp on
+        tp.objectantreanpemeriksaanfk = ta.norec
+    join m_produk mp on
+        mp.id = tp.objectprodukfk
+     left join t_detailorderpelayanan td2 
+     on td2.objectpelayananpasienfk=tp.norec
+     left join t_orderpelayanan to2 on to2.norec=td2.objectorderpelayananfk
+     left join m_pegawai mp2 on mp2.id=to2.objectpegawaifk 
+     left join m_unit mu2 on mu2.id=ta.objectunitasalfk 
+        where td.norec='${req.query.norecdp}' and mu.objectinstalasifk =4
+        `);
+
+
+        let tempres = resultlist.rows
+
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+        });
+
+    } catch (error) {
+        res.status(500).send({ message: error });
+    }
+
+}
+
 export default {
     getDetailJenisProdukLab,
     saveOrderPelayanan,
@@ -559,5 +663,7 @@ export default {
     getDaftarListHistoryOrder,
     getListOrderByNorecOrder,
     updateTglRencanaLaboratorium,
-    saveUserVerifikasi
+    saveUserVerifikasi,
+    getDaftarPasienLaboratorium,
+    getTransaksiPelayananLaboratoriumByNorecDp
 };
