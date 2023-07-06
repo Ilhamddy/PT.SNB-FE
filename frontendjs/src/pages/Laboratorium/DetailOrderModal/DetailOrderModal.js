@@ -191,7 +191,7 @@ const DetailOrderModal = ({ show, onSimpanClick, onCloseClick,onTolakClick, temp
         let tempValue = {
             norec: e.norec
         }
-        // dispatch(deleteDetailOrderPelayanan(tempValue))
+        dispatch(deleteDetailOrderPelayanan(tempValue))
     };
     return (
         <Modal isOpen={show} toggle={onCloseClick} centered={true} size="xl">
