@@ -363,6 +363,17 @@ const Navdata = () => {
                         ]);
                     }
                 },
+                {
+                    id: "laboratorium-daftarpasienlaboratorium",
+                    label: "Daftar Pasien Laboratorium",
+                    link: "/laboratorium/daftarpasienlaboratorium",
+                    parentId: "laboratorium",
+                    isAllowed: () => {
+                        return isAllowedAccess(getUserPermissions(), [
+                            "REGISTRASI_VIEW",
+                        ]);
+                    }
+                },
             ]
         }
     ];

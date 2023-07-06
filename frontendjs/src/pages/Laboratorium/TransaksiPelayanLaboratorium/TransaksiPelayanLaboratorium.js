@@ -12,24 +12,24 @@ import EmrHeader from '../../Emr/EmrHeader/EmrHeader';
 import DataTable from 'react-data-table-component';
 import { useParams } from "react-router-dom";
 import {
-    listPelayananRadiologiGet, radiologiResetForm
+    listPelayananLaboratoriumGet, laboratoriumResetForm
 } from '../../../store/actions';
-const TransaksiPelayananRadiologi = () => {
+const TransaksiPelayanLaboratorium = () => {
     const { norecdp, norecap } = useParams();
     const dispatch = useDispatch();
-    document.title = "Transaksi Pelayanan Radiologi";
+    document.title = "Transaksi Pelayan Laboratorium";
     const { dataPelayanan, loadingPelayanan, successPelayanan } = useSelector((state) => ({
-        dataPelayanan: state.Radiologi.listPelayananRadiologiGet.data,
-        loadingPelayanan: state.Radiologi.listPelayananRadiologiGet.loading,
-        successPelayanan: state.Radiologi.listPelayananRadiologiGet.success,
+        dataPelayanan: state.Laboratorium.listPelayananLaboratoriumGet.data,
+        loadingPelayanan: state.Laboratorium.listPelayananLaboratoriumGet.loading,
+        successPelayanan: state.Laboratorium.listPelayananLaboratoriumGet.success,
     }));
     useEffect(() => {
         return () => {
-            dispatch(radiologiResetForm());
+            dispatch(laboratoriumResetForm());
         }
     }, [dispatch])
     useEffect(() => {
-        dispatch(listPelayananRadiologiGet(norecdp));
+        dispatch(listPelayananLaboratoriumGet(norecdp));
     }, [norecdp,dispatch]);
     const tableCustomStyles = {
         headRow: {
@@ -86,7 +86,7 @@ const TransaksiPelayananRadiologi = () => {
         },
         {
 
-            name: <span className='font-weight-bold fs-13'>Dokter Radiologi</span>,
+            name: <span className='font-weight-bold fs-13'>Dokter Laboratorium</span>,
             selector: row => '',
             sortable: true,
             width: "150px",
@@ -132,7 +132,7 @@ const TransaksiPelayananRadiologi = () => {
             <UiContent />
             <div className="page-content">
                 <Container fluid>
-                    <BreadCrumb title="Transaksi Pelayanan Radiologi" pageTitle="Forms" />
+                    <BreadCrumb title="Transaksi Pelayanan Laboratorium" pageTitle="Forms" />
                     <Row>
                         <Col xxl={12}>
                             <EmrHeader />
@@ -170,4 +170,4 @@ const TransaksiPelayananRadiologi = () => {
     )
 }
 
-export default withRouter(TransaksiPelayananRadiologi);
+export default withRouter(TransaksiPelayanLaboratorium);

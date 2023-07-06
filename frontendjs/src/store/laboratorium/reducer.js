@@ -25,6 +25,12 @@ import {
     SAVE_VERIFIKASI_LABORATORIUM,
     SAVE_VERIFIKASI_LABORATORIUM_SUCCESS,
     SAVE_VERIFIKASI_LABORATORIUM_ERROR,
+    DAFTAR_PASIEN_LABORATORIUM,
+    DAFTAR_PASIEN_LABORATORIUM_SUCCESS,
+    DAFTAR_PASIEN_LABORATORIUM_ERROR,
+    LIST_PELAYANAN_LABORATORIUM_GET,
+    LIST_PELAYANAN_LABORATORIUM_GET_SUCCESS,
+    LIST_PELAYANAN_LABORATORIUM_GET_ERROR 
 } from "./actionType";
 
 const INIT_STATE = {
@@ -71,6 +77,16 @@ const INIT_STATE = {
         error: null,
         success: false
     },
+    daftarPasienLaboratorium:{
+        data: [],
+        loading: false,
+        error: null,
+    },
+    listPelayananLaboratoriumGet:{
+        data:[],
+        loading: false,
+        error: null, 
+    }
 }
 
 const Laboratorium = (state = INIT_STATE, action) => {
@@ -101,6 +117,12 @@ const Laboratorium = (state = INIT_STATE, action) => {
                 },
                 saveVerifikasiLaboratorium:{
                     ...INIT_STATE.saveVerifikasiLaboratorium
+                },
+                daftarPasienLaboratorium:{
+                    ...INIT_STATE.daftarPasienLaboratorium
+                },
+                listPelayananLaboratoriumGet:{
+                    ...INIT_STATE.listPelayananLaboratoriumGet
                 }
             }
         }
@@ -366,6 +388,72 @@ const Laboratorium = (state = INIT_STATE, action) => {
                 ...state,
                 saveVerifikasiLaboratorium: {
                     ...state.saveVerifikasiLaboratorium,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case DAFTAR_PASIEN_LABORATORIUM: {
+            return {
+                ...state,
+                daftarPasienLaboratorium: {
+                    ...state.daftarPasienLaboratorium,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case DAFTAR_PASIEN_LABORATORIUM_SUCCESS: {
+            return {
+                ...state,
+                daftarPasienLaboratorium: {
+                    ...state.daftarPasienLaboratorium,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case DAFTAR_PASIEN_LABORATORIUM_ERROR: {
+            return {
+                ...state,
+                daftarPasienLaboratorium: {
+                    ...state.daftarPasienLaboratorium,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case LIST_PELAYANAN_LABORATORIUM_GET: {
+            return {
+                ...state,
+                listPelayananLaboratoriumGet: {
+                    ...state.listPelayananLaboratoriumGet,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case LIST_PELAYANAN_LABORATORIUM_GET_SUCCESS: {
+            return {
+                ...state,
+                listPelayananLaboratoriumGet: {
+                    ...state.listPelayananLaboratoriumGet,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case LIST_PELAYANAN_LABORATORIUM_GET_ERROR: {
+            return {
+                ...state,
+                listPelayananLaboratoriumGet: {
+                    ...state.listPelayananLaboratoriumGet,
                     loading: false,
                     error: action.error,
                 }

@@ -34,4 +34,12 @@ export default class ServiceLaboratorium {
     saveVerifikasiLaboratoriumUser = async (params) => {
         return await api.put("/transaksi/laboratorium/save-verifikasi-laboratorium", params);
     }
+    
+    getListDaftarPasienLaboratorium = async (param) => {
+        return await api.get(`/transaksi/laboratorium/list-daftar-pasien-laboratorium?noregistrasi=${param}`);
+    }
+
+    getListTransaksiPelayananLaboratorium = async (param) => {
+        return await api.get(`/transaksi/laboratorium/list-transaksi-pelayanan-laboratorium?norecdp=${param}`);
+    }
 }
