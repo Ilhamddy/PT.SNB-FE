@@ -106,4 +106,10 @@ export default function (app) {
         controller.getDaftarPasienFilter
     )
 
+    app.post(
+        "/api/transaksi/registrasi/update-registrasi-pulang",
+        [authJwt.verifyToken],
+        controller.updateRegistrasiPPulang
+    )
+
 };

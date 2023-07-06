@@ -6,14 +6,21 @@ import {
     WIDGET_DAFTARPASIEN_RI_GET, DAFTARPASIEN_RI_GET,
     DAFTARPASIEN_PULANG_GET,
     DAFTARPASIEN_PULANG_GET_SUCCESS,
-    DAFTARPASIEN_PULANG_GET_ERROR
+    DAFTARPASIEN_PULANG_GET_ERROR,
+    DAFTARPASIEN_RI_PULANG_SAVE_ERROR,
+    DAFTARPASIEN_RI_PULANG_SAVE,
+    LIST_FASKES_GET
 } from "./actionType";
 
 import {
     daftarPasienRJGetSuccess, daftarPasienRJGetError, widgetdaftarPasienRJGetSuccess, widgetdaftarPasienRJGetError,
     widgetdaftarPasienRIGetSuccess, widgetdaftarPasienRIGetError,
-    daftarPasienRIGetSuccess, daftarPasienRIGetError
+    daftarPasienRIGetSuccess, daftarPasienRIGetError, 
+    daftarPasienRIPulangSaveSuccess,
+    listFaskesSuccess,
+    listFaskesError,
 } from "./action";
+import { toast } from "react-toastify";
 
 const serviceRegistrasi = new ServiceRegistrasi();
 
@@ -62,6 +69,29 @@ function* onGetDaftarPasienPulang({ payload: { dateStart, dateEnd, instalasi, un
     }
 }
 
+function* saveDaftarPasienPulang({ payload: {data, callback} }) {
+    try {
+        const response = yield call(serviceRegistrasi.saveDaftarPasienPulang, data);
+        toast.success(response.msg, { autoClose: 3000 });
+        callback();
+        yield put(daftarPasienRIPulangSaveSuccess(response.data));
+    } catch (error) {
+        console.error(error)
+        toast.error(error.msg || error.message, { autoClose: 3000 });
+        yield put({ type: DAFTARPASIEN_RI_PULANG_SAVE_ERROR, payload: error });
+    }
+}
+
+
+function* onGetListFaskes({ payload: { qfaskes, faskesType } }) {
+    try {
+        const response = yield call(serviceRegistrasi.getListFaskes, [qfaskes, faskesType]);
+        yield put(listFaskesSuccess(response.data));
+    } catch (error) {
+        yield put(listFaskesError(error));
+    }
+}
+
 export function* watchGetDaftarPasienRJ() {
     yield takeEvery(DAFTARPASIEN_RJ_GET, onGetDaftarPasienRJ);
 }
@@ -83,6 +113,14 @@ export function* watchGetDaftarPasienPulang() {
     yield takeEvery(DAFTARPASIEN_PULANG_GET, onGetDaftarPasienPulang);
 }
 
+export function* watchSaveDaftarPasienPulang() {
+    yield takeEvery(DAFTARPASIEN_RI_PULANG_SAVE, saveDaftarPasienPulang);
+}
+
+export function* watchGetListFaskes() {
+    yield takeEvery(LIST_FASKES_GET, onGetListFaskes);
+}
+
 
 function* daftarPasienSaga() {
     yield all([
@@ -90,7 +128,9 @@ function* daftarPasienSaga() {
         fork(watchGetWidgetDaftarPasienRJ),
         fork(watchGetWidgetDaftarPasienRI),
         fork(watchGetDaftarPasienRI),
-        fork(watchGetDaftarPasienPulang)
+        fork(watchGetDaftarPasienPulang),
+        fork(watchSaveDaftarPasienPulang),
+        fork(watchGetListFaskes),
     ]);
 }
 

@@ -40,4 +40,10 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getKecamatan
     );
+
+    app.get(
+        "/api/transaksi/bridging/bpjs/faskes/",
+        [authJwt.verifyToken],
+        controller.getFaskes
+    )
 }

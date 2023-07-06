@@ -527,29 +527,11 @@ const updateRegistrasiPPulang = async (req, res) => {
         }
         const norecDP = req.body.norec
         const caraKeluar = req.body.carakeluar
-        const isPulangAPS = caraKeluar === 1 || caraKeluar === 2
+        const isPulangOrAPS = caraKeluar === 1 || caraKeluar === 2
         const isMeninggal = caraKeluar === 4
         const isRujuk = caraKeluar === 5
         const isPindah = caraKeluar === 3
-        const objectBody = {
-            "carakeluar": 2,
-            "kondisipulang": 2,
-            "statuspulang": 5,
-            "tanggalpulang": "2023-07-03",
-            "pembawapulang": "disky",
-            "hubungan": 2,
-            "tanggalmeninggal": "",
-            "alasanrujuk": "",
-            "faskestujuan": "",
-            "namafaskes": "",
-            "dokterperujuk": "",
-            "unittujuan": "",
-            "kamar": "",
-            "keteranganpindah": "",
-            "kelas": "",
-            "nobed": "",
-            "tglpindah": ""
-        }
+        const objectBody = req.body
         const objectEdit = {
             objectcarapulangrifk: objectBody.carakeluar,
             objectkondisipulangrifk: objectBody.kondisipulang,
@@ -580,17 +562,78 @@ const updateRegistrasiPPulang = async (req, res) => {
             nobed: "",
             tglpindah: "",
         }
-        
-        if(isMeninggal){
 
+        const objectEditPindahDp = {
+            objectcarapulangrifk: objectBody.carakeluar,
         }
+
+        const objectEditPindahAp = {
+            objectketeranganranapfk: objectBody.keteranganpindah,
+            objectkelasfk: objectBody.kelas,
+            objectkamarfk: objectBody.kamar,
+            nobed: objectBody.nobed,
+            tglmasuk: objectBody.tanggalpulang,
+            tglkeluar: objectBody.tanggalpulang,
+        }
+        let updatedBody = null;
+        let updatedBodyAp = null;
+        if(isPulangOrAPS){
+            const updateRegistrasi = await db.t_daftarpasien.update(objectEdit, {
+                where: {
+                    norec: norecDP
+                }
+            }, { transaction });
+            updatedBody = objectEdit
+            await transaction.commit();
+        }else if(isMeninggal){
+            const updateRegistrasi = await db.t_daftarpasien.update(objectEditMeninggal, {
+                where: {
+                    norec: norecDP
+                }
+            }, { transaction });
+            updatedBody = objectEditMeninggal
+            await transaction.commit();
+        }else if(isRujuk){
+            const updateRegistrasi = await db.t_daftarpasien.update(objectEditRujuk, {
+                where: {
+                    norec: norecDP
+                }
+            }, { transaction });
+            updatedBody = objectEditRujuk
+            await transaction.commit();
+        }else if(isPindah){
+            const updateRegistrasi = await db.t_daftarpasien.update(objectEditPindahDp, {
+                where: {
+                    norec: norecDP
+                }
+            }, { transaction });
+            updatedBody = objectEditPindahDp
+            // const updateRegistrasiAp = await db.t_antreanpemeriksaan.update(objectEditPindahAp, {
+            //     where: {
+            //         noregistrasi: norecAP
+            //     }
+            // }, { transaction });
+            updatedBodyAp = objectEditPindahAp
+            await transaction.commit();
+
+        }else{
+            throw new Error('cara keluar tidak ditemukan')
+        }
+        let tempres = { updatedBody, updatedBodyAp}
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+            msg: 'Update Pulang Berhasil',
+            code: 200
+        });
     }catch(e){
         console.error("Error update registrasiPPulang")
         console.error(e);
         res.status(500).send({
-            status: JSON.stringify(e),
+            status: "error",
             success: false,
-            msg: 'Error update',
+            msg: e.message,
             code: 500
         });
     }
@@ -1209,5 +1252,6 @@ export default {
     getHeaderEmr,
     getWidgetDaftarPasienRI,
     getDaftarPasienRawatInap,
-    getDaftarPasienFilter
+    getDaftarPasienFilter,
+    updateRegistrasiPPulang
 };

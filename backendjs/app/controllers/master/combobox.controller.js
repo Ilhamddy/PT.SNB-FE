@@ -12,7 +12,7 @@ import queriesBahasa from '../../queries/master/bahasa/bahasa.queries';
 import queriesDesa from '../../queries/master/desa/desa.queries';
 import queriesNegara from '../../queries/master/negara/negara.queries';
 import quriesInstalasi from '../../queries/master/instalasi/instalasi.queries'
-import quriesUnit from '../../queries/master/unit/unit.queries'
+import queriesUnit from '../../queries/master/unit/unit.queries'
 import quriesAsalRujukan from '../../queries/master/asalrujukan/asalrujukan.queries'
 import quriesJenisPenjamin from '../../queries/master/jenisPenjamin/jenispenjamin.queries'
 import queriesRekanan from '../../queries/master/rekanan/rekanan.queries'
@@ -168,7 +168,7 @@ const comboRegistrasi = (req, res) => {
     try {
         pool.query(quriesInstalasi.getAll, (error, result) => {
             if (error) throw error;
-            pool.query(quriesUnit.getAll, (error, result2) => {
+            pool.query(queriesUnit.getAll, (error, result2) => {
                 if (error) throw error;
                 pool.query(quriesAsalRujukan.getAll, (error, result3) => {
                     if (error) throw error;
@@ -266,6 +266,7 @@ const comboPulang = async (req, res) => {
         const kelas = await pool.query(queriesKelas.getAll, []);
         const kamar = await pool.query(queriesKamar.getAll, []);
         const tempattidur = await pool.query(queriesTempatTidur.getAll, []);
+        const unit = await pool.query(queriesUnit.getRawatInap, []);
 
         let tempres = {
             statuspulang: statusPulangRI.rows,
@@ -276,6 +277,7 @@ const comboPulang = async (req, res) => {
             kelas: kelas.rows,
             kamar: kamar.rows,
             tempattidur: tempattidur.rows,
+            unit: unit.rows
         }
         res.status(200).send({
             data: tempres,

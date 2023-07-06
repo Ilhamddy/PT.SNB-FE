@@ -15,6 +15,12 @@ import {
     DAFTARPASIEN_PULANG_GET,
     DAFTARPASIEN_PULANG_GET_SUCCESS,
     DAFTARPASIEN_PULANG_GET_ERROR,
+    DAFTARPASIEN_RI_PULANG_SAVE,
+    DAFTARPASIEN_RI_PULANG_SAVE_SUCCESS,
+    DAFTARPASIEN_RI_PULANG_SAVE_ERROR,
+    LIST_FASKES_GET,
+    LIST_FASKES_GET_SUCCESS,
+    LIST_FASKES_GET_ERROR,
 } from "./actionType";
 
 export const daftarPasienResetForm = () => ({
@@ -93,5 +99,38 @@ export const daftarPasienPulangGetSuccess = (data) => ({
 
 export const daftarPasienPulangGetError = (error) => ({
     type: DAFTARPASIEN_PULANG_GET_ERROR,
+    payload: error,
+});
+
+export const daftarPasienRIPulangSave = (data, callback) => ({
+    type: DAFTARPASIEN_RI_PULANG_SAVE,
+    payload: {
+        data,
+        callback
+    },
+});
+
+export const daftarPasienRIPulangSaveSuccess = (data) => ({
+    type: DAFTARPASIEN_RI_PULANG_SAVE_SUCCESS,
+    payload: data,
+});
+
+export const daftarPasienRIPulangSaveError = (error) => ({
+    type: DAFTARPASIEN_RI_PULANG_SAVE_ERROR,
+    payload: error,
+});
+
+export const listFaskesGet = (qfaskes, faskesType) => ({
+    type: LIST_FASKES_GET,
+    payload: { qfaskes, faskesType },
+});
+
+export const listFaskesSuccess = (data) => ({
+    type: LIST_FASKES_GET_SUCCESS,
+    payload: data,
+});
+
+export const listFaskesError = (error) => ({
+    type: LIST_FASKES_GET_ERROR,
     payload: error,
 });

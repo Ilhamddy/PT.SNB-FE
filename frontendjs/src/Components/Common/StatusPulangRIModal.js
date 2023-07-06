@@ -12,15 +12,16 @@ import * as Yup from "yup";
 import Flatpickr from "react-flatpickr";
 import {
     listOrderByNorecGet,listKamarRadiologiGet,updateTglRencanaRadiologi,saveVerifikasiRadiologi,
-    deleteDetailOrderPelayanan,radiologiResetForm
+    deleteDetailOrderPelayanan,radiologiResetForm, daftarPasienRIPulangSave, listFaskesGet
 } from "../../store/actions";
 import { comboPulangGet } from "../../store/master/action";
 
 
-const StatusPulangRIModal = ({ show, onSimpanClick, onCloseClick, onTolakClick, tempNorec }) => {
+const StatusPulangRIModal = ({ norecdp, toggle }) => {
     const dispatch = useDispatch();
-    const { comboPulang, dataKamar } = useSelector((state) => ({
+    const { comboPulang, dataFaskes } = useSelector((state) => ({
         comboPulang: state.Master.comboPulangGet.data,
+        dataFaskes: state.DaftarPasien.listFaskesGet.data
     }));
     useEffect(() => {
         dispatch(comboPulangGet());
@@ -30,16 +31,16 @@ const StatusPulangRIModal = ({ show, onSimpanClick, onCloseClick, onTolakClick, 
     const validation = useFormik({
         enableReinitialize: true,
         initialValues: {
-            norec: "",
+            norec: "002df1e5-55df-4081-88fb-08dd5e05",
             carakeluar: "",
             //pulang/aps 1/2/3/4
             kondisipulang: "",
             statuspulang: "",
-            tanggalpulang: "",
+            tanggalpulang: dateStart,
             pembawapulang: "",
             hubungan: "",
             //meninggal 4
-            tanggalmeninggal: "",
+            tanggalmeninggal: dateStart,
             //rujukan 5
             alasanrujuk: "",
             faskestujuan: "",
@@ -51,7 +52,6 @@ const StatusPulangRIModal = ({ show, onSimpanClick, onCloseClick, onTolakClick, 
             keteranganpindah: "",
             kelas: "",
             nobed: "",
-            tglpindah: "",
         },
         validationSchema: Yup.object({
             carakeluar: Yup.string().required("Cara Keluar Harus diisi"),
@@ -117,9 +117,22 @@ const StatusPulangRIModal = ({ show, onSimpanClick, onCloseClick, onTolakClick, 
             }),
         }),
         onSubmit: (values, { resetForm }) => {
-            console.log(values);
+            dispatch(daftarPasienRIPulangSave(values, () => toggle()));
+            resetForm()
         }
     })
+
+    let arKamar = comboPulang?.kamar?.filter(function (item) {
+        if (item.objectkelasfk === validation.values.kelas 
+            && item.objectunitfk === validation.values.unittujuan)
+            return true;
+        return false;
+    }) || [];
+    let arBed = comboPulang?.tempattidur?.filter(function (item) {
+        if (item.objectkamarfk === validation.values.kamar)
+            return true;
+        return false;
+    }) || [];
 
     const handleBeginOnChangeTglInput = (name, newBeginValue) => {
         var dateString = new Date(newBeginValue.getTime() - (newBeginValue.getTimezoneOffset() * 60000))
@@ -148,25 +161,16 @@ const StatusPulangRIModal = ({ show, onSimpanClick, onCloseClick, onTolakClick, 
         validation.setFieldValue('namatindakan', e.namaproduk)
     }
     
-    const onClickSimpan = ()=>{
-        let tempValue = {
-            norec: tempNorec,
-            tglinput:validation.values.tglinput
-        }
-        dispatch(saveVerifikasiRadiologi(tempValue));
-    }
-    const onClickDelete = (e) => {
-        // setProduct(product);
-        // setDeleteModal(true);
-        let tempValue = {
-            norec: e.norec
-        }
-        dispatch(deleteDetailOrderPelayanan(tempValue))
-    };
     const isPulangAPS = validation.values.carakeluar === 1 || validation.values.carakeluar === 2
     const isMeninggal = validation.values.carakeluar === 4
     const isRujuk = validation.values.carakeluar === 5
     const isPindah = validation.values.carakeluar === 3
+
+    const handleFaskes = characterEntered => {
+        if (characterEntered.length > 3) {
+            dispatch(listFaskesGet(characterEntered, validation.values.faskestujuan));
+        }
+    };
 
     const IsiRujukKiri = (
         <>
@@ -179,7 +183,7 @@ const StatusPulangRIModal = ({ show, onSimpanClick, onCloseClick, onTolakClick, 
                 <CustomSelect
                     id="faskestujuan"
                     name="faskestujuan"
-                    options={[]}
+                    options={[{label: "Faskes 1", value: "1"}, {label: "Faskes 2", value: "2"}]}
                     value={validation.values.faskestujuan || ""}
                     className={`input ${validation.errors.faskestujuan ? "is-invalid" : ""}`}
                     onChange={value => validation.setFieldValue('faskestujuan', value.value)}
@@ -223,7 +227,18 @@ const StatusPulangRIModal = ({ show, onSimpanClick, onCloseClick, onTolakClick, 
                 </Label>
             </Col>
             <Col md={8} className="mb-2">
-                <Input
+                <CustomSelect
+                    id="namafaskes"
+                    name="namafaskes"
+                    onInputChange={handleFaskes}
+                    options={dataFaskes?.faskes || []}
+                    className={`input ${validation.errors.namafaskes ? "is-invalid" : ""}`}
+                    onChange={(e) => validation.setFieldValue("namafaskes", e.value)}
+                />
+                {validation.touched.diagnosarujukan && validation.errors.diagnosarujukan ? (
+                    <FormFeedback type="invalid"><div>{validation.errors.diagnosarujukan}</div></FormFeedback>
+                ) : null}
+                {/* <Input
                     id="namafaskes"
                     name="namafaskes"
                     type="string"
@@ -235,7 +250,7 @@ const StatusPulangRIModal = ({ show, onSimpanClick, onCloseClick, onTolakClick, 
                 />
                 {validation.touched.namafaskes && validation.errors.namafaskes ? (
                     <FormFeedback type="invalid"><div>{validation.errors.namafaskes}</div></FormFeedback>
-                ) : null}
+                ) : null} */}
             </Col>
             <Col md={4} className="mb-2">
                 <Label htmlFor="dokterperujuk" className="form-label">
@@ -403,7 +418,7 @@ const StatusPulangRIModal = ({ show, onSimpanClick, onCloseClick, onTolakClick, 
                 <CustomSelect
                     id="unittujuan"
                     name="unittujuan"
-                    options={comboPulang?.statuspulang || []}
+                    options={comboPulang?.unit || []}
                     value={validation.values.unittujuan || ""}
                     className={`input ${validation.errors.unittujuan ? "is-invalid" : ""}`}
                     onChange={value => validation.setFieldValue('unittujuan', value.value)}
@@ -424,7 +439,7 @@ const StatusPulangRIModal = ({ show, onSimpanClick, onCloseClick, onTolakClick, 
                 <CustomSelect
                     id="kamar"
                     name="kamar"
-                    options={[]}
+                    options={arKamar}
                     value={validation.values.kamar || ""}
                     className={`input ${validation.errors.kamar ? "is-invalid" : ""}`}
                     onChange={value => validation.setFieldValue('kamar', value.value)}
@@ -467,20 +482,22 @@ const StatusPulangRIModal = ({ show, onSimpanClick, onCloseClick, onTolakClick, 
                 </Label>
             </Col>
             <Col md={8} className="mb-2">
-                <CustomSelect
-                    id="unittujuan"
-                    name="unittujuan"
-                    options={comboPulang?.statuspulang || []}
-                    value={validation.values.unittujuan || ""}
-                    className={`input ${validation.errors.unittujuan ? "is-invalid" : ""}`}
-                    onChange={value => validation.setFieldValue('unittujuan', value.value)}
-                    invalid={
-                        validation.touched.unittujuan && validation.errors.unittujuan ? true : false
-                    }
-                />
-                {validation.touched.unittujuan && validation.errors.unittujuan ? (
-                    <FormFeedback type="invalid"><div>{validation.errors.unittujuan}</div></FormFeedback>
-                ) : null}
+                <div className="input-group">
+                    <Flatpickr
+                        className="form-control border-0 fs-5 dash-filter-picker shadow"
+                        options={{
+                            //  enableTime: true,
+                            // mode: "range",
+                            dateFormat: "Y-m-d H:i",
+                            defaultDate: "today"
+                        }}
+                        value={dateStart}
+                        onChange={([newDate]) => {
+                            handleBeginOnChangeTglInput("tanggalpulang", newDate);
+                        }}
+                    />
+                    <div className="input-group-text bg-secondary border-secondary text-white"><i className="ri-calendar-2-line"></i></div>
+                </div>
             </Col>
             <Col md={4} className="mb-2">
                 <Label htmlFor="kelas" className="form-label">
@@ -491,7 +508,7 @@ const StatusPulangRIModal = ({ show, onSimpanClick, onCloseClick, onTolakClick, 
                 <CustomSelect
                     id="kelas"
                     name="kelas"
-                    options={[]}
+                    options={comboPulang?.kelas || []}
                     value={validation.values.kelas || ""}
                     className={`input ${validation.errors.kelas ? "is-invalid" : ""}`}
                     onChange={value => validation.setFieldValue('kelas', value.value)}
@@ -512,7 +529,7 @@ const StatusPulangRIModal = ({ show, onSimpanClick, onCloseClick, onTolakClick, 
                 <CustomSelect
                     id="nobed"
                     name="nobed"
-                    options={[]}
+                    options={arBed}
                     value={validation.values.nobed || ""}
                     className={`input ${validation.errors.nobed ? "is-invalid" : ""}`}
                     onChange={value => validation.setFieldValue('nobed', value.value)}
@@ -529,7 +546,7 @@ const StatusPulangRIModal = ({ show, onSimpanClick, onCloseClick, onTolakClick, 
     
 
     return (
-        <Modal isOpen={show} toggle={onCloseClick} centered={true} size="xl">
+        <Modal isOpen={!!norecdp} toggle={() => toggle()} centered={true} size="xl">
             <ModalBody className="py-12 px-12">
                 {/* <div className="mt-2 text-center">
                     <lord-icon
@@ -546,6 +563,9 @@ const StatusPulangRIModal = ({ show, onSimpanClick, onCloseClick, onTolakClick, 
                             <Form
                                 onSubmit={(e) => {
                                     e.preventDefault();
+                                    if(Object.keys(validation.errors).length){
+                                        console.error(validation.errors);
+                                    }
                                     validation.handleSubmit();
                                     return false;
                                 }}
@@ -591,6 +611,7 @@ const StatusPulangRIModal = ({ show, onSimpanClick, onCloseClick, onTolakClick, 
                                                                     dateFormat: "Y-m-d H:i",
                                                                     defaultDate: "today"
                                                                 }}
+                                                                id={"tanggalmeninggal"}
                                                                 value={dateStart}
                                                                 onChange={([newDate]) => {
                                                                     handleBeginOnChangeTglInput("tanggalmeninggal", newDate);
@@ -598,6 +619,9 @@ const StatusPulangRIModal = ({ show, onSimpanClick, onCloseClick, onTolakClick, 
                                                             />
                                                             <div className="input-group-text bg-secondary border-secondary text-white"><i className="ri-calendar-2-line"></i></div>
                                                         </div>
+                                                        {validation.touched.tanggalmeninggal && validation.errors.tanggalmeninggal ? (
+                                                            <FormFeedback type="invalid"><div>{validation.errors.tanggalmeninggal}</div></FormFeedback>
+                                                        ) : null}
                                                     </Col>
                                                 </>
                                             }

@@ -68,4 +68,15 @@ export default class ServiceRegistrasi {
             + (search ? `&search=${search}` : ``)
         );
     }
+
+    saveDaftarPasienPulang = async (data) => {
+        return await api.create(`/transaksi/registrasi/update-registrasi-pulang`, data)
+    }
+
+    getListFaskes = async ([qfaskes, faskesType]) => {
+        return await api.get(`transaksi/bridging/bpjs/faskes?`
+            + (qfaskes ? `&qfaskes=${qfaskes}` : ``)
+            + (faskesType ? `&faskesType=${faskesType}` : ``)
+        );
+    }
 }
