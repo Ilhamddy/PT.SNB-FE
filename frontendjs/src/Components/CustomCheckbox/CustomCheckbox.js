@@ -109,11 +109,11 @@ const CustomCheckbox = ({data, setData, checkboxName}) => {
                                     id={`formcheck-${checkboxName}${indexVal}`} 
                                     checked={dataVal.checked} 
                                     onChange={e => handleChangeCheckBox(dataVal.id)}/>
-                                    <Label className="form-check-label" 
-                                        htmlFor={`formcheck-${checkboxName}${indexVal}`} 
-                                        style={{ color: "black" }} >
-                                        {dataVal.label}
-                                    </Label>
+                                <Label className="form-check-label" 
+                                    htmlFor={`formcheck-${checkboxName}${indexVal}`} 
+                                    style={{ color: "black" }} >
+                                    {dataVal.label}
+                                </Label>
                             </div>
                             {dataVal.checked &&  
                                 dataVal.subdata?.map((subDataVal, indexSubdataVal) => (
@@ -125,11 +125,11 @@ const CustomCheckbox = ({data, setData, checkboxName}) => {
                                                 id={`formcheck-sub-${indexVal}-${checkboxName}${indexSubdataVal}`} 
                                                 checked={subDataVal.checked} 
                                                 onChange={e => handleChangeSub(dataVal.id, subDataVal.id)}/>
-                                                <Label className="form-check-label" 
-                                                    htmlFor={`formcheck-sub-${indexVal}-${checkboxName}${indexSubdataVal}`} 
-                                                    style={{ color: "black" }} >
-                                                    {subDataVal.label}
-                                                </Label>
+                                            <Label className="form-check-label" 
+                                                htmlFor={`formcheck-sub-${indexVal}-${checkboxName}${indexSubdataVal}`} 
+                                                style={{ color: "black" }} >
+                                                {subDataVal.label}
+                                            </Label>
                                         </div>
                                         {
                                             subDataVal.checked && subDataVal.subsubdata?.map((sub2DataVal, indexSub2dataVal) => (
@@ -140,11 +140,11 @@ const CustomCheckbox = ({data, setData, checkboxName}) => {
                                                         id={`formcheck-sub2-${indexVal}-${checkboxName}${indexSubdataVal}-${indexSub2dataVal}`} 
                                                         checked={sub2DataVal.checked} 
                                                         onChange={e => handleChangeSub2(dataVal.id, subDataVal.id, sub2DataVal.id)}/>
-                                                        <Label className="form-check-label" 
-                                                            htmlFor={`formcheck-sub2-${indexVal}-${checkboxName}${indexSubdataVal}-${indexSub2dataVal}`} 
-                                                            style={{ color: "black" }} >
-                                                            {sub2DataVal.label}
-                                                        </Label>
+                                                    <Label className="form-check-label" 
+                                                        htmlFor={`formcheck-sub2-${indexVal}-${checkboxName}${indexSubdataVal}-${indexSub2dataVal}`} 
+                                                        style={{ color: "black" }} >
+                                                        {sub2DataVal.label}
+                                                    </Label>
                                                 </div>
                                             ))
                                         }

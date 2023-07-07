@@ -260,12 +260,13 @@ import KendaliDokumen from "../pages/RekamMedis/KendaliDokumen/KendaliDokumen";
 import DaftarOrderRadiologi from "../pages/Radiologi/DaftarOrderRadiologi/DaftarOrderRadiologi";
 import DaftarPasienRadiologi from "../pages/Radiologi/DaftarPasienRadiologi/DaftarPasienRadiologi";
 import TransaksiPelayanRadiologi from "../pages/Radiologi/TransaksiPelayanRadiologi/TransaksiPelayanRadiologi";
-import DaftarPasienPulang from "../pages/Emr/DaftarPasienPulang/DaftarPasienPulang";
+import DaftarPasienPulang from "../pages/DaftarPasienPulang/DaftarPasienPulang";
 
 // Laboratorium
 import DaftarOrderLaboratorium from "../pages/Laboratorium/DaftarOrderLaboratorium/DaftarOrderLaboratorium";
 import DaftarPasienLaboratorium from "../pages/Laboratorium/DaftarPasienLaboratorium/DaftarPasienLaboratorium";
 import TransaksiPelayanLaboratorium from "../pages/Laboratorium/TransaksiPelayanLaboratorium/TransaksiPelayanLaboratorium";
+import VerifikasiPelayanan from "../pages/VerifikasiPelayanan/VerifikasiPelayanan";
 
 
 
@@ -508,6 +509,10 @@ const authProtectedRoutes = [
   {path:"/laboratorium/daftarorderlaboratorium", component:<DaftarOrderLaboratorium/>},
   {path:"/laboratorium/daftarpasienlaboratorium", component:<DaftarPasienLaboratorium/>},
   {path:"/transaksi-pelayanan-laboratorium/:norecdp/:norecap", component:<TransaksiPelayanLaboratorium/>},
+
+  // payment
+  {path: "/payment/verif-tagihan/:norecap", component: <VerifikasiPelayanan />},
+
 ];
 
 const publicRoutes = [

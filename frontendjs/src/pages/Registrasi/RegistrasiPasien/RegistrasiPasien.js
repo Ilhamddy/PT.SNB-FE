@@ -102,7 +102,9 @@ const RegistrasiPasien = (props) => {
 
 	
     const current = new Date();
-    const [dateStart, setdateStart] = useState(`${current.getFullYear()}-${current.getMonth() + 1}-${current.getDate()}`);
+    const [dateStart, setdateStart] = useState(`${current.getFullYear()}`
+        + `-${current.getMonth() + 1}`
+        + `-${current.getDate()}`);
     const validation = useFormik({
         enableReinitialize: true,
         initialValues: {

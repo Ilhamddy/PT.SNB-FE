@@ -1,20 +1,21 @@
 import { useFormik } from "formik";
-import userDummy from "../../../assets/images/users/user-dummy-img.jpg";
+import userDummy from "../../assets/images/users/user-dummy-img.jpg";
 import { ToastContainer } from "react-toastify";
 import { useEffect, useState } from "react";
 import { Card, CardBody, Col, Container, Nav, NavItem, NavLink, Row, TabContent, TabPane, Table, Input, Form, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem, UncontrolledTooltip, Button } from "reactstrap";
-import BreadCrumb from "../../../Components/Common/BreadCrumb";
+import BreadCrumb from "../../Components/Common/BreadCrumb";
 import * as Yup from "yup";
 import classnames from "classnames"
 import { Link } from "feather-icons-react/build/IconComponents";
 import { useDispatch, useSelector } from "react-redux";
-import {daftarPasienPulangGet} from "../../../store/daftarPasien/action";
+import {daftarPasienPulangGet} from "../../store/daftarPasien/action";
 import DataTable from "react-data-table-component";
-import { dateISOString, dateTimeLocal } from "../../../utils/format";
+import { dateISOString, dateTimeLocal } from "../../utils/format";
 import Flatpickr from "react-flatpickr";
-import { comboAsuransiGet, comboRegistrasiGet } from "../../../store/master/action";
-import CustomSelect from "../../Select/Select";
+import { comboAsuransiGet, comboRegistrasiGet } from "../../store/master/action";
+import CustomSelect from "../Select/Select";
 import "./DaftarPasienPulang.scss"
+import { useNavigate } from "react-router-dom";
 
 const dateAwalStart = dateISOString(new Date(new Date() - 1000 * 60 * 60 * 24 * 3));
 const dateAwalEnd = dateISOString(new Date())
@@ -30,6 +31,8 @@ const DaftarPasienPulang = () => {
     const [dateEnd, setDateEnd] = useState(dateAwalEnd);
     const [search, setSearch] = useState("");
     const [instalasi, setInstalasi] = useState("");
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const validation = useFormik({
         enableReinitialize: true,
@@ -44,7 +47,6 @@ const DaftarPasienPulang = () => {
         }
     });
 
-    const dispatch = useDispatch();
     useEffect(() => {
         dispatch(daftarPasienPulangGet(
             dateAwalStart,
@@ -58,9 +60,33 @@ const DaftarPasienPulang = () => {
         // dispatch(daftarPasienPulangGet(dateStart, dateEnd))
     }
     const handleClickCari = () => {
-        dispatch(daftarPasienPulangGet(dateStart, dateEnd, instalasi))
+        dispatch(daftarPasienPulangGet({dateStart, dateEnd, instalasi, unit: "", search}))
+    }
+    const handleToVerif = async (norecap) => {
+        norecap 
+            && navigate(`/payment/verif-tagihan/${norecap}`)    
     }
     const columns = [
+        {
+            name: <span className='font-weight-bold fs-13'>Detail</span>,
+            sortable: false,
+            cell: (row) => {
+                return (
+                    <div className="hstack gap-3 flex-wrap">
+                        <UncontrolledTooltip placement="top" target="tooltipTop2" > Pengkajian Pasien </UncontrolledTooltip>
+                        <UncontrolledDropdown className="dropdown d-inline-block">
+                            <DropdownToggle className="btn btn-soft-secondary btn-sm" tag="button" id="tooltipTop2">
+                                <i className="ri-apps-2-line"></i>
+                            </DropdownToggle>
+                            <DropdownMenu className="dropdown-menu-end">
+                                <DropdownItem onClick={() => handleToVerif(row.norecap)}><i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>Verif</DropdownItem>
+                            </DropdownMenu>
+                        </UncontrolledDropdown>
+                    </div>
+                );
+            },
+            width: "50px"
+        },
         {
             name: <span className='font-weight-bold fs-13'>Tgl Registrasi</span>,
             selector: row => dateTimeLocal(new Date(row.tglregistrasi)),
@@ -93,15 +119,13 @@ const DaftarPasienPulang = () => {
             name: <span className='font-weight-bold fs-13'>Unit Asal</span>,
             selector: row => row.namaunit,
             sortable: true,
-            width: "150px"
+            width: "110px"
         },
         {
-
             name: <span className='font-weight-bold fs-13'>Penjamin</span>,
             selector: row => row.namadokter,
             sortable: true,
-            width: "150px",
-
+            width: "140px",
         },
         {
 
@@ -220,7 +244,7 @@ const DaftarPasienPulang = () => {
                             
 
                         </Form>
-                        <Row className="row-header">
+                        <Row className="row-header mb-2">
                             <Col sm={3}>
                                 <div className="input-group">
                                     <Flatpickr

@@ -82,6 +82,7 @@ import Emr from "./emr/reducer";
 import KendaliDokumen from "./kendaliDokumen/reducer";
 import Radiologi from "./radiologi/reducer";
 import Laboratorium from "./laboratorium/reducer";
+import Payment from "./payment/reducer";
 
 
 
@@ -120,7 +121,8 @@ const rootReducer = combineReducers({
     Emr,
     KendaliDokumen,
     Radiologi,
-    Laboratorium
+    Laboratorium,
+    Payment
 });
 
 export default rootReducer;

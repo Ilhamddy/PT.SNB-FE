@@ -73,6 +73,7 @@ import emrSaga from "./emr/saga";
 import kendaliDokumenSaga from "./kendaliDokumen/saga";
 import radiologiSaga from "./radiologi/saga";
 import laboratoriumSaga from "./laboratorium/saga";
+import payment from "./payment/saga";
 
 
 export default function* rootSaga() {
@@ -110,6 +111,7 @@ export default function* rootSaga() {
     fork(emrSaga),
     fork(kendaliDokumenSaga),
     fork(radiologiSaga),
-    fork(laboratoriumSaga)
+    fork(laboratoriumSaga),
+    fork(payment)
   ]);
 }

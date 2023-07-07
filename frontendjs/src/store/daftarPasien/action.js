@@ -95,7 +95,7 @@ export const daftarPasienRIGetError = (error) => ({
     payload: error,
 });
 
-export const daftarPasienPulangGet = (dateStart, dateEnd, instalasi, unit, search) => ({
+export const daftarPasienPulangGet = ({dateStart, dateEnd, instalasi, unit, search}) => ({
     type: DAFTARPASIEN_PULANG_GET,
     payload: { dateStart, dateEnd, instalasi, unit, search},
 });
