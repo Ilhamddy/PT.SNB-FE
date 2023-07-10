@@ -11,6 +11,10 @@ import {
     DAFTAR_TAGIHAN_PASIEN_GET_SUCCESS,
     DAFTAR_TAGIHAN_PASIEN_GET_ERROR,
     DAFTAR_TAGIHAN_PASIEN_GET_RESET,
+    PELAYANAN_FROM_VERIF_GET,
+    PELAYANAN_FROM_VERIF_GET_SUCCESS,
+    PELAYANAN_FROM_VERIF_GET_ERROR,
+    PELAYANAN_FROM_VERIF_GET_RESET,
 } from "./actionType";
 
 const INIT_STATE = {
@@ -27,6 +31,12 @@ const INIT_STATE = {
         error: null,
     },
     daftarTagihanPasienGet: {
+        data: [],
+        loading: false,
+        success: false,
+        error: null,
+    },
+    pelayananFromVerifGet: {
         data: [],
         loading: false,
         success: false,
@@ -159,7 +169,36 @@ const payment = (state = INIT_STATE, action) => {
                     error: null,
                 },
             };
-
+        case PELAYANAN_FROM_VERIF_GET:
+            return {
+                ...state,
+                pelayananFromVerifGet: {
+                    ...state.pelayananFromVerifGet,
+                    data: [],
+                    loading: true,
+                    error: null,
+                },
+            };
+        case PELAYANAN_FROM_VERIF_GET_SUCCESS:
+            return {
+                ...state,
+                pelayananFromVerifGet: {
+                    ...state.pelayananFromVerifGet,
+                    data: action.payload,
+                    loading: false,
+                    error: null,
+                },
+            };
+        case PELAYANAN_FROM_VERIF_GET_ERROR:
+            return {
+                ...state,
+                pelayananFromVerifGet: {
+                    ...state.pelayananFromVerifGet,
+                    data: [],
+                    loading: false,
+                    error: action.payload,
+                },
+            };
         default:
             return { ...state };
     }

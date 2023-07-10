@@ -674,6 +674,7 @@ const StatusPulangRIModal = ({ norecdp, norecAP, toggle }) => {
                                             type="button"
                                             className="btn w-sm btn-danger"
                                             data-bs-dismiss="modal"
+                                            onClick={() => toggle()}
                                         >
                                             Batal
                                         </button>

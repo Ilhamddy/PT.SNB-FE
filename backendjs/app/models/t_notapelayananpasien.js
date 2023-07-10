@@ -24,6 +24,9 @@ export default (sequelize, Sequelize) => {
         },
         tglinput:{
             type: 'TIMESTAMP'
+        },
+        keterangan:{
+            type: Sequelize.STRING
         }
     }, {
         tableName: "t_notapelayananpasien", 

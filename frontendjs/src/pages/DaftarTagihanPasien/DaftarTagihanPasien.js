@@ -56,9 +56,9 @@ const DaftarTagihanPasien = () => {
     const handleClickCari = () => {
         dispatch(daftarPasienPulangGet({dateStart, dateEnd, instalasi, unit: "", search}))
     }
-    const handleToBayar = async (norecap) => {
-        norecap 
-            && navigate(`/payment/bayar/${norecap}`)    
+    const handleToBayar = async (norecnota) => {
+        norecnota 
+            && navigate(`/payment/bayar/${norecnota}`)    
     }
     const columns = [
         {
@@ -73,9 +73,9 @@ const DaftarTagihanPasien = () => {
                                 <i className="ri-apps-2-line"></i>
                             </DropdownToggle>
                             <DropdownMenu className="dropdown-menu-end">
-                                <DropdownItem onClick={() => handleToBayar(row.nonota)}><i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>Bayar</DropdownItem>
-                                <DropdownItem onClick={() => handleToBayar(row.nonota)}><i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>Batal Verif</DropdownItem>
-                                <DropdownItem onClick={() => handleToBayar(row.nonota)}><i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>Batal Bayar</DropdownItem>
+                                <DropdownItem onClick={() => handleToBayar(row.norecnota)}><i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>Bayar</DropdownItem>
+                                <DropdownItem onClick={() => handleToBayar(row.norecnota)}><i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>Batal Verif</DropdownItem>
+                                <DropdownItem onClick={() => handleToBayar(row.norecnota)}><i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>Batal Bayar</DropdownItem>
 
                             </DropdownMenu>
                         </UncontrolledDropdown>

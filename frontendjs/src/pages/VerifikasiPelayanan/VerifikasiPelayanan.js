@@ -130,12 +130,12 @@ const VerifikasiPelayanan = () => {
             cell: (row) => {
                 return (
                     <div className="hstack gap-3 flex-wrap">
-                        <Input 
+                        {!row.no_nota && <Input 
                             className="form-check-input" 
                             type="checkbox" 
                             id={`formcheck-${row.norec}`} 
                             checked={row.checked} 
-                            onChange={e => {handleChecked(row.checked, row.norec)}}/>
+                            onChange={e => {handleChecked(row.checked, row.norec)}}/>}
                     </div>
                 );
             },

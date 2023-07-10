@@ -17,7 +17,7 @@ import CustomSelect from "../Select/Select";
 import "./DaftarPasienPulang.scss"
 import { useNavigate } from "react-router-dom";
 
-const dateAwalStart = dateISOString(new Date(new Date() - 1000 * 60 * 60 * 24 * 3));
+const dateAwalStart = dateISOString(new Date(new Date() - 1000 * 60 * 60 * 24 * 20));
 const dateAwalEnd = dateISOString(new Date())
 
 
@@ -48,10 +48,11 @@ const DaftarPasienPulang = () => {
     });
 
     useEffect(() => {
-        dispatch(daftarPasienPulangGet(
-            dateAwalStart,
-            dateAwalEnd 
-        ))
+        dispatch(daftarPasienPulangGet({
+            dateStart: dateAwalStart,
+            dateEnd: dateAwalEnd
+        }))
+        console.log(dateAwalStart)
         dispatch(comboAsuransiGet());
         dispatch(comboRegistrasiGet());
     }, [dispatch])

@@ -515,7 +515,7 @@ const authProtectedRoutes = [
   // payment
   {path: "/payment/verif-tagihan/:norecap", component: <VerifikasiPelayanan />},
   {path: "/payment/daftar-tagihan", component: <DaftarTagihanPasien />},
-  {path: "/payment/bayar/:nonota", component: <Bayar />},
+  {path: "/payment/bayar/:norecnota", component: <Bayar />},
 ];
 
 const publicRoutes = [

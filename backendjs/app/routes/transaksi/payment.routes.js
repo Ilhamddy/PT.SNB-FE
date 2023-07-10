@@ -27,4 +27,10 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getDaftarTagihanPasien
     );
+
+    app.get(
+        "/api/transaksi/payment/pelayanan-from-verif/:norecnota",
+        [authJwt.verifyToken],
+        controller.getPelayananFromVerif
+    );
 }

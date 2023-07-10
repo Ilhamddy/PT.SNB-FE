@@ -35,7 +35,6 @@ export const dateTimeISOString = (date) => {
     try{
         return new Date(date)
         .toISOString()
-        .split("T")[0]
     }catch(e){
         return ""
     }

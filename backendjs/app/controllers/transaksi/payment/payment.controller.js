@@ -1,7 +1,7 @@
 import * as uuid from 'uuid';
 import db from "../../../models";
 import pool from "../../../config/dbcon.query";
-import { qGetPelayananFromAntrean, qGetNorecPenggunaFromAp, qDaftarTagihanPasien } from '../../../queries/payment/payment.queries';
+import { qGetPelayananFromAntrean, qGetNorecPenggunaFromAp, qDaftarTagihanPasien, qGetPelayananFromVerif, qGetVerif } from '../../../queries/payment/payment.queries';
 
 const t_notapelayananpasien = db.t_notapelayananpasien
 const t_pelayananpasien = db.t_pelayananpasien
@@ -34,6 +34,35 @@ const getPelayananFromAntrean = async (req, res) => {
     }
 };
 
+const getPelayananFromVerif = async (req, res) => {
+    try{
+        const norecnota = req.params.norecnota
+        const pelayanan = await pool.query(qGetPelayananFromVerif, [norecnota])
+        const verif = await pool.query(qGetVerif, [norecnota])
+        let tempres = { 
+            pelayanan: pelayanan.rows || [],
+            nota: verif.rows[0] || null
+        }
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+            msg: 'Simpan Berhasil',
+            code: 200
+        });
+    } catch(error){
+        console.error("===Error Get Pelayanan From Verif");
+        console.error(error);
+        res.status(500).send({
+            data: error,
+            success: false,
+            msg: 'Get Gagal',
+            code: 500
+        });
+    }
+};
+
+
 
 const createNotaVerif = async (req, res) => {
     let transaction = null;
@@ -53,6 +82,7 @@ const createNotaVerif = async (req, res) => {
         const norecnota = uuid.v4().substring(0, 32);
         const body = req.body
         const norecppdone = body.norecppdone
+        console.log("keterangan", body.keterangan)
         const changed = await t_notapelayananpasien.create({
             norec: norecnota,
             kdprofile: 0,
@@ -128,4 +158,5 @@ export default {
     getPelayananFromAntrean,
     createNotaVerif,
     getDaftarTagihanPasien,
+    getPelayananFromVerif
 };

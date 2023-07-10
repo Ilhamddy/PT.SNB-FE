@@ -26,6 +26,8 @@ import queriesStatusPulangRI from '../../queries/master/statuspulangri/statuspul
 import queriesKondisiPulangRI from '../../queries/master/kondisipulangri/kondisipulangri.queries'
 import queriesCaraPulangRI from '../../queries/master/carapulangri/carapulangri.queries'
 import queriesMetodeBayar from '../../queries/master/metodebayar/metodebayar.queries'
+import queriesNonTunai from '../../queries/master/jenisNonTunai/jenisNonTunai.queries'
+
 
 
 const selectComboBox = (req, res) => {
@@ -301,8 +303,10 @@ const comboPulang = async (req, res) => {
 const comboPayment = async (req, res) => {
     try {
         const metodeBayar = await pool.query(queriesMetodeBayar.getAll, []);
+        const nonTunai = await pool.query(queriesNonTunai.getAll, []);
         let tempres = {
-            metodeBayar: metodeBayar.rows
+            metodeBayar: metodeBayar.rows,
+            nontunai: nonTunai.rows
         }
         res.status(200).send({
             data: tempres,

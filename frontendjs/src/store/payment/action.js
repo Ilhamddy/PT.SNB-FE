@@ -9,6 +9,10 @@ import { PELAYANAN_FROM_ANTREAN_GET,
     DAFTAR_TAGIHAN_PASIEN_GET_SUCCESS,
     DAFTAR_TAGIHAN_PASIEN_GET_ERROR,
     DAFTAR_TAGIHAN_PASIEN_GET_RESET,
+    PELAYANAN_FROM_VERIF_GET,
+    PELAYANAN_FROM_VERIF_GET_SUCCESS,
+    PELAYANAN_FROM_VERIF_GET_ERROR,
+    PELAYANAN_FROM_VERIF_GET_RESET,
 } from "./actionType";
 
 export const pelayananFromAntreanGet = (norecap) => {
@@ -85,5 +89,32 @@ export const daftarTagihanPasienGetReset = () => {
     return {
         type: DAFTAR_TAGIHAN_PASIEN_GET_RESET,
         payload: {}
+    }
+}
+
+export const pelayananFromVerifGet = (norecnota) => {
+    return {
+        type: PELAYANAN_FROM_VERIF_GET,
+        payload: {norecnota}
+    }
+}
+
+export const pelayananFromVerifGetSuccess = (data) => {
+    return {
+        type: PELAYANAN_FROM_VERIF_GET_SUCCESS,
+        payload: data
+    }
+}
+
+export const pelayananFromVerifGetError = (error) => {
+    return {
+        type: PELAYANAN_FROM_VERIF_GET_ERROR,
+        payload: error
+    }
+}
+
+export const pelayananFromVerifGetReset = () => {
+    return {
+        type: PELAYANAN_FROM_VERIF_GET_RESET
     }
 }
