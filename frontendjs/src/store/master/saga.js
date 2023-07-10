@@ -1,6 +1,11 @@
 import { call, put, takeEvery, all, fork } from "redux-saga/effects";
 import ServiceMaster from "../../services/service-master";
-import { MASTER_GET,DESA_GET,KECAMATAN_GET,COMBO_REGISTRASI_GET, COMBO_ASURANSI_GET, PROVINSI_GET_BPJS, KABUPATEN_GET_BPJS, KECAMATAN_GET_BPJS } from "./actionType";
+import { MASTER_GET,DESA_GET,KECAMATAN_GET,COMBO_REGISTRASI_GET, COMBO_ASURANSI_GET, 
+    PROVINSI_GET_BPJS, 
+    KABUPATEN_GET_BPJS, 
+    KECAMATAN_GET_BPJS,
+    COMBO_PAYMENT_GET,
+ } from "./actionType";
 import { masterGetSuccess,masterGetError,desaGetSuccess,desaGetError,kecamatanGetSuccess,kecamatanGetError,
     comboRegistrasiGetSuccess,comboRegistrasiGetError, 
     comboAsuransiGet, 
@@ -17,6 +22,8 @@ import { masterGetSuccess,masterGetError,desaGetSuccess,desaGetError,kecamatanGe
     kecamatanGetBpjsError,
     comboPulangGetSuccess,
     comboPulangGetError,
+    comboPaymentGetSuccess,
+    comboPaymentGetError,
 } from "./action";
 
 const serviceMaster = new ServiceMaster();
@@ -103,6 +110,17 @@ function* onGetComboPulang() {
     }
 }
 
+function* onGetComboPayment() {
+    try {
+        const response = yield call(serviceMaster.getComboPayment);
+        yield put(comboPaymentGetSuccess(response.data));
+    } catch (error) {
+        yield put(comboPaymentGetError(error));
+    }
+}
+
+
+
 export function* watchGetMaster() {
     yield takeEvery(MASTER_GET, onGetMaster);
 }
@@ -139,6 +157,10 @@ export function* watchGetComboPulang() {
     yield takeEvery(COMBO_REGISTRASI_GET, onGetComboPulang);
 }
 
+export function* watchGetComboPayment() {
+    yield takeEvery(COMBO_PAYMENT_GET, onGetComboPayment);
+}
+
 function* masterSaga() {
     yield all([
         fork(watchGetMaster),
@@ -150,6 +172,7 @@ function* masterSaga() {
         fork(watchGetKabupatenBpjs),
         fork(watchGetKecamatanBpjs),
         fork(watchGetComboPulang),
+        fork(watchGetComboPayment),
     ]);
 }
 

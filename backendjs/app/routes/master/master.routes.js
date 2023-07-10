@@ -44,6 +44,11 @@ export default function(app) {
       "/api/master/combobox-pulang",
       [authJwt.verifyToken],
       controller.comboPulang
-    )
-  
+    );
+
+    app.get(
+      "/api/master/combobox-payment",
+      [authJwt.verifyToken],
+      controller.comboPayment
+    );
   };

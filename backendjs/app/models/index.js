@@ -22,6 +22,7 @@ import t_rm_lokasidokumenM from "../models/t_rm_lokasidokumen.js";
 import t_orderpelayananM from "../models/t_orderpelayanan.model.js";
 import t_detailorderpelayananM from "../models/t_detailorderpelayanan.model.js";
 import t_kepesertaanasuransiM from "../models/t_kepesertaanasuransi.js";
+import t_notapelayananpasien from "./t_notapelayananpasien.js";
 
 console.log("dialect", config.dialect)
 
@@ -69,8 +70,7 @@ db.t_rm_lokasidokumen = t_rm_lokasidokumenM(sequelize,Sequelize);
 db.t_orderpelayanan = t_orderpelayananM(sequelize,Sequelize);
 db.t_detailorderpelayanan = t_detailorderpelayananM(sequelize,Sequelize);
 db.t_kepesertaanasuransi = t_kepesertaanasuransiM(sequelize,Sequelize);
-
-
+db.t_notapelayananpasien = t_notapelayananpasien(sequelize,Sequelize);
 db.role.belongsToMany(db.user, {
   through: "user_roles",
   foreignKey: "roleid",

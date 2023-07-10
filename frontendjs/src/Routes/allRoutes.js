@@ -260,12 +260,15 @@ import KendaliDokumen from "../pages/RekamMedis/KendaliDokumen/KendaliDokumen";
 import DaftarOrderRadiologi from "../pages/Radiologi/DaftarOrderRadiologi/DaftarOrderRadiologi";
 import DaftarPasienRadiologi from "../pages/Radiologi/DaftarPasienRadiologi/DaftarPasienRadiologi";
 import TransaksiPelayanRadiologi from "../pages/Radiologi/TransaksiPelayanRadiologi/TransaksiPelayanRadiologi";
-import DaftarPasienPulang from "../pages/Emr/DaftarPasienPulang/DaftarPasienPulang";
+import DaftarPasienPulang from "../pages/DaftarPasienPulang/DaftarPasienPulang";
 
 // Laboratorium
 import DaftarOrderLaboratorium from "../pages/Laboratorium/DaftarOrderLaboratorium/DaftarOrderLaboratorium";
 import DaftarPasienLaboratorium from "../pages/Laboratorium/DaftarPasienLaboratorium/DaftarPasienLaboratorium";
 import TransaksiPelayanLaboratorium from "../pages/Laboratorium/TransaksiPelayanLaboratorium/TransaksiPelayanLaboratorium";
+import VerifikasiPelayanan from "../pages/VerifikasiPelayanan/VerifikasiPelayanan";
+import DaftarTagihanPasien from "../pages/DaftarTagihanPasien/DaftarTagihanPasien";
+import Bayar from "../pages/Bayar/Bayar";
 
 // casemix
 import KlaimInacbg from "../pages/Casemix/KlaimInacbg/KlaimInacbg";
@@ -511,8 +514,14 @@ const authProtectedRoutes = [
   {path:"/laboratorium/daftarpasienlaboratorium", component:<DaftarPasienLaboratorium/>},
   {path:"/transaksi-pelayanan-laboratorium/:norecdp/:norecap", component:<TransaksiPelayanLaboratorium/>},
 
-  // casemix
-  {path:"/casemix/klaiminacbg", component:<KlaimInacbg/>}
+    // payment
+    {path: "/payment/verif-tagihan/:norecap", component: <VerifikasiPelayanan />},
+    {path: "/payment/daftar-tagihan", component: <DaftarTagihanPasien />},
+    {path: "/payment/bayar/:nonota", component: <Bayar />},
+  
+// casemix
+{path:"/casemix/klaiminacbg", component:<KlaimInacbg/>}
+  
 ];
 
 const publicRoutes = [

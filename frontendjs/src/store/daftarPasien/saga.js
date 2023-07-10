@@ -9,7 +9,9 @@ import {
     DAFTARPASIEN_PULANG_GET_ERROR,
     DAFTARPASIEN_RI_PULANG_SAVE_ERROR,
     DAFTARPASIEN_RI_PULANG_SAVE,
-    LIST_FASKES_GET
+    LIST_FASKES_GET,
+    DAFTARPASIEN_NOREC_GET,
+    ANTREAN_NOREC_GET,
 } from "./actionType";
 
 import {
@@ -19,6 +21,10 @@ import {
     daftarPasienRIPulangSaveSuccess,
     listFaskesSuccess,
     listFaskesError,
+    daftarPasienNorecGetSuccess,
+    daftarPasienNorecGetError,
+    antreanPasienNorecGetSuccess,
+    antreanPasienNorecGetError,
 } from "./action";
 import { toast } from "react-toastify";
 
@@ -82,6 +88,17 @@ function* saveDaftarPasienPulang({ payload: {data, callback} }) {
     }
 }
 
+function* daftarPasienNorecGet({ payload: { norec } }) {
+    try {
+        const response = yield call(serviceRegistrasi.getDaftarPasienNorec, norec);
+        yield put(daftarPasienNorecGetSuccess(response.data));
+    } catch (error) {
+        console.error(error)
+        yield put(daftarPasienNorecGetError(error));
+    }
+}
+
+
 
 function* onGetListFaskes({ payload: { qfaskes, faskesType } }) {
     try {
@@ -91,6 +108,17 @@ function* onGetListFaskes({ payload: { qfaskes, faskesType } }) {
         yield put(listFaskesError(error));
     }
 }
+
+function* onAntreanNorecGet({ payload: { norec } }) {
+    try {
+        const response = yield call(serviceRegistrasi.getAntreanByNorec, norec);
+        yield put(antreanPasienNorecGetSuccess(response.data));
+    } catch (error) {
+        console.error(error)
+        yield put(antreanPasienNorecGetError(error));
+    }
+}
+
 
 export function* watchGetDaftarPasienRJ() {
     yield takeEvery(DAFTARPASIEN_RJ_GET, onGetDaftarPasienRJ);
@@ -121,6 +149,14 @@ export function* watchGetListFaskes() {
     yield takeEvery(LIST_FASKES_GET, onGetListFaskes);
 }
 
+export function* watchDaftarPasienNorecGet(){
+    yield takeEvery(DAFTARPASIEN_NOREC_GET, daftarPasienNorecGet);
+}
+
+export function* watchAntreanNorecGet(){
+    yield takeEvery(ANTREAN_NOREC_GET, onAntreanNorecGet);
+}
+
 
 function* daftarPasienSaga() {
     yield all([
@@ -131,6 +167,8 @@ function* daftarPasienSaga() {
         fork(watchGetDaftarPasienPulang),
         fork(watchSaveDaftarPasienPulang),
         fork(watchGetListFaskes),
+        fork(watchDaftarPasienNorecGet),
+        fork(watchAntreanNorecGet)
     ]);
 }
 

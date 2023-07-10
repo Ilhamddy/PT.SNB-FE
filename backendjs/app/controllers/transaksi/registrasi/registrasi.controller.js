@@ -505,6 +505,32 @@ async function saveRegistrasiPasien(req, res) {
     }
 }
 
+const getNoAntrean = async (req, res) => {
+    try {
+        let query = `
+        select nobed,objectkamarfk from t_antreanpemeriksaan
+            where 
+            t_antreanpemeriksaan.norec='${req.params.norec}'`
+        const antrean = await pool.query(query, [])
+        res.status(200).send({
+            data: antrean.rows?.[0] || [],
+            status: 'success',
+            success: true,
+            msg: 'get berhasil',
+            code: 200
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(201).send({
+            status: error,
+            success: false,
+            msg: 'get gagal',
+            code: 201
+        });
+    }
+}
+
+
 const updateRegistrasiPPulang = async (req, res) => {
     let transaction = null;
     try{
@@ -525,13 +551,19 @@ const updateRegistrasiPPulang = async (req, res) => {
         if(!req.body.norec){
             throw new Error('norec tidak boleh kosong');
         }
+        if(!req.body.norecAP){
+            throw new Error('norecAP tidak boleh kosong');
+        }
         const norecDP = req.body.norec
+        const norecAP = req.body.norecAP
         const caraKeluar = req.body.carakeluar
         const isPulangOrAPS = caraKeluar === 1 || caraKeluar === 2
         const isMeninggal = caraKeluar === 4
         const isRujuk = caraKeluar === 5
         const isPindah = caraKeluar === 3
         const objectBody = req.body
+        console.log("nobed", objectBody.nobed)
+        console.log("nobedsebelum", objectBody.nobedsebelum)
         const objectEdit = {
             objectcarapulangrifk: objectBody.carakeluar,
             objectkondisipulangrifk: objectBody.kondisipulang,
@@ -540,6 +572,9 @@ const updateRegistrasiPPulang = async (req, res) => {
             tglpulang: objectBody.tanggalpulang,
             tglkeluar: objectBody.tanggalpulang,
             objecthubunganpembawapasienfk: objectBody.hubungan
+        }
+        const objectEditAP = {
+            tglkeluar: objectBody.tanggalpulang,
         }
         const objectEditMeninggal = {
             ...objectEdit, 
@@ -568,6 +603,7 @@ const updateRegistrasiPPulang = async (req, res) => {
         }
 
         const objectEditPindahAp = {
+            ...objectEditAP,
             objectketeranganranapfk: objectBody.keteranganpindah,
             objectkelasfk: objectBody.kelas,
             objectkamarfk: objectBody.kamar,
@@ -577,49 +613,84 @@ const updateRegistrasiPPulang = async (req, res) => {
         }
         let updatedBody = null;
         let updatedBodyAp = null;
+        let updatedBodyK = null;
+        let updatedBodyKPindah = null;
         if(isPulangOrAPS){
-            const updateRegistrasi = await db.t_daftarpasien.update(objectEdit, {
+            updatedBody = await db.t_daftarpasien.update(objectEdit, {
                 where: {
                     norec: norecDP
                 }
             }, { transaction });
-            updatedBody = objectEdit
+            updatedBodyAp = await db.t_antreanpemeriksaan.update(objectEditAP, {
+                where: {
+                    norec: norecAP
+                }
+            }, { transaction });
+            await db.m_tempattidur.update({
+                objectstatusbedfk: 2
+            }, { where: { id: objectBody.nobedsebelum } }, { transaction });
             await transaction.commit();
         }else if(isMeninggal){
-            const updateRegistrasi = await db.t_daftarpasien.update(objectEditMeninggal, {
+            updatedBody = await db.t_daftarpasien.update(objectEditMeninggal, {
                 where: {
                     norec: norecDP
                 }
             }, { transaction });
-            updatedBody = objectEditMeninggal
+            updatedBodyAp = await db.t_antreanpemeriksaan.update(objectEditAP, {
+                where: {
+                    norec: norecAP
+                }
+            }, { transaction });
+            updatedBodyK = await db.m_tempattidur.update({
+                objectstatusbedfk: 2
+            }, { where: { id: objectBody.nobedsebelum } }, { transaction });
             await transaction.commit();
         }else if(isRujuk){
-            const updateRegistrasi = await db.t_daftarpasien.update(objectEditRujuk, {
+            updatedBody = await db.t_daftarpasien.update(objectEditRujuk, {
                 where: {
                     norec: norecDP
                 }
             }, { transaction });
+            updatedBodyAp = await db.t_antreanpemeriksaan.update(objectEditAP, {
+                where: {
+                    norec: norecAP
+                }
+            }, { transaction });
+            updatedBodyK = await db.m_tempattidur.update({
+                objectstatusbedfk: 2
+            }, { where: { id: objectBody.nobedsebelum } }, { transaction });
             updatedBody = objectEditRujuk
+            updatedBodyAp = objectEditAP
             await transaction.commit();
         }else if(isPindah){
-            const updateRegistrasi = await db.t_daftarpasien.update(objectEditPindahDp, {
+            updatedBody = await db.t_daftarpasien.update(objectEditPindahDp, {
                 where: {
                     norec: norecDP
                 }
             }, { transaction });
+            updatedBodyAp = await db.t_antreanpemeriksaan.update(objectEditPindahAp, {
+                where: {
+                    norec: norecAP
+                }
+            }, { transaction });
+            updatedBodyK = await db.m_tempattidur.update({
+                objectstatusbedfk: 2
+            }, { where: { id: objectBody.nobedsebelum } }, { transaction });
+            updatedBodyKPindah = await db.m_tempattidur.update({
+                objectstatusbedfk: 1
+            }, { where: { id: objectBody.nobed } }, { transaction });
             updatedBody = objectEditPindahDp
-            // const updateRegistrasiAp = await db.t_antreanpemeriksaan.update(objectEditPindahAp, {
-            //     where: {
-            //         noregistrasi: norecAP
-            //     }
-            // }, { transaction });
             updatedBodyAp = objectEditPindahAp
             await transaction.commit();
 
         }else{
             throw new Error('cara keluar tidak ditemukan')
         }
-        let tempres = { updatedBody, updatedBodyAp}
+        if(updatedBody && updatedBodyAp){
+            updatedBody.norec = norecDP
+            updatedBodyAp.norec = norecAP
+        }
+        let tempres = { updatedBody, updatedBodyAp, updatedBodyK, updatedBodyKPindah}
         res.status(200).send({
             data: tempres,
             status: "success",
@@ -627,6 +698,7 @@ const updateRegistrasiPPulang = async (req, res) => {
             msg: 'Update Pulang Berhasil',
             code: 200
         });
+        
     }catch(e){
         console.error("Error update registrasiPPulang")
         console.error(e);
@@ -712,7 +784,6 @@ const getDaftarPasienFilter = async (req, res) => {
     try {
         let filterTglLast = formatDateIsoShort(new Date(req.query.dateEnd));
         let filterTglStart = formatDateIsoShort(new Date(req.query.dateStart));
-        console.log(filterTglLast, filterTglStart)
         let filterInstalasi = req.query.instalasi;
         let filterUnit = req.query.unit;
         let filterSearch = req.query.search;
@@ -725,6 +796,7 @@ const getDaftarPasienFilter = async (req, res) => {
             mu.namaunit as namaunit,
             mka.namakamar as namakamar,
             tap.noantrian as nomorantrean,
+            tap.norec as norecap,
             tap.nobed as nobed
                 FROM 
                 t_daftarpasien
@@ -1253,5 +1325,6 @@ export default {
     getWidgetDaftarPasienRI,
     getDaftarPasienRawatInap,
     getDaftarPasienFilter,
-    updateRegistrasiPPulang
+    updateRegistrasiPPulang,
+    getNoAntrean
 };

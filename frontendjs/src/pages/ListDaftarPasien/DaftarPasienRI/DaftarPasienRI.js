@@ -29,6 +29,7 @@ const DaftarPasienRI = () => {
     const dispatch = useDispatch();
     const history = useNavigate();
     const [norecPulangRI, setNorecPulangRI] = useState("");
+    const [norecPulangRIAP, setNorecPulangRIAP] = useState("");
     const { data, datawidget, loading, error, dataCombo,loadingCombo } = useSelector((state) => ({
         data: state.DaftarPasien.daftarPasienRIGet.data,
         datawidget: state.DaftarPasien.widgetdaftarPasienRIGet.data,
@@ -101,15 +102,13 @@ const DaftarPasienRI = () => {
                     <div className="hstack gap-3 flex-wrap">
                         <Link to={`/emr-pasien/${data.norecdp}/${data.norecta}`} className="link-success fs-15" id="tooltipTop"><i className="ri-edit-2-line"></i></Link>
                         <UncontrolledTooltip placement="top" target="tooltipTop" > Pengkajian Pasien </UncontrolledTooltip>
-
-
                         <UncontrolledDropdown className="dropdown d-inline-block">
                             <DropdownToggle className="btn btn-soft-secondary btn-sm" tag="button" id="tooltipTop2">
                                 <i className="ri-apps-2-line"></i>
                             </DropdownToggle>
                             <DropdownMenu className="dropdown-menu-end">
                                 <DropdownItem href="#!" onClick={() => handleClickKonsul(data)}><i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>Konsul Antar Unit</DropdownItem>
-                                <DropdownItem href="#!" onClick={() => setNorecPulangRI(data.norecdp)}><i className="ri-run-line align-bottom me-2 text-muted"></i>Pulang</DropdownItem>
+                                <DropdownItem href="#!" onClick={() => {setNorecPulangRI(data.norecdp); setNorecPulangRIAP(data.norecta)}}><i className="ri-run-line align-bottom me-2 text-muted"></i>Pulang</DropdownItem>
                             </DropdownMenu>
                         </UncontrolledDropdown>
                         <UncontrolledTooltip placement="top" target="tooltipTop2" > Menu </UncontrolledTooltip>
@@ -204,7 +203,8 @@ const DaftarPasienRI = () => {
                 dataDokter={dataDokter}
             />
             <StatusPulangRIModal 
-                norecdp={!!norecPulangRI} 
+                norecdp={norecPulangRI} 
+                norecAP={norecPulangRIAP}
                 toggle={() => setNorecPulangRI("")} />
             <UiContent />
             <div className="page-content">

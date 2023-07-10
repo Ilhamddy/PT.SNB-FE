@@ -21,6 +21,14 @@ import {
     LIST_FASKES_GET,
     LIST_FASKES_GET_SUCCESS,
     LIST_FASKES_GET_ERROR,
+    DAFTARPASIEN_NOREC_GET,
+    DAFTARPASIEN_NOREC_GET_SUCCESS,
+    DAFTARPASIEN_NOREC_GET_ERROR,
+    DAFTARPASIEN_NOREC_GET_RESET,
+    ANTREAN_NOREC_GET,
+    ANTREAN_NOREC_GET_SUCCESS,
+    ANTREAN_NOREC_GET_ERROR,
+    ANTREAN_NOREC_GET_RESET,
 } from "./actionType";
 
 export const daftarPasienResetForm = () => ({
@@ -87,7 +95,7 @@ export const daftarPasienRIGetError = (error) => ({
     payload: error,
 });
 
-export const daftarPasienPulangGet = (dateStart, dateEnd, instalasi, unit, search) => ({
+export const daftarPasienPulangGet = ({dateStart, dateEnd, instalasi, unit, search}) => ({
     type: DAFTARPASIEN_PULANG_GET,
     payload: { dateStart, dateEnd, instalasi, unit, search},
 });
@@ -133,4 +141,44 @@ export const listFaskesSuccess = (data) => ({
 export const listFaskesError = (error) => ({
     type: LIST_FASKES_GET_ERROR,
     payload: error,
+});
+
+export const daftarPasienNorecGet = (norec) => ({
+    type: DAFTARPASIEN_NOREC_GET,
+    payload: { norec },
+});
+
+export const daftarPasienNorecGetSuccess = (data) => ({
+    type: DAFTARPASIEN_NOREC_GET_SUCCESS,
+    payload: data,
+});
+
+export const daftarPasienNorecGetError = (error) => ({
+    type: DAFTARPASIEN_NOREC_GET_ERROR,
+    payload: error,
+});
+
+export const daftarPasienNorecGetReset = () => ({
+    type: DAFTARPASIEN_NOREC_GET_RESET,
+    payload: {},
+});
+
+export const antreanPasienNorecGet = (norec) => ({
+    type: ANTREAN_NOREC_GET,
+    payload: { norec },
+});
+
+export const antreanPasienNorecGetSuccess = (data) => ({
+    type: ANTREAN_NOREC_GET_SUCCESS,
+    payload: data,
+});
+
+export const antreanPasienNorecGetError = (error) => ({
+    type: ANTREAN_NOREC_GET_ERROR,  
+    payload: error,
+});
+
+export const antreanPasienNorecGetReset = () => ({
+    type: ANTREAN_NOREC_GET_RESET,
+    payload: {},
 });

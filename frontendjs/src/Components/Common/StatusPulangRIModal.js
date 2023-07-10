@@ -12,26 +12,34 @@ import * as Yup from "yup";
 import Flatpickr from "react-flatpickr";
 import {
     listOrderByNorecGet,listKamarRadiologiGet,updateTglRencanaRadiologi,saveVerifikasiRadiologi,
-    deleteDetailOrderPelayanan,radiologiResetForm, daftarPasienRIPulangSave, listFaskesGet
+    deleteDetailOrderPelayanan,radiologiResetForm, daftarPasienRIPulangSave, listFaskesGet, daftarPasienNorecGet, antreanPasienNorecGet
 } from "../../store/actions";
 import { comboPulangGet } from "../../store/master/action";
+import { useNavigate } from "react-router-dom";
 
 
-const StatusPulangRIModal = ({ norecdp, toggle }) => {
+const StatusPulangRIModal = ({ norecdp, norecAP, toggle }) => {
     const dispatch = useDispatch();
-    const { comboPulang, dataFaskes } = useSelector((state) => ({
+    const { comboPulang, dataFaskes, dataReg, antreanSebelum } = useSelector((state) => ({
         comboPulang: state.Master.comboPulangGet.data,
-        dataFaskes: state.DaftarPasien.listFaskesGet.data
+        dataFaskes: state.DaftarPasien.listFaskesGet.data,
+        dataReg: state.DaftarPasien.daftarPasienNoRecGet.data,
+        antreanSebelum: state.DaftarPasien.antreanNoRecGet.data,
     }));
+    const isBPJS = dataReg.objectpenjaminfk === 2 
+        || dataReg.objectpenjaminfk2 === 2 
+        || dataReg.objectpenjaminfk3 === 2;
     useEffect(() => {
         dispatch(comboPulangGet());
     }, [dispatch]);
     const current = new Date();
+    const navigate = useNavigate()
     const [dateStart, setdateStart] = useState(`${current.getFullYear()}-${current.getMonth() + 1}-${current.getDate()} ${current.getHours()}:${current.getMinutes()}`);
     const validation = useFormik({
         enableReinitialize: true,
         initialValues: {
-            norec: "002df1e5-55df-4081-88fb-08dd5e05",
+            norec: norecdp,
+            norecAP: norecAP,
             carakeluar: "",
             //pulang/aps 1/2/3/4
             kondisipulang: "",
@@ -52,6 +60,7 @@ const StatusPulangRIModal = ({ norecdp, toggle }) => {
             keteranganpindah: "",
             kelas: "",
             nobed: "",
+            nobedsebelum: "",
         },
         validationSchema: Yup.object({
             carakeluar: Yup.string().required("Cara Keluar Harus diisi"),
@@ -117,10 +126,18 @@ const StatusPulangRIModal = ({ norecdp, toggle }) => {
             }),
         }),
         onSubmit: (values, { resetForm }) => {
-            dispatch(daftarPasienRIPulangSave(values, () => toggle()));
+            dispatch(daftarPasienRIPulangSave(values, () => {
+                toggle();
+                navigate("/listdaftarpasien/daftar-pasien-pulang");
+            }));
             resetForm()
         }
     })
+
+    useEffect(() => {
+        validation.setFieldValue("nobedsebelum", antreanSebelum.nobed || "")
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [validation.setFieldValue, antreanSebelum])
 
     let arKamar = comboPulang?.kamar?.filter(function (item) {
         if (item.objectkelasfk === validation.values.kelas 
@@ -137,7 +154,6 @@ const StatusPulangRIModal = ({ norecdp, toggle }) => {
     const handleBeginOnChangeTglInput = (name, newBeginValue) => {
         var dateString = new Date(newBeginValue.getTime() - (newBeginValue.getTimezoneOffset() * 60000))
             .toISOString()
-            .split("T")[0];
         validation.setFieldValue(name, dateString)
     }
     const [count, setCount] = useState(1);
@@ -171,6 +187,11 @@ const StatusPulangRIModal = ({ norecdp, toggle }) => {
             dispatch(listFaskesGet(characterEntered, validation.values.faskestujuan));
         }
     };
+
+    useEffect(() => {
+        norecdp && dispatch(daftarPasienNorecGet(norecdp));
+        norecAP && dispatch(antreanPasienNorecGet(norecAP));
+    }, [dispatch, norecAP, norecdp])
 
     const IsiRujukKiri = (
         <>
@@ -227,30 +248,38 @@ const StatusPulangRIModal = ({ norecdp, toggle }) => {
                 </Label>
             </Col>
             <Col md={8} className="mb-2">
-                <CustomSelect
-                    id="namafaskes"
-                    name="namafaskes"
-                    onInputChange={handleFaskes}
-                    options={dataFaskes?.faskes || []}
-                    className={`input ${validation.errors.namafaskes ? "is-invalid" : ""}`}
-                    onChange={(e) => validation.setFieldValue("namafaskes", e.value)}
-                />
-                {validation.touched.diagnosarujukan && validation.errors.diagnosarujukan ? (
-                    <FormFeedback type="invalid"><div>{validation.errors.diagnosarujukan}</div></FormFeedback>
-                ) : null}
-                {/* <Input
-                    id="namafaskes"
-                    name="namafaskes"
-                    type="string"
-                    placeholder="Masukkan Nama Faskes"
-                    className="form-control"
-                    onChange={validation.handleChange}
-                    value={validation.values.namafaskes || ""}
-                    invalid={validation.touched.namafaskes && validation.errors.namafaskes ? true : false}
-                />
-                {validation.touched.namafaskes && validation.errors.namafaskes ? (
-                    <FormFeedback type="invalid"><div>{validation.errors.namafaskes}</div></FormFeedback>
-                ) : null} */}
+                {isBPJS ?
+                    <>
+                        <CustomSelect
+                            id="namafaskes"
+                            name="namafaskes"
+                            onInputChange={handleFaskes}
+                            options={dataFaskes?.faskes || []}
+                            className={`input ${validation.errors.namafaskes ? "is-invalid" : ""}`}
+                            onChange={(e) => validation.setFieldValue("namafaskes", e.value)}
+                        />
+                        {validation.touched.diagnosarujukan && validation.errors.diagnosarujukan ? (
+                            <FormFeedback type="invalid"><div>{validation.errors.diagnosarujukan}</div></FormFeedback>
+                        ) : null}
+                    </>
+                    :
+                    <> 
+                        <Input
+                            id="namafaskes"
+                            name="namafaskes"
+                            type="string"
+                            placeholder="Masukkan Nama Faskes"
+                            className="form-control"
+                            onChange={validation.handleChange}
+                            value={validation.values.namafaskes || ""}
+                            invalid={validation.touched.namafaskes && validation.errors.namafaskes ? true : false}
+                        />
+                        {validation.touched.namafaskes && validation.errors.namafaskes ? (
+                            <FormFeedback type="invalid"><div>{validation.errors.namafaskes}</div></FormFeedback>
+                        ) : null} 
+                    </>  
+                }
+
             </Col>
             <Col md={4} className="mb-2">
                 <Label htmlFor="dokterperujuk" className="form-label">
@@ -370,7 +399,7 @@ const StatusPulangRIModal = ({ norecdp, toggle }) => {
                         id="tanggalpulang"
                         className="form-control border-0 fs-5 dash-filter-picker shadow"
                         options={{
-                            //  enableTime: true,
+                            enableTime: true,
                             // mode: "range",
                             dateFormat: "Y-m-d H:i",
                             defaultDate: "today"
@@ -406,6 +435,8 @@ const StatusPulangRIModal = ({ norecdp, toggle }) => {
             </Col>
         </>
     )
+
+
     
     const IsiPindahKiri = (
         <>

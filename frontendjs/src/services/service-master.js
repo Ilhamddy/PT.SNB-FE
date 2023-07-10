@@ -38,4 +38,8 @@ export default class ServiceMaster {
     getKecamatanBpjs = async (kabupaten) => {
         return await api.get(`/transaksi/bridging/bpjs/kecamatan/${kabupaten}`);
     }
+
+    getComboPayment = async () => {
+        return await api.get(`/master/combobox-payment`);
+    }
 }

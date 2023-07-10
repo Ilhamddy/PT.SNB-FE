@@ -112,4 +112,10 @@ export default function (app) {
         controller.updateRegistrasiPPulang
     )
 
+    app.get(
+        "/api/transaksi/registrasi/no-antrean/:norec",
+        [authJwt.verifyToken],
+        controller.getNoAntrean
+    )
+
 };
