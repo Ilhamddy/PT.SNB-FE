@@ -2,7 +2,7 @@ import { useFormik } from "formik";
 import userDummy from "../../assets/images/users/user-dummy-img.jpg";
 import { ToastContainer } from "react-toastify";
 import { useEffect, useState } from "react";
-import { Card, CardBody, Col, Container, Nav, NavItem, NavLink, Row, TabContent, TabPane, Table, Input, Form, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem, UncontrolledTooltip, Button, FormFeedback, Label } from "reactstrap";
+import { Card, CardBody, Col, Container, Nav, NavItem, NavLink, Row, TabContent, TabPane, Table, Input, Form, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem, UncontrolledTooltip, Button, FormFeedback, Label, CardHeader } from "reactstrap";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import * as Yup from "yup";
 import classnames from "classnames"
@@ -14,6 +14,7 @@ import { dateISOString, dateTimeLocal } from "../../utils/format";
 import Flatpickr from "react-flatpickr";
 import { 
     comboAsuransiGet, 
+    comboPaymentGet, 
     comboRegistrasiGet,
 } from "../../store/master/action";
 import { 
@@ -21,7 +22,7 @@ import {
     notaVerifCreate
 } from "../../store/payment/action";
 import CustomSelect from "../Select/Select";
-import "./VerifikasiPelayanan.scss"
+import "./Bayar.scss"
 import { useNavigate, useParams } from "react-router-dom";
 
 const dateAwalStart = dateISOString(new Date(new Date() - 1000 * 60 * 60 * 24 * 3));
@@ -29,18 +30,20 @@ const dateAwalEnd = dateISOString(new Date())
 const date = new Date()
 
 
-const VerifikasiPelayanan = () => {
+const Bayar = () => {
     const { norecap } = useParams();
     let {
         dataPasienPlg, 
         comboboxReg,
         listPelayanan,
-        norecdp
+        norecdp,
+        comboboxpayment
     } = useSelector((state) => ({
         dataPasienPlg: state.DaftarPasien.daftarPasienPulangGet.data || [],
         comboboxReg: state.Master.comboRegistrasiGet.data || {},
         listPelayanan: state.Payment.pelayananFromNoAntrianGet.data?.pelayanan || null,
         norecdp: state.Payment.pelayananFromNoAntrianGet.data?.objectdaftarpasienfk || "",
+        comboboxpayment: state.Master.comboPaymentGet.data?.metodeBayar || []
     }))
     const [listPelayananChecked, setListPelayananChecked] = useState([])
 
@@ -231,136 +234,57 @@ const VerifikasiPelayanan = () => {
         },
     ];
 
+    useEffect(() => {
+        dispatch(comboPaymentGet())
+    }, [dispatch])
+
     return(
-        <div className="page-content verifikasi-pelayanan">
+        <div className="page-content page-bayar">
             <ToastContainer closeButton={false} />
             <Container fluid>
                 <BreadCrumb title="Registrasi Pasien" pageTitle="Verifikasi Tagihan" />
-                <Card className="p-2">
-                    <Form onSubmit={(e) => {
-                        e.preventDefault();
-                        validation.handleSubmit();
-                        return false;
-                        }}
-                        className="gy-4"
-                        action="#">
-                        <Row>
-                            <Col lg={12}>
-                                <Row className="row-header mb-2">
-                                    <Col lg={2}>
-                                        <CustomSelect
-                                            id="instalasifilter"
-                                            name="instalasifilter"
-                                            className={"row-header"}
-                                            options={comboboxReg?.instalasi || []}
-                                            onChange={(e) => {setInstalasi(e.value)}}
-                                            value={instalasi || ""}
-                                        />
-                                    </Col>
-                                    <Col lg={2}>
-                                        <CustomSelect
-                                            id="instalasifilter"
-                                            name="instalasifilter"
-                                            className={"row-header"}
-                                            options={comboboxReg?.instalasi || []}
-                                            onChange={(e) => {setInstalasi(e.value)}}
-                                            value={instalasi || ""}
-                                        />
-                                    </Col>
-                                    
-                                    <Col lg={2}>
-                                        <div className="d-flex justify-content-sm-end">
-                                            <div className="search-box ms-2">
-                                                <input type="text" className="form-control search"
-                                                    placeholder="Search..." onChange={event => setSearch(event.target.value)}
-                                                    onKeyDown={handleFilter} />
-                                                <i className="ri-search-line search-icon"></i>
-                                            </div>
+                    <Row>
+                        <Col lg={8}>
+                            <Card className="p-3">
+                                <Row>
+                                    <Col lg={6}>
+                                        <Label style={{ color: "black" }} htmlFor="keterangan" className="form-label">
+                                            Metode Pembayaran
+                                        </Label>
+                                        <div>
+                                            <CustomSelect
+                                                id="metodepembayaran"
+                                                name="metodepembayaran"
+                                                options={comboboxpayment}
+                                                onChange={(e) => {
+                                                    
+                                                }}
+                                                value={validation.values.metodepembayaran || ""}
+                                            />
+                                            {validation.touched.metodepembayaran && validation.errors.metodepembayaran ? (
+                                                <FormFeedback type="invalid"><div>{validation.errors.metodepembayaran}</div></FormFeedback>
+                                            ) : null}
                                         </div>
                                     </Col>
-                                    
-                                    <Col lg={1}>
-                                        <Button type="button" className="rounded-pill" placement="top" id="tooltipTopPencarian" onClick={handleClickCari}>
-                                            CARI
-                                        </Button>
-                                        <UncontrolledTooltip placement="top" target="tooltipTopPencarian" > Pencarian </UncontrolledTooltip>
+                                    <Col xxl={6} md={6}>
+                                        <Card>
+                                            <CardHeader>
+                                                
+                                            </CardHeader>
+                                        </Card>
                                     </Col>
                                 </Row>
-                                <DataTable
-                                    fixedHeader
-                                    columns={columns}
-                                    pagination
-                                    data={listPelayananChecked || []}
-                                    progressPending={false}
-                                    customStyles={tableCustomStyles}
-                                />
-                            </Col>
-                            <Row className="row-header mb-2">
-                                <Col lg={1} >
-                                    <Label style={{ color: "black" }} htmlFor="keterangan" className="form-label">
-                                        Keterangan: 
-                                    </Label>
-                                </Col>
-                                <Col lg={4}>
-                                    <Input
-                                        id="keterangan"
-                                        name="keterangan"
-                                        type="keterangan"
-                                        placeholder="Isi Keterangan"
-                                        style={{ height: '200px' }}
-                                        onChange={validation.handleChange}
-                                        onBlur={validation.handleBlur}
-                                        value={validation.values.keterangan || ""}
-                                        invalid={
-                                            validation.touched.keterangan && validation.errors.keterangan ? true : false
-                                        }
-                                    />
-                                    {validation.touched.keterangan && validation.errors.keterangan ? (
-                                        <FormFeedback type="invalid"><div>{validation.errors.keterangan}</div></FormFeedback>
-                                    ) : null}
-                                </Col>
-                                <Col lg={7} className="flex-row-reverse d-flex">
-                                    <table className="table-payment ">
-                                        <thead>
-                                            <tr>
-                                                <th className="text-center">Deposit</th>
-                                                <th className="text-center">0</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td className="text-center">Verifikasi Layanan</td>
-                                                <td className="text-center">Rp{totalLayanan}</td>
-                                            </tr>
-                                            <tr>
-                                                <td className="text-center">Verifikasi Resep</td>
-                                                <td className="text-center">Rp{totalObat}</td>
-                                            </tr>
-                                            <tr>
-                                                <td className="text-center">Total Verifikasi</td>
-                                                <td className="text-center">Rp{grandTot}</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </Col>
-                            </Row>
-                            <Row className="row-header mb-2">
-                                <div className="d-flex gap-2 justify-content-center mt-4 mb-2">
-                                    <Button type="submit" color="info" placement="top" id="tooltipTop" >
-                                        SIMPAN
-                                    </Button>
-                                    <button
-                                        type="button"
-                                        className="btn w-sm btn-danger"
-                                        data-bs-dismiss="modal"
-                                    >
-                                        Batal
-                                    </button>
-                                </div>
-                            </Row>
-                        </Row>
-                    </Form>
-                </Card>
+                                
+                            </Card>
+                        </Col>
+                        <Col lg={4}>
+                            <Card>
+                                <Label style={{ color: "black" }} htmlFor="keterangan" className="form-label">
+                                    Total Tagihan
+                                </Label>
+                            </Card>
+                        </Col>
+                    </Row>
             </Container>
             
         </div>
@@ -383,4 +307,4 @@ const tableCustomStyles = {
     }
 }
 
-export default VerifikasiPelayanan;
+export default Bayar;

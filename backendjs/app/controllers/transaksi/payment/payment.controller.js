@@ -1,7 +1,7 @@
 import * as uuid from 'uuid';
 import db from "../../../models";
 import pool from "../../../config/dbcon.query";
-import { qGetPelayananFromAntrean, qGetNorecPenggunaFromAp } from '../../../queries/payment/payment.queries';
+import { qGetPelayananFromAntrean, qGetNorecPenggunaFromAp, qDaftarTagihanPasien } from '../../../queries/payment/payment.queries';
 
 const t_notapelayananpasien = db.t_notapelayananpasien
 const t_pelayananpasien = db.t_pelayananpasien
@@ -11,7 +11,6 @@ const getPelayananFromAntrean = async (req, res) => {
         const norecap = req.params.norecAP
         const pelayanan = await pool.query(qGetPelayananFromAntrean, [norecap])
         const dp = await pool.query(qGetNorecPenggunaFromAp, [norecap])
-        console.log("dp", dp)
         let tempres = { 
             pelayanan: pelayanan.rows || [], 
             objectdaftarpasienfk: dp.rows[0].objectdaftarpasienfk || null 
@@ -27,7 +26,7 @@ const getPelayananFromAntrean = async (req, res) => {
         console.error("Error Get Pelayanan From Antrean");
         console.error(error);
         res.status(500).send({
-            status: error,
+            data: error,
             success: false,
             msg: 'Get Gagal',
             code: 500
@@ -43,7 +42,7 @@ const createNotaVerif = async (req, res) => {
     }catch(e){
         console.error(e)
         res.status(500).send({
-            status: e.message,
+            data: e.message,
             success: false,
             msg: 'Transaksi gagal',
             code: 500
@@ -94,7 +93,7 @@ const createNotaVerif = async (req, res) => {
         console.error(error)
         transaction.rollback();
         res.status(500).send({
-            status: error,
+            data: error,
             success: false,
             msg: 'Create Nota Verif Gagal',
             code: 500
@@ -102,7 +101,31 @@ const createNotaVerif = async (req, res) => {
     }
 }
 
+const getDaftarTagihanPasien = async (req, res) => {
+    try{
+        const tagihan = await pool.query(qDaftarTagihanPasien, [])
+        let tempres = tagihan.rows || []
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+            msg: 'Get daftar tagihan berhasil Berhasil',
+            code: 200
+        });
+    }catch(error){
+        console.error("===Error Get Daftar Tagihan Pasien===");
+        console.error(error);
+        res.status(500).send({
+            data: error,
+            success: false,
+            msg: 'Get daftar tagihan pasien berhasil',
+            code: 500
+        });
+    }
+}
+
 export default {
     getPelayananFromAntrean,
-    createNotaVerif
+    createNotaVerif,
+    getDaftarTagihanPasien,
 };

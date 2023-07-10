@@ -3,12 +3,15 @@ import {
     pelayananFromAntreanGetError, 
     pelayananFromAntreanGetSuccess,
     notaVerifCreateSuccess,
-    notaVerifCreateError
+    notaVerifCreateError,
+    daftarTagihanPasienGetSuccess,
+    daftarTagihanPasienGetError
 } from "./action";
 
 import {
     PELAYANAN_FROM_ANTREAN_GET, 
-    NOTA_VERIF_CREATE
+    NOTA_VERIF_CREATE,
+    DAFTAR_TAGIHAN_PASIEN_GET
 } from "./actionType";
 
 import ServicePayment from "../../services/service-payment";
@@ -38,6 +41,14 @@ function* onGetNotaVerifCreate( {payload: {body, callback}}) {
     }
 }
 
+function* onGetDaftarTagihanPasien( {payload: {body}}) {
+    try {
+        const response = yield call(servicePayment.getDaftarTagihanPasien, body);
+        yield put(daftarTagihanPasienGetSuccess(response.data));
+    } catch (error) {
+        yield put(daftarTagihanPasienGetError(error));
+    }
+}
 
 export function* watchGetPelayananFromAntrean() {
     yield takeEvery(PELAYANAN_FROM_ANTREAN_GET, onGetPelayananFromAntrean);
@@ -47,9 +58,14 @@ export function* watchGetNotaVerifCreate() {
     yield takeEvery(NOTA_VERIF_CREATE, onGetNotaVerifCreate);
 }
 
+export function* watchGetDaftarTagihanPasien() {
+    yield takeEvery(DAFTAR_TAGIHAN_PASIEN_GET, onGetDaftarTagihanPasien);
+}
+
 export default function* masterSaga() {
     yield all([
         fork(watchGetPelayananFromAntrean),
-        fork(watchGetNotaVerifCreate)
+        fork(watchGetNotaVerifCreate),
+        fork(watchGetDaftarTagihanPasien)
     ]);
 }

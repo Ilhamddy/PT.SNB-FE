@@ -4,7 +4,11 @@ import { PELAYANAN_FROM_ANTREAN_GET,
     PELAYANAN_FROM_ANTREAN_GET_RESET,
     NOTA_VERIF_CREATE,
     NOTA_VERIF_CREATE_SUCCESS,
-    NOTA_VERIF_CREATE_ERROR
+    NOTA_VERIF_CREATE_ERROR,
+    DAFTAR_TAGIHAN_PASIEN_GET,
+    DAFTAR_TAGIHAN_PASIEN_GET_SUCCESS,
+    DAFTAR_TAGIHAN_PASIEN_GET_ERROR,
+    DAFTAR_TAGIHAN_PASIEN_GET_RESET,
 } from "./actionType";
 
 export const pelayananFromAntreanGet = (norecap) => {
@@ -56,4 +60,30 @@ export const notaVerifCreateError = (error) => {
     }
 }
 
+export const daftarTagihanPasienGet = (body, callback) => {
+    return {
+        type: DAFTAR_TAGIHAN_PASIEN_GET,
+        payload: {body, callback}
+    }
+}
 
+export const daftarTagihanPasienGetSuccess = (data) => {
+    return {
+        type: DAFTAR_TAGIHAN_PASIEN_GET_SUCCESS,
+        payload: data
+    }
+}
+
+export const daftarTagihanPasienGetError = (error) => {
+    return {
+        type: DAFTAR_TAGIHAN_PASIEN_GET_ERROR,
+        payload: error
+    }
+}
+
+export const daftarTagihanPasienGetReset = () => {
+    return {
+        type: DAFTAR_TAGIHAN_PASIEN_GET_RESET,
+        payload: {}
+    }
+}

@@ -267,6 +267,8 @@ import DaftarOrderLaboratorium from "../pages/Laboratorium/DaftarOrderLaboratori
 import DaftarPasienLaboratorium from "../pages/Laboratorium/DaftarPasienLaboratorium/DaftarPasienLaboratorium";
 import TransaksiPelayanLaboratorium from "../pages/Laboratorium/TransaksiPelayanLaboratorium/TransaksiPelayanLaboratorium";
 import VerifikasiPelayanan from "../pages/VerifikasiPelayanan/VerifikasiPelayanan";
+import DaftarTagihanPasien from "../pages/DaftarTagihanPasien/DaftarTagihanPasien";
+import Bayar from "../pages/Bayar/Bayar";
 
 
 
@@ -512,7 +514,8 @@ const authProtectedRoutes = [
 
   // payment
   {path: "/payment/verif-tagihan/:norecap", component: <VerifikasiPelayanan />},
-
+  {path: "/payment/daftar-tagihan", component: <DaftarTagihanPasien />},
+  {path: "/payment/bayar/:nonota", component: <Bayar />},
 ];
 
 const publicRoutes = [

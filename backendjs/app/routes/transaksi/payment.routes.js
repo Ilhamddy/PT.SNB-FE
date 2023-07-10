@@ -22,6 +22,9 @@ export default function (app) {
         controller.createNotaVerif
     )
 
-
-
+    app.get(
+        "/api/transaksi/payment/get-daftar-tagihan-pasien",
+        [authJwt.verifyToken],
+        controller.getDaftarTagihanPasien
+    );
 }

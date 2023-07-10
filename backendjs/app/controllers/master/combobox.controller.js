@@ -25,6 +25,8 @@ import queriesStatusKecelakaan from '../../queries/master/statuskecelakaan/statu
 import queriesStatusPulangRI from '../../queries/master/statuspulangri/statuspulangri.queries'
 import queriesKondisiPulangRI from '../../queries/master/kondisipulangri/kondisipulangri.queries'
 import queriesCaraPulangRI from '../../queries/master/carapulangri/carapulangri.queries'
+import queriesMetodeBayar from '../../queries/master/metodebayar/metodebayar.queries'
+
 
 const selectComboBox = (req, res) => {
     try {
@@ -295,11 +297,35 @@ const comboPulang = async (req, res) => {
     }
 }
 
+
+const comboPayment = async (req, res) => {
+    try {
+        const metodeBayar = await pool.query(queriesMetodeBayar.getAll, []);
+        let tempres = {
+            metodeBayar: metodeBayar.rows
+        }
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+        });
+    } catch (error) {
+        console.error("===get metode bayar error=== ")
+        console.error(error)
+        res.status(500).send({
+            data: error,
+            status: "error",
+            success: false,
+        });
+    }
+}   
+
 export default {
     selectComboBox,
     desaKelurahan,
     getKecamatan,
     comboRegistrasi,
     comboAsuransi,
-    comboPulang
+    comboPulang,
+    comboPayment
 };

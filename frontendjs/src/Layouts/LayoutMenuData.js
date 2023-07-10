@@ -259,6 +259,17 @@ const Navdata = () => {
                         ]);
                     }
                 },
+                {
+                    id: "daftar-pembayaran",
+                    label: "Daftar Pembayaran",
+                    link: "/payment/daftar-tagihan",
+                    parentId: "listdaftarpasien",
+                    isAllowed: () => {
+                        return isAllowedAccess(getUserPermissions(), [
+                            "REGISTRASI_VIEW",
+                        ]);
+                    }
+                },
             ],
         },
         {

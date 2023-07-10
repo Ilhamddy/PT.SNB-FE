@@ -29,7 +29,36 @@ const qGetNorecPenggunaFromAp =
         LIMIT 1;
     `
 
+
+
+const qDaftarTagihanPasien =
+    `
+    SELECT 
+	SUM(tn.total) AS total, 
+	tn.no_nota AS nonota, 
+	td.nocmfk AS nocmfk,
+	td.tglregistrasi AS tglregistrasi,
+	td.noregistrasi AS noregistrasi,
+	mp.namapasien AS namapasien,
+	mr.namaexternal AS namarekanan,
+	td.tglpulang AS tglpulang
+		FROM t_notapelayananpasien tn
+		LEFT JOIN t_daftarpasien td ON tn.objectdaftarpasienfk=td.norec
+		LEFT JOIN m_pasien mp ON td.nocmfk=mp.id
+		LEFT JOIN m_rekanan mr ON td.objectpenjaminfk=mr.id
+			GROUP BY 
+			tn.no_nota,
+			tn.objectdaftarpasienfk,
+			td.nocmfk,
+			td.tglregistrasi,
+			td.noregistrasi,
+			mp.namapasien,
+			mr.namaexternal,
+			td.tglpulang
+    `
+
 export {
     qGetPelayananFromAntrean,
-    qGetNorecPenggunaFromAp
+    qGetNorecPenggunaFromAp,
+    qDaftarTagihanPasien
 }

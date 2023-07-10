@@ -27,6 +27,9 @@ import {
     COMBO_PULANG_GET,
     COMBO_PULANG_GET_SUCCESS,
     COMBO_PULANG_GET_ERROR,
+    COMBO_PAYMENT_GET,
+    COMBO_PAYMENT_GET_SUCCESS,
+    COMBO_PAYMENT_GET_ERROR,
 } from "./actionType";
 
 const INIT_STATE = {
@@ -71,6 +74,11 @@ const INIT_STATE = {
         error: null,
     },
     comboPulangGet: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    comboPaymentGet: {
         data: [],
         loading: false,
         error: null,
@@ -370,6 +378,39 @@ const Master = (state = INIT_STATE, action) => {
                 ...state,
                 comboPulangGet: {
                     ...state.comboPulangGet,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case COMBO_PAYMENT_GET: {
+            return {
+                ...state,
+                comboPaymentGet: {
+                    ...state.comboPaymentGet,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case COMBO_PAYMENT_GET_SUCCESS: {
+            return {
+                ...state,
+                comboPaymentGet: {
+                    ...state.comboPaymentGet,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case COMBO_PAYMENT_GET_ERROR: {
+            return {
+                ...state,
+                comboPaymentGet: {
+                    ...state.comboPaymentGet,
                     loading: false,
                     error: action.error,
                 }

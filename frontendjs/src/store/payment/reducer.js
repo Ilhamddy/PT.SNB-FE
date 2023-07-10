@@ -6,7 +6,11 @@ import {
     NOTA_VERIF_CREATE,
     NOTA_VERIF_CREATE_SUCCESS,
     NOTA_VERIF_CREATE_ERROR,
-    NOTA_VERIF_CREATE_RESET
+    NOTA_VERIF_CREATE_RESET,
+    DAFTAR_TAGIHAN_PASIEN_GET,
+    DAFTAR_TAGIHAN_PASIEN_GET_SUCCESS,
+    DAFTAR_TAGIHAN_PASIEN_GET_ERROR,
+    DAFTAR_TAGIHAN_PASIEN_GET_RESET,
 } from "./actionType";
 
 const INIT_STATE = {
@@ -21,7 +25,13 @@ const INIT_STATE = {
         loading: false,
         success: false,
         error: null,
-    }
+    },
+    daftarTagihanPasienGet: {
+        data: [],
+        loading: false,
+        success: false,
+        error: null,
+    },
 }
 
 const payment = (state = INIT_STATE, action) => {
@@ -108,7 +118,48 @@ const payment = (state = INIT_STATE, action) => {
                     error: null,
                 },
             };
-            
+        case DAFTAR_TAGIHAN_PASIEN_GET:
+            return {
+                ...state,
+                daftarTagihanPasienGet: {
+                    ...state.daftarTagihanPasienGet,
+                    data: [],
+                    loading: true,
+                    error: null,
+                },
+            };
+        case DAFTAR_TAGIHAN_PASIEN_GET_SUCCESS:
+            return {
+                ...state,
+                daftarTagihanPasienGet: {
+                    ...state.daftarTagihanPasienGet,
+                    data: action.payload,
+                    loading: false,
+                    error: null,
+                },
+            };
+        case DAFTAR_TAGIHAN_PASIEN_GET_ERROR:
+            return {
+                ...state,
+                daftarTagihanPasienGet: {
+                    ...state.daftarTagihanPasienGet,
+                    data: [],
+                    loading: false,
+                    error: action.payload,
+                },
+            };
+        case DAFTAR_TAGIHAN_PASIEN_GET_RESET:
+            return {
+                ...state,
+                daftarTagihanPasienGet: {
+                    ...state.daftarTagihanPasienGet,
+                    data: [],
+                    success: false,
+                    loading: false,
+                    error: null,
+                },
+            };
+
         default:
             return { ...state };
     }

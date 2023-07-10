@@ -26,6 +26,9 @@ import {
     COMBO_PULANG_GET,
     COMBO_PULANG_GET_SUCCESS,
     COMBO_PULANG_GET_ERROR,
+    COMBO_PAYMENT_GET,
+    COMBO_PAYMENT_GET_SUCCESS,
+    COMBO_PAYMENT_GET_ERROR,
 } from "./actionType";
 
 export const masterGet = () => ({
@@ -154,5 +157,19 @@ export const comboPulangGetSuccess = (data) => ({
 
 export const comboPulangGetError = (error) => ({
     type: COMBO_PULANG_GET_ERROR,
+    payload: error,
+});
+
+export const comboPaymentGet = () => ({
+    type: COMBO_PAYMENT_GET,
+});
+
+export const comboPaymentGetSuccess = (data) => ({
+    type: COMBO_PAYMENT_GET_SUCCESS,
+    payload: data,
+});
+
+export const comboPaymentGetError = (error) => ({
+    type: COMBO_PAYMENT_GET_ERROR,
     payload: error,
 });

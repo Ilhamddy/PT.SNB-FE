@@ -1,0 +1,41 @@
+.page-bayar{
+    .row-header{
+        position: relative;
+        z-index: 500;
+    }
+
+    .table-payment{
+        width: 60%;
+        thead{
+            border-bottom: 1px solid #E0E0E0;
+            th{
+                font-weight: 400;
+                padding: 10px 0;
+                text-align: left !important;
+            }
+            th:last-child{
+                text-align: right !important;
+            }
+        }
+
+        tbody{
+            tr{
+                td{
+                    padding: 10px 0;
+                    text-align: left !important;
+                }
+                td:last-child{
+                    padding: 10px 0;
+                    text-align: right !important;
+                }
+            };
+
+            tr:last-child{
+                td{
+                    font-weight: 600;
+                }
+            }
+        }
+    }
+    
+}
