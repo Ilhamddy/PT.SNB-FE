@@ -267,6 +267,8 @@ import DaftarOrderLaboratorium from "../pages/Laboratorium/DaftarOrderLaboratori
 import DaftarPasienLaboratorium from "../pages/Laboratorium/DaftarPasienLaboratorium/DaftarPasienLaboratorium";
 import TransaksiPelayanLaboratorium from "../pages/Laboratorium/TransaksiPelayanLaboratorium/TransaksiPelayanLaboratorium";
 
+// casemix
+import KlaimInacbg from "../pages/Casemix/KlaimInacbg/KlaimInacbg";
 
 
 
@@ -508,6 +510,9 @@ const authProtectedRoutes = [
   {path:"/laboratorium/daftarorderlaboratorium", component:<DaftarOrderLaboratorium/>},
   {path:"/laboratorium/daftarpasienlaboratorium", component:<DaftarPasienLaboratorium/>},
   {path:"/transaksi-pelayanan-laboratorium/:norecdp/:norecap", component:<TransaksiPelayanLaboratorium/>},
+
+  // casemix
+  {path:"/casemix/klaiminacbg", component:<KlaimInacbg/>}
 ];
 
 const publicRoutes = [
