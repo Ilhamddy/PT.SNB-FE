@@ -221,6 +221,7 @@ const Bayar = () => {
     
     useEffect(() => {
         norecnota && dispatch(pelayananFromVerifGet(norecnota))
+        console.log(norecnota)
         return () => {
             dispatch(pelayananFromVerifGetReset())
         }
@@ -418,8 +419,23 @@ const Bayar = () => {
                                         ) : null}
                                     </Col>
                                 </Row>
+                                <Row>
+                                    <div className="d-flex gap-2 justify-content-center mt-4 mb-2">
+                                        <Button type="submit" color="info" placement="top" id="tooltipTop" >
+                                            SIMPAN
+                                        </Button>
+                                        <button
+                                            type="button"
+                                            className="btn w-sm btn-danger"
+                                            data-bs-dismiss="modal"
+                                        >
+                                            Batal
+                                        </button>
+                                    </div>
+                                </Row>
                             </Card>
                         </Col>
+                        
                     </Row>
             </Container>
             
