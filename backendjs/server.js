@@ -15,6 +15,7 @@ import rekammedisRoutes from './app/routes/transaksi/rekammedis.routes.js';
 import radiologiRoutes from './app/routes/transaksi/radiologi.routes.js';
 import laboratoriumRoutes from './app/routes/transaksi/laboratorium.routes.js';
 import paymentRoutes from "./app/routes/transaksi/payment.routes.js";
+import casemixRoutes from "./app/routes/transaksi/casemix.routes.js";
 
 dotenv.config()
 
@@ -59,6 +60,7 @@ rekammedisRoutes(app);
 radiologiRoutes(app);
 laboratoriumRoutes(app);
 paymentRoutes(app);
+casemixRoutes(app)
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8000;

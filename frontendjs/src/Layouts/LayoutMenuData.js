@@ -12,6 +12,7 @@ const Navdata = () => {
     const [isRekamMedis, setRekamMedis] = useState(false);
     const [isRadiologi, setRadiologi] = useState(false);
     const [isLaboratorium, setLaboratorium] = useState(false);
+    const [isCasemix, setCasemix] = useState(false);
     const [isApps, setIsApps] = useState(false);
     const [isAuth, setIsAuth] = useState(false);
     const [isPages, setIsPages] = useState(false);
@@ -135,6 +136,9 @@ const Navdata = () => {
         isRegistrasi,
         isListDaftarPasien,
         isRekamMedis,
+        isRadiologi,
+        isLaboratorium,
+        isCasemix,
         isApps,
         isAuth,
         isPages,
@@ -379,6 +383,37 @@ const Navdata = () => {
                     label: "Daftar Pasien Laboratorium",
                     link: "/laboratorium/daftarpasienlaboratorium",
                     parentId: "laboratorium",
+                    isAllowed: () => {
+                        return isAllowedAccess(getUserPermissions(), [
+                            "REGISTRASI_VIEW",
+                        ]);
+                    }
+                },
+            ]
+        },
+        {
+            id: "casemix",
+            label: "Casemix",
+            icon: "lab la-delicious",
+            link: "/#",
+            click: function (e) {
+                e.preventDefault();
+                setCasemix(!isCasemix);
+                setIscurrentState('isCasemix');
+                updateIconSidebar(e);
+            },
+            stateVariables: isCasemix,
+            isAllowed: () => {
+                return isAllowedAccess(getUserPermissions(), [
+                    "REGISTRASI_VIEW",
+                ]);
+            },
+            subItems: [
+                {
+                    id: "casemix-klaiminacbg",
+                    label: "Klaim Inacbg",
+                    link: "/casemix/klaiminacbg",
+                    parentId: "casemix",
                     isAllowed: () => {
                         return isAllowedAccess(getUserPermissions(), [
                             "REGISTRASI_VIEW",
