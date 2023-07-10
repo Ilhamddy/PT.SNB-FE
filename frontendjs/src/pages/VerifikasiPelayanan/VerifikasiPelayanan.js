@@ -177,7 +177,7 @@ const VerifikasiPelayanan = () => {
         },
         {
             name: <span className='font-weight-bold fs-13'>Harga</span>,
-            selector: row => row.harga,
+            selector: row => (`Rp${row.harga?.toLocaleString("id-ID") || 0}`),
             sortable: true,
             width: "110px",
         },
@@ -216,7 +216,7 @@ const VerifikasiPelayanan = () => {
         {
 
             name: <span className='font-weight-bold fs-13'>Total</span>,
-            selector: row => row.total,
+            selector: row => (`Rp${row.total?.toLocaleString("id-ID") || 0}`),
             sortable: true,
             width: "140px",
             wrap: true
