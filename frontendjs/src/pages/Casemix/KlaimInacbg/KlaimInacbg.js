@@ -71,13 +71,13 @@ const KlaimInacbg = () => {
                 <Container fluid>
                     <BreadCrumb title="KLAIM" pageTitle="Forms" />
                     <Row>
-                        <Col lg={8}>
-                            <Card style={{ backgroundColor: "#ffdd99",height:'500px' }}>
+                        <Col lg={10}>
+                            <Card style={{ backgroundColor: "#ffdd99" }}>
                                 <CardBody>
                                     <Row>
                                         <Col lg={3} md={3}>
                                             <div className="mt-2">
-                                                <Label style={{ color: "black" }} htmlFor="alamatktp" className="form-label">Cari No. RM / No. SEP / Nama</Label>
+                                                <Label style={{ color: "black" }} htmlFor="state" className="form-label">Cari No. RM / No. SEP / Nama</Label>
                                             </div>
                                         </Col>
                                         <Col lg={6} md={6}>
@@ -95,94 +95,66 @@ const KlaimInacbg = () => {
                                         </Col>
                                         {cardCari ? (
                                             <Col lg={12}>
-                                                <Card style={{height:'400px'}}>
+                                                <Card style={{ height: '300px' }}>
                                                     <CardBody>
-                                                        <div className="table-responsive">
-                                                            <table className="table table-bordered table-nowrap align-middle mb-0" style={{height:'300px'}}>
-                                                                <thead>
-                                                                    <tr>
-                                                                        <td style={{ fontStyle: "italic", textAlign: 'center', borderTop: '0' }} colSpan={4}>Pencarian klaim dengan kriteria:</td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td style={{ width: "30px" }}>Jenis Rawat : </td>
-                                                                        <td style={{ width: "70px" }} colSpan={4}>
-                                                                            <Col lg={6}><CustomSelect
-                                                                                id="jenis_rawat"
-                                                                                name="jenis_rawat"
-                                                                                options={listJenisRawat}
-                                                                            // onChange={handleChangeUnitTujuan}
-                                                                            /></Col>
-                                                                            <Col lg={6}></Col>
-                                                                        </td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td>Periode :</td>
-                                                                        <td colSpan={3}>
-                                                                            <table className="table table-bordered table-nowrap align-middle mb-0">
-                                                                                <tbody style={{ border: 'hidden' }}>
-                                                                                    <tr>
-                                                                                        <td style={{ width: "100%", border: 'hidden' }}><CustomSelect
-                                                                                            id="periode"
-                                                                                            name="periode"
-                                                                                            options={listPeriode}
-                                                                                        // onChange={handleChangeUnitTujuan}
-                                                                                        /></td>
-                                                                                        <td style={{ border: 'hidden' }}>
-                                                                                            <Flatpickr
-                                                                                                className="form-control border-0 fs-5 dash-filter-picker shadow"
-                                                                                                options={{
-                                                                                                    // mode: "range",
-                                                                                                    dateFormat: "Y-m-d",
-                                                                                                    defaultDate: "today"
-                                                                                                }}
-                                                                                                value={dateStart}
-                                                                                                onChange={([dateStart]) => {
-                                                                                                    setDateStart(dateISOString(dateStart - dateStart.getTimezoneOffset() * 60000));
-                                                                                                }}
-                                                                                            />
-                                                                                        </td>
-                                                                                        <td style={{ border: 'hidden' }}>s/d</td>
-                                                                                        <td style={{ border: 'hidden' }}>
-                                                                                            <Flatpickr
-                                                                                                className="form-control border-0 fs-5 dash-filter-picker shadow"
-                                                                                                options={{
-                                                                                                    // mode: "range",
-                                                                                                    dateFormat: "Y-m-d",
-                                                                                                    defaultDate: "today"
-                                                                                                }}
-                                                                                                value={dateEnd}
-                                                                                                onChange={([dateEnd]) => {
-                                                                                                    setDateEnd(dateISOString(dateEnd - dateEnd.getTimezoneOffset() * 60000));
-                                                                                                }}
-                                                                                            />
-                                                                                        </td>
-                                                                                    </tr>
-                                                                                </tbody>
-                                                                            </table>
-                                                                        </td>
-
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td style={{ width: "30px" }}>Metode Pembayaran :</td>
-                                                                        <td>
-                                                                            <Col lg={6}>
-                                                                                <CustomSelect
-                                                                                    id="periode"
-                                                                                    name="periode"
-                                                                                    options={listJenisRawat}
-                                                                                // onChange={handleChangeUnitTujuan}
-                                                                                />
-                                                                            </Col>
-                                                                            <Col lg={6}></Col>
-
-                                                                        </td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td colSpan={5}></td>
-                                                                    </tr>
-                                                                </thead>
-                                                            </table>
-                                                        </div>
+                                                        <Row>
+                                                            <Col lg={12} style={{ textAlign: 'center' }}><span style={{ fontStyle: "italic", textAlign: 'center' }}>Pencarian klaim dengan kriteria:</span></Col>
+                                                            <hr />
+                                                            <Col lg={3} style={{ textAlign: 'right' }}><span>Jenis Rawat :</span></Col>
+                                                            <Col lg={9} className="mb-2">
+                                                                <CustomSelect
+                                                                    id="jenis_rawat"
+                                                                    name="jenis_rawat"
+                                                                    options={listJenisRawat}
+                                                                // onChange={handleChangeUnitTujuan}
+                                                                />
+                                                            </Col>
+                                                            <hr />
+                                                            <Col lg={3} style={{ textAlign: 'right' }}><span>Periode :</span></Col>
+                                                            <Col lg={2} className="mb-2">
+                                                                <CustomSelect
+                                                                    id="periode"
+                                                                    name="periode"
+                                                                    options={listPeriode}
+                                                                // onChange={handleChangeUnitTujuan}
+                                                                />
+                                                            </Col>
+                                                            <Col lg={3} className="mb-2">
+                                                                <Flatpickr
+                                                                    className="form-control border-0 fs-5 dash-filter-picker shadow"
+                                                                    options={{
+                                                                        // mode: "range",
+                                                                        dateFormat: "Y-m-d",
+                                                                        defaultDate: "today"
+                                                                    }}
+                                                                    value={dateStart}
+                                                                    onChange={([dateStart]) => {
+                                                                        setDateStart(dateISOString(dateStart - dateStart.getTimezoneOffset() * 60000));
+                                                                    }}
+                                                                />
+                                                            </Col>
+                                                            <Col lg={1} className="mt-2"><span>s/d</span></Col>
+                                                            <Col lg={3} className="mb-2">
+                                                                <Flatpickr
+                                                                    className="form-control border-0 fs-5 dash-filter-picker shadow"
+                                                                    options={{
+                                                                        // mode: "range",
+                                                                        dateFormat: "Y-m-d",
+                                                                        defaultDate: "today"
+                                                                    }}
+                                                                    value={dateEnd}
+                                                                    onChange={([dateEnd]) => {
+                                                                        setDateEnd(dateISOString(dateEnd - dateEnd.getTimezoneOffset() * 60000));
+                                                                    }}
+                                                                />
+                                                            </Col>
+                                                            <hr />
+                                                            <Col lg={12} style={{textAlign:'right'}}>
+                                                                <Button type="button" color="info" className="rounded-pill" placement="top" >
+                                                                    Cari
+                                                                </Button>
+                                                            </Col>
+                                                        </Row>
                                                     </CardBody>
                                                 </Card>
                                             </Col>
@@ -192,7 +164,7 @@ const KlaimInacbg = () => {
                                 </CardBody>
                             </Card>
                         </Col>
-                        <Col lg={4}></Col>
+                        <Col lg={2}></Col>
                     </Row>
                 </Container>
             </div>
