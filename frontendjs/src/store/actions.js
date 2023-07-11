@@ -62,3 +62,4 @@ export * from "./radiologi/action"
 
 export * from "./laboratorium/action"
 export * from "./payment/action"
+export * from "./casemix/action"
