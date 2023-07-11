@@ -1,3 +1,4 @@
+import { rgxAllPeriods, rgxValidNumber } from "./regexcommon"
 
 
 export const dateTimeLocal = (date) => {
@@ -35,9 +36,20 @@ export const dateTimeISOString = (date) => {
     try{
         return new Date(date)
         .toISOString()
-        .split("T")[0]
     }catch(e){
         return ""
     }
+}
 
+export const strNumber = (nbrStr) => {
+    if(nbrStr === "" || nbrStr === null || nbrStr === undefined) return ""
+    return Number(nbrStr).toLocaleString("id-ID")
+}
+
+export const onChangeStrNbr = (value, valueBefore) => {
+    let val = value.replace(rgxAllPeriods, "")
+    if(rgxValidNumber.test(val)){
+        return strNumber(val)
+    }
+    return valueBefore
 }

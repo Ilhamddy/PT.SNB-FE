@@ -119,12 +119,14 @@ function* onSaveRegistrasiRuangan({ payload: { data, history} }) {
     }
 }
 
-function* onRegistrasiSavePenjaminFK({payload: {data}}){
+function* onRegistrasiSavePenjaminFK({payload: {data, callback}}){
     try {
         const response = yield call(serviceRegistrasi.saveRegistrasiPenjaminFK, data);
         yield put(registrasiSavePenjaminFKSuccess(response.data));
         if(response.code===200){
             toast.success(response.msg, { autoClose: 3000 });
+            callback && callback();
+            console.log("success")
         }else{
             toast.error(response.msg, { autoClose: 3000 });
         }

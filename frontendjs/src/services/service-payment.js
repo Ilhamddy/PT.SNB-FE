@@ -15,5 +15,16 @@ export default class ServicePayment {
     getDaftarTagihanPasien = async (body) => {
         return await api.get(`/transaksi/payment/get-daftar-tagihan-pasien`);
     }
-    
+
+    getPelayananFromVerif = async (norecnota) => {
+        return await api.get(`/transaksi/payment/pelayanan-from-verif/${norecnota}`);
+    }
+
+    createBuktiBayar = async (body) => {
+        return await api.create(`/transaksi/payment/create-bukti-bayar`, body);
+    }
+
+    cancelNotaVerif = async (norecnota) => {
+        return await api.create(`/transaksi/payment/cancel-verif-nota/${norecnota}`);
+    }
 }

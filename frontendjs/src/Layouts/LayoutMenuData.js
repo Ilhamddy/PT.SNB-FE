@@ -265,7 +265,7 @@ const Navdata = () => {
                 },
                 {
                     id: "daftar-pembayaran",
-                    label: "Daftar Pembayaran",
+                    label: "Daftar Tagihan",
                     link: "/payment/daftar-tagihan",
                     parentId: "listdaftarpasien",
                     isAllowed: () => {

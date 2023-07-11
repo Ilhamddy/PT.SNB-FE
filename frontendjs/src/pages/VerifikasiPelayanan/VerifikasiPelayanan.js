@@ -51,8 +51,7 @@ const VerifikasiPelayanan = () => {
         initialValues: {
             objectdaftarpasienfk: "",
             total: 0,
-            no_nota: 'P' 
-                + (Math.floor(date.getTime() / 1000)).toString(),
+            no_nota: `V${date.getFullYear()}${date.getMonth() + 1}${date.getDate()}${date.getHours()}${date.getMinutes()}${date.getSeconds()}`  ,
             objectpegawaifk: 1,
             keterangan: "",
             norecppdone: []
@@ -130,12 +129,12 @@ const VerifikasiPelayanan = () => {
             cell: (row) => {
                 return (
                     <div className="hstack gap-3 flex-wrap">
-                        <Input 
+                        {!row.no_nota && <Input 
                             className="form-check-input" 
                             type="checkbox" 
                             id={`formcheck-${row.norec}`} 
                             checked={row.checked} 
-                            onChange={e => {handleChecked(row.checked, row.norec)}}/>
+                            onChange={e => {handleChecked(row.checked, row.norec)}}/>}
                     </div>
                 );
             },
@@ -177,7 +176,7 @@ const VerifikasiPelayanan = () => {
         },
         {
             name: <span className='font-weight-bold fs-13'>Harga</span>,
-            selector: row => row.harga,
+            selector: row => (`Rp${row.harga?.toLocaleString("id-ID") || 0}`),
             sortable: true,
             width: "110px",
         },
@@ -216,7 +215,7 @@ const VerifikasiPelayanan = () => {
         {
 
             name: <span className='font-weight-bold fs-13'>Total</span>,
-            selector: row => row.total,
+            selector: row => (`Rp${row.total?.toLocaleString("id-ID") || 0}`),
             sortable: true,
             width: "140px",
             wrap: true

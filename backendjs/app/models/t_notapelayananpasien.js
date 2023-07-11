@@ -6,6 +6,10 @@ export default (sequelize, Sequelize) => {
             primaryKey: true,
             type: Sequelize.CHAR(32)
         },
+        statusenabled: {
+            type: Sequelize.BOOLEAN,
+            defaultValue: true
+        },
         kdprofile: {
             type: Sequelize.INTEGER,
             defaultValue: true
@@ -24,6 +28,9 @@ export default (sequelize, Sequelize) => {
         },
         tglinput:{
             type: 'TIMESTAMP'
+        },
+        keterangan:{
+            type: Sequelize.STRING
         }
     }, {
         tableName: "t_notapelayananpasien", 
