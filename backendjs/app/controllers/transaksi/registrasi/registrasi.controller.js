@@ -320,7 +320,7 @@ const saveRegistrasiPasien2 = (req, res) => {
                     tglregistrasi: req.body.tglregistrasi,
                     objectunitlastfk: req.body.unittujuan,
                     objectdokterpemeriksafk: req.body.dokter,
-                    objectpegawaifk: req.body.pegawaifk,
+                    objectpegawaifk: req.userId,
                     objectkelasfk: req.body.kelasfk,
                     objectjenispenjaminfk: req.body.jenispenjamin,
                     tglpulang: req.body.tglregistrasi,
