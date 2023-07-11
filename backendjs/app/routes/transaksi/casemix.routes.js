@@ -15,5 +15,11 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getListPasien
     );
+
+    app.get(
+        "/api/transaksi/casemix/list-daftar-pasien",
+        [authJwt.verifyToken],
+        controller.getListDaftarPasien
+    );
     
 }

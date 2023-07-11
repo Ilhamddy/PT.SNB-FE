@@ -83,7 +83,7 @@ import KendaliDokumen from "./kendaliDokumen/reducer";
 import Radiologi from "./radiologi/reducer";
 import Laboratorium from "./laboratorium/reducer";
 import Payment from "./payment/reducer";
-
+import Casemix from "./casemix/reducer";
 
 
 const rootReducer = combineReducers({
@@ -122,7 +122,8 @@ const rootReducer = combineReducers({
     KendaliDokumen,
     Radiologi,
     Laboratorium,
-    Payment
+    Payment,
+    Casemix
 });
 
 export default rootReducer;

@@ -38,10 +38,53 @@ async function getListPasien(req, res) {
         to_char(mp.tgllahir,
         'dd Month YYYY') as tgllahir,
         mp.namapasien,
-        mp.nobpjs 
+        mp.nobpjs,
+        mj.jeniskelamin 
     from
         m_pasien mp
+        join m_jeniskelamin mj on mj.id=mp.objectjeniskelaminfk
         where mp.nocm ilike'%${req.query.nocm}%' and mp.statusenabled=true
+        limit 5
+        `);
+        
+        let tempres = resultlist.rows
+
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+        });
+
+    } catch (error) {
+        res.status(500).send({ message: error });
+    }
+
+}
+
+async function getListDaftarPasien(req, res) {
+
+    try {
+
+        const resultlist = await queryPromise2(`select
+            td.norec,
+            td.noregistrasi,
+            to_char(td.tglregistrasi,
+            'dd Month YYYY') as tglregistrasi,
+            to_char(td.tglpulang,
+            'dd Month YYYY') as tglpulang,
+            mp.nocm,mp.namapasien,
+            case when mu.objectinstalasifk=2 then 'RI' else 'RJ' end as tipe,
+            case when td.objectpenjaminfk=1 then 'JKN' else mr.namarekanan  end as jaminan1,
+            case when td.objectpenjamin2fk=1 then 'JKN' when td.objectpenjamin2fk is null then '' else 'LAIN-LAIN' end as jaminan2,
+            tk.no_sep
+        from
+            t_daftarpasien td
+        join m_pasien mp on mp.id=td.nocmfk
+        join m_unit mu on mu.id=td.objectunitlastfk
+        left join m_rekanan mr on mr.id=td.objectpenjaminfk
+        left join m_rekanan mr2 on mr2.id=td.objectpenjamin2fk
+        left join t_kepesertaanasuransi tk on  tk.objectdaftarpasienfk=td.norec
+        where mp.id ='${req.query.nocm}' and mp.statusenabled=true
         limit 20
         `);
         
@@ -61,5 +104,6 @@ async function getListPasien(req, res) {
 
 
 export default {
-    getListPasien
+    getListPasien,
+    getListDaftarPasien
 };

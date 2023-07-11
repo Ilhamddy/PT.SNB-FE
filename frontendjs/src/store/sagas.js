@@ -74,6 +74,7 @@ import kendaliDokumenSaga from "./kendaliDokumen/saga";
 import radiologiSaga from "./radiologi/saga";
 import laboratoriumSaga from "./laboratorium/saga";
 import payment from "./payment/saga";
+import casemixSaga from "./casemix/saga"
 
 
 export default function* rootSaga() {
@@ -112,6 +113,7 @@ export default function* rootSaga() {
     fork(kendaliDokumenSaga),
     fork(radiologiSaga),
     fork(laboratoriumSaga),
-    fork(payment)
+    fork(payment),
+    fork(casemixSaga)
   ]);
 }

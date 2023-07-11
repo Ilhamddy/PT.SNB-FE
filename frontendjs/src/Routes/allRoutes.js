@@ -489,39 +489,39 @@ const authProtectedRoutes = [
   { path: "/Zm9ybXMtcGFzaWVuLWxhbWE=", component: <PasienLama /> },
 
 
-  {path: "/registrasi/pasien/:id", component: <RegistrasiForm />},
-  {path: "/registrasi/pasien-lama", component: <RegistrasiList />},
-  {path: "/registrasi/pasien-baru", component: <PasienBaruForm />},
-  {path: "/registrasi/pasien-ruangan/:id", component: <RegistrasiPasien />},
-  {path: "/registrasi/pasien-ruangan/:id/:norec", component: <RegistrasiPasien />},
-  {path: "/registrasi/input-penjamin/:id/:norec", component: <RegistrasiPenjaminFK />},
-  {path: "/bukti-pendaftaran/:noregistrasi", component: <BuktiPendaftaran3 />},
-  {path: "/listdaftarpasien/daftar-pasien-rj", component: <DaftarPasienRJ />},
-  {path:"/emr-pasien/:norecdp/:norecap", component:<Emr/>},
-  {path: "/listdaftarpasien/daftar-pasien-ri", component: <DaftarPasienRI />},
-  {path: "/listdaftarpasien/daftar-pasien-pulang", component: <DaftarPasienPulang />},
-  
+  { path: "/registrasi/pasien/:id", component: <RegistrasiForm /> },
+  { path: "/registrasi/pasien-lama", component: <RegistrasiList /> },
+  { path: "/registrasi/pasien-baru", component: <PasienBaruForm /> },
+  { path: "/registrasi/pasien-ruangan/:id", component: <RegistrasiPasien /> },
+  { path: "/registrasi/pasien-ruangan/:id/:norec", component: <RegistrasiPasien /> },
+  { path: "/registrasi/input-penjamin/:id/:norec", component: <RegistrasiPenjaminFK /> },
+  { path: "/bukti-pendaftaran/:noregistrasi", component: <BuktiPendaftaran3 /> },
+  { path: "/listdaftarpasien/daftar-pasien-rj", component: <DaftarPasienRJ /> },
+  { path: "/emr-pasien/:norecdp/:norecap", component: <Emr /> },
+  { path: "/listdaftarpasien/daftar-pasien-ri", component: <DaftarPasienRI /> },
+  { path: "/listdaftarpasien/daftar-pasien-pulang", component: <DaftarPasienPulang /> },
+
   // rekam medis
-  {path:"/rekammedis/kendalidokumen", component:<KendaliDokumen/>},
+  { path: "/rekammedis/kendalidokumen", component: <KendaliDokumen /> },
 
   // radiologi
-  {path:"/radiologi/daftarorderradiologi", component:<DaftarOrderRadiologi/>},
-  {path:"/radiologi/daftarpasienradiologi", component:<DaftarPasienRadiologi/>},
-  {path:"/transaksi-pelayanan-radiologi/:norecdp/:norecap", component:<TransaksiPelayanRadiologi/>},
+  { path: "/radiologi/daftarorderradiologi", component: <DaftarOrderRadiologi /> },
+  { path: "/radiologi/daftarpasienradiologi", component: <DaftarPasienRadiologi /> },
+  { path: "/transaksi-pelayanan-radiologi/:norecdp/:norecap", component: <TransaksiPelayanRadiologi /> },
 
   // laboratorium
-  {path:"/laboratorium/daftarorderlaboratorium", component:<DaftarOrderLaboratorium/>},
-  {path:"/laboratorium/daftarpasienlaboratorium", component:<DaftarPasienLaboratorium/>},
-  {path:"/transaksi-pelayanan-laboratorium/:norecdp/:norecap", component:<TransaksiPelayanLaboratorium/>},
+  { path: "/laboratorium/daftarorderlaboratorium", component: <DaftarOrderLaboratorium /> },
+  { path: "/laboratorium/daftarpasienlaboratorium", component: <DaftarPasienLaboratorium /> },
+  { path: "/transaksi-pelayanan-laboratorium/:norecdp/:norecap", component: <TransaksiPelayanLaboratorium /> },
 
-    // payment
-    {path: "/payment/verif-tagihan/:norecap", component: <VerifikasiPelayanan />},
-    {path: "/payment/daftar-tagihan", component: <DaftarTagihanPasien />},
-    {path: "/payment/bayar/:norecnota", component: <Bayar />},
-  
+  // payment
+  { path: "/payment/verif-tagihan/:norecap", component: <VerifikasiPelayanan /> },
+  { path: "/payment/daftar-tagihan", component: <DaftarTagihanPasien /> },
+  { path: "/payment/bayar/:norecnota", component: <Bayar /> },
+
   // casemix
-  {path:"/casemix/klaiminacbg", component:<KlaimInacbg/>}
-    
+  { path: "/casemix/klaiminacbg", component: <KlaimInacbg /> }
+
 ];
 
 const publicRoutes = [
