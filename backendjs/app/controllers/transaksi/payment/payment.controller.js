@@ -287,77 +287,35 @@ const cancelNotaVerif = async (req, res) => {
     }
 }
 
-// const cancelBayar = async (req, res) => {
-//     let transaction = null;
-//     try{
-//         transaction = await db.sequelize.transaction();
-//     }catch(e){
-//         console.error(e)
-//         res.status(500).send({
-//             data: e.message,
-//             success: false,
-//             msg: 'Transaksi gagal',
-//             code: 500
-//         });
-//         return;
-//     }
-//     try{
-//         const norecnota = req.params.norecbayar;
-//         const updatedPP = await t_pelayananpasien.update({
-//             objectnotapelayananpasienfk: null
-//         }, {
-//             where: {
-//                 objectnotapelayananpasienfk: norecnota
-//             }
-//         }, {
-//             transaction
-//         })
-
-//         const updatedNPP = await t_notapelayananpasien.update({
-//             statusenabled: false,
-//         }, {
-//             where: {
-//                 norec: norecnota
-//             }
-//         }, {
-//             transaction
-//         })
-
-//         const batalVerif = await t_log_batalveriflayanan.create({
-//             norec: uuid.v4().substring(0, 32),
-//             objectpegawaifk: req.userId,
-//             tglbatal: new Date(),
-//             alasanbatal: "Batal Verif",
-//             objectnotapelayananpasienfk: norecnota
-//         }, {
-//             transaction
-//         })
-
-//         transaction.commit();
-        
-//         res.status(200).send({
-//             data: {
-//                 // changedPP: updatedPP,
-//                 changedTPP: updatedNPP,
-//                 newLog: batalVerif
-//             },
-//             status: "success",
-//             success: true,
-//             msg: 'Cancel Nota Berhasil',
-//             code: 200
-//         });
-//     }catch(error){
-//         console.error("Error Create Nota Verif");
-//         console.error(error)
-//         transaction.rollback();
-//         res.status(500).send({
-//             data: error,
-//             success: false,
-//             msg: 'Create Nota Verif Gagal',
-//             code: 500
-//         });
-//     }
-// }
+const cancelBayar = async (req, res) => {
+    let transaction = null;
+    try{
+        transaction = await db.sequelize.transaction();
+    }catch(e){
+        console.error(e)
+        res.status(500).send({
+            data: e.message,
+            success: false,
+            msg: 'Transaksi gagal',
+            code: 500
+        });
+        return;
+    }
+    try{
+        const norecnota = req.params.norecnota;
+        console.log(norecnota)
+    }catch(error){
+        console.error("Error Create Nota Verif");
+        console.error(error)
+        transaction.rollback();
+        res.status(500).send({
+            data: error,
+            success: false,
+            msg: 'Create Nota Verif Gagal',
+            code: 500
+        });
+    }
+}
 
 
 
@@ -367,5 +325,6 @@ export default {
     getDaftarTagihanPasien,
     getPelayananFromVerif,
     createBuktiBayar,
-    cancelNotaVerif
+    cancelNotaVerif,
+    cancelBayar
 };

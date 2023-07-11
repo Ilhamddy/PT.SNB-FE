@@ -42,11 +42,14 @@ const qDaftarTagihanPasien =
 	td.noregistrasi AS noregistrasi,
 	mp.namapasien AS namapasien,
 	mr.namaexternal AS namarekanan,
+    bb.no_bukti AS nobukti,
+    bb.norec as norecbukti,
 	td.tglpulang AS tglpulang
 		FROM t_notapelayananpasien tn
 		LEFT JOIN t_daftarpasien td ON tn.objectdaftarpasienfk=td.norec
 	    LEFT JOIN m_pasien mp ON td.nocmfk=mp.id
 		LEFT JOIN m_rekanan mr ON td.objectpenjaminfk=mr.id
+        LEFT JOIN t_buktibayarpasien bb ON bb.objectnotapelayananpasienfk = tn.norec
             WHERE tn.statusenabled=true
     `       
 const qGetPelayananFromVerif =

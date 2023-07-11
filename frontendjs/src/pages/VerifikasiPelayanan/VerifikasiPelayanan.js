@@ -51,7 +51,7 @@ const VerifikasiPelayanan = () => {
         initialValues: {
             objectdaftarpasienfk: "",
             total: 0,
-            no_nota: `V${date.getFullYear()}${date.getMonth() + 1}${date.getDate()}${date.getHours()}${date.getMinutes()}${date.getSeconds()}`  ,
+            no_nota: `V${date.getFullYear().toString().substring(2,4)}${date.getMonth() + 1}${date.getDate()}${date.getHours()}${date.getMinutes()}${date.getSeconds()}`  ,
             objectpegawaifk: 1,
             keterangan: "",
             norecppdone: []

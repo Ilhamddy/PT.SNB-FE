@@ -12,6 +12,8 @@ import {
     buktiBayarCreateError,
     verifNotaCancelSuccess,
     verifNotaCancelError,
+    buktiBayarCancelSuccess,
+    buktiBayarCancelError,
 } from "./action";
 
 import {
@@ -21,6 +23,7 @@ import {
     PELAYANAN_FROM_VERIF_GET,
     BUKTI_BAYAR_CREATE,
     VERIF_NOTA_CANCEL,
+    BUKTI_BAYAR_CANCEL,
 } from "./actionType";
 
 import ServicePayment from "../../services/service-payment";
@@ -93,6 +96,18 @@ function* onVerifNotaCancel({payload: {norecnota, callback}}) {
     }
 }
 
+function* onBuktiBayarCancel({payload: {norecbukti, callback}}) {
+    try {
+        const response = yield call(servicePayment.cancelBuktiBayar, norecbukti);
+        yield put(buktiBayarCancelSuccess(response.data));
+        toast.success(response.msg, { autoClose: 3000 });
+        callback && callback();
+    } catch (error) {
+        console.error(error)
+        yield put(buktiBayarCancelError(error));
+    }
+}
+
 export function* watchGetPelayananFromAntrean() {
     yield takeEvery(PELAYANAN_FROM_ANTREAN_GET, onGetPelayananFromAntrean);
 }
@@ -117,6 +132,10 @@ export function* watchVerifNotaCancel() {
     yield takeEvery(VERIF_NOTA_CANCEL, onVerifNotaCancel);
 }
 
+export function* watchBuktiBayarCancel() {
+    yield takeEvery(BUKTI_BAYAR_CANCEL, onBuktiBayarCancel);
+}
+
 export default function* masterSaga() {
     yield all([
         fork(watchGetPelayananFromAntrean),
@@ -125,5 +144,6 @@ export default function* masterSaga() {
         fork(watchGetPelayananFromVerif),
         fork(watchGetBuktiBayarCreate),
         fork(watchVerifNotaCancel),
+        fork(watchBuktiBayarCancel),
     ]);
 }

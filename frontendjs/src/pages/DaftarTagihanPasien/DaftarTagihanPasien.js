@@ -61,7 +61,12 @@ const DaftarTagihanPasien = () => {
             && navigate(`/payment/bayar/${norecnota}`)    
     }
     const handleCancelVerif = (norecnota) => {
-        norecnota && dispatch(verifNotaCancel(norecnota))
+        norecnota && 
+            dispatch(verifNotaCancel(norecnota, () => dispatch(daftarTagihanPasienGet())))
+    }
+    const handleCancelBayar = (norecbayar) => {
+        norecbayar &&
+            dispatch(verifNotaCancel(norecbayar, () => dispatch(daftarTagihanPasienGet())))
     }
     const columns = [
         {
@@ -78,7 +83,7 @@ const DaftarTagihanPasien = () => {
                             <DropdownMenu className="dropdown-menu-end">
                                 <DropdownItem onClick={() => handleToBayar(row.norecnota)}><i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>Bayar</DropdownItem>
                                 <DropdownItem onClick={() => handleCancelVerif(row.norecnota)}><i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>Batal Verif</DropdownItem>
-                                <DropdownItem onClick={() => handleToBayar(row.norecnota)}><i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>Batal Bayar</DropdownItem>
+                                {row.norecbukti && <DropdownItem onClick={() => handleToBayar(row.norecnota)}><i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>Batal Bayar</DropdownItem>}
 
                             </DropdownMenu>
                         </UncontrolledDropdown>

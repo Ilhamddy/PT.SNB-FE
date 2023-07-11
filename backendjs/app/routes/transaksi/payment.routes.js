@@ -44,5 +44,11 @@ export default function (app) {
         "/api/transaksi/payment/cancel-verif-nota/:norecnota",
         [authJwt.verifyToken],
         controller.cancelNotaVerif
-    )
+    );
+
+    app.post(
+        "/api/transaksi/payment/cancel-bayar/:norecbayar",
+        [authJwt.verifyToken],
+        controller.cancelBayar
+    );
 }

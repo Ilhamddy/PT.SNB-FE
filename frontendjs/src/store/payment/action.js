@@ -20,7 +20,11 @@ import { PELAYANAN_FROM_ANTREAN_GET,
     VERIF_NOTA_CANCEL,
     VERIF_NOTA_CANCEL_SUCCESS,
     VERIF_NOTA_CANCEL_ERROR,
-    VERIF_NOTA_CANCEL_RESET
+    VERIF_NOTA_CANCEL_RESET,
+    BUKTI_BAYAR_CANCEL,
+    BUKTI_BAYAR_CANCEL_SUCCESS,
+    BUKTI_BAYAR_CANCEL_ERROR,
+    BUKTI_BAYAR_CANCEL_RESET
 } from "./actionType";
 
 export const pelayananFromAntreanGet = (norecap) => {
@@ -172,5 +176,38 @@ export const verifNotaCancelError = (error) => {
     return {
         type: VERIF_NOTA_CANCEL_ERROR,
         payload: error
+    }
+}
+
+export const verifNotaCancelReset = () => {
+    return {
+        type: VERIF_NOTA_CANCEL_RESET,
+    }
+}
+
+export const buktiBayarCancel = (norecbukti, callback) => {
+    return {
+        type: BUKTI_BAYAR_CANCEL,
+        payload: {norecbukti, callback}
+    }
+}
+
+export const buktiBayarCancelSuccess = (data) => {
+    return {
+        type: BUKTI_BAYAR_CANCEL_SUCCESS,
+        payload: data
+    }
+}
+
+export const buktiBayarCancelError = (error) => {
+    return {
+        type: BUKTI_BAYAR_CANCEL_ERROR,
+        payload: error
+    }
+}
+
+export const buktiBayarCancelReset = () => {
+    return {
+        type: BUKTI_BAYAR_CANCEL_RESET,
     }
 }

@@ -23,6 +23,10 @@ import {
     VERIF_NOTA_CANCEL_SUCCESS,
     VERIF_NOTA_CANCEL_ERROR,
     VERIF_NOTA_CANCEL_RESET,
+    BUKTI_BAYAR_CANCEL,
+    BUKTI_BAYAR_CANCEL_SUCCESS,
+    BUKTI_BAYAR_CANCEL_ERROR,
+    BUKTI_BAYAR_CANCEL_RESET,
 } from "./actionType";
 
 const INIT_STATE = {
@@ -57,6 +61,12 @@ const INIT_STATE = {
         error: null,
     },
     verifNotaCancel: {
+        data: [],
+        loading: false,
+        success: false,
+        error: null,
+    },
+    buktiBayarCancel: {
         data: [],
         loading: false,
         success: false,
@@ -313,6 +323,51 @@ const payment = (state = INIT_STATE, action) => {
                 ...state,
                 verifNotaCancel: {
                     ...state.verifNotaCancel,
+                    data: [],
+                    success: false,
+                    loading: false,
+                    error: null,
+                },
+            };
+        
+        case BUKTI_BAYAR_CANCEL:
+            return {
+                ...state,
+                buktiBayarCancel: {
+                    ...state.buktiBayarCancel,
+                    data: [],
+                    loading: true,
+                    error: null,
+                },
+            };
+
+        case BUKTI_BAYAR_CANCEL_SUCCESS:
+            return {
+                ...state,
+                buktiBayarCancel: {
+                    ...state.buktiBayarCancel,
+                    data: action.payload,
+                    loading: false,
+                    error: null,
+                },
+            };
+
+        case BUKTI_BAYAR_CANCEL_ERROR:
+            return {
+                ...state,
+                buktiBayarCancel: {
+                    ...state.buktiBayarCancel,
+                    data: [],
+                    loading: false,
+                    error: action.payload,
+                },
+            };
+        
+        case BUKTI_BAYAR_CANCEL_RESET:
+            return {
+                ...state,
+                buktiBayarCancel: {
+                    ...state.buktiBayarCancel,
                     data: [],
                     success: false,
                     loading: false,
