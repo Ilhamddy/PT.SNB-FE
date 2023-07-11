@@ -8,6 +8,10 @@ import {
     daftarTagihanPasienGetError,
     pelayananFromVerifGetSuccess,
     pelayananFromVerifGetError,
+    buktiBayarCreateSuccess,
+    buktiBayarCreateError,
+    verifNotaCancelSuccess,
+    verifNotaCancelError,
 } from "./action";
 
 import {
@@ -15,6 +19,8 @@ import {
     NOTA_VERIF_CREATE,
     DAFTAR_TAGIHAN_PASIEN_GET,
     PELAYANAN_FROM_VERIF_GET,
+    BUKTI_BAYAR_CREATE,
+    VERIF_NOTA_CANCEL,
 } from "./actionType";
 
 import ServicePayment from "../../services/service-payment";
@@ -63,6 +69,30 @@ function* onGetPelayananFromVerif( {payload: {norecnota}}) {
     }
 }
 
+function* onGetBuktiBayarCreate({payload: {body, callback}}) {
+    try {
+        const response = yield call(servicePayment.createBuktiBayar, body);
+        yield put(buktiBayarCreateSuccess(response.data));
+        toast.success(response.msg, { autoClose: 3000 });
+        callback && callback();
+    } catch (error) {
+        console.error(error)
+        yield put(buktiBayarCreateError(error));
+    }
+}
+
+function* onVerifNotaCancel({payload: {norecnota, callback}}) {
+    try {
+        const response = yield call(servicePayment.cancelNotaVerif, norecnota);
+        yield put(verifNotaCancelSuccess(response.data));
+        toast.success(response.msg, { autoClose: 3000 });
+        callback && callback();
+    } catch (error) {
+        console.error(error)
+        yield put(verifNotaCancelError(error));
+    }
+}
+
 export function* watchGetPelayananFromAntrean() {
     yield takeEvery(PELAYANAN_FROM_ANTREAN_GET, onGetPelayananFromAntrean);
 }
@@ -79,11 +109,21 @@ export function* watchGetPelayananFromVerif() {
     yield takeEvery(PELAYANAN_FROM_VERIF_GET, onGetPelayananFromVerif);
 }
 
+export function* watchGetBuktiBayarCreate() {
+    yield takeEvery(BUKTI_BAYAR_CREATE, onGetBuktiBayarCreate);
+}
+
+export function* watchVerifNotaCancel() {
+    yield takeEvery(VERIF_NOTA_CANCEL, onVerifNotaCancel);
+}
+
 export default function* masterSaga() {
     yield all([
         fork(watchGetPelayananFromAntrean),
         fork(watchGetNotaVerifCreate),
         fork(watchGetDaftarTagihanPasien),
         fork(watchGetPelayananFromVerif),
+        fork(watchGetBuktiBayarCreate),
+        fork(watchVerifNotaCancel),
     ]);
 }

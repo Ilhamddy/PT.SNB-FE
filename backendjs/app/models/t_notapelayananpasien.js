@@ -6,6 +6,10 @@ export default (sequelize, Sequelize) => {
             primaryKey: true,
             type: Sequelize.CHAR(32)
         },
+        statusenabled: {
+            type: Sequelize.BOOLEAN,
+            defaultValue: true
+        },
         kdprofile: {
             type: Sequelize.INTEGER,
             defaultValue: true

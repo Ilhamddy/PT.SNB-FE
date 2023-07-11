@@ -10,7 +10,7 @@ import { Link } from "feather-icons-react/build/IconComponents";
 import { useDispatch, useSelector } from "react-redux";
 import {daftarPasienPulangGet,} from "../../store/daftarPasien/action";
 import DataTable from "react-data-table-component";
-import { dateISOString, dateTimeISOString, dateTimeLocal } from "../../utils/format";
+import { dateISOString, dateTimeISOString, dateTimeLocal, onChangeStrNbr, strNumber } from "../../utils/format";
 import Flatpickr from "react-flatpickr";
 import { 
     comboAsuransiGet, 
@@ -21,11 +21,13 @@ import {
     pelayananFromAntreanGet,
     notaVerifCreate,
     pelayananFromVerifGet,
-    pelayananFromVerifGetReset
+    pelayananFromVerifGetReset,
+    buktiBayarCreate
 } from "../../store/payment/action";
 import CustomSelect from "../Select/Select";
 import "./Bayar.scss"
 import { useNavigate, useParams } from "react-router-dom";
+import { rgxAllPeriods, rgxValidNumber } from "../../utils/regexcommon";
 
 const dateAwalStart = dateTimeISOString(new Date(new Date() - 1000 * 60 * 60 * 24 * 3));
 const dateAwalEnd = dateISOString(new Date())
@@ -45,7 +47,6 @@ const Bayar = () => {
         dataPasienPlg: state.DaftarPasien.daftarPasienPulangGet.data || [],
         comboboxReg: state.Master.comboRegistrasiGet.data || {},
         listPelayanan: state.Payment.pelayananFromVerifGet.data?.pelayanan || [],
-        norecdp: state.Payment.pelayananFromNoAntrianGet.data?.objectdaftarpasienfk || "",
         comboboxpayment: state.Master.comboPaymentGet.data,
         nota: state.Payment.pelayananFromVerifGet.data?.nota || [],
     }))
@@ -57,33 +58,35 @@ const Bayar = () => {
         initialValues: {
             metodebayar: "",
             nontunai: "",
-            diterimadari: "",
+            pjpasien: "",
             nominalbayar: "",
             tglbayar: dateAwalStart,
             rekeningrs: "",
             totaltagihan: "",
-            totalbayar: "",
-            diskon: "",
+            diskon: 0,
             // non wajib
             deposit: 0,
-            nobukti: "",
+            nobukti: `B${date.getFullYear().toString().substring(2, 4)}${date.getMonth() + 1}${date.getDate()}${date.getHours()}${date.getMinutes()}${date.getSeconds()}`,
             pegawai: "",
             norecnota: "",
-            pjpasien: "",
             klaim: "",
+            norecdp: "",
         },
         validationSchema: Yup.object({
             metodebayar: Yup.string().required("Metode Pembayaran harus diisi"),
             nontunai: Yup.string().when("metodebayar", {
-                is: (val) => val === '2',
-                then: () => Yup.string().required("Kondisi Pulang Harus diisi"),
+                is: (val) => val === "2",
+                then: () => Yup.string().required("Metode non tunai harus diisi"),
             }),
-            diterimadari: Yup.string().required("Diterima Dari harus diisi"),
+            pjpasien: Yup.string().required("Diterima Dari harus diisi"),
             nominalbayar: Yup.string().required("Nominal Bayar harus diisi"),
-            tglbayar: Yup.string().required("Tanggal Bayar harus diisi"),
-            rekeningrs: Yup.string().required("Rekening RS harus diisi"),
+            tglbayar: Yup.string()
+                .required("Tanggal Bayar harus diisi"),
+            rekeningrs: Yup.string().when("metodebayar", {
+                is: (val) => val === "2",
+                then: () => Yup.string().required("Rekening RS harus diisi"),
+            }),
             totaltagihan: Yup.string().required("Total Tagihan harus diisi"),
-            totalbayar: Yup.string().required("Total Bayar harus diisi"),
             diskon: Yup.string().required("Diskon harus diisi"),
             // non wajib
             deposit: Yup.string().required("Deposit harus diisi"),
@@ -92,9 +95,14 @@ const Bayar = () => {
             norecnota: Yup.string().required("No Rekam Medis harus diisi"),
             pjpasien: Yup.string().required("Penanggung Jawab Pasien harus diisi"),
             klaim: Yup.string().required("Klaim harus diisi"),
+            norecdp: Yup.string().required("No DP harus diisi"),
         }),
         onSubmit: (values) => {
-            dispatch(notaVerifCreate(values, () => {dispatch(pelayananFromAntreanGet(norecnota))}))
+            const valuesSent = {...values}
+            valuesSent.nominalbayar = Number(valuesSent.nominalbayar.replace(rgxAllPeriods, ""))
+            dispatch(buktiBayarCreate(valuesSent, () => {
+                norecnota && dispatch(pelayananFromVerifGet(norecnota))
+            }))
         }
     })
 
@@ -207,7 +215,7 @@ const Bayar = () => {
         {
 
             name: <span className='font-weight-bold fs-13'>No Verif/NBB</span>,
-            selector: row => (`${row.no_nota ? `${row.no_nota}/` : ``}`),
+            selector: row => (`${(row.no_nota ? `${row.no_nota}/\n` : ``) + (row.no_bukti ? `${row.no_bukti}` : ``)}`),
             sortable: true,
             width: "140px",
             wrap: true
@@ -220,223 +228,276 @@ const Bayar = () => {
 
     
     useEffect(() => {
-        norecnota && dispatch(pelayananFromVerifGet(norecnota))
-        console.log(norecnota)
-        return () => {
-            dispatch(pelayananFromVerifGetReset())
-        }
-    }, [norecnota, dispatch])
+        grandTotal && validation.setFieldValue("totaltagihan", grandTotal)
+        diskon && validation.setFieldValue("diskon", diskon)
+        console.log(norecnota, "norecnota")
+        //TODO: jumlah klaim diisi
+        validation.setFieldValue("klaim", 0)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [dispatch, validation.setFieldValue, grandTotal, diskon])
 
     useEffect(() => {
         nota.keterangan
             && validation.setFieldValue("keterangan", nota.keterangan)
-        nota.namapasien
-            && validation.setFieldValue("diterimadari", nota.namapasien)
+        nota.namapasien 
+            && validation.setFieldValue("pjpasien", nota.namapasien)
+        nota.idpegawai 
+            && validation.setFieldValue("pegawai", nota.idpegawai)
+        nota.norecdp
+            && validation.setFieldValue("norecdp", nota.norecdp)
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [nota, validation.setFieldValue])
 
-    
-    useEffect(() => {
-        validation.setFieldValue("objectdaftarpasienfk", norecdp)
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [norecdp, validation.setFieldValue])
 
+    useEffect(() => {
+        norecnota && validation.setFieldValue("norecnota", norecnota)
+        norecnota && dispatch(pelayananFromVerifGet(norecnota))
+        return () => {
+            dispatch(pelayananFromVerifGetReset())
+        }
+    }, [dispatch, norecnota])
+
+    const rekeningRs = (comboboxpayment?.rekeningRs || [])?.filter(
+        (rekening) => rekening.objectbankfk === validation.values.nontunai
+    );
     return(
         <div className="page-content page-bayar">
             <ToastContainer closeButton={false} />
             <Container fluid>
                 <BreadCrumb title="Pembayaran" pageTitle="Pembayaran" />
-                    <Row>
-                        <Col lg={7}>
-                            <Card className="p-3">
-                                <Row className="mb-2">
-                                    <Col lg={6}>
-                                        <Label style={{ color: "black" }} htmlFor="keterangan" className="form-label">
-                                            Metode Pembayaran
+                    <Form
+                        onSubmit={(e) => {
+                            e.preventDefault();
+                            console.log(validation.errors)
+                            validation.handleSubmit();
+                            return false;
+                        }}
+                        className="gy-4"
+                        action="#">
+                        <Row>
+                            <Col lg={7}>
+                                <Card className="p-3">
+                                    <Row className="mb-2">
+                                        <Col lg={6}>
+                                            <Label style={{ color: "black" }} htmlFor="metodebayar" className="form-label">
+                                                Metode Pembayaran
+                                            </Label>
+                                            <div>
+                                                <CustomSelect
+                                                    id="metodebayar"
+                                                    name="metodebayar"
+                                                    options={comboboxpayment?.metodeBayar || []}
+                                                    onChange={e => 
+                                                        validation.setFieldValue('metodebayar', e.value)
+                                                    }
+                                                    value={validation.values.metodebayar || ""}
+                                                    className={`input ${validation.errors.metodebayar ? "is-invalid" : ""}`}
+                                                />
+                                                {validation.touched.metodebayar && validation.errors.metodebayar && (
+                                                    <FormFeedback type="invalid"><div>{validation.errors.metodebayar}</div></FormFeedback>
+                                                )}
+                                            </div>
+                                        </Col>
+                                        {validation.values.metodebayar === 2 &&
+                                            <Col xxl={6} md={6}>
+                                                <Card>
+                                                    <CardHeader>
+                                                        Non Tunai
+                                                    </CardHeader>
+                                                    <CardBody>
+                                                        <div className="d-flex flex-column">
+                                                        {(comboboxpayment?.nontunai || []).map((data, key) => 
+                                                            <div className="d-flex flex-row" key={key}>
+                                                                <Input 
+                                                                    className="form-check-input" 
+                                                                    type="radio" 
+                                                                    id={`radio-payment-${key}`}   
+                                                                    checked={validation.values.nontunai === data.value}
+                                                                    readOnly
+                                                                    onClick={e => {
+                                                                        validation.setFieldValue('nontunai', data.value)
+                                                                    }}/>
+                                                                <Label className="form-check-label ms-2" 
+                                                                    htmlFor={`radio-payment-${key}`} 
+                                                                    style={{ color: "black" }} >
+                                                                    {data.label}
+                                                                </Label>
+                                                            </div>
+                                                        )}
+
+                                                        </div>
+                                                    </CardBody>
+
+                                                </Card>
+                                            </Col>
+                                        }
+                                    </Row>
+                                    <Row className="mb-2">
+                                        <Label 
+                                            style={{ color: "black" }} 
+                                            htmlFor="pjpasien" 
+                                            className="form-label">
+                                            Sudah diterima dari
                                         </Label>
                                         <div>
-                                            <CustomSelect
-                                                id="metodebayar"
-                                                name="metodebayar"
-                                                options={comboboxpayment?.metodeBayar || []}
-                                                onChange={e => 
-                                                    validation.setFieldValue('metodebayar', e.value)
-                                                }
-                                                value={validation.values.metodebayar || ""}
-                                            />
-                                            {validation.touched.metodebayar && validation.errors.metodebayar ? (
-                                                <FormFeedback type="invalid"><div>{validation.errors.metodebayar}</div></FormFeedback>
+                                            <Input 
+                                                id="pjpasien"
+                                                name="pjpasien"
+                                                type="text"
+                                                disabled
+                                                onBlur={validation.handleBlur}
+                                                value={validation.values.pjpasien || ""} 
+                                                invalid={validation.touched.pjpasien && !!validation.errors.pjpasien}
+                                                />
+                                            {validation.touched.pjpasien && validation.errors.pjpasien ? (
+                                                <FormFeedback type="invalid" ><div>{validation.errors.pjpasien}</div></FormFeedback>
                                             ) : null}
                                         </div>
-                                    </Col>
-                                    {validation.values.metodebayar === 2 &&
-                                        <Col xxl={6} md={6}>
-                                            <Card>
-                                                <CardHeader>
-                                                    Non Tunai
-                                                </CardHeader>
-                                                <CardBody>
-                                                    <div className="d-flex flex-column">
-                                                    {(comboboxpayment?.nontunai || []).map((data, key) => 
-                                                        <div className="d-flex flex-row" key={key}>
-                                                            <Input 
-                                                                className="form-check-input" 
-                                                                type="radio" 
-                                                                id={`radio-payment-${key}`}   
-                                                                checked={validation.values.nontunai === data.value}
-                                                                readOnly
-                                                                onClick={e => {
-                                                                    validation.setFieldValue('nontunai', data.value)
-                                                                }}/>
-                                                            <Label className="form-check-label ms-2" 
-                                                                htmlFor={`radio-payment-${key}`} 
-                                                                style={{ color: "black" }} >
-                                                                {data.label}
-                                                            </Label>
-                                                        </div>
-                                                    )}
-
-                                                    </div>
-                                                </CardBody>
-
-                                            </Card>
-                                        </Col>
-                                    }
-                                </Row>
-                                <Row className="mb-2">
-                                    <Label 
-                                        style={{ color: "black" }} 
-                                        htmlFor="diterimadari" 
-                                        className="form-label">
-                                        Sudah diterima dari
-                                    </Label>
-                                    <div>
-                                        <Input 
-                                            id="diterimadari"
-                                            name="diterimadari"
-                                            type="text"
-                                            disabled
-                                            onBlur={validation.handleBlur}
-                                            value={validation.values.diterimadari || ""} />
-                                        {validation.touched.diterimadari && validation.errors.diterimadari ? (
-                                            <FormFeedback type="invalid"><div>{validation.errors.diterimadari}</div></FormFeedback>
-                                        ) : null}
-                                    </div>
-                                    <Label style={{ color: "black" }} htmlFor="keterangan" className="form-label">
-                                        Nominal bayar
-                                    </Label>
-                                    <div>
-                                        <Input 
-                                            id="nominalbayar"
-                                            name="nominalbayar"
-                                            type="text"
-                                            disabled
-                                            onBlur={validation.handleBlur}
-                                            value={validation.values.nominalbayar || ""} />
-                                        {validation.touched.nominalbayar && validation.errors.nominalbayar ? (
-                                            <FormFeedback type="invalid"><div>{validation.errors.nominalbayar}</div></FormFeedback>
-                                        ) : null}
-                                    </div>
-                                </Row>
-                            </Card>
-                        </Col>
-                        <Col lg={5}>
-                            <Card className="p-3">
-                                <Label style={{ color: "black" }} className="form-label">
-                                    Detail Pembayaran
-                                </Label>
-                                <table className="table-bayar ">
-                                    <tbody>
-                                        <tr>
-                                            <td>Total</td>
-                                            <td>Rp{totalTagihan.toLocaleString("id-ID")}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Diskon</td>
-                                            <td>Rp{diskon}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Klaim Asuransi</td>
-                                            <td>Rp{0}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Deposit</td>
-                                            <td>Rp{0}</td>
-                                        </tr>
-                                    </tbody>
-                                    <tbody className="total-tagihan">
-                                        <tr>
-                                            <td>Total Tagihan</td>
-                                            <td>Rp{grandTotal?.toLocaleString('id-ID')}</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </Card>
-
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col lg={13}>
-                            <Card className="p-3">
-                                <Row>
-                                    <Label style={{ color: "black" }} className="form-label">
-                                        Detail Verifikasi
-                                    </Label>
-                                </Row>
-                                <Row>
-                                    <DataTable
-                                        fixedHeader
-                                        columns={columns}
-                                        pagination
-                                        data={listPelayanan || []}
-                                        progressPending={false}
-                                        customStyles={tableCustomStyles}
-                                    />
-                                </Row>
-                                <Row>
-                                    <Col lg={2} >
                                         <Label style={{ color: "black" }} htmlFor="keterangan" className="form-label">
-                                            Keterangan: 
+                                            Nominal bayar
                                         </Label>
-                                    </Col>
-                                    <Col lg={4}>
-                                        <Input
-                                            id="keterangan"
-                                            name="keterangan"
-                                            type="keterangan"
-                                            placeholder="Isi Keterangan"
-                                            disabled
-                                            style={{ height: '200px' }}
-                                            onChange={validation.handleChange}
-                                            onBlur={validation.handleBlur}
-                                            value={validation.values.keterangan || ""}
-                                            invalid={
-                                                validation.touched.keterangan && validation.errors.keterangan ? true : false
-                                            }
+                                        <div>
+                                            <Input 
+                                                id="nominalbayar"
+                                                name="nominalbayar"
+                                                type="string"
+                                                placeholder="Masukkan nominal bayar"
+                                                className="form-control"
+                                                onBlur={validation.handleBlur}
+                                                onChange={(e) => {
+                                                    validation.setFieldValue("nominalbayar",
+                                                        onChangeStrNbr(
+                                                            e.target.value, 
+                                                            validation.values.nominalbayar
+                                                        ))  
+                                                }}
+                                                invalid={validation.touched.nominalbayar && !!validation.errors.nominalbayar}
+                                                value={validation.values.nominalbayar || ""} />
+                                            {validation.touched.nominalbayar && validation.errors.nominalbayar ? (
+                                                <FormFeedback type="invalid"><div>{validation.errors.nominalbayar}</div></FormFeedback>
+                                            ) : null}
+                                        </div>
+                                        {validation.values.metodebayar === 2 &&
+                                            <>
+                                                <Label style={{ color: "black" }} htmlFor="keterangan" className="form-label">
+                                                    Rekening RS
+                                                </Label>
+                                                <div>
+                                                    <CustomSelect
+                                                        id="rekeningrs"
+                                                        name="rekeningrs"
+                                                        options={rekeningRs}
+                                                        className={`input ${validation.errors.rekeningrs ? "is-invalid" : ""}`}
+                                                        onChange={(e) => {
+                                                            validation.setFieldValue("rekeningrs", e.value);
+                                                        }}
+                                                    />
+                                                    {validation.touched.rekeningrs && validation.errors.rekeningrs ? (
+                                                        <FormFeedback type="invalid"><div>{validation.errors.rekeningrs}</div></FormFeedback>
+                                                    ) : null}
+                                                </div>
+                                            </>
+                                        }
+                                    </Row>
+                                </Card>
+                            </Col>
+                            <Col lg={5}>
+                                <Card className="p-3">
+                                    <Label style={{ color: "black" }} className="form-label">
+                                        Detail Pembayaran
+                                    </Label>
+                                    <table className="table-bayar ">
+                                        <tbody>
+                                            <tr>
+                                                <td>Total</td>
+                                                <td>Rp{totalTagihan?.toLocaleString("id-ID") || ""}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Diskon</td>
+                                                <td>Rp{diskon}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Klaim Asuransi</td>
+                                                <td>Rp{0}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Deposit</td>
+                                                <td>Rp{0}</td>
+                                            </tr>
+                                        </tbody>
+                                        <tbody className="total-tagihan">
+                                            <tr>
+                                                <td>Total Tagihan</td>
+                                                <td>Rp{grandTotal?.toLocaleString('id-ID')}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </Card>
+
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col lg={13}>
+                                <Card className="p-3">
+                                    <Row>
+                                        <Label style={{ color: "black" }} className="form-label">
+                                            Detail Verifikasi
+                                        </Label>
+                                    </Row>
+                                    <Row>
+                                        <DataTable
+                                            fixedHeader
+                                            columns={columns}
+                                            pagination
+                                            data={listPelayanan || []}
+                                            progressPending={false}
+                                            customStyles={tableCustomStyles}
                                         />
-                                        {validation.touched.keterangan && validation.errors.keterangan ? (
-                                            <FormFeedback type="invalid"><div>{validation.errors.keterangan}</div></FormFeedback>
-                                        ) : null}
-                                    </Col>
-                                </Row>
-                                <Row>
-                                    <div className="d-flex gap-2 justify-content-center mt-4 mb-2">
-                                        <Button type="submit" color="info" placement="top" id="tooltipTop" >
-                                            SIMPAN
-                                        </Button>
-                                        <button
-                                            type="button"
-                                            className="btn w-sm btn-danger"
-                                            data-bs-dismiss="modal"
-                                        >
-                                            Batal
-                                        </button>
-                                    </div>
-                                </Row>
-                            </Card>
-                        </Col>
-                        
-                    </Row>
+                                    </Row>
+                                    <Row>
+                                        <Col lg={2} >
+                                            <Label style={{ color: "black" }} htmlFor="keterangan" className="form-label">
+                                                Keterangan: 
+                                            </Label>
+                                        </Col>
+                                        <Col lg={4}>
+                                            <Input
+                                                id="keterangan"
+                                                name="keterangan"
+                                                type="keterangan"
+                                                placeholder="Isi Keterangan"
+                                                disabled
+                                                style={{ height: '200px' }}
+                                                onChange={validation.handleChange}
+                                                onBlur={validation.handleBlur}
+                                                value={validation.values.keterangan || ""}
+                                                invalid={
+                                                    validation.touched.keterangan && validation.errors.keterangan ? true : false
+                                                }
+                                            />
+                                            {validation.touched.keterangan && validation.errors.keterangan ? (
+                                                <FormFeedback type="invalid"><div>{validation.errors.keterangan}</div></FormFeedback>
+                                            ) : null}
+                                        </Col>
+                                    </Row>
+                                    <Row>
+                                        <div className="d-flex gap-2 justify-content-center mt-4 mb-2">
+                                            <Button type="submit" color="info" placement="top" id="tooltipTop" >
+                                                SIMPAN
+                                            </Button>
+                                            <button
+                                                type="button"
+                                                className="btn w-sm btn-danger"
+                                                data-bs-dismiss="modal"
+                                            >
+                                                Batal
+                                            </button>
+                                        </div>
+                                    </Row>
+                                </Card>
+                            </Col>
+                        </Row>
+                    </Form>
             </Container>
             
         </div>

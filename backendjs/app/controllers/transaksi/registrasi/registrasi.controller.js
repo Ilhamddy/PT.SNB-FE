@@ -378,6 +378,7 @@ async function saveRegistrasiPasien(req, res) {
     }
     try {
         let norecDP = uuid.v4().substring(0, 32)
+        console.log(req.body?.penjamin)
         let objectpenjaminfk = req.body?.penjamin?.[0]?.value || null
         let objectpenjamin2fk = req.body?.penjamin?.[1]?.value || null
         let objectpenjamin3fk = req.body?.penjamin?.[2]?.value || null
@@ -729,7 +730,7 @@ const getRegistrasiPasienNorec = async (req, res) => {
         if(!JSON.stringify(norec)){
             throw new Error('norec tidak boleh kosong')
         }
-        const ruanganpasien = await pool
+        let ruanganpasien = await pool
             .query(`SELECT t_daftarpasien.*,
             json_agg(peg) as pegawai, 
             json_agg(dok) as dokter,    
@@ -737,7 +738,10 @@ const getRegistrasiPasienNorec = async (req, res) => {
             json_agg(mps) as pasien,
             json_agg(mu) as unit,
             json_agg(mka) as kamar,
-            json_agg(tap) as antrean
+            json_agg(tap) as antrean,
+            json_agg(mrek1) as penjamin1,
+            json_agg(mrek2) as penjamin2,
+            json_agg(mrek3) as penjamin3
                 FROM 
                 t_daftarpasien
                 left join m_pegawai peg on peg.id = t_daftarpasien.objectpegawaifk    
@@ -747,10 +751,18 @@ const getRegistrasiPasienNorec = async (req, res) => {
                 left join m_unit mu on mu.id = t_daftarpasien.objectunitlastfk
                 left join t_antreanpemeriksaan tap on tap.objectdaftarpasienfk = t_daftarpasien.norec
                 left join m_kamar mka on mka.id = tap.objectkamarfk
+                left join m_rekanan mrek1 on mrek1.id = t_daftarpasien.objectpenjaminfk
+                left join m_rekanan mrek2 on mrek2.id = t_daftarpasien.objectpenjamin2fk
+                left join m_rekanan mrek3 on mrek3.id = t_daftarpasien.objectpenjamin3fk
                 where t_daftarpasien.norec = $1
                 group by t_daftarpasien.norec
             `
             , [norec])
+        if(ruanganpasien.rows[0]){
+            ruanganpasien.rows[0].penjamin1 = ruanganpasien.rows[0].penjamin1?.[0] || null
+            ruanganpasien.rows[0].penjamin2 = ruanganpasien.rows[0].penjamin2?.[0] || null
+            ruanganpasien.rows[0].penjamin3 = ruanganpasien.rows[0].penjamin3?.[0] || null
+        }
 
 
         if(ruanganpasien.rows.length === 0){
@@ -770,6 +782,8 @@ const getRegistrasiPasienNorec = async (req, res) => {
             code: 200
         })
     }catch (error) {
+        console.error("Error getRegistrasiPasienNorec")
+        console.error(error);
         res.status(500).send({
             status: error,
             success: false,
@@ -860,41 +874,55 @@ const saveRegistrasiPenjaminFK = async (req, res) => {
     try{
         let norecPenjaminFK = uuid.v4().substring(0, 32)
         const dataForm = req.body
-        const daftarPasien = await db.t_kepesertaanasuransi.create({
-            norec: norecPenjaminFK,
-            objectdaftarpasienfk: dataForm.norecdp,
-            objectpenjaminfk: dataForm.penjamin,
-            no_kartu: dataForm.nokartu,
-            jenisrujukan: dataForm.jenisrujukan,
-            tglsep: dataForm.tanggalsep,
-            no_rujukan: dataForm.norujukan,
-            no_sep: dataForm.norujukan,
-            tujuankunjungan: dataForm.tujuankunjungan,
-            objectdpjpfk: dataForm.dpjpmelayani,
-            asalrujukan: dataForm.asalrujukan,
-            tglrujukan: dataForm.tanggalrujukan,
-            no_skdp: dataForm.nosuratkontrol,
-            dpjppemberisurat: dataForm.dpjppemberi,
-            objectdiagnosarujukanfk: dataForm.diagnosarujukan,
-            jenispeserta: dataForm.jenispeserta,
-            no_telp: dataForm.notelepon,
-            catatan: dataForm.catatan,
-            ll_namaprovinsi: dataForm.provinsilakalantas,
-            ll_kodeprovinsi: dataForm.kprovinsilakalantas || null,
-            ll_namakabupaten: dataForm.kotalakalantas,
-            ll_kodekabupaten: dataForm.kkabupatenlakalantas || null,
-            ll_namakecamatan: dataForm.kecamatanlakalantas,
-            ll_kodekecamatan: dataForm.kkecamatanlakalantas || null,
-            ll_tgl: dataForm.tanggallakalantas,
-            ll_suplesi: dataForm.nosepsuplesi,
-            ll_keterangan: dataForm.keteranganlakalantas,
-            lk_namaprovinsi: dataForm.provinsilakalantas,
-            lk_kodeprovinsi: dataForm.kprovinsilakalantas || null,
-            lk_namakabupaten: dataForm.kotalakalantas,
-            lk_kodekabupaten: dataForm.kkabupatenlakalantas || null,
-            lk_namakecamatan: dataForm.kecamatanlakalantas,
-            lk_kodekecamatan: dataForm.kkecamatanlakalantas || null,
-        }, { transaction: transaction });
+        let daftarPasien = null;
+        if(!!dataForm.nokartunonbpjs){
+            daftarPasien = await db.t_kepesertaanasuransi.create({
+                norec: norecPenjaminFK,
+                objectdaftarpasienfk: dataForm.norecdp,
+                objectpenjaminfk: dataForm.penjamin,
+                no_kartu: dataForm.nokartunonbpjs,
+                objectdpjpfk: dataForm.dpjpmelayani,
+                objectpenjaminfk: dataForm.penjamin,
+                plafon: dataForm.plafon
+            }, {transaction: transaction})
+        }else{
+            daftarPasien = await db.t_kepesertaanasuransi.create({
+                norec: norecPenjaminFK,
+                objectdaftarpasienfk: dataForm.norecdp,
+                objectpenjaminfk: dataForm.penjamin,
+                no_kartu: dataForm.nokartu,
+                jenisrujukan: dataForm.jenisrujukan,
+                tglsep: dataForm.tanggalsep,
+                no_rujukan: dataForm.norujukan,
+                no_sep: dataForm.norujukan,
+                tujuankunjungan: dataForm.tujuankunjungan,
+                objectdpjpfk: dataForm.dpjpmelayani,
+                asalrujukan: dataForm.asalrujukan,
+                tglrujukan: dataForm.tanggalrujukan,
+                no_skdp: dataForm.nosuratkontrol,
+                dpjppemberisurat: dataForm.dpjppemberi,
+                objectdiagnosarujukanfk: dataForm.diagnosarujukan,
+                jenispeserta: dataForm.jenispeserta,
+                no_telp: dataForm.notelepon,
+                catatan: dataForm.catatan,
+                ll_namaprovinsi: dataForm.provinsilakalantas,
+                ll_kodeprovinsi: dataForm.kprovinsilakalantas || null,
+                ll_namakabupaten: dataForm.kotalakalantas,
+                ll_kodekabupaten: dataForm.kkabupatenlakalantas || null,
+                ll_namakecamatan: dataForm.kecamatanlakalantas,
+                ll_kodekecamatan: dataForm.kkecamatanlakalantas || null,
+                ll_tgl: dataForm.tanggallakalantas,
+                ll_suplesi: dataForm.nosepsuplesi,
+                ll_keterangan: dataForm.keteranganlakalantas,
+                lk_namaprovinsi: dataForm.provinsilakalantas,
+                lk_kodeprovinsi: dataForm.kprovinsilakalantas || null,
+                lk_namakabupaten: dataForm.kotalakalantas,
+                lk_kodekabupaten: dataForm.kkabupatenlakalantas || null,
+                lk_namakecamatan: dataForm.kecamatanlakalantas,
+                lk_kodekecamatan: dataForm.kkecamatanlakalantas || null,
+            }, { transaction: transaction });
+        }
+        
         
         await transaction.commit();
         let tempres = { daftarPasien: daftarPasien }

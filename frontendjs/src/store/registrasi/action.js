@@ -161,9 +161,9 @@ export const registrasiNoBPJSGetError = (error) => ({
     payload: error,
 });
 
-export const registrasiSavePenjaminFK = (data) => ({
+export const registrasiSavePenjaminFK = (data, callback) => ({
     type: REGISTRASI_SAVE_PENJAMIN_FK,
-    payload: { data },
+    payload: { data, callback },
 });
 
 export const registrasiSavePenjaminFKSuccess = (data) => ({

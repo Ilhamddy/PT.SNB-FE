@@ -15,7 +15,7 @@ import Flatpickr from "react-flatpickr";
 import { comboAsuransiGet, comboRegistrasiGet } from "../../store/master/action";
 import CustomSelect from "../Select/Select";
 import { useNavigate } from "react-router-dom";
-import { daftarTagihanPasienGet } from "../../store/payment/action";
+import { daftarTagihanPasienGet, verifNotaCancel } from "../../store/payment/action";
 
 const dateAwalStart = dateISOString(new Date(new Date() - 1000 * 60 * 60 * 24 * 3));
 const dateAwalEnd = dateISOString(new Date())
@@ -60,6 +60,9 @@ const DaftarTagihanPasien = () => {
         norecnota 
             && navigate(`/payment/bayar/${norecnota}`)    
     }
+    const handleCancelVerif = (norecnota) => {
+        norecnota && dispatch(verifNotaCancel(norecnota))
+    }
     const columns = [
         {
             name: <span className='font-weight-bold fs-13'>Detail</span>,
@@ -74,7 +77,7 @@ const DaftarTagihanPasien = () => {
                             </DropdownToggle>
                             <DropdownMenu className="dropdown-menu-end">
                                 <DropdownItem onClick={() => handleToBayar(row.norecnota)}><i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>Bayar</DropdownItem>
-                                <DropdownItem onClick={() => handleToBayar(row.norecnota)}><i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>Batal Verif</DropdownItem>
+                                <DropdownItem onClick={() => handleCancelVerif(row.norecnota)}><i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>Batal Verif</DropdownItem>
                                 <DropdownItem onClick={() => handleToBayar(row.norecnota)}><i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>Batal Bayar</DropdownItem>
 
                             </DropdownMenu>

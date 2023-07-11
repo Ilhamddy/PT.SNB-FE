@@ -18,13 +18,14 @@ import { emrDiagnosaxGet, emrListDiagnosaxGet, registrasiGet, registrasiNoBPJSGe
 import { useDispatch, useSelector } from "react-redux";
 import { comboAsuransiGet, comboRegistrasiGet, kabupatenGetBpjs, kecamatanGetBpjs, provinsiGetBpjs } from "../../../store/master/action";
 import "./RegistrasiPenjaminFK.scss";
+import { onChangeStrNbr } from "../../../utils/format";
+import { rgxAllPeriods } from "../../../utils/regexcommon";
 
 const dateNow = new Date()
 
 
 const RegistrasiPenjaminFK = () => {
     const { id, norec } = useParams();
-    const [cardHeaderTab, setcardHeaderTab] = useState("1")
 
     const [pillsTab, setpillsTab] = useState("1");
     const [isOpenRujukan, setIsOpenModalRujukan] = useState(false);
@@ -41,7 +42,8 @@ const RegistrasiPenjaminFK = () => {
         dataProvinsi,
         dataKabupaten,
         dataKecamatan,
-        successSave
+        successSave,
+        penjaminGet
     } = useSelector((state) => ({
         dataDiagnosa: state.Emr.emrDiagnosaxGet.data,
         data: state.Master.comboRegistrasiGet.data,
@@ -53,7 +55,15 @@ const RegistrasiPenjaminFK = () => {
         dataKabupaten: state.Master.kabupatenBpjs.data?.kabupaten?.list || [],
         dataKecamatan: state.Master.kecamatanBpjs.data?.kecamatan?.list || [],
         successSave: state.Registrasi.registrasiSavePenjaminFK?.success,
+        penjaminGet: [
+            state.Registrasi.registrasiRuangNorecGet.data?.penjamin1 || null,
+            state.Registrasi.registrasiRuangNorecGet.data?.penjamin2 || null,
+            state.Registrasi.registrasiRuangNorecGet.data?.penjamin3 || null,
+        ].filter((item) => item !== null), 
     }));
+
+    const [indexTab, setIndexTab] = useState(0);
+    const penjaminObj = penjaminGet[indexTab] || null;
 
     const optionProv = dataProvinsi.map((item) => ({
         value: Number(item.kode),
@@ -262,9 +272,19 @@ const RegistrasiPenjaminFK = () => {
                 } else return schema
             })
         }),
-        onSubmit: (values) => {
+        onSubmit: (values, {resetForm}) => {
             if(values){
-                dispatch(registrasiSavePenjaminFK(values))
+                const valuesSent = {...values}
+                if(penjaminGet[indexTab + 1] === undefined){
+                    dispatch(registrasiSavePenjaminFK(valuesSent, () => {
+                        resetForm();
+                        navigate(`/registrasi/pasien-ruangan/${id}/${norec}`);
+                    }))
+                }else{
+                    dispatch(registrasiSavePenjaminFK(valuesSent, () => {
+                        setIndexTab(indexTab + 1);
+                    }))
+                }
             }
         }
     });
@@ -272,13 +292,32 @@ const RegistrasiPenjaminFK = () => {
     const vNonBpjs = useFormik({
         enableReinitialize: true,
         initialValues: {
+            norecdp: norec,
+            nokartunonbpjs: '',
+            plafon: '',
+            dpjpmelayani: 1,
+            penjamin: 2
         },
         validationSchema: Yup.object({
-            noregistrasifk: Yup.string().required("No Registrasi harus di isi"),
+            nokartunonbpjs: Yup.string().required("No Registrasi harus di isi"),
+            plafon: Yup.string().required("Plafon harus di isi"),
         }),
-        onSubmit: (values) => {
+        onSubmit: (values, {resetForm}) => {
             if(values){
-                // dispatch(registrasiSavePenjaminNonFK(values))
+                console.log(values)
+                const valuesSent = {...values}
+                valuesSent.plafon = Number(valuesSent.plafon.replace(rgxAllPeriods, ""))
+                if(penjaminGet[indexTab + 1] === undefined){
+                    dispatch(registrasiSavePenjaminFK(valuesSent, () => {
+                        navigate(`/registrasi/pasien-ruangan/${id}/${norec}`)
+                        resetForm();
+                    }))
+                }else{
+                    dispatch(registrasiSavePenjaminFK(valuesSent, () => {
+                        setIndexTab(indexTab + 1);
+                        resetForm();
+                    }))
+                }
             }
         }
     })
@@ -295,11 +334,6 @@ const RegistrasiPenjaminFK = () => {
             setpillsTab(tab);
         }
     };
-    const cardHeaderToggle = (tab) => {
-        if (cardHeaderTab !== tab) {
-            setcardHeaderTab(tab);
-        }
-    }
 
     const handleDiagnosa = characterEntered => {
         if (characterEntered.length > 3) {
@@ -333,7 +367,10 @@ const RegistrasiPenjaminFK = () => {
         validation.setFieldValue("jenisrujukan", val)
     }
     const handleTujuanKunjungan = (val) => {validation.setFieldValue("tujuankunjungan", val);}
-    const handleTujuanDPJPMelayani = (val) => { validation.setFieldValue("dpjpmelayani", val);}
+    const handleTujuanDPJPMelayani = (val) => { 
+        validation.setFieldValue("dpjpmelayani", val);
+        vNonBpjs.setFieldValue("dpjpmelayani", val);
+    }
     const handleJenisPeserta = (val) => {validation.setFieldValue("jenispeserta", val)}
     const handleSetNoKartu = (val) => {validation.setFieldValue("nokartu", val);}
 
@@ -380,10 +417,8 @@ const RegistrasiPenjaminFK = () => {
     }, [dataBpjs, dataRuangDaftar, dataUser])
 
     useEffect(() => {
-        if(successSave && id && norec){
-            navigate(`/registrasi/pasien-ruangan/${id}/${norec}`)
-        }
-    }, [successSave, id, norec, navigate])
+        vNonBpjs.setFieldValue("penjamin", penjaminObj?.id || 1)
+    }, [penjaminObj])
 
 
     //component
@@ -1138,33 +1173,53 @@ const RegistrasiPenjaminFK = () => {
 
     const BodyNonBpjs = (
         <>
-            <Row key={0}>
+            <Row key={0} className="p-2">
                 <Col xxl={6} md={6}>
                     <div className="mt-2">
                         <Label style={{ color: "black" }} htmlFor="nokartunonbpjs" className="form-label">No Kartu</Label>
                     </div>
                 </Col>
-                <Col xxl={6} md={6}>
+                <Col xxl={6} md={6} className="mb-2">
                     <Input 
                         id="nokartunonbpjs"
                         name="nokartunonbpjs"
+                        placeholder="No kartu"
+                        onChange={vNonBpjs.handleChange}
+                        onBlur={vNonBpjs.handleBlur}
+                        value={vNonBpjs.values.nokartunonbpjs || ""}
+                        invalid={
+                            vNonBpjs.touched.nokartunonbpjs && vNonBpjs.errors.nokartunonbpjs ? true : false
+                        }
                     />
                     {vNonBpjs.touched.nokartunonbpjs && vNonBpjs.errors.nokartunonbpjs ? (
                         <FormFeedback type="invalid"><div>{validation.errors.nokartunonbpjs}</div></FormFeedback>
                     ) : null}
                 </Col>
-                <Col xxl={6} md={6}>
+                <Col xxl={6} md={6} >
                     <div className="mt-2">
                         <Label style={{ color: "black" }} htmlFor="kotalakalantas" className="form-label">Besaran Platform</Label>
                     </div>
                 </Col>
                 <Col xxl={6} md={6}>
                     <Input
-                        id="besaranplatform"
-                        name="besaranplatform"
+                        id="plafon"
+                        name="plafon"
+                        placeholder="Besaran Platform"
+                        onChange={(e) => {
+                            const newVal = onChangeStrNbr(
+                                e.target.value, 
+                                validation.values.nominalbayar
+                            )
+                            vNonBpjs.setFieldValue("plafon", newVal);
+                        }}
+                        onBlur={vNonBpjs.handleBlur}
+                        value={vNonBpjs.values.plafon || ""}
+                        invalid={
+                            vNonBpjs.touched.plafon && vNonBpjs.errors.plafon ? true : false
+                        }
                     />
-                    {vNonBpjs.touched.besaranplatform && validation.errors.besaranplatform ? (
-                        <FormFeedback type="invalid"><div>{validation.errors.besaranplatform}</div></FormFeedback>
+                    {vNonBpjs.touched.plafon && validation.errors.plafon ? (
+                        <FormFeedback type="invalid"><div>{validation.errors.plafon}</div></FormFeedback>
                     ) : null}
                 </Col>
             </Row>
@@ -1265,7 +1320,12 @@ const RegistrasiPenjaminFK = () => {
                     <Col lg={9}>
                         <Form onSubmit={(e) => {
                             e.preventDefault();
-                            validation.handleSubmit();
+                            const bpjs = penjaminObj.id === 1
+                            if (bpjs) {
+                                validation.handleSubmit();
+                            } else {
+                                vNonBpjs.handleSubmit();
+                            }
                             return false;
                         }}
                             className="gy-4"
@@ -1278,39 +1338,21 @@ const RegistrasiPenjaminFK = () => {
                                 <div className="card-header align-items-center d-flex">
                                     <div className="flex-shrink-0 ms-2">
                                         <Nav tabs className="nav justify-content-end nav-tabs-custom rounded card-header-tabs border-bottom-0">
-                                            
                                             <NavItemCust 
-                                                tabNumber={"1"} 
-                                                text={"BPJS"} 
-                                                cardHeaderTab={cardHeaderTab} 
-                                                cardHeaderToggle={cardHeaderToggle}/>
-                                            {/* <NavItemCust 
-                                                tabNumber={"2"} 
-                                                text={"Penjamin Lainnya"} 
-                                                cardHeaderTab={cardHeaderTab} 
-                                                cardHeaderToggle={cardHeaderToggle}/> */}
+                                                tabNumber={indexTab} 
+                                                text={penjaminObj?.namarekanan || ""} 
+                                                cardHeaderTab={indexTab} 
+                                                cardHeaderToggle={indexTab}/>
                                         </Nav>
                                     </div>
                                 </div>
-                                <TabContent activeTab={cardHeaderTab} className="text-muted">
-                                    <TabPane tabId="1" id="home-1">
-                                        {BodyBPJSRujukan}
+                                <TabContent activeTab={indexTab} className="text-muted">
+                                    <TabPane tabId={indexTab} id="home-1" >
+                                        {penjaminObj?.id === 1 ? BodyBPJSRujukan : BodyNonBpjs}
                                         <Col lg={12} style={{ textAlign: 'right' }} className="mr-3 me-3">
                                             <Button type="submit" color="info" className="rounded-pill bg-success" >Simpan</Button>
                                         </Col>
                                     </TabPane>
-
-                                    {/* <TabPane tabId="2" id="home-1">
-                                        {BodyNonBpjs}
-                                    </TabPane>
-
-                                    <TabPane tabId="3" id="home-1">
-                                        <Card>
-                                            <CardBody>
-                                                body3
-                                            </CardBody>
-                                        </Card>
-                                    </TabPane> */}
                                 </TabContent>
                             </Card>                            
                         </Form>

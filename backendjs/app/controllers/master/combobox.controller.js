@@ -27,6 +27,7 @@ import queriesKondisiPulangRI from '../../queries/master/kondisipulangri/kondisi
 import queriesCaraPulangRI from '../../queries/master/carapulangri/carapulangri.queries'
 import queriesMetodeBayar from '../../queries/master/metodebayar/metodebayar.queries'
 import queriesNonTunai from '../../queries/master/jenisNonTunai/jenisNonTunai.queries'
+import queriesRekeningRs from '../../queries/master/rekeningRs/rekeningRs.queries'
 
 
 
@@ -304,9 +305,11 @@ const comboPayment = async (req, res) => {
     try {
         const metodeBayar = await pool.query(queriesMetodeBayar.getAll, []);
         const nonTunai = await pool.query(queriesNonTunai.getAll, []);
+        const rekeningRs = await pool.query(queriesRekeningRs.getAll, []);
         let tempres = {
             metodeBayar: metodeBayar.rows,
-            nontunai: nonTunai.rows
+            nontunai: nonTunai.rows,
+            rekeningRs: rekeningRs.rows
         }
         res.status(200).send({
             data: tempres,

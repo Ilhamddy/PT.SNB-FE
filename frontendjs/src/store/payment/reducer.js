@@ -15,6 +15,14 @@ import {
     PELAYANAN_FROM_VERIF_GET_SUCCESS,
     PELAYANAN_FROM_VERIF_GET_ERROR,
     PELAYANAN_FROM_VERIF_GET_RESET,
+    BUKTI_BAYAR_CREATE,
+    BUKTI_BAYAR_CREATE_SUCCESS,
+    BUKTI_BAYAR_CREATE_ERROR,
+    BUKTI_BAYAR_CREATE_RESET,
+    VERIF_NOTA_CANCEL,
+    VERIF_NOTA_CANCEL_SUCCESS,
+    VERIF_NOTA_CANCEL_ERROR,
+    VERIF_NOTA_CANCEL_RESET,
 } from "./actionType";
 
 const INIT_STATE = {
@@ -37,6 +45,18 @@ const INIT_STATE = {
         error: null,
     },
     pelayananFromVerifGet: {
+        data: [],
+        loading: false,
+        success: false,
+        error: null,
+    },
+    buktiBayarCreate: {
+        data: [],
+        loading: false,
+        success: false,
+        error: null,
+    },
+    verifNotaCancel: {
         data: [],
         loading: false,
         success: false,
@@ -199,6 +219,107 @@ const payment = (state = INIT_STATE, action) => {
                     error: action.payload,
                 },
             };
+        case PELAYANAN_FROM_VERIF_GET_RESET:
+            return {
+                ...state,
+                pelayananFromVerifGet: {
+                    ...state.pelayananFromVerifGet,
+                    data: [],
+                    success: false,
+                    loading: false,
+                    error: null,
+                },
+            };
+        case BUKTI_BAYAR_CREATE:
+            return {
+                ...state,
+                buktiBayarCreate: {
+                    ...state.buktiBayarCreate,
+                    data: [],
+                    loading: true,
+                    error: null,
+                },
+            };
+
+        case BUKTI_BAYAR_CREATE_SUCCESS:
+            return {
+                ...state,
+                buktiBayarCreate: {
+                    ...state.buktiBayarCreate,
+                    data: action.payload,
+                    loading: false,
+                    error: null,
+                },
+            };
+
+        case BUKTI_BAYAR_CREATE_ERROR:
+            return {
+                ...state,
+                buktiBayarCreate: {
+                    ...state.buktiBayarCreate,
+                    data: [],
+                    loading: false,
+                    error: action.payload,
+                },
+            };
+
+        case BUKTI_BAYAR_CREATE_RESET:
+            return {
+                ...state,
+                buktiBayarCreate: {
+                    ...state.buktiBayarCreate,
+                    data: [],
+                    success: false,
+                    loading: false,
+                    error: null,
+                },
+            };
+
+        case VERIF_NOTA_CANCEL:
+            return {
+                ...state,
+                verifNotaCancel: {
+                    ...state.verifNotaCancel,
+                    data: [],
+                    loading: true,
+                    error: null,
+                },
+            };
+
+        case VERIF_NOTA_CANCEL_SUCCESS:
+            return {
+                ...state,
+                verifNotaCancel: {
+                    ...state.verifNotaCancel,
+                    data: action.payload,
+                    loading: false,
+                    error: null,
+                },
+            };
+
+        case VERIF_NOTA_CANCEL_ERROR:
+            return {
+                ...state,
+                verifNotaCancel: {
+                    ...state.verifNotaCancel,
+                    data: [],
+                    loading: false,
+                    error: action.payload,
+                },
+            };
+        
+        case VERIF_NOTA_CANCEL_RESET:
+            return {
+                ...state,
+                verifNotaCancel: {
+                    ...state.verifNotaCancel,
+                    data: [],
+                    success: false,
+                    loading: false,
+                    error: null,
+                },
+            };
+            
         default:
             return { ...state };
     }

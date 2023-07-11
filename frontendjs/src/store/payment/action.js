@@ -13,6 +13,14 @@ import { PELAYANAN_FROM_ANTREAN_GET,
     PELAYANAN_FROM_VERIF_GET_SUCCESS,
     PELAYANAN_FROM_VERIF_GET_ERROR,
     PELAYANAN_FROM_VERIF_GET_RESET,
+    BUKTI_BAYAR_CREATE,
+    BUKTI_BAYAR_CREATE_SUCCESS,
+    BUKTI_BAYAR_CREATE_ERROR,
+    BUKTI_BAYAR_CREATE_RESET,
+    VERIF_NOTA_CANCEL,
+    VERIF_NOTA_CANCEL_SUCCESS,
+    VERIF_NOTA_CANCEL_ERROR,
+    VERIF_NOTA_CANCEL_RESET
 } from "./actionType";
 
 export const pelayananFromAntreanGet = (norecap) => {
@@ -116,5 +124,53 @@ export const pelayananFromVerifGetError = (error) => {
 export const pelayananFromVerifGetReset = () => {
     return {
         type: PELAYANAN_FROM_VERIF_GET_RESET
+    }
+}
+
+export const buktiBayarCreate = (body, callback) => {
+    return {
+        type: BUKTI_BAYAR_CREATE,
+        payload: {body, callback}
+    }
+}
+
+export const buktiBayarCreateSuccess = (data) => {
+    return {
+        type: BUKTI_BAYAR_CREATE_SUCCESS,
+        payload: data
+    }
+}
+
+export const buktiBayarCreateError = (error) => {
+    return {
+        type: BUKTI_BAYAR_CREATE_ERROR,
+        payload: error
+    }
+}
+
+export const buktiBayarCreateReset = () => {
+    return {
+        type: BUKTI_BAYAR_CREATE_RESET,
+    }
+}
+
+export const verifNotaCancel = (norecnota, callback) => {
+    return {
+        type: VERIF_NOTA_CANCEL,
+        payload: {norecnota, callback}
+    }
+}
+
+export const verifNotaCancelSuccess = (data) => {
+    return {
+        type: VERIF_NOTA_CANCEL_SUCCESS,
+        payload: data
+    }
+}
+
+export const verifNotaCancelError = (error) => {
+    return {
+        type: VERIF_NOTA_CANCEL_ERROR,
+        payload: error
     }
 }
