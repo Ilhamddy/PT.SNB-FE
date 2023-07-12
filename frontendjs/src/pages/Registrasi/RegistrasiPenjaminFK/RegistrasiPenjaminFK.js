@@ -1,5 +1,5 @@
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import userDummy from "../../../assets/images/users/user-dummy-img.jpg";
 import classnames from "classnames";
 import withRouter from "../../../Components/Common/withRouter";
@@ -289,7 +289,7 @@ const RegistrasiPenjaminFK = () => {
         }
     });
 
-    const vNonBpjs = useFormik({
+    const vNonBPJS = useFormik({
         enableReinitialize: true,
         initialValues: {
             norecdp: norec,
@@ -366,33 +366,34 @@ const RegistrasiPenjaminFK = () => {
         validation.setFieldValue("asalrujukan", val);
         validation.setFieldValue("jenisrujukan", val)
     }
-    const handleTujuanKunjungan = (val) => {validation.setFieldValue("tujuankunjungan", val);}
     const handleTujuanDPJPMelayani = (val) => { 
         validation.setFieldValue("dpjpmelayani", val);
-        vNonBpjs.setFieldValue("dpjpmelayani", val);
+        vNonBPJS.setFieldValue("dpjpmelayani", val);
     }
-    const handleJenisPeserta = (val) => {validation.setFieldValue("jenispeserta", val)}
-    const handleSetNoKartu = (val) => {validation.setFieldValue("nokartu", val);}
-
     useEffect(() => {   
+        const setFF = validation.setFieldValue
+        const setFFNonBPJS = vNonBPJS.setFieldValue
         dataRuangDaftar?.objectinstalasifk 
-            && handleTujuanKunjungan(dataRuangDaftar.objectinstalasifk)
+            && setFF("tujuankunjungan", dataRuangDaftar.objectinstalasifk)
         dataRuangDaftar?.objectasalrujukanfk 
-            && handleAsalRujukan(dataRuangDaftar.objectasalrujukanfk);
+            && setFF("asalrujukan", dataRuangDaftar.objectasalrujukanfk);
+        dataRuangDaftar?.objectjenisrujukanfk
+            && setFF("jenisrujukan", dataRuangDaftar.objectjenisrujukanfk);
         dataRuangDaftar?.objectdokterpemeriksafk 
-            && handleTujuanDPJPMelayani(dataRuangDaftar.objectdokterpemeriksafk);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [dataRuangDaftar])
+            && setFF("dpjpmelayani", dataRuangDaftar.objectdokterpemeriksafk);
+        dataRuangDaftar?.objectdokterpemeriksafk
+            && setFFNonBPJS("dpjpmelayani", dataRuangDaftar.objectdokterpemeriksafk);
+    }, [dataRuangDaftar, validation.setFieldValue, vNonBPJS.setFieldValue])
 
     useEffect(() => {
+        const setFF = validation.setFieldValue
         if(dataBpjs?.kepesertaan?.peserta?.jenisPeserta?.keterangan){
-            handleJenisPeserta(dataBpjs?.kepesertaan?.peserta?.jenisPeserta?.keterangan);
+            setFF("jenispeserta", dataBpjs?.kepesertaan?.peserta?.jenisPeserta?.keterangan);
         }
         if(dataBpjs?.kepesertaan?.peserta?.noKartu){
-            handleSetNoKartu(dataBpjs?.kepesertaan?.peserta?.noKartu);
+            setFF("nokartu", dataBpjs?.kepesertaan?.peserta?.noKartu);
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [dataBpjs])
+    }, [dataBpjs, validation.setFieldValue])
 
     //klinik 3, puskesmas 1, rumahsakit 2
     useEffect(() => {
@@ -416,10 +417,12 @@ const RegistrasiPenjaminFK = () => {
         }
     }, [dataBpjs, dataRuangDaftar, dataUser])
 
-    useEffect(() => {
-        vNonBpjs.setFieldValue("penjamin", penjaminObj?.id || 1)
-    }, [penjaminObj]) // eslint-disable-line react-hooks/exhaustive-deps
 
+    useEffect(() => {
+        const setFFNBPJS = vNonBPJS.setFieldValue
+        setFFNBPJS("penjamin", penjaminObj?.id || 1)
+    }, [vNonBPJS.setFieldValue, penjaminObj])
+    
 
     //component
     const PilihRujukan = (
@@ -440,7 +443,7 @@ const RegistrasiPenjaminFK = () => {
                                         name="jenisrujukan"
                                         options={data.instalasi}
                                         onChange={(e) => {
-                                            handleTujuanKunjungan(e.value)
+                                            validation.setFieldValue("tujuankunjungan", e.value)
                                         }}
                                         value={validation.values.tujuankunjungan || ""}
                                     />
@@ -551,7 +554,7 @@ const RegistrasiPenjaminFK = () => {
                                         name="tujuankunjungan"
                                         options={data.instalasi}
                                         onChange={(e) => {
-                                            handleTujuanKunjungan(e.value)
+                                            validation.setFieldValue("tujuankunjungan", e.value)
                                         }}
                                         value={validation.values.tujuankunjungan || ""}
                                     />
@@ -1184,14 +1187,14 @@ const RegistrasiPenjaminFK = () => {
                         id="nokartunonbpjs"
                         name="nokartunonbpjs"
                         placeholder="No kartu"
-                        onChange={vNonBpjs.handleChange}
-                        onBlur={vNonBpjs.handleBlur}
-                        value={vNonBpjs.values.nokartunonbpjs || ""}
+                        onChange={vNonBPJS.handleChange}
+                        onBlur={vNonBPJS.handleBlur}
+                        value={vNonBPJS.values.nokartunonbpjs || ""}
                         invalid={
-                            vNonBpjs.touched.nokartunonbpjs && vNonBpjs.errors.nokartunonbpjs ? true : false
+                            vNonBPJS.touched.nokartunonbpjs && vNonBPJS.errors.nokartunonbpjs ? true : false
                         }
                     />
-                    {vNonBpjs.touched.nokartunonbpjs && vNonBpjs.errors.nokartunonbpjs ? (
+                    {vNonBPJS.touched.nokartunonbpjs && vNonBPJS.errors.nokartunonbpjs ? (
                         <FormFeedback type="invalid"><div>{validation.errors.nokartunonbpjs}</div></FormFeedback>
                     ) : null}
                 </Col>
@@ -1210,15 +1213,15 @@ const RegistrasiPenjaminFK = () => {
                                 e.target.value, 
                                 validation.values.nominalbayar
                             )
-                            vNonBpjs.setFieldValue("plafon", newVal);
+                            vNonBPJS.setFieldValue("plafon", newVal);
                         }}
-                        onBlur={vNonBpjs.handleBlur}
-                        value={vNonBpjs.values.plafon || ""}
+                        onBlur={vNonBPJS.handleBlur}
+                        value={vNonBPJS.values.plafon || ""}
                         invalid={
-                            vNonBpjs.touched.plafon && vNonBpjs.errors.plafon ? true : false
+                            vNonBPJS.touched.plafon && vNonBPJS.errors.plafon ? true : false
                         }
                     />
-                    {vNonBpjs.touched.plafon && validation.errors.plafon ? (
+                    {vNonBPJS.touched.plafon && validation.errors.plafon ? (
                         <FormFeedback type="invalid"><div>{validation.errors.plafon}</div></FormFeedback>
                     ) : null}
                 </Col>
@@ -1324,7 +1327,7 @@ const RegistrasiPenjaminFK = () => {
                             if (bpjs) {
                                 validation.handleSubmit();
                             } else {
-                                vNonBpjs.handleSubmit();
+                                vNonBPJS.handleSubmit();
                             }
                             return false;
                         }}

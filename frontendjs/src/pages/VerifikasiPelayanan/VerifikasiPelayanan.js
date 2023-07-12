@@ -115,11 +115,11 @@ const VerifikasiPelayanan = () => {
     const grandTot = totalObat + totalLayanan
 
     useEffect(() => {
+        const setFF = validation.setFieldValue
         const hasilCheck = listPelayananChecked.filter((item) => item.checked).map((item) => item.norec)
-        validation.setFieldValue("objectdaftarpasienfk", norecdp)
-        validation.setFieldValue("total", grandTot)
-        validation.setFieldValue("norecppdone", hasilCheck)
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+        setFF("objectdaftarpasienfk", norecdp)
+        setFF("total", grandTot)
+        setFF("norecppdone", hasilCheck)
     }, [norecdp, validation.setFieldValue, grandTot, listPelayananChecked])
     
     const columns = [

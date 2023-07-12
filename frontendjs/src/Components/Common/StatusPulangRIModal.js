@@ -135,8 +135,8 @@ const StatusPulangRIModal = ({ norecdp, norecAP, toggle }) => {
     })
 
     useEffect(() => {
-        validation.setFieldValue("nobedsebelum", antreanSebelum.nobed || "")
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+        const setFF = validation.setFieldValue
+        setFF("nobedsebelum", antreanSebelum.nobed || "")
     }, [validation.setFieldValue, antreanSebelum])
 
     let arKamar = comboPulang?.kamar?.filter(function (item) {

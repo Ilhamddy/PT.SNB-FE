@@ -227,35 +227,34 @@ const Bayar = () => {
 
     
     useEffect(() => {
-        grandTotal && validation.setFieldValue("totaltagihan", grandTotal)
-        diskon && validation.setFieldValue("diskon", diskon)
-        console.log(norecnota, "norecnota")
+        const setFF = validation.setFieldValue
+        grandTotal && setFF("totaltagihan", grandTotal)
+        diskon && setFF("diskon", diskon)
         //TODO: jumlah klaim diisi
-        validation.setFieldValue("klaim", 0)
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+        setFF("klaim", 0)
     }, [dispatch, validation.setFieldValue, grandTotal, diskon])
 
     useEffect(() => {
+        const setFF = validation.setFieldValue
         nota.keterangan
-            && validation.setFieldValue("keterangan", nota.keterangan)
+            && setFF("keterangan", nota.keterangan)
         nota.namapasien 
-            && validation.setFieldValue("pjpasien", nota.namapasien)
+            && setFF("pjpasien", nota.namapasien)
         nota.idpegawai 
-            && validation.setFieldValue("pegawai", nota.idpegawai)
+            && setFF("pegawai", nota.idpegawai)
         nota.norecdp
-            && validation.setFieldValue("norecdp", nota.norecdp)
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+            && setFF("norecdp", nota.norecdp)
     }, [nota, validation.setFieldValue])
 
 
     useEffect(() => {
-        norecnota && validation.setFieldValue("norecnota", norecnota)
+        const setFF = validation.setFieldValue
+        norecnota && setFF("norecnota", norecnota)
         norecnota && dispatch(pelayananFromVerifGet(norecnota))
         return () => {
             dispatch(pelayananFromVerifGetReset())
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [dispatch, norecnota])
+    }, [dispatch, norecnota, validation.setFieldValue])
 
     const rekeningRs = (comboboxpayment?.rekeningRs || [])?.filter(
         (rekening) => rekening.objectbankfk === validation.values.nontunai
