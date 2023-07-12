@@ -76,7 +76,7 @@ async function getListDaftarPasien(req, res) {
             case when mu.objectinstalasifk=2 then 'RI' else 'RJ' end as tipe,
             case when td.objectpenjaminfk=1 then 'JKN' else mr.namarekanan  end as jaminan1,
             case when td.objectpenjamin2fk=1 then 'JKN' when td.objectpenjamin2fk is null then '' else 'LAIN-LAIN' end as jaminan2,
-            tk.no_sep
+            tk.no_sep,tk.no_kartu
         from
             t_daftarpasien td
         join m_pasien mp on mp.id=td.nocmfk
