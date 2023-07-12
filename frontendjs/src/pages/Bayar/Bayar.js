@@ -93,7 +93,6 @@ const Bayar = () => {
             nobukti: Yup.string().required("No Bukti harus diisi"),
             pegawai: Yup.string().required("Pegawai harus diisi"),
             norecnota: Yup.string().required("No Rekam Medis harus diisi"),
-            pjpasien: Yup.string().required("Penanggung Jawab Pasien harus diisi"),
             klaim: Yup.string().required("Klaim harus diisi"),
             norecdp: Yup.string().required("No DP harus diisi"),
         }),
@@ -255,6 +254,7 @@ const Bayar = () => {
         return () => {
             dispatch(pelayananFromVerifGetReset())
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [dispatch, norecnota])
 
     const rekeningRs = (comboboxpayment?.rekeningRs || [])?.filter(

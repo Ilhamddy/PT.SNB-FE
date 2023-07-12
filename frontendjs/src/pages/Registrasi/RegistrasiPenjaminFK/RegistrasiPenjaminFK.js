@@ -418,7 +418,7 @@ const RegistrasiPenjaminFK = () => {
 
     useEffect(() => {
         vNonBpjs.setFieldValue("penjamin", penjaminObj?.id || 1)
-    }, [penjaminObj])
+    }, [penjaminObj]) // eslint-disable-line react-hooks/exhaustive-deps
 
 
     //component
