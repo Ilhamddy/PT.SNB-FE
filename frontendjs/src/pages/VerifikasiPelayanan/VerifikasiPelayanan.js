@@ -10,7 +10,7 @@ import { Link } from "feather-icons-react/build/IconComponents";
 import { useDispatch, useSelector } from "react-redux";
 import {daftarPasienPulangGet,} from "../../store/daftarPasien/action";
 import DataTable from "react-data-table-component";
-import { dateISOString, dateTimeLocal } from "../../utils/format";
+import { dateISOString, dateTimeLocal, onChangeStrNbr } from "../../utils/format";
 import Flatpickr from "react-flatpickr";
 import { 
     comboAsuransiGet, 
@@ -23,6 +23,8 @@ import {
 import CustomSelect from "../Select/Select";
 import "./VerifikasiPelayanan.scss"
 import { useNavigate, useParams } from "react-router-dom";
+import React from "react";
+import { rgxAllPeriods } from "../../utils/regexcommon";
 
 const dateAwalStart = dateISOString(new Date(new Date() - 1000 * 60 * 60 * 24 * 3));
 const dateAwalEnd = dateISOString(new Date())
@@ -31,16 +33,25 @@ const date = new Date()
 
 const VerifikasiPelayanan = () => {
     const { norecap } = useParams();
+
+    const [dateStart, setDateStart] = useState(dateAwalStart);
+    const [dateEnd, setDateEnd] = useState(dateAwalEnd);
+    const [search, setSearch] = useState("");
+    const [instalasi, setInstalasi] = useState("");
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
     let {
         dataPasienPlg, 
         comboboxReg,
         listPelayanan,
-        norecdp
+        norecdp,
+        penjaminGet
     } = useSelector((state) => ({
         dataPasienPlg: state.DaftarPasien.daftarPasienPulangGet.data || [],
         comboboxReg: state.Master.comboRegistrasiGet.data || {},
         listPelayanan: state.Payment.pelayananFromNoAntrianGet.data?.pelayanan || null,
         norecdp: state.Payment.pelayananFromNoAntrianGet.data?.objectdaftarpasienfk || "",
+        penjaminGet: state.Payment.pelayananFromNoAntrianGet.data?.kepesertaan || [],
     }))
     const [listPelayananChecked, setListPelayananChecked] = useState([])
 
@@ -54,24 +65,41 @@ const VerifikasiPelayanan = () => {
             no_nota: `V${date.getFullYear().toString().substring(2,4)}${date.getMonth() + 1}${date.getDate()}${date.getHours()}${date.getMinutes()}${date.getSeconds()}`  ,
             objectpegawaifk: 1,
             keterangan: "",
-            norecppdone: []
+            norecppdone: [],
+            isipenjamin: [],
         },
         validationSchema: Yup.object({
             keterangan: Yup.string().required("Keterangan harus diisi"),
+            norecppdone: Yup.array().min(1, "Pilih minimal 1 pelayanan"),
+            isipenjamin: Yup.array().of(
+                Yup.object().shape({
+                    norec: Yup.string().required("Penjamin harus diisi"),
+                    value: Yup.string().required("Penjamin harus diisi"),
+                    //label
+                })
+            )
         }),
         onSubmit: (values) => {
-            dispatch(notaVerifCreate(values, () => {dispatch(pelayananFromAntreanGet(norecap))}))
+            const newValue = {...values}
+            newValue.isipenjamin = newValue.isipenjamin.map((isipenjamin) => {
+                let newIsiPenjamin = {...isipenjamin};
+                newIsiPenjamin.value = 
+                    Number(newIsiPenjamin.value.replace(rgxAllPeriods, ""));
+                return newIsiPenjamin
+            }) 
+            dispatch(notaVerifCreate(newValue, () => {dispatch(pelayananFromAntreanGet(norecap))}))
         }
     })
 
+    const handleTouched = () => {
+        let touchedVPenjamin = {...validation.touched, keterangan: true, isipelayanan: true}
+        validation.values.isipenjamin.forEach((_, index) => {
+            touchedVPenjamin[`isipenjamin-${index}`] = true
+        })
+        validation.setTouched(touchedVPenjamin);
+    }
 
 
-    const [dateStart, setDateStart] = useState(dateAwalStart);
-    const [dateEnd, setDateEnd] = useState(dateAwalEnd);
-    const [search, setSearch] = useState("");
-    const [instalasi, setInstalasi] = useState("");
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
 
     useEffect(() => {
         if(listPelayanan === null) return
@@ -84,9 +112,14 @@ const VerifikasiPelayanan = () => {
         setListPelayananChecked(withChecked)
     }, [listPelayanan])
 
-    useEffect(() => {
-        dispatch(pelayananFromAntreanGet(norecap));
-    }, [dispatch, norecap])
+    const totalObat = listPelayananChecked.reduce((prev, data) => {
+        return prev + (data.checked && data.isobat ? (data.total || 0) : 0)
+    }, 0)
+    const totalLayanan = listPelayananChecked.reduce((prev, data) => {
+        return prev + (data.checked && !data.isobat ? (data.total || 0) : 0)
+    }, 0)
+    const grandTot = totalObat + totalLayanan
+    
 
     const handleFilter = () => {
         dispatch(daftarPasienPulangGet(dateStart, dateEnd))
@@ -98,6 +131,16 @@ const VerifikasiPelayanan = () => {
         norecpp 
             && navigate(`/payment/verif-tagihan/${norecpp}`)    
     }
+    const handleValuePenjamin = (index, newVal) => {
+        let newIsiPenjamin = [...validation.values.isipenjamin];
+        const newItem = {...newIsiPenjamin[index]};
+        newItem.value = onChangeStrNbr(
+            newVal, 
+            validation.values.isipenjamin[index].value
+        );
+        newIsiPenjamin[index] = newItem;
+        validation.setFieldValue("isipenjamin", newIsiPenjamin)
+    }
     const handleChecked = (checked, norec) => {
         const newListPC = [...listPelayananChecked]
         const index = newListPC.findIndex((item) => item.norec === norec)
@@ -106,13 +149,7 @@ const VerifikasiPelayanan = () => {
         newListPC[index] = newItem
         setListPelayananChecked(newListPC)
     }
-    const totalObat = listPelayananChecked.reduce((prev, data) => {
-        return prev + (data.checked && data.isobat ? (data.total || 0) : 0)
-    }, 0)
-    const totalLayanan = listPelayananChecked.reduce((prev, data) => {
-        return prev + (data.checked && !data.isobat ? (data.total || 0) : 0)
-    }, 0)
-    const grandTot = totalObat + totalLayanan
+
 
     useEffect(() => {
         const setFF = validation.setFieldValue
@@ -121,7 +158,23 @@ const VerifikasiPelayanan = () => {
         setFF("total", grandTot)
         setFF("norecppdone", hasilCheck)
     }, [norecdp, validation.setFieldValue, grandTot, listPelayananChecked])
+
+    useEffect(() => {
+        const setFFPjmn = validation.setFieldValue
+        let newIsiPenjamin = penjaminGet.map((item) => ({
+            value: "",
+            label: item.nama_asuransi,
+            norec: item.norec
+        })) || []
+        newIsiPenjamin.length !== 0 && setFFPjmn("isipenjamin", newIsiPenjamin)
+    }, [penjaminGet, validation.setFieldValue])
+
+    useEffect(() => {
+        dispatch(pelayananFromAntreanGet(norecap));
+    }, [dispatch, norecap])
+
     
+
     const columns = [
         {
             name: <span className='font-weight-bold fs-13'>Detail</span>,
@@ -237,9 +290,10 @@ const VerifikasiPelayanan = () => {
                 <BreadCrumb title="Registrasi Pasien" pageTitle="Verifikasi Tagihan" />
                 <Card className="p-2">
                     <Form onSubmit={(e) => {
-                        e.preventDefault();
-                        validation.handleSubmit();
-                        return false;
+                            e.preventDefault();
+                            validation.handleSubmit();
+                            handleTouched();
+                            return false;
                         }}
                         className="gy-4"
                         action="#">
@@ -293,31 +347,72 @@ const VerifikasiPelayanan = () => {
                                     progressPending={false}
                                     customStyles={tableCustomStyles}
                                 />
+                                {!!validation.errors.norecppdone && !!validation.touched.isipelayanan && 
+                                    <div style={{color: "#E3866F"}} className="mb-3">
+                                        {validation.errors.norecppdone}
+                                    </div>
+                                }
                             </Col>
                             <Row className="row-header mb-2">
-                                <Col lg={1} >
-                                    <Label style={{ color: "black" }} htmlFor="keterangan" className="form-label">
-                                        Keterangan: 
-                                    </Label>
+                                <Col lg={5}>
+                                    <Row>
+                                        {validation.values.isipenjamin.map((penjamin, index) => 
+                                            <React.Fragment key={index}>
+                                                <Col lg={10} >
+                                                    <Label style={{ color: "black" }} htmlFor="keterangan" className="form-label">
+                                                        {penjamin.label}
+                                                    </Label>
+                                                </Col>
+                                                <Col lg={10}>
+                                                    <Input
+                                                        id={`isipenjamin-${index}`}
+                                                        name={`isipenjamin-${index}`}
+                                                        type={`isipenjamin-${index}`}
+                                                        placeholder={`Isi ${penjamin.label}`}
+                                                        className="mb-2"
+                                                        onChange={(e) => {
+                                                            handleValuePenjamin(index, e.target.value)
+                                                        }}
+                                                        onBlur={validation.handleBlur}
+                                                        value={penjamin.value || ""}
+                                                        invalid={
+                                                            !!validation.touched?.[`isipenjamin-${index}`] 
+                                                                && !!validation.errors.isipenjamin?.[index]
+                                                        }
+                                                    />
+                                                    {!!validation.touched?.[`isipenjamin-${index}`] &&  !!validation.errors.isipenjamin?.[index] ? (
+                                                        <FormFeedback type="invalid"><div>{validation.errors.isipenjamin?.[index]?.value || ""}</div></FormFeedback>
+                                                    ) : null}
+                                                </Col>
+                                            </React.Fragment>
+                                        )}
+                                        
+                                        <Col lg={3} >
+                                            <Label style={{ color: "black" }} htmlFor="keterangan" className="form-label">
+                                                Keterangan: 
+                                            </Label>
+                                        </Col>
+                                        <Col lg={10}>
+                                            <Input
+                                                id="keterangan"
+                                                name="keterangan"
+                                                type="keterangan"
+                                                placeholder="Isi Keterangan"
+                                                style={{ height: '200px' }}
+                                                onChange={validation.handleChange}
+                                                onBlur={validation.handleBlur}
+                                                value={validation.values.keterangan || ""}
+                                                invalid={
+                                                    validation.touched.keterangan && validation.errors.keterangan ? true : false
+                                                }
+                                            />
+                                            {validation.touched.keterangan && validation.errors.keterangan ? (
+                                                <FormFeedback type="invalid"><div>{validation.errors.keterangan}</div></FormFeedback>
+                                            ) : null}
+                                        </Col>
+                                    </Row>
                                 </Col>
-                                <Col lg={4}>
-                                    <Input
-                                        id="keterangan"
-                                        name="keterangan"
-                                        type="keterangan"
-                                        placeholder="Isi Keterangan"
-                                        style={{ height: '200px' }}
-                                        onChange={validation.handleChange}
-                                        onBlur={validation.handleBlur}
-                                        value={validation.values.keterangan || ""}
-                                        invalid={
-                                            validation.touched.keterangan && validation.errors.keterangan ? true : false
-                                        }
-                                    />
-                                    {validation.touched.keterangan && validation.errors.keterangan ? (
-                                        <FormFeedback type="invalid"><div>{validation.errors.keterangan}</div></FormFeedback>
-                                    ) : null}
-                                </Col>
+                                
                                 <Col lg={7} className="flex-row-reverse d-flex">
                                     <table className="table-payment ">
                                         <thead>
@@ -343,6 +438,7 @@ const VerifikasiPelayanan = () => {
                                     </table>
                                 </Col>
                             </Row>
+                            
                             <Row className="row-header mb-2">
                                 <div className="d-flex gap-2 justify-content-center mt-4 mb-2">
                                     <Button type="submit" color="info" placement="top" id="tooltipTop" >

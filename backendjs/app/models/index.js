@@ -25,6 +25,7 @@ import t_kepesertaanasuransiM from "../models/t_kepesertaanasuransi.js";
 import t_notapelayananpasien from "./t_notapelayananpasien.js";
 import t_buktibayarpasienM from "./t_buktibayarpasien.model.js";
 import t_log_batalveriflayananM from "./t_log_batalveriflayanan.model.js";
+import t_log_pasienbatalbayarModel from "./t_log_pasienbatalbayar.model.js";
 
 console.log("dialect", config.dialect)
 
@@ -75,6 +76,7 @@ db.t_kepesertaanasuransi = t_kepesertaanasuransiM(sequelize,Sequelize);
 db.t_notapelayananpasien = t_notapelayananpasien(sequelize,Sequelize);
 db.t_buktibayarpasien = t_buktibayarpasienM(sequelize,Sequelize);
 db.t_log_batalveriflayanan = t_log_batalveriflayananM(sequelize,Sequelize);
+db.t_log_pasienbatalbayar = t_log_pasienbatalbayarModel(sequelize,Sequelize);
 db.role.belongsToMany(db.user, {
   through: "user_roles",
   foreignKey: "roleid",

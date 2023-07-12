@@ -18,7 +18,11 @@ export default (sequelize, Sequelize) => {
         objectnotapelayananpasienfk: {
             type: Sequelize.BOOLEAN,
             defaultValue: false
-        }
+        },
+        objectbuktibayarpasienfk: {
+            type: Sequelize.BOOLEAN,
+            defaultValue: false
+        },
     }, {
         tableName: "t_log_batalveriflayanan", // relation "user" does not exist
         createdAt: false,

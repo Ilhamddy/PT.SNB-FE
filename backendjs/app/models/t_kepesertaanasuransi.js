@@ -139,6 +139,9 @@ export default (sequelize, Sequelize) => {
         ll_istaspen:{
             type: Sequelize.BOOLEAN
         },
+        nominalklaim:{
+            type: Sequelize.FLOAT
+        }
     }, {
         tableName: "t_kepesertaanasuransi", // relation "user" does not exist
         createdAt: false,

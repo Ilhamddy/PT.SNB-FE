@@ -1,22 +1,33 @@
 import * as uuid from 'uuid';
 import db from "../../../models";
 import pool from "../../../config/dbcon.query";
-import { qGetPelayananFromAntrean, qGetNorecPenggunaFromAp, qDaftarTagihanPasien, qGetPelayananFromVerif, qGetVerif } from '../../../queries/payment/payment.queries';
+import { qGetPelayananFromAntrean, 
+    qGetNorecPenggunaFromAp, 
+    qDaftarTagihanPasien, 
+    qGetPelayananFromVerif, 
+    qGetVerif,
+    qGetKepesertaanFromAntrean,
+    qGetKepesertaanFromNota
+} from '../../../queries/payment/payment.queries';
 
 const t_notapelayananpasien = db.t_notapelayananpasien
 const t_pelayananpasien = db.t_pelayananpasien
 const t_buktibayarpasien = db.t_buktibayarpasien
 const t_log_batalveriflayanan = db.t_log_batalveriflayanan
+const t_kepesertaanasuransi = db.t_kepesertaanasuransi
+const t_log_pasienbatalbayar = db.t_log_pasienbatalbayar
 const Sequelize = {}
 
 const getPelayananFromAntrean = async (req, res) => {
     try{
         const norecap = req.params.norecAP
         const pelayanan = await pool.query(qGetPelayananFromAntrean, [norecap])
+        const kepesertaan = await pool.query(qGetKepesertaanFromAntrean, [norecap])
         const dp = await pool.query(qGetNorecPenggunaFromAp, [norecap])
         let tempres = { 
             pelayanan: pelayanan.rows || [], 
-            objectdaftarpasienfk: dp.rows[0].objectdaftarpasienfk || null 
+            objectdaftarpasienfk: dp.rows[0].objectdaftarpasienfk || null,
+            kepesertaan: kepesertaan.rows[0]?.list_kpa || []
         }
         res.status(200).send({
             data: tempres,
@@ -42,9 +53,11 @@ const getPelayananFromVerif = async (req, res) => {
         const norecnota = req.params.norecnota
         const pelayanan = await pool.query(qGetPelayananFromVerif, [norecnota])
         const verif = await pool.query(qGetVerif, [norecnota])
+        const kepesertaan = await pool.query(qGetKepesertaanFromNota, [norecnota])
         let tempres = { 
             pelayanan: pelayanan.rows || [],
-            nota: verif.rows[0] || null
+            nota: verif.rows[0] || null,
+            kepesertaan: kepesertaan.rows[0]?.list_kpa || []
         }
         res.status(200).send({
             data: tempres,
@@ -85,6 +98,7 @@ const createNotaVerif = async (req, res) => {
         const norecnota = uuid.v4().substring(0, 32);
         const body = req.body
         const norecppdone = body.norecppdone
+        const isipenjamin = body.isipenjamin
         const changed = await t_notapelayananpasien.create({
             norec: norecnota,
             kdprofile: 0,
@@ -96,18 +110,35 @@ const createNotaVerif = async (req, res) => {
             tglinput: new Date(),
             keterangan: body.keterangan
         })
-        const hasilPP = await Promise.all(norecppdone.map(async (norecpp) => {
-            await t_pelayananpasien.update({
-                objectnotapelayananpasienfk: norecnota
-            }, {
-                where: {
-                    norec: norecpp
-                }
-            }, {
-                transaction
+        const hasilPP = await Promise.all(
+            norecppdone.map(async (norecpp) => {
+                await t_pelayananpasien.update({
+                    objectnotapelayananpasienfk: norecnota
+                }, {
+                    where: {
+                        norec: norecpp
+                    }
+                }, {
+                    transaction
+                })
+                return norecpp
+            }
+        ))
+        console.log("penjamin", isipenjamin)
+        const hasilKepesertaan = await Promise.all(
+            isipenjamin.map(async (penjamin) => {
+                await t_kepesertaanasuransi.update({
+                    nominalklaim: penjamin.value
+                }, {
+                    where: {
+                        norec: penjamin.norec
+                    }
+                }, {
+                    transaction
+                })
+                return penjamin.norec
             })
-            return norecpp
-        }))
+        )
         transaction.commit();
         
         res.status(200).send({
@@ -293,6 +324,30 @@ const cancelBayar = async (req, res) => {
         transaction = await db.sequelize.transaction();
     }catch(e){
         console.error(e)
+        const norec = uuid.v4().substring(0, 32);
+        const body = {
+            norecnota: "ca1ca2c9-f30b-46b0-a493-76b10fd2",
+            norecbayar: "2dbe45cb-5116-4a52-bc69-67d09559"
+        }
+        const updatedNPP = await t_buktibayarpasien.update({
+            statusenabled: false,
+        }, {
+            where: {
+                norec: body.norecbayar
+            }
+        }, {
+            transaction
+        })
+
+        t_log_pasienbatalbayar.create({
+            norec: norec,
+            objectpegawaifk: req.userId,
+            tglbatal: new Date(),
+            alasanbatal: "Batal Bayar",
+            objectnotapelayananpasienfk: body.norecnota,
+            objectbuktibayarfk: body.norecbayar
+        })
+
         res.status(500).send({
             data: e.message,
             success: false,

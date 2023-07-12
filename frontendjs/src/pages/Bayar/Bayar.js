@@ -42,13 +42,15 @@ const Bayar = () => {
         listPelayanan,
         norecdp,
         comboboxpayment,
-        nota
+        nota,
+        kepesertaan
     } = useSelector((state) => ({
         dataPasienPlg: state.DaftarPasien.daftarPasienPulangGet.data || [],
         comboboxReg: state.Master.comboRegistrasiGet.data || {},
         listPelayanan: state.Payment.pelayananFromVerifGet.data?.pelayanan || [],
         comboboxpayment: state.Master.comboPaymentGet.data,
         nota: state.Payment.pelayananFromVerifGet.data?.nota || [],
+        kepesertaan: state.Payment.pelayananFromVerifGet.data?.kepesertaan || []
     }))
 
 
@@ -127,8 +129,10 @@ const Bayar = () => {
     }
 
     const diskon = listPelayanan.reduce((prev, pel) => prev + (pel.discount || 0), 0)
-    const totalTagihan = listPelayanan.reduce((prev, pel) => prev + (pel.total || 0), 0)
-    const grandTotal = totalTagihan - diskon
+    let totalTagihan = listPelayanan.reduce((prev, pel) => prev + (pel.total || 0), 0)
+    const nominalklaim = kepesertaan.reduce((prev, pel) => prev + (pel.nominalklaim || 0), 0)
+    const grandTotal = totalTagihan - diskon - nominalklaim
+
     
     const columns = [
         {
@@ -230,9 +234,8 @@ const Bayar = () => {
         const setFF = validation.setFieldValue
         grandTotal && setFF("totaltagihan", grandTotal)
         diskon && setFF("diskon", diskon)
-        //TODO: jumlah klaim diisi
-        setFF("klaim", 0)
-    }, [dispatch, validation.setFieldValue, grandTotal, diskon])
+        nominalklaim && setFF("klaim", nominalklaim)
+    }, [dispatch, validation.setFieldValue, grandTotal, diskon, nominalklaim])
 
     useEffect(() => {
         const setFF = validation.setFieldValue
@@ -417,7 +420,7 @@ const Bayar = () => {
                                             </tr>
                                             <tr>
                                                 <td>Klaim Asuransi</td>
-                                                <td>Rp{0}</td>
+                                                <td>Rp{nominalklaim}</td>
                                             </tr>
                                             <tr>
                                                 <td>Deposit</td>

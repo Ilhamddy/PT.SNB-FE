@@ -364,7 +364,6 @@ const RegistrasiPenjaminFK = () => {
 
     const handleAsalRujukan = (val) => {
         validation.setFieldValue("asalrujukan", val);
-        validation.setFieldValue("jenisrujukan", val)
     }
     const handleTujuanDPJPMelayani = (val) => { 
         validation.setFieldValue("dpjpmelayani", val);
@@ -373,12 +372,13 @@ const RegistrasiPenjaminFK = () => {
     useEffect(() => {   
         const setFF = validation.setFieldValue
         const setFFNonBPJS = vNonBPJS.setFieldValue
+        console.log("dataRuangDaftar", dataRuangDaftar)
         dataRuangDaftar?.objectinstalasifk 
             && setFF("tujuankunjungan", dataRuangDaftar.objectinstalasifk)
         dataRuangDaftar?.objectasalrujukanfk 
             && setFF("asalrujukan", dataRuangDaftar.objectasalrujukanfk);
-        dataRuangDaftar?.objectjenisrujukanfk
-            && setFF("jenisrujukan", dataRuangDaftar.objectjenisrujukanfk);
+        dataRuangDaftar?.objectinstalasifk
+            && setFF("jenisrujukan", dataRuangDaftar.objectinstalasifk);
         dataRuangDaftar?.objectdokterpemeriksafk 
             && setFF("dpjpmelayani", dataRuangDaftar.objectdokterpemeriksafk);
         dataRuangDaftar?.objectdokterpemeriksafk
