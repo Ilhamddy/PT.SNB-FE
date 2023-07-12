@@ -15,7 +15,7 @@ import Flatpickr from "react-flatpickr";
 import { comboAsuransiGet, comboRegistrasiGet } from "../../store/master/action";
 import CustomSelect from "../Select/Select";
 import { useNavigate } from "react-router-dom";
-import { daftarTagihanPasienGet, verifNotaCancel } from "../../store/payment/action";
+import { buktiBayarCancel, daftarTagihanPasienGet, verifNotaCancel } from "../../store/payment/action";
 
 const dateAwalStart = dateISOString(new Date(new Date() - 1000 * 60 * 60 * 24 * 3));
 const dateAwalEnd = dateISOString(new Date())
@@ -64,9 +64,14 @@ const DaftarTagihanPasien = () => {
         norecnota && 
             dispatch(verifNotaCancel(norecnota, () => dispatch(daftarTagihanPasienGet())))
     }
-    const handleCancelBayar = (norecbayar) => {
-        norecbayar &&
-            dispatch(verifNotaCancel(norecbayar, () => dispatch(daftarTagihanPasienGet())))
+    const handleCancelBayar = (norecnota, norecbayar) => {
+
+        norecbayar && norecnota &&
+            dispatch(buktiBayarCancel(
+                norecnota, 
+                norecbayar, 
+                () => dispatch(daftarTagihanPasienGet())
+            ))
     }
     const columns = [
         {
@@ -83,7 +88,7 @@ const DaftarTagihanPasien = () => {
                             <DropdownMenu className="dropdown-menu-end">
                                 <DropdownItem onClick={() => handleToBayar(row.norecnota)}><i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>Bayar</DropdownItem>
                                 <DropdownItem onClick={() => handleCancelVerif(row.norecnota)}><i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>Batal Verif</DropdownItem>
-                                {row.norecbukti && <DropdownItem onClick={() => handleToBayar(row.norecnota)}><i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>Batal Bayar</DropdownItem>}
+                                {row.norecbukti && <DropdownItem onClick={() => handleCancelBayar(row.norecnota, row.norecbukti)}><i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>Batal Bayar</DropdownItem>}
 
                             </DropdownMenu>
                         </UncontrolledDropdown>

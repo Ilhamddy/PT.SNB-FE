@@ -1,5 +1,5 @@
 export default (sequelize, Sequelize) => {
-    const t_buktibayarpasien = sequelize.define("t_log_batalveriflayanan", {
+    const t_buktibayarpasien = sequelize.define("t_log_pasienbatalbayar", {
         norec: {
             allowNull: false,
             autoIncrement: true,
@@ -18,9 +18,13 @@ export default (sequelize, Sequelize) => {
         objectnotapelayananpasienfk: {
             type: Sequelize.BOOLEAN,
             defaultValue: false
-        }
+        },
+        objectbuktibayarpasienfk: {
+            type: Sequelize.BOOLEAN,
+            defaultValue: false
+        },
     }, {
-        tableName: "t_log_batalveriflayanan", // relation "user" does not exist
+        tableName: "t_log_pasienbatalbayar", // relation "user" does not exist
         createdAt: false,
         updatedAt: false,
     });

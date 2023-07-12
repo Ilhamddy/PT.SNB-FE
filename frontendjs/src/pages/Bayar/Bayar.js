@@ -42,13 +42,15 @@ const Bayar = () => {
         listPelayanan,
         norecdp,
         comboboxpayment,
-        nota
+        nota,
+        kepesertaan
     } = useSelector((state) => ({
         dataPasienPlg: state.DaftarPasien.daftarPasienPulangGet.data || [],
         comboboxReg: state.Master.comboRegistrasiGet.data || {},
         listPelayanan: state.Payment.pelayananFromVerifGet.data?.pelayanan || [],
         comboboxpayment: state.Master.comboPaymentGet.data,
         nota: state.Payment.pelayananFromVerifGet.data?.nota || [],
+        kepesertaan: state.Payment.pelayananFromVerifGet.data?.kepesertaan || []
     }))
 
 
@@ -93,7 +95,6 @@ const Bayar = () => {
             nobukti: Yup.string().required("No Bukti harus diisi"),
             pegawai: Yup.string().required("Pegawai harus diisi"),
             norecnota: Yup.string().required("No Rekam Medis harus diisi"),
-            pjpasien: Yup.string().required("Penanggung Jawab Pasien harus diisi"),
             klaim: Yup.string().required("Klaim harus diisi"),
             norecdp: Yup.string().required("No DP harus diisi"),
         }),
@@ -128,8 +129,10 @@ const Bayar = () => {
     }
 
     const diskon = listPelayanan.reduce((prev, pel) => prev + (pel.discount || 0), 0)
-    const totalTagihan = listPelayanan.reduce((prev, pel) => prev + (pel.total || 0), 0)
-    const grandTotal = totalTagihan - diskon
+    let totalTagihan = listPelayanan.reduce((prev, pel) => prev + (pel.total || 0), 0)
+    const nominalklaim = kepesertaan.reduce((prev, pel) => prev + (pel.nominalklaim || 0), 0)
+    const grandTotal = totalTagihan - diskon - nominalklaim
+
     
     const columns = [
         {
@@ -228,34 +231,33 @@ const Bayar = () => {
 
     
     useEffect(() => {
-        grandTotal && validation.setFieldValue("totaltagihan", grandTotal)
-        diskon && validation.setFieldValue("diskon", diskon)
-        console.log(norecnota, "norecnota")
-        //TODO: jumlah klaim diisi
-        validation.setFieldValue("klaim", 0)
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [dispatch, validation.setFieldValue, grandTotal, diskon])
+        const setFF = validation.setFieldValue
+        grandTotal && setFF("totaltagihan", grandTotal)
+        diskon && setFF("diskon", diskon)
+        nominalklaim && setFF("klaim", nominalklaim)
+    }, [dispatch, validation.setFieldValue, grandTotal, diskon, nominalklaim])
 
     useEffect(() => {
+        const setFF = validation.setFieldValue
         nota.keterangan
-            && validation.setFieldValue("keterangan", nota.keterangan)
+            && setFF("keterangan", nota.keterangan)
         nota.namapasien 
-            && validation.setFieldValue("pjpasien", nota.namapasien)
+            && setFF("pjpasien", nota.namapasien)
         nota.idpegawai 
-            && validation.setFieldValue("pegawai", nota.idpegawai)
+            && setFF("pegawai", nota.idpegawai)
         nota.norecdp
-            && validation.setFieldValue("norecdp", nota.norecdp)
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+            && setFF("norecdp", nota.norecdp)
     }, [nota, validation.setFieldValue])
 
 
     useEffect(() => {
-        norecnota && validation.setFieldValue("norecnota", norecnota)
+        const setFF = validation.setFieldValue
+        norecnota && setFF("norecnota", norecnota)
         norecnota && dispatch(pelayananFromVerifGet(norecnota))
         return () => {
             dispatch(pelayananFromVerifGetReset())
         }
-    }, [dispatch, norecnota])
+    }, [dispatch, norecnota, validation.setFieldValue])
 
     const rekeningRs = (comboboxpayment?.rekeningRs || [])?.filter(
         (rekening) => rekening.objectbankfk === validation.values.nontunai
@@ -418,7 +420,7 @@ const Bayar = () => {
                                             </tr>
                                             <tr>
                                                 <td>Klaim Asuransi</td>
-                                                <td>Rp{0}</td>
+                                                <td>Rp{nominalklaim}</td>
                                             </tr>
                                             <tr>
                                                 <td>Deposit</td>
