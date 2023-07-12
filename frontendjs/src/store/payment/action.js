@@ -185,10 +185,10 @@ export const verifNotaCancelReset = () => {
     }
 }
 
-export const buktiBayarCancel = (norecbukti, callback) => {
+export const buktiBayarCancel = (norecnota, norecbayar, callback) => {
     return {
         type: BUKTI_BAYAR_CANCEL,
-        payload: {norecbukti, callback}
+        payload: {norecnota, norecbayar, callback}
     }
 }
 

@@ -47,7 +47,7 @@ export default function (app) {
     );
 
     app.post(
-        "/api/transaksi/payment/cancel-bayar/:norecbayar",
+        "/api/transaksi/payment/cancel-bayar/:norecnota/:norecbayar",
         [authJwt.verifyToken],
         controller.cancelBayar
     );

@@ -27,4 +27,8 @@ export default class ServicePayment {
     cancelNotaVerif = async (norecnota) => {
         return await api.create(`/transaksi/payment/cancel-verif-nota/${norecnota}`);
     }
+
+    cancelBayar = async ([norecnota, norecbayar]) => {
+        return await api.create(`/transaksi/payment/cancel-bayar/${norecnota}/${norecbayar}`);
+    }
 }

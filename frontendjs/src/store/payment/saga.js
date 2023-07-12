@@ -96,9 +96,9 @@ function* onVerifNotaCancel({payload: {norecnota, callback}}) {
     }
 }
 
-function* onBuktiBayarCancel({payload: {norecbukti, callback}}) {
+function* onBuktiBayarCancel({payload: {norecnota, norecbayar, callback}}) {
     try {
-        const response = yield call(servicePayment.cancelBuktiBayar, norecbukti);
+        const response = yield call(servicePayment.cancelBayar, [norecnota, norecbayar]);
         yield put(buktiBayarCancelSuccess(response.data));
         toast.success(response.msg, { autoClose: 3000 });
         callback && callback();

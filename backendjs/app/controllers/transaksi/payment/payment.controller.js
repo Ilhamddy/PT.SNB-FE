@@ -323,31 +323,6 @@ const cancelBayar = async (req, res) => {
     try{
         transaction = await db.sequelize.transaction();
     }catch(e){
-        console.error(e)
-        const norec = uuid.v4().substring(0, 32);
-        const body = {
-            norecnota: "ca1ca2c9-f30b-46b0-a493-76b10fd2",
-            norecbayar: "2dbe45cb-5116-4a52-bc69-67d09559"
-        }
-        const updatedNPP = await t_buktibayarpasien.update({
-            statusenabled: false,
-        }, {
-            where: {
-                norec: body.norecbayar
-            }
-        }, {
-            transaction
-        })
-
-        t_log_pasienbatalbayar.create({
-            norec: norec,
-            objectpegawaifk: req.userId,
-            tglbatal: new Date(),
-            alasanbatal: "Batal Bayar",
-            objectnotapelayananpasienfk: body.norecnota,
-            objectbuktibayarfk: body.norecbayar
-        })
-
         res.status(500).send({
             data: e.message,
             success: false,
@@ -358,7 +333,41 @@ const cancelBayar = async (req, res) => {
     }
     try{
         const norecnota = req.params.norecnota;
-        console.log(norecnota)
+        const norec = uuid.v4().substring(0, 32);
+        const params = req.params
+        const updatedNPP = await t_buktibayarpasien.update({
+            statusenabled: false,
+        }, {
+            where: {
+                norec: params.norecbayar
+            }
+        }, {
+            transaction
+        })
+
+        console.log("==paramss", params)
+
+        const updatedPasien = await t_log_pasienbatalbayar.create({
+            norec: norec,
+            objectpegawaifk: req.userId,
+            tglbatal: new Date(),
+            alasanbatal: "Batal Bayar",
+            objectnotapelayananpasienfk: params.norecnota,
+            objectbuktibayarpasienfk: params.norecbayar
+        }, {
+            transaction: transaction
+        })
+        transaction.commit();
+        res.status(200).send({
+            data: {
+                changedNPP: updatedNPP,
+                updatedPasien: updatedPasien
+            },
+            status: "success",
+            success: true,
+            msg: 'Cancel Bayar Berhasil',
+            code: 200
+        });
     }catch(error){
         console.error("Error Create Nota Verif");
         console.error(error)
