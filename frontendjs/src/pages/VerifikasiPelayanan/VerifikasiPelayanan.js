@@ -287,7 +287,7 @@ const VerifikasiPelayanan = () => {
         <div className="page-content verifikasi-pelayanan">
             <ToastContainer closeButton={false} />
             <Container fluid>
-                <BreadCrumb title="Registrasi Pasien" pageTitle="Verifikasi Tagihan" />
+                <BreadCrumb title="Verifikasi Tagihan" pageTitle="Verifikasi Tagihan" />
                 <Card className="p-2">
                     <Form onSubmit={(e) => {
                             e.preventDefault();
