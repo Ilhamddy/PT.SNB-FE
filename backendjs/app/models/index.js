@@ -15,7 +15,7 @@ import t_ttvM from "../models/t_ttv.js";
 import t_cpptM from "../models/t_cppt.js";
 import t_diagnosapasienM from "../models/t_diagnosapasien.js";
 import t_diagnosatindakanM from "../models/t_diagnosatindakan.js";
-import t_pelayananpasienM from "../models/t_pelayananpasien.js";
+import t_pelayananpasienM from "./t_pelayananpasien.model.js";
 import t_pelayananpasiendetailM from "../models/t_pelayananpasiendetail.js";
 import t_pelayananpasienpetugasM from "../models/t_pelayananpasienpetugas.js";
 import t_rm_lokasidokumenM from "../models/t_rm_lokasidokumen.js";
@@ -26,6 +26,8 @@ import t_notapelayananpasien from "./t_notapelayananpasien.js";
 import t_buktibayarpasienM from "./t_buktibayarpasien.model.js";
 import t_log_batalveriflayananM from "./t_log_batalveriflayanan.model.js";
 import t_log_pasienbatalbayarModel from "./t_log_pasienbatalbayar.model.js";
+import t_piutangpasienModel from "./t_piutangpasien.model.js";
+import t_detailpiutangpasienModel from "./t_detailpiutangpasien.model.js";
 
 console.log("dialect", config.dialect)
 
@@ -77,6 +79,9 @@ db.t_notapelayananpasien = t_notapelayananpasien(sequelize,Sequelize);
 db.t_buktibayarpasien = t_buktibayarpasienM(sequelize,Sequelize);
 db.t_log_batalveriflayanan = t_log_batalveriflayananM(sequelize,Sequelize);
 db.t_log_pasienbatalbayar = t_log_pasienbatalbayarModel(sequelize,Sequelize);
+db.t_piutangpasien = t_piutangpasienModel(sequelize,Sequelize);
+db.t_detailpiutangpasien = t_detailpiutangpasienModel(sequelize,Sequelize);
+
 db.role.belongsToMany(db.user, {
   through: "user_roles",
   foreignKey: "roleid",
@@ -86,6 +91,14 @@ db.user.belongsToMany(db.role, {
   through: "user_roles",
   foreignKey: "userid",
   otherKey: "roleid"
+});
+
+db.t_notapelayananpasien.hasMany(db.t_pelayananpasien, { 
+  foreignKey: "objectnotapelayananpasienfk" 
+});
+
+db.t_pelayananpasien.belongsTo(db.t_notapelayananpasien, {
+  foreignKey: "objectnotapelayananpasienfk"
 });
 
 db.ROLES = ["user", "admin", "moderator"];

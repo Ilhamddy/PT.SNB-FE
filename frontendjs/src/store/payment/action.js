@@ -158,10 +158,10 @@ export const buktiBayarCreateReset = () => {
     }
 }
 
-export const verifNotaCancel = (norecnota, callback) => {
+export const verifNotaCancel = (norecnota, norecdp, callback) => {
     return {
         type: VERIF_NOTA_CANCEL,
-        payload: {norecnota, callback}
+        payload: {norecnota, norecdp, callback}
     }
 }
 

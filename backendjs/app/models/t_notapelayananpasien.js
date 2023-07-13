@@ -1,5 +1,7 @@
+import t_pelayananpasienModel from "./t_pelayananpasien.model";
+
 export default (sequelize, Sequelize) => {
-    const t_orderpelayanan = sequelize.define("t_notapelayananpasien", {
+    const t_notapelayananpasien = sequelize.define("t_notapelayananpasien", {
         norec: {
             allowNull: false,
             autoIncrement: true,
@@ -37,6 +39,5 @@ export default (sequelize, Sequelize) => {
         createdAt: false,
         updatedAt: false,
     });
-
-    return t_orderpelayanan;
+    return t_notapelayananpasien;
 };

@@ -73,7 +73,8 @@ const VerifikasiPelayanan = () => {
             norecppdone: Yup.array().min(1, "Pilih minimal 1 pelayanan"),
             isipenjamin: Yup.array().of(
                 Yup.object().shape({
-                    norec: Yup.string().required("Penjamin harus diisi"),
+                    norec: Yup.string().required("Norec belum diisi"),
+                    objectpenjaminfk: Yup.string().required("Penjamin belum diisi"),
                     value: Yup.string().required("Penjamin harus diisi"),
                     //label
                 })
@@ -82,6 +83,7 @@ const VerifikasiPelayanan = () => {
         onSubmit: (values) => {
             const newValue = {...values}
             newValue.isipenjamin = newValue.isipenjamin.map((isipenjamin) => {
+                // hapus titik dan jadikan number
                 let newIsiPenjamin = {...isipenjamin};
                 newIsiPenjamin.value = 
                     Number(newIsiPenjamin.value.replace(rgxAllPeriods, ""));
@@ -150,7 +152,6 @@ const VerifikasiPelayanan = () => {
         setListPelayananChecked(newListPC)
     }
 
-
     useEffect(() => {
         const setFF = validation.setFieldValue
         const hasilCheck = listPelayananChecked.filter((item) => item.checked).map((item) => item.norec)
@@ -159,12 +160,14 @@ const VerifikasiPelayanan = () => {
         setFF("norecppdone", hasilCheck)
     }, [norecdp, validation.setFieldValue, grandTot, listPelayananChecked])
 
+    //inisialisasi isipenjamin
     useEffect(() => {
         const setFFPjmn = validation.setFieldValue
         let newIsiPenjamin = penjaminGet.map((item) => ({
             value: "",
             label: item.nama_asuransi,
-            norec: item.norec
+            norec: item.norec,
+            objectpenjaminfk: item.objectpenjaminfk
         })) || []
         newIsiPenjamin.length !== 0 && setFFPjmn("isipenjamin", newIsiPenjamin)
     }, [penjaminGet, validation.setFieldValue])

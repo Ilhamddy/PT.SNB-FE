@@ -60,12 +60,11 @@ const DaftarTagihanPasien = () => {
         norecnota 
             && navigate(`/payment/bayar/${norecnota}`)    
     }
-    const handleCancelVerif = (norecnota) => {
+    const handleCancelVerif = (norecnota, norecdp) => {
         norecnota && 
-            dispatch(verifNotaCancel(norecnota, () => dispatch(daftarTagihanPasienGet())))
+            dispatch(verifNotaCancel(norecnota, norecdp, () => dispatch(daftarTagihanPasienGet())))
     }
     const handleCancelBayar = (norecnota, norecbayar) => {
-
         norecbayar && norecnota &&
             dispatch(buktiBayarCancel(
                 norecnota, 
@@ -86,8 +85,18 @@ const DaftarTagihanPasien = () => {
                                 <i className="ri-apps-2-line"></i>
                             </DropdownToggle>
                             <DropdownMenu className="dropdown-menu-end">
-                                <DropdownItem onClick={() => handleToBayar(row.norecnota)}><i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>Bayar</DropdownItem>
-                                <DropdownItem onClick={() => handleCancelVerif(row.norecnota)}><i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>Batal Verif</DropdownItem>
+                                <DropdownItem onClick={() => 
+                                    handleToBayar(row.norecnota)}>
+                                    <i className="ri-mail-send-fill align-bottom me-2 text-muted">
+                                    </i>
+                                    Bayar
+                                </DropdownItem>
+                                <DropdownItem 
+                                    onClick={() => handleCancelVerif(row.norecnota, row.norecdp)}>
+                                    <i className="ri-mail-send-fill align-bottom me-2 text-muted">
+                                    </i>
+                                    Batal Verif
+                                </DropdownItem>
                                 {row.norecbukti && <DropdownItem onClick={() => handleCancelBayar(row.norecnota, row.norecbukti)}><i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>Batal Bayar</DropdownItem>}
 
                             </DropdownMenu>

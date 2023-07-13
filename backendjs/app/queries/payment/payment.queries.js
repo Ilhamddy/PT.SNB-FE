@@ -55,7 +55,9 @@ const qGetKepesertaanFromAntrean =
         'plafon',
         kpa.plafon,
         'norec',
-        kpa.norec
+        kpa.norec,
+        'objectpenjaminfk',
+        kpa.objectpenjaminfk
     )) AS list_kpa
     FROM t_antreanpemeriksaan ap
         LEFT JOIN t_daftarpasien dp ON dp.norec = ap.objectdaftarpasienfk
@@ -84,6 +86,7 @@ const qDaftarTagihanPasien =
 	td.nocmfk AS nocmfk,
 	td.tglregistrasi AS tglregistrasi,
 	td.noregistrasi AS noregistrasi,
+    td.norec AS norecdp,
 	mp.namapasien AS namapasien,
 	mr.namaexternal AS namarekanan,
     bb.no_bukti AS nobukti,
@@ -149,13 +152,36 @@ const qGetKepesertaanFromNota =
         'norec',
         kpa.norec,
         'nominalklaim',
-        kpa.nominalklaim
+        kpa.nominalklaim,
+        'objectpenjaminfk',
+        kpa.objectpenjaminfk
     )) AS list_kpa
     FROM t_notapelayananpasien tnp
         LEFT JOIN t_kepesertaanasuransi kpa ON kpa.objectdaftarpasienfk = tnp.objectdaftarpasienfk
         LEFT JOIN m_rekanan mr ON mr.id = kpa.objectpenjaminfk
-            WHERE tnp.norec=$1
+            WHERE tnp.norec = $1
     `
+
+const qGetPiutangFromDP = 
+    `
+    SELECT
+    *
+    FROM t_piutangpasien
+        WHERE objectdaftarpasienfk = $1
+        AND statusenabled = true
+    `
+
+
+const qGetNotaPelayananPasien = 
+    `
+    SELECT
+    *
+    FROM t_notapelayananpasien
+        WHERE norec = $1
+    `
+
+
+
 export {
     qGetPelayananFromAntrean,
     qGetNorecPenggunaFromAp,
@@ -163,5 +189,6 @@ export {
     qGetPelayananFromVerif,
     qGetVerif,
     qGetKepesertaanFromAntrean,
-    qGetKepesertaanFromNota
+    qGetKepesertaanFromNota,
+    qGetPiutangFromDP
 }

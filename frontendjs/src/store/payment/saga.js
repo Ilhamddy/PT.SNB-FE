@@ -84,14 +84,15 @@ function* onGetBuktiBayarCreate({payload: {body, callback}}) {
     }
 }
 
-function* onVerifNotaCancel({payload: {norecnota, callback}}) {
+function* onVerifNotaCancel({payload: {norecnota, norecdp, callback}}) {
     try {
-        const response = yield call(servicePayment.cancelNotaVerif, norecnota);
+        const response = yield call(servicePayment.cancelNotaVerif, [norecnota, norecdp]);
         yield put(verifNotaCancelSuccess(response.data));
         toast.success(response.msg, { autoClose: 3000 });
         callback && callback();
     } catch (error) {
         console.error(error)
+        toast.error("error", { autoClose: 3000 });
         yield put(verifNotaCancelError(error));
     }
 }

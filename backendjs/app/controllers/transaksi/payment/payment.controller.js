@@ -7,7 +7,8 @@ import { qGetPelayananFromAntrean,
     qGetPelayananFromVerif, 
     qGetVerif,
     qGetKepesertaanFromAntrean,
-    qGetKepesertaanFromNota
+    qGetKepesertaanFromNota,
+    qGetPiutangFromDP,
 } from '../../../queries/payment/payment.queries';
 
 const t_notapelayananpasien = db.t_notapelayananpasien
@@ -16,6 +17,8 @@ const t_buktibayarpasien = db.t_buktibayarpasien
 const t_log_batalveriflayanan = db.t_log_batalveriflayanan
 const t_kepesertaanasuransi = db.t_kepesertaanasuransi
 const t_log_pasienbatalbayar = db.t_log_pasienbatalbayar
+const t_piutangpasien = db.t_piutangpasien
+const t_detailpiutangpasien = db.t_detailpiutangpasien
 const Sequelize = {}
 
 const getPelayananFromAntrean = async (req, res) => {
@@ -97,19 +100,40 @@ const createNotaVerif = async (req, res) => {
     try{
         const norecnota = uuid.v4().substring(0, 32);
         const body = req.body
+        const totalTagihan = body.total
         const norecppdone = body.norecppdone
         const isipenjamin = body.isipenjamin
-        const changed = await t_notapelayananpasien.create({
+        const totalKlaim = isipenjamin.reduce((total, penjamin) => {
+            return total + penjamin.value
+        }, 0)
+        const addedNota = await t_notapelayananpasien.create({
             norec: norecnota,
             kdprofile: 0,
             statusenabled: true,
             objectdaftarpasienfk: body.objectdaftarpasienfk,
-            total: body.total,
+            total: totalTagihan,
             no_nota: body.no_nota,
             objectpegawaifk: req.userId,
             tglinput: new Date(),
             keterangan: body.keterangan
+        }, {transaction: transaction})
+        const norecpiutangnew =  uuid.v4().substring(0, 32);
+        let addedPiutangPasien
+        addedPiutangPasien = await t_piutangpasien.create({
+            norec: norecpiutangnew,
+            statusenabled: true,
+            objectdaftarpasienfk: body.objectdaftarpasienfk,
+            totaltagihan: totalTagihan || 0,
+            totalklaim: totalKlaim || 0,
+            totalbayar: 0,
+            sisatagihan: totalTagihan - totalKlaim - 0,
+            tglinput: new Date(),
+            tglupdate: new Date(),
+            objectpegawaifk: req.userId
+        }, {
+            transaction: transaction
         })
+
         const hasilPP = await Promise.all(
             norecppdone.map(async (norecpp) => {
                 await t_pelayananpasien.update({
@@ -117,24 +141,44 @@ const createNotaVerif = async (req, res) => {
                 }, {
                     where: {
                         norec: norecpp
-                    }
-                }, {
-                    transaction
+                    },
+                    transaction: transaction
                 })
                 return norecpp
             }
         ))
-        console.log("penjamin", isipenjamin)
+
+        const addedDetailPiutang = await Promise.all(
+            isipenjamin.map(async (penjamin) => {
+                const norecdetailpiutang = uuid.v4().substring(0, 32);
+                await t_detailpiutangpasien.create({
+                    norec: norecdetailpiutang,
+                    statusenabled: true,
+                    objectpiutangpasienfk: norecpiutangnew,
+                    objectpenjaminfk: penjamin.objectpenjaminfk,
+                    nominalpiutang: penjamin.value,
+                    tglinput: new Date(),
+                    tglupdate: new Date(),
+                    objectpegawaifk: req.userId
+                }, {
+                    where: {
+                        norec: penjamin.norec,
+                    },
+                    transaction: transaction
+                })
+                return penjamin.norec
+            })
+        )
+
         const hasilKepesertaan = await Promise.all(
             isipenjamin.map(async (penjamin) => {
                 await t_kepesertaanasuransi.update({
                     nominalklaim: penjamin.value
                 }, {
                     where: {
-                        norec: penjamin.norec
-                    }
-                }, {
-                    transaction
+                        norec: penjamin.norec,
+                    },
+                    transaction: transaction
                 })
                 return penjamin.norec
             })
@@ -143,8 +187,10 @@ const createNotaVerif = async (req, res) => {
         
         res.status(200).send({
             data: {
-                addedNota: changed,
-                changedPP: hasilPP
+                addedNota: addedNota,
+                changedPP: hasilPP,
+                addedPiutangPasien: addedPiutangPasien,
+                addedDetailPiutang: addedDetailPiutang,
             },
             status: "success",
             success: true,
@@ -152,7 +198,7 @@ const createNotaVerif = async (req, res) => {
             code: 200
         });
     }catch(error){
-        console.error("Error Create Nota Verif");
+        console.error("==Error Create Nota Verif");
         console.error(error)
         transaction.rollback();
         res.status(500).send({
@@ -262,25 +308,48 @@ const cancelNotaVerif = async (req, res) => {
     }
     try{
         const norecnota = req.params.norecnota;
+        const norecdp = req.params.norecdp;
         const updatedPP = await t_pelayananpasien.update({
             objectnotapelayananpasienfk: null
         }, {
             where: {
                 objectnotapelayananpasienfk: norecnota
-            }
-        }, {
-            transaction
+            },
+            transaction: transaction
         })
+        let piutang = (await pool.query(qGetPiutangFromDP, [norecdp])).rows[0] || null
+
+        let updatedPiutangPasien  = await t_piutangpasien.update({
+            statusenabled: false,
+        }, {
+            where: {
+                objectdaftarpasienfk: norecdp,
+                statusenabled: true,
+            },
+            transaction: transaction
+        })
+
+
+        const updatedDetailPiutang = await t_detailpiutangpasien.update({
+            statusenabled: false,
+        }, {
+            where: {
+                objectpiutangpasienfk: piutang.norec,
+                statusenabled: true,
+            },
+            transaction: transaction
+        });
 
         const updatedNPP = await t_notapelayananpasien.update({
             statusenabled: false,
         }, {
             where: {
                 norec: norecnota
-            }
-        }, {
-            transaction
+            },
+            transaction: transaction
         })
+
+        
 
         const batalVerif = await t_log_batalveriflayanan.create({
             norec: uuid.v4().substring(0, 32),
@@ -289,7 +358,7 @@ const cancelNotaVerif = async (req, res) => {
             alasanbatal: "Batal Verif",
             objectnotapelayananpasienfk: norecnota
         }, {
-            transaction
+            transaction: transaction
         })
 
         transaction.commit();
@@ -298,7 +367,9 @@ const cancelNotaVerif = async (req, res) => {
             data: {
                 // changedPP: updatedPP,
                 changedTPP: updatedNPP,
-                newLog: batalVerif
+                newLog: batalVerif,
+                updatedDetailPiutang: updatedDetailPiutang,
+                updatedPiutangPasien: updatedPiutangPasien
             },
             status: "success",
             success: true,
