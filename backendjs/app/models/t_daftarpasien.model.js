@@ -57,6 +57,10 @@ export default (sequelize, Sequelize) => {
         },
         objectstatuspulangfk:{
             type:Sequelize.INTEGER
+        },
+        
+        objectcaramasukfk:{
+            type:Sequelize.INTEGER
         }
     }, {
         tableName: "t_daftarpasien", // relation "user" does not exist

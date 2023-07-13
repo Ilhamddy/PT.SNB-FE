@@ -456,6 +456,7 @@ async function saveRegistrasiPasien(req, res) {
             objectpenjamin2fk: objectpenjamin2fk,
             objectpenjamin3fk: objectpenjamin3fk,
             objectpjpasienfk: req.body.penanggungjawab,
+            objectcaramasukfk: req.body.caramasuk,
             statusenabled: true,
         }, { transaction });
 
@@ -894,7 +895,7 @@ const saveRegistrasiPenjaminFK = async (req, res) => {
                 jenisrujukan: dataForm.jenisrujukan,
                 tglsep: dataForm.tanggalsep,
                 no_rujukan: dataForm.norujukan,
-                no_sep: dataForm.norujukan,
+                no_sep: dataForm.nosep,
                 tujuankunjungan: dataForm.tujuankunjungan,
                 objectdpjpfk: dataForm.dpjpmelayani,
                 asalrujukan: dataForm.asalrujukan,
