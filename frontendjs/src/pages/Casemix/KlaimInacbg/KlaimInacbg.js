@@ -120,12 +120,11 @@ const KlaimInacbg = () => {
     ];
 
     const clickList = (e) => {
-        console.log(e)
         setstateList(false)
         setstatePencarian(false)
         setstateListNoregistrasi(true)
         setstateNocm(e.nocm)
-        setstateNama(e.nama)
+        setstateNama(e.namapasien)
         setstateJK(e.jeniskelamin)
         setstateTglLahir(e.tgllahir)
         dispatch(listDaftarPasienGet(e.id))
@@ -563,19 +562,25 @@ const KlaimInacbg = () => {
                                                                 <Col lg={6} md={6}>
                                                                     <Row>
                                                                         <Col lg={6} md={6}>Masuk</Col>
-                                                                        <Col lg={6} md={6}>-</Col>
+                                                                        <Col lg={6} md={6}>{stateTemp.tglregistrasi}</Col>
                                                                     </Row>
                                                                 </Col>
                                                                 <Col lg={6} md={6}>
                                                                     <Row>
                                                                         <Col lg={6} md={6}>Pulang</Col>
-                                                                        <Col lg={6} md={6}>-</Col>
+                                                                        <Col lg={6} md={6}>{stateTemp.tglpulang}</Col>
                                                                     </Row>
                                                                 </Col>
                                                             </Row>
                                                         </td>
                                                         <th scope="row" style={{ width: "10%" }}>Umur</th>
-                                                        <td style={{ width: "30%" }}></td>
+                                                        <td style={{ width: "30%" }}>{stateTemp.umur.substring(1)}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="row" style={{ width: "10%" }}>Cara Masuk</th>
+                                                        <td style={{ width: "90%" }} colSpan={3}>
+                                                            -
+                                                        </td>
                                                     </tr>
                                                     <tr>
                                                         <th scope="row" style={{ width: "10%" }}>LOS (hari)</th>
@@ -583,7 +588,14 @@ const KlaimInacbg = () => {
                                                             1
                                                         </td>
                                                         <th scope="row" style={{ width: "10%" }}>Berat Lahir (gram)</th>
-                                                        <td style={{ width: "30%" }}></td>
+                                                        <td style={{ width: "30%" }}><Input style={{ textAlign: 'center',
+                                                        backgroundColor:'#ffdd99' }}
+                                                            type="number"
+                                                            className="form-control"
+                                                            id="job-title-Input"
+                                                            placeholder="gram"
+                                                            defaultValue='0'
+                                                        /></td>
                                                     </tr>
                                                     <tr>
                                                         <th scope="row" style={{ width: "10%" }}>ADL Score</th>
@@ -935,22 +947,22 @@ const KlaimInacbg = () => {
                                                 </thead>
                                                 <tbody>
                                                     <tr>
-                                                        <th scope="row" style={{ width: "30%"}}>
+                                                        <th scope="row" style={{ width: "30%" }}>
 
                                                         </th>
-                                                        <th scope="row" style={{ width: "20%", textAlign:'center'}}>
-                                                                <Input style={{ textAlign: 'center' }}
-                                                                    type="text"
-                                                                    className="form-control"
-                                                                    id="job-title-Input"
-                                                                    placeholder="Enter job title"
-                                                                    defaultValue='0'
-                                                                    disabled
-                                                                />
-                                                                Sistole
+                                                        <th scope="row" style={{ width: "20%", textAlign: 'center' }}>
+                                                            <Input style={{ textAlign: 'center' }}
+                                                                type="text"
+                                                                className="form-control"
+                                                                id="job-title-Input"
+                                                                placeholder="Enter job title"
+                                                                defaultValue='0'
+                                                                disabled
+                                                            />
+                                                            Sistole
                                                         </th>
-                                                        <th scope="row" style={{ width: "20%",textAlign:'center'}}>
-                                                            <Input style={{ textAlign: 'center'}}
+                                                        <th scope="row" style={{ width: "20%", textAlign: 'center' }}>
+                                                            <Input style={{ textAlign: 'center' }}
                                                                 type="text"
                                                                 className="form-control"
                                                                 id="job-title-Input"
@@ -960,7 +972,7 @@ const KlaimInacbg = () => {
                                                             />
                                                             Diastole
                                                         </th>
-                                                        <th scope="row" style={{ width: "30%"}}>
+                                                        <th scope="row" style={{ width: "30%" }}>
 
                                                         </th>
                                                     </tr>
@@ -977,21 +989,11 @@ const KlaimInacbg = () => {
                                                 </thead>
                                                 <tbody>
                                                     <tr>
-                                                        <th scope="row" style={{ width: "10%"}}>
-                                                                    1 Menit
+                                                        <th scope="row" style={{ width: "10%" }}>
+                                                            1 Menit
                                                         </th>
-                                                        <th scope="row" style={{ width: "18%", textAlign:'center'}}>
-                                                                <Input style={{ textAlign: 'center' }}
-                                                                    type="text"
-                                                                    className="form-control"
-                                                                    id="job-title-Input"
-                                                                    placeholder="Enter job title"
-                                                                    defaultValue='0'
-                                                                    disabled
-                                                                />
-                                                        </th>
-                                                        <th scope="row" style={{ width: "18%",textAlign:'center'}}>
-                                                            <Input style={{ textAlign: 'center'}}
+                                                        <th scope="row" style={{ width: "18%", textAlign: 'center' }}>
+                                                            <Input style={{ textAlign: 'center' }}
                                                                 type="text"
                                                                 className="form-control"
                                                                 id="job-title-Input"
@@ -1000,8 +1002,8 @@ const KlaimInacbg = () => {
                                                                 disabled
                                                             />
                                                         </th>
-                                                        <th scope="row" style={{ width: "18%",textAlign:'center'}}>
-                                                            <Input style={{ textAlign: 'center'}}
+                                                        <th scope="row" style={{ width: "18%", textAlign: 'center' }}>
+                                                            <Input style={{ textAlign: 'center' }}
                                                                 type="text"
                                                                 className="form-control"
                                                                 id="job-title-Input"
@@ -1010,8 +1012,8 @@ const KlaimInacbg = () => {
                                                                 disabled
                                                             />
                                                         </th>
-                                                        <th scope="row" style={{ width: "18%",textAlign:'center'}}>
-                                                            <Input style={{ textAlign: 'center'}}
+                                                        <th scope="row" style={{ width: "18%", textAlign: 'center' }}>
+                                                            <Input style={{ textAlign: 'center' }}
                                                                 type="text"
                                                                 className="form-control"
                                                                 id="job-title-Input"
@@ -1020,8 +1022,8 @@ const KlaimInacbg = () => {
                                                                 disabled
                                                             />
                                                         </th>
-                                                        <th scope="row" style={{ width: "18%",textAlign:'center'}}>
-                                                            <Input style={{ textAlign: 'center'}}
+                                                        <th scope="row" style={{ width: "18%", textAlign: 'center' }}>
+                                                            <Input style={{ textAlign: 'center' }}
                                                                 type="text"
                                                                 className="form-control"
                                                                 id="job-title-Input"
@@ -1030,53 +1032,8 @@ const KlaimInacbg = () => {
                                                                 disabled
                                                             />
                                                         </th>
-                                                    </tr>
-                                                    <tr>
-                                                        <th scope="row" style={{ width: "10%"}}>
-                                                                    5 Menit
-                                                        </th>
-                                                        <th scope="row" style={{ width: "18%", textAlign:'center'}}>
-                                                                <Input style={{ textAlign: 'center' }}
-                                                                    type="text"
-                                                                    className="form-control"
-                                                                    id="job-title-Input"
-                                                                    placeholder="Enter job title"
-                                                                    defaultValue='0'
-                                                                    disabled
-                                                                />
-                                                        </th>
-                                                        <th scope="row" style={{ width: "18%",textAlign:'center'}}>
-                                                            <Input style={{ textAlign: 'center'}}
-                                                                type="text"
-                                                                className="form-control"
-                                                                id="job-title-Input"
-                                                                placeholder="Enter job title"
-                                                                defaultValue='0'
-                                                                disabled
-                                                            />
-                                                        </th>
-                                                        <th scope="row" style={{ width: "18%",textAlign:'center'}}>
-                                                            <Input style={{ textAlign: 'center'}}
-                                                                type="text"
-                                                                className="form-control"
-                                                                id="job-title-Input"
-                                                                placeholder="Enter job title"
-                                                                defaultValue='0'
-                                                                disabled
-                                                            />
-                                                        </th>
-                                                        <th scope="row" style={{ width: "18%",textAlign:'center'}}>
-                                                            <Input style={{ textAlign: 'center'}}
-                                                                type="text"
-                                                                className="form-control"
-                                                                id="job-title-Input"
-                                                                placeholder="Enter job title"
-                                                                defaultValue='0'
-                                                                disabled
-                                                            />
-                                                        </th>
-                                                        <th scope="row" style={{ width: "18%",textAlign:'center'}}>
-                                                            <Input style={{ textAlign: 'center'}}
+                                                        <th scope="row" style={{ width: "18%", textAlign: 'center' }}>
+                                                            <Input style={{ textAlign: 'center' }}
                                                                 type="text"
                                                                 className="form-control"
                                                                 id="job-title-Input"
@@ -1087,23 +1044,78 @@ const KlaimInacbg = () => {
                                                         </th>
                                                     </tr>
                                                     <tr>
-                                                        <th scope="row" style={{ width: "10%"}}>
-                                                                    
+                                                        <th scope="row" style={{ width: "10%" }}>
+                                                            5 Menit
                                                         </th>
-                                                        <th scope="row" style={{ width: "18%", textAlign:'center'}}>
-                                                        <span style={{ fontStyle: 'italic', color: '#888' }}>appear</span>
+                                                        <th scope="row" style={{ width: "18%", textAlign: 'center' }}>
+                                                            <Input style={{ textAlign: 'center' }}
+                                                                type="text"
+                                                                className="form-control"
+                                                                id="job-title-Input"
+                                                                placeholder="Enter job title"
+                                                                defaultValue='0'
+                                                                disabled
+                                                            />
                                                         </th>
-                                                        <th scope="row" style={{ width: "18%",textAlign:'center'}}>
-                                                        <span style={{ fontStyle: 'italic', color: '#888' }}>pulse</span>
+                                                        <th scope="row" style={{ width: "18%", textAlign: 'center' }}>
+                                                            <Input style={{ textAlign: 'center' }}
+                                                                type="text"
+                                                                className="form-control"
+                                                                id="job-title-Input"
+                                                                placeholder="Enter job title"
+                                                                defaultValue='0'
+                                                                disabled
+                                                            />
                                                         </th>
-                                                        <th scope="row" style={{ width: "18%",textAlign:'center'}}>
-                                                        <span style={{ fontStyle: 'italic', color: '#888' }}>grimace</span>
+                                                        <th scope="row" style={{ width: "18%", textAlign: 'center' }}>
+                                                            <Input style={{ textAlign: 'center' }}
+                                                                type="text"
+                                                                className="form-control"
+                                                                id="job-title-Input"
+                                                                placeholder="Enter job title"
+                                                                defaultValue='0'
+                                                                disabled
+                                                            />
                                                         </th>
-                                                        <th scope="row" style={{ width: "18%",textAlign:'center'}}>
-                                                        <span style={{ fontStyle: 'italic', color: '#888' }}>activity</span>
+                                                        <th scope="row" style={{ width: "18%", textAlign: 'center' }}>
+                                                            <Input style={{ textAlign: 'center' }}
+                                                                type="text"
+                                                                className="form-control"
+                                                                id="job-title-Input"
+                                                                placeholder="Enter job title"
+                                                                defaultValue='0'
+                                                                disabled
+                                                            />
                                                         </th>
-                                                        <th scope="row" style={{ width: "18%",textAlign:'center'}}>
-                                                        <span style={{ fontStyle: 'italic', color: '#888' }}>resp</span>
+                                                        <th scope="row" style={{ width: "18%", textAlign: 'center' }}>
+                                                            <Input style={{ textAlign: 'center' }}
+                                                                type="text"
+                                                                className="form-control"
+                                                                id="job-title-Input"
+                                                                placeholder="Enter job title"
+                                                                defaultValue='0'
+                                                                disabled
+                                                            />
+                                                        </th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="row" style={{ width: "10%" }}>
+
+                                                        </th>
+                                                        <th scope="row" style={{ width: "18%", textAlign: 'center' }}>
+                                                            <span style={{ fontStyle: 'italic', color: '#888' }}>appear</span>
+                                                        </th>
+                                                        <th scope="row" style={{ width: "18%", textAlign: 'center' }}>
+                                                            <span style={{ fontStyle: 'italic', color: '#888' }}>pulse</span>
+                                                        </th>
+                                                        <th scope="row" style={{ width: "18%", textAlign: 'center' }}>
+                                                            <span style={{ fontStyle: 'italic', color: '#888' }}>grimace</span>
+                                                        </th>
+                                                        <th scope="row" style={{ width: "18%", textAlign: 'center' }}>
+                                                            <span style={{ fontStyle: 'italic', color: '#888' }}>activity</span>
+                                                        </th>
+                                                        <th scope="row" style={{ width: "18%", textAlign: 'center' }}>
+                                                            <span style={{ fontStyle: 'italic', color: '#888' }}>resp</span>
                                                         </th>
                                                     </tr>
                                                 </tbody>

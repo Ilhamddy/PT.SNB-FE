@@ -69,14 +69,15 @@ async function getListDaftarPasien(req, res) {
             td.norec,
             td.noregistrasi,
             to_char(td.tglregistrasi,
-            'dd Month YYYY') as tglregistrasi,
+            'dd Month YYYY HH:mm') as tglregistrasi,
             to_char(td.tglpulang,
-            'dd Month YYYY') as tglpulang,
+            'dd Month YYYY HH:mm') as tglpulang,
             mp.nocm,mp.namapasien,
             case when mu.objectinstalasifk=2 then 'RI' else 'RJ' end as tipe,
             case when td.objectpenjaminfk=1 then 'JKN' else mr.namarekanan  end as jaminan1,
             case when td.objectpenjamin2fk=1 then 'JKN' when td.objectpenjamin2fk is null then '' else 'LAIN-LAIN' end as jaminan2,
-            tk.no_sep,tk.no_kartu
+            tk.no_sep,tk.no_kartu,to_char( mp.tgllahir, TO_CHAR(age( mp.tgllahir,  now( )), 'YY Tahun mm Bulan DD Hari')) AS umur,
+            mp.tgllahir
         from
             t_daftarpasien td
         join m_pasien mp on mp.id=td.nocmfk
