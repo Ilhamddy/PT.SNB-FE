@@ -46,7 +46,7 @@ async function getListPasien(req, res) {
         where mp.nocm ilike'%${req.query.nocm}%' and mp.statusenabled=true
         limit 5
         `);
-        
+
         let tempres = resultlist.rows
 
         res.status(200).send({
@@ -64,20 +64,37 @@ async function getListPasien(req, res) {
 async function getListDaftarPasien(req, res) {
 
     try {
-
+        let kode_tarif = ''
+        let nama_tarif = ''
+        const resultlistKodeTarif = await queryPromise2(`select s_key,s_value from s_global where s_key ilike '%inacbg%'`);
+        for (let x = 0; x < resultlistKodeTarif.rows.length; x++) {
+            if(resultlistKodeTarif.rows[x].s_key==='kode_tarif_inacbg'){
+                kode_tarif=resultlistKodeTarif.rows[x].s_value
+            }
+            if(resultlistKodeTarif.rows[x].s_key==='nama_tarif_inacbg'){
+                nama_tarif=resultlistKodeTarif.rows[x].s_value
+            }
+        }
         const resultlist = await queryPromise2(`select
             td.norec,
             td.noregistrasi,
             to_char(td.tglregistrasi,
             'dd Month YYYY HH:mm') as tglregistrasi,
+            to_char(td.tglregistrasi,
+                'YYYY-MM-DD') as tglregistrasi2,
             to_char(td.tglpulang,
             'dd Month YYYY HH:mm') as tglpulang,
+            to_char(td.tglpulang,
+                'YYYY-MM-DD') as tglpulang2,
             mp.nocm,mp.namapasien,
             case when mu.objectinstalasifk=2 then 'RI' else 'RJ' end as tipe,
             case when td.objectpenjaminfk=1 then 'JKN' else mr.namarekanan  end as jaminan1,
             case when td.objectpenjamin2fk=1 then 'JKN' when td.objectpenjamin2fk is null then '' else 'LAIN-LAIN' end as jaminan2,
             tk.no_sep,tk.no_kartu,to_char( mp.tgllahir, TO_CHAR(age( mp.tgllahir,  now( )), 'YY Tahun mm Bulan DD Hari')) AS umur,
-            mp.tgllahir
+            mp.tgllahir,mc.caramasuk,to_char( td.tglregistrasi, TO_CHAR(age( td.tglregistrasi,  td.tglpulang), 'DD')) AS los,
+            case when td.objectcarapulangrifk is null then '1' else mcp.kodeexternal end as kodecarapulang,
+            case when td.objectcarapulangrifk is null then 'Atas persetujuan dokter' else mcp.reportdisplay end as labelcarapulang,
+            mpeg.namalengkap as dpjp
         from
             t_daftarpasien td
         join m_pasien mp on mp.id=td.nocmfk
@@ -85,10 +102,45 @@ async function getListDaftarPasien(req, res) {
         left join m_rekanan mr on mr.id=td.objectpenjaminfk
         left join m_rekanan mr2 on mr2.id=td.objectpenjamin2fk
         left join t_kepesertaanasuransi tk on  tk.objectdaftarpasienfk=td.norec
+        left join m_caramasuk mc on mc.id=td.objectcaramasukfk
+        left join m_carapulangri mcp on mcp.id=td.objectcarapulangrifk
+        left join m_pegawai mpeg on mpeg.id=td.objectdokterpemeriksafk
         where mp.id ='${req.query.nocm}' and mp.statusenabled=true
+        order by td.tglregistrasi desc
         limit 20
         `);
-        
+
+        for (var i = 0; i < resultlist.rows.length; ++i) {
+            if (resultlist.rows[i].tglregistrasi2 === resultlist.rows[i].tglpulang2) {
+                resultlist.rows[i].los = 1
+            } else {
+                if (resultlist.rows[i].los.substr(0, 1) === '-') {
+                    resultlist.rows[i].los = parseFloat(resultlist.rows[i].los.substring(1)) + 1
+                    // resultlist.rows[i].los=resultlist.rows[i].los
+                }
+            }
+            const resultTtv = await queryPromise2(`SELECT dp.noregistrasi,
+            to_char(dp.tglregistrasi,'yyyy-MM-dd') as tglregistrasi,tt.norec, tt.objectemrfk, tt.tinggibadan,
+            tt.beratbadan, tt.suhu,tt.e, tt.m, tt.v, tt.nadi, tt.alergi, tt.tekanandarah, tt.spo2, 
+            tt.pernapasan,tt.keadaanumum, tt.objectpegawaifk, tt.isedit, tt.objectttvfk, tt.tglisi,
+            mu.namaunit,mr.reportdisplay as namagcs
+                    FROM t_daftarpasien dp 
+            join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk=dp.norec
+            join t_emrpasien te on te.objectantreanpemeriksaanfk=ta.norec 
+            join t_ttv tt on tt.objectemrfk =te.norec
+            join m_unit mu on mu.id=ta.objectunitfk
+            left join m_range mr on mr.id=tt.objectgcsfk where dp.norec='${resultlist.rows[i].norec}' order by tt.tglisi 
+            desc limit 1
+            `);
+            if(resultTtv.rows.length>0){
+                // console.log(resultTtv.rows[0].beratbadan)
+                resultlist.rows[i].bb=resultTtv.rows[0].beratbadan
+            }else{
+                resultlist.rows[i].bb=0
+            }
+            resultlist.rows[i].kode_tarif=kode_tarif
+            resultlist.rows[i].nama_tarif=nama_tarif
+        }
         let tempres = resultlist.rows
 
         res.status(200).send({

@@ -579,13 +579,13 @@ const KlaimInacbg = () => {
                                                     <tr>
                                                         <th scope="row" style={{ width: "10%" }}>Cara Masuk</th>
                                                         <td style={{ width: "90%" }} colSpan={3}>
-                                                            -
+                                                            {stateTemp.caramasuk}
                                                         </td>
                                                     </tr>
                                                     <tr>
                                                         <th scope="row" style={{ width: "10%" }}>LOS (hari)</th>
                                                         <td style={{ width: "50%" }}>
-                                                            1
+                                                            {stateTemp.los}
                                                         </td>
                                                         <th scope="row" style={{ width: "10%" }}>Berat Lahir (gram)</th>
                                                         <td style={{ width: "30%" }}><Input style={{ textAlign: 'center',
@@ -594,7 +594,7 @@ const KlaimInacbg = () => {
                                                             className="form-control"
                                                             id="job-title-Input"
                                                             placeholder="gram"
-                                                            defaultValue='0'
+                                                            defaultValue={stateTemp.bb}
                                                         /></td>
                                                     </tr>
                                                     <tr>
@@ -616,15 +616,15 @@ const KlaimInacbg = () => {
                                                             </Row>
                                                         </td>
                                                         <th scope="row" style={{ width: "10%" }}>Cara Pulang</th>
-                                                        <td style={{ width: "30%" }}></td>
+                                                        <td style={{ width: "30%" }}>{stateTemp.labelcarapulang}</td>
                                                     </tr>
                                                     <tr>
                                                         <th scope="row" style={{ width: "10%" }}>DPJP</th>
                                                         <td style={{ width: "50%" }}>
-                                                            -
+                                                            {stateTemp.dpjp}
                                                         </td>
                                                         <th scope="row" style={{ width: "10%" }}>Jenis Tarif</th>
-                                                        <td style={{ width: "30%" }}></td>
+                                                        <td style={{ width: "30%" }}>{stateTemp.nama_tarif}</td>
                                                     </tr>
                                                     <tr>
                                                         <th scope="row" style={{ width: "10%" }}>Pasien TB</th>
