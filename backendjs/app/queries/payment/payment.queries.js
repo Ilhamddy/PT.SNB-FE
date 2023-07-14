@@ -92,6 +92,8 @@ const qDaftarTagihanPasien =
     bb.no_bukti AS nobukti,
     bb.statusenabled AS statusenabledbukti,
     bb.norec as norecbukti,
+    bb.totalbayar as totalbayar,
+    bb.totaltagihan as totaltagihan,
 	td.tglpulang AS tglpulang
 		FROM t_notapelayananpasien tn
 		LEFT JOIN t_daftarpasien td ON tn.objectdaftarpasienfk=td.norec
@@ -180,6 +182,48 @@ const qGetNotaPelayananPasien =
         WHERE norec = $1
     `
 
+const qGetBuktiBayar = 
+    `
+    SELECT
+    *
+    FROM t_buktibayarpasien
+        WHERE norec = $1
+    `
+
+const qGetPiutangPasien =
+    `
+    SELECT 
+    tp.totalbayar AS totalbayar, 
+    tp.norec AS norecpiutang,
+    tp.totalpiutang AS totalpiutang, 
+    td.nocmfk AS nocmfk,
+    td.tglregistrasi AS tglregistrasi,
+    td.noregistrasi AS noregistrasi,
+    td.norec AS norecdp,
+    mp.namapasien AS namapasien,
+    mr.namaexternal AS namarekanan,
+    td.tglpulang AS tglpulang
+        FROM t_piutangpasien tp
+        LEFT JOIN t_daftarpasien td ON tp.objectdaftarpasienfk=td.norec
+        LEFT JOIN m_pasien mp ON td.nocmfk=mp.id
+        LEFT JOIN m_rekanan mr ON tp.objectpenjaminfk=mr.id
+            WHERE CASE WHEN $1 = 'pasien' THEN tp.statusenabled = true AND tp.objectpenjaminfk = 3
+                ELSE tp.statusenabled = true AND tp.objectpenjaminfk != 3
+            END;
+    `  
+
+const qTagihanGetFromDP = 
+    `
+    SELECT
+    tn.*,
+    bb.totaltagihan AS totaltagihan,
+    bb.totalbayar AS totalbayar,
+    bb.klaim AS klaim
+    FROM t_notapelayananpasien tn
+        LEFT JOIN t_buktibayarpasien bb ON bb.objectnotapelayananpasienfk = tn.norec AND bb.statusenabled = true
+            WHERE tn.objectdaftarpasienfk = $1
+            AND tn.statusenabled = true
+    `
 
 
 export {
@@ -190,5 +234,9 @@ export {
     qGetVerif,
     qGetKepesertaanFromAntrean,
     qGetKepesertaanFromNota,
-    qGetPiutangFromDP
+    qGetPiutangFromDP,
+    qGetNotaPelayananPasien,
+    qGetBuktiBayar,
+    qGetPiutangPasien,
+    qTagihanGetFromDP,
 }

@@ -1,4 +1,4 @@
-import { rgxAllPeriods, rgxValidNumber } from "./regexcommon"
+import { rgxAllPeriods, rgxValidNumber, rgxZeroStarts } from "./regexcommon"
 
 
 export const dateTimeLocal = (date) => {
@@ -48,6 +48,7 @@ export const strNumber = (nbrStr) => {
 
 export const onChangeStrNbr = (value, valueBefore) => {
     let val = value.replace(rgxAllPeriods, "")
+    val = val === "00" ? "0" : val.length > 1 ? val.replace(rgxZeroStarts, "") : val
     if(rgxValidNumber.test(val)){
         return strNumber(val)
     }

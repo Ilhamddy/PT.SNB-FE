@@ -53,6 +53,7 @@ const VerifikasiPelayanan = () => {
         norecdp: state.Payment.pelayananFromNoAntrianGet.data?.objectdaftarpasienfk || "",
         penjaminGet: state.Payment.pelayananFromNoAntrianGet.data?.kepesertaan || [],
     }))
+    const penjaminExist = penjaminGet.length !== 0
     const [listPelayananChecked, setListPelayananChecked] = useState([])
 
 
@@ -70,7 +71,9 @@ const VerifikasiPelayanan = () => {
         },
         validationSchema: Yup.object({
             keterangan: Yup.string().required("Keterangan harus diisi"),
-            norecppdone: Yup.array().min(1, "Pilih minimal 1 pelayanan"),
+            norecppdone: Yup.array()
+                .min(penjaminExist ? listPelayanan.length : 1, 
+                    `Pilih minimal ${penjaminExist ? listPelayanan.length : 1} pelayanan`),
             isipenjamin: Yup.array().of(
                 Yup.object().shape({
                     norec: Yup.string().required("Norec belum diisi"),
@@ -80,7 +83,7 @@ const VerifikasiPelayanan = () => {
                 })
             )
         }),
-        onSubmit: (values) => {
+        onSubmit: (values, {setTouched}) => {
             const newValue = {...values}
             newValue.isipenjamin = newValue.isipenjamin.map((isipenjamin) => {
                 // hapus titik dan jadikan number
@@ -89,6 +92,7 @@ const VerifikasiPelayanan = () => {
                     Number(newIsiPenjamin.value.replace(rgxAllPeriods, ""));
                 return newIsiPenjamin
             }) 
+            setTouched({})
             dispatch(notaVerifCreate(newValue, () => {dispatch(pelayananFromAntreanGet(norecap))}))
         }
     })
@@ -120,8 +124,12 @@ const VerifikasiPelayanan = () => {
     const totalLayanan = listPelayananChecked.reduce((prev, data) => {
         return prev + (data.checked && !data.isobat ? (data.total || 0) : 0)
     }, 0)
-    const grandTot = totalObat + totalLayanan
-    
+    const totalVerif = totalObat + totalLayanan
+    const totalKlaim = validation.values.isipenjamin.reduce((prev, data) => {
+        const jmlKlaim = Number(data.value.replace(rgxAllPeriods, ""))
+        return prev + (jmlKlaim || 0)
+    }, 0)
+    const grandTotal = totalVerif - totalKlaim
 
     const handleFilter = () => {
         dispatch(daftarPasienPulangGet(dateStart, dateEnd))
@@ -156,9 +164,9 @@ const VerifikasiPelayanan = () => {
         const setFF = validation.setFieldValue
         const hasilCheck = listPelayananChecked.filter((item) => item.checked).map((item) => item.norec)
         setFF("objectdaftarpasienfk", norecdp)
-        setFF("total", grandTot)
+        setFF("total", totalVerif)
         setFF("norecppdone", hasilCheck)
-    }, [norecdp, validation.setFieldValue, grandTot, listPelayananChecked])
+    }, [norecdp, validation.setFieldValue, totalVerif, listPelayananChecked])
 
     //inisialisasi isipenjamin
     useEffect(() => {
@@ -435,7 +443,15 @@ const VerifikasiPelayanan = () => {
                                             </tr>
                                             <tr>
                                                 <td className="text-center">Total Verifikasi</td>
-                                                <td className="text-center">Rp{grandTot}</td>
+                                                <td className="text-center">Rp{totalVerif}</td>
+                                            </tr>
+                                            <tr>
+                                                <td className="text-center">Klaim asuransi</td>
+                                                <td className="text-center">Rp{totalKlaim}</td>
+                                            </tr>
+                                            <tr>
+                                                <td className="text-center">Total tagihan</td>
+                                                <td className="text-center">Rp{grandTotal}</td>
                                             </tr>
                                         </tbody>
                                     </table>

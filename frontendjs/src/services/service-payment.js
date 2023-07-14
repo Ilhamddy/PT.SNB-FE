@@ -31,4 +31,8 @@ export default class ServicePayment {
     cancelBayar = async ([norecnota, norecbayar]) => {
         return await api.create(`/transaksi/payment/cancel-bayar/${norecnota}/${norecbayar}`);
     }
+
+    getAllPiutang = async (location) => {
+        return await api.get(`/transaksi/payment/get-daftar-piutang-pasien/${location}`);
+    }
 }

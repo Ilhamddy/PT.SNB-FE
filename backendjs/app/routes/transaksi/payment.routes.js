@@ -51,4 +51,10 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.cancelBayar
     );
+
+    app.get(
+        "/api/transaksi/payment/get-daftar-piutang-pasien/:location",
+        [authJwt.verifyToken],
+        controller.getAllPiutang
+    );
 }

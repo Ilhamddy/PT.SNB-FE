@@ -12,16 +12,19 @@ export default (sequelize, Sequelize) => {
         objectdaftarpasienfk: {
             type: Sequelize.CHAR(32)
         },
-        totaltagihan: {
-            type: Sequelize.FLOAT
+        objectpenjaminfk: {
+            type: Sequelize.INTEGER
         },
-        totalklaim: {
+        objectnotapelayananpasienfk: {
+            type: Sequelize.CHAR(32)
+        },
+        totalpiutang: {
             type: Sequelize.FLOAT
         },
         totalbayar: {
             type: Sequelize.FLOAT
         },
-        sisatagihan: {
+        sisapiutang: {
             type: Sequelize.FLOAT
         },
         tglinput: {

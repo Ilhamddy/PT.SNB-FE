@@ -10,6 +10,7 @@ const Navdata = () => {
     const [isRegistrasi, setIsRegistrasi] = useState(false);
     const [isListDaftarPasien, setListDaftarPasien] = useState(false);
     const [isRekamMedis, setRekamMedis] = useState(false);
+    const [isPembayaran, setPembayaran] = useState(false);
     const [isRadiologi, setRadiologi] = useState(false);
     const [isLaboratorium, setLaboratorium] = useState(false);
     const [isCasemix, setCasemix] = useState(false);
@@ -263,18 +264,60 @@ const Navdata = () => {
                         ]);
                     }
                 },
+            ],
+        },
+        {
+            id: "listpembayaran",
+            label: "Daftar pembayaran",
+            icon: "lab la-delicious",
+            link: "/#",
+            click: function (e) {
+                e.preventDefault();
+                setPembayaran(!isPembayaran);
+                setIscurrentState('isRekamMedis');
+                updateIconSidebar(e);
+            },
+            stateVariables: isPembayaran,
+            isAllowed: () => {
+                return isAllowedAccess(getUserPermissions(), [
+                    "REGISTRASI_VIEW",
+                ]);
+            },
+            subItems: [
                 {
                     id: "daftar-pembayaran",
                     label: "Daftar Tagihan",
                     link: "/payment/daftar-tagihan",
-                    parentId: "listdaftarpasien",
+                    parentId: "listpembayaran",
                     isAllowed: () => {
                         return isAllowedAccess(getUserPermissions(), [
                             "REGISTRASI_VIEW",
                         ]);
                     }
                 },
-            ],
+                {
+                    id: "daftar-piutang",
+                    label: "Daftar Piutang Pasien",
+                    link: "/payment/daftar-piutang/pasien",
+                    parentId: "listpembayaran",
+                    isAllowed: () => {
+                        return isAllowedAccess(getUserPermissions(), [
+                            "REGISTRASI_VIEW",
+                        ]);
+                    }
+                },
+                {
+                    id: "daftar-piutang",
+                    label: "Daftar Piutang Asuransi",
+                    link: "/payment/daftar-piutang/asuransi",
+                    parentId: "listpembayaran",
+                    isAllowed: () => {
+                        return isAllowedAccess(getUserPermissions(), [
+                            "REGISTRASI_VIEW",
+                        ]);
+                    }
+                }
+            ]
         },
         {
             id: "rekammedis",
