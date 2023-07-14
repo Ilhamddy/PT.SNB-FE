@@ -9,7 +9,13 @@ import {
     LIST_DAFTAR_PASIEN_GET_ERROR,
     LIST_TARIF_PASIEN_GET,
     LIST_TARIF_PASIEN_GET_SUCCESS,
-    LIST_TARIF_PASIEN_GET_ERROR
+    LIST_TARIF_PASIEN_GET_ERROR,
+    LISTDIAGNOSAX_GET,
+    LISTDIAGNOSAX_GET_SUCCESS,
+    LISTDIAGNOSAX_GET_ERROR,
+    LISTDIAGNOSAIX_GET,
+    LISTDIAGNOSAIX_GET_SUCCESS,
+    LISTDIAGNOSAIX_GET_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -24,6 +30,16 @@ const INIT_STATE = {
         error: null,
     },
     listTarifPasienGet: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    listDiagnosaxGet: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    listDiagnosaixGet: {
         data: [],
         loading: false,
         error: null,
@@ -43,6 +59,12 @@ const Casemix = (state= INIT_STATE,action)=>{
                 },
                 listTarifPasienGet:{
                     ...INIT_STATE.listTarifPasienGet
+                },
+                listDiagnosaxGet:{
+                    ...INIT_STATE.listDiagnosaxGet
+                },
+                listDiagnosaixGet:{
+                    ...INIT_STATE.listDiagnosaixGet
                 }
             }
         }
@@ -140,6 +162,72 @@ const Casemix = (state= INIT_STATE,action)=>{
                 ...state,
                 listTarifPasienGet: {
                     ...state.listTarifPasienGet,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case LISTDIAGNOSAX_GET: {
+            return {
+                ...state,
+                listDiagnosaxGet: {
+                    ...state.listDiagnosaxGet,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case LISTDIAGNOSAX_GET_SUCCESS: {
+            return {
+                ...state,
+                listDiagnosaxGet: {
+                    ...state.listDiagnosaxGet,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case LISTDIAGNOSAX_GET_ERROR: {
+            return {
+                ...state,
+                listDiagnosaxGet: {
+                    ...state.listDiagnosaxGet,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case LISTDIAGNOSAIX_GET: {
+            return {
+                ...state,
+                listDiagnosaixGet: {
+                    ...state.listDiagnosaixGet,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case LISTDIAGNOSAIX_GET_SUCCESS: {
+            return {
+                ...state,
+                listDiagnosaixGet: {
+                    ...state.listDiagnosaixGet,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case LISTDIAGNOSAIX_GET_ERROR: {
+            return {
+                ...state,
+                listDiagnosaixGet: {
+                    ...state.listDiagnosaixGet,
                     loading: false,
                     error: action.error,
                 }

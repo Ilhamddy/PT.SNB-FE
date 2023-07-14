@@ -4,13 +4,17 @@ import ServiceCasemix from "../../services/service-casemix";
 import {
     LIST_CARI_PASIEN_GET,
     LIST_DAFTAR_PASIEN_GET,
-    LIST_TARIF_PASIEN_GET
+    LIST_TARIF_PASIEN_GET,
+    LISTDIAGNOSAX_GET,
+    LISTDIAGNOSAIX_GET
 } from "./actionType";
 
 import {
     listCariPasienGetSuccess, listCariPasienGetError,
     listDaftarPasienGetSuccess, listDaftarPasienGetError,
-    listTarifPasienGetSuccess, listTarifPasienGetError
+    listTarifPasienGetSuccess, listTarifPasienGetError,
+    listDiagnosaxGetSuccess, listDiagnosaxGetError,
+    listDiagnosaixGetSuccess, listDiagnosaixGetError
 } from "./action";
 
 import { toast } from 'react-toastify';
@@ -57,11 +61,43 @@ export function* watchonListTarifPasienGet() {
     yield takeEvery(LIST_TARIF_PASIEN_GET, onListTarifPasienGet);
 }
 
+function* onListDiagnosax({ payload: { param } }) {
+    try {
+        let response = null;
+        response = yield call(serviceCasemix.getListDiagnosa10, param);
+
+        yield put(listDiagnosaxGetSuccess(response.data));
+    } catch (error) {
+        yield put(listDiagnosaxGetError(error));
+    }
+}
+
+export function* watchListDiagnosax() {
+    yield takeEvery(LISTDIAGNOSAX_GET, onListDiagnosax);
+}
+
+function* onListDiagnosaix({ payload: { param } }) {
+    try {
+        let response = null;
+        response = yield call(serviceCasemix.getListDiagnosa9, param);
+
+        yield put(listDiagnosaixGetSuccess(response.data));
+    } catch (error) {
+        yield put(listDiagnosaixGetError(error));
+    }
+}
+
+export function* watchListDiagnosaix() {
+    yield takeEvery(LISTDIAGNOSAIX_GET, onListDiagnosaix);
+}
+
 function* casemixSaga() {
     yield all([
         fork(watchonListCariPasienGet),
         fork(watchonListDaftarPasienGet),
-        fork(watchonListTarifPasienGet)
+        fork(watchonListTarifPasienGet),
+        fork(watchListDiagnosax),
+        fork(watchListDiagnosaix)
     ]);
 }
 
