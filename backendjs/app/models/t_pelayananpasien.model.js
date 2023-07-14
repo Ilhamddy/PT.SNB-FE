@@ -1,3 +1,5 @@
+// import t_notapelayananpasien from "./t_notapelayananpasien";
+
 export default (sequelize, Sequelize) => {
     const t_pelayananpasien = sequelize.define("t_pelayananpasien", {
         norec: {
@@ -55,6 +57,8 @@ export default (sequelize, Sequelize) => {
         createdAt: false,
         updatedAt: false,
     });
-
+    // t_pelayananpasien.belongsTo(t_notapelayananpasien(sequelize, Sequelize), 
+    //     { foreignKey: "objectnotapelayananpasienfk" }
+    // )
     return t_pelayananpasien;
 };

@@ -14,6 +14,8 @@ import {
     verifNotaCancelError,
     buktiBayarCancelSuccess,
     buktiBayarCancelError,
+    daftarPiutangPasienGetSuccess,
+    daftarPiutangPasienGetError,
 } from "./action";
 
 import {
@@ -24,6 +26,7 @@ import {
     BUKTI_BAYAR_CREATE,
     VERIF_NOTA_CANCEL,
     BUKTI_BAYAR_CANCEL,
+    DAFTAR_PIUTANG_PASIEN_GET,
 } from "./actionType";
 
 import ServicePayment from "../../services/service-payment";
@@ -84,14 +87,15 @@ function* onGetBuktiBayarCreate({payload: {body, callback}}) {
     }
 }
 
-function* onVerifNotaCancel({payload: {norecnota, callback}}) {
+function* onVerifNotaCancel({payload: {norecnota, norecdp, callback}}) {
     try {
-        const response = yield call(servicePayment.cancelNotaVerif, norecnota);
+        const response = yield call(servicePayment.cancelNotaVerif, [norecnota, norecdp]);
         yield put(verifNotaCancelSuccess(response.data));
         toast.success(response.msg, { autoClose: 3000 });
         callback && callback();
     } catch (error) {
         console.error(error)
+        toast.error("error", { autoClose: 3000 });
         yield put(verifNotaCancelError(error));
     }
 }
@@ -104,7 +108,17 @@ function* onBuktiBayarCancel({payload: {norecnota, norecbayar, callback}}) {
         callback && callback();
     } catch (error) {
         console.error(error)
+        toast.error("terjadi kesalahan", { autoClose: 3000 })
         yield put(buktiBayarCancelError(error));
+    }
+}
+
+function* onGetDaftarPiutangPasien({payload: {location}}) {
+    try {
+        const response = yield call(servicePayment.getAllPiutang, location);
+        yield put(daftarPiutangPasienGetSuccess(response.data));
+    } catch (error) {
+        yield put(daftarPiutangPasienGetError(error));
     }
 }
 
@@ -136,6 +150,10 @@ export function* watchBuktiBayarCancel() {
     yield takeEvery(BUKTI_BAYAR_CANCEL, onBuktiBayarCancel);
 }
 
+export function* watchGetDaftarPiutangPasien() {
+    yield takeEvery(DAFTAR_PIUTANG_PASIEN_GET, onGetDaftarPiutangPasien);
+}
+
 export default function* masterSaga() {
     yield all([
         fork(watchGetPelayananFromAntrean),
@@ -145,5 +163,6 @@ export default function* masterSaga() {
         fork(watchGetBuktiBayarCreate),
         fork(watchVerifNotaCancel),
         fork(watchBuktiBayarCancel),
+        fork(watchGetDaftarPiutangPasien),
     ]);
 }

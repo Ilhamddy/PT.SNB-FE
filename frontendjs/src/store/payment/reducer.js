@@ -27,6 +27,10 @@ import {
     BUKTI_BAYAR_CANCEL_SUCCESS,
     BUKTI_BAYAR_CANCEL_ERROR,
     BUKTI_BAYAR_CANCEL_RESET,
+    DAFTAR_PIUTANG_PASIEN_GET,
+    DAFTAR_PIUTANG_PASIEN_GET_SUCCESS,
+    DAFTAR_PIUTANG_PASIEN_GET_ERROR,
+    DAFTAR_PIUTANG_PASIEN_GET_RESET,
 } from "./actionType";
 
 const INIT_STATE = {
@@ -67,6 +71,12 @@ const INIT_STATE = {
         error: null,
     },
     buktiBayarCancel: {
+        data: [],
+        loading: false,
+        success: false,
+        error: null,
+    },
+    daftarPiutangPasienGet: {
         data: [],
         loading: false,
         success: false,
@@ -368,6 +378,49 @@ const payment = (state = INIT_STATE, action) => {
                 ...state,
                 buktiBayarCancel: {
                     ...state.buktiBayarCancel,
+                    data: [],
+                    success: false,
+                    loading: false,
+                    error: null,
+                },
+            };
+
+        case DAFTAR_PIUTANG_PASIEN_GET:
+            return {
+                ...state,
+                daftarPiutangPasienGet: {
+                    ...state.daftarPiutangPasienGet,
+                    data: [],
+                    loading: true,
+                    error: null,
+                },
+            };
+        case DAFTAR_PIUTANG_PASIEN_GET_SUCCESS:
+            return {
+                ...state,
+                daftarPiutangPasienGet: {
+                    ...state.daftarPiutangPasienGet,
+                    data: action.payload,
+                    loading: false,
+                    error: null,
+                },
+            };
+
+        case DAFTAR_PIUTANG_PASIEN_GET_ERROR:
+            return {
+                ...state,
+                daftarPiutangPasienGet: {
+                    ...state.daftarPiutangPasienGet,
+                    data: [],
+                    loading: false,
+                    error: action.payload,
+                },
+            };
+        case DAFTAR_PIUTANG_PASIEN_GET_RESET:
+            return {
+                ...state,
+                daftarPiutangPasienGet: {
+                    ...state.daftarPiutangPasienGet,
                     data: [],
                     success: false,
                     loading: false,

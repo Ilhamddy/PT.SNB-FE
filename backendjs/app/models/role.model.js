@@ -11,6 +11,5 @@ export default (sequelize, Sequelize) => {
         type: Sequelize.JSON
       }
     });
-  
     return Role;
   };

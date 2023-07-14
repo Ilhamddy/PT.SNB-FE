@@ -24,7 +24,11 @@ import { PELAYANAN_FROM_ANTREAN_GET,
     BUKTI_BAYAR_CANCEL,
     BUKTI_BAYAR_CANCEL_SUCCESS,
     BUKTI_BAYAR_CANCEL_ERROR,
-    BUKTI_BAYAR_CANCEL_RESET
+    BUKTI_BAYAR_CANCEL_RESET,
+    DAFTAR_PIUTANG_PASIEN_GET,
+    DAFTAR_PIUTANG_PASIEN_GET_SUCCESS,
+    DAFTAR_PIUTANG_PASIEN_GET_ERROR,
+    DAFTAR_PIUTANG_PASIEN_GET_RESET
 } from "./actionType";
 
 export const pelayananFromAntreanGet = (norecap) => {
@@ -158,10 +162,10 @@ export const buktiBayarCreateReset = () => {
     }
 }
 
-export const verifNotaCancel = (norecnota, callback) => {
+export const verifNotaCancel = (norecnota, norecdp, callback) => {
     return {
         type: VERIF_NOTA_CANCEL,
-        payload: {norecnota, callback}
+        payload: {norecnota, norecdp, callback}
     }
 }
 
@@ -211,3 +215,31 @@ export const buktiBayarCancelReset = () => {
         type: BUKTI_BAYAR_CANCEL_RESET,
     }
 }
+
+export const daftarPiutangPasienGet = (location) => {
+    return {
+        type: DAFTAR_PIUTANG_PASIEN_GET,
+        payload: {location}
+    }
+}
+
+export const daftarPiutangPasienGetSuccess = (data) => {
+    return {
+        type: DAFTAR_PIUTANG_PASIEN_GET_SUCCESS,
+        payload: data
+    }
+}
+
+export const daftarPiutangPasienGetError = (error) => {
+    return {
+        type: DAFTAR_PIUTANG_PASIEN_GET_ERROR,
+        payload: error
+    }
+}
+
+export const daftarPiutangPasienGetReset = () => {
+    return {
+        type: DAFTAR_PIUTANG_PASIEN_GET_RESET,
+    }
+}
+

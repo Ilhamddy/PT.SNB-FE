@@ -14,17 +14,19 @@ import { dateISOString, dateTimeLocal } from "../../utils/format";
 import Flatpickr from "react-flatpickr";
 import { comboAsuransiGet, comboRegistrasiGet } from "../../store/master/action";
 import CustomSelect from "../Select/Select";
-import { useNavigate } from "react-router-dom";
-import { buktiBayarCancel, daftarTagihanPasienGet, verifNotaCancel } from "../../store/payment/action";
+import { useNavigate, useParams } from "react-router-dom";
+import { buktiBayarCancel, daftarPiutangPasienGet, daftarTagihanPasienGet, verifNotaCancel } from "../../store/payment/action";
 
 const dateAwalStart = dateISOString(new Date(new Date() - 1000 * 60 * 60 * 24 * 3));
 const dateAwalEnd = dateISOString(new Date())
 
 
-const DaftarTagihanPasien = () => {
-    const {dataTagihan, comboboxReg} = useSelector((state) => ({
-        dataTagihan: state.Payment.daftarTagihanPasienGet.data || []
+const DaftarPiutangPasien = () => {
+    const {dataPiutang, comboboxReg} = useSelector((state) => ({
+        dataPiutang: state.Payment.daftarPiutangPasienGet.data || []
     }))
+
+    const { location } = useParams();
 
     const [dateStart, setDateStart] = useState(dateAwalStart);
     const [dateEnd, setDateEnd] = useState(dateAwalEnd);
@@ -46,9 +48,7 @@ const DaftarTagihanPasien = () => {
         }
     });
 
-    useEffect(() => {
-        dispatch(daftarTagihanPasienGet())
-    }, [dispatch])
+
 
     const handleFilter = () => {
         // dispatch(daftarPasienPulangGet(dateStart, dateEnd))
@@ -58,28 +58,24 @@ const DaftarTagihanPasien = () => {
     }
     const handleToBayar = async (norecnota) => {
         norecnota 
-            && navigate(`/payment/bayar/${norecnota}`)    
-    }
-    const handleCancelVerif = (norecnota, norecdp) => {
-        norecnota && 
-            dispatch(verifNotaCancel(norecnota, norecdp, () => dispatch(daftarTagihanPasienGet())))
+            && navigate(`/payment/bayar/piutang/${norecnota}`)    
     }
     const handleCancelBayar = (norecnota, norecbayar) => {
         norecbayar && norecnota &&
             dispatch(buktiBayarCancel(
                 norecnota, 
                 norecbayar, 
-                () => dispatch(daftarTagihanPasienGet())
+                () => dispatch(daftarPiutangPasienGet())
             ))
     }
     const columns = [
         {
-            name: <span className='font-weight-bold fs-13'>Detail</span>,
+            name: <span className='font-weight-bold fs-13'>Action</span>,
             sortable: false,
             cell: (row) => {
                 return (
                     <div className="hstack gap-3 flex-wrap">
-                        <UncontrolledTooltip placement="top" target="tooltipTop2" > Pengkajian Pasien </UncontrolledTooltip>
+                        <UncontrolledTooltip placement="top" target="tooltipTop2" > Pilih opsi </UncontrolledTooltip>
                         <UncontrolledDropdown className="dropdown d-inline-block">
                             <DropdownToggle className="btn btn-soft-secondary btn-sm" tag="button" id="tooltipTop2">
                                 <i className="ri-apps-2-line"></i>
@@ -92,19 +88,6 @@ const DaftarTagihanPasien = () => {
                                         Bayar
                                     </DropdownItem>
                                 }
-                                {!row.norecbukti && <DropdownItem 
-                                        onClick={() => handleCancelVerif(row.norecnota, row.norecdp)}>
-                                        <i className="ri-mail-send-fill align-bottom me-2 text-muted">
-                                        </i>
-                                        Batal Verif
-                                    </DropdownItem>
-                                }
-                                {row.norecbukti && <DropdownItem 
-                                        onClick={() => handleCancelBayar(row.norecnota, row.norecbukti)}>
-                                        <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
-                                        Batal Bayar
-                                    </DropdownItem>}
-
                             </DropdownMenu>
                         </UncontrolledDropdown>
                     </div>
@@ -154,16 +137,16 @@ const DaftarTagihanPasien = () => {
             width: "160px",
         },
         {
-            name: <span className='font-weight-bold fs-13'>Total</span>,
-            selector: row => `Rp${row.total?.toLocaleString('id-ID') || 0}`,
+            name: <span className='font-weight-bold fs-13'>T. Piutang</span>,
+            selector: row => `Rp${row.totalpiutang?.toLocaleString('id-ID') || 0}`,
             sortable: true,
             width: "120px",
             wrap: true
         },
         {
             name: <span className='font-weight-bold fs-13'>Status</span>,
-            selector: row => row.nobukti === null ? "Blm Bayar" 
-                : row.totalbayar === row.totaltagihan 
+            selector: row => row.totalbayar === 0 ? "Blm Bayar" 
+                : row.totalbayar === row.totalpiutang 
                 ? "Lunas" 
                 : "Bayar Sebagian",
             sortable: true,
@@ -172,6 +155,10 @@ const DaftarTagihanPasien = () => {
         },
     ];
     const [pillsTab, setpillsTab] = useState("1");
+
+    useEffect(() => {
+        location && dispatch(daftarPiutangPasienGet(location))
+    }, [dispatch, location])
     return(
         <div className="page-content daftar-pasien-pulang">
             <ToastContainer closeButton={false} />
@@ -346,7 +333,7 @@ const DaftarTagihanPasien = () => {
                             fixedHeaderScrollHeight="400px"
                             columns={columns}
                             pagination
-                            data={dataTagihan || []}
+                            data={dataPiutang || []}
                             progressPending={false}
                             customStyles={tableCustomStyles}
                         />
@@ -374,4 +361,4 @@ const tableCustomStyles = {
     }
 }
 
-export default DaftarTagihanPasien;
+export default DaftarPiutangPasien;

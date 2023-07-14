@@ -41,7 +41,7 @@ export default function (app) {
     );
 
     app.post(
-        "/api/transaksi/payment/cancel-verif-nota/:norecnota",
+        "/api/transaksi/payment/cancel-verif-nota/:norecnota/:norecdp",
         [authJwt.verifyToken],
         controller.cancelNotaVerif
     );
@@ -50,5 +50,11 @@ export default function (app) {
         "/api/transaksi/payment/cancel-bayar/:norecnota/:norecbayar",
         [authJwt.verifyToken],
         controller.cancelBayar
+    );
+
+    app.get(
+        "/api/transaksi/payment/get-daftar-piutang-pasien/:location",
+        [authJwt.verifyToken],
+        controller.getAllPiutang
     );
 }
