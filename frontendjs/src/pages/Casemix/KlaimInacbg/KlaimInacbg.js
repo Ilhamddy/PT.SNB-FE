@@ -22,7 +22,7 @@ import calendar from "../../../assets/images/users/calendar.png";
 import SearchOption from '../../../Components/Common/SearchOption';
 import { dateISOString, dateTimeLocal } from "../../../utils/format";
 import {
-    casemixResetForm, listCariPasienGet, listDaftarPasienGet
+    casemixResetForm, listCariPasienGet, listDaftarPasienGet, listTarifPasienGet
 } from '../../../store/actions';
 
 const dateAwalStart = dateISOString(new Date(new Date() - 1000 * 60 * 60 * 24 * 3));
@@ -31,7 +31,8 @@ const KlaimInacbg = () => {
     document.title = "Klaim Inacbg";
     const dispatch = useDispatch();
     const { editData, newData, loading, error, success,
-        dataPasien, loadingPasien, successPasien, dataDaftarPasien, loadingDaftarPasien, successDaftarPasien } = useSelector((state) => ({
+        dataPasien, loadingPasien, successPasien, dataDaftarPasien, loadingDaftarPasien, successDaftarPasien,
+        dataTarifPasien, loadingTarifPasien, successTarifPasien } = useSelector((state) => ({
             // newData: state.Radiologi.updateTglRencanaRadiologi.newData,
             // success: state.Radiologi.updateTglRencanaRadiologi.success,
             // loading: state.Radiologi.updateTglRencanaRadiologi.loading,
@@ -41,6 +42,9 @@ const KlaimInacbg = () => {
             dataDaftarPasien: state.Casemix.listDaftarPasienGet.data,
             loadingDaftarPasien: state.Casemix.listDaftarPasienGet.loading,
             successDaftarPasien: state.Casemix.listDaftarPasienGet.success,
+            dataTarifPasien: state.Casemix.listTarifPasienGet.data,
+            loadingTarifPasien: state.Casemix.listTarifPasienGet.loading,
+            successTarifPasien: state.Casemix.listTarifPasienGet.success,
         }));
 
     useEffect(() => {
@@ -84,57 +88,47 @@ const KlaimInacbg = () => {
     const [stateNama, setstateNama] = useState('')
     const [stateJK, setstateJK] = useState('')
     const [stateTglLahir, setstateTglLahir] = useState('')
+    const [stateTemp, setstateTemp] = useState([])
+    const [stateRJ, setstateRJ] = useState(false)
+    const [stateRI, setstateRI] = useState(false)
+    const [activeTab, setActiveTab] = useState('1');
     const handleFilter = (e) => {
         if (e.keyCode === 13) {
             setstateList(true)
             dispatch(listCariPasienGet(search))
         }
     }
-    const widgetsTasks = [
+    const widgetsTasksJenisRawat = [
         {
             id: 1,
-            forId: "task_one",
-            text: "Review and make sure nothing slips through cracks",
-            date: "15 Sep, 2021",
+            label: "Jalan",
+            value: stateRJ,
         },
         {
             id: 2,
-            forId: "task_two",
-            text: "Send meeting invites for sales upcampaign",
-            date: "20 Sep, 2021",
-        },
-        {
-            id: 3,
-            forId: "task_three",
-            text: "Weekly closed sales won checking with sales team",
-            date: "24 Sep, 2021",
-        },
-        {
-            id: 4,
-            forId: "task_four",
-            text: "Add notes that can be viewed from the individual view",
-            date: "27 Sep, 2021",
-        },
-        {
-            id: 5,
-            forId: "task_five",
-            text: "Move stuff to another page",
-            date: "27 Sep, 2021",
-        },
-        {
-            id: 6,
-            forId: "task_six",
-            text: "Styling wireframe design and documentation for velzon admin",
-            date: "27 Sep, 2021",
+            label: "Inap",
+            value: stateRI,
         },
     ];
+    const widgetsTasksKelasRawat = [
+        {
+            id: 1,
+            label: "Regular",
+            value: true,
+        },
+        {
+            id: 2,
+            label: "Eksekutif",
+            value: false,
+        },
+    ];
+
     const clickList = (e) => {
-        console.log(e)
         setstateList(false)
         setstatePencarian(false)
         setstateListNoregistrasi(true)
         setstateNocm(e.nocm)
-        setstateNama(e.nama)
+        setstateNama(e.namapasien)
         setstateJK(e.jeniskelamin)
         setstateTglLahir(e.tgllahir)
         dispatch(listDaftarPasienGet(e.id))
@@ -157,7 +151,16 @@ const KlaimInacbg = () => {
     const handleClick = (e) => {
         setstateListNoregistrasi(false)
         setstateCoder(true)
-        console.log(e.norec)
+        setstateTemp(e)
+        if (e.tipe === 'RJ') {
+            setstateRJ(true)
+            setstateRI(false)
+        } else {
+            setstateRI(true)
+            setstateRJ(false)
+        }
+        dispatch(listTarifPasienGet(e.norec))
+        // console.log(stateTemp.noregistrasi)
     };
     const columns = [
         {
@@ -167,7 +170,7 @@ const KlaimInacbg = () => {
             // selector: row => (<button className="btn btn-sm btn-soft-info" onClick={() => handleClick(row)}>{row.noregistrasi}</button>),
             cell: (data) => {
                 return (
-                    <Link to="#" onClick={()=>handleClick(data)} className="link-primary text-decoration-underline">{data.noregistrasi}</Link>
+                    <Link to="#" onClick={() => handleClick(data)} className="link-primary text-decoration-underline">{data.noregistrasi}</Link>
                 )
             },
             width: "130px"
@@ -197,19 +200,19 @@ const KlaimInacbg = () => {
             sortable: true,
             width: "150px"
         },
-        {
+        // {
 
-            name: <span className='font-weight-bold fs-13'>Jaminan 2</span>,
-            selector: row => row.jaminan2,
-            sortable: true,
-            width: "150px"
-        },
-        {
-            name: <span className='font-weight-bold fs-13'>Nomor Jaminan 2</span>,
-            selector: row => row.no_sep,
-            sortable: true,
-            width: "150px"
-        },
+        //     name: <span className='font-weight-bold fs-13'>Jaminan 2</span>,
+        //     selector: row => row.jaminan2,
+        //     sortable: true,
+        //     width: "150px"
+        // },
+        // {
+        //     name: <span className='font-weight-bold fs-13'>Nomor Jaminan 2</span>,
+        //     selector: row => row.no_sep,
+        //     sortable: true,
+        //     width: "150px"
+        // },
         {
             name: <span className='font-weight-bold fs-13'>Tipe</span>,
             selector: row => row.tipe,
@@ -409,17 +412,722 @@ const KlaimInacbg = () => {
                         ) : null}
                         {stateCoder ? (
                             <Card>
-                                    <CardHeader >
-                                        <div className="live-preview">
-                                            <Row>
-                                                <Col lg={12} style={{ marginTop: '3px' }}>
-                                                    <h4 className="card-title mb-0 flex-grow-1 mb-3">
-                                                        <Button type='button' onClick={() => { back2() }} color="light" className="btn-icon"> <i className="ri-arrow-go-back-line" /> </Button>{stateNocm} <span style={{ color: "#55aaee" }}>••</span> {stateNama} <span style={{ color: "#55aaee" }}>••</span> {stateJK}<span style={{ color: "#55aaee" }}>••</span> {stateTglLahir}
-                                                    </h4>
-                                                </Col>
-                                            </Row>
+                                <CardHeader >
+                                    <div className="live-preview">
+                                        <Row>
+                                            <Col lg={12} style={{ marginTop: '3px' }}>
+                                                <h4 className="card-title mb-0 flex-grow-1 mb-3">
+                                                    <Button type='button' onClick={() => { back2() }} color="light" className="btn-icon">
+                                                        <i className="ri-arrow-go-back-line" /> </Button>{stateNocm} <span style={{ color: "#55aaee" }}>••</span>
+                                                    {stateNama} <span style={{ color: "#55aaee" }}>••</span> {stateJK}<span style={{ color: "#55aaee" }}>••</span> {stateTglLahir}
+                                                    <span style={{ color: "#55aaee" }}> /</span> {stateTemp.noregistrasi} <span style={{ color: "#55aaee" }}> /</span> {stateTemp.no_sep}
+                                                </h4>
+                                            </Col>
+                                        </Row>
+                                    </div>
+                                </CardHeader>
+                                <CardBody>
+                                    <Row className="row g-4">
+                                        <Col lg={3}>
+                                            <div>
+                                                <Label
+                                                    htmlFor="job-title-Input"
+                                                    className="form-label" style={{ fontStyle: "italic" }}
+                                                >
+                                                    Jaminan / Cara Bayar
+                                                </Label>
+                                                <Input
+                                                    id="noidentitas"
+                                                    name="noidentitas"
+                                                    type="text"
+                                                    placeholder="Masukkan no. identitas"
+                                                    defaultValue='JKN'
+                                                    disabled
+                                                />
+                                            </div>
+                                        </Col>
+                                        <Col lg={3}>
+                                            <div>
+                                                <Label
+                                                    htmlFor="job-title-Input"
+                                                    className="form-label"
+                                                    style={{ fontStyle: "italic" }}
+                                                >
+                                                    No. Peserta
+                                                </Label>
+                                                <Input
+                                                    type="text"
+                                                    className="form-control"
+                                                    id="job-title-Input"
+                                                    placeholder="Enter job title"
+                                                    defaultValue={stateTemp.no_kartu}
+                                                    disabled
+                                                />
+                                            </div>
+                                        </Col>
+                                        <Col lg={3}>
+                                            <div>
+                                                <Label
+                                                    htmlFor="job-title-Input"
+                                                    className="form-label" style={{ fontStyle: "italic" }}
+                                                >
+                                                    Nomor Surat Eligibilitas Peserta (SEP)
+                                                </Label>
+                                                <Input
+                                                    type="text"
+                                                    className="form-control"
+                                                    id="job-title-Input"
+                                                    placeholder="Enter job title"
+                                                    defaultValue={stateTemp.no_sep}
+                                                    disabled
+                                                />
+                                            </div>
+                                        </Col>
+                                        <Col lg={3}>
+                                            <div>
+                                                <Label
+                                                    htmlFor="job-title-Input"
+                                                    className="form-label" style={{ fontStyle: "italic" }}
+                                                >
+                                                    COB
+                                                </Label>
+                                                <Input
+                                                    type="text"
+                                                    className="form-control"
+                                                    id="job-title-Input"
+                                                    placeholder="Enter job title"
+                                                    defaultValue='-'
+                                                    disabled
+                                                />
+                                            </div>
+                                        </Col>
+                                        <hr style={{ border: '1px dashed' }} />
+                                        <div className="table-responsive">
+                                            <Table className="table-bordered align-middle table-nowrap mb-0 border-secondary">
+                                                <tbody>
+                                                    <tr>
+                                                        <th scope="row" style={{ width: "10%" }}>Jenis Rawat</th>
+                                                        <td style={{ width: "50%" }}>
+                                                            <Row>
+                                                                {(widgetsTasksJenisRawat || []).map((data, key) =>
+                                                                    <Col lg={3} md={6} key={key}>
+                                                                        <div className="d-flex flex-row" >
+                                                                            <Input
+                                                                                className="form-check-input"
+                                                                                type="radio"
+                                                                                id={`radio-payment-${key}`}
+                                                                                checked={data.value}
+                                                                                readOnly
+                                                                            // onClick={e => {
+                                                                            //     validation.setFieldValue('nontunai', data.value)
+                                                                            // }}
+                                                                            />
+                                                                            <Label className="form-check-label ms-2"
+                                                                                htmlFor={`radio-payment-${key}`}
+                                                                                style={{ color: "black" }} >
+                                                                                {data.label}
+                                                                            </Label>
+                                                                        </div>
+                                                                    </Col>
+                                                                )}
+
+                                                            </Row>
+                                                        </td>
+                                                        <th scope="row" style={{ width: "10%" }}>Kelas Rawat</th>
+                                                        <td style={{ width: "30%" }}>
+                                                            <Row>
+                                                                {(widgetsTasksKelasRawat || []).map((data, key) =>
+                                                                    <Col lg={6} md={6} key={key}>
+                                                                        <div className="d-flex flex-row" >
+                                                                            <Input
+                                                                                className="form-check-input"
+                                                                                type="radio"
+                                                                                id={`radio-payment-${key}`}
+                                                                                checked={data.value}
+                                                                                readOnly
+                                                                            // onClick={e => {
+                                                                            //     validation.setFieldValue('nontunai', data.value)
+                                                                            // }}
+                                                                            />
+                                                                            <Label className="form-check-label ms-2"
+                                                                                htmlFor={`radio-payment-${key}`}
+                                                                                style={{ color: "black" }} >
+                                                                                {data.label}
+                                                                            </Label>
+                                                                        </div>
+                                                                    </Col>
+                                                                )}
+                                                            </Row>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="row" style={{ width: "10%" }}>Tanggal Rawat</th>
+                                                        <td style={{ width: "50%" }}>
+                                                            <Row>
+                                                                <Col lg={6} md={6}>
+                                                                    <Row>
+                                                                        <Col lg={6} md={6}>Masuk</Col>
+                                                                        <Col lg={6} md={6}>{stateTemp.tglregistrasi}</Col>
+                                                                    </Row>
+                                                                </Col>
+                                                                <Col lg={6} md={6}>
+                                                                    <Row>
+                                                                        <Col lg={6} md={6}>Pulang</Col>
+                                                                        <Col lg={6} md={6}>{stateTemp.tglpulang}</Col>
+                                                                    </Row>
+                                                                </Col>
+                                                            </Row>
+                                                        </td>
+                                                        <th scope="row" style={{ width: "10%" }}>Umur</th>
+                                                        <td style={{ width: "30%" }}>{stateTemp.umur.substring(1)}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="row" style={{ width: "10%" }}>Cara Masuk</th>
+                                                        <td style={{ width: "90%" }} colSpan={3}>
+                                                            {stateTemp.caramasuk}
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="row" style={{ width: "10%" }}>LOS (hari)</th>
+                                                        <td style={{ width: "50%" }}>
+                                                            {stateTemp.los}
+                                                        </td>
+                                                        <th scope="row" style={{ width: "10%" }}>Berat Lahir (gram)</th>
+                                                        <td style={{ width: "30%" }}><Input style={{ textAlign: 'center',
+                                                        backgroundColor:'#ffdd99' }}
+                                                            type="number"
+                                                            className="form-control"
+                                                            id="job-title-Input"
+                                                            placeholder="gram"
+                                                            defaultValue={stateTemp.bb}
+                                                        /></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="row" style={{ width: "10%" }}>ADL Score</th>
+                                                        <td style={{ width: "50%" }}>
+                                                            <Row>
+                                                                <Col lg={6} md={6}>
+                                                                    <Row>
+                                                                        <Col lg={6} md={6}>Sub Acute :</Col>
+                                                                        <Col lg={6} md={6}>-</Col>
+                                                                    </Row>
+                                                                </Col>
+                                                                <Col lg={6} md={6}>
+                                                                    <Row>
+                                                                        <Col lg={6} md={6}>Chronic :</Col>
+                                                                        <Col lg={6} md={6}>-</Col>
+                                                                    </Row>
+                                                                </Col>
+                                                            </Row>
+                                                        </td>
+                                                        <th scope="row" style={{ width: "10%" }}>Cara Pulang</th>
+                                                        <td style={{ width: "30%" }}>{stateTemp.labelcarapulang}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="row" style={{ width: "10%" }}>DPJP</th>
+                                                        <td style={{ width: "50%" }}>
+                                                            {stateTemp.dpjp}
+                                                        </td>
+                                                        <th scope="row" style={{ width: "10%" }}>Jenis Tarif</th>
+                                                        <td style={{ width: "30%" }}>{stateTemp.nama_tarif}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="row" style={{ width: "10%" }}>Pasien TB</th>
+                                                        <td style={{ width: "50%" }} colSpan={3}>
+                                                            -
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="row" style={{ width: "100%", textAlign: 'center', borderLeft: '0px', borderRight: '0px' }} colSpan={4}><span style={{ fontStyle: "italic" }}>Tarif Rumah Sakit</span> : Rp {dataTarifPasien.total_tagihan}</th>
+                                                    </tr>
+                                                </tbody>
+                                            </Table>
+                                            <Table className="table-bordered align-middle table-nowrap mb-0 border-secondary">
+                                                <tbody>
+                                                    <tr>
+                                                        <th scope="row" style={{ width: "16%", textAlign: 'right', borderLeft: '0px', borderRight: '0px' }}>
+                                                            Prosedur Non Bedah
+                                                        </th>
+                                                        <th scope="row" style={{ width: "16%", textAlign: 'left', borderLeft: '0px', borderRight: '0px' }}>
+                                                            <Input style={{ textAlign: 'center' }}
+                                                                type="text"
+                                                                className="form-control"
+                                                                id="job-title-Input"
+                                                                placeholder="Enter job title"
+                                                                defaultValue={dataTarifPasien.prosedur_non_bedah}
+                                                                disabled
+                                                            />
+                                                        </th>
+                                                        <th scope="row" style={{ width: "18%", textAlign: 'right', borderRight: '0px' }}>
+                                                            Prosedur Bedah
+                                                        </th>
+                                                        <th scope="row" style={{ width: "18%", textAlign: 'left', borderLeft: '0px', borderRight: '0px' }}>
+                                                            <Input style={{ textAlign: 'center' }}
+                                                                type="text"
+                                                                className="form-control"
+                                                                id="job-title-Input"
+                                                                placeholder="Enter job title"
+                                                                defaultValue={dataTarifPasien.prosedur_bedah}
+                                                                disabled
+                                                            />
+                                                        </th>
+                                                        <th scope="row" style={{ width: "16%", textAlign: 'right', borderRight: '0px' }}>
+                                                            Konsultasi
+                                                        </th>
+                                                        <th scope="row" style={{ width: "16%", textAlign: 'left', borderLeft: '0px', borderRight: '0px' }}>
+                                                            <Input style={{ textAlign: 'center' }}
+                                                                type="text"
+                                                                className="form-control"
+                                                                id="job-title-Input"
+                                                                placeholder="Enter job title"
+                                                                defaultValue={dataTarifPasien.konsultasi}
+                                                                disabled
+                                                            />
+                                                        </th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="row" style={{ width: "16%", textAlign: 'right', borderLeft: '0px', borderRight: '0px' }}>
+                                                            Tenaga Ahli
+                                                        </th>
+                                                        <th scope="row" style={{ width: "16%", textAlign: 'left', borderLeft: '0px', borderRight: '0px' }}>
+                                                            <Input style={{ textAlign: 'center' }}
+                                                                type="text"
+                                                                className="form-control"
+                                                                id="job-title-Input"
+                                                                placeholder="Enter job title"
+                                                                defaultValue={dataTarifPasien.tenaga_ahli}
+                                                                disabled
+                                                            />
+                                                        </th>
+                                                        <th scope="row" style={{ width: "18%", textAlign: 'right', borderRight: '0px' }}>
+                                                            Keperawatan
+                                                        </th>
+                                                        <th scope="row" style={{ width: "18%", textAlign: 'left', borderLeft: '0px', borderRight: '0px' }}>
+                                                            <Input style={{ textAlign: 'center' }}
+                                                                type="text"
+                                                                className="form-control"
+                                                                id="job-title-Input"
+                                                                placeholder="Enter job title"
+                                                                defaultValue={dataTarifPasien.keperawatan}
+                                                                disabled
+                                                            />
+                                                        </th>
+                                                        <th scope="row" style={{ width: "16%", textAlign: 'right', borderRight: '0px' }}>
+                                                            Penunjang
+                                                        </th>
+                                                        <th scope="row" style={{ width: "16%", textAlign: 'left', borderLeft: '0px', borderRight: '0px' }}>
+                                                            <Input style={{ textAlign: 'center' }}
+                                                                type="text"
+                                                                className="form-control"
+                                                                id="job-title-Input"
+                                                                placeholder="Enter job title"
+                                                                defaultValue={dataTarifPasien.penunjang}
+                                                                disabled
+                                                            />
+                                                        </th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="row" style={{ width: "16%", textAlign: 'right', borderLeft: '0px', borderRight: '0px' }}>
+                                                            Radiologi
+                                                        </th>
+                                                        <th scope="row" style={{ width: "16%", textAlign: 'left', borderLeft: '0px', borderRight: '0px' }}>
+                                                            <Input style={{ textAlign: 'center' }}
+                                                                type="text"
+                                                                className="form-control"
+                                                                id="job-title-Input"
+                                                                placeholder="Enter job title"
+                                                                defaultValue={dataTarifPasien.radiologi}
+                                                                disabled
+                                                            />
+                                                        </th>
+                                                        <th scope="row" style={{ width: "18%", textAlign: 'right', borderRight: '0px' }}>
+                                                            Laboratorium
+                                                        </th>
+                                                        <th scope="row" style={{ width: "18%", textAlign: 'left', borderLeft: '0px', borderRight: '0px' }}>
+                                                            <Input style={{ textAlign: 'center' }}
+                                                                type="text"
+                                                                className="form-control"
+                                                                id="job-title-Input"
+                                                                placeholder="Enter job title"
+                                                                defaultValue={dataTarifPasien.laboratorium}
+                                                                disabled
+                                                            />
+                                                        </th>
+                                                        <th scope="row" style={{ width: "16%", textAlign: 'right', borderRight: '0px' }}>
+                                                            Pelayanan Darah
+                                                        </th>
+                                                        <th scope="row" style={{ width: "16%", textAlign: 'left', borderLeft: '0px', borderRight: '0px' }}>
+                                                            <Input style={{ textAlign: 'center' }}
+                                                                type="text"
+                                                                className="form-control"
+                                                                id="job-title-Input"
+                                                                placeholder="Enter job title"
+                                                                defaultValue={dataTarifPasien.pelayanan_darah}
+                                                                disabled
+                                                            />
+                                                        </th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="row" style={{ width: "16%", textAlign: 'right', borderLeft: '0px', borderRight: '0px' }}>
+                                                            Rehabilitasi
+                                                        </th>
+                                                        <th scope="row" style={{ width: "16%", textAlign: 'left', borderLeft: '0px', borderRight: '0px' }}>
+                                                            <Input style={{ textAlign: 'center' }}
+                                                                type="text"
+                                                                className="form-control"
+                                                                id="job-title-Input"
+                                                                placeholder="Enter job title"
+                                                                defaultValue={dataTarifPasien.rehabilitasi}
+                                                                disabled
+                                                            />
+                                                        </th>
+                                                        <th scope="row" style={{ width: "18%", textAlign: 'right', borderRight: '0px' }}>
+                                                            Kamar / Akomodasi
+                                                        </th>
+                                                        <th scope="row" style={{ width: "18%", textAlign: 'left', borderLeft: '0px', borderRight: '0px' }}>
+                                                            <Input style={{ textAlign: 'center' }}
+                                                                type="text"
+                                                                className="form-control"
+                                                                id="job-title-Input"
+                                                                placeholder="Enter job title"
+                                                                defaultValue={dataTarifPasien.akomodasi}
+                                                                disabled
+                                                            />
+                                                        </th>
+                                                        <th scope="row" style={{ width: "16%", textAlign: 'right', borderRight: '0px' }}>
+                                                            Rawat Intensif
+                                                        </th>
+                                                        <th scope="row" style={{ width: "16%", textAlign: 'left', borderLeft: '0px', borderRight: '0px' }}>
+                                                            <Input style={{ textAlign: 'center' }}
+                                                                type="text"
+                                                                className="form-control"
+                                                                id="job-title-Input"
+                                                                placeholder="Enter job title"
+                                                                defaultValue={dataTarifPasien.rawat_intensif}
+                                                                disabled
+                                                            />
+                                                        </th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="row" style={{ width: "16%", textAlign: 'right', borderLeft: '0px', borderRight: '0px' }}>
+                                                            Obat
+                                                        </th>
+                                                        <th scope="row" style={{ width: "16%", textAlign: 'left', borderLeft: '0px', borderRight: '0px' }}>
+                                                            <Input style={{ textAlign: 'center' }}
+                                                                type="text"
+                                                                className="form-control"
+                                                                id="job-title-Input"
+                                                                placeholder="Enter job title"
+                                                                defaultValue={dataTarifPasien.obat}
+                                                                disabled
+                                                            />
+                                                        </th>
+                                                        <th scope="row" style={{ width: "18%", textAlign: 'right', borderRight: '0px' }}>
+                                                            Obat Kronis
+                                                        </th>
+                                                        <th scope="row" style={{ width: "18%", textAlign: 'left', borderLeft: '0px', borderRight: '0px' }}>
+                                                            <Input style={{ textAlign: 'center' }}
+                                                                type="text"
+                                                                className="form-control"
+                                                                id="job-title-Input"
+                                                                placeholder="Enter job title"
+                                                                defaultValue={dataTarifPasien.obat_kronis}
+                                                                disabled
+                                                            />
+                                                        </th>
+                                                        <th scope="row" style={{ width: "16%", textAlign: 'right', borderRight: '0px' }}>
+                                                            Obat Kemoterapi
+                                                        </th>
+                                                        <th scope="row" style={{ width: "16%", textAlign: 'left', borderLeft: '0px', borderRight: '0px' }}>
+                                                            <Input style={{ textAlign: 'center' }}
+                                                                type="text"
+                                                                className="form-control"
+                                                                id="job-title-Input"
+                                                                placeholder="Enter job title"
+                                                                defaultValue={dataTarifPasien.obat_kemoterapi}
+                                                                disabled
+                                                            />
+                                                        </th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="row" style={{ width: "16%", textAlign: 'right', borderLeft: '0px', borderRight: '0px' }}>
+                                                            Alkes
+                                                        </th>
+                                                        <th scope="row" style={{ width: "16%", textAlign: 'left', borderLeft: '0px', borderRight: '0px' }}>
+                                                            <Input style={{ textAlign: 'center' }}
+                                                                type="text"
+                                                                className="form-control"
+                                                                id="job-title-Input"
+                                                                placeholder="Enter job title"
+                                                                defaultValue={dataTarifPasien.alkes}
+                                                                disabled
+                                                            />
+                                                        </th>
+                                                        <th scope="row" style={{ width: "18%", textAlign: 'right', borderRight: '0px' }}>
+                                                            BMHP
+                                                        </th>
+                                                        <th scope="row" style={{ width: "18%", textAlign: 'left', borderLeft: '0px', borderRight: '0px' }}>
+                                                            <Input style={{ textAlign: 'center' }}
+                                                                type="text"
+                                                                className="form-control"
+                                                                id="job-title-Input"
+                                                                placeholder="Enter job title"
+                                                                defaultValue={dataTarifPasien.bmhp}
+                                                                disabled
+                                                            />
+                                                        </th>
+                                                        <th scope="row" style={{ width: "16%", textAlign: 'right', borderRight: '0px' }}>
+                                                            Sewa Alat
+                                                        </th>
+                                                        <th scope="row" style={{ width: "16%", textAlign: 'left', borderLeft: '0px', borderRight: '0px' }}>
+                                                            <Input style={{ textAlign: 'center' }}
+                                                                type="text"
+                                                                className="form-control"
+                                                                id="job-title-Input"
+                                                                placeholder="Enter job title"
+                                                                defaultValue={dataTarifPasien.sewa_alat}
+                                                                disabled
+                                                            />
+                                                        </th>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colSpan={6} style={{ paddingTop: '2em', textAlign: 'center', fontStyle: 'italic', color: '#888', borderLeft: '0px', borderRight: '0px' }}>
+                                                            <input type="checkbox" disabled="1" checked="1" value="1"></input> Menyatakan benar bahwa data tarif yang tersebut di atas adalah benar sesuai dengan kondisi yang sesungguhnya.</td>
+                                                    </tr>
+                                                </tbody>
+                                            </Table>
                                         </div>
-                                    </CardHeader>
+                                        <Nav className="nav-tabs nav-tabs-custom" role="tablist">
+                                            <NavItem>
+                                                <NavLink
+                                                    href="#"
+                                                    className={classnames({ active: activeTab === '1' })}
+                                                >Coding UNU Grouper
+                                                </NavLink>
+                                            </NavItem>
+                                        </Nav>
+                                        <Card>
+                                            <CardBody>
+                                                <TabContent activeTab={activeTab} className="text-muted">
+                                                    <TabPane tabId="1">
+                                                        <Row className="row g-4">
+                                                            <Col lg={9} style={{ textAlign: 'left' }}><h5>Diagnosa (ICD-10):</h5></Col>
+                                                            <Col lg={3} style={{ textAlign: 'right', }}>
+                                                                <div className="form-icon">
+                                                                    <Input className="form-control form-control-icon rounded-pill" id="iconInput"
+                                                                        type="text"
+                                                                        placeholder="Search..."
+                                                                        onChange={event => setSearch(event.target.value)}
+                                                                        onKeyDown={handleFilter} />
+                                                                    <i className="ri-search-2-line"></i>
+                                                                </div>
+                                                            </Col>
+                                                            <Col lg={9} style={{ textAlign: 'left' }}><h5>Diagnosa (ICD-9):</h5></Col>
+                                                            <Col lg={3} style={{ textAlign: 'right', }}>
+                                                                <div className="form-icon">
+                                                                    <Input className="form-control form-control-icon rounded-pill" id="iconInput"
+                                                                        type="text"
+                                                                        placeholder="Search..."
+                                                                        onChange={event => setSearch(event.target.value)}
+                                                                        onKeyDown={handleFilter} />
+                                                                    <i className="ri-search-2-line"></i>
+                                                                </div>
+                                                            </Col>
+                                                        </Row>
+                                                    </TabPane>
+                                                </TabContent>
+                                            </CardBody>
+                                        </Card>
+                                        <div className="table-responsive">
+                                            <Table className="align-middle table-nowrap mb-0">
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col" style={{ textAlign: 'center' }} colSpan={4}>Data Klinis</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="col" style={{ textAlign: 'center' }} colSpan={4}>
+                                                            <span style={{ fontStyle: 'italic', color: '#888' }}>Tekanan Darah (mmHg)</span>:
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <th scope="row" style={{ width: "30%" }}>
+
+                                                        </th>
+                                                        <th scope="row" style={{ width: "20%", textAlign: 'center' }}>
+                                                            <Input style={{ textAlign: 'center' }}
+                                                                type="text"
+                                                                className="form-control"
+                                                                id="job-title-Input"
+                                                                placeholder="Enter job title"
+                                                                defaultValue='0'
+                                                                disabled
+                                                            />
+                                                            Sistole
+                                                        </th>
+                                                        <th scope="row" style={{ width: "20%", textAlign: 'center' }}>
+                                                            <Input style={{ textAlign: 'center' }}
+                                                                type="text"
+                                                                className="form-control"
+                                                                id="job-title-Input"
+                                                                placeholder="Enter job title"
+                                                                defaultValue='0'
+                                                                disabled
+                                                            />
+                                                            Diastole
+                                                        </th>
+                                                        <th scope="row" style={{ width: "30%" }}>
+
+                                                        </th>
+                                                    </tr>
+                                                </tbody>
+                                            </Table>
+                                        </div>
+
+                                        <div className="table-responsive">
+                                            <Table className="align-middle table-nowrap mb-0">
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col" style={{ textAlign: 'center' }} colSpan={4}>APGAR Score</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <th scope="row" style={{ width: "10%" }}>
+                                                            1 Menit
+                                                        </th>
+                                                        <th scope="row" style={{ width: "18%", textAlign: 'center' }}>
+                                                            <Input style={{ textAlign: 'center' }}
+                                                                type="text"
+                                                                className="form-control"
+                                                                id="job-title-Input"
+                                                                placeholder="Enter job title"
+                                                                defaultValue='0'
+                                                                disabled
+                                                            />
+                                                        </th>
+                                                        <th scope="row" style={{ width: "18%", textAlign: 'center' }}>
+                                                            <Input style={{ textAlign: 'center' }}
+                                                                type="text"
+                                                                className="form-control"
+                                                                id="job-title-Input"
+                                                                placeholder="Enter job title"
+                                                                defaultValue='0'
+                                                                disabled
+                                                            />
+                                                        </th>
+                                                        <th scope="row" style={{ width: "18%", textAlign: 'center' }}>
+                                                            <Input style={{ textAlign: 'center' }}
+                                                                type="text"
+                                                                className="form-control"
+                                                                id="job-title-Input"
+                                                                placeholder="Enter job title"
+                                                                defaultValue='0'
+                                                                disabled
+                                                            />
+                                                        </th>
+                                                        <th scope="row" style={{ width: "18%", textAlign: 'center' }}>
+                                                            <Input style={{ textAlign: 'center' }}
+                                                                type="text"
+                                                                className="form-control"
+                                                                id="job-title-Input"
+                                                                placeholder="Enter job title"
+                                                                defaultValue='0'
+                                                                disabled
+                                                            />
+                                                        </th>
+                                                        <th scope="row" style={{ width: "18%", textAlign: 'center' }}>
+                                                            <Input style={{ textAlign: 'center' }}
+                                                                type="text"
+                                                                className="form-control"
+                                                                id="job-title-Input"
+                                                                placeholder="Enter job title"
+                                                                defaultValue='0'
+                                                                disabled
+                                                            />
+                                                        </th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="row" style={{ width: "10%" }}>
+                                                            5 Menit
+                                                        </th>
+                                                        <th scope="row" style={{ width: "18%", textAlign: 'center' }}>
+                                                            <Input style={{ textAlign: 'center' }}
+                                                                type="text"
+                                                                className="form-control"
+                                                                id="job-title-Input"
+                                                                placeholder="Enter job title"
+                                                                defaultValue='0'
+                                                                disabled
+                                                            />
+                                                        </th>
+                                                        <th scope="row" style={{ width: "18%", textAlign: 'center' }}>
+                                                            <Input style={{ textAlign: 'center' }}
+                                                                type="text"
+                                                                className="form-control"
+                                                                id="job-title-Input"
+                                                                placeholder="Enter job title"
+                                                                defaultValue='0'
+                                                                disabled
+                                                            />
+                                                        </th>
+                                                        <th scope="row" style={{ width: "18%", textAlign: 'center' }}>
+                                                            <Input style={{ textAlign: 'center' }}
+                                                                type="text"
+                                                                className="form-control"
+                                                                id="job-title-Input"
+                                                                placeholder="Enter job title"
+                                                                defaultValue='0'
+                                                                disabled
+                                                            />
+                                                        </th>
+                                                        <th scope="row" style={{ width: "18%", textAlign: 'center' }}>
+                                                            <Input style={{ textAlign: 'center' }}
+                                                                type="text"
+                                                                className="form-control"
+                                                                id="job-title-Input"
+                                                                placeholder="Enter job title"
+                                                                defaultValue='0'
+                                                                disabled
+                                                            />
+                                                        </th>
+                                                        <th scope="row" style={{ width: "18%", textAlign: 'center' }}>
+                                                            <Input style={{ textAlign: 'center' }}
+                                                                type="text"
+                                                                className="form-control"
+                                                                id="job-title-Input"
+                                                                placeholder="Enter job title"
+                                                                defaultValue='0'
+                                                                disabled
+                                                            />
+                                                        </th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="row" style={{ width: "10%" }}>
+
+                                                        </th>
+                                                        <th scope="row" style={{ width: "18%", textAlign: 'center' }}>
+                                                            <span style={{ fontStyle: 'italic', color: '#888' }}>appear</span>
+                                                        </th>
+                                                        <th scope="row" style={{ width: "18%", textAlign: 'center' }}>
+                                                            <span style={{ fontStyle: 'italic', color: '#888' }}>pulse</span>
+                                                        </th>
+                                                        <th scope="row" style={{ width: "18%", textAlign: 'center' }}>
+                                                            <span style={{ fontStyle: 'italic', color: '#888' }}>grimace</span>
+                                                        </th>
+                                                        <th scope="row" style={{ width: "18%", textAlign: 'center' }}>
+                                                            <span style={{ fontStyle: 'italic', color: '#888' }}>activity</span>
+                                                        </th>
+                                                        <th scope="row" style={{ width: "18%", textAlign: 'center' }}>
+                                                            <span style={{ fontStyle: 'italic', color: '#888' }}>resp</span>
+                                                        </th>
+                                                    </tr>
+                                                </tbody>
+                                            </Table>
+                                        </div>
+                                    </Row>
+                                </CardBody>
                             </Card>
                         ) : null}
                     </Row>

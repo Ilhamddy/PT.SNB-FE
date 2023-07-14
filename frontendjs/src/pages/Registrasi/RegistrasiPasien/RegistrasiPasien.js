@@ -125,6 +125,7 @@ const RegistrasiPasien = (props) => {
             kelas: newData?.kelas ?? "",
             kamar: newData?.kamar ?? "",
             tempattidur: newData?.tempattidur ?? "",
+            caramasuk: newData?.caramasuk ?? ""
         },
         validationSchema: Yup.object({
             tglregistrasi: Yup.string().required("Tanggal Registrasi wajib diisi"),
@@ -135,6 +136,7 @@ const RegistrasiPasien = (props) => {
             penjamin: Yup.array().required("Penjamin wajib diisi"),
             dokter: Yup.string().required("Dokter wajib diisi"),
             penanggungjawab: Yup.string().required("Penanggung jawab wajib diisi"),
+            caramasuk: Yup.string().required("Cara Masuk wajib diisi"),
             // kelas: Yup.string().when("tujkunjungan",{
             //     is:(val) => val ==="2",
             //     then: Yup.string().required("Kelas Harus di isi")
@@ -693,6 +695,26 @@ const RegistrasiPasien = (props) => {
                                                                 />
                                                                 {validation.touched.rujukanasal && validation.errors.rujukanasal ? (
                                                                     <FormFeedback type="invalid"><div>{validation.errors.rujukanasal}</div></FormFeedback>
+                                                                ) : null}
+                                                            </div>
+                                                        </Col>
+                                                        <Col xxl={6} md={6}>
+                                                            <div className="mt-2">
+                                                                <Label style={{ color: "black" }} htmlFor="caramasuk" className="form-label">Cara Masuk</Label>
+                                                            </div>
+                                                        </Col>
+                                                        <Col xxl={6} md={6}>
+                                                            <div>
+                                                                <CustomSelect
+                                                                    id="caramasuk"
+                                                                    name="caramasuk"
+                                                                    options={data.caramasuk}
+                                                                    value={validation.values.caramasuk || ""}
+                                                                    className={`input ${validation.errors.caramasuk ? "is-invalid" : ""}`}
+                                                                    onChange={value => validation.setFieldValue('caramasuk', value.value)}
+                                                                />
+                                                                {validation.touched.caramasuk && validation.errors.caramasuk ? (
+                                                                    <FormFeedback type="invalid"><div>{validation.errors.caramasuk}</div></FormFeedback>
                                                                 ) : null}
                                                             </div>
                                                         </Col>

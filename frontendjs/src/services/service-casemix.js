@@ -9,4 +9,8 @@ export default class ServiceCasemix {
     getListDaftarPasien = async (param) => {
         return await api.get(`/transaksi/casemix/list-daftar-pasien?nocm=${param}`);
     }
+
+    getListTarifPasien = async (param) => {
+        return await api.get(`/transaksi/casemix/list-tarif18-pasien?norec=${param}`);
+    }
 }

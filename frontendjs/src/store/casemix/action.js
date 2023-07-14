@@ -5,7 +5,10 @@ import {
     LIST_CARI_PASIEN_GET_ERROR,
     LIST_DAFTAR_PASIEN_GET,
     LIST_DAFTAR_PASIEN_GET_SUCCESS,
-    LIST_DAFTAR_PASIEN_GET_ERROR
+    LIST_DAFTAR_PASIEN_GET_ERROR,
+    LIST_TARIF_PASIEN_GET,
+    LIST_TARIF_PASIEN_GET_SUCCESS,
+    LIST_TARIF_PASIEN_GET_ERROR
 } from "./actionType";
 
 export const casemixResetForm = () => ({
@@ -39,5 +42,20 @@ export const listDaftarPasienGetSuccess = (data) => ({
 
 export const listDaftarPasienGetError = (error) => ({
     type: LIST_DAFTAR_PASIEN_GET_ERROR,
+    payload: error,
+});
+
+export const listTarifPasienGet = (param) => ({
+    type: LIST_TARIF_PASIEN_GET,
+    payload: { param },
+});
+
+export const listTarifPasienGetSuccess = (data) => ({
+    type: LIST_TARIF_PASIEN_GET_SUCCESS,
+    payload: data,
+});
+
+export const listTarifPasienGetError = (error) => ({
+    type: LIST_TARIF_PASIEN_GET_ERROR,
     payload: error,
 });

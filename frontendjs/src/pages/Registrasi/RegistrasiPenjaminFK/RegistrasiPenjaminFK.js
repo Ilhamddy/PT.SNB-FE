@@ -150,6 +150,7 @@ const RegistrasiPenjaminFK = () => {
             kkotalakakerja: "",
             kecamatanlakakerja: "",
             kkecamatanlakakerja: "",
+            nosep:""
         },
 
         validationSchema: Yup.object({
@@ -676,7 +677,30 @@ const RegistrasiPenjaminFK = () => {
                                     ) : null}
                                 </div>
                             </Col>
-                            
+                            <Col xxl={6} md={6}>
+                                <div className="mt-2">
+                                    <Label style={{ color: "black" }} htmlFor="nosep" className="form-label">No. SEP</Label>
+                                </div>
+                            </Col>
+                            <Col xxl={6} md={6}>
+                                <div>
+                                    <Input
+                                        id="nosep"
+                                        name="nosep"
+                                        type="text"
+                                        placeholder="No. SEP"
+                                        onChange={validation.handleChange}
+                                        onBlur={validation.handleBlur}
+                                        value={validation.values.nosep || ""}
+                                        // invalid={
+                                        //     validation.touched.nosep && validation.errors.nosep ? true : false
+                                        // }
+                                    />
+                                    {/* {validation.touched.nosep && validation.errors.nosep ? (
+                                        <FormFeedback type="invalid"><div>{validation.errors.nosep}</div></FormFeedback>
+                                    ) : null} */}
+                                </div>
+                            </Col>
                         </Row>
                     </CardBody>
                 </Card>

@@ -3,12 +3,14 @@ import ServiceCasemix from "../../services/service-casemix";
 
 import {
     LIST_CARI_PASIEN_GET,
-    LIST_DAFTAR_PASIEN_GET
+    LIST_DAFTAR_PASIEN_GET,
+    LIST_TARIF_PASIEN_GET
 } from "./actionType";
 
 import {
     listCariPasienGetSuccess, listCariPasienGetError,
-    listDaftarPasienGetSuccess, listDaftarPasienGetError
+    listDaftarPasienGetSuccess, listDaftarPasienGetError,
+    listTarifPasienGetSuccess, listTarifPasienGetError
 } from "./action";
 
 import { toast } from 'react-toastify';
@@ -42,10 +44,24 @@ export function* watchonListDaftarPasienGet() {
     yield takeEvery(LIST_DAFTAR_PASIEN_GET, onListDaftarPasienGet);
 }
 
+function* onListTarifPasienGet({ payload: { param } }) {
+    try {
+        const response = yield call(serviceCasemix.getListTarifPasien, param);
+        yield put(listTarifPasienGetSuccess(response.data));
+    } catch (error) {
+        yield put(listTarifPasienGetError(error));
+    }
+}
+
+export function* watchonListTarifPasienGet() {
+    yield takeEvery(LIST_TARIF_PASIEN_GET, onListTarifPasienGet);
+}
+
 function* casemixSaga() {
     yield all([
         fork(watchonListCariPasienGet),
-        fork(watchonListDaftarPasienGet)
+        fork(watchonListDaftarPasienGet),
+        fork(watchonListTarifPasienGet)
     ]);
 }
 
