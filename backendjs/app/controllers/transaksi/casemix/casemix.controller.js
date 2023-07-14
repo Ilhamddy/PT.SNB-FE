@@ -68,11 +68,11 @@ async function getListDaftarPasien(req, res) {
         let nama_tarif = ''
         const resultlistKodeTarif = await queryPromise2(`select s_key,s_value from s_global where s_key ilike '%inacbg%'`);
         for (let x = 0; x < resultlistKodeTarif.rows.length; x++) {
-            if(resultlistKodeTarif.rows[x].s_key==='kode_tarif_inacbg'){
-                kode_tarif=resultlistKodeTarif.rows[x].s_value
+            if (resultlistKodeTarif.rows[x].s_key === 'kode_tarif_inacbg') {
+                kode_tarif = resultlistKodeTarif.rows[x].s_value
             }
-            if(resultlistKodeTarif.rows[x].s_key==='nama_tarif_inacbg'){
-                nama_tarif=resultlistKodeTarif.rows[x].s_value
+            if (resultlistKodeTarif.rows[x].s_key === 'nama_tarif_inacbg') {
+                nama_tarif = resultlistKodeTarif.rows[x].s_value
             }
         }
         const resultlist = await queryPromise2(`select
@@ -132,14 +132,14 @@ async function getListDaftarPasien(req, res) {
             left join m_range mr on mr.id=tt.objectgcsfk where dp.norec='${resultlist.rows[i].norec}' order by tt.tglisi 
             desc limit 1
             `);
-            if(resultTtv.rows.length>0){
+            if (resultTtv.rows.length > 0) {
                 // console.log(resultTtv.rows[0].beratbadan)
-                resultlist.rows[i].bb=resultTtv.rows[0].beratbadan
-            }else{
-                resultlist.rows[i].bb=0
+                resultlist.rows[i].bb = resultTtv.rows[0].beratbadan
+            } else {
+                resultlist.rows[i].bb = 0
             }
-            resultlist.rows[i].kode_tarif=kode_tarif
-            resultlist.rows[i].nama_tarif=nama_tarif
+            resultlist.rows[i].kode_tarif = kode_tarif
+            resultlist.rows[i].nama_tarif = nama_tarif
         }
         let tempres = resultlist.rows
 
@@ -155,8 +155,146 @@ async function getListDaftarPasien(req, res) {
 
 }
 
+async function getListTarif18(req, res) {
+
+    try {
+
+        const resultlist = await queryPromise2(`select
+                sum(((tp.harga - case when tp.discount is null 
+                then 0 else tp.discount end) * tp.qty)+ case when 
+                tp.jasa is null then 0 else tp.jasa end) as ttl,
+                mp.objectvariabelbpjsfk
+            from
+                t_daftarpasien td
+            join t_antreanpemeriksaan ta on
+                td.norec = ta.objectdaftarpasienfk
+            join m_unit mu on
+                mu.id = ta.objectunitfk
+            join t_pelayananpasien tp on
+                tp.objectantreanpemeriksaanfk = ta.norec
+            join m_produk mp on
+                mp.id = tp.objectprodukfk
+            where
+                td.norec = '${req.query.norec}'
+                and tp.statusenabled = true
+            group by mp.objectvariabelbpjsfk 
+        `);
+        let prosedur_non_bedah =0;
+        let prosedur_bedah =0;
+        let konsultasi =0;
+        let tenaga_ahli =0;
+        let keperawatan =0;
+        let penunjang =0;
+        let radiologi =0;
+        let laboratorium =0;
+        let pelayanan_darah =0;
+        let rehabilitasi =0;
+        let akomodasi =0;
+        let rawat_intensif =0;
+        let obat =0;
+        let obat_kronis =0;
+        let obat_kemoterapi =0;
+        let alkes =0;
+        let bmhp =0;
+        let sewa_alat =0;
+        let total_tagihan =0;
+        for (var i = 0; i < resultlist.rows.length; ++i) {
+            if(resultlist.rows[i].objectvariabelbpjsfk===1){
+                akomodasi = resultlist.rows[i].ttl
+            }
+            if(resultlist.rows[i].objectvariabelbpjsfk===2){
+                alkes = resultlist.rows[i].ttl
+            }
+            if(resultlist.rows[i].objectvariabelbpjsfk===3){
+                bmhp = resultlist.rows[i].ttl
+            }
+            if(resultlist.rows[i].objectvariabelbpjsfk===4){
+                keperawatan = resultlist.rows[i].ttl
+            }
+            if(resultlist.rows[i].objectvariabelbpjsfk===5){
+                konsultasi = resultlist.rows[i].ttl
+            }
+            if(resultlist.rows[i].objectvariabelbpjsfk===6){
+                laboratorium = resultlist.rows[i].ttl
+            }
+            if(resultlist.rows[i].objectvariabelbpjsfk===7){
+                obat = resultlist.rows[i].ttl
+            }
+            if(resultlist.rows[i].objectvariabelbpjsfk===8){
+                obat_kemoterapi = resultlist.rows[i].ttl
+            }
+            if(resultlist.rows[i].objectvariabelbpjsfk===9){
+                obat_kronis = resultlist.rows[i].ttl
+            }
+            if(resultlist.rows[i].objectvariabelbpjsfk===10){
+                pelayanan_darah = resultlist.rows[i].ttl
+            }
+            if(resultlist.rows[i].objectvariabelbpjsfk===11){
+                penunjang = resultlist.rows[i].ttl
+            }
+            if(resultlist.rows[i].objectvariabelbpjsfk===12){
+                prosedur_bedah = resultlist.rows[i].ttl
+            }
+            if(resultlist.rows[i].objectvariabelbpjsfk===13){
+                prosedur_non_bedah = resultlist.rows[i].ttl
+            }
+            if(resultlist.rows[i].objectvariabelbpjsfk===14){
+                radiologi = resultlist.rows[i].ttl
+            }
+            if(resultlist.rows[i].objectvariabelbpjsfk===15){
+                rawat_intensif = resultlist.rows[i].ttl
+            }
+            if(resultlist.rows[i].objectvariabelbpjsfk===16){
+                rehabilitasi = resultlist.rows[i].ttl
+            }
+            if(resultlist.rows[i].objectvariabelbpjsfk===17){
+                sewa_alat = resultlist.rows[i].ttl
+            }
+            if(resultlist.rows[i].objectvariabelbpjsfk===18){
+                tenaga_ahli = resultlist.rows[i].ttl
+            }
+
+            total_tagihan = parseFloat(total_tagihan)+parseFloat(resultlist.rows[i].ttl)
+        }
+        let tarif = 
+            {
+                akomodasi: parseFloat(akomodasi),
+                alkes: parseFloat(alkes),
+                bmhp: parseFloat(bmhp),
+                keperawatan: parseFloat(keperawatan),
+                konsultasi: parseFloat(konsultasi),
+                laboratorium: parseFloat(laboratorium),
+                obat: parseFloat(obat),
+                obat_kemoterapi: parseFloat(obat_kemoterapi),
+                obat_kronis: parseFloat(obat_kronis),
+                pelayanan_darah: parseFloat(pelayanan_darah),
+                penunjang: parseFloat(penunjang),
+                prosedur_bedah: parseFloat(prosedur_bedah),
+                prosedur_non_bedah: parseFloat(prosedur_non_bedah),
+                radiologi: parseFloat(radiologi),
+                rawat_intensif: parseFloat(rawat_intensif),
+                rehabilitasi: parseFloat(rehabilitasi),
+                sewa_alat: parseFloat(sewa_alat),
+                tenaga_ahli: parseFloat(tenaga_ahli),
+                total_tagihan: parseFloat(total_tagihan)
+            }
+        ;
+        let tempres = tarif
+
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+        });
+
+    } catch (error) {
+        res.status(500).send({ message: error });
+    }
+
+}
 
 export default {
     getListPasien,
-    getListDaftarPasien
+    getListDaftarPasien,
+    getListTarif18
 };

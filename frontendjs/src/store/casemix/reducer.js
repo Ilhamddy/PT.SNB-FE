@@ -6,7 +6,10 @@ import {
     LIST_CARI_PASIEN_GET_ERROR,
     LIST_DAFTAR_PASIEN_GET,
     LIST_DAFTAR_PASIEN_GET_SUCCESS,
-    LIST_DAFTAR_PASIEN_GET_ERROR
+    LIST_DAFTAR_PASIEN_GET_ERROR,
+    LIST_TARIF_PASIEN_GET,
+    LIST_TARIF_PASIEN_GET_SUCCESS,
+    LIST_TARIF_PASIEN_GET_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -16,6 +19,11 @@ const INIT_STATE = {
         error: null,
     },
     listDaftarPasienGet: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    listTarifPasienGet: {
         data: [],
         loading: false,
         error: null,
@@ -32,6 +40,9 @@ const Casemix = (state= INIT_STATE,action)=>{
                 },
                 listDaftarPasienGet:{
                     ...INIT_STATE.listDaftarPasienGet
+                },
+                listTarifPasienGet:{
+                    ...INIT_STATE.listTarifPasienGet
                 }
             }
         }
@@ -96,6 +107,39 @@ const Casemix = (state= INIT_STATE,action)=>{
                 ...state,
                 listDaftarPasienGet: {
                     ...state.listDaftarPasienGet,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case LIST_TARIF_PASIEN_GET: {
+            return {
+                ...state,
+                listTarifPasienGet: {
+                    ...state.listTarifPasienGet,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case LIST_TARIF_PASIEN_GET_SUCCESS: {
+            return {
+                ...state,
+                listTarifPasienGet: {
+                    ...state.listTarifPasienGet,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case LIST_TARIF_PASIEN_GET_ERROR: {
+            return {
+                ...state,
+                listTarifPasienGet: {
+                    ...state.listTarifPasienGet,
                     loading: false,
                     error: action.error,
                 }

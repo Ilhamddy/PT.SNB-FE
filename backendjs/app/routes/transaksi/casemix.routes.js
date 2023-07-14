@@ -21,5 +21,11 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getListDaftarPasien
     );
+
+    app.get(
+        "/api/transaksi/casemix/list-tarif18-pasien",
+        [authJwt.verifyToken],
+        controller.getListTarif18
+    );
     
 }

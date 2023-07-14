@@ -22,7 +22,7 @@ import calendar from "../../../assets/images/users/calendar.png";
 import SearchOption from '../../../Components/Common/SearchOption';
 import { dateISOString, dateTimeLocal } from "../../../utils/format";
 import {
-    casemixResetForm, listCariPasienGet, listDaftarPasienGet
+    casemixResetForm, listCariPasienGet, listDaftarPasienGet, listTarifPasienGet
 } from '../../../store/actions';
 
 const dateAwalStart = dateISOString(new Date(new Date() - 1000 * 60 * 60 * 24 * 3));
@@ -31,7 +31,8 @@ const KlaimInacbg = () => {
     document.title = "Klaim Inacbg";
     const dispatch = useDispatch();
     const { editData, newData, loading, error, success,
-        dataPasien, loadingPasien, successPasien, dataDaftarPasien, loadingDaftarPasien, successDaftarPasien } = useSelector((state) => ({
+        dataPasien, loadingPasien, successPasien, dataDaftarPasien, loadingDaftarPasien, successDaftarPasien,
+        dataTarifPasien, loadingTarifPasien, successTarifPasien } = useSelector((state) => ({
             // newData: state.Radiologi.updateTglRencanaRadiologi.newData,
             // success: state.Radiologi.updateTglRencanaRadiologi.success,
             // loading: state.Radiologi.updateTglRencanaRadiologi.loading,
@@ -41,6 +42,9 @@ const KlaimInacbg = () => {
             dataDaftarPasien: state.Casemix.listDaftarPasienGet.data,
             loadingDaftarPasien: state.Casemix.listDaftarPasienGet.loading,
             successDaftarPasien: state.Casemix.listDaftarPasienGet.success,
+            dataTarifPasien: state.Casemix.listTarifPasienGet.data,
+            loadingTarifPasien: state.Casemix.listTarifPasienGet.loading,
+            successTarifPasien: state.Casemix.listTarifPasienGet.success,
         }));
 
     useEffect(() => {
@@ -155,6 +159,7 @@ const KlaimInacbg = () => {
             setstateRI(true)
             setstateRJ(false)
         }
+        dispatch(listTarifPasienGet(e.norec))
         // console.log(stateTemp.noregistrasi)
     };
     const columns = [
@@ -633,7 +638,7 @@ const KlaimInacbg = () => {
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <th scope="row" style={{ width: "100%", textAlign: 'center', borderLeft: '0px', borderRight: '0px' }} colSpan={4}><span style={{ fontStyle: "italic" }}>Tarif Rumah Sakit</span> : Rp</th>
+                                                        <th scope="row" style={{ width: "100%", textAlign: 'center', borderLeft: '0px', borderRight: '0px' }} colSpan={4}><span style={{ fontStyle: "italic" }}>Tarif Rumah Sakit</span> : Rp {dataTarifPasien.total_tagihan}</th>
                                                     </tr>
                                                 </tbody>
                                             </Table>
@@ -649,7 +654,7 @@ const KlaimInacbg = () => {
                                                                 className="form-control"
                                                                 id="job-title-Input"
                                                                 placeholder="Enter job title"
-                                                                defaultValue='0'
+                                                                defaultValue={dataTarifPasien.prosedur_non_bedah}
                                                                 disabled
                                                             />
                                                         </th>
@@ -662,7 +667,7 @@ const KlaimInacbg = () => {
                                                                 className="form-control"
                                                                 id="job-title-Input"
                                                                 placeholder="Enter job title"
-                                                                defaultValue='0'
+                                                                defaultValue={dataTarifPasien.prosedur_bedah}
                                                                 disabled
                                                             />
                                                         </th>
@@ -675,7 +680,7 @@ const KlaimInacbg = () => {
                                                                 className="form-control"
                                                                 id="job-title-Input"
                                                                 placeholder="Enter job title"
-                                                                defaultValue='0'
+                                                                defaultValue={dataTarifPasien.konsultasi}
                                                                 disabled
                                                             />
                                                         </th>
@@ -690,7 +695,7 @@ const KlaimInacbg = () => {
                                                                 className="form-control"
                                                                 id="job-title-Input"
                                                                 placeholder="Enter job title"
-                                                                defaultValue='0'
+                                                                defaultValue={dataTarifPasien.tenaga_ahli}
                                                                 disabled
                                                             />
                                                         </th>
@@ -703,7 +708,7 @@ const KlaimInacbg = () => {
                                                                 className="form-control"
                                                                 id="job-title-Input"
                                                                 placeholder="Enter job title"
-                                                                defaultValue='0'
+                                                                defaultValue={dataTarifPasien.keperawatan}
                                                                 disabled
                                                             />
                                                         </th>
@@ -716,7 +721,7 @@ const KlaimInacbg = () => {
                                                                 className="form-control"
                                                                 id="job-title-Input"
                                                                 placeholder="Enter job title"
-                                                                defaultValue='0'
+                                                                defaultValue={dataTarifPasien.penunjang}
                                                                 disabled
                                                             />
                                                         </th>
@@ -731,7 +736,7 @@ const KlaimInacbg = () => {
                                                                 className="form-control"
                                                                 id="job-title-Input"
                                                                 placeholder="Enter job title"
-                                                                defaultValue='0'
+                                                                defaultValue={dataTarifPasien.radiologi}
                                                                 disabled
                                                             />
                                                         </th>
@@ -744,7 +749,7 @@ const KlaimInacbg = () => {
                                                                 className="form-control"
                                                                 id="job-title-Input"
                                                                 placeholder="Enter job title"
-                                                                defaultValue='0'
+                                                                defaultValue={dataTarifPasien.laboratorium}
                                                                 disabled
                                                             />
                                                         </th>
@@ -757,7 +762,7 @@ const KlaimInacbg = () => {
                                                                 className="form-control"
                                                                 id="job-title-Input"
                                                                 placeholder="Enter job title"
-                                                                defaultValue='0'
+                                                                defaultValue={dataTarifPasien.pelayanan_darah}
                                                                 disabled
                                                             />
                                                         </th>
@@ -772,7 +777,7 @@ const KlaimInacbg = () => {
                                                                 className="form-control"
                                                                 id="job-title-Input"
                                                                 placeholder="Enter job title"
-                                                                defaultValue='0'
+                                                                defaultValue={dataTarifPasien.rehabilitasi}
                                                                 disabled
                                                             />
                                                         </th>
@@ -785,7 +790,7 @@ const KlaimInacbg = () => {
                                                                 className="form-control"
                                                                 id="job-title-Input"
                                                                 placeholder="Enter job title"
-                                                                defaultValue='0'
+                                                                defaultValue={dataTarifPasien.akomodasi}
                                                                 disabled
                                                             />
                                                         </th>
@@ -798,7 +803,7 @@ const KlaimInacbg = () => {
                                                                 className="form-control"
                                                                 id="job-title-Input"
                                                                 placeholder="Enter job title"
-                                                                defaultValue='0'
+                                                                defaultValue={dataTarifPasien.rawat_intensif}
                                                                 disabled
                                                             />
                                                         </th>
@@ -813,7 +818,7 @@ const KlaimInacbg = () => {
                                                                 className="form-control"
                                                                 id="job-title-Input"
                                                                 placeholder="Enter job title"
-                                                                defaultValue='0'
+                                                                defaultValue={dataTarifPasien.obat}
                                                                 disabled
                                                             />
                                                         </th>
@@ -826,7 +831,7 @@ const KlaimInacbg = () => {
                                                                 className="form-control"
                                                                 id="job-title-Input"
                                                                 placeholder="Enter job title"
-                                                                defaultValue='0'
+                                                                defaultValue={dataTarifPasien.obat_kronis}
                                                                 disabled
                                                             />
                                                         </th>
@@ -839,7 +844,7 @@ const KlaimInacbg = () => {
                                                                 className="form-control"
                                                                 id="job-title-Input"
                                                                 placeholder="Enter job title"
-                                                                defaultValue='0'
+                                                                defaultValue={dataTarifPasien.obat_kemoterapi}
                                                                 disabled
                                                             />
                                                         </th>
@@ -854,7 +859,7 @@ const KlaimInacbg = () => {
                                                                 className="form-control"
                                                                 id="job-title-Input"
                                                                 placeholder="Enter job title"
-                                                                defaultValue='0'
+                                                                defaultValue={dataTarifPasien.alkes}
                                                                 disabled
                                                             />
                                                         </th>
@@ -867,7 +872,7 @@ const KlaimInacbg = () => {
                                                                 className="form-control"
                                                                 id="job-title-Input"
                                                                 placeholder="Enter job title"
-                                                                defaultValue='0'
+                                                                defaultValue={dataTarifPasien.bmhp}
                                                                 disabled
                                                             />
                                                         </th>
@@ -880,7 +885,7 @@ const KlaimInacbg = () => {
                                                                 className="form-control"
                                                                 id="job-title-Input"
                                                                 placeholder="Enter job title"
-                                                                defaultValue='0'
+                                                                defaultValue={dataTarifPasien.sewa_alat}
                                                                 disabled
                                                             />
                                                         </th>
