@@ -28,7 +28,11 @@ import { PELAYANAN_FROM_ANTREAN_GET,
     DAFTAR_PIUTANG_PASIEN_GET,
     DAFTAR_PIUTANG_PASIEN_GET_SUCCESS,
     DAFTAR_PIUTANG_PASIEN_GET_ERROR,
-    DAFTAR_PIUTANG_PASIEN_GET_RESET
+    DAFTAR_PIUTANG_PASIEN_GET_RESET,
+    PAYMENT_PIUTANG_PASIEN_GET,
+    PAYMENT_PIUTANG_PASIEN_GET_SUCCESS,
+    PAYMENT_PIUTANG_PASIEN_GET_ERROR,
+    PAYMENT_PIUTANG_PASIEN_GET_RESET,
 } from "./actionType";
 
 export const pelayananFromAntreanGet = (norecap) => {
@@ -243,3 +247,29 @@ export const daftarPiutangPasienGetReset = () => {
     }
 }
 
+export const paymentPiutangPasienGet = (norecpiutang) => {
+    return {
+        type: PAYMENT_PIUTANG_PASIEN_GET,
+        payload: {norecpiutang}
+    }
+}
+
+export const paymentPiutangPasienGetSuccess = (data) => {
+    return {
+        type: PAYMENT_PIUTANG_PASIEN_GET_SUCCESS,
+        payload: data
+    }
+}
+
+export const paymentPiutangPasienGetError = (error) => {
+    return {
+        type: PAYMENT_PIUTANG_PASIEN_GET_ERROR,
+        payload: error
+    }
+}
+
+export const paymentPiutangPasienGetReset = () => {
+    return {
+        type: PAYMENT_PIUTANG_PASIEN_GET_RESET,
+    }
+}

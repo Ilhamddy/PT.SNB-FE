@@ -31,6 +31,10 @@ import {
     DAFTAR_PIUTANG_PASIEN_GET_SUCCESS,
     DAFTAR_PIUTANG_PASIEN_GET_ERROR,
     DAFTAR_PIUTANG_PASIEN_GET_RESET,
+    PAYMENT_PIUTANG_PASIEN_GET,
+    PAYMENT_PIUTANG_PASIEN_GET_SUCCESS,
+    PAYMENT_PIUTANG_PASIEN_GET_ERROR,
+    PAYMENT_PIUTANG_PASIEN_GET_RESET,
 } from "./actionType";
 
 const INIT_STATE = {
@@ -77,6 +81,12 @@ const INIT_STATE = {
         error: null,
     },
     daftarPiutangPasienGet: {
+        data: [],
+        loading: false,
+        success: false,
+        error: null,
+    },
+    paymentPiutangPasienGet: {
         data: [],
         loading: false,
         success: false,
@@ -421,6 +431,51 @@ const payment = (state = INIT_STATE, action) => {
                 ...state,
                 daftarPiutangPasienGet: {
                     ...state.daftarPiutangPasienGet,
+                    data: [],
+                    success: false,
+                    loading: false,
+                    error: null,
+                },
+            };
+
+        case PAYMENT_PIUTANG_PASIEN_GET:
+            return {
+                ...state,
+                paymentPiutangPasienGet: {
+                    ...state.paymentPiutangPasienGet,
+                    data: [],
+                    loading: true,
+                    error: null,
+                },
+            };
+        
+        case PAYMENT_PIUTANG_PASIEN_GET_SUCCESS:
+            return {
+                ...state,
+                paymentPiutangPasienGet: {
+                    ...state.paymentPiutangPasienGet,
+                    data: action.payload,
+                    loading: false,
+                    error: null,
+                },
+            };
+
+        case PAYMENT_PIUTANG_PASIEN_GET_ERROR:
+            return {
+                ...state,
+                paymentPiutangPasienGet: {
+                    ...state.paymentPiutangPasienGet,
+                    data: [],
+                    loading: false,
+                    error: action.payload,
+                },
+            };
+
+        case PAYMENT_PIUTANG_PASIEN_GET_RESET:
+            return {
+                ...state,
+                paymentPiutangPasienGet: {
+                    ...state.paymentPiutangPasienGet,
                     data: [],
                     success: false,
                     loading: false,

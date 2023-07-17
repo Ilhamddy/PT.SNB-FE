@@ -22,10 +22,12 @@ import {
     notaVerifCreate,
     pelayananFromVerifGet,
     pelayananFromVerifGetReset,
-    buktiBayarCreate
+    buktiBayarCreate,
+    paymentPiutangPasienGet,
+    paymentPiutangPasienGetReset,
 } from "../../store/payment/action";
 import CustomSelect from "../Select/Select";
-import "./Bayar.scss"
+import "./BayarPiutang.scss"
 import { useNavigate, useParams } from "react-router-dom";
 import { rgxAllNumber, rgxAllPeriods, rgxValidNumber } from "../../utils/regexcommon";
 
@@ -34,12 +36,13 @@ const dateAwalEnd = dateISOString(new Date())
 const date = new Date()
 
 
-const Bayar = () => {
-    const { norecnota } = useParams();
+const BayarPiutang = () => {
+    const { norecpiutang, norecnota } = useParams();
     let {
         dataPasienPlg, 
         comboboxReg,
         listPelayanan,
+        paymentPiutangPasien,
         norecdp,
         comboboxpayment,
         nota,
@@ -50,7 +53,8 @@ const Bayar = () => {
         listPelayanan: state.Payment.pelayananFromVerifGet.data?.pelayanan || [],
         comboboxpayment: state.Master.comboPaymentGet.data,
         nota: state.Payment.pelayananFromVerifGet.data?.nota || [],
-        kepesertaan: state.Payment.pelayananFromVerifGet.data?.kepesertaan || []
+        kepesertaan: state.Payment.pelayananFromVerifGet.data?.kepesertaan || [],
+        paymentPiutangPasien: state.Payment.paymentPiutangPasienGet.data || null
     }))
 
 
@@ -64,6 +68,7 @@ const Bayar = () => {
             deposit: 0,
             nobukti: `B${date.getFullYear().toString().substring(2, 4)}${date.getMonth() + 1}${date.getDate()}${date.getHours()}${date.getMinutes()}${date.getSeconds()}`,
             pegawai: "",
+            norecpiutang: "",
             norecnota: "",
             klaim: "",
             norecdp: "",
@@ -103,7 +108,6 @@ const Bayar = () => {
             deposit: Yup.string().required("Deposit harus diisi"),
             nobukti: Yup.string().required("No Bukti harus diisi"),
             pegawai: Yup.string().required("Pegawai harus diisi"),
-            norecnota: Yup.string().required("No Rekam Medis harus diisi"),
             klaim: Yup.string().required("Klaim harus diisi"),
             norecdp: Yup.string().required("No DP harus diisi"),
         }),
@@ -116,7 +120,7 @@ const Bayar = () => {
                 return newPayment
             })
             dispatch(buktiBayarCreate(valuesSent, () => {
-                norecnota && dispatch(pelayananFromVerifGet(norecnota))
+
             }))
         }
     })
@@ -148,6 +152,7 @@ const Bayar = () => {
         validation.setFieldValue("payment", newPayments);
     }
 
+
     const [dateStart, setDateStart] = useState(dateAwalStart);
     const [dateEnd, setDateEnd] = useState(dateAwalEnd);
     const [search, setSearch] = useState("");
@@ -167,103 +172,28 @@ const Bayar = () => {
             && navigate(`/payment/verif-tagihan/${norecpp}`)    
     }
 
-    const diskon = listPelayanan.reduce((prev, pel) => prev + (pel.discount || 0), 0)
-    let totalTagihan = listPelayanan.reduce((prev, pel) => prev + (pel.total || 0), 0)
-    const nominalklaim = kepesertaan.reduce((prev, pel) => prev + (pel.nominalklaim || 0), 0);
-    const grandTotal = totalTagihan - diskon - nominalklaim;
-    let payment = validation.values.payment
-        ?.reduce((prev, pel) => prev + (Number(pel.nominalbayar.replace(rgxAllPeriods, ""))  || 0), 0) || 0;
-    let sisaGrandTotal = grandTotal - payment;
+    let totalTagihan = (paymentPiutangPasien?.piutang?.totalnota || 0) 
+        - (paymentPiutangPasien?.klaim || 0)
+    let grandTotal = paymentPiutangPasien?.piutang?.totalpiutang || 0
+    let klaim = paymentPiutangPasien?.klaim || 0
+    let totalSudahBayar = paymentPiutangPasien.buktibayar?.reduce((total, bukti) => {
+        return total + bukti.totalbayar
+    }, 0) || 0
+    let totalBayar = validation.values.payment.reduce((total, payment) => {
+        return total + Number(payment.nominalbayar.replace(rgxAllPeriods, "")) 
+    }, 0)
+    const totalFinal = grandTotal - totalBayar
+
     
     const columns = [
         {
             name: <span className='font-weight-bold fs-13'>Tgl Pelayanan</span>,
-            selector: row => dateTimeLocal(new Date(row.tglinput)),
+            selector: row => dateTimeLocal(new Date(row.tglbayar)),
             sortable: true,
             width: "160px",
             wrap: true
         },
-        {
-            name: <span className='font-weight-bold fs-13'>Layanan</span>,
-            // selector: row => row.noregistrasi,
-            sortable: true,
-            selector: row => row.namaproduk,
-            width: "120px"
-        },
-        {
-            name: <span className='font-weight-bold fs-13'>Petugas</span>,
-            selector: row => row.namapegawai,
-            sortable: true,
-            width: "120px"
-        },
-        {
-
-            name: <span className='font-weight-bold fs-13'>Unit</span>,
-            selector: row => row.namaunit,
-            sortable: true,
-            width: "120px"
-        },
-        {
-
-            name: <span className='font-weight-bold fs-13'>Kelas</span>,
-            selector: row => row.namakelas,
-            sortable: true,
-            width: "110px"
-        },
-        {
-            name: <span className='font-weight-bold fs-13'>Harga</span>,
-            selector: row => row.harga,
-            sortable: true,
-            width: "110px",
-        },
-        {
-
-            name: <span className='font-weight-bold fs-13'>Qty</span>,
-            selector: row => row.qty,
-            sortable: true,
-            width: "20px",
-            wrap: true
-        },
-        {
-
-            name: <span className='font-weight-bold fs-13'>Diskon</span>,
-            selector: row => row.discount || 0,
-            sortable: true,
-            width: "70px",
-            wrap: true
-        },
-        {
-
-            name: <span className='font-weight-bold fs-13'>Jasa</span>,
-            selector: row => row.jasa || 0,
-            sortable: true,
-            width: "70px",
-            wrap: true
-        },
-        {
-
-            name: <span className='font-weight-bold fs-13'>C</span>,
-            selector: row => `${row.iscito ? "v" : "x"}`,
-            sortable: true,
-            width: "40px",
-            wrap: true
-        },
-        {
-
-            name: <span className='font-weight-bold fs-13'>Total</span>,
-            selector: row => row.total,
-            sortable: true,
-            width: "140px",
-            wrap: true
-        },
-        {
-
-            name: <span className='font-weight-bold fs-13'>No Verif/NBB</span>,
-            selector: row => (`${(row.no_nota ? `${row.no_nota}/\n` : ``) + (row.no_bukti ? `${row.no_bukti}` : ``)}`),
-            sortable: true,
-            width: "140px",
-            wrap: true
-        },
+        
     ];
 
     useEffect(() => {
@@ -274,9 +204,9 @@ const Bayar = () => {
     useEffect(() => {
         const setFF = validation.setFieldValue
         grandTotal && setFF("totaltagihan", grandTotal)
-        diskon && setFF("diskon", diskon)
-        nominalklaim && setFF("klaim", nominalklaim)
-    }, [dispatch, validation.setFieldValue, grandTotal, diskon, nominalklaim])
+        setFF("diskon", 0)
+        setFF("klaim", 0)
+    }, [dispatch, validation.setFieldValue, grandTotal])
 
     useEffect(() => {
         const setFF = validation.setFieldValue
@@ -286,17 +216,19 @@ const Bayar = () => {
             && setFF("pegawai", nota.idpegawai)
         nota.norecdp
             && setFF("norecdp", nota.norecdp)
-    }, [nota, validation.setFieldValue]) // eslint-disable-line react-hooks/exhaustive-deps
+    }, [nota, validation.setFieldValue])
 
 
     useEffect(() => {
         const setFF = validation.setFieldValue
+        norecpiutang && setFF("norecpiutang", norecpiutang)
+        norecpiutang && dispatch(paymentPiutangPasienGet(norecpiutang))
         norecnota && setFF("norecnota", norecnota)
         norecnota && dispatch(pelayananFromVerifGet(norecnota))
         return () => {
-            dispatch(pelayananFromVerifGetReset())
+            dispatch(paymentPiutangPasienGetReset())
         }
-    }, [dispatch, norecnota, validation.setFieldValue])
+    }, [dispatch, norecpiutang, validation.setFieldValue, norecnota])
 
     const filterRekeningRs = (rekeningRs, nontunaiV) => {
         return rekeningRs?.filter(
@@ -304,15 +236,13 @@ const Bayar = () => {
         );
     }
     return(
-        <div className="page-content page-bayar">
+        <div className="page-content page-bayar-piutang">
             <ToastContainer closeButton={false} />
             <Container fluid>
                 <BreadCrumb title="Pembayaran" pageTitle="Pembayaran" />
                     <Form
                         onSubmit={(e) => {
                             e.preventDefault();
-                            console.log("submit")
-                            console.log(validation.errors)
                             validation.handleSubmit();
                             return false;
                         }}
@@ -483,12 +413,12 @@ const Bayar = () => {
                                                 id={`pjpasien`}
                                                 name={`pjpasien`}
                                                 type="text"
-                                                disabled
                                                 value={validation.values.pjpasien || ""} 
-                                                invalid={validation.touched.payment && !!validation.errors.payment}
+                                                invalid={validation.touched.pjpasien && !!validation.errors.pjpasien}
+                                                onChange={validation.handleChange}
                                                 />
-                                            {validation.touched.payment && validation.errors.payment ? (
-                                                <FormFeedback type="invalid" ><div>{validation.errors.payment}</div></FormFeedback>
+                                            {validation.touched.pjpasien && validation.errors.pjpasien ? (
+                                                <FormFeedback type="invalid" ><div>{validation.errors.pjpasien}</div></FormFeedback>
                                             ) : null}
                                         </div>
                                     </Row>
@@ -523,41 +453,32 @@ const Bayar = () => {
                                     <table className="table-bayar ">
                                         <tbody>
                                             <tr>
-                                                <td>Total</td>
+                                                <td>Total Tagihan</td>
                                                 <td>Rp{totalTagihan?.toLocaleString("id-ID") || ""}</td>
                                             </tr>
                                             <tr>
-                                                <td>Diskon</td>
-                                                <td>Rp{diskon}</td>
+                                                <td>Klaim asuransi</td>
+                                                <td>Rp{klaim?.toLocaleString("id-ID") || ""}</td>
                                             </tr>
                                             <tr>
-                                                <td>Klaim Asuransi</td>
-                                                <td>Rp{nominalklaim}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Deposit</td>
-                                                <td>Rp{0}</td>
+                                                <td>Total sudah bayar</td>
+                                                <td>Rp{totalSudahBayar?.toLocaleString("id-ID") || ""}</td>
                                             </tr>
                                         </tbody>
                                         <tbody className="total-tagihan">
                                             <tr>
-                                                <td>Total Tagihan</td>
-                                                <td>Rp{grandTotal?.toLocaleString('id-ID')}</td>
+                                                <td>Total Piutang</td>
+                                                <td>Rp{grandTotal?.toLocaleString("id-ID") || ""}</td>
                                             </tr>
-                                        </tbody>
-                                        <tbody className="total-tagihan">
                                             <tr>
-                                                <td>Pembayaran</td>
-                                                <td>Rp{payment?.toLocaleString('id-ID')}</td>
+                                                <td>Total Bayar</td>
+                                                <td>Rp{totalBayar?.toLocaleString("id-ID") || ""}</td>
                                             </tr>
-                                        </tbody>
-                                        <tbody className="total-tagihan">
                                             <tr>
-                                                <td>Sisa tagihan</td>
-                                                <td>Rp{sisaGrandTotal?.toLocaleString('id-ID')}</td>
+                                                <td>Sisa piutang</td>
+                                                <td>Rp{totalFinal?.toLocaleString('id-ID')}</td>
                                             </tr>
                                         </tbody>
-
                                     </table>
                                 </Card>
 
@@ -568,7 +489,7 @@ const Bayar = () => {
                                 <Card className="p-3">
                                     <Row>
                                         <Label style={{ color: "black" }} className="form-label">
-                                            Detail Verifikasi
+                                            Riwayat Pembayaran
                                         </Label>
                                     </Row>
                                     <Row>
@@ -576,7 +497,7 @@ const Bayar = () => {
                                             fixedHeader
                                             columns={columns}
                                             pagination
-                                            data={listPelayanan || []}
+                                            data={[]}
                                             progressPending={false}
                                             customStyles={tableCustomStyles}
                                         />
@@ -647,4 +568,4 @@ const tableCustomStyles = {
     }
 }
 
-export default Bayar;
+export default BayarPiutang;

@@ -56,16 +56,16 @@ const DaftarPiutangPasien = () => {
     const handleClickCari = () => {
         dispatch(daftarPasienPulangGet({dateStart, dateEnd, instalasi, unit: "", search}))
     }
-    const handleToBayar = async (norecnota) => {
-        norecnota 
-            && navigate(`/payment/bayar/piutang/${norecnota}`)    
+    const handleToBayar = async (norecpiutang, norecnota) => {
+        norecpiutang
+            && navigate(`/payment/bayar/piutang/${norecpiutang}/${norecnota}`)    
     }
     const handleCancelBayar = (norecnota, norecbayar) => {
         norecbayar && norecnota &&
             dispatch(buktiBayarCancel(
                 norecnota, 
                 norecbayar, 
-                () => dispatch(daftarPiutangPasienGet())
+                () => dispatch(daftarPiutangPasienGet(location))
             ))
     }
     const columns = [
@@ -82,12 +82,17 @@ const DaftarPiutangPasien = () => {
                             </DropdownToggle>
                             <DropdownMenu className="dropdown-menu-end">
                                 {!row.norecbukti && <DropdownItem onClick={() => 
-                                        handleToBayar(row.norecnota)}>
+                                        handleToBayar(row.norecpiutang, row.norecnota)}>
                                         <i className="ri-mail-send-fill align-bottom me-2 text-muted">
                                         </i>
                                         Bayar
                                     </DropdownItem>
                                 }
+                                {row.norecbukti && <DropdownItem 
+                                        onClick={() => handleCancelBayar(row.norecnota, row.norecbukti)}>
+                                        <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
+                                        Batal Bayar
+                                    </DropdownItem>}
                             </DropdownMenu>
                         </UncontrolledDropdown>
                     </div>
@@ -134,13 +139,20 @@ const DaftarPiutangPasien = () => {
             name: <span className='font-weight-bold fs-13'>Tgl Pulang</span>,
             selector: row => dateTimeLocal(new Date(row.tglpulang)),
             sortable: true,
-            width: "160px",
+            width: "120px",
         },
         {
             name: <span className='font-weight-bold fs-13'>T. Piutang</span>,
             selector: row => `Rp${row.totalpiutang?.toLocaleString('id-ID') || 0}`,
             sortable: true,
-            width: "120px",
+            width: "110px",
+            wrap: true
+        },
+        {
+            name: <span className='font-weight-bold fs-13'>T. Bayar</span>,
+            selector: row => `Rp${row.totalbayar?.toLocaleString('id-ID') || 0}`,
+            sortable: true,
+            width: "110px",
             wrap: true
         },
         {
@@ -150,7 +162,7 @@ const DaftarPiutangPasien = () => {
                 ? "Lunas" 
                 : "Bayar Sebagian",
             sortable: true,
-            width: "160px",
+            width: "110px",
             wrap: true
         },
     ];
@@ -309,7 +321,6 @@ const DaftarPiutangPasien = () => {
                                     value={instalasi || ""}
                                 />
                             </Col>
-                            
                             <Col lg={2}>
                                 <div className="d-flex justify-content-sm-end">
                                     <div className="search-box ms-2">

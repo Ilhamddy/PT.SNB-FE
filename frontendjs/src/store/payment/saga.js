@@ -16,6 +16,8 @@ import {
     buktiBayarCancelError,
     daftarPiutangPasienGetSuccess,
     daftarPiutangPasienGetError,
+    paymentPiutangPasienGetSuccess,
+    paymentPiutangPasienGetError,
 } from "./action";
 
 import {
@@ -27,6 +29,7 @@ import {
     VERIF_NOTA_CANCEL,
     BUKTI_BAYAR_CANCEL,
     DAFTAR_PIUTANG_PASIEN_GET,
+    PAYMENT_PIUTANG_PASIEN_GET,
 } from "./actionType";
 
 import ServicePayment from "../../services/service-payment";
@@ -122,6 +125,15 @@ function* onGetDaftarPiutangPasien({payload: {location}}) {
     }
 }
 
+function* onGetPaymentForPiutang({payload: {norecpiutang}}) {
+    try {
+        const response = yield call(servicePayment.getPaymentForPiutang, norecpiutang);
+        yield put(paymentPiutangPasienGetSuccess(response.data));
+    } catch (error) {
+        yield put(paymentPiutangPasienGetError(error));
+    }
+}
+
 export function* watchGetPelayananFromAntrean() {
     yield takeEvery(PELAYANAN_FROM_ANTREAN_GET, onGetPelayananFromAntrean);
 }
@@ -154,6 +166,10 @@ export function* watchGetDaftarPiutangPasien() {
     yield takeEvery(DAFTAR_PIUTANG_PASIEN_GET, onGetDaftarPiutangPasien);
 }
 
+export function* watchGetPaymentForPiutang() {
+    yield takeEvery(PAYMENT_PIUTANG_PASIEN_GET, onGetPaymentForPiutang);
+}
+
 export default function* masterSaga() {
     yield all([
         fork(watchGetPelayananFromAntrean),
@@ -164,5 +180,6 @@ export default function* masterSaga() {
         fork(watchVerifNotaCancel),
         fork(watchBuktiBayarCancel),
         fork(watchGetDaftarPiutangPasien),
+        fork(watchGetPaymentForPiutang),
     ]);
 }
