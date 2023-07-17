@@ -357,101 +357,66 @@ async function getListDiagnosaIxPasien(req, res) {
     });
 }
 // function decrypt
-async function inacbg_encrypt(data, keyHex) {
-    // Make binary representation of key
-    const key = hexToBuffer(keyHex);
-
-    // Check key length, must be 256 bit or 32 bytes
-    if (key.length !== 32) {
-        throw new Error("Needs a 256-bit key!");
-    }
-
-    // Create initialization vector
-    const ivSize = 16; // IV size for AES-256-CBC is 16 bytes
-    const iv = crypto.randomBytes(ivSize);
-
-    // Convert data to Buffer (if needed)
-    const dataBuffer = typeof data === "string" ? Buffer.from(data, "utf8") : data;
-
-    // Encrypt
-    const cipher = crypto.createCipheriv("aes-256-cbc", key, iv);
-    const encryptedBuffer = Buffer.concat([cipher.update(dataBuffer), cipher.final()]);
-
-    // Create signature, against padding oracle attacks
-    const signatureBuffer = crypto.createHmac("sha256", key).update(encryptedBuffer.slice(0, 10)).digest();
-
-    // Combine all, encode, and format
-    const combinedBuffer = Buffer.concat([signatureBuffer, iv, encryptedBuffer]);
-    const encodedData = combinedBuffer.toString("base64");
-    return encodedData;
+const inacbg_encrypt = (data, strkey) => { //stringify when data os object
+    if (typeof data === 'object') {
+        data = JSON.stringify(data);
+    } //make Key to binary type, stored in Buffer
+    let keys = Buffer.from(strkey, 'hex');
+    //make data to binary type, stored in Buffer 
+    let data_encoded = Buffer.from(data);
+    //make iv 16 byte of random 
+    let iv = crypto.randomBytes(16);
+    //create cyper for encrypt
+    let enc = crypto.createCipheriv('aes-256-cbc', keys, iv);
+    // encrypt data 
+    let encrypt = Buffer.concat([enc.update(data_encoded), enc.final()]);
+    //create signature 
+    let signature = crypto.createHmac('sha256', keys)
+        .update(encrypt).digest().slice(0, 10);
+    //concat buffer then return in string encode with base64
+    return Buffer.concat([signature, iv, encrypt]).toString('base64');
 }
 
-function hexToBuffer(hexString) {
-    return Buffer.from(hexString, "hex");
-}
-
-
+const inacbg_compare = (signature, encrypt,key_inacbg) => {
+    let keys = Buffer.from(key_inacbg,'hex');
+    let calc_signature = crypto.createHmac('sha256', keys)
+    .update(encrypt) .digest() .slice(0,10);
+    if(signature.compare(calc_signature)===0){
+    return true; }
+    return false;
+   }
 
 // end
 
 // inacbg decrypt
-async function inacbg_decrypt(str, strkey) {
-    // Make binary representation of key
-    const key = Buffer.from(strkey, "hex");
-
-    // Check key length, must be 256 bit or 32 bytes
-    if (key.length !== 32) {
-        throw new Error("Needs a 256-bit key!");
+const inacbg_decrypt = (data, key_inacbg) => {
+    //Replacing Text
+    if (typeof data === 'string') {
+        data = data.replace(/----BEGIN ENCRYPTED DATA----|----END ENCRYPTED DATA----/g, '');
+    } else {
+        return `Should be String input`;
+    } //make Key to binary type, stored in Buffer 
+    let keys = Buffer.from(key_inacbg, 'hex');
+    //make data to binary type, stored in Buffer 
+    let data_decoded = Buffer.from(data, 'base64');
+    //make iv to binary type, stored in Buffer 
+    let iv = Buffer.from(data_decoded.slice(10, 26));
+    //create Deciper with IV to decode data 
+    let dec = crypto.createDecipheriv('aes-256-cbc', keys, iv);
+    //cutting data that has binary type -- 26 is 10 for char and 16 for IV for aes-256-cbc 
+    let encoded = Buffer.from(data_decoded.slice(26))
+    //take Signature 
+    let signature = data_decoded.slice(0, 10);
+    //check if signature is right
+    if (!inacbg_compare(signature, encoded,key_inacbg)) {
+        return "SIGNATURE_NOT_MATCH"; /// signature doesn't match 
     }
-
-    // Calculate iv size
-    const ivSize = 16; // IV size for AES-256-CBC is 16 bytes
-
-    // Convert the input string to a Buffer (using Base64 decoding)
-    const decoded = Buffer.from(str, "base64");
-
-    // Extract IV from the decoded data
-    const iv = decoded.slice(10, 10 + ivSize);
-
-    // Extract encrypted data from the decoded data (after the IV)
-    const encrypted = decoded.slice(10 + ivSize);
-
-    // Check signature, against padding oracle attack
-    const calc_signature = crypto
-        .createHmac("sha256", key)
-        .update(encrypted)
-        .digest("binary")
-        .slice(0, 10);
-    const hasil = await !inacbg_compare(encrypted.slice(0, 10), Buffer.from(calc_signature, "binary"))
-    if (hasil) {
-        throw new Error("SIGNATURE_NOT_MATCH"); // signature doesn't match
-    }
-
-    // Create the decipher object
-    const decipher = crypto.createDecipheriv("aes-256-cbc", key, iv);
-    decipher.setAutoPadding(false); // Padding is handled manually, set to false
-
-    // Decrypt the data
-    let decrypted = decipher.update(encrypted, "binary", "utf8");
-    decrypted += decipher.final("utf8");
-
-    return decrypted;
+    //decrypt data 
+    let decrypted = Buffer.concat([dec.update(encoded), dec.final()]);
+    return decrypted.toString('utf8');
 }
 
-async function inacbg_compare(a, b) {
-    // Compare individually to prevent timing attacks
 
-    // Compare length
-    if (a.length !== b.length) return false;
-
-    // Compare individual bytes
-    let result = 0;
-    for (let i = 0; i < a.length; i++) {
-        result |= a[i] ^ b[i]
-    }
-
-    return result === 0;
-}
 
 
 
@@ -471,20 +436,20 @@ async function saveBridgingInacbg(req, res) {
     }
 
     const jsonData = {
-        metadata: {
-            method: "new_claim"
+        "metadata": {
+            "method": "new_claim"
         },
-        data: {
-            nomor_kartu: "0000668870001",
-            nomor_sep: "0001R0016120507422",
-            nomor_rm: "123-45-67",
-            nama_pasien: "NAMA TEST PASIEN",
-            tgl_lahir: "1940-01-01 02:00:00",
-            gender: "2"
+        "data": {
+            "nomor_kartu": "0000668870001",
+            "nomor_sep": "0001R0016120507422",
+            "nomor_rm": "00000002",
+            "nama_pasien": "NAMA TEST PASIEN",
+            "tgl_lahir": "1940-01-01 02:00:00",
+            "gender": "2"
         }
     };
-    let tempJ = JSON.stringify(jsonData)
-    let payload = await inacbg_encrypt(tempJ, key_inacbg)
+    // let tempJ = "{\"metadata\":{\"method\":\"new_claim\"},\"data\":{\"nomor_kartu\":\"0000668870001\",\"nomor_sep\":\"0001R0016120507422\",\"nomor_rm\":\"00000002\",\"nama_pasien\":\"NAMA TEST PASIEN\",\"tgl_lahir\":\"1940-01-01 02:00:00\",\"gender\":\"2\"}}"
+    let payload = await inacbg_encrypt(jsonData, key_inacbg)
     const headers = {
         "Content-Type": "application/x-www-form-urlencoded",
         "Access-Control-Allow-Origin": "*"
@@ -494,7 +459,7 @@ async function saveBridgingInacbg(req, res) {
         method: "post",
         url: url_inacbg,
         headers: headers,
-        data: new URLSearchParams(payload).toString()
+        data: payload
     };
     try {
         const response = await axios(config);
@@ -504,12 +469,11 @@ async function saveBridgingInacbg(req, res) {
         const firstNewlineIndex = await responseData.indexOf("\n") + 1;
         const lastNewlineIndex = await responseData.lastIndexOf("\n") - 1;
         const trimmedResponse = await responseData.substring(firstNewlineIndex, lastNewlineIndex);
-        let regex = /----BEGIN ENCRYPTED DATA----(\r\n)|(\r\n)----END ENCRYPTED\sDATA----(\r\n)*/g;
-        let tempRes = responseData.replace(regex, "");
+      
 
-        const decryptedResponse = await inacbg_decrypt(tempRes, key_inacbg);
+        const decryptedResponse = await inacbg_decrypt(responseData, key_inacbg);
         res.status(200).send({
-            data: decryptedResponse,
+            data: JSON.parse(decryptedResponse),
             status: "success",
             success: true,
         });
