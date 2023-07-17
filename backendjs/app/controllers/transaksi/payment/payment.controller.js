@@ -264,6 +264,20 @@ const createBuktiBayar = async (req, res) => {
                 }, {
                     transaction: transaction
                 })
+                createdCaraBayar.objectmetodebayarfk 
+                    = (await pool.query(`
+                    SELECT metodebayar 
+                    FROM m_metodebayar 
+                        WHERE id = $1`, [createdCaraBayar.objectmetodebayarfk])).rows[0].metodebayar
+                if(createdCaraBayar.objectjenisnontunaifk){
+                    createdCaraBayar.objectjenisnontunaifk 
+                        = (await pool.query(`
+                        SELECT nontunai
+                        FROM m_jenisnontunai 
+                        WHERE id = $1`, [createdCaraBayar.objectjenisnontunaifk]))
+                        .rows[0]
+                        .nontunai
+                }
                 return createdCaraBayar
             }
         ))
@@ -299,12 +313,13 @@ const createBuktiBayar = async (req, res) => {
             }, {
                 transaction: transaction
             })
+
         }
 
 
         const tempres = {
             buktiBayar: createdBuktiBayar,
-
+            createdCaraBayar: createdCaraBayar
         }
         transaction.commit();
         res.status(200).send({

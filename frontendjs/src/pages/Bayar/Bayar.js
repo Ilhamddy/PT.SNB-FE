@@ -1,7 +1,7 @@
 import { useFormik } from "formik";
 import userDummy from "../../assets/images/users/user-dummy-img.jpg";
 import { ToastContainer } from "react-toastify";
-import { useEffect, useState } from "react";
+import { useEffect, useReducer, useRef, useState } from "react";
 import { Card, CardBody, Col, Container, Nav, NavItem, NavLink, Row, TabContent, TabPane, Table, Input, Form, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem, UncontrolledTooltip, Button, FormFeedback, Label, CardHeader } from "reactstrap";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import * as Yup from "yup";
@@ -28,6 +28,8 @@ import CustomSelect from "../Select/Select";
 import "./Bayar.scss"
 import { useNavigate, useParams } from "react-router-dom";
 import { rgxAllNumber, rgxAllPeriods, rgxValidNumber } from "../../utils/regexcommon";
+import PrintTemplate from "../Print/PrintTemplate/PrintTemplate";
+import "./Bayar.scss"
 
 const dateAwalStart = dateTimeISOString(new Date(new Date() - 1000 * 60 * 60 * 24 * 3));
 const dateAwalEnd = dateISOString(new Date())
@@ -43,17 +45,23 @@ const Bayar = () => {
         norecdp,
         comboboxpayment,
         nota,
-        kepesertaan
+        kepesertaan,
+        created
     } = useSelector((state) => ({
         dataPasienPlg: state.DaftarPasien.daftarPasienPulangGet.data || [],
         comboboxReg: state.Master.comboRegistrasiGet.data || {},
         listPelayanan: state.Payment.pelayananFromVerifGet.data?.pelayanan || [],
         comboboxpayment: state.Master.comboPaymentGet.data,
         nota: state.Payment.pelayananFromVerifGet.data?.nota || [],
-        kepesertaan: state.Payment.pelayananFromVerifGet.data?.kepesertaan || []
+        kepesertaan: state.Payment.pelayananFromVerifGet.data?.kepesertaan || [],
+        created: state.Payment.buktiBayarCreate.data || null,
     }))
 
-
+    const refPrintTransaksi = useRef(null)
+    
+    const handlePrintBukti = () => {
+        refPrintTransaksi.current.handlePrint();
+    }
 
     const validation = useFormik({
         enableReinitialize: true,
@@ -117,6 +125,7 @@ const Bayar = () => {
             })
             dispatch(buktiBayarCreate(valuesSent, () => {
                 norecnota && dispatch(pelayananFromVerifGet(norecnota))
+                handlePrintBukti();
             }))
         }
     })
@@ -303,6 +312,7 @@ const Bayar = () => {
             (rekening) => rekening.objectbankfk === nontunaiV
         );
     }
+
     return(
         <div className="page-content page-bayar">
             <ToastContainer closeButton={false} />
@@ -311,8 +321,8 @@ const Bayar = () => {
                     <Form
                         onSubmit={(e) => {
                             e.preventDefault();
-                            console.log("submit")
-                            console.log(validation.errors)
+                            // console.log("submit")
+                            // console.log(validation.errors)
                             validation.handleSubmit();
                             return false;
                         }}
@@ -337,10 +347,10 @@ const Bayar = () => {
                                                                 changePayment('metodebayar', index, e.value)
                                                             }
                                                             value={itemP.metodebayar || ""}
-                                                            className={`input ${validation.errors.payment ? "is-invalid" : ""}`}
+                                                            className={`input ${validation.errors.payment?.metodebayar ? "is-invalid" : ""}`}
                                                         />
-                                                        {validation.touched.payment && validation.errors.payment && (
-                                                            <FormFeedback type="invalid"><div>{validation.errors.payment}</div></FormFeedback>
+                                                        {validation.touched.payment && validation.errors.payment?.metodebayar && (
+                                                            <FormFeedback type="invalid"><div>{validation.errors.payment?.metodebayar}</div></FormFeedback>
                                                         )}
                                                     </div>
                                                 </Col>
@@ -395,10 +405,10 @@ const Bayar = () => {
                                                                     rgxAllNumber.test(e.target.value) &&
                                                                         changePayment("approvalcode", index, e.target.value);
                                                                 }}
-                                                                invalid={validation.touched.payment && !!validation.errors.payment}
+                                                                invalid={validation.touched.payment && !!validation.errors.payment?.nominalbayar}
                                                                 />
-                                                            {validation.touched.payment && validation.errors.payment ? (
-                                                                <FormFeedback type="invalid" ><div>{validation.errors.payment}</div></FormFeedback>
+                                                            {validation.touched.payment && validation.errors.payment?.nominalbayar ? (
+                                                                <FormFeedback type="invalid" ><div>{validation.errors.payment?.nominalbayar}</div></FormFeedback>
                                                             ) : null}
                                                         </div>
                                                     </>
@@ -423,10 +433,10 @@ const Bayar = () => {
                                                                     itemP.nominalbayar
                                                                 ))  
                                                         }}
-                                                        invalid={validation.touched.payment && !!validation.errors.payment}
+                                                        invalid={validation.touched.payment && !!validation.errors.payment?.nominalbayar}
                                                         value={itemP.nominalbayar || ""} />
-                                                    {validation.touched.payment && validation.errors.payment ? (
-                                                        <FormFeedback type="invalid"><div>{validation.errors.payment}</div></FormFeedback>
+                                                    {validation.touched.payment && validation.errors.payment?.nominalbayar ? (
+                                                        <FormFeedback type="invalid"><div>{validation.errors.payment?.nominalbayar}</div></FormFeedback>
                                                     ) : null}
                                                 </div>
                                                 {itemP.metodebayar === 2 &&
@@ -439,13 +449,13 @@ const Bayar = () => {
                                                                 id={`rekeningrs${index}}`}
                                                                 name={`rekeningrs${index}`}
                                                                 options={filterRekeningRs(comboboxpayment?.rekeningRs || [], itemP.nontunai)}
-                                                                className={`input ${validation.errors.payment ? "is-invalid" : ""}`}
+                                                                className={`input ${validation.errors.payment?.nominalbayar ? "is-invalid" : ""}`}
                                                                 onChange={(e) => {
                                                                     changePayment("rekeningrs", index, e.value);
                                                                 }}
                                                             />
-                                                            {validation.touched.payment && validation.errors.payment ? (
-                                                                <FormFeedback type="invalid"><div>{validation.errors.payment}</div></FormFeedback>
+                                                            {validation.touched.payment && validation.errors.payment?.nominalbayar ? (
+                                                                <FormFeedback type="invalid"><div>{validation.errors.payment?.nominalbayar}</div></FormFeedback>
                                                             ) : null}
                                                         </div>
                                                     </>
@@ -485,10 +495,10 @@ const Bayar = () => {
                                                 type="text"
                                                 disabled
                                                 value={validation.values.pjpasien || ""} 
-                                                invalid={validation.touched.payment && !!validation.errors.payment}
+                                                invalid={validation.touched.payment && !!validation.errors.payment?.nominalbayar}
                                                 />
-                                            {validation.touched.payment && validation.errors.payment ? (
-                                                <FormFeedback type="invalid" ><div>{validation.errors.payment}</div></FormFeedback>
+                                            {validation.touched.payment && validation.errors.payment?.nominalbayar ? (
+                                                <FormFeedback type="invalid" ><div>{validation.errors.payment?.nominalbayar}</div></FormFeedback>
                                             ) : null}
                                         </div>
                                     </Row>
@@ -626,7 +636,93 @@ const Bayar = () => {
                         </Row>
                     </Form>
             </Container>
-            
+            <PrintTemplate 
+                ContentPrint={
+                    <div className="template-bukti-bayar-print">
+                        <h2 className="judul-template">
+                            Bukti Pembayaran pasien Rumah Sakit Solusi Nusantara Berdikari
+                        </h2>
+                        <h3 className="no-kwitansi">
+
+                        </h3>
+                        <table>
+                            <tr>
+                                <td>
+                                    Nama Pasien
+                                </td>
+                                <td>
+                                    : Moelyono
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Tgl Pendaftaran
+                                </td>
+                                <td>
+                                    : 17/07/2023
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    No. Rekam Medis
+                                </td>
+                                <td>
+                                    : 0012308
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    No Registrasi
+                                </td>
+                                <td>
+                                    : 20230402009
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Sudah diterima dari 
+                                </td>
+                                <td>
+                                    : Neneng Komariyah
+                                </td>
+                            </tr>
+                            {created.createdCaraBayar?.map((caraBayar, index) =>
+                                <tr key={index}>
+                                    <td>
+                                        Metode bayar {index + 1}
+                                    </td>
+                                    <td>
+                                        : {`${caraBayar.objectmetodebayarfk === "Tunai" ? "Tunai" : ""}` + 
+                                            ` ${caraBayar.objectjenisnontunaifk ? `${caraBayar.objectjenisnontunaifk}` : ``}` +
+                                            ` Rp${caraBayar.totalbayar.toLocaleString("id-ID")}`}
+                                    </td>
+                                </tr>
+                            )}
+                            
+                            <tr>
+                                <td>
+                                    Total Bayar
+                                </td>
+                                <td>
+                                    : Tunai
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Untuk Pebayaran
+                                </td>
+                                <td>
+                                    : Keterangan coba
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                }
+                testing={false}
+                ref={refPrintTransaksi}
+                orientation="landscape"
+                format={[210, 120]}
+                />
         </div>
     )
 }

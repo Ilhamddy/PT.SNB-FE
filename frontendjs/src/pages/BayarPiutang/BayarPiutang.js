@@ -267,10 +267,10 @@ const BayarPiutang = () => {
                                                                 changePayment('metodebayar', index, e.value)
                                                             }
                                                             value={itemP.metodebayar || ""}
-                                                            className={`input ${validation.errors.payment ? "is-invalid" : ""}`}
+                                                            className={`input ${validation.errors.payment?.metodebayar ? "is-invalid" : ""}`}
                                                         />
-                                                        {validation.touched.payment && validation.errors.payment && (
-                                                            <FormFeedback type="invalid"><div>{validation.errors.payment}</div></FormFeedback>
+                                                        {validation.touched.payment && validation.errors.payment?.metodebayar && (
+                                                            <FormFeedback type="invalid"><div>{validation.errors.payment?.metodebayar}</div></FormFeedback>
                                                         )}
                                                     </div>
                                                 </Col>
@@ -325,10 +325,10 @@ const BayarPiutang = () => {
                                                                     rgxAllNumber.test(e.target.value) &&
                                                                         changePayment("approvalcode", index, e.target.value);
                                                                 }}
-                                                                invalid={validation.touched.payment && !!validation.errors.payment}
+                                                                invalid={validation.touched.payment && !!validation.errors.payment?.nominalbayar}
                                                                 />
-                                                            {validation.touched.payment && validation.errors.payment ? (
-                                                                <FormFeedback type="invalid" ><div>{validation.errors.payment}</div></FormFeedback>
+                                                            {validation.touched.payment && validation.errors.payment?.nominalbayar ? (
+                                                                <FormFeedback type="invalid" ><div>{validation.errors.payment?.nominalbayar}</div></FormFeedback>
                                                             ) : null}
                                                         </div>
                                                     </>
@@ -353,10 +353,10 @@ const BayarPiutang = () => {
                                                                     itemP.nominalbayar
                                                                 ))  
                                                         }}
-                                                        invalid={validation.touched.payment && !!validation.errors.payment}
+                                                        invalid={validation.touched.payment && !!validation.errors.payment?.nominalbayar}
                                                         value={itemP.nominalbayar || ""} />
-                                                    {validation.touched.payment && validation.errors.payment ? (
-                                                        <FormFeedback type="invalid"><div>{validation.errors.payment}</div></FormFeedback>
+                                                    {validation.touched.payment && validation.errors.payment?.nominalbayar ? (
+                                                        <FormFeedback type="invalid"><div>{validation.errors.payment?.nominalbayar}</div></FormFeedback>
                                                     ) : null}
                                                 </div>
                                                 {itemP.metodebayar === 2 &&
@@ -369,13 +369,13 @@ const BayarPiutang = () => {
                                                                 id={`rekeningrs${index}}`}
                                                                 name={`rekeningrs${index}`}
                                                                 options={filterRekeningRs(comboboxpayment?.rekeningRs || [], itemP.nontunai)}
-                                                                className={`input ${validation.errors.payment ? "is-invalid" : ""}`}
+                                                                className={`input ${validation.errors.payment?.nominalbayar ? "is-invalid" : ""}`}
                                                                 onChange={(e) => {
                                                                     changePayment("rekeningrs", index, e.value);
                                                                 }}
                                                             />
-                                                            {validation.touched.payment && validation.errors.payment ? (
-                                                                <FormFeedback type="invalid"><div>{validation.errors.payment}</div></FormFeedback>
+                                                            {validation.touched.payment?.nominalbayar && validation.errors.payment?.nominalbayar ? (
+                                                                <FormFeedback type="invalid"><div>{validation.errors.payment?.nominalbayar}</div></FormFeedback>
                                                             ) : null}
                                                         </div>
                                                     </>
