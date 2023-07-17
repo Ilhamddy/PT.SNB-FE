@@ -22,6 +22,7 @@
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
+    "crypto-js": "^4.1.1",
     "cryptojs": "^2.5.3",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
@@ -34,7 +35,7 @@
   },
   "eslintConfig": {
     "extends": [],
-    "env": {      
+    "env": {
       "es6": true,
       "node": true
     },
@@ -58,8 +59,7 @@
         "error"
       ]
     },
-    "globals": {
-    }
+    "globals": {}
   },
   "devDependencies": {
     "@babel/core": "^7.22.6",

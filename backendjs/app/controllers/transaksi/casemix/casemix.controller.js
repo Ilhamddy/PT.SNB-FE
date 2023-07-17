@@ -3,6 +3,8 @@ import * as uuid from 'uuid'
 import queries from '../../../queries/transaksi/registrasi.queries';
 import db from "../../../models";
 import crypto from 'crypto';
+import axios from "axios";
+import CryptoJS from "crypto-js";
 const algorithm = 'aes-256-cbc';
 const queryPromise2 = (query) => {
     return new Promise((resolve, reject) => {
@@ -354,34 +356,169 @@ async function getListDiagnosaIxPasien(req, res) {
         success: true,
     });
 }
+// function decrypt
+async function inacbg_encrypt(data, keyHex) {
+    // Make binary representation of key
+    const key = hexToBuffer(keyHex);
 
-function inacbg_encrypt(req) {
-    
-    /// make binary representasion of $key
-    let hex = hex2bin(req)
-    /// check key length, must be 256 bit or 32 bytes
-    if (countChars(hex) !== 32) {
-        throw 'Needs a 256-bit key!'
+    // Check key length, must be 256 bit or 32 bytes
+    if (key.length !== 32) {
+        throw new Error("Needs a 256-bit key!");
     }
-    
-    console.log(req)
-    return hex
-//    return decipher
+
+    // Create initialization vector
+    const ivSize = 16; // IV size for AES-256-CBC is 16 bytes
+    const iv = crypto.randomBytes(ivSize);
+
+    // Convert data to Buffer (if needed)
+    const dataBuffer = typeof data === "string" ? Buffer.from(data, "utf8") : data;
+
+    // Encrypt
+    const cipher = crypto.createCipheriv("aes-256-cbc", key, iv);
+    const encryptedBuffer = Buffer.concat([cipher.update(dataBuffer), cipher.final()]);
+
+    // Create signature, against padding oracle attacks
+    const signatureBuffer = crypto.createHmac("sha256", key).update(encryptedBuffer.slice(0, 10)).digest();
+
+    // Combine all, encode, and format
+    const combinedBuffer = Buffer.concat([signatureBuffer, iv, encryptedBuffer]);
+    const encodedData = combinedBuffer.toString("base64");
+    return encodedData;
 }
+
+function hexToBuffer(hexString) {
+    return Buffer.from(hexString, "hex");
+}
+
+
+
+// end
+
+// inacbg decrypt
+async function inacbg_decrypt(str, strkey) {
+    // Make binary representation of key
+    const key = Buffer.from(strkey, "hex");
+
+    // Check key length, must be 256 bit or 32 bytes
+    if (key.length !== 32) {
+        throw new Error("Needs a 256-bit key!");
+    }
+
+    // Calculate iv size
+    const ivSize = 16; // IV size for AES-256-CBC is 16 bytes
+
+    // Convert the input string to a Buffer (using Base64 decoding)
+    const decoded = Buffer.from(str, "base64");
+
+    // Extract IV from the decoded data
+    const iv = decoded.slice(10, 10 + ivSize);
+
+    // Extract encrypted data from the decoded data (after the IV)
+    const encrypted = decoded.slice(10 + ivSize);
+
+    // Check signature, against padding oracle attack
+    const calc_signature = crypto
+        .createHmac("sha256", key)
+        .update(encrypted)
+        .digest("binary")
+        .slice(0, 10);
+    const hasil = await !inacbg_compare(encrypted.slice(0, 10), Buffer.from(calc_signature, "binary"))
+    if (hasil) {
+        throw new Error("SIGNATURE_NOT_MATCH"); // signature doesn't match
+    }
+
+    // Create the decipher object
+    const decipher = crypto.createDecipheriv("aes-256-cbc", key, iv);
+    decipher.setAutoPadding(false); // Padding is handled manually, set to false
+
+    // Decrypt the data
+    let decrypted = decipher.update(encrypted, "binary", "utf8");
+    decrypted += decipher.final("utf8");
+
+    return decrypted;
+}
+
+async function inacbg_compare(a, b) {
+    // Compare individually to prevent timing attacks
+
+    // Compare length
+    if (a.length !== b.length) return false;
+
+    // Compare individual bytes
+    let result = 0;
+    for (let i = 0; i < a.length; i++) {
+        result |= a[i] ^ b[i]
+    }
+
+    return result === 0;
+}
+
+
+
+//   end
 
 async function saveBridgingInacbg(req, res) {
     let key_inacbg = ''
-        const resultlistKodeTarif = await queryPromise2(`select s_key,s_value from s_global where s_key ilike '%inacbg%'`);
-        for (let x = 0; x < resultlistKodeTarif.rows.length; x++) {
-            if (resultlistKodeTarif.rows[x].s_key === 'key_inacbg') {
-                key_inacbg = resultlistKodeTarif.rows[x].s_value
-            }
+    let url_inacbg = ''
+    const resultlistKodeTarif = await queryPromise2(`select s_key,s_value from s_global where s_key ilike '%inacbg%'`);
+    for (let x = 0; x < resultlistKodeTarif.rows.length; x++) {
+        if (resultlistKodeTarif.rows[x].s_key === 'key_inacbg') {
+            key_inacbg = resultlistKodeTarif.rows[x].s_value
         }
-    res.status(200).send({
-        data: inacbg_encrypt(key_inacbg),
-        status: "success",
-        success: true,
-    });
+        if (resultlistKodeTarif.rows[x].s_key === 'url_inacbg') {
+            url_inacbg = resultlistKodeTarif.rows[x].s_value
+        }
+    }
+
+    const jsonData = {
+        metadata: {
+            method: "new_claim"
+        },
+        data: {
+            nomor_kartu: "0000668870001",
+            nomor_sep: "0001R0016120507422",
+            nomor_rm: "123-45-67",
+            nama_pasien: "NAMA TEST PASIEN",
+            tgl_lahir: "1940-01-01 02:00:00",
+            gender: "2"
+        }
+    };
+    let tempJ = JSON.stringify(jsonData)
+    let payload = await inacbg_encrypt(tempJ, key_inacbg)
+    const headers = {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "Access-Control-Allow-Origin": "*"
+    };
+
+    const config = {
+        method: "post",
+        url: url_inacbg,
+        headers: headers,
+        data: new URLSearchParams(payload).toString()
+    };
+    try {
+        const response = await axios(config);
+        const responseData = response.data;
+
+        // Extract the content between the first and last newlines
+        const firstNewlineIndex = await responseData.indexOf("\n") + 1;
+        const lastNewlineIndex = await responseData.lastIndexOf("\n") - 1;
+        const trimmedResponse = await responseData.substring(firstNewlineIndex, lastNewlineIndex);
+        let regex = /----BEGIN ENCRYPTED DATA----(\r\n)|(\r\n)----END ENCRYPTED\sDATA----(\r\n)*/g;
+        let tempRes = responseData.replace(regex, "");
+
+        const decryptedResponse = await inacbg_decrypt(tempRes, key_inacbg);
+        res.status(200).send({
+            data: decryptedResponse,
+            status: "success",
+            success: true,
+        });
+    } catch (error) {
+        // Handle errors
+        console.error("Error:", error);
+        throw error;
+    }
+
 }
 
 
