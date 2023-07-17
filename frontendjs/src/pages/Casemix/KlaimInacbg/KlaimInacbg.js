@@ -22,8 +22,10 @@ import calendar from "../../../assets/images/users/calendar.png";
 import SearchOption from '../../../Components/Common/SearchOption';
 import { dateISOString, dateTimeLocal } from "../../../utils/format";
 import {
-    casemixResetForm, listCariPasienGet, listDaftarPasienGet, listTarifPasienGet
+    casemixResetForm, listCariPasienGet, listDaftarPasienGet, listTarifPasienGet,
+    listDiagnosaxGet, listDiagnosaixGet
 } from '../../../store/actions';
+import { BasicTable } from '../../Tables/DataTables/datatableCom';
 
 const dateAwalStart = dateISOString(new Date(new Date() - 1000 * 60 * 60 * 24 * 3));
 const dateAwalEnd = dateISOString(new Date())
@@ -32,7 +34,9 @@ const KlaimInacbg = () => {
     const dispatch = useDispatch();
     const { editData, newData, loading, error, success,
         dataPasien, loadingPasien, successPasien, dataDaftarPasien, loadingDaftarPasien, successDaftarPasien,
-        dataTarifPasien, loadingTarifPasien, successTarifPasien } = useSelector((state) => ({
+        dataTarifPasien, loadingTarifPasien, successTarifPasien,
+        dataRiwayatD10, loadingRiwayatD10, successRiwayatD10,
+        dataRiwayatD9, loadingRiwayatD9, successRiwayatD9 } = useSelector((state) => ({
             // newData: state.Radiologi.updateTglRencanaRadiologi.newData,
             // success: state.Radiologi.updateTglRencanaRadiologi.success,
             // loading: state.Radiologi.updateTglRencanaRadiologi.loading,
@@ -45,6 +49,12 @@ const KlaimInacbg = () => {
             dataTarifPasien: state.Casemix.listTarifPasienGet.data,
             loadingTarifPasien: state.Casemix.listTarifPasienGet.loading,
             successTarifPasien: state.Casemix.listTarifPasienGet.success,
+            dataRiwayatD10: state.Casemix.listDiagnosaxGet.data,
+            loadingRiwayatD10: state.Casemix.listDiagnosaxGet.loading,
+            successRiwayatD10: state.Casemix.listDiagnosaxGet.success,
+            dataRiwayatD9: state.Casemix.listDiagnosaixGet.data,
+            loadingRiwayatD9: state.Casemix.listDiagnosaixGet.loading,
+            successRiwayatD9: state.Casemix.listDiagnosaixGet.success,
         }));
 
     useEffect(() => {
@@ -160,7 +170,8 @@ const KlaimInacbg = () => {
             setstateRJ(false)
         }
         dispatch(listTarifPasienGet(e.norec))
-        // console.log(stateTemp.noregistrasi)
+        dispatch(listDiagnosaxGet(e.norec));
+        dispatch(listDiagnosaixGet(e.norec));
     };
     const columns = [
         {
@@ -236,6 +247,25 @@ const KlaimInacbg = () => {
             selector: row => '-',
             sortable: true,
             width: "150px",
+        },
+    ];
+    const columnsDiagnosa10 = [
+
+        {
+            selector: row => row.label,
+            sortable: true
+        },
+        {
+            selector: row => row.tipediagnosa,
+            sortable: true
+        },
+        {
+            selector: row => row.jeniskasus,
+            sortable: true
+        },
+        {
+            selector: row => row.namaunit,
+            sortable: true
         },
     ];
     const back = () => {
@@ -593,8 +623,10 @@ const KlaimInacbg = () => {
                                                             {stateTemp.los}
                                                         </td>
                                                         <th scope="row" style={{ width: "10%" }}>Berat Lahir (gram)</th>
-                                                        <td style={{ width: "30%" }}><Input style={{ textAlign: 'center',
-                                                        backgroundColor:'#ffdd99' }}
+                                                        <td style={{ width: "30%" }}><Input style={{
+                                                            textAlign: 'center',
+                                                            backgroundColor: '#ffdd99'
+                                                        }}
                                                             type="number"
                                                             className="form-control"
                                                             id="job-title-Input"
@@ -922,6 +954,14 @@ const KlaimInacbg = () => {
                                                                     <i className="ri-search-2-line"></i>
                                                                 </div>
                                                             </Col>
+                                                            <Col lg={12}>
+                                                                <DataTable
+                                                                    columns={columnsDiagnosa10}
+                                                                    data={dataRiwayatD10}
+                                                                    pagination
+                                                                    progressPending={loadingRiwayatD10}
+                                                                />
+                                                            </Col>
                                                             <Col lg={9} style={{ textAlign: 'left' }}><h5>Diagnosa (ICD-9):</h5></Col>
                                                             <Col lg={3} style={{ textAlign: 'right', }}>
                                                                 <div className="form-icon">
@@ -932,6 +972,14 @@ const KlaimInacbg = () => {
                                                                         onKeyDown={handleFilter} />
                                                                     <i className="ri-search-2-line"></i>
                                                                 </div>
+                                                            </Col>
+                                                            <Col lg={12}>
+                                                                <DataTable
+                                                                    columns={columnsDiagnosa10}
+                                                                    data={dataRiwayatD9}
+                                                                    pagination
+                                                                    progressPending={loadingRiwayatD9}
+                                                                />
                                                             </Col>
                                                         </Row>
                                                     </TabPane>
@@ -1126,6 +1174,11 @@ const KlaimInacbg = () => {
                                                 </tbody>
                                             </Table>
                                         </div>
+                                        <Col xxl={12} sm={12}>
+                            <Button type="button" color="info" className="rounded-pill" placement="top">
+                                GROUPING
+                            </Button>
+                        </Col>
                                     </Row>
                                 </CardBody>
                             </Card>

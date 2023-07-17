@@ -116,6 +116,7 @@ async function saveTindakanPasien(req, res) {
             msg: 'Simpan Gagal',
             code: 201
         });
+        return
     }
     try {
         var newArray = [{ objectjenispelaksana: req.body.jenispelaksana1, objectnamapelaksana: req.body.namapelaksana1 }];

@@ -8,7 +8,13 @@ import {
     LIST_DAFTAR_PASIEN_GET_ERROR,
     LIST_TARIF_PASIEN_GET,
     LIST_TARIF_PASIEN_GET_SUCCESS,
-    LIST_TARIF_PASIEN_GET_ERROR
+    LIST_TARIF_PASIEN_GET_ERROR,
+    LISTDIAGNOSAX_GET,
+    LISTDIAGNOSAX_GET_SUCCESS,
+    LISTDIAGNOSAX_GET_ERROR,
+    LISTDIAGNOSAIX_GET,
+    LISTDIAGNOSAIX_GET_SUCCESS,
+    LISTDIAGNOSAIX_GET_ERROR
 } from "./actionType";
 
 export const casemixResetForm = () => ({
@@ -57,5 +63,35 @@ export const listTarifPasienGetSuccess = (data) => ({
 
 export const listTarifPasienGetError = (error) => ({
     type: LIST_TARIF_PASIEN_GET_ERROR,
+    payload: error,
+});
+
+export const listDiagnosaxGet = (param) => ({
+    type: LISTDIAGNOSAX_GET,
+    payload: { param },
+});
+
+export const listDiagnosaxGetSuccess = (data) => ({
+    type: LISTDIAGNOSAX_GET_SUCCESS,
+    payload: data,
+});
+
+export const listDiagnosaxGetError = (error) => ({
+    type: LISTDIAGNOSAX_GET_ERROR,
+    payload: error,
+});
+
+export const listDiagnosaixGet = (param) => ({
+    type: LISTDIAGNOSAIX_GET,
+    payload: { param },
+});
+
+export const listDiagnosaixGetSuccess = (data) => ({
+    type: LISTDIAGNOSAIX_GET_SUCCESS,
+    payload: data,
+});
+
+export const listDiagnosaixGetError = (error) => ({
+    type: LISTDIAGNOSAIX_GET_ERROR,
     payload: error,
 });

@@ -27,5 +27,23 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getListTarif18
     );
+
+    app.get(
+        "/api/transaksi/casemix/getList-diagnosax-pasien",
+        [authJwt.verifyToken],
+        controller.getListDiagnosaPasien
+    );
+
+    app.get(
+        "/api/transaksi/casemix/getList-diagnosaix-pasien",
+        [authJwt.verifyToken],
+        controller.getListDiagnosaIxPasien
+    );
+
+    app.post(
+        "/api/transaksi/casemix/save-bridging-inacbg",
+        [authJwt.verifyToken],
+        controller.saveBridgingInacbg
+    );
     
 }
