@@ -35,4 +35,8 @@ export default class ServicePayment {
     getAllPiutang = async (location) => {
         return await api.get(`/transaksi/payment/get-daftar-piutang-pasien/${location}`);
     }
+
+    getPaymentForPiutang = async (norecpiutang) => {
+        return await api.get(`/transaksi/payment/get-payment-piutang-pasien/${norecpiutang}`);
+    }
 }

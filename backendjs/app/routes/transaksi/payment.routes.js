@@ -57,4 +57,10 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getAllPiutang
     );
+
+    app.get(
+        "/api/transaksi/payment/get-payment-piutang-pasien/:norecpiutang",
+        [authJwt.verifyToken],
+        controller.getPaymentForPiutang
+    );
 }

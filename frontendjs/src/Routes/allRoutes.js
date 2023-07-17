@@ -273,6 +273,7 @@ import Bayar from "../pages/Bayar/Bayar";
 // casemix
 import KlaimInacbg from "../pages/Casemix/KlaimInacbg/KlaimInacbg";
 import DaftarPiutangPasien from "../pages/DaftarPiutangPasien/DaftarPiutangPasien";
+import BayarPiutang from "../pages/BayarPiutang/BayarPiutang";
 
 
 
@@ -520,6 +521,7 @@ const authProtectedRoutes = [
   { path: "/payment/daftar-tagihan", component: <DaftarTagihanPasien /> },
   { path: "/payment/bayar/:norecnota", component: <Bayar /> },
   { path: "/payment/daftar-piutang/:location", component: <DaftarPiutangPasien />},
+  { path: "/payment/bayar/piutang/:norecpiutang/:norecnota", component: <BayarPiutang /> },
 
   // casemix
   { path: "/casemix/klaiminacbg", component: <KlaimInacbg /> }

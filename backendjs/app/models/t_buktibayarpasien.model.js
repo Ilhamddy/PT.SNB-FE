@@ -51,6 +51,15 @@ export default (sequelize, Sequelize) => {
         },
         klaim: {
             type: Sequelize.FLOAT
+        },
+        objectpiutangpasienfk: {
+            type: Sequelize.CHAR(32)
+        },
+        keterangan: {
+            type: Sequelize.STRING
+        },
+        tglinput: {
+            type: Sequelize.DATE
         }
     }, {
         tableName: "t_buktibayarpasien", // relation "user" does not exist

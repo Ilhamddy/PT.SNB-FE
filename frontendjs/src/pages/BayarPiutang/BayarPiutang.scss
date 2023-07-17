@@ -1,0 +1,30 @@
+.page-bayar-piutang{
+    .row-header{
+        position: relative;
+        z-index: 500;
+    }
+
+    .table-bayar{
+        width: calc(100%);
+        tbody{
+
+            tr{
+                td{
+                    padding: 10px 0;
+                    text-align: left !important;
+                }
+                td:last-child{
+                    padding: 10px 0;
+                    text-align: right !important;
+                }
+            };
+
+        };
+        .total-tagihan{
+            border-top: 1px solid #E0E0E0;
+            
+        };
+
+    }
+    
+}
