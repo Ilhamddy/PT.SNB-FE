@@ -15,7 +15,10 @@ import {
     LISTDIAGNOSAX_GET_ERROR,
     LISTDIAGNOSAIX_GET,
     LISTDIAGNOSAIX_GET_SUCCESS,
-    LISTDIAGNOSAIX_GET_ERROR
+    LISTDIAGNOSAIX_GET_ERROR,
+    BRIDGING_INACBG_SAVE,
+    BRIDGING_INACBG_SAVE_SUCCESS,
+    BRIDGING_INACBG_SAVE_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -44,6 +47,12 @@ const INIT_STATE = {
         loading: false,
         error: null,
     },
+    bridgingInacbgSave: {
+        newData: null,
+        loading: false,
+        error: null,
+        success: false
+    },
 }
 
 const Casemix = (state= INIT_STATE,action)=>{
@@ -65,6 +74,9 @@ const Casemix = (state= INIT_STATE,action)=>{
                 },
                 listDiagnosaixGet:{
                     ...INIT_STATE.listDiagnosaixGet
+                },
+                bridgingInacbgSave:{
+                    ...INIT_STATE.bridgingInacbgSave
                 }
             }
         }
@@ -228,6 +240,40 @@ const Casemix = (state= INIT_STATE,action)=>{
                 ...state,
                 listDiagnosaixGet: {
                     ...state.listDiagnosaixGet,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case BRIDGING_INACBG_SAVE: {
+            return {
+                ...state,
+                bridgingInacbgSave: {
+                    ...state.bridgingInacbgSave,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case BRIDGING_INACBG_SAVE_SUCCESS: {
+            return {
+                ...state,
+                bridgingInacbgSave: {
+                    ...state.bridgingInacbgSave,
+                    newData: action.payload,
+                    loading: false,
+                    success: true,
+                }
+            }
+        }
+
+        case BRIDGING_INACBG_SAVE_ERROR: {
+            return {
+                ...state,
+                bridgingInacbgSave: {
+                    ...state.bridgingInacbgSave,
                     loading: false,
                     error: action.error,
                 }

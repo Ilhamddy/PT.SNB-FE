@@ -14,7 +14,10 @@ import {
     LISTDIAGNOSAX_GET_ERROR,
     LISTDIAGNOSAIX_GET,
     LISTDIAGNOSAIX_GET_SUCCESS,
-    LISTDIAGNOSAIX_GET_ERROR
+    LISTDIAGNOSAIX_GET_ERROR,
+    BRIDGING_INACBG_SAVE,
+    BRIDGING_INACBG_SAVE_SUCCESS,
+    BRIDGING_INACBG_SAVE_ERROR
 } from "./actionType";
 
 export const casemixResetForm = () => ({
@@ -93,5 +96,21 @@ export const listDiagnosaixGetSuccess = (data) => ({
 
 export const listDiagnosaixGetError = (error) => ({
     type: LISTDIAGNOSAIX_GET_ERROR,
+    payload: error,
+});
+
+export const bridgingInacbgSave = (data, history) => ({
+    type: BRIDGING_INACBG_SAVE,
+    payload: { data, history },
+});
+
+// common error
+export const bridgingInacbgSaveSuccess = (data, history) => ({
+    type: BRIDGING_INACBG_SAVE_SUCCESS,
+    payload: { data, history },
+});
+
+export const bridgingInacbgSaveError = (error) => ({
+    type: BRIDGING_INACBG_SAVE_ERROR,
     payload: error,
 });

@@ -538,7 +538,7 @@ const TandaVital = () => {
                                         <Input
                                             id="tekanandarah"
                                             name="tekanandarah"
-                                            type="number"
+                                            type="input"
                                             placeholder="Tekanan Darah"
                                             onChange={validation.handleChange}
                                             onBlur={validation.handleBlur}

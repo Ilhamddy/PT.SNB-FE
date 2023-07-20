@@ -655,7 +655,7 @@ async function getListDiagnosaIxPasien(req, res) {
     const resultList = await queryPromise2(`SELECT row_number() OVER (ORDER BY td.norec) AS no,dp.noregistrasi,
     to_char(dp.tglregistrasi,'yyyy-MM-dd') as tglregistrasi,td.norec,mu.namaunit,
     mi.kodeexternal ||' - '|| mi.reportdisplay as label,
-    mi.id as value, td.keterangan
+    mi.id as value, td.keterangan, td.qty
             FROM t_daftarpasien dp 
     join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk=dp.norec
     join t_diagnosatindakan td  on td.objectantreanpemeriksaanfk =ta.norec
@@ -694,7 +694,8 @@ async function saveEmrPasienDiagnosaix(req, res) {
             objecticdixfk: req.body.kodediagnosa9,
             keterangan: req.body.keteranganicd9,
             tglinput: new Date(),
-            objectpegawaifk: req.idPegawai
+            objectpegawaifk: req.idPegawai,
+            qty:req.body.jumlahtindakan
         }, { transaction });
 
         await transaction.commit();

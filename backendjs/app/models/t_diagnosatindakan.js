@@ -25,6 +25,9 @@ export default (sequelize, Sequelize) => {
         tglinput:{
             type: 'TIMESTAMP'
         },
+        qty:{
+            type: Sequelize.INTEGER
+        },
     }, {
         tableName: "t_diagnosatindakan", // relation "user" does not exist
         createdAt: false,

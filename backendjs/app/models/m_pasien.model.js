@@ -75,7 +75,7 @@ export default (sequelize, Sequelize) => {
         statusenabled: {
             type: Sequelize.BOOLEAN,
             defaultValue: true
-        },
+        }
     }, {
         tableName: "m_pasien", // relation "user" does not exist
         createdAt: false,
