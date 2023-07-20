@@ -81,7 +81,7 @@ const BayarPiutang = () => {
                 approvalcode: "",
                 nominalbayar: "",
                 tglbayar: dateAwalStart,
-                rekieningrs: ""
+                rekeningrs: ""
             }]
         },
         validationSchema: Yup.object({
@@ -101,11 +101,16 @@ const BayarPiutang = () => {
                         is: (val) => val === "2",
                         then: () => Yup.string().required("Rekening RS harus diisi"),
                     }),
+                    approvalcode: Yup.string().when("metodebayar", {
+                        is: (val) => val === "2",
+                        then: () => Yup.string().required("Approval Code harus diisi"),
+                    }),
                 })
             ),
             pjpasien: Yup.string().required("Diterima Dari harus diisi"),
             // non wajib
             deposit: Yup.string().required("Deposit harus diisi"),
+            keterangan: Yup.string().required("Keterangan wajib diisi"),
             nobukti: Yup.string().required("No Bukti harus diisi"),
             pegawai: Yup.string().required("Pegawai harus diisi"),
             klaim: Yup.string().required("Klaim harus diisi"),
@@ -141,7 +146,8 @@ const BayarPiutang = () => {
             pjpasien: "",
             nominalbayar: "",
             tglbayar: dateAwalStart,
-            rekieningrs: ""
+            rekeningrs: "",
+            approvalcode: "",
         });
         validation.setFieldValue("payment", newPayments);
     }
@@ -235,6 +241,8 @@ const BayarPiutang = () => {
             (rekening) => rekening.objectbankfk === nontunaiV
         );
     }
+    console.log(validation.touched.payment)
+
     return(
         <div className="page-content page-bayar-piutang">
             <ToastContainer closeButton={false} />
@@ -243,6 +251,7 @@ const BayarPiutang = () => {
                     <Form
                         onSubmit={(e) => {
                             e.preventDefault();
+                            console.log(validation.errors)
                             validation.handleSubmit();
                             return false;
                         }}
@@ -251,30 +260,30 @@ const BayarPiutang = () => {
                         <Row>
                             <Col lg={7}>
                                 <Card className="p-3">
-                                    {validation.values.payment.map((itemP, index) => 
-                                        <Row key={index} className="mb-5">
+                                    {validation.values.payment.map((itemPayment, iPayment) => 
+                                        <Row key={iPayment} className="mb-5">
                                             <Row className="mb-2">
                                                 <Col lg={6}>
-                                                    <Label style={{ color: "black" }} htmlFor={`metodebayar${index}`} className="form-label">
-                                                        Metode Pembayaran {index + 1}
+                                                    <Label style={{ color: "black" }} htmlFor={`metodebayar${iPayment}`} className="form-label">
+                                                        Metode Pembayaran {iPayment + 1}
                                                     </Label>
                                                     <div>
                                                         <CustomSelect
-                                                            id={`metodebayar${index}`}
-                                                            name={`metodebayar${index}`}
+                                                            id={`metodebayar${iPayment}`}
+                                                            name={`metodebayar${iPayment}`}
                                                             options={comboboxpayment?.metodeBayar || []}
                                                             onChange={e => 
-                                                                changePayment('metodebayar', index, e.value)
+                                                                changePayment('metodebayar', iPayment, e.value)
                                                             }
-                                                            value={itemP.metodebayar || ""}
-                                                            className={`input ${validation.errors.payment?.metodebayar ? "is-invalid" : ""}`}
+                                                            value={itemPayment.metodebayar || ""}
+                                                            className={`input ${validation.errors.payment?.[iPayment]?.metodebayar ? "is-invalid" : ""}`}
                                                         />
-                                                        {validation.touched.payment && validation.errors.payment?.metodebayar && (
-                                                            <FormFeedback type="invalid"><div>{validation.errors.payment?.metodebayar}</div></FormFeedback>
+                                                        {validation.touched.payment?.[iPayment]?.metodebayar && validation.errors.payment?.[iPayment]?.metodebayar && (
+                                                            <FormFeedback type="invalid"><div>{validation.errors.payment?.[iPayment]?.metodebayar}</div></FormFeedback>
                                                         )}
                                                     </div>
                                                 </Col>
-                                                {itemP.metodebayar === 2 &&
+                                                {itemPayment.metodebayar === 2 &&
                                                     <Col xxl={6} md={6}>
                                                         <Card>
                                                             <CardHeader>
@@ -287,14 +296,14 @@ const BayarPiutang = () => {
                                                                         <Input 
                                                                             className="form-check-input" 
                                                                             type="radio" 
-                                                                            id={`radio-payment-${key}-${index}`}   
-                                                                            checked={itemP.nontunai === data.value}
+                                                                            id={`radio-payment-${key}-${iPayment}`}   
+                                                                            checked={itemPayment.nontunai === data.value}
                                                                             readOnly
                                                                             onClick={e => { 
-                                                                                changePayment('nontunai', index, data.value)
+                                                                                changePayment('nontunai', iPayment, data.value)
                                                                             }}/>
                                                                         <Label className="form-check-label ms-2" 
-                                                                            htmlFor={`radio-payment-${key}-${index}`} 
+                                                                            htmlFor={`radio-payment-${key}-${iPayment}`} 
                                                                             style={{ color: "black" }} >
                                                                             {data.label}
                                                                         </Label>
@@ -307,81 +316,82 @@ const BayarPiutang = () => {
                                                 }
                                             </Row>
                                                 <Row className="mb-2">
-                                                {itemP.metodebayar === 2 && 
+                                                {itemPayment.metodebayar === 2 && 
                                                     <>
                                                         <Label 
                                                             style={{ color: "black" }} 
-                                                            htmlFor={`approvalcode${index}`}
+                                                            htmlFor={`approvalcode${iPayment}`}
                                                             className="form-label">
                                                             Approval Code
                                                         </Label>
                                                         <div>
                                                             <Input 
-                                                                id={`approvalcode${index}`}
-                                                                name={`approvalcode${index}`}
-                                                                type="text"
-                                                                value={itemP.approvalcode || ""} 
+                                                                id={`approvalcode${iPayment}`}
+                                                                name={`approvalcode${iPayment}`}
+                                                                type="string"
+                                                                placeholder="Masukkan approval code"
+                                                                value={itemPayment.approvalcode || ""} 
                                                                 onChange={(e) => {
                                                                     rgxAllNumber.test(e.target.value) &&
-                                                                        changePayment("approvalcode", index, e.target.value);
+                                                                        changePayment("approvalcode", iPayment, e.target.value);
                                                                 }}
-                                                                invalid={validation.touched.payment && !!validation.errors.payment?.nominalbayar}
+                                                                invalid={validation.touched.payment?.[iPayment]?.approvalcode && !!validation.errors.payment?.[iPayment]?.approvalcode}
                                                                 />
-                                                            {validation.touched.payment && validation.errors.payment?.nominalbayar ? (
-                                                                <FormFeedback type="invalid" ><div>{validation.errors.payment?.nominalbayar}</div></FormFeedback>
+                                                            {validation.touched.payment?.[iPayment]?.approvalcode && validation.errors.payment?.[iPayment]?.approvalcode ? (
+                                                                <FormFeedback type="invalid" ><div>{validation.errors.payment?.[iPayment]?.approvalcode}</div></FormFeedback>
                                                             ) : null}
                                                         </div>
                                                     </>
                                                 }
                                                 <Label style={{ color: "black" }} 
-                                                    htmlFor={`keterangan${index}`}
+                                                    htmlFor={`nominalbayar${iPayment}`}
                                                     className="form-label">
                                                     Nominal bayar
                                                 </Label>
                                                 <div>
                                                     <Input 
-                                                        id={`nominalbayar${index}}`}
-                                                        name={`nominalbayar${index}`}
+                                                        id={`nominalbayar${iPayment}`}
+                                                        name={`nominalbayar${iPayment}`}
                                                         type="string"
                                                         placeholder="Masukkan nominal bayar"
                                                         className="form-control"
                                                         onChange={(e) => {
                                                             changePayment("nominalbayar",
-                                                                index,
+                                                                iPayment,
                                                                 onChangeStrNbr(
                                                                     e.target.value, 
-                                                                    itemP.nominalbayar
+                                                                    itemPayment.nominalbayar
                                                                 ))  
                                                         }}
-                                                        invalid={validation.touched.payment && !!validation.errors.payment?.nominalbayar}
-                                                        value={itemP.nominalbayar || ""} />
-                                                    {validation.touched.payment && validation.errors.payment?.nominalbayar ? (
-                                                        <FormFeedback type="invalid"><div>{validation.errors.payment?.nominalbayar}</div></FormFeedback>
+                                                        invalid={validation.touched.payment?.[iPayment]?.nominalbayar && !!validation.errors.payment?.[iPayment]?.nominalbayar}
+                                                        value={itemPayment.nominalbayar || ""} />
+                                                    {validation.touched.payment?.[iPayment]?.nominalbayar && validation.errors.payment?.[iPayment]?.nominalbayar ? (
+                                                        <FormFeedback type="invalid"><div>{validation.errors.payment?.[iPayment]?.nominalbayar}</div></FormFeedback>
                                                     ) : null}
                                                 </div>
-                                                {itemP.metodebayar === 2 &&
+                                                {itemPayment.metodebayar === 2 &&
                                                     <>
                                                         <Label style={{ color: "black" }} htmlFor="keterangan" className="form-label">
                                                             Rekening RS
                                                         </Label>
                                                         <div>
                                                             <CustomSelect
-                                                                id={`rekeningrs${index}}`}
-                                                                name={`rekeningrs${index}`}
-                                                                options={filterRekeningRs(comboboxpayment?.rekeningRs || [], itemP.nontunai)}
-                                                                className={`input ${validation.errors.payment?.nominalbayar ? "is-invalid" : ""}`}
+                                                                id={`rekeningrs${iPayment}}`}
+                                                                name={`rekeningrs${iPayment}`}
+                                                                options={filterRekeningRs(comboboxpayment?.rekeningRs || [], itemPayment.nontunai)}
                                                                 onChange={(e) => {
-                                                                    changePayment("rekeningrs", index, e.value);
+                                                                    changePayment("rekeningrs", iPayment, e.value);
                                                                 }}
+                                                                className={`input ${validation.errors.payment?.[iPayment]?.rekeningrs ? "is-invalid" : ""}`}
                                                             />
-                                                            {validation.touched.payment?.nominalbayar && validation.errors.payment?.nominalbayar ? (
-                                                                <FormFeedback type="invalid"><div>{validation.errors.payment?.nominalbayar}</div></FormFeedback>
+                                                            {validation.touched.payment?.[iPayment]?.rekeningrs && validation.errors.payment?.[iPayment]?.rekeningrs ? (
+                                                                <FormFeedback type="invalid"><div>{validation.errors.payment?.[iPayment]?.rekeningrs}</div></FormFeedback>
                                                             ) : null}
                                                         </div>
                                                     </>
                                                 }
                                             </Row>
-                                            {index === validation.values.payment.length - 1 && 
+                                            {iPayment === validation.values.payment.length - 1 && 
                                             <div className="d-flex flex-column align-items-center">
                                                 <Row>
                                                     <Col lg={5}>
@@ -518,10 +528,8 @@ const BayarPiutang = () => {
                                                 style={{ height: '200px' }}
                                                 onChange={validation.handleChange}
                                                 onBlur={validation.handleBlur}
-                                                value={validation.values.keterangan || ""}
-                                                invalid={
-                                                    validation.touched.keterangan && validation.errors.keterangan ? true : false
-                                                }
+                                                value={""}
+
                                             />
                                             {validation.touched.keterangan && validation.errors.keterangan ? (
                                                 <FormFeedback type="invalid"><div>{validation.errors.keterangan}</div></FormFeedback>

@@ -23,6 +23,7 @@ import CustomSelect from '../../Select/Select';
 import KonsulModal from '../../../Components/Common/KonsulModal';
 import StatusPulangModal from '../../../Components/Common/StatusPulangModal';
 import StatusPulangRIModal from '../../../Components/Common/StatusPulangRIModal';
+import DepositModal from '../../../Components/Common/DepositModal/DepositModal';
 
 const DaftarPasienRI = () => {
     document.title = "Daftar Pasien Rawat Inap";
@@ -30,6 +31,7 @@ const DaftarPasienRI = () => {
     const history = useNavigate();
     const [norecPulangRI, setNorecPulangRI] = useState("");
     const [norecPulangRIAP, setNorecPulangRIAP] = useState("");
+    const [dpDeposit, setdpDeposit] = useState("");
     const { data, datawidget, loading, error, dataCombo,loadingCombo } = useSelector((state) => ({
         data: state.DaftarPasien.daftarPasienRIGet.data,
         datawidget: state.DaftarPasien.widgetdaftarPasienRIGet.data,
@@ -109,6 +111,7 @@ const DaftarPasienRI = () => {
                             <DropdownMenu className="dropdown-menu-end">
                                 <DropdownItem href="#!" onClick={() => handleClickKonsul(data)}><i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>Konsul Antar Unit</DropdownItem>
                                 <DropdownItem href="#!" onClick={() => {setNorecPulangRI(data.norecdp); setNorecPulangRIAP(data.norecta)}}><i className="ri-run-line align-bottom me-2 text-muted"></i>Pulang</DropdownItem>
+                                <DropdownItem href="#!" onClick={() => {setdpDeposit(data.norecdp)}}><i className="ri-run-line align-bottom me-2 text-muted"></i>Deposit</DropdownItem>
                             </DropdownMenu>
                         </UncontrolledDropdown>
                         <UncontrolledTooltip placement="top" target="tooltipTop2" > Menu </UncontrolledTooltip>
@@ -206,6 +209,7 @@ const DaftarPasienRI = () => {
                 norecdp={norecPulangRI} 
                 norecAP={norecPulangRIAP}
                 toggle={() => setNorecPulangRI("")} />
+            <DepositModal toggle={() => setdpDeposit("")} norecdp={dpDeposit}/>
             <UiContent />
             <div className="page-content">
                 <Container fluid>
@@ -278,7 +282,6 @@ const DaftarPasienRI = () => {
                                             </Col>
                                         </Row>
                                     </div>
-
                                 </CardHeader>
                                 <CardBody>
                                     <div className='mb-2'>

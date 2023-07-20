@@ -871,6 +871,7 @@ const saveRegistrasiPenjaminFK = async (req, res) => {
             msg: 'Simpan Gagal',
             code: 201
         });
+        return;
     }
     try{
         let norecPenjaminFK = uuid.v4().substring(0, 32)
@@ -884,7 +885,7 @@ const saveRegistrasiPenjaminFK = async (req, res) => {
                 no_kartu: dataForm.nokartunonbpjs,
                 objectdpjpfk: dataForm.dpjpmelayani,
                 objectpenjaminfk: dataForm.penjamin,
-                plafon: dataForm.plafon
+                plafon: dataForm.plafon,
             }, {transaction: transaction})
         }else{
             daftarPasien = await db.t_kepesertaanasuransi.create({
@@ -921,6 +922,7 @@ const saveRegistrasiPenjaminFK = async (req, res) => {
                 lk_kodekabupaten: dataForm.kkabupatenlakalantas || null,
                 lk_namakecamatan: dataForm.kecamatanlakalantas,
                 lk_kodekecamatan: dataForm.kkecamatanlakalantas || null,
+                objectkelasfk: dataForm.kelasditanggung,
             }, { transaction: transaction });
         }
         
