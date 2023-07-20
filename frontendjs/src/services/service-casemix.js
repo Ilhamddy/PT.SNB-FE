@@ -21,4 +21,8 @@ export default class ServiceCasemix {
     getListDiagnosa9 = async (param) => {
         return await api.get(`/transaksi/casemix/getList-diagnosaix-pasien?norec=${param}`);
     }
+
+    postBridgingInacbg = async (params) => {
+        return await api.create("/transaksi/casemix/save-bridging-inacbg", params);
+    }
 }

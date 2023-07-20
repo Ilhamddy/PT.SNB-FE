@@ -23,7 +23,8 @@ import SearchOption from '../../../Components/Common/SearchOption';
 import { dateISOString, dateTimeLocal } from "../../../utils/format";
 import {
     casemixResetForm, listCariPasienGet, listDaftarPasienGet, listTarifPasienGet,
-    listDiagnosaxGet, listDiagnosaixGet
+    listDiagnosaxGet, listDiagnosaixGet, bridgingInacbgSave, emrDiagnosaxGet,
+    emrDiagnosaxSave, emrDiagnosaixGet, emrDiagnosaixSave
 } from '../../../store/actions';
 import { BasicTable } from '../../Tables/DataTables/datatableCom';
 
@@ -36,10 +37,14 @@ const KlaimInacbg = () => {
         dataPasien, loadingPasien, successPasien, dataDaftarPasien, loadingDaftarPasien, successDaftarPasien,
         dataTarifPasien, loadingTarifPasien, successTarifPasien,
         dataRiwayatD10, loadingRiwayatD10, successRiwayatD10,
-        dataRiwayatD9, loadingRiwayatD9, successRiwayatD9 } = useSelector((state) => ({
-            // newData: state.Radiologi.updateTglRencanaRadiologi.newData,
-            // success: state.Radiologi.updateTglRencanaRadiologi.success,
-            // loading: state.Radiologi.updateTglRencanaRadiologi.loading,
+        dataRiwayatD9, loadingRiwayatD9, successRiwayatD9,
+        dataDiagnosa, loadingDiagnosa, successDiagnosa,
+        newDataDiagnosax, loadingDiagnosax, successDiagnosax,
+        dataDiagnosaix, loadingDiagnosaix, successDiagnosaix,
+        newDataDiagnosaixSave, loadingDiagnosaixSave, successDiagnosaixSave } = useSelector((state) => ({
+            newData: state.Casemix.bridgingInacbgSave.newData,
+            success: state.Casemix.bridgingInacbgSave.success,
+            loading: state.Casemix.bridgingInacbgSave.loading,
             dataPasien: state.Casemix.listCariPasienGet.data,
             loadingPasien: state.Casemix.listCariPasienGet.loading,
             successPasien: state.Casemix.listCariPasienGet.success,
@@ -55,6 +60,18 @@ const KlaimInacbg = () => {
             dataRiwayatD9: state.Casemix.listDiagnosaixGet.data,
             loadingRiwayatD9: state.Casemix.listDiagnosaixGet.loading,
             successRiwayatD9: state.Casemix.listDiagnosaixGet.success,
+            dataDiagnosa: state.Emr.emrDiagnosaxGet.data,
+            loadingDiagnosa: state.Emr.emrDiagnosaxGet.loading,
+            successDiagnosa: state.Emr.emrDiagnosaxGet.success,
+            newDataDiagnosax: state.Emr.emrDiagnosaxSave.newData,
+            successDiagnosax: state.Emr.emrDiagnosaxSave.success,
+            loadingDiagnosax: state.Emr.emrDiagnosaxSave.loading,
+            dataDiagnosaix: state.Emr.emrDiagnosaixGet.data,
+            loadingDiagnosaix: state.Emr.emrDiagnosaixGet.loading,
+            successDiagnosaix: state.Emr.emrDiagnosaixGet.success,
+            newDataDiagnosaixSave: state.Emr.emrDiagnosaixSave.newData,
+            successDiagnosaixSave: state.Emr.emrDiagnosaixSave.success,
+            loadingDiagnosaixSave: state.Emr.emrDiagnosaixSave.loading,
         }));
 
     useEffect(() => {
@@ -102,6 +119,13 @@ const KlaimInacbg = () => {
     const [stateRJ, setstateRJ] = useState(false)
     const [stateRI, setstateRI] = useState(false)
     const [activeTab, setActiveTab] = useState('1');
+    const [stateTombol, setstateTombol] = useState('1');
+    const [stateDescriptionCbg, setstateDescriptionCbg] = useState("")
+    const [stateCodeCbg, setstateCodeCbg] = useState("")
+    const [stateTariff, setstateTariff] = useState("")
+    const [stateHasilGrouping, setstateHasilGrouping] = useState(false)
+    const [stateTombolGrouping, setstateTombolGrouping] = useState(true)
+    const [stateTombolFinal, setstateTombolFinal] = useState(true)
     const handleFilter = (e) => {
         if (e.keyCode === 13) {
             setstateList(true)
@@ -159,6 +183,7 @@ const KlaimInacbg = () => {
         }
     }
     const handleClick = (e) => {
+        setstateHasilGrouping(false)
         setstateListNoregistrasi(false)
         setstateCoder(true)
         setstateTemp(e)
@@ -268,6 +293,29 @@ const KlaimInacbg = () => {
             sortable: true
         },
     ];
+    const columnsDiagnosa9 = [
+
+        {
+            selector: row => row.label,
+            sortable: true
+        },
+        {
+            selector: row => row.tipediagnosa,
+            sortable: true
+        },
+        {
+            selector: row => row.qty,
+            sortable: true
+        },
+        {
+            selector: row => row.namaunit,
+            sortable: true
+        },
+        {
+            selector: row => row.keterangan,
+            sortable: true
+        },
+    ];
     const back = () => {
         setstatePencarian(true)
         setstateListNoregistrasi(false)
@@ -275,6 +323,542 @@ const KlaimInacbg = () => {
     const back2 = () => {
         setstateListNoregistrasi(true)
         setstateCoder(false)
+    }
+    const handleDiagnosa = characterEntered => {
+        if (characterEntered.length > 3) {
+            dispatch(emrDiagnosaxGet(characterEntered, 'diagnosa10'));
+        }
+    };
+    const handleDiagnosaix = characterEntered => {
+        if (characterEntered.length > 3) {
+            dispatch(emrDiagnosaixGet(characterEntered, 'diagnosa9'));
+        }
+    };
+    const handleDiagnosaSave = (e) => {
+        let tipediagnosa = 2
+        if (dataRiwayatD10.length === 0) {
+            tipediagnosa = 1
+        }
+        const tempValue = {
+            "norecap": stateTemp.norecta,
+            "tipediagnosa": tipediagnosa,
+            "kodediagnosa": e,
+            "kasuspenyakit": 2,
+            "keteranganicd10": "",
+            "idlabel": 3,
+            "label": 'DIAGNOSA'
+        }
+        dispatch(emrDiagnosaxSave(tempValue, ''));
+    };
+    const handleDiagnosaixSave = (e) => {
+        const tempValue = {
+            "norecap": stateTemp.norecta,
+            "kodediagnosa9": e,
+            "keteranganicd9": '',
+            "jumlahtindakan": count,
+            "idlabel": 3,
+            "label": 'DIAGNOSA'
+        }
+        dispatch(emrDiagnosaixSave(tempValue, ''));
+    };
+
+    useEffect(() => {
+        dispatch(listDiagnosaxGet(stateTemp.norec));
+    }, [newDataDiagnosax, stateTemp.norec, dispatch])
+
+    useEffect(() => {
+        dispatch(listDiagnosaixGet(stateTemp.norec));
+    }, [newDataDiagnosaixSave, stateTemp.norec, dispatch])
+
+    const handleClickEditKlaim = (e) => {
+        setstateTombol('3')
+        let tempData = []
+        const jsonEdit_Claim = {
+            "metadata": {
+                "method": "reedit_claim"
+            },
+            "data": {
+                "nomor_sep": stateTemp.no_sep,
+            }
+        };
+        tempData.push(jsonEdit_Claim)
+        dispatch(bridgingInacbgSave(tempData))
+    }
+    const handleClickFinal = (e) => {
+        setstateTombol('2')
+        let tempData = []
+        const jsonFinal_Claim = {
+            "metadata": {
+                "method": "claim_final"
+            },
+            "data": {
+                "nomor_sep": stateTemp.no_sep,
+                "coder_nik": "123123123123"
+            }
+        };
+        tempData.push(jsonFinal_Claim)
+        dispatch(bridgingInacbgSave(tempData))
+    }
+    const handleClickGrouping = (e) => {
+        setstateTombol('1')
+        setstateHasilGrouping(false)
+        let tempData = []
+
+        if (dataRiwayatD10.length === 0) {
+            toast.error('Diagnosa 10 Belum Diisi', { autoClose: 3000 });
+        }
+        // UNU Grouper
+        let paramDiagnosa = ''
+        for (let x = 0; x < dataRiwayatD10.length; x++) {
+            if (paramDiagnosa === '') {
+                paramDiagnosa = dataRiwayatD10[x].kodediagnosa
+            } else {
+                paramDiagnosa = paramDiagnosa + '#' + dataRiwayatD10[x].kodediagnosa
+            }
+        }
+        let paramDiagnosa9 = ''
+        for (let x = 0; x < dataRiwayatD9.length; x++) {
+            if (paramDiagnosa9 === '') {
+                paramDiagnosa9 = dataRiwayatD9[x].kodediagnosa
+            } else {
+                paramDiagnosa9 = paramDiagnosa9 + '#' + dataRiwayatD9[x].kodediagnosa
+            }
+        }
+        // end
+        // INA Grouper
+        let paramDiagnosa9Ina = ''
+        for (let x = 0; x < dataRiwayatD9.length; x++) {
+            if (paramDiagnosa9Ina === '') {
+                if (dataRiwayatD9[x].qty > 1) {
+                    paramDiagnosa9Ina = dataRiwayatD9[x].kodediagnosa + '+' + dataRiwayatD9[x].qty
+                } else {
+                    paramDiagnosa9Ina = dataRiwayatD9[x].kodediagnosa
+                }
+            } else {
+                if (dataRiwayatD9[x].qty > 1) {
+                    paramDiagnosa9Ina = paramDiagnosa9Ina + '#' + dataRiwayatD9[x].kodediagnosa + '+' + dataRiwayatD9[x].qty
+                } else {
+                    paramDiagnosa9Ina = paramDiagnosa9Ina + '#' + dataRiwayatD9[x].kodediagnosa
+                }
+            }
+        }
+        // end
+        console.log(paramDiagnosa9Ina)
+        if (stateRJ === true) {
+            const jsonNew_Claim = {
+                "metadata": {
+                    "method": "new_claim"
+                },
+                "data": {
+                    "nomor_kartu": stateTemp.no_kartu,
+                    "nomor_sep": stateTemp.no_sep,
+                    "nomor_rm": stateTemp.nocm,
+                    "nama_pasien": stateTemp.namapasien,
+                    "tgl_lahir": stateTemp.tgllahir,
+                    "gender": stateTemp.gender
+                }
+            };
+            tempData.push(jsonNew_Claim)
+            const jsonSet_Claim = {
+                "metadata": {
+                    "method": "set_claim_data",
+                    "nomor_sep": stateTemp.no_sep
+                },
+                "data": {
+                    "nomor_sep": stateTemp.no_sep,
+                    "nomor_kartu": stateTemp.no_kartu,
+                    "tgl_masuk": stateTemp.tglregistrasi3,
+                    "tgl_pulang": stateTemp.tglpulang3,
+                    "cara_masuk": stateTemp.kodecaramasuk,
+                    "jenis_rawat": stateTemp.jenis_rawat,
+                    "kelas_rawat": "3",
+                    "adl_sub_acute": "",
+                    "adl_chronic": "",
+                    "icu_indikator": "",
+                    "icu_los": "",
+                    "ventilator_hour": "",
+                    "ventilator": {
+                        "use_ind": "",
+                        "start_dttm": "",
+                        "stop_dttm": ""
+                    },
+                    "upgrade_class_ind": "0",
+                    "upgrade_class_class": "",
+                    "upgrade_class_los": "",
+                    "upgrade_class_payor": "",
+                    "add_payment_pct": "",
+                    "birth_weight": parseFloat(stateTemp.bb),
+                    "sistole": parseFloat(stateTemp.sistole),
+                    "diastole": parseFloat(stateTemp.diastole),
+                    "discharge_status": stateTemp.kodecarapulang,
+                    "diagnosa": paramDiagnosa,//unu Grouper
+                    "procedure": paramDiagnosa9,
+                    "diagnosa_inagrouper": "#",
+                    "procedure_inagrouper": "#",
+                    "tarif_rs": {
+                        "prosedur_non_bedah": dataTarifPasien.prosedur_non_bedah,
+                        "prosedur_bedah": dataTarifPasien.prosedur_bedah,
+                        "konsultasi": dataTarifPasien.konsultasi,
+                        "tenaga_ahli": dataTarifPasien.tenaga_ahli,
+                        "keperawatan": dataTarifPasien.keperawatan,
+                        "penunjang": dataTarifPasien.penunjang,
+                        "radiologi": dataTarifPasien.radiologi,
+                        "laboratorium": dataTarifPasien.laboratorium,
+                        "pelayanan_darah": dataTarifPasien.pelayanan_darah,
+                        "rehabilitasi": dataTarifPasien.rehabilitasi,
+                        "kamar": dataTarifPasien.akomodasi,
+                        "rawat_intensif": dataTarifPasien.rawat_intensif,
+                        "obat": dataTarifPasien.obat,
+                        "obat_kronis": dataTarifPasien.obat_kronis,
+                        "obat_kemoterapi": dataTarifPasien.obat_kemoterapi,
+                        "alkes": dataTarifPasien.alkes,
+                        "bmhp": dataTarifPasien.bmhp,
+                        "sewa_alat": dataTarifPasien.sewa_alat
+                    },
+                    // "pemulasaraan_jenazah": "0",
+                    // "kantong_jenazah": "0",
+                    // "peti_jenazah": "0",
+                    // "plastik_erat": "0",
+                    // "desinfektan_jenazah": "0",
+                    // "mobil_jenazah": "0",
+                    // "desinfektan_mobil_jenazah": "0",
+                    // "covid19_status_cd": "0",
+                    // "nomor_kartu_t": "",
+                    // "episodes": "",
+                    // "covid19_cc_ind": "0",
+                    // "covid19_rs_darurat_ind": "0",
+                    // "covid19_co_insidense_ind": "0",
+                    // "covid19_penunjang_pengurang":
+                    // {
+                    //     "lab_asam_laktat": "0",
+                    //     "lab_procalcitonin": "0",
+                    //     "lab_crp": "0",
+                    //     "lab_kultur": "0",
+                    //     "lab_d_dimer": "0",
+                    //     "lab_pt": "0",
+                    //     "lab_aptt": "0",
+                    //     "lab_waktu_pendarahan": "0",
+                    //     "lab_anti_hiv": "0",
+                    //     "lab_analisa_gas": "0",
+                    //     "lab_albumin": "0",
+                    //     "rad_thorax_ap_pa": "0"
+                    // },
+                    // "terapi_konvalesen": "0",
+                    // "akses_naat": "0",
+                    // "isoman_ind": "0",
+                    // "bayi_lahir_status_cd": 0,
+                    // "dializer_single_use": "0",
+                    // "kantong_darah": 0,
+                    // "apgar":
+                    // {
+                    //     "menit_1":
+                    //     {
+                    //         "appearance": 0,
+                    //         "pulse": 0,
+                    //         "grimace": 0,
+                    //         "activity": 0,
+                    //         "respiration": 0
+                    //     },
+                    //     "menit_5": {
+                    //         "appearance": 0,
+                    //         "pulse": 0,
+                    //         "grimace": 0,
+                    //         "activity": 0,
+                    //         "respiration": 0
+                    //     }
+                    // },
+                    // "persalinan": {
+                    //     "usia_kehamilan": "22",
+                    //     "gravida": "2",
+                    //     "partus": "4",
+                    //     "abortus": "2",
+                    //     "onset_kontraksi": "induksi",
+                    //     "delivery": [
+                    //         {
+                    //             "delivery_sequence": "1",
+                    //             "delivery_method": "vaginal",
+                    //             "delivery_dttm": "2023-01-21 17:01:33",
+                    //             "letak_janin": "kepala",
+                    //             "kondisi": "livebirth",
+                    //             "use_manual": "1",
+                    //             "use_forcep": "0",
+                    //             "use_vacuum": "1"
+                    //         },
+                    //         {
+                    //             "delivery_sequence": "2",
+                    //             "delivery_method": "vaginal",
+                    //             "delivery_dttm": "2023-01-21 17:03:49",
+                    //             "letak_janin": "lintang",
+                    //             "kondisi": "livebirth",
+                    //             "use_manual": "1",
+                    //             "use_forcep": "0",
+                    //             "use_vacuum": "0"
+                    //         }
+                    //     ]
+                    // },
+                    "tarif_poli_eks": "0",
+                    "nama_dokter": stateTemp.dpjp,
+                    "kode_tarif": "CP",
+                    "payor_id": "3",
+                    "payor_cd": "JKN",
+                    "cob_cd": "",
+                    "coder_nik": "123123123123"
+                }
+            };
+            tempData.push(jsonSet_Claim)
+            const jsonGrouper = {
+                "metadata": {
+                    "method": "grouper",
+                    "stage": "1"
+                },
+                "data": {
+                    "nomor_sep": stateTemp.no_sep
+                }
+            };
+            tempData.push(jsonGrouper)
+        } else {
+            const jsonNew_Claim = {
+                "metadata": {
+                    "method": "new_claim"
+                },
+                "data": {
+                    "nomor_kartu": stateTemp.no_kartu,
+                    "nomor_sep": stateTemp.no_sep,
+                    "nomor_rm": stateTemp.nocm,
+                    "nama_pasien": stateTemp.namapasien,
+                    "tgl_lahir": stateTemp.tgllahir,
+                    "gender": stateTemp.gender
+                }
+            };
+            tempData.push(jsonNew_Claim)
+            const jsonSet_Claim = {
+                "metadata": {
+                    "method": "set_claim_data",
+                    "nomor_sep": stateTemp.no_sep
+                },
+                "data": {
+                    "nomor_sep": stateTemp.no_sep,
+                    "nomor_kartu": stateTemp.no_kartu,
+                    "tgl_masuk": stateTemp.tglregistrasi3,
+                    "tgl_pulang": stateTemp.tglpulang3,
+                    "cara_masuk": stateTemp.kodecaramasuk,
+                    "jenis_rawat": stateTemp.jenis_rawat,
+                    "kelas_rawat": stateTemp.kelas_bpjs,
+                    "adl_sub_acute": "",
+                    "adl_chronic": "",
+                    "icu_indikator": "",
+                    "icu_los": "",
+                    "ventilator_hour": "",
+                    "ventilator": {
+                        "use_ind": "",
+                        "start_dttm": "",
+                        "stop_dttm": ""
+                    },
+                    "upgrade_class_ind": "0",
+                    "upgrade_class_class": "",
+                    "upgrade_class_los": "",
+                    "upgrade_class_payor": "",
+                    "add_payment_pct": "",
+                    "birth_weight": parseFloat(stateTemp.bb),
+                    "sistole": parseFloat(stateTemp.sistole),
+                    "diastole": parseFloat(stateTemp.diastole),
+                    "discharge_status": stateTemp.kodecarapulang,
+                    "diagnosa": paramDiagnosa,//unu Grouper
+                    "procedure": paramDiagnosa9,
+                    "diagnosa_inagrouper": paramDiagnosa,
+                    "procedure_inagrouper": paramDiagnosa9Ina,
+                    "tarif_rs": {
+                        "prosedur_non_bedah": dataTarifPasien.prosedur_non_bedah,
+                        "prosedur_bedah": dataTarifPasien.prosedur_bedah,
+                        "konsultasi": dataTarifPasien.konsultasi,
+                        "tenaga_ahli": dataTarifPasien.tenaga_ahli,
+                        "keperawatan": dataTarifPasien.keperawatan,
+                        "penunjang": dataTarifPasien.penunjang,
+                        "radiologi": dataTarifPasien.radiologi,
+                        "laboratorium": dataTarifPasien.laboratorium,
+                        "pelayanan_darah": dataTarifPasien.pelayanan_darah,
+                        "rehabilitasi": dataTarifPasien.rehabilitasi,
+                        "kamar": dataTarifPasien.akomodasi,
+                        "rawat_intensif": dataTarifPasien.rawat_intensif,
+                        "obat": dataTarifPasien.obat,
+                        "obat_kronis": dataTarifPasien.obat_kronis,
+                        "obat_kemoterapi": dataTarifPasien.obat_kemoterapi,
+                        "alkes": dataTarifPasien.alkes,
+                        "bmhp": dataTarifPasien.bmhp,
+                        "sewa_alat": dataTarifPasien.sewa_alat
+                    },
+                    // "pemulasaraan_jenazah": "0",
+                    // "kantong_jenazah": "0",
+                    // "peti_jenazah": "0",
+                    // "plastik_erat": "0",
+                    // "desinfektan_jenazah": "0",
+                    // "mobil_jenazah": "0",
+                    // "desinfektan_mobil_jenazah": "0",
+                    // "covid19_status_cd": "0",
+                    // "nomor_kartu_t": "",
+                    // "episodes": "",
+                    // "covid19_cc_ind": "0",
+                    // "covid19_rs_darurat_ind": "0",
+                    // "covid19_co_insidense_ind": "0",
+                    // "covid19_penunjang_pengurang":
+                    // {
+                    //     "lab_asam_laktat": "0",
+                    //     "lab_procalcitonin": "0",
+                    //     "lab_crp": "0",
+                    //     "lab_kultur": "0",
+                    //     "lab_d_dimer": "0",
+                    //     "lab_pt": "0",
+                    //     "lab_aptt": "0",
+                    //     "lab_waktu_pendarahan": "0",
+                    //     "lab_anti_hiv": "0",
+                    //     "lab_analisa_gas": "0",
+                    //     "lab_albumin": "0",
+                    //     "rad_thorax_ap_pa": "0"
+                    // },
+                    // "terapi_konvalesen": "0",
+                    // "akses_naat": "0",
+                    // "isoman_ind": "0",
+                    // "bayi_lahir_status_cd": 0,
+                    // "dializer_single_use": "0",
+                    // "kantong_darah": 0,
+                    // "apgar":
+                    // {
+                    //     "menit_1":
+                    //     {
+                    //         "appearance": 0,
+                    //         "pulse": 0,
+                    //         "grimace": 0,
+                    //         "activity": 0,
+                    //         "respiration": 0
+                    //     },
+                    //     "menit_5": {
+                    //         "appearance": 0,
+                    //         "pulse": 0,
+                    //         "grimace": 0,
+                    //         "activity": 0,
+                    //         "respiration": 0
+                    //     }
+                    // },
+                    // "persalinan": {
+                    //     "usia_kehamilan": "22",
+                    //     "gravida": "2",
+                    //     "partus": "4",
+                    //     "abortus": "2",
+                    //     "onset_kontraksi": "induksi",
+                    //     "delivery": [
+                    //         {
+                    //             "delivery_sequence": "1",
+                    //             "delivery_method": "vaginal",
+                    //             "delivery_dttm": "2023-01-21 17:01:33",
+                    //             "letak_janin": "kepala",
+                    //             "kondisi": "livebirth",
+                    //             "use_manual": "1",
+                    //             "use_forcep": "0",
+                    //             "use_vacuum": "1"
+                    //         },
+                    //         {
+                    //             "delivery_sequence": "2",
+                    //             "delivery_method": "vaginal",
+                    //             "delivery_dttm": "2023-01-21 17:03:49",
+                    //             "letak_janin": "lintang",
+                    //             "kondisi": "livebirth",
+                    //             "use_manual": "1",
+                    //             "use_forcep": "0",
+                    //             "use_vacuum": "0"
+                    //         }
+                    //     ]
+                    // },
+                    "tarif_poli_eks": "0",
+                    "nama_dokter": stateTemp.dpjp,
+                    "kode_tarif": "CP",
+                    "payor_id": "3",
+                    "payor_cd": "JKN",
+                    "cob_cd": "",
+                    "coder_nik": "123123123123"
+                }
+            };
+            tempData.push(jsonSet_Claim)
+            const jsonGrouper = {
+                "metadata": {
+                    "method": "grouper",
+                    "stage": "1"
+                },
+                "data": {
+                    "nomor_sep": stateTemp.no_sep
+                }
+            };
+            tempData.push(jsonGrouper)
+        }
+        dispatch(bridgingInacbgSave(tempData))
+    };
+    const handleClickPrintFinal = (e) => {
+        setstateTombol('4')
+        let tempData = []
+        const jsonPrint_Claim = {
+            "metadata": {
+                "method": "claim_print"
+            },
+            "data": {
+                "nomor_sep": stateTemp.no_sep
+            }
+        };
+        tempData.push(jsonPrint_Claim)
+        dispatch(bridgingInacbgSave(tempData))
+    }
+    useEffect(() => {
+        if (newData !== null) {
+
+            if (stateTombol === '1') {
+                console.log('masuk 1')
+                if (newData.data[2].dataResponse.response_inagrouper !== undefined) {
+                    setstateHasilGrouping(true)
+                    setstateDescriptionCbg(newData.data[2].dataResponse.response.cbg.description)
+                    setstateCodeCbg(newData.data[2].dataResponse.response.cbg.code)
+                    setstateTariff(newData.data[2].dataResponse.response.cbg.tariff)
+                }
+            } else if (stateTombol === '2') {
+                setstateTombolGrouping(false)
+                setstateTombolFinal(false)
+            } else if (stateTombol === '3') {
+                setstateTombolGrouping(true)
+                setstateTombolFinal(true)
+            } else if (stateTombol === '4') {
+                let base64String = newData.data[0].dataResponse.data
+                let decodedString = atob(base64String);
+                // Convert the binary data to a Uint8Array
+                let arrayBuffer = new ArrayBuffer(decodedString.length);
+                let uint8Array = new Uint8Array(arrayBuffer);
+                for (let i = 0; i < decodedString.length; i++) {
+                    uint8Array[i] = decodedString.charCodeAt(i);
+                }
+                // Create a Blob from the Uint8Array
+                let blob = new Blob([uint8Array], { type: 'application/pdf' });
+                // Generate a downloadable link for the Blob
+                let downloadLink = document.createElement('a');
+                downloadLink.href = URL.createObjectURL(blob);
+                downloadLink.download = 'klaim.pdf';
+
+                // Trigger the download programmatically
+                document.body.appendChild(downloadLink);
+                downloadLink.click();
+
+                // Clean up the temporary URL object
+                URL.revokeObjectURL(downloadLink.href);
+            }
+
+        }
+    }, [newData, stateTombol, dispatch])
+    const [count, setCount] = useState(1);
+
+    const onClickCount = (temp) => {
+        if (temp === 'min') {
+            if (count > 0) {
+                setCount(count - 1)
+            }
+        } else {
+            setCount(count + 1)
+        }
+
     }
     return (
         <React.Fragment>
@@ -489,7 +1073,7 @@ const KlaimInacbg = () => {
                                                     type="text"
                                                     className="form-control"
                                                     id="job-title-Input"
-                                                    placeholder="Enter job title"
+                                                    placeholder="0"
                                                     defaultValue={stateTemp.no_kartu}
                                                     disabled
                                                 />
@@ -507,7 +1091,7 @@ const KlaimInacbg = () => {
                                                     type="text"
                                                     className="form-control"
                                                     id="job-title-Input"
-                                                    placeholder="Enter job title"
+                                                    placeholder="0"
                                                     defaultValue={stateTemp.no_sep}
                                                     disabled
                                                 />
@@ -525,7 +1109,7 @@ const KlaimInacbg = () => {
                                                     type="text"
                                                     className="form-control"
                                                     id="job-title-Input"
-                                                    placeholder="Enter job title"
+                                                    placeholder="0"
                                                     defaultValue='-'
                                                     disabled
                                                 />
@@ -685,7 +1269,7 @@ const KlaimInacbg = () => {
                                                                 type="text"
                                                                 className="form-control"
                                                                 id="job-title-Input"
-                                                                placeholder="Enter job title"
+                                                                placeholder="0"
                                                                 defaultValue={dataTarifPasien.prosedur_non_bedah}
                                                                 disabled
                                                             />
@@ -698,7 +1282,7 @@ const KlaimInacbg = () => {
                                                                 type="text"
                                                                 className="form-control"
                                                                 id="job-title-Input"
-                                                                placeholder="Enter job title"
+                                                                placeholder="0"
                                                                 defaultValue={dataTarifPasien.prosedur_bedah}
                                                                 disabled
                                                             />
@@ -711,7 +1295,7 @@ const KlaimInacbg = () => {
                                                                 type="text"
                                                                 className="form-control"
                                                                 id="job-title-Input"
-                                                                placeholder="Enter job title"
+                                                                placeholder="0"
                                                                 defaultValue={dataTarifPasien.konsultasi}
                                                                 disabled
                                                             />
@@ -726,7 +1310,7 @@ const KlaimInacbg = () => {
                                                                 type="text"
                                                                 className="form-control"
                                                                 id="job-title-Input"
-                                                                placeholder="Enter job title"
+                                                                placeholder="0"
                                                                 defaultValue={dataTarifPasien.tenaga_ahli}
                                                                 disabled
                                                             />
@@ -739,7 +1323,7 @@ const KlaimInacbg = () => {
                                                                 type="text"
                                                                 className="form-control"
                                                                 id="job-title-Input"
-                                                                placeholder="Enter job title"
+                                                                placeholder="0"
                                                                 defaultValue={dataTarifPasien.keperawatan}
                                                                 disabled
                                                             />
@@ -752,7 +1336,7 @@ const KlaimInacbg = () => {
                                                                 type="text"
                                                                 className="form-control"
                                                                 id="job-title-Input"
-                                                                placeholder="Enter job title"
+                                                                placeholder="0"
                                                                 defaultValue={dataTarifPasien.penunjang}
                                                                 disabled
                                                             />
@@ -767,7 +1351,7 @@ const KlaimInacbg = () => {
                                                                 type="text"
                                                                 className="form-control"
                                                                 id="job-title-Input"
-                                                                placeholder="Enter job title"
+                                                                placeholder="0"
                                                                 defaultValue={dataTarifPasien.radiologi}
                                                                 disabled
                                                             />
@@ -780,7 +1364,7 @@ const KlaimInacbg = () => {
                                                                 type="text"
                                                                 className="form-control"
                                                                 id="job-title-Input"
-                                                                placeholder="Enter job title"
+                                                                placeholder="0"
                                                                 defaultValue={dataTarifPasien.laboratorium}
                                                                 disabled
                                                             />
@@ -793,7 +1377,7 @@ const KlaimInacbg = () => {
                                                                 type="text"
                                                                 className="form-control"
                                                                 id="job-title-Input"
-                                                                placeholder="Enter job title"
+                                                                placeholder="0"
                                                                 defaultValue={dataTarifPasien.pelayanan_darah}
                                                                 disabled
                                                             />
@@ -808,7 +1392,7 @@ const KlaimInacbg = () => {
                                                                 type="text"
                                                                 className="form-control"
                                                                 id="job-title-Input"
-                                                                placeholder="Enter job title"
+                                                                placeholder="0"
                                                                 defaultValue={dataTarifPasien.rehabilitasi}
                                                                 disabled
                                                             />
@@ -821,7 +1405,7 @@ const KlaimInacbg = () => {
                                                                 type="text"
                                                                 className="form-control"
                                                                 id="job-title-Input"
-                                                                placeholder="Enter job title"
+                                                                placeholder="0"
                                                                 defaultValue={dataTarifPasien.akomodasi}
                                                                 disabled
                                                             />
@@ -834,7 +1418,7 @@ const KlaimInacbg = () => {
                                                                 type="text"
                                                                 className="form-control"
                                                                 id="job-title-Input"
-                                                                placeholder="Enter job title"
+                                                                placeholder="0"
                                                                 defaultValue={dataTarifPasien.rawat_intensif}
                                                                 disabled
                                                             />
@@ -849,7 +1433,7 @@ const KlaimInacbg = () => {
                                                                 type="text"
                                                                 className="form-control"
                                                                 id="job-title-Input"
-                                                                placeholder="Enter job title"
+                                                                placeholder="0"
                                                                 defaultValue={dataTarifPasien.obat}
                                                                 disabled
                                                             />
@@ -862,7 +1446,7 @@ const KlaimInacbg = () => {
                                                                 type="text"
                                                                 className="form-control"
                                                                 id="job-title-Input"
-                                                                placeholder="Enter job title"
+                                                                placeholder="0"
                                                                 defaultValue={dataTarifPasien.obat_kronis}
                                                                 disabled
                                                             />
@@ -875,7 +1459,7 @@ const KlaimInacbg = () => {
                                                                 type="text"
                                                                 className="form-control"
                                                                 id="job-title-Input"
-                                                                placeholder="Enter job title"
+                                                                placeholder="0"
                                                                 defaultValue={dataTarifPasien.obat_kemoterapi}
                                                                 disabled
                                                             />
@@ -890,7 +1474,7 @@ const KlaimInacbg = () => {
                                                                 type="text"
                                                                 className="form-control"
                                                                 id="job-title-Input"
-                                                                placeholder="Enter job title"
+                                                                placeholder="0"
                                                                 defaultValue={dataTarifPasien.alkes}
                                                                 disabled
                                                             />
@@ -903,7 +1487,7 @@ const KlaimInacbg = () => {
                                                                 type="text"
                                                                 className="form-control"
                                                                 id="job-title-Input"
-                                                                placeholder="Enter job title"
+                                                                placeholder="0"
                                                                 defaultValue={dataTarifPasien.bmhp}
                                                                 disabled
                                                             />
@@ -916,7 +1500,7 @@ const KlaimInacbg = () => {
                                                                 type="text"
                                                                 className="form-control"
                                                                 id="job-title-Input"
-                                                                placeholder="Enter job title"
+                                                                placeholder="0"
                                                                 defaultValue={dataTarifPasien.sewa_alat}
                                                                 disabled
                                                             />
@@ -946,12 +1530,13 @@ const KlaimInacbg = () => {
                                                             <Col lg={9} style={{ textAlign: 'left' }}><h5>Diagnosa (ICD-10):</h5></Col>
                                                             <Col lg={3} style={{ textAlign: 'right', }}>
                                                                 <div className="form-icon">
-                                                                    <Input className="form-control form-control-icon rounded-pill" id="iconInput"
-                                                                        type="text"
-                                                                        placeholder="Search..."
-                                                                        onChange={event => setSearch(event.target.value)}
-                                                                        onKeyDown={handleFilter} />
-                                                                    <i className="ri-search-2-line"></i>
+                                                                    <CustomSelect
+                                                                        id="kodediagnosa"
+                                                                        name="kodediagnosa"
+                                                                        options={dataDiagnosa}
+                                                                        onChange={value => handleDiagnosaSave(value.value)}
+                                                                        onInputChange={handleDiagnosa}
+                                                                    />
                                                                 </div>
                                                             </Col>
                                                             <Col lg={12}>
@@ -962,20 +1547,40 @@ const KlaimInacbg = () => {
                                                                     progressPending={loadingRiwayatD10}
                                                                 />
                                                             </Col>
-                                                            <Col lg={9} style={{ textAlign: 'left' }}><h5>Diagnosa (ICD-9):</h5></Col>
+                                                            <Col lg={6} style={{ textAlign: 'left' }}><h5>Diagnosa (ICD-9):</h5></Col>
                                                             <Col lg={3} style={{ textAlign: 'right', }}>
                                                                 <div className="form-icon">
-                                                                    <Input className="form-control form-control-icon rounded-pill" id="iconInput"
-                                                                        type="text"
-                                                                        placeholder="Search..."
-                                                                        onChange={event => setSearch(event.target.value)}
-                                                                        onKeyDown={handleFilter} />
-                                                                    <i className="ri-search-2-line"></i>
+                                                                    <div className="input-step">
+                                                                        <button type="button" className="minus" onClick={() => onClickCount('min')}>
+                                                                            –
+                                                                        </button>
+                                                                        <Input
+                                                                            type="number"
+                                                                            className="product-quantity"
+                                                                            id="product-qty-1"
+                                                                            value={count}
+                                                                            readOnly
+                                                                        />
+                                                                        <button type="button" className="plus" onClick={() => onClickCount('plus')}>
+                                                                            +
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            </Col>
+                                                            <Col lg={3} style={{ textAlign: 'right', }}>
+                                                                <div className="form-icon">
+                                                                    <CustomSelect
+                                                                        id="kodediagnosa9"
+                                                                        name="kodediagnosa9"
+                                                                        options={dataDiagnosaix}
+                                                                        onChange={value => handleDiagnosaixSave(value.value)}
+                                                                        onInputChange={handleDiagnosaix}
+                                                                    />
                                                                 </div>
                                                             </Col>
                                                             <Col lg={12}>
                                                                 <DataTable
-                                                                    columns={columnsDiagnosa10}
+                                                                    columns={columnsDiagnosa9}
                                                                     data={dataRiwayatD9}
                                                                     pagination
                                                                     progressPending={loadingRiwayatD9}
@@ -1008,8 +1613,8 @@ const KlaimInacbg = () => {
                                                                 type="text"
                                                                 className="form-control"
                                                                 id="job-title-Input"
-                                                                placeholder="Enter job title"
-                                                                defaultValue='0'
+                                                                placeholder="0"
+                                                                defaultValue={stateTemp.sistole}
                                                                 disabled
                                                             />
                                                             Sistole
@@ -1019,8 +1624,8 @@ const KlaimInacbg = () => {
                                                                 type="text"
                                                                 className="form-control"
                                                                 id="job-title-Input"
-                                                                placeholder="Enter job title"
-                                                                defaultValue='0'
+                                                                placeholder="0"
+                                                                defaultValue={stateTemp.diastole}
                                                                 disabled
                                                             />
                                                             Diastole
@@ -1033,7 +1638,7 @@ const KlaimInacbg = () => {
                                             </Table>
                                         </div>
 
-                                        <div className="table-responsive">
+                                        {/* <div className="table-responsive">
                                             <Table className="align-middle table-nowrap mb-0">
                                                 <thead>
                                                     <tr>
@@ -1050,7 +1655,7 @@ const KlaimInacbg = () => {
                                                                 type="text"
                                                                 className="form-control"
                                                                 id="job-title-Input"
-                                                                placeholder="Enter job title"
+                                                                placeholder="0"
                                                                 defaultValue='0'
                                                                 disabled
                                                             />
@@ -1060,7 +1665,7 @@ const KlaimInacbg = () => {
                                                                 type="text"
                                                                 className="form-control"
                                                                 id="job-title-Input"
-                                                                placeholder="Enter job title"
+                                                                placeholder="0"
                                                                 defaultValue='0'
                                                                 disabled
                                                             />
@@ -1070,7 +1675,7 @@ const KlaimInacbg = () => {
                                                                 type="text"
                                                                 className="form-control"
                                                                 id="job-title-Input"
-                                                                placeholder="Enter job title"
+                                                                placeholder="0"
                                                                 defaultValue='0'
                                                                 disabled
                                                             />
@@ -1080,7 +1685,7 @@ const KlaimInacbg = () => {
                                                                 type="text"
                                                                 className="form-control"
                                                                 id="job-title-Input"
-                                                                placeholder="Enter job title"
+                                                                placeholder="0"
                                                                 defaultValue='0'
                                                                 disabled
                                                             />
@@ -1090,7 +1695,7 @@ const KlaimInacbg = () => {
                                                                 type="text"
                                                                 className="form-control"
                                                                 id="job-title-Input"
-                                                                placeholder="Enter job title"
+                                                                placeholder="0"
                                                                 defaultValue='0'
                                                                 disabled
                                                             />
@@ -1105,7 +1710,7 @@ const KlaimInacbg = () => {
                                                                 type="text"
                                                                 className="form-control"
                                                                 id="job-title-Input"
-                                                                placeholder="Enter job title"
+                                                                placeholder="0"
                                                                 defaultValue='0'
                                                                 disabled
                                                             />
@@ -1115,7 +1720,7 @@ const KlaimInacbg = () => {
                                                                 type="text"
                                                                 className="form-control"
                                                                 id="job-title-Input"
-                                                                placeholder="Enter job title"
+                                                                placeholder="0"
                                                                 defaultValue='0'
                                                                 disabled
                                                             />
@@ -1125,7 +1730,7 @@ const KlaimInacbg = () => {
                                                                 type="text"
                                                                 className="form-control"
                                                                 id="job-title-Input"
-                                                                placeholder="Enter job title"
+                                                                placeholder="0"
                                                                 defaultValue='0'
                                                                 disabled
                                                             />
@@ -1135,7 +1740,7 @@ const KlaimInacbg = () => {
                                                                 type="text"
                                                                 className="form-control"
                                                                 id="job-title-Input"
-                                                                placeholder="Enter job title"
+                                                                placeholder="0"
                                                                 defaultValue='0'
                                                                 disabled
                                                             />
@@ -1145,7 +1750,7 @@ const KlaimInacbg = () => {
                                                                 type="text"
                                                                 className="form-control"
                                                                 id="job-title-Input"
-                                                                placeholder="Enter job title"
+                                                                placeholder="0"
                                                                 defaultValue='0'
                                                                 disabled
                                                             />
@@ -1173,12 +1778,79 @@ const KlaimInacbg = () => {
                                                     </tr>
                                                 </tbody>
                                             </Table>
-                                        </div>
-                                        <Col xxl={12} sm={12}>
-                            <Button type="button" color="info" className="rounded-pill" placement="top">
-                                GROUPING
-                            </Button>
-                        </Col>
+                                        </div> */}
+                                        {stateTombolGrouping ? (
+                                            <Col xxl={12} sm={12}>
+                                                <Button type="button" style={{ backgroundColor: '#192a56' }} className="rounded-pill" placement="top" onClick={handleClickGrouping}>
+                                                    GROUPING
+                                                </Button>
+                                            </Col>
+                                        ) : null}
+
+                                        {stateHasilGrouping ? (
+                                            <>
+                                                <Table className="table-bordered align-middle table-nowrap mb-0 border-secondary"
+                                                    style={{ backgroundColor: '#ccddcc' }}>
+                                                    <thead className="table-light" >
+                                                        <tr>
+                                                            <th scope="col" style={{ backgroundColor: '#dddddd', textAlign: 'center' }} colSpan={4}>Hasil Grouper E-Klaim v5</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <th scope="row" style={{ width: "18%", textAlign: 'center' }}>
+                                                                <span>Info</span>
+                                                            </th>
+                                                            <th scope="row" style={{ width: "18%", textAlign: 'center' }} colSpan={3}>
+                                                                <span>TARIF RS KELAS D PEMERINTAH</span>
+                                                            </th>
+                                                        </tr>
+                                                        <tr>
+                                                            <th scope="row" style={{ width: "18%", textAlign: 'center' }}>
+                                                                <span>Jenis Rawat</span>
+                                                            </th>
+                                                            <th scope="row" style={{ width: "18%", textAlign: 'center' }} colSpan={3}>
+                                                                <span>Rawat Jalan Regular</span>
+                                                            </th>
+                                                        </tr>
+                                                        <tr>
+                                                            <th scope="row" style={{ width: "18%", textAlign: 'center' }}>
+                                                                <span>Group</span>
+                                                            </th>
+                                                            <th scope="row" style={{ width: "18%", textAlign: 'center' }}>
+                                                                <span>{stateDescriptionCbg}</span>
+                                                            </th>
+                                                            <th scope="row" style={{ width: "18%", textAlign: 'center' }}>
+                                                                <span>{stateCodeCbg}</span>
+                                                            </th>
+                                                            <th scope="row" style={{ width: "18%", textAlign: 'center' }}>
+                                                                <span>Rp {stateTariff}</span>
+                                                            </th>
+                                                        </tr>
+                                                    </tbody>
+                                                </Table>
+                                                {stateTombolGrouping ? (
+                                                    <Col xxl={12} sm={12}>
+                                                        <Button type="button" style={{ backgroundColor: '#192a56' }} className="rounded-pill" placement="top" onClick={handleClickFinal}>
+                                                            Final Klaim
+                                                        </Button>
+                                                    </Col>
+                                                ) :
+                                                    <Row className="row g-2">
+                                                        <Col lg={3} sm={3}>
+                                                            <Button type="button" color='danger' className="rounded-pill" placement="top" onClick={handleClickEditKlaim}>
+                                                                Edit Klaim
+                                                            </Button>
+                                                        </Col>
+                                                        <Col lg={3} sm={3}>
+                                                            <Button type="button" style={{ backgroundColor: '#192a56' }} className="rounded-pill" placement="top" onClick={handleClickPrintFinal}>
+                                                                Print Klaim
+                                                            </Button>
+                                                        </Col>
+                                                    </Row>
+                                                }
+                                            </>
+                                        ) : null}
                                     </Row>
                                 </CardBody>
                             </Card>

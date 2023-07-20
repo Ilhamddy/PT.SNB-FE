@@ -79,16 +79,21 @@ async function getListDaftarPasien(req, res) {
             }
         }
         const resultlist = await queryPromise2(`select
+            ta.norec as norecta,
             td.norec,
             td.noregistrasi,
             to_char(td.tglregistrasi,
             'dd Month YYYY HH:mm') as tglregistrasi,
             to_char(td.tglregistrasi,
                 'YYYY-MM-DD') as tglregistrasi2,
+            to_char(td.tglregistrasi,
+                    'YYYY-MM-DD HH:mm') as tglregistrasi3,
             to_char(td.tglpulang,
             'dd Month YYYY HH:mm') as tglpulang,
             to_char(td.tglpulang,
                 'YYYY-MM-DD') as tglpulang2,
+            to_char(td.tglpulang,
+                    'YYYY-MM-DD HH:mm') as tglpulang3,
             mp.nocm,mp.namapasien,
             case when mu.objectinstalasifk=2 then 'RI' else 'RJ' end as tipe,
             case when td.objectpenjaminfk=1 then 'JKN' else mr.namarekanan  end as jaminan1,
@@ -97,7 +102,9 @@ async function getListDaftarPasien(req, res) {
             mp.tgllahir,mc.caramasuk,to_char( td.tglregistrasi, TO_CHAR(age( td.tglregistrasi,  td.tglpulang), 'DD')) AS los,
             case when td.objectcarapulangrifk is null then '1' else mcp.kodeexternal end as kodecarapulang,
             case when td.objectcarapulangrifk is null then 'Atas persetujuan dokter' else mcp.reportdisplay end as labelcarapulang,
-            mpeg.namalengkap as dpjp
+            mpeg.namalengkap as dpjp, mj.kodeexternal as gender,mc.caramasuk as kodecaramasuk,
+            case when mu.objectinstalasifk=2 then '1' when mu.objectinstalasifk=7 then '3' else '2' end as jenis_rawat,
+            mk.kelas_bpjs
         from
             t_daftarpasien td
         join m_pasien mp on mp.id=td.nocmfk
@@ -108,6 +115,10 @@ async function getListDaftarPasien(req, res) {
         left join m_caramasuk mc on mc.id=td.objectcaramasukfk
         left join m_carapulangri mcp on mcp.id=td.objectcarapulangrifk
         left join m_pegawai mpeg on mpeg.id=td.objectdokterpemeriksafk
+        left join m_jeniskelamin mj on mj.id=mp.objectjeniskelaminfk
+        join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk=td.norec
+        join m_kelas mk on mk.id=tk.objectkelasfk
+        and td.objectunitlastfk=ta.objectunitfk 
         where mp.id ='${req.query.nocm}' and mp.statusenabled=true
         order by td.tglregistrasi desc
         limit 20
@@ -138,8 +149,13 @@ async function getListDaftarPasien(req, res) {
             if (resultTtv.rows.length > 0) {
                 // console.log(resultTtv.rows[0].beratbadan)
                 resultlist.rows[i].bb = resultTtv.rows[0].beratbadan
+                let myArray = resultTtv.rows[0].tekanandarah.split("/");
+                resultlist.rows[i].sistole = myArray[0]
+                resultlist.rows[i].diastole = myArray[1]
             } else {
                 resultlist.rows[i].bb = 0
+                resultlist.rows[i].sistole = 0
+                resultlist.rows[i].diastole = 0
             }
             resultlist.rows[i].kode_tarif = kode_tarif
             resultlist.rows[i].nama_tarif = nama_tarif
@@ -157,27 +173,7 @@ async function getListDaftarPasien(req, res) {
     }
 
 }
-function hex2bin(hex) {
-    var bytes = [], str;
 
-    for (var i = 0; i < hex.length - 1; i += 2)
-        bytes.push(parseInt(hex.substr(i, 2), 16));
-
-    return String.fromCharCode.apply(String, bytes);
-    // var hex = hex, // ASCII HEX: 37="7", 57="W", 71="q"
-    //     bytes = [],
-    //     str;
-
-    // for (var i = 0; i < hex.length - 1; i += 2) {
-    //     bytes.push(parseInt(hex.substr(i, 2), 16));
-    // }
-
-    // str = String.fromCharCode.apply(String, bytes);
-    // return str
-}
-function countChars(str) {
-    return str.replace(/[\u0080-\u10FFFF]/g, "x").length;
-}
 async function getListTarif18(req, res) {
 
     try {
@@ -322,7 +318,7 @@ async function getListDiagnosaPasien(req, res) {
     const resultList = await queryPromise2(`SELECT row_number() OVER (ORDER BY td.norec) AS no,dp.noregistrasi,
     to_char(dp.tglregistrasi,'yyyy-MM-dd') as tglregistrasi,td.norec, mi.kodeexternal ||' - '|| mi.reportdisplay as label,
     mi.id as value, td.keterangan,td.objecttipediagnosafk,mt.reportdisplay as tipediagnosa,
-    td.objectjeniskasusfk, jk.reportdisplay as jeniskasus, mu.namaunit
+    td.objectjeniskasusfk, jk.reportdisplay as jeniskasus, mu.namaunit,mi.kodeexternal as kodediagnosa
             FROM t_daftarpasien dp 
     join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk=dp.norec
     join t_diagnosapasien td  on td.objectantreanpemeriksaanfk =ta.norec
@@ -330,6 +326,7 @@ async function getListDiagnosaPasien(req, res) {
     join m_tipediagnosa mt on mt.id=td.objecttipediagnosafk
     join m_jeniskasus jk on jk.id=td.objectjeniskasusfk
     join m_icdx mi on mi.id=td.objecticdxfk where dp.norec='${req.query.norec}' and td.statusenabled=true
+    order by td.objecttipediagnosafk
     `);
     res.status(200).send({
         data: resultList.rows,
@@ -343,7 +340,7 @@ async function getListDiagnosaIxPasien(req, res) {
     const resultList = await queryPromise2(`SELECT row_number() OVER (ORDER BY td.norec) AS no,dp.noregistrasi,
     to_char(dp.tglregistrasi,'yyyy-MM-dd') as tglregistrasi,td.norec,mu.namaunit,
     mi.kodeexternal ||' - '|| mi.reportdisplay as label,
-    mi.id as value, td.keterangan
+    mi.id as value, td.keterangan,td.qty,mi.kodeexternal as kodediagnosa
             FROM t_daftarpasien dp 
     join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk=dp.norec
     join t_diagnosatindakan td  on td.objectantreanpemeriksaanfk =ta.norec
@@ -377,14 +374,15 @@ const inacbg_encrypt = (data, strkey) => { //stringify when data os object
     return Buffer.concat([signature, iv, encrypt]).toString('base64');
 }
 
-const inacbg_compare = (signature, encrypt,key_inacbg) => {
-    let keys = Buffer.from(key_inacbg,'hex');
+const inacbg_compare = (signature, encrypt, key_inacbg) => {
+    let keys = Buffer.from(key_inacbg, 'hex');
     let calc_signature = crypto.createHmac('sha256', keys)
-    .update(encrypt) .digest() .slice(0,10);
-    if(signature.compare(calc_signature)===0){
-    return true; }
+        .update(encrypt).digest().slice(0, 10);
+    if (signature.compare(calc_signature) === 0) {
+        return true;
+    }
     return false;
-   }
+}
 
 // end
 
@@ -408,7 +406,7 @@ const inacbg_decrypt = (data, key_inacbg) => {
     //take Signature 
     let signature = data_decoded.slice(0, 10);
     //check if signature is right
-    if (!inacbg_compare(signature, encoded,key_inacbg)) {
+    if (!inacbg_compare(signature, encoded, key_inacbg)) {
         return "SIGNATURE_NOT_MATCH"; /// signature doesn't match 
     }
     //decrypt data 
@@ -435,52 +433,59 @@ async function saveBridgingInacbg(req, res) {
         }
     }
 
-    const jsonData = {
-        "metadata": {
-            "method": "new_claim"
-        },
-        "data": {
-            "nomor_kartu": "0000668870001",
-            "nomor_sep": "0001R0016120507422",
-            "nomor_rm": "00000002",
-            "nama_pasien": "NAMA TEST PASIEN",
-            "tgl_lahir": "1940-01-01 02:00:00",
-            "gender": "2"
-        }
-    };
-    // let tempJ = "{\"metadata\":{\"method\":\"new_claim\"},\"data\":{\"nomor_kartu\":\"0000668870001\",\"nomor_sep\":\"0001R0016120507422\",\"nomor_rm\":\"00000002\",\"nama_pasien\":\"NAMA TEST PASIEN\",\"tgl_lahir\":\"1940-01-01 02:00:00\",\"gender\":\"2\"}}"
-    let payload = await inacbg_encrypt(jsonData, key_inacbg)
+    
     const headers = {
         "Content-Type": "application/x-www-form-urlencoded",
         "Access-Control-Allow-Origin": "*"
     };
 
-    const config = {
-        method: "post",
-        url: url_inacbg,
-        headers: headers,
-        data: payload
-    };
+    // res.status(200).send({
+    //     data: req.body,
+    //     status: "success",
+    //     success: true,
+    // });
+    // return
     try {
-        const response = await axios(config);
-        const responseData = response.data;
+        let responArr = []
+        for (let i = 0; i < req.body.length; i++) {
+            let payload = await inacbg_encrypt(req.body[i], key_inacbg)
+            const config = {
+                method: "post",
+                url: url_inacbg,
+                headers: headers,
+                data: payload
+            };
+            const response = await axios(config);
+            const responseData = response.data;
 
-        // Extract the content between the first and last newlines
-        const firstNewlineIndex = await responseData.indexOf("\n") + 1;
-        const lastNewlineIndex = await responseData.lastIndexOf("\n") - 1;
-        const trimmedResponse = await responseData.substring(firstNewlineIndex, lastNewlineIndex);
-      
+            // Extract the content between the first and last newlines
+            const firstNewlineIndex = await responseData.indexOf("\n") + 1;
+            const lastNewlineIndex = await responseData.lastIndexOf("\n") - 1;
+            const trimmedResponse = await responseData.substring(firstNewlineIndex, lastNewlineIndex);
+            const decryptedResponse = await inacbg_decrypt(responseData, key_inacbg);
+            responArr.push({
+                dataRequest:req.body[i],
+                dataResponse:JSON.parse(decryptedResponse)
+            })
+        }
 
-        const decryptedResponse = await inacbg_decrypt(responseData, key_inacbg);
         res.status(200).send({
-            data: JSON.parse(decryptedResponse),
+            data: responArr,
             status: "success",
             success: true,
+            msg: 'success',
+            code: 200
         });
     } catch (error) {
         // Handle errors
-        console.error("Error:", error);
-        throw error;
+        // console.error("Error:", error);
+        // throw error;
+        res.status(201).send({
+            status: error,
+            success: false,
+            msg: 'Gagal',
+            code: 201
+        });
     }
 
 }

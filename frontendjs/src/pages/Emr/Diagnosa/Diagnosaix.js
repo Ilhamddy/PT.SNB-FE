@@ -67,10 +67,12 @@ const Diagnosaix = () => {
             keteranganicd9:editData?.keteranganicd9??'',
             idlabel: 3,
             label: 'DIAGNOSA',
+            jumlahtindakan: editData?.jumlahtindakan??''
         },
         validationSchema: Yup.object({
             kodediagnosa9: Yup.string().required("Diagnosa Belum Diisi"),
             keteranganicd9: Yup.string().required("Ketrangan Belum Diisi"),
+            jumlahtindakan: Yup.string().required("Jumlah Tindakan Belum Diisi")
         }),
         onSubmit: (values, { resetForm }) => {
             console.log(values)
@@ -174,6 +176,12 @@ const Diagnosaix = () => {
         },
         {
 
+            name: <span className='font-weight-bold fs-13'>Qty</span>,
+            selector: row => row.qty,
+            sortable: true
+        },
+        {
+
             name: <span className='font-weight-bold fs-13'>Keterangan</span>,
             selector: row => row.keterangan,
             sortable: true
@@ -225,6 +233,31 @@ const Diagnosaix = () => {
                                                 />
                                                 {validation.touched.kodediagnosa9 && validation.errors.kodediagnosa9 ? (
                                                     <FormFeedback type="invalid"><div>{validation.errors.kodediagnosa9}</div></FormFeedback>
+                                                ) : null}
+                                            </div>
+                                        </Col>
+                                        
+                                        <Col xxl={6} md={6}>
+                                            <div className="mt-2">
+                                                <Label style={{ color: "black" }} htmlFor="jumlahtindakan" className="form-label">Jumlah Tindakan Per Episode</Label>
+                                            </div>
+                                        </Col>
+                                        <Col xxl={6} md={6}>
+                                            <div>
+                                                <Input
+                                                    id="jumlahtindakan"
+                                                    name="jumlahtindakan"
+                                                    type="number"
+                                                    placeholder="Jumlah Tindakan"
+                                                    onChange={validation.handleChange}
+                                                    onBlur={validation.handleBlur}
+                                                    value={validation.values.jumlahtindakan || ""}
+                                                    invalid={
+                                                        validation.touched.jumlahtindakan && validation.errors.jumlahtindakan ? true : false
+                                                    }
+                                                />
+                                                {validation.touched.jumlahtindakan && validation.errors.jumlahtindakan ? (
+                                                    <FormFeedback type="invalid"><div>{validation.errors.jumlahtindakan}</div></FormFeedback>
                                                 ) : null}
                                             </div>
                                         </Col>

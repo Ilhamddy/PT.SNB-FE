@@ -6,7 +6,8 @@ import {
     LIST_DAFTAR_PASIEN_GET,
     LIST_TARIF_PASIEN_GET,
     LISTDIAGNOSAX_GET,
-    LISTDIAGNOSAIX_GET
+    LISTDIAGNOSAIX_GET,
+    BRIDGING_INACBG_SAVE
 } from "./actionType";
 
 import {
@@ -14,7 +15,8 @@ import {
     listDaftarPasienGetSuccess, listDaftarPasienGetError,
     listTarifPasienGetSuccess, listTarifPasienGetError,
     listDiagnosaxGetSuccess, listDiagnosaxGetError,
-    listDiagnosaixGetSuccess, listDiagnosaixGetError
+    listDiagnosaixGetSuccess, listDiagnosaixGetError,
+    bridgingInacbgSaveSuccess, bridgingInacbgSaveError
 } from "./action";
 
 import { toast } from 'react-toastify';
@@ -91,13 +93,35 @@ export function* watchListDiagnosaix() {
     yield takeEvery(LISTDIAGNOSAIX_GET, onListDiagnosaix);
 }
 
+function* onbridgingInacbgSave({ payload: { data, history } }) {
+    try {
+        let response = yield call(serviceCasemix.postBridgingInacbg, data);
+
+        yield put(bridgingInacbgSaveSuccess(response.data));
+        if (response.code === 200) {
+            toast.success(response.msg, { autoClose: 3000 });
+        } else {
+            toast.error(response.msg, { autoClose: 3000 });
+        }
+        // history("/registrasi/pasien-lama")
+    } catch (error) {
+        yield put(bridgingInacbgSaveError(error));
+        toast.error(error, { autoClose: 3000 });
+    }
+}
+
+export function* watchonbridgingInacbgSave() {
+    yield takeEvery(BRIDGING_INACBG_SAVE, onbridgingInacbgSave);
+}
+
 function* casemixSaga() {
     yield all([
         fork(watchonListCariPasienGet),
         fork(watchonListDaftarPasienGet),
         fork(watchonListTarifPasienGet),
         fork(watchListDiagnosax),
-        fork(watchListDiagnosaix)
+        fork(watchListDiagnosaix),
+        fork(watchonbridgingInacbgSave)
     ]);
 }
 
