@@ -23,6 +23,7 @@ import CustomSelect from '../../Select/Select';
 import KonsulModal from '../../../Components/Common/KonsulModal';
 import StatusPulangModal from '../../../Components/Common/StatusPulangModal';
 import StatusPulangRIModal from '../../../Components/Common/StatusPulangRIModal';
+import DepositModal from '../../../Components/Common/DepositModal/DepositModal';
 
 const DaftarPasienRI = () => {
     document.title = "Daftar Pasien Rawat Inap";
@@ -30,6 +31,7 @@ const DaftarPasienRI = () => {
     const history = useNavigate();
     const [norecPulangRI, setNorecPulangRI] = useState("");
     const [norecPulangRIAP, setNorecPulangRIAP] = useState("");
+    const [dpDeposit, setdpDeposit] = useState("");
     const { data, datawidget, loading, error, dataCombo,loadingCombo } = useSelector((state) => ({
         data: state.DaftarPasien.daftarPasienRIGet.data,
         datawidget: state.DaftarPasien.widgetdaftarPasienRIGet.data,
@@ -49,16 +51,7 @@ const DaftarPasienRI = () => {
             dispatch(daftarPasienResetForm());
         }
     }, [dispatch])
-    // useEffect(() => {
-    //     if (dataCombo.length > 0) {
-    //         console.log(dataCombo)
-    //         console.log('masuk'+dataCombo)
-    //         var newArray = dataCombo.unit.filter(function (el) {
-    //             return el.objectinstalasifk === 1;
-    //         });
-    //         setdataUnit(newArray)
-    //     }
-    // }, [dataCombo,loadingCombo])
+
     const [search, setSearch] = useState('')
     const handleFilter = (e) => {
         if (e.keyCode === 13) {
@@ -109,6 +102,7 @@ const DaftarPasienRI = () => {
                             <DropdownMenu className="dropdown-menu-end">
                                 <DropdownItem href="#!" onClick={() => handleClickKonsul(data)}><i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>Konsul Antar Unit</DropdownItem>
                                 <DropdownItem href="#!" onClick={() => {setNorecPulangRI(data.norecdp); setNorecPulangRIAP(data.norecta)}}><i className="ri-run-line align-bottom me-2 text-muted"></i>Pulang</DropdownItem>
+                                <DropdownItem href="#!" onClick={() => {setdpDeposit(data.norecdp)}}><i className="ri-run-line align-bottom me-2 text-muted"></i>Deposit</DropdownItem>
                             </DropdownMenu>
                         </UncontrolledDropdown>
                         <UncontrolledTooltip placement="top" target="tooltipTop2" > Menu </UncontrolledTooltip>
@@ -206,6 +200,7 @@ const DaftarPasienRI = () => {
                 norecdp={norecPulangRI} 
                 norecAP={norecPulangRIAP}
                 toggle={() => setNorecPulangRI("")} />
+            <DepositModal toggle={() => setdpDeposit("")} norecdp={dpDeposit}/>
             <UiContent />
             <div className="page-content">
                 <Container fluid>
@@ -278,7 +273,6 @@ const DaftarPasienRI = () => {
                                             </Col>
                                         </Row>
                                     </div>
-
                                 </CardHeader>
                                 <CardBody>
                                     <div className='mb-2'>
@@ -321,6 +315,8 @@ const DaftarPasienRI = () => {
                                             data={data}
                                             progressPending={loading}
                                             customStyles={tableCustomStyles}
+                                            expandableRows
+                                            expandableRowsComponent={ExpandableDeposit}
                                         />
                                     </div>
                                 </CardBody>
@@ -333,5 +329,37 @@ const DaftarPasienRI = () => {
         </React.Fragment>
     )
 }
+
+const ExpandableDeposit = ({ data }) => {
+
+    if(data.deposit.length === 0 ){
+        return <></>
+    }
+    return (
+        <table className="table">
+            <thead className="thead-light">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Tanggal Deposit</th>
+                    <th scope="col">Nominal</th>
+                    <th scope="col">NoBB</th>
+                </tr>
+            </thead>
+            <tbody>
+
+            {data.deposit.map((item, key) =>
+                <tr key={key}>
+                    <th scope="row">{key + 1}</th>
+                    <td>{item.tglinput}</td>
+                    <td>{item.nominal}</td>
+                    <td>{item.nobukti}</td>
+                </tr>
+            )}
+            </tbody>
+        </table>
+
+    )
+}
+
 
 export default withRouter(DaftarPasienRI)

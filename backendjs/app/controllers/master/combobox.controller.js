@@ -240,22 +240,19 @@ const comboRegistrasi = (req, res) => {
     }
 }
 
-const comboAsuransi = (req, res) => {
+const comboAsuransi = async (req, res) => {
     try {
-        pool.query(queriesStatusKecelakaan.getAll, (error, result) => {
-            if (error){ 
-                throw error;
-            } else  {
-                let tempres = {
-                    statuskecelakaan: result.rows
-                }
-                res.status(200).send({
-                    data: tempres,
-                    status: "success",
-                    success: true,
-                });
-            }
-        }) 
+        const result = await pool.query(queriesStatusKecelakaan.getAll, []) 
+        const kelas = await pool.query(queriesKelas.getAll, [])
+        let tempres = {
+            statuskecelakaan: result.rows,
+            kelas : kelas.rows
+        }
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+        });
     } catch (error) {
         console.error(error.message)
         res.status(500).send({

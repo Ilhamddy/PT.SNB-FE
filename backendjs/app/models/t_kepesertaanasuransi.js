@@ -141,6 +141,9 @@ export default (sequelize, Sequelize) => {
         },
         nominalklaim:{
             type: Sequelize.FLOAT
+        },
+        objectkelasfk:{
+            type: Sequelize.INTEGER
         }
     }, {
         tableName: "t_kepesertaanasuransi", // relation "user" does not exist

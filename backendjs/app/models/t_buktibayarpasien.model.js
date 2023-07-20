@@ -60,6 +60,9 @@ export default (sequelize, Sequelize) => {
         },
         tglinput: {
             type: Sequelize.DATE
+        },
+        objectpiutangpasienfk: {
+            type: Sequelize.CHAR(32)
         }
     }, {
         tableName: "t_buktibayarpasien", // relation "user" does not exist

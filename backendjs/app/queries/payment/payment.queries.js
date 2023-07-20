@@ -278,6 +278,21 @@ const qDaftarTagihanPasienFronNota =
             AND tn.norec = $1
     `     
 
+const qGetDepositFromNota = 
+    `
+    SELECT 
+    dpst.norec AS norec,
+    dpst.nominal AS nominal,
+    dpst.tglinput AS tglinput,
+    bb.no_bukti AS nobukti
+    FROM t_notapelayananpasien tnp
+        LEFT JOIN t_depositpasien dpst ON dpst.objectdaftarpasienfk = tnp.objectdaftarpasienfk
+        LEFT JOIN t_buktibayarpasien bb ON bb.norec = dpst.objectbuktibayarpasienfk
+            WHERE tnp.norec = $1
+            AND tnp.statusenabled = true
+    `
+
+
 export {
     qGetPelayananFromAntrean,
     qGetNorecPenggunaFromAp,
@@ -292,5 +307,6 @@ export {
     qGetPiutangPasien,
     qTagihanGetFromDP,
     qGetPaymentForPiutang,
-    qDaftarTagihanPasienFronNota
+    qDaftarTagihanPasienFronNota,
+    qGetDepositFromNota,
 }

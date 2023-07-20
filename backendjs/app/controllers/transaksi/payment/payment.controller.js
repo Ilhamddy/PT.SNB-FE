@@ -15,6 +15,7 @@ import { qGetPelayananFromAntrean,
     qTagihanGetFromDP,
     qGetPaymentForPiutang,
     qDaftarTagihanPasienFronNota,
+    qGetDepositFromNota
 } from '../../../queries/payment/payment.queries';
 
 import { Op } from "sequelize";
@@ -29,6 +30,7 @@ const t_log_pasienbatalbayar = db.t_log_pasienbatalbayar
 const t_piutangpasien = db.t_piutangpasien
 const t_detailpiutangpasien = db.t_detailpiutangpasien
 const t_carabayar = db.t_carabayar
+const t_depositpasien = db.t_depositpasien
 const Sequelize = {}
 
 const getPelayananFromAntrean = async (req, res) => {
@@ -65,12 +67,15 @@ const getPelayananFromVerif = async (req, res) => {
     try{
         const norecnota = req.params.norecnota
         const pelayanan = await pool.query(qGetPelayananFromVerif, [norecnota])
+       
         const verif = await pool.query(qGetVerif, [norecnota])
         const kepesertaan = await pool.query(qGetKepesertaanFromNota, [norecnota])
+        const deposit = await pool.query(qGetDepositFromNota, [norecnota])
         let tempres = { 
             pelayanan: pelayanan.rows || [],
             nota: verif.rows[0] || null,
-            kepesertaan: kepesertaan.rows[0]?.list_kpa || []
+            kepesertaan: kepesertaan.rows[0]?.list_kpa || [],
+            deposit: deposit.rows || []
         }
         res.status(200).send({
             data: tempres,
@@ -223,64 +228,10 @@ const createBuktiBayar = async (req, res) => {
     try{
         const objectBody = req. body
         const norecbukti = uuid.v4().substring(0, 32);
-        const totalPayment = objectBody.payment.reduce((total, payment) => {
-            return total + payment.nominalbayar
-        }, 0);
-        const createdBuktiBayar = await t_buktibayarpasien.create({
-            norec: norecbukti,
-            kdprofile: 0,
-            statusenabled: true,
-            objectdaftarpasienfk: objectBody.norecdp,
-            totaltagihan: objectBody.totaltagihan,
-            deposit: objectBody.deposit,
-            totalbayar: totalPayment,
-            no_bukti: objectBody.nobukti,
-            objectpegawaifk: objectBody.pegawai,
-            objectnotapelayananpasienfk: objectBody.norecnota,
-            objectmetodebayarfk: null,
-            objectjenisnontunaifk: null,
-            objectrekeningrsfk: null,
-            objectpiutangpasienfk: objectBody.norecpiutang || null,
-            pjpasien: objectBody.pjpasien,
-            diskon: objectBody.diskon,
-            klaim: objectBody.klaim,
-            tglinput: new Date(),
-        }, {transaction: transaction})
 
-        const createdCaraBayar = await Promise.all(
-            objectBody.payment.map(async (payment) => {
-                const norecCaraBayar = uuid.v4().substring(0, 32);
-                const createdCaraBayar = await t_carabayar.create({
-                    norec: uuid.v4().substring(0, 32),
-                    statusenabled: true,
-                    objectbuktibayarpasienfk: norecbukti,
-                    objectmetodebayarfk: payment.metodebayar,
-                    objectjenisnontunaifk: payment.nontunai || null,
-                    objectrekeningrsfk: payment.rekening || null,
-                    totalbayar: payment.nominalbayar,
-                    objectpiutangpasienfk: null,
-                    pjpasien: payment.pjpasien || null,
-                    approvalcode: payment.approvalcode || null,  
-                }, {
-                    transaction: transaction
-                })
-                createdCaraBayar.objectmetodebayarfk 
-                    = (await pool.query(`
-                    SELECT metodebayar 
-                    FROM m_metodebayar 
-                        WHERE id = $1`, [createdCaraBayar.objectmetodebayarfk])).rows[0].metodebayar
-                if(createdCaraBayar.objectjenisnontunaifk){
-                    createdCaraBayar.objectjenisnontunaifk 
-                        = (await pool.query(`
-                        SELECT nontunai
-                        FROM m_jenisnontunai 
-                        WHERE id = $1`, [createdCaraBayar.objectjenisnontunaifk]))
-                        .rows[0]
-                        .nontunai
-                }
-                return createdCaraBayar
-            }
-        ))
+        
+        const {createdBuktiBayar, createdCaraBayar, totalPayment} = 
+            await hCreateBayar(norecbukti, objectBody, transaction)
 
         const sisa = objectBody.totaltagihan - totalPayment
 
@@ -313,13 +264,25 @@ const createBuktiBayar = async (req, res) => {
             }, {
                 transaction: transaction
             })
-
         }
 
+        let createdDeposit = null
+        if(objectBody.isdeposit){
+            createdDeposit = t_depositpasien.create({
+                norec: uuid.v4().substring(0, 32),
+                statusenabled: true,
+                objectdaftarpasienfk: objectBody.norecdp,
+                nominal: totalPayment,
+                objectpegawaifk: req.userId,
+                objectbuktibayarpasienfk: norecbukti,
+                tglinput: new Date(),
+            })
+        }
 
         const tempres = {
             buktiBayar: createdBuktiBayar,
-            createdCaraBayar: createdCaraBayar
+            createdCaraBayar: createdCaraBayar,
+            createdDeposit: createdDeposit
         }
         transaction.commit();
         res.status(200).send({
@@ -636,4 +599,67 @@ const hChangeDetailPiutangPasien = async (norecSebelum, norecSetelah, transactio
         transaction: transaction
     })
     return changedDetailPiutang
+}
+
+const hCreateBayar = async (norecbukti, objectBody, transaction) => {
+    const totalPayment = objectBody.payment.reduce((total, payment) => {
+        return total + payment.nominalbayar
+    }, 0);
+    const createdBuktiBayar = await t_buktibayarpasien.create({
+        norec: norecbukti,
+        kdprofile: 0,
+        statusenabled: true,
+        objectdaftarpasienfk: objectBody.norecdp,
+        totaltagihan: objectBody.totaltagihan,
+        deposit: objectBody.deposit,
+        totalbayar: totalPayment,
+        no_bukti: objectBody.nobukti,
+        objectpegawaifk: objectBody.pegawai,
+        objectnotapelayananpasienfk: objectBody.norecnota || null,
+        objectmetodebayarfk: null,
+        objectjenisnontunaifk: null,
+        objectrekeningrsfk: null,
+        objectpiutangpasienfk: objectBody.norecpiutang || null,
+        pjpasien: objectBody.pjpasien,
+        diskon: objectBody.diskon,
+        klaim: objectBody.klaim,
+        tglinput: new Date(),
+    }, {transaction: transaction})
+
+    const createdCaraBayar = await Promise.all(
+        objectBody.payment.map(async (payment) => {
+            const norecCaraBayar = uuid.v4().substring(0, 32);
+            const createdCaraBayar = await t_carabayar.create({
+                norec: uuid.v4().substring(0, 32),
+                statusenabled: true,
+                objectbuktibayarpasienfk: norecbukti,
+                objectmetodebayarfk: payment.metodebayar,
+                objectjenisnontunaifk: payment.nontunai || null,
+                objectrekeningrsfk: payment.rekening || null,
+                totalbayar: payment.nominalbayar,
+                objectpiutangpasienfk: null,
+                pjpasien: payment.pjpasien || null,
+                approvalcode: payment.approvalcode || null,  
+            }, {
+                transaction: transaction
+            })
+            createdCaraBayar.objectmetodebayarfk 
+                = (await pool.query(`
+                SELECT metodebayar 
+                FROM m_metodebayar 
+                    WHERE id = $1`, [createdCaraBayar.objectmetodebayarfk])).rows[0].metodebayar
+            if(createdCaraBayar.objectjenisnontunaifk){
+                createdCaraBayar.objectjenisnontunaifk 
+                    = (await pool.query(`
+                    SELECT nontunai
+                    FROM m_jenisnontunai 
+                    WHERE id = $1`, [createdCaraBayar.objectjenisnontunaifk]))
+                    .rows[0]
+                    .nontunai
+            }
+            return createdCaraBayar
+        }
+    ))
+
+    return {createdBuktiBayar, createdCaraBayar, totalPayment}
 }

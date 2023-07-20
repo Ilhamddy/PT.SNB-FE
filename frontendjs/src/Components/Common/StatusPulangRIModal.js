@@ -579,15 +579,6 @@ const StatusPulangRIModal = ({ norecdp, norecAP, toggle }) => {
     return (
         <Modal isOpen={!!norecdp} toggle={() => toggle()} centered={true} size="xl">
             <ModalBody className="py-12 px-12">
-                {/* <div className="mt-2 text-center">
-                    <lord-icon
-                        src="https://cdn.lordicon.com/zganwmkl.json"
-                        trigger="loop"
-                        colors="outline:#121331,primary:#3a3347,secondary:#646e78"
-                        style={{ width: "100px", height: "100px" }}
-                    ></lord-icon>
-
-                </div> */}
                 <Row>
                     <Col md={12}>
                         <div>
@@ -685,7 +676,6 @@ const StatusPulangRIModal = ({ norecdp, norecAP, toggle }) => {
                         </div>
                     </Col>
                 </Row>
-
             </ModalBody>
         </Modal>
     );

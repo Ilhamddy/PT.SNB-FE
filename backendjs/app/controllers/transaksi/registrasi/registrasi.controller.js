@@ -871,6 +871,7 @@ const saveRegistrasiPenjaminFK = async (req, res) => {
             msg: 'Simpan Gagal',
             code: 201
         });
+        return;
     }
     try{
         let norecPenjaminFK = uuid.v4().substring(0, 32)
@@ -884,7 +885,7 @@ const saveRegistrasiPenjaminFK = async (req, res) => {
                 no_kartu: dataForm.nokartunonbpjs,
                 objectdpjpfk: dataForm.dpjpmelayani,
                 objectpenjaminfk: dataForm.penjamin,
-                plafon: dataForm.plafon
+                plafon: dataForm.plafon,
             }, {transaction: transaction})
         }else{
             daftarPasien = await db.t_kepesertaanasuransi.create({
@@ -921,6 +922,7 @@ const saveRegistrasiPenjaminFK = async (req, res) => {
                 lk_kodekabupaten: dataForm.kkabupatenlakalantas || null,
                 lk_namakecamatan: dataForm.kecamatanlakalantas,
                 lk_kodekecamatan: dataForm.kkecamatanlakalantas || null,
+                objectkelasfk: dataForm.kelasditanggung,
             }, { transaction: transaction });
         }
         
@@ -1312,26 +1314,34 @@ async function getWidgetDaftarPasienRI(req, res) {
 async function getDaftarPasienRawatInap(req, res) {
     const noregistrasi = req.query.noregistrasi;
 
-    // let query = queries.getAllByOr + ` where nocm ilike '%` + nocm + `%'` + ` or namapasien ilike '%` + nocm + `%' limit 200`
+
     let query = queries.getDaftarPasienRawatInap + ` and td.noregistrasi ilike '%${noregistrasi}%'`
+
     try {
-        pool.query(query, (error, resultCountNoantrianDokter) => {
-            if (error) {
-                res.status(522).send({
-                    status: error,
-                    success: true,
-                });
-            } else {
-                res.status(200).send({
-                    data: resultCountNoantrianDokter.rows,
-                    status: "success",
-                    success: true,
-                });
+        let resultCountNoantrianDokter = await pool.query(query, [])
+        let resultsDeposit = await Promise.all(
+            resultCountNoantrianDokter.rows.map(async (rawatInap) => {
+                const norecdp = rawatInap.norecdp;
+                const deposit = await pool.query(queries.qGetDepositFromPasien, [norecdp])
+                return {
+                    ...rawatInap,
+                    deposit: deposit.rows
+                }
             }
-        })
+        ))
+        res.status(200).send({
+            data: resultsDeposit,
+            status: "success",
+            success: true,
+        });
 
     } catch (error) {
-        throw error;
+        console.error(error);  
+        res.status(500).send({
+            data: [],
+            status: "error",
+            success: false,
+        })
     }
 
 }

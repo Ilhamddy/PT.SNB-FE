@@ -34,7 +34,8 @@ const RegistrasiPenjaminFK = () => {
     const navigate = useNavigate();
 
 
-    const {  dataDiagnosa, statusKecelakaan: statusKecelakaanOpt, 
+    const {  dataDiagnosa, statusKecelakaanOpt,
+        comboboxAsuransi, 
         data, 
         dataUser, 
         dataBpjs, 
@@ -47,7 +48,8 @@ const RegistrasiPenjaminFK = () => {
     } = useSelector((state) => ({
         dataDiagnosa: state.Emr.emrDiagnosaxGet.data,
         data: state.Master.comboRegistrasiGet.data,
-        statusKecelakaan: state.Master.comboAsuransiGet.data.statuskecelakaan,
+        statusKecelakaanOpt: state.Master.comboAsuransiGet.data?.statuskecelakaan,
+        comboboxAsuransi: state.Master.comboAsuransiGet.data,
         dataUser: state.Registrasi.registrasiGet.data,
         dataBpjs: state.Registrasi.registrasiNoBpjsGet.data,
         dataRuangDaftar: state.Registrasi.registrasiRuangNorecGet.data,
@@ -128,6 +130,7 @@ const RegistrasiPenjaminFK = () => {
             jenispeserta: "",
             notelepon: "",
             catatan: "",
+            kelasditanggung: "",
             statuskecelakaan: "",
             provinsilakalantas: "",
             kprovinsilakalantas: "",
@@ -150,7 +153,8 @@ const RegistrasiPenjaminFK = () => {
             kkotalakakerja: "",
             kecamatanlakakerja: "",
             kkecamatanlakakerja: "",
-            nosep:""
+            nosep:"",
+            
         },
 
         validationSchema: Yup.object({
@@ -169,6 +173,7 @@ const RegistrasiPenjaminFK = () => {
             notelepon: Yup.string().matches(RegExp('^\\d+$'), 'Harus angka')
                 .required("No telepon wajib di isi"),
             catatan: Yup.string().required("Catatan wajib di isi"),
+            kelasditanggung: Yup.string().required("Kelas ditanggung wajib di isi"),
             statuskecelakaan: Yup.string().required("Status kecelakaan wajib di isi"),
             provinsilakalantas: Yup.string().when("statuskecelakaan", (statuskecelakaan, schema) => {
                 if (statuskecelakaan[0] === '2' || statuskecelakaan[0] === '4') {
@@ -423,6 +428,9 @@ const RegistrasiPenjaminFK = () => {
         const setFFNBPJS = vNonBPJS.setFieldValue
         setFFNBPJS("penjamin", penjaminObj?.id || 1)
     }, [vNonBPJS.setFieldValue, penjaminObj])
+
+    const kelasOpt = comboboxAsuransi?.kelas?.filter((kel) => 
+        kel.kelas_bpjs === dataBpjs?.kepesertaan?.peserta?.hakKelas?.kode)
     
 
     //component
@@ -711,7 +719,27 @@ const RegistrasiPenjaminFK = () => {
                         <Row className="gy-4">
                             <Col xxl={6} md={6}>
                                 <div className="mt-2">
-                                    <Label style={{ color: "black" }} htmlFor="tglregistrasi" className="form-label">Diagnosa Rujukan</Label>
+                                    <Label style={{ color: "black" }} htmlFor="kelasditanggung" className="form-label">Kelas Ditanggung</Label>
+                                </div>
+                            </Col>
+                            <Col xxl={6} md={6}>
+                                <CustomSelect
+                                    id="kelasditanggung"
+                                    name="kelasditanggung"
+                                    onInputChange={handleDiagnosa}
+                                    options={kelasOpt}
+                                    className={`input ${validation.errors.kelasditanggung ? "is-invalid" : ""}`}
+                                    onChange={(e) => {
+                                        validation.setFieldValue("kelasditanggung", e.value)
+                                    }}
+                                />
+                                {validation.touched.kelasditanggung && validation.errors.kelasditanggung ? (
+                                    <FormFeedback type="invalid"><div>{validation.errors.kelasditanggung}</div></FormFeedback>
+                                ) : null}
+                            </Col>
+                            <Col xxl={6} md={6}>
+                                <div className="mt-2">
+                                    <Label style={{ color: "black" }} htmlFor="diagnosarujukan" className="form-label">Diagnosa Rujukan</Label>
                                 </div>
                             </Col>
                             <Col xxl={6} md={6}>

@@ -84,7 +84,7 @@ const Bayar = () => {
                 approvalcode: "",
                 nominalbayar: "",
                 tglbayar: dateAwalStart,
-                rekieningrs: ""
+                rekeningrs: ""
             }]
         },
         validationSchema: Yup.object({
@@ -104,12 +104,17 @@ const Bayar = () => {
                         is: (val) => val === "2",
                         then: () => Yup.string().required("Rekening RS harus diisi"),
                     }),
+                    approvalcode: Yup.string().when("metodebayar", {
+                        is: (val) => val === "2",
+                        then: () => Yup.string().required("Approval Code harus diisi"),
+                    }),
                 })
             ),
             pjpasien: Yup.string().required("Diterima Dari harus diisi"),
             // non wajib
             deposit: Yup.string().required("Deposit harus diisi"),
             nobukti: Yup.string().required("No Bukti harus diisi"),
+            keterangan: Yup.string().required("Keterangan bayar wajib diisi"),
             pegawai: Yup.string().required("Pegawai harus diisi"),
             norecnota: Yup.string().required("No Rekam Medis harus diisi"),
             klaim: Yup.string().required("Klaim harus diisi"),
@@ -146,7 +151,8 @@ const Bayar = () => {
             pjpasien: "",
             nominalbayar: "",
             tglbayar: dateAwalStart,
-            rekieningrs: ""
+            rekeningrs: "",
+            approvalcode: ""
         });
         validation.setFieldValue("payment", newPayments);
     }
@@ -284,7 +290,7 @@ const Bayar = () => {
         const setFF = validation.setFieldValue
         grandTotal && setFF("totaltagihan", grandTotal)
         diskon && setFF("diskon", diskon)
-        nominalklaim && setFF("klaim", nominalklaim)
+        setFF("klaim", nominalklaim || 0)
     }, [dispatch, validation.setFieldValue, grandTotal, diskon, nominalklaim])
 
     useEffect(() => {
@@ -321,8 +327,7 @@ const Bayar = () => {
                     <Form
                         onSubmit={(e) => {
                             e.preventDefault();
-                            // console.log("submit")
-                            // console.log(validation.errors)
+                            console.log(validation.errors)
                             validation.handleSubmit();
                             return false;
                         }}
@@ -347,10 +352,10 @@ const Bayar = () => {
                                                                 changePayment('metodebayar', index, e.value)
                                                             }
                                                             value={itemP.metodebayar || ""}
-                                                            className={`input ${validation.errors.payment?.metodebayar ? "is-invalid" : ""}`}
+                                                            className={`input ${validation.errors.payment?.[index]?.metodebayar ? "is-invalid" : ""}`}
                                                         />
-                                                        {validation.touched.payment && validation.errors.payment?.metodebayar && (
-                                                            <FormFeedback type="invalid"><div>{validation.errors.payment?.metodebayar}</div></FormFeedback>
+                                                        {validation.touched.payment?.[index]?.metodebayar && validation.errors.payment?.[index]?.metodebayar && (
+                                                            <FormFeedback type="invalid"><div>{validation.errors.payment?.[index]?.metodebayar}</div></FormFeedback>
                                                         )}
                                                     </div>
                                                 </Col>
@@ -405,10 +410,10 @@ const Bayar = () => {
                                                                     rgxAllNumber.test(e.target.value) &&
                                                                         changePayment("approvalcode", index, e.target.value);
                                                                 }}
-                                                                invalid={validation.touched.payment && !!validation.errors.payment?.nominalbayar}
+                                                                invalid={validation.touched.payment?.[index]?.approvalcode && !!validation.errors.payment?.[index]?.approvalcode}
                                                                 />
-                                                            {validation.touched.payment && validation.errors.payment?.nominalbayar ? (
-                                                                <FormFeedback type="invalid" ><div>{validation.errors.payment?.nominalbayar}</div></FormFeedback>
+                                                            {validation.touched.payment?.[index]?.approvalcode && validation.errors.payment?.[index]?.approvalcode ? (
+                                                                <FormFeedback type="invalid" ><div>{validation.errors.payment?.[index]?.approvalcode}</div></FormFeedback>
                                                             ) : null}
                                                         </div>
                                                     </>
@@ -433,15 +438,15 @@ const Bayar = () => {
                                                                     itemP.nominalbayar
                                                                 ))  
                                                         }}
-                                                        invalid={validation.touched.payment && !!validation.errors.payment?.nominalbayar}
+                                                        invalid={validation.touched.payment?.[index]?.nominalbayar && !!validation.errors.payment?.[index]?.nominalbayar}
                                                         value={itemP.nominalbayar || ""} />
-                                                    {validation.touched.payment && validation.errors.payment?.nominalbayar ? (
-                                                        <FormFeedback type="invalid"><div>{validation.errors.payment?.nominalbayar}</div></FormFeedback>
+                                                    {validation.touched.payment?.[index]?.nominalbayar && validation.errors.payment?.[index]?.nominalbayar ? (
+                                                        <FormFeedback type="invalid"><div>{validation.errors.payment?.[index]?.nominalbayar}</div></FormFeedback>
                                                     ) : null}
                                                 </div>
                                                 {itemP.metodebayar === 2 &&
                                                     <>
-                                                        <Label style={{ color: "black" }} htmlFor="keterangan" className="form-label">
+                                                        <Label style={{ color: "black" }} htmlFor={`rekeningrs${index}`} className="form-label">
                                                             Rekening RS
                                                         </Label>
                                                         <div>
@@ -449,13 +454,13 @@ const Bayar = () => {
                                                                 id={`rekeningrs${index}}`}
                                                                 name={`rekeningrs${index}`}
                                                                 options={filterRekeningRs(comboboxpayment?.rekeningRs || [], itemP.nontunai)}
-                                                                className={`input ${validation.errors.payment?.nominalbayar ? "is-invalid" : ""}`}
                                                                 onChange={(e) => {
                                                                     changePayment("rekeningrs", index, e.value);
                                                                 }}
+                                                                className={`input ${validation.errors.payment?.[index]?.rekeningrs ? "is-invalid" : ""}`}
                                                             />
-                                                            {validation.touched.payment && validation.errors.payment?.nominalbayar ? (
-                                                                <FormFeedback type="invalid"><div>{validation.errors.payment?.nominalbayar}</div></FormFeedback>
+                                                            {validation.touched.payment?.[index]?.rekeningrs && validation.errors.payment?.[index]?.rekeningrs ? (
+                                                                <FormFeedback type="invalid"><div>{validation.errors.payment?.[index]?.rekeningrs}</div></FormFeedback>
                                                             ) : null}
                                                         </div>
                                                     </>
@@ -493,12 +498,12 @@ const Bayar = () => {
                                                 id={`pjpasien`}
                                                 name={`pjpasien`}
                                                 type="text"
-                                                disabled
+                                                onChange={validation.handleChange}
                                                 value={validation.values.pjpasien || ""} 
-                                                invalid={validation.touched.payment && !!validation.errors.payment?.nominalbayar}
+                                                invalid={validation.touched.pjpasien && !!validation.errors.pjpasien}
                                                 />
-                                            {validation.touched.payment && validation.errors.payment?.nominalbayar ? (
-                                                <FormFeedback type="invalid" ><div>{validation.errors.payment?.nominalbayar}</div></FormFeedback>
+                                            {validation.touched.pjpasien && validation.errors.pjpasien ? (
+                                                <FormFeedback type="invalid" ><div>{validation.errors.pjpasien}</div></FormFeedback>
                                             ) : null}
                                         </div>
                                     </Row>
@@ -607,14 +612,9 @@ const Bayar = () => {
                                                 style={{ height: '200px' }}
                                                 onChange={validation.handleChange}
                                                 onBlur={validation.handleBlur}
-                                                value={validation.values.keterangan || ""}
-                                                invalid={
-                                                    validation.touched.keterangan && validation.errors.keterangan ? true : false
-                                                }
+                                                value={""}
+                                                invalid={false}
                                             />
-                                            {validation.touched.keterangan && validation.errors.keterangan ? (
-                                                <FormFeedback type="invalid"><div>{validation.errors.keterangan}</div></FormFeedback>
-                                            ) : null}
                                         </Col>
                                     </Row>
                                     <Row>
