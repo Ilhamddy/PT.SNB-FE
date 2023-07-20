@@ -93,9 +93,9 @@ mt.reportdisplay as nobed from t_daftarpasien td
 const qGetDepositFromPasien = 
     `
     SELECT 
-    dpst.norec AS norecdeposit,
-    dpst.nominal AS nominaldeposit,
-    dpst.tglinput AS tglinputdeposit
+    dpst.norec AS norec,
+    dpst.nominal AS nominal,
+    dpst.tglinput AS tglinput
     FROM t_depositpasien dpst
         WHERE dpst.objectdaftarpasienfk = $1
         AND dpst.statusenabled = true

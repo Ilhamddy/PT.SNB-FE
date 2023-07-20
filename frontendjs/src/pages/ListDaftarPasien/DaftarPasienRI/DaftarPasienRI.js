@@ -324,6 +324,8 @@ const DaftarPasienRI = () => {
                                             data={data}
                                             progressPending={loading}
                                             customStyles={tableCustomStyles}
+                                            expandableRows
+                                            expandableRowsComponent={ExpandableDeposit}
                                         />
                                     </div>
                                 </CardBody>
@@ -336,5 +338,35 @@ const DaftarPasienRI = () => {
         </React.Fragment>
     )
 }
+
+const ExpandableDeposit = ({ data }) => {
+
+    if(data.deposit.length === 0 ){
+        return <></>
+    }
+    return (
+        <table className="table">
+            <thead className="thead-light">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Tanggal Deposit</th>
+                    <th scope="col">Nominal</th>
+                </tr>
+            </thead>
+            <tbody>
+
+            {data.deposit.map((item, key) =>
+                <tr key={key}>
+                    <th scope="row">{key + 1}</th>
+                    <td>{item.tglinput}</td>
+                    <td>{item.nominal}</td>
+                </tr>
+            )}
+            </tbody>
+        </table>
+
+    )
+}
+
 
 export default withRouter(DaftarPasienRI)
