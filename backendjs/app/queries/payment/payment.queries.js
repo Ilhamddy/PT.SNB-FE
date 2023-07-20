@@ -278,6 +278,7 @@ const qDaftarTagihanPasienFronNota =
             AND tn.norec = $1
     `     
 
+
 export {
     qGetPelayananFromAntrean,
     qGetNorecPenggunaFromAp,
@@ -292,5 +293,4 @@ export {
     qGetPiutangPasien,
     qTagihanGetFromDP,
     qGetPaymentForPiutang,
-    qDaftarTagihanPasienFronNota
-}
+    qDaftarTagihanPasienFronNota,}

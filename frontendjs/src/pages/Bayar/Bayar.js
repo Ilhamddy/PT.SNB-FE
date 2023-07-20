@@ -446,7 +446,7 @@ const Bayar = () => {
                                                 </div>
                                                 {itemP.metodebayar === 2 &&
                                                     <>
-                                                        <Label style={{ color: "black" }} htmlFor="keterangan" className="form-label">
+                                                        <Label style={{ color: "black" }} htmlFor={`rekeningrs${index}`} className="form-label">
                                                             Rekening RS
                                                         </Label>
                                                         <div>
@@ -500,10 +500,10 @@ const Bayar = () => {
                                                 type="text"
                                                 onChange={validation.handleChange}
                                                 value={validation.values.pjpasien || ""} 
-                                                invalid={validation.touched.payment && !!validation.errors.payment?.nominalbayar}
+                                                invalid={validation.touched.pjpasien && !!validation.errors.pjpasien}
                                                 />
-                                            {validation.touched.payment && validation.errors.payment?.nominalbayar ? (
-                                                <FormFeedback type="invalid" ><div>{validation.errors.payment?.nominalbayar}</div></FormFeedback>
+                                            {validation.touched.pjpasien && validation.errors.pjpasien ? (
+                                                <FormFeedback type="invalid" ><div>{validation.errors.pjpasien}</div></FormFeedback>
                                             ) : null}
                                         </div>
                                     </Row>

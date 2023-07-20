@@ -4,9 +4,10 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
 import { dateISOString, dateTimeISOString, onChangeStrNbr } from "../../../utils/format";
-import { rgxAllNumber } from "../../../utils/regexcommon";
+import { rgxAllNumber, rgxAllPeriods } from "../../../utils/regexcommon";
 import { comboPaymentGet } from "../../../store/master/action";
 import { useEffect } from "react";
+import { buktiBayarCreate } from "../../../store/payment/action";
 
 const dateAwalStart = dateTimeISOString(new Date(new Date() - 1000 * 60 * 60 * 24 * 3));
 const dateAwalEnd = dateISOString(new Date())
@@ -26,15 +27,14 @@ const DepositModal = ({toggle, norecdp}) => {
         initialValues: {
             totaltagihan: "",
             diskon: 0,
-            // non wajib
             deposit: 0,
             nobukti: `B${date.getFullYear().toString().substring(2, 4)}${date.getMonth() + 1}${date.getDate()}${date.getHours()}${date.getMinutes()}${date.getSeconds()}`,
-            pegawai: "",
             norecnota: "",
-            klaim: "",
+            klaim: 0,
             norecdp: norecdp,
             pjpasien: "",
             keterangan: "",
+            isdeposit: true,
             payment: [{
                 metodebayar: "",
                 nontunai: "",
@@ -67,15 +67,22 @@ const DepositModal = ({toggle, norecdp}) => {
             pjpasien: Yup.string().required("Diterima Dari harus diisi"),
             // non wajib
             deposit: Yup.string().required("Deposit harus diisi"),
+            keterangan: Yup.string().required("Keterangan harus diisi"),
             nobukti: Yup.string().required("No Bukti harus diisi"),
-            pegawai: Yup.string().required("Pegawai harus diisi"),
-            norecnota: Yup.string().required("No Rekam Medis harus diisi"),
             klaim: Yup.string().required("Klaim harus diisi"),
             norecdp: Yup.string().required("No DP harus diisi"),
         }),
         onSubmit: (values) => {
             let valuesSent = {...values}
-            
+            valuesSent.payment = valuesSent.payment.map((payment) => {
+                let newPayment = {...payment}
+                newPayment.nominalbayar 
+                    = Number(newPayment.nominalbayar.replace(rgxAllPeriods, "")) 
+                return newPayment
+            })
+            dispatch(buktiBayarCreate(valuesSent, () => {
+                toggle();
+            }))
         }
     })
 
@@ -87,7 +94,8 @@ const DepositModal = ({toggle, norecdp}) => {
             pjpasien: "",
             nominalbayar: "",
             tglbayar: dateAwalStart,
-            rekeningrs: ""
+            rekeningrs: "",
+            approvalcode: ""
         });
         validation.setFieldValue("payment", newPayments);
     }
@@ -103,6 +111,10 @@ const DepositModal = ({toggle, norecdp}) => {
         let newPayment = {...newPayments[index]};
         newPayment[fieldname] = newvalue;
         newPayments[index] = newPayment;
+        const totalPayment = newPayments.reduce((acc, curr) => {
+            return acc + Number(curr.nominalbayar);
+        }, 0);
+        validation.setFieldValue("totaltagihan", totalPayment)
         validation.setFieldValue("payment", newPayments);
     }
 
@@ -123,13 +135,13 @@ const DepositModal = ({toggle, norecdp}) => {
                 <Form
                     onSubmit={(e) => {
                         e.preventDefault();
-                        console.log(validation.touched)
+                        console.log(validation.errors)
                         validation.handleSubmit();
                         return false;
                     }}
                     className="gy-4"
                     action="#">
-                    <Card className="p-3">    
+                    <Card className="p-3">
                         {validation.values.payment.map((itemP, index) => 
                             <Row key={index} className="mb-5">
                                 <Row className="mb-2">
@@ -146,10 +158,10 @@ const DepositModal = ({toggle, norecdp}) => {
                                                     changePayment('metodebayar', index, e.value)
                                                 }
                                                 value={itemP.metodebayar || ""}
-                                                className={`input ${validation.errors.payment?.metodebayar ? "is-invalid" : ""}`}
+                                                className={`input ${validation.errors.payment?.[index]?.metodebayar ? "is-invalid" : ""}`}
                                             />
-                                            {validation.touched.payment && validation.errors.payment?.metodebayar && (
-                                                <FormFeedback type="invalid"><div>{validation.errors.payment?.metodebayar}</div></FormFeedback>
+                                            {validation.touched.payment?.[index]?.metodebayar && validation.errors.payment?.[index]?.metodebayar && (
+                                                <FormFeedback type="invalid"><div>{validation.errors.payment?.[index]?.metodebayar}</div></FormFeedback>
                                             )}
                                         </div>
                                     </Col>
@@ -204,11 +216,10 @@ const DepositModal = ({toggle, norecdp}) => {
                                                         rgxAllNumber.test(e.target.value) &&
                                                             changePayment("approvalcode", index, e.target.value);
                                                     }}
-                                                    invalid={
-                                                        validation.touched.payment?.[0]?.approvalcode && validation.errors.payment?.[0]?.approvalcode}
+                                                    invalid={validation.touched.payment?.[index]?.approvalcode && !!validation.errors.payment?.[index]?.approvalcode}
                                                     />
-                                                {validation.touched.payment?.[0]?.approvalcode && validation.errors.payment?.[0]?.approvalcode ? (
-                                                    <FormFeedback type="invalid" ><div>{validation.errors.payment?.[0]?.approvalcode}</div></FormFeedback>
+                                                {validation.touched.payment?.[index]?.approvalcode && validation.errors.payment?.[index]?.approvalcode ? (
+                                                    <FormFeedback type="invalid" ><div>{validation.errors.payment?.[index]?.approvalcode}</div></FormFeedback>
                                                 ) : null}
                                             </div>
                                         </>
@@ -233,10 +244,10 @@ const DepositModal = ({toggle, norecdp}) => {
                                                         itemP.nominalbayar
                                                     ))  
                                             }}
-                                            invalid={validation.touched.payment && !!validation.errors.payment?.nominalbayar}
+                                            invalid={validation.touched.payment?.[index]?.nominalbayar && !!validation.errors.payment?.[index]?.nominalbayar}
                                             value={itemP.nominalbayar || ""} />
-                                        {validation.touched.payment && validation.errors.payment?.nominalbayar ? (
-                                            <FormFeedback type="invalid"><div>{validation.errors.payment?.nominalbayar}</div></FormFeedback>
+                                        {validation.touched.payment?.[index]?.nominalbayar && validation.errors.payment?.[index]?.nominalbayar ? (
+                                            <FormFeedback type="invalid"><div>{validation.errors.payment?.[index]?.nominalbayar}</div></FormFeedback>
                                         ) : null}
                                     </div>
                                     {itemP.metodebayar === 2 &&
@@ -249,13 +260,13 @@ const DepositModal = ({toggle, norecdp}) => {
                                                     id={`rekeningrs${index}}`}
                                                     name={`rekeningrs${index}`}
                                                     options={filterRekeningRs(comboboxpayment?.rekeningRs || [], itemP.nontunai)}
-                                                    className={`input ${validation.errors.payment?.nominalbayar ? "is-invalid" : ""}`}
                                                     onChange={(e) => {
                                                         changePayment("rekeningrs", index, e.value);
                                                     }}
+                                                    className={`input ${validation.errors.payment?.[index]?.rekeningrs ? "is-invalid" : ""}`}
                                                 />
-                                                {validation.touched.payment && validation.errors.payment?.nominalbayar ? (
-                                                    <FormFeedback type="invalid"><div>{validation.errors.payment?.nominalbayar}</div></FormFeedback>
+                                                {validation.touched.payment?.[index]?.rekeningrs && validation.errors.payment?.[index]?.rekeningrs ? (
+                                                    <FormFeedback type="invalid"><div>{validation.errors.payment?.[index]?.rekeningrs}</div></FormFeedback>
                                                 ) : null}
                                             </div>
                                         </>
@@ -293,12 +304,12 @@ const DepositModal = ({toggle, norecdp}) => {
                                     id={`pjpasien`}
                                     name={`pjpasien`}
                                     type="text"
-                                    disabled
+                                    onChange={validation.handleChange}
                                     value={validation.values.pjpasien || ""} 
-                                    invalid={validation.touched.payment && !!validation.errors.payment?.nominalbayar}
+                                    invalid={validation.touched.pjpasien && !!validation.errors.pjpasien}
                                     />
-                                {validation.touched.payment && validation.errors.payment?.nominalbayar ? (
-                                    <FormFeedback type="invalid" ><div>{validation.errors.payment?.nominalbayar}</div></FormFeedback>
+                                {validation.touched.pjpasien && validation.errors.pjpasien ? (
+                                    <FormFeedback type="invalid" ><div>{validation.errors.pjpasien}</div></FormFeedback>
                                 ) : null}
                             </div>
                         </Row>
@@ -326,7 +337,7 @@ const DepositModal = ({toggle, norecdp}) => {
                         <Row>
                             <div className="d-flex gap-2 justify-content-center mt-4 mb-2">
                                 <Button type="submit" color="info" placement="top" id="tooltipTop" >
-                                    Deposit
+                                    Simpan
                                 </Button>
                                 <button
                                     type="button"

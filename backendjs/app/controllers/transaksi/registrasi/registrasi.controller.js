@@ -1316,24 +1316,31 @@ async function getDaftarPasienRawatInap(req, res) {
 
     // let query = queries.getAllByOr + ` where nocm ilike '%` + nocm + `%'` + ` or namapasien ilike '%` + nocm + `%' limit 200`
     let query = queries.getDaftarPasienRawatInap + ` and td.noregistrasi ilike '%${noregistrasi}%'`
+
     try {
-        pool.query(query, (error, resultCountNoantrianDokter) => {
-            if (error) {
-                res.status(522).send({
-                    status: error,
-                    success: true,
-                });
-            } else {
-                res.status(200).send({
-                    data: resultCountNoantrianDokter.rows,
-                    status: "success",
-                    success: true,
-                });
+        let resultCountNoantrianDokter = await pool.query(query, [])
+        let resultsDeposit = await Promise.all(
+            resultCountNoantrianDokter.rows.map(async (rawatInap) => {
+                const norecdp = rawatInap.norecdp;
+                const deposit = await pool.query(queries.qGetDepositFromPasien, [norecdp])
+                return {
+                    ...rawatInap,
+                    deposit: deposit.rows
+                }
             }
-        })
+        ))
+        res.status(200).send({
+            data: resultsDeposit,
+            status: "success",
+            success: true,
+        });
 
     } catch (error) {
-        throw error;
+        res.status(500).send({
+            data: [],
+            status: "error",
+            success: false,
+        })
     }
 
 }

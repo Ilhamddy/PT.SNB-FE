@@ -74,6 +74,7 @@ const BayarPiutang = () => {
             norecdp: "",
             pjpasien: "",
             keterangan: "",
+            nodeposit: "",
             payment: [{
                 metodebayar: "",
                 nontunai: "",
@@ -124,9 +125,7 @@ const BayarPiutang = () => {
                     = Number(newPayment.nominalbayar.replace(rgxAllPeriods, "")) 
                 return newPayment
             })
-            dispatch(buktiBayarCreate(valuesSent, () => {
-
-            }))
+            dispatch(buktiBayarCreate(valuesSent, () => {}))
         }
     })
 
