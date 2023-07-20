@@ -1314,7 +1314,7 @@ async function getWidgetDaftarPasienRI(req, res) {
 async function getDaftarPasienRawatInap(req, res) {
     const noregistrasi = req.query.noregistrasi;
 
-    // let query = queries.getAllByOr + ` where nocm ilike '%` + nocm + `%'` + ` or namapasien ilike '%` + nocm + `%' limit 200`
+
     let query = queries.getDaftarPasienRawatInap + ` and td.noregistrasi ilike '%${noregistrasi}%'`
 
     try {
@@ -1336,6 +1336,7 @@ async function getDaftarPasienRawatInap(req, res) {
         });
 
     } catch (error) {
+        console.error(error);  
         res.status(500).send({
             data: [],
             status: "error",

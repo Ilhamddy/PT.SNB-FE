@@ -15,6 +15,7 @@ import { qGetPelayananFromAntrean,
     qTagihanGetFromDP,
     qGetPaymentForPiutang,
     qDaftarTagihanPasienFronNota,
+    qGetDepositFromNota
 } from '../../../queries/payment/payment.queries';
 
 import { Op } from "sequelize";
@@ -66,12 +67,15 @@ const getPelayananFromVerif = async (req, res) => {
     try{
         const norecnota = req.params.norecnota
         const pelayanan = await pool.query(qGetPelayananFromVerif, [norecnota])
+       
         const verif = await pool.query(qGetVerif, [norecnota])
         const kepesertaan = await pool.query(qGetKepesertaanFromNota, [norecnota])
+        const deposit = await pool.query(qGetDepositFromNota, [norecnota])
         let tempres = { 
             pelayanan: pelayanan.rows || [],
             nota: verif.rows[0] || null,
-            kepesertaan: kepesertaan.rows[0]?.list_kpa || []
+            kepesertaan: kepesertaan.rows[0]?.list_kpa || [],
+            deposit: deposit.rows || []
         }
         res.status(200).send({
             data: tempres,

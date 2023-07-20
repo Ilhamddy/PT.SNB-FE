@@ -95,10 +95,12 @@ const qGetDepositFromPasien =
     SELECT 
     dpst.norec AS norec,
     dpst.nominal AS nominal,
-    dpst.tglinput AS tglinput
+    dpst.tglinput AS tglinput,
+    bb.no_bukti AS nobukti
     FROM t_depositpasien dpst
-        WHERE dpst.objectdaftarpasienfk = $1
-        AND dpst.statusenabled = true
+        LEFT JOIN t_buktibayarpasien bb ON bb.norec = dpst.objectbuktibayarpasienfk
+            WHERE dpst.objectdaftarpasienfk = $1
+            AND dpst.statusenabled = true
     `
 
 const getRekapBilling = `select variabelbpjs, sum(totalharga) from (

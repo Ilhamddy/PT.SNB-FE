@@ -51,16 +51,7 @@ const DaftarPasienRI = () => {
             dispatch(daftarPasienResetForm());
         }
     }, [dispatch])
-    // useEffect(() => {
-    //     if (dataCombo.length > 0) {
-    //         console.log(dataCombo)
-    //         console.log('masuk'+dataCombo)
-    //         var newArray = dataCombo.unit.filter(function (el) {
-    //             return el.objectinstalasifk === 1;
-    //         });
-    //         setdataUnit(newArray)
-    //     }
-    // }, [dataCombo,loadingCombo])
+
     const [search, setSearch] = useState('')
     const handleFilter = (e) => {
         if (e.keyCode === 13) {
@@ -351,6 +342,7 @@ const ExpandableDeposit = ({ data }) => {
                     <th scope="col">#</th>
                     <th scope="col">Tanggal Deposit</th>
                     <th scope="col">Nominal</th>
+                    <th scope="col">NoBB</th>
                 </tr>
             </thead>
             <tbody>
@@ -360,6 +352,7 @@ const ExpandableDeposit = ({ data }) => {
                     <th scope="row">{key + 1}</th>
                     <td>{item.tglinput}</td>
                     <td>{item.nominal}</td>
+                    <td>{item.nobukti}</td>
                 </tr>
             )}
             </tbody>
