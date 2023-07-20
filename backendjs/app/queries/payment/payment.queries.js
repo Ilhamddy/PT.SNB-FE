@@ -290,6 +290,7 @@ const qGetDepositFromNota =
         LEFT JOIN t_buktibayarpasien bb ON bb.norec = dpst.objectbuktibayarpasienfk
             WHERE tnp.norec = $1
             AND tnp.statusenabled = true
+            ORDER BY dpst.tglinput DESC
     `
 
 

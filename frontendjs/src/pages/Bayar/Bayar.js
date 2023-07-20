@@ -38,6 +38,7 @@ const date = new Date()
 
 const Bayar = () => {
     const { norecnota } = useParams();
+    const [isDeposit, setIsDeposit] = useState(false);
     let {
         dataPasienPlg, 
         comboboxReg,
@@ -46,7 +47,8 @@ const Bayar = () => {
         comboboxpayment,
         nota,
         kepesertaan,
-        created
+        created,
+        deposit
     } = useSelector((state) => ({
         dataPasienPlg: state.DaftarPasien.daftarPasienPulangGet.data || [],
         comboboxReg: state.Master.comboRegistrasiGet.data || {},
@@ -54,6 +56,8 @@ const Bayar = () => {
         comboboxpayment: state.Master.comboPaymentGet.data,
         nota: state.Payment.pelayananFromVerifGet.data?.nota || [],
         kepesertaan: state.Payment.pelayananFromVerifGet.data?.kepesertaan || [],
+        deposit: state.Payment.pelayananFromVerifGet.data?.deposit || [],
+
         created: state.Payment.buktiBayarCreate.data || null,
     }))
 
@@ -185,7 +189,11 @@ const Bayar = () => {
     const diskon = listPelayanan.reduce((prev, pel) => prev + (pel.discount || 0), 0)
     let totalTagihan = listPelayanan.reduce((prev, pel) => prev + (pel.total || 0), 0)
     const nominalklaim = kepesertaan.reduce((prev, pel) => prev + (pel.nominalklaim || 0), 0);
-    const grandTotal = totalTagihan - diskon - nominalklaim;
+    const grandTotal = totalTagihan 
+        - validation.values.diskon 
+        - validation.values.klaim 
+        - validation.values.deposit;
+    let totalDeposit = deposit.reduce((prev, pel) => prev + (pel.nominal || 0), 0);
     let payment = validation.values.payment
         ?.reduce((prev, pel) => prev + (Number(pel.nominalbayar.replace(rgxAllPeriods, ""))  || 0), 0) || 0;
     let sisaGrandTotal = grandTotal - payment;
@@ -291,7 +299,12 @@ const Bayar = () => {
         grandTotal && setFF("totaltagihan", grandTotal)
         diskon && setFF("diskon", diskon)
         setFF("klaim", nominalklaim || 0)
-    }, [dispatch, validation.setFieldValue, grandTotal, diskon, nominalklaim])
+        isDeposit ? 
+            setFF("deposit", totalDeposit || 0)
+            :
+            setFF("deposit", 0)
+        
+    }, [dispatch, validation.setFieldValue, grandTotal, diskon, nominalklaim, totalDeposit, isDeposit])
 
     useEffect(() => {
         const setFF = validation.setFieldValue
@@ -418,11 +431,29 @@ const Bayar = () => {
                                                         </div>
                                                     </>
                                                 }
-                                                <Label style={{ color: "black" }} 
-                                                    htmlFor={`keterangan${index}`}
-                                                    className="form-label">
-                                                    Nominal bayar
-                                                </Label>
+                                                <Row>
+                                                    <Col lg={7}>
+                                                        <Label style={{ color: "black" }} 
+                                                            htmlFor={`keterangan${index}`}
+                                                            className="form-label">
+                                                            Nominal bayar
+                                                        </Label>
+                                                    </Col>
+                                                    {index === 0 && totalDeposit > 0 && <Col lg={5} className="d-flex flex-row-reverse">
+                                                        <Input 
+                                                            className="form-check-input ms-3    " 
+                                                            type="checkbox" 
+                                                            id={`formcheck-deposit`} 
+                                                            checked={isDeposit} 
+                                                            onChange={e => {setIsDeposit(!isDeposit)}}
+                                                            />
+                                                        <Label style={{ color: "black" }}
+                                                            htmlFor={`formcheck-deposit`}
+                                                            className="form-check-label">
+                                                            Gunakan Deposit
+                                                        </Label>
+                                                    </Col>}
+                                                </Row>
                                                 <div>
                                                     <Input 
                                                         id={`nominalbayar${index}}`}
@@ -532,6 +563,13 @@ const Bayar = () => {
                             </Col>
                             <Col lg={5}>
                                 <Card className="p-3">
+                                    {
+                                        totalDeposit > 0 && <Row>
+                                            <Label style={{ color: "red" }} className="form-label">
+                                                *Pasien Ini memiliki deposit sebanyak Rp{totalDeposit?.toLocaleString("id-ID") || 0}
+                                            </Label>
+                                        </Row>
+                                    }
                                     <Label style={{ color: "black" }} className="form-label">
                                         Detail Pembayaran
                                     </Label>
@@ -547,12 +585,14 @@ const Bayar = () => {
                                             </tr>
                                             <tr>
                                                 <td>Klaim Asuransi</td>
-                                                <td>Rp{nominalklaim}</td>
+                                                <td>Rp{nominalklaim?.toLocaleString("id-ID")}</td>
                                             </tr>
-                                            <tr>
-                                                <td>Deposit</td>
-                                                <td>Rp{0}</td>
-                                            </tr>
+                                            {
+                                                isDeposit && <tr>
+                                                    <td>Deposit</td>
+                                                    <td>Rp{validation.values.deposit?.toLocaleString("id-ID")}</td>
+                                                </tr>
+                                            }
                                         </tbody>
                                         <tbody className="total-tagihan">
                                             <tr>

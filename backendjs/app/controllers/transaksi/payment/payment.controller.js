@@ -37,12 +37,14 @@ const getPelayananFromAntrean = async (req, res) => {
     try{
         const norecap = req.params.norecAP
         const pelayanan = await pool.query(qGetPelayananFromAntrean, [norecap])
-        const kepesertaan = await pool.query(qGetKepesertaanFromAntrean, [norecap])
+        let kepesertaan = await pool.query(qGetKepesertaanFromAntrean, [norecap])
+        kepesertaan = kepesertaan.rows[0]?.list_kpa || []
+        kepesertaan = kepesertaan.filter((peserta) => peserta.no_kartu !== null)
         const dp = await pool.query(qGetNorecPenggunaFromAp, [norecap])
         let tempres = { 
             pelayanan: pelayanan.rows || [], 
             objectdaftarpasienfk: dp.rows[0].objectdaftarpasienfk || null,
-            kepesertaan: kepesertaan.rows[0]?.list_kpa || []
+            kepesertaan: kepesertaan
         }
         res.status(200).send({
             data: tempres,
@@ -228,7 +230,6 @@ const createBuktiBayar = async (req, res) => {
     try{
         const objectBody = req. body
         const norecbukti = uuid.v4().substring(0, 32);
-
         
         const {createdBuktiBayar, createdCaraBayar, totalPayment} = 
             await hCreateBayar(norecbukti, objectBody, transaction)
@@ -267,8 +268,9 @@ const createBuktiBayar = async (req, res) => {
         }
 
         let createdDeposit = null
+        let changedDeposit = null
         if(objectBody.isdeposit){
-            createdDeposit = t_depositpasien.create({
+            createdDeposit = await t_depositpasien.create({
                 norec: uuid.v4().substring(0, 32),
                 statusenabled: true,
                 objectdaftarpasienfk: objectBody.norecdp,
@@ -276,13 +278,44 @@ const createBuktiBayar = async (req, res) => {
                 objectpegawaifk: req.userId,
                 objectbuktibayarpasienfk: norecbukti,
                 tglinput: new Date(),
+            }, {
+                transaction: transaction
             })
+        }else{
+            let listDepositNota = await pool.query(qGetDepositFromNota, [objectBody.norecnota]);
+            let depositUsed = objectBody.deposit || 0
+            listDepositNota = listDepositNota.rows || []
+            changedDeposit = await Promise.all(
+                listDepositNota.map(async (deposit) => {
+                    if(depositUsed > deposit.nominal){
+                        depositUsed = depositUsed - deposit.nominal
+                        return await t_depositpasien.update({
+                            nominal: 0
+                        }, {
+                            where: {
+                                norec: deposit.norec
+                            },
+                            transaction: transaction
+                        })
+                    }else{
+                        return await t_depositpasien.update({
+                            nominal: deposit.nominal - depositUsed
+                        }, {
+                            where: {
+                                norec: deposit.norec
+                            },
+                            transaction: transaction
+                        })
+                    }
+                })
+            )
         }
 
         const tempres = {
             buktiBayar: createdBuktiBayar,
             createdCaraBayar: createdCaraBayar,
-            createdDeposit: createdDeposit
+            createdDeposit: createdDeposit,
+            changedDeposit: changedDeposit
         }
         transaction.commit();
         res.status(200).send({
@@ -620,6 +653,7 @@ const hCreateBayar = async (norecbukti, objectBody, transaction) => {
         objectjenisnontunaifk: null,
         objectrekeningrsfk: null,
         objectpiutangpasienfk: objectBody.norecpiutang || null,
+        keterangan: objectBody.keterangan,
         pjpasien: objectBody.pjpasien,
         diskon: objectBody.diskon,
         klaim: objectBody.klaim,

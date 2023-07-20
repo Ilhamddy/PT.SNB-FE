@@ -18,7 +18,7 @@ import "./DaftarPasienPulang.scss"
 import { useNavigate } from "react-router-dom";
 
 const dateAwalStart = dateISOString(new Date(new Date() - 1000 * 60 * 60 * 24 * 20));
-const dateAwalEnd = dateISOString(new Date())
+const dateAwalEnd = dateISOString(new Date((new Date()).setHours(23, 59, 59, 999)))
 
 
 const DaftarPasienPulang = () => {

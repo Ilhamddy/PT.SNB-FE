@@ -800,8 +800,6 @@ const getDaftarPasienFilter = async (req, res) => {
         let filterTglLast = formatDateIsoShort(new Date(req.query.dateEnd));
         let filterTglStart = formatDateIsoShort(new Date(req.query.dateStart));
         let filterInstalasi = req.query.instalasi;
-        let filterUnit = req.query.unit;
-        let filterSearch = req.query.search;
         const daftarpasien = await pool
             .query(`SELECT t_daftarpasien.*,
             peg.namalengkap as namapegawai, 
