@@ -143,7 +143,7 @@ const DaftarPasienPulang = () => {
         <div className="page-content daftar-pasien-pulang">
             <ToastContainer closeButton={false} />
             <Container fluid>
-                <BreadCrumb title="Registrasi Pasien" pageTitle="Registrasi Pasien" />
+                <BreadCrumb title="Daftar Pasien Pulang" pageTitle="Daftar Pasien Pulang" />
                 <Row>
                     <Col lg={3}>
                         <Card>
