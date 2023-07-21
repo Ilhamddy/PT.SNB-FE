@@ -115,16 +115,17 @@ const qGetPelayananFromVerif =
     mp.isobat AS isobat,
     mk.namakelas AS namakelas,
     dp.norec AS norec_dp,
-    npp.no_nota AS no_nota
-    -- tbp.no_bukti AS no_bukti
+    npp.no_nota AS no_nota,
+    tbp.no_bukti AS no_bukti
     FROM t_pelayananpasien tpp
-        LEFT JOIN m_pegawai peg ON peg.id = tpp.objectpegawaifk 
-        LEFT JOIN m_produk mp ON mp.id = tpp.objectprodukfk 
-        LEFT JOIN m_kelas mk ON mk.id = tpp.objectkelasfk
-        LEFT JOIN t_notapelayananpasien npp ON npp.norec = tpp.objectnotapelayananpasienfk
-        LEFT JOIN t_antreanpemeriksaan ap ON ap.norec = tpp.objectantreanpemeriksaanfk
-        LEFT JOIN t_daftarpasien dp ON dp.norec = ap.objectdaftarpasienfk
-        -- LEFT JOIN t_buktibayarpasien tbp ON tbp.objectnotapelayananpasienfk = tpp.objectnotapelayananpasienfk
+        JOIN m_pegawai peg ON peg.id = tpp.objectpegawaifk 
+        JOIN m_produk mp ON mp.id = tpp.objectprodukfk 
+        JOIN m_kelas mk ON mk.id = tpp.objectkelasfk
+        JOIN t_notapelayananpasien npp ON npp.norec = tpp.objectnotapelayananpasienfk
+        JOIN t_antreanpemeriksaan ap ON ap.norec = tpp.objectantreanpemeriksaanfk
+        JOIN t_daftarpasien dp ON dp.norec = ap.objectdaftarpasienfk
+        LEFT JOIN t_buktibayarpasien tbp ON tbp.objectnotapelayananpasienfk = tpp.objectnotapelayananpasienfk
+        AND tbp.statusenabled = true
             WHERE tpp.objectnotapelayananpasienfk=$1 AND npp.statusenabled=true
 
     `
@@ -293,6 +294,45 @@ const qGetDepositFromNota =
             ORDER BY dpst.tglinput DESC
     `
 
+const qGetBuktiBayarFromNota = 
+    `
+    SELECT
+    tbb.*,
+    td.noregistrasi AS noregistrasi,
+    td.nocmfk AS nocmfk,
+    td.tglregistrasi AS tglregistrasi,
+    mp.namapasien AS namapasien
+    FROM t_buktibayarpasien tbb
+        LEFT JOIN t_daftarpasien td ON td.norec = tbb.objectdaftarpasienfk
+        LEFT JOIN m_pasien mp ON mp.id = td.nocmfk
+        WHERE objectnotapelayananpasienfk = $1
+    `
+
+const qGetCaraBayarFromBB = 
+    `
+    SELECT
+    tc.*,
+    mm.metodebayar AS metodebayar,
+    mj.nontunai AS nontunai
+    FROM t_carabayar tc
+        LEFT JOIN m_metodebayar mm ON mm.id = tc.objectmetodebayarfk
+        LEFT JOIN m_jenisnontunai mj ON mj.id = tc.objectjenisnontunaifk
+        WHERE objectbuktibayarpasienfk = $1
+    `
+
+const qGetBuktiBayarNorec = 
+    `
+    SELECT
+    tbb.*,
+    td.noregistrasi AS noregistrasi,
+    td.nocmfk AS nocmfk,
+    td.tglregistrasi AS tglregistrasi,
+    mp.namapasien AS namapasien
+    FROM t_buktibayarpasien tbb
+        LEFT JOIN t_daftarpasien td ON td.norec = tbb.objectdaftarpasienfk
+        LEFT JOIN m_pasien mp ON mp.id = td.nocmfk
+        WHERE tbb.norec = $1
+    `
 
 export {
     qGetPelayananFromAntrean,
@@ -310,4 +350,7 @@ export {
     qGetPaymentForPiutang,
     qDaftarTagihanPasienFronNota,
     qGetDepositFromNota,
+    qGetBuktiBayarFromNota,
+    qGetCaraBayarFromBB,
+    qGetBuktiBayarNorec,
 }

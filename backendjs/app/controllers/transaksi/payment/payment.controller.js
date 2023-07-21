@@ -15,7 +15,9 @@ import { qGetPelayananFromAntrean,
     qTagihanGetFromDP,
     qGetPaymentForPiutang,
     qDaftarTagihanPasienFronNota,
-    qGetDepositFromNota
+    qGetDepositFromNota,
+    qGetBuktiBayarFromNota,
+    qGetCaraBayarFromBB
 } from '../../../queries/payment/payment.queries';
 
 import { Op } from "sequelize";
@@ -54,7 +56,7 @@ const getPelayananFromAntrean = async (req, res) => {
             code: 200
         });
     } catch(error){
-        console.error("Error Get Pelayanan From Antrean");
+        console.error("===Error Get Pelayanan From Antrean");
         console.error(error);
         res.status(500).send({
             data: error,
@@ -73,11 +75,15 @@ const getPelayananFromVerif = async (req, res) => {
         const verif = await pool.query(qGetVerif, [norecnota])
         const kepesertaan = await pool.query(qGetKepesertaanFromNota, [norecnota])
         const deposit = await pool.query(qGetDepositFromNota, [norecnota])
+        let buktiBayar = await pool.query(qGetBuktiBayarFromNota, [norecnota])
+        buktiBayar = buktiBayar.rows[0] || null
+        buktiBayar.createdCaraBayar = (await pool.query(qGetCaraBayarFromBB, [buktiBayar.norec])).rows || []
         let tempres = { 
             pelayanan: pelayanan.rows || [],
             nota: verif.rows[0] || null,
             kepesertaan: kepesertaan.rows[0]?.list_kpa || [],
-            deposit: deposit.rows || []
+            deposit: deposit.rows || [],
+            buktiBayar: buktiBayar
         }
         res.status(200).send({
             data: tempres,
@@ -231,7 +237,7 @@ const createBuktiBayar = async (req, res) => {
         const objectBody = req. body
         const norecbukti = uuid.v4().substring(0, 32);
         
-        const {createdBuktiBayar, createdCaraBayar, totalPayment} = 
+        const {createdBuktiBayar, totalPayment} = 
             await hCreateBayar(norecbukti, objectBody, transaction)
 
         const sisa = objectBody.totaltagihan - totalPayment
@@ -313,7 +319,6 @@ const createBuktiBayar = async (req, res) => {
 
         const tempres = {
             buktiBayar: createdBuktiBayar,
-            createdCaraBayar: createdCaraBayar,
             createdDeposit: createdDeposit,
             changedDeposit: changedDeposit
         }
@@ -638,7 +643,7 @@ const hCreateBayar = async (norecbukti, objectBody, transaction) => {
     const totalPayment = objectBody.payment.reduce((total, payment) => {
         return total + payment.nominalbayar
     }, 0);
-    const createdBuktiBayar = await t_buktibayarpasien.create({
+    await t_buktibayarpasien.create({
         norec: norecbukti,
         kdprofile: 0,
         statusenabled: true,
@@ -695,5 +700,8 @@ const hCreateBayar = async (norecbukti, objectBody, transaction) => {
         }
     ))
 
-    return {createdBuktiBayar, createdCaraBayar, totalPayment}
+    const createdBuktiBayar = await pool.query(qGetDepositFromNota, [objectBody.norecnota])
+    createdBuktiBayar.createdCaraBayar = createdCaraBayar
+
+    return {createdBuktiBayar, totalPayment}
 }

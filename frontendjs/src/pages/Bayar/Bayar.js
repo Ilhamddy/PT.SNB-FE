@@ -22,7 +22,8 @@ import {
     notaVerifCreate,
     pelayananFromVerifGet,
     pelayananFromVerifGetReset,
-    buktiBayarCreate
+    buktiBayarCreate,
+    buktiBayarCreateReset
 } from "../../store/payment/action";
 import CustomSelect from "../Select/Select";
 import "./Bayar.scss"
@@ -47,8 +48,9 @@ const Bayar = () => {
         comboboxpayment,
         nota,
         kepesertaan,
-        created,
-        deposit
+        createdBuktiBayar,
+        deposit,
+        bayarBefore
     } = useSelector((state) => ({
         dataPasienPlg: state.DaftarPasien.daftarPasienPulangGet.data || [],
         comboboxReg: state.Master.comboRegistrasiGet.data || {},
@@ -57,9 +59,11 @@ const Bayar = () => {
         nota: state.Payment.pelayananFromVerifGet.data?.nota || [],
         kepesertaan: state.Payment.pelayananFromVerifGet.data?.kepesertaan || [],
         deposit: state.Payment.pelayananFromVerifGet.data?.deposit || [],
-
-        created: state.Payment.buktiBayarCreate.data || null,
+        bayarBefore: state.Payment.pelayananFromVerifGet.data?.buktiBayar || null,
+        createdBuktiBayar: state.Payment.buktiBayarCreate.data || null,
     }))
+
+    const buktiBayar = bayarBefore || (Array.isArray(createdBuktiBayar) ? null : createdBuktiBayar)
 
     const refPrintTransaksi = useRef(null)
     
@@ -186,8 +190,14 @@ const Bayar = () => {
             && navigate(`/payment/verif-tagihan/${norecpp}`)    
     }
 
+    const filterRekeningRs = (rekeningRs, nontunaiV) => {
+        return rekeningRs?.filter(
+            (rekening) => rekening.objectbankfk === nontunaiV
+        );
+    }
+
     const diskon = listPelayanan.reduce((prev, pel) => prev + (pel.discount || 0), 0)
-    let totalTagihan = listPelayanan.reduce((prev, pel) => prev + (pel.total || 0), 0)
+    let totalTagihan = listPelayanan.reduce((prev, pel) => prev + (pel.no_bukti ? 0 : pel.total || 0), 0)
     const nominalklaim = kepesertaan.reduce((prev, pel) => prev + (pel.nominalklaim || 0), 0);
     const grandTotal = totalTagihan 
         - validation.values.diskon 
@@ -326,11 +336,11 @@ const Bayar = () => {
         }
     }, [dispatch, norecnota, validation.setFieldValue])
 
-    const filterRekeningRs = (rekeningRs, nontunaiV) => {
-        return rekeningRs?.filter(
-            (rekening) => rekening.objectbankfk === nontunaiV
-        );
-    }
+    useEffect(() => {
+        return () => {
+            dispatch(buktiBayarCreateReset())
+        }
+    }, [dispatch])
 
     return(
         <div className="page-content page-bayar">
@@ -659,9 +669,16 @@ const Bayar = () => {
                                     </Row>
                                     <Row>
                                         <div className="d-flex gap-2 justify-content-center mt-4 mb-2">
-                                            <Button type="submit" color="info" placement="top" id="tooltipTop" >
-                                                SIMPAN
-                                            </Button>
+                                            {!buktiBayar &&
+                                                <Button type="submit" color="info" placement="top" id="tooltipTop" >
+                                                    SIMPAN
+                                                </Button>
+                                            }
+                                            {!!buktiBayar &&
+                                                <Button type="button" onClick={() => handlePrintBukti()} color="info" placement="top" id="tooltipTop" >
+                                                    PRINT
+                                                </Button>
+                                            }
                                             <button
                                                 type="button"
                                                 className="btn w-sm btn-danger"
@@ -691,7 +708,7 @@ const Bayar = () => {
                                     Nama Pasien
                                 </td>
                                 <td>
-                                    : Moelyono
+                                    : {buktiBayar?.namapasien}
                                 </td>
                             </tr>
                             <tr>
@@ -699,7 +716,7 @@ const Bayar = () => {
                                     Tgl Pendaftaran
                                 </td>
                                 <td>
-                                    : 17/07/2023
+                                    : {buktiBayar?.tglregistrasi}
                                 </td>
                             </tr>
                             <tr>
@@ -707,7 +724,7 @@ const Bayar = () => {
                                     No. Rekam Medis
                                 </td>
                                 <td>
-                                    : 0012308
+                                    : {buktiBayar?.nocmfk}
                                 </td>
                             </tr>
                             <tr>
@@ -715,7 +732,7 @@ const Bayar = () => {
                                     No Registrasi
                                 </td>
                                 <td>
-                                    : 20230402009
+                                    : {buktiBayar?.namapasien}
                                 </td>
                             </tr>
                             <tr>
@@ -723,10 +740,10 @@ const Bayar = () => {
                                     Sudah diterima dari 
                                 </td>
                                 <td>
-                                    : Neneng Komariyah
+                                    : {buktiBayar?.pjpasien}
                                 </td>
                             </tr>
-                            {created.createdCaraBayar?.map((caraBayar, index) =>
+                            {buktiBayar?.createdCaraBayar?.map((caraBayar, index) =>
                                 <tr key={index}>
                                     <td>
                                         Metode bayar {index + 1}
@@ -738,21 +755,20 @@ const Bayar = () => {
                                     </td>
                                 </tr>
                             )}
-                            
                             <tr>
                                 <td>
                                     Total Bayar
                                 </td>
                                 <td>
-                                    : Tunai
+                                    : {buktiBayar?.totalbayar}
                                 </td>
                             </tr>
                             <tr>
                                 <td>
-                                    Untuk Pebayaran
+                                    Untuk Pembayaran
                                 </td>
                                 <td>
-                                    : Keterangan coba
+                                    : {buktiBayar?.keterangan}
                                 </td>
                             </tr>
                         </table>
