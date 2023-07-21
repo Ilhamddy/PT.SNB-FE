@@ -18,7 +18,10 @@ import {
     LISTDIAGNOSAIX_GET_ERROR,
     BRIDGING_INACBG_SAVE,
     BRIDGING_INACBG_SAVE_SUCCESS,
-    BRIDGING_INACBG_SAVE_ERROR
+    BRIDGING_INACBG_SAVE_ERROR,
+    TARIF_KLAIM_SAVE,
+    TARIF_KLAIM_SAVE_SUCCESS,
+    TARIF_KLAIM_SAVE_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -53,6 +56,12 @@ const INIT_STATE = {
         error: null,
         success: false
     },
+    tarifKlaimSave: {
+        newData: null,
+        loading: false,
+        error: null,
+        success: false
+    },
 }
 
 const Casemix = (state= INIT_STATE,action)=>{
@@ -77,6 +86,9 @@ const Casemix = (state= INIT_STATE,action)=>{
                 },
                 bridgingInacbgSave:{
                     ...INIT_STATE.bridgingInacbgSave
+                },
+                tarifKlaimSave:{
+                    ...INIT_STATE.tarifKlaimSave
                 }
             }
         }
@@ -274,6 +286,40 @@ const Casemix = (state= INIT_STATE,action)=>{
                 ...state,
                 bridgingInacbgSave: {
                     ...state.bridgingInacbgSave,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case TARIF_KLAIM_SAVE: {
+            return {
+                ...state,
+                tarifKlaimSave: {
+                    ...state.tarifKlaimSave,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case TARIF_KLAIM_SAVE_SUCCESS: {
+            return {
+                ...state,
+                tarifKlaimSave: {
+                    ...state.tarifKlaimSave,
+                    newData: action.payload,
+                    loading: false,
+                    success: true,
+                }
+            }
+        }
+
+        case TARIF_KLAIM_SAVE_ERROR: {
+            return {
+                ...state,
+                tarifKlaimSave: {
+                    ...state.tarifKlaimSave,
                     loading: false,
                     error: action.error,
                 }

@@ -30,6 +30,7 @@ import t_piutangpasienModel from "./t_piutangpasien.model.js";
 import t_detailpiutangpasienModel from "./t_detailpiutangpasien.model.js";
 import t_carabayarModel from "./t_carabayar.model.js";
 import t_depositpasienModel from "./t_depositpasien.model.js";
+import t_special_cmg_option from "./t_special_cmg_option.js";
 
 console.log("dialect", config.dialect)
 
@@ -85,6 +86,7 @@ db.t_piutangpasien = t_piutangpasienModel(sequelize,Sequelize);
 db.t_detailpiutangpasien = t_detailpiutangpasienModel(sequelize,Sequelize);
 db.t_carabayar = t_carabayarModel(sequelize,Sequelize);
 db.t_depositpasien = t_depositpasienModel(sequelize,Sequelize);
+db.t_special_cmg_option = t_special_cmg_option(sequelize,Sequelize);
 
 db.role.belongsToMany(db.user, {
   through: "user_roles",

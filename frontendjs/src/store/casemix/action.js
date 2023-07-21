@@ -17,7 +17,10 @@ import {
     LISTDIAGNOSAIX_GET_ERROR,
     BRIDGING_INACBG_SAVE,
     BRIDGING_INACBG_SAVE_SUCCESS,
-    BRIDGING_INACBG_SAVE_ERROR
+    BRIDGING_INACBG_SAVE_ERROR,
+    TARIF_KLAIM_SAVE,
+    TARIF_KLAIM_SAVE_SUCCESS,
+    TARIF_KLAIM_SAVE_ERROR
 } from "./actionType";
 
 export const casemixResetForm = () => ({
@@ -112,5 +115,21 @@ export const bridgingInacbgSaveSuccess = (data, history) => ({
 
 export const bridgingInacbgSaveError = (error) => ({
     type: BRIDGING_INACBG_SAVE_ERROR,
+    payload: error,
+});
+
+export const tarifKlaimSave = (data, history) => ({
+    type: TARIF_KLAIM_SAVE,
+    payload: { data, history },
+});
+
+// common error
+export const tarifKlaimSaveSuccess = (data, history) => ({
+    type: TARIF_KLAIM_SAVE_SUCCESS,
+    payload: { data, history },
+});
+
+export const tarifKlaimSaveError = (error) => ({
+    type: TARIF_KLAIM_SAVE_ERROR,
     payload: error,
 });

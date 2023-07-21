@@ -5,6 +5,7 @@ import db from "../../../models";
 import crypto from 'crypto';
 import axios from "axios";
 import CryptoJS from "crypto-js";
+import t_daftarpasienModel from "../../../models/t_daftarpasien.model";
 const algorithm = 'aes-256-cbc';
 const queryPromise2 = (query) => {
     return new Promise((resolve, reject) => {
@@ -104,7 +105,8 @@ async function getListDaftarPasien(req, res) {
             case when td.objectcarapulangrifk is null then 'Atas persetujuan dokter' else mcp.reportdisplay end as labelcarapulang,
             mpeg.namalengkap as dpjp, mj.kodeexternal as gender,mc.caramasuk as kodecaramasuk,
             case when mu.objectinstalasifk=2 then '1' when mu.objectinstalasifk=7 then '3' else '2' end as jenis_rawat,
-            mk.kelas_bpjs
+            mk.kelas_bpjs,td.status_grouping,td.cbg_code,td.cbg_description,td.cbg_tarif,td.cbg_mdc_number,
+            td.cbg_mdc_description,td.cbg_drg_code,td.cbg_drg_description,td.add_payment_amt
         from
             t_daftarpasien td
         join m_pasien mp on mp.id=td.nocmfk
@@ -117,8 +119,8 @@ async function getListDaftarPasien(req, res) {
         left join m_pegawai mpeg on mpeg.id=td.objectdokterpemeriksafk
         left join m_jeniskelamin mj on mj.id=mp.objectjeniskelaminfk
         join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk=td.norec
-        join m_kelas mk on mk.id=tk.objectkelasfk
         and td.objectunitlastfk=ta.objectunitfk 
+        join m_kelas mk on mk.id=tk.objectkelasfk
         where mp.id ='${req.query.nocm}' and mp.statusenabled=true
         order by td.tglregistrasi desc
         limit 20
@@ -414,10 +416,6 @@ const inacbg_decrypt = (data, key_inacbg) => {
     return decrypted.toString('utf8');
 }
 
-
-
-
-
 //   end
 
 async function saveBridgingInacbg(req, res) {
@@ -433,7 +431,7 @@ async function saveBridgingInacbg(req, res) {
         }
     }
 
-    
+
     const headers = {
         "Content-Type": "application/x-www-form-urlencoded",
         "Access-Control-Allow-Origin": "*"
@@ -464,13 +462,101 @@ async function saveBridgingInacbg(req, res) {
             const trimmedResponse = await responseData.substring(firstNewlineIndex, lastNewlineIndex);
             const decryptedResponse = await inacbg_decrypt(responseData, key_inacbg);
             responArr.push({
-                dataRequest:req.body[i],
-                dataResponse:JSON.parse(decryptedResponse)
+                dataRequest: req.body[i],
+                dataResponse: JSON.parse(decryptedResponse)
             })
         }
 
         res.status(200).send({
             data: responArr,
+            status: "success",
+            success: true,
+            msg: 'success',
+            code: 200
+        });
+    } catch (error) {
+        // Handle errors
+        // console.error("Error:", error);
+        // throw error;
+        res.status(201).send({
+            status: error,
+            success: false,
+            msg: 'Gagal',
+            code: 201
+        });
+    }
+
+}
+
+async function saveTarifKlaim(req, res) {
+    let transaction = null;
+    try {
+        transaction = await db.sequelize.transaction();
+    } catch (e) {
+        console.error(e)
+        res.status(500).send({
+            data: e.message,
+            success: false,
+            msg: 'Transaksi gagal',
+            code: 500
+        });
+        return;
+    }
+
+    try {
+        let add_payment_amt = 0
+        if (req.body.data.response_inagrouper.add_payment_amt !== undefined)
+            add_payment_amt = req.body.data.response_inagrouper.add_payment_amt
+
+        const update_specialcmg = await db.t_special_cmg_option.update({
+            statusenabled: false
+        }, {
+            where: {
+                objectdaftarpasienfk: req.body.norec
+            },
+            transaction: transaction
+        })
+
+        if (req.body.data.special_cmg_option !== undefined) {
+            const cmgOptions = await Promise.all(
+                req.body.data.special_cmg_option.map(async (item) => {
+                    const norec = uuid.v4().substring(0, 32);
+                    const cmgOptions = await db.t_special_cmg_option.create({
+                        norec: uuid.v4().substring(0, 32),
+                        statusenabled: true,
+                        code: item.code,
+                        description: item.description,
+                        type: item.type,
+                        objectdaftarpasienfk: req.body.norec,
+                    }, {
+                        transaction: transaction
+                    })
+
+                    return cmgOptions
+                }
+                ))
+        }
+
+
+        const daftarpasien = await db.t_daftarpasien.update({
+            cbg_code: req.body.data.response.cbg.code,
+            cbg_description: req.body.data.response.cbg.description,
+            cbg_tarif: req.body.data.response.cbg.tariff,
+            cbg_mdc_number: req.body.data.response_inagrouper.mdc_number,
+            cbg_mdc_description: req.body.data.response_inagrouper.mdc_description,
+            cbg_drg_code: req.body.data.response_inagrouper.drg_code,
+            cbg_drg_description: req.body.data.response_inagrouper.drg_description,
+            add_payment_amt: add_payment_amt,
+            status_grouping: req.body.status
+        }, {
+            where: {
+                norec: req.body.norec
+            },
+            transaction: transaction
+        })
+        transaction.commit();
+        res.status(200).send({
+            data: daftarpasien,
             status: "success",
             success: true,
             msg: 'success',
@@ -497,5 +583,6 @@ export default {
     getListTarif18,
     getListDiagnosaPasien,
     getListDiagnosaIxPasien,
-    saveBridgingInacbg
+    saveBridgingInacbg,
+    saveTarifKlaim
 };
