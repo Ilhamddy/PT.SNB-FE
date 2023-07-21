@@ -133,7 +133,7 @@ const PasienBaru = () => {
             kota: newData?.kota ?? "",
             provinsi: newData?.provinsi ?? "",
             pos: newData?.pos ?? "",
-            negara: newData?.negara ?? isWni,
+            negara: newData?.negara ?? "",
             alamatdomisili: newData?.alamatdomisili ?? "",
             rtdomisili: newData?.rtdomisili ?? "",
             rwdomisili: newData?.rwdomisili ?? "",
@@ -142,7 +142,7 @@ const PasienBaru = () => {
             kotaDomisili: newData?.kotaDomisili ?? "",
             provinsiDomisili: newData?.provinsiDomisili ?? "",
             posDomisili: newData?.posDomisili ?? "",
-            negaraDomisili: newData?.negaraDomisili ?? isWni,
+            negaraDomisili: newData?.negaraDomisili ?? "",
         },
         validationSchema: Yup.object({
             namapasien: Yup.string().required("Nama pasien wajib diisi"),
@@ -361,7 +361,7 @@ const PasienBaru = () => {
                                                                     </Col>
                                                                     <Col xxl={6} md={6}>
                                                                         <div className="mt-2">
-                                                                            <Label style={{ color: "black" }} htmlFor="tgllahir" className="form-label">Tempat Lahir</Label>
+                                                                            <Label style={{ color: "black" }} htmlFor="tgllahir" className="form-label">Tanggal Lahir</Label>
                                                                         </div>
                                                                     </Col>
                                                                     <Col xxl={6} md={6}>
