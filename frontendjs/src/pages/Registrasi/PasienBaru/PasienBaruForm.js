@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import UiContent from '../../../Components/Common/UiContent';
 import BreadCrumb from '../../../Components/Common/BreadCrumb';
 import withRouter from "../../../Components/Common/withRouter";
@@ -23,6 +23,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { masterGet, desaGet, kecamatanGet } from '../../../store/master/action';
 import { registrasiSave, registrasiResetForm, registrasiGet } from "../../../store/actions";
 import CustomSelect from '../../Select/Select'
+import { rgxAllNumber } from '../../../utils/regexcommon';
 
 const PasienBaru = () => {
     document.title = "Profile Pasien Baru";
@@ -73,26 +74,16 @@ const PasienBaru = () => {
     const [companyType, setcompanyType] = useState(null);
     const [kecamatan, setKecamatan] = useState(null);
     const [isWni, setisWni] = useState("");
-    const [isSesuaiKtp, setisSesuaiKtp] = useState(true);
+    const [isSesuaiKtp, setisSesuaiKtp] = useState(false);
 
     function handlecompanyType(companyType) {
         setcompanyType(companyType);
         console.log(companyType);
     }
-    const handleChangeCheckBox = (target)=>{
-        setisSesuaiKtp(target.target.checked)
-        if(target.target.checked===true){
-            validation.setFieldValue('alamatdomisili', validation.values.alamatktp)
-            validation.setFieldValue('rtdomisili', validation.values.rt)
-            validation.setFieldValue('rwdomisili', validation.values.rw)
-            validation.setFieldValue('desaDomisili', validation.values.desa)
-            validation.setFieldValue('kotaDomisili', validation.values.kota)
-            validation.setFieldValue('provinsiDomisili', validation.values.provinsi)
-            validation.setFieldValue('posDomisili', validation.values.pos)
-            validation.setFieldValue('negaraDomisili', validation.values.negara)
-            console.log(validation.values.negara)
-        }
-    }
+
+    const refNegara = useRef(null);
+    const refNegaraDomisili = useRef(null);
+    
     const handleChangeDesa = (selected) => {
         validation.setFieldValue('desa', selected.value)
         validation.setFieldValue('kecamatan', selected.namakecamatan)
@@ -101,13 +92,15 @@ const PasienBaru = () => {
         validation.setFieldValue('pos', selected.kodepos)
         // console.log(selected);
     };
-    const handleChangeKebangsaan = (selected) => {
-        validation.setFieldValue('kebangsaan', selected.value)
-        if (selected.value === 1)
-            setisWni(13)
-        else
-            setisWni("")
-    }
+    const handleChangeDesaDomisili = (selected) => {
+        validation.setFieldValue('desaDomisili', selected.value)
+        validation.setFieldValue('kecamatanDomisili', selected.namakecamatan)
+        validation.setFieldValue('kotaDomisili', selected.namakabupaten)
+        validation.setFieldValue('provinsiDomisili', selected.namaprovinsi)
+        validation.setFieldValue('posDomisili', selected.kodepos)
+        // console.log(selected);
+    };
+
     const handleDesa = characterEntered => {
         if (characterEntered.length > 3) {
             // useEffect(() => {
@@ -181,6 +174,42 @@ const PasienBaru = () => {
         }
     });
 
+    useEffect(() => {
+        const setFF = validation.setFieldValue
+        if(!isSesuaiKtp) {
+            return
+        }
+        setFF('alamatdomisili', validation.values.alamatktp)
+        setFF('rtdomisili', validation.values.rt)
+        setFF('rwdomisili', validation.values.rw)
+        setFF('desaDomisili', validation.values.desa)
+        setFF('kotaDomisili', validation.values.kota)
+        setFF('provinsiDomisili', validation.values.provinsi)
+        setFF('posDomisili', validation.values.pos)
+        setFF('negaraDomisili', validation.values.negara)
+    }, [
+        validation.values.alamatktp,
+        validation.values.rt,
+        validation.values.rw,
+        validation.values.desa,
+        validation.values.kota,
+        validation.values.provinsi,
+        validation.values.pos,
+        validation.values.negara,
+        validation.setFieldValue,
+        isSesuaiKtp
+    ])
+
+    const handleChangeKebangsaan = (selected) => {
+        validation.setFieldValue('kebangsaan', selected.value)
+        if (selected.value === 1){
+            validation.setFieldValue("negara", 13)
+            validation.setFieldValue("negaraDomisili", 13)
+        }else{
+            refNegara.current?.clearValue()
+            refNegaraDomisili.current?.clearValue()
+        }
+    }
     return (
         <React.Fragment>
             <ToastContainer closeButton={false} />
@@ -252,7 +281,7 @@ const PasienBaru = () => {
                                                                             <Input
                                                                                 id="noidentitas"
                                                                                 name="noidentitas"
-                                                                                type="number"
+                                                                                type="string"
                                                                                 placeholder="Masukkan No Identitas pasien"
                                                                                 onChange={validation.handleChange}
                                                                                 onBlur={validation.handleBlur}
@@ -556,7 +585,10 @@ const PasienBaru = () => {
                                                                                     name="rt"
                                                                                     type="input"
                                                                                     placeholder="RT"
-                                                                                    onChange={validation.handleChange}
+                                                                                    onChange={(e) => {
+                                                                                        rgxAllNumber.test(e.target.value) 
+                                                                                            && validation.setFieldValue("rt", e.target.value)
+                                                                                    }}
                                                                                     onBlur={validation.handleBlur}
                                                                                     value={validation.values.rt || ""}
                                                                                     invalid={
@@ -573,7 +605,10 @@ const PasienBaru = () => {
                                                                                     name="rw"
                                                                                     type="input"
                                                                                     placeholder="RW"
-                                                                                    onChange={validation.handleChange}
+                                                                                    onChange={(e) => {
+                                                                                        rgxAllNumber.test(e.target.value) 
+                                                                                            && validation.setFieldValue("rw", e.target.value)
+                                                                                    }}
                                                                                     onBlur={validation.handleBlur}
                                                                                     value={validation.values.rw || ""}
                                                                                     invalid={
@@ -655,7 +690,10 @@ const PasienBaru = () => {
                                                                                 type="input"
                                                                                 placeholder="pos"
                                                                                 value={validation.values.pos || ""}
-                                                                                disabled
+                                                                                onChange={(e) => {
+                                                                                    rgxAllNumber.test(e.target.value) 
+                                                                                        && validation.setFieldValue("pos", e.target.value)
+                                                                                }}
                                                                             />
                                                                         </div>
                                                                     </Col>
@@ -687,9 +725,12 @@ const PasienBaru = () => {
                                                                                 id="negara"
                                                                                 name="negara"
                                                                                 options={dataNegara}
-                                                                                value={validation.values.negara || ""}
+                                                                                ref={refNegara}
+                                                                                value={validation.values.negara || null}
                                                                                 className={`input ${validation.errors.negara ? "is-invalid" : ""}`}
-                                                                                onChange={value => validation.setFieldValue('negara', value.value)}
+                                                                                onChange={value => {
+                                                                                    validation.setFieldValue('negara', value?.value || "")
+                                                                                }}
                                                                             />
                                                                             {validation.touched.negara && validation.errors.negara ? (
                                                                                 <FormFeedback type="invalid"><div>{validation.errors.negara}</div></FormFeedback>
@@ -709,7 +750,10 @@ const PasienBaru = () => {
                                                                 <Row className="gy-4">
                                                                     {/* <Col xxl={6} md={6}> */}
                                                                     <div className="form-check ms-2">
-                                                                        <Input className="form-check-input" type="checkbox" id="formCheck1" onChange={e => handleChangeCheckBox(e)}/>
+                                                                        <Input className="form-check-input" type="checkbox" 
+                                                                            checked={isSesuaiKtp}
+                                                                            id="formCheck1" 
+                                                                            onChange={e => setisSesuaiKtp(e.target.checked)}/>
                                                                         <Label className="form-check-label" htmlFor="formCheck1" style={{ color: "black" }} >
                                                                             Sesuai KTP
                                                                         </Label>
@@ -754,7 +798,10 @@ const PasienBaru = () => {
                                                                                     name="rtdomisili"
                                                                                     type="input"
                                                                                     placeholder="RT"
-                                                                                    onChange={validation.handleChange}
+                                                                                    onChange={(e) => {
+                                                                                        rgxAllNumber.test(e.target.value) 
+                                                                                            && validation.setFieldValue("rtdomisili", e.target.value)
+                                                                                    }}
                                                                                     onBlur={validation.handleBlur}
                                                                                     value={validation.values.rtdomisili || ""}
                                                                                     invalid={
@@ -771,7 +818,10 @@ const PasienBaru = () => {
                                                                                     name="rwdomisili"
                                                                                     type="input"
                                                                                     placeholder="RW"
-                                                                                    onChange={validation.handleChange}
+                                                                                    onChange={(e) => {
+                                                                                        rgxAllNumber.test(e.target.value) 
+                                                                                            && validation.setFieldValue("rwdomisili", e.target.value)
+                                                                                    }}
                                                                                     onBlur={validation.handleBlur}
                                                                                     value={validation.values.rwdomisili || ""}
                                                                                     invalid={
@@ -798,7 +848,7 @@ const PasienBaru = () => {
                                                                                 value={validation.values.desaDomisili || ""}
                                                                                 className={`input ${validation.errors.desaDomisili ? "is-invalid" : ""}`}
                                                                                 // onChange={value => validation.setFieldValue('desa', value.value)} 
-                                                                                onChange={handleChangeDesa}
+                                                                                onChange={handleChangeDesaDomisili}
                                                                                 onInputChange={handleDesa}
                                                                             />
                                                                             {validation.touched.desaDomisili && validation.errors.desaDomisili ? (
@@ -853,7 +903,10 @@ const PasienBaru = () => {
                                                                                 type="input"
                                                                                 placeholder="posDomisili"
                                                                                 value={validation.values.posDomisili || ""}
-                                                                                disabled
+                                                                                onChange={(e) => {
+                                                                                    rgxAllNumber.test(e.target.value) 
+                                                                                        && validation.setFieldValue("posDomisili", e.target.value)
+                                                                                }}
                                                                             />
                                                                         </div>
                                                                     </Col>
@@ -885,9 +938,10 @@ const PasienBaru = () => {
                                                                                 id="negaraDomisili"
                                                                                 name="negaraDomisili"
                                                                                 options={dataNegara}
+                                                                                ref={refNegaraDomisili}
                                                                                 value={validation.values.negaraDomisili || ""}
                                                                                 className={`input ${validation.errors.negaraDomisili ? "is-invalid" : ""}`}
-                                                                                onChange={value => validation.setFieldValue('negaraDomisili', value.value)}
+                                                                                onChange={value => validation.setFieldValue('negaraDomisili', value?.value || "")}
                                                                             />
                                                                             {validation.touched.negaraDomisili && validation.errors.negaraDomisili ? (
                                                                                 <FormFeedback type="invalid"><div>{validation.errors.negaraDomisili}</div></FormFeedback>

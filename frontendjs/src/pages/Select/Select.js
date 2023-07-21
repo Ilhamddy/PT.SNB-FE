@@ -1,6 +1,6 @@
 import React from 'react';
 import Select from 'react-select';
-const CustomSelect = ({ onChange, options, value, className, ...rest}) =>{
+const CustomSelect = React.forwardRef(({ onChange, options, value, className, ...rest}, ref) =>{
     const defaultValue = (options,value)=>{
         return options ? options.find(option=>option.value === value):""
     }
@@ -25,7 +25,7 @@ const CustomSelect = ({ onChange, options, value, className, ...rest}) =>{
                 value={defaultValue(options,value)}
                 onChange={value=>onChange(value)}
                 options={options}
-
+                ref={ref}
                 theme={(theme) => ({
                     ...theme,
                     borderRadius: 0,
@@ -36,15 +36,11 @@ const CustomSelect = ({ onChange, options, value, className, ...rest}) =>{
                         primary: '#ECB349',
                     },
                 })}
-                // styles={{
-                //     control: (baseStyles, state) => ({
-                //       ...baseStyles,
-                //       borderColor: state.isFocused ? null : '#ffa502',
-                //     }),
-                //   }}
             />
         </div>
     )
-}
+})
+
+CustomSelect.displayName = "CustomSelect"
 
 export default CustomSelect;

@@ -196,10 +196,17 @@ const comboRegistrasi = (req, res) => {
                                                     pool.query(`select id as value,caramasuk as label from m_caramasuk`, (error, result12) => {
                                                         if (error) throw error;
                                                         let tempres = {
-                                                            instalasi: result.rows, unit: result2.rows, asalrujukan: result3.rows,
-                                                            jenispenjamin: result4.rows, rekanan: result5.rows, hubungankeluarga: result6.rows,
-                                                            pegawai: result7.rows, kelas: result8.rows, kamar: result9.rows,
-                                                            tempattidur: result10.rows,statuspulang: result11.rows,
+                                                            instalasi: result.rows, 
+                                                            unit: result2.rows, 
+                                                            asalrujukan: result3.rows,
+                                                            jenispenjamin: result4.rows, 
+                                                            rekanan: result5.rows, 
+                                                            hubungankeluarga: result6.rows,
+                                                            pegawai: result7.rows, 
+                                                            kelas: result8.rows, 
+                                                            kamar: result9.rows,
+                                                            tempattidur: result10.rows,
+                                                            statuspulang: result11.rows,
                                                             caramasuk:result12.rows
                                                         }
                                                         res.status(200).send({
