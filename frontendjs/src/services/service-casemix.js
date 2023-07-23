@@ -25,4 +25,8 @@ export default class ServiceCasemix {
     postBridgingInacbg = async (params) => {
         return await api.create("/transaksi/casemix/save-bridging-inacbg", params);
     }
+
+    postTarifKlaim = async (params) => {
+        return await api.create("/transaksi/casemix/save-tarif-klaim", params);
+    }
 }

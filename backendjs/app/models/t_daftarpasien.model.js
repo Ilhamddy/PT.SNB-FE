@@ -58,9 +58,35 @@ export default (sequelize, Sequelize) => {
         objectstatuspulangfk:{
             type:Sequelize.INTEGER
         },
-        
         objectcaramasukfk:{
             type:Sequelize.INTEGER
+        },
+        cbg_code:{
+            type:Sequelize.STRING
+        },
+        cbg_description:{
+            type:Sequelize.STRING
+        },
+        cbg_tarif:{
+            type:Sequelize.FLOAT
+        },
+        cbg_mdc_number:{
+            type:Sequelize.STRING
+        },
+        cbg_mdc_description:{
+            type:Sequelize.STRING
+        },
+        cbg_drg_code:{
+            type:Sequelize.STRING
+        },
+        cbg_drg_description:{
+            type:Sequelize.STRING
+        },
+        add_payment_amt:{
+            type:Sequelize.FLOAT
+        },
+        status_grouping:{
+            type:Sequelize.STRING
         }
     }, {
         tableName: "t_daftarpasien", // relation "user" does not exist

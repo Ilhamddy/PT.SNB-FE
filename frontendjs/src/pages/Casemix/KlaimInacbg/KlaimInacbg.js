@@ -24,9 +24,11 @@ import { dateISOString, dateTimeLocal } from "../../../utils/format";
 import {
     casemixResetForm, listCariPasienGet, listDaftarPasienGet, listTarifPasienGet,
     listDiagnosaxGet, listDiagnosaixGet, bridgingInacbgSave, emrDiagnosaxGet,
-    emrDiagnosaxSave, emrDiagnosaixGet, emrDiagnosaixSave
+    emrDiagnosaxSave, emrDiagnosaixGet, emrDiagnosaixSave, deleteDiagnosax,
+    deleteDiagnosaix, tarifKlaimSave
 } from '../../../store/actions';
 import { BasicTable } from '../../Tables/DataTables/datatableCom';
+import DeleteModalCustom from '../../../Components/Common/DeleteModalCustom';
 
 const dateAwalStart = dateISOString(new Date(new Date() - 1000 * 60 * 60 * 24 * 3));
 const dateAwalEnd = dateISOString(new Date())
@@ -41,7 +43,9 @@ const KlaimInacbg = () => {
         dataDiagnosa, loadingDiagnosa, successDiagnosa,
         newDataDiagnosax, loadingDiagnosax, successDiagnosax,
         dataDiagnosaix, loadingDiagnosaix, successDiagnosaix,
-        newDataDiagnosaixSave, loadingDiagnosaixSave, successDiagnosaixSave } = useSelector((state) => ({
+        newDataDiagnosaixSave, loadingDiagnosaixSave, successDiagnosaixSave,
+        newDataDelete, successDelete, newDataDeleteix, successDeleteix,
+        newDataTarifKlaim, loadingTarifKlaim, successTarifKlaim } = useSelector((state) => ({
             newData: state.Casemix.bridgingInacbgSave.newData,
             success: state.Casemix.bridgingInacbgSave.success,
             loading: state.Casemix.bridgingInacbgSave.loading,
@@ -72,6 +76,13 @@ const KlaimInacbg = () => {
             newDataDiagnosaixSave: state.Emr.emrDiagnosaixSave.newData,
             successDiagnosaixSave: state.Emr.emrDiagnosaixSave.success,
             loadingDiagnosaixSave: state.Emr.emrDiagnosaixSave.loading,
+            newDataDelete: state.Emr.deleteDiagnosax.newData,
+            successDelete: state.Emr.deleteDiagnosax.success,
+            newDataDeleteix: state.Emr.deleteDiagnosaix.newData,
+            successDeleteix: state.Emr.deleteDiagnosax.success,
+            newDataTarifKlaim: state.Casemix.tarifKlaimSave.newData,
+            successTarifKlaim: state.Casemix.tarifKlaimSave.success,
+            loadingTarifKlaim: state.Casemix.tarifKlaimSave.loading,
         }));
 
     useEffect(() => {
@@ -124,8 +135,14 @@ const KlaimInacbg = () => {
     const [stateCodeCbg, setstateCodeCbg] = useState("")
     const [stateTariff, setstateTariff] = useState("")
     const [stateHasilGrouping, setstateHasilGrouping] = useState(false)
+    const [stateHasilGroupingV6, setstateHasilGroupingV6] = useState(false)
     const [stateTombolGrouping, setstateTombolGrouping] = useState(true)
     const [stateTombolFinal, setstateTombolFinal] = useState(true)
+    const [stateDeleteDiagnosa, setstateDeleteDiagnosa] = useState(10)
+    const [stateMDC, setstateMDC] = useState("")
+    const [stateMDCCode, setstateMDCCode] = useState("")
+    const [stateDRG, setstateDRG] = useState("")
+    const [stateDRGCode, setstateDRGCode] = useState("")
     const handleFilter = (e) => {
         if (e.keyCode === 13) {
             setstateList(true)
@@ -197,6 +214,51 @@ const KlaimInacbg = () => {
         dispatch(listTarifPasienGet(e.norec))
         dispatch(listDiagnosaxGet(e.norec));
         dispatch(listDiagnosaixGet(e.norec));
+        if (e.status_grouping === 'GROUPING') {
+            setstateHasilGrouping(true)
+            setstateHasilGroupingV6(true)
+            setstateDescriptionCbg(e.cbg_description)
+            setstateCodeCbg(e.cbg_code)
+            setstateTariff(e.cbg_tarif)
+            setstateMDC(e.cbg_mdc_description)
+            setstateMDCCode(e.cbg_mdc_number)
+            setstateDRG(e.cbg_drg_description)
+            setstateDRGCode(e.cbg_drg_code)
+        } else if (e.status_grouping === 'FINAL_KLAIM') {
+            setstateTombolGrouping(false)
+            setstateTombolFinal(false)
+            setstateHasilGrouping(true)
+            setstateHasilGroupingV6(true)
+            setstateDescriptionCbg(e.cbg_description)
+            setstateCodeCbg(e.cbg_code)
+            setstateTariff(e.cbg_tarif)
+            setstateMDC(e.cbg_mdc_description)
+            setstateMDCCode(e.cbg_mdc_number)
+            setstateDRG(e.cbg_drg_description)
+            setstateDRGCode(e.cbg_drg_code)
+        } else if (e.status_grouping === 'EDIT_KLAIM') {
+            setstateTombolGrouping(true)
+            setstateTombolFinal(true)
+        }
+    };
+    //delete order
+    const [deleteModal, setDeleteModal] = useState(false);
+    const [product, setProduct] = useState(null);
+    const onClickDelete = (product, id) => {
+        setstateDeleteDiagnosa(id)
+        setProduct(product);
+        setDeleteModal(true);
+    };
+    const handleDeleteOrder = () => {
+        if (product) {
+            if (stateDeleteDiagnosa === 10) {
+                dispatch(deleteDiagnosax(product.norec));
+            } else {
+                dispatch(deleteDiagnosaix(product.norec));
+            }
+
+            setDeleteModal(false);
+        }
     };
     const columns = [
         {
@@ -263,7 +325,7 @@ const KlaimInacbg = () => {
         },
         {
             name: <span className='font-weight-bold fs-13'>Status</span>,
-            selector: row => '-',
+            selector: row => row.status_grouping,
             sortable: true,
             width: "150px",
         },
@@ -275,7 +337,22 @@ const KlaimInacbg = () => {
         },
     ];
     const columnsDiagnosa10 = [
-
+        {
+            sortable: false,
+            cell: (data) => {
+                return (
+                    <div className="hstack gap-3 flex-wrap">
+                        <UncontrolledDropdown className="dropdown d-inline-block">
+                            <DropdownToggle className="btn btn-soft-secondary btn-sm" tag="button" id="tooltipTop2" type="button" onClick={() => onClickDelete(data, 10)}>
+                                <i className="ri-delete-bin-2-line"></i>
+                            </DropdownToggle>
+                        </UncontrolledDropdown>
+                        <UncontrolledTooltip placement="top" target="tooltipTop2" > Delete </UncontrolledTooltip>
+                    </div>
+                );
+            },
+            width: "50px"
+        },
         {
             selector: row => row.label,
             sortable: true
@@ -294,7 +371,22 @@ const KlaimInacbg = () => {
         },
     ];
     const columnsDiagnosa9 = [
-
+        {
+            sortable: false,
+            cell: (data) => {
+                return (
+                    <div className="hstack gap-3 flex-wrap">
+                        <UncontrolledDropdown className="dropdown d-inline-block">
+                            <DropdownToggle className="btn btn-soft-secondary btn-sm" tag="button" id="tooltipTop2" type="button" onClick={() => onClickDelete(data, 9)}>
+                                <i className="ri-delete-bin-2-line"></i>
+                            </DropdownToggle>
+                        </UncontrolledDropdown>
+                        <UncontrolledTooltip placement="top" target="tooltipTop2" > Delete </UncontrolledTooltip>
+                    </div>
+                );
+            },
+            width: "50px"
+        },
         {
             selector: row => row.label,
             sortable: true
@@ -323,6 +415,13 @@ const KlaimInacbg = () => {
     const back2 = () => {
         setstateListNoregistrasi(true)
         setstateCoder(false)
+        setstateDescriptionCbg("")
+        setstateCodeCbg("")
+        setstateTariff("")
+        setstateMDC("")
+        setstateMDCCode("")
+        setstateDRG("")
+        setstateDRGCode("")
     }
     const handleDiagnosa = characterEntered => {
         if (characterEntered.length > 3) {
@@ -361,6 +460,14 @@ const KlaimInacbg = () => {
         }
         dispatch(emrDiagnosaixSave(tempValue, ''));
     };
+
+    useEffect(() => {
+        dispatch(listDiagnosaxGet(stateTemp.norec));
+    }, [newDataDelete, stateTemp.norec, dispatch])
+
+    useEffect(() => {
+        dispatch(listDiagnosaixGet(stateTemp.norec));
+    }, [newDataDeleteix, stateTemp.norec, dispatch])
 
     useEffect(() => {
         dispatch(listDiagnosaxGet(stateTemp.norec));
@@ -809,12 +916,21 @@ const KlaimInacbg = () => {
         if (newData !== null) {
 
             if (stateTombol === '1') {
-                console.log('masuk 1')
                 if (newData.data[2].dataResponse.response_inagrouper !== undefined) {
                     setstateHasilGrouping(true)
                     setstateDescriptionCbg(newData.data[2].dataResponse.response.cbg.description)
                     setstateCodeCbg(newData.data[2].dataResponse.response.cbg.code)
                     setstateTariff(newData.data[2].dataResponse.response.cbg.tariff)
+                    setstateMDC(newData.data[2].dataResponse.response_inagrouper.mdc_description)
+                    setstateMDCCode(newData.data[2].dataResponse.response_inagrouper.mdc_code)
+                    setstateDRG(newData.data[2].dataResponse.response_inagrouper.drg_description)
+                    setstateDRGCode(newData.data[2].dataResponse.response_inagrouper.drg_code)
+                    const value = {
+                        "data": newData.data[2].dataResponse,
+                        "norec": stateTemp.norec,
+                        "status": "GROUPING"
+                    };
+                    dispatch(tarifKlaimSave(value))
                 }
             } else if (stateTombol === '2') {
                 setstateTombolGrouping(false)
@@ -836,7 +952,7 @@ const KlaimInacbg = () => {
                 // Generate a downloadable link for the Blob
                 let downloadLink = document.createElement('a');
                 downloadLink.href = URL.createObjectURL(blob);
-                downloadLink.download = 'klaim.pdf';
+                downloadLink.download = stateTemp.no_sep + '_klaim.pdf';
 
                 // Trigger the download programmatically
                 document.body.appendChild(downloadLink);
@@ -847,7 +963,7 @@ const KlaimInacbg = () => {
             }
 
         }
-    }, [newData, stateTombol, dispatch])
+    }, [newData, stateTombol, stateTemp, dispatch])
     const [count, setCount] = useState(1);
 
     const onClickCount = (temp) => {
@@ -863,6 +979,13 @@ const KlaimInacbg = () => {
     return (
         <React.Fragment>
             <ToastContainer closeButton={false} />
+            <DeleteModalCustom
+                show={deleteModal}
+                onDeleteClick={handleDeleteOrder}
+                onCloseClick={() => setDeleteModal(false)}
+                msgHDelete='Apa Kamu Yakin ?'
+                msgBDelete='Yakin ingin menghapus data ini?'
+            />
             <UiContent />
             <div className="page-content">
                 <Container fluid>
@@ -1254,7 +1377,7 @@ const KlaimInacbg = () => {
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <th scope="row" style={{ width: "100%", textAlign: 'center', borderLeft: '0px', borderRight: '0px' }} colSpan={4}><span style={{ fontStyle: "italic" }}>Tarif Rumah Sakit</span> : Rp {dataTarifPasien.total_tagihan}</th>
+                                                        <th scope="row" style={{ width: "100%", textAlign: 'center', borderLeft: '0px', borderRight: '0px' }} colSpan={4}><span style={{ fontStyle: "italic" }}>Tarif Rumah Sakit</span> : Rp {dataTarifPasien.total_tagihan?.toLocaleString("id-ID") || ""}</th>
                                                     </tr>
                                                 </tbody>
                                             </Table>
@@ -1270,7 +1393,7 @@ const KlaimInacbg = () => {
                                                                 className="form-control"
                                                                 id="job-title-Input"
                                                                 placeholder="0"
-                                                                defaultValue={dataTarifPasien.prosedur_non_bedah}
+                                                                defaultValue={dataTarifPasien.prosedur_non_bedah?.toLocaleString("id-ID") || ""}
                                                                 disabled
                                                             />
                                                         </th>
@@ -1283,7 +1406,7 @@ const KlaimInacbg = () => {
                                                                 className="form-control"
                                                                 id="job-title-Input"
                                                                 placeholder="0"
-                                                                defaultValue={dataTarifPasien.prosedur_bedah}
+                                                                defaultValue={dataTarifPasien.prosedur_bedah?.toLocaleString("id-ID") || ""}
                                                                 disabled
                                                             />
                                                         </th>
@@ -1296,7 +1419,7 @@ const KlaimInacbg = () => {
                                                                 className="form-control"
                                                                 id="job-title-Input"
                                                                 placeholder="0"
-                                                                defaultValue={dataTarifPasien.konsultasi}
+                                                                defaultValue={dataTarifPasien.konsultasi?.toLocaleString("id-ID") || ""}
                                                                 disabled
                                                             />
                                                         </th>
@@ -1311,7 +1434,7 @@ const KlaimInacbg = () => {
                                                                 className="form-control"
                                                                 id="job-title-Input"
                                                                 placeholder="0"
-                                                                defaultValue={dataTarifPasien.tenaga_ahli}
+                                                                defaultValue={dataTarifPasien.tenaga_ahli?.toLocaleString("id-ID") || ""}
                                                                 disabled
                                                             />
                                                         </th>
@@ -1324,7 +1447,7 @@ const KlaimInacbg = () => {
                                                                 className="form-control"
                                                                 id="job-title-Input"
                                                                 placeholder="0"
-                                                                defaultValue={dataTarifPasien.keperawatan}
+                                                                defaultValue={dataTarifPasien.keperawatan?.toLocaleString("id-ID") || ""}
                                                                 disabled
                                                             />
                                                         </th>
@@ -1337,7 +1460,7 @@ const KlaimInacbg = () => {
                                                                 className="form-control"
                                                                 id="job-title-Input"
                                                                 placeholder="0"
-                                                                defaultValue={dataTarifPasien.penunjang}
+                                                                defaultValue={dataTarifPasien.penunjang?.toLocaleString("id-ID") || ""}
                                                                 disabled
                                                             />
                                                         </th>
@@ -1352,7 +1475,7 @@ const KlaimInacbg = () => {
                                                                 className="form-control"
                                                                 id="job-title-Input"
                                                                 placeholder="0"
-                                                                defaultValue={dataTarifPasien.radiologi}
+                                                                defaultValue={dataTarifPasien.radiologi?.toLocaleString("id-ID") || ""}
                                                                 disabled
                                                             />
                                                         </th>
@@ -1365,7 +1488,7 @@ const KlaimInacbg = () => {
                                                                 className="form-control"
                                                                 id="job-title-Input"
                                                                 placeholder="0"
-                                                                defaultValue={dataTarifPasien.laboratorium}
+                                                                defaultValue={dataTarifPasien.laboratorium?.toLocaleString("id-ID") || ""}
                                                                 disabled
                                                             />
                                                         </th>
@@ -1378,7 +1501,7 @@ const KlaimInacbg = () => {
                                                                 className="form-control"
                                                                 id="job-title-Input"
                                                                 placeholder="0"
-                                                                defaultValue={dataTarifPasien.pelayanan_darah}
+                                                                defaultValue={dataTarifPasien.pelayanan_darah?.toLocaleString("id-ID") || ""}
                                                                 disabled
                                                             />
                                                         </th>
@@ -1393,7 +1516,7 @@ const KlaimInacbg = () => {
                                                                 className="form-control"
                                                                 id="job-title-Input"
                                                                 placeholder="0"
-                                                                defaultValue={dataTarifPasien.rehabilitasi}
+                                                                defaultValue={dataTarifPasien.rehabilitasi?.toLocaleString("id-ID") || ""}
                                                                 disabled
                                                             />
                                                         </th>
@@ -1406,7 +1529,7 @@ const KlaimInacbg = () => {
                                                                 className="form-control"
                                                                 id="job-title-Input"
                                                                 placeholder="0"
-                                                                defaultValue={dataTarifPasien.akomodasi}
+                                                                defaultValue={dataTarifPasien.akomodasi?.toLocaleString("id-ID") || ""}
                                                                 disabled
                                                             />
                                                         </th>
@@ -1419,7 +1542,7 @@ const KlaimInacbg = () => {
                                                                 className="form-control"
                                                                 id="job-title-Input"
                                                                 placeholder="0"
-                                                                defaultValue={dataTarifPasien.rawat_intensif}
+                                                                defaultValue={dataTarifPasien.rawat_intensif?.toLocaleString("id-ID") || ""}
                                                                 disabled
                                                             />
                                                         </th>
@@ -1434,7 +1557,7 @@ const KlaimInacbg = () => {
                                                                 className="form-control"
                                                                 id="job-title-Input"
                                                                 placeholder="0"
-                                                                defaultValue={dataTarifPasien.obat}
+                                                                defaultValue={dataTarifPasien.obat?.toLocaleString("id-ID") || ""}
                                                                 disabled
                                                             />
                                                         </th>
@@ -1447,7 +1570,7 @@ const KlaimInacbg = () => {
                                                                 className="form-control"
                                                                 id="job-title-Input"
                                                                 placeholder="0"
-                                                                defaultValue={dataTarifPasien.obat_kronis}
+                                                                defaultValue={dataTarifPasien.obat_kronis?.toLocaleString("id-ID") || ""}
                                                                 disabled
                                                             />
                                                         </th>
@@ -1460,7 +1583,7 @@ const KlaimInacbg = () => {
                                                                 className="form-control"
                                                                 id="job-title-Input"
                                                                 placeholder="0"
-                                                                defaultValue={dataTarifPasien.obat_kemoterapi}
+                                                                defaultValue={dataTarifPasien.obat_kemoterapi?.toLocaleString("id-ID") || ""}
                                                                 disabled
                                                             />
                                                         </th>
@@ -1475,7 +1598,7 @@ const KlaimInacbg = () => {
                                                                 className="form-control"
                                                                 id="job-title-Input"
                                                                 placeholder="0"
-                                                                defaultValue={dataTarifPasien.alkes}
+                                                                defaultValue={dataTarifPasien.alkes?.toLocaleString("id-ID") || ""}
                                                                 disabled
                                                             />
                                                         </th>
@@ -1488,7 +1611,7 @@ const KlaimInacbg = () => {
                                                                 className="form-control"
                                                                 id="job-title-Input"
                                                                 placeholder="0"
-                                                                defaultValue={dataTarifPasien.bmhp}
+                                                                defaultValue={dataTarifPasien.bmhp?.toLocaleString("id-ID") || ""}
                                                                 disabled
                                                             />
                                                         </th>
@@ -1501,7 +1624,7 @@ const KlaimInacbg = () => {
                                                                 className="form-control"
                                                                 id="job-title-Input"
                                                                 placeholder="0"
-                                                                defaultValue={dataTarifPasien.sewa_alat}
+                                                                defaultValue={dataTarifPasien.sewa_alat?.toLocaleString("id-ID") || ""}
                                                                 disabled
                                                             />
                                                         </th>
@@ -1821,14 +1944,136 @@ const KlaimInacbg = () => {
                                                                 <span>{stateDescriptionCbg}</span>
                                                             </th>
                                                             <th scope="row" style={{ width: "18%", textAlign: 'center' }}>
-                                                                <span>{stateCodeCbg}</span>
+                                                            <span>{stateCodeCbg}</span>
                                                             </th>
                                                             <th scope="row" style={{ width: "18%", textAlign: 'center' }}>
-                                                                <span>Rp {stateTariff}</span>
+                                                                <span>Rp {stateTariff?.toLocaleString("id-ID") || ""}</span>
+                                                            </th>
+                                                        </tr>
+                                                        <tr>
+                                                            <th scope="row" style={{ width: "18%", textAlign: 'center' }}>
+                                                                <span>Special Procedure</span>
+                                                            </th>
+                                                            <th scope="row" style={{ width: "18%", textAlign: 'center', borderLeft: '0px', borderRight: '0px' }}>
+                                                                <CustomSelect
+                                                                    id="kodediagnosa9"
+                                                                    name="kodediagnosa9"
+                                                                    options={dataDiagnosaix}
+                                                                    onChange={value => handleDiagnosaixSave(value.value)}
+                                                                    onInputChange={handleDiagnosaix}
+                                                                />
+                                                            </th>
+                                                            <th scope="row" style={{ width: "18%", textAlign: 'center',borderLeft: '0px', borderRight: '0px'  }}></th>
+                                                            <th scope="row" style={{ width: "18%", textAlign: 'center' }}>
+                                                                <span>Rp 0</span>
+                                                            </th>
+                                                        </tr>
+                                                        <tr>
+                                                            <th scope="row" style={{ width: "18%", textAlign: 'center' }}>
+                                                                <span>Special Prosthesis</span>
+                                                            </th>
+                                                            <th scope="row" style={{ width: "18%", textAlign: 'center', borderLeft: '0px', borderRight: '0px' }}>
+                                                                <CustomSelect
+                                                                    id="kodediagnosa9"
+                                                                    name="kodediagnosa9"
+                                                                    options={dataDiagnosaix}
+                                                                    onChange={value => handleDiagnosaixSave(value.value)}
+                                                                    onInputChange={handleDiagnosaix}
+                                                                />
+                                                            </th>
+                                                            <th scope="row" style={{ width: "18%", textAlign: 'center',borderLeft: '0px', borderRight: '0px'  }}></th>
+                                                            <th scope="row" style={{ width: "18%", textAlign: 'center' }}>
+                                                                <span>Rp 0</span>
+                                                            </th>
+                                                        </tr>
+                                                        <tr>
+                                                            <th scope="row" style={{ width: "18%", textAlign: 'center' }}>
+                                                                <span>Special Investigation</span>
+                                                            </th>
+                                                            <th scope="row" style={{ width: "18%", textAlign: 'center', borderLeft: '0px', borderRight: '0px' }}>
+                                                                <CustomSelect
+                                                                    id="kodediagnosa9"
+                                                                    name="kodediagnosa9"
+                                                                    options={dataDiagnosaix}
+                                                                    onChange={value => handleDiagnosaixSave(value.value)}
+                                                                    onInputChange={handleDiagnosaix}
+                                                                />
+                                                            </th>
+                                                            <th scope="row" style={{ width: "18%", textAlign: 'center',borderLeft: '0px', borderRight: '0px'  }}></th>
+                                                            <th scope="row" style={{ width: "18%", textAlign: 'center' }}>
+                                                                <span>Rp 0</span>
+                                                            </th>
+                                                        </tr>
+                                                        <tr>
+                                                            <th scope="row" style={{ width: "18%", textAlign: 'center' }}>
+                                                                <span>Special Drug</span>
+                                                            </th>
+                                                            <th scope="row" style={{ width: "18%", textAlign: 'center', borderLeft: '0px', borderRight: '0px' }}>
+                                                                <CustomSelect
+                                                                    id="kodediagnosa9"
+                                                                    name="kodediagnosa9"
+                                                                    options={dataDiagnosaix}
+                                                                    onChange={value => handleDiagnosaixSave(value.value)}
+                                                                    onInputChange={handleDiagnosaix}
+                                                                />
+                                                            </th>
+                                                            <th scope="row" style={{ width: "18%", textAlign: 'center',borderLeft: '0px', borderRight: '0px'  }}></th>
+                                                            <th scope="row" style={{ width: "18%", textAlign: 'center' }}>
+                                                                <span>Rp 0</span>
                                                             </th>
                                                         </tr>
                                                     </tbody>
                                                 </Table>
+                                                {stateHasilGroupingV6 ? (
+                                                    <Table className="table-bordered align-middle table-nowrap mb-0 border-secondary"
+                                                        style={{ backgroundColor: '#ccddcc' }}>
+                                                        <thead className="table-light" >
+                                                            <tr>
+                                                                <th scope="col" style={{ backgroundColor: '#dddddd', textAlign: 'center' }} colSpan={3}>Hasil Grouper E-Klaim v6</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <th scope="row" style={{ width: "18%", textAlign: 'center' }}>
+                                                                    <span>Info</span>
+                                                                </th>
+                                                                <th scope="row" style={{ width: "18%", textAlign: 'center' }} colSpan={2}>
+                                                                    <span>TARIF RS KELAS D PEMERINTAH</span>
+                                                                </th>
+                                                            </tr>
+                                                            <tr>
+                                                                <th scope="row" style={{ width: "18%", textAlign: 'center' }}>
+                                                                    <span>Jenis Rawat</span>
+                                                                </th>
+                                                                <th scope="row" style={{ width: "18%", textAlign: 'center' }} colSpan={2}>
+                                                                    <span>Rawat Jalan Regular</span>
+                                                                </th>
+                                                            </tr>
+                                                            <tr>
+                                                                <th scope="row" style={{ width: "18%", textAlign: 'center' }}>
+                                                                    <span>MDC</span>
+                                                                </th>
+                                                                <th scope="row" style={{ width: "18%", textAlign: 'center' }}>
+                                                                    <span>{stateMDC}</span>
+                                                                </th>
+                                                                <th scope="row" style={{ width: "18%", textAlign: 'center' }}>
+                                                                    <span>{stateMDCCode}</span>
+                                                                </th>
+                                                            </tr>
+                                                            <tr>
+                                                                <th scope="row" style={{ width: "18%", textAlign: 'center' }}>
+                                                                    <span>DRG</span>
+                                                                </th>
+                                                                <th scope="row" style={{ width: "18%", textAlign: 'center' }}>
+                                                                    <span>{stateDRG}</span>
+                                                                </th>
+                                                                <th scope="row" style={{ width: "18%", textAlign: 'center' }}>
+                                                                    <span>{stateDRGCode}</span>
+                                                                </th>
+                                                            </tr>
+                                                        </tbody>
+                                                    </Table>
+                                                ) : null}
                                                 {stateTombolGrouping ? (
                                                     <Col xxl={12} sm={12}>
                                                         <Button type="button" style={{ backgroundColor: '#192a56' }} className="rounded-pill" placement="top" onClick={handleClickFinal}>

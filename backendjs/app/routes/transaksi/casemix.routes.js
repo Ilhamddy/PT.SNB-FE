@@ -45,5 +45,11 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.saveBridgingInacbg
     );
+
+    app.post(
+        "/api/transaksi/casemix/save-tarif-klaim",
+        [authJwt.verifyToken],
+        controller.saveTarifKlaim
+    );
     
 }

@@ -1285,7 +1285,7 @@ const RegistrasiPenjaminFK = () => {
         <div className="page-content registrasi-penjamin-fk">
             <ToastContainer closeButton={false} />
             <Container fluid>
-                <BreadCrumb title="Registrasi Pasien" pageTitle="Registrasi Pasien" />
+                <BreadCrumb title="Registrasi Penjamin" pageTitle="Registrasi Penjamin" />
                 <Row>
                     <Col lg={3}>
                         <Card>
