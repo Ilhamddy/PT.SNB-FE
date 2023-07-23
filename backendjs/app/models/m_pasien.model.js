@@ -33,6 +33,12 @@ export default (sequelize, Sequelize) => {
         objectstatusperkawinanfk: {
             type: Sequelize.INTEGER
         },
+        tgldaftar: {
+            type: Sequelize.DATE
+        },
+        tgllahir:{
+            type: Sequelize.DATE
+        },
         objectpendidikanfk: {
             type: Sequelize.INTEGER
         },

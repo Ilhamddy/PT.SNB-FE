@@ -210,61 +210,79 @@ const getAllByOr = (req, res) => {
     // });
 };
 
-const savePasien = (req, res) => {
+const savePasien = async (req, res) => {
+    let transaction = null;
+    try{
+        transaction = await db.sequelize.transaction();
+    }catch(e){
+        console.error(e);
+        // await transaction.rollback();
+        res.status(500).send({
+            status: JSON.stringify(e),
+            success: false,
+            msg: 'Error transaction',
+            code: 500
+        });
+        return;
+    }
     try {
-        running_Number.findAll({
+        const getNocm = await running_Number.findAll({
             where: {
                 id: 1
             }
-        }).then(getNocm => {
-            let nocm = getNocm[0].new_number + 1
-            let new_number = getNocm[0].new_number + 1
-            for (let x = getNocm[0].new_number.toString().length; x < getNocm[0].extention; x++) {
-                nocm = '0' + nocm;
-            }
-            M_pasien.create({
-                nocm: nocm,
-                namapasien: req.body.namapasien,
-                noidentitas: req.body.noidentitas,
-                objectjeniskelaminfk: req.body.jeniskelamin,
-                objecttitlefk: req.body.titlepasien,
-                objectagamafk: req.body.agama,
-                objectgolongandarahfk: req.body.goldarah,
-                objectkebangsaanfk: req.body.kebangsaan,
-                objectstatusperkawinanfk: req.body.statusperkawinan,
-                objectpendidikanfk: req.body.pendidikan,
-                objectpekerjaanfk: req.body.pekerjaan,
-                objectetnisfk: req.body.suku,
-                objectbahasafk: req.body.bahasa,
-                alamatrmh: req.body.alamatktp,
-                rtktp: req.body.rt,
-                rwktp: req.body.rw,
-                objectdesakelurahanktpfk: req.body.desa,
-                objectnegaraktpfk: req.body.negara,
-                statusenabled: true,
-            }).then(result => {
-                running_Number.update({ new_number: new_number }, {
-                    where: {
-                        id: 1
-                    }
-                });
-                res.status(200).send({
-                    data: result,
-                    status: "success",
-                    success: true,
-                    msg: 'Simpan Berhasil',
-                    code: 200
-                });
-            }).catch(err => {
-                res.status(201).send({
-                    status: err,
-                    success: false,
-                    msg: 'Simpan Gagal',
-                    code: 201
-                });
-            });
+        })
+        let nocm = getNocm[0].new_number + 1
+        let new_number = getNocm[0].new_number + 1
+        for (let x = getNocm[0].new_number.toString().length; x < getNocm[0].extention; x++) {
+            nocm = '0' + nocm;
+        }
+        const tglLahir = new Date(req.body.tgllahir)
+        const result = await M_pasien.create({
+            nocm: nocm,
+            namapasien: req.body.namapasien,
+            noidentitas: req.body.noidentitas,
+            objectjeniskelaminfk: req.body.jeniskelamin,
+            objecttitlefk: req.body.titlepasien,
+            objectagamafk: req.body.agama,
+            objectgolongandarahfk: req.body.goldarah,
+            objectkebangsaanfk: req.body.kebangsaan,
+            objectstatusperkawinanfk: req.body.statusperkawinan,
+            tgldaftar: new Date(),
+            tgllahir: new Date(req.body.tgllahir),
+            objectpendidikanfk: req.body.pendidikan,
+            objectpekerjaanfk: req.body.pekerjaan,
+            objectetnisfk: req.body.suku,
+            objectbahasafk: req.body.bahasa,
+            alamatrmh: req.body.alamatktp,
+            rtktp: req.body.rt,
+            rwktp: req.body.rw,
+            objectdesakelurahanktpfk: req.body.desa,
+            objectnegaraktpfk: req.body.negara,
+            alamatdomisili: req.body.alamatdomisili,
+            rtdomisili: req.body.rtdomisili,
+            rwdomisili: req.body.rwdomisili,
+            objectdesakelurahandomisilifk: req.body.desadomisili,
+            objectnegaradomisilifk: req.body.negaradomisili,
+            statusenabled: true,
+        }, {
+            transaction: transaction
+        })
+        await running_Number.update({ new_number: new_number }, {
+            where: {
+                id: 1
+            },
+            transaction: transaction
+        });
+        transaction.commit();
+        res.status(200).send({
+            data: result,
+            status: "success",
+            success: true,
+            msg: 'Simpan Berhasil',
+            code: 200
         });
     } catch (error) {
+        transaction.rollback();
         res.status(500).send({ message: error });
     }
 }

@@ -117,6 +117,7 @@ const PasienBaru = () => {
             noidentitas: newData?.noidentitas ?? "",
             jeniskelamin: newData?.jeniskelamin ?? "",
             titlepasien: newData?.titlepasien ?? "",
+            tgllahir: newData?.tgllahir ?? "",
             agama: newData?.agama ?? "",
             goldarah: newData?.goldarah ?? "",
             kebangsaan: newData?.kebangsaan ?? "",
@@ -149,6 +150,7 @@ const PasienBaru = () => {
             noidentitas: Yup.string().required("Nomor identitas wajib diisi"),
             jeniskelamin: Yup.string().required("Jenis Kelamin wajib diisi"),
             titlepasien: Yup.string().required("Title Pasien wajib diisi"),
+            tgllahir: Yup.string().required("Tanggal Lahir wajib diisi"),
             agama: Yup.string().required("Agama wajib diisi"),
             goldarah: Yup.string().required("Golongan Darah wajib diisi"),
             kebangsaan: Yup.string().required("Kebangsaan wajib diisi"),
@@ -372,6 +374,10 @@ const PasienBaru = () => {
                                                                                     dateFormat: "Y-m-d",
                                                                                     defaultDate: "today",
                                                                                     maxDate: "today"
+                                                                                }}
+                                                                                value={new Date(validation.values.tgllahir) || ""}
+                                                                                onChange={([newDate]) => {
+                                                                                    validation.setFieldValue("tgllahir", newDate.toISOString())
                                                                                 }}
                                                                             />
                                                                         </div>

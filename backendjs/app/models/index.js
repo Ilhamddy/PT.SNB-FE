@@ -1,5 +1,5 @@
 import config from "../config/db.config.js";
-import  Sequelize from "sequelize";
+import {Sequelize} from "sequelize";
 
 import userModel from "../models/user.model.js"
 import roleModel from "../models/role.model.js"
@@ -31,7 +31,6 @@ import t_detailpiutangpasienModel from "./t_detailpiutangpasien.model.js";
 import t_carabayarModel from "./t_carabayar.model.js";
 import t_depositpasienModel from "./t_depositpasien.model.js";
 
-console.log("dialect", config.dialect)
 
 const sequelize = new Sequelize(
   config.DB,
@@ -40,16 +39,18 @@ const sequelize = new Sequelize(
   {
     host: config.HOST,
     dialect: config.dialect,
-    operatorsAliases: false,
-
+    operatorAliases: false,
+    timezone: '+07:00',
     pool: {
       max: config.pool.max,
       min: config.pool.min,
       acquire: config.pool.acquire,
       idle: config.pool.idle
-    }
+    },
+
   }
 );
+
 
 const db = {};
 
