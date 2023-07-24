@@ -206,7 +206,10 @@ async function getHeaderEmr(req, res) {
         let pernapasan = ''
         let keadaanumum = ''
         let namagcs = ''
-        for (var i = 0; i < resultTtv.rows.length; ++i) {
+        
+        const norecdp = resultCountNoantrianDokter.rows[0].norecdp
+
+        for (let i = 0; i < resultTtv.rows.length; ++i) {
             beratbadan = resultTtv.rows[0].beratbadan,
                 tinggibadan = resultTtv.rows[0].tinggibadan,
                 suhu = resultTtv.rows[0].suhu,
@@ -219,9 +222,10 @@ async function getHeaderEmr(req, res) {
                 namagcs = resultTtv.rows[0].namagcs
         }
         let tempres = ""
-        let tglLahir = resultCountNoantrianDokter.rows[i].tgllahirkomplet || new Date()
+        let tglLahir = resultCountNoantrianDokter.rows[0].tgllahirkomplet || new Date()
         let umur = getUmur(new Date(tglLahir), new Date())
         umur = `${umur.years} Tahun ${umur.months} Bulan ${umur.days} Hari`
+        const deposit = (await pool.query(queries.qGetDepositFromPasien, [norecdp])).rows || []
         for (var i = 0; i < resultCountNoantrianDokter.rows.length; ++i) {
             if (resultCountNoantrianDokter.rows[i] !== undefined) {
                 tempres = {
@@ -243,6 +247,7 @@ async function getHeaderEmr(req, res) {
                     pernapasan: pernapasan,
                     keadaanumum: keadaanumum,
                     namagcs: namagcs,
+                    deposit: deposit || []
                 }
 
             }

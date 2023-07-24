@@ -21,8 +21,9 @@ import { Autoplay, Mousewheel } from 'swiper';
 const EmrHeader = () => {
     const { norecdp, norecap } = useParams();
     const dispatch = useDispatch();
-    const { editData, dataTagihan, dataPasienReg, dataTtv } = useSelector(state => ({
+    const { editData, dataTagihan, dataPasienReg, dataTtv, deposit } = useSelector(state => ({
         editData: state.Emr.emrHeaderGet.data,
+        deposit: state.Emr.emrHeaderGet.data?.deposit || [],
         dataTagihan: state.Emr.listTagihanGet.data,
         dataPasienReg: state.Registrasi.registrasiRuangNorecGet.data || null,
         dataTtv: state.Emr.emrTtvGet.data,
@@ -49,6 +50,7 @@ const EmrHeader = () => {
 
     const totalTagihan = dataTagihan.reduce((total, item) => total + item.total * item.qty, 0)
     const dataTtvNol = ([...(dataTtv || [])]?.sort(sortStringDate)?.[0]) || null
+    const totalDeposit = deposit.reduce((prev, currDep) => (prev + (currDep.nominal || 0)), 0)
     return (
         <React.Fragment>
             <Row>
@@ -133,15 +135,15 @@ const EmrHeader = () => {
                             </div>
                             <div className='d-flex justify-content-between mb-1'>
                                 <h6 className="text-muted mb-0">Deposit:</h6>
-                                <h6 className="text-muted mb-0">{0}</h6>
+                                <h6 className="text-muted mb-0">{totalDeposit}</h6>
                             </div>
-                            <div className='d-flex justify-content-between mb-1'>
+                            {/* <div className='d-flex justify-content-between mb-1'>
                                 <h6 className="text-muted mb-0">Total Bayar:</h6>
                                 <h6 className="text-muted mb-0">{0}</h6>
-                            </div>
+                            </div> */}
                             <div className='d-flex justify-content-between mb-1'>
                                 <h6 className="text-muted mb-0">Sisa tagihan:</h6>
-                                <h6 className="text-muted mb-0">{totalTagihan - 0}</h6>
+                                <h6 className="text-muted mb-0">{(totalTagihan - totalDeposit) > 0 ? totalTagihan - totalDeposit : 0}</h6>
                             </div>
                         </CardBody>
                     </Card>
@@ -174,19 +176,19 @@ const EmrHeader = () => {
                                         </div>
                                     </div>
                                     <div className='d-flex justify-content-between mb-1'>
-                                        <h6 className="text-muted mb-0">{dataTtvNol?.tekanandarah || ""}/70mmHg</h6>
+                                        <h6 className="text-muted mb-0">{dataTtvNol?.tekanandarah || "- "}/70mmHg</h6>
                                         <h6 className="text-muted mb-0">TD</h6>
                                     </div>
                                     <div className='d-flex justify-content-between mb-1'>
-                                        <h6 className="text-muted mb-0">{dataTtvNol?.pernapasan || ""} x/menit</h6>
+                                        <h6 className="text-muted mb-0">{dataTtvNol?.pernapasan || "- "} x/menit</h6>
                                         <h6 className="text-muted mb-0">PERNAFASAN</h6>
                                     </div>
                                     <div className='d-flex justify-content-between mb-1'>
-                                        <h6 className="text-muted mb-0">{dataTtvNol?.suhu || ""} °C</h6>
+                                        <h6 className="text-muted mb-0">{dataTtvNol?.suhu || "- "} °C</h6>
                                         <h6 className="text-muted mb-0">SUHU</h6>
                                     </div>
                                     <div className='d-flex justify-content-between mb-1'>
-                                        <h6 className="text-muted mb-0">{dataTtvNol?.nadi || ""} x/menit</h6>
+                                        <h6 className="text-muted mb-0">{dataTtvNol?.nadi || "- "} x/menit</h6>
                                         <h6 className="text-muted mb-0">NADI</h6>
                                     </div>
                                 </div>
@@ -208,19 +210,19 @@ const EmrHeader = () => {
                                         </div>
                                     </div>
                                     <div className='d-flex justify-content-between mb-1'>
-                                        <h6 className="text-muted mb-0">{dataTtvNol?.spo2 || ""}%</h6>
+                                        <h6 className="text-muted mb-0">{dataTtvNol?.spo2 || "- "}%</h6>
                                         <h6 className="text-muted mb-0">SpO2</h6>
                                     </div>
                                     <div className='d-flex justify-content-between mb-1'>
-                                        <h6 className="text-muted mb-0">{dataTtvNol?.keadaanumum || ""}</h6>
+                                        <h6 className="text-muted mb-0">{dataTtvNol?.keadaanumum || "-"}</h6>
                                         <h6 className="text-muted mb-0">KEADAAN UMUM</h6>
                                     </div>
                                     <div className='d-flex justify-content-between mb-1'>
-                                        <h6 className="text-muted mb-0">{dataTtvNol?.e || ""} {dataTtvNol?.m || ""} {dataTtvNol?.v || ""} ({dataTtvNol?.namagcs})</h6>
+                                        <h6 className="text-muted mb-0">{dataTtvNol?.e || ""} {dataTtvNol?.m || ""} {dataTtvNol?.v || ""} {dataTtvNol?.namagcs ? `(${dataTtvNol?.namagcs})` : "-"}</h6>
                                         <h6 className="text-muted mb-0">KESADARAN</h6>
                                     </div>
                                     <div className='d-flex justify-content-between mb-1'>
-                                        <h6 className="text-muted mb-0">{}</h6>
+                                        <h6 className="text-muted mb-0"> - </h6>
                                         <h6 className="text-muted mb-0">DIAGNOSA</h6>
                                     </div>
                                 </div>
@@ -243,17 +245,13 @@ const EmrHeader = () => {
                                         </div>
                                     </div>
                                     <div className='d-flex justify-content-between mb-1'>
-                                        <h6 className="text-muted mb-0">{dataTtvNol?.beratbadan || ""} Kg</h6>
+                                        <h6 className="text-muted mb-0">{dataTtvNol?.beratbadan || "- "} Kg</h6>
                                         <h6 className="text-muted mb-0">BB</h6>
                                     </div>
                                     <div className='d-flex justify-content-between mb-1'>
-                                        <h6 className="text-muted mb-0">{dataTtvNol?.tinggibadan || ""} cm</h6>
+                                        <h6 className="text-muted mb-0">{dataTtvNol?.tinggibadan || "- "} cm</h6>
                                         <h6 className="text-muted mb-0">TB</h6>
                                     </div>
-                                    {/* <div className='d-flex justify-content-between mb-1'>
-                                        <h6 className="text-muted mb-0"></h6>
-                                        <h6 className="text-muted mb-0">ALERGI</h6>
-                                    </div> */}
                                 </div>
                             </Card>
                         </SwiperSlide>
