@@ -98,19 +98,6 @@ const VerifikasiPelayanan = () => {
 
     }
 
-
-
-    useEffect(() => {
-        if(listPelayanan === null) return
-        const withChecked = listPelayanan.map((pelayanan) => {
-            return {
-                ...pelayanan,
-                checked: false
-            }   
-        })
-        setListPelayananChecked(withChecked)
-    }, [listPelayanan])
-
     const totalObat = listPelayananChecked.reduce((prev, data) => {
         return prev + (data.checked && data.isobat ? (data.total || 0) : 0)
     }, 0)
@@ -150,6 +137,18 @@ const VerifikasiPelayanan = () => {
         setListPelayananChecked(newListPC)
     }
 
+    const isCheckedAll = listPelayananChecked?.every((item) => item.checked)
+    const handleCheckedAll = () => {
+        if(listPelayanan === null) return
+        const withChecked = listPelayanan.map((pelayanan) => {
+            return {
+                ...pelayanan,
+                checked: !isCheckedAll
+            }   
+        })
+        setListPelayananChecked(withChecked)
+    }
+
     useEffect(() => {
         const setFF = validation.setFieldValue
         const hasilCheck = listPelayananChecked.filter((item) => item.checked).map((item) => item.norec)
@@ -174,11 +173,29 @@ const VerifikasiPelayanan = () => {
         dispatch(pelayananFromAntreanGet(norecdp));
     }, [dispatch, norecdp])
 
+    useEffect(() => {
+        if(listPelayanan === null) return
+        const withChecked = listPelayanan.map((pelayanan) => {
+            return {
+                ...pelayanan,
+                checked: false
+            }   
+        })
+        setListPelayananChecked(withChecked)
+    }, [listPelayanan])
+
     
 
     const columns = [
         {
-            name: <span className='font-weight-bold fs-13'>Detail</span>,
+            name: <span className='font-weight-bold fs-13'>
+                <Input 
+                    className="form-check-input" 
+                    type="checkbox" 
+                    id={`formcheck-all`} 
+                    checked={isCheckedAll} 
+                    onChange={e => {handleCheckedAll(isCheckedAll)}}/>
+            </span>,
             sortable: false,
             cell: (row) => {
                 return (
