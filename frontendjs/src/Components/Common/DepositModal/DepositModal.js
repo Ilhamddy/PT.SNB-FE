@@ -112,8 +112,9 @@ const DepositModal = ({toggle, norecdp}) => {
         newPayment[fieldname] = newvalue;
         newPayments[index] = newPayment;
         const totalPayment = newPayments.reduce((acc, curr) => {
-            return acc + Number(curr.nominalbayar);
+            return acc + Number(curr.nominalbayar.replace(rgxAllPeriods, ""));
         }, 0);
+        console.log(totalPayment)
         validation.setFieldValue("totaltagihan", totalPayment)
         validation.setFieldValue("payment", newPayments);
     }
