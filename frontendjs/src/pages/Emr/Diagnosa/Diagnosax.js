@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useReducer, useRef } from 'react';
 import {
     Card, CardBody, CardHeader, Col, Container, Row, Nav, NavItem,
     NavLink, TabContent, TabPane, Button, Label, Input, Table,
@@ -30,7 +30,9 @@ const Diagnosax = () => {
     const [deleteModal, setDeleteModal] = useState(false);
     const [product, setProduct] = useState(null);
     
-
+    const refKodeDiagnosa = useRef(null);
+    const refTipeDiagnosa = useRef(null);
+    const refKasusPenyakit = useRef(null);
 
     const { editData, newData, loading, error, success, dataCombo, loadingCombo, successCombo, dataDiagnosa,
         loadingDiagnosa, successDiagnosa, dataRiwayat, loadingRiwayat, successRiwayat,successDelete,newDataDelete } = useSelector((state) => ({
@@ -108,9 +110,11 @@ const Diagnosax = () => {
         validation.setFieldValue('kodediagnosa', '')
         validation.setFieldValue('kasuspenyakit', '')
         validation.setFieldValue('keteranganicd10', '')
-
-
+        refKodeDiagnosa.current?.clearValue();
+        refTipeDiagnosa.current?.clearValue();
+        refKasusPenyakit.current?.clearValue();
     };
+
     const handleDiagnosa = characterEntered => {
         if (characterEntered.length > 3) {
             dispatch(emrDiagnosaxGet(characterEntered, 'diagnosa10'));
@@ -248,7 +252,12 @@ const Diagnosax = () => {
                                                     options={dataCombo.tipediagnosa}
                                                     value={validation.values.tipediagnosa || ""}
                                                     className={`input ${validation.errors.tipediagnosa ? "is-invalid" : ""}`}
-                                                    onChange={value => validation.setFieldValue('tipediagnosa', value.value)}
+                                                    onChange={value => {
+                                                        refKodeDiagnosa.current?.clearValue();
+                                                        refKasusPenyakit.current?.clearValue();
+                                                        validation.setFieldValue('tipediagnosa', value?.value || "")
+                                                    }}
+                                                    ref={refTipeDiagnosa}
                                                 />
                                                 {validation.touched.tipediagnosa && validation.errors.tipediagnosa ? (
                                                     <FormFeedback type="invalid"><div>{validation.errors.tipediagnosa}</div></FormFeedback>
@@ -268,8 +277,9 @@ const Diagnosax = () => {
                                                     options={dataDiagnosa}
                                                     value={validation.values.kodediagnosa || ""}
                                                     className={`input ${validation.errors.kodediagnosa ? "is-invalid" : ""}`}
-                                                    onChange={value => validation.setFieldValue('kodediagnosa', value.value)}
+                                                    onChange={value => validation.setFieldValue('kodediagnosa', value?.value || "")}
                                                     onInputChange={handleDiagnosa}
+                                                    ref={refKodeDiagnosa}
                                                 />
                                                 {validation.touched.kodediagnosa && validation.errors.kodediagnosa ? (
                                                     <FormFeedback type="invalid"><div>{validation.errors.kodediagnosa}</div></FormFeedback>
@@ -289,7 +299,8 @@ const Diagnosax = () => {
                                                     options={dataCombo.jeniskasus}
                                                     value={validation.values.kasuspenyakit || ""}
                                                     className={`input ${validation.errors.kasuspenyakit ? "is-invalid" : ""}`}
-                                                    onChange={value => validation.setFieldValue('kasuspenyakit', value.value)}
+                                                    onChange={value => validation.setFieldValue('kasuspenyakit', value?.value || "")}
+                                                    ref={refKasusPenyakit}
                                                 />
                                                 {validation.touched.kasuspenyakit && validation.errors.kasuspenyakit ? (
                                                     <FormFeedback type="invalid"><div>{validation.errors.kasuspenyakit}</div></FormFeedback>
@@ -322,16 +333,18 @@ const Diagnosax = () => {
                                             </div>
                                         </Col>
                                         <Col xxl={12} sm={12}>
-                                            <Button type="submit" color="info" className="rounded-pill" placement="top" id="tooltipTop">
-                                                SIMPAN
-                                            </Button>
-                                            <UncontrolledTooltip placement="top" target="tooltipTop" > SIMPAN CPPT </UncontrolledTooltip>
-
-                                            <Button type="button" color="danger" className="rounded-pill" placement="top" id="tooltipTop2" onClick={handleClickReset}>
-                                                BATAL
-                                            </Button>
-                                            <UncontrolledTooltip placement="top" target="tooltipTop2" > BATAL CPPT </UncontrolledTooltip>
-
+                                            <span>
+                                                <Button type="submit" color="info" className="rounded-pill" placement="top" id="tooltipTop">
+                                                    SIMPAN
+                                                </Button>
+                                                <UncontrolledTooltip placement="top" target="tooltipTop" > SIMPAN CPPT </UncontrolledTooltip>
+                                            </span>
+                                            <span>
+                                                <Button type="button" color="danger" className="rounded-pill" placement="top" id="tbl-batal-diagnosax" onClick={handleClickReset}>
+                                                    BATAL
+                                                </Button>
+                                                <UncontrolledTooltip placement="top" target="tbl-batal-diagnosax" > BATAL CPPT </UncontrolledTooltip>
+                                            </span>
                                         </Col>
                                     </Row>
                                 </CardBody>

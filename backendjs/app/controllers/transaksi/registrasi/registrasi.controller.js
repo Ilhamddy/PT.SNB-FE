@@ -861,7 +861,7 @@ const getDaftarPasienFilter = async (req, res) => {
                 left join m_pasien mps on mps.id = t_daftarpasien.nocmfk
                 left join m_unit mu on mu.id = t_daftarpasien.objectunitlastfk
                 join t_antreanpemeriksaan tap on tap.objectdaftarpasienfk = t_daftarpasien.norec
-                left join m_kamar mka on mka.id = tap.objectkamarfk
+                join m_kamar mka on mka.id = tap.objectkamarfk
                 left join m_rekanan mrk on mrk.id = t_daftarpasien.objectpenjaminfk
                     WHERE 
                     t_daftarpasien.tglpulang IS NOT null
