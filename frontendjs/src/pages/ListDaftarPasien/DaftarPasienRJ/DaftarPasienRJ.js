@@ -112,9 +112,6 @@ const DaftarPasienRJ = () => {
                                 <UncontrolledTooltip placement="top" target="tooltipTop" > Pengkajian Pasien </UncontrolledTooltip>
                             </>
                         }
-
-
-
                         <UncontrolledDropdown className="dropdown d-inline-block">
                             <DropdownToggle className="btn btn-soft-secondary btn-sm" tag="button" id="tooltipTop2">
                                 <i className="ri-apps-2-line"></i>

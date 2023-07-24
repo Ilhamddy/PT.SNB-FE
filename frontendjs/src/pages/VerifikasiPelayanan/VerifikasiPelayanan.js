@@ -32,7 +32,7 @@ const date = new Date()
 
 
 const VerifikasiPelayanan = () => {
-    const { norecap } = useParams();
+    const { norecdp } = useParams();
 
     const [dateStart, setDateStart] = useState(dateAwalStart);
     const [dateEnd, setDateEnd] = useState(dateAwalEnd);
@@ -44,13 +44,11 @@ const VerifikasiPelayanan = () => {
         dataPasienPlg, 
         comboboxReg,
         listPelayanan,
-        norecdp,
         penjaminGet
     } = useSelector((state) => ({
         dataPasienPlg: state.DaftarPasien.daftarPasienPulangGet.data || [],
         comboboxReg: state.Master.comboRegistrasiGet.data || {},
         listPelayanan: state.Payment.pelayananFromNoAntrianGet.data?.pelayanan || null,
-        norecdp: state.Payment.pelayananFromNoAntrianGet.data?.objectdaftarpasienfk || "",
         penjaminGet: state.Payment.pelayananFromNoAntrianGet.data?.kepesertaan || [],
     }))
     const penjaminExist = penjaminGet.length !== 0
@@ -93,7 +91,7 @@ const VerifikasiPelayanan = () => {
                 return newIsiPenjamin
             }) 
             setTouched({})
-            dispatch(notaVerifCreate(newValue, () => {dispatch(pelayananFromAntreanGet(norecap))}))
+            dispatch(notaVerifCreate(newValue, () => {dispatch(pelayananFromAntreanGet(norecdp))}))
         }
     })
 
@@ -178,8 +176,8 @@ const VerifikasiPelayanan = () => {
     }, [penjaminGet, validation.setFieldValue])
 
     useEffect(() => {
-        dispatch(pelayananFromAntreanGet(norecap));
-    }, [dispatch, norecap])
+        dispatch(pelayananFromAntreanGet(norecdp));
+    }, [dispatch, norecdp])
 
     
 
@@ -389,7 +387,7 @@ const VerifikasiPelayanan = () => {
                                                         }
                                                     />
                                                     {!!validation.touched?.[`isipenjamin-${index}`] &&  !!validation.errors.isipenjamin?.[index] ? (
-                                                        <FormFeedback type="invalid"><div>{validation.errors.isipenjamin?.[index]?.value || ""}</div></FormFeedback>
+                                                        <FormFeedback type="invalid"><div>{validation.errors.isipenjamin?.[index] || ""}</div></FormFeedback>
                                                     ) : null}
                                                 </Col>
                                             </React.Fragment>

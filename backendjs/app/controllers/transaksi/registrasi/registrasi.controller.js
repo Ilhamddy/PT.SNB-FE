@@ -842,32 +842,32 @@ const getDaftarPasienFilter = async (req, res) => {
         let filterTglStart = formatDateIsoShort(new Date(req.query.dateStart));
         let filterInstalasi = req.query.instalasi;
         const daftarpasien = await pool
-            .query(`SELECT t_daftarpasien.*,
+            .query(`SELECT td.norec AS norecdp,
+            td.noregistrasi AS noregistrasi,
+            td.nocmfk AS nocmfk,
+            td.tglregistrasi AS tglregistrasi,
+            td.tglpulang AS tglpulang,
             peg.namalengkap as namapegawai, 
             dok.namalengkap as namadokter,    
             mk.namakelas as namakelas,
             mps.namapasien as namapasien,
             mu.namaunit as namaunit,
-            tap.noantrian as nomorantrean,
-            tap.norec as norecap,
-            tap.nobed as nobed,
             mrk.namaexternal as namapenjamin,
             mps.noidentitas as noidentitas
                 FROM 
-                t_daftarpasien
-                left join m_pegawai peg on peg.id = t_daftarpasien.objectpegawaifk    
-                left join m_pegawai dok on dok.id = t_daftarpasien.objectdokterpemeriksafk
-                left join m_kelas mk on mk.id = t_daftarpasien.objectkelasfk
-                left join m_pasien mps on mps.id = t_daftarpasien.nocmfk
-                left join m_unit mu on mu.id = t_daftarpasien.objectunitlastfk
-                join t_antreanpemeriksaan tap on tap.objectdaftarpasienfk = t_daftarpasien.norec
-                left join m_rekanan mrk on mrk.id = t_daftarpasien.objectpenjaminfk
+                t_daftarpasien td
+                left join m_pegawai peg on peg.id = td.objectpegawaifk    
+                left join m_pegawai dok on dok.id = td.objectdokterpemeriksafk
+                left join m_kelas mk on mk.id = td.objectkelasfk
+                left join m_pasien mps on mps.id = td.nocmfk
+                left join m_unit mu on mu.id = td.objectunitlastfk
+                left join m_rekanan mrk on mrk.id = td.objectpenjaminfk
                     WHERE 
-                    t_daftarpasien.tglpulang IS NOT null
+                    td.tglpulang IS NOT null
                     ${(filterTglStart && filterTglLast) ? 
-                        `AND t_daftarpasien.tglpulang BETWEEN '${filterTglStart}' AND '${filterTglLast}'` : ''}
-                    ${filterInstalasi ? `AND t_daftarpasien.objectinstalasifk = ${filterInstalasi}` : ''}
-                    ORDER BY t_daftarpasien.tglpulang DESC
+                        `AND td.tglpulang BETWEEN '${filterTglStart}' AND '${filterTglLast}'` : ''}
+                    ${filterInstalasi ? `AND td.objectinstalasifk = ${filterInstalasi}` : ''}
+                    ORDER BY td.tglpulang DESC
                     LIMIT 25
             `
             )

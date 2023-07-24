@@ -1,24 +1,35 @@
 
 
-const qGetPelayananFromAntrean =
+const qGetPelayananFromDp =
     `
     SELECT 
-    tpp.*,
     peg.namalengkap AS namapegawai,
     mp.namaproduk AS namaproduk,
     mp.isobat AS isobat,
     mk.namakelas AS namakelas,
     dp.norec AS norec_dp,
-    npp.no_nota AS no_nota
-    FROM t_pelayananpasien tpp
+    npp.no_nota AS no_nota,
+    tpp.norec AS norec,
+    tpp.harga AS harga,
+    tpp.qty AS qty,
+    tpp.discount AS discount,
+    tpp.total AS total,
+    tpp.tglinput AS tglinput,
+    tpp.iscito AS iscito,
+    tpp.jasa AS jasa
+    FROM t_daftarpasien td
+        RIGHT JOIN t_antreanpemeriksaan tap ON tap.objectdaftarpasienfk = td.norec
+        RIGHT JOIN t_pelayananpasien tpp ON tpp.objectantreanpemeriksaanfk = tap.norec 
+        AND tpp.statusenabled = true
+        LEFT JOIN t_notapelayananpasien npp ON npp.objectdaftarpasienfk = td.norec 
+        AND npp.statusenabled = true
         LEFT JOIN m_pegawai peg ON peg.id = tpp.objectpegawaifk 
         LEFT JOIN m_produk mp ON mp.id = tpp.objectprodukfk 
         LEFT JOIN m_kelas mk ON mk.id = tpp.objectkelasfk
-        LEFT JOIN t_notapelayananpasien npp ON npp.norec = tpp.objectnotapelayananpasienfk
         LEFT JOIN t_antreanpemeriksaan ap ON ap.norec = tpp.objectantreanpemeriksaanfk
         LEFT JOIN t_daftarpasien dp ON dp.norec = ap.objectdaftarpasienfk
-            WHERE tpp.objectantreanpemeriksaanfk=$1
-            AND tpp.statusenabled=true
+            WHERE td.norec=$1
+            AND td.statusenabled=true
             GROUP BY 
                 tpp.norec, 
                 peg.namalengkap, 
@@ -59,20 +70,11 @@ const qGetKepesertaanFromAntrean =
         'objectpenjaminfk',
         kpa.objectpenjaminfk
     )) AS list_kpa
-    FROM t_antreanpemeriksaan ap
-        LEFT JOIN t_daftarpasien dp ON dp.norec = ap.objectdaftarpasienfk
+    FROM t_daftarpasien dp
+        LEFT JOIN t_antreanpemeriksaan ap ON ap.objectdaftarpasienfk = dp.norec
         LEFT JOIN t_kepesertaanasuransi kpa ON kpa.objectdaftarpasienfk = dp.norec
         LEFT JOIN m_rekanan mr ON mr.id = kpa.objectpenjaminfk
-            WHERE ap.norec=$1
-    `
-
-
-const qGetNorecPenggunaFromAp = 
-    `
-    SELECT objectdaftarpasienfk
-    FROM t_antreanpemeriksaan 
-        WHERE norec=$1
-        LIMIT 1;
+            WHERE dp.norec=$1
     `
 
 
@@ -338,8 +340,7 @@ const qGetBuktiBayarNorec =
     `
 
 export {
-    qGetPelayananFromAntrean,
-    qGetNorecPenggunaFromAp,
+    qGetPelayananFromDp,
     qDaftarTagihanPasien,
     qGetPelayananFromVerif,
     qGetVerif,

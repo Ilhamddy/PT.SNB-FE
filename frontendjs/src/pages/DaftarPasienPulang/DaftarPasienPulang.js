@@ -57,7 +57,6 @@ const DaftarPasienPulang = () => {
             dateStart: dateAwalStart,
             dateEnd: dateAwalEnd
         }))
-        console.log(dateAwalStart)
         dispatch(comboAsuransiGet());
         dispatch(comboRegistrasiGet());
     }, [dispatch])
@@ -68,9 +67,9 @@ const DaftarPasienPulang = () => {
     const handleClickCari = () => {
         dispatch(daftarPasienPulangGet({dateStart, dateEnd, instalasi, unit: "", search}))
     }
-    const handleToVerif = async (norecap) => {
-        norecap 
-            && navigate(`/payment/verif-tagihan/${norecap}`)    
+    const handleToVerif = async (norecdp) => {
+        norecdp 
+            && navigate(`/payment/verif-tagihan/${norecdp}`)    
     }
     const handleClickUser = (row) => {
         setUserChosen({
@@ -91,7 +90,7 @@ const DaftarPasienPulang = () => {
                                 <i className="ri-apps-2-line"></i>
                             </DropdownToggle>
                             <DropdownMenu className="dropdown-menu-end">
-                                <DropdownItem onClick={() => handleToVerif(row.norecap)}><i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>Verif</DropdownItem>
+                                <DropdownItem onClick={() => handleToVerif(row.norecdp)}><i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>Verif</DropdownItem>
                             </DropdownMenu>
                         </UncontrolledDropdown>
                     </div>

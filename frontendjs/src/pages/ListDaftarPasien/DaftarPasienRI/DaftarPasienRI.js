@@ -87,7 +87,6 @@ const DaftarPasienRI = () => {
                 color: "black",
                 backgroundColor: "#f1f2f6"
             },
-
         }
     }
 
@@ -253,15 +252,9 @@ const DaftarPasienRI = () => {
                                             </div>
                                         </div>
                                     </CardBody>
-                                    {/* <div className="card-footer" style={{ backgroundColor: '#e67e22' }}>
-                                        <div className="text-center">
-                                            <Link to="#" className="link-light" onClick={() => handleClickCard(item)}>View <i className="ri-arrow-right-s-line align-middle lh-1"></i></Link>
-                                        </div>
-                                    </div> */}
                                 </Card>
                             </Col>
                         ))}
-
                         <Col lg={3}>
                             <Card>
                                 <CardBody>
