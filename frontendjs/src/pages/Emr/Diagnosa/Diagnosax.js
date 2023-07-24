@@ -84,8 +84,7 @@ const Diagnosax = () => {
         validationSchema: Yup.object({
             tipediagnosa: Yup.string().required("Tipe Diagnosa Belum Diisi"),
             kodediagnosa: Yup.string().required("Kode Diagnosa Belum Diisi"),
-            kasuspenyakit: Yup.string().required("Kasus Penyakit Belum Diisi"),
-            keteranganicd10: Yup.string().required("Keterangan Belum Diisi"),
+            kasuspenyakit: Yup.string().required("Kasus Penyakit Belum Diisi")
         }),
         onSubmit: (values, { resetForm }) => {
             dispatch(emrDiagnosaxSave(values, ''));

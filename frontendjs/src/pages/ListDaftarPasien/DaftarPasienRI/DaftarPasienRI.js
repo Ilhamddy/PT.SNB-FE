@@ -32,6 +32,10 @@ const DaftarPasienRI = () => {
     const [norecPulangRI, setNorecPulangRI] = useState("");
     const [norecPulangRIAP, setNorecPulangRIAP] = useState("");
     const [dpDeposit, setdpDeposit] = useState("");
+    const [userChosen, setUserChosen] = useState({
+        nama: "",
+        id: "",
+    })
     const { data, datawidget, loading, error, dataCombo,loadingCombo } = useSelector((state) => ({
         data: state.DaftarPasien.daftarPasienRIGet.data,
         datawidget: state.DaftarPasien.widgetdaftarPasienRIGet.data,
@@ -120,7 +124,7 @@ const DaftarPasienRI = () => {
             name: <span className='font-weight-bold fs-13'>No. Registrasi</span>,
             // selector: row => row.noregistrasi,
             sortable: true,
-            selector: row => (<button className="btn btn-sm btn-soft-info" onClick={() => handleClick(data)}>{row.noregistrasi}</button>),
+            selector: row => (<button className="btn btn-sm btn-soft-info" onClick={() => handleClickRM(row)}>{row.noregistrasi}</button>),
             // cell: (data) => {
             //     return (
             //         // <Link to={`/registrasi/pasien/${data.id}`}>Details</Link>
@@ -185,6 +189,15 @@ const DaftarPasienRI = () => {
         setkonsulModal(false);
         // }
     };
+    const handleClickRM = (row) => {
+        setUserChosen({
+            nama: row.namapasien,
+            id: row.noidentitas
+        })
+    };
+    let unitRI = dataCombo.unit?.filter((unitRI) => 
+        unitRI.objectinstalasifk === 2
+    ) || []
     return (
         <React.Fragment>
             <ToastContainer closeButton={false} />
@@ -256,8 +269,8 @@ const DaftarPasienRI = () => {
                                         <img src={userDummy}
                                             className="rounded-circle avatar-xl img-thumbnail user-profile-image"
                                             alt="user-profile" />
-                                        <h5 className="fs-17 mb-1">Testing</h5>
-                                        <p className="text-muted mb-0">Testing</p>
+                                        <h5 className="fs-17 mb-1">{userChosen.nama}</h5>
+                                        <p className="text-muted mb-0">{userChosen.id}</p>
                                     </div>
                                 </CardBody>
                             </Card>
@@ -281,7 +294,7 @@ const DaftarPasienRI = () => {
                                                 <CustomSelect
                                                     id="doktertujuan"
                                                     name="doktertujuan"
-                                                    options={dataCombo.unit}
+                                                    options={unitRI}
                                                     value={selectedSingle}
                                                     onChange={() => {
                                                         handleSelectSingle();

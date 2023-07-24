@@ -6,88 +6,178 @@ export default (sequelize, Sequelize) => {
             primaryKey: true,
             type: Sequelize.CHAR(32)
           },
+        statusenabled: {
+            type: Sequelize.BOOLEAN,
+        },
         nocmfk:{
             type: Sequelize.INTEGER
         },
         noregistrasi:{
             type: Sequelize.STRING
         },
-        statusenabled: {
-            type: Sequelize.BOOLEAN,
-            // defaultValue: true
-        },
         tglregistrasi:{
             type: 'TIMESTAMP'
         },
-        objectunitlastfk:{
+        objectdokterpemeriksafk: {
             type: Sequelize.INTEGER
         },
-        objectdokterpemeriksafk:{
+        objectpegawaifk: {
             type: Sequelize.INTEGER
         },
-        objectpegawaifk:{
+        objectkelasfk: {
             type: Sequelize.INTEGER
         },
-        objectkelasfk:{
-          type: Sequelize.INTEGER  
-        },
-        objectjenispenjaminfk:{
+        objectkelompokpasienlastfk: {
             type: Sequelize.INTEGER
         },
-        tglpulang:{
-            type: 'TIMESTAMP'
-        },
-        objectasalrujukanfk:{
+        objectkondisipasienfk: {
             type: Sequelize.INTEGER
         },
-        objectpenjaminfk:{
+        pembawapasien: {
+            type: Sequelize.STRING
+        },
+        objecthubunganpembawapasienfk: {
             type: Sequelize.INTEGER
         },
-        objectpenjamin2fk:{
+        objectpenyebabkematianfk: {
             type: Sequelize.INTEGER
         },
-        objectpenjamin3fk:{
+        objectpenjaminfk: {
             type: Sequelize.INTEGER
         },
-        objectinstalasifk:{
-            type:Sequelize.INTEGER
+        objectpenjamin2fk: {
+            type: Sequelize.INTEGER
         },
-        objectpjpasienfk:{
-            type:Sequelize.INTEGER
+        objectpenjamin3fk: {
+            type: Sequelize.INTEGER
         },
-        objectstatuspulangfk:{
-            type:Sequelize.INTEGER
+        objectunitlastfk: {
+            type: Sequelize.INTEGER
         },
-        objectcaramasukfk:{
-            type:Sequelize.INTEGER
+        statuspasien: {
+            type: Sequelize.STRING
         },
-        cbg_code:{
-            type:Sequelize.STRING
+        tglpulang: {
+            type: Sequelize.DATE
         },
-        cbg_description:{
-            type:Sequelize.STRING
+        tglregistrasi:{
+            type: Sequelize.DATE
         },
-        cbg_tarif:{
-            type:Sequelize.FLOAT
+        objectunitasalfk:{
+            type: Sequelize.INTEGER
         },
-        cbg_mdc_number:{
-            type:Sequelize.STRING
+        keteranganpenyebabkematian: {
+            type: Sequelize.STRING
         },
-        cbg_mdc_description:{
-            type:Sequelize.STRING
+        isclosing: {
+            type: Sequelize.BOOLEAN
         },
-        cbg_drg_code:{
-            type:Sequelize.STRING
+        tglclosing: {
+            type: Sequelize.DATE
         },
-        cbg_drg_description:{
-            type:Sequelize.STRING
+        catatan: {
+            type: Sequelize.STRING
         },
-        add_payment_amt:{
-            type:Sequelize.FLOAT
+        statuskirimdokumen: {
+            type: Sequelize.INTEGER
         },
-        status_grouping:{
-            type:Sequelize.STRING
+        tgltutuplayananpasien: {
+            type: Sequelize.DATE
+        },
+        sensus: {
+            type: Sequelize.BOOLEAN
+        },
+        tanggalrawat: {
+            type: Sequelize.DATE
+        },
+        keterangan: {
+            type: Sequelize.STRING
+        },
+        objectpjpasienfk: {
+            type: Sequelize.INTEGER
+        },
+        namapjpasien: {
+            type: Sequelize.STRING
+        },
+        objectasalrujukanfk: {
+            type: Sequelize.INTEGER
+        },
+        objectinstalasifk: {
+            type: Sequelize.INTEGER
+        },
+        nohppj: {
+            type: Sequelize.STRING
+        },
+        objectjenispenjaminfk: {
+            type: Sequelize.INTEGER
+        },
+        objectcarapulangrifk: {
+            type: Sequelize.INTEGER
+        },
+        objectkondisipulangrifk: {
+            type: Sequelize.INTEGER
+        },
+        objectstatuspulangrifk: {
+            type: Sequelize.INTEGER
+        },
+        pembawapulang: {
+            type: Sequelize.STRING
+        },
+        objecthubungankeluargapembawafk: {
+            type: Sequelize.INTEGER
+        },
+        tglmeninggal: {
+            type: Sequelize.DATE
+        },
+        tglkeluar: {
+            type: Sequelize.DATE
+        },
+        objectdokterperujukfk: {
+            type: Sequelize.INTEGER
+        },
+        faskestujuan: {
+            type: Sequelize.STRING
+        },
+        namafaskes: {
+            type: Sequelize.STRING
+        },
+        tglrujuk: {
+            type: Sequelize.DATE
+        },
+        alasanrujuk: {
+            type: Sequelize.STRING
+        },
+        objectcaramasukfk: {
+            type: Sequelize.INTEGER
+        },
+        cbg_code: {
+            type: Sequelize.STRING
+        },
+        cbg_description: {
+            type: Sequelize.STRING
+        },
+        cbg_tarif: {
+            type: Sequelize.FLOAT
+        },
+        cbg_mdc_number: {
+            type: Sequelize.STRING
+        },
+        cbg_mdc_description: {
+            type: Sequelize.STRING
+        },
+        cbg_drg_code: {
+            type: Sequelize.STRING
+        },
+        cbg_drg_description: {
+            type: Sequelize.STRING
+        },
+        add_payment_amt: {
+            type: Sequelize.FLOAT
+        },
+        status_grouping: {
+            type: Sequelize.STRING
         }
+
     }, {
         tableName: "t_daftarpasien", // relation "user" does not exist
         createdAt: false,

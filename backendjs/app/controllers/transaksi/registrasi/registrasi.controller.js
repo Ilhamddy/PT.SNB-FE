@@ -583,15 +583,13 @@ const updateRegistrasiPPulang = async (req, res) => {
         const isRujuk = caraKeluar === 5
         const isPindah = caraKeluar === 3
         const objectBody = req.body
-        console.log("nobed", objectBody.nobed)
-        console.log("nobedsebelum", objectBody.nobedsebelum)
         const objectEdit = {
             objectcarapulangrifk: objectBody.carakeluar,
             objectkondisipulangrifk: objectBody.kondisipulang,
             objectstatuspulangrifk: objectBody.statuspulang,
             pembawapulang: objectBody.pembawapulang,
-            tglpulang: objectBody.tanggalpulang,
-            tglkeluar: objectBody.tanggalpulang,
+            tglpulang: new Date(objectBody.tanggalpulang),
+            tglkeluar: new Date(objectBody.tanggalpulang),
             objecthubunganpembawapasienfk: objectBody.hubungan
         }
         const objectEditAP = {
@@ -640,73 +638,97 @@ const updateRegistrasiPPulang = async (req, res) => {
             updatedBody = await db.t_daftarpasien.update(objectEdit, {
                 where: {
                     norec: norecDP
-                }
-            }, { transaction });
+                },
+                transaction: transaction
+            });
             updatedBodyAp = await db.t_antreanpemeriksaan.update(objectEditAP, {
                 where: {
                     norec: norecAP
-                }
-            }, { transaction });
+                },
+                transaction: transaction
+            });
             await db.m_tempattidur.update({
                 objectstatusbedfk: 2
-            }, { where: { id: objectBody.nobedsebelum } }, { transaction });
-            await transaction.commit();
+            }, { where: { 
+                    id: objectBody.nobedsebelum 
+                },
+                transaction: transaction
+            });
         }else if(isMeninggal){
             updatedBody = await db.t_daftarpasien.update(objectEditMeninggal, {
                 where: {
                     norec: norecDP
-                }
-            }, { transaction });
+                },
+                transaction: transaction
+            });
             updatedBodyAp = await db.t_antreanpemeriksaan.update(objectEditAP, {
                 where: {
                     norec: norecAP
-                }
-            }, { transaction });
+                },
+                transaction: transaction
+            });
             updatedBodyK = await db.m_tempattidur.update({
                 objectstatusbedfk: 2
-            }, { where: { id: objectBody.nobedsebelum } }, { transaction });
-            await transaction.commit();
+            }, { 
+                where: { 
+                    id: objectBody.nobedsebelum 
+                },
+                transaction: transaction
+            });
         }else if(isRujuk){
             updatedBody = await db.t_daftarpasien.update(objectEditRujuk, {
                 where: {
                     norec: norecDP
-                }
-            }, { transaction });
+                },
+                transaction: transaction
+            });
             updatedBodyAp = await db.t_antreanpemeriksaan.update(objectEditAP, {
                 where: {
                     norec: norecAP
-                }
-            }, { transaction });
+                },
+                transaction: transaction
+            });
             updatedBodyK = await db.m_tempattidur.update({
                 objectstatusbedfk: 2
-            }, { where: { id: objectBody.nobedsebelum } }, { transaction });
+            }, { 
+                where: { 
+                    id: objectBody.nobedsebelum
+                },
+                transaction: transaction
+            });
             updatedBody = objectEditRujuk
             updatedBodyAp = objectEditAP
-            await transaction.commit();
         }else if(isPindah){
             updatedBody = await db.t_daftarpasien.update(objectEditPindahDp, {
                 where: {
                     norec: norecDP
-                }
-            }, { transaction });
+                },
+                transaction: transaction
+            });
             updatedBodyAp = await db.t_antreanpemeriksaan.update(objectEditPindahAp, {
                 where: {
                     norec: norecAP
-                }
-            }, { transaction });
+                },
+                transaction: transaction
+            });
             updatedBodyK = await db.m_tempattidur.update({
                 objectstatusbedfk: 2
-            }, { where: { id: objectBody.nobedsebelum } }, { transaction });
+            }, { 
+                where: { 
+                    id: objectBody.nobedsebelum 
+                },
+                transaction: transaction
+            });
             updatedBodyKPindah = await db.m_tempattidur.update({
                 objectstatusbedfk: 1
             }, { where: { id: objectBody.nobed } }, { transaction });
             updatedBody = objectEditPindahDp
             updatedBodyAp = objectEditPindahAp
-            await transaction.commit();
 
         }else{
             throw new Error('cara keluar tidak ditemukan')
         }
+        await transaction.commit();
         if(updatedBody && updatedBodyAp){
             updatedBody.norec = norecDP
             updatedBodyAp.norec = norecAP
@@ -1077,20 +1099,12 @@ async function getDaftarPasienRawatJalan(req, res) {
    
 
     try {
-        pool.query(query, (error, resultCountNoantrianDokter) => {
-            if (error) {
-                res.status(522).send({
-                    status: error,
-                    success: true,
-                });
-            } else {
-                res.status(200).send({
-                    data: resultCountNoantrianDokter.rows,
-                    status: "success",
-                    success: true,
-                });
-            }
-        })
+        const resultCountNoantrianDokter = await pool.query(query, [])
+        res.status(200).send({
+            data: resultCountNoantrianDokter.rows,
+            status: "success",
+            success: true,
+        });
 
     } catch (error) {
         throw error;
