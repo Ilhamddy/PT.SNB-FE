@@ -848,7 +848,6 @@ const getDaftarPasienFilter = async (req, res) => {
             mk.namakelas as namakelas,
             mps.namapasien as namapasien,
             mu.namaunit as namaunit,
-            mka.namakamar as namakamar,
             tap.noantrian as nomorantrean,
             tap.norec as norecap,
             tap.nobed as nobed,
@@ -861,7 +860,6 @@ const getDaftarPasienFilter = async (req, res) => {
                 left join m_pasien mps on mps.id = t_daftarpasien.nocmfk
                 left join m_unit mu on mu.id = t_daftarpasien.objectunitlastfk
                 join t_antreanpemeriksaan tap on tap.objectdaftarpasienfk = t_daftarpasien.norec
-                join m_kamar mka on mka.id = tap.objectkamarfk
                 left join m_rekanan mrk on mrk.id = t_daftarpasien.objectpenjaminfk
                     WHERE 
                     t_daftarpasien.tglpulang IS NOT null
