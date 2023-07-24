@@ -851,7 +851,8 @@ const getDaftarPasienFilter = async (req, res) => {
             tap.noantrian as nomorantrean,
             tap.norec as norecap,
             tap.nobed as nobed,
-            mrk.namaexternal as namapenjamin
+            mrk.namaexternal as namapenjamin,
+            mps.noidentitas as noidentitas
                 FROM 
                 t_daftarpasien
                 left join m_pegawai peg on peg.id = t_daftarpasien.objectpegawaifk    

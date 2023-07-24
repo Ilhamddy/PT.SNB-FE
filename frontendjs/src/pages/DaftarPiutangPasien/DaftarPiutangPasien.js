@@ -25,6 +25,10 @@ const DaftarPiutangPasien = () => {
     const {dataPiutang, comboboxReg} = useSelector((state) => ({
         dataPiutang: state.Payment.daftarPiutangPasienGet.data || []
     }))
+    const [userChosen, setUserChosen] = useState({
+        nama: "",
+        id: "",
+    })
 
     const { location } = useParams();
 
@@ -67,6 +71,12 @@ const DaftarPiutangPasien = () => {
                 norecbayar, 
                 () => dispatch(daftarPiutangPasienGet(location))
             ))
+    }
+    const handleClickUser = (row) => {
+        setUserChosen({
+            nama: row.namapasien,
+            id: row.noidentitas,
+        })
     }
     const columns = [
         {
@@ -111,7 +121,7 @@ const DaftarPiutangPasien = () => {
             name: <span className='font-weight-bold fs-13'>No. Registrasi</span>,
             // selector: row => row.noregistrasi,
             sortable: true,
-            selector: row => (<button className="btn btn-sm btn-soft-info" onClick={() => {}}>{row.noregistrasi}</button>),
+            selector: row => (<button className="btn btn-sm btn-soft-info" onClick={() => handleClickUser(row)}>{row.noregistrasi}</button>),
             width: "130px"
         },
         {
@@ -185,14 +195,8 @@ const DaftarPiutangPasien = () => {
                                     <img src={userDummy}
                                         className="rounded-circle avatar-xl img-thumbnail user-profile-image"
                                         alt="user-profile" />
-                                    <Input style={{ border: 'none', textAlign: 'center' }}
-                                        id="namapasien"
-                                        name="namapasien"
-                                        type="text"
-                                        onChange={validation.handleChange}
-                                        onBlur={validation.handleBlur}
-                                        value={validation.values.namapasien || ""}
-                                    />
+                                    <h5 className="fs-17 mb-1">{userChosen.nama}</h5>
+                                    <p className="text-muted mb-0">{userChosen.id}</p>
                                 </div>
                             </CardBody>
                         </Card>

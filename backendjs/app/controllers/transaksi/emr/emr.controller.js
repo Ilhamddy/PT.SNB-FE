@@ -957,19 +957,21 @@ async function updateStatusPulangRJ(req, res) {
     try {
         const daftarpasien = await db.t_daftarpasien.update({
             objectstatuspulangfk: req.body.statuspulang,
-            tglpulang:new Date()
+            tglpulang: new Date()
         }, {
             where: {
                 norec: req.body.norec
-            }
-        }, { transaction });
+            },
+            transaction: transaction
+        });
         const antreanpemeriksaan = await db.t_antreanpemeriksaan.update({
             taskid: 5
         }, {
             where: {
                 norec: req.body.norecta
-            }
-        }, { transaction });
+            },
+            transaction: transaction
+        });
         await transaction.commit();
         let tempres = { daftarpasien: daftarpasien,antreanpemeriksaan:antreanpemeriksaan }
         res.status(200).send({

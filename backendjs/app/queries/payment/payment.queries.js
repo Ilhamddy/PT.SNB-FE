@@ -209,7 +209,8 @@ const qGetPiutangPasien =
     mr.namaexternal AS namarekanan,
     td.tglpulang AS tglpulang,
     tn.norec AS norecnota,
-    bb.norec AS norecbukti
+    bb.norec AS norecbukti,
+    mp.noidentitas AS noidentitas
         FROM t_piutangpasien tp
         LEFT JOIN t_daftarpasien td ON tp.objectdaftarpasienfk=td.norec
         LEFT JOIN m_pasien mp ON td.nocmfk=mp.id
