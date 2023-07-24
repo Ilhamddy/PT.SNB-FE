@@ -8,7 +8,10 @@ import {
     LISTDIAGNOSAX_GET,
     LISTDIAGNOSAIX_GET,
     BRIDGING_INACBG_SAVE,
-    TARIF_KLAIM_SAVE
+    TARIF_KLAIM_SAVE,
+    LIST_CMGOPTIONS_GET,
+    STATUS_KLAIM_SAVE,
+    TARIF_CMGOPTIONS_SAVE
 } from "./actionType";
 
 import {
@@ -18,7 +21,10 @@ import {
     listDiagnosaxGetSuccess, listDiagnosaxGetError,
     listDiagnosaixGetSuccess, listDiagnosaixGetError,
     bridgingInacbgSaveSuccess, bridgingInacbgSaveError,
-    tarifKlaimSaveSuccess,tarifKlaimSaveError
+    tarifKlaimSaveSuccess,tarifKlaimSaveError,
+    listCmgOptionsGetSuccess,listCmgOptionsGetError,
+    statusKlaimSaveSuccess,statusKlaimSaveError,
+    tarifCmgOptionsSaveSuccess,tarifCmgOptionsSaveError
 } from "./action";
 
 import { toast } from 'react-toastify';
@@ -137,6 +143,63 @@ export function* watchontarifKlaimSave() {
     yield takeEvery(TARIF_KLAIM_SAVE, ontarifKlaimSave);
 }
 
+function* onListCmgOptionsGet({ payload: { param } }) {
+    try {
+        let response = null;
+        response = yield call(serviceCasemix.getListCmgOptions, param);
+
+        yield put(listCmgOptionsGetSuccess(response.data));
+    } catch (error) {
+        yield put(listCmgOptionsGetError(error));
+    }
+}
+
+export function* watchListCmgOptions() {
+    yield takeEvery(LIST_CMGOPTIONS_GET, onListCmgOptionsGet);
+}
+
+function* onstatusKlaimSave({ payload: { data, history } }) {
+    try {
+        let response = yield call(serviceCasemix.postStatusKlaim, data);
+
+        yield put(statusKlaimSaveSuccess(response.data));
+        if (response.code === 200) {
+            toast.success(response.msg, { autoClose: 3000 });
+        } else {
+            toast.error(response.msg, { autoClose: 3000 });
+        }
+        // history("/registrasi/pasien-lama")
+    } catch (error) {
+        yield put(statusKlaimSaveError(error));
+        toast.error(error, { autoClose: 3000 });
+    }
+}
+
+export function* watchonstatusKlaimSave() {
+    yield takeEvery(STATUS_KLAIM_SAVE, onstatusKlaimSave);
+}
+
+function* ontarifCmgOptionsSave({ payload: { data, history } }) {
+    try {
+        let response = yield call(serviceCasemix.postTarifCmgOptions, data);
+
+        yield put(tarifCmgOptionsSaveSuccess(response.data));
+        if (response.code === 200) {
+            toast.success(response.msg, { autoClose: 3000 });
+        } else {
+            toast.error(response.msg, { autoClose: 3000 });
+        }
+        // history("/registrasi/pasien-lama")
+    } catch (error) {
+        yield put(tarifCmgOptionsSaveError(error));
+        toast.error(error, { autoClose: 3000 });
+    }
+}
+
+export function* watchontarifCmgOptionsSave() {
+    yield takeEvery(TARIF_CMGOPTIONS_SAVE, ontarifCmgOptionsSave);
+}
+
 function* casemixSaga() {
     yield all([
         fork(watchonListCariPasienGet),
@@ -145,7 +208,10 @@ function* casemixSaga() {
         fork(watchListDiagnosax),
         fork(watchListDiagnosaix),
         fork(watchonbridgingInacbgSave),
-        fork(watchontarifKlaimSave)
+        fork(watchontarifKlaimSave),
+        fork(watchListCmgOptions),
+        fork(watchonstatusKlaimSave),
+        fork(watchontarifCmgOptionsSave)
     ]);
 }
 

@@ -51,5 +51,23 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.saveTarifKlaim
     );
+
+    app.get(
+        "/api/transaksi/casemix/getList-cmgoptions",
+        [authJwt.verifyToken],
+        controller.getListSpecialCmg
+    );
+
+    app.post(
+        "/api/transaksi/casemix/update-status-klaim",
+        [authJwt.verifyToken],
+        controller.updateStatusKlaim
+    );
+
+    app.post(
+        "/api/transaksi/casemix/update-tarif-cmg",
+        [authJwt.verifyToken],
+        controller.updateTarifCmgOptions
+    );
     
 }

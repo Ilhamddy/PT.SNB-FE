@@ -25,7 +25,8 @@ import {
     casemixResetForm, listCariPasienGet, listDaftarPasienGet, listTarifPasienGet,
     listDiagnosaxGet, listDiagnosaixGet, bridgingInacbgSave, emrDiagnosaxGet,
     emrDiagnosaxSave, emrDiagnosaixGet, emrDiagnosaixSave, deleteDiagnosax,
-    deleteDiagnosaix, tarifKlaimSave
+    deleteDiagnosaix, tarifKlaimSave, listCmgOptionsGet, statusKlaimSave,
+    tarifCmgOptionsSave
 } from '../../../store/actions';
 import { BasicTable } from '../../Tables/DataTables/datatableCom';
 import DeleteModalCustom from '../../../Components/Common/DeleteModalCustom';
@@ -45,7 +46,10 @@ const KlaimInacbg = () => {
         dataDiagnosaix, loadingDiagnosaix, successDiagnosaix,
         newDataDiagnosaixSave, loadingDiagnosaixSave, successDiagnosaixSave,
         newDataDelete, successDelete, newDataDeleteix, successDeleteix,
-        newDataTarifKlaim, loadingTarifKlaim, successTarifKlaim } = useSelector((state) => ({
+        newDataTarifKlaim, loadingTarifKlaim, successTarifKlaim,
+        dataListCmg, loadingListCmg, successListCmg,
+        newDataStatusKlaim, loadingStatusKlaim, successStatusKlaim,
+        newDataTarifCmg, loadingTarifCmg, successTarifCmg, } = useSelector((state) => ({
             newData: state.Casemix.bridgingInacbgSave.newData,
             success: state.Casemix.bridgingInacbgSave.success,
             loading: state.Casemix.bridgingInacbgSave.loading,
@@ -83,6 +87,15 @@ const KlaimInacbg = () => {
             newDataTarifKlaim: state.Casemix.tarifKlaimSave.newData,
             successTarifKlaim: state.Casemix.tarifKlaimSave.success,
             loadingTarifKlaim: state.Casemix.tarifKlaimSave.loading,
+            dataListCmg: state.Casemix.listCmgOptionsGet.data,
+            loadingListCmg: state.Casemix.listCmgOptionsGet.loading,
+            successListCmg: state.Casemix.listCmgOptionsGet.success,
+            newDataStatusKlaim: state.Casemix.statusKlaimSave.newData,
+            successStatusKlaim: state.Casemix.statusKlaimSave.success,
+            loadingStatusKlaim: state.Casemix.statusKlaimSave.loading,
+            newDataTarifCmg: state.Casemix.tarifCmgOptionsSave.newData,
+            successTarifCmg: state.Casemix.tarifCmgOptionsSave.success,
+            loadingTarifCmg: state.Casemix.tarifCmgOptionsSave.loading,
         }));
 
     useEffect(() => {
@@ -133,7 +146,7 @@ const KlaimInacbg = () => {
     const [stateTombol, setstateTombol] = useState('1');
     const [stateDescriptionCbg, setstateDescriptionCbg] = useState("")
     const [stateCodeCbg, setstateCodeCbg] = useState("")
-    const [stateTariff, setstateTariff] = useState("")
+    const [stateTariff, setstateTariff] = useState(0)
     const [stateHasilGrouping, setstateHasilGrouping] = useState(false)
     const [stateHasilGroupingV6, setstateHasilGroupingV6] = useState(false)
     const [stateTombolGrouping, setstateTombolGrouping] = useState(true)
@@ -143,6 +156,11 @@ const KlaimInacbg = () => {
     const [stateMDCCode, setstateMDCCode] = useState("")
     const [stateDRG, setstateDRG] = useState("")
     const [stateDRGCode, setstateDRGCode] = useState("")
+    const [stateTariffSpecialProcedure, setstateTariffSpecialProcedure] = useState(0)
+    const [stateTariffSpecialProsthesis, setstateTariffSpecialProsthesis] = useState(0)
+    const [stateTariffSpecialInvestigation, setstateTariffSpecialInvestigation] = useState(0)
+    const [stateTariffSpecialDrug, setstateTariffSpecialDrug] = useState(0)
+
     const handleFilter = (e) => {
         if (e.keyCode === 13) {
             setstateList(true)
@@ -214,6 +232,7 @@ const KlaimInacbg = () => {
         dispatch(listTarifPasienGet(e.norec))
         dispatch(listDiagnosaxGet(e.norec));
         dispatch(listDiagnosaixGet(e.norec));
+
         if (e.status_grouping === 'GROUPING') {
             setstateHasilGrouping(true)
             setstateHasilGroupingV6(true)
@@ -224,6 +243,7 @@ const KlaimInacbg = () => {
             setstateMDCCode(e.cbg_mdc_number)
             setstateDRG(e.cbg_drg_description)
             setstateDRGCode(e.cbg_drg_code)
+            dispatch(listCmgOptionsGet(e.norec))
         } else if (e.status_grouping === 'FINAL_KLAIM') {
             setstateTombolGrouping(false)
             setstateTombolFinal(false)
@@ -236,6 +256,7 @@ const KlaimInacbg = () => {
             setstateMDCCode(e.cbg_mdc_number)
             setstateDRG(e.cbg_drg_description)
             setstateDRGCode(e.cbg_drg_code)
+            dispatch(listCmgOptionsGet(e.norec))
         } else if (e.status_grouping === 'EDIT_KLAIM') {
             setstateTombolGrouping(true)
             setstateTombolFinal(true)
@@ -476,6 +497,13 @@ const KlaimInacbg = () => {
     useEffect(() => {
         dispatch(listDiagnosaixGet(stateTemp.norec));
     }, [newDataDiagnosaixSave, stateTemp.norec, dispatch])
+
+    useEffect(() => {
+        console.log('masuk cmg')
+        dispatch(listCmgOptionsGet(stateTemp.norec));
+
+
+    }, [newDataTarifKlaim, stateTemp.norec, dispatch])
 
     const handleClickEditKlaim = (e) => {
         setstateTombol('3')
@@ -916,7 +944,7 @@ const KlaimInacbg = () => {
         if (newData !== null) {
 
             if (stateTombol === '1') {
-                if (newData.data[2].dataResponse.response_inagrouper !== undefined) {
+                if (newData.data[2].dataResponse !== undefined) {
                     setstateHasilGrouping(true)
                     setstateDescriptionCbg(newData.data[2].dataResponse.response.cbg.description)
                     setstateCodeCbg(newData.data[2].dataResponse.response.cbg.code)
@@ -932,13 +960,30 @@ const KlaimInacbg = () => {
                     };
                     dispatch(tarifKlaimSave(value))
                 }
-            } else if (stateTombol === '2') {
-                setstateTombolGrouping(false)
-                setstateTombolFinal(false)
-            } else if (stateTombol === '3') {
-                setstateTombolGrouping(true)
-                setstateTombolFinal(true)
-            } else if (stateTombol === '4') {
+            } else if (stateTombol === '2' && newData.data[0].dataResponse.metadata) {
+                toast.success(newData.data[0].dataResponse.metadata.message, { autoClose: 3000 });
+                if (newData.data[0].dataResponse.metadata.message === 'Klaim sudah final' || newData.data[0].dataResponse.metadata.message === 'Ok') {
+                    const value = {
+                        "status_grouping": "FINAL_KLAIM",
+                        "norec": stateTemp.norec
+                    };
+                    dispatch(statusKlaimSave(value))
+                    setstateTombolGrouping(false)
+                    setstateTombolFinal(false)
+                }
+
+            } else if (stateTombol === '3' && newData.data[0].dataResponse.metadata) {
+                if (newData.data[0].dataResponse.metadata.message === 'Ok') {
+                    const value = {
+                        "status_grouping": "EDIT_KLAIM",
+                        "norec": stateTemp.norec
+                    };
+                    dispatch(statusKlaimSave(value))
+                    setstateTombolGrouping(true)
+                    setstateTombolFinal(true)
+                }
+
+            } else if (stateTombol === '4' && newData.data[0].dataResponse.data) {
                 let base64String = newData.data[0].dataResponse.data
                 let decodedString = atob(base64String);
                 // Convert the binary data to a Uint8Array
@@ -960,6 +1005,49 @@ const KlaimInacbg = () => {
 
                 // Clean up the temporary URL object
                 URL.revokeObjectURL(downloadLink.href);
+
+            } else if (stateTombol === '5' && newData.data[0].dataResponse.response) {
+                if (newData.data[0].dataResponse.response !== undefined) {
+                    let tempCmg = newData.data[0].dataResponse.response.special_cmg
+                    for (let i = 0; i < tempCmg.length; i++) {
+                        if (tempCmg[i].type === "Special Procedure") {
+                            setstateTariffSpecialProcedure(tempCmg[i].tariff)
+                            const value = {
+                                "tarif": tempCmg[i].tariff,
+                                "norec": stateTemp.norec,
+                                "description":tempCmg[i].description
+                            };
+                            dispatch(tarifCmgOptionsSave(value))
+                        }
+                        if (tempCmg[i].type === "Special Prosthesis") {
+                            setstateTariffSpecialProsthesis(tempCmg[i].tariff)
+                            const value = {
+                                "tarif": tempCmg[i].tariff,
+                                "norec": stateTemp.norec,
+                                "description":tempCmg[i].description
+                            };
+                            dispatch(tarifCmgOptionsSave(value))
+                        }
+                        if (tempCmg[i].type === "Special Investigation") {
+                            setstateTariffSpecialInvestigation(tempCmg[i].tariff)
+                            const value = {
+                                "tarif": tempCmg[i].tariff,
+                                "norec": stateTemp.norec,
+                                "description":tempCmg[i].description
+                            };
+                            dispatch(tarifCmgOptionsSave(value))
+                        }
+                        if (tempCmg[i].type === "Special Drug") {
+                            setstateTariffSpecialDrug(tempCmg[i].tariff)
+                            const value = {
+                                "tarif": tempCmg[i].tariff,
+                                "norec": stateTemp.norec,
+                                "description":tempCmg[i].description
+                            };
+                            dispatch(tarifCmgOptionsSave(value))
+                        }
+                    }
+                }
             }
 
         }
@@ -976,6 +1064,164 @@ const KlaimInacbg = () => {
         }
 
     }
+
+    const validation = useFormik({
+        enableReinitialize: true,
+        initialValues: {
+            specialProcedure: '',
+            specialProthesis: '',
+            specialInvestigation: '',
+            specialDrug: '',
+            codespecialProcedure: '',
+            codespecialProthesis: '',
+            codespecialInvestigation: '',
+            codespecialDrug: '',
+        },
+        validationSchema: Yup.object({
+
+        }),
+        onSubmit: (values, { resetForm }) => {
+            resetForm({ values: '' })
+        }
+    })
+    useEffect(() => {
+        const setFF = validation.setFieldValue
+        setstateTariffSpecialProcedure(0)
+        setstateTariffSpecialProsthesis(0)
+        setstateTariffSpecialInvestigation(0)
+        setstateTariffSpecialDrug(0)
+        if (dataListCmg.dataProcedure !== undefined) {
+            for (let i = 0; i < dataListCmg.dataProcedure.length; i++) {
+                if (dataListCmg.dataProcedure[i].tarif > 0) {
+                    setFF('specialProcedure', dataListCmg.dataProcedure[i].value)
+                    setstateTariffSpecialProcedure(dataListCmg.dataProcedure[i].tarif)
+                }
+            }
+            for (let i = 0; i < dataListCmg.dataProsthesis.length; i++) {
+                if (dataListCmg.dataProsthesis[i].tarif > 0) {
+                    setFF('specialProthesis', dataListCmg.dataProsthesis[i].value)
+                    setstateTariffSpecialProsthesis(dataListCmg.dataProsthesis[i].tarif)
+                }
+            }
+            for (let i = 0; i < dataListCmg.dataInvestigation.length; i++) {
+                if (dataListCmg.dataInvestigation[i].tarif > 0) {
+                    setFF('specialInvestigation', dataListCmg.dataInvestigation[i].value)
+                    setstateTariffSpecialInvestigation(dataListCmg.dataInvestigation[i].tarif)
+                }
+            }
+            for (let i = 0; i < dataListCmg.dataDrug.length; i++) {
+                if (dataListCmg.dataDrug[i].tarif > 0) {
+                    setFF('specialDrug', dataListCmg.dataDrug[i].value)
+                    setstateTariffSpecialDrug(dataListCmg.dataDrug[i].tarif)
+                }
+            }
+        }
+    }, [dataListCmg, validation.setFieldValue])
+    const SpecialProcedure = (e) => {
+        if(e.value==='none'){
+            // const value = {
+            //     "tarif": 0,
+            //     "norec": stateTemp.norec,
+            //     "description":e.label
+            // };
+            // dispatch(tarifCmgOptionsSave(value))
+            return
+        }
+        setstateTombol('5')
+        validation.setFieldValue('specialProcedure', e.value)
+        validation.setFieldValue('codespecialProcedure', e.code)
+        grouperStage2(1, e.code)
+    }
+    const SpecialProsthesis = (e) => {
+        if(e.value==='none'){
+            // const value = {
+            //     "tarif": 0,
+            //     "norec": stateTemp.norec,
+            //     "description":e.label
+            // };
+            // dispatch(tarifCmgOptionsSave(value))
+            return
+        }
+        setstateTombol('5')
+        validation.setFieldValue('specialProthesis', e.value)
+        validation.setFieldValue('codespecialProthesis', e.code)
+        grouperStage2(2, e.code)
+    }
+    const SpecialInvestigation = (e) => {
+        if(e.value==='none'){
+            // const value = {
+            //     "tarif": 0,
+            //     "norec": stateTemp.norec,
+            //     "description":e.label
+            // };
+            // dispatch(tarifCmgOptionsSave(value))
+            return
+        }
+        setstateTombol('5')
+        validation.setFieldValue('specialInvestigation', e.value)
+        validation.setFieldValue('codespecialInvestigation', e.code)
+        grouperStage2(3, e.code)
+    }
+    const SpecialDrug = (e) => {
+        if(e.value==='none'){
+            // const value = {
+            //     "tarif": 0,
+            //     "norec": stateTemp.norec,
+            //     "description":e.label
+            // };
+            // dispatch(tarifCmgOptionsSave(value))
+            return
+        }
+        setstateTombol('5')
+        validation.setFieldValue('specialDrug', e.value)
+        validation.setFieldValue('codespecialDrug', e.code)
+        grouperStage2(4, e.code)
+    }
+    const grouperStage2 = (status, code) => {
+        let tempData = []
+        let tempCmg = ''
+        console.log(code)
+        if (status === 1) {
+            tempCmg = code + '#'
+        } else if (validation.values.codespecialProcedure !== undefined) {
+            tempCmg = validation.values.codespecialProcedure + '#'
+        }
+
+        if (status === 2) {
+            tempCmg = code + '#'
+        } else if (validation.values.codespecialProthesis !== undefined) {
+            tempCmg = tempCmg + validation.values.codespecialProthesis + '#'
+        }
+
+        if (status === 3) {
+            tempCmg = code + '#'
+        } else if (validation.values.codespecialInvestigation !== undefined) {
+            tempCmg = tempCmg + validation.values.codespecialInvestigation + '#'
+        }
+
+        if (status === 4) {
+            tempCmg = code + '#'
+        } else if (validation.values.codespecialDrug !== undefined) {
+            tempCmg = tempCmg + validation.values.codespecialDrug + '#'
+        }
+        const jsonTemp = {
+            "metadata": {
+                "method": "grouper",
+                "stage": "2"
+            },
+            "data": {
+                "nomor_sep": stateTemp.no_sep,
+                "special_cmg": tempCmg
+            }
+        };
+        tempData.push(jsonTemp)
+        // console.log(tempData)
+        dispatch(bridgingInacbgSave(tempData))
+    }
+    let stateTotal = parseFloat(stateTariff) + parseFloat(stateTariffSpecialProsthesis) +
+        parseFloat(stateTariffSpecialProcedure) + parseFloat(stateTariffSpecialInvestigation) + parseFloat(stateTariffSpecialDrug);
+
+
     return (
         <React.Fragment>
             <ToastContainer closeButton={false} />
@@ -1944,7 +2190,7 @@ const KlaimInacbg = () => {
                                                                 <span>{stateDescriptionCbg}</span>
                                                             </th>
                                                             <th scope="row" style={{ width: "18%", textAlign: 'center' }}>
-                                                            <span>{stateCodeCbg}</span>
+                                                                <span>{stateCodeCbg}</span>
                                                             </th>
                                                             <th scope="row" style={{ width: "18%", textAlign: 'center' }}>
                                                                 <span>Rp {stateTariff?.toLocaleString("id-ID") || ""}</span>
@@ -1956,16 +2202,17 @@ const KlaimInacbg = () => {
                                                             </th>
                                                             <th scope="row" style={{ width: "18%", textAlign: 'center', borderLeft: '0px', borderRight: '0px' }}>
                                                                 <CustomSelect
-                                                                    id="kodediagnosa9"
-                                                                    name="kodediagnosa9"
-                                                                    options={dataDiagnosaix}
-                                                                    onChange={value => handleDiagnosaixSave(value.value)}
-                                                                    onInputChange={handleDiagnosaix}
+                                                                    id="specialProcedure"
+                                                                    name="specialProcedure"
+                                                                    options={dataListCmg.dataProcedure}
+                                                                    value={validation.values.specialProcedure || ""}
+                                                                    onChange={value => SpecialProcedure(value)}
+
                                                                 />
                                                             </th>
-                                                            <th scope="row" style={{ width: "18%", textAlign: 'center',borderLeft: '0px', borderRight: '0px'  }}></th>
+                                                            <th scope="row" style={{ width: "18%", textAlign: 'center', borderLeft: '0px', borderRight: '0px' }}></th>
                                                             <th scope="row" style={{ width: "18%", textAlign: 'center' }}>
-                                                                <span>Rp 0</span>
+                                                                <span>Rp {stateTariffSpecialProcedure?.toLocaleString("id-ID") || ""}</span>
                                                             </th>
                                                         </tr>
                                                         <tr>
@@ -1974,16 +2221,16 @@ const KlaimInacbg = () => {
                                                             </th>
                                                             <th scope="row" style={{ width: "18%", textAlign: 'center', borderLeft: '0px', borderRight: '0px' }}>
                                                                 <CustomSelect
-                                                                    id="kodediagnosa9"
-                                                                    name="kodediagnosa9"
-                                                                    options={dataDiagnosaix}
-                                                                    onChange={value => handleDiagnosaixSave(value.value)}
-                                                                    onInputChange={handleDiagnosaix}
+                                                                    id="specialProthesis"
+                                                                    name="specialProthesis"
+                                                                    options={dataListCmg.dataProsthesis}
+                                                                    value={validation.values.specialProthesis || ""}
+                                                                    onChange={value => SpecialProsthesis(value)}
                                                                 />
                                                             </th>
-                                                            <th scope="row" style={{ width: "18%", textAlign: 'center',borderLeft: '0px', borderRight: '0px'  }}></th>
+                                                            <th scope="row" style={{ width: "18%", textAlign: 'center', borderLeft: '0px', borderRight: '0px' }}></th>
                                                             <th scope="row" style={{ width: "18%", textAlign: 'center' }}>
-                                                                <span>Rp 0</span>
+                                                                <span>Rp {stateTariffSpecialProsthesis?.toLocaleString("id-ID") || ""}</span>
                                                             </th>
                                                         </tr>
                                                         <tr>
@@ -1992,16 +2239,16 @@ const KlaimInacbg = () => {
                                                             </th>
                                                             <th scope="row" style={{ width: "18%", textAlign: 'center', borderLeft: '0px', borderRight: '0px' }}>
                                                                 <CustomSelect
-                                                                    id="kodediagnosa9"
-                                                                    name="kodediagnosa9"
-                                                                    options={dataDiagnosaix}
-                                                                    onChange={value => handleDiagnosaixSave(value.value)}
-                                                                    onInputChange={handleDiagnosaix}
+                                                                    id="specialInvestigation"
+                                                                    name="specialInvestigation"
+                                                                    options={dataListCmg.dataInvestigation}
+                                                                    value={validation.values.specialInvestigation || ""}
+                                                                    onChange={value => SpecialInvestigation(value)}
                                                                 />
                                                             </th>
-                                                            <th scope="row" style={{ width: "18%", textAlign: 'center',borderLeft: '0px', borderRight: '0px'  }}></th>
+                                                            <th scope="row" style={{ width: "18%", textAlign: 'center', borderLeft: '0px', borderRight: '0px' }}></th>
                                                             <th scope="row" style={{ width: "18%", textAlign: 'center' }}>
-                                                                <span>Rp 0</span>
+                                                                <span>Rp {stateTariffSpecialInvestigation?.toLocaleString("id-ID") || ""}</span>
                                                             </th>
                                                         </tr>
                                                         <tr>
@@ -2010,16 +2257,24 @@ const KlaimInacbg = () => {
                                                             </th>
                                                             <th scope="row" style={{ width: "18%", textAlign: 'center', borderLeft: '0px', borderRight: '0px' }}>
                                                                 <CustomSelect
-                                                                    id="kodediagnosa9"
-                                                                    name="kodediagnosa9"
-                                                                    options={dataDiagnosaix}
-                                                                    onChange={value => handleDiagnosaixSave(value.value)}
-                                                                    onInputChange={handleDiagnosaix}
+                                                                    id="specialDrug"
+                                                                    name="specialDrug"
+                                                                    options={dataListCmg.dataDrug}
+                                                                    value={validation.values.specialDrug || ""}
+                                                                    onChange={value => SpecialDrug(value)}
                                                                 />
                                                             </th>
-                                                            <th scope="row" style={{ width: "18%", textAlign: 'center',borderLeft: '0px', borderRight: '0px'  }}></th>
+                                                            <th scope="row" style={{ width: "18%", textAlign: 'center', borderLeft: '0px', borderRight: '0px' }}></th>
                                                             <th scope="row" style={{ width: "18%", textAlign: 'center' }}>
-                                                                <span>Rp 0</span>
+                                                                <span>Rp {stateTariffSpecialDrug?.toLocaleString("id-ID") || ""}</span>
+                                                            </th>
+                                                        </tr>
+                                                        <tr>
+                                                            <th scope="row" style={{ width: "18%", textAlign: 'right', borderLeft: '0px', borderRight: '0px' }} colSpan={3}>
+                                                                Total
+                                                            </th>
+                                                            <th scope="row" style={{ width: "18%", textAlign: 'center' }}>
+                                                                <span>Rp {stateTotal?.toLocaleString("id-ID") || ""}</span>
                                                             </th>
                                                         </tr>
                                                     </tbody>

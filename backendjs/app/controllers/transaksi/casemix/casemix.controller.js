@@ -516,8 +516,9 @@ async function saveTarifKlaim(req, res) {
             },
             transaction: transaction
         })
-
+        let statuscmgOptions = false
         if (req.body.data.special_cmg_option !== undefined) {
+            statuscmgOptions = true
             const cmgOptions = await Promise.all(
                 req.body.data.special_cmg_option.map(async (item) => {
                     const norec = uuid.v4().substring(0, 32);
@@ -528,6 +529,7 @@ async function saveTarifKlaim(req, res) {
                         description: item.description,
                         type: item.type,
                         objectdaftarpasienfk: req.body.norec,
+                        tarif:0
                     }, {
                         transaction: transaction
                     })
@@ -555,8 +557,10 @@ async function saveTarifKlaim(req, res) {
             transaction: transaction
         })
         transaction.commit();
+
+        let tempres = {daftarpasien,cmgOptions:statuscmgOptions}
         res.status(200).send({
-            data: daftarpasien,
+            data: tempres,
             status: "success",
             success: true,
             msg: 'success',
@@ -576,6 +580,180 @@ async function saveTarifKlaim(req, res) {
 
 }
 
+async function getListSpecialCmg(req, res) {
+
+    const resultList = await queryPromise2(`select tsco.norec as value, tsco.description as label,
+    tsco."type" as tipe,tsco.tarif,tsco.code from t_special_cmg_option tsco where tsco.objectdaftarpasienfk='${req.query.norec}'
+    and tsco.statusenabled=true
+    `);
+    let temptdataProcedure = []
+    let temptdataProsthesis = []
+    let temptdataInvestigation = []
+    let temptdataDrug = []
+    temptdataProcedure.push({
+        value: 'none',
+        label: 'none',
+        tarif: 0,
+        code:'none'
+    })
+    temptdataProsthesis.push({
+        value: 'none',
+        label: 'none',
+        tarif:0,
+        code:'none'
+    })
+    temptdataInvestigation.push({
+        value: 'none',
+        label: 'none',
+        tarif:0,
+        code:'none'
+    })
+    temptdataDrug.push({
+        value: 'none',
+        label: 'none',
+        tarif:0,
+        code:'none'
+    })
+    for (let i = 0; i < resultList.rows.length; i++) {
+        if(resultList.rows[i].tipe==='Special Procedure'){
+            temptdataProcedure.push({
+                value: resultList.rows[i].value,
+                label: resultList.rows[i].label,
+                tarif: resultList.rows[i].tarif,
+                code:resultList.rows[i].code
+            })
+        }
+        if(resultList.rows[i].tipe==='Special Prosthesis'){
+            temptdataProsthesis.push({
+                value: resultList.rows[i].value,
+                label: resultList.rows[i].label,
+                tarif: resultList.rows[i].tarif,
+                code:resultList.rows[i].code
+            })
+        }
+        if(resultList.rows[i].tipe==='Special Investigation'){
+            temptdataInvestigation.push({
+                value: resultList.rows[i].value,
+                label: resultList.rows[i].label,
+                tarif: resultList.rows[i].tarif,
+                code:resultList.rows[i].code
+            })
+        }
+        if(resultList.rows[i].tipe==='Special Drug'){
+            temptdataDrug.push({
+                value: resultList.rows[i].value,
+                label: resultList.rows[i].label,
+                tarif: resultList.rows[i].tarif,
+                code:resultList.rows[i].code
+            })
+        }
+    }
+    let tempres = {dataProcedure:temptdataProcedure,
+                    dataProsthesis:temptdataProsthesis,
+                    dataInvestigation:temptdataInvestigation,
+                    dataDrug:temptdataDrug}
+    res.status(200).send({
+        data: tempres,
+        status: "success",
+        success: true,
+    });
+}
+
+async function updateStatusKlaim(req, res) {
+    let transaction = null;
+    try {
+        transaction = await db.sequelize.transaction();
+    } catch (e) {
+        console.error(e)
+        res.status(500).send({
+            data: e.message,
+            success: false,
+            msg: 'Transaksi gagal',
+            code: 500
+        });
+        return;
+    }
+
+    try {
+        const updateStatusKlaim = await db.t_daftarpasien.update({
+            status_grouping: req.body.status_grouping
+        }, {
+            where: {
+                norec: req.body.norec
+            },
+            transaction: transaction
+        })
+        transaction.commit();
+
+        let tempres = {updateStatusKlaim}
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+            msg: 'success',
+            code: 200
+        });
+    } catch (error) {
+        res.status(201).send({
+            status: error,
+            success: false,
+            msg: 'Gagal',
+            code: 201
+        });
+    }
+
+}
+
+async function updateTarifCmgOptions(req, res) {
+    let transaction = null;
+    try {
+        transaction = await db.sequelize.transaction();
+    } catch (e) {
+        console.error(e)
+        res.status(500).send({
+            data: e.message,
+            success: false,
+            msg: 'Transaksi gagal',
+            code: 500
+        });
+        return;
+    }
+
+    try {
+        const updateTarif = await db.t_special_cmg_option.update({
+            tarif: req.body.tarif
+        }, {
+            where: {
+                statusenabled:true,
+                objectdaftarpasienfk: req.body.norec,
+                description:{
+                    [db.Sequelize.Op.iLike]: `%${req.body.description}%`,
+                }
+            },
+            transaction: transaction
+        })
+        transaction.commit();
+
+        let tempres = {updateTarif}
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+            msg: 'success',
+            code: 200
+        });
+    } catch (error) {
+        console.error(error)
+        res.status(201).send({
+            status: error,
+            success: false,
+            msg: 'Gagal',
+            code: 201
+        });
+    }
+
+}
+
 
 export default {
     getListPasien,
@@ -584,5 +762,8 @@ export default {
     getListDiagnosaPasien,
     getListDiagnosaIxPasien,
     saveBridgingInacbg,
-    saveTarifKlaim
+    saveTarifKlaim,
+    getListSpecialCmg,
+    updateStatusKlaim,
+    updateTarifCmgOptions
 };

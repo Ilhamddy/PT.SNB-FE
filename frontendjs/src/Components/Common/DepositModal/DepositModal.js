@@ -204,7 +204,7 @@ const DepositModal = ({toggle, norecdp}) => {
                                                 style={{ color: "black" }} 
                                                 htmlFor={`approvalcode${index}`}
                                                 className="form-label">
-                                                Approval Code
+                                                No. Reference
                                             </Label>
                                             <div>
                                                 <Input 
