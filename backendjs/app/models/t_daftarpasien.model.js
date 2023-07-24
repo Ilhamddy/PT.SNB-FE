@@ -57,6 +57,9 @@ export default (sequelize, Sequelize) => {
         statuspasien: {
             type: Sequelize.STRING
         },
+        objectstatuspulangfk: {
+            type: Sequelize.INTEGER
+        },
         tglpulang: {
             type: Sequelize.DATE
         },
