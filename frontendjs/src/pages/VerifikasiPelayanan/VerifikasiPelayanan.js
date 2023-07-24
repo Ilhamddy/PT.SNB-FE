@@ -17,7 +17,7 @@ import {
     comboRegistrasiGet,
 } from "../../store/master/action";
 import { 
-    pelayananFromAntreanGet,
+    pelayananFromDpGet,
     notaVerifCreate
 } from "../../store/payment/action";
 import CustomSelect from "../Select/Select";
@@ -90,7 +90,7 @@ const VerifikasiPelayanan = () => {
                     Number(newIsiPenjamin.value.replace(rgxAllPeriods, ""));
                 return newIsiPenjamin
             }) 
-            dispatch(notaVerifCreate(newValue, () => {dispatch(pelayananFromAntreanGet(norecdp))}))
+            dispatch(notaVerifCreate(newValue, () => {dispatch(pelayananFromDpGet(norecdp))}))
         }
     })
 
@@ -170,7 +170,7 @@ const VerifikasiPelayanan = () => {
     }, [penjaminGet, validation.setFieldValue])
 
     useEffect(() => {
-        dispatch(pelayananFromAntreanGet(norecdp));
+        dispatch(pelayananFromDpGet(norecdp));
     }, [dispatch, norecdp])
 
     useEffect(() => {

@@ -18,7 +18,7 @@ import {
     comboRegistrasiGet,
 } from "../../store/master/action";
 import { 
-    pelayananFromAntreanGet,
+    pelayananFromDpGet,
     notaVerifCreate,
     pelayananFromVerifGet,
     pelayananFromVerifGetReset,
@@ -44,7 +44,6 @@ const Bayar = () => {
         dataPasienPlg, 
         comboboxReg,
         listPelayanan,
-        norecdp,
         comboboxpayment,
         nota,
         kepesertaan,
