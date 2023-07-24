@@ -20,7 +20,16 @@ import {
     BRIDGING_INACBG_SAVE_ERROR,
     TARIF_KLAIM_SAVE,
     TARIF_KLAIM_SAVE_SUCCESS,
-    TARIF_KLAIM_SAVE_ERROR
+    TARIF_KLAIM_SAVE_ERROR,
+    LIST_CMGOPTIONS_GET,
+    LIST_CMGOPTIONS_GET_SUCCESS,
+    LIST_CMGOPTIONS_GET_ERROR,
+    STATUS_KLAIM_SAVE,
+    STATUS_KLAIM_SAVE_SUCCESS,
+    STATUS_KLAIM_SAVE_ERROR,
+    TARIF_CMGOPTIONS_SAVE,
+    TARIF_CMGOPTIONS_SAVE_SUCCESS,
+    TARIF_CMGOPTIONS_SAVE_ERROR
 } from "./actionType";
 
 export const casemixResetForm = () => ({
@@ -131,5 +140,52 @@ export const tarifKlaimSaveSuccess = (data, history) => ({
 
 export const tarifKlaimSaveError = (error) => ({
     type: TARIF_KLAIM_SAVE_ERROR,
+    payload: error,
+});
+
+export const listCmgOptionsGet = (param) => ({
+    type: LIST_CMGOPTIONS_GET,
+    payload: { param },
+});
+
+export const listCmgOptionsGetSuccess = (data) => ({
+    type: LIST_CMGOPTIONS_GET_SUCCESS,
+    payload: data,
+});
+
+export const listCmgOptionsGetError = (error) => ({
+    type: LIST_CMGOPTIONS_GET_ERROR,
+    payload: error,
+});
+
+export const statusKlaimSave = (data, history) => ({
+    type: STATUS_KLAIM_SAVE,
+    payload: { data, history },
+});
+
+// common error
+export const statusKlaimSaveSuccess = (data, history) => ({
+    type: STATUS_KLAIM_SAVE_SUCCESS,
+    payload: { data, history },
+});
+
+export const statusKlaimSaveError = (error) => ({
+    type: STATUS_KLAIM_SAVE_ERROR,
+    payload: error,
+});
+
+export const tarifCmgOptionsSave = (data, history) => ({
+    type: TARIF_CMGOPTIONS_SAVE,
+    payload: { data, history },
+});
+
+// common error
+export const tarifCmgOptionsSaveSuccess = (data, history) => ({
+    type: TARIF_CMGOPTIONS_SAVE_SUCCESS,
+    payload: { data, history },
+});
+
+export const tarifCmgOptionsSaveError = (error) => ({
+    type: TARIF_CMGOPTIONS_SAVE_ERROR,
     payload: error,
 });

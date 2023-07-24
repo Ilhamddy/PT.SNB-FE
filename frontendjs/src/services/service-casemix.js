@@ -29,4 +29,16 @@ export default class ServiceCasemix {
     postTarifKlaim = async (params) => {
         return await api.create("/transaksi/casemix/save-tarif-klaim", params);
     }
+
+    getListCmgOptions = async (param) => {
+        return await api.get(`/transaksi/casemix/getList-cmgoptions?norec=${param}`);
+    }
+
+    postStatusKlaim = async (params) => {
+        return await api.create("/transaksi/casemix/update-status-klaim", params);
+    }
+
+    postTarifCmgOptions = async (params) => {
+        return await api.create("/transaksi/casemix/update-tarif-cmg", params);
+    }
 }
