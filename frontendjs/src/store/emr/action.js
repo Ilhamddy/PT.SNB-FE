@@ -301,9 +301,9 @@ export const deleteDiagnosaixError = error => ({
 });
 // Konsul
 // common success
-export const konsulSave = (data, history) => ({
+export const konsulSave = (data, history, callback) => ({
     type: KONSUL_SAVE,
-    payload: { data, history },
+    payload: { data, history, callback },
 });
 
 // common error

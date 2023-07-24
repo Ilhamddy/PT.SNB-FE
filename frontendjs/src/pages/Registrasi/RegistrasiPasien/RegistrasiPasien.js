@@ -23,7 +23,7 @@ import { useSelector, useDispatch } from "react-redux";
 import classnames from "classnames";
 
 import { comboRegistrasiGet } from '../../../store/master/action';
-import { registrasiNoregistrasiResetForm, registrasiGet, registrasiSaveRuangan, registrasiNoBPJSGet, registrasiRuanganNorecGet } from "../../../store/actions";
+import { registrasiNoregistrasiResetForm, registrasiGet, registrasiSaveRuangan, registrasiNoBPJSGet, registrasiRuanganNorecGet, registrasiSaveRuanganReset, registrasiGetReset, registrasiRuanganNorecGetReset } from "../../../store/actions";
 import BuktiPendaftaran from '../../Print/BuktiPendaftaran';
 
 import BuktiPendaftaran2 from '../../Print/BuktiPendaftaran2';
@@ -33,7 +33,7 @@ import PrintRekap from '../../Print/PrintRekap/PrintRekap';
 import PrintBukti from '../../Print/PrintBukti/PrintBukti';
 import CustomCheckbox from '../../../Components/CustomCheckbox/CustomCheckbox';
 
-
+const dateStart = (new Date()).toISOString()
 
 const RegistrasiPasien = (props) => {
     const { id, norec } = useParams();
@@ -102,9 +102,6 @@ const RegistrasiPasien = (props) => {
 
 	
     const current = new Date();
-    const [dateStart, setdateStart] = useState(`${current.getFullYear()}`
-        + `-${current.getMonth() + 1}`
-        + `-${current.getDate()}`);
     const validation = useFormik({
         enableReinitialize: true,
         initialValues: {
@@ -262,10 +259,8 @@ const RegistrasiPasien = (props) => {
     }
 
     const handleBeginOnChange = (newBeginValue) => {
-        var dateString = new Date(newBeginValue.getTime() - (newBeginValue.getTimezoneOffset() * 60000))
-            .toISOString()
-            .split("T")[0];
-        validation.setFieldValue('tglregistrasi', dateString)
+        var dateString = new Date()
+        validation.setFieldValue('tglregistrasi', dateString.toISOString())
     }
 
     function handleSelectPenjamin(data) {
@@ -421,6 +416,18 @@ const RegistrasiPasien = (props) => {
         return newData;
     }))
 
+    useEffect(() => {
+        dispatch(registrasiGetReset())
+        dispatch(registrasiSaveRuanganReset())
+        dispatch(registrasiRuanganNorecGetReset())
+        return () => {
+            dispatch(registrasiSaveRuanganReset())
+            dispatch(registrasiGetReset())
+            dispatch(registrasiRuanganNorecGetReset())
+
+        }
+    }, [dispatch])
+
 
     return (
         <div className="page-content">
@@ -558,12 +565,10 @@ const RegistrasiPasien = (props) => {
 
                                                                     className="form-control"
                                                                     options={{
-                                                                        dateFormat: "Y-m-d",
-                                                                        defaultDate: "today",
-                                                                        maxDate: "today",
-                                                                        minDate: "today"
+                                                                        enableTime: true,
+                                                                        dateFormat: "Y-m-d H:i"
                                                                     }}
-                                                                    value={dateStart}
+                                                                    value={validation.values.tglregistrasi}
                                                                     onChange={([newDate]) => {
                                                                         handleBeginOnChange(newDate);
                                                                     }}

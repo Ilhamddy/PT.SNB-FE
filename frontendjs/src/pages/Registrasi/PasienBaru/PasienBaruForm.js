@@ -118,6 +118,7 @@ const PasienBaru = () => {
             jeniskelamin: newData?.jeniskelamin ?? "",
             titlepasien: newData?.titlepasien ?? "",
             tgllahir: newData?.tgllahir ?? "",
+            tempatlahir: newData?.tempatlahir ?? "",
             agama: newData?.agama ?? "",
             goldarah: newData?.goldarah ?? "",
             kebangsaan: newData?.kebangsaan ?? "",
@@ -358,6 +359,30 @@ const PasienBaru = () => {
                                                                             />
                                                                             {validation.touched.titlepasien && validation.errors.titlepasien ? (
                                                                                 <FormFeedback type="invalid"><div>{validation.errors.titlepasien}</div></FormFeedback>
+                                                                            ) : null}
+                                                                        </div>
+                                                                    </Col>
+                                                                    <Col xxl={6} md={6}>
+                                                                        <div className="mt-2">
+                                                                            <Label style={{ color: "black" }} htmlFor="tempatlahir" className="form-label">Tempat Lahir</Label>
+                                                                        </div>
+                                                                    </Col>
+                                                                    <Col xxl={6} md={6}>
+                                                                        <div>
+                                                                            <Input
+                                                                                id="tempatlahir"
+                                                                                name="tempatlahir"
+                                                                                type="text"
+                                                                                placeholder="Masukkan tempat lahir"
+                                                                                onChange={validation.handleChange}
+                                                                                onBlur={validation.handleBlur}
+                                                                                value={validation.values.tempatlahir || ""}
+                                                                                invalid={
+                                                                                    validation.touched.tempatlahir && validation.errors.tempatlahir ? true : false
+                                                                                }
+                                                                            />
+                                                                            {validation.touched.tempatlahir && validation.errors.tempatlahir ? (
+                                                                                <FormFeedback type="invalid"><div>{validation.errors.tempatlahir}</div></FormFeedback>
                                                                             ) : null}
                                                                         </div>
                                                                     </Col>

@@ -104,6 +104,7 @@ const qDaftarTagihanPasien =
         AND bb.statusenabled = true 
         AND bb.objectpiutangpasienfk IS NULL
             WHERE tn.statusenabled=true 
+            ORDER BY tn.tglinput DESC
     `       
 const qGetPelayananFromVerif =
     `
@@ -217,7 +218,8 @@ const qGetPiutangPasien =
         LEFT JOIN t_buktibayarpasien bb ON bb.objectpiutangpasienfk = tp.norec AND bb.statusenabled = true
             WHERE CASE WHEN $1 = 'pasien' THEN tp.statusenabled = true AND tp.objectpenjaminfk = 3
                 ELSE tp.statusenabled = true AND tp.objectpenjaminfk != 3
-            END;
+            END
+            ORDER BY tp.tglinput DESC
     `  
 
 const qTagihanGetFromDP = 

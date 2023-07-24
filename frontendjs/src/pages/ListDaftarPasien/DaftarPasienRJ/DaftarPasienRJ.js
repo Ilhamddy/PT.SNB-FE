@@ -277,9 +277,9 @@ const DaftarPasienRJ = () => {
     }
     const [statusPulangModal, setstatusPulangModal] = useState(false);
     const handleSimpanKonsul = () => {
-        // if (product) {
         setkonsulModal(false);
-        // }
+        dispatch(daftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}`));
+        dispatch(widgetdaftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}`));
     };
     useEffect(() => {
         if (newDataDokumen !== null) {

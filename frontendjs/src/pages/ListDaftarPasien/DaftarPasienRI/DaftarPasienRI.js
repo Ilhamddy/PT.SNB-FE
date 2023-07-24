@@ -351,7 +351,7 @@ const ExpandableDeposit = ({ data }) => {
                 <tr key={key}>
                     <th scope="row">{key + 1}</th>
                     <td>{item.tglinput}</td>
-                    <td>{item.nominal}</td>
+                    <td>{item.nominal?.toLocaleString("id-ID") || ""}</td>
                     <td>{item.nobukti}</td>
                 </tr>
             )}

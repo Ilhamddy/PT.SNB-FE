@@ -18,10 +18,11 @@ import "./DaftarPasienPulang.scss"
 import { useNavigate } from "react-router-dom";
 
 const dateAwalStart = dateISOString(new Date(new Date() - 1000 * 60 * 60 * 24 * 20));
-const dateAwalEnd = dateISOString(new Date((new Date()).setHours(23, 59, 59, 999)))
+const dateAwalEnd = dateISOString(new Date(new Date() - (- 1000 * 60 * 60 * 24 * 1)))
 
 
 const DaftarPasienPulang = () => {
+    document.title = "Daftar Pasien Pulang";
     const {dataPasienPlg, comboboxReg} = useSelector((state) => ({
         dataPasienPlg: state.DaftarPasien.daftarPasienPulangGet.data || [],
         comboboxReg: state.Master.comboRegistrasiGet.data || {},
@@ -124,7 +125,7 @@ const DaftarPasienPulang = () => {
         },
         {
             name: <span className='font-weight-bold fs-13'>Penjamin</span>,
-            selector: row => row.namadokter,
+            selector: row => row.namapenjamin,
             sortable: true,
             width: "140px",
         },

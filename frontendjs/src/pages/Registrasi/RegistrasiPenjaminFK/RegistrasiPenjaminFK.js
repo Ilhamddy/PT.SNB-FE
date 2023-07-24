@@ -19,7 +19,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { comboAsuransiGet, comboRegistrasiGet, kabupatenGetBpjs, kecamatanGetBpjs, provinsiGetBpjs } from "../../../store/master/action";
 import "./RegistrasiPenjaminFK.scss";
 import { onChangeStrNbr } from "../../../utils/format";
-import { rgxAllPeriods } from "../../../utils/regexcommon";
+import { rgxAllNumber, rgxAllPeriods } from "../../../utils/regexcommon";
 
 const dateNow = new Date()
 
@@ -471,10 +471,12 @@ const RegistrasiPenjaminFK = () => {
                                     <Input
                                         id="nokartu"
                                         name="nokartu"
-                                        type="number"
                                         placeholder="Masukkan No Kartu"
                                         className="form-control"
-                                        onChange={validation.handleChange}
+                                        onChange={(e) => {
+                                            rgxAllNumber.test(e.target.value) && 
+                                                validation.setFieldValue("nokartu", e.target.value)
+                                        }}
                                         // onBlur={validation.handleBlur}
                                         value={validation.values.nokartu || ""}
                                         invalid={validation.touched.nokartu && validation.errors.nokartu ? true : false}

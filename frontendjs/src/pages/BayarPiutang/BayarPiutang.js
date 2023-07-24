@@ -104,7 +104,7 @@ const BayarPiutang = () => {
                     }),
                     approvalcode: Yup.string().when("metodebayar", {
                         is: (val) => val === "2",
-                        then: () => Yup.string().required("Approval Code harus diisi"),
+                        then: () => Yup.string().required("Reference Code harus diisi"),
                     }),
                 })
             ),
@@ -321,14 +321,14 @@ const BayarPiutang = () => {
                                                             style={{ color: "black" }} 
                                                             htmlFor={`approvalcode${iPayment}`}
                                                             className="form-label">
-                                                            Approval Code
+                                                            Reference Code
                                                         </Label>
                                                         <div>
                                                             <Input 
                                                                 id={`approvalcode${iPayment}`}
                                                                 name={`approvalcode${iPayment}`}
                                                                 type="string"
-                                                                placeholder="Masukkan approval code"
+                                                                placeholder="Masukkan reference code"
                                                                 value={itemPayment.approvalcode || ""} 
                                                                 onChange={(e) => {
                                                                     rgxAllNumber.test(e.target.value) &&

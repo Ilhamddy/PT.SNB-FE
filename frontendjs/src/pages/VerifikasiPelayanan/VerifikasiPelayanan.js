@@ -435,23 +435,23 @@ const VerifikasiPelayanan = () => {
                                         <tbody>
                                             <tr>
                                                 <td className="text-center">Verifikasi Layanan</td>
-                                                <td className="text-center">Rp{totalLayanan}</td>
+                                                <td className="text-center">Rp{totalLayanan?.toLocaleString("id-ID") || ""}</td>
                                             </tr>
                                             <tr>
                                                 <td className="text-center">Verifikasi Resep</td>
-                                                <td className="text-center">Rp{totalObat}</td>
+                                                <td className="text-center">Rp{totalObat?.toLocaleString("id-ID") || ""}</td>
                                             </tr>
                                             <tr>
                                                 <td className="text-center">Total Verifikasi</td>
-                                                <td className="text-center">Rp{totalVerif}</td>
+                                                <td className="text-center">Rp{totalVerif?.toLocaleString("id-ID") || ""}</td>
                                             </tr>
                                             <tr>
                                                 <td className="text-center">Klaim asuransi</td>
-                                                <td className="text-center">Rp{totalKlaim}</td>
+                                                <td className="text-center">Rp{totalKlaim?.toLocaleString("id-ID") || ""}</td>
                                             </tr>
                                             <tr>
                                                 <td className="text-center">Total tagihan</td>
-                                                <td className="text-center">Rp{grandTotal}</td>
+                                                <td className="text-center">Rp{grandTotal?.toLocaleString("id-ID") || ""}</td>
                                             </tr>
                                         </tbody>
                                     </table>

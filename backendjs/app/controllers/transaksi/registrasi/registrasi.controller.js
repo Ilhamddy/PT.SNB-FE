@@ -248,6 +248,7 @@ const savePasien = async (req, res) => {
             objectkebangsaanfk: req.body.kebangsaan,
             objectstatusperkawinanfk: req.body.statusperkawinan,
             tgldaftar: new Date(),
+            tempatlahir: req.body.tempatlahir,
             tgllahir: new Date(req.body.tgllahir),
             objectpendidikanfk: req.body.pendidikan,
             objectpekerjaanfk: req.body.pekerjaan,
@@ -828,7 +829,8 @@ const getDaftarPasienFilter = async (req, res) => {
             mka.namakamar as namakamar,
             tap.noantrian as nomorantrean,
             tap.norec as norecap,
-            tap.nobed as nobed
+            tap.nobed as nobed,
+            mrk.namaexternal as namapenjamin
                 FROM 
                 t_daftarpasien
                 left join m_pegawai peg on peg.id = t_daftarpasien.objectpegawaifk    
@@ -836,8 +838,9 @@ const getDaftarPasienFilter = async (req, res) => {
                 left join m_kelas mk on mk.id = t_daftarpasien.objectkelasfk
                 left join m_pasien mps on mps.id = t_daftarpasien.nocmfk
                 left join m_unit mu on mu.id = t_daftarpasien.objectunitlastfk
-                left join t_antreanpemeriksaan tap on tap.objectdaftarpasienfk = t_daftarpasien.norec
+                join t_antreanpemeriksaan tap on tap.objectdaftarpasienfk = t_daftarpasien.norec
                 left join m_kamar mka on mka.id = tap.objectkamarfk
+                left join m_rekanan mrk on mrk.id = t_daftarpasien.objectpenjaminfk
                     WHERE 
                     t_daftarpasien.tglpulang IS NOT null
                     ${(filterTglStart && filterTglLast) ? 
@@ -1069,7 +1072,8 @@ async function getDaftarPasienRawatJalan(req, res) {
     }
     // let query = queries.getAllByOr + ` where nocm ilike '%` + nocm + `%'` + ` or namapasien ilike '%` + nocm + `%' limit 200`
     let query = queries.getDaftarPasienRawatJalan + `  where td.noregistrasi ilike '%${noregistrasi}%'
-    ${tglregistrasi} ${taskid} and td.objectinstalasifk=1 and trm.objectstatuskendalirmfk is not null`
+    ${tglregistrasi} ${taskid} and td.objectinstalasifk=1 and trm.objectstatuskendalirmfk is not null
+    ORDER BY td.tglregistrasi DESC`
    
 
     try {
@@ -1332,6 +1336,7 @@ async function getDaftarPasienRawatInap(req, res) {
 
 
     let query = queries.getDaftarPasienRawatInap + ` and td.noregistrasi ilike '%${noregistrasi}%'`
+    + `ORDER BY td.tglregistrasi DESC`
 
     try {
         let resultCountNoantrianDokter = await pool.query(query, [])

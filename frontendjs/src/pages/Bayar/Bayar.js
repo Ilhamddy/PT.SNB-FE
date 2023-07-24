@@ -114,7 +114,7 @@ const Bayar = () => {
                     }),
                     approvalcode: Yup.string().when("metodebayar", {
                         is: (val) => val === "2",
-                        then: () => Yup.string().required("Approval Code harus diisi"),
+                        then: () => Yup.string().required("Reference Code harus diisi"),
                     }),
                 })
             ),
@@ -421,7 +421,7 @@ const Bayar = () => {
                                                             style={{ color: "black" }} 
                                                             htmlFor={`approvalcode${index}`}
                                                             className="form-label">
-                                                            Approval Code
+                                                            Reference Code
                                                         </Label>
                                                         <div>
                                                             <Input 
