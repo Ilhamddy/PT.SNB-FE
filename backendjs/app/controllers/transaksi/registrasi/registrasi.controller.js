@@ -961,7 +961,7 @@ const saveRegistrasiPenjaminFK = async (req, res) => {
                 lk_kodekabupaten: dataForm.kkabupatenlakalantas || null,
                 lk_namakecamatan: dataForm.kecamatanlakalantas,
                 lk_kodekecamatan: dataForm.kkecamatanlakalantas || null,
-                objectkelasfk: dataForm.kelasditanggung,
+                objectkelasfk: dataForm.kelasditanggung || null,
             }, { transaction: transaction });
         }
         
