@@ -352,7 +352,7 @@ const ExpandableDeposit = ({ data }) => {
         <table className="table">
             <thead className="thead-light">
                 <tr>
-                    <th scope="col">#</th>
+                    <th scope="col"></th>
                     <th scope="col">Tanggal Deposit</th>
                     <th scope="col">Nominal</th>
                     <th scope="col">NoBB</th>
