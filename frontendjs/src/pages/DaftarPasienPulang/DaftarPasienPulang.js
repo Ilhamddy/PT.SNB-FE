@@ -224,7 +224,7 @@ const DaftarPasienPulang = () => {
                                     />
                                 </div>
                             </Col>
-                            {/* <Col lg={2}>
+                            <Col lg={2}>
                                 <CustomSelect
                                     id="instalasifilter"
                                     name="instalasifilter"
@@ -235,7 +235,7 @@ const DaftarPasienPulang = () => {
                                 />
                             </Col>
                             
-                            <Col lg={2}>
+                            {/* <Col lg={2}>
                                 <div className="d-flex justify-content-sm-end">
                                     <div className="search-box ms-2">
                                         <input type="text" className="form-control search"
@@ -244,8 +244,8 @@ const DaftarPasienPulang = () => {
                                         <i className="ri-search-line search-icon"></i>
                                     </div>
                                 </div>
-                            </Col>
-                             */}
+                            </Col> */}
+                            
                             <Col lg={1}>
                                 <Button type="button" className="rounded-pill" placement="top" id="tooltipTopPencarian" onClick={handleClickCari}>
                                     CARI

@@ -24,6 +24,7 @@ import KonsulModal from '../../../Components/Common/KonsulModal';
 import StatusPulangModal from '../../../Components/Common/StatusPulangModal';
 import StatusPulangRIModal from '../../../Components/Common/StatusPulangRIModal';
 import DepositModal from '../../../Components/Common/DepositModal/DepositModal';
+import "./DaftarPasienRI.scss"
 
 const DaftarPasienRI = () => {
     document.title = "Daftar Pasien Rawat Inap";
@@ -215,7 +216,7 @@ const DaftarPasienRI = () => {
                 toggle={() => setNorecPulangRI("")} />
             <DepositModal toggle={() => setdpDeposit("")} norecdp={dpDeposit}/>
             <UiContent />
-            <div className="page-content">
+            <div className="page-content daftar-pasien-rawat-inap">
                 <Container fluid>
                     <BreadCrumb title="Daftar Pasien Rawat Inap" pageTitle="Forms" />
                     <Row>
@@ -294,6 +295,7 @@ const DaftarPasienRI = () => {
                                                 <CustomSelect
                                                     id="doktertujuan"
                                                     name="doktertujuan"
+                                                    className="row-header"
                                                     options={unitRI}
                                                     value={selectedSingle}
                                                     onChange={() => {
