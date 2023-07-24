@@ -90,17 +90,12 @@ const VerifikasiPelayanan = () => {
                     Number(newIsiPenjamin.value.replace(rgxAllPeriods, ""));
                 return newIsiPenjamin
             }) 
-            setTouched({})
             dispatch(notaVerifCreate(newValue, () => {dispatch(pelayananFromAntreanGet(norecdp))}))
         }
     })
 
     const handleTouched = () => {
-        let touchedVPenjamin = {...validation.touched, keterangan: true, isipelayanan: true}
-        validation.values.isipenjamin.forEach((_, index) => {
-            touchedVPenjamin[`isipenjamin-${index}`] = true
-        })
-        validation.setTouched(touchedVPenjamin);
+
     }
 
 
@@ -298,7 +293,7 @@ const VerifikasiPelayanan = () => {
                     <Form onSubmit={(e) => {
                             e.preventDefault();
                             validation.handleSubmit();
-                            handleTouched();
+                            console.log(validation.errors)
                             return false;
                         }}
                         className="gy-4"
@@ -353,7 +348,7 @@ const VerifikasiPelayanan = () => {
                                     progressPending={false}
                                     customStyles={tableCustomStyles}
                                 />
-                                {!!validation.errors.norecppdone && !!validation.touched.isipelayanan && 
+                                {!!validation.errors.norecppdone && !!validation.touched.norecppdone && 
                                     <div style={{color: "#E3866F"}} className="mb-3">
                                         {validation.errors.norecppdone}
                                     </div>
@@ -371,9 +366,9 @@ const VerifikasiPelayanan = () => {
                                                 </Col>
                                                 <Col lg={10}>
                                                     <Input
-                                                        id={`isipenjamin-${index}`}
-                                                        name={`isipenjamin-${index}`}
-                                                        type={`isipenjamin-${index}`}
+                                                        id={`isipenjamin${index}`}
+                                                        name={`isipenjamin${index}`}
+                                                        type={`isipenjamin${index}`}
                                                         placeholder={`Isi ${penjamin.label}`}
                                                         className="mb-2"
                                                         onChange={(e) => {
@@ -382,12 +377,12 @@ const VerifikasiPelayanan = () => {
                                                         onBlur={validation.handleBlur}
                                                         value={penjamin.value || ""}
                                                         invalid={
-                                                            !!validation.touched?.[`isipenjamin-${index}`] 
-                                                                && !!validation.errors.isipenjamin?.[index]
+                                                            validation.touched?.isipenjamin?.[index] 
+                                                                && !!validation.errors.isipenjamin?.[index]?.value
                                                         }
                                                     />
-                                                    {!!validation.touched?.[`isipenjamin-${index}`] &&  !!validation.errors.isipenjamin?.[index] ? (
-                                                        <FormFeedback type="invalid"><div>{validation.errors.isipenjamin?.[index] || ""}</div></FormFeedback>
+                                                    {validation.touched?.isipenjamin?.[index] &&  !!validation.errors.isipenjamin?.[index]?.value ? (
+                                                        <FormFeedback type="invalid"><div>{validation.errors.isipenjamin?.[index]?.value || ""}</div></FormFeedback>
                                                     ) : null}
                                                 </Col>
                                             </React.Fragment>
