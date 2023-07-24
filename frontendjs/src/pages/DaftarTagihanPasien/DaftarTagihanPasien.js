@@ -252,7 +252,7 @@ const DaftarTagihanPasien = () => {
                                     />
                                 </div>
                             </Col>
-                            <Col lg={2}>
+                            {/* <Col lg={2}>
                                 <CustomSelect
                                     id="instalasifilter"
                                     name="instalasifilter"
@@ -272,7 +272,7 @@ const DaftarTagihanPasien = () => {
                                         <i className="ri-search-line search-icon"></i>
                                     </div>
                                 </div>
-                            </Col>
+                            </Col> */}
                             
                             <Col lg={1}>
                                 <Button type="button" className="rounded-pill" placement="top" id="tooltipTopPencarian" onClick={handleClickCari}>
