@@ -317,8 +317,11 @@ async function getListTarif18(req, res) {
 
 async function getListDiagnosaPasien(req, res) {
 
-    const resultList = await queryPromise2(`SELECT row_number() OVER (ORDER BY td.norec) AS no,dp.noregistrasi,
-    to_char(dp.tglregistrasi,'yyyy-MM-dd') as tglregistrasi,td.norec, mi.kodeexternal ||' - '|| mi.reportdisplay as label,
+    const resultList = await queryPromise2(`SELECT row_number() OVER (ORDER BY td.norec) AS no,
+    dp.noregistrasi,
+    to_char(dp.tglregistrasi,'yyyy-MM-dd') as tglregistrasi,
+    td.norec, 
+    mi.kodeexternal ||' - '|| mi.reportdisplay as label,
     mi.id as value, td.keterangan,td.objecttipediagnosafk,mt.reportdisplay as tipediagnosa,
     td.objectjeniskasusfk, jk.reportdisplay as jeniskasus, mu.namaunit,mi.kodeexternal as kodediagnosa
             FROM t_daftarpasien dp 
@@ -328,7 +331,7 @@ async function getListDiagnosaPasien(req, res) {
     join m_tipediagnosa mt on mt.id=td.objecttipediagnosafk
     join m_jeniskasus jk on jk.id=td.objectjeniskasusfk
     join m_icdx mi on mi.id=td.objecticdxfk where dp.norec='${req.query.norec}' and td.statusenabled=true
-    order by td.objecttipediagnosafk
+    order by td.tglinput DESC
     `);
     res.status(200).send({
         data: resultList.rows,
@@ -348,6 +351,8 @@ async function getListDiagnosaIxPasien(req, res) {
     join t_diagnosatindakan td  on td.objectantreanpemeriksaanfk =ta.norec
     join m_unit mu on mu.id=ta.objectunitfk
     join m_icdix mi on mi.id=td.objecticdixfk where dp.norec='${req.query.norec}' and td.statusenabled=true
+    order by td.tglinput DESC
+
     `);
     res.status(200).send({
         data: resultList.rows,

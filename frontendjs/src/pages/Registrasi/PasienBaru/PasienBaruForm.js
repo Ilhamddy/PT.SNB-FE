@@ -117,6 +117,8 @@ const PasienBaru = () => {
             noidentitas: newData?.noidentitas ?? "",
             jeniskelamin: newData?.jeniskelamin ?? "",
             titlepasien: newData?.titlepasien ?? "",
+            tgllahir: newData?.tgllahir ?? "",
+            tempatlahir: newData?.tempatlahir ?? "",
             agama: newData?.agama ?? "",
             goldarah: newData?.goldarah ?? "",
             kebangsaan: newData?.kebangsaan ?? "",
@@ -149,6 +151,7 @@ const PasienBaru = () => {
             noidentitas: Yup.string().required("Nomor identitas wajib diisi"),
             jeniskelamin: Yup.string().required("Jenis Kelamin wajib diisi"),
             titlepasien: Yup.string().required("Title Pasien wajib diisi"),
+            tgllahir: Yup.string().required("Tanggal Lahir wajib diisi"),
             agama: Yup.string().required("Agama wajib diisi"),
             goldarah: Yup.string().required("Golongan Darah wajib diisi"),
             kebangsaan: Yup.string().required("Kebangsaan wajib diisi"),
@@ -361,6 +364,30 @@ const PasienBaru = () => {
                                                                     </Col>
                                                                     <Col xxl={6} md={6}>
                                                                         <div className="mt-2">
+                                                                            <Label style={{ color: "black" }} htmlFor="tempatlahir" className="form-label">Tempat Lahir</Label>
+                                                                        </div>
+                                                                    </Col>
+                                                                    <Col xxl={6} md={6}>
+                                                                        <div>
+                                                                            <Input
+                                                                                id="tempatlahir"
+                                                                                name="tempatlahir"
+                                                                                type="text"
+                                                                                placeholder="Masukkan tempat lahir"
+                                                                                onChange={validation.handleChange}
+                                                                                onBlur={validation.handleBlur}
+                                                                                value={validation.values.tempatlahir || ""}
+                                                                                invalid={
+                                                                                    validation.touched.tempatlahir && validation.errors.tempatlahir ? true : false
+                                                                                }
+                                                                            />
+                                                                            {validation.touched.tempatlahir && validation.errors.tempatlahir ? (
+                                                                                <FormFeedback type="invalid"><div>{validation.errors.tempatlahir}</div></FormFeedback>
+                                                                            ) : null}
+                                                                        </div>
+                                                                    </Col>
+                                                                    <Col xxl={6} md={6}>
+                                                                        <div className="mt-2">
                                                                             <Label style={{ color: "black" }} htmlFor="tgllahir" className="form-label">Tanggal Lahir</Label>
                                                                         </div>
                                                                     </Col>
@@ -372,6 +399,10 @@ const PasienBaru = () => {
                                                                                     dateFormat: "Y-m-d",
                                                                                     defaultDate: "today",
                                                                                     maxDate: "today"
+                                                                                }}
+                                                                                value={new Date(validation.values.tgllahir) || ""}
+                                                                                onChange={([newDate]) => {
+                                                                                    validation.setFieldValue("tgllahir", newDate.toISOString())
                                                                                 }}
                                                                             />
                                                                         </div>

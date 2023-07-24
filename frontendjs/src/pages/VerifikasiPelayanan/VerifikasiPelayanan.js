@@ -32,7 +32,7 @@ const date = new Date()
 
 
 const VerifikasiPelayanan = () => {
-    const { norecap } = useParams();
+    const { norecdp } = useParams();
 
     const [dateStart, setDateStart] = useState(dateAwalStart);
     const [dateEnd, setDateEnd] = useState(dateAwalEnd);
@@ -44,13 +44,11 @@ const VerifikasiPelayanan = () => {
         dataPasienPlg, 
         comboboxReg,
         listPelayanan,
-        norecdp,
         penjaminGet
     } = useSelector((state) => ({
         dataPasienPlg: state.DaftarPasien.daftarPasienPulangGet.data || [],
         comboboxReg: state.Master.comboRegistrasiGet.data || {},
         listPelayanan: state.Payment.pelayananFromNoAntrianGet.data?.pelayanan || null,
-        norecdp: state.Payment.pelayananFromNoAntrianGet.data?.objectdaftarpasienfk || "",
         penjaminGet: state.Payment.pelayananFromNoAntrianGet.data?.kepesertaan || [],
     }))
     const penjaminExist = penjaminGet.length !== 0
@@ -92,31 +90,13 @@ const VerifikasiPelayanan = () => {
                     Number(newIsiPenjamin.value.replace(rgxAllPeriods, ""));
                 return newIsiPenjamin
             }) 
-            setTouched({})
-            dispatch(notaVerifCreate(newValue, () => {dispatch(pelayananFromAntreanGet(norecap))}))
+            dispatch(notaVerifCreate(newValue, () => {dispatch(pelayananFromAntreanGet(norecdp))}))
         }
     })
 
     const handleTouched = () => {
-        let touchedVPenjamin = {...validation.touched, keterangan: true, isipelayanan: true}
-        validation.values.isipenjamin.forEach((_, index) => {
-            touchedVPenjamin[`isipenjamin-${index}`] = true
-        })
-        validation.setTouched(touchedVPenjamin);
+
     }
-
-
-
-    useEffect(() => {
-        if(listPelayanan === null) return
-        const withChecked = listPelayanan.map((pelayanan) => {
-            return {
-                ...pelayanan,
-                checked: false
-            }   
-        })
-        setListPelayananChecked(withChecked)
-    }, [listPelayanan])
 
     const totalObat = listPelayananChecked.reduce((prev, data) => {
         return prev + (data.checked && data.isobat ? (data.total || 0) : 0)
@@ -137,10 +117,7 @@ const VerifikasiPelayanan = () => {
     const handleClickCari = () => {
         dispatch(daftarPasienPulangGet({dateStart, dateEnd, instalasi, unit: "", search}))
     }
-    const handleToVerif = async (norecpp) => {
-        norecpp 
-            && navigate(`/payment/verif-tagihan/${norecpp}`)    
-    }
+
     const handleValuePenjamin = (index, newVal) => {
         let newIsiPenjamin = [...validation.values.isipenjamin];
         const newItem = {...newIsiPenjamin[index]};
@@ -158,6 +135,18 @@ const VerifikasiPelayanan = () => {
         newItem.checked = !checked
         newListPC[index] = newItem
         setListPelayananChecked(newListPC)
+    }
+
+    const isCheckedAll = listPelayananChecked?.every((item) => item.checked)
+    const handleCheckedAll = () => {
+        if(listPelayanan === null) return
+        const withChecked = listPelayanan.map((pelayanan) => {
+            return {
+                ...pelayanan,
+                checked: !isCheckedAll
+            }   
+        })
+        setListPelayananChecked(withChecked)
     }
 
     useEffect(() => {
@@ -181,14 +170,32 @@ const VerifikasiPelayanan = () => {
     }, [penjaminGet, validation.setFieldValue])
 
     useEffect(() => {
-        dispatch(pelayananFromAntreanGet(norecap));
-    }, [dispatch, norecap])
+        dispatch(pelayananFromAntreanGet(norecdp));
+    }, [dispatch, norecdp])
+
+    useEffect(() => {
+        if(listPelayanan === null) return
+        const withChecked = listPelayanan.map((pelayanan) => {
+            return {
+                ...pelayanan,
+                checked: false
+            }   
+        })
+        setListPelayananChecked(withChecked)
+    }, [listPelayanan])
 
     
 
     const columns = [
         {
-            name: <span className='font-weight-bold fs-13'>Detail</span>,
+            name: <span className='font-weight-bold fs-13'>
+                <Input 
+                    className="form-check-input" 
+                    type="checkbox" 
+                    id={`formcheck-all`} 
+                    checked={isCheckedAll} 
+                    onChange={e => {handleCheckedAll(isCheckedAll)}}/>
+            </span>,
             sortable: false,
             cell: (row) => {
                 return (
@@ -303,7 +310,7 @@ const VerifikasiPelayanan = () => {
                     <Form onSubmit={(e) => {
                             e.preventDefault();
                             validation.handleSubmit();
-                            handleTouched();
+                            console.log(validation.errors)
                             return false;
                         }}
                         className="gy-4"
@@ -358,7 +365,7 @@ const VerifikasiPelayanan = () => {
                                     progressPending={false}
                                     customStyles={tableCustomStyles}
                                 />
-                                {!!validation.errors.norecppdone && !!validation.touched.isipelayanan && 
+                                {!!validation.errors.norecppdone && !!validation.touched.norecppdone && 
                                     <div style={{color: "#E3866F"}} className="mb-3">
                                         {validation.errors.norecppdone}
                                     </div>
@@ -376,9 +383,9 @@ const VerifikasiPelayanan = () => {
                                                 </Col>
                                                 <Col lg={10}>
                                                     <Input
-                                                        id={`isipenjamin-${index}`}
-                                                        name={`isipenjamin-${index}`}
-                                                        type={`isipenjamin-${index}`}
+                                                        id={`isipenjamin${index}`}
+                                                        name={`isipenjamin${index}`}
+                                                        type={`isipenjamin${index}`}
                                                         placeholder={`Isi ${penjamin.label}`}
                                                         className="mb-2"
                                                         onChange={(e) => {
@@ -387,11 +394,11 @@ const VerifikasiPelayanan = () => {
                                                         onBlur={validation.handleBlur}
                                                         value={penjamin.value || ""}
                                                         invalid={
-                                                            !!validation.touched?.[`isipenjamin-${index}`] 
-                                                                && !!validation.errors.isipenjamin?.[index]
+                                                            validation.touched?.isipenjamin?.[index] 
+                                                                && !!validation.errors.isipenjamin?.[index]?.value
                                                         }
                                                     />
-                                                    {!!validation.touched?.[`isipenjamin-${index}`] &&  !!validation.errors.isipenjamin?.[index] ? (
+                                                    {validation.touched?.isipenjamin?.[index] &&  !!validation.errors.isipenjamin?.[index]?.value ? (
                                                         <FormFeedback type="invalid"><div>{validation.errors.isipenjamin?.[index]?.value || ""}</div></FormFeedback>
                                                     ) : null}
                                                 </Col>
@@ -435,23 +442,23 @@ const VerifikasiPelayanan = () => {
                                         <tbody>
                                             <tr>
                                                 <td className="text-center">Verifikasi Layanan</td>
-                                                <td className="text-center">Rp{totalLayanan}</td>
+                                                <td className="text-center">Rp{totalLayanan?.toLocaleString("id-ID") || ""}</td>
                                             </tr>
                                             <tr>
                                                 <td className="text-center">Verifikasi Resep</td>
-                                                <td className="text-center">Rp{totalObat}</td>
+                                                <td className="text-center">Rp{totalObat?.toLocaleString("id-ID") || ""}</td>
                                             </tr>
                                             <tr>
                                                 <td className="text-center">Total Verifikasi</td>
-                                                <td className="text-center">Rp{totalVerif}</td>
+                                                <td className="text-center">Rp{totalVerif?.toLocaleString("id-ID") || ""}</td>
                                             </tr>
                                             <tr>
                                                 <td className="text-center">Klaim asuransi</td>
-                                                <td className="text-center">Rp{totalKlaim}</td>
+                                                <td className="text-center">Rp{totalKlaim?.toLocaleString("id-ID") || ""}</td>
                                             </tr>
                                             <tr>
                                                 <td className="text-center">Total tagihan</td>
-                                                <td className="text-center">Rp{grandTotal}</td>
+                                                <td className="text-center">Rp{grandTotal?.toLocaleString("id-ID") || ""}</td>
                                             </tr>
                                         </tbody>
                                     </table>

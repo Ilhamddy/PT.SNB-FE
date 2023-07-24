@@ -9,9 +9,11 @@ import {
     REGISTRASI_GET,
     REGISTRASI_GET_SUCCESS,
     REGISTRASI_GET_ERROR,
+    REGISTRASI_GET_RESET,
     REGISTRASI_SAVE_RUANGAN,
     REGISTRASI_SAVE_RUANGAN_SUCCESS,
     REGISTRASI_SAVE_RUANGAN_ERROR,
+    REGISTRASI_SAVE_RUANGAN_RESET,
     REGISTRASI_NOREGISTRASI_GET,
     REGISTRASI_NOREGISTRASI_GET_SUCCESS,
     REGISTRASI_NOREGISTRASI_GET_ERROR,
@@ -19,6 +21,7 @@ import {
     REGISTRASI_RUANGAN_NOREC_GET,
     REGISTRASI_RUANGAN_NOREC_GET_SUCCESS,
     REGISTRASI_RUANGAN_NOREC_GET_ERROR,
+    REGISTRASI_RUANGAN_NOREC_GET_RESET,
     REGISTRASI_NO_BPJS_GET,
     REGISTRASI_NO_BPJS_GET_SUCCESS,
     REGISTRASI_NO_BPJS_GET_ERROR,
@@ -153,6 +156,15 @@ const Registrasi = (state = INIT_STATE, action) => {
             }
         }
 
+        case REGISTRASI_GET_RESET: {
+            return {
+                ...state,
+                registrasiGet: {
+                    ...INIT_STATE.registrasiGet,
+                }
+            }
+        }
+
         case REGISTRASI_SAVE: {
             return {
                 ...state,
@@ -217,6 +229,19 @@ const Registrasi = (state = INIT_STATE, action) => {
                     ...state.registrasiSaveRuangan,
                     loading: false,
                     error: action.payload,
+                }
+            }
+        }
+
+        case REGISTRASI_SAVE_RUANGAN_RESET: {
+            return {
+                ...state,
+                registrasiSaveRuangan: {
+                    ...INIT_STATE.registrasiSaveRuangan,
+                    newData: [],
+                    loading: false,
+                    error: null,
+                    success: false,
                 }
             }
         }
@@ -295,6 +320,15 @@ const Registrasi = (state = INIT_STATE, action) => {
                     ...state.registrasiRuangNorecGet,
                     loading: false,
                     error: action.error,
+                }
+            }
+        }
+
+        case REGISTRASI_RUANGAN_NOREC_GET_RESET: {
+            return {
+                ...state,
+                registrasiRuangNorecGet: {
+                    ...INIT_STATE.registrasiRuangNorecGet,
                 }
             }
         }

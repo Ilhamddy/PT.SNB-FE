@@ -24,6 +24,7 @@ import KonsulModal from '../../../Components/Common/KonsulModal';
 import StatusPulangModal from '../../../Components/Common/StatusPulangModal';
 import StatusPulangRIModal from '../../../Components/Common/StatusPulangRIModal';
 import DepositModal from '../../../Components/Common/DepositModal/DepositModal';
+import "./DaftarPasienRI.scss"
 
 const DaftarPasienRI = () => {
     document.title = "Daftar Pasien Rawat Inap";
@@ -32,6 +33,10 @@ const DaftarPasienRI = () => {
     const [norecPulangRI, setNorecPulangRI] = useState("");
     const [norecPulangRIAP, setNorecPulangRIAP] = useState("");
     const [dpDeposit, setdpDeposit] = useState("");
+    const [userChosen, setUserChosen] = useState({
+        nama: "",
+        id: "",
+    })
     const { data, datawidget, loading, error, dataCombo,loadingCombo } = useSelector((state) => ({
         data: state.DaftarPasien.daftarPasienRIGet.data,
         datawidget: state.DaftarPasien.widgetdaftarPasienRIGet.data,
@@ -82,7 +87,6 @@ const DaftarPasienRI = () => {
                 color: "black",
                 backgroundColor: "#f1f2f6"
             },
-
         }
     }
 
@@ -120,7 +124,7 @@ const DaftarPasienRI = () => {
             name: <span className='font-weight-bold fs-13'>No. Registrasi</span>,
             // selector: row => row.noregistrasi,
             sortable: true,
-            selector: row => (<button className="btn btn-sm btn-soft-info" onClick={() => handleClick(data)}>{row.noregistrasi}</button>),
+            selector: row => (<button className="btn btn-sm btn-soft-info" onClick={() => handleClickRM(row)}>{row.noregistrasi}</button>),
             // cell: (data) => {
             //     return (
             //         // <Link to={`/registrasi/pasien/${data.id}`}>Details</Link>
@@ -185,6 +189,15 @@ const DaftarPasienRI = () => {
         setkonsulModal(false);
         // }
     };
+    const handleClickRM = (row) => {
+        setUserChosen({
+            nama: row.namapasien,
+            id: row.noidentitas
+        })
+    };
+    let unitRI = dataCombo.unit?.filter((unitRI) => 
+        unitRI.objectinstalasifk === 2
+    ) || []
     return (
         <React.Fragment>
             <ToastContainer closeButton={false} />
@@ -202,7 +215,7 @@ const DaftarPasienRI = () => {
                 toggle={() => setNorecPulangRI("")} />
             <DepositModal toggle={() => setdpDeposit("")} norecdp={dpDeposit}/>
             <UiContent />
-            <div className="page-content">
+            <div className="page-content daftar-pasien-rawat-inap">
                 <Container fluid>
                     <BreadCrumb title="Daftar Pasien Rawat Inap" pageTitle="Forms" />
                     <Row>
@@ -239,15 +252,9 @@ const DaftarPasienRI = () => {
                                             </div>
                                         </div>
                                     </CardBody>
-                                    {/* <div className="card-footer" style={{ backgroundColor: '#e67e22' }}>
-                                        <div className="text-center">
-                                            <Link to="#" className="link-light" onClick={() => handleClickCard(item)}>View <i className="ri-arrow-right-s-line align-middle lh-1"></i></Link>
-                                        </div>
-                                    </div> */}
                                 </Card>
                             </Col>
                         ))}
-
                         <Col lg={3}>
                             <Card>
                                 <CardBody>
@@ -256,8 +263,8 @@ const DaftarPasienRI = () => {
                                         <img src={userDummy}
                                             className="rounded-circle avatar-xl img-thumbnail user-profile-image"
                                             alt="user-profile" />
-                                        <h5 className="fs-17 mb-1">Testing</h5>
-                                        <p className="text-muted mb-0">Testing</p>
+                                        <h5 className="fs-17 mb-1">{userChosen.nama}</h5>
+                                        <p className="text-muted mb-0">{userChosen.id}</p>
                                     </div>
                                 </CardBody>
                             </Card>
@@ -281,7 +288,8 @@ const DaftarPasienRI = () => {
                                                 <CustomSelect
                                                     id="doktertujuan"
                                                     name="doktertujuan"
-                                                    options={dataCombo.unit}
+                                                    className="row-header"
+                                                    options={unitRI}
                                                     value={selectedSingle}
                                                     onChange={() => {
                                                         handleSelectSingle();
@@ -339,7 +347,7 @@ const ExpandableDeposit = ({ data }) => {
         <table className="table">
             <thead className="thead-light">
                 <tr>
-                    <th scope="col">#</th>
+                    <th scope="col"></th>
                     <th scope="col">Tanggal Deposit</th>
                     <th scope="col">Nominal</th>
                     <th scope="col">NoBB</th>
@@ -351,7 +359,7 @@ const ExpandableDeposit = ({ data }) => {
                 <tr key={key}>
                     <th scope="row">{key + 1}</th>
                     <td>{item.tglinput}</td>
-                    <td>{item.nominal}</td>
+                    <td>{item.nominal?.toLocaleString("id-ID") || ""}</td>
                     <td>{item.nobukti}</td>
                 </tr>
             )}

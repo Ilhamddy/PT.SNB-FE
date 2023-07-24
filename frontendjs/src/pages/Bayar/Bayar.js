@@ -114,7 +114,7 @@ const Bayar = () => {
                     }),
                     approvalcode: Yup.string().when("metodebayar", {
                         is: (val) => val === "2",
-                        then: () => Yup.string().required("No. Reference harus diisi"),
+                        then: () => Yup.string().required("Reference Code harus diisi"),
                     }),
                 })
             ),
@@ -184,10 +184,6 @@ const Bayar = () => {
     }
     const handleClickCari = () => {
         dispatch(daftarPasienPulangGet({dateStart, dateEnd, instalasi, unit: "", search}))
-    }
-    const handleToVerif = async (norecpp) => {
-        norecpp 
-            && navigate(`/payment/verif-tagihan/${norecpp}`)    
     }
 
     const filterRekeningRs = (rekeningRs, nontunaiV) => {
@@ -421,7 +417,7 @@ const Bayar = () => {
                                                             style={{ color: "black" }} 
                                                             htmlFor={`approvalcode${index}`}
                                                             className="form-label">
-                                                            No. Reference
+                                                            Reference Code
                                                         </Label>
                                                         <div>
                                                             <Input 
@@ -662,7 +658,7 @@ const Bayar = () => {
                                                 style={{ height: '200px' }}
                                                 onChange={validation.handleChange}
                                                 onBlur={validation.handleBlur}
-                                                value={""}
+                                                value={nota?.keterangan || ""}
                                                 invalid={false}
                                             />
                                         </Col>

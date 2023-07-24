@@ -34,7 +34,7 @@ const StatusPulangRIModal = ({ norecdp, norecAP, toggle }) => {
     }, [dispatch]);
     const current = new Date();
     const navigate = useNavigate()
-    const [dateStart, setdateStart] = useState(`${current.getFullYear()}-${current.getMonth() + 1}-${current.getDate()} ${current.getHours()}:${current.getMinutes()}`);
+    const [dateStart, setdateStart] = useState((new Date()).toISOString());
     const validation = useFormik({
         enableReinitialize: true,
         initialValues: {
@@ -404,9 +404,9 @@ const StatusPulangRIModal = ({ norecdp, norecAP, toggle }) => {
                             dateFormat: "Y-m-d H:i",
                             defaultDate: "today"
                         }}
-                        value={dateStart}
+                        value={validation.values.tanggalpulang}
                         onChange={([newDate]) => {
-                            handleBeginOnChangeTglInput("tanggalpulang", newDate);
+                            validation.setFieldValue("tanggalpulang", newDate.toISOString());
                         }}
                     />
                     <div className="input-group-text bg-secondary border-secondary text-white"><i className="ri-calendar-2-line"></i></div>

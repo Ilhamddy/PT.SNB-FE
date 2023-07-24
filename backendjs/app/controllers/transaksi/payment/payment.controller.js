@@ -1,12 +1,11 @@
 import * as uuid from 'uuid';
 import db from "../../../models";
 import pool from "../../../config/dbcon.query";
-import { qGetPelayananFromAntrean, 
-    qGetNorecPenggunaFromAp, 
+import { qGetPelayananFromDp, 
     qDaftarTagihanPasien, 
     qGetPelayananFromVerif, 
     qGetVerif,
-    qGetKepesertaanFromAntrean,
+    qGetKepesertaanFromAntrean as qGetKepesertaanFromDp,
     qGetKepesertaanFromNota,
     qGetPiutangFromDP,
     qGetNotaPelayananPasien,
@@ -35,17 +34,15 @@ const t_carabayar = db.t_carabayar
 const t_depositpasien = db.t_depositpasien
 const Sequelize = {}
 
-const getPelayananFromAntrean = async (req, res) => {
+const getPelayananFromDP = async (req, res) => {
     try{
-        const norecap = req.params.norecAP
-        const pelayanan = await pool.query(qGetPelayananFromAntrean, [norecap])
-        let kepesertaan = await pool.query(qGetKepesertaanFromAntrean, [norecap])
+        const norecdp = req.params.norecdp
+        const pelayanan = await pool.query(qGetPelayananFromDp, [norecdp])
+        let kepesertaan = await pool.query(qGetKepesertaanFromDp, [norecdp])
         kepesertaan = kepesertaan.rows[0]?.list_kpa || []
         kepesertaan = kepesertaan.filter((peserta) => peserta.no_kartu !== null)
-        const dp = await pool.query(qGetNorecPenggunaFromAp, [norecap])
         let tempres = { 
             pelayanan: pelayanan.rows || [], 
-            objectdaftarpasienfk: dp.rows[0].objectdaftarpasienfk || null,
             kepesertaan: kepesertaan
         }
         res.status(200).send({
@@ -71,7 +68,6 @@ const getPelayananFromVerif = async (req, res) => {
     try{
         const norecnota = req.params.norecnota
         const pelayanan = await pool.query(qGetPelayananFromVerif, [norecnota])
-       
         const verif = await pool.query(qGetVerif, [norecnota])
         const kepesertaan = await pool.query(qGetKepesertaanFromNota, [norecnota])
         const deposit = await pool.query(qGetDepositFromNota, [norecnota])
@@ -586,7 +582,7 @@ const getPaymentForPiutang = async (req, res) => {
 
 
 export default {
-    getPelayananFromAntrean,
+    getPelayananFromDP,
     createNotaVerif,
     getDaftarTagihanPasien,
     getPelayananFromVerif,

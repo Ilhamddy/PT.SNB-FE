@@ -18,10 +18,15 @@ import "./DaftarPasienPulang.scss"
 import { useNavigate } from "react-router-dom";
 
 const dateAwalStart = dateISOString(new Date(new Date() - 1000 * 60 * 60 * 24 * 20));
-const dateAwalEnd = dateISOString(new Date((new Date()).setHours(23, 59, 59, 999)))
+const dateAwalEnd = dateISOString(new Date(new Date() - (- 1000 * 60 * 60 * 24 * 1)))
 
 
 const DaftarPasienPulang = () => {
+    document.title = "Daftar Pasien Pulang";
+    const [userChosen, setUserChosen] = useState({
+        nama: "",
+        id: "",
+    })
     const {dataPasienPlg, comboboxReg} = useSelector((state) => ({
         dataPasienPlg: state.DaftarPasien.daftarPasienPulangGet.data || [],
         comboboxReg: state.Master.comboRegistrasiGet.data || {},
@@ -52,7 +57,6 @@ const DaftarPasienPulang = () => {
             dateStart: dateAwalStart,
             dateEnd: dateAwalEnd
         }))
-        console.log(dateAwalStart)
         dispatch(comboAsuransiGet());
         dispatch(comboRegistrasiGet());
     }, [dispatch])
@@ -63,9 +67,15 @@ const DaftarPasienPulang = () => {
     const handleClickCari = () => {
         dispatch(daftarPasienPulangGet({dateStart, dateEnd, instalasi, unit: "", search}))
     }
-    const handleToVerif = async (norecap) => {
-        norecap 
-            && navigate(`/payment/verif-tagihan/${norecap}`)    
+    const handleToVerif = async (norecdp) => {
+        norecdp 
+            && navigate(`/payment/verif-tagihan/${norecdp}`)    
+    }
+    const handleClickUser = (row) => {
+        setUserChosen({
+            nama: row.namapasien,
+            id: row.noidentitas,
+        })
     }
     const columns = [
         {
@@ -80,7 +90,7 @@ const DaftarPasienPulang = () => {
                                 <i className="ri-apps-2-line"></i>
                             </DropdownToggle>
                             <DropdownMenu className="dropdown-menu-end">
-                                <DropdownItem onClick={() => handleToVerif(row.norecap)}><i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>Verif</DropdownItem>
+                                <DropdownItem onClick={() => handleToVerif(row.norecdp)}><i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>Verif</DropdownItem>
                             </DropdownMenu>
                         </UncontrolledDropdown>
                     </div>
@@ -99,7 +109,7 @@ const DaftarPasienPulang = () => {
             name: <span className='font-weight-bold fs-13'>No. Registrasi</span>,
             // selector: row => row.noregistrasi,
             sortable: true,
-            selector: row => (<button className="btn btn-sm btn-soft-info" onClick={() => {}}>{row.noregistrasi}</button>),
+            selector: row => (<button className="btn btn-sm btn-soft-info" onClick={() => handleClickUser(row)}>{row.noregistrasi}</button>),
             width: "130px"
         },
         {
@@ -124,7 +134,7 @@ const DaftarPasienPulang = () => {
         },
         {
             name: <span className='font-weight-bold fs-13'>Penjamin</span>,
-            selector: row => row.namadokter,
+            selector: row => row.namapenjamin,
             sortable: true,
             width: "140px",
         },
@@ -153,75 +163,9 @@ const DaftarPasienPulang = () => {
                                     <img src={userDummy}
                                         className="rounded-circle avatar-xl img-thumbnail user-profile-image"
                                         alt="user-profile" />
-                                    <Input style={{ border: 'none', textAlign: 'center' }}
-                                        id="namapasien"
-                                        name="namapasien"
-                                        type="text"
-                                        onChange={validation.handleChange}
-                                        onBlur={validation.handleBlur}
-                                        value={validation.values.namapasien || ""}
-                                    />
+                                    <h5 className="fs-17 mb-1">{userChosen.nama}</h5>
+                                    <p className="text-muted mb-0">{userChosen.id}</p>
                                 </div>
-                            </CardBody>
-                        </Card>
-                        <Card>
-                            <CardBody>
-                                <Nav pills className="nav-success mb-3">
-                                    <NavItem>
-                                        <NavLink style={{ cursor: "pointer" }} className={classnames({ active: pillsTab === "1", })} onClick={() => { setpillsTab("1"); }} >
-                                            Profile
-                                        </NavLink>
-                                    </NavItem>
-                                    <NavItem>
-                                        <NavLink style={{ cursor: "pointer" }} className={classnames({ active: pillsTab === "2", })} onClick={() => { setpillsTab("2"); }} >
-                                            Riwayat
-                                        </NavLink>
-                                    </NavItem>
-                                </Nav>
-                                <TabContent activeTab={pillsTab} className="text-muted">
-                                    <TabPane tabId="1" id="home-1">
-                                        <Card>
-                                            <CardBody>
-                                                <div className="table-responsive">
-                                                    <Table className="table-borderless mb-0">
-                                                        <tbody>
-                                                            <tr>
-                                                                <th className="ps-0" scope="row">NoRM :</th>
-                                                                <td className="text-muted">{}</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <th className="ps-0" scope="row">Tgllahir :</th>
-                                                                <td className="text-muted">{}</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <th className="ps-0" scope="row">No BPJS :</th>
-                                                                <td className="text-muted">{}</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <th className="ps-0" scope="row">No Identitas :</th>
-                                                                <td className="text-muted">{}</td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </Table>
-                                                </div>
-                                            </CardBody>
-                                        </Card>
-                                    </TabPane>
-                                    <TabPane tabId="2" id="home-2">
-                                        <Card>
-                                            <CardBody>
-
-                                            </CardBody>
-                                        </Card>
-                                    </TabPane>
-                                    <TabPane tabId="3" id="home-3">
-                                        <Card>
-                                            <CardBody>
-
-                                            </CardBody>
-                                        </Card>
-                                    </TabPane>
-                                </TabContent>
                             </CardBody>
                         </Card>
                     </Col>
@@ -290,7 +234,7 @@ const DaftarPasienPulang = () => {
                                 />
                             </Col>
                             
-                            <Col lg={2}>
+                            {/* <Col lg={2}>
                                 <div className="d-flex justify-content-sm-end">
                                     <div className="search-box ms-2">
                                         <input type="text" className="form-control search"
@@ -299,7 +243,7 @@ const DaftarPasienPulang = () => {
                                         <i className="ri-search-line search-icon"></i>
                                     </div>
                                 </div>
-                            </Col>
+                            </Col> */}
                             
                             <Col lg={1}>
                                 <Button type="button" className="rounded-pill" placement="top" id="tooltipTopPencarian" onClick={handleClickCari}>

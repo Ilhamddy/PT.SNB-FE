@@ -10,7 +10,11 @@ import { useFormik, yupToFormErrors } from "formik";
 import * as Yup from "yup";
 import { konsulSave } from "../../store/actions";
 
-const KonsulModal = ({ show, onSimpanClick, onCloseClick, tempNorecAp, dataUnit, dataDokter }) => {
+const KonsulModal = ({ show, onSimpanClick, 
+    onCloseClick, 
+    tempNorecAp, 
+    dataUnit, 
+    dataDokter }) => {
     const dispatch = useDispatch();
     const { editData, newData, loading, error, success } = useSelector((state) => ({
         newData: state.Emr.konsulSave.newData,
@@ -30,7 +34,9 @@ const KonsulModal = ({ show, onSimpanClick, onCloseClick, tempNorecAp, dataUnit,
         }),
         onSubmit: (values, { resetForm }) => {
             // console.log(validation.errors)
-            dispatch(konsulSave(values, ''));
+            dispatch(konsulSave(values, '', () => {
+                onSimpanClick()
+            }));
             resetForm({ values: '' })
         }
     })
@@ -106,14 +112,6 @@ const KonsulModal = ({ show, onSimpanClick, onCloseClick, tempNorecAp, dataUnit,
                                         >
                                             Tutup
                                         </button>
-                                        {/* <button
-                        type="button"
-                        className="btn w-sm btn-danger "
-                        id="delete-record"
-                       onClick={onCloseClick}
-                    >
-                        Simpan Konsul
-                    </button> */}
                                         <Button type="submit" color="info" className="rounded-pill" placement="top" id="tooltipTop" >
                                             SIMPAN
                                         </Button>

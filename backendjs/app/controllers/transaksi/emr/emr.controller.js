@@ -168,7 +168,7 @@ async function getHeaderEmr(req, res) {
     const norecta = req.query.norecta;
     // console.log(req.query.norecdp)
     try {
-        const resultCountNoantrianDokter = await queryPromise2(`select mu2.namaunit as ruanganta,mr.namarekanan,to_char( mp.tgllahir, TO_CHAR(age( mp.tgllahir,  now( )), 'YY Tahun mm Bulan DD Hari')) AS umur,
+        const resultCountNoantrianDokter = await queryPromise2(`select mu2.namaunit as ruanganta,mr.namarekanan, mp.tgllahir AS tgllahirkomplet,
         mj2.jeniskelamin,td.norec as norecdp,ta.norec as norecta,mj.jenispenjamin,ta.taskid,mi.namainstalasi,mp.nocm,td.noregistrasi,mp.namapasien,
         to_char(mp.tgllahir,'dd Month YYYY') as tgllahir,mu.namaunit,
         mp2.reportdisplay || '-' ||ta.noantrian as noantrian,mp2.namalengkap as namadokter  from t_daftarpasien td 
@@ -206,7 +206,10 @@ async function getHeaderEmr(req, res) {
         let pernapasan = ''
         let keadaanumum = ''
         let namagcs = ''
-        for (var i = 0; i < resultTtv.rows.length; ++i) {
+        
+        const norecdp = resultCountNoantrianDokter.rows[0].norecdp
+
+        for (let i = 0; i < resultTtv.rows.length; ++i) {
             beratbadan = resultTtv.rows[0].beratbadan,
                 tinggibadan = resultTtv.rows[0].tinggibadan,
                 suhu = resultTtv.rows[0].suhu,
@@ -219,6 +222,10 @@ async function getHeaderEmr(req, res) {
                 namagcs = resultTtv.rows[0].namagcs
         }
         let tempres = ""
+        let tglLahir = resultCountNoantrianDokter.rows[0].tgllahirkomplet || new Date()
+        let umur = getUmur(new Date(tglLahir), new Date())
+        umur = `${umur.years} Tahun ${umur.months} Bulan ${umur.days} Hari`
+        const deposit = (await pool.query(queries.qGetDepositFromPasien, [norecdp])).rows || []
         for (var i = 0; i < resultCountNoantrianDokter.rows.length; ++i) {
             if (resultCountNoantrianDokter.rows[i] !== undefined) {
                 tempres = {
@@ -226,7 +233,7 @@ async function getHeaderEmr(req, res) {
                     namapasien: resultCountNoantrianDokter.rows[i].namapasien,
                     tgllahir: resultCountNoantrianDokter.rows[i].tgllahir,
                     jeniskelamin: resultCountNoantrianDokter.rows[i].jeniskelamin,
-                    umur: (resultCountNoantrianDokter.rows[i].umur?resultCountNoantrianDokter.rows[i].umur.substring(1):null),
+                    umur: umur,
                     namarekanan: resultCountNoantrianDokter.rows[i].namarekanan,
                     ruanganta: resultCountNoantrianDokter.rows[i].ruanganta,
                     noregistrasi: resultCountNoantrianDokter.rows[i].noregistrasi,
@@ -240,6 +247,7 @@ async function getHeaderEmr(req, res) {
                     pernapasan: pernapasan,
                     keadaanumum: keadaanumum,
                     namagcs: namagcs,
+                    deposit: deposit || []
                 }
 
             }
@@ -253,6 +261,7 @@ async function getHeaderEmr(req, res) {
         });
 
     } catch (error) {
+        console.error(error)
         res.status(500).send({ message: error });
     }
 
@@ -507,7 +516,8 @@ async function editEmrPasienCppt(req, res) {
 async function getListDiagnosa10(req, res) {
 
     const result = await queryPromise2(`SELECT id as value,kodeexternal || ' - '|| reportdisplay as label
-        FROM m_icdx where reportdisplay ilike '%${req.query.namadiagnosa}%' or kodeexternal ilike '%${req.query.namadiagnosa}%' limit 10
+        FROM m_icdx where reportdisplay ilike '%${req.query.namadiagnosa}%' 
+        or kodeexternal ilike '%${req.query.namadiagnosa}%' limit 10
     `);
     if (result.rowCount === 0) {
         res.status(201).send({
@@ -952,19 +962,21 @@ async function updateStatusPulangRJ(req, res) {
     try {
         const daftarpasien = await db.t_daftarpasien.update({
             objectstatuspulangfk: req.body.statuspulang,
-            tglpulang:new Date()
+            tglpulang: new Date()
         }, {
             where: {
                 norec: req.body.norec
-            }
-        }, { transaction });
+            },
+            transaction: transaction
+        });
         const antreanpemeriksaan = await db.t_antreanpemeriksaan.update({
             taskid: 5
         }, {
             where: {
                 norec: req.body.norecta
-            }
-        }, { transaction });
+            },
+            transaction: transaction
+        });
         await transaction.commit();
         let tempres = { daftarpasien: daftarpasien,antreanpemeriksaan:antreanpemeriksaan }
         res.status(200).send({
@@ -987,6 +999,24 @@ async function updateStatusPulangRJ(req, res) {
 }
 
 
+function getUmur (dateOfBirth, tillDate) {
+    var dob = new Date (dateOfBirth);
+    var endDt = new Date (tillDate) || new Date ();
+    var age = {};
+    age.years = endDt.getUTCFullYear () - dob.getUTCFullYear ();
+    age.months = endDt.getUTCMonth () - dob.getUTCMonth ();
+    age.days = endDt.getUTCDate () - dob.getUTCDate ();
+    if (age.days < 0) {
+      age.months--;
+      var daysInMonth = new Date (endDt.getUTCFullYear (), endDt.getUTCMonth (), 0).getUTCDate ();
+      age.days += daysInMonth;
+    }
+    if (age.months < 0) {
+      age.years--;
+      age.months += 12;
+    }
+    return age;
+  }
 
 export default {
     saveEmrPasienTtv,

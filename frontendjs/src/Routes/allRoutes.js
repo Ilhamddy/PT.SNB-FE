@@ -517,7 +517,7 @@ const authProtectedRoutes = [
   { path: "/transaksi-pelayanan-laboratorium/:norecdp/:norecap", component: <TransaksiPelayanLaboratorium /> },
 
   // payment
-  { path: "/payment/verif-tagihan/:norecap", component: <VerifikasiPelayanan /> },
+  { path: "/payment/verif-tagihan/:norecdp", component: <VerifikasiPelayanan /> },
   { path: "/payment/daftar-tagihan", component: <DaftarTagihanPasien /> },
   { path: "/payment/bayar/:norecnota", component: <Bayar /> },
   { path: "/payment/daftar-piutang/:location", component: <DaftarPiutangPasien />},

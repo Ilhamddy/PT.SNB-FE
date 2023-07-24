@@ -47,6 +47,10 @@ const DaftarPasienRJ = () => {
         newDataDokumen: state.KendaliDokumen.saveDokumenRekammedis.newData,
         successDokumen: state.KendaliDokumen.saveDokumenRekammedis.success,
     }));
+    const [userChosen, setUserChosen] = useState({
+        nama: "",
+        id: "",
+    })
     const current = new Date();
     const [dateStart, setdateStart] = useState(`${current.getFullYear()}-${current.getMonth() + 1}-${current.getDate()}`);
     const [dateEnd, setdateEnd] = useState(`${current.getFullYear()}-${current.getMonth() + 1}-${current.getDate()}`);
@@ -108,9 +112,6 @@ const DaftarPasienRJ = () => {
                                 <UncontrolledTooltip placement="top" target="tooltipTop" > Pengkajian Pasien </UncontrolledTooltip>
                             </>
                         }
-
-
-
                         <UncontrolledDropdown className="dropdown d-inline-block">
                             <DropdownToggle className="btn btn-soft-secondary btn-sm" tag="button" id="tooltipTop2">
                                 <i className="ri-apps-2-line"></i>
@@ -136,7 +137,7 @@ const DaftarPasienRJ = () => {
             name: <span className='font-weight-bold fs-13'>No. Registrasi</span>,
             // selector: row => row.noregistrasi,
             sortable: true,
-            selector: row => (<button className="btn btn-sm btn-soft-info" onClick={() => handleClick(data)}>{row.noregistrasi}</button>),
+            selector: row => (<button className="btn btn-sm btn-soft-info" onClick={() => handleClickRM(row)}>{row.noregistrasi}</button>),
             // cell: (data) => {
             //     return (
             //         // <Link to={`/registrasi/pasien/${data.id}`}>Details</Link>
@@ -179,9 +180,11 @@ const DaftarPasienRJ = () => {
         },
     ];
 
-    const handleClick = (e) => {
-
-        // console.log('this is:', e.namapasien);
+    const handleClickRM = (row) => {
+        setUserChosen({
+            nama: row.namapasien,
+            id: row.noidentitas
+        })
     };
     const [idPencarian, setidPencarian] = useState(1);
     const [namaPencarian, setnamaPencarian] = useState('Belum Diperiksa');
@@ -277,9 +280,9 @@ const DaftarPasienRJ = () => {
     }
     const [statusPulangModal, setstatusPulangModal] = useState(false);
     const handleSimpanKonsul = () => {
-        // if (product) {
         setkonsulModal(false);
-        // }
+        dispatch(daftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}`));
+        dispatch(widgetdaftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}`));
     };
     useEffect(() => {
         if (newDataDokumen !== null) {
@@ -361,8 +364,8 @@ const DaftarPasienRJ = () => {
                                         <img src={userDummy}
                                             className="rounded-circle avatar-xl img-thumbnail user-profile-image"
                                             alt="user-profile" />
-                                        <h5 className="fs-17 mb-1">Testing</h5>
-                                        <p className="text-muted mb-0">Testing</p>
+                                        <h5 className="fs-17 mb-1">{userChosen.nama}</h5>
+                                        <p className="text-muted mb-0">{userChosen.id}</p>
                                     </div>
                                 </CardBody>
                             </Card>

@@ -370,12 +370,12 @@ const TandaVital = () => {
                                         ) : null}
                                     </div>
                                 </Col>
-                                <Col lg={6} sm={6}>
+                                <Col lg={5} sm={6}>
                                     <div className="mt-2">
                                         <Label style={{ color: "black" }} htmlFor="gcs" className="form-label fw-semibold">GCS(EMV)</Label>
                                     </div>
                                 </Col>
-                                <Col lg={6} sm={6} className="mt-1">
+                                <Col lg={7} sm={6} className="mt-1">
                                     <Row>
                                         <Col lg={4} sm={6}>
                                             <div>
@@ -530,7 +530,7 @@ const TandaVital = () => {
                             <Row>
                                 <Col lg={6} sm={6}>
                                     <div className="mt-2">
-                                        <Label style={{ color: "black" }} htmlFor="tekanandarah" className="form-label fw-semibold">Tekanan Darah(mmhg)</Label>
+                                        <Label style={{ color: "black" }} htmlFor="tekanandarah" className="form-label fw-semibold">Tekanan Darah(/70mmhg)</Label>
                                     </div>
                                 </Col>
                                 <Col lg={6} sm={6} className="mt-1">
@@ -538,7 +538,7 @@ const TandaVital = () => {
                                         <Input
                                             id="tekanandarah"
                                             name="tekanandarah"
-                                            type="input"
+                                            type="number"
                                             placeholder="Tekanan Darah"
                                             onChange={validation.handleChange}
                                             onBlur={validation.handleBlur}

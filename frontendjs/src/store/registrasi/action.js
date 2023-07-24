@@ -9,12 +9,14 @@ import {
     REGISTRASI_GET,
     REGISTRASI_GET_SUCCESS,
     REGISTRASI_GET_ERROR,
+    REGISTRASI_GET_RESET,
     REGISTRASI_LIST_BYOR_GET,
     REGISTRASI_LIST_BYOR_GET_SUCCESS,
     REGISTRASI_LIST_BYOR_GET_ERROR,
     REGISTRASI_SAVE_RUANGAN, 
     REGISTRASI_SAVE_RUANGAN_ERROR, 
     REGISTRASI_SAVE_RUANGAN_SUCCESS,
+    REGISTRASI_SAVE_RUANGAN_RESET,
     REGISTRASI_NOREGISTRASI_GET,
     REGISTRASI_NOREGISTRASI_GET_SUCCESS,
     REGISTRASI_NOREGISTRASI_GET_ERROR,
@@ -22,6 +24,7 @@ import {
     REGISTRASI_RUANGAN_NOREC_GET,
     REGISTRASI_RUANGAN_NOREC_GET_SUCCESS,
     REGISTRASI_RUANGAN_NOREC_GET_ERROR,
+    REGISTRASI_RUANGAN_NOREC_GET_RESET,
     REGISTRASI_NO_BPJS_GET,
     REGISTRASI_NO_BPJS_GET_SUCCESS,
     REGISTRASI_NO_BPJS_GET_ERROR,
@@ -96,6 +99,10 @@ export const registrasiGetError = (error) => ({
     payload: error,
 });
 
+export const registrasiGetReset = () => ({
+    type: REGISTRASI_GET_RESET,
+});
+
 export const registrasiNoregistrasiGet = (noregistrasi) => ({
     type: REGISTRASI_NOREGISTRASI_GET,
     payload: {noregistrasi},
@@ -131,6 +138,10 @@ export const registrasiSaveRuanganError = (error) => ({
     payload: error,
 });
 
+export const registrasiSaveRuanganReset = () => ({
+    type: REGISTRASI_SAVE_RUANGAN_RESET,
+});
+
 export const registrasiRuanganNorecGet = (norec) => ({
     type: REGISTRASI_RUANGAN_NOREC_GET,
     payload: {norec: norec}
@@ -144,6 +155,10 @@ export const registrasiRuanganNorecGetSuccess = (data) => ({
 export const registrasiRuanganNorecGetError = (error) => ({
     type: REGISTRASI_RUANGAN_NOREC_GET_ERROR,
     payload: error,
+});
+
+export const registrasiRuanganNorecGetReset = () => ({
+    type: REGISTRASI_RUANGAN_NOREC_GET_RESET,
 });
 
 export const registrasiNoBPJSGet = (nobpjs) => ({

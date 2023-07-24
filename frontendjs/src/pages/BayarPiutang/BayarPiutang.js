@@ -104,7 +104,7 @@ const BayarPiutang = () => {
                     }),
                     approvalcode: Yup.string().when("metodebayar", {
                         is: (val) => val === "2",
-                        then: () => Yup.string().required("No. Reference harus diisi"),
+                        then: () => Yup.string().required("Reference Code harus diisi"),
                     }),
                 })
             ),
@@ -172,11 +172,6 @@ const BayarPiutang = () => {
     const handleClickCari = () => {
         dispatch(daftarPasienPulangGet({dateStart, dateEnd, instalasi, unit: "", search}))
     }
-    const handleToVerif = async (norecpp) => {
-        norecpp 
-            && navigate(`/payment/verif-tagihan/${norecpp}`)    
-    }
-
     let totalTagihan = (paymentPiutangPasien?.piutang?.totalnota || 0) 
         - (paymentPiutangPasien?.klaim || 0)
     let grandTotal = paymentPiutangPasien?.piutang?.totalpiutang || 0
@@ -321,14 +316,14 @@ const BayarPiutang = () => {
                                                             style={{ color: "black" }} 
                                                             htmlFor={`approvalcode${iPayment}`}
                                                             className="form-label">
-                                                            No. Reference
+                                                            Reference Code
                                                         </Label>
                                                         <div>
                                                             <Input 
                                                                 id={`approvalcode${iPayment}`}
                                                                 name={`approvalcode${iPayment}`}
                                                                 type="string"
-                                                                placeholder="Masukkan No. Reference"
+                                                                placeholder="Masukkan reference code"
                                                                 value={itemPayment.approvalcode || ""} 
                                                                 onChange={(e) => {
                                                                     rgxAllNumber.test(e.target.value) &&
@@ -496,7 +491,7 @@ const BayarPiutang = () => {
                         <Row>
                             <Col lg={13}>
                                 <Card className="p-3">
-                                    <Row>
+                                    {/* <Row>
                                         <Label style={{ color: "black" }} className="form-label">
                                             Riwayat Pembayaran
                                         </Label>
@@ -510,7 +505,7 @@ const BayarPiutang = () => {
                                             progressPending={false}
                                             customStyles={tableCustomStyles}
                                         />
-                                    </Row>
+                                    </Row> */}
                                     <Row>
                                         <Col lg={2} >
                                             <Label style={{ color: "black" }} htmlFor="keterangan" className="form-label">
@@ -527,8 +522,7 @@ const BayarPiutang = () => {
                                                 style={{ height: '200px' }}
                                                 onChange={validation.handleChange}
                                                 onBlur={validation.handleBlur}
-                                                value={""}
-
+                                                value={nota?.keterangan || ""}
                                             />
                                             {validation.touched.keterangan && validation.errors.keterangan ? (
                                                 <FormFeedback type="invalid"><div>{validation.errors.keterangan}</div></FormFeedback>

@@ -11,9 +11,9 @@ export default function (app) {
     });
 
     app.get(
-        "/api/transaksi/payment/pelayanan-from-antrean/:norecAP",
+        "/api/transaksi/payment/pelayanan-from-antrean/:norecdp",
         [authJwt.verifyToken],
-        controller.getPelayananFromAntrean
+        controller.getPelayananFromDP
     );
 
     app.post(

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import {
     Card, CardBody, CardHeader, Col, Container, Row, Nav, NavItem,
     NavLink, TabContent, TabPane, Button, Label, Input, Table,
@@ -25,6 +25,7 @@ import DeleteModalCustom from '../../../Components/Common/DeleteModalCustom';
 const Diagnosaix = () => {
     const { norecdp, norecap } = useParams();
     const dispatch = useDispatch();
+    const refTipeDiagnosa = useRef(null);
     const { editData, newData, loading, error, success, dataCombo, loadingCombo, successCombo, dataDiagnosa,
         loadingDiagnosa, successDiagnosa,dataRiwayat,loadingRiwayat,successRiwayat,
         newDataDelete } = useSelector((state) => ({
@@ -71,7 +72,6 @@ const Diagnosaix = () => {
         },
         validationSchema: Yup.object({
             kodediagnosa9: Yup.string().required("Diagnosa Belum Diisi"),
-            keteranganicd9: Yup.string().required("Ketrangan Belum Diisi"),
             jumlahtindakan: Yup.string().required("Jumlah Tindakan Belum Diisi")
         }),
         onSubmit: (values, { resetForm }) => {
@@ -98,6 +98,7 @@ const Diagnosaix = () => {
     const handleClickReset = (e) => {
         validation.setFieldValue('kodediagnosa9', '')
         validation.setFieldValue('keteranganicd9', '')
+        refTipeDiagnosa.current?.clearValue();
 
     };
     const handleDiagnosa = characterEntered => {
@@ -228,8 +229,9 @@ const Diagnosaix = () => {
                                                     options={dataDiagnosa}
                                                     value={validation.values.kodediagnosa9 || ""}
                                                     className={`input ${validation.errors.kodediagnosa9 ? "is-invalid" : ""}`}
-                                                    onChange={value => validation.setFieldValue('kodediagnosa9', value.value)}
+                                                    onChange={value => validation.setFieldValue('kodediagnosa9', value?.value || "")}
                                                     onInputChange={handleDiagnosa}
+                                                    ref={refTipeDiagnosa}
                                                 />
                                                 {validation.touched.kodediagnosa9 && validation.errors.kodediagnosa9 ? (
                                                     <FormFeedback type="invalid"><div>{validation.errors.kodediagnosa9}</div></FormFeedback>

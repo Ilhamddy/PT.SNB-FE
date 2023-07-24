@@ -118,4 +118,5 @@ export default function (app) {
         controller.getNoAntrean
     )
 
+
 };

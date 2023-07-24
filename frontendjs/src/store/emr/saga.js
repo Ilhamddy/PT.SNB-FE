@@ -317,7 +317,7 @@ export function* watchdeleteDiagnosaix() {
     yield takeEvery(DELETE_DIAGNOSAIX, deleteDiagnosaix);
 }
 
-function* onKonsulSave({ payload: { data, history } }) {
+function* onKonsulSave({ payload: { data, history, callback } }) {
     try {
         let response = null;
         if (data.norec !== '') {
@@ -326,8 +326,7 @@ function* onKonsulSave({ payload: { data, history } }) {
             response = yield call(serviceEmr.saveKonsul, data);
         }
 
-
-
+        callback && callback()
         yield put(konsulSaveSuccess(response.data));
         if (response.code === 200) {
             toast.success(response.msg, { autoClose: 3000 });

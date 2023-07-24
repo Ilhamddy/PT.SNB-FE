@@ -197,66 +197,6 @@ const DaftarTagihanPasien = () => {
                                 </div>
                             </CardBody>
                         </Card>
-                        <Card>
-                            <CardBody>
-                                <Nav pills className="nav-success mb-3">
-                                    <NavItem>
-                                        <NavLink style={{ cursor: "pointer" }} className={classnames({ active: pillsTab === "1", })} onClick={() => { setpillsTab("1"); }} >
-                                            Profile
-                                        </NavLink>
-                                    </NavItem>
-                                    <NavItem>
-                                        <NavLink style={{ cursor: "pointer" }} className={classnames({ active: pillsTab === "2", })} onClick={() => { setpillsTab("2"); }} >
-                                            Riwayat
-                                        </NavLink>
-                                    </NavItem>
-                                </Nav>
-                                <TabContent activeTab={pillsTab} className="text-muted">
-                                    <TabPane tabId="1" id="home-1">
-                                        <Card>
-                                            <CardBody>
-                                                <div className="table-responsive">
-                                                    <Table className="table-borderless mb-0">
-                                                        <tbody>
-                                                            <tr>
-                                                                <th className="ps-0" scope="row">NoRM :</th>
-                                                                <td className="text-muted">{}</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <th className="ps-0" scope="row">Tgllahir :</th>
-                                                                <td className="text-muted">{}</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <th className="ps-0" scope="row">No BPJS :</th>
-                                                                <td className="text-muted">{}</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <th className="ps-0" scope="row">No Identitas :</th>
-                                                                <td className="text-muted">{}</td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </Table>
-                                                </div>
-                                            </CardBody>
-                                        </Card>
-                                    </TabPane>
-                                    <TabPane tabId="2" id="home-2">
-                                        <Card>
-                                            <CardBody>
-
-                                            </CardBody>
-                                        </Card>
-                                    </TabPane>
-                                    <TabPane tabId="3" id="home-3">
-                                        <Card>
-                                            <CardBody>
-
-                                            </CardBody>
-                                        </Card>
-                                    </TabPane>
-                                </TabContent>
-                            </CardBody>
-                        </Card>
                     </Col>
                     <Col lg={9}>
                         <Form onSubmit={(e) => {
@@ -312,7 +252,7 @@ const DaftarTagihanPasien = () => {
                                     />
                                 </div>
                             </Col>
-                            <Col lg={2}>
+                            {/* <Col lg={2}>
                                 <CustomSelect
                                     id="instalasifilter"
                                     name="instalasifilter"
@@ -332,7 +272,7 @@ const DaftarTagihanPasien = () => {
                                         <i className="ri-search-line search-icon"></i>
                                     </div>
                                 </div>
-                            </Col>
+                            </Col> */}
                             
                             <Col lg={1}>
                                 <Button type="button" className="rounded-pill" placement="top" id="tooltipTopPencarian" onClick={handleClickCari}>

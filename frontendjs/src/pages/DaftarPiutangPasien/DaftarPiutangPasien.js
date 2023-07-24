@@ -25,6 +25,10 @@ const DaftarPiutangPasien = () => {
     const {dataPiutang, comboboxReg} = useSelector((state) => ({
         dataPiutang: state.Payment.daftarPiutangPasienGet.data || []
     }))
+    const [userChosen, setUserChosen] = useState({
+        nama: "",
+        id: "",
+    })
 
     const { location } = useParams();
 
@@ -67,6 +71,12 @@ const DaftarPiutangPasien = () => {
                 norecbayar, 
                 () => dispatch(daftarPiutangPasienGet(location))
             ))
+    }
+    const handleClickUser = (row) => {
+        setUserChosen({
+            nama: row.namapasien,
+            id: row.noidentitas,
+        })
     }
     const columns = [
         {
@@ -111,7 +121,7 @@ const DaftarPiutangPasien = () => {
             name: <span className='font-weight-bold fs-13'>No. Registrasi</span>,
             // selector: row => row.noregistrasi,
             sortable: true,
-            selector: row => (<button className="btn btn-sm btn-soft-info" onClick={() => {}}>{row.noregistrasi}</button>),
+            selector: row => (<button className="btn btn-sm btn-soft-info" onClick={() => handleClickUser(row)}>{row.noregistrasi}</button>),
             width: "130px"
         },
         {
@@ -175,7 +185,7 @@ const DaftarPiutangPasien = () => {
         <div className="page-content daftar-pasien-pulang">
             <ToastContainer closeButton={false} />
             <Container fluid>
-                <BreadCrumb title="Daftar Piutang Pasien" pageTitle="Daftar Piutang Pasien" />
+                <BreadCrumb title={`Daftar Piutang ${location}`} pageTitle={`Daftar Piutang ${location}`} />
                 <Row>
                     <Col lg={3}>
                         <Card>
@@ -185,75 +195,9 @@ const DaftarPiutangPasien = () => {
                                     <img src={userDummy}
                                         className="rounded-circle avatar-xl img-thumbnail user-profile-image"
                                         alt="user-profile" />
-                                    <Input style={{ border: 'none', textAlign: 'center' }}
-                                        id="namapasien"
-                                        name="namapasien"
-                                        type="text"
-                                        onChange={validation.handleChange}
-                                        onBlur={validation.handleBlur}
-                                        value={validation.values.namapasien || ""}
-                                    />
+                                    <h5 className="fs-17 mb-1">{userChosen.nama}</h5>
+                                    <p className="text-muted mb-0">{userChosen.id}</p>
                                 </div>
-                            </CardBody>
-                        </Card>
-                        <Card>
-                            <CardBody>
-                                <Nav pills className="nav-success mb-3">
-                                    <NavItem>
-                                        <NavLink style={{ cursor: "pointer" }} className={classnames({ active: pillsTab === "1", })} onClick={() => { setpillsTab("1"); }} >
-                                            Profile
-                                        </NavLink>
-                                    </NavItem>
-                                    <NavItem>
-                                        <NavLink style={{ cursor: "pointer" }} className={classnames({ active: pillsTab === "2", })} onClick={() => { setpillsTab("2"); }} >
-                                            Riwayat
-                                        </NavLink>
-                                    </NavItem>
-                                </Nav>
-                                <TabContent activeTab={pillsTab} className="text-muted">
-                                    <TabPane tabId="1" id="home-1">
-                                        <Card>
-                                            <CardBody>
-                                                <div className="table-responsive">
-                                                    <Table className="table-borderless mb-0">
-                                                        <tbody>
-                                                            <tr>
-                                                                <th className="ps-0" scope="row">NoRM :</th>
-                                                                <td className="text-muted">{}</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <th className="ps-0" scope="row">Tgllahir :</th>
-                                                                <td className="text-muted">{}</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <th className="ps-0" scope="row">No BPJS :</th>
-                                                                <td className="text-muted">{}</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <th className="ps-0" scope="row">No Identitas :</th>
-                                                                <td className="text-muted">{}</td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </Table>
-                                                </div>
-                                            </CardBody>
-                                        </Card>
-                                    </TabPane>
-                                    <TabPane tabId="2" id="home-2">
-                                        <Card>
-                                            <CardBody>
-
-                                            </CardBody>
-                                        </Card>
-                                    </TabPane>
-                                    <TabPane tabId="3" id="home-3">
-                                        <Card>
-                                            <CardBody>
-
-                                            </CardBody>
-                                        </Card>
-                                    </TabPane>
-                                </TabContent>
                             </CardBody>
                         </Card>
                     </Col>
@@ -311,7 +255,7 @@ const DaftarPiutangPasien = () => {
                                     />
                                 </div>
                             </Col>
-                            <Col lg={2}>
+                            {/* <Col lg={2}>
                                 <CustomSelect
                                     id="instalasifilter"
                                     name="instalasifilter"
@@ -330,7 +274,7 @@ const DaftarPiutangPasien = () => {
                                         <i className="ri-search-line search-icon"></i>
                                     </div>
                                 </div>
-                            </Col>
+                            </Col> */}
                             
                             <Col lg={1}>
                                 <Button type="button" className="rounded-pill" placement="top" id="tooltipTopPencarian" onClick={handleClickCari}>
