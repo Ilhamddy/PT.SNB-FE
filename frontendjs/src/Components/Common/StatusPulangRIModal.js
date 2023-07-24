@@ -404,9 +404,9 @@ const StatusPulangRIModal = ({ norecdp, norecAP, toggle }) => {
                             dateFormat: "Y-m-d H:i",
                             defaultDate: "today"
                         }}
-                        value={dateStart}
+                        value={validation.values.tanggalpulang}
                         onChange={([newDate]) => {
-                            handleBeginOnChangeTglInput("tanggalpulang", newDate.toISOString());
+                            validation.setFieldValue("tanggalpulang", newDate.toISOString());
                         }}
                     />
                     <div className="input-group-text bg-secondary border-secondary text-white"><i className="ri-calendar-2-line"></i></div>
