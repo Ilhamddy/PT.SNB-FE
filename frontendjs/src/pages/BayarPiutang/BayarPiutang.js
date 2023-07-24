@@ -491,7 +491,7 @@ const BayarPiutang = () => {
                         <Row>
                             <Col lg={13}>
                                 <Card className="p-3">
-                                    <Row>
+                                    {/* <Row>
                                         <Label style={{ color: "black" }} className="form-label">
                                             Riwayat Pembayaran
                                         </Label>
@@ -505,7 +505,7 @@ const BayarPiutang = () => {
                                             progressPending={false}
                                             customStyles={tableCustomStyles}
                                         />
-                                    </Row>
+                                    </Row> */}
                                     <Row>
                                         <Col lg={2} >
                                             <Label style={{ color: "black" }} htmlFor="keterangan" className="form-label">
@@ -522,8 +522,7 @@ const BayarPiutang = () => {
                                                 style={{ height: '200px' }}
                                                 onChange={validation.handleChange}
                                                 onBlur={validation.handleBlur}
-                                                value={""}
-
+                                                value={nota?.keterangan || ""}
                                             />
                                             {validation.touched.keterangan && validation.errors.keterangan ? (
                                                 <FormFeedback type="invalid"><div>{validation.errors.keterangan}</div></FormFeedback>

@@ -658,7 +658,7 @@ const Bayar = () => {
                                                 style={{ height: '200px' }}
                                                 onChange={validation.handleChange}
                                                 onBlur={validation.handleBlur}
-                                                value={""}
+                                                value={nota?.keterangan || ""}
                                                 invalid={false}
                                             />
                                         </Col>
