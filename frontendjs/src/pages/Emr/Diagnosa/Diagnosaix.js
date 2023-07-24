@@ -71,7 +71,6 @@ const Diagnosaix = () => {
         },
         validationSchema: Yup.object({
             kodediagnosa9: Yup.string().required("Diagnosa Belum Diisi"),
-            keteranganicd9: Yup.string().required("Ketrangan Belum Diisi"),
             jumlahtindakan: Yup.string().required("Jumlah Tindakan Belum Diisi")
         }),
         onSubmit: (values, { resetForm }) => {
