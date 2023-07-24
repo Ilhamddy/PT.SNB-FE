@@ -173,7 +173,7 @@ const RegistrasiPenjaminFK = () => {
             notelepon: Yup.string().matches(RegExp('^\\d+$'), 'Harus angka')
                 .required("No telepon wajib di isi"),
             catatan: Yup.string().required("Catatan wajib di isi"),
-            kelasditanggung: Yup.string().required("Kelas ditanggung wajib di isi"),
+            // kelasditanggung: Yup.string().required("Kelas ditanggung wajib di isi"),
             statuskecelakaan: Yup.string().required("Status kecelakaan wajib di isi"),
             provinsilakalantas: Yup.string().when("statuskecelakaan", (statuskecelakaan, schema) => {
                 if (statuskecelakaan[0] === '2' || statuskecelakaan[0] === '4') {

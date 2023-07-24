@@ -101,15 +101,19 @@ const EmrHeader = () => {
                             <div className='d-flex justify-content-between mb-1'>
                                 <h6 className="text-muted mb-0">{dataPasienReg?.kelas?.[0]?.namakelas}</h6>
                             </div>
-                            <div className='d-flex justify-content-between mb-1'>
-                                <h6 className="text-muted mb-0">{'Tgl masuk: ' + (new Date(dataPasienReg?.tglregistrasi))
-                                ?.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' }) 
-                                 || "-"}</h6>
-                            </div>
-                            <div className='d-flex justify-content-between mb-1'>
-                                <h6 className="text-muted mb-0">{'Tgl Keluar: ' + new Date(dataPasienReg?.tglpulang)
-                                ?.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' }) || "-"}</h6>
-                            </div>
+                            {dataPasienReg?.tglregistrasi &&
+                                <div className='d-flex justify-content-between mb-1'>
+                                    <h6 className="text-muted mb-0">{'Tgl Masuk: ' + (new Date(dataPasienReg?.tglregistrasi))
+                                    ?.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' }) 
+                                    || "-"}</h6>
+                                </div>
+                            }
+                            {dataPasienReg?.tglpulang && 
+                                <div className='d-flex justify-content-between mb-1'>
+                                    <h6 className="text-muted mb-0">{'Tgl Keluar: ' + new Date(dataPasienReg?.tglpulang)
+                                    ?.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' }) || "-"}</h6>
+                                </div>
+                            }
                         </CardBody>
                     </Card>
                 </Col>
@@ -246,10 +250,10 @@ const EmrHeader = () => {
                                         <h6 className="text-muted mb-0">{dataTtvNol?.tinggibadan || ""} cm</h6>
                                         <h6 className="text-muted mb-0">TB</h6>
                                     </div>
-                                    <div className='d-flex justify-content-between mb-1'>
+                                    {/* <div className='d-flex justify-content-between mb-1'>
                                         <h6 className="text-muted mb-0"></h6>
                                         <h6 className="text-muted mb-0">ALERGI</h6>
-                                    </div>
+                                    </div> */}
                                 </div>
                             </Card>
                         </SwiperSlide>

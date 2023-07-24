@@ -185,10 +185,6 @@ const Bayar = () => {
     const handleClickCari = () => {
         dispatch(daftarPasienPulangGet({dateStart, dateEnd, instalasi, unit: "", search}))
     }
-    const handleToVerif = async (norecpp) => {
-        norecpp 
-            && navigate(`/payment/verif-tagihan/${norecpp}`)    
-    }
 
     const filterRekeningRs = (rekeningRs, nontunaiV) => {
         return rekeningRs?.filter(

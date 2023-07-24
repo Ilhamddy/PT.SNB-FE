@@ -172,11 +172,6 @@ const BayarPiutang = () => {
     const handleClickCari = () => {
         dispatch(daftarPasienPulangGet({dateStart, dateEnd, instalasi, unit: "", search}))
     }
-    const handleToVerif = async (norecpp) => {
-        norecpp 
-            && navigate(`/payment/verif-tagihan/${norecpp}`)    
-    }
-
     let totalTagihan = (paymentPiutangPasien?.piutang?.totalnota || 0) 
         - (paymentPiutangPasien?.klaim || 0)
     let grandTotal = paymentPiutangPasien?.piutang?.totalpiutang || 0

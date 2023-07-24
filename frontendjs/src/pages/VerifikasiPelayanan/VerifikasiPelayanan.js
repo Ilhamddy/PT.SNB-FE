@@ -137,10 +137,7 @@ const VerifikasiPelayanan = () => {
     const handleClickCari = () => {
         dispatch(daftarPasienPulangGet({dateStart, dateEnd, instalasi, unit: "", search}))
     }
-    const handleToVerif = async (norecpp) => {
-        norecpp 
-            && navigate(`/payment/verif-tagihan/${norecpp}`)    
-    }
+
     const handleValuePenjamin = (index, newVal) => {
         let newIsiPenjamin = [...validation.values.isipenjamin];
         const newItem = {...newIsiPenjamin[index]};

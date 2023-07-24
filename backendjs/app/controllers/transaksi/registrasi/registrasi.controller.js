@@ -1225,7 +1225,6 @@ async function getHeaderEmr(req, res) {
     const norecta = req.query.norecta;
     let query = queries.getHeaderEmr + ` where ta.norec ilike '%${norecta}%'`
 
-
     try {
         pool.query(query, (error, resultCountNoantrianDokter) => {
             if (error) {
@@ -1238,12 +1237,14 @@ async function getHeaderEmr(req, res) {
                 let tempres = ""
                 for (var i = 0; i < resultCountNoantrianDokter.rows.length; ++i) {
                     if (resultCountNoantrianDokter.rows[i] !== undefined) {
+                        let umur = new Date(resultCountNoantrianDokter.rows[i].umur)
+                        umur = umur.toISOString()
                         tempres = {
                             nocm: resultCountNoantrianDokter.rows[i].nocm,
                             namapasien: resultCountNoantrianDokter.rows[i].namapasien,
                             tgllahir: resultCountNoantrianDokter.rows[i].tgllahir,
                             jeniskelamin: resultCountNoantrianDokter.rows[i].jeniskelamin,
-                            umur: resultCountNoantrianDokter.rows[i].umur.substring(1),
+                            umur: umur,
                             namarekanan: resultCountNoantrianDokter.rows[i].namarekanan,
                             ruanganta: resultCountNoantrianDokter.rows[i].ruanganta,
                             noregistrasi: resultCountNoantrianDokter.rows[i].noregistrasi
@@ -1376,8 +1377,28 @@ async function getDaftarPasienRawatInap(req, res) {
             success: false,
         })
     }
-
 }
+
+const getDepositFromPasien = async (req, res) => {
+    try{
+        const norecdp = req.query.norecdp;
+        let result = await pool.query(queries.qGetDepositFromPasien, [norecdp])
+        res.status(200).send({
+            data: result.rows,
+            status: "success",
+            success: true,
+        })
+    }catch(e){
+        console.error(e);  
+        res.status(500).send({
+            data: [],
+            status: "error",
+            success: false,
+        })
+    }
+}
+
+
 
 export default {
     allSelect,
@@ -1398,5 +1419,6 @@ export default {
     getDaftarPasienRawatInap,
     getDaftarPasienFilter,
     updateRegistrasiPPulang,
-    getNoAntrean
+    getNoAntrean,
+    getDepositFromPasien
 };

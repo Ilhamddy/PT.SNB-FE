@@ -6,7 +6,7 @@ import { qGetPelayananFromAntrean,
     qDaftarTagihanPasien, 
     qGetPelayananFromVerif, 
     qGetVerif,
-    qGetKepesertaanFromAntrean,
+    qGetKepesertaanFromAntrean as qGetKepesertaanFromDp,
     qGetKepesertaanFromNota,
     qGetPiutangFromDP,
     qGetNotaPelayananPasien,
@@ -39,7 +39,7 @@ const getPelayananFromAntrean = async (req, res) => {
     try{
         const norecap = req.params.norecAP
         const pelayanan = await pool.query(qGetPelayananFromAntrean, [norecap])
-        let kepesertaan = await pool.query(qGetKepesertaanFromAntrean, [norecap])
+        let kepesertaan = await pool.query(qGetKepesertaanFromDp, [norecap])
         kepesertaan = kepesertaan.rows[0]?.list_kpa || []
         kepesertaan = kepesertaan.filter((peserta) => peserta.no_kartu !== null)
         const dp = await pool.query(qGetNorecPenggunaFromAp, [norecap])
@@ -71,7 +71,6 @@ const getPelayananFromVerif = async (req, res) => {
     try{
         const norecnota = req.params.norecnota
         const pelayanan = await pool.query(qGetPelayananFromVerif, [norecnota])
-       
         const verif = await pool.query(qGetVerif, [norecnota])
         const kepesertaan = await pool.query(qGetKepesertaanFromNota, [norecnota])
         const deposit = await pool.query(qGetDepositFromNota, [norecnota])
