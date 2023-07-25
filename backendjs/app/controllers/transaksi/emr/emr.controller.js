@@ -880,10 +880,20 @@ async function saveEmrPasienKonsul(req, res) {
             noantrian: noantrian,
             statusenabled: true,
             objectpegawaifk: req.idPegawai,
+            taskid:3,
+            objectkelasfk:8
         }, { transaction });
+        let norectrm = uuid.v4().substring(0, 32)
+        const t_rm_lokasidokumen = await db.t_rm_lokasidokumen.create({
+            norec: norectrm,
+            objectantreanpemeriksaanfk: norec,
+            objectunitfk: req.body.unittujuan,
+            objectstatuskendalirmfk: 3
+        }, { transaction });
+      
 
         await transaction.commit();
-        let tempres = { antreanPemeriksaan: antreanPemeriksaan }
+        let tempres = { antreanPemeriksaan: antreanPemeriksaan,lokasidokumen:t_rm_lokasidokumen }
         res.status(200).send({
             data: tempres,
             status: "success",

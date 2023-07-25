@@ -405,7 +405,7 @@ async function saveRegistrasiPasien(req, res) {
         let todayMonth = '' + (today.getMonth() + 1)
         if (todayMonth.length < 2)
             todayMonth = '0' + todayMonth;
-        let todayDate = '' + (today.getDate() + 1)
+        let todayDate = '' + (today.getDate())
         if (todayDate.length < 2)
             todayDate = '0' + todayDate;
         let todaystart = formatDate(today)
