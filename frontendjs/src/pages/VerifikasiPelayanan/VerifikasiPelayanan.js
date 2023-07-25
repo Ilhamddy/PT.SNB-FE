@@ -48,8 +48,8 @@ const VerifikasiPelayanan = () => {
     } = useSelector((state) => ({
         dataPasienPlg: state.DaftarPasien.daftarPasienPulangGet.data || [],
         comboboxReg: state.Master.comboRegistrasiGet.data || {},
-        listPelayanan: state.Payment.pelayananFromNoAntrianGet.data?.pelayanan || null,
-        penjaminGet: state.Payment.pelayananFromNoAntrianGet.data?.kepesertaan || [],
+        listPelayanan: state.Payment.pelayananFromDPGet.data?.pelayanan || null,
+        penjaminGet: state.Payment.pelayananFromDPGet.data?.kepesertaan || [],
     }))
     const penjaminExist = penjaminGet.length !== 0
     const [listPelayananChecked, setListPelayananChecked] = useState([])

@@ -71,9 +71,8 @@ const qGetKepesertaanFromAntrean =
         kpa.objectpenjaminfk
     )) AS list_kpa
     FROM t_daftarpasien dp
-        LEFT JOIN t_antreanpemeriksaan ap ON ap.objectdaftarpasienfk = dp.norec
-        LEFT JOIN t_kepesertaanasuransi kpa ON kpa.objectdaftarpasienfk = dp.norec
-        LEFT JOIN m_rekanan mr ON mr.id = kpa.objectpenjaminfk
+        LEFT JOIN t_kepesertaanasuransi kpa ON dp.norec = kpa.objectdaftarpasienfk
+        JOIN m_rekanan mr ON mr.id = kpa.objectpenjaminfk
             WHERE dp.norec=$1
     `
 

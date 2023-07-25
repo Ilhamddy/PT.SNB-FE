@@ -530,7 +530,7 @@ const TandaVital = () => {
                             <Row>
                                 <Col lg={6} sm={6}>
                                     <div className="mt-2">
-                                        <Label style={{ color: "black" }} htmlFor="tekanandarah" className="form-label fw-semibold">Tekanan Darah(/70mmhg)</Label>
+                                        <Label style={{ color: "black" }} htmlFor="tekanandarah" className="form-label fw-semibold">Tekanan Darah(mmhg)</Label>
                                     </div>
                                 </Col>
                                 <Col lg={6} sm={6} className="mt-1">
@@ -538,9 +538,11 @@ const TandaVital = () => {
                                         <Input
                                             id="tekanandarah"
                                             name="tekanandarah"
-                                            type="number"
+                                            type="string"
                                             placeholder="Tekanan Darah"
-                                            onChange={validation.handleChange}
+                                            onChange={(e) => {
+                                                
+                                            }}
                                             onBlur={validation.handleBlur}
                                             value={validation.values.tekanandarah || ""}
                                             invalid={
