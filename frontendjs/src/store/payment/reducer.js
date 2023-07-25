@@ -1,8 +1,8 @@
 import {
-    PELAYANAN_FROM_ANTREAN_GET,
-    PELAYANAN_FROM_ANTREAN_GET_SUCCESS,
-    PELAYANAN_FROM_ANTREAN_GET_ERROR,
-    PELAYANAN_FROM_ANTREAN_GET_RESET,
+    PELAYANAN_FROM_DP_GET,
+    PELAYANAN_FROM_DP_GET_SUCCESS,
+    PELAYANAN_FROM_DP_GET_ERROR,
+    PELAYANAN_FROM_DP_GET_RESET,
     NOTA_VERIF_CREATE,
     NOTA_VERIF_CREATE_SUCCESS,
     NOTA_VERIF_CREATE_ERROR,
@@ -38,7 +38,7 @@ import {
 } from "./actionType";
 
 const INIT_STATE = {
-    pelayananFromNoAntrianGet: {
+    pelayananFromDPGet: {
         data: [],
         loading: false,
         success: false,
@@ -96,41 +96,41 @@ const INIT_STATE = {
 
 const payment = (state = INIT_STATE, action) => {
     switch (action.type) {
-        case PELAYANAN_FROM_ANTREAN_GET:
+        case PELAYANAN_FROM_DP_GET:
             return {
                 ...state,
-                pelayananFromNoAntrianGet: {
-                    ...state.pelayananFromNoAntrianGet,
+                pelayananFromDPGet: {
+                    ...state.pelayananFromDPGet,
                     data: [],
                     loading: true,
                     error: null,
                 },
             };
-        case PELAYANAN_FROM_ANTREAN_GET_SUCCESS:
+        case PELAYANAN_FROM_DP_GET_SUCCESS:
             return {
                 ...state,
-                pelayananFromNoAntrianGet: {
-                    ...state.pelayananFromNoAntrianGet,
+                pelayananFromDPGet: {
+                    ...state.pelayananFromDPGet,
                     data: action.payload,
                     loading: false,
                     error: null,
                 },
             };
-        case PELAYANAN_FROM_ANTREAN_GET_ERROR:
+        case PELAYANAN_FROM_DP_GET_ERROR:
             return {
                 ...state,
-                pelayananFromNoAntrianGet: {
-                    ...state.pelayananFromNoAntrianGet,
+                pelayananFromDPGet: {
+                    ...state.pelayananFromDPGet,
                     data: [],
                     loading: false,
                     error: action.payload,
                 },
             };
-        case PELAYANAN_FROM_ANTREAN_GET_RESET:
+        case PELAYANAN_FROM_DP_GET_RESET:
             return {
                 ...state,
-                pelayananFromNoAntrianGet: {
-                    ...state.pelayananFromNoAntrianGet,
+                pelayananFromDPGet: {
+                    ...state.pelayananFromDPGet,
                     data: [],
                     success: false,
                     loading: false,

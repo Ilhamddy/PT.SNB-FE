@@ -18,7 +18,7 @@ import {
     comboRegistrasiGet,
 } from "../../store/master/action";
 import { 
-    pelayananFromAntreanGet,
+    pelayananFromDpGet,
     notaVerifCreate,
     pelayananFromVerifGet,
     pelayananFromVerifGetReset,

@@ -17,7 +17,7 @@ import {
     comboRegistrasiGet,
 } from "../../store/master/action";
 import { 
-    pelayananFromAntreanGet,
+    pelayananFromDpGet,
     notaVerifCreate
 } from "../../store/payment/action";
 import CustomSelect from "../Select/Select";
@@ -46,10 +46,10 @@ const VerifikasiPelayanan = () => {
         listPelayanan,
         penjaminGet
     } = useSelector((state) => ({
-        dataPasienPlg: state.DaftarPasien.daftarPasienPulangGet.data || [],
+        dataPasienPlg: state.DaftarPasien.daftarPasienPulangGet?.data || [],
         comboboxReg: state.Master.comboRegistrasiGet.data || {},
-        listPelayanan: state.Payment.pelayananFromNoAntrianGet.data?.pelayanan || null,
-        penjaminGet: state.Payment.pelayananFromNoAntrianGet.data?.kepesertaan || [],
+        listPelayanan: state.Payment.pelayananFromDPGet.data?.pelayanan || null,
+        penjaminGet: state.Payment.pelayananFromDPGet.data?.kepesertaan || [],
     }))
     const penjaminExist = penjaminGet.length !== 0
     const [listPelayananChecked, setListPelayananChecked] = useState([])
@@ -90,7 +90,8 @@ const VerifikasiPelayanan = () => {
                     Number(newIsiPenjamin.value.replace(rgxAllPeriods, ""));
                 return newIsiPenjamin
             }) 
-            dispatch(notaVerifCreate(newValue, () => {dispatch(pelayananFromAntreanGet(norecdp))}))
+            dispatch(notaVerifCreate(newValue, () => {dispatch(pelayananFromDpGet(norecdp))}))
+            setTouched({})
         }
     })
 
@@ -143,7 +144,7 @@ const VerifikasiPelayanan = () => {
         const withChecked = listPelayanan.map((pelayanan) => {
             return {
                 ...pelayanan,
-                checked: !isCheckedAll
+                checked: !pelayanan.no_nota && !isCheckedAll
             }   
         })
         setListPelayananChecked(withChecked)
@@ -170,7 +171,7 @@ const VerifikasiPelayanan = () => {
     }, [penjaminGet, validation.setFieldValue])
 
     useEffect(() => {
-        dispatch(pelayananFromAntreanGet(norecdp));
+        dispatch(pelayananFromDpGet(norecdp));
     }, [dispatch, norecdp])
 
     useEffect(() => {

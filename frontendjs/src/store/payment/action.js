@@ -1,7 +1,7 @@
-import { PELAYANAN_FROM_ANTREAN_GET,
-    PELAYANAN_FROM_ANTREAN_GET_SUCCESS,
-    PELAYANAN_FROM_ANTREAN_GET_ERROR,
-    PELAYANAN_FROM_ANTREAN_GET_RESET,
+import { PELAYANAN_FROM_DP_GET,
+    PELAYANAN_FROM_DP_GET_SUCCESS,
+    PELAYANAN_FROM_DP_GET_ERROR,
+    PELAYANAN_FROM_DP_GET_RESET,
     NOTA_VERIF_CREATE,
     NOTA_VERIF_CREATE_SUCCESS,
     NOTA_VERIF_CREATE_ERROR,
@@ -35,30 +35,30 @@ import { PELAYANAN_FROM_ANTREAN_GET,
     PAYMENT_PIUTANG_PASIEN_GET_RESET,
 } from "./actionType";
 
-export const pelayananFromAntreanGet = (norecap) => {
+export const pelayananFromDpGet = (norecap) => {
     return {
-        type: PELAYANAN_FROM_ANTREAN_GET,
+        type: PELAYANAN_FROM_DP_GET,
         payload: {norecap}
     }
 }
 
-export const pelayananFromAntreanGetSuccess = (data) => {
+export const pelayananFromDpGetSuccess = (data) => {
     return {
-        type: PELAYANAN_FROM_ANTREAN_GET_SUCCESS,
+        type: PELAYANAN_FROM_DP_GET_SUCCESS,
         payload: data
     }
 }
 
-export const pelayananFromAntreanGetError = (error) => {
+export const pelayananFromDpGetError = (error) => {
     return {
-        type: PELAYANAN_FROM_ANTREAN_GET_ERROR,
+        type: PELAYANAN_FROM_DP_GET_ERROR,
         payload: error
     }
 }
 
-export const pelayananFromAntreanGetReset = () => {
+export const pelayananFromDpGetReset = () => {
     return {
-        type: PELAYANAN_FROM_ANTREAN_GET_RESET,
+        type: PELAYANAN_FROM_DP_GET_RESET,
         payload: {}
     }
 }

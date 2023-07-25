@@ -73,7 +73,11 @@ const getPelayananFromVerif = async (req, res) => {
         const deposit = await pool.query(qGetDepositFromNota, [norecnota])
         let buktiBayar = await pool.query(qGetBuktiBayarFromNota, [norecnota])
         buktiBayar = buktiBayar.rows[0] || null
-        buktiBayar.createdCaraBayar = (await pool.query(qGetCaraBayarFromBB, [buktiBayar.norec])).rows || []
+        if(buktiBayar){
+            buktiBayar.createdCaraBayar 
+                = ((await pool.query(qGetCaraBayarFromBB, [buktiBayar.norec])).rows)
+        }
+
         let tempres = { 
             pelayanan: pelayanan.rows || [],
             nota: verif.rows[0] || null,

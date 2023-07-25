@@ -1,7 +1,7 @@
 import { call, put, takeEvery, all, fork } from "redux-saga/effects";
 import { 
-    pelayananFromAntreanGetError, 
-    pelayananFromAntreanGetSuccess,
+    pelayananFromDpGetError, 
+    pelayananFromDpGetSuccess,
     notaVerifCreateSuccess,
     notaVerifCreateError,
     daftarTagihanPasienGetSuccess,
@@ -21,7 +21,7 @@ import {
 } from "./action";
 
 import {
-    PELAYANAN_FROM_ANTREAN_GET, 
+    PELAYANAN_FROM_DP_GET, 
     NOTA_VERIF_CREATE,
     DAFTAR_TAGIHAN_PASIEN_GET,
     PELAYANAN_FROM_VERIF_GET,
@@ -41,9 +41,9 @@ const servicePayment = new ServicePayment();
 function* onGetPelayananFromAntrean( {payload: {norecap}}) {
     try {
         const response = yield call(servicePayment.getPelayananFromAntrean, norecap);
-        yield put(pelayananFromAntreanGetSuccess(response.data));
+        yield put(pelayananFromDpGetSuccess(response.data));
     } catch (error) {
-        yield put(pelayananFromAntreanGetError(error));
+        yield put(pelayananFromDpGetError(error));
     }
 }
 
@@ -135,7 +135,7 @@ function* onGetPaymentForPiutang({payload: {norecpiutang}}) {
 }
 
 export function* watchGetPelayananFromAntrean() {
-    yield takeEvery(PELAYANAN_FROM_ANTREAN_GET, onGetPelayananFromAntrean);
+    yield takeEvery(PELAYANAN_FROM_DP_GET, onGetPelayananFromAntrean);
 }
 
 export function* watchGetNotaVerifCreate() {
