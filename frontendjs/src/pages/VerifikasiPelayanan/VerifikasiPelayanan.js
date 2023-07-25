@@ -46,7 +46,7 @@ const VerifikasiPelayanan = () => {
         listPelayanan,
         penjaminGet
     } = useSelector((state) => ({
-        dataPasienPlg: state.DaftarPasien.daftarPasienPulangGet.data || [],
+        dataPasienPlg: state.DaftarPasien.daftarPasienPulangGet?.data || [],
         comboboxReg: state.Master.comboRegistrasiGet.data || {},
         listPelayanan: state.Payment.pelayananFromDPGet.data?.pelayanan || null,
         penjaminGet: state.Payment.pelayananFromDPGet.data?.kepesertaan || [],
@@ -91,6 +91,7 @@ const VerifikasiPelayanan = () => {
                 return newIsiPenjamin
             }) 
             dispatch(notaVerifCreate(newValue, () => {dispatch(pelayananFromDpGet(norecdp))}))
+            setTouched({})
         }
     })
 
@@ -143,7 +144,7 @@ const VerifikasiPelayanan = () => {
         const withChecked = listPelayanan.map((pelayanan) => {
             return {
                 ...pelayanan,
-                checked: !isCheckedAll
+                checked: !pelayanan.no_nota && !isCheckedAll
             }   
         })
         setListPelayananChecked(withChecked)
