@@ -2,7 +2,7 @@ import pool from "../../../config/dbcon.query";
 import * as uuid from 'uuid'
 import queries from '../../../queries/transaksi/registrasi.queries';
 import db from "../../../models";
-import {formatDateIsoShort} from "../../../utils/format";
+import { formatDateIsoShort } from "../../../utils/format";
 const M_pasien = db.m_pasien
 const running_Number = db.running_number
 const t_daftarpasien = db.t_daftarpasien
@@ -173,10 +173,10 @@ const getAllByOr = (req, res) => {
             taskid = ` and ta.taskid=4`;
         } else if (req.query.taskid === '3') {
             taskid = ` and ta.taskid in (5,6,7,8,9)`;
-        }else if(req.query.taskid==='1'){
+        } else if (req.query.taskid === '1') {
             taskid = ` and ta.taskid=3`;
         }
-    }else{
+    } else {
         taskid = ` and ta.taskid=3`;
     }
     pool.query(query, (error, result) => {
@@ -212,9 +212,9 @@ const getAllByOr = (req, res) => {
 
 const savePasien = async (req, res) => {
     let transaction = null;
-    try{
+    try {
         transaction = await db.sequelize.transaction();
-    }catch(e){
+    } catch (e) {
         console.error(e);
         // await transaction.rollback();
         res.status(500).send({
@@ -382,9 +382,9 @@ const saveRegistrasiPasien2 = (req, res) => {
 }
 async function saveRegistrasiPasien(req, res) {
     let transaction = null;
-    try{
+    try {
         transaction = await db.sequelize.transaction();
-    }catch(e){
+    } catch (e) {
         console.error(e);
         // await transaction.rollback();
         res.status(500).send({
@@ -432,10 +432,10 @@ async function saveRegistrasiPasien(req, res) {
 
         let tglpulang = req.body.tglregistrasi
         if (req.body.tujkunjungan === 2) {
-            
+
             let queryCekBed = `select id from m_tempattidur
             where objectstatusbedfk =1 and id=${req.body.tempattidur}`
-            
+
             let resqueryCekBed = await pool.query(queryCekBed);
             if (resqueryCekBed.rowCount === 1) {
                 await transaction.rollback();
@@ -457,7 +457,7 @@ async function saveRegistrasiPasien(req, res) {
             // }, { transaction });
         }
 
-        
+
         const daftarPasien = await db.t_daftarpasien.create({
             norec: norecDP,
             nocmfk: req.body.id,
@@ -491,7 +491,7 @@ async function saveRegistrasiPasien(req, res) {
             objectkamarfk: req.body.kamar,
             objectkelasfk: req.body.kelas,
             nobed: req.body.tempattidur,
-            taskid:3,
+            taskid: 3,
             statusenabled: true
         }, { transaction });
         // console.log(antreanPemeriksaan);
@@ -554,9 +554,9 @@ const getNoAntrean = async (req, res) => {
 
 const updateRegistrasiPPulang = async (req, res) => {
     let transaction = null;
-    try{
+    try {
         transaction = await db.sequelize.transaction();
-    }catch(e){
+    } catch (e) {
         console.error("Error transaction registrasiPPulang")
         console.error(e);
         // await transaction.rollback();
@@ -568,11 +568,11 @@ const updateRegistrasiPPulang = async (req, res) => {
         });
         return;
     }
-    try{
-        if(!req.body.norec){
+    try {
+        if (!req.body.norec) {
             throw new Error('norec tidak boleh kosong');
         }
-        if(!req.body.norecAP){
+        if (!req.body.norecAP) {
             throw new Error('norecAP tidak boleh kosong');
         }
         const norecDP = req.body.norec
@@ -596,7 +596,7 @@ const updateRegistrasiPPulang = async (req, res) => {
             tglkeluar: objectBody.tanggalpulang,
         }
         const objectEditMeninggal = {
-            ...objectEdit, 
+            ...objectEdit,
             tglmeninggal: objectBody.tanggalmeninggal
         }
 
@@ -634,7 +634,7 @@ const updateRegistrasiPPulang = async (req, res) => {
         let updatedBodyAp = null;
         let updatedBodyK = null;
         let updatedBodyKPindah = null;
-        if(isPulangOrAPS){
+        if (isPulangOrAPS) {
             updatedBody = await db.t_daftarpasien.update(objectEdit, {
                 where: {
                     norec: norecDP
@@ -649,12 +649,13 @@ const updateRegistrasiPPulang = async (req, res) => {
             });
             await db.m_tempattidur.update({
                 objectstatusbedfk: 2
-            }, { where: { 
-                    id: objectBody.nobedsebelum 
+            }, {
+                where: {
+                    id: objectBody.nobedsebelum
                 },
                 transaction: transaction
             });
-        }else if(isMeninggal){
+        } else if (isMeninggal) {
             updatedBody = await db.t_daftarpasien.update(objectEditMeninggal, {
                 where: {
                     norec: norecDP
@@ -669,13 +670,13 @@ const updateRegistrasiPPulang = async (req, res) => {
             });
             updatedBodyK = await db.m_tempattidur.update({
                 objectstatusbedfk: 2
-            }, { 
-                where: { 
-                    id: objectBody.nobedsebelum 
+            }, {
+                where: {
+                    id: objectBody.nobedsebelum
                 },
                 transaction: transaction
             });
-        }else if(isRujuk){
+        } else if (isRujuk) {
             updatedBody = await db.t_daftarpasien.update(objectEditRujuk, {
                 where: {
                     norec: norecDP
@@ -690,15 +691,15 @@ const updateRegistrasiPPulang = async (req, res) => {
             });
             updatedBodyK = await db.m_tempattidur.update({
                 objectstatusbedfk: 2
-            }, { 
-                where: { 
+            }, {
+                where: {
                     id: objectBody.nobedsebelum
                 },
                 transaction: transaction
             });
             updatedBody = objectEditRujuk
             updatedBodyAp = objectEditAP
-        }else if(isPindah){
+        } else if (isPindah) {
             updatedBody = await db.t_daftarpasien.update(objectEditPindahDp, {
                 where: {
                     norec: norecDP
@@ -713,9 +714,9 @@ const updateRegistrasiPPulang = async (req, res) => {
             });
             updatedBodyK = await db.m_tempattidur.update({
                 objectstatusbedfk: 2
-            }, { 
-                where: { 
-                    id: objectBody.nobedsebelum 
+            }, {
+                where: {
+                    id: objectBody.nobedsebelum
                 },
                 transaction: transaction
             });
@@ -725,15 +726,15 @@ const updateRegistrasiPPulang = async (req, res) => {
             updatedBody = objectEditPindahDp
             updatedBodyAp = objectEditPindahAp
 
-        }else{
+        } else {
             throw new Error('cara keluar tidak ditemukan')
         }
         await transaction.commit();
-        if(updatedBody && updatedBodyAp){
+        if (updatedBody && updatedBodyAp) {
             updatedBody.norec = norecDP
             updatedBodyAp.norec = norecAP
         }
-        let tempres = { updatedBody, updatedBodyAp, updatedBodyK, updatedBodyKPindah}
+        let tempres = { updatedBody, updatedBodyAp, updatedBodyK, updatedBodyKPindah }
         res.status(200).send({
             data: tempres,
             status: "success",
@@ -741,8 +742,8 @@ const updateRegistrasiPPulang = async (req, res) => {
             msg: 'Update Pulang Berhasil',
             code: 200
         });
-        
-    }catch(e){
+
+    } catch (e) {
         console.error("Error update registrasiPPulang")
         console.error(e);
         res.status(500).send({
@@ -755,9 +756,9 @@ const updateRegistrasiPPulang = async (req, res) => {
 }
 const getRegistrasiPasienNorec = async (req, res) => {
     let transaction = null;
-    try{
+    try {
         transaction = await db.sequelize.transaction();
-    }catch(e){
+    } catch (e) {
         res.status(500).send({
             status: e,
             success: false,
@@ -769,7 +770,7 @@ const getRegistrasiPasienNorec = async (req, res) => {
     }
     try {
         const norec = req.params.norec;
-        if(!JSON.stringify(norec)){
+        if (!JSON.stringify(norec)) {
             throw new Error('norec tidak boleh kosong')
         }
         let ruanganpasien = await pool
@@ -799,15 +800,15 @@ const getRegistrasiPasienNorec = async (req, res) => {
                 where t_daftarpasien.norec = $1
                 group by t_daftarpasien.norec
             `
-            , [norec])
-        if(ruanganpasien.rows[0]){
+                , [norec])
+        if (ruanganpasien.rows[0]) {
             ruanganpasien.rows[0].penjamin1 = ruanganpasien.rows[0].penjamin1?.[0] || null
             ruanganpasien.rows[0].penjamin2 = ruanganpasien.rows[0].penjamin2?.[0] || null
             ruanganpasien.rows[0].penjamin3 = ruanganpasien.rows[0].penjamin3?.[0] || null
         }
 
 
-        if(ruanganpasien.rows.length === 0){
+        if (ruanganpasien.rows.length === 0) {
             res.status(404).send({
                 data: [],
                 success: false,
@@ -823,7 +824,7 @@ const getRegistrasiPasienNorec = async (req, res) => {
             msg: 'Data Berhasil',
             code: 200
         })
-    }catch (error) {
+    } catch (error) {
         console.error("Error getRegistrasiPasienNorec")
         console.error(error);
         res.status(500).send({
@@ -864,8 +865,8 @@ const getDaftarPasienFilter = async (req, res) => {
                 left join m_rekanan mrk on mrk.id = td.objectpenjaminfk
                     WHERE 
                     td.tglpulang IS NOT null
-                    ${(filterTglStart && filterTglLast) ? 
-                        `AND td.tglpulang BETWEEN '${filterTglStart}' AND '${filterTglLast}'` : ''}
+                    ${(filterTglStart && filterTglLast) ?
+                    `AND td.tglpulang BETWEEN '${filterTglStart}' AND '${filterTglLast}'` : ''}
                     ${filterInstalasi ? `AND td.objectinstalasifk = ${filterInstalasi}` : ''}
                     ORDER BY td.tglpulang DESC
                     LIMIT 25
@@ -873,7 +874,7 @@ const getDaftarPasienFilter = async (req, res) => {
             )
 
 
-        if(daftarpasien.rows.length === 0){
+        if (daftarpasien.rows.length === 0) {
             res.status(200).send({
                 data: [],
                 success: true,
@@ -888,7 +889,7 @@ const getDaftarPasienFilter = async (req, res) => {
             msg: 'Data Berhasil',
             code: 200
         })
-    }catch (error) {
+    } catch (error) {
         console.error(error);
         res.status(500).send({
             status: error,
@@ -901,9 +902,9 @@ const getDaftarPasienFilter = async (req, res) => {
 
 const saveRegistrasiPenjaminFK = async (req, res) => {
     let transaction = null;
-    try{
+    try {
         transaction = await db.sequelize.transaction();
-    }catch(e){
+    } catch (e) {
         console.error(e)
         res.status(201).send({
             status: e.message,
@@ -913,11 +914,11 @@ const saveRegistrasiPenjaminFK = async (req, res) => {
         });
         return;
     }
-    try{
+    try {
         let norecPenjaminFK = uuid.v4().substring(0, 32)
         const dataForm = req.body
         let daftarPasien = null;
-        if(!!dataForm.nokartunonbpjs){
+        if (!!dataForm.nokartunonbpjs) {
             daftarPasien = await db.t_kepesertaanasuransi.create({
                 norec: norecPenjaminFK,
                 objectdaftarpasienfk: dataForm.norecdp,
@@ -926,8 +927,8 @@ const saveRegistrasiPenjaminFK = async (req, res) => {
                 objectdpjpfk: dataForm.dpjpmelayani,
                 objectpenjaminfk: dataForm.penjamin,
                 plafon: dataForm.plafon,
-            }, {transaction: transaction})
-        }else{
+            }, { transaction: transaction })
+        } else {
             daftarPasien = await db.t_kepesertaanasuransi.create({
                 norec: norecPenjaminFK,
                 objectdaftarpasienfk: dataForm.norecdp,
@@ -965,8 +966,8 @@ const saveRegistrasiPenjaminFK = async (req, res) => {
                 objectkelasfk: dataForm.kelasditanggung || null,
             }, { transaction: transaction });
         }
-        
-        
+
+
         await transaction.commit();
         let tempres = { daftarPasien: daftarPasien }
         res.status(200).send({
@@ -976,7 +977,7 @@ const saveRegistrasiPenjaminFK = async (req, res) => {
             msg: 'Simpan Berhasil',
             code: 200
         });
-    } catch(error){
+    } catch (error) {
         transaction && await transaction.rollback();
         console.error(error);
         res.status(201).send({
@@ -1085,17 +1086,24 @@ async function getDaftarPasienRawatJalan(req, res) {
             taskid = ` and ta.taskid=4`;
         } else if (req.query.taskid === '3') {
             taskid = ` and ta.taskid in (5,6,7,8,9)`;
-        }else if(req.query.taskid==='1'){
+        } else if (req.query.taskid === '1') {
             taskid = ` and ta.taskid=3`;
         }
-    }else{
+    } else {
         taskid = ` and ta.taskid=3`;
+    }
+
+    let unit = ''
+    if (req.query.unit !== undefined) {
+        unit = ` and ta.objectunitfk=${req.query.unit}`
     }
     // let query = queries.getAllByOr + ` where nocm ilike '%` + nocm + `%'` + ` or namapasien ilike '%` + nocm + `%' limit 200`
     let query = queries.getDaftarPasienRawatJalan + `  where td.noregistrasi ilike '%${noregistrasi}%'
     ${tglregistrasi} ${taskid} and td.objectinstalasifk=1 and trm.objectstatuskendalirmfk is not null
+    ${unit}
     ORDER BY td.tglregistrasi DESC`
-   
+
+    console.log(req.query.unit)
 
     try {
         const resultCountNoantrianDokter = await pool.query(query, [])
@@ -1139,10 +1147,10 @@ async function getWidgetDaftarPasienRJ(req, res) {
             taskid = ` and ta.taskid=4`;
         } else if (req.query.taskid === '3') {
             taskid = ` and ta.taskid in (5,6,7,8,9)`;
-        }else if(req.query.taskid==='1'){
+        } else if (req.query.taskid === '1') {
             taskid = ` and ta.taskid=3`;
         }
-    }else{
+    } else {
         taskid = ` and ta.taskid=3`;
     }
     let query = queries.getDaftarPasienRawatJalan + `  where td.noregistrasi ilike '%${noregistrasi}%'
@@ -1163,7 +1171,7 @@ async function getWidgetDaftarPasienRJ(req, res) {
                     totalBP = totalBP + 1
                 } else if (resultCountNoantrianDokter.rows[x].taskid == 4) {
                     totalSP = totalSP + 1
-                    
+
                 } else {
                     totalSSP = totalSSP + 1
                 }
@@ -1350,7 +1358,7 @@ async function getDaftarPasienRawatInap(req, res) {
 
 
     let query = queries.getDaftarPasienRawatInap + ` and td.noregistrasi ilike '%${noregistrasi}%'`
-    + `ORDER BY td.tglregistrasi DESC`
+        + `ORDER BY td.tglregistrasi DESC`
 
     try {
         let resultCountNoantrianDokter = await pool.query(query, [])
@@ -1363,7 +1371,7 @@ async function getDaftarPasienRawatInap(req, res) {
                     deposit: deposit.rows
                 }
             }
-        ))
+            ))
         res.status(200).send({
             data: resultsDeposit,
             status: "success",
@@ -1371,7 +1379,7 @@ async function getDaftarPasienRawatInap(req, res) {
         });
 
     } catch (error) {
-        console.error(error);  
+        console.error(error);
         res.status(500).send({
             data: [],
             status: "error",
@@ -1381,7 +1389,7 @@ async function getDaftarPasienRawatInap(req, res) {
 }
 
 const getDepositFromPasien = async (req, res) => {
-    try{
+    try {
         const norecdp = req.query.norecdp;
         let result = await pool.query(queries.qGetDepositFromPasien, [norecdp])
         res.status(200).send({
@@ -1389,8 +1397,8 @@ const getDepositFromPasien = async (req, res) => {
             status: "success",
             success: true,
         })
-    }catch(e){
-        console.error(e);  
+    } catch (e) {
+        console.error(e);
         res.status(500).send({
             data: [],
             status: "error",
