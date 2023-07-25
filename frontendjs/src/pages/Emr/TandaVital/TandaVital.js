@@ -17,6 +17,7 @@ import classnames from "classnames";
 import { useFormik, yupToFormErrors } from "formik";
 import * as Yup from "yup";
 import DataTable from 'react-data-table-component';
+import { rgxWithSlash } from '../../../utils/regexcommon';
 
 const TandaVital = () => {
     const { norecdp, norecap } = useParams();
@@ -541,7 +542,8 @@ const TandaVital = () => {
                                             type="string"
                                             placeholder="Tekanan Darah"
                                             onChange={(e) => {
-                                                
+                                                rgxWithSlash.test(e.target.value) 
+                                                    && validation.handleChange(e)
                                             }}
                                             onBlur={validation.handleBlur}
                                             value={validation.values.tekanandarah || ""}
