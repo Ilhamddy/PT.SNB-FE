@@ -274,6 +274,7 @@ import Bayar from "../pages/Bayar/Bayar";
 import KlaimInacbg from "../pages/Casemix/KlaimInacbg/KlaimInacbg";
 import DaftarPiutangPasien from "../pages/DaftarPiutangPasien/DaftarPiutangPasien";
 import BayarPiutang from "../pages/BayarPiutang/BayarPiutang";
+import SettingProduk from "../pages/SettingProduk/SettingProduk";
 
 
 
@@ -524,7 +525,10 @@ const authProtectedRoutes = [
   { path: "/payment/bayar/piutang/:norecpiutang/:norecnota", component: <BayarPiutang /> },
 
   // casemix
-  { path: "/casemix/klaiminacbg", component: <KlaimInacbg /> }
+  { path: "/casemix/klaiminacbg", component: <KlaimInacbg /> },
+
+  // farmasi
+  { path: "/farmasi/gudang/setting-produk/:tabopen", component: <SettingProduk /> },
 
 ];
 

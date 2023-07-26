@@ -229,20 +229,24 @@ const PasienBaru = () => {
                             <Card className="mt-xxl-n5">
                                 <div className="card-header align-items-center d-flex">
                                     <div className="flex-shrink-0 ms-2">
-
                                         <Nav tabs className="nav justify-content-end nav-tabs-custom rounded card-header-tabs border-bottom-0">
                                             <NavItem>
-                                                <NavLink style={{ cursor: "pointer", fontWeight: "bold" }} className={classnames({ active: cardHeaderTab === "1", })} onClick={() => { cardHeaderToggle("1"); }} >
+                                                <NavLink 
+                                                    style={{ cursor: "pointer", fontWeight: "bold" }} 
+                                                    className={classnames({ active: cardHeaderTab === "1", })} 
+                                                    onClick={() => { cardHeaderToggle("1"); }} >
                                                     Profile
                                                 </NavLink>
                                             </NavItem>
                                             <NavItem>
-                                                <NavLink style={{ cursor: "pointer", fontWeight: "bold" }} className={classnames({ active: cardHeaderTab === "2", })} onClick={() => { cardHeaderToggle("2"); }} >
+                                                <NavLink 
+                                                    style={{ cursor: "pointer", fontWeight: "bold" }} 
+                                                    className={classnames({ active: cardHeaderTab === "2", })} 
+                                                    onClick={() => { cardHeaderToggle("2"); }} >
                                                     Informasi Lainnya
                                                 </NavLink>
                                             </NavItem>
                                         </Nav>
-
                                     </div>
                                 </div>
                                 <CardBody>
@@ -986,7 +990,6 @@ const PasienBaru = () => {
                                                     <Col md={12}>
                                                         <div className='text-center'>
                                                             <Button type="submit" color="primary" disabled={loadingSave}> Simpan </Button>
-
                                                         </div>
                                                     </Col>
                                                 </Row>
