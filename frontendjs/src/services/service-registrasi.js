@@ -40,7 +40,7 @@ export default class ServiceRegistrasi {
     }
 
     getWidgetDaftarPasienRJ = async (param) => {
-        return await api.get(`/transaksi/registrasi/widget-daftar-pasien-registrasi?&noregistrasi=${param}`);
+        return await api.get(`/transaksi/registrasi/widget-daftar-pasien-registrasi-rj?&noregistrasi=${param}`);
     }
 
     getWidgetDaftarPasienRI = async (param) => {

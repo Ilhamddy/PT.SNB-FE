@@ -331,7 +331,7 @@ async function getListDiagnosaPasien(req, res) {
     join m_tipediagnosa mt on mt.id=td.objecttipediagnosafk
     join m_jeniskasus jk on jk.id=td.objectjeniskasusfk
     join m_icdx mi on mi.id=td.objecticdxfk where dp.norec='${req.query.norec}' and td.statusenabled=true
-    order by td.tglinput DESC
+    order by mt.reportdisplay ASC
     `);
     res.status(200).send({
         data: resultList.rows,
