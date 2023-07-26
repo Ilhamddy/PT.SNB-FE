@@ -11,4 +11,8 @@ export default class ServiceGudang {
         return await api.get(`/transaksi/gudang/get-lain-lain`);
     }
 
+    saveOrEditDetailProduk = async (body) => {
+        return await api.create(`/transaksi/gudang/create-or-edit-detail-produk`, body)
+    }
+
 }

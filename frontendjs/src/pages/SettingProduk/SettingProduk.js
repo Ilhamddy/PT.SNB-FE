@@ -9,7 +9,7 @@ import * as Yup from "yup";
 import CustomSelect from "../Select/Select";
 import { useDispatch, useSelector } from "react-redux";
 import { comboSettingProdukGet } from "../../store/master/action";
-import {lainLainGet, obatGudangSave} from "../../store/gudang/action";
+import {detailProdukSaveOrUpdate, lainLainGet, obatGudangSave} from "../../store/gudang/action";
 import DataTable from "react-data-table-component";
 
 
@@ -511,7 +511,7 @@ const LainLain = () => {
     const refJenisProduk = useRef(null);
     const refJenisSatuan = useRef(null);
 
-    const vJenisProduk = useFormik({
+    const vDetailJenisProduk = useFormik({
         enableReinitialize: true,
         initialValues: {
             id: "",
@@ -524,7 +524,7 @@ const LainLain = () => {
             jenisproduk: Yup.string().required("Jenis produk harus diisi"),
         }),
         onSubmit: (values) => {
-
+            dispatch(detailProdukSaveOrUpdate(values))
         }
     })
 
@@ -687,7 +687,7 @@ const LainLain = () => {
                 <Form
                     onSubmit={(e) => {
                         e.preventDefault();
-                        vJenisProduk.handleSubmit();
+                        vDetailJenisProduk.handleSubmit();
                         return false;
                     }}
                     className="gy-4"
@@ -706,18 +706,18 @@ const LainLain = () => {
                                 id={`detailjenisproduk`}
                                 name={`detailjenisproduk`}
                                 type="text"
-                                value={vJenisProduk.values.detailjenisproduk} 
-                                onChange={vJenisProduk.handleChange}
+                                value={vDetailJenisProduk.values.detailjenisproduk} 
+                                onChange={vDetailJenisProduk.handleChange}
                                 invalid={
-                                    vJenisProduk.touched.detailjenisproduk 
-                                        && !!vJenisProduk.errors.detailjenisproduk
+                                    vDetailJenisProduk.touched.detailjenisproduk 
+                                        && !!vDetailJenisProduk.errors.detailjenisproduk
                                 }
                                 />
-                            {vJenisProduk.touched.detailjenisproduk 
-                                && vJenisProduk.errors.detailjenisproduk ? (
+                            {vDetailJenisProduk.touched.detailjenisproduk 
+                                && vDetailJenisProduk.errors.detailjenisproduk ? (
                                     <FormFeedback type="invalid" >
                                         <div>
-                                            {vJenisProduk.errors.detailjenisproduk}
+                                            {vDetailJenisProduk.errors.detailjenisproduk}
                                         </div>
                                     </FormFeedback>
                                 ) : null
@@ -739,16 +739,16 @@ const LainLain = () => {
                                 name={`jenisproduk`}
                                 options={comboSettingProduk?.jenisproduk || []}
                                 onChange={(e) => {
-                                    vJenisProduk.setFieldValue('jenisproduk', e?.value || "")
+                                    vDetailJenisProduk.setFieldValue('jenisproduk', e?.value || "")
                                 }}
-                                value={vJenisProduk.values.jenisproduk}
+                                value={vDetailJenisProduk.values.jenisproduk}
                                 ref={refJenisProduk}
                                 />
-                            {vJenisProduk.touched.jenisproduk
-                                && !!vJenisProduk.errors.jenisproduk && (
+                            {vDetailJenisProduk.touched.jenisproduk
+                                && !!vDetailJenisProduk.errors.jenisproduk && (
                                     <FormFeedback type="invalid" >
                                         <div>
-                                            {vJenisProduk.errors.jenisproduk}
+                                            {vDetailJenisProduk.errors.jenisproduk}
                                         </div>
                                     </FormFeedback>
                                 )
@@ -769,14 +769,14 @@ const LainLain = () => {
                                 id={`statusenabled`}
                                 name={`statusenabled`}
                                 options={optionStatusEnabled}
-                                onChange={(e) => {vJenisProduk.setFieldValue('statusenabled', e.value)}}
-                                value={vJenisProduk.values.statusenabled}
+                                onChange={(e) => {vDetailJenisProduk.setFieldValue('statusenabled', e.value)}}
+                                value={vDetailJenisProduk.values.statusenabled}
                                 />
-                            {vJenisProduk.touched.statusenabled
-                                && !!vJenisProduk.errors.statusenabled && (
+                            {vDetailJenisProduk.touched.statusenabled
+                                && !!vDetailJenisProduk.errors.statusenabled && (
                                     <FormFeedback type="invalid" >
                                         <div>
-                                            {vJenisProduk.errors.statusenabled}
+                                            {vDetailJenisProduk.errors.statusenabled}
                                         </div>
                                     </FormFeedback>
                                 )
@@ -793,7 +793,7 @@ const LainLain = () => {
                                 placement="top" 
                                 id="tooltipTop" 
                                 onClick={() => {
-                                    vJenisProduk.resetForm()
+                                    vDetailJenisProduk.resetForm()
                                     refJenisProduk.current.clearValue()
                                 }}
                                 >

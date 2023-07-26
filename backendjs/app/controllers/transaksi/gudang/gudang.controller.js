@@ -3,6 +3,7 @@ import * as uuid from 'uuid'
 import db from "../../../models";
 import { qGetJenisDetailProdukLainLain, qGetSatuanLainLain, qGetSediaanLainLain,  } from "../../../queries/gudang/gudang.queries";
 const m_produk = db.m_produk;
+const m_detailjenisproduk = db.m_detailjenisproduk;
 
 
 const createProdukObat = async (req, res) => {
@@ -70,6 +71,76 @@ const createProdukObat = async (req, res) => {
     }
 }
 
+const createOrUpdateDetailProduk = async (req, res) => {
+    let transaction = null;
+    try{
+        transaction = await db.sequelize.transaction();
+    }catch(e){
+        console.error(e)
+        res.status(500).send({
+            data: e.message,
+            success: false,
+            msg: 'Transaksi gagal',
+            code: 500
+        });
+        return;
+    }
+    try{
+        const body = req.body
+
+        let createdOrEdited = null
+
+        if(!body.id){
+            createdOrEdited = await m_detailjenisproduk.create({
+                kd_profile: 0,
+                statusenabled: body.statusenabled,
+                detailjenisproduk: body.detailjenisproduk,
+                objectjenisprodukfk: body.jenisproduk || null,
+                reportdisplay: body.detailjenisproduk,
+                namaexternal: body.detailjenisproduk,
+            }, {
+                transaction: transaction
+            })
+        }else{
+            createdOrEdited = await m_detailjenisproduk.update({
+                statusenabled: body.statusenabled,
+                detailjenisproduk: body.detailjenisproduk,
+                objectjenisprodukfk: body.jenisproduk || null,
+            }, {
+                where: {
+                    id: body.id
+                },
+                transaction: transaction
+            })
+        }
+
+        transaction.commit();
+        const tempres = {
+            createdOrEditedProduk: createdOrEdited
+        }
+
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+            msg: 'Simpan Berhasil',
+            code: 200
+        });
+
+    }catch(error){
+        console.error("==Error Create Detail Produk");
+        console.error(error)
+        transaction.rollback();
+        res.status(500).send({
+            data: error,
+            success: false,
+            msg: 'Create Nota Detail Produk Gagal',
+            code: 500
+        });
+    }
+}
+
+
 const getLainLain = async (req, res) => {
     try{
         const detailJenisProduk = await pool.query(qGetJenisDetailProdukLainLain, [])
@@ -106,5 +177,6 @@ const getLainLain = async (req, res) => {
 
 export default {
     createProdukObat,
-    getLainLain
+    getLainLain,
+    createOrUpdateDetailProduk
 }

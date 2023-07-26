@@ -21,4 +21,10 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getLainLain
     )
+
+    app.post(
+        "/api/transaksi/gudang/create-or-edit-detail-produk",
+        [authJwt.verifyToken],
+        controller.createOrUpdateDetailProduk
+    )
 }

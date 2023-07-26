@@ -5,7 +5,10 @@ import {
     OBAT_GUDANG_SAVE_ERROR,
     LAIN_LAIN_GET,
     LAIN_LAIN_GET_SUCCESS,
-    LAIN_LAIN_GET_ERROR
+    LAIN_LAIN_GET_ERROR,
+    DETAIL_PRODUK_SAVE_OR_UPDATE,
+    DETAIL_PRODUK_SAVE_OR_UPDATE_SUCCESS,
+    DETAIL_PRODUK_SAVE_OR_UPDATE_ERROR,
 } from "./actionType";
 
 const INIT_STATE = {
@@ -15,6 +18,11 @@ const INIT_STATE = {
         error: null,
     },
     lainLainGet: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    detailProdukSaveOrUpdate: {
         data: [],
         loading: false,
         error: null,
@@ -94,6 +102,42 @@ const Registrasi = (state = INIT_STATE, action) => {
                 ...state,
                 lainLainGet: {
                     ...state.lainLainGet,
+                    loading: false,
+                    data: [],
+                    error: action.payload.data
+                }
+            }
+        }
+
+        case DETAIL_PRODUK_SAVE_OR_UPDATE: {
+            return {
+                ...state,
+                detailProdukSaveOrUpdate: {
+                    ...state.detailProdukSaveOrUpdate,
+                    loading: true,
+                    data: [],
+                    error: null
+                }
+            }
+        }
+
+        case DETAIL_PRODUK_SAVE_OR_UPDATE_SUCCESS: {
+            return {
+                ...state,
+                detailProdukSaveOrUpdate: {
+                    ...state.detailProdukSaveOrUpdate,
+                    loading: false,
+                    data: action.payload.data,
+                    error: null
+                }
+            }
+        }
+
+        case DETAIL_PRODUK_SAVE_OR_UPDATE_ERROR: {
+            return {
+                ...state,
+                detailProdukSaveOrUpdate: {
+                    ...state.detailProdukSaveOrUpdate,
                     loading: false,
                     data: [],
                     error: action.payload.data
