@@ -251,6 +251,7 @@ import DaftarPasienRJ from "../pages/ListDaftarPasien/DaftarPasienRJ/DaftarPasie
 import Emr from "../pages/Emr";
 import DaftarPasienRI from "../pages/ListDaftarPasien/DaftarPasienRI/DaftarPasienRI";
 import RegistrasiPenjaminFK from "../pages/Registrasi/RegistrasiPenjaminFK/RegistrasiPenjaminFK";
+import DaftarPasienRegistrasi from "../pages/ListDaftarPasien/DaftarPasienRegistrasi/DaftarPasienRegistrasi";
 
 // rekammedis
 import KendaliDokumen from "../pages/RekamMedis/KendaliDokumen/KendaliDokumen";
@@ -503,6 +504,7 @@ const authProtectedRoutes = [
   { path: "/emr-pasien/:norecdp/:norecap", component: <Emr /> },
   { path: "/listdaftarpasien/daftar-pasien-ri", component: <DaftarPasienRI /> },
   { path: "/listdaftarpasien/daftar-pasien-pulang", component: <DaftarPasienPulang /> },
+  { path: "/listdaftarpasien/daftarpasienregistrasi", component:<DaftarPasienRegistrasi/>},
 
   // rekam medis
   { path: "/rekammedis/kendalidokumen", component: <KendaliDokumen /> },

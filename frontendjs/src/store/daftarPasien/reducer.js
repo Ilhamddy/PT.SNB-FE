@@ -29,6 +29,12 @@ import {
     ANTREAN_NOREC_GET_SUCCESS,
     ANTREAN_NOREC_GET_ERROR,
     ANTREAN_NOREC_GET_RESET,
+    DAFTARPASIEN_REGISTRASI_GET,
+    DAFTARPASIEN_REGISTRASI_GET_SUCCESS,
+    DAFTARPASIEN_REGISTRASI_GET_ERROR,
+    WIDGET_DAFTARPASIEN_REGISTRASI_GET,
+    WIDGET_DAFTARPASIEN_REGISTRASI_GET_SUCCESS,
+    WIDGET_DAFTARPASIEN_REGISTRASI_GET_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -77,6 +83,16 @@ const INIT_STATE = {
         loading: false,
         error: null,
     },
+    daftarPasienRegistrasiGet: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    widgetdaftarPasienRegistrasiGet: {
+        data: [],
+        loading: false,
+        error: null,
+    },
 };
 
 const DaftarPasien = (state = INIT_STATE, action) => {
@@ -90,6 +106,12 @@ const DaftarPasien = (state = INIT_STATE, action) => {
                 daftarPasienRIGet:{
                     ...INIT_STATE.daftarPasienRIGet,
                 },
+                daftarPasienRegistrasiGet:{
+                    ...INIT_STATE.daftarPasienRegistrasiGet
+                },
+                widgetdaftarPasienRegistrasiGet:{
+                    ...INIT_STATE.widgetdaftarPasienRegistrasiGet
+                }
             }
         }
 
@@ -410,6 +432,72 @@ const DaftarPasien = (state = INIT_STATE, action) => {
                     data: [],
                     loading: false,
                     error: null,
+                }
+            }
+        }
+
+        case DAFTARPASIEN_REGISTRASI_GET: {
+            return {
+                ...state,
+                daftarPasienRegistrasiGet: {
+                    ...state.daftarPasienRegistrasiGet,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case DAFTARPASIEN_REGISTRASI_GET_SUCCESS: {
+            return {
+                ...state,
+                daftarPasienRegistrasiGet: {
+                    ...state.daftarPasienRegistrasiGet,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case DAFTARPASIEN_REGISTRASI_GET_ERROR: {
+            return {
+                ...state,
+                daftarPasienRegistrasiGet: {
+                    ...state.daftarPasienRegistrasiGet,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case WIDGET_DAFTARPASIEN_REGISTRASI_GET: {
+            return {
+                ...state,
+                widgetdaftarPasienRegistrasiGet: {
+                    ...state.widgetdaftarPasienRegistrasiGet,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case WIDGET_DAFTARPASIEN_REGISTRASI_GET_SUCCESS: {
+            return {
+                ...state,
+                widgetdaftarPasienRegistrasiGet: {
+                    ...state.widgetdaftarPasienRegistrasiGet,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case WIDGET_DAFTARPASIEN_REGISTRASI_GET_ERROR: {
+            return {
+                ...state,
+                widgetdaftarPasienRegistrasiGet: {
+                    ...state.widgetdaftarPasienRegistrasiGet,
+                    loading: false,
+                    error: action.error,
                 }
             }
         }

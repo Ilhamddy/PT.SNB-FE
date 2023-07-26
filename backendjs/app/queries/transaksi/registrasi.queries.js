@@ -29,35 +29,36 @@ left join m_pegawai mp2 on mp2.id=ta.objectdokterpemeriksafk
 const getAllByOr = `select id,nocm ,namapasien ,noidentitas ,nobpjs ,nohp,to_char(tgllahir,'yyyy-MM-dd')tgllahir, alamatrmh  from m_pasien`;
 
 const getDaftarPasienRawatJalan = `select td.norec as norecdp,
-ta.norec as norecta,
-mj.jenispenjamin,
-ta.taskid,mi.namainstalasi,
-mp.nocm,
-td.noregistrasi,
-mp.namapasien,
-to_char(td.tglregistrasi,'yyyy-MM-dd') as tglregistrasi,mu.namaunit,
-mp2.reportdisplay || '-' ||ta.noantrian as noantrian,mp2.namalengkap as namadokter,
-trm.objectstatuskendalirmfk as objectstatuskendalirmfkap, 
-trm.norec as norectrm,
-mp.noidentitas as noidentitas
-FROM t_daftarpasien td 
-join m_pasien mp on mp.id=td.nocmfk 
-join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk =td.norec
-join m_unit mu on mu.id=ta.objectunitfk 
-left join m_pegawai mp2 on mp2.id=ta.objectdokterpemeriksafk 
-join m_instalasi mi on mi.id=mu.objectinstalasifk
-join m_jenispenjamin mj on mj.id=td.objectjenispenjaminfk
-left join t_rm_lokasidokumen trm on trm.objectantreanpemeriksaanfk=ta.norec`;
+    ta.norec as norecta,
+    mj.jenispenjamin,
+    ta.taskid,mi.namainstalasi,
+    mp.nocm,
+    td.noregistrasi,
+    mp.namapasien,
+    to_char(td.tglregistrasi,'yyyy-MM-dd') as tglregistrasi,mu.namaunit,
+    mp2.reportdisplay || '-' ||ta.noantrian as noantrian,mp2.namalengkap as namadokter,
+    trm.objectstatuskendalirmfk as objectstatuskendalirmfkap, 
+    trm.norec as norectrm,
+    mp.noidentitas as noidentitas
+    FROM t_daftarpasien td 
+    join m_pasien mp on mp.id=td.nocmfk 
+    join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk =td.norec
+    join m_unit mu on mu.id=ta.objectunitfk 
+    left join m_pegawai mp2 on mp2.id=ta.objectdokterpemeriksafk 
+    join m_instalasi mi on mi.id=mu.objectinstalasifk
+    join m_jenispenjamin mj on mj.id=td.objectjenispenjaminfk
+    left join t_rm_lokasidokumen trm on trm.objectantreanpemeriksaanfk=ta.norec`;
 
 
-const getDaftarPasienRegistrasi = `select mi.namainstalasi,mp.nocm,td.noregistrasi,mp.namapasien,
+const getDaftarPasienRegistrasi = `select mj.jenispenjamin,mi.namainstalasi,mp.nocm,td.noregistrasi,mp.namapasien,
 to_char(td.tglregistrasi,'yyyy-MM-dd') as tglregistrasi,mu.namaunit,
 mp2.reportdisplay || '-' ||ta.noantrian as noantrian,mp2.namalengkap as namadokter  from t_daftarpasien td 
 join m_pasien mp on mp.id=td.nocmfk 
-join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk =td.norec
+join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk =td.norec and td.objectunitlastfk=ta.objectunitfk
 join m_unit mu on mu.id=ta.objectunitfk 
 left join m_pegawai mp2 on mp2.id=ta.objectdokterpemeriksafk 
-join m_instalasi mi on mi.id=mu.objectinstalasifk`;
+join m_instalasi mi on mi.id=mu.objectinstalasifk
+join m_jenispenjamin mj on mj.id=td.objectjenispenjaminfk`;
 
 const getHeaderEmr = `select mu2.namaunit as ruanganta,mr.namarekanan,to_char( mp.tgllahir, TO_CHAR(age( mp.tgllahir,  now( )), 'YY Tahun mm Bulan DD Hari')) AS umur,
 mj2.jeniskelamin,td.norec as norecdp,ta.norec as norecta,mj.jenispenjamin,ta.taskid,mi.namainstalasi,mp.nocm,td.noregistrasi,mp.namapasien,
@@ -99,7 +100,7 @@ mt.reportdisplay as nobed from t_daftarpasien td
     join m_tempattidur mt on ta.nobed = mt.id
     where td.tglpulang is null`;
 
-const qGetDepositFromPasien = 
+const qGetDepositFromPasien =
     `
     SELECT 
     dpst.norec AS norec,
