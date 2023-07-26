@@ -376,7 +376,8 @@ const KlaimInacbg = () => {
         },
         {
             selector: row => row.label,
-            sortable: true
+            sortable: true,
+            width: "450px"
         },
         {
             selector: row => row.tipediagnosa,
@@ -410,7 +411,8 @@ const KlaimInacbg = () => {
         },
         {
             selector: row => row.label,
-            sortable: true
+            sortable: true,
+            width: "450px"
         },
         {
             selector: row => row.tipediagnosa,
@@ -1015,7 +1017,7 @@ const KlaimInacbg = () => {
                             const value = {
                                 "tarif": tempCmg[i].tariff,
                                 "norec": stateTemp.norec,
-                                "description":tempCmg[i].description
+                                "description": tempCmg[i].description
                             };
                             dispatch(tarifCmgOptionsSave(value))
                         }
@@ -1024,7 +1026,7 @@ const KlaimInacbg = () => {
                             const value = {
                                 "tarif": tempCmg[i].tariff,
                                 "norec": stateTemp.norec,
-                                "description":tempCmg[i].description
+                                "description": tempCmg[i].description
                             };
                             dispatch(tarifCmgOptionsSave(value))
                         }
@@ -1033,7 +1035,7 @@ const KlaimInacbg = () => {
                             const value = {
                                 "tarif": tempCmg[i].tariff,
                                 "norec": stateTemp.norec,
-                                "description":tempCmg[i].description
+                                "description": tempCmg[i].description
                             };
                             dispatch(tarifCmgOptionsSave(value))
                         }
@@ -1042,7 +1044,7 @@ const KlaimInacbg = () => {
                             const value = {
                                 "tarif": tempCmg[i].tariff,
                                 "norec": stateTemp.norec,
-                                "description":tempCmg[i].description
+                                "description": tempCmg[i].description
                             };
                             dispatch(tarifCmgOptionsSave(value))
                         }
@@ -1094,31 +1096,35 @@ const KlaimInacbg = () => {
             for (let i = 0; i < dataListCmg.dataProcedure.length; i++) {
                 if (dataListCmg.dataProcedure[i].tarif > 0) {
                     setFF('specialProcedure', dataListCmg.dataProcedure[i].value)
+                    setFF('codespecialProcedure', dataListCmg.dataProcedure[i].code)
                     setstateTariffSpecialProcedure(dataListCmg.dataProcedure[i].tarif)
                 }
             }
             for (let i = 0; i < dataListCmg.dataProsthesis.length; i++) {
                 if (dataListCmg.dataProsthesis[i].tarif > 0) {
                     setFF('specialProthesis', dataListCmg.dataProsthesis[i].value)
+                    setFF('codespecialProthesis', dataListCmg.dataProsthesis[i].code)
                     setstateTariffSpecialProsthesis(dataListCmg.dataProsthesis[i].tarif)
                 }
             }
             for (let i = 0; i < dataListCmg.dataInvestigation.length; i++) {
                 if (dataListCmg.dataInvestigation[i].tarif > 0) {
                     setFF('specialInvestigation', dataListCmg.dataInvestigation[i].value)
+                    setFF('codespecialInvestigation', dataListCmg.dataInvestigation[i].code)
                     setstateTariffSpecialInvestigation(dataListCmg.dataInvestigation[i].tarif)
                 }
             }
             for (let i = 0; i < dataListCmg.dataDrug.length; i++) {
                 if (dataListCmg.dataDrug[i].tarif > 0) {
                     setFF('specialDrug', dataListCmg.dataDrug[i].value)
+                    setFF('codespecialDrug', dataListCmg.dataDrug[i].code)
                     setstateTariffSpecialDrug(dataListCmg.dataDrug[i].tarif)
                 }
             }
         }
     }, [dataListCmg, validation.setFieldValue])
     const SpecialProcedure = (e) => {
-        if(e.value==='none'){
+        if (e.value === 'none') {
             // const value = {
             //     "tarif": 0,
             //     "norec": stateTemp.norec,
@@ -1133,7 +1139,7 @@ const KlaimInacbg = () => {
         grouperStage2(1, e.code)
     }
     const SpecialProsthesis = (e) => {
-        if(e.value==='none'){
+        if (e.value === 'none') {
             // const value = {
             //     "tarif": 0,
             //     "norec": stateTemp.norec,
@@ -1148,7 +1154,7 @@ const KlaimInacbg = () => {
         grouperStage2(2, e.code)
     }
     const SpecialInvestigation = (e) => {
-        if(e.value==='none'){
+        if (e.value === 'none') {
             // const value = {
             //     "tarif": 0,
             //     "norec": stateTemp.norec,
@@ -1163,7 +1169,7 @@ const KlaimInacbg = () => {
         grouperStage2(3, e.code)
     }
     const SpecialDrug = (e) => {
-        if(e.value==='none'){
+        if (e.value === 'none') {
             // const value = {
             //     "tarif": 0,
             //     "norec": stateTemp.norec,
@@ -1183,25 +1189,25 @@ const KlaimInacbg = () => {
         console.log(code)
         if (status === 1) {
             tempCmg = code + '#'
-        } else if (validation.values.codespecialProcedure !== undefined) {
+        } else if (validation.values.codespecialProcedure !== undefined && validation.values.codespecialProcedure !== '') {
             tempCmg = validation.values.codespecialProcedure + '#'
         }
 
         if (status === 2) {
-            tempCmg = code + '#'
-        } else if (validation.values.codespecialProthesis !== undefined) {
+            tempCmg = tempCmg + code + '#'
+        } else if (validation.values.codespecialProthesis !== undefined && validation.values.codespecialProthesis !== '') {
             tempCmg = tempCmg + validation.values.codespecialProthesis + '#'
         }
 
         if (status === 3) {
-            tempCmg = code + '#'
-        } else if (validation.values.codespecialInvestigation !== undefined) {
+            tempCmg = tempCmg + code + '#'
+        } else if (validation.values.codespecialInvestigation !== undefined && validation.values.codespecialInvestigation !== '') {
             tempCmg = tempCmg + validation.values.codespecialInvestigation + '#'
         }
 
         if (status === 4) {
-            tempCmg = code + '#'
-        } else if (validation.values.codespecialDrug !== undefined) {
+            tempCmg = tempCmg + code + '#'
+        } else if (validation.values.codespecialDrug !== undefined && validation.values.codespecialDrug !== '') {
             tempCmg = tempCmg + validation.values.codespecialDrug + '#'
         }
         const jsonTemp = {
@@ -2178,9 +2184,16 @@ const KlaimInacbg = () => {
                                                             <th scope="row" style={{ width: "18%", textAlign: 'center' }}>
                                                                 <span>Jenis Rawat</span>
                                                             </th>
-                                                            <th scope="row" style={{ width: "18%", textAlign: 'center' }} colSpan={3}>
-                                                                <span>Rawat Jalan Regular</span>
-                                                            </th>
+
+                                                            {stateRJ ? (
+                                                                <th scope="row" style={{ width: "18%", textAlign: 'center' }} colSpan={3}>
+                                                                    <span>Rawat Jalan Regular</span>
+                                                                </th>
+                                                            ) :
+                                                                <th scope="row" style={{ width: "18%", textAlign: 'center' }} colSpan={3}>
+                                                                    <span>Rawat Jalan Inap</span>
+                                                                </th>
+                                                            }
                                                         </tr>
                                                         <tr>
                                                             <th scope="row" style={{ width: "18%", textAlign: 'center' }}>
@@ -2300,9 +2313,16 @@ const KlaimInacbg = () => {
                                                                 <th scope="row" style={{ width: "18%", textAlign: 'center' }}>
                                                                     <span>Jenis Rawat</span>
                                                                 </th>
-                                                                <th scope="row" style={{ width: "18%", textAlign: 'center' }} colSpan={2}>
-                                                                    <span>Rawat Jalan Regular</span>
-                                                                </th>
+                                                                {stateRJ ? (
+                                                                    <th scope="row" style={{ width: "18%", textAlign: 'center' }} colSpan={2}>
+                                                                        <span>Rawat Jalan Regular</span>
+                                                                    </th>
+                                                                ) :
+                                                                    <th scope="row" style={{ width: "18%", textAlign: 'center' }} colSpan={2}>
+                                                                        <span>Rawat Inap</span>
+                                                                    </th>
+                                                                }
+
                                                             </tr>
                                                             <tr>
                                                                 <th scope="row" style={{ width: "18%", textAlign: 'center' }}>

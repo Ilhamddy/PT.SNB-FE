@@ -186,7 +186,7 @@ export function* watchondaftarPasienRegistrasiGet(){
 }
 
 export function* watchonwidgetdaftarPasienRegistrasiGet(){
-    yield takeEvery(DAFTARPASIEN_REGISTRASI_GET, onwidgetdaftarPasienRegistrasiGet);
+    yield takeEvery(WIDGET_DAFTARPASIEN_REGISTRASI_GET, onwidgetdaftarPasienRegistrasiGet);
 }
 
 

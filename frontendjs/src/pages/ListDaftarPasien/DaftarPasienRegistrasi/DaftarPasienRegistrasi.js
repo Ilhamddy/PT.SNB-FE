@@ -17,7 +17,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import CountUp from "react-countup";
 import userDummy from "../../../assets/images/users/user-dummy-img.jpg";
 
-import { daftarPasienRegistrasiGet } from '../../../store/actions';
+import { daftarPasienResetForm,daftarPasienRegistrasiGet, widgetdaftarPasienRegistrasiGet } from '../../../store/actions';
 import { comboRegistrasiGet } from '../../../store/master/action';
 import CustomSelect from '../../Select/Select';
 import "./DaftarPasienRegistrasi.scss"
@@ -25,10 +25,11 @@ const DaftarPasienRegistrasi = () => {
     document.title = "Daftar Pasien Rawat Jalan";
     const dispatch = useDispatch();
     const history = useNavigate();
-    const { data, datawidget, loading, error, dataCombo, loadingCombo, errorCombo, successUpdateTaskId,
-        newDataDokumen, successDokumen } = useSelector((state) => ({
+    const { data, loading, error,datawidget, dataCombo, loadingCombo, errorCombo } = useSelector((state) => ({
             data: state.DaftarPasien.daftarPasienRegistrasiGet.data,
-            loading: state.DaftarPasien.daftarPasienRegistrasiGet.loading,
+            datawidget: state.DaftarPasien.widgetdaftarPasienRegistrasiGet.data,
+            loading: state.DaftarPasien.daftarPasienRegistrasiGet.loading
+            
         }));
 
     const [userChosen, setUserChosen] = useState({
@@ -80,8 +81,15 @@ const DaftarPasienRegistrasi = () => {
         }
     }
     useEffect(() => {
+        dispatch(widgetdaftarPasienRegistrasiGet(''))
         dispatch(daftarPasienRegistrasiGet(''));
+        
     }, [dispatch]);
+    useEffect(() => {
+        return () => {
+            dispatch(daftarPasienResetForm());
+        }
+    }, [dispatch])
     const handleClickRM = (row) => {
         setUserChosen({
             nama: row.namapasien,
@@ -150,6 +158,40 @@ const DaftarPasienRegistrasi = () => {
                     <BreadCrumb title="Daftar Pasien Registrasi" pageTitle="Forms" />
 
                     <Row>
+                        {datawidget.map((item, key) => (
+                            <Col xxl={4} sm={6} key={key}>
+                                <Card className="card-animate">
+                                    <CardBody>
+                                        <div className="d-flex justify-content-between">
+                                            <div>
+                                                <p className="fw-medium text-muted mb-0">Total Pasien {item.label}</p>
+                                                <h2 className="mt-4 ff-secondary fw-semibold">
+                                                    <span className="counter-value" style={{ fontSize: "5rem" }}>
+                                                        <CountUp
+                                                            start={0}
+                                                            end={item.counter}
+                                                            decimal={item.decimals}
+
+                                                            duration={3}
+                                                        />
+                                                    </span>
+                                                </h2>
+
+                                            </div>
+                                            <div>
+                                                <div className="avatar-xl flex-shrink-0">
+                                                    <span className={"avatar-title rounded-circle fs-4 bg-soft-" + item.iconClass + " text-" + item.iconClass}>
+
+                                                        <img src={item.icon}
+                                                            alt="" className="avatar-lg" />
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </CardBody>
+                                </Card>
+                            </Col>
+                        ))}
                         <Col lg={3}>
                             <Card>
                                 <CardBody>
