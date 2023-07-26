@@ -293,17 +293,27 @@ const DaftarPasienRJ = () => {
             dispatch(widgetdaftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}`));
         }
     }, [newDataDokumen, search, dateStart, dateEnd, idPencarian,tempSelctUnit, dispatch])
-    useEffect(() => {
-        return () => {
+    // useEffect(() => {
+    //     return () => {
+    //         if(dataCombo.unit){
+    //             var newArray = dataCombo.unit.filter(function (el) {
+    //                 return el.objectinstalasifk === 1;
+    //             });
+    //             setdataUnit(newArray)
+    //         }
+    //     }
+    // }, [dataCombo])
+    const handleSelectSingle = (e) => {
+        settempSelctUnit(e)
+    };
+    const handleInputUnit = characterEntered=>{
+        if (characterEntered.length > 3) {
             var newArray = dataCombo.unit.filter(function (el) {
                 return el.objectinstalasifk === 1;
             });
             setdataUnit(newArray)
         }
-    }, [dataCombo])
-    const handleSelectSingle = (e) => {
-        settempSelctUnit(e)
-    };
+    }
     return (
         <React.Fragment>
             <ToastContainer closeButton={false} />
@@ -464,6 +474,7 @@ const DaftarPasienRJ = () => {
                                                     onChange={value => {
                                                         handleSelectSingle(value.value);
                                                     }}
+                                                    onInputChange={handleInputUnit}
                                                 />
                                             </Col>
                                             </Col>

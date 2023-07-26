@@ -264,6 +264,17 @@ const Navdata = () => {
                         ]);
                     }
                 },
+                {
+                    id: "daftar-pasien-registrasi",
+                    label: "Daftar Pasien Registrasi",
+                    link: "/listdaftarpasien/daftarpasienregistrasi",
+                    parentId: "listdaftarpasien",
+                    isAllowed: () => {
+                        return isAllowedAccess(getUserPermissions(), [
+                            "REGISTRASI_VIEW",
+                        ]);
+                    }
+                },
             ],
         },
         {

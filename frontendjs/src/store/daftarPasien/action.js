@@ -29,6 +29,12 @@ import {
     ANTREAN_NOREC_GET_SUCCESS,
     ANTREAN_NOREC_GET_ERROR,
     ANTREAN_NOREC_GET_RESET,
+    DAFTARPASIEN_REGISTRASI_GET,
+    DAFTARPASIEN_REGISTRASI_GET_SUCCESS,
+    DAFTARPASIEN_REGISTRASI_GET_ERROR,
+    WIDGET_DAFTARPASIEN_REGISTRASI_GET,
+    WIDGET_DAFTARPASIEN_REGISTRASI_GET_SUCCESS,
+    WIDGET_DAFTARPASIEN_REGISTRASI_GET_ERROR
 } from "./actionType";
 
 export const daftarPasienResetForm = () => ({
@@ -181,4 +187,34 @@ export const antreanPasienNorecGetError = (error) => ({
 export const antreanPasienNorecGetReset = () => ({
     type: ANTREAN_NOREC_GET_RESET,
     payload: {},
+});
+
+export const daftarPasienRegistrasiGet = (param) => ({
+    type: DAFTARPASIEN_REGISTRASI_GET,
+    payload: { param },
+});
+
+export const daftarPasienRegistrasiGetSuccess = (data) => ({
+    type: DAFTARPASIEN_REGISTRASI_GET_SUCCESS,
+    payload: data,
+});
+
+export const daftarPasienRegistrasiGetError = (error) => ({
+    type: DAFTARPASIEN_REGISTRASI_GET_ERROR,
+    payload: error,
+});
+
+export const widgetdaftarPasienRegistrasiGet = (param) => ({
+    type: WIDGET_DAFTARPASIEN_REGISTRASI_GET,
+    payload: { param },
+});
+
+export const widgetdaftarPasienRegistrasiGetSuccess = (data) => ({
+    type: WIDGET_DAFTARPASIEN_REGISTRASI_GET_SUCCESS,
+    payload: data,
+});
+
+export const widgetdaftarPasienRegistrasiGetError = (error) => ({
+    type: WIDGET_DAFTARPASIEN_REGISTRASI_GET_ERROR,
+    payload: error,
 });
