@@ -555,7 +555,9 @@ const RegistrasiPenjaminFK = () => {
                         <Row className="gy-4">
                             <Col xxl={6} md={6}>
                                 <div className="mt-2">
-                                    <Label style={{ color: "black" }} htmlFor="tujuankunjungan" className="form-label">Tujuan Kunjungan</Label>
+                                    <Label style={{ color: "black" }} htmlFor="tujuankunjungan" className="form-label">
+                                        Tujuan Kunjungan
+                                    </Label>
                                 </div>
                             </Col>
                             <Col xxl={6} md={6}>

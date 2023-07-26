@@ -33,6 +33,8 @@ import queriesGolonganObat from '../../queries/master/golonganobat/golonganobat.
 import queriesDetailJenisProduk from '../../queries/master/detailjenisproduk/detailjenisproduk.queries'
 import queriesVariabelbpjs from '../../queries/master/variabelbpjs/variabelbpjs.queries'
 import queriesSatuan from '../../queries/master/satuan/satuan.queries'
+import queriesJenisProduk from '../../queries/master/jenisproduk/jenisproduk.queries'
+import queriesJenisSatuan from '../../queries/master/jenissatuan/jenissatuan.queries'
 
 const selectComboBox = (req, res) => {
     try {
@@ -343,16 +345,20 @@ const comboSettingProduk = async (req, res) => {
     try {
         const sediaan = await pool.query(queriesSediaan.getAll, []);
         const golonganObat = await pool.query(queriesGolonganObat.getAll, []);
+        const jenisProduk = await pool.query(queriesJenisProduk.getAll, [])
         const detailJenisProduk = await pool.query(queriesDetailJenisProduk.getAll, []);
         const variabelBpjs = await pool.query(queriesVariabelbpjs.getAll, []);
         const satuan = await pool.query(queriesSatuan.getAll, [])
+        const jenisSatuan = await pool.query(queriesJenisSatuan.getAll, [])
 
         let tempres = {
             sediaan: sediaan.rows,
             golonganobat: golonganObat.rows,
             detailjenisproduk: detailJenisProduk.rows,
             variabelbpjs: variabelBpjs.rows,
-            satuan: satuan.rows
+            satuan: satuan.rows,
+            jenisproduk: jenisProduk.rows,
+            jenissatuan: jenisSatuan.rows
         }
         res.status(200).send({
             data: tempres,
