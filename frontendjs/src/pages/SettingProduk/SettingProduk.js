@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button, Card, CardBody, Col, Container, Form, FormFeedback, Input, Label, Nav, NavItem, NavLink, Row, TabContent, TabPane } from "reactstrap";
 import classnames from "classnames";
 import { ToastContainer } from "react-toastify";
@@ -493,7 +493,7 @@ const TambahProduk = () => {
     )
 }
 
-//==========
+
 const LainLain = () => {
 
     const dispatch = useDispatch();
@@ -508,6 +508,8 @@ const LainLain = () => {
         sediaan: state.Gudang.lainLainGet.data?.sediaan || [],
         satuan: state.Gudang.lainLainGet.data?.satuan || [],
     }))
+    const refJenisProduk = useRef(null);
+    const refJenisSatuan = useRef(null);
 
     const vJenisProduk = useFormik({
         enableReinitialize: true,
@@ -565,32 +567,6 @@ const LainLain = () => {
     /**
      * @type {import("react-data-table-component").TableColumn[]}
      */
-    const columnsSediaan = [
-        {
-            name: <span className='font-weight-bold fs-13'>ID</span>,
-            selector: row => row.id,
-            sortable: true,
-            width: "50px",
-            wrap: true
-        },
-        {
-            name: <span className='font-weight-bold fs-13'>Status Enabled</span>,
-            // selector: row => row.noregistrasi,
-            sortable: true,
-            selector: row => row.statusenabled ? "Aktif" : "Tidak Aktif",
-            width: "120px"
-        },
-        {
-            name: <span className='font-weight-bold fs-13'>Satuan</span>,
-            selector: row => row.satuan,
-            sortable: true,
-            width: "170px"
-        }
-    ];
-    
-    /**
-     * @type {import("react-data-table-component").TableColumn[]}
-     */
     const columnsProduk = [
         {
             name: <span className='font-weight-bold fs-13'>ID</span>,
@@ -616,6 +592,65 @@ const LainLain = () => {
 
             name: <span className='font-weight-bold fs-13'>Detail jenis produk</span>,
             selector: row => row.detailjenisproduk,
+            sortable: true,
+            width: "170px"
+        }
+    ];
+
+    /**
+     * @type {import("react-data-table-component").TableColumn[]}
+     */
+    const columnsSediaan = [
+        {
+            name: <span className='font-weight-bold fs-13'>ID</span>,
+            selector: row => row.id,
+            sortable: true,
+            width: "50px",
+            wrap: true
+        },
+        {
+            name: <span className='font-weight-bold fs-13'>Status Enabled</span>,
+            // selector: row => row.noregistrasi,
+            sortable: true,
+            selector: row => row.statusenabled ? "Aktif" : "Tidak Aktif",
+            width: "120px"
+        },
+        {
+            name: <span className='font-weight-bold fs-13'>Sediaan</span>,
+            selector: row => row.sediaan,
+            sortable: true,
+            width: "170px"
+        }
+    ];
+    
+    /**
+     * @type {import("react-data-table-component").TableColumn[]}
+     */
+    const columnsSatuan = [
+        {
+            name: <span className='font-weight-bold fs-13'>ID</span>,
+            selector: row => row.id,
+            sortable: true,
+            width: "50px",
+            wrap: true
+        },
+        {
+            name: <span className='font-weight-bold fs-13'>Status Enabled</span>,
+            // selector: row => row.noregistrasi,
+            sortable: true,
+            selector: row => row.statusenabled ? "Aktif" : "Tidak Aktif",
+            width: "120px"
+        },
+        {
+            name: <span className='font-weight-bold fs-13'>Jenis satuan</span>,
+            // selector: row => row.noregistrasi,
+            sortable: true,
+            selector: row => row.jenissatuan,
+            width: "120px"
+        },
+        {
+            name: <span className='font-weight-bold fs-13'>Satuan</span>,
+            selector: row => row.satuan,
             sortable: true,
             width: "170px"
         }
@@ -703,8 +738,11 @@ const LainLain = () => {
                                 id={`jenisproduk`}
                                 name={`jenisproduk`}
                                 options={comboSettingProduk?.jenisproduk || []}
-                                onChange={(e) => {vJenisProduk.setFieldValue('jenisproduk', e.value)}}
+                                onChange={(e) => {
+                                    vJenisProduk.setFieldValue('jenisproduk', e?.value || "")
+                                }}
                                 value={vJenisProduk.values.jenisproduk}
+                                ref={refJenisProduk}
                                 />
                             {vJenisProduk.touched.jenisproduk
                                 && !!vJenisProduk.errors.jenisproduk && (
@@ -749,6 +787,17 @@ const LainLain = () => {
                         <div className="d-flex gap-2 justify-content-center mt-4 mb-2">
                             <Button type="submit" color="info" placement="top" id="tooltipTop" >
                                 Tambah
+                            </Button>
+                            <Button type="button" 
+                                className="btn-danger" 
+                                placement="top" 
+                                id="tooltipTop" 
+                                onClick={() => {
+                                    vJenisProduk.resetForm()
+                                    refJenisProduk.current.clearValue()
+                                }}
+                                >
+                                Batal
                             </Button>
                         </div>
                     </Row>
@@ -846,6 +895,16 @@ const LainLain = () => {
                             <Button type="submit" color="info" placement="top" id="tooltipTop" >
                                 Tambah
                             </Button>
+                            <Button type="button" 
+                                className="btn-danger" 
+                                placement="top" 
+                                id="tooltipTop" 
+                                onClick={() => {
+                                    vSediaan.resetForm()
+                                }}
+                                >
+                                Batal
+                            </Button>
                         </div>
                     </Row>
                 </Form>
@@ -859,7 +918,7 @@ const LainLain = () => {
             <Col lg={6}>
                 <DataTable 
                     fixedHeader
-                    columns={columnsSediaan}
+                    columns={columnsSatuan}
                     pagination
                     paginationPerPage={5}
                     paginationRowsPerPageOptions={[5]}
@@ -923,8 +982,11 @@ const LainLain = () => {
                                 id={`jenissatuan`}
                                 name={`jenissatuan`}
                                 options={comboSettingProduk?.jenissatuan || []}
-                                onChange={(e) => {vSatuan.setFieldValue('jenissatuan', e.value)}}
+                                onChange={(e) => {
+                                    vSatuan.setFieldValue('jenissatuan', e?.value || "")
+                                }}
                                 value={vSatuan.values.jenissatuan}
+                                ref={refJenisSatuan}
                                 />
                             {vSatuan.touched.jenissatuan
                                 && !!vSatuan.errors.jenissatuan && (
@@ -969,6 +1031,17 @@ const LainLain = () => {
                         <div className="d-flex gap-2 justify-content-center mt-4 mb-2">
                             <Button type="submit" color="info" placement="top" id="tooltipTop" >
                                 Tambah
+                            </Button>
+                            <Button type="button" 
+                                className="btn-danger" 
+                                placement="top" 
+                                id="tooltipTop" 
+                                onClick={() => {
+                                    vSatuan.resetForm()
+                                    refJenisSatuan.current.clearValue()
+                                }}
+                                >
+                                Batal
                             </Button>
                         </div>
                     </Row>
