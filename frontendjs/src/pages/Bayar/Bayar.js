@@ -339,9 +339,8 @@ const Bayar = () => {
 
     return(
         <div className="page-content page-bayar">
-            <ToastContainer closeButton={false} />
             <Container fluid>
-                <BreadCrumb title="Pembayaran" pageTitle="Pembayaran" />
+                <BreadCrumb title="Setting Produk" pageTitle="Setting Produk" />
                     <Form
                         onSubmit={(e) => {
                             e.preventDefault();

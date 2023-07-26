@@ -1,8 +1,18 @@
 import React from 'react';
 import Select from 'react-select';
+import {Props as StateManagerProps} from 'react-select';
+
+/**
+ * @typedef {object} Props
+ * @property {string} className
+ */
+
+/**
+ * @type {import('react').FC<StateManagerProps & Props >}
+ */
 const CustomSelect = React.forwardRef(({ onChange, options, value, className, ...rest}, ref) =>{
     const defaultValue = (options,value)=>{
-        return options ? options.find(option=>option.value === value):""
+        return options ? options.find(option => option.value === value) : ""
     }
     const customStyles = {
         control: (base, state) => ({

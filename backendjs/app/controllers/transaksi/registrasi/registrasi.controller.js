@@ -2,7 +2,6 @@ import pool from "../../../config/dbcon.query";
 import * as uuid from 'uuid'
 import queries from '../../../queries/transaksi/registrasi.queries';
 import db from "../../../models";
-import { formatDateIsoShort } from "../../../utils/format";
 const M_pasien = db.m_pasien
 const running_Number = db.running_number
 const t_daftarpasien = db.t_daftarpasien
@@ -493,7 +492,9 @@ async function saveRegistrasiPasien(req, res) {
             nobed: req.body.tempattidur,
             taskid: 3,
             statusenabled: true
-        }, { transaction });
+        }, { 
+            transaction: transaction
+        });
         // console.log(antreanPemeriksaan);
         if (req.body.tujkunjungan === 2) {
             const ttp = await db.m_tempattidur.update({
@@ -505,7 +506,10 @@ async function saveRegistrasiPasien(req, res) {
             }, { transaction });
         }
         await transaction.commit();
-        let tempres = { daftarPasien: daftarPasien, antreanPemeriksaan: antreanPemeriksaan }
+        let tempres = { 
+            daftarPasien: daftarPasien, 
+            antreanPemeriksaan: antreanPemeriksaan 
+        }
         res.status(200).send({
             data: tempres,
             status: "success",
@@ -839,8 +843,8 @@ const getRegistrasiPasienNorec = async (req, res) => {
 
 const getDaftarPasienFilter = async (req, res) => {
     try {
-        let filterTglLast = formatDateIsoShort(new Date(req.query.dateEnd));
-        let filterTglStart = formatDateIsoShort(new Date(req.query.dateStart));
+        let filterTglLast = (new Date(req.query.dateEnd)).toISOString();
+        let filterTglStart = (new Date(req.query.dateStart)).toISOString();
         let filterInstalasi = req.query.instalasi;
         const daftarpasien = await pool
             .query(`SELECT td.norec AS norecdp,
@@ -870,7 +874,7 @@ const getDaftarPasienFilter = async (req, res) => {
                     ${filterInstalasi ? `AND td.objectinstalasifk = ${filterInstalasi}` : ''}
                     ORDER BY td.tglpulang DESC
                     LIMIT 25
-            `
+            `, 
             )
 
 
