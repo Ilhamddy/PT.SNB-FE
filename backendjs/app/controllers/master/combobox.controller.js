@@ -28,8 +28,11 @@ import queriesCaraPulangRI from '../../queries/master/carapulangri/carapulangri.
 import queriesMetodeBayar from '../../queries/master/metodebayar/metodebayar.queries'
 import queriesNonTunai from '../../queries/master/jenisNonTunai/jenisNonTunai.queries'
 import queriesRekeningRs from '../../queries/master/rekeningRs/rekeningRs.queries'
-
-
+import queriesSediaan from '../../queries/master/sediaan/sediaan.queries'
+import queriesGolonganObat from '../../queries/master/golonganobat/golonganobat.queries'
+import queriesDetailJenisProduk from '../../queries/master/detailjenisproduk/detailjenisproduk.queries'
+import queriesVariabelbpjs from '../../queries/master/variabelbpjs/variabelbpjs.queries'
+import queriesSatuan from '../../queries/master/satuan/satuan.queries'
 
 const selectComboBox = (req, res) => {
     try {
@@ -334,7 +337,38 @@ const comboPayment = async (req, res) => {
             success: false,
         });
     }
-}   
+}
+
+const comboSettingProduk = async (req, res) => {
+    try {
+        const sediaan = await pool.query(queriesSediaan.getAll, []);
+        const golonganObat = await pool.query(queriesGolonganObat.getAll, []);
+        const detailJenisProduk = await pool.query(queriesDetailJenisProduk.getAll, []);
+        const variabelBpjs = await pool.query(queriesVariabelbpjs.getAll, []);
+        const satuan = await pool.query(queriesSatuan.getAll, [])
+
+        let tempres = {
+            sediaan: sediaan.rows,
+            golonganobat: golonganObat.rows,
+            detailjenisproduk: detailJenisProduk.rows,
+            variabelbpjs: variabelBpjs.rows,
+            satuan: satuan.rows
+        }
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+        });
+    } catch (error){
+        console.error("===get combo setting error=== ")
+        console.error(error)
+        res.status(500).send({
+            data: error,
+            status: "error",
+            success: false,
+        });
+    }
+}
 
 export default {
     selectComboBox,
@@ -343,5 +377,6 @@ export default {
     comboRegistrasi,
     comboAsuransi,
     comboPulang,
-    comboPayment
+    comboPayment,
+    comboSettingProduk
 };

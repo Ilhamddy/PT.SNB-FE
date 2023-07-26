@@ -5,9 +5,16 @@ import { MASTER_GET,DESA_GET,KECAMATAN_GET,COMBO_REGISTRASI_GET, COMBO_ASURANSI_
     KABUPATEN_GET_BPJS, 
     KECAMATAN_GET_BPJS,
     COMBO_PAYMENT_GET,
+    COMBO_SETTING_PRODUK_GET,
  } from "./actionType";
-import { masterGetSuccess,masterGetError,desaGetSuccess,desaGetError,kecamatanGetSuccess,kecamatanGetError,
-    comboRegistrasiGetSuccess,comboRegistrasiGetError, 
+import { masterGetSuccess,
+    masterGetError,
+    desaGetSuccess,
+    desaGetError,
+    kecamatanGetSuccess,
+    kecamatanGetError,
+    comboRegistrasiGetSuccess,
+    comboRegistrasiGetError, 
     comboAsuransiGet, 
     comboAsuransiGetSuccess, 
     comboAsuransiGetError,
@@ -24,6 +31,8 @@ import { masterGetSuccess,masterGetError,desaGetSuccess,desaGetError,kecamatanGe
     comboPulangGetError,
     comboPaymentGetSuccess,
     comboPaymentGetError,
+    comboSettingProdukGetSuccess,
+    comboSettingProdukGetError,
 } from "./action";
 
 const serviceMaster = new ServiceMaster();
@@ -119,7 +128,15 @@ function* onGetComboPayment() {
     }
 }
 
-
+function* onGetComboSettingProduk() {
+    try {
+        const response = yield call(serviceMaster.getComboSettingProduk);
+        yield put(comboSettingProdukGetSuccess(response.data));
+    } catch (error) {
+        console.error(error)
+        yield put(comboSettingProdukGetError(error));
+    }
+}
 
 export function* watchGetMaster() {
     yield takeEvery(MASTER_GET, onGetMaster);
@@ -161,6 +178,10 @@ export function* watchGetComboPayment() {
     yield takeEvery(COMBO_PAYMENT_GET, onGetComboPayment);
 }
 
+export function* watchGetComboSettingProduk() {
+    yield takeEvery(COMBO_SETTING_PRODUK_GET, onGetComboSettingProduk);
+}
+
 function* masterSaga() {
     yield all([
         fork(watchGetMaster),
@@ -173,6 +194,7 @@ function* masterSaga() {
         fork(watchGetKecamatanBpjs),
         fork(watchGetComboPulang),
         fork(watchGetComboPayment),
+        fork(watchGetComboSettingProduk),
     ]);
 }
 

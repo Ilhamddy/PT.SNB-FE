@@ -29,6 +29,9 @@ import {
     COMBO_PAYMENT_GET,
     COMBO_PAYMENT_GET_SUCCESS,
     COMBO_PAYMENT_GET_ERROR,
+    COMBO_SETTING_PRODUK_GET,
+    COMBO_SETTING_PRODUK_GET_SUCCESS,
+    COMBO_SETTING_PRODUK_GET_ERROR,
 } from "./actionType";
 
 export const masterGet = () => ({
@@ -171,5 +174,19 @@ export const comboPaymentGetSuccess = (data) => ({
 
 export const comboPaymentGetError = (error) => ({
     type: COMBO_PAYMENT_GET_ERROR,
+    payload: error,
+});
+
+export const comboSettingProdukGet = () => ({
+    type: COMBO_SETTING_PRODUK_GET,
+});
+
+export const comboSettingProdukGetSuccess = (data) => ({
+    type: COMBO_SETTING_PRODUK_GET_SUCCESS,
+    payload: data,
+});
+
+export const comboSettingProdukGetError = (error) => ({
+    type: COMBO_SETTING_PRODUK_GET_ERROR,
     payload: error,
 });

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button, Card, CardBody, Col, Container, Form, FormFeedback, Input, Label, Nav, NavItem, NavLink, Row, TabContent, TabPane } from "reactstrap";
 import classnames from "classnames";
 import { ToastContainer } from "react-toastify";
@@ -7,12 +7,18 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import CustomSelect from "../Select/Select";
+import { useDispatch, useSelector } from "react-redux";
+import { comboSettingProdukGet } from "../../store/master/action";
 
 const linkSettingProduk = "/farmasi/gudang/setting-produk"
 
 const SettingProduk = () => {
     const { tabopen } = useParams();
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+    useEffect(() => {
+        dispatch(comboSettingProdukGet())
+    }, [dispatch])
 
     return (
         <div className="page-content page-setting-produk">
@@ -66,6 +72,13 @@ const SettingProduk = () => {
 }
 
 const TambahProduk = () => {
+
+    const {
+        comboSettingProduk
+    } = useSelector(state => ({
+        comboSettingProduk: state.Master.comboSettingProdukGet.data
+    }))
+
     const navigate = useNavigate();
     const validation = useFormik({
         enableReinitialize: true,
@@ -254,35 +267,6 @@ const TambahProduk = () => {
                             <Col lg={5}>
                                 <Label 
                                     style={{ color: "black" }} 
-                                    htmlFor={`kekuatan`}
-                                    className="form-label">
-                                    Kekuatan
-                                </Label>
-                            </Col>
-                            <Col lg={7}>
-                                <Input 
-                                    id={`kekuatan`}
-                                    name={`kekuatan`}
-                                    type="text"
-                                    value={validation.values.kekuatan} 
-                                    onChange={validation.handleChange}
-                                    invalid={validation.touched.kekuatan && !!validation.errors.kekuatan}
-                                    />
-                                {validation.touched.kekuatan 
-                                    && validation.errors.kekuatan ? (
-                                        <FormFeedback type="invalid" >
-                                            <div>
-                                                {validation.errors.kekuatan}
-                                            </div>
-                                        </FormFeedback>
-                                    ) : null
-                                }
-                            </Col>
-                        </Row>
-                        <Row className="mb-2">
-                            <Col lg={5}>
-                                <Label 
-                                    style={{ color: "black" }} 
                                     htmlFor={`sediaan`}
                                     className="form-label">
                                     Sediaan
@@ -292,7 +276,7 @@ const TambahProduk = () => {
                                 <CustomSelect
                                     id={`sediaan`}
                                     name={`sediaan`}
-                                    options={[]}
+                                    options={comboSettingProduk?.sediaan || []}
                                     onChange={(e) => {validation.setFieldValue('sediaan', e.value)}}
                                     value={validation.values.sediaan}
                                     />
@@ -333,7 +317,7 @@ const TambahProduk = () => {
                                 <CustomSelect
                                     id="golonganobat"
                                     name="golonganobat"
-                                    options={[]}
+                                    options={comboSettingProduk?.golonganobat || []}
                                     onChange={(e) => {validation.setFieldValue('golonganobat', e.value)}}
                                     value={validation.values.golonganobat}
                                     className={`input ${validation.errors.golonganobat ? "is-invalid" : ""}`}
@@ -362,7 +346,7 @@ const TambahProduk = () => {
                                 <CustomSelect
                                     id={`detailjenisproduk`}
                                     name={`detailjenisproduk`}
-                                    options={[]}
+                                    options={comboSettingProduk?.detailjenisproduk || []}
                                     onChange={(e) => {validation.setFieldValue('detailjenisproduk', e.value)}}
                                     value={validation.values.detailjenisproduk}
                                     className={`input ${validation.errors.detailjenisproduk ? "is-invalid" : ""}`}
@@ -402,9 +386,9 @@ const TambahProduk = () => {
                                 <CustomSelect
                                     id="variabelbpjs"
                                     name="variabelbpjs"
-                                    options={[]}
+                                    options={comboSettingProduk?.variabelbpjs || []}
                                     onChange={(e) => {validation.setFieldValue('variabelbpjs', e.value)}}
-                                    value={validation.values.variabelbpjs}
+                                    value={validation.values.variabelbpjs || []}
                                     className={`input ${validation.errors.variabelbpjs ? "is-invalid" : ""}`}
                                     />
                                 {validation.touched.variabelbpjs 
@@ -431,7 +415,7 @@ const TambahProduk = () => {
                                 <CustomSelect
                                     id={`satuanjual`}
                                     name={`satuanjual`}
-                                    options={[]}
+                                    options={comboSettingProduk?.satuan || []}
                                     onChange={(e) => {
                                         validation.setFieldValue('satuanjual', e.value)
                                     }}

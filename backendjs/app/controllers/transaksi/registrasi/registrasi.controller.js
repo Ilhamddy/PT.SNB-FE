@@ -32,12 +32,6 @@ let queryPromise2 = (query) => {
 
 const addPost = (req, res) => {
     const { namapasien, noidentitas } = req.body;
-    // check if username exist
-    // pool.query(queries.checkUserNameExist, [username], (error, result) => {
-    //     if (result.rows.length) {
-    //         res.send("user already exist.");
-    //     } else {
-    // add tabel
     pool.query(queries.checkNewNumber, (error, result) => {
         if (error) {
             throw error
@@ -47,11 +41,6 @@ const addPost = (req, res) => {
             for (let x = result.rows[0].new_number.toString().length; x < result.rows[0].extention; x++) {
                 nocm = '0' + nocm;
             }
-            // res.status(200).send({
-            //     data: nocm,
-            //     status: "success",
-            //     success: true,
-            // });
 
             pool.query(
                 queries.addPost, [nocm, namapasien, noidentitas],
