@@ -93,7 +93,7 @@ export const createLogger = (logname) => {
             fs.mkdirSync(dirPath);
         }
         if(process.env.NODE_ENV === "development"){
-            console.log(`\n=========${logname.toLocaleUpperCase()}=========\n`)
+            console.log(`\n=========${logname.toLocaleUpperCase()}=========`)
             console.log(finalLog) 
         } else{
             const stream = fs.createWriteStream(filePath, {flags: 'a'});
