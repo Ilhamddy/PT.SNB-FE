@@ -81,8 +81,7 @@ export const createLogger = (logname) => {
             "-" +
             (current_datetime.getMonth() + 1) +
             "-" +
-            current_datetime.getDate() +
-            " "
+            current_datetime.getDate() 
         
         const __dirname = path.resolve(path.dirname(''));
         const dirPath = path.join(__dirname, "logs");
