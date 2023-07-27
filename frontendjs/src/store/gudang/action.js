@@ -8,6 +8,15 @@ import {
     DETAIL_PRODUK_SAVE_OR_UPDATE,
     DETAIL_PRODUK_SAVE_OR_UPDATE_SUCCESS,
     DETAIL_PRODUK_SAVE_OR_UPDATE_ERROR,
+    SEDIAAN_SAVE_OR_UPDATE,
+    SEDIAAN_SAVE_OR_UPDATE_SUCCESS,
+    SEDIAAN_SAVE_OR_UPDATE_ERROR,
+    SATUAN_SAVE_OR_UPDATE,
+    SATUAN_SAVE_OR_UPDATE_SUCCESS,
+    SATUAN_SAVE_OR_UPDATE_ERROR,
+    KONVERSI_QUERY_GET,
+    KONVERSI_QUERY_GET_SUCCESS,
+    KONVERSI_QUERY_GET_ERROR,
 } from "./actionType";
 
 
@@ -55,3 +64,50 @@ export const detailProdukSaveOrUpdateError = (data) => ({
     type: DETAIL_PRODUK_SAVE_OR_UPDATE_ERROR,
     payload: { data: data },
 })
+
+export const sediaanSaveOrUpdate = (data) => ({
+    type: SEDIAAN_SAVE_OR_UPDATE,
+    payload: { data: data },
+})
+
+export const sediaanSaveOrUpdateSuccess = (data) => ({
+    type: SEDIAAN_SAVE_OR_UPDATE_SUCCESS,
+    payload: { data: data },
+})
+
+export const sediaanSaveOrUpdateError = (data) => ({
+    type: SEDIAAN_SAVE_OR_UPDATE_ERROR,
+    payload: { data: data },
+})
+
+export const satuanSaveOrUpdate = (data) => ({
+    type: SATUAN_SAVE_OR_UPDATE,
+    payload: { data: data },
+})
+
+export const satuanSaveOrUpdateSuccess = (data) => ({
+    type: SATUAN_SAVE_OR_UPDATE_SUCCESS,
+    payload: { data: data },
+})
+
+export const satuanSaveOrUpdateError = (data) => ({
+    type: SATUAN_SAVE_OR_UPDATE_ERROR,
+    payload: { data: data },
+})
+
+export const konversiQueryGet = (queries) => ({
+    type: KONVERSI_QUERY_GET,
+    payload: { queries: queries },
+})
+
+export const konversiQueryGetSuccess = (data) => ({
+    type: KONVERSI_QUERY_GET_SUCCESS,
+    payload: { data: data },
+})
+
+export const konversiQueryGetError = (data) => ({
+    type: KONVERSI_QUERY_GET_ERROR,
+    payload: { data: data },
+})
+
+

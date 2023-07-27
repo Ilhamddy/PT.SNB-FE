@@ -15,7 +15,7 @@ const qGetSediaanLainLain = `
     id,
     sediaan,
     statusenabled
-    FROM m_sediaan
+        FROM m_sediaan
 `
 
 const qGetSatuanLainLain = `
@@ -28,9 +28,18 @@ const qGetSatuanLainLain = `
         LEFT JOIN m_jenissatuan mjs ON mjs.id = msat.objectjenissatuanfk
 `
 
+const qGetProduk = `
+    SELECT
+    mp.id AS id,
+    mp.statusenabled AS statusenabled,
+    mp.kdprofile AS kdprofile,
+    mp.namaproduk AS namaproduk
+        FROM m_produk mp
+`
 
 export {
     qGetJenisDetailProdukLainLain,
     qGetSediaanLainLain,
-    qGetSatuanLainLain
+    qGetSatuanLainLain,
+    qGetProduk
 }

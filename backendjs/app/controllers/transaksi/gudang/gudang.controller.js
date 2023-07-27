@@ -1,9 +1,11 @@
 import pool from "../../../config/dbcon.query";
 import * as uuid from 'uuid'
 import db from "../../../models";
-import { qGetJenisDetailProdukLainLain, qGetSatuanLainLain, qGetSediaanLainLain,  } from "../../../queries/gudang/gudang.queries";
+import { qGetJenisDetailProdukLainLain, qGetProduk, qGetSatuanLainLain, qGetSediaanLainLain,  } from "../../../queries/gudang/gudang.queries";
 const m_produk = db.m_produk;
 const m_detailjenisproduk = db.m_detailjenisproduk;
+const m_sediaan = db.m_sediaan
+const m_satuan = db.m_satuan
 
 
 const createProdukObat = async (req, res) => {
@@ -159,10 +161,26 @@ const createOrUpdateSediaan = async (req, res) => {
         const body = req.body
 
         let createdOrEdited = null
-        if(body.id){
-
+        if(!body.id){
+            createdOrEdited = await m_sediaan.create({
+                kdprofile: 0,
+                statusenabled: body.statusenabled,
+                sediaan: body.sediaan,
+                reportdisplay: body.sediaan,
+                namaexternal: body.sediaan,
+            }, {
+                transaction: transaction
+            })
         }else{
-
+            createdOrEdited = await m_sediaan.update({
+                statusenabled: body.statusenabled,
+                sediaan: body.sediaan,
+            }, {
+                where: {
+                    id: body.id
+                },
+                transaction: transaction
+            })
         }
 
         transaction.commit();
@@ -179,13 +197,79 @@ const createOrUpdateSediaan = async (req, res) => {
         });
 
     }catch(error){
-        console.error("==Error Create Detail Produk");
         console.error(error)
         transaction.rollback();
         res.status(500).send({
             data: error,
             success: false,
-            msg: 'Create Nota Detail Produk Gagal',
+            msg: 'Create or update sediaan gagal',
+            code: 500
+        });
+    }
+}
+
+const createOrUpdateSatuan = async (req, res) => {
+    let transaction = null;
+    try{
+        transaction = await db.sequelize.transaction();
+    }catch(e){
+        console.error(e)
+        res.status(500).send({
+            data: e.message,
+            success: false,
+            msg: 'Transaksi gagal',
+            code: 500
+        });
+        return;
+    }
+    try{
+        const body = req.body
+
+        let createdOrEdited = null
+        if(!body.id){
+            createdOrEdited = await m_satuan.create({
+                kdprofile: 0,
+                statusenabled: body.statusenabled,
+                satuan: body.satuan,
+                reportdisplay: body.satuan,
+                namaexternal: body.satuan,
+                objectjenissatuanfk: body.jenissatuan || null,
+            }, {
+                transaction: transaction
+            })
+        }else{
+            createdOrEdited = await m_satuan.update({
+                statusenabled: body.statusenabled,
+                satuan: body.satuan,
+                objectjenissatuanfk: body.jenissatuan || null,
+            }, {
+                where: {
+                    id: body.id
+                },
+                transaction: transaction
+            })
+        }
+
+        transaction.commit();
+        const tempres = {
+            createdOrEditedSediaan: createdOrEdited
+        }
+
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+            msg: 'Simpan satuan Berhasil',
+            code: 200
+        });
+
+    }catch(error){
+        console.error(error)
+        transaction.rollback();
+        res.status(500).send({
+            data: error,
+            success: false,
+            msg: 'Create or update satuan gagal',
             code: 500
         });
     }
@@ -215,7 +299,6 @@ const getLainLain = async (req, res) => {
             code: 200
         });
     }catch(error){
-        console.error("==Error Lain Lain");
         console.error(error)
         res.status(500).send({
             data: error,
@@ -226,8 +309,37 @@ const getLainLain = async (req, res) => {
     }
 }
 
+const getKonversi = async (req, res) => {
+    try{
+        const produk = (await pool.query(qGetProduk, [])).rows
+        const tempres = {
+            produk: produk
+        }
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+            msg: 'Simpan Berhasil',
+            code: 200
+        });
+        
+    }catch(e){
+        console.error(e)
+        res.status(500).send({
+            data: e.message,
+            success: false,
+            msg: 'Transaksi gagal',
+            code: 500
+        });
+        return;
+    }
+}
+
 export default {
     createProdukObat,
     getLainLain,
-    createOrUpdateDetailProduk
+    createOrUpdateDetailProduk,
+    createOrUpdateSediaan,
+    createOrUpdateSatuan,
+    getKonversi
 }

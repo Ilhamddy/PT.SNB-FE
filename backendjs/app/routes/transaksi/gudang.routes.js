@@ -23,8 +23,26 @@ export default function (app) {
     )
 
     app.post(
-        "/api/transaksi/gudang/create-or-edit-detail-produk",
+        "/api/transaksi/gudang/create-or-update-detail-produk",
         [authJwt.verifyToken],
         controller.createOrUpdateDetailProduk
+    )
+
+    app.post(
+        "/api/transaksi/gudang/create-or-update-sediaan",
+        [authJwt.verifyToken],
+        controller.createOrUpdateSediaan
+    )
+
+    app.post(
+        "/api/transaksi/gudang/create-or-update-satuan",
+        [authJwt.verifyToken],
+        controller.createOrUpdateSatuan
+    )
+
+    app.get(
+        "/api/transaksi/gudang/get-konversi",
+        [authJwt.verifyToken],
+        controller.getKonversi
     )
 }
