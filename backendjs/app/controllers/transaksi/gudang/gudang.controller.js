@@ -141,6 +141,57 @@ const createOrUpdateDetailProduk = async (req, res) => {
 }
 
 
+const createOrUpdateSediaan = async (req, res) => {
+    let transaction = null;
+    try{
+        transaction = await db.sequelize.transaction();
+    }catch(e){
+        console.error(e)
+        res.status(500).send({
+            data: e.message,
+            success: false,
+            msg: 'Transaksi gagal',
+            code: 500
+        });
+        return;
+    }
+    try{
+        const body = req.body
+
+        let createdOrEdited = null
+        if(body.id){
+
+        }else{
+
+        }
+
+        transaction.commit();
+        const tempres = {
+            createdOrEditedSediaan: createdOrEdited
+        }
+
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+            msg: 'Simpan Berhasil',
+            code: 200
+        });
+
+    }catch(error){
+        console.error("==Error Create Detail Produk");
+        console.error(error)
+        transaction.rollback();
+        res.status(500).send({
+            data: error,
+            success: false,
+            msg: 'Create Nota Detail Produk Gagal',
+            code: 500
+        });
+    }
+}
+
+
 const getLainLain = async (req, res) => {
     try{
         const detailJenisProduk = await pool.query(qGetJenisDetailProdukLainLain, [])

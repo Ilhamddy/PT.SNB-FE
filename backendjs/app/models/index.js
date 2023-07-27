@@ -32,7 +32,7 @@ import t_carabayarModel from "./t_carabayar.model.js";
 import t_depositpasienModel from "./t_depositpasien.model.js";
 import t_special_cmg_option from "./t_special_cmg_option.js";
 import m_produkM from "./m_produk.model.js";
-import m_detailjenisprodukM from "./m_detailjenisproduk.js";
+import m_detailjenisprodukM from "./m_detailjenisproduk.model.js";
 
 
 const sequelize = new Sequelize(
