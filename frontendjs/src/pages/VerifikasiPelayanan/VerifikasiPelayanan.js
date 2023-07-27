@@ -344,7 +344,8 @@ const VerifikasiPelayanan = () => {
                                         <div className="d-flex justify-content-sm-end">
                                             <div className="search-box ms-2">
                                                 <input type="text" className="form-control search"
-                                                    placeholder="Search..." onChange={event => setSearch(event.target.value)}
+                                                    placeholder="Search..." 
+                                                    onChange={event => setSearch(event.target.value)}
                                                     onKeyDown={handleFilter} />
                                                 <i className="ri-search-line search-icon"></i>
                                             </div>

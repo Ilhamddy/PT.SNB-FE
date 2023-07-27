@@ -1,11 +1,5 @@
 export default (sequelize, Sequelize) => {
     const M_pasien = sequelize.define("m_pasien", {
-        // id: {
-        //     allowNull: false,
-        //     autoIncrement: true,
-        //     primaryKey: true,
-        //     type: Sequelize.INTEGER
-        //   },
         nocm:{
             type: Sequelize.STRING
         },

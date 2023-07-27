@@ -11,7 +11,9 @@ import {
     UPDATE_TGLRENCANA_LABORATORIUM,
     SAVE_VERIFIKASI_LABORATORIUM,
     DAFTAR_PASIEN_LABORATORIUM,
-    LIST_PELAYANAN_LABORATORIUM_GET
+    LIST_PELAYANAN_LABORATORIUM_GET,
+    MASTER_PELAYANAN_LABORATORIUM_GET,
+    COMBO_LABORATORIUM_GET
 } from "./actionType";
 
 import {
@@ -24,7 +26,9 @@ import {
     updateTglRencanaLaboratoriumSuccess, updateTglRencanaLaboratoriumError,
     saveVerifikasiLaboratoriumSuccess, saveVerifikasiLaboratoriumError,
     daftarPasienLaboratoriumSuccess, daftarPasienLaboratoriumError,
-    listPelayananLaboratoriumGetSuccess, listPelayananLaboratoriumGetError
+    listPelayananLaboratoriumGetSuccess, listPelayananLaboratoriumGetError,
+    masterPelayananLaboratoriumGetSuccess, masterPelayananLaboratoriumGetError,
+    comboLaboratoriumGetSuccess, comboLaboratoriumGetError
 } from "./action";
 
 import { toast } from 'react-toastify';
@@ -202,9 +206,34 @@ function* onListPelayananLaboratoriumGet({ payload: { param } }) {
     }
 }
 
-
 export function* watchonListPelayananLaboratoriumGet() {
     yield takeEvery(LIST_PELAYANAN_LABORATORIUM_GET, onListPelayananLaboratoriumGet);
+}
+
+function* onmasterPelayananLaboratoriumGet({ payload: { param } }) {
+    try {
+        const response = yield call(serviceLaboratorium.getMasterPelayananLaboratorium, param);
+        yield put(masterPelayananLaboratoriumGetSuccess(response.data));
+    } catch (error) {
+        yield put(masterPelayananLaboratoriumGetError(error));
+    }
+}
+
+export function* watchonmasterPelayananLaboratoriumGet() {
+    yield takeEvery(MASTER_PELAYANAN_LABORATORIUM_GET, onmasterPelayananLaboratoriumGet);
+}
+
+function* oncomboLaboratoriumGet({ payload: { param } }) {
+    try {
+        const response = yield call(serviceLaboratorium.getcomboLaboratorium, param);
+        yield put(comboLaboratoriumGetSuccess(response.data));
+    } catch (error) {
+        yield put(comboLaboratoriumGetError(error));
+    }
+}
+
+export function* watchoncomboLaboratoriumGet() {
+    yield takeEvery(COMBO_LABORATORIUM_GET, oncomboLaboratoriumGet);
 }
 
 function* laboratoriumSaga() {
@@ -218,7 +247,9 @@ function* laboratoriumSaga() {
         fork(watchonUpdateTglRencanaLaboratorium),
         fork(watchonSaveVerifikasiLaboratorium),
         fork(watchonDaftarPasienLaboratorium),
-        fork(watchonListPelayananLaboratoriumGet)
+        fork(watchonListPelayananLaboratoriumGet),
+        fork(watchonmasterPelayananLaboratoriumGet),
+        fork(watchoncomboLaboratoriumGet)
     ]);
 }
 

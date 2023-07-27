@@ -176,7 +176,7 @@ const EmrHeader = () => {
                                         </div>
                                     </div>
                                     <div className='d-flex justify-content-between mb-1'>
-                                        <h6 className="text-muted mb-0">{dataTtvNol?.tekanandarah || "- "}/70mmHg</h6>
+                                        <h6 className="text-muted mb-0">{dataTtvNol?.tekanandarah || "- "}mmHg</h6>
                                         <h6 className="text-muted mb-0">TD</h6>
                                     </div>
                                     <div className='d-flex justify-content-between mb-1'>

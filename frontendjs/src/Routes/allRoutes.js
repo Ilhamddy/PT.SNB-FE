@@ -251,6 +251,7 @@ import DaftarPasienRJ from "../pages/ListDaftarPasien/DaftarPasienRJ/DaftarPasie
 import Emr from "../pages/Emr";
 import DaftarPasienRI from "../pages/ListDaftarPasien/DaftarPasienRI/DaftarPasienRI";
 import RegistrasiPenjaminFK from "../pages/Registrasi/RegistrasiPenjaminFK/RegistrasiPenjaminFK";
+import DaftarPasienRegistrasi from "../pages/ListDaftarPasien/DaftarPasienRegistrasi/DaftarPasienRegistrasi";
 
 // rekammedis
 import KendaliDokumen from "../pages/RekamMedis/KendaliDokumen/KendaliDokumen";
@@ -266,14 +267,19 @@ import DaftarPasienPulang from "../pages/DaftarPasienPulang/DaftarPasienPulang";
 import DaftarOrderLaboratorium from "../pages/Laboratorium/DaftarOrderLaboratorium/DaftarOrderLaboratorium";
 import DaftarPasienLaboratorium from "../pages/Laboratorium/DaftarPasienLaboratorium/DaftarPasienLaboratorium";
 import TransaksiPelayanLaboratorium from "../pages/Laboratorium/TransaksiPelayanLaboratorium/TransaksiPelayanLaboratorium";
-import VerifikasiPelayanan from "../pages/VerifikasiPelayanan/VerifikasiPelayanan";
-import DaftarTagihanPasien from "../pages/DaftarTagihanPasien/DaftarTagihanPasien";
-import Bayar from "../pages/Bayar/Bayar";
+import MasterDataLayanan from "../pages/Laboratorium/MasterDataLayanan/MasterDataLayanan";
+import MasterNilaiNormal from "../pages/Laboratorium/MasterNilaiNormal/MasterNilaiNormal";
 
 // casemix
 import KlaimInacbg from "../pages/Casemix/KlaimInacbg/KlaimInacbg";
 import DaftarPiutangPasien from "../pages/DaftarPiutangPasien/DaftarPiutangPasien";
 import BayarPiutang from "../pages/BayarPiutang/BayarPiutang";
+import SettingProduk from "../pages/SettingProduk/SettingProduk";
+
+// payment
+import VerifikasiPelayanan from "../pages/VerifikasiPelayanan/VerifikasiPelayanan";
+import DaftarTagihanPasien from "../pages/DaftarTagihanPasien/DaftarTagihanPasien";
+import Bayar from "../pages/Bayar/Bayar";
 
 
 
@@ -502,6 +508,7 @@ const authProtectedRoutes = [
   { path: "/emr-pasien/:norecdp/:norecap", component: <Emr /> },
   { path: "/listdaftarpasien/daftar-pasien-ri", component: <DaftarPasienRI /> },
   { path: "/listdaftarpasien/daftar-pasien-pulang", component: <DaftarPasienPulang /> },
+  { path: "/listdaftarpasien/daftarpasienregistrasi", component:<DaftarPasienRegistrasi/>},
 
   // rekam medis
   { path: "/rekammedis/kendalidokumen", component: <KendaliDokumen /> },
@@ -515,7 +522,8 @@ const authProtectedRoutes = [
   { path: "/laboratorium/daftarorderlaboratorium", component: <DaftarOrderLaboratorium /> },
   { path: "/laboratorium/daftarpasienlaboratorium", component: <DaftarPasienLaboratorium /> },
   { path: "/transaksi-pelayanan-laboratorium/:norecdp/:norecap", component: <TransaksiPelayanLaboratorium /> },
-
+  { path: "/laboratorium/masterlayananlab", component: <MasterDataLayanan/>},
+  { path: "/laboratorium/masternilainormal/:idproduk/:layanan/:kodeexternal/:detailjenis", component:<MasterNilaiNormal/>},
   // payment
   { path: "/payment/verif-tagihan/:norecdp", component: <VerifikasiPelayanan /> },
   { path: "/payment/daftar-tagihan", component: <DaftarTagihanPasien /> },
@@ -524,7 +532,10 @@ const authProtectedRoutes = [
   { path: "/payment/bayar/piutang/:norecpiutang/:norecnota", component: <BayarPiutang /> },
 
   // casemix
-  { path: "/casemix/klaiminacbg", component: <KlaimInacbg /> }
+  { path: "/casemix/klaiminacbg", component: <KlaimInacbg /> },
+
+  // farmasi
+  { path: "/farmasi/gudang/setting-produk/:tabopen", component: <SettingProduk /> },
 
 ];
 

@@ -655,6 +655,64 @@ async function getTransaksiPelayananLaboratoriumByNorecDp(req, res) {
 
 }
 
+async function getMasterLayananLaboratorium(req, res) {
+
+    try {
+        
+        const resultlist = await queryPromise2(`select
+        mp.id,case when mp.statusenabled = true then 'AKTIP' else 'NONAKTIP' end as status,
+        mp.kodeexternal,
+        mp.namaproduk,md.detailjenisproduk 
+    from
+        m_produk mp
+    join m_detailjenisproduk md on
+        mp.objectdetailjenisprodukfk = md.id
+    join m_jenisproduk mj on
+        md.objectjenisprodukfk = mj.id
+    where
+        mj.id = 1 and mp.namaproduk ilike '%${req.query.param}%'
+        `);
+
+
+        let tempres = resultlist.rows
+
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+        });
+
+    } catch (error) {
+        res.status(500).send({ message: error });
+    }
+
+}
+
+async function getComboLaboratorium(req, res) {
+
+    try {
+        
+        const resultlist = await queryPromise2(`select ms.id as value,
+        ms.satuan as label from m_satuan ms
+        where kodeexternal ='lab' `);
+
+        const resultlist2 = await queryPromise2(`select mk.id as value, mk.kelompokumur as label
+         from m_kelompokumur mk `);
+
+        let tempres = {datasatuan:resultlist.rows, datakelumur:resultlist2.rows}
+
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+        });
+
+    } catch (error) {
+        res.status(500).send({ message: error });
+    }
+
+}
+
 export default {
     getDetailJenisProdukLab,
     saveOrderPelayanan,
@@ -665,5 +723,7 @@ export default {
     updateTglRencanaLaboratorium,
     saveUserVerifikasi,
     getDaftarPasienLaboratorium,
-    getTransaksiPelayananLaboratoriumByNorecDp
+    getTransaksiPelayananLaboratoriumByNorecDp,
+    getMasterLayananLaboratorium,
+    getComboLaboratorium
 };

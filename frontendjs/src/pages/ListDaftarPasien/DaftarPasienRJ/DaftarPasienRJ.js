@@ -20,7 +20,7 @@ import CountUp from "react-countup";
 
 import {
     daftarPasienRJGet, widgetdaftarPasienRJGet, updateTaskId,
-    saveDokumenRekammedis,kendaliDokumenResetForm
+    saveDokumenRekammedis, kendaliDokumenResetForm
 } from '../../../store/actions';
 // Imported Images
 import pac from "../../../assets/images/sudah-periksa.png";
@@ -29,6 +29,8 @@ import userDummy from "../../../assets/images/users/user-dummy-img.jpg";
 import KonsulModal from '../../../Components/Common/KonsulModal';
 import { comboRegistrasiGet } from '../../../store/master/action';
 import StatusPulangModal from '../../../Components/Common/StatusPulangModal';
+import CustomSelect from '../../Select/Select';
+import "./DaftarPasienRJ.scss"
 
 const DaftarPasienRJ = () => {
     document.title = "Daftar Pasien Rawat Jalan";
@@ -36,17 +38,17 @@ const DaftarPasienRJ = () => {
     const history = useNavigate();
     const { data, datawidget, loading, error, dataCombo, loadingCombo, errorCombo, successUpdateTaskId,
         newDataDokumen, successDokumen } = useSelector((state) => ({
-        data: state.DaftarPasien.daftarPasienRJGet.data,
-        datawidget: state.DaftarPasien.widgetdaftarPasienRJGet.data,
-        loading: state.DaftarPasien.daftarPasienRJGet.loading,
-        error: state.DaftarPasien.daftarPasienRJGet.error,
-        dataCombo: state.Master.comboRegistrasiGet.data,
-        loadingCombo: state.Master.comboRegistrasiGet.loading,
-        errorCombo: state.Master.comboRegistrasiGet.error,
-        successUpdateTaskId: state.Emr.updateTaskId.success,
-        newDataDokumen: state.KendaliDokumen.saveDokumenRekammedis.newData,
-        successDokumen: state.KendaliDokumen.saveDokumenRekammedis.success,
-    }));
+            data: state.DaftarPasien.daftarPasienRJGet.data,
+            datawidget: state.DaftarPasien.widgetdaftarPasienRJGet.data,
+            loading: state.DaftarPasien.daftarPasienRJGet.loading,
+            error: state.DaftarPasien.daftarPasienRJGet.error,
+            dataCombo: state.Master.comboRegistrasiGet.data,
+            loadingCombo: state.Master.comboRegistrasiGet.loading,
+            errorCombo: state.Master.comboRegistrasiGet.error,
+            successUpdateTaskId: state.Emr.updateTaskId.success,
+            newDataDokumen: state.KendaliDokumen.saveDokumenRekammedis.newData,
+            successDokumen: state.KendaliDokumen.saveDokumenRekammedis.success,
+        }));
     const [userChosen, setUserChosen] = useState({
         nama: "",
         id: "",
@@ -192,13 +194,13 @@ const DaftarPasienRJ = () => {
         setidPencarian(e.id)
         setnamaPencarian(e.label)
         if (e.id === 1) {
-            dispatch(daftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=1`));
+            dispatch(daftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=1&unit=${tempSelctUnit}`));
             dispatch(widgetdaftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=1`));
         } else if (e.id === 2) {
-            dispatch(daftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=2`));
+            dispatch(daftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=2&unit=${tempSelctUnit}`));
             dispatch(widgetdaftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=2`));
         } else if (e.id === 3) {
-            dispatch(daftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=3`));
+            dispatch(daftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=3&unit=${tempSelctUnit}`));
             dispatch(widgetdaftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=3`));
         }
     };
@@ -239,14 +241,14 @@ const DaftarPasienRJ = () => {
     }
 
     const handleClickCari = () => {
-        dispatch(daftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}`));
+        dispatch(daftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}&unit=${tempSelctUnit}`));
         dispatch(widgetdaftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}`));
     }
     const handleFilter = (e) => {
         if (e.keyCode === 13) {
             // console.log(search)
             // useEffect(() => {
-            dispatch(daftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}`));
+            dispatch(daftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}&unit=${tempSelctUnit}`));
             dispatch(widgetdaftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}`));
             // }, [dispatch]);
         }
@@ -256,6 +258,7 @@ const DaftarPasienRJ = () => {
     const [dataDokter, setdataDokter] = useState([]);
     const [tempNorecAp, settempNorecAp] = useState('');
     const [tempNorecDp, settempNorecDp] = useState('');
+    const [tempSelctUnit, settempSelctUnit] = useState('');
     const handleClickKonsul = (e) => {
         setkonsulModal(true);
         // console.log(dataCombo.unit)
@@ -281,15 +284,36 @@ const DaftarPasienRJ = () => {
     const [statusPulangModal, setstatusPulangModal] = useState(false);
     const handleSimpanKonsul = () => {
         setkonsulModal(false);
-        dispatch(daftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}`));
+        dispatch(daftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}&unit=${tempSelctUnit}`));
         dispatch(widgetdaftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}`));
     };
     useEffect(() => {
         if (newDataDokumen !== null) {
-            dispatch(daftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}`));
+            dispatch(daftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}&unit=${tempSelctUnit}`));
             dispatch(widgetdaftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}`));
         }
-    }, [newDataDokumen, search, dateStart, dateEnd, idPencarian, dispatch])
+    }, [newDataDokumen, search, dateStart, dateEnd, idPencarian,tempSelctUnit, dispatch])
+    // useEffect(() => {
+    //     return () => {
+    //         if(dataCombo.unit){
+    //             var newArray = dataCombo.unit.filter(function (el) {
+    //                 return el.objectinstalasifk === 1;
+    //             });
+    //             setdataUnit(newArray)
+    //         }
+    //     }
+    // }, [dataCombo])
+    const handleSelectSingle = (e) => {
+        settempSelctUnit(e)
+    };
+    const handleInputUnit = characterEntered=>{
+        if (characterEntered.length > 3) {
+            var newArray = dataCombo.unit.filter(function (el) {
+                return el.objectinstalasifk === 1;
+            });
+            setdataUnit(newArray)
+        }
+    }
     return (
         <React.Fragment>
             <ToastContainer closeButton={false} />
@@ -310,7 +334,7 @@ const DaftarPasienRJ = () => {
                 tempNorecAp={tempNorecAp}
             />
             <UiContent />
-            <div className="page-content">
+            <div className="page-content daftar-pasien-rawat-jalan">
                 <Container fluid>
                     <BreadCrumb title="Daftar Pasien Rawat Jalan" pageTitle="Forms" />
                     <Row>
@@ -384,57 +408,75 @@ const DaftarPasienRJ = () => {
 
                                 <CardBody>
                                     <div className='mb-2'>
-                                        <Row>
+                                        <Row className="g-3">
+                                            <Col lg={12}>
+                                                <Row>
+                                                    <Col sm={4}>
+                                                        <div className="input-group">
+                                                            <Flatpickr
+                                                                className="form-control border-0 fs-5 dash-filter-picker shadow"
+                                                                options={{
+                                                                    // mode: "range",
+                                                                    dateFormat: "Y-m-d",
+                                                                    defaultDate: "today"
+                                                                }}
+                                                                value={dateStart}
+                                                                onChange={([dateStart]) => {
+                                                                    handleBeginOnChangeStart(dateStart);
+                                                                }}
+                                                            />
+                                                            <div className="input-group-text bg-secondary border-secondary text-white"><i className="ri-calendar-2-line"></i></div>
+                                                        </div>
+                                                    </Col>
+                                                    <Col lg={1}><h4>s/d</h4></Col>
+                                                    <Col sm={4}>
+                                                        <div className="input-group">
+                                                            <Flatpickr
+                                                                className="form-control border-0 fs-5 dash-filter-picker shadow"
+                                                                options={{
+                                                                    // mode: "range",
+                                                                    dateFormat: "Y-m-d",
+                                                                    defaultDate: "today"
+                                                                }}
+                                                                value={dateEnd}
+                                                                onChange={([dateEnd]) => {
+                                                                    handleBeginOnChangeEnd(dateEnd);
+                                                                }}
+                                                            />
+                                                            <div className="input-group-text bg-secondary border-secondary text-white"><i className="ri-calendar-2-line"></i></div>
+                                                        </div>
+                                                    </Col>
+                                                    <Col lg={2}>
+                                                        <div className="d-flex justify-content-sm-end">
+                                                            <div className="search-box ms-2">
+                                                                <input type="text" className="form-control search"
+                                                                    placeholder="Search..." onChange={event => setSearch(event.target.value)}
+                                                                    onKeyDown={handleFilter} />
+                                                                <i className="ri-search-line search-icon"></i>
+                                                            </div>
+                                                        </div>
+                                                    </Col>
+                                                    <Col lg={1}>
+                                                        <Button type="button" className="rounded-pill" placement="top" id="tooltipTopPencarian" onClick={handleClickCari}>
+                                                            CARI
+                                                        </Button>
+                                                        <UncontrolledTooltip placement="top" target="tooltipTopPencarian" > Pencarian </UncontrolledTooltip>
+                                                    </Col>
+                                                </Row>
+                                            </Col>
+                                            <Col lg={12}>
                                             <Col sm={4}>
-                                                <div className="input-group">
-                                                    <Flatpickr
-                                                        className="form-control border-0 fs-5 dash-filter-picker shadow"
-                                                        options={{
-                                                            // mode: "range",
-                                                            dateFormat: "Y-m-d",
-                                                            defaultDate: "today"
-                                                        }}
-                                                        value={dateStart}
-                                                        onChange={([dateStart]) => {
-                                                            handleBeginOnChangeStart(dateStart);
-                                                        }}
-                                                    />
-                                                    <div className="input-group-text bg-secondary border-secondary text-white"><i className="ri-calendar-2-line"></i></div>
-                                                </div>
+                                                <CustomSelect
+                                                    id="unitFilter"
+                                                    name="unitFilter"
+                                                    className="row-header"
+                                                    options={dataUnit}
+                                                    onChange={value => {
+                                                        handleSelectSingle(value.value);
+                                                    }}
+                                                    onInputChange={handleInputUnit}
+                                                />
                                             </Col>
-                                            <Col lg={1}><h4>s/d</h4></Col>
-                                            <Col sm={4}>
-                                                <div className="input-group">
-                                                    <Flatpickr
-                                                        className="form-control border-0 fs-5 dash-filter-picker shadow"
-                                                        options={{
-                                                            // mode: "range",
-                                                            dateFormat: "Y-m-d",
-                                                            defaultDate: "today"
-                                                        }}
-                                                        value={dateEnd}
-                                                        onChange={([dateEnd]) => {
-                                                            handleBeginOnChangeEnd(dateEnd);
-                                                        }}
-                                                    />
-                                                    <div className="input-group-text bg-secondary border-secondary text-white"><i className="ri-calendar-2-line"></i></div>
-                                                </div>
-                                            </Col>
-                                            <Col lg={2}>
-                                                <div className="d-flex justify-content-sm-end">
-                                                    <div className="search-box ms-2">
-                                                        <input type="text" className="form-control search"
-                                                            placeholder="Search..." onChange={event => setSearch(event.target.value)}
-                                                            onKeyDown={handleFilter} />
-                                                        <i className="ri-search-line search-icon"></i>
-                                                    </div>
-                                                </div>
-                                            </Col>
-                                            <Col lg={1}>
-                                                <Button type="button" className="rounded-pill" placement="top" id="tooltipTopPencarian" onClick={handleClickCari}>
-                                                    CARI
-                                                </Button>
-                                                <UncontrolledTooltip placement="top" target="tooltipTopPencarian" > Pencarian </UncontrolledTooltip>
                                             </Col>
                                         </Row>
                                     </div>

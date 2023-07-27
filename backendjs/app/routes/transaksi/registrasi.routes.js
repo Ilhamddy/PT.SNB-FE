@@ -79,6 +79,12 @@ export default function (app) {
     app.get(
         "/api/transaksi/registrasi/widget-daftar-pasien-registrasi",
         [authJwt.verifyToken],
+        controller.getWidgetDaftarPasienRegistrasi
+    );
+
+    app.get(
+        "/api/transaksi/registrasi/widget-daftar-pasien-registrasi-rj",
+        [authJwt.verifyToken],
         controller.getWidgetDaftarPasienRJ
     );
 

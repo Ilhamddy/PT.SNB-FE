@@ -12,6 +12,8 @@ import {
     LIST_FASKES_GET,
     DAFTARPASIEN_NOREC_GET,
     ANTREAN_NOREC_GET,
+    DAFTARPASIEN_REGISTRASI_GET,
+    WIDGET_DAFTARPASIEN_REGISTRASI_GET
 } from "./actionType";
 
 import {
@@ -25,6 +27,10 @@ import {
     daftarPasienNorecGetError,
     antreanPasienNorecGetSuccess,
     antreanPasienNorecGetError,
+    daftarPasienRegistrasiGetSuccess,
+    daftarPasienRegistrasiGetError,
+    widgetdaftarPasienRegistrasiGetSuccess,
+    widgetdaftarPasienRegistrasiGetError
 } from "./action";
 import { toast } from "react-toastify";
 
@@ -119,6 +125,24 @@ function* onAntreanNorecGet({ payload: { norec } }) {
     }
 }
 
+function* ondaftarPasienRegistrasiGet({ payload: { param } }) {
+    try {
+        const response = yield call(serviceRegistrasi.getDaftarPasienRegistrasi, param);
+        yield put(daftarPasienRegistrasiGetSuccess(response.data));
+    } catch (error) {
+        yield put(daftarPasienRegistrasiGetError(error));
+    }
+}
+
+function* onwidgetdaftarPasienRegistrasiGet({ payload: { param } }) {
+    try {
+        const response = yield call(serviceRegistrasi.getWidgetDaftarPasienRegistrasi, param);
+        yield put(widgetdaftarPasienRegistrasiGetSuccess(response.data));
+    } catch (error) {
+        yield put(widgetdaftarPasienRegistrasiGetError(error));
+    }
+}
+
 
 export function* watchGetDaftarPasienRJ() {
     yield takeEvery(DAFTARPASIEN_RJ_GET, onGetDaftarPasienRJ);
@@ -157,6 +181,14 @@ export function* watchAntreanNorecGet(){
     yield takeEvery(ANTREAN_NOREC_GET, onAntreanNorecGet);
 }
 
+export function* watchondaftarPasienRegistrasiGet(){
+    yield takeEvery(DAFTARPASIEN_REGISTRASI_GET, ondaftarPasienRegistrasiGet);
+}
+
+export function* watchonwidgetdaftarPasienRegistrasiGet(){
+    yield takeEvery(WIDGET_DAFTARPASIEN_REGISTRASI_GET, onwidgetdaftarPasienRegistrasiGet);
+}
+
 
 function* daftarPasienSaga() {
     yield all([
@@ -168,7 +200,9 @@ function* daftarPasienSaga() {
         fork(watchSaveDaftarPasienPulang),
         fork(watchGetListFaskes),
         fork(watchDaftarPasienNorecGet),
-        fork(watchAntreanNorecGet)
+        fork(watchAntreanNorecGet),
+        fork(watchondaftarPasienRegistrasiGet),
+        fork(watchonwidgetdaftarPasienRegistrasiGet)
     ]);
 }
 

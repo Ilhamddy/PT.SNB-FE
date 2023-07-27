@@ -14,6 +14,7 @@ const Navdata = () => {
     const [isRadiologi, setRadiologi] = useState(false);
     const [isLaboratorium, setLaboratorium] = useState(false);
     const [isCasemix, setCasemix] = useState(false);
+    const [isGudang, setIsGudang] = useState(false);
     const [isApps, setIsApps] = useState(false);
     const [isAuth, setIsAuth] = useState(false);
     const [isPages, setIsPages] = useState(false);
@@ -264,6 +265,17 @@ const Navdata = () => {
                         ]);
                     }
                 },
+                {
+                    id: "daftar-pasien-registrasi",
+                    label: "Daftar Pasien Registrasi",
+                    link: "/listdaftarpasien/daftarpasienregistrasi",
+                    parentId: "listdaftarpasien",
+                    isAllowed: () => {
+                        return isAllowedAccess(getUserPermissions(), [
+                            "REGISTRASI_VIEW",
+                        ]);
+                    }
+                },
             ],
         },
         {
@@ -432,6 +444,17 @@ const Navdata = () => {
                         ]);
                     }
                 },
+                {
+                    id: "laboratorium-masterlayananlab",
+                    label: "Master Layanan Laboratorium",
+                    link: "/laboratorium/masterlayananlab",
+                    parentId: "laboratorium",
+                    isAllowed: () => {
+                        return isAllowedAccess(getUserPermissions(), [
+                            "REGISTRASI_VIEW",
+                        ]);
+                    }
+                },
             ]
         },
         {
@@ -464,7 +487,38 @@ const Navdata = () => {
                     }
                 },
             ]
-        }
+        },
+        {
+            id: "gudang",
+            label: "Gudang",
+            icon: "lab la-delicious",
+            link: "/#",
+            click: function (e) {
+                e.preventDefault();
+                setIsGudang(!isGudang);
+                setIscurrentState('isGudang');
+                updateIconSidebar(e);
+            },
+            stateVariables: isGudang,
+            isAllowed: () => {
+                return isAllowedAccess(getUserPermissions(), [
+                    "REGISTRASI_VIEW",
+                ]);
+            },
+            subItems: [
+                {
+                    id: "setting-produk",
+                    label: "Setting Produk",
+                    link: "/farmasi/gudang/setting-produk/tambah",
+                    parentId: "gudang",
+                    isAllowed: () => {
+                        return isAllowedAccess(getUserPermissions(), [
+                            "REGISTRASI_VIEW",
+                        ]);
+                    }
+                },
+            ]
+        },
     ];
     return <React.Fragment>{menuItems}</React.Fragment>;
 };

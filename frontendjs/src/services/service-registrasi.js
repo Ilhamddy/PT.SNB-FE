@@ -40,7 +40,7 @@ export default class ServiceRegistrasi {
     }
 
     getWidgetDaftarPasienRJ = async (param) => {
-        return await api.get(`/transaksi/registrasi/widget-daftar-pasien-registrasi?&noregistrasi=${param}`);
+        return await api.get(`/transaksi/registrasi/widget-daftar-pasien-registrasi-rj?&noregistrasi=${param}`);
     }
 
     getWidgetDaftarPasienRI = async (param) => {
@@ -86,5 +86,13 @@ export default class ServiceRegistrasi {
 
     getAntreanByNorec = async (norec) => {
         return await api.get(`/transaksi/registrasi/no-antrean/${norec}`);
+    }
+
+    getDaftarPasienRegistrasi = async (param) => {
+        return await api.get(`/transaksi/registrasi/daftar-pasien-registrasi?&noregistrasi=${param}`);
+    }
+
+    getWidgetDaftarPasienRegistrasi = async (param) => {
+        return await api.get(`/transaksi/registrasi/widget-daftar-pasien-registrasi`);
     }
 }

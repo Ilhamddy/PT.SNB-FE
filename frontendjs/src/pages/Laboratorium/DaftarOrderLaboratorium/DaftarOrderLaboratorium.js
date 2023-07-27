@@ -151,7 +151,14 @@ const DaftarOrderLaboratorium = () => {
         //     idpencarian: 4,
         //     norectrm: e.norectrm
         // }
-        // console.log(tempValue)
+        if(e.statusverif==="DIVERIF"){
+            toast.error('Order Sudah Diverifikasi', { autoClose: 3000 });
+            return
+        }else if(e.statusverif==="DITOLAK"){
+            toast.error('Order Sudah Ditolak', { autoClose: 3000 });
+            return
+        }
+        console.log(e)
         settempNorecOrder(e.norec)
         setdetailModal(true)
     };

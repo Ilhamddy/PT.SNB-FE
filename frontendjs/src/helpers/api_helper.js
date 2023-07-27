@@ -57,10 +57,10 @@ class APIClient {
   //  get = (url, params) => {
   //   return axios.get(url, params);
   // };
-  get = (url, params) => {
+  get = (url, params, axiosConfig) => {
     let response;
-
     let paramKeys = [];
+
 
     if (params) {
       Object.keys(params).map(key => {
@@ -69,9 +69,21 @@ class APIClient {
       });
 
       const queryString = paramKeys && paramKeys.length ? paramKeys.join('&') : "";
-      response = axios.get(`${url}?${queryString}`, params);
+      response = axios.get(`${url}?${queryString}`, {
+        headers: {
+          "X-Client-Url": window.location.href,
+          ...(axiosConfig?.headers || {})
+        },
+        ...(axiosConfig || {})
+      });
     } else {
-      response = axios.get(`${url}`, params);
+      response = axios.get(`${url}`, {
+        headers: {
+          "X-Client-Url": window.location.href,
+          ...(axiosConfig?.headers || {})
+        },
+        ...(axiosConfig || {})
+      });
     }
 
     return response;
@@ -79,8 +91,14 @@ class APIClient {
   /**
    * post given data to url
    */
-  create = (url, data) => {
-    return axios.post(url, data);
+  create = (url, data, axiosConfig) => {
+    return axios.post(url, data, {
+      headers: {
+        "X-Client-Url": window.location.href,
+        ...(axiosConfig?.headers || {})
+      },
+      ...(axiosConfig || {})
+    });
   };
   /**
    * Updates data
