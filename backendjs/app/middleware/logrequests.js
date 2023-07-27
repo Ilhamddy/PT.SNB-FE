@@ -9,10 +9,12 @@ export const logRequests = (req, res, next) => {
     let url = req.url;
     let body = req.body;
     let params = req.params;
+    let clientUrl = req.get("X-Client-Url")
 
     let status = res.statusCode;
     const logger = createLogger("request express");
-    logger.info(`${method}: ${url} ${status}`)
+    logger.info(`CLIENT-URL: ${clientUrl}`)
+    logger.info(`METHOD: ${method} ${url} ${status}`)
     logger.info(`BODY: ${JSON.stringify(body, null, 2)}`, true)
     logger.info(`PARAMS: ${JSON.stringify(params, null, 2)}`, true)
     logger.print();
@@ -91,12 +93,12 @@ export const createLogger = (logname) => {
             fs.mkdirSync(dirPath);
         }
         if(process.env.NODE_ENV === "development"){
-            console.log(`=================${logname.toLocaleUpperCase()}=====================\n`)
+            console.log(`=========${logname.toLocaleUpperCase()}=========\n`)
             console.log(finalLog) 
         } else{
             const stream = fs.createWriteStream(filePath, {flags: 'a'});
-            stream.write(`=================${logname.toLocaleUpperCase()}=====================\n`)
-            stream.write(finalLog + "\n");
+            stream.write(`=========${logname.toLocaleUpperCase()}=========\n`)
+            stream.write(finalLog);
             stream.end()
         }
     }
