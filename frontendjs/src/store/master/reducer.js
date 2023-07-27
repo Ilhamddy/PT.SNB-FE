@@ -30,6 +30,9 @@ import {
     COMBO_PAYMENT_GET,
     COMBO_PAYMENT_GET_SUCCESS,
     COMBO_PAYMENT_GET_ERROR,
+    COMBO_SETTING_PRODUK_GET,
+    COMBO_SETTING_PRODUK_GET_SUCCESS,
+    COMBO_SETTING_PRODUK_GET_ERROR,
 } from "./actionType";
 
 const INIT_STATE = {
@@ -83,6 +86,11 @@ const INIT_STATE = {
         loading: false,
         error: null,
     },
+    comboSettingProdukGet: {
+        data: [],
+        loading: false,
+        error: null,
+    }
 };
 
 const Master = (state = INIT_STATE, action) => {
@@ -411,6 +419,39 @@ const Master = (state = INIT_STATE, action) => {
                 ...state,
                 comboPaymentGet: {
                     ...state.comboPaymentGet,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case COMBO_SETTING_PRODUK_GET: {
+            return {
+                ...state,
+                comboSettingProdukGet: {
+                    ...state.comboSettingProdukGet,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case COMBO_SETTING_PRODUK_GET_SUCCESS: {
+            return {
+                ...state,
+                comboSettingProdukGet: {
+                    ...state.comboSettingProdukGet,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case COMBO_SETTING_PRODUK_GET_ERROR: {
+            return {
+                ...state,
+                comboSettingProdukGet: {
+                    ...state.comboSettingProdukGet,
                     loading: false,
                     error: action.error,
                 }

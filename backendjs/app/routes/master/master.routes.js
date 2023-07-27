@@ -51,4 +51,10 @@ export default function(app) {
       [authJwt.verifyToken],
       controller.comboPayment
     );
+
+    app.get(
+      "/api/master/combobox-setting-produk",
+      [authJwt.verifyToken],
+      controller.comboSettingProduk
+    );
   };
