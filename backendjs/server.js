@@ -17,6 +17,7 @@ import laboratoriumRoutes from './app/routes/transaksi/laboratorium.routes.js';
 import paymentRoutes from "./app/routes/transaksi/payment.routes.js";
 import casemixRoutes from "./app/routes/transaksi/casemix.routes.js";
 import gudangRoutes from "./app/routes/transaksi/gudang.routes.js"
+import { logRequests } from "./app/middleware/logrequests.js";
 
 dotenv.config()
 
@@ -43,6 +44,8 @@ app.use(bodyParser.json());
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
 
+app.use(logRequests)
+
 // simple route
 app.get("/", (req, res) => {
   res.json({ message: "Welcome to SNB application." });
@@ -63,6 +66,7 @@ laboratoriumRoutes(app);
 paymentRoutes(app);
 casemixRoutes(app)
 gudangRoutes(app)
+
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8000;
