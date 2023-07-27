@@ -33,7 +33,10 @@ import {
     LIST_PELAYANAN_LABORATORIUM_GET_ERROR,
     MASTER_PELAYANAN_LABORATORIUM_GET,
     MASTER_PELAYANAN_LABORATORIUM_GET_SUCCESS,
-    MASTER_PELAYANAN_LABORATORIUM_GET_ERROR
+    MASTER_PELAYANAN_LABORATORIUM_GET_ERROR,
+    COMBO_LABORATORIUM_GET,
+    COMBO_LABORATORIUM_GET_SUCCESS,
+    COMBO_LABORATORIUM_GET_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -94,6 +97,11 @@ const INIT_STATE = {
         data:[],
         loading: false,
         error: null, 
+    },
+    comboLaboratoriumGet:{
+        data:[],
+        loading: false,
+        error: null, 
     }
 }
 
@@ -134,6 +142,9 @@ const Laboratorium = (state = INIT_STATE, action) => {
                 },
                 masterPelayananLaboratoriumGet:{
                     ...INIT_STATE.masterPelayananLaboratoriumGet
+                },
+                comboLaboratoriumGet:{
+                    ...INIT_STATE.comboLaboratoriumGet
                 }
             }
         }
@@ -498,6 +509,39 @@ const Laboratorium = (state = INIT_STATE, action) => {
                 ...state,
                 masterPelayananLaboratoriumGet: {
                     ...state.masterPelayananLaboratoriumGet,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case COMBO_LABORATORIUM_GET: {
+            return {
+                ...state,
+                comboLaboratoriumGet: {
+                    ...state.comboLaboratoriumGet,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case COMBO_LABORATORIUM_GET_SUCCESS: {
+            return {
+                ...state,
+                comboLaboratoriumGet: {
+                    ...state.comboLaboratoriumGet,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case COMBO_LABORATORIUM_GET_ERROR: {
+            return {
+                ...state,
+                comboLaboratoriumGet: {
+                    ...state.comboLaboratoriumGet,
                     loading: false,
                     error: action.error,
                 }

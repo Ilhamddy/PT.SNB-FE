@@ -688,6 +688,31 @@ async function getMasterLayananLaboratorium(req, res) {
 
 }
 
+async function getComboLaboratorium(req, res) {
+
+    try {
+        
+        const resultlist = await queryPromise2(`select ms.id as value,
+        ms.satuan as label from m_satuan ms
+        where kodeexternal ='lab' `);
+
+        const resultlist2 = await queryPromise2(`select mk.id as value, mk.kelompokumur as label
+         from m_kelompokumur mk `);
+
+        let tempres = {datasatuan:resultlist.rows, datakelumur:resultlist2.rows}
+
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+        });
+
+    } catch (error) {
+        res.status(500).send({ message: error });
+    }
+
+}
+
 export default {
     getDetailJenisProdukLab,
     saveOrderPelayanan,
@@ -699,5 +724,6 @@ export default {
     saveUserVerifikasi,
     getDaftarPasienLaboratorium,
     getTransaksiPelayananLaboratoriumByNorecDp,
-    getMasterLayananLaboratorium
+    getMasterLayananLaboratorium,
+    getComboLaboratorium
 };
