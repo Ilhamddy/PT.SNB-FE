@@ -11,7 +11,7 @@ export const logRequests = (req, res, next) => {
     let params = req.params;
 
     let status = res.statusCode;
-    const logger = createLogger();
+    const logger = createLogger("request express");
     logger.info(`${method}: ${url} ${status}`)
     logger.info(`BODY: ${JSON.stringify(body, null, 2)}`, true)
     logger.info(`PARAMS: ${JSON.stringify(params, null, 2)}`, true)
@@ -20,7 +20,7 @@ export const logRequests = (req, res, next) => {
 }
 
 
-const createLogger = () => {
+export const createLogger = (logname) => {
     let finalLog = "";
     const createFormattedDateTime = () => {
         let current_datetime = new Date();
@@ -92,12 +92,12 @@ const createLogger = () => {
             fs.mkdirSync(dirPath);
         }
         if(process.env.NODE_ENV === "development"){
+            console.log(`=================${logname.toLocaleUpperCase()}=====================\n`)
             console.log(finalLog) 
-            console.log("=============================================\n")
         } else{
             const stream = fs.createWriteStream(filePath, {flags: 'a'});
+            stream.write(`=================${logname.toLocaleUpperCase()}=====================\n`)
             stream.write(finalLog + "\n");
-            stream.write("=============================================\n")
             stream.end()
         }
     }
