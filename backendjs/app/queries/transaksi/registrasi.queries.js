@@ -47,7 +47,7 @@ const getDaftarPasienRawatJalan = `select td.norec as norecdp,
     left join m_pegawai mp2 on mp2.id=ta.objectdokterpemeriksafk 
     join m_instalasi mi on mi.id=mu.objectinstalasifk
     join m_jenispenjamin mj on mj.id=td.objectjenispenjaminfk
-    left join t_rm_lokasidokumen trm on trm.objectantreanpemeriksaanfk=ta.norec`;
+    left join t_rm_lokasidokumen trm on trm.objectantreanpemeriksaanfk=ta.norec `;
 
 
 const getDaftarPasienRegistrasi = `select mj.jenispenjamin,mi.namainstalasi,mp.nocm,td.noregistrasi,mp.namapasien,

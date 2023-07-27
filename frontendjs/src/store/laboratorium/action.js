@@ -29,7 +29,10 @@ import {
     DAFTAR_PASIEN_LABORATORIUM_ERROR,
     LIST_PELAYANAN_LABORATORIUM_GET,
     LIST_PELAYANAN_LABORATORIUM_GET_SUCCESS,
-    LIST_PELAYANAN_LABORATORIUM_GET_ERROR
+    LIST_PELAYANAN_LABORATORIUM_GET_ERROR,
+    MASTER_PELAYANAN_LABORATORIUM_GET,
+    MASTER_PELAYANAN_LABORATORIUM_GET_SUCCESS,
+    MASTER_PELAYANAN_LABORATORIUM_GET_ERROR
 } from "./actionType";
 
 export const laboratoriumResetForm = () => ({
@@ -184,5 +187,20 @@ export const listPelayananLaboratoriumGetSuccess = (data) => ({
 
 export const listPelayananLaboratoriumGetError = (error) => ({
     type: LIST_PELAYANAN_LABORATORIUM_GET_ERROR,
+    payload: error,
+});
+
+export const masterPelayananLaboratoriumGet = (param) => ({
+    type: MASTER_PELAYANAN_LABORATORIUM_GET,
+    payload: { param },
+});
+
+export const masterPelayananLaboratoriumGetSuccess = (data) => ({
+    type: MASTER_PELAYANAN_LABORATORIUM_GET_SUCCESS,
+    payload: data,
+});
+
+export const masterPelayananLaboratoriumGetError = (error) => ({
+    type: MASTER_PELAYANAN_LABORATORIUM_GET_ERROR,
     payload: error,
 });

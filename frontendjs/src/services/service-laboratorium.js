@@ -42,4 +42,8 @@ export default class ServiceLaboratorium {
     getListTransaksiPelayananLaboratorium = async (param) => {
         return await api.get(`/transaksi/laboratorium/list-transaksi-pelayanan-laboratorium?norecdp=${param}`);
     }
+
+    getMasterPelayananLaboratorium = async (param) => {
+        return await api.get(`/transaksi/laboratorium/master-layanan-laboratorium?param=${param}`);
+    }
 }

@@ -1208,15 +1208,13 @@ async function getDaftarPasienRawatJalan(req, res) {
     }
 
     let unit = ''
-    if (req.query.unit !== undefined) {
-        unit = ` and ta.objectunitfk=${req.query.unit}`
+    if (req.query.unit !== undefined && req.query.unit !== '') {
+        unit = ` and ta.objectunitfk=${req.query.unit} `
     }
     // let query = queries.getAllByOr + ` where nocm ilike '%` + nocm + `%'` + ` or namapasien ilike '%` + nocm + `%' limit 200`
     let query = queries.getDaftarPasienRawatJalan + `  where td.noregistrasi ilike '%${noregistrasi}%'
     ${tglregistrasi} ${taskid} and td.objectinstalasifk=1 and trm.objectstatuskendalirmfk is not null
-    ${unit}
-    ORDER BY td.tglregistrasi DESC`
-
+    ${unit} ORDER BY td.tglregistrasi DESC`
     try {
         const resultCountNoantrianDokter = await pool.query(query, [])
         res.status(200).send({

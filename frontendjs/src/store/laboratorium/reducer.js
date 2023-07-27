@@ -30,7 +30,10 @@ import {
     DAFTAR_PASIEN_LABORATORIUM_ERROR,
     LIST_PELAYANAN_LABORATORIUM_GET,
     LIST_PELAYANAN_LABORATORIUM_GET_SUCCESS,
-    LIST_PELAYANAN_LABORATORIUM_GET_ERROR 
+    LIST_PELAYANAN_LABORATORIUM_GET_ERROR,
+    MASTER_PELAYANAN_LABORATORIUM_GET,
+    MASTER_PELAYANAN_LABORATORIUM_GET_SUCCESS,
+    MASTER_PELAYANAN_LABORATORIUM_GET_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -86,6 +89,11 @@ const INIT_STATE = {
         data:[],
         loading: false,
         error: null, 
+    },
+    masterPelayananLaboratoriumGet:{
+        data:[],
+        loading: false,
+        error: null, 
     }
 }
 
@@ -123,6 +131,9 @@ const Laboratorium = (state = INIT_STATE, action) => {
                 },
                 listPelayananLaboratoriumGet:{
                     ...INIT_STATE.listPelayananLaboratoriumGet
+                },
+                masterPelayananLaboratoriumGet:{
+                    ...INIT_STATE.masterPelayananLaboratoriumGet
                 }
             }
         }
@@ -454,6 +465,39 @@ const Laboratorium = (state = INIT_STATE, action) => {
                 ...state,
                 listPelayananLaboratoriumGet: {
                     ...state.listPelayananLaboratoriumGet,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case MASTER_PELAYANAN_LABORATORIUM_GET: {
+            return {
+                ...state,
+                masterPelayananLaboratoriumGet: {
+                    ...state.masterPelayananLaboratoriumGet,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case MASTER_PELAYANAN_LABORATORIUM_GET_SUCCESS: {
+            return {
+                ...state,
+                masterPelayananLaboratoriumGet: {
+                    ...state.masterPelayananLaboratoriumGet,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case MASTER_PELAYANAN_LABORATORIUM_GET_ERROR: {
+            return {
+                ...state,
+                masterPelayananLaboratoriumGet: {
+                    ...state.masterPelayananLaboratoriumGet,
                     loading: false,
                     error: action.error,
                 }

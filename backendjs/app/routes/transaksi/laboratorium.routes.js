@@ -70,4 +70,10 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getTransaksiPelayananLaboratoriumByNorecDp
     );
+
+    app.get(
+        "/api/transaksi/laboratorium/master-layanan-laboratorium",
+        [authJwt.verifyToken],
+        controller.getMasterLayananLaboratorium
+    );
 }

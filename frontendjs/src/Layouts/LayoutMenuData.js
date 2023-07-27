@@ -443,6 +443,17 @@ const Navdata = () => {
                         ]);
                     }
                 },
+                {
+                    id: "laboratorium-masterlayananlab",
+                    label: "Master Layanan Laboratorium",
+                    link: "/laboratorium/masterlayananlab",
+                    parentId: "laboratorium",
+                    isAllowed: () => {
+                        return isAllowedAccess(getUserPermissions(), [
+                            "REGISTRASI_VIEW",
+                        ]);
+                    }
+                },
             ]
         },
         {

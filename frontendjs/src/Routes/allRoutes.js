@@ -267,15 +267,19 @@ import DaftarPasienPulang from "../pages/DaftarPasienPulang/DaftarPasienPulang";
 import DaftarOrderLaboratorium from "../pages/Laboratorium/DaftarOrderLaboratorium/DaftarOrderLaboratorium";
 import DaftarPasienLaboratorium from "../pages/Laboratorium/DaftarPasienLaboratorium/DaftarPasienLaboratorium";
 import TransaksiPelayanLaboratorium from "../pages/Laboratorium/TransaksiPelayanLaboratorium/TransaksiPelayanLaboratorium";
-import VerifikasiPelayanan from "../pages/VerifikasiPelayanan/VerifikasiPelayanan";
-import DaftarTagihanPasien from "../pages/DaftarTagihanPasien/DaftarTagihanPasien";
-import Bayar from "../pages/Bayar/Bayar";
+import MasterDataLayanan from "../pages/Laboratorium/MasterDataLayanan/MasterDataLayanan";
+import MasterNilaiNormal from "../pages/Laboratorium/MasterNilaiNormal/MasterNilaiNormal";
 
 // casemix
 import KlaimInacbg from "../pages/Casemix/KlaimInacbg/KlaimInacbg";
 import DaftarPiutangPasien from "../pages/DaftarPiutangPasien/DaftarPiutangPasien";
 import BayarPiutang from "../pages/BayarPiutang/BayarPiutang";
 import SettingProduk from "../pages/SettingProduk/SettingProduk";
+
+// payment
+import VerifikasiPelayanan from "../pages/VerifikasiPelayanan/VerifikasiPelayanan";
+import DaftarTagihanPasien from "../pages/DaftarTagihanPasien/DaftarTagihanPasien";
+import Bayar from "../pages/Bayar/Bayar";
 
 
 
@@ -518,7 +522,8 @@ const authProtectedRoutes = [
   { path: "/laboratorium/daftarorderlaboratorium", component: <DaftarOrderLaboratorium /> },
   { path: "/laboratorium/daftarpasienlaboratorium", component: <DaftarPasienLaboratorium /> },
   { path: "/transaksi-pelayanan-laboratorium/:norecdp/:norecap", component: <TransaksiPelayanLaboratorium /> },
-
+  { path: "/laboratorium/masterlayananlab", component: <MasterDataLayanan/>},
+  { path: "/laboratorium/masternilainormal/:idproduk/:layanan/:kode/detailjenis", component:<MasterNilaiNormal/>},
   // payment
   { path: "/payment/verif-tagihan/:norecdp", component: <VerifikasiPelayanan /> },
   { path: "/payment/daftar-tagihan", component: <DaftarTagihanPasien /> },
