@@ -32,7 +32,10 @@ import {
     LIST_PELAYANAN_LABORATORIUM_GET_ERROR,
     MASTER_PELAYANAN_LABORATORIUM_GET,
     MASTER_PELAYANAN_LABORATORIUM_GET_SUCCESS,
-    MASTER_PELAYANAN_LABORATORIUM_GET_ERROR
+    MASTER_PELAYANAN_LABORATORIUM_GET_ERROR,
+    COMBO_LABORATORIUM_GET,
+    COMBO_LABORATORIUM_GET_SUCCESS,
+    COMBO_LABORATORIUM_GET_ERROR
 } from "./actionType";
 
 export const laboratoriumResetForm = () => ({
@@ -202,5 +205,20 @@ export const masterPelayananLaboratoriumGetSuccess = (data) => ({
 
 export const masterPelayananLaboratoriumGetError = (error) => ({
     type: MASTER_PELAYANAN_LABORATORIUM_GET_ERROR,
+    payload: error,
+});
+
+export const comboLaboratoriumGet = (param) => ({
+    type: COMBO_LABORATORIUM_GET,
+    payload: { param },
+});
+
+export const comboLaboratoriumGetSuccess = (data) => ({
+    type: COMBO_LABORATORIUM_GET_SUCCESS,
+    payload: data,
+});
+
+export const comboLaboratoriumGetError = (error) => ({
+    type: COMBO_LABORATORIUM_GET_ERROR,
     payload: error,
 });

@@ -20,13 +20,96 @@ import withRouter from '../../../Components/Common/withRouter';
 import BreadCrumb from '../../../Components/Common/BreadCrumb';
 import DataTable from 'react-data-table-component';
 import {
-    masterPelayananLaboratoriumGet
+    comboLaboratoriumGet
 } from '../../../store/actions';
 
 const MasterNilaiNormal = () => {
+    const { idproduk, layanan, kodeexternal, detailjenis } = useParams();
     document.title = "Master Nilai Normal";
     const dispatch = useDispatch();
     const history = useNavigate();
+    const { data, loading, error } = useSelector((state) => ({
+        data: state.Laboratorium.comboLaboratoriumGet.data,
+        loading: state.Laboratorium.comboLaboratoriumGet.loading
+
+    }));
+    const [rows, setRows] = useState([{
+        id: 1, kode: `1`, nama: `${layanan}`, satuan: '', kelompokumur: '', aksi: '', statusDisable: true,
+        level: 1, urutan: 1, lastUrutan: 1
+    }]);
+
+    const handleDeleteRow = (id) => {
+        const filteredRows = rows.filter((row) => row.id !== id);
+        setRows(filteredRows);
+    };
+
+    const handleAddRow = (eId, eLevel, eUrutan, eLUrutan) => {
+        if (eLevel === 1) {
+            const updatedRows = rows.map((row) =>
+                row.id === eId ? { ...row, lastUrutan: eLUrutan + 1 } : row
+            );
+            setRows(updatedRows);
+            const newRow = {
+                id: rows.length + 1, kode: `1.` + (parseFloat(eLUrutan) + 1), nama: ``, satuan: '', kelompokumur: '', aksi: '',
+                statusDisable: false, level: eLevel + 1, urutan: parseFloat(eLUrutan) + 1, lastUrutan: 0
+            };
+            setRows([...updatedRows, newRow]);
+
+            // console.log(rows)
+        } else if (eLevel === 2) {
+            const updatedRows = rows.map((row) =>
+                row.id === eId ? { ...row, lastUrutan: eLUrutan + 1 } : row
+            );
+            setRows(updatedRows);
+            const newRow = {
+                id: rows.length + 1, kode: `1.${eUrutan}.` + (parseFloat(eLUrutan) + 1), nama: ``, satuan: '', kelompokumur: '', aksi: '',
+                statusDisable: false, level: eLevel + 1, urutan: parseFloat(eLUrutan) + 1, lastUrutan: 0
+            };
+            setRows([...updatedRows, newRow]);
+        }
+        // let data = rows
+
+
+        // setRows(data);
+
+    };
+    useEffect(() => {
+        dispatch(comboLaboratoriumGet(''));
+    }, [dispatch])
+
+    const handleInputChange = (id, nama, value) => {
+        const updatedRows = rows.map((row) =>
+            row.id === id ? { ...row, [nama]: value } : row
+        );
+        setRows(updatedRows);
+    };
+
+    const handleSelectSatuan = (eValue,eId) => {
+        const updatedRows = rows.map((row) =>
+            row.id === eId ? { ...row, satuan: eValue } : row
+        );
+        setRows(updatedRows);
+    };
+
+    rows.sort((a, b) => {
+        // Convert the "kode" strings into arrays of numbers to compare the segments
+        const kodeA = a.kode.split('.').map(Number);
+        const kodeB = b.kode.split('.').map(Number);
+
+        // Compare each segment of the "kode" arrays
+        for (let i = 0; i < Math.max(kodeA.length, kodeB.length); i++) {
+            const segmentA = kodeA[i] || 0; // If a segment is missing, consider it as 0
+            const segmentB = kodeB[i] || 0;
+
+            if (segmentA !== segmentB) {
+                return segmentA - segmentB; // Compare segments and return the result
+            }
+        }
+
+        return 0; // Return 0 if the two objects have the same "kode"
+    });
+
+    
     return (
         <React.Fragment>
             <ToastContainer closeButton={false} />
@@ -46,7 +129,119 @@ const MasterNilaiNormal = () => {
                                         </Row>
                                     </div>
                                 </CardHeader>
+                                <CardBody>
+                                    <div className='mb-2'>
+                                        <Row className="g-3">
+                                            <Col lg={4}>
+                                                <Table className="table-sm table-borderless mb-0">
+                                                    <tbody>
+                                                        <tr>
+                                                            <th className="ps-0" scope="row">
+                                                                <li>Nama Layanan</li>
+                                                            </th>
+                                                            <td>: {layanan}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th className="ps-0" scope="row">
+                                                                <li>Kode Pemeriksaan</li>
+                                                            </th>
+                                                            <td>: {kodeexternal}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th className="ps-0" scope="row">
+                                                                <li>Detail Jenis Produk</li>
+                                                            </th>
+                                                            <td>: {detailjenis}</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </Table>
+                                            </Col>
+                                            <Col lg={8}></Col>
+                                            <Col lg={12}>
+                                                <Table className="table-sm table-borderless mb-0" id="tab_logic">
+                                                    <thead>
+                                                        <tr>
+                                                            <th className="text-center">No</th>
+                                                            <th className="text-center">Kode</th>
+                                                            <th className="text-center">Nama Pemeriksaan</th>
+                                                            <th className="text-center">Satuan</th>
+                                                            <th className="text-center">Kelompok Umur</th>
+                                                            <th className="text-center">Aksi</th>
+                                                            {/* <th className="text-center">test</th> */}
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {rows.map((row) => (
+                                                            <tr key={row.id} className="text-center">
+                                                                <td>{row.id}</td>
+                                                                <td>
+                                                                    {row.kode}
+                                                                </td>
+                                                                <td>
+                                                                    <input
+                                                                        type="text"
+                                                                        name="nama"
+                                                                        value={row.nama}
+                                                                        placeholder="Enter nama"
+                                                                        className="form-control"
+                                                                        // disabled={row.statusDisable}
+                                                                        onChange={(e) => handleInputChange(row.id, 'nama', e.target.value)}
+                                                                    />
+                                                                </td>
+                                                                <td>
+                                                                    <CustomSelect
+                                                                        id="satuan"
+                                                                        name="satuan"
+                                                                        options={data.datasatuan}
+                                                                        value={row.satuan}
+                                                                        onChange={value => handleSelectSatuan(value.value,row.id)}
+                                                                    // onInputChange={handleDiagnosaix}
+                                                                    />
+                                                                </td>
+                                                                <td>
+                                                                    <CustomSelect
+                                                                        id="kelompokumur"
+                                                                        name="kelompokumur"
+                                                                        options={data.datakelumur}
+                                                                    // onChange={value => handleDiagnosaixSave(value.value)}
+                                                                    // onInputChange={handleDiagnosaix}
+                                                                    />
+                                                                </td>
+                                                                {/* <td>
+                                                                    {row.lastUrutan}
+                                                                </td> */}
+                                                                <td>
+                                                                    {row.statusDisable ? (
+                                                                        <Button type="button" style={{ backgroundColor: 'green' }} className="rounded-pill" placement="top"
+                                                                            onClick={(e) => handleAddRow(row.id, row.level, row.urutan, row.lastUrutan)}>
+                                                                            Tambah Sub
+                                                                        </Button>
+                                                                    ) :
+                                                                        <Row>
+                                                                            <Button type="button" style={{ backgroundColor: 'green' }} className="rounded-pill" placement="top"
+                                                                                onClick={(e) => handleAddRow(row.id, row.level, row.urutan, row.lastUrutan)}>
+                                                                                Tambah Sub
+                                                                            </Button>
 
+
+                                                                        </Row>
+                                                                    }
+                                                                </td>
+                                                                {row.id > 1 && (
+                                                                    <td>
+                                                                        {/* <button type="button" onClick={() => handleDeleteRow(row.id)}>
+                                                                            Delete
+                                                                        </button> */}
+                                                                    </td>
+                                                                )}
+                                                            </tr>
+                                                        ))}
+                                                    </tbody>
+                                                </Table>
+                                            </Col>
+                                        </Row>
+                                    </div>
+                                </CardBody>
                             </Card>
                         </Col>
                     </Row>

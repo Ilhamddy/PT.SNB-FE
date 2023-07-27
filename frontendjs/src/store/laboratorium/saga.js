@@ -12,7 +12,8 @@ import {
     SAVE_VERIFIKASI_LABORATORIUM,
     DAFTAR_PASIEN_LABORATORIUM,
     LIST_PELAYANAN_LABORATORIUM_GET,
-    MASTER_PELAYANAN_LABORATORIUM_GET
+    MASTER_PELAYANAN_LABORATORIUM_GET,
+    COMBO_LABORATORIUM_GET
 } from "./actionType";
 
 import {
@@ -26,7 +27,8 @@ import {
     saveVerifikasiLaboratoriumSuccess, saveVerifikasiLaboratoriumError,
     daftarPasienLaboratoriumSuccess, daftarPasienLaboratoriumError,
     listPelayananLaboratoriumGetSuccess, listPelayananLaboratoriumGetError,
-    masterPelayananLaboratoriumGetSuccess, masterPelayananLaboratoriumGetError
+    masterPelayananLaboratoriumGetSuccess, masterPelayananLaboratoriumGetError,
+    comboLaboratoriumGetSuccess, comboLaboratoriumGetError
 } from "./action";
 
 import { toast } from 'react-toastify';
@@ -221,6 +223,19 @@ export function* watchonmasterPelayananLaboratoriumGet() {
     yield takeEvery(MASTER_PELAYANAN_LABORATORIUM_GET, onmasterPelayananLaboratoriumGet);
 }
 
+function* oncomboLaboratoriumGet({ payload: { param } }) {
+    try {
+        const response = yield call(serviceLaboratorium.getcomboLaboratorium, param);
+        yield put(comboLaboratoriumGetSuccess(response.data));
+    } catch (error) {
+        yield put(comboLaboratoriumGetError(error));
+    }
+}
+
+export function* watchoncomboLaboratoriumGet() {
+    yield takeEvery(COMBO_LABORATORIUM_GET, oncomboLaboratoriumGet);
+}
+
 function* laboratoriumSaga() {
     yield all([
         fork(watchonwidgetDetailJenisProdukGet),
@@ -233,7 +248,8 @@ function* laboratoriumSaga() {
         fork(watchonSaveVerifikasiLaboratorium),
         fork(watchonDaftarPasienLaboratorium),
         fork(watchonListPelayananLaboratoriumGet),
-        fork(watchonmasterPelayananLaboratoriumGet)
+        fork(watchonmasterPelayananLaboratoriumGet),
+        fork(watchoncomboLaboratoriumGet)
     ]);
 }
 

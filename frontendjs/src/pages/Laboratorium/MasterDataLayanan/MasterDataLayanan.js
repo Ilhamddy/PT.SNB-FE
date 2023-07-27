@@ -60,7 +60,7 @@ const MasterDataLayanan = () => {
             cell: (data) => {
                 return (
                     <div className="hstack gap-3 flex-wrap">
-                        <Link to={`/laboratorium/masternilainormal/${data.id}`} className="link-success fs-15" id="tooltipMasterDataLayanan"><i className="ri-apps-2-line"></i></Link>
+                        <Link to={`/laboratorium/masternilainormal/${data.id}/${data.namaproduk}/${data.kodeexternal}/${data.detailjenisproduk}`} className="link-success fs-15" id="tooltipMasterDataLayanan"><i className="ri-apps-2-line"></i></Link>
                         <UncontrolledTooltip placement="top" target="tooltipMasterDataLayanan" > Set Nilai Normal </UncontrolledTooltip>
                     </div>
                 );

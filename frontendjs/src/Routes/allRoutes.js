@@ -523,7 +523,7 @@ const authProtectedRoutes = [
   { path: "/laboratorium/daftarpasienlaboratorium", component: <DaftarPasienLaboratorium /> },
   { path: "/transaksi-pelayanan-laboratorium/:norecdp/:norecap", component: <TransaksiPelayanLaboratorium /> },
   { path: "/laboratorium/masterlayananlab", component: <MasterDataLayanan/>},
-  { path: "/laboratorium/masternilainormal/:idproduk/:layanan/:kode/detailjenis", component:<MasterNilaiNormal/>},
+  { path: "/laboratorium/masternilainormal/:idproduk/:layanan/:kodeexternal/:detailjenis", component:<MasterNilaiNormal/>},
   // payment
   { path: "/payment/verif-tagihan/:norecdp", component: <VerifikasiPelayanan /> },
   { path: "/payment/daftar-tagihan", component: <DaftarTagihanPasien /> },
