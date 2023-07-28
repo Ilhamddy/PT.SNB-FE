@@ -7,9 +7,16 @@
         {
             "type": "msedge",
             "request": "launch",
-            "name": "Launch Edge against localhost",
+            "name": "SNB Edge gainst localhost",
             "url": "http://localhost:3000",
             "webRoot": "${workspaceFolder}"
-        }
+        },
+        {
+            "type": "firefox",
+            "request": "launch",
+            "name": "SNB Firefox against localhost",
+            "url": "http://localhost:3000",
+            "webRoot": "${workspaceFolder}"
+          }
     ]
 }
