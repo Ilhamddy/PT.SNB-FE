@@ -5,7 +5,8 @@ const qGetJenisDetailProdukLainLain = `
     mdjp.id AS id,
     mdjp.statusenabled AS statusenabled,
     mdjp.detailjenisproduk AS detailjenisproduk,
-    mjp.jenisproduk AS jenisproduk
+    mjp.jenisproduk AS jenisproduk,
+    mjp.id AS idjenisproduk
     FROM m_detailjenisproduk mdjp
         LEFT JOIN m_jenisproduk mjp ON mjp.id = mdjp.objectjenisprodukfk
 `
@@ -23,7 +24,8 @@ const qGetSatuanLainLain = `
     msat.id AS id,
     msat.satuan AS satuan,
     msat.statusenabled AS statusenabled,
-    mjs.jenissatuan AS jenissatuan
+    mjs.jenissatuan AS jenissatuan,
+    mjs.id AS idjenissatuan
     FROM m_satuan msat
         LEFT JOIN m_jenissatuan mjs ON mjs.id = msat.objectjenissatuanfk
 `

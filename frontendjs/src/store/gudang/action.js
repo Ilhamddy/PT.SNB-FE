@@ -50,9 +50,9 @@ export const lainLainGetError = (data) => ({
     payload: { data: data },
 })
 
-export const detailProdukSaveOrUpdate = (data) => ({
+export const detailProdukSaveOrUpdate = (data, callback) => ({
     type: DETAIL_PRODUK_SAVE_OR_UPDATE,
-    payload: { data: data },
+    payload: { data: data, callback: callback },
 })
 
 export const detailProdukSaveOrUpdateSuccess = (data) => ({
@@ -65,9 +65,9 @@ export const detailProdukSaveOrUpdateError = (data) => ({
     payload: { data: data },
 })
 
-export const sediaanSaveOrUpdate = (data) => ({
+export const sediaanSaveOrUpdate = (data, callback) => ({
     type: SEDIAAN_SAVE_OR_UPDATE,
-    payload: { data: data },
+    payload: { data: data, callback: callback },
 })
 
 export const sediaanSaveOrUpdateSuccess = (data) => ({
@@ -80,9 +80,9 @@ export const sediaanSaveOrUpdateError = (data) => ({
     payload: { data: data },
 })
 
-export const satuanSaveOrUpdate = (data) => ({
+export const satuanSaveOrUpdate = (data, callback) => ({
     type: SATUAN_SAVE_OR_UPDATE,
-    payload: { data: data },
+    payload: { data: data, callback: callback },
 })
 
 export const satuanSaveOrUpdateSuccess = (data) => ({

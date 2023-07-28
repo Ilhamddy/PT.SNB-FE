@@ -14,7 +14,8 @@ import {
     NavLink, 
     Row, 
     TabContent, 
-    TabPane 
+    TabPane, 
+    UncontrolledTooltip
 } from "reactstrap";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -56,7 +57,10 @@ const LainLain = () => {
             jenisproduk: Yup.string().required("Jenis produk harus diisi"),
         }),
         onSubmit: (values) => {
-            dispatch(detailProdukSaveOrUpdate(values))
+            dispatch(detailProdukSaveOrUpdate(values, () => {
+                dispatch(lainLainGet());
+                handleBatalProduk();
+            }))
         }
     })
 
@@ -71,7 +75,11 @@ const LainLain = () => {
             sediaan: Yup.string().required("Sediaan harus diisi")
         }),
         onSubmit: (values) => {
-            dispatch(sediaanSaveOrUpdate(values))
+            dispatch(sediaanSaveOrUpdate(values, () => {
+                dispatch(lainLainGet())
+                handleBatalSediaan();
+            }));
+            
         }
     })
 
@@ -89,9 +97,46 @@ const LainLain = () => {
         }),
         onSubmit: (values) => {
             console.log(values);
-            dispatch(satuanSaveOrUpdate(values));
+            dispatch(satuanSaveOrUpdate(values, () => {
+                dispatch(lainLainGet())
+            }));
+            
         }
     })
+
+    const handleEditProduk = (row) => {
+        vDetailJenisProduk.setFieldValue("id", row.id);
+        vDetailJenisProduk.setFieldValue("detailjenisproduk", row.detailjenisproduk);
+        vDetailJenisProduk.setFieldValue("jenisproduk", row.idjenisproduk);
+        vDetailJenisProduk.setFieldValue("statusenabled", row.statusenabled);
+    }
+
+    const handleBatalProduk = () => {
+        vDetailJenisProduk.resetForm()
+        refJenisProduk.current.clearValue()
+    }
+
+    const handleEditSediaan = (row) => {
+        vSediaan.setFieldValue("id", row.id);
+        vSediaan.setFieldValue("sediaan", row.sediaan);
+        vSediaan.setFieldValue("statusenabled", row.statusenabled);
+    }
+
+    const handleBatalSediaan = () => {
+        vSediaan.resetForm()
+    }
+
+    const handleEditSatuan = (row) => {
+        vSatuan.setFieldValue("id", row.id);
+        vSatuan.setFieldValue("satuan", row.satuan);
+        vSatuan.setFieldValue("jenissatuan", row.idjenissatuan);
+    }
+
+    const handleBatalSatuan = () => {
+        vSatuan.resetForm()
+        refJenisSatuan.current.clearValue()
+    }
+
 
     useEffect(() => {
         dispatch(lainLainGet())
@@ -101,6 +146,26 @@ const LainLain = () => {
      * @type {import("react-data-table-component").TableColumn[]}
      */
     const columnsProduk = [
+        {
+            name: <span className='font-weight-bold fs-13'>edit</span>,
+            selector: (row, index) => (
+                <div>
+                    <i 
+                        className="ri-edit-2-line"
+                        id={`edit-produk-${index}`}
+                        onClick={() => handleEditProduk(row)}
+                        >
+                    </i>
+                    <UncontrolledTooltip 
+                        placement="top" 
+                        target={`edit-produk-${index}`}> 
+                        Edit {row.detailjenisproduk}
+                    </UncontrolledTooltip>
+                </div>),
+            sortable: true,
+            width: "50px",
+            wrap: true
+        },
         {
             name: <span className='font-weight-bold fs-13'>ID</span>,
             selector: row => row.id,
@@ -135,8 +200,21 @@ const LainLain = () => {
      */
     const columnsSediaan = [
         {
-            name: <span className='font-weight-bold fs-13'>ID</span>,
-            selector: row => row.id,
+            name: <span className='font-weight-bold fs-13'>edit</span>,
+            selector: (row, index) => (
+                <div>
+                    <i 
+                        className="ri-edit-2-line"
+                        id={`edit-sediaan-${index}`}
+                        onClick={() => handleEditSediaan(row)}
+                        >
+                    </i>
+                    <UncontrolledTooltip 
+                        placement="top" 
+                        target={`edit-sediaan-${index}`}> 
+                        Edit {row.sediaan}
+                    </UncontrolledTooltip>
+                </div>),
             sortable: true,
             width: "50px",
             wrap: true
@@ -160,6 +238,26 @@ const LainLain = () => {
      * @type {import("react-data-table-component").TableColumn[]}
      */
     const columnsSatuan = [
+        {
+            name: <span className='font-weight-bold fs-13'>edit</span>,
+            selector: (row, index) => (
+                <div>
+                    <i 
+                        className="ri-edit-2-line"
+                        id={`edit-satuan-${index}`}
+                        onClick={() => handleEditSatuan(row)}
+                        >
+                    </i>
+                    <UncontrolledTooltip 
+                        placement="top" 
+                        target={`edit-satuan-${index}`}> 
+                        Edit {row.satuan}
+                    </UncontrolledTooltip>
+                </div>),
+            sortable: true,
+            width: "50px",
+            wrap: true
+        },
         {
             name: <span className='font-weight-bold fs-13'>ID</span>,
             selector: row => row.id,
@@ -319,16 +417,13 @@ const LainLain = () => {
                     <Row>
                         <div className="d-flex gap-2 justify-content-center mt-4 mb-2">
                             <Button type="submit" color="info" placement="top" id="tooltipTop" >
-                                Tambah
+                                {vDetailJenisProduk.values.id ? "Edit" : "Tambah"}
                             </Button>
                             <Button type="button" 
                                 className="btn-danger" 
                                 placement="top" 
                                 id="tooltipTop" 
-                                onClick={() => {
-                                    vDetailJenisProduk.resetForm()
-                                    refJenisProduk.current.clearValue()
-                                }}
+                                onClick={handleBatalProduk}
                                 >
                                 Batal
                             </Button>
@@ -426,15 +521,13 @@ const LainLain = () => {
                     <Row>
                         <div className="d-flex gap-2 justify-content-center mt-4 mb-2">
                             <Button type="submit" color="info" placement="top" id="tooltipTop" >
-                                Tambah
+                                {vSediaan.values.id ? "Edit" : "Tambah"}
                             </Button>
                             <Button type="button" 
                                 className="btn-danger" 
                                 placement="top" 
                                 id="tooltipTop" 
-                                onClick={() => {
-                                    vSediaan.resetForm()
-                                }}
+                                onClick={handleBatalSediaan}
                                 >
                                 Batal
                             </Button>
@@ -464,8 +557,6 @@ const LainLain = () => {
                 <Form
                     onSubmit={(e) => {
                         e.preventDefault();
-                        console.log(vSatuan.values)
-                        console.log(vSatuan.errors)
                         vSatuan.handleSubmit();
                         return false;
                     }}
@@ -565,7 +656,7 @@ const LainLain = () => {
                     <Row>
                         <div className="d-flex gap-2 justify-content-center mt-4 mb-2">
                             <Button type="submit" color="info" placement="top" id="tooltipTop" >
-                                Tambah
+                                {vSatuan.values.id ? "Edit" : "Tambah"}
                             </Button>
                             <Button type="button" 
                                 className="btn-danger" 

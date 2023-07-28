@@ -32,6 +32,18 @@ export default (sequelize, Sequelize) => {
         },
         persenhargacito: {
             type: Sequelize.FLOAT
+        },
+        tglinput: {
+            type: Sequelize.DATE
+        },
+        tglupdate: {
+            type: Sequelize.DATE
+        },
+        objectpegawaiinputfk: {
+            type: Sequelize.INTEGER
+        },
+        objectpegawaiupdatefk: {
+            type: Sequelize.INTEGER
         }
     }, {
         tableName: "m_detailjenisproduk",

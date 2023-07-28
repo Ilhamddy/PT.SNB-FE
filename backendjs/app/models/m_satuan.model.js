@@ -26,6 +26,18 @@ export default (sequelize, Sequelize) => {
         },
         objectjenissatuanfk: {
             type: Sequelize.INTEGER
+        },
+        tglinput: {
+            type: Sequelize.DATE
+        },
+        tglupdate: {
+            type: Sequelize.DATE
+        },
+        objectpegawaiinputfk: {
+            type: Sequelize.INTEGER
+        },
+        objectpegawaiupdatefk: {
+            type: Sequelize.INTEGER
         }
     }, {
         tableName: "m_satuan",

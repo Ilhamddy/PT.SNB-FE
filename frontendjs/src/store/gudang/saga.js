@@ -52,11 +52,12 @@ function* onGetLainLain(){
     }
 }
 
-function* onDetailProdukSaveOrUpdate({payload: { data }}){
+function* onDetailProdukSaveOrUpdate({payload: { data, callback }}){
     try {
         let response = yield call(serviceGudang.saveOrEditDetailProduk, data);
         yield put(detailProdukSaveOrUpdateSuccess(response.data));
         toast.success(response.msg, { autoClose: 3000 })
+        callback();
     } catch (error) {
         console.error(error);
         yield put(detailProdukSaveOrUpdateError(error));
@@ -65,11 +66,12 @@ function* onDetailProdukSaveOrUpdate({payload: { data }}){
     }
 }
 
-function* onSediaanSaveOrUpdate({payload: { data }}){
+function* onSediaanSaveOrUpdate({payload: { data, callback }}){
     try {
         let response = yield call(serviceGudang.saveOrEditSediaan, data);
         yield put(sediaanSaveOrUpdateSuccess(response.data));
         toast.success(response.msg, { autoClose: 3000 })
+        callback();
     } catch (error) {
         console.error(error);
         yield put(sediaanSaveOrUpdateError(error));
@@ -88,11 +90,13 @@ function* onKonversiQueryGet({payload: { queries }}){
 }
 
 
-function* onSatuanSaveOrUpdate({payload: { data }}){
+function* onSatuanSaveOrUpdate({payload: { data, callback }}){
     try {
         let response = yield call(serviceGudang.saveOrEditSatuan, data);
         yield put(satuanSaveOrUpdateSuccess(response.data));
         toast.success(response.msg, { autoClose: 3000 })
+        
+        callback();
     } catch (error) {
         console.error(error);
         yield put(satuanSaveOrUpdateError(error));
