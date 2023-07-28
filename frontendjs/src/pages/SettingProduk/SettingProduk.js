@@ -65,9 +65,15 @@ const SettingProduk = () => {
                         </div>
                         <CardBody>
                             <TabContent activeTab={tabopen} className="text-muted">
-                                <TambahProduk />
-                                <LainLain />
-                                <KonversiProduk />
+                                <TambahProduk 
+                                    tabId={"tambah"}
+                                />
+                                <LainLain 
+                                    tabId={"lain-lain"}
+                                />
+                                <KonversiProduk 
+                                    tabId={"konversi-produk"}
+                                />
                             </TabContent>
                         </CardBody>
                     </Card>

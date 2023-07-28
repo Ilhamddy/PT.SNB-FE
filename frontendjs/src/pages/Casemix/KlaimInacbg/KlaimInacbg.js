@@ -20,7 +20,7 @@ import BreadCrumb from '../../../Components/Common/BreadCrumb';
 import DataTable from 'react-data-table-component';
 import calendar from "../../../assets/images/users/calendar.png";
 import SearchOption from '../../../Components/Common/SearchOption';
-import { dateISOString, dateTimeLocal } from "../../../utils/format";
+import { dateTimeLocal } from "../../../utils/format";
 import {
     casemixResetForm, listCariPasienGet, listDaftarPasienGet, listTarifPasienGet,
     listDiagnosaxGet, listDiagnosaixGet, bridgingInacbgSave, emrDiagnosaxGet,
@@ -31,8 +31,8 @@ import {
 import { BasicTable } from '../../Tables/DataTables/datatableCom';
 import DeleteModalCustom from '../../../Components/Common/DeleteModalCustom';
 
-const dateAwalStart = dateISOString(new Date(new Date() - 1000 * 60 * 60 * 24 * 3));
-const dateAwalEnd = dateISOString(new Date())
+const dateAwalStart = (new Date(new Date() - 1000 * 60 * 60 * 24 * 3)).toISOString();
+const dateAwalEnd = (new Date()).toISOString()
 const KlaimInacbg = () => {
     document.title = "Klaim Inacbg";
     const dispatch = useDispatch();
@@ -1335,7 +1335,7 @@ const KlaimInacbg = () => {
                                                                         }}
                                                                         value={dateStart}
                                                                         onChange={([dateStart]) => {
-                                                                            setDateStart(dateISOString(dateStart - dateStart.getTimezoneOffset() * 60000));
+                                                                            setDateStart((new Date(dateStart)).toISOString());
                                                                         }}
                                                                     />
                                                                 </Col>
@@ -1350,7 +1350,7 @@ const KlaimInacbg = () => {
                                                                         }}
                                                                         value={dateEnd}
                                                                         onChange={([dateEnd]) => {
-                                                                            setDateEnd(dateISOString(dateEnd - dateEnd.getTimezoneOffset() * 60000));
+                                                                            setDateEnd((new Date(dateEnd)).toISOString());
                                                                         }}
                                                                     />
                                                                 </Col>

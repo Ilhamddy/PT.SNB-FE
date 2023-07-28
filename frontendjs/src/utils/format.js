@@ -21,16 +21,6 @@ export const dateTimeLocal = (date) => {
 
 }
 
-export const dateISOString = (date) => {
-    try{
-        return new Date(date)
-            .toISOString()
-            .split("T")[0]
-    }catch(e){
-        return ""
-    }
-    
-}
 
 export const dateTimeISOString = (date) => {
     try{
@@ -46,6 +36,10 @@ export const strNumber = (nbrStr) => {
     return Number(nbrStr).toLocaleString("id-ID")
 }
 
+/**
+ * tambahkan titik 
+ * @returns 
+ */
 export const onChangeStrNbr = (value, valueBefore) => {
     let val = value.replace(rgxAllPeriods, "")
     val = val === "00" ? "0" : val.length > 1 ? val.replace(rgxZeroStarts, "") : val

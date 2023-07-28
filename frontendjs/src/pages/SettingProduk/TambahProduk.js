@@ -10,11 +10,7 @@ import CustomSelect from "../Select/Select";
 import { useDispatch, useSelector } from "react-redux";
 import { comboSettingProdukGet } from "../../store/master/action";
 import {
-    detailProdukSaveOrUpdate, 
-    lainLainGet, 
     obatGudangSave, 
-    satuanSaveOrUpdate, 
-    sediaanSaveOrUpdate
 } from "../../store/gudang/action";
 import DataTable from "react-data-table-component";
 import { KonversiProduk } from "./KonversiProduk";
@@ -22,7 +18,7 @@ import LainLain from "./LainLain";
 
 const linkSettingProduk = "/farmasi/gudang/setting-produk"
 
-const TambahProduk = () => {
+const TambahProduk = ({tabId}) => {
     const dispatch = useDispatch();
 
     const {
@@ -79,7 +75,7 @@ const TambahProduk = () => {
     ]
 
     return (
-        <TabPane tabId="tambah" id="home2">
+        <TabPane tabId={tabId} id="home2">
             <Form
                 onSubmit={(e) => {
                     e.preventDefault();
@@ -229,6 +225,7 @@ const TambahProduk = () => {
                                     options={comboSettingProduk?.sediaan || []}
                                     onChange={(e) => {validation.setFieldValue('sediaan', e.value)}}
                                     value={validation.values.sediaan}
+                                    className={`input ${validation.errors.sediaan ? "is-invalid" : ""}`}
                                     />
                                 {validation.touched.sediaan
                                     && !!validation.errors.sediaan && (

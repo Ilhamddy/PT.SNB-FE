@@ -41,8 +41,20 @@ export default function (app) {
     )
 
     app.get(
-        "/api/transaksi/gudang/get-konversi",
+        "/api/transaksi/gudang/get-produk-konversi",
         [authJwt.verifyToken],
-        controller.getKonversi
+        controller.getProdukKonversi
+    )
+
+    app.get(
+        "/api/transaksi/gudang/get-kemasan-konversi",
+        [authJwt.verifyToken],
+        controller.getKemasanKonversi
+    )
+
+    app.post(
+        "/api/transaksi/gudang/create-or-update-kemasan",
+        [authJwt.verifyToken],
+        controller.createOrUpdateKemasan
     )
 }

@@ -23,8 +23,15 @@ export default class ServiceGudang {
         return await api.create(`/transaksi/gudang/create-or-update-satuan`, body)
     }
 
-    getKonversi = async () => {
-        return await api.get(`/transaksi/gudang/get-konversi`, {search: "mencoba"})
+    getProdukKonversi = async (queries) => {
+        return await api.get(`/transaksi/gudang/get-produk-konversi`, queries)
     }
 
+    getKemasanKonversi = async (queries) => {
+        return await api.get(`/transaksi/gudang/get-kemasan-konversi`, queries)
+    }
+
+    saveOrEditKemasan = async (body) => {
+        return await api.create(`/transaksi/gudang/create-or-update-kemasan`, body)
+    }
 }

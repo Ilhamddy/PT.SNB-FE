@@ -15,9 +15,15 @@ import {
     SATUAN_SAVE_OR_UPDATE,
     SATUAN_SAVE_OR_UPDATE_SUCCESS,
     SATUAN_SAVE_OR_UPDATE_ERROR,
-    KONVERSI_QUERY_GET,
-    KONVERSI_QUERY_GET_SUCCESS,
-    KONVERSI_QUERY_GET_ERROR,
+    KONVERSI_PRODUK_QUERY_GET,
+    KONVERSI_PRODUK_QUERY_GET_SUCCESS,
+    KONVERSI_PRODUK_QUERY_GET_ERROR,
+    KONVERSI_KEMASAN_QUERY_GET,
+    KONVERSI_KEMASAN_QUERY_GET_SUCCESS,
+    KONVERSI_KEMASAN_QUERY_GET_ERROR,
+    KEMASAN_SAVE_OR_UPDATE,
+    KEMASAN_SAVE_OR_UPDATE_SUCCESS,
+    KEMASAN_SAVE_OR_UPDATE_ERROR,
 } from "./actionType";
 
 const INIT_STATE = {
@@ -46,7 +52,17 @@ const INIT_STATE = {
         loading: false,
         error: null,
     },
-    konversiQueryGet: {
+    konversiProdukQueryGet: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    konversiKemasanQueryGet: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    kemasanSaveOrUpdate: {
         data: [],
         loading: false,
         error: null,
@@ -242,11 +258,11 @@ const Registrasi = (state = INIT_STATE, action) => {
             }
         }
 
-        case KONVERSI_QUERY_GET: {
+        case KONVERSI_PRODUK_QUERY_GET: {
             return {
                 ...state,
-                konversiQueryGet: {
-                    ...state.konversiQueryGet,
+                konversiProdukQueryGet: {
+                    ...state.konversiProdukQueryGet,
                     loading: true,
                     data: [],
                     error: null
@@ -254,11 +270,11 @@ const Registrasi = (state = INIT_STATE, action) => {
             }
         }
 
-        case KONVERSI_QUERY_GET_SUCCESS: {
+        case KONVERSI_PRODUK_QUERY_GET_SUCCESS: {
             return {
                 ...state,
-                konversiQueryGet: {
-                    ...state.konversiQueryGet,
+                konversiProdukQueryGet: {
+                    ...state.konversiProdukQueryGet,
                     loading: false,
                     data: action.payload.data,
                     error: null
@@ -266,11 +282,83 @@ const Registrasi = (state = INIT_STATE, action) => {
             }
         }
 
-        case KONVERSI_QUERY_GET_ERROR: {
+        case KONVERSI_PRODUK_QUERY_GET_ERROR: {
             return {
                 ...state,
-                konversiQueryGet: {
-                    ...state.konversiQueryGet,
+                konversiProdukQueryGet: {
+                    ...state.konversiProdukQueryGet,
+                    loading: false,
+                    data: [],
+                    error: action.payload.data
+                }
+            }
+        }
+
+        case KONVERSI_KEMASAN_QUERY_GET: {
+            return {
+                ...state,
+                konversiKemasanQueryGet: {
+                    ...state.konversiKemasanQueryGet,
+                    loading: true,
+                    data: [],
+                    error: null
+                }
+            }
+        }
+
+        case KONVERSI_KEMASAN_QUERY_GET_SUCCESS: {
+            return {
+                ...state,
+                konversiKemasanQueryGet: {
+                    ...state.konversiKemasanQueryGet,
+                    loading: false,
+                    data: action.payload.data,
+                    error: null
+                }
+            }
+        }
+
+        case KONVERSI_KEMASAN_QUERY_GET_ERROR: {
+            return {
+                ...state,
+                konversiKemasanQueryGet: {
+                    ...state.konversiKemasanQueryGet,
+                    loading: false,
+                    data: [],
+                    error: action.payload.data
+                }
+            }
+        }
+
+        case KEMASAN_SAVE_OR_UPDATE: {
+            return {
+                ...state,
+                kemasanSaveOrUpdate: {
+                    ...state.kemasanSaveOrUpdate,
+                    loading: true,
+                    data: [],
+                    error: null
+                }
+            }
+        }
+
+        case KEMASAN_SAVE_OR_UPDATE_SUCCESS: {
+            return {
+                ...state,
+                kemasanSaveOrUpdate: {
+                    ...state.kemasanSaveOrUpdate,
+                    loading: false,
+                    data: action.payload.data,
+                    error: null
+                }
+            }
+        }
+
+        case KEMASAN_SAVE_OR_UPDATE_ERROR: {
+            return {
+                ...state,
+                kemasanSaveOrUpdate: {
+                    ...state.kemasanSaveOrUpdate,
                     loading: false,
                     data: [],
                     error: action.payload.data

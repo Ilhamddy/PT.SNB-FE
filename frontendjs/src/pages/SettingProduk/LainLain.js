@@ -25,9 +25,10 @@ import { comboSettingProdukGet } from "../../store/master/action";
 import {detailProdukSaveOrUpdate, lainLainGet, satuanSaveOrUpdate, sediaanSaveOrUpdate} from "../../store/gudang/action";
 import DataTable from "react-data-table-component";
 import { KonversiProduk } from "./KonversiProduk";
+import { Link } from "react-router-dom";
 
 
-const LainLain = () => {
+const LainLain = ({tabId}) => {
 
     const dispatch = useDispatch();
     const {
@@ -147,26 +148,6 @@ const LainLain = () => {
      */
     const columnsProduk = [
         {
-            name: <span className='font-weight-bold fs-13'>edit</span>,
-            selector: (row, index) => (
-                <div>
-                    <i 
-                        className="ri-edit-2-line"
-                        id={`edit-produk-${index}`}
-                        onClick={() => handleEditProduk(row)}
-                        >
-                    </i>
-                    <UncontrolledTooltip 
-                        placement="top" 
-                        target={`edit-produk-${index}`}> 
-                        Edit {row.detailjenisproduk}
-                    </UncontrolledTooltip>
-                </div>),
-            sortable: true,
-            width: "50px",
-            wrap: true
-        },
-        {
             name: <span className='font-weight-bold fs-13'>ID</span>,
             selector: row => row.id,
             sortable: true,
@@ -189,7 +170,22 @@ const LainLain = () => {
         {
 
             name: <span className='font-weight-bold fs-13'>Detail jenis produk</span>,
-            selector: row => row.detailjenisproduk,
+            selector: (row, index) => (
+                <div>
+                    <Link
+                        className="lain-edit-2-line"
+                        id={`edit-produk-${index}`}
+                        onClick={() => handleEditProduk(row)}
+                        >
+                            {row.detailjenisproduk}
+                    </Link>
+                    <UncontrolledTooltip 
+                        placement="top" 
+                        target={`edit-produk-${index}`}> 
+                        Edit {row.detailjenisproduk}
+                    </UncontrolledTooltip>
+                </div>
+                ),
             sortable: true,
             width: "170px"
         }
@@ -200,21 +196,8 @@ const LainLain = () => {
      */
     const columnsSediaan = [
         {
-            name: <span className='font-weight-bold fs-13'>edit</span>,
-            selector: (row, index) => (
-                <div>
-                    <i 
-                        className="ri-edit-2-line"
-                        id={`edit-sediaan-${index}`}
-                        onClick={() => handleEditSediaan(row)}
-                        >
-                    </i>
-                    <UncontrolledTooltip 
-                        placement="top" 
-                        target={`edit-sediaan-${index}`}> 
-                        Edit {row.sediaan}
-                    </UncontrolledTooltip>
-                </div>),
+            name: <span className='font-weight-bold fs-13'>ID</span>,
+            selector: row => row.id,
             sortable: true,
             width: "50px",
             wrap: true
@@ -228,7 +211,21 @@ const LainLain = () => {
         },
         {
             name: <span className='font-weight-bold fs-13'>Sediaan</span>,
-            selector: row => row.sediaan,
+            selector: (row, index) => (
+                <div>
+                    <Link
+                        className="lain-edit-2-line"
+                        id={`edit-sediaan-${index}`}
+                        onClick={() => handleEditSediaan(row)}
+                        >
+                            {row.sediaan}
+                    </Link>
+                    <UncontrolledTooltip 
+                        placement="top" 
+                        target={`edit-satuan-${index}`}> 
+                        Edit {row.sediaan}
+                    </UncontrolledTooltip>
+                </div>),
             sortable: true,
             width: "170px"
         }
@@ -238,26 +235,6 @@ const LainLain = () => {
      * @type {import("react-data-table-component").TableColumn[]}
      */
     const columnsSatuan = [
-        {
-            name: <span className='font-weight-bold fs-13'>edit</span>,
-            selector: (row, index) => (
-                <div>
-                    <i 
-                        className="ri-edit-2-line"
-                        id={`edit-satuan-${index}`}
-                        onClick={() => handleEditSatuan(row)}
-                        >
-                    </i>
-                    <UncontrolledTooltip 
-                        placement="top" 
-                        target={`edit-satuan-${index}`}> 
-                        Edit {row.satuan}
-                    </UncontrolledTooltip>
-                </div>),
-            sortable: true,
-            width: "50px",
-            wrap: true
-        },
         {
             name: <span className='font-weight-bold fs-13'>ID</span>,
             selector: row => row.id,
@@ -281,7 +258,21 @@ const LainLain = () => {
         },
         {
             name: <span className='font-weight-bold fs-13'>Satuan</span>,
-            selector: row => row.satuan,
+            selector: (row, index) => (
+                <div>
+                    <Link
+                        className="lain-edit-2-line"
+                        id={`edit-satuan-${index}`}
+                        onClick={() => handleEditSatuan(row)}
+                        >
+                            {row.satuan}
+                    </Link>
+                    <UncontrolledTooltip 
+                        placement="top" 
+                        target={`edit-satuan-${index}`}> 
+                        Edit {row.satuan}
+                    </UncontrolledTooltip>
+                </div>),
             sortable: true,
             width: "170px"
         }
@@ -677,7 +668,7 @@ const LainLain = () => {
     )
     
     return (
-        <TabPane tabId="lain-lain" id="home2">
+        <TabPane tabId={tabId} id="home2">
             {RowJenisProdukDetail}
             {RowSediaan}
             {RowSatuan}

@@ -35,13 +35,32 @@ const qGetProduk = `
     mp.id AS id,
     mp.statusenabled AS statusenabled,
     mp.kdprofile AS kdprofile,
-    mp.namaproduk AS namaproduk
+    mp.namaproduk AS namaproduk,
+    ms.satuan AS satuan,
+    ms.id AS idsatuan
         FROM m_produk mp
+        LEFT JOIN m_satuan ms ON mp.objectsatuanstandarfk = ms.id
+`
+
+const qGetKemasan = `
+    SELECT
+    mkp.id AS id,
+    mkp.statusenabled AS statusenabled,
+    mkp.nilaikonversi AS nilaikonversi,
+    ms.satuan AS satuan,
+    msb.satuan AS kemasan
+        FROM m_kemasanproduk mkp
+        LEFT JOIN m_produk mp ON mp.id = mkp.objectprodukfk
+        LEFT JOIN m_satuan ms ON mkp.objectsatuankecilfk = ms.id
+        LEFT JOIN m_satuan msb ON mkp.objectsatuanbesarfk = msb.id
+            WHERE mkp.objectprodukfk = $1
+
 `
 
 export {
     qGetJenisDetailProdukLainLain,
     qGetSediaanLainLain,
     qGetSatuanLainLain,
-    qGetProduk
+    qGetProduk,
+    qGetKemasan
 }

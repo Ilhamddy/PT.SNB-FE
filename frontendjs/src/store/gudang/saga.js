@@ -12,8 +12,12 @@ import {
     sediaanSaveOrUpdateSuccess,
     satuanSaveOrUpdateError,
     satuanSaveOrUpdateSuccess,
-    konversiQueryGetError,
-    konversiQueryGetSuccess
+    konversiProdukQueryGetError,
+    konversiProdukQueryGetSuccess,
+    konversiKemasanQueryGetError,
+    konversiKemasanQueryGetSuccess,
+    kemasanSaveOrUpdateError,
+    kemasanSaveOrUpdateSuccess
 } from "./action";
 
 
@@ -25,7 +29,9 @@ import {
     DETAIL_PRODUK_SAVE_OR_UPDATE,
     SEDIAAN_SAVE_OR_UPDATE,
     SATUAN_SAVE_OR_UPDATE,
-    KONVERSI_QUERY_GET
+    KONVERSI_PRODUK_QUERY_GET,
+    KONVERSI_KEMASAN_QUERY_GET,
+    KEMASAN_SAVE_OR_UPDATE
 } from "./actionType";
 
 const serviceGudang = new ServiceGudang();
@@ -79,13 +85,23 @@ function* onSediaanSaveOrUpdate({payload: { data, callback }}){
     }
 }
 
-function* onKonversiQueryGet({payload: { queries }}){
+function* onKonversiProdukQueryGet({payload: { queries }}){
     try {
-        let response = yield call(serviceGudang.getKonversi, queries);
-        yield put(konversiQueryGetSuccess(response.data));
+        let response = yield call(serviceGudang.getProdukKonversi, queries);
+        yield put(konversiProdukQueryGetSuccess(response.data));
     } catch (error) {
         console.error(error);
-        yield put(konversiQueryGetError(error));
+        yield put(konversiProdukQueryGetError(error));
+    }
+}
+
+function* onKonversiKemasanQueryGet({payload: { queries }}){
+    try {
+        let response = yield call(serviceGudang.getKemasanKonversi, queries);
+        yield put(konversiKemasanQueryGetSuccess(response.data));
+    } catch (error) {
+        console.error(error);
+        yield put(konversiKemasanQueryGetError(error));
     }
 }
 
@@ -101,6 +117,18 @@ function* onSatuanSaveOrUpdate({payload: { data, callback }}){
         console.error(error);
         yield put(satuanSaveOrUpdateError(error));
         toast.error(error?.response?.msg || "Gagal save or update satuan", { autoClose: 3000 });
+    }
+}
+
+function* onSaveOrUpdateKemasan({payload: { data, callback }}){
+    try {
+        let response = yield call(serviceGudang.saveOrEditKemasan, data);
+        yield put(kemasanSaveOrUpdateSuccess(response.data));
+        toast.success(response.msg, { autoClose: 3000 })
+        callback();
+    } catch (error) {
+        console.error(error);
+        yield put(kemasanSaveOrUpdateError(error));
     }
 }
 
@@ -124,8 +152,16 @@ export function* watchSatuanSaveOrUpdate(){
     yield takeEvery(SATUAN_SAVE_OR_UPDATE, onSatuanSaveOrUpdate);
 }
 
-export function* watchKonversiQueryGet(){
-    yield takeEvery(KONVERSI_QUERY_GET, onKonversiQueryGet);
+export function* watchProdukKonversiQueryGet(){
+    yield takeEvery(KONVERSI_PRODUK_QUERY_GET, onKonversiProdukQueryGet);
+}
+
+export function* watchKemasanKonversiQueryGet(){
+    yield takeEvery(KONVERSI_KEMASAN_QUERY_GET, onKonversiKemasanQueryGet);
+}
+
+export function* watchSaveOrUpdateKemasan(){
+    yield takeEvery(KEMASAN_SAVE_OR_UPDATE, onSaveOrUpdateKemasan);
 }
 
 function* registrasiSaga() {
@@ -135,7 +171,9 @@ function* registrasiSaga() {
         fork(watchDetailProdukSaveOrUpdate),
         fork(watchSediaanSaveOrUpdate),
         fork(watchSatuanSaveOrUpdate),
-        fork(watchKonversiQueryGet)
+        fork(watchProdukKonversiQueryGet),
+        fork(watchKemasanKonversiQueryGet),
+        fork(watchSaveOrUpdateKemasan)
     ]);
 }
 

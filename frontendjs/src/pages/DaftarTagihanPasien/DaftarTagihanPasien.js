@@ -10,15 +10,15 @@ import { Link } from "feather-icons-react/build/IconComponents";
 import { useDispatch, useSelector } from "react-redux";
 import {daftarPasienPulangGet} from "../../store/daftarPasien/action";
 import DataTable from "react-data-table-component";
-import { dateISOString, dateTimeLocal } from "../../utils/format";
+import { dateTimeLocal } from "../../utils/format";
 import Flatpickr from "react-flatpickr";
 import { comboAsuransiGet, comboRegistrasiGet } from "../../store/master/action";
 import CustomSelect from "../Select/Select";
 import { useNavigate } from "react-router-dom";
 import { buktiBayarCancel, daftarTagihanPasienGet, verifNotaCancel } from "../../store/payment/action";
 
-const dateAwalStart = dateISOString(new Date(new Date() - 1000 * 60 * 60 * 24 * 3));
-const dateAwalEnd = dateISOString(new Date())
+const dateAwalStart = (new Date(new Date() - 1000 * 60 * 60 * 24 * 3)).toISOString();
+const dateAwalEnd = (new Date()).toISOString()
 
 
 const DaftarTagihanPasien = () => {
@@ -230,7 +230,7 @@ const DaftarTagihanPasien = () => {
                                         }}
                                         value={dateStart}
                                         onChange={([dateStart]) => {
-                                            setDateStart(dateISOString(dateStart - dateStart.getTimezoneOffset() * 60000));
+                                            setDateStart((new Date(dateStart - dateStart.getTimezoneOffset() * 60000)).toISOString());
                                         }}
                                     />
                                 </div>
@@ -247,7 +247,7 @@ const DaftarTagihanPasien = () => {
                                         }}
                                         value={dateEnd}
                                         onChange={([dateEnd]) => {
-                                            setDateEnd(dateISOString(dateEnd - dateEnd.getTimezoneOffset() * 60000));
+                                            setDateEnd((new Date(dateEnd - dateEnd.getTimezoneOffset() * 60000)).toISOString());
                                         }}
                                     />
                                 </div>

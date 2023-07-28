@@ -6,7 +6,7 @@ import {
 } from "reactstrap";
 import CustomSelect from "../../pages/Select/Select";
 import { useSelector, useDispatch } from "react-redux";
-import { useFormik, yupToFormErrors } from "formik";
+import { useFormik } from "formik";
 import * as Yup from "yup";
 import { konsulSave } from "../../store/actions";
 

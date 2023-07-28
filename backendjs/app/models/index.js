@@ -35,6 +35,7 @@ import m_produkM from "./m_produk.model.js";
 import m_detailjenisprodukM from "./m_detailjenisproduk.model.js";
 import m_sediaanM from "./m_sediaan.model.js";
 import m_satuanM from "./m_satuan.model.js";
+import m_kemasanprodukM from "./m_kemasanproduk.model.js";
 
 
 const sequelize = new Sequelize(
@@ -97,6 +98,7 @@ db.m_produk = m_produkM(sequelize,Sequelize);
 db.m_detailjenisproduk = m_detailjenisprodukM(sequelize,Sequelize);
 db.m_sediaan = m_sediaanM(sequelize,Sequelize);
 db.m_satuan = m_satuanM(sequelize,Sequelize);
+db.m_kemasanproduk = m_kemasanprodukM(sequelize,Sequelize);
 
 db.role.belongsToMany(db.user, {
   through: "user_roles",

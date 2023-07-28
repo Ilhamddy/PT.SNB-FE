@@ -14,9 +14,15 @@ import {
     SATUAN_SAVE_OR_UPDATE,
     SATUAN_SAVE_OR_UPDATE_SUCCESS,
     SATUAN_SAVE_OR_UPDATE_ERROR,
-    KONVERSI_QUERY_GET,
-    KONVERSI_QUERY_GET_SUCCESS,
-    KONVERSI_QUERY_GET_ERROR,
+    KONVERSI_PRODUK_QUERY_GET,
+    KONVERSI_PRODUK_QUERY_GET_SUCCESS,
+    KONVERSI_PRODUK_QUERY_GET_ERROR,
+    KONVERSI_KEMASAN_QUERY_GET,
+    KONVERSI_KEMASAN_QUERY_GET_SUCCESS,
+    KONVERSI_KEMASAN_QUERY_GET_ERROR,
+    KEMASAN_SAVE_OR_UPDATE,
+    KEMASAN_SAVE_OR_UPDATE_SUCCESS,
+    KEMASAN_SAVE_OR_UPDATE_ERROR,
 } from "./actionType";
 
 
@@ -95,18 +101,48 @@ export const satuanSaveOrUpdateError = (data) => ({
     payload: { data: data },
 })
 
-export const konversiQueryGet = (queries) => ({
-    type: KONVERSI_QUERY_GET,
+export const konversiProdukQueryGet = (queries) => ({
+    type: KONVERSI_PRODUK_QUERY_GET,
     payload: { queries: queries },
 })
 
-export const konversiQueryGetSuccess = (data) => ({
-    type: KONVERSI_QUERY_GET_SUCCESS,
+export const konversiProdukQueryGetSuccess = (data) => ({
+    type: KONVERSI_PRODUK_QUERY_GET_SUCCESS,
     payload: { data: data },
 })
 
-export const konversiQueryGetError = (data) => ({
-    type: KONVERSI_QUERY_GET_ERROR,
+export const konversiProdukQueryGetError = (data) => ({
+    type: KONVERSI_PRODUK_QUERY_GET_ERROR,
+    payload: { data: data },
+})
+
+export const konversiKemasanQueryGet = (queries) => ({
+    type: KONVERSI_KEMASAN_QUERY_GET,
+    payload: { queries: queries },
+})
+
+export const konversiKemasanQueryGetSuccess = (data) => ({
+    type: KONVERSI_KEMASAN_QUERY_GET_SUCCESS,
+    payload: { data: data },
+})
+
+export const konversiKemasanQueryGetError = (data) => ({
+    type: KONVERSI_KEMASAN_QUERY_GET_ERROR,
+    payload: { data: data },
+})
+
+export const kemasanSaveOrUpdate = (data, callback) => ({
+    type: KEMASAN_SAVE_OR_UPDATE,
+    payload: { data: data, callback: callback },
+})
+
+export const kemasanSaveOrUpdateSuccess = (data) => ({
+    type: KEMASAN_SAVE_OR_UPDATE_SUCCESS,
+    payload: { data: data },
+})
+
+export const kemasanSaveOrUpdateError = (data) => ({
+    type: KEMASAN_SAVE_OR_UPDATE_ERROR,
     payload: { data: data },
 })
 
