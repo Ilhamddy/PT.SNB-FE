@@ -20,7 +20,7 @@ import withRouter from '../../../Components/Common/withRouter';
 import BreadCrumb from '../../../Components/Common/BreadCrumb';
 import DataTable from 'react-data-table-component';
 import {
-    comboLaboratoriumGet
+    comboLaboratoriumGet,saveNilaiNormalLaboratorium
 } from '../../../store/actions';
 
 const MasterNilaiNormal = () => {
@@ -28,50 +28,113 @@ const MasterNilaiNormal = () => {
     document.title = "Master Nilai Normal";
     const dispatch = useDispatch();
     const history = useNavigate();
-    const { data, loading, error } = useSelector((state) => ({
+    const { data, loading, error,
+        newDataNilai,loadingDataNilai, successDataNilai,errorDataNilai } = useSelector((state) => ({
         data: state.Laboratorium.comboLaboratoriumGet.data,
-        loading: state.Laboratorium.comboLaboratoriumGet.loading
-
+        loading: state.Laboratorium.comboLaboratoriumGet.loading,
+        newDataNilai:state.Laboratorium.saveNilaiNormalLaboratorium.newData,
+        loadingDataNilai:state.Laboratorium.saveNilaiNormalLaboratorium.loading, 
+        successDataNilai:state.Laboratorium.saveNilaiNormalLaboratorium.success,
+        errorDataNilai: state.Laboratorium.saveNilaiNormalLaboratorium.error,
     }));
     const [rows, setRows] = useState([{
         id: 1, kode: `1`, nama: `${layanan}`, satuan: '', kelompokumur: '', aksi: '', statusDisable: true,
-        level: 1, urutan: 1, lastUrutan: 1
+        level: 1, urutan: 1, lastUrutan: 1, lastTombol: false, lastId: 1, objectinduk: 1
     }]);
 
-    const handleDeleteRow = (id) => {
-        const filteredRows = rows.filter((row) => row.id !== id);
+    const handleDeleteRow = (id, eObjectInduk) => {
+        let filteredRows = rows.filter((row) => row.id !== id);
+        let filteredData = filteredRows.filter((item) => item.objectinduk === eObjectInduk);
+        const maxId = filteredData.reduce((max, item) => (item.id > max ? item.id : max), 0);
+        filteredRows = filteredRows.map((row) =>
+            // ({ ...row, lastTombol: (row.id === tempId) })
+            row.id === eObjectInduk ? { ...row, lastId: maxId, lastUrutan: filteredData.length } : row
+        );
+        filteredRows = filteredRows.map((row) =>
+            // ({ ...row, lastTombol: (row.id === tempId) })
+            row.id === maxId ? { ...row, lastTombol: true } : row
+        );
         setRows(filteredRows);
     };
 
     const handleAddRow = (eId, eLevel, eUrutan, eLUrutan) => {
         if (eLevel === 1) {
-            const updatedRows = rows.map((row) =>
-                row.id === eId ? { ...row, lastUrutan: eLUrutan + 1 } : row
-            );
-            setRows(updatedRows);
-            const newRow = {
-                id: rows.length + 1, kode: `1.` + (parseFloat(eLUrutan) + 1), nama: ``, satuan: '', kelompokumur: '', aksi: '',
-                statusDisable: false, level: eLevel + 1, urutan: parseFloat(eLUrutan) + 1, lastUrutan: 0
-            };
-            setRows([...updatedRows, newRow]);
+            let tempId = '';
 
+            let updatedRows = rows.map((row) =>
+                row.id === eId ? {
+                    ...row,
+                    lastUrutan: eLUrutan + 1,
+                    lastId: rows.length + 1
+                } : row
+            );
+            const newRow = {
+                id: rows.length + 1,
+                kode: `1.` + (parseFloat(eLUrutan) + 1),
+                nama: ``, satuan: '',
+                kelompokumur: '',
+                aksi: '',
+                statusDisable: false,
+                level: eLevel + 1, urutan: parseFloat(eLUrutan) + 1, lastUrutan: 0, lastTombol: true,
+                lastId: 1,
+                objectinduk: eId
+            };
+            for (let i = 0; i < rows.length; i++) {
+                if (rows[i].id === eId) {
+                    tempId = rows[i].lastId;
+                }
+            }
+            updatedRows = [...updatedRows, newRow]
+            // setRows([...updatedRows, newRow]);
+            if (rows.length > 1) {
+                updatedRows = updatedRows.map((row) =>
+                    // ({ ...row, lastTombol: (row.id === tempId) })
+                    row.id === tempId ? { ...row, lastTombol: false } : row
+                );
+            }
+            setRows([...updatedRows]);
             // console.log(rows)
         } else if (eLevel === 2) {
-            const updatedRows = rows.map((row) =>
-                row.id === eId ? { ...row, lastUrutan: eLUrutan + 1 } : row
+            let tempId = '';
+
+            let updatedRows = rows.map((row) =>
+                row.id === eId ? {
+                    ...row,
+                    lastUrutan: eLUrutan + 1,
+                    lastId: rows.length + 1,
+                    lastTombol: false
+                } : row
             );
-            setRows(updatedRows);
             const newRow = {
-                id: rows.length + 1, kode: `1.${eUrutan}.` + (parseFloat(eLUrutan) + 1), nama: ``, satuan: '', kelompokumur: '', aksi: '',
-                statusDisable: false, level: eLevel + 1, urutan: parseFloat(eLUrutan) + 1, lastUrutan: 0
+                id: rows.length + 1,
+                kode: `1.${eUrutan}.` + (parseFloat(eLUrutan) + 1),
+                nama: ``, satuan: '',
+                kelompokumur: '',
+                aksi: '',
+                statusDisable: false,
+                level: eLevel + 1, urutan: parseFloat(eLUrutan) + 1, lastUrutan: 0, lastTombol: true,
+                lastId: 1,
+                objectinduk: eId
             };
-            setRows([...updatedRows, newRow]);
+            for (let i = 0; i < rows.length; i++) {
+                if (rows[i].id === eId) {
+                    tempId = rows[i].lastId;
+                }
+            }
+            updatedRows = [...updatedRows, newRow]
+            // setRows([...updatedRows, newRow]);
+
+            if (rows.length > 1) {
+                updatedRows = updatedRows.map((row) =>
+                    // ({ ...row, lastTombol: (row.id === tempId) })
+                    row.id === tempId ? { ...row, lastTombol: false } : row
+                );
+            }
+            // console.log(tempId)
+            setRows([...updatedRows]);
+            // console.log(updatedRows)
+
         }
-        // let data = rows
-
-
-        // setRows(data);
-
     };
     useEffect(() => {
         dispatch(comboLaboratoriumGet(''));
@@ -84,9 +147,16 @@ const MasterNilaiNormal = () => {
         setRows(updatedRows);
     };
 
-    const handleSelectSatuan = (eValue,eId) => {
+    const handleClickSimpan = ()=>{
+        let tempValue = {
+            data: rows,
+            objectproduk:idproduk
+        }
+        dispatch(saveNilaiNormalLaboratorium(tempValue));
+    }
+    const handleSelectSatuan = (eValue, eId, eNama) => {
         const updatedRows = rows.map((row) =>
-            row.id === eId ? { ...row, satuan: eValue } : row
+            row.id === eId ? { ...row, [eNama]: eValue } : row
         );
         setRows(updatedRows);
     };
@@ -109,7 +179,7 @@ const MasterNilaiNormal = () => {
         return 0; // Return 0 if the two objects have the same "kode"
     });
 
-    
+
     return (
         <React.Fragment>
             <ToastContainer closeButton={false} />
@@ -161,7 +231,7 @@ const MasterNilaiNormal = () => {
                                                 <Table className="table-sm table-borderless mb-0" id="tab_logic">
                                                     <thead>
                                                         <tr>
-                                                            <th className="text-center">No</th>
+                                                            {/* <th className="text-center">No</th> */}
                                                             <th className="text-center">Kode</th>
                                                             <th className="text-center">Nama Pemeriksaan</th>
                                                             <th className="text-center">Satuan</th>
@@ -173,7 +243,7 @@ const MasterNilaiNormal = () => {
                                                     <tbody>
                                                         {rows.map((row) => (
                                                             <tr key={row.id} className="text-center">
-                                                                <td>{row.id}</td>
+                                                                {/* <td>{row.id}</td> */}
                                                                 <td>
                                                                     {row.kode}
                                                                 </td>
@@ -194,7 +264,7 @@ const MasterNilaiNormal = () => {
                                                                         name="satuan"
                                                                         options={data.datasatuan}
                                                                         value={row.satuan}
-                                                                        onChange={value => handleSelectSatuan(value.value,row.id)}
+                                                                        onChange={value => handleSelectSatuan(value.value, row.id, 'satuan')}
                                                                     // onInputChange={handleDiagnosaix}
                                                                     />
                                                                 </td>
@@ -203,7 +273,8 @@ const MasterNilaiNormal = () => {
                                                                         id="kelompokumur"
                                                                         name="kelompokumur"
                                                                         options={data.datakelumur}
-                                                                    // onChange={value => handleDiagnosaixSave(value.value)}
+                                                                        value={row.kelompokumur}
+                                                                        onChange={value => handleSelectSatuan(value.value, row.id, 'kelompokumur')}
                                                                     // onInputChange={handleDiagnosaix}
                                                                     />
                                                                 </td>
@@ -217,27 +288,38 @@ const MasterNilaiNormal = () => {
                                                                             Tambah Sub
                                                                         </Button>
                                                                     ) :
-                                                                        <Row>
-                                                                            <Button type="button" style={{ backgroundColor: 'green' }} className="rounded-pill" placement="top"
-                                                                                onClick={(e) => handleAddRow(row.id, row.level, row.urutan, row.lastUrutan)}>
-                                                                                Tambah Sub
-                                                                            </Button>
+                                                                        <>
+                                                                            {row.level < 3 ? (
+                                                                                <Button type="button" style={{ backgroundColor: 'green' }} className="rounded-pill" placement="top"
+                                                                                    onClick={(e) => handleAddRow(row.id, row.level, row.urutan, row.lastUrutan)}>
+                                                                                    Tambah Sub
+                                                                                </Button>
+                                                                            ) :
+                                                                                null
+                                                                            }
+                                                                        </>
 
-
-                                                                        </Row>
                                                                     }
                                                                 </td>
-                                                                {row.id > 1 && (
+                                                                {row.id > 1 && row.lastTombol ? (
                                                                     <td>
-                                                                        {/* <button type="button" onClick={() => handleDeleteRow(row.id)}>
-                                                                            Delete
-                                                                        </button> */}
+                                                                        <Button type="button" style={{ backgroundColor: 'red' }} className="rounded-pill" placement="top"
+                                                                            onClick={() => handleDeleteRow(row.id, row.objectInduk)}>
+                                                                            Hapus
+                                                                        </Button>
                                                                     </td>
-                                                                )}
+                                                                ) : null}
                                                             </tr>
                                                         ))}
                                                     </tbody>
                                                 </Table>
+                                            </Col>
+                                            <Col>
+                                                <Button type="button" className="rounded-pill" placement="top" id="tooltipTopPencarian"
+                                                 onClick={handleClickSimpan}
+                                                 >
+                                                    Simpan
+                                                </Button>
                                             </Col>
                                         </Row>
                                     </div>

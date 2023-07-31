@@ -713,6 +713,68 @@ async function getComboLaboratorium(req, res) {
 
 }
 
+async function saveMasterNilaiNormal(req, res) {
+    let transaction = null;
+    try{
+        transaction = await db.sequelize.transaction();
+    }catch(e){
+        console.error(e)
+        res.status(201).send({
+            status: e.message,
+            success: false,
+            msg: 'Simpan Gagal',
+            code: 201
+        });
+    }
+    try {
+        
+        const pemeriksaanlab = await Promise.all(
+            req.body.data.map(async (item) => {
+                const pemeriksaanlab = await db.m_pemeriksaanlab.create({
+                    statusenabled: true,
+                    kodeexternal: item.kode,
+                    namaexternal: item.nama,
+                    reportdisplay: item.nama,
+                    objectprodukfk: req.body.objectproduk,
+                    objectsatuanfk: item.satuan,
+                    level:item.level,
+                    urutan:item.urutan,
+                    objectkelompokumurfk:item.kelompokumur,
+                    tglinput:new Date(),
+                    tglupdate:new Date(),
+                    objectpegawaiinputfk:req.idPegawai,
+
+                }, {
+                    transaction: transaction
+                })
+
+                return pemeriksaanlab
+            }
+            ))
+
+        await transaction.commit();
+        let tempres={pemeriksaanlab}
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+            msg: 'Berhasil',
+            code: 200
+        });
+
+    } catch (error) {
+        transaction && await transaction.rollback();
+        console.log(error)
+        res.status(201).send({
+            status: "false",
+            success: false,
+            msg: error,
+            code: 201
+        });
+    }
+
+}
+
 export default {
     getDetailJenisProdukLab,
     saveOrderPelayanan,
@@ -725,5 +787,6 @@ export default {
     getDaftarPasienLaboratorium,
     getTransaksiPelayananLaboratoriumByNorecDp,
     getMasterLayananLaboratorium,
-    getComboLaboratorium
+    getComboLaboratorium,
+    saveMasterNilaiNormal
 };

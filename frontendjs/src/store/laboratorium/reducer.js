@@ -36,7 +36,10 @@ import {
     MASTER_PELAYANAN_LABORATORIUM_GET_ERROR,
     COMBO_LABORATORIUM_GET,
     COMBO_LABORATORIUM_GET_SUCCESS,
-    COMBO_LABORATORIUM_GET_ERROR
+    COMBO_LABORATORIUM_GET_ERROR,
+    SAVE_NILAINORMAL_LABORATORIUM,
+    SAVE_NILAINORMAL_LABORATORIUM_SUCCESS,
+    SAVE_NILAINORMAL_LABORATORIUM_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -102,7 +105,13 @@ const INIT_STATE = {
         data:[],
         loading: false,
         error: null, 
-    }
+    },
+    saveNilaiNormalLaboratorium:{
+        newData: null,
+        loading: false,
+        error: null,
+        success: false
+    },
 }
 
 const Laboratorium = (state = INIT_STATE, action) => {
@@ -145,6 +154,9 @@ const Laboratorium = (state = INIT_STATE, action) => {
                 },
                 comboLaboratoriumGet:{
                     ...INIT_STATE.comboLaboratoriumGet
+                },
+                saveNilaiNormalLaboratorium:{
+                    ...INIT_STATE.saveNilaiNormalLaboratorium
                 }
             }
         }
@@ -542,6 +554,40 @@ const Laboratorium = (state = INIT_STATE, action) => {
                 ...state,
                 comboLaboratoriumGet: {
                     ...state.comboLaboratoriumGet,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case SAVE_NILAINORMAL_LABORATORIUM: {
+            return {
+                ...state,
+                saveNilaiNormalLaboratorium: {
+                    ...state.saveNilaiNormalLaboratorium,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case SAVE_NILAINORMAL_LABORATORIUM_SUCCESS: {
+            return {
+                ...state,
+                saveNilaiNormalLaboratorium: {
+                    ...state.saveNilaiNormalLaboratorium,
+                    newData: action.payload,
+                    loading: false,
+                    success: true,
+                }
+            }
+        }
+
+        case SAVE_NILAINORMAL_LABORATORIUM_ERROR: {
+            return {
+                ...state,
+                saveNilaiNormalLaboratorium: {
+                    ...state.saveNilaiNormalLaboratorium,
                     loading: false,
                     error: action.error,
                 }

@@ -13,7 +13,8 @@ import {
     DAFTAR_PASIEN_LABORATORIUM,
     LIST_PELAYANAN_LABORATORIUM_GET,
     MASTER_PELAYANAN_LABORATORIUM_GET,
-    COMBO_LABORATORIUM_GET
+    COMBO_LABORATORIUM_GET,
+    SAVE_NILAINORMAL_LABORATORIUM
 } from "./actionType";
 
 import {
@@ -28,7 +29,8 @@ import {
     daftarPasienLaboratoriumSuccess, daftarPasienLaboratoriumError,
     listPelayananLaboratoriumGetSuccess, listPelayananLaboratoriumGetError,
     masterPelayananLaboratoriumGetSuccess, masterPelayananLaboratoriumGetError,
-    comboLaboratoriumGetSuccess, comboLaboratoriumGetError
+    comboLaboratoriumGetSuccess, comboLaboratoriumGetError,
+    saveNilaiNormalLaboratoriumSuccess, saveNilaiNormalLaboratoriumError
 } from "./action";
 
 import { toast } from 'react-toastify';
@@ -236,6 +238,28 @@ export function* watchoncomboLaboratoriumGet() {
     yield takeEvery(COMBO_LABORATORIUM_GET, oncomboLaboratoriumGet);
 }
 
+function* onSaveNilaiNormalLaboratorium({ payload: { data, history } }) {
+    try {
+        let response = yield call(serviceLaboratorium.saveNilaiNormalLaboratorium, data);
+
+
+        yield put(saveNilaiNormalLaboratoriumSuccess(response.data));
+        if (response.code === 200) {
+            toast.success(response.msg, { autoClose: 3000 });
+        } else {
+            toast.error(response.msg, { autoClose: 3000 });
+        }
+    } catch (error) {
+        console.log(error)
+        yield put(saveNilaiNormalLaboratoriumError(error));
+        toast.error(error, { autoClose: 3000 });
+    }
+}
+
+export function* watchonSaveNilaiNormalLaboratorium() {
+    yield takeEvery(SAVE_NILAINORMAL_LABORATORIUM, onSaveNilaiNormalLaboratorium);
+}
+
 function* laboratoriumSaga() {
     yield all([
         fork(watchonwidgetDetailJenisProdukGet),
@@ -249,7 +273,8 @@ function* laboratoriumSaga() {
         fork(watchonDaftarPasienLaboratorium),
         fork(watchonListPelayananLaboratoriumGet),
         fork(watchonmasterPelayananLaboratoriumGet),
-        fork(watchoncomboLaboratoriumGet)
+        fork(watchoncomboLaboratoriumGet),
+        fork(watchonSaveNilaiNormalLaboratorium)
     ]);
 }
 

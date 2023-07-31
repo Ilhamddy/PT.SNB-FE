@@ -33,7 +33,7 @@ import t_depositpasienModel from "./t_depositpasien.model.js";
 import t_special_cmg_option from "./t_special_cmg_option.js";
 import m_produkM from "./m_produk.model.js";
 import m_detailjenisprodukM from "./m_detailjenisproduk.model.js";
-
+import m_pemeriksaanlab from "./m_pemeriksaanlab.js";
 
 const sequelize = new Sequelize(
   config.DB,
@@ -92,6 +92,7 @@ db.t_depositpasien = t_depositpasienModel(sequelize,Sequelize);
 db.t_special_cmg_option = t_special_cmg_option(sequelize,Sequelize);
 db.m_produk = m_produkM(sequelize,Sequelize);
 db.m_detailjenisproduk = m_detailjenisprodukM(sequelize,Sequelize);
+db.m_pemeriksaanlab = m_pemeriksaanlab(sequelize,Sequelize);
 
 db.role.belongsToMany(db.user, {
   through: "user_roles",
