@@ -146,7 +146,9 @@ const MasterNilaiNormal = () => {
         );
         setRows(updatedRows);
     };
-
+    const handleBack = () => {
+        history("/laboratorium/masterlayananlab");
+      };
     const handleClickSimpan = ()=>{
         let tempValue = {
             data: rows,
@@ -320,6 +322,10 @@ const MasterNilaiNormal = () => {
                                                  >
                                                     Simpan
                                                 </Button>
+                                                        <Button type="button" color='danger' className="rounded-pill" placement="top" onClick={handleBack}>
+                                                            Back
+                                                        </Button>
+                                                   
                                             </Col>
                                         </Row>
                                     </div>

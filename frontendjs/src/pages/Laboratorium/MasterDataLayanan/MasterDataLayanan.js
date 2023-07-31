@@ -54,14 +54,26 @@ const MasterDataLayanan = () => {
     const onClickDetail = (product, id) => {
 
     };
+    const handleClickDetail = (e) => {
+        history(`/laboratorium/masternilainormal/${e.id}/${e.namaproduk}/${e.kodeexternal}/${e.detailjenisproduk}`);
+    };
     const columns = [
         {
             sortable: false,
             cell: (data) => {
                 return (
                     <div className="hstack gap-3 flex-wrap">
-                        <Link to={`/laboratorium/masternilainormal/${data.id}/${data.namaproduk}/${data.kodeexternal}/${data.detailjenisproduk}`} className="link-success fs-15" id="tooltipMasterDataLayanan"><i className="ri-apps-2-line"></i></Link>
-                        <UncontrolledTooltip placement="top" target="tooltipMasterDataLayanan" > Set Nilai Normal </UncontrolledTooltip>
+                        <UncontrolledDropdown className="dropdown d-inline-block">
+                        <DropdownToggle className="btn btn-soft-secondary btn-sm" tag="button" id="tooltipTop2">
+                                <i className="ri-apps-2-line"></i>
+                            </DropdownToggle>
+                            <DropdownMenu className="dropdown-menu-end">
+                                <DropdownItem href="#!" onClick={() => handleClickDetail(data)}><i className="ri-apps-2-line align-bottom me-2 link-success"></i>Detail</DropdownItem>
+                                <DropdownItem href="#!"><i className="ri-file-settings-line align-bottom me-2 link-success"></i>Setting Layanan</DropdownItem>
+                            </DropdownMenu>
+                        </UncontrolledDropdown>
+                        {/* <Link to={`/laboratorium/masternilainormal/${data.id}/${data.namaproduk}/${data.kodeexternal}/${data.detailjenisproduk}`} className="link-success fs-15" id="tooltipMasterDataLayanan"><i className="ri-apps-2-line"></i></Link>
+                        <UncontrolledTooltip placement="top" target="tooltipMasterDataLayanan" > Set Nilai Normal </UncontrolledTooltip> */}
                     </div>
                 );
             },
@@ -115,6 +127,9 @@ const MasterDataLayanan = () => {
             
         }
     }
+    const handleClickToSetting = () => {
+        history("/laboratorium/seeting-layanan-lab")
+    }
 
     return (
         <React.Fragment>
@@ -140,7 +155,7 @@ const MasterDataLayanan = () => {
                                         <Row className="g-3">
                                             <Col lg={12}>
                                                 <Row>
-                                                    <Col lg={9}></Col>
+                                                    <Col lg={6}></Col>
                                                     <Col lg={2}>
                                                         <div className="d-flex justify-content-sm-end">
                                                             <div className="search-box ms-2">
@@ -156,6 +171,11 @@ const MasterDataLayanan = () => {
                                                             CARI
                                                         </Button>
                                                         <UncontrolledTooltip placement="top" target="tooltipTopPencarian" > Pencarian </UncontrolledTooltip>
+                                                    </Col>
+                                                    <Col lg={3}>
+                                                        <Button type="button" color='success' className="rounded-pill" placement="top" onClick={handleClickToSetting}>
+                                                            Setting Layanan
+                                                        </Button>
                                                     </Col>
                                                 </Row>
                                             </Col>
