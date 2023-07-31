@@ -90,7 +90,19 @@ export default (sequelize, Sequelize) => {
         },
         isalkes: {
             type: Sequelize.BOOLEAN,
-        }
+        },
+        tglinput: {
+            type: Sequelize.DATE,
+        },
+        tglupdate: {
+            type: Sequelize.DATE,
+        },
+        objectpegawaiinputfk: {
+            type: Sequelize.INTEGER,
+        },
+        objectpegawaiupdatefk: {
+            type: Sequelize.INTEGER,
+        },
     }, {
         tableName: "m_produk", // relation "user" does not exist
         createdAt: false,

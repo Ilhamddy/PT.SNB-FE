@@ -10,7 +10,7 @@ import { Link } from "feather-icons-react/build/IconComponents";
 import { useDispatch, useSelector } from "react-redux";
 import {daftarPasienPulangGet,} from "../../store/daftarPasien/action";
 import DataTable from "react-data-table-component";
-import { dateISOString, dateTimeISOString, dateTimeLocal, onChangeStrNbr, strNumber } from "../../utils/format";
+import { dateTimeISOString, dateTimeLocal, onChangeStrNbr, strNumber } from "../../utils/format";
 import Flatpickr from "react-flatpickr";
 import { 
     comboAsuransiGet, 
@@ -31,8 +31,8 @@ import "./BayarPiutang.scss"
 import { useNavigate, useParams } from "react-router-dom";
 import { rgxAllNumber, rgxAllPeriods, rgxValidNumber } from "../../utils/regexcommon";
 
-const dateAwalStart = dateTimeISOString(new Date(new Date() - 1000 * 60 * 60 * 24 * 3));
-const dateAwalEnd = dateISOString(new Date())
+const dateAwalStart = (new Date(new Date(new Date() - 1000 * 60 * 60 * 24 * 3))).toISOString();
+const dateAwalEnd = (new Date()).toISOString()
 const date = new Date()
 
 

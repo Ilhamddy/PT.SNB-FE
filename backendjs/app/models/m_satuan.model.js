@@ -1,5 +1,5 @@
 export default (sequelize, Sequelize) => {
-    const m_sediaan = sequelize.define("m_sediaan", {
+    const m_satuan = sequelize.define("m_satuan", {
         id: {
             allowNull: false,
             autoIncrement: true,
@@ -21,7 +21,10 @@ export default (sequelize, Sequelize) => {
         reportdisplay: {
             type: Sequelize.STRING
         },
-        sediaan: {
+        satuan: {
+            type: Sequelize.INTEGER
+        },
+        objectjenissatuanfk: {
             type: Sequelize.INTEGER
         },
         tglinput: {
@@ -37,10 +40,10 @@ export default (sequelize, Sequelize) => {
             type: Sequelize.INTEGER
         }
     }, {
-        tableName: "m_sediaan",
+        tableName: "m_satuan",
         createdAt: false,
         updatedAt: false,
     });
 
-    return m_sediaan;
+    return m_satuan;
 };

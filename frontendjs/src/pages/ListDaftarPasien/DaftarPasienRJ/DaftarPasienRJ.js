@@ -110,8 +110,18 @@ const DaftarPasienRJ = () => {
                             </>
                         ) :
                             <>
-                                <Link to={`/emr-pasien/${data.norecdp}/${data.norecta}`} className="link-success fs-15" id="tooltipTop"><i className="ri-edit-2-line"></i></Link>
-                                <UncontrolledTooltip placement="top" target="tooltipTop" > Pengkajian Pasien </UncontrolledTooltip>
+                                <Link 
+                                    to={`/emr-pasien/${data.norecdp}/${data.norecta}`} 
+                                    className="link-success fs-15" 
+                                    id="tooltipTop">
+                                    <i className="ri-edit-2-line">
+                                    </i>
+                                </Link>
+                                <UncontrolledTooltip 
+                                    placement="top" 
+                                    target="tooltipTop"> 
+                                    Pengkajian Pasien 
+                                </UncontrolledTooltip>
                             </>
                         }
                         <UncontrolledDropdown className="dropdown d-inline-block">

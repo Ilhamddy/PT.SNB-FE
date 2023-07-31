@@ -26,8 +26,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import React from "react";
 import { rgxAllPeriods } from "../../utils/regexcommon";
 
-const dateAwalStart = dateISOString(new Date(new Date() - 1000 * 60 * 60 * 24 * 3));
-const dateAwalEnd = dateISOString(new Date())
+const dateAwalStart = (new Date(new Date() - 1000 * 60 * 60 * 24 * 3)).toISOString();
+const dateAwalEnd =  (new Date().toISOString())
 const date = new Date()
 
 

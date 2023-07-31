@@ -9,6 +9,21 @@ import {
     DETAIL_PRODUK_SAVE_OR_UPDATE,
     DETAIL_PRODUK_SAVE_OR_UPDATE_SUCCESS,
     DETAIL_PRODUK_SAVE_OR_UPDATE_ERROR,
+    SEDIAAN_SAVE_OR_UPDATE,
+    SEDIAAN_SAVE_OR_UPDATE_SUCCESS,
+    SEDIAAN_SAVE_OR_UPDATE_ERROR,
+    SATUAN_SAVE_OR_UPDATE,
+    SATUAN_SAVE_OR_UPDATE_SUCCESS,
+    SATUAN_SAVE_OR_UPDATE_ERROR,
+    KONVERSI_PRODUK_QUERY_GET,
+    KONVERSI_PRODUK_QUERY_GET_SUCCESS,
+    KONVERSI_PRODUK_QUERY_GET_ERROR,
+    KONVERSI_KEMASAN_QUERY_GET,
+    KONVERSI_KEMASAN_QUERY_GET_SUCCESS,
+    KONVERSI_KEMASAN_QUERY_GET_ERROR,
+    KEMASAN_SAVE_OR_UPDATE,
+    KEMASAN_SAVE_OR_UPDATE_SUCCESS,
+    KEMASAN_SAVE_OR_UPDATE_ERROR,
 } from "./actionType";
 
 const INIT_STATE = {
@@ -23,6 +38,31 @@ const INIT_STATE = {
         error: null,
     },
     detailProdukSaveOrUpdate: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    sediaanSaveOrUpdate: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    satuanSaveOrUpdate: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    konversiProdukQueryGet: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    konversiKemasanQueryGet: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    kemasanSaveOrUpdate: {
         data: [],
         loading: false,
         error: null,
@@ -145,6 +185,186 @@ const Registrasi = (state = INIT_STATE, action) => {
             }
         }
 
+        case SEDIAAN_SAVE_OR_UPDATE: {
+            return {
+                ...state,
+                sediaanSaveOrUpdate: {
+                    ...state.sediaanSaveOrUpdate,
+                    loading: true,
+                    data: [],
+                    error: null
+                }
+            }
+        }
+
+        case SEDIAAN_SAVE_OR_UPDATE_SUCCESS: {
+            return {
+                ...state,
+                sediaanSaveOrUpdate: {
+                    ...state.sediaanSaveOrUpdate,
+                    loading: false,
+                    data: action.payload.data,
+                    error: null
+                }
+            }
+        }
+
+        case SEDIAAN_SAVE_OR_UPDATE_ERROR: {
+            return {
+                ...state,
+                sediaanSaveOrUpdate: {
+                    ...state.sediaanSaveOrUpdate,
+                    loading: false,
+                    data: [],
+                    error: action.payload.data
+                }
+            }
+        }
+
+
+        case SATUAN_SAVE_OR_UPDATE: {
+            return {
+                ...state,
+                satuanSaveOrUpdate: {
+                    ...state.satuanSaveOrUpdate,
+                    loading: true,
+                    data: [],
+                    error: null
+                }
+            }
+        }
+
+        case SATUAN_SAVE_OR_UPDATE_SUCCESS: {
+            return {
+                ...state,
+                satuanSaveOrUpdate: {
+                    ...state.satuanSaveOrUpdate,
+                    loading: false,
+                    data: action.payload.data,
+                    error: null
+                }
+            }
+        }
+
+        case SATUAN_SAVE_OR_UPDATE_ERROR: {
+            return {
+                ...state,
+                satuanSaveOrUpdate: {
+                    ...state.satuanSaveOrUpdate,
+                    loading: false,
+                    data: [],
+                    error: action.payload.data
+                }
+            }
+        }
+
+        case KONVERSI_PRODUK_QUERY_GET: {
+            return {
+                ...state,
+                konversiProdukQueryGet: {
+                    ...state.konversiProdukQueryGet,
+                    loading: true,
+                    data: [],
+                    error: null
+                }
+            }
+        }
+
+        case KONVERSI_PRODUK_QUERY_GET_SUCCESS: {
+            return {
+                ...state,
+                konversiProdukQueryGet: {
+                    ...state.konversiProdukQueryGet,
+                    loading: false,
+                    data: action.payload.data,
+                    error: null
+                }
+            }
+        }
+
+        case KONVERSI_PRODUK_QUERY_GET_ERROR: {
+            return {
+                ...state,
+                konversiProdukQueryGet: {
+                    ...state.konversiProdukQueryGet,
+                    loading: false,
+                    data: [],
+                    error: action.payload.data
+                }
+            }
+        }
+
+        case KONVERSI_KEMASAN_QUERY_GET: {
+            return {
+                ...state,
+                konversiKemasanQueryGet: {
+                    ...state.konversiKemasanQueryGet,
+                    loading: true,
+                    data: [],
+                    error: null
+                }
+            }
+        }
+
+        case KONVERSI_KEMASAN_QUERY_GET_SUCCESS: {
+            return {
+                ...state,
+                konversiKemasanQueryGet: {
+                    ...state.konversiKemasanQueryGet,
+                    loading: false,
+                    data: action.payload.data,
+                    error: null
+                }
+            }
+        }
+
+        case KONVERSI_KEMASAN_QUERY_GET_ERROR: {
+            return {
+                ...state,
+                konversiKemasanQueryGet: {
+                    ...state.konversiKemasanQueryGet,
+                    loading: false,
+                    data: [],
+                    error: action.payload.data
+                }
+            }
+        }
+
+        case KEMASAN_SAVE_OR_UPDATE: {
+            return {
+                ...state,
+                kemasanSaveOrUpdate: {
+                    ...state.kemasanSaveOrUpdate,
+                    loading: true,
+                    data: [],
+                    error: null
+                }
+            }
+        }
+
+        case KEMASAN_SAVE_OR_UPDATE_SUCCESS: {
+            return {
+                ...state,
+                kemasanSaveOrUpdate: {
+                    ...state.kemasanSaveOrUpdate,
+                    loading: false,
+                    data: action.payload.data,
+                    error: null
+                }
+            }
+        }
+
+        case KEMASAN_SAVE_OR_UPDATE_ERROR: {
+            return {
+                ...state,
+                kemasanSaveOrUpdate: {
+                    ...state.kemasanSaveOrUpdate,
+                    loading: false,
+                    data: [],
+                    error: action.payload.data
+                }
+            }
+        }
 
         default: {
             return { ...state };

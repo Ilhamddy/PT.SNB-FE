@@ -167,7 +167,7 @@ const createNotaVerif = async (req, res) => {
                 return penjamin.norec
             })
         )
-        transaction.commit();
+        await transaction.commit();
         
         res.status(200).send({
             data: {
@@ -322,7 +322,7 @@ const createBuktiBayar = async (req, res) => {
             createdDeposit: createdDeposit,
             changedDeposit: changedDeposit
         }
-        transaction.commit();
+        await transaction.commit();
         res.status(200).send({
             data: tempres,
             status: "success",
@@ -401,7 +401,7 @@ const cancelNotaVerif = async (req, res) => {
             transaction: transaction
         })
 
-        transaction.commit();
+        await transaction.commit();
         
         res.status(200).send({
             data: {
@@ -502,7 +502,7 @@ const cancelBayar = async (req, res) => {
         }, {
             transaction: transaction
         })
-        transaction.commit();
+        await transaction.commit();
         res.status(200).send({
             data: {
                 changedNPP: updatedBuktiB,

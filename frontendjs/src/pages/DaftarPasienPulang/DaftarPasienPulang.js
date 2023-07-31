@@ -10,15 +10,15 @@ import { Link } from "feather-icons-react/build/IconComponents";
 import { useDispatch, useSelector } from "react-redux";
 import {daftarPasienPulangGet} from "../../store/daftarPasien/action";
 import DataTable from "react-data-table-component";
-import { dateISOString, dateTimeLocal } from "../../utils/format";
+import { dateTimeLocal } from "../../utils/format";
 import Flatpickr from "react-flatpickr";
 import { comboAsuransiGet, comboRegistrasiGet } from "../../store/master/action";
 import CustomSelect from "../Select/Select";
 import "./DaftarPasienPulang.scss"
 import { useNavigate } from "react-router-dom";
 
-const dateAwalStart = dateISOString(new Date(new Date() - 1000 * 60 * 60 * 24 * 20));
-const dateAwalEnd = dateISOString(new Date(new Date() - (- 1000 * 60 * 60 * 24 * 1)))
+const dateAwalStart = (new Date(new Date() - 1000 * 60 * 60 * 24 * 20)).toISOString();
+const dateAwalEnd = (new Date(new Date() - (- 1000 * 60 * 60 * 24 * 1))).toISOString();
 
 
 const DaftarPasienPulang = () => {
@@ -201,7 +201,7 @@ const DaftarPasienPulang = () => {
                                         }}
                                         value={dateStart}
                                         onChange={([dateStart]) => {
-                                            setDateStart(dateISOString(dateStart - dateStart.getTimezoneOffset() * 60000));
+                                            setDateStart((new Date(dateStart)).toISOString());
                                         }}
                                     />
                                 </div>
@@ -218,7 +218,7 @@ const DaftarPasienPulang = () => {
                                         }}
                                         value={dateEnd}
                                         onChange={([dateEnd]) => {
-                                            setDateEnd(dateISOString(dateEnd - dateEnd.getTimezoneOffset() * 60000));
+                                            setDateEnd(new Date(dateEnd - dateEnd.getTimezoneOffset() * 60000).toISOString());
                                         }}
                                     />
                                 </div>

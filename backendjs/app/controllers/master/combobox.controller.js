@@ -348,8 +348,9 @@ const comboSettingProduk = async (req, res) => {
         const jenisProduk = await pool.query(queriesJenisProduk.getAll, [])
         const detailJenisProduk = await pool.query(queriesDetailJenisProduk.getAll, []);
         const variabelBpjs = await pool.query(queriesVariabelbpjs.getAll, []);
-        const satuan = await pool.query(queriesSatuan.getAll, [])
-        const jenisSatuan = await pool.query(queriesJenisSatuan.getAll, [])
+        const satuan = await pool.query(queriesSatuan.getAll, []);
+        const jenisSatuan = await pool.query(queriesJenisSatuan.getAll, []);
+        const satuanProduk = await pool.query(queriesSatuan.getSatuanProduk, []);
 
         let tempres = {
             sediaan: sediaan.rows,
@@ -358,7 +359,8 @@ const comboSettingProduk = async (req, res) => {
             variabelbpjs: variabelBpjs.rows,
             satuan: satuan.rows,
             jenisproduk: jenisProduk.rows,
-            jenissatuan: jenisSatuan.rows
+            jenissatuan: jenisSatuan.rows,
+            satuanproduk: satuanProduk.rows
         }
         res.status(200).send({
             data: tempres,

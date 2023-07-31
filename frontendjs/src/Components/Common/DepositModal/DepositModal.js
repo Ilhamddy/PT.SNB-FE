@@ -3,14 +3,14 @@ import CustomSelect from "../../../pages/Select/Select";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
-import { dateISOString, dateTimeISOString, onChangeStrNbr } from "../../../utils/format";
+import { dateTimeISOString, onChangeStrNbr } from "../../../utils/format";
 import { rgxAllNumber, rgxAllPeriods } from "../../../utils/regexcommon";
 import { comboPaymentGet } from "../../../store/master/action";
 import { useEffect } from "react";
 import { buktiBayarCreate } from "../../../store/payment/action";
 
-const dateAwalStart = dateTimeISOString(new Date(new Date() - 1000 * 60 * 60 * 24 * 3));
-const dateAwalEnd = dateISOString(new Date())
+const dateAwalStart = (new Date(new Date(new Date() - 1000 * 60 * 60 * 24 * 3))).toISOString();
+const dateAwalEnd = (new Date()).toISOString()
 const date = new Date()
 
 const DepositModal = ({toggle, norecdp}) => {

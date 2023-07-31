@@ -1,5 +1,5 @@
 export default (sequelize, Sequelize) => {
-    const m_sediaan = sequelize.define("m_sediaan", {
+    const m_kemasanproduk = sequelize.define("m_kemasanproduk", {
         id: {
             allowNull: false,
             autoIncrement: true,
@@ -12,35 +12,25 @@ export default (sequelize, Sequelize) => {
         statusenabled: {
             type: Sequelize.BOOLEAN
         },
-        kodeexternal: {
+        barcode: {
             type: Sequelize.STRING
         },
-        namaexternal: {
-            type: Sequelize.STRING
-        },
-        reportdisplay: {
-            type: Sequelize.STRING
-        },
-        sediaan: {
+        objectprodukfk: {
             type: Sequelize.INTEGER
         },
-        tglinput: {
-            type: Sequelize.DATE
-        },
-        tglupdate: {
-            type: Sequelize.DATE
-        },
-        objectpegawaiinputfk: {
+        objectsatuanbesarfk: {
             type: Sequelize.INTEGER
         },
-        objectpegawaiupdatefk: {
+        objectsatuankecilfk: {
+            type: Sequelize.INTEGER
+        },
+        nilaikonversi: {
             type: Sequelize.INTEGER
         }
     }, {
-        tableName: "m_sediaan",
+        tableName: "m_kemasanproduk", // relation "user" does not exist
         createdAt: false,
         updatedAt: false,
     });
-
-    return m_sediaan;
-};
+    return m_kemasanproduk;
+}

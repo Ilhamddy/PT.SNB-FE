@@ -34,6 +34,10 @@ import t_special_cmg_option from "./t_special_cmg_option.js";
 import m_produkM from "./m_produk.model.js";
 import m_detailjenisprodukM from "./m_detailjenisproduk.model.js";
 import m_pemeriksaanlab from "./m_pemeriksaanlab.js";
+import m_sediaanM from "./m_sediaan.model.js";
+import m_satuanM from "./m_satuan.model.js";
+import m_kemasanprodukM from "./m_kemasanproduk.model.js";
+
 
 const sequelize = new Sequelize(
   config.DB,
@@ -44,6 +48,7 @@ const sequelize = new Sequelize(
     dialect: config.dialect,
     operatorAliases: false,
     timezone: '+07:00',
+    logging: false,
     pool: {
       max: config.pool.max,
       min: config.pool.min,
@@ -93,6 +98,9 @@ db.t_special_cmg_option = t_special_cmg_option(sequelize,Sequelize);
 db.m_produk = m_produkM(sequelize,Sequelize);
 db.m_detailjenisproduk = m_detailjenisprodukM(sequelize,Sequelize);
 db.m_pemeriksaanlab = m_pemeriksaanlab(sequelize,Sequelize);
+db.m_sediaan = m_sediaanM(sequelize,Sequelize);
+db.m_satuan = m_satuanM(sequelize,Sequelize);
+db.m_kemasanproduk = m_kemasanprodukM(sequelize,Sequelize);
 
 db.role.belongsToMany(db.user, {
   through: "user_roles",

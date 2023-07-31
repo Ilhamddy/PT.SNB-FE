@@ -9,6 +9,7 @@ export const logRequests = (req, res, next) => {
     let url = req.url;
     let body = req.body;
     let params = req.params;
+    let query = req.query;
     let clientUrl = req.get("X-Client-Url")
 
     let status = res.statusCode;
@@ -17,6 +18,7 @@ export const logRequests = (req, res, next) => {
     logger.info(`METHOD: ${method} ${url} ${status}`)
     logger.info(`BODY: ${JSON.stringify(body, null, 2)}`, true)
     logger.info(`PARAMS: ${JSON.stringify(params, null, 2)}`, true)
+    logger.info(`QUERY: ${JSON.stringify(query, null, 2)}`, true)
     logger.print();
     next();
 }
@@ -41,41 +43,23 @@ export const createLogger = (logname) => {
         return formatted_date_time
     }
 
-    const fnTrace = (content) => {
+    const fnLog = (content, logName = "INFO") => {
         const formatted_date_time = createFormattedDateTime()
-        let log = `[${formatted_date_time}] [TRACE] ${content}`;
+        let log = `[${formatted_date_time}] [${logName}] ${content}`;
         finalLog = finalLog + log + "\n";
     }
 
-    const fnDebug = (content) => {
-        const formatted_date_time = createFormattedDateTime()
-        let log = `[${formatted_date_time}] [DEBUG] ${content}`;
-        finalLog = finalLog + log + "\n";
-    }
+    const fnTrace = (content) => fnLog(content, "TRACE")
 
-    const fnInfo = (content) => {
-        const formatted_date_time = createFormattedDateTime()
-        let log = `[${formatted_date_time}] [INFO] ${content}`;
-        finalLog = finalLog + log + "\n";
-    }
+    const fnDebug = (content) => fnLog(content, "DEBUG")
 
-    const fnWarn = (content) => {
-        const formatted_date_time = createFormattedDateTime()
-        let log = `[${formatted_date_time}] [WARN] ${content}`;
-        finalLog = finalLog + log + "\n";
-    }
+    const fnInfo = (content) => fnLog(content, "INFO")
 
-    const fnError = (content) => {
-        const formatted_date_time = createFormattedDateTime()
-        let log = `[${formatted_date_time}] [ERROR] ${content}`;
-        finalLog = finalLog + log + "\n";
-    }
+    const fnWarn = (content) => fnLog(content, "WARN")
 
-    const fnFatal = (content) => {
-        const formatted_date_time = createFormattedDateTime()
-        let log = `[${formatted_date_time}] [FATAL] ${content}`;
-        finalLog = finalLog + log + "\n";
-    }
+    const fnError = (content) => fnLog(content, "ERROR")
+
+    const fnFatal = (content) => fnLog(content, "FATAL")
 
     const fnPrint = () => {
         let current_datetime = new Date();
@@ -93,7 +77,7 @@ export const createLogger = (logname) => {
             fs.mkdirSync(dirPath);
         }
         if(process.env.NODE_ENV === "development"){
-            console.log(`\n=========${logname.toLocaleUpperCase()}=========`)
+            console.log(`=========${logname.toLocaleUpperCase()}=========\n`)
             console.log(finalLog) 
         } else{
             const stream = fs.createWriteStream(filePath, {flags: 'a'});

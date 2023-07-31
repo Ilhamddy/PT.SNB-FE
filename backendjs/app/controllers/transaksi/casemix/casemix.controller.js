@@ -566,7 +566,7 @@ async function saveTarifKlaim(req, res) {
             },
             transaction: transaction
         })
-        transaction.commit();
+        await transaction.commit();
 
         let tempres = { daftarpasien, cmgOptions: statuscmgOptions }
         res.status(200).send({
@@ -695,7 +695,7 @@ async function updateStatusKlaim(req, res) {
             },
             transaction: transaction
         })
-        transaction.commit();
+        await transaction.commit();
 
         let tempres = { updateStatusKlaim }
         res.status(200).send({
@@ -744,7 +744,7 @@ async function updateTarifCmgOptions(req, res) {
             },
             transaction: transaction
         })
-        transaction.commit();
+        await transaction.commit();
 
         let tempres = { updateTarif }
         res.status(200).send({

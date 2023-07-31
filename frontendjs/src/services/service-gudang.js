@@ -12,7 +12,26 @@ export default class ServiceGudang {
     }
 
     saveOrEditDetailProduk = async (body) => {
-        return await api.create(`/transaksi/gudang/create-or-edit-detail-produk`, body)
+        return await api.create(`/transaksi/gudang/create-or-update-detail-produk`, body)
     }
 
+    saveOrEditSediaan = async (body) => {
+        return await api.create(`/transaksi/gudang/create-or-update-sediaan`, body)
+    }
+
+    saveOrEditSatuan = async (body) => {
+        return await api.create(`/transaksi/gudang/create-or-update-satuan`, body)
+    }
+
+    getProdukKonversi = async (queries) => {
+        return await api.get(`/transaksi/gudang/get-produk-konversi`, queries)
+    }
+
+    getKemasanKonversi = async (queries) => {
+        return await api.get(`/transaksi/gudang/get-kemasan-konversi`, queries)
+    }
+
+    saveOrEditKemasan = async (body) => {
+        return await api.create(`/transaksi/gudang/create-or-update-kemasan`, body)
+    }
 }
