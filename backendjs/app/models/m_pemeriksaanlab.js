@@ -51,7 +51,10 @@ export default (sequelize, Sequelize) => {
         },
         objectpegawaiupdatefk:{
             type:Sequelize.INTEGER
-        }
+        },
+        id_temp:{
+            type: Sequelize.INTEGER
+        },
     }, {
         tableName: "m_pemeriksaanlab", // relation "user" does not exist
         createdAt: false,
