@@ -37,7 +37,7 @@ const SettingLayananLab = () => {
         },
         {
             id: 2,
-            label: "Lain-lain",
+            label: "Satuan",
         }
     ];
     const [pillsTab, setpillsTab] = useState("1");

@@ -30,7 +30,7 @@ const KelompokUmur = () => {
     const { data, loading, error } = useSelector((state) => ({
         // data: state.Laboratorium.masterPelayananLaboratoriumGet.data,
         // loading: state.Laboratorium.masterPelayananLaboratoriumGet.loading
-        
+
     }));
     const [search, setSearch] = useState('')
     const handleFilter = (e) => {
@@ -56,7 +56,7 @@ const KelompokUmur = () => {
         }
     }
     const columns = [
-       
+
         {
             name: <span className='font-weight-bold fs-13'>No</span>,
             selector: row => row.id,
@@ -85,7 +85,7 @@ const KelompokUmur = () => {
                             <div className="live-preview">
                                 <Row>
                                     <Col>
-                                        <h4 className="card-title mb-0 flex-grow-1 mb-3">Kelompok Umur <span style={{ color: '#e67e22' }}> </span></h4>
+                                        <h4 className="card-title mb-0 flex-grow-1 mb-3">Tambah Kelompok Umur <span style={{ color: '#e67e22' }}> </span></h4>
                                     </Col>
                                 </Row>
                             </div>
@@ -122,45 +122,105 @@ const KelompokUmur = () => {
                                             </Col>
                                         </Row>
                                     </Col>
+
+                                </Row>
+                            </div>
+                        </CardBody>
+                    </Card>
+                </Col>
+                <Col lg={6}>
+                    <Card>
+                        <CardHeader className="align-items-center d-flex">
+                            <div className="live-preview">
+                                <Row>
+                                    <Col>
+                                        <h4 className="card-title mb-0 flex-grow-1 mb-3">Daftar Kelompok Umur <span style={{ color: '#e67e22' }}> </span></h4>
+                                    </Col>
+                                </Row>
+                            </div>
+                        </CardHeader>
+                        <CardBody>
+                            <div className='mb-2'>
+                                <Row className="g-3">
                                     <Col lg={6}>
-                                        <Row className="gy-2">
-                                            <Col xxl={6} md={6}>
+                                        <Row className="gy-4">
+                                            <Col lg={8}>
                                                 <div className="mt-2">
-                                                    <Label style={{ color: "black" }} htmlFor="kelompokumur" className="form-label">Kelompok Umur</Label>
+                                                    {/* <div className="d-flex justify-content-sm-start"> */}
+                                                    <div className="search-box ms-2">
+                                                        <input type="text" className="form-control search"
+                                                            placeholder="Cari..." onChange={event => setSearch(event.target.value)}
+                                                            onKeyDown={handleFilter} />
+                                                        <i className="ri-search-line search-icon"></i>
+                                                    </div>
+                                                    {/* </div> */}
                                                 </div>
                                             </Col>
-                                            <Col xxl={6} md={6}>
-                                                <div>
-                                                    <Input
-                                                        id="kelompokumur"
-                                                        name="kelompokumur"
-                                                        type="string"
-                                                        placeholder="Masukkan Kelompok Umur"
-                                                    // onChange={validation.handleChange}
-                                                    // onBlur={validation.handleBlur}
-                                                    // value={validation.values.noidentitas || ""}
-                                                    />
-                                                </div>
-                                            </Col>
-                                            <Col xxl={6} md={6}>
-                                                <div className="mt-2">
-                                                    <Label style={{ color: "black" }} htmlFor="kelompokumur" className="form-label">Enabled</Label>
-                                                </div>
-                                            </Col>
-                                            <Col xxl={6} md={6}>
-                                                <div>
-                                                    <CustomSelect
-                                                        id="statusenabled"
-                                                        name="statusenabled"
-                                                    // options={data.asalrujukan}
-                                                    // value={validation.values.rujukanasal || ""}
-                                                    // className={`input ${validation.errors.rujukanasal ? "is-invalid" : ""}`}
-                                                    // onChange={value => validation.setFieldValue('rujukanasal', value.value)}
+                                            <Col lg={12}>
+                                                <div id="table-gridjs">
+                                                    <DataTable
+                                                        fixedHeader
+                                                        fixedHeaderScrollHeight="400px"
+                                                        columns={columns}
+                                                        pagination
+                                                        // data={data}
+                                                        progressPending={loading}
+                                                        customStyles={tableCustomStyles}
                                                     />
                                                 </div>
                                             </Col>
                                         </Row>
                                     </Col>
+
+                                </Row>
+                            </div>
+                        </CardBody>
+                    </Card>
+                </Col>
+                <Col lg={6}>
+                    <Card>
+                        <CardHeader className="align-items-center d-flex">
+                            <div className="live-preview">
+                                <Row>
+                                    <Col>
+                                        <h4 className="card-title mb-0 flex-grow-1 mb-3">Detail Kelompok Umur <span style={{ color: '#e67e22' }}> </span></h4>
+                                    </Col>
+                                </Row>
+                            </div>
+                        </CardHeader>
+                        <CardBody>
+                            <div className='mb-2'>
+                                <Row className="g-3">
+                                    <Col lg={6}>
+                                        <Row className="gy-4">
+                                            <Col lg={8}>
+                                                <div className="mt-2">
+                                                    {/* <div className="d-flex justify-content-sm-start"> */}
+                                                    <div className="search-box ms-2">
+                                                        <input type="text" className="form-control search"
+                                                            placeholder="Cari..." onChange={event => setSearch(event.target.value)}
+                                                            onKeyDown={handleFilter} />
+                                                        <i className="ri-search-line search-icon"></i>
+                                                    </div>
+                                                    {/* </div> */}
+                                                </div>
+                                            </Col>
+                                            <Col lg={12}>
+                                                <div id="table-gridjs">
+                                                    <DataTable
+                                                        fixedHeader
+                                                        fixedHeaderScrollHeight="400px"
+                                                        columns={columns}
+                                                        pagination
+                                                        // data={data}
+                                                        progressPending={loading}
+                                                        customStyles={tableCustomStyles}
+                                                    />
+                                                </div>
+                                            </Col>
+                                        </Row>
+                                    </Col>
+
                                 </Row>
                             </div>
                         </CardBody>
