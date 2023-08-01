@@ -35,7 +35,10 @@ import {
     MASTER_PELAYANAN_LABORATORIUM_GET_ERROR,
     COMBO_LABORATORIUM_GET,
     COMBO_LABORATORIUM_GET_SUCCESS,
-    COMBO_LABORATORIUM_GET_ERROR
+    COMBO_LABORATORIUM_GET_ERROR,
+    SAVE_NILAINORMAL_LABORATORIUM,
+    SAVE_NILAINORMAL_LABORATORIUM_SUCCESS,
+    SAVE_NILAINORMAL_LABORATORIUM_ERROR
 } from "./actionType";
 
 export const laboratoriumResetForm = () => ({
@@ -220,5 +223,20 @@ export const comboLaboratoriumGetSuccess = (data) => ({
 
 export const comboLaboratoriumGetError = (error) => ({
     type: COMBO_LABORATORIUM_GET_ERROR,
+    payload: error,
+});
+
+export const saveNilaiNormalLaboratorium = (data, history) => ({
+    type: SAVE_NILAINORMAL_LABORATORIUM,
+    payload: { data, history },
+});
+// common error
+export const saveNilaiNormalLaboratoriumSuccess = (data, history) => ({
+    type: SAVE_NILAINORMAL_LABORATORIUM_SUCCESS,
+    payload: { data, history },
+});
+
+export const saveNilaiNormalLaboratoriumError = (error) => ({
+    type: SAVE_NILAINORMAL_LABORATORIUM_ERROR,
     payload: error,
 });

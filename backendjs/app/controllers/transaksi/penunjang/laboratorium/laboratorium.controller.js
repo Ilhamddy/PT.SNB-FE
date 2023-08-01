@@ -57,7 +57,7 @@ async function getDetailJenisProdukLab(req, res) {
                         and mp.id =${resultlistOrder.rows[x].value}`);
                     for (let y = 0; y < resultlistantreanpemeriksaan.rows.length; y++) {
                         resultlistOrder.rows[x].harga = 0
-                        resultlistOrder.rows[x].label =resultlistOrder.rows[x].label+` (${resultlistantreanpemeriksaan.rows[y].totalharga})`
+                        resultlistOrder.rows[x].label = resultlistOrder.rows[x].label + ` (${resultlistantreanpemeriksaan.rows[y].totalharga})`
                         resultlistOrder.rows[x].harga = resultlistantreanpemeriksaan.rows[y].totalharga
                     }
                     resultlistOrder.rows[x].subdata = []
@@ -73,7 +73,9 @@ async function getDetailJenisProdukLab(req, res) {
                         if (tempOrder[y].value === resultlistOrder.rows[x].value) {
                             for (let z = 0; z < tempOrder[y].subdata.length; z++) {
                                 if (tempOrder[y].subdata[z].id === resultlistOrder.rows[x].objectindukfk) {
-                                    tempOrder[y].subdata[z].subsubdata = []
+                                    if(tempOrder[y].subdata[z].subsubdata===undefined){
+                                        tempOrder[y].subdata[z].subsubdata = []
+                                    }
                                     tempOrder[y].subdata[z].subsubdata.push(resultlistOrder.rows[x])
                                 }
 
@@ -103,9 +105,9 @@ async function getDetailJenisProdukLab(req, res) {
 async function saveOrderPelayanan(req, res) {
     let transaction = null;
 
-    try{
+    try {
         transaction = await db.sequelize.transaction();
-    }catch(e){
+    } catch (e) {
         console.error(e)
         res.status(201).send({
             status: e.message,
@@ -392,9 +394,9 @@ async function getListOrderByNorecOrder(req, res) {
 
 async function updateTglRencanaLaboratorium(req, res) {
     let transaction = null;
-    try{
+    try {
         transaction = await db.sequelize.transaction();
-    }catch(e){
+    } catch (e) {
         console.error(e)
         res.status(201).send({
             status: e.message,
@@ -435,9 +437,9 @@ async function updateTglRencanaLaboratorium(req, res) {
 
 async function saveUserVerifikasi(req, res) {
     let transaction = null;
-    try{
+    try {
         transaction = await db.sequelize.transaction();
-    }catch(e){
+    } catch (e) {
         console.error(e)
         res.status(201).send({
             status: e.message,
@@ -476,7 +478,7 @@ async function saveUserVerifikasi(req, res) {
             objectkelasfk: 8,
             taskid: 3,
             statusenabled: true,
-            objectunitasalfk:resultlist.rows[0].objectunitasalfk,
+            objectunitasalfk: resultlist.rows[0].objectunitasalfk,
         }, { transaction });
 
         for (let x = 0; x < resultlist.rows.length; x++) {
@@ -606,7 +608,7 @@ async function getDaftarPasienLaboratorium(req, res) {
 async function getTransaksiPelayananLaboratoriumByNorecDp(req, res) {
 
     try {
-        
+
         const resultlist = await queryPromise2(`select row_number() OVER (ORDER BY tp.norec) AS no,
         mu.namaunit,
         to_char(tp.tglinput,'yyyy-MM-dd HH:mm') as tglinput,
@@ -658,7 +660,7 @@ async function getTransaksiPelayananLaboratoriumByNorecDp(req, res) {
 async function getMasterLayananLaboratorium(req, res) {
 
     try {
-        
+
         const resultlist = await queryPromise2(`select
         mp.id,case when mp.statusenabled = true then 'AKTIP' else 'NONAKTIP' end as status,
         mp.kodeexternal,
@@ -691,7 +693,7 @@ async function getMasterLayananLaboratorium(req, res) {
 async function getComboLaboratorium(req, res) {
 
     try {
-        
+
         const resultlist = await queryPromise2(`select ms.id as value,
         ms.satuan as label from m_satuan ms
         where kodeexternal ='lab' `);
@@ -699,7 +701,7 @@ async function getComboLaboratorium(req, res) {
         const resultlist2 = await queryPromise2(`select mk.id as value, mk.kelompokumur as label
          from m_kelompokumur mk `);
 
-        let tempres = {datasatuan:resultlist.rows, datakelumur:resultlist2.rows}
+        let tempres = { datasatuan: resultlist.rows, datakelumur: resultlist2.rows }
 
         res.status(200).send({
             data: tempres,
@@ -713,6 +715,189 @@ async function getComboLaboratorium(req, res) {
 
 }
 
+async function saveMasterNilaiNormal(req, res) {
+    let transaction = null;
+    try {
+        transaction = await db.sequelize.transaction();
+    } catch (e) {
+        console.error(e)
+        res.status(201).send({
+            status: e.message,
+            success: false,
+            msg: 'Simpan Gagal',
+            code: 201
+        });
+    }
+    try {
+        let filteredRowsLevel1 = req.body.data.filter((row) => row.level === 1);
+        let filteredRowsLevel2 = req.body.data.filter((row) => row.level === 2);
+        let filteredRowsLevel3 = req.body.data.filter((row) => row.level === 3);
+
+        const pemeriksaanlablevel1 = await Promise.all(
+            filteredRowsLevel1.map(async (item) => {
+                const pemeriksaanlablevel1 = await db.m_pemeriksaanlab.create({
+                    statusenabled: true,
+                    kodeexternal: item.kode,
+                    namaexternal: item.nama,
+                    reportdisplay: item.nama,
+                    objectprodukfk: req.body.objectproduk,
+                    objectsatuanfk: item.satuan,
+                    level: item.level,
+                    urutan: item.urutan,
+                    objectkelompokumurfk: item.kelompokumur,
+                    tglinput: new Date(),
+                    tglupdate: new Date(),
+                    objectpegawaiinputfk: req.idPegawai,
+
+                }, {
+                    transaction: transaction
+                })
+
+                return pemeriksaanlablevel1
+            }
+            ))
+
+        const pemeriksaanlablevel2 = await Promise.all(
+            filteredRowsLevel2.map(async (item) => {
+                const pemeriksaanlablevel2 = await db.m_pemeriksaanlab.create({
+                    statusenabled: true,
+                    kodeexternal: item.kode,
+                    namaexternal: item.nama,
+                    reportdisplay: item.nama,
+                    objectprodukfk: req.body.objectproduk,
+                    objectsatuanfk: item.satuan,
+                    level: item.level,
+                    urutan: item.urutan,
+                    objectkelompokumurfk: item.kelompokumur,
+                    tglinput: new Date(),
+                    tglupdate: new Date(),
+                    objectpegawaiinputfk: req.idPegawai,
+                    objectindukfk: pemeriksaanlablevel1[0].id,
+                    id_temp: item.id
+                }, {
+                    transaction: transaction
+                })
+
+                return pemeriksaanlablevel2
+            }
+            ))
+
+        const pemeriksaanlablevel3 = await Promise.all(
+            filteredRowsLevel3.map(async (item) => {
+                pemeriksaanlablevel2.map(async (itemx) => {
+                    if (item.objectinduk === itemx.id_temp) {
+                        let reqtemp = {
+                            statusenabled: true,
+                            kodeexternal: item.kode,
+                            namaexternal: item.nama,
+                            reportdisplay: item.nama,
+                            objectprodukfk: req.body.objectproduk,
+                            objectsatuanfk: item.satuan,
+                            level: item.level,
+                            urutan: item.urutan,
+                            objectkelompokumurfk: item.kelompokumur,
+                            tglinput: new Date(),
+                            tglupdate: new Date(),
+                            objectpegawaiinputfk: req.idPegawai,
+                            objectindukfk: itemx.id,
+                        };
+                        const resultlistlevel3 =await someFunctionUsingSaveMasterNilaiNormal2(reqtemp);
+                        // const pemeriksaanlablevel3 = await db.m_pemeriksaanlab.create({
+                        //     statusenabled: true,
+                        //     kodeexternal: item.kode,
+                        //     namaexternal: item.nama,
+                        //     reportdisplay: item.nama,
+                        //     objectprodukfk: req.body.objectproduk,
+                        //     objectsatuanfk: item.satuan,
+                        //     level: item.level,
+                        //     urutan: item.urutan,
+                        //     objectkelompokumurfk: item.kelompokumur,
+                        //     tglinput: new Date(),
+                        //     tglupdate: new Date(),
+                        //     objectpegawaiinputfk: req.idPegawai,
+                        //     objectindukfk:2,
+                        // }, {
+                        //     transaction: transaction
+                        // })
+                        // return pemeriksaanlablevel3
+                    }
+                })
+
+
+
+            }
+            ))
+
+
+
+
+
+        await transaction.commit();
+        let tempres = { pemeriksaanlablevel1, pemeriksaanlablevel2 }
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+            msg: 'Berhasil',
+            code: 200
+        });
+
+    } catch (error) {
+        transaction && await transaction.rollback();
+        console.log(error)
+        res.status(201).send({
+            status: "false",
+            success: false,
+            msg: error,
+            code: 201
+        });
+    }
+
+}
+async function someFunctionUsingSaveMasterNilaiNormal2(req,res) {
+    let transaction = null;
+    try {
+        transaction = await db.sequelize.transaction();
+    } catch (e) {
+        console.error(e)
+        res.status(201).send({
+            status: e.message,
+            success: false,
+            msg: 'Simpan Gagal',
+            code: 201
+        });
+    }
+    try {
+        const pemeriksaanlablevel3 = await db.m_pemeriksaanlab.create({
+            statusenabled: true,
+            kodeexternal: req.kodeexternal,
+            namaexternal: req.namaexternal,
+            reportdisplay: req.reportdisplay,
+            objectprodukfk: req.objectproduk,
+            objectsatuanfk: req.objectsatuanfk,
+            level: req.level,
+            urutan: req.urutan,
+            objectkelompokumurfk: req.objectkelompokumurfk,
+            tglinput: new Date(),
+            tglupdate: new Date(),
+            objectpegawaiinputfk: req.objectpegawaiinputfk,
+            objectindukfk: req.objectindukfk,
+
+        }, {
+            transaction
+        })
+        await transaction.commit(); // Commit the initial transaction
+       
+    } catch (error) {
+        console.error('Error executing query:', error);
+        console.log(error)
+    }
+}
+
+
+
+
+
 export default {
     getDetailJenisProdukLab,
     saveOrderPelayanan,
@@ -725,5 +910,6 @@ export default {
     getDaftarPasienLaboratorium,
     getTransaksiPelayananLaboratoriumByNorecDp,
     getMasterLayananLaboratorium,
-    getComboLaboratorium
+    getComboLaboratorium,
+    saveMasterNilaiNormal,
 };

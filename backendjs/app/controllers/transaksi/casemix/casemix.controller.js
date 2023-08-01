@@ -539,7 +539,7 @@ async function saveTarifKlaim(req, res) {
                         description: item.description,
                         type: item.type,
                         objectdaftarpasienfk: req.body.norec,
-                        tarif:0
+                        tarif: 0
                     }, {
                         transaction: transaction
                     })
@@ -568,7 +568,7 @@ async function saveTarifKlaim(req, res) {
         })
         await transaction.commit();
 
-        let tempres = {daftarpasien,cmgOptions:statuscmgOptions}
+        let tempres = { daftarpasien, cmgOptions: statuscmgOptions }
         res.status(200).send({
             data: tempres,
             status: "success",
@@ -604,64 +604,66 @@ async function getListSpecialCmg(req, res) {
         value: 'none',
         label: 'none',
         tarif: 0,
-        code:'none'
+        code: 'none'
     })
     temptdataProsthesis.push({
         value: 'none',
         label: 'none',
-        tarif:0,
-        code:'none'
+        tarif: 0,
+        code: 'none'
     })
     temptdataInvestigation.push({
         value: 'none',
         label: 'none',
-        tarif:0,
-        code:'none'
+        tarif: 0,
+        code: 'none'
     })
     temptdataDrug.push({
         value: 'none',
         label: 'none',
-        tarif:0,
-        code:'none'
+        tarif: 0,
+        code: 'none'
     })
     for (let i = 0; i < resultList.rows.length; i++) {
-        if(resultList.rows[i].tipe==='Special Procedure'){
+        if (resultList.rows[i].tipe === 'Special Procedure') {
             temptdataProcedure.push({
                 value: resultList.rows[i].value,
                 label: resultList.rows[i].label,
                 tarif: resultList.rows[i].tarif,
-                code:resultList.rows[i].code
+                code: resultList.rows[i].code
             })
         }
-        if(resultList.rows[i].tipe==='Special Prosthesis'){
+        if (resultList.rows[i].tipe === 'Special Prosthesis') {
             temptdataProsthesis.push({
                 value: resultList.rows[i].value,
                 label: resultList.rows[i].label,
                 tarif: resultList.rows[i].tarif,
-                code:resultList.rows[i].code
+                code: resultList.rows[i].code
             })
         }
-        if(resultList.rows[i].tipe==='Special Investigation'){
+        if (resultList.rows[i].tipe === 'Special Investigation') {
             temptdataInvestigation.push({
                 value: resultList.rows[i].value,
                 label: resultList.rows[i].label,
                 tarif: resultList.rows[i].tarif,
-                code:resultList.rows[i].code
+                code: resultList.rows[i].code
             })
         }
-        if(resultList.rows[i].tipe==='Special Drug'){
+        if (resultList.rows[i].tipe === 'Special Drug') {
             temptdataDrug.push({
                 value: resultList.rows[i].value,
                 label: resultList.rows[i].label,
                 tarif: resultList.rows[i].tarif,
-                code:resultList.rows[i].code
+                code: resultList.rows[i].code
             })
         }
     }
-    let tempres = {dataProcedure:temptdataProcedure,
-                    dataProsthesis:temptdataProsthesis,
-                    dataInvestigation:temptdataInvestigation,
-                    dataDrug:temptdataDrug}
+    let tempres = {
+        dataProcedure: temptdataProcedure,
+        dataProsthesis: temptdataProsthesis,
+        dataInvestigation: temptdataInvestigation,
+        dataDrug: temptdataDrug
+    }
     res.status(200).send({
         data: tempres,
         status: "success",
@@ -695,7 +697,7 @@ async function updateStatusKlaim(req, res) {
         })
         await transaction.commit();
 
-        let tempres = {updateStatusKlaim}
+        let tempres = { updateStatusKlaim }
         res.status(200).send({
             data: tempres,
             status: "success",
@@ -734,9 +736,9 @@ async function updateTarifCmgOptions(req, res) {
             tarif: req.body.tarif
         }, {
             where: {
-                statusenabled:true,
+                statusenabled: true,
                 objectdaftarpasienfk: req.body.norec,
-                description:{
+                description: {
                     [db.Sequelize.Op.iLike]: `%${req.body.description}%`,
                 }
             },
@@ -744,7 +746,7 @@ async function updateTarifCmgOptions(req, res) {
         })
         await transaction.commit();
 
-        let tempres = {updateTarif}
+        let tempres = { updateTarif }
         res.status(200).send({
             data: tempres,
             status: "success",

@@ -50,4 +50,8 @@ export default class ServiceLaboratorium {
     getcomboLaboratorium = async (param) => {
         return await api.get(`/transaksi/laboratorium/combo-laboratorium`);
     }
+
+    saveNilaiNormalLaboratorium = async (params) => {
+        return await api.create("/transaksi/laboratorium/save-master-nilai-normal", params);
+    }
 }

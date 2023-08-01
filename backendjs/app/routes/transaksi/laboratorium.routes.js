@@ -82,4 +82,10 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getComboLaboratorium
     );
+
+    app.post(
+        "/api/transaksi/laboratorium/save-master-nilai-normal",
+        [authJwt.verifyToken],
+        controller.saveMasterNilaiNormal
+    );
 }
