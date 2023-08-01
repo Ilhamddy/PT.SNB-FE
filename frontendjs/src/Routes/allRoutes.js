@@ -283,6 +283,7 @@ import Bayar from "../pages/Bayar/Bayar";
 
 import SettingProduk from "../pages/Produk/SettingProduk";
 import ListProduk from "../pages/Produk/ListProduk";
+import PenerimaanProduk from "../pages/PenerimaanProduk/PenerimaanProduk";
 
 
 
@@ -542,7 +543,8 @@ const authProtectedRoutes = [
   // farmasi
   { path: "/farmasi/gudang/setting-produk/:tabopen/:paramobat", component: <SettingProduk /> },
   { path: "/farmasi/gudang/setting-produk/:tabopen", component: <SettingProduk /> },
-  { path: "/farmasi/gudang/list-produk", component: <ListProduk /> }
+  { path: "/farmasi/gudang/list-produk", component: <ListProduk /> },
+  { path: "/farmasi/gudang/penerimaan-produk", component: <PenerimaanProduk /> }
 
 ];
 
