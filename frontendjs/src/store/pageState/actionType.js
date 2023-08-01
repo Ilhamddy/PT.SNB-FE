@@ -1,0 +1,5 @@
+
+
+
+export const CHANGE_PAGE_STATE = 'CHANGE_PAGE_STATE';
+

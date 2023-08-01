@@ -103,9 +103,13 @@ const TambahProduk = ({tabId}) => {
     }, [produkEditData.data, comboSettingProduk, validation.setFieldValue])
 
     useEffect(() => {
-        paramobat &&
+        const rForm = validation.resetForm
+        if(paramobat){
             dispatch(produkEditGet({produkid: paramobat}))
-    }, [paramobat, dispatch])
+        }else{
+            rForm();
+        }
+    }, [paramobat, dispatch, validation.resetForm])
 
     return (
         <TabPane tabId={tabId} id="home2">
