@@ -101,7 +101,6 @@ async function getDetailJenisProdukLab(req, res) {
 
 }
 
-
 async function saveOrderPelayanan(req, res) {
     let transaction = null;
 
@@ -854,6 +853,7 @@ async function saveMasterNilaiNormal(req, res) {
     }
 
 }
+
 async function someFunctionUsingSaveMasterNilaiNormal2(req,res) {
     let transaction = null;
     try {
@@ -893,7 +893,6 @@ async function someFunctionUsingSaveMasterNilaiNormal2(req,res) {
         console.log(error)
     }
 }
-
 
 
 
