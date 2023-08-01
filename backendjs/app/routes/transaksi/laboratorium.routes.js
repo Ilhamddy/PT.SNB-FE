@@ -89,4 +89,16 @@ export default function (app) {
         controller.saveMasterNilaiNormal
     );
 
+    app.post(
+        "/api/transaksi/laboratorium/save-master-kelompok-umur",
+        [authJwt.verifyToken],
+        controller.saveMasterKelompokUmur
+    );
+
+    app.get(
+        "/api/transaksi/laboratorium/list-detail-kel-umur",
+        [authJwt.verifyToken],
+        controller.getListDetailKelompokUmur
+    );
+
 }

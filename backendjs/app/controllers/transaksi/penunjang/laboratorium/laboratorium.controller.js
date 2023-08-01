@@ -73,7 +73,7 @@ async function getDetailJenisProdukLab(req, res) {
                         if (tempOrder[y].value === resultlistOrder.rows[x].value) {
                             for (let z = 0; z < tempOrder[y].subdata.length; z++) {
                                 if (tempOrder[y].subdata[z].id === resultlistOrder.rows[x].objectindukfk) {
-                                    if(tempOrder[y].subdata[z].subsubdata===undefined){
+                                    if (tempOrder[y].subdata[z].subsubdata === undefined) {
                                         tempOrder[y].subdata[z].subsubdata = []
                                     }
                                     tempOrder[y].subdata[z].subsubdata.push(resultlistOrder.rows[x])
@@ -697,7 +697,7 @@ async function getComboLaboratorium(req, res) {
         ms.satuan as label from m_satuan ms
         where kodeexternal ='lab' `);
 
-        const resultlist2 = await queryPromise2(`select mk.id as value, mk.kelompokumur as label
+        const resultlist2 = await queryPromise2(`select row_number() OVER (ORDER BY mk.id) AS no, mk.id as value, mk.kelompokumur as label,case when mk.statusenabled=true then 'AKTIF' else 'NON AKTIF' end as status
          from m_kelompokumur mk `);
 
         let tempres = { datasatuan: resultlist.rows, datakelumur: resultlist2.rows }
@@ -800,7 +800,7 @@ async function saveMasterNilaiNormal(req, res) {
                             objectpegawaiinputfk: req.idPegawai,
                             objectindukfk: itemx.id,
                         };
-                        const resultlistlevel3 =await someFunctionUsingSaveMasterNilaiNormal2(reqtemp);
+                        const resultlistlevel3 = await someFunctionUsingSaveMasterNilaiNormal2(reqtemp);
                         // const pemeriksaanlablevel3 = await db.m_pemeriksaanlab.create({
                         //     statusenabled: true,
                         //     kodeexternal: item.kode,
@@ -854,7 +854,7 @@ async function saveMasterNilaiNormal(req, res) {
 
 }
 
-async function someFunctionUsingSaveMasterNilaiNormal2(req,res) {
+async function someFunctionUsingSaveMasterNilaiNormal2(req, res) {
     let transaction = null;
     try {
         transaction = await db.sequelize.transaction();
@@ -887,14 +887,82 @@ async function someFunctionUsingSaveMasterNilaiNormal2(req,res) {
             transaction
         })
         await transaction.commit(); // Commit the initial transaction
-       
+
     } catch (error) {
         console.error('Error executing query:', error);
         console.log(error)
     }
 }
 
+async function saveMasterKelompokUmur(req, res) {
+    let transaction = null;
+    try {
+        transaction = await db.sequelize.transaction();
+    } catch (e) {
+        console.error(e)
+        res.status(201).send({
+            status: e.message,
+            success: false,
+            msg: 'Simpan Gagal',
+            code: 201
+        });
+    }
+    try {
+        let status = true
+        if(req.body.status_enabled===2)
+            status = false
+        const masterkelompokumur = await db.m_kelompokumur.create({
+            statusenabled: status,
+            kodeexternal: req.body.namakelompokumur,
+            namaexternal: req.body.namakelompokumur,
+            reportdisplay: req.body.namakelompokumur,
+            kelompokumur:req.body.namakelompokumur
+        }, {
+            transaction: transaction
+        })
 
+
+        await transaction.commit();
+        let tempres = { masterkelompokumur }
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+            msg: 'Berhasil',
+            code: 200
+        });
+
+    } catch (error) {
+        transaction && await transaction.rollback();
+        console.log(error)
+        res.status(201).send({
+            status: "false",
+            success: false,
+            msg: error,
+            code: 201
+        });
+    }
+
+}
+
+async function getListDetailKelompokUmur(req, res) {
+
+    try {
+
+        const resultlist = await queryPromise2(`SELECT id, kdprofile, statusenabled, kodeexternal, objectkelompokumurfk, reportdisplay, detailkelompokumur, statusumur, umurmin, umurmax
+        FROM m_detailkelompokumur`);
+
+        res.status(200).send({
+            data: resultlist.rows,
+            status: "success",
+            success: true,
+        });
+
+    } catch (error) {
+        res.status(500).send({ message: error });
+    }
+
+}
 
 
 export default {
@@ -911,4 +979,6 @@ export default {
     getMasterLayananLaboratorium,
     getComboLaboratorium,
     saveMasterNilaiNormal,
+    saveMasterKelompokUmur,
+    getListDetailKelompokUmur
 };

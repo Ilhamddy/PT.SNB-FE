@@ -54,4 +54,12 @@ export default class ServiceLaboratorium {
     saveNilaiNormalLaboratorium = async (params) => {
         return await api.create("/transaksi/laboratorium/save-master-nilai-normal", params);
     }
+
+    saveMasterKelUmurLaboratorium = async (params) => {
+        return await api.create("/transaksi/laboratorium/save-master-kelompok-umur", params);
+    }
+
+    getListDetailKelompokUmur = async (param) => {
+        return await api.get(`/transaksi/laboratorium/list-detail-kel-umur?param=${param}`);
+    }
 }

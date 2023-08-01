@@ -14,7 +14,9 @@ import {
     LIST_PELAYANAN_LABORATORIUM_GET,
     MASTER_PELAYANAN_LABORATORIUM_GET,
     COMBO_LABORATORIUM_GET,
-    SAVE_NILAINORMAL_LABORATORIUM
+    SAVE_NILAINORMAL_LABORATORIUM,
+    SAVE_MASTER_KEL_UMUR_LABORATORIUM,
+    LIST_DETAIL_KEL_UMUR_LABORATORIUM_GET,
 } from "./actionType";
 
 import {
@@ -30,7 +32,9 @@ import {
     listPelayananLaboratoriumGetSuccess, listPelayananLaboratoriumGetError,
     masterPelayananLaboratoriumGetSuccess, masterPelayananLaboratoriumGetError,
     comboLaboratoriumGetSuccess, comboLaboratoriumGetError,
-    saveNilaiNormalLaboratoriumSuccess, saveNilaiNormalLaboratoriumError
+    saveNilaiNormalLaboratoriumSuccess, saveNilaiNormalLaboratoriumError,
+    saveMasterKelUmurLaboratoriumSuccess, saveMasterKelUmurLaboratoriumError,
+    listDetailKelUmurGetSuccess, listDetailKelUmurGetError,
 } from "./action";
 
 import { toast } from 'react-toastify';
@@ -260,6 +264,42 @@ export function* watchonSaveNilaiNormalLaboratorium() {
     yield takeEvery(SAVE_NILAINORMAL_LABORATORIUM, onSaveNilaiNormalLaboratorium);
 }
 
+function* onsaveMasterKelUmurLaboratorium({ payload: { data, history } }) {
+    try {
+        let response = yield call(serviceLaboratorium.saveMasterKelUmurLaboratorium, data);
+
+
+        yield put(saveMasterKelUmurLaboratoriumSuccess(response.data));
+        if (response.code === 200) {
+            toast.success(response.msg, { autoClose: 3000 });
+        } else {
+            toast.error(response.msg, { autoClose: 3000 });
+        }
+    } catch (error) {
+        console.log(error)
+        yield put(saveMasterKelUmurLaboratoriumError(error));
+        toast.error(error, { autoClose: 3000 });
+    }
+}
+
+export function* watchonsaveMasterKelUmurLaboratorium() {
+    yield takeEvery(SAVE_MASTER_KEL_UMUR_LABORATORIUM, onsaveMasterKelUmurLaboratorium);
+}
+
+function* onlistDetailKelUmurGet({ payload: { param } }) {
+    try {
+        const response = yield call(serviceLaboratorium.getListDetailKelompokUmur, param);
+        yield put(listDetailKelUmurGetSuccess(response.data));
+    } catch (error) {
+        yield put(listDetailKelUmurGetError(error));
+    }
+}
+
+export function* watchonlistDetailKelUmurGet() {
+    yield takeEvery(LIST_DETAIL_KEL_UMUR_LABORATORIUM_GET, onlistDetailKelUmurGet);
+}
+
+
 function* laboratoriumSaga() {
     yield all([
         fork(watchonwidgetDetailJenisProdukGet),
@@ -274,7 +314,9 @@ function* laboratoriumSaga() {
         fork(watchonListPelayananLaboratoriumGet),
         fork(watchonmasterPelayananLaboratoriumGet),
         fork(watchoncomboLaboratoriumGet),
-        fork(watchonSaveNilaiNormalLaboratorium)
+        fork(watchonSaveNilaiNormalLaboratorium),
+        fork(watchonsaveMasterKelUmurLaboratorium),
+        fork(watchonlistDetailKelUmurGet),
     ]);
 }
 
