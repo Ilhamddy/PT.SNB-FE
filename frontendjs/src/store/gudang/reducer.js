@@ -24,6 +24,12 @@ import {
     KEMASAN_SAVE_OR_UPDATE,
     KEMASAN_SAVE_OR_UPDATE_SUCCESS,
     KEMASAN_SAVE_OR_UPDATE_ERROR,
+    PRODUK_MASTER_GET,
+    PRODUK_MASTER_GET_SUCCESS,
+    PRODUK_MASTER_GET_ERROR,
+    PRODUK_EDIT_GET,
+    PRODUK_EDIT_GET_SUCCESS,
+    PRODUK_EDIT_GET_ERROR,
 } from "./actionType";
 
 const INIT_STATE = {
@@ -63,6 +69,16 @@ const INIT_STATE = {
         error: null,
     },
     kemasanSaveOrUpdate: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    produkMasterGet: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    produkEditGet: {
         data: [],
         loading: false,
         error: null,
@@ -365,6 +381,79 @@ const Registrasi = (state = INIT_STATE, action) => {
                 }
             }
         }
+
+        case PRODUK_MASTER_GET: {
+            return {
+                ...state,
+                produkMasterGet: {
+                    ...state.produkMasterGet,
+                    loading: true,
+                    data: [],
+                    error: null
+                }
+            }
+        }
+
+        case PRODUK_MASTER_GET_SUCCESS: {
+            return {
+                ...state,
+                produkMasterGet: {
+                    ...state.produkMasterGet,
+                    loading: false,
+                    data: action.payload.data,
+                    error: null
+                }
+            }
+        }
+
+        case PRODUK_MASTER_GET_ERROR: {
+            return {
+                ...state,
+                produkMasterGet: {
+                    ...state.produkMasterGet,
+                    loading: false,
+                    data: [],
+                    error: action.payload.data
+                }
+            }
+        }
+
+        case PRODUK_EDIT_GET: {
+            return {
+                ...state,
+                produkEditGet: {
+                    ...state.produkEditGet,
+                    loading: true,
+                    data: [],
+                    error: null
+                }
+            }
+        }
+
+        case PRODUK_EDIT_GET_SUCCESS: {
+            return {
+                ...state,
+                produkEditGet: {
+                    ...state.produkEditGet,
+                    loading: false,
+                    data: action.payload.data,
+                    error: null
+                }
+            }
+        }
+
+        case PRODUK_EDIT_GET_ERROR: {
+            return {
+                ...state,
+                produkEditGet: {
+                    ...state.produkEditGet,
+                    loading: false,
+                    data: [],
+                    error: action.payload.data
+                }
+            }
+        }
+        
 
         default: {
             return { ...state };

@@ -2,7 +2,14 @@ import pool from "../../../config/dbcon.query";
 import * as uuid from 'uuid'
 import db from "../../../models";
 import { qGetJenisDetailProdukLainLain, 
-    qGetKemasan, qGetProduk, qGetSatuanLainLain, qGetSediaanLainLain,  } from "../../../queries/gudang/gudang.queries";
+    qGetKemasan, 
+    qGetProdukEdit, 
+    qGetProdukKonversi, 
+    qGetProdukKonversiFromId, 
+    qGetProdukMaster, 
+    qGetSatuanLainLain, 
+    qGetSediaanLainLain,  
+} from "../../../queries/gudang/gudang.queries";
 const m_produk = db.m_produk;
 const m_detailjenisproduk = db.m_detailjenisproduk;
 const m_sediaan = db.m_sediaan
@@ -10,7 +17,7 @@ const m_satuan = db.m_satuan
 const m_kemasanproduk = db.m_kemasanproduk
 
 
-const createProdukObat = async (req, res) => {
+const createOrUpdateProdukObat = async (req, res) => {
     let transaction = null;
     try{
         transaction = await db.sequelize.transaction();
@@ -27,34 +34,65 @@ const createProdukObat = async (req, res) => {
     try{
         const objectBody = req.body
 
-        const createdProduk = await m_produk.create({
-            kdprofile: 0,
-            statusenabled: true,
-            namaexternal: objectBody.namaproduk,
-            reportdisplay: objectBody.namaproduk,
-            objectdetailjenisprodukfk: objectBody.detailjenisproduk,
-            deskripsiproduk: objectBody.deskripsikandungan,
-            kekuatan: objectBody.kekuatan || null,
-            namaproduk: objectBody.namaproduk,
-            nilainormal: null,
-            objectsatuanstandarfk: objectBody.satuanjual || null,
-            objectsediaanfk: objectBody.sediaan || null,
-            keterangan: "" || null,
-            objectvariabelbpjsfk: objectBody.variabelbpjs || null,
-            isobat: objectBody.tipeproduk === 1,
-            isfornas: objectBody.isnasional,
-            isforrs: objectBody.isrs,
-            isbmhp: objectBody.tipeproduk === 2,
-            objectgolonganobatfk: objectBody.golonganobat || null,
-            isalkes: objectBody.tipeproduk === 3,
-            tglinput: new Date(),
-            tglupdate: new Date(),
-            objectpegawaiinputfk: req.userId,
-            objectpegawaiupdatefk: req.userId
-        }, { 
-            transaction: transaction 
-        });
-
+        let createdProduk
+        if(!objectBody.idproduk){
+            createdProduk = await m_produk.create({
+                kdprofile: 0,
+                statusenabled: true,
+                namaexternal: objectBody.namaproduk,
+                reportdisplay: objectBody.namaproduk,
+                objectdetailjenisprodukfk: objectBody.detailjenisproduk,
+                deskripsiproduk: objectBody.deskripsikandungan,
+                kekuatan: objectBody.kekuatan || null,
+                namaproduk: objectBody.namaproduk,
+                nilainormal: null,
+                objectsatuanstandarfk: objectBody.satuanjual || null,
+                objectsediaanfk: objectBody.sediaan || null,
+                keterangan: "" || null,
+                objectvariabelbpjsfk: objectBody.variabelbpjs || null,
+                isobat: objectBody.tipeproduk === 1,
+                isfornas: objectBody.isnasional,
+                isforrs: objectBody.isrs,
+                isbmhp: objectBody.tipeproduk === 2,
+                objectgolonganobatfk: objectBody.golonganobat || null,
+                isalkes: objectBody.tipeproduk === 3,
+                tglinput: new Date(),
+                tglupdate: new Date(),
+                objectpegawaiinputfk: req.userId,
+                objectpegawaiupdatefk: req.userId
+            }, { 
+                transaction: transaction 
+            });
+        }else{
+            createdProduk = await m_produk.update({
+                statusenabled: true,
+                namaexternal: objectBody.namaproduk,
+                reportdisplay: objectBody.namaproduk,
+                objectdetailjenisprodukfk: objectBody.detailjenisproduk,
+                deskripsiproduk: objectBody.deskripsikandungan,
+                kekuatan: objectBody.kekuatan || null,
+                namaproduk: objectBody.namaproduk,
+                nilainormal: null,
+                objectsatuanstandarfk: objectBody.satuanjual || null,
+                objectsediaanfk: objectBody.sediaan || null,
+                keterangan: "" || null,
+                objectvariabelbpjsfk: objectBody.variabelbpjs || null,
+                isobat: objectBody.tipeproduk === 1,
+                isfornas: objectBody.isnasional,
+                isforrs: objectBody.isrs,
+                isbmhp: objectBody.tipeproduk === 2,
+                objectgolonganobatfk: objectBody.golonganobat || null,
+                isalkes: objectBody.tipeproduk === 3,
+                tglupdate: new Date(),
+                objectpegawaiupdatefk: req.userId
+            }, {
+                where: {
+                    id: objectBody.idproduk
+                },
+                transaction: transaction
+            })
+        }
+        
         await transaction.commit();
 
         res.status(200).send({
@@ -335,7 +373,7 @@ const getLainLain = async (req, res) => {
 
 const getProdukKonversi = async (req, res) => {
     try{
-        const produk = (await pool.query(qGetProduk, [])).rows
+        const produk = (await pool.query(qGetProdukKonversi, [])).rows
         const tempres = {
             produk: produk
         }
@@ -364,8 +402,10 @@ const getKemasanKonversi = async (req, res) => {
         const idproduk = req.query.idproduk;
         if(!idproduk) throw Error("idproduk tidak boleh kosong")
         const kemasan = (await pool.query(qGetKemasan, [idproduk])).rows;
+        const produk = (await pool.query(qGetProdukKonversiFromId, [idproduk])).rows[0] || null;
         const tempres = {
-            kemasan: kemasan
+            kemasan: kemasan,
+            produk: produk
         }
         res.status(200).send({
             data: tempres,
@@ -455,13 +495,66 @@ const createOrUpdateKemasan = async (req, res) => {
     }
 }
 
+const getProdukMaster = async (req, res) => {
+    try{
+        let produk = (await pool.query(qGetProdukMaster, [])).rows
+        produk = produk.sort((a, b) => a.id - b.id)
+        const tempres = {
+            produk: produk
+        }
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+            msg: 'Get produk master Berhasil',
+            code: 200
+        });
+    }catch(e){
+        console.error(e)
+        res.status(500).send({
+            data: e.message,
+            success: false,
+            msg: 'Transaksi gagal',
+            code: 500
+        });
+    }
+}
+
+const getProdukEdit = async (req, res) => {
+    try{
+        const produkid = req.query.produkid
+        if(!produkid) throw Error("Produk id tidak boleh kosong")
+        let produk = (await pool.query(qGetProdukEdit, [produkid])).rows
+        const tempres = {
+            produk: produk[0] || null
+        }
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+            msg: 'Get produk edit Berhasil',
+            code: 200
+        });
+    } catch(e){
+        console.error(e)
+        res.status(500).send({
+            data: e.message,
+            success: false,
+            msg: 'get produk gagal',
+            code: 500
+        });
+    }
+}
+
 export default {
-    createProdukObat,
+    createOrUpdateProdukObat,
     getLainLain,
     createOrUpdateDetailProduk,
     createOrUpdateSediaan,
     createOrUpdateSatuan,
     getProdukKonversi,
     getKemasanKonversi,
-    createOrUpdateKemasan
+    createOrUpdateKemasan,
+    getProdukMaster,
+    getProdukEdit
 }

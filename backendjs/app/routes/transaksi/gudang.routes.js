@@ -11,9 +11,9 @@ export default function (app) {
     });
 
     app.post(
-        "/api/transaksi/gudang/tambah-produk",
+        "/api/transaksi/gudang/tambah-or-edit-produk",
         [authJwt.verifyToken],
-        controller.createProdukObat
+        controller.createOrUpdateDetailProduk
     );
 
     app.get(
@@ -56,5 +56,17 @@ export default function (app) {
         "/api/transaksi/gudang/create-or-update-kemasan",
         [authJwt.verifyToken],
         controller.createOrUpdateKemasan
+    )
+
+    app.get(
+        "/api/transaksi/gudang/get-produk",
+        [authJwt.verifyToken],
+        controller.getProdukMaster
+    )
+
+    app.get(
+        "/api/transaksi/gudang/get-produk-edit",
+        [authJwt.verifyToken],
+        controller.getProdukEdit
     )
 }

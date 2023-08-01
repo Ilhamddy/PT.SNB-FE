@@ -79,7 +79,7 @@ const DaftarTagihanPasien = () => {
             cell: (row) => {
                 return (
                     <div className="hstack gap-3 flex-wrap">
-                        <UncontrolledTooltip placement="top" target="tooltipTop2" > Pengkajian Pasien </UncontrolledTooltip>
+                        <UncontrolledTooltip placement="top" target="tooltipTop2" > Detail Tagihan </UncontrolledTooltip>
                         <UncontrolledDropdown className="dropdown d-inline-block">
                             <DropdownToggle className="btn btn-soft-secondary btn-sm" tag="button" id="tooltipTop2">
                                 <i className="ri-apps-2-line"></i>

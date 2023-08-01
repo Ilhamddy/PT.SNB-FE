@@ -275,12 +275,14 @@ import Satuan from "../pages/Laboratorium/SettingLayananLab/Satuan";
 import KlaimInacbg from "../pages/Casemix/KlaimInacbg/KlaimInacbg";
 import DaftarPiutangPasien from "../pages/DaftarPiutangPasien/DaftarPiutangPasien";
 import BayarPiutang from "../pages/BayarPiutang/BayarPiutang";
-import SettingProduk from "../pages/SettingProduk/SettingProduk";
 
 // payment
 import VerifikasiPelayanan from "../pages/VerifikasiPelayanan/VerifikasiPelayanan";
 import DaftarTagihanPasien from "../pages/DaftarTagihanPasien/DaftarTagihanPasien";
 import Bayar from "../pages/Bayar/Bayar";
+
+import SettingProduk from "../pages/Produk/SettingProduk";
+import ListProduk from "../pages/Produk/ListProduk";
 
 
 
@@ -538,7 +540,9 @@ const authProtectedRoutes = [
   { path: "/casemix/klaiminacbg", component: <KlaimInacbg /> },
 
   // farmasi
+  { path: "/farmasi/gudang/setting-produk/:tabopen/:paramobat", component: <SettingProduk /> },
   { path: "/farmasi/gudang/setting-produk/:tabopen", component: <SettingProduk /> },
+  { path: "/farmasi/gudang/list-produk", component: <ListProduk /> }
 
 ];
 

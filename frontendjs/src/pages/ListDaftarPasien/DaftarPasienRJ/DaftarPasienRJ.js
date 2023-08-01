@@ -104,7 +104,14 @@ const DaftarPasienRJ = () => {
                     <div className="hstack gap-3 flex-wrap">
                         {data.objectstatuskendalirmfkap === 1 ? (
                             <>
-                                <Link to="#" onClick={() => { clickCheckBox(data) }} className="text-danger fs-15" id="tooltipTopDokumen"><i className="bx bx-check-circle"></i></Link>
+                                <Link 
+                                    to="#" 
+                                    onClick={() => { clickCheckBox(data) }} 
+                                    className="text-danger fs-15" 
+                                    id="tooltipTopDokumen">
+                                    <i className="bx bx-check-circle">
+                                    </i>
+                                </Link>
                                 <UncontrolledTooltip placement="top" target="tooltipTopDokumen" > Belum Diterima </UncontrolledTooltip>
 
                             </>

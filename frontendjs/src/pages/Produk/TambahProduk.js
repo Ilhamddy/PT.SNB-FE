@@ -10,7 +10,7 @@ import CustomSelect from "../Select/Select";
 import { useDispatch, useSelector } from "react-redux";
 import { comboSettingProdukGet } from "../../store/master/action";
 import {
-    obatGudangSave, 
+    obatGudangSave, produkEditGet, 
 } from "../../store/gudang/action";
 import DataTable from "react-data-table-component";
 import { KonversiProduk } from "./KonversiProduk";
@@ -20,17 +20,23 @@ const linkSettingProduk = "/farmasi/gudang/setting-produk"
 
 const TambahProduk = ({tabId}) => {
     const dispatch = useDispatch();
+    const {paramobat} = useParams();
+
 
     const {
-        comboSettingProduk
+        comboSettingProduk,
+        produkEditData
     } = useSelector(state => ({
-        comboSettingProduk: state.Master.comboSettingProdukGet.data
+        comboSettingProduk: state.Master.comboSettingProdukGet.data,
+        produkEditData: state.Gudang.produkEditGet
     }))
 
+    
     const navigate = useNavigate();
     const validation = useFormik({
         enableReinitialize: true,
         initialValues: {
+            idproduk: "",
             tipeproduk: -1,
             namaproduk: "",
             deskripsikandungan: "",
@@ -73,6 +79,33 @@ const TambahProduk = ({tabId}) => {
             label: "Alkes"
         },
     ]
+
+    useEffect(() => {
+        if(!produkEditData.data || Array.isArray(produkEditData.data)) return;
+        const produk = produkEditData.data.produk
+        const tipeproduk = produkEditData.data.isalkes ? 3 
+            : produk.isbmhp ? 2 
+            : produk.isobat ? 1 
+            : -1
+        const setFF = validation.setFieldValue
+        setFF('idproduk', produk.id)
+        setFF('tipeproduk', tipeproduk)
+        setFF('namaproduk', produk.namaproduk)
+        setFF('deskripsikandungan', produk.deskripsiproduk)
+        setFF('kekuatan', produk.kekuatan)
+        setFF('sediaan', produk.objectsediaanfk)
+        setFF('golonganobat', produk.objectgolonganobatfk)
+        setFF('detailjenisproduk', produk.objectdetailjenisprodukfk)
+        setFF('variabelbpjs', produk.objectvariabelbpjsfk)
+        setFF('satuanjual', produk.objectsatuanstandarfk)
+        setFF('isnasional', produk.isfornas)
+        setFF('isrs', produk.isforrs)
+    }, [produkEditData.data, comboSettingProduk, validation.setFieldValue])
+
+    useEffect(() => {
+        paramobat &&
+            dispatch(produkEditGet({produkid: paramobat}))
+    }, [paramobat, dispatch])
 
     return (
         <TabPane tabId={tabId} id="home2">
@@ -426,7 +459,7 @@ const TambahProduk = ({tabId}) => {
                 <Row>
                     <div className="d-flex gap-2 justify-content-center mt-4 mb-2">
                         <Button type="submit" color="info" placement="top" id="tooltipTop" >
-                            Simpan
+                            {validation.values.idproduk ? "Edit" : "Tambah"}
                         </Button>
                     </div>
                 </Row>

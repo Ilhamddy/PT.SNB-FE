@@ -19,26 +19,30 @@ import DataTable from "react-data-table-component";
 import { kemasanSaveOrUpdate, konversiKemasanQueryGet, konversiProdukQueryGet } from "../../store/gudang/action";
 import { useFormik } from "formik";
 import * as Yup from "yup"
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { rgxAllPeriods, rgxValidNumber } from "../../utils/regexcommon.js";
 import { onChangeStrNbr } from "../../utils/format";
 
 const KonversiProduk = ({tabId}) => {
+    const {paramobat} = useParams();
     const dispatch = useDispatch();
     const refQSearch = useRef("");
     const refKemasan = useRef(null);
+    const navigate = useNavigate();
 
     const { 
         listProduk,
         comboSettingProduk,
         satuanProduk,
-        kemasanTerpilih
+        produkTerpilih
     } = useSelector(state => ({
         listProduk: state.Gudang.konversiProdukQueryGet.data?.produk || [],
         comboSettingProduk: state.Master.comboSettingProdukGet.data?.satuan || [],
         satuanProduk: state.Master.comboSettingProdukGet.data?.satuanproduk || [],
-        kemasanTerpilih: state.Gudang.konversiKemasanQueryGet
+        produkTerpilih: state.Gudang.konversiKemasanQueryGet
     }));
+
+
 
 
     const validation = useFormik({
@@ -75,12 +79,22 @@ const KonversiProduk = ({tabId}) => {
         dispatch(konversiProdukQueryGet({ qsearch: refQSearch.current }))
     }, [dispatch])
 
-    const handlePilihProduk = (row) => {
-        validation.setFieldValue("idproduk", row.id);
-        validation.setFieldValue("namaproduk", row.namaproduk);
-        validation.setFieldValue("satuanjual", row.idsatuan);
-        dispatch(konversiKemasanQueryGet({ idproduk: row.id }))
-    }
+
+    useEffect(() => {
+        paramobat && dispatch(konversiKemasanQueryGet({ idproduk: paramobat }))
+    }, [dispatch, paramobat])
+
+    useEffect(() => {
+        const produk = produkTerpilih.data?.produk
+        if (!produk) return;
+        const setFF = validation.setFieldValue
+        setFF("idproduk", produk.id);
+        setFF("namaproduk", produk.namaproduk);
+        setFF("satuanjual", produk.idsatuan);
+    }, [
+        produkTerpilih.data?.produk,
+        validation.setFieldValue
+    ])
 
     /**
      * @type {import("react-data-table-component").TableColumn[]}
@@ -107,7 +121,7 @@ const KonversiProduk = ({tabId}) => {
                     <Link
                         className="lain-edit-2-line"
                         id={`edit-konv-produk-${index}`}
-                        onClick={() => handlePilihProduk(row)}
+                        to={`/farmasi/gudang/setting-produk/konversi-produk/${row.id}`}
                         >
                             {row.namaproduk}
                     </Link>
@@ -217,8 +231,8 @@ const KonversiProduk = ({tabId}) => {
                                 pagination
                                 paginationPerPage={5}
                                 paginationRowsPerPageOptions={[5]}
-                                data={kemasanTerpilih.data?.kemasan || []}
-                                progressPending={kemasanTerpilih.loading || false}
+                                data={produkTerpilih.data?.kemasan || []}
+                                progressPending={produkTerpilih.loading || false}
                                 customStyles={tableCustomStyles}
                                 
                             />
