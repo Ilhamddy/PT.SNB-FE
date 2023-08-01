@@ -21,8 +21,9 @@ import DataTable from 'react-data-table-component';
 import {
     listDetailKelUmurGet
 } from '../../../store/actions';
+import usePageState from "../../../utils/usePageState";
 
-const DetailKelompokUmur = ({idkelompokumur}) => {
+const DetailKelompokUmur = () => {
     const dispatch = useDispatch();
     const history = useNavigate();
 
@@ -111,6 +112,8 @@ const DetailKelompokUmur = ({idkelompokumur}) => {
     // useEffect(() => {
     //     dispatch(comboLaboratoriumGet(''));
     // }, [dispatch])
+    const [sSettingLayLab, setSSettingLayLab] = usePageState("SETTING_LAYANAN_LAB")
+
     return (
         <React.Fragment>
             <Form
@@ -127,7 +130,7 @@ const DetailKelompokUmur = ({idkelompokumur}) => {
                             <Col lg={12}>
                                 <Row>
                                     <Col lg={3} style={{ textAlign: 'left' }}>
-                                        <Label style={{ color: "black" }} htmlFor="kelompokumur" className="form-label">{idkelompokumur} Detail Kelompok Umur</Label>
+                                        <Label style={{ color: "black" }} htmlFor="kelompokumur" className="form-label">{sSettingLayLab.idkelumur} Detail Kelompok Umur</Label>
                                     </Col>
                                     <Col lg={3} className="mb-2">
                                         <Input

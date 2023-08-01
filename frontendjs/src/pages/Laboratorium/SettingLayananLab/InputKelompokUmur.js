@@ -22,6 +22,7 @@ import {
     saveMasterKelUmurLaboratorium, comboLaboratoriumGet
 } from '../../../store/actions';
 
+import usePageState from "../../../utils/usePageState";
 
 const InputKelompokUmur = () => {
     const dispatch = useDispatch();
@@ -112,10 +113,13 @@ const InputKelompokUmur = () => {
     useEffect(() => {
         dispatch(comboLaboratoriumGet(''));
     }, [dispatch])
-    const [idkelompokumur, setidkelompokumur] = useState(1);
+    const [sSettingLayLab, setSSettingLayLab] = usePageState("SETTING_LAYANAN_LAB")
     const handleClickSelected = (row) => {
-        setidkelompokumur(row.value)
+        setSSettingLayLab("idkelumur", row.value)
     };
+
+    
+
     return (
         <React.Fragment>
             <Form
