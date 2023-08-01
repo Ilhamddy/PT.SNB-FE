@@ -38,7 +38,13 @@ import {
     COMBO_LABORATORIUM_GET_ERROR,
     SAVE_NILAINORMAL_LABORATORIUM,
     SAVE_NILAINORMAL_LABORATORIUM_SUCCESS,
-    SAVE_NILAINORMAL_LABORATORIUM_ERROR
+    SAVE_NILAINORMAL_LABORATORIUM_ERROR,
+    SAVE_MASTER_KEL_UMUR_LABORATORIUM,
+    SAVE_MASTER_KEL_UMUR_LABORATORIUM_SUCCESS,
+    SAVE_MASTER_KEL_UMUR_LABORATORIUM_ERROR,
+    LIST_DETAIL_KEL_UMUR_LABORATORIUM_GET,
+    LIST_DETAIL_KEL_UMUR_LABORATORIUM_GET_SUCCESS,
+    LIST_DETAIL_KEL_UMUR_LABORATORIUM_GET_ERROR,
 } from "./actionType";
 
 export const laboratoriumResetForm = () => ({
@@ -240,3 +246,35 @@ export const saveNilaiNormalLaboratoriumError = (error) => ({
     type: SAVE_NILAINORMAL_LABORATORIUM_ERROR,
     payload: error,
 });
+
+export const saveMasterKelUmurLaboratorium = (data, history) => ({
+    type: SAVE_MASTER_KEL_UMUR_LABORATORIUM,
+    payload: { data, history },
+});
+// common error
+export const saveMasterKelUmurLaboratoriumSuccess = (data, history) => ({
+    type: SAVE_MASTER_KEL_UMUR_LABORATORIUM_SUCCESS,
+    payload: { data, history },
+});
+
+export const saveMasterKelUmurLaboratoriumError = (error) => ({
+    type: SAVE_MASTER_KEL_UMUR_LABORATORIUM_ERROR,
+    payload: error,
+});
+
+export const listDetailKelUmurGet = (param) => ({
+    type: LIST_DETAIL_KEL_UMUR_LABORATORIUM_GET,
+    payload: { param },
+});
+
+export const listDetailKelUmurGetSuccess = (data) => ({
+    type: LIST_DETAIL_KEL_UMUR_LABORATORIUM_GET_SUCCESS,
+    payload: data,
+});
+
+export const listDetailKelUmurGetError = (error) => ({
+    type: LIST_DETAIL_KEL_UMUR_LABORATORIUM_GET_ERROR,
+    payload: error,
+});
+
+

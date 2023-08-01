@@ -39,7 +39,13 @@ import {
     COMBO_LABORATORIUM_GET_ERROR,
     SAVE_NILAINORMAL_LABORATORIUM,
     SAVE_NILAINORMAL_LABORATORIUM_SUCCESS,
-    SAVE_NILAINORMAL_LABORATORIUM_ERROR
+    SAVE_NILAINORMAL_LABORATORIUM_ERROR,
+    SAVE_MASTER_KEL_UMUR_LABORATORIUM,
+    SAVE_MASTER_KEL_UMUR_LABORATORIUM_SUCCESS,
+    SAVE_MASTER_KEL_UMUR_LABORATORIUM_ERROR,
+    LIST_DETAIL_KEL_UMUR_LABORATORIUM_GET,
+    LIST_DETAIL_KEL_UMUR_LABORATORIUM_GET_SUCCESS,
+    LIST_DETAIL_KEL_UMUR_LABORATORIUM_GET_ERROR,
 } from "./actionType";
 
 const INIT_STATE = {
@@ -112,6 +118,17 @@ const INIT_STATE = {
         error: null,
         success: false
     },
+    saveMasterKelUmurLaboratorium:{
+        newData: null,
+        loading: false,
+        error: null,
+        success: false
+    },
+    listDetailKelUmurGet:{
+        data:[],
+        loading: false,
+        error: null, 
+    },
 }
 
 const Laboratorium = (state = INIT_STATE, action) => {
@@ -157,7 +174,13 @@ const Laboratorium = (state = INIT_STATE, action) => {
                 },
                 saveNilaiNormalLaboratorium:{
                     ...INIT_STATE.saveNilaiNormalLaboratorium
-                }
+                },
+                saveMasterKelUmurLaboratorium:{
+                    ...INIT_STATE.saveMasterKelUmurLaboratorium
+                },
+                listDetailKelUmurGet:{
+                    ...INIT_STATE.listDetailKelUmurGet
+                },
             }
         }
 
@@ -593,6 +616,75 @@ const Laboratorium = (state = INIT_STATE, action) => {
                 }
             }
         }
+
+        case SAVE_MASTER_KEL_UMUR_LABORATORIUM: {
+            return {
+                ...state,
+                saveMasterKelUmurLaboratorium: {
+                    ...state.saveMasterKelUmurLaboratorium,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case SAVE_MASTER_KEL_UMUR_LABORATORIUM_SUCCESS: {
+            return {
+                ...state,
+                saveMasterKelUmurLaboratorium: {
+                    ...state.saveMasterKelUmurLaboratorium,
+                    newData: action.payload,
+                    loading: false,
+                    success: true,
+                }
+            }
+        }
+
+        case SAVE_MASTER_KEL_UMUR_LABORATORIUM_ERROR: {
+            return {
+                ...state,
+                saveMasterKelUmurLaboratorium: {
+                    ...state.saveMasterKelUmurLaboratorium,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case LIST_DETAIL_KEL_UMUR_LABORATORIUM_GET: {
+            return {
+                ...state,
+                listDetailKelUmurGet: {
+                    ...state.listDetailKelUmurGet,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case LIST_DETAIL_KEL_UMUR_LABORATORIUM_GET_SUCCESS: {
+            return {
+                ...state,
+                listDetailKelUmurGet: {
+                    ...state.listDetailKelUmurGet,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case LIST_DETAIL_KEL_UMUR_LABORATORIUM_GET_ERROR: {
+            return {
+                ...state,
+                listDetailKelUmurGet: {
+                    ...state.listDetailKelUmurGet,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        
 
 
         default: {
