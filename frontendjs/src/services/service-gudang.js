@@ -4,7 +4,7 @@ const api = new APIClient();
 
 export default class ServiceGudang {
     saveObatGudang = async (body) => {
-        return await api.create(`/transaksi/gudang/tambah-produk`, body);
+        return await api.create(`/transaksi/gudang/tambah-or-edit-produk`, body);
     }
 
     getLainLain = async () => {
@@ -33,5 +33,13 @@ export default class ServiceGudang {
 
     saveOrEditKemasan = async (body) => {
         return await api.create(`/transaksi/gudang/create-or-update-kemasan`, body)
+    }
+
+    getProdukMaster = async (queries) => {
+        return await api.get(`/transaksi/gudang/get-produk`, queries)
+    }
+
+    getProdukEdit = async (queries) => {
+        return await api.get(`/transaksi/gudang/get-produk-edit`, queries)
     }
 }

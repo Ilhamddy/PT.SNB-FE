@@ -77,7 +77,6 @@ const SettingProduk = () => {
                             </TabContent>
                         </CardBody>
                     </Card>
-                    
             </Container>
         </div>
     )

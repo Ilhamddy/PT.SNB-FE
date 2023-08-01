@@ -507,9 +507,9 @@ const Navdata = () => {
             },
             subItems: [
                 {
-                    id: "setting-produk",
-                    label: "Setting Produk",
-                    link: "/farmasi/gudang/setting-produk/tambah",
+                    id: "Produk",
+                    label: "Produk",
+                    link: "/farmasi/gudang/list-produk",
                     parentId: "gudang",
                     isAllowed: () => {
                         return isAllowedAccess(getUserPermissions(), [

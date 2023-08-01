@@ -17,7 +17,11 @@ import {
     konversiKemasanQueryGetError,
     konversiKemasanQueryGetSuccess,
     kemasanSaveOrUpdateError,
-    kemasanSaveOrUpdateSuccess
+    kemasanSaveOrUpdateSuccess,
+    produkMasterGetError,
+    produkMasterGetSuccess,
+    produkEditGetError,
+    produkEditGetSuccess
 } from "./action";
 
 
@@ -31,7 +35,9 @@ import {
     SATUAN_SAVE_OR_UPDATE,
     KONVERSI_PRODUK_QUERY_GET,
     KONVERSI_KEMASAN_QUERY_GET,
-    KEMASAN_SAVE_OR_UPDATE
+    KEMASAN_SAVE_OR_UPDATE,
+    PRODUK_MASTER_GET,
+    PRODUK_EDIT_GET
 } from "./actionType";
 
 const serviceGudang = new ServiceGudang();
@@ -68,7 +74,6 @@ function* onDetailProdukSaveOrUpdate({payload: { data, callback }}){
         console.error(error);
         yield put(detailProdukSaveOrUpdateError(error));
         toast.error(error?.response?.msg || "Gagal save or update detail produk", { autoClose: 3000 });
-
     }
 }
 
@@ -132,6 +137,26 @@ function* onSaveOrUpdateKemasan({payload: { data, callback }}){
     }
 }
 
+function* onProdukMasterGet({payload: { queries }}){
+    try {
+        let response = yield call(serviceGudang.getProdukMaster, queries);
+        yield put(produkMasterGetSuccess(response.data));
+    } catch (error) {
+        console.error(error);
+        yield put(produkMasterGetError(error));
+    }
+}
+
+function* onProdukEditGet({payload: {queries}}){
+    try {
+        let response = yield call(serviceGudang.getProdukEdit, queries);
+        yield put(produkEditGetSuccess(response.data));
+    } catch (error) {
+        console.error(error);
+        yield put(produkEditGetError(error));
+    }
+}
+
 export function* watchSaveObatGudang() {
     yield takeEvery(OBAT_GUDANG_SAVE, onSaveObatGudang);
 }
@@ -164,6 +189,14 @@ export function* watchSaveOrUpdateKemasan(){
     yield takeEvery(KEMASAN_SAVE_OR_UPDATE, onSaveOrUpdateKemasan);
 }
 
+export function* watchProdukMasterGet(){
+    yield takeEvery(PRODUK_MASTER_GET, onProdukMasterGet);
+}
+
+export function* watchProdukEditGet(){
+    yield takeEvery(PRODUK_EDIT_GET, onProdukEditGet);
+}
+
 function* registrasiSaga() {
     yield all([
         fork(watchSaveObatGudang),
@@ -173,7 +206,9 @@ function* registrasiSaga() {
         fork(watchSatuanSaveOrUpdate),
         fork(watchProdukKonversiQueryGet),
         fork(watchKemasanKonversiQueryGet),
-        fork(watchSaveOrUpdateKemasan)
+        fork(watchSaveOrUpdateKemasan),
+        fork(watchProdukMasterGet),
+        fork(watchProdukEditGet)
     ]);
 }
 

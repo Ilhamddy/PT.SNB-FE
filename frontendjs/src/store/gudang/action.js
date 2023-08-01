@@ -23,6 +23,12 @@ import {
     KEMASAN_SAVE_OR_UPDATE,
     KEMASAN_SAVE_OR_UPDATE_SUCCESS,
     KEMASAN_SAVE_OR_UPDATE_ERROR,
+    PRODUK_MASTER_GET,
+    PRODUK_MASTER_GET_SUCCESS,
+    PRODUK_MASTER_GET_ERROR,
+    PRODUK_EDIT_GET,
+    PRODUK_EDIT_GET_SUCCESS,
+    PRODUK_EDIT_GET_ERROR,
 } from "./actionType";
 
 
@@ -146,4 +152,32 @@ export const kemasanSaveOrUpdateError = (data) => ({
     payload: { data: data },
 })
 
+export const produkMasterGet = (queries) => ({
+    type: PRODUK_MASTER_GET,
+    payload: { queries: queries },
+})
 
+export const produkMasterGetSuccess = (data) => ({
+    type: PRODUK_MASTER_GET_SUCCESS,
+    payload: { data: data },
+})
+
+export const produkMasterGetError = (data) => ({
+    type: PRODUK_MASTER_GET_ERROR,
+    payload: { data: data },
+})
+
+export const produkEditGet = (queries) => ({
+    type: PRODUK_EDIT_GET,
+    payload: { queries: queries },
+})
+
+export const produkEditGetSuccess = (data) => ({
+    type: PRODUK_EDIT_GET_SUCCESS,
+    payload: { data: data },
+})
+
+export const produkEditGetError = (data) => ({
+    type: PRODUK_EDIT_GET_ERROR,
+    payload: { data: data },
+})
