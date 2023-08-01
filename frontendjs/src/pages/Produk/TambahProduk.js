@@ -103,8 +103,11 @@ const TambahProduk = ({tabId}) => {
     }, [produkEditData.data, comboSettingProduk, validation.setFieldValue])
 
     useEffect(() => {
-        paramobat &&
+        if(paramobat){
             dispatch(produkEditGet({produkid: paramobat}))
+        }else{
+            validation.resetForm();
+        }
     }, [paramobat, dispatch])
 
     return (
