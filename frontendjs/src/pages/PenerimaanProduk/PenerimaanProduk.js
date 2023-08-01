@@ -52,6 +52,8 @@ const PenerimaanProduk = () => {
             hargasatuanterima: "",
             diskonpersen: "",
             diskonrupiah: "",
+            ppnrupiah: "",
+            ppnpersen: "",
         },
         validationSchema: Yup.object({
             nomorterima: Yup.string().required("No Terima harus diisi"),
@@ -72,13 +74,13 @@ const PenerimaanProduk = () => {
             hargasatuanterima: Yup.string().required("Harga Satuan Terima harus diisi"),
             diskonpersen: Yup.string().required("Diskon Persen harus diisi"),
             diskonrupiah: Yup.string().required("Diskon Rupiah harus diisi"),
+            ppnrupiah: Yup.string().required("PPN Rupiah harus diisi"),
+            ppnpersen: Yup.string().required("PPN Persen harus diisi"),
         }),
         onSubmit: (values) => {
 
         }
     })
-
-    const [sPenerimaan, setSPenerimaan] = usePageState("SETTING_LAYANAN_LAB")
     
     return (
         <div className="page-content page-penerimaan-barang">
@@ -552,23 +554,23 @@ const PenerimaanProduk = () => {
                                 <Col lg={6}>
                                     <Label 
                                         style={{ color: "black" }} 
-                                        htmlFor={`hargasatuankecil`}
+                                        htmlFor={`diskonpersen`}
                                         className="form-label mt-2">
-                                        Harga Satuan Kecil
+                                        Diskon (%)
                                     </Label>
                                     <Input 
-                                        id={`hargasatuankecil`}
-                                        name={`hargasatuankecil`}
+                                        id={`diskonpersen`}
+                                        name={`diskonpersen`}
                                         type="text"
-                                        value={validation.values.hargasatuankecil} 
+                                        value={validation.values.diskonpersen} 
                                         onChange={validation.handleChange}
-                                        invalid={validation.touched.hargasatuankecil && !!validation.errors.hargasatuankecil}
+                                        invalid={validation.touched.diskonpersen && !!validation.errors.diskonpersen}
                                         />
-                                    {validation.touched.hargasatuankecil 
-                                        && !!validation.errors.hargasatuankecil && (
+                                    {validation.touched.diskonpersen 
+                                        && !!validation.errors.diskonpersen && (
                                         <FormFeedback type="invalid" >
                                             <div>
-                                                {validation.errors.hargasatuankecil}
+                                                {validation.errors.diskonpersen}
                                             </div>
                                         </FormFeedback>
                                     )}
@@ -576,23 +578,78 @@ const PenerimaanProduk = () => {
                                 <Col lg={6}>
                                     <Label 
                                         style={{ color: "black" }} 
-                                        htmlFor={`hargasatuanterima`}
+                                        htmlFor={`diskonrupiah`}
                                         className="form-label mt-2">
-                                        Harga Satuan Terima
+                                        Diskon (Rp)
                                     </Label>
                                     <Input 
-                                        id={`hargasatuanterima`}
-                                        name={`hargasatuanterima`}
+                                        id={`diskonrupiah`}
+                                        name={`diskonrupiah`}
                                         type="text"
-                                        value={validation.values.hargasatuanterima} 
+                                        value={validation.values.diskonrupiah} 
                                         onChange={validation.handleChange}
-                                        invalid={validation.touched.hargasatuanterima && !!validation.errors.hargasatuanterima}
+                                        invalid={validation.touched.diskonrupiah 
+                                            && !!validation.errors.diskonrupiah}
                                         />
-                                    {validation.touched.hargasatuanterima 
-                                        && !!validation.errors.hargasatuanterima && (
+                                    {validation.touched.diskonrupiah 
+                                        && !!validation.errors.diskonrupiah && (
                                         <FormFeedback type="invalid" >
                                             <div>
-                                                {validation.errors.hargasatuanterima}
+                                                {validation.errors.diskonrupiah }
+                                            </div>
+                                        </FormFeedback>
+                                    )}
+                                </Col>
+                            </Row>
+                        </Col>
+                        <Col lg={4}>
+                            <Row>
+                                <Col lg={6}>
+                                    <Label 
+                                        style={{ color: "black" }} 
+                                        htmlFor={`ppnpersen`}
+                                        className="form-label mt-2">
+                                        PPn (%)
+                                    </Label>
+                                    <Input 
+                                        id={`ppnpersen`}
+                                        name={`ppnpersen`}
+                                        type="text"
+                                        value={validation.values.ppnpersen} 
+                                        onChange={validation.handleChange}
+                                        invalid={validation.touched.ppnpersen 
+                                            && !!validation.errors.ppnpersen}
+                                        />
+                                    {validation.touched.ppnpersen 
+                                        && !!validation.errors.ppnpersen && (
+                                        <FormFeedback type="invalid" >
+                                            <div>
+                                                {validation.errors.ppnpersen}
+                                            </div>
+                                        </FormFeedback>
+                                    )}
+                                </Col>
+                                <Col lg={6}>
+                                    <Label 
+                                        style={{ color: "black" }} 
+                                        htmlFor={`ppnrupiah`}
+                                        className="form-label mt-2">
+                                        PPn (Rp)
+                                    </Label>
+                                    <Input 
+                                        id={`ppnrupiah`}
+                                        name={`ppnrupiah`}
+                                        type="text"
+                                        value={validation.values.ppnrupiah} 
+                                        onChange={validation.handleChange}
+                                        invalid={validation.touched.ppnrupiah 
+                                            && !!validation.errors.ppnrupiah}
+                                        />
+                                    {validation.touched.ppnrupiah 
+                                        && !!validation.errors.ppnrupiah && (
+                                        <FormFeedback type="invalid" >
+                                            <div>
+                                                {validation.errors.ppnrupiah }
                                             </div>
                                         </FormFeedback>
                                     )}
@@ -601,14 +658,6 @@ const PenerimaanProduk = () => {
                         </Col>
                     </Row>
                 </Card>
-                <Button onClick={() => {
-                    setSPenerimaan("stateButton", !sPenerimaan.stateButton)
-                }}>
-                    Button percobaan
-                </Button>
-                <div>
-                    {sPenerimaan.stateButton ? "true" : "false"}
-                </div>
             </Container>
         </div>
     )
