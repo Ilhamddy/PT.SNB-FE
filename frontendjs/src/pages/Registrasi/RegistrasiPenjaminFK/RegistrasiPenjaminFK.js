@@ -329,9 +329,7 @@ const RegistrasiPenjaminFK = () => {
     })
 
     const handleDateChange = (field, newBeginValue) => {
-        var dateString = new Date(newBeginValue.getTime() - (newBeginValue.getTimezoneOffset() * 60000))
-            .toISOString()
-            .split("T")[0];
+        var dateString = new Date().toISOString()
         validation.setFieldValue(field, dateString)
     }
 

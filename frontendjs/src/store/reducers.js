@@ -84,7 +84,8 @@ import Radiologi from "./radiologi/reducer";
 import Laboratorium from "./laboratorium/reducer";
 import Payment from "./payment/reducer";
 import Casemix from "./casemix/reducer";
-import Gudang from "./gudang/reducer"
+import Gudang from "./gudang/reducer";
+import PageState from "./pageState/reducer"
 
 
 const rootReducer = combineReducers({
@@ -125,7 +126,8 @@ const rootReducer = combineReducers({
     Laboratorium,
     Payment,
     Casemix,
-    Gudang
+    Gudang,
+    PageState   
 });
 
 export default rootReducer;
