@@ -602,7 +602,7 @@ const PenerimaanProduk = () => {
                     </Row>
                 </Card>
                 <Button onClick={() => {
-                    setSPenerimaan("stateButton", !!!sPenerimaan.stateButton)
+                    setSPenerimaan("stateButton", !sPenerimaan.stateButton)
                 }}>
                     Button percobaan
                 </Button>
