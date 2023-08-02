@@ -235,7 +235,7 @@ const PenerimaanProduk = () => {
             return newValDiskon
         }
 
-        const calculateTotal = (newValSubtotal, newValDiskon) => {
+        const calculateTotal = (newValSubtotal, newValDiskon, newValPpn) => {
             let newValTotal =
                 newValSubtotal -
                 newValDiskon
@@ -268,8 +268,8 @@ const PenerimaanProduk = () => {
         const newValTerima = calcualteSatuanTerima()
         const newValSubtotal = calculateSubtotal(newValTerima)
         const newValDiskon = calculateDiskon(newValSubtotal)
-        const newppn = calculatePpn(newValSubtotal)
-        calculateTotal(newValSubtotal, newValDiskon)
+        const newValPpn = calculatePpn(newValSubtotal)
+        calculateTotal(newValSubtotal, newValDiskon, newValPpn)
         
     }, [
         vProduk.values.hargasatuankecil, 
@@ -804,7 +804,7 @@ const PenerimaanProduk = () => {
                                 <Input 
                                     className="form-check-input" 
                                     type="radio" 
-                                    id={`radio-satuan-terima`}   
+                                    id={`radio-diskon-persen`}   
                                     checked={vProduk.values.checkeddiskon === "0"}
                                     onClick={e => { 
                                         vProduk.setFieldValue("checkeddiskon", "0")
