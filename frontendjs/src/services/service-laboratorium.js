@@ -62,4 +62,8 @@ export default class ServiceLaboratorium {
     getListDetailKelompokUmur = async (param) => {
         return await api.get(`/transaksi/laboratorium/list-detail-kel-umur?param=${param}`);
     }
+
+    saveMasterDKelUmurLaboratorium = async (params) => {
+        return await api.create("/transaksi/laboratorium/save-master-detail-kelompok-umur", params);
+    }
 }

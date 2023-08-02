@@ -101,4 +101,10 @@ export default function (app) {
         controller.getListDetailKelompokUmur
     );
 
+    app.post(
+        "/api/transaksi/laboratorium/save-master-detail-kelompok-umur",
+        [authJwt.verifyToken],
+        controller.saveMasterDetailKelompokUmur
+    );
+
 }

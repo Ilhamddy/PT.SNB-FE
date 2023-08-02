@@ -45,6 +45,9 @@ import {
     LIST_DETAIL_KEL_UMUR_LABORATORIUM_GET,
     LIST_DETAIL_KEL_UMUR_LABORATORIUM_GET_SUCCESS,
     LIST_DETAIL_KEL_UMUR_LABORATORIUM_GET_ERROR,
+    SAVE_MASTER_DKEL_UMUR_LABORATORIUM,
+    SAVE_MASTER_DKEL_UMUR_LABORATORIUM_SUCCESS,
+    SAVE_MASTER_DKEL_UMUR_LABORATORIUM_ERROR
 } from "./actionType";
 
 export const laboratoriumResetForm = () => ({
@@ -277,4 +280,17 @@ export const listDetailKelUmurGetError = (error) => ({
     payload: error,
 });
 
+export const saveMasterDKelUmurLaboratorium = (data, history) => ({
+    type: SAVE_MASTER_DKEL_UMUR_LABORATORIUM,
+    payload: { data, history },
+});
+// common error
+export const saveMasterDKelUmurLaboratoriumSuccess = (data, history) => ({
+    type: SAVE_MASTER_DKEL_UMUR_LABORATORIUM_SUCCESS,
+    payload: { data, history },
+});
 
+export const saveMasterDKelUmurLaboratoriumError = (error) => ({
+    type: SAVE_MASTER_DKEL_UMUR_LABORATORIUM_ERROR,
+    payload: error,
+});

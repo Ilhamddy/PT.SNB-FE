@@ -30,12 +30,8 @@ const InputKelompokUmur = () => {
 
     const refStatusEnabled = useRef(null);
     const listStatusEnabled = [
-        {
-            options: [
                 { label: "Aktif", value: 1 },
                 { label: "Non Aktif", value: 2 },
-            ],
-        },
     ];
     const { data, loading, error,
         newDataSave, loadingSave, successSave } = useSelector((state) => ({
@@ -99,7 +95,7 @@ const InputKelompokUmur = () => {
         {
             name: <span className='font-weight-bold fs-13'>Kelompok Umur</span>,
             // selector: row => row.label,
-            selector: row => (<button className="btn btn-sm btn-soft-info" onClick={() => handleClickSelected(row)}>{row.label}</button>),
+            selector: row => (<button type='button' className="btn btn-sm btn-soft-info" onClick={() => handleClickSelected(row)}>{row.label}</button>),
             sortable: true,
             width: "350px"
         },
@@ -116,6 +112,7 @@ const InputKelompokUmur = () => {
     const [sSettingLayLab, setSSettingLayLab] = usePageState("SETTING_LAYANAN_LAB")
     const handleClickSelected = (row) => {
         setSSettingLayLab("idkelumur", row.value)
+        setSSettingLayLab("labelkelumur", row.label)
     };
 
     

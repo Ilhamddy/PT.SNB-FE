@@ -19,34 +19,40 @@ import CustomSelect from '../../Select/Select';
 import withRouter from '../../../Components/Common/withRouter';
 import DataTable from 'react-data-table-component';
 import {
-    listDetailKelUmurGet
+    listDetailKelUmurGet, saveMasterDKelUmurLaboratorium
 } from '../../../store/actions';
 import usePageState from "../../../utils/usePageState";
-
 const DetailKelompokUmur = () => {
     const dispatch = useDispatch();
     const history = useNavigate();
-
+    const [sSettingLayLab, setSSettingLayLab] = usePageState("SETTING_LAYANAN_LAB")
     const { data, loading, error,
-        newDataSave, loadingSave, successSave,dataState } = useSelector((state) => ({
+        newDataSave, loadingSave, successSave, dataState } = useSelector((state) => ({
             data: state.Laboratorium.listDetailKelUmurGet.data,
             loading: state.Laboratorium.listDetailKelUmurGet.loading,
-            newDataSave: state.Laboratorium.saveMasterKelUmurLaboratorium.newData,
-            successSave: state.Laboratorium.saveMasterKelUmurLaboratorium.success,
-            loadingSave: state.Laboratorium.saveMasterKelUmurLaboratorium.loading,
+            newDataSave: state.Laboratorium.saveMasterDKelUmurLaboratorium.newData,
+            successSave: state.Laboratorium.saveMasterDKelUmurLaboratorium.success,
+            loadingSave: state.Laboratorium.saveMasterDKelUmurLaboratorium.loading,
         }));
     const validation = useFormik({
         enableReinitialize: true,
         initialValues: {
-            namakelompokumur: newDataSave?.namakelompokumur ?? '',
-            status_enabled: newDataSave?.status_enabled ?? '',
+            idkelumur: sSettingLayLab.idkelumur,
+            iddkelumur: '',
+            detailkelompokumur: newDataSave?.detailkelompokumur ?? '',
+            umurmin: newDataSave?.umurmin ?? '',
+            statusumur: newDataSave?.statusumur ?? '',
+            umurmax: newDataSave?.umurmax ?? '',
+            status:1
         },
         validationSchema: Yup.object({
-            namakelompokumur: Yup.string().required("Kelompok Umur Belum Diisi"),
-            status_enabled: Yup.string().required("Status Enabled Belum Diisi"),
+            detailkelompokumur: Yup.string().required("Detail Kelompok Umur Belum Diisi"),
+            umurmin: Yup.string().required("Umur Min Belum Diisi"),
+            statusumur: Yup.string().required("Status Umur Belum Diisi"),
+            umurmax: Yup.string().required("Umur Max Belum Diisi"),
         }),
         onSubmit: (values, { resetForm }) => {
-            // dispatch(saveMasterKelUmurLaboratorium(values, ''));
+            dispatch(saveMasterDKelUmurLaboratorium(values, ''));
             resetForm({ values: '' })
             handleClickReset()
         }
@@ -62,17 +68,28 @@ const DetailKelompokUmur = () => {
     }
 
     const handleClickReset = (e) => {
-        validation.setFieldValue('status_enabled', '')
-        validation.setFieldValue('namakelompokumur', '')
-        // refStatusEnabled.current?.clearValue();
+        validation.setFieldValue('detailkelompokumur', '')
+        validation.setFieldValue('umurmin', '')
+        validation.setFieldValue('statusumur', '')
+        validation.setFieldValue('umurmax', '')
+        validation.setFieldValue('iddkelumur', '')
+        refStatusUmur.current?.clearValue();
 
     };
-    useEffect(() => {
-        if (newDataSave !== null) {
-            // dispatch(comboLaboratoriumGet(''));
-        }
-    }, [newDataSave, dispatch])
-    // console.log(validation.errors)
+
+    const handleClickHapus = (e) => {
+        let tempValue = { 
+            idkelumur: validation.values.idkelumur, 
+            iddkelumur: validation.values.iddkelumur, 
+            detailkelompokumur:validation.values.detailkelompokumur, 
+            umurmin: validation.values.umurmin, 
+            statusumur: validation.values.statusumur, 
+            umurmax: validation.values.umurmax, 
+            status: 0 }
+        dispatch(saveMasterDKelUmurLaboratorium(tempValue, ''));
+    };
+
+    console.log(validation.errors)
     const tableCustomStyles = {
         headRow: {
             style: {
@@ -88,6 +105,7 @@ const DetailKelompokUmur = () => {
 
         }
     }
+
     const columns = [
 
         {
@@ -98,24 +116,71 @@ const DetailKelompokUmur = () => {
         },
         {
             name: <span className='font-weight-bold fs-13'>Kelompok Umur</span>,
-            selector: row => row.label,
+            // selector: row => row.kelompokumur,
+            selector: row => (<button type='button' className="btn btn-sm btn-soft-info" onClick={() => handleClickSelected(row)}>{row.kelompokumur}</button>),
             sortable: true,
-            width: "350px"
+            width: "250px"
         },
         {
-            name: <span className='font-weight-bold fs-13'>Enabled</span>,
-            selector: row => row.status,
+            name: <span className='font-weight-bold fs-13'>Detail Kelompok Umur</span>,
+            selector: row => row.detailkelompokumur,
+            sortable: true,
+            width: "200px"
+        },
+        {
+            name: <span className='font-weight-bold fs-13'>Umur Min</span>,
+            selector: row => row.umurmin,
+            sortable: true,
+            width: "100px"
+        },
+        {
+            name: <span className='font-weight-bold fs-13'>Umur Max</span>,
+            selector: row => row.umurmax,
+            sortable: true,
+            width: "100px"
+        },
+        {
+            name: <span className='font-weight-bold fs-13'>Status</span>,
+            selector: row => row.statusumur,
             sortable: true,
             width: "100px"
         },
     ];
-    // useEffect(() => {
-    //     dispatch(comboLaboratoriumGet(''));
-    // }, [dispatch])
-    const [sSettingLayLab, setSSettingLayLab] = usePageState("SETTING_LAYANAN_LAB")
 
+
+    useEffect(() => {
+        if (sSettingLayLab.idkelumur !== undefined)
+            dispatch(listDetailKelUmurGet(sSettingLayLab.idkelumur));
+    }, [sSettingLayLab, dispatch])
+    const refStatusUmur = useRef(null);
+
+    const handleClickSelected = (row) => {
+        validation.setFieldValue('iddkelumur', row.id)
+        validation.setFieldValue('detailkelompokumur', row.detailkelompokumur)
+        validation.setFieldValue('umurmin', row.umurmin)
+        validation.setFieldValue('statusumur', row.statusumur)
+        validation.setFieldValue('umurmax', row.umurmax)
+
+    };
+
+    const listStatusUmur = [
+        { label: "Hari", value: 'H' },
+        { label: "Bulan", value: 'B' },
+        { label: "Tahun", value: 'T' },
+    ];
+
+
+    console.log(validation.values.statusumur)
+    useEffect(() => {
+        if (newDataSave !== null) {
+            dispatch(listDetailKelUmurGet(sSettingLayLab.idkelumur));
+        }
+    }, [newDataSave, sSettingLayLab, dispatch])
+
+    console.log(listStatusUmur)
     return (
         <React.Fragment>
+
             <Form
                 onSubmit={(e) => {
                     e.preventDefault();
@@ -126,11 +191,11 @@ const DetailKelompokUmur = () => {
                 action="#">
                 <Row>
                     <Col lg={12}>
-                        <Row>
+                        <Row className="gy-4">
                             <Col lg={12}>
                                 <Row>
                                     <Col lg={3} style={{ textAlign: 'left' }}>
-                                        <Label style={{ color: "black" }} htmlFor="kelompokumur" className="form-label">{sSettingLayLab.idkelumur} Detail Kelompok Umur</Label>
+                                        <Label style={{ color: "black" }} htmlFor="kelompokumur" className="form-label">Detail Kelompok Umur</Label>
                                     </Col>
                                     <Col lg={3} className="mb-2">
                                         <Input
@@ -173,17 +238,16 @@ const DetailKelompokUmur = () => {
                                         <Label style={{ color: "black" }} htmlFor="kelompokumur" className="form-label">Status Umur</Label>
                                     </Col>
                                     <Col lg={3} className="mb-2">
-                                        <Input
+                                        <CustomSelect
                                             id="statusumur"
                                             name="statusumur"
-                                            type="string"
-                                            placeholder="Masukkan Status Umur"
-                                            onChange={validation.handleChange}
-                                            onBlur={validation.handleBlur}
+                                            options={listStatusUmur}
                                             value={validation.values.statusumur || ""}
-                                            invalid={
-                                                validation.touched.statusumur && validation.errors.statusumur ? true : false
-                                            }
+                                            className={`input ${validation.errors.statusumur ? "is-invalid" : ""}`}
+                                            onChange={value => {
+                                                validation.setFieldValue('statusumur', value?.value || "")
+                                            }}
+                                            ref={refStatusUmur}
                                         />
                                         {validation.touched.statusumur && validation.errors.statusumur ? (
                                             <FormFeedback type="invalid"><div>{validation.errors.statusumur}</div></FormFeedback>
@@ -213,21 +277,28 @@ const DetailKelompokUmur = () => {
                             </Col>
                             <Col lg={6}>
                             </Col>
-                            <Col lg={2}>
-                                <Button type="submit" style={{ backgroundColor: '#192a56', textAlign: 'right' }} className="rounded-pill" placement="top">
-                                    Tambah
-                                </Button>
-                            </Col>
-                            <Col lg={2}>
-                                <Button type="button" color='danger' style={{ textAlign: 'right' }} className="rounded-pill" placement="top">
-                                    Batal
-                                </Button>
-                            </Col>
-                            <Col lg={2}>
-                                <Button type="button" color='danger' style={{ textAlign: 'right' }} className="rounded-pill" placement="top">
-                                    Hapus
-                                </Button>
-                            </Col>
+                            {sSettingLayLab.idkelumur ? (
+                                <>
+                                    <Col lg={2}>
+                                        <Button type="submit" style={{ backgroundColor: '#192a56', textAlign: 'right' }} className="rounded-pill" placement="top">
+                                            Simpan
+                                        </Button>
+                                    </Col>
+                                    <Col lg={2}>
+                                        <Button type="button" color='danger' style={{ textAlign: 'right' }} className="rounded-pill" placement="top"
+                                            onClick={() => handleClickReset()}>
+                                            Batal
+                                        </Button>
+                                    </Col>
+                                    <Col lg={2}>
+                                        <Button type="button" color='danger' style={{ textAlign: 'right' }} className="rounded-pill" placement="top"
+                                            onClick={() => handleClickHapus()}>
+                                            Hapus
+                                        </Button>
+                                    </Col>
+                                </>
+                            ) : null}
+
 
                             <Col lg={12}>
                                 <div id="table-gridjs">
@@ -236,7 +307,7 @@ const DetailKelompokUmur = () => {
                                         fixedHeaderScrollHeight="400px"
                                         columns={columns}
                                         pagination
-                                        // data={data}
+                                        data={data}
                                         progressPending={loading}
                                         customStyles={tableCustomStyles}
                                     />
@@ -249,5 +320,6 @@ const DetailKelompokUmur = () => {
         </React.Fragment>
     )
 }
+
 
 export default (DetailKelompokUmur)

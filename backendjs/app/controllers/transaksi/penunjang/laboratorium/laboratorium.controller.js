@@ -909,14 +909,14 @@ async function saveMasterKelompokUmur(req, res) {
     }
     try {
         let status = true
-        if(req.body.status_enabled===2)
+        if (req.body.status_enabled === 2)
             status = false
         const masterkelompokumur = await db.m_kelompokumur.create({
             statusenabled: status,
             kodeexternal: req.body.namakelompokumur,
             namaexternal: req.body.namakelompokumur,
             reportdisplay: req.body.namakelompokumur,
-            kelompokumur:req.body.namakelompokumur
+            kelompokumur: req.body.namakelompokumur
         }, {
             transaction: transaction
         })
@@ -949,8 +949,24 @@ async function getListDetailKelompokUmur(req, res) {
 
     try {
 
-        const resultlist = await queryPromise2(`SELECT id, kdprofile, statusenabled, kodeexternal, objectkelompokumurfk, reportdisplay, detailkelompokumur, statusumur, umurmin, umurmax
-        FROM m_detailkelompokumur`);
+        const resultlist = await queryPromise2(`select
+        row_number() over (
+        order by md.id) as no,
+        md.id,
+        md.kdprofile,
+        case when md.statusenabled=true then 'AKTIF' else 'NON AKTIF' end as status,
+        md.kodeexternal,
+        md.objectkelompokumurfk,
+        md.reportdisplay,
+        md.detailkelompokumur,
+        md.statusumur,
+        md.umurmin,
+        md.umurmax,
+        mk.kelompokumur 
+    from
+        m_detailkelompokumur md
+    join m_kelompokumur mk on mk.id=md.objectkelompokumurfk where md.objectkelompokumurfk=${req.query.param}
+    and md.statusenabled=true`);
 
         res.status(200).send({
             data: resultlist.rows,
@@ -960,6 +976,80 @@ async function getListDetailKelompokUmur(req, res) {
 
     } catch (error) {
         res.status(500).send({ message: error });
+    }
+
+}
+
+async function saveMasterDetailKelompokUmur(req, res) {
+    let transaction = null;
+    try {
+        transaction = await db.sequelize.transaction();
+    } catch (e) {
+        console.error(e)
+        res.status(201).send({
+            status: e.message,
+            success: false,
+            msg: 'Simpan Gagal',
+            code: 201
+        });
+    }
+    try {
+        let masterdetailkelompokumur = null
+        let status_enabled = true
+        if (req.body.status === 0)
+            status_enabled = false
+        if (req.body.iddkelumur === '') {
+            masterdetailkelompokumur = await db.m_detailkelompokumur.create({
+                statusenabled: true,
+                kodeexternal: req.body.detailkelompokumur,
+                objectkelompokumurfk: req.body.idkelumur,
+                reportdisplay: req.body.detailkelompokumur,
+                detailkelompokumur: req.body.detailkelompokumur,
+                statusumur: req.body.statusumur,
+                umurmin: req.body.umurmin,
+                umurmax: req.body.umurmax
+            }, {
+                transaction: transaction
+            })
+        } else {
+            masterdetailkelompokumur = await db.m_detailkelompokumur.update({
+                statusenabled: status_enabled,
+                kodeexternal: req.body.detailkelompokumur,
+                objectkelompokumurfk: req.body.idkelumur,
+                reportdisplay: req.body.detailkelompokumur,
+                detailkelompokumur: req.body.detailkelompokumur,
+                statusumur: req.body.statusumur,
+                umurmin: req.body.umurmin,
+                umurmax: req.body.umurmax
+            }, {
+                where: {
+                    id: req.body.iddkelumur
+                },
+                transaction: transaction
+            })
+        }
+
+
+
+        await transaction.commit();
+        let tempres = { masterdetailkelompokumur }
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+            msg: 'Berhasil',
+            code: 200
+        });
+
+    } catch (error) {
+        transaction && await transaction.rollback();
+        console.log(error)
+        res.status(201).send({
+            status: "false",
+            success: false,
+            msg: error,
+            code: 201
+        });
     }
 
 }
@@ -980,5 +1070,6 @@ export default {
     getComboLaboratorium,
     saveMasterNilaiNormal,
     saveMasterKelompokUmur,
-    getListDetailKelompokUmur
+    getListDetailKelompokUmur,
+    saveMasterDetailKelompokUmur
 };

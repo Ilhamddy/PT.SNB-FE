@@ -46,6 +46,9 @@ import {
     LIST_DETAIL_KEL_UMUR_LABORATORIUM_GET,
     LIST_DETAIL_KEL_UMUR_LABORATORIUM_GET_SUCCESS,
     LIST_DETAIL_KEL_UMUR_LABORATORIUM_GET_ERROR,
+    SAVE_MASTER_DKEL_UMUR_LABORATORIUM,
+    SAVE_MASTER_DKEL_UMUR_LABORATORIUM_SUCCESS,
+    SAVE_MASTER_DKEL_UMUR_LABORATORIUM_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -129,6 +132,12 @@ const INIT_STATE = {
         loading: false,
         error: null, 
     },
+    saveMasterDKelUmurLaboratorium:{
+        newData: null,
+        loading: false,
+        error: null,
+        success: false
+    }
 }
 
 const Laboratorium = (state = INIT_STATE, action) => {
@@ -181,6 +190,9 @@ const Laboratorium = (state = INIT_STATE, action) => {
                 listDetailKelUmurGet:{
                     ...INIT_STATE.listDetailKelUmurGet
                 },
+                saveMasterDKelUmurLaboratorium:{
+                    ...INIT_STATE.saveMasterDKelUmurLaboratorium
+                }
             }
         }
 
@@ -684,7 +696,39 @@ const Laboratorium = (state = INIT_STATE, action) => {
             }
         }
 
-        
+        case SAVE_MASTER_DKEL_UMUR_LABORATORIUM: {
+            return {
+                ...state,
+                saveMasterDKelUmurLaboratorium: {
+                    ...state.saveMasterDKelUmurLaboratorium,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case SAVE_MASTER_DKEL_UMUR_LABORATORIUM_SUCCESS: {
+            return {
+                ...state,
+                saveMasterDKelUmurLaboratorium: {
+                    ...state.saveMasterDKelUmurLaboratorium,
+                    newData: action.payload,
+                    loading: false,
+                    success: true,
+                }
+            }
+        }
+
+        case SAVE_MASTER_DKEL_UMUR_LABORATORIUM_ERROR: {
+            return {
+                ...state,
+                saveMasterDKelUmurLaboratorium: {
+                    ...state.saveMasterDKelUmurLaboratorium,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
 
 
         default: {
