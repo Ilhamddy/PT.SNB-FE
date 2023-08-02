@@ -48,7 +48,13 @@ import {
     LIST_DETAIL_KEL_UMUR_LABORATORIUM_GET_ERROR,
     SAVE_MASTER_DKEL_UMUR_LABORATORIUM,
     SAVE_MASTER_DKEL_UMUR_LABORATORIUM_SUCCESS,
-    SAVE_MASTER_DKEL_UMUR_LABORATORIUM_ERROR
+    SAVE_MASTER_DKEL_UMUR_LABORATORIUM_ERROR,
+    LIST_SET_NILAI_NORMAL_LABORATORIUM_GET,
+    LIST_SET_NILAI_NORMAL_LABORATORIUM_GET_SUCCESS,
+    LIST_SET_NILAI_NORMAL_LABORATORIUM_GET_ERROR,
+    LIST_SET_NILAI_NORMAL_DETAIL_GET,
+    LIST_SET_NILAI_NORMAL_DETAIL_GET_SUCCESS,
+    LIST_SET_NILAI_NORMAL_DETAIL_GET_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -137,6 +143,16 @@ const INIT_STATE = {
         loading: false,
         error: null,
         success: false
+    },
+    listSetNilaiNormalGet:{
+        data:[],
+        loading: false,
+        error: null, 
+    },
+    listSetNilaiNormalDetailGet:{
+        data:[],
+        loading: false,
+        error: null, 
     }
 }
 
@@ -192,6 +208,12 @@ const Laboratorium = (state = INIT_STATE, action) => {
                 },
                 saveMasterDKelUmurLaboratorium:{
                     ...INIT_STATE.saveMasterDKelUmurLaboratorium
+                },
+                listSetNilaiNormalGet:{
+                    ...INIT_STATE.listSetNilaiNormalGet
+                },
+                listSetNilaiNormalDetailGet:{
+                    ...INIT_STATE.listSetNilaiNormalDetailGet
                 }
             }
         }
@@ -730,6 +752,71 @@ const Laboratorium = (state = INIT_STATE, action) => {
             }
         }
 
+        case LIST_SET_NILAI_NORMAL_LABORATORIUM_GET: {
+            return {
+                ...state,
+                listSetNilaiNormalGet: {
+                    ...state.listSetNilaiNormalGet,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case LIST_SET_NILAI_NORMAL_LABORATORIUM_GET_SUCCESS: {
+            return {
+                ...state,
+                listSetNilaiNormalGet: {
+                    ...state.listSetNilaiNormalGet,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case LIST_SET_NILAI_NORMAL_LABORATORIUM_GET_ERROR: {
+            return {
+                ...state,
+                listSetNilaiNormalGet: {
+                    ...state.listSetNilaiNormalGet,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case LIST_SET_NILAI_NORMAL_DETAIL_GET: {
+            return {
+                ...state,
+                listSetNilaiNormalDetailGet: {
+                    ...state.listSetNilaiNormalDetailGet,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case LIST_SET_NILAI_NORMAL_DETAIL_GET_SUCCESS: {
+            return {
+                ...state,
+                listSetNilaiNormalDetailGet: {
+                    ...state.listSetNilaiNormalDetailGet,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case LIST_SET_NILAI_NORMAL_DETAIL_GET_ERROR: {
+            return {
+                ...state,
+                listSetNilaiNormalDetailGet: {
+                    ...state.listSetNilaiNormalDetailGet,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
 
         default: {
             return { ...state };

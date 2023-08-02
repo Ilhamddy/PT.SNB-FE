@@ -732,6 +732,15 @@ async function saveMasterNilaiNormal(req, res) {
         let filteredRowsLevel2 = req.body.data.filter((row) => row.level === 2);
         let filteredRowsLevel3 = req.body.data.filter((row) => row.level === 3);
 
+        const updatepemeriksaanlab = await db.m_pemeriksaanlab.update({
+            statusenabled: false
+        }, {
+            where: {
+                objectprodukfk: req.body.objectproduk
+            },
+            transaction: transaction
+        })
+
         const pemeriksaanlablevel1 = await Promise.all(
             filteredRowsLevel1.map(async (item) => {
                 const pemeriksaanlablevel1 = await db.m_pemeriksaanlab.create({
@@ -827,7 +836,7 @@ async function saveMasterNilaiNormal(req, res) {
             }
             ))
 
-
+            
 
 
 
@@ -873,7 +882,7 @@ async function someFunctionUsingSaveMasterNilaiNormal2(req, res) {
             kodeexternal: req.kodeexternal,
             namaexternal: req.namaexternal,
             reportdisplay: req.reportdisplay,
-            objectprodukfk: req.objectproduk,
+            objectprodukfk: req.objectprodukfk,
             objectsatuanfk: req.objectsatuanfk,
             level: req.level,
             urutan: req.urutan,
@@ -887,7 +896,7 @@ async function someFunctionUsingSaveMasterNilaiNormal2(req, res) {
             transaction
         })
         await transaction.commit(); // Commit the initial transaction
-
+        // console.log(pemeriksaanlablevel3)
     } catch (error) {
         console.error('Error executing query:', error);
         console.log(error)
@@ -1054,6 +1063,73 @@ async function saveMasterDetailKelompokUmur(req, res) {
 
 }
 
+async function getListSetNilaiNormal(req, res) {
+
+    try {
+
+        const resultlist = await queryPromise2(`select
+        row_number() over (
+            order by mp.id) as no,
+            mp.id,
+            mp.kodeexternal,
+            mp.reportdisplay,
+            ms.satuan,
+            mk.kelompokumur,
+            mp.objectkelompokumurfk
+    from
+        m_pemeriksaanlab mp
+    join m_satuan ms on ms.id=mp.objectsatuanfk
+    join m_kelompokumur mk on mk.id=mp.objectkelompokumurfk 
+    where
+        mp.objectprodukfk = ${req.query.param}
+        and mp.statusenabled = true
+    order by
+        mp.kodeexternal asc`);
+
+        res.status(200).send({
+            data: resultlist.rows,
+            status: "success",
+            success: true,
+        });
+
+    } catch (error) {
+        res.status(500).send({ message: error });
+    }
+
+}
+
+async function getListSetNilaiNormalDetail(req, res) {
+
+    try {
+
+        const resultlist = await queryPromise2(`select
+        row_number() over (
+            order by md.id) as no,
+            md.id,
+        md.detailkelompokumur,
+        mn.nilaimin,
+        mn.nilaimax,
+        mn.nilaitext,
+        mn.nilaikritis
+    from
+        m_detailkelompokumur md
+    join m_pemeriksaanlab mp on
+        md.objectkelompokumurfk = mp.objectkelompokumurfk
+    left join m_nilainormallab mn on mn.objectpemeriksaanlabfk = mp.id
+    where
+        mp.id = ${req.query.idpemeriksaan} and md.objectkelompokumurfk=${req.query.kelompokumur}`);
+
+        res.status(200).send({
+            data: resultlist.rows,
+            status: "success",
+            success: true,
+        });
+
+    } catch (error) {
+        res.status(500).send({ message: error });
+    }
+
+}
 
 export default {
     getDetailJenisProdukLab,
@@ -1071,5 +1147,7 @@ export default {
     saveMasterNilaiNormal,
     saveMasterKelompokUmur,
     getListDetailKelompokUmur,
-    saveMasterDetailKelompokUmur
+    saveMasterDetailKelompokUmur,
+    getListSetNilaiNormal,
+    getListSetNilaiNormalDetail
 };

@@ -17,7 +17,9 @@ import {
     SAVE_NILAINORMAL_LABORATORIUM,
     SAVE_MASTER_KEL_UMUR_LABORATORIUM,
     LIST_DETAIL_KEL_UMUR_LABORATORIUM_GET,
-    SAVE_MASTER_DKEL_UMUR_LABORATORIUM
+    SAVE_MASTER_DKEL_UMUR_LABORATORIUM,
+    LIST_SET_NILAI_NORMAL_LABORATORIUM_GET,
+    LIST_SET_NILAI_NORMAL_DETAIL_GET
 } from "./actionType";
 
 import {
@@ -36,7 +38,9 @@ import {
     saveNilaiNormalLaboratoriumSuccess, saveNilaiNormalLaboratoriumError,
     saveMasterKelUmurLaboratoriumSuccess, saveMasterKelUmurLaboratoriumError,
     listDetailKelUmurGetSuccess, listDetailKelUmurGetError,
-    saveMasterDKelUmurLaboratoriumSuccess, saveMasterDKelUmurLaboratoriumError
+    saveMasterDKelUmurLaboratoriumSuccess, saveMasterDKelUmurLaboratoriumError,
+    listSetNilaiNormalGetSuccess, listSetNilaiNormalGetError,
+    listSetNilaiNormalDetailGetSuccess, listSetNilaiNormalDetailGetError
 } from "./action";
 
 import { toast } from 'react-toastify';
@@ -323,6 +327,32 @@ export function* watchonsaveMasterDKelUmurLaboratorium() {
     yield takeEvery(SAVE_MASTER_DKEL_UMUR_LABORATORIUM, onsaveMasterDKelUmurLaboratorium);
 }
 
+function* onlistSetNilaiNormalGet({ payload: { param } }) {
+    try {
+        const response = yield call(serviceLaboratorium.getListSetNilaiNormal, param);
+        yield put(listSetNilaiNormalGetSuccess(response.data));
+    } catch (error) {
+        yield put(listSetNilaiNormalGetError(error));
+    }
+}
+
+export function* watchonlistSetNilaiNormalGet() {
+    yield takeEvery(LIST_SET_NILAI_NORMAL_LABORATORIUM_GET, onlistSetNilaiNormalGet);
+}
+
+function* onlistSetNilaiNormalDetailGet({ payload: { param } }) {
+    try {
+        const response = yield call(serviceLaboratorium.getListSetNilaiNormalDetail, param);
+        yield put(listSetNilaiNormalDetailGetSuccess(response.data));
+    } catch (error) {
+        yield put(listSetNilaiNormalDetailGetError(error));
+    }
+}
+
+export function* watchonlistSetNilaiNormalDetailGet() {
+    yield takeEvery(LIST_SET_NILAI_NORMAL_DETAIL_GET, onlistSetNilaiNormalDetailGet);
+}
+
 
 function* laboratoriumSaga() {
     yield all([
@@ -341,7 +371,9 @@ function* laboratoriumSaga() {
         fork(watchonSaveNilaiNormalLaboratorium),
         fork(watchonsaveMasterKelUmurLaboratorium),
         fork(watchonlistDetailKelUmurGet),
-        fork(watchonsaveMasterDKelUmurLaboratorium)
+        fork(watchonsaveMasterDKelUmurLaboratorium),
+        fork(watchonlistSetNilaiNormalGet),
+        fork(watchonlistSetNilaiNormalDetailGet)
     ]);
 }
 

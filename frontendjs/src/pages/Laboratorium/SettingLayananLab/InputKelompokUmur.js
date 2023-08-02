@@ -115,7 +115,9 @@ const InputKelompokUmur = () => {
         setSSettingLayLab("labelkelumur", row.label)
     };
 
-    
+    const handleBack = () => {
+        history("/laboratorium/masterlayananlab");
+      };
 
     return (
         <React.Fragment>
@@ -168,11 +170,17 @@ const InputKelompokUmur = () => {
                             <FormFeedback type="invalid"><div>{validation.errors.status_enabled}</div></FormFeedback>
                         ) : null}
                     </Col>
-                    <Col lg={9}></Col>
+                    <Col lg={6}></Col>
                     <Col lg={3}>
                         <Button type="submit" style={{ backgroundColor: '#192a56', textAlign: 'right' }} className="rounded-pill" placement="top">
                             Tambah
                         </Button>
+
+                    </Col>
+                    <Col lg={3}>
+                    <Button type="button" color='danger' className="rounded-pill" placement="top" onClick={handleBack}>
+                                                            Back
+                                                        </Button>
 
                     </Col>
                     <Col lg={12}>

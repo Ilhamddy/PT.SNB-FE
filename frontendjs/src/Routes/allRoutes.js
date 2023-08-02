@@ -271,6 +271,7 @@ import MasterDataLayanan from "../pages/Laboratorium/MasterDataLayanan/MasterDat
 import MasterNilaiNormal from "../pages/Laboratorium/MasterNilaiNormal/MasterNilaiNormal";
 import SettingLayananLab from "../pages/Laboratorium/SettingLayananLab";
 import Satuan from "../pages/Laboratorium/SettingLayananLab/Satuan";
+import SetNilaiNormal from "../pages/Laboratorium/SetNilaiNormal/SetNilaiNormal";
 // casemix
 import KlaimInacbg from "../pages/Casemix/KlaimInacbg/KlaimInacbg";
 import DaftarPiutangPasien from "../pages/DaftarPiutangPasien/DaftarPiutangPasien";
@@ -530,6 +531,7 @@ const authProtectedRoutes = [
   { path: "/laboratorium/masterlayananlab", component: <MasterDataLayanan/>},
   { path: "/laboratorium/masternilainormal/:idproduk/:layanan/:kodeexternal/:detailjenis", component:<MasterNilaiNormal/>},
   { path: "/laboratorium/seeting-layanan-lab", component:<SettingLayananLab/>},
+  { path: "/laboratorium/setnilainormal/:idproduk/:layanan/:kodeexternal/:detailjenis", component:<SetNilaiNormal/>},
   // payment
   { path: "/payment/verif-tagihan/:norecdp", component: <VerifikasiPelayanan /> },
   { path: "/payment/daftar-tagihan", component: <DaftarTagihanPasien /> },

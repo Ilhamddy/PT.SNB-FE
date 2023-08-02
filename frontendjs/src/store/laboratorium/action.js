@@ -47,7 +47,13 @@ import {
     LIST_DETAIL_KEL_UMUR_LABORATORIUM_GET_ERROR,
     SAVE_MASTER_DKEL_UMUR_LABORATORIUM,
     SAVE_MASTER_DKEL_UMUR_LABORATORIUM_SUCCESS,
-    SAVE_MASTER_DKEL_UMUR_LABORATORIUM_ERROR
+    SAVE_MASTER_DKEL_UMUR_LABORATORIUM_ERROR,
+    LIST_SET_NILAI_NORMAL_LABORATORIUM_GET,
+    LIST_SET_NILAI_NORMAL_LABORATORIUM_GET_SUCCESS,
+    LIST_SET_NILAI_NORMAL_LABORATORIUM_GET_ERROR,
+    LIST_SET_NILAI_NORMAL_DETAIL_GET,
+    LIST_SET_NILAI_NORMAL_DETAIL_GET_SUCCESS,
+    LIST_SET_NILAI_NORMAL_DETAIL_GET_ERROR
 } from "./actionType";
 
 export const laboratoriumResetForm = () => ({
@@ -292,5 +298,35 @@ export const saveMasterDKelUmurLaboratoriumSuccess = (data, history) => ({
 
 export const saveMasterDKelUmurLaboratoriumError = (error) => ({
     type: SAVE_MASTER_DKEL_UMUR_LABORATORIUM_ERROR,
+    payload: error,
+});
+
+export const listSetNilaiNormalGet = (param) => ({
+    type: LIST_SET_NILAI_NORMAL_LABORATORIUM_GET,
+    payload: { param },
+});
+
+export const listSetNilaiNormalGetSuccess = (data) => ({
+    type: LIST_SET_NILAI_NORMAL_LABORATORIUM_GET_SUCCESS,
+    payload: data,
+});
+
+export const listSetNilaiNormalGetError = (error) => ({
+    type: LIST_SET_NILAI_NORMAL_LABORATORIUM_GET_ERROR,
+    payload: error,
+});
+
+export const listSetNilaiNormalDetailGet = (param) => ({
+    type: LIST_SET_NILAI_NORMAL_DETAIL_GET,
+    payload: { param },
+});
+
+export const listSetNilaiNormalDetailGetSuccess = (data) => ({
+    type: LIST_SET_NILAI_NORMAL_DETAIL_GET_SUCCESS,
+    payload: data,
+});
+
+export const listSetNilaiNormalDetailGetError = (error) => ({
+    type: LIST_SET_NILAI_NORMAL_DETAIL_GET_ERROR,
     payload: error,
 });
