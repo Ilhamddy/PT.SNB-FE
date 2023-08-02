@@ -17,6 +17,7 @@ import {
     SAVE_NILAINORMAL_LABORATORIUM,
     SAVE_MASTER_KEL_UMUR_LABORATORIUM,
     LIST_DETAIL_KEL_UMUR_LABORATORIUM_GET,
+    SAVE_MASTER_DKEL_UMUR_LABORATORIUM
 } from "./actionType";
 
 import {
@@ -35,6 +36,7 @@ import {
     saveNilaiNormalLaboratoriumSuccess, saveNilaiNormalLaboratoriumError,
     saveMasterKelUmurLaboratoriumSuccess, saveMasterKelUmurLaboratoriumError,
     listDetailKelUmurGetSuccess, listDetailKelUmurGetError,
+    saveMasterDKelUmurLaboratoriumSuccess, saveMasterDKelUmurLaboratoriumError
 } from "./action";
 
 import { toast } from 'react-toastify';
@@ -299,6 +301,28 @@ export function* watchonlistDetailKelUmurGet() {
     yield takeEvery(LIST_DETAIL_KEL_UMUR_LABORATORIUM_GET, onlistDetailKelUmurGet);
 }
 
+function* onsaveMasterDKelUmurLaboratorium({ payload: { data, history } }) {
+    try {
+        let response = yield call(serviceLaboratorium.saveMasterDKelUmurLaboratorium, data);
+
+
+        yield put(saveMasterDKelUmurLaboratoriumSuccess(response.data));
+        if (response.code === 200) {
+            toast.success(response.msg, { autoClose: 3000 });
+        } else {
+            toast.error(response.msg, { autoClose: 3000 });
+        }
+    } catch (error) {
+        console.log(error)
+        yield put(saveMasterDKelUmurLaboratoriumError(error));
+        toast.error(error, { autoClose: 3000 });
+    }
+}
+
+export function* watchonsaveMasterDKelUmurLaboratorium() {
+    yield takeEvery(SAVE_MASTER_DKEL_UMUR_LABORATORIUM, onsaveMasterDKelUmurLaboratorium);
+}
+
 
 function* laboratoriumSaga() {
     yield all([
@@ -317,6 +341,7 @@ function* laboratoriumSaga() {
         fork(watchonSaveNilaiNormalLaboratorium),
         fork(watchonsaveMasterKelUmurLaboratorium),
         fork(watchonlistDetailKelUmurGet),
+        fork(watchonsaveMasterDKelUmurLaboratorium)
     ]);
 }
 

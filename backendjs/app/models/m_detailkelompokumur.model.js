@@ -1,5 +1,5 @@
 export default (sequelize, Sequelize) => {
-    const m_kelompokumur = sequelize.define("m_kelompokumur", {
+    const m_detailkelompokumur = sequelize.define("m_detailkelompokumur", {
         id: {
             allowNull: false,
             autoIncrement: true,
@@ -13,20 +13,29 @@ export default (sequelize, Sequelize) => {
         kodeexternal:{
             type: Sequelize.STRING
         },
-        namaexternal:{
-            type: Sequelize.STRING
+        objectkelompokumurfk:{
+            type: Sequelize.INTEGER
         },
         reportdisplay:{
             type: Sequelize.STRING
         },
-        kelompokumur:{
+        detailkelompokumur:{
             type: Sequelize.STRING
         },
+        statusumur:{
+            type: Sequelize.STRING
+        },
+        umurmin:{
+            type: Sequelize.FLOAT
+        },
+        umurmax:{
+            type: Sequelize.FLOAT
+        },
     }, {
-        tableName: "m_kelompokumur", // relation "user" does not exist
+        tableName: "m_detailkelompokumur", // relation "user" does not exist
         createdAt: false,
         updatedAt: false,
     });
 
-    return m_kelompokumur;
+    return m_detailkelompokumur;
 };
