@@ -234,11 +234,11 @@ const createBuktiBayar = async (req, res) => {
         return;
     }
     try{
-        const objectBody = req. body
         const norecbukti = uuid.v4().substring(0, 32);
+        const objectBody = req.body
         
         const {createdBuktiBayar, totalPayment} = 
-            await hCreateBayar(norecbukti, objectBody, transaction)
+            await hCreateBayar(norecbukti, req, transaction)
 
         const sisa = objectBody.totaltagihan - totalPayment
 
@@ -639,7 +639,8 @@ const hChangeDetailPiutangPasien = async (norecSebelum, norecSetelah, transactio
     return changedDetailPiutang
 }
 
-const hCreateBayar = async (norecbukti, objectBody, transaction) => {
+const hCreateBayar = async (norecbukti, req, transaction) => {
+    const objectBody = req.body
     const totalPayment = objectBody.payment.reduce((total, payment) => {
         return total + payment.nominalbayar
     }, 0);
