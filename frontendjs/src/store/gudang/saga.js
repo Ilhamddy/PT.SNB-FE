@@ -21,7 +21,9 @@ import {
     produkMasterGetError,
     produkMasterGetSuccess,
     produkEditGetError,
-    produkEditGetSuccess
+    produkEditGetSuccess,
+    satuanFromProdukGetError,
+    satuanFromProdukGetSuccess
 } from "./action";
 
 
@@ -37,7 +39,8 @@ import {
     KONVERSI_KEMASAN_QUERY_GET,
     KEMASAN_SAVE_OR_UPDATE,
     PRODUK_MASTER_GET,
-    PRODUK_EDIT_GET
+    PRODUK_EDIT_GET,
+    SATUAN_FROM_PRODUK_GET,
 } from "./actionType";
 
 const serviceGudang = new ServiceGudang();
@@ -116,7 +119,6 @@ function* onSatuanSaveOrUpdate({payload: { data, callback }}){
         let response = yield call(serviceGudang.saveOrEditSatuan, data);
         yield put(satuanSaveOrUpdateSuccess(response.data));
         toast.success(response.msg, { autoClose: 3000 })
-        
         callback();
     } catch (error) {
         console.error(error);
@@ -154,6 +156,16 @@ function* onProdukEditGet({payload: {queries}}){
     } catch (error) {
         console.error(error);
         yield put(produkEditGetError(error));
+    }
+}
+
+function* onSatuanFromProdukGet({payload: {queries}}){
+    try {
+        let response = yield call(serviceGudang.getSatuanFromProduk, queries);
+        yield put(satuanFromProdukGetSuccess(response.data));
+    } catch (error) {
+        console.error(error);
+        yield put(satuanFromProdukGetError(error));
     }
 }
 
@@ -197,6 +209,10 @@ export function* watchProdukEditGet(){
     yield takeEvery(PRODUK_EDIT_GET, onProdukEditGet);
 }
 
+export function* watchSatuanFromProdukGet(){
+    yield takeEvery(SATUAN_FROM_PRODUK_GET, onSatuanFromProdukGet);
+}
+
 function* registrasiSaga() {
     yield all([
         fork(watchSaveObatGudang),
@@ -208,7 +224,8 @@ function* registrasiSaga() {
         fork(watchKemasanKonversiQueryGet),
         fork(watchSaveOrUpdateKemasan),
         fork(watchProdukMasterGet),
-        fork(watchProdukEditGet)
+        fork(watchProdukEditGet),
+        fork(watchSatuanFromProdukGet)
     ]);
 }
 

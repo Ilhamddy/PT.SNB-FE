@@ -29,6 +29,9 @@ import {
     PRODUK_EDIT_GET,
     PRODUK_EDIT_GET_SUCCESS,
     PRODUK_EDIT_GET_ERROR,
+    SATUAN_FROM_PRODUK_GET,
+    SATUAN_FROM_PRODUK_GET_SUCCESS,
+    SATUAN_FROM_PRODUK_GET_ERROR,
 } from "./actionType";
 
 
@@ -179,5 +182,20 @@ export const produkEditGetSuccess = (data) => ({
 
 export const produkEditGetError = (data) => ({
     type: PRODUK_EDIT_GET_ERROR,
+    payload: { data: data },
+})
+
+export const satuanFromProdukGet = (queries) => ({
+    type: SATUAN_FROM_PRODUK_GET,
+    payload: { queries: queries },
+})
+
+export const satuanFromProdukGetSuccess = (data) => ({
+    type: SATUAN_FROM_PRODUK_GET_SUCCESS,
+    payload: { data: data },
+})
+
+export const satuanFromProdukGetError = (data) => ({
+    type: SATUAN_FROM_PRODUK_GET_ERROR,
     payload: { data: data },
 })

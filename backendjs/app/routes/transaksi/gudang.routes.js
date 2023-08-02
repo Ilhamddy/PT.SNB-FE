@@ -69,4 +69,10 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getProdukEdit
     )
+
+    app.get(
+        "/api/transaksi/gudang/get-satuan-from-produk",
+        [authJwt.verifyToken],
+        controller.getSatuanFromProduk
+    )
 }

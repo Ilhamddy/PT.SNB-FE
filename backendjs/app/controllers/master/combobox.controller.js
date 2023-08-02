@@ -35,6 +35,7 @@ import queriesVariabelbpjs from '../../queries/master/variabelbpjs/variabelbpjs.
 import queriesSatuan from '../../queries/master/satuan/satuan.queries'
 import queriesJenisProduk from '../../queries/master/jenisproduk/jenisproduk.queries'
 import queriesJenisSatuan from '../../queries/master/jenissatuan/jenissatuan.queries'
+import queriesProduk from '../../queries/master/produk/produk.queries'
 
 const selectComboBox = (req, res) => {
     try {
@@ -381,8 +382,12 @@ const comboSettingProduk = async (req, res) => {
 const comboPenerimaanBarang = async (req, res) => {
     try{
         const supplier = await pool.query(queriesRekanan.getSupplier);
+        const produk = await pool.query(queriesProduk.getObatWithSatuan);
+        const satuanProduk = await pool.query(queriesSatuan.getSatuanProduk, []);
         let tempres = {
-            supplier: supplier.rows
+            supplier: supplier.rows,
+            produk: produk.rows,
+            satuanproduk: satuanProduk.rows
         }
         res.status(200).send({
             data: tempres,

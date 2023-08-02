@@ -3,8 +3,8 @@ import CustomSelect from "../../../pages/Select/Select";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
-import { dateTimeISOString, onChangeStrNbr } from "../../../utils/format";
-import { rgxAllNumber, rgxAllPeriods } from "../../../utils/regexcommon";
+import { dateTimeISOString, onChangeStrNbr, strToNumber } from "../../../utils/format";
+import { rgxAllComma, rgxAllNumber, rgxAllPeriods } from "../../../utils/regexcommon";
 import { comboPaymentGet } from "../../../store/master/action";
 import { useEffect } from "react";
 import { buktiBayarCreate } from "../../../store/payment/action";
@@ -76,8 +76,7 @@ const DepositModal = ({toggle, norecdp}) => {
             let valuesSent = {...values}
             valuesSent.payment = valuesSent.payment.map((payment) => {
                 let newPayment = {...payment}
-                newPayment.nominalbayar 
-                    = Number(newPayment.nominalbayar.replace(rgxAllPeriods, "")) 
+                newPayment.nominalbayar = strToNumber(newPayment.nominalbayar)
                 return newPayment
             })
             dispatch(buktiBayarCreate(valuesSent, () => {
@@ -112,7 +111,7 @@ const DepositModal = ({toggle, norecdp}) => {
         newPayment[fieldname] = newvalue;
         newPayments[index] = newPayment;
         const totalPayment = newPayments.reduce((acc, curr) => {
-            return acc + Number(curr.nominalbayar.replace(rgxAllPeriods, ""));
+            return acc + strToNumber(curr.nominalbayar);
         }, 0);
         console.log(totalPayment)
         validation.setFieldValue("totaltagihan", totalPayment)

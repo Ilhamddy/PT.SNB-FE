@@ -25,12 +25,27 @@ import DataTable from "react-data-table-component";
 import { produkMasterGet } from "../../store/actions";
 import Flatpickr from "react-flatpickr";
 import usePageState from "../../utils/usePageState";
-import { onChangeStrNbr } from "../../utils/format";
+import { onChangeStrNbr, strToNumber } from "../../utils/format";
+import { comboPenerimaanBarangGet } from "../../store/master/action";
+import { satuanFromProdukGet } from "../../store/gudang/action";
 
 
 const PenerimaanProduk = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const refSatuanTerima = useRef(null);
+
+    const {
+        supplier, 
+        produk,
+        satuanProduk,
+        kemasanProduk
+    } = useSelector((state) => ({
+        supplier: state.Master.comboPenerimaanBarangGet?.data?.supplier || [],
+        produk: state.Master.comboPenerimaanBarangGet?.data?.produk || [],
+        satuanProduk: state.Master.comboPenerimaanBarangGet?.data?.satuanproduk || [],
+        kemasanProduk: state.Gudang.satuanFromProdukGet?.data?.satuan || []
+    }))
 
     const validation = useFormik({
         enableReinitialize: true,
@@ -72,13 +87,17 @@ const PenerimaanProduk = () => {
     const vProduk = useFormik({
         enableReinitialize: true,
         initialValues: {
-            produk: "",
-            satuanjual: "",
+            produk: {
+                value: "",
+                satuanjual: "",
+            },
             satuanterima: "",
             konversisatuan: "",
             jumlahterima: "",
+            checkedharga: "0",
             hargasatuankecil: "",
             hargasatuanterima: "",
+            checkeddiskon: "0",
             diskonpersen: "",
             diskonrupiah: "",
             ppnrupiahproduk: "",
@@ -89,15 +108,24 @@ const PenerimaanProduk = () => {
             totalproduk: "",
         },
         validationSchema: Yup.object({
-            produk: Yup.string().required("Produk harus diisi"),
+            produk: Yup.object().shape({
+                value: Yup.string().required("Produk harus diisi"),
+                satuanjual: Yup.string().required("Satuan jual harus diisi"),
+            }),
             satuanjual: Yup.string().required("Satuan Jual harus diisi"),
             satuanterima: Yup.string().required("Satuan Terima harus diisi"),
             konversisatuan: Yup.string().required("Konversi Satuan harus diisi"),
             jumlahterima: Yup.string().required("Jumlah Terima harus diisi"),
-            hargasatuankecil: Yup.string().required("Harga Satuan Kecil harus diisi"),
-            hargasatuanterima: Yup.string().required("Harga Satuan Terima harus diisi"),
-            diskonpersen: Yup.string().required("Diskon Persen harus diisi"),
-            diskonrupiah: Yup.string().required("Diskon Rupiah harus diisi"),
+            hargasatuankecil: Yup.string().when("checkedharga", {
+                is: (val) => val === "0",
+                then: () => Yup.string().required("Harga satuan kecil harus diisi"),
+            }),
+            hargasatuanterima: Yup.string().required("Harga satuan terima harus diisi"),
+            diskonpersen: Yup.string().when("checkeddiskon", {
+                is: (val) => val === "0",
+                then: () => Yup.string().required("Diskon harus diisi"),
+            }),
+            diskonrupiah: Yup.string().required("Diskon harus diisi"),
             ppnrupiahproduk: Yup.string().required("PPN Rupiah harus diisi"),
             ppnpersenproduk: Yup.string().required("PPN Persen harus diisi"),
             tanggaled: Yup.string().required("Tanggal ED harus diisi"),
@@ -107,6 +135,161 @@ const PenerimaanProduk = () => {
         }),
         onSubmit: (values) => {}
     })
+
+    const handleChangeJumlahTerima = (e) => {
+        const newVal = onChangeStrNbr(
+            e.target.value, 
+            vProduk.values.jumlahterima
+        )
+        vProduk.setFieldValue('jumlahterima', newVal)
+    }
+
+    useEffect(() => {
+        const idProduk = vProduk.values.produk.value
+        refSatuanTerima.current?.clearValue();
+        idProduk && 
+            dispatch(satuanFromProdukGet({ idproduk: idProduk }))
+    }, [dispatch, vProduk.values.produk.value])
+
+    useEffect(() => {
+        // Perhitungan satuan jumlah terima, harga, Diskon, dan ppn
+        const setFF = vProduk.setFieldValue
+        const calcualteSatuanTerima = () => {
+            let newValTerima
+            if(vProduk.values.checkedharga === "0"){
+                const hargaSatuan = vProduk.values.hargasatuankecil
+                newValTerima = 
+                    strToNumber(hargaSatuan) *
+                    vProduk.values.konversisatuan
+                const newValTerimaStr = onChangeStrNbr(
+                    newValTerima,
+                    vProduk.values.hargasatuankecil
+                )
+                setFF(
+                    "hargasatuanterima", 
+                    newValTerimaStr
+                )
+            }else{
+                newValTerima 
+                    = strToNumber(vProduk.values.hargasatuanterima)
+                let newValKecil = 
+                    newValTerima /
+                    (vProduk.values.konversisatuan || 1)
+                const newValKecilStr = onChangeStrNbr(
+                    newValKecil,
+                    vProduk.values.hargasatuankecil
+                )
+                setFF(
+                    "hargasatuankecil", 
+                    newValKecilStr
+                )
+                let newValSubtotal =
+                    strToNumber(newValKecilStr) *
+                    (vProduk.values.jumlahterima || 0)
+                newValSubtotal = onChangeStrNbr(
+                    newValSubtotal,
+                    vProduk.values.subtotalproduk
+                )
+                setFF(
+                    "subtotalproduk",
+                    newValSubtotal
+                )
+            }
+            return newValTerima
+        }
+        const calculateSubtotal = (newValTerima) => {
+            let newValSubtotal = 
+                newValTerima * 
+                (vProduk.values.jumlahterima || 0)
+            const newValSubtotalStr = onChangeStrNbr(
+                newValSubtotal,
+                vProduk.values.subtotalproduk
+            )
+            setFF(
+                "subtotalproduk",
+                newValSubtotalStr
+            )
+            return newValSubtotal
+        }
+
+        const calculateDiskon = (newValSubtotal) => {
+            let newValDiskon
+            if(vProduk.values.checkeddiskon === "0"){
+                const diskonPersen = vProduk.values.diskonpersen
+                newValDiskon = 
+                    strToNumber(diskonPersen) *
+                    newValSubtotal /
+                    100
+                const newValDiskonStr = onChangeStrNbr(
+                    newValDiskon,
+                    vProduk.values.diskonpersen
+                )
+                setFF(
+                    "diskonrupiah", 
+                    newValDiskonStr
+                )
+            }else{
+                newValDiskon 
+                    = strToNumber(vProduk.values.diskonrupiah);
+            }
+            return newValDiskon
+        }
+
+        const calculateTotal = (newValSubtotal, newValDiskon, newValPpn) => {
+            let newValTotal =
+                newValSubtotal -
+                newValDiskon
+            newValTotal = onChangeStrNbr(
+                newValTotal,
+                vProduk.values.totalproduk
+            )
+            setFF(
+                "totalproduk",
+                newValTotal
+            )
+            return newValTotal
+        }
+        const calculatePpn = (newValSubtotal) => {
+            const ppnPersen = vProduk.values.ppnpersenproduk
+            let newValPpn =
+                strToNumber(ppnPersen) *
+                newValSubtotal /
+                100
+            newValPpn = onChangeStrNbr(
+                newValPpn,
+                vProduk.values.ppnrupiahproduk
+            )
+            setFF(
+                "ppnrupiahproduk",
+                newValPpn
+            )
+            return newValPpn
+        }
+        const newValTerima = calcualteSatuanTerima()
+        const newValSubtotal = calculateSubtotal(newValTerima)
+        const newValDiskon = calculateDiskon(newValSubtotal)
+        const newValPpn = calculatePpn(newValSubtotal)
+        calculateTotal(newValSubtotal, newValDiskon, newValPpn)
+        
+    }, [
+        vProduk.values.hargasatuankecil, 
+        vProduk.values.hargasatuanterima, 
+        vProduk.values.checkedharga,
+        vProduk.values.konversisatuan,
+        vProduk.values.jumlahterima,
+        vProduk.values.subtotalproduk,
+        vProduk.values.diskonrupiah,
+        vProduk.values.totalproduk,
+        vProduk.values.checkeddiskon,
+        vProduk.values.diskonpersen,
+        vProduk.values.ppnpersenproduk,
+        vProduk.values.ppnrupiahproduk,
+        vProduk.setFieldValue
+    ])
+
+    useEffect(() => {
+        dispatch(comboPenerimaanBarangGet())
+    }, [dispatch])
 
     const InputUmumTerima = (
         <Card className="p-5">
@@ -181,7 +364,7 @@ const PenerimaanProduk = () => {
                     <CustomSelect
                         id="namasupplier"
                         name="namasupplier"
-                        options={[]}
+                        options={supplier}
                         onChange={(e) => {
                             validation.setFieldValue('namasupplier', e?.value || "")
                         }}
@@ -392,9 +575,12 @@ const PenerimaanProduk = () => {
                     <CustomSelect
                         id="produk"
                         name="produk"
-                        options={[]}
+                        options={produk}
                         onChange={(e) => {
-                            vProduk.setFieldValue('produk', e?.value || "")
+                            vProduk.setFieldValue('produk', {
+                                value: e?.value || "",
+                                satuanjual: e?.valuesatuanstandar || "",
+                            })
                         }}
                         value={vProduk.values.produk}
                         className={`input ${vProduk.errors.produk ? "is-invalid" : ""}`}
@@ -420,18 +606,20 @@ const PenerimaanProduk = () => {
                             <CustomSelect
                                 id="satuanjual"
                                 name="satuanjual"
-                                options={[]}
-                                onChange={(e) => {
-                                    vProduk.setFieldValue('satuanjual', e?.value || "")
-                                }}
-                                value={vProduk.values.satuanjual}
-                                className={`input ${vProduk.errors.satuanjual ? "is-invalid" : ""}`}
+                                options={satuanProduk}
+                                value={vProduk.values.produk?.satuanjual}
+                                isDisabled
+                                className={`input 
+                                    ${vProduk.errors.produk?.satuanjual 
+                                        ? "is-invalid" 
+                                        : ""
+                                    }`}
                                 />
-                            {vProduk.touched.satuanjual 
-                                && !!vProduk.errors.satuanjual && (
+                            {vProduk.touched.produk?.satuanjual
+                                && !!vProduk.errors?.produk?.satuanjual && (
                                 <FormFeedback type="invalid" >
                                     <div>
-                                        {vProduk.errors.satuanjual}
+                                        {vProduk.errors?.produk?.satuanjual}
                                     </div>
                                 </FormFeedback>
                             )}
@@ -446,12 +634,15 @@ const PenerimaanProduk = () => {
                             <CustomSelect
                                 id="satuanterima"
                                 name="satuanterima"
-                                options={[]}
+                                options={kemasanProduk}
+                                isDisabled={kemasanProduk.length === 0}
                                 onChange={(e) => {
                                     vProduk.setFieldValue('satuanterima', e?.value || "")
+                                    vProduk.setFieldValue('konversisatuan', e?.nilaikonversi || "")
                                 }}
                                 value={vProduk.values.satuanterima}
                                 className={`input ${vProduk.errors.satuanterima ? "is-invalid" : ""}`}
+                                ref={refSatuanTerima}
                                 />
                             {vProduk.touched.satuanterima 
                                 && !!vProduk.errors.satuanterima && (
@@ -473,15 +664,14 @@ const PenerimaanProduk = () => {
                                 className="form-label mt-2">
                                 Konversi Satuan
                             </Label>
-                            <CustomSelect
-                                id="konversisatuan"
-                                name="konversisatuan"
-                                options={[]}
-                                onChange={(e) => {
-                                    vProduk.setFieldValue('konversisatuan', e?.value || "")
-                                }}
-                                value={vProduk.values.konversisatuan}
-                                className={`input ${vProduk.errors.konversisatuan ? "is-invalid" : ""}`}
+                            <Input 
+                                id={`konversisatuan`}
+                                name={`konversisatuan`}
+                                type="text"
+                                value={vProduk.values.konversisatuan} 
+                                disabled
+                                invalid={vProduk.touched.konversisatuan 
+                                    && !!vProduk.errors.konversisatuan}
                                 />
                             {vProduk.touched.konversisatuan 
                                 && !!vProduk.errors.konversisatuan && (
@@ -499,15 +689,14 @@ const PenerimaanProduk = () => {
                                 className="form-label mt-2">
                                 Jumlah Terima
                             </Label>
-                            <CustomSelect
-                                id="jumlahterima"
-                                name="jumlahterima"
-                                options={[]}
-                                onChange={(e) => {
-                                    vProduk.setFieldValue('jumlahterima', e?.value || "")
-                                }}
-                                value={vProduk.values.jumlahterima}
-                                className={`input ${vProduk.errors.jumlahterima ? "is-invalid" : ""}`}
+                            <Input 
+                                id={`jumlahterima`}
+                                name={`jumlahterima`}
+                                type="text"
+                                value={vProduk.values.jumlahterima} 
+                                onChange={handleChangeJumlahTerima}
+                                invalid={vProduk.touched.jumlahterima 
+                                    && !!vProduk.errors.jumlahterima}
                                 />
                             {vProduk.touched.jumlahterima 
                                 && !!vProduk.errors.jumlahterima && (
@@ -525,18 +714,34 @@ const PenerimaanProduk = () => {
                 <Col lg={4}>
                     <Row>
                         <Col lg={6}>
-                            <Label 
-                                style={{ color: "black" }} 
-                                htmlFor={`hargasatuankecil`}
-                                className="form-label mt-2">
-                                Harga Satuan Kecil
-                            </Label>
+                            <div className="d-flex flex-row mt-2 form-label">
+                                <Input 
+                                    className="form-check-input" 
+                                    type="radio" 
+                                    id={`radio-satuan-kecil`}   
+                                    checked={vProduk.values.checkedharga === "0"}
+                                    onClick={e => { 
+                                        vProduk.setFieldValue("checkedharga", "0")
+                                    }}/>
+                                <Label className="form-check-label ms-2" 
+                                    htmlFor={`radio-satuan-kecil`} 
+                                    style={{ color: "black" }} >
+                                    Harga satuan kecil
+                                </Label>
+                            </div>
                             <Input 
                                 id={`hargasatuankecil`}
                                 name={`hargasatuankecil`}
                                 type="text"
                                 value={vProduk.values.hargasatuankecil} 
-                                onChange={vProduk.handleChange}
+                                disabled={vProduk.values.checkedharga !== "0"}
+                                onChange={(e) => {
+                                    const newVal = onChangeStrNbr(
+                                        e.target.value, 
+                                        vProduk.values.hargasatuankecil
+                                    )
+                                    vProduk.setFieldValue('hargasatuankecil', newVal)
+                                }}
                                 invalid={vProduk.touched.hargasatuankecil && !!vProduk.errors.hargasatuankecil}
                                 />
                             {vProduk.touched.hargasatuankecil 
@@ -549,18 +754,34 @@ const PenerimaanProduk = () => {
                             )}
                         </Col>
                         <Col lg={6}>
-                            <Label 
-                                style={{ color: "black" }} 
-                                htmlFor={`hargasatuanterima`}
-                                className="form-label mt-2">
-                                Harga Satuan Terima
-                            </Label>
+                            <div className="d-flex flex-row mt-2 form-label">
+                                <Input 
+                                    className="form-check-input" 
+                                    type="radio" 
+                                    id={`radio-satuan-terima`}   
+                                    checked={vProduk.values.checkedharga === "1"}
+                                    onClick={e => { 
+                                        vProduk.setFieldValue("checkedharga", "1")
+                                    }}/>
+                                <Label className="form-check-label ms-2" 
+                                    htmlFor={`radio-satuan-terima`} 
+                                    style={{ color: "black" }} >
+                                    Harga satuan terima
+                                </Label>
+                            </div>
                             <Input 
                                 id={`hargasatuanterima`}
                                 name={`hargasatuanterima`}
                                 type="text"
                                 value={vProduk.values.hargasatuanterima} 
-                                onChange={vProduk.handleChange}
+                                disabled={vProduk.values.checkedharga !== "1"}
+                                onChange={(e) => {
+                                    const newVal = onChangeStrNbr(
+                                        e.target.value, 
+                                        vProduk.values.hargasatuanterima
+                                    )
+                                    vProduk.setFieldValue('hargasatuanterima', newVal)
+                                }}
                                 invalid={
                                     vProduk.touched.hargasatuanterima 
                                         && !!vProduk.errors.hargasatuanterima}
@@ -579,18 +800,34 @@ const PenerimaanProduk = () => {
                 <Col lg={4}>
                     <Row>
                         <Col lg={6}>
-                            <Label 
-                                style={{ color: "black" }} 
-                                htmlFor={`diskonpersen`}
-                                className="form-label mt-2">
-                                Diskon (%)
-                            </Label>
+                            <div className="d-flex flex-row mt-2 form-label">
+                                <Input 
+                                    className="form-check-input" 
+                                    type="radio" 
+                                    id={`radio-diskon-persen`}   
+                                    checked={vProduk.values.checkeddiskon === "0"}
+                                    onClick={e => { 
+                                        vProduk.setFieldValue("checkeddiskon", "0")
+                                    }}/>
+                                <Label className="form-check-label ms-2" 
+                                    htmlFor={`radio-diskon-persen`} 
+                                    style={{ color: "black" }} >
+                                    Diskon (%)
+                                </Label>
+                            </div>
                             <Input 
                                 id={`diskonpersen`}
                                 name={`diskonpersen`}
                                 type="text"
-                                value={vProduk.values.diskonpersen} 
-                                onChange={vProduk.handleChange}
+                                value={vProduk.values.diskonpersen}
+                                disabled={vProduk.values.checkeddiskon !== "0"} 
+                                onChange={(e) => {
+                                    const newVal = onChangeStrNbr(
+                                        e.target.value, 
+                                        vProduk.values.diskonpersen
+                                    )
+                                    vProduk.setFieldValue("diskonpersen", newVal);
+                                }}
                                 invalid={vProduk.touched.diskonpersen && !!vProduk.errors.diskonpersen}
                                 />
                             {vProduk.touched.diskonpersen 
@@ -603,18 +840,34 @@ const PenerimaanProduk = () => {
                             )}
                         </Col>
                         <Col lg={6}>
-                            <Label 
-                                style={{ color: "black" }} 
-                                htmlFor={`diskonrupiah`}
-                                className="form-label mt-2">
-                                Diskon (Rp)
-                            </Label>
+                            <div className="d-flex flex-row mt-2 form-label">
+                                <Input 
+                                    className="form-check-input" 
+                                    type="radio" 
+                                    id={`radio-diskon-rupiah`}   
+                                    checked={vProduk.values.checkeddiskon === "1"}
+                                    onClick={e => { 
+                                        vProduk.setFieldValue("checkeddiskon", "1")
+                                    }}/>
+                                <Label className="form-check-label ms-2" 
+                                    htmlFor={`radio-diskon-rupiah`} 
+                                    style={{ color: "black" }} >
+                                    Diskon (Rp)
+                                </Label>
+                            </div>
                             <Input 
                                 id={`diskonrupiah`}
                                 name={`diskonrupiah`}
                                 type="text"
                                 value={vProduk.values.diskonrupiah} 
-                                onChange={vProduk.handleChange}
+                                disabled={vProduk.values.checkeddiskon !== "1"}
+                                onChange={(e) => {
+                                    const newVal = onChangeStrNbr(
+                                        e.target.value, 
+                                        vProduk.values.diskonpersen
+                                    )
+                                    vProduk.setFieldValue("diskonrupiah", newVal);
+                                }}
                                 invalid={vProduk.touched.diskonrupiah 
                                     && !!vProduk.errors.diskonrupiah}
                                 />
@@ -674,6 +927,7 @@ const PenerimaanProduk = () => {
                                 name={`ppnrupiahproduk`}
                                 type="text"
                                 value={vProduk.values.ppnrupiahproduk} 
+                                disabled
                                 onChange={(e) => {
                                     const newVal = onChangeStrNbr(
                                         e.target.value, 
@@ -769,6 +1023,7 @@ const PenerimaanProduk = () => {
                                 name={`subtotalproduk`}
                                 type="text"
                                 value={vProduk.values.subtotalproduk} 
+                                disabled
                                 onChange={(e) => {
                                     const newVal = onChangeStrNbr(
                                         e.target.value, 
@@ -800,6 +1055,7 @@ const PenerimaanProduk = () => {
                                 name={`totalproduk`}
                                 type="text"
                                 value={vProduk.values.totalproduk} 
+                                disabled
                                 onChange={(e) => {
                                     const newVal = onChangeStrNbr(
                                         e.target.value, 

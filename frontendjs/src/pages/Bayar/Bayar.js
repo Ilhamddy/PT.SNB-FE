@@ -10,7 +10,7 @@ import { Link } from "feather-icons-react/build/IconComponents";
 import { useDispatch, useSelector } from "react-redux";
 import {daftarPasienPulangGet,} from "../../store/daftarPasien/action";
 import DataTable from "react-data-table-component";
-import { dateTimeISOString, dateTimeLocal, onChangeStrNbr, strNumber } from "../../utils/format";
+import { dateTimeISOString, dateTimeLocal, onChangeStrNbr, strNumber, strToNumber } from "../../utils/format";
 import Flatpickr from "react-flatpickr";
 import { 
     comboAsuransiGet, 
@@ -132,7 +132,7 @@ const Bayar = () => {
             valuesSent.payment = valuesSent.payment.map((payment) => {
                 let newPayment = {...payment}
                 newPayment.nominalbayar 
-                    = Number(newPayment.nominalbayar.replace(rgxAllPeriods, "")) 
+                    = strToNumber(newPayment.nominalbayar) 
                 return newPayment
             })
             dispatch(buktiBayarCreate(valuesSent, () => {
@@ -200,7 +200,7 @@ const Bayar = () => {
         - validation.values.deposit;
     let totalDeposit = deposit.reduce((prev, pel) => prev + (pel.nominal || 0), 0);
     let payment = validation.values.payment
-        ?.reduce((prev, pel) => prev + (Number(pel.nominalbayar.replace(rgxAllPeriods, ""))  || 0), 0) || 0;
+        ?.reduce((prev, pel) => prev + (strToNumber(pel.nominalbayar) || 0), 0) || 0;
     let sisaGrandTotal = grandTotal - payment;
     
     const columns = [

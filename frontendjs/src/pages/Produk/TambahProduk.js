@@ -173,6 +173,7 @@ const TambahProduk = ({tabId}) => {
                                     name={`namaproduk`}
                                     type="text"
                                     value={validation.values.namaproduk} 
+                                    disabled={!!validation.values.idproduk}
                                     onChange={validation.handleChange}
                                     invalid={validation.touched.namaproduk && !!validation.errors.namaproduk}
                                     />
@@ -233,6 +234,7 @@ const TambahProduk = ({tabId}) => {
                                     type="text"
                                     value={validation.values.kekuatan} 
                                     onChange={validation.handleChange}
+                                    disabled={!!validation.values.idproduk}
                                     invalid={validation.touched.kekuatan && !!validation.errors.kekuatan}
                                     />
                                 {validation.touched.kekuatan 
