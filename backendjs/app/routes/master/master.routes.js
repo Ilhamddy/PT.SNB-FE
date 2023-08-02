@@ -57,4 +57,10 @@ export default function(app) {
       [authJwt.verifyToken],
       controller.comboSettingProduk
     );
+
+    app.get(
+      "/api/master/combobox-penerimaan-barang",
+      [authJwt.verifyToken],
+      controller.comboPenerimaanBarang
+    )
   };

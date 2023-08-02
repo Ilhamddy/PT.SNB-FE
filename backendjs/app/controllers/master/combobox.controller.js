@@ -378,6 +378,28 @@ const comboSettingProduk = async (req, res) => {
     }
 }
 
+const comboPenerimaanBarang = async (req, res) => {
+    try{
+        const supplier = await pool.query(queriesRekanan.getSupplier);
+        let tempres = {
+            supplier: supplier.rows
+        }
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+        });
+    }catch(e){
+        console.error("===get combo penerimaan barang error=== ")
+        console.error(e)
+        res.status(500).send({
+            data: [],
+            status: "error",
+            success: false,
+        });
+    }
+}
+
 export default {
     selectComboBox,
     desaKelurahan,
@@ -386,5 +408,6 @@ export default {
     comboAsuransi,
     comboPulang,
     comboPayment,
-    comboSettingProduk
+    comboSettingProduk,
+    comboPenerimaanBarang
 };

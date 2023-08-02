@@ -517,6 +517,17 @@ const Navdata = () => {
                         ]);
                     }
                 },
+                {
+                    id: "penerimaanproduk",
+                    label: "Penerimaan produk",
+                    link: "/farmasi/gudang/penerimaan-produk",
+                    parentId: "gudang",
+                    isAllowed: () => {
+                        return isAllowedAccess(getUserPermissions(), [
+                            "REGISTRASI_VIEW",
+                        ]);
+                    }
+                },
             ]
         },
     ];
