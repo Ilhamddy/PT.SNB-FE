@@ -447,12 +447,6 @@ async function saveBridgingInacbg(req, res) {
         "Access-Control-Allow-Origin": "*"
     };
 
-    // res.status(200).send({
-    //     data: req.body,
-    //     status: "success",
-    //     success: true,
-    // });
-    // return
     try {
         let responArr = []
         for (let i = 0; i < req.body.length; i++) {
