@@ -93,6 +93,18 @@ const qGetProdukEdit = `
             WHERE id = $1
 `
 
+const qGetSatuanFromProduk = `
+    SELECT
+    mkp.id AS value,
+    msb.satuan AS label,
+    msk.satuan AS konversi,
+    mkp.nilaikonversi AS nilaikonversi
+        FROM m_kemasanproduk mkp
+        LEFT JOIN m_satuan msb ON mkp.objectsatuanbesarfk = msb.id
+        LEFT JOIN m_satuan msk ON mkp.objectsatuankecilfk = msk.id
+            WHERE mkp.objectprodukfk = $1
+`
+
 export {
     qGetJenisDetailProdukLainLain,
     qGetSediaanLainLain,
@@ -101,5 +113,6 @@ export {
     qGetProdukKonversiFromId,
     qGetKemasan,
     qGetProdukMaster,
-    qGetProdukEdit
+    qGetProdukEdit,
+    qGetSatuanFromProduk
 }

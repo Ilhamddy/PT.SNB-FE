@@ -33,6 +33,9 @@ import {
     COMBO_SETTING_PRODUK_GET,
     COMBO_SETTING_PRODUK_GET_SUCCESS,
     COMBO_SETTING_PRODUK_GET_ERROR,
+    COMBO_PENERIMAAN_BARANG_GET,
+    COMBO_PENERIMAAN_BARANG_GET_SUCCESS,
+    COMBO_PENERIMAAN_BARANG_GET_ERROR,
 } from "./actionType";
 
 const INIT_STATE = {
@@ -90,7 +93,12 @@ const INIT_STATE = {
         data: [],
         loading: false,
         error: null,
-    }
+    },
+    comboPenerimaanBarangGet: {
+        data: [],
+        loading: false,
+        error: null,
+    },
 };
 
 const Master = (state = INIT_STATE, action) => {
@@ -457,6 +465,43 @@ const Master = (state = INIT_STATE, action) => {
                 }
             }
         }
+
+        case COMBO_PENERIMAAN_BARANG_GET: {
+            return {
+                ...state,
+                comboPenerimaanBarangGet: {
+                    ...state.comboPenerimaanBarangGet,
+                    loading: true,
+                    data: [],
+                    error: null,
+                }
+            }
+        }
+
+        case COMBO_PENERIMAAN_BARANG_GET_SUCCESS: {
+            return {
+                ...state,
+                comboPenerimaanBarangGet: {
+                    ...state.comboPenerimaanBarangGet,
+                    data: action.payload,
+                    error: null,
+                    loading: false,
+                }
+            }
+        }
+
+        case COMBO_PENERIMAAN_BARANG_GET_ERROR: {
+            return {
+                ...state,
+                comboPenerimaanBarangGet: {
+                    ...state.comboPenerimaanBarangGet,
+                    loading: false,
+                    data: [],
+                    error: action.error,
+                }
+            }
+        }
+
 
         default: {
             return { ...state };

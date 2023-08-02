@@ -18,7 +18,7 @@ import { emrDiagnosaxGet, emrListDiagnosaxGet, registrasiGet, registrasiNoBPJSGe
 import { useDispatch, useSelector } from "react-redux";
 import { comboAsuransiGet, comboRegistrasiGet, kabupatenGetBpjs, kecamatanGetBpjs, provinsiGetBpjs } from "../../../store/master/action";
 import "./RegistrasiPenjaminFK.scss";
-import { onChangeStrNbr } from "../../../utils/format";
+import { onChangeStrNbr, strToNumber } from "../../../utils/format";
 import { rgxAllNumber, rgxAllPeriods } from "../../../utils/regexcommon";
 
 const dateNow = new Date()
@@ -312,7 +312,7 @@ const RegistrasiPenjaminFK = () => {
             if(values){
                 console.log(values)
                 const valuesSent = {...values}
-                valuesSent.plafon = Number(valuesSent.plafon.replace(rgxAllPeriods, ""))
+                valuesSent.plafon = strToNumber(valuesSent.plafon)
                 if(penjaminGet[indexTab + 1] === undefined){
                     dispatch(registrasiSavePenjaminFK(valuesSent, () => {
                         navigate(`/registrasi/pasien-ruangan/${id}/${norec}`)

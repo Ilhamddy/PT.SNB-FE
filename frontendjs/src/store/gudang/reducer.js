@@ -30,6 +30,9 @@ import {
     PRODUK_EDIT_GET,
     PRODUK_EDIT_GET_SUCCESS,
     PRODUK_EDIT_GET_ERROR,
+    SATUAN_FROM_PRODUK_GET,
+    SATUAN_FROM_PRODUK_GET_SUCCESS,
+    SATUAN_FROM_PRODUK_GET_ERROR,
 } from "./actionType";
 
 const INIT_STATE = {
@@ -79,6 +82,11 @@ const INIT_STATE = {
         error: null,
     },
     produkEditGet: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    satuanFromProdukGet: {
         data: [],
         loading: false,
         error: null,
@@ -453,6 +461,43 @@ const Registrasi = (state = INIT_STATE, action) => {
                 }
             }
         }
+
+        case SATUAN_FROM_PRODUK_GET: {
+            return {
+                ...state,
+                satuanFromProdukGet: {
+                    ...state.satuanFromProdukGet,
+                    loading: true,
+                    data: [],
+                    error: null
+                }
+            }
+        }
+
+        case SATUAN_FROM_PRODUK_GET_SUCCESS: {
+            return {
+                ...state,
+                satuanFromProdukGet: {
+                    ...state.satuanFromProdukGet,
+                    loading: false,
+                    data: action.payload.data,
+                    error: null
+                }
+            }
+        }
+
+        case SATUAN_FROM_PRODUK_GET_ERROR: {
+            return {
+                ...state,
+                satuanFromProdukGet: {
+                    ...state.satuanFromProdukGet,
+                    loading: false,
+                    data: [],
+                    error: action.payload.data
+                }
+            }
+        }
+        
         
 
         default: {

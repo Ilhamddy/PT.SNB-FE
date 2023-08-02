@@ -3,6 +3,7 @@ import { APIClient } from "../helpers/api_helper";
 const api = new APIClient();
 
 export default class ServiceGudang {
+    
     saveObatGudang = async (body) => {
         return await api.create(`/transaksi/gudang/tambah-or-edit-produk`, body);
     }
@@ -41,5 +42,9 @@ export default class ServiceGudang {
 
     getProdukEdit = async (queries) => {
         return await api.get(`/transaksi/gudang/get-produk-edit`, queries)
+    }
+
+    getSatuanFromProduk = async (queries) => {
+        return await api.get(`/transaksi/gudang/get-satuan-from-produk`, queries)
     }
 }

@@ -7,6 +7,7 @@ import { qGetJenisDetailProdukLainLain,
     qGetProdukKonversi, 
     qGetProdukKonversiFromId, 
     qGetProdukMaster, 
+    qGetSatuanFromProduk, 
     qGetSatuanLainLain, 
     qGetSediaanLainLain,  
 } from "../../../queries/gudang/gudang.queries";
@@ -546,6 +547,34 @@ const getProdukEdit = async (req, res) => {
     }
 }
 
+const getSatuanFromProduk = async (req, res) => {
+    try{
+        const {idproduk} = req.query
+        if(!idproduk) throw Error("idproduk tidak boleh kosong")
+        const satuanFromProduk = (await pool.query(qGetSatuanFromProduk, [idproduk])).rows
+        let tempres = {
+            satuan: satuanFromProduk
+        }
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+            msg: 'Get satuan from produk Berhasil',
+            code: 200
+        });
+    }catch(error){
+        console.error("==Get satuan from produk error");
+        console.error(error)
+        res.status(500).send({
+            data: error,
+            success: false,
+            msg: 'Get satuan from produk gagal',
+            code: 500
+        });
+    }
+}
+
+
 export default {
     createOrUpdateProdukObat,
     getLainLain,
@@ -556,5 +585,6 @@ export default {
     getKemasanKonversi,
     createOrUpdateKemasan,
     getProdukMaster,
-    getProdukEdit
+    getProdukEdit,
+    getSatuanFromProduk
 }

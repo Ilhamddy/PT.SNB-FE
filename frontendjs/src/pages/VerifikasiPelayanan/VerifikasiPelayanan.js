@@ -10,7 +10,7 @@ import { Link } from "feather-icons-react/build/IconComponents";
 import { useDispatch, useSelector } from "react-redux";
 import {daftarPasienPulangGet,} from "../../store/daftarPasien/action";
 import DataTable from "react-data-table-component";
-import { dateISOString, dateTimeLocal, onChangeStrNbr } from "../../utils/format";
+import { dateISOString, dateTimeLocal, onChangeStrNbr, strToNumber } from "../../utils/format";
 import Flatpickr from "react-flatpickr";
 import { 
     comboAsuransiGet, 
@@ -87,7 +87,7 @@ const VerifikasiPelayanan = () => {
                 // hapus titik dan jadikan number
                 let newIsiPenjamin = {...isipenjamin};
                 newIsiPenjamin.value = 
-                    Number(newIsiPenjamin.value.replace(rgxAllPeriods, ""));
+                    strToNumber(newIsiPenjamin.value);
                 return newIsiPenjamin
             }) 
             dispatch(notaVerifCreate(newValue, () => {dispatch(pelayananFromDpGet(norecdp))}))
@@ -107,7 +107,7 @@ const VerifikasiPelayanan = () => {
     }, 0)
     const totalVerif = totalObat + totalLayanan
     const totalKlaim = validation.values.isipenjamin.reduce((prev, data) => {
-        const jmlKlaim = Number(data.value.replace(rgxAllPeriods, ""))
+        const jmlKlaim = strToNumber(data.value)
         return prev + (jmlKlaim || 0)
     }, 0)
     const grandTotal = totalVerif - totalKlaim

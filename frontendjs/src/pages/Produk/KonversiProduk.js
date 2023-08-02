@@ -21,7 +21,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup"
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { rgxAllPeriods, rgxValidNumber } from "../../utils/regexcommon.js";
-import { onChangeStrNbr } from "../../utils/format";
+import { onChangeStrNbr, strToNumber } from "../../utils/format";
 
 const KonversiProduk = ({tabId}) => {
     const {paramobat} = useParams();
@@ -64,7 +64,7 @@ const KonversiProduk = ({tabId}) => {
         onSubmit: (values) => {
             console.log("masuk")
             let newValues = {...values}
-            let newJml = newValues.jumlahkonversi.replace(rgxAllPeriods, "")
+            let newJml = strToNumber(newValues.jumlahkonversi)
             newJml = Number(newJml);
             newValues.jumlahkonversi = newJml;
             dispatch(

@@ -42,7 +42,7 @@ async function getListDaftarDokumenRekammedis(req, res) {
             let todayMonth = '' + (today.getMonth() + 1)
             if (todayMonth.length < 2)
                 todayMonth = '0' + todayMonth;
-            let todaystart = formatDate(today)
+            let todaystart = new Date()
             let todayend = formatDate(today) + ' 23:59'
             tglregistrasi = ` and dp.tglregistrasi between '${todaystart}'
         and '${todayend}' `;
