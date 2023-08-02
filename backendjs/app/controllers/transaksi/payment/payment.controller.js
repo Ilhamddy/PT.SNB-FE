@@ -132,7 +132,7 @@ const createNotaVerif = async (req, res) => {
             objectdaftarpasienfk: body.objectdaftarpasienfk,
             total: totalTagihan,
             no_nota: body.no_nota,
-            objectpegawaifk: req.userId,
+            objectpegawaifk: req.idPegawai,
             tglinput: new Date(),
             keterangan: body.keterangan
         }, {transaction: transaction})
@@ -267,7 +267,7 @@ const createBuktiBayar = async (req, res) => {
                 sisapiutang: sisa,
                 tglinput: new Date(),
                 tglupdate: new Date,
-                objectpegawaifk: req.userId
+                objectpegawaifk: req.idPegawai
             }, {
                 transaction: transaction
             })
@@ -281,7 +281,7 @@ const createBuktiBayar = async (req, res) => {
                 statusenabled: true,
                 objectdaftarpasienfk: objectBody.norecdp,
                 nominal: totalPayment,
-                objectpegawaifk: req.userId,
+                objectpegawaifk: req.idPegawai,
                 objectbuktibayarpasienfk: norecbukti,
                 tglinput: new Date(),
             }, {
@@ -393,7 +393,7 @@ const cancelNotaVerif = async (req, res) => {
 
         const batalVerif = await t_log_batalveriflayanan.create({
             norec: uuid.v4().substring(0, 32),
-            objectpegawaifk: req.userId,
+            objectpegawaifk: req.idPegawai,
             tglbatal: new Date(),
             alasanbatal: "Batal Verif",
             objectnotapelayananpasienfk: norecnota
@@ -494,7 +494,7 @@ const cancelBayar = async (req, res) => {
 
         const updatedPasien = await t_log_pasienbatalbayar.create({
             norec: norec,
-            objectpegawaifk: req.userId,
+            objectpegawaifk: req.idPegawai,
             tglbatal: new Date(),
             alasanbatal: "Batal Bayar",
             objectnotapelayananpasienfk: params.norecnota,
@@ -617,7 +617,7 @@ const hAddPiutang = async (req, res, transaction, norecnota) => {
                 sisapiutang: penjamin.value - 0,
                 tglinput: new Date(),
                 tglupdate: new Date,
-                objectpegawaifk: req.userId
+                objectpegawaifk: req.idPegawai
             }, {
                 transaction: transaction
             })
@@ -652,7 +652,7 @@ const hCreateBayar = async (norecbukti, objectBody, transaction) => {
         deposit: objectBody.deposit,
         totalbayar: totalPayment,
         no_bukti: objectBody.nobukti,
-        objectpegawaifk: objectBody.pegawai,
+        objectpegawaifk: req.idPegawai,
         objectnotapelayananpasienfk: objectBody.norecnota || null,
         objectmetodebayarfk: null,
         objectjenisnontunaifk: null,

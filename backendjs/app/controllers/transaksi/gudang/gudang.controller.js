@@ -58,8 +58,8 @@ const createOrUpdateProdukObat = async (req, res) => {
                 isalkes: objectBody.tipeproduk === 3,
                 tglinput: new Date(),
                 tglupdate: new Date(),
-                objectpegawaiinputfk: req.userId,
-                objectpegawaiupdatefk: req.userId
+                objectpegawaiinputfk: req.idPegawai,
+                objectpegawaiupdatefk: req.idPegawai
             }, { 
                 transaction: transaction 
             });
@@ -84,7 +84,7 @@ const createOrUpdateProdukObat = async (req, res) => {
                 objectgolonganobatfk: objectBody.golonganobat || null,
                 isalkes: objectBody.tipeproduk === 3,
                 tglupdate: new Date(),
-                objectpegawaiupdatefk: req.userId
+                objectpegawaiupdatefk: req.idPegawai
             }, {
                 where: {
                     id: objectBody.idproduk
