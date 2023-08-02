@@ -105,8 +105,7 @@ const PenerimaanProduk = () => {
             subtotalproduk: Yup.string().required("Subtotal harus diisi"),
             totalproduk: Yup.string().required("Total harus diisi"),
         }),
-        onSubmit: (values) => {
-        }
+        onSubmit: (values) => {}
     })
 
     const InputUmumTerima = (
@@ -899,7 +898,7 @@ const PenerimaanProduk = () => {
                                 id={`subtotal`}
                                 name={`subtotal`}
                                 type="text"
-                                readOnly
+                                disabled
                                 value={validation.values.subtotal} 
                                 onChange={validation.handleChange}
                                 invalid={validation.touched.subtotal 
@@ -931,7 +930,7 @@ const PenerimaanProduk = () => {
                                 id={`ppnrupiah`}
                                 name={`ppnrupiah`}
                                 type="text"
-                                readOnly
+                                disabled
                                 value={validation.values.ppnrupiah} 
                                 invalid={validation.touched.ppnrupiah 
                                     && !!validation.errors.ppnrupiah}
@@ -962,7 +961,7 @@ const PenerimaanProduk = () => {
                                 id={`diskonrupiah`}
                                 name={`diskonrupiah`}
                                 type="text"
-                                readOnly
+                                disabled
                                 value={validation.values.diskonrupiah} 
                                 invalid={validation.touched.diskonrupiah 
                                     && !!validation.errors.diskonrupiah}
@@ -993,7 +992,7 @@ const PenerimaanProduk = () => {
                                 id={`total`}
                                 name={`total`}
                                 type="text"
-                                readOnly
+                                disabled
                                 value={validation.values.total} 
                                 invalid={validation.touched.total 
                                     && !!validation.errors.total}
