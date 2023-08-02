@@ -146,8 +146,8 @@ const createOrUpdateDetailProduk = async (req, res) => {
                 namaexternal: body.detailjenisproduk,
                 tglinput: new Date(),
                 tglupdate: new Date(),
-                objectpegawaiinputfk: req.userId,
-                objectpegawaiupdatefk: req.userId
+                objectpegawaiinputfk: req.idPegawai,
+                objectpegawaiupdatefk: req.idPegawai
             }, {
                 transaction: transaction
             })
@@ -157,7 +157,7 @@ const createOrUpdateDetailProduk = async (req, res) => {
                 detailjenisproduk: body.detailjenisproduk,
                 objectjenisprodukfk: body.jenisproduk || null,
                 tglupdate: new Date(),
-                objectpegawaiupdatefk: req.userId
+                objectpegawaiupdatefk: req.idPegawai
             }, {
                 where: {
                     id: body.id
@@ -220,8 +220,8 @@ const createOrUpdateSediaan = async (req, res) => {
                 namaexternal: body.sediaan,
                 tglinput: new Date(),
                 tglupdate: new Date,
-                objectpegawaiinputfk: req.userId,
-                objectpegawaiupdatefk: req.userId
+                objectpegawaiinputfk: req.idPegawai,
+                objectpegawaiupdatefk: req.idPegawai
             }, {
                 transaction: transaction
             })
@@ -230,7 +230,7 @@ const createOrUpdateSediaan = async (req, res) => {
                 statusenabled: body.statusenabled,
                 sediaan: body.sediaan,
                 tglupdate: new Date(),
-                objectpegawaiupdatefk: req.userId
+                objectpegawaiupdatefk: req.idPegawai
             }, {
                 where: {
                     id: body.id
@@ -292,8 +292,8 @@ const createOrUpdateSatuan = async (req, res) => {
                 objectjenissatuanfk: body.jenissatuan || null,
                 tglinput: new Date(),
                 tglupdate: new Date,
-                objectpegawaiinputfk: req.userId,
-                objectpegawaiupdatefk: req.userId
+                objectpegawaiinputfk: req.idPegawai,
+                objectpegawaiupdatefk: req.idPegawai
             }, {
                 transaction: transaction
             })
@@ -303,7 +303,7 @@ const createOrUpdateSatuan = async (req, res) => {
                 satuan: body.satuan,
                 objectjenissatuanfk: body.jenissatuan || null,
                 tglupdate: new Date(),
-                objectpegawaiupdatefk: req.userId
+                objectpegawaiupdatefk: req.idPegawai
             }, {
                 where: {
                     id: body.id
