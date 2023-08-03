@@ -32,7 +32,7 @@ async function getDetailJenisProdukLab(req, res) {
     try {
 
         const resultlist = await queryPromise2(`select id as value, detailjenisproduk as label,'' as detail  from m_detailjenisproduk md 
-        where md.objectjenisprodukfk = 1
+        where md.objectjenisprodukfk = 1 and md.statusenabled=true
         `);
         for (var i = 0; i < resultlist.rows.length; ++i) {
 
@@ -44,7 +44,7 @@ async function getDetailJenisProdukLab(req, res) {
             end as label, mp.objectindukfk , mp."level" , mp.urutan, mp.objectprodukfk as value,
             mp2.objectdetailjenisprodukfk from m_pemeriksaanlab mp 
             join m_produk mp2 on mp.objectprodukfk = mp2.id 
-            where mp2.objectdetailjenisprodukfk = '${resultlist.rows[i].value}'
+            where mp2.objectdetailjenisprodukfk = '${resultlist.rows[i].value}' and mp.statusenabled=true
             order by mp.kodeexternal`);
             let tempOrder = []
             for (var x = 0; x < resultlistOrder.rows.length; ++x) {
@@ -1120,7 +1120,7 @@ async function getListSetNilaiNormalDetail(req, res) {
         md.objectkelompokumurfk = mp.objectkelompokumurfk
     left join m_nilainormallab mn on mn.objectpemeriksaanlabfk = mp.id
     where
-        mp.id = ${req.query.idpemeriksaan} and md.objectkelompokumurfk=${req.query.kelompokumur}`);
+        mp.id = ${req.query.idpemeriksaan} and md.objectkelompokumurfk=${req.query.kelompokumur} and mp.statusenabled=true`);
 
         let filteredRowsjkL = resultlist.rows.filter((row) => row.objectjeniskelaminfk === 1);
         let filteredRowsjkP = resultlist.rows.filter((row) => row.objectjeniskelaminfk === 2);
