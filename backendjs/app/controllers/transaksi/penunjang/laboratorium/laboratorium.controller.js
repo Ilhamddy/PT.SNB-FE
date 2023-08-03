@@ -836,7 +836,7 @@ async function saveMasterNilaiNormal(req, res) {
             }
             ))
 
-            
+
 
 
 
@@ -1110,7 +1110,10 @@ async function getListSetNilaiNormalDetail(req, res) {
         mn.nilaimin,
         mn.nilaimax,
         mn.nilaitext,
-        mn.nilaikritis
+        mn.nilaikritis,
+        mn.objectjeniskelaminfk,
+        mn.id as idnilainormal,
+        mp.id as objectpemeriksaanlabfk
     from
         m_detailkelompokumur md
     join m_pemeriksaanlab mp on
@@ -1119,14 +1122,178 @@ async function getListSetNilaiNormalDetail(req, res) {
     where
         mp.id = ${req.query.idpemeriksaan} and md.objectkelompokumurfk=${req.query.kelompokumur}`);
 
+        let filteredRowsjkL = resultlist.rows.filter((row) => row.objectjeniskelaminfk === 1);
+        let filteredRowsjkP = resultlist.rows.filter((row) => row.objectjeniskelaminfk === 2);
+        if (filteredRowsjkL.length === 0) {
+            for (let i = 0; i < resultlist.rows.length; i++) {
+                filteredRowsjkL.push({
+                    id: resultlist.rows[i].id,
+                    detailkelompokumur: resultlist.rows[i].detailkelompokumur,
+                    nilaimin: '', nilaimax: '', nilaitext: '', nilaikritis: '', idnilainormal: ''
+                })
+            }
+        }
+        if (filteredRowsjkP.length === 0) {
+            for (let i = 0; i < resultlist.rows.length; i++) {
+                filteredRowsjkP.push({
+                    id: resultlist.rows[i].id,
+                    detailkelompokumur: resultlist.rows[i].detailkelompokumur,
+                    nilaimin: '', nilaimax: '', nilaitext: '', nilaikritis: '', idnilainormal: ''
+                })
+            }
+
+        }
+        let tempres = { datap: filteredRowsjkP, datal: filteredRowsjkL }
         res.status(200).send({
-            data: resultlist.rows,
+            data: tempres,
             status: "success",
             success: true,
         });
 
     } catch (error) {
         res.status(500).send({ message: error });
+    }
+
+}
+
+async function saveSetMasterNilaiNormalLab(req, res) {
+    let transaction = null;
+    try {
+        transaction = await db.sequelize.transaction();
+    } catch (e) {
+        console.error(e)
+        res.status(201).send({
+            status: e.message,
+            success: false,
+            msg: 'Simpan Gagal',
+            code: 201
+        });
+    }
+    try {
+
+        const nilainormallab = await Promise.all(
+            req.body.datal.map(async (item) => {
+                let nilainormallab = null
+                if (item.idnilainormal === '') {
+                    nilainormallab = await db.m_nilainormallab.create({
+                        statusenabled: true,
+                        namaexternal: req.body.header.namaPemeriksaan,
+                        reportdisplay: req.body.header.namaPemeriksaan,
+                        objectpemeriksaanlabfk: req.body.header.idnamaPemeriksaan,
+                        objectjeniskelaminfk: 1,
+                        objectdetailkelompokumurfk: item.id,
+                        metodepemeriksaan: req.body.header.metode,
+                        nilaimin: item.nilaimin,
+                        nilaimax: item.nilaimax,
+                        nilaitext: item.nilaitext,
+                        nilaikritis: item.nilaikritis,
+                        tglinput: new Date(),
+                        tglupdate: new Date(),
+                        objectpegawaiinputfk: req.idPegawai,
+                        tipedata: req.body.header.tipedata
+                    }, {
+                        transaction: transaction
+                    })
+                } else {
+                    nilainormallab = await db.m_nilainormallab.update({
+                        statusenabled: true,
+                        namaexternal: req.body.header.namaPemeriksaan,
+                        reportdisplay: req.body.header.namaPemeriksaan,
+                        objectpemeriksaanlabfk: req.body.header.idnamaPemeriksaan,
+                        objectjeniskelaminfk: 1,
+                        objectdetailkelompokumurfk: item.id,
+                        metodepemeriksaan: req.body.header.metode,
+                        nilaimin: item.nilaimin,
+                        nilaimax: item.nilaimax,
+                        nilaitext: item.nilaitext,
+                        nilaikritis: item.nilaikritis,
+                        tglupdate: new Date(),
+                        objectpegawaiupdatefk: req.idPegawai,
+                        tipedata: req.body.header.tipedata
+                    }, {
+                        where: {
+                            id: item.idnilainormal
+                        },
+                        transaction: transaction
+                    })
+                }
+
+
+                return nilainormallab
+            })
+        )
+
+        const nilainormallabp = await Promise.all(
+            req.body.datap.map(async (item) => {
+                let nilainormallabp = null
+                if (item.idnilainormal === '') {
+                    nilainormallabp = await db.m_nilainormallab.create({
+                        statusenabled: true,
+                        namaexternal: req.body.header.namaPemeriksaan,
+                        reportdisplay: req.body.header.namaPemeriksaan,
+                        objectpemeriksaanlabfk: req.body.header.idnamaPemeriksaan,
+                        objectjeniskelaminfk: 2,
+                        objectdetailkelompokumurfk: item.id,
+                        metodepemeriksaan: req.body.header.metode,
+                        nilaimin: item.nilaimin,
+                        nilaimax: item.nilaimax,
+                        nilaitext: item.nilaitext,
+                        nilaikritis: item.nilaikritis,
+                        tglinput: new Date(),
+                        tglupdate: new Date(),
+                        objectpegawaiinputfk: req.idPegawai,
+                        tipedata: req.body.header.tipedata
+                    }, {
+                        transaction: transaction
+                    })
+                } else {
+                    nilainormallabp = await db.m_nilainormallab.update({
+                        statusenabled: true,
+                        namaexternal: req.body.header.namaPemeriksaan,
+                        reportdisplay: req.body.header.namaPemeriksaan,
+                        objectpemeriksaanlabfk: req.body.header.idnamaPemeriksaan,
+                        objectjeniskelaminfk: 2,
+                        objectdetailkelompokumurfk: item.id,
+                        metodepemeriksaan: req.body.header.metode,
+                        nilaimin: item.nilaimin,
+                        nilaimax: item.nilaimax,
+                        nilaitext: item.nilaitext,
+                        nilaikritis: item.nilaikritis,
+                        tglupdate: new Date(),
+                        objectpegawaiupdatefk: req.idPegawai,
+                        tipedata: req.body.header.tipedata
+                    }, {
+                        where: {
+                            id: item.idnilainormal
+                        },
+                        transaction: transaction
+                    })
+                }
+
+
+                return nilainormallabp
+            })
+        )
+
+        await transaction.commit();
+        let tempres = { nilainormallab,nilainormallabp }
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+            msg: 'Berhasil',
+            code: 200
+        });
+
+    } catch (error) {
+        transaction && await transaction.rollback();
+        console.log(error)
+        res.status(201).send({
+            status: "false",
+            success: false,
+            msg: error,
+            code: 201
+        });
     }
 
 }
@@ -1149,5 +1316,6 @@ export default {
     getListDetailKelompokUmur,
     saveMasterDetailKelompokUmur,
     getListSetNilaiNormal,
-    getListSetNilaiNormalDetail
+    getListSetNilaiNormalDetail,
+    saveSetMasterNilaiNormalLab
 };

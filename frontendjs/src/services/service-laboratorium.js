@@ -74,4 +74,8 @@ export default class ServiceLaboratorium {
     getListSetNilaiNormalDetail = async (param) => {
         return await api.get(`/transaksi/laboratorium/list-setnilai-normal-detail?idpemeriksaan=${param}`);
     }
+
+    saveSetMasterNilaiNormalLab = async (params) => {
+        return await api.create("/transaksi/laboratorium/save-set-master-nilai-normal-lab", params);
+    }
 }

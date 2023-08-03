@@ -20,7 +20,7 @@ import withRouter from '../../../Components/Common/withRouter';
 import BreadCrumb from '../../../Components/Common/BreadCrumb';
 import DataTable from 'react-data-table-component';
 import {
-    comboLaboratoriumGet, saveNilaiNormalLaboratorium
+    comboLaboratoriumGet, saveNilaiNormalLaboratorium,laboratoriumResetForm
 } from '../../../store/actions';
 
 const MasterNilaiNormal = () => {
@@ -28,6 +28,11 @@ const MasterNilaiNormal = () => {
     document.title = "Master Nilai Normal";
     const dispatch = useDispatch();
     const history = useNavigate();
+    useEffect(() => {
+        return () => {
+            dispatch(laboratoriumResetForm());
+        }
+    }, [dispatch])
     const { data, loading, error,
         newDataNilai, loadingDataNilai, successDataNilai, errorDataNilai } = useSelector((state) => ({
             data: state.Laboratorium.comboLaboratoriumGet.data,

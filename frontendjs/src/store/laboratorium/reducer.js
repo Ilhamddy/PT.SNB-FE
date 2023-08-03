@@ -54,7 +54,10 @@ import {
     LIST_SET_NILAI_NORMAL_LABORATORIUM_GET_ERROR,
     LIST_SET_NILAI_NORMAL_DETAIL_GET,
     LIST_SET_NILAI_NORMAL_DETAIL_GET_SUCCESS,
-    LIST_SET_NILAI_NORMAL_DETAIL_GET_ERROR
+    LIST_SET_NILAI_NORMAL_DETAIL_GET_ERROR,
+    SAVE_SET_MASTER_NILAI_NORMAL_LAB,
+    SAVE_SET_MASTER_NILAI_NORMAL_LAB_SUCCESS,
+    SAVE_SET_MASTER_NILAI_NORMAL_LAB_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -153,6 +156,12 @@ const INIT_STATE = {
         data:[],
         loading: false,
         error: null, 
+    },
+    saveSetMasterNilaiNormalLab:{
+        newData: null,
+        loading: false,
+        error: null,
+        success: false
     }
 }
 
@@ -214,6 +223,9 @@ const Laboratorium = (state = INIT_STATE, action) => {
                 },
                 listSetNilaiNormalDetailGet:{
                     ...INIT_STATE.listSetNilaiNormalDetailGet
+                },
+                saveSetMasterNilaiNormalLab:{
+                    ...INIT_STATE.saveSetMasterNilaiNormalLab
                 }
             }
         }
@@ -812,6 +824,40 @@ const Laboratorium = (state = INIT_STATE, action) => {
                 ...state,
                 listSetNilaiNormalDetailGet: {
                     ...state.listSetNilaiNormalDetailGet,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case SAVE_SET_MASTER_NILAI_NORMAL_LAB: {
+            return {
+                ...state,
+                saveSetMasterNilaiNormalLab: {
+                    ...state.saveSetMasterNilaiNormalLab,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case SAVE_SET_MASTER_NILAI_NORMAL_LAB_SUCCESS: {
+            return {
+                ...state,
+                saveSetMasterNilaiNormalLab: {
+                    ...state.saveSetMasterNilaiNormalLab,
+                    newData: action.payload,
+                    loading: false,
+                    success: true,
+                }
+            }
+        }
+
+        case SAVE_SET_MASTER_NILAI_NORMAL_LAB_ERROR: {
+            return {
+                ...state,
+                saveSetMasterNilaiNormalLab: {
+                    ...state.saveSetMasterNilaiNormalLab,
                     loading: false,
                     error: action.error,
                 }

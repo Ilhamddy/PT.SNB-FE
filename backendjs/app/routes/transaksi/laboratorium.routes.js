@@ -119,4 +119,10 @@ export default function (app) {
         controller.getListSetNilaiNormalDetail
     );
 
+    app.post(
+        "/api/transaksi/laboratorium/save-set-master-nilai-normal-lab",
+        [authJwt.verifyToken],
+        controller.saveSetMasterNilaiNormalLab
+    );
+
 }
