@@ -129,13 +129,16 @@ const PenerimaanProdukList = () => {
                 <Card className="p-5">
                     <Row>
                         <Widget
+                            title={"Total pemesanan yang belum diterima"}
+                            end={0}
+                        />
+                        <Widget
+                            title={"Total pemesanan yang sudah diterima"}
                             end={dataPenerimaan.length}
                         />
                         <Widget
-                            end={dataPenerimaan.length}
-                        />
-                        <Widget
-                            end={dataPenerimaan.length}
+                            title={"Total pemesanan yang Dibatalkan"}
+                            end={0}
                         />
                     </Row>
                     <Row>
@@ -222,22 +225,21 @@ const ExpandablePenerimaan = ({ data }) => {
             fixedHeader
             fixedHeaderScrollHeight="400px"
             columns={columnsDetail}
-            pagination
             data={data.detailpenerimaan || []}
             progressPending={false}
-            customStyles={tableCustomStyles}
+            customStyles={subTableCustomStyles}
             />
     )
 }
 
-const Widget = ({end}) => {
+const Widget = ({title, end}) => {
     return (
         <Col xxl={4} sm={6}>
             <Card className="card-animate">
                 <CardBody>
                     <div className="d-flex justify-content-between">
                         <div>
-                            <p className="fw-medium text-muted mb-0">Total pesanan yang belum diterima</p>
+                            <p className="fw-medium text-muted mb-0">{title}</p>
                             <h2 className="mt-4 ff-secondary fw-semibold">
                                 <span className="counter-value" style={{ fontSize: "5rem" }}>
                                     <CountUp
@@ -295,6 +297,20 @@ const tableCustomStyles = {
     }
 }
 
-
+const subTableCustomStyles = {
+    headRow: {
+        style: {
+            color: '#ffffff',
+            backgroundColor: '#ECB349'
+        },
+    },
+    rows: {
+        style: {
+            color: "black",
+            backgroundColor: "#f1f2f6"
+        },
+    }
+    
+}
 
 export default PenerimaanProdukList;
