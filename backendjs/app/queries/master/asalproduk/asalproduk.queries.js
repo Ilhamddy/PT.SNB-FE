@@ -1,7 +1,7 @@
 const getAll =
     `SELECT id as value, 
-    asalrujukan as label 
-        FROM m_asalrujukan 
+    asalproduk as label 
+        FROM m_asalproduk 
             WHERE statusenabled = true`;
 
 export default {

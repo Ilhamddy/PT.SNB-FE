@@ -36,6 +36,7 @@ import queriesSatuan from '../../queries/master/satuan/satuan.queries'
 import queriesJenisProduk from '../../queries/master/jenisproduk/jenisproduk.queries'
 import queriesJenisSatuan from '../../queries/master/jenissatuan/jenissatuan.queries'
 import queriesProduk from '../../queries/master/produk/produk.queries'
+import queriesAsalProduk from "../../queries/master/asalproduk/asalproduk.queries"
 
 const selectComboBox = (req, res) => {
     try {
@@ -383,11 +384,15 @@ const comboPenerimaanBarang = async (req, res) => {
     try{
         const supplier = await pool.query(queriesRekanan.getSupplier);
         const produk = await pool.query(queriesProduk.getObatWithSatuan);
-        const satuanProduk = await pool.query(queriesSatuan.getSatuanProduk, []);
+        const satuanProduk = await pool.query(queriesSatuan.getSatuanProduk);
+        const asalproduk = await pool.query(queriesAsalProduk.getAll)
+        const unit = await pool.query(queriesUnit.getAll)
         let tempres = {
             supplier: supplier.rows,
             produk: produk.rows,
-            satuanproduk: satuanProduk.rows
+            satuanproduk: satuanProduk.rows,
+            asalproduk: asalproduk.rows,
+            unit: unit.rows 
         }
         res.status(200).send({
             data: tempres,

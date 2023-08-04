@@ -1,6 +1,7 @@
 import { authJwt } from "../../middleware/index.js";
 import controller from "../../controllers/transaksi/gudang/gudang.controller";
 
+// eslint-disable-next-line max-lines-per-function
 export default function (app) {
     app.use(function (req, res, next) {
         res.header(
@@ -74,5 +75,17 @@ export default function (app) {
         "/api/transaksi/gudang/get-satuan-from-produk",
         [authJwt.verifyToken],
         controller.getSatuanFromProduk
+    )
+
+    app.post(
+        "/api/transaksi/gudang/create-or-update-penerimaan",
+        [authJwt.verifyToken],
+        controller.createOrUpdatePenerimaan
+    )
+
+    app.get(
+        "/api/transaksi/gudang/get-penerimaan",
+        [authJwt.verifyToken],
+        controller.getPenerimaan
     )
 }

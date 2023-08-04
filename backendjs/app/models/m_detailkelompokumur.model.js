@@ -1,3 +1,4 @@
+// eslint-disable-next-line max-lines-per-function
 export default (sequelize, Sequelize) => {
     const m_detailkelompokumur = sequelize.define("m_detailkelompokumur", {
         id: {

@@ -234,11 +234,14 @@ const createBuktiBayar = async (req, res) => {
         return;
     }
     try{
-        const norecbukti = uuid.v4().substring(0, 32);
+        
         const objectBody = req.body
         
-        const {createdBuktiBayar, totalPayment} = 
-            await hCreateBayar(norecbukti, req, transaction)
+        const {
+            createdBuktiBayar, 
+            totalPayment,
+            norecbukti
+        } = await hCreateBayar(req, transaction)
 
         const sisa = objectBody.totaltagihan - totalPayment
 
@@ -368,8 +371,6 @@ const cancelNotaVerif = async (req, res) => {
             },
             transaction: transaction
         })
-
-
 
         const updatedNPP = await t_notapelayananpasien.update({
             statusenabled: false,
@@ -639,7 +640,8 @@ const hChangeDetailPiutangPasien = async (norecSebelum, norecSetelah, transactio
     return changedDetailPiutang
 }
 
-const hCreateBayar = async (norecbukti, req, transaction) => {
+const hCreateBayar = async ( req, transaction) => {
+    const norecbukti = uuid.v4().substring(0, 32);
     const objectBody = req.body
     const totalPayment = objectBody.payment.reduce((total, payment) => {
         return total + payment.nominalbayar
@@ -704,5 +706,9 @@ const hCreateBayar = async (norecbukti, req, transaction) => {
     const createdBuktiBayar = await pool.query(qGetDepositFromNota, [objectBody.norecnota])
     createdBuktiBayar.createdCaraBayar = createdCaraBayar
 
-    return {createdBuktiBayar, totalPayment}
+    return {
+        createdBuktiBayar, 
+        totalPayment,
+        norecbukti
+    }
 }

@@ -124,6 +124,16 @@ const getRekapBilling = `select variabelbpjs, sum(totalharga) from (
 ) aa
 group by aa.variabelbpjs`;
 
+const qNoAntrian = `select 
+        count(noantrian) 
+        from t_antreanpemeriksaan ta
+        join m_pegawai mp 
+        on mp.id=ta.objectdokterpemeriksafk 
+        WHERE ta.objectdokterpemeriksafk=$1
+        AND ta.tglmasuk between $2 and $3
+        
+`
+
 
 export default {
     getAll,
@@ -141,5 +151,6 @@ export default {
     widgetgetDaftarPasienRawatInap,
     getDaftarPasienRawatInap,
     getRekapBilling,
-    qGetDepositFromPasien
+    qGetDepositFromPasien,
+    qNoAntrian
 };

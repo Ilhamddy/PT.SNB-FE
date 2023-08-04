@@ -732,9 +732,9 @@ async function saveMasterNilaiNormal(req, res) {
         let filteredRowsLevel2 = req.body.data.filter((row) => row.level === 2);
         let filteredRowsLevel3 = req.body.data.filter((row) => row.level === 3);
 
-        const pemeriksaanlablevel1 = await Promise.all(
-            filteredRowsLevel1.map(async (item) => {
-                const pemeriksaanlablevel1 = await db.m_pemeriksaanlab.create({
+        const saveFilteredRows = async (filteredRows) => {
+            return await Promise.all(filteredRows.map(async (item) => {
+                const pemeriksaanlablevel = await db.m_pemeriksaanlab.create({
                     statusenabled: true,
                     kodeexternal: item.kode,
                     namaexternal: item.nama,
@@ -752,83 +752,13 @@ async function saveMasterNilaiNormal(req, res) {
                     transaction: transaction
                 })
 
-                return pemeriksaanlablevel1
-            }
-            ))
+                return pemeriksaanlablevel
+            }))
+        }
 
-        const pemeriksaanlablevel2 = await Promise.all(
-            filteredRowsLevel2.map(async (item) => {
-                const pemeriksaanlablevel2 = await db.m_pemeriksaanlab.create({
-                    statusenabled: true,
-                    kodeexternal: item.kode,
-                    namaexternal: item.nama,
-                    reportdisplay: item.nama,
-                    objectprodukfk: req.body.objectproduk,
-                    objectsatuanfk: item.satuan,
-                    level: item.level,
-                    urutan: item.urutan,
-                    objectkelompokumurfk: item.kelompokumur,
-                    tglinput: new Date(),
-                    tglupdate: new Date(),
-                    objectpegawaiinputfk: req.idPegawai,
-                    objectindukfk: pemeriksaanlablevel1[0].id,
-                    id_temp: item.id
-                }, {
-                    transaction: transaction
-                })
-
-                return pemeriksaanlablevel2
-            }
-            ))
-
-        const pemeriksaanlablevel3 = await Promise.all(
-            filteredRowsLevel3.map(async (item) => {
-                pemeriksaanlablevel2.map(async (itemx) => {
-                    if (item.objectinduk === itemx.id_temp) {
-                        let reqtemp = {
-                            statusenabled: true,
-                            kodeexternal: item.kode,
-                            namaexternal: item.nama,
-                            reportdisplay: item.nama,
-                            objectprodukfk: req.body.objectproduk,
-                            objectsatuanfk: item.satuan,
-                            level: item.level,
-                            urutan: item.urutan,
-                            objectkelompokumurfk: item.kelompokumur,
-                            tglinput: new Date(),
-                            tglupdate: new Date(),
-                            objectpegawaiinputfk: req.idPegawai,
-                            objectindukfk: itemx.id,
-                        };
-                        const resultlistlevel3 = await someFunctionUsingSaveMasterNilaiNormal2(reqtemp);
-                        // const pemeriksaanlablevel3 = await db.m_pemeriksaanlab.create({
-                        //     statusenabled: true,
-                        //     kodeexternal: item.kode,
-                        //     namaexternal: item.nama,
-                        //     reportdisplay: item.nama,
-                        //     objectprodukfk: req.body.objectproduk,
-                        //     objectsatuanfk: item.satuan,
-                        //     level: item.level,
-                        //     urutan: item.urutan,
-                        //     objectkelompokumurfk: item.kelompokumur,
-                        //     tglinput: new Date(),
-                        //     tglupdate: new Date(),
-                        //     objectpegawaiinputfk: req.idPegawai,
-                        //     objectindukfk:2,
-                        // }, {
-                        //     transaction: transaction
-                        // })
-                        // return pemeriksaanlablevel3
-                    }
-                })
-
-
-
-            }
-            ))
-
-
-
+        const pemeriksaanlablevel1 = await saveFilteredRows(filteredRowsLevel1)
+        const pemeriksaanlablevel2 = await saveFilteredRows(filteredRowsLevel2)
+        const pemeriksaanlablevel3 = await saveFilteredRows(filteredRowsLevel3)
 
 
         await transaction.commit();

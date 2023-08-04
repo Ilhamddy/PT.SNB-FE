@@ -1,7 +1,7 @@
 import pool from "../../../config/dbcon.query";
 import * as uuid from 'uuid'
 import db from "../../../models";
-import { qGetJenisDetailProdukLainLain, 
+import { qGetDetailPenerimaan, qGetJenisDetailProdukLainLain, 
     qGetKemasan, 
     qGetProdukEdit, 
     qGetProdukKonversi, 
@@ -16,6 +16,8 @@ const m_detailjenisproduk = db.m_detailjenisproduk;
 const m_sediaan = db.m_sediaan
 const m_satuan = db.m_satuan
 const m_kemasanproduk = db.m_kemasanproduk
+const t_penerimaanbarang = db.t_penerimaanbarang
+const t_penerimaanbarangdetail = db.t_penerimaanbarangdetail
 
 
 const createOrUpdateProdukObat = async (req, res) => {
@@ -299,7 +301,7 @@ const createOrUpdateSatuan = async (req, res) => {
                 transaction: transaction
             })
         }else{
-            createdOrEdited = await m_satuan.update({
+            const [_, edited] = await m_satuan.update({
                 statusenabled: body.statusenabled,
                 satuan: body.satuan,
                 objectjenissatuanfk: body.jenissatuan || null,
@@ -309,8 +311,11 @@ const createOrUpdateSatuan = async (req, res) => {
                 where: {
                     id: body.id
                 },
-                transaction: transaction
+                transaction: transaction,
+                plain: true,
+                returning: true
             })
+            createdOrEdited = edited
         }
 
         await transaction.commit();
@@ -563,12 +568,111 @@ const getSatuanFromProduk = async (req, res) => {
             code: 200
         });
     }catch(error){
-        console.error("==Get satuan from produk error");
+        console.error("==Get satuan from produk gagal");
         console.error(error)
         res.status(500).send({
             data: error,
             success: false,
             msg: 'Get satuan from produk gagal',
+            code: 500
+        });
+    }
+}
+
+const createOrUpdatePenerimaan = async (req, res) => {
+    let transaction = null;
+    try{
+        transaction = await db.sequelize.transaction();
+    }catch(e){
+        console.error(e)
+        res.status(500).send({
+            data: e.message,
+            success: false,
+            msg: 'Transaksi gagal',
+            code: 500
+        });
+        return;
+    }
+    try {
+        const {
+            createdOrUpdatedPenerimaan,
+            norecpenerimaan
+        } = await hCreateOrUpdatePenerimaan(req, res, transaction)
+
+
+        const {
+            createdOrUpdatedDetailPenerimaan
+        } = await hCreateOrUpdateDetailPenerimaan(
+            req, 
+            res, 
+            transaction, 
+            norecpenerimaan
+        )
+        
+        await transaction.commit();
+
+        const tempres = {
+            createdOrUpdatedPenerimaan: createdOrUpdatedPenerimaan,
+            createdOrUpdatedDetailPenerimaan: createdOrUpdatedDetailPenerimaan
+        }
+
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+            msg: 'Create or update penerimaan berhasil',
+            code: 200
+        });
+    }catch(error){
+        console.error("==Create or update produk penerimaan gagal");
+        console.error(error)
+        transaction.rollback();
+        res.status(500).send({
+            data: error,
+            success: false,
+            msg: 'Create or update produk penerimaan gagal',
+            code: 500
+        });
+    }
+}
+
+const getPenerimaan = async (req, res) => {
+    try{
+        const {norecpenerimaan} = req.query
+        if(!norecpenerimaan) throw Error("norecpenerimaan tidak boleh kosong")
+        let detailPenerimaan = 
+            (await pool.query(qGetDetailPenerimaan, [norecpenerimaan])).rows
+
+        detailPenerimaan = detailPenerimaan.map((item) => ({
+            ...item,
+            jumlahterima: item.jumlahterima.toLocaleString('id-ID', {maximumFractionDigit: 10}),
+            hargasatuankecil: item.hargasatuankecil.toLocaleString('id-ID', {maximumFractionDigit: 10}),
+            hargasatuanterima: item.hargasatuanterima.toLocaleString('id-ID', {maximumFractionDigit: 10}),
+            diskonrupiah: item.diskonrupiah.toLocaleString('id-ID', {maximumFractionDigit: 10}),
+            diskonpersen: item.diskonpersen.toLocaleString('id-ID', {maximumFractionDigit: 10}),
+            diskonrupiah: item.diskonrupiah.toLocaleString('id-ID', {maximumFractionDigit: 10}), 
+            ppnrupiahproduk: item.ppnrupiahproduk.toLocaleString('id-ID', {maximumFractionDigit: 10}),
+            ppnpersenproduk: item.ppnpersenproduk.toLocaleString('id-ID', {maximumFractionDigit: 10}),
+            subtotalproduk: item.subtotalproduk.toLocaleString('id-ID', {maximumFractionDigit: 10}),
+            totalproduk: item.totalproduk.toLocaleString('id-ID', {maximumFractionDigit: 10}),
+        }))
+        let tempres = {
+            detailPenerimaan: detailPenerimaan
+        }
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+            msg: 'Get penerimaan Berhasil',
+            code: 200
+        });
+    }catch(error){
+        console.error("==Get penerimaan gagal");
+        console.error(error)
+        res.status(500).send({
+            data: error,
+            success: false,
+            msg: 'Get penerimaan gagal',
             code: 500
         });
     }
@@ -586,5 +690,127 @@ export default {
     createOrUpdateKemasan,
     getProdukMaster,
     getProdukEdit,
-    getSatuanFromProduk
+    getSatuanFromProduk,
+    getPenerimaan,
+    createOrUpdatePenerimaan
+}
+
+const hCreateOrUpdatePenerimaan = async (req, res, transaction) => {
+    let createdOrUpdatedPenerimaan
+    const bodyPenerimaan = req.body.penerimaan
+    if(!bodyPenerimaan) return null
+    let norecpenerimaan = bodyPenerimaan.norecpenerimaan
+    if(!norecpenerimaan){
+        norecpenerimaan = uuid.v4().substring(0, 32)
+        createdOrUpdatedPenerimaan = await t_penerimaanbarang.create({
+            norec: norecpenerimaan,
+            kdprofile: 0,
+            statusenabled: true,
+            no_terima: bodyPenerimaan.nomorterima || null,
+            no_order: bodyPenerimaan.nomorpo || null,
+            tglorder: new Date(bodyPenerimaan.tanggalterima),
+            tglterima: new Date(bodyPenerimaan.tanggalterima),
+            tgljatuhtempo: null,
+            objectrekananfk: bodyPenerimaan.namasupplier,
+            objectunitfk: bodyPenerimaan.unitpesan,
+            objectasalprodukfk: bodyPenerimaan.sumberdana,
+            keterangan: bodyPenerimaan.keterangan,
+            objectpegawaifk: req.idPegawai,
+            tglinput: new Date(),
+            tglupdate: new Date()
+        }, {
+            transaction: transaction
+        })
+    }else{
+        const [_, updated] = await t_penerimaanbarang.update({
+            no_terima: bodyPenerimaan.nomorterima || null,
+            no_order: bodyPenerimaan.nomorpo || null,
+            tglorder: new Date(bodyPenerimaan.tanggalterima),
+            tglterima: new Date(bodyPenerimaan.tanggalterima),
+            tgljatuhtempo: null,
+            objectrekananfk: bodyPenerimaan.namasupplier,
+            objectunitfk: bodyPenerimaan.unitpesan,
+            objectasalprodukfk: bodyPenerimaan.sumberdana,
+            keterangan: bodyPenerimaan.keterangan,
+            objectpegawaifk: req.idPegawai,
+            tglupdate: new Date()
+        }, {
+            where: {
+                norec: norecpenerimaan
+            },
+            returning: true,
+            plain: true,
+            transaction: transaction
+        })
+        createdOrUpdatedPenerimaan = updated
+    }
+    return { createdOrUpdatedPenerimaan, norecpenerimaan }
+}
+
+const hCreateOrUpdateDetailPenerimaan = async (
+    req, 
+    res, 
+    transaction, 
+    norecpenerimaan
+) => {
+    const arDetail = req.body.detail
+
+    let createdOrUpdatedDetailPenerimaan = []
+    createdOrUpdatedDetailPenerimaan = await Promise.all(
+        arDetail.map(async (bodyDetail) => {
+            let norecDetailPenerimaan = bodyDetail.norecdetailpenerimaan
+            let createdOrUpdated
+            if(!norecDetailPenerimaan){
+                norecDetailPenerimaan = uuid.v4().substring(0, 32)
+                createdOrUpdated = await t_penerimaanbarangdetail.create({
+                    norec: uuid.v4().substring(0, 32),
+                    statusenabled: true,
+                    objectpenerimaanbarangfk: norecpenerimaan,
+                    objectprodukfk: bodyDetail.produk.idproduk,
+                    ed: new Date(bodyDetail.tanggaled),
+                    nobatch: bodyDetail.nobatch,
+                    objectsatuanfk: bodyDetail.satuanterima,
+                    jumlah: bodyDetail.jumlahterima,
+                    hargasatuankecil: bodyDetail.hargasatuankecil,
+                    hargasatuanterima: bodyDetail.hargasatuanterima,
+                    subtotal: bodyDetail.subtotalproduk,
+                    diskonpersen: bodyDetail.diskonpersen,
+                    diskon: bodyDetail.diskonrupiah,
+                    ppnpersen: bodyDetail.ppnpersenproduk,
+                    ppn: bodyDetail.ppnrupiahproduk,
+                    total: bodyDetail.totalproduk
+                }, {
+                    transaction: transaction
+                }) 
+                
+            }else{
+                const [_, updated] = await t_penerimaanbarangdetail.update({
+                    objectprodukfk: bodyDetail.produk.idproduk,
+                    ed: new Date(bodyDetail.tanggaled),
+                    nobatch: bodyDetail.nobatch,
+                    objectsatuanfk: bodyDetail.satuanterima,
+                    jumlah: bodyDetail.jumlahterima,
+                    hargasatuankecil: bodyDetail.hargasatuankecil,
+                    hargasatuanterima: bodyDetail.hargasatuanterima,
+                    subtotal: bodyDetail.subtotalproduk,
+                    diskonpersen: bodyDetail.diskonpersen,
+                    diskon: bodyDetail.diskonrupiah,
+                    ppnpersen: bodyDetail.ppnpersenproduk,
+                    ppn: bodyDetail.ppnrupiahproduk,
+                    total: bodyDetail.totalproduk
+                }, {
+                    where: {
+                        norec: norecDetailPenerimaan
+                    },
+                    returning: true,
+                    plain: true,
+                    transaction: transaction
+                })
+                createdOrUpdated = updated
+            }
+            return createdOrUpdated
+        })
+    )
+    
+    return {createdOrUpdatedDetailPenerimaan}
 }

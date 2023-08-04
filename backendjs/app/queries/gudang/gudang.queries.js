@@ -105,6 +105,36 @@ const qGetSatuanFromProduk = `
             WHERE mkp.objectprodukfk = $1
 `
 
+const qGetDetailPenerimaan = `
+    SELECT
+    json_build_object(
+        'idproduk', mp.id,
+        'namaproduk', mp.namaproduk,
+        'satuanjual', msk.id,
+        'namasatuanjual', msp.satuan 
+    )
+    AS produk,
+    msk.id AS satuanterima,
+    msk.satuan AS namasatuanterima,
+    tpbd.jumlah AS jumlahterima,
+    tpbd.hargasatuankecil AS hargasatuankecil,
+    tpbd.hargasatuanterima AS hargasatuanterima,
+    tpbd.diskonpersen AS diskonpersen,
+    tpbd.diskon AS diskonrupiah,
+    tpbd.ppn AS ppnrupiahproduk,
+    tpbd.ppnpersen AS ppnpersenproduk,
+    tpbd.ed AS tanggaled,
+    tpbd.nobatch AS nobatch,
+    tpbd.subtotal AS subtotalproduk,
+    tpbd.total AS totalproduk
+        FROM t_penerimaanbarangdetail tpbd
+        JOIN m_produk mp ON mp.id = tpbd.objectprodukfk
+        LEFT JOIN m_satuan ms ON ms.id = tpbd.objectsatuanfk
+        JOIN m_satuan msp ON msp.id = mp.objectsatuanstandarfk
+        JOIN m_satuan msk ON msk.id = tpbd.objectsatuanfk
+            WHERE tpbd.objectpenerimaanbarangfk = $1
+`
+
 export {
     qGetJenisDetailProdukLainLain,
     qGetSediaanLainLain,
@@ -114,5 +144,6 @@ export {
     qGetKemasan,
     qGetProdukMaster,
     qGetProdukEdit,
-    qGetSatuanFromProduk
+    qGetSatuanFromProduk,
+    qGetDetailPenerimaan
 }

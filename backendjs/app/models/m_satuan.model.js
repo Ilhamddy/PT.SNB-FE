@@ -1,3 +1,4 @@
+// eslint-disable-next-line max-lines-per-function
 export default (sequelize, Sequelize) => {
     const m_satuan = sequelize.define("m_satuan", {
         id: {
