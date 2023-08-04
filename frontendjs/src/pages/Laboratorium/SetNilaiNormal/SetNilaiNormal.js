@@ -46,6 +46,8 @@ const SetNilaiNormal = () => {
         }));
         const [stateButtonSimpan, setstateButtonSimpan] = useState(false)
     const handleClickSelected = (row) => {
+        setRowsL([])
+        setRowsP([])
         dispatch(listSetNilaiNormalDetailGet(`${row.id}&kelompokumur=${row.objectkelompokumurfk}`));
         setstateButtonSimpan(true)
         vSetHeaderNilaiNormal.setFieldValue('namaPemeriksaan', row.reportdisplay)
