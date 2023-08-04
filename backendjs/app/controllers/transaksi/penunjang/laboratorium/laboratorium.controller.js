@@ -1046,7 +1046,7 @@ async function getListSetNilaiNormalDetail(req, res) {
         m_detailkelompokumur md
     join m_pemeriksaanlab mp on
         md.objectkelompokumurfk = mp.objectkelompokumurfk
-    left join m_nilainormallab mn on mn.objectpemeriksaanlabfk = mp.id
+    left join m_nilainormallab mn on mn.objectpemeriksaanlabfk = mp.id and md.id=mn.objectdetailkelompokumurfk 
     where
         mp.id = ${req.query.idpemeriksaan} and md.objectkelompokumurfk=${req.query.kelompokumur} and mp.statusenabled=true`);
 
