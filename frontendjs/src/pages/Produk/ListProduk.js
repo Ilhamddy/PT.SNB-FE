@@ -141,7 +141,7 @@ const ListProduk = () => {
         <div className="page-content page-list-produk">
             <ToastContainer closeButton={false} />
             <Container fluid>
-                <BreadCrumb title="Pembayaran" pageTitle="Pembayaran" />
+                <BreadCrumb title="List produk" pageTitle="List Produk" />
                     <Card className="p-5">
                         <Row className="justify-content-between mb-5">
                             <Col>

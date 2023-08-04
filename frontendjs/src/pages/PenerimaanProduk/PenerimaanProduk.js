@@ -38,7 +38,6 @@ const PenerimaanProduk = () => {
     const {norecpenerimaan} = useParams();
 
     const [dateNow] = useState(() => (new Date()).toISOString())
-    console.log(dateNow)
 
     const {
         supplier, 

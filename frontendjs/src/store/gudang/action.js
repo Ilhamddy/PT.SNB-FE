@@ -38,6 +38,9 @@ import {
     PENERIMAAN_QUERY_GET,
     PENERIMAAN_QUERY_GET_SUCCESS,
     PENERIMAAN_QUERY_GET_ERROR,
+    PENERIMAAN_LIST_QUERY_GET,
+    PENERIMAAN_LIST_QUERY_GET_SUCCESS,
+    PENERIMAAN_LIST_QUERY_GET_ERROR,
 } from "./actionType";
 
 
@@ -233,5 +236,20 @@ export const penerimaanQueryGetSuccess = (data) => ({
 
 export const penerimaanQueryGetError = (data) => ({
     type: PENERIMAAN_QUERY_GET_ERROR,
+    payload: { data: data },
+})
+
+export const penerimaanListQueryGet = (queries) => ({
+    type: PENERIMAAN_LIST_QUERY_GET,
+    payload: { queries: queries },
+})
+
+export const penerimaanListQueryGetSuccess = (data) => ({
+    type: PENERIMAAN_LIST_QUERY_GET_SUCCESS,
+    payload: { data: data },
+})
+
+export const penerimaanListQueryGetError = (data) => ({
+    type: PENERIMAAN_LIST_QUERY_GET_ERROR,
     payload: { data: data },
 })

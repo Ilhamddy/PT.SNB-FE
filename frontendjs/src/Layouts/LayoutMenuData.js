@@ -520,7 +520,7 @@ const Navdata = () => {
                 {
                     id: "penerimaanproduk",
                     label: "Penerimaan produk",
-                    link: "/farmasi/gudang/penerimaan-produk",
+                    link: "/farmasi/gudang/penerimaan-produk-list",
                     parentId: "gudang",
                     isAllowed: () => {
                         return isAllowedAccess(getUserPermissions(), [

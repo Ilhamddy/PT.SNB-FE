@@ -3,6 +3,7 @@ import * as uuid from 'uuid'
 import db from "../../../models";
 import { qGetDetailPenerimaan, qGetJenisDetailProdukLainLain, 
     qGetKemasan, 
+    qGetListPenerimaan, 
     qGetPenerimaan, 
     qGetProdukEdit, 
     qGetProdukKonversi, 
@@ -682,6 +683,43 @@ const getPenerimaan = async (req, res) => {
     }
 }
 
+const getListPenerimaan = async (req, res) => {
+    try{
+        let listPenerimaan = (await pool.query(qGetListPenerimaan, [])).rows
+        listPenerimaan = await Promise.all(
+            listPenerimaan.map(async (penerimaan) => {
+                const newPenerimaan = { ...penerimaan }
+                const listDetail = 
+                    (await pool.query(
+                        qGetDetailPenerimaan, 
+                        [penerimaan.norecpenerimaan]
+                        )).rows
+                newPenerimaan.detailpenerimaan = listDetail
+                return newPenerimaan
+            }
+        ))
+        const tempres = {
+            listpenerimaan: listPenerimaan
+        }
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+            msg: 'Get list penerimaan Berhasil',
+            code: 200
+        });
+    }catch(error){
+        console.error("==Get list penerimaan gagal");
+        console.error(error)
+        res.status(500).send({
+            data: error,
+            success: false,
+            msg: 'Get list penerimaan gagal',
+            code: 500
+        });
+    }
+}
+
 export default {
     createOrUpdateProdukObat,
     getLainLain,
@@ -695,7 +733,8 @@ export default {
     getProdukEdit,
     getSatuanFromProduk,
     getPenerimaan,
-    createOrUpdatePenerimaan
+    createOrUpdatePenerimaan,
+    getListPenerimaan
 }
 
 const hCreateOrUpdatePenerimaan = async (req, res, transaction) => {

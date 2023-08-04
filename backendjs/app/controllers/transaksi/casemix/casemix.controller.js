@@ -177,10 +177,7 @@ async function getListDaftarPasien(req, res) {
 }
 
 async function getListTarif18(req, res) {
-
     try {
-
-
         const resultlist = await queryPromise2(`select
                 sum(((tp.harga - case when tp.discount is null 
                 then 0 else tp.discount end) * tp.qty)+ case when 

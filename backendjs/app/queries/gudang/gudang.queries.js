@@ -136,25 +136,34 @@ const qGetDetailPenerimaan = `
             WHERE tpbd.objectpenerimaanbarangfk = $1
 `
 
-
-const qGetPenerimaan = `
+const qGetPenerimaanFE = `
     SELECT
     tpb.norec AS norecpenerimaan,
     tpb.no_terima AS nomorterima,
     tpb.tglterima AS tanggalterima,
     tpb.objectrekananfk AS namasupplier,
+    mr.reportdisplay AS namasupplierstr,
     tpb.no_order AS nomorpo,
     tpb.tglorder AS tanggalpesan,
     tpb.objectunitfk AS unitpesan,
+    mu.namaunit AS unitpesanstr,
     tpb.tgljatuhtempo AS tanggaljatuhtempo,
     tpb.objectasalprodukfk AS sumberdana,
     tpb.keterangan AS keterangan,
-    '' as subtotal,
-    '' as ppnrupiah,
-    '' as diskonrupiah,
-    '' as total
+    '' AS subtotal,
+    '' AS ppnrupiah,
+    '' AS diskonrupiah,
+    '' AS total
         FROM t_penerimaanbarang tpb
-            WHERE tpb.norec = $1
+        JOIN m_rekanan mr ON mr.id = tpb.objectrekananfk
+        JOIN m_unit mu ON mu.id = tpb.objectunitfk
+`
+
+const qGetPenerimaan = qGetPenerimaanFE + `
+            WHERE tpb.norec = $1`
+
+const qGetListPenerimaan = qGetPenerimaanFE + `
+            WHERE tpb.statusenabled = true
 `
 
 export {
@@ -168,5 +177,6 @@ export {
     qGetProdukEdit,
     qGetSatuanFromProduk,
     qGetDetailPenerimaan,
-    qGetPenerimaan
+    qGetPenerimaan,
+    qGetListPenerimaan
 }
