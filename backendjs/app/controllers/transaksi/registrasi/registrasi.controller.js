@@ -222,7 +222,8 @@ const savePasien = async (req, res) => {
         let nocm = getNocm[0].new_number + 1
         let new_number = getNocm[0].new_number + 1
         for (let x = getNocm[0].new_number.toString().length; x < getNocm[0].extention; x++) {
-            nocm = '0' + nocm;
+            if (nocm.toString().length !== getNocm[0].extention)
+                nocm = '0' + nocm;
         }
         const tglLahir = new Date(req.body.tgllahir)
         const result = await M_pasien.create({
@@ -468,7 +469,7 @@ async function saveRegistrasiPasien(req, res) {
             nobed: req.body.tempattidur,
             taskid: 3,
             statusenabled: true
-        }, { 
+        }, {
             transaction: transaction
         });
         // console.log(antreanPemeriksaan);
@@ -482,9 +483,9 @@ async function saveRegistrasiPasien(req, res) {
             }, { transaction });
         }
         await transaction.commit();
-        let tempres = { 
-            daftarPasien: daftarPasien, 
-            antreanPemeriksaan: antreanPemeriksaan 
+        let tempres = {
+            daftarPasien: daftarPasien,
+            antreanPemeriksaan: antreanPemeriksaan
         }
         res.status(200).send({
             data: tempres,
@@ -557,14 +558,14 @@ const updateRegistrasiPPulang = async (req, res) => {
         if (!req.body.norecAP) {
             throw new Error('norecAP tidak boleh kosong');
         }
-        
-        const { 
-            updatedBody, 
-            updatedBodyAp, 
-            updatedBodyK, 
-            updatedBodyKPindah 
-        } 
-        = hUpdateRegistrasiPulang(req, res, transaction)
+
+        const {
+            updatedBody,
+            updatedBodyAp,
+            updatedBodyK,
+            updatedBodyKPindah
+        }
+            = hUpdateRegistrasiPulang(req, res, transaction)
         await transaction.commit();
         if (updatedBody && updatedBodyAp) {
             updatedBody.norec = norecDP
@@ -706,7 +707,7 @@ const getDaftarPasienFilter = async (req, res) => {
                     ${filterInstalasi ? `AND td.objectinstalasifk = ${filterInstalasi}` : ''}
                     ORDER BY td.tglpulang DESC
                     LIMIT 25
-            `, 
+            `,
             )
 
 
@@ -991,7 +992,7 @@ async function getWidgetDaftarPasienRegistrasi(req, res) {
                 prefix: "",
                 suffix: "k",
             },
-            
+
 
         ];
         res.status(200).send({
