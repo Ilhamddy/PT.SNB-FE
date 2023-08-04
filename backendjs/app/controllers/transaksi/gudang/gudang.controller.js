@@ -3,6 +3,7 @@ import * as uuid from 'uuid'
 import db from "../../../models";
 import { qGetDetailPenerimaan, qGetJenisDetailProdukLainLain, 
     qGetKemasan, 
+    qGetPenerimaan, 
     qGetProdukEdit, 
     qGetProdukKonversi, 
     qGetProdukKonversiFromId, 
@@ -642,6 +643,8 @@ const getPenerimaan = async (req, res) => {
         if(!norecpenerimaan) throw Error("norecpenerimaan tidak boleh kosong")
         let detailPenerimaan = 
             (await pool.query(qGetDetailPenerimaan, [norecpenerimaan])).rows
+        let penerimaan = 
+            (await pool.query(qGetPenerimaan, [norecpenerimaan])).rows[0]
 
         detailPenerimaan = detailPenerimaan.map((item) => ({
             ...item,
@@ -657,7 +660,8 @@ const getPenerimaan = async (req, res) => {
             totalproduk: item.totalproduk.toLocaleString('id-ID', {maximumFractionDigit: 10}),
         }))
         let tempres = {
-            detailPenerimaan: detailPenerimaan
+            detailPenerimaan: detailPenerimaan,
+            penerimaan: penerimaan
         }
         res.status(200).send({
             data: tempres,
@@ -677,7 +681,6 @@ const getPenerimaan = async (req, res) => {
         });
     }
 }
-
 
 export default {
     createOrUpdateProdukObat,
@@ -699,7 +702,7 @@ const hCreateOrUpdatePenerimaan = async (req, res, transaction) => {
     let createdOrUpdatedPenerimaan
     const bodyPenerimaan = req.body.penerimaan
     if(!bodyPenerimaan) return null
-    let norecpenerimaan = bodyPenerimaan.norecpenerimaan
+    let norecpenerimaan = req.body.norecpenerimaan
     if(!norecpenerimaan){
         norecpenerimaan = uuid.v4().substring(0, 32)
         createdOrUpdatedPenerimaan = await t_penerimaanbarang.create({
@@ -710,7 +713,7 @@ const hCreateOrUpdatePenerimaan = async (req, res, transaction) => {
             no_order: bodyPenerimaan.nomorpo || null,
             tglorder: new Date(bodyPenerimaan.tanggalterima),
             tglterima: new Date(bodyPenerimaan.tanggalterima),
-            tgljatuhtempo: null,
+            tgljatuhtempo: new Date(bodyPenerimaan.tanggaljatuhtempo),
             objectrekananfk: bodyPenerimaan.namasupplier,
             objectunitfk: bodyPenerimaan.unitpesan,
             objectasalprodukfk: bodyPenerimaan.sumberdana,
@@ -727,7 +730,7 @@ const hCreateOrUpdatePenerimaan = async (req, res, transaction) => {
             no_order: bodyPenerimaan.nomorpo || null,
             tglorder: new Date(bodyPenerimaan.tanggalterima),
             tglterima: new Date(bodyPenerimaan.tanggalterima),
-            tgljatuhtempo: null,
+            tgljatuhtempo: new Date(bodyPenerimaan.tanggaljatuhtempo),
             objectrekananfk: bodyPenerimaan.namasupplier,
             objectunitfk: bodyPenerimaan.unitpesan,
             objectasalprodukfk: bodyPenerimaan.sumberdana,
@@ -778,7 +781,8 @@ const hCreateOrUpdateDetailPenerimaan = async (
                     diskon: bodyDetail.diskonrupiah,
                     ppnpersen: bodyDetail.ppnpersenproduk,
                     ppn: bodyDetail.ppnrupiahproduk,
-                    total: bodyDetail.totalproduk
+                    total: bodyDetail.totalproduk,
+                    jumlahkonversi: bodyDetail.konversisatuan
                 }, {
                     transaction: transaction
                 }) 
@@ -797,7 +801,8 @@ const hCreateOrUpdateDetailPenerimaan = async (
                     diskon: bodyDetail.diskonrupiah,
                     ppnpersen: bodyDetail.ppnpersenproduk,
                     ppn: bodyDetail.ppnrupiahproduk,
-                    total: bodyDetail.totalproduk
+                    total: bodyDetail.totalproduk,
+                    jumlahkonversi: bodyDetail.konversisatuan
                 }, {
                     where: {
                         norec: norecDetailPenerimaan

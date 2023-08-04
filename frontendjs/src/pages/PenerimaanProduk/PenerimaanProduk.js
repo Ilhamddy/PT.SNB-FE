@@ -58,13 +58,11 @@ const PenerimaanProduk = () => {
         penerimaanQuery: state.Gudang.penerimaanQueryGet?.data || null,
     }))
 
-    
-
     const validation = useFormik({
         enableReinitialize: true,
         initialValues: {
+            norecpenerimaan: "",
             penerimaan: {
-                norecpenerimaan: "",
                 nomorterima: "",
                 tanggalterima: dateNow,
                 namasupplier: "",
@@ -92,10 +90,6 @@ const PenerimaanProduk = () => {
                 tanggaljatuhtempo: Yup.string().required("Tanggal Jatuh Tempo harus diisi"),
                 sumberdana: Yup.string().required("Sumber Dana harus diisi"),
                 keterangan: Yup.string().required("Keterangan harus diisi"),
-                // subtotal: Yup.string().required("Subtotal harus diisi"),
-                // ppnrupiah: Yup.string().required("PPN Rupiah harus diisi"),
-                // diskonrupiah: Yup.string().required("Diskon harus diisi"),
-                // total: Yup.string().required("Total harus diisi"),
             }),
             detail: Yup.array()
         }),
@@ -320,13 +314,13 @@ const PenerimaanProduk = () => {
             newValPpn = newValPpn *
                 strToNumber(ppnPersen)/
                 100
-            newValPpn = onChangeStrNbr(
+            const newValPpnStr = onChangeStrNbr(
                 newValPpn,
                 detail.ppnrupiahproduk
             )
             setFF(
                 "ppnrupiahproduk",
-                newValPpn
+                newValPpnStr
             )
             return newValPpn
         }
@@ -334,7 +328,8 @@ const PenerimaanProduk = () => {
         const calculateTotal = (newValSubtotal, newValDiskon, newValPpn) => {
             let newValTotal =
                 newValSubtotal -
-                newValDiskon
+                newValDiskon +
+                newValPpn
             newValTotal = onChangeStrNbr(
                 newValTotal,
                 detail.totalproduk
@@ -368,29 +363,35 @@ const PenerimaanProduk = () => {
         vDetail.setFieldValue
     ])
 
-    useEffect(() => {
-        // const setFF = handleChangePenerimaan
-        // norecpenerimaan 
-        //     && setFF("norecpenerimaan", norecpenerimaan)
-    }, [norecpenerimaan, handleChangePenerimaan])
 
     useEffect(() => {
         dispatch(comboPenerimaanBarangGet())
     }, [dispatch])
 
     useEffect(() => {
+        const setFF = validation.setFieldValue
         norecpenerimaan && 
             dispatch(penerimaanQueryGet({norecpenerimaan: norecpenerimaan}))
-    }, [dispatch, norecpenerimaan])
+
+        setFF("norecpenerimaan", norecpenerimaan)
+    }, [dispatch, norecpenerimaan, validation.setFieldValue])
 
     useEffect(() => {
         const setFF = validation.setFieldValue
         if(penerimaanQuery.detailPenerimaan){
             setFF("detail", penerimaanQuery.detailPenerimaan || [])
-        }else{
-            setFF("detail", [])
         }
-    }, [penerimaanQuery, validation.setFieldValue])
+        if(penerimaanQuery.penerimaan){
+            setFF("penerimaan", penerimaanQuery.penerimaan)
+        }
+        if(!norecpenerimaan){
+            setFF("detail", [])
+            setFF("penerimaan", validation.initialValues.penerimaan)
+        }
+    }, [penerimaanQuery, 
+        validation.setFieldValue, 
+        norecpenerimaan, 
+        validation.initialValues.penerimaan])
 
     /**
      * @type {import("react-data-table-component").TableColumn<typeof vDetail.values>[]}
@@ -464,6 +465,7 @@ const PenerimaanProduk = () => {
                         name={`nomorterima`}
                         type="text"
                         value={penerimaan.nomorterima} 
+                        disabled={!!norecpenerimaan}
                         onChange={(e) => {
                             handleChangePenerimaan("nomorterima", e.target.value)
                         }}
@@ -1300,7 +1302,7 @@ const PenerimaanProduk = () => {
                         placement="top" 
                         formTarget="form-input-penerimaan"
                         >
-                        Simpan
+                        {!!norecpenerimaan ? "Edit" : "Simpan"}
                     </Button>
                     <Button
                         type="button"
