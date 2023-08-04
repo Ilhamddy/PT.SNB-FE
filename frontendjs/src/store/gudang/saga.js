@@ -27,7 +27,9 @@ import {
     penerimaanSaveOrUpdateError,
     penerimaanSaveOrUpdateSuccess,
     penerimaanQueryGetError,
-    penerimaanQueryGetSuccess
+    penerimaanQueryGetSuccess,
+    penerimaanListQueryGetSuccess,
+    penerimaanListQueryGetError
 } from "./action";
 
 
@@ -46,7 +48,8 @@ import {
     PRODUK_EDIT_GET,
     SATUAN_FROM_PRODUK_GET,
     PENERIMAAN_SAVE_OR_UPDATE,
-    PENERIMAAN_QUERY_GET
+    PENERIMAAN_QUERY_GET,
+    PENERIMAAN_LIST_QUERY_GET
 } from "./actionType";
 
 const serviceGudang = new ServiceGudang();
@@ -199,6 +202,16 @@ function* onPenerimaanQueryGet({payload: {queries}}){
     }
 }
 
+function* onPenerimaanListQueryGet({payload: {queries}}){
+    try {
+        let response = yield call(serviceGudang.getListPenerimaan, queries);
+        yield put(penerimaanListQueryGetSuccess(response.data));
+    } catch (error) {
+        console.error(error);
+        yield put(penerimaanListQueryGetError(error));
+    }
+}
+
 export function* watchSaveObatGudang() {
     yield takeEvery(OBAT_GUDANG_SAVE, onSaveObatGudang);
 }
@@ -251,6 +264,10 @@ export function* watchPenerimaanQueryGet(){
     yield takeEvery(PENERIMAAN_QUERY_GET, onPenerimaanQueryGet);
 }
 
+export function* watchPenerimaanListQueryGet(){
+    yield takeEvery(PENERIMAAN_LIST_QUERY_GET, onPenerimaanListQueryGet);
+}
+
 function* registrasiSaga() {
     yield all([
         fork(watchSaveObatGudang),
@@ -265,7 +282,8 @@ function* registrasiSaga() {
         fork(watchProdukEditGet),
         fork(watchSatuanFromProdukGet),
         fork(watchPenerimaanSaveOrUpdate),
-        fork(watchPenerimaanQueryGet)
+        fork(watchPenerimaanQueryGet),
+        fork(watchPenerimaanListQueryGet)
     ]);
 }
 

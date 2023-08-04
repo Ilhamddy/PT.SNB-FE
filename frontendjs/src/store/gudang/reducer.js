@@ -39,6 +39,9 @@ import {
     PENERIMAAN_QUERY_GET,
     PENERIMAAN_QUERY_GET_SUCCESS,
     PENERIMAAN_QUERY_GET_ERROR,
+    PENERIMAAN_LIST_QUERY_GET,
+    PENERIMAAN_LIST_QUERY_GET_SUCCESS,
+    PENERIMAAN_LIST_QUERY_GET_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -103,6 +106,11 @@ const INIT_STATE = {
         error: null,
     },
     penerimaanQueryGet: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    penerimaanListQueryGet: {
         data: [],
         loading: false,
         error: null,
@@ -579,6 +587,42 @@ const Registrasi = (state = INIT_STATE, action) => {
                 ...state,
                 penerimaanQueryGet: {
                     ...state.penerimaanQueryGet,
+                    loading: false,
+                    data: [],
+                    error: action.payload.data
+                }
+            }
+        }
+
+        case PENERIMAAN_LIST_QUERY_GET: {
+            return {
+                ...state,
+                penerimaanListQueryGet: {
+                    ...state.penerimaanListQueryGet,
+                    loading: true,
+                    data: [],
+                    error: null
+                }
+            }
+        }
+
+        case PENERIMAAN_LIST_QUERY_GET_SUCCESS: {
+            return {
+                ...state,
+                penerimaanListQueryGet: {
+                    ...state.penerimaanListQueryGet,
+                    loading: false,
+                    data: action.payload.data,
+                    error: null
+                }
+            }
+        }
+
+        case PENERIMAAN_LIST_QUERY_GET_ERROR: {
+            return {
+                ...state,
+                penerimaanListQueryGet: {
+                    ...state.penerimaanListQueryGet,
                     loading: false,
                     data: [],
                     error: action.payload.data

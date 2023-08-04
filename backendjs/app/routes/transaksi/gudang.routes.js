@@ -88,4 +88,10 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getPenerimaan
     )
+
+    app.get(
+        "/api/transaksi/gudang/get-list-penerimaan",
+        [authJwt.verifyToken],
+        controller.getListPenerimaan
+    )
 }
