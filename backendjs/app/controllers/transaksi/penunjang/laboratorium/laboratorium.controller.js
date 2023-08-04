@@ -1,6 +1,6 @@
 import pool from "../../../../config/dbcon.query";
 import * as uuid from 'uuid';
-import queries from '../../../../queries/transaksi/registrasi.queries';
+import queries from '../../../../queries/penunjang/laboratorium/laboratorium.queries';
 import db from "../../../../models";
 
 const queryPromise2 = (query) => {
@@ -640,9 +640,18 @@ async function getTransaksiPelayananLaboratoriumByNorecDp(req, res) {
      left join m_unit mu2 on mu2.id=ta.objectunitasalfk 
         where td.norec='${req.query.norecdp}' and mu.objectinstalasifk =4
         `);
+        let resultsNilaiNormal = await Promise.all(
+            resultlist.rows.map(async (item) => {
+                const norecpp = item.norec;
+                const listnilainormal = await pool.query(queries.qResult, [norecpp])
+                return {
+                    ...item,
+                    listnilainormal: listnilainormal.rows
+                }
+            }
+            ))
 
-
-        let tempres = resultlist.rows
+        let tempres = resultsNilaiNormal
 
         res.status(200).send({
             data: tempres,
@@ -1202,7 +1211,7 @@ async function saveSetMasterNilaiNormalLab(req, res) {
         )
 
         await transaction.commit();
-        let tempres = { nilainormallab,nilainormallabp }
+        let tempres = { nilainormallab, nilainormallabp }
         res.status(200).send({
             data: tempres,
             status: "success",
