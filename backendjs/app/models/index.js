@@ -41,6 +41,7 @@ import m_kelompokumurM from "./m_kelompokumur.model.js";
 import m_detailkelompokumurM from "./m_detailkelompokumur.model.js";
 import t_penerimaanbarangModel from "./t_penerimaanbarang.model.js";
 import t_penerimaanbarangdetailModel from "./t_penerimaanbarangdetail.model.js";
+import m_nilainormallabM from "./m_nilainormallab.model.js";
 
 
 const sequelize = new Sequelize(
@@ -109,6 +110,8 @@ db.m_kelompokumur = m_kelompokumurM(sequelize,Sequelize);
 db.m_detailkelompokumur = m_detailkelompokumurM(sequelize, Sequelize)
 db.t_penerimaanbarang = t_penerimaanbarangModel(sequelize, Sequelize)
 db.t_penerimaanbarangdetail = t_penerimaanbarangdetailModel(sequelize, Sequelize)
+db.m_detailkelompokumur = m_detailkelompokumurM(sequelize, Sequelize);
+db.m_nilainormallab = m_nilainormallabM(sequelize, Sequelize);
 
 db.role.belongsToMany(db.user, {
   through: "user_roles",

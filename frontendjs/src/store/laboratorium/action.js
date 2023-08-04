@@ -47,7 +47,16 @@ import {
     LIST_DETAIL_KEL_UMUR_LABORATORIUM_GET_ERROR,
     SAVE_MASTER_DKEL_UMUR_LABORATORIUM,
     SAVE_MASTER_DKEL_UMUR_LABORATORIUM_SUCCESS,
-    SAVE_MASTER_DKEL_UMUR_LABORATORIUM_ERROR
+    SAVE_MASTER_DKEL_UMUR_LABORATORIUM_ERROR,
+    LIST_SET_NILAI_NORMAL_LABORATORIUM_GET,
+    LIST_SET_NILAI_NORMAL_LABORATORIUM_GET_SUCCESS,
+    LIST_SET_NILAI_NORMAL_LABORATORIUM_GET_ERROR,
+    LIST_SET_NILAI_NORMAL_DETAIL_GET,
+    LIST_SET_NILAI_NORMAL_DETAIL_GET_SUCCESS,
+    LIST_SET_NILAI_NORMAL_DETAIL_GET_ERROR,
+    SAVE_SET_MASTER_NILAI_NORMAL_LAB,
+    SAVE_SET_MASTER_NILAI_NORMAL_LAB_SUCCESS,
+    SAVE_SET_MASTER_NILAI_NORMAL_LAB_ERROR
 } from "./actionType";
 
 export const laboratoriumResetForm = () => ({
@@ -292,5 +301,50 @@ export const saveMasterDKelUmurLaboratoriumSuccess = (data, history) => ({
 
 export const saveMasterDKelUmurLaboratoriumError = (error) => ({
     type: SAVE_MASTER_DKEL_UMUR_LABORATORIUM_ERROR,
+    payload: error,
+});
+
+export const listSetNilaiNormalGet = (param) => ({
+    type: LIST_SET_NILAI_NORMAL_LABORATORIUM_GET,
+    payload: { param },
+});
+
+export const listSetNilaiNormalGetSuccess = (data) => ({
+    type: LIST_SET_NILAI_NORMAL_LABORATORIUM_GET_SUCCESS,
+    payload: data,
+});
+
+export const listSetNilaiNormalGetError = (error) => ({
+    type: LIST_SET_NILAI_NORMAL_LABORATORIUM_GET_ERROR,
+    payload: error,
+});
+
+export const listSetNilaiNormalDetailGet = (param) => ({
+    type: LIST_SET_NILAI_NORMAL_DETAIL_GET,
+    payload: { param },
+});
+
+export const listSetNilaiNormalDetailGetSuccess = (data) => ({
+    type: LIST_SET_NILAI_NORMAL_DETAIL_GET_SUCCESS,
+    payload: data,
+});
+
+export const listSetNilaiNormalDetailGetError = (error) => ({
+    type: LIST_SET_NILAI_NORMAL_DETAIL_GET_ERROR,
+    payload: error,
+});
+
+export const saveSetMasterNilaiNormalLab = (data, history) => ({
+    type: SAVE_SET_MASTER_NILAI_NORMAL_LAB,
+    payload: { data, history },
+});
+// common error
+export const saveSetMasterNilaiNormalLabSuccess = (data, history) => ({
+    type: SAVE_SET_MASTER_NILAI_NORMAL_LAB_SUCCESS,
+    payload: { data, history },
+});
+
+export const saveSetMasterNilaiNormalLabError = (error) => ({
+    type: SAVE_SET_MASTER_NILAI_NORMAL_LAB_ERROR,
     payload: error,
 });

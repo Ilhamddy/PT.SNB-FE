@@ -89,7 +89,7 @@ const DetailKelompokUmur = () => {
         dispatch(saveMasterDKelUmurLaboratorium(tempValue, ''));
     };
 
-    console.log(validation.errors)
+    // console.log(validation.errors)
     const tableCustomStyles = {
         headRow: {
             style: {

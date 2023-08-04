@@ -20,7 +20,7 @@ import withRouter from '../../../Components/Common/withRouter';
 import BreadCrumb from '../../../Components/Common/BreadCrumb';
 import DataTable from 'react-data-table-component';
 import {
-    comboLaboratoriumGet,saveNilaiNormalLaboratorium
+    comboLaboratoriumGet, saveNilaiNormalLaboratorium,laboratoriumResetForm
 } from '../../../store/actions';
 
 const MasterNilaiNormal = () => {
@@ -28,15 +28,20 @@ const MasterNilaiNormal = () => {
     document.title = "Master Nilai Normal";
     const dispatch = useDispatch();
     const history = useNavigate();
+    useEffect(() => {
+        return () => {
+            dispatch(laboratoriumResetForm());
+        }
+    }, [dispatch])
     const { data, loading, error,
-        newDataNilai,loadingDataNilai, successDataNilai,errorDataNilai } = useSelector((state) => ({
-        data: state.Laboratorium.comboLaboratoriumGet.data,
-        loading: state.Laboratorium.comboLaboratoriumGet.loading,
-        newDataNilai:state.Laboratorium.saveNilaiNormalLaboratorium.newData,
-        loadingDataNilai:state.Laboratorium.saveNilaiNormalLaboratorium.loading, 
-        successDataNilai:state.Laboratorium.saveNilaiNormalLaboratorium.success,
-        errorDataNilai: state.Laboratorium.saveNilaiNormalLaboratorium.error,
-    }));
+        newDataNilai, loadingDataNilai, successDataNilai, errorDataNilai } = useSelector((state) => ({
+            data: state.Laboratorium.comboLaboratoriumGet.data,
+            loading: state.Laboratorium.comboLaboratoriumGet.loading,
+            newDataNilai: state.Laboratorium.saveNilaiNormalLaboratorium.newData,
+            loadingDataNilai: state.Laboratorium.saveNilaiNormalLaboratorium.loading,
+            successDataNilai: state.Laboratorium.saveNilaiNormalLaboratorium.success,
+            errorDataNilai: state.Laboratorium.saveNilaiNormalLaboratorium.error,
+        }));
     const [rows, setRows] = useState([{
         id: 1, kode: `1`, nama: `${layanan}`, satuan: '', kelompokumur: '', aksi: '', statusDisable: true,
         level: 1, urutan: 1, lastUrutan: 1, lastTombol: false, lastId: 1, objectinduk: 1
@@ -148,11 +153,11 @@ const MasterNilaiNormal = () => {
     };
     const handleBack = () => {
         history("/laboratorium/masterlayananlab");
-      };
-    const handleClickSimpan = ()=>{
+    };
+    const handleClickSimpan = () => {
         let tempValue = {
             data: rows,
-            objectproduk:idproduk
+            objectproduk: idproduk
         }
         dispatch(saveNilaiNormalLaboratorium(tempValue));
     }
@@ -318,14 +323,14 @@ const MasterNilaiNormal = () => {
                                             </Col>
                                             <Col>
                                                 <Button type="button" className="rounded-pill" placement="top" id="tooltipTopPencarian"
-                                                 onClick={handleClickSimpan}
-                                                 >
+                                                    onClick={handleClickSimpan}
+                                                >
                                                     Simpan
                                                 </Button>
-                                                        <Button type="button" color='danger' className="rounded-pill" placement="top" onClick={handleBack}>
-                                                            Back
-                                                        </Button>
-                                                   
+                                                <Button type="button" color='danger' className="rounded-pill" placement="top" onClick={handleBack}>
+                                                    Back
+                                                </Button>
+
                                             </Col>
                                         </Row>
                                     </div>

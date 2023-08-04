@@ -28,10 +28,10 @@ const MasterDataLayanan = () => {
     const dispatch = useDispatch();
     const history = useNavigate();
     const { data, loading, error } = useSelector((state) => ({
-            data: state.Laboratorium.masterPelayananLaboratoriumGet.data,
-            loading: state.Laboratorium.masterPelayananLaboratoriumGet.loading
-            
-        }));
+        data: state.Laboratorium.masterPelayananLaboratoriumGet.data,
+        loading: state.Laboratorium.masterPelayananLaboratoriumGet.loading
+
+    }));
     const current = new Date();
     const [dateStart, setdateStart] = useState(`${current.getFullYear()}-${current.getMonth() + 1}-${current.getDate()}`);
     const [dateEnd, setdateEnd] = useState(`${current.getFullYear()}-${current.getMonth() + 1}-${current.getDate()}`);
@@ -54,8 +54,11 @@ const MasterDataLayanan = () => {
     const onClickDetail = (product, id) => {
 
     };
-    const handleClickDetail = (e) => {
-        history(`/laboratorium/masternilainormal/${e.id}/${e.namaproduk}/${e.kodeexternal}/${e.detailjenisproduk}`);
+    const handleClickDetail = (id, e) => {
+        if (id === 1)
+            history(`/laboratorium/masternilainormal/${e.id}/${e.namaproduk}/${e.kodeexternal}/${e.detailjenisproduk}`);
+        else
+            history(`/laboratorium/setnilainormal/${e.id}/${e.namaproduk}/${e.kodeexternal}/${e.detailjenisproduk}`);
     };
     const columns = [
         {
@@ -64,12 +67,12 @@ const MasterDataLayanan = () => {
                 return (
                     <div className="hstack gap-3 flex-wrap">
                         <UncontrolledDropdown className="dropdown d-inline-block">
-                        <DropdownToggle className="btn btn-soft-secondary btn-sm" tag="button" id="tooltipTop2">
+                            <DropdownToggle className="btn btn-soft-secondary btn-sm" tag="button" id="tooltipTop2">
                                 <i className="ri-apps-2-line"></i>
                             </DropdownToggle>
                             <DropdownMenu className="dropdown-menu-end">
-                                <DropdownItem href="#!" onClick={() => handleClickDetail(data)}><i className="ri-apps-2-line align-bottom me-2 link-success"></i>Detail</DropdownItem>
-                                <DropdownItem href="#!"><i className="ri-file-settings-line align-bottom me-2 link-success"></i>Setting Layanan</DropdownItem>
+                                <DropdownItem href="#!" onClick={() => handleClickDetail(1, data)}><i className="ri-apps-2-line align-bottom me-2 link-success"></i>Detail</DropdownItem>
+                                <DropdownItem href="#!" onClick={() => handleClickDetail(2, data)}><i className="ri-file-settings-line align-bottom me-2 link-success"></i>Set Nilai Normal</DropdownItem>
                             </DropdownMenu>
                         </UncontrolledDropdown>
                         {/* <Link to={`/laboratorium/masternilainormal/${data.id}/${data.namaproduk}/${data.kodeexternal}/${data.detailjenisproduk}`} className="link-success fs-15" id="tooltipMasterDataLayanan"><i className="ri-apps-2-line"></i></Link>
@@ -118,13 +121,13 @@ const MasterDataLayanan = () => {
 
     const handleClickCari = () => {
         dispatch(masterPelayananLaboratoriumGet(`${search}`));
-        
+
     }
     const handleFilter = (e) => {
         if (e.keyCode === 13) {
-           
+
             dispatch(masterPelayananLaboratoriumGet(`${search}`));
-            
+
         }
     }
     const handleClickToSetting = () => {

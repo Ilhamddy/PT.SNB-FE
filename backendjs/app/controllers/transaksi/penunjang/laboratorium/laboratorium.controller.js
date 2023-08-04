@@ -32,7 +32,7 @@ async function getDetailJenisProdukLab(req, res) {
     try {
 
         const resultlist = await queryPromise2(`select id as value, detailjenisproduk as label,'' as detail  from m_detailjenisproduk md 
-        where md.objectjenisprodukfk = 1
+        where md.objectjenisprodukfk = 1 and md.statusenabled=true
         `);
         for (var i = 0; i < resultlist.rows.length; ++i) {
 
@@ -44,7 +44,7 @@ async function getDetailJenisProdukLab(req, res) {
             end as label, mp.objectindukfk , mp."level" , mp.urutan, mp.objectprodukfk as value,
             mp2.objectdetailjenisprodukfk from m_pemeriksaanlab mp 
             join m_produk mp2 on mp.objectprodukfk = mp2.id 
-            where mp2.objectdetailjenisprodukfk = '${resultlist.rows[i].value}'
+            where mp2.objectdetailjenisprodukfk = '${resultlist.rows[i].value}' and mp.statusenabled=true
             order by mp.kodeexternal`);
             let tempOrder = []
             for (var x = 0; x < resultlistOrder.rows.length; ++x) {
@@ -732,6 +732,15 @@ async function saveMasterNilaiNormal(req, res) {
         let filteredRowsLevel2 = req.body.data.filter((row) => row.level === 2);
         let filteredRowsLevel3 = req.body.data.filter((row) => row.level === 3);
 
+
+        const updatepemeriksaanlab = await db.m_pemeriksaanlab.update({
+            statusenabled: false
+        }, {
+            where: {
+                objectprodukfk: req.body.objectproduk
+            },
+            transaction: transaction
+        })
         const saveFilteredRows = async (filteredRows) => {
             return await Promise.all(filteredRows.map(async (item) => {
                 const pemeriksaanlablevel = await db.m_pemeriksaanlab.create({
@@ -803,7 +812,7 @@ async function someFunctionUsingSaveMasterNilaiNormal2(req, res) {
             kodeexternal: req.kodeexternal,
             namaexternal: req.namaexternal,
             reportdisplay: req.reportdisplay,
-            objectprodukfk: req.objectproduk,
+            objectprodukfk: req.objectprodukfk,
             objectsatuanfk: req.objectsatuanfk,
             level: req.level,
             urutan: req.urutan,
@@ -817,7 +826,7 @@ async function someFunctionUsingSaveMasterNilaiNormal2(req, res) {
             transaction
         })
         await transaction.commit(); // Commit the initial transaction
-
+        // console.log(pemeriksaanlablevel3)
     } catch (error) {
         console.error('Error executing query:', error);
         console.log(error)
@@ -984,6 +993,240 @@ async function saveMasterDetailKelompokUmur(req, res) {
 
 }
 
+async function getListSetNilaiNormal(req, res) {
+
+    try {
+
+        const resultlist = await queryPromise2(`select
+        row_number() over (
+            order by mp.id) as no,
+            mp.id,
+            mp.kodeexternal,
+            mp.reportdisplay,
+            ms.satuan,
+            mk.kelompokumur,
+            mp.objectkelompokumurfk
+    from
+        m_pemeriksaanlab mp
+    join m_satuan ms on ms.id=mp.objectsatuanfk
+    join m_kelompokumur mk on mk.id=mp.objectkelompokumurfk 
+    where
+        mp.objectprodukfk = ${req.query.param}
+        and mp.statusenabled = true
+    order by
+        mp.kodeexternal asc`);
+
+        res.status(200).send({
+            data: resultlist.rows,
+            status: "success",
+            success: true,
+        });
+
+    } catch (error) {
+        res.status(500).send({ message: error });
+    }
+
+}
+
+async function getListSetNilaiNormalDetail(req, res) {
+
+    try {
+
+        const resultlist = await queryPromise2(`select
+        row_number() over (
+            order by md.id) as no,
+            md.id,
+        md.detailkelompokumur,
+        mn.nilaimin,
+        mn.nilaimax,
+        mn.nilaitext,
+        mn.nilaikritis,
+        mn.objectjeniskelaminfk,
+        mn.id as idnilainormal,
+        mp.id as objectpemeriksaanlabfk
+    from
+        m_detailkelompokumur md
+    join m_pemeriksaanlab mp on
+        md.objectkelompokumurfk = mp.objectkelompokumurfk
+    left join m_nilainormallab mn on mn.objectpemeriksaanlabfk = mp.id
+    where
+        mp.id = ${req.query.idpemeriksaan} and md.objectkelompokumurfk=${req.query.kelompokumur} and mp.statusenabled=true`);
+
+        let filteredRowsjkL = resultlist.rows.filter((row) => row.objectjeniskelaminfk === 1);
+        let filteredRowsjkP = resultlist.rows.filter((row) => row.objectjeniskelaminfk === 2);
+        if (filteredRowsjkL.length === 0) {
+            for (let i = 0; i < resultlist.rows.length; i++) {
+                filteredRowsjkL.push({
+                    id: resultlist.rows[i].id,
+                    detailkelompokumur: resultlist.rows[i].detailkelompokumur,
+                    nilaimin: '', nilaimax: '', nilaitext: '', nilaikritis: '', idnilainormal: ''
+                })
+            }
+        }
+        if (filteredRowsjkP.length === 0) {
+            for (let i = 0; i < resultlist.rows.length; i++) {
+                filteredRowsjkP.push({
+                    id: resultlist.rows[i].id,
+                    detailkelompokumur: resultlist.rows[i].detailkelompokumur,
+                    nilaimin: '', nilaimax: '', nilaitext: '', nilaikritis: '', idnilainormal: ''
+                })
+            }
+
+        }
+        let tempres = { datap: filteredRowsjkP, datal: filteredRowsjkL }
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+        });
+
+    } catch (error) {
+        res.status(500).send({ message: error });
+    }
+
+}
+
+async function saveSetMasterNilaiNormalLab(req, res) {
+    let transaction = null;
+    try {
+        transaction = await db.sequelize.transaction();
+    } catch (e) {
+        console.error(e)
+        res.status(201).send({
+            status: e.message,
+            success: false,
+            msg: 'Simpan Gagal',
+            code: 201
+        });
+    }
+    try {
+
+        const nilainormallab = await Promise.all(
+            req.body.datal.map(async (item) => {
+                let nilainormallab = null
+                if (item.idnilainormal === '') {
+                    nilainormallab = await db.m_nilainormallab.create({
+                        statusenabled: true,
+                        namaexternal: req.body.header.namaPemeriksaan,
+                        reportdisplay: req.body.header.namaPemeriksaan,
+                        objectpemeriksaanlabfk: req.body.header.idnamaPemeriksaan,
+                        objectjeniskelaminfk: 1,
+                        objectdetailkelompokumurfk: item.id,
+                        metodepemeriksaan: req.body.header.metode,
+                        nilaimin: item.nilaimin,
+                        nilaimax: item.nilaimax,
+                        nilaitext: item.nilaitext,
+                        nilaikritis: item.nilaikritis,
+                        tglinput: new Date(),
+                        tglupdate: new Date(),
+                        objectpegawaiinputfk: req.idPegawai,
+                        tipedata: req.body.header.tipedata
+                    }, {
+                        transaction: transaction
+                    })
+                } else {
+                    nilainormallab = await db.m_nilainormallab.update({
+                        statusenabled: true,
+                        namaexternal: req.body.header.namaPemeriksaan,
+                        reportdisplay: req.body.header.namaPemeriksaan,
+                        objectpemeriksaanlabfk: req.body.header.idnamaPemeriksaan,
+                        objectjeniskelaminfk: 1,
+                        objectdetailkelompokumurfk: item.id,
+                        metodepemeriksaan: req.body.header.metode,
+                        nilaimin: item.nilaimin,
+                        nilaimax: item.nilaimax,
+                        nilaitext: item.nilaitext,
+                        nilaikritis: item.nilaikritis,
+                        tglupdate: new Date(),
+                        objectpegawaiupdatefk: req.idPegawai,
+                        tipedata: req.body.header.tipedata
+                    }, {
+                        where: {
+                            id: item.idnilainormal
+                        },
+                        transaction: transaction
+                    })
+                }
+
+
+                return nilainormallab
+            })
+        )
+
+        const nilainormallabp = await Promise.all(
+            req.body.datap.map(async (item) => {
+                let nilainormallabp = null
+                if (item.idnilainormal === '') {
+                    nilainormallabp = await db.m_nilainormallab.create({
+                        statusenabled: true,
+                        namaexternal: req.body.header.namaPemeriksaan,
+                        reportdisplay: req.body.header.namaPemeriksaan,
+                        objectpemeriksaanlabfk: req.body.header.idnamaPemeriksaan,
+                        objectjeniskelaminfk: 2,
+                        objectdetailkelompokumurfk: item.id,
+                        metodepemeriksaan: req.body.header.metode,
+                        nilaimin: item.nilaimin,
+                        nilaimax: item.nilaimax,
+                        nilaitext: item.nilaitext,
+                        nilaikritis: item.nilaikritis,
+                        tglinput: new Date(),
+                        tglupdate: new Date(),
+                        objectpegawaiinputfk: req.idPegawai,
+                        tipedata: req.body.header.tipedata
+                    }, {
+                        transaction: transaction
+                    })
+                } else {
+                    nilainormallabp = await db.m_nilainormallab.update({
+                        statusenabled: true,
+                        namaexternal: req.body.header.namaPemeriksaan,
+                        reportdisplay: req.body.header.namaPemeriksaan,
+                        objectpemeriksaanlabfk: req.body.header.idnamaPemeriksaan,
+                        objectjeniskelaminfk: 2,
+                        objectdetailkelompokumurfk: item.id,
+                        metodepemeriksaan: req.body.header.metode,
+                        nilaimin: item.nilaimin,
+                        nilaimax: item.nilaimax,
+                        nilaitext: item.nilaitext,
+                        nilaikritis: item.nilaikritis,
+                        tglupdate: new Date(),
+                        objectpegawaiupdatefk: req.idPegawai,
+                        tipedata: req.body.header.tipedata
+                    }, {
+                        where: {
+                            id: item.idnilainormal
+                        },
+                        transaction: transaction
+                    })
+                }
+
+
+                return nilainormallabp
+            })
+        )
+
+        await transaction.commit();
+        let tempres = { nilainormallab,nilainormallabp }
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+            msg: 'Berhasil',
+            code: 200
+        });
+
+    } catch (error) {
+        transaction && await transaction.rollback();
+        console.log(error)
+        res.status(201).send({
+            status: "false",
+            success: false,
+            msg: error,
+            code: 201
+        });
+    }
+
+}
 
 export default {
     getDetailJenisProdukLab,
@@ -1001,5 +1244,8 @@ export default {
     saveMasterNilaiNormal,
     saveMasterKelompokUmur,
     getListDetailKelompokUmur,
-    saveMasterDetailKelompokUmur
+    saveMasterDetailKelompokUmur,
+    getListSetNilaiNormal,
+    getListSetNilaiNormalDetail,
+    saveSetMasterNilaiNormalLab
 };

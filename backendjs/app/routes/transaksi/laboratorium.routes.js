@@ -108,4 +108,22 @@ export default function (app) {
         controller.saveMasterDetailKelompokUmur
     );
 
+    app.get(
+        "/api/transaksi/laboratorium/list-setnilai-normal",
+        [authJwt.verifyToken],
+        controller.getListSetNilaiNormal
+    );
+
+    app.get(
+        "/api/transaksi/laboratorium/list-setnilai-normal-detail",
+        [authJwt.verifyToken],
+        controller.getListSetNilaiNormalDetail
+    );
+
+    app.post(
+        "/api/transaksi/laboratorium/save-set-master-nilai-normal-lab",
+        [authJwt.verifyToken],
+        controller.saveSetMasterNilaiNormalLab
+    );
+
 }
