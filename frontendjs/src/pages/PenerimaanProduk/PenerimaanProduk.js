@@ -431,7 +431,7 @@ const PenerimaanProduk = () => {
             name: <span className='font-weight-bold fs-13'>Total</span>,
             sortable: true,
             selector: row => `Rp${row.totalproduk}`,
-            width: "100px"
+            width: "150px"
         },
         {
             name: <span className='font-weight-bold fs-13'>E.D</span>,
@@ -446,6 +446,28 @@ const PenerimaanProduk = () => {
             width: "100px"
         },
     ];
+
+
+
+    let subtotal = validation.values.detail.reduce((prev, curr) =>
+        prev + strToNumber(curr.subtotalproduk)
+    , 0)
+    subtotal = "Rp" + subtotal.toLocaleString("id-ID", {maximumFractionDigits:5})
+
+    let ppn = validation.values.detail.reduce((prev, curr) =>
+        prev + strToNumber(curr.ppnrupiahproduk)
+    , 0)
+    ppn = "Rp" + ppn.toLocaleString("id-ID", {maximumFractionDigits: 5})
+
+    let diskon = validation.values.detail.reduce((prev, curr) =>
+        prev + strToNumber(curr.diskonrupiah)
+    , 0)
+    diskon = "Rp" + diskon.toLocaleString("id-ID", {maximumFractionDigits: 5})
+
+    let total = validation.values.detail.reduce((prev, curr) => 
+        prev + strToNumber(curr.totalproduk)
+    , 0)
+    total = "Rp" + total.toLocaleString("id-ID", {maximumFractionDigits: 5})
 
 
     const InputUmumTerima = (
@@ -1327,7 +1349,7 @@ const PenerimaanProduk = () => {
                                 name={`subtotal`}
                                 type="text"
                                 disabled
-                                value={detail.subtotalproduk} 
+                                value={subtotal} 
                                 invalid={penerimaanTouched?.subtotal 
                                     && !!penerimaanErr?.subtotal}
                                 />
@@ -1349,7 +1371,7 @@ const PenerimaanProduk = () => {
                                 style={{ color: "black" }} 
                                 htmlFor={`ppnrupiah`}
                                 className="form-label mt-2">
-                                PPn
+                                PPN
                             </Label>
                         </Col>
                         <Col lg={6}>
@@ -1358,7 +1380,7 @@ const PenerimaanProduk = () => {
                                 name={`ppnrupiah`}
                                 type="text"
                                 disabled
-                                value={detail.ppnrupiahproduk} 
+                                value={ppn} 
                                 invalid={penerimaanTouched?.ppnrupiah 
                                     && !!penerimaanErr?.ppnrupiah}
                                 />
@@ -1389,7 +1411,7 @@ const PenerimaanProduk = () => {
                                 name={`diskonrupiah`}
                                 type="text"
                                 disabled
-                                value={detail.diskonrupiah} 
+                                value={diskon} 
                                 invalid={penerimaanTouched?.diskonrupiah 
                                     && !!penerimaanErr?.diskonrupiah}
                                 />
@@ -1420,7 +1442,7 @@ const PenerimaanProduk = () => {
                                 name={`total`}
                                 type="text"
                                 disabled
-                                value={detail.totalproduk} 
+                                value={total} 
                                 invalid={penerimaanTouched?.total 
                                     && !!penerimaanErr?.total}
                                 />
