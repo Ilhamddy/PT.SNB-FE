@@ -405,7 +405,8 @@ async function saveRegistrasiPasien(req, res) {
         var resultCount = await pool.query(query);
         let noregistrasi = parseFloat(resultCount.rows[0].count) + 1
         for (let x = resultCount.rows[0].count.toString().length; x < 4; x++) {
-            noregistrasi = '0' + noregistrasi;
+            if (noregistrasi.toString().length !== 4)
+                noregistrasi = '0' + noregistrasi;
         }
         if (req.body.kelas === "")
             req.body.kelas = 8
