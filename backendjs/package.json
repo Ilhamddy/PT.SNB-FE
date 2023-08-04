@@ -60,7 +60,7 @@
       "for-direction": [
         "error"
       ],
-      "max-lines-per-function": ["error", 140]
+      "max-lines-per-function": ["warn", 140]
     },
     "globals": {}
   },

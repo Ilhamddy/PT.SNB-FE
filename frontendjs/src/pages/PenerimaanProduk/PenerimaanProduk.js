@@ -58,13 +58,11 @@ const PenerimaanProduk = () => {
         penerimaanQuery: state.Gudang.penerimaanQueryGet?.data || null,
     }))
 
-    
-
     const validation = useFormik({
         enableReinitialize: true,
         initialValues: {
+            norecpenerimaan: "",
             penerimaan: {
-                norecpenerimaan: "",
                 nomorterima: "",
                 tanggalterima: dateNow,
                 namasupplier: "",
@@ -92,10 +90,6 @@ const PenerimaanProduk = () => {
                 tanggaljatuhtempo: Yup.string().required("Tanggal Jatuh Tempo harus diisi"),
                 sumberdana: Yup.string().required("Sumber Dana harus diisi"),
                 keterangan: Yup.string().required("Keterangan harus diisi"),
-                // subtotal: Yup.string().required("Subtotal harus diisi"),
-                // ppnrupiah: Yup.string().required("PPN Rupiah harus diisi"),
-                // diskonrupiah: Yup.string().required("Diskon harus diisi"),
-                // total: Yup.string().required("Total harus diisi"),
             }),
             detail: Yup.array()
         }),
@@ -320,13 +314,13 @@ const PenerimaanProduk = () => {
             newValPpn = newValPpn *
                 strToNumber(ppnPersen)/
                 100
-            newValPpn = onChangeStrNbr(
+            const newValPpnStr = onChangeStrNbr(
                 newValPpn,
                 detail.ppnrupiahproduk
             )
             setFF(
                 "ppnrupiahproduk",
-                newValPpn
+                newValPpnStr
             )
             return newValPpn
         }
@@ -334,7 +328,8 @@ const PenerimaanProduk = () => {
         const calculateTotal = (newValSubtotal, newValDiskon, newValPpn) => {
             let newValTotal =
                 newValSubtotal -
-                newValDiskon
+                newValDiskon +
+                newValPpn
             newValTotal = onChangeStrNbr(
                 newValTotal,
                 detail.totalproduk
@@ -368,29 +363,35 @@ const PenerimaanProduk = () => {
         vDetail.setFieldValue
     ])
 
-    useEffect(() => {
-        // const setFF = handleChangePenerimaan
-        // norecpenerimaan 
-        //     && setFF("norecpenerimaan", norecpenerimaan)
-    }, [norecpenerimaan, handleChangePenerimaan])
 
     useEffect(() => {
         dispatch(comboPenerimaanBarangGet())
     }, [dispatch])
 
     useEffect(() => {
+        const setFF = validation.setFieldValue
         norecpenerimaan && 
             dispatch(penerimaanQueryGet({norecpenerimaan: norecpenerimaan}))
-    }, [dispatch, norecpenerimaan])
+
+        setFF("norecpenerimaan", norecpenerimaan)
+    }, [dispatch, norecpenerimaan, validation.setFieldValue])
 
     useEffect(() => {
         const setFF = validation.setFieldValue
         if(penerimaanQuery.detailPenerimaan){
             setFF("detail", penerimaanQuery.detailPenerimaan || [])
-        }else{
-            setFF("detail", [])
         }
-    }, [penerimaanQuery, validation.setFieldValue])
+        if(penerimaanQuery.penerimaan){
+            setFF("penerimaan", penerimaanQuery.penerimaan)
+        }
+        if(!norecpenerimaan){
+            setFF("detail", [])
+            setFF("penerimaan", validation.initialValues.penerimaan)
+        }
+    }, [penerimaanQuery, 
+        validation.setFieldValue, 
+        norecpenerimaan, 
+        validation.initialValues.penerimaan])
 
     /**
      * @type {import("react-data-table-component").TableColumn<typeof vDetail.values>[]}
@@ -430,7 +431,7 @@ const PenerimaanProduk = () => {
             name: <span className='font-weight-bold fs-13'>Total</span>,
             sortable: true,
             selector: row => `Rp${row.totalproduk}`,
-            width: "100px"
+            width: "150px"
         },
         {
             name: <span className='font-weight-bold fs-13'>E.D</span>,
@@ -445,6 +446,28 @@ const PenerimaanProduk = () => {
             width: "100px"
         },
     ];
+
+
+
+    let subtotal = validation.values.detail.reduce((prev, curr) =>
+        prev + strToNumber(curr.subtotalproduk)
+    , 0)
+    subtotal = "Rp" + subtotal.toLocaleString("id-ID", {maximumFractionDigits:5})
+
+    let ppn = validation.values.detail.reduce((prev, curr) =>
+        prev + strToNumber(curr.ppnrupiahproduk)
+    , 0)
+    ppn = "Rp" + ppn.toLocaleString("id-ID", {maximumFractionDigits: 5})
+
+    let diskon = validation.values.detail.reduce((prev, curr) =>
+        prev + strToNumber(curr.diskonrupiah)
+    , 0)
+    diskon = "Rp" + diskon.toLocaleString("id-ID", {maximumFractionDigits: 5})
+
+    let total = validation.values.detail.reduce((prev, curr) => 
+        prev + strToNumber(curr.totalproduk)
+    , 0)
+    total = "Rp" + total.toLocaleString("id-ID", {maximumFractionDigits: 5})
 
 
     const InputUmumTerima = (
@@ -464,6 +487,7 @@ const PenerimaanProduk = () => {
                         name={`nomorterima`}
                         type="text"
                         value={penerimaan.nomorterima} 
+                        disabled={!!norecpenerimaan}
                         onChange={(e) => {
                             handleChangePenerimaan("nomorterima", e.target.value)
                         }}
@@ -1300,7 +1324,7 @@ const PenerimaanProduk = () => {
                         placement="top" 
                         formTarget="form-input-penerimaan"
                         >
-                        Simpan
+                        {!!norecpenerimaan ? "Edit" : "Simpan"}
                     </Button>
                     <Button
                         type="button"
@@ -1325,7 +1349,7 @@ const PenerimaanProduk = () => {
                                 name={`subtotal`}
                                 type="text"
                                 disabled
-                                value={detail.subtotalproduk} 
+                                value={subtotal} 
                                 invalid={penerimaanTouched?.subtotal 
                                     && !!penerimaanErr?.subtotal}
                                 />
@@ -1347,7 +1371,7 @@ const PenerimaanProduk = () => {
                                 style={{ color: "black" }} 
                                 htmlFor={`ppnrupiah`}
                                 className="form-label mt-2">
-                                PPn
+                                PPN
                             </Label>
                         </Col>
                         <Col lg={6}>
@@ -1356,7 +1380,7 @@ const PenerimaanProduk = () => {
                                 name={`ppnrupiah`}
                                 type="text"
                                 disabled
-                                value={detail.ppnrupiahproduk} 
+                                value={ppn} 
                                 invalid={penerimaanTouched?.ppnrupiah 
                                     && !!penerimaanErr?.ppnrupiah}
                                 />
@@ -1387,7 +1411,7 @@ const PenerimaanProduk = () => {
                                 name={`diskonrupiah`}
                                 type="text"
                                 disabled
-                                value={detail.diskonrupiah} 
+                                value={diskon} 
                                 invalid={penerimaanTouched?.diskonrupiah 
                                     && !!penerimaanErr?.diskonrupiah}
                                 />
@@ -1418,7 +1442,7 @@ const PenerimaanProduk = () => {
                                 name={`total`}
                                 type="text"
                                 disabled
-                                value={detail.totalproduk} 
+                                value={total} 
                                 invalid={penerimaanTouched?.total 
                                     && !!penerimaanErr?.total}
                                 />

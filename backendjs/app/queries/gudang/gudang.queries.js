@@ -107,6 +107,7 @@ const qGetSatuanFromProduk = `
 
 const qGetDetailPenerimaan = `
     SELECT
+    tpbd.norec AS norecdetailpenerimaan,
     json_build_object(
         'idproduk', mp.id,
         'namaproduk', mp.namaproduk,
@@ -135,6 +136,27 @@ const qGetDetailPenerimaan = `
             WHERE tpbd.objectpenerimaanbarangfk = $1
 `
 
+
+const qGetPenerimaan = `
+    SELECT
+    tpb.norec AS norecpenerimaan,
+    tpb.no_terima AS nomorterima,
+    tpb.tglterima AS tanggalterima,
+    tpb.objectrekananfk AS namasupplier,
+    tpb.no_order AS nomorpo,
+    tpb.tglorder AS tanggalpesan,
+    tpb.objectunitfk AS unitpesan,
+    tpb.tgljatuhtempo AS tanggaljatuhtempo,
+    tpb.objectasalprodukfk AS sumberdana,
+    tpb.keterangan AS keterangan,
+    '' as subtotal,
+    '' as ppnrupiah,
+    '' as diskonrupiah,
+    '' as total
+        FROM t_penerimaanbarang tpb
+            WHERE tpb.norec = $1
+`
+
 export {
     qGetJenisDetailProdukLainLain,
     qGetSediaanLainLain,
@@ -145,5 +167,6 @@ export {
     qGetProdukMaster,
     qGetProdukEdit,
     qGetSatuanFromProduk,
-    qGetDetailPenerimaan
+    qGetDetailPenerimaan,
+    qGetPenerimaan
 }

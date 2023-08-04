@@ -51,6 +51,9 @@ export default (sequelize, Sequelize) => {
         },
         total: {
             type: Sequelize.DOUBLE,
+        },
+        jumlahkonversi: {
+            type: Sequelize.DOUBLE,
         }
     }, {
         tableName: "t_penerimaanbarangdetail", // relation "user" does not exist
