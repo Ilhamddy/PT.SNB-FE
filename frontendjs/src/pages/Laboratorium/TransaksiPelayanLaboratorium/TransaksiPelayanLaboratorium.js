@@ -183,6 +183,8 @@ const TransaksiPelayanLaboratorium = () => {
                                                     data={dataPelayanan}
                                                     progressPending={loadingPelayanan}
                                                     customStyles={tableCustomStyles}
+                                                    expandableRows
+                                                    expandableRowsComponent={ExpandableNilaiNormal}
                                                 />
                                             </div>
                                             </CardBody>
@@ -202,5 +204,39 @@ const TransaksiPelayanLaboratorium = () => {
         </React.Fragment>
     )
 }
+
+const ExpandableNilaiNormal = ({ dataPelayanan }) => {
+
+    // if(data.deposit.length === 0 ){
+    //     return <></>
+    // }
+    return (
+        <table className="table">
+            <thead className="thead-light">
+                <tr>
+                    <th scope="col">Detail Pemeriksaan</th>
+                    <th scope="col">Hasil Pemeriksaan</th>
+                    <th scope="col">Nilai Normal</th>
+                    <th scope="col">Satuan Hasil</th>
+                    <th scope="col">Metode</th>
+                    <th scope="col">Keterangan</th>
+                </tr>
+            </thead>
+            <tbody>
+
+            {/* {data.deposit.map((item, key) =>
+                <tr key={key}>
+                    <th scope="row">{key + 1}</th>
+                    <td>{item.tglinput}</td>
+                    <td>{item.nominal?.toLocaleString("id-ID") || ""}</td>
+                    <td>{item.nobukti}</td>
+                </tr>
+            )} */}
+            </tbody>
+        </table>
+
+    )
+}
+
 
 export default withRouter(TransaksiPelayanLaboratorium);
