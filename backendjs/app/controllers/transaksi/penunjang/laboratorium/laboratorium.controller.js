@@ -731,8 +731,6 @@ async function saveMasterNilaiNormal(req, res) {
         let filteredRowsLevel1 = req.body.data.filter((row) => row.level === 1);
         let filteredRowsLevel2 = req.body.data.filter((row) => row.level === 2);
         let filteredRowsLevel3 = req.body.data.filter((row) => row.level === 3);
-
-
         const updatepemeriksaanlab = await db.m_pemeriksaanlab.update({
             statusenabled: false
         }, {
@@ -1199,8 +1197,6 @@ async function saveSetMasterNilaiNormalLab(req, res) {
                         transaction: transaction
                     })
                 }
-
-
                 return nilainormallabp
             })
         )
