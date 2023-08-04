@@ -1,5 +1,6 @@
 // import t_notapelayananpasien from "./t_notapelayananpasien";
 
+// eslint-disable-next-line max-lines-per-function
 export default (sequelize, Sequelize) => {
     const t_pelayananpasien = sequelize.define("t_pelayananpasien", {
         norec: {

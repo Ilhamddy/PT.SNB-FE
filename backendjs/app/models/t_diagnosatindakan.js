@@ -1,3 +1,4 @@
+// eslint-disable-next-line max-lines-per-function
 export default (sequelize, Sequelize) => {
     const t_diagnosatindakan = sequelize.define("t_diagnosatindakan", {
         norec: {

@@ -32,6 +32,12 @@ import {
     SATUAN_FROM_PRODUK_GET,
     SATUAN_FROM_PRODUK_GET_SUCCESS,
     SATUAN_FROM_PRODUK_GET_ERROR,
+    PENERIMAAN_SAVE_OR_UPDATE,
+    PENERIMAAN_SAVE_OR_UPDATE_SUCCESS,
+    PENERIMAAN_SAVE_OR_UPDATE_ERROR,
+    PENERIMAAN_QUERY_GET,
+    PENERIMAAN_QUERY_GET_SUCCESS,
+    PENERIMAAN_QUERY_GET_ERROR,
 } from "./actionType";
 
 
@@ -197,5 +203,35 @@ export const satuanFromProdukGetSuccess = (data) => ({
 
 export const satuanFromProdukGetError = (data) => ({
     type: SATUAN_FROM_PRODUK_GET_ERROR,
+    payload: { data: data },
+})
+
+export const penerimaanSaveOrUpdate = (data, callback) => ({
+    type: PENERIMAAN_SAVE_OR_UPDATE,
+    payload: { data: data, callback: callback },
+})
+
+export const penerimaanSaveOrUpdateSuccess = (data) => ({
+    type: PENERIMAAN_SAVE_OR_UPDATE_SUCCESS,
+    payload: { data: data },
+})
+
+export const penerimaanSaveOrUpdateError = (data) => ({
+    type: PENERIMAAN_SAVE_OR_UPDATE_ERROR,
+    payload: { data: data },
+})
+
+export const penerimaanQueryGet = (queries) => ({
+    type: PENERIMAAN_QUERY_GET,
+    payload: { queries: queries },
+})
+
+export const penerimaanQueryGetSuccess = (data) => ({
+    type: PENERIMAAN_QUERY_GET_SUCCESS,
+    payload: { data: data },
+})
+
+export const penerimaanQueryGetError = (data) => ({
+    type: PENERIMAAN_QUERY_GET_ERROR,
     payload: { data: data },
 })

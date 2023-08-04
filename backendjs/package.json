@@ -59,7 +59,8 @@
       ],
       "for-direction": [
         "error"
-      ]
+      ],
+      "max-lines-per-function": ["error", 140]
     },
     "globals": {}
   },

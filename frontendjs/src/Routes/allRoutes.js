@@ -546,7 +546,9 @@ const authProtectedRoutes = [
   { path: "/farmasi/gudang/setting-produk/:tabopen/:paramobat", component: <SettingProduk /> },
   { path: "/farmasi/gudang/setting-produk/:tabopen", component: <SettingProduk /> },
   { path: "/farmasi/gudang/list-produk", component: <ListProduk /> },
+  { path: "/farmasi/gudang/penerimaan-produk/:norecpenerimaan", component: <PenerimaanProduk /> },
   { path: "/farmasi/gudang/penerimaan-produk", component: <PenerimaanProduk /> }
+
 
 ];
 

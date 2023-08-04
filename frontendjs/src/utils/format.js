@@ -31,6 +31,11 @@ export const dateTimeISOString = (date) => {
     }
 }
 
+/**
+ * 
+ * @param {string | number} string 
+ * @returns {number}
+ */
 export const strToNumber = (string) => {
     if(string === "" || string === null || string === undefined) return 0
     if(typeof string === "number") {

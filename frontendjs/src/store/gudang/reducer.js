@@ -33,6 +33,12 @@ import {
     SATUAN_FROM_PRODUK_GET,
     SATUAN_FROM_PRODUK_GET_SUCCESS,
     SATUAN_FROM_PRODUK_GET_ERROR,
+    PENERIMAAN_SAVE_OR_UPDATE,
+    PENERIMAAN_SAVE_OR_UPDATE_SUCCESS,
+    PENERIMAAN_SAVE_OR_UPDATE_ERROR,
+    PENERIMAAN_QUERY_GET,
+    PENERIMAAN_QUERY_GET_SUCCESS,
+    PENERIMAAN_QUERY_GET_ERROR,
 } from "./actionType";
 
 const INIT_STATE = {
@@ -87,6 +93,16 @@ const INIT_STATE = {
         error: null,
     },
     satuanFromProdukGet: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    penerimaanSaveOrUpdate: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    penerimaanQueryGet: {
         data: [],
         loading: false,
         error: null,
@@ -497,8 +513,78 @@ const Registrasi = (state = INIT_STATE, action) => {
                 }
             }
         }
+
+        case PENERIMAAN_SAVE_OR_UPDATE: {
+            return {
+                ...state,
+                penerimaanSaveOrUpdate: {
+                    ...state.penerimaanSaveOrUpdate,
+                    loading: true,
+                    data: [],
+                    error: null
+                }
+            }
+        }
+
+        case PENERIMAAN_SAVE_OR_UPDATE_SUCCESS: {
+            return {
+                ...state,
+                penerimaanSaveOrUpdate: {
+                    ...state.penerimaanSaveOrUpdate,
+                    loading: false,
+                    data: action.payload.data,
+                    error: null
+                }
+            }
+        }
+
+        case PENERIMAAN_SAVE_OR_UPDATE_ERROR: {
+            return {
+                ...state,
+                penerimaanSaveOrUpdate: {
+                    ...state.penerimaanSaveOrUpdate,
+                    loading: false,
+                    data: [],
+                    error: action.payload.data
+                }
+            }
+        }
         
-        
+        case PENERIMAAN_QUERY_GET: {
+            return {
+                ...state,
+                penerimaanQueryGet: {
+                    ...state.penerimaanQueryGet,
+                    loading: true,
+                    data: [],
+                    error: null
+                }
+            }
+        }
+
+        case PENERIMAAN_QUERY_GET_SUCCESS: {
+            return {
+                ...state,
+                penerimaanQueryGet: {
+                    ...state.penerimaanQueryGet,
+                    loading: false,
+                    data: action.payload.data,
+                    error: null
+                }
+            }
+        }
+
+        case PENERIMAAN_QUERY_GET_ERROR: {
+            return {
+                ...state,
+                penerimaanQueryGet: {
+                    ...state.penerimaanQueryGet,
+                    loading: false,
+                    data: [],
+                    error: action.payload.data
+                }
+            }
+        }
 
         default: {
             return { ...state };

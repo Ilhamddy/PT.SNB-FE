@@ -23,7 +23,11 @@ import {
     produkEditGetError,
     produkEditGetSuccess,
     satuanFromProdukGetError,
-    satuanFromProdukGetSuccess
+    satuanFromProdukGetSuccess,
+    penerimaanSaveOrUpdateError,
+    penerimaanSaveOrUpdateSuccess,
+    penerimaanQueryGetError,
+    penerimaanQueryGetSuccess
 } from "./action";
 
 
@@ -41,6 +45,8 @@ import {
     PRODUK_MASTER_GET,
     PRODUK_EDIT_GET,
     SATUAN_FROM_PRODUK_GET,
+    PENERIMAAN_SAVE_OR_UPDATE,
+    PENERIMAAN_QUERY_GET
 } from "./actionType";
 
 const serviceGudang = new ServiceGudang();
@@ -169,6 +175,30 @@ function* onSatuanFromProdukGet({payload: {queries}}){
     }
 }
 
+function* onPenerimaanSaveOrUpdate({payload: {data, callback}}){
+    try {
+        let response = yield call(serviceGudang.saveOrEditPenerimaan, data);
+        yield put(penerimaanSaveOrUpdateSuccess(response.data));
+        toast.success(response.msg, { autoClose: 3000 })
+        callback && 
+            callback(response.data?.createdOrUpdatedPenerimaan?.norec || "");
+    } catch (error) {
+        console.error(error);
+        yield put(penerimaanSaveOrUpdateError(error));
+        toast.error(error?.response?.msg || "Gagal save or update penerimaan", { autoClose: 3000 });
+    }
+}
+
+function* onPenerimaanQueryGet({payload: {queries}}){
+    try {
+        let response = yield call(serviceGudang.getPenerimaan, queries);
+        yield put(penerimaanQueryGetSuccess(response.data));
+    } catch (error) {
+        console.error(error);
+        yield put(penerimaanQueryGetError(error));
+    }
+}
+
 export function* watchSaveObatGudang() {
     yield takeEvery(OBAT_GUDANG_SAVE, onSaveObatGudang);
 }
@@ -213,6 +243,14 @@ export function* watchSatuanFromProdukGet(){
     yield takeEvery(SATUAN_FROM_PRODUK_GET, onSatuanFromProdukGet);
 }
 
+export function* watchPenerimaanSaveOrUpdate(){
+    yield takeEvery(PENERIMAAN_SAVE_OR_UPDATE, onPenerimaanSaveOrUpdate);
+}
+
+export function* watchPenerimaanQueryGet(){
+    yield takeEvery(PENERIMAAN_QUERY_GET, onPenerimaanQueryGet);
+}
+
 function* registrasiSaga() {
     yield all([
         fork(watchSaveObatGudang),
@@ -225,7 +263,9 @@ function* registrasiSaga() {
         fork(watchSaveOrUpdateKemasan),
         fork(watchProdukMasterGet),
         fork(watchProdukEditGet),
-        fork(watchSatuanFromProdukGet)
+        fork(watchSatuanFromProdukGet),
+        fork(watchPenerimaanSaveOrUpdate),
+        fork(watchPenerimaanQueryGet)
     ]);
 }
 
