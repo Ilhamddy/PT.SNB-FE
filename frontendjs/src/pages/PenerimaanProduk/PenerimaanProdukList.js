@@ -1,5 +1,6 @@
 import { 
     Breadcrumb,
+    Button,
     Card,
     CardBody,
     Col,
@@ -141,6 +142,15 @@ const PenerimaanProdukList = () => {
                             end={0}
                         />
                     </Row>
+                    <Row className="d-flex flex-row-reverse mb-3">
+                        <Col lg={2} className="d-flex flex-row-reverse">
+                            <Link to={"/farmasi/gudang/penerimaan-produk"}>
+                                <Button>
+                                    Tambah
+                                </Button>
+                            </Link>
+                        </Col>
+                    </Row>
                     <Row>
                         <div id="table-gridjs">
                             <DataTable
@@ -156,6 +166,7 @@ const PenerimaanProdukList = () => {
                             />
                         </div>
                     </Row>
+
                 </Card>
             </Container>
         </div>   
