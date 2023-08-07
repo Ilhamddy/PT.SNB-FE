@@ -307,7 +307,8 @@ const subTableCustomStyles = {
     rows: {
         style: {
             color: "black",
-            backgroundColor: "#f1f2f6"
+            backgroundColor: "#f1f2f6",
+            borderBottom: "1px solid #919191"
         },
     }
     
