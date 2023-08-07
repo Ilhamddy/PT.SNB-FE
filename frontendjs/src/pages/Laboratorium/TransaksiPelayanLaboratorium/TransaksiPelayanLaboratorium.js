@@ -205,11 +205,11 @@ const TransaksiPelayanLaboratorium = () => {
     )
 }
 
-const ExpandableNilaiNormal = ({ dataPelayanan }) => {
+const ExpandableNilaiNormal = ({ data }) => {
 
-    // if(data.deposit.length === 0 ){
-    //     return <></>
-    // }
+    if(data.listnilainormal.length === 0 ){
+        return <></>
+    }
     return (
         <table className="table">
             <thead className="thead-light">
@@ -224,14 +224,14 @@ const ExpandableNilaiNormal = ({ dataPelayanan }) => {
             </thead>
             <tbody>
 
-            {/* {data.deposit.map((item, key) =>
+            {data.listnilainormal.map((item, key) =>
                 <tr key={key}>
                     <th scope="row">{key + 1}</th>
-                    <td>{item.tglinput}</td>
-                    <td>{item.nominal?.toLocaleString("id-ID") || ""}</td>
-                    <td>{item.nobukti}</td>
+                    <td>{item.reportdisplay}</td>
+                    {/* <td>{item.nominal?.toLocaleString("id-ID") || ""}</td>
+                    <td>{item.nobukti}</td> */}
                 </tr>
-            )} */}
+            )}
             </tbody>
         </table>
 
