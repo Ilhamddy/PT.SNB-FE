@@ -371,11 +371,11 @@ const saveRegistrasiPasien2 = (req, res) => {
     }
 }
 async function saveRegistrasiPasien(req, res) {
-    const [transaction, error] 
+    const [transaction, errorTransaciton] 
         = await createTransaction(db, res, "saveRegPasien")
     
     try {
-        if(error) throw error
+        if(errorTransaciton) throw errorTransaciton
         let norecDP = uuid.v4().substring(0, 32)
         console.log(req.body?.penjamin)
         let objectpenjaminfk = req.body?.penjamin?.[0]?.value || null
