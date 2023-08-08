@@ -584,6 +584,7 @@ const updateRegistrasiPPulang = async (req, res) => {
     } catch (e) {
         console.error("Error update registrasiPPulang")
         console.error(e);
+        transaction.rollback()
         res.status(500).send({
             status: "error",
             success: false,
