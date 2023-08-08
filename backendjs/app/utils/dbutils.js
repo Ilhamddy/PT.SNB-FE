@@ -1,6 +1,6 @@
 
 
-export const createTransaction = async (db, res) => {
+export const createTransaction = async (db, res, transactionName) => {
     let transaction = null;
     let error = null
     try {
@@ -9,7 +9,7 @@ export const createTransaction = async (db, res) => {
         res.status(500).send({
             status: JSON.stringify(e),
             success: false,
-            msg: 'Error transaction',
+            msg: `Error transaction ${transactionName}`,
             code: 500
         });
         error = e
