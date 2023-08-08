@@ -1,5 +1,12 @@
 
-
+/**
+ * 
+ * @param {any} db 
+ * @param {any} res 
+ * @param {string} [transactionName] 
+ * transaction name is optional
+ * @returns {Promise<[import("sequelize").Transaction, any]>}
+ */
 export const createTransaction = async (db, res, transactionName) => {
     let transaction = null;
     let error = null
