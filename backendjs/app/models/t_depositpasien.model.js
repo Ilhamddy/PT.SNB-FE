@@ -14,7 +14,7 @@ export default (sequelize, Sequelize) => {
             type: Sequelize.CHAR(32),
         },
         nominal: {
-            type: Sequelize.DOUBLE,
+            type: Sequelize.FLOAT,
         },
         objectpegawaifk: {
             type: Sequelize.CHAR(32),

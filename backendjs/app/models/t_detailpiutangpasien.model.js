@@ -17,7 +17,7 @@ export default (sequelize, Sequelize) => {
             type: Sequelize.INTEGER
         },
         nominalpiutang: {
-            type: Sequelize.DOUBLE
+            type: Sequelize.FLOAT
         },
         tglinput: {
             type: Sequelize.DATE

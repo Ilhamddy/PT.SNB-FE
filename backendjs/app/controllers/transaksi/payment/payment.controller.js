@@ -21,7 +21,6 @@ import { qGetPelayananFromDp,
 
 import { Op } from "sequelize";
 
-
 const t_notapelayananpasien = db.t_notapelayananpasien
 const t_pelayananpasien = db.t_pelayananpasien
 const t_buktibayarpasien = db.t_buktibayarpasien
@@ -445,24 +444,24 @@ const cancelBayar = async (req, res) => {
         const norecnota = req.params.norecnota;
         const norec = uuid.v4().substring(0, 32);
         const params = req.params
-        const [cob, updatedBuktiB] = await t_buktibayarpasien.update({
+        let [cob, updatedBuktiB] = await t_buktibayarpasien.update({
             statusenabled: false,
         }, {
             where: {
                 norec: params.norecbayar
             },
             returning: true,
-            plain: true,
             transaction: transaction
         })
+        updatedBuktiB = updatedBuktiB[0]?.get() || null
 
         const [hasil, updatedRestBB] = await t_buktibayarpasien.update({
             statusenabled: false,
         }, {
             where: {
-                objectnotapelayananpasienfk: updatedBuktiB.objectnotapelayananpasienfk,
+                objectnotapelayananpasienfk: updatedBuktiB?.objectnotapelayananpasienfk,
                 tglinput: {
-                    [Op.gte]: new Date(updatedBuktiB.tglinput.getTime() - new Date().getTimezoneOffset() * 60000)
+                    [Op.gte]: new Date(updatedBuktiB?.tglinput.getTime() - new Date().getTimezoneOffset() * 60000)
                 },
                 statusenabled: true
             },

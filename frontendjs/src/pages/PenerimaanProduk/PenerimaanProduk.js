@@ -128,6 +128,7 @@ const PenerimaanProduk = () => {
     const vDetail = useFormik({
         enableReinitialize: true,
         initialValues: {
+            indexDetail: "",
             norecdetailpenerimaan: "",
             produk: {
                 idproduk: "",
@@ -179,7 +180,13 @@ const PenerimaanProduk = () => {
         }),
         onSubmit: (values) => {
             const newDetailValues = [...validation.values.detail]
-            newDetailValues.push(values);
+            const newValues = {...values}
+            if(values.indexDetail !== ""){
+                newDetailValues[values.indexDetail] = newValues
+            }else{
+                newValues.indexDetail = newDetailValues.length
+                newDetailValues.push(newValues);
+            }
             validation.setFieldValue("detail", newDetailValues)
         }
     })
@@ -214,13 +221,6 @@ const PenerimaanProduk = () => {
         )
         handleChangeDetail('jumlahterima', newVal)
     }
-
-    useEffect(() => {
-        const idProduk = detail.produk.idproduk
-        refSatuanTerima.current?.clearValue();
-        idProduk && 
-            dispatch(satuanFromProdukGet({ idproduk: idProduk }))
-    }, [dispatch, detail.produk.idproduk])
 
     // Perhitungan satuan jumlah terima, harga, Diskon, dan ppn
     // saat jumlah, terima, harga sudah diinput akan otomatis menghitung total harga
@@ -362,6 +362,57 @@ const PenerimaanProduk = () => {
         vDetail.setFieldValue
     ])
 
+    let subtotal = validation.values.detail.reduce((prev, curr) =>
+        prev + strToNumber(curr.subtotalproduk)
+    , 0)
+    subtotal = "Rp" + subtotal.toLocaleString("id-ID", {maximumFractionDigits:5})
+
+    let ppn = validation.values.detail.reduce((prev, curr) =>
+        prev + strToNumber(curr.ppnrupiahproduk)
+    , 0)
+    ppn = "Rp" + ppn.toLocaleString("id-ID", {maximumFractionDigits: 5})
+
+    let diskon = validation.values.detail.reduce((prev, curr) =>
+        prev + strToNumber(curr.diskonrupiah)
+    , 0)
+    diskon = "Rp" + diskon.toLocaleString("id-ID", {maximumFractionDigits: 5})
+
+    let total = validation.values.detail.reduce((prev, curr) => 
+        prev + strToNumber(curr.totalproduk)
+    , 0)
+    total = "Rp" + total.toLocaleString("id-ID", {maximumFractionDigits: 5})
+
+
+    useEffect(() => {
+        const idProduk = detail.produk.idproduk
+        const setFF = vDetail.setFieldValue
+        const onGetSuccess = (data) => {
+            if(Array.isArray(data) && data.length === 0) {
+                refSatuanTerima.current?.clearValue();
+                return
+            }
+            const newData = [...data.satuan]
+            const dataSatuan = newData.find((val) => val.value === detail.satuanterima)
+            if(!dataSatuan) {
+                refSatuanTerima.current?.clearValue();
+                return
+            }
+            setFF("satuanterima", dataSatuan?.value || "")
+            setFF("namasatuanterima", dataSatuan?.label || "")
+            setFF("konversisatuan", dataSatuan?.nilaikonversi || "")
+        }
+        idProduk && 
+            dispatch(
+                satuanFromProdukGet(
+                    { idproduk: idProduk }, 
+                    onGetSuccess
+                ))
+    }, [
+        dispatch, 
+        detail.produk.idproduk,
+        detail.satuanterima,
+        vDetail.setFieldValue
+    ])
 
     useEffect(() => {
         dispatch(comboPenerimaanBarangGet())
@@ -376,9 +427,17 @@ const PenerimaanProduk = () => {
     }, [dispatch, norecpenerimaan, validation.setFieldValue])
 
     useEffect(() => {
+        console.log(vDetail.values.satuanterima)
+    }, [vDetail.values.satuanterima ])
+
+    useEffect(() => {
         const setFF = validation.setFieldValue
         if(penerimaanQuery.detailPenerimaan){
-            setFF("detail", penerimaanQuery.detailPenerimaan || [])
+            const detailPenerimaan = penerimaanQuery.detailPenerimaan.map((values, index) => ({
+                ...values,
+                indexDetail: index,
+            }))
+            setFF("detail", detailPenerimaan || [])
         }
         if(penerimaanQuery.penerimaan){
             setFF("penerimaan", penerimaanQuery.penerimaan)
@@ -390,12 +449,50 @@ const PenerimaanProduk = () => {
     }, [penerimaanQuery, 
         validation.setFieldValue, 
         norecpenerimaan, 
-        validation.initialValues.penerimaan])
+        validation.initialValues.penerimaan
+    ])
+
+
 
     /**
      * @type {import("react-data-table-component").TableColumn<typeof vDetail.values>[]}
      */
     const columnsDetail = [
+        {
+            name: <span className='font-weight-bold fs-13'>Detail</span>,
+            cell: (row) => (
+                <div className="hstack gap-3 flex-wrap">
+                    <UncontrolledTooltip 
+                        placement="top" 
+                        target="edit-produk" > 
+                        Detail Produk 
+                    </UncontrolledTooltip>
+                    <UncontrolledDropdown className="dropdown d-inline-block">
+                        <DropdownToggle 
+                            className="btn btn-soft-secondary btn-sm" 
+                            itemType="button"
+                            id="edit-produk">
+                            <i className="ri-apps-2-line"></i>
+                        </DropdownToggle>
+                        <DropdownMenu className="dropdown-menu-end">
+                            <DropdownItem onClick={() => {
+                                console.log(row)
+                                vDetail.setValues({
+                                    ...row,
+                                })
+                                }}>
+                                <i className="ri-mail-send-fill align-bottom me-2 text-muted">
+                                </i>
+                                Edit Produk
+                            </DropdownItem>
+                        </DropdownMenu>
+                    </UncontrolledDropdown>
+                </div>)
+                ,
+            sortable: true,
+            width: "70px",
+            wrap: true
+        },
         {
             name: <span className='font-weight-bold fs-13'>Nama produk</span>,
             sortable: true,
@@ -445,28 +542,6 @@ const PenerimaanProduk = () => {
             width: "100px"
         },
     ];
-
-
-
-    let subtotal = validation.values.detail.reduce((prev, curr) =>
-        prev + strToNumber(curr.subtotalproduk)
-    , 0)
-    subtotal = "Rp" + subtotal.toLocaleString("id-ID", {maximumFractionDigits:5})
-
-    let ppn = validation.values.detail.reduce((prev, curr) =>
-        prev + strToNumber(curr.ppnrupiahproduk)
-    , 0)
-    ppn = "Rp" + ppn.toLocaleString("id-ID", {maximumFractionDigits: 5})
-
-    let diskon = validation.values.detail.reduce((prev, curr) =>
-        prev + strToNumber(curr.diskonrupiah)
-    , 0)
-    diskon = "Rp" + diskon.toLocaleString("id-ID", {maximumFractionDigits: 5})
-
-    let total = validation.values.detail.reduce((prev, curr) => 
-        prev + strToNumber(curr.totalproduk)
-    , 0)
-    total = "Rp" + total.toLocaleString("id-ID", {maximumFractionDigits: 5})
 
 
     const InputUmumTerima = (
@@ -660,8 +735,8 @@ const PenerimaanProduk = () => {
                     <Label 
                         style={{ color: "black" }} 
                         htmlFor={`tanggaljatuhtempo`}
-                        className="form-label mt-2">
-                        Tgl J.Tempo  
+                        className="form-label">
+                        Tgl Jatuh tempo
                     </Label>
                 </Col>
                 <Col lg={3}>
@@ -692,8 +767,8 @@ const PenerimaanProduk = () => {
                     <Label 
                         style={{ color: "black" }} 
                         htmlFor={`sumberdana`}
-                        className="form-label mt-2">
-                        Sbr Dana
+                        className="form-label">
+                        Sumber Dana
                     </Label>
                 </Col>
                 <Col lg={3}>
@@ -765,14 +840,13 @@ const PenerimaanProduk = () => {
                         name="produk"
                         options={produk}
                         onChange={(e) => {
-                            console.log(e)
                             handleChangeDetail('produk', {
                                 idproduk: e?.value || "",
                                 namaproduk: e?.label || "",
                                 satuanjual: e?.valuesatuanstandar || "",
                             })
                         }}
-                        value={detail.produk}
+                        value={detail.produk.idproduk}
                         className={`input ${detailErr?.produk ? "is-invalid" : ""}`}
                         />
                     {detailTouched?.produk 
@@ -830,7 +904,6 @@ const PenerimaanProduk = () => {
                                     vDetail.setFieldValue("satuanterima", e?.value || "")
                                     vDetail.setFieldValue("namasatuanterima", e?.label || "")
                                     vDetail.setFieldValue("konversisatuan", e?.nilaikonversi || "")
-                                    
                                 }}
                                 value={detail.satuanterima}
                                 className={`input ${detailErr?.satuanterima ? "is-invalid" : ""}`}
@@ -1278,14 +1351,18 @@ const PenerimaanProduk = () => {
                         placement="top" 
                         formTarget="form-input-produk-detail"
                         id="tooltipTop" >
-                        Tambah
+                        {!vDetail.values.indexDetail ? "Tambah" : "Edit"}
                     </Button>
                     <Button
                         type="button"
                         className="btn"
-                        color="warning">
+                        color="warning"
+                        onClick={() => {
+                            vDetail.resetForm();
+                        }}>
                         Batal
                     </Button>
+
                     <Button
                         type="button"
                         className="btn"
@@ -1325,12 +1402,14 @@ const PenerimaanProduk = () => {
                         >
                         {!!norecpenerimaan ? "Edit" : "Simpan"}
                     </Button>
-                    <Button
-                        type="button"
-                        className="btn"
-                        color="danger">
-                        Batal
-                    </Button>
+                    <Link to="/farmasi/gudang/penerimaan-produk-list">
+                        <Button
+                            type="button"
+                            className="btn"
+                            color="danger">
+                            Batal
+                        </Button>
+                    </Link>
                 </Col>
                 <Col lg={5}>
                     <Row className="mb-2">
@@ -1470,6 +1549,7 @@ const PenerimaanProduk = () => {
                 <Form
                     onSubmit={(e) => {
                         e.preventDefault();
+                        console.log("Submit")
                         validation.handleSubmit();
                         return false;
                     }}

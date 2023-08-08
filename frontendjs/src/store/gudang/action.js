@@ -194,9 +194,9 @@ export const produkEditGetError = (data) => ({
     payload: { data: data },
 })
 
-export const satuanFromProdukGet = (queries) => ({
+export const satuanFromProdukGet = (queries, callback) => ({
     type: SATUAN_FROM_PRODUK_GET,
-    payload: { queries: queries },
+    payload: { queries: queries, callback: callback },
 })
 
 export const satuanFromProdukGetSuccess = (data) => ({

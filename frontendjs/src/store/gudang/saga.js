@@ -168,9 +168,10 @@ function* onProdukEditGet({payload: {queries}}){
     }
 }
 
-function* onSatuanFromProdukGet({payload: {queries}}){
+function* onSatuanFromProdukGet({payload: {queries, callback}}){
     try {
         let response = yield call(serviceGudang.getSatuanFromProduk, queries);
+        callback && callback(response.data)
         yield put(satuanFromProdukGetSuccess(response.data));
     } catch (error) {
         console.error(error);

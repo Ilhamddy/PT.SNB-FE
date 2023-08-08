@@ -1,4 +1,5 @@
 import config from "../config/db.config.js";
+import sequelizeInstance from "sequelize"
 import {Sequelize} from "sequelize";
 
 import userModel from "../models/user.model.js"
@@ -42,7 +43,7 @@ import m_detailkelompokumurM from "./m_detailkelompokumur.model.js";
 import t_penerimaanbarangModel from "./t_penerimaanbarang.model.js";
 import t_penerimaanbarangdetailModel from "./t_penerimaanbarangdetail.model.js";
 import m_nilainormallabM from "./m_nilainormallab.model.js";
-
+import t_stokunitModel from "./t_stokunit.model.js";
 
 const sequelize = new Sequelize(
   config.DB,
@@ -67,51 +68,52 @@ const sequelize = new Sequelize(
 
 const db = {};
 
-db.Sequelize = Sequelize;
+db.Sequelize = sequelizeInstance;
 db.sequelize = sequelize;
 
-db.user = userModel(sequelize, Sequelize);
-db.role = roleModel(sequelize, Sequelize);
+db.user = userModel(sequelize, sequelizeInstance);
+db.role = roleModel(sequelize, sequelizeInstance);
 // master
-db.m_pasien = m_pasienM(sequelize, Sequelize);
-db.running_number = running_numberM(sequelize,Sequelize);
-db.m_tempattidur = m_tempattidurM(sequelize,Sequelize);
+db.m_pasien = m_pasienM(sequelize, sequelizeInstance);
+db.running_number = running_numberM(sequelize,sequelizeInstance);
+db.m_tempattidur = m_tempattidurM(sequelize,sequelizeInstance);
 // transaksi
-db.t_daftarpasien = t_daftarpasienM(sequelize,Sequelize);
-db.t_antreanpemeriksaan = t_antreanpemeriksaanM(sequelize,Sequelize);
-db.t_emrpasien = t_emrpasienM(sequelize,Sequelize);
-db.t_ttv = t_ttvM(sequelize,Sequelize);
-db.t_cppt = t_cpptM(sequelize,Sequelize);
-db.t_diagnosapasien = t_diagnosapasienM(sequelize,Sequelize);
-db.t_diagnosatindakan = t_diagnosatindakanM(sequelize,Sequelize);
-db.t_pelayananpasien = t_pelayananpasienM(sequelize,Sequelize);
-db.t_pelayananpasiendetail = t_pelayananpasiendetailM(sequelize,Sequelize);
-db.t_pelayananpasienpetugas = t_pelayananpasienpetugasM(sequelize,Sequelize);
-db.t_rm_lokasidokumen = t_rm_lokasidokumenM(sequelize,Sequelize);
-db.t_orderpelayanan = t_orderpelayananM(sequelize,Sequelize);
-db.t_detailorderpelayanan = t_detailorderpelayananM(sequelize,Sequelize);
-db.t_kepesertaanasuransi = t_kepesertaanasuransiM(sequelize,Sequelize);
-db.t_notapelayananpasien = t_notapelayananpasien(sequelize,Sequelize);
-db.t_buktibayarpasien = t_buktibayarpasienM(sequelize,Sequelize);
-db.t_log_batalveriflayanan = t_log_batalveriflayananM(sequelize,Sequelize);
-db.t_log_pasienbatalbayar = t_log_pasienbatalbayarModel(sequelize,Sequelize);
-db.t_piutangpasien = t_piutangpasienModel(sequelize,Sequelize);
-db.t_detailpiutangpasien = t_detailpiutangpasienModel(sequelize,Sequelize);
-db.t_carabayar = t_carabayarModel(sequelize,Sequelize);
-db.t_depositpasien = t_depositpasienModel(sequelize,Sequelize);
-db.t_special_cmg_option = t_special_cmg_option(sequelize,Sequelize);
-db.m_produk = m_produkM(sequelize,Sequelize);
-db.m_detailjenisproduk = m_detailjenisprodukM(sequelize,Sequelize);
-db.m_pemeriksaanlab = m_pemeriksaanlab(sequelize,Sequelize);
-db.m_sediaan = m_sediaanM(sequelize,Sequelize);
-db.m_satuan = m_satuanM(sequelize,Sequelize);
-db.m_kemasanproduk = m_kemasanprodukM(sequelize,Sequelize);
-db.m_kelompokumur = m_kelompokumurM(sequelize,Sequelize);
-db.m_detailkelompokumur = m_detailkelompokumurM(sequelize, Sequelize)
-db.t_penerimaanbarang = t_penerimaanbarangModel(sequelize, Sequelize)
-db.t_penerimaanbarangdetail = t_penerimaanbarangdetailModel(sequelize, Sequelize)
-db.m_detailkelompokumur = m_detailkelompokumurM(sequelize, Sequelize);
-db.m_nilainormallab = m_nilainormallabM(sequelize, Sequelize);
+db.t_daftarpasien = t_daftarpasienM(sequelize,sequelizeInstance);
+db.t_antreanpemeriksaan = t_antreanpemeriksaanM(sequelize,sequelizeInstance);
+db.t_emrpasien = t_emrpasienM(sequelize,sequelizeInstance);
+db.t_ttv = t_ttvM(sequelize,sequelizeInstance);
+db.t_cppt = t_cpptM(sequelize,sequelizeInstance);
+db.t_diagnosapasien = t_diagnosapasienM(sequelize,sequelizeInstance);
+db.t_diagnosatindakan = t_diagnosatindakanM(sequelize,sequelizeInstance);
+db.t_pelayananpasien = t_pelayananpasienM(sequelize,sequelizeInstance);
+db.t_pelayananpasiendetail = t_pelayananpasiendetailM(sequelize,sequelizeInstance);
+db.t_pelayananpasienpetugas = t_pelayananpasienpetugasM(sequelize,sequelizeInstance);
+db.t_rm_lokasidokumen = t_rm_lokasidokumenM(sequelize,sequelizeInstance);
+db.t_orderpelayanan = t_orderpelayananM(sequelize,sequelizeInstance);
+db.t_detailorderpelayanan = t_detailorderpelayananM(sequelize,sequelizeInstance);
+db.t_kepesertaanasuransi = t_kepesertaanasuransiM(sequelize,sequelizeInstance);
+db.t_notapelayananpasien = t_notapelayananpasien(sequelize,sequelizeInstance);
+db.t_buktibayarpasien = t_buktibayarpasienM(sequelize,sequelizeInstance);
+db.t_log_batalveriflayanan = t_log_batalveriflayananM(sequelize,sequelizeInstance);
+db.t_log_pasienbatalbayar = t_log_pasienbatalbayarModel(sequelize,sequelizeInstance);
+db.t_piutangpasien = t_piutangpasienModel(sequelize,sequelizeInstance);
+db.t_detailpiutangpasien = t_detailpiutangpasienModel(sequelize,sequelizeInstance);
+db.t_carabayar = t_carabayarModel(sequelize,sequelizeInstance);
+db.t_depositpasien = t_depositpasienModel(sequelize,sequelizeInstance);
+db.t_special_cmg_option = t_special_cmg_option(sequelize,sequelizeInstance);
+db.m_produk = m_produkM(sequelize,sequelizeInstance);
+db.m_detailjenisproduk = m_detailjenisprodukM(sequelize,sequelizeInstance);
+db.m_pemeriksaanlab = m_pemeriksaanlab(sequelize,sequelizeInstance);
+db.m_sediaan = m_sediaanM(sequelize,sequelizeInstance);
+db.m_satuan = m_satuanM(sequelize,sequelizeInstance);
+db.m_kemasanproduk = m_kemasanprodukM(sequelize,sequelizeInstance);
+db.m_kelompokumur = m_kelompokumurM(sequelize,sequelizeInstance);
+db.m_detailkelompokumur = m_detailkelompokumurM(sequelize, sequelizeInstance)
+db.t_penerimaanbarang = t_penerimaanbarangModel(sequelize, sequelizeInstance)
+db.t_penerimaanbarangdetail = t_penerimaanbarangdetailModel(sequelize, sequelizeInstance)
+db.m_detailkelompokumur = m_detailkelompokumurM(sequelize, sequelizeInstance);
+db.m_nilainormallab = m_nilainormallabM(sequelize, sequelizeInstance);
+db.t_stokunit = t_stokunitModel(sequelize, sequelizeInstance);
 
 db.role.belongsToMany(db.user, {
   through: "user_roles",
@@ -135,3 +137,7 @@ db.t_pelayananpasien.belongsTo(db.t_notapelayananpasien, {
 db.ROLES = ["user", "admin", "moderator"];
 
 export default db;
+
+/**
+ * @typedef {typeof sequelizeInstance} SequelizeInstance
+ */

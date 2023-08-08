@@ -1,4 +1,8 @@
 // eslint-disable-next-line max-lines-per-function
+/**
+ * @param {import("sequelize").Sequelize} sequelize
+ * @param {import(".").SequelizeInstance} Sequelize
+ */
 export default (sequelize, Sequelize) => {
     const t_penerimaanbarangdetail = sequelize.define("t_penerimaanbarangdetail", {
         norec: {
@@ -29,31 +33,31 @@ export default (sequelize, Sequelize) => {
             type: Sequelize.INTEGER,
         },
         hargasatuankecil: {
-            type: Sequelize.DOUBLE,
+            type: Sequelize.FLOAT,
         },
         hargasatuanterima: {
-            type: Sequelize.DOUBLE,
+            type: Sequelize.FLOAT,
         },
         subtotal: {
-            type: Sequelize.DOUBLE,
+            type: Sequelize.FLOAT,
         },
         diskonpersen: {
-            type: Sequelize.DOUBLE,
+            type: Sequelize.FLOAT,
         },
         diskon: {
-            type: Sequelize.DOUBLE,
+            type: Sequelize.FLOAT,
         },
         ppnpersen: {
-            type: Sequelize.DOUBLE,
+            type: Sequelize.FLOAT,
         },
         ppn: {
-            type: Sequelize.DOUBLE,
+            type: Sequelize.FLOAT,
         },
         total: {
-            type: Sequelize.DOUBLE,
+            type: Sequelize.FLOAT,
         },
         jumlahkonversi: {
-            type: Sequelize.DOUBLE,
+            type: Sequelize.FLOAT,
         }
     }, {
         tableName: "t_penerimaanbarangdetail", // relation "user" does not exist

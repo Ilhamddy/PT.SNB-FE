@@ -20,6 +20,7 @@ const m_satuan = db.m_satuan
 const m_kemasanproduk = db.m_kemasanproduk
 const t_penerimaanbarang = db.t_penerimaanbarang
 const t_penerimaanbarangdetail = db.t_penerimaanbarangdetail
+const t_stokunit = db.t_stokunit
 
 
 const createOrUpdateProdukObat = async (req, res) => {
@@ -303,7 +304,7 @@ const createOrUpdateSatuan = async (req, res) => {
                 transaction: transaction
             })
         }else{
-            const [_, edited] = await m_satuan.update({
+            let [_, edited] = await m_satuan.update({
                 statusenabled: body.statusenabled,
                 satuan: body.satuan,
                 objectjenissatuanfk: body.jenissatuan || null,
@@ -314,10 +315,10 @@ const createOrUpdateSatuan = async (req, res) => {
                     id: body.id
                 },
                 transaction: transaction,
-                plain: true,
                 returning: true
             })
-            createdOrEdited = edited
+            edited = edited[0]?.get() || null
+            createdOrEdited = edited[0]
         }
 
         await transaction.commit();
@@ -608,14 +609,30 @@ const createOrUpdatePenerimaan = async (req, res) => {
             req, 
             res, 
             transaction, 
-            norecpenerimaan
+            {
+                norecpenerimaan
+            }
+        )
+
+        const {
+            createdOrUpdatedStokUnit
+        } = await hCreateOrUpdateStokUnit(
+            req, 
+            res,
+            transaction,
+            {
+                createdOrUpdatedDetailPenerimaan,
+                norecpenerimaan,
+                createdOrUpdatedPenerimaan
+            }
         )
         
         await transaction.commit();
 
         const tempres = {
             createdOrUpdatedPenerimaan: createdOrUpdatedPenerimaan,
-            createdOrUpdatedDetailPenerimaan: createdOrUpdatedDetailPenerimaan
+            createdOrUpdatedDetailPenerimaan: createdOrUpdatedDetailPenerimaan,
+            createdOrUpdatedStokUnit: createdOrUpdatedStokUnit,
         }
 
         res.status(200).send({
@@ -682,6 +699,8 @@ const getPenerimaan = async (req, res) => {
         });
     }
 }
+
+
 
 const getListPenerimaan = async (req, res) => {
     try{
@@ -781,30 +800,33 @@ const hCreateOrUpdatePenerimaan = async (req, res, transaction) => {
                 norec: norecpenerimaan
             },
             returning: true,
-            plain: true,
             transaction: transaction
         })
-        createdOrUpdatedPenerimaan = updated
+        norecpenerimaan = norecpenerimaan
+        createdOrUpdatedPenerimaan = updated[0]?.get() || null;
     }
     return { createdOrUpdatedPenerimaan, norecpenerimaan }
 }
+
 
 const hCreateOrUpdateDetailPenerimaan = async (
     req, 
     res, 
     transaction, 
-    norecpenerimaan
+    {
+        norecpenerimaan
+    }
 ) => {
     const arDetail = req.body.detail
-
     let createdOrUpdatedDetailPenerimaan = []
     createdOrUpdatedDetailPenerimaan = await Promise.all(
         arDetail.map(async (bodyDetail) => {
             let norecDetailPenerimaan = bodyDetail.norecdetailpenerimaan
-            let createdOrUpdated
+            let prevValue = null
+            let updatedValue = null
             if(!norecDetailPenerimaan){
                 norecDetailPenerimaan = uuid.v4().substring(0, 32)
-                createdOrUpdated = await t_penerimaanbarangdetail.create({
+                updatedValue = await t_penerimaanbarangdetail.create({
                     norec: uuid.v4().substring(0, 32),
                     statusenabled: true,
                     objectpenerimaanbarangfk: norecpenerimaan,
@@ -822,16 +844,23 @@ const hCreateOrUpdateDetailPenerimaan = async (
                     ppn: bodyDetail.ppnrupiahproduk,
                     total: bodyDetail.totalproduk,
                     jumlahkonversi: bodyDetail.konversisatuan
+                    
                 }, {
                     transaction: transaction
                 }) 
-                
             }else{
-                const [_, updated] = await t_penerimaanbarangdetail.update({
+                let prev = await t_penerimaanbarangdetail.findOne({
+                    where: {
+                        norec: norecDetailPenerimaan
+                    },
+                })
+                prev = prev[0]?.get() || null
+                prevValue = prev
+                let [_, updated] = await t_penerimaanbarangdetail.update({
                     objectprodukfk: bodyDetail.produk.idproduk,
                     ed: new Date(bodyDetail.tanggaled),
                     nobatch: bodyDetail.nobatch,
-                    objectsatuanfk: bodyDetail.satuanterima,
+                    objectsatuanfk: bodyDetail.produk.satuanjual,
                     jumlah: bodyDetail.jumlahterima,
                     hargasatuankecil: bodyDetail.hargasatuankecil,
                     hargasatuanterima: bodyDetail.hargasatuanterima,
@@ -847,14 +876,113 @@ const hCreateOrUpdateDetailPenerimaan = async (
                         norec: norecDetailPenerimaan
                     },
                     returning: true,
-                    plain: true,
                     transaction: transaction
                 })
-                createdOrUpdated = updated
+                updated = updated[0]?.get() || null
+                updatedValue = updated ;
             }
-            return createdOrUpdated
+            return {
+                prevValue,
+                updatedValue
+            }
         })
     )
     
-    return {createdOrUpdatedDetailPenerimaan}
+    return {
+        createdOrUpdatedDetailPenerimaan
+    }
+}
+
+const hCreateOrUpdateStokUnit  = async (
+    req, 
+    res,
+    transaction,
+    {
+        createdOrUpdatedDetailPenerimaan,
+        norecpenerimaan,
+        createdOrUpdatedPenerimaan,
+    }
+) => {
+    let createdOrUpdatedStokUnit = []
+    createdOrUpdatedStokUnit = await Promise.all(
+        createdOrUpdatedDetailPenerimaan.map(
+            async ({prevValue, updatedValue}) => {
+                const {
+                    nobatch
+                } = updatedValue
+                let stokBatch = await t_stokunit.findAll({
+                    where: {
+                        nobatch: nobatch,
+                        objectprodukfk: updatedValue.objectprodukfk
+                    }
+                })
+                let createdOrUpdated = null
+                let stokBatchItemFind = stokBatch.find((stokBatch) => {
+                    const data = stokBatch.get()
+                    const idProduk = data.objectprodukfk
+                    const idProdukDetail = updatedValue.objectprodukfk
+                    const isSame = idProduk === idProdukDetail
+                    return isSame
+                })
+                // if not found create new batch
+                if(!stokBatchItemFind){
+                    const qty = updatedValue.jumlah || 0
+                    const konversi = updatedValue.jumlahkonversi || 0
+                    let changedQty = qty * konversi
+                    const persenPpn = (updatedValue.ppnpersen || 0) / 100
+                    const hargaKecil = (updatedValue.hargasatuankecil || 0)
+                    const harga = (hargaKecil + (persenPpn * hargaKecil))
+                    const hargaDiskon = (updatedValue.total || 0) / changedQty
+                    createdOrUpdated = await t_stokunit.create({
+                        norec: uuid.v4().substring(0, 32),
+                        kdprofile: 0,
+                        statusenabled: true,
+                        objectunitfk: createdOrUpdatedPenerimaan.objectunitfk,
+                        objectasalprodukfk: createdOrUpdatedPenerimaan.objectasalprodukfk,
+                        objectprodukfk: updatedValue.objectprodukfk,
+                        nobatch: nobatch,
+                        ed: updatedValue.ed,
+                        persendiskon: updatedValue.diskonpersen,
+                        hargadiskon: hargaDiskon,
+                        harga: harga,
+                        qty: updatedValue.jumlah,
+                        objectpenerimaanbarangdetailfk: norecpenerimaan,
+                        tglterima: createdOrUpdatedPenerimaan.tglterima,
+                        tglinput: new Date(),
+                        tglupdate: new Date(),
+                    }, {
+                        transaction: transaction
+                    })
+                }else{
+                    // if batch found, use old batch
+                    const prevStokBatch = stokBatchItemFind.get() 
+                    const qty = updatedValue.jumlah || 0
+                    const qtyPrev = prevValue?.jumlah || 0
+                    const konversi = updatedValue.jumlahkonversi || 0
+                    const konversiPrev = prevValue?.jumlahkonversi || 0
+                    let changedQty = (qty * konversi - qtyPrev * konversiPrev)
+                    changedQty = prevStokBatch.qty + changedQty
+                    
+                    let [_, updated] = await t_stokunit.update({
+                        qty: changedQty,
+                        objectpenerimaanbarangdetailfk: norecpenerimaan,
+                        tglterima: createdOrUpdatedPenerimaan.tglterima,
+                        tglupdate: new Date(),
+                    }, {
+                        where: {
+                            norec: stokBatchItemFind.norec
+                        },
+                        returning: true,
+                        transaction: transaction
+                    })
+                    updated = updated[0]?.get() || null
+                    createdOrUpdated = updated
+                }
+                return createdOrUpdated
+            }
+        )
+    )
+    
+    
+    return {createdOrUpdatedStokUnit}
 }

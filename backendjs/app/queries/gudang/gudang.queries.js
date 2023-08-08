@@ -111,7 +111,7 @@ const qGetDetailPenerimaan = `
     json_build_object(
         'idproduk', mp.id,
         'namaproduk', mp.namaproduk,
-        'satuanjual', msk.id,
+        'satuanjual', mp.objectsatuanstandarfk,
         'namasatuanjual', msp.satuan 
     )
     AS produk,

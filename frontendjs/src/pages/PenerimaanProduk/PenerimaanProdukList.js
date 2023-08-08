@@ -19,6 +19,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { penerimaanListQueryGet } from "../../store/actions";
 import CountUp from "react-countup";
+import { pesananBatal, pesananDiterimaImg, pesananSudahImg } from "./imagesementara";
 
 
 
@@ -132,20 +133,23 @@ const PenerimaanProdukList = () => {
                         <Widget
                             title={"Total pemesanan yang belum diterima"}
                             end={0}
+                            image={pesananDiterimaImg}
                         />
                         <Widget
                             title={"Total pemesanan yang sudah diterima"}
                             end={dataPenerimaan.length}
+                            image={pesananSudahImg}
                         />
                         <Widget
                             title={"Total pemesanan yang Dibatalkan"}
                             end={0}
+                            image={pesananBatal}
                         />
                     </Row>
                     <Row className="d-flex flex-row-reverse mb-3">
                         <Col lg={2} className="d-flex flex-row-reverse">
                             <Link to={"/farmasi/gudang/penerimaan-produk"}>
-                                <Button>
+                                <Button color={"info"}>
                                     Tambah
                                 </Button>
                             </Link>
@@ -243,7 +247,7 @@ const ExpandablePenerimaan = ({ data }) => {
     )
 }
 
-const Widget = ({title, end}) => {
+const Widget = ({title, end, image}) => {
     return (
         <Col xxl={4} sm={6}>
             <Card className="card-animate">
@@ -266,8 +270,8 @@ const Widget = ({title, end}) => {
                         <div>
                             <div className="avatar-xl flex-shrink-0">
                                 <span className={"avatar-title rounded-circle fs-4"}>
-                                    {/* <img src={"assets/images/widget-img.svg"}
-                                        alt="" className="avatar-lg" /> */}
+                                    <img src={image}
+                                        alt="" className="avatar-lg" />
                                 </span>
                             </div>
                         </div>
@@ -324,5 +328,6 @@ const subTableCustomStyles = {
     }
     
 }
+
 
 export default PenerimaanProdukList;
