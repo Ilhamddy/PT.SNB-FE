@@ -2,6 +2,7 @@ import pool from "../../../config/dbcon.query";
 import * as uuid from 'uuid'
 import queries from '../../../queries/transaksi/registrasi.queries';
 import db from "../../../models";
+import { createTransaction } from "../../../utils/dbutils";
 const M_pasien = db.m_pasien
 const running_Number = db.running_number
 const t_daftarpasien = db.t_daftarpasien
@@ -1334,23 +1335,6 @@ const getDepositFromPasien = async (req, res) => {
     }
 }
 
-const createTransaction = async (db, res) => {
-    let transaction = null;
-    let error = null
-    try {
-        transaction = await db.sequelize.transaction();
-    } catch (e) {
-        console.error(e);
-        res.status(500).send({
-            status: JSON.stringify(e),
-            success: false,
-            msg: 'Error transaction',
-            code: 500
-        });
-        error = e
-    }
-    return [transaction, error]
-}
 
 
 
