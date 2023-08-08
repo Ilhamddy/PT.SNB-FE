@@ -566,7 +566,7 @@ const updateRegistrasiPPulang = async (req, res) => {
             updatedBodyK,
             updatedBodyKPindah
         }
-            = hUpdateRegistrasiPulang(req, res, transaction)
+            = await hUpdateRegistrasiPulang(req, res, transaction)
         await transaction.commit();
         if (updatedBody && updatedBodyAp) {
             updatedBody.norec = norecDP
