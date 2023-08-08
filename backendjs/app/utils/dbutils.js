@@ -6,7 +6,6 @@ export const createTransaction = async (db, res) => {
     try {
         transaction = await db.sequelize.transaction();
     } catch (e) {
-        console.error(e);
         res.status(500).send({
             status: JSON.stringify(e),
             success: false,
