@@ -749,7 +749,7 @@ async function saveMasterNilaiNormal(req, res) {
             transaction: transaction
         })
         const saveFilteredRows = async (filteredRows) => {
-            return await Promise.all(filteredRows.map(async (item) => {
+            return Promise.all(filteredRows.map(async (item) => {
                 const pemeriksaanlablevel = await db.m_pemeriksaanlab.create({
                     statusenabled: true,
                     kodeexternal: item.kode,
@@ -1105,63 +1105,11 @@ async function saveSetMasterNilaiNormalLab(req, res) {
             msg: 'Simpan Gagal',
             code: 201
         });
+        return
     }
     try {
-
-        const nilainormallab = await Promise.all(
-            req.body.datal.map(async (item) => {
-                let nilainormallab = null
-                if (item.idnilainormal === '') {
-                    nilainormallab = await db.m_nilainormallab.create({
-                        statusenabled: true,
-                        namaexternal: req.body.header.namaPemeriksaan,
-                        reportdisplay: req.body.header.namaPemeriksaan,
-                        objectpemeriksaanlabfk: req.body.header.idnamaPemeriksaan,
-                        objectjeniskelaminfk: 1,
-                        objectdetailkelompokumurfk: item.id,
-                        metodepemeriksaan: req.body.header.metode,
-                        nilaimin: item.nilaimin,
-                        nilaimax: item.nilaimax,
-                        nilaitext: item.nilaitext,
-                        nilaikritis: item.nilaikritis,
-                        tglinput: new Date(),
-                        tglupdate: new Date(),
-                        objectpegawaiinputfk: req.idPegawai,
-                        tipedata: req.body.header.tipedata
-                    }, {
-                        transaction: transaction
-                    })
-                } else {
-                    nilainormallab = await db.m_nilainormallab.update({
-                        statusenabled: true,
-                        namaexternal: req.body.header.namaPemeriksaan,
-                        reportdisplay: req.body.header.namaPemeriksaan,
-                        objectpemeriksaanlabfk: req.body.header.idnamaPemeriksaan,
-                        objectjeniskelaminfk: 1,
-                        objectdetailkelompokumurfk: item.id,
-                        metodepemeriksaan: req.body.header.metode,
-                        nilaimin: item.nilaimin,
-                        nilaimax: item.nilaimax,
-                        nilaitext: item.nilaitext,
-                        nilaikritis: item.nilaikritis,
-                        tglupdate: new Date(),
-                        objectpegawaiupdatefk: req.idPegawai,
-                        tipedata: req.body.header.tipedata
-                    }, {
-                        where: {
-                            id: item.idnilainormal
-                        },
-                        transaction: transaction
-                    })
-                }
-
-
-                return nilainormallab
-            })
-        )
-
-        const nilainormallabp = await Promise.all(
-            req.body.datap.map(async (item) => {
+        const inputNilaiLab = (data, objectjeniskelamin) =>
+            data.map(async (item) => {
                 let nilainormallabp = null
                 if (item.idnilainormal === '') {
                     nilainormallabp = await db.m_nilainormallab.create({
@@ -1169,7 +1117,7 @@ async function saveSetMasterNilaiNormalLab(req, res) {
                         namaexternal: req.body.header.namaPemeriksaan,
                         reportdisplay: req.body.header.namaPemeriksaan,
                         objectpemeriksaanlabfk: req.body.header.idnamaPemeriksaan,
-                        objectjeniskelaminfk: 2,
+                        objectjeniskelaminfk: objectjeniskelamin,
                         objectdetailkelompokumurfk: item.id,
                         metodepemeriksaan: req.body.header.metode,
                         nilaimin: item.nilaimin,
@@ -1189,7 +1137,7 @@ async function saveSetMasterNilaiNormalLab(req, res) {
                         namaexternal: req.body.header.namaPemeriksaan,
                         reportdisplay: req.body.header.namaPemeriksaan,
                         objectpemeriksaanlabfk: req.body.header.idnamaPemeriksaan,
-                        objectjeniskelaminfk: 2,
+                        objectjeniskelaminfk: objectjeniskelamin,
                         objectdetailkelompokumurfk: item.id,
                         metodepemeriksaan: req.body.header.metode,
                         nilaimin: item.nilaimin,
@@ -1208,8 +1156,14 @@ async function saveSetMasterNilaiNormalLab(req, res) {
                 }
                 return nilainormallabp
             })
+
+        const nilainormallab = await Promise.all(
+            inputNilaiLab(req.body.datal, 1)
         )
 
+        const nilainormallabp = await Promise.all(
+            inputNilaiLab(req.body.datap, 2)
+        )
         await transaction.commit();
         let tempres = { nilainormallab, nilainormallabp }
         res.status(200).send({
@@ -1219,7 +1173,6 @@ async function saveSetMasterNilaiNormalLab(req, res) {
             msg: 'Berhasil',
             code: 200
         });
-
     } catch (error) {
         transaction && await transaction.rollback();
         console.log(error)

@@ -6,6 +6,7 @@ import crypto from 'crypto';
 import axios from "axios";
 import CryptoJS from "crypto-js";
 import t_daftarpasienModel from "../../../models/t_daftarpasien.model";
+import { qGetListTarif18 } from "../../../queries/casemix/casemix.queries";
 const algorithm = 'aes-256-cbc';
 const queryPromise2 = (query) => {
     return new Promise((resolve, reject) => {
@@ -178,26 +179,7 @@ async function getListDaftarPasien(req, res) {
 
 async function getListTarif18(req, res) {
     try {
-        const resultlist = await queryPromise2(`select
-                sum(((tp.harga - case when tp.discount is null 
-                then 0 else tp.discount end) * tp.qty)+ case when 
-                tp.jasa is null then 0 else tp.jasa end) as ttl,
-                mp.objectvariabelbpjsfk
-            from
-                t_daftarpasien td
-            join t_antreanpemeriksaan ta on
-                td.norec = ta.objectdaftarpasienfk
-            join m_unit mu on
-                mu.id = ta.objectunitfk
-            join t_pelayananpasien tp on
-                tp.objectantreanpemeriksaanfk = ta.norec
-            join m_produk mp on
-                mp.id = tp.objectprodukfk
-            where
-                td.norec = '${req.query.norec}'
-                and tp.statusenabled = true
-            group by mp.objectvariabelbpjsfk 
-        `);
+        const resultlist = await queryPromise2(qGetListTarif18);
         let prosedur_non_bedah = 0;
         let prosedur_bedah = 0;
         let konsultasi = 0;
