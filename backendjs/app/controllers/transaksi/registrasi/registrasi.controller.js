@@ -371,7 +371,7 @@ const saveRegistrasiPasien2 = (req, res) => {
     }
 }
 async function saveRegistrasiPasien(req, res) {
-    const [transaction, error] = createTransaction(db, res)
+    const [transaction, error] = await createTransaction(db, res)
     try {
         if(error) throw error
         let norecDP = uuid.v4().substring(0, 32)
