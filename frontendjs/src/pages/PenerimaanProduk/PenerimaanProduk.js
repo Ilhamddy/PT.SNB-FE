@@ -178,7 +178,7 @@ const PenerimaanProduk = () => {
             subtotalproduk: Yup.string().required("Subtotal harus diisi"),
             totalproduk: Yup.string().required("Total harus diisi"),
         }),
-        onSubmit: (values) => {
+        onSubmit: (values, {resetForm}) => {
             const newDetailValues = [...validation.values.detail]
             const newValues = {...values}
             if(values.indexDetail !== ""){
@@ -187,6 +187,7 @@ const PenerimaanProduk = () => {
                 newValues.indexDetail = newDetailValues.length
                 newDetailValues.push(newValues);
             }
+            resetForm();
             validation.setFieldValue("detail", newDetailValues)
         }
     })

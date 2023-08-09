@@ -286,6 +286,7 @@ import SettingProduk from "../pages/Produk/SettingProduk";
 import ListProduk from "../pages/Produk/ListProduk";
 import PenerimaanProduk from "../pages/PenerimaanProduk/PenerimaanProduk";
 import PenerimaanProdukList from "../pages/PenerimaanProduk/PenerimaanProdukList";
+import KartuStok from "../pages/KartuStok/KartuStok";
 
 
 
@@ -549,8 +550,8 @@ const authProtectedRoutes = [
   { path: "/farmasi/gudang/list-produk", component: <ListProduk /> },
   { path: "/farmasi/gudang/penerimaan-produk/:norecpenerimaan", component: <PenerimaanProduk /> },
   { path: "/farmasi/gudang/penerimaan-produk", component: <PenerimaanProduk /> },
-  { path: "/farmasi/gudang/penerimaan-produk-list", component: <PenerimaanProdukList /> }
-
+  { path: "/farmasi/gudang/penerimaan-produk-list", component: <PenerimaanProdukList /> },
+  { path: "/farmasi/gudang/kartu-stok", component: <KartuStok />}
 
 ];
 

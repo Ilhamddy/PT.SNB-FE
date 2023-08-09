@@ -372,7 +372,7 @@ const saveRegistrasiPasien2 = (req, res) => {
 }
 async function saveRegistrasiPasien(req, res) {
     const [transaction, errorTransaciton] 
-        = await createTransaction(db, res, "saveRegPasien")
+        = await createTransaction(db, "saveRegPasien")
     
     try {
         if(errorTransaciton) throw errorTransaciton

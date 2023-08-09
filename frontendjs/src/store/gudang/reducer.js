@@ -41,7 +41,10 @@ import {
     PENERIMAAN_QUERY_GET_ERROR,
     PENERIMAAN_LIST_QUERY_GET,
     PENERIMAAN_LIST_QUERY_GET_SUCCESS,
-    PENERIMAAN_LIST_QUERY_GET_ERROR
+    PENERIMAAN_LIST_QUERY_GET_ERROR,
+    KARTU_STOK_QUERY_GET,
+    KARTU_STOK_QUERY_GET_SUCCESS,
+    KARTU_STOK_QUERY_GET_ERROR,
 } from "./actionType";
 
 const INIT_STATE = {
@@ -111,6 +114,11 @@ const INIT_STATE = {
         error: null,
     },
     penerimaanListQueryGet: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    kartuStokQueryGet: {
         data: [],
         loading: false,
         error: null,
@@ -623,6 +631,42 @@ const Registrasi = (state = INIT_STATE, action) => {
                 ...state,
                 penerimaanListQueryGet: {
                     ...state.penerimaanListQueryGet,
+                    loading: false,
+                    data: [],
+                    error: action.payload.data
+                }
+            }
+        }
+
+        case KARTU_STOK_QUERY_GET: {
+            return {
+                ...state,
+                kartuStokQueryGet: {
+                    ...state.kartuStokQueryGet,
+                    loading: true,
+                    data: [],
+                    error: null
+                }
+            }
+        }
+
+        case KARTU_STOK_QUERY_GET_SUCCESS: {
+            return {
+                ...state,
+                kartuStokQueryGet: {
+                    ...state.kartuStokQueryGet,
+                    loading: false,
+                    data: action.payload.data,
+                    error: null
+                }
+            }
+        }
+
+        case KARTU_STOK_QUERY_GET_ERROR: {
+            return {
+                ...state,
+                kartuStokQueryGet: {
+                    ...state.kartuStokQueryGet,
                     loading: false,
                     data: [],
                     error: action.payload.data

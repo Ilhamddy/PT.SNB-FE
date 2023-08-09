@@ -2,6 +2,7 @@ import pool from "../../../config/dbcon.query";
 import * as uuid from 'uuid'
 import db from "../../../models";
 import { qGetDetailPenerimaan, qGetJenisDetailProdukLainLain, 
+    qGetKartuStok, 
     qGetKemasan, 
     qGetListPenerimaan, 
     qGetPenerimaan, 
@@ -13,6 +14,9 @@ import { qGetDetailPenerimaan, qGetJenisDetailProdukLainLain,
     qGetSatuanLainLain, 
     qGetSediaanLainLain,  
 } from "../../../queries/gudang/gudang.queries";
+import {
+    createTransaction
+} from "../../../utils/dbutils";
 const m_produk = db.m_produk;
 const m_detailjenisproduk = db.m_detailjenisproduk;
 const m_sediaan = db.m_sediaan
@@ -21,23 +25,14 @@ const m_kemasanproduk = db.m_kemasanproduk
 const t_penerimaanbarang = db.t_penerimaanbarang
 const t_penerimaanbarangdetail = db.t_penerimaanbarangdetail
 const t_stokunit = db.t_stokunit
+const t_kartustok = db.t_kartustok
 
 
 const createOrUpdateProdukObat = async (req, res) => {
-    let transaction = null;
+    const [transaction, errorTransaction]
+        = await createTransaction(db)
     try{
-        transaction = await db.sequelize.transaction();
-    }catch(e){
-        console.error(e)
-        res.status(500).send({
-            data: e.message,
-            success: false,
-            msg: 'Transaksi gagal',
-            code: 500
-        });
-        return;
-    }
-    try{
+        if(errorTransaction) throw errorTransaction
         const objectBody = req.body
 
         let createdProduk
@@ -124,20 +119,10 @@ const createOrUpdateProdukObat = async (req, res) => {
 }
 
 const createOrUpdateDetailProduk = async (req, res) => {
-    let transaction = null;
+    const [transaction, errorTransaction]
+        = await createTransaction(db)
     try{
-        transaction = await db.sequelize.transaction();
-    }catch(e){
-        console.error(e)
-        res.status(500).send({
-            data: e.message,
-            success: false,
-            msg: 'Transaksi gagal',
-            code: 500
-        });
-        return;
-    }
-    try{
+        if(errorTransaction) throw errorTransaction
         const body = req.body
 
         let createdOrEdited = null
@@ -200,20 +185,10 @@ const createOrUpdateDetailProduk = async (req, res) => {
 
 
 const createOrUpdateSediaan = async (req, res) => {
-    let transaction = null;
+    const [transaction, errorTransaction]
+        = await createTransaction(db)
     try{
-        transaction = await db.sequelize.transaction();
-    }catch(e){
-        console.error(e)
-        res.status(500).send({
-            data: e.message,
-            success: false,
-            msg: 'Transaksi gagal',
-            code: 500
-        });
-        return;
-    }
-    try{
+        if(errorTransaction) throw errorTransaction
         const body = req.body
 
         let createdOrEdited = null
@@ -271,20 +246,10 @@ const createOrUpdateSediaan = async (req, res) => {
 }
 
 const createOrUpdateSatuan = async (req, res) => {
-    let transaction = null;
+    const [transaction, errorTransaction]
+        = await createTransaction(db)
     try{
-        transaction = await db.sequelize.transaction();
-    }catch(e){
-        console.error(e)
-        res.status(500).send({
-            data: e.message,
-            success: false,
-            msg: 'Transaksi gagal',
-            code: 500
-        });
-        return;
-    }
-    try{
+        if(errorTransaction) throw errorTransaction
         const body = req.body
 
         let createdOrEdited = null
@@ -583,20 +548,10 @@ const getSatuanFromProduk = async (req, res) => {
 }
 
 const createOrUpdatePenerimaan = async (req, res) => {
-    let transaction = null;
-    try{
-        transaction = await db.sequelize.transaction();
-    }catch(e){
-        console.error(e)
-        res.status(500).send({
-            data: e.message,
-            success: false,
-            msg: 'Transaksi gagal',
-            code: 500
-        });
-        return;
-    }
+    const [transaction, errorTransaction]
+        = await createTransaction(db)
     try {
+        if(errorTransaction) throw errorTransaction
         const {
             createdOrUpdatedPenerimaan,
             norecpenerimaan
@@ -626,13 +581,26 @@ const createOrUpdatePenerimaan = async (req, res) => {
                 createdOrUpdatedPenerimaan
             }
         )
-        
+
+        const {
+            createdKartuStok
+        } = await hCreateKartuStok(
+            req,
+            res,
+            transaction,
+            {
+                createdOrUpdatedPenerimaan,
+                createdOrUpdatedStokUnit
+            }
+        )
+
         await transaction.commit();
 
         const tempres = {
             createdOrUpdatedPenerimaan: createdOrUpdatedPenerimaan,
             createdOrUpdatedDetailPenerimaan: createdOrUpdatedDetailPenerimaan,
             createdOrUpdatedStokUnit: createdOrUpdatedStokUnit,
+            createdKartuStok: createdKartuStok
         }
 
         res.status(200).send({
@@ -739,6 +707,30 @@ const getListPenerimaan = async (req, res) => {
     }
 }
 
+const getKartuStok = async (req, res) => {
+    try{
+        const kartuStok = (await pool.query(qGetKartuStok, [])).rows
+        const tempres = {
+            kartustok: kartuStok
+        }
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+            msg: 'Get kartu stok Berhasil',
+            code: 200
+        });
+    }catch(e){
+        console.error(e)
+        res.status(500).send({
+            data: e.message,
+            success: false,
+            msg: 'Transaksi gagal',
+            code: 500
+        });
+    }
+}
+
 export default {
     createOrUpdateProdukObat,
     getLainLain,
@@ -753,7 +745,8 @@ export default {
     getSatuanFromProduk,
     getPenerimaan,
     createOrUpdatePenerimaan,
-    getListPenerimaan
+    getListPenerimaan,
+    getKartuStok
 }
 
 const hCreateOrUpdatePenerimaan = async (req, res, transaction) => {
@@ -824,6 +817,15 @@ const hCreateOrUpdateDetailPenerimaan = async (
             let prevValue = null
             let updatedValue = null
             if(!norecDetailPenerimaan){
+                let prev = await t_penerimaanbarangdetail.findOne({
+                    where: {
+                        norec: norecDetailPenerimaan
+                    },
+                })
+                prev = prev?.[0]?.get() || null
+                prevValue = prev
+            }
+            if(!norecDetailPenerimaan || !prevValue){
                 norecDetailPenerimaan = uuid.v4().substring(0, 32)
                 updatedValue = await t_penerimaanbarangdetail.create({
                     norec: uuid.v4().substring(0, 32),
@@ -848,13 +850,6 @@ const hCreateOrUpdateDetailPenerimaan = async (
                     transaction: transaction
                 }) 
             }else{
-                let prev = await t_penerimaanbarangdetail.findOne({
-                    where: {
-                        norec: norecDetailPenerimaan
-                    },
-                })
-                prev = prev[0]?.get() || null
-                prevValue = prev
                 let [_, updated] = await t_penerimaanbarangdetail.update({
                     objectprodukfk: bodyDetail.produk.idproduk,
                     ed: new Date(bodyDetail.tanggaled),
@@ -877,7 +872,7 @@ const hCreateOrUpdateDetailPenerimaan = async (
                     returning: true,
                     transaction: transaction
                 })
-                updated = updated[0]?.get() || null
+                updated = updated?.[0]?.get() || null
                 updatedValue = updated ;
             }
             return {
@@ -923,11 +918,13 @@ const hCreateOrUpdateStokUnit  = async (
                     const isSame = idProduk === idProdukDetail
                     return isSame
                 })
-                // if not found create new batch
+                let changedQty = 0
+                let prevStok
+                // if batch found, create new batch
                 if(!stokBatchItemFind){
                     const qty = updatedValue.jumlah || 0
                     const konversi = updatedValue.jumlahkonversi || 0
-                    let changedQty = qty * konversi
+                    changedQty = qty * konversi
                     const persenPpn = (updatedValue.ppnpersen || 0) / 100
                     const hargaKecil = (updatedValue.hargasatuankecil || 0)
                     const harga = (hargaKecil + (persenPpn * hargaKecil))
@@ -944,7 +941,7 @@ const hCreateOrUpdateStokUnit  = async (
                         persendiskon: updatedValue.diskonpersen,
                         hargadiskon: hargaDiskon,
                         harga: harga,
-                        qty: updatedValue.jumlah,
+                        qty: changedQty,
                         objectpenerimaanbarangdetailfk: norecpenerimaan,
                         tglterima: createdOrUpdatedPenerimaan.tglterima,
                         tglinput: new Date(),
@@ -954,16 +951,16 @@ const hCreateOrUpdateStokUnit  = async (
                     })
                 }else{
                     // if batch found, use old batch
-                    const prevStokBatch = stokBatchItemFind.get() 
-                    const qty = updatedValue.jumlah || 0
-                    const qtyPrev = prevValue?.jumlah || 0
+                    prevStok = stokBatchItemFind.get() 
+                    const jmlPaket = updatedValue.jumlah || 0
+                    const jmlPaketPrev = prevValue?.jumlah || 0
                     const konversi = updatedValue.jumlahkonversi || 0
                     const konversiPrev = prevValue?.jumlahkonversi || 0
-                    let changedQty = (qty * konversi - qtyPrev * konversiPrev)
-                    changedQty = prevStokBatch.qty + changedQty
+                    changedQty = (jmlPaket * konversi - jmlPaketPrev * konversiPrev)
+                    const qty = prevStok.qty + changedQty
                     
                     let [_, updated] = await t_stokunit.update({
-                        qty: changedQty,
+                        qty: qty,
                         objectpenerimaanbarangdetailfk: norecpenerimaan,
                         tglterima: createdOrUpdatedPenerimaan.tglterima,
                         tglupdate: new Date(),
@@ -977,7 +974,7 @@ const hCreateOrUpdateStokUnit  = async (
                     updated = updated[0]?.get() || null
                     createdOrUpdated = updated
                 }
-                return createdOrUpdated
+                return {createdOrUpdated, prevStok, changedQty}
             }
         )
     )
@@ -990,7 +987,46 @@ const hCreateOrUpdateStokUnit  = async (
 const hCreateKartuStok = async (
     req,
     res,
-    transaction
+    transaction,
+    {
+        createdOrUpdatedPenerimaan,
+        createdOrUpdatedStokUnit
+    }
 ) => {
+    
+    let createdKartuStok = await Promise.all(
+        createdOrUpdatedStokUnit.map(async({
+            createdOrUpdated, 
+            prevStok, 
+            changedQty
+        }) => {
+            const masuk = changedQty >= 0 ? changedQty : 0
+            const keluar = changedQty < 0 ? changedQty : 0
+            const norecKartuStok = uuid.v4().substring(0, 32)
+            const saldoAwal = prevStok?.qty || 0
+            const createdKartuStok = await t_kartustok.create({
+                norec: norecKartuStok,
+                kdprofile: 0,
+                statusenabled: true,
+                objectunitfk: createdOrUpdatedPenerimaan.objectunitfk,
+                objectprodukfk: createdOrUpdated.objectprodukfk,
+                saldoawal: saldoAwal,
+                masuk: masuk,
+                keluar: keluar,
+                saldoakhir: saldoAwal + changedQty,
+                keteranan: "",
+                status: false,
+                tglinput: new Date(),
+                tglupdate: new Date(),
+                tabeltransaksi: "t_penerimaanbarangdetail",
+                norectransaksi: createdOrUpdatedPenerimaan.norec,
+                batch: createdOrUpdated.nobatch
+            }, {
+                transaction: transaction
+            })
+            return createdKartuStok
+        })
+    )
 
+    return {createdKartuStok}
 }

@@ -59,4 +59,8 @@ export default class ServiceGudang {
     getListPenerimaan = async (queries) => {
         return await api.get(`/transaksi/gudang/get-list-penerimaan`, queries)
     }
+
+    getKartuStok = async (queries) => {
+        return await api.get(`/transaksi/gudang/get-kartu-stok`, queries)
+    }
 }

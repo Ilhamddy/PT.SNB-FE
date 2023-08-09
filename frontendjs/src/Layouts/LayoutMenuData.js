@@ -528,6 +528,17 @@ const Navdata = () => {
                         ]);
                     }
                 },
+                {
+                    id: "kartustok",
+                    label: "Kartu Stok",
+                    link: "/farmasi/gudang/kartu-stok",
+                    parentId: "gudang",
+                    isAllowed: () => {
+                        return isAllowedAccess(getUserPermissions(), [
+                            "REGISTRASI_VIEW",
+                        ]);
+                    }
+                },
             ]
         },
     ];

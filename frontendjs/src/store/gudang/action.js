@@ -41,6 +41,9 @@ import {
     PENERIMAAN_LIST_QUERY_GET,
     PENERIMAAN_LIST_QUERY_GET_SUCCESS,
     PENERIMAAN_LIST_QUERY_GET_ERROR,
+    KARTU_STOK_QUERY_GET,
+    KARTU_STOK_QUERY_GET_SUCCESS,
+    KARTU_STOK_QUERY_GET_ERROR,
 } from "./actionType";
 
 
@@ -251,5 +254,20 @@ export const penerimaanListQueryGetSuccess = (data) => ({
 
 export const penerimaanListQueryGetError = (data) => ({
     type: PENERIMAAN_LIST_QUERY_GET_ERROR,
+    payload: { data: data },
+})
+
+export const kartuStokQueryGet = (queries) => ({
+    type: KARTU_STOK_QUERY_GET,
+    payload: { queries: queries },
+})
+
+export const kartuStokQueryGetSuccess = (data) => ({
+    type: KARTU_STOK_QUERY_GET_SUCCESS,
+    payload: { data: data },
+})
+
+export const kartuStokQueryGetError = (data) => ({
+    type: KARTU_STOK_QUERY_GET_ERROR,
     payload: { data: data },
 })
