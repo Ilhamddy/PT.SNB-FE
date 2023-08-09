@@ -148,7 +148,7 @@ const DaftarPasienLaboratorium = () => {
             <UiContent />
             <div className="page-content">
                 <Container fluid>
-                    <BreadCrumb title="Daftar Pasien Radiologi" pageTitle="Forms" />
+                    <BreadCrumb title="Daftar Pasien Laboratorium" pageTitle="Forms" />
                     <Row>
                         <Col lg={3}>
                             <Card>

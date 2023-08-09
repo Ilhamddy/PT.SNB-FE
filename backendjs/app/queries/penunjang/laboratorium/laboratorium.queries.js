@@ -10,7 +10,7 @@ from
     age(cast(mp2.tgllahir as date))/(3600 * 24) ) as umur,
     mp3.id,
     mp3.namaproduk ,
-    mp.id,
+    mp.id as idpemeriksaanlab,
     row_number() over (partition by mp.id
 order by
     mp.id asc,
@@ -24,7 +24,13 @@ order by
         when md3.id is null then null
     end as nilaitext,
     ms.satuan,
-    mn.nilaikritis
+    mn.nilaikritis,
+    mn.metodepemeriksaan,
+    case when th2.nilaihasil is null then '' else th2.nilaihasil end as nilaihasil,
+    --th2.nilaihasil,
+    th2.keterangan,
+    mn.id as idnilainormallab,
+    th2.norec as norecdetailhasil
 from
     m_pemeriksaanlab mp
 join t_pelayananpasien tp on
@@ -42,6 +48,8 @@ left join m_satuan ms on
 left join m_nilainormallab mn on
     mp.id = mn.objectpemeriksaanlabfk
     and mn.objectjeniskelaminfk = mp2.objectjeniskelaminfk
+left join t_hasilpemeriksaan th on th.objectpelayananpasienfk=tp.norec
+left join t_hasilpemeriksaandetail th2 on th2.objecthasilpemeriksaanfk=th.norec
 left join (
     select
         id,
