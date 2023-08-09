@@ -94,4 +94,10 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getListPenerimaan
     )
+
+    app.get(
+        "/api/transaksi/gudang/get-kartu-stok",
+        [authJwt.verifyToken],
+        controller.getKartuStok
+    )
 }

@@ -166,6 +166,27 @@ const qGetListPenerimaan = qGetPenerimaanFE + `
             WHERE tpb.statusenabled = true
 `
 
+const qGetKartuStok = `
+    SELECT
+    tks.norec AS noreckartustok,
+    tks.statusenabled AS statusenabled,
+    mu.namaunit AS unit,
+    mp.namaproduk AS namaproduk,
+    tks.saldoawal AS saldoawal,
+    tks.masuk AS masuk,
+    tks.keluar AS keluar,
+    tks.saldoakhir AS saldoakhir,
+    tks.keterangan AS keterangan,
+    tks.tglinput AS tglinput,
+    tks.tglupdate AS tglupdate,
+    tks.tabeltransaksi AS tabeltransaksi,
+    tks.norectransaksi AS norectransaksi,
+    tks.batch AS nobatch
+        FROM t_kartustok tks
+        JOIN m_produk mp ON mp.id = tks.objectprodukfk
+        JOIN m_unit mu ON mu.id = tks.objectunitfk
+`
+
 export {
     qGetJenisDetailProdukLainLain,
     qGetSediaanLainLain,
@@ -178,5 +199,6 @@ export {
     qGetSatuanFromProduk,
     qGetDetailPenerimaan,
     qGetPenerimaan,
-    qGetListPenerimaan
+    qGetListPenerimaan,
+    qGetKartuStok
 }
