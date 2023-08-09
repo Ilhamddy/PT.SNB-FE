@@ -14,14 +14,21 @@ const updatePasienById = "update m_pasien set namapasien=$1,noidentitas=$2 ,nobp
 
 const getPasienById = "select id,nocm ,namapasien ,noidentitas ,nobpjs ,nohp, tgllahir  from m_pasien where id = $1";
 
-const getPasienByNoregistrasi = `select mp.nocm,td.noregistrasi,mp.namapasien,
-to_char(td.tglregistrasi,'yyyy-MM-dd'),mu.namaunit,
-mp2.reportdisplay || '-' ||ta.noantrian as noantrian,mp2.namalengkap as namadokter  from t_daftarpasien td 
-join m_pasien mp on mp.id=td.nocmfk 
-join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk =td.norec
-join m_unit mu on mu.id=ta.objectunitfk 
-left join m_pegawai mp2 on mp2.id=ta.objectdokterpemeriksafk 
- where td.noregistrasi = $1`;
+const getPasienByNoregistrasi = `
+    select 
+    mp.nocm,
+    td.noregistrasi,
+    mp.namapasien,
+    to_char(td.tglregistrasi,'yyyy-MM-dd'),
+    mu.namaunit,
+    mp2.reportdisplay || '-' ||ta.noantrian as noantrian,
+    mp2.namalengkap as namadokter  
+    from t_daftarpasien td 
+    join m_pasien mp on mp.id=td.nocmfk 
+    join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk =td.norec
+    join m_unit mu on mu.id=ta.objectunitfk 
+    left join m_pegawai mp2 on mp2.id=ta.objectdokterpemeriksafk 
+    where td.noregistrasi = $1`;
 
 // const getAllByOr = 
 //     "select id,nocm ,namapasien ,noidentitas ,nobpjs ,nohp,"+
@@ -75,6 +82,64 @@ left join m_rekanan mr on mr.id=td.objectpenjaminfk
 left join m_unit mu2 on mu2.id=ta.objectunitfk `;
 
 const widgetgetDaftarPasienRawatInap = `select objectstatusbedfk  from m_tempattidur mt where statusenabled =true`;
+
+const qGetPasienFormById = `
+    SELECT
+    mp.id AS id,
+    mp.namapasien AS namapasien,
+    mp.noidentitas AS noidentitas,
+    mp.objectjeniskelaminfk AS jeniskelamin,
+    mp.objecttitlefk AS titlepasien,
+    mp.tgllahir AS tgllahir,
+    mp.tempatlahir AS tempatlahir,
+    mp.objectagamafk AS agama,
+    mp.objectgolongandarahfk AS goldarah,
+    mp.objectkebangsaanfk AS kebangsaan,
+    mp.objectstatusperkawinanfk AS statusperkawinan,
+    mp.objectpendidikanfk AS pendidikan,
+    mp.objectpekerjaanfk AS pekerjaan,
+    mp.objectetnisfk AS suku,
+    mp.objectbahasafk AS bahasa,
+    mp.alamatrmh AS alamatktp,
+    mp.rtktp AS rt,
+    mp.rwktp AS rw,
+    mp.objectdesakelurahanktpfk AS desa,
+    mdk.namadesakelurahan AS labelDesa,
+    mkck.namakecamatan AS kecamatan,
+    mkbk.namakabupaten AS kota,
+    mpk.namaprovinsi AS provinsi,
+    mdk.kodepos AS pos,
+    mp.objectnegaradomisilifk AS negara,
+    mnk.namanegara AS labelNegara,
+    mp.rtdomisili AS rtdomisili,
+    mp.rwdomisili AS rwdomisili,
+    mp.objectdesakelurahanktpfk AS desaDommisili,
+    mdd.namadesakelurahan AS labelDesaDomisili,
+    mkcd.namakecamatan AS kecamatanDomisili,
+    mkbd.namakabupaten AS kotaDomisili,
+    mpd.namaprovinsi AS provinsiDomisili,
+    mdd.kodepos AS posDomisili,
+    mnd.namanegara AS labelNegaraDomisili,
+    mp.nobpjs AS nobpjs,
+    mp.namaibu AS namaibu,
+    mp.namaayah AS namaayah,
+    mp.namasuamiistri AS namasuamiistri,
+    mp.namakeluarga AS namakeluargalain,
+    mp.nohp AS nohp,
+    mp.notelepon AS notelepon
+        FROM m_pasien mp
+        LEFT JOIN m_negara mnk ON mnk.id = mp.objectnegaraktpfk
+        LEFT JOIN m_desakelurahan mdk ON mdk.id = mp.objectdesakelurahanktpfk
+        LEFT JOIN m_provinsi mpk ON mpk.id = mdk.objectprovinsifk
+        LEFT JOIN m_kabupaten mkbk ON mkbk.id = mdk.objectkabupatenfk
+        LEFT JOIN m_kecamatan mkck ON mkck.id = mdk.objectkecamatanfk
+        LEFT JOIN m_negara mnd ON mnk.id = mp.objectnegaradomisilifk
+        LEFT JOIN m_desakelurahan mdd ON mdd.id = mp.objectdesakelurahandomisilifk
+        LEFT JOIN m_provinsi mpd ON mpd.id = mdd.objectprovinsifk
+        LEFT JOIN m_kabupaten mkbd ON mkbd.id = mdd.objectkabupatenfk
+        LEFT JOIN m_kecamatan mkcd ON mkcd.id = mdd.objectkecamatanfk
+            WHERE mp.id = $1
+`
 
 const getDaftarPasienRawatInap = `SELECT 
 td.norec as norecdp,
@@ -152,5 +217,6 @@ export default {
     getDaftarPasienRawatInap,
     getRekapBilling,
     qGetDepositFromPasien,
-    qNoAntrian
+    qNoAntrian,
+    qGetPasienFormById
 };

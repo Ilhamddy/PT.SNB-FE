@@ -31,6 +31,9 @@ import {
     REGISTRASI_SAVE_PENJAMIN_FK,
     REGISTRASI_SAVE_PENJAMIN_FK_SUCCESS,
     REGISTRASI_SAVE_PENJAMIN_FK_ERROR,
+    PASIEN_FORM_QUERIES_GET,
+    PASIEN_FORM_QUERIES_GET_SUCCESS,
+    PASIEN_FORM_QUERIES_GET_ERROR,
 } from "./actionType";
 
 export const registrasiResetForm = () => ({
@@ -188,5 +191,20 @@ export const registrasiSavePenjaminFKSuccess = (data) => ({
 
 export const registrasiSavePenjaminFKError = (error) => ({
     type: REGISTRASI_SAVE_PENJAMIN_FK_ERROR,
+    payload: error,
+});
+
+export const pasienFormQueriesGet = (queries) => ({
+    type: PASIEN_FORM_QUERIES_GET,
+    payload: {queries},
+});
+
+export const pasienFormQueriesGetSuccess = (data) => ({
+    type: PASIEN_FORM_QUERIES_GET_SUCCESS,
+    payload: data,
+});
+
+export const pasienFormQueriesGetError = (error) => ({
+    type: PASIEN_FORM_QUERIES_GET_ERROR,
     payload: error,
 });

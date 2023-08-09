@@ -95,4 +95,8 @@ export default class ServiceRegistrasi {
     getWidgetDaftarPasienRegistrasi = async (param) => {
         return await api.get(`/transaksi/registrasi/widget-daftar-pasien-registrasi`);
     }
+
+    getPasienFormById = async (queries) => {
+        return await api.get(`/transaksi/registrasi/get-pasien-form`, queries);
+    }
 }

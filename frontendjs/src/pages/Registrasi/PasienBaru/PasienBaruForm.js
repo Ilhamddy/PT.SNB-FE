@@ -21,13 +21,15 @@ import progileBg from '../../../assets/images/profile-bg-2.jpg';
 import Select from "react-select";
 import { useSelector, useDispatch } from "react-redux";
 import { masterGet, desaGet, kecamatanGet } from '../../../store/master/action';
-import { registrasiSave, registrasiResetForm, registrasiGet } from "../../../store/actions";
+import { registrasiSave, registrasiResetForm, registrasiGet, pasienFormQueriesGet } from "../../../store/actions";
 import CustomSelect from '../../Select/Select'
 import { rgxAllNumber, rgxNbrEmpty } from '../../../utils/regexcommon';
+import { useParams } from 'react-router-dom';
 
 const PasienBaru = () => {
     document.title = "Profile Pasien Baru";
     const dispatch = useDispatch();
+    const {idpasien} = useParams();
     const { 
         data, 
         dataJenisKelamin, 
@@ -43,7 +45,8 @@ const PasienBaru = () => {
         newData, 
         loadingSave, 
         success, 
-        errorSave 
+        errorSave,
+        pasienFormQueries
     } = useSelector((state) => ({
             data: state.Master.masterGet.data.agama,
             dataJenisKelamin: state.Master.masterGet.data.jeniskelamin,
@@ -63,6 +66,7 @@ const PasienBaru = () => {
             success: state.Registrasi.registrasiSave.success,
             loading: state.Master.masterGet.loading,
             error: state.Master.masterGet.error,
+            pasienFormQueries: state.Registrasi.pasienFormQueriesGet.data?.pasien || null
         }));
 
     useEffect(() => {
@@ -118,7 +122,7 @@ const PasienBaru = () => {
     const validation = useFormik({
         enableReinitialize: true,
         initialValues: {
-            id: newData?.id ?? undefined,
+            id: newData?.id ?? null,
             namapasien: newData?.namapasien ?? "",
             noidentitas: newData?.noidentitas ?? "",
             jeniskelamin: newData?.jeniskelamin ?? "",
@@ -185,6 +189,7 @@ const PasienBaru = () => {
             negaraDomisili: Yup.string().required("negara wajib diisi"),
         }),
         onSubmit: (values) => {
+            console.log(values)
             dispatch(registrasiSave(values, ''));
             // console.log(values)
         }
@@ -215,6 +220,23 @@ const PasienBaru = () => {
         validation.setFieldValue,
         isSesuaiKtp
     ])
+
+    useEffect(() => {
+        const setFF = validation.setFieldValue
+        setFF("id", idpasien)
+        if(idpasien){
+            dispatch(pasienFormQueriesGet({idpasien: idpasien}))
+        }
+    }, [idpasien, dispatch, validation.setFieldValue])
+
+    useEffect(() => {
+        const setV = validation.setValues
+        console.log(pasienFormQueries)
+        if(pasienFormQueries){
+            setV(pasienFormQueries)
+        }
+    }, [pasienFormQueries, validation.setValues])
+
 
     const handleChangeKebangsaan = (selected) => {
         validation.setFieldValue('kebangsaan', selected.value)
@@ -279,7 +301,8 @@ const PasienBaru = () => {
                                 onBlur={validation.handleBlur}
                                 value={validation.values.namapasien || ""}
                                 invalid={
-                                    validation.touched.namapasien && validation.errors.namapasien ? true : false
+                                    validation.touched.namapasien
+                                        && !!validation.errors.namapasien 
                                 }
                             />
                             {validation.touched.namapasien && validation.errors.namapasien ? (
@@ -1267,6 +1290,7 @@ const PasienBaru = () => {
                                         <TabPane tabId="1" id="home2">
                                             <Form onSubmit={(e) => {
                                                 e.preventDefault();
+                                                console.log(validation.errors)
                                                 validation.handleSubmit();
                                                 return false;
                                             }}
