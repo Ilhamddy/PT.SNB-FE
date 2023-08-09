@@ -123,7 +123,7 @@ const getPasienById = (req, res) => {
                 });
             } else {
                 let tempres = ""
-                for (var i = 0; i < result.rows.length; ++i) {
+                for (let i = 0; i < result.rows.length; ++i) {
                     if (result.rows[i] !== undefined) {
                         tempres = {
                             id: result.rows[i].id, nocm: result.rows[i].nocm, namapasien: result.rows[i].namapasien,
@@ -278,7 +278,7 @@ const savePasien = async (req, res) => {
     }
 }
 function formatDate(date) {
-    var d = new Date(date),
+    let d = new Date(date),
         month = '' + (d.getMonth() + 1),
         day = '' + d.getDate(),
         year = d.getFullYear();
@@ -390,11 +390,11 @@ async function saveRegistrasiPasien(req, res) {
             todayDate = '0' + todayDate;
         let todaystart = formatDate(today)
         let todayend = formatDate(today) + ' 23:59'
-        var resultCountNoantrianDokter = await pool.query(queries.qNoAntrian, [req.body.dokter, todaystart, todayend]);
+        let resultCountNoantrianDokter = await pool.query(queries.qNoAntrian, [req.body.dokter, todaystart, todayend]);
         let noantrian = parseFloat(resultCountNoantrianDokter.rows[0].count) + 1
         let query = `select count(norec) from t_daftarpasien
             where tglregistrasi between '${todaystart}' and '${todayend}'`
-        var resultCount = await pool.query(query);
+        let resultCount = await pool.query(query);
         let noregistrasi = parseFloat(resultCount.rows[0].count) + 1
         for (let x = resultCount.rows[0].count.toString().length; x < 4; x++) {
             if (noregistrasi.toString().length !== 4)
@@ -833,7 +833,7 @@ const getPasienNoregistrasi = (req, res) => {
                 });
             } else {
                 let tempres = ""
-                for (var i = 0; i < result.rows.length; ++i) {
+                for (let i = 0; i < result.rows.length; ++i) {
                     if (result.rows[i] !== undefined) {
                         tempres = {
                             noregistrasi: result.rows[i].noregistrasi,
@@ -1180,7 +1180,7 @@ async function getHeaderEmr(req, res) {
                 });
             } else {
                 let tempres = ""
-                for (var i = 0; i < resultCountNoantrianDokter.rows.length; ++i) {
+                for (let i = 0; i < resultCountNoantrianDokter.rows.length; ++i) {
                     if (resultCountNoantrianDokter.rows[i] !== undefined) {
                         let umur = new Date(resultCountNoantrianDokter.rows[i].umur)
                         umur = umur.toISOString()

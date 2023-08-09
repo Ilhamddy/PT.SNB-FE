@@ -802,7 +802,6 @@ const hCreateOrUpdatePenerimaan = async (req, res, transaction) => {
             returning: true,
             transaction: transaction
         })
-        norecpenerimaan = norecpenerimaan
         createdOrUpdatedPenerimaan = updated[0]?.get() || null;
     }
     return { createdOrUpdatedPenerimaan, norecpenerimaan }
@@ -985,4 +984,13 @@ const hCreateOrUpdateStokUnit  = async (
     
     
     return {createdOrUpdatedStokUnit}
+}
+
+
+const hCreateKartuStok = async (
+    req,
+    res,
+    transaction
+) => {
+
 }

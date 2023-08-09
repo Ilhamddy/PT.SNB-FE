@@ -119,7 +119,7 @@ async function saveTindakanPasien(req, res) {
         return
     }
     try {
-        var newArray = [{ objectjenispelaksana: req.body.jenispelaksana1, objectnamapelaksana: req.body.namapelaksana1 }];
+        let newArray = [{ objectjenispelaksana: req.body.jenispelaksana1, objectnamapelaksana: req.body.namapelaksana1 }];
         if (req.body.jenispelaksana2 !== '')
             newArray.push({ objectjenispelaksana: req.body.jenispelaksana2, objectnamapelaksana: req.body.namapelaksana2 });
         if (req.body.jenispelaksana3 !== '')
@@ -229,7 +229,7 @@ async function getListTagihan(req, res) {
             td.norec = '${req.query.norecdp}'
             and tp.statusenabled = true order by tp.tglinput desc`);
 
-        for (var i = 0; i < resultlist.rows.length; ++i) {
+        for (let i = 0; i < resultlist.rows.length; ++i) {
             const resultlistPetugas = await queryPromise2(`select
                 tp.norec,mp.namalengkap 
             from
@@ -237,7 +237,7 @@ async function getListTagihan(req, res) {
             join m_pegawai mp on mp.id=tp.objectpegawaifk 
             where tp.statusenabled = true and tp.objectpelayananpasienfk='${resultlist.rows[i].norec}'`);
             let tempPetugas = ''
-            for (var x = 0; x < resultlistPetugas.rows.length; ++x) {
+            for (let x = 0; x < resultlistPetugas.rows.length; ++x) {
                 tempPetugas = tempPetugas +resultlistPetugas.rows[x].namalengkap +', '
             }
             resultlist.rows[i].petugas = tempPetugas
