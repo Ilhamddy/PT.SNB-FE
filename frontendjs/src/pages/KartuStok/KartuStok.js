@@ -27,9 +27,9 @@ const KartuStok = () => {
     const dispatch = useDispatch();
 
     const {
-        dataKartuStok
+        kartuStok
     } = useSelector((state) => ({
-        dataKartuStok: state.Gudang.kartuStokQueryGet?.data?.kartustok || [],
+        kartuStok: state.Gudang.kartuStokQueryGet || [],
     }))
 
     useEffect(() => {
@@ -110,8 +110,8 @@ const KartuStok = () => {
                                 fixedHeaderScrollHeight="400px"
                                 columns={columnsKartuStok}
                                 pagination
-                                data={dataKartuStok}
-                                progressPending={false}
+                                data={kartuStok?.data?.kartustok || []}
+                                progressPending={kartuStok?.loading}
                                 customStyles={tableCustomStyles}
                             />
                         </div>
