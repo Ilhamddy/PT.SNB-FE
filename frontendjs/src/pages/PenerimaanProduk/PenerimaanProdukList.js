@@ -269,7 +269,9 @@ const Widget = ({title, end, image}) => {
                         </div>
                         <div>
                             <div className="avatar-xl flex-shrink-0">
-                                <span className={"avatar-title rounded-circle fs-4"}>
+                                <span 
+                                    className={"avatar-title rounded-circle fs-4"} 
+                                    style={{backgroundColor: "#CC845C"}}>
                                     <img src={image}
                                         alt="" className="avatar-lg" />
                                 </span>

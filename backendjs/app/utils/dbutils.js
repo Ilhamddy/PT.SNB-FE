@@ -14,5 +14,6 @@ export const createTransaction = async (db, transactionName) => {
         console.error(`Error transaction ${transactionName}`, e)
         error = e
     }
+
     return [transaction, error]
 }

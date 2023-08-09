@@ -12,3 +12,4 @@ export const rgxAllNumber = /^[0-9]*$/
 
 export const rgxWithSlash = /^(|0|^[1-9][\d/]*)$/
 
+export const rgxNbrEmpty = /^\d*$/

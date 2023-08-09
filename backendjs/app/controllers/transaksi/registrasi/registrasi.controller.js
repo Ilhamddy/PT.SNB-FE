@@ -200,21 +200,10 @@ const getAllByOr = (req, res) => {
 };
 
 const savePasien = async (req, res) => {
-    let transaction = null;
+    const [transaction, errorTransaction]
+        = await createTransaction(db, "savePasien")
     try {
-        transaction = await db.sequelize.transaction();
-    } catch (e) {
-        console.error(e);
-        // await transaction.rollback();
-        res.status(500).send({
-            status: JSON.stringify(e),
-            success: false,
-            msg: 'Error transaction',
-            code: 500
-        });
-        return;
-    }
-    try {
+        if (errorTransaction) throw errorTransaction
         const getNocm = await running_Number.findAll({
             where: {
                 id: 1
@@ -226,35 +215,43 @@ const savePasien = async (req, res) => {
             if (nocm.toString().length !== getNocm[0].extention)
                 nocm = '0' + nocm;
         }
-        const tglLahir = new Date(req.body.tgllahir)
+        const objBody = req.body
         const result = await M_pasien.create({
             nocm: nocm,
-            namapasien: req.body.namapasien,
-            noidentitas: req.body.noidentitas,
-            objectjeniskelaminfk: req.body.jeniskelamin,
-            objecttitlefk: req.body.titlepasien,
-            objectagamafk: req.body.agama,
-            objectgolongandarahfk: req.body.goldarah,
-            objectkebangsaanfk: req.body.kebangsaan,
-            objectstatusperkawinanfk: req.body.statusperkawinan,
+            namapasien: objBody.namapasien,
+            noidentitas: objBody.noidentitas,
+            objectjeniskelaminfk: objBody.jeniskelamin,
+            objecttitlefk: objBody.titlepasien,
+            objectagamafk: objBody.agama,
+            objectgolongandarahfk: objBody.goldarah,
+            objectkebangsaanfk: objBody.kebangsaan,
+            objectstatusperkawinanfk: objBody.statusperkawinan,
             tgldaftar: new Date(),
-            tempatlahir: req.body.tempatlahir,
-            tgllahir: new Date(req.body.tgllahir),
-            objectpendidikanfk: req.body.pendidikan,
-            objectpekerjaanfk: req.body.pekerjaan,
-            objectetnisfk: req.body.suku,
-            objectbahasafk: req.body.bahasa,
-            alamatrmh: req.body.alamatktp,
-            rtktp: req.body.rt,
-            rwktp: req.body.rw,
-            objectdesakelurahanktpfk: req.body.desa,
-            objectnegaraktpfk: req.body.negara,
-            alamatdomisili: req.body.alamatdomisili,
-            rtdomisili: req.body.rtdomisili,
-            rwdomisili: req.body.rwdomisili,
-            objectdesakelurahandomisilifk: req.body.desadomisili,
-            objectnegaradomisilifk: req.body.negaradomisili,
+            tempatlahir: objBody.tempatlahir,
+            tgllahir: new Date(objBody.tgllahir),
+            objectpendidikanfk: objBody.pendidikan,
+            objectpekerjaanfk: objBody.pekerjaan,
+            objectetnisfk: objBody.suku,
+            objectbahasafk: objBody.bahasa,
+            alamatrmh: objBody.alamatktp,
+            rtktp: objBody.rt,
+            rwktp: objBody.rw,
+            objectdesakelurahanktpfk: objBody.desa,
+            objectnegaraktpfk: objBody.negara,
+            alamatdomisili: objBody.alamatdomisili,
+            rtdomisili: objBody.rtdomisili,
+            rwdomisili: objBody.rwdomisili,
+            objectdesakelurahandomisilifk: objBody.desaDomisili,
+            objectnegaradomisilifk: objBody.negaradomisili,
             statusenabled: true,
+            nobpjs: objBody.nobpjs || null,
+            nohp: objBody.nohp || null,
+            notelepon: objBody.notelepon || null,
+            namaayah: objBody.namaayah || null,
+            namasuamiistri: objBody.namasuamiistri || null,
+            namakeluarga: objBody.namakeluargalain || null,
+            namaibu: objBody.namaibu || null,
+            objectkaryawanrsfk: req.idPegawai || null,
         }, {
             transaction: transaction
         })

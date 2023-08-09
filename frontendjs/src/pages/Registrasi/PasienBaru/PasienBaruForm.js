@@ -23,14 +23,28 @@ import { useSelector, useDispatch } from "react-redux";
 import { masterGet, desaGet, kecamatanGet } from '../../../store/master/action';
 import { registrasiSave, registrasiResetForm, registrasiGet } from "../../../store/actions";
 import CustomSelect from '../../Select/Select'
-import { rgxAllNumber } from '../../../utils/regexcommon';
+import { rgxAllNumber, rgxNbrEmpty } from '../../../utils/regexcommon';
 
 const PasienBaru = () => {
     document.title = "Profile Pasien Baru";
     const dispatch = useDispatch();
-    const { data, dataJenisKelamin, dataTitle, dataGD, dataKebangsaan,
-        dataPerkawinan, dataPendidikan, dataPekerjaan, dataEtnis, dataBahasa, dataDesa,
-        dataNegara, loading, error, newData, loadingSave, success, errorSave } = useSelector((state) => ({
+    const { 
+        data, 
+        dataJenisKelamin, 
+        dataTitle, 
+        dataGD, 
+        dataKebangsaan,
+        dataPerkawinan, 
+        dataPendidikan, 
+        dataPekerjaan, dataEtnis, dataBahasa, dataDesa,
+        dataNegara, 
+        loading, 
+        error, 
+        newData, 
+        loadingSave, 
+        success, 
+        errorSave 
+    } = useSelector((state) => ({
             data: state.Master.masterGet.data.agama,
             dataJenisKelamin: state.Master.masterGet.data.jeniskelamin,
             dataTitle: state.Master.masterGet.data.title,
@@ -71,15 +85,7 @@ const PasienBaru = () => {
     };
 
 
-    const [companyType, setcompanyType] = useState(null);
-    const [kecamatan, setKecamatan] = useState(null);
-    const [isWni, setisWni] = useState("");
     const [isSesuaiKtp, setisSesuaiKtp] = useState(false);
-
-    function handlecompanyType(companyType) {
-        setcompanyType(companyType);
-        console.log(companyType);
-    }
 
     const refNegara = useRef(null);
     const refNegaraDomisili = useRef(null);
@@ -145,6 +151,13 @@ const PasienBaru = () => {
             provinsiDomisili: newData?.provinsiDomisili ?? "",
             posDomisili: newData?.posDomisili ?? "",
             negaraDomisili: newData?.negaraDomisili ?? "",
+            nobpjs: newData?.nobpjs ?? "",
+            namaibu: newData?.namaibu ?? "",
+            namaayah: newData?.namaayah ?? "",
+            namasuamiistri: newData?.namasuamiistri ?? "",
+            namakeluargalain: newData?.namakeluargalain ?? "",
+            nohp: newData?.nohp ?? "",
+            notelepon: newData?.notelepon ?? "",
         },
         validationSchema: Yup.object({
             namapasien: Yup.string().required("Nama pasien wajib diisi"),
@@ -213,6 +226,1012 @@ const PasienBaru = () => {
             refNegaraDomisili.current?.clearValue()
         }
     }
+
+    const DataDiri = (
+        <Card style={{ backgroundColor: "#f1f2f6" }}>
+            <CardHeader style={{ backgroundColor: "#dfe4ea" }}>
+                <h4 className="card-title mb-0">Data Diri Pasien</h4>
+            </CardHeader>
+            <CardBody>
+                <Row className="gy-4">
+                    <Col xxl={6} md={6}>
+                        <div className="mt-2">
+                            <Label style={{ color: "black" }} htmlFor="noidentitas" className="form-label">No Identitas</Label>
+                        </div>
+                    </Col>
+                    <Col xxl={6} md={6}>
+                        <div>
+                            <Input
+                                id="noidentitas"
+                                name="noidentitas"
+                                type="string"
+                                placeholder="Masukkan No Identitas pasien"
+                                onChange={validation.handleChange}
+                                onBlur={validation.handleBlur}
+                                value={validation.values.noidentitas || ""}
+                                invalid={
+                                    validation.touched.noidentitas && validation.errors.noidentitas ? true : false
+                                }
+                            />
+                            {validation.touched.noidentitas && validation.errors.noidentitas ? (
+                                <FormFeedback type="invalid">
+                                    <div>{
+                                        validation.errors.noidentitas
+                                    }
+                                    </div>
+                                </FormFeedback>
+                            ) : null}
+                        </div>
+                    </Col>
+                    <Col xxl={6} md={6}>
+                        <div className="mt-2">
+                            <Label style={{ color: "black" }} htmlFor="namapasien" className="form-label">Nama Pasien</Label>
+                        </div>
+                    </Col>
+                    <Col xxl={6} md={6}>
+                        <div>
+                            <Input
+                                id="namapasien"
+                                name="namapasien"
+                                type="text"
+                                placeholder="Masukkan nama pasien"
+                                onChange={validation.handleChange}
+                                onBlur={validation.handleBlur}
+                                value={validation.values.namapasien || ""}
+                                invalid={
+                                    validation.touched.namapasien && validation.errors.namapasien ? true : false
+                                }
+                            />
+                            {validation.touched.namapasien && validation.errors.namapasien ? (
+                                <FormFeedback type="invalid"><div>{validation.errors.namapasien}</div></FormFeedback>
+                            ) : null}
+                        </div>
+                    </Col>
+                    <Col xxl={6} md={6}>
+                        <div className="mt-2">
+                            <Label style={{ color: "black" }} htmlFor="jeniskelamin" className="form-label">Jenis Kelamin</Label>
+                        </div>
+                    </Col>
+                    <Col xxl={6} md={6}>
+                        <div>
+                            <CustomSelect
+                                id="jeniskelamin"
+                                name="jeniskelamin"
+                                options={dataJenisKelamin}
+                                value={validation.values.jeniskelamin || ""}
+                                className={`input ${validation.errors.jeniskelamin ? "is-invalid" : ""}`}
+                                onChange={value => validation.setFieldValue('jeniskelamin', value.value)}
+                            />
+                            {validation.touched.jeniskelamin && validation.errors.jeniskelamin ? (
+                                <FormFeedback type="invalid"><div>{validation.errors.jeniskelamin}</div></FormFeedback>
+                            ) : null}
+                        </div>
+                    </Col>
+                    <Col xxl={6} md={6}>
+                        <div className="mt-2">
+                            <Label style={{ color: "black" }} htmlFor="titlepasien" className="form-label">Title Pasien</Label>
+                        </div>
+                    </Col>
+                    <Col xxl={6} md={6}>
+                        <div>
+                            <CustomSelect
+                                id="titlepasien"
+                                name="titlepasien"
+                                options={dataTitle}
+                                value={validation.values.titlepasien || ""}
+                                className={`input ${validation.errors.titlepasien ? "is-invalid" : ""}`}
+                                onChange={value => validation.setFieldValue('titlepasien', value.value)}
+                                />
+                            {validation.touched.titlepasien && validation.errors.titlepasien ? (
+                                <FormFeedback type="invalid"><div>{validation.errors.titlepasien}</div></FormFeedback>
+                            ) : null}
+                        </div>
+                    </Col>
+                    <Col xxl={6} md={6}>
+                        <div className="mt-2">
+                            <Label style={{ color: "black" }} htmlFor="tempatlahir" className="form-label">Tempat Lahir</Label>
+                        </div>
+                    </Col>
+                    <Col xxl={6} md={6}>
+                        <div>
+                            <Input
+                                id="tempatlahir"
+                                name="tempatlahir"
+                                type="text"
+                                placeholder="Masukkan tempat lahir"
+                                onChange={validation.handleChange}
+                                onBlur={validation.handleBlur}
+                                value={validation.values.tempatlahir || ""}
+                                invalid={
+                                    validation.touched.tempatlahir && validation.errors.tempatlahir ? true : false
+                                }
+                            />
+                            {validation.touched.tempatlahir && validation.errors.tempatlahir ? (
+                                <FormFeedback type="invalid"><div>{validation.errors.tempatlahir}</div></FormFeedback>
+                            ) : null}
+                        </div>
+                    </Col>
+                    <Col xxl={6} md={6}>
+                        <div className="mt-2">
+                            <Label style={{ color: "black" }} htmlFor="tgllahir" className="form-label">Tanggal Lahir</Label>
+                        </div>
+                    </Col>
+                    <Col xxl={6} md={6}>
+                        <div>
+                            <Flatpickr
+                                className="form-control"
+                                options={{
+                                    dateFormat: "Y-m-d",
+                                    defaultDate: "today",
+                                    maxDate: "today"
+                                }}
+                                value={new Date(validation.values.tgllahir) || ""}
+                                onChange={([newDate]) => {
+                                    validation.setFieldValue("tgllahir", newDate.toISOString())
+                                }}
+                            />
+                        </div>
+                    </Col>
+                    <Col xxl={6} md={6}>
+                        <div className="mt-2">
+                            <Label style={{ color: "black" }} htmlFor="agama" className="form-label">Agama</Label>
+                        </div>
+                    </Col>
+                    <Col xxl={6} md={6}>
+                        <div>
+                            <CustomSelect
+                                id="agama"
+                                name="agama"
+                                options={data}
+                                value={validation.values.agama || ""}
+                                className={`input ${validation.errors.agama ? "is-invalid" : ""}`}
+                                onChange={value => validation.setFieldValue('agama', value.value)}
+                            />
+                            {validation.touched.agama && validation.errors.agama ? (
+                                <FormFeedback type="invalid"><div>{validation.errors.agama}</div></FormFeedback>
+                            ) : null}
+                        </div>
+                    </Col>
+                    <Col xxl={6} md={6}>
+                        <div className="mt-2">
+                            <Label style={{ color: "black" }} htmlFor="goldarah" className="form-label">Gol Darah</Label>
+                        </div>
+                    </Col>
+                    <Col xxl={6} md={6}>
+                        <div>
+                            <CustomSelect
+                                id="goldarah"
+                                name="goldarah"
+                                options={dataGD}
+                                value={validation.values.goldarah || ""}
+                                className={`input ${validation.errors.goldarah ? "is-invalid" : ""}`}
+                                onChange={value => validation.setFieldValue('goldarah', value.value)}
+                            />
+                            {validation.touched.goldarah && validation.errors.goldarah ? (
+                                <FormFeedback type="invalid"><div>{validation.errors.goldarah}</div></FormFeedback>
+                            ) : null}
+                        </div>
+                    </Col>
+                    <Col xxl={6} md={6}>
+                        <div className="mt-2">
+                            <Label style={{ color: "black" }} htmlFor="kebangsaan" className="form-label">Kebangsaan</Label>
+                        </div>
+                    </Col>
+                    <Col xxl={6} md={6}>
+                        <div>
+                            <CustomSelect
+                                id="kebangsaan"
+                                name="kebangsaan"
+                                options={dataKebangsaan}
+                                value={validation.values.kebangsaan || ""}
+                                className={`input ${validation.errors.kebangsaan ? "is-invalid" : ""}`}
+                                onChange={handleChangeKebangsaan}
+
+                            />
+                            {validation.touched.kebangsaan && validation.errors.kebangsaan ? (
+                                <FormFeedback type="invalid"><div>{validation.errors.kebangsaan}</div></FormFeedback>
+                            ) : null}
+                        </div>
+                    </Col>
+                    <Col xxl={6} md={6}>
+                        <div className="mt-2">
+                            <Label style={{ color: "black" }} htmlFor="statusperkawinan" className="form-label">Status Perkawinan</Label>
+                        </div>
+                    </Col>
+                    <Col xxl={6} md={6}>
+                        <div>
+                            <CustomSelect
+                                id="statusperkawinan"
+                                name="statusperkawinan"
+                                options={dataPerkawinan}
+                                value={validation.values.statusperkawinan || ""}
+                                className={`input ${validation.errors.statusperkawinan ? "is-invalid" : ""}`}
+                                onChange={value => validation.setFieldValue('statusperkawinan', value.value)}
+                            />
+                            {validation.touched.statusperkawinan && validation.errors.statusperkawinan ? (
+                                <FormFeedback type="invalid"><div>{validation.errors.statusperkawinan}</div></FormFeedback>
+                            ) : null}
+                        </div>
+                    </Col>
+                    <Col xxl={6} md={6}>
+                        <div className="mt-2">
+                            <Label style={{ color: "black" }} htmlFor="pendidikan" className="form-label">Pendidikan</Label>
+                        </div>
+                    </Col>
+                    <Col xxl={6} md={6}>
+                        <div>
+                            <CustomSelect
+                                id="pendidikan"
+                                name="pendidikan"
+                                options={dataPendidikan}
+                                value={validation.values.pendidikan || ""}
+                                className={`input ${validation.errors.pendidikan ? "is-invalid" : ""}`}
+                                onChange={value => validation.setFieldValue('pendidikan', value.value)}
+                            />
+                            {validation.touched.pendidikan && validation.errors.pendidikan ? (
+                                <FormFeedback type="invalid"><div>{validation.errors.pendidikan}</div></FormFeedback>
+                            ) : null}
+                        </div>
+                    </Col>
+                    <Col xxl={6} md={6}>
+                        <div className="mt-2">
+                            <Label style={{ color: "black" }} htmlFor="pekerjaan" className="form-label">Pekerjaan</Label>
+                        </div>
+                    </Col>
+                    <Col xxl={6} md={6}>
+                        <div>
+                            <CustomSelect
+                                id="pekerjaan"
+                                name="pekerjaan"
+                                options={dataPekerjaan}
+                                value={validation.values.pekerjaan || ""}
+                                className={`input ${validation.errors.pekerjaan ? "is-invalid" : ""}`}
+                                onChange={value => validation.setFieldValue('pekerjaan', value.value)}
+                            />
+                            {validation.touched.pekerjaan && validation.errors.pekerjaan ? (
+                                <FormFeedback type="invalid"><div>{validation.errors.pekerjaan}</div></FormFeedback>
+                            ) : null}
+                        </div>
+                    </Col>
+                    <Col xxl={6} md={6}>
+                        <div className="mt-2">
+                            <Label style={{ color: "black" }} htmlFor="suku" className="form-label">SUKU</Label>
+                        </div>
+                    </Col>
+                    <Col xxl={6} md={6}>
+                        <div>
+                            <CustomSelect
+                                id="suku"
+                                name="suku"
+                                options={dataEtnis}
+                                value={validation.values.suku || ""}
+                                className={`input ${validation.errors.suku ? "is-invalid" : ""}`}
+                                onChange={value => validation.setFieldValue('suku', value.value)}
+                            />
+                            {validation.touched.suku && validation.errors.suku ? (
+                                <FormFeedback type="invalid"><div>{validation.errors.suku}</div></FormFeedback>
+                            ) : null}
+                        </div>
+                    </Col>
+                    <Col xxl={6} md={6}>
+                        <div className="mt-2">
+                            <Label style={{ color: "black" }} htmlFor="bahasa" className="form-label">Bahasa Yang Dikuasai</Label>
+                        </div>
+                    </Col>
+                    <Col xxl={6} md={6}>
+                        <div>
+                            <CustomSelect
+                                id="bahasa"
+                                name="bahasa"
+                                options={dataBahasa}
+                                value={validation.values.bahasa || ""}
+                                className={`input ${validation.errors.bahasa ? "is-invalid" : ""}`}
+                                onChange={value => validation.setFieldValue('bahasa', value.value)}
+                            />
+                            {validation.touched.bahasa && validation.errors.bahasa ? (
+                                <FormFeedback type="invalid"><div>{validation.errors.bahasa}</div></FormFeedback>
+                            ) : null}
+                        </div>
+                    </Col>
+                </Row>
+            </CardBody>
+        </Card>
+    )
+
+    const InfoTambahan = (
+        <Card style={{ backgroundColor: "#f1f2f6" }}>
+            <CardHeader style={{ backgroundColor: "#dfe4ea" }}>
+                <h4 className="card-title mb-0">Data Diri Pasien</h4>
+            </CardHeader>
+            <CardBody>
+                <Row className="gy-4">
+                    <Col xxl={6} md={6}>
+                        <div className="mt-2">
+                            <Label 
+                                style={{ color: "black" }} 
+                                htmlFor="nobpjs" 
+                                className="form-label"
+                                >
+                                No Identitas
+                            </Label>
+                        </div>
+                    </Col>
+                    <Col xxl={6} md={6}>
+                        <div>
+                            <Input
+                                id="nobpjs"
+                                name="nobpjs"
+                                type="string"
+                                placeholder="Masukkan nomor bpjs"
+                                onChange={(e) => {
+                                    rgxNbrEmpty.test(e.target.value) 
+                                        && validation.setFieldValue("nobpjs", e.target.value)
+                                }}
+                                onBlur={validation.handleBlur}
+                                value={validation.values.nobpjs || ""}
+                                invalid={
+                                    validation.touched.nobpjs && validation.errors.nobpjs ? true : false
+                                }
+                            />
+                            {validation.touched.nobpjs && validation.errors.nobpjs ? (
+                                <FormFeedback type="invalid">
+                                    <div>
+                                        {validation.errors.nobpjs}
+                                    </div>
+                                </FormFeedback>
+                            ) : null}
+                        </div>
+                    </Col>
+                    <Col xxl={6} md={6}>
+                        <div className="mt-2">
+                            <Label 
+                                style={{ color: "black" }} 
+                                htmlFor="namaibu" 
+                                className="form-label"
+                                >
+                                Nama Ibu
+                            </Label>
+                        </div>
+                    </Col>
+                    <Col xxl={6} md={6}>
+                        <div>
+                            <Input
+                                id="namaibu"
+                                name="namaibu"
+                                type="string"
+                                placeholder="Masukkan nama ibu"
+                                onChange={validation.handleChange}
+                                onBlur={validation.handleBlur}
+                                value={validation.values.namaibu || ""}
+                                invalid={
+                                    validation.touched.namaibu && validation.errors.namaibu ? true : false
+                                }
+                            />
+                            {
+                                validation.touched.namaibu 
+                                    && validation.errors.namaibu && (
+                                    <FormFeedback type="invalid">
+                                        <div>
+                                            {validation.errors.namaibu}
+                                        </div>
+                                    </FormFeedback>
+                                )
+                            }
+                        </div>
+                    </Col>
+                    <Col xxl={6} md={6}>
+                        <div className="mt-2">
+                            <Label 
+                                style={{ color: "black" }} 
+                                htmlFor="namaayah" 
+                                className="form-label"
+                                >
+                                Nama Ayah
+                            </Label>
+                        </div>
+                    </Col>
+                    <Col xxl={6} md={6}>
+                        <div>
+                            <Input
+                                id="namaayah"
+                                name="namaayah"
+                                type="string"
+                                placeholder="Masukkan nama ayah"
+                                onChange={validation.handleChange}
+                                onBlur={validation.handleBlur}
+                                value={validation.values.namaayah || ""}
+                                invalid={
+                                    validation.touched.namaayah && validation.errors.namaayah ? true : false
+                                }
+                            />
+                            {
+                                validation.touched.namaayah 
+                                    && validation.errors.namaayah && (
+                                    <FormFeedback type="invalid">
+                                        <div>
+                                            {validation.errors.namaayah}
+                                        </div>
+                                    </FormFeedback>
+                                )
+                            }
+                        </div>
+                    </Col>
+                    <Col xxl={6} md={6}>
+                        <div className="mt-2">
+                            <Label 
+                                style={{ color: "black" }} 
+                                htmlFor="namasuamiistri" 
+                                className="form-label"
+                                >
+                                Nama Suami/Istri
+                            </Label>
+                        </div>
+                    </Col>
+                    <Col xxl={6} md={6}>
+                        <div>
+                            <Input
+                                id="namasuamimistri"
+                                name="namasuamiistri"
+                                type="string"
+                                placeholder="Masukkan nama Suami/Istri"
+                                onChange={validation.handleChange}
+                                onBlur={validation.handleBlur}
+                                value={validation.values.namasuamiistri || ""}
+                                invalid={
+                                    !!validation.touched.namasuamiistri 
+                                        && !!validation.errors.namasuamiistri
+                                }
+                            />
+                            {
+                                validation.touched.namasuamiistri 
+                                    && validation.errors.namasuamiistri && (
+                                    <FormFeedback type="invalid">
+                                        <div>
+                                            {validation.errors.namasuamiistri}
+                                        </div>
+                                    </FormFeedback>
+                                )
+                            }
+                        </div>
+                    </Col>
+                    <Col xxl={6} md={6}>
+                        <div className="mt-2">
+                            <Label 
+                                style={{ color: "black" }} 
+                                htmlFor="namakeluargalain" 
+                                className="form-label"
+                                >
+                                Nama Keluarga Lainnya
+                            </Label>
+                        </div>
+                    </Col>
+                    <Col xxl={6} md={6}>
+                        <div>
+                            <Input
+                                id="namakeluargalain"
+                                name="namakeluargalain"
+                                type="string"
+                                placeholder="Masukkan nama Keluarga Lain"
+                                onChange={validation.handleChange}
+                                onBlur={validation.handleBlur}
+                                value={validation.values.namakeluargalain || ""}
+                                invalid={
+                                    !!validation.touched.namakeluargalain 
+                                        && !!validation.errors.namakeluargalain
+                                }
+                            />
+                            {
+                                validation.touched.namakeluargalain 
+                                    && validation.errors.namakeluargalain && (
+                                    <FormFeedback type="invalid">
+                                        <div>
+                                            {validation.errors.namakeluargalain}
+                                        </div>
+                                    </FormFeedback>
+                                )
+                            }
+                        </div>
+                    </Col>
+                    <Col xxl={6} md={6}>
+                        <div className="mt-2">
+                            <Label 
+                                style={{ color: "black" }} 
+                                htmlFor="nohp" 
+                                className="form-label"
+                                >
+                                No HP
+                            </Label>
+                        </div>
+                    </Col>
+                    <Col xxl={6} md={6}>
+                        <div>
+                            <Input
+                                id="nohp"
+                                name="nohp"
+                                type="string"
+                                placeholder="Masukkan Nomor HP"
+                                onChange={(e) => {
+                                    rgxNbrEmpty.test(e.target.value) 
+                                        && validation.setFieldValue("nohp", e.target.value)
+                                }}
+                                onBlur={validation.handleBlur}
+                                value={validation.values.nohp || ""}
+                                invalid={
+                                    !!validation.touched.nohp 
+                                        && !!validation.errors.nohp
+                                }
+                            />
+                            {
+                                validation.touched.nohp 
+                                    && validation.errors.nohp && (
+                                    <FormFeedback type="invalid">
+                                        <div>
+                                            {validation.errors.nohp}
+                                        </div>
+                                    </FormFeedback>
+                                )
+                            }
+                        </div>
+                    </Col>
+                    <Col xxl={6} md={6}>
+                        <div className="mt-2">
+                            <Label 
+                                style={{ color: "black" }} 
+                                htmlFor="notelepon" 
+                                className="form-label"
+                                >
+                                No Telepon
+                            </Label>
+                        </div>
+                    </Col>
+                    <Col xxl={6} md={6}>
+                        <div>
+                            <Input
+                                id="notelepon"
+                                name="notelepon"
+                                type="string"
+                                placeholder="Masukkan Nomor Telepon"
+                                onChange={(e) => {
+                                    rgxNbrEmpty.test(e.target.value) 
+                                        && validation.setFieldValue("notelepon", e.target.value)
+                                }}
+                                onBlur={validation.handleBlur}
+                                value={validation.values.notelepon || ""}
+                                invalid={
+                                    !!validation.touched.notelepon 
+                                        && !!validation.errors.notelepon
+                                }
+                            />
+                            {
+                                validation.touched.nohp 
+                                    && validation.errors.nohp && (
+                                    <FormFeedback type="invalid">
+                                        <div>
+                                            {validation.errors.nohp}
+                                        </div>
+                                    </FormFeedback>
+                                )
+                            }
+                        </div>
+                    </Col>
+                </Row>
+            </CardBody>
+        </Card>
+    )
+
+    const AlamatKTP = (
+        <Card style={{ backgroundColor: "#f1f2f6" }}>
+            <CardHeader style={{ backgroundColor: "#dfe4ea" }}>
+                <h4 className="card-title mb-0">Alamat KTP</h4>
+            </CardHeader>
+            <CardBody>
+                <Row className="gy-4">
+                    <Col xxl={6} md={6}>
+                        <div className="mt-2">
+                            <Label style={{ color: "black" }} htmlFor="alamatktp" className="form-label">Alamat KTP</Label>
+                        </div>
+                    </Col>
+                    <Col xxl={6} md={6}>
+                        <div>
+                            <Input
+                                id="alamatktp"
+                                name="alamatktp"
+                                type="textarea"
+                                placeholder="Masukkan Alamat pasien"
+                                onChange={validation.handleChange}
+                                onBlur={validation.handleBlur}
+                                value={validation.values.alamatktp || ""}
+                                invalid={
+                                    validation.touched.alamatktp && validation.errors.alamatktp ? true : false
+                                }
+                            />
+                            {validation.touched.alamatktp && validation.errors.alamatktp ? (
+                                <FormFeedback type="invalid"><div>{validation.errors.alamatktp}</div></FormFeedback>
+                            ) : null}
+                        </div>
+                    </Col>
+                    <Col xxl={6} md={6}>
+                        <div className="mt-2">
+                            <Label style={{ color: "black" }} htmlFor="rtrw" className="form-label">RT / RW</Label>
+                        </div>
+                    </Col>
+                    <Col xxl={6} md={6}>
+                        <div className="row">
+                            <div className="col-sm">
+                                <Input
+                                    id="rt"
+                                    name="rt"
+                                    type="input"
+                                    placeholder="RT"
+                                    onChange={(e) => {
+                                        rgxAllNumber.test(e.target.value) 
+                                            && validation.setFieldValue("rt", e.target.value)
+                                    }}
+                                    onBlur={validation.handleBlur}
+                                    value={validation.values.rt || ""}
+                                    invalid={
+                                        validation.touched.rt && validation.errors.rt ? true : false
+                                    }
+                                />
+                                {validation.touched.rt && validation.errors.rt ? (
+                                    <FormFeedback type="invalid"><div>{validation.errors.rt}</div></FormFeedback>
+                                ) : null}
+                            </div>
+                            <div className="col-sm">
+                                <Input
+                                    id="rw"
+                                    name="rw"
+                                    type="input"
+                                    placeholder="RW"
+                                    onChange={(e) => {
+                                        rgxAllNumber.test(e.target.value) 
+                                            && validation.setFieldValue("rw", e.target.value)
+                                    }}
+                                    onBlur={validation.handleBlur}
+                                    value={validation.values.rw || ""}
+                                    invalid={
+                                        validation.touched.rw && validation.errors.rw ? true : false
+                                    }
+                                />
+                                {validation.touched.rw && validation.errors.rw ? (
+                                    <FormFeedback type="invalid"><div>{validation.errors.rw}</div></FormFeedback>
+                                ) : null}
+                            </div>
+                        </div>
+                    </Col>
+                    <Col xxl={6} md={6}>
+                        <div className="mt-2">
+                            <Label style={{ color: "black" }} htmlFor="desa" className="form-label">Kelurahan / Desa</Label>
+                        </div>
+                    </Col>
+                    <Col xxl={6} md={6}>
+                        <div>
+                            <CustomSelect
+                                id="desa"
+                                name="desa"
+                                options={dataDesa}
+                                value={validation.values.desa || ""}
+                                className={`input ${validation.errors.desa ? "is-invalid" : ""}`}
+                                // onChange={value => validation.setFieldValue('desa', value.value)} 
+                                onChange={handleChangeDesa}
+                                onInputChange={handleDesa}
+                            />
+                            {validation.touched.desa && validation.errors.desa ? (
+                                <FormFeedback type="invalid"><div>{validation.errors.desa}</div></FormFeedback>
+                            ) : null}
+                        </div>
+                    </Col>
+                    <Col xxl={6} md={6}>
+                        <div className="mt-2">
+                            <Label style={{ color: "black" }} htmlFor="kecamatan" className="form-label">Kecamatan</Label>
+                        </div>
+                    </Col>
+                    <Col xxl={6} md={6}>
+                        <div>
+                            <Input
+                                id="kecamatan"
+                                name="kecamatan"
+                                type="input"
+                                placeholder="Kecamatan"
+                                value={validation.values.kecamatan || ""}
+                                disabled
+                            />
+                        </div>
+                    </Col>
+                    <Col xxl={6} md={6}>
+                        <div className="mt-2">
+                            <Label style={{ color: "black" }} htmlFor="kota" className="form-label">Kota / Kabupaten</Label>
+                        </div>
+                    </Col>
+                    <Col xxl={6} md={6}>
+                        <div>
+                            <Input
+                                id="kota"
+                                name="kota"
+                                type="input"
+                                placeholder="kota"
+                                value={validation.values.kota || ""}
+                                disabled
+                            />
+                        </div>
+                    </Col>
+                    <Col xxl={6} md={6}>
+                        <div className="mt-2">
+                            <Label style={{ color: "black" }} htmlFor="pos" className="form-label">Kode POS</Label>
+                        </div>
+                    </Col>
+                    <Col xxl={6} md={6}>
+                        <div>
+                            <Input
+                                id="pos"
+                                name="pos"
+                                type="input"
+                                placeholder="pos"
+                                value={validation.values.pos || ""}
+                                onChange={(e) => {
+                                    rgxAllNumber.test(e.target.value) 
+                                        && validation.setFieldValue("pos", e.target.value)
+                                }}
+                            />
+                        </div>
+                    </Col>
+                    <Col xxl={6} md={6}>
+                        <div className="mt-2">
+                            <Label style={{ color: "black" }} htmlFor="provinsi" className="form-label">Provinsi</Label>
+                        </div>
+                    </Col>
+                    <Col xxl={6} md={6}>
+                        <div>
+                            <Input
+                                id="provinsi"
+                                name="provinsi"
+                                type="input"
+                                placeholder="provinsi"
+                                value={validation.values.provinsi || ""}
+                                disabled
+                            />
+                        </div>
+                    </Col>
+                    <Col xxl={6} md={6}>
+                        <div className="mt-2">
+                            <Label style={{ color: "black" }} htmlFor="negara" className="form-label">Negara</Label>
+                        </div>
+                    </Col>
+                    <Col xxl={6} md={6}>
+                        <div>
+                            <CustomSelect
+                                id="negara"
+                                name="negara"
+                                options={dataNegara}
+                                ref={refNegara}
+                                value={validation.values.negara || null}
+                                className={`input ${validation.errors.negara ? "is-invalid" : ""}`}
+                                onChange={value => {
+                                    validation.setFieldValue('negara', value?.value || "")
+                                }}
+                            />
+                            {validation.touched.negara && validation.errors.negara ? (
+                                <FormFeedback type="invalid"><div>{validation.errors.negara}</div></FormFeedback>
+                            ) : null}
+                        </div>
+                    </Col>
+                </Row>
+            </CardBody>
+        </Card>
+    )
+
+    const AlamatDomisili = (
+        <Card style={{ backgroundColor: "#f1f2f6" }}>
+            <CardHeader style={{ backgroundColor: "#dfe4ea" }}>
+                <h4 className="card-title mb-0">Alamat Domisili</h4>
+            </CardHeader>
+            <CardBody>
+                <Row className="gy-4">
+                    {/* <Col xxl={6} md={6}> */}
+                    <div className="form-check ms-2">
+                        <Input className="form-check-input" type="checkbox" 
+                            checked={isSesuaiKtp}
+                            id="formCheck1" 
+                            onChange={e => setisSesuaiKtp(e.target.checked)}/>
+                        <Label className="form-check-label" htmlFor="formCheck1" style={{ color: "black" }} >
+                            Sesuai KTP
+                        </Label>
+                    </div>
+                    {/* </Col> */}
+
+                    <Col xxl={6} md={6}>
+                        <div className="mt-2">
+                            <Label style={{ color: "black" }} htmlFor="alamatdomisili" className="form-label">Alamat Domisili</Label>
+                        </div>
+                    </Col>
+                    <Col xxl={6} md={6}>
+                        <div>
+                        <Input
+                                id="alamatdomisili"
+                                name="alamatdomisili"
+                                type="textarea"
+                                placeholder="Masukkan Alamat pasien"
+                                onChange={validation.handleChange}
+                                onBlur={validation.handleBlur}
+                                value={validation.values.alamatdomisili || ""}
+                                invalid={
+                                    validation.touched.alamatdomisili && validation.errors.alamatdomisili ? true : false
+                                }
+                                disabled={isSesuaiKtp}
+                            />
+                            {validation.touched.alamatdomisili && validation.errors.alamatdomisili ? (
+                                <FormFeedback type="invalid"><div>{validation.errors.alamatdomisili}</div></FormFeedback>
+                            ) : null}
+                        </div>
+                    </Col>
+                    <Col xxl={6} md={6}>
+                        <div className="mt-2">
+                            <Label style={{ color: "black" }} htmlFor="rtrwdomisili" className="form-label">RT / RW</Label>
+                        </div>
+                    </Col>
+                    <Col xxl={6} md={6}>
+                        <div className="row">
+                            <div className="col-sm">
+                            <Input
+                                    id="rtdomisili"
+                                    name="rtdomisili"
+                                    type="input"
+                                    placeholder="RT"
+                                    onChange={(e) => {
+                                        rgxAllNumber.test(e.target.value) 
+                                            && validation.setFieldValue("rtdomisili", e.target.value)
+                                    }}
+                                    onBlur={validation.handleBlur}
+                                    value={validation.values.rtdomisili || ""}
+                                    invalid={
+                                        validation.touched.rtdomisili && validation.errors.rtdomisili ? true : false
+                                    }
+                                />
+                                {validation.touched.rtdomisili && validation.errors.rtdomisili ? (
+                                    <FormFeedback type="invalid"><div>{validation.errors.rtdomisili}</div></FormFeedback>
+                                ) : null}
+                            </div>
+                            <div className="col-sm">
+                            <Input
+                                    id="rwdomisili"
+                                    name="rwdomisili"
+                                    type="input"
+                                    placeholder="RW"
+                                    onChange={(e) => {
+                                        rgxAllNumber.test(e.target.value) 
+                                            && validation.setFieldValue("rwdomisili", e.target.value)
+                                    }}
+                                    onBlur={validation.handleBlur}
+                                    value={validation.values.rwdomisili || ""}
+                                    invalid={
+                                        validation.touched.rwdomisili && validation.errors.rwdomisili ? true : false
+                                    }
+                                />
+                                {validation.touched.rwdomisili && validation.errors.rwdomisili ? (
+                                    <FormFeedback type="invalid"><div>{validation.errors.rwdomisili}</div></FormFeedback>
+                                ) : null}
+                            </div>
+                        </div>
+                    </Col>
+                    <Col xxl={6} md={6}>
+                        <div className="mt-2">
+                            <Label style={{ color: "black" }} htmlFor="desa" className="form-label">Kelurahan / Desa</Label>
+                        </div>
+                    </Col>
+                    <Col xxl={6} md={6}>
+                        <div>
+                        <CustomSelect
+                                id="desaDomisili"
+                                name="desaDomisili"
+                                options={dataDesa}
+                                value={validation.values.desaDomisili || ""}
+                                className={`input ${validation.errors.desaDomisili ? "is-invalid" : ""}`}
+                                // onChange={value => validation.setFieldValue('desa', value.value)} 
+                                onChange={handleChangeDesaDomisili}
+                                onInputChange={handleDesa}
+                            />
+                            {validation.touched.desaDomisili && validation.errors.desaDomisili ? (
+                                <FormFeedback type="invalid"><div>{validation.errors.desaDomisili}</div></FormFeedback>
+                            ) : null}
+                        </div>
+                    </Col>
+                    <Col xxl={6} md={6}>
+                        <div className="mt-2">
+                            <Label style={{ color: "black" }} htmlFor="kecamatandomisili" className="form-label">Kecamatan</Label>
+                        </div>
+                    </Col>
+                    <Col xxl={6} md={6}>
+                        <div>
+                        <Input
+                                id="kecamatanDomisili"
+                                name="kecamatanDomisili"
+                                type="input"
+                                placeholder="kecamatanDomisili"
+                                value={validation.values.kecamatanDomisili || ""}
+                                disabled
+                            />
+                        </div>
+                    </Col>
+                    <Col xxl={6} md={6}>
+                        <div className="mt-2">
+                            <Label style={{ color: "black" }} htmlFor="kotadomisili" className="form-label">Kota / Kabupaten</Label>
+                        </div>
+                    </Col>
+                    <Col xxl={6} md={6}>
+                        <div>
+                        <Input
+                                id="kotaDomisili"
+                                name="kotaDomisili"
+                                type="input"
+                                placeholder="kotaDomisili"
+                                value={validation.values.kotaDomisili || ""}
+                                disabled
+                            />
+                        </div>
+                    </Col>
+                    <Col xxl={6} md={6}>
+                        <div className="mt-2">
+                            <Label style={{ color: "black" }} htmlFor="posdomisili" className="form-label">Kode POS</Label>
+                        </div>
+                    </Col>
+                    <Col xxl={6} md={6}>
+                        <div>
+                        <Input
+                                id="posDomisili"
+                                name="posDomisili"
+                                type="input"
+                                placeholder="posDomisili"
+                                value={validation.values.posDomisili || ""}
+                                onChange={(e) => {
+                                    rgxAllNumber.test(e.target.value) 
+                                        && validation.setFieldValue("posDomisili", e.target.value)
+                                }}
+                            />
+                        </div>
+                    </Col>
+                    <Col xxl={6} md={6}>
+                        <div className="mt-2">
+                            <Label style={{ color: "black" }} htmlFor="provinsidomisili" className="form-label">Provinsi</Label>
+                        </div>
+                    </Col>
+                    <Col xxl={6} md={6}>
+                        <div>
+                        <Input
+                                id="provinsiDomisili"
+                                name="provinsiDomisili"
+                                type="input"
+                                placeholder="provinsiDomisili"
+                                value={validation.values.provinsiDomisili || ""}
+                                disabled
+                            />
+                        </div>
+                    </Col>
+                    <Col xxl={6} md={6}>
+                        <div className="mt-2">
+                            <Label style={{ color: "black" }} htmlFor="negaradomisili" className="form-label">Negara</Label>
+                        </div>
+                    </Col>
+                    <Col xxl={6} md={6}>
+                        <div>
+                        <CustomSelect
+                                id="negaraDomisili"
+                                name="negaraDomisili"
+                                options={dataNegara}
+                                ref={refNegaraDomisili}
+                                value={validation.values.negaraDomisili || ""}
+                                className={`input ${validation.errors.negaraDomisili ? "is-invalid" : ""}`}
+                                onChange={value => validation.setFieldValue('negaraDomisili', value?.value || "")}
+                            />
+                            {validation.touched.negaraDomisili && validation.errors.negaraDomisili ? (
+                                <FormFeedback type="invalid"><div>{validation.errors.negaraDomisili}</div></FormFeedback>
+                            ) : null}
+                        </div>
+                    </Col>
+                </Row>
+            </CardBody>
+        </Card>
+    )
+
     return (
         <React.Fragment>
             <ToastContainer closeButton={false} />
@@ -236,14 +1255,6 @@ const PasienBaru = () => {
                                                     className={classnames({ active: cardHeaderTab === "1", })} 
                                                     onClick={() => { cardHeaderToggle("1"); }} >
                                                     Profile
-                                                </NavLink>
-                                            </NavItem>
-                                            <NavItem>
-                                                <NavLink 
-                                                    style={{ cursor: "pointer", fontWeight: "bold" }} 
-                                                    className={classnames({ active: cardHeaderTab === "2", })} 
-                                                    onClick={() => { cardHeaderToggle("2"); }} >
-                                                    Informasi Lainnya
                                                 </NavLink>
                                             </NavItem>
                                         </Nav>
@@ -271,722 +1282,32 @@ const PasienBaru = () => {
                                                     </>
                                                 ) : null} */}
                                                 <Row>
-                                                    <Col lg={4}>
-                                                        <Card style={{ backgroundColor: "#f1f2f6" }}>
-                                                            <CardHeader style={{ backgroundColor: "#dfe4ea" }}>
-                                                                <h4 className="card-title mb-0">Data Diri Pasien</h4>
-                                                            </CardHeader>
-                                                            <CardBody>
-                                                                <Row className="gy-4">
-                                                                    <Col xxl={6} md={6}>
-                                                                        <div className="mt-2">
-                                                                            <Label style={{ color: "black" }} htmlFor="noidentitas" className="form-label">No Identitas</Label>
-                                                                        </div>
-                                                                    </Col>
-                                                                    <Col xxl={6} md={6}>
-                                                                        <div>
-                                                                            <Input
-                                                                                id="noidentitas"
-                                                                                name="noidentitas"
-                                                                                type="string"
-                                                                                placeholder="Masukkan No Identitas pasien"
-                                                                                onChange={validation.handleChange}
-                                                                                onBlur={validation.handleBlur}
-                                                                                value={validation.values.noidentitas || ""}
-                                                                                invalid={
-                                                                                    validation.touched.noidentitas && validation.errors.noidentitas ? true : false
-                                                                                }
-                                                                            />
-                                                                            {validation.touched.noidentitas && validation.errors.noidentitas ? (
-                                                                                <FormFeedback type="invalid"><div>{validation.errors.noidentitas}</div></FormFeedback>
-                                                                            ) : null}
-                                                                        </div>
-                                                                    </Col>
-                                                                    <Col xxl={6} md={6}>
-                                                                        <div className="mt-2">
-                                                                            <Label style={{ color: "black" }} htmlFor="namapasien" className="form-label">Nama Pasien</Label>
-                                                                        </div>
-                                                                    </Col>
-                                                                    <Col xxl={6} md={6}>
-                                                                        <div>
-                                                                            <Input
-                                                                                id="namapasien"
-                                                                                name="namapasien"
-                                                                                type="text"
-                                                                                placeholder="Masukkan nama pasien"
-                                                                                onChange={validation.handleChange}
-                                                                                onBlur={validation.handleBlur}
-                                                                                value={validation.values.namapasien || ""}
-                                                                                invalid={
-                                                                                    validation.touched.namapasien && validation.errors.namapasien ? true : false
-                                                                                }
-                                                                            />
-                                                                            {validation.touched.namapasien && validation.errors.namapasien ? (
-                                                                                <FormFeedback type="invalid"><div>{validation.errors.namapasien}</div></FormFeedback>
-                                                                            ) : null}
-                                                                        </div>
-                                                                    </Col>
-                                                                    <Col xxl={6} md={6}>
-                                                                        <div className="mt-2">
-                                                                            <Label style={{ color: "black" }} htmlFor="jeniskelamin" className="form-label">Jenis Kelamin</Label>
-                                                                        </div>
-                                                                    </Col>
-                                                                    <Col xxl={6} md={6}>
-                                                                        <div>
-                                                                            <CustomSelect
-                                                                                id="jeniskelamin"
-                                                                                name="jeniskelamin"
-                                                                                options={dataJenisKelamin}
-                                                                                value={validation.values.jeniskelamin || ""}
-                                                                                className={`input ${validation.errors.jeniskelamin ? "is-invalid" : ""}`}
-                                                                                onChange={value => validation.setFieldValue('jeniskelamin', value.value)}
-                                                                            />
-                                                                            {validation.touched.jeniskelamin && validation.errors.jeniskelamin ? (
-                                                                                <FormFeedback type="invalid"><div>{validation.errors.jeniskelamin}</div></FormFeedback>
-                                                                            ) : null}
-                                                                        </div>
-                                                                    </Col>
-                                                                    <Col xxl={6} md={6}>
-                                                                        <div className="mt-2">
-                                                                            <Label style={{ color: "black" }} htmlFor="titlepasien" className="form-label">Title Pasien</Label>
-                                                                        </div>
-                                                                    </Col>
-                                                                    <Col xxl={6} md={6}>
-                                                                        <div>
-                                                                            <CustomSelect
-                                                                                id="titlepasien"
-                                                                                name="titlepasien"
-                                                                                options={dataTitle}
-                                                                                value={validation.values.titlepasien || ""}
-                                                                                className={`input ${validation.errors.titlepasien ? "is-invalid" : ""}`}
-                                                                                onChange={value => validation.setFieldValue('titlepasien', value.value)}
-                                                                            />
-                                                                            {validation.touched.titlepasien && validation.errors.titlepasien ? (
-                                                                                <FormFeedback type="invalid"><div>{validation.errors.titlepasien}</div></FormFeedback>
-                                                                            ) : null}
-                                                                        </div>
-                                                                    </Col>
-                                                                    <Col xxl={6} md={6}>
-                                                                        <div className="mt-2">
-                                                                            <Label style={{ color: "black" }} htmlFor="tempatlahir" className="form-label">Tempat Lahir</Label>
-                                                                        </div>
-                                                                    </Col>
-                                                                    <Col xxl={6} md={6}>
-                                                                        <div>
-                                                                            <Input
-                                                                                id="tempatlahir"
-                                                                                name="tempatlahir"
-                                                                                type="text"
-                                                                                placeholder="Masukkan tempat lahir"
-                                                                                onChange={validation.handleChange}
-                                                                                onBlur={validation.handleBlur}
-                                                                                value={validation.values.tempatlahir || ""}
-                                                                                invalid={
-                                                                                    validation.touched.tempatlahir && validation.errors.tempatlahir ? true : false
-                                                                                }
-                                                                            />
-                                                                            {validation.touched.tempatlahir && validation.errors.tempatlahir ? (
-                                                                                <FormFeedback type="invalid"><div>{validation.errors.tempatlahir}</div></FormFeedback>
-                                                                            ) : null}
-                                                                        </div>
-                                                                    </Col>
-                                                                    <Col xxl={6} md={6}>
-                                                                        <div className="mt-2">
-                                                                            <Label style={{ color: "black" }} htmlFor="tgllahir" className="form-label">Tanggal Lahir</Label>
-                                                                        </div>
-                                                                    </Col>
-                                                                    <Col xxl={6} md={6}>
-                                                                        <div>
-                                                                            <Flatpickr
-                                                                                className="form-control"
-                                                                                options={{
-                                                                                    dateFormat: "Y-m-d",
-                                                                                    defaultDate: "today",
-                                                                                    maxDate: "today"
-                                                                                }}
-                                                                                value={new Date(validation.values.tgllahir) || ""}
-                                                                                onChange={([newDate]) => {
-                                                                                    validation.setFieldValue("tgllahir", newDate.toISOString())
-                                                                                }}
-                                                                            />
-                                                                        </div>
-                                                                    </Col>
-                                                                    <Col xxl={6} md={6}>
-                                                                        <div className="mt-2">
-                                                                            <Label style={{ color: "black" }} htmlFor="agama" className="form-label">Agama</Label>
-                                                                        </div>
-                                                                    </Col>
-                                                                    <Col xxl={6} md={6}>
-                                                                        <div>
-                                                                            <CustomSelect
-                                                                                id="agama"
-                                                                                name="agama"
-                                                                                options={data}
-                                                                                value={validation.values.agama || ""}
-                                                                                className={`input ${validation.errors.agama ? "is-invalid" : ""}`}
-                                                                                onChange={value => validation.setFieldValue('agama', value.value)}
-                                                                            />
-                                                                            {validation.touched.agama && validation.errors.agama ? (
-                                                                                <FormFeedback type="invalid"><div>{validation.errors.agama}</div></FormFeedback>
-                                                                            ) : null}
-                                                                        </div>
-                                                                    </Col>
-                                                                    <Col xxl={6} md={6}>
-                                                                        <div className="mt-2">
-                                                                            <Label style={{ color: "black" }} htmlFor="goldarah" className="form-label">Gol Darah</Label>
-                                                                        </div>
-                                                                    </Col>
-                                                                    <Col xxl={6} md={6}>
-                                                                        <div>
-                                                                            <CustomSelect
-                                                                                id="goldarah"
-                                                                                name="goldarah"
-                                                                                options={dataGD}
-                                                                                value={validation.values.goldarah || ""}
-                                                                                className={`input ${validation.errors.goldarah ? "is-invalid" : ""}`}
-                                                                                onChange={value => validation.setFieldValue('goldarah', value.value)}
-                                                                            />
-                                                                            {validation.touched.goldarah && validation.errors.goldarah ? (
-                                                                                <FormFeedback type="invalid"><div>{validation.errors.goldarah}</div></FormFeedback>
-                                                                            ) : null}
-                                                                        </div>
-                                                                    </Col>
-                                                                    <Col xxl={6} md={6}>
-                                                                        <div className="mt-2">
-                                                                            <Label style={{ color: "black" }} htmlFor="kebangsaan" className="form-label">Kebangsaan</Label>
-                                                                        </div>
-                                                                    </Col>
-                                                                    <Col xxl={6} md={6}>
-                                                                        <div>
-                                                                            <CustomSelect
-                                                                                id="kebangsaan"
-                                                                                name="kebangsaan"
-                                                                                options={dataKebangsaan}
-                                                                                value={validation.values.kebangsaan || ""}
-                                                                                className={`input ${validation.errors.kebangsaan ? "is-invalid" : ""}`}
-                                                                                onChange={handleChangeKebangsaan}
-
-                                                                            />
-                                                                            {validation.touched.kebangsaan && validation.errors.kebangsaan ? (
-                                                                                <FormFeedback type="invalid"><div>{validation.errors.kebangsaan}</div></FormFeedback>
-                                                                            ) : null}
-                                                                        </div>
-                                                                    </Col>
-                                                                    <Col xxl={6} md={6}>
-                                                                        <div className="mt-2">
-                                                                            <Label style={{ color: "black" }} htmlFor="statusperkawinan" className="form-label">Status Perkawinan</Label>
-                                                                        </div>
-                                                                    </Col>
-                                                                    <Col xxl={6} md={6}>
-                                                                        <div>
-                                                                            <CustomSelect
-                                                                                id="statusperkawinan"
-                                                                                name="statusperkawinan"
-                                                                                options={dataPerkawinan}
-                                                                                value={validation.values.statusperkawinan || ""}
-                                                                                className={`input ${validation.errors.statusperkawinan ? "is-invalid" : ""}`}
-                                                                                onChange={value => validation.setFieldValue('statusperkawinan', value.value)}
-                                                                            />
-                                                                            {validation.touched.statusperkawinan && validation.errors.statusperkawinan ? (
-                                                                                <FormFeedback type="invalid"><div>{validation.errors.statusperkawinan}</div></FormFeedback>
-                                                                            ) : null}
-                                                                        </div>
-                                                                    </Col>
-                                                                    <Col xxl={6} md={6}>
-                                                                        <div className="mt-2">
-                                                                            <Label style={{ color: "black" }} htmlFor="pendidikan" className="form-label">Pendidikan</Label>
-                                                                        </div>
-                                                                    </Col>
-                                                                    <Col xxl={6} md={6}>
-                                                                        <div>
-                                                                            <CustomSelect
-                                                                                id="pendidikan"
-                                                                                name="pendidikan"
-                                                                                options={dataPendidikan}
-                                                                                value={validation.values.pendidikan || ""}
-                                                                                className={`input ${validation.errors.pendidikan ? "is-invalid" : ""}`}
-                                                                                onChange={value => validation.setFieldValue('pendidikan', value.value)}
-                                                                            />
-                                                                            {validation.touched.pendidikan && validation.errors.pendidikan ? (
-                                                                                <FormFeedback type="invalid"><div>{validation.errors.pendidikan}</div></FormFeedback>
-                                                                            ) : null}
-                                                                        </div>
-                                                                    </Col>
-                                                                    <Col xxl={6} md={6}>
-                                                                        <div className="mt-2">
-                                                                            <Label style={{ color: "black" }} htmlFor="pekerjaan" className="form-label">Pekerjaan</Label>
-                                                                        </div>
-                                                                    </Col>
-                                                                    <Col xxl={6} md={6}>
-                                                                        <div>
-                                                                            <CustomSelect
-                                                                                id="pekerjaan"
-                                                                                name="pekerjaan"
-                                                                                options={dataPekerjaan}
-                                                                                value={validation.values.pekerjaan || ""}
-                                                                                className={`input ${validation.errors.pekerjaan ? "is-invalid" : ""}`}
-                                                                                onChange={value => validation.setFieldValue('pekerjaan', value.value)}
-                                                                            />
-                                                                            {validation.touched.pekerjaan && validation.errors.pekerjaan ? (
-                                                                                <FormFeedback type="invalid"><div>{validation.errors.pekerjaan}</div></FormFeedback>
-                                                                            ) : null}
-                                                                        </div>
-                                                                    </Col>
-                                                                    <Col xxl={6} md={6}>
-                                                                        <div className="mt-2">
-                                                                            <Label style={{ color: "black" }} htmlFor="suku" className="form-label">SUKU</Label>
-                                                                        </div>
-                                                                    </Col>
-                                                                    <Col xxl={6} md={6}>
-                                                                        <div>
-                                                                            <CustomSelect
-                                                                                id="suku"
-                                                                                name="suku"
-                                                                                options={dataEtnis}
-                                                                                value={validation.values.suku || ""}
-                                                                                className={`input ${validation.errors.suku ? "is-invalid" : ""}`}
-                                                                                onChange={value => validation.setFieldValue('suku', value.value)}
-                                                                            />
-                                                                            {validation.touched.suku && validation.errors.suku ? (
-                                                                                <FormFeedback type="invalid"><div>{validation.errors.suku}</div></FormFeedback>
-                                                                            ) : null}
-                                                                        </div>
-                                                                    </Col>
-                                                                    <Col xxl={6} md={6}>
-                                                                        <div className="mt-2">
-                                                                            <Label style={{ color: "black" }} htmlFor="bahasa" className="form-label">Bahasa Yang Dikuasai</Label>
-                                                                        </div>
-                                                                    </Col>
-                                                                    <Col xxl={6} md={6}>
-                                                                        <div>
-                                                                            <CustomSelect
-                                                                                id="bahasa"
-                                                                                name="bahasa"
-                                                                                options={dataBahasa}
-                                                                                value={validation.values.bahasa || ""}
-                                                                                className={`input ${validation.errors.bahasa ? "is-invalid" : ""}`}
-                                                                                onChange={value => validation.setFieldValue('bahasa', value.value)}
-                                                                            />
-                                                                            {validation.touched.bahasa && validation.errors.bahasa ? (
-                                                                                <FormFeedback type="invalid"><div>{validation.errors.bahasa}</div></FormFeedback>
-                                                                            ) : null}
-                                                                        </div>
-                                                                    </Col>
-                                                                </Row>
-                                                            </CardBody>
-                                                        </Card>
+                                                    <Col lg={6}>
+                                                        <Row>
+                                                            <Col lg={12}>
+                                                                {DataDiri}
+                                                            </Col>
+                                                        </Row>
+                                                        <Row>
+                                                            <Col lg={12}>
+                                                                {InfoTambahan}
+                                                            </Col>
+                                                        </Row>
                                                     </Col>
-                                                    <Col lg={4}>
-                                                        <Card style={{ backgroundColor: "#f1f2f6" }}>
-                                                            <CardHeader style={{ backgroundColor: "#dfe4ea" }}>
-                                                                <h4 className="card-title mb-0">Alamat KTP</h4>
-                                                            </CardHeader>
-                                                            <CardBody>
-                                                                <Row className="gy-4">
-                                                                    <Col xxl={6} md={6}>
-                                                                        <div className="mt-2">
-                                                                            <Label style={{ color: "black" }} htmlFor="alamatktp" className="form-label">Alamat KTP</Label>
-                                                                        </div>
-                                                                    </Col>
-                                                                    <Col xxl={6} md={6}>
-                                                                        <div>
-                                                                            <Input
-                                                                                id="alamatktp"
-                                                                                name="alamatktp"
-                                                                                type="textarea"
-                                                                                placeholder="Masukkan Alamat pasien"
-                                                                                onChange={validation.handleChange}
-                                                                                onBlur={validation.handleBlur}
-                                                                                value={validation.values.alamatktp || ""}
-                                                                                invalid={
-                                                                                    validation.touched.alamatktp && validation.errors.alamatktp ? true : false
-                                                                                }
-                                                                            />
-                                                                            {validation.touched.alamatktp && validation.errors.alamatktp ? (
-                                                                                <FormFeedback type="invalid"><div>{validation.errors.alamatktp}</div></FormFeedback>
-                                                                            ) : null}
-                                                                        </div>
-                                                                    </Col>
-                                                                    <Col xxl={6} md={6}>
-                                                                        <div className="mt-2">
-                                                                            <Label style={{ color: "black" }} htmlFor="rtrw" className="form-label">RT / RW</Label>
-                                                                        </div>
-                                                                    </Col>
-                                                                    <Col xxl={6} md={6}>
-                                                                        <div className="row">
-                                                                            <div className="col-sm">
-                                                                                <Input
-                                                                                    id="rt"
-                                                                                    name="rt"
-                                                                                    type="input"
-                                                                                    placeholder="RT"
-                                                                                    onChange={(e) => {
-                                                                                        rgxAllNumber.test(e.target.value) 
-                                                                                            && validation.setFieldValue("rt", e.target.value)
-                                                                                    }}
-                                                                                    onBlur={validation.handleBlur}
-                                                                                    value={validation.values.rt || ""}
-                                                                                    invalid={
-                                                                                        validation.touched.rt && validation.errors.rt ? true : false
-                                                                                    }
-                                                                                />
-                                                                                {validation.touched.rt && validation.errors.rt ? (
-                                                                                    <FormFeedback type="invalid"><div>{validation.errors.rt}</div></FormFeedback>
-                                                                                ) : null}
-                                                                            </div>
-                                                                            <div className="col-sm">
-                                                                                <Input
-                                                                                    id="rw"
-                                                                                    name="rw"
-                                                                                    type="input"
-                                                                                    placeholder="RW"
-                                                                                    onChange={(e) => {
-                                                                                        rgxAllNumber.test(e.target.value) 
-                                                                                            && validation.setFieldValue("rw", e.target.value)
-                                                                                    }}
-                                                                                    onBlur={validation.handleBlur}
-                                                                                    value={validation.values.rw || ""}
-                                                                                    invalid={
-                                                                                        validation.touched.rw && validation.errors.rw ? true : false
-                                                                                    }
-                                                                                />
-                                                                                {validation.touched.rw && validation.errors.rw ? (
-                                                                                    <FormFeedback type="invalid"><div>{validation.errors.rw}</div></FormFeedback>
-                                                                                ) : null}
-                                                                            </div>
-                                                                        </div>
-                                                                    </Col>
-                                                                    <Col xxl={6} md={6}>
-                                                                        <div className="mt-2">
-                                                                            <Label style={{ color: "black" }} htmlFor="desa" className="form-label">Kelurahan / Desa</Label>
-                                                                        </div>
-                                                                    </Col>
-                                                                    <Col xxl={6} md={6}>
-                                                                        <div>
-                                                                            <CustomSelect
-                                                                                id="desa"
-                                                                                name="desa"
-                                                                                options={dataDesa}
-                                                                                value={validation.values.desa || ""}
-                                                                                className={`input ${validation.errors.desa ? "is-invalid" : ""}`}
-                                                                                // onChange={value => validation.setFieldValue('desa', value.value)} 
-                                                                                onChange={handleChangeDesa}
-                                                                                onInputChange={handleDesa}
-                                                                            />
-                                                                            {validation.touched.desa && validation.errors.desa ? (
-                                                                                <FormFeedback type="invalid"><div>{validation.errors.desa}</div></FormFeedback>
-                                                                            ) : null}
-                                                                        </div>
-                                                                    </Col>
-                                                                    <Col xxl={6} md={6}>
-                                                                        <div className="mt-2">
-                                                                            <Label style={{ color: "black" }} htmlFor="kecamatan" className="form-label">Kecamatan</Label>
-                                                                        </div>
-                                                                    </Col>
-                                                                    <Col xxl={6} md={6}>
-                                                                        <div>
-                                                                            <Input
-                                                                                id="kecamatan"
-                                                                                name="kecamatan"
-                                                                                type="input"
-                                                                                placeholder="Kecamatan"
-                                                                                value={validation.values.kecamatan || ""}
-                                                                                disabled
-                                                                            />
-                                                                        </div>
-                                                                    </Col>
-                                                                    <Col xxl={6} md={6}>
-                                                                        <div className="mt-2">
-                                                                            <Label style={{ color: "black" }} htmlFor="kota" className="form-label">Kota / Kabupaten</Label>
-                                                                        </div>
-                                                                    </Col>
-                                                                    <Col xxl={6} md={6}>
-                                                                        <div>
-                                                                            <Input
-                                                                                id="kota"
-                                                                                name="kota"
-                                                                                type="input"
-                                                                                placeholder="kota"
-                                                                                value={validation.values.kota || ""}
-                                                                                disabled
-                                                                            />
-                                                                        </div>
-                                                                    </Col>
-                                                                    <Col xxl={6} md={6}>
-                                                                        <div className="mt-2">
-                                                                            <Label style={{ color: "black" }} htmlFor="pos" className="form-label">Kode POS</Label>
-                                                                        </div>
-                                                                    </Col>
-                                                                    <Col xxl={6} md={6}>
-                                                                        <div>
-                                                                            <Input
-                                                                                id="pos"
-                                                                                name="pos"
-                                                                                type="input"
-                                                                                placeholder="pos"
-                                                                                value={validation.values.pos || ""}
-                                                                                onChange={(e) => {
-                                                                                    rgxAllNumber.test(e.target.value) 
-                                                                                        && validation.setFieldValue("pos", e.target.value)
-                                                                                }}
-                                                                            />
-                                                                        </div>
-                                                                    </Col>
-                                                                    <Col xxl={6} md={6}>
-                                                                        <div className="mt-2">
-                                                                            <Label style={{ color: "black" }} htmlFor="provinsi" className="form-label">Provinsi</Label>
-                                                                        </div>
-                                                                    </Col>
-                                                                    <Col xxl={6} md={6}>
-                                                                        <div>
-                                                                            <Input
-                                                                                id="provinsi"
-                                                                                name="provinsi"
-                                                                                type="input"
-                                                                                placeholder="provinsi"
-                                                                                value={validation.values.provinsi || ""}
-                                                                                disabled
-                                                                            />
-                                                                        </div>
-                                                                    </Col>
-                                                                    <Col xxl={6} md={6}>
-                                                                        <div className="mt-2">
-                                                                            <Label style={{ color: "black" }} htmlFor="negara" className="form-label">Negara</Label>
-                                                                        </div>
-                                                                    </Col>
-                                                                    <Col xxl={6} md={6}>
-                                                                        <div>
-                                                                            <CustomSelect
-                                                                                id="negara"
-                                                                                name="negara"
-                                                                                options={dataNegara}
-                                                                                ref={refNegara}
-                                                                                value={validation.values.negara || null}
-                                                                                className={`input ${validation.errors.negara ? "is-invalid" : ""}`}
-                                                                                onChange={value => {
-                                                                                    validation.setFieldValue('negara', value?.value || "")
-                                                                                }}
-                                                                            />
-                                                                            {validation.touched.negara && validation.errors.negara ? (
-                                                                                <FormFeedback type="invalid"><div>{validation.errors.negara}</div></FormFeedback>
-                                                                            ) : null}
-                                                                        </div>
-                                                                    </Col>
-                                                                </Row>
-                                                            </CardBody>
-                                                        </Card>
+                                                    <Col lg={6}>
+                                                        <Row>
+                                                            <Col lg={12}>
+                                                                {AlamatKTP}
+                                                            </Col>
+                                                        </Row>
+                                                        <Row>
+                                                            <Col lg={12}>
+                                                                {AlamatDomisili}
+                                                            </Col>
+                                                        </Row>
                                                     </Col>
-                                                    <Col lg={4}>
-                                                        <Card style={{ backgroundColor: "#f1f2f6" }}>
-                                                            <CardHeader style={{ backgroundColor: "#dfe4ea" }}>
-                                                                <h4 className="card-title mb-0">Alamat Domisili</h4>
-                                                            </CardHeader>
-                                                            <CardBody>
-                                                                <Row className="gy-4">
-                                                                    {/* <Col xxl={6} md={6}> */}
-                                                                    <div className="form-check ms-2">
-                                                                        <Input className="form-check-input" type="checkbox" 
-                                                                            checked={isSesuaiKtp}
-                                                                            id="formCheck1" 
-                                                                            onChange={e => setisSesuaiKtp(e.target.checked)}/>
-                                                                        <Label className="form-check-label" htmlFor="formCheck1" style={{ color: "black" }} >
-                                                                            Sesuai KTP
-                                                                        </Label>
-                                                                    </div>
-                                                                    {/* </Col> */}
-
-                                                                    <Col xxl={6} md={6}>
-                                                                        <div className="mt-2">
-                                                                            <Label style={{ color: "black" }} htmlFor="alamatdomisili" className="form-label">Alamat Domisili</Label>
-                                                                        </div>
-                                                                    </Col>
-                                                                    <Col xxl={6} md={6}>
-                                                                        <div>
-                                                                        <Input
-                                                                                id="alamatdomisili"
-                                                                                name="alamatdomisili"
-                                                                                type="textarea"
-                                                                                placeholder="Masukkan Alamat pasien"
-                                                                                onChange={validation.handleChange}
-                                                                                onBlur={validation.handleBlur}
-                                                                                value={validation.values.alamatdomisili || ""}
-                                                                                invalid={
-                                                                                    validation.touched.alamatdomisili && validation.errors.alamatdomisili ? true : false
-                                                                                }
-                                                                                disabled={isSesuaiKtp}
-                                                                            />
-                                                                            {validation.touched.alamatdomisili && validation.errors.alamatdomisili ? (
-                                                                                <FormFeedback type="invalid"><div>{validation.errors.alamatdomisili}</div></FormFeedback>
-                                                                            ) : null}
-                                                                        </div>
-                                                                    </Col>
-                                                                    <Col xxl={6} md={6}>
-                                                                        <div className="mt-2">
-                                                                            <Label style={{ color: "black" }} htmlFor="rtrwdomisili" className="form-label">RT / RW</Label>
-                                                                        </div>
-                                                                    </Col>
-                                                                    <Col xxl={6} md={6}>
-                                                                        <div className="row">
-                                                                            <div className="col-sm">
-                                                                            <Input
-                                                                                    id="rtdomisili"
-                                                                                    name="rtdomisili"
-                                                                                    type="input"
-                                                                                    placeholder="RT"
-                                                                                    onChange={(e) => {
-                                                                                        rgxAllNumber.test(e.target.value) 
-                                                                                            && validation.setFieldValue("rtdomisili", e.target.value)
-                                                                                    }}
-                                                                                    onBlur={validation.handleBlur}
-                                                                                    value={validation.values.rtdomisili || ""}
-                                                                                    invalid={
-                                                                                        validation.touched.rtdomisili && validation.errors.rtdomisili ? true : false
-                                                                                    }
-                                                                                />
-                                                                                {validation.touched.rtdomisili && validation.errors.rtdomisili ? (
-                                                                                    <FormFeedback type="invalid"><div>{validation.errors.rtdomisili}</div></FormFeedback>
-                                                                                ) : null}
-                                                                            </div>
-                                                                            <div className="col-sm">
-                                                                            <Input
-                                                                                    id="rwdomisili"
-                                                                                    name="rwdomisili"
-                                                                                    type="input"
-                                                                                    placeholder="RW"
-                                                                                    onChange={(e) => {
-                                                                                        rgxAllNumber.test(e.target.value) 
-                                                                                            && validation.setFieldValue("rwdomisili", e.target.value)
-                                                                                    }}
-                                                                                    onBlur={validation.handleBlur}
-                                                                                    value={validation.values.rwdomisili || ""}
-                                                                                    invalid={
-                                                                                        validation.touched.rwdomisili && validation.errors.rwdomisili ? true : false
-                                                                                    }
-                                                                                />
-                                                                                {validation.touched.rwdomisili && validation.errors.rwdomisili ? (
-                                                                                    <FormFeedback type="invalid"><div>{validation.errors.rwdomisili}</div></FormFeedback>
-                                                                                ) : null}
-                                                                            </div>
-                                                                        </div>
-                                                                    </Col>
-                                                                    <Col xxl={6} md={6}>
-                                                                        <div className="mt-2">
-                                                                            <Label style={{ color: "black" }} htmlFor="desa" className="form-label">Kelurahan / Desa</Label>
-                                                                        </div>
-                                                                    </Col>
-                                                                    <Col xxl={6} md={6}>
-                                                                        <div>
-                                                                        <CustomSelect
-                                                                                id="desaDomisili"
-                                                                                name="desaDomisili"
-                                                                                options={dataDesa}
-                                                                                value={validation.values.desaDomisili || ""}
-                                                                                className={`input ${validation.errors.desaDomisili ? "is-invalid" : ""}`}
-                                                                                // onChange={value => validation.setFieldValue('desa', value.value)} 
-                                                                                onChange={handleChangeDesaDomisili}
-                                                                                onInputChange={handleDesa}
-                                                                            />
-                                                                            {validation.touched.desaDomisili && validation.errors.desaDomisili ? (
-                                                                                <FormFeedback type="invalid"><div>{validation.errors.desaDomisili}</div></FormFeedback>
-                                                                            ) : null}
-                                                                        </div>
-                                                                    </Col>
-                                                                    <Col xxl={6} md={6}>
-                                                                        <div className="mt-2">
-                                                                            <Label style={{ color: "black" }} htmlFor="kecamatandomisili" className="form-label">Kecamatan</Label>
-                                                                        </div>
-                                                                    </Col>
-                                                                    <Col xxl={6} md={6}>
-                                                                        <div>
-                                                                        <Input
-                                                                                id="kecamatanDomisili"
-                                                                                name="kecamatanDomisili"
-                                                                                type="input"
-                                                                                placeholder="kecamatanDomisili"
-                                                                                value={validation.values.kecamatanDomisili || ""}
-                                                                                disabled
-                                                                            />
-                                                                        </div>
-                                                                    </Col>
-                                                                    <Col xxl={6} md={6}>
-                                                                        <div className="mt-2">
-                                                                            <Label style={{ color: "black" }} htmlFor="kotadomisili" className="form-label">Kota / Kabupaten</Label>
-                                                                        </div>
-                                                                    </Col>
-                                                                    <Col xxl={6} md={6}>
-                                                                        <div>
-                                                                        <Input
-                                                                                id="kotaDomisili"
-                                                                                name="kotaDomisili"
-                                                                                type="input"
-                                                                                placeholder="kotaDomisili"
-                                                                                value={validation.values.kotaDomisili || ""}
-                                                                                disabled
-                                                                            />
-                                                                        </div>
-                                                                    </Col>
-                                                                    <Col xxl={6} md={6}>
-                                                                        <div className="mt-2">
-                                                                            <Label style={{ color: "black" }} htmlFor="posdomisili" className="form-label">Kode POS</Label>
-                                                                        </div>
-                                                                    </Col>
-                                                                    <Col xxl={6} md={6}>
-                                                                        <div>
-                                                                        <Input
-                                                                                id="posDomisili"
-                                                                                name="posDomisili"
-                                                                                type="input"
-                                                                                placeholder="posDomisili"
-                                                                                value={validation.values.posDomisili || ""}
-                                                                                onChange={(e) => {
-                                                                                    rgxAllNumber.test(e.target.value) 
-                                                                                        && validation.setFieldValue("posDomisili", e.target.value)
-                                                                                }}
-                                                                            />
-                                                                        </div>
-                                                                    </Col>
-                                                                    <Col xxl={6} md={6}>
-                                                                        <div className="mt-2">
-                                                                            <Label style={{ color: "black" }} htmlFor="provinsidomisili" className="form-label">Provinsi</Label>
-                                                                        </div>
-                                                                    </Col>
-                                                                    <Col xxl={6} md={6}>
-                                                                        <div>
-                                                                        <Input
-                                                                                id="provinsiDomisili"
-                                                                                name="provinsiDomisili"
-                                                                                type="input"
-                                                                                placeholder="provinsiDomisili"
-                                                                                value={validation.values.provinsiDomisili || ""}
-                                                                                disabled
-                                                                            />
-                                                                        </div>
-                                                                    </Col>
-                                                                    <Col xxl={6} md={6}>
-                                                                        <div className="mt-2">
-                                                                            <Label style={{ color: "black" }} htmlFor="negaradomisili" className="form-label">Negara</Label>
-                                                                        </div>
-                                                                    </Col>
-                                                                    <Col xxl={6} md={6}>
-                                                                        <div>
-                                                                        <CustomSelect
-                                                                                id="negaraDomisili"
-                                                                                name="negaraDomisili"
-                                                                                options={dataNegara}
-                                                                                ref={refNegaraDomisili}
-                                                                                value={validation.values.negaraDomisili || ""}
-                                                                                className={`input ${validation.errors.negaraDomisili ? "is-invalid" : ""}`}
-                                                                                onChange={value => validation.setFieldValue('negaraDomisili', value?.value || "")}
-                                                                            />
-                                                                            {validation.touched.negaraDomisili && validation.errors.negaraDomisili ? (
-                                                                                <FormFeedback type="invalid"><div>{validation.errors.negaraDomisili}</div></FormFeedback>
-                                                                            ) : null}
-                                                                        </div>
-                                                                    </Col>
-                                                                </Row>
-                                                            </CardBody>
-                                                        </Card>
-                                                    </Col>
+                                                </Row>
+                                                <Row>
                                                     <Col md={12}>
                                                         <div className='text-center'>
                                                             <Button type="submit" color="primary" disabled={loadingSave}> Simpan </Button>
