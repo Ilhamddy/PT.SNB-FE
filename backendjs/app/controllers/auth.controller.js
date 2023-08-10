@@ -75,6 +75,7 @@ const signin = (req, res) => {
         });
       }
 
+      
       try {
         pool.query(queries.getSesions, [user.id], (error, result) => {
           if (error) throw error;
