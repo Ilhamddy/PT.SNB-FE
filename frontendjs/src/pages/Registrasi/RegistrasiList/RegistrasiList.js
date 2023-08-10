@@ -235,9 +235,8 @@ const RegistrasiList = () => {
                                         </TabPane>
                                         <TabPane tabId="3" id="messages-1" >
                                             <div className="live-preview">
-                                                <div className="d-flex flex-wrap gap-2">
+                                                <div className="d-flex flex-column gap-2">
                                                     <Button color="info" className="btn-animation" data-text="Registrasi" onClick={() => handleClickButton('registrasi')}><span>Registrasi</span></Button>
-
                                                     <Button color="info" className="btn-animation" data-text="Edit Data Pasien" onClick={() => handleClickButton('edit')}> <span>Edit Data Pasien</span> </Button>
                                                     <Button color="info" className="btn-animation" data-text="[BPJS] Cek Kepesertaan"> <span>[BPJS] Cek Kepesertaan</span> </Button>
                                                     <Button color="info" className="btn-animation" data-text="[BPJS] Cek Rujukan"> <span>[BPJS] Cek Rujukan</span> </Button>
