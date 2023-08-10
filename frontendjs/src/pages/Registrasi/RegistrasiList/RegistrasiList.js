@@ -18,6 +18,7 @@ import userDummy from "../../../assets/images/users/user-dummy-img.jpg";
 import patient from "../../../assets/images/users/icons8-patient-64.png";
 
 import { ToastContainer, toast } from 'react-toastify';
+import LoadingTable from '../../../Components/LoadingTable/LoadingTable';
 
 const RegistrasiList = () => {
     const dispatch = useDispatch();
@@ -302,6 +303,7 @@ const RegistrasiList = () => {
                                             data={data}
                                             progressPending={loading}
                                             customStyles={tableCustomStyles}
+                                            progressComponent={<LoadingTable />}
                                         />
                                     </div>
                                 </CardBody>
