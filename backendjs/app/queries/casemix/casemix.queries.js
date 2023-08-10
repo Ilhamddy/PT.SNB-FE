@@ -14,8 +14,7 @@ const qGetListTarif18 = `select
     join m_produk mp on
     mp.id = tp.objectprodukfk
     where
-    td.norec = $1
-    and tp.statusenabled = true
+    td.norec = '$1' and tp.statusenabled = true
     group by mp.objectvariabelbpjsfk 
 `
 
