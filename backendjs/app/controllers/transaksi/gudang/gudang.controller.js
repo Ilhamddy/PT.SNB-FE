@@ -814,18 +814,18 @@ const hCreateOrUpdateDetailPenerimaan = async (
     createdOrUpdatedDetailPenerimaan = await Promise.all(
         arDetail.map(async (bodyDetail) => {
             let norecDetailPenerimaan = bodyDetail.norecdetailpenerimaan
-            let prevValue = null
+            let prev = null
             let updatedValue = null
             if(!norecDetailPenerimaan){
-                let prev = await t_penerimaanbarangdetail.findOne({
+                prev = await t_penerimaanbarangdetail.findOne({
                     where: {
                         norec: norecDetailPenerimaan
                     },
+                    lock: transaction.LOCK.UPDATE,
+                    transaction: transaction
                 })
-                prev = prev?.[0]?.get() || null
-                prevValue = prev
             }
-            if(!norecDetailPenerimaan || !prevValue){
+            if(!norecDetailPenerimaan || !prev){
                 norecDetailPenerimaan = uuid.v4().substring(0, 32)
                 updatedValue = await t_penerimaanbarangdetail.create({
                     norec: uuid.v4().substring(0, 32),
@@ -844,13 +844,12 @@ const hCreateOrUpdateDetailPenerimaan = async (
                     ppnpersen: bodyDetail.ppnpersenproduk,
                     ppn: bodyDetail.ppnrupiahproduk,
                     total: bodyDetail.totalproduk,
-                    jumlahkonversi: bodyDetail.konversisatuan
-                    
+                    jumlahkonversi: bodyDetail.konversisatuan 
                 }, {
                     transaction: transaction
                 }) 
             }else{
-                let [_, updated] = await t_penerimaanbarangdetail.update({
+                let [_, updated] = await prev.update({
                     objectprodukfk: bodyDetail.produk.idproduk,
                     ed: new Date(bodyDetail.tanggaled),
                     nobatch: bodyDetail.nobatch,
@@ -866,9 +865,6 @@ const hCreateOrUpdateDetailPenerimaan = async (
                     total: bodyDetail.totalproduk,
                     jumlahkonversi: bodyDetail.konversisatuan
                 }, {
-                    where: {
-                        norec: norecDetailPenerimaan
-                    },
                     returning: true,
                     transaction: transaction
                 })
@@ -876,7 +872,7 @@ const hCreateOrUpdateDetailPenerimaan = async (
                 updatedValue = updated ;
             }
             return {
-                prevValue,
+                prevValue: prev?.get() || null,
                 updatedValue
             }
         })
@@ -908,7 +904,8 @@ const hCreateOrUpdateStokUnit  = async (
                     where: {
                         nobatch: nobatch,
                         objectprodukfk: updatedValue.objectprodukfk
-                    }
+                    },
+                    lock: transaction.LOCK.UPDATE,
                 })
                 let createdOrUpdated = null
                 let stokBatchItemFind = stokBatch.find((stokBatch) => {
@@ -959,15 +956,12 @@ const hCreateOrUpdateStokUnit  = async (
                     changedQty = (jmlPaket * konversi - jmlPaketPrev * konversiPrev)
                     const qty = prevStok.qty + changedQty
                     
-                    let [_, updated] = await t_stokunit.update({
+                    let [_, updated] = await stokBatchItemFind.update({
                         qty: qty,
                         objectpenerimaanbarangdetailfk: norecpenerimaan,
                         tglterima: createdOrUpdatedPenerimaan.tglterima,
                         tglupdate: new Date(),
                     }, {
-                        where: {
-                            norec: stokBatchItemFind.norec
-                        },
                         returning: true,
                         transaction: transaction
                     })

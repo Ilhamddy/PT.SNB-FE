@@ -10,7 +10,8 @@ import {
     REGISTRASI_NOREGISTRASI_GET,
     REGISTRASI_RUANGAN_NOREC_GET,
     REGISTRASI_NO_BPJS_GET,
-    REGISTRASI_SAVE_PENJAMIN_FK
+    REGISTRASI_SAVE_PENJAMIN_FK,
+    PASIEN_FORM_QUERIES_GET
 } from "./actionType";
 import {
     registrasiGetError,
@@ -30,8 +31,10 @@ import {
     registrasiNoBPJSGetSuccess,
     registrasiNoBPJSGetError,
     registrasiSavePenjaminFKSuccess,
-    registrasiSavePenjaminFKError
-
+    registrasiSavePenjaminFKError,
+    pasienFormQueriesGetSuccess,
+    pasienFormQueriesGetError
+    
 } from "./action";
 
 import { toast } from 'react-toastify';
@@ -42,11 +45,7 @@ const serviceRegistrasi = new ServiceRegistrasi();
 function* onSaveRegistrasi({payload: { data, history}}) {
     try {
         let response = null;
-        if (data.id) {
-            response = yield call(serviceRegistrasi.updatePasien, data);
-        } else {
-            response = yield call(serviceRegistrasi.createPasienBaru, data);
-        }
+        response = yield call(serviceRegistrasi.createPasienBaru, data);
         
         yield put(registrasiSaveSuccess(response.data));
         if(response.code===200){
@@ -154,6 +153,15 @@ function* onGetRegistrasiNoBPJS({payload: {nobpjs}}) {
     }
 }
 
+function* onGetPasienFormQueries({payload: {queries}}) {
+    try {
+        const response = yield call(serviceRegistrasi.getPasienFormById, queries);
+        yield put(pasienFormQueriesGetSuccess(response.data));
+    } catch (error) {
+        yield put(pasienFormQueriesGetError(error));
+    }
+}
+
 export function* watchSaveRegistrasi() {
     yield takeEvery(REGISTRASI_SAVE, onSaveRegistrasi);
 }
@@ -190,6 +198,10 @@ export function* watchRegistrasiSavePenjaminFK() {
     yield takeEvery(REGISTRASI_SAVE_PENJAMIN_FK, onRegistrasiSavePenjaminFK);
 }
 
+export function* watchGetPasienFormQueries() {
+    yield takeEvery(PASIEN_FORM_QUERIES_GET, onGetPasienFormQueries);
+}
+
 function* registrasiSaga() {
     yield all([
         fork(watchSaveRegistrasi),
@@ -200,7 +212,8 @@ function* registrasiSaga() {
         fork(watchGetRegistrasiNoregistrasi),
         fork(watchGetRegistrasiNorec),
         fork(watchGetRegistrasiNoBPJS),
-        fork(watchRegistrasiSavePenjaminFK)
+        fork(watchRegistrasiSavePenjaminFK),
+        fork(watchGetPasienFormQueries)
     ]);
 }
 

@@ -28,6 +28,9 @@ import {
     REGISTRASI_SAVE_PENJAMIN_FK,
     REGISTRASI_SAVE_PENJAMIN_FK_SUCCESS,
     REGISTRASI_SAVE_PENJAMIN_FK_ERROR,
+    PASIEN_FORM_QUERIES_GET,
+    PASIEN_FORM_QUERIES_GET_SUCCESS,
+    PASIEN_FORM_QUERIES_GET_ERROR,
 } from "./actionType";
 
 const INIT_STATE = {
@@ -74,6 +77,11 @@ const INIT_STATE = {
         error: null,
         success: false
     },
+    pasienFormQueriesGet: {
+        data: null,
+        loading: false,
+        error: null,
+    }
 };
 
 const Registrasi = (state = INIT_STATE, action) => {
@@ -397,6 +405,42 @@ const Registrasi = (state = INIT_STATE, action) => {
                     ...state.registrasiSavePenjaminFK,
                     loading: false,
                     success: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case PASIEN_FORM_QUERIES_GET: {
+            return {
+                ...state,
+                pasienFormQueriesGet: {
+                    ...state.pasienFormQueriesGet,
+                    data: [],
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case PASIEN_FORM_QUERIES_GET_SUCCESS: {
+            return {
+                ...state,
+                pasienFormQueriesGet: {
+                    ...state.pasienFormQueriesGet,
+                    data: action.payload,
+                    loading: false,
+                    error: null
+                }
+            }
+        }
+
+        case PASIEN_FORM_QUERIES_GET_ERROR: {
+            return {
+                ...state,
+                pasienFormQueriesGet: {
+                    ...state.pasienFormQueriesGet,
+                    data: [],
+                    loading: false,
                     error: action.error,
                 }
             }

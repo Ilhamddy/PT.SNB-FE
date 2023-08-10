@@ -170,7 +170,7 @@ const RegistrasiPenjaminFK = () => {
             dpjppemberi: Yup.string().required("DPJP pemberi wajib di isi"),
             diagnosarujukan: Yup.string().required("Diagnosa rujukan wajib di isi"),
             jenispeserta: Yup.string().required("Jenis peserta wajib di isi"),
-            notelepon: Yup.string().matches(RegExp('^\\d+$'), 'Harus angka')
+            notelepon: Yup.string().matches(RegExp('^\\d+$' ), 'Harus angka')
                 .required("No telepon wajib di isi"),
             catatan: Yup.string().required("Catatan wajib di isi"),
             // kelasditanggung: Yup.string().required("Kelas ditanggung wajib di isi"),

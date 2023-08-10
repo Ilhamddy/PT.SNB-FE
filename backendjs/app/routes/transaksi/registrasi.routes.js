@@ -125,5 +125,11 @@ export default function (app) {
         controller.getNoAntrean
     )
 
+    app.get(
+        "/api/transaksi/registrasi/get-pasien-form",
+        [authJwt.verifyToken],
+        controller.getPasienFormById
+    )
+
 
 };

@@ -19,7 +19,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { penerimaanListQueryGet } from "../../store/actions";
 import CountUp from "react-countup";
-import { pesananBatal, pesananDiterimaImg, pesananSudahImg } from "./imagesementara";
+import { 
+    pesananBatal, 
+    pesananDiterimaImg, 
+    pesananSudahImg 
+} from "./imagesementara";
 
 
 
@@ -269,7 +273,9 @@ const Widget = ({title, end, image}) => {
                         </div>
                         <div>
                             <div className="avatar-xl flex-shrink-0">
-                                <span className={"avatar-title rounded-circle fs-4"}>
+                                <span 
+                                    className={"avatar-title rounded-circle fs-4"} 
+                                    style={{backgroundColor: "#CC845C"}}>
                                     <img src={image}
                                         alt="" className="avatar-lg" />
                                 </span>

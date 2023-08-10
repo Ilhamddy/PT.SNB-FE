@@ -218,78 +218,60 @@ const DaftarTagihanPasien = () => {
                             
 
                         </Form>
-                        <Row className="row-header mb-2">
-                            <Col sm={3}>
-                                <div className="input-group">
-                                    <Flatpickr
-                                        className="form-control border-0 fs-5 dash-filter-picker shadow"
-                                        options={{
-                                            // mode: "range",
-                                            dateFormat: "Y-m-d",
-                                            defaultDate: "today"
-                                        }}
-                                        value={dateStart}
-                                        onChange={([dateStart]) => {
-                                            setDateStart((new Date(dateStart - dateStart.getTimezoneOffset() * 60000)).toISOString());
-                                        }}
-                                    />
-                                </div>
-                            </Col>
-                            <Col sm={1}><h4>s/d</h4></Col>
-                            <Col sm={3}>
-                                <div className="input-group">
-                                    <Flatpickr
-                                        className="form-control border-0 fs-5 dash-filter-picker shadow"
-                                        options={{
-                                            // mode: "range",
-                                            dateFormat: "Y-m-d",
-                                            defaultDate: "today"
-                                        }}
-                                        value={dateEnd}
-                                        onChange={([dateEnd]) => {
-                                            setDateEnd((new Date(dateEnd - dateEnd.getTimezoneOffset() * 60000)).toISOString());
-                                        }}
-                                    />
-                                </div>
-                            </Col>
-                            {/* <Col lg={2}>
-                                <CustomSelect
-                                    id="instalasifilter"
-                                    name="instalasifilter"
-                                    className={"row-header"}
-                                    options={comboboxReg?.instalasi || []}
-                                    onChange={(e) => {setInstalasi(e.value)}}
-                                    value={instalasi || ""}
+                        <Card>
+                            <CardBody>
+                                <Row className="row-header mb-2 ">
+                                    <Col sm={3}>
+                                        <div className="input-group">
+                                            <Flatpickr
+                                                className="form-control border-0 fs-5 dash-filter-picker shadow"
+                                                options={{
+                                                    // mode: "range",
+                                                    dateFormat: "Y-m-d",
+                                                    defaultDate: "today"
+                                                }}
+                                                value={dateStart}
+                                                onChange={([dateStart]) => {
+                                                    setDateStart((new Date(dateStart - dateStart.getTimezoneOffset() * 60000)).toISOString());
+                                                }}
+                                            />
+                                        </div>
+                                    </Col>
+                                    <Col sm={1}><h4 className="mt-2">s/d</h4></Col>
+                                    <Col sm={3}>
+                                        <div className="input-group">
+                                            <Flatpickr
+                                                className="form-control border-0 fs-5 dash-filter-picker shadow"
+                                                options={{
+                                                    // mode: "range",
+                                                    dateFormat: "Y-m-d",
+                                                    defaultDate: "today"
+                                                }}
+                                                value={dateEnd}
+                                                onChange={([dateEnd]) => {
+                                                    setDateEnd((new Date(dateEnd - dateEnd.getTimezoneOffset() * 60000)).toISOString());
+                                                }}
+                                            />
+                                        </div>
+                                    </Col>
+                                    <Col lg={1}>
+                                        <Button type="button" className="rounded-pill" placement="top" id="tooltipTopPencarian" onClick={handleClickCari}>
+                                            CARI
+                                        </Button>
+                                        <UncontrolledTooltip placement="top" target="tooltipTopPencarian" > Pencarian </UncontrolledTooltip>
+                                    </Col>
+                                </Row>
+                                <DataTable
+                                    fixedHeader
+                                    fixedHeaderScrollHeight="700px"
+                                    columns={columns}
+                                    pagination
+                                    data={dataTagihan || []}
+                                    progressPending={false}
+                                    customStyles={tableCustomStyles}
                                 />
-                            </Col>
-                            
-                            <Col lg={2}>
-                                <div className="d-flex justify-content-sm-end">
-                                    <div className="search-box ms-2">
-                                        <input type="text" className="form-control search"
-                                            placeholder="Search..." onChange={event => setSearch(event.target.value)}
-                                            onKeyDown={handleFilter} />
-                                        <i className="ri-search-line search-icon"></i>
-                                    </div>
-                                </div>
-                            </Col> */}
-                            
-                            <Col lg={1}>
-                                <Button type="button" className="rounded-pill" placement="top" id="tooltipTopPencarian" onClick={handleClickCari}>
-                                    CARI
-                                </Button>
-                                <UncontrolledTooltip placement="top" target="tooltipTopPencarian" > Pencarian </UncontrolledTooltip>
-                            </Col>
-                        </Row>
-                        <DataTable
-                            fixedHeader
-                            fixedHeaderScrollHeight="400px"
-                            columns={columns}
-                            pagination
-                            data={dataTagihan || []}
-                            progressPending={false}
-                            customStyles={tableCustomStyles}
-                        />
+                            </CardBody>
+                        </Card>
                     </Col>
                 </Row>
             </Container>

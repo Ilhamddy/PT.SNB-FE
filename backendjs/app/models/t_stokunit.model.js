@@ -1,8 +1,8 @@
-// eslint-disable-next-line max-lines-per-function
 /**
  * @param {import("sequelize").Sequelize} sequelize
  * @param {import(".").SequelizeInstance} Sequelize
  */
+// eslint-disable-next-line max-lines-per-function
 export default (sequelize, Sequelize) => {
     const t_stokunit = sequelize.define("t_stokunit", {
         norec: {
