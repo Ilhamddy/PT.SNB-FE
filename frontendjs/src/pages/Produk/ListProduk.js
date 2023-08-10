@@ -108,7 +108,7 @@ const ListProduk = () => {
             name: <span className='font-weight-bold fs-13'>Nama Produk</span>,
             selector: row => row.namaproduk,
             sortable: true,
-            width: "100px"
+            width: "130px"
         },
         {
             name: <span className='font-weight-bold fs-13'>Satuan Jual</span>,
@@ -120,7 +120,7 @@ const ListProduk = () => {
             name: <span className='font-weight-bold fs-13'>Variabel BPJS</span>,
             sortable: true,
             selector: row => row.variabelbpjs,
-            width: "100px"
+            width: "130px"
         },
         {
             name: <span className='font-weight-bold fs-13'>Detail Jenis</span>,
