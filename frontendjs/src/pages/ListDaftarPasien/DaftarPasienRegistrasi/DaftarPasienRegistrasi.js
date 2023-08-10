@@ -21,6 +21,7 @@ import { daftarPasienResetForm,daftarPasienRegistrasiGet, widgetdaftarPasienRegi
 import { comboRegistrasiGet } from '../../../store/master/action';
 import CustomSelect from '../../Select/Select';
 import "./DaftarPasienRegistrasi.scss"
+import LoadingTable from '../../../Components/LoadingTable/LoadingTable';
 const DaftarPasienRegistrasi = () => {
     document.title = "Daftar Pasien Rawat Jalan";
     const dispatch = useDispatch();
@@ -290,6 +291,7 @@ const DaftarPasienRegistrasi = () => {
                                         <DataTable
                                             fixedHeader
                                             fixedHeaderScrollHeight="700px"
+                                            progressComponent={<LoadingTable />}
                                             columns={columns}
                                             pagination
                                             data={data}

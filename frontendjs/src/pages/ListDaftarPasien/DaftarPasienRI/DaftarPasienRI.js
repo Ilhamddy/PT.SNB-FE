@@ -25,6 +25,7 @@ import StatusPulangModal from '../../../Components/Common/StatusPulangModal';
 import StatusPulangRIModal from '../../../Components/Common/StatusPulangRIModal';
 import DepositModal from '../../../Components/Common/DepositModal/DepositModal';
 import "./DaftarPasienRI.scss"
+import LoadingTable from '../../../Components/LoadingTable/LoadingTable';
 
 const DaftarPasienRI = () => {
     document.title = "Daftar Pasien Rawat Inap";
@@ -323,6 +324,7 @@ const DaftarPasienRI = () => {
                                             data={data}
                                             progressPending={loading}
                                             customStyles={tableCustomStyles}
+                                            progressComponent={<LoadingTable />}
                                             expandableRows
                                             expandableRowsComponent={ExpandableDeposit}
                                         />
