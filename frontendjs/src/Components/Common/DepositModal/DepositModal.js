@@ -226,7 +226,7 @@ const DepositModal = ({toggle, norecdp}) => {
                                     }
                                     <Label style={{ color: "black" }} 
                                         htmlFor={`keterangan${index}`}
-                                        className="form-label">
+                                        className="form-label mt-2">
                                         Nominal bayar
                                     </Label>
                                     <div>
@@ -263,7 +263,7 @@ const DepositModal = ({toggle, norecdp}) => {
                                                     onChange={(e) => {
                                                         changePayment("rekeningrs", index, e.value);
                                                     }}
-                                                    className={`input ${validation.errors.payment?.[index]?.rekeningrs ? "is-invalid" : ""}`}
+                                                    className={`input mt-2 ${validation.errors.payment?.[index]?.rekeningrs ? "is-invalid" : ""}`}
                                                 />
                                                 {validation.touched.payment?.[index]?.rekeningrs && validation.errors.payment?.[index]?.rekeningrs ? (
                                                     <FormFeedback type="invalid"><div>{validation.errors.payment?.[index]?.rekeningrs}</div></FormFeedback>
