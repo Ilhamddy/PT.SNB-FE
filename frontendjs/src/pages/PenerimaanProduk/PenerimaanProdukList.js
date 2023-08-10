@@ -19,7 +19,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { penerimaanListQueryGet } from "../../store/actions";
 import CountUp from "react-countup";
-import { pesananBatal, pesananDiterimaImg, pesananSudahImg } from "./imagesementara";
+import { 
+    pesananBatal, 
+    pesananDiterimaImg, 
+    pesananSudahImg 
+} from "./imagesementara";
 
 
 
