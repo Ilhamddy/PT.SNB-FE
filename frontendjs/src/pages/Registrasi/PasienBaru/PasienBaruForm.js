@@ -204,6 +204,7 @@ const PasienBaru = () => {
         setFF('rtdomisili', validation.values.rt)
         setFF('rwdomisili', validation.values.rw)
         setFF('desaDomisili', validation.values.desa)
+        setFF('kecamatanDomisili', validation.values.desa)
         setFF('kotaDomisili', validation.values.kota)
         setFF('provinsiDomisili', validation.values.provinsi)
         setFF('posDomisili', validation.values.pos)
