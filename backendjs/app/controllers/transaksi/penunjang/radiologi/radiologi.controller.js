@@ -398,7 +398,7 @@ async function saveUserVerifikasi(req, res) {
         });
     }
     try {
-        const resultlist = await queryPromise2(queries.qResult, [req.body.norec]);
+        const resultlist = await pool.query(queries.qResult, [req.body.norec]);
         // console.log(resultlist.rows[0].norec)
         let tempres = resultlist.rows[0].norectd
 
@@ -476,6 +476,7 @@ async function saveUserVerifikasi(req, res) {
 
     } catch (error) {
         transaction && await transaction.rollback();
+        console.error(error)
         res.status(201).send({
             status: "false",
             success: false,
