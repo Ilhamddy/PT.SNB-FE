@@ -67,12 +67,11 @@ const RegistrasiList = () => {
             defaultnotify('Pasien Belum Dipilih')
             return
         }
-            
         
         if(e==='registrasi'){
             history(`/registrasi/pasien-ruangan/${idcmfk}`);
         }else if(e==='edit'){
-            history(`/registrasi/pasien/${idcmfk}`);
+            history(`/registrasi/pasien-baru/${idcmfk}`);
         }
          
     };
