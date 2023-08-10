@@ -16,14 +16,18 @@ import { comboAsuransiGet, comboRegistrasiGet } from "../../store/master/action"
 import CustomSelect from "../Select/Select";
 import { useNavigate } from "react-router-dom";
 import { buktiBayarCancel, daftarTagihanPasienGet, verifNotaCancel } from "../../store/payment/action";
+import LoadingTable from "../../Components/LoadingTable/LoadingTable";
 
 const dateAwalStart = (new Date(new Date() - 1000 * 60 * 60 * 24 * 3)).toISOString();
 const dateAwalEnd = (new Date()).toISOString()
 
 
 const DaftarTagihanPasien = () => {
-    const {dataTagihan, comboboxReg} = useSelector((state) => ({
-        dataTagihan: state.Payment.daftarTagihanPasienGet.data || []
+    const {
+        dataTagihan, 
+        comboboxReg
+    } = useSelector((state) => ({
+        dataTagihan: state.Payment.daftarTagihanPasienGet || []
     }))
 
     const [dateStart, setDateStart] = useState(dateAwalStart);
@@ -266,9 +270,10 @@ const DaftarTagihanPasien = () => {
                                     fixedHeaderScrollHeight="700px"
                                     columns={columns}
                                     pagination
-                                    data={dataTagihan || []}
-                                    progressPending={false}
+                                    data={dataTagihan?.data || []}
+                                    progressPending={dataTagihan?.loading || false}
                                     customStyles={tableCustomStyles}
+                                    progressComponent={<LoadingTable />}
                                 />
                             </CardBody>
                         </Card>

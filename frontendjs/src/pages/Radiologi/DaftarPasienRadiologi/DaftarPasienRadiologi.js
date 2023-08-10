@@ -22,6 +22,7 @@ import userDummy from "../../../assets/images/users/user-dummy-img.jpg";
 import {
     daftarPasienRadiologi, radiologiResetForm
 } from '../../../store/actions';
+import LoadingTable from '../../../Components/LoadingTable/LoadingTable';
 const DaftarPasienRadiologi = () => {
     document.title = "Daftar Order Radiologi";
     const dispatch = useDispatch();
@@ -238,6 +239,7 @@ const DaftarPasienRadiologi = () => {
                                                 data={dataPasien}
                                                 progressPending={loadingPasien}
                                                 customStyles={tableCustomStyles}
+                                                progressComponent={<LoadingTable />}
                                             />
                                         </div>
                                     </Row>
