@@ -291,7 +291,7 @@ const tableCustomStyles = {
     headRow: {
         style: {
             color: '#ffffff',
-            backgroundColor: '#B57602'
+            backgroundColor: '#e67e22',
         },
     },
     rows: {
@@ -299,8 +299,6 @@ const tableCustomStyles = {
             color: "black",
             backgroundColor: "#f1f2f6"
         },
-
     }
 }
-
 export default withRouter(Satuan)

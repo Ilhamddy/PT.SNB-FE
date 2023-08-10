@@ -53,7 +53,7 @@ const Tagihan = ({ show }) => {
         headRow: {
             style: {
                 color: '#ffffff',
-                backgroundColor: '#B57602',
+                backgroundColor: '#e67e22',
             },
         },
         rows: {
