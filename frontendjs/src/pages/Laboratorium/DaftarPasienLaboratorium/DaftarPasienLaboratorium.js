@@ -25,7 +25,12 @@ import {
 const DaftarPasienLaboratorium = () => {
     document.title = "Daftar Order Laboratorium";
     const dispatch = useDispatch();
-    const { editData, newData, loading, error, success,
+    const { 
+        editData, 
+        newData, 
+        loading, 
+        error, 
+        tsuccess,
         dataPasien, loadingPasien, successPasien } = useSelector((state) => ({
             // newData: state.Radiologi.updateTglRencanaRadiologi.newData,
             // success: state.Radiologi.updateTglRencanaRadiologi.success,
@@ -170,7 +175,7 @@ const DaftarPasienLaboratorium = () => {
                                 <CardBody>
                                     <Row>
                                         <Col sm={4}>
-                                            <div className="input-group">
+                                            <div className="input-group mb-2">
                                                 <Flatpickr
                                                     className="form-control border-0 fs-5 dash-filter-picker shadow"
                                                     options={{
@@ -221,15 +226,6 @@ const DaftarPasienLaboratorium = () => {
                                             <UncontrolledTooltip placement="top" target="tooltipTopPencarian" > Pencarian </UncontrolledTooltip>
                                         </Col>
                                         <div id="table-gridjs">
-                                            {/* <Col className="col-sm">
-                                            <div className="d-flex justify-content-sm-end">
-                                                <div className="search-box ms-2">
-                                                    <input type="text" className="form-control search"
-                                                        placeholder="Search..." />
-                                                    <i className="ri-search-line search-icon"></i>
-                                                </div>
-                                            </div>
-                                        </Col> */}
                                             <DataTable
                                                 fixedHeader
                                                 fixedHeaderScrollHeight="400px"
