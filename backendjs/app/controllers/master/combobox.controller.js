@@ -42,47 +42,47 @@ const selectComboBox = (req, res) => {
     try {
         pool.query(queries.getAll, (error, result) => {
             if (error) {
-                throw error;
+                // throw error;
             } else {
                 pool.query(queriesJk.getAll, (error, resultJk) => {
                     if (error) {
-                        throw error;
+                        // throw error;
                     } else {
                         pool.query(queriesTitle.getAll, (error, resultTitle) => {
                             if (error) {
-                                throw error;
+                                // throw error;
                             } else {
                                 pool.query(queriesGolonganDarah.getAll, (error, resultGD) => {
                                     if (error) {
-                                        throw error;
+                                        // throw error;
                                     } else {
                                         pool.query(queriesKebangsaan.getAll, (error, resultKeb) => {
                                             if (error) {
-                                                throw error;
+                                                // throw error;
                                             } else {
                                                 pool.query(queriesPerkawinan.getAll, (error, resultPerkawinan) => {
                                                     if (error) {
-                                                        throw error;
+                                                        // throw error;
                                                     } else {
                                                         pool.query(queriespendidikan.getAll, (error, resultPendidikan) => {
                                                             if (error) {
-                                                                throw error;
+                                                                // throw error;
                                                             } else {
                                                                 pool.query(queriesPekerjaan.getAll, (error, resultPekerjaan) => {
                                                                     if (error) {
-                                                                        throw error;
+                                                                        // throw error;
                                                                     } else {
                                                                         pool.query(queriesEtnis.getAll, (error, resultEtnis) => {
                                                                             if (error) {
-                                                                                throw error;
+                                                                                // throw error;
                                                                             } else {
                                                                                 pool.query(queriesBahasa.getAll, (error, resultBahasa) => {
                                                                                     if (error) {
-                                                                                        throw error;
+                                                                                        // throw error;
                                                                                     } else {
                                                                                         pool.query(queriesNegara.getAll, (error, resultNegara) => {
                                                                                             if (error) {
-                                                                                                throw error;
+                                                                                                // throw error;
                                                                                             } else {
                                                                                                 let tempres = {
                                                                                                     agama: result.rows, jeniskelamin: resultJk.rows, title: resultTitle.rows,
