@@ -219,8 +219,6 @@ async function getListHistoryOrder(req, res) {
 }
 
 async function getWidgetListDaftarOrderLaboratorium(req, res) {
-
-
     try {
         let tglregistrasi = ""
         if (req.query.start !== undefined) {
@@ -237,18 +235,18 @@ async function getWidgetListDaftarOrderLaboratorium(req, res) {
             tglregistrasi = ` and to2.tglinput between '${todaystart}'
         and '${todayend}' `;
         }
-        const resultlistantreanpemeriksaan = await queryPromise2(`select td.noregistrasi,to2.nomororder,to2.norec,
-        mp.namalengkap, 
-        mu.namaunit,
-        to2.keterangan,
-        to_char(to2.tglinput,'yyyy-MM-dd HH:mm') as tglinput,
-        ms.statusverif,to2.objectstatusveriffk  from t_daftarpasien td 
-        join t_antreanpemeriksaan ta on td.norec =ta.objectdaftarpasienfk
-        join t_orderpelayanan to2 on to2.objectantreanpemeriksaanfk=ta.norec
-        join m_pegawai mp on mp.id=to2.objectpegawaifk 
-        join m_unit mu ON mu.id=ta.objectunitfk 
-        join m_statusverif ms on ms.id=to2.objectstatusveriffk
-        where to2.objectjenisorderfk=1 ${tglregistrasi}
+            const resultlistantreanpemeriksaan = await queryPromise2(`select td.noregistrasi,to2.nomororder,to2.norec,
+            mp.namalengkap, 
+            mu.namaunit,
+            to2.keterangan,
+            to_char(to2.tglinput,'yyyy-MM-dd HH:mm') as tglinput,
+            ms.statusverif,to2.objectstatusveriffk  from t_daftarpasien td 
+            join t_antreanpemeriksaan ta on td.norec =ta.objectdaftarpasienfk
+            join t_orderpelayanan to2 on to2.objectantreanpemeriksaanfk=ta.norec
+            join m_pegawai mp on mp.id=to2.objectpegawaifk 
+            join m_unit mu ON mu.id=ta.objectunitfk 
+            join m_statusverif ms on ms.id=to2.objectstatusveriffk
+            where to2.objectjenisorderfk=1 ${tglregistrasi}
         `);
 
         let totalBelum = 0
