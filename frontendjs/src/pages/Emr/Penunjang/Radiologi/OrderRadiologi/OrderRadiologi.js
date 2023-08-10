@@ -22,6 +22,7 @@ import {
     comboHistoryUnitGet, comboTindakanRadiologiGet, radiologiResetForm,
     saveOrderPelayananRadiologi,daftarOrderRadiologiGet
 } from "../../../../../store/actions";
+import LoadingTable from '../../../../../Components/LoadingTable/LoadingTable';
 
 const OrderRadiologi = () => {
     const { norecdp, norecap } = useParams();
@@ -418,6 +419,7 @@ const OrderRadiologi = () => {
                                             data={searches}
                                             progressPending={loading}
                                             customStyles={tableCustomStyles}
+                                            progressComponent={<LoadingTable />}
                                         />
                                     </div>
                                 </CardBody>
@@ -467,6 +469,7 @@ const OrderRadiologi = () => {
                                             data={dataOrder}
                                             progressPending={loadingOrder}
                                             customStyles={tableCustomStyles}
+                                            progressComponent={<LoadingTable />}
                                         />
                                     </div>
                                 </CardBody>
@@ -486,6 +489,7 @@ const OrderRadiologi = () => {
                                             // data={searches}
                                             progressPending={loading}
                                             customStyles={tableCustomStyles}
+                                            progressComponent={<LoadingTable />}
                                         />
                                     </div>
                                 </CardBody>

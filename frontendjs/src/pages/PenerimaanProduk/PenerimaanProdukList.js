@@ -24,6 +24,7 @@ import {
     pesananDiterimaImg, 
     pesananSudahImg 
 } from "./imagesementara";
+import LoadingTable from "../../Components/LoadingTable/LoadingTable";
 
 
 
@@ -33,9 +34,9 @@ const PenerimaanProdukList = () => {
     const dispatch = useDispatch();
 
     const {
-        dataPenerimaan
+        penerimaan
     } = useSelector((state) => ({
-        dataPenerimaan: state.Gudang.penerimaanListQueryGet.data?.listpenerimaan || [],
+        penerimaan: state.Gudang.penerimaanListQueryGet || [],
     }))
 
     useEffect(() => {
@@ -141,7 +142,7 @@ const PenerimaanProdukList = () => {
                         />
                         <Widget
                             title={"Total pemesanan yang sudah diterima"}
-                            end={dataPenerimaan.length}
+                            end={(penerimaan?.data?.listpenerimaan || []).length}
                             image={pesananSudahImg}
                         />
                         <Widget
@@ -166,11 +167,12 @@ const PenerimaanProdukList = () => {
                                 fixedHeaderScrollHeight="700px"
                                 columns={columnsPenerimaan}
                                 pagination
-                                data={dataPenerimaan}
-                                progressPending={false}
+                                data={penerimaan?.data?.listpenerimaan || []}
+                                progressPending={penerimaan?.loading || false}
                                 customStyles={tableCustomStyles}
                                 expandableRows
                                 expandableRowsComponent={ExpandablePenerimaan}
+                                progressComponent={<LoadingTable />}
                             />
                         </div>
                     </Row>

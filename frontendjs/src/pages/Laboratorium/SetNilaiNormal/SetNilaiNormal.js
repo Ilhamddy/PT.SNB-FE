@@ -23,6 +23,7 @@ import {
     listSetNilaiNormalGet, listSetNilaiNormalDetailGet, laboratoriumResetForm,
     saveSetMasterNilaiNormalLab
 } from '../../../store/actions';
+import LoadingTable from '../../../Components/LoadingTable/LoadingTable';
 
 const SetNilaiNormal = () => {
     const { idproduk, layanan, kodeexternal, detailjenis } = useParams();
@@ -217,6 +218,7 @@ const SetNilaiNormal = () => {
                                                     data={data}
                                                     progressPending={loading}
                                                     customStyles={tableCustomStyles}
+                                                    progressComponent={<LoadingTable />}
                                                 />
                                             </div>
                                         </Col>

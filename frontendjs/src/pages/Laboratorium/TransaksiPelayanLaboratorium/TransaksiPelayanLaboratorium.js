@@ -16,6 +16,7 @@ import {
 } from '../../../store/actions';
 import classnames from "classnames";
 import { useFormik } from 'formik';
+import LoadingTable from '../../../Components/LoadingTable/LoadingTable';
 const TransaksiPelayanLaboratorium = () => {
     const { norecdp, norecap } = useParams();
     const dispatch = useDispatch();
@@ -227,6 +228,7 @@ const TransaksiPelayanLaboratorium = () => {
                                                                     {...rest}
                                                                 />
                                                             }
+                                                            progressComponent={<LoadingTable />}
                                                         />
                                                     </div>
                                                 </CardBody>

@@ -15,6 +15,7 @@ import {
     listOrderLaboratoriumByNorecGet,updateTglRencanaLaboratorium,saveVerifikasiLaboratorium,
     deleteDetailOrderPelayanan,laboratoriumResetForm
 } from "../../../store/actions";
+import LoadingTable from "../../../Components/LoadingTable/LoadingTable";
 
 const DetailOrderModal = ({ show, onSimpanClick, onCloseClick,onTolakClick, tempNorec }) => {
     const dispatch = useDispatch();
@@ -292,6 +293,7 @@ const DetailOrderModal = ({ show, onSimpanClick, onCloseClick,onTolakClick, temp
                                                         data={dataOrder}
                                                         progressPending={loadingOrder}
                                                         customStyles={tableCustomStyles}
+                                                        progressComponent={<LoadingTable />}
                                                     />
                                                 </div>
                                             </CardBody>

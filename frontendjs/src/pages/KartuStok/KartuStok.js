@@ -19,6 +19,7 @@ import { useEffect } from "react";
 import { kartuStokQueryGet, penerimaanListQueryGet } from "../../store/actions";
 import CountUp from "react-countup";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
+import LoadingTable from "../../Components/LoadingTable/LoadingTable";
 
 
 
@@ -113,6 +114,7 @@ const KartuStok = () => {
                                 data={kartuStok?.data?.kartustok || []}
                                 progressPending={kartuStok?.loading}
                                 customStyles={tableCustomStyles}
+                                progressComponent={<LoadingTable />}
                             />
                         </div>
                     </Row>

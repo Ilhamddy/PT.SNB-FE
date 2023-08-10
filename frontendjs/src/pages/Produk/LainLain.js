@@ -26,6 +26,7 @@ import {detailProdukSaveOrUpdate, lainLainGet, satuanSaveOrUpdate, sediaanSaveOr
 import DataTable from "react-data-table-component";
 import { KonversiProduk } from "./KonversiProduk";
 import { Link } from "react-router-dom";
+import LoadingTable from "../../Components/LoadingTable/LoadingTable";
 
 
 const LainLain = ({tabId}) => {
@@ -34,13 +35,19 @@ const LainLain = ({tabId}) => {
     const {
         comboSettingProduk,
         detailjenisproduk,
+        detailjenisLoading,
         sediaan,
-        satuan
+        sediaanLoading,
+        satuan,
+        satuanLoading
     } = useSelector(state => ({
         comboSettingProduk: state.Master.comboSettingProdukGet.data,
         detailjenisproduk: state.Gudang.lainLainGet.data?.detailjenisproduk || [],
+        detailjenisLoading: state.Gudang.lainLainGet.loading || false,
         sediaan: state.Gudang.lainLainGet.data?.sediaan || [],
+        sediaanLoading: state.Gudang.lainLainGet.loading || false,
         satuan: state.Gudang.lainLainGet.data?.satuan || [],
+        satuanLoading: state.Gudang.lainLainGet.loading || false,
     }))
     const refJenisProduk = useRef(null);
     const refJenisSatuan = useRef(null);
@@ -301,8 +308,10 @@ const LainLain = ({tabId}) => {
                     paginationPerPage={5}
                     paginationRowsPerPageOptions={[5]}
                     data={detailjenisproduk}
-                    progressPending={false}
+                    progressPending={detailjenisLoading}
                     customStyles={tableCustomStyles}
+                    progressComponent={<LoadingTable />}
+
                 />
             </Col>
             <Col lg={6}>
@@ -436,8 +445,10 @@ const LainLain = ({tabId}) => {
                     paginationPerPage={5}
                     paginationRowsPerPageOptions={[5]}
                     data={sediaan}
-                    progressPending={false}
+                    progressPending={sediaanLoading}
                     customStyles={tableCustomStyles}
+                    progressComponent={<LoadingTable />}
+
                 />
             </Col>
             <Col lg={6}>
@@ -540,8 +551,10 @@ const LainLain = ({tabId}) => {
                     paginationPerPage={5}
                     paginationRowsPerPageOptions={[5]}
                     data={satuan}
-                    progressPending={false}
+                    progressPending={satuanLoading}
                     customStyles={tableCustomStyles}
+                    progressComponent={<LoadingTable />}
+
                 />
             </Col>
             <Col lg={6}>

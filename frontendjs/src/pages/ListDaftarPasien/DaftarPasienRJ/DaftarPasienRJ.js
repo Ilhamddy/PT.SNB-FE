@@ -31,6 +31,7 @@ import { comboRegistrasiGet } from '../../../store/master/action';
 import StatusPulangModal from '../../../Components/Common/StatusPulangModal';
 import CustomSelect from '../../Select/Select';
 import "./DaftarPasienRJ.scss"
+import LoadingTable from '../../../Components/LoadingTable/LoadingTable';
 
 const DaftarPasienRJ = () => {
     document.title = "Daftar Pasien Rawat Jalan";
@@ -516,6 +517,7 @@ const DaftarPasienRJ = () => {
                                             pagination
                                             data={data}
                                             progressPending={loading}
+                                            progressComponent={<LoadingTable />}
                                             customStyles={tableCustomStyles}
                                         />
                                     </div>

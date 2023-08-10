@@ -22,6 +22,7 @@ import userDummy from "../../../assets/images/users/user-dummy-img.jpg";
 import {
     daftarPasienLaboratorium, laboratoriumResetForm
 } from '../../../store/actions';
+import LoadingTable from '../../../Components/LoadingTable/LoadingTable';
 const DaftarPasienLaboratorium = () => {
     document.title = "Daftar Order Laboratorium";
     const dispatch = useDispatch();
@@ -234,6 +235,7 @@ const DaftarPasienLaboratorium = () => {
                                                 data={dataPasien}
                                                 progressPending={loadingPasien}
                                                 customStyles={tableCustomStyles}
+                                                progressComponent={<LoadingTable />}
                                             />
                                         </div>
                                     </Row>

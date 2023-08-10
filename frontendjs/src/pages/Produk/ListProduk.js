@@ -21,6 +21,7 @@ import CustomSelect from "../Select/Select";
 import { useDispatch, useSelector } from "react-redux";
 import DataTable from "react-data-table-component";
 import { produkMasterGet } from "../../store/actions";
+import LoadingTable from "../../Components/LoadingTable/LoadingTable";
 
 
 
@@ -184,6 +185,8 @@ const ListProduk = () => {
                                 data={produkMaster?.data?.produk || []}
                                 progressPending={produkMaster.loading || false}
                                 customStyles={tableCustomStyles}
+                                progressComponent={<LoadingTable />}
+
                             />
                         </Row>
                     </Card>

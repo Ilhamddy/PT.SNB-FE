@@ -24,6 +24,7 @@ import {
     daftarOrderLaboratoriumGet
 } from "../../../../../store/actions";
 import ListGroupCollapse from '../../../../../Components/Common/ListGroupCollapse';
+import LoadingTable from '../../../../../Components/LoadingTable/LoadingTable';
 
 const OrderLaboratorium = () => {
     const { norecdp, norecap } = useParams();
@@ -253,6 +254,7 @@ const OrderLaboratorium = () => {
                                             data={temp}
                                             progressPending={loading}
                                             customStyles={tableCustomStyles}
+                                            progressComponent={<LoadingTable />}
                                         />
                                     </div>
                                 </CardBody>
@@ -305,6 +307,7 @@ const OrderLaboratorium = () => {
                                             data={dataOrder}
                                             progressPending={loadingOrder}
                                             customStyles={tableCustomStyles}
+                                            progressComponent={<LoadingTable />}
                                         />
                                     </div>
                                 </CardBody>

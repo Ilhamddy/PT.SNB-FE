@@ -22,6 +22,7 @@ import DataTable from 'react-data-table-component';
 import {
     comboLaboratoriumGet, saveNilaiNormalLaboratorium, satuanSaveOrUpdate, lainLainGet
 } from '../../../store/actions';
+import LoadingTable from '../../../Components/LoadingTable/LoadingTable';
 
 const Satuan = () => {
     document.title = "Satuan";
@@ -150,6 +151,7 @@ const Satuan = () => {
                                             data={satuan}
                                             progressPending={false}
                                             customStyles={tableCustomStyles}
+                                            progressComponent={<LoadingTable />}
                                         />
                                     </Col>
                                     <Col lg={6}>

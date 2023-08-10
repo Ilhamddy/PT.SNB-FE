@@ -22,6 +22,7 @@ import DataTable from 'react-data-table-component';
 import {
     masterPelayananLaboratoriumGet
 } from '../../../store/actions';
+import LoadingTable from '../../../Components/LoadingTable/LoadingTable';
 
 const MasterDataLayanan = () => {
     document.title = "Master Data Layanan Laboratorium";
@@ -202,6 +203,7 @@ const MasterDataLayanan = () => {
                                             data={data}
                                             progressPending={loading}
                                             customStyles={tableCustomStyles}
+                                            progressComponent={<LoadingTable />}
                                         />
                                     </div>
                                 </CardBody>

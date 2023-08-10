@@ -18,6 +18,7 @@ import * as Yup from "yup";
 import DataTable from 'react-data-table-component';
 
 import { emrSave, emrResetForm, emrGet} from "../../../store/actions";
+import LoadingTable from '../../../Components/LoadingTable/LoadingTable';
 
 
 const Cppt = () => {
@@ -311,6 +312,7 @@ const Cppt = () => {
                                             data={dataTtv}
                                             progressPending={loadingTtv}
                                             customStyles={tableCustomStyles}
+                                            progressComponent={<LoadingTable />}
                                         />
                                     </div>
                                 </CardBody>
