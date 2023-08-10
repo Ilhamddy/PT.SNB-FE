@@ -162,7 +162,7 @@ const RegistrasiList = () => {
                                     <h5 className="card-title mb-5">Profile Pasien</h5>
                                     <div className="text-center">
                                         <img src={userDummy}
-                                            className="rounded-circle avatar-xl img-thumbnail user-profile-image"
+                                            className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image"
                                             alt="user-profile" />
                                         <h5 className="fs-17 mb-1">{namaPasien}</h5>
                                         <p className="text-muted mb-0">{noIdentitas}</p>
@@ -179,18 +179,14 @@ const RegistrasiList = () => {
                                             </NavLink>
                                         </NavItem>
                                         <NavItem>
-                                            {/* <NavItem> */}
-                                                <NavLink style={{ cursor: "pointer" }} className={classnames({ active: pillsTab === "2", })} onClick={() => { pillsToggle("2"); }} >
-                                                    Riwayat
-                                                </NavLink>
-                                            {/* </NavItem> */}
+                                            <NavLink style={{ cursor: "pointer" }} className={classnames({ active: pillsTab === "2", })} onClick={() => { pillsToggle("2"); }} >
+                                                Riwayat
+                                            </NavLink>
                                         </NavItem>
                                         <NavItem>
-                                            {/* <NavItem> */}
-                                                <NavLink style={{ cursor: "pointer" }} className={classnames({ active: pillsTab === "3", })} onClick={() => { pillsToggle("3"); }} >
-                                                    Action
-                                                </NavLink>
-                                            {/* </NavItem> */}
+                                            <NavLink style={{ cursor: "pointer" }} className={classnames({ active: pillsTab === "3", })} onClick={() => { pillsToggle("3"); }} >
+                                                Action
+                                            </NavLink>
                                         </NavItem>
                                     </Nav>
 
@@ -290,7 +286,7 @@ const RegistrasiList = () => {
 
                                 <CardBody>
                                     <div id="table-gridjs">
-                                        <Col className="col-sm">
+                                        <Col className="col-sm mb-3">
                                             <div className="d-flex justify-content-sm-end">
                                                 <div className="search-box ms-2">
                                                     <input type="text" className="form-control search"
