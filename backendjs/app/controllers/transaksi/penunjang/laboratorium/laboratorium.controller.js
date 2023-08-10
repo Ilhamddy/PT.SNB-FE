@@ -224,7 +224,6 @@ async function getWidgetListDaftarOrderLaboratorium(req, res) {
     try {
         let tglregistrasi = ""
         if (req.query.start !== undefined) {
-
             tglregistrasi = ` and to2.tglinput between '${req.query.start}'
          and '${req.query.end} 23:59' `;
         } else {
@@ -239,7 +238,10 @@ async function getWidgetListDaftarOrderLaboratorium(req, res) {
         and '${todayend}' `;
         }
         const resultlistantreanpemeriksaan = await queryPromise2(`select td.noregistrasi,to2.nomororder,to2.norec,
-        mp.namalengkap, mu.namaunit,to2.keterangan,to_char(to2.tglinput,'yyyy-MM-dd HH:mm') as tglinput,
+        mp.namalengkap, 
+        mu.namaunit,
+        to2.keterangan,
+        to_char(to2.tglinput,'yyyy-MM-dd HH:mm') as tglinput,
         ms.statusverif,to2.objectstatusveriffk  from t_daftarpasien td 
         join t_antreanpemeriksaan ta on td.norec =ta.objectdaftarpasienfk
         join t_orderpelayanan to2 on to2.objectantreanpemeriksaanfk=ta.norec

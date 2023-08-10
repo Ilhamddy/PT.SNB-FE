@@ -80,7 +80,8 @@ async function getListDaftarPasien(req, res) {
                 nama_tarif = resultlistKodeTarif.rows[x].s_value
             }
         }
-        const resultlist = await queryPromise2(`select
+        const resultlist = await pool.query(`
+        select
             ta.norec as norecta,
             td.norec,
             td.noregistrasi,
@@ -96,7 +97,8 @@ async function getListDaftarPasien(req, res) {
                 'YYYY-MM-DD') as tglpulang2,
             to_char(td.tglpulang,
                     'YYYY-MM-DD HH:mm') as tglpulang3,
-            mp.nocm,mp.namapasien,
+            mp.nocm,
+            mp.namapasien,
             case when mu.objectinstalasifk=2 then 'RI' else 'RJ' end as tipe,
             case when td.objectpenjaminfk=1 then 'JKN' else mr.namarekanan  end as jaminan1,
             case when td.objectpenjamin2fk=1 then 'JKN' when td.objectpenjamin2fk is null then '' else 'LAIN-LAIN' end as jaminan2,
@@ -122,10 +124,10 @@ async function getListDaftarPasien(req, res) {
         join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk=td.norec
         and td.objectunitlastfk=ta.objectunitfk 
         join m_kelas mk on mk.id=tk.objectkelasfk
-        where mp.id ='${req.query.nocm}' and mp.statusenabled=true
+        where mp.id = $1 and mp.statusenabled=true
         order by td.tglregistrasi desc
         limit 20
-        `);
+        `, [req.query.nocm]);
 
         for (var i = 0; i < resultlist.rows.length; ++i) {
             if (resultlist.rows[i].tglregistrasi2 === resultlist.rows[i].tglpulang2) {
@@ -136,19 +138,19 @@ async function getListDaftarPasien(req, res) {
                     // resultlist.rows[i].los=resultlist.rows[i].los
                 }
             }
-            const resultTtv = await queryPromise2(`SELECT dp.noregistrasi,
+            const resultTtv = await pool.query(`SELECT dp.noregistrasi,
             to_char(dp.tglregistrasi,'yyyy-MM-dd') as tglregistrasi,tt.norec, tt.objectemrfk, tt.tinggibadan,
             tt.beratbadan, tt.suhu,tt.e, tt.m, tt.v, tt.nadi, tt.alergi, tt.tekanandarah, tt.spo2, 
             tt.pernapasan,tt.keadaanumum, tt.objectpegawaifk, tt.isedit, tt.objectttvfk, tt.tglisi,
             mu.namaunit,mr.reportdisplay as namagcs
-                    FROM t_daftarpasien dp 
+                FROM t_daftarpasien dp 
             join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk=dp.norec
             join t_emrpasien te on te.objectantreanpemeriksaanfk=ta.norec 
             join t_ttv tt on tt.objectemrfk =te.norec
             join m_unit mu on mu.id=ta.objectunitfk
-            left join m_range mr on mr.id=tt.objectgcsfk where dp.norec='${resultlist.rows[i].norec}' order by tt.tglisi 
+            left join m_range mr on mr.id=tt.objectgcsfk where dp.norec=$1 order by tt.tglisi 
             desc limit 1
-            `);
+            `, [resultlist.rows[i].norec]);
             if (resultTtv.rows.length > 0) {
                 // console.log(resultTtv.rows[0].beratbadan)
                 resultlist.rows[i].bb = resultTtv.rows[0].beratbadan

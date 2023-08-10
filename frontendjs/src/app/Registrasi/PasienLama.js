@@ -57,15 +57,9 @@ const PasienLama = () => {
                                 </CardBody>
                             </Card>
                         </Col>
-
                     </Row>
-
-
                 </Container>
-
             </div>
-
-
         </React.Fragment>
     );
 }

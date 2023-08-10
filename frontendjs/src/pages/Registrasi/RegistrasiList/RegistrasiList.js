@@ -238,7 +238,6 @@ const RegistrasiList = () => {
                                                 </div>
                                             </div>
                                         </TabPane>
-
                                         <TabPane tabId="3" id="messages-1" >
                                             <div className="live-preview">
                                                 <div className="d-flex flex-wrap gap-2">
@@ -253,11 +252,7 @@ const RegistrasiList = () => {
                                                     <ToastContainer autoClose={2000} />
                                                 </div>
                                             </div>
-
-
-
                                         </TabPane>
-
                                         <TabPane tabId="4" id="settings-1">
                                             <div className="d-flex mt-2">
                                                 <div className="flex-shrink-0">
@@ -307,7 +302,7 @@ const RegistrasiList = () => {
                                         </Col>
                                         <DataTable
                                             fixedHeader
-                                            fixedHeaderScrollHeight="400px"
+                                            fixedHeaderScrollHeight="700px"
                                             columns={columns}
                                             pagination
                                             data={data}
