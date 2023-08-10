@@ -633,6 +633,7 @@ const Bayar = () => {
                                     <Row>
                                         <DataTable
                                             fixedHeader
+                                            fixedHeaderScrollHeight="700px"
                                             columns={columns}
                                             pagination
                                             data={listPelayanan || []}

@@ -366,7 +366,7 @@ const DaftarOrderLaboratorium = () => {
                                         </Col> */}
                                         <DataTable
                                             fixedHeader
-                                            fixedHeaderScrollHeight="400px"
+                                            fixedHeaderScrollHeight="700px"
                                             columns={columns}
                                             pagination
                                             data={data}

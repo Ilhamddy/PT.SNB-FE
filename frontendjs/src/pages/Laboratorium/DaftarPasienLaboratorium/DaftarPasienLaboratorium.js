@@ -228,7 +228,7 @@ const DaftarPasienLaboratorium = () => {
                                         <div id="table-gridjs">
                                             <DataTable
                                                 fixedHeader
-                                                fixedHeaderScrollHeight="400px"
+                                                fixedHeaderScrollHeight="700px"
                                                 columns={columns}
                                                 pagination
                                                 data={dataPasien}

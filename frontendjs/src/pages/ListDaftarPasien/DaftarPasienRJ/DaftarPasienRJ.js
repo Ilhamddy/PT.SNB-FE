@@ -445,7 +445,7 @@ const DaftarPasienRJ = () => {
                                                             <div className="input-group-text bg-secondary border-secondary text-white"><i className="ri-calendar-2-line"></i></div>
                                                         </div>
                                                     </Col>
-                                                    <Col lg={1}><h4>s/d</h4></Col>
+                                                    <Col lg={1}><h4 className='mt-2'>s/d</h4></Col>
                                                     <Col sm={4}>
                                                         <div className="input-group">
                                                             <Flatpickr

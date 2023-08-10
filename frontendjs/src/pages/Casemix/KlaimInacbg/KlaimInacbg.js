@@ -1389,7 +1389,7 @@ const KlaimInacbg = () => {
                                 <div id="table-gridjs">
                                     <DataTable
                                         fixedHeader
-                                        fixedHeaderScrollHeight="400px"
+                                        fixedHeaderScrollHeight="700px"
                                         columns={columns}
                                         pagination
                                         data={dataDaftarPasien}

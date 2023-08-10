@@ -163,7 +163,7 @@ const PenerimaanProdukList = () => {
                         <div id="table-gridjs">
                             <DataTable
                                 fixedHeader
-                                fixedHeaderScrollHeight="400px"
+                                fixedHeaderScrollHeight="700px"
                                 columns={columnsPenerimaan}
                                 pagination
                                 data={dataPenerimaan}
@@ -242,7 +242,7 @@ const ExpandablePenerimaan = ({ data }) => {
     return (
         <DataTable
             fixedHeader
-            fixedHeaderScrollHeight="400px"
+            fixedHeaderScrollHeight="700px"
             columns={columnsDetail}
             data={data.detailpenerimaan || []}
             progressPending={false}
