@@ -20,7 +20,8 @@ import {
     SAVE_MASTER_DKEL_UMUR_LABORATORIUM,
     LIST_SET_NILAI_NORMAL_LABORATORIUM_GET,
     LIST_SET_NILAI_NORMAL_DETAIL_GET,
-    SAVE_SET_MASTER_NILAI_NORMAL_LAB
+    SAVE_SET_MASTER_NILAI_NORMAL_LAB,
+    SAVE_SET_T_NILAI_NORMAL_LAB
 } from "./actionType";
 
 import {
@@ -42,7 +43,8 @@ import {
     saveMasterDKelUmurLaboratoriumSuccess, saveMasterDKelUmurLaboratoriumError,
     listSetNilaiNormalGetSuccess, listSetNilaiNormalGetError,
     listSetNilaiNormalDetailGetSuccess, listSetNilaiNormalDetailGetError,
-    saveSetMasterNilaiNormalLabSuccess, saveSetMasterNilaiNormalLabError
+    saveSetMasterNilaiNormalLabSuccess, saveSetMasterNilaiNormalLabError,
+    saveSetTNilaiNormalLabSuccess, saveSetTNilaiNormalLabError
 } from "./action";
 
 import { toast } from 'react-toastify';
@@ -377,6 +379,28 @@ export function* watchonsaveSetMasterNilaiNormalLab() {
     yield takeEvery(SAVE_SET_MASTER_NILAI_NORMAL_LAB, onsaveSetMasterNilaiNormalLab);
 }
 
+function* onsaveSetTNilaiNormalLab({ payload: { data, history } }) {
+    try {
+        let response = yield call(serviceLaboratorium.saveSetTNilaiNormalLab, data);
+
+
+        yield put(saveSetTNilaiNormalLabSuccess(response.data));
+        if (response.code === 200) {
+            toast.success(response.msg, { autoClose: 3000 });
+        } else {
+            toast.error(response.msg, { autoClose: 3000 });
+        }
+    } catch (error) {
+        console.log(error)
+        yield put(saveSetTNilaiNormalLabError(error));
+        toast.error(error, { autoClose: 3000 });
+    }
+}
+
+export function* watchonsaveSetTNilaiNormalLab() {
+    yield takeEvery(SAVE_SET_T_NILAI_NORMAL_LAB, onsaveSetTNilaiNormalLab);
+}
+
 function* laboratoriumSaga() {
     yield all([
         fork(watchonwidgetDetailJenisProdukGet),
@@ -397,7 +421,8 @@ function* laboratoriumSaga() {
         fork(watchonsaveMasterDKelUmurLaboratorium),
         fork(watchonlistSetNilaiNormalGet),
         fork(watchonlistSetNilaiNormalDetailGet),
-        fork(watchonsaveSetMasterNilaiNormalLab)
+        fork(watchonsaveSetMasterNilaiNormalLab),
+        fork(watchonsaveSetTNilaiNormalLab)
     ]);
 }
 

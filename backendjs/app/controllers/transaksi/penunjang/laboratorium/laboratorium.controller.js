@@ -1186,6 +1186,44 @@ async function saveSetMasterNilaiNormalLab(req, res) {
 
 }
 
+async function saveSetNilaiNormalt(req, res) {
+    let transaction = null;
+    try {
+        transaction = await db.sequelize.transaction();
+    } catch (e) {
+        console.error(e)
+        res.status(201).send({
+            status: e.message,
+            success: false,
+            msg: 'Simpan Gagal',
+            code: 201
+        });
+        return
+    }
+    try {
+        
+        await transaction.commit();
+        // let tempres = { nilainormallab, nilainormallabp }
+        res.status(200).send({
+            data: req.body,
+            status: "success",
+            success: true,
+            msg: 'Berhasil',
+            code: 200
+        });
+    } catch (error) {
+        transaction && await transaction.rollback();
+        console.log(error)
+        res.status(201).send({
+            status: "false",
+            success: false,
+            msg: error,
+            code: 201
+        });
+    }
+
+}
+
 export default {
     getDetailJenisProdukLab,
     saveOrderPelayanan,
@@ -1205,5 +1243,6 @@ export default {
     saveMasterDetailKelompokUmur,
     getListSetNilaiNormal,
     getListSetNilaiNormalDetail,
-    saveSetMasterNilaiNormalLab
+    saveSetMasterNilaiNormalLab,
+    saveSetNilaiNormalt
 };

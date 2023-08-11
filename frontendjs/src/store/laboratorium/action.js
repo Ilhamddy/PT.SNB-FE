@@ -56,7 +56,10 @@ import {
     LIST_SET_NILAI_NORMAL_DETAIL_GET_ERROR,
     SAVE_SET_MASTER_NILAI_NORMAL_LAB,
     SAVE_SET_MASTER_NILAI_NORMAL_LAB_SUCCESS,
-    SAVE_SET_MASTER_NILAI_NORMAL_LAB_ERROR
+    SAVE_SET_MASTER_NILAI_NORMAL_LAB_ERROR,
+    SAVE_SET_T_NILAI_NORMAL_LAB,
+    SAVE_SET_T_NILAI_NORMAL_LAB_SUCCESS,
+    SAVE_SET_T_NILAI_NORMAL_LAB_ERROR
 } from "./actionType";
 
 export const laboratoriumResetForm = () => ({
@@ -346,5 +349,20 @@ export const saveSetMasterNilaiNormalLabSuccess = (data, history) => ({
 
 export const saveSetMasterNilaiNormalLabError = (error) => ({
     type: SAVE_SET_MASTER_NILAI_NORMAL_LAB_ERROR,
+    payload: error,
+});
+
+export const saveSetTNilaiNormalLab = (data, history) => ({
+    type: SAVE_SET_T_NILAI_NORMAL_LAB,
+    payload: { data, history },
+});
+// common error
+export const saveSetTNilaiNormalLabSuccess = (data, history) => ({
+    type: SAVE_SET_T_NILAI_NORMAL_LAB_SUCCESS,
+    payload: { data, history },
+});
+
+export const saveSetTNilaiNormalLabError = (error) => ({
+    type: SAVE_SET_T_NILAI_NORMAL_LAB_ERROR,
     payload: error,
 });
