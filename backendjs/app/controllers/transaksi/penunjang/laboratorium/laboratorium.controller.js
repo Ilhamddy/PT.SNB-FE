@@ -2,6 +2,8 @@ import pool from "../../../../config/dbcon.query";
 import * as uuid from 'uuid';
 import queries from '../../../../queries/penunjang/laboratorium/laboratorium.queries';
 import db from "../../../../models";
+import t_hasilpemeriksaanModel from "../../../../models/t_hasilpemeriksaan.model";
+import t_hasilpemeriksaandetailModel from "../../../../models/t_hasilpemeriksaandetail.model";
 
 const queryPromise2 = (query) => {
     return new Promise((resolve, reject) => {
@@ -235,7 +237,7 @@ async function getWidgetListDaftarOrderLaboratorium(req, res) {
             tglregistrasi = ` and to2.tglinput between '${todaystart}'
         and '${todayend}' `;
         }
-            const resultlistantreanpemeriksaan = await queryPromise2(`select td.noregistrasi,to2.nomororder,to2.norec,
+        const resultlistantreanpemeriksaan = await queryPromise2(`select td.noregistrasi,to2.nomororder,to2.norec,
             mp.namalengkap, 
             mu.namaunit,
             to2.keterangan,
@@ -1201,11 +1203,73 @@ async function saveSetNilaiNormalt(req, res) {
         return
     }
     try {
-        
+        let tempData = req.body.data
+        let saveHasilPemeriksaan
+        let norechasilpemeriksaan = uuid.v4().substring(0, 32)
+        if(tempData[0].objecthasilpemeriksaanfk===null){
+            
+            saveHasilPemeriksaan = await db.t_hasilpemeriksaan.create({
+                norec: norechasilpemeriksaan,
+                statusenabled: true,
+                objectpelayananpasienfk: tempData[0].norecpelayanan,
+                objectpegawaiinputfk: req.idPegawai,
+                objectpegawaiupdatefk: req.idPegawai,
+                tglinput: new Date(),
+                tglupdate: new Date()
+            }, {
+                transaction: transaction
+            })
+
+
+        }else{
+            norechasilpemeriksaan = tempData[0].objecthasilpemeriksaanfk
+        }
+        const inputNilaiLab = (data) =>
+            data.map(async (item) => {
+                let saveHasilPemeriksaanDetail = null
+                if (item.objecthasilpemeriksaanfk === null) {
+                    let norecdetailhasilpemeriksaan = uuid.v4().substring(0, 32)
+                    saveHasilPemeriksaanDetail = await db.t_hasilpemeriksaandetail.create({
+                        norec:norecdetailhasilpemeriksaan,
+                        statusenabled: true,
+                        objecthasilpemeriksaanfk: norechasilpemeriksaan,
+                        objectpemeriksaanlabfk: item.idpemeriksaanlab,
+                        objectnilainormallabfk: item.idnilainormallab,
+                        nilaihasil: item.nilaihasil,
+                        metode: item.metodepemeriksaan,
+                        nilaikritis: item.nilaikritis,
+                        keterangan: item.keterangan
+                    }, {
+                        transaction: transaction
+                    })
+                } else {
+                    saveHasilPemeriksaanDetail = await db.t_hasilpemeriksaandetail.update({
+                        statusenabled: true,
+                        objecthasilpemeriksaanfk: norechasilpemeriksaan,
+                        objectpemeriksaanlabfk: item.idpemeriksaanlab,
+                        objectnilainormallabfk: item.idnilainormallab,
+                        nilaihasil: item.nilaihasil,
+                        metode: item.metodepemeriksaan,
+                        nilaikritis: item.nilaikritis,
+                        keterangan: item.keterangan
+                    }, {
+                        where: {
+                            norec: item.norecdetailhasil
+                        },
+                        transaction: transaction
+                    })
+                }
+                return saveHasilPemeriksaanDetail
+            })
+
+            const nilainormallabDetail = await Promise.all(
+                inputNilaiLab(tempData, 1)
+            )
+
         await transaction.commit();
-        // let tempres = { nilainormallab, nilainormallabp }
+        let tempres = { saveHasilPemeriksaan, nilainormallabDetail }
         res.status(200).send({
-            data: req.body,
+            data: tempres,
             status: "success",
             success: true,
             msg: 'Berhasil',

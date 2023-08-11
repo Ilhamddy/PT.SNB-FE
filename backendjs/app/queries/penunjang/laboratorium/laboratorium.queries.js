@@ -30,7 +30,9 @@ order by
     --th2.nilaihasil,
     case when th2.keterangan is null then '' else th2.keterangan end as keterangan,
     mn.id as idnilainormallab,
-    th2.norec as norecdetailhasil
+    th2.norec as norecdetailhasil,
+    th2.objecthasilpemeriksaanfk,
+    tp.norec as norecpelayanan
 from
     m_pemeriksaanlab mp
 join t_pelayananpasien tp on

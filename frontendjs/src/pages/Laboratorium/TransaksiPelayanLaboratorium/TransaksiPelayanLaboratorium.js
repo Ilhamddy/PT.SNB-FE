@@ -11,6 +11,7 @@ import { Link, useNavigate } from "react-router-dom";
 import EmrHeader from '../../Emr/EmrHeader/EmrHeader';
 import DataTable from 'react-data-table-component';
 import { useParams } from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify';
 import {
     listPelayananLaboratoriumGet, laboratoriumResetForm, saveSetTNilaiNormalLab
 } from '../../../store/actions';
@@ -67,8 +68,52 @@ const TransaksiPelayanLaboratorium = () => {
 
         }
     }
+    const [listPelayananChecked, setListPelayananChecked] = useState([])
+    const handleChecked = (checked, norec) => {
+        const newListPC = [...listPelayananChecked]
+        const index = newListPC.findIndex((item) => item.norec === norec)
+        const newItem = {...newListPC[index]}
+        newItem.checked = !checked
+        newListPC[index] = newItem
+        setListPelayananChecked(newListPC)
+    }
 
+    const isCheckedAll = listPelayananChecked?.every((item) => item.checked)
+    const handleCheckedAll = () => {
+        if(dataPelayanan === null) return
+        const withChecked = dataPelayanan.map((pelayanan) => {
+            return {
+                ...pelayanan,
+                checked: !pelayanan.norec && !isCheckedAll
+            }   
+        })
+        setListPelayananChecked(withChecked)
+    }
     const columns = [
+        {
+            name: <span className='font-weight-bold fs-13'>
+                {/* <Input 
+                    className="form-check-input" 
+                    type="checkbox" 
+                    id={`formcheck-all`} 
+                    checked={isCheckedAll} 
+                    onChange={e => {handleCheckedAll(isCheckedAll)}}/> */}
+            </span>,
+            sortable: false,
+            cell: (row) => {
+                return (
+                    <div className="hstack gap-3 flex-wrap">
+                         <Input 
+                            className="form-check-input" 
+                            type="checkbox" 
+                            id={`formcheck-${row.norec}`} 
+                            checked={row.checked} 
+                            onChange={e => {handleChecked(row.checked, row.norec)}}/>
+                    </div>
+                );
+            },
+            width: "50px"
+        },
         {
             name: <span className='font-weight-bold fs-13'>Detail</span>,
             sortable: false,
@@ -194,6 +239,7 @@ const TransaksiPelayanLaboratorium = () => {
 
     return (
         <React.Fragment>
+            <ToastContainer closeButton={false} />
             <UiContent />
             <div className="page-content">
                 <Container fluid>
@@ -220,6 +266,13 @@ const TransaksiPelayanLaboratorium = () => {
                                         <TabPane tabId="1" id="home-1">
                                             <Card>
                                                 <CardBody>
+                                                    <Col lg={3} style={{textAlign:'left'}}>
+                                                    <Button type="button" style={{ backgroundColor: '#192a56', textAlign: 'right' }} placement="top"
+                            // onClick={() => handleClickSave(data.listnilainormal)}
+                            >
+                            Cetak
+                        </Button>
+                                                    </Col>
                                                     <div id="table-gridjs">
                                                         <DataTable
                                                             fixedHeader
@@ -258,14 +311,16 @@ const TransaksiPelayanLaboratorium = () => {
 }
 
 
-const handleClickSave = (e) => {
-    let tempValue = {
-        data:e
-    }
-    // dispatch(saveSetTNilaiNormalLab(tempValue));
-};
+
 
 const ExpandableNilaiNormal = ({ data, handleInputChangeHasil }) => {
+    const dispatch = useDispatch();
+    const handleClickSave = (e) => {
+        let tempValue = {
+            data:e
+        }
+        dispatch(saveSetTNilaiNormalLab(tempValue));
+    };
     const [tempVal, setTempValue] = useState({
         index: -1,
         value: "",
