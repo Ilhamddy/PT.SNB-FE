@@ -1,0 +1,39 @@
+.kontainer-print-hasil-b{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 450px;
+    .header-hasil{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid black;
+        width: 100%;
+        img{
+            width: 35px;
+            height: 35px;
+            object-fit: contain;
+        }
+        .header-title{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: calc(100% - 85px);
+            h2{
+                font-size: 13px;
+                font-weight: 800;
+                margin: 0;
+                margin-bottom: 5px;
+                text-align: center;
+            };
+            h3{
+                font-size: 10px;
+                font-weight: 600;
+                margin: 0;
+                margin-bottom: 5px;
+                text-align: center;
+            }
+        }
+    };
+}
