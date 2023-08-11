@@ -18,6 +18,10 @@ import {
 import classnames from "classnames";
 import { useFormik } from 'formik';
 import LoadingTable from '../../../Components/LoadingTable/LoadingTable';
+import PrintTemplate from '../../Print/PrintTemplate/PrintTemplate';
+import PrintHasilLaboratorium from '../../Print/PrintHasilLaboratorium/PrintHasilLaboratorium';
+
+
 const TransaksiPelayanLaboratorium = () => {
     const { norecdp, norecap } = useParams();
     const dispatch = useDispatch();
@@ -72,7 +76,7 @@ const TransaksiPelayanLaboratorium = () => {
     const handleChecked = (checked, norec) => {
         const newListPC = [...listPelayananChecked]
         const index = newListPC.findIndex((item) => item.norec === norec)
-        const newItem = {...newListPC[index]}
+        const newItem = { ...newListPC[index] }
         newItem.checked = !checked
         newListPC[index] = newItem
         setListPelayananChecked(newListPC)
@@ -80,12 +84,12 @@ const TransaksiPelayanLaboratorium = () => {
 
     const isCheckedAll = listPelayananChecked?.every((item) => item.checked)
     const handleCheckedAll = () => {
-        if(dataPelayanan === null) return
+        if (dataPelayanan === null) return
         const withChecked = dataPelayanan.map((pelayanan) => {
             return {
                 ...pelayanan,
                 checked: !pelayanan.norec && !isCheckedAll
-            }   
+            }
         })
         setListPelayananChecked(withChecked)
     }
@@ -103,12 +107,12 @@ const TransaksiPelayanLaboratorium = () => {
             cell: (row) => {
                 return (
                     <div className="hstack gap-3 flex-wrap">
-                         <Input 
-                            className="form-check-input" 
-                            type="checkbox" 
-                            id={`formcheck-${row.norec}`} 
-                            checked={row.checked} 
-                            onChange={e => {handleChecked(row.checked, row.norec)}}/>
+                        <Input
+                            className="form-check-input"
+                            type="checkbox"
+                            id={`formcheck-${row.norec}`}
+                            checked={row.checked}
+                            onChange={e => { handleChecked(row.checked, row.norec) }} />
                     </div>
                 );
             },
@@ -235,8 +239,10 @@ const TransaksiPelayanLaboratorium = () => {
 
         validation.setFieldValue("pelayananproses", newDataPelayanan)
     };
-
-
+    const refPrintHasilLab = useRef(null);
+    const handlePrint = () => {
+        refPrintHasilLab.current?.handlePrint();
+    }
     return (
         <React.Fragment>
             <ToastContainer closeButton={false} />
@@ -266,12 +272,12 @@ const TransaksiPelayanLaboratorium = () => {
                                         <TabPane tabId="1" id="home-1">
                                             <Card>
                                                 <CardBody>
-                                                    <Col lg={3} style={{textAlign:'left'}}>
-                                                    <Button type="button" style={{ backgroundColor: '#192a56', textAlign: 'right' }} placement="top"
-                            // onClick={() => handleClickSave(data.listnilainormal)}
-                            >
-                            Cetak
-                        </Button>
+                                                    <Col lg={3} style={{ textAlign: 'left' }}>
+                                                        <Button type="button" style={{ backgroundColor: '#192a56', textAlign: 'right' }} placement="top"
+                                                            onClick={() => handlePrint()}
+                                                        >
+                                                            Cetak
+                                                        </Button>
                                                     </Col>
                                                     <div id="table-gridjs">
                                                         <DataTable
@@ -306,6 +312,16 @@ const TransaksiPelayanLaboratorium = () => {
                     </Row>
                 </Container>
             </div>
+
+            <PrintTemplate
+                ContentPrint={<PrintHasilLaboratorium
+                // dataRekap={dataTagihanPrint?.billing || []}
+                // dataPasien={dataPasienReg || null}
+                />
+
+                }
+                ref={refPrintHasilLab}
+            />
         </React.Fragment>
     )
 }
@@ -317,7 +333,7 @@ const ExpandableNilaiNormal = ({ data, handleInputChangeHasil }) => {
     const dispatch = useDispatch();
     const handleClickSave = (e) => {
         let tempValue = {
-            data:e
+            data: e
         }
         dispatch(saveSetTNilaiNormalLab(tempValue));
     };

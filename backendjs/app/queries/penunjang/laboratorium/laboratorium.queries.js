@@ -27,7 +27,6 @@ order by
     mn.nilaikritis,
     mn.metodepemeriksaan,
     case when th2.nilaihasil is null then '' else th2.nilaihasil end as nilaihasil,
-    --th2.nilaihasil,
     case when th2.keterangan is null then '' else th2.keterangan end as keterangan,
     mn.id as idnilainormallab,
     th2.norec as norecdetailhasil,
