@@ -23,18 +23,6 @@ import { useSelector, useDispatch } from "react-redux";
 const PasienLama = () => {
     const dispatch = useDispatch();
 
-    // const { registrasiList, isRegistrasiCreated, isRegistrasiSuccess, error } = useSelector((state) => ({
-    //     registrasiList: state.Registrasi.RegistrasiList,
-    //     isRegistrasiCreated: state.Registrasi.isRegistrasiCreated,
-    //     isRegistrasiSuccess: state.Registrasi.isRegistrasiSuccess,
-    //     error: state.Registrasi.error,
-    // }));
-
-    // useEffect(() => {
-    //     if (registrasiList && !registrasiList.length) {
-    //         dispatch(getRegistrasiList());
-    //     }
-    // }, [dispatch, registrasiList]);
 
     document.title = "Pasien Lama";
     return (
@@ -57,15 +45,9 @@ const PasienLama = () => {
                                 </CardBody>
                             </Card>
                         </Col>
-
                     </Row>
-
-
                 </Container>
-
             </div>
-
-
         </React.Fragment>
     );
 }

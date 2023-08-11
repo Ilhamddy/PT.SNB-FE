@@ -23,6 +23,7 @@ import {
     daftarDokumenRekammedisGet, widgetdaftarDokumenRekammedisGet,
     saveDokumenRekammedis,kendaliDokumenResetForm
 } from '../../../store/actions';
+import LoadingTable from '../../../Components/LoadingTable/LoadingTable';
 
 const KendaliDokumen = () => {
     document.title = "Daftar Dokumen Rekammedis";
@@ -319,6 +320,7 @@ const KendaliDokumen = () => {
                                         data={data}
                                         progressPending={loading}
                                         customStyles={tableCustomStyles}
+                                        progressComponent={<LoadingTable />}
                                     />
                                 </div>
                             </CardBody>

@@ -21,6 +21,7 @@ import CustomSelect from "../Select/Select";
 import { useDispatch, useSelector } from "react-redux";
 import DataTable from "react-data-table-component";
 import { produkMasterGet } from "../../store/actions";
+import LoadingTable from "../../Components/LoadingTable/LoadingTable";
 
 
 
@@ -107,7 +108,7 @@ const ListProduk = () => {
             name: <span className='font-weight-bold fs-13'>Nama Produk</span>,
             selector: row => row.namaproduk,
             sortable: true,
-            width: "100px"
+            width: "130px"
         },
         {
             name: <span className='font-weight-bold fs-13'>Satuan Jual</span>,
@@ -119,7 +120,7 @@ const ListProduk = () => {
             name: <span className='font-weight-bold fs-13'>Variabel BPJS</span>,
             sortable: true,
             selector: row => row.variabelbpjs,
-            width: "100px"
+            width: "130px"
         },
         {
             name: <span className='font-weight-bold fs-13'>Detail Jenis</span>,
@@ -184,6 +185,8 @@ const ListProduk = () => {
                                 data={produkMaster?.data?.produk || []}
                                 progressPending={produkMaster.loading || false}
                                 customStyles={tableCustomStyles}
+                                progressComponent={<LoadingTable />}
+
                             />
                         </Row>
                     </Card>
@@ -197,7 +200,7 @@ const tableCustomStyles = {
     headRow: {
         style: {
             color: '#ffffff',
-            backgroundColor: '#B57602'
+            backgroundColor: '#e67e22',
         },
     },
     rows: {
@@ -205,9 +208,7 @@ const tableCustomStyles = {
             color: "black",
             backgroundColor: "#f1f2f6"
         },
-
     }
 }
-
 
 export default ListProduk;

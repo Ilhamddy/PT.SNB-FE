@@ -339,7 +339,7 @@ const BayarPiutang = () => {
                                                 }
                                                 <Label style={{ color: "black" }} 
                                                     htmlFor={`nominalbayar${iPayment}`}
-                                                    className="form-label">
+                                                    className="form-label mt-2">
                                                     Nominal bayar
                                                 </Label>
                                                 <div>
@@ -376,7 +376,7 @@ const BayarPiutang = () => {
                                                                 onChange={(e) => {
                                                                     changePayment("rekeningrs", iPayment, e.value);
                                                                 }}
-                                                                className={`input ${validation.errors.payment?.[iPayment]?.rekeningrs ? "is-invalid" : ""}`}
+                                                                className={`input mt-2 ${validation.errors.payment?.[iPayment]?.rekeningrs ? "is-invalid" : ""}`}
                                                             />
                                                             {validation.touched.payment?.[iPayment]?.rekeningrs && validation.errors.payment?.[iPayment]?.rekeningrs ? (
                                                                 <FormFeedback type="invalid"><div>{validation.errors.payment?.[iPayment]?.rekeningrs}</div></FormFeedback>
@@ -557,7 +557,7 @@ const tableCustomStyles = {
     headRow: {
         style: {
             color: '#ffffff',
-            backgroundColor: '#B57602'
+            backgroundColor: '#e67e22',
         },
     },
     rows: {
@@ -565,7 +565,6 @@ const tableCustomStyles = {
             color: "black",
             backgroundColor: "#f1f2f6"
         },
-
     }
 }
 

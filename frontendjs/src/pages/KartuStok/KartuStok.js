@@ -19,6 +19,7 @@ import { useEffect } from "react";
 import { kartuStokQueryGet, penerimaanListQueryGet } from "../../store/actions";
 import CountUp from "react-countup";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
+import LoadingTable from "../../Components/LoadingTable/LoadingTable";
 
 
 
@@ -107,12 +108,13 @@ const KartuStok = () => {
                         <div id="table-gridjs">
                             <DataTable
                                 fixedHeader
-                                fixedHeaderScrollHeight="400px"
+                                fixedHeaderScrollHeight="700px"
                                 columns={columnsKartuStok}
                                 pagination
                                 data={kartuStok?.data?.kartustok || []}
                                 progressPending={kartuStok?.loading}
                                 customStyles={tableCustomStyles}
+                                progressComponent={<LoadingTable />}
                             />
                         </div>
                     </Row>
@@ -127,7 +129,7 @@ const tableCustomStyles = {
     headRow: {
         style: {
             color: '#ffffff',
-            backgroundColor: '#B57602'
+            backgroundColor: '#e67e22',
         },
     },
     rows: {
@@ -135,7 +137,6 @@ const tableCustomStyles = {
             color: "black",
             backgroundColor: "#f1f2f6"
         },
-
     }
 }
 

@@ -21,6 +21,7 @@ import CustomSelect from '../../Select/Select';
 import { emrDiagnosaxSave, emrResetForm, emrComboGet, emrDiagnosaxGet, emrListDiagnosaxGet,
 deleteDiagnosax } from "../../../store/actions";
 import DeleteModalCustom from '../../../Components/Common/DeleteModalCustom';
+import LoadingTable from '../../../Components/LoadingTable/LoadingTable';
 
 const Diagnosax = () => {
     const { norecdp, norecap } = useParams();
@@ -365,6 +366,7 @@ const Diagnosax = () => {
                                             data={dataRiwayat}
                                             progressPending={loadingRiwayat}
                                             customStyles={tableCustomStyles}
+                                            progressComponent={<LoadingTable />}
                                         />
                                     </div>
                                 </CardBody>

@@ -23,6 +23,7 @@ import {
 } from '../../../store/actions';
 
 import usePageState from "../../../utils/usePageState";
+import LoadingTable from '../../../Components/LoadingTable/LoadingTable';
 
 const InputKelompokUmur = () => {
     const dispatch = useDispatch();
@@ -209,6 +210,7 @@ const InputKelompokUmur = () => {
                                                         data={data.datakelumur}
                                                         progressPending={loading}
                                                         customStyles={tableCustomStyles}
+                                                        progressComponent={<LoadingTable />}
                                                     />
                                                 </div>
                                                 {/* {data.datakelumur ? (

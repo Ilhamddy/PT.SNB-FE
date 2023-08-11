@@ -25,6 +25,7 @@ import "./VerifikasiPelayanan.scss"
 import { useNavigate, useParams } from "react-router-dom";
 import React from "react";
 import { rgxAllPeriods } from "../../utils/regexcommon";
+import LoadingTable from "../../Components/LoadingTable/LoadingTable";
 
 const dateAwalStart = (new Date(new Date() - 1000 * 60 * 60 * 24 * 3)).toISOString();
 const dateAwalEnd =  (new Date().toISOString())
@@ -366,6 +367,8 @@ const VerifikasiPelayanan = () => {
                                     data={listPelayananChecked || []}
                                     progressPending={false}
                                     customStyles={tableCustomStyles}
+                                    progressComponent={<LoadingTable />}
+
                                 />
                                 {!!validation.errors.norecppdone && !!validation.touched.norecppdone && 
                                     <div style={{color: "#E3866F"}} className="mb-3">
@@ -494,7 +497,7 @@ const tableCustomStyles = {
     headRow: {
         style: {
             color: '#ffffff',
-            backgroundColor: '#B57602'
+            backgroundColor: '#e67e22',
         },
     },
     rows: {
@@ -502,7 +505,6 @@ const tableCustomStyles = {
             color: "black",
             backgroundColor: "#f1f2f6"
         },
-
     }
 }
 

@@ -29,6 +29,7 @@ import usePageState from "../../utils/usePageState";
 import { onChangeStrNbr, strToNumber } from "../../utils/format";
 import { comboPenerimaanBarangGet } from "../../store/master/action";
 import { satuanFromProdukGet, penerimaanSaveOrUpdate, penerimaanQueryGet } from "../../store/gudang/action";
+import LoadingTable from "../../Components/LoadingTable/LoadingTable";
 
 
 const PenerimaanProduk = () => {
@@ -1385,6 +1386,7 @@ const PenerimaanProduk = () => {
                     data={validation.values.detail || []}
                     progressPending={false}
                     customStyles={tableCustomStyles}
+                    progressComponent={<LoadingTable />}
                     noDataComponent={
                         <div 
                             className="border-bottom w-100 text-center">
@@ -1570,7 +1572,7 @@ const tableCustomStyles = {
     headRow: {
         style: {
             color: '#ffffff',
-            backgroundColor: '#B57602'
+            backgroundColor: '#e67e22',
         },
     },
     rows: {
@@ -1578,9 +1580,7 @@ const tableCustomStyles = {
             color: "black",
             backgroundColor: "#f1f2f6"
         },
-
     }
 }
-
 
 export default PenerimaanProduk;

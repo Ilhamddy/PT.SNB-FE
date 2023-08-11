@@ -26,6 +26,7 @@ import {
 import userDummy from "../../../assets/images/users/user-dummy-img.jpg";
 import DetailOrderModal from '../DetailOrderModal/DetailOrderModal';
 import DeleteModalCustom from '../../../Components/Common/DeleteModalCustom';
+import LoadingTable from '../../../Components/LoadingTable/LoadingTable';
 
 const DaftarOrderRadiologi = () => {
     document.title = "Daftar Order Radiologi";
@@ -370,12 +371,13 @@ const DaftarOrderRadiologi = () => {
                                         </Col> */}
                                         <DataTable
                                             fixedHeader
-                                            fixedHeaderScrollHeight="400px"
+                                            fixedHeaderScrollHeight="700px"
                                             columns={columns}
                                             pagination
                                             data={data}
                                             progressPending={loading}
                                             customStyles={tableCustomStyles}
+                                            progressComponent={<LoadingTable />}
                                         />
                                     </div>
 

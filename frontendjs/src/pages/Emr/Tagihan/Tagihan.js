@@ -24,6 +24,7 @@ import PrintTemplate from '../../Print/PrintTemplate/PrintTemplate';
 import PrintRekapBiaya from '../../Print/PrintRekapBiaya/PrintRekapBiaya';
 import SimpleBar from 'simplebar-react';
 import "./Tagihan.scss";
+import LoadingTable from '../../../Components/LoadingTable/LoadingTable';
 
 const Tagihan = ({ show }) => {
     const { norecdp, norecap } = useParams();
@@ -52,7 +53,7 @@ const Tagihan = ({ show }) => {
         headRow: {
             style: {
                 color: '#ffffff',
-                backgroundColor: '#B57602',
+                backgroundColor: '#e67e22',
             },
         },
         rows: {
@@ -223,6 +224,7 @@ const Tagihan = ({ show }) => {
                                 data={dataTagihan}
                                 progressPending={loadingTagihan}
                                 customStyles={tableCustomStyles}
+                                progressComponent={<LoadingTable />}
                             />
                             
                         </div>

@@ -31,6 +31,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { rgxAllNumber, rgxAllPeriods, rgxValidNumber } from "../../utils/regexcommon";
 import PrintTemplate from "../Print/PrintTemplate/PrintTemplate";
 import "./Bayar.scss"
+import LoadingTable from "../../Components/LoadingTable/LoadingTable";
 
 const dateAwalStart = (new Date(new Date(new Date() - 1000 * 60 * 60 * 24 * 3))).toISOString();
 const dateAwalEnd = (new Date()).toISOString()
@@ -439,7 +440,7 @@ const Bayar = () => {
                                                     <Col lg={7}>
                                                         <Label style={{ color: "black" }} 
                                                             htmlFor={`keterangan${index}`}
-                                                            className="form-label">
+                                                            className="form-label mt-2">
                                                             Nominal bayar
                                                         </Label>
                                                     </Col>
@@ -492,7 +493,7 @@ const Bayar = () => {
                                                                 onChange={(e) => {
                                                                     changePayment("rekeningrs", index, e.value);
                                                                 }}
-                                                                className={`input ${validation.errors.payment?.[index]?.rekeningrs ? "is-invalid" : ""}`}
+                                                                className={`input mt-2 ${validation.errors.payment?.[index]?.rekeningrs ? "is-invalid" : ""}`}
                                                             />
                                                             {validation.touched.payment?.[index]?.rekeningrs && validation.errors.payment?.[index]?.rekeningrs ? (
                                                                 <FormFeedback type="invalid"><div>{validation.errors.payment?.[index]?.rekeningrs}</div></FormFeedback>
@@ -633,11 +634,13 @@ const Bayar = () => {
                                     <Row>
                                         <DataTable
                                             fixedHeader
+                                            fixedHeaderScrollHeight="700px"
                                             columns={columns}
                                             pagination
                                             data={listPelayanan || []}
                                             progressPending={false}
                                             customStyles={tableCustomStyles}
+                                            progressComponent={<LoadingTable />}
                                         />
                                     </Row>
                                     <Row>
@@ -781,7 +784,7 @@ const tableCustomStyles = {
     headRow: {
         style: {
             color: '#ffffff',
-            backgroundColor: '#B57602'
+            backgroundColor: '#e67e22',
         },
     },
     rows: {
@@ -789,7 +792,6 @@ const tableCustomStyles = {
             color: "black",
             backgroundColor: "#f1f2f6"
         },
-
     }
 }
 

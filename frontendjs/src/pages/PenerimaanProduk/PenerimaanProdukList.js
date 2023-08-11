@@ -24,6 +24,7 @@ import {
     pesananDiterimaImg, 
     pesananSudahImg 
 } from "./imagesementara";
+import LoadingTable from "../../Components/LoadingTable/LoadingTable";
 
 
 
@@ -33,9 +34,9 @@ const PenerimaanProdukList = () => {
     const dispatch = useDispatch();
 
     const {
-        dataPenerimaan
+        penerimaan
     } = useSelector((state) => ({
-        dataPenerimaan: state.Gudang.penerimaanListQueryGet.data?.listpenerimaan || [],
+        penerimaan: state.Gudang.penerimaanListQueryGet || [],
     }))
 
     useEffect(() => {
@@ -141,7 +142,7 @@ const PenerimaanProdukList = () => {
                         />
                         <Widget
                             title={"Total pemesanan yang sudah diterima"}
-                            end={dataPenerimaan.length}
+                            end={(penerimaan?.data?.listpenerimaan || []).length}
                             image={pesananSudahImg}
                         />
                         <Widget
@@ -163,14 +164,15 @@ const PenerimaanProdukList = () => {
                         <div id="table-gridjs">
                             <DataTable
                                 fixedHeader
-                                fixedHeaderScrollHeight="400px"
+                                fixedHeaderScrollHeight="700px"
                                 columns={columnsPenerimaan}
                                 pagination
-                                data={dataPenerimaan}
-                                progressPending={false}
+                                data={penerimaan?.data?.listpenerimaan || []}
+                                progressPending={penerimaan?.loading || false}
                                 customStyles={tableCustomStyles}
                                 expandableRows
                                 expandableRowsComponent={ExpandablePenerimaan}
+                                progressComponent={<LoadingTable />}
                             />
                         </div>
                     </Row>
@@ -242,7 +244,7 @@ const ExpandablePenerimaan = ({ data }) => {
     return (
         <DataTable
             fixedHeader
-            fixedHeaderScrollHeight="400px"
+            fixedHeaderScrollHeight="700px"
             columns={columnsDetail}
             data={data.detailpenerimaan || []}
             progressPending={false}
@@ -306,7 +308,7 @@ const tableCustomStyles = {
     headRow: {
         style: {
             color: '#ffffff',
-            backgroundColor: '#B57602'
+            backgroundColor: '#e67e22',
         },
     },
     rows: {
@@ -314,7 +316,6 @@ const tableCustomStyles = {
             color: "black",
             backgroundColor: "#f1f2f6"
         },
-
     }
 }
 

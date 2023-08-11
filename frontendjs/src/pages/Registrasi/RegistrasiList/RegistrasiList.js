@@ -18,6 +18,7 @@ import userDummy from "../../../assets/images/users/user-dummy-img.jpg";
 import patient from "../../../assets/images/users/icons8-patient-64.png";
 
 import { ToastContainer, toast } from 'react-toastify';
+import LoadingTable from '../../../Components/LoadingTable/LoadingTable';
 
 const RegistrasiList = () => {
     const dispatch = useDispatch();
@@ -67,12 +68,11 @@ const RegistrasiList = () => {
             defaultnotify('Pasien Belum Dipilih')
             return
         }
-            
         
         if(e==='registrasi'){
             history(`/registrasi/pasien-ruangan/${idcmfk}`);
         }else if(e==='edit'){
-            history(`/registrasi/pasien/${idcmfk}`);
+            history(`/registrasi/pasien-baru/${idcmfk}`);
         }
          
     };
@@ -162,7 +162,7 @@ const RegistrasiList = () => {
                                     <h5 className="card-title mb-5">Profile Pasien</h5>
                                     <div className="text-center">
                                         <img src={userDummy}
-                                            className="rounded-circle avatar-xl img-thumbnail user-profile-image"
+                                            className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image"
                                             alt="user-profile" />
                                         <h5 className="fs-17 mb-1">{namaPasien}</h5>
                                         <p className="text-muted mb-0">{noIdentitas}</p>
@@ -179,18 +179,14 @@ const RegistrasiList = () => {
                                             </NavLink>
                                         </NavItem>
                                         <NavItem>
-                                            {/* <NavItem> */}
-                                                <NavLink style={{ cursor: "pointer" }} className={classnames({ active: pillsTab === "2", })} onClick={() => { pillsToggle("2"); }} >
-                                                    Riwayat
-                                                </NavLink>
-                                            {/* </NavItem> */}
+                                            <NavLink style={{ cursor: "pointer" }} className={classnames({ active: pillsTab === "2", })} onClick={() => { pillsToggle("2"); }} >
+                                                Riwayat
+                                            </NavLink>
                                         </NavItem>
                                         <NavItem>
-                                            {/* <NavItem> */}
-                                                <NavLink style={{ cursor: "pointer" }} className={classnames({ active: pillsTab === "3", })} onClick={() => { pillsToggle("3"); }} >
-                                                    Action
-                                                </NavLink>
-                                            {/* </NavItem> */}
+                                            <NavLink style={{ cursor: "pointer" }} className={classnames({ active: pillsTab === "3", })} onClick={() => { pillsToggle("3"); }} >
+                                                Action
+                                            </NavLink>
                                         </NavItem>
                                     </Nav>
 
@@ -238,12 +234,10 @@ const RegistrasiList = () => {
                                                 </div>
                                             </div>
                                         </TabPane>
-
                                         <TabPane tabId="3" id="messages-1" >
                                             <div className="live-preview">
-                                                <div className="d-flex flex-wrap gap-2">
+                                                <div className="d-flex flex-column gap-2">
                                                     <Button color="info" className="btn-animation" data-text="Registrasi" onClick={() => handleClickButton('registrasi')}><span>Registrasi</span></Button>
-
                                                     <Button color="info" className="btn-animation" data-text="Edit Data Pasien" onClick={() => handleClickButton('edit')}> <span>Edit Data Pasien</span> </Button>
                                                     <Button color="info" className="btn-animation" data-text="[BPJS] Cek Kepesertaan"> <span>[BPJS] Cek Kepesertaan</span> </Button>
                                                     <Button color="info" className="btn-animation" data-text="[BPJS] Cek Rujukan"> <span>[BPJS] Cek Rujukan</span> </Button>
@@ -253,11 +247,7 @@ const RegistrasiList = () => {
                                                     <ToastContainer autoClose={2000} />
                                                 </div>
                                             </div>
-
-
-
                                         </TabPane>
-
                                         <TabPane tabId="4" id="settings-1">
                                             <div className="d-flex mt-2">
                                                 <div className="flex-shrink-0">
@@ -295,7 +285,7 @@ const RegistrasiList = () => {
 
                                 <CardBody>
                                     <div id="table-gridjs">
-                                        <Col className="col-sm">
+                                        <Col className="col-sm mb-3">
                                             <div className="d-flex justify-content-sm-end">
                                                 <div className="search-box ms-2">
                                                     <input type="text" className="form-control search"
@@ -307,12 +297,13 @@ const RegistrasiList = () => {
                                         </Col>
                                         <DataTable
                                             fixedHeader
-                                            fixedHeaderScrollHeight="400px"
+                                            fixedHeaderScrollHeight="700px"
                                             columns={columns}
                                             pagination
                                             data={data}
                                             progressPending={loading}
                                             customStyles={tableCustomStyles}
+                                            progressComponent={<LoadingTable />}
                                         />
                                     </div>
                                 </CardBody>

@@ -22,6 +22,7 @@ import {
     listDetailKelUmurGet, saveMasterDKelUmurLaboratorium
 } from '../../../store/actions';
 import usePageState from "../../../utils/usePageState";
+import LoadingTable from '../../../Components/LoadingTable/LoadingTable';
 const DetailKelompokUmur = () => {
     const dispatch = useDispatch();
     const history = useNavigate();
@@ -304,12 +305,13 @@ const DetailKelompokUmur = () => {
                                 <div id="table-gridjs">
                                     <DataTable
                                         fixedHeader
-                                        fixedHeaderScrollHeight="400px"
+                                        fixedHeaderScrollHeight="700px"
                                         columns={columns}
                                         pagination
                                         data={data}
                                         progressPending={loading}
                                         customStyles={tableCustomStyles}
+                                        progressComponent={<LoadingTable />}
                                     />
                                 </div>
                             </Col>

@@ -22,6 +22,7 @@ import * as Yup from "yup"
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { rgxAllPeriods, rgxValidNumber } from "../../utils/regexcommon.js";
 import { onChangeStrNbr, strToNumber } from "../../utils/format";
+import LoadingTable from "../../Components/LoadingTable/LoadingTable";
 
 const KonversiProduk = ({tabId}) => {
     const {paramobat} = useParams();
@@ -220,6 +221,7 @@ const KonversiProduk = ({tabId}) => {
                             data={listProduk}
                             progressPending={false}
                             customStyles={tableCustomStyles}
+                            progressComponent={<LoadingTable />}
                         />
                     </Col>
                     
@@ -234,6 +236,7 @@ const KonversiProduk = ({tabId}) => {
                                 data={produkTerpilih.data?.kemasan || []}
                                 progressPending={produkTerpilih.loading || false}
                                 customStyles={tableCustomStyles}
+                                progressComponent={<LoadingTable />}
                                 
                             />
                         </Row>
@@ -398,7 +401,7 @@ const tableCustomStyles = {
     headRow: {
         style: {
             color: '#ffffff',
-            backgroundColor: '#B57602'
+            backgroundColor: '#e67e22',
         },
     },
     rows: {
@@ -406,7 +409,6 @@ const tableCustomStyles = {
             color: "black",
             backgroundColor: "#f1f2f6"
         },
-
     }
 }
 

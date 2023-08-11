@@ -18,6 +18,7 @@ import * as Yup from "yup";
 import DataTable from 'react-data-table-component';
 
 import { emrSave, emrResetForm, emrGet} from "../../../store/actions";
+import LoadingTable from '../../../Components/LoadingTable/LoadingTable';
 
 
 const Cppt = () => {
@@ -305,12 +306,13 @@ const Cppt = () => {
                                     <div id="table-gridjs">
                                         <DataTable
                                             fixedHeader
-                                            fixedHeaderScrollHeight="400px"
+                                            fixedHeaderScrollHeight="700px"
                                             columns={columns}
                                             pagination
                                             data={dataTtv}
                                             progressPending={loadingTtv}
                                             customStyles={tableCustomStyles}
+                                            progressComponent={<LoadingTable />}
                                         />
                                     </div>
                                 </CardBody>

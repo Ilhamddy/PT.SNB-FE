@@ -28,6 +28,7 @@ import {
 } from '../../../store/actions';
 import DetailOrderModal from '../../Laboratorium/DetailOrderModal/DetailOrderModal';
 import DeleteModalCustom from '../../../Components/Common/DeleteModalCustom';
+import LoadingTable from '../../../Components/LoadingTable/LoadingTable';
 
 const DaftarOrderLaboratorium = () => {
     document.title = "Daftar Order Laboratorium"
@@ -366,12 +367,13 @@ const DaftarOrderLaboratorium = () => {
                                         </Col> */}
                                         <DataTable
                                             fixedHeader
-                                            fixedHeaderScrollHeight="400px"
+                                            fixedHeaderScrollHeight="700px"
                                             columns={columns}
                                             pagination
                                             data={data}
                                             progressPending={loading}
                                             customStyles={tableCustomStyles}
+                                            progressComponent={<LoadingTable />}
                                         />
                                     </div>
 

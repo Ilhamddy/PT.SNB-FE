@@ -16,6 +16,7 @@ import { comboAsuransiGet, comboRegistrasiGet } from "../../store/master/action"
 import CustomSelect from "../Select/Select";
 import "./DaftarPasienPulang.scss"
 import { useNavigate } from "react-router-dom";
+import LoadingTable from "../../Components/LoadingTable/LoadingTable";
 
 const dateAwalStart = (new Date(new Date() - 1000 * 60 * 60 * 24 * 20)).toISOString();
 const dateAwalEnd = (new Date(new Date() - (- 1000 * 60 * 60 * 24 * 1))).toISOString();
@@ -250,6 +251,7 @@ const DaftarPasienPulang = () => {
                                     data={dataPasienPlg || []}
                                     progressPending={false}
                                     customStyles={tableCustomStyles}
+                                    progressComponent={<LoadingTable />}
                                 />
                             </CardBody>
                         </Card>
@@ -265,7 +267,7 @@ const tableCustomStyles = {
     headRow: {
         style: {
             color: '#ffffff',
-            backgroundColor: '#B57602'
+            backgroundColor: '#e67e22',
         },
     },
     rows: {
@@ -273,7 +275,6 @@ const tableCustomStyles = {
             color: "black",
             backgroundColor: "#f1f2f6"
         },
-
     }
 }
 

@@ -31,6 +31,7 @@ import { comboRegistrasiGet } from '../../../store/master/action';
 import StatusPulangModal from '../../../Components/Common/StatusPulangModal';
 import CustomSelect from '../../Select/Select';
 import "./DaftarPasienRJ.scss"
+import LoadingTable from '../../../Components/LoadingTable/LoadingTable';
 
 const DaftarPasienRJ = () => {
     document.title = "Daftar Pasien Rawat Jalan";
@@ -445,7 +446,7 @@ const DaftarPasienRJ = () => {
                                                             <div className="input-group-text bg-secondary border-secondary text-white"><i className="ri-calendar-2-line"></i></div>
                                                         </div>
                                                     </Col>
-                                                    <Col lg={1}><h4>s/d</h4></Col>
+                                                    <Col lg={1}><h4 className='mt-2'>s/d</h4></Col>
                                                     <Col sm={4}>
                                                         <div className="input-group">
                                                             <Flatpickr
@@ -511,11 +512,12 @@ const DaftarPasienRJ = () => {
                                         </Col> */}
                                         <DataTable
                                             fixedHeader
-                                            fixedHeaderScrollHeight="400px"
+                                            fixedHeaderScrollHeight="700px"
                                             columns={columns}
                                             pagination
                                             data={data}
                                             progressPending={loading}
+                                            progressComponent={<LoadingTable />}
                                             customStyles={tableCustomStyles}
                                         />
                                     </div>

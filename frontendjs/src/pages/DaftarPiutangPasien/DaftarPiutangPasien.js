@@ -16,14 +16,18 @@ import { comboAsuransiGet, comboRegistrasiGet } from "../../store/master/action"
 import CustomSelect from "../Select/Select";
 import { useNavigate, useParams } from "react-router-dom";
 import { buktiBayarCancel, daftarPiutangPasienGet, daftarTagihanPasienGet, verifNotaCancel } from "../../store/payment/action";
+import LoadingTable from "../../Components/LoadingTable/LoadingTable";
 
 const dateAwalStart = (new Date(new Date() - 1000 * 60 * 60 * 24 * 3)).toISOString();
 const dateAwalEnd = (new Date()).toISOString()
 
 
 const DaftarPiutangPasien = () => {
-    const {dataPiutang, comboboxReg} = useSelector((state) => ({
-        dataPiutang: state.Payment.daftarPiutangPasienGet.data || []
+    const {
+        dataPiutang, 
+        comboboxReg
+    } = useSelector((state) => ({
+        dataPiutang: state.Payment.daftarPiutangPasienGet || []
     }))
     const [userChosen, setUserChosen] = useState({
         nama: "",
@@ -279,8 +283,9 @@ const DaftarPiutangPasien = () => {
                                     fixedHeaderScrollHeight="700px"
                                     columns={columns}
                                     pagination
-                                    data={dataPiutang || []}
-                                    progressPending={false}
+                                    data={dataPiutang?.data || []}
+                                    progressComponent={<LoadingTable />}
+                                    progressPending={dataPiutang?.loading || false}
                                     customStyles={tableCustomStyles}
                                 />
                             </CardBody>
@@ -297,7 +302,7 @@ const tableCustomStyles = {
     headRow: {
         style: {
             color: '#ffffff',
-            backgroundColor: '#B57602'
+            backgroundColor: '#e67e22',
         },
     },
     rows: {
@@ -305,7 +310,6 @@ const tableCustomStyles = {
             color: "black",
             backgroundColor: "#f1f2f6"
         },
-
     }
 }
 

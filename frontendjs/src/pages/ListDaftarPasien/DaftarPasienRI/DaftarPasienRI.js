@@ -25,6 +25,7 @@ import StatusPulangModal from '../../../Components/Common/StatusPulangModal';
 import StatusPulangRIModal from '../../../Components/Common/StatusPulangRIModal';
 import DepositModal from '../../../Components/Common/DepositModal/DepositModal';
 import "./DaftarPasienRI.scss"
+import LoadingTable from '../../../Components/LoadingTable/LoadingTable';
 
 const DaftarPasienRI = () => {
     document.title = "Daftar Pasien Rawat Inap";
@@ -317,12 +318,13 @@ const DaftarPasienRI = () => {
                                     <div id="table-gridjs">
                                         <DataTable
                                             fixedHeader
-                                            fixedHeaderScrollHeight="400px"
+                                            fixedHeaderScrollHeight="700px"
                                             columns={columns}
                                             pagination
                                             data={data}
                                             progressPending={loading}
                                             customStyles={tableCustomStyles}
+                                            progressComponent={<LoadingTable />}
                                             expandableRows
                                             expandableRowsComponent={ExpandableDeposit}
                                         />

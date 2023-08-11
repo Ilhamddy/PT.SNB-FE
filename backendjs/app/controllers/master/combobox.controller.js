@@ -42,47 +42,58 @@ const selectComboBox = (req, res) => {
     try {
         pool.query(queries.getAll, (error, result) => {
             if (error) {
-                throw error;
+                return
+                // throw error;
             } else {
                 pool.query(queriesJk.getAll, (error, resultJk) => {
                     if (error) {
-                        throw error;
+                        return
+                        // throw error;
                     } else {
                         pool.query(queriesTitle.getAll, (error, resultTitle) => {
                             if (error) {
-                                throw error;
+                                return
+                                // throw error;
                             } else {
                                 pool.query(queriesGolonganDarah.getAll, (error, resultGD) => {
                                     if (error) {
-                                        throw error;
+                                        return
+                                        // throw error;
                                     } else {
                                         pool.query(queriesKebangsaan.getAll, (error, resultKeb) => {
                                             if (error) {
-                                                throw error;
+                                                return
+                                                // throw error;
                                             } else {
                                                 pool.query(queriesPerkawinan.getAll, (error, resultPerkawinan) => {
                                                     if (error) {
-                                                        throw error;
+                                                        return
+                                                        // throw error;
                                                     } else {
                                                         pool.query(queriespendidikan.getAll, (error, resultPendidikan) => {
                                                             if (error) {
-                                                                throw error;
+                                                                return
+                                                                // throw error;
                                                             } else {
                                                                 pool.query(queriesPekerjaan.getAll, (error, resultPekerjaan) => {
                                                                     if (error) {
-                                                                        throw error;
+                                                                        return
+                                                                        // throw error;
                                                                     } else {
                                                                         pool.query(queriesEtnis.getAll, (error, resultEtnis) => {
                                                                             if (error) {
-                                                                                throw error;
+                                                                                return
+                                                                                // throw error;
                                                                             } else {
                                                                                 pool.query(queriesBahasa.getAll, (error, resultBahasa) => {
                                                                                     if (error) {
-                                                                                        throw error;
+                                                                                        return
+                                                                                        // throw error;
                                                                                     } else {
                                                                                         pool.query(queriesNegara.getAll, (error, resultNegara) => {
                                                                                             if (error) {
-                                                                                                throw error;
+                                                                                                return
+                                                                                                // throw error;
                                                                                             } else {
                                                                                                 let tempres = {
                                                                                                     agama: result.rows, jeniskelamin: resultJk.rows, title: resultTitle.rows,
@@ -179,29 +190,29 @@ const getKecamatan = (req, res) => {
 const comboRegistrasi = (req, res) => {
     try {
         pool.query(quriesInstalasi.getAll, (error, result) => {
-            if (error) throw error;
+            if (error) return;
             pool.query(queriesUnit.getAll, (error, result2) => {
-                if (error) throw error;
+                if (error) return;
                 pool.query(quriesAsalRujukan.getAll, (error, result3) => {
-                    if (error) throw error;
+                    if (error) return;
                     pool.query(quriesJenisPenjamin.getAll, (error, result4) => {
-                        if (error) throw error;
+                        if (error) return;
                         pool.query(queriesRekanan.getAll, (error, result5) => {
-                            if (error) throw error;
+                            if (error) return;
                             pool.query(queriesHubunganKeluarga.getAll, (error, result6) => {
-                                if (error) throw error;
+                                if (error) return;
                                 pool.query(queriesPegawai.getAll, (error, result7) => {
-                                    if (error) throw error;
+                                    if (error) return;
                                     pool.query(queriesKelas.getAll, (error, result8) => {
-                                        if (error) throw error;
+                                        if (error) return;
                                         pool.query(queriesKamar.getAll, (error, result9) => {
-                                            if (error) throw error;
+                                            if (error) return;
                                             pool.query(queriesTempatTidur.getAll, (error, result10) => {
-                                                if (error) throw error;
+                                                if (error) return;
                                                 pool.query(`select id as value,reportdisplay as label from m_statuspulang`, (error, result11) => {
-                                                    if (error) throw error;
+                                                    if (error) return;
                                                     pool.query(`select id as value,caramasuk as label from m_caramasuk`, (error, result12) => {
-                                                        if (error) throw error;
+                                                        if (error) return;
                                                         let tempres = {
                                                             instalasi: result.rows, 
                                                             unit: result2.rows, 

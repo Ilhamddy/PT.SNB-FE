@@ -30,6 +30,7 @@ import {
 } from '../../../store/actions';
 import { BasicTable } from '../../Tables/DataTables/datatableCom';
 import DeleteModalCustom from '../../../Components/Common/DeleteModalCustom';
+import LoadingTable from '../../../Components/LoadingTable/LoadingTable';
 
 const dateAwalStart = (new Date(new Date() - 1000 * 60 * 60 * 24 * 3)).toISOString();
 const dateAwalEnd = (new Date()).toISOString()
@@ -1389,11 +1390,12 @@ const KlaimInacbg = () => {
                                 <div id="table-gridjs">
                                     <DataTable
                                         fixedHeader
-                                        fixedHeaderScrollHeight="400px"
+                                        fixedHeaderScrollHeight="700px"
                                         columns={columns}
                                         pagination
                                         data={dataDaftarPasien}
                                         progressPending={loading}
+                                        progressComponent={<LoadingTable />}
                                         customStyles={tableCustomStyles}
                                     />
                                 </div>
