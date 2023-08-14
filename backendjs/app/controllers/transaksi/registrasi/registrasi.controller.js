@@ -656,7 +656,9 @@ const getRegistrasiPasienNorec = async (req, res) => {
             json_agg(tap) as antrean,
             json_agg(mrek1) as penjamin1,
             json_agg(mrek2) as penjamin2,
-            json_agg(mrek3) as penjamin3
+            json_agg(mrek3) as penjamin3,
+            json_agg(mu2) as unitantrean,
+            mj.jeniskelamin
                 FROM 
                 t_daftarpasien
                 left join m_pegawai peg on peg.id = t_daftarpasien.objectpegawaifk    
@@ -669,8 +671,10 @@ const getRegistrasiPasienNorec = async (req, res) => {
                 left join m_rekanan mrek1 on mrek1.id = t_daftarpasien.objectpenjaminfk
                 left join m_rekanan mrek2 on mrek2.id = t_daftarpasien.objectpenjamin2fk
                 left join m_rekanan mrek3 on mrek3.id = t_daftarpasien.objectpenjamin3fk
+                left join m_unit mu2 on mu2.id = tap.objectunitfk
+                left join m_jeniskelamin mj on mj.id=mps.objectjeniskelaminfk 
                 where t_daftarpasien.norec = $1
-                group by t_daftarpasien.norec
+                group by t_daftarpasien.norec,mj.jeniskelamin 
             `
                 , [norec])
         if (ruanganpasien.rows[0]) {

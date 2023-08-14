@@ -1288,6 +1288,24 @@ async function saveSetNilaiNormalt(req, res) {
 
 }
 
+async function getCetakHasilLab(req, res){
+    try {
+
+        const resultlist = await pool.query(queries.qResultCetakHasil, [])
+
+       
+        res.status(200).send({
+            data: resultlist.rows,
+            status: "success",
+            success: true,
+        });
+
+    } catch (error) {
+        res.status(500).send({ message: error });
+    }
+
+}
+
 export default {
     getDetailJenisProdukLab,
     saveOrderPelayanan,
@@ -1308,5 +1326,6 @@ export default {
     getListSetNilaiNormal,
     getListSetNilaiNormalDetail,
     saveSetMasterNilaiNormalLab,
-    saveSetNilaiNormalt
+    saveSetNilaiNormalt,
+    getCetakHasilLab
 };

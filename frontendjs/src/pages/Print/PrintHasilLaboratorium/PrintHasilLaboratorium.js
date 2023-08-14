@@ -1,6 +1,7 @@
 import EmblemBerdikari from "./emblemberdikari.png";
 import "./PrintHasilLaboratorium.scss";
-const PrintHasilLaboratorium = () => {
+const PrintHasilLaboratorium = ({ dataCetak, dataPasien, dokterlab,
+    unitpengirim, dokterpengirim, tgllayanan, tglhasil, tglcetak }) => {
     const rsName = "Rumah Sakit Solusi Nusantara Berdikari";
     const alamat = "Menara Mandiri Tower 2, Jl. Jenderal Sudirman No.54-55, RT.5/RW.3, Senayan, Kec. Kby. Baru, Daerah Khusus Ibukota Jakarta 12190";
     return (
@@ -25,7 +26,7 @@ const PrintHasilLaboratorium = () => {
                                 No RM/No Registrasi
                             </p>
                             <p className="t-data-data">
-                                {/* : {dataPasien?.pasien?.[0]?.namapasien || "-"} */}
+                                : {dataPasien?.pasien?.[0]?.nocm || "-"} / {dataPasien?.noregistrasi || "-"}
                             </p>
                         </td>
                         <td>
@@ -33,7 +34,7 @@ const PrintHasilLaboratorium = () => {
                                 Unit Pengirim
                             </p>
                             <p className="t-data-data">
-                                {/* : {dataPasien?.dokter?.[0]?.nama} */}
+                                : {unitpengirim}
                             </p>
                         </td>
                     </tr>
@@ -43,7 +44,7 @@ const PrintHasilLaboratorium = () => {
                                 Nama Pasien
                             </p>
                             <p className="t-data-data">
-                                {/* : {dataPasien?.nocmfk || ""} */}
+                                : {dataPasien?.pasien?.[0]?.namapasien || ""}
                             </p>
                         </td>
                         <td>
@@ -51,7 +52,7 @@ const PrintHasilLaboratorium = () => {
                                 Dokter Pengirim
                             </p>
                             <p className="t-data-data">
-                                {/* : {dataPasien?.unit?.[0]?.namaunit || "-"} */}
+                                : {dokterpengirim || "-"}
                             </p>
                         </td>
                     </tr>
@@ -61,7 +62,7 @@ const PrintHasilLaboratorium = () => {
                                 Tgl Lahir/Umur
                             </p>
                             <p className="t-data-data">
-                                {/* : {dataPasien?.noregistrasi || "-"} */}
+                                {dataPasien?.pasien?.[0]?.tgllahir || ""}
                             </p>
                         </td>
                         <td>
@@ -69,7 +70,7 @@ const PrintHasilLaboratorium = () => {
                                 Tanggal Pelayanan
                             </p>
                             <p className="t-data-data">
-                                {/* : {dataPasien?.kamar?.[0] || "-"} */}
+                                : {(new Date(tgllayanan))?.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' }) || "-"}
                             </p>
                         </td>
                     </tr>
@@ -79,7 +80,7 @@ const PrintHasilLaboratorium = () => {
                                 Jenis Kelamin
                             </p>
                             <p className="t-data-data">
-                                : {"-"}
+                                : {dataPasien?.jeniskelamin || "-"}
                             </p>
                         </td>
                         <td>
@@ -87,7 +88,7 @@ const PrintHasilLaboratorium = () => {
                                 Tanggal Hasil
                             </p>
                             <p className="t-data-data">
-                                {/* : {dataPasien?.kelas?.[0]?.namakelas || "-"} */}
+                                : {(new Date(tglhasil))?.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' }) || "-"}
                             </p>
                         </td>
                     </tr>
@@ -97,7 +98,7 @@ const PrintHasilLaboratorium = () => {
                                 Tipe Pasien
                             </p>
                             <p className="t-data-data">
-                                {/* : {dataPasien2.namaPasien || "-"} */}
+                                : {dataPasien?.penjamin1?.[0]?.namarekanan || "-"}
                             </p>
                         </td>
                         <td>
@@ -105,7 +106,7 @@ const PrintHasilLaboratorium = () => {
                                 Tgl Cetak
                             </p>
                             <p className="t-data-data">
-                                {/* : {(new Date(dataPasien?.tglregistrasi))?.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' }) || "-"} */}
+                                : {(new Date(tglcetak))?.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' }) || "-"}
                             </p>
                         </td>
                     </tr>
@@ -115,7 +116,7 @@ const PrintHasilLaboratorium = () => {
                                 Alamat
                             </p>
                             <p className="t-data-data">
-                                {/* : {dataPasien?.pasien?.[0]?.alamatdomisili || "-"} */}
+                                : {dataPasien?.pasien?.[0]?.alamatdomisili || "-"}
                             </p>
                         </td>
 
@@ -125,15 +126,23 @@ const PrintHasilLaboratorium = () => {
             <table className="table-data-hasil">
                 <thead>
                     <tr>
-                        <th scope="col">Pemeriksaan</th>
-                        <th  scope="col">Hasil Pemeriksaan</th>
-                        <th  scope="col">Nilai Rujuk</th>
-                        <th  scope="col">Satuan Hasil</th>
-                        <th  scope="col">Keterangan</th>
+                        <th>Pemeriksaan</th>
+                        <th>Hasil Pemeriksaan</th>
+                        <th>Nilai Rujuk</th>
+                        <th>Satuan Hasil</th>
+                        <th>Keterangan</th>
                     </tr>
                 </thead>
                 <tbody>
-                    
+                    {dataCetak.map((item, key) =>
+                        <tr key={key}>
+                            <td>{item.pemeriksaan_lab}</td>
+                            <td>{item.nilaihasil}</td>
+                            <td>{item.nilaitext}</td>
+                            <td>{item.satuan}</td>
+                            <td>{item.keterangan}</td>
+                        </tr>
+                    )}
                 </tbody>
             </table>
         </div>

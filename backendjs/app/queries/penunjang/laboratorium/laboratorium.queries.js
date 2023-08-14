@@ -128,7 +128,7 @@ const qResultCetakHasil = `select * from(
 	and extract(epoch from age(cast(mp2.tgllahir as date))/(3600*24) ) >= md3.umurharimin
 	left join t_hasilpemeriksaan th on th.objectpelayananpasienfk = tp.norec 
 	left join t_hasilpemeriksaandetail th2 on th2.objecthasilpemeriksaanfk = th.norec  and th2.objectnilainormallabfk = mn.id 
-	where  mp.statusenabled = true and tp.norec in $1
+	where  mp.statusenabled = true and tp.norec in ('65d617d8-d71c-4c0a-adde-39776491','14c4c81c-c72a-402c-8bc7-8e4d62b2')
 	order by mp3.id asc,mp.kodeexternal asc,md3.umurharimax asc
 ) temp1 where row_number = 1`
 export default {

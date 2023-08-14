@@ -20,7 +20,7 @@ import { useFormik } from 'formik';
 import LoadingTable from '../../../Components/LoadingTable/LoadingTable';
 import PrintTemplate from '../../Print/PrintTemplate/PrintTemplate';
 import PrintHasilLaboratorium from '../../Print/PrintHasilLaboratorium/PrintHasilLaboratorium';
-
+import CetakLabModal from '../../../Components/Common/CetakLabModal';
 
 const TransaksiPelayanLaboratorium = () => {
     const { norecdp, norecap } = useParams();
@@ -243,9 +243,15 @@ const TransaksiPelayanLaboratorium = () => {
     const handlePrint = () => {
         refPrintHasilLab.current?.handlePrint();
     }
+    const [showCetakModal, setshowCetakModal] = useState(false);
     return (
         <React.Fragment>
             <ToastContainer closeButton={false} />
+            <CetakLabModal
+                show={showCetakModal}
+                norecdp={norecdp}
+                norecap={norecap}
+                onCloseClick={() => setshowCetakModal(false)} />
             <UiContent />
             <div className="page-content">
                 <Container fluid>
@@ -274,7 +280,7 @@ const TransaksiPelayanLaboratorium = () => {
                                                 <CardBody>
                                                     <Col lg={3} style={{ textAlign: 'left' }}>
                                                         <Button type="button" style={{ backgroundColor: '#192a56', textAlign: 'right' }} placement="top"
-                                                            onClick={() => handlePrint()}
+                                                            onClick={() => { setshowCetakModal(true) }}
                                                         >
                                                             Cetak
                                                         </Button>
@@ -313,7 +319,7 @@ const TransaksiPelayanLaboratorium = () => {
                 </Container>
             </div>
 
-            <PrintTemplate
+            {/* <PrintTemplate
                 ContentPrint={<PrintHasilLaboratorium
                 // dataRekap={dataTagihanPrint?.billing || []}
                 // dataPasien={dataPasienReg || null}
@@ -321,7 +327,7 @@ const TransaksiPelayanLaboratorium = () => {
 
                 }
                 ref={refPrintHasilLab}
-            />
+            /> */}
         </React.Fragment>
     )
 }

@@ -21,7 +21,8 @@ import {
     LIST_SET_NILAI_NORMAL_LABORATORIUM_GET,
     LIST_SET_NILAI_NORMAL_DETAIL_GET,
     SAVE_SET_MASTER_NILAI_NORMAL_LAB,
-    SAVE_SET_T_NILAI_NORMAL_LAB
+    SAVE_SET_T_NILAI_NORMAL_LAB,
+    LIST_CETAK_HASIL_LAB_GET
 } from "./actionType";
 
 import {
@@ -44,7 +45,8 @@ import {
     listSetNilaiNormalGetSuccess, listSetNilaiNormalGetError,
     listSetNilaiNormalDetailGetSuccess, listSetNilaiNormalDetailGetError,
     saveSetMasterNilaiNormalLabSuccess, saveSetMasterNilaiNormalLabError,
-    saveSetTNilaiNormalLabSuccess, saveSetTNilaiNormalLabError
+    saveSetTNilaiNormalLabSuccess, saveSetTNilaiNormalLabError,
+    listCetakHasiilLabGetSuccess, listCetakHasiilLabGetError
 } from "./action";
 
 import { toast } from 'react-toastify';
@@ -401,6 +403,19 @@ export function* watchonsaveSetTNilaiNormalLab() {
     yield takeEvery(SAVE_SET_T_NILAI_NORMAL_LAB, onsaveSetTNilaiNormalLab);
 }
 
+function* onlistCetakHasiilLabGet({ payload: { param } }) {
+    try {
+        const response = yield call(serviceLaboratorium.getListCetakHasilLab, param);
+        yield put(listCetakHasiilLabGetSuccess(response.data));
+    } catch (error) {
+        yield put(listCetakHasiilLabGetError(error));
+    }
+}
+
+export function* watchonlistCetakHasiilLabGet() {
+    yield takeEvery(LIST_CETAK_HASIL_LAB_GET, onlistCetakHasiilLabGet);
+}
+
 function* laboratoriumSaga() {
     yield all([
         fork(watchonwidgetDetailJenisProdukGet),
@@ -422,7 +437,8 @@ function* laboratoriumSaga() {
         fork(watchonlistSetNilaiNormalGet),
         fork(watchonlistSetNilaiNormalDetailGet),
         fork(watchonsaveSetMasterNilaiNormalLab),
-        fork(watchonsaveSetTNilaiNormalLab)
+        fork(watchonsaveSetTNilaiNormalLab),
+        fork(watchonlistCetakHasiilLabGet)
     ]);
 }
 

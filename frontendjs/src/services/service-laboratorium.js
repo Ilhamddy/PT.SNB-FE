@@ -82,4 +82,8 @@ export default class ServiceLaboratorium {
     saveSetTNilaiNormalLab = async (params) => {
         return await api.create("/transaksi/laboratorium/save-transaksi-nilai-normal-lab", params);
     }
+
+    getListCetakHasilLab = async (param) => {
+        return await api.get(`/transaksi/laboratorium/list-cetak-hasil-lab?norec=${param}`);
+    }
 }

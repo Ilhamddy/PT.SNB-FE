@@ -132,4 +132,10 @@ export default function (app) {
         controller.saveSetNilaiNormalt
     );
 
+    app.get(
+        "/api/transaksi/laboratorium/list-cetak-hasil-lab",
+        [authJwt.verifyToken],
+        controller.getCetakHasilLab
+    );
+
 }
