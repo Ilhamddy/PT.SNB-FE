@@ -28,7 +28,7 @@ import Flatpickr from "react-flatpickr";
 import usePageState from "../../utils/usePageState";
 import { onChangeStrNbr, strToNumber } from "../../utils/format";
 import { comboPenerimaanBarangGet } from "../../store/master/action";
-import { satuanFromProdukGet, penerimaanSaveOrUpdate, penerimaanQueryGet } from "../../store/gudang/action";
+import { kemasanFromProdukGet, penerimaanSaveOrUpdate, penerimaanQueryGet } from "../../store/gudang/action";
 import LoadingTable from "../../Components/Table/LoadingTable";
 import NoDataTable from "../../Components/Table/NoDataTable";
 
@@ -53,7 +53,7 @@ const PenerimaanProduk = () => {
         supplier: state.Master.comboPenerimaanBarangGet?.data?.supplier || [],
         produk: state.Master.comboPenerimaanBarangGet?.data?.produk || [],
         satuanProduk: state.Master.comboPenerimaanBarangGet?.data?.satuanproduk || [],
-        kemasanProduk: state.Gudang.satuanFromProdukGet?.data?.satuan || [],
+        kemasanProduk: state.Gudang.kemasanFromProdukGet?.data?.satuan || [],
         asalProduk: state.Master.comboPenerimaanBarangGet?.data?.asalproduk || [],
         unit: state.Master.comboPenerimaanBarangGet?.data?.unit || [],
         penerimaanQuery: state.Gudang.penerimaanQueryGet?.data || null,
@@ -407,7 +407,7 @@ const PenerimaanProduk = () => {
         }
         idProduk && 
             dispatch(
-                satuanFromProdukGet(
+                kemasanFromProdukGet(
                     { idproduk: idProduk }, 
                     onGetSatuanSuccess
                 ))

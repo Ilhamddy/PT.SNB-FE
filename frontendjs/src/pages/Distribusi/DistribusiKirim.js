@@ -26,7 +26,7 @@ import LoadingTable from "../../Components/Table/LoadingTable";
 import NoDataTable from "../../Components/Table/NoDataTable";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useRef } from "react";
-import { getStokBatch, satuanFromProdukGet } from "../../store/actions";
+import { getStokBatch, kemasanFromProdukGet } from "../../store/actions";
 
 
 const DistribusiOrder = () => {
@@ -37,7 +37,7 @@ const DistribusiOrder = () => {
         satuan
     } = useSelector(state => ({
         stokBatch: state.Distribusi.getStokBatch?.data || [],
-        satuan: state.Gudang.satuanFromProdukGet || null
+        satuan: state.Gudang.kemasanFromProdukGet || null
     }))
 
     const refSatuan = useRef(null);
@@ -131,7 +131,7 @@ const DistribusiOrder = () => {
         }
         vProduk.values.produk && 
             dispatch(
-                satuanFromProdukGet(
+                kemasanFromProdukGet(
                     { idproduk: vProduk.values.produk },
                     onGetSatuanSuccess
                 ))

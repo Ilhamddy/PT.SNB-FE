@@ -22,8 +22,8 @@ import {
     produkMasterGetSuccess,
     produkEditGetError,
     produkEditGetSuccess,
-    satuanFromProdukGetError,
-    satuanFromProdukGetSuccess,
+    kemasanFromProdukGetError,
+    kemasanFromProdukGetSuccess,
     penerimaanSaveOrUpdateError,
     penerimaanSaveOrUpdateSuccess,
     penerimaanQueryGetError,
@@ -48,7 +48,7 @@ import {
     KEMASAN_SAVE_OR_UPDATE,
     PRODUK_MASTER_GET,
     PRODUK_EDIT_GET,
-    SATUAN_FROM_PRODUK_GET,
+    KEMASAN_FROM_PRODUK_GET,
     PENERIMAAN_SAVE_OR_UPDATE,
     PENERIMAAN_QUERY_GET,
     PENERIMAAN_LIST_QUERY_GET,
@@ -171,14 +171,14 @@ function* onProdukEditGet({payload: {queries}}){
     }
 }
 
-function* onSatuanFromProdukGet({payload: {queries, callback}}){
+function* onKemasanFromProdukGet({payload: {queries, callback}}){
     try {
-        let response = yield call(serviceGudang.getSatuanFromProduk, queries);
+        let response = yield call(serviceGudang.getKemasanFromProduk, queries);
         callback && callback(response.data)
-        yield put(satuanFromProdukGetSuccess(response.data));
+        yield put(kemasanFromProdukGetSuccess(response.data));
     } catch (error) {
         console.error(error);
-        yield put(satuanFromProdukGetError(error));
+        yield put(kemasanFromProdukGetError(error));
     }
 }
 
@@ -266,8 +266,8 @@ export function* watchProdukEditGet(){
     yield takeEvery(PRODUK_EDIT_GET, onProdukEditGet);
 }
 
-export function* watchSatuanFromProdukGet(){
-    yield takeEvery(SATUAN_FROM_PRODUK_GET, onSatuanFromProdukGet);
+export function* watchKemasanFromProdukGet(){
+    yield takeEvery(KEMASAN_FROM_PRODUK_GET, onKemasanFromProdukGet);
 }
 
 export function* watchPenerimaanSaveOrUpdate(){
@@ -298,7 +298,7 @@ function* registrasiSaga() {
         fork(watchSaveOrUpdateKemasan),
         fork(watchProdukMasterGet),
         fork(watchProdukEditGet),
-        fork(watchSatuanFromProdukGet),
+        fork(watchKemasanFromProdukGet),
         fork(watchPenerimaanSaveOrUpdate),
         fork(watchPenerimaanQueryGet),
         fork(watchPenerimaanListQueryGet),

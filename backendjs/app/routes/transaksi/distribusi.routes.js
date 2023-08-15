@@ -17,4 +17,10 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getStokBatch
     )
+
+    app.get(
+        "/api/transaksi/gudang/distribusi/get-kemasan-by-id",
+        [authJwt.verifyToken],
+        controller.getKemasanById
+    )
 }

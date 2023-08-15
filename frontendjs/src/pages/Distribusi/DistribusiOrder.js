@@ -26,7 +26,10 @@ import LoadingTable from "../../Components/Table/LoadingTable";
 import NoDataTable from "../../Components/Table/NoDataTable";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useRef } from "react";
-import { getStokBatch, satuanFromProdukGet } from "../../store/actions";
+import { getStokBatch, kemasanFromProdukGet } from "../../store/actions";
+import { APIClient } from "../../helpers/api_helper";
+
+
 
 
 const DistribusiOrder = () => {
@@ -37,7 +40,7 @@ const DistribusiOrder = () => {
         satuan
     } = useSelector(state => ({
         stokBatch: state.Distribusi.getStokBatch?.data || [],
-        satuan: state.Gudang.satuanFromProdukGet || null
+        satuan: state.Gudang.kemasanFromProdukGet || null
     }))
 
     const refSatuan = useRef(null);
@@ -51,18 +54,7 @@ const DistribusiOrder = () => {
             unitorder: "",
             unittujuan: "",
             keterangankirim: "",
-            /**
-             * @type {Array<{
-            *  norecstok: string, 
-            *  produkid: number, 
-            *  label: string, 
-            *  nobatch: string, qty: 
-            *  number, 
-            *  tglinput: string, 
-            *  qtyout: number,
-            *  difference: boolean
-            * }>}
-            */
+            /**@type {import("../../../../backendjs/app/queries/gudang/distribusi.queries").ListStokUnit} */
             batchproduk: [],
 
         },
@@ -113,9 +105,13 @@ const DistribusiOrder = () => {
             })
             batchInputAsc = batchInputAsc.map((batch) => {
                 const newBatch = {...batch}
-                newBatch.newlyadded = true;
+                newBatch.satuankirim = values.satuan
+                newBatch.namasatuan = values.namasatuan
                 if(jumlahKonversi >= newBatch.qty) {
                     newBatch.qtyout = newBatch.qty
+                    // jumlah hanya untuk pelengkap di db, operasi perhitungan harus menggunakan 
+                    // qty dan konversisatuan
+                    newBatch.jumlah = newBatch.qty / strToNumber(values.konversi)
                     jumlahKonversi -= newBatch.qty
                 } else {
                     newBatch.qtyout = jumlahKonversi
@@ -151,7 +147,7 @@ const DistribusiOrder = () => {
         }
         vProduk.values.produk && 
             dispatch(
-                satuanFromProdukGet(
+                kemasanFromProdukGet(
                     { idproduk: vProduk.values.produk },
                     onGetSatuanSuccess
                 ))
@@ -189,6 +185,33 @@ const DistribusiOrder = () => {
     }, [dispatch])
     
 
+    const handleEditColumn = async (row) => {
+        const api = new APIClient();
+        const konversi = row.konversi
+        vProduk.setFieldValue("produk", row.produkid)
+        vProduk.setFieldValue("namaproduk", row.label)
+        vProduk.setFieldValue("satuan", row.satuankirim)
+        vProduk.setFieldValue("namasatuan", row.namasatuan)
+        vProduk.setFieldValue("konversi", konversi)
+        // hitung jumlahnya dahulu
+        const allProduk = vOrder.values.batchproduk.filter((batch) => {
+            return batch.produkid === row.produkid
+        })
+        const jmlAllProduk = allProduk.reduce((total, batch) => {
+            return total + batch.qtyout / konversi
+        }, 0)
+        
+        vProduk.setFieldValue("jumlah", jmlAllProduk)
+        const newBatch = stokBatch.find((batch) => {
+            return batch.produkid === row.produkid
+        })
+        // lalu maasukkan batchnya didapatkan dari stokBatch
+        vProduk.setFieldValue("batch", newBatch?.value || [])
+        const otherProduk = vOrder.values.batchproduk.filter((batch) => {
+            return batch.produkid !== row.produkid
+        })
+        vOrder.setFieldValue("batchproduk", [...otherProduk])
+    }
 
     /**
      * @type {import("react-data-table-component").TableColumn<typeof vOrder.values.batchproduk[0]>[]}
@@ -211,9 +234,7 @@ const DistribusiOrder = () => {
                             <i className="ri-apps-2-line"></i>
                         </DropdownToggle>
                         <DropdownMenu className="dropdown-menu-end">
-                            <DropdownItem onClick={() => {
-                                vProduk.setFieldValue("produk", row.produkid)
-                                }}>
+                            <DropdownItem onClick={() => handleEditColumn(row)}>
                                 <i className="ri-mail-send-fill align-bottom me-2 text-muted">
                                 </i>
                                 Edit Produk
@@ -246,14 +267,14 @@ const DistribusiOrder = () => {
         },
         {
             name: <span className='font-weight-bold fs-13'>Satuan</span>,
-            selector: row => "",
+            selector: row => row.namasatuan,
             sortable: true,
             width: "100px"
         },
         {
             name: <span className='font-weight-bold fs-13'>Stok</span>,
             sortable: true,
-            selector: row => `${row.stok}`,
+            selector: row => `${row.qty}`,
             width: "100px"
         },
         {

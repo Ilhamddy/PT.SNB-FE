@@ -44,8 +44,8 @@ export default class ServiceGudang {
         return await api.get(`/transaksi/gudang/get-produk-edit`, queries)
     }
 
-    getSatuanFromProduk = async (queries) => {
-        return await api.get(`/transaksi/gudang/get-satuan-from-produk`, queries)
+    getKemasanFromProduk = async (queries) => {
+        return await api.get(`/transaksi/gudang/get-kemasan-from-produk`, queries)
     }
 
     saveOrEditPenerimaan = async (body) => {

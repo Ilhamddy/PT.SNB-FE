@@ -520,13 +520,13 @@ const getProdukEdit = async (req, res) => {
     }
 }
 
-const getSatuanFromProduk = async (req, res) => {
+const getKemasanFromProduk = async (req, res) => {
     try{
         const {idproduk} = req.query
         if(!idproduk) throw Error("idproduk tidak boleh kosong")
-        const satuanFromProduk = (await pool.query(qGetSatuanFromProduk, [idproduk])).rows
+        const kemasanFromProduk = (await pool.query(qGetSatuanFromProduk, [idproduk])).rows
         let tempres = {
-            satuan: satuanFromProduk
+            satuan: kemasanFromProduk
         }
         res.status(200).send({
             data: tempres,
@@ -742,7 +742,7 @@ export default {
     createOrUpdateKemasan,
     getProdukMaster,
     getProdukEdit,
-    getSatuanFromProduk,
+    getKemasanFromProduk,
     getPenerimaan,
     createOrUpdatePenerimaan,
     getListPenerimaan,

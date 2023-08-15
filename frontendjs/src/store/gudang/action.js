@@ -29,9 +29,9 @@ import {
     PRODUK_EDIT_GET,
     PRODUK_EDIT_GET_SUCCESS,
     PRODUK_EDIT_GET_ERROR,
-    SATUAN_FROM_PRODUK_GET,
-    SATUAN_FROM_PRODUK_GET_SUCCESS,
-    SATUAN_FROM_PRODUK_GET_ERROR,
+    KEMASAN_FROM_PRODUK_GET,
+    KEMASAN_FROM_PRODUK_GET_SUCCESS,
+    KEMASAN_FROM_PRODUK_GET_ERROR,
     PENERIMAAN_SAVE_OR_UPDATE,
     PENERIMAAN_SAVE_OR_UPDATE_SUCCESS,
     PENERIMAAN_SAVE_OR_UPDATE_ERROR,
@@ -197,18 +197,18 @@ export const produkEditGetError = (data) => ({
     payload: { data: data },
 })
 
-export const satuanFromProdukGet = (queries, callback) => ({
-    type: SATUAN_FROM_PRODUK_GET,
+export const kemasanFromProdukGet = (queries, callback) => ({
+    type: KEMASAN_FROM_PRODUK_GET,
     payload: { queries: queries, callback: callback },
 })
 
-export const satuanFromProdukGetSuccess = (data) => ({
-    type: SATUAN_FROM_PRODUK_GET_SUCCESS,
+export const kemasanFromProdukGetSuccess = (data) => ({
+    type: KEMASAN_FROM_PRODUK_GET_SUCCESS,
     payload: { data: data },
 })
 
-export const satuanFromProdukGetError = (data) => ({
-    type: SATUAN_FROM_PRODUK_GET_ERROR,
+export const kemasanFromProdukGetError = (data) => ({
+    type: KEMASAN_FROM_PRODUK_GET_ERROR,
     payload: { data: data },
 })
 

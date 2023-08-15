@@ -94,19 +94,19 @@ const qGetProdukEdit = `
 `
 
 const qGetSatuanFromProduk = `
-    SELECT
+SELECT
     mkp.id AS value,
     msb.satuan AS label,
     msk.satuan AS konversi,
     mkp.nilaikonversi AS nilaikonversi
-        FROM m_kemasanproduk mkp
-        LEFT JOIN m_satuan msb ON mkp.objectsatuanbesarfk = msb.id
-        LEFT JOIN m_satuan msk ON mkp.objectsatuankecilfk = msk.id
-            WHERE mkp.objectprodukfk = $1
+FROM m_kemasanproduk mkp
+    LEFT JOIN m_satuan msb ON mkp.objectsatuanbesarfk = msb.id
+    LEFT JOIN m_satuan msk ON mkp.objectsatuankecilfk = msk.id
+WHERE mkp.objectprodukfk = $1
 `
 
 const qGetDetailPenerimaan = `
-    SELECT
+SELECT
     tpbd.norec AS norecdetailpenerimaan,
     json_build_object(
         'idproduk', mp.id,
@@ -128,16 +128,16 @@ const qGetDetailPenerimaan = `
     tpbd.nobatch AS nobatch,
     tpbd.subtotal AS subtotalproduk,
     tpbd.total AS totalproduk
-        FROM t_penerimaanbarangdetail tpbd
-        JOIN m_produk mp ON mp.id = tpbd.objectprodukfk
-        LEFT JOIN m_satuan ms ON ms.id = tpbd.objectsatuanfk
-        JOIN m_satuan msp ON msp.id = mp.objectsatuanstandarfk
-        JOIN m_satuan msk ON msk.id = tpbd.objectsatuanfk
-            WHERE tpbd.objectpenerimaanbarangfk = $1
+FROM t_penerimaanbarangdetail tpbd
+    JOIN m_produk mp ON mp.id = tpbd.objectprodukfk
+    LEFT JOIN m_satuan ms ON ms.id = tpbd.objectsatuanfk
+    JOIN m_satuan msp ON msp.id = mp.objectsatuanstandarfk
+    JOIN m_satuan msk ON msk.id = tpbd.objectsatuanfk
+WHERE tpbd.objectpenerimaanbarangfk = $1
 `
 
 const qGetPenerimaanFE = `
-    SELECT
+SELECT
     tpb.norec AS norecpenerimaan,
     tpb.no_terima AS nomorterima,
     tpb.tglterima AS tanggalterima,
@@ -154,9 +154,9 @@ const qGetPenerimaanFE = `
     '' AS ppnrupiah,
     '' AS diskonrupiah,
     '' AS total
-        FROM t_penerimaanbarang tpb
-        JOIN m_rekanan mr ON mr.id = tpb.objectrekananfk
-        JOIN m_unit mu ON mu.id = tpb.objectunitfk
+FROM t_penerimaanbarang tpb
+    JOIN m_rekanan mr ON mr.id = tpb.objectrekananfk
+    JOIN m_unit mu ON mu.id = tpb.objectunitfk
 `
 
 const qGetPenerimaan = qGetPenerimaanFE + `

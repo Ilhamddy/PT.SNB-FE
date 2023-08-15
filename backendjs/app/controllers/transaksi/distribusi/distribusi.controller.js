@@ -2,7 +2,7 @@ import pool from "../../../config/dbcon.query";
 import * as uuid from 'uuid'
 import db from "../../../models";
 import { 
-    qGetStokUnit
+    qGetStokUnit, qKemasanFromId
 } from "../../../queries/gudang/distribusi.queries";
 import {
     createTransaction
@@ -49,7 +49,32 @@ export const getStokBatch = async (req, res) => {
     }
 }
 
+const getKemasanById = async (req, res) => {
+    try {
+        const { idkemasan } = req.query;
+        // id kemasan boleh kosong
+        const kemasan = await pool.query(qKemasanFromId, [idkemasan || null]);
+
+        let tempres = {
+            kemasan: kemasan
+        }
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+        });
+    } catch (error){
+        console.error("===get combo setting error=== ")
+        console.error(error)
+        res.status(500).send({
+            data: error,
+            status: "error",
+            success: false,
+        });
+    }
+}
 
 export default {
-    getStokBatch
+    getStokBatch,
+    getKemasanById
 }

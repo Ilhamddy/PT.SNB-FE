@@ -30,9 +30,9 @@ import {
     PRODUK_EDIT_GET,
     PRODUK_EDIT_GET_SUCCESS,
     PRODUK_EDIT_GET_ERROR,
-    SATUAN_FROM_PRODUK_GET,
-    SATUAN_FROM_PRODUK_GET_SUCCESS,
-    SATUAN_FROM_PRODUK_GET_ERROR,
+    KEMASAN_FROM_PRODUK_GET,
+    KEMASAN_FROM_PRODUK_GET_SUCCESS,
+    KEMASAN_FROM_PRODUK_GET_ERROR,
     PENERIMAAN_SAVE_OR_UPDATE,
     PENERIMAAN_SAVE_OR_UPDATE_SUCCESS,
     PENERIMAAN_SAVE_OR_UPDATE_ERROR,
@@ -98,7 +98,7 @@ const INIT_STATE = {
         loading: false,
         error: null,
     },
-    satuanFromProdukGet: {
+    kemasanFromProdukGet: {
         data: [],
         loading: false,
         error: null,
@@ -494,11 +494,11 @@ const Registrasi = (state = INIT_STATE, action) => {
             }
         }
 
-        case SATUAN_FROM_PRODUK_GET: {
+        case KEMASAN_FROM_PRODUK_GET: {
             return {
                 ...state,
-                satuanFromProdukGet: {
-                    ...state.satuanFromProdukGet,
+                kemasanFromProdukGet: {
+                    ...state.kemasanFromProdukGet,
                     loading: true,
                     data: [],
                     error: null
@@ -506,11 +506,11 @@ const Registrasi = (state = INIT_STATE, action) => {
             }
         }
 
-        case SATUAN_FROM_PRODUK_GET_SUCCESS: {
+        case KEMASAN_FROM_PRODUK_GET_SUCCESS: {
             return {
                 ...state,
-                satuanFromProdukGet: {
-                    ...state.satuanFromProdukGet,
+                kemasanFromProdukGet: {
+                    ...state.kemasanFromProdukGet,
                     loading: false,
                     data: action.payload.data,
                     error: null
@@ -518,11 +518,11 @@ const Registrasi = (state = INIT_STATE, action) => {
             }
         }
 
-        case SATUAN_FROM_PRODUK_GET_ERROR: {
+        case KEMASAN_FROM_PRODUK_GET_ERROR: {
             return {
                 ...state,
-                satuanFromProdukGet: {
-                    ...state.satuanFromProdukGet,
+                kemasanFromProdukGet: {
+                    ...state.kemasanFromProdukGet,
                     loading: false,
                     data: [],
                     error: action.payload.data

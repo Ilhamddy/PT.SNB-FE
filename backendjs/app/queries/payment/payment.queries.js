@@ -198,7 +198,7 @@ const qGetBuktiBayar =
 
 const qGetPiutangPasien =
     `
-    SELECT 
+SELECT 
     tp.totalbayar AS totalbayar, 
     tp.norec AS norecpiutang,
     tp.totalpiutang AS totalpiutang, 
@@ -212,16 +212,17 @@ const qGetPiutangPasien =
     tn.norec AS norecnota,
     bb.norec AS norecbukti,
     mp.noidentitas AS noidentitas
-        FROM t_piutangpasien tp
-        LEFT JOIN t_daftarpasien td ON tp.objectdaftarpasienfk=td.norec
-        LEFT JOIN m_pasien mp ON td.nocmfk=mp.id
-        LEFT JOIN m_rekanan mr ON tp.objectpenjaminfk=mr.id
-        LEFT JOIN t_notapelayananpasien tn ON tn.norec = tp.objectnotapelayananpasienfk
-        LEFT JOIN t_buktibayarpasien bb ON bb.objectpiutangpasienfk = tp.norec AND bb.statusenabled = true
-            WHERE CASE WHEN $1 = 'pasien' THEN tp.statusenabled = true AND tp.objectpenjaminfk = 3
-                ELSE tp.statusenabled = true AND tp.objectpenjaminfk != 3
-            END
-            ORDER BY tp.tglinput DESC
+FROM t_piutangpasien tp
+    LEFT JOIN t_daftarpasien td ON tp.objectdaftarpasienfk=td.norec
+    LEFT JOIN m_pasien mp ON td.nocmfk=mp.id
+    LEFT JOIN m_rekanan mr ON tp.objectpenjaminfk=mr.id
+    LEFT JOIN t_notapelayananpasien tn ON tn.norec = tp.objectnotapelayananpasienfk
+    LEFT JOIN t_buktibayarpasien bb ON bb.objectpiutangpasienfk = tp.norec AND bb.statusenabled = true
+WHERE CASE WHEN $1 = 'pasien' 
+    THEN tp.statusenabled = true AND tp.objectpenjaminfk = 3
+    ELSE tp.statusenabled = true AND tp.objectpenjaminfk != 3
+END
+ORDER BY tp.tglinput DESC
     `  
 
 const qTagihanGetFromDP = 

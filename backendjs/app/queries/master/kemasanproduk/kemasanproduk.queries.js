@@ -2,10 +2,11 @@ const getAll =
 `
 SELECT 
     id AS value, 
-    sediaan AS label
-FROM 
-    m_sediaan ms
-WHERE statusenabled = true`;
+    barcode AS label
+FROM m_kemasanproduk 
+WHERE statusenabled=true`;
+
+
 
 export default {
     getAll

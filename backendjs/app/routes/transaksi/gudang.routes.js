@@ -73,9 +73,9 @@ export default function (app) {
     )
 
     app.get(
-        "/api/transaksi/gudang/get-satuan-from-produk",
+        "/api/transaksi/gudang/get-kemasan-from-produk",
         [authJwt.verifyToken],
-        controller.getSatuanFromProduk
+        controller.getKemasanFromProduk
     )
 
     app.post(
