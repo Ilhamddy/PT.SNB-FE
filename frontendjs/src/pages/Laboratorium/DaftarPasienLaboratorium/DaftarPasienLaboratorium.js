@@ -95,7 +95,7 @@ const DaftarPasienLaboratorium = () => {
             sortable: false,
             cell: (data) => {
                 return (
-                    <Link to={`/transaksi-pelayanan-laboratorium/${data.norecdp}/${data.norecta}`} className="link-success fs-15" id="tooltipTop"><i className="ri-edit-2-line"></i></Link>
+                    <Link to={`/dHJhbnNha3NpLXBlbGF5YW5hbi1sYWJvcmF0b3JpdW0=/${data.norecdp}/${data.norecta}`} className="link-success fs-15" id="tooltipTop"><i className="ri-edit-2-line"></i></Link>
                 );
             },
             width: "80px"

@@ -1290,10 +1290,21 @@ async function saveSetNilaiNormalt(req, res) {
 
 async function getCetakHasilLab(req, res){
     try {
-
-        const resultlist = await pool.query(queries.qResultCetakHasil, [])
-
-       
+        let norecArray = req.query.norec.split(',');
+        const resultlist = await pool.query(queries.qResultCetakHasil, [norecArray])
+        for (let i = 0; i < resultlist.rows.length; i++) {
+            if(resultlist.rows[i].tipedata===1){
+                if(parseFloat(resultlist.rows[i].nilaihasil) < parseFloat(resultlist.rows[i].nilaimin)){
+                    resultlist.rows[i].nilaihasil = resultlist.rows[i].nilaihasil+'*'
+                }else if(parseFloat(resultlist.rows[i].nilaihasil) > parseFloat(resultlist.rows[i].nilaimax)){
+                    resultlist.rows[i].nilaihasil = resultlist.rows[i].nilaihasil+'*'
+                }
+            }else if(resultlist.rows[i].tipedata===2){
+                if(resultlist.rows[i].nilaihasil.toLowerCase() !== resultlist.rows[i].nilaimin.toLowerCase()){
+                    resultlist.rows[i].nilaihasil = resultlist.rows[i].nilaihasil+'*'
+                }
+            }
+        }
         res.status(200).send({
             data: resultlist.rows,
             status: "success",
