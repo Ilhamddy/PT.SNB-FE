@@ -30,9 +30,9 @@ const t_kartustok = db.t_kartustok
 
 const createOrUpdateProdukObat = async (req, res) => {
     const [transaction, errorTransaction]
-        = await createTransaction(db)
+        = await createTransaction(db, res)
+    if(errorTransaction) return
     try{
-        if(errorTransaction) throw errorTransaction
         const objectBody = req.body
 
         let createdProduk
@@ -120,9 +120,9 @@ const createOrUpdateProdukObat = async (req, res) => {
 
 const createOrUpdateDetailProduk = async (req, res) => {
     const [transaction, errorTransaction]
-        = await createTransaction(db)
+        = await createTransaction(db, res)
+    if(errorTransaction) return
     try{
-        if(errorTransaction) throw errorTransaction
         const body = req.body
 
         let createdOrEdited = null
@@ -186,9 +186,9 @@ const createOrUpdateDetailProduk = async (req, res) => {
 
 const createOrUpdateSediaan = async (req, res) => {
     const [transaction, errorTransaction]
-        = await createTransaction(db)
+        = await createTransaction(db, res)
+    if(errorTransaction) return
     try{
-        if(errorTransaction) throw errorTransaction
         const body = req.body
 
         let createdOrEdited = null
@@ -247,9 +247,9 @@ const createOrUpdateSediaan = async (req, res) => {
 
 const createOrUpdateSatuan = async (req, res) => {
     const [transaction, errorTransaction]
-        = await createTransaction(db)
+        = await createTransaction(db, res)
+    if(errorTransaction) return
     try{
-        if(errorTransaction) throw errorTransaction
         const body = req.body
 
         let createdOrEdited = null
@@ -549,9 +549,9 @@ const getKemasanFromProduk = async (req, res) => {
 
 const createOrUpdatePenerimaan = async (req, res) => {
     const [transaction, errorTransaction]
-        = await createTransaction(db)
+        = await createTransaction(db, res)
+    if(errorTransaction) return
     try {
-        if(errorTransaction) throw errorTransaction
         const {
             createdOrUpdatedPenerimaan,
             norecpenerimaan

@@ -17,7 +17,7 @@
 const qGetStokUnit = `
 SELECT
     ts.norec AS norecstok,
-    ts.objectprodukfk AS produkid,
+    ts.objectprodukfk AS value,
     mp.namaproduk AS label,
     ts.nobatch AS nobatch,
     ts.qty AS qty,
@@ -47,10 +47,7 @@ FROM m_kemasanproduk mk
     LEFT JOIN m_produk mp ON mk.objectprodukfk = mp.id
     LEFT JOIN m_satuan msk ON msk.id = mk.objectsatuankecilfk
     LEFT JOIN m_satuan msb ON msb.id = mk.objectsatuanbesarfk
-WHERE CASE WHEN $1 = NULL 
-    THEN mk.statusenabled = true 
-    ELSE mk.statusenabled = true AND mk.id = $1
-END
+WHERE mk.statusenabled = true AND mk.id = $1
 `
 
 export {

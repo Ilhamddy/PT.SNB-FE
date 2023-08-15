@@ -37,6 +37,7 @@ import queriesJenisProduk from '../../queries/master/jenisproduk/jenisproduk.que
 import queriesJenisSatuan from '../../queries/master/jenissatuan/jenissatuan.queries'
 import queriesProduk from '../../queries/master/produk/produk.queries'
 import queriesAsalProduk from "../../queries/master/asalproduk/asalproduk.queries"
+import jenisorderbarangQueries from "../../queries/master/jenisorderbarang/jenisorderbarang.queries";
 
 const selectComboBox = (req, res) => {
     try {
@@ -421,6 +422,30 @@ const comboPenerimaanBarang = async (req, res) => {
     }
 }
 
+const comboDistribusiOrder = async (req, res) => {
+    try{
+        const unit = await pool.query(queriesUnit.getAll)
+        const jenisOrderBarang = await pool.query(jenisorderbarangQueries.getAll)
+        let tempres = {
+            unit: unit.rows,
+            jenisorderbarang: jenisOrderBarang.rows
+        }
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+        });
+    }catch(e){
+        console.error("===get combo distribusi order error=== ")
+        console.error(e)
+        res.status(500).send({
+            data: [],
+            status: "error",
+            success: false,
+        });
+    }
+}
+
 export default {
     selectComboBox,
     desaKelurahan,
@@ -430,5 +455,6 @@ export default {
     comboPulang,
     comboPayment,
     comboSettingProduk,
-    comboPenerimaanBarang
+    comboPenerimaanBarang,
+    comboDistribusiOrder,
 };
