@@ -1299,6 +1299,10 @@ async function getCetakHasilLab(req, res){
                 }else if(parseFloat(resultlist.rows[i].nilaihasil) > parseFloat(resultlist.rows[i].nilaimax)){
                     resultlist.rows[i].nilaihasil = resultlist.rows[i].nilaihasil+'*'
                 }
+            }else if(resultlist.rows[i].tipedata===2){
+                if(resultlist.rows[i].nilaihasil.toLowerCase() !== resultlist.rows[i].nilaimin.toLowerCase()){
+                    resultlist.rows[i].nilaihasil = resultlist.rows[i].nilaihasil+'*'
+                }
             }
         }
         res.status(200).send({
