@@ -17,6 +17,7 @@ import laboratoriumRoutes from './app/routes/transaksi/laboratorium.routes.js';
 import paymentRoutes from "./app/routes/transaksi/payment.routes.js";
 import casemixRoutes from "./app/routes/transaksi/casemix.routes.js";
 import gudangRoutes from "./app/routes/transaksi/gudang.routes.js"
+import distribusiRoutes from "./app/routes/transaksi/distribusi.routes.js"
 import { logRequests } from "./app/middleware/logrequests.js";
 
 dotenv.config()
@@ -27,7 +28,6 @@ const app = express();
 let corsOptions = {
   origin: "http://localhost:8081"
 };
-
 
 
 app.use(cors());
@@ -59,7 +59,8 @@ radiologiRoutes(app);
 laboratoriumRoutes(app);
 paymentRoutes(app);
 casemixRoutes(app)
-gudangRoutes(app)
+gudangRoutes(app);
+distribusiRoutes(app);
 
 
 // set port, listen for requests

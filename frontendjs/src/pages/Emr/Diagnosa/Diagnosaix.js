@@ -21,7 +21,7 @@ import CustomSelect from '../../Select/Select';
 import { emrDiagnosaixSave, emrResetForm, emrDiagnosaixGet,
     emrListDiagnosaixGet,deleteDiagnosaix } from "../../../store/actions";
 import DeleteModalCustom from '../../../Components/Common/DeleteModalCustom';
-import LoadingTable from '../../../Components/LoadingTable/LoadingTable';
+import LoadingTable from '../../../Components/Table/LoadingTable';
 
 const Diagnosaix = () => {
     const { norecdp, norecap } = useParams();

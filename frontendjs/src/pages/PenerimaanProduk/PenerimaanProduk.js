@@ -29,7 +29,8 @@ import usePageState from "../../utils/usePageState";
 import { onChangeStrNbr, strToNumber } from "../../utils/format";
 import { comboPenerimaanBarangGet } from "../../store/master/action";
 import { satuanFromProdukGet, penerimaanSaveOrUpdate, penerimaanQueryGet } from "../../store/gudang/action";
-import LoadingTable from "../../Components/LoadingTable/LoadingTable";
+import LoadingTable from "../../Components/Table/LoadingTable";
+import NoDataTable from "../../Components/Table/NoDataTable";
 
 
 const PenerimaanProduk = () => {
@@ -388,7 +389,8 @@ const PenerimaanProduk = () => {
     useEffect(() => {
         const idProduk = detail.produk.idproduk
         const setFF = vDetail.setFieldValue
-        const onGetSuccess = (data) => {
+        const onGetSatuanSuccess = (data) => {
+            // reset value jika ada satuan baru
             if(Array.isArray(data) && data.length === 0) {
                 refSatuanTerima.current?.clearValue();
                 return
@@ -407,7 +409,7 @@ const PenerimaanProduk = () => {
             dispatch(
                 satuanFromProdukGet(
                     { idproduk: idProduk }, 
-                    onGetSuccess
+                    onGetSatuanSuccess
                 ))
     }, [
         dispatch, 
@@ -827,7 +829,6 @@ const PenerimaanProduk = () => {
     )
 
     const InputProdukDetail = (
-
         <Card className="p-5">
             <Row className="mb-2">
                 <Col lg={4}>
@@ -1387,11 +1388,7 @@ const PenerimaanProduk = () => {
                     progressPending={false}
                     customStyles={tableCustomStyles}
                     progressComponent={<LoadingTable />}
-                    noDataComponent={
-                        <div 
-                            className="border-bottom w-100 text-center">
-                            Belum ada data produk
-                        </div>}
+                    noDataComponent={<NoDataTable />}
                     />
             </Row>
             <Row>

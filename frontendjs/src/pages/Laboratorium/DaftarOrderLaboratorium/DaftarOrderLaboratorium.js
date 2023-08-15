@@ -28,7 +28,7 @@ import {
 } from '../../../store/actions';
 import DetailOrderModal from '../../Laboratorium/DetailOrderModal/DetailOrderModal';
 import DeleteModalCustom from '../../../Components/Common/DeleteModalCustom';
-import LoadingTable from '../../../Components/LoadingTable/LoadingTable';
+import LoadingTable from '../../../Components/Table/LoadingTable';
 
 const DaftarOrderLaboratorium = () => {
     document.title = "Daftar Order Laboratorium"

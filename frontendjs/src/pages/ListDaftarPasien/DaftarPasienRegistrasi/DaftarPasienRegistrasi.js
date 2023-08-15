@@ -21,7 +21,7 @@ import { daftarPasienResetForm,daftarPasienRegistrasiGet, widgetdaftarPasienRegi
 import { comboRegistrasiGet } from '../../../store/master/action';
 import CustomSelect from '../../Select/Select';
 import "./DaftarPasienRegistrasi.scss"
-import LoadingTable from '../../../Components/LoadingTable/LoadingTable';
+import LoadingTable from '../../../Components/Table/LoadingTable';
 const DaftarPasienRegistrasi = () => {
     document.title = "Daftar Pasien Rawat Jalan";
     const dispatch = useDispatch();

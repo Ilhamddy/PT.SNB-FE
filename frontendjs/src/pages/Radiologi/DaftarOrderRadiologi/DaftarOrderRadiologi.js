@@ -26,7 +26,7 @@ import {
 import userDummy from "../../../assets/images/users/user-dummy-img.jpg";
 import DetailOrderModal from '../DetailOrderModal/DetailOrderModal';
 import DeleteModalCustom from '../../../Components/Common/DeleteModalCustom';
-import LoadingTable from '../../../Components/LoadingTable/LoadingTable';
+import LoadingTable from '../../../Components/Table/LoadingTable';
 
 const DaftarOrderRadiologi = () => {
     document.title = "Daftar Order Radiologi";

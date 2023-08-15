@@ -22,7 +22,7 @@ import DataTable from 'react-data-table-component';
 import {
     masterPelayananLaboratoriumGet
 } from '../../../store/actions';
-import LoadingTable from '../../../Components/LoadingTable/LoadingTable';
+import LoadingTable from '../../../Components/Table/LoadingTable';
 
 const MasterDataLayanan = () => {
     document.title = "Master Data Layanan Laboratorium";

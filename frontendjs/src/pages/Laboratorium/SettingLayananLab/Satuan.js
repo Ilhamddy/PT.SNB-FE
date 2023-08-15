@@ -22,7 +22,7 @@ import DataTable from 'react-data-table-component';
 import {
     comboLaboratoriumGet, saveNilaiNormalLaboratorium, satuanSaveOrUpdate, lainLainGet
 } from '../../../store/actions';
-import LoadingTable from '../../../Components/LoadingTable/LoadingTable';
+import LoadingTable from '../../../Components/Table/LoadingTable';
 
 const Satuan = () => {
     document.title = "Satuan";

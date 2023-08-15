@@ -16,7 +16,7 @@ import { comboAsuransiGet, comboRegistrasiGet } from "../../store/master/action"
 import CustomSelect from "../Select/Select";
 import "./DaftarPasienPulang.scss"
 import { useNavigate } from "react-router-dom";
-import LoadingTable from "../../Components/LoadingTable/LoadingTable";
+import LoadingTable from "../../Components/Table/LoadingTable";
 
 const dateAwalStart = (new Date(new Date() - 1000 * 60 * 60 * 24 * 20)).toISOString();
 const dateAwalEnd = (new Date(new Date() - (- 1000 * 60 * 60 * 24 * 1))).toISOString();

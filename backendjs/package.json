@@ -66,8 +66,8 @@
       "no-self-assign": ["error"],
       "no-constant-condition": ["warn"],
       "no-unsafe-negation": ["error"],
-      "no-unsafe-optional-chaining": ["error"]
-      
+      "no-unsafe-optional-chaining": ["error"],
+      "no-sparse-arrays": ["warn"]
 
     },
     "globals": {}

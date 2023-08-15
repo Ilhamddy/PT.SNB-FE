@@ -31,7 +31,7 @@ import { comboRegistrasiGet } from '../../../store/master/action';
 import StatusPulangModal from '../../../Components/Common/StatusPulangModal';
 import CustomSelect from '../../Select/Select';
 import "./DaftarPasienRJ.scss"
-import LoadingTable from '../../../Components/LoadingTable/LoadingTable';
+import LoadingTable from '../../../Components/Table/LoadingTable';
 
 const DaftarPasienRJ = () => {
     document.title = "Daftar Pasien Rawat Jalan";

@@ -24,7 +24,7 @@ import PrintTemplate from '../../Print/PrintTemplate/PrintTemplate';
 import PrintRekapBiaya from '../../Print/PrintRekapBiaya/PrintRekapBiaya';
 import SimpleBar from 'simplebar-react';
 import "./Tagihan.scss";
-import LoadingTable from '../../../Components/LoadingTable/LoadingTable';
+import LoadingTable from '../../../Components/Table/LoadingTable';
 
 const Tagihan = ({ show }) => {
     const { norecdp, norecap } = useParams();

@@ -54,9 +54,6 @@ class APIClient {
    * Fetches data from given url
    */
 
-  //  get = (url, params) => {
-  //   return axios.get(url, params);
-  // };
   get = (url, params, axiosConfig) => {
     let response;
     let paramKeys = [];

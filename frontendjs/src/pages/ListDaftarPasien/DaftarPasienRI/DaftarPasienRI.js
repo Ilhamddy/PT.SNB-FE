@@ -25,7 +25,7 @@ import StatusPulangModal from '../../../Components/Common/StatusPulangModal';
 import StatusPulangRIModal from '../../../Components/Common/StatusPulangRIModal';
 import DepositModal from '../../../Components/Common/DepositModal/DepositModal';
 import "./DaftarPasienRI.scss"
-import LoadingTable from '../../../Components/LoadingTable/LoadingTable';
+import LoadingTable from '../../../Components/Table/LoadingTable';
 
 const DaftarPasienRI = () => {
     document.title = "Daftar Pasien Rawat Inap";

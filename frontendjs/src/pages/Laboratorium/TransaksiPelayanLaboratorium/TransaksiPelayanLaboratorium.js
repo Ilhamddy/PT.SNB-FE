@@ -16,7 +16,7 @@ import {
 } from '../../../store/actions';
 import classnames from "classnames";
 import { useFormik } from 'formik';
-import LoadingTable from '../../../Components/LoadingTable/LoadingTable';
+import LoadingTable from '../../../Components/Table/LoadingTable';
 const TransaksiPelayanLaboratorium = () => {
     const { norecdp, norecap } = useParams();
     const dispatch = useDispatch();

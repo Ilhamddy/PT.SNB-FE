@@ -31,7 +31,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { rgxAllNumber, rgxAllPeriods, rgxValidNumber } from "../../utils/regexcommon";
 import PrintTemplate from "../Print/PrintTemplate/PrintTemplate";
 import "./Bayar.scss"
-import LoadingTable from "../../Components/LoadingTable/LoadingTable";
+import LoadingTable from "../../Components/Table/LoadingTable";
 
 const dateAwalStart = (new Date(new Date(new Date() - 1000 * 60 * 60 * 24 * 3))).toISOString();
 const dateAwalEnd = (new Date()).toISOString()

@@ -18,7 +18,7 @@ import { useFormik, yupToFormErrors } from "formik";
 import * as Yup from "yup";
 import DataTable from 'react-data-table-component';
 import { rgxWithSlash } from '../../../utils/regexcommon';
-import LoadingTable from '../../../Components/LoadingTable/LoadingTable';
+import LoadingTable from '../../../Components/Table/LoadingTable';
 
 const TandaVital = () => {
     const { norecdp, norecap } = useParams();

@@ -26,7 +26,7 @@ import {detailProdukSaveOrUpdate, lainLainGet, satuanSaveOrUpdate, sediaanSaveOr
 import DataTable from "react-data-table-component";
 import { KonversiProduk } from "./KonversiProduk";
 import { Link } from "react-router-dom";
-import LoadingTable from "../../Components/LoadingTable/LoadingTable";
+import LoadingTable from "../../Components/Table/LoadingTable";
 
 
 const LainLain = ({tabId}) => {

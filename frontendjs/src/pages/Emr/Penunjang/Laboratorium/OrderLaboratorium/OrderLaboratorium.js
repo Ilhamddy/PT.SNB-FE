@@ -24,7 +24,7 @@ import {
     daftarOrderLaboratoriumGet
 } from "../../../../../store/actions";
 import ListGroupCollapse from '../../../../../Components/Common/ListGroupCollapse';
-import LoadingTable from '../../../../../Components/LoadingTable/LoadingTable';
+import LoadingTable from '../../../../../Components/Table/LoadingTable';
 
 const OrderLaboratorium = () => {
     const { norecdp, norecap } = useParams();

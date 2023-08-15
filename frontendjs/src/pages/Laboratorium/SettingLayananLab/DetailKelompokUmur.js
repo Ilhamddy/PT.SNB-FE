@@ -22,7 +22,7 @@ import {
     listDetailKelUmurGet, saveMasterDKelUmurLaboratorium
 } from '../../../store/actions';
 import usePageState from "../../../utils/usePageState";
-import LoadingTable from '../../../Components/LoadingTable/LoadingTable';
+import LoadingTable from '../../../Components/Table/LoadingTable';
 const DetailKelompokUmur = () => {
     const dispatch = useDispatch();
     const history = useNavigate();

@@ -18,7 +18,7 @@ import userDummy from "../../../assets/images/users/user-dummy-img.jpg";
 import patient from "../../../assets/images/users/icons8-patient-64.png";
 
 import { ToastContainer, toast } from 'react-toastify';
-import LoadingTable from '../../../Components/LoadingTable/LoadingTable';
+import LoadingTable from '../../../Components/Table/LoadingTable';
 
 const RegistrasiList = () => {
     const dispatch = useDispatch();

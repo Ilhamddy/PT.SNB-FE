@@ -21,7 +21,7 @@ import CustomSelect from "../Select/Select";
 import { useDispatch, useSelector } from "react-redux";
 import DataTable from "react-data-table-component";
 import { produkMasterGet } from "../../store/actions";
-import LoadingTable from "../../Components/LoadingTable/LoadingTable";
+import LoadingTable from "../../Components/Table/LoadingTable";
 
 
 

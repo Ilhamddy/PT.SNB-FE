@@ -15,7 +15,7 @@ import {
     listOrderLaboratoriumByNorecGet,updateTglRencanaLaboratorium,saveVerifikasiLaboratorium,
     deleteDetailOrderPelayanan,laboratoriumResetForm
 } from "../../../store/actions";
-import LoadingTable from "../../../Components/LoadingTable/LoadingTable";
+import LoadingTable from "../../../Components/Table/LoadingTable";
 
 const DetailOrderModal = ({ show, onSimpanClick, onCloseClick,onTolakClick, tempNorec }) => {
     const dispatch = useDispatch();

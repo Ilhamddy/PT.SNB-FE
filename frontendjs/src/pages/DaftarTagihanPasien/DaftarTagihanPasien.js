@@ -16,7 +16,7 @@ import { comboAsuransiGet, comboRegistrasiGet } from "../../store/master/action"
 import CustomSelect from "../Select/Select";
 import { useNavigate } from "react-router-dom";
 import { buktiBayarCancel, daftarTagihanPasienGet, verifNotaCancel } from "../../store/payment/action";
-import LoadingTable from "../../Components/LoadingTable/LoadingTable";
+import LoadingTable from "../../Components/Table/LoadingTable";
 
 const dateAwalStart = (new Date(new Date() - 1000 * 60 * 60 * 24 * 3)).toISOString();
 const dateAwalEnd = (new Date()).toISOString()

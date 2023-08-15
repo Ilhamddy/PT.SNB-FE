@@ -19,7 +19,7 @@ import { useEffect } from "react";
 import { kartuStokQueryGet, penerimaanListQueryGet } from "../../store/actions";
 import CountUp from "react-countup";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
-import LoadingTable from "../../Components/LoadingTable/LoadingTable";
+import LoadingTable from "../../Components/Table/LoadingTable";
 
 
 

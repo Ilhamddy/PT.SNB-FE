@@ -24,7 +24,7 @@ import {
     pesananDiterimaImg, 
     pesananSudahImg 
 } from "./imagesementara";
-import LoadingTable from "../../Components/LoadingTable/LoadingTable";
+import LoadingTable from "../../Components/Table/LoadingTable";
 
 
 

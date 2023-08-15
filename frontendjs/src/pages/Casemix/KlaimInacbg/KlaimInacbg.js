@@ -30,7 +30,7 @@ import {
 } from '../../../store/actions';
 import { BasicTable } from '../../Tables/DataTables/datatableCom';
 import DeleteModalCustom from '../../../Components/Common/DeleteModalCustom';
-import LoadingTable from '../../../Components/LoadingTable/LoadingTable';
+import LoadingTable from '../../../Components/Table/LoadingTable';
 
 const dateAwalStart = (new Date(new Date() - 1000 * 60 * 60 * 24 * 3)).toISOString();
 const dateAwalEnd = (new Date()).toISOString()

@@ -22,7 +22,7 @@ import userDummy from "../../../assets/images/users/user-dummy-img.jpg";
 import {
     daftarPasienRadiologi, radiologiResetForm
 } from '../../../store/actions';
-import LoadingTable from '../../../Components/LoadingTable/LoadingTable';
+import LoadingTable from '../../../Components/Table/LoadingTable';
 const DaftarPasienRadiologi = () => {
     document.title = "Daftar Order Radiologi";
     const dispatch = useDispatch();

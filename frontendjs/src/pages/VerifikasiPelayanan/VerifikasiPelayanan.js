@@ -25,7 +25,7 @@ import "./VerifikasiPelayanan.scss"
 import { useNavigate, useParams } from "react-router-dom";
 import React from "react";
 import { rgxAllPeriods } from "../../utils/regexcommon";
-import LoadingTable from "../../Components/LoadingTable/LoadingTable";
+import LoadingTable from "../../Components/Table/LoadingTable";
 
 const dateAwalStart = (new Date(new Date() - 1000 * 60 * 60 * 24 * 3)).toISOString();
 const dateAwalEnd =  (new Date().toISOString())

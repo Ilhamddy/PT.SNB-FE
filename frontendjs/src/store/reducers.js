@@ -86,6 +86,7 @@ import Payment from "./payment/reducer";
 import Casemix from "./casemix/reducer";
 import Gudang from "./gudang/reducer";
 import PageState from "./pageState/reducer"
+import Distribusi from "./distribusi/reducer";
 
 
 const rootReducer = combineReducers({
@@ -127,6 +128,7 @@ const rootReducer = combineReducers({
     Payment,
     Casemix,
     Gudang,
+    Distribusi,
     PageState   
 });
 

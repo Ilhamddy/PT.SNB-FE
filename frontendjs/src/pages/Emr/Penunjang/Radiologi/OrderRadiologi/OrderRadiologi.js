@@ -22,7 +22,7 @@ import {
     comboHistoryUnitGet, comboTindakanRadiologiGet, radiologiResetForm,
     saveOrderPelayananRadiologi,daftarOrderRadiologiGet
 } from "../../../../../store/actions";
-import LoadingTable from '../../../../../Components/LoadingTable/LoadingTable';
+import LoadingTable from '../../../../../Components/Table/LoadingTable';
 
 const OrderRadiologi = () => {
     const { norecdp, norecap } = useParams();

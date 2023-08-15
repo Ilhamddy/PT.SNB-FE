@@ -22,7 +22,7 @@ import * as Yup from "yup"
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { rgxAllPeriods, rgxValidNumber } from "../../utils/regexcommon.js";
 import { onChangeStrNbr, strToNumber } from "../../utils/format";
-import LoadingTable from "../../Components/LoadingTable/LoadingTable";
+import LoadingTable from "../../Components/Table/LoadingTable";
 
 const KonversiProduk = ({tabId}) => {
     const {paramobat} = useParams();

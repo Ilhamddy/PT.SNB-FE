@@ -1,6 +1,7 @@
 import { authJwt } from "../../middleware/index.js";
 import controller from "../../controllers/transaksi/gudang/gudang.controller";
 
+
 // eslint-disable-next-line max-lines-per-function
 export default function (app) {
     app.use(function (req, res, next) {
@@ -100,4 +101,6 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getKartuStok
     )
+
+
 }

@@ -23,7 +23,7 @@ import {
     daftarDokumenRekammedisGet, widgetdaftarDokumenRekammedisGet,
     saveDokumenRekammedis,kendaliDokumenResetForm
 } from '../../../store/actions';
-import LoadingTable from '../../../Components/LoadingTable/LoadingTable';
+import LoadingTable from '../../../Components/Table/LoadingTable';
 
 const KendaliDokumen = () => {
     document.title = "Daftar Dokumen Rekammedis";
