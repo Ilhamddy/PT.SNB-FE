@@ -4,7 +4,10 @@ import {
     GET_STOK_BATCH_ERROR,
     CREATE_OR_UPDATE_ORDER_BARANG,
     CREATE_OR_UPDATE_ORDER_BARANG_SUCCESS,
-    CREATE_OR_UPDATE_ORDER_BARANG_ERROR
+    CREATE_OR_UPDATE_ORDER_BARANG_ERROR,
+    GET_ORDER_BARANG,
+    GET_ORDER_BARANG_SUCCESS,
+    GET_ORDER_BARANG_ERROR,
   } from "./actionType";
   
 const INIT_STATE = {
@@ -17,7 +20,12 @@ const INIT_STATE = {
         data: [],
         loading: false,
         error: null
-    }
+    },
+    getOrderBarang: {
+        data: [],
+        loading: false,
+        error: null
+    },
 };
   
 const Distribusi = (state = INIT_STATE, action) => {
@@ -83,6 +91,40 @@ const Distribusi = (state = INIT_STATE, action) => {
                 ...state,
                 createOrUpdateOrderbarang: {
                     ...state.createOrUpdateOrderbarang,
+                    loading: false,
+                    data: [],
+                    error: action.payload
+                }
+            }
+        }
+
+        case GET_ORDER_BARANG: {
+            return {
+                ...state,
+                getOrderBarang: {
+                    ...state.getOrderBarang,
+                    loading: true,
+                    data: [],
+                    error: null
+                }
+            }
+        }
+        case GET_ORDER_BARANG_SUCCESS: {
+            return {
+                ...state,
+                getOrderBarang: {
+                    ...state.getOrderBarang,
+                    loading: false,
+                    data: action.payload,
+                    error: null
+                }
+            }
+        }
+        case GET_ORDER_BARANG_ERROR: {
+            return {
+                ...state,
+                getOrderBarang: {
+                    ...state.getOrderBarang,
                     loading: false,
                     data: [],
                     error: action.payload

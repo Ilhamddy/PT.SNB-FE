@@ -4,7 +4,10 @@ import {
     GET_STOK_BATCH_ERROR,
     CREATE_OR_UPDATE_ORDER_BARANG,
     CREATE_OR_UPDATE_ORDER_BARANG_SUCCESS,
-    CREATE_OR_UPDATE_ORDER_BARANG_ERROR
+    CREATE_OR_UPDATE_ORDER_BARANG_ERROR,
+    GET_ORDER_BARANG,
+    GET_ORDER_BARANG_SUCCESS,
+    GET_ORDER_BARANG_ERROR,
 } from "./actionType"
 
 
@@ -35,5 +38,20 @@ export const createOrUpdateOrderbarangSuccess = (data) => ({
 
 export const createOrUpdateOrderbarangError = (error) => ({
     type: CREATE_OR_UPDATE_ORDER_BARANG_ERROR,
+    payload: error
+})
+
+export const getOrderBarang = (queries) => ({
+    type: GET_ORDER_BARANG,
+    payload: {queries: queries}
+})
+
+export const getOrderBarangSuccess = (data) => ({
+    type: GET_ORDER_BARANG_SUCCESS,
+    payload: data
+})
+
+export const getOrderBarangError = (error) => ({
+    type: GET_ORDER_BARANG_ERROR,
     payload: error
 })

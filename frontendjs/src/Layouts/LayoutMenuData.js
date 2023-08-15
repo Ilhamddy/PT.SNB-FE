@@ -535,7 +535,7 @@ const Navdata = () => {
         },
         {
             id: "gudang",
-            label: "Gudang",
+            label: "Gudang Farmasi",
             icon: "lab la-delicious",
             link: "/#",
             click: function (e) {
@@ -577,6 +577,17 @@ const Navdata = () => {
                     id: "kartustok",
                     label: "Kartu Stok",
                     link: "/farmasi/gudang/kartu-stok",
+                    parentId: "gudang",
+                    isAllowed: () => {
+                        return isAllowedAccess(getUserPermissions(), [
+                            "REGISTRASI_VIEW",
+                        ]);
+                    }
+                },
+                {
+                    id: "distribusiorder",
+                    label: "Distribusi Order",
+                    link: "/farmasi/gudang/distribusi-order",
                     parentId: "gudang",
                     isAllowed: () => {
                         return isAllowedAccess(getUserPermissions(), [

@@ -10,4 +10,8 @@ export default class ServiceDistribusi{
     createOrUpdateOrderbarang = async (body) => {
         return await api.create(`/transaksi/gudang/distribusi/create-or-update-order-barang`, body)
     }
+
+    getOrderBarang = async (queries) => {
+        return await api.get(`/transaksi/gudang/distribusi/get-order-barang`, queries)
+    }
 }

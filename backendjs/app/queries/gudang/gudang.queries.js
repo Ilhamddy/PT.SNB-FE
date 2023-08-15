@@ -71,7 +71,7 @@ const qGetKemasan = `
 `
 
 const qGetProdukMaster = `
-    SELECT
+SELECT
     mp.id AS id,
     mp.statusenabled AS statusenabled,
     mp.namaproduk AS namaproduk,
@@ -79,11 +79,11 @@ const qGetProdukMaster = `
     mv.reportdisplay AS variabelbpjs,
     mdjp.detailjenisproduk AS detailjenisproduk,
     mgo.golonganobat AS golonganobat
-        FROM m_produk mp
-        LEFT JOIN m_satuan ms ON mp.objectsatuanstandarfk = ms.id
-        LEFT JOIN m_variabelbpjs mv ON mv.id = mp.objectvariabelbpjsfk
-        LEFT JOIN m_detailjenisproduk mdjp ON mdjp.id = mp.objectdetailjenisprodukfk
-        LEFT JOIN m_golonganobat mgo ON mgo.id = mp.objectgolonganobatfk
+FROM m_produk mp
+    LEFT JOIN m_satuan ms ON mp.objectsatuanstandarfk = ms.id
+    LEFT JOIN m_variabelbpjs mv ON mv.id = mp.objectvariabelbpjsfk
+    LEFT JOIN m_detailjenisproduk mdjp ON mdjp.id = mp.objectdetailjenisprodukfk
+    LEFT JOIN m_golonganobat mgo ON mgo.id = mp.objectgolonganobatfk
 `
 
 const qGetProdukEdit = `
