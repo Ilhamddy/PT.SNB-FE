@@ -539,6 +539,17 @@ const Navdata = () => {
                         ]);
                     }
                 },
+                {
+                    id: "distribusiorder",
+                    label: "Distribusi Order",
+                    link: "/farmasi/gudang/distribusi-order",
+                    parentId: "gudang",
+                    isAllowed: () => {
+                        return isAllowedAccess(getUserPermissions(), [
+                            "REGISTRASI_VIEW",
+                        ]);
+                    }
+                },
             ]
         },
     ];

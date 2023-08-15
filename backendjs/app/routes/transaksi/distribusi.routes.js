@@ -29,5 +29,11 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.createOrUpdateOrderbarang
     )
+
+    app.get(
+        "/api/transaksi/gudang/distribusi/get-order-barang",
+        [authJwt.verifyToken],
+        controller.getOrderBarang
+    )
         
 }

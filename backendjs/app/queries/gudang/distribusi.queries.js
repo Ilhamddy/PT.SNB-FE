@@ -50,7 +50,21 @@ FROM m_kemasanproduk mk
 WHERE mk.statusenabled = true AND mk.id = $1
 `
 
+// nama variable disamakan dengan variable input frontens
+const qGetOrder = `
+SELECT
+    norec AS norecorder,
+    tglinput AS tglorder,
+    objectjenisorderbarangfk AS jenisorder,
+    objectunitasalfk AS unitorder,
+    objectunittujuanfk AS unittujuan,
+    keterangan
+FROM
+    t_orderbarang
+`
+
 export {
     qGetStokUnit,
-    qKemasanFromId
+    qKemasanFromId,
+    qGetOrder
 }

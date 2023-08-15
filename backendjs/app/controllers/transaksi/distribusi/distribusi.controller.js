@@ -2,6 +2,7 @@ import pool from "../../../config/dbcon.query";
 import * as uuid from 'uuid'
 import db from "../../../models";
 import { 
+    qGetOrder,
     qGetStokUnit, qKemasanFromId
 } from "../../../queries/gudang/distribusi.queries";
 import {
@@ -145,10 +146,34 @@ const createOrUpdateOrderbarang = async (req, res) => {
     }
 } 
 
+const getOrderBarang = async (req, res) => {
+    try {
+        const order = (await pool.query(qGetOrder, []));
+        if(order.rows.length === 0) throw new Error("order not found")
+        let tempres = {
+            order: order.rows[0]
+        }
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+        });
+    } catch (error){
+        console.error("===get combo setting error=== ")
+        console.error(error)
+        res.status(500).send({
+            data: error,
+            status: "error",
+            success: false,
+        });
+    }
+}
+
 export default {
     getStokBatch,
     getKemasanById,
-    createOrUpdateOrderbarang
+    createOrUpdateOrderbarang,
+    getOrderBarang
 }
 
 const hCreateOrderDetail = async (req, res, transaction, {norecorder}) => {
