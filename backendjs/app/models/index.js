@@ -45,6 +45,8 @@ import t_penerimaanbarangdetailModel from "./t_penerimaanbarangdetail.model.js";
 import m_nilainormallabM from "./m_nilainormallab.model.js";
 import t_stokunitModel from "./t_stokunit.model.js";
 import t_kartustokModel from "./t_kartustok.model.js";
+import t_hasilpemeriksaanModel from "./t_hasilpemeriksaan.model.js";
+import t_hasilpemeriksaandetailModel from "./t_hasilpemeriksaandetail.model.js";
 
 const sequelize = new Sequelize(
   config.DB,
@@ -116,6 +118,8 @@ db.m_detailkelompokumur = m_detailkelompokumurM(sequelize, sequelizeInstance);
 db.m_nilainormallab = m_nilainormallabM(sequelize, sequelizeInstance);
 db.t_stokunit = t_stokunitModel(sequelize, sequelizeInstance);
 db.t_kartustok = t_kartustokModel(sequelize, sequelizeInstance);
+db.t_hasilpemeriksaan = t_hasilpemeriksaanModel(sequelize, sequelizeInstance);
+db.t_hasilpemeriksaandetail = t_hasilpemeriksaandetailModel(sequelize, sequelizeInstance);
 
 db.role.belongsToMany(db.user, {
   through: "user_roles",

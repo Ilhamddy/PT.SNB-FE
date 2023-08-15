@@ -126,4 +126,16 @@ export default function (app) {
         controller.saveSetMasterNilaiNormalLab
     );
 
+    app.post(
+        "/api/transaksi/laboratorium/save-transaksi-nilai-normal-lab",
+        [authJwt.verifyToken],
+        controller.saveSetNilaiNormalt
+    );
+
+    app.get(
+        "/api/transaksi/laboratorium/list-cetak-hasil-lab",
+        [authJwt.verifyToken],
+        controller.getCetakHasilLab
+    );
+
 }

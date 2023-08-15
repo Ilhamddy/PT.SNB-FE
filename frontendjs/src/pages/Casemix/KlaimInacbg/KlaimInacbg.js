@@ -2179,7 +2179,7 @@ const KlaimInacbg = () => {
                                                                 <span>Info</span>
                                                             </th>
                                                             <th scope="row" style={{ width: "18%", textAlign: 'center' }} colSpan={3}>
-                                                                <span>TARIF RS KELAS D PEMERINTAH</span>
+                                                                <span>TARIF RS KELAS A PEMERINTAH</span>
                                                             </th>
                                                         </tr>
                                                         <tr>
@@ -2308,7 +2308,7 @@ const KlaimInacbg = () => {
                                                                     <span>Info</span>
                                                                 </th>
                                                                 <th scope="row" style={{ width: "18%", textAlign: 'center' }} colSpan={2}>
-                                                                    <span>TARIF RS KELAS D PEMERINTAH</span>
+                                                                    <span>TARIF RS KELAS A PEMERINTAH</span>
                                                                 </th>
                                                             </tr>
                                                             <tr>

@@ -11,12 +11,17 @@ import { Link, useNavigate } from "react-router-dom";
 import EmrHeader from '../../Emr/EmrHeader/EmrHeader';
 import DataTable from 'react-data-table-component';
 import { useParams } from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify';
 import {
-    listPelayananLaboratoriumGet, laboratoriumResetForm
+    listPelayananLaboratoriumGet, laboratoriumResetForm, saveSetTNilaiNormalLab
 } from '../../../store/actions';
 import classnames from "classnames";
 import { useFormik } from 'formik';
 import LoadingTable from '../../../Components/Table/LoadingTable';
+import PrintTemplate from '../../Print/PrintTemplate/PrintTemplate';
+import PrintHasilLaboratorium from '../../Print/PrintHasilLaboratorium/PrintHasilLaboratorium';
+import CetakLabModal from '../../../Components/Common/CetakLabModal';
+
 const TransaksiPelayanLaboratorium = () => {
     const { norecdp, norecap } = useParams();
     const dispatch = useDispatch();
@@ -25,6 +30,9 @@ const TransaksiPelayanLaboratorium = () => {
         dataPelayanan: state.Laboratorium.listPelayananLaboratoriumGet.data || [],
         loadingPelayanan: state.Laboratorium.listPelayananLaboratoriumGet.loading,
         successPelayanan: state.Laboratorium.listPelayananLaboratoriumGet.success,
+        newDataSave: state.Laboratorium.saveSetTNilaiNormalLab.newData,
+        successSave: state.Laboratorium.saveSetTNilaiNormalLab.success,
+        loadingSave: state.Laboratorium.saveSetTNilaiNormalLab.loading,
     }));
     const validation = useFormik({
         enableReinitialize: true,
@@ -37,7 +45,7 @@ const TransaksiPelayanLaboratorium = () => {
     });
     useEffect(() => {
         const setFF = validation.setFieldValue
-        if((dataPelayanan || []).length !== 0){
+        if ((dataPelayanan || []).length !== 0) {
             setFF("pelayananproses", dataPelayanan)
         }
     }, [dataPelayanan, validation.setFieldValue])
@@ -64,8 +72,52 @@ const TransaksiPelayanLaboratorium = () => {
 
         }
     }
+    const [listPelayananChecked, setListPelayananChecked] = useState([])
+    const handleChecked = (checked, norec) => {
+        const newListPC = [...listPelayananChecked]
+        const index = newListPC.findIndex((item) => item.norec === norec)
+        const newItem = { ...newListPC[index] }
+        newItem.checked = !checked
+        newListPC[index] = newItem
+        setListPelayananChecked(newListPC)
+    }
 
+    const isCheckedAll = listPelayananChecked?.every((item) => item.checked)
+    const handleCheckedAll = () => {
+        if (dataPelayanan === null) return
+        const withChecked = dataPelayanan.map((pelayanan) => {
+            return {
+                ...pelayanan,
+                checked: !pelayanan.norec && !isCheckedAll
+            }
+        })
+        setListPelayananChecked(withChecked)
+    }
     const columns = [
+        {
+            name: <span className='font-weight-bold fs-13'>
+                {/* <Input 
+                    className="form-check-input" 
+                    type="checkbox" 
+                    id={`formcheck-all`} 
+                    checked={isCheckedAll} 
+                    onChange={e => {handleCheckedAll(isCheckedAll)}}/> */}
+            </span>,
+            sortable: false,
+            cell: (row) => {
+                return (
+                    <div className="hstack gap-3 flex-wrap">
+                        <Input
+                            className="form-check-input"
+                            type="checkbox"
+                            id={`formcheck-${row.norec}`}
+                            checked={row.checked}
+                            onChange={e => { handleChecked(row.checked, row.norec) }} />
+                    </div>
+                );
+            },
+            width: "50px"
+        },
         {
             name: <span className='font-weight-bold fs-13'>Detail</span>,
             sortable: false,
@@ -163,29 +215,43 @@ const TransaksiPelayanLaboratorium = () => {
 
     ];
 
-    const handleInputChangeHasil = (data,id, nama, value, nodata) => {
+    const handleInputChangeHasil = (data, id, nama, value, nodata) => {
         let newData = [...data]
 
         for (let i = 0; i < newData.length; i++) {
-            if(newData[i].idnilainormallab===id){
-                newData[i].nilaihasil=value
+            if (newData[i].idnilainormallab === id) {
+                if (nama === 'nilaihasil') {
+                    newData[i].nilaihasil = value
+                } else if (nama === 'keterangan') {
+                    newData[i].keterangan = value
+                }
+
             }
         }
 
         let newDataPelayanan = [...validation.values.pelayananproses]
 
         const indexChange = newDataPelayanan.findIndex((newDataPel) => newDataPel === nodata)
-        if(indexChange >= 0){
+        if (indexChange >= 0) {
             newDataPelayanan[indexChange] = newData
 
         }
 
         validation.setFieldValue("pelayananproses", newDataPelayanan)
     };
-
-    
+    const refPrintHasilLab = useRef(null);
+    const handlePrint = () => {
+        refPrintHasilLab.current?.handlePrint();
+    }
+    const [showCetakModal, setshowCetakModal] = useState(false);
     return (
         <React.Fragment>
+            <ToastContainer closeButton={false} />
+            <CetakLabModal
+                show={showCetakModal}
+                norecdp={norecdp}
+                norecap={norecap}
+                onCloseClick={() => setshowCetakModal(false)} />
             <UiContent />
             <div className="page-content">
                 <Container fluid>
@@ -212,6 +278,13 @@ const TransaksiPelayanLaboratorium = () => {
                                         <TabPane tabId="1" id="home-1">
                                             <Card>
                                                 <CardBody>
+                                                    <Col lg={3} style={{ textAlign: 'left' }}>
+                                                        <Button type="button" style={{ backgroundColor: '#192a56', textAlign: 'right' }} placement="top"
+                                                            onClick={() => { setshowCetakModal(true) }}
+                                                        >
+                                                            Cetak
+                                                        </Button>
+                                                    </Col>
                                                     <div id="table-gridjs">
                                                         <DataTable
                                                             fixedHeader
@@ -222,7 +295,7 @@ const TransaksiPelayanLaboratorium = () => {
                                                             progressPending={loadingPelayanan}
                                                             customStyles={tableCustomStyles}
                                                             expandableRows
-                                                            expandableRowsComponent={({...rest}) => 
+                                                            expandableRowsComponent={({ ...rest }) =>
                                                                 <ExpandableNilaiNormal
                                                                     handleInputChangeHasil={handleInputChangeHasil}
                                                                     {...rest}
@@ -245,17 +318,36 @@ const TransaksiPelayanLaboratorium = () => {
                     </Row>
                 </Container>
             </div>
+
+            {/* <PrintTemplate
+                ContentPrint={<PrintHasilLaboratorium
+                // dataRekap={dataTagihanPrint?.billing || []}
+                // dataPasien={dataPasienReg || null}
+                />
+
+                }
+                ref={refPrintHasilLab}
+            /> */}
         </React.Fragment>
     )
 }
 
 
-const handleClickSave = (e) => {
-   console.log(e)
-};
+
 
 const ExpandableNilaiNormal = ({ data, handleInputChangeHasil }) => {
+    const dispatch = useDispatch();
+    const handleClickSave = (e) => {
+        let tempValue = {
+            data: e
+        }
+        dispatch(saveSetTNilaiNormalLab(tempValue));
+    };
     const [tempVal, setTempValue] = useState({
+        index: -1,
+        value: "",
+    })
+    const [tempValKet, setTempValueKet] = useState({
         index: -1,
         value: "",
     })
@@ -282,36 +374,63 @@ const ExpandableNilaiNormal = ({ data, handleInputChangeHasil }) => {
                         <td>{item.reportdisplay}</td>
                         <td>
                             <input
-                            type="text"
-                            name="nilaihasil"
-                            value={key === tempVal.index ? tempVal.value : item.nilaihasil}
-                            placeholder="Nilai Hasil"
-                            className="form-control"
-                            onFocus={(e) => setTempValue({
-                                index: key,
-                                value: e.target.value
-                            })}
-                            onBlur={(e) => handleInputChangeHasil(
-                                data.listnilainormal,
-                                item.idnilainormallab, 
-                                'nilaihasil',
-                                e.target.value,
-                                data.no,
-                            )}
-                            // disabled={row.statusDisable}
-                            onChange={(e) => {
-                                key === tempVal.index &&
-                                    setTempValue({
-                                        index: tempVal.index,
-                                        value: e.target.value
-                                    })
-                            }}
-                        />
+                                type="text"
+                                name="nilaihasil"
+                                value={key === tempVal.index ? tempVal.value : item.nilaihasil}
+                                placeholder="Nilai Hasil"
+                                className="form-control"
+                                onFocus={(e) => setTempValue({
+                                    index: key,
+                                    value: e.target.value
+                                })}
+                                onBlur={(e) => handleInputChangeHasil(
+                                    data.listnilainormal,
+                                    item.idnilainormallab,
+                                    'nilaihasil',
+                                    e.target.value,
+                                    data.no,
+                                )}
+                                // disabled={row.statusDisable}
+                                onChange={(e) => {
+                                    key === tempVal.index &&
+                                        setTempValue({
+                                            index: tempVal.index,
+                                            value: e.target.value
+                                        })
+                                }}
+                            />
                         </td>
                         <td>{item.nilaitext}</td>
                         <td>{item.satuan}</td>
                         <td>{item.metodepemeriksaan}</td>
-                        <td>{item.keterangan}</td>
+                        <td>
+                            <input
+                                type="text"
+                                name="keterangan"
+                                value={key === tempValKet.index ? tempValKet.value : item.keterangan}
+                                placeholder="Keterangan"
+                                className="form-control"
+                                onFocus={(e) => setTempValueKet({
+                                    index: key,
+                                    value: e.target.value
+                                })}
+                                onBlur={(e) => handleInputChangeHasil(
+                                    data.listnilainormal,
+                                    item.idnilainormallab,
+                                    'keterangan',
+                                    e.target.value,
+                                    data.no,
+                                )}
+                                // disabled={row.statusDisable}
+                                onChange={(e) => {
+                                    key === tempValKet.index &&
+                                        setTempValueKet({
+                                            index: tempValKet.index,
+                                            value: e.target.value
+                                        })
+                                }}
+                            />
+                        </td>
                         {/* <td>{item.nominal?.toLocaleString("id-ID") || ""}</td>
                     <td>{item.nobukti}</td> */}
                     </tr>
@@ -319,7 +438,7 @@ const ExpandableNilaiNormal = ({ data, handleInputChangeHasil }) => {
                 <tr>
                     <td style={{ textAlign: 'center' }} colSpan={6}>
                         <Button type="button" style={{ backgroundColor: '#192a56', textAlign: 'right' }} placement="top"
-                        onClick={() => handleClickSave(data.listnilainormal)}>
+                            onClick={() => handleClickSave(data.listnilainormal)}>
                             Simpan
                         </Button>
                         <Button type="button" style={{ backgroundColor: 'red', textAlign: 'right' }} placement="top">
