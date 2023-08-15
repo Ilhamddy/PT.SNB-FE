@@ -47,6 +47,13 @@ const TransaksiPelayanLaboratorium = () => {
         const setFF = validation.setFieldValue
         if ((dataPelayanan || []).length !== 0) {
             setFF("pelayananproses", dataPelayanan)
+            const withChecked = dataPelayanan.map((pelayanan) => {
+                return {
+                    ...pelayanan,
+                    checked: false
+                }
+            })
+            setListPelayananChecked(withChecked)
         }
     }, [dataPelayanan, validation.setFieldValue])
     useEffect(() => {
@@ -80,6 +87,7 @@ const TransaksiPelayanLaboratorium = () => {
         newItem.checked = !checked
         newListPC[index] = newItem
         setListPelayananChecked(newListPC)
+        // console.log(listPelayananChecked)
     }
 
     const isCheckedAll = listPelayananChecked?.every((item) => item.checked)
@@ -240,10 +248,24 @@ const TransaksiPelayanLaboratorium = () => {
         validation.setFieldValue("pelayananproses", newDataPelayanan)
     };
     const refPrintHasilLab = useRef(null);
+    const [tempNorecPel, settempNorecPel] = useState("");
     const handlePrint = () => {
-        refPrintHasilLab.current?.handlePrint();
+        // refPrintHasilLab.current?.handlePrint();
+        let temp = []
+        for (let i = 0; i < listPelayananChecked.length; i++) {
+            if (listPelayananChecked[i].checked === true) {
+                temp.push(listPelayananChecked[i].norec)
+                // if (temp === ``)
+                //     temp = `'${listPelayananChecked[i].norec}'`
+                // else
+                //     temp = temp + `,'${listPelayananChecked[i].norec}'`
+            }
+        }
+        settempNorecPel(temp)
+        setshowCetakModal(true)
     }
     const [showCetakModal, setshowCetakModal] = useState(false);
+
     return (
         <React.Fragment>
             <ToastContainer closeButton={false} />
@@ -251,7 +273,8 @@ const TransaksiPelayanLaboratorium = () => {
                 show={showCetakModal}
                 norecdp={norecdp}
                 norecap={norecap}
-                onCloseClick={() => setshowCetakModal(false)} />
+                onCloseClick={() => setshowCetakModal(false)}
+                tempNorecPel={tempNorecPel} />
             <UiContent />
             <div className="page-content">
                 <Container fluid>
@@ -280,7 +303,7 @@ const TransaksiPelayanLaboratorium = () => {
                                                 <CardBody>
                                                     <Col lg={3} style={{ textAlign: 'left' }}>
                                                         <Button type="button" style={{ backgroundColor: '#192a56', textAlign: 'right' }} placement="top"
-                                                            onClick={() => { setshowCetakModal(true) }}
+                                                            onClick={handlePrint}
                                                         >
                                                             Cetak
                                                         </Button>

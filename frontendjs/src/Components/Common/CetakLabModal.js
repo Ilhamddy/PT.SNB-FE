@@ -17,7 +17,7 @@ import {
     daftarPasienNorecGet,listCetakHasiilLabGet
 } from "../../store/actions";
 
-const CetakLabModal = ({ show, norecdp, norecap, onCloseClick }) => {
+const CetakLabModal = ({ show, norecdp, norecap, onCloseClick,tempNorecPel }) => {
     const dispatch = useDispatch();
     const { editData, newData, loading, error, success, dataReg,
     dataCetak } = useSelector((state) => ({
@@ -29,8 +29,8 @@ const CetakLabModal = ({ show, norecdp, norecap, onCloseClick }) => {
     }));
     useEffect(() => {
         norecdp && dispatch(daftarPasienNorecGet(norecdp));
-        dispatch(listCetakHasiilLabGet(''))
-    }, [dispatch, norecap, norecdp])
+        dispatch(listCetakHasiilLabGet(tempNorecPel))
+    }, [dispatch, norecap, norecdp,tempNorecPel])
     const [tempDataDokter, settempDataDokter] = useState([]);
     const [tempDataUnit, settempDataUnit] = useState([]);
     useEffect(() => {
