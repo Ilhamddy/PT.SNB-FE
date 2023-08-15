@@ -56,11 +56,17 @@ SELECT
     norec AS norecorder,
     tglinput AS tglorder,
     objectjenisorderbarangfk AS jenisorder,
+    mjob.reportdisplay AS namajenisorder,
     objectunitasalfk AS unitorder,
+    mua.namaunit AS namaunitasal,
     objectunittujuanfk AS unittujuan,
+    mut.namaunit AS namaunittujuan,
+    noorder AS noorder,
     keterangan
-FROM
-    t_orderbarang
+FROM t_orderbarang tor
+    LEFT JOIN m_unit mua ON mua.id = tor.objectunitasalfk
+    LEFT JOIN m_unit mut ON mut.id = tor.objectunittujuanfk
+    LEFT JOIN m_jenisorderbarang mjob ON mjob.id = tor.objectjenisorderbarangfk
 `
 
 export {

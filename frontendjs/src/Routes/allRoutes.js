@@ -288,6 +288,7 @@ import PenerimaanProduk from "../pages/PenerimaanProduk/PenerimaanProduk";
 import PenerimaanProdukList from "../pages/PenerimaanProduk/PenerimaanProdukList";
 import KartuStok from "../pages/KartuStok/KartuStok";
 import DistribusiOrder from "../pages/Distribusi/DistribusiOrder";
+import DistribusiOrderList from "../pages/Distribusi/DistribusiList";
 
 
 
@@ -557,6 +558,7 @@ const authProtectedRoutes = [
 
   //distribusi 
   { path: "/farmasi/gudang/distribusi-order", component: <DistribusiOrder /> },
+  { path: "/farmasi/gudang/distribusi-order-list", component: <DistribusiOrderList /> },
 
 ];
 

@@ -151,7 +151,7 @@ const getOrderBarang = async (req, res) => {
         const order = (await pool.query(qGetOrder, []));
         if(order.rows.length === 0) throw new Error("order not found")
         let tempres = {
-            order: order.rows[0]
+            order: order.rows
         }
         res.status(200).send({
             data: tempres,
