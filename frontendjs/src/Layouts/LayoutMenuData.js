@@ -10,6 +10,7 @@ const Navdata = () => {
     const [isRegistrasi, setIsRegistrasi] = useState(false);
     const [isListDaftarPasien, setListDaftarPasien] = useState(false);
     const [isRekamMedis, setRekamMedis] = useState(false);
+    const [isLaporan, setLaporan] = useState(false);
     const [isPembayaran, setPembayaran] = useState(false);
     const [isRadiologi, setRadiologi] = useState(false);
     const [isLaboratorium, setLaboratorium] = useState(false);
@@ -138,6 +139,7 @@ const Navdata = () => {
         isRegistrasi,
         isListDaftarPasien,
         isRekamMedis,
+        isLaporan,
         isRadiologi,
         isLaboratorium,
         isCasemix,
@@ -360,6 +362,49 @@ const Navdata = () => {
                         ]);
                     }
                 },
+                {
+                    id: "rekammedis-laporan",
+                    label: "Laporan",
+                    icon: "lab la-delicious",
+                    link: "/#",
+                    parentId: "rekammedis",
+                    isChildItem: true,
+                    click: function (e) {
+                        e.preventDefault();
+                        setLaporan(!isLaporan);
+                    },
+                    stateVariables: isLaporan,
+                    isAllowed: () => {
+                        return isAllowedAccess(getUserPermissions(), [
+                            "REGISTRASI_VIEW",
+                        ]);
+                    },
+                    childItems: [
+                        {
+                            id: "rekammedis-laporan-pasien-daftar",
+                            label: "Laporan Pasien Daftar",
+                            link: "/cmVrYW1tZWRpcy9sYXBvcmFuLXBhc2llbi1kYWZ0YXI=",
+                            parentId: "rekammedis-laporan",
+                            isAllowed: () => {
+                                return isAllowedAccess(getUserPermissions(), [
+                                    "REGISTRASI_VIEW",
+                                ]);
+                            },
+                        },
+                        {
+                            id: "laporan-subitem2",
+                            label: "Sub-item 2",
+                            link: "/laporan/subitem2",
+                            parentId: "rekammedis-laporan",
+                            isAllowed: () => {
+                                return isAllowedAccess(getUserPermissions(), [
+                                    "REGISTRASI_VIEW",
+                                ]);
+                            },
+                        },
+                        // Add more sub-subitems as needed
+                    ],
+                }
             ]
         },
         {
@@ -552,6 +597,7 @@ const Navdata = () => {
                 },
             ]
         },
+        
     ];
     return <React.Fragment>{menuItems}</React.Fragment>;
 };
