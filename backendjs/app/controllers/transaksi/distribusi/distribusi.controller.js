@@ -51,12 +51,12 @@ export const getStokBatch = async (req, res) => {
 
 const getKemasanById = async (req, res) => {
     try {
-        const { idkemasan } = req.query;
+        let { idkemasan } = req.query;
         // id kemasan boleh kosong
-        const kemasan = await pool.query(qKemasanFromId, [idkemasan || null]);
+        const kemasan = (await pool.query(qKemasanFromId, [idkemasan]));
 
         let tempres = {
-            kemasan: kemasan
+            kemasan: kemasan.rows
         }
         res.status(200).send({
             data: tempres,

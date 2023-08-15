@@ -47,9 +47,9 @@ FROM m_kemasanproduk mk
     LEFT JOIN m_produk mp ON mk.objectprodukfk = mp.id
     LEFT JOIN m_satuan msk ON msk.id = mk.objectsatuankecilfk
     LEFT JOIN m_satuan msb ON msb.id = mk.objectsatuanbesarfk
-WHERE CASE WHEN $1 = NULL 
+WHERE CASE WHEN NULLIF($1, '')::int IS NULL 
     THEN mk.statusenabled = true 
-    ELSE mk.statusenabled = true AND mk.id = $1
+    ELSE mk.statusenabled = true AND mk.id = $1::int
 END
 `
 

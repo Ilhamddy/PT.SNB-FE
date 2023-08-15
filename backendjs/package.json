@@ -60,15 +60,31 @@
       "for-direction": [
         "error"
       ],
-      "max-lines-per-function": ["warn", 130],
-      "no-dupe-args": ["error"],
-      "use-isnan": ["error"],
-      "no-self-assign": ["error"],
-      "no-constant-condition": ["warn"],
-      "no-unsafe-negation": ["error"],
-      "no-unsafe-optional-chaining": ["error"],
-      "no-sparse-arrays": ["warn"]
-
+      "max-lines-per-function": [
+        "warn",
+        130
+      ],
+      "no-dupe-args": [
+        "error"
+      ],
+      "use-isnan": [
+        "error"
+      ],
+      "no-self-assign": [
+        "error"
+      ],
+      "no-constant-condition": [
+        "warn"
+      ],
+      "no-unsafe-negation": [
+        "error"
+      ],
+      "no-unsafe-optional-chaining": [
+        "error"
+      ],
+      "no-sparse-arrays": [
+        "warn"
+      ]
     },
     "globals": {}
   },
@@ -76,6 +92,7 @@
     "@babel/core": "^7.22.6",
     "@babel/eslint-parser": "^7.22.6",
     "@babel/preset-react": "^7.22.5",
+    "@types/pg": "^8.10.2",
     "eslint": "^8.44.0",
     "nodemon": "^2.0.22"
   }
