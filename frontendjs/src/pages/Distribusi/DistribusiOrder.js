@@ -25,38 +25,46 @@ import DataTable from "react-data-table-component";
 import LoadingTable from "../../Components/Table/LoadingTable";
 import NoDataTable from "../../Components/Table/NoDataTable";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useRef } from "react";
-import { getStokBatch, kemasanFromProdukGet } from "../../store/actions";
+import { useEffect, useRef, useState } from "react";
+import { createOrUpdateOrderbarang, getStokBatch, kemasanFromProdukGet } from "../../store/actions";
 import { APIClient } from "../../helpers/api_helper";
+import { comboDistribusiOrderGet } from "../../store/master/action";
+import { Link } from "react-router-dom";
 
 
 
 
 const DistribusiOrder = () => {
     const dispatch = useDispatch()
+    const [tglSekarang] = useState(() => new Date().toISOString())
 
-    const {
+    let {
         stokBatch,
-        satuan
+        satuan,
+        unit,
+        jenisorderbarang
     } = useSelector(state => ({
         stokBatch: state.Distribusi.getStokBatch?.data || [],
-        satuan: state.Gudang.kemasanFromProdukGet || null
+        satuan: state.Gudang.kemasanFromProdukGet || null,
+        unit: state.Master.comboDistribusiOrderGet.data?.unit || [],
+        jenisorderbarang: state.Master.comboDistribusiOrderGet.data?.jenisorderbarang || [],
     }))
 
     const refSatuan = useRef(null);
     const refProduk = useRef(null);
 
     const vOrder = useFormik({
+        enableReinitialize: true,
         initialValues: {
-            tanggalorder: "",
+            norecorder: "",
+            tanggalorder: tglSekarang,
             noorder: "",
             jenisorder: "",
             unitorder: "",
             unittujuan: "",
-            keterangankirim: "",
+            keterangan: "",
             /**@type {import("../../../../backendjs/app/queries/gudang/distribusi.queries").ListStokUnit} */
             batchproduk: [],
-
         },
         validationSchema: Yup.object({
             tanggalorder: Yup.string().required("Tanggal Order harus diisi"),
@@ -64,10 +72,11 @@ const DistribusiOrder = () => {
             jenisorder: Yup.string().required("Jenis Order harus diisi"),
             unitorder: Yup.string().required("Unit Order harus diisi"),
             unittujuan: Yup.string().required("Unit Tujuan harus diisi"),
-            keterangankirim: Yup.string().required("Keterangan Kirim harus diisi"),
+            keterangan: Yup.string().required("Keterangan Kirim harus diisi"),
         }),
         onSubmit: (values) => {
-            console.log(values)
+            
+            dispatch(createOrUpdateOrderbarang(values))
         }
     })
 
@@ -157,7 +166,7 @@ const DistribusiOrder = () => {
         return total + batch.qty
     }, 0)
 
-    const jumlahOut = vOrder.values.batchproduk.reduce((total, batch) => {
+    let jumlahOut = vOrder.values.batchproduk.reduce((total, batch) => {
         const out = (batch.produkid === vProduk.values.produk ? batch.qtyout : 0)
         return total + out
     }, 0)
@@ -176,39 +185,55 @@ const DistribusiOrder = () => {
     }
 
 
-
     const jumlahTotal = strToNumber(vProduk.values.jumlah) * strToNumber(vProduk.values.konversi)
-
+    const newStokBatch = stokBatch.filter((batch) => {
+        const batchProduk = vOrder.values.batchproduk.find((batchOrder) => {
+            return batchOrder.value === batch.value
+        })
+        const produkNotFound = !batchProduk
+        return produkNotFound
+    })
 
     useEffect(() => {
         dispatch(getStokBatch({}))
+        dispatch(comboDistribusiOrderGet())
     }, [dispatch])
     
 
     const handleEditColumn = async (row) => {
         const api = new APIClient();
-        const konversi = row.konversi
-        vProduk.setFieldValue("produk", row.produkid)
+        
+        vProduk.setFieldValue("produk", row.value)
         vProduk.setFieldValue("namaproduk", row.label)
         vProduk.setFieldValue("satuan", row.satuankirim)
         vProduk.setFieldValue("namasatuan", row.namasatuan)
+        const kemasan = await api
+        .get("/transaksi/gudang/distribusi/get-kemasan-by-id", {idkemasan: row.satuankirim})
+        const konversi = kemasan.data.kemasan.nilaikonversi
         vProduk.setFieldValue("konversi", konversi)
         // hitung jumlahnya dahulu
         const allProduk = vOrder.values.batchproduk.filter((batch) => {
-            return batch.produkid === row.produkid
+            return batch.value === row.value
         })
         const jmlAllProduk = allProduk.reduce((total, batch) => {
-            return total + batch.qtyout / konversi
+            return total + (batch.qtyout / konversi)
         }, 0)
         
         vProduk.setFieldValue("jumlah", jmlAllProduk)
         const newBatch = stokBatch.find((batch) => {
-            return batch.produkid === row.produkid
+            return batch.value === row.value
         })
         // lalu maasukkan batchnya didapatkan dari stokBatch
-        vProduk.setFieldValue("batch", newBatch?.value || [])
+        vProduk.setFieldValue("batch", newBatch?.batchproduk || [])
         const otherProduk = vOrder.values.batchproduk.filter((batch) => {
-            return batch.produkid !== row.produkid
+            return batch.value !== row.value
+        })
+        vOrder.setFieldValue("batchproduk", [...otherProduk])
+    }
+
+    const handleHapusProduk = (row) => {
+        const otherProduk = vOrder.values.batchproduk.filter((batch) => {
+            return batch.value !== row.value
         })
         vOrder.setFieldValue("batchproduk", [...otherProduk])
     }
@@ -238,6 +263,11 @@ const DistribusiOrder = () => {
                                 <i className="ri-mail-send-fill align-bottom me-2 text-muted">
                                 </i>
                                 Edit Produk
+                            </DropdownItem>
+                            <DropdownItem onClick={() => handleHapusProduk(row)}>
+                                <i className="ri-mail-send-fill align-bottom me-2 text-muted">
+                                </i>
+                                Hapus produk
                             </DropdownItem>
                         </DropdownMenu>
                     </UncontrolledDropdown>
@@ -336,10 +366,10 @@ const DistribusiOrder = () => {
                         value={vOrder.values.noorder} 
                         onChange={vOrder.handleChange}
                         invalid={vOrder.touched?.noorder 
-                            && !!vOrder?.touched?.noorder}
+                            && !!vOrder?.errors?.noorder}
                         />
                     {vOrder.touched?.noorder 
-                        && !!vOrder.touched?.noorder && (
+                        && !!vOrder.errors?.noorder && (
                         <FormFeedback type="invalid" >
                             <div>
                                 {vOrder.errors?.noorder}
@@ -359,8 +389,11 @@ const DistribusiOrder = () => {
                     <CustomSelect
                         id="jenisorder"
                         name="jenisorder"
-                        options={[]}
+                        options={jenisorderbarang}
                         value={vOrder.values?.jenisorder}
+                        onChange={(val) => {
+                            vOrder.setFieldValue("jenisorder", val?.value)
+                        }}
                         className={`input 
                             ${vOrder.errors?.jenisorder 
                                 ? "is-invalid" 
@@ -388,8 +421,11 @@ const DistribusiOrder = () => {
                     <CustomSelect
                         id="unitorder"
                         name="unitorder"
-                        options={[]}
+                        options={unit}
                         value={vOrder.values?.unitorder}
+                        onChange={(val) => {
+                            vOrder.setFieldValue("unitorder", val.value)
+                        }}
                         className={`input 
                             ${vOrder.errors?.unitorder 
                                 ? "is-invalid" 
@@ -417,7 +453,10 @@ const DistribusiOrder = () => {
                     <CustomSelect
                         id="unittujuan"
                         name="unittujuan"
-                        options={[]}
+                        options={unit}
+                        onChange={(val) => {
+                            vOrder.setFieldValue("unittujuan", val.value)
+                        }}
                         value={vOrder.values?.unittujuan}
                         className={`input 
                             ${vOrder.errors?.unittujuan 
@@ -437,26 +476,26 @@ const DistribusiOrder = () => {
                 <Col xl={1} lg={2}>
                     <Label 
                         style={{ color: "black" }} 
-                        htmlFor={`keterangankirim`}
+                        htmlFor={`keterangan`}
                         className="form-label">
                         Keterangan Kirim
                     </Label>
                 </Col>
                 <Col xl={3} lg={4} className="mb-2">
                     <Input 
-                        id={`keterangankirim`}
-                        name={`keterangankirim`}
+                        id={`keterangan`}
+                        name={`keterangan`}
                         type="text"
-                        value={vOrder.values.keterangankirim} 
+                        value={vOrder.values.keterangan} 
                         onChange={vOrder.handleChange}
-                        invalid={vOrder.touched?.keterangankirim 
-                            && !!vOrder?.touched?.keterangankirim}
+                        invalid={vOrder.touched?.keterangan 
+                            && !!vOrder?.errors?.keterangan}
                         />
-                    {vOrder.touched?.keterangankirim 
-                        && !!vOrder.touched?.keterangankirim && (
+                    {vOrder.touched?.keterangan 
+                        && !!vOrder.touched?.keterangan && (
                         <FormFeedback type="invalid" >
                             <div>
-                                {vOrder.errors?.keterangankirim}
+                                {vOrder.errors?.keterangan}
                             </div>
                         </FormFeedback>
                     )}
@@ -478,14 +517,14 @@ const DistribusiOrder = () => {
                     <CustomSelect
                         id="produk"
                         name="produk"
-                        options={stokBatch}
-                        // value={vProduk.values?.produk}
+                        options={newStokBatch}
+                        value={vProduk.values?.produk || ""}
                         onChange={(e) => {
                             vProduk.resetForm();
                             refSatuan.current.clearValue();
-                            vProduk.setFieldValue("produk", e?.produkid || "")
+                            vProduk.setFieldValue("produk", e?.value || "")
                             vProduk.setFieldValue("namaproduk", e?.label || "")
-                            vProduk.setFieldValue("batch", e?.value || [])
+                            vProduk.setFieldValue("batch", e?.batchproduk || [])
                         }}
                         className={`input mb-2
                             ${vProduk.errors?.produk 
@@ -695,6 +734,23 @@ const DistribusiOrder = () => {
                     <NoDataTable 
                         dataName={"produk"}/>}
                 />
+            <Col lg={12}
+                className="d-flex justify-content-around align-items-end mt-5">
+                <Button 
+                    type="submit" 
+                    color="info" 
+                    placement="top" 
+                    formTarget="form-input-penerimaan"
+                    >
+                    Simpan
+                </Button>
+                <Button
+                    type="button"
+                    className="btn"
+                    color="danger">
+                    Batal
+                </Button>
+            </Col>
         </Card>
     )
 
@@ -706,6 +762,7 @@ const DistribusiOrder = () => {
                 <Form
                     onSubmit={(e) => {
                         e.preventDefault();
+                        console.log(vOrder.errors)
                         vOrder.handleSubmit();
                         return false;
                     }}
@@ -714,6 +771,7 @@ const DistribusiOrder = () => {
                     {OrderBarang}
                     {TambahItem}
                     {TableProduk}
+
                 </Form>
             </Container>
         </div>

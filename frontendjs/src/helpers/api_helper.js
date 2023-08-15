@@ -54,13 +54,13 @@ class APIClient {
    * Fetches data from given url
    */
 
-  get = (url, params, axiosConfig) => {
+  get = (url, queries, axiosConfig) => {
     let response;
     let paramKeys = [];
 
-    if (params) {
-      Object.keys(params).map(key => {
-        paramKeys.push(key + '=' + params[key]);
+    if (queries && Object.keys(queries).length > 0) {
+      Object.keys(queries).map(key => {
+        paramKeys.push(key + '=' + queries[key]);
         return paramKeys;
       });
 

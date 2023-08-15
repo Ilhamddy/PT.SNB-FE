@@ -36,6 +36,9 @@ import {
     COMBO_PENERIMAAN_BARANG_GET,
     COMBO_PENERIMAAN_BARANG_GET_SUCCESS,
     COMBO_PENERIMAAN_BARANG_GET_ERROR,
+    COMBO_DISTRIBUSI_ORDER_GET,
+    COMBO_DISTRIBUSI_ORDER_GET_SUCCESS,
+    COMBO_DISTRIBUSI_ORDER_GET_ERROR,
 } from "./actionType";
 
 const INIT_STATE = {
@@ -95,6 +98,11 @@ const INIT_STATE = {
         error: null,
     },
     comboPenerimaanBarangGet: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    comboDistribusiOrderGet: {
         data: [],
         loading: false,
         error: null,
@@ -495,6 +503,42 @@ const Master = (state = INIT_STATE, action) => {
                 ...state,
                 comboPenerimaanBarangGet: {
                     ...state.comboPenerimaanBarangGet,
+                    loading: false,
+                    data: [],
+                    error: action.error,
+                }
+            }
+        }
+
+        case COMBO_DISTRIBUSI_ORDER_GET: {
+            return {
+                ...state,
+                comboDistribusiOrderGet: {
+                    ...state.comboDistribusiOrderGet,
+                    loading: true,
+                    data: [],
+                    error: null,
+                }
+            }
+        }
+
+        case COMBO_DISTRIBUSI_ORDER_GET_SUCCESS: {
+            return {
+                ...state,
+                comboDistribusiOrderGet: {
+                    ...state.comboDistribusiOrderGet,
+                    data: action.payload,
+                    error: null,
+                    loading: false,
+                }
+            }
+        }
+
+        case COMBO_DISTRIBUSI_ORDER_GET_ERROR: {
+            return {
+                ...state,
+                comboDistribusiOrderGet: {
+                    ...state.comboDistribusiOrderGet,
                     loading: false,
                     data: [],
                     error: action.error,

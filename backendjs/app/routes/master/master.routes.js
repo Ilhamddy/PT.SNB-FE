@@ -64,4 +64,10 @@ export default function(app) {
       controller.comboPenerimaanBarang
     )
 
+    app.get(
+      "/api/master/combobox-distribusi-order",
+      [authJwt.verifyToken],
+      controller.comboDistribusiOrder
+    )
+
   };

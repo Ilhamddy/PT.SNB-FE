@@ -201,9 +201,9 @@ const getAllByOr = (req, res) => {
 
 const savePasien = async (req, res) => {
     const [transaction, errorTransaction]
-        = await createTransaction(db, "savePasien")
+        = await createTransaction(db, res, "savePasien")
+    if(errorTransaction) return
     try {
-        if (errorTransaction) throw errorTransaction
         const getNocm = await running_Number.findAll({
             where: {
                 id: 1
@@ -415,10 +415,10 @@ const saveRegistrasiPasien2 = (req, res) => {
 }
 async function saveRegistrasiPasien(req, res) {
     const [transaction, errorTransaciton] 
-        = await createTransaction(db, "saveRegPasien")
-    
+        = await createTransaction(db, res, "saveRegPasien")
+    if(errorTransaciton) return
     try {
-        if(errorTransaciton) throw errorTransaciton
+
         let norecDP = uuid.v4().substring(0, 32)
         console.log(req.body?.penjamin)
         let objectpenjaminfk = req.body?.penjamin?.[0]?.value || null

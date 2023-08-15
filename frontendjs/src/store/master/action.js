@@ -35,6 +35,9 @@ import {
     COMBO_PENERIMAAN_BARANG_GET,
     COMBO_PENERIMAAN_BARANG_GET_SUCCESS,
     COMBO_PENERIMAAN_BARANG_GET_ERROR,
+    COMBO_DISTRIBUSI_ORDER_GET,
+    COMBO_DISTRIBUSI_ORDER_GET_SUCCESS,
+    COMBO_DISTRIBUSI_ORDER_GET_ERROR,
 } from "./actionType";
 
 export const masterGet = () => ({
@@ -205,5 +208,19 @@ export const comboPenerimaanBarangGetSuccess = (data) => ({
 
 export const comboPenerimaanBarangGetError = (error) => ({
     type: COMBO_PENERIMAAN_BARANG_GET_ERROR,
+    payload: error,
+});
+
+export const comboDistribusiOrderGet = () => ({
+    type: COMBO_DISTRIBUSI_ORDER_GET,
+});
+
+export const comboDistribusiOrderGetSuccess = (data) => ({
+    type: COMBO_DISTRIBUSI_ORDER_GET_SUCCESS,
+    payload: data,
+});
+
+export const comboDistribusiOrderGetError = (error) => ({
+    type: COMBO_DISTRIBUSI_ORDER_GET_ERROR,
     payload: error,
 });

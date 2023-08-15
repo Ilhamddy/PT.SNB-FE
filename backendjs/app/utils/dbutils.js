@@ -5,7 +5,7 @@
  * @param {string} [transactionName] 
  * transaction name is optional
  */
-export const createTransaction = async (db, transactionName) => {
+export const createTransaction = async (db, res, transactionName) => {
     let transaction = null;
     let error = null
     try {
@@ -13,6 +13,12 @@ export const createTransaction = async (db, transactionName) => {
     } catch (e) {
         console.error(`Error transaction ${transactionName}`, e)
         error = e
+        res.status(500).send({
+            data: error,
+            success: false,
+            msg: error.message,
+            code: 500
+        });
     }
 
     return [transaction, error]

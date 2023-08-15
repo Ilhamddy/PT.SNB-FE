@@ -7,6 +7,7 @@ import { MASTER_GET,DESA_GET,KECAMATAN_GET,COMBO_REGISTRASI_GET, COMBO_ASURANSI_
     COMBO_PAYMENT_GET,
     COMBO_SETTING_PRODUK_GET,
     COMBO_PENERIMAAN_BARANG_GET,
+    COMBO_DISTRIBUSI_ORDER_GET
  } from "./actionType";
 import { masterGetSuccess,
     masterGetError,
@@ -36,6 +37,8 @@ import { masterGetSuccess,
     comboSettingProdukGetError,
     comboPenerimaanBarangGetSuccess,
     comboPenerimaanBarangGetError,
+    comboDistribusiOrderGetSuccess,
+    comboDistribusiOrderGetError,
 } from "./action";
 
 const serviceMaster = new ServiceMaster();
@@ -150,6 +153,16 @@ function* onGetComboPenerimaanBarang(){
     }
 }
 
+
+function* onComboDistributionOrderGet(){
+    try {
+        const response = yield call(serviceMaster.getComboDistributionOrder);
+        yield put(comboDistribusiOrderGetSuccess(response.data));
+    } catch(error){
+        yield put(comboDistribusiOrderGetError(error));
+    }
+}
+
 export function* watchGetMaster() {
     yield takeEvery(MASTER_GET, onGetMaster);
 }
@@ -198,6 +211,10 @@ export function* watchGetComboPenerimaanBarang(){
     yield takeEvery(COMBO_PENERIMAAN_BARANG_GET, onGetComboPenerimaanBarang);
 }
 
+export function* watchGetComboDistributionOrder(){
+    yield takeEvery(COMBO_DISTRIBUSI_ORDER_GET, onComboDistributionOrderGet);
+}
+
 function* masterSaga() {
     yield all([
         fork(watchGetMaster),
@@ -212,6 +229,7 @@ function* masterSaga() {
         fork(watchGetComboPayment),
         fork(watchGetComboSettingProduk),
         fork(watchGetComboPenerimaanBarang),
+        fork(watchGetComboDistributionOrder)
     ]);
 }
 
