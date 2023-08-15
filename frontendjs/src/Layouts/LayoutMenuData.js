@@ -535,7 +535,7 @@ const Navdata = () => {
         },
         {
             id: "gudang",
-            label: "Gudang",
+            label: "Gudang Farmasi",
             icon: "lab la-delicious",
             link: "/#",
             click: function (e) {
