@@ -4,10 +4,9 @@
  */
 // eslint-disable-next-line max-lines-per-function
 export default (sequelize, Sequelize) => {
-    const t_penerimaanbarang = sequelize.define("t_penerimaanbarang", {
+    const t_kirimbarang = sequelize.define("t_kirimbarang", {
         norec: {
             allowNull: false,
-            autoIncrement: true,
             primaryKey: true,
             type: Sequelize.CHAR(32)
         },
@@ -17,47 +16,34 @@ export default (sequelize, Sequelize) => {
         statusenabled: {
             type: Sequelize.BOOLEAN,
         },
-        no_terima: {
+        objectorderbarangfk: {
+            type: Sequelize.CHAR(32),
+        },
+        nopengiriman: {
             type: Sequelize.STRING,
         },
-        no_order: {
-            type: Sequelize.STRING,
-        },
-        tglorder: {
-            type: Sequelize.DATE,
-        },
-        tglterima: {
-            type: Sequelize.DATE,
-        },
-        tgljatuhtempo: {
-            type: Sequelize.DATE,
-        },
-        objectrekananfk: {
+        objectunitpengirimfk: {
             type: Sequelize.INTEGER,
         },
-        objectunitfk: {
+        objectunittujuanfk: {
             type: Sequelize.INTEGER,
         },
-        objectasalprodukfk: {
+        objectjenisorderbarangfk: {
             type: Sequelize.INTEGER,
         },
         keterangan: {
-            type: Sequelize.CHAR(100),
-        },
-        objectpegawaifk: {
-            type: Sequelize.INTEGER,
+            type: Sequelize.STRING,
         },
         tglinput: {
             type: Sequelize.DATE,
         },
-        tglupdate: {
-            type: Sequelize.DATE,
+        objectpegawaifk: {
+            type: Sequelize.INTEGER,
         }
     }, {
-        tableName: "t_penerimaanbarang", // relation "user" does not exist
+        tableName: "t_kirimbarang", 
         createdAt: false,
         updatedAt: false,
-    });
-
-    return t_penerimaanbarang;
-};
+    })
+    return t_kirimbarang;
+}

@@ -1,3 +1,7 @@
+/**
+ * @param {import("sequelize").Sequelize} sequelize
+ * @param {import(".").SequelizeInstance} Sequelize
+ */
 // eslint-disable-next-line max-lines-per-function
 export default (sequelize, Sequelize) => {
     const t_kepesertaanasuransi = sequelize.define("t_kepesertaanasuransi", {

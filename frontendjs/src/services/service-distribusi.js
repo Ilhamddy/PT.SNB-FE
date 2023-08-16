@@ -14,4 +14,12 @@ export default class ServiceDistribusi{
     getOrderBarang = async (queries) => {
         return await api.get(`/transaksi/gudang/distribusi/get-order-barang`, queries)
     }
+
+    getOrderStokBatch = async (queries) => {
+        return await api.get(`/transaksi/gudang/distribusi/get-order-stok-batch`, queries)
+    }
+
+    createOrUpdateKirimBarang = async (body) => {
+        return await api.create(`/transaksi/gudang/distribusi/create-or-update-kirim-barang`, body)
+    }
 }

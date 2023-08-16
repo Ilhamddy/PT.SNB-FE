@@ -7,21 +7,27 @@ import {
     createOrUpdateOrderbarangSuccess,
     createOrUpdateOrderbarangError,
     getOrderBarangSuccess,
-    getOrderBarangError
+    getOrderBarangError,
+    getOrderStokBatchSuccess,
+    getOrderStokBatchError,
+    createOrUpdateKirimBarangSuccess,
+    createOrUpdateKirimBarangError
 } from "./action";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { 
     GET_STOK_BATCH,
     CREATE_OR_UPDATE_ORDER_BARANG,
-    GET_ORDER_BARANG
+    GET_ORDER_BARANG,
+    GET_ORDER_STOK_BATCH,
+    CREATE_OR_UPDATE_KIRIM_BARANG
 } from "./actionType";
 
-const serviceGudang = new ServiceDistribusi();
+const serviceDistribusi = new ServiceDistribusi();
 
 function* onGetStokBatch({payload: { queries }}) {
     try {
-        let response = yield call(serviceGudang.getStokBatch, queries);
+        let response = yield call(serviceDistribusi.getStokBatch, queries);
         yield put(getStokBatchSuccess(response.data));
     } catch (error) {
         console.error(error);
@@ -31,9 +37,9 @@ function* onGetStokBatch({payload: { queries }}) {
 
 function* onCreateOrUpdateOrderbarang({payload: { body }}) {
     try {
-        let response = yield call(serviceGudang.createOrUpdateOrderbarang, body);
+        let response = yield call(serviceDistribusi.createOrUpdateOrderbarang, body);
         yield put(createOrUpdateOrderbarangSuccess(response.data));
-        toast.success(response.data.msg);
+        toast.success(response.msg,  { autoClose: 3000 });
     }catch(error){
         console.error(error);
         yield put(createOrUpdateOrderbarangError(error));
@@ -43,11 +49,33 @@ function* onCreateOrUpdateOrderbarang({payload: { body }}) {
 
 function* onGetOrderBarang({payload: { queries }}) {
     try {
-        let response = yield call(serviceGudang.getOrderBarang, queries);
+        let response = yield call(serviceDistribusi.getOrderBarang, queries);
         yield put(getOrderBarangSuccess(response.data));
     } catch (error) {
         console.error(error);
         yield put(getOrderBarangError(error));
+    }
+}
+
+function* onGetOrderStokBatch({payload: { queries }}) {
+    try {
+        let response = yield call(serviceDistribusi.getOrderStokBatch, queries);
+        yield put(getOrderStokBatchSuccess(response.data));
+    } catch (error) {
+        console.error(error);
+        yield put(getOrderStokBatchError(error));
+    }
+}
+
+function* onCreateOrUpdateKirimBarang({payload: { body }}) {
+    try {
+        let response = yield call(serviceDistribusi.createOrUpdateKirimBarang, body);
+        yield put(createOrUpdateKirimBarangSuccess(response.data));
+        toast.success(response.msg,  { autoClose: 3000 });
+    }catch(error){
+        console.error(error);
+        yield put(createOrUpdateKirimBarangError(error));
+        toast.error(error?.response?.msg);
     }
 }
 
@@ -64,11 +92,21 @@ export function* watchGetOrderBarang(){
     yield takeEvery(GET_ORDER_BARANG, onGetOrderBarang);
 }
 
+export function* watchGetOrderStokBatch(){
+    yield takeEvery(GET_ORDER_STOK_BATCH, onGetOrderStokBatch);
+}
+
+export function* watchCreateOrUpdateKirimBarang(){
+    yield takeEvery(CREATE_OR_UPDATE_KIRIM_BARANG, onCreateOrUpdateKirimBarang);
+}
+
 function* registrasiSaga() {
     yield all([
         fork(watchGetStokBatch),
         fork(watchCreateOrUpdateOrderbarang),
-        fork(watchGetOrderBarang)
+        fork(watchGetOrderBarang),
+        fork(watchGetOrderStokBatch),
+        fork(watchCreateOrUpdateKirimBarang)
     ]);
 }
 

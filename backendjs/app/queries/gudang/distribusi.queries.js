@@ -1,17 +1,17 @@
 
+
 /**
     * @typedef {Array<{
     *  norecstok: string, 
-    *  produkid: number, 
+    *  value: number,  //(produk id)
     *  label: string, 
-    *  nobatch: string, qty: 
-    *  number, 
+    *  qty: number, 
     *  tglinput: string, 
     *  qtyout: number,
     *  jumlah: number,
-    *  satuankirim: number,
-    *  namasatuan: string
-    * }>} ListStokUnit
+    *  satuan: number,
+    *  namasatuan: string,
+    * }>} ListOrderStokUnit
     */
 
 const qGetStokUnit = `
@@ -24,7 +24,7 @@ SELECT
     ts.tglinput AS tglinput,
     0 AS qtyout,
     0 AS jumlah,
-    null AS satuankirim,
+    null AS satuan,
     '' AS namasatuan
 FROM
     t_stokunit ts
@@ -69,8 +69,61 @@ FROM t_orderbarang tor
     LEFT JOIN m_jenisorderbarang mjob ON mjob.id = tor.objectjenisorderbarangfk
 `
 
+/**
+    * @typedef {Array<{
+    *  norecstok: string, 
+    *  value: number,  //(produk id)
+    *  norecorderdetail: string,
+    *  produkid: number, 
+    *  label: string, 
+    *  nobatch: string, 
+    *  qty: number, 
+    *  tglinput: string, 
+    *  qtyout: number,
+    *  qtykirim: number,
+    *  jumlah: number,
+    *  satuan: number,
+    *  namasatuan: string,
+    * }>} ListStokUnit
+    */
+const qGetOrderStok = `
+SELECT
+    tor.norec AS norecorder,
+    tor.objectjenisorderbarangfk AS jenisorder,
+    mjb.reportdisplay AS namajenisorder,
+    tor.objectunittujuanfk AS unittujuan,
+    tor.objectunitasalfk AS unitasal,
+    tor.tglinput AS tglorder,
+    tor.noorder AS noorder,
+    tor.keterangan AS keterangan,
+    tod.norec AS norecorderdetail,
+    tod.objectprodukfk AS produkid,
+    ts.norec AS norecstok,
+    ts.objectprodukfk AS value,
+    mp.namaproduk AS label,
+    ts.nobatch AS nobatch,
+    ts.qty AS qty,
+    ts.tglinput AS tglinput,
+    tod.qty AS qtyout,
+    0 AS qtykirim,
+    tod.jumlah AS jumlah,
+    tod.objectsatuanfk AS satuan,
+    ms.satuan AS namasatuan
+FROM
+    t_orderbarang tor
+    LEFT JOIN t_orderbarangdetail tod ON tod.objectorderbarangfk = tor.norec
+    LEFT JOIN t_stokunit ts ON ts.objectprodukfk = tod.objectprodukfk
+    INNER JOIN m_produk mp ON mp.id = ts.objectprodukfk
+    LEFT JOIN m_satuan ms ON ms.id = tod.objectsatuanfk
+    LEFT JOIN m_jenisorderbarang mjb ON mjb.id = tor.objectjenisorderbarangfk
+WHERE
+    tor.statusenabled = true
+    AND tor.norec = $1
+`
+
 export {
     qGetStokUnit,
     qKemasanFromId,
-    qGetOrder
+    qGetOrder,
+    qGetOrderStok
 }

@@ -3,6 +3,7 @@ import * as uuid from 'uuid'
 import db from "../../../models";
 import { 
     qGetOrder,
+    qGetOrderStok,
     qGetStokUnit, qKemasanFromId
 } from "../../../queries/gudang/distribusi.queries";
 import {
@@ -10,7 +11,8 @@ import {
 } from "../../../utils/dbutils";
 const t_orderbarang = db.t_orderbarang
 const t_orderbarangdetail = db.t_orderbarangdetail
-const t_stokunit = db.t_stokunit
+const t_kirimbarang = db.t_kirimbarang
+const t_kirimbarangdetail = db.t_kirimbarangdetail
 
 
 export const getStokBatch = async (req, res) => {
@@ -169,18 +171,157 @@ const getOrderBarang = async (req, res) => {
     }
 }
 
+export const getOrderStokBatch = async (req, res) => {
+    try{
+        const norecorder = req.query.norecorder
+        if(!norecorder) throw new Error("norecorder is required");
+
+        const { rows: rowsOrder } = await pool.query(qGetOrderStok, [norecorder])
+        let datas = []
+        
+        // kelompokkan sesuai produk
+        rowsOrder.forEach((stok) => {
+            const iProdukFound = datas.findIndex((data) => {
+                return data.value === stok.value
+            })
+            if(iProdukFound < 0){
+                datas.push({
+                    value: stok.value,
+                    qty: stok.qty,
+                    qtyout: stok.qtyout,
+                    batchproduk: [{...stok}],
+                    label: stok.label,
+                })
+            }else{
+                datas[iProdukFound].batchproduk = [...datas[iProdukFound].batchproduk, {...stok}]
+                datas[iProdukFound].qty = datas[iProdukFound].qty + stok.qty
+            }
+        })
+
+        const dataOrder = { 
+            norecorder: rowsOrder[0].norecorder,
+            jenisorder: rowsOrder[0].jenisorder,
+            noorder: rowsOrder[0].noorder,
+            namajenisorder: rowsOrder[0].namajenisorder,
+            unittujuan: rowsOrder[0].unittujuan,
+            unitasal: rowsOrder[0].unitasal,
+            tglorder: rowsOrder[0].tglorder,
+            keterangan: rowsOrder[0].keterangan,
+        }
+        
+        let tempres = {
+            order: dataOrder,
+            itemorders: datas
+        }
+        res.status(200).send({
+            data: tempres,
+            success: true,
+            msg: 'Get Stok Batch Berhasil',
+            code: 200
+        });
+    }catch(error){
+        console.error("==error get stok batch==")
+        console.error(error)
+        res.status(500).send({
+            data: error,
+            success: false,
+            msg: 'Create Nota Produk Obat Gagal',
+            code: 500
+        });
+    }
+}
+
+
+
+const createOrUpdateKirimBarang = async (req, res) => {
+    const [transaction, errorTransaction] = await createTransaction(db, res);
+    if(errorTransaction) return
+    try {
+        let body = req.body
+        let createdOrUpdated
+        let noreckirim
+        if(!body.noreckirim){
+            noreckirim = uuid.v4().substring(0, 32)
+            createdOrUpdated = await t_kirimbarang.create({
+                norec: noreckirim,
+                kdprofile: 0,
+                statusenabled: true,
+                objectorderbarangfk: body.norecorder,
+                nopengiriman: body.nokirim,
+                objectunitpengirimfk: body.unitpengirim,
+                objectunittujuanfk: body.unitpenerima,
+                objectjenisorderbarangfk: body.jeniskirim,
+                keterangan: body.keterangankirim,
+                tglinput: new Date(body.tanggalkirim),
+                objectpegawaifk: req.idPegawai
+            }, {
+                transaction: transaction
+            })
+        }else{
+            noreckirim = body.noreckirim
+            const [_, updated] = await t_kirimbarang.update({
+                kdprofile: 0,
+                statusenabled: true,
+                objectorderbarangfk: body.norecorder,
+                nopengiriman: body.nokirim,
+                objectunitpengirimfk: body.unitpengirim,
+                objectunittujuanfk: body.unitpenerima,
+                objectjenisorderbarangfk: body.jeniskirim,
+                keterangan: body.keterangankirim,
+                tglinput: new Date(body.tanggalkirim),
+                objectpegawaifk: req.idPegawai
+            }, {
+                where: {
+                    norec: body.noreckirim
+                },
+                returning: true,
+                transaction: transaction
+            })
+            createdOrUpdated = updated[0]?.get() || null;
+        }
+
+        const detailCreated = 
+            await hCreateKirimDetail(req, res, transaction, {noreckirim: noreckirim})
+        
+        await transaction.commit();
+        const tempres = {
+            createdOrUpdated,
+            detailCreated
+        }
+
+        res.status(200).send({
+            data: tempres,
+            success: true,
+            msg: 'Create or update kirim barang berhasil',
+            code: 200
+        });
+    }catch(error){
+        console.error("==Create or update kirim barang gagal");
+        console.error(error)
+        await transaction.rollback();
+        res.status(500).send({
+            data: error,
+            success: false,
+            msg: 'Create or update kirim barang gagal',
+            code: 500
+        });
+    }
+} 
+
 export default {
     getStokBatch,
     getKemasanById,
     createOrUpdateOrderbarang,
-    getOrderBarang
+    getOrderBarang,
+    getOrderStokBatch,
+    createOrUpdateKirimBarang
 }
 
 const hCreateOrderDetail = async (req, res, transaction, {norecorder}) => {
-    const batches = req.body.batchproduk
+    const produks = req.body.isiproduk
     // const { body } = req
     const created = await Promise.all(
-        batches.map(async(batch) => {
+        produks.map(async(batch) => {
             const created = await t_orderbarangdetail.create({
                 norec: uuid.v4().substring(0, 32),
                 kdprofile: 0,
@@ -189,7 +330,7 @@ const hCreateOrderDetail = async (req, res, transaction, {norecorder}) => {
                 objectprodukfk: batch.value,
                 qty: batch.qtyout,
                 jumlah: 0,
-                objectsatuanfk: batch.satuankirim
+                objectsatuanfk: batch.satuan
             }, {
                 transaction: transaction
             })
@@ -199,6 +340,37 @@ const hCreateOrderDetail = async (req, res, transaction, {norecorder}) => {
     )
     return created
 }
+
+const hCreateKirimDetail = async (req, res, transaction, {noreckirim}) => {
+    /**
+     * @type {import("../../../queries/gudang/distribusi.queries").ListStokUnit}
+     */
+    const batches = req.body.batchproduk
+    const created = await Promise.all(
+        batches.map(async(batch) => {
+            const norec = uuid.v4().substring(0, 32)
+            const created = await t_kirimbarangdetail.create({
+                norec: norec,
+                kdprofile: 0,
+                statusenabled: true,
+                objectdistribusibarangfk: noreckirim,
+                objectorderbarangdetailfk: batch.norecorderdetail,
+                objectprodukfk: batch.value,
+                nobatch: batch.nobatch,
+                qty: batch.qtykirim,
+                jumlah: batch.jumlah,
+                objectsatuanfk: batch.satuan
+            }, {
+                transaction: transaction
+            })
+            
+            return {created}
+        })
+    )
+
+    return created
+}
+
 
 // let stokUnitModel = await t_stokunit.findOne({
 //     where: {

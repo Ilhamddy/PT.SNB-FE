@@ -35,5 +35,17 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getOrderBarang
     )
+
+    app.get(
+        "/api/transaksi/gudang/distribusi/get-order-stok-batch",
+        [authJwt.verifyToken],
+        controller.getOrderStokBatch
+    )
+
+    app.post(
+        "/api/transaksi/gudang/distribusi/create-or-update-kirim-barang",
+        [authJwt.verifyToken],
+        controller.createOrUpdateKirimBarang
+    )
         
 }
