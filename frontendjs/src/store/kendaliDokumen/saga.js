@@ -5,14 +5,16 @@ import {
     DAFTAR_DOKUMEN_REKAMMEDIS_GET,
     WIDGET_DAFTAR_DOKUMEN_REKAMMEDIS_GET,
     SAVE_DOKUMEN_REKAMMEDIS,
-    COMBO_LAPORAN_REKAMMEDIS_GET
+    COMBO_LAPORAN_REKAMMEDIS_GET,
+    LIST_LAPORAN_PASIEN_DAFTAR_GET
 } from "./actionType";
 
 import {
     daftarDokumenRekammedisGetSuccess,daftarDokumenRekammedisGetError,
     widgetdaftarDokumenRekammedisGetSuccess,widgetdaftarDokumenRekammedisGetError,
     saveDokumenRekammedisSuccess,saveDokumenRekammedisError,
-    comboLaporanRekammedisGetSuccess, comboLaporanRekammedisGetError
+    comboLaporanRekammedisGetSuccess, comboLaporanRekammedisGetError,
+    listLaporanPasienDaftarGetSuccess, listLaporanPasienDaftarGetError
 } from "./action";
 
 import { toast } from 'react-toastify';
@@ -85,9 +87,21 @@ function* oncomboLaporanRekammedisGet({ payload: { param } }) {
     }
 }
 
-
 export function* watchoncomboLaporanRekammedisGet() {
     yield takeEvery(COMBO_LAPORAN_REKAMMEDIS_GET, oncomboLaporanRekammedisGet);
+}
+
+function* onlistLaporanPasienDaftarGet({ payload: { param } }) {
+    try {
+        const response = yield call(serviceRekammedis.getListPasienDaftar, param);
+        yield put(listLaporanPasienDaftarGetSuccess(response.data));
+    } catch (error) {
+        yield put(listLaporanPasienDaftarGetError(error));
+    }
+}
+
+export function* watchonlistLaporanPasienDaftarGet() {
+    yield takeEvery(LIST_LAPORAN_PASIEN_DAFTAR_GET, onlistLaporanPasienDaftarGet);
 }
 
 function* kendaliDokumenSaga() {
@@ -95,7 +109,8 @@ function* kendaliDokumenSaga() {
         fork(watchonDaftarDokumenRekammedis),
         fork(watchonWidgetDaftarDokumenRekammedis),
         fork(watchonsaveDokumenRekammedis),
-        fork(watchoncomboLaporanRekammedisGet)
+        fork(watchoncomboLaporanRekammedisGet),
+        fork(watchonlistLaporanPasienDaftarGet)
     ]);
 }
 

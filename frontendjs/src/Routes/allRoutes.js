@@ -255,7 +255,7 @@ import DaftarPasienRegistrasi from "../pages/ListDaftarPasien/DaftarPasienRegist
 
 // rekammedis
 import KendaliDokumen from "../pages/RekamMedis/KendaliDokumen/KendaliDokumen";
-import LaporanPasienDaftar from "../pages/RekamMedis/Laporan/LaporanPasienDaftar";
+import LaporanPasienDaftar from "../pages/RekamMedis/Laporan/LaporanPasienDaftar/LaporanPasienDaftar";
 
 // radiologi
 import DaftarOrderRadiologi from "../pages/Radiologi/DaftarOrderRadiologi/DaftarOrderRadiologi";

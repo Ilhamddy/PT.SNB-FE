@@ -8,35 +8,50 @@ import {
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useSelector, useDispatch } from "react-redux";
-import BreadCrumb from '../../../Components/Common/BreadCrumb';
-import UiContent from '../../../Components/Common/UiContent';
+import BreadCrumb from '../../../../Components/Common/BreadCrumb';
+import UiContent from '../../../../Components/Common/UiContent';
 import { Link, useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import classnames from "classnames";
 import { useFormik, yupToFormErrors } from "formik";
 import * as Yup from "yup";
-import CustomSelect from '../../Select/Select';
+import CustomSelect from '../../../Select/Select';
 import Flatpickr from "react-flatpickr";
 import DataTable from 'react-data-table-component';
-import LoadingTable from '../../../Components/Table/LoadingTable';
+import LoadingTable from '../../../../Components/Table/LoadingTable';
 import {
-    comboLaporanRekammedisGet, kendaliDokumenResetForm
-} from '../../../store/actions';
+    comboLaporanRekammedisGet, kendaliDokumenResetForm, listLaporanPasienDaftarGet
+} from '../../../../store/actions';
+import "./LaporanPasienDaftar.scss"
+
+const currentDate = new Date();
+currentDate.setDate(currentDate.getDate());
+currentDate.setHours(0, 0, 0, 0);
+
+const dateAwalStart = currentDate.toISOString();
+const dateAwalEnd = (new Date()).toISOString()
 
 const LaporanPasienDaftar = () => {
     document.title = "Laporan Pasien Daftar";
     const dispatch = useDispatch();
-    const { data, loading, error } = useSelector((state) => ({
+    const { data, loading, error, dataGrid, loadingGrid } = useSelector((state) => ({
         data: state.KendaliDokumen.comboLaporanRekammedisGet.data,
         loading: state.KendaliDokumen.comboLaporanRekammedisGet.loading,
         error: state.KendaliDokumen.comboLaporanRekammedisGet.error,
+        dataGrid: state.KendaliDokumen.listLaporanPasienDaftarGet.data,
+        loadingGrid: state.KendaliDokumen.listLaporanPasienDaftarGet.loading,
     }));
-    const [dateStart, setdateStart] = useState((new Date()).toISOString());
+    const [dateStart, setdateStart] = useState(dateAwalStart);
+    const [dateEnd, setDateEnd] = useState(dateAwalEnd);
     const validation = useFormik({
         enableReinitialize: true,
         initialValues: {
             tglstart: dateStart,
-            tglend: dateStart,
+            tglend: dateEnd,
+            departemen: '',
+            unit: '',
+            rekanan: '',
+            pegawai: ''
         },
         validationSchema: Yup.object({
             // dokterlab: Yup.string().required("Dokter Lab wajib diisi"),
@@ -60,15 +75,11 @@ const LaporanPasienDaftar = () => {
     const handleFilter = (e) => {
         if (e.keyCode === 13) {
             // console.log(search)
-            // useEffect(() => {
-            // dispatch(daftarDokumenRekammedisGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}`));
-            // dispatch(widgetdaftarDokumenRekammedisGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}`));
-            // }, [dispatch]);
+            dispatch(listLaporanPasienDaftarGet(`${search}&start=${validation.values.tglstart}&end=${validation.values.tglend}&instalasi=${validation.values.departemen}&unit=${validation.values.unit}&rekanan=${validation.values.rekanan}&pegawai=${validation.values.pegawai}`));
         }
     }
     const handleClickCari = () => {
-        // dispatch(daftarDokumenRekammedisGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}`));
-        // dispatch(widgetdaftarDokumenRekammedisGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}`));
+        dispatch(listLaporanPasienDaftarGet(`${search}&start=${validation.values.tglstart}&end=${validation.values.tglend}&instalasi=${validation.values.departemen}&unit=${validation.values.unit}&rekanan=${validation.values.rekanan}&pegawai=${validation.values.pegawai}`));
     }
     const tableCustomStyles = {
         headRow: {
@@ -122,8 +133,29 @@ const LaporanPasienDaftar = () => {
         },
         {
 
-            name: <span className='font-weight-bold fs-13'>statuskendali</span>,
-            selector: row => row.statuskendali,
+            name: <span className='font-weight-bold fs-13'>Instalasi</span>,
+            selector: row => row.namainstalasi,
+            sortable: true,
+            // width: "150px"
+        },
+        {
+
+            name: <span className='font-weight-bold fs-13'>Unit</span>,
+            selector: row => row.namaunit,
+            sortable: true,
+            // width: "150px"
+        },
+        {
+
+            name: <span className='font-weight-bold fs-13'>Tgl Registrasi</span>,
+            selector: row => row.tglregistrasi,
+            sortable: true,
+            // width: "150px"
+        },
+        {
+
+            name: <span className='font-weight-bold fs-13'>Tgl Pulang</span>,
+            selector: row => row.tglpulang,
             sortable: true,
             // width: "150px"
         },
@@ -133,12 +165,12 @@ const LaporanPasienDaftar = () => {
         <React.Fragment>
             <ToastContainer closeButton={false} />
             <UiContent />
-            <div className="page-content">
+            <div className="page-content laporan-pasien-daftar">
                 <Container fluid>
                     <BreadCrumb title="Laporan Pasien Daftar" pageTitle="Forms" />
                     <Card>
                         <CardBody>
-                            <div className='mb-2'>
+                            <div className='mb-2 row-header'>
                                 <Row>
                                     <Col sm={3}>
                                         <div className="input-group">
@@ -148,7 +180,7 @@ const LaporanPasienDaftar = () => {
                                                 options={{
                                                     enableTime: true,
                                                     // mode: "range",
-                                                    dateFormat: "Y-m-d H:i",
+                                                    dateFormat: "Y-m-d",
                                                     defaultDate: "today"
                                                 }}
                                                 value={validation.values.tglstart}
@@ -168,7 +200,7 @@ const LaporanPasienDaftar = () => {
                                                 options={{
                                                     enableTime: true,
                                                     // mode: "range",
-                                                    dateFormat: "Y-m-d H:i",
+                                                    dateFormat: "Y-m-d",
                                                     defaultDate: "today"
                                                 }}
                                                 value={validation.values.tglend}
@@ -303,8 +335,8 @@ const LaporanPasienDaftar = () => {
                                     fixedHeaderScrollHeight="330px"
                                     columns={columns}
                                     pagination
-                                    // data={data}
-                                    progressPending={loading}
+                                    data={dataGrid}
+                                    progressPending={loadingGrid}
                                     customStyles={tableCustomStyles}
                                     progressComponent={<LoadingTable />}
                                 />

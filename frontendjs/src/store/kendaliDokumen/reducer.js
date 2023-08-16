@@ -11,7 +11,10 @@ import {
     SAVE_DOKUMEN_REKAMMEDIS_ERROR,
     COMBO_LAPORAN_REKAMMEDIS_GET,
     COMBO_LAPORAN_REKAMMEDIS_GET_SUCCESS,
-    COMBO_LAPORAN_REKAMMEDIS_GET_ERROR
+    COMBO_LAPORAN_REKAMMEDIS_GET_ERROR,
+    LIST_LAPORAN_PASIEN_DAFTAR_GET,
+    LIST_LAPORAN_PASIEN_DAFTAR_GET_SUCCESS,
+    LIST_LAPORAN_PASIEN_DAFTAR_GET_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -36,6 +39,11 @@ const INIT_STATE = {
         loading: false,
         error: null,
     },
+    listLaporanPasienDaftarGet: {
+        data: [],
+        loading: false,
+        error: null,
+    },
 }
 
 const KendaliDokumen = (state = INIT_STATE, action) => {
@@ -54,6 +62,9 @@ const KendaliDokumen = (state = INIT_STATE, action) => {
                 },
                 comboLaporanRekammedisGet:{
                     ...INIT_STATE.comboLaporanRekammedisGet
+                },
+                listLaporanPasienDaftarGet:{
+                    ...INIT_STATE.listLaporanPasienDaftarGet
                 }
             }
         }
@@ -185,6 +196,39 @@ const KendaliDokumen = (state = INIT_STATE, action) => {
                 ...state,
                 comboLaporanRekammedisGet: {
                     ...state.comboLaporanRekammedisGet,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case LIST_LAPORAN_PASIEN_DAFTAR_GET: {
+            return {
+                ...state,
+                listLaporanPasienDaftarGet: {
+                    ...state.listLaporanPasienDaftarGet,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case LIST_LAPORAN_PASIEN_DAFTAR_GET_SUCCESS: {
+            return {
+                ...state,
+                listLaporanPasienDaftarGet: {
+                    ...state.listLaporanPasienDaftarGet,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case LIST_LAPORAN_PASIEN_DAFTAR_GET_ERROR: {
+            return {
+                ...state,
+                listLaporanPasienDaftarGet: {
+                    ...state.listLaporanPasienDaftarGet,
                     loading: false,
                     error: action.error,
                 }
