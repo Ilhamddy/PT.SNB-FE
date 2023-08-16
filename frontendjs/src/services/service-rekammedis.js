@@ -19,4 +19,8 @@ export default class ServiceRekammedis {
     getComboLaporanRekammedis = async (param) => {
         return await api.get(`/transaksi/rekammedis/get-combo-laporan-rekammedis`);
     }
+
+    getListPasienDaftar = async (param) => {
+        return await api.get(`/transaksi/rekammedis/get-list-pasien-daftar?&search=${param}`);
+    }
 }

@@ -308,16 +308,30 @@ async function getComboLaporanRekammedis(req, res) {
 
 async function getListLaporanDaftarPasien(req, res) {
     try {
-
-
-        const result = await pool.query(queries.qResult, [])
-
-        let tempres = {
-            list: result.rows
-        }
+        let start = (new Date(req.query.start)).toISOString();
+        let end = (new Date(req.query.end)).toISOString();
+        let search = `%${req.query.search}%`
+        let instalasi =req.query.instalasi !== '' ? ` and td.objectinstalasifk = '${req.query.instalasi}'` : '';
+        let unit = req.query.unit !== '' ? ` and td.objectunitlastfk = '${req.query.unit}'` : '';
+        let rekanan = req.query.rekanan !== '' ? ` and td.objectpenjaminfk = '${req.query.rekanan}'` : '';
+        let pegawai = req.query.pegawai !== '' ? ` and td.objectpegawaifk = '${req.query.pegawai}'` : '';
+        console.log(start,end,search,instalasi,unit,rekanan,pegawai)
+        
+        // const result = await pool.query(queries.qResult, [start,end,search]) //,instalasi,unit,rekanan,pegawai
+        const result = await queryPromise2(`select td.noregistrasi,td.norec,td.nocmfk,
+        to_char(td.tglregistrasi,'dd Month YYYY') as tglregistrasi,to_char(td.tglpulang,'dd Month YYYY') as tglpulang,mp.namapasien,
+        mi.namainstalasi,mu.namaunit,mp.nocm,mr.namarekanan,mp2.namalengkap  from t_daftarpasien td 
+        left join m_pasien mp on mp.id=td.nocmfk
+        left join m_instalasi mi on mi.id=td.objectinstalasifk
+        left join m_unit mu on mu.id=td.objectunitlastfk
+        left join m_rekanan mr on td.objectpenjaminfk=mr.id
+        left join m_pegawai mp2 on mp2.id=td.objectpegawaifk
+        where td.tglregistrasi between '${start}' and '${end}' and td.noregistrasi ilike '${search}'
+        ${instalasi} ${unit} ${rekanan} ${pegawai}
+        `);
 
         res.status(200).send({
-            data: tempres,
+            data: result.rows,
             status: "success",
             success: true,
         });
