@@ -253,10 +253,10 @@ const DistribusiKirim = () => {
 
     useEffect(() => {
         const setFF = vKirim.setFieldValue
-        setFF("noreckirim", dataOrder?.noreckirim || "")
-        setFF("tanggalkirim", dataOrder?.tglkirim || "")
-        setFF("nokirim", dataOrder?.nokirim || "")
-        setFF("keterangankirim", dataOrder?.keterangankirim || "")
+        dataOrder?.noreckirim && setFF("noreckirim", dataOrder?.noreckirim || "")
+        dataOrder?.tglkirim && setFF("tanggalkirim", dataOrder?.tglkirim || "")
+        dataOrder?.nokirim && setFF("nokirim", dataOrder?.nokirim || "")
+        dataOrder?.keterangankirim && setFF("keterangankirim", dataOrder?.keterangankirim || "")
         setFF("unitpengirim", dataOrder?.unittujuan || "")
         setFF("unitpenerima", dataOrder?.unitasal || "")
         setFF("tanggalpermintaan", dataOrder?.tglorder || "")
