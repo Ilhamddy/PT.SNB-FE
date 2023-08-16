@@ -31,6 +31,7 @@ FROM
     INNER JOIN m_produk mp ON mp.id = ts.objectprodukfk
 WHERE
     ts.statusenabled = true
+    AND ts.objectunitfk = $1
 `
 
 const qKemasanFromId = `

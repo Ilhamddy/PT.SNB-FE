@@ -13,11 +13,13 @@ const t_orderbarang = db.t_orderbarang
 const t_orderbarangdetail = db.t_orderbarangdetail
 const t_kirimbarang = db.t_kirimbarang
 const t_kirimbarangdetail = db.t_kirimbarangdetail
+const t_stokunit = db.t_stokunit
 
 
 export const getStokBatch = async (req, res) => {
     try{
-        const { rows } = await pool.query(qGetStokUnit)
+        const { idunit } = req.query
+        const { rows } = await pool.query(qGetStokUnit, [idunit])
         let datas = []
         // kelompokkan sesuai produk
         rows.forEach((stok) => {
@@ -238,11 +240,11 @@ const createOrUpdateKirimBarang = async (req, res) => {
     if(errorTransaction) return
     try {
         let body = req.body
-        let createdOrUpdated
+        let createdOrUpdatedKirimBarang
         let noreckirim
         if(!body.noreckirim){
             noreckirim = uuid.v4().substring(0, 32)
-            createdOrUpdated = await t_kirimbarang.create({
+            createdOrUpdatedKirimBarang = await t_kirimbarang.create({
                 norec: noreckirim,
                 kdprofile: 0,
                 statusenabled: true,
@@ -277,16 +279,24 @@ const createOrUpdateKirimBarang = async (req, res) => {
                 returning: true,
                 transaction: transaction
             })
-            createdOrUpdated = updated[0]?.get() || null;
+            createdOrUpdatedKirimBarang = updated[0]?.get() || null;
         }
 
-        const detailCreated = 
+        const {createdKirimDetail} = 
             await hCreateKirimDetail(req, res, transaction, {noreckirim: noreckirim})
+    
+        const {createdOrUpdatedStokUnit}
+            = await hCreateDetail(req, res, transaction, {
+                createdOrUpdatedKirimBarang,
+                createdKirimDetail
+            })
+        
         
         await transaction.commit();
         const tempres = {
-            createdOrUpdated,
-            detailCreated
+            createdOrUpdated: createdOrUpdatedKirimBarang,
+            createdKirimDetail,
+            createdOrUpdatedStokUnit
         }
 
         res.status(200).send({
@@ -346,10 +356,10 @@ const hCreateKirimDetail = async (req, res, transaction, {noreckirim}) => {
      * @type {import("../../../queries/gudang/distribusi.queries").ListStokUnit}
      */
     const batches = req.body.batchproduk
-    const created = await Promise.all(
+    const createdKirimDetail = await Promise.all(
         batches.map(async(batch) => {
             const norec = uuid.v4().substring(0, 32)
-            const created = await t_kirimbarangdetail.create({
+            const createdKirimDetail = await t_kirimbarangdetail.create({
                 norec: norec,
                 kdprofile: 0,
                 statusenabled: true,
@@ -364,11 +374,79 @@ const hCreateKirimDetail = async (req, res, transaction, {noreckirim}) => {
                 transaction: transaction
             })
             
-            return {created}
+            return createdKirimDetail
         })
     )
 
-    return created
+    return {createdKirimDetail}
+}
+
+const hCreateDetail = async (req, res, transaction, {
+    createdOrUpdatedKirimBarang,
+    createdKirimDetail
+}) => {
+    let createdOrUpdatedStokUnit = []
+    createdOrUpdatedStokUnit = await Promise.all(
+        createdKirimDetail.map(
+            async (createdKirimDetail) => {
+                const stokPengirim = await t_stokunit.findOne({
+                    where: {
+                        objectunitfk: createdOrUpdatedKirimBarang.objectunitpengirimfk,
+                        nobatch: createdKirimDetail.nobatch,
+                        objectprodukfk: createdKirimDetail.objectprodukfk
+                    },
+                })
+                const stokPengirimVal = stokPengirim?.get() || null
+                const stokTujuan = await t_stokunit.findOne({
+                    where: {
+                        objectunitfk: createdOrUpdatedKirimBarang.objectunittujuanfk,
+                        nobatch: createdKirimDetail.nobatch,
+                        objectprodukfk: createdKirimDetail.objectprodukfk
+                    }
+                })
+                let createdOrUpdatedStokBaru
+                if(!stokTujuan){
+                    createdOrUpdatedStokBaru = await t_stokunit.create({
+                        norec: uuid.v4().substring(0, 32),
+                        kdprofile: 0,
+                        statusenabled: true,
+                        objectunitfk: createdOrUpdatedKirimBarang.objectunittujuanfk,
+                        objectasalprodukfk: stokPengirimVal.objectasalprodukfk,
+                        objectprodukfk: stokPengirimVal.objectprodukfk,
+                        nobatch: createdKirimDetail.nobatch,
+                        ed: stokPengirimVal.ed,
+                        persendiskon: stokPengirimVal.persendiskon,
+                        hargadiskon: stokPengirimVal.hargadiskon,
+                        harga: stokPengirimVal.harga,
+                        qty: createdKirimDetail.qty,
+                        objectpenerimaanbarangdetailfk: stokPengirimVal.objectpenerimaanbarangdetailfk,
+                        tglterima: createdOrUpdatedKirimBarang.tglinput,
+                        tglinput: new Date(),
+                        tglupdate: new Date(),
+                    }, {
+                        transaction: transaction
+                    })
+                }else{
+                    const qty = stokTujuan.qty + createdKirimDetail.qty
+                    let updated = await stokTujuan.update({
+                        qty: qty
+                    }, {
+                        transaction: transaction,
+                    })
+                    createdOrUpdatedStokBaru = updated?.get() || null
+                }
+                let stokPengirimUpdated = await stokPengirim.update({
+                    qty: stokPengirimVal.qty - createdKirimDetail.qty
+                }, {
+                    returning: true,
+                    transaction: transaction
+                })
+                stokPengirimUpdated = stokPengirimUpdated?.get() || null
+                return {createdOrUpdatedStokBaru, stokPengirimUpdated}
+            }
+        )
+    )
+    return {createdOrUpdatedStokUnit}
 }
 
 

@@ -186,7 +186,7 @@ const DistribusiOrder = () => {
     })
 
     useEffect(() => {
-        dispatch(getStokBatch({}))
+        
         dispatch(comboDistribusiOrderGet())
     }, [dispatch])
     
@@ -441,6 +441,7 @@ const DistribusiOrder = () => {
                         options={unit}
                         onChange={(val) => {
                             vOrder.setFieldValue("unittujuan", val.value)
+                            dispatch(getStokBatch({ idunit: val.value }))
                         }}
                         value={vOrder.values?.unittujuan}
                         className={`input 

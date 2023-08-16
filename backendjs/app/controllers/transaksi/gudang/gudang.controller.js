@@ -849,7 +849,7 @@ const hCreateOrUpdateDetailPenerimaan = async (
                     transaction: transaction
                 }) 
             }else{
-                let [_, updated] = await prev.update({
+                let updated = await prev.update({
                     objectprodukfk: bodyDetail.produk.idproduk,
                     ed: new Date(bodyDetail.tanggaled),
                     nobatch: bodyDetail.nobatch,
@@ -868,7 +868,7 @@ const hCreateOrUpdateDetailPenerimaan = async (
                     returning: true,
                     transaction: transaction
                 })
-                updated = updated?.[0]?.get() || null
+                updated = updated?.get() || null
                 updatedValue = updated ;
             }
             return {
@@ -956,7 +956,7 @@ const hCreateOrUpdateStokUnit  = async (
                     changedQty = (jmlPaket * konversi - jmlPaketPrev * konversiPrev)
                     const qty = prevStok.qty + changedQty
                     
-                    let [_, updated] = await stokBatchItemFind.update({
+                    let updated = await stokBatchItemFind.update({
                         qty: qty,
                         objectpenerimaanbarangdetailfk: norecpenerimaan,
                         tglterima: createdOrUpdatedPenerimaan.tglterima,
@@ -965,7 +965,7 @@ const hCreateOrUpdateStokUnit  = async (
                         returning: true,
                         transaction: transaction
                     })
-                    updated = updated[0]?.get() || null
+                    updated = updated?.get() || null
                     createdOrUpdated = updated
                 }
                 return {createdOrUpdated, prevStok, changedQty}

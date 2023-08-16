@@ -209,7 +209,11 @@ const DistribusiKirim = () => {
         norecorder && 
             dispatch(getOrderStokBatch({norecorder: norecorder}))
         setFF("noreckirim", noreckirim || "")
-    }, [dispatch, norecorder, vKirim.setFieldValue])
+    }, [dispatch, 
+        norecorder, 
+        vKirim.setFieldValue,
+        noreckirim
+    ])
 
     useEffect(() => {
         const setFF = vKirim.setFieldValue
@@ -229,7 +233,6 @@ const DistribusiKirim = () => {
         dataOrder?.norecorder,
         dataOrder?.jenisorder,
         vKirim.setFieldValue, 
-        unit
     ])
     
 
@@ -274,7 +277,7 @@ const DistribusiKirim = () => {
     /**
      * @type {import("react-data-table-component").TableColumn<typeof vKirim.values.batchproduk[0]>[]}
      */
-    const columnsProduk = [
+    const columnsKirim = [
         {
             name: <span className='font-weight-bold fs-13'>Detail</span>,
             cell: (row) => (
@@ -830,7 +833,7 @@ const DistribusiKirim = () => {
         <Card className="p-5">
             <DataTable
                 fixedHeader
-                columns={columnsProduk}
+                columns={columnsKirim}
                 pagination
                 data={vKirim.values.batchproduk || []}
                 progressPending={false}
