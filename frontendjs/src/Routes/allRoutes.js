@@ -290,6 +290,7 @@ import KartuStok from "../pages/KartuStok/KartuStok";
 import DistribusiOrder from "../pages/Distribusi/DistribusiOrder";
 import DistribusiOrderList from "../pages/Distribusi/DistribusiList";
 import DistribusiKirim from "../pages/Distribusi/DistribusiKirim";
+import StokUnitList from "../pages/StokUnit/StokUnit";
 
 
 
@@ -556,6 +557,7 @@ const authProtectedRoutes = [
   { path: "/farmasi/gudang/penerimaan-produk", component: <PenerimaanProduk /> },
   { path: "/farmasi/gudang/penerimaan-produk-list", component: <PenerimaanProdukList /> },
   { path: "/farmasi/gudang/kartu-stok", component: <KartuStok />},
+  { path: "/farmasi/gudang/stok-unit", component: <StokUnitList />},
 
   //distribusi 
   { path: "/farmasi/gudang/distribusi-order", component: <DistribusiOrder /> },

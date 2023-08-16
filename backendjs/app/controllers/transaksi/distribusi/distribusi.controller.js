@@ -200,7 +200,26 @@ export const getOrderStokBatch = async (req, res) => {
             }
         })
 
+        let tempres = {
+            order: null,
+            itemorders: datas
+        }
+
+        if(rowsOrder.length === 0) {
+            res.status(200).send({
+                data: tempres,
+                success: true,
+                msg: 'Get Stok Batch Berhasil',
+                code: 200
+            });
+            return
+        }
+
         const dataOrder = { 
+            noreckirim: rowsOrder[0].noreckirim,
+            tglkirim: rowsOrder[0].tglkirim,
+            nokirim: rowsOrder[0].nokirim,
+            keterangankirim: rowsOrder[0].keterangankirim,
             norecorder: rowsOrder[0].norecorder,
             jenisorder: rowsOrder[0].jenisorder,
             noorder: rowsOrder[0].noorder,
@@ -210,11 +229,8 @@ export const getOrderStokBatch = async (req, res) => {
             tglorder: rowsOrder[0].tglorder,
             keterangan: rowsOrder[0].keterangan,
         }
-        
-        let tempres = {
-            order: dataOrder,
-            itemorders: datas
-        }
+        tempres.order = dataOrder
+
         res.status(200).send({
             data: tempres,
             success: true,

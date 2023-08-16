@@ -1365,7 +1365,6 @@ const PenerimaanProduk = () => {
                         }}>
                         Batal
                     </Button>
-
                     <Button
                         type="button"
                         className="btn"

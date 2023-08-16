@@ -51,23 +51,27 @@ FROM m_kemasanproduk mk
 WHERE mk.statusenabled = true AND mk.id = $1
 `
 
-// nama variable disamakan dengan variable input frontens
 const qGetOrder = `
 SELECT
-    norec AS norecorder,
-    tglinput AS tglorder,
-    objectjenisorderbarangfk AS jenisorder,
+    tkb.norec AS noreckirim,
+    tkb.tglinput AS tglkirim,
+    tkb.nopengiriman AS nokirim,
+    tkb.keterangan AS keterangankirim,
+    tor.norec AS norecorder,
+    tor.tglinput AS tglorder,
+    tor.objectjenisorderbarangfk AS jenisorder,
     mjob.reportdisplay AS namajenisorder,
     objectunitasalfk AS unitorder,
     mua.namaunit AS namaunitasal,
-    objectunittujuanfk AS unittujuan,
+    tor.objectunittujuanfk AS unittujuan,
     mut.namaunit AS namaunittujuan,
-    noorder AS noorder,
-    keterangan
+    tor.noorder AS noorder,
+    tor.keterangan
 FROM t_orderbarang tor
     LEFT JOIN m_unit mua ON mua.id = tor.objectunitasalfk
     LEFT JOIN m_unit mut ON mut.id = tor.objectunittujuanfk
     LEFT JOIN m_jenisorderbarang mjob ON mjob.id = tor.objectjenisorderbarangfk
+    LEFT JOIN t_kirimbarang tkb ON tkb.objectorderbarangfk = tor.norec
 `
 
 /**
@@ -89,6 +93,10 @@ FROM t_orderbarang tor
     */
 const qGetOrderStok = `
 SELECT
+    tkb.norec AS noreckirim,
+    tkb.tglinput AS tglkirim,
+    tkb.nopengiriman AS nokirim,
+    tkb.keterangan AS keterangankirim,
     tor.norec AS norecorder,
     tor.objectjenisorderbarangfk AS jenisorder,
     mjb.reportdisplay AS namajenisorder,
@@ -117,6 +125,7 @@ FROM
     INNER JOIN m_produk mp ON mp.id = ts.objectprodukfk
     LEFT JOIN m_satuan ms ON ms.id = tod.objectsatuanfk
     LEFT JOIN m_jenisorderbarang mjb ON mjb.id = tor.objectjenisorderbarangfk
+    LEFT JOIN t_kirimbarang tkb ON tkb.objectorderbarangfk = tor.norec
 WHERE
     tor.statusenabled = true
     AND tor.norec = $1

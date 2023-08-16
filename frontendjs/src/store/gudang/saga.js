@@ -31,7 +31,9 @@ import {
     penerimaanListQueryGetSuccess,
     penerimaanListQueryGetError,
     kartuStokQueryGetSuccess,
-    kartuStokQueryGetError
+    kartuStokQueryGetError,
+    getStokUnitGudangSuccess,
+    getStokUnitGudangError
 } from "./action";
 
 
@@ -52,7 +54,8 @@ import {
     PENERIMAAN_SAVE_OR_UPDATE,
     PENERIMAAN_QUERY_GET,
     PENERIMAAN_LIST_QUERY_GET,
-    KARTU_STOK_QUERY_GET
+    KARTU_STOK_QUERY_GET,
+    GET_STOK_UNIT_GUDANG
 } from "./actionType";
 
 const serviceGudang = new ServiceGudang();
@@ -226,6 +229,16 @@ function* onKartuStokQueryGet({payload: {queries}}){
     }
 }
 
+function* onGetStokUnitGudang({payload: {queries}}){
+    try {
+        let response = yield call(serviceGudang.getStokUnit, queries);
+        yield put(getStokUnitGudangSuccess(response.data));
+    } catch (error) {
+        console.error(error);
+        yield put(getStokUnitGudangError(error));
+    }
+}
+
 export function* watchSaveObatGudang() {
     yield takeEvery(OBAT_GUDANG_SAVE, onSaveObatGudang);
 }
@@ -286,6 +299,10 @@ export function* watchKartuStokQueryGet(){
     yield takeEvery(KARTU_STOK_QUERY_GET, onKartuStokQueryGet);
 }
 
+export function* watchGetStokUnitGudang(){
+    yield takeEvery(GET_STOK_UNIT_GUDANG, onGetStokUnitGudang);
+}
+
 function* registrasiSaga() {
     yield all([
         fork(watchSaveObatGudang),
@@ -302,7 +319,8 @@ function* registrasiSaga() {
         fork(watchPenerimaanSaveOrUpdate),
         fork(watchPenerimaanQueryGet),
         fork(watchPenerimaanListQueryGet),
-        fork(watchKartuStokQueryGet)
+        fork(watchKartuStokQueryGet),
+        fork(watchGetStokUnitGudang)
     ]);
 }
 

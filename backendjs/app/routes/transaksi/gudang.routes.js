@@ -102,5 +102,10 @@ export default function (app) {
         controller.getKartuStok
     )
 
+    app.get(
+        "/api/transaksi/gudang/get-stok-unit",
+        [authJwt.verifyToken],
+        controller.getStokUnit
+    )
 
 }

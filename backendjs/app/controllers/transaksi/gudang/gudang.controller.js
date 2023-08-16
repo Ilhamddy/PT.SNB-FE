@@ -12,7 +12,8 @@ import { qGetDetailPenerimaan, qGetJenisDetailProdukLainLain,
     qGetProdukMaster, 
     qGetSatuanFromProduk, 
     qGetSatuanLainLain, 
-    qGetSediaanLainLain,  
+    qGetSediaanLainLain,
+    qGetStokUnit,  
 } from "../../../queries/gudang/gudang.queries";
 import {
     createTransaction
@@ -731,6 +732,30 @@ const getKartuStok = async (req, res) => {
     }
 }
 
+const getStokUnit = async (req, res) => {
+    try{
+        const stokUnit = (await pool.query(qGetStokUnit, [])).rows
+        const tempres = {
+            stokUnit: stokUnit
+        }
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+            msg: 'Get stok unit Berhasil',
+            code: 200
+        });
+    }catch(e){
+        console.error(e)
+        res.status(500).send({
+            data: e.message,
+            success: false,
+            msg: 'Get stok unit gagal',
+            code: 500
+        });
+    }
+}
+
 export default {
     createOrUpdateProdukObat,
     getLainLain,
@@ -746,7 +771,8 @@ export default {
     getPenerimaan,
     createOrUpdatePenerimaan,
     getListPenerimaan,
-    getKartuStok
+    getKartuStok,
+    getStokUnit
 }
 
 const hCreateOrUpdatePenerimaan = async (req, res, transaction) => {

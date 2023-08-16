@@ -44,6 +44,9 @@ import {
     KARTU_STOK_QUERY_GET,
     KARTU_STOK_QUERY_GET_SUCCESS,
     KARTU_STOK_QUERY_GET_ERROR,
+    GET_STOK_UNIT_GUDANG,
+    GET_STOK_UNIT_GUDANG_SUCCESS,
+    GET_STOK_UNIT_GUDANG_ERROR,
 } from "./actionType";
 
 
@@ -269,5 +272,20 @@ export const kartuStokQueryGetSuccess = (data) => ({
 
 export const kartuStokQueryGetError = (data) => ({
     type: KARTU_STOK_QUERY_GET_ERROR,
+    payload: { data: data },
+})
+
+export const getStokUnitGudang = (queries) => ({
+    type: GET_STOK_UNIT_GUDANG,
+    payload: { queries: queries },
+})
+
+export const getStokUnitGudangSuccess = (data) => ({
+    type: GET_STOK_UNIT_GUDANG_SUCCESS,
+    payload: { data: data },
+})
+
+export const getStokUnitGudangError = (data) => ({
+    type: GET_STOK_UNIT_GUDANG_ERROR,
     payload: { data: data },
 })

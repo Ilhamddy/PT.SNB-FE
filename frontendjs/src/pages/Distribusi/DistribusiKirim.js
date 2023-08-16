@@ -36,7 +36,7 @@ import { Link, useParams } from "react-router-dom";
 
 const DistribusiKirim = () => {
     const dispatch = useDispatch()
-    const {norecorder, noreckirim} = useParams()
+    const {norecorder} = useParams()
     const [tglSekarang] = useState(() => new Date().toISOString())
 
     let {
@@ -122,12 +122,14 @@ const DistribusiKirim = () => {
                 const newBatch = {...batch}
                 newBatch.satuan = values.satuan
                 newBatch.namasatuan = values.namasatuan
-                if(jumlahKonversi >= newBatch.qty) {
-                    newBatch.qtykirim = newBatch.qty
+                const maxQtyTerkirim 
+                    = newBatch.qtyout > newBatch.qty ? newBatch.qty : newBatch.qtyout 
+                if(jumlahKonversi >= maxQtyTerkirim) {
+                    newBatch.qtykirim = maxQtyTerkirim
                     // jumlah hanya untuk pelengkap di db, operasi perhitungan harus menggunakan 
                     // qty dan konversisatuan
-                    newBatch.jumlah = newBatch.qty / strToNumber(values.konversi)
-                    jumlahKonversi -= newBatch.qty
+                    newBatch.jumlah = maxQtyTerkirim / strToNumber(values.konversi)
+                    jumlahKonversi -= maxQtyTerkirim
                 } else {
                     newBatch.qtykirim = jumlahKonversi
                     jumlahKonversi = 0
@@ -143,9 +145,10 @@ const DistribusiKirim = () => {
     })
     
     useEffect(() => {
+        // inisialisasi data order
         const setFF = vProduk.setFieldValue
         const onGetSatuanSuccess = (data) => {
-            // reset value jika ada array satuan baru
+            // reset value jika ada array satuan baru dari produk baru
             if(Array.isArray(data) && data.length === 0) {
                 refSatuan.current?.clearValue();
                 return
@@ -166,7 +169,40 @@ const DistribusiKirim = () => {
                     { idproduk: vProduk.values.produk },
                     onGetSatuanSuccess
                 ))
-    }, [dispatch, vProduk.values.produk, vProduk.setFieldValue, vProduk.values.satuan])
+    }, [
+        dispatch, 
+        vProduk.values.produk, 
+        vProduk.setFieldValue, 
+        vProduk.values.satuan
+    ])
+
+    useEffect(() => {
+        const setFF = vKirim.setFieldValue
+        let batchInputAsc = []
+        stokBatch.forEach((data) => {
+            data.batchproduk.map((batch) => {
+                const newBatch = {...batch}
+                newBatch.satuan = batch.satuan
+                newBatch.namasatuan = batch.namasatuan
+                const maxQtyTerkirim 
+                    = newBatch.qtyout > newBatch.qty ? newBatch.qty : newBatch.qtyout 
+                newBatch.qtykirim = maxQtyTerkirim
+                // jumlah hanya untuk pelengkap di db, operasi perhitungan harus menggunakan 
+                // qty dan konversisatuan
+                batchInputAsc.push(newBatch)
+                return newBatch;
+            })
+        })
+        batchInputAsc = batchInputAsc.filter((batch) => batch.qtykirim > 0)
+        if(vKirim.values.batchproduk.length === 0 && batchInputAsc.length > 0){
+            const newBatchKirim = [...vKirim.values.batchproduk, ...batchInputAsc]
+            setFF("batchproduk", newBatchKirim)
+        }
+    }, [
+        stokBatch,
+        vKirim.setFieldValue,
+        vKirim.values.batchproduk
+    ])
 
     let jumlahStokProduk = vProduk.values.batch.reduce((total, batch) => {
         return total + batch.qty
@@ -177,14 +213,17 @@ const DistribusiKirim = () => {
         return total + out
     }, 0)
 
+    let jumlahOrder = vProduk.values.batch[0]?.qtyout || 0
+
     jumlahStokProduk = jumlahStokProduk - jumlahKirim
 
     const handleJmlSatuanChange = (jmlInput, konversi) => {
 
         let jumlahKonversi = strToNumber(jmlInput) * strToNumber(konversi)
         let jumlah = strToNumber(jmlInput)
-        if (jumlahKonversi > jumlahStokProduk) {
-            jumlah = Math.floor(jumlahStokProduk / konversi)
+        let maxValue = jumlahStokProduk < jumlahOrder ? jumlahStokProduk : jumlahOrder
+        if (jumlahKonversi > maxValue) {
+            jumlah = Math.floor(maxValue / konversi)
         }
         const jmlStr = onChangeStrNbr(jumlah, vProduk.values.jumlah)
         vProduk.setFieldValue("jumlah", jmlStr)
@@ -205,18 +244,19 @@ const DistribusiKirim = () => {
     }, [dispatch])
 
     useEffect(() => {
-        const setFF = vKirim.setFieldValue
         norecorder && 
             dispatch(getOrderStokBatch({norecorder: norecorder}))
-        setFF("noreckirim", noreckirim || "")
     }, [dispatch, 
         norecorder, 
         vKirim.setFieldValue,
-        noreckirim
     ])
 
     useEffect(() => {
         const setFF = vKirim.setFieldValue
+        setFF("noreckirim", dataOrder?.noreckirim || "")
+        setFF("tanggalkirim", dataOrder?.tglkirim || "")
+        setFF("nokirim", dataOrder?.nokirim || "")
+        setFF("keterangankirim", dataOrder?.keterangankirim || "")
         setFF("unitpengirim", dataOrder?.unittujuan || "")
         setFF("unitpenerima", dataOrder?.unitasal || "")
         setFF("tanggalpermintaan", dataOrder?.tglorder || "")
@@ -232,6 +272,10 @@ const DistribusiKirim = () => {
         dataOrder?.keterangan,
         dataOrder?.norecorder,
         dataOrder?.jenisorder,
+        dataOrder?.noreckirim,
+        dataOrder?.tglkirim,
+        dataOrder?.nokirim,
+        dataOrder?.keterangankirim,
         vKirim.setFieldValue, 
     ])
     
@@ -684,6 +728,23 @@ const DistribusiKirim = () => {
                 <Col xl={2} lg={3}>
                     <Label 
                         style={{ color: "black" }} 
+                        htmlFor={`jumlahorder`}
+                        className="form-label mb-1">
+                        Jumlah Order
+                    </Label>
+                    <Input 
+                        className="mb-2"
+                        id={`jumlahorder`}
+                        name={`stok`}
+                        type="text" 
+                        disabled
+                        value={jumlahOrder}
+                        /> 
+
+                </Col>
+                <Col xl={2} lg={3}>
+                    <Label 
+                        style={{ color: "black" }} 
                         htmlFor={`stok`}
                         className="form-label mb-1">
                         Stok
@@ -798,7 +859,7 @@ const DistribusiKirim = () => {
                         style={{ color: "black" }} 
                         htmlFor={`jumlahtotal`}
                         className="form-label mb-1">
-                        Jumlah
+                        Jumlah Total
                     </Label>
                     <Input 
                         id={`jumlahtotal`}
@@ -854,6 +915,7 @@ const DistribusiKirim = () => {
                     color="info" 
                     placement="top" 
                     formTarget="form-input-penerimaan"
+                    disabled={vKirim.values.noreckirim ? true : false}
                     >
                     Simpan
                 </Button>

@@ -1,28 +1,8 @@
 SELECT
-    tor.norec AS norecorder,
-    tor.objectjenisorderbarangfk AS jenisorder,
-    mjb.reportdisplay AS namajenisorder,
-    tor.objectunittujuanfk AS unittujuan,
-    tor.objectunitasalfk AS unitasal,
-    tod.norec AS norecorderdetail,
-    tod.objectprodukfk AS produkid,
-    ts.norec AS norecstok,
-    ts.objectprodukfk AS value,
-    mp.namaproduk AS label,
-    ts.nobatch AS nobatch,
-    ts.qty AS qty,
-    ts.tglinput AS tglinput,
-    tod.qty AS qtyout,
-    tod.jumlah AS jumlah,
-    tod.objectsatuanfk AS satuan,
-    ms.satuan AS namasatuan
-FROM
-    t_orderbarang tor
-    LEFT JOIN t_orderbarangdetail tod ON tod.objectorderbarangfk = tor.norec
-    LEFT JOIN t_stokunit ts ON ts.objectprodukfk = tod.objectprodukfk
-    INNER JOIN m_produk mp ON mp.id = ts.objectprodukfk
-    LEFT JOIN m_satuan ms ON ms.id = tod.objectsatuanfk
-    LEFT JOIN m_jenisorderbarang mjb ON mjb.id = tor.objectjenisorderbarangfk
-WHERE
-    tor.statusenabled = true
-    AND tor.norec = 's'
+    tsu.norec AS norecstokunit,
+    tsu.qty AS qty,
+    mp.namaproduk AS namaproduk,
+    mu.namaunit AS namaunit
+FROM t_stokunit tsu
+    JOIN m_produk mp ON mp.id = tsu.objectprodukfk
+    JOIN m_unit mu ON mu.id = tsu.objectunitfk

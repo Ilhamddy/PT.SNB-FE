@@ -5,7 +5,7 @@ import LoadingTable from "../../Components/Table/LoadingTable"
 import DataTable from "react-data-table-component"
 import BreadCrumb from "../../Components/Common/BreadCrumb"
 import { ToastContainer } from "react-toastify"
-import { Card, Container, DropdownItem, DropdownMenu, DropdownToggle, UncontrolledDropdown, UncontrolledTooltip } from "reactstrap"
+import { Button, Card, Col, Container, DropdownItem, DropdownMenu, DropdownToggle, Row, UncontrolledDropdown, UncontrolledTooltip } from "reactstrap"
 import { Link } from "react-router-dom"
 
 
@@ -61,13 +61,13 @@ const DistribusiOrderList = () => {
         {
             name: <span className='font-weight-bold fs-13'>Tanggal Kirim</span>,
             sortable: true,
-            selector: row => "-",
+            selector: row => row.tglkirim || "-",
             width: "100px"
         },    
         {
             name: <span className='font-weight-bold fs-13'>No Kirim</span>,
             sortable: true,
-            selector: row => "-",
+            selector: row => row.nokirim || "-",
             width: "100px"
         },        
         {
@@ -85,7 +85,7 @@ const DistribusiOrderList = () => {
         {
             name: <span className='font-weight-bold fs-13'>Unit Membutuhkan</span>,
             sortable: true,
-            selector: row => row.namaunittujuan,
+            selector: row => row.namaunitasal,
             width: "200px"
         },
         {
@@ -102,17 +102,29 @@ const DistribusiOrderList = () => {
             <Container fluid>
                 <BreadCrumb title="Order Barang" pageTitle="Gudang" />
                 <Card className="p-5">
-                    <DataTable 
-                        fixedHeader
-                        columns={columnsProduk}
-                        pagination
-                        paginationPerPage={5}
-                        paginationRowsPerPageOptions={[5]}
-                        data={listOrder}
-                        progressPending={false}
-                        customStyles={tableCustomStyles}
-                        progressComponent={<LoadingTable />}
-                        /> 
+                    <Row className="d-flex flex-row-reverse mb-3">
+                        <Col lg={2} className="d-flex flex-row-reverse">
+                            <Link to={"/farmasi/gudang/distribusi-order"}>
+                                <Button color={"info"}>
+                                    Tambah
+                                </Button>
+                            </Link>
+                        </Col>
+                    </Row>
+                    <Row>
+
+                        <DataTable 
+                            fixedHeader
+                            columns={columnsProduk}
+                            pagination
+                            paginationPerPage={5}
+                            paginationRowsPerPageOptions={[5]}
+                            data={listOrder}
+                            progressPending={false}
+                            customStyles={tableCustomStyles}
+                            progressComponent={<LoadingTable />}
+                            /> 
+                    </Row>
                 </Card>
             </Container>
         </div>

@@ -167,7 +167,7 @@ const qGetListPenerimaan = qGetPenerimaanFE + `
 `
 
 const qGetKartuStok = `
-    SELECT
+SELECT
     tks.norec AS noreckartustok,
     tks.statusenabled AS statusenabled,
     mu.namaunit AS unit,
@@ -182,9 +182,21 @@ const qGetKartuStok = `
     tks.tabeltransaksi AS tabeltransaksi,
     tks.norectransaksi AS norectransaksi,
     tks.batch AS nobatch
-        FROM t_kartustok tks
-        JOIN m_produk mp ON mp.id = tks.objectprodukfk
-        JOIN m_unit mu ON mu.id = tks.objectunitfk
+FROM t_kartustok tks
+    JOIN m_produk mp ON mp.id = tks.objectprodukfk
+    JOIN m_unit mu ON mu.id = tks.objectunitfk
+`
+
+const qGetStokUnit = `
+SELECT
+    tsu.norec AS norecstokunit,
+    tsu.qty AS qty,
+    mp.namaproduk AS namaproduk,
+    mu.namaunit AS namaunit,
+    tsu.nobatch AS nobatch
+FROM t_stokunit tsu
+    LEFT JOIN m_produk mp ON mp.id = tsu.objectprodukfk
+    LEFT JOIN m_unit mu ON mu.id = tsu.objectunitfk
 `
 
 export {
@@ -200,5 +212,6 @@ export {
     qGetDetailPenerimaan,
     qGetPenerimaan,
     qGetListPenerimaan,
-    qGetKartuStok
+    qGetKartuStok,
+    qGetStokUnit
 }

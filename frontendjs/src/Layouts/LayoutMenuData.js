@@ -595,6 +595,17 @@ const Navdata = () => {
                         ]);
                     }
                 },
+                {
+                    id: "stokunit",
+                    label: "Stok Unit",
+                    link: "/farmasi/gudang/stok-unit",
+                    parentId: "gudang",
+                    isAllowed: () => {
+                        return isAllowedAccess(getUserPermissions(), [
+                            "REGISTRASI_VIEW",
+                        ]);
+                    }
+                },
             ]
         },
         

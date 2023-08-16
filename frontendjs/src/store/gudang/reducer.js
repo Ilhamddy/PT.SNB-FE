@@ -45,6 +45,9 @@ import {
     KARTU_STOK_QUERY_GET,
     KARTU_STOK_QUERY_GET_SUCCESS,
     KARTU_STOK_QUERY_GET_ERROR,
+    GET_STOK_UNIT_GUDANG,
+    GET_STOK_UNIT_GUDANG_SUCCESS,
+    GET_STOK_UNIT_GUDANG_ERROR,
 } from "./actionType";
 
 const INIT_STATE = {
@@ -119,6 +122,11 @@ const INIT_STATE = {
         error: null,
     },
     kartuStokQueryGet: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    getStokUnitGudang: {
         data: [],
         loading: false,
         error: null,
@@ -667,6 +675,42 @@ const Registrasi = (state = INIT_STATE, action) => {
                 ...state,
                 kartuStokQueryGet: {
                     ...state.kartuStokQueryGet,
+                    loading: false,
+                    data: [],
+                    error: action.payload.data
+                }
+            }
+        }
+
+        case GET_STOK_UNIT_GUDANG: {
+            return {
+                ...state,
+                getStokUnitGudang: {
+                    ...state.getStokUnitGudang,
+                    loading: true,
+                    data: [],
+                    error: null
+                }
+            }
+        }
+
+        case GET_STOK_UNIT_GUDANG_SUCCESS: {
+            return {
+                ...state,
+                getStokUnitGudang: {
+                    ...state.getStokUnitGudang,
+                    loading: false,
+                    data: action.payload.data,
+                    error: null
+                }
+            }
+        }
+
+        case GET_STOK_UNIT_GUDANG_ERROR: {
+            return {
+                ...state,
+                getStokUnitGudang: {
+                    ...state.getStokUnitGudang,
                     loading: false,
                     data: [],
                     error: action.payload.data
