@@ -1,19 +1,28 @@
-
-        
-SELECT 
-    mk.id, 
-    mk.barcode,
-    mp.namaproduk AS namaproduk,
-    msk.satuan AS namasatuankecil,
-    msb.satuan AS namasatuanbesar,
-    msk.id AS satuankecil,
-    msb.id AS satuanbesar,
-    mk.nilaikonversi AS nilaikonversi
-FROM m_kemasanproduk mk
-    LEFT JOIN m_produk mp ON mk.objectprodukfk = mp.id
-    LEFT JOIN m_satuan msk ON msk.id = mk.objectsatuankecilfk
-    LEFT JOIN m_satuan msb ON msb.id = mk.objectsatuanbesarfk
-WHERE CASE WHEN '$1' = NULL 
-    THEN mk.statusenabled = true 
-    ELSE mk.statusenabled = true AND mk.id = '$1'
-END
+SELECT
+    tor.norec AS norecorder,
+    tor.objectjenisorderbarangfk AS jenisorder,
+    mjb.reportdisplay AS namajenisorder,
+    tor.objectunittujuanfk AS unittujuan,
+    tor.objectunitasalfk AS unitasal,
+    tod.norec AS norecorderdetail,
+    tod.objectprodukfk AS produkid,
+    ts.norec AS norecstok,
+    ts.objectprodukfk AS value,
+    mp.namaproduk AS label,
+    ts.nobatch AS nobatch,
+    ts.qty AS qty,
+    ts.tglinput AS tglinput,
+    tod.qty AS qtyout,
+    tod.jumlah AS jumlah,
+    tod.objectsatuanfk AS satuan,
+    ms.satuan AS namasatuan
+FROM
+    t_orderbarang tor
+    LEFT JOIN t_orderbarangdetail tod ON tod.objectorderbarangfk = tor.norec
+    LEFT JOIN t_stokunit ts ON ts.objectprodukfk = tod.objectprodukfk
+    INNER JOIN m_produk mp ON mp.id = ts.objectprodukfk
+    LEFT JOIN m_satuan ms ON ms.id = tod.objectsatuanfk
+    LEFT JOIN m_jenisorderbarang mjb ON mjb.id = tor.objectjenisorderbarangfk
+WHERE
+    tor.statusenabled = true
+    AND tor.norec = 's'

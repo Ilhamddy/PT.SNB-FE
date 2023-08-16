@@ -5,7 +5,8 @@ import LoadingTable from "../../Components/Table/LoadingTable"
 import DataTable from "react-data-table-component"
 import BreadCrumb from "../../Components/Common/BreadCrumb"
 import { ToastContainer } from "react-toastify"
-import { Card, Container } from "reactstrap"
+import { Card, Container, DropdownItem, DropdownMenu, DropdownToggle, UncontrolledDropdown, UncontrolledTooltip } from "reactstrap"
+import { Link } from "react-router-dom"
 
 
 const DistribusiOrderList = () => {
@@ -25,6 +26,38 @@ const DistribusiOrderList = () => {
      * @type {import("react-data-table-component").TableColumn[]}
      */
      const columnsProduk = [
+        {
+            name: <span className='font-weight-bold fs-13'>Detail</span>,
+            cell: (row) => (
+                <div className="hstack gap-3 flex-wrap">
+                    <UncontrolledTooltip 
+                        placement="top" 
+                        target="edit-produk" > 
+                        Detail Produk 
+                    </UncontrolledTooltip>
+                    <UncontrolledDropdown className="dropdown d-inline-block">
+                        <DropdownToggle 
+                            className="btn btn-soft-secondary btn-sm" 
+                            itemType="button"
+                            id="edit-produk">
+                            <i className="ri-apps-2-line"></i>
+                        </DropdownToggle>
+                        <DropdownMenu className="dropdown-menu-end">
+                            <Link to={`/farmasi/gudang/distribusi-kirim/${row.norecorder}`}>
+                                <DropdownItem >
+                                    <i className="ri-mail-send-fill align-bottom me-2 text-muted">
+                                    </i>
+                                    Kirim Order
+                                </DropdownItem>
+                            </Link>
+                        </DropdownMenu>
+                    </UncontrolledDropdown>
+                </div>)
+                ,
+            sortable: true,
+            width: "70px",
+            wrap: true
+        },
         {
             name: <span className='font-weight-bold fs-13'>Tanggal Kirim</span>,
             sortable: true,

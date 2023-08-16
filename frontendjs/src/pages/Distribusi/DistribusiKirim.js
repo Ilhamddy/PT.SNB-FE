@@ -25,47 +25,67 @@ import DataTable from "react-data-table-component";
 import LoadingTable from "../../Components/Table/LoadingTable";
 import NoDataTable from "../../Components/Table/NoDataTable";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useRef } from "react";
-import { getStokBatch, kemasanFromProdukGet } from "../../store/actions";
+import { useEffect, useRef, useState } from "react";
+import { createOrUpdateKirimBarang, createOrUpdateOrderbarang, getOrderStokBatch, getStokBatch, kemasanFromProdukGet } from "../../store/actions";
+import { APIClient } from "../../helpers/api_helper";
+import { comboDistribusiOrderGet } from "../../store/master/action";
+import { Link, useParams } from "react-router-dom";
 
 
-const DistribusiOrder = () => {
+
+
+const DistribusiKirim = () => {
     const dispatch = useDispatch()
+    const {norecorder, noreckirim} = useParams()
+    const [tglSekarang] = useState(() => new Date().toISOString())
 
-    const {
+    let {
         stokBatch,
-        satuan
+        dataOrder,
+        satuan,
+        unit,
+        jenisorderbarang
     } = useSelector(state => ({
-        stokBatch: state.Distribusi.getStokBatch?.data || [],
-        satuan: state.Gudang.kemasanFromProdukGet || null
+        stokBatch: state.Distribusi.getOrderStokBatch?.data?.itemorders || [],
+        dataOrder: state.Distribusi.getOrderStokBatch.data?.order || [],
+        satuan: state.Gudang.kemasanFromProdukGet || null,
+        unit: state.Master.comboDistribusiOrderGet.data?.unit || [],
+        jenisorderbarang: state.Master.comboDistribusiOrderGet.data?.jenisorderbarang || [],
     }))
 
     const refSatuan = useRef(null);
+    const refProduk = useRef(null);
 
     const vKirim = useFormik({
+        enableReinitialize: true,
         initialValues: {
-            tanggalkirim: "",
+            noreckirim: "",
+            norecorder: "",
+            tanggalkirim: tglSekarang,
             nokirim: "",
-            unitkirim: "",
-            tanggalpermintaan: "",
-            /**
-             * @type {Array<{
-             *  norecstok: string, 
-             *  produkid: number, 
-             *  label: string, 
-             *  nobatch: string, qty: 
-             *  number, 
-             *  tglinput: string, 
-             *  qtyout: number,
-             *  difference: boolean
-             * }>}
-             */
-            batchproduk: []
+            unitpengirim: "",
+            unitpenerima: "",
+            tanggalpermintaan: tglSekarang,
+            noorder: "",
+            jeniskirim: "",
+            keteranganorder: "",
+            keterangankirim: "",
+            /**@type {import("../../../../backendjs/app/queries/gudang/distribusi.queries").ListStokUnit} */
+            batchproduk: [],
         },
+        validationSchema: Yup.object({
+            tanggalkirim: Yup.string().required("Tanggal Order harus diisi"),
+            nokirim: Yup.string().required("No Order harus diisi"),
+            unitpengirim: Yup.string().required("Unit Pengirim harus diisi"),
+            unitpenerima: Yup.string().required("Unit Penerima harus diisi"),
+            jeniskirim: Yup.string().required("Jenis Kirim harus diisi"),
+            keterangankirim: Yup.string().required("Keterangan Kirim harus diisi"),
+        }),
         onSubmit: (values) => {
-            console.log(values)
+            dispatch(createOrUpdateKirimBarang(values))
         }
     })
+
 
     const vProduk = useFormik({
         enableReinitialize: true,
@@ -88,26 +108,37 @@ const DistribusiOrder = () => {
         onSubmit: (values, {resetForm}) => {
             // prioritaskan batch yang pertama kalin masuk
             // kurangkan jumlahKonversi setiap ada qyout
+            const batchProduk = vKirim.values.batchproduk.filter(
+                (batch) => batch.produkid === values.produk
+            );
+            const jmlBefore = batchProduk.reduce((a, b) => a + b.qtykirim, 0);
             let jumlahKonversi = strToNumber(values.jumlah) * strToNumber(values.konversi);
+            jumlahKonversi = jmlBefore + jumlahKonversi;
+
             let batchInputAsc = [...values.batch].sort((a, b) => {
                 return new Date(a.tglinput) - new Date(b.tglinput)
             })
             batchInputAsc = batchInputAsc.map((batch) => {
                 const newBatch = {...batch}
-                newBatch.newlyadded = true;
+                newBatch.satuan = values.satuan
+                newBatch.namasatuan = values.namasatuan
                 if(jumlahKonversi >= newBatch.qty) {
-                    newBatch.qtyout = newBatch.qty
+                    newBatch.qtykirim = newBatch.qty
+                    // jumlah hanya untuk pelengkap di db, operasi perhitungan harus menggunakan 
+                    // qty dan konversisatuan
+                    newBatch.jumlah = newBatch.qty / strToNumber(values.konversi)
                     jumlahKonversi -= newBatch.qty
                 } else {
-                    newBatch.qtyout = jumlahKonversi
+                    newBatch.qtykirim = jumlahKonversi
                     jumlahKonversi = 0
                 }
                 return newBatch;
             })
-            batchInputAsc = batchInputAsc.filter((batch) => batch.qtyout > 0)
+            batchInputAsc = batchInputAsc.filter((batch) => batch.qtykirim > 0)
             const newBatchKirim = [...vKirim.values.batchproduk, ...batchInputAsc]
             vKirim.setFieldValue("batchproduk", newBatchKirim)
             resetForm()
+            refProduk.current?.clearValue()
         }
     })
     
@@ -141,12 +172,12 @@ const DistribusiOrder = () => {
         return total + batch.qty
     }, 0)
 
-    const jumlahOut = vKirim.values.batchproduk.reduce((total, batch) => {
-        const out = (batch.produkid === vProduk.values.produk ? batch.qtyout : 0)
+    let jumlahKirim = vKirim.values.batchproduk.reduce((total, batch) => {
+        const out = (batch.produkid === vProduk.values.produk ? batch.qtykirim : 0)
         return total + out
     }, 0)
 
-    jumlahStokProduk = jumlahStokProduk - jumlahOut
+    jumlahStokProduk = jumlahStokProduk - jumlahKirim
 
     const handleJmlSatuanChange = (jmlInput, konversi) => {
 
@@ -160,20 +191,93 @@ const DistribusiOrder = () => {
     }
 
 
-
     const jumlahTotal = strToNumber(vProduk.values.jumlah) * strToNumber(vProduk.values.konversi)
-
+    const newStokBatch = stokBatch.filter((batch) => {
+        const batchProduk = vKirim.values.batchproduk.find((batchOrder) => {
+            return batchOrder.value === batch.value
+        })
+        const produkNotFound = !batchProduk
+        return produkNotFound
+    })
 
     useEffect(() => {
-        dispatch(getStokBatch({}))
+        dispatch(comboDistribusiOrderGet())
     }, [dispatch])
+
+    useEffect(() => {
+        const setFF = vKirim.setFieldValue
+        norecorder && 
+            dispatch(getOrderStokBatch({norecorder: norecorder}))
+        setFF("noreckirim", noreckirim || "")
+    }, [dispatch, 
+        norecorder, 
+        vKirim.setFieldValue,
+        noreckirim
+    ])
+
+    useEffect(() => {
+        const setFF = vKirim.setFieldValue
+        setFF("unitpengirim", dataOrder?.unittujuan || "")
+        setFF("unitpenerima", dataOrder?.unitasal || "")
+        setFF("tanggalpermintaan", dataOrder?.tglorder || "")
+        setFF("noorder", dataOrder?.noorder || "")
+        setFF("keteranganorder", dataOrder?.keterangan || "")
+        setFF("norecorder", dataOrder?.norecorder || "")
+        setFF("jeniskirim", dataOrder?.jenisorder || "")
+    }, [
+        dataOrder?.unittujuan, 
+        dataOrder?.unitasal, 
+        dataOrder?.tglorder,
+        dataOrder?.noorder,
+        dataOrder?.keterangan,
+        dataOrder?.norecorder,
+        dataOrder?.jenisorder,
+        vKirim.setFieldValue, 
+    ])
     
 
+    const handleEditColumn = async (row) => {
+        const api = new APIClient();
+        
+        vProduk.setFieldValue("produk", row.value)
+        vProduk.setFieldValue("namaproduk", row.label)
+        vProduk.setFieldValue("satuan", row.satuan)
+        vProduk.setFieldValue("namasatuan", row.namasatuan)
+        const kemasan = await api
+        .get("/transaksi/gudang/distribusi/get-kemasan-by-id", {idkemasan: row.satuan})
+        const konversi = kemasan.data.kemasan.nilaikonversi
+        vProduk.setFieldValue("konversi", konversi)
+        // hitung jumlahnya dahulu
+        const allProduk = vKirim.values.batchproduk.filter((batch) => {
+            return batch.value === row.value
+        })
+        const jmlAllProduk = allProduk.reduce((total, batch) => {
+            return total + (batch.qtykirim / konversi)
+        }, 0)
+        
+        vProduk.setFieldValue("jumlah", jmlAllProduk)
+        const newBatch = stokBatch.find((batch) => {
+            return batch.value === row.value
+        })
+        // lalu maasukkan batchnya didapatkan dari stokBatch
+        vProduk.setFieldValue("batch", newBatch?.batchproduk || [])
+        const otherProduk = vKirim.values.batchproduk.filter((batch) => {
+            return batch.value !== row.value
+        })
+        vKirim.setFieldValue("batchproduk", [...otherProduk])
+    }
+
+    const handleHapusProduk = (row) => {
+        const otherProduk = vKirim.values.batchproduk.filter((batch) => {
+            return batch.value !== row.value
+        })
+        vKirim.setFieldValue("batchproduk", [...otherProduk])
+    }
 
     /**
      * @type {import("react-data-table-component").TableColumn<typeof vKirim.values.batchproduk[0]>[]}
      */
-    const columnsProduk = [
+    const columnsKirim = [
         {
             name: <span className='font-weight-bold fs-13'>Detail</span>,
             cell: (row) => (
@@ -191,12 +295,15 @@ const DistribusiOrder = () => {
                             <i className="ri-apps-2-line"></i>
                         </DropdownToggle>
                         <DropdownMenu className="dropdown-menu-end">
-                            <DropdownItem onClick={() => {
-                                vProduk.setFieldValue("produk", row.produkid)
-                                }}>
+                            <DropdownItem onClick={() => handleEditColumn(row)}>
                                 <i className="ri-mail-send-fill align-bottom me-2 text-muted">
                                 </i>
                                 Edit Produk
+                            </DropdownItem>
+                            <DropdownItem onClick={() => handleHapusProduk(row)}>
+                                <i className="ri-mail-send-fill align-bottom me-2 text-muted">
+                                </i>
+                                Hapus produk
                             </DropdownItem>
                         </DropdownMenu>
                     </UncontrolledDropdown>
@@ -226,20 +333,20 @@ const DistribusiOrder = () => {
         },
         {
             name: <span className='font-weight-bold fs-13'>Satuan</span>,
-            selector: row => "",
+            selector: row => row.namasatuan,
             sortable: true,
             width: "100px"
         },
         {
             name: <span className='font-weight-bold fs-13'>Stok</span>,
             sortable: true,
-            selector: row => `${row.stok}`,
+            selector: row => `${row.qty}`,
             width: "100px"
         },
         {
             name: <span className='font-weight-bold fs-13'>Jumlah</span>,
             sortable: true,
-            selector: row => `${row.qtyout}`,
+            selector: row => `${row.qtykirim}`,
             width: "100px"
         }
     ];
@@ -251,8 +358,8 @@ const DistribusiOrder = () => {
                     <Label 
                         style={{ color: "black" }} 
                         htmlFor={`tanggalkirim`}
-                        className="form-label mt-2">
-                        Tgl Kirim
+                        className="form-label">
+                        Tanggal Kirim
                     </Label>
                 </Col>
                 <Col xl={3} lg={4} className="mb-2">
@@ -284,7 +391,7 @@ const DistribusiOrder = () => {
                         style={{ color: "black" }} 
                         htmlFor={`nokirim`}
                         className="form-label mt-2">
-                        No Order
+                        No Kirim
                     </Label>
                 </Col>
                 <Col xl={3} lg={4} className="mb-2">
@@ -295,10 +402,10 @@ const DistribusiOrder = () => {
                         value={vKirim.values.nokirim} 
                         onChange={vKirim.handleChange}
                         invalid={vKirim.touched?.nokirim 
-                            && !!vKirim?.touched?.nokirim}
+                            && !!vKirim?.errors?.nokirim}
                         />
                     {vKirim.touched?.nokirim 
-                        && !!vKirim.touched?.nokirim && (
+                        && !!vKirim.errors?.nokirim && (
                         <FormFeedback type="invalid" >
                             <div>
                                 {vKirim.errors?.nokirim}
@@ -309,28 +416,32 @@ const DistribusiOrder = () => {
                 <Col xl={1} lg={2}>
                     <Label 
                         style={{ color: "black" }} 
-                        htmlFor={`unitkirim`}
-                        className="form-label mt-2">
-                        Jenis Order
+                        htmlFor={`unitpengirim`}
+                        className="form-label">
+                        Unit Pengirim
                     </Label>
                 </Col>
                 <Col xl={3} lg={4} className="mb-2">
                     <CustomSelect
-                        id="unitkirim"
-                        name="unitkirim"
-                        options={[]}
-                        value={vKirim.values?.unitkirim}
+                        id="unitpengirim"
+                        name="unitpengirim"
+                        options={unit}
+                        value={vKirim.values?.unitpengirim}
+                        isDisabled
+                        onChange={(val) => {
+                            vKirim.setFieldValue("unitpengirim", val.value)
+                        }}
                         className={`input 
-                            ${vKirim.errors?.unitkirim 
+                            ${vKirim.errors?.unitpengirim 
                                 ? "is-invalid" 
                                 : ""
                             }`}
                         />
-                    {vKirim.touched?.unitkirim
-                        && !!vKirim.errors?.unitkirim && (
+                    {vKirim.touched?.unitpengirim
+                        && !!vKirim.errors?.unitpengirim && (
                         <FormFeedback type="invalid" >
                             <div>
-                                {vKirim.errors?.unitkirim}
+                                {vKirim.errors?.unitpengirim}
                             </div>
                         </FormFeedback>
                     )}
@@ -338,28 +449,86 @@ const DistribusiOrder = () => {
                 <Col xl={1} lg={2}>
                     <Label 
                         style={{ color: "black" }} 
-                        htmlFor={`unitorder`}
-                        className="form-label mt-2">
+                        htmlFor={`tanggalpermintaan`}
+                        className="form-label">
                         Tanggal Permintaan
                     </Label>
                 </Col>
                 <Col xl={3} lg={4} className="mb-2">
+                    <Flatpickr
+                        // value={penerimaan.tglregistrasi || ""}
+                        className="form-control"
+                        id="tanggalpermintaan"
+                        options={{
+                            dateFormat: "Y-m-d",
+                            defaultDate: "today"
+                        }}
+                        disabled
+                        value={vKirim.values.tanggalpermintaan}
+                        onChange={([newDate]) => {
+                            vKirim.setFieldValue("tanggalpermintaan", newDate.toISOString());
+                        }}
+                    />
+                    {
+                        vKirim.touched?.tanggalpermintaan 
+                            && !!vKirim.touched?.tanggalpermintaan && (
+                            <FormFeedback type="invalid" >
+                                <div>
+                                    {vKirim.touched?.tanggalpermintaan}
+                                </div>
+                            </FormFeedback>
+                        )
+                    }
+                </Col>
+                <Col xl={1} lg={2}>
+                    <Label 
+                        style={{ color: "black" }} 
+                        htmlFor={`noorder`}
+                        className="form-label mt-2">
+                        No Order
+                    </Label>
+                </Col>
+                <Col xl={3} lg={4} className="mb-2">
+                    <Input 
+                        id={`noorder`}
+                        name={`noorder`}
+                        type="text"
+                        disabled
+                        value={vKirim.values.noorder} 
+                        onChange={vKirim.handleChange}
+                        invalid={vKirim.touched?.noorder 
+                            && !!vKirim?.errors?.noorder}
+                        />
+                </Col>
+                <Col xl={1} lg={2}>
+                    <Label 
+                        style={{ color: "black" }} 
+                        htmlFor={`unitpenerima`}
+                        className="form-label">
+                        Unit Penerima
+                    </Label>
+                </Col>
+                <Col xl={3} lg={4} className="mb-2">
                     <CustomSelect
-                        id="unitorder"
-                        name="unitorder"
-                        options={[]}
-                        value={vKirim.values?.unitorder}
+                        id="unitpenerima"
+                        name="unitpenerima"
+                        options={unit}
+                        isDisabled
+                        value={vKirim.values?.unitpenerima}
+                        onChange={(val) => {
+                            vKirim.setFieldValue("unitpenerima", val.value)
+                        }}
                         className={`input 
-                            ${vKirim.errors?.unitorder 
+                            ${vKirim.errors?.unitpenerima 
                                 ? "is-invalid" 
                                 : ""
                             }`}
                         />
-                    {vKirim.touched?.unitorder
-                        && !!vKirim.errors?.unitorder && (
+                    {vKirim.touched?.unitpenerima
+                        && !!vKirim.errors?.unitpenerima && (
                         <FormFeedback type="invalid" >
                             <div>
-                                {vKirim.errors?.unitorder}
+                                {vKirim.errors?.unitpenerima}
                             </div>
                         </FormFeedback>
                     )}
@@ -367,38 +536,62 @@ const DistribusiOrder = () => {
                 <Col xl={1} lg={2}>
                     <Label 
                         style={{ color: "black" }} 
-                        htmlFor={`unittujuan`}
+                        htmlFor={`jeniskirim`}
                         className="form-label mt-2">
-                        Unit Tujuan
+                        Jenis Kirim
                     </Label>
                 </Col>
                 <Col xl={3} lg={4} className="mb-2">
                     <CustomSelect
-                        id="unittujuan"
-                        name="unittujuan"
-                        options={[]}
-                        value={vKirim.values?.unittujuan}
+                        id="jeniskirim"
+                        name="jeniskirim"
+                        options={jenisorderbarang}
+                        value={vKirim.values?.jeniskirim}
+                        onChange={(val) => {
+                            vKirim.setFieldValue("jeniskirim", val.value)
+                        }}
+                        isDisabled
                         className={`input 
-                            ${vKirim.errors?.unittujuan 
+                            ${vKirim.errors?.jeniskirim 
                                 ? "is-invalid" 
                                 : ""
                             }`}
                         />
-                    {vKirim.touched?.unittujuan
-                        && !!vKirim.errors?.unittujuan && (
+                    {vKirim.touched?.jeniskirim
+                        && !!vKirim.errors?.jeniskirim && (
                         <FormFeedback type="invalid" >
                             <div>
-                                {vKirim.errors?.unittujuan}
+                                {vKirim.errors?.jeniskirim}
                             </div>
                         </FormFeedback>
                     )}
+                </Col>
+                <Col xl={1} lg={2}>
+                    <Label 
+                        style={{ color: "black" }} 
+                        htmlFor={`keteranganorder`}
+                        className="form-label">
+                        Keterangan Order
+                    </Label>
+                </Col>
+                <Col xl={3} lg={4} className="mb-2">
+                    <Input 
+                        id={`keteranganorder`}
+                        name={`keteranganorder`}
+                        type="text"
+                        disabled
+                        value={vKirim.values.keteranganorder} 
+                        onChange={vKirim.handleChange}
+                        invalid={vKirim.touched?.keteranganorder 
+                            && !!vKirim?.errors?.keteranganorder}
+                        />
                 </Col>
                 <Col xl={1} lg={2}>
                     <Label 
                         style={{ color: "black" }} 
                         htmlFor={`keterangankirim`}
-                        className="form-label">
-                        Keterangan Kirim
+                        className="form-label ">
+                        Keterangan kirim
                     </Label>
                 </Col>
                 <Col xl={3} lg={4} className="mb-2">
@@ -412,7 +605,7 @@ const DistribusiOrder = () => {
                             && !!vKirim?.errors?.keterangankirim}
                         />
                     {vKirim.touched?.keterangankirim 
-                        && !!vKirim.touched?.keterangankirim && (
+                        && !!vKirim.errors?.keterangankirim && (
                         <FormFeedback type="invalid" >
                             <div>
                                 {vKirim.errors?.keterangankirim}
@@ -437,20 +630,21 @@ const DistribusiOrder = () => {
                     <CustomSelect
                         id="produk"
                         name="produk"
-                        options={stokBatch}
-                        // value={vProduk.values?.produk}
+                        options={newStokBatch}
+                        value={vProduk.values?.produk || ""}
                         onChange={(e) => {
                             vProduk.resetForm();
                             refSatuan.current.clearValue();
-                            vProduk.setFieldValue("produk", e?.produkid || "")
-                            vProduk.setFieldValue("namaproduk", e.label)
-                            vProduk.setFieldValue("batch", e.value)
+                            vProduk.setFieldValue("produk", e?.value || "")
+                            vProduk.setFieldValue("namaproduk", e?.label || "")
+                            vProduk.setFieldValue("batch", e?.batchproduk || [])
                         }}
                         className={`input mb-2
                             ${vProduk.errors?.produk 
                                 ? "is-invalid" 
                                 : ""
                             }`}
+                        ref={refProduk}
                         />
                     {vProduk.touched?.produk
                         && !!vProduk.errors?.produk && (
@@ -469,11 +663,7 @@ const DistribusiOrder = () => {
                         Id produk
                     </Label>
                     <Input 
-                        className={`input mb-2
-                        ${vProduk.errors?.produk 
-                            ? "is-invalid" 
-                            : ""
-                        }`}
+                        className="mb-2"
                         id={`produkid`}
                         name={`produkid`}
                         type="text"
@@ -512,7 +702,7 @@ const DistribusiOrder = () => {
                         && jumlahStokProduk === 0 && (
                         <FormFeedback type="invalid" >
                             <div>
-                                Stok Kosong
+                                {vProduk.errors?.produk}
                             </div>
                         </FormFeedback>
                     )}
@@ -647,7 +837,7 @@ const DistribusiOrder = () => {
         <Card className="p-5">
             <DataTable
                 fixedHeader
-                columns={columnsProduk}
+                columns={columnsKirim}
                 pagination
                 data={vKirim.values.batchproduk || []}
                 progressPending={false}
@@ -657,6 +847,23 @@ const DistribusiOrder = () => {
                     <NoDataTable 
                         dataName={"produk"}/>}
                 />
+            <Col lg={12}
+                className="d-flex justify-content-around align-items-end mt-5">
+                <Button 
+                    type="submit" 
+                    color="info" 
+                    placement="top" 
+                    formTarget="form-input-penerimaan"
+                    >
+                    Simpan
+                </Button>
+                <Button
+                    type="button"
+                    className="btn"
+                    color="danger">
+                    Batal
+                </Button>
+            </Col>
         </Card>
     )
 
@@ -664,10 +871,11 @@ const DistribusiOrder = () => {
         <div className="page-content page-penerimaan-barang">
             <ToastContainer closeButton={false} />
             <Container fluid>
-                <BreadCrumb title="Kirim Barang" pageTitle="Gudang" />
+                <BreadCrumb title="Order Barang" pageTitle="Gudang" />
                 <Form
                     onSubmit={(e) => {
                         e.preventDefault();
+                        console.log(vKirim.errors)
                         vKirim.handleSubmit();
                         return false;
                     }}
@@ -676,6 +884,7 @@ const DistribusiOrder = () => {
                     {OrderBarang}
                     {TambahItem}
                     {TableProduk}
+
                 </Form>
             </Container>
         </div>
@@ -698,4 +907,4 @@ const tableCustomStyles = {
 }
 
 
-export default DistribusiOrder
+export default DistribusiKirim

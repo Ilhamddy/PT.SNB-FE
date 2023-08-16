@@ -63,8 +63,8 @@ const DistribusiOrder = () => {
             unitorder: "",
             unittujuan: "",
             keterangan: "",
-            /**@type {import("../../../../backendjs/app/queries/gudang/distribusi.queries").ListStokUnit} */
-            batchproduk: [],
+            /**@type {import("../../../../backendjs/app/queries/gudang/distribusi.queries").ListOrderStokUnit} */
+            isiproduk: [],
         },
         validationSchema: Yup.object({
             tanggalorder: Yup.string().required("Tanggal Order harus diisi"),
@@ -75,7 +75,6 @@ const DistribusiOrder = () => {
             keterangan: Yup.string().required("Keterangan Kirim harus diisi"),
         }),
         onSubmit: (values) => {
-            
             dispatch(createOrUpdateOrderbarang(values))
         }
     })
@@ -90,7 +89,7 @@ const DistribusiOrder = () => {
             namasatuan: "",
             konversi: "",
             jumlah: "0",
-            /**@type {typeof vOrder.values.batchproduk} */
+            /**@type {typeof vOrder.values.isiproduk} */
             batch: []
         },
         validationSchema: Yup.object({
@@ -102,35 +101,28 @@ const DistribusiOrder = () => {
         onSubmit: (values, {resetForm}) => {
             // prioritaskan batch yang pertama kalin masuk
             // kurangkan jumlahKonversi setiap ada qyout
-            const batchProduk = vOrder.values.batchproduk.filter(
+            const isiProduk = vOrder.values.isiproduk.filter(
                 (batch) => batch.produkid === values.produk
             );
-            const jmlBefore = batchProduk.reduce((a, b) => a + b.qtyout, 0);
-            let jumlahKonversi = strToNumber(values.jumlah) * strToNumber(values.konversi);
-            jumlahKonversi = jmlBefore + jumlahKonversi;
-
             let batchInputAsc = [...values.batch].sort((a, b) => {
                 return new Date(a.tglinput) - new Date(b.tglinput)
             })
-            batchInputAsc = batchInputAsc.map((batch) => {
-                const newBatch = {...batch}
-                newBatch.satuankirim = values.satuan
-                newBatch.namasatuan = values.namasatuan
-                if(jumlahKonversi >= newBatch.qty) {
-                    newBatch.qtyout = newBatch.qty
-                    // jumlah hanya untuk pelengkap di db, operasi perhitungan harus menggunakan 
-                    // qty dan konversisatuan
-                    newBatch.jumlah = newBatch.qty / strToNumber(values.konversi)
-                    jumlahKonversi -= newBatch.qty
-                } else {
-                    newBatch.qtyout = jumlahKonversi
-                    jumlahKonversi = 0
-                }
-                return newBatch;
-            })
-            batchInputAsc = batchInputAsc.filter((batch) => batch.qtyout > 0)
-            const newBatchKirim = [...vOrder.values.batchproduk, ...batchInputAsc]
-            vOrder.setFieldValue("batchproduk", newBatchKirim)
+            const jmlBefore = isiProduk.reduce((a, b) => a + b.qtyout, 0);
+            const jmlStok = batchInputAsc.reduce((a, b) => a + b.qty, 0);
+            let jumlahKonversi = strToNumber(values.jumlah) * strToNumber(values.konversi);
+            jumlahKonversi = jmlBefore + jumlahKonversi;
+
+            if(!batchInputAsc[0]) {
+                console.error("batchInputAsc[0] is undefined")
+                return
+            }
+            let firstBatchInputAsc = {...batchInputAsc[0]}
+            firstBatchInputAsc.namasatuan = values.namasatuan
+            firstBatchInputAsc.satuan = values.satuan
+            firstBatchInputAsc.qty = jmlStok
+            firstBatchInputAsc.qtyout = jumlahKonversi;
+            const newBatchKirim = [...vOrder.values.isiproduk, firstBatchInputAsc]
+            vOrder.setFieldValue("isiproduk", newBatchKirim)
             resetForm()
             refProduk.current?.clearValue()
         }
@@ -150,8 +142,8 @@ const DistribusiOrder = () => {
                 refSatuan.current?.clearValue();
                 return
             }
-            setFF("satuanterima", dataSatuan?.value || "")
-            setFF("namasatuanterima", dataSatuan?.label || "")
+            setFF("satuan", dataSatuan?.value || "")
+            setFF("namasatuan", dataSatuan?.label || "")
             setFF("konversisatuan", dataSatuan?.nilaikonversi || "")
         }
         vProduk.values.produk && 
@@ -166,7 +158,7 @@ const DistribusiOrder = () => {
         return total + batch.qty
     }, 0)
 
-    let jumlahOut = vOrder.values.batchproduk.reduce((total, batch) => {
+    let jumlahOut = vOrder.values.isiproduk.reduce((total, batch) => {
         const out = (batch.produkid === vProduk.values.produk ? batch.qtyout : 0)
         return total + out
     }, 0)
@@ -174,7 +166,6 @@ const DistribusiOrder = () => {
     jumlahStokProduk = jumlahStokProduk - jumlahOut
 
     const handleJmlSatuanChange = (jmlInput, konversi) => {
-
         let jumlahKonversi = strToNumber(jmlInput) * strToNumber(konversi)
         let jumlah = strToNumber(jmlInput)
         if (jumlahKonversi > jumlahStokProduk) {
@@ -187,15 +178,15 @@ const DistribusiOrder = () => {
 
     const jumlahTotal = strToNumber(vProduk.values.jumlah) * strToNumber(vProduk.values.konversi)
     const newStokBatch = stokBatch.filter((batch) => {
-        const batchProduk = vOrder.values.batchproduk.find((batchOrder) => {
+        const isiProduk = vOrder.values.isiproduk.find((batchOrder) => {
             return batchOrder.value === batch.value
         })
-        const produkNotFound = !batchProduk
+        const produkNotFound = !isiProduk
         return produkNotFound
     })
 
     useEffect(() => {
-        dispatch(getStokBatch({}))
+        
         dispatch(comboDistribusiOrderGet())
     }, [dispatch])
     
@@ -205,41 +196,41 @@ const DistribusiOrder = () => {
         
         vProduk.setFieldValue("produk", row.value)
         vProduk.setFieldValue("namaproduk", row.label)
-        vProduk.setFieldValue("satuan", row.satuankirim)
+        vProduk.setFieldValue("satuan", row.satuan)
         vProduk.setFieldValue("namasatuan", row.namasatuan)
         const kemasan = await api
-        .get("/transaksi/gudang/distribusi/get-kemasan-by-id", {idkemasan: row.satuankirim})
+        .get("/transaksi/gudang/distribusi/get-kemasan-by-id", {idkemasan: row.satuan})
         const konversi = kemasan.data.kemasan.nilaikonversi
         vProduk.setFieldValue("konversi", konversi)
         // hitung jumlahnya dahulu
-        const allProduk = vOrder.values.batchproduk.filter((batch) => {
+        let produk = vOrder.values.isiproduk.find((batch) => {
             return batch.value === row.value
         })
-        const jmlAllProduk = allProduk.reduce((total, batch) => {
-            return total + (batch.qtyout / konversi)
-        }, 0)
+        if(!produk) return console.error("produk is undefined")
+        produk = {...produk}
+        const jmlAllProduk = produk.qtyout / konversi
         
         vProduk.setFieldValue("jumlah", jmlAllProduk)
-        const newBatch = stokBatch.find((batch) => {
+        const newIsiProduk = stokBatch.find((batch) => {
             return batch.value === row.value
         })
         // lalu maasukkan batchnya didapatkan dari stokBatch
-        vProduk.setFieldValue("batch", newBatch?.batchproduk || [])
-        const otherProduk = vOrder.values.batchproduk.filter((batch) => {
+        vProduk.setFieldValue("batch", newIsiProduk?.isiproduk || [])
+        const otherProduk = vOrder.values.isiproduk.filter((batch) => {
             return batch.value !== row.value
         })
-        vOrder.setFieldValue("batchproduk", [...otherProduk])
+        vOrder.setFieldValue("isiproduk", [...otherProduk])
     }
 
     const handleHapusProduk = (row) => {
-        const otherProduk = vOrder.values.batchproduk.filter((batch) => {
+        const otherProduk = vOrder.values.isiproduk.filter((batch) => {
             return batch.value !== row.value
         })
-        vOrder.setFieldValue("batchproduk", [...otherProduk])
+        vOrder.setFieldValue("isiproduk", [...otherProduk])
     }
 
     /**
-     * @type {import("react-data-table-component").TableColumn<typeof vOrder.values.batchproduk[0]>[]}
+     * @type {import("react-data-table-component").TableColumn<typeof vOrder.values.isiproduk[0]>[]}
      */
     const columnsProduk = [
         {
@@ -280,14 +271,8 @@ const DistribusiOrder = () => {
         {
             name: <span className='font-weight-bold fs-13'>Id Produk</span>,
             sortable: true,
-            selector: row => row.produkid,
+            selector: row => row.value,
             width: "100px"
-        },
-        {
-            name: <span className='font-weight-bold fs-13'>No Batch</span>,
-            sortable: true,
-            selector: row => row.nobatch,
-            width: "150px"
         },
         {
             name: <span className='font-weight-bold fs-13'>Nama produk</span>,
@@ -456,6 +441,7 @@ const DistribusiOrder = () => {
                         options={unit}
                         onChange={(val) => {
                             vOrder.setFieldValue("unittujuan", val.value)
+                            dispatch(getStokBatch({ idunit: val.value }))
                         }}
                         value={vOrder.values?.unittujuan}
                         className={`input 
@@ -726,7 +712,7 @@ const DistribusiOrder = () => {
                 fixedHeader
                 columns={columnsProduk}
                 pagination
-                data={vOrder.values.batchproduk || []}
+                data={vOrder.values.isiproduk || []}
                 progressPending={false}
                 customStyles={tableCustomStyles}
                 progressComponent={<LoadingTable />}

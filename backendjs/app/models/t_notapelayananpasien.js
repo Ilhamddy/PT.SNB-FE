@@ -1,5 +1,9 @@
 import t_pelayananpasienModel from "./t_pelayananpasien.model";
 
+/**
+ * @param {import("sequelize").Sequelize} sequelize
+ * @param {import(".").SequelizeInstance} Sequelize
+ */
 // eslint-disable-next-line max-lines-per-function
 export default (sequelize, Sequelize) => {
     const t_notapelayananpasien = sequelize.define("t_notapelayananpasien", {
