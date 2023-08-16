@@ -19,15 +19,300 @@ import CustomSelect from '../../Select/Select';
 import Flatpickr from "react-flatpickr";
 import DataTable from 'react-data-table-component';
 import LoadingTable from '../../../Components/Table/LoadingTable';
+import {
+    comboLaporanRekammedisGet, kendaliDokumenResetForm
+} from '../../../store/actions';
 
-const LaporanPasienDaftar = () =>{
+const LaporanPasienDaftar = () => {
     document.title = "Laporan Pasien Daftar";
     const dispatch = useDispatch();
+    const { data, loading, error } = useSelector((state) => ({
+        data: state.KendaliDokumen.comboLaporanRekammedisGet.data,
+        loading: state.KendaliDokumen.comboLaporanRekammedisGet.loading,
+        error: state.KendaliDokumen.comboLaporanRekammedisGet.error,
+    }));
+    const [dateStart, setdateStart] = useState((new Date()).toISOString());
+    const validation = useFormik({
+        enableReinitialize: true,
+        initialValues: {
+            tglstart: dateStart,
+            tglend: dateStart,
+        },
+        validationSchema: Yup.object({
+            // dokterlab: Yup.string().required("Dokter Lab wajib diisi"),
 
-    return(
+
+        }),
+        onSubmit: (values, { resetForm }) => {
+
+        }
+    })
+    useEffect(() => {
+        return () => {
+            dispatch(kendaliDokumenResetForm());
+        }
+    }, [dispatch])
+    useEffect(() => {
+        dispatch(comboLaporanRekammedisGet(''));
+
+    }, [dispatch]);
+    const [search, setSearch] = useState('')
+    const handleFilter = (e) => {
+        if (e.keyCode === 13) {
+            // console.log(search)
+            // useEffect(() => {
+            // dispatch(daftarDokumenRekammedisGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}`));
+            // dispatch(widgetdaftarDokumenRekammedisGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}`));
+            // }, [dispatch]);
+        }
+    }
+    const handleClickCari = () => {
+        // dispatch(daftarDokumenRekammedisGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}`));
+        // dispatch(widgetdaftarDokumenRekammedisGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}`));
+    }
+    const tableCustomStyles = {
+        headRow: {
+            style: {
+                color: '#ffffff',
+                backgroundColor: '#e67e22',
+            },
+        },
+        rows: {
+            style: {
+                color: "black",
+                backgroundColor: "#f1f2f6"
+            },
+
+        }
+    }
+    const columns = [
+        {
+            name: <span className='font-weight-bold fs-13'>NoCM</span>,
+            selector: row => row.nocm,
+            sortable: true,
+            // selector: row => (<button className="btn btn-sm btn-soft-info" onClick={() => handleClick(dataTtv)}>{row.noregistrasi}</button>),
+            // width: "140px",
+            // cell: (data) => {
+            //     return (
+            //         // <Link to={`/registrasi/pasien/${data.id}`}>Details</Link>
+            //         <button type='button' className="btn btn-sm btn-soft-info" onClick={() => handleClick(data)}>{data.noregistrasi}</button>
+            //     );
+            // },
+        },
+        {
+
+            name: <span className='font-weight-bold fs-13'>Noregistrasi</span>,
+            selector: row => row.noregistrasi,
+            sortable: true,
+            // width: "150px"
+        },
+        {
+
+            name: <span className='font-weight-bold fs-13'>Unit Tujuan</span>,
+            selector: row => row.namaunit,
+            sortable: true,
+            // width: "150px"
+        },
+        {
+
+            name: <span className='font-weight-bold fs-13'>Nama Pasien</span>,
+            selector: row => row.namapasien,
+            sortable: true,
+            // width: "250px",
+        },
+        {
+
+            name: <span className='font-weight-bold fs-13'>statuskendali</span>,
+            selector: row => row.statuskendali,
+            sortable: true,
+            // width: "150px"
+        },
+
+    ];
+    return (
         <React.Fragment>
             <ToastContainer closeButton={false} />
             <UiContent />
+            <div className="page-content">
+                <Container fluid>
+                    <BreadCrumb title="Laporan Pasien Daftar" pageTitle="Forms" />
+                    <Card>
+                        <CardBody>
+                            <div className='mb-2'>
+                                <Row>
+                                    <Col sm={3}>
+                                        <div className="input-group">
+                                            <Flatpickr
+                                                id="tglstart"
+                                                className="form-control border-0 fs-5 dash-filter-picker shadow"
+                                                options={{
+                                                    enableTime: true,
+                                                    // mode: "range",
+                                                    dateFormat: "Y-m-d H:i",
+                                                    defaultDate: "today"
+                                                }}
+                                                value={validation.values.tglstart}
+                                                onChange={([newDate]) => {
+                                                    validation.setFieldValue("tglstart", newDate.toISOString());
+                                                }}
+                                            />
+                                            <div className="input-group-text bg-secondary border-secondary text-white"><i className="ri-calendar-2-line"></i></div>
+                                        </div>
+                                    </Col>
+                                    <Col lg={1}><h4>s/d</h4></Col>
+                                    <Col sm={3}>
+                                        <div className="input-group">
+                                            <Flatpickr
+                                                id="tglend"
+                                                className="form-control border-0 fs-5 dash-filter-picker shadow"
+                                                options={{
+                                                    enableTime: true,
+                                                    // mode: "range",
+                                                    dateFormat: "Y-m-d H:i",
+                                                    defaultDate: "today"
+                                                }}
+                                                value={validation.values.tglend}
+                                                onChange={([newDate]) => {
+                                                    validation.setFieldValue("tglend", newDate.toISOString());
+                                                }}
+                                            />
+                                            <div className="input-group-text bg-secondary border-secondary text-white"><i className="ri-calendar-2-line"></i></div>
+                                        </div>
+                                    </Col>
+                                    <Col lg={3}>
+                                        <div className="d-flex justify-content-sm-end">
+                                            <div className="search-box ms-2">
+                                                <input type="text" className="form-control search"
+                                                    placeholder="Search..." onChange={event => setSearch(event.target.value)}
+                                                    onKeyDown={handleFilter} />
+                                                <i className="ri-search-line search-icon"></i>
+                                            </div>
+                                        </div>
+                                    </Col>
+                                    <Col lg={2}>
+                                        <Button type="button" className="rounded-pill" placement="top" id="tooltipTopPencarian" onClick={handleClickCari}>
+                                            CARI
+                                        </Button>
+                                        <UncontrolledTooltip placement="top" target="tooltipTopPencarian" > Pencarian </UncontrolledTooltip>
+                                    </Col>
+                                    <Col lg={3}>
+                                        <Col lg={12}>
+                                            <div className="mt-2">
+                                                <Label style={{ color: "black" }} htmlFor="tipediagnosa" className="form-label">Departemen</Label>
+                                            </div>
+                                        </Col>
+                                        <Col lg={12}>
+                                            <div>
+                                                <CustomSelect
+                                                    id="departemen"
+                                                    name="departemen"
+                                                    options={data.departemen}
+                                                    value={validation.values.departemen || ""}
+                                                    className={`input ${validation.errors.departemen ? "is-invalid" : ""}`}
+                                                    onChange={value => validation.setFieldValue('departemen', value.value)}
+                                                    invalid={
+                                                        validation.touched.departemen && validation.errors.departemen ? true : false
+                                                    }
+                                                />
+                                                {validation.touched.departemen && validation.errors.departemen ? (
+                                                    <FormFeedback type="invalid"><div>{validation.errors.departemen}</div></FormFeedback>
+                                                ) : null}
+                                            </div>
+                                        </Col>
+                                    </Col>
+                                    <Col lg={3}>
+                                        <Col lg={12}>
+                                            <div className="mt-2">
+                                                <Label style={{ color: "black" }} htmlFor="tipediagnosa" className="form-label">Unit</Label>
+                                            </div>
+                                        </Col>
+                                        <Col lg={12}>
+                                            <div>
+                                                <CustomSelect
+                                                    id="unit"
+                                                    name="unit"
+                                                    options={data.unit}
+                                                    value={validation.values.unit || ""}
+                                                    className={`input ${validation.errors.unit ? "is-invalid" : ""}`}
+                                                    onChange={value => validation.setFieldValue('unit', value.value)}
+                                                    invalid={
+                                                        validation.touched.unit && validation.errors.unit ? true : false
+                                                    }
+                                                />
+                                                {validation.touched.unit && validation.errors.unit ? (
+                                                    <FormFeedback type="invalid"><div>{validation.errors.unit}</div></FormFeedback>
+                                                ) : null}
+                                            </div>
+                                        </Col>
+                                    </Col>
+                                    <Col lg={3}>
+                                        <Col lg={12}>
+                                            <div className="mt-2">
+                                                <Label style={{ color: "black" }} htmlFor="tipediagnosa" className="form-label">Rekanan</Label>
+                                            </div>
+                                        </Col>
+                                        <Col lg={12}>
+                                            <div>
+                                                <CustomSelect
+                                                    id="rekanan"
+                                                    name="rekanan"
+                                                    options={data.rekanan}
+                                                    value={validation.values.rekanan || ""}
+                                                    className={`input ${validation.errors.rekanan ? "is-invalid" : ""}`}
+                                                    onChange={value => validation.setFieldValue('rekanan', value.value)}
+                                                    invalid={
+                                                        validation.touched.rekanan && validation.errors.rekanan ? true : false
+                                                    }
+                                                />
+                                                {validation.touched.rekanan && validation.errors.rekanan ? (
+                                                    <FormFeedback type="invalid"><div>{validation.errors.rekanan}</div></FormFeedback>
+                                                ) : null}
+                                            </div>
+                                        </Col>
+                                    </Col>
+                                    <Col lg={3}>
+                                        <Col lg={12}>
+                                            <div className="mt-2">
+                                                <Label style={{ color: "black" }} htmlFor="tipediagnosa" className="form-label">Pegawai Registrasi</Label>
+                                            </div>
+                                        </Col>
+                                        <Col lg={12}>
+                                            <div>
+                                                <CustomSelect
+                                                    id="pegawai"
+                                                    name="pegawai"
+                                                    options={data.pegawai}
+                                                    value={validation.values.pegawai || ""}
+                                                    className={`input ${validation.errors.pegawai ? "is-invalid" : ""}`}
+                                                    onChange={value => validation.setFieldValue('pegawai', value.value)}
+                                                    invalid={
+                                                        validation.touched.pegawai && validation.errors.pegawai ? true : false
+                                                    }
+                                                />
+                                                {validation.touched.pegawai && validation.errors.pegawai ? (
+                                                    <FormFeedback type="invalid"><div>{validation.errors.pegawai}</div></FormFeedback>
+                                                ) : null}
+                                            </div>
+                                        </Col>
+                                    </Col>
+                                </Row>
+                            </div>
+                            <div id="table-gridjs">
+                                <DataTable
+                                    fixedHeader
+                                    fixedHeaderScrollHeight="330px"
+                                    columns={columns}
+                                    pagination
+                                    // data={data}
+                                    progressPending={loading}
+                                    customStyles={tableCustomStyles}
+                                    progressComponent={<LoadingTable />}
+                                />
+                            </div>
+                        </CardBody>
+                    </Card>
+                </Container>
+            </div>
         </React.Fragment>
     )
 }

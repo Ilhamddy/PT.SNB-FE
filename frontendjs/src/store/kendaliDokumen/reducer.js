@@ -8,7 +8,10 @@ import {
     WIDGET_DAFTAR_DOKUMEN_REKAMMEDIS_GET_ERROR,
     SAVE_DOKUMEN_REKAMMEDIS,
     SAVE_DOKUMEN_REKAMMEDIS_SUCCESS,
-    SAVE_DOKUMEN_REKAMMEDIS_ERROR
+    SAVE_DOKUMEN_REKAMMEDIS_ERROR,
+    COMBO_LAPORAN_REKAMMEDIS_GET,
+    COMBO_LAPORAN_REKAMMEDIS_GET_SUCCESS,
+    COMBO_LAPORAN_REKAMMEDIS_GET_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -28,7 +31,11 @@ const INIT_STATE = {
         error: null,
         success: false
     },
-   
+    comboLaporanRekammedisGet: {
+        data: [],
+        loading: false,
+        error: null,
+    },
 }
 
 const KendaliDokumen = (state = INIT_STATE, action) => {
@@ -44,6 +51,9 @@ const KendaliDokumen = (state = INIT_STATE, action) => {
                 },
                 saveDokumenRekammedis:{
                     ...INIT_STATE.saveDokumenRekammedis
+                },
+                comboLaporanRekammedisGet:{
+                    ...INIT_STATE.comboLaporanRekammedisGet
                 }
             }
         }
@@ -142,6 +152,39 @@ const KendaliDokumen = (state = INIT_STATE, action) => {
                 ...state,
                 saveDokumenRekammedis: {
                     ...state.saveDokumenRekammedis,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case COMBO_LAPORAN_REKAMMEDIS_GET: {
+            return {
+                ...state,
+                comboLaporanRekammedisGet: {
+                    ...state.comboLaporanRekammedisGet,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case COMBO_LAPORAN_REKAMMEDIS_GET_SUCCESS: {
+            return {
+                ...state,
+                comboLaporanRekammedisGet: {
+                    ...state.comboLaporanRekammedisGet,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case COMBO_LAPORAN_REKAMMEDIS_GET_ERROR: {
+            return {
+                ...state,
+                comboLaporanRekammedisGet: {
+                    ...state.comboLaporanRekammedisGet,
                     loading: false,
                     error: action.error,
                 }

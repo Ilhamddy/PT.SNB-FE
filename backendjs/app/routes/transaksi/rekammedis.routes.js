@@ -30,4 +30,15 @@ export default function (app) {
         controller.saveDokumenRekammedis
     );
     
+    app.get(
+        "/api/transaksi/rekammedis/get-combo-laporan-rekammedis",
+        [authJwt.verifyToken],
+        controller.getComboLaporanRekammedis
+    );
+
+    app.get(
+        "/api/transaksi/rekammedis/get-list-pasien-daftar",
+        [authJwt.verifyToken],
+        controller.getListLaporanDaftarPasien
+    );
 }

@@ -51,6 +51,7 @@ left join m_nilainormallab mn on
     and mn.objectjeniskelaminfk = mp2.objectjeniskelaminfk
 left join t_hasilpemeriksaan th on th.objectpelayananpasienfk=tp.norec
 left join t_hasilpemeriksaandetail th2 on th2.objecthasilpemeriksaanfk=th.norec
+and th2.objectpemeriksaanlabfk = mp.id
 left join (
     select
         id,
