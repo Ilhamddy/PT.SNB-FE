@@ -15,4 +15,8 @@ export default class ServiceRekammedis {
     saveDokumenRekammedis = async (params) => {
         return await api.create("/transaksi/rekammedis/save-dokumen-rekammedis", params);
     }
+
+    getComboLaporanRekammedis = async (param) => {
+        return await api.get(`/transaksi/rekammedis/get-combo-laporan-rekammedis`);
+    }
 }

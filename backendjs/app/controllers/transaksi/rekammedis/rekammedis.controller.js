@@ -1,6 +1,6 @@
 import pool from "../../../config/dbcon.query";
 import * as uuid from 'uuid';
-import queries from '../../../queries/transaksi/registrasi.queries';
+import queries from '../../../queries/rekammedis/rekammedis.queries';
 import db from "../../../models";
 
 function formatDate(date) {
@@ -54,13 +54,13 @@ async function getListDaftarDokumenRekammedis(req, res) {
                 taskid = ` and trm.objectstatuskendalirmfk is null`;
             } else if (req.query.taskid === '3') {
                 taskid = ` and trm.objectstatuskendalirmfk=5`;
-            }else if(req.query.taskid==='2'){
+            } else if (req.query.taskid === '2') {
                 taskid = ` and trm.objectstatuskendalirmfk <>5`;
             }
-        }else{
+        } else {
             taskid = ` and trm.objectstatuskendalirmfk is null`;
         }
-       
+
         const resultlistantreanpemeriksaan = await queryPromise2(`select dp.noregistrasi,mu.namaunit,ta.norec as norecap,
         mp.namapasien,mp.nocm, mrm.statuskendali,mp.objectstatuskendalirmfk as objectstatuskendalirmfkmp,
         trm.objectstatuskendalirmfk as objectstatuskendalirmfkap,
@@ -189,9 +189,9 @@ async function getWidgetListDaftarDokumenRekammedis(req, res) {
 
 async function saveDokumenRekammedis(req, res) {
     let transaction = null;
-    try{
+    try {
         transaction = await db.sequelize.transaction();
-    }catch(e){
+    } catch (e) {
         console.error(e)
         res.status(201).send({
             status: e.message,
@@ -201,7 +201,7 @@ async function saveDokumenRekammedis(req, res) {
         });
     }
     try {
-        if(req.body.idpencarian===1){
+        if (req.body.idpencarian === 1) {
             let norec = uuid.v4().substring(0, 32)
             const t_rm_lokasidokumen = await db.t_rm_lokasidokumen.create({
                 norec: norec,
@@ -217,9 +217,9 @@ async function saveDokumenRekammedis(req, res) {
                 msg: 'Berhasil',
                 code: 200
             });
-        }else if(req.body.idpencarian===2){
+        } else if (req.body.idpencarian === 2) {
             const t_rm_lokasidokumen = await db.t_rm_lokasidokumen.update({
-                objectstatuskendalirmfk:5
+                objectstatuskendalirmfk: 5
             }, {
                 where: {
                     norec: req.body.norectrm
@@ -233,10 +233,10 @@ async function saveDokumenRekammedis(req, res) {
                 msg: 'Berhasil',
                 code: 200
             });
-        }else if(req.body.idpencarian===4){
+        } else if (req.body.idpencarian === 4) {
             // ini untuk dokumen diterima di poliklinik
             const t_rm_lokasidokumen = await db.t_rm_lokasidokumen.update({
-                objectstatuskendalirmfk:2
+                objectstatuskendalirmfk: 2
             }, {
                 where: {
                     norec: req.body.norectrm
@@ -251,10 +251,10 @@ async function saveDokumenRekammedis(req, res) {
                 code: 200
             });
         }
-        
-        
+
+
         // let tempres = { statu: t_rm_lokasidokumen }
-       
+
     } catch (error) {
         // console.log(error);
         await transaction.rollback();
@@ -267,8 +267,71 @@ async function saveDokumenRekammedis(req, res) {
     }
 }
 
+async function getComboLaporanRekammedis(req, res) {
+    try {
+
+
+        const resultDepartemen = await queryPromise2(`select id as value, namainstalasi as label from m_instalasi
+            where statusenabled=true
+        `);
+
+        const resultUnit = await queryPromise2(`select id as value, namaunit as label from m_unit
+            where statusenabled=true
+        `);
+
+        const resultRekanan = await queryPromise2(`select id as value, namarekanan as label from m_rekanan
+            where statusenabled=true
+        `);
+
+        const resultPegawai = await queryPromise2(`select id as value, namalengkap as label from m_pegawai
+         where objectprofesipegawaifk <> 1 and statusenabled=true
+        `);
+
+        let tempres = {
+            departemen: resultDepartemen.rows,
+            unit: resultUnit.rows,
+            rekanan: resultRekanan.rows,
+            pegawai: resultPegawai.rows
+        }
+
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+        });
+
+    } catch (error) {
+        res.status(500).send({ message: error });
+    }
+
+}
+
+async function getListLaporanDaftarPasien(req, res) {
+    try {
+
+
+        const result = await pool.query(queries.qResult, [])
+
+        let tempres = {
+            list: result.rows
+        }
+
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+        });
+
+    } catch (error) {
+        res.status(500).send({ message: error });
+    }
+
+}
+
 export default {
     getListDaftarDokumenRekammedis,
     getWidgetListDaftarDokumenRekammedis,
-    saveDokumenRekammedis
+    saveDokumenRekammedis,
+    getComboLaporanRekammedis,
+    getListLaporanDaftarPasien
 };

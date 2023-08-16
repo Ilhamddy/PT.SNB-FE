@@ -8,7 +8,13 @@ import {
     WIDGET_DAFTAR_DOKUMEN_REKAMMEDIS_GET_ERROR,
     SAVE_DOKUMEN_REKAMMEDIS,
     SAVE_DOKUMEN_REKAMMEDIS_SUCCESS,
-    SAVE_DOKUMEN_REKAMMEDIS_ERROR
+    SAVE_DOKUMEN_REKAMMEDIS_ERROR,
+    COMBO_LAPORAN_REKAMMEDIS_GET,
+    COMBO_LAPORAN_REKAMMEDIS_GET_SUCCESS,
+    COMBO_LAPORAN_REKAMMEDIS_GET_ERROR,
+    LIST_LAPORAN_PASIEN_DAFTAR_GET,
+    LIST_LAPORAN_PASIEN_DAFTAR_GET_SUCCESS,
+    LIST_LAPORAN_PASIEN_DAFTAR_GET_ERROR
 } from "./actionType";
 
 export const kendaliDokumenResetForm = () => ({
@@ -58,5 +64,35 @@ export const saveDokumenRekammedisSuccess = (data, history) => ({
 
 export const saveDokumenRekammedisError = (error) => ({
     type: SAVE_DOKUMEN_REKAMMEDIS_ERROR,
+    payload: error,
+});
+
+export const comboLaporanRekammedisGet = (param) => ({
+    type: COMBO_LAPORAN_REKAMMEDIS_GET,
+    payload: { param },
+});
+
+export const comboLaporanRekammedisGetSuccess = (data) => ({
+    type: COMBO_LAPORAN_REKAMMEDIS_GET_SUCCESS,
+    payload: data,
+});
+
+export const comboLaporanRekammedisGetError = (error) => ({
+    type: COMBO_LAPORAN_REKAMMEDIS_GET_ERROR,
+    payload: error,
+});
+
+export const listLaporanPasienDaftarGet = (param) => ({
+    type: LIST_LAPORAN_PASIEN_DAFTAR_GET,
+    payload: { param },
+});
+
+export const listLaporanPasienDaftarGetSuccess = (data) => ({
+    type: LIST_LAPORAN_PASIEN_DAFTAR_GET_SUCCESS,
+    payload: data,
+});
+
+export const listLaporanPasienDaftarGetError = (error) => ({
+    type: LIST_LAPORAN_PASIEN_DAFTAR_GET_ERROR,
     payload: error,
 });
