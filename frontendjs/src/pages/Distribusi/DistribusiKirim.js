@@ -427,6 +427,7 @@ const DistribusiKirim = () => {
                         name="unitpengirim"
                         options={unit}
                         value={vKirim.values?.unitpengirim}
+                        isDisabled
                         onChange={(val) => {
                             vKirim.setFieldValue("unitpengirim", val.value)
                         }}
@@ -462,6 +463,7 @@ const DistribusiKirim = () => {
                             dateFormat: "Y-m-d",
                             defaultDate: "today"
                         }}
+                        disabled
                         value={vKirim.values.tanggalpermintaan}
                         onChange={([newDate]) => {
                             vKirim.setFieldValue("tanggalpermintaan", newDate.toISOString());
@@ -511,6 +513,7 @@ const DistribusiKirim = () => {
                         id="unitpenerima"
                         name="unitpenerima"
                         options={unit}
+                        isDisabled
                         value={vKirim.values?.unitpenerima}
                         onChange={(val) => {
                             vKirim.setFieldValue("unitpenerima", val.value)
@@ -547,6 +550,7 @@ const DistribusiKirim = () => {
                         onChange={(val) => {
                             vKirim.setFieldValue("jeniskirim", val.value)
                         }}
+                        isDisabled
                         className={`input 
                             ${vKirim.errors?.jeniskirim 
                                 ? "is-invalid" 
