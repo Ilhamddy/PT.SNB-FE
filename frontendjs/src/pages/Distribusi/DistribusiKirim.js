@@ -195,7 +195,7 @@ const DistribusiKirim = () => {
         })
         batchInputAsc = batchInputAsc.filter((batch) => batch.qtykirim > 0)
         if(vKirim.values.batchproduk.length === 0 && batchInputAsc.length > 0){
-            const newBatchKirim = [...vKirim.values.batchproduk, ...batchInputAsc]
+            const newBatchKirim = [...batchInputAsc]
             setFF("batchproduk", newBatchKirim)
         }
     }, [
