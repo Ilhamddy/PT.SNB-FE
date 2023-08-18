@@ -5,9 +5,14 @@ import LoadingTable from "../../Components/Table/LoadingTable"
 import DataTable from "react-data-table-component"
 import BreadCrumb from "../../Components/Common/BreadCrumb"
 import { ToastContainer } from "react-toastify"
-import { Button, Card, Col, Container, DropdownItem, DropdownMenu, DropdownToggle, Row, UncontrolledDropdown, UncontrolledTooltip } from "reactstrap"
+import { Button, Card, CardBody, Col, Container, DropdownItem, DropdownMenu, DropdownToggle, Row, UncontrolledDropdown, UncontrolledTooltip } from "reactstrap"
 import { Link } from "react-router-dom"
-
+import CountUp from "react-countup";
+import { 
+    pesananBatal, 
+    pesananDiterimaImg, 
+    pesananSudahImg 
+} from "./imagesementara";
 
 const DistribusiOrderList = () => {
     const dispatch = useDispatch()
@@ -96,12 +101,33 @@ const DistribusiOrderList = () => {
         },
     ];
 
+    const totalBelumTerima = listOrder.filter(item => !item.tglkirim).length
+    const totalSudahTerima = listOrder.filter(item => !!item.tglkirim).length
+
+
     return (
         <div className="page-content page-penerimaan-barang">
             <ToastContainer closeButton={false} />
             <Container fluid>
                 <BreadCrumb title="Order Barang" pageTitle="Gudang" />
                 <Card className="p-5">
+                    <Row>
+                        <Widget
+                            title={"Total Permintaan Barang"}
+                            end={totalBelumTerima}
+                            image={pesananSudahImg}
+                        />
+                        <Widget
+                            title={"Total Barang Dikirim"}
+                            end={totalSudahTerima}
+                            image={pesananDiterimaImg}
+                        />
+                        <Widget
+                            title={"Total pemesanan yang Dibatalkan"}
+                            end={0}
+                            image={pesananBatal}
+                        />
+                    </Row>
                     <Row className="d-flex flex-row-reverse mb-3">
                         <Col lg={2} className="d-flex flex-row-reverse">
                             <Link to={"/farmasi/gudang/distribusi-order"}>
@@ -131,6 +157,57 @@ const DistribusiOrderList = () => {
 
     )
 }
+
+const Widget = ({title, end, image}) => {
+    return (
+        <Col xxl={4} sm={6}>
+            <Card className="card-animate">
+                <CardBody>
+                    <div className="d-flex justify-content-between">
+                        <div>
+                            <p className="fw-medium text-muted mb-0">{title}</p>
+                            <h2 className="mt-4 ff-secondary fw-semibold">
+                                <span className="counter-value" style={{ fontSize: "5rem" }}>
+                                    <CountUp
+                                        start={0}
+                                        end={end}
+                                        decimal={","}
+                                        // suffix={item.suffix}
+                                        duration={3}
+                                    />
+                                </span>
+                            </h2>
+                        </div>
+                        <div>
+                            <div className="avatar-xl flex-shrink-0">
+                                <span 
+                                    className={"avatar-title rounded-circle fs-4"} 
+                                    style={{backgroundColor: "#CC845C"}}>
+                                    <img src={image}
+                                        alt="" className="avatar-lg" />
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </CardBody>
+                <div className="card-footer" style={{ backgroundColor: '#e67e22' }}>
+                    <div className="text-center">
+                        <Link 
+                            to="#" 
+                            className="link-light" 
+                            onClick={() => {}}
+                            >
+                            View 
+                            <i className="ri-arrow-right-s-line align-middle lh-1">
+                            </i>
+                        </Link>
+                    </div>
+                </div>
+            </Card>
+        </Col>
+    ) 
+}
+
 
 const tableCustomStyles = {
     headRow: {

@@ -300,8 +300,7 @@ const Widget = ({title, end, image}) => {
                 </div>
             </Card>
         </Col>
-    )
-    
+    ) 
 }
 
 const tableCustomStyles = {
