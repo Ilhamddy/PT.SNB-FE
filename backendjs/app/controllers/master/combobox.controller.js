@@ -446,6 +446,28 @@ const comboDistribusiOrder = async (req, res) => {
     }
 }
 
+const comboStokOpname = async (req, res) => {
+    try{
+        const unit = await pool.query(queriesUnit.getAll)
+        let tempres = {
+            unit: unit.rows,
+        }
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+        });
+    }catch(e){
+        console.error("===get combo stok opname error=== ")
+        console.error(e)
+        res.status(500).send({
+            data: [],
+            status: "error",
+            success: false,
+        });
+    }
+}
+
 export default {
     selectComboBox,
     desaKelurahan,
@@ -457,4 +479,5 @@ export default {
     comboSettingProduk,
     comboPenerimaanBarang,
     comboDistribusiOrder,
+    comboStokOpname
 };

@@ -70,4 +70,10 @@ export default function(app) {
       controller.comboDistribusiOrder
     )
 
+    app.get(
+      "/api/master/combobox-stok-opname",
+      [authJwt.verifyToken],
+      controller.comboStokOpname
+    )
+
   };

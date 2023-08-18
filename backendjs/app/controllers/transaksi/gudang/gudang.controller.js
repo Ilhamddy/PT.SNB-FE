@@ -27,6 +27,7 @@ const t_penerimaanbarang = db.t_penerimaanbarang
 const t_penerimaanbarangdetail = db.t_penerimaanbarangdetail
 const t_stokunit = db.t_stokunit
 const t_kartustok = db.t_kartustok
+const t_stokopname = db.t_stokopname
 
 
 const createOrUpdateProdukObat = async (req, res) => {
@@ -753,6 +754,22 @@ const getStokUnit = async (req, res) => {
             msg: 'Get stok unit gagal',
             code: 500
         });
+    }
+}
+
+const createOrUpdateStokOpname = (req, res) => {
+    try{
+        const body = req.body
+        if(!body.norecstokopname){
+            const norecstokopname = uuid.v4().substring(0, 32)
+            t_stokopname.create({
+                norec: norecstokopname,
+                kdprofile: 0,
+                statusenabled: true,
+            })
+        }
+    }catch(e){
+
     }
 }
 

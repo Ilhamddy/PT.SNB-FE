@@ -38,6 +38,9 @@ import {
     COMBO_DISTRIBUSI_ORDER_GET,
     COMBO_DISTRIBUSI_ORDER_GET_SUCCESS,
     COMBO_DISTRIBUSI_ORDER_GET_ERROR,
+    GET_COMBO_STOK_OPNAME,
+    GET_COMBO_STOK_OPNAME_SUCCESS,
+    GET_COMBO_STOK_OPNAME_ERROR,
 } from "./actionType";
 
 export const masterGet = () => ({
@@ -222,5 +225,19 @@ export const comboDistribusiOrderGetSuccess = (data) => ({
 
 export const comboDistribusiOrderGetError = (error) => ({
     type: COMBO_DISTRIBUSI_ORDER_GET_ERROR,
+    payload: error,
+});
+
+export const getComboStokOpname = () => ({
+    type: GET_COMBO_STOK_OPNAME,
+});
+
+export const getComboStokOpnameSuccess = (data) => ({
+    type: GET_COMBO_STOK_OPNAME_SUCCESS,
+    payload: data,
+});
+
+export const getComboStokOpnameError = (error) => ({
+    type: GET_COMBO_STOK_OPNAME_ERROR,
     payload: error,
 });

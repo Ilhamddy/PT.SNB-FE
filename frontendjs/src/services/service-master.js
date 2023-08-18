@@ -54,5 +54,9 @@ export default class ServiceMaster {
     getComboDistributionOrder = async () => {
         return await api.get(`/master/combobox-distribusi-order`);
     }
+
+    getComboStokOpname = async () => {
+        return await api.get(`/master/combobox-stok-opname`);
+    }
     
 }

@@ -121,7 +121,7 @@ SELECT
 FROM
     t_orderbarang tor
     LEFT JOIN t_orderbarangdetail tod ON tod.objectorderbarangfk = tor.norec
-    LEFT JOIN t_stokunit ts ON ts.objectprodukfk = tod.objectprodukfk
+    LEFT JOIN t_stokunit ts ON ts.objectprodukfk = tod.objectprodukfk AND ts.objectunitfk = tor.objectunittujuanfk
     INNER JOIN m_produk mp ON mp.id = ts.objectprodukfk
     LEFT JOIN m_satuan ms ON ms.id = tod.objectsatuanfk
     LEFT JOIN m_jenisorderbarang mjb ON mjb.id = tor.objectjenisorderbarangfk

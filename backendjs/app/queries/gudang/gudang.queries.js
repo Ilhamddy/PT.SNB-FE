@@ -57,17 +57,17 @@ const qGetProdukKonversiFromId = `
 
 
 const qGetKemasan = `
-    SELECT
+SELECT
     mkp.id AS id,
     mkp.statusenabled AS statusenabled,
     mkp.nilaikonversi AS nilaikonversi,
     ms.satuan AS satuan,
     msb.satuan AS kemasan
-        FROM m_kemasanproduk mkp
-        LEFT JOIN m_produk mp ON mp.id = mkp.objectprodukfk
-        LEFT JOIN m_satuan ms ON mkp.objectsatuankecilfk = ms.id
-        LEFT JOIN m_satuan msb ON mkp.objectsatuanbesarfk = msb.id
-            WHERE mkp.objectprodukfk = $1
+FROM m_kemasanproduk mkp
+    LEFT JOIN m_produk mp ON mp.id = mkp.objectprodukfk
+    LEFT JOIN m_satuan ms ON mkp.objectsatuankecilfk = ms.id
+    LEFT JOIN m_satuan msb ON mkp.objectsatuanbesarfk = msb.id
+WHERE mkp.objectprodukfk = $1
 `
 
 const qGetProdukMaster = `
@@ -95,7 +95,7 @@ const qGetProdukEdit = `
 
 const qGetSatuanFromProduk = `
 SELECT
-    mkp.id AS value,
+    msb.id AS value,
     msb.satuan AS label,
     msk.satuan AS konversi,
     mkp.nilaikonversi AS nilaikonversi

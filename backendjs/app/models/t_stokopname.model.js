@@ -4,7 +4,7 @@
  */
 // eslint-disable-next-line max-lines-per-function
 export default (sequelize, Sequelize) => {
-    const t_stokunit = sequelize.define("t_stokunit", {
+    const t_stokopname = sequelize.define("t_stokopname", {
         norec: {
             allowNull: false,
             autoIncrement: true,
@@ -21,51 +21,32 @@ export default (sequelize, Sequelize) => {
         objectunitfk: {
             type: Sequelize.INTEGER,
         },
-        objectasalprodukfk: {
-            type: Sequelize.INTEGER,
-        },
-        objectprodukfk: {
-            type: Sequelize.INTEGER,
-        },
-        nobatch: {
-            type: Sequelize.STRING,
-        },
-        ed: {
+        tglawal: {
             type: Sequelize.DATE,
         },
-        persendiskon: {
-            type: Sequelize.FLOAT,
-        },
-        hargadiskon: {
-            type: Sequelize.FLOAT,
-        },
-        harga: {
-            type: Sequelize.DOUBLE,
-        },
-        qty: {
-            type: Sequelize.DOUBLE,
-        },
-        objectpenerimaanbarangdetailfk: {
-            type: Sequelize.STRING,
-        },
-        tglterima: {
+        tglakhir: {
             type: Sequelize.DATE,
         },
         tglinput: {
             type: Sequelize.DATE,
         },
-        tglupdate: {
+        tglselesai: {
             type: Sequelize.DATE,
         },
-        kodebatch: {
-            type: Sequelize.STRING,
-            unique: true
+        statusselesai: {
+            type: Sequelize.BOOLEAN,
+        },
+        objectpegawaiinputfk: {
+            type: Sequelize.INTEGER,
+        },
+        objectpegawaiupdatefk: {
+            type: Sequelize.INTEGER,
         }
     }, {
-        tableName: "t_stokunit",
+        tableName: "t_stokopname",
         createdAt: false,
         updatedAt: false,
     });
 
-    return t_stokunit;
+    return t_stokopname;
 };

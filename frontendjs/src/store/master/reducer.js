@@ -39,6 +39,9 @@ import {
     COMBO_DISTRIBUSI_ORDER_GET,
     COMBO_DISTRIBUSI_ORDER_GET_SUCCESS,
     COMBO_DISTRIBUSI_ORDER_GET_ERROR,
+    GET_COMBO_STOK_OPNAME,
+    GET_COMBO_STOK_OPNAME_SUCCESS,
+    GET_COMBO_STOK_OPNAME_ERROR,
 } from "./actionType";
 
 const INIT_STATE = {
@@ -107,6 +110,11 @@ const INIT_STATE = {
         loading: false,
         error: null,
     },
+    getComboStokOpname: {
+        data: [],
+        loading: false,
+        error: null,
+    }
 };
 
 const Master = (state = INIT_STATE, action) => {
@@ -539,6 +547,42 @@ const Master = (state = INIT_STATE, action) => {
                 ...state,
                 comboDistribusiOrderGet: {
                     ...state.comboDistribusiOrderGet,
+                    loading: false,
+                    data: [],
+                    error: action.error,
+                }
+            }
+        }
+
+        case GET_COMBO_STOK_OPNAME: {
+            return {
+                ...state,
+                getComboStokOpname: {
+                    ...state.getComboStokOpname,
+                    loading: true,
+                    data: [],
+                    error: null,
+                }
+            }
+        }
+
+        case GET_COMBO_STOK_OPNAME_SUCCESS: {
+            return {
+                ...state,
+                getComboStokOpname: {
+                    ...state.getComboStokOpname,
+                    data: action.payload,
+                    error: null,
+                    loading: false,
+                }
+            }
+        }
+
+        case GET_COMBO_STOK_OPNAME_ERROR: {
+            return {
+                ...state,
+                getComboStokOpname: {
+                    ...state.getComboStokOpname,
                     loading: false,
                     data: [],
                     error: action.error,
