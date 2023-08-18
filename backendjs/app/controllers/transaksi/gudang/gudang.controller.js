@@ -756,6 +756,46 @@ const getStokUnit = async (req, res) => {
     }
 }
 
+const hCreateKartuStok = async (
+    req,
+    res,
+    transaction,
+    {
+        idUnit,
+        idProduk,
+        saldoAwal,
+        masuk,
+        keluar,
+        saldoAkhir,
+        tabelTransaksi,
+        norecTransaksi,
+        noBatch
+    }
+) => {
+    const norecKartuStok = uuid.v4().substring(0, 32)
+    const createdKartuStok = await t_kartustok.create({
+        norec: norecKartuStok,
+        kdprofile: 0,
+        statusenabled: true,
+        objectunitfk: idUnit,
+        objectprodukfk: idProduk,
+        saldoawal: saldoAwal,
+        masuk: masuk,
+        keluar: keluar,
+        saldoakhir: saldoAkhir,
+        keteranan: "",
+        status: false,
+        tglinput: new Date(),
+        tglupdate: new Date(),
+        tabeltransaksi: tabelTransaksi,
+        norectransaksi: norecTransaksi,
+        batch: noBatch
+    }, {
+        transaction: transaction
+    })
+    return createdKartuStok
+}
+
 export default {
     createOrUpdateProdukObat,
     getLainLain,
@@ -772,7 +812,8 @@ export default {
     createOrUpdatePenerimaan,
     getListPenerimaan,
     getKartuStok,
-    getStokUnit
+    getStokUnit,
+    hCreateKartuStok
 }
 
 const hCreateOrUpdatePenerimaan = async (req, res, transaction) => {
@@ -1047,42 +1088,3 @@ const hCreateKartuStokPenerimaan = async (
     return {createdKartuStokPenerimaan}
 }
 
-const hCreateKartuStok = async (
-    req,
-    res,
-    transaction,
-    {
-        idUnit,
-        idProduk,
-        saldoAwal,
-        masuk,
-        keluar,
-        saldoAkhir,
-        tabelTransaksi,
-        norecTransaksi,
-        noBatch
-    }
-) => {
-    const norecKartuStok = uuid.v4().substring(0, 32)
-    const createdKartuStok = await t_kartustok.create({
-        norec: norecKartuStok,
-        kdprofile: 0,
-        statusenabled: true,
-        objectunitfk: idUnit,
-        objectprodukfk: idProduk,
-        saldoawal: saldoAwal,
-        masuk: masuk,
-        keluar: keluar,
-        saldoakhir: saldoAkhir,
-        keteranan: "",
-        status: false,
-        tglinput: new Date(),
-        tglupdate: new Date(),
-        tabeltransaksi: tabelTransaksi,
-        norectransaksi: norecTransaksi,
-        batch: noBatch
-    }, {
-        transaction: transaction
-    })
-    return createdKartuStok
-}
