@@ -584,7 +584,7 @@ const createOrUpdatePenerimaan = async (req, res) => {
         )
 
         const {
-            createdKartuStok
+            createdKartuStokPenerimaan
         } = await hCreateKartuStokPenerimaan(
             req,
             res,
@@ -601,7 +601,7 @@ const createOrUpdatePenerimaan = async (req, res) => {
             createdOrUpdatedPenerimaan: createdOrUpdatedPenerimaan,
             createdOrUpdatedDetailPenerimaan: createdOrUpdatedDetailPenerimaan,
             createdOrUpdatedStokUnit: createdOrUpdatedStokUnit,
-            createdKartuStok: createdKartuStok
+            createdKartuStokPenerimaan: createdKartuStokPenerimaan
         }
 
         res.status(200).send({
@@ -1015,7 +1015,7 @@ const hCreateKartuStokPenerimaan = async (
     }
 ) => {
     
-    let createdKartuStok = await Promise.all(
+    let createdKartuStokPenerimaan = await Promise.all(
         createdOrUpdatedStokUnit.map(async({
             createdOrUpdated, 
             prevStok, 
@@ -1034,7 +1034,7 @@ const hCreateKartuStokPenerimaan = async (
                     saldoAwal: saldoAwal,
                     masuk: masuk,
                     keluar: keluar,
-                    saldoAkhir: saldoAwal + changed,
+                    saldoAkhir: saldoAwal + changedQty,
                     tabelTransaksi: "t_penerimaanbarangdetail",
                     norecTransaksi: createdOrUpdatedPenerimaan.norec,
                     batch: createdOrUpdated.nobatch
@@ -1044,7 +1044,7 @@ const hCreateKartuStokPenerimaan = async (
         })
     )
 
-    return {createdKartuStok}
+    return {createdKartuStokPenerimaan}
 }
 
 const hCreateKartuStok = async (
