@@ -2,7 +2,14 @@ SELECT
     tsu.norec AS norecstokunit,
     tsu.qty AS qty,
     mp.namaproduk AS namaproduk,
-    mu.namaunit AS namaunit
+    mu.namaunit AS namaunit,
+    tsu.nobatch AS nobatch,
+    ms.satuan AS namasatuan,
+    mas.asalproduk AS asalproduk,
+    tsu.harga AS harga
 FROM t_stokunit tsu
-    JOIN m_produk mp ON mp.id = tsu.objectprodukfk
-    JOIN m_unit mu ON mu.id = tsu.objectunitfk
+    LEFT JOIN m_produk mp ON mp.id = tsu.objectprodukfk
+    LEFT JOIN m_unit mu ON mu.id = tsu.objectunitfk
+    LEFT JOIN m_satuan ms ON ms.id = mp.objectsatuanstandarfk
+    LEFT JOIN m_asalproduk mas ON mas.id = tsu.objectasalprodukfk
+

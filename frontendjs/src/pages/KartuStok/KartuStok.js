@@ -20,6 +20,7 @@ import { kartuStokQueryGet, penerimaanListQueryGet } from "../../store/actions";
 import CountUp from "react-countup";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import LoadingTable from "../../Components/Table/LoadingTable";
+import { dateTimeLocal } from "../../utils/format";
 
 
 
@@ -50,8 +51,9 @@ const KartuStok = () => {
         {
             name: <span className='font-weight-bold fs-13'>Tanggal Transaksi</span>,
             sortable: true,
-            selector: row => row.tglinput,
-            width: "100px"
+            selector: row => dateTimeLocal(row.tglinput),
+            width: "180px",
+            wrap: true
         },
         {
             name: <span className='font-weight-bold fs-13'>Transaksi</span>,

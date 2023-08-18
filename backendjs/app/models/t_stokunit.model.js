@@ -57,6 +57,10 @@ export default (sequelize, Sequelize) => {
         },
         tglupdate: {
             type: Sequelize.DATE,
+        },
+        kodebatch: {
+            type: Sequelize.STRING,
+            unique: true
         }
     }, {
         tableName: "t_stokunit",

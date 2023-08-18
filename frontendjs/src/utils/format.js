@@ -3,6 +3,8 @@ import { rgxAllComma, rgxAllPeriods, rgxValidNumber, rgxZeroStarts } from "./reg
 
 export const dateTimeLocal = (date) => {
     try{
+        if(typeof date !== "string") throw new Error("Date is not UTC string")
+        if(!date) throw new Error("Date is null")
         return new Date(date)
             .toLocaleDateString("id-ID", 
                             { weekday: 'long', 
@@ -16,7 +18,7 @@ export const dateTimeLocal = (date) => {
             new Date(date)
             .toLocaleTimeString("id-ID", {hour: '2-digit', minute: '2-digit'})
     }catch(e){
-        return ""
+        return e
     }
 
 }

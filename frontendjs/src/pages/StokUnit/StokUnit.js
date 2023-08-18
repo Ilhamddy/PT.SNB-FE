@@ -27,15 +27,42 @@ const StokUnitList = () => {
      */
      const columnsProduk = [
         {
-            name: <span className='font-weight-bold fs-13'>Nama Produk</span>,
+            name: <span className='font-weight-bold fs-13'></span>,
+            cell: (row) => (
+                <div className="hstack gap-3 flex-wrap">
+                    <UncontrolledTooltip 
+                        placement="top" 
+                        target="menu-stok-unit" > 
+                        Aksi 
+                    </UncontrolledTooltip>
+                    <UncontrolledDropdown className="dropdown d-inline-block">
+                        <DropdownToggle 
+                            className="btn btn-soft-secondary btn-sm" 
+                            itemType="button"
+                            id="menu-stok-unit">
+                            <i className="ri-apps-2-line"></i>
+                        </DropdownToggle>
+                        <DropdownMenu className="dropdown-menu-end">
+                            <Link to={`/farmasi/gudang/stock-opname/${row.norecstokunit}`}>
+                                <DropdownItem onClick={() => {
+                                    }}>
+                                    <i className="ri-mail-send-fill align-bottom me-2 text-muted">
+                                    </i>
+                                    Adjustment stok
+                                </DropdownItem>
+                            </Link>
+                        </DropdownMenu>
+                    </UncontrolledDropdown>
+                </div>)
+                ,
             sortable: true,
-            selector: row => row.namaproduk || "-",
-            width: "100px"
-        },    
+            width: "70px",
+            wrap: true
+        },
         {
-            name: <span className='font-weight-bold fs-13'>Nama Unit</span>,
+            name: <span className='font-weight-bold fs-13'>Id Produk</span>,
             sortable: true,
-            selector: row => row.namaunit || "-",
+            selector: row => row.idproduk || "-",
             width: "100px"
         },
         {
@@ -45,9 +72,33 @@ const StokUnitList = () => {
             width: "100px"
         }, 
         {
+            name: <span className='font-weight-bold fs-13'>Nama Produk</span>,
+            sortable: true,
+            selector: row => row.namaproduk || "-",
+            width: "100px"
+        },
+        {
+            name: <span className='font-weight-bold fs-13'>Nama Unit</span>,
+            sortable: true,
+            selector: row => row.namaunit || "-",
+            width: "160px"
+        },
+        {
             name: <span className='font-weight-bold fs-13'>Quantity</span>,
             sortable: true,
             selector: row => row.qty || "0",
+            width: "100px"
+        }, 
+        {
+            name: <span className='font-weight-bold fs-13'>Asal Barang</span>,
+            sortable: true,
+            selector: row => row.asalproduk || "-",
+            width: "200px"
+        }, 
+        {
+            name: <span className='font-weight-bold fs-13'>Harga</span>,
+            sortable: true,
+            selector: row => row.harga || "-",
             width: "100px"
         }, 
 

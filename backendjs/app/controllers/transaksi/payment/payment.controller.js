@@ -453,7 +453,7 @@ const cancelBayar = async (req, res) => {
             returning: true,
             transaction: transaction
         })
-        updatedBuktiB = updatedBuktiB[0]?.get() || null
+        updatedBuktiB = updatedBuktiB[0]?.toJSON() || null
 
         const [hasil, updatedRestBB] = await t_buktibayarpasien.update({
             statusenabled: false,

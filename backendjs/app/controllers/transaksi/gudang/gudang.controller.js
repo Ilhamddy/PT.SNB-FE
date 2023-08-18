@@ -283,7 +283,7 @@ const createOrUpdateSatuan = async (req, res) => {
                 transaction: transaction,
                 returning: true
             })
-            edited = edited[0]?.get() || null
+            edited = edited[0]?.toJSON() || null
             createdOrEdited = edited[0]
         }
 
@@ -571,8 +571,8 @@ const createOrUpdatePenerimaan = async (req, res) => {
         )
 
         const {
-            createdOrUpdatedStokUnit
-        } = await hCreateOrUpdateStokUnit(
+            createdOrUpdatedStokUnitPenerimaan
+        } = await hCreateOrUpdateStokUnitPenerimaan(
             req, 
             res,
             transaction,
@@ -591,7 +591,7 @@ const createOrUpdatePenerimaan = async (req, res) => {
             transaction,
             {
                 createdOrUpdatedPenerimaan,
-                createdOrUpdatedStokUnit
+                createdOrUpdatedStokUnitPenerimaan
             }
         )
 
@@ -600,7 +600,7 @@ const createOrUpdatePenerimaan = async (req, res) => {
         const tempres = {
             createdOrUpdatedPenerimaan: createdOrUpdatedPenerimaan,
             createdOrUpdatedDetailPenerimaan: createdOrUpdatedDetailPenerimaan,
-            createdOrUpdatedStokUnit: createdOrUpdatedStokUnit,
+            createdOrUpdatedStokUnitPenerimaan: createdOrUpdatedStokUnitPenerimaan,
             createdKartuStokPenerimaan: createdKartuStokPenerimaan
         }
 
@@ -756,45 +756,7 @@ const getStokUnit = async (req, res) => {
     }
 }
 
-const hCreateKartuStok = async (
-    req,
-    res,
-    transaction,
-    {
-        idUnit,
-        idProduk,
-        saldoAwal,
-        masuk,
-        keluar,
-        saldoAkhir,
-        tabelTransaksi,
-        norecTransaksi,
-        noBatch
-    }
-) => {
-    const norecKartuStok = uuid.v4().substring(0, 32)
-    const createdKartuStok = await t_kartustok.create({
-        norec: norecKartuStok,
-        kdprofile: 0,
-        statusenabled: true,
-        objectunitfk: idUnit,
-        objectprodukfk: idProduk,
-        saldoawal: saldoAwal,
-        masuk: masuk,
-        keluar: keluar,
-        saldoakhir: saldoAkhir,
-        keteranan: "",
-        status: false,
-        tglinput: new Date(),
-        tglupdate: new Date(),
-        tabeltransaksi: tabelTransaksi,
-        norectransaksi: norecTransaksi,
-        batch: noBatch
-    }, {
-        transaction: transaction
-    })
-    return createdKartuStok
-}
+
 
 export default {
     createOrUpdateProdukObat,
@@ -813,7 +775,6 @@ export default {
     getListPenerimaan,
     getKartuStok,
     getStokUnit,
-    hCreateKartuStok
 }
 
 const hCreateOrUpdatePenerimaan = async (req, res, transaction) => {
@@ -862,7 +823,7 @@ const hCreateOrUpdatePenerimaan = async (req, res, transaction) => {
             returning: true,
             transaction: transaction
         })
-        createdOrUpdatedPenerimaan = updated[0]?.get() || null;
+        createdOrUpdatedPenerimaan = updated[0]?.toJSON() || null;
     }
     return { createdOrUpdatedPenerimaan, norecpenerimaan }
 }
@@ -911,7 +872,7 @@ const hCreateOrUpdateDetailPenerimaan = async (
                     ppnpersen: bodyDetail.ppnpersenproduk,
                     ppn: bodyDetail.ppnrupiahproduk,
                     total: bodyDetail.totalproduk,
-                    jumlahkonversi: bodyDetail.konversisatuan 
+                    jumlahkonversi: bodyDetail.konversisatuan
                 }, {
                     transaction: transaction
                 }) 
@@ -935,11 +896,11 @@ const hCreateOrUpdateDetailPenerimaan = async (
                     returning: true,
                     transaction: transaction
                 })
-                updated = updated?.get() || null
+                updated = updated?.toJSON() || null
                 updatedValue = updated ;
             }
             return {
-                prevValue: prev?.get() || null,
+                prevValue: prev?.toJSON() || null,
                 updatedValue
             }
         })
@@ -950,7 +911,7 @@ const hCreateOrUpdateDetailPenerimaan = async (
     }
 }
 
-const hCreateOrUpdateStokUnit  = async (
+const hCreateOrUpdateStokUnitPenerimaan  = async (
     req, 
     res,
     transaction,
@@ -960,32 +921,29 @@ const hCreateOrUpdateStokUnit  = async (
         createdOrUpdatedPenerimaan,
     }
 ) => {
-    let createdOrUpdatedStokUnit = []
-    createdOrUpdatedStokUnit = await Promise.all(
+    let createdOrUpdatedStokUnitPenerimaan = []
+    createdOrUpdatedStokUnitPenerimaan = await Promise.all(
         createdOrUpdatedDetailPenerimaan.map(
             async ({prevValue, updatedValue}) => {
                 const {
                     nobatch
                 } = updatedValue
-                let stokBatch = await t_stokunit.findAll({
+                let stokBatch = await t_stokunit.findOne({
                     where: {
-                        nobatch: nobatch,
-                        objectprodukfk: updatedValue.objectprodukfk
+                        kodebatch: generateKodeBatch(
+                            nobatch, 
+                            updatedValue.objectprodukfk,
+                            createdOrUpdatedPenerimaan.objectunitfk
+                        )
                     },
                     lock: transaction.LOCK.UPDATE,
                 })
                 let createdOrUpdated = null
-                let stokBatchItemFind = stokBatch.find((stokBatch) => {
-                    const data = stokBatch.get()
-                    const idProduk = data.objectprodukfk
-                    const idProdukDetail = updatedValue.objectprodukfk
-                    const isSame = idProduk === idProdukDetail
-                    return isSame
-                })
+                const stokBatchVal = stokBatch?.toJSON() || null
                 let changedQty = 0
-                let prevStok
+                let prevStok = null
                 // if batch found, create new batch
-                if(!stokBatchItemFind){
+                if(!stokBatchVal){
                     const qty = updatedValue.jumlah || 0
                     const konversi = updatedValue.jumlahkonversi || 0
                     changedQty = qty * konversi
@@ -1010,20 +968,25 @@ const hCreateOrUpdateStokUnit  = async (
                         tglterima: createdOrUpdatedPenerimaan.tglterima,
                         tglinput: new Date(),
                         tglupdate: new Date(),
+                        kodebatch: generateKodeBatch(
+                            nobatch, 
+                            updatedValue.objectprodukfk,
+                            createdOrUpdatedPenerimaan.objectunitfk
+                        )
                     }, {
                         transaction: transaction
                     })
                 }else{
                     // if batch found, use old batch
-                    prevStok = stokBatchItemFind.get() 
+                    prevStok = stokBatchVal
                     const jmlPaket = updatedValue.jumlah || 0
                     const jmlPaketPrev = prevValue?.jumlah || 0
                     const konversi = updatedValue.jumlahkonversi || 0
                     const konversiPrev = prevValue?.jumlahkonversi || 0
                     changedQty = (jmlPaket * konversi - jmlPaketPrev * konversiPrev)
-                    const qty = prevStok.qty + changedQty
+                    const qty = stokBatchVal.qty + changedQty
                     
-                    let updated = await stokBatchItemFind.update({
+                    let updated = await stokBatch.update({
                         qty: qty,
                         objectpenerimaanbarangdetailfk: norecpenerimaan,
                         tglterima: createdOrUpdatedPenerimaan.tglterima,
@@ -1032,7 +995,7 @@ const hCreateOrUpdateStokUnit  = async (
                         returning: true,
                         transaction: transaction
                     })
-                    updated = updated?.get() || null
+                    updated = updated?.toJSON() || null
                     createdOrUpdated = updated
                 }
                 return {createdOrUpdated, prevStok, changedQty}
@@ -1041,9 +1004,20 @@ const hCreateOrUpdateStokUnit  = async (
     )
     
     
-    return {createdOrUpdatedStokUnit}
+    return {createdOrUpdatedStokUnitPenerimaan}
 }
 
+/**
+ * harus menggunakan ini agar nobatch, idProduk, idUnit tidak terbalik2
+ * dan konvensi nama kodebatch selalu sama
+ * @param {string} nobatch 
+ * @param {string} idProduk 
+ * @param {string} idUnit 
+ * @returns {string}
+ */
+export const generateKodeBatch = (nobatch, idProduk, idUnit) => {
+    return `${nobatch}-${idProduk}-${idUnit}`
+}
 
 
 const hCreateKartuStokPenerimaan = async (
@@ -1052,33 +1026,29 @@ const hCreateKartuStokPenerimaan = async (
     transaction,
     {
         createdOrUpdatedPenerimaan,
-        createdOrUpdatedStokUnit
+        createdOrUpdatedStokUnitPenerimaan
     }
 ) => {
     
     let createdKartuStokPenerimaan = await Promise.all(
-        createdOrUpdatedStokUnit.map(async({
+        createdOrUpdatedStokUnitPenerimaan.map(async({
             createdOrUpdated, 
             prevStok, 
             changedQty
         }) => {
-            const masuk = changedQty >= 0 ? changedQty : 0
-            const keluar = changedQty < 0 ? changedQty : 0
             const saldoAwal = prevStok?.qty || 0
             const createdKartuStok = await hCreateKartuStok(
                 req,
                 res,
                 transaction,
                 {
-                    unit: createdOrUpdatedPenerimaan.objectunitfk,
-                    produk: createdOrUpdated.objectprodukfk,
+                    idUnit: createdOrUpdatedPenerimaan.objectunitfk,
+                    idProduk: createdOrUpdated.objectprodukfk,
                     saldoAwal: saldoAwal,
-                    masuk: masuk,
-                    keluar: keluar,
                     saldoAkhir: saldoAwal + changedQty,
                     tabelTransaksi: "t_penerimaanbarangdetail",
                     norecTransaksi: createdOrUpdatedPenerimaan.norec,
-                    batch: createdOrUpdated.nobatch
+                    noBatch: createdOrUpdated.nobatch
                 }
             )
             return createdKartuStok
@@ -1088,3 +1058,42 @@ const hCreateKartuStokPenerimaan = async (
     return {createdKartuStokPenerimaan}
 }
 
+export const hCreateKartuStok = async (
+    req,
+    res,
+    transaction,
+    {
+        idUnit,
+        idProduk,
+        saldoAwal,
+        saldoAkhir,
+        tabelTransaksi,
+        norecTransaksi,
+        noBatch
+    }
+) => {
+    const masuk = saldoAkhir - saldoAwal > 0 ? saldoAkhir - saldoAwal : 0
+    const keluar = saldoAkhir - saldoAwal < 0 ? saldoAkhir - saldoAwal : 0
+    const norecKartuStok = uuid.v4().substring(0, 32)
+    const createdKartuStok = await t_kartustok.create({
+        norec: norecKartuStok,
+        kdprofile: 0,
+        statusenabled: true,
+        objectunitfk: idUnit,
+        objectprodukfk: idProduk,
+        saldoawal: saldoAwal,
+        masuk: masuk,
+        keluar: keluar,
+        saldoakhir: saldoAkhir,
+        keteranan: "",
+        status: false,
+        tglinput: new Date(),
+        tglupdate: new Date(),
+        tabeltransaksi: tabelTransaksi,
+        norectransaksi: norecTransaksi,
+        batch: noBatch
+    }, {
+        transaction: transaction
+    })
+    return createdKartuStok
+}

@@ -183,20 +183,28 @@ SELECT
     tks.norectransaksi AS norectransaksi,
     tks.batch AS nobatch
 FROM t_kartustok tks
-    JOIN m_produk mp ON mp.id = tks.objectprodukfk
-    JOIN m_unit mu ON mu.id = tks.objectunitfk
+    LEFT JOIN m_produk mp ON mp.id = tks.objectprodukfk
+    LEFT JOIN m_unit mu ON mu.id = tks.objectunitfk
+ORDER BY 
+    tks.tglinput DESC
 `
 
 const qGetStokUnit = `
 SELECT
     tsu.norec AS norecstokunit,
     tsu.qty AS qty,
+    mp.id AS idproduk,
     mp.namaproduk AS namaproduk,
     mu.namaunit AS namaunit,
-    tsu.nobatch AS nobatch
+    tsu.nobatch AS nobatch,
+    ms.satuan AS namasatuan,
+    mas.asalproduk AS asalproduk,
+    tsu.harga AS harga
 FROM t_stokunit tsu
     LEFT JOIN m_produk mp ON mp.id = tsu.objectprodukfk
     LEFT JOIN m_unit mu ON mu.id = tsu.objectunitfk
+    LEFT JOIN m_satuan ms ON ms.id = mp.objectsatuanstandarfk
+    LEFT JOIN m_asalproduk mas ON mas.id = tsu.objectasalprodukfk
 `
 
 export {

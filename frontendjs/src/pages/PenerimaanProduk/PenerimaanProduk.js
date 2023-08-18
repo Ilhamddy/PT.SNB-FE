@@ -15,7 +15,7 @@ import { Button,
     UncontrolledDropdown, 
     UncontrolledTooltip } from "reactstrap";
 import classnames from "classnames";
-import { ToastContainer } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useFormik } from "formik";
@@ -23,15 +23,12 @@ import * as Yup from "yup";
 import CustomSelect from "../Select/Select";
 import { useDispatch, useSelector } from "react-redux";
 import DataTable from "react-data-table-component";
-import { produkMasterGet } from "../../store/actions";
 import Flatpickr from "react-flatpickr";
-import usePageState from "../../utils/usePageState";
 import { onChangeStrNbr, strToNumber } from "../../utils/format";
 import { comboPenerimaanBarangGet } from "../../store/master/action";
 import { kemasanFromProdukGet, penerimaanSaveOrUpdate, penerimaanQueryGet } from "../../store/gudang/action";
 import LoadingTable from "../../Components/Table/LoadingTable";
 import NoDataTable from "../../Components/Table/NoDataTable";
-
 
 const PenerimaanProduk = () => {
     const dispatch = useDispatch();
@@ -183,7 +180,17 @@ const PenerimaanProduk = () => {
         onSubmit: (values, {resetForm}) => {
             const newDetailValues = [...validation.values.detail]
             const newValues = {...values}
-            if(values.indexDetail !== ""){
+            const findSameProduk = newDetailValues.find(
+                (val) => val.produk.idproduk === newValues.produk.idproduk
+                    && val.nobatch === newValues.nobatch
+            )
+            const existSameProduk = !!findSameProduk
+            const isEdit = newValues.indexDetail !== ""
+            if(existSameProduk){
+                toast.error("Produk dengan batch sama sudah ada")
+                return
+            }
+            if(isEdit){// edit
                 newDetailValues[values.indexDetail] = newValues
             }else{
                 newValues.indexDetail = newDetailValues.length
