@@ -585,7 +585,7 @@ const createOrUpdatePenerimaan = async (req, res) => {
 
         const {
             createdKartuStok
-        } = await hCreateKartuStok(
+        } = await hCreateKartuStokPenerimaan(
             req,
             res,
             transaction,
@@ -1004,7 +1004,8 @@ const hCreateOrUpdateStokUnit  = async (
 }
 
 
-const hCreateKartuStok = async (
+
+const hCreateKartuStokPenerimaan = async (
     req,
     res,
     transaction,
@@ -1022,31 +1023,66 @@ const hCreateKartuStok = async (
         }) => {
             const masuk = changedQty >= 0 ? changedQty : 0
             const keluar = changedQty < 0 ? changedQty : 0
-            const norecKartuStok = uuid.v4().substring(0, 32)
             const saldoAwal = prevStok?.qty || 0
-            const createdKartuStok = await t_kartustok.create({
-                norec: norecKartuStok,
-                kdprofile: 0,
-                statusenabled: true,
-                objectunitfk: createdOrUpdatedPenerimaan.objectunitfk,
-                objectprodukfk: createdOrUpdated.objectprodukfk,
-                saldoawal: saldoAwal,
-                masuk: masuk,
-                keluar: keluar,
-                saldoakhir: saldoAwal + changedQty,
-                keteranan: "",
-                status: false,
-                tglinput: new Date(),
-                tglupdate: new Date(),
-                tabeltransaksi: "t_penerimaanbarangdetail",
-                norectransaksi: createdOrUpdatedPenerimaan.norec,
-                batch: createdOrUpdated.nobatch
-            }, {
-                transaction: transaction
-            })
+            const createdKartuStok = await hCreateKartuStok(
+                req,
+                res,
+                transaction,
+                {
+                    unit: createdOrUpdatedPenerimaan.objectunitfk,
+                    produk: createdOrUpdated.objectprodukfk,
+                    saldoAwal: saldoAwal,
+                    masuk: masuk,
+                    keluar: keluar,
+                    saldoAkhir: saldoAwal + changed,
+                    tabelTransaksi: "t_penerimaanbarangdetail",
+                    norecTransaksi: createdOrUpdatedPenerimaan.norec,
+                    batch: createdOrUpdated.nobatch
+                }
+            )
             return createdKartuStok
         })
     )
 
     return {createdKartuStok}
+}
+
+const hCreateKartuStok = async (
+    req,
+    res,
+    transaction,
+    {
+        idUnit,
+        idProduk,
+        saldoAwal,
+        masuk,
+        keluar,
+        saldoAkhir,
+        tabelTransaksi,
+        norecTransaksi,
+        noBatch
+    }
+) => {
+    const norecKartuStok = uuid.v4().substring(0, 32)
+    const createdKartuStok = await t_kartustok.create({
+        norec: norecKartuStok,
+        kdprofile: 0,
+        statusenabled: true,
+        objectunitfk: idUnit,
+        objectprodukfk: idProduk,
+        saldoawal: saldoAwal,
+        masuk: masuk,
+        keluar: keluar,
+        saldoakhir: saldoAkhir,
+        keteranan: "",
+        status: false,
+        tglinput: new Date(),
+        tglupdate: new Date(),
+        tabeltransaksi: tabelTransaksi,
+        norectransaksi: norecTransaksi,
+        batch: noBatch
+    }, {
+        transaction: transaction
+    })
+    return createdKartuStok
 }
