@@ -28,7 +28,6 @@ import LoadingTable from "../../Components/Table/LoadingTable";
 
 
 
-
 const PenerimaanProdukList = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();

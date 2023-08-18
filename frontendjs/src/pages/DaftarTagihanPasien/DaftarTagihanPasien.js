@@ -27,7 +27,7 @@ const DaftarTagihanPasien = () => {
         dataTagihan, 
         comboboxReg
     } = useSelector((state) => ({
-        dataTagihan: state.Payment.daftarTagihanPasienGet || []
+        dataTagihan: state.Payment.daftarTagihanPasienGet || null
     }))
 
     const [dateStart, setDateStart] = useState(dateAwalStart);
