@@ -223,12 +223,13 @@ export const getOrderStokBatch = async (req, res) => {
                     sisaQtyOut = 0 
                 }
                 sisaQtyOutPerItem[stok.value] = sisaQtyOut
-                dataItemOrders[iProdukFound].batchproduk 
-                    = [...dataItemOrders[iProdukFound].batchproduk, {...stok}]
-                dataItemOrders[iProdukFound].qty 
-                    = dataItemOrders[iProdukFound].qty + stok.qty
-                dataItemOrders[iProdukFound].qtykirim 
-                    = dataItemOrders[iProdukFound].qtykirim + stok.qtykirim
+                const dataItemOrder = dataItemOrders[iProdukFound]
+                dataItemOrder.batchproduk 
+                    = [...dataItemOrder.batchproduk, {...stok}]
+                dataItemOrder.qty 
+                    = dataItemOrder.qty + stok.qty
+                dataItemOrder.qtykirim 
+                    = dataItemOrder.qtykirim + stok.qtykirim
             }
         })
 
