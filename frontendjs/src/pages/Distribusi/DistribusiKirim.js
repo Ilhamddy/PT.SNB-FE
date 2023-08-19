@@ -180,17 +180,9 @@ const DistribusiKirim = () => {
         const setFF = vKirim.setFieldValue
         let batchInputAsc = []
         stokBatch.forEach((data) => {
-            data.batchproduk.map((batch) => {
+            data.batchproduk.forEach((batch) => {
                 const newBatch = {...batch}
-                newBatch.satuan = batch.satuan
-                newBatch.namasatuan = batch.namasatuan
-                const maxQtyTerkirim 
-                    = newBatch.qtyout > newBatch.qty ? newBatch.qty : newBatch.qtyout 
-                newBatch.qtykirim = maxQtyTerkirim
-                // jumlah hanya untuk pelengkap di db, operasi perhitungan harus menggunakan 
-                // qty dan konversisatuan
                 batchInputAsc.push(newBatch)
-                return newBatch;
             })
         })
         batchInputAsc = batchInputAsc.filter((batch) => batch.qtykirim > 0)

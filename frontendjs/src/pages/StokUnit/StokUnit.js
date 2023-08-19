@@ -118,8 +118,8 @@ const StokUnitList = () => {
                             fixedHeader
                             columns={columnsProduk}
                             pagination
-                            paginationPerPage={5}
-                            paginationRowsPerPageOptions={[5]}
+                            paginationPerPage={10}
+                            paginationRowsPerPageOptions={[10]}
                             data={stokUnit}
                             progressPending={false}
                             customStyles={tableCustomStyles}

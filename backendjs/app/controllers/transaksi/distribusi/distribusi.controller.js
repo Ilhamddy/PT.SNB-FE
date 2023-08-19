@@ -179,31 +179,62 @@ export const getOrderStokBatch = async (req, res) => {
         const norecorder = req.query.norecorder
         if(!norecorder) throw new Error("norecorder is required");
 
-        const { rows: rowsOrder } = await pool.query(qGetOrderStok, [norecorder])
-        let datas = []
+        let { rows: rowsOrder } = await pool.query(qGetOrderStok, [norecorder])
+        let dataItemOrders = []
+        let sisaQtyOutPerItem = {}
+        rowsOrder = [...rowsOrder].sort((a, b) => {
+            return new Date(a.tglinput) - new Date(b.tglinput)
+        })
         
         // kelompokkan sesuai produk
         rowsOrder.forEach((stok) => {
-            const iProdukFound = datas.findIndex((data) => {
+            const iProdukFound = dataItemOrders.findIndex((data) => {
                 return data.value === stok.value
             })
             if(iProdukFound < 0){
-                datas.push({
+
+                let sisaQtyOut = stok.qtyout
+                let qty = stok.qty
+                if(sisaQtyOut > qty){
+                    stok.qtykirim = qty
+                    sisaQtyOut = sisaQtyOut - qty
+                }else{
+                    stok.qtykirim = sisaQtyOut
+                    sisaQtyOut = 0
+                }
+                sisaQtyOutPerItem[stok.value] = sisaQtyOut
+                dataItemOrders.push({
                     value: stok.value,
                     qty: stok.qty,
+                    // qty out adalah qty order, 
                     qtyout: stok.qtyout,
                     batchproduk: [{...stok}],
                     label: stok.label,
+                    qtykirim: stok.qtykirim
                 })
             }else{
-                datas[iProdukFound].batchproduk = [...datas[iProdukFound].batchproduk, {...stok}]
-                datas[iProdukFound].qty = datas[iProdukFound].qty + stok.qty
+                let sisaQtyOut = sisaQtyOutPerItem[stok.value]
+                let qty = stok.qty
+                if(sisaQtyOut > qty){
+                    stok.qtykirim = qty
+                    sisaQtyOut = sisaQtyOut - qty
+                }else{
+                    stok.qtykirim = sisaQtyOut
+                    sisaQtyOut = 0 
+                }
+                sisaQtyOutPerItem[stok.value] = sisaQtyOut
+                dataItemOrders[iProdukFound].batchproduk 
+                    = [...dataItemOrders[iProdukFound].batchproduk, {...stok}]
+                dataItemOrders[iProdukFound].qty 
+                    = dataItemOrders[iProdukFound].qty + stok.qty
+                dataItemOrders[iProdukFound].qtykirim 
+                    = dataItemOrders[iProdukFound].qtykirim + stok.qtykirim
             }
         })
 
         let tempres = {
             order: null,
-            itemorders: datas
+            itemorders: dataItemOrders
         }
 
         if(rowsOrder.length === 0) {
@@ -451,7 +482,7 @@ const hCreateDetail = async (
 
                 let stokPengirimAwalVal = stokPengirim?.toJSON() || null
                 
-                const stokTujuanAwalVal = await t_stokunit.findOne({
+                const stokTujuanAwal = await t_stokunit.findOne({
                     where: {
                         kodebatch: generateKodeBatch(
                             createdKirimDetail.nobatch,
@@ -461,10 +492,11 @@ const hCreateDetail = async (
                     },
                     lock: transaction.LOCK.UPDATE
                 })
+                const stokTujuanAwalVal = stokTujuanAwal?.toJSON() || null
                 
                 let stokTujuanAkhirVal
 
-                if(!stokTujuanAwalVal){
+                if(!stokTujuanAwal){
                     stokTujuanAkhirVal = await t_stokunit.create({
                         norec: uuid.v4().substring(0, 32),
                         kdprofile: 0,
@@ -491,11 +523,11 @@ const hCreateDetail = async (
                         transaction: transaction
                     })
                 }else{
-                    const qty = stokTujuanAwalVal.qty + createdKirimDetail.qty
+                    const qty = stokTujuanAwal.qty + createdKirimDetail.qty
                     if(qty < 0){
                         throw new Error("Stok tidak cukup")
                     }
-                    let updated = await stokTujuanAwalVal.update({
+                    let updated = await stokTujuanAwal.update({
                         qty: qty
                     }, {
                         transaction: transaction,

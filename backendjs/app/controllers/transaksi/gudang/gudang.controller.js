@@ -1090,7 +1090,7 @@ export const hCreateKartuStok = async (
     }
 ) => {
     const masuk = saldoAkhir - saldoAwal > 0 ? saldoAkhir - saldoAwal : 0
-    const keluar = saldoAkhir - saldoAwal < 0 ? saldoAkhir - saldoAwal : 0
+    const keluar = saldoAkhir - saldoAwal < 0 ? saldoAwal - saldoAkhir : 0
     const norecKartuStok = uuid.v4().substring(0, 32)
     const createdKartuStok = await t_kartustok.create({
         norec: norecKartuStok,
