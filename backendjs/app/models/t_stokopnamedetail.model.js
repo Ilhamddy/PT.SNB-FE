@@ -35,7 +35,10 @@ export default (sequelize, Sequelize) => {
         tglupdate: {
             type: Sequelize.DATE,
         },
-        objectpegawaifk: {
+        objectpegawaiinputfk: {
+            type: Sequelize.INTEGER,
+        },
+        objectpegawaiupdatefk: {
             type: Sequelize.INTEGER,
         }
     }, {

@@ -924,8 +924,6 @@ const updatedStokOpnameDetails = async (req, res) => {
     try {
         if(errorTransaction) return
         const {
-            stokopnamedetails, 
-            idunit, 
             issimpan, 
             norecstokopname
         } = req.body
@@ -938,6 +936,9 @@ const updatedStokOpnameDetails = async (req, res) => {
                 lock: transaction.LOCK.UPDATE,
                 transaction: transaction
             })
+            const stokopnameVal = stokopname.toJSON()
+            const alreadySavedBySomeone = stokopnameVal.statusselesai
+            if(alreadySavedBySomeone) throw Error("Stok opname sudah disimpan oleh orang lain")
             const stokopnameUpdated = await stokopname.update({
                 statusselesai: true,
                 tglselesai: new Date(),
@@ -950,84 +951,13 @@ const updatedStokOpnameDetails = async (req, res) => {
             })
             stokOpnameUpdated = stokopnameUpdated.toJSON()
         }
-        let updatedAll = await Promise.all(
-            stokopnamedetails.map(async (stokopnamedetail) => {
-                const SODetailBefore = await t_stokopnamedetail.findOne({
-                    where: {
-                        norec: stokopnamedetail.norecstokopnamedetail
-                    },
-                    lock: transaction.LOCK.UPDATE,
-                    transaction: transaction
-                })
-                const SODetailValBefore = SODetailBefore.toJSON()
-                const stokUnitDiopnames = (await t_stokunit.findAll({
-                    where: {
-                        objectprodukfk: stokopnamedetail.objectprodukfk,
-                        objectunitfk: idunit
-                    },
-                    lock: transaction.LOCK.UPDATE,
-                    transaction: transaction,
-                    order: [['tglinput', 'ASC']]
-                }))
-                let stokUnitDiopnameVal = stokUnitDiopnames.map((stokUnit) => stokUnit.toJSON())
-                let totalStokAplikasi = stokUnitDiopnameVal.reduce((prev, stokUnit) => {
-                    return prev + stokUnit.qty
-                }, 0)
-                let totalStokFisik = stokopnamedetail.stokfisik
-                let selisih = totalStokFisik - totalStokAplikasi
-                const SODetailValUpdated = await SODetailBefore.update({
-                    stokaplikasi: totalStokAplikasi,
-                    stokfisik: totalStokFisik,
-                    selisih: selisih,
-                    objectpegawaifk: req.idPegawai,
-                    keterangan: stokopnamedetail.keterangan,
-                }, {
-                    transaction: transaction,
-                    returning: true
-                })
-                if(!issimpan){
-                    return {
-                        SODetailValBefore: SODetailValBefore,
-                        SODetailValUpdated: SODetailValUpdated.toJSON()
-                    }
-                }
-                let stokUnitDiopnameValUpdated = stokUnitDiopnameVal.map((stokUnit) => {
-                    if(selisih > 0){                 
-                        stokUnit.qty = stokUnit.qty + selisih
-                        selisih = 0          
-                    }else if(selisih < 0){
-                        if(stokUnit.qty > - selisih){
-                            stokUnit.qty = stokUnit.qty + selisih
-                            selisih = 0
-                        }else{
-                            selisih = stokUnit.qty + selisih
-                            stokUnit.qty = 0
-                        }
-                    }
-                    return stokUnit
-                })
 
-                stokUnitDiopnameValUpdated = await Promise.all(
-                    stokUnitDiopnames.map(
-                        async (stokUnitDiopname, index) => {
-                            const updatedStokUnit = await stokUnitDiopname.update({
-                                qty: stokUnitDiopnameValUpdated[index].qty,
-                            }, {
-                                transaction: transaction,
-                                returning: true
-                            })
-                            return updatedStokUnit.toJSON()
-                        }
-                    )
-                )
-                return {
-                    SODetailValBefore: SODetailValBefore,
-                    SODetailValUpdated: SODetailValUpdated.toJSON(),
-                    stokUnitDiopnameValUpdated: stokUnitDiopnameValUpdated,
-                    stokUnitDiopnameVal: stokUnitDiopnameVal
-                }
-            })
+        const {updatedAll} = await hUpdateStokOpnameDetails(
+            req,
+            res,
+            transaction,
         )
+        
         let tempres = {
             updatedAll: updatedAll
         }
@@ -1036,7 +966,7 @@ const updatedStokOpnameDetails = async (req, res) => {
             data: tempres,
             status: "success",
             success: true,
-            msg: 'Update stok opname detail Berhasil',
+            msg: issimpan ? 'Finalisasi stok opname berhasil' : 'Update stok opname detail Berhasil',
             code: 200
         });
     } catch(error){
@@ -1355,6 +1285,11 @@ const hCreateKartuStokPenerimaan = async (
     return {createdKartuStokPenerimaan}
 }
 
+/**
+ * 
+ * create kartu stok harus menggunakan ini agar selalu sama
+ * @returns 
+ */
 export const hCreateKartuStok = async (
     req,
     res,
@@ -1369,6 +1304,7 @@ export const hCreateKartuStok = async (
         noBatch
     }
 ) => {
+    if(saldoAwal === saldoAkhir) return null
     const masuk = saldoAkhir - saldoAwal > 0 ? saldoAkhir - saldoAwal : 0
     const keluar = saldoAkhir - saldoAwal < 0 ? saldoAwal - saldoAkhir : 0
     const norecKartuStok = uuid.v4().substring(0, 32)
@@ -1393,4 +1329,114 @@ export const hCreateKartuStok = async (
         transaction: transaction
     })
     return createdKartuStok
+}
+
+const hUpdateStokOpnameDetails = async (
+    req,
+    res,
+    transaction
+) => {
+    const {
+        stokopnamedetails, 
+        idunit, 
+        issimpan,
+    } = req.body
+    let updatedAll = await Promise.all(
+        stokopnamedetails.map(async (stokopnamedetail) => {
+            const SODetailBefore = await t_stokopnamedetail.findOne({
+                where: {
+                    norec: stokopnamedetail.norecstokopnamedetail
+                },
+                lock: transaction.LOCK.UPDATE,
+                transaction: transaction
+            })
+            const SODetailValBefore = SODetailBefore.toJSON()
+            const stokUnitDiopnames = (await t_stokunit.findAll({
+                where: {
+                    objectprodukfk: stokopnamedetail.objectprodukfk,
+                    objectunitfk: idunit
+                },
+                lock: transaction.LOCK.UPDATE,
+                transaction: transaction,
+                order: [['tglinput', 'ASC']]
+            }))
+            let stokUnitDiopnameVal = stokUnitDiopnames.map((stokUnit) => stokUnit.toJSON())
+            let totalStokAplikasi = stokUnitDiopnameVal.reduce((prev, stokUnit) => {
+                return prev + stokUnit.qty
+            }, 0)
+            let totalStokFisik = stokopnamedetail.stokfisik
+            let selisih = totalStokFisik - totalStokAplikasi
+            const SODetailUpdated = await SODetailBefore.update({
+                stokaplikasi: totalStokAplikasi,
+                stokfisik: totalStokFisik,
+                selisih: selisih,
+                objectpegawaiupdatefk: req.idPegawai,
+                keterangan: stokopnamedetail.keterangan,
+            }, {
+                transaction: transaction,
+                returning: true
+            })
+            const SODetailValUpdated = SODetailUpdated.toJSON()
+            if(!issimpan){
+                return {
+                    SODetailValBefore: SODetailValBefore,
+                    SODetailValUpdated: SODetailValUpdated
+                }
+            }
+            let stokUnitDiopnameValUpdated = stokUnitDiopnameVal.map((stokUnit) => {
+                const newStokUnit = {...stokUnit}
+                if(selisih > 0){                 
+                    newStokUnit.qty = newStokUnit.qty + selisih
+                    selisih = 0          
+                }else if(selisih < 0){
+                    if(newStokUnit.qty > - selisih){
+                        newStokUnit.qty = newStokUnit.qty + selisih
+                        selisih = 0
+                    }else{
+                        selisih = newStokUnit.qty + selisih
+                        newStokUnit.qty = 0
+                    }
+                }
+                return newStokUnit
+            })
+
+            stokUnitDiopnameValUpdated = await Promise.all(
+                stokUnitDiopnames.map(
+                    async (stokUnitDiopname, index) => {
+                        const updatedStokUnit = await stokUnitDiopname.update({
+                            qty: stokUnitDiopnameValUpdated[index].qty,
+                        }, {
+                            transaction: transaction,
+                            returning: true
+                        })
+                        const newStokUnit = updatedStokUnit.toJSON()
+                        const created = await hCreateKartuStok(
+                            req,
+                            res,
+                            transaction,
+                            {
+                                idUnit: idunit,
+                                idProduk: stokopnamedetail.objectprodukfk,
+                                saldoAwal: stokUnitDiopnameVal[index].qty,
+                                saldoAkhir: newStokUnit.qty,
+                                tabelTransaksi: "t_stokopnamedetail",
+                                norecTransaksi: SODetailUpdated.norec,
+                                noBatch: stokUnitDiopnameVal[index].nobatch,   
+                            }
+                        )
+                        return newStokUnit
+
+                    }
+                )
+            )
+
+            return {
+                SODetailValBefore: SODetailValBefore,
+                SODetailValUpdated: SODetailValUpdated,
+                stokUnitDiopnameValUpdated: stokUnitDiopnameValUpdated,
+                stokUnitDiopnameVal: stokUnitDiopnameVal
+            }
+        })
+    )
+    return {updatedAll}
 }

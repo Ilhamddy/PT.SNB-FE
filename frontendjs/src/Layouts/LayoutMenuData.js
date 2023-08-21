@@ -606,6 +606,17 @@ const Navdata = () => {
                         ]);
                     }
                 },
+                {
+                    id: "stokopname",
+                    label: "Stok Opname",
+                    link: "/farmasi/gudang/stok-opname/daftar-stok-opname",
+                    parentId: "gudang",
+                    isAllowed: () => {
+                        return isAllowedAccess(getUserPermissions(), [
+                            "REGISTRASI_VIEW",
+                        ]);
+                    }
+                },
             ]
         },
         
