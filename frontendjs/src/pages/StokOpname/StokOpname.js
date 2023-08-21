@@ -83,7 +83,7 @@ const StokOpname = () => {
                                 navigate(`/farmasi/gudang/stok-opname/edit-stok-opname/${row.norecstokopname}`)}>
                                 <i className="ri-mail-send-fill align-bottom me-2 text-muted">
                                 </i>
-                                Edit
+                                {row.statusselesai ? "lihat" : "Edit"}
                             </DropdownItem>
                         </DropdownMenu>
                     </UncontrolledDropdown>
@@ -129,6 +129,12 @@ const StokOpname = () => {
             name: <span className='font-weight-bold fs-13'>Jumlah Item</span>,
             sortable: true,
             selector: row => row.jumlahproduk,
+            width: "150px"
+        },
+        {
+            name: <span className='font-weight-bold fs-13'>Status</span>,
+            sortable: true,
+            selector: row => row.statusselesai ? "Selesai" : "Belum Selesai",
             width: "150px"
         },
     ];
@@ -503,6 +509,7 @@ const ExpandableStokOpname = ({ data }) => {
             selector: row => row.keterangan,
             width: "150px"
         },
+
     ];
     if(data.detailstokopname.length === 0 ){
         return <></>

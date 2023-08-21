@@ -219,6 +219,7 @@ SELECT
     tso.tglinput AS tglinput,
     tso.tglselesai AS tglselesai,
     count(tsod.norec) AS jumlahproduk,
+    tso.statusselesai AS statusselesai,
     json_agg(
         json_build_object(
             'norecstokopnamedetail', tsod.norec,
