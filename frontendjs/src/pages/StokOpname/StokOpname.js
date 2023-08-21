@@ -221,6 +221,7 @@ const EditStokOpname = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const isSimpan = useRef(false);
+    const simpanIndex = useRef(-1);
     const {
         stokOpnameDetail
     } = useSelector((state) => ({
@@ -246,6 +247,11 @@ const EditStokOpname = () => {
         onSubmit: (values) => {
             const newValues = {...values};
             newValues.issimpan = isSimpan.current
+            if(simpanIndex >= 0){
+                newValues.stokopnamedetails = newValues.stokopnamedetails.filter((_, index) => {
+                    return index === simpanIndex.current
+                })
+            }
             newValues.stokopnamedetails = newValues.stokopnamedetails.map((item) => {
                 const newItem = {...item};
                 newItem.stokfisik = strToNumber(newItem.stokfisik);
@@ -271,9 +277,11 @@ const EditStokOpname = () => {
 
     const statusSelesai = !!vStokOpnameDetail.values.statusSelesai
 
-    const handleSubmitOnBlur = () => {
+    const handleSubmitOnBlur = (rowIndex) => {
+        simpanIndex.current = rowIndex;
         isSimpan.current = false;
         vStokOpnameDetail.handleSubmit();
+        simpanIndex.current = -1;
     }
 
     /**
@@ -335,7 +343,7 @@ const EditStokOpname = () => {
                                     newDatas[row.no - 1] = newData;
                                     vStokOpnameDetail.setFieldValue("stokopnamedetails", newDatas);
                                 }}
-                                onBlur={handleSubmitOnBlur}
+                                onBlur={() => handleSubmitOnBlur(row.no - 1)}
                                 disabled={statusSelesai}
                                 invalid={touchedDetail
                                     && !!errorSelisih}
@@ -386,7 +394,7 @@ const EditStokOpname = () => {
                                     newDatas[row.no - 1] = newData;
                                     vStokOpnameDetail.setFieldValue("stokopnamedetails", newDatas);
                                 }}
-                                onBlur={handleSubmitOnBlur}
+                                onBlur={() => handleSubmitOnBlur(row.no - 1)}
                                 disabled={statusSelesai}
                                 invalid={touchedDetail
                                     && !!errorSelisih}
