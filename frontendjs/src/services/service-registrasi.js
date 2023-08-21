@@ -99,4 +99,8 @@ export default class ServiceRegistrasi {
     getPasienFormById = async (queries) => {
         return await api.get(`/transaksi/registrasi/get-pasien-form`, queries);
     }
+
+    saveBatalRegistrasi = async (data) => {
+        return await api.create(`/transaksi/registrasi/save-batal-registrasi`, data)
+    }
 }

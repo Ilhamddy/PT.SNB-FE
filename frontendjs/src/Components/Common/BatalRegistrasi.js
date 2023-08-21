@@ -9,6 +9,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { useFormik } from "formik";
 import Flatpickr from "react-flatpickr";
 import * as Yup from "yup";
+import { saveBatalRegistrasi } from "../../store/actions";
+
 
 const currentDate = new Date();
 currentDate.setDate(currentDate.getDate());
@@ -35,10 +37,10 @@ const BatalRegistrasi = ({ show, onSimpanClick,
             pembatal: Yup.string().required("Pembatal wajib diisi"),
         }),
         onSubmit: (values, { resetForm }) => {
-            // dispatch(konsulSave(values, '', () => {
-            //     onSimpanClick()
-            // }));
-            // resetForm({ values: '' })
+            dispatch(saveBatalRegistrasi(values, '', () => {
+                onSimpanClick()
+            }));
+            resetForm({ values: '' })
         }
     })
     const listPembatal = [
@@ -115,6 +117,19 @@ const BatalRegistrasi = ({ show, onSimpanClick,
                                             <FormFeedback type="invalid"><div>{validation.errors.alasan}</div></FormFeedback>
                                         ) : null}
                                     </Col>
+                                    <div className="d-flex gap-2 justify-content-center mt-4 mb-2">
+                                        <button
+                                            type="button"
+                                            className="btn w-sm btn-light"
+                                            data-bs-dismiss="modal"
+                                            onClick={onCloseClick}
+                                        >
+                                            Tutup
+                                        </button>
+                                        <Button type="submit" color="info" placement="top" id="tooltipTop" >
+                                            SIMPAN
+                                        </Button>
+                                    </div>
                                 </Row>
                             </Form>
                         </div>
@@ -124,5 +139,11 @@ const BatalRegistrasi = ({ show, onSimpanClick,
         </Modal>
     )
 }
+
+BatalRegistrasi.propTypes = {
+    onCloseClick: PropTypes.func,
+    onSimpanClick: PropTypes.func,
+    show: PropTypes.any,
+};
 
 export default BatalRegistrasi

@@ -131,5 +131,9 @@ export default function (app) {
         controller.getPasienFormById
     )
 
-
+    app.post(
+        "/api/transaksi/registrasi/save-batal-registrasi",
+        [authJwt.verifyToken],
+        controller.saveBatalRegistrasi
+    )
 };

@@ -166,7 +166,7 @@ function* onGetPasienFormQueries({payload: {queries}}) {
 
 function* onsaveBatalRegistrasi({payload: {data, callback}}){
     try {
-        const response = yield call(serviceRegistrasi.saveRegistrasiPenjaminFK, data);
+        const response = yield call(serviceRegistrasi.saveBatalRegistrasi, data);
         yield put(saveBatalRegistrasiSuccess(response.data));
         if(response.code===200){
             toast.success(response.msg, { autoClose: 3000 });
