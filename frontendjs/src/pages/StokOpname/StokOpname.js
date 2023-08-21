@@ -247,7 +247,7 @@ const EditStokOpname = () => {
         onSubmit: (values) => {
             const newValues = {...values};
             newValues.issimpan = isSimpan.current
-            if(simpanIndex >= 0){
+            if(simpanIndex.current >= 0){
                 newValues.stokopnamedetails = newValues.stokopnamedetails.filter((_, index) => {
                     return index === simpanIndex.current
                 })
@@ -281,7 +281,6 @@ const EditStokOpname = () => {
         simpanIndex.current = rowIndex;
         isSimpan.current = false;
         vStokOpnameDetail.handleSubmit();
-        simpanIndex.current = -1;
     }
 
     /**
@@ -447,7 +446,7 @@ const EditStokOpname = () => {
                         formTarget="form-input-penerimaan"
                         disabled={statusSelesai}
                         onClick={() => {
-                            console.error(vStokOpnameDetail.errors)
+                            simpanIndex.current = -1;
                             isSimpan.current = true;
                             vStokOpnameDetail.handleSubmit();
                         }}
