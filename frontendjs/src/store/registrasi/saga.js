@@ -11,7 +11,8 @@ import {
     REGISTRASI_RUANGAN_NOREC_GET,
     REGISTRASI_NO_BPJS_GET,
     REGISTRASI_SAVE_PENJAMIN_FK,
-    PASIEN_FORM_QUERIES_GET
+    PASIEN_FORM_QUERIES_GET,
+    SAVE_BATAL_REGISTRASI
 } from "./actionType";
 import {
     registrasiGetError,
@@ -33,8 +34,9 @@ import {
     registrasiSavePenjaminFKSuccess,
     registrasiSavePenjaminFKError,
     pasienFormQueriesGetSuccess,
-    pasienFormQueriesGetError
-    
+    pasienFormQueriesGetError,
+    saveBatalRegistrasiSuccess,
+    saveBatalRegistrasiError
 } from "./action";
 
 import { toast } from 'react-toastify';
@@ -162,6 +164,23 @@ function* onGetPasienFormQueries({payload: {queries}}) {
     }
 }
 
+function* onsaveBatalRegistrasi({payload: {data, callback}}){
+    try {
+        const response = yield call(serviceRegistrasi.saveRegistrasiPenjaminFK, data);
+        yield put(saveBatalRegistrasiSuccess(response.data));
+        if(response.code===200){
+            toast.success(response.msg, { autoClose: 3000 });
+            callback && callback();
+            console.log("success")
+        }else{
+            toast.error(response.msg, { autoClose: 3000 });
+        }
+    } catch (error) {
+        yield put(saveBatalRegistrasiError(error));
+        toast.error(error, { autoClose: 3000 });
+    }
+}
+
 export function* watchSaveRegistrasi() {
     yield takeEvery(REGISTRASI_SAVE, onSaveRegistrasi);
 }
@@ -202,6 +221,10 @@ export function* watchGetPasienFormQueries() {
     yield takeEvery(PASIEN_FORM_QUERIES_GET, onGetPasienFormQueries);
 }
 
+export function* watchsaveBatalRegistrasi() {
+    yield takeEvery(SAVE_BATAL_REGISTRASI, onsaveBatalRegistrasi);
+}
+
 function* registrasiSaga() {
     yield all([
         fork(watchSaveRegistrasi),
@@ -213,7 +236,8 @@ function* registrasiSaga() {
         fork(watchGetRegistrasiNorec),
         fork(watchGetRegistrasiNoBPJS),
         fork(watchRegistrasiSavePenjaminFK),
-        fork(watchGetPasienFormQueries)
+        fork(watchGetPasienFormQueries),
+        fork(watchsaveBatalRegistrasi)
     ]);
 }
 

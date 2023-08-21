@@ -1386,7 +1386,6 @@ const getDepositFromPasien = async (req, res) => {
     }
 }
 
-
 const getPasienFormById = async (req, res) => {
     try{
         const {idpasien} = req.query
@@ -1412,7 +1411,43 @@ const getPasienFormById = async (req, res) => {
     }
 }
 
+async function saveBatalRegistrasi(req, res) {
+    let transaction = null;
+    try {
+        transaction = await db.sequelize.transaction();
+    } catch (e) {
+        console.error(e)
+        res.status(500).send({
+            data: e.message,
+            success: false,
+            msg: 'Transaksi gagal',
+            code: 500
+        });
+        return;
+    }
 
+    try {
+        
+        await transaction.commit();
+
+        let tempres = { test:'test' }
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+            msg: 'success',
+            code: 200
+        });
+    } catch (error) {
+        res.status(201).send({
+            status: error,
+            success: false,
+            msg: 'Gagal',
+            code: 201
+        });
+    }
+
+}
 
 
 export default {
@@ -1437,7 +1472,8 @@ export default {
     getNoAntrean,
     getDepositFromPasien,
     getWidgetDaftarPasienRegistrasi,
-    getPasienFormById
+    getPasienFormById,
+    saveBatalRegistrasi
 };
 
 const hUpdateRegistrasiPulang = async (req, res, transaction) => {

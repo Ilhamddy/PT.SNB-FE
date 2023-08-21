@@ -34,6 +34,9 @@ import {
     PASIEN_FORM_QUERIES_GET,
     PASIEN_FORM_QUERIES_GET_SUCCESS,
     PASIEN_FORM_QUERIES_GET_ERROR,
+    SAVE_BATAL_REGISTRASI,
+    SAVE_BATAL_REGISTRASI_SUCCESS,
+    SAVE_BATAL_REGISTRASI_ERROR
 } from "./actionType";
 
 export const registrasiResetForm = () => ({
@@ -206,5 +209,20 @@ export const pasienFormQueriesGetSuccess = (data) => ({
 
 export const pasienFormQueriesGetError = (error) => ({
     type: PASIEN_FORM_QUERIES_GET_ERROR,
+    payload: error,
+});
+
+export const saveBatalRegistrasi = (data, callback) => ({
+    type: SAVE_BATAL_REGISTRASI,
+    payload: { data, callback },
+});
+
+export const saveBatalRegistrasiSuccess = (data) => ({
+    type: SAVE_BATAL_REGISTRASI_SUCCESS,
+    payload: data,
+});
+
+export const saveBatalRegistrasiError = (error) => ({
+    type: SAVE_BATAL_REGISTRASI_ERROR,
     payload: error,
 });

@@ -31,6 +31,9 @@ import {
     PASIEN_FORM_QUERIES_GET,
     PASIEN_FORM_QUERIES_GET_SUCCESS,
     PASIEN_FORM_QUERIES_GET_ERROR,
+    SAVE_BATAL_REGISTRASI,
+    SAVE_BATAL_REGISTRASI_SUCCESS,
+    SAVE_BATAL_REGISTRASI_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -81,6 +84,12 @@ const INIT_STATE = {
         data: null,
         loading: false,
         error: null,
+    },
+    saveBatalRegistrasi:{
+        newData: null,
+        loading: false,
+        error: null,
+        success: false
     }
 };
 
@@ -94,6 +103,9 @@ const Registrasi = (state = INIT_STATE, action) => {
                 },
                 registrasiSave: {
                     ...INIT_STATE.registrasiSave,
+                },
+                saveBatalRegistrasi:{
+                    ...INIT_STATE.saveBatalRegistrasi
                 }
             }
         }
@@ -440,6 +452,40 @@ const Registrasi = (state = INIT_STATE, action) => {
                 pasienFormQueriesGet: {
                     ...state.pasienFormQueriesGet,
                     data: [],
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case SAVE_BATAL_REGISTRASI: {
+            return {
+                ...state,
+                saveBatalRegistrasi: {
+                    ...state.saveBatalRegistrasi,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case SAVE_BATAL_REGISTRASI_SUCCESS: {
+            return {
+                ...state,
+                saveBatalRegistrasi: {
+                    ...state.saveBatalRegistrasi,
+                    newData: action.payload,
+                    loading: false,
+                    success: true,
+                }
+            }
+        }
+
+        case SAVE_BATAL_REGISTRASI_ERROR: {
+            return {
+                ...state,
+                saveBatalRegistrasi: {
+                    ...state.saveBatalRegistrasi,
                     loading: false,
                     error: action.error,
                 }

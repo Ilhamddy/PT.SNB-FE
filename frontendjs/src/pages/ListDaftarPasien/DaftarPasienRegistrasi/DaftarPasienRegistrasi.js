@@ -17,21 +17,22 @@ import 'react-toastify/dist/ReactToastify.css';
 import CountUp from "react-countup";
 import userDummy from "../../../assets/images/users/user-dummy-img.jpg";
 
-import { daftarPasienResetForm,daftarPasienRegistrasiGet, widgetdaftarPasienRegistrasiGet } from '../../../store/actions';
+import { daftarPasienResetForm, daftarPasienRegistrasiGet, widgetdaftarPasienRegistrasiGet } from '../../../store/actions';
 import { comboRegistrasiGet } from '../../../store/master/action';
 import CustomSelect from '../../Select/Select';
 import "./DaftarPasienRegistrasi.scss"
 import LoadingTable from '../../../Components/Table/LoadingTable';
+import BatalRegistrasi from '../../../Components/Common/BatalRegistrasi';
 const DaftarPasienRegistrasi = () => {
     document.title = "Daftar Pasien Rawat Jalan";
     const dispatch = useDispatch();
     const history = useNavigate();
-    const { data, loading, error,datawidget, dataCombo, loadingCombo, errorCombo } = useSelector((state) => ({
-            data: state.DaftarPasien.daftarPasienRegistrasiGet.data,
-            datawidget: state.DaftarPasien.widgetdaftarPasienRegistrasiGet.data,
-            loading: state.DaftarPasien.daftarPasienRegistrasiGet.loading
-            
-        }));
+    const { data, loading, error, datawidget, dataCombo, loadingCombo, errorCombo } = useSelector((state) => ({
+        data: state.DaftarPasien.daftarPasienRegistrasiGet.data,
+        datawidget: state.DaftarPasien.widgetdaftarPasienRegistrasiGet.data,
+        loading: state.DaftarPasien.daftarPasienRegistrasiGet.loading
+
+    }));
 
     const [userChosen, setUserChosen] = useState({
         nama: "",
@@ -84,7 +85,7 @@ const DaftarPasienRegistrasi = () => {
     useEffect(() => {
         dispatch(widgetdaftarPasienRegistrasiGet(''))
         dispatch(daftarPasienRegistrasiGet(''));
-        
+
     }, [dispatch]);
     useEffect(() => {
         return () => {
@@ -97,7 +98,33 @@ const DaftarPasienRegistrasi = () => {
             id: row.noidentitas
         })
     };
+    const [tempNorecDp, settempNorecDp] = useState('');
+    const [batalModal, setbatalModal] = useState(false);
+    const handleToCancel = async (norecdp) => {
+        settempNorecDp(norecdp)
+        setbatalModal(true)
+    }
     const columns = [
+        {
+            name: <span className='font-weight-bold fs-13'>Detail</span>,
+            sortable: false,
+            cell: (row) => {
+                return (
+                    <div className="hstack gap-3 flex-wrap">
+                        <UncontrolledTooltip placement="top" target="tooltipTop2" > Pengkajian Pasien </UncontrolledTooltip>
+                        <UncontrolledDropdown className="dropdown d-inline-block">
+                            <DropdownToggle className="btn btn-soft-secondary btn-sm" tag="button" id="tooltipTop2">
+                                <i className="ri-apps-2-line"></i>
+                            </DropdownToggle>
+                            <DropdownMenu className="dropdown-menu-end">
+                                <DropdownItem onClick={() => handleToCancel(row.norecdp)}><i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>Batal Registrasi</DropdownItem>
+                            </DropdownMenu>
+                        </UncontrolledDropdown>
+                    </div>
+                );
+            },
+            width: "70px"
+        },
         {
             name: <span className='font-weight-bold fs-13'>Tgl Registrasi</span>,
             selector: row => row.tglregistrasi,
@@ -153,6 +180,11 @@ const DaftarPasienRegistrasi = () => {
     return (
         <React.Fragment>
             <ToastContainer closeButton={false} />
+            <BatalRegistrasi
+                show={batalModal}
+                onSimpanClick={() => setbatalModal(false)}
+                onCloseClick={() => setbatalModal(false)}
+                tempNorecDp={tempNorecDp} />
             <UiContent />
             <div className="page-content daftar-pasien-registrasi">
                 <Container fluid>

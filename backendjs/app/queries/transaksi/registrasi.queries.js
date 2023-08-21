@@ -57,7 +57,7 @@ const getDaftarPasienRawatJalan = `select td.norec as norecdp,
     left join t_rm_lokasidokumen trm on trm.objectantreanpemeriksaanfk=ta.norec `;
 
 
-const getDaftarPasienRegistrasi = `select mj.jenispenjamin,mi.namainstalasi,mp.nocm,td.noregistrasi,mp.namapasien,
+const getDaftarPasienRegistrasi = `select td.norec as norecdp,mj.jenispenjamin,mi.namainstalasi,mp.nocm,td.noregistrasi,mp.namapasien,
 to_char(td.tglregistrasi,'yyyy-MM-dd') as tglregistrasi,mu.namaunit,
 mp2.reportdisplay || '-' ||ta.noantrian as noantrian,mp2.namalengkap as namadokter  from t_daftarpasien td 
 join m_pasien mp on mp.id=td.nocmfk 
