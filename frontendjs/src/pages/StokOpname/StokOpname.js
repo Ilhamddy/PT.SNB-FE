@@ -128,7 +128,7 @@ const StokOpname = () => {
         {
             name: <span className='font-weight-bold fs-13'>Jumlah Item</span>,
             sortable: true,
-            selector: row => 0,
+            selector: row => row.jumlahproduk,
             width: "150px"
         },
     ];
@@ -198,6 +198,8 @@ const StokOpname = () => {
                                             progressPending={stokOpname.loading || false}
                                             customStyles={tableCustomStyles}
                                             progressComponent={<LoadingTable />}
+                                            expandableRows
+                                            expandableRowsComponent={ExpandableStokOpname}
                                         />
                                     </Col>
                                 </Row>
@@ -459,6 +461,64 @@ const EditStokOpname = () => {
     )
 }
 
+const ExpandableStokOpname = ({ data }) => {
+
+    /**
+     * @type {import("react-data-table-component").TableColumn[]}
+     */
+    const columnsDetail = [
+        {
+            name: <span className='font-weight-bold fs-13'>Nama produk</span>,
+            sortable: true,
+            selector: row => row.namaproduk,
+            width: "150px"
+        },
+        {
+            name: <span className='font-weight-bold fs-13'>Satuan</span>,
+            selector: row => row.namasatuan,
+            sortable: true,
+            width: "150px"
+        },
+        {
+            name: <span className='font-weight-bold fs-13'>Stok aplikasi</span>,
+            sortable: true,
+            selector: row => row.stokaplikasi,
+            width: "100px"
+        },
+        {
+            name: <span className='font-weight-bold fs-13'>Stok Fisik</span>,
+            sortable: true,
+            selector: row => row.stokfisik,
+            width: "100px"
+        },
+        {
+            name: <span className='font-weight-bold fs-13'>Selisih</span>,
+            sortable: true,
+            selector: row => row.selisih,
+            width: "100px"
+        },
+        {
+            name: <span className='font-weight-bold fs-13'>Keterangan</span>,
+            sortable: true,
+            selector: row => row.keterangan,
+            width: "150px"
+        },
+    ];
+    if(data.detailstokopname.length === 0 ){
+        return <></>
+    }
+    return (
+        <DataTable
+            fixedHeader
+            fixedHeaderScrollHeight="700px"
+            columns={columnsDetail}
+            data={data.detailstokopname || []}
+            progressPending={false}
+            customStyles={subTableCustomStyles}
+            />
+    )
+}
+
 const ModalMenu = ({ isMenuOpen, toggle }) => {
     const [dateNow] = useState(() => (new Date()).toISOString());
     const dispatch = useDispatch();
@@ -650,6 +710,23 @@ const tableCustomStyles = {
             backgroundColor: "#f1f2f6"
         },
     }
+}
+
+const subTableCustomStyles = {
+    headRow: {
+        style: {
+            color: '#ffffff',
+            backgroundColor: '#ECB349'
+        },
+    },
+    rows: {
+        style: {
+            color: "black",
+            backgroundColor: "#f1f2f6",
+            borderBottom: "1px solid #919191"
+        },
+    }
+    
 }
 
 export default StokOpname

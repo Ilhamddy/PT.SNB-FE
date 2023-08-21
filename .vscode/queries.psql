@@ -1,7 +1,29 @@
 SELECT
-    tsu.objectprodukfk AS idproduk,
-    tsu.norec AS norecstokunit,
-    tsu.qty AS qty
-FROM t_stokunit tsu
-    WHERE tsu.objectprodukfk = 3
-    AND tsu.objectunitfk = 3
+    row_number() over() AS no,
+    tso.norec AS norecstokopname,
+    tso.tglawal AS tanggalawal,
+    tso.tglakhir AS tanggalakhir,
+    tso.objectunitfk AS unitso,
+    mu.id AS idunit,
+    mu.namaunit AS namaunit,
+    tso.tglinput AS tglinput,
+    tso.tglselesai AS tglselesai,
+    count(tsod.norec) AS jumlahproduk,
+    json_agg(
+        json_build_object(
+            'norecstokopnamedetail', tsod.norec,
+            'namaproduk', mp.namaproduk,
+            'objectsatuanstandarfk', ms.id,
+            'namasatuan', ms.satuan,
+            'stokaplikasi', tsod.stokaplikasi,
+            'stokfisik', tsod.stokfisik,
+            'selisih', tsod.selisih,
+            'keterangan', tsod.keterangan
+        )
+    ) AS detailstokopname
+FROM t_stokopname tso
+    LEFT JOIN m_unit mu ON mu.id = tso.objectunitfk
+    LEFT JOIN t_stokopnamedetail tsod ON tsod.objectstokopnamefk = tso.norec
+    LEFT JOIN m_produk mp ON mp.id = tsod.objectprodukfk
+    LEFT JOIN m_satuan ms ON ms.id = mp.objectsatuanstandarfk
+GROUP BY tso.norec, tso.tglawal, tso.tglakhir, tso.objectunitfk, mu.namaunit, tso.tglinput, tso.tglselesai, mu.id

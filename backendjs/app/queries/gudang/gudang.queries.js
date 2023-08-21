@@ -209,7 +209,7 @@ FROM t_stokunit tsu
 
 const qGetStokOpname = `
 SELECT
-    row_number() over() as no,
+    row_number() over() AS no,
     tso.norec AS norecstokopname,
     tso.tglawal AS tanggalawal,
     tso.tglakhir AS tanggalakhir,
@@ -218,6 +218,7 @@ SELECT
     mu.namaunit AS namaunit,
     tso.tglinput AS tglinput,
     tso.tglselesai AS tglselesai,
+    count(tsod.norec) AS jumlahproduk,
     json_agg(
         json_build_object(
             'norecstokopnamedetail', tsod.norec,
