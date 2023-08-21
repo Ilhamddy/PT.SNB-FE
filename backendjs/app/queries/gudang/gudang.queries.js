@@ -207,6 +207,106 @@ FROM t_stokunit tsu
     LEFT JOIN m_asalproduk mas ON mas.id = tsu.objectasalprodukfk
 `
 
+const qGetStokOpname = `
+SELECT
+    row_number() over() as no,
+    tso.norec AS norecstokopname,
+    tso.tglawal AS tanggalawal,
+    tso.tglakhir AS tanggalakhir,
+    tso.objectunitfk AS unitso,
+    mu.id AS idunit,
+    mu.namaunit AS namaunit,
+    tso.tglinput AS tglinput,
+    tso.tglselesai AS tglselesai,
+    json_agg(
+        json_build_object(
+            'norecstokopnamedetail', tsod.norec,
+            'namaproduk', mp.namaproduk,
+            'objectsatuanstandarfk', ms.id,
+            'namasatuan', ms.satuan,
+            'stokaplikasi', tsod.stokaplikasi,
+            'stokfisik', tsod.stokfisik,
+            'selisih', tsod.selisih,
+            'keterangan', tsod.keterangan
+        )
+    ) AS detailstokopname
+FROM t_stokopname tso
+    LEFT JOIN m_unit mu ON mu.id = tso.objectunitfk
+    LEFT JOIN t_stokopnamedetail tsod ON tsod.objectstokopnamefk = tso.norec
+    LEFT JOIN m_produk mp ON mp.id = tsod.objectprodukfk
+    LEFT JOIN m_satuan ms ON ms.id = mp.objectsatuanstandarfk
+GROUP BY tso.norec, tso.tglawal, tso.tglakhir, tso.objectunitfk, mu.namaunit, tso.tglinput, tso.tglselesai, mu.id
+`
+
+const qGetStokOpnameStokUnit = `
+SELECT
+    row_number() over() AS no,
+    tso.norec AS objectstokopnamefk,
+    mp.namaproduk AS namaproduk,
+    tsu.objectprodukfk AS objectprodukfk,
+    ms.id AS objectsatuanstandarfk,
+    ms.satuan AS namasatuan,
+    mu.id AS objectunitfk,
+    mu.namaunit AS namaunit,
+    json_agg(
+        json_build_object(
+            'stok', tsu.qty,
+            'batch', tsu.nobatch
+        )
+    ) AS stokaplikasibatch,
+    sum(tsu.qty) AS stokaplikasi,
+    sum(tsu.qty) AS stokfisik,
+    0 AS selisih,
+    '' AS keterangan
+FROM t_stokopname tso
+    LEFT JOIN t_stokunit tsu ON tsu.objectunitfk = tso.objectunitfk
+    LEFT JOIN m_produk mp ON mp.id = tsu.objectprodukfk
+    LEFT JOIN m_satuan ms ON ms.id = mp.objectsatuanstandarfk
+    LEFT JOIN m_unit mu ON mu.id = tso.objectunitfk
+WHERE tso.norec = $1
+GROUP BY tso.norec, tsu.objectprodukfk, mp.namaproduk, ms.id, ms.satuan, mu.id, mu.namaunit
+`
+
+/**
+ * @typedef {{
+ *  no: number,
+ *  norecstokopnamedetail: string,
+ *  namaproduk: string,
+ *  objectprodukfk: number,
+ *  objectsatuanstandarfk: string,
+ *  namasatuan: string,
+ *  stokaplikasi: number,
+ *  stokfisik: number,
+ *  selisih: number,
+ *  keterangan: string,
+ *  objectunitfk: number,
+ *  namaunit: string,
+ * }} StokOpnameDetail
+ */
+const qGetStokOpnameDetail = `
+SELECT
+    row_number() over() as no,
+    tsod.norec AS norecstokopnamedetail,
+    mp.id AS objectprodukfk,
+    mp.namaproduk AS namaproduk,
+    ms.id AS objectsatuanstandarfk,
+    ms.satuan AS namasatuan,
+    tsod.stokaplikasi AS stokaplikasi,
+    tsod.stokfisik AS stokfisik,
+    tsod.selisih AS selisih,
+    tsod.keterangan AS keterangan,
+    mu.id AS objectunitfk,
+    mu.namaunit AS namaunit,
+    tso.statusselesai AS statusselesai
+FROM t_stokopnamedetail tsod
+    LEFT JOIN t_stokopname tso ON tso.norec = tsod.objectstokopnamefk
+    LEFT JOIN m_produk mp ON mp.id = tsod.objectprodukfk
+    LEFT JOIN m_satuan ms ON ms.id = mp.objectsatuanstandarfk
+    LEFT JOIN m_unit mu ON mu.id = tso.objectunitfk
+WHERE tsod.objectstokopnamefk = $1
+`
+
+
 export {
     qGetJenisDetailProdukLainLain,
     qGetSediaanLainLain,
@@ -221,5 +321,8 @@ export {
     qGetPenerimaan,
     qGetListPenerimaan,
     qGetKartuStok,
-    qGetStokUnit
+    qGetStokUnit,
+    qGetStokOpname,
+    qGetStokOpnameStokUnit,
+    qGetStokOpnameDetail,
 }

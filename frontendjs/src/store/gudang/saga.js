@@ -33,7 +33,15 @@ import {
     kartuStokQueryGetSuccess,
     kartuStokQueryGetError,
     getStokUnitGudangSuccess,
-    getStokUnitGudangError
+    getStokUnitGudangError,
+    createOrUpdateStokOpnameSuccess,
+    createOrUpdateStokOpnameError,
+    getStokOpnameSuccess,
+    getStokOpnameError,
+    getStokOpnameDetailSuccess,
+    getStokOpnameDetailError,
+    updateStokOpnameDetailsSuccess,
+    updateStokOpnameDetailsError
 } from "./action";
 
 
@@ -55,7 +63,11 @@ import {
     PENERIMAAN_QUERY_GET,
     PENERIMAAN_LIST_QUERY_GET,
     KARTU_STOK_QUERY_GET,
-    GET_STOK_UNIT_GUDANG
+    GET_STOK_UNIT_GUDANG,
+    CREATE_OR_UPDATE_STOK_OPNAME,
+    GET_STOK_OPNAME,
+    GET_STOK_OPNAME_DETAIL,
+    UPDATE_STOK_OPNAME_DETAILS
 } from "./actionType";
 
 const serviceGudang = new ServiceGudang();
@@ -239,6 +251,56 @@ function* onGetStokUnitGudang({payload: {queries}}){
     }
 }
 
+function* onCreateOrUpdateStokOpname({payload: {data, callback}}){
+    try {
+        let response = yield call(serviceGudang.createOrUpdateStokOpname, data);
+        yield put(createOrUpdateStokOpnameSuccess(response.data));
+        toast.success(response.msg, { autoClose: 3000 })
+        callback &&
+            callback(response.data || null);
+    } catch (error) {
+        console.error(error);
+        yield put(createOrUpdateStokOpnameError(error));
+        toast.error(error?.response?.msg || "Gagal save or update stok opname", { autoClose: 3000 });
+    }
+}
+
+function* onGetStokOpname({payload: {queries}}){
+    try {
+        let response = yield call(serviceGudang.getStokOpname, queries);
+        yield put(getStokOpnameSuccess(response.data));
+    } catch (error) {
+        console.error(error);
+        yield put(getStokOpnameError(error));
+    }
+}
+
+function* onGetStokOpnameDetail({payload: {queries}}){
+    try {
+        let response = yield call(serviceGudang.getStokOpnameDetail, queries);
+        yield put(getStokOpnameDetailSuccess(response.data));
+    } catch (error) {
+        console.error(error);
+        yield put(getStokOpnameDetailError(error));
+    }
+}
+
+function* onUpdateStokOpnameDetails({payload: {data, callback}}){
+    try {
+        let response = yield call(serviceGudang.updateStokOpnameDetails, data);
+        yield put(updateStokOpnameDetailsSuccess(response.data));
+        data?.issimpan && toast.success(response.msg, { autoClose: 3000 })
+        callback &&
+            callback(response.data || null);
+    } catch (error) {
+        console.error(error);
+        yield put(updateStokOpnameDetailsError(error));
+        toast.error(error?.response?.msg || "Gagal update stok opname", { autoClose: 3000 });
+    }
+}
+
+
+
 export function* watchSaveObatGudang() {
     yield takeEvery(OBAT_GUDANG_SAVE, onSaveObatGudang);
 }
@@ -303,6 +365,22 @@ export function* watchGetStokUnitGudang(){
     yield takeEvery(GET_STOK_UNIT_GUDANG, onGetStokUnitGudang);
 }
 
+export function* watchCreateOrUpdateStokOpname(){
+    yield takeEvery(CREATE_OR_UPDATE_STOK_OPNAME, onCreateOrUpdateStokOpname);
+}
+
+export function* watchGetStokOpname(){
+    yield takeEvery(GET_STOK_OPNAME, onGetStokOpname);
+}
+
+export function* watchGetStokOpnameDetail(){
+    yield takeEvery(GET_STOK_OPNAME_DETAIL, onGetStokOpnameDetail);
+}
+
+export function* watchUpdateStokOpnameDetails(){
+    yield takeEvery(UPDATE_STOK_OPNAME_DETAILS, onUpdateStokOpnameDetails);
+}
+
 function* registrasiSaga() {
     yield all([
         fork(watchSaveObatGudang),
@@ -320,7 +398,11 @@ function* registrasiSaga() {
         fork(watchPenerimaanQueryGet),
         fork(watchPenerimaanListQueryGet),
         fork(watchKartuStokQueryGet),
-        fork(watchGetStokUnitGudang)
+        fork(watchGetStokUnitGudang),
+        fork(watchCreateOrUpdateStokOpname),
+        fork(watchGetStokOpname),
+        fork(watchGetStokOpnameDetail),
+        fork(watchUpdateStokOpnameDetails)
     ]);
 }
 

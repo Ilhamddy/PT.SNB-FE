@@ -1,15 +1,7 @@
 SELECT
+    tsu.objectprodukfk AS idproduk,
     tsu.norec AS norecstokunit,
-    tsu.qty AS qty,
-    mp.namaproduk AS namaproduk,
-    mu.namaunit AS namaunit,
-    tsu.nobatch AS nobatch,
-    ms.satuan AS namasatuan,
-    mas.asalproduk AS asalproduk,
-    tsu.harga AS harga
+    tsu.qty AS qty
 FROM t_stokunit tsu
-    LEFT JOIN m_produk mp ON mp.id = tsu.objectprodukfk
-    LEFT JOIN m_unit mu ON mu.id = tsu.objectunitfk
-    LEFT JOIN m_satuan ms ON ms.id = mp.objectsatuanstandarfk
-    LEFT JOIN m_asalproduk mas ON mas.id = tsu.objectasalprodukfk
-
+    WHERE tsu.objectprodukfk = 3
+    AND tsu.objectunitfk = 3

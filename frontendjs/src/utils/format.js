@@ -1,4 +1,4 @@
-import { rgxAllComma, rgxAllPeriods, rgxValidNumber, rgxZeroStarts } from "./regexcommon"
+import { rgxAllComma, rgxAllPeriods, rgxNegative, rgxValidNumberNeg, rgxValidNumberPos, rgxZeroStarts } from "./regexcommon"
 
 
 export const dateTimeLocal = (date) => {
@@ -15,6 +15,21 @@ export const dateTimeLocal = (date) => {
                         +
             new Date(date)
             .toLocaleTimeString("id-ID", {hour: '2-digit', minute: '2-digit'})
+    }catch(e){
+        return ""
+    }
+}
+
+
+export const dateLocal = (date) => {
+    try{
+        return new Date(date)
+            .toLocaleDateString("id-ID", 
+                            { weekday: 'long', 
+                            year: 'numeric', 
+                            month: 'long', 
+                            day: 'numeric' 
+                        }) 
     }catch(e){
         return ""
     }
@@ -76,7 +91,29 @@ export const onChangeStrNbr = (value, valueBefore) => {
     let val = value.replace(rgxAllPeriods, "")
     val = val.replace(rgxAllComma, ".")
     val = val === "00" ? "0" : val.length > 1 ? val.replace(rgxZeroStarts, "") : val
-    if(rgxValidNumber.test(val)){
+    if(rgxValidNumberPos.test(val)){
+        return strNumber(val)
+    }
+    return valueBefore
+}
+
+/**
+ * tambahkan titik kepada number isi string
+ * @returns 
+ */
+export const onChangeStrNbrNeg = (value, valueBefore) => {
+    if(typeof value === "number") {
+        let val = value
+            .toLocaleString("id-ID", {maximumFractionDigits: 10})
+        val = val.replace(rgxAllPeriods, "")
+        val = val.replace(rgxAllComma, ".")
+        return strNumber(val)
+    }
+    let val = value.replace(rgxAllPeriods, "")
+    val = val.replace(rgxAllComma, ".")
+    val = val === "00" ? "0" : val.length > 1 ? val.replace(rgxZeroStarts, "") : val
+    val = val === "-" ? "0" : val
+    if(rgxValidNumberNeg.test(val)){
         return strNumber(val)
     }
     return valueBefore

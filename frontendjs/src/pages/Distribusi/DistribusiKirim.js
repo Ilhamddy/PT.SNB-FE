@@ -24,7 +24,7 @@ import { onChangeStrNbr, strToNumber } from "../../utils/format";
 import DataTable from "react-data-table-component";
 import LoadingTable from "../../Components/Table/LoadingTable";
 import NoDataTable from "../../Components/Table/NoDataTable";
-import { useDispatch, useSelector } from "react-redux";
+import { batch, useDispatch, useSelector } from "react-redux";
 import { useEffect, useRef, useState } from "react";
 import { createOrUpdateKirimBarang, createOrUpdateOrderbarang, getOrderStokBatch, getStokBatch, kemasanFromProdukGet } from "../../store/actions";
 import { APIClient } from "../../helpers/api_helper";
@@ -40,13 +40,15 @@ const DistribusiKirim = () => {
     const [tglSekarang] = useState(() => new Date().toISOString())
 
     let {
-        stokBatch,
+        itemOrders,
+        itemKirims,
         dataOrder,
         satuan,
         unit,
         jenisorderbarang
     } = useSelector(state => ({
-        stokBatch: state.Distribusi.getOrderStokBatch?.data?.itemorders || [],
+        itemOrders: state.Distribusi.getOrderStokBatch?.data?.itemorders || [],
+        itemKirims: state.Distribusi.getOrderStokBatch?.data?.itemkirims || [],
         dataOrder: state.Distribusi.getOrderStokBatch.data?.order || [],
         satuan: state.Gudang.kemasanFromProdukGet || null,
         unit: state.Master.comboDistribusiOrderGet.data?.unit || [],
@@ -179,19 +181,24 @@ const DistribusiKirim = () => {
     useEffect(() => {
         const setFF = vKirim.setFieldValue
         let batchInputAsc = []
-        stokBatch.forEach((data) => {
-            data.batchproduk.forEach((batch) => {
-                const newBatch = {...batch}
-                batchInputAsc.push(newBatch)
+        if(itemKirims.length === 0) {
+            itemOrders.forEach((data) => {
+                data.batchproduk.forEach((batch) => {
+                    const newBatch = {...batch}
+                    batchInputAsc.push(newBatch)
+                })
             })
-        })
+        }else{
+            batchInputAsc = [...itemKirims]
+        }
         batchInputAsc = batchInputAsc.filter((batch) => batch.qtykirim > 0)
         if(vKirim.values.batchproduk.length === 0 && batchInputAsc.length > 0){
             const newBatchKirim = [...batchInputAsc]
             setFF("batchproduk", newBatchKirim)
         }
     }, [
-        stokBatch,
+        itemOrders,
+        itemKirims,
         vKirim.setFieldValue,
         vKirim.values.batchproduk
     ])
@@ -223,7 +230,7 @@ const DistribusiKirim = () => {
 
 
     const jumlahTotal = strToNumber(vProduk.values.jumlah) * strToNumber(vProduk.values.konversi)
-    const newStokBatch = stokBatch.filter((batch) => {
+    const newStokBatch = itemOrders.filter((batch) => {
         const batchProduk = vKirim.values.batchproduk.find((batchOrder) => {
             return batchOrder.value === batch.value
         })
@@ -292,7 +299,7 @@ const DistribusiKirim = () => {
         }, 0)
         
         vProduk.setFieldValue("jumlah", jmlAllProduk)
-        const newBatch = stokBatch.find((batch) => {
+        const newBatch = itemOrders.find((batch) => {
             return batch.value === row.value
         })
         // lalu maasukkan batchnya didapatkan dari stokBatch

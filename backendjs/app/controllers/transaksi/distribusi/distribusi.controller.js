@@ -2,6 +2,7 @@ import pool from "../../../config/dbcon.query";
 import * as uuid from 'uuid'
 import db from "../../../models";
 import { 
+    qGetKirimStok,
     qGetOrder,
     qGetOrderStok,
     qGetStokUnit, qKemasanFromId
@@ -180,6 +181,7 @@ export const getOrderStokBatch = async (req, res) => {
         if(!norecorder) throw new Error("norecorder is required");
 
         let { rows: rowsOrder } = await pool.query(qGetOrderStok, [norecorder])
+        let { rows: rowsKirim } = await pool.query(qGetKirimStok, [norecorder])
         let dataItemOrders = []
         let sisaQtyOutPerItem = {}
         rowsOrder = [...rowsOrder].sort((a, b) => {
@@ -235,7 +237,8 @@ export const getOrderStokBatch = async (req, res) => {
 
         let tempres = {
             order: null,
-            itemorders: dataItemOrders
+            itemorders: dataItemOrders,
+            itemkirims: rowsKirim
         }
 
         if(rowsOrder.length === 0) {

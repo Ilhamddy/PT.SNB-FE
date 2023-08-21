@@ -108,4 +108,27 @@ export default function (app) {
         controller.getStokUnit
     )
 
+    app.post(
+        "/api/transaksi/gudang/create-or-update-stok-opname",
+        [authJwt.verifyToken],
+        controller.createOrUpdateStokOpname
+    )
+
+    app.get(
+        "/api/transaksi/gudang/get-stok-opname",
+        [authJwt.verifyToken],
+        controller.getStokOpname
+    )
+
+    app.get(
+        "/api/transaksi/gudang/get-stok-opname-detail",
+        [authJwt.verifyToken],
+        controller.getStokOpnameDetail
+    )
+
+    app.post(
+        "/api/transaksi/gudang/update-stok-opname-details",
+        [authJwt.verifyToken],
+        controller.updatedStokOpnameDetails
+    )
 }

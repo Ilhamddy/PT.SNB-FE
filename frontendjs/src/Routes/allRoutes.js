@@ -560,6 +560,7 @@ const authProtectedRoutes = [
   { path: "/farmasi/gudang/kartu-stok", component: <KartuStok />},
   { path: "/farmasi/gudang/stok-unit", component: <StokUnitList />},
   { path: "/farmasi/gudang/stok-opname/:tabopen", component: <StokOpname />},
+  { path: "/farmasi/gudang/stok-opname/:tabopen/:norecstokopname", component: <StokOpname />},
 
   //distribusi 
   { path: "/farmasi/gudang/distribusi-order", component: <DistribusiOrder /> },

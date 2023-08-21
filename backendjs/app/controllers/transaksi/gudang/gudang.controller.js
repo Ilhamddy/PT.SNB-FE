@@ -13,7 +13,10 @@ import { qGetDetailPenerimaan, qGetJenisDetailProdukLainLain,
     qGetSatuanFromProduk, 
     qGetSatuanLainLain, 
     qGetSediaanLainLain,
-    qGetStokUnit,  
+    qGetStokOpname,
+    qGetStokOpnameDetail,
+    qGetStokOpnameStokUnit,
+    qGetStokUnit, 
 } from "../../../queries/gudang/gudang.queries";
 import {
     createTransaction
@@ -28,6 +31,7 @@ const t_penerimaanbarangdetail = db.t_penerimaanbarangdetail
 const t_stokunit = db.t_stokunit
 const t_kartustok = db.t_kartustok
 const t_stokopname = db.t_stokopname
+const t_stokopnamedetail = db.t_stokopnamedetail
 
 
 const createOrUpdateProdukObat = async (req, res) => {
@@ -110,7 +114,7 @@ const createOrUpdateProdukObat = async (req, res) => {
     }catch(error){
         console.error("==Error Create Produk Obat");
         console.error(error)
-        transaction.rollback();
+        await transaction.rollback();
         res.status(500).send({
             data: error,
             success: false,
@@ -175,7 +179,7 @@ const createOrUpdateDetailProduk = async (req, res) => {
     }catch(error){
         console.error("==Error Create Detail Produk");
         console.error(error)
-        transaction.rollback();
+        await transaction.rollback();
         res.status(500).send({
             data: error,
             success: false,
@@ -237,7 +241,7 @@ const createOrUpdateSediaan = async (req, res) => {
 
     }catch(error){
         console.error(error)
-        transaction.rollback();
+        await transaction.rollback();
         res.status(500).send({
             data: error,
             success: false,
@@ -303,7 +307,7 @@ const createOrUpdateSatuan = async (req, res) => {
 
     }catch(error){
         console.error(error)
-        transaction.rollback();
+        await transaction.rollback();
         res.status(500).send({
             data: error,
             success: false,
@@ -461,6 +465,7 @@ const createOrUpdateKemasan = async (req, res) => {
         
     }catch(e){
         console.error(e)
+        await transaction.rollback();
         res.status(500).send({
             data: e.message,
             success: false,
@@ -757,23 +762,294 @@ const getStokUnit = async (req, res) => {
     }
 }
 
-const createOrUpdateStokOpname = (req, res) => {
+const createOrUpdateStokOpname = async (req, res) => {
+    const [transaction, errorTransaction] 
+        = await createTransaction(db, res)
+    if(errorTransaction) return
     try{
         const body = req.body
+        let createdOrUpdated
         if(!body.norecstokopname){
             const norecstokopname = uuid.v4().substring(0, 32)
-            t_stokopname.create({
+            createdOrUpdated = await t_stokopname.create({
                 norec: norecstokopname,
                 kdprofile: 0,
                 statusenabled: true,
+                objectunitfk: body.unitso,
+                tglawal: new Date(body.tanggalawal),
+                tglakhir: new Date(body.tanggalakhir),
+                tglinput: new Date(),
+                tglselesai: body.tglselesai ? new Date(body.tglselesai) : null,
+                statusselesai: body.statusselesai,
+                objectpegawaifk: req.idPegawai,
+                objectpegawaiupdatefk: req.idPegawai
+            }, {
+                transaction: transaction
             })
+        }else{
+            createdOrUpdated = await t_stokopname.update({
+                statusenabled: true,
+                objectunitfk: body.unitso,
+                tglawal: new Date(body.tglawal),
+                tglakhir: new Date(body.tglakhir),
+                tglinput: new Date(),
+                tglselesai: body.tglselesai ? new Date(body.tglselesai) : null,
+                statusselesai: body.statusselesai,
+                objectpegawaiupdatefk: req.idPegawai
+            }, {
+                where: {
+                    norec: body.norecstokopname,
+                    returning: true
+                },
+                transaction: transaction
+            })
+            createdOrUpdated
         }
-    }catch(e){
-
+        let tempres = {
+            createdOrUpdated: createdOrUpdated
+        }
+        transaction.commit();
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+            msg: 'Simpan Berhasil',
+            code: 200
+        });
+    }catch(error){
+        console.error(error)
+        transaction.rollback();
+        res.status(500).send({
+            data: error.message,
+            success: false,
+            msg: 'Create or update sediaan gagal',
+            code: 500
+        });
     }
 }
 
+const getStokOpname = async (req, res) => {
+    try {
+        const stokOpname = (await pool.query(qGetStokOpname, [])).rows
+        const tempres = {
+            stokopname: stokOpname
+        }
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+            msg: 'Get stok opname Berhasil',
+            code: 200
+        });
+    } catch(error){
+        console.error(error)
+        res.status(500).send({
+            data: error.message,
+            success: false,
+            msg: 'Get stok opname gagal',
+            code: 500
+        });
+    }
+}
 
+const getStokOpnameDetail = async (req, res) => {
+    const [transaction, errorTransaction] = await createTransaction(db, res)
+    try {
+        if(errorTransaction) return
+        const {norecstokopname} = req.query
+        if(!norecstokopname) throw Error("norecstokopname tidak boleh kosong")
+        let stokOpnameDetails = (await pool.query(qGetStokOpnameDetail, [norecstokopname])).rows;
+        let stokOpnameStokUnit = []
+        let updatedStokOpnameDetails = []
+        if(stokOpnameDetails.length === 0) {
+            // jika tidak ada maka buat baru
+            stokOpnameStokUnit = (await pool.query(qGetStokOpnameStokUnit, [norecstokopname])).rows
+            updatedStokOpnameDetails = await Promise.all(
+                stokOpnameStokUnit.map(
+                    async (stokUnit) => {
+                        const norecstokopnamedetail = uuid.v4().substring(0, 32)
+                        const stokOpnameDetail = await t_stokopnamedetail.create({
+                            norec: norecstokopnamedetail,
+                            kdprofile: 0,
+                            objectstokopnamefk: norecstokopname,
+                            objectprodukfk: stokUnit.objectprodukfk,
+                            stokaplikasi: stokUnit.stokaplikasi,
+                            stokfisik: stokUnit.stokfisik,
+                            selisih: stokUnit.selisih,
+                            keterangan: stokUnit.keterangan,
+                            tglupdate: new Date(),
+                            objectpegawaifk: req.idPegawai
+                        }, {
+                            transaction: transaction
+                        })
+                        return stokOpnameDetail.toJSON();
+                    }
+                )
+            )
+            
+        }
+
+        
+        await transaction.commit();
+        if(stokOpnameDetails.length === 0) {
+            stokOpnameDetails = (await pool.query(qGetStokOpnameDetail, [norecstokopname])).rows;
+        }
+        const tempres = {
+            stokopnamestokunit: stokOpnameStokUnit,
+            stokopnamedetails: stokOpnameDetails,
+            unitstokopname: stokOpnameDetails[0]?.objectunitfk || null,
+            statusselesai: stokOpnameDetails[0]?.statusselesai || false,
+        }
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+            msg: 'Get stok opname Berhasil',
+            code: 200
+        });
+    }catch(error){
+        console.error(error);
+        transaction.rollback();
+        res.status(500).send({
+            data: error.message,
+            success: false,
+            msg: 'Get stok opname stok unit gagal',
+            code: 500
+        })
+    }
+}
+
+const updatedStokOpnameDetails = async (req, res) => {
+    const [transaction, errorTransaction] = await createTransaction(db, res)
+    try {
+        if(errorTransaction) return
+        const {
+            stokopnamedetails, 
+            idunit, 
+            issimpan, 
+            norecstokopname
+        } = req.body
+        let stokOpnameUpdated = null
+        if(issimpan){
+            const stokopname = await t_stokopname.findOne({
+                where: {
+                    norec: norecstokopname
+                },
+                lock: transaction.LOCK.UPDATE,
+                transaction: transaction
+            })
+            const stokopnameUpdated = await stokopname.update({
+                statusselesai: true,
+                tglselesai: new Date(),
+            }, {
+                where: {
+                    norec: norecstokopname
+                },
+                transaction: transaction,
+                returning: true
+            })
+            stokOpnameUpdated = stokopnameUpdated.toJSON()
+        }
+        let updatedAll = await Promise.all(
+            stokopnamedetails.map(async (stokopnamedetail) => {
+                const SODetailBefore = await t_stokopnamedetail.findOne({
+                    where: {
+                        norec: stokopnamedetail.norecstokopnamedetail
+                    },
+                    lock: transaction.LOCK.UPDATE,
+                    transaction: transaction
+                })
+                const SODetailValBefore = SODetailBefore.toJSON()
+                const stokUnitDiopnames = (await t_stokunit.findAll({
+                    where: {
+                        objectprodukfk: stokopnamedetail.objectprodukfk,
+                        objectunitfk: idunit
+                    },
+                    lock: transaction.LOCK.UPDATE,
+                    transaction: transaction,
+                    order: [['tglinput', 'ASC']]
+                }))
+                let stokUnitDiopnameVal = stokUnitDiopnames.map((stokUnit) => stokUnit.toJSON())
+                let totalStokAplikasi = stokUnitDiopnameVal.reduce((prev, stokUnit) => {
+                    return prev + stokUnit.qty
+                }, 0)
+                let totalStokFisik = stokopnamedetail.stokfisik
+                let selisih = totalStokFisik - totalStokAplikasi
+                const SODetailValUpdated = await SODetailBefore.update({
+                    stokaplikasi: totalStokAplikasi,
+                    stokfisik: totalStokFisik,
+                    selisih: selisih,
+                    objectpegawaifk: req.idPegawai,
+                    keterangan: stokopnamedetail.keterangan,
+                }, {
+                    transaction: transaction,
+                    returning: true
+                })
+                if(!issimpan){
+                    return {
+                        SODetailValBefore: SODetailValBefore,
+                        SODetailValUpdated: SODetailValUpdated.toJSON()
+                    }
+                }
+                let stokUnitDiopnameValUpdated = stokUnitDiopnameVal.map((stokUnit) => {
+                    if(selisih > 0){                 
+                        stokUnit.qty = stokUnit.qty + selisih
+                        selisih = 0          
+                    }else if(selisih < 0){
+                        if(stokUnit.qty > - selisih){
+                            stokUnit.qty = stokUnit.qty + selisih
+                            selisih = 0
+                        }else{
+                            selisih = stokUnit.qty + selisih
+                            stokUnit.qty = 0
+                        }
+                    }
+                    return stokUnit
+                })
+
+                stokUnitDiopnameValUpdated = await Promise.all(
+                    stokUnitDiopnames.map(
+                        async (stokUnitDiopname, index) => {
+                            const updatedStokUnit = await stokUnitDiopname.update({
+                                qty: stokUnitDiopnameValUpdated[index].qty,
+                            }, {
+                                transaction: transaction,
+                                returning: true
+                            })
+                            return updatedStokUnit.toJSON()
+                        }
+                    )
+                )
+                return {
+                    SODetailValBefore: SODetailValBefore,
+                    SODetailValUpdated: SODetailValUpdated.toJSON(),
+                    stokUnitDiopnameValUpdated: stokUnitDiopnameValUpdated,
+                    stokUnitDiopnameVal: stokUnitDiopnameVal
+                }
+            })
+        )
+        let tempres = {
+            updatedAll: updatedAll
+        }
+        await transaction.commit();
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+            msg: 'Update stok opname detail Berhasil',
+            code: 200
+        });
+    } catch(error){
+        console.error(error);
+        await transaction.rollback();
+        res.status(500).send({
+            data: error.message,
+            success: false,
+            msg: 'Update stok opname detail gagal',
+            code: 500
+        })
+    }
+}
 
 export default {
     createOrUpdateProdukObat,
@@ -792,6 +1068,10 @@ export default {
     getListPenerimaan,
     getKartuStok,
     getStokUnit,
+    createOrUpdateStokOpname,
+    getStokOpname,
+    getStokOpnameDetail,
+    updatedStokOpnameDetails
 }
 
 const hCreateOrUpdatePenerimaan = async (req, res, transaction) => {

@@ -48,6 +48,18 @@ import {
     GET_STOK_UNIT_GUDANG,
     GET_STOK_UNIT_GUDANG_SUCCESS,
     GET_STOK_UNIT_GUDANG_ERROR,
+    CREATE_OR_UPDATE_STOK_OPNAME,
+    CREATE_OR_UPDATE_STOK_OPNAME_SUCCESS,
+    CREATE_OR_UPDATE_STOK_OPNAME_ERROR,
+    GET_STOK_OPNAME,
+    GET_STOK_OPNAME_SUCCESS,
+    GET_STOK_OPNAME_ERROR,
+    GET_STOK_OPNAME_DETAIL,
+    GET_STOK_OPNAME_DETAIL_SUCCESS,
+    GET_STOK_OPNAME_DETAIL_ERROR,
+    UPDATE_STOK_OPNAME_DETAILS,
+    UPDATE_STOK_OPNAME_DETAILS_SUCCESS,
+    UPDATE_STOK_OPNAME_DETAILS_ERROR,
 } from "./actionType";
 
 const INIT_STATE = {
@@ -127,6 +139,26 @@ const INIT_STATE = {
         error: null,
     },
     getStokUnitGudang: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    createOrUpdateStokOpname: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    getStokOpname: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    getStokOpnameDetail: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    updateStokOpnameDetails: {
         data: [],
         loading: false,
         error: null,
@@ -717,6 +749,151 @@ const Registrasi = (state = INIT_STATE, action) => {
                 }
             }
         }
+
+        case CREATE_OR_UPDATE_STOK_OPNAME: {
+            return {
+                ...state,
+                createOrUpdateStokOpname: {
+                    ...state.createOrUpdateStokOpname,
+                    loading: true,
+                    data: [],
+                    error: null
+                }
+            }
+        }
+
+        case CREATE_OR_UPDATE_STOK_OPNAME_SUCCESS: {
+            return {
+                ...state,
+                createOrUpdateStokOpname: {
+                    ...state.createOrUpdateStokOpname,
+                    loading: false,
+                    data: action.payload.data,
+                    error: null
+                }
+            }
+        }
+
+        case CREATE_OR_UPDATE_STOK_OPNAME_ERROR: {
+            return {
+                ...state,
+                createOrUpdateStokOpname: {
+                    ...state.createOrUpdateStokOpname,
+                    loading: false,
+                    data: [],
+                    error: action.payload.data
+                }
+            }
+        }
+
+        case GET_STOK_OPNAME: {
+            return {
+                ...state,
+                getStokOpname: {
+                    ...state.getStokOpname,
+                    loading: true,
+                    data: [],
+                    error: null
+                }
+            }
+        }
+
+        case GET_STOK_OPNAME_SUCCESS: {
+            return {
+                ...state,
+                getStokOpname: {
+                    ...state.getStokOpname,
+                    loading: false,
+                    data: action.payload.data,
+                    error: null
+                }
+            }
+        }
+
+        case GET_STOK_OPNAME_ERROR: {
+            return {
+                ...state,
+                getStokOpname: {
+                    ...state.getStokOpname,
+                    loading: false,
+                    data: [],
+                    error: action.payload.data
+                }
+            }
+        }
+
+        case GET_STOK_OPNAME_DETAIL: {
+            return {
+                ...state,
+                getStokOpnameDetail: {
+                    ...state.getStokOpnameDetail,
+                    loading: true,
+                    data: [],
+                    error: null
+                }
+            }
+        }
+
+        case GET_STOK_OPNAME_DETAIL_SUCCESS: {
+            return {
+                ...state,
+                getStokOpnameDetail: {
+                    ...state.getStokOpnameDetail,
+                    loading: false,
+                    data: action.payload.data,
+                    error: null
+                }
+            }
+        }
+
+        case GET_STOK_OPNAME_DETAIL_ERROR: {
+            return {
+                ...state,
+                getStokOpnameDetail: {
+                    ...state.getStokOpnameDetail,
+                    loading: false,
+                    data: [],
+                    error: action.payload.data
+                }
+            }
+        }
+
+        case UPDATE_STOK_OPNAME_DETAILS: {
+            return {
+                ...state,
+                updateStokOpnameDetails: {
+                    ...state.updateStokOpnameDetails,
+                    loading: true,
+                    data: [],
+                    error: null
+                }
+            }
+        }
+
+        case UPDATE_STOK_OPNAME_DETAILS_SUCCESS: {
+            return {
+                ...state,
+                updateStokOpnameDetails: {
+                    ...state.updateStokOpnameDetails,
+                    loading: false,
+                    data: action.payload.data,
+                    error: null
+                }
+            }
+        }
+
+        case UPDATE_STOK_OPNAME_DETAILS_ERROR: {
+            return {
+                ...state,
+                updateStokOpnameDetails: {
+                    ...state.updateStokOpnameDetails,
+                    loading: false,
+                    data: [],
+                    error: action.payload.data
+                }
+            }
+        }
+
 
         default: {
             return { ...state };

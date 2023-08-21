@@ -68,4 +68,19 @@ export default class ServiceGudang {
         return await api.get(`/transaksi/gudang/get-stok-unit`, queries)
     }
 
+    createOrUpdateStokOpname = async (body) => {
+        return await api.create(`/transaksi/gudang/create-or-update-stok-opname`, body)
+    }
+
+    getStokOpname = async (queries) => {
+        return await api.get(`/transaksi/gudang/get-stok-opname`, queries)
+    }
+
+    getStokOpnameDetail = async (queries) => {
+        return await api.get(`/transaksi/gudang/get-stok-opname-detail`, queries)
+    }
+
+    updateStokOpnameDetails = async (body) => {
+        return await api.create(`/transaksi/gudang/update-stok-opname-details`, body)
+    }
 }

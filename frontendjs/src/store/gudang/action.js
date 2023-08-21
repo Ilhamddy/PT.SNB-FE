@@ -47,6 +47,18 @@ import {
     GET_STOK_UNIT_GUDANG,
     GET_STOK_UNIT_GUDANG_SUCCESS,
     GET_STOK_UNIT_GUDANG_ERROR,
+    CREATE_OR_UPDATE_STOK_OPNAME,
+    CREATE_OR_UPDATE_STOK_OPNAME_SUCCESS,
+    CREATE_OR_UPDATE_STOK_OPNAME_ERROR,
+    GET_STOK_OPNAME,
+    GET_STOK_OPNAME_SUCCESS,
+    GET_STOK_OPNAME_ERROR,
+    GET_STOK_OPNAME_DETAIL,
+    GET_STOK_OPNAME_DETAIL_SUCCESS,
+    GET_STOK_OPNAME_DETAIL_ERROR,
+    UPDATE_STOK_OPNAME_DETAILS,
+    UPDATE_STOK_OPNAME_DETAILS_SUCCESS,
+    UPDATE_STOK_OPNAME_DETAILS_ERROR,
 } from "./actionType";
 
 
@@ -287,5 +299,65 @@ export const getStokUnitGudangSuccess = (data) => ({
 
 export const getStokUnitGudangError = (data) => ({
     type: GET_STOK_UNIT_GUDANG_ERROR,
+    payload: { data: data },
+})
+
+export const createOrUpdateStokOpname = (data, callback) => ({
+    type: CREATE_OR_UPDATE_STOK_OPNAME,
+    payload: { data: data, callback: callback },
+})
+
+export const createOrUpdateStokOpnameSuccess = (data) => ({
+    type: CREATE_OR_UPDATE_STOK_OPNAME_SUCCESS,
+    payload: { data: data },
+})
+
+export const createOrUpdateStokOpnameError = (data) => ({
+    type: CREATE_OR_UPDATE_STOK_OPNAME_ERROR,
+    payload: { data: data },
+})
+
+export const getStokOpname = (queries) => ({
+    type: GET_STOK_OPNAME,
+    payload: { queries: queries },
+})
+
+export const getStokOpnameSuccess = (data) => ({
+    type: GET_STOK_OPNAME_SUCCESS,
+    payload: { data: data },
+})
+
+export const getStokOpnameError = (data) => ({
+    type: GET_STOK_OPNAME_ERROR,
+    payload: { data: data },
+})
+
+export const getStokOpnameDetail = (queries) => ({
+    type: GET_STOK_OPNAME_DETAIL,
+    payload: { queries: queries },
+})
+
+export const getStokOpnameDetailSuccess = (data) => ({
+    type: GET_STOK_OPNAME_DETAIL_SUCCESS,
+    payload: { data: data },
+})
+
+export const getStokOpnameDetailError = (data) => ({
+    type: GET_STOK_OPNAME_DETAIL_ERROR,
+    payload: { data: data },
+})
+
+export const updateStokOpnameDetails = (data, callback) => ({
+    type: UPDATE_STOK_OPNAME_DETAILS,
+    payload: { data: data, callback: callback },
+})
+
+export const updateStokOpnameDetailsSuccess = (data) => ({
+    type: UPDATE_STOK_OPNAME_DETAILS_SUCCESS,
+    payload: { data: data },
+})
+
+export const updateStokOpnameDetailsError = (data) => ({
+    type: UPDATE_STOK_OPNAME_DETAILS_ERROR,
     payload: { data: data },
 })

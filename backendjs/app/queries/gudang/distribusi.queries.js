@@ -131,9 +131,37 @@ WHERE
     AND tor.norec = $1
 `
 
+const qGetKirimStok = `
+SELECT
+    tkbd.norec AS noreckirim,
+    tkbd.objectprodukfk AS value,
+    tkbd.objectorderbarangdetailfk AS norecorderdetail,
+    tkbd.objectprodukfk AS produkid,
+    mp.namaproduk AS label,
+    tkbd.nobatch AS nobatch,
+    ts.qty AS qty,
+    tod.qty AS qtyout,
+    tkbd.qty AS qtykirim,
+    tkbd.jumlah AS jumlah,
+    tkbd.objectsatuanfk AS satuan,
+    ms.satuan AS namasatuan
+FROM t_orderbarang tor
+    LEFT JOIN t_kirimbarang tkb ON tkb.objectorderbarangfk = tor.norec
+    LEFT JOIN t_kirimbarangdetail tkbd ON tkbd.objectdistribusibarangfk = tkb.norec
+    LEFT JOIN m_produk mp ON mp.id = tkbd.objectprodukfk
+    LEFT JOIN t_orderbarangdetail tod ON tod.norec = tkbd.objectorderbarangdetailfk
+    --- minta qty pada saat ngirim
+    LEFT JOIN t_stokunit ts ON ts.objectprodukfk = tkbd.objectprodukfk 
+    AND ts.objectunitfk = tkb.objectunittujuanfk
+    AND ts.nobatch = tkbd.nobatch
+    LEFT JOIN m_satuan ms ON ms.id = tkbd.objectsatuanfk
+WHERE tor.norec = $1
+`
+
 export {
     qGetStokUnit,
     qKemasanFromId,
     qGetOrder,
-    qGetOrderStok
+    qGetOrderStok,
+    qGetKirimStok
 }

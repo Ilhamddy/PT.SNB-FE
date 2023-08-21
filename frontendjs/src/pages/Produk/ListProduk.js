@@ -55,7 +55,7 @@ const ListProduk = () => {
     /**
      * @type {import("react-data-table-component").TableColumn[]}
      */
-    const columnsKemasan = [
+    const columnsProduk = [
         {
             name: <span className='font-weight-bold fs-13'>Detail</span>,
             cell: row => (
@@ -86,12 +86,6 @@ const ListProduk = () => {
             width: "70px",
             wrap: true
         },
-        // {
-        //     name: <span className='font-weight-bold fs-13'>No</span>,
-        //     sortable: true,
-        //     selector: (row, index) => index + 1,
-        //     width: "60px"
-        // },
         {
             name: <span className='font-weight-bold fs-13'>ID Produk</span>,
             sortable: true,
@@ -178,7 +172,7 @@ const ListProduk = () => {
                         <Row >
                             <DataTable 
                                 fixedHeader
-                                columns={columnsKemasan}
+                                columns={columnsProduk}
                                 pagination
                                 paginationPerPage={10}
                                 paginationRowsPerPageOptions={[10]}

@@ -646,20 +646,22 @@ const getRegistrasiPasienNorec = async (req, res) => {
             throw new Error('norec tidak boleh kosong')
         }
         let ruanganpasien = await pool
-            .query(`SELECT t_daftarpasien.*,
-            json_agg(peg) as pegawai, 
-            json_agg(dok) as dokter,    
-            json_agg(mk) as kelas,
-            json_agg(mps) as pasien,
-            json_agg(mu) as unit,
-            json_agg(mka) as kamar,
-            json_agg(tap) as antrean,
-            json_agg(mrek1) as penjamin1,
-            json_agg(mrek2) as penjamin2,
-            json_agg(mrek3) as penjamin3,
-            json_agg(mu2) as unitantrean,
-            mj.jeniskelamin
-                FROM 
+            .query(`
+            SELECT 
+                t_daftarpasien.*,
+                json_agg(peg) as pegawai, 
+                json_agg(dok) as dokter,    
+                json_agg(mk) as kelas,
+                json_agg(mps) as pasien,
+                json_agg(mu) as unit,
+                json_agg(mka) as kamar,
+                json_agg(tap) as antrean,
+                json_agg(mrek1) as penjamin1,
+                json_agg(mrek2) as penjamin2,
+                json_agg(mrek3) as penjamin3,
+                json_agg(mu2) as unitantrean,
+                mj.jeniskelamin
+            FROM 
                 t_daftarpasien
                 left join m_pegawai peg on peg.id = t_daftarpasien.objectpegawaifk    
                 left join m_pegawai dok on dok.id = t_daftarpasien.objectdokterpemeriksafk
