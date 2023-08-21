@@ -23,6 +23,7 @@ import {
     comboLaporanRekammedisGet, kendaliDokumenResetForm, listLaporanPasienDaftarGet
 } from '../../../../store/actions';
 import "./LaporanPasienDaftar.scss"
+import * as XLSX from 'xlsx';
 
 const currentDate = new Date();
 currentDate.setDate(currentDate.getDate());
@@ -161,6 +162,16 @@ const LaporanPasienDaftar = () => {
         },
 
     ];
+    const handleExport = () => {
+        const formattedData = dataGrid.map(row => columns.map(col => col.selector(row)));
+        const header = columns.map(col => col.name.props.children);
+        const sheetData = [header, ...formattedData];
+        const worksheet = XLSX.utils.aoa_to_sheet(sheetData);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+
+        XLSX.writeFile(workbook, 'exported_data.xlsx');
+    };
     return (
         <React.Fragment>
             <ToastContainer closeButton={false} />
@@ -327,8 +338,12 @@ const LaporanPasienDaftar = () => {
                                             </div>
                                         </Col>
                                     </Col>
+                                    
                                 </Row>
                             </div>
+                            <Button type="button" className="rounded-pill" placement="top" id="tooltipTopPencarian" onClick={handleExport}>
+                                Export to Excel
+                            </Button>
                             <div id="table-gridjs">
                                 <DataTable
                                     fixedHeader
