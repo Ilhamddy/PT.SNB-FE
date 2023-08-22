@@ -125,10 +125,15 @@ const getPasienById = (req, res) => {
                 let tempres = ""
                 for (let i = 0; i < result.rows.length; ++i) {
                     if (result.rows[i] !== undefined) {
+                        let todays = formatDate(new Date())
+                        let tgldaftar = formatDate(new Date(result.rows[i].tgldaftar))
+                        let statuspasien = 'LAMA'
+                        if(todays === tgldaftar)
+                            statuspasien = 'BARU'
                         tempres = {
                             id: result.rows[i].id, nocm: result.rows[i].nocm, namapasien: result.rows[i].namapasien,
                             noidentitas: result.rows[i].noidentitas, nobpjs: result.rows[i].nobpjs, nohp: result.rows[i].nohp,
-                            tgllahir: result.rows[i].tgllahir
+                            tgllahir: result.rows[i].tgllahir, statuspasien:statuspasien
                         }
 
                     }
@@ -487,6 +492,7 @@ async function saveRegistrasiPasien(req, res) {
             objectpjpasienfk: req.body.penanggungjawab,
             objectcaramasukfk: req.body.caramasuk,
             statusenabled: true,
+            statuspasien: req.body.statuspasien
         }, { transaction });
 
         let norecAP = uuid.v4().substring(0, 32)

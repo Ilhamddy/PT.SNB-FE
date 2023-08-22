@@ -402,7 +402,17 @@ const Navdata = () => {
                                 ]);
                             },
                         },
-                        // Add more sub-subitems as needed
+                        {
+                            id: "rekammedis-laporan-pasien-kunjungan",
+                            label: "Laporan Pasien Kunjungan",
+                            link: "/cmVrYW1tZWRpcy9sYXBvcmFuLXBhc2llbi1rdW5qdW5nYW4=",
+                            parentId: "rekammedis-laporan",
+                            isAllowed: () => {
+                                return isAllowedAccess(getUserPermissions(), [
+                                    "REGISTRASI_VIEW",
+                                ]);
+                            },
+                        },
                     ],
                 }
             ]

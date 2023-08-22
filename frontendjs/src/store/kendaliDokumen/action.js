@@ -14,7 +14,13 @@ import {
     COMBO_LAPORAN_REKAMMEDIS_GET_ERROR,
     LIST_LAPORAN_PASIEN_DAFTAR_GET,
     LIST_LAPORAN_PASIEN_DAFTAR_GET_SUCCESS,
-    LIST_LAPORAN_PASIEN_DAFTAR_GET_ERROR
+    LIST_LAPORAN_PASIEN_DAFTAR_GET_ERROR,
+    LIST_LAPORAN_PASIEN_BATAL_GET,
+    LIST_LAPORAN_PASIEN_BATAL_GET_SUCCESS,
+    LIST_LAPORAN_PASIEN_BATAL_GET_ERROR,
+    LIST_LAPORAN_PASIEN_KUNJUNGAN_GET,
+    LIST_LAPORAN_PASIEN_KUNJUNGAN_GET_SUCCESS,
+    LIST_LAPORAN_PASIEN_KUNJUNGAN_GET_ERROR
 } from "./actionType";
 
 export const kendaliDokumenResetForm = () => ({
@@ -94,5 +100,35 @@ export const listLaporanPasienDaftarGetSuccess = (data) => ({
 
 export const listLaporanPasienDaftarGetError = (error) => ({
     type: LIST_LAPORAN_PASIEN_DAFTAR_GET_ERROR,
+    payload: error,
+});
+
+export const listLaporanPasienBatalGet = (param) => ({
+    type: LIST_LAPORAN_PASIEN_BATAL_GET,
+    payload: { param },
+});
+
+export const listLaporanPasienBatalGetSuccess = (data) => ({
+    type: LIST_LAPORAN_PASIEN_BATAL_GET_SUCCESS,
+    payload: data,
+});
+
+export const listLaporanPasienBatalGetError = (error) => ({
+    type: LIST_LAPORAN_PASIEN_BATAL_GET_ERROR,
+    payload: error,
+});
+
+export const listLaporanPasienKunjunganGet = (param) => ({
+    type: LIST_LAPORAN_PASIEN_KUNJUNGAN_GET,
+    payload: { param },
+});
+
+export const listLaporanPasienKunjunganGetSuccess = (data) => ({
+    type: LIST_LAPORAN_PASIEN_KUNJUNGAN_GET_SUCCESS,
+    payload: data,
+});
+
+export const listLaporanPasienKunjunganGetError = (error) => ({
+    type: LIST_LAPORAN_PASIEN_KUNJUNGAN_GET_ERROR,
     payload: error,
 });

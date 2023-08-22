@@ -23,4 +23,12 @@ export default class ServiceRekammedis {
     getListPasienDaftar = async (param) => {
         return await api.get(`/transaksi/rekammedis/get-list-pasien-daftar?&search=${param}`);
     }
+
+    getListPasienBatal = async (param) => {
+        return await api.get(`/transaksi/rekammedis/get-list-pasien-batal?&search=${param}`);
+    }
+
+    getListPasienKunjungan = async (param) => {
+        return await api.get(`/transaksi/rekammedis/get-list-pasien-kunjungan?&search=${param}`);
+    }
 }

@@ -20,7 +20,7 @@ import Flatpickr from "react-flatpickr";
 import DataTable from 'react-data-table-component';
 import LoadingTable from '../../../../Components/Table/LoadingTable';
 import {
-    comboLaporanRekammedisGet, kendaliDokumenResetForm, listLaporanPasienDaftarGet
+    comboLaporanRekammedisGet, kendaliDokumenResetForm, listLaporanPasienBatalGet
 } from '../../../../store/actions';
 import "./LaporanPasienBatal.scss"
 import * as XLSX from 'xlsx';
@@ -33,14 +33,14 @@ const dateAwalStart = currentDate.toISOString();
 const dateAwalEnd = (new Date()).toISOString()
 
 const LaporanPasienBatal = () => {
-    document.title = "Laporan Pasien Daftar";
+    document.title = "Laporan Pasien Batal";
     const dispatch = useDispatch();
     const { data, loading, error, dataGrid, loadingGrid } = useSelector((state) => ({
         data: state.KendaliDokumen.comboLaporanRekammedisGet.data,
         loading: state.KendaliDokumen.comboLaporanRekammedisGet.loading,
         error: state.KendaliDokumen.comboLaporanRekammedisGet.error,
-        dataGrid: state.KendaliDokumen.listLaporanPasienDaftarGet.data,
-        loadingGrid: state.KendaliDokumen.listLaporanPasienDaftarGet.loading,
+        dataGrid: state.KendaliDokumen.listLaporanPasienBatalGet.data,
+        loadingGrid: state.KendaliDokumen.listLaporanPasienBatalGet.loading,
     }));
     const [dateStart, setdateStart] = useState(dateAwalStart);
     const [dateEnd, setDateEnd] = useState(dateAwalEnd);
@@ -76,11 +76,11 @@ const LaporanPasienBatal = () => {
     const handleFilter = (e) => {
         if (e.keyCode === 13) {
             // console.log(search)
-            dispatch(listLaporanPasienDaftarGet(`${search}&start=${validation.values.tglstart}&end=${validation.values.tglend}&instalasi=${validation.values.departemen}&unit=${validation.values.unit}&rekanan=${validation.values.rekanan}&pegawai=${validation.values.pegawai}`));
+            dispatch(listLaporanPasienBatalGet(`${search}&start=${validation.values.tglstart}&end=${validation.values.tglend}&instalasi=${validation.values.departemen}&unit=${validation.values.unit}&rekanan=${validation.values.rekanan}&pegawai=${validation.values.pegawai}`));
         }
     }
     const handleClickCari = () => {
-        dispatch(listLaporanPasienDaftarGet(`${search}&start=${validation.values.tglstart}&end=${validation.values.tglend}&instalasi=${validation.values.departemen}&unit=${validation.values.unit}&rekanan=${validation.values.rekanan}&pegawai=${validation.values.pegawai}`));
+        dispatch(listLaporanPasienBatalGet(`${search}&start=${validation.values.tglstart}&end=${validation.values.tglend}&instalasi=${validation.values.departemen}&unit=${validation.values.unit}&rekanan=${validation.values.rekanan}&pegawai=${validation.values.pegawai}`));
     }
     const tableCustomStyles = {
         headRow: {
@@ -167,8 +167,24 @@ const LaporanPasienBatal = () => {
             sortable: true,
             // width: "150px"
         },
-    ];
+        {
 
+            name: <span className='font-weight-bold fs-13'>Petugas Pembatal</span>,
+            selector: row => row.pegawaipembatal,
+            sortable: true,
+            // width: "150px"
+        },
+    ];
+    const handleExport = () => {
+        const formattedData = dataGrid.map(row => columns.map(col => col.selector(row)));
+        const header = columns.map(col => col.name.props.children);
+        const sheetData = [header, ...formattedData];
+        const worksheet = XLSX.utils.aoa_to_sheet(sheetData);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+
+        XLSX.writeFile(workbook, 'laporan_pasien_batal.xlsx');
+    };
 
     return (
         <React.Fragment>
@@ -231,7 +247,7 @@ const LaporanPasienBatal = () => {
                                         </div>
                                     </Col>
                                     <Col lg={2}>
-                                        <Button type="button" className="rounded-pill" placement="top" id="tooltipTopPencarian" onClick={handleClickCari}>
+                                        <Button type="button" placement="top" id="tooltipTopPencarian" onClick={handleClickCari}>
                                             CARI
                                         </Button>
                                         <UncontrolledTooltip placement="top" target="tooltipTopPencarian" > Pencarian </UncontrolledTooltip>
@@ -337,6 +353,21 @@ const LaporanPasienBatal = () => {
                                         </Col>
                                     </Col>
                                 </Row>
+                            </div>
+                            <Button type="button" placement="top" id="tooltipTopPencarian" onClick={handleExport}>
+                                Export to Excel
+                            </Button>
+                            <div id="table-gridjs">
+                                <DataTable
+                                    fixedHeader
+                                    fixedHeaderScrollHeight="330px"
+                                    columns={columns}
+                                    pagination
+                                    data={dataGrid}
+                                    progressPending={loadingGrid}
+                                    customStyles={tableCustomStyles}
+                                    progressComponent={<LoadingTable />}
+                                />
                             </div>
                         </CardBody>
                     </Card>

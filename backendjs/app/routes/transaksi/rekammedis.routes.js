@@ -41,4 +41,16 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getListLaporanDaftarPasien
     );
+
+    app.get(
+        "/api/transaksi/rekammedis/get-list-pasien-batal",
+        [authJwt.verifyToken],
+        controller.getListLaporanPasienBatal
+    );
+
+    app.get(
+        "/api/transaksi/rekammedis/get-list-pasien-kunjungan",
+        [authJwt.verifyToken],
+        controller.getListLaporanPasienKunjungan
+    );
 }
