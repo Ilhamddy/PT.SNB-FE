@@ -41,6 +41,9 @@ import {
     GET_COMBO_STOK_OPNAME,
     GET_COMBO_STOK_OPNAME_SUCCESS,
     GET_COMBO_STOK_OPNAME_ERROR,
+    GET_COMBO_RESEP,
+    GET_COMBO_RESEP_SUCCESS,
+    GET_COMBO_RESEP_ERROR,
 } from "./actionType";
 
 export const masterGet = () => ({
@@ -239,5 +242,19 @@ export const getComboStokOpnameSuccess = (data) => ({
 
 export const getComboStokOpnameError = (error) => ({
     type: GET_COMBO_STOK_OPNAME_ERROR,
+    payload: error,
+});
+
+export const getComboResep = () => ({
+    type: GET_COMBO_RESEP,
+});
+
+export const getComboResepSuccess = (data) => ({
+    type: GET_COMBO_RESEP_SUCCESS,
+    payload: data,
+});
+
+export const getComboResepError = (error) => ({
+    type: GET_COMBO_RESEP_ERROR,
     payload: error,
 });

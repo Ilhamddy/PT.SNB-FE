@@ -20,15 +20,17 @@ import InputTindakan from '../InputTindakan/InputTindakan';
 import Tagihan from '../Tagihan/Tagihan';
 import OrderRadiologi from '../Penunjang/Radiologi/OrderRadiologi/OrderRadiologi';
 import OrderLaboratorium from '../Penunjang/Laboratorium/OrderLaboratorium/OrderLaboratorium';
+import OrderResep from '../Penunjang/OrderResep/OrderResep';
 
 const EmrBody = () => {
-    const { norecdp, norecap } = useParams();
+    const { norecdp, norecap, tab } = useParams();
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     // Pills Tabs
     const [pillsTab, setpillsTab] = useState("1");
-    const pillsToggle = (tab) => {
-        if (pillsTab !== tab) {
-            setpillsTab(tab);
+    const tabToggle = (newTab) => {
+        if (tab !== newTab) {
+            navigate(`/emr-pasien/${norecdp}/${norecap}/${newTab}`)
         }
     };
     
@@ -63,19 +65,19 @@ const EmrBody = () => {
 
     const taskWidgets = [
         {
-            id: 1,
+            id: "rawat-jalan",
             label: "Rawat Jalan",
         },
         {
-            id: 2,
+            id: "rawat-inap",
             label: "Rawat Inap",
         },
         {
-            id: 3,
+            id: "billing",
             label: "Billing",
         },
         {
-            id: 4,
+            id: "penunjang",
             label: "Penunjang",
         },
 
@@ -127,6 +129,10 @@ const EmrBody = () => {
             id: 2,
             label: "Radiologi",
         },
+        {
+            id: 3,
+            label: "Resep",
+        },
     ];
 
     useEffect(() => {
@@ -148,8 +154,13 @@ const EmrBody = () => {
                             <Nav tabs className="nav justify-content-end nav-tabs-custom rounded card-header-tabs border-bottom-0">
                                 {taskWidgets.map((item, key) => (
                                     <NavItem key={key}>
-                                        <NavLink style={{ cursor: "pointer" }} className={classnames({ active: pillsTab === `${item.id}`, })} onClick={() => { pillsToggle(`${item.id}`); }}>
-                                            <span className="fw-semibold">{item.label}</span>
+                                        <NavLink 
+                                            style={{ cursor: "pointer" }} 
+                                            className={classnames({ active: tab === `${item.id}`, })} 
+                                            onClick={() => { tabToggle(`${item.id}`); }}>
+                                            <span className="fw-semibold">
+                                                {item.label}
+                                            </span>
                                         </NavLink>
                                     </NavItem>
                                 ))}
@@ -158,8 +169,8 @@ const EmrBody = () => {
                             {/* </div> */}
                         </div>
                         {/* <CardBody> */}
-                        <TabContent activeTab={pillsTab} className="text-muted">
-                            <TabPane tabId="1" id="home-1">
+                        <TabContent activeTab={tab} className="text-muted">
+                            <TabPane tabId="rawat-jalan" id="home-1">
                                 <Card>
                                     <div className="card-header align-items-center d-flex">
                                         <div className="flex-shrink-0 ms-2">
@@ -204,51 +215,37 @@ const EmrBody = () => {
                                 </Card>
 
                             </TabPane>
-                            <TabPane tabId="2" id="home-1">
-                                <Card>
-                                    <div className="card-header align-items-center d-flex">
-                                        <div className="flex-shrink-0 ms-2">
-                                            <Nav tabs className="nav justify-content-end nav-tabs-custom rounded card-header-tabs border-bottom-0">
-                                                {taskRI.map((item, key) => (
-                                                    <NavItem key={key}>
-                                                        <NavLink style={{ cursor: "pointer" }} className={classnames({ active: pillsTabRi === `${item.id}`, })} onClick={() => { pillsToggleRi(`${item.id}`); }}>
-                                                            <span className="fw-semibold">{item.label}</span>
-                                                        </NavLink>
-                                                    </NavItem>
-                                                ))}
-                                            </Nav>
-                                        </div>
+                            <TabPane tabId="rawat-inap" id="home-1">
+                                <div className="card-header align-items-center d-flex">
+                                    <div className="flex-shrink-0 ms-2">
+                                        <Nav tabs className="nav justify-content-end nav-tabs-custom rounded card-header-tabs border-bottom-0">
+                                            {taskRI.map((item, key) => (
+                                                <NavItem key={key}>
+                                                    <NavLink style={{ cursor: "pointer" }} className={classnames({ active: pillsTabRi === `${item.id}`, })} onClick={() => { pillsToggleRi(`${item.id}`); }}>
+                                                        <span className="fw-semibold">{item.label}</span>
+                                                    </NavLink>
+                                                </NavItem>
+                                            ))}
+                                        </Nav>
                                     </div>
-                                    <TabContent activeTab={pillsTabRi} className="text-muted">
-                                        <TabPane tabId="1" id="ttv-1">
-                                            <Card>
-                                                <CardBody>
-                                                    <TandaVital />
-                                                </CardBody>
-                                            </Card>
-                                        </TabPane>
-                                    </TabContent>
-                                    <TabContent activeTab={pillsTabRi} className="text-muted">
-                                        <TabPane tabId="2" id="ttv-2">
-                                            <Card>
-                                                <CardBody>
-                                                    <Cppt />
-                                                </CardBody>
-                                            </Card>
-                                        </TabPane>
-                                    </TabContent>
-                                    <TabContent activeTab={pillsTabRi} className="text-muted">
-                                        <TabPane tabId="3" id="diagnosa-3">
-                                            <Card>
-                                                <CardBody>
-                                                    <Diagnosa />
-                                                </CardBody>
-                                            </Card>
-                                        </TabPane>
-                                    </TabContent>
-                                </Card>
+                                </div>
+                                <TabContent activeTab={pillsTabRi} className="text-muted">
+                                    <TabPane tabId="1" id="ttv-1">
+                                        <TandaVital />
+                                    </TabPane>
+                                </TabContent>
+                                <TabContent activeTab={pillsTabRi} className="text-muted">
+                                    <TabPane tabId="2" id="ttv-2">
+                                        <Cppt />
+                                    </TabPane>
+                                </TabContent>
+                                <TabContent activeTab={pillsTabRi} className="text-muted">
+                                    <TabPane tabId="3" id="diagnosa-3">
+                                        <Diagnosa />
+                                    </TabPane>
+                                </TabContent>
                             </TabPane>
-                            <TabPane tabId="3" id="home-1">
+                            <TabPane tabId="billing" id="home-1">
                                 <Card>
                                     <div className="card-header align-items-center d-flex">
                                         <div className="flex-shrink-0 ms-2">
@@ -284,40 +281,35 @@ const EmrBody = () => {
                                 </Card>
                             </TabPane>
 
-                            <TabPane tabId="4" id="home-1">
-                                <Card>
-                                    <div className="card-header align-items-center d-flex">
-                                        <div className="flex-shrink-0 ms-2">
-                                            <Nav tabs className="nav justify-content-end nav-tabs-custom rounded card-header-tabs border-bottom-0">
-                                                {taskPenunjang.map((item, key) => (
-                                                    <NavItem key={key}>
-                                                        <NavLink style={{ cursor: "pointer" }} className={classnames({ active: pillsTabPenunjang === `${item.id}`, })} onClick={() => { pillsTogglePenunjang(`${item.id}`); }}>
-                                                            <span className="fw-semibold">{item.label}</span>
-                                                        </NavLink>
-                                                    </NavItem>
-                                                ))}
-                                            </Nav>
-                                        </div>
+                            <TabPane tabId="penunjang" id="home-1">
+                                <div className="card-header align-items-center d-flex">
+                                    <div className="flex-shrink-0 ms-2">
+                                        <Nav tabs className="nav justify-content-end nav-tabs-custom rounded card-header-tabs border-bottom-0">
+                                            {taskPenunjang.map((item, key) => (
+                                                <NavItem key={key}>
+                                                    <NavLink style={{ cursor: "pointer" }} className={classnames({ active: pillsTabPenunjang === `${item.id}`, })} onClick={() => { pillsTogglePenunjang(`${item.id}`); }}>
+                                                        <span className="fw-semibold">{item.label}</span>
+                                                    </NavLink>
+                                                </NavItem>
+                                            ))}
+                                        </Nav>
                                     </div>
-                                    <TabContent activeTab={pillsTabPenunjang} className="text-muted">
-                                        <TabPane tabId="1" id="penunjang-1">
-                                            <Card>
-                                                <CardBody>
-                                                    <OrderLaboratorium/>
-                                                </CardBody>
-                                            </Card>
-                                        </TabPane>
-                                    </TabContent>
-                                    <TabContent activeTab={pillsTabPenunjang} className="text-muted">
-                                        <TabPane tabId="2" id="penunjang-2">
-                                            <Card>
-                                                <CardBody>
-                                                    <OrderRadiologi />
-                                                </CardBody>
-                                            </Card>
-                                        </TabPane>
-                                    </TabContent>
-                                </Card>
+                                </div>
+                                <TabContent activeTab={pillsTabPenunjang} className="text-muted">
+                                    <TabPane tabId="1" id="penunjang-1">
+                                        <OrderLaboratorium/>                                        
+                                    </TabPane>
+                                </TabContent>
+                                <TabContent activeTab={pillsTabPenunjang} className="text-muted">
+                                    <TabPane tabId="2" id="penunjang-2">
+                                        <OrderRadiologi />
+                                    </TabPane>
+                                </TabContent>
+                                <TabContent activeTab={pillsTabPenunjang} className="text-muted">
+                                    <TabPane tabId="3" id="penunjang-2">
+                                        <OrderResep />
+                                    </TabPane>
+                                </TabContent>
                             </TabPane>
                         </TabContent>
 

@@ -2,6 +2,9 @@ import pool from "../../../config/dbcon.query";
 import * as uuid from 'uuid'
 import queries from '../../../queries/transaksi/registrasi.queries';
 import db from "../../../models";
+import {
+    createTransaction
+} from "../../../utils/dbutils";
 
 const t_emrpasien = db.t_emrpasien
 const t_ttv = db.t_ttv
@@ -957,19 +960,9 @@ async function updateTaskid(req, res) {
 }
 
 async function updateStatusPulangRJ(req, res) {
-    let transaction = null;
-    try{
-        transaction = await db.sequelize.transaction();
-    }catch(e){
-        console.error(e)
-        res.status(201).send({
-            status: e.message,
-            success: false,
-            msg: 'Simpan Gagal',
-            code: 201
-        });
-    }
+    const [transaction, errorTransaction] = await createTransaction()
     try {
+        if(errorTransaction) return
         const daftarpasien = await db.t_daftarpasien.update({
             objectstatuspulangfk: req.body.statuspulang,
             tglpulang: new Date()
@@ -1026,7 +1019,8 @@ function getUmur (dateOfBirth, tillDate) {
       age.months += 12;
     }
     return age;
-  }
+}
+
 
 export default {
     saveEmrPasienTtv,

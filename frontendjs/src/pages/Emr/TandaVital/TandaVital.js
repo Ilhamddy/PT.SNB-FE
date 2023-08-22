@@ -305,7 +305,7 @@ const TandaVital = () => {
     return (
         <React.Fragment>
             {/* <ToastContainer closeButton={false} /> */}
-            <Row className="gy-4">
+            <Row className="gy-4 p-5">
                 <Form
                     onSubmit={(e) => {
                         e.preventDefault();
