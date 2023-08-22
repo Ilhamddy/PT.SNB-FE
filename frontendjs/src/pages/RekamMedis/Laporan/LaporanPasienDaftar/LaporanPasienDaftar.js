@@ -167,6 +167,13 @@ const LaporanPasienDaftar = () => {
             sortable: true,
             // width: "150px"
         },
+        {
+
+            name: <span className='font-weight-bold fs-13'>Status Pasien</span>,
+            selector: row => row.statuspasien,
+            sortable: true,
+            // width: "150px"
+        },
     ];
     const handleExport = () => {
         const formattedData = dataGrid.map(row => columns.map(col => col.selector(row)));

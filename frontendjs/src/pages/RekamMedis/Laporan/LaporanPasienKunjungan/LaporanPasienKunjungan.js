@@ -187,8 +187,8 @@ const LaporanPasienKunjungan = () => {
                     <BreadCrumb title="Laporan Pasien Kunjungan" pageTitle="Forms" />
                     <Card>
                         <CardBody>
-                        <div className='mb-2 row-header'>
-                        <Row>
+                            <div className='mb-2 row-header'>
+                                <Row>
                                     <Col sm={3}>
                                         <div className="input-group">
                                             <Flatpickr
@@ -345,8 +345,8 @@ const LaporanPasienKunjungan = () => {
                                         </Col>
                                     </Col>
                                 </Row>
-                        </div>
-                        <Button type="button" placement="top" id="tooltipTopPencarian" onClick={handleExport}>
+                            </div>
+                            <Button type="button" placement="top" id="tooltipTopPencarian" onClick={handleExport}>
                                 Export to Excel
                             </Button>
                             <div id="table-gridjs">
