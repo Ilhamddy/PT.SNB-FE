@@ -98,8 +98,8 @@ const Header = ({ onChangeLayoutMode, layoutModeType, headerClass }) => {
                                 </span>
                             </button>
 
-
-                            <SearchOption />
+                            {/* pencarian */}
+                            {/* <SearchOption /> */}
                         </div>
 
                         <div className="d-flex align-items-center">
@@ -123,13 +123,13 @@ const Header = ({ onChangeLayoutMode, layoutModeType, headerClass }) => {
                             </Dropdown>
 
                             {/* LanguageDropdown */}
-                            <LanguageDropdown />
+                            {/* <LanguageDropdown /> */}
 
                             {/* WebAppsDropdown */}
-                            <WebAppsDropdown />
+                            {/* <WebAppsDropdown /> */}
 
                             {/* MyCartDropdwon */}
-                            <MyCartDropdown />
+                            {/* <MyCartDropdown /> */}
 
                             {/* FullScreenDropdown */}
                             <FullScreenDropdown />
