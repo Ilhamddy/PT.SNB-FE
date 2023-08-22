@@ -256,6 +256,7 @@ import DaftarPasienRegistrasi from "../pages/ListDaftarPasien/DaftarPasienRegist
 // rekammedis
 import KendaliDokumen from "../pages/RekamMedis/KendaliDokumen/KendaliDokumen";
 import LaporanPasienDaftar from "../pages/RekamMedis/Laporan/LaporanPasienDaftar/LaporanPasienDaftar";
+import LaporanPasienBatal from "../pages/RekamMedis/Laporan/LaporanPasienBatal/LaporanPasienBatal";
 
 // radiologi
 import DaftarOrderRadiologi from "../pages/Radiologi/DaftarOrderRadiologi/DaftarOrderRadiologi";
@@ -527,6 +528,7 @@ const authProtectedRoutes = [
   // rekam medis
   { path: "/rekammedis/kendalidokumen", component: <KendaliDokumen /> },
   { path: "/cmVrYW1tZWRpcy9sYXBvcmFuLXBhc2llbi1kYWZ0YXI=", component: <LaporanPasienDaftar/>},
+  { path: "/cmVrYW1tZWRpcy9sYXBvcmFuLXBhc2llbi1iYXRhbA==", component: <LaporanPasienBatal/>},
   // radiologi
   { path: "/radiologi/daftarorderradiologi", component: <DaftarOrderRadiologi /> },
   { path: "/radiologi/daftarpasienradiologi", component: <DaftarPasienRadiologi /> },

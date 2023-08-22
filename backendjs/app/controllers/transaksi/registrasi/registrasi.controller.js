@@ -202,7 +202,7 @@ const getAllByOr = (req, res) => {
 const savePasien = async (req, res) => {
     const [transaction, errorTransaction]
         = await createTransaction(db, res, "savePasien")
-    if(errorTransaction) return
+    if (errorTransaction) return
     try {
         const getNocm = await running_Number.findAll({
             where: {
@@ -217,7 +217,7 @@ const savePasien = async (req, res) => {
         }
         const objBody = req.body
         let result
-        if(!objBody.id){
+        if (!objBody.id) {
             result = await M_pasien.create({
                 nocm: nocm,
                 namapasien: objBody.namapasien,
@@ -263,7 +263,7 @@ const savePasien = async (req, res) => {
                 },
                 transaction: transaction
             });
-        }else{
+        } else {
             result = await M_pasien.update({
                 nocm: nocm,
                 namapasien: objBody.namapasien,
@@ -306,7 +306,7 @@ const savePasien = async (req, res) => {
                 transaction: transaction
             })
         }
-        
+
         transaction.commit();
         res.status(200).send({
             data: result,
@@ -414,9 +414,9 @@ const saveRegistrasiPasien2 = (req, res) => {
     }
 }
 async function saveRegistrasiPasien(req, res) {
-    const [transaction, errorTransaciton] 
+    const [transaction, errorTransaciton]
         = await createTransaction(db, res, "saveRegPasien")
-    if(errorTransaciton) return
+    if (errorTransaciton) return
     try {
 
         let norecDP = uuid.v4().substring(0, 32)
@@ -928,7 +928,7 @@ const getDaftarPasienRegistrasi = (req, res) => {
         tglregistrasi = ` and td.tglregistrasi between '${todaystart}'
         and '${todayend}' `;
     }
-    let query = queries.getDaftarPasienRegistrasi + `  where td.noregistrasi ilike '%${noregistrasi}%'
+    let query = queries.getDaftarPasienRegistrasi + `  where td.statusenabled=true and td.noregistrasi ilike '%${noregistrasi}%'
     ${tglregistrasi}`
     // res.status(200).send({
     //     data: query,
@@ -1104,7 +1104,7 @@ async function getDaftarPasienRawatJalan(req, res) {
 }
 
 async function getWidgetDaftarPasienRJ(req, res) {
-    try{
+    try {
         const noregistrasi = ""//req.query.noregistrasi;
         let tglregistrasi = ""
         if (req.query.start !== undefined) {
@@ -1203,7 +1203,7 @@ async function getWidgetDaftarPasienRJ(req, res) {
             status: "success",
             success: true,
         });
-    }catch(e){
+    } catch (e) {
         console.error("==Error getWidgetDaftarPasienRJ==")
         console.error(e)
         res.status(500).send({
@@ -1262,7 +1262,7 @@ async function getHeaderEmr(req, res) {
 
 async function getWidgetDaftarPasienRI(req, res) {
 
-    try{
+    try {
         let query = queries.widgetgetDaftarPasienRawatInap
         const resultCountNoantrianDokter = await pool.query(query)
         let totalTKosong = 0
@@ -1317,18 +1317,18 @@ async function getWidgetDaftarPasienRI(req, res) {
                 prefix: "",
                 suffix: "K",
             },
-    
+
         ];
-    
+
         res.status(200).send({
             data: taskWidgets,
             status: "success",
             success: true,
         });
-    }catch(e){
+    } catch (e) {
         console.error("getWidget daftar pasien gagal")
     }
-    
+
 
 }
 
@@ -1387,8 +1387,8 @@ const getDepositFromPasien = async (req, res) => {
 }
 
 const getPasienFormById = async (req, res) => {
-    try{
-        const {idpasien} = req.query
+    try {
+        const { idpasien } = req.query
         const pasien = (await pool.query(queries.qGetPasienFormById, [Number(idpasien)])).rows
         const tempres = {
             pasien: pasien?.[0] || null
@@ -1400,7 +1400,7 @@ const getPasienFormById = async (req, res) => {
             msg: 'Get Pasien Form by Id Berhasil',
             code: 200
         });
-    }catch(e){
+    } catch (e) {
         console.error(e)
         res.status(500).send({
             data: e.message,
@@ -1427,10 +1427,45 @@ async function saveBatalRegistrasi(req, res) {
     }
 
     try {
+        let resqueryCek = await pool.query(`select ap.objectdaftarpasienfk  from t_pelayananpasien pp
+        join t_antreanpemeriksaan ap on ap.norec=pp.objectantreanpemeriksaanfk
+        where ap.objectdaftarpasienfk ='${req.body.norecdp}'`);
+        if (resqueryCek.rowCount > 0) {
+            await transaction.rollback();
+            res.status(201).send({
+                status: 'Pasien Sudah Mendapat Tindakan, tidak bisa di batalkan',
+                success: false,
+                msg: 'Pasien Sudah Mendapat Tindakan, tidak bisa di batalkan',
+                code: 201
+            });
+            return
+        }
+
+        let saveBatal
+        let norec = uuid.v4().substring(0, 32)
         
+        saveBatal = await db.t_batalpasien.create({
+            norec: norec,
+            objectdaftarpasienfk: req.body.norecdp,
+            objectpegawaifk: req.idPegawai,
+            alasanbatal: req.body.alasan,
+            objectbatalpasienfk: req.body.pembatal,
+            tglbatal: new Date()
+        }, {
+            transaction: transaction
+        })
+
+        const updatedBody = await db.t_daftarpasien.update({
+            statusenabled: false
+        }, {
+            where: {
+                norec: req.body.norecdp
+            },
+            transaction: transaction
+        });
         await transaction.commit();
 
-        let tempres = { test:req.body }
+        let tempres = { batal: saveBatal, td:updatedBody }
         res.status(200).send({
             data: tempres,
             status: "success",

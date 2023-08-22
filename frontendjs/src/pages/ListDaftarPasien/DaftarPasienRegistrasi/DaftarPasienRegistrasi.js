@@ -104,6 +104,10 @@ const DaftarPasienRegistrasi = () => {
         settempNorecDp(norecdp)
         setbatalModal(true)
     }
+    const handleToCloseBatalModal = async () => {
+        setbatalModal(false)
+        handleClickCari()
+    }
     const columns = [
         {
             name: <span className='font-weight-bold fs-13'>Detail</span>,
@@ -183,7 +187,7 @@ const DaftarPasienRegistrasi = () => {
             <BatalRegistrasi
                 show={batalModal}
                 onSimpanClick={() => setbatalModal(false)}
-                onCloseClick={() => setbatalModal(false)}
+                onCloseClick={() => handleToCloseBatalModal()}
                 tempNorecDp={tempNorecDp} />
             <UiContent />
             <div className="page-content daftar-pasien-registrasi">

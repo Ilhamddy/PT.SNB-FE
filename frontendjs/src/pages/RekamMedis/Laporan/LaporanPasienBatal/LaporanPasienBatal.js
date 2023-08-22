@@ -22,7 +22,7 @@ import LoadingTable from '../../../../Components/Table/LoadingTable';
 import {
     comboLaporanRekammedisGet, kendaliDokumenResetForm, listLaporanPasienDaftarGet
 } from '../../../../store/actions';
-import "./LaporanPasienDaftar.scss"
+import "./LaporanPasienBatal.scss"
 import * as XLSX from 'xlsx';
 
 const currentDate = new Date();
@@ -32,7 +32,7 @@ currentDate.setHours(0, 0, 0, 0);
 const dateAwalStart = currentDate.toISOString();
 const dateAwalEnd = (new Date()).toISOString()
 
-const LaporanPasienDaftar = () => {
+const LaporanPasienBatal = () => {
     document.title = "Laporan Pasien Daftar";
     const dispatch = useDispatch();
     const { data, loading, error, dataGrid, loadingGrid } = useSelector((state) => ({
@@ -168,23 +168,15 @@ const LaporanPasienDaftar = () => {
             // width: "150px"
         },
     ];
-    const handleExport = () => {
-        const formattedData = dataGrid.map(row => columns.map(col => col.selector(row)));
-        const header = columns.map(col => col.name.props.children);
-        const sheetData = [header, ...formattedData];
-        const worksheet = XLSX.utils.aoa_to_sheet(sheetData);
-        const workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
 
-        XLSX.writeFile(workbook, 'exported_data.xlsx');
-    };
+
     return (
         <React.Fragment>
             <ToastContainer closeButton={false} />
             <UiContent />
-            <div className="page-content laporan-pasien-daftar">
+            <div className="page-content laporan-pasien-batal">
                 <Container fluid>
-                    <BreadCrumb title="Laporan Pasien Daftar" pageTitle="Forms" />
+                    <BreadCrumb title="Laporan Pasien Batal" pageTitle="Forms" />
                     <Card>
                         <CardBody>
                             <div className='mb-2 row-header'>
@@ -344,23 +336,7 @@ const LaporanPasienDaftar = () => {
                                             </div>
                                         </Col>
                                     </Col>
-                                    
                                 </Row>
-                            </div>
-                            <Button type="button" className="rounded-pill" placement="top" id="tooltipTopPencarian" onClick={handleExport}>
-                                Export to Excel
-                            </Button>
-                            <div id="table-gridjs">
-                                <DataTable
-                                    fixedHeader
-                                    fixedHeaderScrollHeight="330px"
-                                    columns={columns}
-                                    pagination
-                                    data={dataGrid}
-                                    progressPending={loadingGrid}
-                                    customStyles={tableCustomStyles}
-                                    progressComponent={<LoadingTable />}
-                                />
                             </div>
                         </CardBody>
                     </Card>
@@ -370,4 +346,4 @@ const LaporanPasienDaftar = () => {
     )
 }
 
-export default (LaporanPasienDaftar)
+export default (LaporanPasienBatal)

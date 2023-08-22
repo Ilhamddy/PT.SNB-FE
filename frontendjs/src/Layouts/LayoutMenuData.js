@@ -392,9 +392,9 @@ const Navdata = () => {
                             },
                         },
                         {
-                            id: "laporan-subitem2",
-                            label: "Sub-item 2",
-                            link: "/laporan/subitem2",
+                            id: "rekammedis-laporan-pasien-batal",
+                            label: "Laporan Pasien Batal",
+                            link: "/cmVrYW1tZWRpcy9sYXBvcmFuLXBhc2llbi1iYXRhbA==",
                             parentId: "rekammedis-laporan",
                             isAllowed: () => {
                                 return isAllowedAccess(getUserPermissions(), [
