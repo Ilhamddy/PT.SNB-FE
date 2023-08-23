@@ -8,16 +8,22 @@ import { onChangeStrNbr, strToNumber } from "../../../../utils/format";
 import { useEffect, useRef, useState } from "react";
 import { getComboResep } from "../../../../store/master/action";
 import { useDispatch, useSelector } from "react-redux";
+import { getObatFromUnit } from "../../../../store/emr/action";
+import * as Yup from "yup"
 
 const initValueResep = {
+    norecresep: "",
     obat: "",
     namaobat: "",
     satuanobat: "",
+    namasatuan: "",
     koder: 1,
     qty: "",
     qtyracikan: "",
     qtypembulatan: "",
+    qtyjumlahracikan: "",
     sediaan: "",
+    namasediaan: "",
     harga: "",
     total: "",
     signa: "",
@@ -39,15 +45,22 @@ const OrderResep = () => {
         pegawai,
         unit,
         keteranganResep,
-        signa
+        signa,
+        obatList,
+        sediaanList,
     } = useSelector((state) => ({
-        pegawai: state.Master?.getComboResep?.data?.pegawai,
-        unit: state.Master?.getComboResep?.data?.unit,
-        keteranganResep: state.Master?.getComboResep?.data?.keteranganresep,
-        signa: state.Master?.getComboResep?.data?.signa,
+        pegawai: state.Master?.getComboResep?.data?.pegawai || [],
+        unit: state.Master?.getComboResep?.data?.unit || [],
+        keteranganResep: state.Master?.getComboResep?.data?.keteranganresep || [],
+        signa: state.Master?.getComboResep?.data?.signa || [],
+        obatList: state?.Emr?.getObatFromUnit?.data?.obat || [],
+        sediaanList: state?.Master?.getComboResep?.data?.sediaan || [],
     }))
+
     const vResep = useFormik({
+        enableReinitialize: true,
         initialValues: {
+            norecorder: "",
             dokter: "",
             namadokter: "",
             unittujuan: "",
@@ -56,6 +69,31 @@ const OrderResep = () => {
                     ...initValueResep
                 }
             ],
+        },
+        validationSchema: Yup.object({
+            dokter: Yup.string().required("Dokter harus diisi"),
+            unittujuan: Yup.string().required("Depo tujuan harus diisi"),
+            resep: Yup.array().of(
+                Yup.object().shape({
+                    obat: Yup.string().when("racikan", {
+                        is: (val) => (val.length === 0),
+                        then: () => Yup.string().required("Obat harus diisi"),
+                    }),
+                    qty: Yup.string().required("Qty harus diisi"),
+                    sediaan: Yup.string().required("Sediaan harus diisi"),
+                    signa: Yup.string().required("Signa harus diisi"),
+                    keterangan: Yup.string().required("Keterangan harus diisi"),
+                    racikan: Yup.array().of(
+                        Yup.object().shape({
+                            obat: Yup.string().required("Obat harus diisi"),
+                            qtyracikan: Yup.string().required("Qty Racikan harus diisi"),
+                        })
+                    )
+                })
+            )
+        }),
+        onSubmit: (value) => {
+            console.log(value)
         }
     })
 
@@ -77,7 +115,7 @@ const OrderResep = () => {
         }
     }
 
-    const handleChangeRacikan = (newVal, field, rowUtama, rowRacikan) => {
+    const handleChangeRacikan = (newVal, field, rowUtama, rowRacikan, isSet) => {
         const newReseps = [...resepRef.current]
         const newResep = {...newReseps[rowUtama.koder - 1]}
         const newRacikan = {...newResep.racikan[rowRacikan.koder - 1]}
@@ -85,6 +123,9 @@ const OrderResep = () => {
         newResep.racikan[rowRacikan.koder - 1] = newRacikan
         newReseps[rowUtama.koder - 1] = newResep
         resepRef.current = newReseps
+        if(isSet){
+            vResep.setFieldValue("resep", newReseps)
+        }
     }
 
     const handleChangeAllResep = (newVal) => {
@@ -104,17 +145,22 @@ const OrderResep = () => {
             return val
         })
         
-        resepRef.current = newVal
-        vResep.setFieldValue("resep", resepRef.current)
+        resepRef.current = newResep
+        vResep.setFieldValue("resep", newResep)
     }
 
-    const handleBlur = () => {
+    const handleBlur = (e) => {
         vResep.setFieldValue("resep", resepRef.current)
     }
 
     useEffect(() => {
         dispatch(getComboResep())
     }, [dispatch])
+
+    useEffect(() => {
+        vResep.values.unittujuan &&
+            dispatch(getObatFromUnit({idunit: vResep.values.unittujuan}))
+    }, [dispatch, vResep.values.unittujuan])
 
     const columnsResep = [
         {
@@ -125,28 +171,80 @@ const OrderResep = () => {
         {
             name: <span className='font-weight-bold fs-13'>Nama Obat</span>,
             Cell: ({row}) => {
-                const errorsResep = vResep.errors?.resep?.[row.koder - 1]
-                const touchedResep = vResep.touched?.resep?.[row.koder - 1]
-                const [val, setVal] = useState("")
+                const errorsResep = vResep.errors
+                ?.resep
+                ?.[row.koder - 1]
+                const touchedResep = vResep.touched
+                ?.resep
+                ?.[row.koder - 1]
+                if(row.racikan.length === 0){
+                    return (
+                        <div>
+                            <CustomSelect
+                                id="obat"
+                                name="obat"
+                                options={obatList}
+                                onChange={(e) => {
+                                    handleChangeResep(e?.value || "", "obat", row, true);
+                                    handleChangeResep(e?.label || "", "namaobat", row, true);
+                                    handleChangeResep(e?.satuanid || "", "satuanobat", row, true);
+                                    handleChangeResep(e?.namasatuan || "", "namasatuan", row, true);
+                                    handleChangeResep(e?.sediaanid || "", "sediaan", row, true);
+                                    handleChangeResep(e?.namasediaan || "", "namasediaan", row, true); 
+                                    const harga = e?.batchstokunit?.[0]?.harga || 0
+                                    const totalHarga = 
+                                        ((harga) * (row.qty || 0)) || ""
+                                    handleChangeResep(
+                                        totalHarga, 
+                                        "total", 
+                                        row, 
+                                        true
+                                    )
+                                    //TODO: masih janky
+                                    handleChangeResep(
+                                        harga || "", 
+                                        "harga", 
+                                        row, 
+                                        true
+                                    )
+                                }}
+                                value={row.obat}
+                                className={`input ${touchedResep?.obat 
+                                    && !!errorsResep?.obat
+                                    ? "is-invalid" : ""}`}
+                                />
+                            {touchedResep?.obat
+                                && !!errorsResep?.obat && (
+                                    <FormFeedback type="invalid" >
+                                        <div>
+                                            {errorsResep?.obat}
+                                        </div>
+                                    </FormFeedback>
+                                ) 
+                            }
+                        </div>
+                    )
+                }
                 return (
                     <div>
                         <CustomSelect
-                            id="obat"
-                            name="obat"
-                            options={[]}
+                            id="sediaan"
+                            name="sediaan"
+                            options={sediaanList}
                             onChange={(e) => {
-                                handleChangeResep(e?.value || "", "obat", row);
-                                setVal(e?.value || "")
+                                handleChangeResep(e?.value || "", "sediaan", row, true);
+                                handleChangeResep(e?.label || "", "namasediaan", row, true); 
                             }}
-                            value={val}
-                            className={`input ${!!errorsResep?.obat
+                            value={row.sediaan}
+                            className={`input ${touchedResep?.sediaan 
+                                && !!errorsResep?.sediaan
                                 ? "is-invalid" : ""}`}
                             />
-                        {errorsResep?.obat
-                            && !!errorsResep?.obat && (
+                        {touchedResep?.sediaan
+                            && !!errorsResep?.sediaan && (
                                 <FormFeedback type="invalid" >
                                     <div>
-                                        {errorsResep?.obat}
+                                        {errorsResep?.sediaan}
                                     </div>
                                 </FormFeedback>
                             ) 
@@ -159,8 +257,12 @@ const OrderResep = () => {
         {
             name: <span className='font-weight-bold fs-13'>Qty</span>,
             Cell: ({row}) => {
-                const errorsResep = vResep.errors?.resep?.[row.koder - 1]
-                const touchedResep = vResep.touched?.resep?.[row.koder - 1]
+                const errorsResep = vResep.errors
+                ?.resep
+                ?.[row.koder - 1]
+                const touchedResep = vResep.touched
+                ?.resep
+                ?.[row.koder - 1]
                 const [val, setVal] = useState(row.qty)
                 return (
                     <div>
@@ -174,6 +276,35 @@ const OrderResep = () => {
                                 const newVal = onChangeStrNbr(e.target.value, val)
                                 setVal(newVal)
                                 handleChangeResep(newVal, "qty", row)
+                                // TODO: fix
+                                const totalHarga = (
+                                    row.harga * 
+                                    (strToNumber(newVal) || 0)
+                                ) || ""
+                                handleChangeResep(
+                                    totalHarga, 
+                                    "total", 
+                                    row
+                                )
+                                row.racikan.forEach((valRacikan) => {
+                                    const totalQty = strToNumber(valRacikan.qtyracikan) * (strToNumber(newVal) || 0)
+                                    const totalHargaRacikan = (
+                                        valRacikan.harga * 
+                                        (totalQty)
+                                    ) || ""
+                                    handleChangeRacikan(
+                                        totalHargaRacikan, 
+                                        "total", 
+                                        row, 
+                                        valRacikan
+                                    )
+                                    handleChangeRacikan(
+                                        totalQty, 
+                                        "qty", 
+                                        row, 
+                                        valRacikan
+                                    )
+                                })
                             }}
                             invalid={touchedResep?.qty && !!errorsResep?.qty}
                             />
@@ -194,32 +325,9 @@ const OrderResep = () => {
         {
             name: <span className='font-weight-bold fs-13'>Sediaan</span>,
             Cell: ({row}) => {
-                const errorsResep = vResep.errors?.resep?.[row.koder - 1]
-                const touchedResep = vResep.touched?.resep?.[row.koder - 1]
-                const [val, setVal] = useState(row.sediaan)
                 return (
                     <div>
-                        <CustomSelect
-                            id={`sediaan-${row.koder}`}
-                            name={`sediaan-${row.koder}`}
-                            options={[]}
-                            onChange={(e) => {
-                                const newVal = e?.value || ""
-                                handleChangeResep(newVal, "sediaan", row)
-                            }}
-                            value={val}
-                            className={`input ${!!errorsResep?.sediaan
-                                ? "is-invalid" : ""}`}
-                            />
-                        {errorsResep?.sediaan
-                            && !!errorsResep?.sediaan && (
-                                <FormFeedback type="invalid" >
-                                    <div>
-                                        {errorsResep?.sediaan}
-                                    </div>
-                                </FormFeedback>
-                            ) 
-                        }
+                        {row.namasatuan}
                     </div>
                 )
             },
@@ -228,9 +336,18 @@ const OrderResep = () => {
         {
             name: <span className='font-weight-bold fs-13'>Harga</span>,
             Cell: ({row}) => {
-                const errorsResep = vResep.errors?.resep?.[row.koder - 1]
-                const touchedResep = vResep.touched?.resep?.[row.koder - 1]
-                const [val, setVal] = useState(row.harga)
+                const errorsResep = vResep.errors
+                ?.resep
+                ?.[row.koder - 1]
+                const touchedResep = vResep.touched
+                ?.resep
+                ?.[row.koder - 1]
+                const totalRacikan = row.racikan.reduce((prev, val) => {
+                    return prev + (strToNumber(val.total) || 0)
+                }, 0)
+                const initValue = row.racikan.length > 0 ? 
+                    totalRacikan : row.total
+                const [val, setVal] = useState(initValue)
                 return (
                     <div>
                         <Input 
@@ -239,6 +356,7 @@ const OrderResep = () => {
                             type="text"
                             value={val} 
                             onBlur={handleBlur}
+                            disabled
                             onChange={(e) => {
                                 const newVal = onChangeStrNbr(e.target.value, val)
                                 setVal(newVal)
@@ -263,8 +381,12 @@ const OrderResep = () => {
         {
             name: <span className='font-weight-bold fs-13'>Signa</span>,
             Cell: ({row}) => {
-                const errorsResep = vResep.errors?.resep?.[row.koder - 1]
-                const touchedResep = vResep.touched?.resep?.[row.koder - 1]
+                const errorsResep = vResep.errors
+                ?.resep
+                ?.[row.koder - 1]
+                const touchedResep = vResep.touched
+                ?.resep
+                ?.[row.koder - 1]
                 return (
                     <div>
                         <CustomSelect
@@ -355,9 +477,13 @@ const OrderResep = () => {
         {
             name: <span className='font-weight-bold fs-13'>Nama Obat</span>,
             Cell: ({row, rowUtama}) => {
-                const errorsResep = vResep.errors?.resep?.[rowUtama.koder - 1]
+                const errorsResep = vResep.errors
+                ?.resep
+                ?.[rowUtama.koder - 1]
                 ?.racikan?.[row.koder - 1]
-                const touchedResep = vResep.touched?.resep?.[rowUtama.koder - 1]
+                const touchedResep = vResep.touched
+                ?.resep
+                ?.[rowUtama.koder - 1]
                 ?.racikan?.[row.koder - 1]
                 const [val, setVal] = useState("")
                 return (
@@ -365,12 +491,41 @@ const OrderResep = () => {
                         <CustomSelect
                             id="obat"
                             name="obat"
-                            options={[]}
+                            options={obatList}
                             onChange={(e) => {
-                                handleChangeRacikan(e?.value || "", "obat", rowUtama, row);
+                                handleChangeRacikan(e?.value || "", "obat", rowUtama, row, true);
+                                handleChangeRacikan(e?.label || "", "namaobat", rowUtama, row, true);
+                                handleChangeRacikan(e?.satuanid || "", "satuanobat", rowUtama, row, true);
+                                handleChangeRacikan(e?.namasatuan || "", "namasatuan", rowUtama, row, true);
                                 setVal(e?.value || "")
+                                const harga = e?.batchstokunit?.[0]?.harga || 0
+                                const qtyTotal = strToNumber(rowUtama.qty || 0) * strToNumber(row.qtyracikan || 0)
+                                const totalHarga = 
+                                    ((harga) * qtyTotal) || ""
+                                handleChangeRacikan(
+                                    qtyTotal,
+                                    "qty",
+                                    rowUtama,
+                                    row,
+                                    true
+                                )
+                                handleChangeRacikan(
+                                    totalHarga, 
+                                    "total", 
+                                    rowUtama,
+                                    row, 
+                                    true
+                                )
+                                //TODO: masih janky
+                                handleChangeRacikan(
+                                    harga || "", 
+                                    "harga",
+                                    rowUtama, 
+                                    row, 
+                                    true
+                                )
                             }}
-                            value={val}
+                            value={row.obat}
                             className={`input ${!!errorsResep?.obat
                                 ? "is-invalid" : ""}`}
                             />
@@ -391,11 +546,17 @@ const OrderResep = () => {
         {
             name: <span className='font-weight-bold fs-13'>Qty</span>,
             Cell: ({row, rowUtama}) => {
-                const errorsResep = vResep.errors?.resep?.[row.koder - 1]
-                ?.racikan?.[rowUtama.koder - 1]
-                const touchedResep = vResep.touched?.resep?.[row.koder - 1]
-                ?.racikan?.[rowUtama.koder - 1]
-                const [val, setVal] = useState(row.qty)
+                const errorsResep = vResep.errors
+                ?.resep
+                ?.[rowUtama.koder - 1]
+                ?.racikan
+                ?.[row.koder - 1]
+                const touchedResep = vResep.touched
+                ?.resep
+                ?.[rowUtama.koder - 1]
+                ?.racikan
+                ?.[row.koder - 1]
+                const [val, setVal] = useState(row.qtyracikan)
                 return (
                     <div>
                         <Input 
@@ -405,18 +566,31 @@ const OrderResep = () => {
                             value={val} 
                             onChange={(e) => {
                                 const newVal = onChangeStrNbr(e.target.value, val)
+                                const qtyTotal = strToNumber(rowUtama.qty || 0) * strToNumber(newVal || 0)
+                                handleChangeRacikan(newVal, "qtyracikan", rowUtama, row)
+                                handleChangeRacikan(qtyTotal, "qty", rowUtama, row)
+                                // TODO: fix
+                                const totalHarga = (
+                                    row.harga * (strToNumber(newVal)) * (strToNumber(rowUtama.qty))
+                                ) || ""
+                                handleChangeRacikan(
+                                    totalHarga, 
+                                    "total", 
+                                    rowUtama,
+                                    row
+                                )
                                 setVal(newVal)
-                                handleChangeRacikan(newVal, "qty", rowUtama, row)
+
                             }}
                             onBlur={handleBlur}
-                            invalid={touchedResep?.qty && !!errorsResep?.qty}
+                            invalid={touchedResep?.qtyracikan && !!errorsResep?.qtyracikan}
                             />
                         {
-                        touchedResep?.qty
-                            && !!errorsResep?.qty &&  (
+                        touchedResep?.qtyracikan
+                            && !!errorsResep?.qtyracikan &&  (
                             <FormFeedback type="invalid" >
                                 <div>
-                                    {errorsResep?.qty}
+                                    {errorsResep?.qtyracikan}
                                 </div>
                             </FormFeedback>
                         )}
@@ -427,12 +601,12 @@ const OrderResep = () => {
         },
         {
             name: <span className='font-weight-bold fs-13'>Qty</span>,
-            Cell: ({rowUtama}) => <p>/{rowUtama.qty} racikan</p>,
+            Cell: ({rowUtama}) => <p>/1 racikan</p>,
             width: "10%"
         },
         {
             name: <span className='font-weight-bold fs-13'>Qty</span>,
-            Cell: ({row, rowUtama}) => <p>{(strToNumber(row.qty || 0)) * strToNumber(rowUtama.qty || 0)} {row.satuanobat}</p>,
+            Cell: ({row, rowUtama}) => <p>{row.qty} {row.namasatuan}</p>,
             width: "7%"    
         },
         {
@@ -443,9 +617,17 @@ const OrderResep = () => {
         {
             name: <span className='font-weight-bold fs-13'>Harga</span>,
             Cell: ({row, rowUtama}) => {
-                const errorsResep = vResep.errors?.resep?.[row.koder - 1]
-                const touchedResep = vResep.touched?.resep?.[row.koder - 1]
-                const [val, setVal] = useState(row.harga)
+                const errorsResep = vResep.errors
+                ?.resep
+                ?.[rowUtama.koder - 1]
+                ?.racikan
+                ?.[row.koder - 1]
+                const touchedResep = vResep.touched
+                ?.resep
+                ?.[rowUtama.koder - 1]
+                ?.racikan
+                ?.[row.koder - 1]
+                const [val, setVal] = useState(row.total)
                 return (
                     <div>
                         <Input 
@@ -453,6 +635,7 @@ const OrderResep = () => {
                             name={`harga`}
                             type="text"
                             value={val} 
+                            disabled
                             onBlur={handleBlur}
                             onChange={(e) => {
                                 const newVal = onChangeStrNbr(e.target.value, val)
@@ -493,7 +676,6 @@ const OrderResep = () => {
                             const newResep = {...newReseps[rowUtama.koder - 1]}
                             const newRacikans = [...newResep.racikan]
                             const newRacikan = {...initValueRacikan}
-                            newRacikan.koder = newRacikans.length + 1
                             newRacikans.push(newRacikan)
                             newResep.racikan = newRacikans
                             newReseps[rowUtama.koder - 1] = newResep
@@ -662,7 +844,6 @@ const OrderResep = () => {
                                 <Button color={"info"} style={{border: "none", width: "fit-content"}}
                                     onClick={() => {
                                         const newValue = {...initValueResep}
-                                        newValue.koder = vResep.values.resep.length + 1
                                         newValue.racikan = [{...initValueRacikan}]
                                         const newResep = [...resepRef.current, {...newValue}]
                                         handleChangeAllResep(newResep)
@@ -715,7 +896,11 @@ const OrderResep = () => {
                 </table>
                 <Row style={{justifyContent: "space-evenly"}}>
                     <Col md={2}>
-                        <Button color="info">
+                        <Button color="info"
+                            onClick={() => {
+                                console.error(vResep.errors)
+                                vResep.handleSubmit();
+                            }}>
                             Simpan
                         </Button>
                     </Col>

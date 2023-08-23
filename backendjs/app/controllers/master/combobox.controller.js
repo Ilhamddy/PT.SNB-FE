@@ -476,11 +476,13 @@ const comboResep = async (req, res) => {
         const unit = await pool.query(queriesUnit.getAll)
         const signa = await pool.query(queriesSigna.getAll)
         const keteranganResep = await pool.query(queriesKeteranganResep.getAll)
+        const sediaan = await pool.query(queriesSediaan.getAll)
         let tempres = {
             pegawai: pegawai.rows,
             unit: unit.rows,
             signa: signa.rows,
-            keteranganresep: keteranganResep.rows
+            keteranganresep: keteranganResep.rows,
+            sediaan: sediaan.rows
         }
         res.status(200).send({
             data: tempres,
