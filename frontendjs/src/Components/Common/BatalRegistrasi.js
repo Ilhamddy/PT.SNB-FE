@@ -78,6 +78,7 @@ const BatalRegistrasi = ({ show, onSimpanClick,
                                                 onChange={([newDate]) => {
                                                     validation.setFieldValue("tglbatal", newDate.toISOString());
                                                 }}
+                                                disabled
                                             />
                                             <div className="input-group-text bg-secondary border-secondary text-white"><i className="ri-calendar-2-line"></i></div>
                                         </div>

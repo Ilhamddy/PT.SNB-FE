@@ -6,7 +6,9 @@ import {
     WIDGET_DAFTAR_DOKUMEN_REKAMMEDIS_GET,
     SAVE_DOKUMEN_REKAMMEDIS,
     COMBO_LAPORAN_REKAMMEDIS_GET,
-    LIST_LAPORAN_PASIEN_DAFTAR_GET
+    LIST_LAPORAN_PASIEN_DAFTAR_GET,
+    LIST_LAPORAN_PASIEN_BATAL_GET,
+    LIST_LAPORAN_PASIEN_KUNJUNGAN_GET
 } from "./actionType";
 
 import {
@@ -14,7 +16,9 @@ import {
     widgetdaftarDokumenRekammedisGetSuccess,widgetdaftarDokumenRekammedisGetError,
     saveDokumenRekammedisSuccess,saveDokumenRekammedisError,
     comboLaporanRekammedisGetSuccess, comboLaporanRekammedisGetError,
-    listLaporanPasienDaftarGetSuccess, listLaporanPasienDaftarGetError
+    listLaporanPasienDaftarGetSuccess, listLaporanPasienDaftarGetError,
+    listLaporanPasienBatalGetSuccess,listLaporanPasienBatalGetError,
+    listLaporanPasienKunjunganGetSuccess, listLaporanPasienKunjunganGetError
 } from "./action";
 
 import { toast } from 'react-toastify';
@@ -104,13 +108,41 @@ export function* watchonlistLaporanPasienDaftarGet() {
     yield takeEvery(LIST_LAPORAN_PASIEN_DAFTAR_GET, onlistLaporanPasienDaftarGet);
 }
 
+function* onlistLaporanPasienBatalGet({ payload: { param } }) {
+    try {
+        const response = yield call(serviceRekammedis.getListPasienBatal, param);
+        yield put(listLaporanPasienBatalGetSuccess(response.data));
+    } catch (error) {
+        yield put(listLaporanPasienBatalGetError(error));
+    }
+}
+
+export function* watchonlistLaporanPasienBatalGet() {
+    yield takeEvery(LIST_LAPORAN_PASIEN_BATAL_GET, onlistLaporanPasienBatalGet);
+}
+
+function* onlistLaporanPasienKunjunganGet({ payload: { param } }) {
+    try {
+        const response = yield call(serviceRekammedis.getListPasienKunjungan, param);
+        yield put(listLaporanPasienKunjunganGetSuccess(response.data));
+    } catch (error) {
+        yield put(listLaporanPasienKunjunganGetError(error));
+    }
+}
+
+export function* watchonlistLaporanPasienKunjunganGet() {
+    yield takeEvery(LIST_LAPORAN_PASIEN_KUNJUNGAN_GET, onlistLaporanPasienKunjunganGet);
+}
+
 function* kendaliDokumenSaga() {
     yield all([
         fork(watchonDaftarDokumenRekammedis),
         fork(watchonWidgetDaftarDokumenRekammedis),
         fork(watchonsaveDokumenRekammedis),
         fork(watchoncomboLaporanRekammedisGet),
-        fork(watchonlistLaporanPasienDaftarGet)
+        fork(watchonlistLaporanPasienDaftarGet),
+        fork(watchonlistLaporanPasienBatalGet),
+        fork(watchonlistLaporanPasienKunjunganGet)
     ]);
 }
 

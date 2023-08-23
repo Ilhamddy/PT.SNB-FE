@@ -122,7 +122,8 @@ const RegistrasiPasien = (props) => {
             kelas: newData?.kelas ?? "",
             kamar: newData?.kamar ?? "",
             tempattidur: newData?.tempattidur ?? "",
-            caramasuk: newData?.caramasuk ?? ""
+            caramasuk: newData?.caramasuk ?? "",
+            statuspasien:dataPas?.statuspasien ?? "",
         },
         validationSchema: Yup.object({
             tglregistrasi: Yup.string().required("Tanggal Registrasi wajib diisi"),

@@ -20,9 +20,9 @@ import Flatpickr from "react-flatpickr";
 import DataTable from 'react-data-table-component';
 import LoadingTable from '../../../../Components/Table/LoadingTable';
 import {
-    comboLaporanRekammedisGet, kendaliDokumenResetForm, listLaporanPasienDaftarGet
+    comboLaporanRekammedisGet, kendaliDokumenResetForm, listLaporanPasienBatalGet
 } from '../../../../store/actions';
-import "./LaporanPasienDaftar.scss"
+import "./LaporanPasienBatal.scss"
 import * as XLSX from 'xlsx';
 
 const currentDate = new Date();
@@ -32,15 +32,15 @@ currentDate.setHours(0, 0, 0, 0);
 const dateAwalStart = currentDate.toISOString();
 const dateAwalEnd = (new Date()).toISOString()
 
-const LaporanPasienDaftar = () => {
-    document.title = "Laporan Pasien Daftar";
+const LaporanPasienBatal = () => {
+    document.title = "Laporan Pasien Batal";
     const dispatch = useDispatch();
     const { data, loading, error, dataGrid, loadingGrid } = useSelector((state) => ({
         data: state.KendaliDokumen.comboLaporanRekammedisGet.data,
         loading: state.KendaliDokumen.comboLaporanRekammedisGet.loading,
         error: state.KendaliDokumen.comboLaporanRekammedisGet.error,
-        dataGrid: state.KendaliDokumen.listLaporanPasienDaftarGet.data,
-        loadingGrid: state.KendaliDokumen.listLaporanPasienDaftarGet.loading,
+        dataGrid: state.KendaliDokumen.listLaporanPasienBatalGet.data,
+        loadingGrid: state.KendaliDokumen.listLaporanPasienBatalGet.loading,
     }));
     const [dateStart, setdateStart] = useState(dateAwalStart);
     const [dateEnd, setDateEnd] = useState(dateAwalEnd);
@@ -76,11 +76,11 @@ const LaporanPasienDaftar = () => {
     const handleFilter = (e) => {
         if (e.keyCode === 13) {
             // console.log(search)
-            dispatch(listLaporanPasienDaftarGet(`${search}&start=${validation.values.tglstart}&end=${validation.values.tglend}&instalasi=${validation.values.departemen}&unit=${validation.values.unit}&rekanan=${validation.values.rekanan}&pegawai=${validation.values.pegawai}`));
+            dispatch(listLaporanPasienBatalGet(`${search}&start=${validation.values.tglstart}&end=${validation.values.tglend}&instalasi=${validation.values.departemen}&unit=${validation.values.unit}&rekanan=${validation.values.rekanan}&pegawai=${validation.values.pegawai}`));
         }
     }
     const handleClickCari = () => {
-        dispatch(listLaporanPasienDaftarGet(`${search}&start=${validation.values.tglstart}&end=${validation.values.tglend}&instalasi=${validation.values.departemen}&unit=${validation.values.unit}&rekanan=${validation.values.rekanan}&pegawai=${validation.values.pegawai}`));
+        dispatch(listLaporanPasienBatalGet(`${search}&start=${validation.values.tglstart}&end=${validation.values.tglend}&instalasi=${validation.values.departemen}&unit=${validation.values.unit}&rekanan=${validation.values.rekanan}&pegawai=${validation.values.pegawai}`));
     }
     const tableCustomStyles = {
         headRow: {
@@ -169,8 +169,8 @@ const LaporanPasienDaftar = () => {
         },
         {
 
-            name: <span className='font-weight-bold fs-13'>Status Pasien</span>,
-            selector: row => row.statuspasien,
+            name: <span className='font-weight-bold fs-13'>Petugas Pembatal</span>,
+            selector: row => row.pegawaipembatal,
             sortable: true,
             // width: "150px"
         },
@@ -183,15 +183,16 @@ const LaporanPasienDaftar = () => {
         const workbook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
 
-        XLSX.writeFile(workbook, 'laporan_pasien_daftar.xlsx');
+        XLSX.writeFile(workbook, 'laporan_pasien_batal.xlsx');
     };
+
     return (
         <React.Fragment>
             <ToastContainer closeButton={false} />
             <UiContent />
-            <div className="page-content laporan-pasien-daftar">
+            <div className="page-content laporan-pasien-batal">
                 <Container fluid>
-                    <BreadCrumb title="Laporan Pasien Daftar" pageTitle="Forms" />
+                    <BreadCrumb title="Laporan Pasien Batal" pageTitle="Forms" />
                     <Card>
                         <CardBody>
                             <div className='mb-2 row-header'>
@@ -351,7 +352,6 @@ const LaporanPasienDaftar = () => {
                                             </div>
                                         </Col>
                                     </Col>
-                                    
                                 </Row>
                             </div>
                             <Button type="button" placement="top" id="tooltipTopPencarian" onClick={handleExport}>
@@ -377,4 +377,4 @@ const LaporanPasienDaftar = () => {
     )
 }
 
-export default (LaporanPasienDaftar)
+export default (LaporanPasienBatal)

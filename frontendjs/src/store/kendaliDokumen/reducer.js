@@ -14,7 +14,13 @@ import {
     COMBO_LAPORAN_REKAMMEDIS_GET_ERROR,
     LIST_LAPORAN_PASIEN_DAFTAR_GET,
     LIST_LAPORAN_PASIEN_DAFTAR_GET_SUCCESS,
-    LIST_LAPORAN_PASIEN_DAFTAR_GET_ERROR
+    LIST_LAPORAN_PASIEN_DAFTAR_GET_ERROR,
+    LIST_LAPORAN_PASIEN_BATAL_GET,
+    LIST_LAPORAN_PASIEN_BATAL_GET_SUCCESS,
+    LIST_LAPORAN_PASIEN_BATAL_GET_ERROR,
+    LIST_LAPORAN_PASIEN_KUNJUNGAN_GET,
+    LIST_LAPORAN_PASIEN_KUNJUNGAN_GET_SUCCESS,
+    LIST_LAPORAN_PASIEN_KUNJUNGAN_GET_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -44,6 +50,16 @@ const INIT_STATE = {
         loading: false,
         error: null,
     },
+    listLaporanPasienBatalGet:{
+        data: [],
+        loading: false,
+        error: null,
+    },
+    listLaporanPasienKunjunganGet:{
+        data: [],
+        loading: false,
+        error: null,
+    }
 }
 
 const KendaliDokumen = (state = INIT_STATE, action) => {
@@ -65,6 +81,12 @@ const KendaliDokumen = (state = INIT_STATE, action) => {
                 },
                 listLaporanPasienDaftarGet:{
                     ...INIT_STATE.listLaporanPasienDaftarGet
+                },
+                listLaporanPasienBatalGet:{
+                    ...INIT_STATE.listLaporanPasienBatalGet
+                },
+                listLaporanPasienKunjunganGet:{
+                    ...INIT_STATE.listLaporanPasienKunjunganGet
                 }
             }
         }
@@ -229,6 +251,72 @@ const KendaliDokumen = (state = INIT_STATE, action) => {
                 ...state,
                 listLaporanPasienDaftarGet: {
                     ...state.listLaporanPasienDaftarGet,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case LIST_LAPORAN_PASIEN_BATAL_GET: {
+            return {
+                ...state,
+                listLaporanPasienBatalGet: {
+                    ...state.listLaporanPasienBatalGet,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case LIST_LAPORAN_PASIEN_BATAL_GET_SUCCESS: {
+            return {
+                ...state,
+                listLaporanPasienBatalGet: {
+                    ...state.listLaporanPasienBatalGet,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case LIST_LAPORAN_PASIEN_BATAL_GET_ERROR: {
+            return {
+                ...state,
+                listLaporanPasienBatalGet: {
+                    ...state.listLaporanPasienBatalGet,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case LIST_LAPORAN_PASIEN_KUNJUNGAN_GET: {
+            return {
+                ...state,
+                listLaporanPasienKunjunganGet: {
+                    ...state.listLaporanPasienKunjunganGet,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case LIST_LAPORAN_PASIEN_KUNJUNGAN_GET_SUCCESS: {
+            return {
+                ...state,
+                listLaporanPasienKunjunganGet: {
+                    ...state.listLaporanPasienKunjunganGet,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case LIST_LAPORAN_PASIEN_KUNJUNGAN_GET_ERROR: {
+            return {
+                ...state,
+                listLaporanPasienKunjunganGet: {
+                    ...state.listLaporanPasienKunjunganGet,
                     loading: false,
                     error: action.error,
                 }

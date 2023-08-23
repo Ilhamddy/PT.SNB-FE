@@ -18,7 +18,7 @@ const Footer = () => {
 
                                 </div>
                                 <div className="mt-4">
-                                    <p>Premium Multipurpose Admin & Dashboard Template</p>
+                                    <p>SIMRS SNB</p>
                                     <p>You can build any type of web application like eCommerce, CRM, CMS, Project management apps, Admin Panels, etc using Velzon.</p>
                                 </div>
                             </div>

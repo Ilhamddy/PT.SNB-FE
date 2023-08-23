@@ -17,7 +17,7 @@ const Footer = () => {
                                     <img src={logolight} alt="logo light" height="17" />
                                 </div>
                                 <div className="mt-4">
-                                    <p>Premium Multipurpose Admin & Dashboard Template</p>
+                                    <p>SIMRS SNB</p>
                                     <p className="ff-secondary">You can build any type of web application like eCommerce, CRM, CMS, Project
                                         management apps, Admin Panels, etc using Velzon.</p>
                                 </div>

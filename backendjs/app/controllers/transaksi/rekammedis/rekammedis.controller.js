@@ -320,12 +320,51 @@ async function getListLaporanDaftarPasien(req, res) {
         // const result = await pool.query(queries.qResult, [start,end,search]) //,instalasi,unit,rekanan,pegawai
         const result = await queryPromise2(`select td.noregistrasi,td.norec,td.nocmfk,
         to_char(td.tglregistrasi,'dd Month YYYY') as tglregistrasi,to_char(td.tglpulang,'dd Month YYYY') as tglpulang,mp.namapasien,
-        mi.namainstalasi,mu.namaunit,mp.nocm,mr.namarekanan,mp2.namalengkap  from t_daftarpasien td 
+        mi.namainstalasi,mu.namaunit,mp.nocm,mr.namarekanan,mp2.namalengkap,td.statuspasien  from t_daftarpasien td 
         left join m_pasien mp on mp.id=td.nocmfk
         left join m_instalasi mi on mi.id=td.objectinstalasifk
         left join m_unit mu on mu.id=td.objectunitlastfk
         left join m_rekanan mr on td.objectpenjaminfk=mr.id
         left join m_pegawai mp2 on mp2.id=td.objectpegawaifk
+        where td.tglregistrasi between '${start}' and '${end}' and td.statusenabled=true and td.noregistrasi ilike '${search}'
+        ${instalasi} ${unit} ${rekanan} ${pegawai}
+        `);
+
+        res.status(200).send({
+            data: result.rows,
+            status: "success",
+            success: true,
+        });
+
+    } catch (error) {
+        res.status(500).send({ message: error });
+    }
+
+}
+
+async function getListLaporanPasienBatal(req, res) {
+    try {
+        let start = (new Date(req.query.start)).toISOString();
+        let end = (new Date(req.query.end)).toISOString();
+        let search = `%${req.query.search}%`
+        let instalasi =req.query.instalasi !== '' ? ` and td.objectinstalasifk = '${req.query.instalasi}'` : '';
+        let unit = req.query.unit !== '' ? ` and td.objectunitlastfk = '${req.query.unit}'` : '';
+        let rekanan = req.query.rekanan !== '' ? ` and td.objectpenjaminfk = '${req.query.rekanan}'` : '';
+        let pegawai = req.query.pegawai !== '' ? ` and td.objectpegawaifk = '${req.query.pegawai}'` : '';
+        console.log(start,end,search,instalasi,unit,rekanan,pegawai)
+        
+        // const result = await pool.query(queries.qResult, [start,end,search]) //,instalasi,unit,rekanan,pegawai
+        const result = await queryPromise2(`select tb.norec,tb.alasanbatal,to_char(tb.tglbatal,'dd Month YYYY HH:MM') as tglbatal,td.noregistrasi,td.norec,td.nocmfk,
+        to_char(td.tglregistrasi,'dd Month YYYY') as tglregistrasi,to_char(td.tglpulang,'dd Month YYYY') as tglpulang,mp.namapasien,
+        mi.namainstalasi,mu.namaunit,mp.nocm,mr.namarekanan,mp2.namalengkap,
+        mp3.namalengkap as pegawaipembatal from t_batalpasien tb 
+        join t_daftarpasien td on td.norec=tb.objectdaftarpasienfk 
+        left join m_pasien mp on mp.id=td.nocmfk
+        left join m_instalasi mi on mi.id=td.objectinstalasifk
+        left join m_unit mu on mu.id=td.objectunitlastfk
+        left join m_rekanan mr on td.objectpenjaminfk=mr.id
+        left join m_pegawai mp2 on mp2.id=td.objectpegawaifk
+        left join m_pegawai mp3 on mp3.id=tb.objectpegawaifk 
         where td.tglregistrasi between '${start}' and '${end}' and td.noregistrasi ilike '${search}'
         ${instalasi} ${unit} ${rekanan} ${pegawai}
         `);
@@ -342,10 +381,50 @@ async function getListLaporanDaftarPasien(req, res) {
 
 }
 
+async function getListLaporanPasienKunjungan(req, res) {
+    try {
+        let start = (new Date(req.query.start)).toISOString();
+        let end = (new Date(req.query.end)).toISOString();
+        let search = `%${req.query.search}%`
+        let instalasi =req.query.instalasi !== '' ? ` and mu.objectinstalasifk = '${req.query.instalasi}'` : '';
+        let unit = req.query.unit !== '' ? ` and ta.objectunitfk = '${req.query.unit}'` : '';
+        let rekanan = req.query.rekanan !== '' ? ` and td.objectpenjaminfk = '${req.query.rekanan}'` : '';
+        let pegawai = req.query.pegawai !== '' ? ` and td.objectpegawaifk = '${req.query.pegawai}'` : '';
+        console.log(start,end,search,instalasi,unit,rekanan,pegawai)
+        
+        // const result = await pool.query(queries.qResult, [start,end,search]) //,instalasi,unit,rekanan,pegawai
+        const result = await queryPromise2(`select td.noregistrasi,td.norec,td.nocmfk,
+        to_char(td.tglregistrasi,'dd Month YYYY') as tglregistrasi,to_char(td.tglpulang,'dd Month YYYY') as tglpulang,mp.namapasien,
+        mi.namainstalasi,mu.namaunit,mp.nocm,mr.namarekanan,mp2.namalengkap  from t_daftarpasien td 
+        left join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk=td.norec 
+        left join m_pasien mp on mp.id=td.nocmfk
+        left join m_unit mu on mu.id=ta.objectunitfk
+        left join m_instalasi mi on mi.id=mu.objectinstalasifk
+        left join m_rekanan mr on td.objectpenjaminfk=mr.id
+        left join m_pegawai mp2 on mp2.id=td.objectpegawaifk
+        where td.tglregistrasi between '${start}' and '${end}' and td.statusenabled=true and td.noregistrasi ilike '${search}'
+        ${instalasi} ${unit} ${rekanan} ${pegawai}
+        `);
+
+        res.status(200).send({
+            data: result.rows,
+            status: "success",
+            success: true,
+        });
+
+    } catch (error) {
+        res.status(500).send({ message: error });
+    }
+
+}
+
+
 export default {
     getListDaftarDokumenRekammedis,
     getWidgetListDaftarDokumenRekammedis,
     saveDokumenRekammedis,
     getComboLaporanRekammedis,
-    getListLaporanDaftarPasien
+    getListLaporanDaftarPasien,
+    getListLaporanPasienBatal,
+    getListLaporanPasienKunjungan
 };
