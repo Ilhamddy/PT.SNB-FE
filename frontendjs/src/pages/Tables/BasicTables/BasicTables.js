@@ -1455,7 +1455,7 @@ const BasicTables = () => {
                                                         <th scope="col">#</th>
                                                         <th scope="col">Name</th>
                                                         <th scope="col">Position</th>
-                                                        <th scope="col">Department</th>
+                                                        <th scope="col">Instalasi</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>

@@ -108,7 +108,7 @@ const KendaliDokumen = () => {
         //     width: "50px"
         // },
         {
-            name: <span className='font-weight-bold fs-13'>NoCM</span>,
+            name: <span className='font-weight-bold fs-13'>No. RM</span>,
             selector: row => row.nocm,
             sortable: true,
             // selector: row => (<button className="btn btn-sm btn-soft-info" onClick={() => handleClick(dataTtv)}>{row.noregistrasi}</button>),

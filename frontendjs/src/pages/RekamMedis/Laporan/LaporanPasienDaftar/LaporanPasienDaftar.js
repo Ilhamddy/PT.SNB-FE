@@ -99,7 +99,7 @@ const LaporanPasienDaftar = () => {
     }
     const columns = [
         {
-            name: <span className='font-weight-bold fs-13'>NoCM</span>,
+            name: <span className='font-weight-bold fs-13'>No. RM</span>,
             selector: row => row.nocm,
             sortable: true,
             // selector: row => (<button className="btn btn-sm btn-soft-info" onClick={() => handleClick(dataTtv)}>{row.noregistrasi}</button>),
@@ -254,7 +254,7 @@ const LaporanPasienDaftar = () => {
                                     <Col lg={3}>
                                         <Col lg={12}>
                                             <div className="mt-2">
-                                                <Label style={{ color: "black" }} htmlFor="tipediagnosa" className="form-label">Departemen</Label>
+                                                <Label style={{ color: "black" }} htmlFor="tipediagnosa" className="form-label">Instalasi</Label>
                                             </div>
                                         </Col>
                                         <Col lg={12}>
