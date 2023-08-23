@@ -278,6 +278,12 @@ const Navdata = () => {
                         ]);
                     }
                 },
+                {
+                    id: "daftar-pasien-registrasi",
+                    label: "Daftar Pasien Mutasi",
+                    link: "/bGlzdGRhZnRhcnBhc2llbi9kYWZ0YXJwYXNpZW5tdXRhc2k=",
+                    parentId: "listdaftarpasien",
+                },
             ],
         },
         {

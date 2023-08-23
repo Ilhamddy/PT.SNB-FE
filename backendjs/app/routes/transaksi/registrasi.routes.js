@@ -136,4 +136,10 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.saveBatalRegistrasi
     )
+
+    app.get(
+        "/api/transaksi/registrasi/get-list-pasien-mutasi",
+        [authJwt.verifyToken],
+        controller.getListPasienMutasi
+    );
 };

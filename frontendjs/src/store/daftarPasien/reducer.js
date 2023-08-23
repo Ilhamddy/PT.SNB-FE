@@ -34,7 +34,10 @@ import {
     DAFTARPASIEN_REGISTRASI_GET_ERROR,
     WIDGET_DAFTARPASIEN_REGISTRASI_GET,
     WIDGET_DAFTARPASIEN_REGISTRASI_GET_SUCCESS,
-    WIDGET_DAFTARPASIEN_REGISTRASI_GET_ERROR
+    WIDGET_DAFTARPASIEN_REGISTRASI_GET_ERROR,
+    LIST_PASIEN_MUTASI_GET,
+    LIST_PASIEN_MUTASI_GET_SUCCESS,
+    LIST_PASIEN_MUTASI_GET_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -93,6 +96,11 @@ const INIT_STATE = {
         loading: false,
         error: null,
     },
+    listPasienMutasiGet:{
+        data: [],
+        loading: false,
+        error: null,
+    }
 };
 
 const DaftarPasien = (state = INIT_STATE, action) => {
@@ -111,6 +119,9 @@ const DaftarPasien = (state = INIT_STATE, action) => {
                 },
                 widgetdaftarPasienRegistrasiGet:{
                     ...INIT_STATE.widgetdaftarPasienRegistrasiGet
+                },
+                listPasienMutasiGet:{
+                    ...INIT_STATE.listPasienMutasiGet
                 }
             }
         }
@@ -496,6 +507,39 @@ const DaftarPasien = (state = INIT_STATE, action) => {
                 ...state,
                 widgetdaftarPasienRegistrasiGet: {
                     ...state.widgetdaftarPasienRegistrasiGet,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case LIST_PASIEN_MUTASI_GET: {
+            return {
+                ...state,
+                listPasienMutasiGet: {
+                    ...state.listPasienMutasiGet,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case LIST_PASIEN_MUTASI_GET_SUCCESS: {
+            return {
+                ...state,
+                listPasienMutasiGet: {
+                    ...state.listPasienMutasiGet,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case LIST_PASIEN_MUTASI_GET_ERROR: {
+            return {
+                ...state,
+                listPasienMutasiGet: {
+                    ...state.listPasienMutasiGet,
                     loading: false,
                     error: action.error,
                 }
