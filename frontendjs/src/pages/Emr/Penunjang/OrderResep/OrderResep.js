@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { createOrUpdateResepOrder, getObatFromUnit, getOrderResepFromDp } from "../../../../store/emr/action";
 import * as Yup from "yup"
 import { useParams} from "react-router-dom"
+import RiwayatOrder from "./RiwayatOrder";
 
 export const initValueResep = {
     norecap: "",
@@ -957,6 +958,7 @@ const OrderResep = () => {
                     </Col>
                 </Row>
             </Row>
+            <RiwayatOrder />
         </div>
     )
 }
