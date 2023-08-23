@@ -26,7 +26,7 @@ const Diagnosa = () => {
     return (
         <React.Fragment>
             {/* <ToastContainer closeButton={false} /> */}
-            <Row className="gy-6">
+            <Row className="gy-6 p-5">
                 {/* <Form> */}
                     <Row>
                         <Col lg={12}>

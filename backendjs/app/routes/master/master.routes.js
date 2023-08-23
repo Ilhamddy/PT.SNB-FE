@@ -76,4 +76,10 @@ export default function(app) {
       controller.comboStokOpname
     )
 
+    app.get(
+      "/api/master/combobox-resep",
+      [authJwt.verifyToken],
+      controller.comboResep
+    )
+
   };

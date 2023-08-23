@@ -119,7 +119,7 @@ const DaftarPasienRJ = () => {
                         ) :
                             <>
                                 <Link 
-                                    to={`/emr-pasien/${data.norecdp}/${data.norecta}`} 
+                                    to={`/emr-pasien/${data.norecdp}/${data.norecta}/rawat-jalan`} 
                                     className="link-success fs-15" 
                                     id="tooltipTop">
                                     <i className="ri-edit-2-line">

@@ -255,7 +255,7 @@ const OrderRadiologi = () => {
     ];
     return (
         <React.Fragment>
-            <Row className="gy-4">
+            <Row className="gy-4 p-5">
                 <Form
                     onSubmit={(e) => {
                         e.preventDefault();
@@ -483,7 +483,7 @@ const OrderRadiologi = () => {
                                 <CardBody>
                                     <div id="table-gridjs">
                                         <DataTable
-                                        fixedHeader
+                                            fixedHeader
                                             columns={columns}
                                             pagination
                                             // data={searches}

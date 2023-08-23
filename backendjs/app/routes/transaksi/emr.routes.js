@@ -116,5 +116,16 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.updateStatusPulangRJ
     );
-    
+
+    app.get(
+        "/api/transaksi/emr/get-obat-from-unit",
+        [authJwt.verifyToken],
+        controller.getObatFromUnit
+    )
+
+    app.post(
+        "/api/transaksi/emr/create-or-update-emr-resep-order",
+        [authJwt.verifyToken],
+        controller.createOrUpdateEmrResepDokter
+    )
 }

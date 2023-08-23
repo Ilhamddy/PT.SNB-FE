@@ -38,6 +38,8 @@ import queriesJenisSatuan from '../../queries/master/jenissatuan/jenissatuan.que
 import queriesProduk from '../../queries/master/produk/produk.queries'
 import queriesAsalProduk from "../../queries/master/asalproduk/asalproduk.queries"
 import jenisorderbarangQueries from "../../queries/master/jenisorderbarang/jenisorderbarang.queries";
+import queriesSigna from "../../queries/master/signa/signa.queries";
+import queriesKeteranganResep from "../../queries/master/keteranganresep/keteranganresep.queries";
 
 const selectComboBox = (req, res) => {
     try {
@@ -468,6 +470,37 @@ const comboStokOpname = async (req, res) => {
     }
 }
 
+const comboResep = async (req, res) => {
+    try{
+        const pegawai = await pool.query(queriesPegawai.getAll)
+        const unit = await pool.query(queriesUnit.getAll)
+        const signa = await pool.query(queriesSigna.getAll)
+        const keteranganResep = await pool.query(queriesKeteranganResep.getAll)
+        const sediaan = await pool.query(queriesSediaan.getAll)
+        let tempres = {
+            pegawai: pegawai.rows,
+            unit: unit.rows,
+            signa: signa.rows,
+            keteranganresep: keteranganResep.rows,
+            sediaan: sediaan.rows
+        }
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+        });
+    }catch(error){
+        console.error("===get combo stok resep error=== ")
+        console.error(error)
+        res.status(500).send({
+            data: [],
+            status: "error",
+            success: false,
+        });
+    }
+}
+
+
 export default {
     selectComboBox,
     desaKelurahan,
@@ -479,5 +512,6 @@ export default {
     comboSettingProduk,
     comboPenerimaanBarang,
     comboDistribusiOrder,
-    comboStokOpname
+    comboStokOpname,
+    comboResep
 };

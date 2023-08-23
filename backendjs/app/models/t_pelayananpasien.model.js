@@ -1,5 +1,3 @@
-// import t_notapelayananpasien from "./t_notapelayananpasien";
-
 /**
  * @param {import("sequelize").Sequelize} sequelize
  * @param {import(".").SequelizeInstance} Sequelize
@@ -62,8 +60,5 @@ export default (sequelize, Sequelize) => {
         createdAt: false,
         updatedAt: false,
     });
-    // t_pelayananpasien.belongsTo(t_notapelayananpasien(sequelize, Sequelize), 
-    //     { foreignKey: "objectnotapelayananpasienfk" }
-    // )
     return t_pelayananpasien;
 };

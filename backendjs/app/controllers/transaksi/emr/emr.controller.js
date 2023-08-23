@@ -1,13 +1,19 @@
 import pool from "../../../config/dbcon.query";
 import * as uuid from 'uuid'
 import queries from '../../../queries/transaksi/registrasi.queries';
+import { qGetObatFromUnit } from "../../../queries/emr/emr.queries";
 import db from "../../../models";
+import {
+    createTransaction
+} from "../../../utils/dbutils";
 
 const t_emrpasien = db.t_emrpasien
 const t_ttv = db.t_ttv
 const t_cppt = db.t_cppt
 const t_diagnosapasien = db.t_diagnosapasien
 const t_diagnosatindakan = db.t_diagnosatindakan
+const t_orderresep = db.t_orderresep
+const t_orderresepdetail = db.t_orderresepdetail
 
 function formatDate(date) {
     var d = new Date(date),
@@ -957,19 +963,9 @@ async function updateTaskid(req, res) {
 }
 
 async function updateStatusPulangRJ(req, res) {
-    let transaction = null;
-    try{
-        transaction = await db.sequelize.transaction();
-    }catch(e){
-        console.error(e)
-        res.status(201).send({
-            status: e.message,
-            success: false,
-            msg: 'Simpan Gagal',
-            code: 201
-        });
-    }
+    const [transaction, errorTransaction] = await createTransaction()
     try {
+        if(errorTransaction) return
         const daftarpasien = await db.t_daftarpasien.update({
             objectstatuspulangfk: req.body.statuspulang,
             tglpulang: new Date()
@@ -1026,7 +1022,113 @@ function getUmur (dateOfBirth, tillDate) {
       age.months += 12;
     }
     return age;
-  }
+}
+
+const getObatFromUnit = async (req, res) => {
+    try{
+        const {idunit} = req.query
+        let dataGet = await pool.query(qGetObatFromUnit, [idunit])
+        const tempres = {
+            obat: dataGet.rows
+        }
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+        });
+    }catch(error){
+        console.error(error)
+        res.status(500).send({
+            data: error,
+            status: "error",
+            success: false,
+        });
+    }
+}
+
+const createOrUpdateEmrResepDokter = async (req, res) => {
+    const [transaction, errorTransaction] = await createTransaction(db, res)
+    try{
+        if(errorTransaction) return
+        const body = req.body
+        let norecorderresep = req.body.norecorderresep
+        let createdOrUpdated = null
+        if(!norecorderresep){
+            norecorderresep = uuid.v4().substring(0, 32)
+            const date = new Date()
+            const kodeOrder = "O" + date.getFullYear() 
+            + (date.getMonth() + 1) 
+            + date.getDate() 
+            + date.getHours() 
+            + date.getMinutes()
+            const created = await t_orderresep.create({
+                norec: norecorderresep,
+                kdprofile: 0,
+                statusenabled: true,
+                kodeexternal: kodeOrder,
+                namaexternal: kodeOrder,
+                reportdisplay: kodeOrder,
+                objectantreanpemeriksaanfk: body.norecap,
+                objectpegawaifk: req.idPegawai,
+                tglinput: new Date(),
+                objectunitasalfk: body.unittujuan,
+                no_order: kodeOrder,
+                objectdepotujuanfk: body.unittujuan
+            }, {
+                transaction: transaction
+            })
+            createdOrUpdated = created.toJSON()
+        }else{
+            const [_, updated] = await t_orderresep.update({
+                norec: norecorderresep,
+                kdprofile: 0,
+                statusenabled: true,
+                objectantreanpemeriksaanfk: body.antreanpemeriksaan,
+                objectpegawaifk: req.idPegawai,
+                tglinput: new Date(),
+                objectunitasalfk: body.unittujuan,
+                objectdepotujuanfk: body.unittujuan
+            }, {
+                where: {
+                    norec: norecorderresep
+                },
+                transaction: transaction,
+                returning: true,
+            })
+            createdOrUpdated = updated[0].toJSON();
+        }
+        const {createdOrUpdatedDetailOrder} = 
+        await hCreateOrUpdateDetailOrder(
+            req, 
+            res, 
+            transaction, 
+            {
+                norecorderresep: norecorderresep
+            }
+        )
+        await transaction.commit()
+        const tempres = {
+            orderresep: createdOrUpdated,
+            detailorder: createdOrUpdatedDetailOrder
+        }
+        res.status(200).send({
+            code: 200,
+            data: tempres,
+            status: "success",
+            msg: "sukses create or update resep",
+            success: true,
+        });
+    }catch(error){
+        console.error(error)
+        await transaction.rollback()
+        res.status(500).send({
+            data: error,
+            status: "error",
+            msg: "gagal create or update resep",
+            success: false,
+        });
+    }
+}
 
 export default {
     saveEmrPasienTtv,
@@ -1047,5 +1149,146 @@ export default {
     deleteEmrPasienDiagnosaix,
     saveEmrPasienKonsul,
     updateTaskid,
-    updateStatusPulangRJ
+    updateStatusPulangRJ,
+    getObatFromUnit,
+    createOrUpdateEmrResepDokter
 };
+
+
+const hCreateOrUpdateDetailOrder = async (
+    req, 
+    res, 
+    transaction,
+    {
+        norecorderresep
+    }
+) => {
+    const resep = req.body.resep
+    let createdOrUpdatedDetailOrder = await Promise.all(
+        resep.map(async (item) => {
+            if(item.racikan.length > 0){
+                // untuk racikan, maka masukkan sub item
+                let createdOrUpdatedRacikans = []
+                createdOrUpdatedRacikans = await Promise.all(
+                    item.racikan.map(async (subItem) => {
+                        let norecresepsub = subItem.norecresep
+                        let createdOrUpdated
+                        if(!norecresepsub){
+                            norecresepsub = uuid.v4().substring(0, 32);
+                            const {created} = await hCreateResep(
+                                norecorderresep, 
+                                item, 
+                                subItem, 
+                                transaction
+                            )
+                            createdOrUpdated = created
+                        }else{
+                            const {updated} = await hUpdateResep(
+                                norecorderresep,
+                                norecresepsub,
+                                item,
+                                subItem,
+                                transaction
+                            )
+                            createdOrUpdated = updated;
+                        }
+                        return createdOrUpdated
+                    })
+                )
+                return createdOrUpdatedRacikans
+            }
+            // jika bukan racikan, maka tidak perlu subitem
+            let norecresep = item.norecresep
+            let createdOrUpdatedObat
+            if(!norecresep){
+                norecresep = uuid.v4().substring(0, 32);
+                const {created} = await hCreateResep(
+                    norecorderresep,
+                    item,
+                    null,
+                    transaction
+                )
+                createdOrUpdatedObat = created
+            }else{
+                const {updated} = await hUpdateResep(
+                    norecorderresep,
+                    norecresep,
+                    item,
+                    null,
+                    transaction
+                )
+                createdOrUpdatedObat = updated
+            }
+            return createdOrUpdatedObat
+        })
+    )
+    createdOrUpdatedDetailOrder 
+        = createdOrUpdatedDetailOrder.flat(1)
+    return {createdOrUpdatedDetailOrder}
+}
+
+
+const hCreateResep = async (norecorderresep, item, subItem, transaction) => {
+    // jika bukan subitem, maka yang digunakan adalah item
+    let itemUsed = subItem || item
+    let created = await t_orderresepdetail.create({
+        norec: uuid.v4().substring(0, 32),
+        kdprofile: 0,
+        statusenabled: true,
+        kodeexternal: "",
+        namaexternal: itemUsed.namaobat,
+        reportdisplay: itemUsed.namaobat,
+        objectorderresepfk: norecorderresep,
+        kode_r: item.koder,
+        objectprodukfk: itemUsed.obat,
+        qty: itemUsed.qty || 0,
+        objectsediaanfk: item.sediaan,
+        harga: itemUsed.harga || 0,
+        total: itemUsed.total ||0,
+        objectsignafk: item.signa,
+        objectketeranganresepfk: item.keterangan,
+        qtyracikan: item.qty,
+        qtypembulatan: itemUsed.qtypembulatan,
+        qtyjumlahracikan: itemUsed.qtyjumlahracikan,
+        // harus koder dari subitem
+        kode_r_tambahan: subItem?.koder || null
+    }, {
+        transaction: transaction
+    })
+    created = created.toJSON()
+    return {created, norecresep: created.norec}
+}
+
+const hUpdateResep = async (norecorderresep, norecresep, item, subItem, transaction) => {
+    // jika bukan subitem, maka yang digunakan adalah item
+    let itemUsed = subItem || item
+    let [_, updated] = await t_orderresepdetail.update({
+        kdprofile: 0,
+        statusenabled: true,
+        kodeexternal: "",
+        namaexternal: itemUsed.namaobat,
+        reportdisplay: itemUsed.namaobat,
+        objectorderresepfk: norecorderresep,
+        kode_r: itemUsed.koder,
+        objectprodukfk: itemUsed.obat,
+        qty: itemUsed.qty || 0,
+        objectsediaanfk: itemUsed.sediaan,
+        harga: itemUsed.harga || 0,
+        total: itemUsed.total ||0,
+        objectsignafk: itemUsed.signa,
+        objectketeranganresepfk: itemUsed.keterangan,
+        qtyracikan: itemUsed.qty,
+        qtypembulatan: itemUsed.qtypembulatan,
+        // harus koder dari subitem
+        kode_r_tambahan: subItem?.koder,
+        qtyjumlahracikan: itemUsed.qtyjumlahracikan,
+    }, {
+        where: {
+            norec: norecresep
+        },
+        transaction: transaction,
+        returning: true 
+    })
+    updated = updated[0].toJSON();
+    return {updated, norecresep: norecresep}
+}

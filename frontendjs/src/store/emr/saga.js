@@ -11,7 +11,9 @@ import {
     COMBO_HISTORY_UNIT_GET, COMBO_TINDAKAN_GET,
     COMBO_JENIS_PELAKSANA_GET,COMBO_NAMA_PELAKSANA_GET,
     TINDAKAN_SAVE, LIST_TAGIHAN, LIST_TAGIHAN_PRINT,
-    COMBO_TINDAKAN_RADIOLOGI_GET
+    COMBO_TINDAKAN_RADIOLOGI_GET,
+    GET_OBAT_FROM_UNIT,
+    CREATE_OR_UPDATE_RESEP_ORDER
 } from "./actionType";
 
 import {
@@ -35,7 +37,11 @@ import {
     comboNamaPelaksanaGetSuccess,comboNamaPelaksanaGetError,
     tindakanSaveSuccess,tindakanSaveError,
     listTagihanGetSuccess,listTagihanGetError, listTagihanPrintGet, listTagihanPrintGetSuccess, listTagihanPrintGetError,
-    comboTindakanRadiologiGetGetSuccess, comboTindakanRadiologiGetGetError
+    comboTindakanRadiologiGetGetSuccess, comboTindakanRadiologiGetGetError,
+    getObatFromUnitSuccess,
+    getObatFromUnitError,
+    createOrUpdateResepOrderSuccess,
+    createOrUpdateResepOrderError,
 } from "./action";
 
 import { toast } from 'react-toastify';
@@ -510,6 +516,10 @@ function* onListTagihan({ payload: { param } }) {
     }
 }
 
+export function* watchonListTagihan() {
+    yield takeEvery(LIST_TAGIHAN, onListTagihan);
+}
+
 function* onListTagihanPrint({payload: { norecdp}}) {
     try {
         let response = null;
@@ -520,12 +530,40 @@ function* onListTagihanPrint({payload: { norecdp}}) {
     }
 }
 
-export function* watchonListTagihan() {
-    yield takeEvery(LIST_TAGIHAN, onListTagihan);
-}
-
 export function* watchonListTagihanPrint() {
     yield takeEvery(LIST_TAGIHAN_PRINT, onListTagihanPrint);
+}
+
+function* onGetObatFromUnit({ payload: { queries } }) {
+    try {
+        let response = null;
+        response = yield call(serviceEmr.getObatFromUnit, queries);
+        yield put(getObatFromUnitSuccess(response.data));
+    } catch (error) {
+        yield put(getObatFromUnitError(error));
+    }
+}
+
+export function* watchGetObatFromUnit() {
+    yield takeEvery(GET_OBAT_FROM_UNIT, onGetObatFromUnit);
+}
+
+function* onCreateOrUpdateResepOrder({ payload: { data, callback } }) {
+    try {
+        let response = null;
+        response = yield call(serviceEmr.createOrUpdateResepOrder, data);
+        yield put(createOrUpdateResepOrderSuccess(response.data));
+        callback && callback()
+        toast.success(response.msg, { autoClose: 3000 });
+    } catch (error) {
+        yield put(createOrUpdateResepOrderError(error));
+        console.error(error)
+        toast.error("error", { autoClose: 3000 })
+    }
+}
+
+export function* watchCreateOrUpdateResepOrder() {
+    yield takeEvery(CREATE_OR_UPDATE_RESEP_ORDER, onCreateOrUpdateResepOrder);
 }
 
 function* emrSaga() {
@@ -554,7 +592,9 @@ function* emrSaga() {
         fork(watchonTindakanSave),
         fork(watchonListTagihan),
         fork(watchonListTagihanPrint),
-        fork(watchonGetComboTindakanRadiologi)
+        fork(watchonGetComboTindakanRadiologi),
+        fork(watchGetObatFromUnit),
+        fork(watchCreateOrUpdateResepOrder),
     ]);
 }
 

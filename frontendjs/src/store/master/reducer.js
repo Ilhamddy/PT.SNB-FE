@@ -42,6 +42,9 @@ import {
     GET_COMBO_STOK_OPNAME,
     GET_COMBO_STOK_OPNAME_SUCCESS,
     GET_COMBO_STOK_OPNAME_ERROR,
+    GET_COMBO_RESEP,
+    GET_COMBO_RESEP_SUCCESS,
+    GET_COMBO_RESEP_ERROR,
 } from "./actionType";
 
 const INIT_STATE = {
@@ -114,7 +117,12 @@ const INIT_STATE = {
         data: [],
         loading: false,
         error: null,
-    }
+    },
+    getComboResep: {
+        data: [],
+        loading: false,
+        error: null,
+    },
 };
 
 const Master = (state = INIT_STATE, action) => {
@@ -590,6 +598,41 @@ const Master = (state = INIT_STATE, action) => {
             }
         }
 
+        case GET_COMBO_RESEP: {
+            return {
+                ...state,
+                getComboResep: {
+                    ...state.getComboResep,
+                    loading: true,
+                    data: [],
+                    error: null,
+                }
+            }
+        }
+
+        case GET_COMBO_RESEP_SUCCESS: {
+            return {
+                ...state,
+                getComboResep: {
+                    ...state.getComboResep,
+                    data: action.payload,
+                    error: null,
+                    loading: false,
+                }
+            }
+        }
+
+        case GET_COMBO_RESEP_ERROR: {
+            return {
+                ...state,
+                getComboResep: {
+                    ...state.getComboResep,
+                    loading: false,
+                    data: [],
+                    error: action.error,
+                }
+            }
+        }
 
         default: {
             return { ...state };

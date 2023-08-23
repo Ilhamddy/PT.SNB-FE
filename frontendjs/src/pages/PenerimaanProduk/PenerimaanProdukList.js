@@ -25,6 +25,7 @@ import {
     pesananSudahImg 
 } from "./imagesementara";
 import LoadingTable from "../../Components/Table/LoadingTable";
+import NoDataTable from "../../Components/Table/NoDataTable";
 
 
 
@@ -172,6 +173,7 @@ const PenerimaanProdukList = () => {
                                 expandableRows
                                 expandableRowsComponent={ExpandablePenerimaan}
                                 progressComponent={<LoadingTable />}
+                                noDataComponent={<NoDataTable dataName={"permintaan"}/>}
                             />
                         </div>
                     </Row>

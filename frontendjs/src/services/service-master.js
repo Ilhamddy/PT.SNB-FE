@@ -58,5 +58,10 @@ export default class ServiceMaster {
     getComboStokOpname = async () => {
         return await api.get(`/master/combobox-stok-opname`);
     }
+
+    getComboResep = async () => {
+        return await api.get(`/master/combobox-resep`);
+    }
+    
     
 }

@@ -75,6 +75,12 @@ import {
     LIST_TAGIHAN_PRINT,
     LIST_TAGIHAN_PRINT_SUCCESS,
     LIST_TAGIHAN_PRINT_ERROR,
+    GET_OBAT_FROM_UNIT,
+    GET_OBAT_FROM_UNIT_SUCCESS,
+    GET_OBAT_FROM_UNIT_ERROR,
+    CREATE_OR_UPDATE_RESEP_ORDER,
+    CREATE_OR_UPDATE_RESEP_ORDER_SUCCESS,
+    CREATE_OR_UPDATE_RESEP_ORDER_ERROR,
 } from "./actionType";
 
 export const emrResetForm = () => ({
@@ -472,5 +478,35 @@ export const listTagihanPrintGetSuccess = (data) => ({
 
 export const listTagihanPrintGetError = (error) => ({
     type: LIST_TAGIHAN_PRINT_ERROR,
+    payload: error,
+});
+
+export const getObatFromUnit = (queries) => ({
+    type: GET_OBAT_FROM_UNIT,
+    payload: { queries: queries },
+});
+
+export const getObatFromUnitSuccess = (data) => ({
+    type: GET_OBAT_FROM_UNIT_SUCCESS,
+    payload: data,
+});
+
+export const getObatFromUnitError = (error) => ({
+    type: GET_OBAT_FROM_UNIT_ERROR,
+    payload: error,
+});
+
+export const createOrUpdateResepOrder = (data, callback) => ({
+    type: CREATE_OR_UPDATE_RESEP_ORDER,
+    payload: { data: data, callback: callback },
+});
+
+export const createOrUpdateResepOrderSuccess = (data, callback) => ({
+    type: CREATE_OR_UPDATE_RESEP_ORDER_SUCCESS,
+    payload: { data: data, callback: callback },
+});
+
+export const createOrUpdateResepOrderError = (error) => ({
+    type: CREATE_OR_UPDATE_RESEP_ORDER_ERROR,
     payload: error,
 });
