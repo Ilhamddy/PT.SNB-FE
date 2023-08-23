@@ -218,7 +218,7 @@ const Navdata = () => {
         },
         {
             id: "listdaftarpasien",
-            label: "ListDaftarPasien",
+            label: "List Daftar Pasien",
             icon: "lab la-delicious",
             link: "/#",
             click: function (e) {
@@ -230,7 +230,7 @@ const Navdata = () => {
             stateVariables: isListDaftarPasien,
             isAllowed: () => {
                 return isAllowedAccess(getUserPermissions(), [
-                    "REGISTRASI_VIEW",
+                    "REGISTRASI_VIEW"
                 ]);
             },
             subItems: [
@@ -241,7 +241,7 @@ const Navdata = () => {
                     parentId: "listdaftarpasien",
                     isAllowed: () => {
                         return isAllowedAccess(getUserPermissions(), [
-                            "REGISTRASI_VIEW",
+                            "REGISTRASI_VIEW"
                         ]);
                     }
                 },
@@ -347,7 +347,7 @@ const Navdata = () => {
             stateVariables: isRekamMedis,
             isAllowed: () => {
                 return isAllowedAccess(getUserPermissions(), [
-                    "REGISTRASI_VIEW",
+                    "REGISTRASI_VIEW","REKAMMEDIS_VIEW"
                 ]);
             },
             subItems: [
@@ -431,7 +431,7 @@ const Navdata = () => {
             stateVariables: isRadiologi,
             isAllowed: () => {
                 return isAllowedAccess(getUserPermissions(), [
-                    "REGISTRASI_VIEW",
+                    "REGISTRASI_VIEW","RADIOLOGI_VIEW"
                 ]);
             },
             subItems: [
@@ -473,7 +473,7 @@ const Navdata = () => {
             stateVariables: isLaboratorium,
             isAllowed: () => {
                 return isAllowedAccess(getUserPermissions(), [
-                    "REGISTRASI_VIEW",
+                    "REGISTRASI_VIEW","LABORATORIUM_VIEW"
                 ]);
             },
             subItems: [
@@ -526,7 +526,7 @@ const Navdata = () => {
             stateVariables: isCasemix,
             isAllowed: () => {
                 return isAllowedAccess(getUserPermissions(), [
-                    "REGISTRASI_VIEW",
+                    "REGISTRASI_VIEW","REKAMMEDIS_VIEW"
                 ]);
             },
             subItems: [
@@ -629,7 +629,65 @@ const Navdata = () => {
                 },
             ]
         },
-        
+        // loket.rj
+        {
+            id: "loket_rj",
+            label: "List Daftar Pasien",
+            icon: "lab la-delicious",
+            link: "/#",
+            click: function (e) {
+                e.preventDefault();
+                setListDaftarPasien(!isListDaftarPasien);
+                setIscurrentState('ListDaftarPasien');
+                updateIconSidebar(e);
+            },
+            stateVariables: isListDaftarPasien,
+            isAllowed: () => {
+                return isAllowedAccess(getUserPermissions(), [
+                    "RAWAT_JALAN_VIEW"
+                ]);
+            },
+            subItems: [
+                {
+                    id: "registrasi-pasien-lama",
+                    label: "Daftar Pasien Rawat Jalan",
+                    link: "/listdaftarpasien/daftar-pasien-rj",
+                    parentId: "listdaftarpasien",
+                    // isAllowed: () => {
+                    //     return isAllowedAccess(getUserPermissions(), [
+                    //         "REGISTRASI_VIEW",
+                    //     ]);
+                    // }
+                },
+            ],
+        },
+        // loket.ri
+        {
+            id: "loket_ri",
+            label: "List Daftar Pasien",
+            icon: "lab la-delicious",
+            link: "/#",
+            click: function (e) {
+                e.preventDefault();
+                setListDaftarPasien(!isListDaftarPasien);
+                setIscurrentState('ListDaftarPasien');
+                updateIconSidebar(e);
+            },
+            stateVariables: isListDaftarPasien,
+            isAllowed: () => {
+                return isAllowedAccess(getUserPermissions(), [
+                    "RAWAT_INAP_VIEW"
+                ]);
+            },
+            subItems: [
+                {
+                    id: "registrasi-pasien-lama",
+                    label: "Daftar Pasien Rawat Inap",
+                    link: "/listdaftarpasien/daftar-pasien-ri",
+                    parentId: "listdaftarpasien",
+                },
+            ],
+        },
     ];
     return <React.Fragment>{menuItems}</React.Fragment>;
 };

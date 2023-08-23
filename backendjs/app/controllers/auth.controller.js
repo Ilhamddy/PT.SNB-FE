@@ -29,9 +29,10 @@ const signup = (req, res) => {
       if (req.body.roles) {
         Role.findAll({
           where: {
-            name: {
-              [Op.or]: req.body.roles
-            }
+            // name: {
+            //   [Op.or]: req.body.roles
+            // }
+            id: req.body.roles
           }
         }).then(roles => {
           user.setRoles(roles).then(() => {
