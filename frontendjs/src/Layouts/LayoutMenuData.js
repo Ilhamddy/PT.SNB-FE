@@ -557,7 +557,7 @@ const Navdata = () => {
             stateVariables: isGudang,
             isAllowed: () => {
                 return isAllowedAccess(getUserPermissions(), [
-                    "REGISTRASI_VIEW",
+                    "REGISTRASI_VIEW","GUDANG_FARMASI_VIEW"
                 ]);
             },
             subItems: [
