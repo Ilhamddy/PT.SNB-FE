@@ -1,7 +1,7 @@
 import pool from "../../../config/dbcon.query";
 import * as uuid from 'uuid'
 import queries from '../../../queries/transaksi/registrasi.queries';
-import { qGetObatFromUnit } from "../../../queries/emr/emr.queries";
+import { qGetObatFromUnit, qGetOrderResepFromDP } from "../../../queries/emr/emr.queries";
 import db from "../../../models";
 import {
     createTransaction
@@ -1130,6 +1130,86 @@ const createOrUpdateEmrResepDokter = async (req, res) => {
     }
 }
 
+export const initValueResep = {
+    norecap: "",
+    norecresep: "",
+    obat: "",
+    namaobat: "",
+    satuanobat: "",
+    namasatuan: "",
+    koder: 1,
+    qty: "",
+    qtyracikan: "",
+    qtypembulatan: "",
+    qtyjumlahracikan: "",
+    sediaan: "",
+    namasediaan: "",
+    harga: "",
+    total: "",
+    signa: "",
+    keterangan: "",
+    namaketerangan: "",
+    racikan: []
+}
+
+const getOrderResepFromDP = async (req, res) => {
+    try{
+        const {norecdp} = req.query
+
+        let dataOrders = await pool.query(qGetOrderResepFromDP, [norecdp])
+        dataOrders = dataOrders.rows
+        dataOrders = dataOrders.map((order) => {
+            let newOrder = {...order}
+            const newOrdersResep = []
+
+            newOrder.resep.map((resep) => {
+                const newResep = {...resep}
+                if(newResep.kodertambahan){
+                    const findResep = newOrdersResep.find((findItem) => {
+                        return findItem.koder === newResep.koder
+                    })
+                    if(!findResep){
+                        const valueResepNew = {...initValueResep}
+                        valueResepNew.qty = newResep.qtyjumlahracikan
+                        valueResepNew.sediaan = newResep.sediaan
+                        valueResepNew.namasediaan = newResep.namasediaan
+                        valueResepNew.signa = newResep.signa
+                        valueResepNew.keterangan = newResep.keterangan
+                        valueResepNew.namaketerangan = newResep.namaketerangan
+                        valueResepNew.racikan = [newResep]
+                        newOrdersResep.push(valueResepNew)
+                    }else{
+                        findResep.racikan = [...findResep.racikan, newResep]
+                    }
+                }else{
+                    newOrdersResep.push(newResep)
+                }
+            })
+            newOrder.resep = newOrdersResep
+            return newOrder
+        })
+        const tempres = {
+            order: dataOrders
+        }
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+            msg: "sukses get resep from dp"
+        });
+    }catch(error){
+        console.error("== gagal get Resep from DP")
+        console.error(error)
+        res.status(500).send({
+            data: error,
+            status: "error",
+            success: false,
+            msg: "gagal get resep from dp"
+        })
+    }
+}
+
+
 export default {
     saveEmrPasienTtv,
     getListTtv,
@@ -1151,7 +1231,8 @@ export default {
     updateTaskid,
     updateStatusPulangRJ,
     getObatFromUnit,
-    createOrUpdateEmrResepDokter
+    createOrUpdateEmrResepDokter,
+    getOrderResepFromDP
 };
 
 

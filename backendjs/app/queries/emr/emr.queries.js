@@ -31,6 +31,59 @@ GROUP BY
     msd.sediaan
 `
 
+const qGetOrderResepFromDP = `
+SELECT
+    tor.norec AS norecorder,
+    mpeg.id AS dokter,
+    mpeg.namalengkap AS namadokter,
+    mu.id AS unittujuan,
+    mu.namaunit AS namaunittujuan,
+    tor.no_order AS noorder,
+    tor.tglinput AS tglinput,
+    json_agg(
+        json_build_object(
+            'norecap', tap.norec,
+            'norecresep', tord.norec,
+            'obat', tord.objectprodukfk,
+            'namaobat', mp.namaproduk,
+            'satuanobat', ms.id,
+            'namasatuan', ms.satuan,
+            'koder', tord.kode_r,
+            'qty', tord.qty,
+            'qtyracikan', tord.qtyracikan,
+            'qtypembulatan', tord.qtypembulatan,
+            'sediaan', tord.objectsediaanfk,
+            'namasediaan', msed.sediaan,
+            'harga', tord.harga,
+            'total', tord.total,
+            'signa', tord.objectsignafk,
+            'namasigna', msig.reportdisplay,
+            'keterangan', tord.objectketeranganresepfk,
+            'namaketerangan', mket.reportdisplay,
+            'kodertambahan', tord.kode_r_tambahan
+        )
+    ) AS resep
+FROM t_daftarpasien tdp
+    LEFT JOIN t_antreanpemeriksaan tap ON tdp.norec = tap.objectdaftarpasienfk
+    LEFT JOIN t_orderresep tor ON tor.objectantreanpemeriksaanfk = tap.norec
+    LEFT JOIN t_orderresepdetail tord ON tord.objectorderresepfk = tor.norec
+    LEFT JOIN m_pegawai mpeg ON mpeg.id = tor.objectpegawaifk
+    LEFT JOIN m_unit mu ON mu.id = tor.objectdepotujuanfk
+    LEFT JOIN m_produk mp ON mp.id = tord.objectprodukfk
+    LEFT JOIN m_satuan ms ON ms.id = mp.objectsatuanstandarfk
+    LEFT JOIN m_sediaan msed ON msed.id = mp.objectsediaanfk
+    LEFT JOIN m_keteranganresep mket ON mket.id = tord.objectketeranganresepfk
+    LEFT JOIN m_signa msig ON msig.id = tord.objectsignafk
+WHERE tdp.norec = $1
+GROUP BY
+    tor.norec,
+    mpeg.id,
+    mpeg.namalengkap,
+    mu.id,
+    mu.namaunit
+`
+
 export {
-    qGetObatFromUnit
+    qGetObatFromUnit,
+    qGetOrderResepFromDP
 }

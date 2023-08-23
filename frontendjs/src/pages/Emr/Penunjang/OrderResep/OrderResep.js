@@ -8,11 +8,12 @@ import { onChangeStrNbr, strToNumber } from "../../../../utils/format";
 import { useEffect, useRef, useState } from "react";
 import { getComboResep } from "../../../../store/master/action";
 import { useDispatch, useSelector } from "react-redux";
-import { createOrUpdateResepOrder, getObatFromUnit } from "../../../../store/emr/action";
+import { createOrUpdateResepOrder, getObatFromUnit, getOrderResepFromDp } from "../../../../store/emr/action";
 import * as Yup from "yup"
 import { useParams} from "react-router-dom"
+import RiwayatOrder from "./RiwayatOrder";
 
-const initValueResep = {
+export const initValueResep = {
     norecap: "",
     norecresep: "",
     obat: "",
@@ -30,6 +31,7 @@ const initValueResep = {
     total: "",
     signa: "",
     keterangan: "",
+    namaketerangan: "",
     racikan: []
 }
 
@@ -42,7 +44,7 @@ const initValueRacikan = {
 const OrderResep = () => {
     const dispatch = useDispatch()
 
-    const {norecap} = useParams()
+    const {norecap, norecdp} = useParams()
 
     const {
         pegawai,
@@ -192,6 +194,11 @@ const OrderResep = () => {
         setFF("norecap", norecap)
     }, [vResep.setFieldValue, norecap])
 
+    useEffect(() => {
+        dispatch(getOrderResepFromDp({norecdp: norecdp}))
+    }, [dispatch, norecdp])
+
+
     const columnsResep = [
         {
             name: <span className='font-weight-bold fs-13'>R/</span>,
@@ -316,14 +323,16 @@ const OrderResep = () => {
                                     row
                                 )
                                 row.racikan.forEach((valRacikan) => {
-                                    const totalQty = strToNumber(valRacikan.qtyracikan) * (strToNumber(newVal) || 0)
+                                    let totalQty = strToNumber(valRacikan.qtyracikan) * (strToNumber(newVal) || 0)
+                                    totalQty = Number(totalQty.toFixed(6))
                                     const qtyBulat = Math.ceil(totalQty)
-                                    const qtyPembulatan = qtyBulat - totalQty
+                                    let qtyPembulatan = qtyBulat - totalQty
+                                    qtyPembulatan = Number(qtyPembulatan.toFixed(6))
                                     const totalHargaRacikan = (
                                         valRacikan.harga * 
                                         (totalQty)
                                     ) || ""
-                                    handleChangeRacikan(qtyPembulatan, "qtypembulatan", row, valRacikan)
+                                    handleChangeRacikan(qtyPembulatan, qtyBulat, row, valRacikan)
                                     handleChangeRacikan(
                                         totalHargaRacikan, 
                                         "total", 
@@ -461,6 +470,7 @@ const OrderResep = () => {
                             onChange={(e) => {
                                 const newVal = e?.value || ""
                                 handleChangeResep(newVal, "keterangan", row, true)
+                                handleChangeResep(e?.label || "", "namaketerangan", row, true)
                             }}
                             value={row.keterangan}
                             className={`input ${!!errorsResep?.keterangan
@@ -598,12 +608,14 @@ const OrderResep = () => {
                             value={val} 
                             onChange={(e) => {
                                 const newVal = onChangeStrNbr(e.target.value, val)
-                                const qtyTotal = strToNumber(rowUtama.qty || 0) * strToNumber(newVal || 0)
+                                let qtyTotal = strToNumber(rowUtama.qty || 0) * strToNumber(newVal || 0)
+                                qtyTotal = Number(qtyTotal.toFixed(6))
                                 const qtyBulat = Math.ceil(qtyTotal)
-                                const qtyPembulatan = qtyBulat - qtyTotal
+                                let qtyPembulatan = qtyBulat - qtyTotal
+                                qtyPembulatan = Number(qtyPembulatan.toFixed(6))
                                 handleChangeRacikan(newVal, "qtyracikan", rowUtama, row)
                                 handleChangeRacikan(qtyTotal, "qty", rowUtama, row)
-                                handleChangeRacikan(qtyPembulatan, "qtypembulatan", rowUtama, row)
+                                handleChangeRacikan(qtyBulat, "qtypembulatan", rowUtama, row)
                                 // TODO: fix
                                 const totalHarga = (
                                     row.harga * (strToNumber(newVal)) * (strToNumber(rowUtama.qty))
@@ -946,6 +958,7 @@ const OrderResep = () => {
                     </Col>
                 </Row>
             </Row>
+            <RiwayatOrder />
         </div>
     )
 }

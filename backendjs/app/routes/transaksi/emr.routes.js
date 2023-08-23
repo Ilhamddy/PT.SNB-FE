@@ -128,4 +128,10 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.createOrUpdateEmrResepDokter
     )
+
+    app.get(
+        "/api/transaksi/emr/get-order-resep-from-dp",
+        [authJwt.verifyToken],
+        controller.getOrderResepFromDP
+    )
 }
