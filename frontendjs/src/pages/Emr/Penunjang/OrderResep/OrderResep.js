@@ -325,7 +325,7 @@ const OrderResep = () => {
                                         valRacikan.harga * 
                                         (totalQty)
                                     ) || ""
-                                    handleChangeRacikan(qtyPembulatan, "qtypembulatan", row, valRacikan)
+                                    handleChangeRacikan(qtyPembulatan, qtyBulat, row, valRacikan)
                                     handleChangeRacikan(
                                         totalHargaRacikan, 
                                         "total", 
@@ -607,7 +607,7 @@ const OrderResep = () => {
                                 qtyPembulatan = Number(qtyPembulatan.toFixed(6))
                                 handleChangeRacikan(newVal, "qtyracikan", rowUtama, row)
                                 handleChangeRacikan(qtyTotal, "qty", rowUtama, row)
-                                handleChangeRacikan(qtyPembulatan, "qtypembulatan", rowUtama, row)
+                                handleChangeRacikan(qtyBulat, "qtypembulatan", rowUtama, row)
                                 // TODO: fix
                                 const totalHarga = (
                                     row.harga * (strToNumber(newVal)) * (strToNumber(rowUtama.qty))
