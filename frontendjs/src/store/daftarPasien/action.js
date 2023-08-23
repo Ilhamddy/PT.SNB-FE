@@ -34,7 +34,10 @@ import {
     DAFTARPASIEN_REGISTRASI_GET_ERROR,
     WIDGET_DAFTARPASIEN_REGISTRASI_GET,
     WIDGET_DAFTARPASIEN_REGISTRASI_GET_SUCCESS,
-    WIDGET_DAFTARPASIEN_REGISTRASI_GET_ERROR
+    WIDGET_DAFTARPASIEN_REGISTRASI_GET_ERROR,
+    LIST_PASIEN_MUTASI_GET,
+    LIST_PASIEN_MUTASI_GET_SUCCESS,
+    LIST_PASIEN_MUTASI_GET_ERROR
 } from "./actionType";
 
 export const daftarPasienResetForm = () => ({
@@ -216,5 +219,20 @@ export const widgetdaftarPasienRegistrasiGetSuccess = (data) => ({
 
 export const widgetdaftarPasienRegistrasiGetError = (error) => ({
     type: WIDGET_DAFTARPASIEN_REGISTRASI_GET_ERROR,
+    payload: error,
+});
+
+export const listPasienMutasiGet = (param) => ({
+    type: LIST_PASIEN_MUTASI_GET,
+    payload: { param },
+});
+
+export const listPasienMutasiGetSuccess = (data) => ({
+    type: LIST_PASIEN_MUTASI_GET_SUCCESS,
+    payload: data,
+});
+
+export const listPasienMutasiGetError = (error) => ({
+    type: LIST_PASIEN_MUTASI_GET_ERROR,
     payload: error,
 });

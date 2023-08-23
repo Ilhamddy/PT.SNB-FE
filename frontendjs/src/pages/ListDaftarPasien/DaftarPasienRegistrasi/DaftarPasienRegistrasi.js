@@ -16,7 +16,6 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import CountUp from "react-countup";
 import userDummy from "../../../assets/images/users/user-dummy-img.jpg";
-
 import { daftarPasienResetForm, daftarPasienRegistrasiGet, widgetdaftarPasienRegistrasiGet } from '../../../store/actions';
 import { comboRegistrasiGet } from '../../../store/master/action';
 import CustomSelect from '../../Select/Select';
