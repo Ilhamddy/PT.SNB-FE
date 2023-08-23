@@ -316,9 +316,11 @@ const OrderResep = () => {
                                     row
                                 )
                                 row.racikan.forEach((valRacikan) => {
-                                    const totalQty = strToNumber(valRacikan.qtyracikan) * (strToNumber(newVal) || 0)
+                                    let totalQty = strToNumber(valRacikan.qtyracikan) * (strToNumber(newVal) || 0)
+                                    totalQty = Number(totalQty.toFixed(6))
                                     const qtyBulat = Math.ceil(totalQty)
-                                    const qtyPembulatan = qtyBulat - totalQty
+                                    let qtyPembulatan = qtyBulat - totalQty
+                                    qtyPembulatan = Number(qtyPembulatan.toFixed(6))
                                     const totalHargaRacikan = (
                                         valRacikan.harga * 
                                         (totalQty)
@@ -598,9 +600,11 @@ const OrderResep = () => {
                             value={val} 
                             onChange={(e) => {
                                 const newVal = onChangeStrNbr(e.target.value, val)
-                                const qtyTotal = strToNumber(rowUtama.qty || 0) * strToNumber(newVal || 0)
+                                let qtyTotal = strToNumber(rowUtama.qty || 0) * strToNumber(newVal || 0)
+                                qtyTotal = Number(qtyTotal.toFixed(6))
                                 const qtyBulat = Math.ceil(qtyTotal)
-                                const qtyPembulatan = qtyBulat - qtyTotal
+                                let qtyPembulatan = qtyBulat - qtyTotal
+                                qtyPembulatan = Number(qtyPembulatan.toFixed(6))
                                 handleChangeRacikan(newVal, "qtyracikan", rowUtama, row)
                                 handleChangeRacikan(qtyTotal, "qty", rowUtama, row)
                                 handleChangeRacikan(qtyPembulatan, "qtypembulatan", rowUtama, row)
