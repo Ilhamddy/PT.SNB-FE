@@ -8,11 +8,11 @@ import { onChangeStrNbr, strToNumber } from "../../../../utils/format";
 import { useEffect, useRef, useState } from "react";
 import { getComboResep } from "../../../../store/master/action";
 import { useDispatch, useSelector } from "react-redux";
-import { createOrUpdateResepOrder, getObatFromUnit } from "../../../../store/emr/action";
+import { createOrUpdateResepOrder, getObatFromUnit, getOrderResepFromDp } from "../../../../store/emr/action";
 import * as Yup from "yup"
 import { useParams} from "react-router-dom"
 
-const initValueResep = {
+export const initValueResep = {
     norecap: "",
     norecresep: "",
     obat: "",
@@ -30,6 +30,7 @@ const initValueResep = {
     total: "",
     signa: "",
     keterangan: "",
+    namaketerangan: "",
     racikan: []
 }
 
@@ -42,7 +43,7 @@ const initValueRacikan = {
 const OrderResep = () => {
     const dispatch = useDispatch()
 
-    const {norecap} = useParams()
+    const {norecap, norecdp} = useParams()
 
     const {
         pegawai,
@@ -191,6 +192,11 @@ const OrderResep = () => {
         const setFF = vResep.setFieldValue
         setFF("norecap", norecap)
     }, [vResep.setFieldValue, norecap])
+
+    useEffect(() => {
+        dispatch(getOrderResepFromDp({norecdp: norecdp}))
+    }, [dispatch, norecdp])
+
 
     const columnsResep = [
         {
@@ -463,6 +469,7 @@ const OrderResep = () => {
                             onChange={(e) => {
                                 const newVal = e?.value || ""
                                 handleChangeResep(newVal, "keterangan", row, true)
+                                handleChangeResep(e?.label || "", "namaketerangan", row, true)
                             }}
                             value={row.keterangan}
                             className={`input ${!!errorsResep?.keterangan

@@ -13,7 +13,8 @@ import {
     TINDAKAN_SAVE, LIST_TAGIHAN, LIST_TAGIHAN_PRINT,
     COMBO_TINDAKAN_RADIOLOGI_GET,
     GET_OBAT_FROM_UNIT,
-    CREATE_OR_UPDATE_RESEP_ORDER
+    CREATE_OR_UPDATE_RESEP_ORDER,
+    GET_ORDER_RESEP_FROM_DP
 } from "./actionType";
 
 import {
@@ -42,6 +43,8 @@ import {
     getObatFromUnitError,
     createOrUpdateResepOrderSuccess,
     createOrUpdateResepOrderError,
+    getOrderResepFromDpSuccess,
+    getOrderResepFromDpError,
 } from "./action";
 
 import { toast } from 'react-toastify';
@@ -566,6 +569,20 @@ export function* watchCreateOrUpdateResepOrder() {
     yield takeEvery(CREATE_OR_UPDATE_RESEP_ORDER, onCreateOrUpdateResepOrder);
 }
 
+function* onGetOrderResepFromDp({ payload: {queries}  }) {
+    try {
+        let response = null;
+        response = yield call(serviceEmr.getOrderResepFromDp, queries);
+        yield put(getOrderResepFromDpSuccess(response.data));
+    } catch (error) {
+        yield put(getOrderResepFromDpError(error));
+    }
+}
+
+export function* watchGetOrderResepFromDp() {
+    yield takeEvery(GET_ORDER_RESEP_FROM_DP, onGetOrderResepFromDp);
+}
+
 function* emrSaga() {
     yield all([
         fork(watchGetEmrHeader),
@@ -595,6 +612,7 @@ function* emrSaga() {
         fork(watchonGetComboTindakanRadiologi),
         fork(watchGetObatFromUnit),
         fork(watchCreateOrUpdateResepOrder),
+        fork(watchGetOrderResepFromDp),
     ]);
 }
 

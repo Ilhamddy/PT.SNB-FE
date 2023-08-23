@@ -81,6 +81,9 @@ import {
     CREATE_OR_UPDATE_RESEP_ORDER,
     CREATE_OR_UPDATE_RESEP_ORDER_SUCCESS,
     CREATE_OR_UPDATE_RESEP_ORDER_ERROR,
+    GET_ORDER_RESEP_FROM_DP,
+    GET_ORDER_RESEP_FROM_DP_SUCCESS,
+    GET_ORDER_RESEP_FROM_DP_ERROR,
 } from "./actionType";
 
 export const emrResetForm = () => ({
@@ -508,5 +511,20 @@ export const createOrUpdateResepOrderSuccess = (data, callback) => ({
 
 export const createOrUpdateResepOrderError = (error) => ({
     type: CREATE_OR_UPDATE_RESEP_ORDER_ERROR,
+    payload: error,
+});
+
+export const getOrderResepFromDp = (queries) => ({
+    type: GET_ORDER_RESEP_FROM_DP,
+    payload: { queries: queries },
+});
+
+export const getOrderResepFromDpSuccess = (data) => ({
+    type: GET_ORDER_RESEP_FROM_DP_SUCCESS,
+    payload: data,
+});
+
+export const getOrderResepFromDpError = (error) => ({
+    type: GET_ORDER_RESEP_FROM_DP_ERROR,
     payload: error,
 });

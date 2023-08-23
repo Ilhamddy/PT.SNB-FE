@@ -81,6 +81,9 @@ import {
     CREATE_OR_UPDATE_RESEP_ORDER,
     CREATE_OR_UPDATE_RESEP_ORDER_SUCCESS,
     CREATE_OR_UPDATE_RESEP_ORDER_ERROR,
+    GET_ORDER_RESEP_FROM_DP,
+    GET_ORDER_RESEP_FROM_DP_SUCCESS,
+    GET_ORDER_RESEP_FROM_DP_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -229,6 +232,11 @@ const INIT_STATE = {
         loading: false,
         error: null,
     },
+    getOrderResepFromDP: {
+        data: [],
+        loading: false,
+        error: null,
+    }
 };
 
 const Emr = (state = INIT_STATE, action) => {
@@ -1211,6 +1219,42 @@ const Emr = (state = INIT_STATE, action) => {
                 ...state,
                 createOrUpdateResepOrder: {
                     ...state.createOrUpdateResepOrder,
+                    data: [],
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case GET_ORDER_RESEP_FROM_DP: {
+            return {
+                ...state,
+                getOrderResepFromDP: {
+                    ...state.getOrderResepFromDP,
+                    data: [],
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case GET_ORDER_RESEP_FROM_DP_SUCCESS: {
+            return {
+                ...state,
+                getOrderResepFromDP: {
+                    ...state.getOrderResepFromDP,
+                    data: action.payload,
+                    error: null,
+                    loading: false,
+                }
+            }
+        }
+
+        case GET_ORDER_RESEP_FROM_DP_ERROR: {
+            return {
+                ...state,
+                getOrderResepFromDP: {
+                    ...state.getOrderResepFromDP,
                     data: [],
                     loading: false,
                     error: action.error,
