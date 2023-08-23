@@ -78,6 +78,9 @@ import {
     GET_OBAT_FROM_UNIT,
     GET_OBAT_FROM_UNIT_SUCCESS,
     GET_OBAT_FROM_UNIT_ERROR,
+    CREATE_OR_UPDATE_RESEP_ORDER,
+    CREATE_OR_UPDATE_RESEP_ORDER_SUCCESS,
+    CREATE_OR_UPDATE_RESEP_ORDER_ERROR,
 } from "./actionType";
 
 const INIT_STATE = {
@@ -220,7 +223,12 @@ const INIT_STATE = {
         data: [],
         loading: false,
         error: null,
-    }
+    },
+    createOrUpdateResepOrder: {
+        data: [],
+        loading: false,
+        error: null,
+    },
 };
 
 const Emr = (state = INIT_STATE, action) => {
@@ -1167,6 +1175,42 @@ const Emr = (state = INIT_STATE, action) => {
                 ...state,
                 getObatFromUnit: {
                     ...state.getObatFromUnit,
+                    data: [],
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case CREATE_OR_UPDATE_RESEP_ORDER: {
+            return {
+                ...state,
+                createOrUpdateResepOrder: {
+                    ...state.createOrUpdateResepOrder,
+                    data: [],
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case CREATE_OR_UPDATE_RESEP_ORDER_SUCCESS: {
+            return {
+                ...state,
+                createOrUpdateResepOrder: {
+                    ...state.createOrUpdateResepOrder,
+                    data: action.payload,
+                    error: null,
+                    loading: false,
+                }
+            }
+        }
+
+        case CREATE_OR_UPDATE_RESEP_ORDER_ERROR: {
+            return {
+                ...state,
+                createOrUpdateResepOrder: {
+                    ...state.createOrUpdateResepOrder,
                     data: [],
                     loading: false,
                     error: action.error,

@@ -37,7 +37,7 @@ export default (sequelize, Sequelize) => {
         objectunitasalfk: {
             type: Sequelize.INTEGER,
         },
-        nomororder: {
+        no_order: {
             type: Sequelize.STRING,
         },
         objectdepotujuanfk: {

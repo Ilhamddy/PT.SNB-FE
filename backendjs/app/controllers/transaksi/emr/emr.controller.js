@@ -1047,7 +1047,7 @@ const getObatFromUnit = async (req, res) => {
 }
 
 const createOrUpdateEmrResepDokter = async (req, res) => {
-    const [transaction, errorTransaction] = await createTransaction()
+    const [transaction, errorTransaction] = await createTransaction(db, res)
     try{
         if(errorTransaction) return
         const body = req.body
@@ -1068,11 +1068,11 @@ const createOrUpdateEmrResepDokter = async (req, res) => {
                 kodeexternal: kodeOrder,
                 namaexternal: kodeOrder,
                 reportdisplay: kodeOrder,
-                objectantreanpemeriksaanfk: body.antreanpemeriksaan,
+                objectantreanpemeriksaanfk: body.norecap,
                 objectpegawaifk: req.idPegawai,
                 tglinput: new Date(),
                 objectunitasalfk: body.unittujuan,
-                nomororder: kodeOrder,
+                no_order: kodeOrder,
                 objectdepotujuanfk: body.unittujuan
             }, {
                 transaction: transaction
@@ -1154,6 +1154,7 @@ export default {
     createOrUpdateEmrResepDokter
 };
 
+
 const hCreateOrUpdateDetailOrder = async (
     req, 
     res, 
@@ -1196,6 +1197,7 @@ const hCreateOrUpdateDetailOrder = async (
                 )
                 return createdOrUpdatedRacikans
             }
+            // jika bukan racikan, maka tidak perlu subitem
             let norecresep = item.norecresep
             let createdOrUpdatedObat
             if(!norecresep){

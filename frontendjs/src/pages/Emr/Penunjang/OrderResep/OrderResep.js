@@ -8,10 +8,12 @@ import { onChangeStrNbr, strToNumber } from "../../../../utils/format";
 import { useEffect, useRef, useState } from "react";
 import { getComboResep } from "../../../../store/master/action";
 import { useDispatch, useSelector } from "react-redux";
-import { getObatFromUnit } from "../../../../store/emr/action";
+import { createOrUpdateResepOrder, getObatFromUnit } from "../../../../store/emr/action";
 import * as Yup from "yup"
+import { useParams} from "react-router-dom"
 
 const initValueResep = {
+    norecap: "",
     norecresep: "",
     obat: "",
     namaobat: "",
@@ -28,7 +30,6 @@ const initValueResep = {
     total: "",
     signa: "",
     keterangan: "",
-    kodertambahan: "",
     racikan: []
 }
 
@@ -40,6 +41,8 @@ const initValueRacikan = {
 
 const OrderResep = () => {
     const dispatch = useDispatch()
+
+    const {norecap} = useParams()
 
     const {
         pegawai,
@@ -93,6 +96,28 @@ const OrderResep = () => {
             )
         }),
         onSubmit: (value) => {
+            const newVal = {...value}
+            newVal.resep = newVal.resep.map((valResep) => {
+                const newValResep = {...valResep}
+                newValResep.racikan = newValResep.racikan.map((valRacikan) => {
+                    const newValRacikan = {...valRacikan}
+                    newValRacikan.qty = strToNumber(newValRacikan.qty)
+                    newValRacikan.qtyjumlahracikan = strToNumber(newValRacikan.qtyjumlahracikan)
+                    newValRacikan.qtyracikan = strToNumber(newValRacikan.qtyracikan)
+                    newValRacikan.qtypembulatan = strToNumber(newValRacikan.qtypembulatan)
+                    newValRacikan.harga = strToNumber(newValRacikan.harga)
+                    newValRacikan.total = strToNumber(newValRacikan.total)
+                    return newValRacikan
+                })
+                newValResep.qty = strToNumber(valResep.qty)
+                newValResep.qtyjumlahracikan = strToNumber(valResep.qtyjumlahracikan)
+                newValResep.qtyracikan = strToNumber(valResep.qtyracikan)
+                newValResep.qtypembulatan = strToNumber(valResep.qtypembulatan)
+                newValResep.harga = strToNumber(valResep.harga)
+                newValResep.total = strToNumber(valResep.total)
+                return newValResep
+            }) 
+            dispatch(createOrUpdateResepOrder(newVal))
             console.log(value)
         }
     })
@@ -161,6 +186,11 @@ const OrderResep = () => {
         vResep.values.unittujuan &&
             dispatch(getObatFromUnit({idunit: vResep.values.unittujuan}))
     }, [dispatch, vResep.values.unittujuan])
+
+    useEffect(() => {
+        const setFF = vResep.setFieldValue
+        setFF("norecap", norecap)
+    }, [vResep.setFieldValue, norecap])
 
     const columnsResep = [
         {
@@ -276,7 +306,6 @@ const OrderResep = () => {
                                 const newVal = onChangeStrNbr(e.target.value, val)
                                 setVal(newVal)
                                 handleChangeResep(newVal, "qty", row)
-                                // TODO: fix
                                 const totalHarga = (
                                     row.harga * 
                                     (strToNumber(newVal) || 0)
@@ -288,10 +317,13 @@ const OrderResep = () => {
                                 )
                                 row.racikan.forEach((valRacikan) => {
                                     const totalQty = strToNumber(valRacikan.qtyracikan) * (strToNumber(newVal) || 0)
+                                    const qtyBulat = Math.ceil(totalQty)
+                                    const qtyPembulatan = qtyBulat - totalQty
                                     const totalHargaRacikan = (
                                         valRacikan.harga * 
                                         (totalQty)
                                     ) || ""
+                                    handleChangeRacikan(qtyPembulatan, "qtypembulatan", row, valRacikan)
                                     handleChangeRacikan(
                                         totalHargaRacikan, 
                                         "total", 
@@ -567,8 +599,11 @@ const OrderResep = () => {
                             onChange={(e) => {
                                 const newVal = onChangeStrNbr(e.target.value, val)
                                 const qtyTotal = strToNumber(rowUtama.qty || 0) * strToNumber(newVal || 0)
+                                const qtyBulat = Math.ceil(qtyTotal)
+                                const qtyPembulatan = qtyBulat - qtyTotal
                                 handleChangeRacikan(newVal, "qtyracikan", rowUtama, row)
                                 handleChangeRacikan(qtyTotal, "qty", rowUtama, row)
+                                handleChangeRacikan(qtyPembulatan, "qtypembulatan", rowUtama, row)
                                 // TODO: fix
                                 const totalHarga = (
                                     row.harga * (strToNumber(newVal)) * (strToNumber(rowUtama.qty))
