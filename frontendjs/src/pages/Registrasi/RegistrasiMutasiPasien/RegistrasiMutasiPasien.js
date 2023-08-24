@@ -23,7 +23,7 @@ import * as Yup from "yup";
 import { useSelector, useDispatch } from "react-redux";
 import classnames from "classnames";
 import { comboRegistrasiGet } from '../../../store/master/action';
-import { registrasiNoregistrasiResetForm, registrasiGet, saveRegistrasiMutasi, registrasiNoBPJSGet, registrasiRuanganNorecGet, registrasiGetReset, registrasiRuanganNorecGetReset } from "../../../store/actions";
+import { registrasiNoregistrasiResetForm, registrasiGet, saveRegistrasiMutasi, registrasiResetForm, registrasiRuanganNorecGet, registrasiGetReset, registrasiRuanganNorecGetReset } from "../../../store/actions";
 import "./RegistrasiMutasiPasien.scss"
 const dateStart = (new Date()).toISOString()
 
@@ -59,9 +59,11 @@ const RegistrasiMutasiPasien = (props) => {
             dtRuangNorec: state.Registrasi.registrasiRuangNorecGet.data,
 
         }));
+        console.log(successReg)
     useEffect(() => {
         return () => {
             dispatch(registrasiNoregistrasiResetForm());
+            dispatch(registrasiResetForm())
         }
     }, [dispatch])
 
