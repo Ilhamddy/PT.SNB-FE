@@ -850,68 +850,7 @@ const VerifikasiResep = () => {
             <Container fluid>
                 <BreadCrumb title="Verifikasi Resep" pageTitle="Farmasi" />
                 <Card className="p-5">
-                    <Row>
-                        <Col lg={2}>
-                            <Label 
-                                style={{ color: "black" }} 
-                                htmlFor={`dokter`}
-                                className="form-label mt-2">
-                                Dokter
-                            </Label>
-                        </Col>
-                        <Col lg={4}>
-                            <CustomSelect
-                                id="dokter"
-                                name="dokter"
-                                options={pegawai}
-                                onChange={(e) => {
-                                    vResep.setFieldValue("dokter", e?.value || "")
-                                    vResep.setFieldValue("namadokter", e?.label || "")
-                                }}
-                                value={vResep.values.dokter}
-                                className={`input ${!!vResep?.errors.dokter ? "is-invalid" : ""}`}
-                                />
-                            {vResep.touched.dokter 
-                                && !!vResep.errors.dokter ? (
-                                    <FormFeedback type="invalid" >
-                                        <div>
-                                            {vResep.errors.dokter}
-                                        </div>
-                                    </FormFeedback>
-                                ) : null
-                            }
-                        </Col>
-                        <Col lg={2}>
-                            <Label 
-                                style={{ color: "black" }} 
-                                htmlFor={`unittujuan`}
-                                className="form-label mt-2">
-                                Depo Tujuan
-                            </Label>
-                        </Col>
-                        <Col lg={4}>
-                            <CustomSelect
-                                id="unittujuan"
-                                name="unittujuan"
-                                options={unit}
-                                onChange={(e) => {
-                                    vResep.setFieldValue("unittujuan", e?.value || "")
-                                }}
-                                value={vResep.values.unittujuan}
-                                className={`input ${!!vResep?.errors.unittujuan ? "is-invalid" : ""}`}
-                                />
-                            {vResep.touched.unittujuan 
-                                && !!vResep.errors.unittujuan && (
-                                    <FormFeedback type="invalid" >
-                                        <div>
-                                            {vResep.errors.unittujuan}
-                                        </div>
-                                    </FormFeedback>
-                                )
-                            }
-                        </Col>
-
-                    </Row>
+                    
                     <Row className="mt-5">
                         <table className="table" width={"fit-content"}>
                             <thead style={{width: "100%",}}>
