@@ -297,6 +297,7 @@ import StokUnitList from "../pages/StokUnit/StokUnit";
 import StokOpname from "../pages/StokOpname/StokOpname";
 import OrderResep from "../pages/Emr/Penunjang/OrderResep/OrderResep";
 import VerifikasiResep from "../pages/VerifikasiResep/VerifikasiResep";
+import AllOrderResepList from "../pages/AllOrderResepList/AllOrderResepList";
 
 
 
@@ -580,6 +581,8 @@ const authProtectedRoutes = [
 
   //farmasi
   { path: "/farmasi/verif-order-resep", component: <VerifikasiResep /> },
+  { path: "/farmasi/verif-order-resep/:norecorder", component: <VerifikasiResep /> },
+  { path: "/farmasi/order-list", component: <AllOrderResepList /> },
 ];
 
 const publicRoutes = [

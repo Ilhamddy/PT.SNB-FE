@@ -13,7 +13,6 @@ import * as Yup from "yup"
 import { useParams, useSearchParams} from "react-router-dom"
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import { ToastContainer } from "react-toastify";
-import AllOrderResep from "./AllOrderResep";
 
 export const initValueResep = {
     norecap: "",
@@ -850,7 +849,6 @@ const VerifikasiResep = () => {
             <Container fluid>
                 <BreadCrumb title="Verifikasi Resep" pageTitle="Farmasi" />
                 <Card className="p-5">
-                    
                     <Row className="mt-5">
                         <table className="table" width={"fit-content"}>
                             <thead style={{width: "100%",}}>
@@ -980,7 +978,6 @@ const VerifikasiResep = () => {
                             </Col>
                         </Row>
                     </Row>
-                    <AllOrderResep />
                 </Card> 
             </Container>
         </div>
