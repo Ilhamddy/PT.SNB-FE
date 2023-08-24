@@ -15,15 +15,16 @@ import BreadCrumb from '../../../Components/Common/BreadCrumb';
 import Flatpickr from "react-flatpickr";
 //import images
 import userDummy from "../../../assets/images/users/user-dummy-img.jpg";
-
+import DataTable from 'react-data-table-component';
+import LoadingTable from '../../../Components/Table/LoadingTable';
 import CustomSelect from '../../Select/Select'
 import { useFormik, yupToFormErrors } from "formik";
 import * as Yup from "yup";
 import { useSelector, useDispatch } from "react-redux";
 import classnames from "classnames";
 import { comboRegistrasiGet } from '../../../store/master/action';
-import { registrasiNoregistrasiResetForm, registrasiGet, registrasiSaveRuangan, registrasiNoBPJSGet, registrasiRuanganNorecGet, registrasiSaveRuanganReset, registrasiGetReset, registrasiRuanganNorecGetReset } from "../../../store/actions";
-
+import { registrasiNoregistrasiResetForm, registrasiGet, saveRegistrasiMutasi, registrasiNoBPJSGet, registrasiRuanganNorecGet, registrasiGetReset, registrasiRuanganNorecGetReset } from "../../../store/actions";
+import "./RegistrasiMutasiPasien.scss"
 const dateStart = (new Date()).toISOString()
 
 const RegistrasiMutasiPasien = (props) => {
@@ -44,31 +45,32 @@ const RegistrasiMutasiPasien = (props) => {
             dispatch(registrasiGet(id));
         }
     }, [id, dispatch]);
-    const { dataPas, data, loading, error, newData, loadingSave, successReg, 
+    const { dataPas, data, loading, error, newData, loadingSave, successReg,
         errorSave,
         dtRuangNorec } = useSelector((state) => ({
-        data: state.Master.comboRegistrasiGet.data,
-        newData: state.Registrasi.registrasiSaveRuangan.newData,
-        successReg: state.Registrasi.registrasiSaveRuangan.success,
-        loadingSave: state.Registrasi.registrasiSaveRuangan.loading,
-        errorSave: state.Registrasi.registrasiSaveRuangan.error,
-        loading: state.Master.comboRegistrasiGet.loading,
-        error: state.Master.comboRegistrasiGet.error,
-        dataPas: state.Registrasi.registrasiGet.data,
-        dtRuangNorec: state.Registrasi.registrasiRuangNorecGet.data,
-        
-    }));
+            data: state.Master.comboRegistrasiGet.data,
+            newData: state.Registrasi.saveRegistrasiMutasi.newData,
+            successReg: state.Registrasi.saveRegistrasiMutasi.success,
+            loadingSave: state.Registrasi.saveRegistrasiMutasi.loading,
+            errorSave: state.Registrasi.saveRegistrasiMutasi.error,
+            loading: state.Master.comboRegistrasiGet.loading,
+            error: state.Master.comboRegistrasiGet.error,
+            dataPas: state.Registrasi.registrasiGet.data,
+            dtRuangNorec: state.Registrasi.registrasiRuangNorecGet.data,
+
+        }));
     useEffect(() => {
         return () => {
             dispatch(registrasiNoregistrasiResetForm());
         }
     }, [dispatch])
-    
+
     const [dataUnit, setdataUnit] = useState([]);
     const validation = useFormik({
         enableReinitialize: true,
         initialValues: {
             id: newData?.id ?? id,
+            norecdp: norec,
             tglregistrasi: newData?.tglregistrasi ?? dateStart,
             unittujuan: newData?.unittujuan ?? "",
             rujukanasal: newData?.rujukanasal ?? "",
@@ -86,7 +88,7 @@ const RegistrasiMutasiPasien = (props) => {
             kamar: newData?.kamar ?? "",
             tempattidur: newData?.tempattidur ?? "",
             caramasuk: newData?.caramasuk ?? "",
-            statuspasien:dataPas?.statuspasien ?? "",
+            statuspasien: dataPas?.statuspasien ?? "",
         },
         validationSchema: Yup.object({
             tglregistrasi: Yup.string().required("Tanggal Registrasi wajib diisi"),
@@ -122,16 +124,17 @@ const RegistrasiMutasiPasien = (props) => {
             })
         }),
         onSubmit: (values) => {
-            // console.log(values)
-            dispatch(registrasiSaveRuangan(values, ''));
+            // console.log('masukkkk')
+            dispatch(saveRegistrasiMutasi(values, ''));
         }
     });
+    // console.log(validation.errors)
     useEffect(() => {
         norec && dispatch(registrasiRuanganNorecGet(norec));
     }, [dispatch, norec]);
 
     useEffect(() => {
-        if(dtRuangNorec && data){
+        if (dtRuangNorec && data) {
             validation.setFieldValue('tujkunjungan', 2)
             let newArray = data?.unit?.filter(function (el) {
                 return el.objectinstalasifk === 2;
@@ -163,7 +166,7 @@ const RegistrasiMutasiPasien = (props) => {
             const penjamin3 = dtRuangNorec?.objectpenjamin3fk || null;
             let penjamin = [penjamin1, penjamin2, penjamin3];
             penjamin = penjamin.map((item) => {
-                if(item === null) return null;
+                if (item === null) return null;
                 const rekanan = data?.rekanan?.find((it) => it.value === item);
                 return rekanan || null;
             });
@@ -178,7 +181,7 @@ const RegistrasiMutasiPasien = (props) => {
         if (e === 'registrasi') {
             // setcardRegistrasi(false)
             // setcardBuktiPendaftaran(true)
-        } 
+        }
     };
     const refPrintBukti = useRef(null);
     const handleBack = () => {
@@ -219,8 +222,8 @@ const RegistrasiMutasiPasien = (props) => {
     }
     const [isLoading, setIsLoading] = useState(true);
     const optionPenjamin = data
-    .rekanan?.filter((rekanan) => rekanan.objectjenispenjaminfk === validation.values.jenispenjamin) 
-    ?? [];
+        .rekanan?.filter((rekanan) => rekanan.objectjenispenjaminfk === validation.values.jenispenjamin)
+        ?? [];
     const [dataTT, setdataTT] = useState([]);
     const [dataKamar, setdataKamar] = useState([]);
     const handleChangeKelas = (selected) => {
@@ -241,9 +244,52 @@ const RegistrasiMutasiPasien = (props) => {
         setdataKamar([])
         setdataTT([])
     }
+    const tableCustomStyles = {
+        headRow: {
+            style: {
+                color: '#ffffff',
+                backgroundColor: '#e67e22',
+            },
+        },
+        rows: {
+            style: {
+                color: "black",
+                backgroundColor: "#f1f2f6"
+            },
 
+        }
+    }
+    const columns = [
+        {
+            name: <span className='font-weight-bold fs-13'>Unit</span>,
+            selector: row => row.namaunit,
+            sortable: true,
+            // selector: row => (<button className="btn btn-sm btn-soft-info" onClick={() => handleClick(dataTtv)}>{row.noregistrasi}</button>),
+            // width: "140px",
+            // cell: (data) => {
+            //     return (
+            //         // <Link to={`/registrasi/pasien/${data.id}`}>Details</Link>
+            //         <button type='button' className="btn btn-sm btn-soft-info" onClick={() => handleClick(data)}>{data.noregistrasi}</button>
+            //     );
+            // },
+        },
+        {
+
+            name: <span className='font-weight-bold fs-13'>Kelas</span>,
+            selector: row => row.namakelas,
+            sortable: true,
+            // width: "150px"
+        },
+        {
+
+            name: <span className='font-weight-bold fs-13'>Jumlah Bed</span>,
+            selector: row => row.count,
+            sortable: true,
+            // width: "150px"
+        },
+    ];
     return (
-        <div className="page-content">
+        <div className="page-content registrasi-mutasi-pasien">
             <ToastContainer closeButton={false} />
             <Container fluid>
                 <BreadCrumb title="Registrasi Mutasi Pasien" pageTitle="Registrasi Mutasi Pasien" />
@@ -327,8 +373,8 @@ const RegistrasiMutasiPasien = (props) => {
                                             <CardBody>
                                                 <div className="live-preview">
                                                     <div className="d-flex flex-wrap gap-2">
-                                                        <Button color="info" className="btn-animation" data-text="Registrasi" onClick={() => {handleRegistrasi()}}><span>Registrasi</span></Button>
-                                                        <Button color="warning" className="btn-animation" data-text="Batal" onClick={() => handleBack()}> <span>Batal</span> </Button>
+                                                        {/* <Button color="info" className="btn-animation" data-text="Registrasi" onClick={() => { handleRegistrasi() }}><span>Registrasi</span></Button>
+                                                        <Button color="warning" className="btn-animation" data-text="Batal" onClick={() => handleBack()}> <span>Batal</span> </Button> */}
                                                     </div>
                                                 </div>
                                             </CardBody>
@@ -558,9 +604,9 @@ const RegistrasiMutasiPasien = (props) => {
                                                                     value={validation.values.jenispenjamin || ""}
                                                                     className={`input ${validation.errors.jenispenjamin ? "is-invalid" : ""}`}
                                                                     onChange={value => {
-                                                                        validation.setFieldValue('jenispenjamin', value.value); 
+                                                                        validation.setFieldValue('jenispenjamin', value.value);
                                                                         validation.setFieldValue('penjamin', []);
-                                                                    }}	
+                                                                    }}
                                                                 />
                                                                 {validation.touched.jenispenjamin && validation.errors.jenispenjamin ? (
                                                                     <FormFeedback type="invalid"><div>{validation.errors.jenispenjamin}</div></FormFeedback>
@@ -615,7 +661,7 @@ const RegistrasiMutasiPasien = (props) => {
                                                             </div>
                                                         </Col>
                                                         <Col xxl={6} md={6}>
-                                                            <div>
+                                                            <div className="row-header">
                                                                 <CustomSelect
                                                                     id="penanggungjawab"
                                                                     name="penanggungjawab"
@@ -630,11 +676,24 @@ const RegistrasiMutasiPasien = (props) => {
                                                             </div>
                                                         </Col>
                                                     </Row>
+                                                    <div id="table-gridjs" className="mt-2">
+                                                        <DataTable
+                                                            fixedHeader
+                                                            fixedHeaderScrollHeight="330px"
+                                                            columns={columns}
+                                                            pagination
+                                                            data={data.gridtempattidur}
+                                                            progressPending={loading}
+                                                            customStyles={tableCustomStyles}
+                                                            progressComponent={<LoadingTable />}
+                                                        />
+                                                    </div>
                                                 </CardBody>
                                             </Card>
                                         </Col>
-                                        <Col lg={12} style={{ textAlign: 'right' }}>
-                                            {!successReg && (!norec || !dtRuangNorec) && <Button type="submit" color="info" className="rounded-pill" disabled={loadingSave}> SIMPAN </Button>}
+                                        <Col lg={12} style={{ textAlign: 'right' }} >
+                                            {!successReg && <Button type="submit"  color="info" disabled={loadingSave}> SIMPAN </Button>}
+                                            <Button type="button" color="warning" className="btn-animation" data-text="Batal" onClick={() => handleBack()}> <span>Batal</span> </Button>
                                         </Col>
                                         {/* contoh pakai checkbox */}
                                         {/* <CustomCheckbox 
@@ -654,12 +713,12 @@ const RegistrasiMutasiPasien = (props) => {
                                 // src={"50"}//"/bukti-pendaftaran/"	
                                 style={{ display: 'none' }}
                                 title="Receipt"
-								ref={refIframe}
-								width={"50"}
-								height={"50"}
+                                ref={refIframe}
+                                width={"50"}
+                                height={"50"}
                             >
-								
-							</iframe>
+
+                            </iframe>
 
                         </Form>
                     </Col>

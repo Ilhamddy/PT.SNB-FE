@@ -12,7 +12,8 @@ import {
     REGISTRASI_NO_BPJS_GET,
     REGISTRASI_SAVE_PENJAMIN_FK,
     PASIEN_FORM_QUERIES_GET,
-    SAVE_BATAL_REGISTRASI
+    SAVE_BATAL_REGISTRASI,
+    SAVE_REGISTRASI_MUTASI
 } from "./actionType";
 import {
     registrasiGetError,
@@ -36,7 +37,8 @@ import {
     pasienFormQueriesGetSuccess,
     pasienFormQueriesGetError,
     saveBatalRegistrasiSuccess,
-    saveBatalRegistrasiError
+    saveBatalRegistrasiError,
+    saveRegistrasiMutasiSuccess, saveRegistrasiMutasiError
 } from "./action";
 
 import { toast } from 'react-toastify';
@@ -181,6 +183,23 @@ function* onsaveBatalRegistrasi({payload: {data, callback}}){
     }
 }
 
+function* onsaveRegistrasiMutasi({payload: {data, callback}}){
+    try {
+        const response = yield call(serviceRegistrasi.saveRegistrasiMutasi, data);
+        yield put(saveRegistrasiMutasiSuccess(response.data));
+        if(response.code===200){
+            toast.success(response.msg, { autoClose: 3000 });
+            callback && callback();
+            console.log("success")
+        }else{
+            toast.error(response.msg, { autoClose: 3000 });
+        }
+    } catch (error) {
+        yield put(saveRegistrasiMutasiError(error));
+        toast.error(error, { autoClose: 3000 });
+    }
+}
+
 export function* watchSaveRegistrasi() {
     yield takeEvery(REGISTRASI_SAVE, onSaveRegistrasi);
 }
@@ -225,6 +244,10 @@ export function* watchsaveBatalRegistrasi() {
     yield takeEvery(SAVE_BATAL_REGISTRASI, onsaveBatalRegistrasi);
 }
 
+export function* watchonsaveRegistrasiMutasi() {
+    yield takeEvery(SAVE_REGISTRASI_MUTASI, onsaveRegistrasiMutasi);
+}
+
 function* registrasiSaga() {
     yield all([
         fork(watchSaveRegistrasi),
@@ -237,7 +260,8 @@ function* registrasiSaga() {
         fork(watchGetRegistrasiNoBPJS),
         fork(watchRegistrasiSavePenjaminFK),
         fork(watchGetPasienFormQueries),
-        fork(watchsaveBatalRegistrasi)
+        fork(watchsaveBatalRegistrasi),
+        fork(watchonsaveRegistrasiMutasi)
     ]);
 }
 

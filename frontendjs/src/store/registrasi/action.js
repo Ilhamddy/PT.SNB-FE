@@ -36,7 +36,10 @@ import {
     PASIEN_FORM_QUERIES_GET_ERROR,
     SAVE_BATAL_REGISTRASI,
     SAVE_BATAL_REGISTRASI_SUCCESS,
-    SAVE_BATAL_REGISTRASI_ERROR
+    SAVE_BATAL_REGISTRASI_ERROR,
+    SAVE_REGISTRASI_MUTASI,
+    SAVE_REGISTRASI_MUTASI_SUCCESS,
+    SAVE_REGISTRASI_MUTASI_ERROR
 } from "./actionType";
 
 export const registrasiResetForm = () => ({
@@ -224,5 +227,20 @@ export const saveBatalRegistrasiSuccess = (data) => ({
 
 export const saveBatalRegistrasiError = (error) => ({
     type: SAVE_BATAL_REGISTRASI_ERROR,
+    payload: error,
+});
+
+export const saveRegistrasiMutasi = (data, history) => ({
+    type: SAVE_REGISTRASI_MUTASI,
+    payload: { data, history },
+});
+// common error
+export const saveRegistrasiMutasiSuccess = (data, history) => ({
+    type: SAVE_REGISTRASI_MUTASI_SUCCESS,
+    payload: { data, history},
+});
+
+export const saveRegistrasiMutasiError = (error) => ({
+    type: SAVE_REGISTRASI_MUTASI_ERROR,
     payload: error,
 });

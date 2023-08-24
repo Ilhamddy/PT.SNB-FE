@@ -142,4 +142,10 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getListPasienMutasi
     );
+
+    app.post(
+        "/api/transaksi/registrasi/save-registrasi-mutasi",
+        [authJwt.verifyToken],
+        controller.saveRegistrasiPasienMutasi
+    );
 };
