@@ -361,6 +361,7 @@ const OrderResep = () => {
 
     useEffect(() => {
         const setV = vResep.setValues
+        const resetV = vResep.resetForm
         let orderNorecGot = null
         if(!Array.isArray(orderNorec) && orderNorec){
             orderNorecGot = orderNorec
@@ -368,9 +369,16 @@ const OrderResep = () => {
         if(orderNorecGot){
             setV(orderNorec)
             resepRef.current = orderNorecGot.resep
+        }else{
+            resetV();
+            resepRef.current = [
+                {
+                    ...initValueResep
+                }
+            ]
         }
 
-    }, [orderNorec, vResep.setValues])
+    }, [orderNorec, vResep.setValues, vResep.resetForm])
 
     useEffect(() => {
         dispatch(getOrderResepFromDp({
