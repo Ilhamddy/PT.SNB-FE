@@ -296,6 +296,7 @@ import DistribusiKirim from "../pages/Distribusi/DistribusiKirim";
 import StokUnitList from "../pages/StokUnit/StokUnit";
 import StokOpname from "../pages/StokOpname/StokOpname";
 import OrderResep from "../pages/Emr/Penunjang/OrderResep/OrderResep";
+import VerifikasiResep from "../pages/VerifikasiResep/VerifikasiResep";
 
 
 
@@ -578,7 +579,7 @@ const authProtectedRoutes = [
   { path: "/farmasi/gudang/distribusi-kirim/:norecorder", component: <DistribusiKirim /> },
 
   //farmasi
-  { path: "/farmasi/verif-order", component: <OrderResep /> },
+  { path: "/farmasi/verif-order-resep", component: <VerifikasiResep /> },
 ];
 
 const publicRoutes = [

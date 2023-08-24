@@ -643,11 +643,11 @@ const Navdata = () => {
             link: "/#",
             click: function (e) {
                 e.preventDefault();
-                setIsFarmasi(!isGudang);
+                setIsFarmasi(!isFarmasi);
                 setIscurrentState('isFarmasi');
                 updateIconSidebar(e);
             },
-            stateVariables: isGudang,
+            stateVariables: isFarmasi,
             isAllowed: () => {
                 return isAllowedAccess(getUserPermissions(), [
                     "REGISTRASI_VIEW","FARMASI_VIEW"
@@ -657,7 +657,7 @@ const Navdata = () => {
                 {
                     id: "Verif Order",
                     label: "Verif Order",
-                    link: "/farmasi/verif-order",
+                    link: "/farmasi/verif-order-resep",
                     parentId: "farmasi",
                     isAllowed: () => {
                         return isAllowedAccess(getUserPermissions(), [

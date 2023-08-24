@@ -76,9 +76,10 @@ FROM t_daftarpasien tdp
     LEFT JOIN m_sediaan msed ON msed.id = mp.objectsediaanfk
     LEFT JOIN m_keteranganresep mket ON mket.id = tord.objectketeranganresepfk
     LEFT JOIN m_signa msig ON msig.id = tord.objectsignafk
-WHERE CASE WHEN $1 = 'norecresep' 
-    THEN tor.norec = $2
-    ELSE tdp.norec = $3
+WHERE CASE 
+    WHEN $1 = 'all' THEN tor.statusenabled = true
+    WHEN $1 = 'norecresep' THEN tor.norec = $2
+        ELSE tdp.norec = $3
 END
 GROUP BY
     tor.norec,
