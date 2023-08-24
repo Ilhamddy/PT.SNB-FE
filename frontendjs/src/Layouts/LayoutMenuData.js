@@ -682,6 +682,17 @@ const Navdata = () => {
                         ]);
                     }
                 },
+                {
+                    id: "Order List",
+                    label: "Order List",
+                    link: "/farmasi/order-list",
+                    parentId: "farmasi",
+                    isAllowed: () => {
+                        return isAllowedAccess(getUserPermissions(), [
+                            "REGISTRASI_VIEW",
+                        ]);
+                    }
+                },
             ]
         },
         // loket.rj

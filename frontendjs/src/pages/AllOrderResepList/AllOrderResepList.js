@@ -1,11 +1,15 @@
-import { Row } from "reactstrap"
+import { Card, Container, DropdownItem, DropdownMenu, DropdownToggle, Row, UncontrolledDropdown, UncontrolledTooltip } from "reactstrap"
 import LoadingTable from "../../Components/Table/LoadingTable"
 import NoDataTable from "../../Components/Table/NoDataTable"
 import DataTable from 'react-data-table-component';
 import { useSelector } from "react-redux";
+import BreadCrumb from "../../Components/Common/BreadCrumb";
+import { ToastContainer } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 
-const AllOrderResep = () => {
+const AllOrderResepList = () => {
+    const navigate = useNavigate();
     const {
         listOrder
     } = useSelector(state => ({
@@ -16,6 +20,30 @@ const AllOrderResep = () => {
      * @type {import("react-data-table-component").TableColumn[]}
      */
     const columnsOrder = [
+        {
+            name: <span className='font-weight-bold fs-13'>Detail</span>,
+            cell: row => (
+                <div className="hstack gap-3 flex-wrap">
+                    <UncontrolledTooltip placement="top" target="detail-produk" > Detail Produk </UncontrolledTooltip>
+                    <UncontrolledDropdown className="dropdown d-inline-block">
+                        <DropdownToggle className="btn btn-soft-secondary btn-sm" tag="button" id="detail-produk">
+                            <i className="ri-apps-2-line"></i>
+                        </DropdownToggle>
+                        <DropdownMenu className="dropdown-menu-end">
+                            <DropdownItem onClick={() => 
+                                navigate(`/farmasi/verif-order-resep/${row.norecorder}`)}>
+                                <i className="ri-mail-send-fill align-bottom me-2 text-muted">
+                                </i>
+                                Verif
+                            </DropdownItem>
+                        </DropdownMenu>
+                    </UncontrolledDropdown>
+                </div>)
+                ,
+            sortable: true,
+            width: "70px",
+            wrap: true
+        },
         {
             name: <span className='font-weight-bold fs-13'>No Order</span>,
             sortable: true,
@@ -38,21 +66,29 @@ const AllOrderResep = () => {
     ];
 
     return(
-        <Row className="mt-5">
-            <DataTable
-                fixedHeader
-                fixedHeaderScrollHeight="700px"
-                columns={columnsOrder}
-                pagination
-                data={listOrder || []}
-                progressPending={false}
-                customStyles={tableCustomStyles}
-                expandableRows
-                expandableRowsComponent={ExpandableRiwayat}
-                progressComponent={<LoadingTable />}
-                noDataComponent={<NoDataTable dataName={"data order"}/>}
-            />
-        </Row>
+        <div className="page-content page-verifikasi-resep">
+            <ToastContainer closeButton={false} />
+            <Container fluid>
+                <BreadCrumb title="Verifikasi Resep" pageTitle="Farmasi" />
+                <Card className="p-5">
+                    <Row className="mt-5">
+                        <DataTable
+                            fixedHeader
+                            fixedHeaderScrollHeight="700px"
+                            columns={columnsOrder}
+                            pagination
+                            data={listOrder || []}
+                            progressPending={false}
+                            customStyles={tableCustomStyles}
+                            expandableRows
+                            expandableRowsComponent={ExpandableRiwayat}
+                            progressComponent={<LoadingTable />}
+                            noDataComponent={<NoDataTable dataName={"data order"}/>}
+                        />
+                    </Row>
+                </Card>
+            </Container>
+        </div>
     )
 }
 
@@ -201,4 +237,4 @@ const subTableCustomStyles = {
     }
 }
 
-export default AllOrderResep
+export default AllOrderResepList
