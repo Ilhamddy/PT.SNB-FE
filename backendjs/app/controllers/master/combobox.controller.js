@@ -216,25 +216,35 @@ const comboRegistrasi = (req, res) => {
                                                     if (error) return;
                                                     pool.query(`select id as value,caramasuk as label from m_caramasuk`, (error, result12) => {
                                                         if (error) return;
-                                                        let tempres = {
-                                                            instalasi: result.rows, 
-                                                            unit: result2.rows, 
-                                                            asalrujukan: result3.rows,
-                                                            jenispenjamin: result4.rows, 
-                                                            rekanan: result5.rows, 
-                                                            hubungankeluarga: result6.rows,
-                                                            pegawai: result7.rows, 
-                                                            kelas: result8.rows, 
-                                                            kamar: result9.rows,
-                                                            tempattidur: result10.rows,
-                                                            statuspulang: result11.rows,
-                                                            caramasuk:result12.rows
-                                                        }
-                                                        res.status(200).send({
-                                                            data: tempres,
-                                                            status: "success",
-                                                            success: true,
-                                                        });
+                                                        pool.query(`select mu.namaunit,mk2.namakelas,count(mt.id) from m_unit mu 
+                                                        join m_kamar mk on mk.objectunitfk=mu.id 
+                                                        join m_kelas mk2 on mk2.id=mk.objectkelasfk
+                                                        join m_tempattidur mt on mt.objectkamarfk=mk.id
+                                                        where mt.objectstatusbedfk =2 and mt.statusenabled =true
+                                                        group  by mu.namaunit,mk2.namakelas`, (error, result13) => {
+                                                            if (error) return;
+                                                            let tempres = {
+                                                                instalasi: result.rows, 
+                                                                unit: result2.rows, 
+                                                                asalrujukan: result3.rows,
+                                                                jenispenjamin: result4.rows, 
+                                                                rekanan: result5.rows, 
+                                                                hubungankeluarga: result6.rows,
+                                                                pegawai: result7.rows, 
+                                                                kelas: result8.rows, 
+                                                                kamar: result9.rows,
+                                                                tempattidur: result10.rows,
+                                                                statuspulang: result11.rows,
+                                                                caramasuk:result12.rows,
+                                                                gridtempattidur:result13.rows
+                                                            }
+                                                            res.status(200).send({
+                                                                data: tempres,
+                                                                status: "success",
+                                                                success: true,
+                                                            });
+                
+                                                        })
             
                                                     })
         

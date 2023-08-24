@@ -107,4 +107,8 @@ export default class ServiceRegistrasi {
     getListPasienMutasi = async (param) => {
         return await api.get(`/transaksi/registrasi/get-list-pasien-mutasi?&search=${param}`);
     }
+
+    saveRegistrasiMutasi = async (data) => {
+        return await api.create(`/transaksi/registrasi/save-registrasi-mutasi`, data)
+    }
 }

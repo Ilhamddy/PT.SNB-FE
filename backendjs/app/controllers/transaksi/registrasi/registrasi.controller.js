@@ -338,86 +338,7 @@ function formatDate(date) {
 
     return [year, month, day].join('-');
 }
-const saveRegistrasiPasien2 = (req, res) => {
-    try {
-        let norec = uuid.v4().substring(0, 32)
-        let objectpenjaminfk = null
-        let objectpenjamin2fk = null
-        let objectpenjamin3fk = null
-        for (let x = 0; x < req.body.penjamin.length; x++) {
-            if (x == 0)
-                objectpenjaminfk = req.body.penjamin[x].value
-        }
-        let today = new Date();
-        let todayMonth = '' + (today.getMonth() + 1)
-        if (todayMonth.length < 2)
-            todayMonth = '0' + todayMonth;
-        let todaystart = formatDate(today)
-        let todayend = formatDate(today) + ' 23:59'
 
-        let queryNoAntrian = `select count(noantrian)  from t_antreanpemeriksaan ta
-        join m_pegawai mp on mp.id=ta.objectdokterpemeriksafk where ta.objectdokterpemeriksafk='${req.body.dokter}' 
-        and ta.tglmasuk between '${todaystart}' and '${todayend}'`
-        pool.query(queryNoAntrian, (error, resultCountNoantrianDokter) => {
-            if (error) throw error;
-            let noantrian = parseFloat(resultCountNoantrianDokter.rows[0].count) + 1
-            let query = `select count(norec) from t_daftarpasien
-            where tglregistrasi between '${todaystart}' and '${todayend}'`
-            pool.query(query, (error, resultCount) => {
-                if (error) throw error;
-                let noregistrasi = parseFloat(resultCount.rows[0].count) + 1
-                for (let x = resultCount.rows[0].count.toString().length; x < 4; x++) {
-                    noregistrasi = '0' + noregistrasi;
-                }
-
-                t_daftarpasien.create({
-                    norec: norec,
-                    nocmfk: req.body.id,
-                    noregistrasi: today.getFullYear() + todayMonth.toString() + noregistrasi,
-                    tglregistrasi: req.body.tglregistrasi,
-                    objectunitlastfk: req.body.unittujuan,
-                    objectdokterpemeriksafk: req.body.dokter,
-                    objectpegawaifk: req.userId,
-                    objectkelasfk: req.body.kelasfk,
-                    objectjenispenjaminfk: req.body.jenispenjamin,
-                    tglpulang: req.body.tglregistrasi,
-                    objectasalrujukanfk: req.body.rujukanasal,
-                    objectinstalasifk: req.body.tujkunjungan,
-                    objectpenjaminfk: objectpenjaminfk,
-                    objectpenjamin2fk: objectpenjamin2fk,
-                    objectpenjamin3fk: objectpenjamin3fk,
-                    objectpjpasienfk: req.body.penanggungjawab,
-                    statusenabled: true
-                }).then(result => {
-                    let norec = uuid.v4().substring(0, 32)
-                    t_antreanpemeriksaan.create({
-                        norec: norec,
-                        noregistrasif: result.norec,
-                        tglmasuk: req.body.tglregistrasi,
-                        tglpulang: req.body.tglregistrasi,
-                        objectdokterpemeriksafk: req.body.dokter,
-                        noantrian: noantrian,
-                        statusenabled: true
-                    }).then(result2 => {
-                        let tempres = { instalasi: result, unit: result2 }
-                        res.status(200).send({
-                            data: tempres,
-                            status: "success",
-                            success: true,
-                        });
-                    }).catch(err => {
-                        res.status(500).send({ message: err.message });
-                    });
-                }).catch(err => {
-                    res.status(500).send({ message: err.message });
-                });
-            })
-        })
-
-    } catch (error) {
-        res.status(500).send({ message: error });
-    }
-}
 async function saveRegistrasiPasien(req, res) {
     const [transaction, errorTransaciton]
         = await createTransaction(db, res, "saveRegPasien")
@@ -1526,6 +1447,127 @@ async function getListPasienMutasi(req, res) {
 
 }
 
+async function saveRegistrasiPasienMutasi(req, res) {
+    const [transaction, errorTransaciton]
+        = await createTransaction(db, res, "saveRegPasien")
+    if (errorTransaciton) return
+    try {
+
+        // console.log(req.body?.penjamin)
+        let objectpenjaminfk = req.body?.penjamin?.[0]?.value || null
+        let objectpenjamin2fk = req.body?.penjamin?.[1]?.value || null
+        let objectpenjamin3fk = req.body?.penjamin?.[2]?.value || null
+        let today = new Date();
+        let todayMonth = '' + (today.getMonth() + 1)
+        if (todayMonth.length < 2)
+            todayMonth = '0' + todayMonth;
+        let todayDate = '' + (today.getDate())
+        if (todayDate.length < 2)
+            todayDate = '0' + todayDate;
+        let todaystart = formatDate(today)
+        let todayend = formatDate(today) + ' 23:59'
+        let resultCountNoantrianDokter = await pool.query(queries.qNoAntrian, [req.body.dokter, todaystart, todayend]);
+        let noantrian = parseFloat(resultCountNoantrianDokter.rows[0].count) + 1
+        let query = `select count(norec) from t_daftarpasien
+            where tglregistrasi between '${todaystart}' and '${todayend}'`
+        let resultCount = await pool.query(query);
+       
+        if (req.body.kelas === "")
+            req.body.kelas = 8
+        if (req.body.kamar === "")
+            req.body.kamar = null
+        if (req.body.tempattidur === "")
+            req.body.tempattidur = null
+
+        if (req.body.tujkunjungan === 2) {
+            let queryCekBed = `select id from m_tempattidur
+            where objectstatusbedfk =1 and id=${req.body.tempattidur}`
+            let resqueryCekBed = await pool.query(queryCekBed);
+            if (resqueryCekBed.rowCount === 1) {
+                await transaction.rollback();
+                res.status(201).send({
+                    status: 'Bed yang dipilih sudah terisi',
+                    success: false,
+                    msg: 'Simpan Gagal',
+                    code: 201
+                });
+                return
+            }
+        }
+
+        const daftarPasien = await db.t_daftarpasien.update({
+            tglregistrasi: req.body.tglregistrasi,
+            objectunitlastfk: req.body.unittujuan,
+            objectdokterpemeriksafk: req.body.dokter,
+            objectpegawaifk: req.idPegawai,
+            objectkelasfk: req.body.kelas,
+            objectjenispenjaminfk: req.body.jenispenjamin,
+            tglpulang: null,
+            objectasalrujukanfk: req.body.rujukanasal,
+            objectinstalasifk: req.body.tujkunjungan,
+            objectpenjaminfk: objectpenjaminfk,
+            objectpenjamin2fk: objectpenjamin2fk,
+            objectpenjamin3fk: objectpenjamin3fk,
+            objectpjpasienfk: req.body.penanggungjawab,
+            objectcaramasukfk: req.body.caramasuk,
+            statusenabled: true,
+            statuspasien: req.body.statuspasien
+        }, {
+            where: {
+                norec: req.body.norecdp
+            }
+        }, { transaction });
+
+        let norecAP = uuid.v4().substring(0, 32)
+        const antreanPemeriksaan = await db.t_antreanpemeriksaan.create({
+            norec: norecAP,
+            objectdaftarpasienfk: req.body.norecdp,
+            tglmasuk: req.body.tglregistrasi,
+            objectdokterpemeriksafk: req.body.dokter,
+            objectunitfk: req.body.unittujuan,
+            noantrian: noantrian,
+            objectkamarfk: req.body.kamar,
+            objectkelasfk: req.body.kelas,
+            nobed: req.body.tempattidur,
+            taskid: 3,
+            statusenabled: true
+        }, {
+            transaction: transaction
+        });
+        // console.log(antreanPemeriksaan);
+        if (req.body.tujkunjungan === 2) {
+            const ttp = await db.m_tempattidur.update({
+                objectstatusbedfk: 1
+            }, {
+                where: {
+                    id: req.body.tempattidur
+                }
+            }, { transaction });
+        }
+        await transaction.commit();
+        let tempres = {
+            daftarPasien: daftarPasien,
+            antreanPemeriksaan: antreanPemeriksaan
+        }
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+            msg: 'Simpan Berhasil',
+            code: 200
+        });
+    } catch (error) {
+        // console.log(error);
+        console.error(error);
+        transaction && await transaction.rollback();
+        res.status(201).send({
+            status: error,
+            success: false,
+            msg: 'Simpan Gagal',
+            code: 201
+        });
+    }
+}
 
 export default {
     allSelect,
@@ -1551,7 +1593,8 @@ export default {
     getWidgetDaftarPasienRegistrasi,
     getPasienFormById,
     saveBatalRegistrasi,
-    getListPasienMutasi
+    getListPasienMutasi,
+    saveRegistrasiPasienMutasi
 };
 
 const hUpdateRegistrasiPulang = async (req, res, transaction) => {

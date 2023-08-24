@@ -33,7 +33,10 @@ import {
     PASIEN_FORM_QUERIES_GET_ERROR,
     SAVE_BATAL_REGISTRASI,
     SAVE_BATAL_REGISTRASI_SUCCESS,
-    SAVE_BATAL_REGISTRASI_ERROR
+    SAVE_BATAL_REGISTRASI_ERROR,
+    SAVE_REGISTRASI_MUTASI,
+    SAVE_REGISTRASI_MUTASI_SUCCESS,
+    SAVE_REGISTRASI_MUTASI_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -90,6 +93,12 @@ const INIT_STATE = {
         loading: false,
         error: null,
         success: false
+    },
+    saveRegistrasiMutasi:{
+        newData: null,
+        loading: false,
+        error: null,
+        success: false
     }
 };
 
@@ -106,6 +115,9 @@ const Registrasi = (state = INIT_STATE, action) => {
                 },
                 saveBatalRegistrasi:{
                     ...INIT_STATE.saveBatalRegistrasi
+                },
+                saveRegistrasiMutasi:{
+                    ...INIT_STATE.saveRegistrasiMutasi
                 }
             }
         }
@@ -486,6 +498,40 @@ const Registrasi = (state = INIT_STATE, action) => {
                 ...state,
                 saveBatalRegistrasi: {
                     ...state.saveBatalRegistrasi,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case SAVE_REGISTRASI_MUTASI: {
+            return {
+                ...state,
+                saveRegistrasiMutasi: {
+                    ...state.saveRegistrasiMutasi,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case SAVE_REGISTRASI_MUTASI_SUCCESS: {
+            return {
+                ...state,
+                saveRegistrasiMutasi: {
+                    ...state.saveRegistrasiMutasi,
+                    newData: action.payload,
+                    loading: false,
+                    success: true,
+                }
+            }
+        }
+
+        case SAVE_REGISTRASI_MUTASI_ERROR: {
+            return {
+                ...state,
+                saveRegistrasiMutasi: {
+                    ...state.saveRegistrasiMutasi,
                     loading: false,
                     error: action.error,
                 }
