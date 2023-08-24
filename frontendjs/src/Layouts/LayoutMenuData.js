@@ -16,6 +16,7 @@ const Navdata = () => {
     const [isLaboratorium, setLaboratorium] = useState(false);
     const [isCasemix, setCasemix] = useState(false);
     const [isGudang, setIsGudang] = useState(false);
+    const [isFarmasi, setIsFarmasi] = useState(false);
     const [isApps, setIsApps] = useState(false);
     const [isAuth, setIsAuth] = useState(false);
     const [isPages, setIsPages] = useState(false);
@@ -627,6 +628,37 @@ const Navdata = () => {
                     label: "Stok Opname",
                     link: "/farmasi/gudang/stok-opname/daftar-stok-opname",
                     parentId: "gudang",
+                    isAllowed: () => {
+                        return isAllowedAccess(getUserPermissions(), [
+                            "REGISTRASI_VIEW",
+                        ]);
+                    }
+                },
+            ]
+        },
+        {
+            id: "farmasi",
+            label: "Farmasi",
+            icon: "lab la-delicious",
+            link: "/#",
+            click: function (e) {
+                e.preventDefault();
+                setIsFarmasi(!isGudang);
+                setIscurrentState('isFarmasi');
+                updateIconSidebar(e);
+            },
+            stateVariables: isGudang,
+            isAllowed: () => {
+                return isAllowedAccess(getUserPermissions(), [
+                    "REGISTRASI_VIEW","FARMASI_VIEW"
+                ]);
+            },
+            subItems: [
+                {
+                    id: "Verif Order",
+                    label: "Verif Order",
+                    link: "/farmasi/verif-order",
+                    parentId: "farmasi",
                     isAllowed: () => {
                         return isAllowedAccess(getUserPermissions(), [
                             "REGISTRASI_VIEW",
