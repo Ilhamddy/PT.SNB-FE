@@ -556,7 +556,7 @@ function* onCreateOrUpdateResepOrder({ payload: { data, callback } }) {
         let response = null;
         response = yield call(serviceEmr.createOrUpdateResepOrder, data);
         yield put(createOrUpdateResepOrderSuccess(response.data));
-        callback && callback()
+        callback && callback(response.data)
         toast.success(response.msg, { autoClose: 3000 });
     } catch (error) {
         yield put(createOrUpdateResepOrderError(error));

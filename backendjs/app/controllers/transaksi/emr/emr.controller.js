@@ -15,6 +15,8 @@ const t_diagnosatindakan = db.t_diagnosatindakan
 const t_orderresep = db.t_orderresep
 const t_orderresepdetail = db.t_orderresepdetail
 
+const Op = db.Sequelize.Op;
+
 function formatDate(date) {
     var d = new Date(date),
         month = '' + (d.getMonth() + 1),
@@ -440,15 +442,24 @@ async function getListCppt(req, res) {
         return
     }
     let nocmfk = resultNocmfk.rows[0].nocmfk
-    const resultList = await queryPromise2(`SELECT row_number() OVER (ORDER BY tt.norec) AS no,dp.noregistrasi,
-    to_char(dp.tglregistrasi,'yyyy-MM-dd') as tglregistrasi,tt.norec, tt.objectemrfk, tt.subjective,
-    tt.objective, tt.assesment,tt.plan,mu.namaunit
-            FROM t_daftarpasien dp 
-    join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk=dp.norec
-    join t_emrpasien te on te.objectantreanpemeriksaanfk=ta.norec 
-    join t_cppt tt on tt.objectemrfk =te.norec
-    join m_unit mu on mu.id=ta.objectunitfk where dp.nocmfk='${nocmfk}' and tt.statusenabled=true
-    `);
+    const resultList = await pool.query(`
+        SELECT 
+            row_number() OVER (ORDER BY tt.norec) AS no,
+            dp.noregistrasi,
+            to_char(dp.tglregistrasi,'yyyy-MM-dd') as tglregistrasi,
+            tt.norec, 
+            tt.objectemrfk, 
+            tt.subjective,
+            tt.objective, 
+            tt.assesment,
+            tt.plan,
+            mu.namaunit
+        FROM t_daftarpasien dp 
+            JOIN t_antreanpemeriksaan ta on ta.objectdaftarpasienfk=dp.norec
+            JOIN t_emrpasien te on te.objectantreanpemeriksaanfk=ta.norec 
+            JOIN t_cppt tt on tt.objectemrfk =te.norec
+            JOIN m_unit mu on mu.id=ta.objectunitfk where dp.nocmfk = $1 and tt.statusenabled=true
+    `, [nocmfk]);
     res.status(200).send({
         data: resultList.rows,
         status: "success",
@@ -1056,11 +1067,21 @@ const createOrUpdateEmrResepDokter = async (req, res) => {
         if(!norecorderresep){
             norecorderresep = uuid.v4().substring(0, 32)
             const date = new Date()
+            const dateTodayStart = new Date(date.getFullYear(), date.getMonth(), date.getDate())
+            const dateTodayEnd = new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1)
+            let totalOrderToday = await t_orderresep.count({
+                where: {
+                    tglinput: {
+                        [Op.between]: [dateTodayStart, dateTodayEnd]
+                    }
+                }
+            })
+            totalOrderToday = ("0000" + totalOrderToday).slice(-4)
             const kodeOrder = "O" + date.getFullYear() 
             + (date.getMonth() + 1) 
             + date.getDate() 
-            + date.getHours() 
-            + date.getMinutes()
+            + totalOrderToday
+            
             const created = await t_orderresep.create({
                 norec: norecorderresep,
                 kdprofile: 0,
@@ -1154,42 +1175,25 @@ export const initValueResep = {
 
 const getOrderResepFromDP = async (req, res) => {
     try{
-        const {norecdp} = req.query
+        const {norecdp, norecresep} = req.query
 
-        let dataOrders = await pool.query(qGetOrderResepFromDP, [norecdp])
+        let dataOrders = await pool.query(qGetOrderResepFromDP, [
+            'norecdp',
+            null,
+            norecdp
+        ])
+        let dataOrderNorec = (await pool.query(qGetOrderResepFromDP, [
+            'norecresep',
+            norecresep,
+            norecdp
+        ])).rows
         dataOrders = dataOrders.rows
-        dataOrders = dataOrders.map((order) => {
-            let newOrder = {...order}
-            const newOrdersResep = []
-
-            newOrder.resep.map((resep) => {
-                const newResep = {...resep}
-                if(newResep.kodertambahan){
-                    const findResep = newOrdersResep.find((findItem) => {
-                        return findItem.koder === newResep.koder
-                    })
-                    if(!findResep){
-                        const valueResepNew = {...initValueResep}
-                        valueResepNew.qty = newResep.qtyjumlahracikan
-                        valueResepNew.sediaan = newResep.sediaan
-                        valueResepNew.namasediaan = newResep.namasediaan
-                        valueResepNew.signa = newResep.signa
-                        valueResepNew.keterangan = newResep.keterangan
-                        valueResepNew.namaketerangan = newResep.namaketerangan
-                        valueResepNew.racikan = [newResep]
-                        newOrdersResep.push(valueResepNew)
-                    }else{
-                        findResep.racikan = [...findResep.racikan, newResep]
-                    }
-                }else{
-                    newOrdersResep.push(newResep)
-                }
-            })
-            newOrder.resep = newOrdersResep
-            return newOrder
-        })
+        dataOrders = hProcessOrderResep(dataOrders)
+        dataOrderNorec = hProcessOrderResep(dataOrderNorec)
+        dataOrderNorec = dataOrderNorec[0] || null
         const tempres = {
-            order: dataOrders
+            order: dataOrders,
+            ordernorec: dataOrderNorec
         }
         res.status(200).send({
             data: tempres,
@@ -1208,6 +1212,7 @@ const getOrderResepFromDP = async (req, res) => {
         })
     }
 }
+
 
 
 export default {
@@ -1309,7 +1314,12 @@ const hCreateOrUpdateDetailOrder = async (
 }
 
 
-const hCreateResep = async (norecorderresep, item, subItem, transaction) => {
+const hCreateResep = async (
+    norecorderresep, 
+    item, 
+    subItem, 
+    transaction
+) => {
     // jika bukan subitem, maka yang digunakan adalah item
     let itemUsed = subItem || item
     let created = await t_orderresepdetail.create({
@@ -1328,9 +1338,9 @@ const hCreateResep = async (norecorderresep, item, subItem, transaction) => {
         total: itemUsed.total ||0,
         objectsignafk: item.signa,
         objectketeranganresepfk: item.keterangan,
-        qtyracikan: item.qty,
+        qtyracikan: itemUsed.qtyracikan,
         qtypembulatan: itemUsed.qtypembulatan,
-        qtyjumlahracikan: itemUsed.qtyjumlahracikan,
+        qtyjumlahracikan: item.qty,
         // harus koder dari subitem
         kode_r_tambahan: subItem?.koder || null
     }, {
@@ -1340,7 +1350,13 @@ const hCreateResep = async (norecorderresep, item, subItem, transaction) => {
     return {created, norecresep: created.norec}
 }
 
-const hUpdateResep = async (norecorderresep, norecresep, item, subItem, transaction) => {
+const hUpdateResep = async (
+    norecorderresep, 
+    norecresep, 
+    item, 
+    subItem, 
+    transaction
+) => {
     // jika bukan subitem, maka yang digunakan adalah item
     let itemUsed = subItem || item
     let [_, updated] = await t_orderresepdetail.update({
@@ -1358,10 +1374,10 @@ const hUpdateResep = async (norecorderresep, norecresep, item, subItem, transact
         total: itemUsed.total ||0,
         objectsignafk: itemUsed.signa,
         objectketeranganresepfk: itemUsed.keterangan,
-        qtyracikan: itemUsed.qty,
+        qtyracikan: itemUsed.qtyracikan,
         qtypembulatan: itemUsed.qtypembulatan,
         // harus koder dari subitem
-        kode_r_tambahan: subItem?.koder,
+        kode_r_tambahan: subItem?.koder || null,
         qtyjumlahracikan: itemUsed.qtyjumlahracikan,
     }, {
         where: {
@@ -1372,4 +1388,43 @@ const hUpdateResep = async (norecorderresep, norecresep, item, subItem, transact
     })
     updated = updated[0].toJSON();
     return {updated, norecresep: norecresep}
+}
+
+const hProcessOrderResep = (dataOrders) => {
+    
+    let newDataOrders = dataOrders.map((order) => {
+        let newOrder = {...order}
+        const newOrdersResep = []
+
+        newOrder.resep.map((resep) => {
+            const newResep = {...resep}
+            if(newResep.kodertambahan){
+                const findResep = newOrdersResep.find((findItem) => {
+                    return findItem.koder === newResep.koder
+                })
+                if(!findResep){
+                    const valueResepNew = {...initValueResep}
+                    valueResepNew.qty = newResep.qtyjumlahracikan
+                    valueResepNew.sediaan = newResep.sediaan
+                    valueResepNew.namasediaan = newResep.namasediaan
+                    valueResepNew.signa = newResep.signa
+                    valueResepNew.keterangan = newResep.keterangan
+                    valueResepNew.namaketerangan = newResep.namaketerangan
+                    valueResepNew.koder = newResep.koder
+                    newResep.koder = newResep.kodertambahan
+                    valueResepNew.racikan = [newResep]
+                    newOrdersResep.push(valueResepNew)
+                }else{
+                    newResep.koder = newResep.kodertambahan
+                    findResep.racikan = [...findResep.racikan, newResep]
+                }
+            }else{
+                newResep.racikan = []
+                newOrdersResep.push(newResep)
+            }
+        })
+        newOrder.resep = newOrdersResep
+        return newOrder
+    })
+    return newDataOrders
 }

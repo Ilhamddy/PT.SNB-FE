@@ -333,7 +333,6 @@ const subTableCustomStyles = {
             borderBottom: "1px solid #919191"
         },
     }
-    
 }
 
 

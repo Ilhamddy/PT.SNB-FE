@@ -10,7 +10,7 @@ import { getComboResep } from "../../../../store/master/action";
 import { useDispatch, useSelector } from "react-redux";
 import { createOrUpdateResepOrder, getObatFromUnit, getOrderResepFromDp } from "../../../../store/emr/action";
 import * as Yup from "yup"
-import { useParams} from "react-router-dom"
+import { useParams, useSearchParams} from "react-router-dom"
 import RiwayatOrder from "./RiwayatOrder";
 
 export const initValueResep = {
@@ -45,6 +45,8 @@ const OrderResep = () => {
     const dispatch = useDispatch()
 
     const {norecap, norecdp} = useParams()
+    const [searchParams, setSearchParams] = useSearchParams()
+    const norecresep = searchParams.get("norecresep")
 
     const {
         pegawai,
@@ -53,6 +55,7 @@ const OrderResep = () => {
         signa,
         obatList,
         sediaanList,
+        orderNorec
     } = useSelector((state) => ({
         pegawai: state.Master?.getComboResep?.data?.pegawai || [],
         unit: state.Master?.getComboResep?.data?.unit || [],
@@ -60,6 +63,7 @@ const OrderResep = () => {
         signa: state.Master?.getComboResep?.data?.signa || [],
         obatList: state?.Emr?.getObatFromUnit?.data?.obat || [],
         sediaanList: state?.Master?.getComboResep?.data?.sediaan || [],
+        orderNorec: state?.Emr?.getOrderResepFromDP?.data?.ordernorec || null
     }))
 
     const vResep = useFormik({
@@ -119,12 +123,14 @@ const OrderResep = () => {
                 newValResep.total = strToNumber(valResep.total)
                 return newValResep
             }) 
-            dispatch(createOrUpdateResepOrder(newVal))
-            console.log(value)
+            dispatch(createOrUpdateResepOrder(newVal, (data) => {
+                searchParams.set("norecresep", data?.orderresep.norec)
+                setSearchParams(searchParams)
+            }))
         }
     })
 
-    // harusnuya pake memoized tapi lagi keburu
+    // harusnya pake memoized tapi lagi keburu
     const resepRef = useRef([
         {
             ...initValueResep
@@ -180,6 +186,165 @@ const OrderResep = () => {
         vResep.setFieldValue("resep", resepRef.current)
     }
 
+    const handleChangeObatResep = (e, row, ) => {
+        handleChangeResep(e?.value || "", "obat", row, true);
+        handleChangeResep(e?.label || "", "namaobat", row, true);
+        handleChangeResep(e?.satuanid || "", "satuanobat", row, true);
+        handleChangeResep(e?.namasatuan || "", "namasatuan", row, true);
+        handleChangeResep(e?.sediaanid || "", "sediaan", row, true);
+        handleChangeResep(e?.namasediaan || "", "namasediaan", row, true); 
+        const harga = e?.batchstokunit?.[0]?.harga || 0
+        let totalHarga = 
+            ((harga) * (row.qty || 0)) || ""
+        totalHarga = Math.ceil(totalHarga)
+        handleChangeResep(
+            totalHarga, 
+            "total", 
+            row, 
+            true
+        )
+        //TODO: masih janky
+        handleChangeResep(
+            harga || "", 
+            "harga", 
+            row, 
+            true
+        )
+    }
+
+    const handleQtyObatResep = (e, row, val, setVal) => {
+        const newVal = onChangeStrNbr(e.target.value, val)
+        setVal(newVal)
+        handleChangeResep(newVal, "qty", row)
+        let totalHarga = (
+            row.harga * 
+            (strToNumber(newVal) || 0)
+        ) || ""
+        handleChangeResep(
+            totalHarga, 
+            "total", 
+            row
+        )
+        totalHarga = Math.ceil(totalHarga)
+        row.racikan.forEach((valRacikan) => {
+            let totalQty = strToNumber(valRacikan.qtyracikan) * (strToNumber(newVal) || 0)
+            totalQty = Number(totalQty.toFixed(6))
+            const qtyBulat = Math.ceil(totalQty)
+            let qtyPembulatan = qtyBulat - totalQty
+            
+            qtyPembulatan = Number(qtyPembulatan.toFixed(6))
+            const totalHargaRacikan = (
+                valRacikan.harga * 
+                (totalQty)
+            ) || ""
+            handleChangeRacikan(qtyBulat, "qtypembulatan", row, valRacikan)
+            handleChangeRacikan(qtyPembulatan, qtyBulat, row, valRacikan)
+            handleChangeRacikan(
+                totalHargaRacikan, 
+                "total", 
+                row, 
+                valRacikan
+            )
+            handleChangeRacikan(
+                totalQty, 
+                "qty", 
+                row, 
+                valRacikan
+            )
+        })
+    }
+
+    const handleQtyRacikan = (e, row, rowUtama, val, setVal) => {
+        const newVal = onChangeStrNbr(e.target.value, val)
+        let qtyTotal = strToNumber(rowUtama.qty || 0) * strToNumber(newVal || 0)
+        qtyTotal = Number(qtyTotal.toFixed(6))
+        const qtyBulat = Math.ceil(qtyTotal)
+        let qtyPembulatan = qtyBulat - qtyTotal
+        qtyPembulatan = Number(qtyPembulatan.toFixed(6))
+        handleChangeRacikan(newVal, "qtyracikan", rowUtama, row)
+        handleChangeRacikan(qtyTotal, "qty", rowUtama, row)
+        handleChangeRacikan(qtyBulat, "qtypembulatan", rowUtama, row)
+        let totalHarga = (
+            row.harga * 1.25 * (strToNumber(newVal)) * (strToNumber(rowUtama.qty))
+        ) || ""
+        totalHarga = Math.ceil(totalHarga)
+        handleChangeRacikan(
+            totalHarga, 
+            "total", 
+            rowUtama,
+            row
+        )
+        // set val, value yang ada di dalam input
+        setVal(newVal)
+    }
+
+    const handleChangeObatRacikan = (e, row, rowUtama) => {
+        handleChangeRacikan(e?.value || "", "obat", rowUtama, row, true);
+        handleChangeRacikan(e?.label || "", "namaobat", rowUtama, row, true);
+        handleChangeRacikan(e?.satuanid || "", "satuanobat", rowUtama, row, true);
+        handleChangeRacikan(e?.namasatuan || "", "namasatuan", rowUtama, row, true);
+        const harga = e?.batchstokunit?.[0]?.harga || 0
+        const qtyTotal = strToNumber(rowUtama.qty || 0) * strToNumber(row.qtyracikan || 0)
+        const totalHarga = 
+            ((harga) * 1.25 * qtyTotal) || ""
+        handleChangeRacikan(
+            qtyTotal,
+            "qty",
+            rowUtama,
+            row,
+            true
+        )
+        handleChangeRacikan(
+            totalHarga, 
+            "total", 
+            rowUtama,
+            row, 
+            true
+        )
+        handleChangeRacikan(
+            harga || "", 
+            "harga",
+            rowUtama, 
+            row, 
+            true
+        )
+    }
+
+    const handleHapusRacikan = (row, rowUtama) => {
+        if(rowUtama.racikan.length === 1) return;
+        const newReseps = [...resepRef.current]
+        const newResep = {...newReseps[rowUtama.koder - 1]}
+        const newRacikans = [...newResep.racikan]
+        newRacikans.splice(row.koder - 1, 1)
+        newResep.racikan = newRacikans 
+        newReseps[rowUtama.koder - 1] = newResep
+        handleChangeAllResep(newReseps)
+    }
+
+    const handleTambahRacikan = (row, rowUtama) => {
+        const newReseps = [...resepRef.current]
+        const newResep = {...newReseps[rowUtama.koder - 1]}
+        const newRacikans = [...newResep.racikan]
+        const newRacikan = {...initValueRacikan}
+        newRacikans.push(newRacikan)
+        newResep.racikan = newRacikans
+        newReseps[rowUtama.koder - 1] = newResep
+        handleChangeAllResep(newReseps)
+    }
+
+    const handleAddResep = () => {
+        const newValue = {...initValueResep}
+        const newResep = [...resepRef.current, {...newValue}]
+        handleChangeAllResep(newResep)
+    }
+
+    const handleAddRacikan = () => {
+        const newValue = {...initValueResep}
+        newValue.racikan = [{...initValueRacikan}]
+        const newResep = [...resepRef.current, {...newValue}]
+        handleChangeAllResep(newResep)
+    }
+
     useEffect(() => {
         dispatch(getComboResep())
     }, [dispatch])
@@ -195,8 +360,25 @@ const OrderResep = () => {
     }, [vResep.setFieldValue, norecap])
 
     useEffect(() => {
-        dispatch(getOrderResepFromDp({norecdp: norecdp}))
-    }, [dispatch, norecdp])
+        const setV = vResep.setValues
+        let orderNorecGot = null
+        if(!Array.isArray(orderNorec) && orderNorec){
+            orderNorecGot = orderNorec
+        }
+        if(orderNorecGot){
+            setV(orderNorec)
+            resepRef.current = orderNorecGot.resep
+        }
+
+    }, [orderNorec, vResep.setValues])
+
+    useEffect(() => {
+        dispatch(getOrderResepFromDp({
+            norecdp: norecdp, 
+            norecresep: norecresep
+        }))
+    }, [dispatch, norecdp, norecresep])
+
 
 
     const columnsResep = [
@@ -221,30 +403,7 @@ const OrderResep = () => {
                                 id="obat"
                                 name="obat"
                                 options={obatList}
-                                onChange={(e) => {
-                                    handleChangeResep(e?.value || "", "obat", row, true);
-                                    handleChangeResep(e?.label || "", "namaobat", row, true);
-                                    handleChangeResep(e?.satuanid || "", "satuanobat", row, true);
-                                    handleChangeResep(e?.namasatuan || "", "namasatuan", row, true);
-                                    handleChangeResep(e?.sediaanid || "", "sediaan", row, true);
-                                    handleChangeResep(e?.namasediaan || "", "namasediaan", row, true); 
-                                    const harga = e?.batchstokunit?.[0]?.harga || 0
-                                    const totalHarga = 
-                                        ((harga) * (row.qty || 0)) || ""
-                                    handleChangeResep(
-                                        totalHarga, 
-                                        "total", 
-                                        row, 
-                                        true
-                                    )
-                                    //TODO: masih janky
-                                    handleChangeResep(
-                                        harga || "", 
-                                        "harga", 
-                                        row, 
-                                        true
-                                    )
-                                }}
+                                onChange={(e) => handleChangeObatResep(e, row)}
                                 value={row.obat}
                                 className={`input ${touchedResep?.obat 
                                     && !!errorsResep?.obat
@@ -309,44 +468,12 @@ const OrderResep = () => {
                             type="text"
                             value={val} 
                             onBlur={handleBlur}
-                            onChange={(e) => {
-                                const newVal = onChangeStrNbr(e.target.value, val)
-                                setVal(newVal)
-                                handleChangeResep(newVal, "qty", row)
-                                const totalHarga = (
-                                    row.harga * 
-                                    (strToNumber(newVal) || 0)
-                                ) || ""
-                                handleChangeResep(
-                                    totalHarga, 
-                                    "total", 
-                                    row
-                                )
-                                row.racikan.forEach((valRacikan) => {
-                                    let totalQty = strToNumber(valRacikan.qtyracikan) * (strToNumber(newVal) || 0)
-                                    totalQty = Number(totalQty.toFixed(6))
-                                    const qtyBulat = Math.ceil(totalQty)
-                                    let qtyPembulatan = qtyBulat - totalQty
-                                    qtyPembulatan = Number(qtyPembulatan.toFixed(6))
-                                    const totalHargaRacikan = (
-                                        valRacikan.harga * 
-                                        (totalQty)
-                                    ) || ""
-                                    handleChangeRacikan(qtyPembulatan, qtyBulat, row, valRacikan)
-                                    handleChangeRacikan(
-                                        totalHargaRacikan, 
-                                        "total", 
-                                        row, 
-                                        valRacikan
-                                    )
-                                    handleChangeRacikan(
-                                        totalQty, 
-                                        "qty", 
-                                        row, 
-                                        valRacikan
-                                    )
-                                })
-                            }}
+                            onChange={(e) => handleQtyObatResep(
+                                e, 
+                                row, 
+                                val, 
+                                setVal
+                            )}
                             invalid={touchedResep?.qty && !!errorsResep?.qty}
                             />
                         {
@@ -527,46 +654,17 @@ const OrderResep = () => {
                 ?.resep
                 ?.[rowUtama.koder - 1]
                 ?.racikan?.[row.koder - 1]
-                const [val, setVal] = useState("")
                 return (
                     <div>
                         <CustomSelect
                             id="obat"
                             name="obat"
                             options={obatList}
-                            onChange={(e) => {
-                                handleChangeRacikan(e?.value || "", "obat", rowUtama, row, true);
-                                handleChangeRacikan(e?.label || "", "namaobat", rowUtama, row, true);
-                                handleChangeRacikan(e?.satuanid || "", "satuanobat", rowUtama, row, true);
-                                handleChangeRacikan(e?.namasatuan || "", "namasatuan", rowUtama, row, true);
-                                setVal(e?.value || "")
-                                const harga = e?.batchstokunit?.[0]?.harga || 0
-                                const qtyTotal = strToNumber(rowUtama.qty || 0) * strToNumber(row.qtyracikan || 0)
-                                const totalHarga = 
-                                    ((harga) * qtyTotal) || ""
-                                handleChangeRacikan(
-                                    qtyTotal,
-                                    "qty",
-                                    rowUtama,
-                                    row,
-                                    true
-                                )
-                                handleChangeRacikan(
-                                    totalHarga, 
-                                    "total", 
-                                    rowUtama,
-                                    row, 
-                                    true
-                                )
-                                //TODO: masih janky
-                                handleChangeRacikan(
-                                    harga || "", 
-                                    "harga",
-                                    rowUtama, 
-                                    row, 
-                                    true
-                                )
-                            }}
+                            onChange={(e) => handleChangeObatRacikan(
+                                e, 
+                                row, 
+                                rowUtama
+                            )}
                             value={row.obat}
                             className={`input ${!!errorsResep?.obat
                                 ? "is-invalid" : ""}`}
@@ -607,27 +705,13 @@ const OrderResep = () => {
                             type="text"
                             value={val} 
                             onChange={(e) => {
-                                const newVal = onChangeStrNbr(e.target.value, val)
-                                let qtyTotal = strToNumber(rowUtama.qty || 0) * strToNumber(newVal || 0)
-                                qtyTotal = Number(qtyTotal.toFixed(6))
-                                const qtyBulat = Math.ceil(qtyTotal)
-                                let qtyPembulatan = qtyBulat - qtyTotal
-                                qtyPembulatan = Number(qtyPembulatan.toFixed(6))
-                                handleChangeRacikan(newVal, "qtyracikan", rowUtama, row)
-                                handleChangeRacikan(qtyTotal, "qty", rowUtama, row)
-                                handleChangeRacikan(qtyBulat, "qtypembulatan", rowUtama, row)
-                                // TODO: fix
-                                const totalHarga = (
-                                    row.harga * (strToNumber(newVal)) * (strToNumber(rowUtama.qty))
-                                ) || ""
-                                handleChangeRacikan(
-                                    totalHarga, 
-                                    "total", 
+                                handleQtyRacikan(
+                                    e, 
+                                    row, 
                                     rowUtama,
-                                    row
+                                    val,
+                                    setVal
                                 )
-                                setVal(newVal)
-
                             }}
                             onBlur={handleBlur}
                             invalid={touchedResep?.qtyracikan && !!errorsResep?.qtyracikan}
@@ -718,16 +802,11 @@ const OrderResep = () => {
                 }
                 return (
                     <div>
-                        <Button color="success" onClick={() => {
-                            const newReseps = [...resepRef.current]
-                            const newResep = {...newReseps[rowUtama.koder - 1]}
-                            const newRacikans = [...newResep.racikan]
-                            const newRacikan = {...initValueRacikan}
-                            newRacikans.push(newRacikan)
-                            newResep.racikan = newRacikans
-                            newReseps[rowUtama.koder - 1] = newResep
-                            handleChangeAllResep(newReseps)
-                        }}>
+                        <Button 
+                            color="success" 
+                            onClick={() => 
+                                handleTambahRacikan(row, rowUtama)
+                            }>
                             +
                         </Button>
                     </div>
@@ -740,16 +819,11 @@ const OrderResep = () => {
             Cell: ({row, rowUtama}) => {
                 return (
                     <div>
-                        <Button color="danger" onClick={() => {
-                            if(rowUtama.racikan.length === 1) return;
-                            const newReseps = [...resepRef.current]
-                            const newResep = {...newReseps[rowUtama.koder - 1]}
-                            const newRacikans = [...newResep.racikan]
-                            newRacikans.splice(row.koder - 1, 1)
-                            newResep.racikan = newRacikans 
-                            newReseps[rowUtama.koder - 1] = newResep
-                            handleChangeAllResep(newReseps)
-                        }}>
+                        <Button 
+                            color="danger" 
+                            onClick={() => 
+                                handleHapusRacikan(row, rowUtama)
+                            }>
                             -
                         </Button>
                     </div>
@@ -758,6 +832,7 @@ const OrderResep = () => {
             width: "10%"
         },
     ];
+    console.log(vResep.values)
     const resepNonRacikan = vResep.values.resep.filter((val) => val.racikan.length === 0)
     const resepRacikan = vResep.values.resep.filter((val) => val.racikan.length > 0)
     return (
@@ -850,12 +925,10 @@ const OrderResep = () => {
                                 }}>
                                     Non Racikan
                                 </h1>
-                                <Button color={"info"} style={{border: "none", width: "fit-content"}}
-                                    onClick={() => {
-                                        const newValue = {...initValueResep}
-                                        const newResep = [...resepRef.current, {...newValue}]
-                                        handleChangeAllResep(newResep)
-                                    }}>
+                                <Button 
+                                    color={"info"} 
+                                    style={{border: "none", width: "fit-content"}}
+                                    onClick={handleAddResep}>
                                     +
                                 </Button>
                             </td>
@@ -888,13 +961,10 @@ const OrderResep = () => {
                                 }}>
                                     Racikan
                                 </h1>
-                                <Button color={"info"} style={{border: "none", width: "fit-content"}}
-                                    onClick={() => {
-                                        const newValue = {...initValueResep}
-                                        newValue.racikan = [{...initValueRacikan}]
-                                        const newResep = [...resepRef.current, {...newValue}]
-                                        handleChangeAllResep(newResep)
-                                    }}>
+                                <Button 
+                                    color={"info"} 
+                                    style={{border: "none", width: "fit-content"}}
+                                    onClick={handleAddRacikan}>
                                     +
                                 </Button>
                             </td>
@@ -944,6 +1014,7 @@ const OrderResep = () => {
                 <Row style={{justifyContent: "space-evenly"}}>
                     <Col md={2}>
                         <Button color="info"
+                            disabled={!!orderNorec}
                             onClick={() => {
                                 console.error(vResep.errors)
                                 vResep.handleSubmit();

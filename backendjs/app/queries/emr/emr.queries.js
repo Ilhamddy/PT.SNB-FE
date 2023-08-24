@@ -52,6 +52,7 @@ SELECT
             'qty', tord.qty,
             'qtyracikan', tord.qtyracikan,
             'qtypembulatan', tord.qtypembulatan,
+            'qtyjumlahracikan', tord.qtyjumlahracikan,
             'sediaan', tord.objectsediaanfk,
             'namasediaan', msed.sediaan,
             'harga', tord.harga,
@@ -62,6 +63,7 @@ SELECT
             'namaketerangan', mket.reportdisplay,
             'kodertambahan', tord.kode_r_tambahan
         )
+        ORDER BY tord.kode_r ASC, tord.kode_r_tambahan ASC
     ) AS resep
 FROM t_daftarpasien tdp
     LEFT JOIN t_antreanpemeriksaan tap ON tdp.norec = tap.objectdaftarpasienfk
@@ -74,7 +76,10 @@ FROM t_daftarpasien tdp
     LEFT JOIN m_sediaan msed ON msed.id = mp.objectsediaanfk
     LEFT JOIN m_keteranganresep mket ON mket.id = tord.objectketeranganresepfk
     LEFT JOIN m_signa msig ON msig.id = tord.objectsignafk
-WHERE tdp.norec = $1
+WHERE CASE WHEN $1 = 'norecresep' 
+    THEN tor.norec = $2
+    ELSE tdp.norec = $3
+END
 GROUP BY
     tor.norec,
     mpeg.id,

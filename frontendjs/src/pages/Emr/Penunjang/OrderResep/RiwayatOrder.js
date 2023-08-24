@@ -63,12 +63,6 @@ const ExpandableRiwayat = ({ data }) => {
      */
     const columnsDetail = [
         {
-            name: <span className='font-weight-bold fs-13'>R</span>,
-            sortable: true,
-            selector: row => row.koder,
-            width: "20px"
-        },
-        {
             name: <span className='font-weight-bold fs-13'>Kemasan</span>,
             selector: row => (row.racikan || [])?.length === 0 ? "Non Racikan" : "Racikan",
             sortable: true,
@@ -113,6 +107,63 @@ const ExpandableRiwayat = ({ data }) => {
             data={data.resep || []}
             progressPending={false}
             customStyles={subTableCustomStyles}
+            progressComponent={<LoadingTable />}
+            expandableRowDisabled={row => (row.racikan || [])?.length === 0}
+            expandableRows
+            expandableRowsComponent={ExpandableRiwayatObat}
+            noDataComponent={<NoDataTable dataName={"data obat"}/>}
+        />
+    )
+}
+
+const ExpandableRiwayatObat = ({ data }) => {
+
+    /**
+     * @type {import("react-data-table-component").TableColumn[]}
+     */
+    const columnsDetail = [
+        {
+            sortable: true,
+            selector: row => row.koder,
+            width: "47px"
+        },
+        {
+            selector: row => (row.racikan || [])?.length === 0 ? "Non Racikan" : "Racikan",
+            sortable: true,
+            width: "100px"
+        },
+        {
+            sortable: true,
+            selector: row => `${row.namaobat || ""}`,
+            width: "100px"
+        },
+        {
+            sortable: true,
+            selector: row => `${row.qty}`,
+            width: "150px"
+        },
+        {
+            sortable: true,
+            selector: row => `${row.namasatuan || ""}`,
+            width: "100px"
+        },
+        {
+            sortable: true,
+            selector: row => `${row.namasigna || ""}`,
+            width: "150px"
+        },
+        {
+            sortable: true,
+            selector: row => `${row.namaketerangan}`,
+            width: "100px"
+        },
+    ];
+    return(
+        <DataTable
+            columns={columnsDetail}
+            data={data.racikan || []}
+            progressPending={false}
+            customStyles={{...subTableCustomStyles, headRow: {...subTableCustomStyles.headRow, style: {...subTableCustomStyles.headRow.style, display: "none"}}}}
             progressComponent={<LoadingTable />}
             noDataComponent={<NoDataTable dataName={"data obat"}/>}
         />
