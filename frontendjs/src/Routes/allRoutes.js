@@ -260,6 +260,10 @@ import KendaliDokumen from "../pages/RekamMedis/KendaliDokumen/KendaliDokumen";
 import LaporanPasienDaftar from "../pages/RekamMedis/Laporan/LaporanPasienDaftar/LaporanPasienDaftar";
 import LaporanPasienBatal from "../pages/RekamMedis/Laporan/LaporanPasienBatal/LaporanPasienBatal";
 import LaporanPasienKunjungan from "../pages/RekamMedis/Laporan/LaporanPasienKunjungan/LaporanPasienKunjungan";
+
+// RL
+import RL3_1 from "../pages/RekamMedis/Laporan/RL3_1/RL3_1";
+// 
 // radiologi
 import DaftarOrderRadiologi from "../pages/Radiologi/DaftarOrderRadiologi/DaftarOrderRadiologi";
 import DaftarPasienRadiologi from "../pages/Radiologi/DaftarPasienRadiologi/DaftarPasienRadiologi";
@@ -538,6 +542,7 @@ const authProtectedRoutes = [
   { path: "/cmVrYW1tZWRpcy9sYXBvcmFuLXBhc2llbi1kYWZ0YXI=", component: <LaporanPasienDaftar/>},
   { path: "/cmVrYW1tZWRpcy9sYXBvcmFuLXBhc2llbi1iYXRhbA==", component: <LaporanPasienBatal/>},
   { path: "/cmVrYW1tZWRpcy9sYXBvcmFuLXBhc2llbi1rdW5qdW5nYW4=", component: <LaporanPasienKunjungan/>},
+  { path: "/cmVrYW1tZWRpcy9sYXBvcmFuLXJsL3JsMy4x", component: <RL3_1/>},//rekammedis/laporan-rl/rl3.1
 
   // radiologi
   { path: "/radiologi/daftarorderradiologi", component: <DaftarOrderRadiologi /> },

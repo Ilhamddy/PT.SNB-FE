@@ -311,12 +311,12 @@ async function getListLaporanDaftarPasien(req, res) {
         let start = (new Date(req.query.start)).toISOString();
         let end = (new Date(req.query.end)).toISOString();
         let search = `%${req.query.search}%`
-        let instalasi =req.query.instalasi !== '' ? ` and td.objectinstalasifk = '${req.query.instalasi}'` : '';
+        let instalasi = req.query.instalasi !== '' ? ` and td.objectinstalasifk = '${req.query.instalasi}'` : '';
         let unit = req.query.unit !== '' ? ` and td.objectunitlastfk = '${req.query.unit}'` : '';
         let rekanan = req.query.rekanan !== '' ? ` and td.objectpenjaminfk = '${req.query.rekanan}'` : '';
         let pegawai = req.query.pegawai !== '' ? ` and td.objectpegawaifk = '${req.query.pegawai}'` : '';
-        console.log(start,end,search,instalasi,unit,rekanan,pegawai)
-        
+        console.log(start, end, search, instalasi, unit, rekanan, pegawai)
+
         // const result = await pool.query(queries.qResult, [start,end,search]) //,instalasi,unit,rekanan,pegawai
         const result = await queryPromise2(`select td.noregistrasi,td.norec,td.nocmfk,
         to_char(td.tglregistrasi,'dd Month YYYY') as tglregistrasi,to_char(td.tglpulang,'dd Month YYYY') as tglpulang,mp.namapasien,
@@ -347,12 +347,12 @@ async function getListLaporanPasienBatal(req, res) {
         let start = (new Date(req.query.start)).toISOString();
         let end = (new Date(req.query.end)).toISOString();
         let search = `%${req.query.search}%`
-        let instalasi =req.query.instalasi !== '' ? ` and td.objectinstalasifk = '${req.query.instalasi}'` : '';
+        let instalasi = req.query.instalasi !== '' ? ` and td.objectinstalasifk = '${req.query.instalasi}'` : '';
         let unit = req.query.unit !== '' ? ` and td.objectunitlastfk = '${req.query.unit}'` : '';
         let rekanan = req.query.rekanan !== '' ? ` and td.objectpenjaminfk = '${req.query.rekanan}'` : '';
         let pegawai = req.query.pegawai !== '' ? ` and td.objectpegawaifk = '${req.query.pegawai}'` : '';
-        console.log(start,end,search,instalasi,unit,rekanan,pegawai)
-        
+        console.log(start, end, search, instalasi, unit, rekanan, pegawai)
+
         // const result = await pool.query(queries.qResult, [start,end,search]) //,instalasi,unit,rekanan,pegawai
         const result = await queryPromise2(`select tb.norec,tb.alasanbatal,to_char(tb.tglbatal,'dd Month YYYY HH:MM') as tglbatal,td.noregistrasi,td.norec,td.nocmfk,
         to_char(td.tglregistrasi,'dd Month YYYY') as tglregistrasi,to_char(td.tglpulang,'dd Month YYYY') as tglpulang,mp.namapasien,
@@ -386,12 +386,12 @@ async function getListLaporanPasienKunjungan(req, res) {
         let start = (new Date(req.query.start)).toISOString();
         let end = (new Date(req.query.end)).toISOString();
         let search = `%${req.query.search}%`
-        let instalasi =req.query.instalasi !== '' ? ` and mu.objectinstalasifk = '${req.query.instalasi}'` : '';
+        let instalasi = req.query.instalasi !== '' ? ` and mu.objectinstalasifk = '${req.query.instalasi}'` : '';
         let unit = req.query.unit !== '' ? ` and ta.objectunitfk = '${req.query.unit}'` : '';
         let rekanan = req.query.rekanan !== '' ? ` and td.objectpenjaminfk = '${req.query.rekanan}'` : '';
         let pegawai = req.query.pegawai !== '' ? ` and td.objectpegawaifk = '${req.query.pegawai}'` : '';
-        console.log(start,end,search,instalasi,unit,rekanan,pegawai)
-        
+        console.log(start, end, search, instalasi, unit, rekanan, pegawai)
+
         // const result = await pool.query(queries.qResult, [start,end,search]) //,instalasi,unit,rekanan,pegawai
         const result = await queryPromise2(`select td.noregistrasi,td.norec,td.nocmfk,
         to_char(td.tglregistrasi,'dd Month YYYY') as tglregistrasi,to_char(td.tglpulang,'dd Month YYYY') as tglpulang,mp.namapasien,
@@ -418,6 +418,71 @@ async function getListLaporanPasienKunjungan(req, res) {
 
 }
 
+async function getLaporanRL3_1(req, res) {
+    try {
+        let start = (new Date(req.query.start)).toISOString();
+        let end = (new Date(req.query.end)).toISOString();
+        let search = `%${req.query.search}%`
+        let instalasi = req.query.instalasi !== '' ? ` and mu.objectinstalasifk = '${req.query.instalasi}'` : '';
+        let unit = req.query.unit !== '' ? ` and ta.objectunitfk = '${req.query.unit}'` : '';
+        let rekanan = req.query.rekanan !== '' ? ` and td.objectpenjaminfk = '${req.query.rekanan}'` : '';
+        let pegawai = req.query.pegawai !== '' ? ` and td.objectpegawaifk = '${req.query.pegawai}'` : '';
+
+        // const result = await pool.query(queries.qResult, [start,end,search]) //,instalasi,unit,rekanan,pegawai
+        const result = await queryPromise2(`select mp.objectspesialisasifk,ms.reportdisplay as jenis_spesialisasi,
+        to_char(td.tglregistrasi,'dd-MM-YYYY') as tglregistrasi,to_char(td.tglpulang,'dd-MM-YYYY') as tglpulang,
+        td.objectcarapulangrifk,td.objectkondisipulangrifk  from t_daftarpasien td 
+        join m_pegawai mp on mp.id=td.objectdokterpemeriksafk
+        join m_spesialisasi ms on ms.id=mp.objectspesialisasifk
+        where td.objectinstalasifk=2 and td.tglregistrasi between '${start}' and '${end}' and td.statusenabled=true 
+        and td.tglpulang is not null
+        `);
+
+        let data10 = [];
+        result.rows.forEach(element => {
+            let sama = false;
+            let jmlPulangHidup = 0
+            let jmlMeninggalK48 = 0
+            if (element.objectcarapulangrifk !== 4) {
+                jmlPulangHidup = 1
+            }else if (element.objectcarapulangrifk === 4) {
+                if(element.objectkondisipulangrifk===4){
+                    jmlMeninggalK48 = 1
+                }
+            }
+            data10.forEach(element2 => {
+                if (element.jenis_spesialisasi === element2.jenis_spesialisasi) {
+                    sama = true
+                    element2.jumlah = parseFloat(element2.jumlah) + 1
+                    element2.jmlpulanghidup = parseFloat(element2.jmlpulanghidup) + jmlPulangHidup
+                    element2.jmlmeninggalk48 = parseFloat(element2.jmlmeninggalk48) + jmlMeninggalK48
+                }
+            });
+
+            if (sama === false) {
+                data10.push({
+                    'jenis_spesialisasi': element.jenis_spesialisasi,
+                    'jumlah': 1,
+                    'row': data10.length + 1,
+                    'jmlpulanghidup': jmlPulangHidup,
+                    'jmlmeninggalk48':jmlMeninggalK48
+                });
+
+            }
+
+
+        });
+        res.status(200).send({
+            data: data10,
+            status: "success",
+            success: true,
+        });
+
+    } catch (error) {
+        res.status(500).send({ message: error });
+    }
+
+}
 
 export default {
     getListDaftarDokumenRekammedis,
@@ -426,5 +491,6 @@ export default {
     getComboLaporanRekammedis,
     getListLaporanDaftarPasien,
     getListLaporanPasienBatal,
-    getListLaporanPasienKunjungan
+    getListLaporanPasienKunjungan,
+    getLaporanRL3_1
 };

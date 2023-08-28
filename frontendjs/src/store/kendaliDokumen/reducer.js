@@ -20,7 +20,10 @@ import {
     LIST_LAPORAN_PASIEN_BATAL_GET_ERROR,
     LIST_LAPORAN_PASIEN_KUNJUNGAN_GET,
     LIST_LAPORAN_PASIEN_KUNJUNGAN_GET_SUCCESS,
-    LIST_LAPORAN_PASIEN_KUNJUNGAN_GET_ERROR
+    LIST_LAPORAN_PASIEN_KUNJUNGAN_GET_ERROR,
+    LAPORAN_RL_3_1_GET,
+    LAPORAN_RL_3_1_GET_SUCCESS,
+    LAPORAN_RL_3_1_GET_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -59,6 +62,11 @@ const INIT_STATE = {
         data: [],
         loading: false,
         error: null,
+    },
+    laporanRL_3_1_Get:{
+        data: [],
+        loading: false,
+        error: null,
     }
 }
 
@@ -87,6 +95,9 @@ const KendaliDokumen = (state = INIT_STATE, action) => {
                 },
                 listLaporanPasienKunjunganGet:{
                     ...INIT_STATE.listLaporanPasienKunjunganGet
+                },
+                laporanRL_3_1_Get:{
+                    ...INIT_STATE.laporanRL_3_1_Get
                 }
             }
         }
@@ -317,6 +328,39 @@ const KendaliDokumen = (state = INIT_STATE, action) => {
                 ...state,
                 listLaporanPasienKunjunganGet: {
                     ...state.listLaporanPasienKunjunganGet,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case LAPORAN_RL_3_1_GET: {
+            return {
+                ...state,
+                laporanRL_3_1_Get: {
+                    ...state.laporanRL_3_1_Get,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case LAPORAN_RL_3_1_GET_SUCCESS: {
+            return {
+                ...state,
+                laporanRL_3_1_Get: {
+                    ...state.laporanRL_3_1_Get,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case LAPORAN_RL_3_1_GET_ERROR: {
+            return {
+                ...state,
+                laporanRL_3_1_Get: {
+                    ...state.laporanRL_3_1_Get,
                     loading: false,
                     error: action.error,
                 }
