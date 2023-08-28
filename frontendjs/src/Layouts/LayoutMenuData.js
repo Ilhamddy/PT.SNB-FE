@@ -11,6 +11,7 @@ const Navdata = () => {
     const [isListDaftarPasien, setListDaftarPasien] = useState(false);
     const [isRekamMedis, setRekamMedis] = useState(false);
     const [isLaporan, setLaporan] = useState(false);
+    const [isLaporanRL, setLaporanRL] = useState(false);
     const [isPembayaran, setPembayaran] = useState(false);
     const [isRadiologi, setRadiologi] = useState(false);
     const [isLaboratorium, setLaboratorium] = useState(false);
@@ -419,6 +420,22 @@ const Navdata = () => {
                                     "REGISTRASI_VIEW",
                                 ]);
                             },
+                        },
+                        {
+                            id: "rekammedis-laporan-rl",
+                            label: "Laporan RL",
+                            link: "/#",
+                            parentId: "rekammedis-laporan-rl",
+                            isChildItem: true,
+                            click: function (e) {
+                                e.preventDefault();
+                                setLaporanRL(!isLaporanRL);
+                            },
+                            stateVariables: isLaporanRL,
+                            childItems: [
+                                { id: 2, label: "Basic Action", link: "/#", parentId: "rekammedis-laporan-rl2" },
+                                { id: 3, label: "Ecommerce Action", link: "/#", parentId: "rekammedis-laporan-rl3" },
+                            ],
                         },
                     ],
                 }
