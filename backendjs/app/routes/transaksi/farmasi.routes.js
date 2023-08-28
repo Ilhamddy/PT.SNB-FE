@@ -16,4 +16,16 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getOrderResepQuery
     );
+
+    app.get(
+        "/api/transaksi/farmasi/get-order-resep-from-norec",
+        [authJwt.verifyToken],
+        controller.getOrderResepFromNorec
+    )
+
+    app.post(
+        "/api/transaksi/farmasi/create-or-update-verif-resep",
+        [authJwt.verifyToken],
+        controller.createOrUpdateVerifResep
+    )
 }

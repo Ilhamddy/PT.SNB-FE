@@ -510,6 +510,38 @@ const comboResep = async (req, res) => {
     }
 }
 
+const comboVerifResep = async (req, res) => {
+    try{
+        const pegawai = await pool.query(queriesPegawai.getAll)
+        const unit = await pool.query(queriesUnit.getAll)
+        const signa = await pool.query(queriesSigna.getAll)
+        const keteranganResep = await pool.query(queriesKeteranganResep.getAll)
+        const sediaan = await pool.query(queriesSediaan.getAll)
+        const penjamin = await pool.query(queriesRekanan.getPenjamin)
+        let tempres = {
+            pegawai: pegawai.rows,
+            unit: unit.rows,
+            signa: signa.rows,
+            keteranganresep: keteranganResep.rows,
+            sediaan: sediaan.rows,
+            penjamin: penjamin.rows
+        }
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+        });
+    }catch(error){
+        console.error("===get combo stok resep error=== ")
+        console.error(error)
+        res.status(500).send({
+            data: [],
+            status: "error",
+            success: false,
+        });
+    }
+}
+
 
 export default {
     selectComboBox,
@@ -523,5 +555,6 @@ export default {
     comboPenerimaanBarang,
     comboDistribusiOrder,
     comboStokOpname,
-    comboResep
+    comboResep,
+    comboVerifResep
 };

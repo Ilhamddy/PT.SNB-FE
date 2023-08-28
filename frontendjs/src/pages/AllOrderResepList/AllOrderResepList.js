@@ -21,7 +21,7 @@ const AllOrderResepList = () => {
 
     useEffect(() => {
         dispatch(getOrderResepQuery({}))
-    }, [])
+    }, [dispatch])
 
     /**
      * @type {import("react-data-table-component").TableColumn[]}

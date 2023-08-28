@@ -6,17 +6,18 @@ import LoadingTable from "../../Components/Table/LoadingTable";
 import NoDataTable from "../../Components/Table/NoDataTable";
 import { onChangeStrNbr, strToNumber } from "../../utils/format";
 import { useEffect, useRef, useState } from "react";
-import { getComboResep } from "../../store/master/action";
+import { getComboResep, getComboVerifResep } from "../../store/master/action";
 import { useDispatch, useSelector } from "react-redux";
-import { createOrUpdateResepOrder, getObatFromUnit, getOrderResepFromDp } from "../../store/emr/action";
+import { getObatFromUnit } from "../../store/emr/action";
 import * as Yup from "yup"
 import { useParams, useSearchParams} from "react-router-dom"
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import { ToastContainer } from "react-toastify";
+import { createOrUpdateVerifResep, getOrderResepFromNorec } from "../../store/farmasi/action";
+import Flatpickr from "react-flatpickr";
 
 export const initValueResep = {
-    norecap: "",
-    norecresep: "",
+    norecverif: "",
     obat: "",
     namaobat: "",
     satuanobat: "",
@@ -45,9 +46,8 @@ const initValueRacikan = {
 const VerifikasiResep = () => {
     const dispatch = useDispatch()
 
-    const {norecap, norecdp} = useParams()
+    const {norecorder} = useParams()
     const [searchParams, setSearchParams] = useSearchParams()
-    const norecresep = searchParams.get("norecresep")
 
     const {
         pegawai,
@@ -56,24 +56,33 @@ const VerifikasiResep = () => {
         signa,
         obatList,
         sediaanList,
+        penjamin,
         orderNorec
     } = useSelector((state) => ({
-        pegawai: state.Master?.getComboResep?.data?.pegawai || [],
-        unit: state.Master?.getComboResep?.data?.unit || [],
-        keteranganResep: state.Master?.getComboResep?.data?.keteranganresep || [],
-        signa: state.Master?.getComboResep?.data?.signa || [],
-        obatList: state?.Emr?.getObatFromUnit?.data?.obat || [],
-        sediaanList: state?.Master?.getComboResep?.data?.sediaan || [],
-        orderNorec: state?.Emr?.getOrderResepFromDP?.data?.ordernorec || null
+        pegawai: state.Master?.getComboVerifResep?.data?.pegawai || [],
+        unit: state.Master?.getComboVerifResep?.data?.unit || [],
+        keteranganResep: state.Master?.getComboVerifResep?.data?.keteranganresep || [],
+        signa: state.Master?.getComboVerifResep?.data?.signa || [],
+        obatList: state?.Emr?.getComboVerifResep?.data?.obat || [],
+        sediaanList: state?.Master?.getComboVerifResep?.data?.sediaan || [],
+        penjamin: state?.Master?.getComboVerifResep?.data?.penjamin || [],
+        orderNorec: state?.Farmasi?.getOrderResepFromNorec?.data?.ordernorec || null
     }))
 
     const vResep = useFormik({
         enableReinitialize: true,
         initialValues: {
-            norecorder: "",
+            norecorderresep: "",
+            norecap: "",
             dokter: "",
             namadokter: "",
+            unitasal: "",
             unittujuan: "",
+            tanggalorder: "",
+            noorder: "",
+            noresep: "",
+            tglverif: "",
+            penjamin: "",
             resep: [
                 {
                     ...initValueResep
@@ -124,9 +133,8 @@ const VerifikasiResep = () => {
                 newValResep.total = strToNumber(valResep.total)
                 return newValResep
             }) 
-            dispatch(createOrUpdateResepOrder(newVal, (data) => {
-                searchParams.set("norecresep", data?.orderresep.norec)
-                setSearchParams(searchParams)
+            dispatch(createOrUpdateVerifResep(newVal, (data) => {
+
             }))
         }
     })
@@ -346,7 +354,7 @@ const VerifikasiResep = () => {
     }
 
     useEffect(() => {
-        dispatch(getComboResep())
+        dispatch(getComboVerifResep())
     }, [dispatch])
 
     useEffect(() => {
@@ -354,10 +362,6 @@ const VerifikasiResep = () => {
             dispatch(getObatFromUnit({idunit: vResep.values.unittujuan}))
     }, [dispatch, vResep.values.unittujuan])
 
-    useEffect(() => {
-        const setFF = vResep.setFieldValue
-        setFF("norecap", norecap)
-    }, [vResep.setFieldValue, norecap])
 
     useEffect(() => {
         const setV = vResep.setValues
@@ -366,7 +370,7 @@ const VerifikasiResep = () => {
         if(!Array.isArray(orderNorec) && orderNorec){
             orderNorecGot = orderNorec
         }
-        if(!norecresep){
+        if(!norecorder){
             resetV();
             resepRef.current = [
                 {
@@ -380,12 +384,18 @@ const VerifikasiResep = () => {
             resepRef.current = orderNorecGot.resep
         }
 
-    }, [orderNorec, norecresep, vResep.setValues, vResep.resetForm])
+    }, [
+        orderNorec, 
+        norecorder, 
+        vResep.setValues, 
+        vResep.resetForm
+    ])
 
     useEffect(() => {
-        // TODO: jangan pake ini, sementara saja
-        dispatch(getOrderResepFromDp({}))
-    }, [dispatch, norecdp, norecresep])
+        const setFF = vResep.setFieldValue
+        dispatch(getOrderResepFromNorec({norec: norecorder}))
+        setFF("norecorderresep", norecorder)
+    }, [dispatch, norecorder, vResep.setFieldValue])
 
 
 
@@ -849,6 +859,186 @@ const VerifikasiResep = () => {
             <Container fluid>
                 <BreadCrumb title="Verifikasi Resep" pageTitle="Farmasi" />
                 <Card className="p-5">
+                    <Row className="mb-2">
+                        <Col lg={2}>
+                            <Label 
+                                style={{ color: "black" }} 
+                                htmlFor={`dokter`}
+                                className="form-label mt-2">
+                                Dokter
+                            </Label>
+                        </Col>
+                        <Col lg={4}>
+                            <CustomSelect
+                                id="dokter"
+                                name="dokter"
+                                options={pegawai}
+                                onChange={(e) => {
+                                    vResep.setFieldValue("dokter", e?.value || "")
+                                    vResep.setFieldValue("namadokter", e?.label || "")
+                                }}
+                                value={vResep.values.dokter}
+                                className={`input ${!!vResep?.errors.dokter ? "is-invalid" : ""}`}
+                                />
+                            {vResep.touched.dokter 
+                                && !!vResep.errors.dokter ? (
+                                    <FormFeedback type="invalid" >
+                                        <div>
+                                            {vResep.errors.dokter}
+                                        </div>
+                                    </FormFeedback>
+                                ) : null
+                            }
+                        </Col>
+                        <Col lg={2}>
+                            <Label 
+                                style={{ color: "black" }} 
+                                htmlFor={`unitasal`}
+                                className="form-label mt-2">
+                                Unit Asal
+                            </Label>
+                        </Col>
+                        <Col lg={4}>
+                            <CustomSelect
+                                id="unitasal"
+                                name="unitasal"
+                                options={unit}
+                                onChange={(e) => {
+                                    vResep.setFieldValue("unitasal", e?.value || "")
+                                }}
+                                value={vResep.values.unitasal}
+                                className={`input ${!!vResep?.errors.unitasal ? "is-invalid" : ""}`}
+                                />
+                            {vResep.touched.unitasal 
+                                && !!vResep.errors.unitasal && (
+                                    <FormFeedback type="invalid" >
+                                        <div>
+                                            {vResep.errors.unitasal}
+                                        </div>
+                                    </FormFeedback>
+                                )
+                            }
+                        </Col>
+                    </Row>
+                    <Row className="mb-2">
+                        <Col lg={2}>
+                            <Label 
+                                style={{ color: "black" }} 
+                                htmlFor={`unitasal`}
+                                className="form-label mt-2">
+                                Waktu Order
+                            </Label>
+                        </Col>
+                        <Col lg={4}>
+                            <Flatpickr
+                                className="form-control"
+                                id="tanggaled"
+                                options={{
+                                    dateFormat: "Y-m-d H:i",
+                                    defaultDate: "today"
+                                }}
+                                onChange={([newDate]) => {
+                                    vResep.setFieldValue("tanggalorder", newDate.toISOString());
+                                }}
+                            />
+                            {
+                                vResep.touched?.tanggalorder 
+                                    && !!vResep.errors?.tanggalorder && (
+                                    <FormFeedback type="invalid" >
+                                        <div>
+                                            {vResep.errors?.tanggalorder}
+                                        </div>
+                                    </FormFeedback>
+                                )
+                            }
+                        </Col>
+                        <Col lg={2}>
+                            <Label 
+                                style={{ color: "black" }} 
+                                htmlFor={`unittujuan`}
+                                className="form-label mt-2">
+                                Depo Tujuan 
+                            </Label>
+                        </Col>
+                        <Col lg={4}>
+                            <CustomSelect
+                                id="unittujuan"
+                                name="unittujuan"
+                                options={unit}
+                                onChange={(e) => {
+                                    vResep.setFieldValue("unittujuan", e?.value || "")
+                                }}
+                                value={vResep.values.unittujuan}
+                                className={`input ${!!vResep?.errors.unittujuan ? "is-invalid" : ""}`}
+                                />
+                            {vResep.touched.unittujuan 
+                                && !!vResep.errors.unittujuan && (
+                                    <FormFeedback type="invalid" >
+                                        <div>
+                                            {vResep.errors.unittujuan}
+                                        </div>
+                                    </FormFeedback>
+                                )
+                            }
+                        </Col>
+                    </Row>
+                    <Row className="mb-2">
+                        <Col lg={2}>
+                            <Label 
+                                style={{ color: "black" }} 
+                                htmlFor={`noorder`}
+                                className="form-label mt-2">
+                                No Order 
+                            </Label>
+                        </Col>
+                        <Col lg={4}>
+                            <Input 
+                                id={`noorder`}
+                                name={`noorder`}
+                                type="text"
+                                value={vResep.values.noorder + "/" + vResep.values.noresep} 
+                                disabled
+                                invalid={vResep.touched?.noorder 
+                                    && !!vResep.errors?.noorder}
+                                />
+                            {vResep.touched?.noorder 
+                                && !!vResep.errors?.noorder && (
+                                <FormFeedback type="invalid" >
+                                    <div>
+                                        {vResep.errors?.noorder}
+                                    </div>
+                                </FormFeedback>
+                            )}
+                        </Col>
+                        <Col lg={2}>
+                            <Label 
+                                style={{ color: "black" }} 
+                                htmlFor={`penjamin`}
+                                className="form-label mt-2">
+                                Penjamin 
+                            </Label>
+                        </Col>
+                        <Col lg={4}>
+                            <CustomSelect
+                                id="penjamin"
+                                name="penjamin"
+                                options={penjamin}
+                                onChange={(e) => {
+                                    vResep.setFieldValue("penjamin", e?.value || "")
+                                }}
+                                value={vResep.values.penjamin}
+                                className={`input ${!!vResep?.errors.penjamin ? "is-invalid" : ""}`}
+                                />
+                            {vResep.touched?.penjamin 
+                                && !!vResep.errors?.penjamin && (
+                                <FormFeedback type="invalid" >
+                                    <div>
+                                        {vResep.errors?.penjamin}
+                                    </div>
+                                </FormFeedback>
+                            )}
+                        </Col>
+                    </Row>
                     <Row className="mt-5">
                         <table className="table" width={"fit-content"}>
                             <thead style={{width: "100%",}}>
@@ -959,12 +1149,11 @@ const VerifikasiResep = () => {
                                     </>
                                 )}
                             </tbody>
-
                         </table>
                         <Row style={{justifyContent: "space-evenly"}}>
                             <Col md={2}>
                                 <Button color="info"
-                                    disabled={!!orderNorec}
+                                    disabled={vResep.values.noresep}
                                     onClick={() => {
                                         vResep.handleSubmit();
                                     }}>
