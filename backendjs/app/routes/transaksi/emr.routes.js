@@ -32,7 +32,7 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.editEmrPasienTtv
     );
-// cppt
+    // cppt
     app.post(
         "/api/transaksi/emr/save-emr-pasien-cppt",
         [authJwt.verifyToken],

@@ -1409,7 +1409,7 @@ const hUpdateResep = async (
     return {updated, norecresep: norecresep}
 }
 
-const hProcessOrderResep = (dataOrders) => {
+export const hProcessOrderResep = (dataOrders) => {
     if(dataOrders === null) return []
     let newDataOrders = dataOrders.map((order) => {
         let newOrder = {...order}
