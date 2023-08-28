@@ -77,6 +77,7 @@ import payment from "./payment/saga";
 import casemixSaga from "./casemix/saga"
 import gudangSaga from "./gudang/saga"
 import distribusiSaga from "./distribusi/saga"
+import farmasiSaga from "./farmasi/saga"
 
 
 export default function* rootSaga() {
@@ -118,6 +119,7 @@ export default function* rootSaga() {
     fork(payment),
     fork(casemixSaga),
     fork(gudangSaga),
-    fork(distribusiSaga)
+    fork(distribusiSaga),
+    fork(farmasiSaga)
   ]);
 }

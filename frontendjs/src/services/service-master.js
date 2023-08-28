@@ -63,5 +63,8 @@ export default class ServiceMaster {
         return await api.get(`/master/combobox-resep`);
     }
     
+    getComboVerifResep = async () => {
+        return await api.get(`/master/combobox-verif-resep`);
+    }
     
 }

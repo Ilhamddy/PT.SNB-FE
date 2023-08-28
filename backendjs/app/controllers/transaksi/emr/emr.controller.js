@@ -1088,8 +1088,8 @@ const createOrUpdateEmrResepDokter = async (req, res) => {
             })
             totalOrderToday = ("0000" + totalOrderToday).slice(-4)
             const kodeOrder = "O" + date.getFullYear() 
-            + (date.getMonth() + 1) 
-            + date.getDate() 
+            + ("0" + (date.getMonth() + 1)).slice(-2)
+            + ("0" + date.getDate()).slice(-2)
             + totalOrderToday
             
             const created = await t_orderresep.create({
@@ -1114,7 +1114,7 @@ const createOrUpdateEmrResepDokter = async (req, res) => {
                 norec: norecorderresep,
                 kdprofile: 0,
                 statusenabled: true,
-                objectantreanpemeriksaanfk: body.antreanpemeriksaan,
+                objectantreanpemeriksaanfk: body.norecap,
                 objectpegawaifk: req.idPegawai,
                 tglinput: new Date(),
                 objectunitasalfk: body.unittujuan,
@@ -1186,7 +1186,6 @@ export const initValueResep = {
 const getOrderResepFromDP = async (req, res) => {
     try{
         const {norecdp, norecresep} = req.query
-        let dataAllOrders = null
         let dataOrders = await pool.query(qGetOrderResepFromDP, [
             'norecdp',
             null,
@@ -1197,22 +1196,13 @@ const getOrderResepFromDP = async (req, res) => {
             norecresep,
             norecdp
         ])).rows
-        if(!norecresep && !norecdp){
-            dataAllOrders = await pool.query(qGetOrderResepFromDP, [
-                'all',
-                null,
-                null
-            ])
-        }
         dataOrders = dataOrders.rows
         dataOrders = hProcessOrderResep(dataOrders)
         dataOrderNorec = hProcessOrderResep(dataOrderNorec)
-        dataAllOrders = hProcessOrderResep(dataAllOrders?.rows || null)
         dataOrderNorec = dataOrderNorec[0] || null
         const tempres = {
             order: dataOrders,
-            ordernorec: dataOrderNorec,
-            dataAllOrders: dataAllOrders
+            ordernorec: dataOrderNorec
         }
         res.status(200).send({
             data: tempres,
@@ -1409,7 +1399,7 @@ const hUpdateResep = async (
     return {updated, norecresep: norecresep}
 }
 
-const hProcessOrderResep = (dataOrders) => {
+export const hProcessOrderResep = (dataOrders) => {
     if(dataOrders === null) return []
     let newDataOrders = dataOrders.map((order) => {
         let newOrder = {...order}

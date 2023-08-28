@@ -2,19 +2,26 @@ import { Card, Container, DropdownItem, DropdownMenu, DropdownToggle, Row, Uncon
 import LoadingTable from "../../Components/Table/LoadingTable"
 import NoDataTable from "../../Components/Table/NoDataTable"
 import DataTable from 'react-data-table-component';
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import { ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { getOrderResepQuery } from "../../store/farmasi/action";
 
 
 const AllOrderResepList = () => {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     const {
         listOrder
     } = useSelector(state => ({
-        listOrder: state.Emr.getOrderResepFromDP.data?.dataAllOrders || []
+        listOrder: state.Farmasi.getOrderResepQuery.data?.dataAllOrders || []
     }))
+
+    useEffect(() => {
+        dispatch(getOrderResepQuery({}))
+    }, [dispatch])
 
     /**
      * @type {import("react-data-table-component").TableColumn[]}

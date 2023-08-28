@@ -19,6 +19,7 @@ import casemixRoutes from "./app/routes/transaksi/casemix.routes.js";
 import gudangRoutes from "./app/routes/transaksi/gudang.routes.js"
 import distribusiRoutes from "./app/routes/transaksi/distribusi.routes.js"
 import { logRequests } from "./app/middleware/logrequests.js";
+import farmasiRoutes from "./app/routes/transaksi/farmasi.routes.js";
 
 dotenv.config()
 
@@ -61,6 +62,7 @@ paymentRoutes(app);
 casemixRoutes(app)
 gudangRoutes(app);
 distribusiRoutes(app);
+farmasiRoutes(app);
 
 
 // set port, listen for requests

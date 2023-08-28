@@ -82,4 +82,10 @@ export default function(app) {
       controller.comboResep
     )
 
+    app.get(
+      "/api/master/combobox-verif-resep",
+      [authJwt.verifyToken],
+      controller.comboVerifResep
+    )
+
   };

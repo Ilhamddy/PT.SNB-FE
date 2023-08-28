@@ -40,6 +40,8 @@ SELECT
     mu.namaunit AS namaunittujuan,
     tor.no_order AS noorder,
     tor.tglinput AS tglinput,
+    tor.no_resep AS noresep,
+    tor.tglverif AS tglverif,
     json_agg(
         json_build_object(
             'norecap', tap.norec,

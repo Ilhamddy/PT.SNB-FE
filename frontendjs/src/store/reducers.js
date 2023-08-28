@@ -87,6 +87,7 @@ import Casemix from "./casemix/reducer";
 import Gudang from "./gudang/reducer";
 import PageState from "./pageState/reducer"
 import Distribusi from "./distribusi/reducer";
+import Farmasi from "./farmasi/reducer"
 
 
 const rootReducer = combineReducers({
@@ -129,7 +130,8 @@ const rootReducer = combineReducers({
     Casemix,
     Gudang,
     Distribusi,
-    PageState   
+    PageState,
+    Farmasi
 });
 
 export default rootReducer;

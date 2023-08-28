@@ -45,6 +45,9 @@ import {
     GET_COMBO_RESEP,
     GET_COMBO_RESEP_SUCCESS,
     GET_COMBO_RESEP_ERROR,
+    GET_COMBO_VERIF_RESEP,
+    GET_COMBO_VERIF_RESEP_SUCCESS,
+    GET_COMBO_VERIF_RESEP_ERROR,
 } from "./actionType";
 
 const INIT_STATE = {
@@ -119,6 +122,11 @@ const INIT_STATE = {
         error: null,
     },
     getComboResep: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    getComboVerifResep: {
         data: [],
         loading: false,
         error: null,
@@ -627,6 +635,42 @@ const Master = (state = INIT_STATE, action) => {
                 ...state,
                 getComboResep: {
                     ...state.getComboResep,
+                    loading: false,
+                    data: [],
+                    error: action.error,
+                }
+            }
+        }
+
+        case GET_COMBO_VERIF_RESEP: {
+            return {
+                ...state,
+                getComboVerifResep: {
+                    ...state.getComboVerifResep,
+                    loading: true,
+                    data: [],
+                    error: null,
+                }
+            }
+        }
+
+        case GET_COMBO_VERIF_RESEP_SUCCESS: {
+            return {
+                ...state,
+                getComboVerifResep: {
+                    ...state.getComboVerifResep,
+                    data: action.payload,
+                    error: null,
+                    loading: false,
+                }
+            }
+        }
+
+        case GET_COMBO_VERIF_RESEP_ERROR: {
+            return {
+                ...state,
+                getComboVerifResep: {
+                    ...state.getComboVerifResep,
                     loading: false,
                     data: [],
                     error: action.error,

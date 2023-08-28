@@ -4,7 +4,7 @@
  */
 // eslint-disable-next-line max-lines-per-function
 export default (sequelize, Sequelize) => {
-    const t_orderresep = sequelize.define("t_orderresep", {
+    const t_verifresep = sequelize.define("t_verifresep", {
         norec: {
             allowNull: false,
             primaryKey: true,
@@ -16,44 +16,53 @@ export default (sequelize, Sequelize) => {
         statusenabled: {
             type: Sequelize.BOOLEAN,
         },
-        kodeexternal: {
-            type: Sequelize.STRING,
-        },
-        namaexternal: {
-            type: Sequelize.STRING,
-        },
         reportdisplay: {
             type: Sequelize.STRING,
         },
-        objectantreanpemeriksaanfk: {
+        objectorderresepfk: {
             type: Sequelize.CHAR(32),
         },
-        objectpegawaifk: {
+        kode_r: {
             type: Sequelize.INTEGER,
         },
-        tglinput: {
-            type: Sequelize.DATE,
-        },
-        objectunitasalfk: {
+        objectprodukfk: {
             type: Sequelize.INTEGER,
         },
-        no_order: {
-            type: Sequelize.STRING,
-        },
-        objectdepotujuanfk: {
+        qty: {
             type: Sequelize.INTEGER,
         },
-        no_resep: {
-            type: Sequelize.STRING,
+        objectsediaanfk: {
+            type: Sequelize.INTEGER,
         },
-        tglverif: {
-            type: Sequelize.DATE,
+        harga: {
+            type: Sequelize.FLOAT,
+        },
+        total: {
+            type: Sequelize.FLOAT,
+        },
+        objectsignafk: {
+            type: Sequelize.INTEGER,
+        },
+        objectketeranganresepfk: {
+            type: Sequelize.INTEGER,
+        },
+        qtyracikan: {
+            type: Sequelize.FLOAT,
+        },
+        qtypembulatan: {
+            type: Sequelize.FLOAT,
+        },
+        kode_r_tambahan: {
+            type: Sequelize.INTEGER,
+        },
+        qtyjumlahracikan: {
+            type: Sequelize.INTEGER,
         }
     }, {
-        tableName: "t_orderresep",
+        tableName: "t_verifresep",
         createdAt: false,
         updatedAt: false,
     });
 
-    return t_orderresep;
+    return t_verifresep;
 };

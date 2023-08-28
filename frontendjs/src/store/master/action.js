@@ -44,6 +44,9 @@ import {
     GET_COMBO_RESEP,
     GET_COMBO_RESEP_SUCCESS,
     GET_COMBO_RESEP_ERROR,
+    GET_COMBO_VERIF_RESEP,
+    GET_COMBO_VERIF_RESEP_SUCCESS,
+    GET_COMBO_VERIF_RESEP_ERROR,
 } from "./actionType";
 
 export const masterGet = () => ({
@@ -256,5 +259,19 @@ export const getComboResepSuccess = (data) => ({
 
 export const getComboResepError = (error) => ({
     type: GET_COMBO_RESEP_ERROR,
+    payload: error,
+});
+
+export const getComboVerifResep = () => ({
+    type: GET_COMBO_VERIF_RESEP,
+});
+
+export const getComboVerifResepSuccess = (data) => ({
+    type: GET_COMBO_VERIF_RESEP_SUCCESS,
+    payload: data,
+});
+
+export const getComboVerifResepError = (error) => ({
+    type: GET_COMBO_VERIF_RESEP_ERROR,
     payload: error,
 });
