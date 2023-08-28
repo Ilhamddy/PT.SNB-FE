@@ -47,11 +47,11 @@ function* onCreateOrUpdateVerifResep({ payload: { body, callback } }) {
     try {
         const response = yield call(serviceFarmasi.createOrUpdateVerifResep, body);
         yield put(createOrUpdateVerifResepSuccess(response.data));
-        toast.success(response.message);
+        toast.success(response.data.msg);
         callback && callback();
     } catch (error) {
         yield put(createOrUpdateVerifResepError(error));
-        toast.error(error.message);
+        toast.error("Gagal update verif resep");
     }
 }
 

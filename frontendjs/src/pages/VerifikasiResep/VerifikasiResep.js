@@ -63,7 +63,7 @@ const VerifikasiResep = () => {
         unit: state.Master?.getComboVerifResep?.data?.unit || [],
         keteranganResep: state.Master?.getComboVerifResep?.data?.keteranganresep || [],
         signa: state.Master?.getComboVerifResep?.data?.signa || [],
-        obatList: state?.Emr?.getComboVerifResep?.data?.obat || [],
+        obatList: state?.Emr?.getObatFromUnit?.data?.obat || [],
         sediaanList: state?.Master?.getComboVerifResep?.data?.sediaan || [],
         penjamin: state?.Master?.getComboVerifResep?.data?.penjamin || [],
         orderNorec: state?.Farmasi?.getOrderResepFromNorec?.data?.ordernorec || null
@@ -134,7 +134,7 @@ const VerifikasiResep = () => {
                 return newValResep
             }) 
             dispatch(createOrUpdateVerifResep(newVal, (data) => {
-
+                dispatch(getOrderResepFromNorec({norec: norecorder}))
             }))
         }
     })
@@ -996,7 +996,7 @@ const VerifikasiResep = () => {
                                 id={`noorder`}
                                 name={`noorder`}
                                 type="text"
-                                value={vResep.values.noorder + "/" + vResep.values.noresep} 
+                                value={vResep.values.noorder + "/" + (vResep.values.noresep || "")} 
                                 disabled
                                 invalid={vResep.touched?.noorder 
                                     && !!vResep.errors?.noorder}
