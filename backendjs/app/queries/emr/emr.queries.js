@@ -97,6 +97,7 @@ CROSS JOIN LATERAL (
         FROM t_stokunit tsu
     WHERE tsu.objectprodukfk = tord.objectprodukfk
         AND tsu.qty > 0
+        AND tsu.objectunitfk = tor.objectdepotujuanfk
     ) s
 WHERE CASE 
     WHEN $1 = 'all' THEN tor.statusenabled = true
@@ -179,6 +180,7 @@ CROSS JOIN LATERAL (
         FROM t_stokunit tsu
     WHERE tsu.objectprodukfk = tv.objectprodukfk
         AND tsu.qty > 0
+        AND tsu.objectunitfk = tor.objectdepotujuanfk
     ) s
 WHERE CASE 
     WHEN $1 = 'all' THEN tor.statusenabled = true

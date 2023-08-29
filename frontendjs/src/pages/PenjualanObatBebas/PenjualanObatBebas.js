@@ -1117,7 +1117,7 @@ const PenjualanObatBebas = () => {
                                         options={[]}
                                         isDisabled
                                         onChange={(e) => {
-                                            vResep.setFieldValue("jenis", e?.value || "")
+                                            vResep.setFieldValue("unittujuan", e?.value || "")
                                         }}
                                         value={vResep.values.unittujuan}
                                         className={`input ${!!vResep?.errors.unittujuan ? "is-invalid" : ""}`}
@@ -1155,6 +1155,92 @@ const PenjualanObatBebas = () => {
                                             <FormFeedback type="invalid" >
                                                 <div>
                                                     {vResep.errors.noresep}
+                                                </div>
+                                            </FormFeedback>
+                                        )
+                                    }
+                                </Col>
+                                <Col lg={4}>
+                                    <div className="mt-2">
+                                        <Label 
+                                            style={{ color: "black" }} 
+                                            htmlFor="noresep" 
+                                            className="form-label">
+                                            Penulis Resep
+                                        </Label>
+                                    </div>
+                                    <Input 
+                                        id={`penulisresep`}
+                                        name={`penulisresep`}
+                                        type="text"
+                                        value={vResep.values.penulisresep} 
+                                        onChange={vResep.handleChange}
+                                        invalid={vResep.touched?.penulisresep 
+                                            && !!vResep.errors?.penulisresep}
+                                        />
+                                    {vResep.touched.penulisresep 
+                                        && !!vResep.errors.penulisresep && (
+                                            <FormFeedback type="invalid" >
+                                                <div>
+                                                    {vResep.errors.penulisresep}
+                                                </div>
+                                            </FormFeedback>
+                                        )
+                                    }
+                                </Col>
+                                <Col lg={4}>
+                                    <div className="mt-2">
+                                        <Label 
+                                            style={{ color: "black" }} 
+                                            htmlFor="petugasapotek" 
+                                            className="form-label">
+                                            Petugas Apotek
+                                        </Label>
+                                    </div>
+                                    <CustomSelect
+                                        id="petugasapotek"
+                                        name="petugasapotek"
+                                        options={[]}
+                                        isDisabled
+                                        onChange={(e) => {
+                                            vResep.setFieldValue("petugasapotek", e?.value || "")
+                                        }}
+                                        value={vResep.values.petugasapotek}
+                                        className={`input ${!!vResep?.errors.petugasapotek ? "is-invalid" : ""}`}
+                                        />
+                                    {vResep.touched.petugasapotek 
+                                        && !!vResep.errors.petugasapotek && (
+                                            <FormFeedback type="invalid" >
+                                                <div>
+                                                    {vResep.errors.petugasapotek}
+                                                </div>
+                                            </FormFeedback>
+                                        )
+                                    }
+                                </Col>
+                                <Col lg={12}>
+                                    <div className="mt-2">
+                                        <Label 
+                                            style={{ color: "black" }} 
+                                            htmlFor="catatan" 
+                                            className="form-label">
+                                            Catatan
+                                        </Label>
+                                    </div>
+                                    <Input 
+                                        id={`catatan`}
+                                        name={`noresep`}
+                                        type="text"
+                                        value={vResep.values.catatan} 
+                                        onChange={vResep.handleChange}
+                                        invalid={vResep.touched?.catatan 
+                                            && !!vResep.errors?.catatan}
+                                        />
+                                    {vResep.touched.catatan 
+                                        && !!vResep.errors.catatan && (
+                                            <FormFeedback type="invalid" >
+                                                <div>
+                                                    {vResep.errors.catatan}
                                                 </div>
                                             </FormFeedback>
                                         )
