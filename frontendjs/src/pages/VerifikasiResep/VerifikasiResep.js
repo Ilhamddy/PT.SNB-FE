@@ -873,6 +873,7 @@ const VerifikasiResep = () => {
                                 id="dokter"
                                 name="dokter"
                                 options={pegawai}
+                                isDisabled
                                 onChange={(e) => {
                                     vResep.setFieldValue("dokter", e?.value || "")
                                     vResep.setFieldValue("namadokter", e?.label || "")
@@ -903,6 +904,7 @@ const VerifikasiResep = () => {
                                 id="unitasal"
                                 name="unitasal"
                                 options={unit}
+                                isDisabled
                                 onChange={(e) => {
                                     vResep.setFieldValue("unitasal", e?.value || "")
                                 }}
@@ -937,6 +939,7 @@ const VerifikasiResep = () => {
                                     dateFormat: "Y-m-d H:i",
                                     defaultDate: "today"
                                 }}
+                                value={vResep.values.tanggalorder}
                                 onChange={([newDate]) => {
                                     vResep.setFieldValue("tanggalorder", newDate.toISOString());
                                 }}
@@ -965,6 +968,7 @@ const VerifikasiResep = () => {
                                 id="unittujuan"
                                 name="unittujuan"
                                 options={unit}
+                                isDisabled
                                 onChange={(e) => {
                                     vResep.setFieldValue("unittujuan", e?.value || "")
                                 }}
@@ -1023,6 +1027,7 @@ const VerifikasiResep = () => {
                                 id="penjamin"
                                 name="penjamin"
                                 options={penjamin}
+                                isDisabled
                                 onChange={(e) => {
                                     vResep.setFieldValue("penjamin", e?.value || "")
                                 }}

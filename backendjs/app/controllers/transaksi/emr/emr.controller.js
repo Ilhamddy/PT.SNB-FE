@@ -1102,7 +1102,7 @@ const createOrUpdateEmrResepDokter = async (req, res) => {
                 objectantreanpemeriksaanfk: body.norecap,
                 objectpegawaifk: body.dokter,
                 tglinput: new Date(),
-                objectunitasalfk: body.unittujuan,
+                objectunitasalfk: body.unitasal,
                 no_order: kodeOrder,
                 objectdepotujuanfk: body.unittujuan
             }, {
@@ -1186,6 +1186,7 @@ export const initValueResep = {
 const getOrderResepFromDP = async (req, res) => {
     try{
         const {norecdp, norecresep} = req.query
+
         let dataOrders = await pool.query(qGetOrderResepFromDP, [
             'norecdp',
             null,

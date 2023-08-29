@@ -267,7 +267,7 @@ const hCreatePelayanan = async (
         objectorderresepfk: req.body.norecorder,
         objectantreanpemeriksaanfk: orderData.objectantreanpemeriksaanfk,
         harga: verifUsed.harga,
-        qty: verifUsed.qty,
+        qty: verifUsed.qtypembulatan,
         discount: 0,
         total: verifUsed.total,
         tglinput: new Date(),

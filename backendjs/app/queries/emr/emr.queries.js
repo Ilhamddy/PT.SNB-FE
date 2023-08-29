@@ -38,10 +38,12 @@ SELECT
     mpeg.namalengkap AS namadokter,
     mu.id AS unittujuan,
     mu.namaunit AS namaunittujuan,
+    tdp.objectunitlastfk AS unitasal,
     tor.no_order AS noorder,
-    tor.tglinput AS tglinput,
+    tor.tglinput AS tanggalorder,
     tor.no_resep AS noresep,
     tor.tglverif AS tglverif,
+    tdp.objectpenjaminfk AS penjamin,
     json_agg(
         json_build_object(
             'norecap', tap.norec,
@@ -81,14 +83,16 @@ FROM t_daftarpasien tdp
 WHERE CASE 
     WHEN $1 = 'all' THEN tor.statusenabled = true
     WHEN $1 = 'norecresep' THEN tor.norec = $2
-        ELSE tdp.norec = $3
+    ELSE tdp.norec = $3
 END
 GROUP BY
     tor.norec,
     mpeg.id,
     mpeg.namalengkap,
     mu.id,
-    mu.namaunit
+    mu.namaunit,
+    tdp.objectunitlastfk,
+    tdp.objectpenjaminfk
 `
 
 export {

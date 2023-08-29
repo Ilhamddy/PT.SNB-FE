@@ -48,8 +48,6 @@ const OrderResep = () => {
     const [searchParams, setSearchParams] = useSearchParams()
     const norecresep = searchParams.get("norecresep")
 
-    console.log(norecap)
-
     const {
         pegawai,
         unit,
@@ -57,7 +55,8 @@ const OrderResep = () => {
         signa,
         obatList,
         sediaanList,
-        orderNorec
+        orderNorec,
+        orderDp
     } = useSelector((state) => ({
         pegawai: state.Master?.getComboResep?.data?.pegawai || [],
         unit: state.Master?.getComboResep?.data?.unit || [],
@@ -65,7 +64,8 @@ const OrderResep = () => {
         signa: state.Master?.getComboResep?.data?.signa || [],
         obatList: state?.Emr?.getObatFromUnit?.data?.obat || [],
         sediaanList: state?.Master?.getComboResep?.data?.sediaan || [],
-        orderNorec: state?.Emr?.getOrderResepFromDP?.data?.ordernorec || null
+        orderNorec: state?.Emr?.getOrderResepFromDP?.data?.ordernorec || null,
+        orderDp: state?.Emr?.getOrderResepFromDP?.data?.order || null
     }))
 
     const vResep = useFormik({
@@ -73,6 +73,7 @@ const OrderResep = () => {
             norecorder: "",
             dokter: "",
             namadokter: "",
+            unitasal: "",
             unittujuan: "",
             norecap: "",
             resep: [
@@ -105,7 +106,6 @@ const OrderResep = () => {
         }),
         onSubmit: (value) => {
             const newVal = {...value}
-            console.log(newVal)
             newVal.resep = newVal.resep.map((valResep) => {
                 const newValResep = {...valResep}
                 newValResep.racikan = newValResep.racikan.map((valRacikan) => {
@@ -367,12 +367,17 @@ const OrderResep = () => {
         const setV = vResep.setValues
         const resetV = vResep.resetForm
         let orderNorecGot = null
+        let unitasal = null
         if(!Array.isArray(orderNorec) && orderNorec){
             orderNorecGot = orderNorec
+        }
+        if(orderDp){
+            unitasal = orderDp[0]?.unitasal
         }
         if(!norecresep){
             resetV();
             setFF("norecap", norecap)
+            setFF("unitasal", unitasal || "")
             resepRef.current = [
                 {
                     ...initValueResep
@@ -385,7 +390,13 @@ const OrderResep = () => {
             resepRef.current = orderNorecGot.resep
         }
 
-    }, [orderNorec, norecresep, vResep.setValues, vResep.resetForm, vResep.setFieldValue, norecap])
+    }, [orderNorec, 
+        norecresep, 
+        vResep.setValues, 
+        vResep.resetForm, 
+        vResep.setFieldValue, 
+        norecap, 
+        orderDp])
 
     useEffect(() => {
         dispatch(getOrderResepFromDp({
