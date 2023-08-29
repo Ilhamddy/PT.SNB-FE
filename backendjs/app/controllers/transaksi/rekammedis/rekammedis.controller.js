@@ -427,7 +427,7 @@ async function getLaporanRL3_1(req, res) {
         let unit = req.query.unit !== '' ? ` and ta.objectunitfk = '${req.query.unit}'` : '';
         let rekanan = req.query.rekanan !== '' ? ` and td.objectpenjaminfk = '${req.query.rekanan}'` : '';
         let pegawai = req.query.pegawai !== '' ? ` and td.objectpegawaifk = '${req.query.pegawai}'` : '';
-
+// console.log(start.toLocaleDateString())
         // const result = await pool.query(queries.qResult, [start,end,search]) //,instalasi,unit,rekanan,pegawai
         const result = await queryPromise2(`select mp.objectspesialisasifk,ms.reportdisplay as jenis_spesialisasi,
         to_char(td.tglregistrasi,'dd-MM-YYYY') as tglregistrasi,to_char(td.tglpulang,'dd-MM-YYYY') as tglpulang,
@@ -449,16 +449,16 @@ async function getLaporanRL3_1(req, res) {
             let jmlLamaRawat = 1
             if (element.objectcarapulangrifk !== 4) {
                 jmlPulangHidup = 1
-            }else if (element.objectcarapulangrifk === 4) {
-                if(element.objectkondisipulangrifk===4){
+            } else if (element.objectcarapulangrifk === 4) {
+                if (element.objectkondisipulangrifk === 4) {
                     jmlMeninggalK48 = 1
-                }else if(element.objectkondisipulangrifk===5){
+                } else if (element.objectkondisipulangrifk === 5) {
                     jmlMeninggalL48 = 1
                 }
             }
 
-            if(element.days_difference!== 0){
-                jmlLamaRawat=element.days_difference
+            if (element.days_difference !== 0) {
+                jmlLamaRawat = element.days_difference
             }
             data10.forEach(element2 => {
                 if (element.jenis_spesialisasi === element2.jenis_spesialisasi) {
@@ -477,15 +477,50 @@ async function getLaporanRL3_1(req, res) {
                     'jumlah': 1,
                     'row': data10.length + 1,
                     'jmlpulanghidup': jmlPulangHidup,
-                    'jmlmeninggalk48':jmlMeninggalK48,
-                    'jmlmeninggall48':jmlMeninggalL48,
-                    'lamarawat':jmlLamaRawat
+                    'jmlmeninggalk48': jmlMeninggalK48,
+                    'jmlmeninggall48': jmlMeninggalL48,
+                    'lamarawat': jmlLamaRawat,
+                    'objectspesialisasifk': element.objectspesialisasifk,
+                    'hariperawatankl1':0,
+                    'hariperawatankl2':0,
+                    'hariperawatankl3':0,
+                    'hariperawatanklvvip':0,
+                    'hariperawatanklvip':0,
+                    'hariperawatanklkhusus':0
                 });
 
             }
 
 
         });
+        for (let i = 0; i < data10.length; i++) {
+            const result = await queryPromise2(`select count(ts.objectdokterpemeriksafk) as jml,ts.objectkelasfk from t_sensusharian ts 
+                join m_pegawai mp on mp.id=ts.objectdokterpemeriksafk
+                join m_spesialisasi ms on ms.id=mp.objectspesialisasifk
+                where ts.tglinput between '${start}' and '${end}' and mp.objectspesialisasifk='${data10[i].objectspesialisasifk}'
+                group by ts.objectkelasfk`
+            );
+            let jmlhariperawatan = 0
+            result.rows.forEach(element => {
+                jmlhariperawatan = parseFloat(jmlhariperawatan)+parseFloat(element.jml)
+                if (element.objectkelasfk === 3)
+                    data10[i].hariperawatankl1 = parseFloat(data10[i].hariperawatankl1)+parseFloat(element.jml)
+                else if (element.objectkelasfk === 4)
+                    data10[i].hariperawatankl2 = parseFloat(data10[i].hariperawatankl2)+parseFloat(element.jml)
+                else if (element.objectkelasfk === 5)
+                    data10[i].hariperawatankl3 = parseFloat(data10[i].hariperawatankl3)+parseFloat(element.jml)
+                else if (element.objectkelasfk === 1)
+                    data10[i].hariperawatanklvvip = parseFloat(data10[i].hariperawatanklvvip)+parseFloat(element.jml)
+                else if (element.objectkelasfk === 2)
+                    data10[i].hariperawatanklvip = parseFloat(data10[i].hariperawatanklvip)+parseFloat(element.jml)
+                else
+                    data10[i].hariperawatanklkhusus = parseFloat(data10[i].hariperawatanklkhusus)+parseFloat(element.jml)
+            });
+            data10[i].hariperawatan = jmlhariperawatan
+        }
+
+
+
         res.status(200).send({
             data: data10,
             status: "success",
@@ -493,6 +528,80 @@ async function getLaporanRL3_1(req, res) {
         });
 
     } catch (error) {
+        res.status(500).send({ message: error });
+    }
+
+}
+
+async function getTest(req, res) {
+    let transaction = null;
+    try {
+        transaction = await db.sequelize.transaction();
+    } catch (e) {
+        console.error(e)
+        return;
+    }
+    try {
+        let today = new Date();
+        let todaystart = formatDate(today) + ' 00:00'
+        let todayend = formatDate(today) + ' 23:59'
+
+        const queryResult = await pool.query(`select ta.objectkelasfk ,td.norec,ta.norec as norecta,ta.objectunitfk,td.noregistrasi,td.nocmfk,
+        ta.objectdokterpemeriksafk  from t_daftarpasien td
+        join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk=td.norec and ta.objectunitfk=td.objectunitlastfk 
+        where td.tglpulang is null and td.statusenabled =true and ta.statusenabled=true`); // Your SQL query here
+
+        const queryResult2 = await pool.query(`select * from t_sensusharian where tglinput between '${todaystart}' and '${todayend}'`);
+        const cmgOptions = await Promise.all(
+            queryResult.rows.map(async (item) => {
+                if (queryResult2.rows.length === 0) {
+                    const add = await db.t_sensusharian.create({
+                        norec: uuid.v4().substring(0, 32),
+                        objectantreanpemeriksaanfk: item.norecta,
+                        objectunitfk: item.objectunitfk,
+                        objectdaftarpasienfk: item.norec,
+                        noregistrasi: item.noregistrasi,
+                        objectpasienfk: item.nocmfk,
+                        objectdokterpemeriksafk: item.objectdokterpemeriksafk,
+                        objectkelasfk: item.objectkelasfk,
+                        tglinput: new Date()
+                    }, {
+                        transaction: transaction
+                    });
+                    return add
+                } else {
+                    const foundItems = queryResult2.rows.filter(itemx => itemx.objectantreanpemeriksaanfk === item.norecta);
+                    if (foundItems.length > 0) {
+                        console.log('Items found: sensus harian');
+                    } else {
+                        const add = await db.t_sensusharian.create({
+                            norec: uuid.v4().substring(0, 32),
+                            objectantreanpemeriksaanfk: item.norecta,
+                            objectunitfk: item.objectunitfk,
+                            objectdaftarpasienfk: item.norec,
+                            noregistrasi: item.noregistrasi,
+                            objectpasienfk: item.nocmfk,
+                            objectdokterpemeriksafk: item.objectdokterpemeriksafk,
+                            objectkelasfk: item.objectkelasfk,
+                            tglinput: new Date()
+                        }, {
+                            transaction: transaction
+                        });
+                        return add
+                    }
+                }
+            }
+            )
+        )
+        await transaction.commit();
+        res.status(200).send({
+            data: queryResult2.rows.length,
+            status: "success",
+            success: true,
+        });
+
+    } catch (error) {
+        console.log(error)
         res.status(500).send({ message: error });
     }
 
@@ -508,5 +617,6 @@ export default {
     getListLaporanDaftarPasien,
     getListLaporanPasienBatal,
     getListLaporanPasienKunjungan,
-    getLaporanRL3_1
+    getLaporanRL3_1,
+    getTest
 };

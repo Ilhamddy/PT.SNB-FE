@@ -59,4 +59,10 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getLaporanRL3_1
     );
+
+    app.get(
+        "/api/transaksi/rekammedis/get-test",
+        [authJwt.verifyToken],
+        controller.getTest
+    );
 }

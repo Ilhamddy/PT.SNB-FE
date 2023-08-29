@@ -67,11 +67,12 @@ const RL3_1 = () => {
     const [search, setSearch] = useState('')
     const handleFilter = (e) => {
         if (e.keyCode === 13) {
-            // console.log(search)
+            
             dispatch(laporanRL_3_1_Get(`${search}&start=${validation.values.tglstart}&end=${validation.values.tglend}&instalasi=${validation.values.departemen}&unit=${validation.values.unit}&rekanan=${validation.values.rekanan}&pegawai=${validation.values.pegawai}`));
         }
     }
     const handleClickCari = () => {
+        console.log(validation.values.tglstart)
         dispatch(laporanRL_3_1_Get(`${search}&start=${validation.values.tglstart}&end=${validation.values.tglend}&instalasi=${validation.values.departemen}&unit=${validation.values.unit}&rekanan=${validation.values.rekanan}&pegawai=${validation.values.pegawai}`));
     }
     const tableCustomStyles = {
@@ -92,52 +93,114 @@ const RL3_1 = () => {
     const columns = [
         {
             name: <span className='font-weight-bold fs-13'>No</span>,
-            selector: row => row.nocm,
+            selector: row => row.row,
             sortable: true,
         },
         {
 
             name: <span className='font-weight-bold fs-13'>Jenis Pelayanan</span>,
-            selector: row => row.noregistrasi,
+            selector: row => row.jenis_spesialisasi,
             sortable: true,
             // width: "150px"
         },
         {
 
             name: <span className='font-weight-bold fs-13'>Pasien Awal Tahun</span>,
-            selector: row => row.namaunit,
+            selector: row => '',
             sortable: true,
             // width: "150px"
         },
         {
 
             name: <span className='font-weight-bold fs-13'>Pasien Masuk</span>,
-            selector: row => row.namapasien,
+            selector: row => row.jumlah,
             sortable: true,
             // width: "250px",
         },
         {
 
             name: <span className='font-weight-bold fs-13'>Pasien Keluar Hidup</span>,
-            selector: row => row.namainstalasi,
+            selector: row => row.jmlpulanghidup,
             sortable: true,
             // width: "150px"
         },
         {
 
             name: <span className='font-weight-bold fs-13'>Pasien Akhir Tahun</span>,
-            selector: row => row.namaunit,
+            selector: row => row.jmlmeninggalk48,
             sortable: true,
             // width: "150px"
         },
         {
 
             name: <span className='font-weight-bold fs-13'>Jumlah Hari Perawatan</span>,
-            selector: row => row.tglregistrasi,
+            selector: row => row.jmlmeninggall48,
             sortable: true,
             // width: "150px"
         },
+        {
 
+            name: <span className='font-weight-bold fs-13'>Jumlah Hari Perawatan</span>,
+            selector: row => row.lamarawat,
+            sortable: true,
+            // width: "150px"
+        },
+        {
+
+            name: <span className='font-weight-bold fs-13'>Jumlah Hari Perawatan</span>,
+            selector: row => '',
+            sortable: true,
+            // width: "150px"
+        },
+        {
+
+            name: <span className='font-weight-bold fs-13'>Jumlah Hari Perawatan</span>,
+            selector: row => row.hariperawatan,
+            sortable: true,
+            // width: "150px"
+        },
+        {
+
+            name: <span className='font-weight-bold fs-13'>Jumlah Hari Perawatan</span>,
+            selector: row => row.hariperawatanklvvip,
+            sortable: true,
+            // width: "150px"
+        },
+        {
+
+            name: <span className='font-weight-bold fs-13'>Jumlah Hari Perawatan</span>,
+            selector: row => row.hariperawatanklvip,
+            sortable: true,
+            // width: "150px"
+        },
+        {
+
+            name: <span className='font-weight-bold fs-13'>Jumlah Hari Perawatan</span>,
+            selector: row => row.hariperawatankl1,
+            sortable: true,
+            // width: "150px"
+        },
+        {
+
+            name: <span className='font-weight-bold fs-13'>Jumlah Hari Perawatan</span>,
+            selector: row => row.hariperawatankl2,
+            sortable: true,
+            // width: "150px"
+        },
+        {
+
+            name: <span className='font-weight-bold fs-13'>Jumlah Hari Perawatan</span>,
+            selector: row => row.hariperawatankl3,
+            sortable: true,
+            // width: "150px"
+        },
+        {
+
+            name: <span className='font-weight-bold fs-13'>Jumlah Hari Perawatan</span>,
+            selector: row => row.hariperawatanklkhusus,
+            sortable: true,
+            // width: "150px"
+        },
     ];
 
     const handleExport = () => {
@@ -265,6 +328,13 @@ const RL3_1 = () => {
                                                         <td className="text-muted">{data.jmlmeninggall48}</td>
                                                         <td className="text-muted">{data.lamarawat}</td>
                                                         <td className="text-muted"></td>
+                                                        <td className="text-muted">{data.hariperawatan}</td>
+                                                        <td className="text-muted">{data.hariperawatanklvvip}</td>
+                                                        <td className="text-muted">{data.hariperawatanklvip}</td>
+                                                        <td className="text-muted">{data.hariperawatankl1}</td>
+                                                        <td className="text-muted">{data.hariperawatankl2}</td>
+                                                        <td className="text-muted">{data.hariperawatankl3}</td>
+                                                        <td className="text-muted">{data.hariperawatanklkhusus}</td>
                                                     </tr>
                                                 </tbody>
                                             ))
