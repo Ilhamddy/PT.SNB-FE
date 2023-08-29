@@ -1,6 +1,6 @@
 import pool from "../../../config/dbcon.query";
 import * as uuid from 'uuid'
-import { qGetObatFromUnit, qGetOrderResepFromDP } from "../../../queries/emr/emr.queries";
+import { qGetObatFromUnit, qGetOrderResepFromDP, qGetOrderVerifResepFromDP } from "../../../queries/emr/emr.queries";
 import db from "../../../models";
 import {
     createTransaction
@@ -54,10 +54,19 @@ const getOrderResepFromNorec = async (req, res) => {
             norec,
             null
         ])).rows
+        let dataOrderNorecVerif = (await pool.query(qGetOrderVerifResepFromDP, [
+            'norecresep',
+            norec,
+            null
+        ])).rows
         dataOrderNorec = hProcessOrderResep(dataOrderNorec)
         dataOrderNorec = dataOrderNorec[0] || null
+        dataOrderNorecVerif = hProcessOrderResep(dataOrderNorecVerif)
+        dataOrderNorecVerif = dataOrderNorecVerif[0] || null
+        // jika belum ada maka pakai ordernorec
+        dataOrderNorecVerif = (dataOrderNorecVerif?.noresep || null) === null ? null : dataOrderNorecVerif
         const tempres = {
-            ordernorec: dataOrderNorec
+            ordernorec: dataOrderNorecVerif || dataOrderNorec
         }
         res.status(200).send({
             data: tempres,
@@ -334,7 +343,7 @@ const hCreateVerif = async (
         res, 
         transaction, 
         {
-            idUnit: req.body.idunit,
+            idUnit: req.body.unittujuan,
             productId: itemUsed.obat, 
             stokChange: (qtyPembulatan || qty) 
         }
@@ -387,10 +396,11 @@ const hChangeStok = async (
     transaction, 
     {
         productId,
+        idUnit,
         stokChange
     }
 ) => {
-    let produkBatch = await pool.query(qGetObatFromProduct, [productId])
+    let produkBatch = await pool.query(qGetObatFromProduct, [productId, idUnit])
     produkBatch = produkBatch.rows[0] || null
     if(!produkBatch){
         throw new Error("produk tidak ditemukan")
@@ -435,7 +445,7 @@ const hChangeStok = async (
 
             updated = updated.toJSON()
             await hCreateKartuStok(req, res, transaction, {
-                idUnit: null,
+                idUnit: idUnit,
                 idProduk: productId,
                 saldoAwal: batchStokUnit[indexSU].qty,
                 saldoAkhir: updated.qty,

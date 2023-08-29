@@ -693,6 +693,17 @@ const Navdata = () => {
                         ]);
                     }
                 },
+                {
+                    id: "Penjualan Obat Bebas",
+                    label: "Penjualan Obat Bebas",
+                    link: "/farmasi/penjualan-obat-bebas",
+                    parentId: "farmasi",
+                    isAllowed: () => {
+                        return isAllowedAccess(getUserPermissions(), [
+                            "REGISTRASI_VIEW",
+                        ]);
+                    }
+                },
             ]
         },
         // loket.rj
