@@ -1,17 +1,18 @@
 import pool from "../../../config/dbcon.query";
 import * as uuid from 'uuid'
-import queries from '../../../queries/transaksi/registrasi.queries';
 import { qGetObatFromUnit, qGetOrderResepFromDP } from "../../../queries/emr/emr.queries";
 import db from "../../../models";
 import {
     createTransaction
 } from "../../../utils/dbutils";
 import { hProcessOrderResep } from "../emr/emr.controller";
+import { qGetObatFromProduct } from "../../../queries/farmasi/farmasi.queries";
 
 
 const t_verifresep = db.t_verifresep
 const t_pelayananpasien = db.t_pelayananpasien
 const t_orderresep = db.t_orderresep
+const t_stokunit = db.t_stokunit
 
 const Op = db.Sequelize.Op;
 
@@ -179,12 +180,15 @@ const hCreateOrUpdateDetailVerif = async (
                         if(!norecresepsub){
                             norecresepsub = uuid.v4().substring(0, 32);
                             const {created} = await hCreateVerif(
-                                norecorder,
-                                item, 
-                                subItem, 
-                                transaction
+                                req,
+                                res,
+                                transaction,
+                                {
+                                    norecorderresep: norecorder, 
+                                    item: item, 
+                                    subItem: subItem,
+                                } 
                             )
-                            
                             createdOrUpdatedVerif = created
                         }else{
                             const {updated} = await hUpdateVerif(
@@ -216,10 +220,14 @@ const hCreateOrUpdateDetailVerif = async (
             if(!norecverif){
                 norecverif = uuid.v4().substring(0, 32);
                 const {created} = await hCreateVerif(
-                    norecorder,
-                    item,
-                    null,
-                    transaction
+                    req,
+                    res,
+                    transaction,
+                    {
+                        norecorderresep: norecorder, 
+                        item: item, 
+                        subItem: null,
+                    } 
                 )
                 createdOrUpdatedVerif = created
             }else{
@@ -285,10 +293,14 @@ const hCreatePelayanan = async (
 }
 
 const hCreateVerif = async (
-    norecorderresep, 
-    item, 
-    subItem, 
-    transaction
+    req,
+    res,
+    transaction,
+    {
+        norecorderresep, 
+        item, 
+        subItem,
+    } 
 ) => {
     // jika bukan subitem, maka yang digunakan adalah item
     let itemUsed = subItem || item
@@ -314,8 +326,19 @@ const hCreateVerif = async (
     }, {
         transaction: transaction
     })
+    const qtyPembulatan = itemUsed.qtypembulatan
+    const qty = itemUsed.qty
+    const changedStok = await hChangeStok(
+        req, 
+        res, 
+        transaction, 
+        {
+            productId: itemUsed.obat, 
+            stokChange: (qtyPembulatan || qty) 
+        }
+    )
     created = created.toJSON()
-    return {created, norecresep: created.norec}
+    return {created, norecresep: created.norec, changedStok}
 }
 
 const hUpdateVerif = async (
@@ -355,3 +378,61 @@ const hUpdateVerif = async (
     updated = updated[0].toJSON();
     return {updated, norecresep: norecverif}
 }
+
+const hChangeStok = async (
+    req, 
+    res, 
+    transaction, 
+    {
+        productId,
+        stokChange
+    }
+) => {
+    let produkBatch = await pool.query(qGetObatFromProduct, [productId])
+    produkBatch = produkBatch.rows[0] || null
+    if(!produkBatch){
+        throw new Error("produk tidak ditemukan")
+    }
+    if(stokChange > 0 && produkBatch.totalstok < stokChange){
+        throw new Error("stok tidak cukup")
+    }
+    let stokChangeUpdate = stokChange
+    let batchStokUnit = produkBatch.batchstokunit
+    const batchStokUnitChanged = batchStokUnit.map((stokUnit) => {
+        let newStokUnit = {...stokUnit}
+        if(stokChangeUpdate <= 0){
+            newStokUnit.qtyChange = 0
+            return newStokUnit
+        }
+        const qty = newStokUnit.qty
+        if(qty > stokChangeUpdate){
+            newStokUnit.qty = qty - stokChangeUpdate
+            newStokUnit.qtyChange = stokChangeUpdate
+            stokChangeUpdate = 0
+            return newStokUnit
+        }
+        newStokUnit.qty = 0
+        newStokUnit.qtyChange = qty
+        stokChangeUpdate = stokChangeUpdate - qty
+        return newStokUnit
+    })
+    const updatedData = await Promise.all(
+        batchStokUnitChanged.map(async (stokUnit) => {
+            const stokUnitModel = await t_stokunit.findOne({
+                where: {
+                    norec: stokUnit.norecstokunit,
+                },
+                lock: transaction.LOCK.UPDATE,
+            })
+            let updated = await stokUnitModel.update({
+                qty: stokUnit.qty
+            }, {
+                transaction: transaction,
+                returning: true
+            })
+            updated = updated.toJSON()
+            return updated
+        })
+    )
+    return updatedData
+} 

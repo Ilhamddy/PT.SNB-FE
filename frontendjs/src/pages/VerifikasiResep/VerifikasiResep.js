@@ -27,6 +27,7 @@ export const initValueResep = {
     qtyracikan: "",
     qtypembulatan: "",
     qtyjumlahracikan: "",
+    stok: "",
     sediaan: "",
     namasediaan: "",
     harga: "",
@@ -202,6 +203,7 @@ const VerifikasiResep = () => {
         handleChangeResep(e?.namasatuan || "", "namasatuan", row, true);
         handleChangeResep(e?.sediaanid || "", "sediaan", row, true);
         handleChangeResep(e?.namasediaan || "", "namasediaan", row, true); 
+        handleChangeResep(e?.totalstok || "", "stok", row, true);
         const harga = e?.batchstokunit?.[0]?.harga || 0
         let totalHarga = 
             ((harga) * (row.qty || 0)) || ""
@@ -221,7 +223,10 @@ const VerifikasiResep = () => {
     }
 
     const handleQtyObatResep = (e, row, val, setVal) => {
-        const newVal = onChangeStrNbr(e.target.value, val)
+        let newVal = onChangeStrNbr(e.target.value, val)
+        if(strToNumber(newVal) > strToNumber(row.stok)){
+            newVal = row.stok
+        }
         setVal(newVal)
         handleChangeResep(newVal, "qty", row)
         let totalHarga = (
@@ -436,6 +441,9 @@ const VerifikasiResep = () => {
                                     </FormFeedback>
                                 ) 
                             }
+                            <div>
+                                <span>Stok: {row.stok}</span>
+                            </div>
                         </div>
                     )
                 }
@@ -696,6 +704,9 @@ const VerifikasiResep = () => {
                                 </FormFeedback>
                             ) 
                         }
+                        <div>
+                            <span>Stok: {row.stok}</span>
+                        </div>
                     </div>
                 )
             },

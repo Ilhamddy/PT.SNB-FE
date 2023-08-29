@@ -14,7 +14,8 @@ SELECT
             'qty', tsu.qty,
             'nobatch', tsu.nobatch
         )
-    ) AS batchstokunit
+    ) AS batchstokunit,
+    sum(tsu.qty) AS totalstok
 FROM t_stokunit tsu
     LEFT JOIN m_produk mp ON mp.id = tsu.objectprodukfk
     LEFT JOIN m_satuan ms ON ms.id = mp.objectsatuanstandarfk
@@ -65,7 +66,9 @@ SELECT
             'namasigna', msig.reportdisplay,
             'keterangan', tord.objectketeranganresepfk,
             'namaketerangan', mket.reportdisplay,
-            'kodertambahan', tord.kode_r_tambahan
+            'kodertambahan', tord.kode_r_tambahan,
+            'stok', s.stok,
+            'batch', s.batch
         )
         ORDER BY tord.kode_r ASC, tord.kode_r_tambahan ASC
     ) AS resep
@@ -80,6 +83,21 @@ FROM t_daftarpasien tdp
     LEFT JOIN m_sediaan msed ON msed.id = mp.objectsediaanfk
     LEFT JOIN m_keteranganresep mket ON mket.id = tord.objectketeranganresepfk
     LEFT JOIN m_signa msig ON msig.id = tord.objectsignafk
+CROSS JOIN LATERAL (
+    SELECT 
+        json_agg(
+            json_build_object(
+                'norecstokunit', tsu.norec,
+                'harga', tsu.harga,
+                'qty', tsu.qty,
+                'nobatch', tsu.nobatch
+            )
+        ) AS batch,
+        sum(tsu.qty) AS stok
+        FROM t_stokunit tsu
+    WHERE tsu.objectprodukfk = tord.objectprodukfk
+        AND tsu.qty > 0
+    ) s
 WHERE CASE 
     WHEN $1 = 'all' THEN tor.statusenabled = true
     WHEN $1 = 'norecresep' THEN tor.norec = $2
@@ -93,6 +111,7 @@ GROUP BY
     mu.namaunit,
     tdp.objectunitlastfk,
     tdp.objectpenjaminfk
+
 `
 
 export {
