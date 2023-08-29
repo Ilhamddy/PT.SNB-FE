@@ -2,6 +2,7 @@ import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
 import * as dotenv from "dotenv"
+import './app/scheduler/scheduler'; 
 
 import authRoutes from './app/routes/auth.routes.js';
 import userRoutes from './app/routes/user.routes.js';
