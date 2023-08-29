@@ -57,6 +57,7 @@ import t_batalpasienModel from "./t_batalpasien.model.js";
 import t_orderresepModel from "./t_orderresep.model.js";
 import t_orderresepdetailModel from "./t_orderresepdetail.model.js";
 import t_verifresepModel from "./t_verifresep.model.js";
+import t_sensusharianModel from "./t_sensusharian.js";
 
 const sequelize = new Sequelize(
   config.DB,
@@ -140,6 +141,7 @@ db.t_batalpasien = t_batalpasienModel(sequelize, sequelizeInstance);
 db.t_orderresep = t_orderresepModel(sequelize, sequelizeInstance);
 db.t_orderresepdetail = t_orderresepdetailModel(sequelize, sequelizeInstance);
 db.t_verifresep = t_verifresepModel(sequelize, sequelizeInstance);
+db.t_sensusharian =t_sensusharianModel(sequelize, sequelizeInstance);
 
 db.role.belongsToMany(db.user, {
   through: "user_roles",

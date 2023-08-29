@@ -11,24 +11,29 @@ export default (sequelize, Sequelize) => {
             primaryKey: true,
             type: Sequelize.CHAR(32)
         },
-        statusenabled: {
-            type: Sequelize.BOOLEAN,
-            defaultValue: true
+        objectantreanpemeriksaanfk:{
+            type: Sequelize.CHAR(32)
         },
-        code:{
-            type: Sequelize.STRING
-        },
-        description:{
-            type:Sequelize.STRING
-        },
-        type:{
-            type: Sequelize.STRING
+        objectunitfk:{
+            type:Sequelize.INTEGER
         },
         objectdaftarpasienfk:{
+            type: Sequelize.CHAR(32)
+        },
+        noregistrasi:{
+            type:Sequelize.STRING
+        },
+        objectpasienfk:{
+            type:Sequelize.INTEGER
+        },
+        objectdokterpemeriksafk:{
             type:Sequelize.CHAR(32)
         },
-        tarif:{
-            type:Sequelize.FLOAT
+        tglinput:{
+            type: Sequelize.DATE
+        },
+        objectkelasfk:{
+            type:Sequelize.INTEGER
         }
     }, {
         tableName: "t_sensusharian", // relation "user" does not exist
