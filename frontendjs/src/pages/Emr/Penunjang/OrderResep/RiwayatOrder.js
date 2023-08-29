@@ -7,9 +7,11 @@ import { useSelector } from "react-redux";
 
 const RiwayatOrder = () => {
     const {
-        listOrder
+        listOrder,
+        listVerif
     } = useSelector(state => ({
-        listOrder: state.Emr.getOrderResepFromDP.data?.order || []
+        listOrder: state.Emr.getOrderResepFromDP.data?.order || [],
+        listVerif: state.Emr.getOrderResepFromDP.data?.veriforder || []
     }))
 
     /**
@@ -25,7 +27,38 @@ const RiwayatOrder = () => {
         {
             name: <span className='font-weight-bold fs-13'>Tgl Order</span>,
             sortable: true,
-            selector: row => row.tglinput,
+            selector: row => row.tanggalorder,
+            width: "120px"
+        },
+        {
+            name: <span className='font-weight-bold fs-13'>Unit tujuan</span>,
+            sortable: true,
+            selector: row => row.namaunittujuan,
+            width: "170px"
+        }
+        
+    ];
+
+    /**
+     * @type {import("react-data-table-component").TableColumn[]}
+     */
+    const columnsVerif = [
+        {
+            name: <span className='font-weight-bold fs-13'>No Order/No Resep</span>,
+            sortable: true,
+            selector: row => row.noorder + "/" + row.noresep,
+            width: "150px"
+        },
+        {
+            name: <span className='font-weight-bold fs-13'>Tgl Order</span>,
+            sortable: true,
+            selector: row => row.tanggalorder,
+            width: "120px"
+        },
+        {
+            name: <span className='font-weight-bold fs-13'>Tgl Verif</span>,
+            sortable: true,
+            selector: row => row.tanggalverif,
             width: "120px"
         },
         {
@@ -39,12 +72,33 @@ const RiwayatOrder = () => {
 
     return(
         <Row className="mt-5">
+            <h5>
+                Riwayat Order
+            </h5>
             <DataTable
                 fixedHeader
                 fixedHeaderScrollHeight="700px"
                 columns={columnsOrder}
                 pagination
                 data={listOrder || []}
+                progressPending={false}
+                customStyles={tableCustomStyles}
+                expandableRows
+                expandableRowsComponent={ExpandableRiwayat}
+                progressComponent={<LoadingTable />}
+                noDataComponent={<NoDataTable dataName={"data order"}/>}
+            />
+            {((listVerif || []).length > 0) && 
+                <h5>
+                    Riwayat Obat Diterima pasien
+                </h5>
+            }
+            <DataTable
+                fixedHeader
+                fixedHeaderScrollHeight="700px"
+                columns={columnsVerif}
+                pagination
+                data={listVerif || []}
                 progressPending={false}
                 customStyles={tableCustomStyles}
                 expandableRows

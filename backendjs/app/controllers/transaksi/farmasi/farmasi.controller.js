@@ -7,6 +7,7 @@ import {
 } from "../../../utils/dbutils";
 import { hProcessOrderResep } from "../emr/emr.controller";
 import { qGetObatFromProduct } from "../../../queries/farmasi/farmasi.queries";
+import { hCreateKartuStok } from "../gudang/gudang.controller";
 
 
 const t_verifresep = db.t_verifresep
@@ -333,6 +334,7 @@ const hCreateVerif = async (
         res, 
         transaction, 
         {
+            idUnit: req.body.idunit,
             productId: itemUsed.obat, 
             stokChange: (qtyPembulatan || qty) 
         }
@@ -417,7 +419,7 @@ const hChangeStok = async (
         return newStokUnit
     })
     const updatedData = await Promise.all(
-        batchStokUnitChanged.map(async (stokUnit) => {
+        batchStokUnitChanged.map(async (stokUnit, indexSU) => {
             const stokUnitModel = await t_stokunit.findOne({
                 where: {
                     norec: stokUnit.norecstokunit,
@@ -430,7 +432,17 @@ const hChangeStok = async (
                 transaction: transaction,
                 returning: true
             })
+
             updated = updated.toJSON()
+            await hCreateKartuStok(req, res, transaction, {
+                idUnit: null,
+                idProduk: productId,
+                saldoAwal: batchStokUnit[indexSU].qty,
+                saldoAkhir: updated.qty,
+                tabelTransaksi: "t_verifresep",
+                norecTransaksi: null,
+                noBatch: updated.kodebatch
+            })
             return updated
         })
     )
