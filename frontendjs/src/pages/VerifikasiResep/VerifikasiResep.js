@@ -27,6 +27,7 @@ export const initValueResep = {
     qtyracikan: "",
     qtypembulatan: "",
     qtyjumlahracikan: "",
+    stok: "",
     sediaan: "",
     namasediaan: "",
     harga: "",
@@ -202,6 +203,7 @@ const VerifikasiResep = () => {
         handleChangeResep(e?.namasatuan || "", "namasatuan", row, true);
         handleChangeResep(e?.sediaanid || "", "sediaan", row, true);
         handleChangeResep(e?.namasediaan || "", "namasediaan", row, true); 
+        handleChangeResep(e?.totalstok || "", "stok", row, true);
         const harga = e?.batchstokunit?.[0]?.harga || 0
         let totalHarga = 
             ((harga) * (row.qty || 0)) || ""
@@ -221,7 +223,10 @@ const VerifikasiResep = () => {
     }
 
     const handleQtyObatResep = (e, row, val, setVal) => {
-        const newVal = onChangeStrNbr(e.target.value, val)
+        let newVal = onChangeStrNbr(e.target.value, val)
+        if(strToNumber(newVal) > strToNumber(row.stok)){
+            newVal = row.stok
+        }
         setVal(newVal)
         handleChangeResep(newVal, "qty", row)
         let totalHarga = (
@@ -436,6 +441,9 @@ const VerifikasiResep = () => {
                                     </FormFeedback>
                                 ) 
                             }
+                            <div>
+                                <span>Stok: {row.stok}</span>
+                            </div>
                         </div>
                     )
                 }
@@ -696,6 +704,9 @@ const VerifikasiResep = () => {
                                 </FormFeedback>
                             ) 
                         }
+                        <div>
+                            <span>Stok: {row.stok}</span>
+                        </div>
                     </div>
                 )
             },
@@ -873,6 +884,7 @@ const VerifikasiResep = () => {
                                 id="dokter"
                                 name="dokter"
                                 options={pegawai}
+                                isDisabled
                                 onChange={(e) => {
                                     vResep.setFieldValue("dokter", e?.value || "")
                                     vResep.setFieldValue("namadokter", e?.label || "")
@@ -903,6 +915,7 @@ const VerifikasiResep = () => {
                                 id="unitasal"
                                 name="unitasal"
                                 options={unit}
+                                isDisabled
                                 onChange={(e) => {
                                     vResep.setFieldValue("unitasal", e?.value || "")
                                 }}
@@ -937,6 +950,7 @@ const VerifikasiResep = () => {
                                     dateFormat: "Y-m-d H:i",
                                     defaultDate: "today"
                                 }}
+                                value={vResep.values.tanggalorder}
                                 onChange={([newDate]) => {
                                     vResep.setFieldValue("tanggalorder", newDate.toISOString());
                                 }}
@@ -965,6 +979,7 @@ const VerifikasiResep = () => {
                                 id="unittujuan"
                                 name="unittujuan"
                                 options={unit}
+                                isDisabled
                                 onChange={(e) => {
                                     vResep.setFieldValue("unittujuan", e?.value || "")
                                 }}
@@ -1023,6 +1038,7 @@ const VerifikasiResep = () => {
                                 id="penjamin"
                                 name="penjamin"
                                 options={penjamin}
+                                isDisabled
                                 onChange={(e) => {
                                     vResep.setFieldValue("penjamin", e?.value || "")
                                 }}

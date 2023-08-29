@@ -47,11 +47,11 @@ function* onCreateOrUpdateVerifResep({ payload: { body, callback } }) {
     try {
         const response = yield call(serviceFarmasi.createOrUpdateVerifResep, body);
         yield put(createOrUpdateVerifResepSuccess(response.data));
-        toast.success(response.data.msg);
+        toast.success("Sukses update verif resep", { autoClose: 3000 });
         callback && callback();
     } catch (error) {
         yield put(createOrUpdateVerifResepError(error));
-        toast.error("Gagal update verif resep");
+        toast.error("Gagal update verif resep", { autoClose: 3000 });
     }
 }
 

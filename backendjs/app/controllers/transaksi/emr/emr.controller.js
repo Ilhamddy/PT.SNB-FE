@@ -1,7 +1,7 @@
 import pool from "../../../config/dbcon.query";
 import * as uuid from 'uuid'
 import queries from '../../../queries/transaksi/registrasi.queries';
-import { qGetObatFromUnit, qGetOrderResepFromDP } from "../../../queries/emr/emr.queries";
+import { qGetObatFromUnit, qGetOrderResepFromDP, qGetOrderVerifResepFromDP } from "../../../queries/emr/emr.queries";
 import db from "../../../models";
 import {
     createTransaction
@@ -1102,7 +1102,7 @@ const createOrUpdateEmrResepDokter = async (req, res) => {
                 objectantreanpemeriksaanfk: body.norecap,
                 objectpegawaifk: body.dokter,
                 tglinput: new Date(),
-                objectunitasalfk: body.unittujuan,
+                objectunitasalfk: body.unitasal,
                 no_order: kodeOrder,
                 objectdepotujuanfk: body.unittujuan
             }, {
@@ -1186,6 +1186,7 @@ export const initValueResep = {
 const getOrderResepFromDP = async (req, res) => {
     try{
         const {norecdp, norecresep} = req.query
+
         let dataOrders = await pool.query(qGetOrderResepFromDP, [
             'norecdp',
             null,
@@ -1196,13 +1197,19 @@ const getOrderResepFromDP = async (req, res) => {
             norecresep,
             norecdp
         ])).rows
+        let dataVerif = (await pool.query(qGetOrderVerifResepFromDP, [
+            'norecdp',
+            null,
+            norecdp
+        ]))
         dataOrders = dataOrders.rows
         dataOrders = hProcessOrderResep(dataOrders)
         dataOrderNorec = hProcessOrderResep(dataOrderNorec)
         dataOrderNorec = dataOrderNorec[0] || null
         const tempres = {
             order: dataOrders,
-            ordernorec: dataOrderNorec
+            ordernorec: dataOrderNorec,
+            veriforder: dataVerif.rows
         }
         res.status(200).send({
             data: tempres,
