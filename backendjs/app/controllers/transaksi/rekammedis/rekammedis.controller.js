@@ -431,10 +431,12 @@ async function getLaporanRL3_1(req, res) {
         // const result = await pool.query(queries.qResult, [start,end,search]) //,instalasi,unit,rekanan,pegawai
         const result = await queryPromise2(`select mp.objectspesialisasifk,ms.reportdisplay as jenis_spesialisasi,
         to_char(td.tglregistrasi,'dd-MM-YYYY') as tglregistrasi,to_char(td.tglpulang,'dd-MM-YYYY') as tglpulang,
-        td.objectcarapulangrifk,td.objectkondisipulangrifk  from t_daftarpasien td 
+        td.objectcarapulangrifk,td.objectkondisipulangrifk,
+        EXTRACT(DAY FROM AGE(to_char(td.tglpulang,'YYYY-MM-dd')::DATE, to_char(td.tglregistrasi,'YYYY-MM-dd')::DATE)) AS days_difference
+        from t_daftarpasien td 
         join m_pegawai mp on mp.id=td.objectdokterpemeriksafk
         join m_spesialisasi ms on ms.id=mp.objectspesialisasifk
-        where td.objectinstalasifk=2 and td.tglregistrasi between '${start}' and '${end}' and td.statusenabled=true 
+        where td.objectinstalasifk=2 and td.tglpulang between '${start}' and '${end}' and td.statusenabled=true 
         and td.tglpulang is not null
         `);
 
@@ -443,12 +445,20 @@ async function getLaporanRL3_1(req, res) {
             let sama = false;
             let jmlPulangHidup = 0
             let jmlMeninggalK48 = 0
+            let jmlMeninggalL48 = 0
+            let jmlLamaRawat = 1
             if (element.objectcarapulangrifk !== 4) {
                 jmlPulangHidup = 1
             }else if (element.objectcarapulangrifk === 4) {
                 if(element.objectkondisipulangrifk===4){
                     jmlMeninggalK48 = 1
+                }else if(element.objectkondisipulangrifk===5){
+                    jmlMeninggalL48 = 1
                 }
+            }
+
+            if(element.days_difference!== 0){
+                jmlLamaRawat=element.days_difference
             }
             data10.forEach(element2 => {
                 if (element.jenis_spesialisasi === element2.jenis_spesialisasi) {
@@ -456,6 +466,8 @@ async function getLaporanRL3_1(req, res) {
                     element2.jumlah = parseFloat(element2.jumlah) + 1
                     element2.jmlpulanghidup = parseFloat(element2.jmlpulanghidup) + jmlPulangHidup
                     element2.jmlmeninggalk48 = parseFloat(element2.jmlmeninggalk48) + jmlMeninggalK48
+                    element2.jmlmeninggall48 = parseFloat(element2.jmlmeninggall48) + jmlMeninggalL48
+                    element2.lamarawat = parseFloat(element2.lamarawat) + jmlLamaRawat
                 }
             });
 
@@ -465,7 +477,9 @@ async function getLaporanRL3_1(req, res) {
                     'jumlah': 1,
                     'row': data10.length + 1,
                     'jmlpulanghidup': jmlPulangHidup,
-                    'jmlmeninggalk48':jmlMeninggalK48
+                    'jmlmeninggalk48':jmlMeninggalK48,
+                    'jmlmeninggall48':jmlMeninggalL48,
+                    'lamarawat':jmlLamaRawat
                 });
 
             }
@@ -483,6 +497,8 @@ async function getLaporanRL3_1(req, res) {
     }
 
 }
+
+
 
 export default {
     getListDaftarDokumenRekammedis,

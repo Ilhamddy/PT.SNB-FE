@@ -261,6 +261,10 @@ const RL3_1 = () => {
                                                         <td className="text-muted"></td>
                                                         <td className="text-muted">{data.jumlah}</td>
                                                         <td className="text-muted">{data.jmlpulanghidup}</td>
+                                                        <td className="text-muted">{data.jmlmeninggalk48}</td>
+                                                        <td className="text-muted">{data.jmlmeninggall48}</td>
+                                                        <td className="text-muted">{data.lamarawat}</td>
+                                                        <td className="text-muted"></td>
                                                     </tr>
                                                 </tbody>
                                             ))
