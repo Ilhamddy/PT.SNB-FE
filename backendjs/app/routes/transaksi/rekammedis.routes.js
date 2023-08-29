@@ -53,4 +53,10 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getListLaporanPasienKunjungan
     );
+
+    app.get(
+        "/api/transaksi/rekammedis/get-laporan-rl-3-1",
+        [authJwt.verifyToken],
+        controller.getLaporanRL3_1
+    );
 }
