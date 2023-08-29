@@ -15,7 +15,7 @@ export default function (app) {
     app.post(
         "/api/transaksi/gudang/tambah-or-edit-produk",
         [authJwt.verifyToken],
-        controller.createOrUpdateDetailProduk
+        controller.createOrUpdateProdukObat
     );
 
     app.get(
