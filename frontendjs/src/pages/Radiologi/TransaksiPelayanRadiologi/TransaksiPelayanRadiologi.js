@@ -11,9 +11,11 @@ import { Link, useNavigate } from "react-router-dom";
 import EmrHeader from '../../Emr/EmrHeader/EmrHeader';
 import DataTable from 'react-data-table-component';
 import { useParams } from "react-router-dom";
+import classnames from "classnames";
 import {
     listPelayananRadiologiGet, radiologiResetForm
 } from '../../../store/actions';
+import InputTindakan from '../../Emr/InputTindakan/InputTindakan';
 const TransaksiPelayananRadiologi = () => {
     const { norecdp, norecap } = useParams();
     const dispatch = useDispatch();
@@ -30,7 +32,7 @@ const TransaksiPelayananRadiologi = () => {
     }, [dispatch])
     useEffect(() => {
         dispatch(listPelayananRadiologiGet(norecdp));
-    }, [norecdp,dispatch]);
+    }, [norecdp, dispatch]);
     const tableCustomStyles = {
         headRow: {
             style: {
@@ -46,14 +48,16 @@ const TransaksiPelayananRadiologi = () => {
 
         }
     }
-
+    const handleClickKonsul = (e) => {
+console.log('teststestset')
+    }
     const columns = [
         {
             name: <span className='font-weight-bold fs-13'>Detail</span>,
             sortable: false,
             cell: (data) => {
                 return (
-                    <Link to='#' className="link-success fs-15" id="tooltipTop"><i className="ri-edit-2-line"></i></Link>
+                    <Link onClick={() => handleClickKonsul(data)} className="link-success fs-15" id="tooltipTop"><i className="ri-edit-2-line"></i></Link>
                 );
             },
             width: "80px"
@@ -127,6 +131,23 @@ const TransaksiPelayananRadiologi = () => {
             // width: "250px",
         },
     ];
+    const [pillsTab, setpillsTab] = useState("1");
+    const pillsToggle = (tab) => {
+        if (pillsTab !== tab) {
+            setpillsTab(tab);
+        }
+    };
+    const taskWidgets = [
+        {
+            id: 1,
+            label: "Transaksi Pelayanan",
+        },
+        {
+            id: 2,
+            label: "Tindakan",
+        },
+
+    ];
     return (
         <React.Fragment>
             <UiContent />
@@ -140,26 +161,44 @@ const TransaksiPelayananRadiologi = () => {
                         <Col ccl={12}>
                             <Card>
                                 <CardBody>
-                                    <div id="table-gridjs">
-                                        {/* <Col className="col-sm">
-                                            <div className="d-flex justify-content-sm-end">
-                                                <div className="search-box ms-2">
-                                                    <input type="text" className="form-control search"
-                                                        placeholder="Search..." />
-                                                    <i className="ri-search-line search-icon"></i>
-                                                </div>
-                                            </div>
-                                        </Col> */}
-                                        <DataTable
-                                            fixedHeader
-                                            fixedHeaderScrollHeight="700px"
-                                            columns={columns}
-                                            pagination
-                                            data={dataPelayanan}
-                                            progressPending={loadingPelayanan}
-                                            customStyles={tableCustomStyles}
-                                        />
+                                    <div className="card-header align-items-center d-flex">
+                                        <Nav tabs className="nav justify-content-end nav-tabs-custom rounded card-header-tabs border-bottom-0">
+                                            {taskWidgets.map((item, key) => (
+                                                <NavItem key={key}>
+                                                    <NavLink style={{ cursor: "pointer" }} className={classnames({ active: pillsTab === `${item.id}`, })} onClick={() => { pillsToggle(`${item.id}`); }}>
+                                                        <span className="fw-semibold">{item.label}</span>
+                                                    </NavLink>
+                                                </NavItem>
+                                            ))}
+                                        </Nav>
                                     </div>
+                                    <TabContent activeTab={pillsTab} className="text-muted">
+                                        <TabPane tabId="1" id="home-1">
+                                            <Card>
+                                                <CardBody>
+                                                    <div id="table-gridjs">
+                                                        <DataTable
+                                                            fixedHeader
+                                                            fixedHeaderScrollHeight="700px"
+                                                            columns={columns}
+                                                            pagination
+                                                            data={dataPelayanan}
+                                                            progressPending={loadingPelayanan}
+                                                            customStyles={tableCustomStyles}
+                                                        />
+                                                    </div>
+                                                </CardBody>
+                                            </Card>
+                                        </TabPane>
+                                        <TabPane tabId="2" id="home-1">
+                                            <Card>
+                                                <CardBody>
+                                                <InputTindakan/>
+                                                </CardBody>
+                                            </Card>
+                                        </TabPane>
+                                    </TabContent>
+
                                 </CardBody>
                             </Card>
                         </Col>

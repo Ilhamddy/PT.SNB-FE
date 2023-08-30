@@ -21,6 +21,7 @@ import LoadingTable from '../../../Components/Table/LoadingTable';
 import PrintTemplate from '../../Print/PrintTemplate/PrintTemplate';
 import PrintHasilLaboratorium from '../../Print/PrintHasilLaboratorium/PrintHasilLaboratorium';
 import CetakLabModal from '../../../Components/Common/CetakLabModal';
+import InputTindakan from '../../Emr/InputTindakan/InputTindakan';
 
 const TransaksiPelayanLaboratorium = () => {
     const { norecdp, norecap } = useParams();
@@ -331,7 +332,11 @@ const TransaksiPelayanLaboratorium = () => {
                                             </Card>
                                         </TabPane>
                                         <TabPane tabId="2" id="home-1">
-
+                                            <Card>
+                                                <CardBody>
+                                                    <InputTindakan />
+                                                </CardBody>
+                                            </Card>
                                         </TabPane>
                                     </TabContent>
 
