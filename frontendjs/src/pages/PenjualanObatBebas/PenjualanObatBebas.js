@@ -99,11 +99,20 @@ const PenjualanObatBebas = () => {
             tanggallahir: Yup.string().required("Tanggal lahir harus diisi"),
             notelepon: Yup.string().required("No telepon harus diisi"),
             alamat: Yup.string().required("Alamat harus diisi"),
-            tanggalresep: Yup.string().required("Tanggal resep harus diisi"),
+            tanggalresep: Yup.string().when("jenis", {
+                is: (val) => (val === 2),
+                then: () => Yup.string().required("Tanggal resep harus diisi"),
+            }),
             jenis: Yup.string().required("Jenis harus diisi"),
             unittujuan: Yup.string().required("Unit tujuan harus diisi"),
-            noresep: Yup.string().required("No resep harus diisi"),
-            penulisresep: Yup.string().required("Penulis resep harus diisi"),
+            noresep: Yup.string().when("jenis", {
+                is: (val) => (val === 2),
+                then: () => Yup.string().required("No Resep harus diisi"),
+            }),
+            penulisresep: Yup.string().when("jenis", {
+                is: (val) => (val === 2),
+                then: () => Yup.string().required("Penulis resep harus diisi"),
+            }),
             petugasapotek: Yup.string().required("Petugas apotek harus diisi"),
             catatan: Yup.string().required("Catatan harus diisi"),
             resep: Yup.array().of(
@@ -378,8 +387,12 @@ const PenjualanObatBebas = () => {
 
     useEffect(() => {
         vResep.values.unittujuan &&
-            dispatch(getObatFromUnit({idunit: vResep.values.unittujuan}))
-    }, [dispatch, vResep.values.unittujuan])
+            dispatch(getObatFromUnit({
+                idunit: vResep.values.unittujuan, 
+                isbebas: vResep.values.jenis === 1
+            }
+        ))
+    }, [dispatch, vResep.values.unittujuan, vResep.values.jenis])
 
 
     useEffect(() => {
@@ -1060,6 +1073,7 @@ const PenjualanObatBebas = () => {
                                             dateFormat: "Y-m-d",
                                             defaultDate: "today"
                                         }}
+                                        disabled={vResep.values.jenis !== 2}
                                         value={vResep.values.tanggalresep}
                                         onChange={([newDate]) => {
                                             vResep.setFieldValue("tanggalresep", newDate.toISOString());
@@ -1091,6 +1105,11 @@ const PenjualanObatBebas = () => {
                                         options={jenisResep}
                                         onChange={(e) => {
                                             vResep.setFieldValue("jenis", e?.value || "")
+                                            if(e.value === 1){
+                                                vResep.setFieldValue("noresep", "")
+                                                vResep.setFieldValue("penulisresep", "")
+                                                vResep.setFieldValue("tanggalresep", "")
+                                            }
                                         }}
                                         value={vResep.values.jenis}
                                         className={`input ${!!vResep?.errors.jenis ? "is-invalid" : ""}`}
@@ -1118,6 +1137,7 @@ const PenjualanObatBebas = () => {
                                         id="unittujuan"
                                         name="unittujuan"
                                         options={unit}
+                                        isDisabled
                                         onChange={(e) => {
                                             vResep.setFieldValue("unittujuan", e?.value || "")
                                         }}
@@ -1147,6 +1167,7 @@ const PenjualanObatBebas = () => {
                                         id={`noresep`}
                                         name={`noresep`}
                                         type="text"
+                                        disabled={vResep.values.jenis !== 2}
                                         value={vResep.values.noresep} 
                                         onChange={vResep.handleChange}
                                         invalid={vResep.touched?.noresep 
@@ -1175,6 +1196,7 @@ const PenjualanObatBebas = () => {
                                         id={`penulisresep`}
                                         name={`penulisresep`}
                                         type="text"
+                                        disabled={vResep.values.jenis !== 2}
                                         value={vResep.values.penulisresep} 
                                         onChange={vResep.handleChange}
                                         invalid={vResep.touched?.penulisresep 

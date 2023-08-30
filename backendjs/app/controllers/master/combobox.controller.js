@@ -545,7 +545,7 @@ const comboVerifResep = async (req, res) => {
 }
 
 const comboPenjualanBebas = async (req, res) => {
-    const logger = createLogger("combo penjualan bebas")
+    const logger = createLogger("get combo penjualan bebas")
     try{
         const pegawai = await pool.query(queriesPegawai.getAll)
         const jenisResep = await pool.query(queriesJenisResep.getAll)
@@ -568,6 +568,7 @@ const comboPenjualanBebas = async (req, res) => {
             status: "success",
             success: true,
         });
+        logger.info("sukses")
     }catch(error){
         logger.error(error)
         res.status(500).send({

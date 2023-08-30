@@ -172,6 +172,7 @@ const createOrUpdatePenjualanBebas = async (req, res) => {
     try{
         const body = req.body
         let [createdOrUpdated, norec] = [null, req.body.norecjualbebas || null]
+        const tglResep = body.tanggalresep ? new Date(body.tanggalresep) : null
         if(!norec){
             norec = uuid.v4().substring(0, 32);
             const created = await t_penjualanbebas.create({
@@ -184,7 +185,7 @@ const createOrUpdatePenjualanBebas = async (req, res) => {
                 tgllahir: new Date(body.tanggallahir),
                 notelepon: body.notelepon,
                 alamat: body.alamat,
-                tglresep: new Date(body.tanggalresep),
+                tglresep: tglResep,
                 objectjenisresepfk: body.jenis,
                 objectunitfk: body.unittujuan,
                 no_resep: body.noresep,
