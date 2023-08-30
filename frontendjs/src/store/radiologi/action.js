@@ -35,7 +35,10 @@ import {
     DAFTAR_PASIEN_RADIOLOGI_ERROR,
     LIST_PELAYANAN_RADIOLOGI_GET,
     LIST_PELAYANAN_RADIOLOGI_GET_SUCCESS,
-    LIST_PELAYANAN_RADIOLOGI_GET_ERROR
+    LIST_PELAYANAN_RADIOLOGI_GET_ERROR,
+    LIST_COMBO_RADIOLOGI_GET,
+    LIST_COMBO_RADIOLOGI_GET_SUCCESS,
+    LIST_COMBO_RADIOLOGI_GET_ERROR
 } from "./actionType";
 
 export const radiologiResetForm = () => ({
@@ -224,5 +227,20 @@ export const listPelayananRadiologiGetSuccess = (data) => ({
 
 export const listPelayananRadiologiGetError = (error) => ({
     type: LIST_PELAYANAN_RADIOLOGI_GET_ERROR,
+    payload: error,
+});
+
+export const listComboRadiologiGet = (param) => ({
+    type: LIST_COMBO_RADIOLOGI_GET,
+    payload: { param },
+});
+
+export const listComboRadiologiGetSuccess = (data) => ({
+    type: LIST_COMBO_RADIOLOGI_GET_SUCCESS,
+    payload: data,
+});
+
+export const listComboRadiologiGetError = (error) => ({
+    type: LIST_COMBO_RADIOLOGI_GET_ERROR,
     payload: error,
 });

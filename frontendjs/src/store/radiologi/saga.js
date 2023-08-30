@@ -14,6 +14,7 @@ import {
     DELETE_DETAIL_ORDER_PELAYANAN,
     DAFTAR_PASIEN_RADIOLOGI,
     LIST_PELAYANAN_RADIOLOGI_GET,
+    LIST_COMBO_RADIOLOGI_GET
 } from "./actionType";
 
 import {
@@ -29,6 +30,7 @@ import {
     deleteDetailOrderPelayananSuccess,deleteDetailOrderPelayananError,
     daftarPasienRadiologiSuccess,daftarPasienRadiologiError,
     listPelayananRadiologiGetSuccess, listPelayananRadiologiGetError,
+    listComboRadiologiGetSuccess, listComboRadiologiGetError
 } from "./action";
 
 
@@ -262,6 +264,20 @@ export function* watchonListPelayananRadiologiGet() {
     yield takeEvery(LIST_PELAYANAN_RADIOLOGI_GET, onListPelayananRadiologiGet);
 }
 
+function* onlistComboRadiologiGet({ payload: { param } }) {
+    try {
+        const response = yield call(serviceRadiologi.getListComboRadiologi, param);
+        yield put(listComboRadiologiGetSuccess(response.data));
+    } catch (error) {
+        yield put(listComboRadiologiGetError(error));
+    }
+}
+
+
+export function* watchonlistComboRadiologiGet() {
+    yield takeEvery(LIST_COMBO_RADIOLOGI_GET, onlistComboRadiologiGet);
+}
+
 function* radiologiSaga() {
     yield all([
         fork(watchonsaveOrderPelayanan),
@@ -275,7 +291,8 @@ function* radiologiSaga() {
         fork(watchonDeleteOrderPelayanan),
         fork(watchonDeleteDetailOrderPelayanan),
         fork(watchonDaftarPasienRadiologi),
-        fork(watchonListPelayananRadiologiGet)
+        fork(watchonListPelayananRadiologiGet),
+        fork(watchonlistComboRadiologiGet)
     ]);
 }
 
