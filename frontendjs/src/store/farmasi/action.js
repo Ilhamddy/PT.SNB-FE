@@ -7,7 +7,10 @@ import {
     GET_ORDER_RESEP_FROM_NOREC_SUCCESS,
     CREATE_OR_UPDATE_VERIF_RESEP,
     CREATE_OR_UPDATE_VERIF_RESEP_SUCCESS,
-    CREATE_OR_UPDATE_VERIF_RESEP_ERROR
+    CREATE_OR_UPDATE_VERIF_RESEP_ERROR,
+    CREATE_OR_UPDATE_PENJUALAN_BEBAS,
+    CREATE_OR_UPDATE_PENJUALAN_BEBAS_SUCCESS,
+    CREATE_OR_UPDATE_PENJUALAN_BEBAS_ERROR,
 } from "./actionType";
 
 
@@ -60,5 +63,23 @@ export const createOrUpdateVerifResepSuccess = (data) => ({
 
 export const createOrUpdateVerifResepError = (error) => ({
     type: CREATE_OR_UPDATE_VERIF_RESEP_ERROR,
+    payload: error
+});
+
+export const createOrUpdatePenjualanBebas = (body, callback) => ({
+    type: CREATE_OR_UPDATE_PENJUALAN_BEBAS,
+    payload: {
+        body: body,
+        callback: callback
+    }
+});
+
+export const createOrUpdatePenjualanBebasSuccess = (data) => ({
+    type: CREATE_OR_UPDATE_PENJUALAN_BEBAS_SUCCESS,
+    payload: data
+});
+
+export const createOrUpdatePenjualanBebasError = (error) => ({
+    type: CREATE_OR_UPDATE_PENJUALAN_BEBAS_ERROR,
     payload: error
 });

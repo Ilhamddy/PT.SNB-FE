@@ -103,7 +103,7 @@ export default class ServiceEmr {
     }
 
     getListTagihanPrint = async (norecdp) => {
-        return await api.get(`/transaksi/tindakan/list-tagihan-print${norecdp}`, {norecdp: norecdp});
+        return await api.get(`/transaksi/tindakan/list-tagihan-print`, {norecdp: norecdp});
     }
 
     getObatFromUnit = async (queries) => {

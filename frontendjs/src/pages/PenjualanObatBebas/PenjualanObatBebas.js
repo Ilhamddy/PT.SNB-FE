@@ -6,18 +6,18 @@ import LoadingTable from "../../Components/Table/LoadingTable";
 import NoDataTable from "../../Components/Table/NoDataTable";
 import { onChangeStrNbr, strToNumber } from "../../utils/format";
 import { useEffect, useRef, useState } from "react";
-import { getComboResep, getComboVerifResep } from "../../store/master/action";
+import { getComboPenjualanBebas, getComboResep, getComboVerifResep } from "../../store/master/action";
 import { useDispatch, useSelector } from "react-redux";
 import { getObatFromUnit } from "../../store/emr/action";
 import * as Yup from "yup"
 import { useParams, useSearchParams} from "react-router-dom"
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import { ToastContainer } from "react-toastify";
-import { createOrUpdateVerifResep, getOrderResepFromNorec } from "../../store/farmasi/action";
+import { createOrUpdatePenjualanBebas, createOrUpdateVerifResep, getOrderResepFromNorec } from "../../store/farmasi/action";
 import Flatpickr from "react-flatpickr";
 
 export const initValueResep = {
-    norecverif: "",
+    norecdetail: "",
     obat: "",
     namaobat: "",
     satuanobat: "",
@@ -51,22 +51,24 @@ const PenjualanObatBebas = () => {
     const [searchParams, setSearchParams] = useSearchParams()
 
     const {
-        pegawai,
         unit,
         keteranganResep,
         signa,
         obatList,
         sediaanList,
+        jenisResep,
         penjamin,
+        pegawai,
         orderNorec
     } = useSelector((state) => ({
-        pegawai: state.Master?.getComboVerifResep?.data?.pegawai || [],
-        unit: state.Master?.getComboVerifResep?.data?.unit || [],
-        keteranganResep: state.Master?.getComboVerifResep?.data?.keteranganresep || [],
-        signa: state.Master?.getComboVerifResep?.data?.signa || [],
+        unit: state.Master?.getComboPenjualanBebas?.data?.unit || [],
+        keteranganResep: state.Master?.getComboPenjualanBebas?.data?.keteranganresep || [],
+        signa: state.Master?.getComboPenjualanBebas?.data?.signa || [],
         obatList: state?.Emr?.getObatFromUnit?.data?.obat || [],
-        sediaanList: state?.Master?.getComboVerifResep?.data?.sediaan || [],
-        penjamin: state?.Master?.getComboVerifResep?.data?.penjamin || [],
+        jenisResep: state?.Master?.getComboPenjualanBebas?.data?.jenisresep || [],
+        sediaanList: state?.Master?.getComboPenjualanBebas?.data?.sediaan || [],
+        penjamin: state?.Master?.getComboPenjualanBebas?.data?.penjamin || [],
+        pegawai: state?.Master?.getComboPenjualanBebas?.data?.pegawai || [],
         orderNorec: state?.Farmasi?.getOrderResepFromNorec?.data?.ordernorec || null
     }))
 
@@ -145,8 +147,9 @@ const PenjualanObatBebas = () => {
                 newValResep.total = strToNumber(valResep.total)
                 return newValResep
             }) 
-            dispatch(createOrUpdateVerifResep(newVal, (data) => {
-                dispatch(getOrderResepFromNorec({norec: norecjualbebas}))
+            dispatch(createOrUpdatePenjualanBebas(newVal, (data) => {
+                // TODO:
+                // dispatch(getOrderResepFromNorec({norec: norecjualbebas}))
             }))
         }
     })
@@ -370,7 +373,7 @@ const PenjualanObatBebas = () => {
     }
 
     useEffect(() => {
-        dispatch(getComboVerifResep())
+        dispatch(getComboPenjualanBebas())
     }, [dispatch])
 
     useEffect(() => {
@@ -383,22 +386,22 @@ const PenjualanObatBebas = () => {
         const setV = vResep.setValues
         const resetV = vResep.resetForm
         let orderNorecGot = null
-        if(!Array.isArray(orderNorec) && orderNorec){
-            orderNorecGot = orderNorec
-        }
-        if(!norecjualbebas){
-            resetV();
-            resepRef.current = [
-                {
-                    ...initValueResep
-                }
-            ]
-        }
+        // if(!Array.isArray(orderNorec) && orderNorec){
+        //     orderNorecGot = orderNorec
+        // }
+        // if(!norecjualbebas){
+        //     resetV();
+        //     resepRef.current = [
+        //         {
+        //             ...initValueResep
+        //         }
+        //     ]
+        // }
 
-        if(orderNorecGot){
-            setV(orderNorec)
-            resepRef.current = orderNorecGot.resep
-        }
+        // if(orderNorecGot){
+        //     setV(orderNorec)
+        //     resepRef.current = orderNorecGot.resep
+        // }
 
     }, [
         orderNorec, 
@@ -409,7 +412,8 @@ const PenjualanObatBebas = () => {
 
     useEffect(() => {
         const setFF = vResep.setFieldValue
-        dispatch(getOrderResepFromNorec({norec: norecjualbebas}))
+        // TODO:
+        // dispatch(getOrderResepFromNorec({norec: norecjualbebas}))
         setFF("norecjualbebas", norecjualbebas)
     }, [dispatch, norecjualbebas, vResep.setFieldValue])
 
@@ -955,7 +959,7 @@ const PenjualanObatBebas = () => {
                                         }
                                         id="tanggallahir"
                                         options={{
-                                            dateFormat: "Y-m-d H:i",
+                                            dateFormat: "Y-m-d",
                                             defaultDate: "today"
                                         }}
                                         value={vResep.values.tanggallahir}
@@ -1053,7 +1057,7 @@ const PenjualanObatBebas = () => {
                                         }
                                         id="tanggallahir"
                                         options={{
-                                            dateFormat: "Y-m-d H:i",
+                                            dateFormat: "Y-m-d",
                                             defaultDate: "today"
                                         }}
                                         value={vResep.values.tanggalresep}
@@ -1084,8 +1088,7 @@ const PenjualanObatBebas = () => {
                                     <CustomSelect
                                         id="jenis"
                                         name="jenis"
-                                        options={[]}
-                                        isDisabled
+                                        options={jenisResep}
                                         onChange={(e) => {
                                             vResep.setFieldValue("jenis", e?.value || "")
                                         }}
@@ -1114,8 +1117,7 @@ const PenjualanObatBebas = () => {
                                     <CustomSelect
                                         id="unittujuan"
                                         name="unittujuan"
-                                        options={[]}
-                                        isDisabled
+                                        options={unit}
                                         onChange={(e) => {
                                             vResep.setFieldValue("unittujuan", e?.value || "")
                                         }}
@@ -1200,8 +1202,7 @@ const PenjualanObatBebas = () => {
                                     <CustomSelect
                                         id="petugasapotek"
                                         name="petugasapotek"
-                                        options={[]}
-                                        isDisabled
+                                        options={pegawai}
                                         onChange={(e) => {
                                             vResep.setFieldValue("petugasapotek", e?.value || "")
                                         }}
@@ -1229,7 +1230,7 @@ const PenjualanObatBebas = () => {
                                     </div>
                                     <Input 
                                         id={`catatan`}
-                                        name={`noresep`}
+                                        name={`catatan`}
                                         type="text"
                                         value={vResep.values.catatan} 
                                         onChange={vResep.handleChange}
@@ -1363,7 +1364,7 @@ const PenjualanObatBebas = () => {
                         <Row style={{justifyContent: "space-evenly"}}>
                             <Col md={2}>
                                 <Button color="info"
-                                    disabled={vResep.values.noresep}
+                                    disabled={false}
                                     onClick={() => {
                                         vResep.handleSubmit();
                                     }}>

@@ -206,7 +206,7 @@ const getAllByOr = (req, res) => {
 
 const savePasien = async (req, res) => {
     const [transaction, errorTransaction]
-        = await createTransaction(db, res, "savePasien")
+        = await createTransaction(db, res)
     if (errorTransaction) return
     try {
         const getNocm = await running_Number.findAll({
@@ -341,7 +341,7 @@ function formatDate(date) {
 
 async function saveRegistrasiPasien(req, res) {
     const [transaction, errorTransaciton]
-        = await createTransaction(db, res, "saveRegPasien")
+        = await createTransaction(db, res)
     if (errorTransaciton) return
     try {
 
@@ -1449,7 +1449,7 @@ async function getListPasienMutasi(req, res) {
 
 async function saveRegistrasiPasienMutasi(req, res) {
     const [transaction, errorTransaciton]
-        = await createTransaction(db, res, "saveRegPasien")
+        = await createTransaction(db, res)
     if (errorTransaciton) return
     try {
 

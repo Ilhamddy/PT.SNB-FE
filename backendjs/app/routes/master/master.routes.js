@@ -88,4 +88,10 @@ export default function(app) {
       controller.comboVerifResep
     )
 
+    app.get(
+      "/api/master/combobox-penjualan-bebas",
+      [authJwt.verifyToken],
+      controller.comboPenjualanBebas
+    )
+
   };

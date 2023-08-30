@@ -7,13 +7,14 @@
  * transaction name is optional
  * @returns {Promise<[import("sequelize").Transaction, Error]>}
  */
-export const createTransaction = async (db, res, transactionName) => {
+export const createTransaction = async (db, res, logger) => {
     let transaction = null;
     let error = null
     try {
         transaction = await db.sequelize.transaction()
     } catch (e) {
-        console.error(`Error transaction ${transactionName}`, e)
+        logger?.error(e)
+        logger?.print()
         error = e
         res.status(500).send({
             data: error,

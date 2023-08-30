@@ -47,6 +47,9 @@ import {
     GET_COMBO_VERIF_RESEP,
     GET_COMBO_VERIF_RESEP_SUCCESS,
     GET_COMBO_VERIF_RESEP_ERROR,
+    GET_COMBO_PENJUALAN_BEBAS,
+    GET_COMBO_PENJUALAN_BEBAS_SUCCESS,
+    GET_COMBO_PENJUALAN_BEBAS_ERROR,
 } from "./actionType";
 
 export const masterGet = () => ({
@@ -273,5 +276,19 @@ export const getComboVerifResepSuccess = (data) => ({
 
 export const getComboVerifResepError = (error) => ({
     type: GET_COMBO_VERIF_RESEP_ERROR,
+    payload: error,
+});
+
+export const getComboPenjualanBebas = () => ({
+    type: GET_COMBO_PENJUALAN_BEBAS,
+});
+
+export const getComboPenjualanBebasSuccess = (data) => ({
+    type: GET_COMBO_PENJUALAN_BEBAS_SUCCESS,
+    payload: data,
+});
+
+export const getComboPenjualanBebasError = (error) => ({
+    type: GET_COMBO_PENJUALAN_BEBAS_ERROR,
     payload: error,
 });
