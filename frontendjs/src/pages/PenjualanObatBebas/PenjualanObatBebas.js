@@ -232,7 +232,7 @@ const PenjualanObatBebas = () => {
         handleChangeResep(e?.totalstok || "", "stok", row, true);
         const harga = e?.batchstokunit?.[0]?.harga || 0
         let totalHarga = 
-            ((harga) * (row.qty || 0)) || ""
+            ((harga) * 1.25 * (row.qty || 0)) || ""
         totalHarga = Math.ceil(totalHarga)
         handleChangeResep(
             totalHarga, 
@@ -259,13 +259,14 @@ const PenjualanObatBebas = () => {
         let totalHarga = (
             row.harga * 
             (strToNumber(newVal) || 0)
+            * 1.25
         ) || ""
+        totalHarga = Math.ceil(totalHarga)
         handleChangeResep(
             totalHarga, 
             "total", 
             row
         )
-        totalHarga = Math.ceil(totalHarga)
         row.racikan.forEach((valRacikan) => {
             let totalQty = strToNumber(valRacikan.qtyracikan) * (strToNumber(newVal) || 0)
             totalQty = Number(totalQty.toFixed(6))
@@ -273,10 +274,10 @@ const PenjualanObatBebas = () => {
             let qtyPembulatan = qtyBulat - totalQty
             
             qtyPembulatan = Number(qtyPembulatan.toFixed(6))
-            const totalHargaRacikan = (
-                valRacikan.harga * 
-                (totalQty)
+            let totalHargaRacikan = (
+                valRacikan.harga * 1.25 * (strToNumber(qtyBulat))
             ) || ""
+            totalHargaRacikan = Math.ceil(totalHargaRacikan)
             handleChangeRacikan(qtyBulat, "qtypembulatan", row, valRacikan)
             handleChangeRacikan(qtyPembulatan, qtyBulat, row, valRacikan)
             handleChangeRacikan(
@@ -305,7 +306,7 @@ const PenjualanObatBebas = () => {
         handleChangeRacikan(qtyTotal, "qty", rowUtama, row)
         handleChangeRacikan(qtyBulat, "qtypembulatan", rowUtama, row)
         let totalHarga = (
-            row.harga * 1.25 * (strToNumber(newVal)) * (strToNumber(rowUtama.qty))
+            row.harga * 1.25 * (strToNumber(qtyBulat))
         ) || ""
         totalHarga = Math.ceil(totalHarga)
         handleChangeRacikan(
@@ -325,7 +326,8 @@ const PenjualanObatBebas = () => {
         handleChangeRacikan(e?.namasatuan || "", "namasatuan", rowUtama, row, true);
         handleChangeRacikan(e?.totalstok || "", "stok", rowUtama, row, true);
         const harga = e?.batchstokunit?.[0]?.harga || 0
-        const qtyTotal = strToNumber(rowUtama.qty || 0) * strToNumber(row.qtyracikan || 0)
+        let qtyTotal = strToNumber(rowUtama.qty || 0) * strToNumber(row.qtyracikan || 0)
+        qtyTotal = Math.ceil(qtyTotal)
         const totalHarga = 
             ((harga) * 1.25 * qtyTotal) || ""
         handleChangeRacikan(
