@@ -190,6 +190,7 @@ const createOrUpdatePenjualanBebas = async (req, res) => {
                 objectunitfk: body.unittujuan,
                 no_resep: body.noresep,
                 namapenulis: body.penulisresep,
+                objectpegawaifk: body.petugasapotek,
                 catatan: body.catatan,
                 tglinput: new Date()
             }, {

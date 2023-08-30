@@ -50,6 +50,9 @@ export default (sequelize, Sequelize) => {
         namapenulis: {
             type: Sequelize.STRING
         },
+        objectpegawaifk: {
+            type: Sequelize.INTEGER
+        },
         catatan: {
             type: Sequelize.STRING
         },
