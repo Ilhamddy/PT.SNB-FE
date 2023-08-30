@@ -297,6 +297,7 @@ const VerifikasiResep = () => {
         handleChangeRacikan(e?.label || "", "namaobat", rowUtama, row, true);
         handleChangeRacikan(e?.satuanid || "", "satuanobat", rowUtama, row, true);
         handleChangeRacikan(e?.namasatuan || "", "namasatuan", rowUtama, row, true);
+        handleChangeRacikan(e?.totalstok || "", "stok", rowUtama, row, true);
         const harga = e?.batchstokunit?.[0]?.harga || 0
         const qtyTotal = strToNumber(rowUtama.qty || 0) * strToNumber(row.qtyracikan || 0)
         const totalHarga = 
