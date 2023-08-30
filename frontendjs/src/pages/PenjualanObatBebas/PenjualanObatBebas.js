@@ -15,6 +15,7 @@ import BreadCrumb from "../../Components/Common/BreadCrumb";
 import { ToastContainer } from "react-toastify";
 import { createOrUpdatePenjualanBebas, createOrUpdateVerifResep, getOrderResepFromNorec } from "../../store/farmasi/action";
 import Flatpickr from "react-flatpickr";
+import { rgxNbrEmpty } from "../../utils/regexcommon";
 
 export const initValueResep = {
     norecdetail: "",
@@ -1008,7 +1009,10 @@ const PenjualanObatBebas = () => {
                                         name={`notelepon`}
                                         type="text"
                                         value={vResep.values.notelepon} 
-                                        onChange={vResep.handleChange}
+                                        onChange={(e) => {
+                                            rgxNbrEmpty.test(e.target.value) 
+                                                && vResep.setFieldValue("notelepon", e.target.value)
+                                        }}
                                         invalid={vResep.touched?.notelepon 
                                             && !!vResep.errors?.notelepon}
                                         />
