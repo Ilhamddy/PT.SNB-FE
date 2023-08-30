@@ -12,18 +12,23 @@ import EmrHeader from '../../Emr/EmrHeader/EmrHeader';
 import DataTable from 'react-data-table-component';
 import { useParams } from "react-router-dom";
 import classnames from "classnames";
+import { ToastContainer, toast } from 'react-toastify';
 import {
-    listPelayananRadiologiGet, radiologiResetForm
+    listPelayananRadiologiGet, radiologiResetForm, listComboRadiologiGet
 } from '../../../store/actions';
 import InputTindakan from '../../Emr/InputTindakan/InputTindakan';
+import ExpertiseRadiologiModal from '../../../Components/Common/ExpertiseRadiologiModal/ExpertiseRadiologiModal';
+
+
 const TransaksiPelayananRadiologi = () => {
     const { norecdp, norecap } = useParams();
     const dispatch = useDispatch();
     document.title = "Transaksi Pelayanan Radiologi";
-    const { dataPelayanan, loadingPelayanan, successPelayanan } = useSelector((state) => ({
+    const { dataPelayanan, loadingPelayanan, successPelayanan,dataCombo } = useSelector((state) => ({
         dataPelayanan: state.Radiologi.listPelayananRadiologiGet.data,
         loadingPelayanan: state.Radiologi.listPelayananRadiologiGet.loading,
         successPelayanan: state.Radiologi.listPelayananRadiologiGet.success,
+        dataCombo: state.Radiologi.listComboRadiologiGet.data,
     }));
     useEffect(() => {
         return () => {
@@ -32,6 +37,7 @@ const TransaksiPelayananRadiologi = () => {
     }, [dispatch])
     useEffect(() => {
         dispatch(listPelayananRadiologiGet(norecdp));
+        dispatch(listComboRadiologiGet(''))
     }, [norecdp, dispatch]);
     const tableCustomStyles = {
         headRow: {
@@ -48,16 +54,14 @@ const TransaksiPelayananRadiologi = () => {
 
         }
     }
-    const handleClickKonsul = (e) => {
-console.log('teststestset')
-    }
+    
     const columns = [
         {
             name: <span className='font-weight-bold fs-13'>Detail</span>,
             sortable: false,
             cell: (data) => {
                 return (
-                    <Link onClick={() => handleClickKonsul(data)} className="link-success fs-15" id="tooltipTop"><i className="ri-edit-2-line"></i></Link>
+                    <Link onClick={() => handleClickExpertise(data)} className="link-success fs-15" id="tooltipTop"><i className="ri-edit-2-line"></i></Link>
                 );
             },
             width: "80px"
@@ -148,8 +152,27 @@ console.log('teststestset')
         },
 
     ];
+    const [showExpertiseModal, setshowExpertiseModal] = useState(false);
+    const [norecPelayanan, setnorecPelayanan] = useState('');
+    const [tempDokterPengirim, settempDokterPengirim] = useState('');
+    const [tempIdRuanganPengirim, settempIdRuanganPengirim] = useState('');
+    const handleClickExpertise = (e) => {
+        setshowExpertiseModal(true)
+        setnorecPelayanan(e.norec)
+        settempDokterPengirim(e.idpegawaipengirim)
+        settempIdRuanganPengirim(e.idunitpengirim)
+    }
     return (
         <React.Fragment>
+            <ToastContainer closeButton={false} />
+            <ExpertiseRadiologiModal 
+            show={showExpertiseModal}
+            onCloseClick={() => setshowExpertiseModal(false)}
+            norecPelayanan={norecPelayanan}
+            dataCombo={dataCombo}
+            tempdokterpengirim={tempDokterPengirim}
+            tempruanganpengirim={tempIdRuanganPengirim}
+            />
             <UiContent />
             <div className="page-content">
                 <Container fluid>
@@ -193,7 +216,7 @@ console.log('teststestset')
                                         <TabPane tabId="2" id="home-1">
                                             <Card>
                                                 <CardBody>
-                                                <InputTindakan/>
+                                                    <InputTindakan />
                                                 </CardBody>
                                             </Card>
                                         </TabPane>
@@ -209,4 +232,4 @@ console.log('teststestset')
     )
 }
 
-export default withRouter(TransaksiPelayananRadiologi);
+export default (TransaksiPelayananRadiologi);

@@ -36,7 +36,10 @@ import {
     DAFTAR_PASIEN_RADIOLOGI_ERROR,
     LIST_PELAYANAN_RADIOLOGI_GET,
     LIST_PELAYANAN_RADIOLOGI_GET_SUCCESS,
-    LIST_PELAYANAN_RADIOLOGI_GET_ERROR
+    LIST_PELAYANAN_RADIOLOGI_GET_ERROR,
+    LIST_COMBO_RADIOLOGI_GET,
+    LIST_COMBO_RADIOLOGI_GET_SUCCESS,
+    LIST_COMBO_RADIOLOGI_GET_ERROR
 } from "./actionType";
 import { DELETE_ORDER } from "../ecommerce/actionType";
 
@@ -105,6 +108,11 @@ const INIT_STATE = {
         data:[],
         loading: false,
         error: null, 
+    },
+    listComboRadiologiGet:{
+        data:[],
+        loading: false,
+        error: null, 
     }
 }
 
@@ -148,6 +156,9 @@ const Radiologi = (state = INIT_STATE, action) => {
                 },
                 listPelayananRadiologiGet:{
                     ...INIT_STATE.listPelayananRadiologiGet
+                },
+                listComboRadiologiGet:{
+                    ...INIT_STATE.listComboRadiologiGet
                 }
             }
         }
@@ -548,6 +559,39 @@ const Radiologi = (state = INIT_STATE, action) => {
                 ...state,
                 listPelayananRadiologiGet: {
                     ...state.listPelayananRadiologiGet,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case LIST_COMBO_RADIOLOGI_GET: {
+            return {
+                ...state,
+                listComboRadiologiGet: {
+                    ...state.listComboRadiologiGet,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case LIST_COMBO_RADIOLOGI_GET_SUCCESS: {
+            return {
+                ...state,
+                listComboRadiologiGet: {
+                    ...state.listComboRadiologiGet,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case LIST_COMBO_RADIOLOGI_GET_ERROR: {
+            return {
+                ...state,
+                listComboRadiologiGet: {
+                    ...state.listComboRadiologiGet,
                     loading: false,
                     error: action.error,
                 }

@@ -82,5 +82,11 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getTransaksiPelayananRadiologiByNorecDp
     );
+
+    app.get(
+        "/api/transaksi/radiologi/list-combo-radiologi",
+        [authJwt.verifyToken],
+        controller.getComboRadiologi
+    );
     
 }

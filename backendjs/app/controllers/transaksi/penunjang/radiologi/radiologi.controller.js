@@ -645,7 +645,9 @@ async function getTransaksiPelayananRadiologiByNorecDp(req, res) {
         '' as petugas,
         case when tp.iscito=true then '✓' else '✕' end as statuscito,
         tp.total,
+        mp2.id as idpegawaipengirim,
         mp2.namalengkap as pegawaipengirim,
+        mu2.id as idunitpengirim,
         mu2.namaunit as unitpengirim,
         td2.tglperjanjian,to2.nomororder
     from
@@ -681,6 +683,31 @@ async function getTransaksiPelayananRadiologiByNorecDp(req, res) {
 
 }
 
+async function getComboRadiologi(req, res) {
+
+    try {
+        
+        const resultlist = await queryPromise2(`select id as value,namalengkap as label from m_pegawai where statusenabled=true`);
+
+        const resultlist2 = await queryPromise2(`select id as value,namaunit  as label from m_unit mu where statusenabled=true`);
+
+        const resultlist3 = await queryPromise2(`select id as value,pemeriksaan as label,expertise from m_templateradiologi where statusenabled=true`)
+
+
+        let tempres = {pegawai:resultlist.rows,unit:resultlist2.rows,expertise:resultlist3.rows}
+
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+        });
+
+    } catch (error) {
+        res.status(500).send({ message: error });
+    }
+
+}
+
 export default {
     saveOrderPelayanan,
     getListHistoryOrder,
@@ -693,5 +720,6 @@ export default {
     deleteOrderPelayanan,
     deleteDetailOrderPelayanan,
     getDaftarPasienRadiologi,
-    getTransaksiPelayananRadiologiByNorecDp
+    getTransaksiPelayananRadiologiByNorecDp,
+    getComboRadiologi
 };
