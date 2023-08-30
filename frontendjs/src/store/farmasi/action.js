@@ -11,6 +11,9 @@ import {
     CREATE_OR_UPDATE_PENJUALAN_BEBAS,
     CREATE_OR_UPDATE_PENJUALAN_BEBAS_SUCCESS,
     CREATE_OR_UPDATE_PENJUALAN_BEBAS_ERROR,
+    GET_PASIEN_FROM_NOCM,
+    GET_PASIEN_FROM_NOCM_SUCCESS,
+    GET_PASIEN_FROM_NOCM_ERROR
 } from "./actionType";
 
 
@@ -81,5 +84,22 @@ export const createOrUpdatePenjualanBebasSuccess = (data) => ({
 
 export const createOrUpdatePenjualanBebasError = (error) => ({
     type: CREATE_OR_UPDATE_PENJUALAN_BEBAS_ERROR,
+    payload: error
+});
+
+export const getPasienFromNoCm = (queries) => ({
+    type: GET_PASIEN_FROM_NOCM,
+    payload: {
+        queries: queries
+    }
+});
+
+export const getPasienFromNoCmSuccess = (data) => ({
+    type: GET_PASIEN_FROM_NOCM_SUCCESS,
+    payload: data
+});
+
+export const getPasienFromNoCmError = (error) => ({
+    type: GET_PASIEN_FROM_NOCM_ERROR,
     payload: error
 });

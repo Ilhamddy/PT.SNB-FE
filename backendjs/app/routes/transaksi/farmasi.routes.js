@@ -34,4 +34,10 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.createOrUpdatePenjualanBebas
     )
+
+    app.get(
+        "/api/transaksi/farmasi/get-pasien-from-nocm",
+        [authJwt.verifyToken],
+        controller.getPasienFromNoCm
+    )
 }

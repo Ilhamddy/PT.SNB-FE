@@ -120,7 +120,21 @@ GROUP BY
     mjr.reportdisplay
 `
 
+const qGetPasienFromId = `
+SELECT
+    mpas.id AS value,
+    mpas.id || ' - ' || mpas.namapasien AS label,
+    mpas.namapasien AS namapasien,
+    mpas.notelepon AS notelepon,
+    mpas.alamatdomisili AS alamat,
+    mpas.tgllahir AS tanggallahir
+FROM m_pasien AS mpas
+WHERE CAST(mpas.id AS text) ILIKE $1
+LIMIT 10
+`
 
 export {
-    qGetObatFromProduct
+    qGetObatFromProduct,
+    qGetPenjualanBebasFromNorec,
+    qGetPasienFromId
 }

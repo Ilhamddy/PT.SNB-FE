@@ -13,7 +13,7 @@ import * as Yup from "yup"
 import { useParams, useSearchParams} from "react-router-dom"
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import { ToastContainer } from "react-toastify";
-import { createOrUpdatePenjualanBebas, createOrUpdateVerifResep, getOrderResepFromNorec } from "../../store/farmasi/action";
+import { createOrUpdatePenjualanBebas, createOrUpdateVerifResep, getOrderResepFromNorec, getPasienFromNoCm } from "../../store/farmasi/action";
 import Flatpickr from "react-flatpickr";
 import { rgxNbrEmpty } from "../../utils/regexcommon";
 
@@ -60,7 +60,8 @@ const PenjualanObatBebas = () => {
         jenisResep,
         penjamin,
         pegawai,
-        orderNorec
+        orderNorec,
+        pasien
     } = useSelector((state) => ({
         unit: state.Master?.getComboPenjualanBebas?.data?.unit || [],
         keteranganResep: state.Master?.getComboPenjualanBebas?.data?.keteranganresep || [],
@@ -70,7 +71,8 @@ const PenjualanObatBebas = () => {
         sediaanList: state?.Master?.getComboPenjualanBebas?.data?.sediaan || [],
         penjamin: state?.Master?.getComboPenjualanBebas?.data?.penjamin || [],
         pegawai: state?.Master?.getComboPenjualanBebas?.data?.pegawai || [],
-        orderNorec: state?.Farmasi?.getOrderResepFromNorec?.data?.ordernorec || null
+        orderNorec: state?.Farmasi?.getOrderResepFromNorec?.data?.ordernorec || null,
+        pasien: state?.Farmasi?.getPasienFromNoCm?.data?.datapasien || [],
     }))
 
     const vResep = useFormik({
@@ -907,28 +909,37 @@ const PenjualanObatBebas = () => {
                                     <div className="mt-2">
                                         <Label 
                                             style={{ color: "black" }} 
-                                            htmlFor="norm" 
+                                            htmlFor="namapasien" 
                                             className="form-label">
-                                            No RM
+                                            No Rm
                                         </Label>
                                     </div>
-                                    <Input 
-                                        id={`norm`}
-                                        name={`norm`}
-                                        type="text"
-                                        value={vResep.values.norm} 
-                                        onChange={vResep.handleChange}
-                                        invalid={vResep.touched?.norm 
-                                            && !!vResep.errors?.norm}
+                                    <CustomSelect
+                                        id="norm"
+                                        name="norm"
+                                        options={pasien}
+                                        onChange={(e) => {
+                                            vResep.setFieldValue("norm", e?.value || "")
+                                            vResep.setFieldValue("namapasien", e?.namapasien || "")
+                                            vResep.setFieldValue("notelepon", e?.notelepon || "")
+                                            vResep.setFieldValue("alamat", e?.alamat || "")
+                                            vResep.setFieldValue("tanggallahir", e?.tanggallahir || "")
+                                        }}
+                                        onInputChange={(val) => {
+                                            dispatch(getPasienFromNoCm({nocm: val || ""}))
+                                        }}
+                                        value={vResep.values.norm}
+                                        className={`input ${!!vResep?.errors.norm ? "is-invalid" : ""}`}
                                         />
-                                    {vResep.touched?.norm 
-                                        && !!vResep.errors?.norm && (
-                                        <FormFeedback type="invalid" >
-                                            <div>
-                                                {vResep.errors?.norm}
-                                            </div>
-                                        </FormFeedback>
-                                    )}
+                                    {vResep.touched.norm 
+                                        && !!vResep.errors.norm && (
+                                            <FormFeedback type="invalid" >
+                                                <div>
+                                                    {vResep.errors.norm}
+                                                </div>
+                                            </FormFeedback>
+                                        )
+                                    }
                                 </Col>
                                 <Col lg={6}>
                                     <div className="mt-2">

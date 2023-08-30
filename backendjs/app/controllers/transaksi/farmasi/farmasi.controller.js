@@ -6,7 +6,7 @@ import {
     createTransaction
 } from "../../../utils/dbutils";
 import { hProcessOrderResep } from "../emr/emr.controller";
-import { qGetObatFromProduct } from "../../../queries/farmasi/farmasi.queries";
+import { qGetObatFromProduct, qGetPasienFromId } from "../../../queries/farmasi/farmasi.queries";
 import { hCreateKartuStok } from "../gudang/gudang.controller";
 import { createLogger } from "../../../utils/logger";
 
@@ -258,12 +258,41 @@ const createOrUpdatePenjualanBebas = async (req, res) => {
     logger.print()
 }
 
+const getPasienFromNoCm = async (req, res) => {
+    const logger = createLogger("get dp from no cm")
+    try{
+        const {nocm} = req.query
+        let dataAllPasien = await pool.query(qGetPasienFromId, [
+            `%${nocm}%`,
+        ])
+        const tempres = {
+            datapasien: dataAllPasien.rows
+        }
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+            msg: "sukses get resep from dp"
+        });
+        logger.info("sukses")
+    }catch(error){
+        logger.error(error)
+        res.status(500).send({
+            data: error,
+            status: "error",
+            success: false,
+            msg: "gagal get all resep query"
+        })
+    }
+    logger.print()
+}
 
 export default {
     getOrderResepQuery,
     getOrderResepFromNorec,
     createOrUpdateVerifResep,
-    createOrUpdatePenjualanBebas
+    createOrUpdatePenjualanBebas,
+    getPasienFromNoCm
 }
 
 const hCreateOrUpdateDetailVerif = async (
