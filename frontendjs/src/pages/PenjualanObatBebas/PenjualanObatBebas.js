@@ -49,7 +49,7 @@ const PenjualanObatBebas = () => {
 
     const {norecjualbebas} = useParams()
     const [searchParams, setSearchParams] = useSearchParams()
-
+    const [today] = useState(() => new Date().toISOString())
     const {
         unit,
         keteranganResep,
@@ -78,10 +78,10 @@ const PenjualanObatBebas = () => {
             norecjualbebas: "",
             norm: "",
             namapasien: "",
-            tanggallahir: "",
+            tanggallahir: today ,
             notelepon: "",
             alamat: "",
-            tanggalresep: "",
+            tanggalresep: today,
             jenis: "",
             unittujuan: 14,
             noresep: "",
@@ -1073,7 +1073,6 @@ const PenjualanObatBebas = () => {
                                             dateFormat: "Y-m-d",
                                             defaultDate: "today"
                                         }}
-                                        disabled={vResep.values.jenis !== 2}
                                         value={vResep.values.tanggalresep}
                                         onChange={([newDate]) => {
                                             vResep.setFieldValue("tanggalresep", newDate.toISOString());
