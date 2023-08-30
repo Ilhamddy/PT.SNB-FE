@@ -248,7 +248,8 @@ const PenjualanObatBebas = () => {
 
     const handleQtyObatResep = (e, row, val, setVal) => {
         let newVal = onChangeStrNbr(e.target.value, val)
-        if(strToNumber(newVal) > strToNumber(row.stok)){
+        if(strToNumber(newVal) > strToNumber(row.stok) 
+            && row.racikan.length === 0){
             newVal = row.stok
         }
         setVal(newVal)
