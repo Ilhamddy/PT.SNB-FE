@@ -124,7 +124,7 @@ const PrintExpertiseRadiologi = ({
                 </tbody>
             </table>
 
-            <div dangerouslySetInnerHTML={{ __html: `<div style="font-size: 16px;">${expertise}</div>` }} />
+            <div dangerouslySetInnerHTML={{ __html: `<div style="font-size: 10px;">${expertise}</div>` }} />
         </div>
         
     )
