@@ -19,7 +19,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { comboAsuransiGet, comboRegistrasiGet, kabupatenGetBpjs, kecamatanGetBpjs, provinsiGetBpjs } from "../../../store/master/action";
 import "./RegistrasiPenjaminFK.scss";
 import { onChangeStrNbr, strToNumber } from "../../../utils/format";
-import { rgxAllNumber, rgxAllPeriods } from "../../../utils/regexcommon";
+import { rgxAllNumber, rgxAllPeriods, rgxNbrEmpty } from "../../../utils/regexcommon";
 
 const dateNow = new Date()
 
@@ -794,7 +794,10 @@ const RegistrasiPenjaminFK = () => {
                                     name="notelepon"
                                     type="string"
                                     placeholder="No Telepon"
-                                    onChange={validation.handleChange}
+                                    onChange={(e) => {
+                                        rgxNbrEmpty.test(e.target.value) 
+                                            && validation.setFieldValue("notelepon", e.target.value)
+                                    }}
                                     onBlur={validation.handleBlur}
                                     value={validation.values.notelepon || ""}
                                     invalid={

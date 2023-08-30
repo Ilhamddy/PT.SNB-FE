@@ -7,7 +7,13 @@ import {
     GET_ORDER_RESEP_FROM_NOREC_SUCCESS,
     CREATE_OR_UPDATE_VERIF_RESEP,
     CREATE_OR_UPDATE_VERIF_RESEP_SUCCESS,
-    CREATE_OR_UPDATE_VERIF_RESEP_ERROR
+    CREATE_OR_UPDATE_VERIF_RESEP_ERROR,
+    CREATE_OR_UPDATE_PENJUALAN_BEBAS,
+    CREATE_OR_UPDATE_PENJUALAN_BEBAS_SUCCESS,
+    CREATE_OR_UPDATE_PENJUALAN_BEBAS_ERROR,
+    GET_PASIEN_FROM_NOCM,
+    GET_PASIEN_FROM_NOCM_SUCCESS,
+    GET_PASIEN_FROM_NOCM_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -26,7 +32,16 @@ const INIT_STATE = {
         loading: false,
         error: null,
     },
-    
+    createOrUpdatePenjualanBebas: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    getPasienFromNoCm: {
+        data: [],
+        loading: false,
+        error: null,
+    }
 };
 
 const Farmasi = (state = INIT_STATE, action) => {
@@ -125,6 +140,74 @@ const Farmasi = (state = INIT_STATE, action) => {
                 ...state,
                 createOrUpdateVerifResep: {
                     ...state.createOrUpdateVerifResep,
+                    loading: false,
+                    error: action.payload,
+                },
+            };
+        }
+
+        case CREATE_OR_UPDATE_PENJUALAN_BEBAS: {
+            return {
+                ...state,
+                createOrUpdatePenjualanBebas: {
+                    ...state.createOrUpdatePenjualanBebas,
+                    data: [],
+                    loading: true,
+                    error: null,
+                },
+            };
+        }
+
+        case CREATE_OR_UPDATE_PENJUALAN_BEBAS_SUCCESS: {
+            return {
+                ...state,
+                createOrUpdatePenjualanBebas: {
+                    ...state.createOrUpdatePenjualanBebas,
+                    loading: false,
+                    data: action.payload,
+                },
+            };
+        }
+
+        case CREATE_OR_UPDATE_PENJUALAN_BEBAS_ERROR: {
+            return {
+                ...state,
+                createOrUpdatePenjualanBebas: {
+                    ...state.createOrUpdatePenjualanBebas,
+                    loading: false,
+                    error: action.payload,
+                },
+            };
+        }
+
+        case GET_PASIEN_FROM_NOCM: {
+            return {
+                ...state,
+                getPasienFromNoCm: {
+                    ...state.getPasienFromNoCm,
+                    data: [],
+                    loading: true,
+                    error: null,
+                },
+            };
+        }
+
+        case GET_PASIEN_FROM_NOCM_SUCCESS: {
+            return {
+                ...state,
+                getPasienFromNoCm: {
+                    ...state.getPasienFromNoCm,
+                    loading: false,
+                    data: action.payload,
+                },
+            };
+        }
+
+        case GET_PASIEN_FROM_NOCM_ERROR: {
+            return {
+                ...state,
+                getPasienFromNoCm: {
+                    ...state.getPasienFromNoCm,
                     loading: false,
                     error: action.payload,
                 },

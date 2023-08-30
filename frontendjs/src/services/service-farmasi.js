@@ -15,4 +15,12 @@ export default class ServiceFarmasi {
     createOrUpdateVerifResep = async (body) => {
         return await api.create(`/transaksi/farmasi/create-or-update-verif-resep`, body);
     }
+
+    createOrUpdatePenjualanBebas = async (body) => {
+        return await api.create(`/transaksi/farmasi/create-or-update-penjualan-bebas`, body);
+    }
+
+    getPasienFromNoCm = async (queries) => {
+        return await api.get(`/transaksi/farmasi/get-pasien-from-nocm`, queries);
+    }
 }

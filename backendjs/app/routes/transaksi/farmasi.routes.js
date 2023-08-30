@@ -28,4 +28,16 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.createOrUpdateVerifResep
     )
+
+    app.post(
+        "/api/transaksi/farmasi/create-or-update-penjualan-bebas",
+        [authJwt.verifyToken],
+        controller.createOrUpdatePenjualanBebas
+    )
+
+    app.get(
+        "/api/transaksi/farmasi/get-pasien-from-nocm",
+        [authJwt.verifyToken],
+        controller.getPasienFromNoCm
+    )
 }

@@ -23,6 +23,11 @@ FROM t_stokunit tsu
 WHERE tsu.objectunitfk = $1
     AND tsu.qty > 0
     AND tsu.statusenabled = true
+    AND
+CASE WHEN $2 = true 
+    THEN mp.objectgolonganobatfk = 2
+    ELSE true
+END
 GROUP BY 
     tsu.objectprodukfk, 
     mp.namaproduk,

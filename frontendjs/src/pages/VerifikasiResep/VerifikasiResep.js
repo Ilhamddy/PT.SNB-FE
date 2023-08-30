@@ -206,7 +206,7 @@ const VerifikasiResep = () => {
         handleChangeResep(e?.totalstok || "", "stok", row, true);
         const harga = e?.batchstokunit?.[0]?.harga || 0
         let totalHarga = 
-            ((harga) * (row.qty || 0)) || ""
+            ((harga) * 1.25 * (row.qty || 0)) || ""
         totalHarga = Math.ceil(totalHarga)
         handleChangeResep(
             totalHarga, 
@@ -224,7 +224,8 @@ const VerifikasiResep = () => {
 
     const handleQtyObatResep = (e, row, val, setVal) => {
         let newVal = onChangeStrNbr(e.target.value, val)
-        if(strToNumber(newVal) > strToNumber(row.stok)){
+        if(strToNumber(newVal) > strToNumber(row.stok) 
+            && row.racikan.length === 0){
             newVal = row.stok
         }
         setVal(newVal)
@@ -232,13 +233,14 @@ const VerifikasiResep = () => {
         let totalHarga = (
             row.harga * 
             (strToNumber(newVal) || 0)
+            * 1.25
         ) || ""
+        totalHarga = Math.ceil(totalHarga)
         handleChangeResep(
             totalHarga, 
             "total", 
             row
         )
-        totalHarga = Math.ceil(totalHarga)
         row.racikan.forEach((valRacikan) => {
             let totalQty = strToNumber(valRacikan.qtyracikan) * (strToNumber(newVal) || 0)
             totalQty = Number(totalQty.toFixed(6))
@@ -246,10 +248,10 @@ const VerifikasiResep = () => {
             let qtyPembulatan = qtyBulat - totalQty
             
             qtyPembulatan = Number(qtyPembulatan.toFixed(6))
-            const totalHargaRacikan = (
-                valRacikan.harga * 
-                (totalQty)
+            let totalHargaRacikan = (
+                valRacikan.harga * 1.25 * (strToNumber(qtyBulat))
             ) || ""
+            totalHargaRacikan = Math.ceil(totalHargaRacikan)
             handleChangeRacikan(qtyBulat, "qtypembulatan", row, valRacikan)
             handleChangeRacikan(qtyPembulatan, qtyBulat, row, valRacikan)
             handleChangeRacikan(
@@ -278,7 +280,7 @@ const VerifikasiResep = () => {
         handleChangeRacikan(qtyTotal, "qty", rowUtama, row)
         handleChangeRacikan(qtyBulat, "qtypembulatan", rowUtama, row)
         let totalHarga = (
-            row.harga * 1.25 * (strToNumber(newVal)) * (strToNumber(rowUtama.qty))
+            row.harga * 1.25 * (strToNumber(qtyBulat))
         ) || ""
         totalHarga = Math.ceil(totalHarga)
         handleChangeRacikan(
@@ -296,8 +298,9 @@ const VerifikasiResep = () => {
         handleChangeRacikan(e?.label || "", "namaobat", rowUtama, row, true);
         handleChangeRacikan(e?.satuanid || "", "satuanobat", rowUtama, row, true);
         handleChangeRacikan(e?.namasatuan || "", "namasatuan", rowUtama, row, true);
+        handleChangeRacikan(e?.totalstok || "", "stok", rowUtama, row, true);
         const harga = e?.batchstokunit?.[0]?.harga || 0
-        const qtyTotal = strToNumber(rowUtama.qty || 0) * strToNumber(row.qtyracikan || 0)
+        const qtyTotal = strToNumber(rowUtama.qty || 0) * strToNumber(row.qtypembulatan || 0)
         const totalHarga = 
             ((harga) * 1.25 * qtyTotal) || ""
         handleChangeRacikan(

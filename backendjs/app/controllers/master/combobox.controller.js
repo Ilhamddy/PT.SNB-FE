@@ -40,6 +40,8 @@ import queriesAsalProduk from "../../queries/master/asalproduk/asalproduk.querie
 import jenisorderbarangQueries from "../../queries/master/jenisorderbarang/jenisorderbarang.queries";
 import queriesSigna from "../../queries/master/signa/signa.queries";
 import queriesKeteranganResep from "../../queries/master/keteranganresep/keteranganresep.queries";
+import queriesJenisResep from "../../queries/master/jenisresep/jenisresep.queries";
+import { createLogger } from "../../utils/logger";
 
 const selectComboBox = (req, res) => {
     try {
@@ -542,6 +544,42 @@ const comboVerifResep = async (req, res) => {
     }
 }
 
+const comboPenjualanBebas = async (req, res) => {
+    const logger = createLogger("get combo penjualan bebas")
+    try{
+        const pegawai = await pool.query(queriesPegawai.getAll)
+        const jenisResep = await pool.query(queriesJenisResep.getAll)
+        const unit = await pool.query(queriesUnit.getAll)
+        const signa = await pool.query(queriesSigna.getAll)
+        const keteranganResep = await pool.query(queriesKeteranganResep.getAll)
+        const sediaan = await pool.query(queriesSediaan.getAll)
+        
+        let tempres = {
+            pegawai: pegawai.rows,
+            unit: unit.rows,
+            jenisresep: jenisResep.rows,
+            signa: signa.rows,
+            keteranganresep: keteranganResep.rows,
+            sediaan: sediaan.rows,
+        }
+
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+        });
+        logger.info("sukses")
+    }catch(error){
+        logger.error(error)
+        res.status(500).send({
+            data: [],
+            status: "error",
+            success: false,
+        });
+    }
+    logger.print();
+}
+
 
 export default {
     selectComboBox,
@@ -556,5 +594,6 @@ export default {
     comboDistribusiOrder,
     comboStokOpname,
     comboResep,
-    comboVerifResep
+    comboVerifResep,
+    comboPenjualanBebas
 };

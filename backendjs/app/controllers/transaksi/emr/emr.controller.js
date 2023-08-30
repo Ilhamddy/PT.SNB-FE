@@ -1047,8 +1047,9 @@ function getUmur (dateOfBirth, tillDate) {
 
 const getObatFromUnit = async (req, res) => {
     try{
-        const {idunit} = req.query
-        let dataGet = await pool.query(qGetObatFromUnit, [idunit])
+        let {idunit, isbebas} = req.query
+        isbebas = isbebas === "true"
+        let dataGet = await pool.query(qGetObatFromUnit, [idunit, isbebas])
         const tempres = {
             obat: dataGet.rows
         }
