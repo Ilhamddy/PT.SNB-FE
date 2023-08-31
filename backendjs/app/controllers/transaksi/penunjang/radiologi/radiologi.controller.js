@@ -31,9 +31,9 @@ function formatDate(date) {
 async function saveOrderPelayanan(req, res) {
 
     let transaction = null;
-    try{
+    try {
         transaction = await db.sequelize.transaction();
-    }catch(e){
+    } catch (e) {
         console.error(e)
         res.status(201).send({
             status: e.message,
@@ -342,9 +342,9 @@ async function getKamarRadiologi(req, res) {
 
 async function updateTglRencanaRadiologi(req, res) {
     let transaction = null;
-    try{
+    try {
         transaction = await db.sequelize.transaction();
-    }catch(e){
+    } catch (e) {
         console.error(e)
         res.status(201).send({
             status: e.message,
@@ -386,9 +386,9 @@ async function updateTglRencanaRadiologi(req, res) {
 
 async function saveUserVerifikasi(req, res) {
     let transaction = null;
-    try{
+    try {
         transaction = await db.sequelize.transaction();
-    }catch(e){
+    } catch (e) {
         console.error(e)
         res.status(201).send({
             status: e.message,
@@ -412,7 +412,7 @@ async function saveUserVerifikasi(req, res) {
             objectkelasfk: 8,
             taskid: 3,
             statusenabled: true,
-            objectunitasalfk:resultlist.rows[0].objectunitasalfk,
+            objectunitasalfk: resultlist.rows[0].objectunitasalfk,
         }, { transaction });
 
         for (let x = 0; x < resultlist.rows.length; x++) {
@@ -489,9 +489,9 @@ async function saveUserVerifikasi(req, res) {
 
 async function deleteOrderPelayanan(req, res) {
     let transaction = null;
-    try{
+    try {
         transaction = await db.sequelize.transaction();
-    }catch(e){
+    } catch (e) {
         console.error(e)
         res.status(201).send({
             status: e.message,
@@ -535,9 +535,9 @@ async function deleteOrderPelayanan(req, res) {
 
 async function deleteDetailOrderPelayanan(req, res) {
     let transaction = null;
-    try{
+    try {
         transaction = await db.sequelize.transaction();
-    }catch(e){
+    } catch (e) {
         console.error(e)
         res.status(201).send({
             status: e.message,
@@ -632,7 +632,7 @@ async function getDaftarPasienRadiologi(req, res) {
 async function getTransaksiPelayananRadiologiByNorecDp(req, res) {
 
     try {
-        
+
         const resultlist = await queryPromise2(`select row_number() OVER (ORDER BY tp.norec) AS no,
         mu.namaunit,
         to_char(tp.tglinput,'yyyy-MM-dd HH:mm') as tglinput,
@@ -649,7 +649,8 @@ async function getTransaksiPelayananRadiologiByNorecDp(req, res) {
         mp2.namalengkap as pegawaipengirim,
         mu2.id as idunitpengirim,
         mu2.namaunit as unitpengirim,
-        td2.tglperjanjian,to2.nomororder
+        td2.tglperjanjian,to2.nomororder,
+        th.expertise, th.nofoto,th.norec as norecexpertise, th.objecttemplateradiologifk
     from
         t_daftarpasien td
     join t_antreanpemeriksaan ta on
@@ -664,7 +665,8 @@ async function getTransaksiPelayananRadiologiByNorecDp(req, res) {
      on td2.objectpelayananpasienfk=tp.norec
      left join t_orderpelayanan to2 on to2.norec=td2.objectorderpelayananfk
      left join m_pegawai mp2 on mp2.id=to2.objectpegawaifk 
-     left join m_unit mu2 on mu2.id=ta.objectunitasalfk 
+     left join m_unit mu2 on mu2.id=ta.objectunitasalfk
+     left join t_hasilpemeriksaan th on th.objectpelayananpasienfk=tp.norec
         where td.norec='${req.query.norecdp}' and mu.objectinstalasifk =3 
         `);
 
@@ -686,7 +688,7 @@ async function getTransaksiPelayananRadiologiByNorecDp(req, res) {
 async function getComboRadiologi(req, res) {
 
     try {
-        
+
         const resultlist = await queryPromise2(`select id as value,namalengkap as label from m_pegawai where statusenabled=true`);
 
         const resultlist2 = await queryPromise2(`select id as value,namaunit  as label from m_unit mu where statusenabled=true`);
@@ -694,7 +696,7 @@ async function getComboRadiologi(req, res) {
         const resultlist3 = await queryPromise2(`select id as value,pemeriksaan as label,expertise from m_templateradiologi where statusenabled=true`)
 
 
-        let tempres = {pegawai:resultlist.rows,unit:resultlist2.rows,expertise:resultlist3.rows}
+        let tempres = { pegawai: resultlist.rows, unit: resultlist2.rows, expertise: resultlist3.rows }
 
         res.status(200).send({
             data: tempres,
@@ -704,6 +706,82 @@ async function getComboRadiologi(req, res) {
 
     } catch (error) {
         res.status(500).send({ message: error });
+    }
+
+}
+
+async function saveHasilExpertise(req, res) {
+    let transaction = null;
+    try {
+        transaction = await db.sequelize.transaction();
+    } catch (e) {
+        console.error(e)
+        res.status(201).send({
+            status: e.message,
+            success: false,
+            msg: 'Simpan Gagal',
+            code: 201
+        });
+        return
+    }
+    try {
+        let tempData = req.body
+        let saveHasilPemeriksaan
+        let norechasilpemeriksaan = uuid.v4().substring(0, 32)
+        if (tempData.norecexpertise === null) {
+
+            saveHasilPemeriksaan = await db.t_hasilpemeriksaan.create({
+                norec: norechasilpemeriksaan,
+                statusenabled: true,
+                objectpelayananpasienfk: tempData.norecpel,
+                objectpegawaiinputfk: req.idPegawai,
+                objectpegawaiupdatefk: req.idPegawai,
+                tglinput: new Date(),
+                tglupdate: new Date(),
+                nofoto:tempData.foto,
+                expertise:tempData.expertise
+            }, {
+                transaction: transaction
+            })
+
+
+        } else {
+            saveHasilPemeriksaan = await db.t_hasilpemeriksaan.update({
+                objectpelayananpasienfk: tempData.norecpel,
+                objectpegawaiinputfk: req.idPegawai,
+                objectpegawaiupdatefk: req.idPegawai,
+                tglinput: new Date(),
+                tglupdate: new Date(),
+                nofoto:tempData.foto,
+                expertise:tempData.expertise
+            }, {
+                where: {
+                    norec: tempData.norecexpertise
+                },
+                transaction: transaction
+            })
+        }
+
+
+
+        await transaction.commit();
+        let tempres = { tempData }
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+            msg: 'Berhasil',
+            code: 200
+        });
+    } catch (error) {
+        transaction && await transaction.rollback();
+        console.log(error)
+        res.status(201).send({
+            status: "false",
+            success: false,
+            msg: error,
+            code: 201
+        });
     }
 
 }
@@ -721,5 +799,6 @@ export default {
     deleteDetailOrderPelayanan,
     getDaftarPasienRadiologi,
     getTransaksiPelayananRadiologiByNorecDp,
-    getComboRadiologi
+    getComboRadiologi,
+    saveHasilExpertise
 };

@@ -6,10 +6,9 @@ import { useSelector, useDispatch } from "react-redux";
 import React, { useEffect, useState, useCallback, useRef } from "react";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
-import { useQuill } from "react-quilljs";
 import Flatpickr from "react-flatpickr";
 import {
-    radiologiResetForm, listComboRadiologiGet
+    saveExpertiseRadiologi,daftarPasienNoRecGet,listCetakHasiilLabGet
 } from "../../../store/actions";
 import PropTypes from "prop-types";
 import PrintTemplate from "../../../pages/Print/PrintTemplate/PrintTemplate";
@@ -19,14 +18,14 @@ const dateAwalStart = (new Date(new Date(new Date() - 1000 * 60 * 60 * 24 * 3)))
 const dateAwalEnd = (new Date()).toISOString()
 const date = new Date()
 
-const ExpertiseRadiologiModal = ({ show, onCloseClick, norecPelayanan, dataCombo,tempdokterpengirim,
-tempruanganpengirim }) => {
-    // const dispatch = useDispatch();
-    // const { dataPelayanan, loadingPelayanan, successPelayanan } = useSelector((state) => ({
-    //     dataPelayanan: state.Radiologi.listComboRadiologiGet.data,
-    //     loadingPelayanan: state.Radiologi.listComboRadiologiGet.loading,
-    //     successPelayanan: state.Radiologi.listComboRadiologiGet.success,
-    // }));
+const ExpertiseRadiologiModal = ({ show,dataReg, onCloseClick, norecPelayanan, dataCombo,tempdokterpengirim,
+tempruanganpengirim,tempSelected }) => {
+    const dispatch = useDispatch();
+    const { newData, loading, success } = useSelector(state => ({
+        newData: state.Radiologi.saveExpertiseRadiologi.newData,
+        success: state.Radiologi.saveExpertiseRadiologi.success,
+        loading: state.Radiologi.saveExpertiseRadiologi.loading,
+    }));
     // useEffect(() => {
     //     dispatch(listComboRadiologiGet(''));
     // }, [ dispatch]);
@@ -40,13 +39,17 @@ tempruanganpengirim }) => {
         enableReinitialize: true,
         initialValues: {
             norecpel: norecPelayanan,
+            norecexpertise:tempSelected.norecexpertise,
             template: '',
             expertise: '',
             dokterpengirim: '',
+            labeldokterpengirim: '',
             tgllayanan: dateAwalStart,
             foto: '',
             dokterradiologi: '',
+            labeldokterradiologi:'',
             ruanganpengirim: '',
+            labelruanganpengirim: '',
             tglcetak:dateAwalStart
         },
         validationSchema: Yup.object({
@@ -58,28 +61,44 @@ tempruanganpengirim }) => {
             
         }),
         onSubmit: (values, { resetForm }) => {
-            // console.log(validation.errors)
-            // dispatch(konsulSave(values, '', () => {
-            //     onSimpanClick()
-            // }));
-            // console.log(validation.values.template)
-            // refPrintExpertise.current?.handlePrint();
-            // resetForm()
+            console.log(values)
+            dispatch(saveExpertiseRadiologi(values))
         }
     })
+    const [showCetak, setshowCetak] = useState(false);
     useEffect(() => {
         const setFF = validation.setFieldValue
         if(tempdokterpengirim){
             setFF('dokterpengirim', tempdokterpengirim || "")
             setFF('ruanganpengirim',tempruanganpengirim || "")
+            setFF('template',tempSelected.objecttemplateradiologifk || "")
+            setFF('expertise',tempSelected.expertise || "")
+            if(tempSelected.norecexpertise!==null){
+                setshowCetak(true)
+            }
         }
-    }, [tempdokterpengirim,tempruanganpengirim, validation.setFieldValue])
-    const { quillRef } = useQuill();
-
+    }, [setshowCetak,tempSelected,tempdokterpengirim,tempruanganpengirim, validation.setFieldValue])
+    useEffect(()=>{
+        if(newData && success){
+            setshowCetak(true)
+        }
+    },[newData,success,setshowCetak])
     const handleChangeTemplate = (selected) => {
         validation.setFieldValue('template', selected.value)
         validation.setFieldValue('expertise', selected.expertise)
-
+    }
+    const handleChangeDokterRadiologi = (selected)=>{
+        validation.setFieldValue('dokterradiologi', selected.value)
+        validation.setFieldValue('labeldokterradiologi', selected.label)
+       
+    }
+    const handleChangeDokterPengirim = (selected)=>{
+        validation.setFieldValue('dokterpengirim', selected.value)
+        validation.setFieldValue('labeldokterpengirim', selected.label)
+    }
+    const handleChangeRuanganPengirim = (selected)=>{
+        validation.setFieldValue('ruanganpengirim', selected.value)
+        validation.setFieldValue('labelruanganpengirim', selected.label)
     }
     const refPrintExpertise = useRef(null);
     const handlePrint = ()=>{
@@ -141,7 +160,7 @@ tempruanganpengirim }) => {
                                                         id="foto"
                                                         name="foto"
                                                         type="text"
-                                                        placeholder="Masukkan nama pasien"
+                                                        placeholder="Masukkan Nomor Foto"
                                                         onChange={validation.handleChange}
                                                         onBlur={validation.handleBlur}
                                                         value={validation.values.foto || ""}
@@ -214,7 +233,8 @@ tempruanganpengirim }) => {
                                                         options={dataCombo.pegawai}
                                                         value={validation.values.dokterradiologi || ""}
                                                         className={`input ${validation.errors.dokterradiologi ? "is-invalid" : ""}`}
-                                                        onChange={value => validation.setFieldValue('dokterradiologi', value.value)}
+                                                        // onChange={value => validation.setFieldValue('dokterradiologi', value.value)}
+                                                        onChange={handleChangeDokterRadiologi}
                                                         invalid={
                                                             validation.touched.dokterradiologi && validation.errors.dokterradiologi ? true : false
                                                         }
@@ -237,7 +257,8 @@ tempruanganpengirim }) => {
                                                         options={dataCombo.pegawai}
                                                         value={validation.values.dokterpengirim || ""}
                                                         className={`input ${validation.errors.dokterpengirim ? "is-invalid" : ""}`}
-                                                        onChange={value => validation.setFieldValue('dokterpengirim', value.value)}
+                                                        // onChange={value => validation.setFieldValue('dokterpengirim', value.value)}
+                                                        onChange={handleChangeDokterPengirim}
                                                         invalid={
                                                             validation.touched.dokterpengirim && validation.errors.dokterpengirim ? true : false
                                                         }
@@ -260,7 +281,8 @@ tempruanganpengirim }) => {
                                                         options={dataCombo.unit}
                                                         value={validation.values.ruanganpengirim || ""}
                                                         className={`input ${validation.errors.ruanganpengirim ? "is-invalid" : ""}`}
-                                                        onChange={value => validation.setFieldValue('ruanganpengirim', value.value)}
+                                                        // onChange={value => validation.setFieldValue('ruanganpengirim', value.value)}
+                                                        onChange={handleChangeRuanganPengirim}
                                                         invalid={
                                                             validation.touched.ruanganpengirim && validation.errors.ruanganpengirim ? true : false
                                                         }
@@ -300,8 +322,18 @@ tempruanganpengirim }) => {
                                                 <button type="submit" className="btn btn-success w-sm">
                                                     Simpan
                                                 </button>
-                                                <button type="button" onClick={handlePrint} className="btn btn-warning w-sm">
+                                                {showCetak?(
+                                                    <button type="button" onClick={handlePrint} className="btn btn-warning w-sm">
                                                     Cetak
+                                                </button>
+                                                ):null}
+                                                <button
+                                                    type="button"
+                                                    className="btn w-sm btn-danger"
+                                                    data-bs-dismiss="modal"
+                                                    onClick={onCloseClick}
+                                                >
+                                                    Batal
                                                 </button>
                                             </div>
                                         </CardBody>
@@ -315,11 +347,11 @@ tempruanganpengirim }) => {
             </ModalBody>
             <PrintTemplate
                 ContentPrint={<PrintExpertiseRadiologi
-                    // dataCetak={dataCetak || []}
-                    // dataPasien={dataReg || null}
-                    // dokterlab={validation.values.dokterlab}
-                    unitpengirim={validation.values.ruanganpengirim}
-                    dokterpengirim={validation.values.dokterpengirim}
+                    dataSelected={tempSelected}
+                    dataPasien={dataReg || null}
+                    dokterradiologi={validation.values.labeldokterradiologi}
+                    unitpengirim={validation.values.labelruanganpengirim}
+                    dokterpengirim={validation.values.labeldokterpengirim}
                     tgllayanan={validation.values.tgllayanan}
                     // tglhasil={validation.values.tglhasil}
                     tglcetak={validation.values.tglcetak}

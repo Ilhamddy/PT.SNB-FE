@@ -14,7 +14,8 @@ import {
     DELETE_DETAIL_ORDER_PELAYANAN,
     DAFTAR_PASIEN_RADIOLOGI,
     LIST_PELAYANAN_RADIOLOGI_GET,
-    LIST_COMBO_RADIOLOGI_GET
+    LIST_COMBO_RADIOLOGI_GET,
+    SAVE_EXPERTISE_RADIOLOGI
 } from "./actionType";
 
 import {
@@ -30,7 +31,8 @@ import {
     deleteDetailOrderPelayananSuccess,deleteDetailOrderPelayananError,
     daftarPasienRadiologiSuccess,daftarPasienRadiologiError,
     listPelayananRadiologiGetSuccess, listPelayananRadiologiGetError,
-    listComboRadiologiGetSuccess, listComboRadiologiGetError
+    listComboRadiologiGetSuccess, listComboRadiologiGetError,
+    saveExpertiseRadiologiSuccess, saveExpertiseRadiologiError
 } from "./action";
 
 
@@ -278,6 +280,26 @@ export function* watchonlistComboRadiologiGet() {
     yield takeEvery(LIST_COMBO_RADIOLOGI_GET, onlistComboRadiologiGet);
 }
 
+function* onsaveExpertiseRadiologi({ payload: { data, history } }) {
+    try {
+        let response = yield call(serviceRadiologi.saveHasilExpertise, data);
+       
+        yield put(saveExpertiseRadiologiSuccess(response.data));
+        if (response.code === 200) {
+            toast.success(response.msg, { autoClose: 3000 });
+        } else {
+            toast.error(response.msg, { autoClose: 3000 });
+        }
+    } catch (error) {
+        yield put(saveExpertiseRadiologiError(error));
+        toast.error(error, { autoClose: 3000 });
+    }
+}
+
+export function* watchonsaveExpertiseRadiologi() {
+    yield takeEvery(SAVE_EXPERTISE_RADIOLOGI, onsaveExpertiseRadiologi);
+}
+
 function* radiologiSaga() {
     yield all([
         fork(watchonsaveOrderPelayanan),
@@ -292,7 +314,8 @@ function* radiologiSaga() {
         fork(watchonDeleteDetailOrderPelayanan),
         fork(watchonDaftarPasienRadiologi),
         fork(watchonListPelayananRadiologiGet),
-        fork(watchonlistComboRadiologiGet)
+        fork(watchonlistComboRadiologiGet),
+        fork(watchonsaveExpertiseRadiologi)
     ]);
 }
 

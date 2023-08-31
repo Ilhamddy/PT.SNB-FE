@@ -88,5 +88,11 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getComboRadiologi
     );
+
+    app.post(
+        "/api/transaksi/radiologi/save-hasil-expertise",
+        [authJwt.verifyToken],
+        controller.saveHasilExpertise
+    );
     
 }
