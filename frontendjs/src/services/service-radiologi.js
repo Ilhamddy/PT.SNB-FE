@@ -55,4 +55,8 @@ export default class ServiceRadiologi {
     getListComboRadiologi = async (param) => {
         return await api.get(`/transaksi/radiologi/list-combo-radiologi`);
     }
+
+    saveHasilExpertise = async (params) => {
+        return await api.create("/transaksi/radiologi/save-hasil-expertise", params);
+    }
 }

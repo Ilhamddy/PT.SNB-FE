@@ -63,6 +63,9 @@ export default (sequelize, Sequelize) => {
         tglupdate: {
             type: Sequelize.DATE,
         },
+        objecttemplateradiologifk: {
+            type: Sequelize.INTEGER,
+        },
     }, {
         tableName: "t_hasilpemeriksaan", // relation "user" does not exist
         createdAt: false,

@@ -38,7 +38,10 @@ import {
     LIST_PELAYANAN_RADIOLOGI_GET_ERROR,
     LIST_COMBO_RADIOLOGI_GET,
     LIST_COMBO_RADIOLOGI_GET_SUCCESS,
-    LIST_COMBO_RADIOLOGI_GET_ERROR
+    LIST_COMBO_RADIOLOGI_GET_ERROR,
+    SAVE_EXPERTISE_RADIOLOGI,
+    SAVE_EXPERTISE_RADIOLOGI_SUCCESS,
+    SAVE_EXPERTISE_RADIOLOGI_ERROR
 } from "./actionType";
 
 export const radiologiResetForm = () => ({
@@ -242,5 +245,21 @@ export const listComboRadiologiGetSuccess = (data) => ({
 
 export const listComboRadiologiGetError = (error) => ({
     type: LIST_COMBO_RADIOLOGI_GET_ERROR,
+    payload: error,
+});
+
+export const saveExpertiseRadiologi = (data, history) => ({
+    type: SAVE_EXPERTISE_RADIOLOGI,
+    payload: { data, history },
+});
+
+// common error
+export const saveExpertiseRadiologiSuccess = (data, history) => ({
+    type: SAVE_EXPERTISE_RADIOLOGI_SUCCESS,
+    payload: { data, history },
+});
+
+export const saveExpertiseRadiologiError = (error) => ({
+    type: SAVE_EXPERTISE_RADIOLOGI_ERROR,
     payload: error,
 });

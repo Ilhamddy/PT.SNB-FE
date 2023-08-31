@@ -1,7 +1,8 @@
 import EmblemBerdikari from "./emblemberdikari.png";
 import "./PrintExpertiseRadiologi.scss"
-const PrintExpertiseRadiologi = ({ 
-    unitpengirim, dokterpengirim, tgllayanan, tglcetak, expertise }) => {
+import {  Col, Row } from "reactstrap";
+const PrintExpertiseRadiologi = ({
+    dataPasien, dokterradiologi, unitpengirim, dokterpengirim, tgllayanan, tglcetak, expertise }) => {
     const rsName = "Rumah Sakit Solusi Nusantara Berdikari";
     const alamat = "Menara Mandiri Tower 2, Jl. Jenderal Sudirman No.54-55, RT.5/RW.3, Senayan, Kec. Kby. Baru, Daerah Khusus Ibukota Jakarta 12190";
     return (
@@ -26,7 +27,7 @@ const PrintExpertiseRadiologi = ({
                                 No RM/No Registrasi
                             </p>
                             <p className="t-data-data">
-                                {/* : {dataPasien?.pasien?.[0]?.nocm || "-"} / {dataPasien?.noregistrasi || "-"} */}
+                                : {dataPasien?.nocm || "-"} / {dataPasien?.noregistrasi || "-"}
                             </p>
                         </td>
                         <td>
@@ -44,7 +45,7 @@ const PrintExpertiseRadiologi = ({
                                 Nama Pasien
                             </p>
                             <p className="t-data-data">
-                                {/* : {dataPasien?.pasien?.[0]?.namapasien || ""} */}
+                                : {dataPasien?.namapasien || ""}
                             </p>
                         </td>
                         <td>
@@ -62,7 +63,7 @@ const PrintExpertiseRadiologi = ({
                                 Tgl Lahir/Umur
                             </p>
                             <p className="t-data-data">
-                                {/* {dataPasien?.pasien?.[0]?.tgllahir || ""} */}
+                                : {dataPasien?.tgllahir || ""}
                             </p>
                         </td>
                         <td>
@@ -80,30 +81,12 @@ const PrintExpertiseRadiologi = ({
                                 Jenis Kelamin
                             </p>
                             <p className="t-data-data">
-                                {/* : {dataPasien?.jeniskelamin || "-"} */}
+                                : {dataPasien?.jeniskelamin || "-"}
                             </p>
                         </td>
                         <td>
                             <p className="t-data-name">
-                                Tanggal Hasil
-                            </p>
-                            <p className="t-data-data">
-                                {/* : {(new Date(tglhasil))?.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' }) || "-"} */}
-                            </p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <p className="t-data-name">
-                                Tipe Pasien
-                            </p>
-                            <p className="t-data-data">
-                                {/* : {dataPasien?.penjamin1?.[0]?.namarekanan || "-"} */}
-                            </p>
-                        </td>
-                        <td>
-                            <p className="t-data-name">
-                                Tgl Cetak
+                                Tanggal Cetak
                             </p>
                             <p className="t-data-data">
                                 : {(new Date(tglcetak))?.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' }) || "-"}
@@ -113,10 +96,21 @@ const PrintExpertiseRadiologi = ({
                     <tr>
                         <td>
                             <p className="t-data-name">
+                                Tipe Pasien
+                            </p>
+                            <p className="t-data-data">
+                                : {dataPasien?.namarekanan || "-"}
+                            </p>
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td>
+                            <p className="t-data-name">
                                 Alamat
                             </p>
                             <p className="t-data-data">
-                                {/* : {dataPasien?.pasien?.[0]?.alamatdomisili || "-"} */}
+                                : {dataPasien?.alamatdomisili || "-"}
                             </p>
                         </td>
 
@@ -125,8 +119,25 @@ const PrintExpertiseRadiologi = ({
             </table>
 
             <div dangerouslySetInnerHTML={{ __html: `<div style="font-size: 10px;">${expertise}</div>` }} />
+            {/* <table className="table-data-footer">
+                <tbody>
+                    
+                </tbody>
+            </table> */}
+            <div className="data-footer">
+                <Row>
+                    <Col lg={6}></Col>
+                    <Col lg={6}>
+                    <p>dr. Radiologi</p>
+                <br/>
+                <br/>
+                <p>({dokterradiologi})</p>
+                    </Col>
+                </Row>
+                
+            </div>
         </div>
-        
+
     )
 }
 

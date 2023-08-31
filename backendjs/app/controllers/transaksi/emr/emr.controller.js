@@ -179,7 +179,7 @@ async function getHeaderEmr(req, res) {
         const resultCountNoantrianDokter = await queryPromise2(`select mu2.namaunit as ruanganta,mr.namarekanan, mp.tgllahir AS tgllahirkomplet,
         mj2.jeniskelamin,td.norec as norecdp,ta.norec as norecta,mj.jenispenjamin,ta.taskid,mi.namainstalasi,mp.nocm,td.noregistrasi,mp.namapasien,
         to_char(mp.tgllahir,'dd Month YYYY') as tgllahir,mu.namaunit,
-        mp2.reportdisplay || '-' ||ta.noantrian as noantrian,mp2.namalengkap as namadokter  from t_daftarpasien td 
+        mp2.reportdisplay || '-' ||ta.noantrian as noantrian,mp2.namalengkap as namadokter,mp.alamatdomisili  from t_daftarpasien td 
         join m_pasien mp on mp.id=td.nocmfk 
         join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk =td.norec
         join m_unit mu on mu.id=td.objectunitlastfk 
@@ -255,7 +255,8 @@ async function getHeaderEmr(req, res) {
                     pernapasan: pernapasan,
                     keadaanumum: keadaanumum,
                     namagcs: namagcs,
-                    deposit: deposit || []
+                    deposit: deposit || [],
+                    alamatdomisili:resultCountNoantrianDokter.rows[i].alamatdomisili
                 }
 
             }

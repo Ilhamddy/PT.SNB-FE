@@ -39,7 +39,10 @@ import {
     LIST_PELAYANAN_RADIOLOGI_GET_ERROR,
     LIST_COMBO_RADIOLOGI_GET,
     LIST_COMBO_RADIOLOGI_GET_SUCCESS,
-    LIST_COMBO_RADIOLOGI_GET_ERROR
+    LIST_COMBO_RADIOLOGI_GET_ERROR,
+    SAVE_EXPERTISE_RADIOLOGI,
+    SAVE_EXPERTISE_RADIOLOGI_SUCCESS,
+    SAVE_EXPERTISE_RADIOLOGI_ERROR
 } from "./actionType";
 import { DELETE_ORDER } from "../ecommerce/actionType";
 
@@ -113,7 +116,13 @@ const INIT_STATE = {
         data:[],
         loading: false,
         error: null, 
-    }
+    },
+    saveExpertiseRadiologi: {
+        newData: null,
+        loading: false,
+        error: null,
+        success: false
+    },
 }
 
 const Radiologi = (state = INIT_STATE, action) => {
@@ -159,6 +168,9 @@ const Radiologi = (state = INIT_STATE, action) => {
                 },
                 listComboRadiologiGet:{
                     ...INIT_STATE.listComboRadiologiGet
+                },
+                saveExpertiseRadiologi:{
+                    ...INIT_STATE.saveExpertiseRadiologi
                 }
             }
         }
@@ -592,6 +604,40 @@ const Radiologi = (state = INIT_STATE, action) => {
                 ...state,
                 listComboRadiologiGet: {
                     ...state.listComboRadiologiGet,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case SAVE_EXPERTISE_RADIOLOGI: {
+            return {
+                ...state,
+                saveExpertiseRadiologi: {
+                    ...state.saveExpertiseRadiologi,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case SAVE_EXPERTISE_RADIOLOGI_SUCCESS: {
+            return {
+                ...state,
+                saveExpertiseRadiologi: {
+                    ...state.saveExpertiseRadiologi,
+                    newData: action.payload,
+                    loading: false,
+                    success: true,
+                }
+            }
+        }
+
+        case SAVE_EXPERTISE_RADIOLOGI_ERROR: {
+            return {
+                ...state,
+                saveExpertiseRadiologi: {
+                    ...state.saveExpertiseRadiologi,
                     loading: false,
                     error: action.error,
                 }

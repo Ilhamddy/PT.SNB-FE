@@ -14,8 +14,9 @@ import { useParams } from "react-router-dom";
 import classnames from "classnames";
 import { ToastContainer, toast } from 'react-toastify';
 import {
-    listPelayananRadiologiGet, radiologiResetForm, listComboRadiologiGet
+    listPelayananRadiologiGet, radiologiResetForm, listComboRadiologiGet,emrHeaderGet
 } from '../../../store/actions';
+
 import InputTindakan from '../../Emr/InputTindakan/InputTindakan';
 import ExpertiseRadiologiModal from '../../../Components/Common/ExpertiseRadiologiModal/ExpertiseRadiologiModal';
 
@@ -24,11 +25,12 @@ const TransaksiPelayananRadiologi = () => {
     const { norecdp, norecap } = useParams();
     const dispatch = useDispatch();
     document.title = "Transaksi Pelayanan Radiologi";
-    const { dataPelayanan, loadingPelayanan, successPelayanan,dataCombo } = useSelector((state) => ({
+    const { dataPelayanan, loadingPelayanan, successPelayanan,dataCombo,dataReg } = useSelector((state) => ({
         dataPelayanan: state.Radiologi.listPelayananRadiologiGet.data,
         loadingPelayanan: state.Radiologi.listPelayananRadiologiGet.loading,
         successPelayanan: state.Radiologi.listPelayananRadiologiGet.success,
         dataCombo: state.Radiologi.listComboRadiologiGet.data,
+        dataReg: state.Emr.emrHeaderGet.data
     }));
     useEffect(() => {
         return () => {
@@ -38,7 +40,8 @@ const TransaksiPelayananRadiologi = () => {
     useEffect(() => {
         dispatch(listPelayananRadiologiGet(norecdp));
         dispatch(listComboRadiologiGet(''))
-    }, [norecdp, dispatch]);
+        dispatch(emrHeaderGet(norecap + `&norecdp=${norecdp}`))
+    }, [norecap,norecdp, dispatch]);
     const tableCustomStyles = {
         headRow: {
             style: {
@@ -156,22 +159,26 @@ const TransaksiPelayananRadiologi = () => {
     const [norecPelayanan, setnorecPelayanan] = useState('');
     const [tempDokterPengirim, settempDokterPengirim] = useState('');
     const [tempIdRuanganPengirim, settempIdRuanganPengirim] = useState('');
+    const [tempSelected, settempSelected] = useState('');
     const handleClickExpertise = (e) => {
         setshowExpertiseModal(true)
         setnorecPelayanan(e.norec)
         settempDokterPengirim(e.idpegawaipengirim)
         settempIdRuanganPengirim(e.idunitpengirim)
+        settempSelected(e)
     }
     return (
         <React.Fragment>
             <ToastContainer closeButton={false} />
             <ExpertiseRadiologiModal 
             show={showExpertiseModal}
-            onCloseClick={() => setshowExpertiseModal(false)}
+            dataReg={dataReg}
+            onCloseClick={() => {setshowExpertiseModal(false)}}
             norecPelayanan={norecPelayanan}
             dataCombo={dataCombo}
             tempdokterpengirim={tempDokterPengirim}
             tempruanganpengirim={tempIdRuanganPengirim}
+            tempSelected={tempSelected}
             />
             <UiContent />
             <div className="page-content">
