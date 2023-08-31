@@ -1181,6 +1181,7 @@ export const initValueResep = {
     signa: "",
     keterangan: "",
     namaketerangan: "",
+    nobatch: "",
     racikan: []
 }
 
@@ -1359,7 +1360,8 @@ const hCreateResep = async (
         qtypembulatan: itemUsed.qtypembulatan,
         qtyjumlahracikan: item.qty,
         // harus koder dari subitem
-        kode_r_tambahan: subItem?.koder || null
+        kode_r_tambahan: subItem?.koder || null,
+        nobatch: itemUsed.nobatch
     }, {
         transaction: transaction
     })
@@ -1396,6 +1398,7 @@ const hUpdateResep = async (
         // harus koder dari subitem
         kode_r_tambahan: subItem?.koder || null,
         qtyjumlahracikan: itemUsed.qtyjumlahracikan,
+        nobatch: itemUsed.nobatch
     }, {
         where: {
             norec: norecresep

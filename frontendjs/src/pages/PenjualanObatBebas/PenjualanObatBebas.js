@@ -36,6 +36,7 @@ export const initValueResep = {
     signa: "",
     keterangan: "",
     namaketerangan: "",
+    nobatch: "",
     racikan: []
 }
 
@@ -820,6 +821,7 @@ export const useHandleChangeResep = (resepRef, vResep) => {
         handleChangeResep(e?.namasediaan || "", "namasediaan", row, true); 
         handleChangeResep(e?.totalstok || "", "stok", row, true);
         const harga = e?.batchstokunit?.[0]?.harga || 0
+        const nobatch = e?.batchstokunit?.[0]?.nobatch || ""
         let totalHarga = 
             ((harga) * 1.25 * (row.qty || 0)) || ""
         totalHarga = Math.ceil(totalHarga)
@@ -833,6 +835,12 @@ export const useHandleChangeResep = (resepRef, vResep) => {
             harga || "", 
             "harga", 
             row, 
+            true
+        )
+        handleChangeResep(
+            nobatch || "",
+            "nobatch",
+            row,
             true
         )
     }, [handleChangeResep])

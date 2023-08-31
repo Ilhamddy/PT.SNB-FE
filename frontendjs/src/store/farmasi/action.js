@@ -13,7 +13,10 @@ import {
     CREATE_OR_UPDATE_PENJUALAN_BEBAS_ERROR,
     GET_PASIEN_FROM_NOCM,
     GET_PASIEN_FROM_NOCM_SUCCESS,
-    GET_PASIEN_FROM_NOCM_ERROR
+    GET_PASIEN_FROM_NOCM_ERROR,
+    GET_ALL_VERIF_RESEP,
+    GET_ALL_VERIF_RESEP_SUCCESS,
+    GET_ALL_VERIF_RESEP_ERROR
 } from "./actionType";
 
 
@@ -101,5 +104,22 @@ export const getPasienFromNoCmSuccess = (data) => ({
 
 export const getPasienFromNoCmError = (error) => ({
     type: GET_PASIEN_FROM_NOCM_ERROR,
+    payload: error
+});
+
+export const getAllVerifResep = (queries) => ({
+    type: GET_ALL_VERIF_RESEP,
+    payload: {
+        queries: queries
+    }
+});
+
+export const getAllVerifResepSuccess = (data) => ({
+    type: GET_ALL_VERIF_RESEP_SUCCESS,
+    payload: data
+});
+
+export const getAllVerifResepError = (error) => ({
+    type: GET_ALL_VERIF_RESEP_ERROR,
     payload: error
 });

@@ -133,8 +133,32 @@ WHERE CAST(mpas.id AS text) ILIKE $1
 LIMIT 10
 `
 
+const qGetAllVerif = `
+SELECT 
+    row_number() OVER () AS no,
+    tvr.norec AS norecverif,
+    tvr.kode_r AS koder,
+    tvr.kode_r_tambahan AS kodertambahan,
+    tor.no_resep AS noresep,
+    tvr.qty AS qty,
+    tvr.harga AS harga,
+    tvr.total AS total,
+    mu.id AS unit,
+    mu.namaunit AS namaunit,
+    mp.id AS produk,
+    mp.namaproduk AS namaproduk,
+    tvr.nobatch AS nobatch
+FROM t_verifresep tvr
+    LEFT JOIN t_orderresep tor ON tvr.objectorderresepfk = tor.norec
+    LEFT JOIN m_unit mu ON mu.id = tor.objectdepotujuanfk
+    LEFT JOIN m_produk mp ON mp.id = tvr.objectprodukfk
+WHERE tvr.statusenabled = true
+    AND tvr.nobatch IS NOT NULL
+`
+
 export {
     qGetObatFromProduct,
     qGetPenjualanBebasFromNorec,
-    qGetPasienFromId
+    qGetPasienFromId,
+    qGetAllVerif
 }

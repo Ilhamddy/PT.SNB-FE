@@ -57,6 +57,9 @@ export default (sequelize, Sequelize) => {
         },
         qtyjumlahracikan: {
             type: Sequelize.INTEGER,
+        },
+        nobatch: {
+            type: Sequelize.STRING,
         }
     }, {
         tableName: "t_verifresep",

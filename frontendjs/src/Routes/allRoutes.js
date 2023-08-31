@@ -303,6 +303,7 @@ import OrderResep from "../pages/Emr/Penunjang/OrderResep/OrderResep";
 import VerifikasiResep from "../pages/VerifikasiResep/VerifikasiResep";
 import AllOrderResepList from "../pages/AllOrderResepList/AllOrderResepList";
 import PenjualanObatBebas from "../pages/PenjualanObatBebas/PenjualanObatBebas";
+import ListVerifObat from "../pages/ListVerifObat/ListVerifObat";
 
 
 
@@ -590,6 +591,7 @@ const authProtectedRoutes = [
   { path: "/farmasi/verif-order-resep/:norecorder", component: <VerifikasiResep /> },
   { path: "/farmasi/order-list", component: <AllOrderResepList /> },
   { path: "/farmasi/penjualan-obat-bebas", component: <PenjualanObatBebas /> },
+  { path: "/farmasi/list-verif-obat", component: <ListVerifObat />}
 ];
 
 const publicRoutes = [
