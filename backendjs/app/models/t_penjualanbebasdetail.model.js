@@ -58,6 +58,9 @@ export default (sequelize, Sequelize) => {
         objectketeranganresepfk: {
             type: Sequelize.INTEGER,
         },
+        nobatch: {
+            type: Sequelize.STRING,
+        }
     }, {
         tableName: "t_penjualanbebasdetail",
         createdAt: false,

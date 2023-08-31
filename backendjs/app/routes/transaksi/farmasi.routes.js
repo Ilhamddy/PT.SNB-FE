@@ -40,4 +40,10 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getPasienFromNoCm
     )
+
+    app.get(
+        "/api/transaksi/farmasi/get-verif-resep",
+        [authJwt.verifyToken],
+        controller.getAllVerifResep
+    )
 }

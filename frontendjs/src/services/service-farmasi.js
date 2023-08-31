@@ -23,4 +23,8 @@ export default class ServiceFarmasi {
     getPasienFromNoCm = async (queries) => {
         return await api.get(`/transaksi/farmasi/get-pasien-from-nocm`, queries);
     }
+
+    getAllVerifResep = async (queries) => {
+        return await api.get(`/transaksi/farmasi/get-verif-resep`, queries);
+    }
 }

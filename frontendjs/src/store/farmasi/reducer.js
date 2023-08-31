@@ -13,7 +13,10 @@ import {
     CREATE_OR_UPDATE_PENJUALAN_BEBAS_ERROR,
     GET_PASIEN_FROM_NOCM,
     GET_PASIEN_FROM_NOCM_SUCCESS,
-    GET_PASIEN_FROM_NOCM_ERROR
+    GET_PASIEN_FROM_NOCM_ERROR,
+    GET_ALL_VERIF_RESEP,
+    GET_ALL_VERIF_RESEP_SUCCESS,
+    GET_ALL_VERIF_RESEP_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -208,6 +211,40 @@ const Farmasi = (state = INIT_STATE, action) => {
                 ...state,
                 getPasienFromNoCm: {
                     ...state.getPasienFromNoCm,
+                    loading: false,
+                    error: action.payload,
+                },
+            };
+        }
+
+        case GET_ALL_VERIF_RESEP: {
+            return {
+                ...state,
+                getAllVerifResep: {
+                    ...state.getAllVerifResep,
+                    data: [],
+                    loading: true,
+                    error: null,
+                },
+            };
+        }
+
+        case GET_ALL_VERIF_RESEP_SUCCESS: {
+            return {
+                ...state,
+                getAllVerifResep: {
+                    ...state.getAllVerifResep,
+                    loading: false,
+                    data: action.payload,
+                },
+            };
+        }
+
+        case GET_ALL_VERIF_RESEP_ERROR: {
+            return {
+                ...state,
+                getAllVerifResep: {
+                    ...state.getAllVerifResep,
                     loading: false,
                     error: action.payload,
                 },

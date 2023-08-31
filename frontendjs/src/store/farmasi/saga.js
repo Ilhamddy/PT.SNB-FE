@@ -11,7 +11,9 @@ import {
     createOrUpdatePenjualanBebasSuccess,
     createOrUpdatePenjualanBebasError,
     getPasienFromNoCmSuccess,
-    getPasienFromNoCmError
+    getPasienFromNoCmError,
+    getAllVerifResepSuccess,
+    getAllVerifResepError
 } from "./action";
 
 import {
@@ -19,7 +21,8 @@ import {
     GET_ORDER_RESEP_FROM_NOREC,
     CREATE_OR_UPDATE_VERIF_RESEP,
     CREATE_OR_UPDATE_PENJUALAN_BEBAS,
-    GET_PASIEN_FROM_NOCM
+    GET_PASIEN_FROM_NOCM,
+    GET_ALL_VERIF_RESEP
 } from "./actionType";
 
 import {
@@ -82,6 +85,15 @@ function* onGetPasienFromNoCm({ payload: { queries } }) {
     }
 }
 
+function* onGetAllVerifResep({ payload: { queries } }) {
+    try {
+        const response = yield call(serviceFarmasi.getAllVerifResep, queries);
+        yield put(getAllVerifResepSuccess(response.data));
+    } catch (error) {
+        yield put(getAllVerifResepError(error));
+    }
+}
+
 export function* watchGetOrderResepQuery() {
     yield takeEvery(GET_ORDER_RESEP_QUERY, onGetOrderResepQuery);
 }
@@ -102,14 +114,19 @@ export function* watchGetPasienFromNoCm() {
     yield takeEvery(GET_PASIEN_FROM_NOCM, onGetPasienFromNoCm);
 }
 
-function* emrSaga() {
+export function* watchGetAllVerifResep(){
+    yield takeEvery(GET_ALL_VERIF_RESEP, onGetAllVerifResep);
+}
+
+function* farmasiSaga() {
     yield all([
         fork(watchGetOrderResepQuery),
         fork(watchGetOrderResepFromNorec),
         fork(watchCreateOrUpdateVerifResep),
         fork(watchCreateOrUpdatePenjualanBebas),
-        fork(watchGetPasienFromNoCm)
+        fork(watchGetPasienFromNoCm),
+        fork(watchGetAllVerifResep)
     ]);
 }
 
-export default emrSaga;
+export default farmasiSaga;

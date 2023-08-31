@@ -6,7 +6,7 @@ import {
     createTransaction
 } from "../../../utils/dbutils";
 import { hProcessOrderResep } from "../emr/emr.controller";
-import { qGetObatFromProduct, qGetPasienFromId } from "../../../queries/farmasi/farmasi.queries";
+import { qGetAllVerif, qGetObatFromProduct, qGetPasienFromId } from "../../../queries/farmasi/farmasi.queries";
 import { hCreateKartuStok } from "../gudang/gudang.controller";
 import { createLogger } from "../../../utils/logger";
 
@@ -16,7 +16,7 @@ const t_orderresep = db.t_orderresep
 const t_stokunit = db.t_stokunit
 const t_penjualanbebas = db.t_penjualanbebas
 const t_penjualanbebasdetail = db.t_penjualanbebasdetail
-
+const t_antreanpemeriksaan = db.t_antreanpemeriksaan
 
 const Op = db.Sequelize.Op;
 
@@ -117,6 +117,7 @@ const createOrUpdateVerifResep = async (req, res) => {
                 }
             }
         })
+
         totalResepToday = ("0000" + (totalResepToday + 1)).slice(-2)
         const kodeResep = "R" + date.getFullYear() 
         + ("0" + (date.getMonth() + 1)).slice(-2)
@@ -129,6 +130,9 @@ const createOrUpdateVerifResep = async (req, res) => {
             transaction: transaction
         })
         let orderData = orderTable.toJSON()
+        const {newAP} = await hCreateAntreanPemeriksaan(req, res, transaction, {
+            norecap: orderData.objectantreanpemeriksaanfk
+        })
         
         const {createdOrUpdatedDetailOrder} = 
         await hCreateOrUpdateDetailVerif(
@@ -137,13 +141,15 @@ const createOrUpdateVerifResep = async (req, res) => {
             transaction,
             {
                 norecorder: norecorder,
-                orderData: orderData
+                orderData: orderData,
+                newnorecap: newAP.norec
             }
         )
         await transaction.commit()
         const tempres = {
             orderresep: createdOrUpdated,
-            detailorder: createdOrUpdatedDetailOrder
+            detailorder: createdOrUpdatedDetailOrder,
+            newAP: newAP
         }
         res.status(200).send({
             code: 200,
@@ -288,12 +294,66 @@ const getPasienFromNoCm = async (req, res) => {
     logger.print()
 }
 
+const getAllVerifResep = async (req, res) => {
+    const logger = createLogger("get all verif")
+    try{
+        let dataAllPasien = await pool.query(qGetAllVerif, [])
+        const tempres = {
+            dataverif: dataAllPasien.rows
+        }
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+            msg: "sukses get all verif"
+        });
+        logger.info("sukses")
+    }catch(error){
+        logger.error(error)
+        res.status(500).send({
+            data: error,
+            status: "error",
+            success: false,
+            msg: "gagal get all verif"
+        })
+    }
+    logger.print() 
+}
+
 export default {
     getOrderResepQuery,
     getOrderResepFromNorec,
     createOrUpdateVerifResep,
     createOrUpdatePenjualanBebas,
-    getPasienFromNoCm
+    getPasienFromNoCm,
+    getAllVerifResep
+}
+
+const hCreateAntreanPemeriksaan = async(
+    req,
+    res,
+    transaction,
+    {
+        norecap
+    }
+) => {
+    let ap = await t_antreanpemeriksaan.findOne({
+        where: {
+            norec: norecap
+        }
+    })
+    ap = ap.toJSON();
+    const newNorec = uuid.v4().substring(0, 32);
+    delete ap.norec
+    ap.unit = req.body.unittujuan;
+    ap.tglmasuk = new Date();
+    ap.noantrian = null
+    ap.norec = newNorec
+    let newAP = await t_antreanpemeriksaan.create(ap, {
+        transaction: transaction
+    })
+    newAP = newAP.toJSON();
+    return {newAP}
 }
 
 const hCreateOrUpdateDetailVerif = async (
@@ -302,7 +362,8 @@ const hCreateOrUpdateDetailVerif = async (
     transaction,
     {
         norecorder,
-        orderData
+        orderData,
+        newnorecap
     }
 ) => {
     const resep = req.body.resep
@@ -344,7 +405,8 @@ const hCreateOrUpdateDetailVerif = async (
                             transaction,
                             {
                                 verifUsed: createdOrUpdatedVerif,
-                                orderData: orderData
+                                orderData: orderData,
+                                norecap: newnorecap
                             }
                         )
                         return createdOrUpdatedVerif
@@ -384,7 +446,8 @@ const hCreateOrUpdateDetailVerif = async (
                 transaction,
                 {
                     verifUsed: createdOrUpdatedVerif,
-                    orderData: orderData
+                    orderData: orderData,
+                    norecap: newnorecap
                 }
             )
             return createdOrUpdatedVerif
@@ -401,32 +464,40 @@ const hCreatePelayanan = async (
     transaction,
     {
         verifUsed,
-        orderData
+        orderData,
+        norecap
     }
 
 ) => {
     const norecPelayanan = uuid.v4().substring(0, 32);
-    const createdPelayanan = await t_pelayananpasien.create({
-        norec: norecPelayanan,
-        statusenabled: true,
-        reportdisplay: verifUsed.reportdisplay,
-        objectorderresepfk: req.body.norecorder,
-        objectantreanpemeriksaanfk: orderData.objectantreanpemeriksaanfk,
-        harga: verifUsed.harga,
-        qty: verifUsed.qtypembulatan,
-        discount: 0,
-        total: verifUsed.total,
-        tglinput: new Date(),
-        objectnotapelayananpasienfk: null,
-        objectprodukfk: verifUsed.objectprodukfk,
-        objectpegawaifk: req.idPegawai,
-        objectkelasfk: null,
-        jasa: null,
-        iscito: false,
-        objectverifresepfk: verifUsed.norec,
-    }, {
-        transaction: transaction
-    })
+    const createdPelayanan = await Promise.all(
+        verifUsed.map(
+            async (verifUsed) => {
+                const createdPelayanan = await t_pelayananpasien.create({
+                    norec: norecPelayanan,
+                    statusenabled: true,
+                    reportdisplay: verifUsed.reportdisplay,
+                    objectorderresepfk: req.body.norecorder,
+                    objectantreanpemeriksaanfk: norecap,
+                    harga: verifUsed.harga,
+                    qty: verifUsed.qtypembulatan,
+                    discount: 0,
+                    total: verifUsed.total,
+                    tglinput: new Date(),
+                    objectnotapelayananpasienfk: null,
+                    objectprodukfk: verifUsed.objectprodukfk,
+                    objectpegawaifk: req.idPegawai,
+                    objectkelasfk: null,
+                    jasa: null,
+                    iscito: false,
+                    objectverifresepfk: verifUsed.norec,
+                }, {
+                    transaction: transaction
+                })
+                return createdPelayanan.toJSON()
+            }
+        )
+    )
     return {createdPelayanan}
 }
 
@@ -442,31 +513,9 @@ const hCreateVerif = async (
 ) => {
     // jika bukan subitem, maka yang digunakan adalah item
     let itemUsed = subItem || item
-    let created = await t_verifresep.create({
-        norec: uuid.v4().substring(0, 32),
-        kdprofile: 0,
-        statusenabled: true,
-        reportdisplay: itemUsed.namaobat,
-        objectorderresepfk: norecorderresep,
-        kode_r: item.koder,
-        objectprodukfk: itemUsed.obat,
-        qty: itemUsed.qty || 0,
-        objectsediaanfk: item.sediaan,
-        harga: itemUsed.harga || 0,
-        total: itemUsed.total ||0,
-        objectsignafk: item.signa,
-        objectketeranganresepfk: item.keterangan,
-        qtyracikan: itemUsed.qtyracikan,
-        qtypembulatan: itemUsed.qtypembulatan,
-        qtyjumlahracikan: item.qty,
-        // harus koder dari subitem
-        kode_r_tambahan: subItem?.koder || null
-    }, {
-        transaction: transaction
-    })
     const qtyPembulatan = itemUsed.qtypembulatan
     const qty = itemUsed.qty
-    const changedStok = await hChangeStok(
+    const {changedStok, batchStokUnitChanged} = await hChangeStok(
         req, 
         res, 
         transaction, 
@@ -476,7 +525,38 @@ const hCreateVerif = async (
             stokChange: (qtyPembulatan || qty) 
         }
     )
-    created = created.toJSON()
+    const created = await Promise.all(
+        batchStokUnitChanged.map(
+            async (batchstokunit) => {
+                let created = await t_verifresep.create({
+                    norec: uuid.v4().substring(0, 32),
+                    kdprofile: 0,
+                    statusenabled: true,
+                    reportdisplay: itemUsed.namaobat,
+                    objectorderresepfk: norecorderresep,
+                    kode_r: item.koder,
+                    objectprodukfk: itemUsed.obat,
+                    qty: batchstokunit.qtyChange || 0,
+                    objectsediaanfk: item.sediaan,
+                    harga: batchstokunit.harga || 0,
+                    total: batchstokunit.harga * (batchstokunit.qtyChange || 0),
+                    objectsignafk: item.signa,
+                    objectketeranganresepfk: item.keterangan,
+                    qtyracikan: itemUsed.qtyracikan,
+                    qtypembulatan: itemUsed.qtypembulatan,
+                    qtyjumlahracikan: batchstokunit.qtyChange || 0,
+                    // harus koder dari subitem
+                    kode_r_tambahan: subItem?.koder || null,
+                    nobatch: batchstokunit.nobatch,
+                }, {
+                    transaction: transaction
+                })
+                created = created.toJSON()
+                return created
+            }
+        )
+    )
+
     return {created, norecresep: created.norec, changedStok}
 }
 
@@ -610,42 +690,49 @@ const hCreateDetailBebas = async (
 ) => {
     // jika bukan subitem, maka yang digunakan adalah item
     let itemUsed = subItem || item
-    let created = await t_penjualanbebasdetail.create({
-        norec: uuid.v4().substring(0, 32),
-        kdprofile: 0,
-        statusenabled: true,
-        reportdisplay: itemUsed.namaobat,
-        objectpenjualanbebasfk: norecpenjualanbebas,
-        kode_r: item.koder,
-        objectprodukfk: itemUsed.obat,
-        qty: itemUsed.qty || 0,
-        objectsediaanfk: item.sediaan,
-        harga: itemUsed.harga || 0,
-        total: itemUsed.total ||0,
-        objectsignafk: item.signa,
-        objectketeranganresepfk: item.keterangan,
-        qtyracikan: itemUsed.qtyracikan,
-        qtypembulatan: itemUsed.qtypembulatan,
-        qtyjumlahracikan: item.qty,
-        // harus koder dari subitem
-        kode_r_tambahan: subItem?.koder || null
-    }, {
-        transaction: transaction
-    })
     const qtyPembulatan = itemUsed.qtypembulatan
     const qty = itemUsed.qty
-    const changedStok = await hChangeStok(
+    const {changedStok, batchStokUnitChanged} = await hChangeStok(
         req, 
         res, 
         transaction, 
         {
             idUnit: req.body.unittujuan,
             productId: itemUsed.obat, 
-            stokChange: (qtyPembulatan || qty),
-            tabelTransaksi: "t_penjualanbebasdetail",
+            stokChange: (qtyPembulatan || qty) 
         }
     )
-    created = created.toJSON()
+    const created = Promise.all(
+        batchStokUnitChanged.map(
+            async (batchstokunit) => {
+                let created = await t_penjualanbebasdetail.create({
+                    norec: uuid.v4().substring(0, 32),
+                    kdprofile: 0,
+                    statusenabled: true,
+                    reportdisplay: itemUsed.namaobat,
+                    objectpenjualanbebasfk: norecpenjualanbebas,
+                    kode_r: item.koder,
+                    objectprodukfk: itemUsed.obat,
+                    qty: batchstokunit.qtyChange || 0,
+                    objectsediaanfk: item.sediaan,
+                    harga: batchstokunit.harga || 0,
+                    total: batchstokunit.harga * (batchstokunit.qtyChange || 0),
+                    objectsignafk: item.signa,
+                    objectketeranganresepfk: item.keterangan,
+                    qtyracikan: itemUsed.qtyracikan,
+                    qtypembulatan: itemUsed.qtypembulatan,
+                    qtyjumlahracikan: batchstokunit.qtyChange || 0,
+                    // harus koder dari subitem
+                    kode_r_tambahan: subItem?.koder || null,
+                    nobatch: batchstokunit.nobatch,
+                }, {
+                    transaction: transaction
+                })
+                created = created.toJSON()
+                return created
+            }
+        )
+    )
     return {created, norecresep: created.norec, changedStok}
 }
 
@@ -754,5 +841,5 @@ const hChangeStok = async (
             return updated
         })
     )
-    return updatedData
+    return {updatedData, batchStokUnitChanged}
 } 

@@ -36,6 +36,7 @@ export const initValueResep = {
     signa: "",
     keterangan: "",
     namaketerangan: "",
+    nobatch: "",
     racikan: []
 }
 
