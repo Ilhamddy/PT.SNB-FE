@@ -160,7 +160,7 @@ tempruanganpengirim,tempSelected }) => {
                                                         id="foto"
                                                         name="foto"
                                                         type="text"
-                                                        placeholder="Masukkan nama pasien"
+                                                        placeholder="Masukkan Nomor Foto"
                                                         onChange={validation.handleChange}
                                                         onBlur={validation.handleBlur}
                                                         value={validation.values.foto || ""}
@@ -347,6 +347,7 @@ tempruanganpengirim,tempSelected }) => {
             </ModalBody>
             <PrintTemplate
                 ContentPrint={<PrintExpertiseRadiologi
+                    dataSelected={tempSelected}
                     dataPasien={dataReg || null}
                     dokterradiologi={validation.values.labeldokterradiologi}
                     unitpengirim={validation.values.labelruanganpengirim}

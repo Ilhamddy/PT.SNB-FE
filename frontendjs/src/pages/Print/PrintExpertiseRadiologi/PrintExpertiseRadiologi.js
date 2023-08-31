@@ -2,7 +2,7 @@ import EmblemBerdikari from "./emblemberdikari.png";
 import "./PrintExpertiseRadiologi.scss"
 import {  Col, Row } from "reactstrap";
 const PrintExpertiseRadiologi = ({
-    dataPasien, dokterradiologi, unitpengirim, dokterpengirim, tgllayanan, tglcetak, expertise }) => {
+    dataSelected,dataPasien, dokterradiologi, unitpengirim, dokterpengirim, tgllayanan, tglcetak, expertise }) => {
     const rsName = "Rumah Sakit Solusi Nusantara Berdikari";
     const alamat = "Menara Mandiri Tower 2, Jl. Jenderal Sudirman No.54-55, RT.5/RW.3, Senayan, Kec. Kby. Baru, Daerah Khusus Ibukota Jakarta 12190";
     return (
@@ -117,7 +117,9 @@ const PrintExpertiseRadiologi = ({
                     </tr>
                 </tbody>
             </table>
-
+            <div>
+                <p style={{fontSize:'12px'}}>{dataSelected.namaproduk}</p>
+            </div>
             <div dangerouslySetInnerHTML={{ __html: `<div style="font-size: 10px;">${expertise}</div>` }} />
             {/* <table className="table-data-footer">
                 <tbody>
