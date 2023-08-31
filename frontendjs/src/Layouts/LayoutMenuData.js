@@ -434,7 +434,7 @@ const Navdata = () => {
                             stateVariables: isLaporanRL,
                             childItems: [
                                 { id: 2, label: "Laporan RL3.1", link: "/cmVrYW1tZWRpcy9sYXBvcmFuLXJsL3JsMy4x", parentId: "rekammedis-laporan-rl3-1" },
-                                { id: 3, label: "Ecommerce Action", link: "/#", parentId: "rekammedis-laporan-rl3" },
+                                { id: 3, label: "Laporan RL3.2", link: "/cmVrYW1tZWRpcy9sYXBvcmFuLXJsL3JsMy4y", parentId: "rekammedis-laporan-rl3-2" },
                             ],
                         },
                     ],
