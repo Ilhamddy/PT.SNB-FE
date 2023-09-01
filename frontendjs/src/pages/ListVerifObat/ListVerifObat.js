@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import {useDispatch, useSelector} from "react-redux"
-import { getAllVerifResep } from "../../store/farmasi/action"
+import { createOrUpdateRetur, getAllVerifResep } from "../../store/farmasi/action"
 import { ToastContainer } from "react-toastify"
 import { Card, CardBody, Col, Container, Nav, NavItem, NavLink, Row, TabContent, TabPane, Table, Input, Form, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem, UncontrolledTooltip, Button, FormFeedback, Label, Modal, ModalBody } from "reactstrap";
 import DataTable from "react-data-table-component";
@@ -9,6 +9,10 @@ import LoadingTable from "../../Components/Table/LoadingTable";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import { useFormik } from "formik";
 import CustomSelect from "../Select/Select";
+import { useParams } from "react-router-dom";
+import { getComboReturObat } from "../../store/master/action";
+import { onChangeStrNbr, strToNumber } from "../../utils/format";
+import * as Yup from "yup";
 
 const initialRetur = {
     norecverif: "",
@@ -17,11 +21,14 @@ const initialRetur = {
         namadepo: "",
         namaobat: "",
         qty: "",
+        nobatch: "",
+        unit: "",
     }
 }
 
 const ListVerifObat = () => {
     const dispatch = useDispatch()
+    const {norecdp} = useParams();
 
     const {dataVerif} = useSelector(state => ({
         dataVerif: state.Farmasi.getAllVerifResep?.data?.dataverif || []
@@ -30,10 +37,12 @@ const ListVerifObat = () => {
     const [dataModal, setDataModal] = useState(initialRetur)
 
     useEffect(() => {
-        dispatch(getAllVerifResep())
-    }, [dispatch])
+        dispatch(getAllVerifResep({norecdp: norecdp}))
+    }, [dispatch, norecdp])
 
-    console.log(dataModal)
+    useEffect(() => {
+        dispatch(getComboReturObat())
+    }, [dispatch])
     
     /**
      * @type {import("react-data-table-component").TableColumn[]}
@@ -43,28 +52,35 @@ const ListVerifObat = () => {
             name: <span className='font-weight-bold fs-13'>Detail</span>,
             cell: row => (
                 <div className="hstack gap-3 flex-wrap">
-                    <UncontrolledTooltip placement="top" target="detail-produk" > Detail Produk </UncontrolledTooltip>
-                    <UncontrolledDropdown className="dropdown d-inline-block">
-                        <DropdownToggle className="btn btn-soft-secondary btn-sm" tag="button" id="detail-produk">
-                            <i className="ri-apps-2-line"></i>
-                        </DropdownToggle>
-                        <DropdownMenu className="dropdown-menu-end">
-                            <DropdownItem onClick={() => {
-                                setDataModal({
-                                    norecverif: row.norecverif,
-                                    data: {
-                                        noresep: row.noresep,
-                                        namadepo: row.namaunit,
-                                        namaobat: row.namaproduk,
-                                    }
-                                })
-                            }}>
-                                <i className="ri-mail-send-fill align-bottom me-2 text-muted">
-                                </i>
-                                Retur Obat
-                            </DropdownItem>
-                        </DropdownMenu>
-                    </UncontrolledDropdown>
+                    {!true && 
+                    <>
+                        <UncontrolledTooltip placement="top" target="detail-produk" > Detail Produk </UncontrolledTooltip>
+                        <UncontrolledDropdown className="dropdown d-inline-block">
+                            <DropdownToggle className="btn btn-soft-secondary btn-sm" tag="button" id="detail-produk">
+                                <i className="ri-apps-2-line"></i>
+                            </DropdownToggle>
+                            <DropdownMenu className="dropdown-menu-end">
+                                <DropdownItem onClick={() => {
+                                    setDataModal({
+                                        norecverif: row.norecverif,
+                                        data: {
+                                            noresep: row.noresep,
+                                            namadepo: row.namaunit,
+                                            unit: row.unit,
+                                            namaobat: row.namaproduk,
+                                            qty: row.qty,
+                                            nobatch: row.nobatch,
+                                        }
+                                    })
+                                }}>
+                                    <i className="ri-mail-send-fill align-bottom me-2 text-muted">
+                                    </i>
+                                    Retur Obat
+                                </DropdownItem>
+                            </DropdownMenu>
+                        </UncontrolledDropdown>
+                    </>
+                    }
                 </div>)
                 ,
             sortable: true,
@@ -75,7 +91,7 @@ const ListVerifObat = () => {
             name: <span className='font-weight-bold fs-13'>R/</span>,
             sortable: true,
             selector: row => row.koder + (row.kodertambahan ? "." + row.kodertambahan : ""),
-            width: "150px"
+            width: "40px"
         },
         {
             name: <span className='font-weight-bold fs-13'>No Resep</span>,
@@ -92,7 +108,7 @@ const ListVerifObat = () => {
         {
             name: <span className='font-weight-bold fs-13'>Nama Obat</span>,
             sortable: true,
-            selector: row => row.namaobat,
+            selector: row => row.namaproduk,
             width: "120px"
         },
         {
@@ -124,12 +140,24 @@ const ListVerifObat = () => {
 
     return (
         <div className="page-content page-verifikasi-resep">
-            <ModalRetur dataModal={dataModal} toggle={() => setDataModal({...initialRetur})}/>
+            <ModalRetur dataModal={dataModal} 
+                toggle={() => setDataModal({...initialRetur})}
+                onRetur={() => {
+                    dispatch(getAllVerifResep({norecdp: norecdp}))
+                }}
+            />
             <ToastContainer closeButton={false} />
             <Container fluid>
                 <BreadCrumb title="List Verif Obat" pageTitle="List Verif Obat" />
                 <Card className="p-5">
                     <Row className="mb-2">
+                        <Row className="d-flex flex-row-reverse mb-3">
+                            <Col lg={2} className="d-flex flex-row-reverse">
+                                <Button color={"info"}>
+                                    Menu
+                                </Button>
+                            </Col>
+                        </Row>
                         <DataTable
                             fixedHeader
                             fixedHeaderScrollHeight="700px"
@@ -138,7 +166,6 @@ const ListVerifObat = () => {
                             data={dataVerif}
                             progressPending={false}
                             customStyles={tableCustomStyles}
-                            expandableRows
                             progressComponent={<LoadingTable />}
                             noDataComponent={<NoDataTable dataName={"data order"}/>}
                         />
@@ -149,14 +176,46 @@ const ListVerifObat = () => {
     )
 }
 
-const ModalRetur = ({dataModal, ...rest}) => {
-
+const ModalRetur = ({dataModal, onRetur, ...rest}) => {
+    const {
+        alasan
+    } = useSelector(state => ({
+        alasan: state.Master?.getComboReturObat?.data?.alasan || []
+    }))
+    const dispatch = useDispatch()
     const vRetur = useFormik({
+        enableReinitialize: true,
         initialValues: {
             norecverif: "",
+            qty: "",
             qtyretur: "",
+            alasan: "",
+            unit: "",
+            nobatch: "",
+        },
+        validationSchema: Yup.object({
+            qty: Yup.string().required("qty kosong Lab wajib diisi"),
+            qtyretur: Yup.string().required("qtyretur wajib diisi"),
+            alasan: Yup.string().required("alasan wajib diisi"),
+        }),
+        onSubmit: (values) => {
+            const newVal = {...values}
+            newVal.qty = strToNumber(newVal.qty)
+            newVal.qtyretur = strToNumber(newVal.qtyretur)
+            dispatch(createOrUpdateRetur(newVal, () => {
+                onRetur(); 
+                rest.toggle()
+            }))
+            
         }
     })
+    useEffect(() => {
+        const setFF = vRetur.setFieldValue
+        setFF("norecverif", dataModal.norecverif)
+        setFF("qty", dataModal.data.qty)
+        setFF("nobatch", dataModal.data.nobatch)
+        setFF("unit", dataModal.data.unit)
+    }, [dataModal, vRetur.setFieldValue])
     return (
         <Modal isOpen={!!dataModal.norecverif} centered={true} size="xl" {...rest}>
             <ModalBody className="py-12 px-12">
@@ -225,22 +284,25 @@ const ModalRetur = ({dataModal, ...rest}) => {
                             </Label>
                         </div>
                         <CustomSelect
-                            id="alasan"
-                            name="alasan"
-                            options={[]}
-                            onChange={(e) => {}}
-                            value={vRetur.values.jenis}
-                            className={`input ${!!vRetur?.errors.jenis ? "is-invalid" : ""}`}
-                            />
-                        {vRetur.touched.jenis 
-                            && !!vRetur.errors.jenis && (
-                                <FormFeedback type="invalid" >
-                                    <div>
-                                        {vRetur.errors.jenis}
-                                    </div>
-                                </FormFeedback>
-                            )
-                        }
+                                id="alasan"
+                                name="alasan"
+                                options={alasan}
+                                onChange={(e) => {
+                                    vRetur.setFieldValue("alasan", e.value)
+                                }}
+                                value={vRetur.values.alasan}
+                                className={`input ${!!vRetur.errors.alasan 
+                                    && vRetur.touched.alasan ? "is-invalid" : ""}`}
+                                />
+                            {vRetur.touched.alasan 
+                                && !!vRetur.errors.alasan ? (
+                                    <FormFeedback type="invalid" >
+                                        <div>
+                                            {vRetur.errors.alasan}
+                                        </div>
+                                    </FormFeedback>
+                                ) : null
+                            }
                     </Col>
                     <Col lg={6}>
                         <div className="mt-2">
@@ -255,7 +317,8 @@ const ModalRetur = ({dataModal, ...rest}) => {
                             id={`qty`}
                             name={`qty`}
                             type="text"
-                            value={""} 
+                            value={dataModal.data.qty} 
+                            disabled
                             readOnly
                             />
                     </Col>
@@ -272,14 +335,39 @@ const ModalRetur = ({dataModal, ...rest}) => {
                             id={`qtyretur`}
                             name={`qtyretur`}
                             type="text"
-                            value={""} 
-                            readOnly
+                            value={vRetur.values.qtyretur} 
+                            onChange={(e) => {
+                                let newVal = onChangeStrNbr(
+                                    e.target.value, 
+                                    vRetur.values.qtyretur
+                                )
+                                if(strToNumber(newVal) > strToNumber(dataModal.data.qty)){
+                                    newVal = onChangeStrNbr(
+                                        dataModal.data.qty, 
+                                        vRetur.values.qtyretur
+                                    )
+                                }
+                                vRetur.setFieldValue("qtyretur", newVal);
+                            }}
+                            invalid={vRetur.touched?.qtyretur 
+                                && !!vRetur.errors?.qtyretur}
                             />
+                        {vRetur?.touched.qtyretur
+                            && !!vRetur?.errors?.qtyretur && (
+                            <FormFeedback type="invalid" >
+                                <div>
+                                    {vRetur.touched?.qtyretur }
+                                </div>
+                            </FormFeedback>
+                        )}
                     </Col>
                 </Row>
                 <div className="d-flex gap-2 justify-content-center mt-4 mb-2">
-                    <Button type="submit" color="info" placement="top" id="tooltipTop" >
-                        Cetak
+                    <Button 
+                        onClick={() => vRetur.handleSubmit()}
+                        type="submit" 
+                        color="info" placement="top" id="tooltipTop" >
+                        Simpan
                     </Button>
                     <Button
                         color="danger"

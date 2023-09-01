@@ -27,4 +27,8 @@ export default class ServiceFarmasi {
     getAllVerifResep = async (queries) => {
         return await api.get(`/transaksi/farmasi/get-verif-resep`, queries);
     }
+
+    createOrUpdateRetur = async (body) => {
+        return await api.create(`/transaksi/farmasi/create-or-update-retur`, body);
+    }
 }

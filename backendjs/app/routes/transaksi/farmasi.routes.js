@@ -46,4 +46,10 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getAllVerifResep
     )
+
+    app.post(
+        "/api/transaksi/farmasi/create-or-update-retur",
+        [authJwt.verifyToken],
+        controller.createOrUpdateRetur
+    )
 }

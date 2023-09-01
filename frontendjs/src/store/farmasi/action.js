@@ -16,7 +16,10 @@ import {
     GET_PASIEN_FROM_NOCM_ERROR,
     GET_ALL_VERIF_RESEP,
     GET_ALL_VERIF_RESEP_SUCCESS,
-    GET_ALL_VERIF_RESEP_ERROR
+    GET_ALL_VERIF_RESEP_ERROR,
+    CREATE_OR_UPDATE_RETUR,
+    CREATE_OR_UPDATE_RETUR_SUCCESS,
+    CREATE_OR_UPDATE_RETUR_ERROR
 } from "./actionType";
 
 
@@ -121,5 +124,23 @@ export const getAllVerifResepSuccess = (data) => ({
 
 export const getAllVerifResepError = (error) => ({
     type: GET_ALL_VERIF_RESEP_ERROR,
+    payload: error
+});
+
+export const createOrUpdateRetur = (body, callback) => ({
+    type: CREATE_OR_UPDATE_RETUR,
+    payload: {
+        body: body,
+        callback: callback
+    }
+});
+
+export const createOrUpdateReturSuccess = (data) => ({
+    type: CREATE_OR_UPDATE_RETUR_SUCCESS,
+    payload: data
+});
+
+export const createOrUpdateReturError = (error) => ({
+    type: CREATE_OR_UPDATE_RETUR_ERROR,
     payload: error
 });

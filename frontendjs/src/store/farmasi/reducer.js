@@ -16,7 +16,10 @@ import {
     GET_PASIEN_FROM_NOCM_ERROR,
     GET_ALL_VERIF_RESEP,
     GET_ALL_VERIF_RESEP_SUCCESS,
-    GET_ALL_VERIF_RESEP_ERROR
+    GET_ALL_VERIF_RESEP_ERROR,
+    CREATE_OR_UPDATE_RETUR,
+    CREATE_OR_UPDATE_RETUR_SUCCESS,
+    CREATE_OR_UPDATE_RETUR_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -41,6 +44,11 @@ const INIT_STATE = {
         error: null,
     },
     getPasienFromNoCm: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    createOrUpdateRetur: {
         data: [],
         loading: false,
         error: null,
@@ -245,6 +253,40 @@ const Farmasi = (state = INIT_STATE, action) => {
                 ...state,
                 getAllVerifResep: {
                     ...state.getAllVerifResep,
+                    loading: false,
+                    error: action.payload,
+                },
+            };
+        }
+
+        case CREATE_OR_UPDATE_RETUR: {
+            return {
+                ...state,
+                createOrUpdateRetur: {
+                    ...state.createOrUpdateRetur,
+                    data: [],
+                    loading: true,
+                    error: null,
+                },
+            };
+        }
+
+        case CREATE_OR_UPDATE_RETUR_SUCCESS: {
+            return {
+                ...state,
+                createOrUpdateRetur: {
+                    ...state.createOrUpdateRetur,
+                    loading: false,
+                    data: action.payload,
+                },
+            };
+        }
+
+        case CREATE_OR_UPDATE_RETUR_ERROR: {
+            return {
+                ...state,
+                createOrUpdateRetur: {
+                    ...state.createOrUpdateRetur,
                     loading: false,
                     error: action.payload,
                 },

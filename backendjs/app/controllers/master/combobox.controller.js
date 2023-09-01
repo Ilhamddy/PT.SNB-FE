@@ -41,6 +41,7 @@ import jenisorderbarangQueries from "../../queries/master/jenisorderbarang/jenis
 import queriesSigna from "../../queries/master/signa/signa.queries";
 import queriesKeteranganResep from "../../queries/master/keteranganresep/keteranganresep.queries";
 import queriesJenisResep from "../../queries/master/jenisresep/jenisresep.queries";
+import queriesAlasanRetur from "../../queries/master/alasanretur/m_alasanretur.queries";
 import { createLogger } from "../../utils/logger";
 
 const selectComboBox = (req, res) => {
@@ -580,6 +581,31 @@ const comboPenjualanBebas = async (req, res) => {
     logger.print();
 }
 
+const comboReturObat = async (req, res) => {
+    const logger = createLogger("get combo retur obat")
+    try{
+        const alasan = await pool.query(queriesAlasanRetur.getAll)
+        
+        let tempres = {
+            alasan: alasan.rows,
+        }
+
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+        });
+        logger.info("sukses")
+    }catch(error){
+        logger.error(error)
+        res.status(500).send({
+            data: [],
+            status: "error",
+            success: false,
+        });
+    }
+    logger.print();
+}
 
 export default {
     selectComboBox,
@@ -595,5 +621,6 @@ export default {
     comboStokOpname,
     comboResep,
     comboVerifResep,
-    comboPenjualanBebas
+    comboPenjualanBebas,
+    comboReturObat
 };

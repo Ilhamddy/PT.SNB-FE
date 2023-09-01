@@ -94,4 +94,10 @@ export default function(app) {
       controller.comboPenjualanBebas
     )
 
+    app.get(
+      "/api/master/combobox-retur-obat",
+      [authJwt.verifyToken],
+      controller.comboReturObat
+    )
+
   };

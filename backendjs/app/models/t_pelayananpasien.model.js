@@ -55,6 +55,9 @@ export default (sequelize, Sequelize) => {
             type: Sequelize.BOOLEAN,
             defaultValue: false
         },
+        objectverifresepfk: {
+            type: Sequelize.CHAR(32),
+        }
     }, {
         tableName: "t_pelayananpasien", // relation "user" does not exist
         createdAt: false,

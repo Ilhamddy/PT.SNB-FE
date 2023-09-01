@@ -308,6 +308,7 @@ import VerifikasiResep from "../pages/VerifikasiResep/VerifikasiResep";
 import AllOrderResepList from "../pages/AllOrderResepList/AllOrderResepList";
 import PenjualanObatBebas from "../pages/PenjualanObatBebas/PenjualanObatBebas";
 import ListVerifObat from "../pages/ListVerifObat/ListVerifObat";
+import DaftarPasienFarmasi from "../pages/ListDaftarPasien/DaftarPasienFarmasi/DaftarPasienFarmasi";
 
 
 
@@ -540,6 +541,8 @@ const authProtectedRoutes = [
   { path: "/listdaftarpasien/daftar-pasien-ri", component: <DaftarPasienRI /> },
   { path: "/listdaftarpasien/daftar-pasien-pulang", component: <DaftarPasienPulang /> },
   { path: "/listdaftarpasien/daftarpasienregistrasi", component:<DaftarPasienRegistrasi/>},
+  { path: "/listdaftarpasien/daftar-pasien-farmasi", component:<DaftarPasienFarmasi/>},
+
   { path: "/bGlzdGRhZnRhcnBhc2llbi9kYWZ0YXJwYXNpZW5tdXRhc2k=", component:<DaftarPasienMutasi/>},
   { path: "/registrasi/mutasi-pasien/:id/:norec", component: <RegistrasiMutasiPasien/> },
 
@@ -597,7 +600,7 @@ const authProtectedRoutes = [
   { path: "/farmasi/verif-order-resep/:norecorder", component: <VerifikasiResep /> },
   { path: "/farmasi/order-list", component: <AllOrderResepList /> },
   { path: "/farmasi/penjualan-obat-bebas", component: <PenjualanObatBebas /> },
-  { path: "/farmasi/list-verif-obat", component: <ListVerifObat />}
+  { path: "/farmasi/list-verif-obat/:norecdp", component: <ListVerifObat />}
 ];
 
 const publicRoutes = [

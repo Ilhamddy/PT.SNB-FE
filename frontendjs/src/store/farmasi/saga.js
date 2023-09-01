@@ -13,7 +13,9 @@ import {
     getPasienFromNoCmSuccess,
     getPasienFromNoCmError,
     getAllVerifResepSuccess,
-    getAllVerifResepError
+    getAllVerifResepError,
+    createOrUpdateReturSuccess,
+    createOrUpdateReturError
 } from "./action";
 
 import {
@@ -22,7 +24,8 @@ import {
     CREATE_OR_UPDATE_VERIF_RESEP,
     CREATE_OR_UPDATE_PENJUALAN_BEBAS,
     GET_PASIEN_FROM_NOCM,
-    GET_ALL_VERIF_RESEP
+    GET_ALL_VERIF_RESEP,
+    CREATE_OR_UPDATE_RETUR
 } from "./actionType";
 
 import {
@@ -94,6 +97,19 @@ function* onGetAllVerifResep({ payload: { queries } }) {
     }
 }
 
+function* onCreateOrUpdateRetur({ payload: { body, callback } }) {
+    try {
+        const response = yield call(serviceFarmasi.createOrUpdateRetur, body);
+        yield put(createOrUpdateReturSuccess(response.data));
+        toast.success("Sukses update retur", { autoClose: 3000 });
+        callback && callback();
+    } catch (error) {
+        yield put(createOrUpdateReturError(error));
+        console.error(error)
+        toast.error("Gagal update retur", { autoClose: 3000 });
+    }
+}
+
 export function* watchGetOrderResepQuery() {
     yield takeEvery(GET_ORDER_RESEP_QUERY, onGetOrderResepQuery);
 }
@@ -118,6 +134,10 @@ export function* watchGetAllVerifResep(){
     yield takeEvery(GET_ALL_VERIF_RESEP, onGetAllVerifResep);
 }
 
+export function* watchCreateOrUpdateRetur(){
+    yield takeEvery(CREATE_OR_UPDATE_RETUR, onCreateOrUpdateRetur);
+}
+
 function* farmasiSaga() {
     yield all([
         fork(watchGetOrderResepQuery),
@@ -125,7 +145,8 @@ function* farmasiSaga() {
         fork(watchCreateOrUpdateVerifResep),
         fork(watchCreateOrUpdatePenjualanBebas),
         fork(watchGetPasienFromNoCm),
-        fork(watchGetAllVerifResep)
+        fork(watchGetAllVerifResep),
+        fork(watchCreateOrUpdateRetur)
     ]);
 }
 

@@ -148,12 +148,16 @@ SELECT
     mp.id AS produk,
     mp.namaproduk AS namaproduk,
     tvr.nobatch AS nobatch
-FROM t_verifresep tvr
+FROM t_daftarpasien tdp
+    LEFT JOIN t_antreanpemeriksaan tap ON tap.objectdaftarpasienfk = tdp.norec
+    LEFT JOIN t_pelayananpasien tp ON tp.objectantreanpemeriksaanfk = tap.norec
+    LEFT JOIN t_verifresep tvr ON tvr.norec = tp.objectverifresepfk
     LEFT JOIN t_orderresep tor ON tvr.objectorderresepfk = tor.norec
     LEFT JOIN m_unit mu ON mu.id = tor.objectdepotujuanfk
     LEFT JOIN m_produk mp ON mp.id = tvr.objectprodukfk
 WHERE tvr.statusenabled = true
     AND tvr.nobatch IS NOT NULL
+    AND tdp.norec = $1
 `
 
 export {

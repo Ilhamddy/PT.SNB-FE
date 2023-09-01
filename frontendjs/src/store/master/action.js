@@ -50,6 +50,9 @@ import {
     GET_COMBO_PENJUALAN_BEBAS,
     GET_COMBO_PENJUALAN_BEBAS_SUCCESS,
     GET_COMBO_PENJUALAN_BEBAS_ERROR,
+    GET_COMBO_RETUR_OBAT,
+    GET_COMBO_RETUR_OBAT_SUCCESS,
+    GET_COMBO_RETUR_OBAT_ERROR,
 } from "./actionType";
 
 export const masterGet = () => ({
@@ -290,5 +293,19 @@ export const getComboPenjualanBebasSuccess = (data) => ({
 
 export const getComboPenjualanBebasError = (error) => ({
     type: GET_COMBO_PENJUALAN_BEBAS_ERROR,
+    payload: error,
+});
+
+export const getComboReturObat = () => ({
+    type: GET_COMBO_RETUR_OBAT,
+});
+
+export const getComboReturObatSuccess = (data) => ({
+    type: GET_COMBO_RETUR_OBAT_SUCCESS,
+    payload: data,
+});
+
+export const getComboReturObatError = (error) => ({
+    type: GET_COMBO_RETUR_OBAT_ERROR,
     payload: error,
 });

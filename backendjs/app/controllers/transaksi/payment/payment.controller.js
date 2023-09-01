@@ -246,7 +246,7 @@ const createBuktiBayar = async (req, res) => {
         const sisa = objectBody.totaltagihan - totalPayment
 
         if(objectBody.norecpiutang){
-            t_piutangpasien.update({
+            await t_piutangpasien.update({
                 totalbayar: totalPayment,
                 sisapiutang: sisa,
                 tglupdate: new Date()

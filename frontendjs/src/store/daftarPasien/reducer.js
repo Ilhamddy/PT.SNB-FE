@@ -37,7 +37,10 @@ import {
     WIDGET_DAFTARPASIEN_REGISTRASI_GET_ERROR,
     LIST_PASIEN_MUTASI_GET,
     LIST_PASIEN_MUTASI_GET_SUCCESS,
-    LIST_PASIEN_MUTASI_GET_ERROR
+    LIST_PASIEN_MUTASI_GET_ERROR,
+    GET_DAFTAR_PASIEN_FARMASI,
+    GET_DAFTAR_PASIEN_FARMASI_SUCCESS,
+    GET_DAFTAR_PASIEN_FARMASI_ERROR,
 } from "./actionType";
 
 const INIT_STATE = {
@@ -97,6 +100,11 @@ const INIT_STATE = {
         error: null,
     },
     listPasienMutasiGet:{
+        data: [],
+        loading: false,
+        error: null,
+    },
+    getDaftarPasienFarmasi: {
         data: [],
         loading: false,
         error: null,
@@ -540,6 +548,39 @@ const DaftarPasien = (state = INIT_STATE, action) => {
                 ...state,
                 listPasienMutasiGet: {
                     ...state.listPasienMutasiGet,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case GET_DAFTAR_PASIEN_FARMASI: {
+            return {
+                ...state,
+                getDaftarPasienFarmasi: {
+                    ...state.getDaftarPasienFarmasi,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case GET_DAFTAR_PASIEN_FARMASI_SUCCESS: {
+            return {
+                ...state,
+                getDaftarPasienFarmasi: {
+                    ...state.getDaftarPasienFarmasi,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case GET_DAFTAR_PASIEN_FARMASI_ERROR: {
+            return {
+                ...state,
+                getDaftarPasienFarmasi: {
+                    ...state.getDaftarPasienFarmasi,
                     loading: false,
                     error: action.error,
                 }
