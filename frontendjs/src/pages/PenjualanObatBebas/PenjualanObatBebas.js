@@ -138,7 +138,7 @@ const PenjualanObatBebas = () => {
                 })
             )
         }),
-        onSubmit: (value) => {
+        onSubmit: (value, {resetForm}) => {
             const newVal = {...value}
             newVal.resep = newVal.resep.map((valResep) => {
                 const newValResep = {...valResep}
@@ -161,6 +161,7 @@ const PenjualanObatBebas = () => {
                 return newValResep
             }) 
             dispatch(createOrUpdatePenjualanBebas(newVal, (data) => {
+                resetForm();
                 // TODO:
                 // dispatch(getOrderResepFromNorec({norec: norecjualbebas}))
             }))
