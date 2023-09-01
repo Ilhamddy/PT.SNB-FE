@@ -63,7 +63,7 @@ mp2.reportdisplay || '-' ||ta.noantrian as noantrian,mp2.namalengkap as namadokt
 join m_pasien mp on mp.id=td.nocmfk 
 join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk =td.norec and td.objectunitlastfk=ta.objectunitfk
 join m_unit mu on mu.id=ta.objectunitfk 
-left join m_pegawai mp2 on mp2.id=ta.objectdokterpemeriksafk
+join m_pegawai mp2 on mp2.id=ta.objectdokterpemeriksafk
 join m_instalasi mi on mi.id=mu.objectinstalasifk
 join m_jenispenjamin mj on mj.id=td.objectjenispenjaminfk`;
 

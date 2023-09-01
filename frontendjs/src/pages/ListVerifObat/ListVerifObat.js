@@ -194,39 +194,33 @@ const ModalTambahObat = ({dataModal, ...rest}) => {
             width: "120px"
         },
         {
-            name: <span className='font-weight-bold fs-13'>Depo</span>,
+            name: <span className='font-weight-bold fs-13'>Penjamin</span>,
             sortable: true,
             selector: row => row.namaunit,
             width: "120px"
         },
         {
-            name: <span className='font-weight-bold fs-13'>Nama Obat</span>,
+            name: <span className='font-weight-bold fs-13'>Kelas</span>,
             sortable: true,
             selector: row => row.namaproduk,
             width: "120px"
         },
         {
-            name: <span className='font-weight-bold fs-13'>Quantity</span>,
+            name: <span className='font-weight-bold fs-13'>Tgl Masuk</span>,
             sortable: true,
             selector: row => row.qty,
             width: "120px"
         },
         {
-            name: <span className='font-weight-bold fs-13'>Harga</span>,
+            name: <span className='font-weight-bold fs-13'>Tgl Keluar</span>,
             sortable: true,
             selector: row => row.harga,
             width: "120px"
         },
         {
-            name: <span className='font-weight-bold fs-13'>Total Harga</span>,
+            name: <span className='font-weight-bold fs-13'></span>,
             sortable: true,
-            selector: row => row.total,
-            width: "120px"
-        },
-        {
-            name: <span className='font-weight-bold fs-13'>No Batch</span>,
-            sortable: true,
-            selector: row => row.nobatch,
+            selector: row => <Button color="info">Tambah</Button>,
             width: "120px"
         },  
     ];
