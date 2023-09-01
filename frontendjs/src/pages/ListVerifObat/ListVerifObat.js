@@ -176,14 +176,15 @@ const ListVerifObat = () => {
     )
 }
 
-const ModalTambahObat = ({...rest}) => {
+const ModalTambahObat = ({dataModal, ...rest}) => {
     return (
-        <Modal isOpen={!!dataModal.norecverif} centered={true} size="xl" {...rest}>
+        <Modal 
+            isOpen={!!dataModal.norecverif} 
+            centered={true}
+            size="xl" {...rest}>
             <ModalBody className="py-12 px-12">
                 <Row>
-                    <Col lg={6}>
 
-                    </Col>
                 </Row>
             </ModalBody>
         </Modal>
