@@ -16,7 +16,8 @@ import { qGetPelayananFromDp,
     qDaftarTagihanPasienFronNota,
     qGetDepositFromNota,
     qGetBuktiBayarFromNota,
-    qGetCaraBayarFromBB
+    qGetCaraBayarFromBB,
+    qGetLaporanPendapatanKasir
 } from '../../../queries/payment/payment.queries';
 
 import { Op } from "sequelize";
@@ -584,6 +585,31 @@ const getPaymentForPiutang = async (req, res) => {
     }
 }
 
+const getLaporanPendapatanKasir = async (req, res) => {
+    try{
+        let Laporan = await pool.query(qGetLaporanPendapatanKasir, [req.query.start,req.query.end, `%${req.query.search}%`])
+        let tempres = {
+            laporan: Laporan.rows || []
+        }
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+            msg: 'Get Laporan Pendapatan Kasir berhasil Berhasil',
+            code: 200
+        });
+    }catch(e){
+        console.error("===Error Get Laporan Pendapatan Kasir===");
+        console.error(e);
+        res.status(500).send({
+            data: e,
+            success: false,
+            msg: 'Get Laporan Pendapatan Kasir Gagal',
+            code: 500
+        });
+    }
+}
+
 
 export default {
     getPelayananFromDP,
@@ -594,7 +620,8 @@ export default {
     cancelNotaVerif,
     cancelBayar,
     getAllPiutang,
-    getPaymentForPiutang
+    getPaymentForPiutang,
+    getLaporanPendapatanKasir
 }
 
 

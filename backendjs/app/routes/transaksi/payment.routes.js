@@ -65,5 +65,10 @@ export default function (app) {
         controller.getPaymentForPiutang
     );
 
+    app.get(
+        "/api/transaksi/payment/get-laporan-pendapatan-kasir",
+        [authJwt.verifyToken],
+        controller.getLaporanPendapatanKasir
+    );
 
 }

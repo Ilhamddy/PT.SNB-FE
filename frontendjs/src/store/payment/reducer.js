@@ -35,6 +35,10 @@ import {
     PAYMENT_PIUTANG_PASIEN_GET_SUCCESS,
     PAYMENT_PIUTANG_PASIEN_GET_ERROR,
     PAYMENT_PIUTANG_PASIEN_GET_RESET,
+    LAPORAN_PENDAPATAN_KASIR_GET,
+    LAPORAN_PENDAPATAN_KASIR_GET_SUCCESS,
+    LAPORAN_PENDAPATAN_KASIR_GET_ERROR,
+    LAPORAN_PENDAPATAN_KASIR_GET_RESET
 } from "./actionType";
 
 const INIT_STATE = {
@@ -87,6 +91,12 @@ const INIT_STATE = {
         error: null,
     },
     paymentPiutangPasienGet: {
+        data: [],
+        loading: false,
+        success: false,
+        error: null,
+    },
+    laporanPendapatanKasirGet: {
         data: [],
         loading: false,
         success: false,
@@ -337,7 +347,7 @@ const payment = (state = INIT_STATE, action) => {
                     error: action.payload,
                 },
             };
-        
+
         case VERIF_NOTA_CANCEL_RESET:
             return {
                 ...state,
@@ -349,7 +359,7 @@ const payment = (state = INIT_STATE, action) => {
                     error: null,
                 },
             };
-        
+
         case BUKTI_BAYAR_CANCEL:
             return {
                 ...state,
@@ -382,7 +392,7 @@ const payment = (state = INIT_STATE, action) => {
                     error: action.payload,
                 },
             };
-        
+
         case BUKTI_BAYAR_CANCEL_RESET:
             return {
                 ...state,
@@ -448,7 +458,7 @@ const payment = (state = INIT_STATE, action) => {
                     error: null,
                 },
             };
-        
+
         case PAYMENT_PIUTANG_PASIEN_GET_SUCCESS:
             return {
                 ...state,
@@ -482,11 +492,56 @@ const payment = (state = INIT_STATE, action) => {
                     error: null,
                 },
             };
-            
+
+        case LAPORAN_PENDAPATAN_KASIR_GET:
+            return {
+                ...state,
+                laporanPendapatanKasirGet: {
+                    ...state.laporanPendapatanKasirGet,
+                    data: [],
+                    loading: true,
+                    error: null,
+                },
+            };
+
+        case LAPORAN_PENDAPATAN_KASIR_GET_SUCCESS:
+            return {
+                ...state,
+                laporanPendapatanKasirGet: {
+                    ...state.laporanPendapatanKasirGet,
+                    data: action.payload,
+                    loading: false,
+                    error: null,
+                },
+            };
+
+        case LAPORAN_PENDAPATAN_KASIR_GET_ERROR:
+            return {
+                ...state,
+                laporanPendapatanKasirGet: {
+                    ...state.laporanPendapatanKasirGet,
+                    data: [],
+                    loading: false,
+                    error: action.payload,
+                },
+            };
+
+        case LAPORAN_PENDAPATAN_KASIR_GET_RESET:
+            return {
+                ...state,
+                laporanPendapatanKasirGet: {
+                    ...state.laporanPendapatanKasirGet,
+                    data: [],
+                    success: false,
+                    loading: false,
+                    error: null,
+                },
+            };
+
         default:
             return { ...state };
     }
 };
-  
+
 
 export default payment;

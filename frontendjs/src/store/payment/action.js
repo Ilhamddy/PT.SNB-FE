@@ -33,6 +33,10 @@ import { PELAYANAN_FROM_DP_GET,
     PAYMENT_PIUTANG_PASIEN_GET_SUCCESS,
     PAYMENT_PIUTANG_PASIEN_GET_ERROR,
     PAYMENT_PIUTANG_PASIEN_GET_RESET,
+    LAPORAN_PENDAPATAN_KASIR_GET,
+    LAPORAN_PENDAPATAN_KASIR_GET_SUCCESS,
+    LAPORAN_PENDAPATAN_KASIR_GET_ERROR,
+    LAPORAN_PENDAPATAN_KASIR_GET_RESET
 } from "./actionType";
 
 export const pelayananFromDpGet = (norecap) => {
@@ -271,5 +275,32 @@ export const paymentPiutangPasienGetError = (error) => {
 export const paymentPiutangPasienGetReset = () => {
     return {
         type: PAYMENT_PIUTANG_PASIEN_GET_RESET,
+    }
+}
+
+export const laporanPendapatanKasirGet = (param) => {
+    return {
+        type: LAPORAN_PENDAPATAN_KASIR_GET,
+        payload: {param}
+    }
+}
+
+export const laporanPendapatanKasirGetSuccess = (data) => {
+    return {
+        type: LAPORAN_PENDAPATAN_KASIR_GET_SUCCESS,
+        payload: data
+    }
+}
+
+export const laporanPendapatanKasirGetError = (error) => {
+    return {
+        type: LAPORAN_PENDAPATAN_KASIR_GET_ERROR,
+        payload: error
+    }
+}
+
+export const laporanPendapatanKasirGetReset = () => {
+    return {
+        type: LAPORAN_PENDAPATAN_KASIR_GET_RESET,
     }
 }
