@@ -290,6 +290,9 @@ import VerifikasiPelayanan from "../pages/VerifikasiPelayanan/VerifikasiPelayana
 import DaftarTagihanPasien from "../pages/DaftarTagihanPasien/DaftarTagihanPasien";
 import Bayar from "../pages/Bayar/Bayar";
 
+// laporan Kasir
+import LaporanPendapatan from "../pages/Kasir/Laporan/LaporanPendapatan/LaporanPendapatan";
+
 import SettingProduk from "../pages/Produk/SettingProduk";
 import ListProduk from "../pages/Produk/ListProduk";
 import PenerimaanProduk from "../pages/PenerimaanProduk/PenerimaanProduk";
@@ -567,6 +570,7 @@ const authProtectedRoutes = [
   { path: "/payment/bayar/:norecnota", component: <Bayar /> },
   { path: "/payment/daftar-piutang/:location", component: <DaftarPiutangPasien />},
   { path: "/payment/bayar/piutang/:norecpiutang/:norecnota", component: <BayarPiutang /> },
+  { path: "/payment/laporan-pendapatan", component: <LaporanPendapatan /> },
 
   // casemix
   { path: "/casemix/klaiminacbg", component: <KlaimInacbg /> },

@@ -25,6 +25,7 @@ const DepositModal = ({toggle, norecdp}) => {
     const validation = useFormik({
         enableReinitialize: true,
         initialValues: {
+            objectjenispembayaranfk:3,
             totaltagihan: "",
             diskon: 0,
             deposit: 0,

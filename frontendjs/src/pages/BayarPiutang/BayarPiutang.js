@@ -62,6 +62,7 @@ const BayarPiutang = () => {
     const validation = useFormik({
         enableReinitialize: true,
         initialValues: {
+            objectjenispembayaranfk:2,
             totaltagihan: "",
             diskon: 0,
             // non wajib

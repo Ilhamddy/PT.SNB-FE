@@ -665,6 +665,7 @@ const hCreateBayar = async ( req, transaction) => {
         diskon: objectBody.diskon,
         klaim: objectBody.klaim,
         tglinput: new Date(),
+        objectjenispembayaranfk:objectBody.objectjenispembayaranfk,
     }, {transaction: transaction})
 
     const createdCaraBayar = await Promise.all(
