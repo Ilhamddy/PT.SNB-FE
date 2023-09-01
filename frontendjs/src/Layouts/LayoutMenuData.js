@@ -287,6 +287,17 @@ const Navdata = () => {
                     link: "/bGlzdGRhZnRhcnBhc2llbi9kYWZ0YXJwYXNpZW5tdXRhc2k=",
                     parentId: "listdaftarpasien",
                 },
+                {
+                    id: "daftar-pasien-farmasi",
+                    label: "Daftar Pasien Farmasi",
+                    link: "/listdaftarpasien/daftar-pasien-farmasi",
+                    parentId: "listdaftarpasien",
+                    isAllowed: () => {
+                        return isAllowedAccess(getUserPermissions(), [
+                            "REGISTRASI_VIEW",
+                        ]);
+                    }
+                },
             ],
         },
         // KASIR
