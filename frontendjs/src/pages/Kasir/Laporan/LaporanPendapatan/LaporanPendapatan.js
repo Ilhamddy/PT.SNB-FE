@@ -142,7 +142,7 @@ const LaporanPendapatan = () => {
     ];
 
     const handleExport = () => {
-        const formattedData = dataGrid.map(row => columns.map(col => col.selector(row)));
+        const formattedData = dataGrid.laporan.map(row => columns.map(col => col.selector(row)));
         const header = columns.map(col => col.name.props.children);
         const sheetData = [header, ...formattedData];
         const worksheet = XLSX.utils.aoa_to_sheet(sheetData);
