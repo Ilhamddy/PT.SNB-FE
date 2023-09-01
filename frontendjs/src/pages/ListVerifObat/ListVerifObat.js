@@ -151,6 +151,13 @@ const ListVerifObat = () => {
                 <BreadCrumb title="List Verif Obat" pageTitle="List Verif Obat" />
                 <Card className="p-5">
                     <Row className="mb-2">
+                        <Row className="d-flex flex-row-reverse mb-3">
+                            <Col lg={2} className="d-flex flex-row-reverse">
+                                <Button color={"info"}>
+                                    Menu
+                                </Button>
+                            </Col>
+                        </Row>
                         <DataTable
                             fixedHeader
                             fixedHeaderScrollHeight="700px"
