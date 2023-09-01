@@ -15,7 +15,11 @@ import {
     getAllVerifResepSuccess,
     getAllVerifResepError,
     createOrUpdateReturSuccess,
-    createOrUpdateReturError
+    createOrUpdateReturError,
+    getAntreanFromDPSuccess,
+    getAntreanFromDPError,
+    createOrUpdateOrderPlusVerifSuccess,
+    createOrUpdateOrderPlusVerifError
 } from "./action";
 
 import {
@@ -25,7 +29,9 @@ import {
     CREATE_OR_UPDATE_PENJUALAN_BEBAS,
     GET_PASIEN_FROM_NOCM,
     GET_ALL_VERIF_RESEP,
-    CREATE_OR_UPDATE_RETUR
+    CREATE_OR_UPDATE_RETUR,
+    GET_ANTREAN_FROM_DP,
+    CREATE_OR_UPDATE_ORDER_PLUS_VERIF
 } from "./actionType";
 
 import {
@@ -110,6 +116,27 @@ function* onCreateOrUpdateRetur({ payload: { body, callback } }) {
     }
 }
 
+function* onGetAntreanFromDP({ payload: { queries } }) {
+    try {
+        const response = yield call(serviceFarmasi.getAntreanFromDp, queries);
+        yield put(getAntreanFromDPSuccess(response.data));
+    } catch (error) {
+        yield put(getAntreanFromDPError(error));
+    }
+}
+
+function* onCreateOrUpdateOrderPlusVerif({ payload: { body, callback } }) {
+    try {
+        const response = yield call(serviceFarmasi.createOrUpdateOrderPlusVerif, body);
+        yield put(createOrUpdateOrderPlusVerifSuccess(response.data));
+        toast.success("Sukses update order plus verif", { autoClose: 3000 });
+        callback && callback();
+    } catch (error) {
+        yield put(createOrUpdateOrderPlusVerifError(error));
+        toast.error("Gagal update order plus verif", { autoClose: 3000 });
+    }
+}
+
 export function* watchGetOrderResepQuery() {
     yield takeEvery(GET_ORDER_RESEP_QUERY, onGetOrderResepQuery);
 }
@@ -138,6 +165,14 @@ export function* watchCreateOrUpdateRetur(){
     yield takeEvery(CREATE_OR_UPDATE_RETUR, onCreateOrUpdateRetur);
 }
 
+export function* watchGetAntreanFromDP(){
+    yield takeEvery(GET_ANTREAN_FROM_DP, onGetAntreanFromDP);
+}
+
+export function* watchCreateOrUpdateOrderPlusVerif(){
+    yield takeEvery(CREATE_OR_UPDATE_ORDER_PLUS_VERIF, onCreateOrUpdateOrderPlusVerif);
+}
+
 function* farmasiSaga() {
     yield all([
         fork(watchGetOrderResepQuery),
@@ -146,7 +181,9 @@ function* farmasiSaga() {
         fork(watchCreateOrUpdatePenjualanBebas),
         fork(watchGetPasienFromNoCm),
         fork(watchGetAllVerifResep),
-        fork(watchCreateOrUpdateRetur)
+        fork(watchCreateOrUpdateRetur),
+        fork(watchGetAntreanFromDP),
+        fork(watchCreateOrUpdateOrderPlusVerif)
     ]);
 }
 

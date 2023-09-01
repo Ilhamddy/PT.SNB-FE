@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import {useDispatch, useSelector} from "react-redux"
-import { createOrUpdateRetur, getAllVerifResep } from "../../store/farmasi/action"
+import { createOrUpdateRetur, getAllVerifResep, getAntreanFromDP } from "../../store/farmasi/action"
 import { ToastContainer } from "react-toastify"
 import { Card, CardBody, Col, Container, Nav, NavItem, NavLink, Row, TabContent, TabPane, Table, Input, Form, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem, UncontrolledTooltip, Button, FormFeedback, Label, Modal, ModalBody } from "reactstrap";
 import DataTable from "react-data-table-component";
@@ -9,7 +9,7 @@ import LoadingTable from "../../Components/Table/LoadingTable";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import { useFormik } from "formik";
 import CustomSelect from "../Select/Select";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { getComboReturObat } from "../../store/master/action";
 import { onChangeStrNbr, strToNumber } from "../../utils/format";
 import * as Yup from "yup";
@@ -35,9 +35,11 @@ const ListVerifObat = () => {
     }))
 
     const [dataModal, setDataModal] = useState(initialRetur)
+    const [isOpenTambah, setIsOpenTambah] = useState(false)
 
     useEffect(() => {
         dispatch(getAllVerifResep({norecdp: norecdp}))
+        dispatch(getAntreanFromDP({norecdp: norecdp}))
     }, [dispatch, norecdp])
 
     useEffect(() => {
@@ -146,6 +148,10 @@ const ListVerifObat = () => {
                     dispatch(getAllVerifResep({norecdp: norecdp}))
                 }}
             />
+            <ModalTambahObat 
+                isOpen={isOpenTambah}
+                toggle={() => setIsOpenTambah(!isOpenTambah)}
+            />
             <ToastContainer closeButton={false} />
             <Container fluid>
                 <BreadCrumb title="List Verif Obat" pageTitle="List Verif Obat" />
@@ -153,7 +159,8 @@ const ListVerifObat = () => {
                     <Row className="mb-2">
                         <Row className="d-flex flex-row-reverse mb-3">
                             <Col lg={2} className="d-flex flex-row-reverse">
-                                <Button color={"info"}>
+                                <Button color={"info"}
+                                    onClick={() => setIsOpenTambah(true)}>
                                     Menu
                                 </Button>
                             </Col>
@@ -177,6 +184,15 @@ const ListVerifObat = () => {
 }
 
 const ModalTambahObat = ({dataModal, ...rest}) => {
+
+    const {
+        dataAntrean
+    } = useSelector(state => ({
+        dataAntrean: state.Farmasi.getAntreanFromDP?.data?.dataantrean || []
+    }))
+    const navigate = useNavigate();
+
+
     /**
      * @type {import("react-data-table-component").TableColumn[]}
      */
@@ -184,49 +200,44 @@ const ModalTambahObat = ({dataModal, ...rest}) => {
         {
             name: <span className='font-weight-bold fs-13'>No</span>,
             sortable: true,
-            selector: row => row.koder + (row.kodertambahan ? "." + row.kodertambahan : ""),
+            selector: row => row.no,
             width: "40px"
         },
         {
             name: <span className='font-weight-bold fs-13'>Tgl registrasi</span>,
             sortable: true,
-            selector: row => row.noresep,
+            selector: row => row.tanggalregistrasi,
             width: "120px"
         },
         {
             name: <span className='font-weight-bold fs-13'>Penjamin</span>,
             sortable: true,
-            selector: row => row.namaunit,
-            width: "120px"
-        },
-        {
-            name: <span className='font-weight-bold fs-13'>Kelas</span>,
-            sortable: true,
-            selector: row => row.namaproduk,
+            selector: row => row.namarekanan,
             width: "120px"
         },
         {
             name: <span className='font-weight-bold fs-13'>Tgl Masuk</span>,
             sortable: true,
-            selector: row => row.qty,
+            selector: row => row.tanggalmasuk,
             width: "120px"
         },
         {
             name: <span className='font-weight-bold fs-13'>Tgl Keluar</span>,
             sortable: true,
-            selector: row => row.harga,
+            selector: row => row.tanggalkeluar,
             width: "120px"
         },
         {
             name: <span className='font-weight-bold fs-13'></span>,
             sortable: true,
-            selector: row => <Button color="info">Tambah</Button>,
+            selector: row => <Button color="info" onClick={() => {
+                navigate(`/farmasi/tambah-obat-farmasi/${row.norecap}`)
+            }}>Tambah</Button>,
             width: "120px"
         },  
     ];
     return (
         <Modal 
-            isOpen={!!dataModal.norecverif} 
             centered={true}
             size="xl" {...rest}>
             <ModalBody className="py-12 px-12">
@@ -234,8 +245,7 @@ const ModalTambahObat = ({dataModal, ...rest}) => {
                     fixedHeader
                     fixedHeaderScrollHeight="700px"
                     columns={columnsAntrean}
-                    pagination
-                    data={[]}
+                    data={dataAntrean}
                     progressPending={false}
                     customStyles={tableCustomStyles}
                     progressComponent={<LoadingTable />}

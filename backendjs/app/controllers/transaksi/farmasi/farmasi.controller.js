@@ -1,6 +1,6 @@
 import pool from "../../../config/dbcon.query";
 import * as uuid from 'uuid'
-import { qGetObatFromUnit, qGetOrderResepFromDP, qGetOrderVerifResepFromDP } from "../../../queries/emr/emr.queries";
+import { qGetAntreanFromDP, qGetObatFromUnit, qGetOrderResepFromDP, qGetOrderVerifResepFromDP } from "../../../queries/emr/emr.queries";
 import db from "../../../models";
 import {
     createTransaction
@@ -106,25 +106,8 @@ const createOrUpdateVerifResep = async (req, res) => {
         if(!orderTable){
             throw new Error("order tidak ditemukan")
         }
-        const date = new Date()
-        const dateTodayStart = new Date(date.getFullYear(), date.getMonth(), date.getDate())
-        const dateTodayEnd = new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1)
-        let totalResepToday = await t_orderresep.count({
-            where: {
-                tglinput: {
-                    [Op.between]: [dateTodayStart, dateTodayEnd]
-                },
-                tglverif: {
-                    [Op.not]: null
-                }
-            }
-        })
 
-        totalResepToday = ("0000" + (totalResepToday + 1)).slice(-2)
-        const kodeResep = "R" + date.getFullYear() 
-        + ("0" + (date.getMonth() + 1)).slice(-2)
-        + ("0" + date.getDate()) 
-        + totalResepToday
+        const kodeResep = await createKodeResep();
         await orderTable.update({
             no_resep: kodeResep,
             tglverif: new Date()
@@ -143,7 +126,7 @@ const createOrUpdateVerifResep = async (req, res) => {
             transaction,
             {
                 norecorder: norecorder,
-                orderData: orderData,
+                resep: req.body.resep,
                 newnorecap: newAP.norec
             }
         )
@@ -172,8 +155,31 @@ const createOrUpdateVerifResep = async (req, res) => {
     }
 }
 
+const createKodeResep = async () => {
+    const date = new Date()
+    const dateTodayStart = new Date(date.getFullYear(), date.getMonth(), date.getDate())
+    const dateTodayEnd = new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1)
+    let totalResepToday = await t_orderresep.count({
+        where: {
+            tglinput: {
+                [Op.between]: [dateTodayStart, dateTodayEnd]
+            },
+            tglverif: {
+                [Op.not]: null
+            }
+        }
+    })
+
+    totalResepToday = ("0000" + (totalResepToday + 1)).slice(-2)
+    const kodeResep = "R" + date.getFullYear() 
+    + ("0" + (date.getMonth() + 1)).slice(-2)
+    + ("0" + date.getDate()) 
+    + totalResepToday
+    return kodeResep
+}
+
 const createOrUpdatePenjualanBebas = async (req, res) => {
-    const logger = createLogger("create or update penjualan bebas")
+    const logger = createLogger(createOrUpdatePenjualanBebas.name)
     const [transaction, errorTransaction] 
         = await createTransaction(db, res, logger)
     if(errorTransaction) return
@@ -297,7 +303,7 @@ const getPasienFromNoCm = async (req, res) => {
 }
 
 const getAllVerifResep = async (req, res) => {
-    const logger = createLogger("get all verif")
+    const logger = createLogger(getAllVerifResep.name)
     try{
         const { norecdp } = req.query
         let dataAllPasien = await pool.query(qGetAllVerif, [norecdp])
@@ -324,7 +330,7 @@ const getAllVerifResep = async (req, res) => {
 }
 
 const createOrUpdateRetur = async (req, res) => {
-    const logger = createLogger("create retur")
+    const logger = createLogger(createOrUpdateRetur.name)
     const [transaction, errorTransaction]
         = await createTransaction(db, res, logger)
     if(errorTransaction) return
@@ -411,6 +417,136 @@ const createOrUpdateRetur = async (req, res) => {
     logger.print()
 }
 
+const getAntreanFromDP = async (req, res) => {
+    const logger = createLogger(getAntreanFromDP.name)
+    try{
+        const { norecdp } = req.query
+        let dataAllAntrean = await pool.query(qGetAntreanFromDP, [norecdp])
+        const tempres = {
+            dataantrean: dataAllAntrean.rows
+        }
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+            msg: "sukses get resep from dp"
+        });
+        logger.info("sukses")
+    }catch(error){
+        logger.error(error)
+        res.status(500).send({
+            data: error,
+            status: "error",
+            success: false,
+            msg: "gagal get all resep query"
+        })
+    }
+    logger.print()
+}
+
+const createOrUpdateOrderPlusVerif = async (req, res) => {
+    const logger = createLogger(createOrUpdateOrderPlusVerif.name)
+    const [transaction, errorTransaction] = await createTransaction(db, res, logger)
+    if(errorTransaction) return
+    try{
+        const body = req.body
+        let norecap = body.norecap
+        let createdOrUpdated = null
+        let norecorderresep = body.norecorder
+        if(!norecorderresep){
+            norecorderresep = uuid.v4().substring(0, 32)
+            const date = new Date()
+            const dateTodayStart = new Date(date.getFullYear(), date.getMonth(), date.getDate())
+            const dateTodayEnd = new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1)
+            let totalOrderToday = await t_orderresep.count({
+                where: {
+                    tglinput: {
+                        [Op.between]: [dateTodayStart, dateTodayEnd]
+                    }
+                }
+            })
+            totalOrderToday = ("0000" + totalOrderToday).slice(-4)
+            const kodeOrder = "O" + date.getFullYear() 
+            + ("0" + (date.getMonth() + 1)).slice(-2)
+            + ("0" + date.getDate()).slice(-2)
+            + totalOrderToday
+            const kodeResep = await createKodeResep()
+            
+            const created = await t_orderresep.create({
+                norec: norecorderresep,
+                kdprofile: 0,
+                statusenabled: true,
+                kodeexternal: kodeOrder,
+                namaexternal: kodeOrder,
+                reportdisplay: kodeOrder,
+                objectantreanpemeriksaanfk: norecap,
+                objectpegawaifk: body.penulisresep,
+                tglinput: new Date(),
+                objectunitasalfk: body.unittujuan,
+                no_order: kodeOrder,
+                no_resep: kodeResep,
+                objectdepotujuanfk: body.unittujuan
+            }, {
+                transaction: transaction
+            })
+            createdOrUpdated = created.toJSON()
+        }else{
+            const [_, updated] = await t_orderresep.update({
+                norec: norecorderresep,
+                kdprofile: 0,
+                statusenabled: true,
+                objectantreanpemeriksaanfk: body.norecap,
+                objectpegawaifk: req.dokter,
+                tglinput: new Date(),
+                objectunitasalfk: body.unittujuan,
+                objectdepotujuanfk: body.unittujuan
+            }, {
+                where: {
+                    norec: norecorderresep
+                },
+                transaction: transaction,
+                returning: true,
+            })
+            createdOrUpdated = updated[0].toJSON();
+        }
+        const {createdOrUpdatedDetailOrder} =
+        await hCreateOrUpdateDetailVerif(
+            req,
+            res,
+            transaction,
+            {
+                norecorder: norecorderresep,
+                resep: req.body.resep,
+                newnorecap: norecap
+            }
+        )
+        await transaction.commit()
+        const tempres = {
+            orderresep: createdOrUpdated,
+            detailorder: createdOrUpdatedDetailOrder
+        }
+        res.status(200).send({
+            code: 200,
+            data: tempres,
+            status: "success",
+            msg: "sukses create or update order plus verif",
+            success: true,
+        });
+        logger.info("sukses")
+    }catch(error){
+        logger.error(error)
+        await transaction.rollback()
+        res.status(500).send({
+            code: 200,
+            data: error,
+            status: "error",
+            msg: "gagal create or update order plus verif",
+            success: false,
+        });
+    }
+    logger.print()
+}
+
 export default {
     getOrderResepQuery,
     getOrderResepFromNorec,
@@ -418,7 +554,9 @@ export default {
     createOrUpdatePenjualanBebas,
     getPasienFromNoCm,
     getAllVerifResep,
-    createOrUpdateRetur
+    createOrUpdateRetur,
+    getAntreanFromDP,
+    createOrUpdateOrderPlusVerif
 }
 
 const hCreateAntreanPemeriksaan = async(
@@ -465,11 +603,10 @@ const hCreateOrUpdateDetailVerif = async (
     transaction,
     {
         norecorder,
-        orderData,
+        resep,
         newnorecap
     }
 ) => {
-    const resep = req.body.resep
     let createdOrUpdatedDetailOrder = await Promise.all(
         resep.map(async (item) => {
             if(item.racikan.length > 0){
@@ -508,7 +645,6 @@ const hCreateOrUpdateDetailVerif = async (
                             transaction,
                             {
                                 verifUsed: createdOrUpdatedVerif,
-                                orderData: orderData,
                                 norecap: newnorecap
                             }
                         )
@@ -549,7 +685,6 @@ const hCreateOrUpdateDetailVerif = async (
                 transaction,
                 {
                     verifUsed: createdOrUpdatedVerif,
-                    orderData: orderData,
                     norecap: newnorecap
                 }
             )
@@ -567,7 +702,6 @@ const hCreatePelayanan = async (
     transaction,
     {
         verifUsed,
-        orderData,
         norecap
     }
 

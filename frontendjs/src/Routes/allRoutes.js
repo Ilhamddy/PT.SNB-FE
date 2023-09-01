@@ -579,7 +579,7 @@ const authProtectedRoutes = [
   // casemix
   { path: "/casemix/klaiminacbg", component: <KlaimInacbg /> },
 
-  // farmasi
+  // gudang farmasi
   { path: "/farmasi/gudang/setting-produk/:tabopen/:paramobat", component: <SettingProduk /> },
   { path: "/farmasi/gudang/setting-produk/:tabopen", component: <SettingProduk /> },
   { path: "/farmasi/gudang/list-produk", component: <ListProduk /> },

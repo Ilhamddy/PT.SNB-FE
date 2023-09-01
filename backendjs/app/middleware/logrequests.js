@@ -13,7 +13,7 @@ export const logRequests = (req, res, next) => {
     let clientUrl = req.get("X-Client-Url")
 
     let status = res.statusCode;
-    const logger = createLogger("request express");
+    const logger = createLogger("REQUEST EXPRESS");
     logger.info(`CLIENT-URL: ${clientUrl}`)
     logger.info(`METHOD: ${method} ${url} ${status}`)
     logger.info(`BODY: ${JSON.stringify(body, null, 2)}`, true)

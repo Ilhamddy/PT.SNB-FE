@@ -6,14 +6,14 @@ import LoadingTable from "../../Components/Table/LoadingTable";
 import NoDataTable from "../../Components/Table/NoDataTable";
 import { onChangeStrNbr, strToNumber } from "../../utils/format";
 import { useEffect, useRef, useState } from "react";
-import { getComboResep, getComboVerifResep } from "../../store/master/action";
+import { getComboPenjualanBebas, getComboResep, getComboVerifResep } from "../../store/master/action";
 import { useDispatch, useSelector } from "react-redux";
 import { getObatFromUnit } from "../../store/emr/action";
 import * as Yup from "yup"
-import { useParams, useSearchParams} from "react-router-dom"
+import { useNavigate, useParams, useSearchParams} from "react-router-dom"
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import { ToastContainer } from "react-toastify";
-import { createOrUpdateVerifResep, getOrderResepFromNorec } from "../../store/farmasi/action";
+import { createOrUpdateOrderPlusVerif, createOrUpdateVerifResep, getOrderResepFromNorec } from "../../store/farmasi/action";
 import Flatpickr from "react-flatpickr";
 import { useHandleChangeResep, useHandleChangeAllResep, useColumnsResep, useColumnsResepRacikan } from "../PenjualanObatBebas/PenjualanObatBebas";
 
@@ -42,9 +42,8 @@ export const initValueResep = {
 
 const TambahObatFarmasi = () => {
     const dispatch = useDispatch()
-
-    const {norecorder} = useParams()
-    const [searchParams, setSearchParams] = useSearchParams()
+    const navigate = useNavigate()
+    const {norecap} = useParams()
 
     const {
         pegawai,
@@ -53,17 +52,13 @@ const TambahObatFarmasi = () => {
         signa,
         obatList,
         sediaanList,
-        penjamin,
-        orderNorec
     } = useSelector((state) => ({
-        pegawai: state.Master?.getComboVerifResep?.data?.pegawai || [],
-        unit: state.Master?.getComboVerifResep?.data?.unit || [],
-        keteranganResep: state.Master?.getComboVerifResep?.data?.keteranganresep || [],
-        signa: state.Master?.getComboVerifResep?.data?.signa || [],
+        pegawai: state?.Master?.getComboPenjualanBebas?.data?.pegawai || [],
+        unit: state.Master?.getComboPenjualanBebas?.data?.unit || [],
+        keteranganResep: state.Master?.getComboPenjualanBebas?.data?.keteranganresep || [],
+        signa: state.Master?.getComboPenjualanBebas?.data?.signa || [],
         obatList: state?.Emr?.getObatFromUnit?.data?.obat || [],
-        sediaanList: state?.Master?.getComboVerifResep?.data?.sediaan || [],
-        penjamin: state?.Master?.getComboVerifResep?.data?.penjamin || [],
-        orderNorec: state?.Farmasi?.getOrderResepFromNorec?.data?.ordernorec || null,
+        sediaanList: state?.Master?.getComboPenjualanBebas?.data?.sediaan || [],
     }))
 
     const [dateNow] = useState(() => new Date().toISOString())
@@ -71,6 +66,8 @@ const TambahObatFarmasi = () => {
     const vResep = useFormik({
         enableReinitialize: true,
         initialValues: {
+            norecorder: "",
+            norecap: norecap,
             tanggalresep: dateNow,
             unittujuan: "",
             penulisresep: "",
@@ -82,7 +79,7 @@ const TambahObatFarmasi = () => {
             ],
         },
         validationSchema: Yup.object({
-            dokter: Yup.string().required("Dokter harus diisi"),
+            penulisresep: Yup.string().required("Penulis resep harus diisi"),
             unittujuan: Yup.string().required("Depo tujuan harus diisi"),
             resep: Yup.array().of(
                 Yup.object().shape({
@@ -125,8 +122,8 @@ const TambahObatFarmasi = () => {
                 newValResep.total = strToNumber(valResep.total)
                 return newValResep
             }) 
-            dispatch(createOrUpdateVerifResep(newVal, (data) => {
-                dispatch(getOrderResepFromNorec({norec: norecorder}))
+            dispatch(createOrUpdateOrderPlusVerif(newVal, (data) => {
+                navigate(-1)
             }))
         }
     })
@@ -160,7 +157,7 @@ const TambahObatFarmasi = () => {
     }
 
     useEffect(() => {
-        dispatch(getComboVerifResep())
+        dispatch(getComboPenjualanBebas())
     }, [dispatch])
 
     useEffect(() => {
@@ -168,41 +165,10 @@ const TambahObatFarmasi = () => {
             dispatch(getObatFromUnit({idunit: vResep.values.unittujuan}))
     }, [dispatch, vResep.values.unittujuan])
 
-
-    useEffect(() => {
-        const setV = vResep.setValues
-        const resetV = vResep.resetForm
-        let orderNorecGot = null
-        if(!Array.isArray(orderNorec) && orderNorec){
-            orderNorecGot = orderNorec
-        }
-        if(!norecorder){
-            resetV();
-            resepRef.current = [
-                {
-                    ...initValueResep
-                }
-            ]
-        }
-
-        if(orderNorecGot){
-            setV(orderNorec)
-            resepRef.current = orderNorecGot.resep
-        }
-
-    }, [
-        orderNorec, 
-        norecorder, 
-        vResep.setValues, 
-        vResep.resetForm
-    ])
-
     useEffect(() => {
         const setFF = vResep.setFieldValue
-        dispatch(getOrderResepFromNorec({norec: norecorder}))
-        setFF("norecorderresep", norecorder)
-    }, [dispatch, norecorder, vResep.setFieldValue])
-
+        setFF("norecap", norecap || "")
+    }, [norecap, vResep.setFieldValue])
 
 
     const columnsResep = useColumnsResep(
@@ -242,9 +208,9 @@ const TambahObatFarmasi = () => {
                         <Col lg={2}>
                             <Label 
                                 style={{ color: "black" }} 
-                                htmlFor={`unitasal`}
+                                htmlFor={`tanggalresep`}
                                 className="form-label mt-2">
-                                Waktu Order
+                                Tanggal Resep
                             </Label>
                         </Col>
                         <Col lg={4}>
@@ -287,7 +253,6 @@ const TambahObatFarmasi = () => {
                                 id="unittujuan"
                                 name="unittujuan"
                                 options={unit}
-                                isDisabled
                                 onChange={(e) => {
                                     vResep.setFieldValue("unittujuan", e?.value || "")
                                 }}
@@ -318,8 +283,7 @@ const TambahObatFarmasi = () => {
                             <CustomSelect
                                 id="penulisresep"
                                 name="penulisresep"
-                                options={unit}
-                                isDisabled
+                                options={pegawai}
                                 onChange={(e) => {
                                     vResep.setFieldValue("penulisresep", e?.value || "")
                                 }}
@@ -349,7 +313,7 @@ const TambahObatFarmasi = () => {
                                 id={`noresep`}
                                 name={`noresep`}
                                 type="text"
-                                value={vResep.values.noresep + "/" + (vResep.values.noresep || "")} 
+                                value={vResep.values.noresep} 
                                 disabled
                                 invalid={vResep.touched?.noresep 
                                     && !!vResep.errors?.noresep}

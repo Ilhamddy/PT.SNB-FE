@@ -19,7 +19,13 @@ import {
     GET_ALL_VERIF_RESEP_ERROR,
     CREATE_OR_UPDATE_RETUR,
     CREATE_OR_UPDATE_RETUR_SUCCESS,
-    CREATE_OR_UPDATE_RETUR_ERROR
+    CREATE_OR_UPDATE_RETUR_ERROR,
+    GET_ANTREAN_FROM_DP,
+    GET_ANTREAN_FROM_DP_SUCCESS,
+    GET_ANTREAN_FROM_DP_ERROR,
+    CREATE_OR_UPDATE_ORDER_PLUS_VERIF,
+    CREATE_OR_UPDATE_ORDER_PLUS_VERIF_SUCCESS,
+    CREATE_OR_UPDATE_ORDER_PLUS_VERIF_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -49,6 +55,16 @@ const INIT_STATE = {
         error: null,
     },
     createOrUpdateRetur: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    getAntreanFromDP: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    createOrUpdateOrderPlusVerif: {
         data: [],
         loading: false,
         error: null,
@@ -287,6 +303,74 @@ const Farmasi = (state = INIT_STATE, action) => {
                 ...state,
                 createOrUpdateRetur: {
                     ...state.createOrUpdateRetur,
+                    loading: false,
+                    error: action.payload,
+                },
+            };
+        }
+
+        case GET_ANTREAN_FROM_DP: {
+            return {
+                ...state,
+                getAntreanFromDP: {
+                    ...state.getAntreanFromDP,
+                    data: [],
+                    loading: true,
+                    error: null,
+                },
+            };
+        }
+
+        case GET_ANTREAN_FROM_DP_SUCCESS: {
+            return {
+                ...state,
+                getAntreanFromDP: {
+                    ...state.getAntreanFromDP,
+                    loading: false,
+                    data: action.payload,
+                },
+            };
+        }
+
+        case GET_ANTREAN_FROM_DP_ERROR: {
+            return {
+                ...state,
+                getAntreanFromDP: {
+                    ...state.getAntreanFromDP,
+                    loading: false,
+                    error: action.payload,
+                },
+            };
+        }
+
+        case CREATE_OR_UPDATE_ORDER_PLUS_VERIF: {
+            return {
+                ...state,
+                createOrUpdateOrderPlusVerif: {
+                    ...state.createOrUpdateOrderPlusVerif,
+                    data: [],
+                    loading: true,
+                    error: null,
+                },
+            };
+        }
+
+        case CREATE_OR_UPDATE_ORDER_PLUS_VERIF_SUCCESS: {
+            return {
+                ...state,
+                createOrUpdateOrderPlusVerif: {
+                    ...state.createOrUpdateOrderPlusVerif,
+                    loading: false,
+                    data: action.payload,
+                },
+            };
+        }
+
+        case CREATE_OR_UPDATE_ORDER_PLUS_VERIF_ERROR: {
+            return {
+                ...state,
+                createOrUpdateOrderPlusVerif: {
+                    ...state.createOrUpdateOrderPlusVerif,
                     loading: false,
                     error: action.payload,
                 },

@@ -19,7 +19,13 @@ import {
     GET_ALL_VERIF_RESEP_ERROR,
     CREATE_OR_UPDATE_RETUR,
     CREATE_OR_UPDATE_RETUR_SUCCESS,
-    CREATE_OR_UPDATE_RETUR_ERROR
+    CREATE_OR_UPDATE_RETUR_ERROR,
+    GET_ANTREAN_FROM_DP,
+    GET_ANTREAN_FROM_DP_SUCCESS,
+    GET_ANTREAN_FROM_DP_ERROR,
+    CREATE_OR_UPDATE_ORDER_PLUS_VERIF,
+    CREATE_OR_UPDATE_ORDER_PLUS_VERIF_SUCCESS,
+    CREATE_OR_UPDATE_ORDER_PLUS_VERIF_ERROR
 } from "./actionType";
 
 
@@ -142,5 +148,40 @@ export const createOrUpdateReturSuccess = (data) => ({
 
 export const createOrUpdateReturError = (error) => ({
     type: CREATE_OR_UPDATE_RETUR_ERROR,
+    payload: error
+});
+
+export const getAntreanFromDP = (queries) => ({
+    type: GET_ANTREAN_FROM_DP,
+    payload: {
+        queries: queries
+    }
+});
+
+export const getAntreanFromDPSuccess = (data) => ({
+    type: GET_ANTREAN_FROM_DP_SUCCESS,
+    payload: data
+});
+
+export const getAntreanFromDPError = (error) => ({
+    type: GET_ANTREAN_FROM_DP_ERROR,
+    payload: error
+});
+
+export const createOrUpdateOrderPlusVerif = (body, callback) => ({
+    type: CREATE_OR_UPDATE_ORDER_PLUS_VERIF,
+    payload: {
+        body: body,
+        callback: callback
+    }
+});
+
+export const createOrUpdateOrderPlusVerifSuccess = (data) => ({
+    type: CREATE_OR_UPDATE_ORDER_PLUS_VERIF_SUCCESS,
+    payload: data
+});
+
+export const createOrUpdateOrderPlusVerifError = (error) => ({
+    type: CREATE_OR_UPDATE_ORDER_PLUS_VERIF_ERROR,
     payload: error
 });

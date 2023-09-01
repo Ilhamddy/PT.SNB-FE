@@ -1071,8 +1071,8 @@ const getObatFromUnit = async (req, res) => {
 
 const createOrUpdateEmrResepDokter = async (req, res) => {
     const [transaction, errorTransaction] = await createTransaction(db, res)
+    if(errorTransaction) return
     try{
-        if(errorTransaction) return
         const body = req.body
         let norecorderresep = req.body.norecorderresep
         let createdOrUpdated = null

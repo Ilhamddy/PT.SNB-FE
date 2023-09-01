@@ -31,4 +31,12 @@ export default class ServiceFarmasi {
     createOrUpdateRetur = async (body) => {
         return await api.create(`/transaksi/farmasi/create-or-update-retur`, body);
     }
+
+    getAntreanFromDp = async (queries) => {
+        return await api.get(`/transaksi/farmasi/get-antrean-from-dp`, queries);
+    }
+
+    createOrUpdateOrderPlusVerif = async (body) => {
+        return await api.create(`/transaksi/farmasi/create-or-update-order-plus-verif`, body);
+    }
 }

@@ -546,7 +546,7 @@ const comboVerifResep = async (req, res) => {
 }
 
 const comboPenjualanBebas = async (req, res) => {
-    const logger = createLogger("get combo penjualan bebas")
+    const logger = createLogger(comboPenjualanBebas.name)
     try{
         const pegawai = await pool.query(queriesPegawai.getAll)
         const jenisResep = await pool.query(queriesJenisResep.getAll)
@@ -582,7 +582,7 @@ const comboPenjualanBebas = async (req, res) => {
 }
 
 const comboReturObat = async (req, res) => {
-    const logger = createLogger("get combo retur obat")
+    const logger = createLogger(comboReturObat.name)
     try{
         const alasan = await pool.query(queriesAlasanRetur.getAll)
         
