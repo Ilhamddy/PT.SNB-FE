@@ -148,4 +148,10 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.saveRegistrasiPasienMutasi
     );
+
+    app.get(
+        "/api/transaksi/registrasi/get-daftar-pasien-farmasi",
+        [authJwt.verifyToken],
+        controller.getDaftarPasienFarmasi
+    )
 };

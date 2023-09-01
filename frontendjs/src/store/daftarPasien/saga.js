@@ -14,7 +14,8 @@ import {
     ANTREAN_NOREC_GET,
     DAFTARPASIEN_REGISTRASI_GET,
     WIDGET_DAFTARPASIEN_REGISTRASI_GET,
-    LIST_PASIEN_MUTASI_GET
+    LIST_PASIEN_MUTASI_GET,
+    GET_DAFTAR_PASIEN_FARMASI
 } from "./actionType";
 
 import {
@@ -32,7 +33,10 @@ import {
     daftarPasienRegistrasiGetError,
     widgetdaftarPasienRegistrasiGetSuccess,
     widgetdaftarPasienRegistrasiGetError,
-    listPasienMutasiGetSuccess, listPasienMutasiGetError
+    listPasienMutasiGetSuccess, 
+    listPasienMutasiGetError,
+    getDaftarPasienFarmasiSuccess,
+    getDaftarPasienFarmasiError
 } from "./action";
 import { toast } from "react-toastify";
 
@@ -154,6 +158,16 @@ function* onlistPasienMutasiGet({ payload: { param } }) {
     }
 }
 
+function* onGetDaftarPasienFarmasi({ payload: { queries } }) {
+    try {
+        const response = yield call(serviceRegistrasi.getDaftarPasienFarmasi, queries);
+        yield put(getDaftarPasienFarmasiSuccess(response.data));
+    } catch (error) {
+        console.error(error)
+        yield put(getDaftarPasienFarmasiError(error));
+    }
+}
+
 
 export function* watchGetDaftarPasienRJ() {
     yield takeEvery(DAFTARPASIEN_RJ_GET, onGetDaftarPasienRJ);
@@ -204,6 +218,11 @@ export function* watchonlistPasienMutasiGet(){
     yield takeEvery(LIST_PASIEN_MUTASI_GET, onlistPasienMutasiGet);
 }
 
+export function* watchGetDaftarPasienFarmasi() {
+    yield takeEvery(GET_DAFTAR_PASIEN_FARMASI, onGetDaftarPasienFarmasi);
+}
+
+
 
 function* daftarPasienSaga() {
     yield all([
@@ -218,7 +237,8 @@ function* daftarPasienSaga() {
         fork(watchAntreanNorecGet),
         fork(watchondaftarPasienRegistrasiGet),
         fork(watchonwidgetdaftarPasienRegistrasiGet),
-        fork(watchonlistPasienMutasiGet)
+        fork(watchonlistPasienMutasiGet),
+        fork(watchGetDaftarPasienFarmasi)
     ]);
 }
 

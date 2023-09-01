@@ -60,6 +60,7 @@ import t_verifresepModel from "./t_verifresep.model.js";
 import t_sensusharianModel from "./t_sensusharian.js";
 import t_penjualanbebasModel from "./t_penjualanbebas.model.js";
 import t_penjualanbebasdetailModel from "./t_penjualanbebasdetail.model.js";
+import t_returobatpasienModel from "./t_returobatpasien.model.js";
 
 const sequelize = new Sequelize(
   config.DB,
@@ -146,6 +147,7 @@ db.t_verifresep = t_verifresepModel(sequelize, sequelizeInstance);
 db.t_sensusharian =t_sensusharianModel(sequelize, sequelizeInstance);
 db.t_penjualanbebas = t_penjualanbebasModel(sequelize, sequelizeInstance);
 db.t_penjualanbebasdetail = t_penjualanbebasdetailModel(sequelize, sequelizeInstance);
+db.t_returobatpasien = t_returobatpasienModel(sequelize, sequelizeInstance);
 
 db.role.belongsToMany(db.user, {
   through: "user_roles",

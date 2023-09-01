@@ -51,6 +51,9 @@ import {
     GET_COMBO_PENJUALAN_BEBAS,
     GET_COMBO_PENJUALAN_BEBAS_SUCCESS,
     GET_COMBO_PENJUALAN_BEBAS_ERROR,
+    GET_COMBO_RETUR_OBAT,
+    GET_COMBO_RETUR_OBAT_SUCCESS,
+    GET_COMBO_RETUR_OBAT_ERROR,
 } from "./actionType";
 
 const INIT_STATE = {
@@ -139,6 +142,11 @@ const INIT_STATE = {
         loading: false,
         error: null,
     },
+    getComboReturObat: {
+        data: [],
+        loading: false,
+        error: null,
+    }
 };
 
 const Master = (state = INIT_STATE, action) => {
@@ -715,6 +723,42 @@ const Master = (state = INIT_STATE, action) => {
                 ...state,
                 getComboPenjualanBebas: {
                     ...state.getComboPenjualanBebas,
+                    loading: false,
+                    data: [],
+                    error: action.error,
+                }
+            }
+        }
+
+        case GET_COMBO_RETUR_OBAT: {
+            return {
+                ...state,
+                getComboReturObat: {
+                    ...state.getComboReturObat,
+                    loading: true,
+                    data: [],
+                    error: null,
+                }
+            }
+        }
+
+        case GET_COMBO_RETUR_OBAT_SUCCESS: {
+            return {
+                ...state,
+                getComboReturObat: {
+                    ...state.getComboReturObat,
+                    data: action.payload,
+                    error: null,
+                    loading: false,
+                }
+            }
+        }
+
+        case GET_COMBO_RETUR_OBAT_ERROR: {
+            return {
+                ...state,
+                getComboReturObat: {
+                    ...state.getComboReturObat,
                     loading: false,
                     data: [],
                     error: action.error,

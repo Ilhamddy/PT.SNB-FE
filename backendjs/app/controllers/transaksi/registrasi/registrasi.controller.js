@@ -857,14 +857,9 @@ const getDaftarPasienRegistrasi = (req, res) => {
     }
     let query = queries.getDaftarPasienRegistrasi + `  where td.statusenabled=true and td.noregistrasi ilike '%${noregistrasi}%'
     ${tglregistrasi}`
-    // res.status(200).send({
-    //     data: query,
-    //     status: "success",
-    //     success: true,
-    // });
     pool.query(query, (error, result) => {
         if (error) {
-            error
+            console.error(error)
         } else {
             res.status(200).send({
                 data: result.rows,
@@ -873,6 +868,47 @@ const getDaftarPasienRegistrasi = (req, res) => {
             });
         }
     })
+}
+
+const getDaftarPasienFarmasi = async (req, res) => {
+    try{
+        const {
+            start,
+            noregistrasi,
+            end
+        } = req.query;
+        // console.log(req.query.tglregistrasi)
+        // return
+        let tglregistrasi = ""
+        if (start !== undefined) {
+            tglregistrasi = ` and td.tglregistrasi between '${start}'
+             and '${end} 23:59' `;
+        } else {
+            // console.log('massuukk')
+            let today = new Date();
+            let todayMonth = '' + (today.getMonth() + 1)
+            if (todayMonth.length < 2)
+                todayMonth = '0' + todayMonth;
+            let todaystart = formatDate(today)
+            let todayend = formatDate(today) + ' 23:59'
+            tglregistrasi = ` and td.tglregistrasi between '${todaystart}'
+            and '${todayend}' `;
+        }
+        let query = queries.getDaftarPasienRegistrasi + `  where td.statusenabled=true AND ta.objectunitfk = 14`
+        const result = await pool.query(query)
+        res.status(200).send({
+            data: result.rows,
+            status: "success",
+            success: true,
+        });
+    }catch(e){
+        console.error(e)
+        res.status(500).send({
+            data: [],
+            status: "error",
+            success: false,
+        });
+    }
 }
 
 async function getWidgetDaftarPasienRegistrasi(req, res) {
@@ -1594,7 +1630,8 @@ export default {
     getPasienFormById,
     saveBatalRegistrasi,
     getListPasienMutasi,
-    saveRegistrasiPasienMutasi
+    saveRegistrasiPasienMutasi,
+    getDaftarPasienFarmasi
 };
 
 const hUpdateRegistrasiPulang = async (req, res, transaction) => {

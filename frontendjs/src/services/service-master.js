@@ -71,4 +71,7 @@ export default class ServiceMaster {
         return await api.get(`/master/combobox-penjualan-bebas`);
     }
     
+    getComboReturObat = async () => {
+        return await api.get(`/master/combobox-retur-obat`);
+    }
 }

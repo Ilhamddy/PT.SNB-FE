@@ -7,7 +7,7 @@ import {
 } from "../../../utils/dbutils";
 import { hProcessOrderResep } from "../emr/emr.controller";
 import { qGetAllVerif, qGetObatFromProduct, qGetPasienFromId } from "../../../queries/farmasi/farmasi.queries";
-import { hCreateKartuStok } from "../gudang/gudang.controller";
+import { generateKodeBatch, hCreateKartuStok } from "../gudang/gudang.controller";
 import { createLogger } from "../../../utils/logger";
 
 const t_verifresep = db.t_verifresep
@@ -17,6 +17,8 @@ const t_stokunit = db.t_stokunit
 const t_penjualanbebas = db.t_penjualanbebas
 const t_penjualanbebasdetail = db.t_penjualanbebasdetail
 const t_antreanpemeriksaan = db.t_antreanpemeriksaan
+const t_daftarpasien = db.t_daftarpasien
+const t_returobatpasien = db.t_returobatpasien
 
 const Op = db.Sequelize.Op;
 
@@ -297,7 +299,8 @@ const getPasienFromNoCm = async (req, res) => {
 const getAllVerifResep = async (req, res) => {
     const logger = createLogger("get all verif")
     try{
-        let dataAllPasien = await pool.query(qGetAllVerif, [])
+        const { norecdp } = req.query
+        let dataAllPasien = await pool.query(qGetAllVerif, [norecdp])
         const tempres = {
             dataverif: dataAllPasien.rows
         }
@@ -320,13 +323,102 @@ const getAllVerifResep = async (req, res) => {
     logger.print() 
 }
 
+const createOrUpdateRetur = async (req, res) => {
+    const logger = createLogger("create retur")
+    const [transaction, errorTransaction]
+        = await createTransaction(db, res, logger)
+    if(errorTransaction) return
+    try{
+        const body = req.body
+        let norecretur = body.norecretur
+        let createdOrUpdated = null
+        if(!norecretur){
+            norecretur = uuid.v4().substring(0, 32);
+            const created = await t_returobatpasien.create({
+                norec: norecretur,
+                kdprofile: 0,
+                statusenabled: true,
+                objectverifresepfk: body.norecverif,
+                qtyretur: body.qtyretur,
+                objectalasanreturfk: body.alasan,
+                tglinput: new Date(),
+                objectpegawaifk: req.idPegawai
+            }, {
+                transaction: transaction
+            })
+            createdOrUpdated = created.toJSON()
+        }else{
+            const [_, updated] = t_returobatpasien.update({
+                statusenabled: true,
+                objectverifresepfk: body.norecverif,
+                qtyretur: body.qtyretur,
+                objectalasanreturfk: body.alasan,
+                tglinput: new Date(),
+            }, {
+                where: {
+                    norec: norecretur
+                },
+                transaction: transaction,
+                returning: true
+            })
+            createdOrUpdated = updated[0]?.toJSON()
+        }
+        const verif = await t_verifresep.findOne({
+            where: {
+                norec: body.norecverif
+            },
+            lock: transaction.LOCK.UPDATE,
+            transaction: transaction
+        })
+        let verifVal = verif.toJSON()
+        const updatedVerif = await verif.update({
+            qty: verifVal.qty - body.qtyretur
+        }, {
+            transaction: transaction,
+        })
+        await hAddStock(req, res, transaction, {
+            nobatch: body.nobatch,
+            idUnit: req.body.unit,
+            idProduk: verifVal.objectprodukfk,
+            tabelTransaksi: "t_returobatpasien",
+            qtyAdd: body.qtyretur
+        })
+        await transaction.commit()
+        const tempres = {
+            retur: createdOrUpdated,
+            updatedVerif: updatedVerif
+        }
+
+        res.status(200).send({
+            code: 200,
+            data: tempres,
+            status: "success",
+            msg: "sukses create or update retur",
+            success: true,
+        });
+
+    }catch(error){
+        logger.error(error)
+        await transaction.rollback()
+        res.status(500).send({
+            code: 200,
+            data: error,
+            status: "error",
+            msg: "gagal create or update retur",
+            success: false,
+        });
+    }
+    logger.print()
+}
+
 export default {
     getOrderResepQuery,
     getOrderResepFromNorec,
     createOrUpdateVerifResep,
     createOrUpdatePenjualanBebas,
     getPasienFromNoCm,
-    getAllVerifResep
+    getAllVerifResep,
+    createOrUpdateRetur
 }
 
 const hCreateAntreanPemeriksaan = async(
@@ -343,9 +435,20 @@ const hCreateAntreanPemeriksaan = async(
         }
     })
     ap = ap.toJSON();
+    const norecdp = ap.objectdaftarpasienfk
+    let dp = await t_daftarpasien.findOne({
+        where: {
+            norec: norecdp
+        }
+    })
+    const updatedDp = await dp?.update({
+        objectunitlastfk: req.body.unittujuan
+    }, {
+        transaction: transaction
+    })
     const newNorec = uuid.v4().substring(0, 32);
     delete ap.norec
-    ap.unit = req.body.unittujuan;
+    ap.objectunitfk = req.body.unittujuan;
     ap.tglmasuk = new Date();
     ap.noantrian = null
     ap.norec = newNorec
@@ -515,7 +618,7 @@ const hCreateVerif = async (
     let itemUsed = subItem || item
     const qtyPembulatan = itemUsed.qtypembulatan
     const qty = itemUsed.qty
-    const {changedStok, batchStokUnitChanged} = await hChangeStok(
+    const {changedStok, batchStokUnitChanged} = await hSubstractStokProduct(
         req, 
         res, 
         transaction, 
@@ -692,7 +795,7 @@ const hCreateDetailBebas = async (
     let itemUsed = subItem || item
     const qtyPembulatan = itemUsed.qtypembulatan
     const qty = itemUsed.qty
-    const {changedStok, batchStokUnitChanged} = await hChangeStok(
+    const {changedStok, batchStokUnitChanged} = await hSubstractStokProduct(
         req, 
         res, 
         transaction, 
@@ -774,14 +877,15 @@ const hUpdateDetailBebas = async (
     return {updated, norecresep: norecverif}
 }
 
-const hChangeStok = async (
+// substract stock produk (bukan nobatch)
+const hSubstractStokProduct = async (
     req, 
     res, 
     transaction, 
     {
         productId,
         idUnit,
-        stokChange,
+        stokChange: qtySubstract,
         tabelTransaksi = "t_verifresep",
     }
 ) => {
@@ -790,10 +894,10 @@ const hChangeStok = async (
     if(!produkBatch){
         throw new Error("produk tidak ditemukan")
     }
-    if(stokChange > 0 && produkBatch.totalstok < stokChange){
+    if(qtySubstract > 0 && produkBatch.totalstok < qtySubstract){
         throw new Error("stok tidak cukup")
     }
-    let stokChangeUpdate = stokChange
+    let stokChangeUpdate = qtySubstract
     let batchStokUnit = produkBatch.batchstokunit
     const batchStokUnitChanged = batchStokUnit.map((stokUnit) => {
         let newStokUnit = {...stokUnit}
@@ -843,3 +947,38 @@ const hChangeStok = async (
     )
     return {updatedData, batchStokUnitChanged}
 } 
+
+const hAddStock = async (
+    req,
+    res,
+    transaction,
+    {
+        nobatch,
+        idUnit,
+        idProduk,
+        tabelTransaksi,
+        qtyAdd
+    }
+) => {
+    const stokAwal = await t_stokunit.findOne({
+        where: {
+            kodebatch: generateKodeBatch(nobatch, idProduk, idUnit),
+        },
+        lock: transaction.LOCK.UPDATE,
+    })
+    let stokAwalVal = stokAwal.toJSON()
+    const stokAkhir = await stokAwal.update({
+        qty: stokAwalVal.qty + qtyAdd
+    })
+    let stokAkhirVal = stokAkhir.toJSON()
+    const kartuStok = await hCreateKartuStok(req, res, transaction, {
+        idUnit: idUnit,
+        idProduk: idProduk,
+        saldoAwal: stokAwalVal.qty,
+        saldoAkhir: stokAkhirVal.qty,
+        tabelTransaksi: tabelTransaksi,
+        norecTransaksi: null,
+        noBatch: nobatch
+    })
+    return {stok: stokAkhirVal, kartuStok: kartuStok}
+}
