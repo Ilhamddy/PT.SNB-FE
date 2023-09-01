@@ -502,7 +502,6 @@ const PenjualanObatBebas = () => {
                                             if(e.value === 1){
                                                 vResep.setFieldValue("noresep", "")
                                                 vResep.setFieldValue("penulisresep", "")
-                                                vResep.setFieldValue("tanggalresep", "")
                                             }
                                         }}
                                         value={vResep.values.jenis}
