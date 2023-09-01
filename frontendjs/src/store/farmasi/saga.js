@@ -105,6 +105,7 @@ function* onCreateOrUpdateRetur({ payload: { body, callback } }) {
         callback && callback();
     } catch (error) {
         yield put(createOrUpdateReturError(error));
+        console.error(error)
         toast.error("Gagal update retur", { autoClose: 3000 });
     }
 }

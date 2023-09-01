@@ -52,31 +52,35 @@ const ListVerifObat = () => {
             name: <span className='font-weight-bold fs-13'>Detail</span>,
             cell: row => (
                 <div className="hstack gap-3 flex-wrap">
-                    <UncontrolledTooltip placement="top" target="detail-produk" > Detail Produk </UncontrolledTooltip>
-                    <UncontrolledDropdown className="dropdown d-inline-block">
-                        <DropdownToggle className="btn btn-soft-secondary btn-sm" tag="button" id="detail-produk">
-                            <i className="ri-apps-2-line"></i>
-                        </DropdownToggle>
-                        <DropdownMenu className="dropdown-menu-end">
-                            <DropdownItem onClick={() => {
-                                setDataModal({
-                                    norecverif: row.norecverif,
-                                    data: {
-                                        noresep: row.noresep,
-                                        namadepo: row.namaunit,
-                                        unit: row.unit,
-                                        namaobat: row.namaproduk,
-                                        qty: row.qty,
-                                        nobatch: row.nobatch,
-                                    }
-                                })
-                            }}>
-                                <i className="ri-mail-send-fill align-bottom me-2 text-muted">
-                                </i>
-                                Retur Obat
-                            </DropdownItem>
-                        </DropdownMenu>
-                    </UncontrolledDropdown>
+                    {!true && 
+                    <>
+                        <UncontrolledTooltip placement="top" target="detail-produk" > Detail Produk </UncontrolledTooltip>
+                        <UncontrolledDropdown className="dropdown d-inline-block">
+                            <DropdownToggle className="btn btn-soft-secondary btn-sm" tag="button" id="detail-produk">
+                                <i className="ri-apps-2-line"></i>
+                            </DropdownToggle>
+                            <DropdownMenu className="dropdown-menu-end">
+                                <DropdownItem onClick={() => {
+                                    setDataModal({
+                                        norecverif: row.norecverif,
+                                        data: {
+                                            noresep: row.noresep,
+                                            namadepo: row.namaunit,
+                                            unit: row.unit,
+                                            namaobat: row.namaproduk,
+                                            qty: row.qty,
+                                            nobatch: row.nobatch,
+                                        }
+                                    })
+                                }}>
+                                    <i className="ri-mail-send-fill align-bottom me-2 text-muted">
+                                    </i>
+                                    Retur Obat
+                                </DropdownItem>
+                            </DropdownMenu>
+                        </UncontrolledDropdown>
+                    </>
+                    }
                 </div>)
                 ,
             sortable: true,
@@ -136,8 +140,11 @@ const ListVerifObat = () => {
 
     return (
         <div className="page-content page-verifikasi-resep">
-            <ModalRetur dataModal={dataModal} toggle={() => setDataModal({...initialRetur})}
-                onRetur={() => dispatch(getAllVerifResep({norecdp: norecdp}))}
+            <ModalRetur dataModal={dataModal} 
+                toggle={() => setDataModal({...initialRetur})}
+                onRetur={() => {
+                    dispatch(getAllVerifResep({norecdp: norecdp}))
+                }}
             />
             <ToastContainer closeButton={false} />
             <Container fluid>
@@ -188,7 +195,10 @@ const ModalRetur = ({dataModal, onRetur, ...rest}) => {
             const newVal = {...values}
             newVal.qty = strToNumber(newVal.qty)
             newVal.qtyretur = strToNumber(newVal.qtyretur)
-            dispatch(createOrUpdateRetur(newVal), () => {onRetur(); dataModal.toggle()})
+            dispatch(createOrUpdateRetur(newVal, () => {
+                onRetur(); 
+                rest.toggle()
+            }))
             
         }
     })
