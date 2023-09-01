@@ -18,6 +18,8 @@ import {
     daftarPiutangPasienGetError,
     paymentPiutangPasienGetSuccess,
     paymentPiutangPasienGetError,
+    laporanPendapatanKasirGetSuccess,
+    laporanPendapatanKasirGetError
 } from "./action";
 
 import {
@@ -30,6 +32,7 @@ import {
     BUKTI_BAYAR_CANCEL,
     DAFTAR_PIUTANG_PASIEN_GET,
     PAYMENT_PIUTANG_PASIEN_GET,
+    LAPORAN_PENDAPATAN_KASIR_GET
 } from "./actionType";
 
 import ServicePayment from "../../services/service-payment";
@@ -134,6 +137,15 @@ function* onGetPaymentForPiutang({payload: {norecpiutang}}) {
     }
 }
 
+function* onGetLaporanPendapatanKasir({payload: {param}}) {
+    try {
+        const response = yield call(servicePayment.getLaporanPendapatanKasir, param);
+        yield put(laporanPendapatanKasirGetSuccess(response.data));
+    } catch (error) {
+        yield put(laporanPendapatanKasirGetError(error));
+    }
+}
+
 export function* watchGetPelayananFromAntrean() {
     yield takeEvery(PELAYANAN_FROM_DP_GET, onGetPelayananFromAntrean);
 }
@@ -170,6 +182,10 @@ export function* watchGetPaymentForPiutang() {
     yield takeEvery(PAYMENT_PIUTANG_PASIEN_GET, onGetPaymentForPiutang);
 }
 
+export function* watchonGetLaporanPendapatanKasir() {
+    yield takeEvery(LAPORAN_PENDAPATAN_KASIR_GET, onGetLaporanPendapatanKasir);
+}
+
 export default function* masterSaga() {
     yield all([
         fork(watchGetPelayananFromAntrean),
@@ -181,5 +197,6 @@ export default function* masterSaga() {
         fork(watchBuktiBayarCancel),
         fork(watchGetDaftarPiutangPasien),
         fork(watchGetPaymentForPiutang),
+        fork(watchonGetLaporanPendapatanKasir)
     ]);
 }

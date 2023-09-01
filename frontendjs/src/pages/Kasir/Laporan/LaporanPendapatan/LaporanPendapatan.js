@@ -20,7 +20,7 @@ import Flatpickr from "react-flatpickr";
 import DataTable from 'react-data-table-component';
 import LoadingTable from '../../../../Components/Table/LoadingTable';
 import {
-    laporanRL_3_1_Get
+    laporanPendapatanKasirGet
 } from '../../../../store/actions';
 import "./LaporanPendapatan.scss"
 import * as XLSX from 'xlsx';
@@ -40,8 +40,8 @@ const LaporanPendapatan = () => {
         // data: state.KendaliDokumen.comboLaporanRekammedisGet.data,
         // loading: state.KendaliDokumen.comboLaporanRekammedisGet.loading,
         // error: state.KendaliDokumen.comboLaporanRekammedisGet.error,
-        dataGrid: state.KendaliDokumen.laporanRL_3_1_Get.data,
-        loadingGrid: state.KendaliDokumen.laporanRL_3_1_Get.loading,
+        dataGrid: state.Payment.laporanPendapatanKasirGet.data,
+        loadingGrid: state.Payment.laporanPendapatanKasirGet.loading,
     }));
     const [dateStart, setdateStart] = useState(dateAwalStart);
     const [dateEnd, setDateEnd] = useState(dateAwalEnd);
@@ -67,13 +67,13 @@ const LaporanPendapatan = () => {
     const [search, setSearch] = useState('')
     const handleFilter = (e) => {
         if (e.keyCode === 13) {
-            
-            dispatch(laporanRL_3_1_Get(`${search}&start=${validation.values.tglstart}&end=${validation.values.tglend}&instalasi=${validation.values.departemen}&unit=${validation.values.unit}&rekanan=${validation.values.rekanan}&pegawai=${validation.values.pegawai}`));
+
+            dispatch(laporanPendapatanKasirGet(`${search}&start=${validation.values.tglstart}&end=${validation.values.tglend}`));
         }
     }
     const handleClickCari = () => {
-        console.log(validation.values.tglstart)
-        dispatch(laporanRL_3_1_Get(`${search}&start=${validation.values.tglstart}&end=${validation.values.tglend}&instalasi=${validation.values.departemen}&unit=${validation.values.unit}&rekanan=${validation.values.rekanan}&pegawai=${validation.values.pegawai}`));
+        // console.log(`${search}&start=${validation.values.tglstart}&end=${validation.values.tglend}`)
+        dispatch(laporanPendapatanKasirGet(`${search}&start=${validation.values.tglstart}&end=${validation.values.tglend}`));
     }
     const tableCustomStyles = {
         headRow: {
@@ -93,111 +93,49 @@ const LaporanPendapatan = () => {
     const columns = [
         {
             name: <span className='font-weight-bold fs-13'>No</span>,
-            selector: row => row.row,
+            selector: row => row.no,
             sortable: true,
+            width: "50px"
         },
         {
 
-            name: <span className='font-weight-bold fs-13'>Jenis Pelayanan</span>,
-            selector: row => row.jenis_spesialisasi,
-            sortable: true,
-            // width: "150px"
-        },
-        {
-
-            name: <span className='font-weight-bold fs-13'>Pasien Awal Tahun</span>,
-            selector: row => '',
+            name: <span className='font-weight-bold fs-13'>Noregistrasi</span>,
+            selector: row => row.noregistrasi,
             sortable: true,
             // width: "150px"
         },
         {
 
-            name: <span className='font-weight-bold fs-13'>Pasien Masuk</span>,
-            selector: row => row.jumlah,
+            name: <span className='font-weight-bold fs-13'>No Bukti Bayar</span>,
+            selector: row => row.no_bukti,
+            sortable: true,
+            // width: "150px"
+        },
+        {
+
+            name: <span className='font-weight-bold fs-13'>Tanggal Bayar</span>,
+            selector: row => row.tglbayar,
             sortable: true,
             // width: "250px",
         },
         {
 
-            name: <span className='font-weight-bold fs-13'>Pasien Keluar Hidup</span>,
-            selector: row => row.jmlpulanghidup,
+            name: <span className='font-weight-bold fs-13'>Total Bayar</span>,
+            selector: row => row.totalbayar,
             sortable: true,
             // width: "150px"
         },
         {
 
-            name: <span className='font-weight-bold fs-13'>Pasien Akhir Tahun</span>,
-            selector: row => row.jmlmeninggalk48,
+            name: <span className='font-weight-bold fs-13'>Kasir</span>,
+            selector: row => row.namalengkap,
             sortable: true,
             // width: "150px"
         },
         {
 
-            name: <span className='font-weight-bold fs-13'>Jumlah Hari Perawatan</span>,
-            selector: row => row.jmlmeninggall48,
-            sortable: true,
-            // width: "150px"
-        },
-        {
-
-            name: <span className='font-weight-bold fs-13'>Jumlah Hari Perawatan</span>,
-            selector: row => row.lamarawat,
-            sortable: true,
-            // width: "150px"
-        },
-        {
-
-            name: <span className='font-weight-bold fs-13'>Jumlah Hari Perawatan</span>,
-            selector: row => '',
-            sortable: true,
-            // width: "150px"
-        },
-        {
-
-            name: <span className='font-weight-bold fs-13'>Jumlah Hari Perawatan</span>,
-            selector: row => row.hariperawatan,
-            sortable: true,
-            // width: "150px"
-        },
-        {
-
-            name: <span className='font-weight-bold fs-13'>Jumlah Hari Perawatan</span>,
-            selector: row => row.hariperawatanklvvip,
-            sortable: true,
-            // width: "150px"
-        },
-        {
-
-            name: <span className='font-weight-bold fs-13'>Jumlah Hari Perawatan</span>,
-            selector: row => row.hariperawatanklvip,
-            sortable: true,
-            // width: "150px"
-        },
-        {
-
-            name: <span className='font-weight-bold fs-13'>Jumlah Hari Perawatan</span>,
-            selector: row => row.hariperawatankl1,
-            sortable: true,
-            // width: "150px"
-        },
-        {
-
-            name: <span className='font-weight-bold fs-13'>Jumlah Hari Perawatan</span>,
-            selector: row => row.hariperawatankl2,
-            sortable: true,
-            // width: "150px"
-        },
-        {
-
-            name: <span className='font-weight-bold fs-13'>Jumlah Hari Perawatan</span>,
-            selector: row => row.hariperawatankl3,
-            sortable: true,
-            // width: "150px"
-        },
-        {
-
-            name: <span className='font-weight-bold fs-13'>Jumlah Hari Perawatan</span>,
-            selector: row => row.hariperawatanklkhusus,
+            name: <span className='font-weight-bold fs-13'>Jenis Pembayaran</span>,
+            selector: row => row.jenispembayaran,
             sortable: true,
             // width: "150px"
         },
@@ -288,7 +226,19 @@ const LaporanPendapatan = () => {
                             </Button>
 
                             <div className="live-preview">
-                                <div className="table-responsive">
+                                <div id="table-gridjs">
+                                    <DataTable
+                                        fixedHeader
+                                        fixedHeaderScrollHeight="700px"
+                                        columns={columns}
+                                        pagination
+                                        data={dataGrid.laporan}
+                                        progressPending={loadingGrid}
+                                        progressComponent={<LoadingTable />}
+                                        customStyles={tableCustomStyles}
+                                    />
+                                </div>
+                                {/* <div className="table-responsive">
                                     <Table className="table-bordered border-secondary table-nowrap align-top mb-0">
                                         <thead style={{ backgroundColor: '#e67e22', color: '#ffffff' }}>
                                             <tr>
@@ -315,7 +265,7 @@ const LaporanPendapatan = () => {
                                             </tr>
                                         </thead>
                                         {
-                                            dataGrid.map((data, i) => (
+                                            dataGrid.laporan.map((data, i) => (
                                                 <tbody className="w-100 table-hover-click"
                                                     key={i}>
                                                     <tr className="w-100">
@@ -340,27 +290,9 @@ const LaporanPendapatan = () => {
                                             ))
                                         }
                                     </Table>
-                                </div>
+                                </div> */}
                             </div>
-                            {/* <div className="table-responsive table-card mt-3 mb-1">
-                                <table className="table align-middle" id="customerTable">
-                                    <thead className="table-light">
-                                        <tr>
-                                            <th scope="col" style={{ width: "50px" }}>
-                                                <div className="form-check">
-                                                    <input className="form-check-input" type="checkbox" id="checkAll" value="option" />
-                                                </div>
-                                            </th>
-                                            <th className="sort" data-sort="customer_name">No</th>
-                                            <th className="sort" data-sort="email">Jenis Pelayanan</th>
-                                            <th className="sort" data-sort="phone">PASIEN KELUAR MATI
-                                                <td>test</td>
-                                                <td>test</td>
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                </table>
-                            </div> */}
+
                         </CardBody>
                     </Card>
                 </Container>

@@ -40,7 +40,7 @@ const qGetPelayananFromDp =
                 npp.no_nota
     `
 
-const qDm =`
+const qDm = `
     SELECT
     json_agg(json_build_object(
         'no_kartu', 
@@ -55,7 +55,7 @@ const qDm =`
             LEFT JOIN m_rekanan mr ON mr.id = kpa.objectpenjaminfk
     `
 
-const qGetKepesertaanFromAntrean = 
+const qGetKepesertaanFromAntrean =
     `
     SELECT
     json_agg(json_build_object(
@@ -106,7 +106,7 @@ const qDaftarTagihanPasien =
         AND bb.objectpiutangpasienfk IS NULL
             WHERE tn.statusenabled=true 
             ORDER BY tn.tglinput DESC
-    `       
+    `
 const qGetPelayananFromVerif =
     `
     SELECT 
@@ -147,7 +147,7 @@ const qGetVerif = `
             WHERE tnp.norec=$1
 `
 
-const qGetKepesertaanFromNota = 
+const qGetKepesertaanFromNota =
     `
     SELECT
     json_agg(json_build_object(
@@ -170,7 +170,7 @@ const qGetKepesertaanFromNota =
             WHERE tnp.norec = $1
     `
 
-const qGetPiutangFromDP = 
+const qGetPiutangFromDP =
     `
     SELECT
     *
@@ -180,7 +180,7 @@ const qGetPiutangFromDP =
     `
 
 
-const qGetNotaPelayananPasien = 
+const qGetNotaPelayananPasien =
     `
     SELECT
     *
@@ -188,7 +188,7 @@ const qGetNotaPelayananPasien =
         WHERE norec = $1
     `
 
-const qGetBuktiBayar = 
+const qGetBuktiBayar =
     `
     SELECT
     *
@@ -223,9 +223,9 @@ WHERE CASE WHEN $1 = 'pasien'
     ELSE tp.statusenabled = true AND tp.objectpenjaminfk != 3
 END
 ORDER BY tp.tglinput DESC
-    `  
+    `
 
-const qTagihanGetFromDP = 
+const qTagihanGetFromDP =
     `
     SELECT
     tn.*,
@@ -238,7 +238,7 @@ const qTagihanGetFromDP =
             AND tn.statusenabled = true
     `
 
-const qGetPaymentForPiutang = 
+const qGetPaymentForPiutang =
     `
     SELECT
     tp.totalpiutang AS totalpiutang,
@@ -282,9 +282,9 @@ const qDaftarTagihanPasienFronNota =
         AND bb.statusenabled = true 
             WHERE tn.statusenabled=true 
             AND tn.norec = $1
-    `     
+    `
 
-const qGetDepositFromNota = 
+const qGetDepositFromNota =
     `
     SELECT 
     dpst.norec AS norec,
@@ -299,7 +299,7 @@ const qGetDepositFromNota =
             ORDER BY dpst.tglinput DESC
     `
 
-const qGetBuktiBayarFromNota = 
+const qGetBuktiBayarFromNota =
     `
     SELECT
     tbb.*,
@@ -313,7 +313,7 @@ const qGetBuktiBayarFromNota =
         WHERE objectnotapelayananpasienfk = $1
     `
 
-const qGetCaraBayarFromBB = 
+const qGetCaraBayarFromBB =
     `
     SELECT
     tc.*,
@@ -325,7 +325,7 @@ const qGetCaraBayarFromBB =
         WHERE objectbuktibayarpasienfk = $1
     `
 
-const qGetBuktiBayarNorec = 
+const qGetBuktiBayarNorec =
     `
     SELECT
     tbb.*,
@@ -338,6 +338,16 @@ const qGetBuktiBayarNorec =
         LEFT JOIN m_pasien mp ON mp.id = td.nocmfk
         WHERE tbb.norec = $1
     `
+const qGetLaporanPendapatanKasir =
+    `select row_number() OVER (ORDER BY tb.norec) AS no,tb.totalbayar,tb.objectpegawaifk,mp.namalengkap,
+    to_char(tb.tglinput,'dd Month YYYY') as tglbayar, mj.reportdisplay as jenispembayaran,
+    td.noregistrasi,tb.no_bukti from t_buktibayarpasien tb 
+    join m_pegawai mp on mp.id=tb.objectpegawaifk 
+    join m_jenispembayaran mj on mj.id=tb.objectjenispembayaranfk
+    join t_daftarpasien td on td.norec=tb.objectdaftarpasienfk 
+    where tb.statusenabled=true and tb.tglinput between $1 and $2 and mp.namalengkap ilike $3
+    `
+
 
 export {
     qGetPelayananFromDp,
@@ -357,4 +367,5 @@ export {
     qGetBuktiBayarFromNota,
     qGetCaraBayarFromBB,
     qGetBuktiBayarNorec,
+    qGetLaporanPendapatanKasir
 }
