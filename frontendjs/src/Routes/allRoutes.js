@@ -309,6 +309,7 @@ import AllOrderResepList from "../pages/AllOrderResepList/AllOrderResepList";
 import PenjualanObatBebas from "../pages/PenjualanObatBebas/PenjualanObatBebas";
 import ListVerifObat from "../pages/ListVerifObat/ListVerifObat";
 import DaftarPasienFarmasi from "../pages/ListDaftarPasien/DaftarPasienFarmasi/DaftarPasienFarmasi";
+import TambahObatFarmasi from "../pages/TambahObatFarmasi/TambahObatFarmasi";
 
 
 
@@ -600,7 +601,8 @@ const authProtectedRoutes = [
   { path: "/farmasi/verif-order-resep/:norecorder", component: <VerifikasiResep /> },
   { path: "/farmasi/order-list", component: <AllOrderResepList /> },
   { path: "/farmasi/penjualan-obat-bebas", component: <PenjualanObatBebas /> },
-  { path: "/farmasi/list-verif-obat/:norecdp", component: <ListVerifObat />}
+  { path: "/farmasi/list-verif-obat/:norecdp", component: <ListVerifObat />},
+  { path: "/farmasi/tambah-obat-farmasi/:norecap", component: <TambahObatFarmasi />}
 ];
 
 const publicRoutes = [

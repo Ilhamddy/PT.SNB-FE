@@ -52,7 +52,7 @@ const ListVerifObat = () => {
             name: <span className='font-weight-bold fs-13'>Detail</span>,
             cell: row => (
                 <div className="hstack gap-3 flex-wrap">
-                    {!true && 
+                    {!row.kodertambahan && 
                     <>
                         <UncontrolledTooltip placement="top" target="detail-produk" > Detail Produk </UncontrolledTooltip>
                         <UncontrolledDropdown className="dropdown d-inline-block">
@@ -90,8 +90,8 @@ const ListVerifObat = () => {
         {
             name: <span className='font-weight-bold fs-13'>R/</span>,
             sortable: true,
-            selector: row => row.koder + (row.kodertambahan ? "." + row.kodertambahan : ""),
-            width: "40px"
+            selector: row => (row.koder) + (row.kodertambahan ? ("." + row.kodertambahan) : ""),
+            width: "60px"
         },
         {
             name: <span className='font-weight-bold fs-13'>No Resep</span>,
@@ -173,6 +173,76 @@ const ListVerifObat = () => {
                 </Card>
             </Container>
         </div>
+    )
+}
+
+const ModalTambahObat = ({dataModal, ...rest}) => {
+    /**
+     * @type {import("react-data-table-component").TableColumn[]}
+     */
+    const columnsAntrean = [
+        {
+            name: <span className='font-weight-bold fs-13'>No</span>,
+            sortable: true,
+            selector: row => row.koder + (row.kodertambahan ? "." + row.kodertambahan : ""),
+            width: "40px"
+        },
+        {
+            name: <span className='font-weight-bold fs-13'>Tgl registrasi</span>,
+            sortable: true,
+            selector: row => row.noresep,
+            width: "120px"
+        },
+        {
+            name: <span className='font-weight-bold fs-13'>Penjamin</span>,
+            sortable: true,
+            selector: row => row.namaunit,
+            width: "120px"
+        },
+        {
+            name: <span className='font-weight-bold fs-13'>Kelas</span>,
+            sortable: true,
+            selector: row => row.namaproduk,
+            width: "120px"
+        },
+        {
+            name: <span className='font-weight-bold fs-13'>Tgl Masuk</span>,
+            sortable: true,
+            selector: row => row.qty,
+            width: "120px"
+        },
+        {
+            name: <span className='font-weight-bold fs-13'>Tgl Keluar</span>,
+            sortable: true,
+            selector: row => row.harga,
+            width: "120px"
+        },
+        {
+            name: <span className='font-weight-bold fs-13'></span>,
+            sortable: true,
+            selector: row => <Button color="info">Tambah</Button>,
+            width: "120px"
+        },  
+    ];
+    return (
+        <Modal 
+            isOpen={!!dataModal.norecverif} 
+            centered={true}
+            size="xl" {...rest}>
+            <ModalBody className="py-12 px-12">
+                <DataTable
+                    fixedHeader
+                    fixedHeaderScrollHeight="700px"
+                    columns={columnsAntrean}
+                    pagination
+                    data={[]}
+                    progressPending={false}
+                    customStyles={tableCustomStyles}
+                    progressComponent={<LoadingTable />}
+                    noDataComponent={<NoDataTable dataName={"antrean pasien"}/>}
+                    />
+            </ModalBody>
+        </Modal>
     )
 }
 

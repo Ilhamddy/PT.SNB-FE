@@ -896,8 +896,16 @@ const getDaftarPasienFarmasi = async (req, res) => {
         }
         let query = queries.getDaftarPasienRegistrasi + `  where td.statusenabled=true AND ta.objectunitfk = 14`
         const result = await pool.query(query)
+        //TODO: harusnya level query
+        let final = []
+        result.rows.forEach(data => {
+            const finalFind = final.find(x => x.noregistrasi === data.noregistrasi)
+            if (!finalFind) {
+                final.push(data)
+            }
+        })
         res.status(200).send({
-            data: result.rows,
+            data: final,
             status: "success",
             success: true,
         });
