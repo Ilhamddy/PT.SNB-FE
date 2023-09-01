@@ -68,6 +68,9 @@ export default (sequelize, Sequelize) => {
         },
         objectpiutangpasienfk: {
             type: Sequelize.CHAR(32)
+        },
+        objectjenispembayaranfk:{
+            type:Sequelize.INTEGER
         }
     }, {
         tableName: "t_buktibayarpasien", // relation "user" does not exist

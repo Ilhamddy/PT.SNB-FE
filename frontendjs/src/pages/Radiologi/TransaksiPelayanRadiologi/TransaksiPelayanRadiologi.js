@@ -19,7 +19,7 @@ import {
 
 import InputTindakan from '../../Emr/InputTindakan/InputTindakan';
 import ExpertiseRadiologiModal from '../../../Components/Common/ExpertiseRadiologiModal/ExpertiseRadiologiModal';
-
+import LoadingTable from '../../../Components/Table/LoadingTable';
 
 const TransaksiPelayananRadiologi = () => {
     const { norecdp, norecap } = useParams();
@@ -214,6 +214,7 @@ const TransaksiPelayananRadiologi = () => {
                                                             pagination
                                                             data={dataPelayanan}
                                                             progressPending={loadingPelayanan}
+                                                            progressComponent={<LoadingTable />}
                                                             customStyles={tableCustomStyles}
                                                         />
                                                     </div>

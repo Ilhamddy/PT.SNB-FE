@@ -13,6 +13,7 @@ const Navdata = () => {
     const [isLaporan, setLaporan] = useState(false);
     const [isLaporanRL, setLaporanRL] = useState(false);
     const [isPembayaran, setPembayaran] = useState(false);
+    const [isLaporanKasir, setLaporanKasir] = useState(false);
     const [isRadiologi, setRadiologi] = useState(false);
     const [isLaboratorium, setLaboratorium] = useState(false);
     const [isCasemix, setCasemix] = useState(false);
@@ -288,6 +289,7 @@ const Navdata = () => {
                 },
             ],
         },
+        // KASIR
         {
             id: "listpembayaran",
             label: "Daftar pembayaran",
@@ -302,7 +304,7 @@ const Navdata = () => {
             stateVariables: isPembayaran,
             isAllowed: () => {
                 return isAllowedAccess(getUserPermissions(), [
-                    "REGISTRASI_VIEW",
+                    "REGISTRASI_VIEW","KASIR_VIEW"
                 ]);
             },
             subItems: [
@@ -341,6 +343,38 @@ const Navdata = () => {
                 }
             ]
         },
+        {
+            id: "listlaporankasir",
+            label: "Laporan",
+            icon: "lab la-delicious",
+            link: "/#",
+            click: function (e) {
+                e.preventDefault();
+                setLaporanKasir(!isLaporanKasir);
+                setIscurrentState('isLaporanKasir');
+                updateIconSidebar(e);
+            },
+            stateVariables: isLaporanKasir,
+            isAllowed: () => {
+                return isAllowedAccess(getUserPermissions(), [
+                    "REGISTRASI_VIEW","KASIR_VIEW"
+                ]);
+            },
+            subItems: [
+                {
+                    id: "laporanPendapatanKasir",
+                    label: "Laporan Pendapatan Kasir",
+                    link: "/payment/laporan-pendapatan",
+                    parentId: "listlaporankasir",
+                    isAllowed: () => {
+                        return isAllowedAccess(getUserPermissions(), [
+                            "REGISTRASI_VIEW",
+                        ]);
+                    }
+                },
+            ]
+        },
+        // end
         {
             id: "rekammedis",
             label: "Rekam Medis",
@@ -434,7 +468,7 @@ const Navdata = () => {
                             stateVariables: isLaporanRL,
                             childItems: [
                                 { id: 2, label: "Laporan RL3.1", link: "/cmVrYW1tZWRpcy9sYXBvcmFuLXJsL3JsMy4x", parentId: "rekammedis-laporan-rl3-1" },
-                                { id: 3, label: "Ecommerce Action", link: "/#", parentId: "rekammedis-laporan-rl3" },
+                                { id: 3, label: "Laporan RL3.2", link: "/cmVrYW1tZWRpcy9sYXBvcmFuLXJsL3JsMy4y", parentId: "rekammedis-laporan-rl3-2" },
                             ],
                         },
                     ],
@@ -765,6 +799,8 @@ const Navdata = () => {
                 },
             ],
         },
+        
+        
     ];
     return <React.Fragment>{menuItems}</React.Fragment>;
 };

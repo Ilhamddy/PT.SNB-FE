@@ -263,6 +263,7 @@ import LaporanPasienKunjungan from "../pages/RekamMedis/Laporan/LaporanPasienKun
 
 // RL
 import RL3_1 from "../pages/RekamMedis/Laporan/RL3_1/RL3_1";
+import RL3_2 from "../pages/RekamMedis/Laporan/RL3_2/RL3_2";
 // 
 // radiologi
 import DaftarOrderRadiologi from "../pages/Radiologi/DaftarOrderRadiologi/DaftarOrderRadiologi";
@@ -288,6 +289,9 @@ import BayarPiutang from "../pages/BayarPiutang/BayarPiutang";
 import VerifikasiPelayanan from "../pages/VerifikasiPelayanan/VerifikasiPelayanan";
 import DaftarTagihanPasien from "../pages/DaftarTagihanPasien/DaftarTagihanPasien";
 import Bayar from "../pages/Bayar/Bayar";
+
+// laporan Kasir
+import LaporanPendapatan from "../pages/Kasir/Laporan/LaporanPendapatan/LaporanPendapatan";
 
 import SettingProduk from "../pages/Produk/SettingProduk";
 import ListProduk from "../pages/Produk/ListProduk";
@@ -548,6 +552,7 @@ const authProtectedRoutes = [
   { path: "/cmVrYW1tZWRpcy9sYXBvcmFuLXBhc2llbi1iYXRhbA==", component: <LaporanPasienBatal/>},
   { path: "/cmVrYW1tZWRpcy9sYXBvcmFuLXBhc2llbi1rdW5qdW5nYW4=", component: <LaporanPasienKunjungan/>},
   { path: "/cmVrYW1tZWRpcy9sYXBvcmFuLXJsL3JsMy4x", component: <RL3_1/>},//rekammedis/laporan-rl/rl3.1
+  { path: "/cmVrYW1tZWRpcy9sYXBvcmFuLXJsL3JsMy4y", component: <RL3_2/>},
 
   // radiologi
   { path: "/radiologi/daftarorderradiologi", component: <DaftarOrderRadiologi /> },
@@ -568,6 +573,7 @@ const authProtectedRoutes = [
   { path: "/payment/bayar/:norecnota", component: <Bayar /> },
   { path: "/payment/daftar-piutang/:location", component: <DaftarPiutangPasien />},
   { path: "/payment/bayar/piutang/:norecpiutang/:norecnota", component: <BayarPiutang /> },
+  { path: "/payment/laporan-pendapatan", component: <LaporanPendapatan /> },
 
   // casemix
   { path: "/casemix/klaiminacbg", component: <KlaimInacbg /> },
