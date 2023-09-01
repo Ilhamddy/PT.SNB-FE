@@ -572,10 +572,11 @@ const hCreatePelayanan = async (
     }
 
 ) => {
-    const norecPelayanan = uuid.v4().substring(0, 32);
+
     const createdPelayanan = await Promise.all(
         verifUsed.map(
             async (verifUsed) => {
+                const norecPelayanan = uuid.v4().substring(0, 32);
                 const createdPelayanan = await t_pelayananpasien.create({
                     norec: norecPelayanan,
                     statusenabled: true,

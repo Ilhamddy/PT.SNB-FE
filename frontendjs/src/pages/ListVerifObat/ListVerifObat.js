@@ -176,6 +176,20 @@ const ListVerifObat = () => {
     )
 }
 
+const ModalTambahObat = ({...rest}) => {
+    return (
+        <Modal isOpen={!!dataModal.norecverif} centered={true} size="xl" {...rest}>
+            <ModalBody className="py-12 px-12">
+                <Row>
+                    <Col lg={6}>
+
+                    </Col>
+                </Row>
+            </ModalBody>
+        </Modal>
+    )
+}
+
 const ModalRetur = ({dataModal, onRetur, ...rest}) => {
     const {
         alasan
