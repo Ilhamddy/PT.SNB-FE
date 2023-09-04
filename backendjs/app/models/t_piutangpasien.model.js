@@ -40,6 +40,9 @@ export default (sequelize, Sequelize) => {
         },
         objectpegawaifk: {
             type: Sequelize.INTEGER
+        },
+        objectbuktibayarfk: {
+            type: Sequelize.CHAR(32)
         }
     },
     {

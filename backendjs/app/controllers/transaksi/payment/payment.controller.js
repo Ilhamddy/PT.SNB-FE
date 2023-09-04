@@ -19,6 +19,8 @@ import { qGetPelayananFromDp,
     qGetCaraBayarFromBB,
     qGetLaporanPendapatanKasir
 } from '../../../queries/payment/payment.queries';
+import {createLogger} from "../../../utils/logger";
+import { createTransaction } from "../../../utils/dbutils"
 
 import { Op } from "sequelize";
 
@@ -244,16 +246,18 @@ const createBuktiBayar = async (req, res) => {
         } = await hCreateBayar(req, transaction)
 
         const sisa = objectBody.totaltagihan - totalPayment
-
+        
         if(objectBody.norecpiutang){
             await t_piutangpasien.update({
                 totalbayar: totalPayment,
                 sisapiutang: sisa,
-                tglupdate: new Date()
+                tglupdate: new Date(),
+                objectbuktibayarfk: norecbukti
             }, {
                 where: {
                     norec: objectBody.norecpiutang
-                }
+                },
+                transaction: transaction
             })
         }
 
@@ -269,7 +273,7 @@ const createBuktiBayar = async (req, res) => {
                 totalbayar: 0,
                 sisapiutang: sisa,
                 tglinput: new Date(),
-                tglupdate: new Date,
+                tglupdate: new Date(),
                 objectpegawaifk: req.idPegawai
             }, {
                 transaction: transaction
@@ -429,24 +433,17 @@ const cancelNotaVerif = async (req, res) => {
 }
 
 const cancelBayar = async (req, res) => {
-    let transaction = null;
-    try{
-        transaction = await db.sequelize.transaction();
-    }catch(e){
-        res.status(500).send({
-            data: e.message,
-            success: false,
-            msg: 'Transaksi gagal',
-            code: 500
-        });
-        return;
-    }
+    const logger = createLogger(cancelBayar.name);
+    const [transaction, errorTransaction] 
+        = await createTransaction(db, res, logger);
+    if(errorTransaction) return;
     try{
         const norecnota = req.params.norecnota;
         const norec = uuid.v4().substring(0, 32);
         const params = req.params
-        let [cob, updatedBuktiB] = await t_buktibayarpasien.update({
+        let [_, updatedBuktiB] = await t_buktibayarpasien.update({
             statusenabled: false,
+            tglbatal: new Date(),
         }, {
             where: {
                 norec: params.norecbayar
@@ -454,19 +451,30 @@ const cancelBayar = async (req, res) => {
             returning: true,
             transaction: transaction
         })
+        const piutangSebelum = await t_piutangpasien.findOne({
+            where: {
+                objectbuktibayarfk: params.norecbayar
+            }
+        })
+        
+        const piutangSebelumVal = piutangSebelum.toJSON() || null
+        let totalPiutangBefore = piutangSebelumVal?.totalpiutang || 0
+        const piutangUpdated = await piutangSebelum.update({
+            statusenabled: true,
+            tglupdate: new Date(),
+            totalbayar: 0,
+            sisapiutang: totalPiutangBefore,
+        }, {
+            transaction: transaction,
+        })
         updatedBuktiB = updatedBuktiB[0]?.toJSON() || null
 
-        const [hasil, updatedRestBB] = await t_buktibayarpasien.update({
-            statusenabled: false,
-        }, {
-            where: {
-                objectnotapelayananpasienfk: updatedBuktiB?.objectnotapelayananpasienfk,
-                tglinput: {
-                    [Op.gte]: new Date(updatedBuktiB?.tglinput.getTime() - new Date().getTimezoneOffset() * 60000)
-                },
-                statusenabled: true
-            },
-            transaction: transaction
+        await hCancelPiutangAfter(
+            req, 
+            res, 
+            transaction, 
+        {
+            updatedBuktiBayar: updatedBuktiB,
         })
 
         const updatedCaraBayar = await t_carabayar.update({
@@ -478,22 +486,7 @@ const cancelBayar = async (req, res) => {
             transaction: transaction
         })
 
-        const updatedPiutang = await t_piutangpasien.update({
-            statusenabled: false,
-        }, {
-            where: {
-                objectnotapelayananpasienfk: params.norecnota,
-                objectpenjaminfk: 3,
-                tglinput: {
-                    [Op.gte]: new Date(updatedBuktiB.tglinput.getTime() - new Date().getTimezoneOffset() * 60000)
-                },
-                statusenabled: true
-            },
-            transaction: transaction
-        })
-
-
-        const updatedPasien = await t_log_pasienbatalbayar.create({
+        const logBatal = await t_log_pasienbatalbayar.create({
             norec: norec,
             objectpegawaifk: req.idPegawai,
             tglbatal: new Date(),
@@ -507,7 +500,7 @@ const cancelBayar = async (req, res) => {
         res.status(200).send({
             data: {
                 changedNPP: updatedBuktiB,
-                updatedPasien: updatedPasien,
+                logBatal: logBatal,
                 updatedCaraBayar: updatedCaraBayar
             },
             status: "success",
@@ -518,7 +511,7 @@ const cancelBayar = async (req, res) => {
     }catch(error){
         console.error("Error Create Nota Verif");
         console.error(error)
-        transaction.rollback();
+        await transaction.rollback();
         res.status(500).send({
             data: error,
             success: false,
@@ -526,6 +519,7 @@ const cancelBayar = async (req, res) => {
             code: 500
         });
     }
+    logger.print()
 }
 
 const getAllPiutang = async (req, res) => {
@@ -643,7 +637,7 @@ const hAddPiutang = async (req, res, transaction, norecnota) => {
                 totalbayar: 0,
                 sisapiutang: penjamin.value - 0,
                 tglinput: new Date(),
-                tglupdate: new Date,
+                tglupdate: new Date(),
                 objectpegawaifk: req.idPegawai
             }, {
                 transaction: transaction
@@ -693,7 +687,9 @@ const hCreateBayar = async ( req, transaction) => {
         klaim: objectBody.klaim,
         tglinput: new Date(),
         objectjenispembayaranfk:objectBody.objectjenispembayaranfk,
-    }, {transaction: transaction})
+    }, {
+        transaction: transaction
+    })
 
     const createdCaraBayar = await Promise.all(
         objectBody.payment.map(async (payment) => {
@@ -738,4 +734,53 @@ const hCreateBayar = async ( req, transaction) => {
         totalPayment,
         norecbukti
     }
+}
+
+// piutang yang sudah terbayarkan setelahnya
+const hCancelPiutangAfter = async (req, res, transaction, {
+    updatedBuktiBayar,
+}) => {
+    const piutangPasienBefores = await t_piutangpasien.findAll({
+        where: {
+            objectnotapelayananpasienfk: req.params.norecnota,
+            objectpenjaminfk: 3,
+            tglinput: {
+                [Op.gt]: new Date(updatedBuktiBayar.tglinput)
+            },
+            statusenabled: true
+        },
+        transaction: transaction
+    })
+
+    await Promise.all(
+        piutangPasienBefores.map(
+            async (piutangPasienBefore) => {
+                const piutangPasienBeforeVal = piutangPasienBefore?.toJSON() || null
+                let totalPiutangBefore = piutangPasienBeforeVal?.totalpiutang || 0
+                let totalBayarBefore = piutangPasienBeforeVal?.totalbayar || 0
+
+                const buktiBayarSebelum = await t_buktibayarpasien.findOne({
+                    where: {
+                        norec: piutangPasienBeforeVal.objectbuktibayarfk
+                    },
+                    transaction: transaction
+                })
+
+                const buktiBayarSebelumUpdated = await buktiBayarSebelum?.update({
+                    statusenabled: false,
+                    tglbatal: new Date(),
+                }, {
+                    transaction: transaction
+                })
+        
+                const updatedPiutangAfter = await piutangPasienBefore?.update({
+                    statusenabled: false,
+                    objectbuktibayarfk: null
+                }, {
+                    transaction: transaction
+                })
+                
+            }
+        )
+    )
 }

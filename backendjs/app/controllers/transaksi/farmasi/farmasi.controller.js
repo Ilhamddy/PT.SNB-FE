@@ -101,7 +101,8 @@ const createOrUpdateVerifResep = async (req, res) => {
         let orderTable = await t_orderresep.findOne({
             where: {
                 norec: norecorder
-            }
+            },
+            transaction: transaction
         })
         if(!orderTable){
             throw new Error("order tidak ditemukan")
@@ -570,14 +571,16 @@ const hCreateAntreanPemeriksaan = async(
     let ap = await t_antreanpemeriksaan.findOne({
         where: {
             norec: norecap
-        }
+        },
+        transaction: transaction
     })
     ap = ap.toJSON();
     const norecdp = ap.objectdaftarpasienfk
     let dp = await t_daftarpasien.findOne({
         where: {
             norec: norecdp
-        }
+        },
+        transaction: transaction
     })
     const updatedDp = await dp?.update({
         objectunitlastfk: req.body.unittujuan
@@ -1059,6 +1062,7 @@ const hSubstractStokProduct = async (
                     norec: stokUnit.norecstokunit,
                 },
                 lock: transaction.LOCK.UPDATE,
+                transaction: transaction
             })
             let updated = await stokUnitModel.update({
                 qty: stokUnit.qty
@@ -1100,10 +1104,13 @@ const hAddStock = async (
             kodebatch: generateKodeBatch(nobatch, idProduk, idUnit),
         },
         lock: transaction.LOCK.UPDATE,
+        transaction: transaction
     })
     let stokAwalVal = stokAwal.toJSON()
     const stokAkhir = await stokAwal.update({
         qty: stokAwalVal.qty + qtyAdd
+    }, {
+        transaction: transaction
     })
     let stokAkhirVal = stokAkhir.toJSON()
     const kartuStok = await hCreateKartuStok(req, res, transaction, {

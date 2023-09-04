@@ -23,6 +23,7 @@ const AllOrderResepList = () => {
         dispatch(getOrderResepQuery({}))
     }, [dispatch])
 
+
     /**
      * @type {import("react-data-table-component").TableColumn[]}
      */
@@ -61,6 +62,12 @@ const AllOrderResepList = () => {
             name: <span className='font-weight-bold fs-13'>Tgl Order</span>,
             sortable: true,
             selector: row => row.tglinput,
+            width: "120px"
+        },
+        {
+            name: <span className='font-weight-bold fs-13'>Tgl Verif</span>,
+            sortable: true,
+            selector: row => row.tglverif,
             width: "120px"
         },
         {

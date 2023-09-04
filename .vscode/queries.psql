@@ -1,12 +1,36 @@
-SELECT
-    row_number() OVER (ORDER BY tap.tglmasuk) AS no,
-    tap.tglmasuk AS tanggalmasuk,
-    tdp.tglregistrasi AS tanggalregistrasi,
-    tap.tglkeluar AS tanggalkeluar,
-    tdp.objectpenjaminfk AS penjamin,
-    mr.namarekanan AS namarekanan
-FROM t_antreanpemeriksaan tap
-    LEFT JOIN t_daftarpasien tdp ON tdp.norec = tap.objectdaftarpasienfk
-    LEFT JOIN m_rekanan mr ON tdp.objectpenjaminfk = mr.id
-WHERE tap.objectdaftarpasienfk = ''
-ORDER BY tap.tglmasuk
+SELECT 
+	tn.total AS total, 
+    tn.norec AS norecnota,
+	tn.no_nota AS nonota, 
+	td.nocmfk AS nocmfk,
+	td.tglregistrasi AS tglregistrasi,
+	td.noregistrasi AS noregistrasi,
+    td.norec AS norecdp,
+	mp.namapasien AS namapasien,
+	mr.namaexternal AS namarekanan,
+    bb.no_bukti AS nobukti,
+    bb.statusenabled AS statusenabledbukti,
+    bb.norec as norecbukti,
+    bb.totalbayar as totalbayar,
+    bb.totaltagihan as totaltagihan,
+	td.tglpulang AS tglpulang,
+    count(tp)::int as jmlpiutangbayar
+FROM t_notapelayananpasien tn
+    LEFT JOIN t_daftarpasien td ON tn.objectdaftarpasienfk=td.norec
+    LEFT JOIN m_pasien mp ON td.nocmfk=mp.id
+    LEFT JOIN m_rekanan mr ON td.objectpenjaminfk=mr.id
+    LEFT JOIN t_buktibayarpasien bb ON bb.objectnotapelayananpasienfk = tn.norec 
+        AND bb.statusenabled = true 
+        AND bb.objectpiutangpasienfk IS NULL
+    LEFT JOIN t_piutangpasien tp ON tp.objectnotapelayananpasienfk = tn.norec
+        AND tp.statusenabled = true 
+        AND tp.totalbayar > 0
+WHERE tn.statusenabled=true 
+GROUP BY 
+    tn.total,
+    tn.norec,
+    td.norec,
+    mp.namapasien,
+    mr.namaexternal,
+    bb.norec
+ORDER BY tn.tglinput DESC

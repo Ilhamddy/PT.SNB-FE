@@ -1,6 +1,6 @@
 import { useFormik } from "formik";
 import userDummy from "../../assets/images/users/user-dummy-img.jpg";
-import { ToastContainer } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import { useEffect, useState } from "react";
 import { Card, CardBody, Col, Container, Nav, NavItem, NavLink, Row, TabContent, TabPane, Table, Input, Form, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem, UncontrolledTooltip, Button } from "reactstrap";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
@@ -68,13 +68,18 @@ const DaftarTagihanPasien = () => {
         norecnota && 
             dispatch(verifNotaCancel(norecnota, norecdp, () => dispatch(daftarTagihanPasienGet())))
     }
-    const handleCancelBayar = (norecnota, norecbayar) => {
-        norecbayar && norecnota &&
-            dispatch(buktiBayarCancel(
-                norecnota, 
-                norecbayar, 
-                () => dispatch(daftarTagihanPasienGet())
-            ))
+    const handleCancelBayar = (row) => {
+        if(row.jmlpiutangbayar > 0){
+            toast.error("Tidak bisa cancel, karena ada piutang terbayarkan", { autoclose: 3000 })
+        }else{
+            row.norecbayar && row.norecnota &&
+                dispatch(buktiBayarCancel(
+                    row.norecnota, 
+                    row.norecbayar, 
+                    () => dispatch(daftarTagihanPasienGet())
+                ))
+        }
+              
     }
     const columns = [
         {
@@ -104,7 +109,7 @@ const DaftarTagihanPasien = () => {
                                     </DropdownItem>
                                 }
                                 {row.norecbukti && <DropdownItem 
-                                        onClick={() => handleCancelBayar(row.norecnota, row.norecbukti)}>
+                                        onClick={() => handleCancelBayar(row)}>
                                         <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
                                         Batal Bayar
                                     </DropdownItem>}
