@@ -289,7 +289,7 @@ const createBuktiBayar = async (req, res) => {
                 objectdaftarpasienfk: objectBody.norecdp,
                 nominal: totalPayment,
                 objectpegawaifk: req.idPegawai,
-                objectbuktibayarpasienfk: norecbukti,
+                objectbuktibayarfk: norecbukti,
                 tglinput: new Date(),
             }, {
                 transaction: transaction

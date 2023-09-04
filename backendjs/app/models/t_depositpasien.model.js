@@ -23,7 +23,7 @@ export default (sequelize, Sequelize) => {
         objectpegawaifk: {
             type: Sequelize.CHAR(32),
         },
-        objectbuktibayarpasienfk: {
+        objectbuktibayarfk: {
             type: Sequelize.CHAR(32),
         },
         tglinput: {
