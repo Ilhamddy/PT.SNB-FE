@@ -313,16 +313,17 @@ const qGetDepositFromNota =
 
 const qGetBuktiBayarFromNota =
     `
-    SELECT
+SELECT
     tbb.*,
     td.noregistrasi AS noregistrasi,
     td.nocmfk AS nocmfk,
     td.tglregistrasi AS tglregistrasi,
     mp.namapasien AS namapasien
-    FROM t_buktibayarpasien tbb
-        LEFT JOIN t_daftarpasien td ON td.norec = tbb.objectdaftarpasienfk
-        LEFT JOIN m_pasien mp ON mp.id = td.nocmfk
-        WHERE objectnotapelayananpasienfk = $1
+FROM t_buktibayarpasien tbb
+    LEFT JOIN t_daftarpasien td ON td.norec = tbb.objectdaftarpasienfk
+    LEFT JOIN m_pasien mp ON mp.id = td.nocmfk
+    WHERE objectnotapelayananpasienfk = $1
+AND tbb.statusenabled = true
     `
 
 const qGetCaraBayarFromBB =

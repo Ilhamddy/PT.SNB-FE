@@ -457,9 +457,9 @@ const cancelBayar = async (req, res) => {
             }
         })
         
-        const piutangSebelumVal = piutangSebelum.toJSON() || null
+        const piutangSebelumVal = piutangSebelum?.toJSON() || null
         let totalPiutangBefore = piutangSebelumVal?.totalpiutang || 0
-        const piutangUpdated = await piutangSebelum.update({
+        const piutangUpdated = await piutangSebelum?.update({
             statusenabled: true,
             tglupdate: new Date(),
             totalbayar: 0,
@@ -509,8 +509,7 @@ const cancelBayar = async (req, res) => {
             code: 200
         });
     }catch(error){
-        console.error("Error Create Nota Verif");
-        console.error(error)
+        logger.error(error)
         await transaction.rollback();
         res.status(500).send({
             data: error,

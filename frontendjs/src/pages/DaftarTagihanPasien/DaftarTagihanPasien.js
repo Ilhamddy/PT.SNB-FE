@@ -72,10 +72,10 @@ const DaftarTagihanPasien = () => {
         if(row.jmlpiutangbayar > 0){
             toast.error("Tidak bisa cancel, karena ada piutang terbayarkan", { autoclose: 3000 })
         }else{
-            row.norecbayar && row.norecnota &&
+            row.norecbukti && row.norecnota &&
                 dispatch(buktiBayarCancel(
                     row.norecnota, 
-                    row.norecbayar, 
+                    row.norecbukti, 
                     () => dispatch(daftarTagihanPasienGet())
                 ))
         }
