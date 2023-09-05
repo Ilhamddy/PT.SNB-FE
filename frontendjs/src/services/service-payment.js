@@ -42,4 +42,8 @@ export default class ServicePayment {
     getLaporanPendapatanKasir = async (param) => {
         return await api.get(`/transaksi/payment/get-laporan-pendapatan-kasir?&search=${param}`);
     }
+
+    getPiutangAfterDate = async (queries) => {
+        return await api.get(`/transaksi/payment/piutang-after-date`, queries)
+    }
 }

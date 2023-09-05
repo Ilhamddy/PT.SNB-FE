@@ -7,6 +7,7 @@ import axios from "axios";
 import CryptoJS from "crypto-js";
 import t_daftarpasienModel from "../../../models/t_daftarpasien.model";
 import { qGetListTarif18 } from "../../../queries/casemix/casemix.queries";
+import { createTransaction } from "../../../utils/dbutils";
 const algorithm = 'aes-256-cbc';
 const queryPromise2 = (query) => {
     return new Promise((resolve, reject) => {
@@ -37,19 +38,20 @@ async function getListPasien(req, res) {
 
     try {
 
-        const resultlist = await queryPromise2(`select
-        mp.id,
-        mp.nocm,
-        to_char(mp.tgllahir,
-        'dd Month YYYY') as tgllahir,
-        mp.namapasien,
-        mp.nobpjs,
-        mj.jeniskelamin 
-    from
-        m_pasien mp
-        join m_jeniskelamin mj on mj.id=mp.objectjeniskelaminfk
-        where mp.nocm ilike'%${req.query.nocm}%' and mp.statusenabled=true
-        limit 5
+        const resultlist = await queryPromise2(`
+        select
+            mp.id,
+            mp.nocm,
+            to_char(mp.tgllahir,
+            'dd Month YYYY') as tgllahir,
+            mp.namapasien,
+            mp.nobpjs,
+            mj.jeniskelamin 
+        from
+            m_pasien mp
+            join m_jeniskelamin mj on mj.id=mp.objectjeniskelaminfk
+            where mp.nocm ilike'%${req.query.nocm}%' and mp.statusenabled=true
+            limit 5
         `);
 
         let tempres = resultlist.rows
@@ -67,7 +69,7 @@ async function getListPasien(req, res) {
 }
 
 async function getListDaftarPasien(req, res) {
-
+    const logger = res.locals.logger
     try {
         let kode_tarif = ''
         let nama_tarif = ''
@@ -174,12 +176,14 @@ async function getListDaftarPasien(req, res) {
         });
 
     } catch (error) {
+        logger.error(error)
         res.status(500).send({ message: error });
     }
 
 }
 
 async function getListTarif18(req, res) {
+    const logger = res.locals.logger
     try {
         let norec= req.query.norec
         // const resultlist = await queryPromise2(qGetListTarif18, [norec]);
@@ -297,39 +301,46 @@ async function getListTarif18(req, res) {
         });
 
     } catch (error) {
+        logger.error(error)
         res.status(500).send({ message: error });
     }
 
 }
 
 async function getListDiagnosaPasien(req, res) {
-
-    const resultList = await queryPromise2(`
-    SELECT row_number() OVER (ORDER BY td.norec) AS no,
-    dp.noregistrasi,
-    to_char(dp.tglregistrasi,'yyyy-MM-dd') as tglregistrasi,
-    td.norec, 
-    mi.kodeexternal ||' - '|| mi.reportdisplay as label,
-    mi.id as value, td.keterangan,td.objecttipediagnosafk,
-    mt.reportdisplay as tipediagnosa,
-    td.objectjeniskasusfk, 
-    jk.reportdisplay as jeniskasus, 
-    mu.namaunit,
-    mi.kodeexternal as kodediagnosa
-            FROM t_daftarpasien dp 
-    join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk=dp.norec
-    join t_diagnosapasien td  on td.objectantreanpemeriksaanfk =ta.norec
-    join m_unit mu on mu.id=ta.objectunitfk
-    join m_tipediagnosa mt on mt.id=td.objecttipediagnosafk
-    join m_jeniskasus jk on jk.id=td.objectjeniskasusfk
-    join m_icdx mi on mi.id=td.objecticdxfk where dp.norec='${req.query.norec}' and td.statusenabled=true
-    order by mt.reportdisplay ASC
-    `);
-    res.status(200).send({
-        data: resultList.rows,
-        status: "success",
-        success: true,
-    });
+    const logger = res.locals.logger
+    try{
+        const resultList = await queryPromise2(`
+        SELECT row_number() OVER (ORDER BY td.norec) AS no,
+        dp.noregistrasi,
+        to_char(dp.tglregistrasi,'yyyy-MM-dd') as tglregistrasi,
+        td.norec, 
+        mi.kodeexternal ||' - '|| mi.reportdisplay as label,
+        mi.id as value, td.keterangan,td.objecttipediagnosafk,
+        mt.reportdisplay as tipediagnosa,
+        td.objectjeniskasusfk, 
+        jk.reportdisplay as jeniskasus, 
+        mu.namaunit,
+        mi.kodeexternal as kodediagnosa
+                FROM t_daftarpasien dp 
+        join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk=dp.norec
+        join t_diagnosapasien td  on td.objectantreanpemeriksaanfk =ta.norec
+        join m_unit mu on mu.id=ta.objectunitfk
+        join m_tipediagnosa mt on mt.id=td.objecttipediagnosafk
+        join m_jeniskasus jk on jk.id=td.objectjeniskasusfk
+        join m_icdx mi on mi.id=td.objecticdxfk where dp.norec='${req.query.norec}' and td.statusenabled=true
+        order by mt.reportdisplay ASC
+        `);
+        res.status(200).send({
+            data: resultList.rows,
+            status: "success",
+            success: true,
+        });
+    }catch(error){
+        logger.error(error);
+        res.status(500).send({ message: error });
+    }
+    
 }
 
 async function getListDiagnosaIxPasien(req, res) {
@@ -416,6 +427,7 @@ const inacbg_decrypt = (data, key_inacbg) => {
 //   end
 
 async function saveBridgingInacbg(req, res) {
+    const logger = res.locals.logger
     let key_inacbg = ''
     let url_inacbg = ''
     const resultlistKodeTarif = await queryPromise2(`select s_key,s_value from s_global where s_key ilike '%inacbg%'`);
@@ -466,9 +478,7 @@ async function saveBridgingInacbg(req, res) {
             code: 200
         });
     } catch (error) {
-        // Handle errors
-        // console.error("Error:", error);
-        // throw error;
+        logger.error(error)
         res.status(201).send({
             status: error,
             success: false,
@@ -480,19 +490,9 @@ async function saveBridgingInacbg(req, res) {
 }
 
 async function saveTarifKlaim(req, res) {
-    let transaction = null;
-    try {
-        transaction = await db.sequelize.transaction();
-    } catch (e) {
-        console.error(e)
-        res.status(500).send({
-            data: e.message,
-            success: false,
-            msg: 'Transaksi gagal',
-            code: 500
-        });
-        return;
-    }
+    const [transaction, errorTransaction] = createTransaction(db, res);
+    const logger = res.locals.logger
+    if(errorTransaction) return
 
     try {
         let add_payment_amt = 0
@@ -558,9 +558,7 @@ async function saveTarifKlaim(req, res) {
             code: 200
         });
     } catch (error) {
-        // Handle errors
-        // console.error("Error:", error);
-        // throw error;
+        logger.error(error)
         res.status(201).send({
             status: error,
             success: false,
@@ -572,101 +570,100 @@ async function saveTarifKlaim(req, res) {
 }
 
 async function getListSpecialCmg(req, res) {
-
-    const resultList = await queryPromise2(`select tsco.norec as value, tsco.description as label,
-    tsco."type" as tipe,tsco.tarif,tsco.code from t_special_cmg_option tsco where tsco.objectdaftarpasienfk='${req.query.norec}'
-    and tsco.statusenabled=true
-    `);
-    let temptdataProcedure = []
-    let temptdataProsthesis = []
-    let temptdataInvestigation = []
-    let temptdataDrug = []
-    temptdataProcedure.push({
-        value: 'none',
-        label: 'none',
-        tarif: 0,
-        code: 'none'
-    })
-    temptdataProsthesis.push({
-        value: 'none',
-        label: 'none',
-        tarif: 0,
-        code: 'none'
-    })
-    temptdataInvestigation.push({
-        value: 'none',
-        label: 'none',
-        tarif: 0,
-        code: 'none'
-    })
-    temptdataDrug.push({
-        value: 'none',
-        label: 'none',
-        tarif: 0,
-        code: 'none'
-    })
-    for (let i = 0; i < resultList.rows.length; i++) {
-        if (resultList.rows[i].tipe === 'Special Procedure') {
-            temptdataProcedure.push({
-                value: resultList.rows[i].value,
-                label: resultList.rows[i].label,
-                tarif: resultList.rows[i].tarif,
-                code: resultList.rows[i].code
-            })
+    const logger = res.locals.logger
+    try{
+        const resultList = await queryPromise2(`select tsco.norec as value, tsco.description as label,
+        tsco."type" as tipe,tsco.tarif,tsco.code from t_special_cmg_option tsco where tsco.objectdaftarpasienfk='${req.query.norec}'
+        and tsco.statusenabled=true
+        `);
+        let temptdataProcedure = []
+        let temptdataProsthesis = []
+        let temptdataInvestigation = []
+        let temptdataDrug = []
+        temptdataProcedure.push({
+            value: 'none',
+            label: 'none',
+            tarif: 0,
+            code: 'none'
+        })
+        temptdataProsthesis.push({
+            value: 'none',
+            label: 'none',
+            tarif: 0,
+            code: 'none'
+        })
+        temptdataInvestigation.push({
+            value: 'none',
+            label: 'none',
+            tarif: 0,
+            code: 'none'
+        })
+        temptdataDrug.push({
+            value: 'none',
+            label: 'none',
+            tarif: 0,
+            code: 'none'
+        })
+        for (let i = 0; i < resultList.rows.length; i++) {
+            if (resultList.rows[i].tipe === 'Special Procedure') {
+                temptdataProcedure.push({
+                    value: resultList.rows[i].value,
+                    label: resultList.rows[i].label,
+                    tarif: resultList.rows[i].tarif,
+                    code: resultList.rows[i].code
+                })
+            }
+            if (resultList.rows[i].tipe === 'Special Prosthesis') {
+                temptdataProsthesis.push({
+                    value: resultList.rows[i].value,
+                    label: resultList.rows[i].label,
+                    tarif: resultList.rows[i].tarif,
+                    code: resultList.rows[i].code
+                })
+            }
+            if (resultList.rows[i].tipe === 'Special Investigation') {
+                temptdataInvestigation.push({
+                    value: resultList.rows[i].value,
+                    label: resultList.rows[i].label,
+                    tarif: resultList.rows[i].tarif,
+                    code: resultList.rows[i].code
+                })
+            }
+            if (resultList.rows[i].tipe === 'Special Drug') {
+                temptdataDrug.push({
+                    value: resultList.rows[i].value,
+                    label: resultList.rows[i].label,
+                    tarif: resultList.rows[i].tarif,
+                    code: resultList.rows[i].code
+                })
+            }
         }
-        if (resultList.rows[i].tipe === 'Special Prosthesis') {
-            temptdataProsthesis.push({
-                value: resultList.rows[i].value,
-                label: resultList.rows[i].label,
-                tarif: resultList.rows[i].tarif,
-                code: resultList.rows[i].code
-            })
+        let tempres = {
+            dataProcedure: temptdataProcedure,
+            dataProsthesis: temptdataProsthesis,
+            dataInvestigation: temptdataInvestigation,
+            dataDrug: temptdataDrug
         }
-        if (resultList.rows[i].tipe === 'Special Investigation') {
-            temptdataInvestigation.push({
-                value: resultList.rows[i].value,
-                label: resultList.rows[i].label,
-                tarif: resultList.rows[i].tarif,
-                code: resultList.rows[i].code
-            })
-        }
-        if (resultList.rows[i].tipe === 'Special Drug') {
-            temptdataDrug.push({
-                value: resultList.rows[i].value,
-                label: resultList.rows[i].label,
-                tarif: resultList.rows[i].tarif,
-                code: resultList.rows[i].code
-            })
-        }
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+        });
+    } catch(error){
+        logger.error(error)
+        res.status(500).send({
+            data: error,
+            status: "error",
+            success: false,
+        });
     }
-    let tempres = {
-        dataProcedure: temptdataProcedure,
-        dataProsthesis: temptdataProsthesis,
-        dataInvestigation: temptdataInvestigation,
-        dataDrug: temptdataDrug
-    }
-    res.status(200).send({
-        data: tempres,
-        status: "success",
-        success: true,
-    });
+    
 }
 
 async function updateStatusKlaim(req, res) {
-    let transaction = null;
-    try {
-        transaction = await db.sequelize.transaction();
-    } catch (e) {
-        console.error(e)
-        res.status(500).send({
-            data: e.message,
-            success: false,
-            msg: 'Transaksi gagal',
-            code: 500
-        });
-        return;
-    }
-
+    const [transaction, errorTransaction] = createTransaction(db, res);
+    const logger = res.locals.logger
+    if(errorTransaction) return
     try {
         const updateStatusKlaim = await db.t_daftarpasien.update({
             status_grouping: req.body.status_grouping
@@ -687,6 +684,7 @@ async function updateStatusKlaim(req, res) {
             code: 200
         });
     } catch (error) {
+        logger.error(error)
         res.status(201).send({
             status: error,
             success: false,
@@ -698,20 +696,9 @@ async function updateStatusKlaim(req, res) {
 }
 
 async function updateTarifCmgOptions(req, res) {
-    let transaction = null;
-    try {
-        transaction = await db.sequelize.transaction();
-    } catch (e) {
-        console.error(e)
-        res.status(500).send({
-            data: e.message,
-            success: false,
-            msg: 'Transaksi gagal',
-            code: 500
-        });
-        return;
-    }
-
+    const [transaction, errorTransaction] = createTransaction(db, res);
+    const logger = res.locals.logger
+    if(errorTransaction) return
     try {
         const updateTarif = await db.t_special_cmg_option.update({
             tarif: req.body.tarif
@@ -736,7 +723,7 @@ async function updateTarifCmgOptions(req, res) {
             code: 200
         });
     } catch (error) {
-        console.error(error)
+        logger.error(error)
         res.status(201).send({
             status: error,
             success: false,

@@ -2,6 +2,7 @@ import pool from "../../../../config/dbcon.query";
 import * as uuid from 'uuid'
 import queries from '../../../../queries/penunjang/radiologi/radiologi.queries';
 import db from "../../../../models";
+import { createTransaction } from "../../../../utils/dbutils";
 
 const queryPromise2 = (query) => {
     return new Promise((resolve, reject) => {
@@ -29,19 +30,9 @@ function formatDate(date) {
 }
 
 async function saveOrderPelayanan(req, res) {
-
-    let transaction = null;
-    try {
-        transaction = await db.sequelize.transaction();
-    } catch (e) {
-        console.error(e)
-        res.status(201).send({
-            status: e.message,
-            success: false,
-            msg: 'Simpan Gagal',
-            code: 201
-        });
-    }
+    const logger = res.locals.logger
+    const [transaction, errorTransaction] = await createTransaction(db, res)
+    if(errorTransaction) return
     try {
         let today = new Date();
         let todayMonth = '' + (today.getMonth() + 1)
@@ -98,7 +89,7 @@ async function saveOrderPelayanan(req, res) {
         // let tempres = { statu: t_rm_lokasidokumen }
 
     } catch (error) {
-        // console.log(error);
+        logger.error(error)
         transaction && await transaction.rollback();
         res.status(201).send({
             status: "false",
@@ -110,7 +101,7 @@ async function saveOrderPelayanan(req, res) {
 }
 
 async function getListHistoryOrder(req, res) {
-
+    const logger = res.locals.logger
     try {
 
         const resultlist = await queryPromise2(`select td.noregistrasi,to2.nomororder,to2.norec,
@@ -140,14 +131,14 @@ async function getListHistoryOrder(req, res) {
         });
 
     } catch (error) {
+        logger.error(error)
         res.status(500).send({ message: error });
     }
 
 }
 
 async function getWidgetListDaftarOrderRadiologi(req, res) {
-
-
+    const logger = res.locals.logger
     try {
         let tglregistrasi = ""
         if (req.query.start !== undefined) {
@@ -237,13 +228,14 @@ async function getWidgetListDaftarOrderRadiologi(req, res) {
         });
 
     } catch (error) {
+        logger.error(error);
         res.status(500).send({ message: error });
     }
 
 }
 
 async function getDaftarListHistoryOrder(req, res) {
-
+    const logger = res.locals.logger
     try {
         let tglregistrasi = ""
         if (req.query.start !== undefined) {
@@ -281,13 +273,14 @@ async function getDaftarListHistoryOrder(req, res) {
         });
 
     } catch (error) {
+        logger.error(error);
         res.status(500).send({ message: error });
     }
 
 }
 
 async function getListOrderByNorecOrder(req, res) {
-
+    const logger = res.locals.logger
     try {
         const resultlist = await queryPromise2(`select td.noregistrasi,to2.nomororder,td2.norec,
         mp.namalengkap, mu.namaunit,to2.keterangan,to_char(to2.tglinput,'yyyy-MM-dd HH:mm') as tglinput,
@@ -314,13 +307,14 @@ async function getListOrderByNorecOrder(req, res) {
         });
 
     } catch (error) {
+        logger.error(error)
         res.status(500).send({ message: error });
     }
 
 }
 
 async function getKamarRadiologi(req, res) {
-
+    const logger = res.locals.logger
     try {
         const resultlist = await queryPromise2(`select id as value, reportdisplay as label from m_kamar 
         where objectunitfk =13
@@ -335,24 +329,16 @@ async function getKamarRadiologi(req, res) {
         });
 
     } catch (error) {
+        logger.error(error)
         res.status(500).send({ message: error });
     }
 
 }
 
 async function updateTglRencanaRadiologi(req, res) {
-    let transaction = null;
-    try {
-        transaction = await db.sequelize.transaction();
-    } catch (e) {
-        console.error(e)
-        res.status(201).send({
-            status: e.message,
-            success: false,
-            msg: 'Simpan Gagal',
-            code: 201
-        });
-    }
+    const logger = res.locals.logger
+    const [transaction, errorTransaction] = await createTransaction(db, res)
+    if(errorTransaction) return
     try {
         const t_detailorderpelayanan = await db.t_detailorderpelayanan.update({
             objectkamarfk: req.body.nokamar,
@@ -373,6 +359,7 @@ async function updateTglRencanaRadiologi(req, res) {
         });
 
     } catch (error) {
+        logger.error(error)
         transaction && await transaction.rollback();
         res.status(201).send({
             status: "false",
@@ -385,18 +372,9 @@ async function updateTglRencanaRadiologi(req, res) {
 }
 
 async function saveUserVerifikasi(req, res) {
-    let transaction = null;
-    try {
-        transaction = await db.sequelize.transaction();
-    } catch (e) {
-        console.error(e)
-        res.status(201).send({
-            status: e.message,
-            success: false,
-            msg: 'Simpan Gagal',
-            code: 201
-        });
-    }
+    const logger = res.locals.logger
+    const [transaction, errorTransaction] = await createTransaction(db, res)
+    if(errorTransaction) return
     try {
         const resultlist = await pool.query(queries.qResult, [req.body.norec]);
         // console.log(resultlist.rows[0].norec)
@@ -476,7 +454,7 @@ async function saveUserVerifikasi(req, res) {
 
     } catch (error) {
         transaction && await transaction.rollback();
-        console.error(error)
+        logger.error(error)
         res.status(201).send({
             status: "false",
             success: false,
@@ -488,18 +466,9 @@ async function saveUserVerifikasi(req, res) {
 }
 
 async function deleteOrderPelayanan(req, res) {
-    let transaction = null;
-    try {
-        transaction = await db.sequelize.transaction();
-    } catch (e) {
-        console.error(e)
-        res.status(201).send({
-            status: e.message,
-            success: false,
-            msg: 'Simpan Gagal',
-            code: 201
-        });
-    }
+    const logger = res.locals.logger
+    const [transaction, errorTransaction] = await createTransaction(db, res)
+    if(errorTransaction) return
     try {
         const t_orderpelayanan = await db.t_orderpelayanan.update({
             objectstatusveriffk: 3,
@@ -520,32 +489,22 @@ async function deleteOrderPelayanan(req, res) {
         });
 
     } catch (error) {
-        if (transaction) {
-            await transaction.rollback();
-            res.status(201).send({
-                status: "false",
-                success: false,
-                msg: 'Gagal',
-                code: 201
-            });
-        }
+        logger.error(error)
+        await transaction.rollback();
+        res.status(201).send({
+            status: "false",
+            success: false,
+            msg: 'Gagal',
+            code: 201
+        });
     }
 
 }
 
 async function deleteDetailOrderPelayanan(req, res) {
-    let transaction = null;
-    try {
-        transaction = await db.sequelize.transaction();
-    } catch (e) {
-        console.error(e)
-        res.status(201).send({
-            status: e.message,
-            success: false,
-            msg: 'Simpan Gagal',
-            code: 201
-        });
-    }
+    const logger = res.locals.logger
+    const [transaction, errorTransaction] = await createTransaction(db, res)
+    if(errorTransaction) return
     try {
         const t_detailorderpelayanan = await db.t_detailorderpelayanan.update({
             statusenabled: false,
@@ -566,6 +525,7 @@ async function deleteDetailOrderPelayanan(req, res) {
         });
 
     } catch (error) {
+        logger.error(error)
         transaction && await transaction.rollback();
         res.status(201).send({
             status: "false",
@@ -578,7 +538,7 @@ async function deleteDetailOrderPelayanan(req, res) {
 }
 
 async function getDaftarPasienRadiologi(req, res) {
-
+    const logger = res.locals.logger
     try {
         const noregistrasi = req.query.noregistrasi;
         let tglregistrasi = ""
@@ -624,13 +584,14 @@ async function getDaftarPasienRadiologi(req, res) {
         });
 
     } catch (error) {
+        logger.error(error)
         res.status(500).send({ message: error });
     }
 
 }
 
 async function getTransaksiPelayananRadiologiByNorecDp(req, res) {
-
+    const logger = res.locals.logger
     try {
 
         const resultlist = await queryPromise2(`select row_number() OVER (ORDER BY tp.norec) AS no,
@@ -680,13 +641,14 @@ async function getTransaksiPelayananRadiologiByNorecDp(req, res) {
         });
 
     } catch (error) {
+        logger.error(error)
         res.status(500).send({ message: error });
     }
 
 }
 
 async function getComboRadiologi(req, res) {
-
+    const logger = res.locals.logger
     try {
 
         const resultlist = await queryPromise2(`select id as value,namalengkap as label from m_pegawai where statusenabled=true`);
@@ -705,25 +667,16 @@ async function getComboRadiologi(req, res) {
         });
 
     } catch (error) {
+        logger.error(error)
         res.status(500).send({ message: error });
     }
 
 }
 
 async function saveHasilExpertise(req, res) {
-    let transaction = null;
-    try {
-        transaction = await db.sequelize.transaction();
-    } catch (e) {
-        console.error(e)
-        res.status(201).send({
-            status: e.message,
-            success: false,
-            msg: 'Simpan Gagal',
-            code: 201
-        });
-        return
-    }
+    const logger = res.locals.logger
+    const [transaction, errorTransaction] = await createTransaction(db, res)
+    if(errorTransaction) return
     try {
         let tempData = req.body
         let saveHasilPemeriksaan
@@ -775,7 +728,7 @@ async function saveHasilExpertise(req, res) {
         });
     } catch (error) {
         transaction && await transaction.rollback();
-        console.log(error)
+        logger.error(error)
         res.status(201).send({
             status: "false",
             success: false,

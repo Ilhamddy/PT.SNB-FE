@@ -38,6 +38,9 @@ export default (sequelize, Sequelize) => {
         },
         keterangan:{
             type: Sequelize.STRING
+        },
+        objectbuktibayarfk: {
+            type: Sequelize.CHAR(32),
         }
     }, {
         tableName: "t_notapelayananpasien", 

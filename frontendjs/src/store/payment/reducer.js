@@ -38,7 +38,10 @@ import {
     LAPORAN_PENDAPATAN_KASIR_GET,
     LAPORAN_PENDAPATAN_KASIR_GET_SUCCESS,
     LAPORAN_PENDAPATAN_KASIR_GET_ERROR,
-    LAPORAN_PENDAPATAN_KASIR_GET_RESET
+    LAPORAN_PENDAPATAN_KASIR_GET_RESET,
+    GET_PIUTANG_AFTER_DATE,
+    GET_PIUTANG_AFTER_DATE_SUCCESS,
+    GET_PIUTANG_AFTER_DATE_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -102,6 +105,12 @@ const INIT_STATE = {
         success: false,
         error: null,
     },
+    getPiutangAfterDate: {
+        data: [],
+        loading: false,
+        success: false,
+        error: null,
+    }
 }
 
 const payment = (state = INIT_STATE, action) => {
@@ -535,6 +544,38 @@ const payment = (state = INIT_STATE, action) => {
                     success: false,
                     loading: false,
                     error: null,
+                },
+            };
+
+        case GET_PIUTANG_AFTER_DATE:
+            return {
+                ...state,
+                getPiutangAfterDate: {
+                    ...state.getPiutangAfterDate,
+                    data: [],
+                    loading: true,
+                    error: null,
+                },
+            };
+        
+        case GET_PIUTANG_AFTER_DATE_SUCCESS:
+            return {
+                ...state,
+                getPiutangAfterDate: {
+                    ...state.getPiutangAfterDate,
+                    data: action.payload,
+                    loading: false,
+                    error: null,
+                },
+            };
+
+        case GET_PIUTANG_AFTER_DATE_ERROR:
+            return {
+                ...state,
+                getPiutangAfterDate: {
+                    ...state.getPiutangAfterDate,
+                    loading: false,
+                    error: action.payload,
                 },
             };
 

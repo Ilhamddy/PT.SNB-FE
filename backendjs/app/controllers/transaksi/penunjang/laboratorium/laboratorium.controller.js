@@ -4,6 +4,7 @@ import queries from '../../../../queries/penunjang/laboratorium/laboratorium.que
 import db from "../../../../models";
 import t_hasilpemeriksaanModel from "../../../../models/t_hasilpemeriksaan.model";
 import t_hasilpemeriksaandetailModel from "../../../../models/t_hasilpemeriksaandetail.model";
+import { createTransaction } from "../../../../utils/dbutils";
 
 const queryPromise2 = (query) => {
     return new Promise((resolve, reject) => {
@@ -30,7 +31,7 @@ function formatDate(date) {
     return [year, month, day].join('-');
 }
 async function getDetailJenisProdukLab(req, res) {
-
+    const logger = res.locals.logger
     try {
 
         const resultlist = await queryPromise2(`select id as value, detailjenisproduk as label,'' as detail  from m_detailjenisproduk md 
@@ -98,25 +99,16 @@ async function getDetailJenisProdukLab(req, res) {
         });
 
     } catch (error) {
+        logger.error(error)
         res.status(500).send({ message: error });
     }
 
 }
 
 async function saveOrderPelayanan(req, res) {
-    let transaction = null;
-
-    try {
-        transaction = await db.sequelize.transaction();
-    } catch (e) {
-        console.error(e)
-        res.status(201).send({
-            status: e.message,
-            success: false,
-            msg: 'Simpan Gagal',
-            code: 201
-        });
-    }
+    const [transaction, errorTransaction] = await createTransaction(db, res)
+    if(errorTransaction) return
+    const logger = res.locals.logger
     try {
         let today = new Date();
         let todayMonth = '' + (today.getMonth() + 1)
@@ -173,7 +165,7 @@ async function saveOrderPelayanan(req, res) {
         // let tempres = { statu: t_rm_lokasidokumen }
 
     } catch (error) {
-        console.error(error);
+        logger.error(error);
         await transaction.rollback();
         res.status(201).send({
             status: "false",
@@ -185,7 +177,7 @@ async function saveOrderPelayanan(req, res) {
 }
 
 async function getListHistoryOrder(req, res) {
-
+    const logger = res.locals.logger
     try {
 
         const resultlist = await queryPromise2(`select td.noregistrasi,to2.nomororder,to2.norec,
@@ -215,12 +207,14 @@ async function getListHistoryOrder(req, res) {
         });
 
     } catch (error) {
+        logger.error(error)
         res.status(500).send({ message: error });
     }
 
 }
 
 async function getWidgetListDaftarOrderLaboratorium(req, res) {
+    const logger = res.locals.logger
     try {
         let tglregistrasi = ""
         if (req.query.start !== undefined) {
@@ -312,13 +306,14 @@ async function getWidgetListDaftarOrderLaboratorium(req, res) {
         });
 
     } catch (error) {
+        logger.error(error)
         res.status(500).send({ message: error });
     }
 
 }
 
 async function getDaftarListHistoryOrder(req, res) {
-
+    const logger = res.locals.logger
     try {
         let tglregistrasi = ""
         if (req.query.start !== undefined) {
@@ -356,12 +351,13 @@ async function getDaftarListHistoryOrder(req, res) {
         });
 
     } catch (error) {
+        logger.error(error)
         res.status(500).send({ message: error });
     }
 
 }
 async function getListOrderByNorecOrder(req, res) {
-
+    const logger = res.locals.logger
     try {
         const resultlist = await queryPromise2(`select td.noregistrasi,to2.nomororder,td2.norec,
         mp.namalengkap, mu.namaunit,to2.keterangan,to_char(to2.tglinput,'yyyy-MM-dd HH:mm') as tglinput,
@@ -388,24 +384,16 @@ async function getListOrderByNorecOrder(req, res) {
         });
 
     } catch (error) {
+        logger.error(error)
         res.status(500).send({ message: error });
     }
 
 }
 
 async function updateTglRencanaLaboratorium(req, res) {
-    let transaction = null;
-    try {
-        transaction = await db.sequelize.transaction();
-    } catch (e) {
-        console.error(e)
-        res.status(201).send({
-            status: e.message,
-            success: false,
-            msg: 'Simpan Gagal',
-            code: 201
-        });
-    }
+    const logger = res.locals.logger
+    const [transaction, errorTransaction] = await createTransaction(db, res)
+    if(errorTransaction) return
     try {
         const t_detailorderpelayanan = await db.t_detailorderpelayanan.update({
             tglperjanjian: req.body.tglinput,
@@ -425,6 +413,7 @@ async function updateTglRencanaLaboratorium(req, res) {
         });
 
     } catch (error) {
+        logger.error(error)
         transaction && await transaction.rollback();
         res.status(201).send({
             status: "false",
@@ -437,18 +426,9 @@ async function updateTglRencanaLaboratorium(req, res) {
 }
 
 async function saveUserVerifikasi(req, res) {
-    let transaction = null;
-    try {
-        transaction = await db.sequelize.transaction();
-    } catch (e) {
-        console.error(e)
-        res.status(201).send({
-            status: e.message,
-            success: false,
-            msg: 'Simpan Gagal',
-            code: 201
-        });
-    }
+    const logger = res.locals.logger
+    const [transaction, errorTransaction] = await createTransaction(db, res)
+    if(errorTransaction) return
     try {
         const resultlist = await queryPromise2(`select td.norec as norectd,td2.objectprodukfk,to2.objectunitasalfk,
         td.noregistrasi,to2.nomororder,td2.norec,
@@ -543,7 +523,7 @@ async function saveUserVerifikasi(req, res) {
 
     } catch (error) {
         transaction && await transaction.rollback();
-        console.log(error)
+        logger.log(error)
         res.status(201).send({
             status: "false",
             success: false,
@@ -555,7 +535,7 @@ async function saveUserVerifikasi(req, res) {
 }
 
 async function getDaftarPasienLaboratorium(req, res) {
-
+    const logger = res.locals.logger
     try {
         const noregistrasi = req.query.noregistrasi;
         let tglregistrasi = ""
@@ -601,13 +581,14 @@ async function getDaftarPasienLaboratorium(req, res) {
         });
 
     } catch (error) {
+        logger.error(error)
         res.status(500).send({ message: error });
     }
 
 }
 
 async function getTransaksiPelayananLaboratoriumByNorecDp(req, res) {
-
+    const logger = res.locals.logger
     try {
 
         const resultlist = await queryPromise2(`select row_number() OVER (ORDER BY tp.norec) AS no,
@@ -662,13 +643,14 @@ async function getTransaksiPelayananLaboratoriumByNorecDp(req, res) {
         });
 
     } catch (error) {
+        logger.error(error)
         res.status(500).send({ message: error });
     }
 
 }
 
 async function getMasterLayananLaboratorium(req, res) {
-
+    const logger = res.locals.logger
     try {
 
         const resultlist = await queryPromise2(`select
@@ -695,13 +677,15 @@ async function getMasterLayananLaboratorium(req, res) {
         });
 
     } catch (error) {
+        logger.error(error)
         res.status(500).send({ message: error });
     }
 
 }
 
 async function getComboLaboratorium(req, res) {
-
+    const logger = res.locals.logger
+    
     try {
 
         const resultlist = await queryPromise2(`select ms.id as value,
@@ -720,24 +704,16 @@ async function getComboLaboratorium(req, res) {
         });
 
     } catch (error) {
+        logger.error(error)
         res.status(500).send({ message: error });
     }
 
 }
 
 async function saveMasterNilaiNormal(req, res) {
-    let transaction = null;
-    try {
-        transaction = await db.sequelize.transaction();
-    } catch (e) {
-        console.error(e)
-        res.status(201).send({
-            status: e.message,
-            success: false,
-            msg: 'Simpan Gagal',
-            code: 201
-        });
-    }
+    const logger = res.locals.logger
+    const [transaction, errorTransaction] = await createTransaction(db, res)
+    if(errorTransaction) return
     try {
         let filteredRowsLevel1 = req.body.data.filter((row) => row.level === 1);
         let filteredRowsLevel2 = req.body.data.filter((row) => row.level === 2);
@@ -791,7 +767,7 @@ async function saveMasterNilaiNormal(req, res) {
 
     } catch (error) {
         transaction && await transaction.rollback();
-        console.log(error)
+        logger.error(error)
         res.status(201).send({
             status: "false",
             success: false,
@@ -803,18 +779,9 @@ async function saveMasterNilaiNormal(req, res) {
 }
 
 async function someFunctionUsingSaveMasterNilaiNormal2(req, res) {
-    let transaction = null;
-    try {
-        transaction = await db.sequelize.transaction();
-    } catch (e) {
-        console.error(e)
-        res.status(201).send({
-            status: e.message,
-            success: false,
-            msg: 'Simpan Gagal',
-            code: 201
-        });
-    }
+    const logger = res.locals.logger
+    const [transaction, errorTransaction] = await createTransaction(db, res)
+    if(errorTransaction) return
     try {
         const pemeriksaanlablevel3 = await db.m_pemeriksaanlab.create({
             statusenabled: true,
@@ -837,24 +804,14 @@ async function someFunctionUsingSaveMasterNilaiNormal2(req, res) {
         await transaction.commit(); // Commit the initial transaction
         // console.log(pemeriksaanlablevel3)
     } catch (error) {
-        console.error('Error executing query:', error);
-        console.log(error)
+        logger.error('Error executing query:', error);
     }
 }
 
 async function saveMasterKelompokUmur(req, res) {
-    let transaction = null;
-    try {
-        transaction = await db.sequelize.transaction();
-    } catch (e) {
-        console.error(e)
-        res.status(201).send({
-            status: e.message,
-            success: false,
-            msg: 'Simpan Gagal',
-            code: 201
-        });
-    }
+    const logger = res.locals.logger
+    const [transaction, errorTransaction] = await createTransaction(db, res)
+    if(errorTransaction) return
     try {
         let status = true
         if (req.body.status_enabled === 2)
@@ -882,7 +839,7 @@ async function saveMasterKelompokUmur(req, res) {
 
     } catch (error) {
         transaction && await transaction.rollback();
-        console.log(error)
+        logger.error(error)
         res.status(201).send({
             status: "false",
             success: false,
@@ -894,7 +851,7 @@ async function saveMasterKelompokUmur(req, res) {
 }
 
 async function getListDetailKelompokUmur(req, res) {
-
+    const logger = res.locals.logger
     try {
 
         const resultlist = await queryPromise2(`select
@@ -923,24 +880,16 @@ async function getListDetailKelompokUmur(req, res) {
         });
 
     } catch (error) {
+        logger.error(error)
         res.status(500).send({ message: error });
     }
 
 }
 
 async function saveMasterDetailKelompokUmur(req, res) {
-    let transaction = null;
-    try {
-        transaction = await db.sequelize.transaction();
-    } catch (e) {
-        console.error(e)
-        res.status(201).send({
-            status: e.message,
-            success: false,
-            msg: 'Simpan Gagal',
-            code: 201
-        });
-    }
+    const logger = res.locals.logger
+    const [transaction, errorTransaction] = await createTransaction(db, res)
+    if(errorTransaction) return
     try {
         let masterdetailkelompokumur = null
         let status_enabled = true
@@ -991,7 +940,7 @@ async function saveMasterDetailKelompokUmur(req, res) {
 
     } catch (error) {
         transaction && await transaction.rollback();
-        console.log(error)
+        logger.error(error)
         res.status(201).send({
             status: "false",
             success: false,
@@ -1003,7 +952,7 @@ async function saveMasterDetailKelompokUmur(req, res) {
 }
 
 async function getListSetNilaiNormal(req, res) {
-
+    const logger = res.locals.logger
     try {
 
         const resultlist = await queryPromise2(`select
@@ -1032,13 +981,14 @@ async function getListSetNilaiNormal(req, res) {
         });
 
     } catch (error) {
+        logger.error(error)
         res.status(500).send({ message: error });
     }
 
 }
 
 async function getListSetNilaiNormalDetail(req, res) {
-
+    const logger = res.locals.logger
     try {
 
         const resultlist = await queryPromise2(`select
@@ -1090,25 +1040,16 @@ async function getListSetNilaiNormalDetail(req, res) {
         });
 
     } catch (error) {
+        logger.error(error)
         res.status(500).send({ message: error });
     }
 
 }
 
 async function saveSetMasterNilaiNormalLab(req, res) {
-    let transaction = null;
-    try {
-        transaction = await db.sequelize.transaction();
-    } catch (e) {
-        console.error(e)
-        res.status(201).send({
-            status: e.message,
-            success: false,
-            msg: 'Simpan Gagal',
-            code: 201
-        });
-        return
-    }
+    const logger = res.locals.logger
+    const [transaction, errorTransaction] = await createTransaction(db, res)
+    if(errorTransaction) return
     try {
         const inputNilaiLab = (data, objectjeniskelamin) =>
             data.map(async (item) => {
@@ -1177,7 +1118,7 @@ async function saveSetMasterNilaiNormalLab(req, res) {
         });
     } catch (error) {
         transaction && await transaction.rollback();
-        console.log(error)
+        logger.error(error)
         res.status(201).send({
             status: "false",
             success: false,
@@ -1189,19 +1130,9 @@ async function saveSetMasterNilaiNormalLab(req, res) {
 }
 
 async function saveSetNilaiNormalt(req, res) {
-    let transaction = null;
-    try {
-        transaction = await db.sequelize.transaction();
-    } catch (e) {
-        console.error(e)
-        res.status(201).send({
-            status: e.message,
-            success: false,
-            msg: 'Simpan Gagal',
-            code: 201
-        });
-        return
-    }
+    const logger = res.locals.logger
+    const [transaction, errorTransaction] = await createTransaction(db, res)
+    if(errorTransaction) return
     try {
         let tempData = req.body.data
         let saveHasilPemeriksaan
@@ -1277,7 +1208,7 @@ async function saveSetNilaiNormalt(req, res) {
         });
     } catch (error) {
         transaction && await transaction.rollback();
-        console.log(error)
+        logger.error(error)
         res.status(201).send({
             status: "false",
             success: false,
@@ -1289,6 +1220,7 @@ async function saveSetNilaiNormalt(req, res) {
 }
 
 async function getCetakHasilLab(req, res){
+    const logger = res.locals.logger
     try {
         let norecArray = req.query.norec.split(',');
         const resultlist = await pool.query(queries.qResultCetakHasil, [norecArray])
@@ -1312,6 +1244,7 @@ async function getCetakHasilLab(req, res){
         });
 
     } catch (error) {
+        logger.error(error)
         res.status(500).send({ message: error });
     }
 

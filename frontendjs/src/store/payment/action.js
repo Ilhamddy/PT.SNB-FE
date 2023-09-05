@@ -36,7 +36,10 @@ import { PELAYANAN_FROM_DP_GET,
     LAPORAN_PENDAPATAN_KASIR_GET,
     LAPORAN_PENDAPATAN_KASIR_GET_SUCCESS,
     LAPORAN_PENDAPATAN_KASIR_GET_ERROR,
-    LAPORAN_PENDAPATAN_KASIR_GET_RESET
+    LAPORAN_PENDAPATAN_KASIR_GET_RESET,
+    GET_PIUTANG_AFTER_DATE,
+    GET_PIUTANG_AFTER_DATE_SUCCESS,
+    GET_PIUTANG_AFTER_DATE_ERROR
 } from "./actionType";
 
 export const pelayananFromDpGet = (norecap) => {
@@ -302,5 +305,29 @@ export const laporanPendapatanKasirGetError = (error) => {
 export const laporanPendapatanKasirGetReset = () => {
     return {
         type: LAPORAN_PENDAPATAN_KASIR_GET_RESET,
+    }
+}
+
+export const getPiutangAfterDate = (queries = {
+    tglterakhir: null, 
+    norecnota: null
+}) => {
+    return {
+        type: GET_PIUTANG_AFTER_DATE,
+        payload: {queries}
+    }
+}
+
+export const getPiutangAfterDateSuccess = (data) => {
+    return {
+        type: GET_PIUTANG_AFTER_DATE_SUCCESS,
+        payload: data
+    }
+}
+
+export const getPiutangAfterDateError = (error) => {
+    return {
+        type: GET_PIUTANG_AFTER_DATE_ERROR,
+        payload: error
     }
 }

@@ -42,7 +42,6 @@ import queriesSigna from "../../queries/master/signa/signa.queries";
 import queriesKeteranganResep from "../../queries/master/keteranganresep/keteranganresep.queries";
 import queriesJenisResep from "../../queries/master/jenisresep/jenisresep.queries";
 import queriesAlasanRetur from "../../queries/master/alasanretur/m_alasanretur.queries";
-import { createLogger } from "../../utils/logger";
 
 const selectComboBox = (req, res) => {
     try {
@@ -546,7 +545,6 @@ const comboVerifResep = async (req, res) => {
 }
 
 const comboPenjualanBebas = async (req, res) => {
-    const logger = createLogger(comboPenjualanBebas.name)
     try{
         const pegawai = await pool.query(queriesPegawai.getAll)
         const jenisResep = await pool.query(queriesJenisResep.getAll)
@@ -569,20 +567,16 @@ const comboPenjualanBebas = async (req, res) => {
             status: "success",
             success: true,
         });
-        logger.info("sukses")
     }catch(error){
-        logger.error(error)
         res.status(500).send({
             data: [],
             status: "error",
             success: false,
         });
     }
-    logger.print();
 }
 
 const comboReturObat = async (req, res) => {
-    const logger = createLogger(comboReturObat.name)
     try{
         const alasan = await pool.query(queriesAlasanRetur.getAll)
         
@@ -595,16 +589,13 @@ const comboReturObat = async (req, res) => {
             status: "success",
             success: true,
         });
-        logger.info("sukses")
     }catch(error){
-        logger.error(error)
         res.status(500).send({
             data: [],
             status: "error",
             success: false,
         });
     }
-    logger.print();
 }
 
 export default {

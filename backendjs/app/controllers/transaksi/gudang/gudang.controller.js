@@ -35,6 +35,7 @@ const t_stokopnamedetail = db.t_stokopnamedetail
 
 
 const createOrUpdateProdukObat = async (req, res) => {
+    const logger = res.locals.logger
     const [transaction, errorTransaction]
         = await createTransaction(db, res)
     if(errorTransaction) return
@@ -112,8 +113,7 @@ const createOrUpdateProdukObat = async (req, res) => {
             code: 200
         });
     }catch(error){
-        console.error("==Error Create Produk Obat");
-        console.error(error)
+        logger.error(error)
         await transaction.rollback();
         res.status(500).send({
             data: error,
@@ -125,6 +125,7 @@ const createOrUpdateProdukObat = async (req, res) => {
 }
 
 const createOrUpdateDetailProduk = async (req, res) => {
+    const logger = res.locals.logger
     const [transaction, errorTransaction]
         = await createTransaction(db, res)
     if(errorTransaction) return
@@ -177,8 +178,7 @@ const createOrUpdateDetailProduk = async (req, res) => {
         });
 
     }catch(error){
-        console.error("==Error Create Detail Produk");
-        console.error(error)
+        logger.error(error)
         await transaction.rollback();
         res.status(500).send({
             data: error,
@@ -191,6 +191,7 @@ const createOrUpdateDetailProduk = async (req, res) => {
 
 
 const createOrUpdateSediaan = async (req, res) => {
+    const logger = res.locals.logger
     const [transaction, errorTransaction]
         = await createTransaction(db, res)
     if(errorTransaction) return
@@ -240,7 +241,7 @@ const createOrUpdateSediaan = async (req, res) => {
         });
 
     }catch(error){
-        console.error(error)
+        logger.error(error)
         await transaction.rollback();
         res.status(500).send({
             data: error,
@@ -252,6 +253,7 @@ const createOrUpdateSediaan = async (req, res) => {
 }
 
 const createOrUpdateSatuan = async (req, res) => {
+    const logger = res.locals.logger
     const [transaction, errorTransaction]
         = await createTransaction(db, res)
     if(errorTransaction) return
@@ -306,7 +308,7 @@ const createOrUpdateSatuan = async (req, res) => {
         });
 
     }catch(error){
-        console.error(error)
+        logger.error(error)
         await transaction.rollback();
         res.status(500).send({
             data: error,
@@ -319,6 +321,7 @@ const createOrUpdateSatuan = async (req, res) => {
 
 
 const getLainLain = async (req, res) => {
+    const logger = res.locals.logger
     try{
         const detailJenisProduk = await pool.query(qGetJenisDetailProdukLainLain, [])
         detailJenisProduk.rows = detailJenisProduk.rows.sort((a, b) => a.id - b.id)
@@ -341,7 +344,7 @@ const getLainLain = async (req, res) => {
             code: 200
         });
     }catch(error){
-        console.error(error)
+        logger.error(error)
         res.status(500).send({
             data: error,
             success: false,
@@ -352,6 +355,7 @@ const getLainLain = async (req, res) => {
 }
 
 const getProdukKonversi = async (req, res) => {
+    const logger = res.locals.logger
     try{
         const produk = (await pool.query(qGetProdukKonversi, [])).rows
         const tempres = {
@@ -366,7 +370,7 @@ const getProdukKonversi = async (req, res) => {
         });
         
     }catch(e){
-        console.error(e)
+        logger.error(e)
         res.status(500).send({
             data: e.message,
             success: false,
@@ -378,6 +382,7 @@ const getProdukKonversi = async (req, res) => {
 }
 
 const getKemasanKonversi = async (req, res) => {
+    const logger = res.locals.logger
     try{
         const idproduk = req.query.idproduk;
         if(!idproduk) throw Error("idproduk tidak boleh kosong")
@@ -395,7 +400,7 @@ const getKemasanKonversi = async (req, res) => {
             code: 200
         });
     }catch(e){
-        console.error(e)
+        logger.error(e)
         res.status(500).send({
             data: e.message,
             success: false,
@@ -407,19 +412,9 @@ const getKemasanKonversi = async (req, res) => {
 }
 
 const createOrUpdateKemasan = async (req, res) => {
-    let transaction = null;
-    try{
-        transaction = await db.sequelize.transaction();
-    }catch(e){
-        console.error(e)
-        res.status(500).send({
-            data: e.message,
-            success: false,
-            msg: 'Transaksi gagal',
-            code: 500
-        });
-        return;
-    }
+    const logger = res.locals.logger
+    const [transaction, errorTransaction] 
+        = await createTransaction(db, res)
     try{
         const reqBody = req.body
         let     createdOrEditedKemasan
@@ -464,7 +459,7 @@ const createOrUpdateKemasan = async (req, res) => {
         });
         
     }catch(e){
-        console.error(e)
+        logger.error(e)
         await transaction.rollback();
         res.status(500).send({
             data: e.message,
@@ -477,6 +472,7 @@ const createOrUpdateKemasan = async (req, res) => {
 }
 
 const getProdukMaster = async (req, res) => {
+    const logger = res.locals.logger
     try{
         let produk = (await pool.query(qGetProdukMaster, [])).rows
         produk = produk.sort((a, b) => a.id - b.id)
@@ -491,7 +487,7 @@ const getProdukMaster = async (req, res) => {
             code: 200
         });
     }catch(e){
-        console.error(e)
+        logger.error(e)
         res.status(500).send({
             data: e.message,
             success: false,
@@ -502,6 +498,7 @@ const getProdukMaster = async (req, res) => {
 }
 
 const getProdukEdit = async (req, res) => {
+    const logger = res.locals.logger
     try{
         const produkid = req.query.produkid
         if(!produkid) throw Error("Produk id tidak boleh kosong")
@@ -517,7 +514,7 @@ const getProdukEdit = async (req, res) => {
             code: 200
         });
     } catch(e){
-        console.error(e)
+        logger.error(e)
         res.status(500).send({
             data: e.message,
             success: false,
@@ -528,6 +525,7 @@ const getProdukEdit = async (req, res) => {
 }
 
 const getKemasanFromProduk = async (req, res) => {
+    const logger = res.locals.logger
     try{
         const {idproduk} = req.query
         if(!idproduk) throw Error("idproduk tidak boleh kosong")
@@ -543,8 +541,7 @@ const getKemasanFromProduk = async (req, res) => {
             code: 200
         });
     }catch(error){
-        console.error("==Get satuan from produk gagal");
-        console.error(error)
+        logger.error(error)
         res.status(500).send({
             data: error,
             success: false,
@@ -555,6 +552,7 @@ const getKemasanFromProduk = async (req, res) => {
 }
 
 const createOrUpdatePenerimaan = async (req, res) => {
+    const logger = res.locals.logger
     const [transaction, errorTransaction]
         = await createTransaction(db, res)
     if(errorTransaction) return
@@ -618,8 +616,7 @@ const createOrUpdatePenerimaan = async (req, res) => {
             code: 200
         });
     }catch(error){
-        console.error("==Create or update produk penerimaan gagal");
-        console.error(error)
+        logger.error(error)
         transaction.rollback();
         res.status(500).send({
             data: error,
@@ -631,6 +628,7 @@ const createOrUpdatePenerimaan = async (req, res) => {
 }
 
 const getPenerimaan = async (req, res) => {
+    const logger = res.locals.logger
     try{
         const {norecpenerimaan} = req.query
         if(!norecpenerimaan) throw Error("norecpenerimaan tidak boleh kosong")
@@ -664,8 +662,7 @@ const getPenerimaan = async (req, res) => {
             code: 200
         });
     }catch(error){
-        console.error("==Get penerimaan gagal");
-        console.error(error)
+        logger.error(error)
         res.status(500).send({
             data: error,
             success: false,
@@ -678,6 +675,7 @@ const getPenerimaan = async (req, res) => {
 
 
 const getListPenerimaan = async (req, res) => {
+    const logger = res.locals.logger
     try{
         let listPenerimaan = (await pool.query(qGetListPenerimaan, [])).rows
         listPenerimaan = await Promise.all(
@@ -703,8 +701,7 @@ const getListPenerimaan = async (req, res) => {
             code: 200
         });
     }catch(error){
-        console.error("==Get list penerimaan gagal");
-        console.error(error)
+        logger.error(error)
         res.status(500).send({
             data: error,
             success: false,
@@ -715,6 +712,7 @@ const getListPenerimaan = async (req, res) => {
 }
 
 const getKartuStok = async (req, res) => {
+    const logger = res.locals.logger
     try{
         const kartuStok = (await pool.query(qGetKartuStok, [])).rows
         const tempres = {
@@ -728,7 +726,7 @@ const getKartuStok = async (req, res) => {
             code: 200
         });
     }catch(e){
-        console.error(e)
+        logger.error(e)
         res.status(500).send({
             data: e.message,
             success: false,
@@ -739,6 +737,7 @@ const getKartuStok = async (req, res) => {
 }
 
 const getStokUnit = async (req, res) => {
+    const logger = res.locals.logger
     try{
         const stokUnit = (await pool.query(qGetStokUnit, [])).rows
         const tempres = {
@@ -752,7 +751,7 @@ const getStokUnit = async (req, res) => {
             code: 200
         });
     }catch(e){
-        console.error(e)
+        logger.error(e)
         res.status(500).send({
             data: e.message,
             success: false,
@@ -763,6 +762,7 @@ const getStokUnit = async (req, res) => {
 }
 
 const createOrUpdateStokOpname = async (req, res) => {
+    const logger = res.locals.logger
     const [transaction, errorTransaction] 
         = await createTransaction(db, res)
     if(errorTransaction) return
@@ -817,7 +817,7 @@ const createOrUpdateStokOpname = async (req, res) => {
             code: 200
         });
     }catch(error){
-        console.error(error)
+        logger.error(error)
         transaction.rollback();
         res.status(500).send({
             data: error.message,
@@ -829,6 +829,7 @@ const createOrUpdateStokOpname = async (req, res) => {
 }
 
 const getStokOpname = async (req, res) => {
+    const logger = res.locals.logger
     try {
         const stokOpname = (await pool.query(qGetStokOpname, [])).rows
         const tempres = {
@@ -842,7 +843,7 @@ const getStokOpname = async (req, res) => {
             code: 200
         });
     } catch(error){
-        console.error(error)
+        logger.error(error)
         res.status(500).send({
             data: error.message,
             success: false,
@@ -853,6 +854,7 @@ const getStokOpname = async (req, res) => {
 }
 
 const getStokOpnameDetail = async (req, res) => {
+    const logger = res.locals.logger
     const [transaction, errorTransaction] = await createTransaction(db, res)
     try {
         if(errorTransaction) return
@@ -908,7 +910,7 @@ const getStokOpnameDetail = async (req, res) => {
             code: 200
         });
     }catch(error){
-        console.error(error);
+        logger.error(error);
         transaction.rollback();
         res.status(500).send({
             data: error.message,
@@ -920,6 +922,7 @@ const getStokOpnameDetail = async (req, res) => {
 }
 
 const updatedStokOpnameDetails = async (req, res) => {
+    const logger = res.locals.logger
     const [transaction, errorTransaction] = await createTransaction(db, res)
     try {
         if(errorTransaction) return
@@ -970,7 +973,7 @@ const updatedStokOpnameDetails = async (req, res) => {
             code: 200
         });
     } catch(error){
-        console.error(error);
+        logger.error(error);
         await transaction.rollback();
         res.status(500).send({
             data: error.message,

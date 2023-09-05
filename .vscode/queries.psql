@@ -1,12 +1,32 @@
-SELECT
-    row_number() OVER (ORDER BY tap.tglmasuk) AS no,
-    tap.tglmasuk AS tanggalmasuk,
-    tdp.tglregistrasi AS tanggalregistrasi,
-    tap.tglkeluar AS tanggalkeluar,
-    tdp.objectpenjaminfk AS penjamin,
-    mr.namarekanan AS namarekanan
-FROM t_antreanpemeriksaan tap
-    LEFT JOIN t_daftarpasien tdp ON tdp.norec = tap.objectdaftarpasienfk
-    LEFT JOIN m_rekanan mr ON tdp.objectpenjaminfk = mr.id
-WHERE tap.objectdaftarpasienfk = ''
-ORDER BY tap.tglmasuk
+SELECT 
+    tp.totalbayar AS totalbayar, 
+    tp.norec AS norecpiutang,
+    tp.totalpiutang AS totalpiutang, 
+    td.nocmfk AS nocmfk,
+    td.tglregistrasi AS tglregistrasi,
+    td.noregistrasi AS noregistrasi,
+    td.norec AS norecdp,
+    mp.namapasien AS namapasien,
+    mr.namaexternal AS namarekanan,
+    td.tglpulang AS tglpulang,
+    tn.norec AS norecnota,
+    bb.norec AS norecbukti,
+    mp.noidentitas AS noidentitas
+FROM t_piutangpasien tp
+    LEFT JOIN t_daftarpasien td ON tp.objectdaftarpasienfk=td.norec
+    LEFT JOIN m_pasien mp ON td.nocmfk=mp.id
+    LEFT JOIN m_rekanan mr ON tp.objectpenjaminfk=mr.id
+    LEFT JOIN t_notapelayananpasien tn ON tn.norec = tp.objectnotapelayananpasienfk
+    LEFT JOIN t_buktibayarpasien bb ON bb.objectpiutangpasienfk = tp.norec AND bb.statusenabled = true
+WHERE CASE 
+    WHEN 'pasien' = 'pasien' THEN 
+        COALESCE(
+            CASE 
+                WHEN (('2023-08-08' <> '') IS TRUE) THEN to_date('2023-08-08', 'YYYY-MM-DD') > tp.tglupdate 
+            END,
+            true
+        )
+        AND tp.statusenabled = true AND tp.objectpenjaminfk = 3
+    ELSE tp.statusenabled = true AND tp.objectpenjaminfk != 3
+END
+ORDER BY tp.tglinput DESC

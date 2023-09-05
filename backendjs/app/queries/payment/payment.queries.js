@@ -2,7 +2,7 @@
 
 const qGetPelayananFromDp =
     `
-    SELECT 
+SELECT 
     peg.namalengkap AS namapegawai,
     mp.namaproduk AS namaproduk,
     mp.isobat AS isobat,
@@ -17,27 +17,27 @@ const qGetPelayananFromDp =
     tpp.tglinput AS tglinput,
     tpp.iscito AS iscito,
     tpp.jasa AS jasa
-    FROM t_daftarpasien td
-        RIGHT JOIN t_antreanpemeriksaan tap ON tap.objectdaftarpasienfk = td.norec
-        RIGHT JOIN t_pelayananpasien tpp ON tpp.objectantreanpemeriksaanfk = tap.norec 
-        AND tpp.statusenabled = true
-        LEFT JOIN t_notapelayananpasien npp ON npp.objectdaftarpasienfk = td.norec 
-        AND npp.statusenabled = true
-        LEFT JOIN m_pegawai peg ON peg.id = tpp.objectpegawaifk 
-        LEFT JOIN m_produk mp ON mp.id = tpp.objectprodukfk 
-        LEFT JOIN m_kelas mk ON mk.id = tpp.objectkelasfk
-        LEFT JOIN t_antreanpemeriksaan ap ON ap.norec = tpp.objectantreanpemeriksaanfk
-        LEFT JOIN t_daftarpasien dp ON dp.norec = ap.objectdaftarpasienfk
-            WHERE td.norec=$1
-            AND td.statusenabled=true
-            GROUP BY 
-                tpp.norec, 
-                peg.namalengkap, 
-                mp.namaproduk, 
-                mp.isobat, 
-                mk.namakelas, 
-                dp.norec, 
-                npp.no_nota
+FROM t_daftarpasien td
+    RIGHT JOIN t_antreanpemeriksaan tap ON tap.objectdaftarpasienfk = td.norec
+    RIGHT JOIN t_pelayananpasien tpp ON tpp.objectantreanpemeriksaanfk = tap.norec 
+    AND tpp.statusenabled = true
+    LEFT JOIN t_notapelayananpasien npp ON npp.norec = tpp.objectnotapelayananpasienfk 
+    AND npp.statusenabled = true
+    LEFT JOIN m_pegawai peg ON peg.id = tpp.objectpegawaifk 
+    LEFT JOIN m_produk mp ON mp.id = tpp.objectprodukfk 
+    LEFT JOIN m_kelas mk ON mk.id = tpp.objectkelasfk
+    LEFT JOIN t_antreanpemeriksaan ap ON ap.norec = tpp.objectantreanpemeriksaanfk
+    LEFT JOIN t_daftarpasien dp ON dp.norec = ap.objectdaftarpasienfk
+WHERE td.norec=$1
+AND td.statusenabled=true
+GROUP BY 
+    tpp.norec, 
+    peg.namalengkap, 
+    mp.namaproduk, 
+    mp.isobat, 
+    mk.namakelas, 
+    dp.norec, 
+    npp.no_nota
     `
 
 const qDm = `
@@ -79,8 +79,8 @@ const qGetKepesertaanFromAntrean =
 
 
 const qDaftarTagihanPasien =
-    `
-    SELECT 
+`
+SELECT 
 	tn.total AS total, 
     tn.norec AS norecnota,
 	tn.no_nota AS nonota, 
@@ -95,41 +95,52 @@ const qDaftarTagihanPasien =
     bb.norec as norecbukti,
     bb.totalbayar as totalbayar,
     bb.totaltagihan as totaltagihan,
-	td.tglpulang AS tglpulang
-		FROM t_notapelayananpasien tn
-		LEFT JOIN t_daftarpasien td ON tn.objectdaftarpasienfk=td.norec
-	    LEFT JOIN m_pasien mp ON td.nocmfk=mp.id
-		LEFT JOIN m_rekanan mr ON td.objectpenjaminfk=mr.id
-        LEFT JOIN t_buktibayarpasien bb 
-        ON bb.objectnotapelayananpasienfk = tn.norec 
+	td.tglpulang AS tglpulang,
+    count(tp)::int as jmlpiutangbayar
+FROM t_notapelayananpasien tn
+    LEFT JOIN t_daftarpasien td ON tn.objectdaftarpasienfk=td.norec
+    LEFT JOIN m_pasien mp ON td.nocmfk=mp.id
+    LEFT JOIN m_rekanan mr ON td.objectpenjaminfk=mr.id
+    LEFT JOIN t_buktibayarpasien bb ON bb.objectnotapelayananpasienfk = tn.norec 
         AND bb.statusenabled = true 
         AND bb.objectpiutangpasienfk IS NULL
-            WHERE tn.statusenabled=true 
-            ORDER BY tn.tglinput DESC
-    `
+    LEFT JOIN t_piutangpasien tp ON tp.objectnotapelayananpasienfk = tn.norec
+        AND tp.statusenabled = true 
+        AND tp.totalbayar > 0
+WHERE tn.statusenabled=true 
+GROUP BY 
+    tn.total,
+    tn.norec,
+    td.norec,
+    mp.namapasien,
+    mr.namaexternal,
+    bb.norec
+ORDER BY tn.tglinput DESC
+
+`
+
 const qGetPelayananFromVerif =
     `
-    SELECT 
-    tpp.*,
-    peg.namalengkap AS namapegawai,
-    peg.id AS idpegawai,
-    mp.namaproduk AS namaproduk,
-    mp.isobat AS isobat,
-    mk.namakelas AS namakelas,
-    dp.norec AS norec_dp,
-    npp.no_nota AS no_nota,
-    tbp.no_bukti AS no_bukti
-    FROM t_pelayananpasien tpp
-        JOIN m_pegawai peg ON peg.id = tpp.objectpegawaifk 
-        JOIN m_produk mp ON mp.id = tpp.objectprodukfk 
-        JOIN m_kelas mk ON mk.id = tpp.objectkelasfk
-        JOIN t_notapelayananpasien npp ON npp.norec = tpp.objectnotapelayananpasienfk
-        JOIN t_antreanpemeriksaan ap ON ap.norec = tpp.objectantreanpemeriksaanfk
-        JOIN t_daftarpasien dp ON dp.norec = ap.objectdaftarpasienfk
-        LEFT JOIN t_buktibayarpasien tbp ON tbp.objectnotapelayananpasienfk = tpp.objectnotapelayananpasienfk
-        AND tbp.statusenabled = true
-            WHERE tpp.objectnotapelayananpasienfk=$1 AND npp.statusenabled=true
-
+SELECT 
+tpp.*,
+peg.namalengkap AS namapegawai,
+peg.id AS idpegawai,
+mp.namaproduk AS namaproduk,
+mp.isobat AS isobat,
+mk.namakelas AS namakelas,
+dp.norec AS norec_dp,
+npp.no_nota AS no_nota,
+tbp.no_bukti AS no_bukti
+FROM t_pelayananpasien tpp
+    LEFT JOIN m_pegawai peg ON peg.id = tpp.objectpegawaifk 
+    LEFT JOIN m_produk mp ON mp.id = tpp.objectprodukfk 
+    LEFT JOIN m_kelas mk ON mk.id = tpp.objectkelasfk
+    LEFT JOIN t_notapelayananpasien npp ON npp.norec = tpp.objectnotapelayananpasienfk
+    LEFT JOIN t_antreanpemeriksaan ap ON ap.norec = tpp.objectantreanpemeriksaanfk
+    LEFT JOIN t_daftarpasien dp ON dp.norec = ap.objectdaftarpasienfk
+    LEFT JOIN t_buktibayarpasien tbp ON tbp.objectnotapelayananpasienfk = tpp.objectnotapelayananpasienfk
+AND tbp.statusenabled = true
+    WHERE tpp.objectnotapelayananpasienfk=$1 AND npp.statusenabled=true
     `
 
 const qGetVerif = `
@@ -197,7 +208,7 @@ const qGetBuktiBayar =
     `
 
 const qGetPiutangPasien =
-    `
+`
 SELECT 
     tp.totalbayar AS totalbayar, 
     tp.norec AS norecpiutang,
@@ -211,6 +222,7 @@ SELECT
     td.tglpulang AS tglpulang,
     tn.norec AS norecnota,
     bb.norec AS norecbukti,
+    tp.tglupdate AS tglupdate,
     mp.noidentitas AS noidentitas
 FROM t_piutangpasien tp
     LEFT JOIN t_daftarpasien td ON tp.objectdaftarpasienfk=td.norec
@@ -218,12 +230,29 @@ FROM t_piutangpasien tp
     LEFT JOIN m_rekanan mr ON tp.objectpenjaminfk=mr.id
     LEFT JOIN t_notapelayananpasien tn ON tn.norec = tp.objectnotapelayananpasienfk
     LEFT JOIN t_buktibayarpasien bb ON bb.objectpiutangpasienfk = tp.norec AND bb.statusenabled = true
-WHERE CASE WHEN $1 = 'pasien' 
-    THEN tp.statusenabled = true AND tp.objectpenjaminfk = 3
-    ELSE tp.statusenabled = true AND tp.objectpenjaminfk != 3
-END
+WHERE 
+    CASE 
+        WHEN $1 = 'pasien' THEN 
+            CASE 
+                WHEN (($2 <> '') IS TRUE) THEN cast($2 AS TIMESTAMP) <= tp.tglupdate 
+                ELSE TRUE
+            END
+            AND
+            CASE
+                WHEN (($3 <> '') IS TRUE) THEN tp.objectnotapelayananpasienfk = $3
+                ELSE TRUE
+            END
+            AND tp.objectpenjaminfk = 3
+        ELSE tp.objectpenjaminfk != 3
+    END
+    AND
+    CASE
+        WHEN $4 IS TRUE THEN tp.totalbayar > 0
+        ELSE TRUE
+    END
+    AND tp.statusenabled = true
 ORDER BY tp.tglinput DESC
-    `
+`
 
 const qTagihanGetFromDP =
     `
@@ -301,16 +330,17 @@ const qGetDepositFromNota =
 
 const qGetBuktiBayarFromNota =
     `
-    SELECT
+SELECT
     tbb.*,
     td.noregistrasi AS noregistrasi,
     td.nocmfk AS nocmfk,
     td.tglregistrasi AS tglregistrasi,
     mp.namapasien AS namapasien
-    FROM t_buktibayarpasien tbb
-        LEFT JOIN t_daftarpasien td ON td.norec = tbb.objectdaftarpasienfk
-        LEFT JOIN m_pasien mp ON mp.id = td.nocmfk
-        WHERE objectnotapelayananpasienfk = $1
+FROM t_buktibayarpasien tbb
+    LEFT JOIN t_daftarpasien td ON td.norec = tbb.objectdaftarpasienfk
+    LEFT JOIN m_pasien mp ON mp.id = td.nocmfk
+WHERE objectnotapelayananpasienfk = $1
+    AND tbb.statusenabled = true
     `
 
 const qGetCaraBayarFromBB =

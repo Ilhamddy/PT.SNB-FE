@@ -54,20 +54,11 @@ const queryPromise2 = (query) => {
 async function saveEmrPasienTtv(req, res) {
     // res.status(500).send({ message: req.userId });
     // return
-    let transaction = null;
-    try{
-        transaction = await db.sequelize.transaction();
-    }catch(e){
-        console.error(e)
-        res.status(201).send({
-            status: e.message,
-            success: false,
-            msg: 'Simpan Gagal',
-            code: 201
-        });
-    }
-    const resultEmrPasien = await queryPromise1(req.body.norecap, req.body.idlabel);
+    const logger = res.locals.logger
+    const [transaction, errorTransaction] = await createTransaction(db, res)
+    if(errorTransaction) return
     try {
+        const resultEmrPasien = await queryPromise1(req.body.norecap, req.body.idlabel);
         let rate = req.body.gcse + req.body.gcsm + req.body.gcsv
         let idgcs = null
         if (rate <= 3) {
@@ -132,7 +123,7 @@ async function saveEmrPasienTtv(req, res) {
             code: 200
         });
     } catch (error) {
-        // console.log(error);
+        logger.error(error)
         transaction && await transaction.rollback();
         res.status(201).send({
             status: "false",
@@ -144,37 +135,44 @@ async function saveEmrPasienTtv(req, res) {
 }
 
 async function getListTtv(req, res) {
+    const logger = res.locals.logger
+    try{
+        const resultNocmfk = await queryPromise2(`SELECT nocmfk
+            FROM t_daftarpasien where norec='${req.query.norecdp}'
+        `);
+        if (resultNocmfk.rowCount === 0) {
+            res.status(500).send({ message: 'Data Tidak Ada' });
+            return
+        }
+        let nocmfk = resultNocmfk.rows[0].nocmfk
+        const resultList = await queryPromise2(`SELECT row_number() OVER (ORDER BY tt.norec) AS no,dp.noregistrasi,
+        to_char(dp.tglregistrasi,'yyyy-MM-dd') as tglregistrasi,tt.norec, tt.objectemrfk, tt.tinggibadan,
+        tt.beratbadan, tt.suhu,tt.e, tt.m, tt.v, tt.nadi, tt.alergi, tt.tekanandarah, tt.spo2, 
+        tt.pernapasan,tt.keadaanumum, tt.objectpegawaifk, tt.isedit, tt.objectttvfk, tt.tglisi,
+        mu.namaunit,mr.reportdisplay as namagcs
+                FROM t_daftarpasien dp 
+        join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk=dp.norec
+        join t_emrpasien te on te.objectantreanpemeriksaanfk=ta.norec 
+        join t_ttv tt on tt.objectemrfk =te.norec
+        join m_unit mu on mu.id=ta.objectunitfk
+        left join m_range mr on mr.id=tt.objectgcsfk where dp.nocmfk='${nocmfk}' and tt.statusenabled=true
+        `);
+        res.status(200).send({
+            data: resultList.rows,
+            status: "success",
+            success: true,
+        });
+    }catch(error){
+        logger.error(error)
+        res.status(500).send({ message: error });
 
-    const resultNocmfk = await queryPromise2(`SELECT nocmfk
-        FROM t_daftarpasien where norec='${req.query.norecdp}'
-    `);
-    if (resultNocmfk.rowCount === 0) {
-        res.status(500).send({ message: 'Data Tidak Ada' });
-        return
     }
-    let nocmfk = resultNocmfk.rows[0].nocmfk
-    const resultList = await queryPromise2(`SELECT row_number() OVER (ORDER BY tt.norec) AS no,dp.noregistrasi,
-    to_char(dp.tglregistrasi,'yyyy-MM-dd') as tglregistrasi,tt.norec, tt.objectemrfk, tt.tinggibadan,
-    tt.beratbadan, tt.suhu,tt.e, tt.m, tt.v, tt.nadi, tt.alergi, tt.tekanandarah, tt.spo2, 
-    tt.pernapasan,tt.keadaanumum, tt.objectpegawaifk, tt.isedit, tt.objectttvfk, tt.tglisi,
-    mu.namaunit,mr.reportdisplay as namagcs
-            FROM t_daftarpasien dp 
-    join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk=dp.norec
-    join t_emrpasien te on te.objectantreanpemeriksaanfk=ta.norec 
-    join t_ttv tt on tt.objectemrfk =te.norec
-    join m_unit mu on mu.id=ta.objectunitfk
-    left join m_range mr on mr.id=tt.objectgcsfk where dp.nocmfk='${nocmfk}' and tt.statusenabled=true
-    `);
-    res.status(200).send({
-        data: resultList.rows,
-        status: "success",
-        success: true,
-    });
+
 }
 
 async function getHeaderEmr(req, res) {
     const norecta = req.query.norecta;
-    // console.log(req.query.norecdp)
+    const logger = res.locals.logger
     try {
         const resultCountNoantrianDokter = await queryPromise2(`select mu2.namaunit as ruanganta,mr.namarekanan, mp.tgllahir AS tgllahirkomplet,
         mj2.jeniskelamin,td.norec as norecdp,ta.norec as norecta,mj.jenispenjamin,ta.taskid,mi.namainstalasi,mp.nocm,td.noregistrasi,mp.namapasien,
@@ -270,28 +268,16 @@ async function getHeaderEmr(req, res) {
         });
 
     } catch (error) {
-        console.error(error)
+        logger.error(error)
         res.status(500).send({ message: error });
     }
 
 }
 
 async function editEmrPasienTtv(req, res) {
-    // res.status(500).send({ message: 'error',msg:'Edit Data Tanda Vital Gagal'  });
-
-    // return
-    let transaction = null;
-    try{
-        transaction = await db.sequelize.transaction();
-    }catch(e){
-        console.error(e)
-        res.status(201).send({
-            status: e.message,
-            success: false,
-            msg: 'Simpan Gagal',
-            code: 201
-        });
-    }
+    const logger = res.locals.logger
+    const [transaction, errorTransaction] = await createTransaction(db, res)
+    if(errorTransaction) return
     try {
         let rate = req.body.gcse + req.body.gcsm + req.body.gcsv
         let idgcs = null
@@ -356,7 +342,7 @@ async function editEmrPasienTtv(req, res) {
             code: 200
         });
     } catch (error) {
-        // console.log(error);
+        logger.error(error);
         transaction && await transaction.rollback();
         res.status(201).send({
             status: error,
@@ -368,23 +354,12 @@ async function editEmrPasienTtv(req, res) {
 }
 
 async function saveEmrPasienCppt(req, res) {
-    // res.status(500).send({ message: req.userId });
-    // return
-    const resultEmrPasien = await queryPromise1(req.body.norecap, req.body.idlabel);
-    let transaction = null;
-    try{
-        transaction = await db.sequelize.transaction();
-    }catch(e){
-        console.error(e)
-        res.status(201).send({
-            status: e.message,
-            success: false,
-            msg: 'Simpan Gagal',
-            code: 201
-        });
-    }
+    const logger = res.locals.logger
+    const [transaction, errorTransaction] = await createTransaction(db, res)
+    if(errorTransaction) return
     try {
         let norec = uuid.v4().substring(0, 32)
+        const resultEmrPasien = await queryPromise1(req.body.norecap, req.body.idlabel);
 
         if (resultEmrPasien.rowCount != 0) {
             norec = resultEmrPasien.rows[0].norec
@@ -422,7 +397,7 @@ async function saveEmrPasienCppt(req, res) {
             code: 200
         });
     } catch (error) {
-        // console.log(error);
+        logger.error(error);
         transaction && await transaction.rollback();
         res.status(201).send({
             status: "false",
@@ -434,57 +409,51 @@ async function saveEmrPasienCppt(req, res) {
 }
 
 async function getListCppt(req, res) {
-
-    const resultNocmfk = await queryPromise2(`SELECT nocmfk
-        FROM t_daftarpasien where norec='${req.query.norecdp}'
-    `);
-    if (resultNocmfk.rowCount === 0) {
-        res.status(500).send({ message: 'Data Tidak Ada' });
-        return
+    const logger = res.locals.logger
+    try{
+        const resultNocmfk = await queryPromise2(`SELECT nocmfk
+            FROM t_daftarpasien where norec='${req.query.norecdp}'
+        `);
+        if (resultNocmfk.rowCount === 0) {
+            res.status(500).send({ message: 'Data Tidak Ada' });
+            return
+        }
+        let nocmfk = resultNocmfk.rows[0].nocmfk
+        const resultList = await pool.query(`
+            SELECT 
+                row_number() OVER (ORDER BY tt.norec) AS no,
+                dp.noregistrasi,
+                to_char(dp.tglregistrasi,'yyyy-MM-dd') as tglregistrasi,
+                tt.norec, 
+                tt.objectemrfk, 
+                tt.subjective,
+                tt.objective, 
+                tt.assesment,
+                tt.plan,
+                mu.namaunit
+            FROM t_daftarpasien dp 
+                JOIN t_antreanpemeriksaan ta on ta.objectdaftarpasienfk=dp.norec
+                JOIN t_emrpasien te on te.objectantreanpemeriksaanfk=ta.norec 
+                JOIN t_cppt tt on tt.objectemrfk =te.norec
+                JOIN m_unit mu on mu.id=ta.objectunitfk where dp.nocmfk = $1 and tt.statusenabled=true
+        `, [nocmfk]);
+        res.status(200).send({
+            data: resultList.rows,
+            status: "success",
+            success: true,
+        });
+    }catch(error){
+        logger.error(error)
+        res.status(500).send({ message: error });
     }
-    let nocmfk = resultNocmfk.rows[0].nocmfk
-    const resultList = await pool.query(`
-        SELECT 
-            row_number() OVER (ORDER BY tt.norec) AS no,
-            dp.noregistrasi,
-            to_char(dp.tglregistrasi,'yyyy-MM-dd') as tglregistrasi,
-            tt.norec, 
-            tt.objectemrfk, 
-            tt.subjective,
-            tt.objective, 
-            tt.assesment,
-            tt.plan,
-            mu.namaunit
-        FROM t_daftarpasien dp 
-            JOIN t_antreanpemeriksaan ta on ta.objectdaftarpasienfk=dp.norec
-            JOIN t_emrpasien te on te.objectantreanpemeriksaanfk=ta.norec 
-            JOIN t_cppt tt on tt.objectemrfk =te.norec
-            JOIN m_unit mu on mu.id=ta.objectunitfk where dp.nocmfk = $1 and tt.statusenabled=true
-    `, [nocmfk]);
-    res.status(200).send({
-        data: resultList.rows,
-        status: "success",
-        success: true,
-    });
+    
 }
 
 async function editEmrPasienCppt(req, res) {
-    // res.status(500).send({ message: req.body });
-    // return
-    let transaction = null;
-    try{
-        transaction = await db.sequelize.transaction();
-    }catch(e){
-        console.error(e)
-        res.status(201).send({
-            status: e.message,
-            success: false,
-            msg: 'Simpan Gagal',
-            code: 201
-        });
-    }
+    const logger = res.locals.logger
+    const [transaction, errorTransaction] = await createTransaction(db, res)
+    if(errorTransaction) return
     try {
-
         let noreccppt = uuid.v4().substring(0, 32)
         const cppt = await db.t_cppt.create({
             norec: noreccppt,
@@ -520,7 +489,7 @@ async function editEmrPasienCppt(req, res) {
             code: 200
         });
     } catch (error) {
-        // console.log(error);
+        logger.error(error)
         transaction && await transaction.rollback();
         res.status(201).send({
             status: "false",
@@ -532,80 +501,87 @@ async function editEmrPasienCppt(req, res) {
 }
 
 async function getListDiagnosa10(req, res) {
+    const logger = res.locals.logger
+    try{
+        const result = await queryPromise2(`SELECT id as value,kodeexternal || ' - '|| reportdisplay as label
+            FROM m_icdx where reportdisplay ilike '%${req.query.namadiagnosa}%' 
+            or kodeexternal ilike '%${req.query.namadiagnosa}%' limit 10
+        `);
+        if (result.rowCount === 0) {
+            res.status(201).send({
+                data: [],
+                status: "success",
+                success: true,
+            });
+            return
+        }
 
-    const result = await queryPromise2(`SELECT id as value,kodeexternal || ' - '|| reportdisplay as label
-        FROM m_icdx where reportdisplay ilike '%${req.query.namadiagnosa}%' 
-        or kodeexternal ilike '%${req.query.namadiagnosa}%' limit 10
-    `);
-    if (result.rowCount === 0) {
-        res.status(201).send({
-            data: [],
+        res.status(200).send({
+            data: result.rows,
             status: "success",
             success: true,
         });
-        return
+    }catch(error){
+        logger.error(error)
+        res.status(500).send({ message: error });
     }
 
-    res.status(200).send({
-        data: result.rows,
-        status: "success",
-        success: true,
-    });
 }
 
 async function getListDiagnosa9(req, res) {
+    const logger = res.locals.logger
+    try{
+        const result = await queryPromise2(`SELECT id as value,kodeexternal || ' - '||reportdisplay as label
+            FROM m_icdix where reportdisplay ilike '%${req.query.namadiagnosa}%' or kodeexternal ilike '%${req.query.namadiagnosa}%' limit 10
+        `);
+        if (result.rowCount === 0) {
+            res.status(201).send({
+                data: [],
+                status: "success",
+                success: true,
+            });
+            return
+        }
 
-    const result = await queryPromise2(`SELECT id as value,kodeexternal || ' - '||reportdisplay as label
-        FROM m_icdix where reportdisplay ilike '%${req.query.namadiagnosa}%' or kodeexternal ilike '%${req.query.namadiagnosa}%' limit 10
-    `);
-    if (result.rowCount === 0) {
-        res.status(201).send({
-            data: [],
+        res.status(200).send({
+            data: result.rows,
             status: "success",
             success: true,
         });
-        return
+    }catch(error){
+        logger.error(error);
+        res.status(500).send({ message: error });
     }
 
-    res.status(200).send({
-        data: result.rows,
-        status: "success",
-        success: true,
-    });
 }
 
 async function getListComboDiagnosa(req, res) {
+    const logger = res.locals.logger
+    try{
+        const result = await queryPromise2(`SELECT id as value,reportdisplay as label
+            FROM m_tipediagnosa
+        `);
+        const result2 = await queryPromise2(`SELECT id as value,reportdisplay as label
+            FROM m_jeniskasus
+        `);
 
-    const result = await queryPromise2(`SELECT id as value,reportdisplay as label
-        FROM m_tipediagnosa
-    `);
-    const result2 = await queryPromise2(`SELECT id as value,reportdisplay as label
-        FROM m_jeniskasus
-    `);
+        let tempres = { tipediagnosa: result.rows, jeniskasus: result2.rows }
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+        });
+    }catch(error){
+        logger.error(error)
+        res.status(500).send({ message: error });
+    }
 
-    let tempres = { tipediagnosa: result.rows, jeniskasus: result2.rows }
-    res.status(200).send({
-        data: tempres,
-        status: "success",
-        success: true,
-    });
 }
 
 async function saveEmrPasienDiagnosa(req, res) {
-    // res.status(500).send({ message: req.userId });
-    // return
-    let transaction = null;
-    try{
-        transaction = await db.sequelize.transaction();
-    }catch(e){
-        console.error(e)
-        res.status(201).send({
-            status: e.message,
-            success: false,
-            msg: 'Simpan Gagal',
-            code: 201
-        });
-    }
+    const logger = res.locals.logger
+    const [transaction, errorTransaction] = await createTransaction(db, res)
+    if(errorTransaction) return
     try {
         let norec = uuid.v4().substring(0, 32)
         const diagnosapasien = await db.t_diagnosapasien.create({
@@ -630,7 +606,7 @@ async function saveEmrPasienDiagnosa(req, res) {
             code: 200
         });
     } catch (error) {
-        // console.log(error);
+        logger.error(error)
         transaction && await transaction.rollback();
         res.status(201).send({
             status: error,
@@ -642,78 +618,80 @@ async function saveEmrPasienDiagnosa(req, res) {
 }
 
 async function getListDiagnosaPasien(req, res) {
-
-    const resultNocmfk = await queryPromise2(`SELECT nocmfk
-        FROM t_daftarpasien where norec='${req.query.norecdp}'
-    `);
-    if (resultNocmfk.rowCount === 0) {
-        res.status(500).send({ message: 'Data Tidak Ada' });
-        return
+    const logger = res.locals.logger
+    try{
+        const resultNocmfk = await queryPromise2(`SELECT nocmfk
+            FROM t_daftarpasien where norec='${req.query.norecdp}'
+        `);
+        if (resultNocmfk.rowCount === 0) {
+            res.status(500).send({ message: 'Data Tidak Ada' });
+            return
+        }
+        let nocmfk = resultNocmfk.rows[0].nocmfk
+        const resultList = await queryPromise2(`SELECT row_number() OVER (ORDER BY td.norec) AS no,dp.noregistrasi,
+        to_char(dp.tglregistrasi,'yyyy-MM-dd') as tglregistrasi,td.norec, mi.kodeexternal ||' - '|| mi.reportdisplay as label,
+        mi.id as value, td.keterangan,td.objecttipediagnosafk,mt.reportdisplay as tipediagnosa,
+        td.objectjeniskasusfk, jk.reportdisplay as jeniskasus, mu.namaunit
+                FROM t_daftarpasien dp 
+        join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk=dp.norec
+        join t_diagnosapasien td  on td.objectantreanpemeriksaanfk =ta.norec
+        join m_unit mu on mu.id=ta.objectunitfk
+        join m_tipediagnosa mt on mt.id=td.objecttipediagnosafk
+        join m_jeniskasus jk on jk.id=td.objectjeniskasusfk
+        join m_icdx mi on mi.id=td.objecticdxfk where dp.nocmfk='${nocmfk}' and td.statusenabled=true
+        `);
+        res.status(200).send({
+            data: resultList.rows,
+            status: "success",
+            success: true,
+        });
+    }catch(error){
+        logger.error(error)
+        res.status(500).send({ message: error });
     }
-    let nocmfk = resultNocmfk.rows[0].nocmfk
-    const resultList = await queryPromise2(`SELECT row_number() OVER (ORDER BY td.norec) AS no,dp.noregistrasi,
-    to_char(dp.tglregistrasi,'yyyy-MM-dd') as tglregistrasi,td.norec, mi.kodeexternal ||' - '|| mi.reportdisplay as label,
-    mi.id as value, td.keterangan,td.objecttipediagnosafk,mt.reportdisplay as tipediagnosa,
-    td.objectjeniskasusfk, jk.reportdisplay as jeniskasus, mu.namaunit
-            FROM t_daftarpasien dp 
-    join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk=dp.norec
-    join t_diagnosapasien td  on td.objectantreanpemeriksaanfk =ta.norec
-    join m_unit mu on mu.id=ta.objectunitfk
-    join m_tipediagnosa mt on mt.id=td.objecttipediagnosafk
-    join m_jeniskasus jk on jk.id=td.objectjeniskasusfk
-    join m_icdx mi on mi.id=td.objecticdxfk where dp.nocmfk='${nocmfk}' and td.statusenabled=true
-    `);
-    res.status(200).send({
-        data: resultList.rows,
-        status: "success",
-        success: true,
-    });
+
 }
 
 async function getListDiagnosaIxPasien(req, res) {
-
-    const resultNocmfk = await queryPromise2(`SELECT nocmfk
-        FROM t_daftarpasien where norec='${req.query.norecdp}'
-    `);
-    if (resultNocmfk.rowCount === 0) {
-        res.status(500).send({ message: 'Data Tidak Ada' });
-        return
+    const logger = res.locals.logger
+    const [transaction, errorTransaction] = await createTransaction(db, res)
+    if(errorTransaction) return
+    try{
+        const resultNocmfk = await queryPromise2(`SELECT nocmfk
+            FROM t_daftarpasien where norec='${req.query.norecdp}'
+        `);
+        if (resultNocmfk.rowCount === 0) {
+            res.status(500).send({ message: 'Data Tidak Ada' });
+            return
+        }
+        let nocmfk = resultNocmfk.rows[0].nocmfk
+        const resultList = await queryPromise2(`SELECT row_number() OVER (ORDER BY td.norec) AS no,dp.noregistrasi,
+        to_char(dp.tglregistrasi,'yyyy-MM-dd') as tglregistrasi,td.norec,mu.namaunit,
+        mi.kodeexternal ||' - '|| mi.reportdisplay as label,
+        mi.id as value, td.keterangan, td.qty
+                FROM t_daftarpasien dp 
+        join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk=dp.norec
+        join t_diagnosatindakan td  on td.objectantreanpemeriksaanfk =ta.norec
+        join m_unit mu on mu.id=ta.objectunitfk
+        join m_icdix mi on mi.id=td.objecticdixfk where dp.nocmfk='${nocmfk}' and td.statusenabled=true
+        `);
+        res.status(200).send({
+            data: resultList.rows,
+            status: "success",
+            success: true,
+        });
+    }catch(error){
+        logger.error(error)
+        res.status(500).send({ message: error });
     }
-    let nocmfk = resultNocmfk.rows[0].nocmfk
-    const resultList = await queryPromise2(`SELECT row_number() OVER (ORDER BY td.norec) AS no,dp.noregistrasi,
-    to_char(dp.tglregistrasi,'yyyy-MM-dd') as tglregistrasi,td.norec,mu.namaunit,
-    mi.kodeexternal ||' - '|| mi.reportdisplay as label,
-    mi.id as value, td.keterangan, td.qty
-            FROM t_daftarpasien dp 
-    join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk=dp.norec
-    join t_diagnosatindakan td  on td.objectantreanpemeriksaanfk =ta.norec
-    join m_unit mu on mu.id=ta.objectunitfk
-    join m_icdix mi on mi.id=td.objecticdixfk where dp.nocmfk='${nocmfk}' and td.statusenabled=true
-    `);
-    res.status(200).send({
-        data: resultList.rows,
-        status: "success",
-        success: true,
-    });
+
 }
 
 async function saveEmrPasienDiagnosaix(req, res) {
-    // res.status(500).send({ message: req.userId });
-    // return
-    let transaction = null;
-    try{
-        transaction = await db.sequelize.transaction();
-    }catch(e){
-        console.error(e)
-        res.status(201).send({
-            status: e.message,
-            success: false,
-            msg: 'Simpan Gagal',
-            code: 201
-        });
-    }
+    const logger = res.locals.logger
+    const [transaction, errorTransaction] = await createTransaction(db, res)
+    if(errorTransaction) return
     try {
-
         let norec = uuid.v4().substring(0, 32)
         const diagnosatindakan = await db.t_diagnosatindakan.create({
             norec: norec,
@@ -736,7 +714,7 @@ async function saveEmrPasienDiagnosaix(req, res) {
             code: 200
         });
     } catch (error) {
-        // console.log(error);
+        logger.error(error);
         transaction && await transaction.rollback();
         res.status(201).send({
             status: error,
@@ -748,21 +726,9 @@ async function saveEmrPasienDiagnosaix(req, res) {
 }
 
 async function deleteEmrPasienDiagnosax(req, res) {
-
-    // res.status(500).send({ message: req.query });
-    // return
-    let transaction = null;
-    try{
-        transaction = await db.sequelize.transaction();
-    }catch(e){
-        console.error(e)
-        res.status(201).send({
-            status: e.message,
-            success: false,
-            msg: 'Simpan Gagal',
-            code: 201
-        });
-    }
+    const logger = res.locals.logger
+    const [transaction, errorTransaction] = await createTransaction(db, res)
+    if(errorTransaction) return
     try {
         const t_diagnosapasien = await db.t_diagnosapasien.update({
             statusenabled: false,
@@ -784,7 +750,7 @@ async function deleteEmrPasienDiagnosax(req, res) {
             code: 200
         });
     } catch (error) {
-        // console.log(error);
+        logger.error(error)
         await transaction.rollback();
         res.status(201).send({
             status: error,
@@ -796,21 +762,9 @@ async function deleteEmrPasienDiagnosax(req, res) {
 }
 
 async function deleteEmrPasienDiagnosaix(req, res) {
-
-    // res.status(500).send({ message: req.query });
-    // return
-    let transaction = null;
-    try{
-        transaction = await db.sequelize.transaction();
-    }catch(e){
-        console.error(e)
-        res.status(201).send({
-            status: e.message,
-            success: false,
-            msg: 'Simpan Gagal',
-            code: 201
-        });
-    }
+    const logger = res.locals.logger
+    const [transaction, errorTransaction] = await createTransaction(db, res)
+    if(errorTransaction) return
     try {
         const t_diagnosatindakan = await db.t_diagnosatindakan.update({
             statusenabled: false,
@@ -832,7 +786,7 @@ async function deleteEmrPasienDiagnosaix(req, res) {
             code: 200
         });
     } catch (error) {
-        // console.log(error);
+        logger.error(error)
         transaction && await transaction.rollback();
         res.status(201).send({
             status: error,
@@ -844,24 +798,13 @@ async function deleteEmrPasienDiagnosaix(req, res) {
 }
 
 async function saveEmrPasienKonsul(req, res) {
-    // res.status(500).send({ message: req.body });
-    // return
-    let transaction = null;
-    try{
-        transaction = await db.sequelize.transaction();
-    }catch(e){
-        console.error(e)
-        res.status(201).send({
-            status: e.message,
-            success: false,
-            msg: 'Simpan Gagal',
-            code: 201
-        });
-    }
+    const logger = res.locals.logger
+    const [transaction, errorTransaction] = await createTransaction(db, res)
+    if(errorTransaction) return
     try {
         const resultNocmfk = await queryPromise2(`SELECT norec,objectdaftarpasienfk,objectunitfk
         FROM t_antreanpemeriksaan where norec='${req.body.norecap}'
-    `);
+        `);
 
         if (resultNocmfk.rowCount === 0) {
             res.status(500).send({ message: 'Data Tidak Ada' });
@@ -920,7 +863,7 @@ async function saveEmrPasienKonsul(req, res) {
             code: 200
         });
     } catch (error) {
-        // console.log(error);
+        logger.error(error)
         transaction && await transaction.rollback();
         res.status(201).send({
             status: error,
@@ -932,18 +875,9 @@ async function saveEmrPasienKonsul(req, res) {
 }
 
 async function updateTaskid(req, res) {
-    let transaction = null;
-    try{
-        transaction = await db.sequelize.transaction();
-    }catch(e){
-        console.error(e)
-        res.status(201).send({
-            status: e.message,
-            success: false,
-            msg: 'Simpan Gagal',
-            code: 201
-        });
-    }
+    const logger = res.locals.logger
+    const [transaction, errorTransaction] = await createTransaction(db, res)
+    if(errorTransaction) return
     try {
         const antreanpemeriksaan = await db.t_antreanpemeriksaan.update({
             taskid: req.body.taskid
@@ -963,7 +897,7 @@ async function updateTaskid(req, res) {
             code: 200
         });
     } catch (error) {
-        // console.log(error);
+        logger.error(error)
         transaction && await transaction.rollback();
         res.status(201).send({
             status: error,
@@ -975,18 +909,9 @@ async function updateTaskid(req, res) {
 }
 
 async function updateStatusPulangRJ(req, res) {
-    let transaction = null;
-    try{
-        transaction = await db.sequelize.transaction();
-    }catch(e){
-        console.error(e)
-        res.status(201).send({
-            status: e.message,
-            success: false,
-            msg: 'Simpan Gagal',
-            code: 201
-        });
-    }
+    const logger = res.locals.logger
+    const [transaction, errorTransaction] = await createTransaction(db, res)
+    if(errorTransaction) return
     try {
         const daftarpasien = await db.t_daftarpasien.update({
             objectstatuspulangfk: req.body.statuspulang,
@@ -1015,7 +940,7 @@ async function updateStatusPulangRJ(req, res) {
             code: 200
         });
     } catch (error) {
-        // console.log(error);
+        logger.error(error)
         await transaction.rollback();
         res.status(201).send({
             status: error,
@@ -1070,6 +995,7 @@ const getObatFromUnit = async (req, res) => {
 }
 
 const createOrUpdateEmrResepDokter = async (req, res) => {
+    const logger = res.locals.logger
     const [transaction, errorTransaction] = await createTransaction(db, res)
     if(errorTransaction) return
     try{
@@ -1152,7 +1078,7 @@ const createOrUpdateEmrResepDokter = async (req, res) => {
             success: true,
         });
     }catch(error){
-        console.error(error)
+        logger.error(error)
         await transaction.rollback()
         res.status(500).send({
             data: error,
@@ -1187,6 +1113,7 @@ export const initValueResep = {
 }
 
 const getOrderResepFromDP = async (req, res) => {
+    const logger = res.locals.logger
     try{
         const {norecdp, norecresep} = req.query
 
@@ -1221,8 +1148,7 @@ const getOrderResepFromDP = async (req, res) => {
             msg: "sukses get resep from dp"
         });
     }catch(error){
-        console.error("== gagal get Resep from DP")
-        console.error(error)
+        logger.error(error)
         res.status(500).send({
             data: error,
             status: "error",
