@@ -173,7 +173,7 @@ const InputKelompokUmur = () => {
                     </Col>
                     <Col lg={6}></Col>
                     <Col lg={3}>
-                        <Button type="submit" style={{ backgroundColor: '#192a56', textAlign: 'right' }} className="rounded-pill" placement="top">
+                        <Button type="submit" color='success' style={{ textAlign: 'right' }} className="rounded-pill" placement="top">
                             Tambah
                         </Button>
 

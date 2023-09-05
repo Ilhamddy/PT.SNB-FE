@@ -95,6 +95,7 @@ const scheduledTask = schedule.scheduleJob('40 * * * *', async function () {
         await transaction.commit();
         console.log(queryResult2.rows.length)
     } catch (error) {
+        transaction && await transaction.rollback();
         console.error('Error executing query:', error);
     }
 });
