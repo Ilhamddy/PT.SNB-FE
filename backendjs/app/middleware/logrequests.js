@@ -19,12 +19,15 @@ export const logRequests = (req, res, next) => {
         isShowBodyRes = true
     }
     res.locals.logger = logger
-    logger.info(`CLIENT-URL: ${clientUrl}`)
     logger.info(`METHOD: ${method} ${url} ${status}`)
+    logger.info(`CLIENT-URL: ${clientUrl}`)
     logger.info(`BODY: ${JSON.stringify(body, null, 2)}`, true)
     logger.info(`PARAMS: ${JSON.stringify(params, null, 2)}`, true)
     logger.info(`QUERY: ${JSON.stringify(query, null, 2)}`, true)
+    logger.print(`RESPONSE EXPRESS`);
     res.on("finish", () => {
+        logger.info(`METHOD: ${method} ${url} ${status}`)
+        logger.info(`CLIENT-URL: ${clientUrl}`)
         logger.info(`STATUS: ${status}`)
         if(isShowBodyRes){
             logger.info(`RESPONSE-BODY: ${JSON.stringify(JSON.parse(res.locals.body), null, 2)}`, true)

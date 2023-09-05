@@ -2,7 +2,7 @@ import { useFormik } from "formik";
 import userDummy from "../../assets/images/users/user-dummy-img.jpg";
 import { ToastContainer } from "react-toastify";
 import { useEffect, useState } from "react";
-import { Card, CardBody, Col, Container, Nav, NavItem, NavLink, Row, TabContent, TabPane, Table, Input, Form, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem, UncontrolledTooltip, Button } from "reactstrap";
+import { Card, CardBody, Col, Container, Nav, NavItem, NavLink, Row, TabContent, TabPane, Table, Input, Form, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem, UncontrolledTooltip, Button, Modal, ModalBody } from "reactstrap";
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import * as Yup from "yup";
 import classnames from "classnames"
@@ -15,14 +15,12 @@ import Flatpickr from "react-flatpickr";
 import { comboAsuransiGet, comboRegistrasiGet } from "../../store/master/action";
 import CustomSelect from "../Select/Select";
 import { useNavigate, useParams } from "react-router-dom";
-import { buktiBayarCancel, daftarPiutangPasienGet, daftarTagihanPasienGet, getPiutangAfterDate, verifNotaCancel } from "../../store/payment/action";
+import { buktiBayarCancel, daftarPiutangPasienGet, daftarTagihanPasienGet, getPiutangAfterDate, getPiutangAfterDateSuccess, verifNotaCancel } from "../../store/payment/action";
 import LoadingTable from "../../Components/Table/LoadingTable";
 import ServicePayment from "../../services/service-payment";
 
 const dateAwalStart = (new Date(new Date() - 1000 * 60 * 60 * 24 * 3)).toISOString();
 const dateAwalEnd = (new Date()).toISOString()
-
-const servicePayment = new ServicePayment();
 
 
 const DaftarPiutangPasien = () => {
@@ -32,6 +30,7 @@ const DaftarPiutangPasien = () => {
     } = useSelector((state) => ({
         dataPiutang: state.Payment.daftarPiutangPasienGet || []
     }))
+    const [piutangDelete, setPiutangDelete] = useState(null);
     const [userChosen, setUserChosen] = useState({
         nama: "",
         id: "",
@@ -71,12 +70,15 @@ const DaftarPiutangPasien = () => {
         norecpiutang
             && navigate(`/payment/bayar/piutang/${norecpiutang}/${norecnota}`)    
     }
-    const handleCancelBayar = (norecnota, norecbayar) => {
-        norecbayar && norecnota &&
+    const handleCancelBayar = (row) => {
+        row.norecnota && row.norecbukti &&
             dispatch(buktiBayarCancel(
-                norecnota, 
-                norecbayar, 
-                () => dispatch(daftarPiutangPasienGet(location))
+                row.norecnota, 
+                row.norecbukti, 
+                () => {
+                    dispatch(daftarPiutangPasienGet(location))
+                    setPiutangDelete(null)
+                }
             ))
     }
     const handleClickUser = (row) => {
@@ -106,16 +108,24 @@ const DaftarPiutangPasien = () => {
                                     </DropdownItem>
                                 }
                                 {row.norecbukti && <DropdownItem 
-                                        onClick={() => {
-                                            servicePayment.getPiutangAfterDate({
-                                                norecnota: row.norecnota,
-                                                tglterakhir: row.tglupdate
-                                            })
-                                            getPiutangAfterDate({
-                                                norecnota: row.norecnota,
-
-                                            })
-                                            handleCancelBayar(row.norecnota, row.norecbukti)
+                                        onClick={async () => {
+                                            try{
+                                                const servicePayment = new ServicePayment();
+                                                const response = await servicePayment.getPiutangAfterDate({
+                                                    norecnota: row.norecnota,
+                                                    tglterakhir: row.tglupdate
+                                                })
+                                                
+                                                if((response.data || []).length <= 1){
+                                                    dispatch(getPiutangAfterDateSuccess([]))
+                                                    setPiutangDelete(row)
+                                                }else{
+                                                    dispatch(getPiutangAfterDateSuccess(response.data))
+                                                    setPiutangDelete(row)
+                                                }
+                                            }catch(e){
+                                                console.error(e);
+                                            }
                                         }}>
                                         <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
                                         Batal Bayar
@@ -201,6 +211,12 @@ const DaftarPiutangPasien = () => {
     return(
         <div className="page-content daftar-pasien-pulang">
             <ToastContainer closeButton={false} />
+            <ModalHapus 
+                isOpen={!!piutangDelete} 
+                handleCancelBayar={() => handleCancelBayar(piutangDelete)}
+                toggle={() => setPiutangDelete(null)}
+                size="xl"
+                />
             <Container fluid>
                 <BreadCrumb title={`Daftar Piutang ${location}`} pageTitle={`Daftar Piutang ${location}`} />
                 <Row>
@@ -308,6 +324,112 @@ const DaftarPiutangPasien = () => {
             </Container>
             
         </div>
+    )
+}
+
+const ModalHapus = ({handleCancelBayar, ...rest}) => {
+    const {
+        piutangAfterDate
+    } = useSelector((state) => ({
+        piutangAfterDate: state.Payment.getPiutangAfterDate.data || []
+    }))
+    const columns = [
+        {
+            name: <span className='font-weight-bold fs-13'>Tgl Registrasi</span>,
+            selector: row => dateTimeLocal(new Date(row.tglregistrasi)),
+            sortable: true,
+            width: "160px",
+            wrap: true
+        },
+        {
+            name: <span className='font-weight-bold fs-13'>No. Registrasi</span>,
+            // selector: row => row.noregistrasi,
+            sortable: true,
+            selector: row => (row.noregistrasi),
+            width: "130px"
+        },
+        {
+            name: <span className='font-weight-bold fs-13'>No. RM</span>,
+            selector: row => row.nocmfk,
+            sortable: true,
+            width: "60px"
+        },
+        {
+
+            name: <span className='font-weight-bold fs-13'>Nama Pasien</span>,
+            selector: row => row.namapasien,
+            sortable: true,
+            width: "120px",
+            wrap: true
+        },
+        {
+
+            name: <span className='font-weight-bold fs-13'>Penjamin</span>,
+            selector: row => row.namarekanan,
+            sortable: true,
+            width: "110px"
+        },
+        {
+            name: <span className='font-weight-bold fs-13'>Tgl Pulang</span>,
+            selector: row => dateTimeLocal(new Date(row.tglpulang)),
+            sortable: true,
+            width: "120px",
+        },
+        {
+            name: <span className='font-weight-bold fs-13'>T. Piutang</span>,
+            selector: row => `Rp${row.totalpiutang?.toLocaleString('id-ID') || 0}`,
+            sortable: true,
+            width: "110px",
+            wrap: true
+        },
+        {
+            name: <span className='font-weight-bold fs-13'>T. Bayar</span>,
+            selector: row => `Rp${row.totalbayar?.toLocaleString('id-ID') || 0}`,
+            sortable: true,
+            width: "110px",
+            wrap: true
+        },
+        {
+            name: <span className='font-weight-bold fs-13'>Status</span>,
+            selector: row => row.totalbayar === 0 ? "Blm Bayar" 
+                : row.totalbayar === row.totalpiutang 
+                ? "Lunas" 
+                : "Bayar Sebagian",
+            sortable: true,
+            width: "110px",
+            wrap: true
+        },
+    ];
+    return (
+        <Modal 
+            centered={true}
+            {...rest}>
+            <ModalBody className="py-12 px-12">
+                {
+                    piutangAfterDate?.length > 0 ? <Row>
+                        <Col lg={12}>
+                            <DataTable 
+                                fixedHeader
+                                fixedHeaderScrollHeight="700px"
+                                columns={columns}
+                                data={piutangAfterDate || []}
+                                progressComponent={<LoadingTable />}
+                                customStyles={tableCustomStyles}
+                            />
+                        </Col>
+                    </Row>
+                    : <div>
+                        <h6 className="text-center">Apakah anda yakin ingin membatalkan pembayaran ini?</h6>
+                    </div>
+                }
+                <div className="d-flex justify-content-center w-100 mt-3">
+                    <Button color="info"
+                        onClick={() => handleCancelBayar()}>
+                        Batal Bayar
+                    </Button>
+                </div>
+            </ModalBody>
+        </Modal>
     )
 }
 

@@ -512,7 +512,8 @@ const getAllPiutang = async (req, res) => {
         let piutangs = await pool.query(qGetPiutangPasien, [
             location, 
             null,
-            null
+            null,
+            false
         ])
 
         piutangs = [...piutangs.rows]   
@@ -605,7 +606,8 @@ const getPiutangAfterDate = async (req, res) => {
             [
                 'pasien', 
                 new Date(tglterakhir),
-                norecnota
+                norecnota,
+                true
             ])
         const tempres = piutangs.rows || []
         res.status(200).send({

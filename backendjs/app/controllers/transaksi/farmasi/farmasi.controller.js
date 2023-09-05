@@ -8,7 +8,6 @@ import {
 import { hProcessOrderResep } from "../emr/emr.controller";
 import { qGetAllVerif, qGetObatFromProduct, qGetPasienFromId } from "../../../queries/farmasi/farmasi.queries";
 import { generateKodeBatch, hCreateKartuStok } from "../gudang/gudang.controller";
-import { createLogger } from "../../../utils/logger";
 
 const t_verifresep = db.t_verifresep
 const t_pelayananpasien = db.t_pelayananpasien
@@ -180,9 +179,8 @@ const createKodeResep = async () => {
 }
 
 const createOrUpdatePenjualanBebas = async (req, res) => {
-    const logger = createLogger(createOrUpdatePenjualanBebas.name)
     const [transaction, errorTransaction] 
-        = await createTransaction(db, res, logger)
+        = await createTransaction(db, res)
     if(errorTransaction) return
     try{
         const body = req.body
@@ -259,9 +257,7 @@ const createOrUpdatePenjualanBebas = async (req, res) => {
             msg: "sukses create or update penjualan bebas",
             success: true,
         });
-        logger.info("sukses")
     }catch(error){
-        logger.error(error)
         await transaction.rollback()
         res.status(500).send({
             code: 200,
@@ -271,11 +267,9 @@ const createOrUpdatePenjualanBebas = async (req, res) => {
             success: false,
         });
     }
-    logger.print()
 }
 
 const getPasienFromNoCm = async (req, res) => {
-    const logger = createLogger("get dp from no cm")
     try{
         const {nocm} = req.query
         let dataAllPasien = await pool.query(qGetPasienFromId, [
@@ -290,9 +284,7 @@ const getPasienFromNoCm = async (req, res) => {
             success: true,
             msg: "sukses get resep from dp"
         });
-        logger.info("sukses")
     }catch(error){
-        logger.error(error)
         res.status(500).send({
             data: error,
             status: "error",
@@ -300,11 +292,9 @@ const getPasienFromNoCm = async (req, res) => {
             msg: "gagal get all resep query"
         })
     }
-    logger.print()
 }
 
 const getAllVerifResep = async (req, res) => {
-    const logger = createLogger(getAllVerifResep.name)
     try{
         const { norecdp } = req.query
         let dataAllPasien = await pool.query(qGetAllVerif, [norecdp])
@@ -317,9 +307,7 @@ const getAllVerifResep = async (req, res) => {
             success: true,
             msg: "sukses get all verif"
         });
-        logger.info("sukses")
     }catch(error){
-        logger.error(error)
         res.status(500).send({
             data: error,
             status: "error",
@@ -327,13 +315,11 @@ const getAllVerifResep = async (req, res) => {
             msg: "gagal get all verif"
         })
     }
-    logger.print() 
 }
 
 const createOrUpdateRetur = async (req, res) => {
-    const logger = createLogger(createOrUpdateRetur.name)
     const [transaction, errorTransaction]
-        = await createTransaction(db, res, logger)
+        = await createTransaction(db, res)
     if(errorTransaction) return
     try{
         const body = req.body
@@ -405,7 +391,6 @@ const createOrUpdateRetur = async (req, res) => {
         });
 
     }catch(error){
-        logger.error(error)
         await transaction.rollback()
         res.status(500).send({
             code: 200,
@@ -415,11 +400,9 @@ const createOrUpdateRetur = async (req, res) => {
             success: false,
         });
     }
-    logger.print()
 }
 
 const getAntreanFromDP = async (req, res) => {
-    const logger = createLogger(getAntreanFromDP.name)
     try{
         const { norecdp } = req.query
         let dataAllAntrean = await pool.query(qGetAntreanFromDP, [norecdp])
@@ -432,9 +415,7 @@ const getAntreanFromDP = async (req, res) => {
             success: true,
             msg: "sukses get resep from dp"
         });
-        logger.info("sukses")
     }catch(error){
-        logger.error(error)
         res.status(500).send({
             data: error,
             status: "error",
@@ -442,12 +423,10 @@ const getAntreanFromDP = async (req, res) => {
             msg: "gagal get all resep query"
         })
     }
-    logger.print()
 }
 
 const createOrUpdateOrderPlusVerif = async (req, res) => {
-    const logger = createLogger(createOrUpdateOrderPlusVerif.name)
-    const [transaction, errorTransaction] = await createTransaction(db, res, logger)
+    const [transaction, errorTransaction] = await createTransaction(db, res)
     if(errorTransaction) return
     try{
         const body = req.body
@@ -533,9 +512,7 @@ const createOrUpdateOrderPlusVerif = async (req, res) => {
             msg: "sukses create or update order plus verif",
             success: true,
         });
-        logger.info("sukses")
     }catch(error){
-        logger.error(error)
         await transaction.rollback()
         res.status(500).send({
             code: 200,
@@ -545,7 +522,6 @@ const createOrUpdateOrderPlusVerif = async (req, res) => {
             success: false,
         });
     }
-    logger.print()
 }
 
 export default {

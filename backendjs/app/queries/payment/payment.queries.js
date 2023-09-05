@@ -234,21 +234,22 @@ FROM t_piutangpasien tp
 WHERE 
     CASE 
         WHEN $1 = 'pasien' THEN 
-            COALESCE(
-                CASE 
-                    WHEN (($2 <> '') IS TRUE) THEN to_date($2, 'YYYY-MM-DD') < tp.tglupdate 
-                END,
-                TRUE
-            )
+            CASE 
+                WHEN (($2 <> '') IS TRUE) THEN cast($2 AS TIMESTAMP) <= tp.tglupdate 
+                ELSE TRUE
+            END
             AND
-            COALESCE(
-                CASE
-                    WHEN (($3 <> '') IS TRUE) THEN tp.objectnotapelayananpasienfk = $3
-                END,
-                TRUE
-            )
+            CASE
+                WHEN (($3 <> '') IS TRUE) THEN tp.objectnotapelayananpasienfk = $3
+                ELSE TRUE
+            END
             AND tp.objectpenjaminfk = 3
         ELSE tp.objectpenjaminfk != 3
+    END
+    AND
+    CASE
+        WHEN $4 IS TRUE THEN tp.totalbayar > 0
+        ELSE TRUE
     END
     AND tp.statusenabled = true
 ORDER BY tp.tglinput DESC

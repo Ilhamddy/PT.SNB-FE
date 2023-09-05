@@ -66,8 +66,8 @@ async function saveEmrPasienTtv(req, res) {
             code: 201
         });
     }
-    const resultEmrPasien = await queryPromise1(req.body.norecap, req.body.idlabel);
     try {
+        const resultEmrPasien = await queryPromise1(req.body.norecap, req.body.idlabel);
         let rate = req.body.gcse + req.body.gcsm + req.body.gcsv
         let idgcs = null
         if (rate <= 3) {
@@ -144,32 +144,39 @@ async function saveEmrPasienTtv(req, res) {
 }
 
 async function getListTtv(req, res) {
+    const logger = res.locals.logger
+    try{
+        const resultNocmfk = await queryPromise2(`SELECT nocmfk
+            FROM t_daftarpasien where norec='${req.query.norecdp}'
+        `);
+        if (resultNocmfk.rowCount === 0) {
+            res.status(500).send({ message: 'Data Tidak Ada' });
+            return
+        }
+        let nocmfk = resultNocmfk.rows[0].nocmfk
+        const resultList = await queryPromise2(`SELECT row_number() OVER (ORDER BY tt.norec) AS no,dp.noregistrasi,
+        to_char(dp.tglregistrasi,'yyyy-MM-dd') as tglregistrasi,tt.norec, tt.objectemrfk, tt.tinggibadan,
+        tt.beratbadan, tt.suhu,tt.e, tt.m, tt.v, tt.nadi, tt.alergi, tt.tekanandarah, tt.spo2, 
+        tt.pernapasan,tt.keadaanumum, tt.objectpegawaifk, tt.isedit, tt.objectttvfk, tt.tglisi,
+        mu.namaunit,mr.reportdisplay as namagcs
+                FROM t_daftarpasien dp 
+        join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk=dp.norec
+        join t_emrpasien te on te.objectantreanpemeriksaanfk=ta.norec 
+        join t_ttv tt on tt.objectemrfk =te.norec
+        join m_unit mu on mu.id=ta.objectunitfk
+        left join m_range mr on mr.id=tt.objectgcsfk where dp.nocmfk='${nocmfk}' and tt.statusenabled=true
+        `);
+        res.status(200).send({
+            data: resultList.rows,
+            status: "success",
+            success: true,
+        });
+    }catch(error){
+        logger.error(error)
+        res.status(500).send({ message: error });
 
-    const resultNocmfk = await queryPromise2(`SELECT nocmfk
-        FROM t_daftarpasien where norec='${req.query.norecdp}'
-    `);
-    if (resultNocmfk.rowCount === 0) {
-        res.status(500).send({ message: 'Data Tidak Ada' });
-        return
     }
-    let nocmfk = resultNocmfk.rows[0].nocmfk
-    const resultList = await queryPromise2(`SELECT row_number() OVER (ORDER BY tt.norec) AS no,dp.noregistrasi,
-    to_char(dp.tglregistrasi,'yyyy-MM-dd') as tglregistrasi,tt.norec, tt.objectemrfk, tt.tinggibadan,
-    tt.beratbadan, tt.suhu,tt.e, tt.m, tt.v, tt.nadi, tt.alergi, tt.tekanandarah, tt.spo2, 
-    tt.pernapasan,tt.keadaanumum, tt.objectpegawaifk, tt.isedit, tt.objectttvfk, tt.tglisi,
-    mu.namaunit,mr.reportdisplay as namagcs
-            FROM t_daftarpasien dp 
-    join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk=dp.norec
-    join t_emrpasien te on te.objectantreanpemeriksaanfk=ta.norec 
-    join t_ttv tt on tt.objectemrfk =te.norec
-    join m_unit mu on mu.id=ta.objectunitfk
-    left join m_range mr on mr.id=tt.objectgcsfk where dp.nocmfk='${nocmfk}' and tt.statusenabled=true
-    `);
-    res.status(200).send({
-        data: resultList.rows,
-        status: "success",
-        success: true,
-    });
+
 }
 
 async function getHeaderEmr(req, res) {

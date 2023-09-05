@@ -2,6 +2,7 @@ import * as path from "path"
 import * as fs from "fs"
 
 export const createLogger = (logname) => {
+    let logName = logname
     let finalLog = "";
     const createFormattedDateTime = () => {
         let current_datetime = new Date();
@@ -56,7 +57,7 @@ export const createLogger = (logname) => {
     const fnFatal = (content) => fnLog(content, "FATAL")
 
 
-    const fnPrint = () => {
+    const fnPrint = (newLogName) => {
         let current_datetime = new Date();
         const formatted_date = current_datetime.getFullYear() +
             "-" +
@@ -72,14 +73,16 @@ export const createLogger = (logname) => {
             fs.mkdirSync(dirPath);
         }
         if(process.env.NODE_ENV === "development"){
-            console.log(`=========${logname}=========\n`)
+            console.log(`=========${logName}=========\n`)
             console.log(finalLog) 
         } else{
             const stream = fs.createWriteStream(filePath, {flags: 'a'});
-            stream.write(`\n=========${logname}=========\n`)
+            stream.write(`\n=========${logName}=========\n`)
             stream.write(finalLog);
             stream.end()
         }
+        finalLog = ""
+        logName = newLogName
     }
    
     

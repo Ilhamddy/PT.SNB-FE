@@ -44,6 +44,6 @@ export default class ServicePayment {
     }
 
     getPiutangAfterDate = async (queries) => {
-        return await api.get(`/transaksi/payment/get-piutang-after-date`, queries)
+        return await api.get(`/transaksi/payment/piutang-after-date`, queries)
     }
 }
