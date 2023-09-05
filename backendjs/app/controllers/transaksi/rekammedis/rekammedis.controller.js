@@ -2,6 +2,7 @@ import pool from "../../../config/dbcon.query";
 import * as uuid from 'uuid';
 import queries from '../../../queries/rekammedis/rekammedis.queries';
 import db from "../../../models";
+import { createTransaction } from "../../../utils/dbutils";
 
 function formatDate(date) {
     let d = new Date(date),
@@ -28,8 +29,7 @@ const queryPromise2 = (query) => {
 };
 
 async function getListDaftarDokumenRekammedis(req, res) {
-
-
+    const logger = res.locals.logger
     try {
         let tglregistrasi = ""
         if (req.query.start !== undefined) {
@@ -83,14 +83,14 @@ async function getListDaftarDokumenRekammedis(req, res) {
         });
 
     } catch (error) {
+        logger.error(error)
         res.status(500).send({ message: error });
     }
 
 }
 
 async function getWidgetListDaftarDokumenRekammedis(req, res) {
-
-
+    const logger = res.locals.logger
     try {
         let tglregistrasi = ""
         if (req.query.start !== undefined) {
@@ -182,24 +182,16 @@ async function getWidgetListDaftarDokumenRekammedis(req, res) {
         });
 
     } catch (error) {
+        logger.error(error)
         res.status(500).send({ message: error });
     }
 
 }
 
 async function saveDokumenRekammedis(req, res) {
-    let transaction = null;
-    try {
-        transaction = await db.sequelize.transaction();
-    } catch (e) {
-        console.error(e)
-        res.status(201).send({
-            status: e.message,
-            success: false,
-            msg: 'Simpan Gagal',
-            code: 201
-        });
-    }
+    const logger = res.locals.logger
+    const [transaction, errorTransaction] = await createTransaction(db, res)
+    if(errorTransaction) return
     try {
         if (req.body.idpencarian === 1) {
             let norec = uuid.v4().substring(0, 32)
@@ -256,7 +248,7 @@ async function saveDokumenRekammedis(req, res) {
         // let tempres = { statu: t_rm_lokasidokumen }
 
     } catch (error) {
-        // console.log(error);
+        logger.error(error)
         await transaction.rollback();
         res.status(201).send({
             status: "false",
@@ -268,9 +260,8 @@ async function saveDokumenRekammedis(req, res) {
 }
 
 async function getComboLaporanRekammedis(req, res) {
+    const logger = res.locals.logger
     try {
-
-
         const resultDepartemen = await queryPromise2(`select id as value, namainstalasi as label from m_instalasi
             where statusenabled=true
         `);
@@ -301,12 +292,14 @@ async function getComboLaporanRekammedis(req, res) {
         });
 
     } catch (error) {
+        logger.error(error)
         res.status(500).send({ message: error });
     }
 
 }
 
 async function getListLaporanDaftarPasien(req, res) {
+    const logger = res.locals.logger
     try {
         let start = (new Date(req.query.start)).toISOString();
         let end = (new Date(req.query.end)).toISOString();
@@ -337,12 +330,14 @@ async function getListLaporanDaftarPasien(req, res) {
         });
 
     } catch (error) {
+        logger.error(error)
         res.status(500).send({ message: error });
     }
 
 }
 
 async function getListLaporanPasienBatal(req, res) {
+    const logger = res.locals.logger
     try {
         let start = (new Date(req.query.start)).toISOString();
         let end = (new Date(req.query.end)).toISOString();
@@ -376,6 +371,7 @@ async function getListLaporanPasienBatal(req, res) {
         });
 
     } catch (error) {
+        logger.error(error)
         res.status(500).send({ message: error });
     }
 
@@ -419,6 +415,7 @@ async function getListLaporanPasienKunjungan(req, res) {
 }
 
 async function getLaporanRL3_1(req, res) {
+    const logger = res.locals.logger
     try {
         let start = (new Date(req.query.start)).toISOString();
         let end = (new Date(req.query.end)).toISOString();
@@ -528,19 +525,16 @@ async function getLaporanRL3_1(req, res) {
         });
 
     } catch (error) {
+        logger.error(error)
         res.status(500).send({ message: error });
     }
 
 }
 
 async function getTest(req, res) {
-    let transaction = null;
-    try {
-        transaction = await db.sequelize.transaction();
-    } catch (e) {
-        console.error(e)
-        return;
-    }
+    const logger = res.locals.logger
+    const [transaction, errorTransaction] = await createTransaction(db, res)
+    if(errorTransaction) return
     try {
         let today = new Date();
         let todaystart = formatDate(today) + ' 00:00'
@@ -601,7 +595,7 @@ async function getTest(req, res) {
         });
 
     } catch (error) {
-        console.log(error)
+        logger.error(error)
         res.status(500).send({ message: error });
     }
 

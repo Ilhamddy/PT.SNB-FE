@@ -490,7 +490,7 @@ async function saveBridgingInacbg(req, res) {
 }
 
 async function saveTarifKlaim(req, res) {
-    const [transaction, errorTransaction] = createTransaction();
+    const [transaction, errorTransaction] = createTransaction(db, res);
     const logger = res.locals.logger
     if(errorTransaction) return
 
@@ -661,7 +661,7 @@ async function getListSpecialCmg(req, res) {
 }
 
 async function updateStatusKlaim(req, res) {
-    const [transaction, errorTransaction] = createTransaction();
+    const [transaction, errorTransaction] = createTransaction(db, res);
     const logger = res.locals.logger
     if(errorTransaction) return
     try {
@@ -696,7 +696,7 @@ async function updateStatusKlaim(req, res) {
 }
 
 async function updateTarifCmgOptions(req, res) {
-    const [transaction, errorTransaction] = createTransaction();
+    const [transaction, errorTransaction] = createTransaction(db, res);
     const logger = res.locals.logger
     if(errorTransaction) return
     try {

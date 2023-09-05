@@ -2,6 +2,7 @@ import pool from "../../../config/dbcon.query";
 import * as uuid from 'uuid';
 import queries from '../../../queries/transaksi/registrasi.queries';
 import db from "../../../models";
+import { createTransaction } from "../../../utils/dbutils";
 
 const t_antreanpemeriksaan = db.t_antreanpemeriksaan
 
@@ -39,10 +40,10 @@ async function getListAntreanPemeriksaan(req, res) {
 }
 
 async function getListProdukToKelasToUnit(req, res) {
-    const objectkelasfk = req.query.objectkelasfk;
-    const objectunitfk = req.query.objectunitfk;
-    // console.log(objectunitfk)
+    const logger = res.locals.logger
     try {
+        const objectkelasfk = req.query.objectkelasfk;
+        const objectunitfk = req.query.objectunitfk;
         const resultlistantreanpemeriksaan = await queryPromise2(`select mp.namaproduk as label,mp.id as value,mth.objectkelasfk,mm.objectunitfk,mu.reportdisplay,mth.totalharga  from m_mapunittoproduk mm
         join m_produk mp on mp.id=mm.objectprodukfk
         join m_unit mu on mu.id=mm.objectunitfk
@@ -59,13 +60,14 @@ async function getListProdukToKelasToUnit(req, res) {
         });
 
     } catch (error) {
+        logger.error(error)
         res.status(500).send({ message: error });
     }
 
 }
 
 async function getListJenisPelaksana(req, res) {
-
+    const logger = res.locals.logger
     try {
         const resultlistantreanpemeriksaan = await queryPromise2(`select id as value,reportdisplay as label
         from m_jenispelaksana mj where statusenabled=true`);
@@ -79,13 +81,14 @@ async function getListJenisPelaksana(req, res) {
         });
 
     } catch (error) {
+        logger.error(error)
         res.status(500).send({ message: error });
     }
 
 }
 
 async function getListNamaPelaksana(req, res) {
-
+    const logger = res.locals.logger
     try {
         const resultlistantreanpemeriksaan = await queryPromise2(`select id as value, namalengkap as label from m_pegawai mp
         where statusenabled=true`);
@@ -99,25 +102,16 @@ async function getListNamaPelaksana(req, res) {
         });
 
     } catch (error) {
+        logger.error(error)
         res.status(500).send({ message: error });
     }
 
 }
 
 async function saveTindakanPasien(req, res) {
-    let transaction = null;
-    try{
-        transaction = await db.sequelize.transaction();
-    }catch(e){
-        console.error(e)
-        res.status(201).send({
-            status: e.message,
-            success: false,
-            msg: 'Simpan Gagal',
-            code: 201
-        });
-        return
-    }
+    const logger = res.locals.logger
+    const [transaction, errorTransaction] = await createTransaction(db, res)
+    if(errorTransaction) return
     try {
         let newArray = [{ objectjenispelaksana: req.body.jenispelaksana1, objectnamapelaksana: req.body.namapelaksana1 }];
         if (req.body.jenispelaksana2 !== '')
@@ -189,7 +183,7 @@ async function saveTindakanPasien(req, res) {
 
     } catch (error) {
         transaction && await transaction.rollback();
-        console.error(error)
+        logger.error(error)
         res.status(201).send({
             status: error,
             success: false,
@@ -201,7 +195,9 @@ async function saveTindakanPasien(req, res) {
 }
 
 async function getListTagihan(req, res) {
-
+    const logger = res.locals.logger
+    const [transaction, errorTransaction] = await createTransaction(db, res)
+    if(errorTransaction) return
     try {
         const resultlist = await queryPromise2(`select row_number() OVER (ORDER BY tp.norec) AS no,
             mu.namaunit,
@@ -251,12 +247,14 @@ async function getListTagihan(req, res) {
         });
 
     } catch (error) {
+        logger.error(error)
         res.status(500).send({ message: error });
     }
 
 }
 
 const getAllBillingPrint = async (req, res) => {
+    const logger = res.locals.logger
     try{
         const norecdp = req.query.norecdp;
         const queryBilling = `
@@ -282,7 +280,7 @@ const getAllBillingPrint = async (req, res) => {
             code: 200
         });
     }catch(e){
-        console.error(e)
+        logger.error(e)
         res.status(201).send({
             status: e,
             success: false,

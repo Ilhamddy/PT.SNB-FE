@@ -481,7 +481,8 @@ const hCreateDetail = async (
                             createdOrUpdatedKirimBarang.objectunitpengirimfk
                         ),
                     },
-                    lock: transaction.LOCK.UPDATE
+                    lock: transaction.LOCK.UPDATE,
+                    transaction: transaction
                 })
 
                 let stokPengirimAwalVal = stokPengirim?.toJSON() || null
@@ -494,7 +495,8 @@ const hCreateDetail = async (
                             createdOrUpdatedKirimBarang.objectunittujuanfk
                         ),
                     },
-                    lock: transaction.LOCK.UPDATE
+                    lock: transaction.LOCK.UPDATE,
+                    transaction: transaction
                 })
                 const stokTujuanAwalVal = stokTujuanAwal?.toJSON() || null
                 
