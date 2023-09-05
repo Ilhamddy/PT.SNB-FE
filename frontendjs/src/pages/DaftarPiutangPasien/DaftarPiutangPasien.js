@@ -15,11 +15,14 @@ import Flatpickr from "react-flatpickr";
 import { comboAsuransiGet, comboRegistrasiGet } from "../../store/master/action";
 import CustomSelect from "../Select/Select";
 import { useNavigate, useParams } from "react-router-dom";
-import { buktiBayarCancel, daftarPiutangPasienGet, daftarTagihanPasienGet, verifNotaCancel } from "../../store/payment/action";
+import { buktiBayarCancel, daftarPiutangPasienGet, daftarTagihanPasienGet, getPiutangAfterDate, verifNotaCancel } from "../../store/payment/action";
 import LoadingTable from "../../Components/Table/LoadingTable";
+import ServicePayment from "../../services/service-payment";
 
 const dateAwalStart = (new Date(new Date() - 1000 * 60 * 60 * 24 * 3)).toISOString();
 const dateAwalEnd = (new Date()).toISOString()
+
+const servicePayment = new ServicePayment();
 
 
 const DaftarPiutangPasien = () => {
@@ -103,7 +106,17 @@ const DaftarPiutangPasien = () => {
                                     </DropdownItem>
                                 }
                                 {row.norecbukti && <DropdownItem 
-                                        onClick={() => handleCancelBayar(row.norecnota, row.norecbukti)}>
+                                        onClick={() => {
+                                            servicePayment.getPiutangAfterDate({
+                                                norecnota: row.norecnota,
+                                                tglterakhir: row.tglupdate
+                                            })
+                                            getPiutangAfterDate({
+                                                norecnota: row.norecnota,
+
+                                            })
+                                            handleCancelBayar(row.norecnota, row.norecbukti)
+                                        }}>
                                         <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
                                         Batal Bayar
                                     </DropdownItem>}

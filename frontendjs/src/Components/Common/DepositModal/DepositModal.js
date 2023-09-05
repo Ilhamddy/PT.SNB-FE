@@ -115,7 +115,7 @@ const DepositModal = ({toggle, norecdp}) => {
             return acc + strToNumber(curr.nominalbayar);
         }, 0);
         console.log(totalPayment)
-        validation.setFieldValue("totaltagihan", totalPayment)
+        validation.setFieldValue("totaltagihan", 0)
         validation.setFieldValue("payment", newPayments);
     }
 

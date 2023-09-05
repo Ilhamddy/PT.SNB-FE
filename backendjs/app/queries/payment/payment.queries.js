@@ -209,7 +209,7 @@ const qGetBuktiBayar =
     `
 
 const qGetPiutangPasien =
-    `
+`
 SELECT 
     tp.totalbayar AS totalbayar, 
     tp.norec AS norecpiutang,
@@ -223,6 +223,7 @@ SELECT
     td.tglpulang AS tglpulang,
     tn.norec AS norecnota,
     bb.norec AS norecbukti,
+    tp.tglupdate AS tglupdate,
     mp.noidentitas AS noidentitas
 FROM t_piutangpasien tp
     LEFT JOIN t_daftarpasien td ON tp.objectdaftarpasienfk=td.norec
@@ -230,12 +231,28 @@ FROM t_piutangpasien tp
     LEFT JOIN m_rekanan mr ON tp.objectpenjaminfk=mr.id
     LEFT JOIN t_notapelayananpasien tn ON tn.norec = tp.objectnotapelayananpasienfk
     LEFT JOIN t_buktibayarpasien bb ON bb.objectpiutangpasienfk = tp.norec AND bb.statusenabled = true
-WHERE CASE WHEN $1 = 'pasien' 
-    THEN tp.statusenabled = true AND tp.objectpenjaminfk = 3
-    ELSE tp.statusenabled = true AND tp.objectpenjaminfk != 3
-END
+WHERE 
+    CASE 
+        WHEN $1 = 'pasien' THEN 
+            COALESCE(
+                CASE 
+                    WHEN (($2 <> '') IS TRUE) THEN to_date($2, 'YYYY-MM-DD') < tp.tglupdate 
+                END,
+                TRUE
+            )
+            AND
+            COALESCE(
+                CASE
+                    WHEN (($3 <> '') IS TRUE) THEN tp.objectnotapelayananpasienfk = $3
+                END,
+                TRUE
+            )
+            AND tp.objectpenjaminfk = 3
+        ELSE tp.objectpenjaminfk != 3
+    END
+    AND tp.statusenabled = true
 ORDER BY tp.tglinput DESC
-    `
+`
 
 const qTagihanGetFromDP =
     `
@@ -322,8 +339,8 @@ SELECT
 FROM t_buktibayarpasien tbb
     LEFT JOIN t_daftarpasien td ON td.norec = tbb.objectdaftarpasienfk
     LEFT JOIN m_pasien mp ON mp.id = td.nocmfk
-    WHERE objectnotapelayananpasienfk = $1
-AND tbb.statusenabled = true
+WHERE objectnotapelayananpasienfk = $1
+    AND tbb.statusenabled = true
     `
 
 const qGetCaraBayarFromBB =

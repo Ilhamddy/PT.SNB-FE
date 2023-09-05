@@ -71,4 +71,9 @@ export default function (app) {
         controller.getLaporanPendapatanKasir
     );
 
+    app.get(
+        "/api/transaksi/payment/piutang-after-date",
+        [authJwt.verifyToken],
+        controller.getPiutangAfterDate
+    );
 }

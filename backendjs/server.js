@@ -19,7 +19,7 @@ import paymentRoutes from "./app/routes/transaksi/payment.routes.js";
 import casemixRoutes from "./app/routes/transaksi/casemix.routes.js";
 import gudangRoutes from "./app/routes/transaksi/gudang.routes.js"
 import distribusiRoutes from "./app/routes/transaksi/distribusi.routes.js"
-import { logRequests } from "./app/middleware/logrequests.js";
+import { addResBody, logRequests } from "./app/middleware/logrequests.js";
 import farmasiRoutes from "./app/routes/transaksi/farmasi.routes.js";
 
 dotenv.config()
@@ -40,6 +40,7 @@ app.use(bodyParser.json());
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
 
+app.use(addResBody)
 app.use(logRequests)
 
 // simple route

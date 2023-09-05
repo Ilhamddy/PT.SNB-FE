@@ -1,36 +1,32 @@
 SELECT 
-	tn.total AS total, 
-    tn.norec AS norecnota,
-	tn.no_nota AS nonota, 
-	td.nocmfk AS nocmfk,
-	td.tglregistrasi AS tglregistrasi,
-	td.noregistrasi AS noregistrasi,
+    tp.totalbayar AS totalbayar, 
+    tp.norec AS norecpiutang,
+    tp.totalpiutang AS totalpiutang, 
+    td.nocmfk AS nocmfk,
+    td.tglregistrasi AS tglregistrasi,
+    td.noregistrasi AS noregistrasi,
     td.norec AS norecdp,
-	mp.namapasien AS namapasien,
-	mr.namaexternal AS namarekanan,
-    bb.no_bukti AS nobukti,
-    bb.statusenabled AS statusenabledbukti,
-    bb.norec as norecbukti,
-    bb.totalbayar as totalbayar,
-    bb.totaltagihan as totaltagihan,
-	td.tglpulang AS tglpulang,
-    count(tp)::int as jmlpiutangbayar
-FROM t_notapelayananpasien tn
-    LEFT JOIN t_daftarpasien td ON tn.objectdaftarpasienfk=td.norec
+    mp.namapasien AS namapasien,
+    mr.namaexternal AS namarekanan,
+    td.tglpulang AS tglpulang,
+    tn.norec AS norecnota,
+    bb.norec AS norecbukti,
+    mp.noidentitas AS noidentitas
+FROM t_piutangpasien tp
+    LEFT JOIN t_daftarpasien td ON tp.objectdaftarpasienfk=td.norec
     LEFT JOIN m_pasien mp ON td.nocmfk=mp.id
-    LEFT JOIN m_rekanan mr ON td.objectpenjaminfk=mr.id
-    LEFT JOIN t_buktibayarpasien bb ON bb.objectnotapelayananpasienfk = tn.norec 
-        AND bb.statusenabled = true 
-        AND bb.objectpiutangpasienfk IS NULL
-    LEFT JOIN t_piutangpasien tp ON tp.objectnotapelayananpasienfk = tn.norec
-        AND tp.statusenabled = true 
-        AND tp.totalbayar > 0
-WHERE tn.statusenabled=true 
-GROUP BY 
-    tn.total,
-    tn.norec,
-    td.norec,
-    mp.namapasien,
-    mr.namaexternal,
-    bb.norec
-ORDER BY tn.tglinput DESC
+    LEFT JOIN m_rekanan mr ON tp.objectpenjaminfk=mr.id
+    LEFT JOIN t_notapelayananpasien tn ON tn.norec = tp.objectnotapelayananpasienfk
+    LEFT JOIN t_buktibayarpasien bb ON bb.objectpiutangpasienfk = tp.norec AND bb.statusenabled = true
+WHERE CASE 
+    WHEN 'pasien' = 'pasien' THEN 
+        COALESCE(
+            CASE 
+                WHEN (('2023-08-08' <> '') IS TRUE) THEN to_date('2023-08-08', 'YYYY-MM-DD') > tp.tglupdate 
+            END,
+            true
+        )
+        AND tp.statusenabled = true AND tp.objectpenjaminfk = 3
+    ELSE tp.statusenabled = true AND tp.objectpenjaminfk != 3
+END
+ORDER BY tp.tglinput DESC

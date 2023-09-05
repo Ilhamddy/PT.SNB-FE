@@ -19,10 +19,10 @@ import { qGetPelayananFromDp,
     qGetCaraBayarFromBB,
     qGetLaporanPendapatanKasir
 } from '../../../queries/payment/payment.queries';
-import {createLogger} from "../../../utils/logger";
 import { createTransaction } from "../../../utils/dbutils"
 
 import { Op } from "sequelize";
+import { checkValidDate } from '../../../utils/dateutils';
 
 const t_notapelayananpasien = db.t_notapelayananpasien
 const t_pelayananpasien = db.t_pelayananpasien
@@ -37,6 +37,7 @@ const t_depositpasien = db.t_depositpasien
 const Sequelize = {}
 
 const getPelayananFromDP = async (req, res) => {
+    const logger = res.locals.logger
     try{
         const norecdp = req.params.norecdp
         const pelayanan = await pool.query(qGetPelayananFromDp, [norecdp])
@@ -55,8 +56,7 @@ const getPelayananFromDP = async (req, res) => {
             code: 200
         });
     } catch(error){
-        console.error("===Error Get Pelayanan From Antrean");
-        console.error(error);
+        logger.error(error)
         res.status(500).send({
             data: error,
             success: false,
@@ -67,6 +67,7 @@ const getPelayananFromDP = async (req, res) => {
 };
 
 const getPelayananFromVerif = async (req, res) => {
+    const logger = res.locals.logger
     try{
         const norecnota = req.params.norecnota
         const pelayanan = await pool.query(qGetPelayananFromVerif, [norecnota])
@@ -95,8 +96,7 @@ const getPelayananFromVerif = async (req, res) => {
             code: 200
         });
     } catch(error){
-        console.error("===Error Get Pelayanan From Verif");
-        console.error(error);
+        logger.error(error)
         res.status(500).send({
             data: error,
             success: false,
@@ -109,19 +109,10 @@ const getPelayananFromVerif = async (req, res) => {
 
 
 const createNotaVerif = async (req, res) => {
-    let transaction = null;
-    try{
-        transaction = await db.sequelize.transaction();
-    }catch(e){
-        console.error(e)
-        res.status(500).send({
-            data: e.message,
-            success: false,
-            msg: 'Transaksi gagal',
-            code: 500
-        });
-        return;
-    }
+    const logger = res.locals.logger
+    const [transaction, errorTransaction] 
+        = await createTransaction(db, res);
+    if(errorTransaction) return;
     try{
         const norecnota = uuid.v4().substring(0, 32);
         const body = req.body
@@ -184,8 +175,7 @@ const createNotaVerif = async (req, res) => {
             code: 200
         });
     }catch(error){
-        console.error("==Error Create Nota Verif");
-        console.error(error)
+        logger.error(error)
         transaction.rollback();
         res.status(500).send({
             data: error,
@@ -199,6 +189,7 @@ const createNotaVerif = async (req, res) => {
 
 
 const getDaftarTagihanPasien = async (req, res) => {
+    const logger = res.locals.logger
     try{
         const tagihan = await pool.query(qDaftarTagihanPasien, [])
         let tempres = tagihan.rows || []
@@ -210,8 +201,7 @@ const getDaftarTagihanPasien = async (req, res) => {
             code: 200
         });
     }catch(error){
-        console.error("===Error Get Daftar Tagihan Pasien===");
-        console.error(error);
+        logger.error(error)
         res.status(500).send({
             data: error,
             success: false,
@@ -222,19 +212,10 @@ const getDaftarTagihanPasien = async (req, res) => {
 }
 
 const createBuktiBayar = async (req, res) => {
-    let transaction = null;
-    try{
-        transaction = await db.sequelize.transaction();
-    }catch(e){
-        console.error(e)
-        res.status(500).send({
-            data: e.message,
-            success: false,
-            msg: 'Transaksi gagal',
-            code: 500
-        });
-        return;
-    }
+    const logger = res.locals.logger
+    const [transaction, errorTransaction] 
+        = await createTransaction(db, res);
+    if(errorTransaction) return;
     try{
         
         const objectBody = req.body
@@ -246,20 +227,16 @@ const createBuktiBayar = async (req, res) => {
         } = await hCreateBayar(req, transaction)
 
         const sisa = objectBody.totaltagihan - totalPayment
-        
-        if(objectBody.norecpiutang){
-            await t_piutangpasien.update({
-                totalbayar: totalPayment,
-                sisapiutang: sisa,
-                tglupdate: new Date(),
-                objectbuktibayarfk: norecbukti
-            }, {
-                where: {
-                    norec: objectBody.norecpiutang
-                },
-                transaction: transaction
+
+        await hChangeYangDibayar(
+            req, 
+            res, 
+            transaction, 
+            {
+                norecbukti,
+                sisa,
+                totalPayment
             })
-        }
 
         if(sisa > 0){
             const norecpiutangnew = uuid.v4().substring(0, 32);
@@ -338,8 +315,7 @@ const createBuktiBayar = async (req, res) => {
             code: 200
         });
     }catch(error){
-        console.error("===Error Create Bukti Bayar===");
-        console.error(error);
+        logger.error(error)
         transaction.rollback();
         res.status(500).send({
             data: error,
@@ -351,19 +327,10 @@ const createBuktiBayar = async (req, res) => {
 }
 
 const cancelNotaVerif = async (req, res) => {
-    let transaction = null;
-    try{
-        transaction = await db.sequelize.transaction();
-    }catch(e){
-        console.error(e)
-        res.status(500).send({
-            data: e.message,
-            success: false,
-            msg: 'Transaksi gagal',
-            code: 500
-        });
-        return;
-    }
+    const logger = res.locals.logger
+    const [transaction, errorTransaction] 
+        = await createTransaction(db, res);
+    if(errorTransaction) return;
     try{
         const norecnota = req.params.norecnota;
         const norecdp = req.params.norecdp;
@@ -420,8 +387,7 @@ const cancelNotaVerif = async (req, res) => {
             code: 200
         });
     }catch(error){
-        console.error("Error Create Nota Verif");
-        console.error(error)
+        logger.error(error)
         transaction.rollback();
         res.status(500).send({
             data: error,
@@ -433,9 +399,9 @@ const cancelNotaVerif = async (req, res) => {
 }
 
 const cancelBayar = async (req, res) => {
-    const logger = createLogger(cancelBayar.name);
+    const logger = res.locals.logger
     const [transaction, errorTransaction] 
-        = await createTransaction(db, res, logger);
+        = await createTransaction(db, res);
     if(errorTransaction) return;
     try{
         const norecnota = req.params.norecnota;
@@ -451,22 +417,41 @@ const cancelBayar = async (req, res) => {
             returning: true,
             transaction: transaction
         })
+
+        const notaSebelum = await t_notapelayananpasien.findOne({
+            where: {
+                objectbuktibayarfk: params.norecbayar
+            }
+        })
+
         const piutangSebelum = await t_piutangpasien.findOne({
             where: {
                 objectbuktibayarfk: params.norecbayar
             }
         })
-        
-        const piutangSebelumVal = piutangSebelum?.toJSON() || null
-        let totalPiutangBefore = piutangSebelumVal?.totalpiutang || 0
-        const piutangUpdated = await piutangSebelum?.update({
-            statusenabled: true,
-            tglupdate: new Date(),
-            totalbayar: 0,
-            sisapiutang: totalPiutangBefore,
-        }, {
-            transaction: transaction,
-        })
+
+        if(notaSebelum){
+            const updateNota = await notaSebelum.update({
+                statusenabled: true,
+                objectbuktibayarfk: null
+            }, {
+                returning: true
+            })
+        }
+
+        if(piutangSebelum){
+            const piutangSebelumVal = piutangSebelum?.toJSON() || null
+            let totalPiutangBefore = piutangSebelumVal?.totalpiutang || 0
+            const piutangUpdated = await piutangSebelum?.update({
+                statusenabled: true,
+                tglupdate: new Date(),
+                totalbayar: 0,
+                sisapiutang: totalPiutangBefore,
+                objectbuktibayarfk: null
+            }, {
+                transaction: transaction,
+            })
+        }
         updatedBuktiB = updatedBuktiB[0]?.toJSON() || null
 
         await hCancelPiutangAfter(
@@ -518,15 +503,19 @@ const cancelBayar = async (req, res) => {
             code: 500
         });
     }
-    logger.print()
 }
 
 const getAllPiutang = async (req, res) => {
+    const logger = res.locals.logger
     try{
         const location = req.params.location;
-        let piutangs = await pool.query(qGetPiutangPasien, [location])
+        let piutangs = await pool.query(qGetPiutangPasien, [
+            location, 
+            null,
+            null
+        ])
 
-        piutangs = [...piutangs.rows]
+        piutangs = [...piutangs.rows]   
         let tempres = [...piutangs]
         res.status(200).send({
             data: tempres,
@@ -536,8 +525,7 @@ const getAllPiutang = async (req, res) => {
             code: 200
         });
     }catch(error){
-        console.error("===Error Get Daftar Piutang Pasien===");
-        console.error(error);
+        logger.error(error)
         res.status(500).send({
             data: error,
             success: false,
@@ -549,6 +537,7 @@ const getAllPiutang = async (req, res) => {
 
 
 const getPaymentForPiutang = async (req, res) => {
+    const logger = res.locals.logger
     try{
         const norecpiutang = req.params.norecpiutang;
         let piutang = await pool.query(qGetPaymentForPiutang, [norecpiutang])
@@ -567,8 +556,7 @@ const getPaymentForPiutang = async (req, res) => {
             code: 200
         });
     }catch(e){
-        console.error("===Error Get Payment For Piutang===");
-        console.error(e);
+        logger.error(e)
         res.status(500).send({
             data: e,
             success: false,
@@ -579,6 +567,7 @@ const getPaymentForPiutang = async (req, res) => {
 }
 
 const getLaporanPendapatanKasir = async (req, res) => {
+    const logger = res.locals.logger
     try{
         let Laporan = await pool.query(qGetLaporanPendapatanKasir, [req.query.start,req.query.end, `%${req.query.search}%`])
         let tempres = {
@@ -592,12 +581,46 @@ const getLaporanPendapatanKasir = async (req, res) => {
             code: 200
         });
     }catch(e){
-        console.error("===Error Get Laporan Pendapatan Kasir===");
-        console.error(e);
+        logger.error(e)
         res.status(500).send({
             data: e,
             success: false,
             msg: 'Get Laporan Pendapatan Kasir Gagal',
+            code: 500
+        });
+    }
+}
+
+const getPiutangAfterDate = async (req, res) => {
+    const logger = res.locals.logger
+    try {
+        const {tglterakhir, norecnota} = req.query
+        if(!checkValidDate(tglterakhir)){
+            throw new Error("Tanggal tidak valid")
+        }
+        if(!norecnota){
+            throw new Error("No nota tidak boleh kosong")
+        }
+        const piutangs = await pool.query(qGetPiutangPasien, 
+            [
+                'pasien', 
+                new Date(tglterakhir),
+                norecnota
+            ])
+        const tempres = piutangs.rows || []
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+            msg: 'Get daftar piutang Berhasil',
+            code: 200
+        });
+    } catch(error) {
+        logger.error(error)
+        res.status(500).send({
+            data: error,
+            success: false,
+            msg: 'Get All Payment Gagal',
             code: 500
         });
     }
@@ -614,7 +637,8 @@ export default {
     cancelBayar,
     getAllPiutang,
     getPaymentForPiutang,
-    getLaporanPendapatanKasir
+    getLaporanPendapatanKasir,
+    getPiutangAfterDate
 }
 
 
@@ -782,4 +806,49 @@ const hCancelPiutangAfter = async (req, res, transaction, {
             }
         )
     )
+}
+
+const hChangeYangDibayar = async (
+    req, 
+    res, 
+    transaction,
+    {
+        norecbukti,
+        sisa,
+        totalPayment
+    }
+) => {
+    const objectBody = req.body
+    let nota, piutang   
+    if(objectBody.norecnota){
+        nota = await t_notapelayananpasien.findOne({
+            where: {
+                norec: objectBody.norecnota
+            },
+            transaction: transaction
+        })
+
+        await nota.update({
+            objectbuktibayarfk: norecbukti
+        }, {
+            transaction: transaction
+        })
+    }
+    
+    if(objectBody.norecpiutang){
+        const [_, updatedPiutang] = await t_piutangpasien.update({
+            totalbayar: totalPayment,
+            sisapiutang: sisa,
+            tglupdate: new Date(),
+            objectbuktibayarfk: norecbukti
+        }, {
+            where: {
+                norec: objectBody.norecpiutang
+            },
+            transaction: transaction,
+            returning: true
+        })
+        piutang = updatedPiutang
+    }
+    return {nota, piutang}
 }
