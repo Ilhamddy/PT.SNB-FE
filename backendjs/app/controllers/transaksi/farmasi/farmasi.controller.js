@@ -742,9 +742,10 @@ const hCreateVerif = async (
             stokChange: (qtyPembulatan || qty) 
         }
     )
-    const created = await Promise.all(
+    let created = await Promise.all(
         batchStokUnitChanged.map(
             async (batchstokunit) => {
+                if(batchstokunit.qtyChange <= 0) return null
                 let created = await t_verifresep.create({
                     norec: uuid.v4().substring(0, 32),
                     kdprofile: 0,
@@ -773,6 +774,7 @@ const hCreateVerif = async (
             }
         )
     )
+    created = created.filter((item) => item !== null)
 
     return {created, norecresep: created.norec, changedStok}
 }
