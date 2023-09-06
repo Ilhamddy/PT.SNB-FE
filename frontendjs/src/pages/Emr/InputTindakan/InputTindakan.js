@@ -435,7 +435,7 @@ const InputTindakan = () => {
                                                     </Row>
                                                 </Col>
                                                 <Col lg={1}>
-                                                    <Button type="button" color="info" className="rounded-pill" placement="top" onClick={() => setshowPelaksana2(true)}>
+                                                    <Button type="button" color="success" placement="top" onClick={() => setshowPelaksana2(true)}>
                                                         +
                                                     </Button>
                                                 </Col>
@@ -499,12 +499,12 @@ const InputTindakan = () => {
                                                     </Row>
                                                 </Col>
                                                 <Col lg={1}>
-                                                    <Button type="button" color="info" className="rounded-pill" placement="top" onClick={() => setshowPelaksana3(true)}>
+                                                    <Button type="button" color="success" placement="top" onClick={() => setshowPelaksana3(true)}>
                                                         +
                                                     </Button>
                                                 </Col>
                                                 <Col lg={1}>
-                                                    <Button type="button" color="danger" className="rounded-pill" placement="top" onClick={() => handleClickKurang(2)}>
+                                                    <Button type="button" color="danger" placement="top" onClick={() => handleClickKurang(2)}>
                                                         -
                                                     </Button>
                                                 </Col>
@@ -565,12 +565,12 @@ const InputTindakan = () => {
                                                     </Row>
                                                 </Col>
                                                 <Col lg={1}>
-                                                    <Button type="button" color="info" className="rounded-pill" placement="top" onClick={() => setshowPelaksana4(true)}>
+                                                    <Button type="button" color="success" placement="top" onClick={() => setshowPelaksana4(true)}>
                                                         +
                                                     </Button>
                                                 </Col>
                                                 <Col lg={1}>
-                                                    <Button type="button" color="danger" className="rounded-pill" placement="top" onClick={() => handleClickKurang(3)}>
+                                                    <Button type="button" color="danger" placement="top" onClick={() => handleClickKurang(3)}>
                                                         -
                                                     </Button>
                                                 </Col>
@@ -631,12 +631,12 @@ const InputTindakan = () => {
                                                     </Row>
                                                 </Col>
                                                 <Col lg={1}>
-                                                    <Button type="button" color="info" className="rounded-pill" placement="top" onClick={() => setshowPelaksana5(true)}>
+                                                    <Button type="button" color="success" placement="top" onClick={() => setshowPelaksana5(true)}>
                                                         +
                                                     </Button>
                                                 </Col>
                                                 <Col lg={1}>
-                                                    <Button type="button" color="danger" className="rounded-pill" placement="top" onClick={() => handleClickKurang(4)}>
+                                                    <Button type="button" color="danger" placement="top" onClick={() => handleClickKurang(4)}>
                                                         -
                                                     </Button>
                                                 </Col>
@@ -697,12 +697,12 @@ const InputTindakan = () => {
                                                     </Row>
                                                 </Col>
                                                 <Col lg={1}>
-                                                    <Button type="button" color="info" className="rounded-pill" placement="top" onClick={() => setshowPelaksana6(true)}>
+                                                    <Button type="button" color="success" placement="top" onClick={() => setshowPelaksana6(true)}>
                                                         +
                                                     </Button>
                                                 </Col>
                                                 <Col lg={1}>
-                                                    <Button type="button" color="danger" className="rounded-pill" placement="top" onClick={() => handleClickKurang(5)}>
+                                                    <Button type="button" color="danger" placement="top" onClick={() => handleClickKurang(5)}>
                                                         -
                                                     </Button>
                                                 </Col>
@@ -763,12 +763,12 @@ const InputTindakan = () => {
                                                     </Row>
                                                 </Col>
                                                 <Col lg={1}>
-                                                    <Button type="button" color="info" className="rounded-pill" placement="top" onClick={() => setshowPelaksana7(true)}>
+                                                    <Button type="button" color="success" placement="top" onClick={() => setshowPelaksana7(true)}>
                                                         +
                                                     </Button>
                                                 </Col>
                                                 <Col lg={1}>
-                                                    <Button type="button" color="danger" className="rounded-pill" placement="top" onClick={() => handleClickKurang(6)}>
+                                                    <Button type="button" color="danger" placement="top" onClick={() => handleClickKurang(6)}>
                                                         -
                                                     </Button>
                                                 </Col>
@@ -829,12 +829,12 @@ const InputTindakan = () => {
                                                     </Row>
                                                 </Col>
                                                 <Col lg={1}>
-                                                    <Button type="button" color="info" className="rounded-pill" placement="top" onClick={() => setshowPelaksana8(true)}>
+                                                    <Button type="button" color="success" placement="top" onClick={() => setshowPelaksana8(true)}>
                                                         +
                                                     </Button>
                                                 </Col>
                                                 <Col lg={1}>
-                                                    <Button type="button" color="danger" className="rounded-pill" placement="top" onClick={() => handleClickKurang(7)}>
+                                                    <Button type="button" color="danger" placement="top" onClick={() => handleClickKurang(7)}>
                                                         -
                                                     </Button>
                                                 </Col>
@@ -845,7 +845,7 @@ const InputTindakan = () => {
                             </Row>
                         </Col>
                         <Col xxl={12} sm={12}>
-                            <Button type="submit" color="info" className="rounded-pill" placement="top" >
+                            <Button type="submit" color="success" placement="top" >
                                 SIMPAN
                             </Button>
 

@@ -284,7 +284,7 @@ const OrderLaboratorium = () => {
                                 </Col>
                                 <Col lg={4} sm={2} className="mt-1">
                                     <div className="d-flex flex-wrap gap-2 justify-content-md-start">
-                                        <Button type="button" color="info" className="rounded-pill" placement="top"
+                                        <Button type="button" color="success" placement="top"
                                             onClick={() => onClickSimpan()}>
                                             Simpan
                                         </Button>

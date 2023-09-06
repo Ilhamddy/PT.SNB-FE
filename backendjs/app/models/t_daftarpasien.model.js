@@ -184,8 +184,10 @@ export default (sequelize, Sequelize) => {
         },
         status_grouping: {
             type: Sequelize.STRING
+        },
+        objectjenispelayananfk:{
+            type: Sequelize.INTEGER
         }
-
     }, {
         tableName: "t_daftarpasien", // relation "user" does not exist
         createdAt: false,

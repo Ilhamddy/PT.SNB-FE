@@ -67,7 +67,7 @@ const TandaVital = () => {
             keadaanumum: editData?.keadaanumum ?? '',
             idlabel: 1,
             label: 'TTV',
-            idgcs: editData?.idgcs?? ''
+            idgcs: editData?.idgcs ?? ''
         },
         validationSchema: Yup.object({
             tinggibadan: Yup.string().required("Tinggi Badan wajib diisi"),
@@ -141,7 +141,7 @@ const TandaVital = () => {
         }
     }
     const columns = [
-       
+
         {
             name: <span className='font-weight-bold fs-13'>No</span>,
             selector: row => row.no,
@@ -282,25 +282,25 @@ const TandaVital = () => {
         validation.setFieldValue('norec', '')
         validation.setFieldValue('objectemrfk', '')
     };
-    
-    
+
+
     useEffect(() => {
-        if(rate<=3){
+        if (rate <= 3) {
             sethasilGcs('Coma')
-        }else if(rate===4){
+        } else if (rate === 4) {
             sethasilGcs('Semi-coma')
-        }else if(rate>=5 && rate<=6){
+        } else if (rate >= 5 && rate <= 6) {
             sethasilGcs('Sopor')
-        }else if(rate>=7 && rate<=9){
+        } else if (rate >= 7 && rate <= 9) {
             sethasilGcs('Somnolen')
-        }else if(rate>=10 && rate<=11){
+        } else if (rate >= 10 && rate <= 11) {
             sethasilGcs('Delirium')
-        }else if(rate>=12 && rate<=13){
+        } else if (rate >= 12 && rate <= 13) {
             sethasilGcs('Apatis')
-        }else if(rate>=14 && rate<=15){
+        } else if (rate >= 14 && rate <= 15) {
             sethasilGcs('Cosposmentis')
         }
-      }, [rate]);
+    }, [rate]);
 
     return (
         <React.Fragment>
@@ -543,7 +543,7 @@ const TandaVital = () => {
                                             type="string"
                                             placeholder="Tekanan Darah"
                                             onChange={(e) => {
-                                                rgxWithSlash.test(e.target.value) 
+                                                rgxWithSlash.test(e.target.value)
                                                     && validation.handleChange(e)
                                             }}
                                             onBlur={validation.handleBlur}
@@ -659,16 +659,14 @@ const TandaVital = () => {
                             </Row>
                         </Col>
                         <Col xxl={12} sm={12}>
-                            <Button type="submit" color="info" className="rounded-pill" placement="top" id="tooltipTop">
-                                SIMPAN
-                            </Button>
-                            <UncontrolledTooltip placement="top" target="tooltipTop" > SIMPAN Tanda-Tanda Vital </UncontrolledTooltip>
-
-                            <Button type="button" color="danger" className="rounded-pill" placement="top" id="tooltipTop2" onClick={handleClickReset}>
-                                BATAL
-                            </Button>
-                            <UncontrolledTooltip placement="top" target="tooltipTop2" > BATAL Tanda-Tanda Vital </UncontrolledTooltip>
-
+                            <div className="d-flex flex-wrap gap-2">
+                                <Button type="submit" color="success" placement="top">
+                                    SIMPAN
+                                </Button>
+                                <Button type="button" color="danger" placement="top" onClick={handleClickReset}>
+                                    BATAL
+                                </Button>
+                            </div>
                         </Col>
 
                         <Col xxl={12} sm={12}>

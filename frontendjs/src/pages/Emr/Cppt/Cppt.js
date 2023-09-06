@@ -17,7 +17,7 @@ import { useFormik, yupToFormErrors } from "formik";
 import * as Yup from "yup";
 import DataTable from 'react-data-table-component';
 
-import { emrSave, emrResetForm, emrGet} from "../../../store/actions";
+import { emrSave, emrResetForm, emrGet } from "../../../store/actions";
 import LoadingTable from '../../../Components/Table/LoadingTable';
 
 
@@ -41,12 +41,12 @@ const Cppt = () => {
     }, [dispatch])
     useEffect(() => {
         if (norecdp) {
-            dispatch(emrGet(norecdp,'cppt'));
+            dispatch(emrGet(norecdp, 'cppt'));
         }
     }, [norecdp, dispatch])
     useEffect(() => {
         if (newData !== null) {
-            dispatch(emrGet(norecdp,'cppt'));
+            dispatch(emrGet(norecdp, 'cppt'));
         }
     }, [newData, norecdp, dispatch])
     const validation = useFormik({
@@ -94,7 +94,7 @@ const Cppt = () => {
 
 
     const columns = [
-      
+
         {
             name: <span className='font-weight-bold fs-13'>No</span>,
             selector: row => row.no,
@@ -152,8 +152,8 @@ const Cppt = () => {
             selector: row => row.plan,
             sortable: true
         },
-        
-   
+
+
     ];
 
     return (
@@ -168,7 +168,7 @@ const Cppt = () => {
                     }}
                     className="gy-4"
                     action="#">
-                    
+
                     <Row>
                         <Col xxl={6} sm={6}>
                             <Row>
@@ -288,15 +288,15 @@ const Cppt = () => {
                         </Col>
 
                         <Col xxl={12} sm={12}>
-                            <Button type="submit" color="info" className="rounded-pill" placement="top" id="tooltipTop">
-                                SIMPAN
-                            </Button>
-                            <UncontrolledTooltip placement="top" target="tooltipTop" > SIMPAN CPPT </UncontrolledTooltip>
+                            <div className="d-flex flex-wrap gap-2">
+                                <Button type="submit" color="success" placement="top">
+                                    SIMPAN
+                                </Button>
 
-                            <Button type="button" color="danger" className="rounded-pill" placement="top" id="tooltipTop2" onClick={handleClickReset}>
-                                BATAL
-                            </Button>
-                            <UncontrolledTooltip placement="top" target="tooltipTop2" > BATAL CPPT </UncontrolledTooltip>
+                                <Button type="button" color="danger" placement="top" onClick={handleClickReset}>
+                                    BATAL
+                                </Button>
+                            </div>
 
                         </Col>
 

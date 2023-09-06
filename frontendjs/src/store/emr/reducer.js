@@ -86,7 +86,10 @@ import {
     GET_ORDER_RESEP_FROM_DP_ERROR,
     EMR_JENIS_PELAYANAN_SAVE,
     EMR_JENIS_PELAYANAN_SAVE_SUCCESS,
-    EMR_JENIS_PELAYANAN_SAVE_ERROR
+    EMR_JENIS_PELAYANAN_SAVE_ERROR,
+    GET_HISTORI_JENIS_PELAYANAN,
+    GET_HISTORI_JENIS_PELAYANAN_SUCCESS,
+    GET_HISTORI_JENIS_PELAYANAN_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -246,6 +249,11 @@ const INIT_STATE = {
         error: null,
         success: false
     },
+    getHistoriJenisPelayanan: {
+        data: [],
+        loading: false,
+        error: null,
+    },
 };
 
 const Emr = (state = INIT_STATE, action) => {
@@ -324,6 +332,12 @@ const Emr = (state = INIT_STATE, action) => {
                 },
                 comboTindakanRadiologiGet:{
                     ...INIT_STATE.comboTindakanRadiologiGet
+                },
+                emrJenisPelayananSave:{
+                    ...INIT_STATE.emrJenisPelayananSave
+                },
+                getHistoriJenisPelayanan:{
+                    ...INIT_STATE.getHistoriJenisPelayanan
                 }
             }
         }
@@ -1265,6 +1279,73 @@ const Emr = (state = INIT_STATE, action) => {
                 getOrderResepFromDP: {
                     ...state.getOrderResepFromDP,
                     data: [],
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case EMR_JENIS_PELAYANAN_SAVE: {
+            return {
+                ...state,
+                emrJenisPelayananSave: {
+                    ...state.emrJenisPelayananSave,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case EMR_JENIS_PELAYANAN_SAVE_SUCCESS: {
+            return {
+                ...state,
+                emrJenisPelayananSave: {
+                    ...state.emrJenisPelayananSave,
+                    newData: action.payload,
+                    loading: false,
+                    success: true,
+                }
+            }
+        }
+
+        case EMR_JENIS_PELAYANAN_SAVE_ERROR: {
+            return {
+                ...state,
+                emrJenisPelayananSave: {
+                    ...state.emrJenisPelayananSave,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case GET_HISTORI_JENIS_PELAYANAN: {
+            return {
+                ...state,
+                getHistoriJenisPelayanan: {
+                    ...state.getHistoriJenisPelayanan,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case GET_HISTORI_JENIS_PELAYANAN_SUCCESS: {
+            return {
+                ...state,
+                getHistoriJenisPelayanan: {
+                    ...state.getHistoriJenisPelayanan,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case GET_HISTORI_JENIS_PELAYANAN_ERROR: {
+            return {
+                ...state,
+                getHistoriJenisPelayanan: {
+                    ...state.getHistoriJenisPelayanan,
                     loading: false,
                     error: action.error,
                 }

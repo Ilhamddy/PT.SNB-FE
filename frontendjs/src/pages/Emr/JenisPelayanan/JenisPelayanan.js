@@ -19,8 +19,7 @@ import DataTable from 'react-data-table-component';
 import CustomSelect from '../../Select/Select';
 
 import {
-    emrDiagnosaxSave, emrResetForm, emrComboGet, emrDiagnosaxGet, emrListDiagnosaxGet,
-    deleteDiagnosax
+    emrJenisPelayananSave, emrResetForm, emrComboGet, getHistoriJenisPelayanan
 } from "../../../store/actions";
 import DeleteModalCustom from '../../../Components/Common/DeleteModalCustom';
 import LoadingTable from '../../../Components/Table/LoadingTable';
@@ -28,28 +27,28 @@ import LoadingTable from '../../../Components/Table/LoadingTable';
 const JenisPelayanan = () => {
     const { norecdp, norecap } = useParams();
     const dispatch = useDispatch();
-    const { editData, newData, loading, error, success, dataCombo, loadingCombo, successCombo } = useSelector((state) => ({
-        newData: state.Emr.emrDiagnosaxSave.newData,
-        success: state.Emr.emrDiagnosaxSave.success,
-        loading: state.Emr.emrDiagnosaxSave.loading,
+    const { editData, newData, loading, error, success, dataCombo, loadingCombo,
+        dataJP } = useSelector((state) => ({
+        newData: state.Emr.emrJenisPelayananSave.newData,
+        success: state.Emr.emrJenisPelayananSave.success,
+        loading: state.Emr.emrJenisPelayananSave.loading,
         dataCombo: state.Emr.emrComboGet.data,
         loadingCombo: state.Emr.emrComboGet.loading,
-        successCombo: state.Emr.emrComboGet.success,
+        dataJP: state.Emr.getHistoriJenisPelayanan.data,
     }));
 
 
     const validation = useFormik({
         enableReinitialize: true,
         initialValues: {
-            norecap: editData?.norecap ?? norecap,
-            norec: editData?.norec ?? '',
+            norecdp: editData?.norecdp ?? norecdp,
             jenispelayanan: editData?.jenispelayanan ?? ''
         },
         validationSchema: Yup.object({
             jenispelayanan: Yup.string().required("Tipe Diagnosa Belum Diisi"),
         }),
         onSubmit: (values, { resetForm }) => {
-            dispatch(emrDiagnosaxSave(values, ''));
+            dispatch(emrJenisPelayananSave(values, ''));
             resetForm({ values: '' })
         }
     })
@@ -60,9 +59,17 @@ const JenisPelayanan = () => {
     }, [dispatch])
     useEffect(() => {
         if (norecdp) {
-            dispatch(emrComboGet(norecdp, 'combo'));
+            dispatch(emrComboGet('combo'));
+            dispatch(getHistoriJenisPelayanan({norecdp:norecdp}))
         }
     }, [norecdp, dispatch])
+    useEffect(() => {
+        const setFF = validation.setFieldValue
+        if (dataJP) {
+            const idjenispelayanan = dataJP?.[0]?.objectjenispelayananfk || ""
+            setFF('jenispelayanan', idjenispelayanan);
+        }
+    }, [validation.setFieldValue, dataJP])
     return (
         <React.Fragment>
 

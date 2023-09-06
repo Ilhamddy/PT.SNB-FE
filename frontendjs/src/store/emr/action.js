@@ -86,7 +86,10 @@ import {
     GET_ORDER_RESEP_FROM_DP_ERROR,
     EMR_JENIS_PELAYANAN_SAVE,
     EMR_JENIS_PELAYANAN_SAVE_SUCCESS,
-    EMR_JENIS_PELAYANAN_SAVE_ERROR
+    EMR_JENIS_PELAYANAN_SAVE_ERROR,
+    GET_HISTORI_JENIS_PELAYANAN,
+    GET_HISTORI_JENIS_PELAYANAN_SUCCESS,
+    GET_HISTORI_JENIS_PELAYANAN_ERROR
 } from "./actionType";
 
 export const emrResetForm = () => ({
@@ -545,5 +548,20 @@ export const emrJenisPelayananSaveSuccess = (data, history) => ({
 
 export const emrJenisPelayananSaveError = (error) => ({
     type: EMR_JENIS_PELAYANAN_SAVE_ERROR,
+    payload: error,
+});
+
+export const getHistoriJenisPelayanan = (queries) => ({
+    type: GET_HISTORI_JENIS_PELAYANAN,
+    payload: { queries: queries },
+});
+
+export const getHistoriJenisPelayananSuccess = (data) => ({
+    type: GET_HISTORI_JENIS_PELAYANAN_SUCCESS,
+    payload: data,
+});
+
+export const getHistoriJenisPelayananError = (error) => ({
+    type: GET_HISTORI_JENIS_PELAYANAN_ERROR,
     payload: error,
 });

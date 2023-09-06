@@ -117,4 +117,12 @@ export default class ServiceEmr {
     getOrderResepFromDp = async (queries) => {
         return await api.get(`/transaksi/emr/get-order-resep-from-dp`, queries);
     }
+
+    saveJenisPelayanan = async (params) => {
+        return await api.create("/transaksi/emr/save-emr-jenis-pelayanan", params);
+    }
+
+    getHistoriJenisPelayanan = async (queries) => {
+        return await api.get(`/transaksi/emr/get-histori-jenis-pelayanan`, queries);
+    }
 }

@@ -181,7 +181,7 @@ const printFile = async ({
     const printers = await ptp.getPrinters()
 
     fs.writeFileSync("./hasil.pdf", base64Data, 'base64')
-    await ptp.print("./hasil.pdf", {printer: "OneNote (Desktop)"})
+    await ptp.print("./hasil.pdf", {printer: "Canon E480 series Printer"})
   }catch(error){
     console.error(error)
   }
