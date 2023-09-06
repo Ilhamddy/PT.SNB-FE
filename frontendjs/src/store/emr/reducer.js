@@ -83,7 +83,10 @@ import {
     CREATE_OR_UPDATE_RESEP_ORDER_ERROR,
     GET_ORDER_RESEP_FROM_DP,
     GET_ORDER_RESEP_FROM_DP_SUCCESS,
-    GET_ORDER_RESEP_FROM_DP_ERROR
+    GET_ORDER_RESEP_FROM_DP_ERROR,
+    EMR_JENIS_PELAYANAN_SAVE,
+    EMR_JENIS_PELAYANAN_SAVE_SUCCESS,
+    EMR_JENIS_PELAYANAN_SAVE_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -236,7 +239,13 @@ const INIT_STATE = {
         data: [],
         loading: false,
         error: null,
-    }
+    },
+    emrJenisPelayananSave: {
+        newData: null,
+        loading: false,
+        error: null,
+        success: false
+    },
 };
 
 const Emr = (state = INIT_STATE, action) => {
