@@ -7,6 +7,8 @@ const PDFWindow = require('electron-pdf-window');
 const sequelize = require('./config/sequelize');
 const isDev = process.env.NODE_ENV !== 'production';
 const isMac = process.platform === 'darwin';
+const ch = require('os');
+const ptp = require('pdf-to-printer');
 
 var options = {
   silent: false,
@@ -48,7 +50,6 @@ async function createMainWindow() {
 
   // mainWindow.loadURL(`file://${__dirname}/renderer/index.html`);
   mainWindow.loadFile(path.join(__dirname, './renderer/index.html'));
-
 }
 
 // About Window
@@ -155,11 +156,36 @@ ipcMain.on('get-printer-app', async () => {
 })
 
 // Respond to the resize image event
-ipcMain.on('printer:toPrint', (e, options) => {
+ipcMain.handle('printer:toPrint', async (e, options) => {
   // console.log(options);
   options.dest = path.join(os.homedir(), 'imageresizer');
-  printToPrinter(options);
+  console.log("print");
+  printFile(options)
+  // printToPrinter(options);
 });
+
+ipcMain.handle('file:getHTML', (e, options) => {
+  const htmlContent = fs.readFileSync('./renderer/report/invoice.html', 'utf8');
+  return htmlContent
+})
+
+const printFile = async ({
+  height,
+  width,
+  printer,
+  base64pdf
+}) => {
+  try{
+    console.log(base64pdf)
+    let base64Data = base64pdf.replace(/^data:application\/pdf;filename\=generated\.pdf;base64,/, "");
+    const printers = await ptp.getPrinters()
+
+    fs.writeFileSync("./hasil.pdf", base64Data, 'base64')
+    await ptp.print("./hasil.pdf", {printer: "OneNote (Desktop)"})
+  }catch(error){
+    console.error(error)
+  }
+}
 
 // async function printToPrinter({ height, width, printer }) {
 //   try {

@@ -3,33 +3,112 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-    http-equiv="Content-Security-Policy"
-    content="script-src 'self' 'unsafe-inline'"
-  />
-    <link
-    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&display=swap"
-    rel="stylesheet"
-  />
-  <link rel="stylesheet" href="css/style.css" />
-  <script src="js/renderer.js" defer></script>
+    <meta http-equiv="Content-Security-Policy" content="default-src * self blob: data: gap:; style-src * self 'unsafe-inline' blob: data: gap:; script-src * 'self' 'unsafe-eval' 'unsafe-inline' blob: data: gap:; object-src * 'self' blob: data: gap:; img-src * self 'unsafe-inline' blob: data: gap:; connect-src self * 'unsafe-inline' blob: data: gap:; frame-src * self blob: data: gap:;">
+      <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+    <script src="js/renderer.js" defer></script>
+    <script src="js/purify.min.js" defer></script>
+    <style>
+      body {
+          font-family: Arial, sans-serif;
+          margin: 0;
+          padding: 20px;
+      }
+
+      .invoice {
+          /* max-width: 100%;  */
+          background-color: #f9f9f9;
+          padding: 20px;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .invoice h1 {
+          font-size: 24px;
+          text-align: center;
+      }
+
+      .invoice .header {
+          display: flex;
+          justify-content: space-between;
+          margin-bottom: 20px;
+      }
+
+      .invoice .from,
+      .invoice .to {
+          width: 45%;
+      }
+
+      .invoice .from {
+          float: left;
+      }
+
+      .invoice .to {
+          float: right;
+      }
+
+      .invoice .invoice-details {
+          margin-bottom: 20px;
+      }
+
+      .invoice .invoice-details p {
+          margin: 0;
+      }
+
+      .invoice table {
+          width: 100%;
+          border-collapse: collapse;
+          margin-top: 20px;
+      }
+
+      .invoice th,
+      .invoice td {
+          border: 1px solid #ccc;
+          padding: 10px;
+          text-align: left;
+      }
+
+      .invoice th {
+          background-color: #f2f2f2;
+      }
+
+      .invoice .total {
+          float: right;
+      }
+
+      .invoice .total p {
+          font-weight: bold;
+      }
+
+      @page {
+          size: A4;
+          /* Set the page size to A4 */
+          margin: 20mm;
+          /* Adjust margins as needed (top, right, bottom, left) */
+      }
+
+      @media print {
+          body {
+              padding: 0;
+              /* Remove padding for printing */
+          }
+
+          .invoice {
+              page-break-before: always;
+              /* Start each invoice on a new page */
+          }
+      }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibyoeqMV/TJlSKda6FXzoEyYGjTe+vXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <title>Tracer</title>
   </head>
   <body class="bg-teal-700">
     <div
       class="max-w-xl m-auto h-screen flex flex-col align-center justify-center"
     >
-      <!-- <div class="flex flex-col w-full items-center justify-center bg-grey-lighter">
-        <label
-          class="w-64 flex flex-col items-center px-4 py-7 bg-white text-gray-500 rounded-lg shadow-lg tracking-wide uppercase border border-blue cursor-pointer hover:text-teal-800"
-        >
-          <img src="./images/logo.svg" width="32" />
-          <span class="mt-2 leading-normal">Select an image to resize</span>
-          <input id="img" type="file" class="hidden" />
-        </label>
-      </div> -->
-      
-      <!-- Form -->
       <form id="img-form">
         <div class="mt-6">
           <label class="mt-1 block text-white text-center w-80 m-auto py-3 shadow-sm border-gray-300 rounded-md">List Printer</label>
@@ -69,6 +148,54 @@
           </button>
 
       </form>
+      <div class="invoice">
+        <h1>Invoice</h1>
+        <div class="header">
+            <div class="from">
+                <p>From:</p>
+                <p>Your Company Name</p>
+                <p>123 Main Street</p>
+                <p>City, State, ZIP</p>
+            </div>
+            <div class="to">
+                <p>To:</p>
+                <p>Client Name</p>
+                <p>456 Client Street</p>
+                <p>City, State, ZIP</p>
+            </div>
+        </div>
+        <div class="invoice-details">
+            <p>Date: June 1, 2023</p>
+            <p>Due Date: June 15, 2023</p>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    <th>Quantity</th>
+                    <th>Unit Price</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Item 1</td>
+                    <td>2</td>
+                    <td>$50.00</td>
+                    <td>$100.00</td>
+                </tr>
+                <tr>
+                    <td>Item 2</td>
+                    <td>1</td>
+                    <td>$75.00</td>
+                    <td>$75.00</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="total">
+            <p>Total: $175.00</p>
+        </div>
+      </div>
 
       <!-- <p class="text-white text-lg text-center font-mono mt-6"><strong>File: </strong><span id="filename"></span></p>
       <p class="text-white text-lg text-center font-mono mt-2"><strong>Output: </strong><span id="output-path"></span></p> -->
