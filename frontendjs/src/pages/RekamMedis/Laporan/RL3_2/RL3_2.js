@@ -306,28 +306,21 @@ const RL3_2 = () => {
                             <div className="live-preview">
                                 <div className="table-responsive">
                                     <Table className="table-bordered border-secondary table-nowrap align-top mb-0">
-                                        <thead style={{ backgroundColor: '#e67e22', color: '#ffffff' }}>
+                                        <thead style={{ backgroundColor: '#e67e22', color: '#ffffff', textAlign:'center',verticalAlign: 'top'  }}>
                                             <tr>
                                                 <th rowSpan="2">No</th>
                                                 <th rowSpan="2">Jenis Pelayanan</th>
-                                                <th rowSpan="2">Pasien Awal Tahun</th>
-                                                <th rowSpan="2">Pasien Masuk</th>
-                                                <th rowSpan="2">Pasien Keluar Hidup</th>
-                                                <th colSpan="2">Pasien Keluar Mati</th>
-                                                <th rowSpan="2">JUMLAH Lama Dirawat</th>
-                                                <th rowSpan="2">Pasien Akhir Tahun</th>
-                                                <th rowSpan="2">Jumlah Hari Perawatan</th>
-                                                <th colSpan="6">Rincian Hari Perawatan Per Kelas</th>
+                                                <th colSpan="2">Total Pasien</th>
+                                                <th colSpan="3">Tindak Lanjut Pelayanan</th>
+                                                <th rowSpan="2">Mati Di IGD</th>
+                                                <th rowSpan="2">DOA</th>
                                             </tr>
                                             <tr>
-                                                <th scope="col"><span>‹ 48 Jam</span></th>
-                                                <th scope="col">› 48 Jam</th>
-                                                <th scope="col"><span>VVIP</span></th>
-                                                <th scope="col">VIP</th>
-                                                <th scope="col"><span>I</span></th>
-                                                <th scope="col">II</th>
-                                                <th scope="col">III</th>
-                                                <th scope="col">Kelas Khusus</th>
+                                                <th scope="col"><span>Rujukan</span></th>
+                                                <th scope="col">Non Rujukan</th>
+                                                <th scope="col"><span>Dirawat</span></th>
+                                                <th scope="col">Dirujukan</th>
+                                                <th scope="col"><span>Dipulang</span></th>
                                             </tr>
                                         </thead>
                                         {

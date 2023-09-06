@@ -305,7 +305,7 @@ const RL3_1 = () => {
                             <div className="live-preview">
                                 <div className="table-responsive">
                                     <Table className="table-bordered border-secondary table-nowrap align-top mb-0">
-                                        <thead style={{ backgroundColor: '#e67e22', color: '#ffffff' }}>
+                                        <thead style={{ backgroundColor: '#e67e22', color: '#ffffff', textAlign:'center',verticalAlign: 'top' }}>
                                             <tr>
                                                 <th rowSpan="2">No</th>
                                                 <th rowSpan="2">Jenis Pelayanan</th>
