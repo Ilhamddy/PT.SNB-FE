@@ -23,7 +23,8 @@ contextBridge.exposeInMainWorld('electron', {
     ipcRenderer.on('ongetprinter', callback);
   },
   getPrinterApp: () => {
-    ipcRenderer.invoke('get-printer-app')
+    const printers = ipcRenderer.invoke('printer:getListPrinter')
+    return printers
   },
   getHTML: async (location) => {
     const html = await ipcRenderer.invoke('file:getHTML', {
@@ -31,20 +32,8 @@ contextBridge.exposeInMainWorld('electron', {
     });
     return html
   },
-  print: async ({
-    // imgPath,
-    height,
-    width,
-    printer,
-    base64pdf
-  }) => {
-    const print = ipcRenderer.invoke('printer:toPrint', {
-      // imgPath,
-      height,
-      width,
-      printer,
-      base64pdf
-    });
+  print: async (props) => {
+    const print = ipcRenderer.invoke('printer:toPrint', props);
     return print
   }
 })

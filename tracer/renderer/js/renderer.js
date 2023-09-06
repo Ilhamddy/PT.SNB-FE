@@ -9,22 +9,17 @@ const printerSelectInput = document.querySelector('#printerSelect');
 
 
 document.addEventListener('DOMContentLoaded', () => {
-  const printerSelect = document.getElementById('printerSelect');
-
-  console.log(window.electron)
-  getPrinter();
-  window.electron.onGetPrinterApp((_name, printer) => {
-    // console.log("masuk")
-    // console.log(printer)
-    // console.log(_name)
+  (async () => {
+    const printerSelect = document.getElementById('printerSelect');
     printerSelect.innerHTML = '';
-    printer.forEach((printer) => {
+    const printers = await window.electron.getPrinterApp();
+    printers.forEach((printer) => {
       const option = document.createElement('option');
-      option.value = printer.name;
+      option.value = printer.deviceId;
       option.text = printer.name;
       printerSelect.appendChild(option);
     });
-  })
+  })(); 
 });
 
 
@@ -66,14 +61,17 @@ async function printToPrinter(e) {
   const width = widthInput.value;
   const height = heightInput.value;
   const printer = printerSelectInput.value;
-  const base64pdf = await getHTML()
+  const base64pdf = await getHTML();
+  const printerSelect = document.getElementById('printerSelect');
+  const idPrint = printerSelect.value
 
   await window.electron.print({
     // imgPath,
     height,
     width,
     printer,
-    base64pdf
+    base64pdf,
+    idPrint
   });
 }
 
@@ -104,10 +102,6 @@ async function getHTML(location) {
   );
   const base64pdf = doc.output("datauri")
   return base64pdf
-}
-
-function getPrinter(e) {
-  ipcRenderer.send('get-printer-app')
 }
 
 // When done, show message
