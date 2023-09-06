@@ -76,7 +76,7 @@ const Tagihan = ({ show }) => {
                                 <i className="ri-delete-bin-2-line"></i>
                             </DropdownToggle> */}
                         </UncontrolledDropdown>
-                        <UncontrolledTooltip placement="top" target="tooltipTop2" > Delete </UncontrolledTooltip>
+                        {/* <UncontrolledTooltip placement="top" target="tooltipTop2" > Delete </UncontrolledTooltip> */}
                     </div>
                 );
             },

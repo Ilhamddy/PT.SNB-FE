@@ -237,13 +237,13 @@ const RegistrasiList = () => {
                                         <TabPane tabId="3" id="messages-1" >
                                             <div className="live-preview">
                                                 <div className="d-flex flex-column gap-2">
-                                                    <Button color="info" className="btn-animation" data-text="Registrasi" onClick={() => handleClickButton('registrasi')}><span>Registrasi</span></Button>
-                                                    <Button color="info" className="btn-animation" data-text="Edit Data Pasien" onClick={() => handleClickButton('edit')}> <span>Edit Data Pasien</span> </Button>
-                                                    <Button color="info" className="btn-animation" data-text="[BPJS] Cek Kepesertaan"> <span>[BPJS] Cek Kepesertaan</span> </Button>
-                                                    <Button color="info" className="btn-animation" data-text="[BPJS] Cek Rujukan"> <span>[BPJS] Cek Rujukan</span> </Button>
-                                                    <Button color="info" className="btn-animation" data-text="[BPJS] Buat Surkon/SPRI"> <span>[BPJS] Buat Surkon/SPRI</span> </Button>
-                                                    <Button color="info" className="btn-animation" data-text="Cetak Kartu Pasien"> <span>Cetak Kartu Pasien</span> </Button>
-                                                    <Button color="info" className="btn-animation" data-text="Cetak Label Pasien"> <span>Cetak Label Pasien</span> </Button>
+                                                    <Button color="success" className="btn-animation" data-text="Registrasi" onClick={() => handleClickButton('registrasi')}><span>Registrasi</span></Button>
+                                                    <Button color="success" className="btn-animation" data-text="Edit Data Pasien" onClick={() => handleClickButton('edit')}> <span>Edit Data Pasien</span> </Button>
+                                                    <Button color="success" className="btn-animation" data-text="[BPJS] Cek Kepesertaan"> <span>[BPJS] Cek Kepesertaan</span> </Button>
+                                                    <Button color="success" className="btn-animation" data-text="[BPJS] Cek Rujukan"> <span>[BPJS] Cek Rujukan</span> </Button>
+                                                    <Button color="success" className="btn-animation" data-text="[BPJS] Buat Surkon/SPRI"> <span>[BPJS] Buat Surkon/SPRI</span> </Button>
+                                                    <Button color="success" className="btn-animation" data-text="Cetak Kartu Pasien"> <span>Cetak Kartu Pasien</span> </Button>
+                                                    <Button color="success" className="btn-animation" data-text="Cetak Label Pasien"> <span>Cetak Label Pasien</span> </Button>
                                                     <ToastContainer autoClose={2000} />
                                                 </div>
                                             </div>

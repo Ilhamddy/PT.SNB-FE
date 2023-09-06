@@ -18,8 +18,10 @@ import * as Yup from "yup";
 import DataTable from 'react-data-table-component';
 import CustomSelect from '../../Select/Select';
 
-import { emrDiagnosaxSave, emrResetForm, emrComboGet, emrDiagnosaxGet, emrListDiagnosaxGet,
-deleteDiagnosax } from "../../../store/actions";
+import {
+    emrDiagnosaxSave, emrResetForm, emrComboGet, emrDiagnosaxGet, emrListDiagnosaxGet,
+    deleteDiagnosax
+} from "../../../store/actions";
 import DeleteModalCustom from '../../../Components/Common/DeleteModalCustom';
 import LoadingTable from '../../../Components/Table/LoadingTable';
 
@@ -30,13 +32,13 @@ const Diagnosax = () => {
     //delete order
     const [deleteModal, setDeleteModal] = useState(false);
     const [product, setProduct] = useState(null);
-    
+
     const refKodeDiagnosa = useRef(null);
     const refTipeDiagnosa = useRef(null);
     const refKasusPenyakit = useRef(null);
 
     const { editData, newData, loading, error, success, dataCombo, loadingCombo, successCombo, dataDiagnosa,
-        loadingDiagnosa, successDiagnosa, dataRiwayat, loadingRiwayat, successRiwayat,successDelete,newDataDelete } = useSelector((state) => ({
+        loadingDiagnosa, successDiagnosa, dataRiwayat, loadingRiwayat, successRiwayat, successDelete, newDataDelete } = useSelector((state) => ({
             newData: state.Emr.emrDiagnosaxSave.newData,
             success: state.Emr.emrDiagnosaxSave.success,
             loading: state.Emr.emrDiagnosaxSave.loading,
@@ -49,7 +51,7 @@ const Diagnosax = () => {
             dataRiwayat: state.Emr.emrListDiagnosaxGet.data,
             loadingRiwayat: state.Emr.emrListDiagnosaxGet.loading,
             successRiwayat: state.Emr.emrListDiagnosaxGet.success,
-            newDataDelete:state.Emr.deleteDiagnosax.newData,
+            newDataDelete: state.Emr.deleteDiagnosax.newData,
             successDelete: state.Emr.deleteDiagnosax.success
         }));
 
@@ -68,10 +70,10 @@ const Diagnosax = () => {
     useEffect(() => {
         if (newData !== null) {
             dispatch(emrListDiagnosaxGet(norecdp));
-        }else if(newDataDelete === true){
+        } else if (newDataDelete === true) {
             dispatch(emrListDiagnosaxGet(norecdp));
         }
-    }, [newData, norecdp,newDataDelete, dispatch])
+    }, [newData, norecdp, newDataDelete, dispatch])
     const validation = useFormik({
         enableReinitialize: true,
         initialValues: {
@@ -105,7 +107,7 @@ const Diagnosax = () => {
             setDeleteModal(false);
         }
     };
- 
+
     const handleClickReset = (e) => {
         validation.setFieldValue('tipediagnosa', '')
         validation.setFieldValue('kodediagnosa', '')
@@ -334,17 +336,16 @@ const Diagnosax = () => {
                                             </div>
                                         </Col>
                                         <Col xxl={12} sm={12}>
-                                            <span>
+                                            <div className="d-flex flex-wrap gap-2">
                                                 <Button type="submit" color="success" placement="top">
                                                     SIMPAN
                                                 </Button>
-                                                
-                                            </span>
-                                            <span>
+
                                                 <Button type="button" color="danger" placement="top" onClick={handleClickReset}>
                                                     BATAL
                                                 </Button>
-                                            </span>
+                                            </div>
+
                                         </Col>
                                     </Row>
                                 </CardBody>

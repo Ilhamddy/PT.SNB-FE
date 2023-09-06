@@ -56,7 +56,7 @@ async function saveEmrPasienTtv(req, res) {
     // return
     const logger = res.locals.logger
     const [transaction, errorTransaction] = await createTransaction(db, res)
-    if(errorTransaction) return
+    if (errorTransaction) return
     try {
         const resultEmrPasien = await queryPromise1(req.body.norecap, req.body.idlabel);
         let rate = req.body.gcse + req.body.gcsm + req.body.gcsv
@@ -136,7 +136,7 @@ async function saveEmrPasienTtv(req, res) {
 
 async function getListTtv(req, res) {
     const logger = res.locals.logger
-    try{
+    try {
         const resultNocmfk = await queryPromise2(`SELECT nocmfk
             FROM t_daftarpasien where norec='${req.query.norecdp}'
         `);
@@ -162,7 +162,7 @@ async function getListTtv(req, res) {
             status: "success",
             success: true,
         });
-    }catch(error){
+    } catch (error) {
         logger.error(error)
         res.status(500).send({ message: error });
 
@@ -212,7 +212,7 @@ async function getHeaderEmr(req, res) {
         let pernapasan = ''
         let keadaanumum = ''
         let namagcs = ''
-        
+
         const norecdp = resultCountNoantrianDokter.rows[0].norecdp
 
         for (let i = 0; i < resultTtv.rows.length; ++i) {
@@ -254,13 +254,13 @@ async function getHeaderEmr(req, res) {
                     keadaanumum: keadaanumum,
                     namagcs: namagcs,
                     deposit: deposit || [],
-                    alamatdomisili:resultCountNoantrianDokter.rows[i].alamatdomisili
+                    alamatdomisili: resultCountNoantrianDokter.rows[i].alamatdomisili
                 }
 
             }
         }
-        
-        
+
+
         res.status(200).send({
             data: tempres,
             status: "success",
@@ -277,7 +277,7 @@ async function getHeaderEmr(req, res) {
 async function editEmrPasienTtv(req, res) {
     const logger = res.locals.logger
     const [transaction, errorTransaction] = await createTransaction(db, res)
-    if(errorTransaction) return
+    if (errorTransaction) return
     try {
         let rate = req.body.gcse + req.body.gcsm + req.body.gcsv
         let idgcs = null
@@ -356,7 +356,7 @@ async function editEmrPasienTtv(req, res) {
 async function saveEmrPasienCppt(req, res) {
     const logger = res.locals.logger
     const [transaction, errorTransaction] = await createTransaction(db, res)
-    if(errorTransaction) return
+    if (errorTransaction) return
     try {
         let norec = uuid.v4().substring(0, 32)
         const resultEmrPasien = await queryPromise1(req.body.norecap, req.body.idlabel);
@@ -410,7 +410,7 @@ async function saveEmrPasienCppt(req, res) {
 
 async function getListCppt(req, res) {
     const logger = res.locals.logger
-    try{
+    try {
         const resultNocmfk = await queryPromise2(`SELECT nocmfk
             FROM t_daftarpasien where norec='${req.query.norecdp}'
         `);
@@ -442,17 +442,17 @@ async function getListCppt(req, res) {
             status: "success",
             success: true,
         });
-    }catch(error){
+    } catch (error) {
         logger.error(error)
         res.status(500).send({ message: error });
     }
-    
+
 }
 
 async function editEmrPasienCppt(req, res) {
     const logger = res.locals.logger
     const [transaction, errorTransaction] = await createTransaction(db, res)
-    if(errorTransaction) return
+    if (errorTransaction) return
     try {
         let noreccppt = uuid.v4().substring(0, 32)
         const cppt = await db.t_cppt.create({
@@ -500,7 +500,7 @@ async function editEmrPasienCppt(req, res) {
 
 async function getListDiagnosa10(req, res) {
     const logger = res.locals.logger
-    try{
+    try {
         const result = await queryPromise2(`SELECT id as value,kodeexternal || ' - '|| reportdisplay as label
             FROM m_icdx where reportdisplay ilike '%${req.query.namadiagnosa}%' 
             or kodeexternal ilike '%${req.query.namadiagnosa}%' limit 10
@@ -519,7 +519,7 @@ async function getListDiagnosa10(req, res) {
             status: "success",
             success: true,
         });
-    }catch(error){
+    } catch (error) {
         logger.error(error)
         res.status(500).send({ message: error });
     }
@@ -528,7 +528,7 @@ async function getListDiagnosa10(req, res) {
 
 async function getListDiagnosa9(req, res) {
     const logger = res.locals.logger
-    try{
+    try {
         const result = await queryPromise2(`SELECT id as value,kodeexternal || ' - '||reportdisplay as label
             FROM m_icdix where reportdisplay ilike '%${req.query.namadiagnosa}%' or kodeexternal ilike '%${req.query.namadiagnosa}%' limit 10
         `);
@@ -546,7 +546,7 @@ async function getListDiagnosa9(req, res) {
             status: "success",
             success: true,
         });
-    }catch(error){
+    } catch (error) {
         logger.error(error);
         res.status(500).send({ message: error });
     }
@@ -555,7 +555,7 @@ async function getListDiagnosa9(req, res) {
 
 async function getListComboDiagnosa(req, res) {
     const logger = res.locals.logger
-    try{
+    try {
         const result = await queryPromise2(`SELECT id as value,reportdisplay as label
             FROM m_tipediagnosa
         `);
@@ -563,13 +563,20 @@ async function getListComboDiagnosa(req, res) {
             FROM m_jeniskasus
         `);
 
-        let tempres = { tipediagnosa: result.rows, jeniskasus: result2.rows }
+        const result3 = await queryPromise2(`SELECT id as value,reportdisplay as label
+            FROM m_jenispelayanan
+        `);
+
+        let tempres = {
+            tipediagnosa: result.rows, jeniskasus: result2.rows,
+            jenispelayanan: result3.rows
+        }
         res.status(200).send({
             data: tempres,
             status: "success",
             success: true,
         });
-    }catch(error){
+    } catch (error) {
         logger.error(error)
         res.status(500).send({ message: error });
     }
@@ -579,7 +586,7 @@ async function getListComboDiagnosa(req, res) {
 async function saveEmrPasienDiagnosa(req, res) {
     const logger = res.locals.logger
     const [transaction, errorTransaction] = await createTransaction(db, res)
-    if(errorTransaction) return
+    if (errorTransaction) return
     try {
         let norec = uuid.v4().substring(0, 32)
         const diagnosapasien = await db.t_diagnosapasien.create({
@@ -617,7 +624,7 @@ async function saveEmrPasienDiagnosa(req, res) {
 
 async function getListDiagnosaPasien(req, res) {
     const logger = res.locals.logger
-    try{
+    try {
         const resultNocmfk = await queryPromise2(`SELECT nocmfk
             FROM t_daftarpasien where norec='${req.query.norecdp}'
         `);
@@ -643,7 +650,7 @@ async function getListDiagnosaPasien(req, res) {
             status: "success",
             success: true,
         });
-    }catch(error){
+    } catch (error) {
         logger.error(error)
         res.status(500).send({ message: error });
     }
@@ -652,7 +659,7 @@ async function getListDiagnosaPasien(req, res) {
 
 async function getListDiagnosaIxPasien(req, res) {
     const logger = res.locals.logger
-    try{
+    try {
         const resultNocmfk = await queryPromise2(`SELECT nocmfk
             FROM t_daftarpasien where norec='${req.query.norecdp}'
         `);
@@ -676,7 +683,7 @@ async function getListDiagnosaIxPasien(req, res) {
             status: "success",
             success: true,
         });
-    }catch(error){
+    } catch (error) {
         logger.error(error)
         res.status(500).send({ message: error });
     }
@@ -686,7 +693,7 @@ async function getListDiagnosaIxPasien(req, res) {
 async function saveEmrPasienDiagnosaix(req, res) {
     const logger = res.locals.logger
     const [transaction, errorTransaction] = await createTransaction(db, res)
-    if(errorTransaction) return
+    if (errorTransaction) return
     try {
         let norec = uuid.v4().substring(0, 32)
         const diagnosatindakan = await db.t_diagnosatindakan.create({
@@ -697,7 +704,7 @@ async function saveEmrPasienDiagnosaix(req, res) {
             keterangan: req.body.keteranganicd9,
             tglinput: new Date(),
             objectpegawaifk: req.idPegawai,
-            qty:req.body.jumlahtindakan
+            qty: req.body.jumlahtindakan
         }, { transaction });
 
         await transaction.commit();
@@ -724,7 +731,7 @@ async function saveEmrPasienDiagnosaix(req, res) {
 async function deleteEmrPasienDiagnosax(req, res) {
     const logger = res.locals.logger
     const [transaction, errorTransaction] = await createTransaction(db, res)
-    if(errorTransaction) return
+    if (errorTransaction) return
     try {
         const t_diagnosapasien = await db.t_diagnosapasien.update({
             statusenabled: false,
@@ -760,7 +767,7 @@ async function deleteEmrPasienDiagnosax(req, res) {
 async function deleteEmrPasienDiagnosaix(req, res) {
     const logger = res.locals.logger
     const [transaction, errorTransaction] = await createTransaction(db, res)
-    if(errorTransaction) return
+    if (errorTransaction) return
     try {
         const t_diagnosatindakan = await db.t_diagnosatindakan.update({
             statusenabled: false,
@@ -796,7 +803,7 @@ async function deleteEmrPasienDiagnosaix(req, res) {
 async function saveEmrPasienKonsul(req, res) {
     const logger = res.locals.logger
     const [transaction, errorTransaction] = await createTransaction(db, res)
-    if(errorTransaction) return
+    if (errorTransaction) return
     try {
         const resultNocmfk = await queryPromise2(`SELECT norec,objectdaftarpasienfk,objectunitfk
         FROM t_antreanpemeriksaan where norec='${req.body.norecap}'
@@ -837,8 +844,8 @@ async function saveEmrPasienKonsul(req, res) {
             noantrian: noantrian,
             statusenabled: true,
             objectpegawaifk: req.idPegawai,
-            taskid:3,
-            objectkelasfk:8
+            taskid: 3,
+            objectkelasfk: 8
         }, { transaction });
         let norectrm = uuid.v4().substring(0, 32)
         const t_rm_lokasidokumen = await db.t_rm_lokasidokumen.create({
@@ -847,10 +854,10 @@ async function saveEmrPasienKonsul(req, res) {
             objectunitfk: req.body.unittujuan,
             objectstatuskendalirmfk: 3
         }, { transaction });
-      
+
 
         await transaction.commit();
-        let tempres = { antreanPemeriksaan: antreanPemeriksaan,lokasidokumen:t_rm_lokasidokumen }
+        let tempres = { antreanPemeriksaan: antreanPemeriksaan, lokasidokumen: t_rm_lokasidokumen }
         res.status(200).send({
             data: tempres,
             status: "success",
@@ -873,7 +880,7 @@ async function saveEmrPasienKonsul(req, res) {
 async function updateTaskid(req, res) {
     const logger = res.locals.logger
     const [transaction, errorTransaction] = await createTransaction(db, res)
-    if(errorTransaction) return
+    if (errorTransaction) return
     try {
         const antreanpemeriksaan = await db.t_antreanpemeriksaan.update({
             taskid: req.body.taskid
@@ -907,7 +914,7 @@ async function updateTaskid(req, res) {
 async function updateStatusPulangRJ(req, res) {
     const logger = res.locals.logger
     const [transaction, errorTransaction] = await createTransaction(db, res)
-    if(errorTransaction) return
+    if (errorTransaction) return
     try {
         const daftarpasien = await db.t_daftarpasien.update({
             objectstatuspulangfk: req.body.statuspulang,
@@ -927,7 +934,7 @@ async function updateStatusPulangRJ(req, res) {
             transaction: transaction
         });
         await transaction.commit();
-        let tempres = { daftarpasien: daftarpasien,antreanpemeriksaan:antreanpemeriksaan }
+        let tempres = { daftarpasien: daftarpasien, antreanpemeriksaan: antreanpemeriksaan }
         res.status(200).send({
             data: tempres,
             status: "success",
@@ -948,21 +955,21 @@ async function updateStatusPulangRJ(req, res) {
 }
 
 
-function getUmur (dateOfBirth, tillDate) {
-    var dob = new Date (dateOfBirth);
-    var endDt = new Date (tillDate) || new Date ();
+function getUmur(dateOfBirth, tillDate) {
+    var dob = new Date(dateOfBirth);
+    var endDt = new Date(tillDate) || new Date();
     var age = {};
-    age.years = endDt.getUTCFullYear () - dob.getUTCFullYear ();
-    age.months = endDt.getUTCMonth () - dob.getUTCMonth ();
-    age.days = endDt.getUTCDate () - dob.getUTCDate ();
+    age.years = endDt.getUTCFullYear() - dob.getUTCFullYear();
+    age.months = endDt.getUTCMonth() - dob.getUTCMonth();
+    age.days = endDt.getUTCDate() - dob.getUTCDate();
     if (age.days < 0) {
-      age.months--;
-      var daysInMonth = new Date (endDt.getUTCFullYear (), endDt.getUTCMonth (), 0).getUTCDate ();
-      age.days += daysInMonth;
+        age.months--;
+        var daysInMonth = new Date(endDt.getUTCFullYear(), endDt.getUTCMonth(), 0).getUTCDate();
+        age.days += daysInMonth;
     }
     if (age.months < 0) {
-      age.years--;
-      age.months += 12;
+        age.years--;
+        age.months += 12;
     }
     return age;
 }
@@ -994,12 +1001,12 @@ const getObatFromUnit = async (req, res) => {
 const createOrUpdateEmrResepDokter = async (req, res) => {
     const logger = res.locals.logger
     const [transaction, errorTransaction] = await createTransaction(db, res)
-    if(errorTransaction) return
-    try{
+    if (errorTransaction) return
+    try {
         const body = req.body
         let norecorderresep = req.body.norecorderresep
         let createdOrUpdated = null
-        if(!norecorderresep){
+        if (!norecorderresep) {
             norecorderresep = uuid.v4().substring(0, 32)
             const date = new Date()
             const dateTodayStart = new Date(date.getFullYear(), date.getMonth(), date.getDate())
@@ -1012,11 +1019,11 @@ const createOrUpdateEmrResepDokter = async (req, res) => {
                 }
             })
             totalOrderToday = ("0000" + totalOrderToday).slice(-4)
-            const kodeOrder = "O" + date.getFullYear() 
-            + ("0" + (date.getMonth() + 1)).slice(-2)
-            + ("0" + date.getDate()).slice(-2)
-            + totalOrderToday
-            
+            const kodeOrder = "O" + date.getFullYear()
+                + ("0" + (date.getMonth() + 1)).slice(-2)
+                + ("0" + date.getDate()).slice(-2)
+                + totalOrderToday
+
             const created = await t_orderresep.create({
                 norec: norecorderresep,
                 kdprofile: 0,
@@ -1034,7 +1041,7 @@ const createOrUpdateEmrResepDokter = async (req, res) => {
                 transaction: transaction
             })
             createdOrUpdated = created.toJSON()
-        }else{
+        } else {
             const [_, updated] = await t_orderresep.update({
                 norec: norecorderresep,
                 kdprofile: 0,
@@ -1053,15 +1060,15 @@ const createOrUpdateEmrResepDokter = async (req, res) => {
             })
             createdOrUpdated = updated[0].toJSON();
         }
-        const {createdOrUpdatedDetailOrder} = 
-        await hCreateOrUpdateDetailOrder(
-            req, 
-            res, 
-            transaction, 
-            {
-                norecorderresep: norecorderresep
-            }
-        )
+        const { createdOrUpdatedDetailOrder } =
+            await hCreateOrUpdateDetailOrder(
+                req,
+                res,
+                transaction,
+                {
+                    norecorderresep: norecorderresep
+                }
+            )
         await transaction.commit()
         const tempres = {
             orderresep: createdOrUpdated,
@@ -1074,7 +1081,7 @@ const createOrUpdateEmrResepDokter = async (req, res) => {
             msg: "sukses create or update resep",
             success: true,
         });
-    }catch(error){
+    } catch (error) {
         logger.error(error)
         await transaction.rollback()
         res.status(500).send({
@@ -1111,8 +1118,8 @@ export const initValueResep = {
 
 const getOrderResepFromDP = async (req, res) => {
     const logger = res.locals.logger
-    try{
-        const {norecdp, norecresep} = req.query
+    try {
+        const { norecdp, norecresep } = req.query
 
         let dataOrders = await pool.query(qGetOrderResepFromDP, [
             'norecdp',
@@ -1144,7 +1151,7 @@ const getOrderResepFromDP = async (req, res) => {
             success: true,
             msg: "sukses get resep from dp"
         });
-    }catch(error){
+    } catch (error) {
         logger.error(error)
         res.status(500).send({
             data: error,
@@ -1155,6 +1162,78 @@ const getOrderResepFromDP = async (req, res) => {
     }
 }
 
+async function saveEmrJenisPelayanan(req, res) {
+    const logger = res.locals.logger
+    // const [transaction, errorTransaction] = await createTransaction(db, res)
+    // if (errorTransaction) return
+    try {
+        // const daftarpasien = await db.t_daftarpasien.update({
+        //     objectjenispelayananfk: req.body.jenispelayanan
+        // }, {
+        //     where: {
+        //         norec: req.body.norecdp
+        //     },
+        //     transaction: transaction
+        // });
+
+        // await transaction.commit();
+        const result = await db.sequelize.transaction(async (t) => {
+
+            const user = await db.t_daftarpasien.update({
+                objectjenispelayananfk: req.body.jenispelayanan
+            }, {
+                where: {
+                    norec: req.body.norecdp
+                }, transaction: t
+            });
+
+
+            return user;
+
+        });
+        let tempres = { daftarpasien: result }
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+            msg: 'Simpan Berhasil',
+            code: 200
+        });
+    } catch (error) {
+        logger.error(error)
+        // transaction && await transaction.rollback();
+        res.status(201).send({
+            status: error,
+            success: false,
+            msg: 'Simpan Gagal',
+            code: 201
+        });
+    }
+}
+
+const getHistoriJenisPelayananPasien = async (req, res) => {
+    const logger = res.locals.logger
+    try {
+        const result4 = await queryPromise2(`SELECT objectjenispelayananfk
+            FROM t_daftarpasien where norec='${req.query.norecdp}'
+            `);
+
+        res.status(200).send({
+            data: result4.rows,
+            status: "success",
+            success: true,
+            msg: "sukses get Histori Jenis Pelayanan"
+        });
+    } catch (error) {
+        logger.error(error)
+        res.status(500).send({
+            data: error,
+            status: "error",
+            success: false,
+            msg: "gagal get Histori Jenis Pelayanan"
+        })
+    }
+}
 
 
 export default {
@@ -1179,13 +1258,15 @@ export default {
     updateStatusPulangRJ,
     getObatFromUnit,
     createOrUpdateEmrResepDokter,
-    getOrderResepFromDP
+    getOrderResepFromDP,
+    saveEmrJenisPelayanan,
+    getHistoriJenisPelayananPasien
 };
 
 
 const hCreateOrUpdateDetailOrder = async (
-    req, 
-    res, 
+    req,
+    res,
     transaction,
     {
         norecorderresep
@@ -1194,24 +1275,24 @@ const hCreateOrUpdateDetailOrder = async (
     const resep = req.body.resep
     let createdOrUpdatedDetailOrder = await Promise.all(
         resep.map(async (item) => {
-            if(item.racikan.length > 0){
+            if (item.racikan.length > 0) {
                 // untuk racikan, maka masukkan sub item
                 let createdOrUpdatedRacikans = []
                 createdOrUpdatedRacikans = await Promise.all(
                     item.racikan.map(async (subItem) => {
                         let norecresepsub = subItem.norecresep
                         let createdOrUpdated
-                        if(!norecresepsub){
+                        if (!norecresepsub) {
                             norecresepsub = uuid.v4().substring(0, 32);
-                            const {created} = await hCreateResep(
-                                norecorderresep, 
-                                item, 
-                                subItem, 
+                            const { created } = await hCreateResep(
+                                norecorderresep,
+                                item,
+                                subItem,
                                 transaction
                             )
                             createdOrUpdated = created
-                        }else{
-                            const {updated} = await hUpdateResep(
+                        } else {
+                            const { updated } = await hUpdateResep(
                                 norecorderresep,
                                 norecresepsub,
                                 item,
@@ -1228,17 +1309,17 @@ const hCreateOrUpdateDetailOrder = async (
             // jika bukan racikan, maka tidak perlu subitem
             let norecresep = item.norecresep
             let createdOrUpdatedObat
-            if(!norecresep){
+            if (!norecresep) {
                 norecresep = uuid.v4().substring(0, 32);
-                const {created} = await hCreateResep(
+                const { created } = await hCreateResep(
                     norecorderresep,
                     item,
                     null,
                     transaction
                 )
                 createdOrUpdatedObat = created
-            }else{
-                const {updated} = await hUpdateResep(
+            } else {
+                const { updated } = await hUpdateResep(
                     norecorderresep,
                     norecresep,
                     item,
@@ -1250,16 +1331,16 @@ const hCreateOrUpdateDetailOrder = async (
             return createdOrUpdatedObat
         })
     )
-    createdOrUpdatedDetailOrder 
+    createdOrUpdatedDetailOrder
         = createdOrUpdatedDetailOrder.flat(1)
-    return {createdOrUpdatedDetailOrder}
+    return { createdOrUpdatedDetailOrder }
 }
 
 
 const hCreateResep = async (
-    norecorderresep, 
-    item, 
-    subItem, 
+    norecorderresep,
+    item,
+    subItem,
     transaction
 ) => {
     // jika bukan subitem, maka yang digunakan adalah item
@@ -1277,7 +1358,7 @@ const hCreateResep = async (
         qty: itemUsed.qty || 0,
         objectsediaanfk: item.sediaan,
         harga: itemUsed.harga || 0,
-        total: itemUsed.total ||0,
+        total: itemUsed.total || 0,
         objectsignafk: item.signa,
         objectketeranganresepfk: item.keterangan,
         qtyracikan: itemUsed.qtyracikan,
@@ -1290,14 +1371,14 @@ const hCreateResep = async (
         transaction: transaction
     })
     created = created.toJSON()
-    return {created, norecresep: created.norec}
+    return { created, norecresep: created.norec }
 }
 
 const hUpdateResep = async (
-    norecorderresep, 
-    norecresep, 
-    item, 
-    subItem, 
+    norecorderresep,
+    norecresep,
+    item,
+    subItem,
     transaction
 ) => {
     // jika bukan subitem, maka yang digunakan adalah item
@@ -1314,7 +1395,7 @@ const hUpdateResep = async (
         qty: itemUsed.qty || 0,
         objectsediaanfk: itemUsed.sediaan,
         harga: itemUsed.harga || 0,
-        total: itemUsed.total ||0,
+        total: itemUsed.total || 0,
         objectsignafk: itemUsed.signa,
         objectketeranganresepfk: itemUsed.keterangan,
         qtyracikan: itemUsed.qtyracikan,
@@ -1328,26 +1409,26 @@ const hUpdateResep = async (
             norec: norecresep
         },
         transaction: transaction,
-        returning: true 
+        returning: true
     })
     updated = updated[0].toJSON();
-    return {updated, norecresep: norecresep}
+    return { updated, norecresep: norecresep }
 }
 
 export const hProcessOrderResep = (dataOrders) => {
-    if(dataOrders === null) return []
+    if (dataOrders === null) return []
     let newDataOrders = dataOrders.map((order) => {
-        let newOrder = {...order}
+        let newOrder = { ...order }
         const newOrdersResep = []
 
         newOrder.resep.map((resep) => {
-            const newResep = {...resep}
-            if(newResep.kodertambahan){
+            const newResep = { ...resep }
+            if (newResep.kodertambahan) {
                 const findResep = newOrdersResep.find((findItem) => {
                     return findItem.koder === newResep.koder
                 })
-                if(!findResep){
-                    const valueResepNew = {...initValueResep}
+                if (!findResep) {
+                    const valueResepNew = { ...initValueResep }
                     valueResepNew.qty = newResep.qtyjumlahracikan
                     valueResepNew.sediaan = newResep.sediaan
                     valueResepNew.namasediaan = newResep.namasediaan
@@ -1358,11 +1439,11 @@ export const hProcessOrderResep = (dataOrders) => {
                     newResep.koder = newResep.kodertambahan
                     valueResepNew.racikan = [newResep]
                     newOrdersResep.push(valueResepNew)
-                }else{
+                } else {
                     newResep.koder = newResep.kodertambahan
                     findResep.racikan = [...findResep.racikan, newResep]
                 }
-            }else{
+            } else {
                 newResep.racikan = []
                 newOrdersResep.push(newResep)
             }

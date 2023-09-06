@@ -14,7 +14,9 @@ import {
     COMBO_TINDAKAN_RADIOLOGI_GET,
     GET_OBAT_FROM_UNIT,
     CREATE_OR_UPDATE_RESEP_ORDER,
-    GET_ORDER_RESEP_FROM_DP
+    GET_ORDER_RESEP_FROM_DP,
+    EMR_JENIS_PELAYANAN_SAVE,
+    GET_HISTORI_JENIS_PELAYANAN
 } from "./actionType";
 
 import {
@@ -45,6 +47,8 @@ import {
     createOrUpdateResepOrderError,
     getOrderResepFromDpSuccess,
     getOrderResepFromDpError,
+    emrJenisPelayananSaveSuccess, emrJenisPelayananSaveError,
+    getHistoriJenisPelayananSuccess, getHistoriJenisPelayananError
 } from "./action";
 
 import { toast } from 'react-toastify';
@@ -583,6 +587,41 @@ export function* watchGetOrderResepFromDp() {
     yield takeEvery(GET_ORDER_RESEP_FROM_DP, onGetOrderResepFromDp);
 }
 
+function* onemrJenisPelayananSave({ payload: { data, history } }) {
+    try {
+        let response = yield call(serviceEmr.saveJenisPelayanan, data);
+
+        yield put(emrJenisPelayananSaveSuccess(response.data));
+        if (response.code === 200) {
+            toast.success(response.msg, { autoClose: 3000 });
+        } else {
+            toast.error(response.msg, { autoClose: 3000 });
+        }
+        // history("/registrasi/pasien-lama")
+    } catch (error) {
+        yield put(emrJenisPelayananSaveError(error));
+        toast.error(error, { autoClose: 3000 });
+    }
+}
+
+export function* watchemrJenisPelayananSave() {
+    yield takeEvery(EMR_JENIS_PELAYANAN_SAVE, onemrJenisPelayananSave);
+}
+
+function* ongetHistoriJenisPelayanan({ payload: {queries}  }) {
+    try {
+        let response = null;
+        response = yield call(serviceEmr.getHistoriJenisPelayanan, queries);
+        yield put(getHistoriJenisPelayananSuccess(response.data));
+    } catch (error) {
+        yield put(getHistoriJenisPelayananError(error));
+    }
+}
+
+export function* watchgetHistoriJenisPelayanan() {
+    yield takeEvery(GET_HISTORI_JENIS_PELAYANAN, ongetHistoriJenisPelayanan);
+}
+
 function* emrSaga() {
     yield all([
         fork(watchGetEmrHeader),
@@ -613,6 +652,8 @@ function* emrSaga() {
         fork(watchGetObatFromUnit),
         fork(watchCreateOrUpdateResepOrder),
         fork(watchGetOrderResepFromDp),
+        fork(watchemrJenisPelayananSave),
+        fork(watchgetHistoriJenisPelayanan)
     ]);
 }
 

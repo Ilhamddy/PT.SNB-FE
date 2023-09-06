@@ -134,4 +134,16 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getOrderResepFromDP
     )
+
+    app.post(
+        "/api/transaksi/emr/save-emr-jenis-pelayanan",
+        [authJwt.verifyToken],
+        controller.saveEmrJenisPelayanan
+    );
+
+    app.get(
+        "/api/transaksi/emr/get-histori-jenis-pelayanan",
+        [authJwt.verifyToken],
+        controller.getHistoriJenisPelayananPasien
+    );
 }

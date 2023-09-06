@@ -18,8 +18,10 @@ import * as Yup from "yup";
 import DataTable from 'react-data-table-component';
 import CustomSelect from '../../Select/Select';
 
-import { emrDiagnosaixSave, emrResetForm, emrDiagnosaixGet,
-    emrListDiagnosaixGet,deleteDiagnosaix } from "../../../store/actions";
+import {
+    emrDiagnosaixSave, emrResetForm, emrDiagnosaixGet,
+    emrListDiagnosaixGet, deleteDiagnosaix
+} from "../../../store/actions";
 import DeleteModalCustom from '../../../Components/Common/DeleteModalCustom';
 import LoadingTable from '../../../Components/Table/LoadingTable';
 
@@ -28,7 +30,7 @@ const Diagnosaix = () => {
     const dispatch = useDispatch();
     const refTipeDiagnosa = useRef(null);
     const { editData, newData, loading, error, success, dataCombo, loadingCombo, successCombo, dataDiagnosa,
-        loadingDiagnosa, successDiagnosa,dataRiwayat,loadingRiwayat,successRiwayat,
+        loadingDiagnosa, successDiagnosa, dataRiwayat, loadingRiwayat, successRiwayat,
         newDataDelete } = useSelector((state) => ({
             newData: state.Emr.emrDiagnosaixSave.newData,
             success: state.Emr.emrDiagnosaixSave.success,
@@ -39,7 +41,7 @@ const Diagnosaix = () => {
             dataRiwayat: state.Emr.emrListDiagnosaixGet.data,
             loadingRiwayat: state.Emr.emrListDiagnosaixGet.loading,
             successRiwayat: state.Emr.emrListDiagnosaixGet.success,
-            newDataDelete:state.Emr.deleteDiagnosaix.newData,
+            newDataDelete: state.Emr.deleteDiagnosaix.newData,
         }));
 
     useEffect(() => {
@@ -56,20 +58,20 @@ const Diagnosaix = () => {
     useEffect(() => {
         if (newData !== null) {
             dispatch(emrListDiagnosaixGet(norecdp));
-        }else if(newDataDelete === true){
+        } else if (newDataDelete === true) {
             dispatch(emrListDiagnosaixGet(norecdp));
         }
-    }, [newData, norecdp,newDataDelete, dispatch])
+    }, [newData, norecdp, newDataDelete, dispatch])
     const validation = useFormik({
         enableReinitialize: true,
         initialValues: {
             norecap: editData?.norecap ?? norecap,
             norec: editData?.norec ?? '',
             kodediagnosa9: editData?.kodediagnosa9 ?? '',
-            keteranganicd9:editData?.keteranganicd9??'',
+            keteranganicd9: editData?.keteranganicd9 ?? '',
             idlabel: 3,
             label: 'DIAGNOSA',
-            jumlahtindakan: editData?.jumlahtindakan??''
+            jumlahtindakan: editData?.jumlahtindakan ?? ''
         },
         validationSchema: Yup.object({
             kodediagnosa9: Yup.string().required("Diagnosa Belum Diisi"),
@@ -154,7 +156,7 @@ const Diagnosaix = () => {
             sortable: true,
             // selector: row => (<button className="btn btn-sm btn-soft-info" onClick={() => handleClick(dataTtv)}>{row.noregistrasi}</button>),
             width: "140px",
-          
+
         },
         {
             name: <span className='font-weight-bold fs-13'>Tgl Registrasi</span>,
@@ -202,16 +204,16 @@ const Diagnosaix = () => {
             {/* <ToastContainer closeButton={false} /> */}
             <Row className="gy-4">
                 <Form
-                onSubmit={(e) => {
-                    e.preventDefault();
-                    validation.handleSubmit();
-                    return false;
-                }}
-                className="gy-4"
-                action="#">
+                    onSubmit={(e) => {
+                        e.preventDefault();
+                        validation.handleSubmit();
+                        return false;
+                    }}
+                    className="gy-4"
+                    action="#">
                     <Row>
                         <Col lg={5}>
-                        <Card>
+                            <Card>
                                 <CardHeader style={{ backgroundColor: "#e67e22" }}>
                                     <h4 className="card-title mb-0" style={{ color: '#ffffff' }}>ICD 9</h4>
                                 </CardHeader>
@@ -239,7 +241,7 @@ const Diagnosaix = () => {
                                                 ) : null}
                                             </div>
                                         </Col>
-                                        
+
                                         <Col xxl={6} md={6}>
                                             <div className="mt-2">
                                                 <Label style={{ color: "black" }} htmlFor="jumlahtindakan" className="form-label">Jumlah Tindakan Per Episode</Label>
@@ -291,13 +293,14 @@ const Diagnosaix = () => {
                                             </div>
                                         </Col>
                                         <Col xxl={12} sm={12}>
-                                            <Button type="submit" color="success" placement="top">
-                                                SIMPAN
-                                            </Button>
-                                            <Button type="button" color="danger" placement="top" onClick={handleClickReset}>
-                                                BATAL
-                                            </Button>
-
+                                            <div className="d-flex flex-wrap gap-2">
+                                                <Button type="submit" color="success" placement="top">
+                                                    SIMPAN
+                                                </Button>
+                                                <Button type="button" color="danger" placement="top" onClick={handleClickReset}>
+                                                    BATAL
+                                                </Button>
+                                            </div>
                                         </Col>
                                     </Row>
                                 </CardBody>
@@ -305,7 +308,7 @@ const Diagnosaix = () => {
                         </Col>
                         <Col lg={7}>
                             <Card>
-                            <CardHeader style={{ backgroundColor: "#e67e22" }}>
+                                <CardHeader style={{ backgroundColor: "#e67e22" }}>
                                     <h4 className="card-title mb-0" style={{ color: '#ffffff' }}>Riwayat ICD 9</h4>
                                 </CardHeader>
                                 <CardBody>
