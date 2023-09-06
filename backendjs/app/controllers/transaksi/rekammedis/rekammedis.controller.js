@@ -17,16 +17,6 @@ function formatDate(date) {
 
     return [year, month, day].join('-');
 }
-const queryPromise2 = (query) => {
-    return new Promise((resolve, reject) => {
-        pool.query(query, (error, results) => {
-            if (error) {
-                return reject(error);
-            }
-            return resolve(results);
-        });
-    });
-};
 
 async function getListDaftarDokumenRekammedis(req, res) {
     const logger = res.locals.logger
@@ -61,7 +51,7 @@ async function getListDaftarDokumenRekammedis(req, res) {
             taskid = ` and trm.objectstatuskendalirmfk is null`;
         }
 
-        const resultlistantreanpemeriksaan = await queryPromise2(`select dp.noregistrasi,mu.namaunit,ta.norec as norecap,
+        const resultlistantreanpemeriksaan = await pool.query(`select dp.noregistrasi,mu.namaunit,ta.norec as norecap,
         mp.namapasien,mp.nocm, mrm.statuskendali,mp.objectstatuskendalirmfk as objectstatuskendalirmfkmp,
         trm.objectstatuskendalirmfk as objectstatuskendalirmfkap,
         dp.objectunitlastfk, trm.norec as norectrm from t_daftarpasien dp
@@ -108,7 +98,7 @@ async function getWidgetListDaftarDokumenRekammedis(req, res) {
             tglregistrasi = ` and dp.tglregistrasi between '${todaystart}'
         and '${todayend}' `;
         }
-        const resultlistantreanpemeriksaan = await queryPromise2(`
+        const resultlistantreanpemeriksaan = await pool.query(`
         select 
             dp.noregistrasi,
             mu.namaunit,
@@ -269,19 +259,19 @@ async function saveDokumenRekammedis(req, res) {
 async function getComboLaporanRekammedis(req, res) {
     const logger = res.locals.logger
     try {
-        const resultDepartemen = await queryPromise2(`select id as value, namainstalasi as label from m_instalasi
+        const resultDepartemen = await pool.query(`select id as value, namainstalasi as label from m_instalasi
             where statusenabled=true
         `);
 
-        const resultUnit = await queryPromise2(`select id as value, namaunit as label from m_unit
+        const resultUnit = await pool.query(`select id as value, namaunit as label from m_unit
             where statusenabled=true
         `);
 
-        const resultRekanan = await queryPromise2(`select id as value, namarekanan as label from m_rekanan
+        const resultRekanan = await pool.query(`select id as value, namarekanan as label from m_rekanan
             where statusenabled=true
         `);
 
-        const resultPegawai = await queryPromise2(`select id as value, namalengkap as label from m_pegawai
+        const resultPegawai = await pool.query(`select id as value, namalengkap as label from m_pegawai
          where objectprofesipegawaifk <> 1 and statusenabled=true
         `);
 
@@ -318,7 +308,7 @@ async function getListLaporanDaftarPasien(req, res) {
         console.log(start, end, search, instalasi, unit, rekanan, pegawai)
 
         // const result = await pool.query(queries.qResult, [start,end,search]) //,instalasi,unit,rekanan,pegawai
-        const result = await queryPromise2(`select td.noregistrasi,td.norec,td.nocmfk,
+        const result = await pool.query(`select td.noregistrasi,td.norec,td.nocmfk,
         to_char(td.tglregistrasi,'dd Month YYYY') as tglregistrasi,to_char(td.tglpulang,'dd Month YYYY') as tglpulang,mp.namapasien,
         mi.namainstalasi,mu.namaunit,mp.nocm,mr.namarekanan,mp2.namalengkap,td.statuspasien  from t_daftarpasien td 
         left join m_pasien mp on mp.id=td.nocmfk
@@ -356,7 +346,7 @@ async function getListLaporanPasienBatal(req, res) {
         console.log(start, end, search, instalasi, unit, rekanan, pegawai)
 
         // const result = await pool.query(queries.qResult, [start,end,search]) //,instalasi,unit,rekanan,pegawai
-        const result = await queryPromise2(`select tb.norec,tb.alasanbatal,to_char(tb.tglbatal,'dd Month YYYY HH:MM') as tglbatal,td.noregistrasi,td.norec,td.nocmfk,
+        const result = await pool.query(`select tb.norec,tb.alasanbatal,to_char(tb.tglbatal,'dd Month YYYY HH:MM') as tglbatal,td.noregistrasi,td.norec,td.nocmfk,
         to_char(td.tglregistrasi,'dd Month YYYY') as tglregistrasi,to_char(td.tglpulang,'dd Month YYYY') as tglpulang,mp.namapasien,
         mi.namainstalasi,mu.namaunit,mp.nocm,mr.namarekanan,mp2.namalengkap,
         mp3.namalengkap as pegawaipembatal from t_batalpasien tb 
@@ -381,7 +371,6 @@ async function getListLaporanPasienBatal(req, res) {
         logger.error(error)
         res.status(500).send({ message: error });
     }
-
 }
 
 async function getListLaporanPasienKunjungan(req, res) {
@@ -396,7 +385,7 @@ async function getListLaporanPasienKunjungan(req, res) {
         console.log(start, end, search, instalasi, unit, rekanan, pegawai)
 
         // const result = await pool.query(queries.qResult, [start,end,search]) //,instalasi,unit,rekanan,pegawai
-        const result = await queryPromise2(`select td.noregistrasi,td.norec,td.nocmfk,
+        const result = await pool.query(`select td.noregistrasi,td.norec,td.nocmfk,
         to_char(td.tglregistrasi,'dd Month YYYY') as tglregistrasi,to_char(td.tglpulang,'dd Month YYYY') as tglpulang,mp.namapasien,
         mi.namainstalasi,mu.namaunit,mp.nocm,mr.namarekanan,mp2.namalengkap  from t_daftarpasien td 
         left join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk=td.norec 
@@ -433,7 +422,7 @@ async function getLaporanRL3_1(req, res) {
         let pegawai = req.query.pegawai !== '' ? ` and td.objectpegawaifk = '${req.query.pegawai}'` : '';
 // console.log(start.toLocaleDateString())
         // const result = await pool.query(queries.qResult, [start,end,search]) //,instalasi,unit,rekanan,pegawai
-        const result = await queryPromise2(`select mp.objectspesialisasifk,ms.reportdisplay as jenis_spesialisasi,
+        const result = await pool.query(`select mp.objectspesialisasifk,ms.reportdisplay as jenis_spesialisasi,
         to_char(td.tglregistrasi,'dd-MM-YYYY') as tglregistrasi,to_char(td.tglpulang,'dd-MM-YYYY') as tglpulang,
         td.objectcarapulangrifk,td.objectkondisipulangrifk,
         EXTRACT(DAY FROM AGE(to_char(td.tglpulang,'YYYY-MM-dd')::DATE, to_char(td.tglregistrasi,'YYYY-MM-dd')::DATE)) AS days_difference
@@ -498,7 +487,7 @@ async function getLaporanRL3_1(req, res) {
 
         });
         for (let i = 0; i < data10.length; i++) {
-            const result = await queryPromise2(`select count(ts.objectdokterpemeriksafk) as jml,ts.objectkelasfk from t_sensusharian ts 
+            const result = await pool.query(`select count(ts.objectdokterpemeriksafk) as jml,ts.objectkelasfk from t_sensusharian ts 
                 join m_pegawai mp on mp.id=ts.objectdokterpemeriksafk
                 join m_spesialisasi ms on ms.id=mp.objectspesialisasifk
                 where ts.tglinput between '${start}' and '${end}' and mp.objectspesialisasifk='${data10[i].objectspesialisasifk}'
