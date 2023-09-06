@@ -212,7 +212,7 @@ const Diagnosaix = () => {
                     <Row>
                         <Col lg={5}>
                         <Card>
-                                <CardHeader style={{ backgroundColor: "#B57602" }}>
+                                <CardHeader style={{ backgroundColor: "#e67e22" }}>
                                     <h4 className="card-title mb-0" style={{ color: '#ffffff' }}>ICD 9</h4>
                                 </CardHeader>
                                 <CardBody>
@@ -291,15 +291,12 @@ const Diagnosaix = () => {
                                             </div>
                                         </Col>
                                         <Col xxl={12} sm={12}>
-                                            <Button type="submit" color="info" className="rounded-pill" placement="top" id="tooltipTop">
+                                            <Button type="submit" color="success" placement="top">
                                                 SIMPAN
                                             </Button>
-                                            <UncontrolledTooltip placement="top" target="tooltipTop" > SIMPAN CPPT </UncontrolledTooltip>
-
-                                            <Button type="button" color="danger" className="rounded-pill" placement="top" id="tooltipTop2" onClick={handleClickReset}>
+                                            <Button type="button" color="danger" placement="top" onClick={handleClickReset}>
                                                 BATAL
                                             </Button>
-                                            <UncontrolledTooltip placement="top" target="tooltipTop2" > BATAL CPPT </UncontrolledTooltip>
 
                                         </Col>
                                     </Row>
@@ -308,7 +305,7 @@ const Diagnosaix = () => {
                         </Col>
                         <Col lg={7}>
                             <Card>
-                            <CardHeader style={{ backgroundColor: "#B57602" }}>
+                            <CardHeader style={{ backgroundColor: "#e67e22" }}>
                                     <h4 className="card-title mb-0" style={{ color: '#ffffff' }}>Riwayat ICD 9</h4>
                                 </CardHeader>
                                 <CardBody>

@@ -21,6 +21,7 @@ import CustomSelect from '../../Select/Select';
 import { emrSave, emrResetForm, emrComboGet, emrGet } from "../../../store/actions";
 import Diagnosax from './Diagnosax';
 import Diagnosaix from './Diagnosaix';
+import JenisPelayanan from '../JenisPelayanan/JenisPelayanan'
 
 const Diagnosa = () => {
     return (
@@ -29,6 +30,9 @@ const Diagnosa = () => {
             <Row className="gy-6 p-5">
                 {/* <Form> */}
                     <Row>
+                        <Col lg={12}>
+                            <JenisPelayanan/>
+                        </Col>
                         <Col lg={12}>
                             <Diagnosax/>
                         </Col>
