@@ -13,10 +13,6 @@ const Role = db.role;
 const Op = db.Sequelize.Op;
 
 
-
-
-
-
 const signup = (req, res) => {
   // Save User to Database
   User.create({

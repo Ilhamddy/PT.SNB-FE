@@ -654,8 +654,6 @@ async function getListDiagnosaPasien(req, res) {
 
 async function getListDiagnosaIxPasien(req, res) {
     const logger = res.locals.logger
-    const [transaction, errorTransaction] = await createTransaction(db, res)
-    if(errorTransaction) return
     try{
         const resultNocmfk = await queryPromise2(`SELECT nocmfk
             FROM t_daftarpasien where norec='${req.query.norecdp}'
