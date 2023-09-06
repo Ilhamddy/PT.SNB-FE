@@ -340,7 +340,7 @@ const OrderResep = () => {
                                     Non Racikan
                                 </h1>
                                 <Button 
-                                    color={"info"} 
+                                    color={"success"} 
                                     style={{border: "none", width: "fit-content"}}
                                     onClick={handleAddResep}>
                                     +
@@ -376,7 +376,7 @@ const OrderResep = () => {
                                     Racikan
                                 </h1>
                                 <Button 
-                                    color={"info"} 
+                                    color={"success"} 
                                     style={{border: "none", width: "fit-content"}}
                                     onClick={handleAddRacikan}>
                                     +
@@ -427,7 +427,7 @@ const OrderResep = () => {
                 </table>
                 <Row style={{justifyContent: "space-evenly"}}>
                     <Col md={2}>
-                        <Button color="info"
+                        <Button color="success"
                             disabled={!!orderNorec}
                             onClick={() => {
                                 vResep.handleSubmit();
