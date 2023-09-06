@@ -554,19 +554,7 @@ const updateRegistrasiPPulang = async (req, res) => {
     }
 }
 const getRegistrasiPasienNorec = async (req, res) => {
-    let transaction = null;
-    try {
-        transaction = await db.sequelize.transaction();
-    } catch (e) {
-        res.status(500).send({
-            status: e,
-            success: false,
-            msg: 'Simpan Gagal',
-            code: 500
-        });
-        transaction && await transaction.rollback();
-        return;
-    }
+  
     try {
         const norec = req.params.norec;
         if (!JSON.stringify(norec)) {
@@ -622,7 +610,6 @@ const getRegistrasiPasienNorec = async (req, res) => {
             });
             return
         }
-        await transaction.commit();
         res.status(200).send({
             data: ruanganpasien.rows[0],
             success: true,
@@ -638,7 +625,6 @@ const getRegistrasiPasienNorec = async (req, res) => {
             msg: 'Simpan Gagal',
             code: 500
         });
-        transaction && await transaction.rollback();
     }
 }
 

@@ -196,8 +196,6 @@ async function saveTindakanPasien(req, res) {
 
 async function getListTagihan(req, res) {
     const logger = res.locals.logger
-    const [transaction, errorTransaction] = await createTransaction(db, res)
-    if(errorTransaction) return
     try {
         const resultlist = await queryPromise2(`select row_number() OVER (ORDER BY tp.norec) AS no,
             mu.namaunit,
