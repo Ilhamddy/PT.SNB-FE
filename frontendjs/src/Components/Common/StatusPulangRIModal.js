@@ -659,7 +659,7 @@ const StatusPulangRIModal = ({ norecdp, norecAP, toggle }) => {
                                         </Row>
                                     </Col>
                                     <div className="d-flex gap-2 justify-content-center mt-4 mb-2">
-                                        <Button type="submit" color="info" placement="top" id="tooltipTop" >
+                                        <Button type="submit" color="success" placement="top" id="tooltipTop" >
                                             SIMPAN
                                         </Button>
                                         <button
