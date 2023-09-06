@@ -477,8 +477,6 @@ async function editEmrPasienCppt(req, res) {
             }
         }, { transaction });
 
-
-
         await transaction.commit();
         let tempres = { cppt: cppt }
         res.status(200).send({
@@ -977,8 +975,9 @@ function getUmur(dateOfBirth, tillDate) {
 }
 
 const getObatFromUnit = async (req, res) => {
-    try {
-        let { idunit, isbebas } = req.query
+    const logger = res.locals.logger
+    try{
+        let {idunit, isbebas} = req.query
         isbebas = isbebas === "true"
         let dataGet = await pool.query(qGetObatFromUnit, [idunit, isbebas])
         const tempres = {
@@ -989,8 +988,8 @@ const getObatFromUnit = async (req, res) => {
             status: "success",
             success: true,
         });
-    } catch (error) {
-        console.error(error)
+    }catch(error){
+        logger.error(error)
         res.status(500).send({
             data: error,
             status: "error",

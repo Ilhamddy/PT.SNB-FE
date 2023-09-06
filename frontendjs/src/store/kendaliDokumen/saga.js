@@ -137,9 +137,9 @@ export function* watchonlistLaporanPasienKunjunganGet() {
 }
 
 
-function* onlaporanRL_3_1_Get({ payload: { param } }) {
+function* onlaporanRL_3_1_Get({ payload: { queries } }) {
     try {
-        const response = yield call(serviceRekammedis.getLaporanRL3_1, param);
+        const response = yield call(serviceRekammedis.getLaporanRL3_1, queries);
         yield put(laporanRL_3_1_GetSuccess(response.data));
     } catch (error) {
         yield put(laporanRL_3_1_GetError(error));

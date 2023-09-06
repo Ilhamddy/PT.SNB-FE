@@ -68,12 +68,28 @@ const RL3_2 = () => {
     const handleFilter = (e) => {
         if (e.keyCode === 13) {
             
-            dispatch(laporanRL_3_1_Get(`${search}&start=${validation.values.tglstart}&end=${validation.values.tglend}&instalasi=${validation.values.departemen}&unit=${validation.values.unit}&rekanan=${validation.values.rekanan}&pegawai=${validation.values.pegawai}`));
+            dispatch(laporanRL_3_1_Get({
+                search: search,
+                start: validation.values.tglstart,
+                end: validation.values.tglend,
+                instalasi: validation.values.departemen,
+                unit: validation.values.unit,
+                rekanan: validation.values.rekanan,
+                pegawai: validation.values.pegawai
+            }));
         }
     }
     const handleClickCari = () => {
         console.log(validation.values.tglstart)
-        dispatch(laporanRL_3_1_Get(`${search}&start=${validation.values.tglstart}&end=${validation.values.tglend}&instalasi=${validation.values.departemen}&unit=${validation.values.unit}&rekanan=${validation.values.rekanan}&pegawai=${validation.values.pegawai}`));
+        dispatch(laporanRL_3_1_Get({
+            search: search,
+            start: validation.values.tglstart,
+            end: validation.values.tglend,
+            instalasi: validation.values.departemen,
+            unit: validation.values.unit,
+            rekanan: validation.values.rekanan,
+            pegawai: validation.values.pegawai
+        }));
     }
     const tableCustomStyles = {
         headRow: {

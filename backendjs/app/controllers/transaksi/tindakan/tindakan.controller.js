@@ -248,7 +248,6 @@ async function getListTagihan(req, res) {
         logger.error(error)
         res.status(500).send({ message: error });
     }
-
 }
 
 const getAllBillingPrint = async (req, res) => {

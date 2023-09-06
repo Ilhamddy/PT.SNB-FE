@@ -80,15 +80,18 @@ const addPost = (req, res) => {
 
 const updatePasienById = (req, res) => {
     const { namapasien, noidentitas, nobpjs, nohp, id } = req.body;
+    const logger = res.locals.logger
     try {
 
         pool.query(queries.updatePasienById, [namapasien, noidentitas, nobpjs, nohp, id], (error, result) => {
             if (error) {
-                throw error
+                logger.error(error)
+                res.status(500).send({ message: error, status: "errors" });
             } else {
                 pool.query(queries.getPasienById, [id], (error, resultx) => {
                     if (error) {
-                        throw error
+                        logger.error(error)
+                        res.status(500).send({ message: error, status: "errors" });
                     } else {
                         res.status(200).send({
                             data: resultx.rows,
@@ -111,9 +114,11 @@ const updatePasienById = (req, res) => {
 
 const getPasienById = (req, res) => {
     const id = parseInt(req.params.id);
+    const logger = res.locals.logger
     pool.query(queries.getPasienById, [id], (error, result) => {
         if (error) {
-            throw error
+            logger.error(error)
+            res.status(500).send({ message: error, status: "errors" });
         } else {
             if (result.rows.length == 0) {
                 res.status(201).send({
@@ -151,6 +156,7 @@ const getPasienById = (req, res) => {
 }
 
 const getAllByOr = (req, res) => {
+    const logger = res.locals.logger
     const nocm = req.query.nocm;
     // let query = queries.getAllByOr + ` where nocm ilike '%` + nocm + `%'` + ` or namapasien ilike '%` + nocm + `%' limit 200`
     let query = queries.getAllByOr + ` where nocm ilike '%${nocm}%'  or namapasien ilike '%${nocm}%'`
@@ -175,7 +181,7 @@ const getAllByOr = (req, res) => {
     }
     pool.query(query, (error, result) => {
         if (error) {
-            error
+            logger.error(error)
         } else {
             res.status(200).send({
                 data: result.rows,
@@ -184,30 +190,12 @@ const getAllByOr = (req, res) => {
             });
         }
     })
-    // res.status(200).send({
-    //     data: queries.getAllByOr,
-    //     status: "success",
-    //     success: true,
-    // });
-
-    // pool.query(queries.getAllByOr,[nocm], (error, result) => {
-    //     if (error){
-    //         error
-    //     } else{
-    //         res.status(200).send({
-    //             data: result.rows,
-    //             status: "success",
-    //             success: true,
-    //         });
-    //     }
-
-    // });
 };
 
 const savePasien = async (req, res) => {
-    const [transaction, errorTransaction]
-        = await createTransaction(db, res)
-    if (errorTransaction) return
+    const logger = res.locals.logger
+    const [transaction, errorTransaction] = await createTransaction(db, res)
+    if(errorTransaction) return
     try {
         const getNocm = await running_Number.findAll({
             where: {
@@ -321,7 +309,8 @@ const savePasien = async (req, res) => {
             code: 200
         });
     } catch (error) {
-        transaction.rollback();
+        logger.error(error);
+        await transaction.rollback();
         res.status(500).send({ message: error });
     }
 }
@@ -340,9 +329,9 @@ function formatDate(date) {
 }
 
 async function saveRegistrasiPasien(req, res) {
-    const [transaction, errorTransaciton]
-        = await createTransaction(db, res)
-    if (errorTransaciton) return
+    const logger = res.locals.logger
+    const [transaction, errorTransaction] = await createTransaction(db, res)
+    if(errorTransaction) return
     try {
 
         let norecDP = uuid.v4().substring(0, 32)
@@ -457,7 +446,7 @@ async function saveRegistrasiPasien(req, res) {
         });
     } catch (error) {
         // console.log(error);
-        console.error(error);
+        logger.error(error);
         transaction && await transaction.rollback();
         res.status(201).send({
             status: error,
@@ -469,6 +458,7 @@ async function saveRegistrasiPasien(req, res) {
 }
 
 const getNoAntrean = async (req, res) => {
+    const logger = res.locals.logger
     try {
         let query = `
         select nobed,objectkamarfk from t_antreanpemeriksaan
@@ -483,7 +473,7 @@ const getNoAntrean = async (req, res) => {
             code: 200
         });
     } catch (error) {
-        console.error(error);
+        logger.error(error);
         res.status(201).send({
             status: error,
             success: false,
@@ -495,21 +485,9 @@ const getNoAntrean = async (req, res) => {
 
 
 const updateRegistrasiPPulang = async (req, res) => {
-    let transaction = null;
-    try {
-        transaction = await db.sequelize.transaction();
-    } catch (e) {
-        console.error("Error transaction registrasiPPulang")
-        console.error(e);
-        // await transaction.rollback();
-        res.status(500).send({
-            status: JSON.stringify(e),
-            success: false,
-            msg: 'Error transaction',
-            code: 500
-        });
-        return;
-    }
+    const logger = res.locals.logger
+    const [transaction, errorTransaction] = await createTransaction(db, res)
+    if(errorTransaction) return
     try {
         const norecDP = req.body.norec
         const norecAP = req.body.norecAP
@@ -542,9 +520,8 @@ const updateRegistrasiPPulang = async (req, res) => {
         });
 
     } catch (e) {
-        console.error("Error update registrasiPPulang")
-        console.error(e);
-        transaction.rollback()
+        logger.error(e)
+        await transaction.rollback()
         res.status(500).send({
             status: "error",
             success: false,
@@ -554,7 +531,7 @@ const updateRegistrasiPPulang = async (req, res) => {
     }
 }
 const getRegistrasiPasienNorec = async (req, res) => {
-  
+    const logger = res.locals.logger
     try {
         const norec = req.params.norec;
         if (!JSON.stringify(norec)) {
@@ -617,8 +594,7 @@ const getRegistrasiPasienNorec = async (req, res) => {
             code: 200
         })
     } catch (error) {
-        console.error("Error getRegistrasiPasienNorec")
-        console.error(error);
+        logger.error(error);
         res.status(500).send({
             status: error,
             success: false,
@@ -629,6 +605,7 @@ const getRegistrasiPasienNorec = async (req, res) => {
 }
 
 const getDaftarPasienFilter = async (req, res) => {
+    const logger = res.locals.logger
     try {
         let filterTglLast = (new Date(req.query.dateEnd)).toISOString();
         let filterTglStart = (new Date(req.query.dateStart)).toISOString();
@@ -681,7 +658,7 @@ const getDaftarPasienFilter = async (req, res) => {
             code: 200
         })
     } catch (error) {
-        console.error(error);
+        logger.error(error);
         res.status(500).send({
             status: error,
             success: false,
@@ -692,19 +669,9 @@ const getDaftarPasienFilter = async (req, res) => {
 }
 
 const saveRegistrasiPenjaminFK = async (req, res) => {
-    let transaction = null;
-    try {
-        transaction = await db.sequelize.transaction();
-    } catch (e) {
-        console.error(e)
-        res.status(201).send({
-            status: e.message,
-            success: false,
-            msg: 'Simpan Gagal',
-            code: 201
-        });
-        return;
-    }
+    const logger = res.locals.logger
+    const [transaction, errorTransaction] = await createTransaction(db, res)
+    if(errorTransaction) return
     try {
         let norecPenjaminFK = uuid.v4().substring(0, 32)
         const dataForm = req.body
@@ -770,7 +737,7 @@ const saveRegistrasiPenjaminFK = async (req, res) => {
         });
     } catch (error) {
         transaction && await transaction.rollback();
-        console.error(error);
+        logger.error(error);
         res.status(201).send({
             status: error,
             success: false,
@@ -781,82 +748,94 @@ const saveRegistrasiPenjaminFK = async (req, res) => {
 };
 
 
-const getPasienNoregistrasi = (req, res) => {
-    const id = parseInt(req.params.noregistrasi);
-    pool.query(queries.getPasienByNoregistrasi, [id], (error, result) => {
-        if (error) {
-            throw error
+const getPasienNoregistrasi = async (req, res) => {
+    const logger = res.locals.logger
+    try{
+        const id = parseInt(req.params.noregistrasi);
+        const result = await pool.query(queries.getPasienByNoregistrasi, [id])
+        if (result.rows.length == 0) {
+            res.status(201).send({
+                data: "",
+                status: "Data Tidak Ada",
+                success: true,
+            });
         } else {
-            if (result.rows.length == 0) {
-                res.status(201).send({
-                    data: "",
-                    status: "Data Tidak Ada",
-                    success: true,
-                });
-            } else {
-                let tempres = ""
-                for (let i = 0; i < result.rows.length; ++i) {
-                    if (result.rows[i] !== undefined) {
-                        tempres = {
-                            noregistrasi: result.rows[i].noregistrasi,
-                            namapasien: result.rows[i].namapasien,
-                            tglregistrasi: result.rows[i].tglregistrasi,
-                            nocm: result.rows[i].nocm,
-                            namaunit: result.rows[i].namaunit,
-                            noantrian: result.rows[i].noantrian,
-                            namadokter: result.rows[i].namadokter,
-                            objectasalrujukanfk: result.rows[i].objectasalrujukanfk
-                        }
-
+            let tempres = ""
+            for (let i = 0; i < result.rows.length; ++i) {
+                if (result.rows[i] !== undefined) {
+                    tempres = {
+                        noregistrasi: result.rows[i].noregistrasi,
+                        namapasien: result.rows[i].namapasien,
+                        tglregistrasi: result.rows[i].tglregistrasi,
+                        nocm: result.rows[i].nocm,
+                        namaunit: result.rows[i].namaunit,
+                        noantrian: result.rows[i].noantrian,
+                        namadokter: result.rows[i].namadokter,
+                        objectasalrujukanfk: result.rows[i].objectasalrujukanfk
                     }
+
                 }
-
-                res.status(200).send({
-                    data: tempres,
-                    status: "success",
-                    success: true,
-                });
             }
-        }
 
-    })
-}
-const getDaftarPasienRegistrasi = (req, res) => {
-    const noregistrasi = req.query.noregistrasi;
-    // console.log(req.query.tglregistrasi)
-    // return
-    let tglregistrasi = ""
-    if (req.query.start !== undefined) {
-
-        tglregistrasi = ` and td.tglregistrasi between '${req.query.start}'
-         and '${req.query.end} 23:59' `;
-    } else {
-        // console.log('massuukk')
-        let today = new Date();
-        let todayMonth = '' + (today.getMonth() + 1)
-        if (todayMonth.length < 2)
-            todayMonth = '0' + todayMonth;
-        let todaystart = formatDate(today)
-        let todayend = formatDate(today) + ' 23:59'
-        tglregistrasi = ` and td.tglregistrasi between '${todaystart}'
-        and '${todayend}' `;
-    }
-    let query = queries.getDaftarPasienRegistrasi + `  where td.statusenabled=true and td.noregistrasi ilike '%${noregistrasi}%'
-    ${tglregistrasi}`
-    pool.query(query, (error, result) => {
-        if (error) {
-            console.error(error)
-        } else {
             res.status(200).send({
-                data: result.rows,
+                data: tempres,
                 status: "success",
                 success: true,
             });
         }
-    })
+    }catch(error){
+        logger.error(error);
+        res.status(500).send({
+            status: error,
+            success: false,
+            msg: 'Simpan Gagal',
+            code: 500
+        });
+    }
+    
+}
+const getDaftarPasienRegistrasi = async (req, res) => {
+    const logger = res.locals.logger
+    try{
+        const noregistrasi = req.query.noregistrasi;
+        // console.log(req.query.tglregistrasi)
+        // return
+        let tglregistrasi = ""
+        if (req.query.start !== undefined) {
+            tglregistrasi = ` and td.tglregistrasi between '${req.query.start}'
+             and '${req.query.end} 23:59' `;
+        } else {
+            // console.log('massuukk')
+            let today = new Date();
+            let todayMonth = '' + (today.getMonth() + 1)
+            if (todayMonth.length < 2)
+                todayMonth = '0' + todayMonth;
+            let todaystart = formatDate(today)
+            let todayend = formatDate(today) + ' 23:59'
+            tglregistrasi = ` and td.tglregistrasi between '${todaystart}'
+            and '${todayend}' `;
+        }
+        let query = queries.getDaftarPasienRegistrasi + `  where td.statusenabled=true and td.noregistrasi ilike '%${noregistrasi}%'
+        ${tglregistrasi}`
+        const result = await pool.query(query)
+        res.status(200).send({
+            data: result.rows,
+            status: "success",
+            success: true,
+        });
+    }catch(error){
+        logger.error(error);
+        res.status(500).send({
+            data: error,
+            status: "error",
+            success: false,
+        })
+    }
+
 }
 
 const getDaftarPasienFarmasi = async (req, res) => {
+    const logger = res.locals.logger
     try{
         const {
             start,
@@ -896,7 +875,7 @@ const getDaftarPasienFarmasi = async (req, res) => {
             success: true,
         });
     }catch(e){
-        console.error(e)
+        logger.error(e)
         res.status(500).send({
             data: [],
             status: "error",
@@ -906,8 +885,7 @@ const getDaftarPasienFarmasi = async (req, res) => {
 }
 
 async function getWidgetDaftarPasienRegistrasi(req, res) {
-
-
+    const logger = res.locals.logger
     try {
         let tglregistrasi = ""
         if (req.query.start !== undefined) {
@@ -1000,53 +978,55 @@ async function getWidgetDaftarPasienRegistrasi(req, res) {
         });
 
     } catch (error) {
+        logger.error(error)
         res.status(500).send({ message: error });
     }
 
 }
 
 async function getDaftarPasienRawatJalan(req, res) {
-    const noregistrasi = req.query.noregistrasi;
-    let tglregistrasi = ""
-    if (req.query.start !== undefined) {
+    const logger = res.locals.logger
+    try{
+        const noregistrasi = req.query.noregistrasi;
+        let tglregistrasi = ""
+        if (req.query.start !== undefined) {
 
-        tglregistrasi = ` and td.tglregistrasi between '${req.query.start}'
-         and '${req.query.end} 23:59' `;
-    } else {
-        // console.log('massuukk')
-        let today = new Date();
-        let todayMonth = '' + (today.getMonth() + 1)
-        if (todayMonth.length < 2)
-            todayMonth = '0' + todayMonth;
-        let todaystart = formatDate(today)
-        let todayend = formatDate(today) + ' 23:59'
-        tglregistrasi = ` and td.tglregistrasi between '${todaystart}'
-        and '${todayend}' `;
-    }
-    let taskid = ""
+            tglregistrasi = ` and td.tglregistrasi between '${req.query.start}'
+            and '${req.query.end} 23:59' `;
+        } else {
+            // console.log('massuukk')
+            let today = new Date();
+            let todayMonth = '' + (today.getMonth() + 1)
+            if (todayMonth.length < 2)
+                todayMonth = '0' + todayMonth;
+            let todaystart = formatDate(today)
+            let todayend = formatDate(today) + ' 23:59'
+            tglregistrasi = ` and td.tglregistrasi between '${todaystart}'
+            and '${todayend}' `;
+        }
+        let taskid = ""
 
-    if (req.query.taskid !== undefined) {
-        if (req.query.taskid === '2') {
-            // console.log(req.query.taskid)
-            taskid = ` and ta.taskid=4`;
-        } else if (req.query.taskid === '3') {
-            taskid = ` and ta.taskid in (5,6,7,8,9)`;
-        } else if (req.query.taskid === '1') {
+        if (req.query.taskid !== undefined) {
+            if (req.query.taskid === '2') {
+                // console.log(req.query.taskid)
+                taskid = ` and ta.taskid=4`;
+            } else if (req.query.taskid === '3') {
+                taskid = ` and ta.taskid in (5,6,7,8,9)`;
+            } else if (req.query.taskid === '1') {
+                taskid = ` and ta.taskid=3`;
+            }
+        } else {
             taskid = ` and ta.taskid=3`;
         }
-    } else {
-        taskid = ` and ta.taskid=3`;
-    }
 
-    let unit = ''
-    if (req.query.unit !== undefined && req.query.unit !== '') {
-        unit = ` and ta.objectunitfk=${req.query.unit} `
-    }
-    // let query = queries.getAllByOr + ` where nocm ilike '%` + nocm + `%'` + ` or namapasien ilike '%` + nocm + `%' limit 200`
-    let query = queries.getDaftarPasienRawatJalan + `  where td.noregistrasi ilike '%${noregistrasi}%'
-    ${tglregistrasi} ${taskid} and td.objectinstalasifk=1 and trm.objectstatuskendalirmfk is not null
-    ${unit} ORDER BY td.tglregistrasi DESC`
-    try {
+        let unit = ''
+        if (req.query.unit !== undefined && req.query.unit !== '') {
+            unit = ` and ta.objectunitfk=${req.query.unit} `
+        }
+        // let query = queries.getAllByOr + ` where nocm ilike '%` + nocm + `%'` + ` or namapasien ilike '%` + nocm + `%' limit 200`
+        let query = queries.getDaftarPasienRawatJalan + `  where td.noregistrasi ilike '%${noregistrasi}%'
+        ${tglregistrasi} ${taskid} and td.objectinstalasifk=1 and trm.objectstatuskendalirmfk is not null
+        ${unit} ORDER BY td.tglregistrasi DESC`
         const resultCountNoantrianDokter = await pool.query(query, [])
         res.status(200).send({
             data: resultCountNoantrianDokter.rows,
@@ -1055,12 +1035,18 @@ async function getDaftarPasienRawatJalan(req, res) {
         });
 
     } catch (error) {
-        throw error;
+        logger.error(error)
+        res.status(500).send({
+            data: error,
+            status: "error",
+            success: false,
+        })
     }
 
 }
 
 async function getWidgetDaftarPasienRJ(req, res) {
+    const logger = res.locals.logger
     try {
         const noregistrasi = ""//req.query.noregistrasi;
         let tglregistrasi = ""
@@ -1161,8 +1147,7 @@ async function getWidgetDaftarPasienRJ(req, res) {
             success: true,
         });
     } catch (e) {
-        console.error("==Error getWidgetDaftarPasienRJ==")
-        console.error(e)
+        logger.error(e)
         res.status(500).send({
             data: e,
             status: "error",
@@ -1173,52 +1158,47 @@ async function getWidgetDaftarPasienRJ(req, res) {
 }
 
 async function getHeaderEmr(req, res) {
-    const norecta = req.query.norecta;
-    let query = queries.getHeaderEmr + ` where ta.norec ilike '%${norecta}%'`
-
+    const logger = res.locals.logger
     try {
-        pool.query(query, (error, resultCountNoantrianDokter) => {
-            if (error) {
-                res.status(522).send({
-                    data: error,
-                    status: "Connection Time Out",
-                    success: true,
-                });
-            } else {
-                let tempres = ""
-                for (let i = 0; i < resultCountNoantrianDokter.rows.length; ++i) {
-                    if (resultCountNoantrianDokter.rows[i] !== undefined) {
-                        let umur = new Date(resultCountNoantrianDokter.rows[i].umur)
-                        umur = umur.toISOString()
-                        tempres = {
-                            nocm: resultCountNoantrianDokter.rows[i].nocm,
-                            namapasien: resultCountNoantrianDokter.rows[i].namapasien,
-                            tgllahir: resultCountNoantrianDokter.rows[i].tgllahir,
-                            jeniskelamin: resultCountNoantrianDokter.rows[i].jeniskelamin,
-                            umur: umur,
-                            namarekanan: resultCountNoantrianDokter.rows[i].namarekanan,
-                            ruanganta: resultCountNoantrianDokter.rows[i].ruanganta,
-                            noregistrasi: resultCountNoantrianDokter.rows[i].noregistrasi
-                        }
-
-                    }
+        const norecta = req.query.norecta;
+        let query = queries.getHeaderEmr + ` where ta.norec ilike '%${norecta}%'`
+        const resultCountNoantrianDokter = await pool.query(query)
+        let tempres = ""
+        for (let i = 0; i < resultCountNoantrianDokter.rows.length; ++i) {
+            if (resultCountNoantrianDokter.rows[i] !== undefined) {
+                let umur = new Date(resultCountNoantrianDokter.rows[i].umur)
+                umur = umur.toISOString()
+                tempres = {
+                    nocm: resultCountNoantrianDokter.rows[i].nocm,
+                    namapasien: resultCountNoantrianDokter.rows[i].namapasien,
+                    tgllahir: resultCountNoantrianDokter.rows[i].tgllahir,
+                    jeniskelamin: resultCountNoantrianDokter.rows[i].jeniskelamin,
+                    umur: umur,
+                    namarekanan: resultCountNoantrianDokter.rows[i].namarekanan,
+                    ruanganta: resultCountNoantrianDokter.rows[i].ruanganta,
+                    noregistrasi: resultCountNoantrianDokter.rows[i].noregistrasi
                 }
-                res.status(200).send({
-                    data: tempres,
-                    status: "success",
-                    success: true,
-                });
-            }
-        })
 
+            }
+        }
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+        });
     } catch (error) {
-        throw error;
+        logger.error(error)
+        res.status(500).send({
+            data: error,
+            status: "error",
+            success: false,
+        });
     }
 
 }
 
 async function getWidgetDaftarPasienRI(req, res) {
-
+    const logger = res.locals.logger
     try {
         let query = queries.widgetgetDaftarPasienRawatInap
         const resultCountNoantrianDokter = await pool.query(query)
@@ -1283,20 +1263,23 @@ async function getWidgetDaftarPasienRI(req, res) {
             success: true,
         });
     } catch (e) {
-        console.error("getWidget daftar pasien gagal")
+        logger.error(e);
+        res.status(500).send({
+            data: e,
+            status: "error",
+            success: false,
+        });
     }
 
 
 }
 
 async function getDaftarPasienRawatInap(req, res) {
-    const noregistrasi = req.query.noregistrasi;
-
-
-    let query = queries.getDaftarPasienRawatInap + ` and td.noregistrasi ilike '%${noregistrasi}%'`
-        + `ORDER BY td.tglregistrasi DESC`
-
+    const logger = res.locals.logger
     try {
+        const noregistrasi = req.query.noregistrasi;
+        let query = queries.getDaftarPasienRawatInap + ` and td.noregistrasi ilike '%${noregistrasi}%'`
+            + `ORDER BY td.tglregistrasi DESC`
         let resultCountNoantrianDokter = await pool.query(query, [])
         let resultsDeposit = await Promise.all(
             resultCountNoantrianDokter.rows.map(async (rawatInap) => {
@@ -1315,7 +1298,7 @@ async function getDaftarPasienRawatInap(req, res) {
         });
 
     } catch (error) {
-        console.error(error);
+        logger.error(error);
         res.status(500).send({
             data: [],
             status: "error",
@@ -1325,6 +1308,7 @@ async function getDaftarPasienRawatInap(req, res) {
 }
 
 const getDepositFromPasien = async (req, res) => {
+    const logger = res.locals.logger
     try {
         const norecdp = req.query.norecdp;
         let result = await pool.query(queries.qGetDepositFromPasien, [norecdp])
@@ -1334,7 +1318,7 @@ const getDepositFromPasien = async (req, res) => {
             success: true,
         })
     } catch (e) {
-        console.error(e);
+        logger.error(e);
         res.status(500).send({
             data: [],
             status: "error",
@@ -1344,6 +1328,7 @@ const getDepositFromPasien = async (req, res) => {
 }
 
 const getPasienFormById = async (req, res) => {
+    const logger = res.locals.logger
     try {
         const { idpasien } = req.query
         const pasien = (await pool.query(queries.qGetPasienFormById, [Number(idpasien)])).rows
@@ -1358,7 +1343,7 @@ const getPasienFormById = async (req, res) => {
             code: 200
         });
     } catch (e) {
-        console.error(e)
+        logger.error(e)
         res.status(500).send({
             data: e.message,
             success: false,
@@ -1369,19 +1354,9 @@ const getPasienFormById = async (req, res) => {
 }
 
 async function saveBatalRegistrasi(req, res) {
-    let transaction = null;
-    try {
-        transaction = await db.sequelize.transaction();
-    } catch (e) {
-        console.error(e)
-        res.status(500).send({
-            data: e.message,
-            success: false,
-            msg: 'Transaksi gagal',
-            code: 500
-        });
-        return;
-    }
+    const logger = res.locals.logger
+    const [transaction, errorTransaction] = await createTransaction(db, res)
+    if(errorTransaction) return
 
     try {
         let resqueryCek = await pool.query(`select ap.objectdaftarpasienfk  from t_pelayananpasien pp
@@ -1431,6 +1406,7 @@ async function saveBatalRegistrasi(req, res) {
             code: 200
         });
     } catch (error) {
+        logger.error(error)
         res.status(201).send({
             status: error,
             success: false,
@@ -1442,6 +1418,7 @@ async function saveBatalRegistrasi(req, res) {
 }
 
 async function getListPasienMutasi(req, res) {
+    const logger = res.locals.logger
     try {
         let start = (new Date(req.query.start)).toISOString();
         let end = (new Date(req.query.end)).toISOString();
@@ -1472,15 +1449,16 @@ async function getListPasienMutasi(req, res) {
         });
 
     } catch (error) {
+        logger.error(error)
         res.status(500).send({ message: error });
     }
 
 }
 
 async function saveRegistrasiPasienMutasi(req, res) {
-    const [transaction, errorTransaciton]
-        = await createTransaction(db, res)
-    if (errorTransaciton) return
+    const logger = res.locals.logger
+    const [transaction, errorTransaction] = await createTransaction(db, res)
+    if(errorTransaction) return
     try {
 
         // console.log(req.body?.penjamin)
@@ -1588,7 +1566,7 @@ async function saveRegistrasiPasienMutasi(req, res) {
         });
     } catch (error) {
         // console.log(error);
-        console.error(error);
+        logger.error(error);
         transaction && await transaction.rollback();
         res.status(201).send({
             status: error,
