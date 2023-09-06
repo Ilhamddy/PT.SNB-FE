@@ -1,0 +1,152 @@
+<!-- <!DOCTYPE html> -->
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .invoice {
+            /* max-width: 100%;  */
+            background-color: #f9f9f9;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .invoice h1 {
+            font-size: 24px;
+            text-align: center;
+        }
+
+        .invoice .header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .invoice .from,
+        .invoice .to {
+            width: 45%;
+        }
+
+        .invoice .from {
+            float: left;
+        }
+
+        .invoice .to {
+            float: right;
+        }
+
+        .invoice .invoice-details {
+            margin-bottom: 20px;
+        }
+
+        .invoice .invoice-details p {
+            margin: 0;
+        }
+
+        .invoice table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .invoice th,
+        .invoice td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: left;
+        }
+
+        .invoice th {
+            background-color: #f2f2f2;
+        }
+
+        .invoice .total {
+            float: right;
+        }
+
+        .invoice .total p {
+            font-weight: bold;
+        }
+
+        @page {
+            size: A4;
+            /* Set the page size to A4 */
+            margin: 20mm;
+            /* Adjust margins as needed (top, right, bottom, left) */
+        }
+
+        @media print {
+            body {
+                padding: 0;
+                /* Remove padding for printing */
+            }
+
+            .invoice {
+                page-break-before: always;
+                /* Start each invoice on a new page */
+            }
+        }
+    </style>
+    <script src="../../main.js"></script>
+</head>
+
+<body>
+    <div class="invoice">
+        <h1>Invoice</h1>
+        <div class="header">
+            <div class="from">
+                <p>From:</p>
+                <p>Your Company Name</p>
+                <p>123 Main Street</p>
+                <p>City, State, ZIP</p>
+            </div>
+            <div class="to">
+                <p>To:</p>
+                <p>Client Name</p>
+                <p>456 Client Street</p>
+                <p>City, State, ZIP</p>
+            </div>
+        </div>
+        <div class="invoice-details">
+            <p>Date: June 1, 2023</p>
+            <p>Due Date: June 15, 2023</p>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    <th>Quantity</th>
+                    <th>Unit Price</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Item 1</td>
+                    <td>2</td>
+                    <td>$50.00</td>
+                    <td>$100.00</td>
+                </tr>
+                <tr>
+                    <td>Item 2</td>
+                    <td>1</td>
+                    <td>$75.00</td>
+                    <td>$75.00</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="total">
+            <p>Total: $175.00</p>
+        </div>
+    </div>
+</body>
+
+</html>
