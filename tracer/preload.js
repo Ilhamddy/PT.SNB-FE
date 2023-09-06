@@ -24,6 +24,28 @@ contextBridge.exposeInMainWorld('electron', {
   },
   getPrinterApp: () => {
     ipcRenderer.invoke('get-printer-app')
+  },
+  getHTML: async (location) => {
+    const html = await ipcRenderer.invoke('file:getHTML', {
+      location: location
+    });
+    return html
+  },
+  print: async ({
+    // imgPath,
+    height,
+    width,
+    printer,
+    base64pdf
+  }) => {
+    const print = ipcRenderer.invoke('printer:toPrint', {
+      // imgPath,
+      height,
+      width,
+      printer,
+      base64pdf
+    });
+    return print
   }
 })
 

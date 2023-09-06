@@ -14,8 +14,8 @@
   },
   "dependencies": {
     "electron-pdf-window": "^1.0.12",
-    "electron-printer": "^0.0.5",
     "jspdf": "^2.5.1",
+    "pdf-to-printer": "^5.6.0",
     "pg": "^8.11.3",
     "printer": "^0.4.0",
     "sequelize": "^6.32.1",

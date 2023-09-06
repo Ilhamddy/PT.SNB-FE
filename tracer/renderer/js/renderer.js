@@ -1,3 +1,4 @@
+
 const form = document.querySelector('#img-form');
 const img = document.querySelector('#img');
 const outputPath = document.querySelector('#output-path');
@@ -58,19 +59,51 @@ function isFileImage(file) {
 }
 
 // Resize image
-function printToPrinter(e) {
+async function printToPrinter(e) {
   e.preventDefault();
-
+  console.log(printerSelectInput.value)
+  console.log(ipcRenderer)
   const width = widthInput.value;
   const height = heightInput.value;
   const printer = printerSelectInput.value;
-  console.log(printerSelectInput.value)
-  ipcRenderer.send('printer:toPrint', {
+  const base64pdf = await getHTML()
+
+  await window.electron.print({
     // imgPath,
     height,
     width,
-    printer
+    printer,
+    base64pdf
   });
+}
+
+async function getHTML(location) {
+  const htmlString = await window.electron.getHTML("./renderer/report/invoice.html");
+  console.log(htmlString)
+  const jsPDF = window.jspdf.jsPDF
+  let doc = new jsPDF({
+      orientation: 'portrait',
+      unit: "mm",
+      format: [210, 297]
+  });
+
+  let div = document.getElementsByClassName("invoice")[0];
+
+  await doc.html(
+      div,
+      {
+        margin: 15,
+        width: 210,
+        windowWidth: 786,
+        html2canvas: {
+          width: 210,
+          scale: 0.2,
+
+        }
+      }
+  );
+  const base64pdf = doc.output("datauri")
+  return base64pdf
 }
 
 function getPrinter(e) {
