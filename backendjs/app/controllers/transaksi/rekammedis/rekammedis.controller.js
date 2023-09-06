@@ -108,8 +108,15 @@ async function getWidgetListDaftarDokumenRekammedis(req, res) {
             tglregistrasi = ` and dp.tglregistrasi between '${todaystart}'
         and '${todayend}' `;
         }
-        const resultlistantreanpemeriksaan = await queryPromise2(`select dp.noregistrasi,mu.namaunit,ta.norec as norecap,
-        mp.namapasien,mp.nocm, mrm.statuskendali,mp.objectstatuskendalirmfk as objectstatuskendalirmfkmp,
+        const resultlistantreanpemeriksaan = await queryPromise2(`
+        select 
+            dp.noregistrasi,
+            mu.namaunit,
+            ta.norec as norecap,
+            mp.namapasien,
+            mp.nocm, 
+            mrm.statuskendali,
+            mp.objectstatuskendalirmfk as objectstatuskendalirmfkmp,
         trm.objectstatuskendalirmfk as objectstatuskendalirmfkap from t_daftarpasien dp
         join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk=dp.norec
         and ta.objectunitfk =dp.objectunitlastfk 

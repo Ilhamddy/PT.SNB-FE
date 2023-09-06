@@ -136,9 +136,9 @@ export const listLaporanPasienKunjunganGetError = (error) => ({
     payload: error,
 });
 
-export const laporanRL_3_1_Get = (param) => ({
+export const laporanRL_3_1_Get = (queries) => ({
     type: LAPORAN_RL_3_1_GET,
-    payload: { param },
+    payload: { queries },
 });
 
 export const laporanRL_3_1_GetSuccess = (data) => ({
