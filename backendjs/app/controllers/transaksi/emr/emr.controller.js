@@ -477,8 +477,6 @@ async function editEmrPasienCppt(req, res) {
             }
         }, { transaction });
 
-
-
         await transaction.commit();
         let tempres = { cppt: cppt }
         res.status(200).send({
@@ -565,12 +563,7 @@ async function getListComboDiagnosa(req, res) {
             FROM m_jeniskasus
         `);
 
-        const result3 = await queryPromise2(`SELECT id as value,reportdisplay as label
-            FROM m_jenispelayanan
-        `);
-
-        let tempres = { tipediagnosa: result.rows, jeniskasus: result2.rows,
-        jenispelayanan: result3.rows }
+        let tempres = { tipediagnosa: result.rows, jeniskasus: result2.rows }
         res.status(200).send({
             data: tempres,
             status: "success",
@@ -975,6 +968,7 @@ function getUmur (dateOfBirth, tillDate) {
 }
 
 const getObatFromUnit = async (req, res) => {
+    const logger = res.locals.logger
     try{
         let {idunit, isbebas} = req.query
         isbebas = isbebas === "true"
@@ -988,7 +982,7 @@ const getObatFromUnit = async (req, res) => {
             success: true,
         });
     }catch(error){
-        console.error(error)
+        logger.error(error)
         res.status(500).send({
             data: error,
             status: "error",
