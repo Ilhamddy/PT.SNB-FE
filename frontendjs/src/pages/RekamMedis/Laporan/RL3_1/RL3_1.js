@@ -20,7 +20,7 @@ import Flatpickr from "react-flatpickr";
 import DataTable from 'react-data-table-component';
 import LoadingTable from '../../../../Components/Table/LoadingTable';
 import {
-    laporanRL_3_1_Get
+    laporanRL_3_1_Get,kendaliDokumenResetForm
 } from '../../../../store/actions';
 import "./RL3_1.scss"
 import * as XLSX from 'xlsx';
@@ -64,6 +64,11 @@ const RL3_1 = () => {
 
         }
     })
+    useEffect(() => {
+        return () => {
+            dispatch(kendaliDokumenResetForm());
+        }
+    }, [dispatch])
     const [search, setSearch] = useState('')
     const handleFilter = (e) => {
         if (e.keyCode === 13) {

@@ -20,7 +20,7 @@ import Flatpickr from "react-flatpickr";
 import DataTable from 'react-data-table-component';
 import LoadingTable from '../../../../Components/Table/LoadingTable';
 import {
-    laporanRL_3_2_Get
+    laporanRL_3_2_Get,kendaliDokumenResetForm
 } from '../../../../store/actions';
 import "./RL3_2.scss"
 import * as XLSX from 'xlsx';
@@ -64,6 +64,11 @@ const RL3_2 = () => {
 
         }
     })
+    useEffect(() => {
+        return () => {
+            dispatch(kendaliDokumenResetForm());
+        }
+    }, [dispatch])
     const [search, setSearch] = useState('')
     const handleFilter = (e) => {
         if (e.keyCode === 13) {
@@ -262,7 +267,7 @@ const RL3_2 = () => {
                                                 <th scope="col">Non Rujukan</th>
                                                 <th scope="col"><span>Dirawat</span></th>
                                                 <th scope="col">Dirujukan</th>
-                                                <th scope="col"><span>Dipulang</span></th>
+                                                <th scope="col"><span>Pulang</span></th>
                                             </tr>
                                         </thead>
                                         {
