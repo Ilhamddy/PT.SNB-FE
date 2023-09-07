@@ -33,6 +33,8 @@ export default class ServiceRekammedis {
     }
 
     getLaporanRL3_1 = async (queries) => {
+        console.log("laporan rl get")
+        console.log(queries)
         return await api.get(`/transaksi/rekammedis/get-laporan-rl-3-1`, queries);
     }
 }

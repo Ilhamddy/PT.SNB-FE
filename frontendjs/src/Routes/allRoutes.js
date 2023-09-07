@@ -311,6 +311,7 @@ import PenjualanObatBebas from "../pages/PenjualanObatBebas/PenjualanObatBebas";
 import ListVerifObat from "../pages/ListVerifObat/ListVerifObat";
 import DaftarPasienFarmasi from "../pages/ListDaftarPasien/DaftarPasienFarmasi/DaftarPasienFarmasi";
 import TambahObatFarmasi from "../pages/TambahObatFarmasi/TambahObatFarmasi";
+import Mapping3_3 from "../pages/RekamMedis/Laporan/RL3_3/Mapping3_3";
 
 
 
@@ -554,8 +555,9 @@ const authProtectedRoutes = [
   { path: "/cmVrYW1tZWRpcy9sYXBvcmFuLXBhc2llbi1kYWZ0YXI=", component: <LaporanPasienDaftar/>},
   { path: "/cmVrYW1tZWRpcy9sYXBvcmFuLXBhc2llbi1iYXRhbA==", component: <LaporanPasienBatal/>},
   { path: "/cmVrYW1tZWRpcy9sYXBvcmFuLXBhc2llbi1rdW5qdW5nYW4=", component: <LaporanPasienKunjungan/>},
-  { path: "/cmVrYW1tZWRpcy9sYXBvcmFuLXJsL3JsMy4x", component: <RL3_1/>},//rekammedis/laporan-rl/rl3.1
+  { path: "/cmVrYW1tZWRpcy9sYXBvcmFuLXJsL3JsMy4x", component: <RL3_1/>},
   { path: "/cmVrYW1tZWRpcy9sYXBvcmFuLXJsL3JsMy4y", component: <RL3_2/>},
+  { path: "/cmVrYW1tZWRpcy9sYXBvcmFuLXJsL21hcHBpbmctcmwzLjM=", component: <Mapping3_3 />},
 
   // radiologi
   { path: "/radiologi/daftarorderradiologi", component: <DaftarOrderRadiologi /> },

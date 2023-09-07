@@ -80,7 +80,6 @@ const RL3_2 = () => {
         }
     }
     const handleClickCari = () => {
-        console.log(validation.values.tglstart)
         dispatch(laporanRL_3_1_Get({
             search: search,
             start: validation.values.tglstart,
