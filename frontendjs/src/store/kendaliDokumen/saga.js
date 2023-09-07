@@ -9,7 +9,8 @@ import {
     LIST_LAPORAN_PASIEN_DAFTAR_GET,
     LIST_LAPORAN_PASIEN_BATAL_GET,
     LIST_LAPORAN_PASIEN_KUNJUNGAN_GET,
-    LAPORAN_RL_3_1_GET
+    LAPORAN_RL_3_1_GET,
+    LAPORAN_RL_3_2_GET,
 } from "./actionType";
 
 import {
@@ -20,7 +21,8 @@ import {
     listLaporanPasienDaftarGetSuccess, listLaporanPasienDaftarGetError,
     listLaporanPasienBatalGetSuccess, listLaporanPasienBatalGetError,
     listLaporanPasienKunjunganGetSuccess, listLaporanPasienKunjunganGetError,
-    laporanRL_3_1_GetSuccess, laporanRL_3_1_GetError
+    laporanRL_3_1_GetSuccess, laporanRL_3_1_GetError,
+    laporanRL_3_2_GetSuccess, laporanRL_3_2_GetError
 } from "./action";
 
 import { toast } from 'react-toastify';
@@ -150,6 +152,19 @@ export function* watchonlaporanRL_3_1_Get() {
     yield takeEvery(LAPORAN_RL_3_1_GET, onlaporanRL_3_1_Get);
 }
 
+function* onlaporanRL_3_2_Get({ payload: { queries } }) {
+    try {
+        const response = yield call(serviceRekammedis.getLaporanRL3_2, queries);
+        yield put(laporanRL_3_2_GetSuccess(response.data));
+    } catch (error) {
+        yield put(laporanRL_3_2_GetError(error));
+    }
+}
+
+export function* watchonlaporanRL_3_2_Get() {
+    yield takeEvery(LAPORAN_RL_3_2_GET, onlaporanRL_3_2_Get);
+}
+
 function* kendaliDokumenSaga() {
     yield all([
         fork(watchonDaftarDokumenRekammedis),
@@ -159,7 +174,8 @@ function* kendaliDokumenSaga() {
         fork(watchonlistLaporanPasienDaftarGet),
         fork(watchonlistLaporanPasienBatalGet),
         fork(watchonlistLaporanPasienKunjunganGet),
-        fork(watchonlaporanRL_3_1_Get)
+        fork(watchonlaporanRL_3_1_Get),
+        fork(watchonlaporanRL_3_2_Get)
     ]);
 }
 

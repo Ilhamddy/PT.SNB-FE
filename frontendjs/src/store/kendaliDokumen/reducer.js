@@ -23,7 +23,10 @@ import {
     LIST_LAPORAN_PASIEN_KUNJUNGAN_GET_ERROR,
     LAPORAN_RL_3_1_GET,
     LAPORAN_RL_3_1_GET_SUCCESS,
-    LAPORAN_RL_3_1_GET_ERROR
+    LAPORAN_RL_3_1_GET_ERROR,
+    LAPORAN_RL_3_2_GET,
+    LAPORAN_RL_3_2_GET_SUCCESS,
+    LAPORAN_RL_3_2_GET_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -67,6 +70,11 @@ const INIT_STATE = {
         data: [],
         loading: false,
         error: null,
+    },
+    laporanRL_3_2_Get:{
+        data: [],
+        loading: false,
+        error: null,
     }
 }
 
@@ -98,6 +106,9 @@ const KendaliDokumen = (state = INIT_STATE, action) => {
                 },
                 laporanRL_3_1_Get:{
                     ...INIT_STATE.laporanRL_3_1_Get
+                },
+                laporanRL_3_2_Get:{
+                    ...INIT_STATE.laporanRL_3_2_Get
                 }
             }
         }
@@ -361,6 +372,39 @@ const KendaliDokumen = (state = INIT_STATE, action) => {
                 ...state,
                 laporanRL_3_1_Get: {
                     ...state.laporanRL_3_1_Get,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case LAPORAN_RL_3_2_GET: {
+            return {
+                ...state,
+                laporanRL_3_2_Get: {
+                    ...state.laporanRL_3_2_Get,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case LAPORAN_RL_3_2_GET_SUCCESS: {
+            return {
+                ...state,
+                laporanRL_3_2_Get: {
+                    ...state.laporanRL_3_2_Get,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case LAPORAN_RL_3_2_GET_ERROR: {
+            return {
+                ...state,
+                laporanRL_3_2_Get: {
+                    ...state.laporanRL_3_2_Get,
                     loading: false,
                     error: action.error,
                 }
