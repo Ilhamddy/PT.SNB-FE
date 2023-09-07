@@ -300,6 +300,7 @@ async function getListLaporanDaftarPasien(req, res) {
     try {
         let start = (new Date(req.query.start)).toISOString();
         let end = (new Date(req.query.end)).toISOString();
+        end = formatDate(end) + ' 23:59'
         let search = `%${req.query.search}%`
         let instalasi = req.query.instalasi !== '' ? ` and td.objectinstalasifk = '${req.query.instalasi}'` : '';
         let unit = req.query.unit !== '' ? ` and td.objectunitlastfk = '${req.query.unit}'` : '';
@@ -338,6 +339,7 @@ async function getListLaporanPasienBatal(req, res) {
     try {
         let start = (new Date(req.query.start)).toISOString();
         let end = (new Date(req.query.end)).toISOString();
+        end = formatDate(end) + ' 23:59'
         let search = `%${req.query.search}%`
         let instalasi = req.query.instalasi !== '' ? ` and td.objectinstalasifk = '${req.query.instalasi}'` : '';
         let unit = req.query.unit !== '' ? ` and td.objectunitlastfk = '${req.query.unit}'` : '';
@@ -377,6 +379,7 @@ async function getListLaporanPasienKunjungan(req, res) {
     try {
         let start = (new Date(req.query.start)).toISOString();
         let end = (new Date(req.query.end)).toISOString();
+        end = formatDate(end) + ' 23:59'
         let search = `%${req.query.search}%`
         let instalasi = req.query.instalasi !== '' ? ` and mu.objectinstalasifk = '${req.query.instalasi}'` : '';
         let unit = req.query.unit !== '' ? ` and ta.objectunitfk = '${req.query.unit}'` : '';
@@ -415,6 +418,7 @@ async function getLaporanRL3_1(req, res) {
     try {
         let start = (new Date(req.query.start)).toISOString();
         let end = (new Date(req.query.end)).toISOString();
+        end = formatDate(end) + ' 23:59'
         let search = `%${req.query.search}%`
         let instalasi = req.query.instalasi !== '' ? ` and mu.objectinstalasifk = '${req.query.instalasi}'` : '';
         let unit = req.query.unit !== '' ? ` and ta.objectunitfk = '${req.query.unit}'` : '';
@@ -597,35 +601,6 @@ async function getSensusManual(req, res) {
 
 }
 
-const getLayananJenis = async (req, res) => {
-    const logger = res.locals.logger;
-    try{
-        const { instalasi, jenisproduk, detailjenisproduk } = req.query;
-        // const layanan = await pool.query(queries.qLayananJenis, 
-        //     [
-        //         instalasi, 
-        //         detailjenisproduk
-        //     ]
-        // );
-        const tempres = {
-        
-        };
-        res.status(200).json({
-            msg: 'Success',
-            code: 200,
-            data: tempres,
-            success: true
-        });
-    } catch (error) {
-        logger.error(error);
-        res.status(500).json({
-            msg: error.message,
-            code: 500,
-            data: error,
-            success: false
-        });
-    }
-}
 
 const getDetailJenisProduk = async (req, res) => {
     const logger = res.locals.logger;
@@ -660,7 +635,7 @@ async function getLaporanRL3_2(req, res) {
     try {
         let start = (new Date(req.query.start)).toISOString();
         let end = (new Date(req.query.end)).toISOString();
-        
+        end = formatDate(end) + ' 23:59'
         const result = await pool.query(`
         SELECT
             ROW_NUMBER() OVER (ORDER BY mj.reportdisplay) AS row_n,
