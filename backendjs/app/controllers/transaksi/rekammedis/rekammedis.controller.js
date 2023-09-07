@@ -527,7 +527,7 @@ async function getLaporanRL3_1(req, res) {
 
 }
 
-async function getTest(req, res) {
+async function getSensusManual(req, res) {
     const logger = res.locals.logger
     const [transaction, errorTransaction] = await createTransaction(db, res)
     if(errorTransaction) return
@@ -627,7 +627,45 @@ const getLayananJenis = async (req, res) => {
     }
 }
 
+async function getLaporanRL3_2(req, res) {
+    const logger = res.locals.logger
+    try {
+        let start = (new Date(req.query.start)).toISOString();
+        let end = (new Date(req.query.end)).toISOString();
+        
+        const result = await pool.query(`
+        SELECT
+            mj.reportdisplay,
+            COUNT(CASE WHEN ma.id IN (1, 2, 3) THEN ma.id END) AS rujukan,
+            COUNT(CASE WHEN ma.id NOT IN (1, 2, 3) THEN ma.id END) AS nonrujukan,
+            COUNT(case when td.objectstatuspulangfk=1 then td.objectstatuspulangfk END)as pulang,
+            COUNT(case when td.objectstatuspulangfk=2 then td.objectstatuspulangfk END)as rawat,
+            COUNT(case when td.objectstatuspulangfk=3 then td.objectstatuspulangfk END)as rujuk,
+            COUNT(case when td.objectstatuspulangfk=4 then td.objectstatuspulangfk END)as matidiigd,
+            COUNT(case when td.objectstatuspulangfk=5 then td.objectstatuspulangfk END)as doa
+        FROM
+            t_daftarpasien td
+        JOIN m_jenispelayanan mj ON mj.id = td.objectjenispelayananfk
+        JOIN m_asalrujukan ma ON ma.id = td.objectasalrujukanfk
+        WHERE
+            td.objectinstalasifk = 7 and td.tglpulang between '${start}' and '${end}' and td.statusenabled=true 
+        GROUP BY
+            mj.reportdisplay
+        `);
 
+
+        res.status(200).send({
+            data: result.rows,
+            status: "success",
+            success: true,
+        });
+
+    } catch (error) {
+        logger.error(error)
+        res.status(500).send({ message: error });
+    }
+
+}
 
 export default {
     getListDaftarDokumenRekammedis,
@@ -637,6 +675,7 @@ export default {
     getListLaporanDaftarPasien,
     getListLaporanPasienBatal,
     getListLaporanPasienKunjungan,
+    getSensusManual,
     getLaporanRL3_1,
-    getTest
+    getLaporanRL3_2
 };

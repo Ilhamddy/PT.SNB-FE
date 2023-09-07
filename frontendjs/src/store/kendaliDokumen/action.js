@@ -23,7 +23,10 @@ import {
     LIST_LAPORAN_PASIEN_KUNJUNGAN_GET_ERROR,
     LAPORAN_RL_3_1_GET,
     LAPORAN_RL_3_1_GET_SUCCESS,
-    LAPORAN_RL_3_1_GET_ERROR
+    LAPORAN_RL_3_1_GET_ERROR,
+    LAPORAN_RL_3_2_GET,
+    LAPORAN_RL_3_2_GET_SUCCESS,
+    LAPORAN_RL_3_2_GET_ERROR
 } from "./actionType";
 
 export const kendaliDokumenResetForm = () => ({
@@ -148,5 +151,20 @@ export const laporanRL_3_1_GetSuccess = (data) => ({
 
 export const laporanRL_3_1_GetError = (error) => ({
     type: LAPORAN_RL_3_1_GET_ERROR,
+    payload: error,
+});
+
+export const laporanRL_3_2_Get = (queries) => ({
+    type: LAPORAN_RL_3_2_GET,
+    payload: { queries },
+});
+
+export const laporanRL_3_2_GetSuccess = (data) => ({
+    type: LAPORAN_RL_3_2_GET_SUCCESS,
+    payload: data,
+});
+
+export const laporanRL_3_2_GetError = (error) => ({
+    type: LAPORAN_RL_3_2_GET_ERROR,
     payload: error,
 });
