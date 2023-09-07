@@ -597,6 +597,36 @@ async function getSensusManual(req, res) {
 
 }
 
+const getLayananJenis = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const { instalasi, jenisproduk, detailjenisproduk } = req.query;
+        // const layanan = await pool.query(queries.qLayananJenis, 
+        //     [
+        //         instalasi, 
+        //         detailjenisproduk
+        //     ]
+        // );
+        const tempres = {
+        
+        };
+        res.status(200).json({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).json({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 async function getLaporanRL3_2(req, res) {
     const logger = res.locals.logger
     try {

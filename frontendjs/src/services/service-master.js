@@ -74,4 +74,8 @@ export default class ServiceMaster {
     getComboReturObat = async () => {
         return await api.get(`/master/combobox-retur-obat`);
     }
+
+    getComboMappingProduk = async () => {
+        return await api.get(`/master/combobox-mapping-produk`);
+    }
 }

@@ -1,0 +1,63 @@
+{
+    "Backend Read": {
+        "prefix": ["backend-r"],
+        "body": [
+            "const ${1:NamaFungsi} = async (req, res) => {",
+            "\tconst logger = res.locals.logger;",
+            "\ttry{",
+            "\t\t${2}",
+            "\t\tconst tempres = {",
+            "\t\t",
+            "\t\t};",
+            "\t\tres.status(200).json({",
+            "\t\t\tmsg: 'Success',",
+            "\t\t\tcode: 200,",
+            "\t\t\tdata: tempres,",
+            "\t\t\tsuccess: true",
+            "\t\t});",
+            "\t} catch (error) {",
+            "\t\tlogger.error(error);",
+            "\t\tres.status(500).json({",
+            "\t\t\tmsg: error.message,",
+            "\t\t\tcode: 500,",
+            "\t\t\tdata: error,",
+            "\t\t\tsuccess: false",
+            "\t\t});",
+            "\t}",
+            "}"
+        ],
+        "description": "Komponen body next standar AniMemo"
+    },
+    "Backend Create Update Delete": {
+        "prefix": ["backend-cud"],
+        "body": [
+            "const ${1:NamaFungsi} = async (req, res) => {",
+            "\tconst logger = res.locals.logger;",
+            "\ttry{",
+            "\t\tawait db.sequelize.transaction(async (transaction) => {",
+            "\t\t\t${2}",
+            "\t\t});",
+            "\t\t",
+            "\t\tconst tempres = {",
+            "\t\t",
+            "\t\t};",
+            "\t\tres.status(200).json({",
+            "\t\t\tmsg: 'Success',",
+            "\t\t\tcode: 200,",
+            "\t\t\tdata: tempres,",
+            "\t\t\tsuccess: true",
+            "\t\t});",
+            "\t} catch (error) {",
+            "\t\tlogger.error(error);",
+            "\t\tres.status(500).json({",
+            "\t\t\tmsg: error.message,",
+            "\t\t\tcode: 500,",
+            "\t\t\tdata: error,",
+            "\t\t\tsuccess: false",
+            "\t\t});",
+            "\t}",
+            "}"
+        ],
+        "description": "Komponen body next standar AniMemo"
+    }
+}

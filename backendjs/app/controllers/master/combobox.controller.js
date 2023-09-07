@@ -598,6 +598,30 @@ const comboReturObat = async (req, res) => {
     }
 }
 
+const comboMappingProduk = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const jenisProduk = await pool.query(queriesJenisProduk.getAll)
+        const tempres = {
+            jenisproduk: jenisProduk.rows
+        };
+        res.status(200).json({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).json({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export default {
     selectComboBox,
     desaKelurahan,
@@ -613,5 +637,6 @@ export default {
     comboResep,
     comboVerifResep,
     comboPenjualanBebas,
-    comboReturObat
+    comboReturObat,
+    comboMappingProduk
 };

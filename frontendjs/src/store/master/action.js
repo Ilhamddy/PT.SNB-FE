@@ -53,6 +53,9 @@ import {
     GET_COMBO_RETUR_OBAT,
     GET_COMBO_RETUR_OBAT_SUCCESS,
     GET_COMBO_RETUR_OBAT_ERROR,
+    GET_COMBO_MAPPING_PRODUK,
+    GET_COMBO_MAPPING_PRODUK_SUCCESS,
+    GET_COMBO_MAPPING_PRODUK_ERROR,
 } from "./actionType";
 
 export const masterGet = () => ({
@@ -307,5 +310,19 @@ export const getComboReturObatSuccess = (data) => ({
 
 export const getComboReturObatError = (error) => ({
     type: GET_COMBO_RETUR_OBAT_ERROR,
+    payload: error,
+});
+
+export const getComboMappingProduk = () => ({
+    type: GET_COMBO_MAPPING_PRODUK,
+});
+
+export const getComboMappingProdukSuccess = (data) => ({
+    type: GET_COMBO_MAPPING_PRODUK_SUCCESS,
+    payload: data,
+});
+
+export const getComboMappingProdukError = (error) => ({
+    type: GET_COMBO_MAPPING_PRODUK_ERROR,
     payload: error,
 });

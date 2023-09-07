@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { ToastContainer } from 'react-toastify'
 import UiContent from '../../../../Components/Common/UiContent'
 import {
+  Button,
   Card,
   CardBody,
   Col,
@@ -17,8 +18,12 @@ import LoadingTable from '../../../../Components/Table/LoadingTable'
 import CustomSelect from '../../../Select/Select'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
+import { useDispatch } from 'react-redux'
+import { getComboMappingProduk } from '../../../../store/master/action'
+import NoDataTable from '../../../../Components/Table/NoDataTable'
 
 const MappingRL = () => {
+  const dispatch = useDispatch()
   const vMapping = useFormik({
     initialValues: {
       norl: '',
@@ -36,7 +41,6 @@ const MappingRL = () => {
       instalasi: '',
       jenisproduk: '',
       detailjenisproduk: '',
-      namalayanan: '',
     },
     validationSchema: Yup.object({
       instalasi: Yup.string().required('Instalasi harus diisi!'),
@@ -44,10 +48,13 @@ const MappingRL = () => {
       detailjenisproduk: Yup.string().required(
         'Detail Jenis Produk harus diisi!'
       ),
-      namalayanan: Yup.string().required('Layanan harus diisi!'),
     }),
     onSubmit: (values) => {},
   })
+
+  useEffect(() => {
+    dispatch(getComboMappingProduk())
+  }, [dispatch])
 
   return (
     <React.Fragment>
@@ -56,7 +63,7 @@ const MappingRL = () => {
       <div className="page-content laporan-rl3-2">
         <Container fluid>
           <BreadCrumb title="Laporan RL3.2" pageTitle="Forms" />
-          <Card>
+          <Card className="p-3">
             <CardBody>
               <Row>
                 <Col>
@@ -100,7 +107,7 @@ const MappingRL = () => {
                 </Col>
               </Row>
             </CardBody>
-            <Row>
+            <Row className="mb-5">
               <Col lg={12}>
                 <DataTable
                   fixedHeader
@@ -111,6 +118,7 @@ const MappingRL = () => {
                   progressPending={false}
                   progressComponent={<LoadingTable />}
                   customStyles={tableCustomStyles}
+                  noDataComponent={<NoDataTable />}
                 />
               </Col>
             </Row>
@@ -212,18 +220,15 @@ const MappingRL = () => {
                       )}
                   </Col>
                 </Row>
-                <Row>
-                  <Col lg={2}>
-                    <Label
-                      style={{ color: 'black' }}
-                      htmlFor={`namalayanan`}
-                      className="form-label mt-2"
-                    >
-                      No Resep
-                    </Label>
-                  </Col>
+                <div className="d-flex justify-content-center w-100 mt-3">
+                  <Button color="success">Tampilkan</Button>
+                </div>
+              </Col>
+              <Col lg={7}>
+                <Row className="d-flex flex-row-reverse">
                   <Col lg={4}>
                     <Input
+                      className="w-100"
                       id={`namalayanan`}
                       name={`namalayanan`}
                       type="text"
@@ -241,9 +246,27 @@ const MappingRL = () => {
                       )}
                   </Col>
                 </Row>
+                <Row className="mb-5">
+                  <Col lg={12}>
+                    <DataTable
+                      fixedHeader
+                      fixedHeaderScrollHeight="700px"
+                      columns={[]}
+                      pagination
+                      data={[]}
+                      progressPending={false}
+                      progressComponent={<LoadingTable />}
+                      customStyles={tableCustomStyles}
+                      noDataComponent={<NoDataTable />}
+                    />
+                  </Col>
+                </Row>
+                <div className="d-flex justify-content-center w-100 mt-3">
+                  <Button color="success">Selesai</Button>
+                </div>
               </Col>
-              <Col lg={7}></Col>
             </Row>
+            <div></div>
           </Card>
         </Container>
       </div>
