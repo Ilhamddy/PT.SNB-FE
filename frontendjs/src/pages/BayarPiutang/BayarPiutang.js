@@ -31,10 +31,6 @@ import "./BayarPiutang.scss"
 import { useNavigate, useParams } from "react-router-dom";
 import { rgxAllNumber, rgxAllPeriods, rgxValidNumber } from "../../utils/regexcommon";
 
-const dateAwalStart = (new Date(new Date(new Date() - 1000 * 60 * 60 * 24 * 3))).toISOString();
-const dateAwalEnd = (new Date()).toISOString()
-const date = new Date()
-
 
 const BayarPiutang = () => {
     const { norecpiutang, norecnota } = useParams();
@@ -57,7 +53,8 @@ const BayarPiutang = () => {
         paymentPiutangPasien: state.Payment.paymentPiutangPasienGet.data || null
     }))
 
-
+    const [dateStart] = useState(() => (new Date()).toISOString())
+    const [dateEnd] = useState(() => (new Date()).toISOString())
 
     const validation = useFormik({
         enableReinitialize: true,
@@ -67,7 +64,7 @@ const BayarPiutang = () => {
             diskon: 0,
             // non wajib
             deposit: 0,
-            nobukti: `B${date.getFullYear().toString().substring(2, 4)}${date.getMonth() + 1}${date.getDate()}${date.getHours()}${date.getMinutes()}${date.getSeconds()}`,
+            nobukti: `B${dateStart.slice(2, 4)}${dateStart.slice(5,7) + 1}${dateStart.slice(8,10)}${dateStart.slice(11,13)}${dateStart.slice(14,16)}${dateStart.slice(17, 19)}`,
             pegawai: "",
             norecpiutang: "",
             norecnota: "",
@@ -82,7 +79,7 @@ const BayarPiutang = () => {
                 pjpasien: "",
                 approvalcode: "",
                 nominalbayar: "",
-                tglbayar: dateAwalStart,
+                tglbayar: dateStart,
                 rekeningrs: ""
             }]
         },
@@ -145,7 +142,7 @@ const BayarPiutang = () => {
             nontunai: "",
             pjpasien: "",
             nominalbayar: "",
-            tglbayar: dateAwalStart,
+            tglbayar: dateStart,
             rekeningrs: "",
             approvalcode: "",
         });
@@ -158,9 +155,6 @@ const BayarPiutang = () => {
         validation.setFieldValue("payment", newPayments);
     }
 
-
-    const [dateStart, setDateStart] = useState(dateAwalStart);
-    const [dateEnd, setDateEnd] = useState(dateAwalEnd);
     const [search, setSearch] = useState("");
     const [instalasi, setInstalasi] = useState("");
     const dispatch = useDispatch();
