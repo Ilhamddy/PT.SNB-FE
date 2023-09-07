@@ -33,12 +33,12 @@ import PrintRekap from '../../Print/PrintRekap/PrintRekap';
 import PrintBukti from '../../Print/PrintBukti/PrintBukti';
 import CustomCheckbox from '../../../Components/CustomCheckbox/CustomCheckbox';
 
-const dateStart = (new Date()).toISOString()
 
 const RegistrasiPasien = (props) => {
     const { id, norec } = useParams();
     document.title = "Registrasi Pasien";
     const dispatch = useDispatch();
+    const [dateStart] = useState(() => (new Date()).toISOString())
     const [modal, setModal] = useState(false);
     const [cardRegistrasi, setcardRegistrasi] = useState(true);
     const [cardBuktiPendaftaran, setcardBuktiPendaftaran] = useState(true);

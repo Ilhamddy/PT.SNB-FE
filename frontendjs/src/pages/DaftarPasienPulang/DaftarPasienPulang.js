@@ -18,9 +18,6 @@ import "./DaftarPasienPulang.scss"
 import { useNavigate } from "react-router-dom";
 import LoadingTable from "../../Components/Table/LoadingTable";
 
-const dateAwalStart = (new Date(new Date() - 1000 * 60 * 60 * 24 * 20)).toISOString();
-const dateAwalEnd = (new Date(new Date() - (- 1000 * 60 * 60 * 24 * 1))).toISOString();
-
 
 const DaftarPasienPulang = () => {
     document.title = "Daftar Pasien Pulang";
@@ -32,9 +29,8 @@ const DaftarPasienPulang = () => {
         dataPasienPlg: state.DaftarPasien.daftarPasienPulangGet.data || [],
         comboboxReg: state.Master.comboRegistrasiGet.data || {},
     }))
-
-    const [dateStart, setDateStart] = useState(dateAwalStart);
-    const [dateEnd, setDateEnd] = useState(dateAwalEnd);
+    const [dateStart, setDateStart] = useState(() => (new Date()).toISOString());
+    const [dateEnd, setDateEnd] = useState(() => (new Date()).toISOString());
     const [search, setSearch] = useState("");
     const [instalasi, setInstalasi] = useState("");
     const dispatch = useDispatch();
@@ -55,12 +51,12 @@ const DaftarPasienPulang = () => {
 
     useEffect(() => {
         dispatch(daftarPasienPulangGet({
-            dateStart: dateAwalStart,
-            dateEnd: dateAwalEnd
+            dateStart: dateStart,
+            dateEnd: dateEnd
         }))
         dispatch(comboAsuransiGet());
         dispatch(comboRegistrasiGet());
-    }, [dispatch])
+    }, [dispatch,dateStart,dateEnd])
 
     const handleFilter = () => {
         // dispatch(daftarPasienPulangGet(dateStart, dateEnd))
