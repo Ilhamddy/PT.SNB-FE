@@ -605,6 +605,7 @@ async function getLaporanRL3_2(req, res) {
         
         const result = await pool.query(`
         SELECT
+            ROW_NUMBER() OVER (ORDER BY mj.reportdisplay) AS row_n,
             mj.reportdisplay,
             COUNT(CASE WHEN ma.id IN (1, 2, 3) THEN ma.id END) AS rujukan,
             COUNT(CASE WHEN ma.id NOT IN (1, 2, 3) THEN ma.id END) AS nonrujukan,

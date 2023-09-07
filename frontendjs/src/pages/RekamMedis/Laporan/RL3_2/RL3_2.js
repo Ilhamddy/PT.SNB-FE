@@ -20,7 +20,7 @@ import Flatpickr from "react-flatpickr";
 import DataTable from 'react-data-table-component';
 import LoadingTable from '../../../../Components/Table/LoadingTable';
 import {
-    laporanRL_3_1_Get
+    laporanRL_3_2_Get
 } from '../../../../store/actions';
 import "./RL3_2.scss"
 import * as XLSX from 'xlsx';
@@ -40,8 +40,8 @@ const RL3_2 = () => {
         // data: state.KendaliDokumen.comboLaporanRekammedisGet.data,
         // loading: state.KendaliDokumen.comboLaporanRekammedisGet.loading,
         // error: state.KendaliDokumen.comboLaporanRekammedisGet.error,
-        dataGrid: state.KendaliDokumen.laporanRL_3_1_Get.data,
-        loadingGrid: state.KendaliDokumen.laporanRL_3_1_Get.loading,
+        dataGrid: state.KendaliDokumen.laporanRL_3_2_Get.data,
+        loadingGrid: state.KendaliDokumen.laporanRL_3_2_Get.loading,
     }));
     const [dateStart, setdateStart] = useState(dateAwalStart);
     const [dateEnd, setDateEnd] = useState(dateAwalEnd);
@@ -67,27 +67,19 @@ const RL3_2 = () => {
     const [search, setSearch] = useState('')
     const handleFilter = (e) => {
         if (e.keyCode === 13) {
-            
-            dispatch(laporanRL_3_1_Get({
+
+            dispatch(laporanRL_3_2_Get({
                 search: search,
                 start: validation.values.tglstart,
-                end: validation.values.tglend,
-                instalasi: validation.values.departemen,
-                unit: validation.values.unit,
-                rekanan: validation.values.rekanan,
-                pegawai: validation.values.pegawai
+                end: validation.values.tglend
             }));
         }
     }
     const handleClickCari = () => {
-        dispatch(laporanRL_3_1_Get({
+        dispatch(laporanRL_3_2_Get({
             search: search,
             start: validation.values.tglstart,
-            end: validation.values.tglend,
-            instalasi: validation.values.departemen,
-            unit: validation.values.unit,
-            rekanan: validation.values.rekanan,
-            pegawai: validation.values.pegawai
+            end: validation.values.tglend
         }));
     }
     const tableCustomStyles = {
@@ -108,113 +100,64 @@ const RL3_2 = () => {
     const columns = [
         {
             name: <span className='font-weight-bold fs-13'>No</span>,
-            selector: row => row.row,
+            selector: row => row.row_n,
             sortable: true,
         },
         {
 
             name: <span className='font-weight-bold fs-13'>Jenis Pelayanan</span>,
-            selector: row => row.jenis_spesialisasi,
+            selector: row => row.reportdisplay,
             sortable: true,
             // width: "150px"
         },
         {
 
-            name: <span className='font-weight-bold fs-13'>Pasien Awal Tahun</span>,
-            selector: row => '',
+            name: <span className='font-weight-bold fs-13'>Pasien Rujukan</span>,
+            selector: row => row.rujukan,
             sortable: true,
             // width: "150px"
         },
         {
 
-            name: <span className='font-weight-bold fs-13'>Pasien Masuk</span>,
-            selector: row => row.jumlah,
+            name: <span className='font-weight-bold fs-13'>Pasien NonRujukan</span>,
+            selector: row => row.nonrujukan,
             sortable: true,
             // width: "250px",
         },
         {
 
-            name: <span className='font-weight-bold fs-13'>Pasien Keluar Hidup</span>,
-            selector: row => row.jmlpulanghidup,
+            name: <span className='font-weight-bold fs-13'>Pasien Rawat</span>,
+            selector: row => row.rawat,
             sortable: true,
-            // width: "150px"
+            // width: "250px",
         },
         {
 
-            name: <span className='font-weight-bold fs-13'>Pasien Akhir Tahun</span>,
-            selector: row => row.jmlmeninggalk48,
+            name: <span className='font-weight-bold fs-13'>Pasien rujuk</span>,
+            selector: row => row.rujuk,
             sortable: true,
-            // width: "150px"
+            // width: "250px",
         },
         {
 
-            name: <span className='font-weight-bold fs-13'>Jumlah Hari Perawatan</span>,
-            selector: row => row.jmlmeninggall48,
+            name: <span className='font-weight-bold fs-13'>Pasien pulang</span>,
+            selector: row => row.pulang,
             sortable: true,
-            // width: "150px"
+            // width: "250px",
         },
         {
 
-            name: <span className='font-weight-bold fs-13'>Jumlah Hari Perawatan</span>,
-            selector: row => row.lamarawat,
+            name: <span className='font-weight-bold fs-13'>Mati IGD</span>,
+            selector: row => row.matiigd,
             sortable: true,
-            // width: "150px"
+            // width: "250px",
         },
         {
 
-            name: <span className='font-weight-bold fs-13'>Jumlah Hari Perawatan</span>,
-            selector: row => '',
+            name: <span className='font-weight-bold fs-13'>DOA</span>,
+            selector: row => row.doa,
             sortable: true,
-            // width: "150px"
-        },
-        {
-
-            name: <span className='font-weight-bold fs-13'>Jumlah Hari Perawatan</span>,
-            selector: row => row.hariperawatan,
-            sortable: true,
-            // width: "150px"
-        },
-        {
-
-            name: <span className='font-weight-bold fs-13'>Jumlah Hari Perawatan</span>,
-            selector: row => row.hariperawatanklvvip,
-            sortable: true,
-            // width: "150px"
-        },
-        {
-
-            name: <span className='font-weight-bold fs-13'>Jumlah Hari Perawatan</span>,
-            selector: row => row.hariperawatanklvip,
-            sortable: true,
-            // width: "150px"
-        },
-        {
-
-            name: <span className='font-weight-bold fs-13'>Jumlah Hari Perawatan</span>,
-            selector: row => row.hariperawatankl1,
-            sortable: true,
-            // width: "150px"
-        },
-        {
-
-            name: <span className='font-weight-bold fs-13'>Jumlah Hari Perawatan</span>,
-            selector: row => row.hariperawatankl2,
-            sortable: true,
-            // width: "150px"
-        },
-        {
-
-            name: <span className='font-weight-bold fs-13'>Jumlah Hari Perawatan</span>,
-            selector: row => row.hariperawatankl3,
-            sortable: true,
-            // width: "150px"
-        },
-        {
-
-            name: <span className='font-weight-bold fs-13'>Jumlah Hari Perawatan</span>,
-            selector: row => row.hariperawatanklkhusus,
-            sortable: true,
-            // width: "150px"
+            // width: "250px",
         },
     ];
 
@@ -305,7 +248,7 @@ const RL3_2 = () => {
                             <div className="live-preview">
                                 <div className="table-responsive">
                                     <Table className="table-bordered border-secondary table-nowrap align-top mb-0">
-                                        <thead style={{ backgroundColor: '#e67e22', color: '#ffffff', textAlign:'center',verticalAlign: 'top'  }}>
+                                        <thead style={{ backgroundColor: '#e67e22', color: '#ffffff', textAlign: 'center', verticalAlign: 'top' }}>
                                             <tr>
                                                 <th rowSpan="2">No</th>
                                                 <th rowSpan="2">Jenis Pelayanan</th>
@@ -327,22 +270,15 @@ const RL3_2 = () => {
                                                 <tbody className="w-100 table-hover-click"
                                                     key={i}>
                                                     <tr className="w-100">
-                                                        <td className="text-muted">{data.row}</td>
-                                                        <td className="text-muted">{data.jenis_spesialisasi}</td>
-                                                        <td className="text-muted"></td>
-                                                        <td className="text-muted">{data.jumlah}</td>
-                                                        <td className="text-muted">{data.jmlpulanghidup}</td>
-                                                        <td className="text-muted">{data.jmlmeninggalk48}</td>
-                                                        <td className="text-muted">{data.jmlmeninggall48}</td>
-                                                        <td className="text-muted">{data.lamarawat}</td>
-                                                        <td className="text-muted"></td>
-                                                        <td className="text-muted">{data.hariperawatan}</td>
-                                                        <td className="text-muted">{data.hariperawatanklvvip}</td>
-                                                        <td className="text-muted">{data.hariperawatanklvip}</td>
-                                                        <td className="text-muted">{data.hariperawatankl1}</td>
-                                                        <td className="text-muted">{data.hariperawatankl2}</td>
-                                                        <td className="text-muted">{data.hariperawatankl3}</td>
-                                                        <td className="text-muted">{data.hariperawatanklkhusus}</td>
+                                                        <td className="text-muted">{data.row_n}</td>
+                                                        <td className="text-muted">{data.reportdisplay}</td>
+                                                        <td className="text-muted">{data.rujukan}</td>
+                                                        <td className="text-muted">{data.nonrujukan}</td>
+                                                        <td className="text-muted">{data.rawat}</td>
+                                                        <td className="text-muted">{data.rujuk}</td>
+                                                        <td className="text-muted">{data.pulang}</td>
+                                                        <td className="text-muted">{data.matidiigd}</td>
+                                                        <td className="text-muted">{data.doa}</td>
                                                     </tr>
                                                 </tbody>
                                             ))
@@ -350,24 +286,17 @@ const RL3_2 = () => {
                                     </Table>
                                 </div>
                             </div>
-                            {/* <div className="table-responsive table-card mt-3 mb-1">
-                                <table className="table align-middle" id="customerTable">
-                                    <thead className="table-light">
-                                        <tr>
-                                            <th scope="col" style={{ width: "50px" }}>
-                                                <div className="form-check">
-                                                    <input className="form-check-input" type="checkbox" id="checkAll" value="option" />
-                                                </div>
-                                            </th>
-                                            <th className="sort" data-sort="customer_name">No</th>
-                                            <th className="sort" data-sort="email">Jenis Pelayanan</th>
-                                            <th className="sort" data-sort="phone">PASIEN KELUAR MATI
-                                                <td>test</td>
-                                                <td>test</td>
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                </table>
+                            {/* <div id="table-gridjs">
+                                <DataTable
+                                    fixedHeader
+                                    fixedHeaderScrollHeight="700px"
+                                    columns={columns}
+                                    pagination
+                                    data={dataGrid}
+                                    progressPending={loading}
+                                    progressComponent={<LoadingTable />}
+                                    customStyles={tableCustomStyles}
+                                />
                             </div> */}
                         </CardBody>
                     </Card>

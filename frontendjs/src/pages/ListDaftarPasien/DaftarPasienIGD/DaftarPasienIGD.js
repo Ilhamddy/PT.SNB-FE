@@ -109,6 +109,7 @@ const DaftarPasienIGD = () => {
                             </DropdownToggle>
                             <DropdownMenu className="dropdown-menu-end">
                                 <DropdownItem onClick={() => handleToPengkajian(row)}><i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>Pengkajian Pasien</DropdownItem>
+                                <DropdownItem href="#!" onClick={() => handleClickPulang(row)}><i className="ri-run-line align-bottom me-2 text-muted"></i>Pulang</DropdownItem>
                             </DropdownMenu>
                         </UncontrolledDropdown>
                     </div>
@@ -174,9 +175,30 @@ const DaftarPasienIGD = () => {
             id: row.noidentitas
         })
     };
+    const [statusPulangModal, setstatusPulangModal] = useState(false);
+    const [tempNorecAp, settempNorecAp] = useState('');
+    const [tempNorecDp, settempNorecDp] = useState('');
+    useEffect(() => {
+        dispatch(daftarPasienIGDGet(''));
+        dispatch(comboRegistrasiGet());
+    }, [dispatch]);
+    const handleClickPulang = (e) => {
+        console.log(e)
+        setstatusPulangModal(true);
+        settempNorecDp(e.norecdp)
+        settempNorecAp(e.norecta)
+    }
     return (
         <React.Fragment>
             <ToastContainer closeButton={false} />
+            <StatusPulangModal
+                show={statusPulangModal}
+                // onSimpanClick={handleSimpanKonsul}
+                onCloseClick={() => setstatusPulangModal(false)}
+                tempNorecDp={tempNorecDp}
+                dataStatusPulang={dataCombo.statuspulang}
+                tempNorecAp={tempNorecAp}
+            />
             <UiContent />
             <div className="page-content daftar-pasien-igd">
                 <Container fluid>
