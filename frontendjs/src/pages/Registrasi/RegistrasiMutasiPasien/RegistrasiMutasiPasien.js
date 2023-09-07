@@ -25,13 +25,13 @@ import classnames from "classnames";
 import { comboRegistrasiGet } from '../../../store/master/action';
 import { registrasiNoregistrasiResetForm, registrasiGet, saveRegistrasiMutasi, registrasiResetForm, registrasiRuanganNorecGet, registrasiGetReset, registrasiRuanganNorecGetReset } from "../../../store/actions";
 import "./RegistrasiMutasiPasien.scss"
-const dateStart = (new Date()).toISOString()
 
 const RegistrasiMutasiPasien = (props) => {
     const { id, norec } = useParams();
     document.title = "Registrasi Mutasi Pasien";
     const dispatch = useDispatch();
     const history = useNavigate();
+    const [dateStart] = useState(() => (new Date()).toISOString())
     // Pills Tabs
     const [pillsTab, setpillsTab] = useState("1");
     const pillsToggle = (tab) => {

@@ -33,14 +33,12 @@ import PrintTemplate from "../Print/PrintTemplate/PrintTemplate";
 import "./Bayar.scss"
 import LoadingTable from "../../Components/Table/LoadingTable";
 
-const dateAwalStart = (new Date(new Date(new Date() - 1000 * 60 * 60 * 24 * 3))).toISOString();
-const dateAwalEnd = (new Date()).toISOString()
-const date = new Date()
 
 
 const Bayar = () => {
     const { norecnota } = useParams();
     const [isDeposit, setIsDeposit] = useState(false);
+    
     let {
         dataPasienPlg, 
         comboboxReg,
@@ -70,7 +68,8 @@ const Bayar = () => {
     const handlePrintBukti = () => {
         refPrintTransaksi.current.handlePrint();
     }
-
+    const [dateStart] = useState(() => (new Date()).toISOString())
+    const [dateEnd] = useState(() => (new Date()).toISOString())
     const validation = useFormik({
         enableReinitialize: true,
         initialValues: {
@@ -79,7 +78,7 @@ const Bayar = () => {
             diskon: 0,
             // non wajib
             deposit: 0,
-            nobukti: `B${date.getFullYear().toString().substring(2, 4)}${date.getMonth() + 1}${date.getDate()}${date.getHours()}${date.getMinutes()}${date.getSeconds()}`,
+            nobukti: `B${dateStart.slice(2, 4)}${dateStart.slice(5,7) + 1}${dateStart.slice(8,10)}${dateStart.slice(11,13)}${dateStart.slice(14,16)}${dateStart.slice(17, 19)}`,
             pegawai: "",
             norecnota: "",
             klaim: "",
@@ -92,7 +91,7 @@ const Bayar = () => {
                 pjpasien: "",
                 approvalcode: "",
                 nominalbayar: "",
-                tglbayar: dateAwalStart,
+                tglbayar: dateStart,
                 rekeningrs: ""
             }]
         },
@@ -159,7 +158,7 @@ const Bayar = () => {
             nontunai: "",
             pjpasien: "",
             nominalbayar: "",
-            tglbayar: dateAwalStart,
+            tglbayar: dateStart,
             rekeningrs: "",
             approvalcode: ""
         });
@@ -171,9 +170,7 @@ const Bayar = () => {
         newPayments.pop();
         validation.setFieldValue("payment", newPayments);
     }
-
-    const [dateStart, setDateStart] = useState(dateAwalStart);
-    const [dateEnd, setDateEnd] = useState(dateAwalEnd);
+    
     const [search, setSearch] = useState("");
     const [instalasi, setInstalasi] = useState("");
     const dispatch = useDispatch();

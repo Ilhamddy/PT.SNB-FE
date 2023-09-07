@@ -18,6 +18,7 @@ import PrintExpertiseRadiologi from "../../../pages/Print/PrintExpertiseRadiolog
 const ExpertiseRadiologiModal = ({ show,dataReg, onCloseClick, norecPelayanan, dataCombo,tempdokterpengirim,
 tempruanganpengirim,tempSelected }) => {
     const dispatch = useDispatch();
+    const [dateStart] = useState(() => (new Date()).toISOString())
     const { newData, loading, success } = useSelector(state => ({
         newData: state.Radiologi.saveExpertiseRadiologi.newData,
         success: state.Radiologi.saveExpertiseRadiologi.success,
@@ -43,13 +44,13 @@ tempruanganpengirim,tempSelected }) => {
             expertise: '',
             dokterpengirim: '',
             labeldokterpengirim: '',
-            tgllayanan: dateAwalStart,
+            tgllayanan: dateStart,
             foto: '',
             dokterradiologi: '',
             labeldokterradiologi:'',
             ruanganpengirim: '',
             labelruanganpengirim: '',
-            tglcetak:dateAwalStart
+            tglcetak:dateStart
         },
         validationSchema: Yup.object({
             template: Yup.string().required("Template wajib diisi"),

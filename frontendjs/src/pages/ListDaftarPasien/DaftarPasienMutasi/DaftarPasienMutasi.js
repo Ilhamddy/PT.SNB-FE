@@ -25,12 +25,6 @@ import {
 } from '../../../store/actions';
 import "./DaftarPasienMutasi.scss"
 
-const currentDate = new Date();
-currentDate.setDate(currentDate.getDate());
-currentDate.setHours(0, 0, 0, 0);
-
-const dateAwalStart = currentDate.toISOString();
-const dateAwalEnd = (new Date()).toISOString()
 
 const DaftarPasienMutasi = () => {
     document.title = "Daftar Pasien Rawat Jalan";
@@ -43,8 +37,9 @@ const DaftarPasienMutasi = () => {
         dataGrid: state.DaftarPasien.listPasienMutasiGet.data,
         loadingGrid: state.DaftarPasien.listPasienMutasiGet.loading,
     }));
-    const [dateStart, setdateStart] = useState(dateAwalStart);
-    const [dateEnd, setDateEnd] = useState(dateAwalEnd);
+    const [dateStart] = useState(() => (new Date()).toISOString())
+    const [dateEnd] = useState(() => (new Date()).toISOString())
+
     const validation = useFormik({
         enableReinitialize: true,
         initialValues: {

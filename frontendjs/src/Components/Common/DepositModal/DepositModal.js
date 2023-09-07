@@ -6,16 +6,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { dateTimeISOString, onChangeStrNbr, strToNumber } from "../../../utils/format";
 import { rgxAllComma, rgxAllNumber, rgxAllPeriods } from "../../../utils/regexcommon";
 import { comboPaymentGet } from "../../../store/master/action";
-import { useEffect } from "react";
+import { useEffect,useState } from "react";
 import { buktiBayarCreate } from "../../../store/payment/action";
 
-const dateAwalStart = (new Date(new Date(new Date() - 1000 * 60 * 60 * 24 * 3))).toISOString();
-const dateAwalEnd = (new Date()).toISOString()
-const date = new Date()
+
 
 const DepositModal = ({toggle, norecdp}) => {
     const dispatch = useDispatch();
-
+    const [dateStart] = useState(new Date().toISOString())
     let {
         comboboxpayment,
     } = useSelector((state) => ({
@@ -29,7 +27,7 @@ const DepositModal = ({toggle, norecdp}) => {
             totaltagihan: "",
             diskon: 0,
             deposit: 0,
-            nobukti: `B${date.getFullYear().toString().substring(2, 4)}${date.getMonth() + 1}${date.getDate()}${date.getHours()}${date.getMinutes()}${date.getSeconds()}`,
+            nobukti: `B${dateStart.slice(2, 4)}${dateStart.slice(5,7) + 1}${dateStart.slice(8,10)}${dateStart.slice(11,13)}${dateStart.slice(14,16)}${dateStart.slice(17, 19)}`,
             norecnota: "",
             klaim: 0,
             norecdp: norecdp,
@@ -42,7 +40,7 @@ const DepositModal = ({toggle, norecdp}) => {
                 pjpasien: "",
                 approvalcode: "",
                 nominalbayar: "",
-                tglbayar: dateAwalStart,
+                tglbayar: dateStart,
                 rekeningrs: ""
             }]
         },
@@ -93,7 +91,7 @@ const DepositModal = ({toggle, norecdp}) => {
             nontunai: "",
             pjpasien: "",
             nominalbayar: "",
-            tglbayar: dateAwalStart,
+            tglbayar: dateStart,
             rekeningrs: "",
             approvalcode: ""
         });

@@ -12,18 +12,12 @@ import * as Yup from "yup";
 import { saveBatalRegistrasi } from "../../store/actions";
 
 
-const currentDate = new Date();
-currentDate.setDate(currentDate.getDate());
-currentDate.setHours(0, 0, 0, 0);
-
-const dateAwalStart = currentDate.toISOString();
-const dateAwalEnd = (new Date()).toISOString()
 
 const BatalRegistrasi = ({ show, onSimpanClick,
     onCloseClick,
     tempNorecDp }) => {
     const dispatch = useDispatch();
-    const [dateStart, setdateStart] = useState(dateAwalStart);
+    const [dateStart, setdateStart] = useState(() => (new Date()).toISOString());
     const validation = useFormik({
         enableReinitialize: true,
         initialValues: {

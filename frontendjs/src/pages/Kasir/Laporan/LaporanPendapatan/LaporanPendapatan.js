@@ -26,13 +26,6 @@ import "./LaporanPendapatan.scss"
 import * as XLSX from 'xlsx';
 import { Grid, _ } from 'gridjs-react';
 
-const currentDate = new Date();
-currentDate.setDate(currentDate.getDate());
-currentDate.setHours(0, 0, 0, 0);
-
-const dateAwalStart = currentDate.toISOString();
-const dateAwalEnd = (new Date()).toISOString()
-
 const LaporanPendapatan = () => {
     document.title = "Laporan RL3.1";
     const dispatch = useDispatch();
@@ -43,8 +36,9 @@ const LaporanPendapatan = () => {
         dataGrid: state.Payment.laporanPendapatanKasirGet.data,
         loadingGrid: state.Payment.laporanPendapatanKasirGet.loading,
     }));
-    const [dateStart, setdateStart] = useState(dateAwalStart);
-    const [dateEnd, setDateEnd] = useState(dateAwalEnd);
+    const [dateStart] = useState(() => (new Date()).toISOString())
+    const [dateEnd] = useState(() => (new Date()).toISOString())
+
     const validation = useFormik({
         enableReinitialize: true,
         initialValues: {

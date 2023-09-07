@@ -19,9 +19,6 @@ import { buktiBayarCancel, daftarPiutangPasienGet, daftarTagihanPasienGet, getPi
 import LoadingTable from "../../Components/Table/LoadingTable";
 import ServicePayment from "../../services/service-payment";
 
-const dateAwalStart = (new Date(new Date() - 1000 * 60 * 60 * 24 * 3)).toISOString();
-const dateAwalEnd = (new Date()).toISOString()
-
 
 const DaftarPiutangPasien = () => {
     const {
@@ -38,8 +35,8 @@ const DaftarPiutangPasien = () => {
 
     const { location } = useParams();
 
-    const [dateStart, setDateStart] = useState(dateAwalStart);
-    const [dateEnd, setDateEnd] = useState(dateAwalEnd);
+    const [dateStart, setDateStart] = useState(new Date().toISOString());
+    const [dateEnd, setDateEnd] = useState(new Date().toISOString());
     const [search, setSearch] = useState("");
     const [instalasi, setInstalasi] = useState("");
     const dispatch = useDispatch();
