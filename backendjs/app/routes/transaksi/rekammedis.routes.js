@@ -61,8 +61,14 @@ export default function (app) {
     );
 
     app.get(
-        "/api/transaksi/rekammedis/get-test",
+        "/api/transaksi/rekammedis/get-sensus-manual",
         [authJwt.verifyToken],
-        controller.getTest
+        controller.getSensusManual
+    );
+
+    app.get(
+        "/api/transaksi/rekammedis/get-laporan-rl-3-2",
+        [authJwt.verifyToken],
+        controller.getLaporanRL3_2
     );
 }
