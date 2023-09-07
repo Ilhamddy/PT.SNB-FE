@@ -22,6 +22,7 @@ const t_returobatpasien = db.t_returobatpasien
 const Op = db.Sequelize.Op;
 
 const getOrderResepQuery = async (req, res) => {
+    const logger = res.locals.logger
     try{
         let dataAllOrders = await pool.query(qGetOrderResepFromDP, [
             'all',
@@ -39,8 +40,7 @@ const getOrderResepQuery = async (req, res) => {
             msg: "sukses get resep from dp"
         });
     }catch(error){
-        console.error("== gagal get all resep query")
-        console.error(error)
+        logger.error(error)
         res.status(500).send({
             data: error,
             status: "error",
@@ -51,6 +51,7 @@ const getOrderResepQuery = async (req, res) => {
 }
 
 const getOrderResepFromNorec = async (req, res) => {
+    const logger = res.locals.logger
     try{
         const {norec} = req.query
         let dataOrderNorec = (await pool.query(qGetOrderResepFromDP, [
@@ -79,8 +80,7 @@ const getOrderResepFromNorec = async (req, res) => {
             msg: "sukses get resep from norec"
         });
     }catch(error){
-        console.error("== gagal get Resep from DP")
-        console.error(error)
+        logger.error(error)
         res.status(500).send({
             data: error,
             status: "error",
@@ -91,6 +91,7 @@ const getOrderResepFromNorec = async (req, res) => {
 }
 
 const createOrUpdateVerifResep = async (req, res) => {
+    const logger = res.locals.logger
     const [transaction, errorTransaction] = await createTransaction(db, res)
     try{
         if(errorTransaction) return
@@ -144,7 +145,7 @@ const createOrUpdateVerifResep = async (req, res) => {
             success: true,
         });
     }catch(error){
-        console.error(error)
+        logger.error(error)
         await transaction.rollback()
         res.status(500).send({
             data: error,
@@ -179,6 +180,7 @@ const createKodeResep = async () => {
 }
 
 const createOrUpdatePenjualanBebas = async (req, res) => {
+    const logger = res.locals.logger
     const [transaction, errorTransaction] 
         = await createTransaction(db, res)
     if(errorTransaction) return
@@ -258,6 +260,7 @@ const createOrUpdatePenjualanBebas = async (req, res) => {
             success: true,
         });
     }catch(error){
+        logger.error(error)
         await transaction.rollback()
         res.status(500).send({
             code: 200,
@@ -270,6 +273,7 @@ const createOrUpdatePenjualanBebas = async (req, res) => {
 }
 
 const getPasienFromNoCm = async (req, res) => {
+    const logger = res.locals.logger
     try{
         const {nocm} = req.query
         let dataAllPasien = await pool.query(qGetPasienFromId, [
@@ -285,6 +289,7 @@ const getPasienFromNoCm = async (req, res) => {
             msg: "sukses get resep from dp"
         });
     }catch(error){
+        logger.error(error)
         res.status(500).send({
             data: error,
             status: "error",
@@ -295,6 +300,7 @@ const getPasienFromNoCm = async (req, res) => {
 }
 
 const getAllVerifResep = async (req, res) => {
+    const logger = res.locals.logger
     try{
         const { norecdp } = req.query
         let dataAllPasien = await pool.query(qGetAllVerif, [norecdp])
@@ -308,6 +314,7 @@ const getAllVerifResep = async (req, res) => {
             msg: "sukses get all verif"
         });
     }catch(error){
+        logger.error(error)
         res.status(500).send({
             data: error,
             status: "error",
@@ -318,6 +325,7 @@ const getAllVerifResep = async (req, res) => {
 }
 
 const createOrUpdateRetur = async (req, res) => {
+    const logger = res.locals.logger
     const [transaction, errorTransaction]
         = await createTransaction(db, res)
     if(errorTransaction) return
@@ -391,6 +399,7 @@ const createOrUpdateRetur = async (req, res) => {
         });
 
     }catch(error){
+        logger.error(error)
         await transaction.rollback()
         res.status(500).send({
             code: 200,
@@ -403,6 +412,7 @@ const createOrUpdateRetur = async (req, res) => {
 }
 
 const getAntreanFromDP = async (req, res) => {
+    const logger = res.locals.logger
     try{
         const { norecdp } = req.query
         let dataAllAntrean = await pool.query(qGetAntreanFromDP, [norecdp])
@@ -426,6 +436,7 @@ const getAntreanFromDP = async (req, res) => {
 }
 
 const createOrUpdateOrderPlusVerif = async (req, res) => {
+    const logger = res.locals.logger
     const [transaction, errorTransaction] = await createTransaction(db, res)
     if(errorTransaction) return
     try{
@@ -513,6 +524,7 @@ const createOrUpdateOrderPlusVerif = async (req, res) => {
             success: true,
         });
     }catch(error){
+        logger.error(error)
         await transaction.rollback()
         res.status(500).send({
             code: 200,

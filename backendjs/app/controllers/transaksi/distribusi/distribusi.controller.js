@@ -19,6 +19,7 @@ const t_stokunit = db.t_stokunit
 
 
 export const getStokBatch = async (req, res) => {
+    const logger = res.locals.logger
     try{
         const { idunit } = req.query
         const { rows } = await pool.query(qGetStokUnit, [idunit])
@@ -45,8 +46,7 @@ export const getStokBatch = async (req, res) => {
             code: 200
         });
     }catch(error){
-        console.error("==error get stok batch==")
-        console.error(error)
+        logger.error(error)
         res.status(500).send({
             data: error,
             success: false,
@@ -57,6 +57,7 @@ export const getStokBatch = async (req, res) => {
 }
 
 const getKemasanById = async (req, res) => {
+    const logger = res.locals.logger
     try {
         let { idkemasan } = req.query;
         if(!idkemasan) throw new Error("idkemasan is required")
@@ -71,8 +72,7 @@ const getKemasanById = async (req, res) => {
             success: true,
         });
     } catch (error){
-        console.error("===get combo setting error=== ")
-        console.error(error)
+        logger.error(error)
         res.status(500).send({
             data: error,
             status: "error",
@@ -82,6 +82,7 @@ const getKemasanById = async (req, res) => {
 }
 
 const createOrUpdateOrderbarang = async (req, res) => {
+    const logger = res.locals.logger
     const [transaction, errorTransaction] = await createTransaction(db, res);
     if(errorTransaction) return
     try{
@@ -140,8 +141,7 @@ const createOrUpdateOrderbarang = async (req, res) => {
         });
 
     }catch(error){
-        console.error("==Create or update produk penerimaan gagal");
-        console.error(error)
+        logger.error(error)
         await transaction.rollback();
         res.status(500).send({
             data: error,
@@ -153,6 +153,7 @@ const createOrUpdateOrderbarang = async (req, res) => {
 } 
 
 const getOrderBarang = async (req, res) => {
+    const logger = res.locals.logger
     try {
         const order = (await pool.query(qGetOrder, []));
         if(order.rows.length === 0) throw new Error("order not found")
@@ -165,8 +166,7 @@ const getOrderBarang = async (req, res) => {
             success: true,
         });
     } catch (error){
-        console.error("===get combo setting error=== ")
-        console.error(error)
+        logger.error(error)
         res.status(500).send({
             data: error,
             status: "error",
@@ -176,6 +176,7 @@ const getOrderBarang = async (req, res) => {
 }
 
 export const getOrderStokBatch = async (req, res) => {
+    const logger = res.locals.logger
     try{
         const norecorder = req.query.norecorder
         if(!norecorder) throw new Error("norecorder is required");
@@ -274,8 +275,7 @@ export const getOrderStokBatch = async (req, res) => {
             code: 200
         });
     }catch(error){
-        console.error("==error get stok batch==")
-        console.error(error)
+        logger.error(error)
         res.status(500).send({
             data: error,
             success: false,
@@ -288,6 +288,7 @@ export const getOrderStokBatch = async (req, res) => {
 
 
 const createOrUpdateKirimBarang = async (req, res) => {
+    const logger = res.locals.logger
     const [transaction, errorTransaction] = await createTransaction(db, res);
     if(errorTransaction) return
     try {
@@ -341,8 +342,7 @@ const createOrUpdateKirimBarang = async (req, res) => {
             code: 200
         });
     }catch(error){
-        console.error("==Create or update kirim barang gagal");
-        console.error(error)
+        logger.error(error)
         await transaction.rollback();
         res.status(500).send({
             data: error,
