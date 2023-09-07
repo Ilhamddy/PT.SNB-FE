@@ -598,6 +598,32 @@ async function getTest(req, res) {
 }
 
 
+const get = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        await db.sequelize.transaction(async (transaction) => {
+            //Kode
+        });
+        
+        const tempres = {
+        
+        };
+        res.status(200).json({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).json({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
 
 export default {
     getListDaftarDokumenRekammedis,

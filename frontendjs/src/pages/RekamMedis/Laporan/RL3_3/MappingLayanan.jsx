@@ -2,6 +2,7 @@ import React from 'react'
 import { ToastContainer } from 'react-toastify'
 import UiContent from '../../../../Components/Common/UiContent'
 import {
+  Button,
   Card,
   CardBody,
   Col,
@@ -36,7 +37,6 @@ const MappingRL = () => {
       instalasi: '',
       jenisproduk: '',
       detailjenisproduk: '',
-      namalayanan: '',
     },
     validationSchema: Yup.object({
       instalasi: Yup.string().required('Instalasi harus diisi!'),
@@ -212,18 +212,15 @@ const MappingRL = () => {
                       )}
                   </Col>
                 </Row>
-                <Row>
-                  <Col lg={2}>
-                    <Label
-                      style={{ color: 'black' }}
-                      htmlFor={`namalayanan`}
-                      className="form-label mt-2"
-                    >
-                      No Resep
-                    </Label>
-                  </Col>
+                <div className="d-flex justify-content-center w-100 mt-3">
+                  <Button color="success">Tampilkan</Button>
+                </div>
+              </Col>
+              <Col lg={7}>
+                <Row className="d-flex flex-row-reverse">
                   <Col lg={4}>
                     <Input
+                      className="w-100"
                       id={`namalayanan`}
                       name={`namalayanan`}
                       type="text"
@@ -241,9 +238,26 @@ const MappingRL = () => {
                       )}
                   </Col>
                 </Row>
+                <Row>
+                  <Col lg={12}>
+                    <DataTable
+                      fixedHeader
+                      fixedHeaderScrollHeight="700px"
+                      columns={[]}
+                      pagination
+                      data={[]}
+                      progressPending={false}
+                      progressComponent={<LoadingTable />}
+                      customStyles={tableCustomStyles}
+                    />
+                  </Col>
+                </Row>
+                <div className="d-flex justify-content-center w-100 mt-3">
+                  <Button color="success">Selesai</Button>
+                </div>
               </Col>
-              <Col lg={7}></Col>
             </Row>
+            <div></div>
           </Card>
         </Container>
       </div>
