@@ -26,7 +26,13 @@ import {
     LAPORAN_RL_3_1_GET_ERROR,
     LAPORAN_RL_3_2_GET,
     LAPORAN_RL_3_2_GET_SUCCESS,
-    LAPORAN_RL_3_2_GET_ERROR
+    LAPORAN_RL_3_2_GET_ERROR,
+    GET_DETAIL_JENIS_PRODUK,
+    GET_DETAIL_JENIS_PRODUK_SUCCESS,
+    GET_DETAIL_JENIS_PRODUK_ERROR,
+    GET_LAYANAN_JENIS,
+    GET_LAYANAN_JENIS_SUCCESS,
+    GET_LAYANAN_JENIS_ERROR,
 } from "./actionType";
 
 const INIT_STATE = {
@@ -72,6 +78,16 @@ const INIT_STATE = {
         error: null,
     },
     laporanRL_3_2_Get:{
+        data: [],
+        loading: false,
+        error: null,
+    },
+    getDetailJenisProduk: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    getLayananJenis: {
         data: [],
         loading: false,
         error: null,
@@ -405,6 +421,73 @@ const KendaliDokumen = (state = INIT_STATE, action) => {
                 ...state,
                 laporanRL_3_2_Get: {
                     ...state.laporanRL_3_2_Get,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case GET_DETAIL_JENIS_PRODUK: {
+            return {
+                ...state,
+                getDetailJenisProduk: {
+                    ...state.getDetailJenisProduk,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case GET_DETAIL_JENIS_PRODUK_SUCCESS: {
+            return {
+                ...state,
+                getDetailJenisProduk: {
+                    ...state.getDetailJenisProduk,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case GET_DETAIL_JENIS_PRODUK_ERROR: {
+            return {
+                ...state,
+                getDetailJenisProduk: {
+                    ...state.getDetailJenisProduk,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case GET_LAYANAN_JENIS: {
+            return {
+                ...state,
+                getLayananJenis: {
+                    ...state.getLayananJenis,
+                    data: [],
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case GET_LAYANAN_JENIS_SUCCESS: {
+            return {
+                ...state,
+                getLayananJenis: {
+                    ...state.getLayananJenis,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case GET_LAYANAN_JENIS_ERROR: {
+            return {
+                ...state,
+                getLayananJenis: {
+                    ...state.getLayananJenis,
                     loading: false,
                     error: action.error,
                 }

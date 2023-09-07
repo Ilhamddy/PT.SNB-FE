@@ -9,16 +9,36 @@ left join m_pegawai mp2 on mp2.id=td.objectpegawaifk
 where td.tglregistrasi between $1 and $2 and td.noregistrasi ilike $3 
 `
 
+
+
 const qGetDetailFromJenisProduk = `
 SELECT 
     mdjp.namaexternal AS label,
     mdjp.id AS value
 FROM m_detailjenisproduk mdjp
-WHERE objectinstalasifk = $1
+WHERE objectjenisprodukfk = $1
 AND statusenabled = true
+`
+
+const qLayananJenis = `
+SELECT
+    CAST(row_number() OVER (ORDER BY mpr.id) AS INT)  AS no,
+    mpr.id AS idproduk,
+    mpr.namaproduk AS namaproduk,
+    mdp.detailjenisproduk AS detailjenisproduk,
+    mjp.jenisproduk AS jenisproduk,
+    mi.namainstalasi AS instalasi
+FROM m_produk mpr
+    LEFT JOIN m_detailjenisproduk mdp ON mdp.id = mpr.objectdetailjenisprodukfk
+    LEFT JOIN m_jenisproduk mjp ON mjp.id = mdp.objectjenisprodukfk
+    LEFT JOIN m_instalasi mi ON mi.id = mpr.objectinstalasifk
+WHERE mpr.objectdetailjenisprodukfk = $1
+AND mpr.statusenabled = true
+ORDER BY mpr.id
 `
 
 export default {
     qResult,
-    qGetDetailFromJenisProduk
+    qGetDetailFromJenisProduk,
+    qLayananJenis
 }

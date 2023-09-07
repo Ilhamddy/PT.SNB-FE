@@ -21,9 +21,6 @@ import "./RegistrasiPenjaminFK.scss";
 import { onChangeStrNbr, strToNumber } from "../../../utils/format";
 import { rgxAllNumber, rgxAllPeriods, rgxNbrEmpty } from "../../../utils/regexcommon";
 
-const dateNow = new Date()
-
-
 const RegistrasiPenjaminFK = () => {
     const { id, norec } = useParams();
 
@@ -33,6 +30,7 @@ const RegistrasiPenjaminFK = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
+    const [dateNow] = useState(() => (new Date()).toISOString())
 
     const {  dataDiagnosa, statusKecelakaanOpt,
         comboboxAsuransi, 

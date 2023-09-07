@@ -44,4 +44,7 @@ export default class ServiceRekammedis {
         return await api.get(`/transaksi/rekammedis/get-detail-jenis-produk`, queries);
     }
 
+    getLayananJenis = async (queries) => {
+        return await api.get(`/transaksi/rekammedis/get-layanan-jenis`, queries);
+    }
 }

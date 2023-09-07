@@ -11,6 +11,8 @@ import {
     LIST_LAPORAN_PASIEN_KUNJUNGAN_GET,
     LAPORAN_RL_3_1_GET,
     LAPORAN_RL_3_2_GET,
+    GET_DETAIL_JENIS_PRODUK,
+    GET_LAYANAN_JENIS
 } from "./actionType";
 
 import {
@@ -22,7 +24,11 @@ import {
     listLaporanPasienBatalGetSuccess, listLaporanPasienBatalGetError,
     listLaporanPasienKunjunganGetSuccess, listLaporanPasienKunjunganGetError,
     laporanRL_3_1_GetSuccess, laporanRL_3_1_GetError,
-    laporanRL_3_2_GetSuccess, laporanRL_3_2_GetError
+    laporanRL_3_2_GetSuccess, laporanRL_3_2_GetError,
+    getDetailJenisProdukSuccess,
+    getDetailJenisProdukError,
+    getLayananJenisSuccess,
+    getLayananJenisError
 } from "./action";
 
 import { toast } from 'react-toastify';
@@ -165,6 +171,32 @@ export function* watchonlaporanRL_3_2_Get() {
     yield takeEvery(LAPORAN_RL_3_2_GET, onlaporanRL_3_2_Get);
 }
 
+function* onGetDetailJenisProduk({ payload: { queries }}) {
+    try{
+        const response = yield call(serviceRekammedis.getDetailJenisProduk, queries);
+        yield put(getDetailJenisProdukSuccess(response.data));
+    } catch(error) {
+        yield put(getDetailJenisProdukError(error));
+    }
+}
+
+export function* watchonGetDetailJenisProduk() {
+    yield takeEvery(GET_DETAIL_JENIS_PRODUK, onGetDetailJenisProduk);
+}
+
+function* onGetLayananJenis({ payload: { queries }}) {
+    try{
+        const response = yield call(serviceRekammedis.getLayananJenis, queries);
+        yield put(getLayananJenisSuccess(response.data));
+    } catch (error) {
+        yield put(getLayananJenisError(error));
+    }
+}
+
+export function* watchonGetLayananJenis() {
+    yield takeEvery(GET_LAYANAN_JENIS, onGetLayananJenis);
+}
+
 function* kendaliDokumenSaga() {
     yield all([
         fork(watchonDaftarDokumenRekammedis),
@@ -175,7 +207,9 @@ function* kendaliDokumenSaga() {
         fork(watchonlistLaporanPasienBatalGet),
         fork(watchonlistLaporanPasienKunjunganGet),
         fork(watchonlaporanRL_3_1_Get),
-        fork(watchonlaporanRL_3_2_Get)
+        fork(watchonlaporanRL_3_2_Get),
+        fork(watchonGetDetailJenisProduk),
+        fork(watchonGetLayananJenis)
     ]);
 }
 

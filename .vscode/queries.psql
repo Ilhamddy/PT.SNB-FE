@@ -1,6 +1,13 @@
-SELECT 
-    mdjp.namaexternal AS label,
-    mdjp.id AS value
-FROM m_detailjenisproduk mdjp
-WHERE objectinstalasifk = 1
-AND statusenabled = true
+SELECT
+    mpr.id AS idproduk,
+    mpr.namaproduk AS namaproduk,
+    mdp.detailjenisproduk AS detailjenisproduk,
+    mjp.jenisproduk AS jenisproduk,
+    mi.namainstalasi AS instalasi
+FROM m_produk mpr
+    LEFT JOIN m_detailjenisproduk mdp ON mdp.id = mpr.objectdetailjenisprodukfk
+    LEFT JOIN m_jenisproduk mjp ON mjp.id = mdp.objectjenisprodukfk
+    LEFT JOIN m_instalasi mi ON mi.id = mpr.objectinstalasifk
+WHERE mpr.objectinstalasifk = 1
+AND mpr.objectdetailjenisprodukfk = 2
+AND mpr.statusenabled = true

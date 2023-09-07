@@ -27,6 +27,7 @@ import React from "react";
 import { rgxAllPeriods } from "../../utils/regexcommon";
 import LoadingTable from "../../Components/Table/LoadingTable";
 
+//TODO: ganti masukkan ke dalam komponen
 const dateAwalStart = (new Date(new Date() - 1000 * 60 * 60 * 24 * 3)).toISOString();
 const dateAwalEnd =  (new Date().toISOString())
 const date = new Date()

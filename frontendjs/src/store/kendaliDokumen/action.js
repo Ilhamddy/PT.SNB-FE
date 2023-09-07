@@ -26,7 +26,13 @@ import {
     LAPORAN_RL_3_1_GET_ERROR,
     LAPORAN_RL_3_2_GET,
     LAPORAN_RL_3_2_GET_SUCCESS,
-    LAPORAN_RL_3_2_GET_ERROR
+    LAPORAN_RL_3_2_GET_ERROR,
+    GET_DETAIL_JENIS_PRODUK,
+    GET_DETAIL_JENIS_PRODUK_SUCCESS,
+    GET_DETAIL_JENIS_PRODUK_ERROR,
+    GET_LAYANAN_JENIS,
+    GET_LAYANAN_JENIS_SUCCESS,
+    GET_LAYANAN_JENIS_ERROR,
 } from "./actionType";
 
 export const kendaliDokumenResetForm = () => ({
@@ -166,5 +172,35 @@ export const laporanRL_3_2_GetSuccess = (data) => ({
 
 export const laporanRL_3_2_GetError = (error) => ({
     type: LAPORAN_RL_3_2_GET_ERROR,
+    payload: error,
+});
+
+export const getDetailJenisProduk = (queries) => ({
+    type: GET_DETAIL_JENIS_PRODUK,
+    payload: { queries: queries },
+});
+
+export const getDetailJenisProdukSuccess = (data) => ({
+    type: GET_DETAIL_JENIS_PRODUK_SUCCESS,
+    payload: data,
+});
+
+export const getDetailJenisProdukError = (error) => ({
+    type: GET_DETAIL_JENIS_PRODUK_ERROR,
+    payload: error,
+});
+
+export const getLayananJenis = (queries) => ({
+    type: GET_LAYANAN_JENIS,
+    payload: { queries: queries },
+});
+
+export const getLayananJenisSuccess = (data) => ({
+    type: GET_LAYANAN_JENIS_SUCCESS,
+    payload: data,
+});
+
+export const getLayananJenisError = (error) => ({
+    type: GET_LAYANAN_JENIS_ERROR,
     payload: error,
 });

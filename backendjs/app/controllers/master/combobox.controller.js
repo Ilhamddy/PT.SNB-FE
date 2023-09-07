@@ -602,8 +602,10 @@ const comboMappingProduk = async (req, res) => {
     const logger = res.locals.logger;
     try{
         const jenisProduk = await pool.query(queriesJenisProduk.getAll)
+        const instalasi = await pool.query(quriesInstalasi.getAll)
         const tempres = {
-            jenisproduk: jenisProduk.rows
+            jenisproduk: jenisProduk.rows,
+            instalasi: instalasi.rows
         };
         res.status(200).json({
             msg: 'Success',

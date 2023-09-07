@@ -47,8 +47,8 @@ const DaftarPasienFarmasi = () => {
         id: "",
     })
     const current = new Date();
-    const [dateStart, setdateStart] = useState(`${current.getFullYear()}-${current.getMonth() + 1}-${current.getDate()}`);
-    const [dateEnd, setdateEnd] = useState(`${current.getFullYear()}-${current.getMonth() + 1}-${current.getDate()}`);
+    const [dateStart, setdateStart] = useState(current.toISOString());
+    const [dateEnd, setdateEnd] = useState(current.toISOString());
     const [search, setSearch] = useState('')
     const tableCustomStyles = {
         headRow: {

@@ -14,9 +14,6 @@ import PropTypes from "prop-types";
 import PrintTemplate from "../../../pages/Print/PrintTemplate/PrintTemplate";
 import PrintExpertiseRadiologi from "../../../pages/Print/PrintExpertiseRadiologi/PrintExpertiseRadiologi";
 
-const dateAwalStart = (new Date(new Date(new Date() - 1000 * 60 * 60 * 24 * 3))).toISOString();
-const dateAwalEnd = (new Date()).toISOString()
-const date = new Date()
 
 const ExpertiseRadiologiModal = ({ show,dataReg, onCloseClick, norecPelayanan, dataCombo,tempdokterpengirim,
 tempruanganpengirim,tempSelected }) => {
@@ -34,6 +31,8 @@ tempruanganpengirim,tempSelected }) => {
     //         dispatch(radiologiResetForm());
     //     }
     // }, [dispatch])
+
+    const [dateAwalStart] = useState(() => (new Date()).toISOString())
     
     const validation = useFormik({
         enableReinitialize: true,

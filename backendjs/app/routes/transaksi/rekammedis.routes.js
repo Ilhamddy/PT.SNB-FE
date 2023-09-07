@@ -77,4 +77,10 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getDetailJenisProduk
     )
+
+    app.get(
+        "/api/transaksi/rekammedis/get-layanan-jenis",
+        [authJwt.verifyToken],
+        controller.getLayananJenis
+    )
 }

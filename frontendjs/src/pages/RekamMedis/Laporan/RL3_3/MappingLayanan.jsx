@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { ToastContainer } from 'react-toastify'
 import UiContent from '../../../../Components/Common/UiContent'
 import {
@@ -18,12 +18,30 @@ import LoadingTable from '../../../../Components/Table/LoadingTable'
 import CustomSelect from '../../../Select/Select'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { getComboMappingProduk } from '../../../../store/master/action'
 import NoDataTable from '../../../../Components/Table/NoDataTable'
+import {
+  getDetailJenisProduk,
+  getLayananJenis,
+} from '../../../../store/kendaliDokumen/action'
 
 const MappingRL = () => {
   const dispatch = useDispatch()
+  const {
+    loadingComboMapping,
+    jenisProduk,
+    instalasi,
+    detailJenisProduk,
+    layananJenis,
+  } = useSelector((state) => ({
+    loadingComboMapping: state.Master.getComboMappingProduk.loading,
+    jenisProduk: state.Master.getComboMappingProduk.data.jenisproduk,
+    instalasi: state.Master.getComboMappingProduk.data.instalasi,
+    detailJenisProduk:
+      state.KendaliDokumen.getDetailJenisProduk.data.detailjenisproduk,
+    layananJenis: state.KendaliDokumen.getLayananJenis.data.layanan,
+  }))
   const vMapping = useFormik({
     initialValues: {
       norl: '',
@@ -43,18 +61,65 @@ const MappingRL = () => {
       detailjenisproduk: '',
     },
     validationSchema: Yup.object({
-      instalasi: Yup.string().required('Instalasi harus diisi!'),
-      jenisproduk: Yup.string().required('Jenis Produk harus diisi!'),
       detailjenisproduk: Yup.string().required(
         'Detail Jenis Produk harus diisi!'
       ),
     }),
-    onSubmit: (values) => {},
+    onSubmit: (values) => {
+      dispatch(getLayananJenis(values))
+    },
   })
+
+  const [namaLayanan, setNamaLayanan] = useState('')
 
   useEffect(() => {
     dispatch(getComboMappingProduk())
   }, [dispatch])
+
+  useEffect(() => {
+    vLayanan.values.jenisproduk &&
+      dispatch(
+        getDetailJenisProduk({ jenisproduk: vLayanan.values.jenisproduk })
+      )
+  }, [dispatch, vLayanan.values.jenisproduk])
+
+  /**
+   * @type {import("react-data-table-component").TableColumn[]}
+   */
+  const columnsLayanan = [
+    {
+      name: <span className="font-weight-bold fs-13">No</span>,
+      selector: (row) => row.no,
+      sortable: true,
+      width: '60px',
+      wrap: true,
+    },
+    {
+      name: <span className="font-weight-bold fs-13">Nama Layanan</span>,
+      // selector: row => row.noregistrasi,
+      sortable: true,
+      selector: (row) => row.namaproduk,
+      width: '120px',
+    },
+    {
+      name: <span className="font-weight-bold fs-13">jenis produk</span>,
+      selector: (row) => row.jenisproduk,
+      sortable: true,
+      width: '170px',
+    },
+    {
+      name: <span className="font-weight-bold fs-13">Detail jenis produk</span>,
+      selector: (row) => row.detailjenisproduk,
+      sortable: true,
+      width: '170px',
+    },
+    {
+      name: <span className="font-weight-bold fs-13">Instalasi</span>,
+      selector: (row) => row.instalasi,
+      sortable: true,
+      width: '170px',
+    },
+  ]
 
   return (
     <React.Fragment>
@@ -124,146 +189,121 @@ const MappingRL = () => {
             </Row>
             <Row>
               <Col lg={5}>
-                <Row>
-                  <Col lg={6}>
-                    <Label
-                      style={{ color: 'black' }}
-                      htmlFor={`instalasi`}
-                      className="form-label mt-2"
+                <Card className="p-2">
+                  <Row className="mb-2">
+                    <Col lg={6}>
+                      <Label
+                        style={{ color: 'black' }}
+                        htmlFor={`jenisproduk`}
+                        className="form-label mt-2"
+                      >
+                        Jenis Produk
+                      </Label>
+                    </Col>
+                    <Col lg={6}>
+                      <CustomSelect
+                        id="jenisproduk"
+                        name="jenisproduk"
+                        options={jenisProduk}
+                        isDisabled={loadingComboMapping}
+                        onChange={(e) => {
+                          vLayanan.setFieldValue('jenisproduk', e?.value || '')
+                        }}
+                        value={vLayanan.values.jenisproduk}
+                        className={`input ${
+                          !!vLayanan?.errors.jenisproduk ? 'is-invalid' : ''
+                        }`}
+                      />
+                      {vLayanan.touched.jenisproduk &&
+                        !!vLayanan.errors.jenisproduk && (
+                          <FormFeedback type="invalid">
+                            <div>{vLayanan.errors.jenisproduk}</div>
+                          </FormFeedback>
+                        )}
+                    </Col>
+                  </Row>
+                  <Row className="mb-2">
+                    <Col lg={6}>
+                      <Label
+                        style={{ color: 'black' }}
+                        htmlFor={`detailjenisproduk`}
+                        className="form-label mt-2"
+                      >
+                        Detail Jenis Produk
+                      </Label>
+                    </Col>
+                    <Col lg={6}>
+                      <CustomSelect
+                        id="detailjenisproduk"
+                        name="detailjenisproduk"
+                        options={detailJenisProduk}
+                        onChange={(e) => {
+                          vLayanan.setFieldValue(
+                            'detailjenisproduk',
+                            e?.value || ''
+                          )
+                        }}
+                        value={vLayanan.values.detailjenisproduk}
+                        className={`input ${
+                          !!vLayanan?.errors.detailjenisproduk
+                            ? 'is-invalid'
+                            : ''
+                        }`}
+                      />
+                      {vLayanan.touched.detailjenisproduk &&
+                        !!vLayanan.errors.detailjenisproduk && (
+                          <FormFeedback type="invalid">
+                            <div>{vLayanan.errors.detailjenisproduk}</div>
+                          </FormFeedback>
+                        )}
+                    </Col>
+                  </Row>
+                  <div className="d-flex justify-content-center w-100 mt-3">
+                    <Button
+                      color="success"
+                      type="button"
+                      onClick={() => vLayanan.handleSubmit()}
                     >
-                      Instalasi
-                    </Label>
-                  </Col>
-                  <Col lg={6}>
-                    <CustomSelect
-                      id="instalasi"
-                      name="instalasi"
-                      options={[]}
-                      onChange={(e) => {
-                        vLayanan.setFieldValue('instalasi', e?.value || '')
-                      }}
-                      value={vLayanan.values.instalasi}
-                      className={`input ${
-                        !!vLayanan?.errors.instalasi ? 'is-invalid' : ''
-                      }`}
-                    />
-                    {vLayanan.touched.instalasi &&
-                      !!vLayanan.errors.instalasi && (
-                        <FormFeedback type="invalid">
-                          <div>{vLayanan.errors.instalasi}</div>
-                        </FormFeedback>
-                      )}
-                  </Col>
-                </Row>
-                <Row>
-                  <Col lg={6}>
-                    <Label
-                      style={{ color: 'black' }}
-                      htmlFor={`jenisproduk`}
-                      className="form-label mt-2"
-                    >
-                      Jenis Produk
-                    </Label>
-                  </Col>
-                  <Col lg={6}>
-                    <CustomSelect
-                      id="jenisproduk"
-                      name="jenisproduk"
-                      options={[]}
-                      onChange={(e) => {
-                        vLayanan.setFieldValue('jenisproduk', e?.value || '')
-                      }}
-                      value={vLayanan.values.jenisproduk}
-                      className={`input ${
-                        !!vLayanan?.errors.jenisproduk ? 'is-invalid' : ''
-                      }`}
-                    />
-                    {vLayanan.touched.jenisproduk &&
-                      !!vLayanan.errors.jenisproduk && (
-                        <FormFeedback type="invalid">
-                          <div>{vLayanan.errors.jenisproduk}</div>
-                        </FormFeedback>
-                      )}
-                  </Col>
-                </Row>
-                <Row>
-                  <Col lg={6}>
-                    <Label
-                      style={{ color: 'black' }}
-                      htmlFor={`detailjenisproduk`}
-                      className="form-label mt-2"
-                    >
-                      Detail Jenis Produk
-                    </Label>
-                  </Col>
-                  <Col lg={6}>
-                    <CustomSelect
-                      id="detailjenisproduk"
-                      name="detailjenisproduk"
-                      options={[]}
-                      onChange={(e) => {
-                        vLayanan.setFieldValue(
-                          'detailjenisproduk',
-                          e?.value || ''
-                        )
-                      }}
-                      value={vLayanan.values.detailjenisproduk}
-                      className={`input ${
-                        !!vLayanan?.errors.detailjenisproduk ? 'is-invalid' : ''
-                      }`}
-                    />
-                    {vLayanan.touched.detailjenisproduk &&
-                      !!vLayanan.errors.detailjenisproduk && (
-                        <FormFeedback type="invalid">
-                          <div>{vLayanan.errors.detailjenisproduk}</div>
-                        </FormFeedback>
-                      )}
-                  </Col>
-                </Row>
-                <div className="d-flex justify-content-center w-100 mt-3">
-                  <Button color="success">Tampilkan</Button>
-                </div>
+                      Tampilkan
+                    </Button>
+                  </div>
+                </Card>
               </Col>
               <Col lg={7}>
-                <Row className="d-flex flex-row-reverse">
-                  <Col lg={4}>
-                    <Input
-                      className="w-100"
-                      id={`namalayanan`}
-                      name={`namalayanan`}
-                      type="text"
-                      value={vLayanan.values.namalayanan}
-                      disabled
-                      invalid={
-                        vLayanan.touched?.noresep && !!vLayanan.errors?.noresep
-                      }
-                    />
-                    {vLayanan.touched?.noresep &&
-                      !!vLayanan.errors?.noresep && (
-                        <FormFeedback type="invalid">
-                          <div>{vLayanan.errors?.noresep}</div>
-                        </FormFeedback>
-                      )}
-                  </Col>
-                </Row>
-                <Row className="mb-5">
-                  <Col lg={12}>
-                    <DataTable
-                      fixedHeader
-                      fixedHeaderScrollHeight="700px"
-                      columns={[]}
-                      pagination
-                      data={[]}
-                      progressPending={false}
-                      progressComponent={<LoadingTable />}
-                      customStyles={tableCustomStyles}
-                      noDataComponent={<NoDataTable />}
-                    />
-                  </Col>
-                </Row>
-                <div className="d-flex justify-content-center w-100 mt-3">
-                  <Button color="success">Selesai</Button>
-                </div>
+                <Card className="p-2">
+                  <Row className="d-flex flex-row-reverse">
+                    <Col lg={4}>
+                      <Input
+                        className="w-100 mb-2"
+                        id={`namalayanan`}
+                        name={`namalayanan`}
+                        type="text"
+                        value={namaLayanan}
+                        onChange={(e) => {
+                          setNamaLayanan(e.target.value)
+                        }}
+                      />
+                    </Col>
+                  </Row>
+                  <Row className="mb-5">
+                    <Col lg={12}>
+                      <DataTable
+                        fixedHeader
+                        fixedHeaderScrollHeight="700px"
+                        columns={columnsLayanan}
+                        pagination
+                        data={layananJenis}
+                        progressPending={false}
+                        progressComponent={<LoadingTable />}
+                        customStyles={tableCustomStyles}
+                        noDataComponent={<NoDataTable />}
+                      />
+                    </Col>
+                  </Row>
+                  <div className="d-flex justify-content-center w-100 mt-3">
+                    <Button color="success">Selesai</Button>
+                  </div>
+                </Card>
               </Col>
             </Row>
             <div></div>
