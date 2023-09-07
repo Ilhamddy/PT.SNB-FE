@@ -10,9 +10,10 @@ import { useEffect,useState } from "react";
 import { buktiBayarCreate } from "../../../store/payment/action";
 
 
+
 const DepositModal = ({toggle, norecdp}) => {
     const dispatch = useDispatch();
-    const [dateStart] = useState(() => (new Date()).toISOString())
+    const [dateStart] = useState(new Date().toISOString())
     let {
         comboboxpayment,
     } = useSelector((state) => ({
@@ -26,7 +27,7 @@ const DepositModal = ({toggle, norecdp}) => {
             totaltagihan: "",
             diskon: 0,
             deposit: 0,
-            nobukti: `B${dateStart.getFullYear().toString().substring(2, 4)}${dateStart.getMonth() + 1}${dateStart.getDate()}${dateStart.getHours()}${dateStart.getMinutes()}${dateStart.getSeconds()}`,
+            nobukti: `B${dateStart.slice(2, 4)}${dateStart.slice(5,7) + 1}${dateStart.slice(8,10)}${dateStart.slice(11,13)}${dateStart.slice(14,16)}${dateStart.slice(17, 19)}`,
             norecnota: "",
             klaim: 0,
             norecdp: norecdp,
