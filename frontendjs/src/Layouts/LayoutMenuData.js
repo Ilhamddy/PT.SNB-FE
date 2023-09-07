@@ -250,6 +250,17 @@ const Navdata = () => {
                 },
                 {
                     id: "registrasi-pasien-lama",
+                    label: "Daftar Pasien Rawat Darurat",
+                    link: "/listdaftarpasien/daftar-pasien-igd",
+                    parentId: "listdaftarpasien",
+                    isAllowed: () => {
+                        return isAllowedAccess(getUserPermissions(), [
+                            "REGISTRASI_VIEW"
+                        ]);
+                    }
+                },
+                {
+                    id: "registrasi-pasien-lama",
                     label: "Daftar Pasien Rawat Inap",
                     link: "/listdaftarpasien/daftar-pasien-ri",
                     parentId: "listdaftarpasien",

@@ -41,6 +41,9 @@ import {
     GET_DAFTAR_PASIEN_FARMASI,
     GET_DAFTAR_PASIEN_FARMASI_SUCCESS,
     GET_DAFTAR_PASIEN_FARMASI_ERROR,
+    DAFTARPASIEN_IGD_GET,
+    DAFTARPASIEN_IGD_GET_SUCCESS,
+    DAFTARPASIEN_IGD_GET_ERROR
 } from "./actionType";
 
 export const daftarPasienResetForm = () => ({
@@ -252,5 +255,20 @@ export const getDaftarPasienFarmasiSuccess = (data) => ({
 
 export const getDaftarPasienFarmasiError = (error) => ({
     type: GET_DAFTAR_PASIEN_FARMASI_ERROR,
+    payload: error,
+});
+
+export const daftarPasienIGDGet = (queries) => ({
+    type: DAFTARPASIEN_IGD_GET,
+    payload: { queries: queries },
+});
+
+export const daftarPasienIGDGetSuccess = (data) => ({
+    type: DAFTARPASIEN_IGD_GET_SUCCESS,
+    payload: data,
+});
+
+export const daftarPasienIGDGetError = (error) => ({
+    type: DAFTARPASIEN_IGD_GET_ERROR,
     payload: error,
 });

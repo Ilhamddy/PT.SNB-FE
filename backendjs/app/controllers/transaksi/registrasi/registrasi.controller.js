@@ -1577,6 +1577,50 @@ async function saveRegistrasiPasienMutasi(req, res) {
     }
 }
 
+async function getDaftarPasienIGD(req, res) {
+    const logger = res.locals.logger
+    try{
+        const noregistrasi = req.query.noregistrasi;
+        let tglregistrasi = ""
+        if (req.query.start !== undefined) {
+
+            tglregistrasi = ` and td.tglregistrasi between '${req.query.start}'
+            and '${req.query.end} 23:59' `;
+        } else {
+            // console.log('massuukk')
+            let today = new Date();
+            let todayMonth = '' + (today.getMonth() + 1)
+            if (todayMonth.length < 2)
+                todayMonth = '0' + todayMonth;
+            let todaystart = formatDate(today)
+            let todayend = formatDate(today) + ' 23:59'
+            tglregistrasi = ` and td.tglregistrasi between '${todaystart}'
+            and '${todayend}' `;
+        }
+       
+       
+        let query = queries.getDaftarPasienIGD + `  where td.noregistrasi ilike '%${noregistrasi}%'
+        ${tglregistrasi} and td.objectinstalasifk=7
+        ORDER BY td.tglregistrasi DESC`
+        console.log(query)
+        const resultCountNoantrianDokter = await pool.query(query, [])
+        res.status(200).send({
+            data: resultCountNoantrianDokter.rows,
+            status: "success",
+            success: true,
+        });
+
+    } catch (error) {
+        logger.error(error)
+        res.status(500).send({
+            data: error,
+            status: "error",
+            success: false,
+        })
+    }
+
+}
+
 export default {
     allSelect,
     addPost,
@@ -1603,7 +1647,8 @@ export default {
     saveBatalRegistrasi,
     getListPasienMutasi,
     saveRegistrasiPasienMutasi,
-    getDaftarPasienFarmasi
+    getDaftarPasienFarmasi,
+    getDaftarPasienIGD
 };
 
 const hUpdateRegistrasiPulang = async (req, res, transaction) => {
