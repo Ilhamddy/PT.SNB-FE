@@ -597,14 +597,16 @@ async function getTest(req, res) {
 
 }
 
-
-const get = async (req, res) => {
+const getLayananJenis = async (req, res) => {
     const logger = res.locals.logger;
     try{
-        await db.sequelize.transaction(async (transaction) => {
-            //Kode
-        });
-        
+        const { instalasi, jenisproduk, detailjenisproduk } = req.query;
+        // const layanan = await pool.query(queries.qLayananJenis, 
+        //     [
+        //         instalasi, 
+        //         detailjenisproduk
+        //     ]
+        // );
         const tempres = {
         
         };
@@ -624,6 +626,8 @@ const get = async (req, res) => {
         });
     }
 }
+
+
 
 export default {
     getListDaftarDokumenRekammedis,

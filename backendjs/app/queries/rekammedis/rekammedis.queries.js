@@ -8,6 +8,7 @@ left join m_rekanan mr on td.objectpenjaminfk=mr.id
 left join m_pegawai mp2 on mp2.id=td.objectpegawaifk
 where td.tglregistrasi between $1 and $2 and td.noregistrasi ilike $3 
 `
+
 export default {
-    qResult
+    qResult,
 }

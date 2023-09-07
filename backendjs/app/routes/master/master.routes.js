@@ -1,6 +1,7 @@
 import { authJwt } from "../../middleware/index.js";
 import controller from "../../controllers/master/combobox.controller.js";
 
+// eslint-disable-next-line max-lines-per-function
 export default function(app) {
     app.use(function(req, res, next) {
       res.header(
@@ -98,6 +99,12 @@ export default function(app) {
       "/api/master/combobox-retur-obat",
       [authJwt.verifyToken],
       controller.comboReturObat
+    )
+
+    app.get(
+      "/api/master/combobox-mapping-produk",
+      [authJwt.verifyToken],
+      controller.comboMappingProduk
     )
 
   };
