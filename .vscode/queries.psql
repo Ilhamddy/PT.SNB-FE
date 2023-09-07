@@ -1,5 +1,6 @@
 SELECT 
-    
-FROM m_produk mpr
+    mdjp.namaexternal AS label,
+    mdjp.id AS value
+FROM m_detailjenisproduk mdjp
 WHERE objectinstalasifk = 1
-AND 
+AND statusenabled = true

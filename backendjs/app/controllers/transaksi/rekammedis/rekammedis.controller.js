@@ -627,6 +627,34 @@ const getLayananJenis = async (req, res) => {
     }
 }
 
+const getDetailJenisProduk = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const { jenisproduk } = req.query;
+
+        const detailJenisProduk = await pool.query(queries.qGetDetailFromJenisProduk, [
+            jenisproduk
+        ])
+        const tempres = {
+            detailjenisproduk: detailJenisProduk.rows
+        };
+        res.status(200).json({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).json({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 async function getLaporanRL3_2(req, res) {
     const logger = res.locals.logger
     try {
@@ -677,5 +705,6 @@ export default {
     getListLaporanPasienKunjungan,
     getSensusManual,
     getLaporanRL3_1,
-    getLaporanRL3_2
+    getLaporanRL3_2,
+    getDetailJenisProduk,
 };

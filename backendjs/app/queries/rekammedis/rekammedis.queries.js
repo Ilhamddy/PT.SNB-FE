@@ -9,6 +9,16 @@ left join m_pegawai mp2 on mp2.id=td.objectpegawaifk
 where td.tglregistrasi between $1 and $2 and td.noregistrasi ilike $3 
 `
 
+const qGetDetailFromJenisProduk = `
+SELECT 
+    mdjp.namaexternal AS label,
+    mdjp.id AS value
+FROM m_detailjenisproduk mdjp
+WHERE objectinstalasifk = $1
+AND statusenabled = true
+`
+
 export default {
     qResult,
+    qGetDetailFromJenisProduk
 }
