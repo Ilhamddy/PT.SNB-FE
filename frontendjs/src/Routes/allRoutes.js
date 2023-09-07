@@ -254,6 +254,7 @@ import RegistrasiPenjaminFK from "../pages/Registrasi/RegistrasiPenjaminFK/Regis
 import DaftarPasienRegistrasi from "../pages/ListDaftarPasien/DaftarPasienRegistrasi/DaftarPasienRegistrasi";
 import DaftarPasienMutasi from "../pages/ListDaftarPasien/DaftarPasienMutasi/DaftarPasienMutasi";
 import RegistrasiMutasiPasien from "../pages/Registrasi/RegistrasiMutasiPasien/RegistrasiMutasiPasien";
+import DaftarPasienIGD from "../pages/ListDaftarPasien/DaftarPasienIGD/DaftarPasienIGD";
 
 // rekammedis
 import KendaliDokumen from "../pages/RekamMedis/KendaliDokumen/KendaliDokumen";
@@ -547,6 +548,7 @@ const authProtectedRoutes = [
 
   { path: "/bGlzdGRhZnRhcnBhc2llbi9kYWZ0YXJwYXNpZW5tdXRhc2k=", component:<DaftarPasienMutasi/>},
   { path: "/registrasi/mutasi-pasien/:id/:norec", component: <RegistrasiMutasiPasien/> },
+  { path: "/listdaftarpasien/daftar-pasien-igd", component: <DaftarPasienIGD /> },
 
   // rekam medis
   { path: "/rekammedis/kendalidokumen", component: <KendaliDokumen /> },

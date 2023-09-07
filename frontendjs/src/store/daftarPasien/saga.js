@@ -15,7 +15,8 @@ import {
     DAFTARPASIEN_REGISTRASI_GET,
     WIDGET_DAFTARPASIEN_REGISTRASI_GET,
     LIST_PASIEN_MUTASI_GET,
-    GET_DAFTAR_PASIEN_FARMASI
+    GET_DAFTAR_PASIEN_FARMASI,
+    DAFTARPASIEN_IGD_GET
 } from "./actionType";
 
 import {
@@ -36,7 +37,9 @@ import {
     listPasienMutasiGetSuccess, 
     listPasienMutasiGetError,
     getDaftarPasienFarmasiSuccess,
-    getDaftarPasienFarmasiError
+    getDaftarPasienFarmasiError,
+    daftarPasienIGDGetSuccess,
+    daftarPasienIGDGetError
 } from "./action";
 import { toast } from "react-toastify";
 
@@ -168,6 +171,15 @@ function* onGetDaftarPasienFarmasi({ payload: { queries } }) {
     }
 }
 
+function* ondaftarpasienIGDGet({ payload: {queries}  }) {
+    try {
+        let response = null;
+        response = yield call(serviceRegistrasi.getDaftarPasienIGD, queries);
+        yield put(daftarPasienIGDGetSuccess(response.data));
+    } catch (error) {
+        yield put(daftarPasienIGDGetError(error));
+    }
+}
 
 export function* watchGetDaftarPasienRJ() {
     yield takeEvery(DAFTARPASIEN_RJ_GET, onGetDaftarPasienRJ);
@@ -222,6 +234,10 @@ export function* watchGetDaftarPasienFarmasi() {
     yield takeEvery(GET_DAFTAR_PASIEN_FARMASI, onGetDaftarPasienFarmasi);
 }
 
+export function* watchondaftarpasienIGDGet() {
+    yield takeEvery(DAFTARPASIEN_IGD_GET, ondaftarpasienIGDGet);
+}
+
 
 
 function* daftarPasienSaga() {
@@ -238,7 +254,8 @@ function* daftarPasienSaga() {
         fork(watchondaftarPasienRegistrasiGet),
         fork(watchonwidgetdaftarPasienRegistrasiGet),
         fork(watchonlistPasienMutasiGet),
-        fork(watchGetDaftarPasienFarmasi)
+        fork(watchGetDaftarPasienFarmasi),
+        fork(watchondaftarpasienIGDGet)
     ]);
 }
 

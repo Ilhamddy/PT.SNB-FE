@@ -372,14 +372,14 @@ const TandaVital = () => {
                                         ) : null}
                                     </div>
                                 </Col>
-                                <Col lg={5} sm={6}>
+                                <Col lg={4} sm={6}>
                                     <div className="mt-2">
                                         <Label style={{ color: "black" }} htmlFor="gcs" className="form-label fw-semibold">GCS(EMV)</Label>
                                     </div>
                                 </Col>
-                                <Col lg={7} sm={6} className="mt-1">
+                                <Col lg={8} sm={6} className="mt-1">
                                     <Row>
-                                        <Col lg={4} sm={6}>
+                                        <Col lg={4} md={6} sm={12}>
                                             <div>
                                                 <Input
                                                     id="gcse"
@@ -398,7 +398,7 @@ const TandaVital = () => {
                                                 ) : null}
                                             </div>
                                         </Col>
-                                        <Col lg={4} sm={6}>
+                                        <Col lg={4} md={6} sm={12}>
                                             <div>
                                                 <Input
                                                     id="gcsm"
@@ -417,7 +417,7 @@ const TandaVital = () => {
                                                 ) : null}
                                             </div>
                                         </Col>
-                                        <Col lg={4} sm={6}>
+                                        <Col lg={4} md={6} sm={12}>
                                             <div>
                                                 <Input
                                                     id="gcsv"

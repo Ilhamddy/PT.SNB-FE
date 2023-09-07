@@ -41,6 +41,9 @@ import {
     GET_DAFTAR_PASIEN_FARMASI,
     GET_DAFTAR_PASIEN_FARMASI_SUCCESS,
     GET_DAFTAR_PASIEN_FARMASI_ERROR,
+    DAFTARPASIEN_IGD_GET,
+    DAFTARPASIEN_IGD_GET_SUCCESS,
+    DAFTARPASIEN_IGD_GET_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -108,6 +111,11 @@ const INIT_STATE = {
         data: [],
         loading: false,
         error: null,
+    },
+    daftarPasienIGDGet: {
+        data: [],
+        loading: false,
+        error: null,
     }
 };
 
@@ -130,6 +138,9 @@ const DaftarPasien = (state = INIT_STATE, action) => {
                 },
                 listPasienMutasiGet:{
                     ...INIT_STATE.listPasienMutasiGet
+                },
+                daftarPasienIGDGet:{
+                    ...INIT_STATE.daftarPasienIGDGet
                 }
             }
         }
@@ -581,6 +592,39 @@ const DaftarPasien = (state = INIT_STATE, action) => {
                 ...state,
                 getDaftarPasienFarmasi: {
                     ...state.getDaftarPasienFarmasi,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case DAFTARPASIEN_IGD_GET: {
+            return {
+                ...state,
+                daftarPasienIGDGet: {
+                    ...state.daftarPasienIGDGet,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case DAFTARPASIEN_IGD_GET_SUCCESS: {
+            return {
+                ...state,
+                daftarPasienIGDGet: {
+                    ...state.daftarPasienIGDGet,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case DAFTARPASIEN_IGD_GET_ERROR: {
+            return {
+                ...state,
+                daftarPasienIGDGet: {
+                    ...state.daftarPasienIGDGet,
                     loading: false,
                     error: action.error,
                 }

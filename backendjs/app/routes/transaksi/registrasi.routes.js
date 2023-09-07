@@ -154,4 +154,10 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getDaftarPasienFarmasi
     )
+
+    app.get(
+        "/api/transaksi/registrasi/daftar-pasien-rawat-darurat",
+        [authJwt.verifyToken],
+        controller.getDaftarPasienIGD
+    );
 };
