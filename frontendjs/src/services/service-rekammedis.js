@@ -47,4 +47,20 @@ export default class ServiceRekammedis {
     getLayananJenis = async (queries) => {
         return await api.get(`/transaksi/rekammedis/get-layanan-jenis`, queries);
     }
+
+    createOrUpdateMapRL = async (data) => {
+        return await api.create(`/transaksi/rekammedis/create-or-update-map-rl`, data);
+    }
+
+    getMasterRLFromInduk = async (queries) => {
+        return await api.get(`/transaksi/rekammedis/get-master-rl-from-induk`, queries);
+    }
+
+    getLayananFromMasterRL = async (queries) => {
+        return await api.get(`/transaksi/rekammedis/get-layanan-from-master-rl`, queries);
+    }
+
+    deleteMapRL = async (params) => {
+        return await api.delete(`/transaksi/rekammedis/delete-map-rl`, params);
+    }
 }

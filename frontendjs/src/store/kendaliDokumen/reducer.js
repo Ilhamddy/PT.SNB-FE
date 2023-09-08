@@ -33,6 +33,18 @@ import {
     GET_LAYANAN_JENIS,
     GET_LAYANAN_JENIS_SUCCESS,
     GET_LAYANAN_JENIS_ERROR,
+    GET_MASTER_RL_FROM_INDUK,
+    GET_MASTER_RL_FROM_INDUK_SUCCESS,
+    GET_MASTER_RL_FROM_INDUK_ERROR,
+    CREATE_OR_UPDATE_MAP_RL,
+    CREATE_OR_UPDATE_MAP_RL_SUCCESS,
+    CREATE_OR_UPDATE_MAP_RL_ERROR,
+    GET_LAYANAN_FROM_MASTER_RL,
+    GET_LAYANAN_FROM_MASTER_RL_SUCCESS,
+    GET_LAYANAN_FROM_MASTER_RL_ERROR,
+    DELETE_MAP_RL,
+    DELETE_MAP_RL_SUCCESS,
+    DELETE_MAP_RL_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -88,6 +100,26 @@ const INIT_STATE = {
         error: null,
     },
     getLayananJenis: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    getMasterRLFromInduk: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    createOrUpdateMapRL: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    getLayananFromMasterRL: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    deleteMapRL: {
         data: [],
         loading: false,
         error: null,
@@ -488,6 +520,142 @@ const KendaliDokumen = (state = INIT_STATE, action) => {
                 ...state,
                 getLayananJenis: {
                     ...state.getLayananJenis,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case GET_MASTER_RL_FROM_INDUK: {
+            return {
+                ...state,
+                getMasterRLFromInduk: {
+                    ...state.getMasterRLFromInduk,
+                    data: [],
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case GET_MASTER_RL_FROM_INDUK_SUCCESS: {
+            return {
+                ...state,
+                getMasterRLFromInduk: {
+                    ...state.getMasterRLFromInduk,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case GET_MASTER_RL_FROM_INDUK_ERROR: {
+            return {
+                ...state,
+                getMasterRLFromInduk: {
+                    ...state.getMasterRLFromInduk,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case CREATE_OR_UPDATE_MAP_RL: {
+            return {
+                ...state,
+                createOrUpdateMapRL: {
+                    ...state.createOrUpdateMapRL,
+                    data: [],
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case CREATE_OR_UPDATE_MAP_RL_SUCCESS: {
+            return {
+                ...state,
+                createOrUpdateMapRL: {
+                    ...state.createOrUpdateMapRL,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case CREATE_OR_UPDATE_MAP_RL_ERROR: {
+            return {
+                ...state,
+                createOrUpdateMapRL: {
+                    ...state.createOrUpdateMapRL,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case GET_LAYANAN_FROM_MASTER_RL: {
+            return {
+                ...state,
+                getLayananFromMasterRL: {
+                    ...state.getLayananFromMasterRL,
+                    data: [],
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case GET_LAYANAN_FROM_MASTER_RL_SUCCESS: {
+            return {
+                ...state,
+                getLayananFromMasterRL: {
+                    ...state.getLayananFromMasterRL,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case GET_LAYANAN_FROM_MASTER_RL_ERROR: {
+            return {
+                ...state,
+                getLayananFromMasterRL: {
+                    ...state.getLayananFromMasterRL,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case DELETE_MAP_RL: {
+            return {
+                ...state,
+                deleteMapRL: {
+                    ...state.deleteMapRL,
+                    data: [],
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case DELETE_MAP_RL_SUCCESS: {
+            return {
+                ...state,
+                deleteMapRL: {
+                    ...state.deleteMapRL,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case DELETE_MAP_RL_ERROR: {
+            return {
+                ...state,
+                deleteMapRL: {
+                    ...state.deleteMapRL,
                     loading: false,
                     error: action.error,
                 }

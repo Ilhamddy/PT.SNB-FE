@@ -37,8 +37,39 @@ AND mpr.statusenabled = true
 ORDER BY mpr.id
 `
 
+const qLayananFromMasterRL = `
+SELECT
+    CAST(row_number() OVER (ORDER BY mpr.id) AS INT)  AS no,
+    mpr.id AS idproduk,
+    mpr.namaproduk AS namaproduk,
+    mdp.detailjenisproduk AS detailjenisproduk,
+    mjp.jenisproduk AS jenisproduk,
+    mi.namainstalasi AS instalasi,
+    mprl.id AS idmaprl
+FROM m_maprltoproduk mprl
+    LEFT JOIN m_produk mpr ON mpr.id = mprl.objectprodukfk
+    LEFT JOIN m_detailjenisproduk mdp ON mdp.id = mpr.objectdetailjenisprodukfk
+    LEFT JOIN m_jenisproduk mjp ON mjp.id = mdp.objectjenisprodukfk
+    LEFT JOIN m_instalasi mi ON mi.id = mpr.objectinstalasifk
+WHERE mprl.objectmasterrlfk = $1
+AND mpr.statusenabled = true
+ORDER BY mpr.id
+`
+
+
+const qGetMasterRLFromInduk = `
+SELECT
+    id AS value,
+    kodeexternal || ' - ' || reportdisplay as label 
+FROM m_masterrl
+WHERE objectindukrlfk = $1
+AND statusenabled = true
+`
+
 export default {
     qResult,
     qGetDetailFromJenisProduk,
-    qLayananJenis
+    qLayananJenis,
+    qGetMasterRLFromInduk,
+    qLayananFromNoRL: qLayananFromMasterRL
 }

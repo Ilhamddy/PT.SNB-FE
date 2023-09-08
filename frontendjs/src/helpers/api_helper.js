@@ -106,11 +106,15 @@ class APIClient {
   put = (url, data) => {
     return axios.put(url, data);
   };
-  /**
-   * Delete
-   */
-  delete = (url, config) => {
-    return axios.delete(url, { ...config });
+  delete = (url, params, config) => {
+    // remove trailing slash
+    let newUrl = url.replace(/\/$/, "");
+    if (params) {
+      params.forEach(() => {
+        newUrl += '/' + params
+      })
+    }
+    return axios.delete(newUrl, { ...config });
   };
 }
 const getLoggedinUser = () => {

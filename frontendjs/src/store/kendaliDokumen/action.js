@@ -33,6 +33,19 @@ import {
     GET_LAYANAN_JENIS,
     GET_LAYANAN_JENIS_SUCCESS,
     GET_LAYANAN_JENIS_ERROR,
+    CREATE_OR_UPDATE_MAP_RL,
+    CREATE_OR_UPDATE_MAP_RL_SUCCESS,
+    CREATE_OR_UPDATE_MAP_RL_ERROR,
+    GET_MASTER_RL_FROM_INDUK,
+    GET_MASTER_RL_FROM_INDUK_SUCCESS,
+    GET_MASTER_RL_FROM_INDUK_ERROR,
+    GET_LAYANAN_FROM_MASTER_RL,
+    GET_LAYANAN_FROM_MASTER_RL_SUCCESS,
+    GET_LAYANAN_FROM_MASTER_RL_ERROR,
+    DELETE_MAP_RL,
+    DELETE_MAP_RL_SUCCESS,
+    DELETE_MAP_RL_ERROR
+
 } from "./actionType";
 
 export const kendaliDokumenResetForm = () => ({
@@ -202,5 +215,68 @@ export const getLayananJenisSuccess = (data) => ({
 
 export const getLayananJenisError = (error) => ({
     type: GET_LAYANAN_JENIS_ERROR,
+    payload: error,
+});
+
+export const createOrUpdateMapRL = (data, callback) => ({
+    type: CREATE_OR_UPDATE_MAP_RL,
+    payload: { 
+        data: data, 
+        callback: callback 
+    },
+});
+
+export const createOrUpdateMapRLSuccess = (data) => ({
+    type: CREATE_OR_UPDATE_MAP_RL_SUCCESS,
+    payload: data,
+});
+
+export const createOrUpdateMapRLError = (error) => ({
+    type: CREATE_OR_UPDATE_MAP_RL_ERROR,
+    payload: error,
+});
+
+export const getMasterRLFromInduk = (queries) => ({
+    type: GET_MASTER_RL_FROM_INDUK,
+    payload: { queries: queries },
+});
+
+export const getMasterRLFromIndukSuccess = (data) => ({
+    type: GET_MASTER_RL_FROM_INDUK_SUCCESS,
+    payload: data,
+});
+
+export const getMasterRLFromIndukError = (error) => ({
+    type: GET_MASTER_RL_FROM_INDUK_ERROR,
+    payload: error,
+});
+
+export const getLayananFromMasterRL = (queries) => ({
+    type: GET_LAYANAN_FROM_MASTER_RL,
+    payload: { queries: queries },
+});
+
+export const getLayananFromMasterRLSuccess = (data) => ({
+    type: GET_LAYANAN_FROM_MASTER_RL_SUCCESS,
+    payload: data,
+});
+
+export const getLayananFromMasterRLError = (error) => ({
+    type: GET_LAYANAN_FROM_MASTER_RL_ERROR,
+    payload: error,
+});
+
+export const deleteMapRL = (params, callback) => ({
+    type: DELETE_MAP_RL,
+    payload: {params, callback},
+});
+
+export const deleteMapRLSuccess = (data) => ({
+    type: DELETE_MAP_RL_SUCCESS,
+    payload: data,
+});
+
+export const deleteMapRLError = (error) => ({
+    type: DELETE_MAP_RL_ERROR,
     payload: error,
 });

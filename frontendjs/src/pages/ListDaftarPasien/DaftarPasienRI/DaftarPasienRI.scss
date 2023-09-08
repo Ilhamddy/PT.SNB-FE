@@ -1,6 +1,9 @@
-.daftar-pasien-rawat-inap{
-    .row-header{
+.daftar-pasien-rawat-inap {
+    .row-header {
         position: relative;
         z-index: 500;
+        &-2 {
+            z-index: 400;
+        }
     }
 }

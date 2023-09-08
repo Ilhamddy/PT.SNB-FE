@@ -42,6 +42,8 @@ import queriesSigna from "../../queries/master/signa/signa.queries";
 import queriesKeteranganResep from "../../queries/master/keteranganresep/keteranganresep.queries";
 import queriesJenisResep from "../../queries/master/jenisresep/jenisresep.queries";
 import queriesAlasanRetur from "../../queries/master/alasanretur/m_alasanretur.queries";
+import queriesMasterIndukRL from "../../queries/master/masterindukrl/masterindukrl.queries";
+import queriesMasterRL from "../../queries/master/masterrl/masterrl.queries";
 
 const selectComboBox = (req, res) => {
     try {
@@ -603,9 +605,12 @@ const comboMappingProduk = async (req, res) => {
     try{
         const jenisProduk = await pool.query(queriesJenisProduk.getAll)
         const instalasi = await pool.query(quriesInstalasi.getAll)
+        const masterIndukRL = await pool.query(queriesMasterIndukRL.getAll)
+        const masterRL = await pool.query(queriesMasterRL.getAll)
         const tempres = {
             jenisproduk: jenisProduk.rows,
-            instalasi: instalasi.rows
+            instalasi: instalasi.rows,
+            masterindukrl: masterIndukRL.rows,
         };
         res.status(200).json({
             msg: 'Success',

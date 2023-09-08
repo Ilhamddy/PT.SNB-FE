@@ -12,7 +12,11 @@ import {
     LAPORAN_RL_3_1_GET,
     LAPORAN_RL_3_2_GET,
     GET_DETAIL_JENIS_PRODUK,
-    GET_LAYANAN_JENIS
+    GET_LAYANAN_JENIS,
+    CREATE_OR_UPDATE_MAP_RL,
+    GET_MASTER_RL_FROM_INDUK,
+    GET_LAYANAN_FROM_MASTER_RL,
+    DELETE_MAP_RL
 } from "./actionType";
 
 import {
@@ -28,7 +32,15 @@ import {
     getDetailJenisProdukSuccess,
     getDetailJenisProdukError,
     getLayananJenisSuccess,
-    getLayananJenisError
+    getLayananJenisError,
+    createOrUpdateMapRLSuccess,
+    createOrUpdateMapRLError,
+    getMasterRLFromIndukSuccess,
+    getMasterRLFromIndukError,
+    getLayananFromMasterRLSuccess,
+    getLayananFromMasterRLError,
+    deleteMapRLSuccess,
+    deleteMapRLError
 } from "./action";
 
 import { toast } from 'react-toastify';
@@ -197,6 +209,64 @@ export function* watchonGetLayananJenis() {
     yield takeEvery(GET_LAYANAN_JENIS, onGetLayananJenis);
 }
 
+function* onCreateOrUpdateMapRL({ payload: { data, callback }}) {
+    try{
+        const response = yield call(serviceRekammedis.createOrUpdateMapRL, data);
+        yield put(createOrUpdateMapRLSuccess(response.data));
+        callback && callback(response);
+        toast.success("Sukses", {autoClose: 3000})
+    } catch (error) {
+        yield put(createOrUpdateMapRLError(error));
+        toast.error("Error", {autoClose: 3000})
+    }
+}
+
+export function* watchonCreateOrUpdateMapRL() {
+    yield takeEvery(CREATE_OR_UPDATE_MAP_RL, onCreateOrUpdateMapRL);
+}
+
+function* onGetMasterRLFromInduk({ payload: { queries }}) {
+    try{
+        const response = yield call(serviceRekammedis.getMasterRLFromInduk, queries);
+        yield put(getMasterRLFromIndukSuccess(response.data));
+    } catch (error) {
+        yield put(getMasterRLFromIndukError(error));
+    }
+}
+
+export function* watchonGetMasterRLFromInduk() {
+    yield takeEvery(GET_MASTER_RL_FROM_INDUK, onGetMasterRLFromInduk);
+}
+
+function* onGetLayananFromMasterRL({ payload: { queries }}) {
+    try{
+        const response = yield call(serviceRekammedis.getLayananFromMasterRL, queries);
+        yield put(getLayananFromMasterRLSuccess(response.data));
+    } catch (error) {
+        yield put(getLayananFromMasterRLError(error));
+    }
+}
+
+export function* watchonGetLayananFromMasterRL() {
+    yield takeEvery(GET_LAYANAN_FROM_MASTER_RL, onGetLayananFromMasterRL);
+}
+
+function* onDeleteMapRL({ payload: { params, callback }}) {
+    try{
+        const response = yield call(serviceRekammedis.deleteMapRL, params);
+        yield put(deleteMapRLSuccess(response.data));
+        callback && callback(response);
+        toast.success("Sukses", {autoClose: 3000})
+    } catch (error) {
+        yield put(deleteMapRLError(error));
+        toast.error("Error", {autoClose: 3000})
+    }
+}
+
+export function* watchonDeleteMapRL() {
+    yield takeEvery(DELETE_MAP_RL, onDeleteMapRL);
+}
+
 function* kendaliDokumenSaga() {
     yield all([
         fork(watchonDaftarDokumenRekammedis),
@@ -209,7 +279,11 @@ function* kendaliDokumenSaga() {
         fork(watchonlaporanRL_3_1_Get),
         fork(watchonlaporanRL_3_2_Get),
         fork(watchonGetDetailJenisProduk),
-        fork(watchonGetLayananJenis)
+        fork(watchonGetLayananJenis),
+        fork(watchonCreateOrUpdateMapRL),
+        fork(watchonGetMasterRLFromInduk),
+        fork(watchonGetLayananFromMasterRL),
+        fork(watchonDeleteMapRL)
     ]);
 }
 

@@ -2,8 +2,8 @@ const getAll =
 `
 SELECT 
     id as value, 
-    reportdisplay as label 
-FROM m_kondisipulangri 
+    kodeexternal || ' - ' || reportdisplay as label 
+FROM m_masterindukrl 
 WHERE statusenabled=true`;
 
 export default {

@@ -4,6 +4,8 @@ import queries from '../../../queries/rekammedis/rekammedis.queries';
 import db from "../../../models";
 import { createTransaction } from "../../../utils/dbutils";
 
+const m_maprltoproduk = db.m_maprltoproduk
+
 function formatDate(date) {
     let d = new Date(date),
         month = '' + (d.getMonth() + 1),
@@ -547,27 +549,9 @@ async function getSensusManual(req, res) {
 
         const queryResult2 = await pool.query(`select * from t_sensusharian where tglinput between '${todaystart}' and '${todayend}'`);
         const cmgOptions = await Promise.all(
-            queryResult.rows.map(async (item) => {
-                if (queryResult2.rows.length === 0) {
-                    const add = await db.t_sensusharian.create({
-                        norec: uuid.v4().substring(0, 32),
-                        objectantreanpemeriksaanfk: item.norecta,
-                        objectunitfk: item.objectunitfk,
-                        objectdaftarpasienfk: item.norec,
-                        noregistrasi: item.noregistrasi,
-                        objectpasienfk: item.nocmfk,
-                        objectdokterpemeriksafk: item.objectdokterpemeriksafk,
-                        objectkelasfk: item.objectkelasfk,
-                        tglinput: new Date()
-                    }, {
-                        transaction: transaction
-                    });
-                    return add
-                } else {
-                    const foundItems = queryResult2.rows.filter(itemx => itemx.objectantreanpemeriksaanfk === item.norecta);
-                    if (foundItems.length > 0) {
-                        console.log('Items found: sensus harian');
-                    } else {
+            queryResult.rows.map(
+                async (item) => {
+                    if (queryResult2.rows.length === 0) {
                         const add = await db.t_sensusharian.create({
                             norec: uuid.v4().substring(0, 32),
                             objectantreanpemeriksaanfk: item.norecta,
@@ -582,9 +566,28 @@ async function getSensusManual(req, res) {
                             transaction: transaction
                         });
                         return add
+                    } else {
+                        const foundItems = queryResult2.rows.filter(itemx => itemx.objectantreanpemeriksaanfk === item.norecta);
+                        if (foundItems.length > 0) {
+                            console.log('Items found: sensus harian');
+                        } else {
+                            const add = await db.t_sensusharian.create({
+                                norec: uuid.v4().substring(0, 32),
+                                objectantreanpemeriksaanfk: item.norecta,
+                                objectunitfk: item.objectunitfk,
+                                objectdaftarpasienfk: item.norec,
+                                noregistrasi: item.noregistrasi,
+                                objectpasienfk: item.nocmfk,
+                                objectdokterpemeriksafk: item.objectdokterpemeriksafk,
+                                objectkelasfk: item.objectkelasfk,
+                                tglinput: new Date()
+                            }, {
+                                transaction: transaction
+                            });
+                            return add
+                        }
                     }
                 }
-            }
             )
         )
         await transaction.commit();
@@ -700,6 +703,130 @@ const getLayananJenis = async (req, res) => {
     }
 }
 
+const getMasterRLFromInduk = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const {idInduk} = req.query;
+        const masterRL = await pool.query(queries.qGetMasterRLFromInduk, [idInduk])
+        const tempres = {
+            masterrl: masterRL.rows
+        };
+        res.status(200).json({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).json({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+const createOrUpdateMapRL = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const { norldetail, idproduk } = req.body;
+        const {rlToProduk} = await db.sequelize.transaction(async (transaction) => {
+            const rlToProduk = await m_maprltoproduk.create({
+                kdprofile: 0,
+                statusenabled: true,
+                objectprodukfk: idproduk,
+                objectmasterrlfk: norldetail, 
+            }, {
+                transaction: transaction
+            });
+
+            return {rlToProduk}
+        });
+        
+        const tempres = {
+            rltoproduk: rlToProduk
+        };
+        res.status(200).json({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).json({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+const getLayananFromMasterRL = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const { norldetail } = req.query;
+        const layanan = await pool.query(queries.qLayananFromNoRL, [norldetail])
+        const tempres = {
+            layanan: layanan.rows
+        };
+        res.status(200).json({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).json({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+const deleteMapRL = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const { idmaprl } = req.params;
+        const {deleted} = await db.sequelize.transaction(async (transaction) => {
+            const deleted = await m_maprltoproduk.findOne({
+                where: {
+                    id: idmaprl
+                }
+            })
+            const deletedVal = deleted.toJSON()
+            await deleted.destroy({
+                transaction: transaction
+            })
+            return {deleted: deletedVal}
+        });
+
+        const tempres = {
+            deleted: deleted
+        };
+        res.status(200).json({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).json({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export default {
     getListDaftarDokumenRekammedis,
     getWidgetListDaftarDokumenRekammedis,
@@ -712,5 +839,9 @@ export default {
     getLaporanRL3_1,
     getLaporanRL3_2,
     getDetailJenisProduk,
-    getLayananJenis
+    getLayananJenis,
+    createOrUpdateMapRL,
+    getMasterRLFromInduk,
+    getLayananFromMasterRL,
+    deleteMapRL
 };

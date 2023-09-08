@@ -83,4 +83,28 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getLayananJenis
     )
+
+    app.post(
+        "/api/transaksi/rekammedis/create-or-update-map-rl",
+        [authJwt.verifyToken],
+        controller.createOrUpdateMapRL
+    )
+
+    app.get(
+        "/api/transaksi/rekammedis/get-master-rl-from-induk",
+        [authJwt.verifyToken],
+        controller.getMasterRLFromInduk
+    )
+
+    app.get(
+        "/api/transaksi/rekammedis/get-layanan-from-master-rl",
+        [authJwt.verifyToken],
+        controller.getLayananFromMasterRL
+    )
+
+    app.delete(
+        "/api/transaksi/rekammedis/delete-map-rl/:idmaprl",
+        [authJwt.verifyToken],
+        controller.deleteMapRL
+    )
 }
