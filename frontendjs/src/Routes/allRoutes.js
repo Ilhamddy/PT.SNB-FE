@@ -311,7 +311,8 @@ import PenjualanObatBebas from "../pages/PenjualanObatBebas/PenjualanObatBebas";
 import ListVerifObat from "../pages/ListVerifObat/ListVerifObat";
 import DaftarPasienFarmasi from "../pages/ListDaftarPasien/DaftarPasienFarmasi/DaftarPasienFarmasi";
 import TambahObatFarmasi from "../pages/TambahObatFarmasi/TambahObatFarmasi";
-import MappingLayanan from "../pages/RekamMedis/Laporan/RL3_3/MappingLayanan.jsx";
+import MappingLayanan from "../pages/RekamMedis/MappingLayanan/MappingLayanan.jsx";
+import RL3_3 from "../pages/RekamMedis/Laporan/RL3_3/RL3_3";
 
 
 
@@ -557,6 +558,7 @@ const authProtectedRoutes = [
   { path: "/cmVrYW1tZWRpcy9sYXBvcmFuLXBhc2llbi1rdW5qdW5nYW4=", component: <LaporanPasienKunjungan/>},
   { path: "/cmVrYW1tZWRpcy9sYXBvcmFuLXJsL3JsMy4x", component: <RL3_1/>},
   { path: "/cmVrYW1tZWRpcy9sYXBvcmFuLXJsL3JsMy4y", component: <RL3_2/>},
+  { path: "/cmVrYW1tZWRpcy9sYXBvcmFuLXJsL3JsMy4z", component: <RL3_3 />},
   { path: "/cmVrYW1tZWRpcy9tYXBwaW5nLXJs", component: <MappingLayanan />},
 
   // radiologi

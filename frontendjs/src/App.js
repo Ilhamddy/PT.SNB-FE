@@ -5,7 +5,7 @@ import './assets/scss/themes.scss';
 
 //imoprt Route
 import Route from './Routes';
-import "./App.css"
+import "./App.scss"
 
 // Import Firebase Configuration file
 // import { initFirebaseBackend } from "./helpers/firebase_helper";

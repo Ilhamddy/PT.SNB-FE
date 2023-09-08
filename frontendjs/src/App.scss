@@ -49,6 +49,18 @@
     }
 }
 
+.fc-flatpickr {
+    border-right: none !important;
+    border-top-right-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+}
+
+.img-flatpickr {
+    border-right: none !important;
+    border-top-left-radius: 0 !important;
+    border-bottom-left-radius: 0 !important;
+}
+
 @page {
     size: auto;
     size: A3;

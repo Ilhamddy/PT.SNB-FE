@@ -643,7 +643,30 @@ async function getLaporanRL3_2(req, res) {
         logger.error(error)
         res.status(500).send({ message: error });
     }
+}
 
+const getLaporanRL3_3 = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        
+        const tempres = {
+        
+        };
+        res.status(200).json({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).json({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
 }
 
 const getDetailJenisProduk = async (req, res) => {

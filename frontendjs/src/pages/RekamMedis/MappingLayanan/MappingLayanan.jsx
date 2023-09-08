@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { ToastContainer } from 'react-toastify'
-import UiContent from '../../../../Components/Common/UiContent'
+import UiContent from '../../../Components/Common/UiContent'
 import {
   Button,
   Card,
@@ -12,15 +12,15 @@ import {
   Label,
   Row,
 } from 'reactstrap'
-import BreadCrumb from '../../../../Components/Common/BreadCrumb'
+import BreadCrumb from '../../../Components/Common/BreadCrumb'
 import DataTable from 'react-data-table-component'
-import LoadingTable from '../../../../Components/Table/LoadingTable'
-import CustomSelect from '../../../Select/Select'
+import LoadingTable from '../../../Components/Table/LoadingTable'
+import CustomSelect from '../../Select/Select'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import { useDispatch, useSelector } from 'react-redux'
-import { getComboMappingProduk } from '../../../../store/master/action'
-import NoDataTable from '../../../../Components/Table/NoDataTable'
+import { getComboMappingProduk } from '../../../store/master/action'
+import NoDataTable from '../../../Components/Table/NoDataTable'
 import {
   createOrUpdateMapRL,
   deleteMapRL,
@@ -28,7 +28,7 @@ import {
   getLayananFromMasterRL,
   getLayananJenis,
   getMasterRLFromInduk,
-} from '../../../../store/kendaliDokumen/action'
+} from '../../../store/kendaliDokumen/action'
 import './MappingLayanan.scss'
 
 const MappingRL = () => {
@@ -115,10 +115,11 @@ const MappingRL = () => {
 
   useEffect(() => {
     refNoRLDetail.current.clearValue()
-    vMapping.setFieldValue('norldetail', '')
+    const setFF = vMapping.setFieldValue
+    setFF('norldetail', '')
     vMapping.values.norl &&
       dispatch(getMasterRLFromInduk({ idInduk: vMapping.values.norl }))
-  }, [vMapping.values.norl, dispatch])
+  }, [vMapping.values.norl, dispatch, vMapping.setFieldValue])
 
   useEffect(() => {
     dispatch(getLayananFromMasterRL({ norldetail: vMapping.values.norldetail }))
