@@ -111,17 +111,13 @@ const RegistrasiPenjaminFK = () => {
             norecdp: norec,
             nokartu: "",
             jenisrujukan: "",
-            tanggalsep: new Date(dateNow.getTime() - (dateNow.getTimezoneOffset() * 60000))
-                .toISOString()
-                .split("T")[0],
+            tanggalsep: dateNow,
             norujukan: "",
             penjamin: 1,
             tujuankunjungan: "",
             dpjpmelayani: "",
             asalrujukan: "",
-            tanggalrujukan: new Date(dateNow.getTime() - (dateNow.getTimezoneOffset() * 60000))
-                .toISOString()
-                .split("T")[0],
+            tanggalrujukan: dateNow,
             nosuratkontrol: "",
             dpjppemberi: "",
             diagnosarujukan: "",
@@ -135,14 +131,10 @@ const RegistrasiPenjaminFK = () => {
             kotalakalantas: "",
             kkotalakalantas: "",
             kecamatanlakalantas: "",
-            tanggallakalantas: new Date(dateNow.getTime() - (dateNow.getTimezoneOffset() * 60000))
-                .toISOString()
-                .split("T")[0],
+            tanggallakalantas: dateNow,
             nosepsuplesi: "",
             keteranganlakalantas: "", 
-            tanggallakakerja: new Date(dateNow.getTime() - (dateNow.getTimezoneOffset() * 60000))
-                .toISOString()
-                .split("T")[0],
+            tanggallakakerja: dateNow,
             nolaporanpolisi: "",
             keteranganlakakerja: "",
             provinsilakakerja: "",
