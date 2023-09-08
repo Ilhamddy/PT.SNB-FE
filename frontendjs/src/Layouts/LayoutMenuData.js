@@ -427,6 +427,17 @@ const Navdata = () => {
                     }
                 },
                 {
+                    id: "rekammedis-mapping",
+                    label: "Mapping RL",
+                    link: "/cmVrYW1tZWRpcy9tYXBwaW5nLXJs",
+                    parentId: "rekammedis",
+                    isAllowed: () => {
+                        return isAllowedAccess(getUserPermissions(), [
+                            "REGISTRASI_VIEW",
+                        ]);
+                    }
+                },
+                {
                     id: "rekammedis-laporan",
                     label: "Laporan",
                     icon: "lab la-delicious",
