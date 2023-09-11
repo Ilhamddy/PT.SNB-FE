@@ -59,5 +59,127 @@
             "}"
         ],
         "description": "Komponen body next standar AniMemo"
+    },
+    "Frontend Custom Select": {
+        "prefix": "frontend-custom-select",
+        "body": [
+            "<CustomSelect",
+            "\tid=\"${2:DataName}\"",
+            "\tname=\"${2:DataName}\"",
+            "\toptions={masterRL}",
+            "\tonChange={(e) => {",
+            "\t\t${1:ValidationName}.setFieldValue('${2:DataName}', e?.value || '')",
+            "\t}}",
+            "\tvalue={${1:ValidationName}.values.${2:DataName}}",
+            "\tclassName={`input row-header \\${",
+            "\t\t!!${1:ValidationName}?.errors.${2:DataName} ? 'is-invalid' : ''",
+            "\t}`}",
+            "\t/>",
+            "{${1:ValidationName}.touched.${2:DataName} &&",
+            "\t!!${1:ValidationName}.errors.${2:DataName} && (",
+            "\t\t<FormFeedback type=\"invalid\">",
+            "\t\t\t<div>{${1:ValidationName}.errors.${2:DataName}}</div>",
+            "\t\t</FormFeedback>",
+            "\t)}"
+        ],
+        "description": "Komponen custom select"
+    },
+    "Frontend Kontainer Flatpickr": {
+        "prefix": "frontend-flatpickr",
+        "body": [
+            "<KontainerFlatpickr",
+            "\tisError={${1:ValidationName}.touched?.${2:DataName} &&",
+            "\t\t!!${1:ValidationName}.errors?.${2:DataName}}",
+            "\tid=\"${2:DataName}\"",
+            "\toptions={{",
+            "\tdateFormat: 'Y-m-d',",
+            "\tdefaultDate: 'today',",
+            "\t}}",
+            "\tvalue={${1:ValidationName}.values.${2:DataName}}",
+            "\tonChange={([newDate]) => {",
+            "\t\t${1:ValidationName}.setFieldValue('${2:DataName}', newDate.toISOString())",
+            "\t}}",
+            "/>",
+            "{${1:ValidationName}.touched?.${2:DataName}",
+            "\t&& !!${1:ValidationName}.errors.${2:DataName} && (",
+            "\t\t<FormFeedback type=\"invalid\">",
+            "\t\t\t<div>{${1:ValidationName}.errors.${2:DataName}}</div>",
+            "\t\t</FormFeedback>",
+            "\t)}"
+        ],
+        "description": "Komponen kontainer flatpickr"
+    },
+    "Frontend Input Number": {
+        "prefix": "frontend-input-number",
+        //create snippet from above
+        "body": [
+            "<Input",
+            "\tid=\"${2:DataName}\"",
+            "\tname=\"${2:DataName}\"",
+            "\ttype=\"text\"",
+            "\tvalue={${1:ValidationName}.values.${2:DataName}}",
+            "\tonChange={(e) => {",
+            "\t\tconst newVal = onChangeStrNbr(",
+            "\t\t\te.target.value,",
+            "\t\t\t${1:ValidationName}.values.${2:DataName}",
+            "\t\t)",
+            "\t\t${1:ValidationName}.setFieldValue('${2:DataName}', newVal)",
+            "\t}}",
+            "\tinvalid={${1:ValidationName}.touched?.${2:DataName} &&",
+            "\t\t!!${1:ValidationName}.errors?.${2:DataName}}",
+            "/>",
+            "{${1:ValidationName}.touched?.${2:DataName}",
+            "\t&& !!${1:ValidationName}.errors.${2:DataName} && (",
+            "\t\t<FormFeedback type=\"invalid\">",
+            "\t\t\t<div>{${1:ValidationName}.errors.${2:DataName}}</div>",
+            "\t\t</FormFeedback>",
+            "\t)}"
+        ],
+        "description": "Komponen input number"
+    },
+    "Frontend Input Text": {
+        "prefix": "frontend-input-text",
+        "body": [
+            "<Input",
+            "\tid=\"${2:DataName}\"",
+            "\tname=\"${2:DataName}\"",
+            "\ttype=\"text\"",
+            "\tvalue={${1:ValidationName}.values.${2:DataName}}",
+            "\tonChange={(e) => {",
+            "\t\t${1:ValidationName}.setFieldValue('${2:DataName}', e.target.value)",
+            "\t}}",
+            "\tinvalid={${1:ValidationName}.touched?.${2:DataName} &&",
+            "\t\t!!${1:ValidationName}.errors?.${2:DataName}}",
+            "/>",
+            "{${1:ValidationName}.touched?.${2:DataName}",
+            "\t&& !!${1:ValidationName}.errors.${2:DataName} && (",
+            "\t\t<FormFeedback type=\"invalid\">",
+            "\t\t\t<div>{${1:ValidationName}.errors.${2:DataName}}</div>",
+            "\t\t</FormFeedback>",
+            "\t)}"
+        ],
+        "description": "Komponen input text"
+    },
+    "Frontend Date Now": {
+        "prefix": "frontend-date-now",
+        "body": ["const [dateNow] = useState(() => new Date().toISOString())"],
+        "description": "Komponen date now"
+    },
+    "Frontend Formik": {
+        "prefix": "frontend-formik",
+        "body": [
+            "const ${1:ValidationName} = useFormik({",
+            "\tinitialValues: {",
+            "\t\t",
+            "\t},",
+            "\tvalidationSchema: Yup.object({",
+            "\t\t",
+            "\t}),",
+            "\tonSubmit: (values) => {",
+            "\t\t",
+            "\t},",
+            "})"
+        ],
+        "description": "Komponen formik"
     }
 }
