@@ -1,0 +1,106 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+}
+
+.invoice-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+}
+
+.invoice-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.invoice {
+    /* max-width: 100%;  */
+    width: 60%;
+    height: fit-content;
+    background-color: #f9f9f9;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.invoice h1 {
+    font-size: 24px;
+    text-align: center;
+}
+
+.invoice .header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.invoice .from,
+.invoice .to {
+    width: 45%;
+}
+
+.invoice .from {
+    float: left;
+}
+
+.invoice .to {
+    float: right;
+}
+
+.invoice .invoice-details {
+    margin-bottom: 20px;
+}
+
+.invoice .invoice-details p {
+    margin: 0;
+}
+
+.invoice table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.invoice th,
+.invoice td {
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: left;
+}
+
+.invoice th {
+    background-color: #f2f2f2;
+}
+
+.invoice .total {
+    float: right;
+}
+
+.invoice .total p {
+    font-weight: bold;
+}
+
+@page {
+    size: A4;
+    /* Set the page size to A4 */
+    margin: 20mm;
+    /* Adjust margins as needed (top, right, bottom, left) */
+}
+
+@media print {
+    body {
+        padding: 0;
+        /* Remove padding for printing */
+    }
+
+    .invoice {
+        page-break-before: always;
+        /* Start each invoice on a new page */
+    }
+}

@@ -12,11 +12,11 @@ document.addEventListener('DOMContentLoaded', () => {
   (async () => {
     const printerSelect = document.getElementById('printerSelect');
     printerSelect.innerHTML = '';
-    const printers = await window.electron.getPrinterApp();
+    const printers = await window.electron.getPrinterPOS();
     printers.forEach((printer) => {
       const option = document.createElement('option');
-      option.value = printer.deviceId;
-      option.text = printer.name;
+      option.value = printer.busNumber;
+      option.text = "Printer " + printer.busNumber;
       printerSelect.appendChild(option);
     });
   })(); 
@@ -56,24 +56,33 @@ function isFileImage(file) {
 // Resize image
 async function printToPrinter(e) {
   e.preventDefault();
-  console.log(printerSelectInput.value)
-  console.log(ipcRenderer)
-  const width = widthInput.value;
-  const height = heightInput.value;
-  const printer = printerSelectInput.value;
-  const base64pdf = await getHTML();
+  // const width = widthInput.value;
+  // const height = heightInput.value;
+  // const devicePrint = printerSelectInput.value;
+  // const base64pdf = await getHTML();
   const printerSelect = document.getElementById('printerSelect');
-  const idPrint = printerSelect.value
+  const busPrint = isNaN(Number(printerSelect.value)) ? -1 : Number(printerSelect.value)
+  console.log(busPrint)
 
-  await window.electron.print({
-    // imgPath,
-    height,
-    width,
-    printer,
-    base64pdf,
-    idPrint
-  });
+  // await window.electron.print({
+  //   // imgPath,
+  //   height,
+  //   width,
+  //   printer,
+  //   base64pdf,
+  //   idPrint
+  // });
+  try{
+    await window.electron.printPOS({
+      devicePrintBus: busPrint,
+    });
+  }catch(error){
+    console.error(error)
+  }
+
 }
+
+
 
 async function getHTML(location) {
   const htmlString = await window.electron.getHTML("./renderer/report/invoice.html");

@@ -11,95 +11,7 @@
     <link rel="stylesheet" href="css/style.css" />
     <script src="js/renderer.js" defer></script>
     <script src="js/purify.min.js" defer></script>
-    <style>
-      body {
-          font-family: Arial, sans-serif;
-          margin: 0;
-          padding: 20px;
-      }
-
-      .invoice {
-          /* max-width: 100%;  */
-          background-color: #f9f9f9;
-          padding: 20px;
-          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      }
-
-      .invoice h1 {
-          font-size: 24px;
-          text-align: center;
-      }
-
-      .invoice .header {
-          display: flex;
-          justify-content: space-between;
-          margin-bottom: 20px;
-      }
-
-      .invoice .from,
-      .invoice .to {
-          width: 45%;
-      }
-
-      .invoice .from {
-          float: left;
-      }
-
-      .invoice .to {
-          float: right;
-      }
-
-      .invoice .invoice-details {
-          margin-bottom: 20px;
-      }
-
-      .invoice .invoice-details p {
-          margin: 0;
-      }
-
-      .invoice table {
-          width: 100%;
-          border-collapse: collapse;
-          margin-top: 20px;
-      }
-
-      .invoice th,
-      .invoice td {
-          border: 1px solid #ccc;
-          padding: 10px;
-          text-align: left;
-      }
-
-      .invoice th {
-          background-color: #f2f2f2;
-      }
-
-      .invoice .total {
-          float: right;
-      }
-
-      .invoice .total p {
-          font-weight: bold;
-      }
-
-      @page {
-          size: A4;
-          /* Set the page size to A4 */
-          margin: 20mm;
-          /* Adjust margins as needed (top, right, bottom, left) */
-      }
-
-      @media print {
-          body {
-              padding: 0;
-              /* Remove padding for printing */
-          }
-
-          .invoice {
-              page-break-before: always;
-              /* Start each invoice on a new page */
-          }
-      }
+    <link rel="stylesheet" href="css/styleprint.css">
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibyoeqMV/TJlSKda6FXzoEyYGjTe+vXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -116,7 +28,7 @@
           placeholder="List Printer"
           class="mt-1 block w-80 m-auto p-3 shadow-sm border-gray-300 rounded-md"></select>
         </div>
-        <div class="mt-6">
+        <!-- <div class="mt-6">
           <label class="mt-1 block text-white text-center w-80 m-auto py-3 shadow-sm border-gray-300 rounded-md">List Printer</label>
           <input
             type="number"
@@ -136,7 +48,7 @@
             class="mt-1 block w-80 m-auto p-3 shadow-sm border-gray-300 rounded-md"
             placeholder="Height"
           />
-        </div>
+        </div> -->
 
         <!-- Button -->
         <div class="mt-6">
@@ -144,11 +56,11 @@
             type="submit"
             class="w-80 m-auto flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-teal-500 hover:bg-teal-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
           >
-            Simpan
+            Print
           </button>
 
       </form>
-      <div class="invoice">
+      <!-- <div class="invoice">
         <h1>Invoice</h1>
         <div class="header">
             <div class="from">
@@ -195,7 +107,7 @@
         <div class="total">
             <p>Total: $175.00</p>
         </div>
-      </div>
+      </div> -->
 
       <!-- <p class="text-white text-lg text-center font-mono mt-6"><strong>File: </strong><span id="filename"></span></p>
       <p class="text-white text-lg text-center font-mono mt-2"><strong>Output: </strong><span id="output-path"></span></p> -->

@@ -1,26 +1,30 @@
 {
-  "name": "service-tracer",
-  "version": "1.0.0",
-  "description": "service tracer",
-  "main": "main.js",
-  "scripts": {
-    "start": "electron .",
-    "test": "run service tracer"
-  },
-  "author": "snb",
-  "license": "ISC",
-  "devDependencies": {
-    "electron": "^26.1.0"
-  },
-  "dependencies": {
-    "electron-pdf-window": "^1.0.12",
-    "jspdf": "^2.5.1",
-    "pdf-to-printer": "^5.6.0",
-    "pg": "^8.11.3",
-    "printer": "^0.4.0",
-    "sequelize": "^6.32.1",
-    "sequelize-cli": "^6.6.1",
-    "toastify-js": "^1.12.0",
-    "usb": "^2.10.0"
-  }
+    "name": "service-tracer",
+    "version": "1.0.0",
+    "description": "service tracer",
+    "main": "main.js",
+    "scripts": {
+        "start": "electron --trace-warnings .",
+        "test": "run service tracer"
+    },
+    "author": "snb",
+    "license": "ISC",
+    "devDependencies": {
+        "electron": "^26.1.0"
+    },
+    "dependencies": {
+        "@node-escpos/core": "^0.4.0",
+        "@node-escpos/usb-adapter": "^0.3.1",
+        "dotenv": "^16.3.1",
+        "electron-pdf-window": "^1.0.12",
+        "jspdf": "^2.5.1",
+        "node-escpos": "^0.0.3",
+        "pdf-to-printer": "^5.6.0",
+        "pg": "^8.11.3",
+        "printer": "^0.4.0",
+        "sequelize": "^6.32.1",
+        "sequelize-cli": "^6.6.1",
+        "toastify-js": "^1.12.0",
+        "usb": "^2.10.0"
+    }
 }

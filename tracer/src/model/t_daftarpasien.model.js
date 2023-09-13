@@ -3,7 +3,7 @@
  * @param {import(".").SequelizeInstance} Sequelize
  */
 // eslint-disable-next-line max-lines-per-function
-export default (sequelize, Sequelize) => {
+module.exports = (sequelize, Sequelize) => {
     const t_daftarpasien = sequelize.define("t_daftarpasien", {
         norec: {
             allowNull: false,
@@ -21,7 +21,7 @@ export default (sequelize, Sequelize) => {
             type: Sequelize.STRING
         },
         tglregistrasi:{
-            type: 'TIMESTAMP'
+            type: Sequelize.DATE
         },
         objectdokterpemeriksafk: {
             type: Sequelize.INTEGER
