@@ -99,14 +99,14 @@ const DaftarPasienPulang = () => {
             name: <span className='font-weight-bold fs-13'>Tgl Registrasi</span>,
             selector: row => dateTimeLocal(new Date(row.tglregistrasi)),
             sortable: true,
-            width: "160px",
+            width: "200px",
             wrap: true
         },
         {
             name: <span className='font-weight-bold fs-13'>No. Registrasi</span>,
             // selector: row => row.noregistrasi,
             sortable: true,
-            selector: row => (<button className="btn btn-sm btn-soft-info" onClick={() => handleClickUser(row)}>{row.noregistrasi}</button>),
+            selector: row => row.noregistrasi,
             width: "130px"
         },
         {
@@ -140,7 +140,7 @@ const DaftarPasienPulang = () => {
             name: <span className='font-weight-bold fs-13'>Tgl Pulang</span>,
             selector: row => dateTimeLocal(new Date(row.tglpulang)),
             sortable: true,
-            width: "160px",
+            width: "200px",
             wrap: true
 
         },
@@ -244,6 +244,9 @@ const DaftarPasienPulang = () => {
                                     fixedHeaderScrollHeight="700px"
                                     columns={columns}
                                     pagination
+                                    highlightOnHover
+                                    pointerOnHover
+                                    onRowClicked={(row) => handleClickUser(row)}
                                     data={dataPasienPlg || []}
                                     progressPending={false}
                                     customStyles={tableCustomStyles}
