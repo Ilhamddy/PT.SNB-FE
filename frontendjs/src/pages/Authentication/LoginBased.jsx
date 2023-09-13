@@ -35,6 +35,7 @@ import { loginUser, socialLogin, resetLoginFlag } from '../../store/actions'
 import logoLight from '../../assets/images/svg/login-new.svg'
 import bgImage from './bg-image.svg'
 import bgGradien from './bg-gradien.png'
+import logoBerdikari from './logo-berdikari.svg'
 //Import config
 import { facebook, google } from '../../config'
 import withRouter from '../../Components/Common/withRouter'
@@ -144,6 +145,9 @@ const Login = (props) => {
                 }}
                 action="#"
               >
+                <div className="mb-5 logo-snb">
+                  <img src={logoBerdikari} alt="logo-snb" />
+                </div>
                 <div className="mb-3">
                   <Label htmlFor="username" className="form-label">
                     Username
@@ -217,7 +221,7 @@ const Login = (props) => {
                         Loading...{' '}
                       </Spinner>
                     ) : null}
-                    Sign In
+                    Masuk
                   </Button>
                 </div>
               </Form>

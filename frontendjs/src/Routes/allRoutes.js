@@ -313,6 +313,7 @@ import DaftarPasienFarmasi from "../pages/ListDaftarPasien/DaftarPasienFarmasi/D
 import TambahObatFarmasi from "../pages/TambahObatFarmasi/TambahObatFarmasi";
 import MappingLayanan from "../pages/RekamMedis/MappingLayanan/MappingLayanan.jsx";
 import RL3_3 from "../pages/RekamMedis/Laporan/RL3_3/RL3_3";
+import Dashboard from "../pages/Dashboard/Dashboard";
 
 
 
@@ -320,7 +321,7 @@ import RL3_3 from "../pages/RekamMedis/Laporan/RL3_3/RL3_3";
 const authProtectedRoutes = [
   { path: "/dashboard-analytics", component: <DashboardAnalytics /> },
   { path: "/dashboard-crm", component: <DashboardCrm /> },
-  { path: "/dashboard", component: <DashboardEcommerce /> },
+  { path: "/dashboard", component: <Dashboard /> },
   { path: "/index", component: <DashboardEcommerce /> },
   { path: "/dashboard-crypto", component: <DashboardCrypto /> },
   { path: "/dashboard-projects", component: <DashboardProject /> },
