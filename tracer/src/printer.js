@@ -37,8 +37,8 @@ function printPromise({device, isCut = true}, printAction){
     })
 }
 
-function checkPrinterStatusPromise(){
-    return new Promise(async (res, rej) => {
+function checkPrinterStatus(){
+    return new Promise((res, rej) => {
         device.write(command.GS)
         device.write(coba)
         device.write(String.fromCharCode(3))
