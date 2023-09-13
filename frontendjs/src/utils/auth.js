@@ -12,7 +12,7 @@ export const useCheckActivity = () => {
             timeout && clearTimeout(timeout);
             timeout = setTimeout(() => { 
                 history(`/logout`); 
-            }, 1 * 60 * 1000);
+            }, 30 * 60 * 1000);
         }
         document.addEventListener('keydown', checkActivity);
         document.addEventListener('mousedown', checkActivity);
