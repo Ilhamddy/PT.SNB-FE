@@ -2,6 +2,10 @@ const qUnit = `select id as value, reportdisplay as label from m_unit mu where o
 and mu.statusenabled=true
 `
 
+const qDokter = `select id as value,namalengkap as label from m_pegawai where statusenabled=true
+`
+
 export default {
-    qUnit
+    qUnit,
+    qDokter
 }
