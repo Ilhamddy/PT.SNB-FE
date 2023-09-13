@@ -2,7 +2,7 @@ import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
 import * as dotenv from "dotenv"
-import './app/scheduler/scheduler'; 
+import './app/scheduler/scheduler';
 
 import authRoutes from './app/routes/auth.routes.js';
 import userRoutes from './app/routes/user.routes.js';
@@ -21,6 +21,7 @@ import gudangRoutes from "./app/routes/transaksi/gudang.routes.js"
 import distribusiRoutes from "./app/routes/transaksi/distribusi.routes.js"
 import { addResBody, logRequests } from "./app/middleware/logrequests.js";
 import farmasiRoutes from "./app/routes/transaksi/farmasi.routes.js";
+import kioskRoutes from "./app/routes/transaksi/kiosk.routes";
 
 dotenv.config()
 
@@ -65,6 +66,7 @@ casemixRoutes(app)
 gudangRoutes(app);
 distribusiRoutes(app);
 farmasiRoutes(app);
+kioskRoutes(app);
 
 
 // set port, listen for requests
