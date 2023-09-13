@@ -22,8 +22,10 @@ const getComboKiosk = async (req, res) => {
     const logger = res.locals.logger;
     try {
         const unit = await pool.query(queries.qUnit, [])
+        const dokter = await pool.query(queries.qDokter, [])
         const tempres = {
-            unit: unit.rows
+            unit: unit.rows,
+            dokter: dokter.rows
         };
         res.status(200).json({
             msg: 'Success',
