@@ -11,7 +11,7 @@ export const useCheckActivity = () => {
         function checkActivity() {
             timeout && clearTimeout(timeout);
             timeout = setTimeout(() => { 
-                console.log(`/logout`); 
+                history(`/logout`); 
             }, 1 * 60 * 1000);
         }
         document.addEventListener('keydown', checkActivity);
