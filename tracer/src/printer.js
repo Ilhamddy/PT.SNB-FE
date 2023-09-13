@@ -24,21 +24,6 @@ function printPromise({device, isCut = true}, printAction){
                 const options = { encoding: "GB18030" }
                 let printer = new Printer(device, options);
                 printer = await printAction(printer);
-
-                printer.adapter.on("data", function (data) {
-                    // console.log(typeof data)
-                    // if(data.length === 0) return 
-                    // console.log(data)
-                    // const byte = data.toString("utf-8");
-                    // console.log("data", byte);
-                    // console.log("data hex", data.charCodeAt((0)))
-                });
-            
-                printer.adapter.read((data) => {
-                    console.log("read data")
-                    console.log(data)
-                })
-
                 
                 if(isCut) printer.cut();
                 // printer.close();
@@ -52,7 +37,7 @@ function printPromise({device, isCut = true}, printAction){
     })
 }
 
-function checkPrinterStatus(){
+function checkPrinterStatusPromise(){
     return new Promise(async (res, rej) => {
         device.write(command.GS)
         device.write(coba)
@@ -66,7 +51,6 @@ function checkPrinterStatus(){
             if(data.length === 0) return 
             console.log(data)
             clearTimeout(timeout)
-
             res(data)
         });
     })
