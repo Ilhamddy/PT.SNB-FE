@@ -1267,12 +1267,6 @@ const PasienBaru = () => {
             <ToastContainer closeButton={false} />
             <div className="page-content">
                 <Container fluid>
-                    <div className="position-relative mx-n4 mt-n4">
-                        <div className="profile-wid-bg profile-setting-img">
-                            <img src={progileBg} className="profile-wid-img" alt="" />
-                        </div>
-                    </div>
-
                     <Row>
                         <Col xxl={12}>
                             <Card className="mt-xxl-n5">

@@ -1,5 +1,5 @@
-import React from 'react';
-import { Routes, Route } from "react-router-dom";
+import React, { useEffect } from 'react';
+import { Routes, Route, useNavigate } from "react-router-dom";
 
 //Layouts
 import NonAuthLayout from "../Layouts/NonAuthLayout";
@@ -10,6 +10,7 @@ import { authProtectedRoutes, publicRoutes } from "./allRoutes";
 import { AuthProtected } from './AuthProtected';
 
 const Index = () => {
+
     return (
         <React.Fragment>
             <Routes>
@@ -27,7 +28,6 @@ const Index = () => {
                         />
                     ))}
                 </Route>
-
                 <Route>
                     {authProtectedRoutes.map((route, idx) => (
                         <Route

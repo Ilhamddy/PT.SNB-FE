@@ -6,6 +6,7 @@ import { useDispatch } from "react-redux";
 import { useProfile } from "../Components/Hooks/UserHooks";
 
 import { logoutUser } from "../store/actions";
+import { useCheckActivity } from "../utils/auth";
 
 const AuthProtected = (props) => {
   const dispatch = useDispatch();
@@ -17,6 +18,8 @@ const AuthProtected = (props) => {
       dispatch(logoutUser());
     }
   }, [token, userProfile, loading, dispatch]);
+
+  useCheckActivity();
 
   /*
     Navigate is un-auth access protected routes via url

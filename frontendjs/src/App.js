@@ -5,6 +5,7 @@ import './assets/scss/themes.scss';
 
 //imoprt Route
 import Route from './Routes';
+import { Routes } from "react-router-dom";
 import "./App.scss"
 
 // Import Firebase Configuration file
