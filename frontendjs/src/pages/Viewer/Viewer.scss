@@ -1,0 +1,127 @@
+.viewer-aplikasi {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100vw;
+    height: 100vh;
+    background-color: #fbd3b7;
+
+    .header-viewer {
+        width: 100%;
+        height: 100px;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        background-color: #e67e22;
+
+        .gbr-header {
+            width: 150px;
+            height: 70px;
+            object-fit: contain;
+        }
+
+        .kontainer-waktu {
+            display: flex;
+            flex-direction: column;
+            align-items: right;
+            font-size: 36px;
+            font-weight: 700;
+
+            .jam-berjalan {
+                margin: 0;
+                font-size: 36px;
+                margin-bottom: 5px;
+            }
+
+            .tgl-berjalan {
+                margin: 0;
+                font-size: 24px;
+                font-weight: 400;
+            }
+        }
+    }
+
+    .konten-viewer {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        height: calc(100% - 160px);
+
+        .antrean-aktif-video {
+            display: flex;
+            flex-direction: row;
+            padding: 7px;
+            height: calc(100% - 220px);
+            .antrean-aktif {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                width: 37%;
+                margin-right: 3%;
+                font-size: 35px;
+                justify-content: space-between;
+                width: 40%;
+                background-color: #eee7df;
+                border-radius: 25px;
+
+                .judul {
+                    font-size: 30px;
+                    font-weight: 700;
+                }
+
+                .nomor {
+                    font-size: 120px;
+                    font-weight: 800;
+                    text-align: center;
+                }
+
+                .loket {
+                    font-size: 30px;
+                    font-weight: 700;
+                }
+            }
+            .kontainer-video {
+                background-color: #000000;
+                border-radius: 25px;
+                width: 60%;
+            }
+        }
+
+        .kontainer-loket {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            height: 220px;
+
+            .loket-available {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                width: 24%;
+                height: 95%;
+                border-radius: 15px;
+                margin-right: 1%;
+                background-color: #eee7df;
+
+                .number {
+                    margin: 0;
+                    font-size: 32px;
+                    font-weight: 700;
+                    margin-top: 8px;
+                }
+
+                .isi {
+                    font-size: 80px;
+                    font-weight: 800;
+                }
+            }
+        }
+    }
+
+    .running-text-viewer {
+        display: flex;
+        background-color: #e67e22;
+        width: 100%;
+        height: 60px;
+    }
+}

@@ -314,6 +314,7 @@ import TambahObatFarmasi from "../pages/TambahObatFarmasi/TambahObatFarmasi";
 import MappingLayanan from "../pages/RekamMedis/MappingLayanan/MappingLayanan.jsx";
 import RL3_3 from "../pages/RekamMedis/Laporan/RL3_3/RL3_3";
 import Dashboard from "../pages/Dashboard/Dashboard";
+import Viewer from "../pages/Viewer/Viewer";
 
 
 
@@ -547,7 +548,8 @@ const authProtectedRoutes = [
   { path: "/listdaftarpasien/daftar-pasien-pulang", component: <DaftarPasienPulang /> },
   { path: "/listdaftarpasien/daftarpasienregistrasi", component:<DaftarPasienRegistrasi/>},
   { path: "/listdaftarpasien/daftar-pasien-farmasi", component:<DaftarPasienFarmasi/>},
-
+  //viewer
+  { path: "/cmVnaXN0cmFzaS92aWV3ZXI=", component: <Viewer />, isLayout: false},
   { path: "/bGlzdGRhZnRhcnBhc2llbi9kYWZ0YXJwYXNpZW5tdXRhc2k=", component:<DaftarPasienMutasi/>},
   { path: "/registrasi/mutasi-pasien/:id/:norec", component: <RegistrasiMutasiPasien/> },
   { path: "/listdaftarpasien/daftar-pasien-igd", component: <DaftarPasienIGD /> },
@@ -610,6 +612,8 @@ const authProtectedRoutes = [
   { path: "/farmasi/penjualan-obat-bebas", component: <PenjualanObatBebas /> },
   { path: "/farmasi/list-verif-obat/:norecdp", component: <ListVerifObat />},
   { path: "/farmasi/tambah-obat-farmasi/:norecap", component: <TambahObatFarmasi />}
+
+
 ];
 
 const publicRoutes = [

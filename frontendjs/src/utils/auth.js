@@ -14,15 +14,24 @@ export const useCheckActivity = () => {
                 history(`/logout`); 
             }, 30 * 60 * 1000);
         }
-        document.addEventListener('keydown', checkActivity);
-        document.addEventListener('mousedown', checkActivity);
-        document.addEventListener('mousemove', checkActivity);
+        try{
+            document.addEventListener('keydown', checkActivity);
+            document.addEventListener('mousedown', checkActivity);
+            document.addEventListener('mousemove', checkActivity);
+        }catch(error){
+            console.error(error);
+        }
+        
         checkActivity();
         return () => {
             clearTimeout(timeout);
-            document.removeEventListener('keydown', checkActivity);
-            document.removeEventListener('mousedown', checkActivity);
-            document.removeEventListener('mousemove', checkActivity);
+            try{
+                document.removeEventListener('keydown', checkActivity);
+                document.removeEventListener('mousedown', checkActivity);
+                document.removeEventListener('mousemove', checkActivity);
+            }catch(error){
+                console.error(error);
+            }
         }
     }, [history])
 }
