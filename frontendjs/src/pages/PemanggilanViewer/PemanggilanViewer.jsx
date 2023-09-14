@@ -67,7 +67,7 @@ const PemanggilanViewer = () => {
                     vPemanggilan.setFieldValue('loket', e?.value || '')
                   }}
                   value={vPemanggilan.values.loket}
-                  className={`input row-header mt-2 ${
+                  className={`input row-header ${
                     !!vPemanggilan?.errors.loket ? 'is-invalid' : ''
                   }`}
                 />
@@ -79,7 +79,7 @@ const PemanggilanViewer = () => {
                 <Label
                   style={{ color: 'black' }}
                   htmlFor="jenis"
-                  className="form-label"
+                  className="form-label mt-3"
                 >
                   Jenis
                 </Label>
@@ -91,7 +91,7 @@ const PemanggilanViewer = () => {
                     vPemanggilan.setFieldValue('jenis', e?.value || '')
                   }}
                   value={vPemanggilan.values.jenis}
-                  className={`input row-header mt-2 ${
+                  className={`input row-header ${
                     !!vPemanggilan?.errors.jenis ? 'is-invalid' : ''
                   }`}
                 />
@@ -100,17 +100,19 @@ const PemanggilanViewer = () => {
                     <div>{vPemanggilan.errors.jenis}</div>
                   </FormFeedback>
                 )}
-                <Button color="info">Panggil Selanjutnya</Button>
+                <Button color="info" className="w-100 mt-3">
+                  Panggil Selanjutnya
+                </Button>
               </Col>
               <Col sm={6}>
-                <Card>
-                  <p>Antrean sekarang</p>
-                  <p>S04</p>
-                  <p>Loket 1</p>
-                </Card>
+                <div className="isi-antrean">
+                  <p className="judul">Antrean sekarang</p>
+                  <p className="antrean">S04</p>
+                  <p className="loket">Loket 1</p>
+                </div>
               </Col>
             </Row>
-            <Row>
+            <Row className="mt-3">
               <Col sm={6}>
                 <Label
                   style={{ color: 'black' }}
@@ -129,7 +131,9 @@ const PemanggilanViewer = () => {
                   }}
                   invalid={panggilUlang}
                 />
-                <Button color="info">Panggil Ulang Antrean</Button>
+                <Button color="info" className="w-100 mt-3">
+                  Panggil Ulang Antrean
+                </Button>
               </Col>
               <Col sm={6}>
                 <Label
@@ -148,7 +152,9 @@ const PemanggilanViewer = () => {
                     setNoRM(e.target.value)
                   }}
                 />
-                <Button color="info">Simpan No RM</Button>
+                <Button color="success" className="w-100 mt-3">
+                  Simpan No RM
+                </Button>
               </Col>
             </Row>
           </Col>
