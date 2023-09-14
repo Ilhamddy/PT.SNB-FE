@@ -36,6 +36,20 @@ const PasienBaru = () => {
     document.title = "Profile Pasien Baru";
     const dispatch = useDispatch();
     const {idpasien} = useParams();
+
+    const refAgama = useRef(null);
+    const refGolDarah = useRef(null);
+    const refKebangsaan = useRef(null);
+    const refPerkawinan = useRef(null);
+    const refPendidikan = useRef(null);
+    const refPekerjaan = useRef(null);
+    const refSuku = useRef(null);
+    const refBahasa = useRef(null);
+    const refDesa = useRef(null);
+    const refDesaDomisili = useRef(null);
+    const refNegara = useRef(null);
+    const refNegaraDomisili = useRef(null);
+
     const { 
         data, 
         dataJenisKelamin, 
@@ -44,7 +58,7 @@ const PasienBaru = () => {
         dataKebangsaan,
         dataPerkawinan, 
         dataPendidikan, 
-        dataPekerjaan, dataEtnis, dataBahasa, dataDesa,
+        dataPekerjaan, dataEtnis: dataSuku, dataBahasa, dataDesa,
         dataNegara, 
         loading, 
         error, 
@@ -75,17 +89,8 @@ const PasienBaru = () => {
             pasienFormQueries: state.Registrasi.pasienFormQueriesGet.data?.pasien || null
         }));
 
-    useEffect(() => {
-        dispatch(masterGet());
-        dispatch(desaGet(''));
-        // dispatch(kecamatanGet())
-    }, [dispatch]);
+    
 
-    useEffect(() => {
-        return () => {
-            dispatch(registrasiResetForm());
-        }
-    }, [dispatch])
     // Card Header Tabs
     const [cardHeaderTab, setcardHeaderTab] = useState("1");
     const cardHeaderToggle = (tab) => {
@@ -96,24 +101,21 @@ const PasienBaru = () => {
 
 
     const [isSesuaiKtp, setisSesuaiKtp] = useState(false);
-
-    const refNegara = useRef(null);
-    const refNegaraDomisili = useRef(null);
     
     const handleChangeDesa = (selected) => {
-        validation.setFieldValue('desa', selected.value)
-        validation.setFieldValue('kecamatan', selected.namakecamatan)
-        validation.setFieldValue('kota', selected.namakabupaten)
-        validation.setFieldValue('provinsi', selected.namaprovinsi)
-        validation.setFieldValue('pos', selected.kodepos)
+        validation.setFieldValue('desa', selected?.value || "")
+        validation.setFieldValue('kecamatan', selected?.namakecamatan || "")
+        validation.setFieldValue('kota', selected?.namakabupaten || "")
+        validation.setFieldValue('provinsi', selected?.namaprovinsi || "")
+        validation.setFieldValue('pos', selected?.kodepos || "")
         // console.log(selected);
     };
     const handleChangeDesaDomisili = (selected) => {
-        validation.setFieldValue('desaDomisili', selected.value)
-        validation.setFieldValue('kecamatanDomisili', selected.namakecamatan)
-        validation.setFieldValue('kotaDomisili', selected.namakabupaten)
-        validation.setFieldValue('provinsiDomisili', selected.namaprovinsi)
-        validation.setFieldValue('posDomisili', selected.kodepos)
+        validation.setFieldValue('desaDomisili', selected?.value || "")
+        validation.setFieldValue('kecamatanDomisili', selected?.namakecamatan || "")
+        validation.setFieldValue('kotaDomisili', selected?.namakabupaten || "")
+        validation.setFieldValue('provinsiDomisili', selected?.namaprovinsi || "")
+        validation.setFieldValue('posDomisili', selected?.kodepos || "")
         // console.log(selected);
     };
 
@@ -201,6 +203,34 @@ const PasienBaru = () => {
         }
     });
 
+    const handleResetAll = () => {
+        validation.resetForm();
+        refAgama.current?.clearValue()
+        refGolDarah.current?.clearValue()
+        refKebangsaan.current?.clearValue()
+        refPerkawinan.current?.clearValue()
+        refPendidikan.current?.clearValue()
+        refPekerjaan.current?.clearValue()
+        refSuku.current?.clearValue()
+        refBahasa.current?.clearValue()
+        refDesa.current?.clearValue()
+        refDesaDomisili.current?.clearValue()
+        refNegara.current?.clearValue()
+        refNegaraDomisili.current?.clearValue()
+    }
+
+    useEffect(() => {
+        dispatch(masterGet());
+        dispatch(desaGet(''));
+        // dispatch(kecamatanGet())
+    }, [dispatch]);
+
+    useEffect(() => {
+        return () => {
+            dispatch(registrasiResetForm());
+        }
+    }, [dispatch])
+
     useEffect(() => {
         const setFF = validation.setFieldValue
         if(!isSesuaiKtp) {
@@ -246,8 +276,8 @@ const PasienBaru = () => {
 
 
     const handleChangeKebangsaan = (selected) => {
-        validation.setFieldValue('kebangsaan', selected.value)
-        if (selected.value === 1){
+        validation.setFieldValue('kebangsaan', selected?.value || "")
+        if (selected?.value === 1){
             validation.setFieldValue("negara", 13)
             validation.setFieldValue("negaraDomisili", 13)
         }else{
@@ -263,12 +293,12 @@ const PasienBaru = () => {
             </CardHeader>
             <CardBody>
                 <Row className="gy-4">
-                    <Col xxl={6} md={6}>
+                    <Col md={4}>
                         <div className="mt-2">
                             <Label style={{ color: "black" }} htmlFor="noidentitas" className="form-label">No Identitas</Label>
                         </div>
                     </Col>
-                    <Col xxl={6} md={6}>
+                    <Col md={8}>
                         <div>
                             <Input
                                 id="noidentitas"
@@ -292,12 +322,12 @@ const PasienBaru = () => {
                             ) : null}
                         </div>
                     </Col>
-                    <Col xxl={6} md={6}>
+                    <Col md={4}>
                         <div className="mt-2">
                             <Label style={{ color: "black" }} htmlFor="namapasien" className="form-label">Nama Pasien</Label>
                         </div>
                     </Col>
-                    <Col xxl={6} md={6}>
+                    <Col md={8}>
                         <div>
                             <Input
                                 id="namapasien"
@@ -317,12 +347,12 @@ const PasienBaru = () => {
                             ) : null}
                         </div>
                     </Col>
-                    <Col xxl={6} md={6}>
+                    <Col md={4}>
                         <div className="mt-2">
                             <Label style={{ color: "black" }} htmlFor="jeniskelamin" className="form-label">Jenis Kelamin</Label>
                         </div>
                     </Col>
-                    <Col xxl={6} md={6}>
+                    <Col md={8}>
                         <div>
                             <CustomSelect
                                 id="jeniskelamin"
@@ -337,12 +367,12 @@ const PasienBaru = () => {
                             ) : null}
                         </div>
                     </Col>
-                    <Col xxl={6} md={6}>
+                    <Col md={4}>
                         <div className="mt-2">
                             <Label style={{ color: "black" }} htmlFor="titlepasien" className="form-label">Title Pasien</Label>
                         </div>
                     </Col>
-                    <Col xxl={6} md={6}>
+                    <Col md={8}>
                         <div>
                             <CustomSelect
                                 id="titlepasien"
@@ -350,19 +380,19 @@ const PasienBaru = () => {
                                 options={dataTitle}
                                 value={validation.values.titlepasien || ""}
                                 className={`input ${validation.errors.titlepasien ? "is-invalid" : ""}`}
-                                onChange={value => validation.setFieldValue('titlepasien', value.value)}
+                                onChange={value => validation.setFieldValue('titlepasien', value?.value || "")}
                                 />
                             {validation.touched.titlepasien && validation.errors.titlepasien ? (
                                 <FormFeedback type="invalid"><div>{validation.errors.titlepasien}</div></FormFeedback>
                             ) : null}
                         </div>
                     </Col>
-                    <Col xxl={6} md={6}>
+                    <Col md={4}>
                         <div className="mt-2">
                             <Label style={{ color: "black" }} htmlFor="tempatlahir" className="form-label">Tempat Lahir</Label>
                         </div>
                     </Col>
-                    <Col xxl={6} md={6}>
+                    <Col md={8}>
                         <div>
                             <Input
                                 id="tempatlahir"
@@ -381,12 +411,12 @@ const PasienBaru = () => {
                             ) : null}
                         </div>
                     </Col>
-                    <Col xxl={6} md={6}>
+                    <Col md={4}>
                         <div className="mt-2">
                             <Label style={{ color: "black" }} htmlFor="tgllahir" className="form-label">Tanggal Lahir</Label>
                         </div>
                     </Col>
-                    <Col xxl={6} md={6}>
+                    <Col md={8}>
                         <div>
                             <Flatpickr
                                 className="form-control"
@@ -402,12 +432,12 @@ const PasienBaru = () => {
                             />
                         </div>
                     </Col>
-                    <Col xxl={6} md={6}>
+                    <Col md={4}>
                         <div className="mt-2">
                             <Label style={{ color: "black" }} htmlFor="agama" className="form-label">Agama</Label>
                         </div>
                     </Col>
-                    <Col xxl={6} md={6}>
+                    <Col md={8}>
                         <div>
                             <CustomSelect
                                 id="agama"
@@ -415,19 +445,20 @@ const PasienBaru = () => {
                                 options={data}
                                 value={validation.values.agama || ""}
                                 className={`input ${validation.errors.agama ? "is-invalid" : ""}`}
-                                onChange={value => validation.setFieldValue('agama', value.value)}
+                                onChange={value => validation.setFieldValue('agama', value?.value || "")}
+                                ref={refAgama}
                             />
                             {validation.touched.agama && validation.errors.agama ? (
                                 <FormFeedback type="invalid"><div>{validation.errors.agama}</div></FormFeedback>
                             ) : null}
                         </div>
                     </Col>
-                    <Col xxl={6} md={6}>
+                    <Col md={4}>
                         <div className="mt-2">
                             <Label style={{ color: "black" }} htmlFor="goldarah" className="form-label">Gol Darah</Label>
                         </div>
                     </Col>
-                    <Col xxl={6} md={6}>
+                    <Col md={8}>
                         <div>
                             <CustomSelect
                                 id="goldarah"
@@ -435,19 +466,20 @@ const PasienBaru = () => {
                                 options={dataGD}
                                 value={validation.values.goldarah || ""}
                                 className={`input ${validation.errors.goldarah ? "is-invalid" : ""}`}
-                                onChange={value => validation.setFieldValue('goldarah', value.value)}
+                                onChange={value => validation.setFieldValue('goldarah', value?.value || "")}
+                                ref={refGolDarah}
                             />
                             {validation.touched.goldarah && validation.errors.goldarah ? (
                                 <FormFeedback type="invalid"><div>{validation.errors.goldarah}</div></FormFeedback>
                             ) : null}
                         </div>
                     </Col>
-                    <Col xxl={6} md={6}>
+                    <Col md={4}>
                         <div className="mt-2">
                             <Label style={{ color: "black" }} htmlFor="kebangsaan" className="form-label">Kebangsaan</Label>
                         </div>
                     </Col>
-                    <Col xxl={6} md={6}>
+                    <Col md={8}>
                         <div>
                             <CustomSelect
                                 id="kebangsaan"
@@ -456,19 +488,19 @@ const PasienBaru = () => {
                                 value={validation.values.kebangsaan || ""}
                                 className={`input ${validation.errors.kebangsaan ? "is-invalid" : ""}`}
                                 onChange={handleChangeKebangsaan}
-
+                                ref={refKebangsaan}
                             />
                             {validation.touched.kebangsaan && validation.errors.kebangsaan ? (
                                 <FormFeedback type="invalid"><div>{validation.errors.kebangsaan}</div></FormFeedback>
                             ) : null}
                         </div>
                     </Col>
-                    <Col xxl={6} md={6}>
+                    <Col md={4}>
                         <div className="mt-2">
                             <Label style={{ color: "black" }} htmlFor="statusperkawinan" className="form-label">Status Perkawinan</Label>
                         </div>
                     </Col>
-                    <Col xxl={6} md={6}>
+                    <Col md={8}>
                         <div>
                             <CustomSelect
                                 id="statusperkawinan"
@@ -476,19 +508,20 @@ const PasienBaru = () => {
                                 options={dataPerkawinan}
                                 value={validation.values.statusperkawinan || ""}
                                 className={`input ${validation.errors.statusperkawinan ? "is-invalid" : ""}`}
-                                onChange={value => validation.setFieldValue('statusperkawinan', value.value)}
+                                onChange={value => validation.setFieldValue('statusperkawinan', value?.value || "")}
+                                ref={refPerkawinan}
                             />
                             {validation.touched.statusperkawinan && validation.errors.statusperkawinan ? (
                                 <FormFeedback type="invalid"><div>{validation.errors.statusperkawinan}</div></FormFeedback>
                             ) : null}
                         </div>
                     </Col>
-                    <Col xxl={6} md={6}>
+                    <Col md={4}>
                         <div className="mt-2">
                             <Label style={{ color: "black" }} htmlFor="pendidikan" className="form-label">Pendidikan</Label>
                         </div>
                     </Col>
-                    <Col xxl={6} md={6}>
+                    <Col md={8}>
                         <div>
                             <CustomSelect
                                 id="pendidikan"
@@ -496,19 +529,20 @@ const PasienBaru = () => {
                                 options={dataPendidikan}
                                 value={validation.values.pendidikan || ""}
                                 className={`input ${validation.errors.pendidikan ? "is-invalid" : ""}`}
-                                onChange={value => validation.setFieldValue('pendidikan', value.value)}
+                                onChange={value => validation.setFieldValue('pendidikan', value?.value || "")}
+                                ref={refPendidikan}
                             />
                             {validation.touched.pendidikan && validation.errors.pendidikan ? (
                                 <FormFeedback type="invalid"><div>{validation.errors.pendidikan}</div></FormFeedback>
                             ) : null}
                         </div>
                     </Col>
-                    <Col xxl={6} md={6}>
+                    <Col md={4}>
                         <div className="mt-2">
                             <Label style={{ color: "black" }} htmlFor="pekerjaan" className="form-label">Pekerjaan</Label>
                         </div>
                     </Col>
-                    <Col xxl={6} md={6}>
+                    <Col md={8}>
                         <div>
                             <CustomSelect
                                 id="pekerjaan"
@@ -516,39 +550,41 @@ const PasienBaru = () => {
                                 options={dataPekerjaan}
                                 value={validation.values.pekerjaan || ""}
                                 className={`input ${validation.errors.pekerjaan ? "is-invalid" : ""}`}
-                                onChange={value => validation.setFieldValue('pekerjaan', value.value)}
+                                onChange={value => validation.setFieldValue('pekerjaan', value?.value)}
+                                ref={refPekerjaan}
                             />
                             {validation.touched.pekerjaan && validation.errors.pekerjaan ? (
                                 <FormFeedback type="invalid"><div>{validation.errors.pekerjaan}</div></FormFeedback>
                             ) : null}
                         </div>
                     </Col>
-                    <Col xxl={6} md={6}>
+                    <Col md={4}>
                         <div className="mt-2">
-                            <Label style={{ color: "black" }} htmlFor="suku" className="form-label">SUKU</Label>
+                            <Label style={{ color: "black" }} htmlFor="suku" className="form-label">Suku</Label>
                         </div>
                     </Col>
-                    <Col xxl={6} md={6}>
+                    <Col md={8}>
                         <div>
                             <CustomSelect
                                 id="suku"
                                 name="suku"
-                                options={dataEtnis}
+                                options={dataSuku}
                                 value={validation.values.suku || ""}
                                 className={`input ${validation.errors.suku ? "is-invalid" : ""}`}
-                                onChange={value => validation.setFieldValue('suku', value.value)}
+                                onChange={value => validation.setFieldValue('suku', value?.value || "")}
+                                ref={refSuku}
                             />
                             {validation.touched.suku && validation.errors.suku ? (
                                 <FormFeedback type="invalid"><div>{validation.errors.suku}</div></FormFeedback>
                             ) : null}
                         </div>
                     </Col>
-                    <Col xxl={6} md={6}>
+                    <Col md={4}>
                         <div className="mt-2">
                             <Label style={{ color: "black" }} htmlFor="bahasa" className="form-label">Bahasa Yang Dikuasai</Label>
                         </div>
                     </Col>
-                    <Col xxl={6} md={6}>
+                    <Col md={8}>
                         <div>
                             <CustomSelect
                                 id="bahasa"
@@ -556,7 +592,8 @@ const PasienBaru = () => {
                                 options={dataBahasa}
                                 value={validation.values.bahasa || ""}
                                 className={`input ${validation.errors.bahasa ? "is-invalid" : ""}`}
-                                onChange={value => validation.setFieldValue('bahasa', value.value)}
+                                onChange={value => validation.setFieldValue('bahasa', value?.value || "")}
+                                ref={refBahasa}
                             />
                             {validation.touched.bahasa && validation.errors.bahasa ? (
                                 <FormFeedback type="invalid"><div>{validation.errors.bahasa}</div></FormFeedback>
@@ -575,18 +612,18 @@ const PasienBaru = () => {
             </CardHeader>
             <CardBody>
                 <Row className="gy-4">
-                    <Col xxl={6} md={6}>
+                    <Col md={4}>
                         <div className="mt-2">
                             <Label 
                                 style={{ color: "black" }} 
                                 htmlFor="nobpjs" 
                                 className="form-label"
                                 >
-                                No Identitas
+                                No BPJS
                             </Label>
                         </div>
                     </Col>
-                    <Col xxl={6} md={6}>
+                    <Col md={8}>
                         <div>
                             <Input
                                 id="nobpjs"
@@ -612,7 +649,7 @@ const PasienBaru = () => {
                             ) : null}
                         </div>
                     </Col>
-                    <Col xxl={6} md={6}>
+                    <Col md={4}>
                         <div className="mt-2">
                             <Label 
                                 style={{ color: "black" }} 
@@ -623,7 +660,7 @@ const PasienBaru = () => {
                             </Label>
                         </div>
                     </Col>
-                    <Col xxl={6} md={6}>
+                    <Col md={8}>
                         <div>
                             <Input
                                 id="namaibu"
@@ -649,7 +686,7 @@ const PasienBaru = () => {
                             }
                         </div>
                     </Col>
-                    <Col xxl={6} md={6}>
+                    <Col md={4}>
                         <div className="mt-2">
                             <Label 
                                 style={{ color: "black" }} 
@@ -660,7 +697,7 @@ const PasienBaru = () => {
                             </Label>
                         </div>
                     </Col>
-                    <Col xxl={6} md={6}>
+                    <Col md={8}>
                         <div>
                             <Input
                                 id="namaayah"
@@ -686,7 +723,7 @@ const PasienBaru = () => {
                             }
                         </div>
                     </Col>
-                    <Col xxl={6} md={6}>
+                    <Col md={4}>
                         <div className="mt-2">
                             <Label 
                                 style={{ color: "black" }} 
@@ -697,7 +734,7 @@ const PasienBaru = () => {
                             </Label>
                         </div>
                     </Col>
-                    <Col xxl={6} md={6}>
+                    <Col md={8}>
                         <div>
                             <Input
                                 id="namasuamimistri"
@@ -724,7 +761,7 @@ const PasienBaru = () => {
                             }
                         </div>
                     </Col>
-                    <Col xxl={6} md={6}>
+                    <Col md={4}>
                         <div className="mt-2">
                             <Label 
                                 style={{ color: "black" }} 
@@ -735,7 +772,7 @@ const PasienBaru = () => {
                             </Label>
                         </div>
                     </Col>
-                    <Col xxl={6} md={6}>
+                    <Col md={8}>
                         <div>
                             <Input
                                 id="namakeluargalain"
@@ -762,7 +799,7 @@ const PasienBaru = () => {
                             }
                         </div>
                     </Col>
-                    <Col xxl={6} md={6}>
+                    <Col md={4}>
                         <div className="mt-2">
                             <Label 
                                 style={{ color: "black" }} 
@@ -773,7 +810,7 @@ const PasienBaru = () => {
                             </Label>
                         </div>
                     </Col>
-                    <Col xxl={6} md={6}>
+                    <Col md={8}>
                         <div>
                             <Input
                                 id="nohp"
@@ -803,7 +840,7 @@ const PasienBaru = () => {
                             }
                         </div>
                     </Col>
-                    <Col xxl={6} md={6}>
+                    <Col md={4}>
                         <div className="mt-2">
                             <Label 
                                 style={{ color: "black" }} 
@@ -814,7 +851,7 @@ const PasienBaru = () => {
                             </Label>
                         </div>
                     </Col>
-                    <Col xxl={6} md={6}>
+                    <Col md={8}>
                         <div>
                             <Input
                                 id="notelepon"
@@ -856,12 +893,12 @@ const PasienBaru = () => {
             </CardHeader>
             <CardBody>
                 <Row className="gy-4">
-                    <Col xxl={6} md={6}>
+                    <Col md={4}>
                         <div className="mt-2">
                             <Label style={{ color: "black" }} htmlFor="alamatktp" className="form-label">Alamat KTP</Label>
                         </div>
                     </Col>
-                    <Col xxl={6} md={6}>
+                    <Col md={8}>
                         <div>
                             <Input
                                 id="alamatktp"
@@ -880,12 +917,12 @@ const PasienBaru = () => {
                             ) : null}
                         </div>
                     </Col>
-                    <Col xxl={6} md={6}>
+                    <Col md={4}>
                         <div className="mt-2">
                             <Label style={{ color: "black" }} htmlFor="rtrw" className="form-label">RT / RW</Label>
                         </div>
                     </Col>
-                    <Col xxl={6} md={6}>
+                    <Col md={8}>
                         <div className="row">
                             <div className="col-sm">
                                 <Input
@@ -929,12 +966,12 @@ const PasienBaru = () => {
                             </div>
                         </div>
                     </Col>
-                    <Col xxl={6} md={6}>
+                    <Col md={4}>
                         <div className="mt-2">
                             <Label style={{ color: "black" }} htmlFor="desa" className="form-label">Kelurahan / Desa</Label>
                         </div>
                     </Col>
-                    <Col xxl={6} md={6}>
+                    <Col md={8}>
                         <div>
                             <CustomSelect
                                 id="desa"
@@ -945,18 +982,19 @@ const PasienBaru = () => {
                                 // onChange={value => validation.setFieldValue('desa', value.value)} 
                                 onChange={handleChangeDesa}
                                 onInputChange={handleDesa}
+                                ref={refDesa}
                             />
                             {validation.touched.desa && validation.errors.desa ? (
                                 <FormFeedback type="invalid"><div>{validation.errors.desa}</div></FormFeedback>
                             ) : null}
                         </div>
                     </Col>
-                    <Col xxl={6} md={6}>
+                    <Col md={4}>
                         <div className="mt-2">
                             <Label style={{ color: "black" }} htmlFor="kecamatan" className="form-label">Kecamatan</Label>
                         </div>
                     </Col>
-                    <Col xxl={6} md={6}>
+                    <Col md={8}>
                         <div>
                             <Input
                                 id="kecamatan"
@@ -968,12 +1006,12 @@ const PasienBaru = () => {
                             />
                         </div>
                     </Col>
-                    <Col xxl={6} md={6}>
+                    <Col md={4}>
                         <div className="mt-2">
                             <Label style={{ color: "black" }} htmlFor="kota" className="form-label">Kota / Kabupaten</Label>
                         </div>
                     </Col>
-                    <Col xxl={6} md={6}>
+                    <Col md={8}>
                         <div>
                             <Input
                                 id="kota"
@@ -985,12 +1023,12 @@ const PasienBaru = () => {
                             />
                         </div>
                     </Col>
-                    <Col xxl={6} md={6}>
+                    <Col md={4}>
                         <div className="mt-2">
                             <Label style={{ color: "black" }} htmlFor="pos" className="form-label">Kode POS</Label>
                         </div>
                     </Col>
-                    <Col xxl={6} md={6}>
+                    <Col md={8}>
                         <div>
                             <Input
                                 id="pos"
@@ -1005,12 +1043,12 @@ const PasienBaru = () => {
                             />
                         </div>
                     </Col>
-                    <Col xxl={6} md={6}>
+                    <Col md={4}>
                         <div className="mt-2">
                             <Label style={{ color: "black" }} htmlFor="provinsi" className="form-label">Provinsi</Label>
                         </div>
                     </Col>
-                    <Col xxl={6} md={6}>
+                    <Col md={8}>
                         <div>
                             <Input
                                 id="provinsi"
@@ -1022,12 +1060,12 @@ const PasienBaru = () => {
                             />
                         </div>
                     </Col>
-                    <Col xxl={6} md={6}>
+                    <Col md={4}>
                         <div className="mt-2">
                             <Label style={{ color: "black" }} htmlFor="negara" className="form-label">Negara</Label>
                         </div>
                     </Col>
-                    <Col xxl={6} md={6}>
+                    <Col md={8}>
                         <div>
                             <CustomSelect
                                 id="negara"
@@ -1057,7 +1095,7 @@ const PasienBaru = () => {
             </CardHeader>
             <CardBody>
                 <Row className="gy-4">
-                    {/* <Col xxl={6} md={6}> */}
+                    {/* <Col md={8}> */}
                     <div className="form-check ms-2">
                         <Input className="form-check-input" type="checkbox" 
                             checked={isSesuaiKtp}
@@ -1069,12 +1107,12 @@ const PasienBaru = () => {
                     </div>
                     {/* </Col> */}
 
-                    <Col xxl={6} md={6}>
+                    <Col md={4}>
                         <div className="mt-2">
                             <Label style={{ color: "black" }} htmlFor="alamatdomisili" className="form-label">Alamat Domisili</Label>
                         </div>
                     </Col>
-                    <Col xxl={6} md={6}>
+                    <Col md={8}>
                         <div>
                         <Input
                                 id="alamatdomisili"
@@ -1094,12 +1132,12 @@ const PasienBaru = () => {
                             ) : null}
                         </div>
                     </Col>
-                    <Col xxl={6} md={6}>
+                    <Col md={4}>
                         <div className="mt-2">
                             <Label style={{ color: "black" }} htmlFor="rtrwdomisili" className="form-label">RT / RW</Label>
                         </div>
                     </Col>
-                    <Col xxl={6} md={6}>
+                    <Col md={8}>
                         <div className="row">
                             <div className="col-sm">
                             <Input
@@ -1143,12 +1181,12 @@ const PasienBaru = () => {
                             </div>
                         </div>
                     </Col>
-                    <Col xxl={6} md={6}>
+                    <Col md={4}>
                         <div className="mt-2">
                             <Label style={{ color: "black" }} htmlFor="desa" className="form-label">Kelurahan / Desa</Label>
                         </div>
                     </Col>
-                    <Col xxl={6} md={6}>
+                    <Col md={8}>
                         <div>
                         <CustomSelect
                                 id="desaDomisili"
@@ -1159,18 +1197,19 @@ const PasienBaru = () => {
                                 // onChange={value => validation.setFieldValue('desa', value.value)} 
                                 onChange={handleChangeDesaDomisili}
                                 onInputChange={handleDesa}
+                                ref={refDesaDomisili}
                             />
                             {validation.touched.desaDomisili && validation.errors.desaDomisili ? (
                                 <FormFeedback type="invalid"><div>{validation.errors.desaDomisili}</div></FormFeedback>
                             ) : null}
                         </div>
                     </Col>
-                    <Col xxl={6} md={6}>
+                    <Col md={4}>
                         <div className="mt-2">
                             <Label style={{ color: "black" }} htmlFor="kecamatandomisili" className="form-label">Kecamatan</Label>
                         </div>
                     </Col>
-                    <Col xxl={6} md={6}>
+                    <Col md={8}>
                         <div>
                         <Input
                                 id="kecamatanDomisili"
@@ -1182,12 +1221,12 @@ const PasienBaru = () => {
                             />
                         </div>
                     </Col>
-                    <Col xxl={6} md={6}>
+                    <Col md={4}>
                         <div className="mt-2">
                             <Label style={{ color: "black" }} htmlFor="kotadomisili" className="form-label">Kota / Kabupaten</Label>
                         </div>
                     </Col>
-                    <Col xxl={6} md={6}>
+                    <Col md={8}>
                         <div>
                         <Input
                                 id="kotaDomisili"
@@ -1199,12 +1238,12 @@ const PasienBaru = () => {
                             />
                         </div>
                     </Col>
-                    <Col xxl={6} md={6}>
+                    <Col md={4}>
                         <div className="mt-2">
                             <Label style={{ color: "black" }} htmlFor="posdomisili" className="form-label">Kode POS</Label>
                         </div>
                     </Col>
-                    <Col xxl={6} md={6}>
+                    <Col md={8}>
                         <div>
                         <Input
                                 id="posDomisili"
@@ -1219,12 +1258,12 @@ const PasienBaru = () => {
                             />
                         </div>
                     </Col>
-                    <Col xxl={6} md={6}>
+                    <Col md={4}>
                         <div className="mt-2">
                             <Label style={{ color: "black" }} htmlFor="provinsidomisili" className="form-label">Provinsi</Label>
                         </div>
                     </Col>
-                    <Col xxl={6} md={6}>
+                    <Col md={8}>
                         <div>
                         <Input
                                 id="provinsiDomisili"
@@ -1236,25 +1275,25 @@ const PasienBaru = () => {
                             />
                         </div>
                     </Col>
-                    <Col xxl={6} md={6}>
+                    <Col md={4}>
                         <div className="mt-2">
                             <Label style={{ color: "black" }} htmlFor="negaradomisili" className="form-label">Negara</Label>
                         </div>
                     </Col>
-                    <Col xxl={6} md={6}>
+                    <Col md={8}>
                         <div>
-                        <CustomSelect
-                                id="negaraDomisili"
-                                name="negaraDomisili"
-                                options={dataNegara}
-                                ref={refNegaraDomisili}
-                                value={validation.values.negaraDomisili || ""}
-                                className={`input ${validation.errors.negaraDomisili ? "is-invalid" : ""}`}
-                                onChange={value => validation.setFieldValue('negaraDomisili', value?.value || "")}
-                            />
-                            {validation.touched.negaraDomisili && validation.errors.negaraDomisili ? (
-                                <FormFeedback type="invalid"><div>{validation.errors.negaraDomisili}</div></FormFeedback>
-                            ) : null}
+                            <CustomSelect
+                                    id="negaraDomisili"
+                                    name="negaraDomisili"
+                                    options={dataNegara}
+                                    ref={refNegaraDomisili}
+                                    value={validation.values.negaraDomisili || ""}
+                                    className={`input ${validation.errors.negaraDomisili ? "is-invalid" : ""}`}
+                                    onChange={value => validation.setFieldValue('negaraDomisili', value?.value || "")}
+                                />
+                                {validation.touched.negaraDomisili && validation.errors.negaraDomisili ? (
+                                    <FormFeedback type="invalid"><div>{validation.errors.negaraDomisili}</div></FormFeedback>
+                                ) : null}
                         </div>
                     </Col>
                 </Row>
@@ -1263,113 +1302,72 @@ const PasienBaru = () => {
     )
 
     return (
-        <React.Fragment>
+        <div className="page-content">
             <ToastContainer closeButton={false} />
-            <div className="page-content">
-                <Container fluid>
+            <Container fluid>
+                <BreadCrumb title="Registrasi Pasien" pageTitle="Registrasi Pasien" />
+                <Card>
                     <Row>
                         <Col xxl={12}>
-                            <Card className="mt-xxl-n5">
-                                <div className="card-header align-items-center d-flex">
-                                    <div className="flex-shrink-0 ms-2">
-                                        <Nav tabs className="nav justify-content-end nav-tabs-custom rounded card-header-tabs border-bottom-0">
-                                            <NavItem>
-                                                <NavLink 
-                                                    style={{ cursor: "pointer", fontWeight: "bold" }} 
-                                                    className={classnames({ active: cardHeaderTab === "1", })} 
-                                                    onClick={() => { cardHeaderToggle("1"); }} >
-                                                    Profile
-                                                </NavLink>
-                                            </NavItem>
-                                        </Nav>
-                                    </div>
-                                </div>
+                            <Card >
                                 <CardBody>
-                                    <TabContent activeTab={cardHeaderTab} className="text-muted">
-                                        {/* <Form className="gy-4"
-                                                action="#"> */}
-                                        <TabPane tabId="1" id="home2">
-                                            <Form onSubmit={(e) => {
-                                                e.preventDefault();
-                                                console.log(validation.errors)
-                                                validation.handleSubmit();
-                                                return false;
-                                            }}
-                                                className="gy-4"
-                                                action="#">
-                                                {/* {success ? (
-                                                    <>
-                                                        {toast("Your Redirect To Login Page...", { position: "top-right", hideProgressBar: false, className: 'bg-success text-white', progress: undefined, toastId: "" })}
-                                                        <ToastContainer autoClose={2000} limit={1} />
-                                                        <Alert color="success" >
-                                                            Pasien berhasil di simpan, silahkan lanjutkan Registrasi...
-                                                        </Alert>
-                                                    </>
-                                                ) : null} */}
+                                    <Form onSubmit={(e) => {
+                                        e.preventDefault();
+                                        console.log(validation.errors)
+                                        validation.handleSubmit();
+                                        return false;
+                                    }}
+                                        className="gy-4"
+                                        action="#">
+                                        <Row>
+                                            <Col lg={6}>
                                                 <Row>
-                                                    <Col lg={6}>
-                                                        <Row>
-                                                            <Col lg={12}>
-                                                                {DataDiri}
-                                                            </Col>
-                                                        </Row>
-                                                        <Row>
-                                                            <Col lg={12}>
-                                                                {InfoTambahan}
-                                                            </Col>
-                                                        </Row>
-                                                    </Col>
-                                                    <Col lg={6}>
-                                                        <Row>
-                                                            <Col lg={12}>
-                                                                {AlamatKTP}
-                                                            </Col>
-                                                        </Row>
-                                                        <Row>
-                                                            <Col lg={12}>
-                                                                {AlamatDomisili}
-                                                            </Col>
-                                                        </Row>
+                                                    <Col lg={12}>
+                                                        {DataDiri}
                                                     </Col>
                                                 </Row>
                                                 <Row>
-                                                    <Col md={12}>
-                                                        <div className='text-center'>
-                                                            <Button type="submit" color="primary" disabled={loadingSave}> Simpan </Button>
-                                                        </div>
+                                                    <Col lg={12}>
+                                                        {InfoTambahan}
                                                     </Col>
                                                 </Row>
-                                            </Form>
-                                        </TabPane>
-
-                                        <TabPane tabId="2" id="profile2">
-                                            <Form className="gy-4"
-                                                action="#">
+                                            </Col>
+                                            <Col lg={6}>
                                                 <Row>
-                                                    <Col lg={4}>
-                                                        <Card style={{ backgroundColor: "#f1f2f6" }}>
-                                                            <CardHeader style={{ backgroundColor: "#dfe4ea" }}>
-                                                                <h4 className="card-title mb-0">Informasi Lainnya</h4>
-                                                            </CardHeader>
-                                                            <CardBody>
-                                                                <Row className="gy-4">
-
-                                                                </Row>
-                                                            </CardBody>
-                                                        </Card>
+                                                    <Col lg={12}>
+                                                        {AlamatKTP}
                                                     </Col>
                                                 </Row>
-                                            </Form>
-                                        </TabPane>
-                                        {/* </Form> */}
-                                    </TabContent>
+                                                <Row>
+                                                    <Col lg={12}>
+                                                        {AlamatDomisili}
+                                                    </Col>
+                                                </Row>
+                                            </Col>
+                                        </Row>
+                                        <Row>
+                                            <Col md={12}>
+                                                <div className='text-center'>
+                                                    <Button className='me-3' type="submit" color="success" disabled={loadingSave}>Simpan</Button>
+                                                    <Button
+                                                        type="button" 
+                                                        color="danger" 
+                                                        disabled={loadingSave}
+                                                        onClick={() => handleResetAll()}
+                                                    >
+                                                        Batal
+                                                    </Button>
+                                                </div>
+                                            </Col>
+                                        </Row>
+                                    </Form>
                                 </CardBody>
                             </Card>
                         </Col>
                     </Row>
-                </Container>
-            </div>
-        </React.Fragment>
+                </Card>
+            </Container>
+        </div>
     );
 }
 

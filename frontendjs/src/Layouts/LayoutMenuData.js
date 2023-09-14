@@ -196,17 +196,6 @@ const Navdata = () => {
             },
             subItems: [
                 {
-                    id: "registrasi-pasien-lama",
-                    label: "Pasien Lama",
-                    link: "/registrasi/pasien-lama",
-                    parentId: "registrasi",
-                    isAllowed: () => {
-                        return isAllowedAccess(getUserPermissions(), [
-                            "REGISTRASI_VIEW",
-                        ]);
-                    }
-                },
-                {
                     id: "registrasi-pasien-baru",
                     label: "Pasien Baru",
                     link: "/registrasi/pasien-baru",
@@ -217,6 +206,18 @@ const Navdata = () => {
                         ]);
                     }
                 },
+                {
+                    id: "registrasi-pasien-lama",
+                    label: "Pasien Lama",
+                    link: "/registrasi/pasien-lama",
+                    parentId: "registrasi",
+                    isAllowed: () => {
+                        return isAllowedAccess(getUserPermissions(), [
+                            "REGISTRASI_VIEW",
+                        ]);
+                    }
+                },
+
             ],
         },
         {

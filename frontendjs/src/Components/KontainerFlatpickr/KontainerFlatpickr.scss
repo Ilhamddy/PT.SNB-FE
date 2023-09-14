@@ -1,0 +1,10 @@
+.kontainer-flatpickr {
+    &:hover {
+        cursor: pointer;
+    }
+    .fc-flatpickr {
+        border-right: none;
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+}

@@ -54,7 +54,7 @@ const RL3_3 = () => {
       <div className="page-content laporan-rl3-3">
         <Container fluid>
           <BreadCrumb title="Laporan RL3.3" pageTitle="Forms" />
-          <Card>
+          <Card className="p-5">
             <Row>
               <Col lg={3}>
                 <KontainerFlatpickr
@@ -95,7 +95,7 @@ const RL3_3 = () => {
                 )}
               </Col>
             </Row>
-            <Row>
+            <Row className="mt-3">
               <Col lg={12}>
                 <DataTable
                   fixedHeader
