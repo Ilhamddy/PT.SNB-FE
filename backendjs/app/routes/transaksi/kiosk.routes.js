@@ -12,7 +12,7 @@ export default function (app) {
 
     app.get(
         "/api/transaksi/kiosk/combo-kiosk",
-        [authJwt.verifyToken],
+        // [authJwt.verifyToken],
         controller.getComboKiosk
     );
 

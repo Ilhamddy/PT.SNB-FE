@@ -1,0 +1,25 @@
+/* Base card styles */
+.custom-card {
+    width: 100%; /* Card takes full width of the parent container */
+    max-width: 80rem; /* Optional: Set a maximum width */
+    margin: 0 auto; /* Center the card horizontally */
+  
+    /* Add additional styling like padding, border, box-shadow, etc. */
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: rgba(247, 239, 232, 1);
+  }
+  
+  .card-custom-background {
+    background-color: rgba(247, 239, 232, 1) !important;
+  }
+  
+  /* Responsive styling */
+  @media (max-width: 768px) {
+    .custom-card {
+      /* Adjust card styles for smaller screens */
+      padding: 10px;
+    }
+  }
