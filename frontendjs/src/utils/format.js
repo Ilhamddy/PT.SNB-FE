@@ -1,5 +1,5 @@
 import { rgxAllComma, rgxAllPeriods, rgxNegative, rgxValidNumberNeg, rgxValidNumberPos, rgxZeroStarts } from "./regexcommon"
-
+import { useEffect, useState } from "react"
 
 export const dateTimeLocal = (date) => {
     try{
@@ -19,6 +19,35 @@ export const dateTimeLocal = (date) => {
         return ""
     }
 }
+
+export const useDate = () => {
+    const locale = 'id-ID';
+    const [today, setDate] = useState(new Date());
+  
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setDate(new Date());
+        }, 1000);
+        return () => {
+            clearInterval(timer);
+        }
+    }, []);
+  
+    const day = today.toLocaleDateString(locale, { weekday: 'long' });
+    const tanggal = `${day}, ${today.getDate()} ${today.toLocaleDateString(locale, { month: 'long' })}`;
+  
+    const hour = today.getHours();
+    const ucapan = `Selamat ${(hour < 12 && 'Pagi') || (hour < 17 && 'Sore') || 'Malam'}, `;
+  
+    const waktu = today.toLocaleTimeString(locale, { hour: 'numeric', minute: 'numeric', second: 'numeric' })
+        .replace(/\./g,':') ;
+  
+    return {
+        tanggal,
+        waktu,
+        ucapan,
+    };
+};
 
 
 export const dateLocal = (date) => {

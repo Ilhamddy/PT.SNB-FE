@@ -1,4 +1,6 @@
+import { useDate } from '../../utils/format'
 import './Viewer.scss'
+import logoSNB from './logo-snb.svg'
 
 const Viewer = () => {
   const isiLoket = [
@@ -19,13 +21,14 @@ const Viewer = () => {
       isi: 'C02',
     },
   ]
+  const { tanggal, waktu } = useDate()
   return (
     <div className="viewer-aplikasi">
       <div className="header-viewer">
-        <img className="gbr-header" alt="gbr snb" />
+        <img className="gbr-header" src={logoSNB} alt="gbr snb" />
         <div className="kontainer-waktu">
-          <p className="jam-berjalan"></p>
-          <p className="tgl-berjalan"></p>
+          <p className="jam-berjalan">{waktu}</p>
+          <p className="tgl-berjalan">{tanggal}</p>
         </div>
       </div>
       <div className="konten-viewer">
@@ -48,7 +51,8 @@ const Viewer = () => {
         </div>
       </div>
       <p className="running-text-viewer">
-        Teks yang sangat panjang dan super duper panjang
+        Teks yang sangat panjang dan super duper panjang kdjfsa Teks yang sangat
+        panjang dan super duper panjang kdjfsa
       </p>
     </div>
   )
