@@ -28,19 +28,17 @@ body {
   border-radius: 5px;
   cursor: pointer;
   margin: 10px;
-}
-
-.kiosk-button:hover {
-  background-color: #005eaa;
-}
-
-/* Updated styles for responsive design */
-@media (max-width: 768px) {
-  .kiosk-button {
+  &:hover{
+    background-color: #005eaa;
+  }
+  @media (max-width: 768px) {
     font-size: 16px;
     padding: 8px 16px;
   }
 }
+
+/* Updated styles for responsive design */
+
 
 .confirmation-page {
   text-align: center;
@@ -102,6 +100,7 @@ body {
   border: 1px solid #ccc;
   border-radius: 5px;
   padding: 10px;
+  
 }
 
 /* Numeric buttons */

@@ -44,6 +44,32 @@ const getComboKiosk = async (req, res) => {
     }
 }
 
+const getCariPasien = async (req, res) => {
+    const logger = res.locals.logger;
+    try {
+        const pasien = await pool.query(queries.qCariPasien, [req.query.search])
+
+        // const tempres = {
+        //     pasien: pasien.rows
+        // };
+        res.status(200).json({
+            msg: 'Success',
+            code: 200,
+            data: pasien.rows,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).json({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export default{
-    getComboKiosk
+    getComboKiosk,
+    getCariPasien
 }
