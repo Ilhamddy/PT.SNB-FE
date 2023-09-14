@@ -5,14 +5,14 @@ export const dateTimeLocal = (date) => {
     try{
         return new Date(date)
             .toLocaleDateString("id-ID", 
-                            { weekday: 'long', 
-                            year: 'numeric', 
-                            month: 'long', 
-                            day: 'numeric' 
-                        }) 
-                        + 
-                        " " 
-                        +
+                { weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            }) 
+            + 
+            " " 
+            +
             new Date(date)
             .toLocaleTimeString("id-ID", {hour: '2-digit', minute: '2-digit'})
     }catch(e){
@@ -54,11 +54,11 @@ export const dateLocal = (date) => {
     try{
         return new Date(date)
             .toLocaleDateString("id-ID", 
-                            { weekday: 'long', 
-                            year: 'numeric', 
-                            month: 'long', 
-                            day: 'numeric' 
-                        }) 
+                { weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            }) 
     }catch(e){
         return ""
     }

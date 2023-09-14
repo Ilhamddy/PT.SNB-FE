@@ -315,6 +315,7 @@ import MappingLayanan from "../pages/RekamMedis/MappingLayanan/MappingLayanan.js
 import RL3_3 from "../pages/RekamMedis/Laporan/RL3_3/RL3_3";
 import Dashboard from "../pages/Dashboard/Dashboard";
 import Viewer from "../pages/Viewer/Viewer";
+import PemanggilanViewer from "../pages/PemanggilanViewer/PemanggilanViewer";
 
 
 
@@ -550,6 +551,7 @@ const authProtectedRoutes = [
   { path: "/listdaftarpasien/daftar-pasien-farmasi", component:<DaftarPasienFarmasi/>},
   //viewer
   { path: "/cmVnaXN0cmFzaS92aWV3ZXI=", component: <Viewer />, isLayout: false},
+  { path: "/cmVnaXN0cmFzaS92aWV3ZXIvcGVtYW5nZ2lsYW4=", component: <PemanggilanViewer />, isLayout: false},
   { path: "/bGlzdGRhZnRhcnBhc2llbi9kYWZ0YXJwYXNpZW5tdXRhc2k=", component:<DaftarPasienMutasi/>},
   { path: "/registrasi/mutasi-pasien/:id/:norec", component: <RegistrasiMutasiPasien/> },
   { path: "/listdaftarpasien/daftar-pasien-igd", component: <DaftarPasienIGD /> },

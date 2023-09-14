@@ -108,11 +108,6 @@ const CetakLabModal = ({ show, norecdp, norecap, onCloseClick,tempNorecPel }) =>
                                         <Row>
                                             <Col lg={12}>
                                                 <Col lg={6}>
-                                                    <div className="mt-2">
-                                                        <Label style={{ color: "black" }} htmlFor="tipediagnosa" className="form-label">Dokter Laboratorium</Label>
-                                                    </div>
-                                                </Col>
-                                                <Col lg={6}>
                                                     <div>
                                                         <CustomSelect
                                                             id="dokterlab"
