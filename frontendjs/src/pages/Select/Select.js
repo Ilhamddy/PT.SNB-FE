@@ -15,39 +15,30 @@ const CustomSelect = React.forwardRef(({ onChange, options, value, className, ..
         return options ? options.find(option => option.value === value) : ""
     }
     const customStyles = {
-        control: (base, state) => ({
-          ...base,
-          background: "#023950",
-          // Overwrittes the different states of border
-          borderColor: state.isFocused ? "yellow" : "green",
-          // Removes weird border around container
-          boxShadow: state.isFocused ? null : null,
-          "&:hover": {
-            // Overwrittes the different states of border
-            borderColor: state.isFocused ? "red" : "blue"
-          },
-        })
-      };
+        menuPortal: provided => ({ ...provided, zIndex: 30 }),
+        menu: provided => ({ ...provided, zIndex: 30, borderRadius: 5 })
+      }
     return(
-        <div className={className}>
-            <Select 
-                {...rest}
-                value={defaultValue(options,value)}
-                onChange={value=>onChange(value)}
-                options={options}
-                ref={ref}
-                theme={(theme) => ({
-                    ...theme,
-                    borderRadius: 0,
-                    colors: {
-                        ...theme.colors,
-                        text: 'orangered',
-                        primary25: '#ECB349',
-                        primary: '#ECB349',
-                    },
-                })}
-            />
-        </div>
+        <Select 
+            className={className + " custom-select-row-header"}
+            {...rest}
+            value={defaultValue(options,value)}
+            onChange={value=>onChange(value)}
+            options={options}
+            ref={ref}
+            theme={(theme) => ({
+                ...theme,
+                borderRadius: 5,
+                colors: {
+                    ...theme.colors,
+                    text: 'orangered',
+                    primary25: '#ECB349',
+                    primary: '#ECB349',
+                },
+            })}
+            menuPortalTarget={document.body}
+            styles={customStyles}
+        />
     )
 })
 

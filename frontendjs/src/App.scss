@@ -55,6 +55,11 @@
     border-bottom-left-radius: 0 !important;
 }
 
+.custom-select-row-header {
+    position: relative;
+    z-index: 20;
+}
+
 @page {
     size: auto;
     size: A3;

@@ -3,6 +3,7 @@ import LoadingTable from "../../../../Components/Table/LoadingTable"
 import NoDataTable from "../../../../Components/Table/NoDataTable"
 import DataTable from 'react-data-table-component';
 import { useSelector } from "react-redux";
+import { dateTimeLocal } from "../../../../utils/format";
 
 
 const RiwayatOrder = () => {
@@ -25,10 +26,10 @@ const RiwayatOrder = () => {
             width: "150px"
         },
         {
-            name: <span className='font-weight-bold fs-13'>Tgl Order</span>,
+            name: <span className='font-weight-bold fs-13'>Tgl. Order</span>,
             sortable: true,
-            selector: row => row.tanggalorder,
-            width: "120px"
+            selector: row => dateTimeLocal(row.tanggalorder),
+            width: "160px"
         },
         {
             name: <span className='font-weight-bold fs-13'>Unit tujuan</span>,
@@ -50,16 +51,16 @@ const RiwayatOrder = () => {
             width: "150px"
         },
         {
-            name: <span className='font-weight-bold fs-13'>Tgl Order</span>,
+            name: <span className='font-weight-bold fs-13'>Tgl. Order</span>,
             sortable: true,
-            selector: row => row.tanggalorder,
-            width: "120px"
+            selector: row => dateTimeLocal(row.tanggalorder),
+            width: "160px"
         },
         {
-            name: <span className='font-weight-bold fs-13'>Tgl Verif</span>,
+            name: <span className='font-weight-bold fs-13'>Tgl. Verif</span>,
             sortable: true,
-            selector: row => row.tanggalverif,
-            width: "120px"
+            selector: row => dateTimeLocal(row.tanggalverif),
+            width: "160px"
         },
         {
             name: <span className='font-weight-bold fs-13'>Unit tujuan</span>,
@@ -86,13 +87,11 @@ const RiwayatOrder = () => {
                 expandableRows
                 expandableRowsComponent={ExpandableRiwayat}
                 progressComponent={<LoadingTable />}
-                noDataComponent={<NoDataTable dataName={"data order"}/>}
+                noDataComponent={<NoDataTable dataName={"order"}/>}
             />
-            {((listVerif || []).length > 0) && 
-                <h5>
-                    Riwayat Obat Diterima pasien
-                </h5>
-            }
+            <h5>
+                Riwayat Obat Diterima pasien
+            </h5>
             <DataTable
                 fixedHeader
                 fixedHeaderScrollHeight="700px"
@@ -104,7 +103,7 @@ const RiwayatOrder = () => {
                 expandableRows
                 expandableRowsComponent={ExpandableRiwayat}
                 progressComponent={<LoadingTable />}
-                noDataComponent={<NoDataTable dataName={"data order"}/>}
+                noDataComponent={<NoDataTable dataName={"obat diterima pasien"}/>}
             />
         </Row>
     )
@@ -132,7 +131,7 @@ const ExpandableRiwayat = ({ data }) => {
             name: <span className='font-weight-bold fs-13'>Qty</span>,
             sortable: true,
             selector: row => `${row.qty}`,
-            width: "150px"
+            width: "50px"
         },
         {
             name: <span className='font-weight-bold fs-13'>Satuan</span>,
@@ -230,6 +229,7 @@ const tableCustomStyles = {
             color: '#ffffff',
             backgroundColor: '#e67e22',
         },
+        
     },
     rows: {
         style: {

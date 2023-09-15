@@ -115,6 +115,7 @@ const ListGroupCollapse = ({ cat, tempData, index, onChange }) => {
             <Collapse isOpen={collapse}>
                 <CustomCheckbox
                     data={stateDummy}
+                    labelSelector={(data) => `${data.label} (${data.harga})`}
                     setData={(newData) => {
                         handlesortBy(newData)
                     }}

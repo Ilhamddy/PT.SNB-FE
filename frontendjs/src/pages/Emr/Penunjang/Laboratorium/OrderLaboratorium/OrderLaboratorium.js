@@ -25,6 +25,7 @@ import {
 } from "../../../../../store/actions";
 import ListGroupCollapse from '../../../../../Components/Common/ListGroupCollapse';
 import LoadingTable from '../../../../../Components/Table/LoadingTable';
+import { dateTimeLocal } from '../../../../../utils/format';
 
 const OrderLaboratorium = () => {
     const { norecdp, norecap } = useParams();
@@ -44,7 +45,6 @@ const OrderLaboratorium = () => {
             dataOrder: state.Laboratorium.daftarOrderLaboratoriumGet.data,
             loadingOrder: state.Laboratorium.daftarOrderLaboratoriumGet.loading,
             successOrder: state.Laboratorium.daftarOrderLaboratoriumGet.success,
-
         }));
 
     const validation = useFormik({
@@ -107,7 +107,7 @@ const OrderLaboratorium = () => {
         {
 
             name: <span className='font-weight-bold fs-13'>Harga</span>,
-            selector: row => row.harga,
+            selector: row => row.harga?.toLocaleString('id-ID'),
             sortable: true,
             // width: "150px"
         },
@@ -121,7 +121,7 @@ const OrderLaboratorium = () => {
         {
 
             name: <span className='font-weight-bold fs-13'>Total</span>,
-            selector: row => row.harga,
+            selector: row => row.harga?.toLocaleString('id-ID'),
             sortable: true,
             // width: "250px",
         },
@@ -149,7 +149,7 @@ const OrderLaboratorium = () => {
         },
         {
             name: <span className='font-weight-bold fs-13'>Tgl Order</span>,
-            selector: row => row.tglinput,
+            selector: row => dateTimeLocal(row.tglinput),
             sortable: true,
             width: "150px"
         },
@@ -234,7 +234,9 @@ const OrderLaboratorium = () => {
                             <Col xxl={4} sm={6} key={key}>
                                 <ListGroupCollapse
                                     key={key}
-                                    cat={dataWidget[key]} tempData={temp} index={index}
+                                    cat={dataWidget[key]} 
+                                    tempData={temp} 
+                                    index={index}
                                     onChange={(tempData) => {
                                         setTemp(tempData)
                                     }} />

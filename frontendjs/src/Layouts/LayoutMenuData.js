@@ -180,7 +180,7 @@ const Navdata = () => {
         {
             id: "registrasi",
             label: "Registrasi",
-            icon: "lab la-delicious",
+            icon: "bx bx-been-here",
             link: "/#",
             click: function (e) {
                 e.preventDefault();
@@ -223,7 +223,7 @@ const Navdata = () => {
         {
             id: "listdaftarpasien",
             label: "List Daftar Pasien",
-            icon: "lab la-delicious",
+            icon: "ri-hotel-bed-fill",
             link: "/#",
             click: function (e) {
                 e.preventDefault();
@@ -312,96 +312,10 @@ const Navdata = () => {
                 },
             ],
         },
-        // KASIR
-        {
-            id: "listpembayaran",
-            label: "Daftar pembayaran",
-            icon: "lab la-delicious",
-            link: "/#",
-            click: function (e) {
-                e.preventDefault();
-                setPembayaran(!isPembayaran);
-                setIscurrentState('isRekamMedis');
-                updateIconSidebar(e);
-            },
-            stateVariables: isPembayaran,
-            isAllowed: () => {
-                return isAllowedAccess(getUserPermissions(), [
-                    "REGISTRASI_VIEW","KASIR_VIEW"
-                ]);
-            },
-            subItems: [
-                {
-                    id: "daftar-pembayaran",
-                    label: "Daftar Tagihan",
-                    link: "/payment/daftar-tagihan",
-                    parentId: "listpembayaran",
-                    isAllowed: () => {
-                        return isAllowedAccess(getUserPermissions(), [
-                            "REGISTRASI_VIEW",
-                        ]);
-                    }
-                },
-                {
-                    id: "daftar-piutang",
-                    label: "Daftar Piutang Pasien",
-                    link: "/payment/daftar-piutang/pasien",
-                    parentId: "listpembayaran",
-                    isAllowed: () => {
-                        return isAllowedAccess(getUserPermissions(), [
-                            "REGISTRASI_VIEW",
-                        ]);
-                    }
-                },
-                {
-                    id: "daftar-piutang",
-                    label: "Daftar Piutang Asuransi",
-                    link: "/payment/daftar-piutang/asuransi",
-                    parentId: "listpembayaran",
-                    isAllowed: () => {
-                        return isAllowedAccess(getUserPermissions(), [
-                            "REGISTRASI_VIEW",
-                        ]);
-                    }
-                }
-            ]
-        },
-        {
-            id: "listlaporankasir",
-            label: "Laporan",
-            icon: "lab la-delicious",
-            link: "/#",
-            click: function (e) {
-                e.preventDefault();
-                setLaporanKasir(!isLaporanKasir);
-                setIscurrentState('isLaporanKasir');
-                updateIconSidebar(e);
-            },
-            stateVariables: isLaporanKasir,
-            isAllowed: () => {
-                return isAllowedAccess(getUserPermissions(), [
-                    "REGISTRASI_VIEW","KASIR_VIEW"
-                ]);
-            },
-            subItems: [
-                {
-                    id: "laporanPendapatanKasir",
-                    label: "Laporan Pendapatan Kasir",
-                    link: "/payment/laporan-pendapatan",
-                    parentId: "listlaporankasir",
-                    isAllowed: () => {
-                        return isAllowedAccess(getUserPermissions(), [
-                            "REGISTRASI_VIEW",
-                        ]);
-                    }
-                },
-            ]
-        },
-        // end
         {
             id: "rekammedis",
             label: "Rekam Medis",
-            icon: "lab la-delicious",
+            icon: "ri-hotel-bed-fill",
             link: "/#",
             click: function (e) {
                 e.preventDefault();
@@ -509,29 +423,30 @@ const Navdata = () => {
                 }
             ]
         },
+        // KASIR
         {
-            id: "radiologi",
-            label: "Radiologi",
-            icon: "lab la-delicious",
+            id: "listpembayaran",
+            label: "List pembayaran",
+            icon: "ri-bank-card-2-fill",
             link: "/#",
             click: function (e) {
                 e.preventDefault();
-                setRadiologi(!isRadiologi);
-                setIscurrentState('isRadiologi');
+                setPembayaran(!isPembayaran);
+                setIscurrentState('isRekamMedis');
                 updateIconSidebar(e);
             },
-            stateVariables: isRadiologi,
+            stateVariables: isPembayaran,
             isAllowed: () => {
                 return isAllowedAccess(getUserPermissions(), [
-                    "REGISTRASI_VIEW","RADIOLOGI_VIEW"
+                    "REGISTRASI_VIEW","KASIR_VIEW"
                 ]);
             },
             subItems: [
                 {
-                    id: "radiologi-daftarorderradiologi",
-                    label: "Daftar Order Radiologi",
-                    link: "/radiologi/daftarorderradiologi",
-                    parentId: "radiologi",
+                    id: "daftar-pembayaran",
+                    label: "Daftar Tagihan",
+                    link: "/payment/daftar-tagihan",
+                    parentId: "listpembayaran",
                     isAllowed: () => {
                         return isAllowedAccess(getUserPermissions(), [
                             "REGISTRASI_VIEW",
@@ -539,22 +454,33 @@ const Navdata = () => {
                     }
                 },
                 {
-                    id: "radiologi-daftarpasienradiologi",
-                    label: "Daftar Pasien Radiologi",
-                    link: "/radiologi/daftarpasienradiologi",
-                    parentId: "radiologi",
+                    id: "daftar-piutang",
+                    label: "Daftar Piutang Pasien",
+                    link: "/payment/daftar-piutang/pasien",
+                    parentId: "listpembayaran",
                     isAllowed: () => {
                         return isAllowedAccess(getUserPermissions(), [
                             "REGISTRASI_VIEW",
                         ]);
                     }
                 },
+                {
+                    id: "daftar-piutang",
+                    label: "Daftar Piutang Asuransi",
+                    link: "/payment/daftar-piutang/asuransi",
+                    parentId: "listpembayaran",
+                    isAllowed: () => {
+                        return isAllowedAccess(getUserPermissions(), [
+                            "REGISTRASI_VIEW",
+                        ]);
+                    }
+                }
             ]
         },
         {
             id: "laboratorium",
             label: "Laboratorium",
-            icon: "lab la-delicious",
+            icon: "las la-flask",
             link: "/#",
             click: function (e) {
                 e.preventDefault();
@@ -605,28 +531,92 @@ const Navdata = () => {
             ]
         },
         {
-            id: "casemix",
-            label: "Casemix",
-            icon: "lab la-delicious",
+            id: "radiologi",
+            label: "Radiologi",
+            icon: "las la-radiation-alt",
             link: "/#",
             click: function (e) {
                 e.preventDefault();
-                setCasemix(!isCasemix);
-                setIscurrentState('isCasemix');
+                setRadiologi(!isRadiologi);
+                setIscurrentState('isRadiologi');
                 updateIconSidebar(e);
             },
-            stateVariables: isCasemix,
+            stateVariables: isRadiologi,
             isAllowed: () => {
                 return isAllowedAccess(getUserPermissions(), [
-                    "REGISTRASI_VIEW","REKAMMEDIS_VIEW"
+                    "REGISTRASI_VIEW","RADIOLOGI_VIEW"
                 ]);
             },
             subItems: [
                 {
-                    id: "casemix-klaiminacbg",
-                    label: "Klaim Inacbg",
-                    link: "/casemix/klaiminacbg",
-                    parentId: "casemix",
+                    id: "radiologi-daftarorderradiologi",
+                    label: "Daftar Order Radiologi",
+                    link: "/radiologi/daftarorderradiologi",
+                    parentId: "radiologi",
+                    isAllowed: () => {
+                        return isAllowedAccess(getUserPermissions(), [
+                            "REGISTRASI_VIEW",
+                        ]);
+                    }
+                },
+                {
+                    id: "radiologi-daftarpasienradiologi",
+                    label: "Daftar Pasien Radiologi",
+                    link: "/radiologi/daftarpasienradiologi",
+                    parentId: "radiologi",
+                    isAllowed: () => {
+                        return isAllowedAccess(getUserPermissions(), [
+                            "REGISTRASI_VIEW",
+                        ]);
+                    }
+                },
+            ]
+        },
+        {
+            id: "farmasi",
+            label: "Farmasi",
+            icon: "ri-toggle-fill",
+            link: "/#",
+            click: function (e) {
+                e.preventDefault();
+                setIsFarmasi(!isFarmasi);
+                setIscurrentState('isFarmasi');
+                updateIconSidebar(e);
+            },
+            stateVariables: isFarmasi,
+            isAllowed: () => {
+                return isAllowedAccess(getUserPermissions(), [
+                    "REGISTRASI_VIEW","FARMASI_VIEW"
+                ]);
+            },
+            subItems: [
+                {
+                    id: "Verif Order",
+                    label: "Verif Order",
+                    link: "/farmasi/verif-order-resep",
+                    parentId: "farmasi",
+                    isAllowed: () => {
+                        return isAllowedAccess(getUserPermissions(), [
+                            "REGISTRASI_VIEW",
+                        ]);
+                    }
+                },
+                {
+                    id: "Order List",
+                    label: "Order List",
+                    link: "/farmasi/order-list",
+                    parentId: "farmasi",
+                    isAllowed: () => {
+                        return isAllowedAccess(getUserPermissions(), [
+                            "REGISTRASI_VIEW",
+                        ]);
+                    }
+                },
+                {
+                    id: "Penjualan Obat Bebas",
+                    label: "Penjualan Obat Bebas",
+                    link: "/farmasi/penjualan-obat-bebas",
+                    parentId: "farmasi",
                     isAllowed: () => {
                         return isAllowedAccess(getUserPermissions(), [
                             "REGISTRASI_VIEW",
@@ -638,7 +628,7 @@ const Navdata = () => {
         {
             id: "gudang",
             label: "Gudang Farmasi",
-            icon: "lab la-delicious",
+            icon: "ri-building-4-fill",
             link: "/#",
             click: function (e) {
                 e.preventDefault();
@@ -722,50 +712,60 @@ const Navdata = () => {
             ]
         },
         {
-            id: "farmasi",
-            label: "Farmasi",
-            icon: "lab la-delicious",
+            id: "listlaporankasir",
+            label: "Laporan",
+            icon: "ri-survey-fill",
             link: "/#",
             click: function (e) {
                 e.preventDefault();
-                setIsFarmasi(!isFarmasi);
-                setIscurrentState('isFarmasi');
+                setLaporanKasir(!isLaporanKasir);
+                setIscurrentState('isLaporanKasir');
                 updateIconSidebar(e);
             },
-            stateVariables: isFarmasi,
+            stateVariables: isLaporanKasir,
             isAllowed: () => {
                 return isAllowedAccess(getUserPermissions(), [
-                    "REGISTRASI_VIEW","FARMASI_VIEW"
+                    "REGISTRASI_VIEW","KASIR_VIEW"
                 ]);
             },
             subItems: [
                 {
-                    id: "Verif Order",
-                    label: "Verif Order",
-                    link: "/farmasi/verif-order-resep",
-                    parentId: "farmasi",
+                    id: "laporanPendapatanKasir",
+                    label: "Laporan Pendapatan Kasir",
+                    link: "/payment/laporan-pendapatan",
+                    parentId: "listlaporankasir",
                     isAllowed: () => {
                         return isAllowedAccess(getUserPermissions(), [
                             "REGISTRASI_VIEW",
                         ]);
                     }
                 },
+            ]
+        },
+        // end
+        {
+            id: "casemix",
+            label: "Casemix",
+            icon: "ri-secure-payment-line",
+            link: "/#",
+            click: function (e) {
+                e.preventDefault();
+                setCasemix(!isCasemix);
+                setIscurrentState('isCasemix');
+                updateIconSidebar(e);
+            },
+            stateVariables: isCasemix,
+            isAllowed: () => {
+                return isAllowedAccess(getUserPermissions(), [
+                    "REGISTRASI_VIEW","REKAMMEDIS_VIEW"
+                ]);
+            },
+            subItems: [
                 {
-                    id: "Order List",
-                    label: "Order List",
-                    link: "/farmasi/order-list",
-                    parentId: "farmasi",
-                    isAllowed: () => {
-                        return isAllowedAccess(getUserPermissions(), [
-                            "REGISTRASI_VIEW",
-                        ]);
-                    }
-                },
-                {
-                    id: "Penjualan Obat Bebas",
-                    label: "Penjualan Obat Bebas",
-                    link: "/farmasi/penjualan-obat-bebas",
-                    parentId: "farmasi",
+                    id: "casemix-klaiminacbg",
+                    label: "Klaim Inacbg",
+                    link: "/casemix/klaiminacbg",
+                    parentId: "casemix",
                     isAllowed: () => {
                         return isAllowedAccess(getUserPermissions(), [
                             "REGISTRASI_VIEW",

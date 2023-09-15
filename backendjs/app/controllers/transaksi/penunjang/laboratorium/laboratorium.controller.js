@@ -33,13 +33,13 @@ function formatDate(date) {
 async function getDetailJenisProdukLab(req, res) {
     const logger = res.locals.logger
     try {
-
-        const resultlist = await queryPromise2(`select id as value, detailjenisproduk as label,'' as detail  from m_detailjenisproduk md 
+        res.locals.showBodyRes()
+        const resultlist = await pool.query(`select id as value, detailjenisproduk as label,'' as detail  from m_detailjenisproduk md 
         where md.objectjenisprodukfk = 1 and md.statusenabled=true
         `);
         for (var i = 0; i < resultlist.rows.length; ++i) {
 
-            const resultlistOrder = await queryPromise2(`select mp.id,mp.kodeexternal , 
+            const resultlistOrder = await pool.query(`select mp.id,mp.kodeexternal , 
             case 
                 when mp."level" = 1 then mp.reportdisplay
                 when mp."level" = 2 then '  '||mp.reportdisplay
@@ -60,7 +60,7 @@ async function getDetailJenisProdukLab(req, res) {
                         and mp.id =${resultlistOrder.rows[x].value}`);
                     for (let y = 0; y < resultlistantreanpemeriksaan.rows.length; y++) {
                         resultlistOrder.rows[x].harga = 0
-                        resultlistOrder.rows[x].label = resultlistOrder.rows[x].label + ` (${resultlistantreanpemeriksaan.rows[y].totalharga})`
+                        
                         resultlistOrder.rows[x].harga = resultlistantreanpemeriksaan.rows[y].totalharga
                     }
                     resultlistOrder.rows[x].subdata = []

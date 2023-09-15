@@ -4,16 +4,22 @@ import { Col, Input, Label, Row } from "reactstrap"
 
 
 /**
- * @typedef {Object} Data
+ * @typedef {Object} SubData data bisa berbentuk apa aja, tapi yang wajib adalah 3 ini
  * @property {string} Data.label
  * @property {string} Data.id
  * @property {boolean} Data.checked
- * @property {[]} Data.subdata
+ * @property {[]} Data.subsubdata
+ * @typedef {Object} Data data bisa berbentuk apa aja, tapi yang wajib adalah 3 ini
+ * @property {string} Data.label
+ * @property {string} Data.id
+ * @property {boolean} Data.checked
+ * @property {SubData[]} Data.subdata
  * @typedef {Object} Props
  * @property {Array<Data>} props.data
+ * @property {(data: Data) => string} props.labelSelector
  * @param {Props} props
  */
-const CustomCheckbox = ({data, setData, checkboxName}) => {
+const CustomCheckbox = ({data, labelSelector, setData, checkboxName}) => {
     const handleChangeCheckBox = (id)=>{
         const newData = [...data]
         const dataVal = newData.find((dataId) => dataId.id === id) 
@@ -112,7 +118,7 @@ const CustomCheckbox = ({data, setData, checkboxName}) => {
                                 <Label className="form-check-label" 
                                     htmlFor={`formcheck-${checkboxName}${indexVal}`} 
                                     style={{ color: "black" }} >
-                                    {dataVal.label}
+                                    {labelSelector ? labelSelector(dataVal) : dataVal.label}
                                 </Label>
                             </div>
                             {dataVal.checked &&  

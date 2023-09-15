@@ -425,8 +425,8 @@ const OrderResep = () => {
                     </tbody>
 
                 </table>
-                <Row style={{justifyContent: "space-evenly"}}>
-                    <Col md={2}>
+                <Row >
+                    <Col md={12} className="d-flex justify-content-center gap-3">
                         <Button color="success"
                             disabled={!!orderNorec}
                             onClick={() => {
@@ -434,8 +434,6 @@ const OrderResep = () => {
                             }}>
                             Simpan
                         </Button>
-                    </Col>
-                    <Col md={2}>
                         <Button color="danger">
                             Batal
                         </Button>

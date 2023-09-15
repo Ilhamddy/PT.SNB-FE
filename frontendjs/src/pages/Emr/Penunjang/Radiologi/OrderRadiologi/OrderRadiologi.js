@@ -23,6 +23,8 @@ import {
     saveOrderPelayananRadiologi,daftarOrderRadiologiGet
 } from "../../../../../store/actions";
 import LoadingTable from '../../../../../Components/Table/LoadingTable';
+import { dateTimeLocal } from '../../../../../utils/format';
+import KontainerFlatpicr from "../../../../../Components/KontainerFlatpickr/KontainerFlatpickr";
 
 const OrderRadiologi = () => {
     const { norecdp, norecap } = useParams();
@@ -206,20 +208,20 @@ const OrderRadiologi = () => {
     ];
     const columnsRiwayat = [
         {
-            name: <span className='font-weight-bold fs-13'>Noregistrasi</span>,
+            name: <span className='font-weight-bold fs-13'>No. registrasi</span>,
             selector: row => row.noregistrasi,
             sortable: true,
             width: "130px"
         },
         {
-            name: <span className='font-weight-bold fs-13'>Tgl Order</span>,
-            selector: row => row.tglinput,
+            name: <span className='font-weight-bold fs-13'>Tgl. Order</span>,
+            selector: row => dateTimeLocal(row.tglinput),
             sortable: true,
             width: "150px"
         },
         {
 
-            name: <span className='font-weight-bold fs-13'>No Order</span>,
+            name: <span className='font-weight-bold fs-13'>No. Order</span>,
             selector: row => row.nomororder,
             sortable: true,
             width: "150px"
@@ -243,7 +245,7 @@ const OrderRadiologi = () => {
             name: <span className='font-weight-bold fs-13'>Nama Produk</span>,
             selector: row => row.namaproduk,
             sortable: true,
-            // width: "250px",
+            width: "150px",
         },
         {
 
@@ -292,7 +294,7 @@ const OrderRadiologi = () => {
                                         <Label style={{ color: "black" }} htmlFor="tindakan" className="form-label">Nama Tindakan</Label>
                                     </div>
                                 </Col>
-                                <Col lg={8} md={8}>
+                                <Col lg={8} md={8} className='mt-2'>
                                     <div>
                                         <CustomSelect
                                             id="tindakan"
@@ -311,7 +313,7 @@ const OrderRadiologi = () => {
 
                             </Row>
                         </Col>
-                        <Col lg={7}>
+                        <Col lg={7} className='mb-5'>
                             <Row>
                                 <Col lg={4} md={4}>
                                     <div className="mt-2">
@@ -319,39 +321,42 @@ const OrderRadiologi = () => {
                                     </div>
                                 </Col>
                                 <Col lg={6} md={6}>
-                                    <div className="input-group">
-                                        <Flatpickr
-                                            className="form-control border-0 fs-5 dash-filter-picker shadow"
-                                            options={{
-                                                //  enableTime: true,
-                                                // mode: "range",
-                                                dateFormat: "Y-m-d H:i",
-                                                defaultDate: "today"
-                                            }}
-                                            value={dateStart}
-                                            onChange={([newDate]) => {
-                                                handleBeginOnChangeTglInput(newDate);
-                                            }}
-                                        />
-                                        <div className="input-group-text bg-secondary border-secondary text-white"><i className="ri-calendar-2-line"></i></div>
-                                    </div>
+                                    <KontainerFlatpicr
+                                        isError={validation.touched?.tglinput &&
+                                            !!validation.errors?.tglinput}
+                                        id="tglinput"
+                                        options={{
+                                        dateFormat: 'Y-m-d',
+                                        defaultDate: 'today',
+                                        }}
+                                        value={validation.values.tglinput}
+                                        onChange={([newDate]) => {
+                                            validation.setFieldValue('tglinput', newDate.toISOString())
+                                        }}
+                                    />
+                                    {validation.touched?.tglinput
+                                        && !!validation.errors.tglinput && (
+                                            <FormFeedback type="invalid">
+                                                <div>{validation.errors.tglinput}</div>
+                                            </FormFeedback>
+                                        )}
                                 </Col>
                                 <Col lg={2} md={2}>
-                                    <div className="form-check ms-2">
+                                    <div className="form-check ms-2 mt-2">
                                         <Input className="form-check-input" type="checkbox" id="formCheck1" />
                                         <Label className="form-check-label" htmlFor="formCheck1" style={{ color: "black" }} >
                                             Cito
                                         </Label>
                                     </div>
                                 </Col>
-                                <Col lg={12}>
+                                <Col lg={12} className='mt-2'>
                                     <Row>
                                         <Col lg={4} sm={6}>
                                             <div className="mt-2">
-                                                <Label style={{ color: "black" }} htmlFor="qty" className="form-label fw-semibold">Quantity</Label>
+                                                <Label style={{ color: "black" }} htmlFor="qty">Quantity</Label>
                                             </div>
                                         </Col>
-                                        <Col lg={4} sm={6} className="mt-1">
+                                        <Col lg={4} sm={6} >
                                             <div>
                                                 <div className="input-step">
                                                     <button type="button" className="minus" onClick={() => onClickCount('min')}>
@@ -370,12 +375,17 @@ const OrderRadiologi = () => {
                                                 </div>
                                             </div>
                                         </Col>
-                                        {/* <Col lg={2} sm={6}> */}
-                                        {/* <div className="mt-2">
-                                                <Label style={{ color: "black" }} htmlFor="tinggibadan" className="form-label fw-semibold">Harga</Label>
-                                            </div> */}
-                                        {/* </Col> */}
-                                        <Col lg={4} sm={6} className="mt-1">
+
+                                    </Row>
+                                </Col>
+                                <Col lg={12} className='mt-2'>
+                                    <Row>
+                                        <Col lg={4} sm={6}>
+                                            <div className="mt-2">
+                                                <Label style={{ color: "black" }} htmlFor="harga">Quantity</Label>
+                                            </div>
+                                        </Col>
+                                        <Col lg={8} sm={6}>
                                             <div>
                                                 <Input
                                                     type="text"
@@ -390,7 +400,7 @@ const OrderRadiologi = () => {
                                     </Row>
                                 </Col>
                                 <Col lg={12}>
-                                    <div className="d-flex flex-wrap gap-2 justify-content-md-start">
+                                    <div className="d-flex gap-2 flex-row-reverse mt-3">
                                         <Button type="button" color="success" placement="top"
                                             onClick={() => onClickTambah()}>
                                             TAMBAH
@@ -399,9 +409,6 @@ const OrderRadiologi = () => {
                                             BATAL
                                         </Button>
                                     </div>
-
-
-
                                 </Col>
                             </Row>
                         </Col>
@@ -446,7 +453,7 @@ const OrderRadiologi = () => {
                                     ) : null}
                                 </div>
                             </Col>
-                            <Col lg={2} sm={2} className="mt-1">
+                            <Col lg={2} sm={2} className="mt-2">
                                 <div className="d-flex flex-wrap gap-2 justify-content-md-start">
                                     <Button type="button" color="success" placement="top"
                                     onClick={() => onClickSimpan()}>
