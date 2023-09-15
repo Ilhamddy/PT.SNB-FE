@@ -29,7 +29,8 @@ function PagesPenjaminPendaftaran() {
                             <h1 style={{ fontSize: '36px', color: '#e67e22', textAlign: 'center' }}>Pendaftaran Mandiri</h1>
                             <h1 style={{ fontSize: '36px', color: '#e67e22', textAlign: 'center' }}>Silahkan Pilih Penjamin Pasien</h1>
                         </Col>
-                        <Col lg={12} className='mr-2'>
+                        <Col lg={10} className='mr-2'></Col>
+                        <Col lg={2} className='mr-2'>
                             <div className="d-flex justify-content-end gap-2">
                                 <Button color="danger" style={{ width: '100px' }} className="m-2 mr-2" onClick={() => navigate(-1)}>
                                     <FontAwesomeIcon icon={faStepBackward} />
