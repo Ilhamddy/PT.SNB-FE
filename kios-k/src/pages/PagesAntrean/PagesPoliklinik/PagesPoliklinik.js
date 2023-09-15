@@ -21,14 +21,10 @@ function PagesPoliklinik() {
         data: state.Kiosk.getComboKiosk.data || []
     }));
     useEffect(() => {
-        return () => {
             dispatch(kioskResetForm());
-        }
     }, [dispatch])
     useEffect(() => {
-        return () => {
             dispatch(getComboKiosk())
-        }
     }, [dispatch])
     const handleHome = () => {
         navigate('/pages-awal');

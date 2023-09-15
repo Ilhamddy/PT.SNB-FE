@@ -5,7 +5,10 @@ import {
     GET_COMBO_KIOSK_ERROR,
     GET_CARI_PASIEN_KIOSK,
     GET_CARI_PASIEN_KIOSK_SUCCESS,
-    GET_CARI_PASIEN_KIOSK_ERROR
+    GET_CARI_PASIEN_KIOSK_ERROR,
+    SAVE_REGISTRASI_PASIEN_KIOSK,
+    SAVE_REGISTRASI_PASIEN_KIOSK_SUCCESS,
+    SAVE_REGISTRASI_PASIEN_KIOSK_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -19,6 +22,12 @@ const INIT_STATE = {
         loading: false,
         error: null,
     },
+    saveRegistrasiPasienKiosk: {
+        data: [],
+        loading: false,
+        error: null,
+        success: false
+    }
 }
 
 const Kiosk = (state = INIT_STATE, action) => {
@@ -31,6 +40,9 @@ const Kiosk = (state = INIT_STATE, action) => {
                 },
                 getCariPasienKiosk:{
                     ...INIT_STATE.getCariPasienKiosk
+                },
+                saveRegistrasiPasienKiosk:{
+                    ...INIT_STATE.saveRegistrasiPasienKiosk
                 }
             }
         }
@@ -101,6 +113,41 @@ const Kiosk = (state = INIT_STATE, action) => {
                     error: action.error,
                 }
             }
+        }
+
+        case SAVE_REGISTRASI_PASIEN_KIOSK: {
+            return {
+                ...state,
+                saveRegistrasiPasienKiosk: {
+                    ...state.saveRegistrasiPasienKiosk,
+                    data: [],
+                    loading: true,
+                    error: null,
+                },
+            };
+        }
+
+        case SAVE_REGISTRASI_PASIEN_KIOSK_SUCCESS: {
+            return {
+                ...state,
+                saveRegistrasiPasienKiosk: {
+                    ...state.saveRegistrasiPasienKiosk,
+                    loading: false,
+                    data: action.payload,
+                    success: true,
+                },
+            };
+        }
+
+        case SAVE_REGISTRASI_PASIEN_KIOSK_ERROR: {
+            return {
+                ...state,
+                saveRegistrasiPasienKiosk: {
+                    ...state.saveRegistrasiPasienKiosk,
+                    loading: false,
+                    error: action.payload,
+                },
+            };
         }
 
         default: {
