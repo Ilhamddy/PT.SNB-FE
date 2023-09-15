@@ -16,4 +16,10 @@ export default function (app) {
         controller.getComboKiosk
     );
 
+    app.get(
+        "/api/transaksi/kiosk/cari-pasien",
+        // [authJwt.verifyToken],
+        controller.getCariPasien
+    );
+
 }

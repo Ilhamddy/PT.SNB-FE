@@ -1,4 +1,5 @@
 import { Card } from "reactstrap"
+import "./CardKiosk"
 
 /**
  * 
