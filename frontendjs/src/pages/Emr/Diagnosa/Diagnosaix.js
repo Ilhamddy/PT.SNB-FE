@@ -219,12 +219,12 @@ const Diagnosaix = () => {
                                 </CardHeader>
                                 <CardBody>
                                     <Row className="gy-2">
-                                        <Col xxl={6} md={6}>
+                                        <Col xxl={4} md={4}>
                                             <div className="mt-2">
                                                 <Label style={{ color: "black" }} htmlFor="kodediagnosa9" className="form-label">Diagnosa Tindakan</Label>
                                             </div>
                                         </Col>
-                                        <Col xxl={6} md={6}>
+                                        <Col xxl={8} md={8}>
                                             <div>
                                                 <CustomSelect
                                                     id="kodediagnosa9"
@@ -242,12 +242,12 @@ const Diagnosaix = () => {
                                             </div>
                                         </Col>
 
-                                        <Col xxl={6} md={6}>
-                                            <div className="mt-2">
+                                        <Col xxl={4} md={4}>
+                                            <div>
                                                 <Label style={{ color: "black" }} htmlFor="jumlahtindakan" className="form-label">Jumlah Tindakan Per Episode</Label>
                                             </div>
                                         </Col>
-                                        <Col xxl={6} md={6}>
+                                        <Col xxl={8} md={8}>
                                             <div>
                                                 <Input
                                                     id="jumlahtindakan"
@@ -267,12 +267,12 @@ const Diagnosaix = () => {
                                             </div>
                                         </Col>
 
-                                        <Col xxl={6} md={6}>
+                                        <Col xxl={4} md={4}>
                                             <div className="mt-2">
                                                 <Label style={{ color: "black" }} htmlFor="keteranganicd9" className="form-label">Keterangan</Label>
                                             </div>
                                         </Col>
-                                        <Col xxl={6} md={6}>
+                                        <Col xxl={8} md={8}>
                                             <div>
                                                 <Input
                                                     id="keteranganicd9"

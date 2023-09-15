@@ -242,12 +242,12 @@ const Diagnosax = () => {
                                 </CardHeader>
                                 <CardBody>
                                     <Row className="gy-2">
-                                        <Col xxl={6} md={6}>
+                                        <Col xxl={4} md={4}>
                                             <div className="mt-2">
                                                 <Label style={{ color: "black" }} htmlFor="tipediagnosa" className="form-label">Tipe Diagnosa</Label>
                                             </div>
                                         </Col>
-                                        <Col xxl={6} md={6}>
+                                        <Col xxl={8} md={8}>
                                             <div>
                                                 <CustomSelect
                                                     id="tipediagnosa"
@@ -267,12 +267,12 @@ const Diagnosax = () => {
                                                 ) : null}
                                             </div>
                                         </Col>
-                                        <Col xxl={6} md={6}>
+                                        <Col xxl={4} md={4}>
                                             <div className="mt-2">
                                                 <Label style={{ color: "black" }} htmlFor="kodediagnosa" className="form-label">Diagnosa</Label>
                                             </div>
                                         </Col>
-                                        <Col xxl={6} md={6}>
+                                        <Col xxl={8} md={8}>
                                             <div>
                                                 <CustomSelect
                                                     id="kodediagnosa"
@@ -289,12 +289,12 @@ const Diagnosax = () => {
                                                 ) : null}
                                             </div>
                                         </Col>
-                                        <Col xxl={6} md={6}>
+                                        <Col xxl={4} md={4}>
                                             <div className="mt-2">
                                                 <Label style={{ color: "black" }} htmlFor="kasuspenyakit" className="form-label">Kasus Penyakit</Label>
                                             </div>
                                         </Col>
-                                        <Col xxl={6} md={6}>
+                                        <Col xxl={8} md={8}>
                                             <div>
                                                 <CustomSelect
                                                     id="kasuspenyakit"
@@ -310,12 +310,12 @@ const Diagnosax = () => {
                                                 ) : null}
                                             </div>
                                         </Col>
-                                        <Col xxl={6} md={6}>
+                                        <Col xxl={4} md={4}>
                                             <div className="mt-2">
                                                 <Label style={{ color: "black" }} htmlFor="keteranganicd10" className="form-label">Keterangan</Label>
                                             </div>
                                         </Col>
-                                        <Col xxl={6} md={6}>
+                                        <Col xxl={8} md={8}>
                                             <div>
                                                 <Input
                                                     id="keteranganicd10"

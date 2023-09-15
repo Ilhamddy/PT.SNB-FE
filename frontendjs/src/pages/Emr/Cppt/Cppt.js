@@ -19,6 +19,8 @@ import DataTable from 'react-data-table-component';
 
 import { emrSave, emrResetForm, emrGet } from "../../../store/actions";
 import LoadingTable from '../../../Components/Table/LoadingTable';
+import { CKEditor } from '@ckeditor/ckeditor5-react';
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 
 
 const Cppt = () => {
@@ -159,7 +161,7 @@ const Cppt = () => {
     return (
         <React.Fragment>
             {/* <ToastContainer closeButton={false} /> */}
-            <Row className="gy-4 p-5">
+            <Row className="gy-4 p-3">
                 <Form
                     onSubmit={(e) => {
                         e.preventDefault();
@@ -169,138 +171,123 @@ const Cppt = () => {
                     className="gy-4"
                     action="#">
 
-                    <Row>
+                    <Row className='text-dark'>
                         <Col xxl={6} sm={6}>
                             <Row>
-                                <Col lg={6} sm={6}>
-                                    <div style={{ marginTop: '100px' }}>
+                                <Col sm={12}>
+                                    <div>
                                         <Label style={{ color: "black" }} htmlFor="subjective" className="form-label fw-semibold">Subjective</Label>
                                     </div>
-                                </Col>
-                                <Col lg={6} sm={6} className="mt-1">
-                                    <div>
-                                        <Input
-                                            id="subjective"
-                                            name="subjective"
-                                            type="textarea"
-                                            placeholder="Subjective"
-                                            style={{ height: '300px' }}
-                                            onChange={validation.handleChange}
-                                            onBlur={validation.handleBlur}
-                                            value={validation.values.subjective || ""}
-                                            invalid={
-                                                validation.touched.subjective && validation.errors.subjective ? true : false
+                                    <CKEditor
+                                        editor={ClassicEditor}
+                                        config={{
+                                            toolbar: {
+                                                items: ['undo', "redo", "bold", "italic", 'link', 'bulletedList']
                                             }
-                                        />
-                                        {validation.touched.subjective && validation.errors.subjective ? (
-                                            <FormFeedback type="invalid"><div>{validation.errors.subjective}</div></FormFeedback>
-                                        ) : null}
-
-                                    </div>
+                                        }}
+                                        data={validation.values.subjective || ""}
+                                        onChange={(event, editor) => {
+                                            const data = editor.getData(); 
+                                            validation.setFieldValue('subjective', data)
+                                        }}
+                                    />
+                                    {validation.touched.subjective && validation.errors.subjective ? (
+                                        <FormFeedback type="invalid"><div>{validation.errors.subjective}</div></FormFeedback>
+                                    ) : null}
                                 </Col>
                             </Row>
                         </Col>
                         <Col xxl={6} sm={6}>
                             <Row>
-                                <Col lg={6} sm={6}>
-                                    <div style={{ marginTop: '100px' }}>
+                                <Col lg={12} sm={12}>
+                                    <div>
                                         <Label style={{ color: "black" }} htmlFor="assesment" className="form-label fw-semibold">Assesment</Label>
                                     </div>
-                                </Col>
-                                <Col lg={6} sm={6} className="mt-1">
                                     <div>
-                                        <Input
-                                            id="assesment"
-                                            name="assesment"
-                                            type="textarea"
-                                            placeholder="Assesment"
-                                            style={{ height: '300px' }} onChange={validation.handleChange}
-                                            onBlur={validation.handleBlur}
-                                            value={validation.values.assesment || ""}
-                                            invalid={
-                                                validation.touched.assesment && validation.errors.assesment ? true : false
-                                            }
+                                        <CKEditor
+                                            editor={ClassicEditor}
+                                            config={{
+                                                toolbar: {
+                                                    items: ['undo', "redo", "bold", "italic", 'link', 'bulletedList']
+                                                }
+                                            }}
+                                            data={validation.values.assesment || ""}
+                                            onChange={(event, editor) => {
+                                                const data = editor.getData();
+                                                console.log(data)
+                                                validation.setFieldValue('assesment', data)
+                                            }}
                                         />
                                         {validation.touched.assesment && validation.errors.assesment ? (
                                             <FormFeedback type="invalid"><div>{validation.errors.assesment}</div></FormFeedback>
                                         ) : null}
-
                                     </div>
                                 </Col>
                             </Row>
                         </Col>
                         <Col xxl={6} sm={6}>
-                            <Row>
-                                <Col lg={6} sm={6}>
-                                    <div style={{ marginTop: '100px' }}>
+                            <Row className='mt-5'>
+                                <Col lg={12} sm={12}>
+                                    <div >
                                         <Label style={{ color: "black" }} htmlFor="objective" className="form-label fw-semibold">Objective</Label>
                                     </div>
-                                </Col>
-                                <Col lg={6} sm={6} className="mt-1">
-                                    <div>
-                                        <Input
-                                            id="objective"
-                                            name="objective"
-                                            type="textarea"
-                                            placeholder="Objective"
-                                            style={{ height: '300px' }} onChange={validation.handleChange}
-                                            onBlur={validation.handleBlur}
-                                            value={validation.values.objective || ""}
-                                            invalid={
-                                                validation.touched.objective && validation.errors.objective ? true : false
+                                    <CKEditor
+                                        editor={ClassicEditor}
+                                        config={{
+                                            toolbar: {
+                                                items: ['undo', "redo", "bold", "italic", 'link', 'bulletedList']
                                             }
-                                        />
-                                        {validation.touched.objective && validation.errors.objective ? (
-                                            <FormFeedback type="invalid"><div>{validation.errors.objective}</div></FormFeedback>
-                                        ) : null}
-
-                                    </div>
+                                        }}
+                                        data={validation.values.objective || ""}
+                                        onChange={(event, editor) => {
+                                            const data = editor.getData();
+                                            validation.setFieldValue('objective', data)
+                                        }}
+                                    />
+                                    {validation.touched.objective && validation.errors.objective ? (
+                                        <FormFeedback type="invalid"><div>{validation.errors.objective}</div></FormFeedback>
+                                    ) : null}
                                 </Col>
                             </Row>
                         </Col>
                         <Col xxl={6} sm={6}>
-                            <Row>
-                                <Col lg={6} sm={6}>
-                                    <div style={{ marginTop: '100px' }}>
-                                        <Label style={{ color: "black" }} htmlFor="plan" className="form-label fw-semibold">Plan</Label>
+                            <Row className='mt-5'>
+                                <Col lg={12} sm={12}>
+                                    <div >
+                                        <Label style={{ color: "black" }} htmlFor="subjective" className="form-label fw-semibold">Subjective</Label>
                                     </div>
-                                </Col>
-                                <Col lg={6} sm={6} className="mt-1">
-                                    <div>
-                                        <Input
-                                            id="plan"
-                                            name="plan"
-                                            type="textarea"
-                                            placeholder="Plan"
-                                            style={{ height: '300px' }} onChange={validation.handleChange}
-                                            onBlur={validation.handleBlur}
-                                            value={validation.values.plan || ""}
-                                            invalid={
-                                                validation.touched.plan && validation.errors.plan ? true : false
+                                    <CKEditor
+                                        editor={ClassicEditor}
+                                        config={{
+                                            toolbar: {
+                                                items: ['undo', "redo", "bold", "italic", 'link', 'bulletedList']
                                             }
-                                        />
-                                        {validation.touched.plan && validation.errors.plan ? (
-                                            <FormFeedback type="invalid"><div>{validation.errors.plan}</div></FormFeedback>
-                                        ) : null}
-                                    </div>
+                                        }}
+                                        data={validation.values.subjective || ""}
+                                        onChange={(event, editor) => {
+                                            const data = editor.getData();
+                                            validation.setFieldValue('subjective', data)
+                                        }}
+                                    />
+                                    {validation.touched.subjective && validation.errors.subjective ? (
+                                        <FormFeedback type="invalid"><div>{validation.errors.subjective}</div></FormFeedback>
+                                    ) : null}
                                 </Col>
                             </Row>
                         </Col>
 
                         <Col xxl={12} sm={12}>
-                            <div className="d-flex flex-wrap gap-2">
-                                <Button type="submit" color="success" placement="top">
-                                    SIMPAN
-                                </Button>
-
+                            <div className="d-flex flex-wrap gap-2 mt-5 w-100 flex-row-reverse">
                                 <Button type="button" color="danger" placement="top" onClick={handleClickReset}>
                                     BATAL
                                 </Button>
+                                <Button type="submit" color="success" placement="top">
+                                    SIMPAN
+                                </Button>
                             </div>
-
                         </Col>
 
-                        <Col xxl={12} sm={12}>
+                        <Col xxl={12} sm={12} className='mt-5'>
                             <Card>
                                 <CardBody>
                                     <div id="table-gridjs">

@@ -1,13 +1,37 @@
 import { rgxAllComma, rgxAllPeriods, rgxNegative, rgxValidNumberNeg, rgxValidNumberPos, rgxZeroStarts } from "./regexcommon"
 import { useEffect, useState } from "react"
 
+/**
+ * FORMAT TANPA FUNGSI
+ * nominal uang: number langsung saja menggunakan ?.toLocaleString('id-ID')
+ * 
+ */
+
+// ======================
+
+/**
+ * FORMAT DENGAN FUNGSI
+ * map: 
+ * - dateTimeLocal: mengubah format date menjadi tanggal dan waktu
+ * - dateLocal: mengubah format date menjadi tanggal
+ * - dateTimeISOString: mengubah format date menjadi tanggal dan waktu dalam bentuk ISOString
+ * - strToNumber: mengubah format string ("1.000") menjadi number (1000)
+ * - onChangeStrNbr: untuk input; mengubah format string ("1.000") menjadi number (1000)
+ * - onChangeStrNbrNeg: untuk input; mengubah format string ("1.000") menjadi number (1000) dan bisa negatif
+ */
+
+
+/**
+ * mengubah format date menjadi waktu tanggal string
+ * @param {string | Date} date 
+ * @returns {string} format hasil "dd/mm/yyyy hh:mm"
+ */
 export const dateTimeLocal = (date) => {
     try{
         return new Date(date)
             .toLocaleDateString("id-ID", 
-                { weekday: 'long', 
-                year: 'numeric', 
-                month: 'long', 
+                { year: 'numeric', 
+                month: 'numeric', 
                 day: 'numeric' 
             }) 
             + 
@@ -16,10 +40,33 @@ export const dateTimeLocal = (date) => {
             new Date(date)
             .toLocaleTimeString("id-ID", {hour: '2-digit', minute: '2-digit'})
     }catch(e){
-        return ""
+        return "-"
     }
 }
 
+/**
+ * mengubah format date menjadi tanggal string
+ * @param {string | Date} date 
+ * @returns {string} format hasil "dd/mm/yyyy"
+ */
+export const dateLocal = (date) => {
+    try{
+        return new Date(date)
+            .toLocaleDateString("id-ID", 
+                { 
+                    year: 'numeric', 
+                    month: 'numeric', 
+                    day: 'numeric' 
+            }) 
+    }catch(e){
+        return "-"
+    }
+}
+
+/**
+ * mereturn waktu realtime yang berubah setiap detik
+ * @returns {{tanggal: string, waktu: string, ucapan: string}}
+ */
 export const useDate = () => {
     const locale = 'id-ID';
     const [today, setDate] = useState(new Date());
@@ -50,22 +97,6 @@ export const useDate = () => {
 };
 
 
-export const dateLocal = (date) => {
-    try{
-        return new Date(date)
-            .toLocaleDateString("id-ID", 
-                { weekday: 'long', 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric' 
-            }) 
-    }catch(e){
-        return ""
-    }
-
-}
-
-
 export const dateTimeISOString = (date) => {
     try{
         return new Date(date)
@@ -76,7 +107,8 @@ export const dateTimeISOString = (date) => {
 }
 
 /**
- * 
+ * Mengubah format string menjadi number
+ * contoh : "1.000.000,20" menjadi 1000000.20
  * @param {string | number} string 
  * @returns {number}
  */
@@ -94,15 +126,6 @@ export const strToNumber = (string) => {
     newString
         = Number(newString.replace(rgxAllComma, "."))
     return newString
-}
-
-export const strNumber = (nbrStr) => {
-    if(nbrStr === "" || nbrStr === null || nbrStr === undefined) return ""
-    const nbrAwal = nbrStr.split(".")[0]
-    const nbrDesimal = nbrStr.split(".")[1]
-    const isAdaKoma = nbrDesimal || nbrDesimal === ""
-    return Number(nbrAwal).toLocaleString("id-ID") 
-        + (isAdaKoma ? "," + nbrDesimal : "")
 }
 
 /**
@@ -127,7 +150,7 @@ export const onChangeStrNbr = (value, valueBefore) => {
 }
 
 /**
- * tambahkan titik kepada number isi string
+ * tambahkan titik kepada number isi string dan bisa negatif
  * @returns 
  */
 export const onChangeStrNbrNeg = (value, valueBefore) => {
@@ -146,4 +169,13 @@ export const onChangeStrNbrNeg = (value, valueBefore) => {
         return strNumber(val)
     }
     return valueBefore
+}
+
+export const strNumber = (nbrStr) => {
+    if(nbrStr === "" || nbrStr === null || nbrStr === undefined) return ""
+    const nbrAwal = nbrStr.split(".")[0]
+    const nbrDesimal = nbrStr.split(".")[1]
+    const isAdaKoma = nbrDesimal || nbrDesimal === ""
+    return Number(nbrAwal).toLocaleString("id-ID") 
+        + (isAdaKoma ? "," + nbrDesimal : "")
 }

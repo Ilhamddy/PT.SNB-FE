@@ -19,6 +19,7 @@ import patient from "../../../assets/images/users/icons8-patient-64.png";
 
 import { ToastContainer, toast } from 'react-toastify';
 import LoadingTable from '../../../Components/Table/LoadingTable';
+import { dateLocal } from '../../../utils/format';
 
 const RegistrasiList = () => {
     const dispatch = useDispatch();
@@ -106,43 +107,42 @@ const RegistrasiList = () => {
 
     const columns = [
         {
-            name: <span className='font-weight-bold fs-13'>Detail</span>,
-            sortable: false,
-            cell: (data) => {
-                return (
-                    // <Link to={`/registrasi/pasien/${data.id}`}>Details</Link>
-                    <button className="btn btn-sm btn-soft-info" onClick={() => handleClick(data)}>View</button>
-                );
-            },
-        },
-        {
             name: <span className='font-weight-bold fs-13'>No. RM</span>,
             selector: row => row.nocm,
-            sortable: true
+            sortable: true,
+            width: "100px"
         },
         {
 
             name: <span className='font-weight-bold fs-13'>Nama Pasien</span>,
             selector: row => row.namapasien,
             sortable: true,
-            // style: {
-            //     background: "orange",
-            //   },
+            width: "150px"
+
         },
         {
             name: <span className='font-weight-bold fs-13'>No. Identitas</span>,
             selector: row => row.noidentitas,
-            sortable: true
+            sortable: true,
+            width: "150px"
         },
         {
             name: <span className='font-weight-bold fs-13'>No. BPJS</span>,
             selector: row => row.nobpjs,
-            sortable: true
+            sortable: true,
+            width: "150px"
         },
         {
-            name: <span className='font-weight-bold fs-13'>Tgl Lahir</span>,
-            selector: row => row.tgllahir,
-            sortable: false
+            name: <span className='font-weight-bold fs-13'>Tgl. Lahir</span>,
+            selector: row => dateLocal(row.tgllahir),
+            sortable: false,
+            width: "160px"
+        },
+        {
+            name: <span className='font-weight-bold fs-13'>Alamat</span>,
+            selector: row => row.alamatrmh,
+            sortable: false,
+            width: "150px"
         },
 
     ];
@@ -158,8 +158,7 @@ const RegistrasiList = () => {
                         <Col lg={3}>
                             <Card>
                                 <CardBody>
-                                    <h5 className="card-title mb-5">Profile Pasien</h5>
-                                    <div className="text-center">
+                                    <div className="text-center mt-3">
                                         <img src={userDummy}
                                             className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image"
                                             alt="user-profile" />
@@ -271,16 +270,6 @@ const RegistrasiList = () => {
                         </Col>
                         <Col lg={9}>
                             <Card>
-                                <CardHeader className="align-items-center d-flex">
-                                    <div className="live-preview">
-                                        <Row>
-                                            <Col>
-                                                <h4 className="card-title mb-0 flex-grow-1 mb-3">Daftar Pasien Lama</h4>
-                                            </Col>
-                                        </Row>
-                                    </div>
-
-                                </CardHeader>
 
                                 <CardBody>
                                     <div id="table-gridjs">
@@ -302,6 +291,9 @@ const RegistrasiList = () => {
                                             data={data}
                                             progressPending={loading}
                                             customStyles={tableCustomStyles}
+                                            onRowClicked={(row) => handleClick(row)}
+                                            pointerOnHover
+                                            highlightOnHover
                                             progressComponent={<LoadingTable />}
                                         />
                                     </div>
