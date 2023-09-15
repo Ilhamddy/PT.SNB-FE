@@ -19,6 +19,7 @@ import patient from "../../../assets/images/users/icons8-patient-64.png";
 
 import { ToastContainer, toast } from 'react-toastify';
 import LoadingTable from '../../../Components/Table/LoadingTable';
+import { dateLocal } from '../../../utils/format';
 
 const RegistrasiList = () => {
     const dispatch = useDispatch();
@@ -132,10 +133,10 @@ const RegistrasiList = () => {
             width: "150px"
         },
         {
-            name: <span className='font-weight-bold fs-13'>Tgl Lahir</span>,
-            selector: row => row.tgllahir,
+            name: <span className='font-weight-bold fs-13'>Tgl. Lahir</span>,
+            selector: row => dateLocal(row.tgllahir),
             sortable: false,
-            width: "150px"
+            width: "160px"
         },
         {
             name: <span className='font-weight-bold fs-13'>Alamat</span>,
@@ -157,8 +158,7 @@ const RegistrasiList = () => {
                         <Col lg={3}>
                             <Card>
                                 <CardBody>
-                                    <h5 className="card-title mb-5">Profile Pasien</h5>
-                                    <div className="text-center">
+                                    <div className="text-center mt-3">
                                         <img src={userDummy}
                                             className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image"
                                             alt="user-profile" />
@@ -270,16 +270,6 @@ const RegistrasiList = () => {
                         </Col>
                         <Col lg={9}>
                             <Card>
-                                <CardHeader className="align-items-center d-flex">
-                                    <div className="live-preview">
-                                        <Row>
-                                            <Col>
-                                                <h4 className="card-title mb-0 flex-grow-1 mb-3">Daftar Pasien Lama</h4>
-                                            </Col>
-                                        </Row>
-                                    </div>
-
-                                </CardHeader>
 
                                 <CardBody>
                                     <div id="table-gridjs">

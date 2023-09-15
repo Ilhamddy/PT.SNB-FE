@@ -25,6 +25,7 @@ import PrintRekapBiaya from '../../Print/PrintRekapBiaya/PrintRekapBiaya';
 import SimpleBar from 'simplebar-react';
 import "./Tagihan.scss";
 import LoadingTable from '../../../Components/Table/LoadingTable';
+import { dateTimeLocal } from '../../../utils/format';
 
 const Tagihan = ({ show }) => {
     const { norecdp, norecap } = useParams();
@@ -90,16 +91,11 @@ const Tagihan = ({ show }) => {
         },
         {
             name: <span className='font-weight-bold fs-13'>Tgl Layanan</span>,
-            selector: row => row.tglinput,
+            selector: row => dateTimeLocal(row.tglinput),
             sortable: true,
             // selector: row => (<button className="btn btn-sm btn-soft-info" onClick={() => handleClick(dataTtv)}>{row.noregistrasi}</button>),
-            width: "140px",
-            // cell: (data) => {
-            //     return (
-            //         // <Link to={`/registrasi/pasien/${data.id}`}>Details</Link>
-            //         <button type='button' className="btn btn-sm btn-soft-info" onClick={() => handleClick(data)}>{data.noregistrasi}</button>
-            //     );
-            // },
+            width: "160px",
+            wrap: true,
         },
         {
 
@@ -125,7 +121,7 @@ const Tagihan = ({ show }) => {
         {
 
             name: <span className='font-weight-bold fs-13'>Harga</span>,
-            selector: row => row.harga,
+            selector: row => row.harga?.toLocaleString('id-ID'),
             sortable: true,
             width: "100px"
         },
@@ -157,7 +153,7 @@ const Tagihan = ({ show }) => {
         },{
 
             name: <span className='font-weight-bold fs-13'>Total</span>,
-            selector: row => row.total,
+            selector: row => row.total?.toLocaleString('id-ID'),
             sortable: true,
             width: "100px"
         },

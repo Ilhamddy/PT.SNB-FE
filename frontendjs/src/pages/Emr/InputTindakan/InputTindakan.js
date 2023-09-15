@@ -22,6 +22,7 @@ import {
     comboHistoryUnitGet, comboTindakanGet, comboJenisPelaksanaGet, comboNamaPelaksanaGet,
     tindakanSave, emrResetForm
 } from "../../../store/actions";
+import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/KontainerFlatpickr';
 const InputTindakan = () => {
     const { norecdp, norecap } = useParams();
     const dispatch = useDispatch();
@@ -113,8 +114,7 @@ const InputTindakan = () => {
 
     }
 
-    const current = new Date();
-    const [dateStart, setdateStart] = useState(`${current.getFullYear()}-${current.getMonth() + 1}-${current.getDate()} ${current.getHours()}:${current.getMinutes()}`);
+    const [dateStart, setdateStart] = useState((new Date()).toISOString());
     const validation = useFormik({
         enableReinitialize: true,
         initialValues: {
@@ -230,11 +230,8 @@ const InputTindakan = () => {
         }
     })
     const handleBeginOnChangeTglInput = (newBeginValue) => {
-        var dateString = new Date(newBeginValue.getTime() - (newBeginValue.getTimezoneOffset() * 60000))
-            .toISOString()
-            .split("T")[0];
         // setdateStart(dateString)
-        validation.setFieldValue('tglinput', dateString)
+
     }
 
     const [showPelaksana1, setshowPelaksana1] = useState(true);
@@ -260,7 +257,7 @@ const InputTindakan = () => {
                     className="gy-4"
                     action="#">
                     <Row>
-                        <Col lg={5}>
+                        <Col lg={6}>
                             <Row className="gy-2">
                                 <Col lg={4} md={4}>
                                     <div className="mt-2">
@@ -306,7 +303,7 @@ const InputTindakan = () => {
 
                             </Row>
                         </Col>
-                        <Col lg={7}>
+                        <Col lg={6}>
                             <Row>
                                 <Col lg={4} md={4}>
                                     <div className="mt-2">
@@ -314,24 +311,27 @@ const InputTindakan = () => {
                                     </div>
                                 </Col>
                                 <Col lg={8} md={8}>
-                                    <div className="input-group">
-                                        <Flatpickr
-                                            className="form-control border-0 fs-5 dash-filter-picker shadow"
-                                            options={{
-                                                //  enableTime: true,
-                                                // mode: "range",
-                                                dateFormat: "Y-m-d H:i",
-                                                defaultDate: "today"
-                                            }}
-                                            value={dateStart}
-                                            onChange={([newDate]) => {
-                                                handleBeginOnChangeTglInput(newDate);
-                                            }}
-                                        />
-                                        <div className="input-group-text bg-secondary border-secondary text-white"><i className="ri-calendar-2-line"></i></div>
-                                    </div>
+                                    <KontainerFlatpickr
+                                        isError={validation.touched?.tglinput &&
+                                            !!validation.errors?.tglinput}
+                                        id="tglinput"
+                                        options={{
+                                        dateFormat: 'Y-m-d',
+                                        defaultDate: 'today',
+                                        }}
+                                        value={validation.values.tglinput}
+                                        onChange={([newDate]) => {
+                                            validation.setFieldValue('tglinput', newDate.toISOString())
+                                        }}
+                                    />
+                                    {validation.touched?.tglinput
+                                        && !!validation.errors.tglinput && (
+                                            <FormFeedback type="invalid">
+                                                <div>{validation.errors.tglinput}</div>
+                                            </FormFeedback>
+                                        )}
                                 </Col>
-                                <Col lg={12}>
+                                <Col lg={12} className='mt-2'>
                                     <Row>
                                         <Col lg={4} sm={6}>
                                             <div className="mt-2">
@@ -380,13 +380,12 @@ const InputTindakan = () => {
                             </Row>
                         </Col>
                         <Col xs={24} sm={24} md={17} lg={19} xl={20} className="mt-2" >
-                            <Row>
-
+                            <Row> 
                                 {showPelaksana1 ? (
                                     <>
                                         <Col className='mt-2' lg={12}>
                                             <Row>
-                                                <Col lg={5}>
+                                                <Col lg={6}>
                                                     <Row>
                                                         <Col lg={4} md={4}>
                                                             <div className="mt-2">
@@ -410,14 +409,14 @@ const InputTindakan = () => {
                                                         </Col>
                                                     </Row>
                                                 </Col>
-                                                <Col lg={5}>
+                                                <Col lg={6}>
                                                     <Row>
-                                                        <Col lg={5} md={4}>
+                                                        <Col lg={4} md={4}>
                                                             <div className="mt-2">
                                                                 <Label style={{ color: "black" }} htmlFor="namapelaksana1" className="form-label">Nama Pelaksana</Label>
                                                             </div>
                                                         </Col>
-                                                        <Col lg={7} sm={6}>
+                                                        <Col lg={6} sm={6}>
                                                             <div>
                                                                 <CustomSelect
                                                                     id="namapelaksana1"
@@ -432,15 +431,12 @@ const InputTindakan = () => {
                                                                 ) : null}
                                                             </div>
                                                         </Col>
+                                                        <Col lg={2} className='d-flex flex-row-reverse'>
+                                                            <Button type="button" color="success" placement="top" onClick={() => setshowPelaksana2(true)}>
+                                                                +
+                                                            </Button>
+                                                        </Col>
                                                     </Row>
-                                                </Col>
-                                                <Col lg={1}>
-                                                    <Button type="button" color="success" placement="top" onClick={() => setshowPelaksana2(true)}>
-                                                        +
-                                                    </Button>
-                                                </Col>
-                                                <Col lg={1}>
-
                                                 </Col>
                                             </Row>
                                         </Col>
@@ -450,7 +446,7 @@ const InputTindakan = () => {
                                     <>
                                         <Col className='mt-2' lg={12}>
                                             <Row>
-                                                <Col lg={5}>
+                                                <Col lg={6}>
                                                     <Row>
                                                         <Col lg={4} md={4}>
                                                             <div className="mt-2">
@@ -474,14 +470,14 @@ const InputTindakan = () => {
                                                         </Col>
                                                     </Row>
                                                 </Col>
-                                                <Col lg={5}>
+                                                <Col lg={6}>
                                                     <Row>
-                                                        <Col lg={5} md={4}>
+                                                        <Col lg={4} md={4}>
                                                             <div className="mt-2">
                                                                 <Label style={{ color: "black" }} htmlFor="namapelaksana2" className="form-label">Nama Pelaksana</Label>
                                                             </div>
                                                         </Col>
-                                                        <Col lg={7} sm={6}>
+                                                        <Col lg={6} sm={6}>
                                                             <div>
                                                                 <CustomSelect
                                                                     id="namapelaksana2"
@@ -496,17 +492,15 @@ const InputTindakan = () => {
                                                                 ) : null}
                                                             </div>
                                                         </Col>
+                                                        <Col lg={2} className='d-flex flex-row-reverse gap-2'>
+                                                            <Button type="button" color="success" placement="top" onClick={() => setshowPelaksana3(true)}>
+                                                                +
+                                                            </Button>
+                                                            <Button type="button" color="danger" placement="top" onClick={() => handleClickKurang(2)}>
+                                                                -
+                                                            </Button>
+                                                        </Col>
                                                     </Row>
-                                                </Col>
-                                                <Col lg={1}>
-                                                    <Button type="button" color="success" placement="top" onClick={() => setshowPelaksana3(true)}>
-                                                        +
-                                                    </Button>
-                                                </Col>
-                                                <Col lg={1}>
-                                                    <Button type="button" color="danger" placement="top" onClick={() => handleClickKurang(2)}>
-                                                        -
-                                                    </Button>
                                                 </Col>
                                             </Row>
                                         </Col>
@@ -516,7 +510,7 @@ const InputTindakan = () => {
                                     <>
                                         <Col className='mt-2' lg={12}>
                                             <Row>
-                                                <Col lg={5}>
+                                                <Col lg={6}>
                                                     <Row>
                                                         <Col lg={4} md={4}>
                                                             <div className="mt-2">
@@ -540,14 +534,14 @@ const InputTindakan = () => {
                                                         </Col>
                                                     </Row>
                                                 </Col>
-                                                <Col lg={5}>
+                                                <Col lg={6}>
                                                     <Row>
-                                                        <Col lg={5} md={4}>
+                                                        <Col lg={4} md={4}>
                                                             <div className="mt-2">
                                                                 <Label style={{ color: "black" }} htmlFor="namapelaksana3" className="form-label">Nama Pelaksana</Label>
                                                             </div>
                                                         </Col>
-                                                        <Col lg={7} sm={6}>
+                                                        <Col lg={6} sm={6}>
                                                             <div>
                                                                 <CustomSelect
                                                                     id="namapelaksana3"
@@ -562,17 +556,15 @@ const InputTindakan = () => {
                                                                 ) : null}
                                                             </div>
                                                         </Col>
+                                                        <Col lg={2} className='d-flex flex-row-reverse gap-2'>
+                                                            <Button type="button" color="success" placement="top" onClick={() => setshowPelaksana4(true)}>
+                                                                +
+                                                            </Button>
+                                                            <Button type="button" color="danger" placement="top" onClick={() => handleClickKurang(3)}>
+                                                                -
+                                                            </Button>
+                                                        </Col>
                                                     </Row>
-                                                </Col>
-                                                <Col lg={1}>
-                                                    <Button type="button" color="success" placement="top" onClick={() => setshowPelaksana4(true)}>
-                                                        +
-                                                    </Button>
-                                                </Col>
-                                                <Col lg={1}>
-                                                    <Button type="button" color="danger" placement="top" onClick={() => handleClickKurang(3)}>
-                                                        -
-                                                    </Button>
                                                 </Col>
                                             </Row>
                                         </Col>
@@ -582,7 +574,7 @@ const InputTindakan = () => {
                                     <>
                                         <Col className='mt-2' lg={12}>
                                             <Row>
-                                                <Col lg={5}>
+                                                <Col lg={6}>
                                                     <Row>
                                                         <Col lg={4} md={4}>
                                                             <div className="mt-2">
@@ -597,7 +589,7 @@ const InputTindakan = () => {
                                                                     options={dataJenisPelaksana}
                                                                     value={validation.values.jenispelaksana4 || ""}
                                                                     className={`input ${validation.errors.jenispelaksana4 ? "is-invalid" : ""}`}
-                                                                    onChange={value => validation.setFieldValue('jenispelaksana4', value.value)}
+                                                                    onChange={value => validation.setFieldValue('jenispelaksana3', value.value)}
                                                                 />
                                                                 {validation.touched.jenispelaksana4 && validation.errors.jenispelaksana4 ? (
                                                                     <FormFeedback type="invalid"><div>{validation.errors.jenispelaksana4}</div></FormFeedback>
@@ -606,14 +598,14 @@ const InputTindakan = () => {
                                                         </Col>
                                                     </Row>
                                                 </Col>
-                                                <Col lg={5}>
+                                                <Col lg={6}>
                                                     <Row>
-                                                        <Col lg={5} md={4}>
+                                                        <Col lg={4} md={4}>
                                                             <div className="mt-2">
                                                                 <Label style={{ color: "black" }} htmlFor="namapelaksana4" className="form-label">Nama Pelaksana</Label>
                                                             </div>
                                                         </Col>
-                                                        <Col lg={7} sm={6}>
+                                                        <Col lg={6} sm={6}>
                                                             <div>
                                                                 <CustomSelect
                                                                     id="namapelaksana4"
@@ -621,24 +613,22 @@ const InputTindakan = () => {
                                                                     options={dataNamaPelaksana}
                                                                     value={validation.values.namapelaksana4 || ""}
                                                                     className={`input ${validation.errors.namapelaksana4 ? "is-invalid" : ""}`}
-                                                                    onChange={value => validation.setFieldValue('jenispelaksana4', value.value)}
+                                                                    onChange={value => validation.setFieldValue('namapelaksana4', value.value)}
                                                                 />
                                                                 {validation.touched.namapelaksana4 && validation.errors.namapelaksana4 ? (
                                                                     <FormFeedback type="invalid"><div>{validation.errors.namapelaksana4}</div></FormFeedback>
                                                                 ) : null}
                                                             </div>
                                                         </Col>
+                                                        <Col lg={2} className='d-flex flex-row-reverse gap-2'>
+                                                            <Button type="button" color="success" placement="top" onClick={() => setshowPelaksana5(true)}>
+                                                                +
+                                                            </Button>
+                                                            <Button type="button" color="danger" placement="top" onClick={() => handleClickKurang(4)}>
+                                                                -
+                                                            </Button>
+                                                        </Col>
                                                     </Row>
-                                                </Col>
-                                                <Col lg={1}>
-                                                    <Button type="button" color="success" placement="top" onClick={() => setshowPelaksana5(true)}>
-                                                        +
-                                                    </Button>
-                                                </Col>
-                                                <Col lg={1}>
-                                                    <Button type="button" color="danger" placement="top" onClick={() => handleClickKurang(4)}>
-                                                        -
-                                                    </Button>
                                                 </Col>
                                             </Row>
                                         </Col>
@@ -648,7 +638,7 @@ const InputTindakan = () => {
                                     <>
                                         <Col className='mt-2' lg={12}>
                                             <Row>
-                                                <Col lg={5}>
+                                                <Col lg={6}>
                                                     <Row>
                                                         <Col lg={4} md={4}>
                                                             <div className="mt-2">
@@ -672,14 +662,14 @@ const InputTindakan = () => {
                                                         </Col>
                                                     </Row>
                                                 </Col>
-                                                <Col lg={5}>
+                                                <Col lg={6}>
                                                     <Row>
-                                                        <Col lg={5} md={4}>
+                                                        <Col lg={4} md={4}>
                                                             <div className="mt-2">
                                                                 <Label style={{ color: "black" }} htmlFor="namapelaksana5" className="form-label">Nama Pelaksana</Label>
                                                             </div>
                                                         </Col>
-                                                        <Col lg={7} sm={6}>
+                                                        <Col lg={6} sm={6}>
                                                             <div>
                                                                 <CustomSelect
                                                                     id="namapelaksana5"
@@ -694,17 +684,15 @@ const InputTindakan = () => {
                                                                 ) : null}
                                                             </div>
                                                         </Col>
+                                                        <Col lg={2} className='d-flex flex-row-reverse gap-2'>
+                                                            <Button type="button" color="success" placement="top" onClick={() => setshowPelaksana6(true)}>
+                                                                +
+                                                            </Button>
+                                                            <Button type="button" color="danger" placement="top" onClick={() => handleClickKurang(5)}>
+                                                                -
+                                                            </Button>
+                                                        </Col>
                                                     </Row>
-                                                </Col>
-                                                <Col lg={1}>
-                                                    <Button type="button" color="success" placement="top" onClick={() => setshowPelaksana6(true)}>
-                                                        +
-                                                    </Button>
-                                                </Col>
-                                                <Col lg={1}>
-                                                    <Button type="button" color="danger" placement="top" onClick={() => handleClickKurang(5)}>
-                                                        -
-                                                    </Button>
                                                 </Col>
                                             </Row>
                                         </Col>
@@ -714,7 +702,7 @@ const InputTindakan = () => {
                                     <>
                                         <Col className='mt-2' lg={12}>
                                             <Row>
-                                                <Col lg={5}>
+                                                <Col lg={6}>
                                                     <Row>
                                                         <Col lg={4} md={4}>
                                                             <div className="mt-2">
@@ -729,7 +717,7 @@ const InputTindakan = () => {
                                                                     options={dataJenisPelaksana}
                                                                     value={validation.values.jenispelaksana6 || ""}
                                                                     className={`input ${validation.errors.jenispelaksana6 ? "is-invalid" : ""}`}
-                                                                    onChange={value => validation.setFieldValue('jenispelaksana6', value.value)}
+                                                                    onChange={value => validation.setFieldValue('jenispelaksana1', value.value)}
                                                                 />
                                                                 {validation.touched.jenispelaksana6 && validation.errors.jenispelaksana6 ? (
                                                                     <FormFeedback type="invalid"><div>{validation.errors.jenispelaksana6}</div></FormFeedback>
@@ -738,14 +726,14 @@ const InputTindakan = () => {
                                                         </Col>
                                                     </Row>
                                                 </Col>
-                                                <Col lg={5}>
+                                                <Col lg={6}>
                                                     <Row>
-                                                        <Col lg={5} md={4}>
+                                                        <Col lg={4} md={4}>
                                                             <div className="mt-2">
                                                                 <Label style={{ color: "black" }} htmlFor="namapelaksana6" className="form-label">Nama Pelaksana</Label>
                                                             </div>
                                                         </Col>
-                                                        <Col lg={7} sm={6}>
+                                                        <Col lg={6} sm={6}>
                                                             <div>
                                                                 <CustomSelect
                                                                     id="namapelaksana6"
@@ -760,83 +748,15 @@ const InputTindakan = () => {
                                                                 ) : null}
                                                             </div>
                                                         </Col>
-                                                    </Row>
-                                                </Col>
-                                                <Col lg={1}>
-                                                    <Button type="button" color="success" placement="top" onClick={() => setshowPelaksana7(true)}>
-                                                        +
-                                                    </Button>
-                                                </Col>
-                                                <Col lg={1}>
-                                                    <Button type="button" color="danger" placement="top" onClick={() => handleClickKurang(6)}>
-                                                        -
-                                                    </Button>
-                                                </Col>
-                                            </Row>
-                                        </Col>
-                                    </>
-                                ) : null}
-                                {showPelaksana7 ? (
-                                    <>
-                                        <Col className='mt-2' lg={12}>
-                                            <Row>
-                                                <Col lg={5}>
-                                                    <Row>
-                                                        <Col lg={4} md={4}>
-                                                            <div className="mt-2">
-                                                                <Label style={{ color: "black" }} htmlFor="jenispelaksana7" className="form-label">Jenis Pelaksana</Label>
-                                                            </div>
-                                                        </Col>
-                                                        <Col lg={8} sm={6}>
-                                                            <div>
-                                                                <CustomSelect
-                                                                    id="jenispelaksana7"
-                                                                    name="jenispelaksana7"
-                                                                    options={dataJenisPelaksana}
-                                                                    value={validation.values.jenispelaksana7 || ""}
-                                                                    className={`input ${validation.errors.jenispelaksana7 ? "is-invalid" : ""}`}
-                                                                    onChange={value => validation.setFieldValue('jenispelaksana7', value.value)}
-                                                                />
-                                                                {validation.touched.jenispelaksana7 && validation.errors.jenispelaksana7 ? (
-                                                                    <FormFeedback type="invalid"><div>{validation.errors.jenispelaksana7}</div></FormFeedback>
-                                                                ) : null}
-                                                            </div>
+                                                        <Col lg={2} className='d-flex flex-row-reverse gap-2'>
+                                                            <Button type="button" color="success" placement="top" onClick={() => {}}>
+                                                                +
+                                                            </Button>
+                                                            <Button type="button" color="danger" placement="top" onClick={() => handleClickKurang(6)}>
+                                                                -
+                                                            </Button>
                                                         </Col>
                                                     </Row>
-                                                </Col>
-                                                <Col lg={5}>
-                                                    <Row>
-                                                        <Col lg={5} md={4}>
-                                                            <div className="mt-2">
-                                                                <Label style={{ color: "black" }} htmlFor="namapelaksana7" className="form-label">Nama Pelaksana</Label>
-                                                            </div>
-                                                        </Col>
-                                                        <Col lg={7} sm={6}>
-                                                            <div>
-                                                                <CustomSelect
-                                                                    id="namapelaksana7"
-                                                                    name="namapelaksana7"
-                                                                    options={dataNamaPelaksana}
-                                                                    value={validation.values.namapelaksana7 || ""}
-                                                                    className={`input ${validation.errors.namapelaksana7 ? "is-invalid" : ""}`}
-                                                                    onChange={value => validation.setFieldValue('namapelaksana7', value.value)}
-                                                                />
-                                                                {validation.touched.namapelaksana7 && validation.errors.namapelaksana7 ? (
-                                                                    <FormFeedback type="invalid"><div>{validation.errors.namapelaksana7}</div></FormFeedback>
-                                                                ) : null}
-                                                            </div>
-                                                        </Col>
-                                                    </Row>
-                                                </Col>
-                                                <Col lg={1}>
-                                                    <Button type="button" color="success" placement="top" onClick={() => setshowPelaksana8(true)}>
-                                                        +
-                                                    </Button>
-                                                </Col>
-                                                <Col lg={1}>
-                                                    <Button type="button" color="danger" placement="top" onClick={() => handleClickKurang(7)}>
-                                                        -
-                                                    </Button>
                                                 </Col>
                                             </Row>
                                         </Col>
@@ -844,7 +764,7 @@ const InputTindakan = () => {
                                 ) : null}
                             </Row>
                         </Col>
-                        <Col xxl={12} sm={12}>
+                        <Col xxl={12} sm={12} className='mt-3'>
                             <Button type="submit" color="success" placement="top" >
                                 SIMPAN
                             </Button>

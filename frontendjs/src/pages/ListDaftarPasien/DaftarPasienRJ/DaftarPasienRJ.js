@@ -33,6 +33,7 @@ import CustomSelect from '../../Select/Select';
 import "./DaftarPasienRJ.scss"
 import LoadingTable from '../../../Components/Table/LoadingTable';
 import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/KontainerFlatpickr';
+import { dateTimeLocal } from '../../../utils/format';
 
 const DaftarPasienRJ = () => {
     document.title = "Daftar Pasien Rawat Jalan";
@@ -151,9 +152,10 @@ const DaftarPasienRJ = () => {
         },
         {
             name: <span className='font-weight-bold fs-13'>Tgl Registrasi</span>,
-            selector: row => row.tglregistrasi,
+            selector: row => dateTimeLocal(row.tglregistrasi),
             sortable: true,
-            width: "130px"
+            width: "160px",
+            wrap: true
         },
         {
             name: <span className='font-weight-bold fs-13'>No. Registrasi</span>,
