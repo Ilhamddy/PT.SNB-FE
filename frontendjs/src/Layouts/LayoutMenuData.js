@@ -239,6 +239,28 @@ const Navdata = () => {
             },
             subItems: [
                 {
+                    id: "daftar-pasien-registrasi",
+                    label: "Daftar Pasien Registrasi",
+                    link: "/listdaftarpasien/daftarpasienregistrasi",
+                    parentId: "listdaftarpasien",
+                    isAllowed: () => {
+                        return isAllowedAccess(getUserPermissions(), [
+                            "REGISTRASI_VIEW",
+                        ]);
+                    }
+                },
+                {
+                    id: "registrasi-pasien-lama",
+                    label: "Daftar Pasien Gawat Darurat",
+                    link: "/listdaftarpasien/daftar-pasien-igd",
+                    parentId: "listdaftarpasien",
+                    isAllowed: () => {
+                        return isAllowedAccess(getUserPermissions(), [
+                            "REGISTRASI_VIEW"
+                        ]);
+                    }
+                },
+                {
                     id: "registrasi-pasien-lama",
                     label: "Daftar Pasien Rawat Jalan",
                     link: "/listdaftarpasien/daftar-pasien-rj",
@@ -250,15 +272,10 @@ const Navdata = () => {
                     }
                 },
                 {
-                    id: "registrasi-pasien-lama",
-                    label: "Daftar Pasien Rawat Darurat",
-                    link: "/listdaftarpasien/daftar-pasien-igd",
+                    id: "daftar-pasien-registrasi",
+                    label: "Daftar Pasien Mutasi",
+                    link: "/bGlzdGRhZnRhcnBhc2llbi9kYWZ0YXJwYXNpZW5tdXRhc2k=",
                     parentId: "listdaftarpasien",
-                    isAllowed: () => {
-                        return isAllowedAccess(getUserPermissions(), [
-                            "REGISTRASI_VIEW"
-                        ]);
-                    }
                 },
                 {
                     id: "registrasi-pasien-lama",
@@ -281,23 +298,6 @@ const Navdata = () => {
                             "REGISTRASI_VIEW",
                         ]);
                     }
-                },
-                {
-                    id: "daftar-pasien-registrasi",
-                    label: "Daftar Pasien Registrasi",
-                    link: "/listdaftarpasien/daftarpasienregistrasi",
-                    parentId: "listdaftarpasien",
-                    isAllowed: () => {
-                        return isAllowedAccess(getUserPermissions(), [
-                            "REGISTRASI_VIEW",
-                        ]);
-                    }
-                },
-                {
-                    id: "daftar-pasien-registrasi",
-                    label: "Daftar Pasien Mutasi",
-                    link: "/bGlzdGRhZnRhcnBhc2llbi9kYWZ0YXJwYXNpZW5tdXRhc2k=",
-                    parentId: "listdaftarpasien",
                 },
                 {
                     id: "daftar-pasien-farmasi",
@@ -591,19 +591,8 @@ const Navdata = () => {
             },
             subItems: [
                 {
-                    id: "Verif Order",
-                    label: "Verif Order",
-                    link: "/farmasi/verif-order-resep",
-                    parentId: "farmasi",
-                    isAllowed: () => {
-                        return isAllowedAccess(getUserPermissions(), [
-                            "REGISTRASI_VIEW",
-                        ]);
-                    }
-                },
-                {
-                    id: "Order List",
-                    label: "Order List",
+                    id: "List Order",
+                    label: "List Order",
                     link: "/farmasi/order-list",
                     parentId: "farmasi",
                     isAllowed: () => {
@@ -645,7 +634,7 @@ const Navdata = () => {
             subItems: [
                 {
                     id: "Produk",
-                    label: "Produk",
+                    label: "Master Produk",
                     link: "/farmasi/gudang/list-produk",
                     parentId: "gudang",
                     isAllowed: () => {
@@ -658,17 +647,6 @@ const Navdata = () => {
                     id: "penerimaanproduk",
                     label: "Penerimaan produk",
                     link: "/farmasi/gudang/penerimaan-produk-list",
-                    parentId: "gudang",
-                    isAllowed: () => {
-                        return isAllowedAccess(getUserPermissions(), [
-                            "REGISTRASI_VIEW",
-                        ]);
-                    }
-                },
-                {
-                    id: "kartustok",
-                    label: "Kartu Stok",
-                    link: "/farmasi/gudang/kartu-stok",
                     parentId: "gudang",
                     isAllowed: () => {
                         return isAllowedAccess(getUserPermissions(), [
@@ -702,6 +680,17 @@ const Navdata = () => {
                     id: "stokopname",
                     label: "Stok Opname",
                     link: "/farmasi/gudang/stok-opname/daftar-stok-opname",
+                    parentId: "gudang",
+                    isAllowed: () => {
+                        return isAllowedAccess(getUserPermissions(), [
+                            "REGISTRASI_VIEW",
+                        ]);
+                    }
+                },
+                {
+                    id: "kartustok",
+                    label: "Kartu Stok",
+                    link: "/farmasi/gudang/kartu-stok",
                     parentId: "gudang",
                     isAllowed: () => {
                         return isAllowedAccess(getUserPermissions(), [
