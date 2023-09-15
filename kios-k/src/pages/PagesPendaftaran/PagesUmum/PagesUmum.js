@@ -16,18 +16,24 @@ import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 import './PagesUmum.scss'
-import { kioskResetForm, getComboKiosk, getCariPasienKiosk } from '../../../store/action';
+import { kioskResetForm, getComboKiosk, getCariPasienKiosk, saveRegistrasiPasienKiosk } from '../../../store/action';
 import ModalPoliklinik from '../../../components/ModalPoliklinik/ModalPoliklinik';
 
 function PagesUmum() {
     const [activeStep, setActiveStep] = useState(0);
     const [tempDaftar, setTempDaftar] = useState([]);
-    const onStepsChange = (norm, namapasien, tgllahir, namapoli, idnamapoli, doktertujuan, iddoktertujuan) => {
-        const newTempValue = [{ norm:norm,namapasien: namapasien,tgllahir:tgllahir, namapoli:namapoli,
-             idnamapoli:idnamapoli, doktertujuan:doktertujuan, iddoktertujuan:iddoktertujuan }];
+    const onStepsChange = (nocmfk, norm, namapasien, tgllahir, namapoli, idnamapoli, doktertujuan, iddoktertujuan) => {
+        const newTempValue = [{
+            nocmfk: nocmfk, norm: norm, namapasien: namapasien, tgllahir: tgllahir, namapoli: namapoli,
+            idnamapoli: idnamapoli, doktertujuan: doktertujuan, iddoktertujuan: iddoktertujuan
+        }];
 
         setTempDaftar(newTempValue);
-        console.log(newTempValue)
+    }
+    const [tempFinish, setTempFinish] = useState([]);
+    const onStepsFinishChange = (data) => {
+        // console.log(data)
+        setTempFinish(data);
     }
     const handleNextStep = () => {
         setActiveStep((prevStep) => prevStep + 1);
@@ -44,12 +50,12 @@ function PagesUmum() {
         {
             label: 'Konfirmasi',
             content: faStarHalfStroke,
-            stateForm: <Step2 handleNextStep={handleNextStep} handlePreviousStep={handlePreviousStep} tempDaftar={tempDaftar} />
+            stateForm: <Step2 handleNextStep={handleNextStep} handlePreviousStep={handlePreviousStep} tempDaftar={tempDaftar} onStepsFinishChange={onStepsFinishChange} />
         },
         {
             label: 'Bukti Daftar',
             content: faPrint,
-            stateForm: <Step3 />
+            stateForm: <Step3 tempFinish={tempFinish} />
         },
     ];
 
@@ -113,6 +119,7 @@ function Step1({ handleNextStep, onStepsChange }) {
     const vSetStep1 = useFormik({
         enableReinitialize: true,
         initialValues: {
+            nocmfk: '',
             norm: "",
             namapasien: '',
             tgllahir: '',
@@ -130,13 +137,16 @@ function Step1({ handleNextStep, onStepsChange }) {
         onSubmit: (values) => {
             // console.log(values);
             handleNextStep()
-            onStepsChange(vSetStep1.values.norm,
+            onStepsChange(
+                vSetStep1.values.nocmfk,
+                vSetStep1.values.norm,
                 vSetStep1.values.namapasien,
                 vSetStep1.values.tgllahir,
                 vSetStep1.values.namapoli,
                 vSetStep1.values.idnamapoli,
                 vSetStep1.values.doktertujuan,
-                vSetStep1.values.iddoktertujuan)
+                vSetStep1.values.iddoktertujuan,
+            )
 
         }
     })
@@ -190,6 +200,7 @@ function Step1({ handleNextStep, onStepsChange }) {
             setFF("norm", dataPasien[0].nocm || "")
             setFF("namapasien", dataPasien[0].namapasien || "")
             setFF("tgllahir", dataPasien[0].tgllahir || "")
+            setFF("nocmfk", dataPasien[0].id || "")
         }
     }, [dispatch, dataPasien, vSetStep1.setFieldValue, stateHasilCari])
     const handleHome = () => {
@@ -396,32 +407,54 @@ function Step1({ handleNextStep, onStepsChange }) {
     )
 }
 
-function Step2({ handleNextStep, handlePreviousStep, tempDaftar }) {
+function Step2({ handleNextStep, handlePreviousStep, tempDaftar, onStepsFinishChange }) {
+    const dispatch = useDispatch();
     const navigate = useNavigate();
+    const { newData, successSave } = useSelector((state) => ({
+        newData: state.Kiosk.saveRegistrasiPasienKiosk.data,
+        successSave: state.Kiosk.saveRegistrasiPasienKiosk.success,
+    }));
     const vSetStep2 = useFormik({
         enableReinitialize: true,
         initialValues: {
-            norm:  tempDaftar[0].norm||'',
-            namapasien: tempDaftar[0].namapasien||"",
+            nocmfk: tempDaftar[0].nocmfk || '',
+            norm: tempDaftar[0].norm || '',
+            namapasien: tempDaftar[0].namapasien || "",
             tgllahir: tempDaftar[0].tgllahir || '',
             namapoli: tempDaftar[0].namapoli || '',
             idnamapoli: tempDaftar[0].idnamapoli || '',
             doktertujuan: tempDaftar[0].doktertujuan || '',
-            iddoktertujuan: tempDaftar[0].iddoktertujuan || ''
+            iddoktertujuan: tempDaftar[0].iddoktertujuan || '',
+            objectpenjaminfk: 3,
+            kelas: 8,
+            jenispenjamin: 1,
+            rujukanasal: 5,
+            tujkunjungan: 1,
+            caramasuk: 4,
+            statuspasien: 'LAMA'
         },
         vSetStep1Schema: Yup.object({
             norm: Yup.string().required("Metode harus diisi"),
             tipedata: Yup.string().required("Tipe Data harus diisi")
         }),
         onSubmit: (values) => {
-            // console.log(values);
-            handleNextStep()
-            // dispatch(saveSetMasterNilaiNormalLab(values, () => {
-            //     // dispatch(lainLainGet())
-            // }));
-
+            dispatch(saveRegistrasiPasienKiosk(values, (data) => {
+                // handleNextStep()
+                // handleNewData()
+            }))
         }
     })
+    // const handleNewData = () => {
+    //     // console.log(newData)
+    //     handleNextStep()
+    // };
+    useEffect(() => {
+        if (successSave && newData?.daftarPasien?.noregistrasi) {
+            // console.log(newData)
+            onStepsFinishChange([newData])
+            handleNextStep()
+        }
+    }, [newData, successSave, onStepsFinishChange, handleNextStep])
     const handleKembali = () => {
         handlePreviousStep()
     }
@@ -634,8 +667,8 @@ function Step2({ handleNextStep, handlePreviousStep, tempDaftar }) {
                         </Col>
                         <Col lg={12} className="mr-3 me-3 mt-2">
                             <div className="d-flex flex-wrap justify-content-end gap-2">
-                                <Button type="button" onClick={handleKembali} color="danger" style={{width:'20%'}}>Kembali</Button>
-                                <Button type="submit" color="success" style={{width:'20%'}}>Daftar</Button>
+                                <Button type="button" onClick={handleKembali} color="danger" style={{ width: '20%' }}>Kembali</Button>
+                                <Button type="submit" color="success" style={{ width: '20%' }}>Daftar</Button>
                             </div>
                         </Col>
                     </Row>
@@ -645,7 +678,7 @@ function Step2({ handleNextStep, handlePreviousStep, tempDaftar }) {
     )
 }
 
-function Step3() {
+function Step3({ tempFinish }) {
     const navigate = useNavigate();
     const MySwal = withReactContent(Swal)
     const vSetStep3 = useFormik({
@@ -715,130 +748,115 @@ function Step3() {
                                         </Button>
                                     </div>
                                 </Col>
-                                <Col lg={6}>
-                                    <div className="mt-2">
-                                        <Label style={{ color: "black" }} htmlFor="norm" className="form-label">No. Rekam Medis / NIK</Label>
-                                    </div>
+                                <Col lg={10}>
+                                    <Row>
+                                        <Col lg={6}>
+                                            <div>
+                                                <Label style={{ color: "black" }} htmlFor="norm" className="form-label">No. Rekam Medis / NIK</Label>
+                                            </div>
+                                        </Col>
+                                        <Col lg={6}>
+                                            <div>
+                                                <Label style={{ color: "black" }} htmlFor="norm" className="form-label">{tempFinish[0].dataDaftar.norm}</Label>
+                                            </div>
+                                        </Col>
+                                        <Col lg={6}>
+                                            <div>
+                                                <Label style={{ color: "black" }} htmlFor="namapasien" className="form-label">Nama Pasien</Label>
+                                            </div>
+                                        </Col>
+                                        <Col lg={6}>
+                                            <div>
+                                                <Label style={{ color: "black" }} htmlFor="namapasien" className="form-label">{tempFinish[0].dataDaftar.namapasien}</Label>
+                                            </div>
+                                        </Col>
+                                        <Col lg={6}>
+                                            <div>
+                                                <Label style={{ color: "black" }} htmlFor="tgllahir" className="form-label">Tanggal Lahir</Label>
+                                            </div>
+                                        </Col>
+                                        <Col lg={6}>
+                                            <div>
+                                                <Label style={{ color: "black" }} htmlFor="tgllahir" className="form-label">{tempFinish[0].dataDaftar.tgllahir}</Label>
+                                            </div>
+                                        </Col>
+                                        <Col lg={6}>
+                                            <div>
+                                                <Label style={{ color: "black" }} htmlFor="tgllahir" className="form-label">No. Registrasi</Label>
+                                            </div>
+                                        </Col>
+                                        <Col lg={6}>
+                                            <div>
+                                                <Label style={{ color: "black" }} htmlFor="tgllahir" className="form-label">{tempFinish[0].daftarPasien.noregistrasi}</Label>
+                                            </div>
+                                        </Col>
+                                        <Col lg={6}>
+                                            <div>
+                                                <Label style={{ color: "black" }} htmlFor="poliklinik" className="form-label">Poliklinik Tujuan</Label>
+                                            </div>
+                                        </Col>
+                                        <Col lg={6}>
+                                            <div>
+                                                <Label style={{ color: "black" }} htmlFor="poliklinik" className="form-label">{tempFinish[0].dataDaftar.namapoli}</Label>
+                                            </div>
+                                        </Col>
+                                        <Col lg={6}>
+                                            <div>
+                                                <Label style={{ color: "black" }} htmlFor="doktertujuan" className="form-label">Dokter Tujuan</Label>
+                                            </div>
+                                        </Col>
+                                        <Col lg={6}>
+                                            <div>
+                                                <Label style={{ color: "black" }} htmlFor="doktertujuan" className="form-label">{tempFinish[0].dataDaftar.doktertujuan}</Label>
+                                            </div>
+                                        </Col>
+                                        <Col lg={6}>
+                                            <div>
+                                                <Label style={{ color: "black" }} htmlFor="doktertujuan" className="form-label">Rujukan Asal</Label>
+                                            </div>
+                                        </Col>
+                                        <Col lg={6}>
+                                            <div>
+                                                <Label style={{ color: "black" }} htmlFor="doktertujuan" className="form-label">Datang Sendiri</Label>
+                                            </div>
+                                        </Col>
+                                        <Col lg={6}>
+                                            <div>
+                                                <Label style={{ color: "black" }} htmlFor="doktertujuan" className="form-label">Penjamin</Label>
+                                            </div>
+                                        </Col>
+                                        <Col lg={6}>
+                                            <div>
+                                                <Label style={{ color: "black" }} htmlFor="doktertujuan" className="form-label">Umum/Pribadi</Label>
+                                            </div>
+                                        </Col>
+                                        <Col lg={6}>
+                                            <div>
+                                                <Label style={{ color: "black" }} htmlFor="doktertujuan" className="form-label">Catatan</Label>
+                                            </div>
+                                        </Col>
+                                        <Col lg={6}>
+                                            <div>
+                                                <Label style={{ color: "black" }} htmlFor="doktertujuan" className="form-label">KIOS-K</Label>
+                                            </div>
+                                        </Col>
+                                    </Row>
                                 </Col>
-                                <Col lg={6}>
-                                    <div>
-                                        <Input
-                                            id="norm"
-                                            name="norm"
-                                            type="text"
-                                            placeholder="Masukan No. Rekam Medis / NIK"
-                                            onChange={vSetStep3.handleChange}
-                                            onBlur={vSetStep3.handleBlur}
-                                            value={vSetStep3.values.norm || ''}
-                                            invalid={
-                                                vSetStep3.touched.norm && vSetStep3.errors.norm ? true : false
-                                            }
-                                        />
-                                        {vSetStep3.touched.norm && vSetStep3.errors.norm ? (
-                                            <FormFeedback type="invalid"><div>{vSetStep3.errors.norm}</div></FormFeedback>
-                                        ) : null}
-                                    </div>
-                                </Col>
-                                <Col lg={6}>
-                                    <div className="mt-2">
-                                        <Label style={{ color: "black" }} htmlFor="namapasien" className="form-label">Nama Pasien</Label>
-                                    </div>
-                                </Col>
-                                <Col lg={6}>
-                                    <div>
-                                        <Input
-                                            id="namapasien"
-                                            name="namapasien"
-                                            type="text"
-                                            placeholder="Nama Pasien"
-                                            onChange={vSetStep3.handleChange}
-                                            onBlur={vSetStep3.handleBlur}
-                                            value={vSetStep3.values.namapasien || ""}
-                                            invalid={
-                                                vSetStep3.touched.namapasien && vSetStep3.errors.namapasien ? true : false
-                                            }
-                                        />
-                                        {vSetStep3.touched.namapasien && vSetStep3.errors.namapasien ? (
-                                            <FormFeedback type="invalid"><div>{vSetStep3.errors.namapasien}</div></FormFeedback>
-                                        ) : null}
-                                    </div>
-                                </Col>
-                                <Col lg={6}>
-                                    <div className="mt-2">
-                                        <Label style={{ color: "black" }} htmlFor="tgllahir" className="form-label">Tanggal Lahir</Label>
-                                    </div>
-                                </Col>
-                                <Col lg={6}>
-                                    <div>
-                                        <Input
-                                            id="tgllahir"
-                                            name="tgllahir"
-                                            type="text"
-                                            placeholder="Tanggal Lahir"
-                                            onChange={vSetStep3.handleChange}
-                                            onBlur={vSetStep3.handleBlur}
-                                            value={vSetStep3.values.tgllahir || ""}
-                                            invalid={
-                                                vSetStep3.touched.tgllahir && vSetStep3.errors.tgllahir ? true : false
-                                            }
-                                        />
-                                        {vSetStep3.touched.tgllahir && vSetStep3.errors.tgllahir ? (
-                                            <FormFeedback type="invalid"><div>{vSetStep3.errors.tgllahir}</div></FormFeedback>
-                                        ) : null}
-                                    </div>
-                                </Col>
-                                <Col lg={6}>
-                                    <div className="mt-2">
-                                        <Label style={{ color: "black" }} htmlFor="poliklinik" className="form-label">Poliklinik Tujuan</Label>
-                                    </div>
-                                </Col>
-                                <Col lg={6}>
-                                    <div>
-                                        <Input
-                                            id="poliklinik"
-                                            name="poliklinik"
-                                            type="select"
-                                            placeholder="Poliklinik Tujuan"
-                                            onChange={vSetStep3.handleChange}
-                                            onBlur={vSetStep3.handleBlur}
-                                            value={vSetStep3.values.poliklinik || ""}
-                                            invalid={
-                                                vSetStep3.touched.poliklinik && vSetStep3.errors.poliklinik ? true : false
-                                            }
-                                        />
-                                        {vSetStep3.touched.poliklinik && vSetStep3.errors.poliklinik ? (
-                                            <FormFeedback type="invalid"><div>{vSetStep3.errors.poliklinik}</div></FormFeedback>
-                                        ) : null}
-                                    </div>
-                                </Col>
-                                <Col lg={6}>
-                                    <div className="mt-2">
-                                        <Label style={{ color: "black" }} htmlFor="doktertujuan" className="form-label">Dokter Tujuan</Label>
-                                    </div>
-                                </Col>
-                                <Col lg={6}>
-                                    <div>
-                                        <Input
-                                            id="doktertujuan"
-                                            name="doktertujuan"
-                                            type="select"
-                                            placeholder="Dokter Tujuan"
-                                            onChange={vSetStep3.handleChange}
-                                            onBlur={vSetStep3.handleBlur}
-                                            value={vSetStep3.values.doktertujuan || ""}
-                                            invalid={
-                                                vSetStep3.touched.doktertujuan && vSetStep3.errors.doktertujuan ? true : false
-                                            }
-                                        />
-                                        {vSetStep3.touched.doktertujuan && vSetStep3.errors.doktertujuan ? (
-                                            <FormFeedback type="invalid"><div>{vSetStep3.errors.doktertujuan}</div></FormFeedback>
-                                        ) : null}
-                                    </div>
+                                <Col lg={2}>
+                                    <Card>
+                                        <CardBody>
+                                            <h5 className="card-title mb-5">NO ANTREAN</h5>
+                                            <div className="text-center">
+                                                <h1 className="fs-17 mb-1">{tempFinish[0].antreanPemeriksaan.noantrian}</h1>
+                                                <h1 className="fs-17 mb-1">{tempFinish[0].namahafis}</h1>
+                                            </div>
+                                        </CardBody>
+                                    </Card>
                                 </Col>
                             </Row>
                         </Col>
                         <Col lg={12} className="mr-3 me-3 mt-2">
-                            <div className="d-flex flex-wrap justify-content-end gap-2">
+                            <div className="d-flex flex-wrap justify-content-center gap-2">
                                 <Button type="button" onClick={handlePrint} color="danger">Cetak Bukti Pendaftaran</Button>
                                 {/* <Button type="button" onClick={handleClickSelesai} color="success">Selesai</Button> */}
                             </div>

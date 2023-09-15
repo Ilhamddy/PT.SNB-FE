@@ -2,6 +2,7 @@ import pool from "../../../config/dbcon.query";
 import * as uuid from 'uuid';
 import db from "../../../models";
 import queries from '../../../queries/kiosk/kiosk.queries';
+import queriesRegistrasi from '../../../queries/transaksi/registrasi.queries';
 import { createTransaction } from "../../../utils/dbutils";
 
 function formatDate(date) {
@@ -69,7 +70,99 @@ const getCariPasien = async (req, res) => {
     }
 }
 
-export default{
+const saveRegistrasiPasienKiosk = async (req, res) => {
+    const logger = res.locals.logger;
+    try {
+        const { daftarPasien, antreanPemeriksaan,namahafis } = await db.sequelize.transaction(async (transaction) => {
+            let queryNamaHafis = `select mp.reportdisplay from m_pegawai mp
+            where mp.id='${req.body.iddoktertujuan}'`
+            let resultqueryNamaHafis = await pool.query(queryNamaHafis);
+            const namahafis = resultqueryNamaHafis.rows[0].reportdisplay
+            let norecDP = uuid.v4().substring(0, 32)
+            let objectpenjaminfk = req.body.objectpenjaminfk || null
+            let today = new Date();
+            let todayMonth = '' + (today.getMonth() + 1)
+            if (todayMonth.length < 2)
+                todayMonth = '0' + todayMonth;
+            let todayDate = '' + (today.getDate())
+            if (todayDate.length < 2)
+                todayDate = '0' + todayDate;
+            let todaystart = formatDate(today)
+            let todayend = formatDate(today) + ' 23:59'
+            let resultCountNoantrianDokter = await pool.query(queriesRegistrasi.qNoAntrian, [req.body.iddoktertujuan, todaystart, todayend]);
+            let noantrian = parseFloat(resultCountNoantrianDokter.rows[0].count) + 1
+            let query = `select count(norec) from t_daftarpasien
+            where tglregistrasi between '${todaystart}' and '${todayend}'`
+            let resultCount = await pool.query(query);
+            let noregistrasi = parseFloat(resultCount.rows[0].count) + 1
+            for (let x = resultCount.rows[0].count.toString().length; x < 4; x++) {
+                if (noregistrasi.toString().length !== 4)
+                    noregistrasi = '0' + noregistrasi;
+            }
+            if (req.body.kelas === "")
+                req.body.kelas = 8
+
+            const daftarPasien = await db.t_daftarpasien.create({
+                norec: norecDP,
+                nocmfk: req.body.nocmfk,
+                noregistrasi: today.getFullYear() + todayMonth.toString() + todayDate.toString() + noregistrasi,
+                tglregistrasi: new Date(),
+                objectunitlastfk: req.body.idnamapoli,
+                objectdokterpemeriksafk: req.body.iddoktertujuan,
+                objectkelasfk: req.body.kelas,
+                objectjenispenjaminfk: req.body.jenispenjamin,
+                tglpulang: new Date(),
+                objectasalrujukanfk: req.body.rujukanasal,
+                objectinstalasifk: req.body.tujkunjungan,
+                objectpenjaminfk: objectpenjaminfk,
+                objectcaramasukfk: req.body.caramasuk,
+                statusenabled: true,
+                statuspasien: req.body.statuspasien
+            }, { transaction });
+
+            let norecAP = uuid.v4().substring(0, 32)
+            const antreanPemeriksaan = await db.t_antreanpemeriksaan.create({
+                norec: norecAP,
+                objectdaftarpasienfk: norecDP,
+                tglmasuk: new Date(),
+                tglkeluar: new Date(),
+                objectdokterpemeriksafk: req.body.iddoktertujuan,
+                objectunitfk: req.body.idnamapoli,
+                noantrian: noantrian,
+                objectkelasfk: req.body.kelas,
+                taskid: 3,
+                statusenabled: true
+            }, {
+                transaction: transaction
+            });
+            return { daftarPasien, antreanPemeriksaan,namahafis }
+        });
+
+        const tempres = {
+            daftarPasien: daftarPasien,
+            antreanPemeriksaan: antreanPemeriksaan,
+            dataDaftar: req.body,
+            namahafis:namahafis
+        };
+        res.status(200).json({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).json({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+export default {
     getComboKiosk,
-    getCariPasien
+    getCariPasien,
+    saveRegistrasiPasienKiosk
 }

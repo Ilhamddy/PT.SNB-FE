@@ -22,4 +22,10 @@ export default function (app) {
         controller.getCariPasien
     );
 
+    app.post(
+        "/api/transaksi/kiosk/save-registrasi-pasien-kiosk",
+        // [authJwt.verifyToken],
+        controller.saveRegistrasiPasienKiosk
+    );
+
 }

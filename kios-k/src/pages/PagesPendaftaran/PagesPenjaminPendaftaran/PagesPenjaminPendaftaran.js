@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Row, Col, CardBody, Button, Container } from 'reactstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStepBackward, faHomeUser } from '@fortawesome/free-solid-svg-icons';
-import asurasni from '../../../assets/svg/asuransi.svg'
+// import asurasni from '../../../assets/svg/asuransi.svg'
 import umum from '../../../assets/svg/umum.svg'
 import bpjs from '../../../assets/svg/bpjs-kesehatan.svg'
 import CardKiosk from '../../../components/CardKiosk/CardKiosk';
@@ -39,7 +39,7 @@ function PagesPenjaminPendaftaran() {
                                 </Button>
                             </div>
                         </Col>
-                        <Col lg={4}>
+                        <Col lg={6}>
                             <div className="d-flex justify-content-center">
                                 <CardKiosk onClick={handleCardClickUmum}>
                                     <CardBody>
@@ -53,7 +53,7 @@ function PagesPenjaminPendaftaran() {
                                 </CardKiosk>
                             </div>
                         </Col>
-                        <Col lg={4}>
+                        {/* <Col lg={4}>
                             <div className="d-flex justify-content-center">
                                 <CardKiosk onClick={handleCardClick}>
                                     <CardBody>
@@ -66,8 +66,8 @@ function PagesPenjaminPendaftaran() {
                                     </div>
                                 </CardKiosk>
                             </div>
-                        </Col>
-                        <Col lg={4}>
+                        </Col> */}
+                        <Col lg={6}>
                             <div className="d-flex justify-content-center">
                                 <CardKiosk onClick={handleCardClick}>
                                     <CardBody>

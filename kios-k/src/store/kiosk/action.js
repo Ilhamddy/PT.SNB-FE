@@ -5,7 +5,10 @@ import {
     GET_COMBO_KIOSK_ERROR,
     GET_CARI_PASIEN_KIOSK,
     GET_CARI_PASIEN_KIOSK_SUCCESS,
-    GET_CARI_PASIEN_KIOSK_ERROR
+    GET_CARI_PASIEN_KIOSK_ERROR,
+    SAVE_REGISTRASI_PASIEN_KIOSK,
+    SAVE_REGISTRASI_PASIEN_KIOSK_SUCCESS,
+    SAVE_REGISTRASI_PASIEN_KIOSK_ERROR
 } from "./actionType";
 
 export const kioskResetForm = () => ({
@@ -40,4 +43,22 @@ export const getCariPasienKioskSuccess = (data) => ({
 export const getCariPasienKioskError = (error) => ({
     type: GET_CARI_PASIEN_KIOSK_ERROR,
     payload: error,
+});
+
+export const saveRegistrasiPasienKiosk = (body, callback) => ({
+    type: SAVE_REGISTRASI_PASIEN_KIOSK,
+    payload: {
+        body: body,
+        callback: callback
+    }
+});
+
+export const saveRegistrasiPasienKioskSuccess = (data) => ({
+    type: SAVE_REGISTRASI_PASIEN_KIOSK_SUCCESS,
+    payload: data
+});
+
+export const saveRegistrasiPasienKioskError = (error) => ({
+    type: SAVE_REGISTRASI_PASIEN_KIOSK_ERROR,
+    payload: error
 });
