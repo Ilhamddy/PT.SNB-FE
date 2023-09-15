@@ -51,7 +51,7 @@ function* loginUser({ payload: { user, history } }) {
         yield put(loginSuccess(response));
         history('/dashboard')
         localStorage.setItem("authUser", JSON.stringify(response));
-        setAuthorization(JSON.parse(localStorage.getItem("authUser")).accessToken);
+        setAuthorization(JSON.parse(localStorage.getItem("authUser"))?.accessToken || null);
       } else {
         yield put(apiError(response));
       }

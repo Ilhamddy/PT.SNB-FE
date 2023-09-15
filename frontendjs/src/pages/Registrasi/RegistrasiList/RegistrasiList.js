@@ -106,43 +106,42 @@ const RegistrasiList = () => {
 
     const columns = [
         {
-            name: <span className='font-weight-bold fs-13'>Detail</span>,
-            sortable: false,
-            cell: (data) => {
-                return (
-                    // <Link to={`/registrasi/pasien/${data.id}`}>Details</Link>
-                    <button className="btn btn-sm btn-soft-info" onClick={() => handleClick(data)}>View</button>
-                );
-            },
-        },
-        {
             name: <span className='font-weight-bold fs-13'>No. RM</span>,
             selector: row => row.nocm,
-            sortable: true
+            sortable: true,
+            width: "100px"
         },
         {
 
             name: <span className='font-weight-bold fs-13'>Nama Pasien</span>,
             selector: row => row.namapasien,
             sortable: true,
-            // style: {
-            //     background: "orange",
-            //   },
+            width: "150px"
+
         },
         {
             name: <span className='font-weight-bold fs-13'>No. Identitas</span>,
             selector: row => row.noidentitas,
-            sortable: true
+            sortable: true,
+            width: "150px"
         },
         {
             name: <span className='font-weight-bold fs-13'>No. BPJS</span>,
             selector: row => row.nobpjs,
-            sortable: true
+            sortable: true,
+            width: "150px"
         },
         {
             name: <span className='font-weight-bold fs-13'>Tgl Lahir</span>,
             selector: row => row.tgllahir,
-            sortable: false
+            sortable: false,
+            width: "150px"
+        },
+        {
+            name: <span className='font-weight-bold fs-13'>Alamat</span>,
+            selector: row => row.alamatrmh,
+            sortable: false,
+            width: "150px"
         },
 
     ];
@@ -302,6 +301,9 @@ const RegistrasiList = () => {
                                             data={data}
                                             progressPending={loading}
                                             customStyles={tableCustomStyles}
+                                            onRowClicked={(row) => handleClick(row)}
+                                            pointerOnHover
+                                            highlightOnHover
                                             progressComponent={<LoadingTable />}
                                         />
                                     </div>

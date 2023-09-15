@@ -32,6 +32,7 @@ import StatusPulangModal from '../../../Components/Common/StatusPulangModal';
 import CustomSelect from '../../Select/Select';
 import "./DaftarPasienRJ.scss"
 import LoadingTable from '../../../Components/Table/LoadingTable';
+import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/KontainerFlatpickr';
 
 const DaftarPasienRJ = () => {
     document.title = "Daftar Pasien Rawat Jalan";
@@ -100,6 +101,7 @@ const DaftarPasienRJ = () => {
         {
             name: <span className='font-weight-bold fs-13'>Detail</span>,
             sortable: false,
+            width: "100px",
             cell: (data) => {
                 return (
                     <div className="hstack gap-3 flex-wrap">
@@ -157,13 +159,7 @@ const DaftarPasienRJ = () => {
             name: <span className='font-weight-bold fs-13'>No. Registrasi</span>,
             // selector: row => row.noregistrasi,
             sortable: true,
-            selector: row => (<button className="btn btn-sm btn-soft-info" onClick={() => handleClickRM(row)}>{row.noregistrasi}</button>),
-            // cell: (data) => {
-            //     return (
-            //         // <Link to={`/registrasi/pasien/${data.id}`}>Details</Link>
-            //         <button className="btn btn-sm btn-soft-info" onClick={() => handleClick(data)}>View</button>
-            //     );
-            // },
+            selector: row => row.noregistrasi,
             width: "130px"
         },
         {
@@ -190,13 +186,16 @@ const DaftarPasienRJ = () => {
 
             name: <span className='font-weight-bold fs-13'>DPJP Tujuan</span>,
             selector: row => row.namadokter,
-            sortable: true
+            sortable: true,
+            width: "200px"
         },
         {
 
             name: <span className='font-weight-bold fs-13'>Jenis Pasien</span>,
             selector: row => row.jenispenjamin,
-            sortable: true
+            sortable: true,
+            width: "120px"
+
         },
     ];
 
@@ -364,32 +363,27 @@ const DaftarPasienRJ = () => {
                                             <div>
                                                 <p className="fw-medium text-muted mb-0">Total Pasien {item.label}</p>
                                                 <h2 className="mt-4 ff-secondary fw-semibold">
-                                                    <span className="counter-value" style={{ fontSize: "5rem" }}>
+                                                    <span className="counter-value" style={{ fontSize: "1.5rem" }}>
                                                         <CountUp
                                                             start={0}
                                                             end={item.counter}
                                                             decimal={item.decimals}
-                                                            // suffix={item.suffix}
                                                             duration={3}
                                                         />
                                                     </span>
                                                 </h2>
-                                                {/* <p className="mb-0 text-muted"><span className={"badge bg-light mb-0 text-" + item.badgeClass}>
-                                                    <i className={"align-middle " + item.badge}></i> {item.percentage}
-                                                </span> vs. previous month</p> */}
                                             </div>
                                             <div>
-                                                <div className="avatar-xl flex-shrink-0">
+                                                <div className="avatar-md flex-shrink-0">
                                                     <span className={"avatar-title rounded-circle fs-4 bg-soft-" + item.iconClass + " text-" + item.iconClass}>
-                                                        {/* <i className={item.icon}></i> */}
                                                         <img src={item.icon}
-                                                            alt="" className="avatar-lg" />
+                                                            alt="" className="avatar-md" />
                                                     </span>
                                                 </div>
                                             </div>
                                         </div>
                                     </CardBody>
-                                    <div className="card-footer" style={{ backgroundColor: '#e67e22' }}>
+                                    <div className="card-footer p-2" style={{ backgroundColor: '#e67e22' }}>
                                         <div className="text-center">
                                             <Link to="#" className="link-light" onClick={() => handleClickCard(item)}>View <i className="ri-arrow-right-s-line align-middle lh-1"></i></Link>
                                         </div>
@@ -429,73 +423,67 @@ const DaftarPasienRJ = () => {
                                         <Row className="g-3">
                                             <Col lg={12}>
                                                 <Row>
-                                                    <Col sm={4}>
-                                                        <div className="input-group">
-                                                            <Flatpickr
-                                                                className="form-control border-0 fs-5 dash-filter-picker shadow"
-                                                                options={{
-                                                                    // mode: "range",
-                                                                    dateFormat: "Y-m-d",
-                                                                    defaultDate: "today"
-                                                                }}
-                                                                value={dateStart}
-                                                                onChange={([dateStart]) => {
-                                                                    handleBeginOnChangeStart(dateStart);
-                                                                }}
-                                                            />
-                                                            <div className="input-group-text bg-secondary border-secondary text-white"><i className="ri-calendar-2-line"></i></div>
-                                                        </div>
+                                                    <Col sm={3}>
+                                                        <KontainerFlatpickr
+                                                            options={{
+                                                                // mode: "range",
+                                                                dateFormat: "Y-m-d",
+                                                                defaultDate: "today"
+                                                            }}
+                                                            value={dateStart}
+                                                            onChange={([dateStart]) => {
+                                                                handleBeginOnChangeStart(dateStart);
+                                                            }}
+                                                        />
                                                     </Col>
-                                                    <Col lg={1}><h4 className='mt-2'>s/d</h4></Col>
-                                                    <Col sm={4}>
-                                                        <div className="input-group">
-                                                            <Flatpickr
-                                                                className="form-control border-0 fs-5 dash-filter-picker shadow"
-                                                                options={{
-                                                                    // mode: "range",
-                                                                    dateFormat: "Y-m-d",
-                                                                    defaultDate: "today"
-                                                                }}
-                                                                value={dateEnd}
-                                                                onChange={([dateEnd]) => {
-                                                                    handleBeginOnChangeEnd(dateEnd);
-                                                                }}
-                                                            />
-                                                            <div className="input-group-text bg-secondary border-secondary text-white"><i className="ri-calendar-2-line"></i></div>
-                                                        </div>
+                                                    <Col lg={1}><h4 className='mt-2 text-center'>s/d</h4></Col>
+                                                    <Col sm={3}>
+                                                        <KontainerFlatpickr
+                                                            isError={false}
+                                                            options={{
+                                                                // mode: "range",
+                                                                dateFormat: "Y-m-d",
+                                                                defaultDate: "today"
+                                                            }}
+                                                            value={dateEnd}
+                                                            onChange={([dateEnd]) => {
+                                                                handleBeginOnChangeEnd(dateEnd);
+                                                            }}
+                                                        />
                                                     </Col>
-                                                    <Col lg={2}>
-                                                        <div className="d-flex justify-content-sm-end">
-                                                            <div className="search-box ms-2">
-                                                                <input type="text" className="form-control search"
-                                                                    placeholder="Search..." onChange={event => setSearch(event.target.value)}
-                                                                    onKeyDown={handleFilter} />
-                                                                <i className="ri-search-line search-icon"></i>
-                                                            </div>
-                                                        </div>
+                                                    <Col lg={4}>
+                                                        <Input
+                                                            id="search"
+                                                            name="search"
+                                                            type="search"
+                                                            value={search}
+                                                            placeholder='Search...'
+                                                            onChange={(e) => {
+                                                                setSearch(e.target.value)
+                                                            }}
+                                                        />
                                                     </Col>
                                                     <Col lg={1}>
-                                                        <Button type="button" className="rounded-pill" placement="top" id="tooltipTopPencarian" onClick={handleClickCari}>
+                                                        <Button type="button" color="info" placement="top" id="tooltipTopPencarian" onClick={handleClickCari}>
                                                             CARI
                                                         </Button>
                                                         <UncontrolledTooltip placement="top" target="tooltipTopPencarian" > Pencarian </UncontrolledTooltip>
                                                     </Col>
+                                                    <Col sm={3}>
+                                                        <CustomSelect
+                                                            id="unitFilter"
+                                                            name="unitFilter"
+                                                            className="row-header mt-2"
+                                                            options={dataUnit}
+                                                            onChange={value => {
+                                                                handleSelectSingle(value.value);
+                                                            }}
+                                                            onInputChange={handleInputUnit}
+                                                        />
+                                                    </Col>
                                                 </Row>
                                             </Col>
-                                            <Col lg={12}>
-                                            <Col sm={4}>
-                                                <CustomSelect
-                                                    id="unitFilter"
-                                                    name="unitFilter"
-                                                    className="row-header"
-                                                    options={dataUnit}
-                                                    onChange={value => {
-                                                        handleSelectSingle(value.value);
-                                                    }}
-                                                    onInputChange={handleInputUnit}
-                                                />
-                                            </Col>
-                                            </Col>
+                                            
                                         </Row>
                                     </div>
 
@@ -517,8 +505,11 @@ const DaftarPasienRJ = () => {
                                             pagination
                                             data={data}
                                             progressPending={loading}
+                                            onRowClicked={(row) => handleClickRM(row)}
                                             progressComponent={<LoadingTable />}
                                             customStyles={tableCustomStyles}
+                                            pointerOnHover
+                                            highlightOnHover
                                         />
                                     </div>
                                 </CardBody>

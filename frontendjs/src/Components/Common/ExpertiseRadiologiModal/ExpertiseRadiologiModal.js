@@ -14,7 +14,6 @@ import PropTypes from "prop-types";
 import PrintTemplate from "../../../pages/Print/PrintTemplate/PrintTemplate";
 import PrintExpertiseRadiologi from "../../../pages/Print/PrintExpertiseRadiologi/PrintExpertiseRadiologi";
 
-
 const ExpertiseRadiologiModal = ({ show,dataReg, onCloseClick, norecPelayanan, dataCombo,tempdokterpengirim,
 tempruanganpengirim,tempSelected }) => {
     const dispatch = useDispatch();
@@ -24,14 +23,6 @@ tempruanganpengirim,tempSelected }) => {
         success: state.Radiologi.saveExpertiseRadiologi.success,
         loading: state.Radiologi.saveExpertiseRadiologi.loading,
     }));
-    // useEffect(() => {
-    //     dispatch(listComboRadiologiGet(''));
-    // }, [ dispatch]);
-    // useEffect(() => {
-    //     return () => {
-    //         dispatch(radiologiResetForm());
-    //     }
-    // }, [dispatch])
 
     const [dateAwalStart] = useState(() => (new Date()).toISOString())
     
@@ -61,7 +52,6 @@ tempruanganpengirim,tempSelected }) => {
             
         }),
         onSubmit: (values, { resetForm }) => {
-            console.log(values)
             dispatch(saveExpertiseRadiologi(values))
         }
     })
@@ -301,21 +291,21 @@ tempruanganpengirim,tempSelected }) => {
                                             <div className="mt-2">
                                                 <CKEditor
                                                     editor={ClassicEditor}
-                                                    data={validation.values.expertise || ""}
-                                                    onReady={(editor) => {
-                                                        // You can store the "editor" and use when it is needed.
+                                                    config={{
+                                                        toolbar: {
+                                                            items: ['undo', "redo", "bold", "italic", 'link', 'bulletedList', 'numberedList',
+                                                            // 'blockQuote'
+                                                            // 'insertTable'
+                                                            'heading'
+                                                        ]
+                                                        }
                                                     }}
+                                                    data={validation.values.expertise || ""}
                                                     onChange={(event, editor) => {
                                                         const data = editor.getData();
                                                         console.log({ data });
                                                         validation.setFieldValue('expertise', data)
                                                     }}
-                                                // onBlur={(event, editor) => {
-                                                //     console.log('Blur.', editor);
-                                                // }}
-                                                // onFocus={(event, editor) => {
-                                                //     console.log('Focus.', editor);
-                                                // }}
                                                 />
                                             </div>
                                             <div className="mt-3 d-flex flex-wrap gap-2">

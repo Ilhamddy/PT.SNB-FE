@@ -19,6 +19,7 @@ import * as Yup from "yup";
 import DataTable from 'react-data-table-component';
 import { rgxWithSlash } from '../../../utils/regexcommon';
 import LoadingTable from '../../../Components/Table/LoadingTable';
+import NoDataTable from '../../../Components/Table/NoDataTable';
 
 const TandaVital = () => {
     const { norecdp, norecap } = useParams();
@@ -305,7 +306,7 @@ const TandaVital = () => {
     return (
         <React.Fragment>
             {/* <ToastContainer closeButton={false} /> */}
-            <Row className="gy-4 p-5">
+            <Row className="gy-4 p-3">
                 <Form
                     onSubmit={(e) => {
                         e.preventDefault();
@@ -314,14 +315,7 @@ const TandaVital = () => {
                     }}
                     className="gy-4"
                     action="#">
-                    {/* {success && success ? (
-                        <>
-                            {toast("Tanda Vital Berhasil Disimpan.....", { position: "top-right", hideProgressBar: false, className: 'bg-success text-white', progress: undefined, toastId: "" })}
-                            <ToastContainer autoClose={2000} limit={1}/>
-                        </>
-                    ) : null} */}
                     <Row>
-
                         <Col xxl={3} sm={6}>
                             <Row>
                                 <Col lg={6} sm={6}>
@@ -659,7 +653,7 @@ const TandaVital = () => {
                             </Row>
                         </Col>
                         <Col xxl={12} sm={12}>
-                            <div className="d-flex flex-wrap gap-2">
+                            <div className="d-flex flex-wrap gap-2 mt-2">
                                 <Button type="submit" color="success" placement="top">
                                     SIMPAN
                                 </Button>
@@ -669,23 +663,20 @@ const TandaVital = () => {
                             </div>
                         </Col>
 
-                        <Col xxl={12} sm={12}>
-                            <Card>
-                                <CardBody>
-                                    <div id="table-gridjs">
-                                        <DataTable
-                                            fixedHeader
-                                            fixedHeaderScrollHeight="700px"
-                                            columns={columns}
-                                            pagination
-                                            data={dataTtv}
-                                            progressPending={loadingTtv}
-                                            customStyles={tableCustomStyles}
-                                            progressComponent={<LoadingTable />}
-                                        />
-                                    </div>
-                                </CardBody>
-                            </Card>
+                        <Col xxl={12} sm={12} className='mt-4'>
+                            <div id="table-gridjs">
+                                <DataTable
+                                    fixedHeader
+                                    fixedHeaderScrollHeight="700px"
+                                    columns={columns}
+                                    pagination
+                                    data={dataTtv}
+                                    progressPending={loadingTtv}
+                                    customStyles={tableCustomStyles}
+                                    progressComponent={<LoadingTable />}
+                                    noDataComponent={<NoDataTable />}
+                                />
+                            </div>
                         </Col>
 
                     </Row>
