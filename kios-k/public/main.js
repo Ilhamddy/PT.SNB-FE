@@ -13,7 +13,7 @@ function createWindow() {
         }
     })
     // load index.html running on the url
-    win.loadURL('http://localhost:3000');
+    win.loadURL('http://localhost:3001');
     // Open the DevTools.
     win.webContents.openDevTools()
 }

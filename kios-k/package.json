@@ -33,7 +33,7 @@
   },
   "scripts": {
     "start": "concurrently \"npm run start-react\" \"npm run start-electron\"",
-    "start-react": "react-scripts start",
+    "start-react": "cross-env PORT=3001 react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
@@ -59,6 +59,7 @@
   },
   "devDependencies": {
     "concurrently": "^8.2.1",
+    "cross-env": "^7.0.3",
     "sass": "^1.66.1"
   }
 }
