@@ -44,6 +44,8 @@ import queriesJenisResep from "../../queries/master/jenisresep/jenisresep.querie
 import queriesAlasanRetur from "../../queries/master/alasanretur/m_alasanretur.queries";
 import queriesMasterIndukRL from "../../queries/master/masterindukrl/masterindukrl.queries";
 import queriesMasterRL from "../../queries/master/masterrl/masterrl.queries";
+import queriesLoket from "../../queries/master/loket/loket.queries";
+import queriesJenisAntrean from "../../queries/master/jenisloket/m_jenisantrean.queries";
 
 const selectComboBox = (req, res) => {
     try {
@@ -629,6 +631,32 @@ const comboMappingProduk = async (req, res) => {
     }
 }
 
+const comboViewer = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const loket = await pool.query(queriesLoket.getAll)
+        const jenisLoket = await pool.query(queriesJenisAntrean.getAll)
+        const tempres = {
+            loket: loket.rows,
+            jenisloket: jenisLoket.rows
+        };
+        res.status(200).json({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).json({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export default {
     selectComboBox,
     desaKelurahan,
@@ -645,5 +673,6 @@ export default {
     comboVerifResep,
     comboPenjualanBebas,
     comboReturObat,
-    comboMappingProduk
+    comboMappingProduk,
+    comboViewer
 };

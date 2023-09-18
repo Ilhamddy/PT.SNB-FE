@@ -56,22 +56,10 @@ function isFileImage(file) {
 // Resize image
 async function printToPrinter(e) {
   e.preventDefault();
-  // const width = widthInput.value;
-  // const height = heightInput.value;
-  // const devicePrint = printerSelectInput.value;
-  // const base64pdf = await getHTML();
   const printerSelect = document.getElementById('printerSelect');
   const busPrint = isNaN(Number(printerSelect.value)) ? -1 : Number(printerSelect.value)
   console.log(busPrint)
 
-  // await window.electron.print({
-  //   // imgPath,
-  //   height,
-  //   width,
-  //   printer,
-  //   base64pdf,
-  //   idPrint
-  // });
   try{
     await window.electron.printPOS({
       devicePrintBus: busPrint,

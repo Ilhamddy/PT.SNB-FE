@@ -14,6 +14,7 @@ import { MASTER_GET,DESA_GET,KECAMATAN_GET,COMBO_REGISTRASI_GET, COMBO_ASURANSI_
     GET_COMBO_PENJUALAN_BEBAS,
     GET_COMBO_RETUR_OBAT,
     GET_COMBO_MAPPING_PRODUK,
+    GET_COMBO_VIEWER
  } from "./actionType";
 import { masterGetSuccess,
     masterGetError,
@@ -57,6 +58,8 @@ import { masterGetSuccess,
     getComboReturObatError,
     getComboMappingProdukSuccess,
     getComboMappingProdukError,
+    getComboViewerSuccess,
+    getComboViewerError
 } from "./action";
 
 const serviceMaster = new ServiceMaster();
@@ -235,6 +238,15 @@ function* onGetComboMappingProduk(){
     }
 }
 
+function* onGetComboViewer() {
+    try {
+        const response = yield call(serviceMaster.getComboViewer);
+        yield put(getComboViewerSuccess(response.data));
+    } catch (error) {
+        yield put(getComboViewerError(error));
+    }
+}
+
 export function* watchGetMaster() {
     yield takeEvery(MASTER_GET, onGetMaster);
 }
@@ -311,6 +323,10 @@ export function* watchGetComboMappingProduk(){
     yield takeEvery(GET_COMBO_MAPPING_PRODUK, onGetComboMappingProduk);
 }
 
+export function* watchGetComboMaster(){
+    yield takeEvery(GET_COMBO_VIEWER, onGetComboViewer);
+}
+
 function* masterSaga() {
     yield all([
         fork(watchGetMaster),
@@ -332,6 +348,7 @@ function* masterSaga() {
         fork(watchGetComboPenjualanBebas),
         fork(watchGetComboReturObat),
         fork(watchGetComboMappingProduk),
+        fork(watchGetComboMaster)
     ]);
 }
 

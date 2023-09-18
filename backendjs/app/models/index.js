@@ -62,6 +62,7 @@ import t_penjualanbebasModel from "./t_penjualanbebas.model.js";
 import t_penjualanbebasdetailModel from "./t_penjualanbebasdetail.model.js";
 import t_returobatpasienModel from "./t_returobatpasien.model.js";
 import m_maprltoprodukModel from "./m_maprltoproduk.model.js";
+import t_antreanloketModel from "../models/t_antreanloket.model.js";
 
 const sequelize = new Sequelize(
   config.DB,
@@ -148,7 +149,8 @@ db.t_sensusharian =t_sensusharianModel(sequelize, sequelizeInstance);
 db.t_penjualanbebas = t_penjualanbebasModel(sequelize, sequelizeInstance);
 db.t_penjualanbebasdetail = t_penjualanbebasdetailModel(sequelize, sequelizeInstance);
 db.t_returobatpasien = t_returobatpasienModel(sequelize, sequelizeInstance);
-db.m_maprltoproduk = m_maprltoprodukModel(sequelize, sequelizeInstance)
+db.m_maprltoproduk = m_maprltoprodukModel(sequelize, sequelizeInstance);
+db.t_antreanloket = t_antreanloketModel(sequelize, sequelizeInstance);
 
 db.role.belongsToMany(db.user, {
   through: "user_roles",

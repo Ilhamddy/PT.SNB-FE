@@ -57,6 +57,9 @@ import {
     GET_COMBO_MAPPING_PRODUK,
     GET_COMBO_MAPPING_PRODUK_SUCCESS,
     GET_COMBO_MAPPING_PRODUK_ERROR,
+    GET_COMBO_VIEWER,
+    GET_COMBO_VIEWER_SUCCESS,
+    GET_COMBO_VIEWER_ERROR,
 } from "./actionType";
 
 const INIT_STATE = {
@@ -151,6 +154,11 @@ const INIT_STATE = {
         error: null,
     },
     getComboMappingProduk: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    getComboViewer: {
         data: [],
         loading: false,
         error: null,
@@ -804,6 +812,42 @@ const Master = (state = INIT_STATE, action) => {
                 getComboMappingProduk: {
                     ...state.getComboMappingProduk,
                     loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case GET_COMBO_VIEWER: {
+            return {
+                ...state,
+                getComboViewer: {
+                    ...state.getComboViewer,
+                    loading: true,
+                    data: [],
+                    error: null,
+                }
+            }
+        }
+
+        case GET_COMBO_VIEWER_SUCCESS: {
+            return {
+                ...state,
+                getComboViewer: {
+                    ...state.getComboViewer,
+                    data: action.payload,
+                    error: null,
+                    loading: false,
+                }
+            }
+        }
+
+        case GET_COMBO_VIEWER_ERROR: {
+            return {
+                ...state,
+                getComboViewer: {
+                    ...state.getComboViewer,
+                    loading: false,
+                    data: [],
                     error: action.error,
                 }
             }

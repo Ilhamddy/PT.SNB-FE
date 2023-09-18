@@ -8,9 +8,6 @@ import Route from './Routes';
 import { Routes } from "react-router-dom";
 import "./App.scss"
 
-// Import Firebase Configuration file
-// import { initFirebaseBackend } from "./helpers/firebase_helper";
-
 // Fake Backend 
 import fakeBackend from "./helpers/AuthType/fakeBackend";
 

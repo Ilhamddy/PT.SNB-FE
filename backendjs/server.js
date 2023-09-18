@@ -22,6 +22,7 @@ import distribusiRoutes from "./app/routes/transaksi/distribusi.routes.js"
 import { addResBody, logRequests } from "./app/middleware/logrequests.js";
 import farmasiRoutes from "./app/routes/transaksi/farmasi.routes.js";
 import kioskRoutes from "./app/routes/transaksi/kiosk.routes";
+import viewerRoutes from "./app/routes/transaksi/viewer.routes";
 
 dotenv.config()
 
@@ -67,6 +68,7 @@ gudangRoutes(app);
 distribusiRoutes(app);
 farmasiRoutes(app);
 kioskRoutes(app);
+viewerRoutes(app);
 
 
 // set port, listen for requests

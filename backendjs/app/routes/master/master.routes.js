@@ -107,4 +107,10 @@ export default function(app) {
       controller.comboMappingProduk
     )
 
+    app.get(
+      "/api/master/combobox-viewer",
+      [authJwt.verifyToken],
+      controller.comboViewer
+    )
+
   };

@@ -56,6 +56,9 @@ import {
     GET_COMBO_MAPPING_PRODUK,
     GET_COMBO_MAPPING_PRODUK_SUCCESS,
     GET_COMBO_MAPPING_PRODUK_ERROR,
+    GET_COMBO_VIEWER,
+    GET_COMBO_VIEWER_SUCCESS,
+    GET_COMBO_VIEWER_ERROR,
 } from "./actionType";
 
 export const masterGet = () => ({
@@ -324,5 +327,19 @@ export const getComboMappingProdukSuccess = (data) => ({
 
 export const getComboMappingProdukError = (error) => ({
     type: GET_COMBO_MAPPING_PRODUK_ERROR,
+    payload: error,
+});
+
+export const getComboViewer = () => ({
+    type: GET_COMBO_VIEWER,
+});
+
+export const getComboViewerSuccess = (data) => ({
+    type: GET_COMBO_VIEWER_SUCCESS,
+    payload: data,
+});
+
+export const getComboViewerError = (error) => ({
+    type: GET_COMBO_VIEWER_ERROR,
     payload: error,
 });

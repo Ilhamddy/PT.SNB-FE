@@ -88,6 +88,7 @@ import Gudang from "./gudang/reducer";
 import PageState from "./pageState/reducer"
 import Distribusi from "./distribusi/reducer";
 import Farmasi from "./farmasi/reducer"
+import Viewer from "./viewer/reducer";
 
 
 const rootReducer = combineReducers({
@@ -131,7 +132,8 @@ const rootReducer = combineReducers({
     Gudang,
     Distribusi,
     PageState,
-    Farmasi
+    Farmasi,
+    Viewer
 });
 
 export default rootReducer;

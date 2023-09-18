@@ -325,10 +325,11 @@ async function editEmrPasienTtv(req, res) {
             statusenabled: false,
             // tglisi: new Date()
         }, {
+            transaction: transaction,
             where: {
                 norec: req.body.norec
             }
-        }, { transaction });
+        });
 
 
 

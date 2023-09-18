@@ -78,4 +78,8 @@ export default class ServiceMaster {
     getComboMappingProduk = async () => {
         return await api.get(`/master/combobox-mapping-produk`);
     }
+
+    getComboViewer = async () => {
+        return await api.get(`/master/combobox-viewer`);
+    }
 }
