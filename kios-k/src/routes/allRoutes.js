@@ -7,6 +7,9 @@ import PagesPoliklinik from "../pages/PagesAntrean/PagesPoliklinik/PagesPoliklin
 import PagesPenjamin from "../pages/PagesAntrean/PagesPenjamin/PagesPenjamin";
 import PagesPenjaminPendaftaran from "../pages/PagesPendaftaran/PagesPenjaminPendaftaran/PagesPenjaminPendaftaran";
 import PagesUmum from "../pages/PagesPendaftaran/PagesUmum/PagesUmum";
+import PagesBPJS from "../pages/PagesPendaftaran/PagesBPJS/PagesBPJS";
+import PrintBuktiPendaftaran from "../pages/Print/PrintBuktiPendaftaran/PrintBuktiPendaftaran";
+import PrintTemplate from "../pages/Print/PrintTemplate/PrintTemplate";
 
 
 const publicRoutes = [
@@ -16,6 +19,9 @@ const publicRoutes = [
     { path: "/pages-penjamin", component: <PagesPenjamin /> },
     { path: "/pages-penjamin-pendaftaran", component: <PagesPenjaminPendaftaran /> },
     { path: "/pages-pendaftaran-umum", component: <PagesUmum /> },
+    { path: "/pages-pendaftaran-bpjs", component: <PagesBPJS /> },
+    { path: "/print-bukti-pendaftaran", component: <PrintBuktiPendaftaran /> },
+    { path: "/print-template", component: <PrintTemplate /> },
 
     {
         path: "/",

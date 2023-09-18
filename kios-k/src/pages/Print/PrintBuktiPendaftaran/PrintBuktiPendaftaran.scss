@@ -1,0 +1,56 @@
+.kontainer-print-bukti-pendaftaran{
+    display: flex;
+    flex-direction: column;
+    width: 450px;
+    h2{
+        font-size: 12px;
+        font-weight: bold;
+        text-align: center;
+    }
+    .data-bukti-pendaftaran{
+        display: flex;
+        align-items: flex-start;
+        width: 100%;
+        table{
+            width: 70%;
+            tbody{
+                width: 100%;
+                tr{
+                    th{
+                        margin: 0;
+                        font-size: 10px;
+                        width: 30%;
+                    }
+                    td{
+                        margin: 0;
+                        font-size: 10px;
+                        width: 70%;
+                    }
+                }
+            }
+        }
+        .no-antrean{
+            width: 30%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border: 1px solid black;
+            h3{
+                font-size: 10px;
+                font-weight: normal;
+                margin: 0
+            }
+            .data-no-antrean{
+                font-size: 17px;
+                font-weight: bold;
+                margin: 0;
+                height: 28px;
+            }
+            .initial-doc{
+                font-size: 10px;
+                font-weight: normal;
+                margin: 0;
+            }
+        }
+    }
+}

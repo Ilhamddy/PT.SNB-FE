@@ -14,7 +14,7 @@ function PagesPenjaminPendaftaran() {
         navigate('/pages-awal');
     };
     const handleCardClick = () => {
-        navigate('/pages-poliklinik');
+        navigate('/pages-pendaftaran-bpjs');
     };
     const handleCardClickUmum = () => {
         navigate('/pages-pendaftaran-umum');

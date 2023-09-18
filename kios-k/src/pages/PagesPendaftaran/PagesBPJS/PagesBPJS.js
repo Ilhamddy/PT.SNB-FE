@@ -1,4 +1,4 @@
-import React, { useState, useEffect,useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from "react-redux";
 import { Step, Stepper } from 'react-form-stepper';
 import {
@@ -15,14 +15,13 @@ import * as Yup from "yup";
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
-import './PagesUmum.scss'
+import './PagesBPJS.scss'
 import { kioskResetForm, getComboKiosk, getCariPasienKiosk, saveRegistrasiPasienKiosk } from '../../../store/action';
 import ModalPoliklinik from '../../../components/ModalPoliklinik/ModalPoliklinik';
 import PrintBuktiPendaftaran from '../../Print/PrintBuktiPendaftaran/PrintBuktiPendaftaran';
 import PrintTemplate from '../../Print/PrintTemplate/PrintTemplate';
 
-
-function PagesUmum() {
+function PagesBPJS() {
     const [activeStep, setActiveStep] = useState(0);
     const [tempDaftar, setTempDaftar] = useState([]);
     const onStepsChange = (nocmfk, norm, namapasien, tgllahir, namapoli, idnamapoli, doktertujuan, iddoktertujuan) => {
@@ -114,6 +113,7 @@ function PagesUmum() {
 function Step1({ handleNextStep, onStepsChange }) {
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    
     const { data, dataPasien } = useSelector((state) => ({
         data: state.Kiosk.getComboKiosk.data || [],
         dataPasien: state.Kiosk.getCariPasienKiosk.data || []
@@ -169,10 +169,7 @@ function Step1({ handleNextStep, onStepsChange }) {
         }
     };
 
-    // const handleClearButtonClick = () => {
-    //     // vSetStep1.setFieldValue('norm', '')
-    // };
-
+    
     const handleCariButtonClick = () => {
         dispatch(getCariPasienKiosk({
             search: vSetStep1.values.norm
@@ -214,6 +211,7 @@ function Step1({ handleNextStep, onStepsChange }) {
         setstateHasilCari(false)
         navigate(-1)
     };
+    
     return (
         <div>
             <ModalPoliklinik onDokterChange={onDokterChange} open={modal} toggle={() => setModal(!modal)} data={data} />
@@ -402,6 +400,7 @@ function Step1({ handleNextStep, onStepsChange }) {
                             <Col lg={12} style={{ textAlign: 'right' }} className="mr-3 me-3">
                                 <Button type="submit" color="success">Selanjutnya</Button>
                             </Col>
+                            
                         </Row>
                     </Card>
                 </Row>
@@ -428,12 +427,12 @@ function Step2({ handleNextStep, handlePreviousStep, tempDaftar, onStepsFinishCh
             idnamapoli: tempDaftar[0].idnamapoli || '',
             doktertujuan: tempDaftar[0].doktertujuan || '',
             iddoktertujuan: tempDaftar[0].iddoktertujuan || '',
-            objectpenjaminfk: 3,
+            objectpenjaminfk: 1,
             kelas: 8,
-            jenispenjamin: 1,
+            jenispenjamin: 2,
             rujukanasal: 5,
             tujkunjungan: 1,
-            caramasuk: 4,
+            caramasuk: 1,
             statuspasien: 'LAMA'
         },
         vSetStep1Schema: Yup.object({
@@ -776,7 +775,7 @@ function Step3({ tempFinish }) {
                                             </Col>
                                             <Col lg={6}>
                                                 <div>
-                                                    <Label style={{ color: "black" }} htmlFor="norm" className="form-label">{tempFinish[0].dataDaftar.norm}</Label>
+                                                    <Label style={{ color: "black" }} htmlFor="norm" className="form-label">{tempFinish[0].dataDaftar.norm || ''}</Label>
                                                 </div>
                                             </Col>
                                             <Col lg={6}>
@@ -836,7 +835,7 @@ function Step3({ tempFinish }) {
                                             </Col>
                                             <Col lg={6}>
                                                 <div>
-                                                    <Label style={{ color: "black" }} htmlFor="doktertujuan" className="form-label">Datang Sendiri</Label>
+                                                    <Label style={{ color: "black" }} htmlFor="doktertujuan" className="form-label">Rujukan Faskes</Label>
                                                 </div>
                                             </Col>
                                             <Col lg={6}>
@@ -846,7 +845,7 @@ function Step3({ tempFinish }) {
                                             </Col>
                                             <Col lg={6}>
                                                 <div>
-                                                    <Label style={{ color: "black" }} htmlFor="doktertujuan" className="form-label">Umum/Pribadi</Label>
+                                                    <Label style={{ color: "black" }} htmlFor="doktertujuan" className="form-label">BPJS Kesehatan</Label>
                                                 </div>
                                             </Col>
                                             <Col lg={6}>
@@ -893,8 +892,8 @@ function Step3({ tempFinish }) {
                     tglPendaftaran={tempFinish[0].daftarPasien.tglregistrasi || ''}
                     poliTujuan={tempFinish[0].dataDaftar.namapoli}
                     dokterTujuan={tempFinish[0].dataDaftar.doktertujuan}
-                    rujukanAsal='Datang Sendiri'
-                    penjamin='Umum/Pribadi'
+                    rujukanAsal='Rujukan Faskes'
+                    penjamin='BPJS Kesehatan'
                     catatan="KIOS-K"
                     initialDoc={tempFinish[0].namahafis}
                     noAntrean={tempFinish[0].antreanPemeriksaan.noantrian}
@@ -908,4 +907,4 @@ function Step3({ tempFinish }) {
     )
 }
 
-export default PagesUmum;
+export default PagesBPJS;
