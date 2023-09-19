@@ -2,12 +2,10 @@ import React, { useEffect } from 'react'
 import { Routes, Route, useNavigate } from 'react-router-dom'
 
 //Layouts
-import NonAuthLayout from '../Layouts/NonAuthLayout'
-import VerticalLayout from '../Layouts/index'
+// import NonAuthLayout from '../Layouts/NonAuthLayout'
 
 //routes
-import { authProtectedRoutes, publicRoutes } from './allRoutes.js'
-import { AuthProtected } from './AuthProtected'
+import { publicRoutes } from './allRoutes.js'
 
 const Index = () => {
   return (
@@ -17,14 +15,15 @@ const Index = () => {
           {publicRoutes.map((route, idx) => (
             <Route
               path={route.path}
-              element={<NonAuthLayout>{route.component}</NonAuthLayout>}
+              element={route.component}
               key={idx}
               exact={true}
             />
           ))}
         </Route>
         <Route>
-          {authProtectedRoutes.map((route, idx) => (
+          {/* TODO: lanjutkan authprotectedroutes */}
+          {/* {authProtectedRoutes.map((route, idx) => (
             <Route
               path={route.path}
               element={
@@ -38,8 +37,8 @@ const Index = () => {
               }
               key={idx}
               exact={true}
-            />
-          ))}
+            /> 
+          ))} */}
         </Route>
       </Routes>
     </React.Fragment>

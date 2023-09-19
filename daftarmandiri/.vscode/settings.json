@@ -6,6 +6,6 @@
         "../frontendjs": true
     },
     "files.exclude": {
-        "frontendjs": true
+        "**/frontendjs/**": true
     }
 }

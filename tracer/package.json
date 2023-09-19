@@ -21,6 +21,7 @@
         "node-escpos": "^0.0.3",
         "pdf-to-printer": "^5.6.0",
         "pg": "^8.11.3",
+        "prettier": "^3.0.3",
         "printer": "^0.4.0",
         "sequelize": "^6.32.1",
         "sequelize-cli": "^6.6.1",

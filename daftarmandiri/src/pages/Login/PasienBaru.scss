@@ -1,0 +1,13 @@
+.pasien-lama-konten {
+    .kontainer-btn-lama {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        width: 100%;
+        justify-content: space-between;
+
+        .btn-lama {
+            width: calc(50% - 10px);
+        }
+    }
+}
