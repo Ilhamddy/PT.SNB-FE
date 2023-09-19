@@ -10,4 +10,8 @@ export default class ServiceViewer {
     panggilLoket = async (data) => {
         return await api.create("/transaksi/viewer/panggil-loket", data);
     }
+    
+    getAllLoket = async () => {
+        return await api.get("/transaksi/viewer/get-all-loket");
+    }
 }

@@ -1,5 +1,5 @@
 import pool from "../../../config/dbcon.query";
-import { qGetLoket, qGetLoketSisa, qGetLastPemanggilan } from "../../../queries/viewer/viewer.queries";
+import { qGetLoket, qGetLoketSisa, qGetLastPemanggilan, qGetAllLoket, qGetLastPemanggilanLoket, qGetLastPemanggilanAll } from "../../../queries/viewer/viewer.queries";
 import db from "../../../models";
 
 const t_antreanloket = db.t_antreanloket
@@ -134,12 +134,65 @@ const panggilLoket = async (req, res) => {
     }
 }
 
-const qGetAllLoket = `
-
-`
+const getAllLoket = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const dateNow = new Date();
+        const dateStart = new Date(dateNow.getFullYear(), dateNow.getMonth(), dateNow.getDate(), 0, 0, 0);
+        const dateEnd = new Date(dateNow.getFullYear(), dateNow.getMonth(), dateNow.getDate(), 23, 59, 59);
+        let lokets = (await pool.query(qGetAllLoket)).rows;
+        let lastPemanggilanAll = (await pool.query(qGetLastPemanggilanAll, [
+            dateStart,
+            dateEnd
+        ]))?.rows
+        lastPemanggilanAll = lastPemanggilanAll?.[0] || null
+        const prefix =  lastPemanggilanAll?.prefix
+        let lastAntrean = ("00" + lastPemanggilanAll?.noantrean).slice(-2)
+        lastAntrean = lastPemanggilanAll ? prefix + lastAntrean : ""
+        lokets = await Promise.all(
+            lokets.map(
+                async (loket) => {
+                    let lastPemanggilan = (await pool.query(qGetLastPemanggilanLoket, [
+                        loket.value,
+                        dateStart,
+                        dateEnd
+                    ]))?.rows
+                    lastPemanggilan = lastPemanggilan?.[0] || null
+                    const prefix =  lastPemanggilan?.prefix
+                    let lastAntrean = ("00" + lastPemanggilan?.noantrean).slice(-2)
+                    lastAntrean = lastPemanggilan ? prefix + lastAntrean : ""
+                    return {
+                        ...loket,
+                        lastAntrean: lastAntrean,
+                    }
+                }
+            )
+        )
+        const tempres = {
+            loket: lokets,
+            lastantrean: lastAntrean,
+            lastloket: lastPemanggilanAll?.loket || ""
+        };
+        res.status(200).json({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).json({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
 
 export default {
     pollingAntrean,
     getLoketSisa,
     panggilLoket,
+    getAllLoket
 }

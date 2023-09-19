@@ -18,8 +18,6 @@ function printPromise({device, isCut = true}, printAction){
                 return
             }
 
-
-
             try{
                 const options = { encoding: "GB18030" }
                 let printer = new Printer(device, options);

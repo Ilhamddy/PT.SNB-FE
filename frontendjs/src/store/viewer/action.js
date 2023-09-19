@@ -5,6 +5,9 @@ import {
     PANGGIL_LOKET,
     PANGGIL_LOKET_SUCCESS,
     PANGGIL_LOKET_ERROR,
+    GET_ALL_LOKET,
+    GET_ALL_LOKET_SUCCESS,
+    GET_ALL_LOKET_ERROR,
 } from "./actionType";
 
 export const getLoketSisa = () => ({
@@ -36,5 +39,19 @@ export const panggilLoketSuccess = (data) => ({
 
 export const panggilLoketError = (error) => ({
     type: PANGGIL_LOKET_ERROR,
+    payload: error,
+});
+
+export const getAllLoket = () => ({
+    type: GET_ALL_LOKET,
+});
+
+export const getAllLoketSuccess = (data) => ({
+    type: GET_ALL_LOKET_SUCCESS,
+    payload: data,
+});
+
+export const getAllLoketError = (error) => ({
+    type: GET_ALL_LOKET_ERROR,
     payload: error,
 });
