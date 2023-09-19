@@ -14,6 +14,7 @@ import fakeBackend from "./helpers/AuthType/fakeBackend";
 // Activating fake backend
 fakeBackend();
 
+
 function App() {
   return (
     <React.Fragment>

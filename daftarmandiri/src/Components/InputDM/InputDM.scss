@@ -1,0 +1,18 @@
+.input-daftar-mandiri {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+
+    input {
+        border-radius: 10px;
+        border: 1px solid #564405;
+        background: #fdfdfd;
+        width: 100%;
+        height: 56px;
+        padding: 0 20px;
+
+        &:focus {
+            outline: none;
+        }
+    }
+}

@@ -1,18 +1,10 @@
 import React from 'react';
-
-//import Scss
-import './assets/scss/themes.scss';
-
+import { Provider } from 'react-redux';
 //imoprt Route
 import AppRoutes from './AppRoutes';
 import { Routes } from "react-router-dom";
-import "./App.scss"
+import "./App.css"
 
-// Fake Backend 
-import fakeBackend from "./helpers/AuthType/fakeBackend";
-
-// Activating fake backend
-fakeBackend();
 
 
 

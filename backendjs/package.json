@@ -33,6 +33,7 @@
     "node-schedule": "^2.1.1",
     "pg": "^8.10.0",
     "pg-hstore": "^2.3.4",
+    "prettier": "^3.0.3",
     "sequelize": "^6.31.1",
     "uuid": "^9.0.0"
   },

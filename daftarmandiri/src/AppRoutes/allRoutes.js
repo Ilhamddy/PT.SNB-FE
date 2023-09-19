@@ -4,7 +4,7 @@ import { Navigate } from "react-router-dom";
 import Login from "../pages/Login/Login";
 
 const publicRoutes = [
-    { path: "/route", component: <PagesAwal /> },
+    { path: "/login", component: <Login /> },
 ]
 
 export { publicRoutes };
