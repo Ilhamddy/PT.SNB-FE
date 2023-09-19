@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect} from 'react'
 import '../../../App.scss'; // Import your CSS file for styling
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from 'react-router-dom';
@@ -7,18 +7,17 @@ import withReactContent from 'sweetalert2-react-content'
 import { Row, Col, CardBody, Button, Container } from 'reactstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStepBackward, faHomeUser } from '@fortawesome/free-solid-svg-icons';
-import { kioskResetForm, getComboKiosk } from '../../../store/action';
+import { kioskResetForm, getComboKiosk,saveAntreanPasienKiosk } from '../../../store/action';
 import CardKiosk from '../../../components/CardKiosk/CardKiosk';
-// import asurasni from '../../../assets/svg/asuransi.svg'
-// import baru from '../../../assets/svg/pasien-baru.svg'
-// import kasir from '../../../assets/svg/antrean-kasir.svg'
+import { useParams } from "react-router-dom";
 
 function PagesPoliklinik() {
+    const { jenisantrean } = useParams();
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const MySwal = withReactContent(Swal)
     const { data } = useSelector((state) => ({
-        data: state.Kiosk.getComboKiosk.data || []
+        data: state.Kiosk.getComboKiosk.data || [],
     }));
     useEffect(() => {
             dispatch(kioskResetForm());
@@ -29,7 +28,7 @@ function PagesPoliklinik() {
     const handleHome = () => {
         navigate('/pages-awal');
     };
-    const handlePrint = async () => {
+    const handlePrint = async (item) => {
         MySwal.fire({
             customClass: {
                 confirmButton: 'btn btn-success',
@@ -45,9 +44,31 @@ function PagesPoliklinik() {
         }).then(async (result) => {
             if (result.isConfirmed) {
                 if (window.electron) {
-                    await window.electron.printPOS({
-                        devicePrintBus: 1,
-                    });
+                    let objectjenisantrean=1
+                    let captionheader ='ANTREAN PASIEN LAMA'
+                    if(jenisantrean==='D'){
+                        objectjenisantrean=4
+                        captionheader='ANTREAN PASIEN BARU'
+                    }else if(jenisantrean==='A'){
+                        objectjenisantrean=1
+                    }else if(jenisantrean==='B'){
+                        objectjenisantrean=2
+                    }else if(jenisantrean==='C'){
+                        objectjenisantrean=3
+                    }
+                        
+                    const values = 
+                        {
+                            jenisantrean: objectjenisantrean,
+                            objectunitfk:item.value,
+                            iddoktertujuan:null,
+                            namajenisantrean:jenisantrean,
+                            captionheader:captionheader,
+                            unittujuan:item.label
+                        }
+                    dispatch(saveAntreanPasienKiosk(values, (data) => {
+// 
+                    }))
                 } else {
 
                     console.error('Electron not available');
@@ -57,6 +78,8 @@ function PagesPoliklinik() {
             }
         })
     }
+    
+    
     return (
         <React.Fragment>
             <Container fluid>
@@ -82,7 +105,7 @@ function PagesPoliklinik() {
                                 {/* <Button key={key} className="btn btn-lg">{item.label}</Button> */}
                                 <div className="d-flex justify-content-center">
                                     <CardKiosk key={key} style={{marginBottom:'10px'}}
-                                    onClick={handlePrint}>
+                                    onClick={() => handlePrint(item)}>
                                         <CardBody>
                                             <div className="text-center" style={{ borderBottom: '1px solid', fontFamily: 'sans-serif', fontSize: '36px' }}>
                                                 <p style={{ color: 'black' }}>{item.label}</p>

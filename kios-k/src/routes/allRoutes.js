@@ -15,7 +15,7 @@ import PrintTemplate from "../pages/Print/PrintTemplate/PrintTemplate";
 const publicRoutes = [
     { path: "/pages-awal", component: <PagesAwal /> },
     { path: "/pages-pemilihan-antrean", component: <PagesPemilihanAntrean /> },
-    { path: "/pages-poliklinik", component: <PagesPoliklinik /> },
+    { path: "/pages-poliklinik/:jenisantrean", component: <PagesPoliklinik /> },
     { path: "/pages-penjamin", component: <PagesPenjamin /> },
     { path: "/pages-penjamin-pendaftaran", component: <PagesPenjaminPendaftaran /> },
     { path: "/pages-pendaftaran-umum", component: <PagesUmum /> },

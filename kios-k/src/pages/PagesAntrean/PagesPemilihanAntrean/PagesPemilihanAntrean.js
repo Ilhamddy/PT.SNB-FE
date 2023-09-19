@@ -1,6 +1,7 @@
 import React from 'react';
 import '../../../App.scss'; // Import your CSS file for styling
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from "react-redux";
 import { Row, Col, CardBody, Button, Container } from 'reactstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStepBackward, faHomeUser } from '@fortawesome/free-solid-svg-icons';
@@ -10,16 +11,17 @@ import lama from '../../../assets/svg/pasien-lama.svg'
 import baru from '../../../assets/svg/pasien-baru.svg'
 import kasir from '../../../assets/svg/antrean-kasir.svg'
 import CardKiosk from '../../../components/CardKiosk/CardKiosk';
-
+import { saveAntreanPasienKiosk } from '../../../store/action';
 
 function PagesPemilihanAntrean() {
+    const dispatch = useDispatch();
     const navigate = useNavigate();
     const MySwal = withReactContent(Swal)
     const handleHome = () => {
         navigate('/pages-awal');
     };
     const handlePasienBaru = () => {
-        navigate('/pages-poliklinik');
+        navigate('/pages-poliklinik/D');
     };
     const handlePasienLama = () => {
         navigate('/pages-penjamin');
@@ -29,16 +31,39 @@ function PagesPemilihanAntrean() {
             customClass: {
                 confirmButton: 'btn btn-success',
                 cancelButton: 'btn btn-danger'
-              },
-              buttonsStyling: false,
-            title: 'Anda Akan Mencetak Antrean..?',
+            },
+            buttonsStyling: false,
+            title: 'Anda Akan Mencetak Bukti Pendaftaran..?',
             text: `Silahkan Pilih Tombol Dibawah!`,
             icon: 'question',
             confirmButtonText: 'Print ..!',
             cancelButtonText: 'Tidak ..!',
             showCancelButton: true,
-        })
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                if (window.electron) {
+                    let objectjenisantrean=5
+                    let captionheader ='ANTREAN KASIR'  
+                    const values = 
+                        {
+                            jenisantrean: objectjenisantrean,
+                            objectunitfk:null,
+                            iddoktertujuan:null,
+                            namajenisantrean:'S',
+                            captionheader:captionheader,
+                            unittujuan:'KASIR'
+                        }
+                    dispatch(saveAntreanPasienKiosk(values, (data) => {
+// 
+                    }))
+                } else {
 
+                    console.error('Electron not available');
+                }
+            } else {
+                console.log('tidak print')
+            }
+        })
     }
     
 

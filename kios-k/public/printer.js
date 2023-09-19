@@ -10,7 +10,6 @@ const { RollPaperSensorStatus } = require("@node-escpos/core")
 function printPromise({device, isCut = true}, printAction){
     return new Promise((res, rej) => {
         if(!device) rej("Device not found");
-        console.log("masuk")
 
         device.open(async function(errPrinter){
             if(errPrinter){
@@ -18,7 +17,6 @@ function printPromise({device, isCut = true}, printAction){
                 console.error("print error")
                 return
             }
-            console.log("masuk3")
 
             try{
                 const options = { encoding: "GB18030" }

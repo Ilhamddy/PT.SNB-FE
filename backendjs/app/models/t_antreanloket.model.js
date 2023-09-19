@@ -15,7 +15,8 @@ export default (sequelize, Sequelize) => {
             type: Sequelize.SMALLINT
         },
         statusenabled: {
-            type: Sequelize.BOOLEAN
+            type: Sequelize.BOOLEAN,
+            defaultValue: true
         },
         reportdisplay: {
             type: Sequelize.STRING
