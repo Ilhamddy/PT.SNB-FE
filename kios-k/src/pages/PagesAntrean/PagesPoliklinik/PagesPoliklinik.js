@@ -29,21 +29,33 @@ function PagesPoliklinik() {
     const handleHome = () => {
         navigate('/pages-awal');
     };
-    const handlePrint = () => {
+    const handlePrint = async () => {
         MySwal.fire({
             customClass: {
                 confirmButton: 'btn btn-success',
                 cancelButton: 'btn btn-danger'
-              },
-              buttonsStyling: false,
-            title: 'Anda Akan Mencetak Antrean..?',
+            },
+            buttonsStyling: false,
+            title: 'Anda Akan Mencetak Bukti Pendaftaran..?',
             text: `Silahkan Pilih Tombol Dibawah!`,
             icon: 'question',
             confirmButtonText: 'Print ..!',
             cancelButtonText: 'Tidak ..!',
             showCancelButton: true,
-        })
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                if (window.electron) {
+                    await window.electron.printPOS({
+                        devicePrintBus: 1,
+                    });
+                } else {
 
+                    console.error('Electron not available');
+                }
+            } else {
+                console.log('tidak print')
+            }
+        })
     }
     return (
         <React.Fragment>
