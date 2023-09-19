@@ -1,0 +1,33 @@
+{
+    "folders": [
+        {
+            "name": "ROOT",
+            "path": "../"
+        },
+        {
+            "name": "frontendjs",
+            "path": "../frontendjs"
+        },
+        {
+            "name": "backendjs",
+            "path": "../backendjs"
+        },
+        {
+            "name": "daftarmandiri",
+            "path": "../daftarmandiri"
+        },
+        {
+            "name": "daftarmandiri",
+            "path": "../daftarmandiri"
+        },
+        {
+            "name": "kios-k",
+            "path": "../kios-k"
+        },
+        {
+            "name": "tracer",
+            "path": "../tracer"
+        }
+    ],
+    "settings": {}
+}
