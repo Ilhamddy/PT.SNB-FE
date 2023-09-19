@@ -7,7 +7,7 @@ SELECT
 FROM
     m_loket
 `
-
+// FIXME: saat semuanya kosong nanti menjadi tidak ada data sama sekali malahan
 const qGetLoketSisa = `
 select 
 	mj.id, 
@@ -34,6 +34,7 @@ from (
 right join m_jenisantrean mj on t1.id = mj.id;
 `
 
+
 const qGetLastPemanggilan = `
 SELECT 
     tal.ispanggil AS ispanggil,
@@ -50,8 +51,48 @@ WHERE tal.statusenabled = true
 ORDER BY tal.tglpanggil DESC
 `
 
+const qGetAllLoket = `
+SELECT
+	id AS value,
+	reportdisplay as label
+FROM
+	m_loket
+`
+
+const qGetLastPemanggilanLoket = `
+SELECT
+    tal.ispanggil AS ispanggil,
+    mja.prefix AS prefix,
+    tal.noantrean AS noantrean
+FROM t_antreanloket tal
+    LEFT JOIN m_jenisantrean mja ON tal.objectjenisantreanfk = mja.id
+WHERE 
+	tal.statusenabled = true
+	AND tal.objectloketfk = $1
+	AND tal.tglinput > $2 AND tal.tglinput <= $3
+	AND tal.ispanggil = true
+`
+
+const qGetLastPemanggilanAll = `
+SELECT
+    tal.ispanggil AS ispanggil,
+    mja.prefix AS prefix,
+    tal.noantrean AS noantrean,
+	ml.reportdisplay AS loket
+FROM t_antreanloket tal
+    LEFT JOIN m_jenisantrean mja ON tal.objectjenisantreanfk = mja.id
+	LEFT JOIN m_loket ml ON tal.objectloketfk = ml.id
+WHERE 
+	tal.statusenabled = true
+	AND tal.tglinput > $1 AND tal.tglinput <= $2
+	AND tal.ispanggil = true
+`
+
 export {
     qGetLoket,
     qGetLoketSisa,
-    qGetLastPemanggilan
+    qGetLastPemanggilan,
+	qGetAllLoket,
+    qGetLastPemanggilanLoket,
+	qGetLastPemanggilanAll,
 }

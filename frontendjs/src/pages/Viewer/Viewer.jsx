@@ -1,27 +1,21 @@
+import { useEffect } from 'react'
 import { useDate } from '../../utils/format'
 import './Viewer.scss'
 import logoSNB from './logo-snb.svg'
+import { useDispatch, useSelector } from 'react-redux'
+import { getAllLoket } from '../../store/actions'
 
 const Viewer = () => {
-  const isiLoket = [
-    {
-      loketNumber: 1,
-      isi: 'S04',
-    },
-    {
-      loketNumber: 2,
-      isi: 'D02',
-    },
-    {
-      loketNumber: 3,
-      isi: 'A12',
-    },
-    {
-      loketNumber: 4,
-      isi: 'C02',
-    },
-  ]
+  const dispatch = useDispatch()
+  const { loket, lastLoket, lastAntrean } = useSelector((state) => ({
+    loket: state.Viewer.getAllLoket?.data?.loket || [],
+    lastLoket: state.Viewer.getAllLoket?.data?.lastloket,
+    lastAntrean: state.Viewer.getAllLoket?.data?.lastantrean,
+  }))
   const { tanggal, waktu } = useDate()
+  useEffect(() => {
+    dispatch(getAllLoket())
+  }, [dispatch])
   return (
     <div className="viewer-aplikasi">
       <div className="header-viewer">
@@ -35,17 +29,17 @@ const Viewer = () => {
         <div className="antrean-aktif-video">
           <div className="antrean-aktif">
             <p className="judul">Antrean Dipanggil</p>
-            <p className="nomor">S09</p>
-            <p className="loket">Loket 2</p>
+            <p className="nomor">{lastAntrean}</p>
+            <p className="loket">{lastLoket}</p>
           </div>
           <div className="kontainer-video"></div>
         </div>
         <div className="kontainer-loket">
-          {isiLoket.map((item, index) => (
+          {loket.map((item, index) => (
             <LoketAvailable
               key={index}
-              loketNumber={item.loketNumber}
-              isi={item.isi}
+              loketNumber={item.label}
+              isi={item.lastAntrean}
             />
           ))}
         </div>
@@ -61,8 +55,8 @@ const Viewer = () => {
 const LoketAvailable = ({ loketNumber, isi }) => {
   return (
     <div className="loket-available">
-      <p className="number">Loket {loketNumber}</p>
-      <p className="isi">{isi}</p>
+      <p className="number">{loketNumber}</p>
+      <p className="isi">{isi || '-'}</p>
     </div>
   )
 }

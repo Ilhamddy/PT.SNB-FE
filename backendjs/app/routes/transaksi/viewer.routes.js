@@ -23,5 +23,11 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.panggilLoket
     )
+
+    app.get(
+        "/api/transaksi/viewer/get-all-loket",
+        [authJwt.verifyToken],
+        controller.getAllLoket
+    )
     
 }
