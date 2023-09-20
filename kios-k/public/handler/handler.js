@@ -9,19 +9,28 @@ const filePath = 'C:\\settingprinter.json';
 
 async function readJsonFile() {
     try {
-      const data = await readFileAsync(filePath, 'utf8');
-      let jsonData = JSON.stringify(data);
-      let jsonData2 = JSON.parse(jsonData);
-      const jsonData3 = {jsonData2}
-      console.log(jsonData3.jsonData2.printerantrean);
+        const data = await readFileAsync(filePath, 'utf8');
+        const jsonData2 = JSON.parse(data);
+
+        // jsonData2.forEach(item => {
+        //     if (item.printername) {
+        //         console.log(item.printername);
+        //     }
+        // });
+        return jsonData2
     } catch (err) {
-      console.error(err);
+        console.error(err);
     }
-  }
+}
 
 const toPrintPOS = async (e, { devicePrintBus, jenisantrean, captionjenisantrean, sisaantrean, tujuanpoli }) => {
-   readJsonFile();
-
+    // const jsonPrinter = await readJsonFile();
+    // jsonPrinter.forEach(item => {
+    //     if (item.printername) {
+    //         console.log(item.printername);
+    //     }
+    // });
+    // console.log(jsonPrinter)
     const devices = await USB.findPrinter();
     // console.log(devices)
     const deviceChosen = devices.find((device) => {
@@ -46,8 +55,15 @@ const toPrintPOS = async (e, { devicePrintBus, jenisantrean, captionjenisantrean
 }
 
 const toPrint = async (e, { devicePrintBus }) => {
-    // console.log(devicePrintBus)
-    const hasilPrint = await hPrintFile({ base64pdf: devicePrintBus })
+    const jsonPrinter = await readJsonFile();
+    let printer = ''
+    jsonPrinter.forEach(item => {
+        if (item.printername === 'printerbuktidaftar') {
+            printer = item.config
+        }
+    });
+    // console.log(jsonPrinter)
+    const hasilPrint = await hPrintFile({ base64pdf: devicePrintBus,printer:printer })
     return hasilPrint
 }
 
@@ -113,13 +129,13 @@ const hPrintAll = async (datas, device, jenisantrean, captionjenisantrean, sisaa
 }
 
 const hPrintFile = async ({
-    base64pdf
+    base64pdf,printer
 }) => {
     try {
         let base64Data = base64pdf.replace(/^data:application\/pdf;filename\=generated\.pdf;base64,/, "");
 
         fs.writeFileSync("../hasil.pdf", base64Data, 'base64')
-        await ptp.print("../hasil.pdf", { printer: 'Canon E480 series Printer' })
+        await ptp.print("../hasil.pdf", { printer: printer })
     } catch (error) {
         console.error(error)
     }

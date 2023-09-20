@@ -187,11 +187,11 @@ const saveAntreanKiosk = async (req, res) => {
                 objectdpjpfk: req.body.iddoktertujuan,
                 noantrean: noantrean,
                 noantreantext: req.body.namajenisantrean+noantrean,
-                ispanggil:false,
+                ispanggil:1,
             }, { transaction });
 
             let query2 = `select count(norec) from t_antreanloket
-            where tglinput between '${todaystart}' and '${todayend}' and objectjenisantreanfk='${req.body.jenisantrean}' and ispanggil =false`
+            where tglinput between '${todaystart}' and '${todayend}' and objectjenisantreanfk='${req.body.jenisantrean}' and ispanggil =1`
             let resultBelumDipanggil = await pool.query(query2);
             let belumdipanggil = parseFloat(resultBelumDipanggil.rows[0].count)
 
