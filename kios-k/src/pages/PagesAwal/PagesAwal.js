@@ -11,7 +11,6 @@ function PagesAwal() {
     const navigate = useNavigate();
 
   const handleCardClickAntrean = () => {
-    console.log('testsetest')
     navigate('/pages-pemilihan-antrean');
   };
 
