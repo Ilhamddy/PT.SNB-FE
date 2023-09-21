@@ -317,6 +317,10 @@ import Dashboard from "../pages/Dashboard/Dashboard";
 import Viewer from "../pages/Viewer/Viewer";
 import PemanggilanViewer from "../pages/PemanggilanViewer/PemanggilanViewer";
 
+// Gawat Darurat
+import DaftarPasienTriage from "../pages/GawatDarurat/DaftarPasienTriage/DaftarPasienTriage";
+import TriageIGD from "../pages/GawatDarurat/TriageIGD/TriageIGD";
+
 
 
 
@@ -555,6 +559,7 @@ const authProtectedRoutes = [
   { path: "/bGlzdGRhZnRhcnBhc2llbi9kYWZ0YXJwYXNpZW5tdXRhc2k=", component:<DaftarPasienMutasi/>},
   { path: "/registrasi/mutasi-pasien/:id/:norec", component: <RegistrasiMutasiPasien/> },
   { path: "/listdaftarpasien/daftar-pasien-igd", component: <DaftarPasienIGD /> },
+ 
 
   // rekam medis
   { path: "/rekammedis/kendalidokumen", component: <KendaliDokumen /> },
@@ -613,8 +618,11 @@ const authProtectedRoutes = [
   { path: "/farmasi/order-list", component: <AllOrderResepList /> },
   { path: "/farmasi/penjualan-obat-bebas", component: <PenjualanObatBebas /> },
   { path: "/farmasi/list-verif-obat/:norecdp", component: <ListVerifObat />},
-  { path: "/farmasi/tambah-obat-farmasi/:norecap", component: <TambahObatFarmasi />}
+  { path: "/farmasi/tambah-obat-farmasi/:norecap", component: <TambahObatFarmasi />},
 
+  // Gawat Darurat
+  { path: "/gawatdarurat/daftar-pasien-igd", component: <DaftarPasienIGD /> },
+  { path: "/gawatdarurat/daftar-pasien-triage", component: <DaftarPasienTriage /> },
 
 ];
 

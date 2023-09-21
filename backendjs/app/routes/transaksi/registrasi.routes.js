@@ -160,4 +160,16 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getDaftarPasienIGD
     );
+
+    app.get(
+        "/api/transaksi/registrasi/widget-pasien-triage",
+        [authJwt.verifyToken],
+        controller.getWidgetPasienTriage
+    );
+
+    app.get(
+        "/api/transaksi/registrasi/daftar-pasien-triage",
+        [authJwt.verifyToken],
+        controller.getDaftarPasienTriage
+    );
 };

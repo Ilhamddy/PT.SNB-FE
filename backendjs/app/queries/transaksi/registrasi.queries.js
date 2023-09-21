@@ -220,6 +220,12 @@ WHERE ta.objectdokterpemeriksafk=$1
     AND ta.tglmasuk between $2 and $3
 `
 
+const qDaftarPasienTriage = `
+SELECT tp.norec, tp.namapasien, tp.umur, tp.keluhan, tp.namapj, tp.nohp, tp.tglinput,tp.tglupdate
+FROM t_pasienigd tp 
+
+`
+
 
 export default {
     getAll,
@@ -240,5 +246,6 @@ export default {
     qGetDepositFromPasien,
     qNoAntrian,
     qGetPasienFormById,
-    getDaftarPasienIGD
+    getDaftarPasienIGD,
+    qDaftarPasienTriage
 };

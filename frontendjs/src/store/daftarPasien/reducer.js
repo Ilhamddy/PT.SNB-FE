@@ -43,7 +43,13 @@ import {
     GET_DAFTAR_PASIEN_FARMASI_ERROR,
     DAFTARPASIEN_IGD_GET,
     DAFTARPASIEN_IGD_GET_SUCCESS,
-    DAFTARPASIEN_IGD_GET_ERROR
+    DAFTARPASIEN_IGD_GET_ERROR,
+    WIDGET_DAFTARPASIEN_TRIAGE_GET,
+    WIDGET_DAFTARPASIEN_TRIAGE_GET_SUCCESS,
+    WIDGET_DAFTARPASIEN_TRIAGE_GET_ERROR,
+    DAFTARPASIEN_TRIAGE_GET,
+    DAFTARPASIEN_TRIAGE_GET_SUCCESS,
+    DAFTARPASIEN_TRIAGE_GET_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -116,6 +122,16 @@ const INIT_STATE = {
         data: [],
         loading: false,
         error: null,
+    },
+    widgetDaftarPasienTriageGet: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    DaftarPasienTriageGet: {
+        data: [],
+        loading: false,
+        error: null,
     }
 };
 
@@ -141,6 +157,12 @@ const DaftarPasien = (state = INIT_STATE, action) => {
                 },
                 daftarPasienIGDGet:{
                     ...INIT_STATE.daftarPasienIGDGet
+                },
+                widgetDaftarPasienTriageGet:{
+                    ...INIT_STATE.widgetDaftarPasienTriageGet
+                },
+                DaftarPasienTriageGet:{
+                    ...INIT_STATE.DaftarPasienTriageGet
                 }
             }
         }
@@ -631,6 +653,71 @@ const DaftarPasien = (state = INIT_STATE, action) => {
             }
         }
 
+        case WIDGET_DAFTARPASIEN_TRIAGE_GET: {
+            return {
+                ...state,
+                widgetDaftarPasienTriageGet: {
+                    ...state.widgetDaftarPasienTriageGet,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case WIDGET_DAFTARPASIEN_TRIAGE_GET_SUCCESS: {
+            return {
+                ...state,
+                widgetDaftarPasienTriageGet: {
+                    ...state.widgetDaftarPasienTriageGet,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case WIDGET_DAFTARPASIEN_TRIAGE_GET_ERROR: {
+            return {
+                ...state,
+                widgetDaftarPasienTriageGet: {
+                    ...state.widgetDaftarPasienTriageGet,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case DAFTARPASIEN_TRIAGE_GET: {
+            return {
+                ...state,
+                DaftarPasienTriageGet: {
+                    ...state.DaftarPasienTriageGet,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case DAFTARPASIEN_TRIAGE_GET_SUCCESS: {
+            return {
+                ...state,
+                DaftarPasienTriageGet: {
+                    ...state.DaftarPasienTriageGet,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case DAFTARPASIEN_TRIAGE_GET_ERROR: {
+            return {
+                ...state,
+                DaftarPasienTriageGet: {
+                    ...state.DaftarPasienTriageGet,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
 
         default: {
             return { ...state };

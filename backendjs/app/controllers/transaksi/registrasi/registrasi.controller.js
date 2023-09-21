@@ -1602,7 +1602,6 @@ async function getDaftarPasienIGD(req, res) {
         let query = queries.getDaftarPasienIGD + `  where td.noregistrasi ilike '%${noregistrasi}%'
         ${tglregistrasi} and td.objectinstalasifk=7
         ORDER BY td.tglregistrasi DESC`
-        console.log(query)
         const resultCountNoantrianDokter = await pool.query(query, [])
         res.status(200).send({
             data: resultCountNoantrianDokter.rows,
@@ -1619,6 +1618,95 @@ async function getDaftarPasienIGD(req, res) {
         })
     }
 
+}
+
+const getWidgetPasienTriage = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const taskWidgets = [
+            {
+                id: 1,
+                label: "Jumlah Pasien",
+                counter: 10,
+                badge: "ri-arrow-up-line",
+                color: "#B7DBFD",
+                decimals: 1,
+            },
+            {
+                id: 2,
+                label: "Jumlah Pasien",
+                counter: 10,
+                badge: "ri-arrow-down-line",
+                color: "#FDB7B7",
+                decimals: 1,
+            },
+            {
+                id: 3,
+                label: "Jumlah Pasien",
+                counter: 10,
+                badge: "ri-arrow-down-line",
+                color: "#FCFDB7",
+                decimals: 1,
+            },
+            {
+                id: 4,
+                label: "Jumlah Pasien",
+                counter: 10,
+                badge: "ri-arrow-down-line",
+                color: "#B8FDB7",
+                decimals: 1,
+            },
+            {
+                id: 5,
+                label: "Jumlah Pasien",
+                counter: 10,
+                badge: "ri-arrow-down-line",
+                color: "#E1E1E1",
+                decimals: 1,
+            },
+
+
+        ];
+        res.status(200).json({
+            msg: 'Success',
+            code: 200,
+            data: taskWidgets,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).json({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+const getDaftarPasienTriage = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        let query = queries.qDaftarPasienTriage
+        const result = await pool.query(query, [])
+        const tempres = {
+            data:result.rows
+        };
+        res.status(200).json({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).json({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
 }
 
 export default {
@@ -1648,7 +1736,9 @@ export default {
     getListPasienMutasi,
     saveRegistrasiPasienMutasi,
     getDaftarPasienFarmasi,
-    getDaftarPasienIGD
+    getDaftarPasienIGD,
+    getWidgetPasienTriage,
+    getDaftarPasienTriage
 };
 
 const hUpdateRegistrasiPulang = async (req, res, transaction) => {
