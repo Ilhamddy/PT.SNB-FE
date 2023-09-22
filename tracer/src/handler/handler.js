@@ -69,7 +69,7 @@ module.exports = {
 const hPrintAll = async (datas, device) => {
     const printed = await Promise.all(
         datas.map(async (data, index) => {
-            if(index >= 1) return
+            if(index >= 10) return
 
             const print = await printPromise({device}, async (printer) => {
                 let newPrinter = printer
@@ -78,8 +78,6 @@ const hPrintAll = async (datas, device) => {
                 .align("ct")
                 .style("b")
                 .size(1, 1)
-                .text("Mencoba ngeprint")
-                // .barcode(112233445566, "EAN13", { width: 100, height: 80 })
                 .tableCustom(
                     [
                         { text: "Nama", align: "LEFT", width: 0.5, style: "B" },
@@ -122,17 +120,15 @@ const hPrintAll = async (datas, device) => {
                 .style("normal")
                 .tableCustom(
                     [
-                    { 
-                        text: "Tanggal Cetak: " + (new Date()).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' }), 
-                        align: "CENTER", 
-                        width: 1
-                    },
+                        { 
+                            text: "Tanggal Cetak: " + (new Date()).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' }), 
+                            align: "CENTER", 
+                            width: 1
+                        },
                     ],
                     { encoding: "cp857", size: [1, 1] },
                 )
                 
-                // await printer
-                //   .qrimage("https://github.com/node-escpos/driver")
                 return newPrinter
             })
     

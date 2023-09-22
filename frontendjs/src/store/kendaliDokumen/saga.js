@@ -16,7 +16,8 @@ import {
     CREATE_OR_UPDATE_MAP_RL,
     GET_MASTER_RL_FROM_INDUK,
     GET_LAYANAN_FROM_MASTER_RL,
-    DELETE_MAP_RL
+    DELETE_MAP_RL,
+    UPDATE_PRINTED,
 } from "./actionType";
 
 import {
@@ -40,7 +41,9 @@ import {
     getLayananFromMasterRLSuccess,
     getLayananFromMasterRLError,
     deleteMapRLSuccess,
-    deleteMapRLError
+    deleteMapRLError,
+    updatePrintedSuccess,
+    updatePrintedError
 } from "./action";
 
 import { toast } from 'react-toastify';
@@ -267,6 +270,21 @@ export function* watchonDeleteMapRL() {
     yield takeEvery(DELETE_MAP_RL, onDeleteMapRL);
 }
 
+function* onUpdatePrinted({ payload: {data}}) {
+    try{
+        const response = yield call(serviceRekammedis.updatePrinted, data);
+        yield put(updatePrintedSuccess(response.data));
+        toast.success("Sukses", {autoClose: 3000})
+    }catch(error){
+        yield put(updatePrintedError(error));
+        toast.error("Error", {autoClose: 3000})
+    }
+}
+
+export function* watchonPriterUpdated(){
+    yield takeEvery(UPDATE_PRINTED, onUpdatePrinted)
+}
+
 function* kendaliDokumenSaga() {
     yield all([
         fork(watchonDaftarDokumenRekammedis),
@@ -283,7 +301,8 @@ function* kendaliDokumenSaga() {
         fork(watchonCreateOrUpdateMapRL),
         fork(watchonGetMasterRLFromInduk),
         fork(watchonGetLayananFromMasterRL),
-        fork(watchonDeleteMapRL)
+        fork(watchonDeleteMapRL),
+        fork(watchonPriterUpdated)
     ]);
 }
 

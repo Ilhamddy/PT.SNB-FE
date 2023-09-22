@@ -63,4 +63,8 @@ export default class ServiceRekammedis {
     deleteMapRL = async (params) => {
         return await api.delete(`/transaksi/rekammedis/delete-map-rl`, params);
     }
+
+    updatePrinted = async (body) => {
+        return await api.create(`/transaksi/rekammedis/update-printed`, body);
+    }
 }

@@ -107,4 +107,10 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.deleteMapRL
     )
+
+    app.post(
+        "/api/transaksi/rekammedis/update-printed",
+        [authJwt.verifyToken],
+        controller.updatePrinted
+    )
 }

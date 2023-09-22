@@ -5,6 +5,7 @@ import db from "../../../models";
 import { createTransaction } from "../../../utils/dbutils";
 
 const m_maprltoproduk = db.m_maprltoproduk
+const t_daftarpasien = db.t_daftarpasien
 
 function formatDate(date) {
     let d = new Date(date),
@@ -56,6 +57,7 @@ async function getListDaftarDokumenRekammedis(req, res) {
         const resultlistantreanpemeriksaan = await pool.query(`select dp.noregistrasi,mu.namaunit,ta.norec as norecap,
         mp.namapasien,mp.nocm, mrm.statuskendali,mp.objectstatuskendalirmfk as objectstatuskendalirmfkmp,
         trm.objectstatuskendalirmfk as objectstatuskendalirmfkap,
+        dp.norec as norecdp,
         dp.objectunitlastfk, trm.norec as norectrm from t_daftarpasien dp
         join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk=dp.norec
         and ta.objectunitfk =dp.objectunitlastfk 
@@ -242,10 +244,6 @@ async function saveDokumenRekammedis(req, res) {
                 code: 200
             });
         }
-
-
-        // let tempres = { statu: t_rm_lokasidokumen }
-
     } catch (error) {
         logger.error(error)
         await transaction.rollback();
@@ -645,6 +643,47 @@ async function getLaporanRL3_2(req, res) {
     }
 }
 
+const updatePrinted = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const { norecdp } = req.body
+        const {updatedDP} = await db.sequelize.transaction(async (transaction) => {
+            const dpmodel = await t_daftarpasien.findOne({
+                where: {
+                    norec: norecdp
+                },
+                transaction: transaction
+            })
+
+            const updatedDP = await dpmodel.update({
+                isprinted: true,
+            }, {
+                transaction: transaction
+            })
+            
+            return {updatedDP}
+        });
+        
+        const tempres = {
+            updateddp: updatedDP
+        };
+        res.status(200).json({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).json({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 const getLaporanRL3_3 = async (req, res) => {
     const logger = res.locals.logger;
     try{
@@ -866,5 +905,6 @@ export default {
     createOrUpdateMapRL,
     getMasterRLFromInduk,
     getLayananFromMasterRL,
-    deleteMapRL
+    deleteMapRL,
+    updatePrinted
 };
