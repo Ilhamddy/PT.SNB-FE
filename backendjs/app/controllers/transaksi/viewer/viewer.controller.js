@@ -52,8 +52,8 @@ const getLoketSisa = async (req, res) => {
             if(sisa.ispanggil === 2 || sisa.ispanggil === 3){
                 const foundLoketSisa = loketSisa.find((loket) => loket.id === sisa.id)
                 if(foundLoketSisa){
-                    foundLoketSisa.jumlahantrean += sisa.jumlahantrean
-                    foundLoketSisa.sisaantrean += sisa.sisaantrean
+                    foundLoketSisa.jumlahantrean += (sisa.jumlahantrean || 0)
+                    foundLoketSisa.sisaantrean += (sisa.sisaantrean || 0)
                     return
                 }
                 const foundIsPanggils = loketSisaReq.filter(

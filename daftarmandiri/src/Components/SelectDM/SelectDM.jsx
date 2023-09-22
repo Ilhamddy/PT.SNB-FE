@@ -1,6 +1,6 @@
 import React from 'react'
 import Select from 'react-select'
-import { Props as StateManagerProps } from 'react-select'
+import { Props as SelectProps } from 'react-select'
 
 /**
  * @typedef {object} Props
@@ -8,7 +8,7 @@ import { Props as StateManagerProps } from 'react-select'
  */
 
 /**
- * @type {import('react').FC<StateManagerProps & Props >}
+ * @type {import('react').FC<SelectProps & Props >}
  */
 const CustomSelect = React.forwardRef(
   ({ onChange, options, value, className, ...rest }, ref) => {

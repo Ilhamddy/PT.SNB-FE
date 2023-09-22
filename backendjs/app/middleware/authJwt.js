@@ -14,9 +14,6 @@ const verifyToken = (req, res, next) => {
   }
   let bearer = bearerHeader.split(' ');
   let bearerToken = bearer[1]
-  // return res.status(403).send({
-  //   message: bearer
-  // });
   jwt.verify(bearerToken, config.secret, (err, decoded) => {
     if (err) {
       return res.status(401).send({
