@@ -14,4 +14,12 @@ export default class ServiceViewer {
     getAllLoket = async () => {
         return await api.get("/transaksi/viewer/get-all-loket");
     }
+
+    getAllTerpanggil = async () => {
+        return await api.get("/transaksi/viewer/get-all-terpanggil")
+    }
+
+    panggilUlangAntrian = async (data) => {
+        return await api.create("/transaksi/viewer/panggil-ulang-antrean", data)
+    }
 }

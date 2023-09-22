@@ -1,5 +1,5 @@
 import pool from "../../../config/dbcon.query";
-import { qGetLoket, qGetLoketSisa, qGetLastPemanggilan, qGetAllLoket, qGetLastPemanggilanLoket, qGetLastPemanggilanAll } from "../../../queries/viewer/viewer.queries";
+import { qGetLoket, qGetLoketSisa, qGetLastPemanggilan, qGetAllLoket, qGetLastPemanggilanLoket, qGetLastPemanggilanAll, qGetAllTerpanggil } from "../../../queries/viewer/viewer.queries";
 import db from "../../../models";
 
 const t_antreanloket = db.t_antreanloket
@@ -45,20 +45,26 @@ const getLoketSisa = async (req, res) => {
         lastAntrean = lastPemanggilan ? prefix + lastAntrean : ""
         let loketSisa = []
         // kelompokkan berdasarkan id
-        loketSisaReq = loketSisaReq.sort((a, b) => a.ispanggil ? -1 : 1)
+        loketSisaReq = loketSisaReq.sort((a, b) => b.ispanggil - a.ispanggil)
         loketSisaReq.forEach((sisa) => {
-            if(sisa.ispanggil){
-                const foundIsPanggil = loketSisaReq.find(
-                    (loket) => (loket.id === sisa.id) && (!loket.ispanggil)
+            if(sisa.ispanggil === 2 || sisa.ispanggil === 3){
+                const foundIsPanggils = loketSisaReq.filter(
+                    (loket) => (loket.id === sisa.id) && (loket.ispanggil === 1)
                 )
-                if(!foundIsPanggil) {
-                    sisa.jumlahantrean = 0
+                if(foundIsPanggils.length === 0) {
                     sisa.sisaantrean = 0
                     loketSisa.push(sisa)
                     return
                 }
-                sisa.jumlahantrean = foundIsPanggil.antreanterakhir
-                sisa.sisaantrean = foundIsPanggil.jumlahantrean
+                foundIsPanggils.forEach((foundIsPanggil) => {
+                    foundIsPanggil.done = true
+                    sisa.jumlahantrean = foundIsPanggil.antreanterakhir
+                    sisa.sisaantrean = foundIsPanggil.jumlahantrean
+                    loketSisa.push(sisa)
+                })
+            }else if(!sisa.done){
+                sisa.sisaantrean = sisa.jumlahantrean
+                sisa.antreanterakhir = 0
                 loketSisa.push(sisa)
             }
         })
@@ -95,7 +101,7 @@ const panggilLoket = async (req, res) => {
             const lastAntrean = await t_antreanloket.findOne({
                 where: {
                     objectjenisantreanfk: jenis,
-                    ispanggil: false,
+                    ispanggil: 1,
                     tglinput: {
                         [Op.between]: [dateStart, dateEnd]
                     }
@@ -104,7 +110,7 @@ const panggilLoket = async (req, res) => {
             })
             if(lastAntrean === null) throw new Error("Tidak ada antrean tersedia")
             await lastAntrean.update({
-                ispanggil: true,
+                ispanggil: 2,
                 objectloketfk: loket,
                 tglpanggil: new Date(),
             }, {
@@ -143,9 +149,15 @@ const getAllLoket = async (req, res) => {
         let lokets = (await pool.query(qGetAllLoket)).rows;
         let lastPemanggilanAll = (await pool.query(qGetLastPemanggilanAll, [
             dateStart,
-            dateEnd
+            dateEnd,
+            2
         ]))?.rows
-        lastPemanggilanAll = lastPemanggilanAll?.[0] || null
+        const lastPemanggilanDone = (await pool.query(qGetLastPemanggilanAll, [
+            dateStart,
+            dateEnd,
+            3
+        ]))?.rows
+        lastPemanggilanAll = lastPemanggilanAll?.[0] || lastPemanggilanDone?.[0] || null
         const prefix =  lastPemanggilanAll?.prefix
         let lastAntrean = ("00" + lastPemanggilanAll?.noantrean).slice(-2)
         lastAntrean = lastPemanggilanAll ? prefix + lastAntrean : ""
@@ -168,10 +180,98 @@ const getAllLoket = async (req, res) => {
                 }
             )
         )
+        if(lastPemanggilanAll?.ispanggil === 2){
+            await t_antreanloket.update({
+                ispanggil: 3,
+            }, {
+                where: {
+                    norec: lastPemanggilanAll.norec
+                }
+            })
+        }
         const tempres = {
             loket: lokets,
             lastantrean: lastAntrean,
-            lastloket: lastPemanggilanAll?.loket || ""
+            lastloket: lastPemanggilanAll?.loket || "",
+            status: lastPemanggilanAll?.ispanggil || 3
+        };
+        res.status(200).json({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).json({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+const getAllTerpanggil = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const dateNow = new Date();
+        const dateStart = new Date(dateNow.getFullYear(), dateNow.getMonth(), dateNow.getDate(), 0, 0, 0);
+        const dateEnd = new Date(dateNow.getFullYear(), dateNow.getMonth(), dateNow.getDate(), 23, 59, 59);
+        let terpanggils = (await pool.query(qGetAllTerpanggil, [dateStart, dateEnd])).rows;
+        terpanggils = terpanggils.map((terpanggil) => {
+            const newTerpanggil = {...terpanggil}
+            const prefix =  terpanggil?.prefix
+            let lastAntrean = ("00" + terpanggil?.noantrean).slice(-2)
+            lastAntrean = terpanggil ? prefix + lastAntrean : ""
+            newTerpanggil.label = lastAntrean
+            return newTerpanggil
+        })
+        const tempres = {
+            terpanggil: terpanggils
+        };
+        res.status(200).json({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).json({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+const panggilUlangAntrean = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const norecantrean = req.body.norecantrean
+        const {updatedAntrean } = await db.sequelize.transaction(async (transaction) => {
+            const antrean = await t_antreanloket.findOne({
+                where: {
+                    norec: norecantrean
+                },
+            })
+            if(!antrean) throw new Error("Antrean tidak ditemukan")
+            const updatedAntrean  = await antrean.update({
+                ispanggil: 2,
+                tglpanggil: new Date(),
+            }, {
+                transaction: transaction,
+                returning: true
+            })
+            return {
+                updatedAntrean
+            }
+        });
+        
+        const tempres = {
+            updatedantrean: updatedAntrean
         };
         res.status(200).json({
             msg: 'Success',
@@ -194,5 +294,7 @@ export default {
     pollingAntrean,
     getLoketSisa,
     panggilLoket,
-    getAllLoket
+    getAllLoket,
+    getAllTerpanggil,
+    panggilUlangAntrean
 }

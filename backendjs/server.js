@@ -3,6 +3,7 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import * as dotenv from "dotenv"
 import './app/scheduler/scheduler';
+import * as path from "path"
 
 import authRoutes from './app/routes/auth.routes.js';
 import userRoutes from './app/routes/user.routes.js';
@@ -41,6 +42,8 @@ app.use(bodyParser.json());
 
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
+const __dirname = path.resolve(path.dirname(''));
+app.use('/media', express.static(__dirname + '/app/media'));
 
 app.use(addResBody)
 app.use(logRequests)

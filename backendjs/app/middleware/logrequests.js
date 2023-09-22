@@ -19,6 +19,10 @@ export const logRequests = (req, res, next) => {
         isShowBodyRes = true
     }
     res.locals.logger = logger
+    if(url === "/api/transaksi/viewer/get-all-loket"){
+        next();
+        return;
+    }
     logger.info(`METHOD: ${method} ${url} ${status}`)
     logger.info(`CLIENT-URL: ${clientUrl}`)
     logger.info(`BODY: ${JSON.stringify(body, null, 2)}`, true)

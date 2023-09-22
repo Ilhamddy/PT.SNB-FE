@@ -8,6 +8,12 @@ import {
     GET_ALL_LOKET,
     GET_ALL_LOKET_SUCCESS,
     GET_ALL_LOKET_ERROR,
+    GET_ALL_TERPANGGIL,
+    GET_ALL_TERPANGGIL_SUCCESS,
+    GET_ALL_TERPANGGIL_ERROR,
+    PANGGIL_ULANG_ANTREAN,
+    PANGGIL_ULANG_ANTREAN_SUCCESS,
+    PANGGIL_ULANG_ANTREAN_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -24,6 +30,16 @@ const INIT_STATE = {
     getAllLoket: {
         data: [],
         loading: false,
+        error: null,
+    },
+    getAllTerpanggil: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    panggilUlangAntrean: {
+        data: [],
+        loading: false, 
         error: null,
     }
 };
@@ -132,6 +148,73 @@ const Viewer = (state = INIT_STATE, action) => {
             }
         }
 
+        case GET_ALL_TERPANGGIL: {
+            return {
+                ...state,
+                getAllTerpanggil: {
+                    ...state.masterGet,
+                    data: [],
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case GET_ALL_TERPANGGIL_SUCCESS: {
+            return {
+                ...state,
+                getAllTerpanggil: {
+                    ...state.masterGet,
+                    loading: false,
+                    data: action.payload,
+                }
+            }
+        }
+
+        case GET_ALL_TERPANGGIL_ERROR: {
+            return {
+                ...state,
+                getAllTerpanggil: {
+                    ...state.masterGet,
+                    loading: false,
+                    error: action.payload,
+                }
+            }
+        }
+
+        case PANGGIL_ULANG_ANTREAN: {
+            return {
+                ...state,
+                panggilUlangAntrean: {
+                    ...state.masterGet,
+                    data: [],
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case PANGGIL_ULANG_ANTREAN_SUCCESS: {
+            return {
+                ...state,
+                panggilUlangAntrean: {
+                    ...state.masterGet,
+                    loading: false,
+                    data: action.payload,
+                }
+            }
+        }
+
+        case PANGGIL_ULANG_ANTREAN_ERROR: {
+            return {
+                ...state,
+                panggilUlangAntrean: {
+                    ...state.masterGet,
+                    loading: false,
+                    error: action.payload,
+                }
+            }
+        }
 
         default: return { ...state };
     }

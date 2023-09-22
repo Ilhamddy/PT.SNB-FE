@@ -7,12 +7,18 @@ SELECT
 FROM
     m_loket
 `
-// FIXME: saat semuanya kosong nanti menjadi tidak ada data sama sekali malahan
+
+const panggilStatus = {
+	ambilAntrean: 1,
+	sedangPanggil: 2,
+	selesaiDipanggil: 3
+}
+
 const qGetLoketSisa = `
 select 
 	mj.id, 
 	mj.prefix || ' (' || mj.reportdisplay || ')'  AS label,
-	coalesce (t1.ispanggil,true) AS ispanggil, 
+	coalesce (t1.ispanggil,1) AS ispanggil, 
 	coalesce (t1.jumlahantrean,0) AS jumlahantrean, 
 	coalesce (t1.antreanterakhir,0) AS antreanterakhir 
 from (
@@ -47,7 +53,7 @@ FROM t_antreanloket tal
 WHERE tal.statusenabled = true  
     AND tal.tglinput > $1 AND tal.tglinput <= $2
 	AND tal.tglpanggil IS NOT NULL
-	AND tal.ispanggil = true
+	AND tal.ispanggil = 2 OR tal.ispanggil = 3
 ORDER BY tal.tglpanggil DESC
 `
 
@@ -70,11 +76,12 @@ WHERE
 	tal.statusenabled = true
 	AND tal.objectloketfk = $1
 	AND tal.tglinput > $2 AND tal.tglinput <= $3
-	AND tal.ispanggil = true
+	AND (tal.ispanggil = 2 OR tal.ispanggil = 3)
 `
 
 const qGetLastPemanggilanAll = `
 SELECT
+	tal.norec AS norec,
     tal.ispanggil AS ispanggil,
     mja.prefix AS prefix,
     tal.noantrean AS noantrean,
@@ -85,7 +92,23 @@ FROM t_antreanloket tal
 WHERE 
 	tal.statusenabled = true
 	AND tal.tglinput > $1 AND tal.tglinput <= $2
-	AND tal.ispanggil = true
+	AND tal.ispanggil = $3
+`
+
+const qGetAllTerpanggil = `
+SELECT
+	tal.norec AS value,
+	tal.ispanggil AS ispanggil,
+	mja.prefix AS prefix,
+	tal.noantrean AS noantrean,
+	ml.reportdisplay AS loket
+FROM t_antreanloket tal
+	LEFT JOIN m_jenisantrean mja ON tal.objectjenisantreanfk = mja.id
+	LEFT JOIN m_loket ml ON tal.objectloketfk = ml.id
+WHERE 
+	tal.statusenabled = true
+	AND tal.tglinput > $1 AND tal.tglinput <= $2
+	AND tal.ispanggil = 3
 `
 
 export {
@@ -95,4 +118,5 @@ export {
 	qGetAllLoket,
     qGetLastPemanggilanLoket,
 	qGetLastPemanggilanAll,
+	qGetAllTerpanggil
 }
