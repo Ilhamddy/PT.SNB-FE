@@ -221,9 +221,23 @@ WHERE ta.objectdokterpemeriksafk=$1
 `
 
 const qDaftarPasienTriage = `
-SELECT tp.norec, tp.namapasien, tp.umur, tp.keluhan, tp.namapj, tp.nohp, tp.tglinput,tp.tglupdate
-FROM t_pasienigd tp 
-
+select
+	tp.norec,
+	tp.namapasien,
+	tp.umur,
+	tp.keluhan,
+	tp.namapj,
+	tp.nohp,
+	to_char(tp.tglinput,'yyyy-MM-dd HH:mm') tglinput,
+	tp.tglupdate,
+	td.noregistrasi,
+	mp.nocm,
+	to_char( mp.tgllahir, TO_CHAR(age( mp.tgllahir,  now( )), 'YY Tahun mm Bulan DD Hari')) AS umur
+from
+	t_pasienigd tp
+left join t_daftarpasien td on
+	td.norec = tp.objectdaftarpasienfk
+left join m_pasien mp on mp.id=td.nocmfk 
 `
 
 
