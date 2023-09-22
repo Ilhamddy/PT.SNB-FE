@@ -119,4 +119,12 @@ export default class ServiceRegistrasi {
     getDaftarPasienIGD = async (param) => {
         return await api.get(`/transaksi/registrasi/daftar-pasien-rawat-darurat`, param);
     }
+
+    getwidgetDaftarPasienTriage = async (param) => {
+        return await api.get(`/transaksi/registrasi/widget-pasien-triage`, param);
+    }
+
+    getDaftarPasienTriage = async (param) => {
+        return await api.get(`/transaksi/registrasi/daftar-pasien-triage`, param);
+    }
 }

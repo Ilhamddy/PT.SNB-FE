@@ -13,8 +13,8 @@ function PagesPenjamin() {
     const handleHome = () => {
         navigate('/pages-awal');
     };
-    const handleCardClick = () => {
-        navigate('/pages-poliklinik');
+    const handleCardClick = (e) => {
+        navigate(`/pages-poliklinik/${e}`);
     };
     return (
         <React.Fragment>
@@ -38,7 +38,7 @@ function PagesPenjamin() {
                         </Col>
                         <Col lg={4}>
                             <div className="d-flex justify-content-center">
-                                <CardKiosk onClick={handleCardClick}>
+                                <CardKiosk onClick={() => handleCardClick('A')}>
                                     <CardBody>
                                         <div className="mx-auto avatar-md mb-3">
                                             <img src={umum} alt="" className="img-fluid" />
@@ -52,7 +52,7 @@ function PagesPenjamin() {
                         </Col>
                         <Col lg={4}>
                             <div className="d-flex justify-content-center">
-                                <CardKiosk onClick={handleCardClick}>
+                                <CardKiosk onClick={() => handleCardClick('B')}>
                                     <CardBody>
                                         <div className="mx-auto avatar-md mb-3">
                                             <img src={asurasni} alt="" className="img-fluid" />
@@ -66,7 +66,7 @@ function PagesPenjamin() {
                         </Col>
                         <Col lg={4}>
                             <div className="d-flex justify-content-center">
-                                <CardKiosk onClick={handleCardClick}>
+                                <CardKiosk onClick={() => handleCardClick('C')}>
                                     <CardBody>
                                         <div className="mx-auto avatar-md mb-3">
                                             <img src={bpjs} alt="" className="img-fluid" />

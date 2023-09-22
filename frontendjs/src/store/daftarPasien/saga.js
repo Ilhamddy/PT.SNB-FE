@@ -16,7 +16,9 @@ import {
     WIDGET_DAFTARPASIEN_REGISTRASI_GET,
     LIST_PASIEN_MUTASI_GET,
     GET_DAFTAR_PASIEN_FARMASI,
-    DAFTARPASIEN_IGD_GET
+    DAFTARPASIEN_IGD_GET,
+    WIDGET_DAFTARPASIEN_TRIAGE_GET,
+    DAFTARPASIEN_TRIAGE_GET
 } from "./actionType";
 
 import {
@@ -39,7 +41,9 @@ import {
     getDaftarPasienFarmasiSuccess,
     getDaftarPasienFarmasiError,
     daftarPasienIGDGetSuccess,
-    daftarPasienIGDGetError
+    daftarPasienIGDGetError,
+    widgetDaftarPasienTriageGetSuccess, widgetDaftarPasienTriageGetError,
+    DaftarPasienTriageGetSuccess, DaftarPasienTriageGetError,
 } from "./action";
 import { toast } from "react-toastify";
 
@@ -181,6 +185,26 @@ function* ondaftarpasienIGDGet({ payload: {queries}  }) {
     }
 }
 
+function* onwidgetDaftarPasienTriageGet({ payload: {queries}  }) {
+    try {
+        let response = null;
+        response = yield call(serviceRegistrasi.getwidgetDaftarPasienTriage, queries);
+        yield put(widgetDaftarPasienTriageGetSuccess(response.data));
+    } catch (error) {
+        yield put(widgetDaftarPasienTriageGetError(error));
+    }
+}
+
+function* onDaftarPasienTriageGet({ payload: {queries}  }) {
+    try {
+        let response = null;
+        response = yield call(serviceRegistrasi.getDaftarPasienTriage, queries);
+        yield put(DaftarPasienTriageGetSuccess(response.data));
+    } catch (error) {
+        yield put(DaftarPasienTriageGetError(error));
+    }
+}
+
 export function* watchGetDaftarPasienRJ() {
     yield takeEvery(DAFTARPASIEN_RJ_GET, onGetDaftarPasienRJ);
 }
@@ -238,6 +262,14 @@ export function* watchondaftarpasienIGDGet() {
     yield takeEvery(DAFTARPASIEN_IGD_GET, ondaftarpasienIGDGet);
 }
 
+export function* watchonwidgetDaftarPasienTriageGet() {
+    yield takeEvery(WIDGET_DAFTARPASIEN_TRIAGE_GET, onwidgetDaftarPasienTriageGet);
+}
+
+export function* watchonDaftarPasienTriageGet() {
+    yield takeEvery(DAFTARPASIEN_TRIAGE_GET, onDaftarPasienTriageGet);
+}
+
 
 
 function* daftarPasienSaga() {
@@ -255,7 +287,9 @@ function* daftarPasienSaga() {
         fork(watchonwidgetdaftarPasienRegistrasiGet),
         fork(watchonlistPasienMutasiGet),
         fork(watchGetDaftarPasienFarmasi),
-        fork(watchondaftarpasienIGDGet)
+        fork(watchondaftarpasienIGDGet),
+        fork(watchonwidgetDaftarPasienTriageGet),
+        fork(watchonDaftarPasienTriageGet)
     ]);
 }
 

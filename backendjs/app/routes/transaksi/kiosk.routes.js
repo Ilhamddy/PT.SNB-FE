@@ -28,4 +28,10 @@ export default function (app) {
         controller.saveRegistrasiPasienKiosk
     );
 
+    app.post(
+        "/api/transaksi/kiosk/save-antrean-pasien-kiosk",
+        // [authJwt.verifyToken],
+        controller.saveAntreanKiosk
+    );
+
 }

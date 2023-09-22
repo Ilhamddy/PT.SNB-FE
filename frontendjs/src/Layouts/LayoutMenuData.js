@@ -30,6 +30,7 @@ const Navdata = () => {
     const [isIcons, setIsIcons] = useState(false);
     const [isMaps, setIsMaps] = useState(false);
     const [isMultiLevel, setIsMultiLevel] = useState(false);
+    const [isListGawatDarurat, setListGawatDarurat] = useState(false);
 
     // Apps
     const [isEmail, setEmail] = useState(false);
@@ -822,7 +823,39 @@ const Navdata = () => {
                 },
             ],
         },
-        
+        // loket.igd
+        {
+            id: "loket_igd",
+            label: "Gawat Darurat",
+            icon: "ri-police-car-fill",
+            link: "/#",
+            click: function (e) {
+                e.preventDefault();
+                setListGawatDarurat(!isListGawatDarurat);
+                setIscurrentState('ListGawatDarurat');
+                updateIconSidebar(e);
+            },
+            stateVariables: isListGawatDarurat,
+            isAllowed: () => {
+                return isAllowedAccess(getUserPermissions(), [
+                    "REGISTRASI_VIEW","GAWATDARURAT_VIEW"
+                ]);
+            },
+            subItems: [
+                {
+                    id: "registrasi-pasien-lama",
+                    label: "Daftar Pasien Triage",
+                    link: "/gawatdarurat/daftar-pasien-triage",
+                    parentId: "ListGawatDarurat",
+                },
+                {
+                    id: "registrasi-pasien-lama",
+                    label: "Daftar Pasien Gawat Darurat",
+                    link: "/gawatdarurat/daftar-pasien-igd",
+                    parentId: "ListGawatDarurat",
+                },
+            ],
+        },
         
     ];
     return <React.Fragment>{menuItems}</React.Fragment>;

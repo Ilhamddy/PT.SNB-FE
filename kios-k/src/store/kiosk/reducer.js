@@ -8,7 +8,10 @@ import {
     GET_CARI_PASIEN_KIOSK_ERROR,
     SAVE_REGISTRASI_PASIEN_KIOSK,
     SAVE_REGISTRASI_PASIEN_KIOSK_SUCCESS,
-    SAVE_REGISTRASI_PASIEN_KIOSK_ERROR
+    SAVE_REGISTRASI_PASIEN_KIOSK_ERROR,
+    SAVE_ANTREAN_PASIEN_KIOSK,
+    SAVE_ANTREAN_PASIEN_KIOSK_SUCCESS,
+    SAVE_ANTREAN_PASIEN_KIOSK_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -23,6 +26,12 @@ const INIT_STATE = {
         error: null,
     },
     saveRegistrasiPasienKiosk: {
+        data: [],
+        loading: false,
+        error: null,
+        success: false
+    },
+    saveAntreanPasienKiosk: {
         data: [],
         loading: false,
         error: null,
@@ -43,6 +52,9 @@ const Kiosk = (state = INIT_STATE, action) => {
                 },
                 saveRegistrasiPasienKiosk:{
                     ...INIT_STATE.saveRegistrasiPasienKiosk
+                },
+                saveAntreanPasienKiosk:{
+                    ...INIT_STATE.saveAntreanPasienKiosk
                 }
             }
         }
@@ -144,6 +156,41 @@ const Kiosk = (state = INIT_STATE, action) => {
                 ...state,
                 saveRegistrasiPasienKiosk: {
                     ...state.saveRegistrasiPasienKiosk,
+                    loading: false,
+                    error: action.payload,
+                },
+            };
+        }
+
+        case SAVE_ANTREAN_PASIEN_KIOSK: {
+            return {
+                ...state,
+                saveAntreanPasienKiosk: {
+                    ...state.saveAntreanPasienKiosk,
+                    data: [],
+                    loading: true,
+                    error: null,
+                },
+            };
+        }
+
+        case SAVE_ANTREAN_PASIEN_KIOSK_SUCCESS: {
+            return {
+                ...state,
+                saveAntreanPasienKiosk: {
+                    ...state.saveAntreanPasienKiosk,
+                    loading: false,
+                    data: action.payload,
+                    success: true,
+                },
+            };
+        }
+
+        case SAVE_ANTREAN_PASIEN_KIOSK_ERROR: {
+            return {
+                ...state,
+                saveAntreanPasienKiosk: {
+                    ...state.saveAntreanPasienKiosk,
                     loading: false,
                     error: action.payload,
                 },

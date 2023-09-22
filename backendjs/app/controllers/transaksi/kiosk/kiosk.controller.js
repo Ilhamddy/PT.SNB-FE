@@ -161,8 +161,68 @@ const saveRegistrasiPasienKiosk = async (req, res) => {
     }
 }
 
+const saveAntreanKiosk = async (req, res) => {
+    const logger = res.locals.logger;
+    try {
+        const { antreanloket,belumdipanggil } = await db.sequelize.transaction(async (transaction) => {
+            let today = new Date();
+            let todayMonth = '' + (today.getMonth() + 1)
+            if (todayMonth.length < 2)
+                todayMonth = '0' + todayMonth;
+            let todayDate = '' + (today.getDate())
+            if (todayDate.length < 2)
+                todayDate = '0' + todayDate;
+            let todaystart = formatDate(today)
+            let todayend = formatDate(today) + ' 23:59'
+            let query = `select count(norec) from t_antreanloket
+            where tglinput between '${todaystart}' and '${todayend}' and objectjenisantreanfk='${req.body.jenisantrean}'`
+            let resultCount = await pool.query(query);
+            let noantrean = parseFloat(resultCount.rows[0].count) + 1
+            let norec = uuid.v4().substring(0, 32)
+            const antreanloket = await db.t_antreanloket.create({
+                norec: norec,
+                objectjenisantreanfk: req.body.jenisantrean,
+                tglinput: new Date(),
+                objectunitfk: req.body.objectunitfk,
+                objectdpjpfk: req.body.iddoktertujuan,
+                noantrean: noantrean,
+                noantreantext: req.body.namajenisantrean+noantrean,
+                ispanggil:1,
+            }, { transaction });
+
+            let query2 = `select count(norec) from t_antreanloket
+            where tglinput between '${todaystart}' and '${todayend}' and objectjenisantreanfk='${req.body.jenisantrean}' and ispanggil =1`
+            let resultBelumDipanggil = await pool.query(query2);
+            let belumdipanggil = parseFloat(resultBelumDipanggil.rows[0].count)
+
+            return { antreanloket,belumdipanggil }
+        });
+
+        const tempres = {
+            antreanloket: antreanloket,
+            belumdipanggil:belumdipanggil,
+            datasave: req.body
+        };
+        res.status(200).json({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).json({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export default {
     getComboKiosk,
     getCariPasien,
-    saveRegistrasiPasienKiosk
+    saveRegistrasiPasienKiosk,
+    saveAntreanKiosk
 }

@@ -15,4 +15,8 @@ export default class ServiceKiosk {
         return await api.create(`/transaksi/kiosk/save-registrasi-pasien-kiosk`, body);
     }
 
+    saveAntreanPasienKiosk = async (body) => {
+        return await api.create(`/transaksi/kiosk/save-antrean-pasien-kiosk`, body);
+    }
+
 }

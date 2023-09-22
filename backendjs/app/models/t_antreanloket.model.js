@@ -15,7 +15,8 @@ export default (sequelize, Sequelize) => {
             type: Sequelize.SMALLINT
         },
         statusenabled: {
-            type: Sequelize.BOOLEAN
+            type: Sequelize.BOOLEAN,
+            defaultValue: true
         },
         reportdisplay: {
             type: Sequelize.STRING
@@ -45,7 +46,7 @@ export default (sequelize, Sequelize) => {
             type: Sequelize.DATE
         },
         ispanggil: {
-            type: Sequelize.BOOLEAN
+            type: Sequelize.INTEGER
         },
         tglpanggil: {
             type: Sequelize.DATE

@@ -43,7 +43,13 @@ import {
     GET_DAFTAR_PASIEN_FARMASI_ERROR,
     DAFTARPASIEN_IGD_GET,
     DAFTARPASIEN_IGD_GET_SUCCESS,
-    DAFTARPASIEN_IGD_GET_ERROR
+    DAFTARPASIEN_IGD_GET_ERROR,
+    WIDGET_DAFTARPASIEN_TRIAGE_GET,
+    WIDGET_DAFTARPASIEN_TRIAGE_GET_SUCCESS,
+    WIDGET_DAFTARPASIEN_TRIAGE_GET_ERROR,
+    DAFTARPASIEN_TRIAGE_GET,
+    DAFTARPASIEN_TRIAGE_GET_SUCCESS,
+    DAFTARPASIEN_TRIAGE_GET_ERROR
 } from "./actionType";
 
 export const daftarPasienResetForm = () => ({
@@ -270,5 +276,35 @@ export const daftarPasienIGDGetSuccess = (data) => ({
 
 export const daftarPasienIGDGetError = (error) => ({
     type: DAFTARPASIEN_IGD_GET_ERROR,
+    payload: error,
+});
+
+export const widgetDaftarPasienTriageGet = (queries) => ({
+    type: WIDGET_DAFTARPASIEN_TRIAGE_GET,
+    payload: { queries: queries },
+});
+
+export const widgetDaftarPasienTriageGetSuccess = (data) => ({
+    type: WIDGET_DAFTARPASIEN_TRIAGE_GET_SUCCESS,
+    payload: data,
+});
+
+export const widgetDaftarPasienTriageGetError = (error) => ({
+    type: WIDGET_DAFTARPASIEN_TRIAGE_GET_ERROR,
+    payload: error,
+});
+
+export const DaftarPasienTriageGet = (queries) => ({
+    type: DAFTARPASIEN_TRIAGE_GET,
+    payload: { queries: queries },
+});
+
+export const DaftarPasienTriageGetSuccess = (data) => ({
+    type: DAFTARPASIEN_TRIAGE_GET_SUCCESS,
+    payload: data,
+});
+
+export const DaftarPasienTriageGetError = (error) => ({
+    type: DAFTARPASIEN_TRIAGE_GET_ERROR,
     payload: error,
 });
