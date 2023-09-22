@@ -108,10 +108,10 @@ const DaftarPasienRJ = () => {
                     <div className="hstack gap-3 flex-wrap">
                         {data.objectstatuskendalirmfkap === 1 ? (
                             <>
-                                <Link 
-                                    to="#" 
-                                    onClick={() => { clickCheckBox(data) }} 
-                                    className="text-danger fs-15" 
+                                <Link
+                                    to="#"
+                                    onClick={() => { clickCheckBox(data) }}
+                                    className="text-danger fs-15"
                                     id="tooltipTopDokumen">
                                     <i className="bx bx-check-circle">
                                     </i>
@@ -121,17 +121,17 @@ const DaftarPasienRJ = () => {
                             </>
                         ) :
                             <>
-                                <Link 
-                                    to={`/emr-pasien/${data.norecdp}/${data.norecta}/rawat-jalan`} 
-                                    className="link-success fs-15" 
+                                <Link
+                                    to={`/emr-pasien/${data.norecdp}/${data.norecta}/rawat-jalan`}
+                                    className="link-success fs-15"
                                     id="tooltipTop">
                                     <i className="ri-edit-2-line">
                                     </i>
                                 </Link>
-                                <UncontrolledTooltip 
-                                    placement="top" 
-                                    target="tooltipTop"> 
-                                    Pengkajian Pasien 
+                                <UncontrolledTooltip
+                                    placement="top"
+                                    target="tooltipTop">
+                                    Pengkajian Pasien
                                 </UncontrolledTooltip>
                             </>
                         }
@@ -311,7 +311,7 @@ const DaftarPasienRJ = () => {
             dispatch(daftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}&unit=${tempSelctUnit}`));
             dispatch(widgetdaftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}`));
         }
-    }, [newDataDokumen, search, dateStart, dateEnd, idPencarian,tempSelctUnit, dispatch])
+    }, [newDataDokumen, search, dateStart, dateEnd, idPencarian, tempSelctUnit, dispatch])
     // useEffect(() => {
     //     return () => {
     //         if(dataCombo.unit){
@@ -325,7 +325,7 @@ const DaftarPasienRJ = () => {
     const handleSelectSingle = (e) => {
         settempSelctUnit(e)
     };
-    const handleInputUnit = characterEntered=>{
+    const handleInputUnit = characterEntered => {
         if (characterEntered.length > 3) {
             var newArray = dataCombo.unit.filter(function (el) {
                 return el.objectinstalasifk === 1;
@@ -485,7 +485,7 @@ const DaftarPasienRJ = () => {
                                                     </Col>
                                                 </Row>
                                             </Col>
-                                            
+
                                         </Row>
                                     </div>
 

@@ -6,14 +6,18 @@ import { widgetDaftarPasienTriageGet, daftarPasienResetForm, DaftarPasienTriageG
 import { useDispatch, useSelector } from 'react-redux';
 import BreadCrumb from '../../../Components/Common/BreadCrumb';
 import CountUp from "react-countup";
+import pria from "../../../assets/images/svg/pria.svg";
+import { useNavigate } from 'react-router-dom';
 
 const TriageIGD = () => {
     document.title = "Daftar Pasien Triage";
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const { datawidget, data } = useSelector((state) => ({
         datawidget: state.DaftarPasien.widgetDaftarPasienTriageGet.data,
         data: state.DaftarPasien.DaftarPasienTriageGet.data,
     }));
+    const [namaPasien, setnamaPasien] = useState(null);
     useEffect(() => {
         return () => {
             dispatch(daftarPasienResetForm());
@@ -25,6 +29,10 @@ const TriageIGD = () => {
     useEffect(() => {
         dispatch(DaftarPasienTriageGet());
     }, [dispatch])
+    const handleCard = (item) => {
+        // console.log(item)
+        setnamaPasien(item.namapasien)
+    };
     return (
         <React.Fragment>
             <UiContent />
@@ -72,14 +80,27 @@ const TriageIGD = () => {
                             <Row>
                                 <Col lg={3}>
                                     <Card>
+                                        <CardBody className="p-4 text-center">
+                                            <div className="mx-auto avatar-md mb-3">
+                                                <span className={"avatar-title rounded-circle fs-4 bg-soft-info"}>
+                                                    <h2 className="ff-secondary fw-semibold">
+                                                        <span className="counter-value" style={{ fontSize: "1.5rem" }}>
+                                                        <img src={pria} alt="" className="img-fluid rounded-circle" />
+                                                        </span>
+                                                    </h2>
+                                                </span>
+                                            </div>
+                                            <h5 className="card-title mb-1">{namaPasien}</h5>
+                                            {/* <p className="text-muted mb-0">Graphic Designer</p> */}
+                                        </CardBody>
+                                    </Card>
+                                    <Card>
                                         <CardBody>
-                                            {/* <h5 className="card-title mb-5">Profile Pasien</h5> */}
-                                            <div className="text-center">
-                                                {/* <img src={userDummy}
-                                            className="rounded-circle avatar-xl img-thumbnail user-profile-image"
-                                            alt="user-profile" />
-                                        <h5 className="fs-17 mb-1">{userChosen.nama}</h5>
-                                        <p className="text-muted mb-0">{userChosen.id}</p> */}
+                                            <div className="live-preview">
+                                                <div className="d-flex flex-column gap-2">
+                                                    <Button color="info" className="btn-animation" data-text="Cetak Label Pasien"> <span>Registrasi</span> </Button>
+                                                    <Button color="info" className="btn-animation" data-text="Cetak Label Pasien"> <span>Pengkajian Medis</span> </Button>
+                                                </div>
                                             </div>
                                         </CardBody>
                                     </Card>
@@ -135,46 +156,59 @@ const TriageIGD = () => {
                                                     />
                                                 </Col>
                                                 <Col>
-                                                    <Button>+</Button></Col>
+                                                    <Button onClick={()=>{navigate(`/gawatdarurat/input-pasien-triage`) }} color='info'>+</Button></Col>
                                             </Row>
                                         </CardHeader>
                                         <CardBody>
-                                            <Row className="row-cols-xxl-12 row-cols-lg-12 row-cols-1">
-                                                {(data.data || []).map((item, key) => (
-                                                    <Col key={key}>
-                                                        <Card className="card-animate">
-                                                            <CardBody>
-                                                                <div className="d-flex justify-content-between">
-                                                                    <div className="avatar-md flex-shrink-0">
-                                                                        <span className={"avatar-title rounded-circle fs-4 bg-soft-info"}>
-                                                                            <h2 className="ff-secondary fw-semibold">
-                                                                                <span className="counter-value" style={{ fontSize: "1.5rem" }}>
+                                            <div style={{ overflowY: 'auto', maxHeight: '400px' }}>
+                                                <Row className="row-cols-xxl-12 row-cols-lg-12 row-cols-1">
+                                                    {(data.data || []).map((item, key) => (
+                                                        <Col key={key}>
+                                                            <Card className="card-animate" onClick={()=>{handleCard(item)}}>
+                                                                <CardBody>
+                                                                    <Row className="gy-2">
+                                                                        <Col xs={1}>
+                                                                            <div className="avatar-md flex-shrink-0">
+                                                                                <span className={"avatar-title rounded-circle fs-4 bg-soft-info"}>
+                                                                                    <h2 className="ff-secondary fw-semibold">
+                                                                                        <span className="counter-value" style={{ fontSize: "1.5rem" }}>
+                                                                                        </span>
+                                                                                    </h2>
                                                                                 </span>
-                                                                            </h2>
-                                                                        </span>
-                                                                    </div>
-                                                                    <div className="flex-grow-1 ms-2">
-                                                                        <h5 className="card-title mb-1">-</h5>
-                                                                        <p className="text-muted mb-0">{item.namapasien}</p>
-                                                                        <p className="text-muted mb-0">Digital Marketing</p>
-                                                                    </div>
-                                                                    <div className="flex-grow-1 ms-2">
-                                                                        <h5 className="card-title mb-1">-</h5>
-                                                                        <p className="text-muted mb-0">{item.namapasien}</p>
-                                                                        <p className="text-muted mb-0">Digital Marketing</p>
-                                                                    </div>
-                                                                    <div className="flex-grow-1 ms-2">
-                                                                        <h5 className="card-title mb-1">-</h5>
-                                                                        <p className="text-muted mb-0">{item.namapasien}</p>
-                                                                        <p className="text-muted mb-0">Digital Marketing</p>
-                                                                    </div>
-                                                                </div>
-                                                            </CardBody>
-
-                                                        </Card>
-                                                    </Col>
-                                                ))}
-                                            </Row>
+                                                                            </div>
+                                                                        </Col>
+                                                                        <Col xs={3}>
+                                                                            <div className="flex-grow-1 ms-2">
+                                                                                <h5 className="card-title mb-1">{item.nocm ? item.nocm : '-'}</h5>
+                                                                                <p className="mb-0">
+                                                                                    {item.namapasien && item.namapasien.length > 20
+                                                                                        ? `${item.namapasien.substring(0, 20)}...`
+                                                                                        : item.namapasien}
+                                                                                </p>
+                                                                                <p className="text-muted mb-0">{item.umur ? item.umur : '-'}</p>
+                                                                            </div>
+                                                                        </Col>
+                                                                        <Col xs={3}>
+                                                                            <div className="flex-grow-1 ms-2">
+                                                                                <p className="text-muted mb-0">Tgl. Kedatangan {item.tglinput}</p>
+                                                                                <p className="text-muted mb-0">Pembawa Pasien {item.namapj ? item.namapj : '-'}</p>
+                                                                                <p className="text-muted mb-0">No Hp {item.nohp ? item.nohp : '-'}</p>
+                                                                            </div>
+                                                                        </Col>
+                                                                        <Col xs={5}>
+                                                                            <div className="flex-grow-1 ms-2">
+                                                                                <p className="text-muted mb-0">No. Registrasi : {item.noregistrasi ? item.noregistrasi : '-'}</p>
+                                                                                <p className="text-muted mb-0">DPJP Pasien : {item.namapj ? item.namapj : '-'}</p>
+                                                                                <p className="text-muted mb-0">Keluhan : {item.keluhan ? item.keluhan : '-'}</p>
+                                                                            </div>
+                                                                        </Col>
+                                                                    </Row>
+                                                                </CardBody>
+                                                            </Card>
+                                                        </Col>
+                                                    ))}
+                                                </Row>
+                                            </div>
                                         </CardBody>
                                     </Card>
                                 </Col>

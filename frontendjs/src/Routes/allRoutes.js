@@ -623,7 +623,7 @@ const authProtectedRoutes = [
   // Gawat Darurat
   { path: "/gawatdarurat/daftar-pasien-igd", component: <DaftarPasienIGD /> },
   { path: "/gawatdarurat/daftar-pasien-triage", component: <DaftarPasienTriage /> },
-
+  { path: "/gawatdarurat/input-pasien-triage", component: <TriageIGD /> },
 ];
 
 const publicRoutes = [
