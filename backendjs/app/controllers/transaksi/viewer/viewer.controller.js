@@ -1,5 +1,5 @@
 import pool from "../../../config/dbcon.query";
-import { qGetLoket, qGetLoketSisa, qGetLastPemanggilan, qGetAllLoket, qGetLastPemanggilanLoket, qGetLastPemanggilanAll, qGetAllTerpanggil } from "../../../queries/viewer/viewer.queries";
+import { qGetLoket, qGetLoketSisa, qGetLastPemanggilan, qGetAllLoket, qGetLastPemanggilanLoket, qGetLastPemanggilanAll, qGetAllTerpanggil, panggilStatus } from "../../../queries/viewer/viewer.queries";
 import db from "../../../models";
 
 const t_antreanloket = db.t_antreanloket
@@ -46,8 +46,16 @@ const getLoketSisa = async (req, res) => {
         let loketSisa = []
         // kelompokkan berdasarkan id
         loketSisaReq = loketSisaReq.sort((a, b) => b.ispanggil - a.ispanggil)
+        logger.info("loketSisaReq")
+        logger.info(loketSisaReq)
         loketSisaReq.forEach((sisa) => {
             if(sisa.ispanggil === 2 || sisa.ispanggil === 3){
+                const foundLoketSisa = loketSisa.find((loket) => loket.id === sisa.id)
+                if(foundLoketSisa){
+                    foundLoketSisa.jumlahantrean += sisa.jumlahantrean
+                    foundLoketSisa.sisaantrean += sisa.sisaantrean
+                    return
+                }
                 const foundIsPanggils = loketSisaReq.filter(
                     (loket) => (loket.id === sisa.id) && (loket.ispanggil === 1)
                 )
@@ -101,7 +109,7 @@ const panggilLoket = async (req, res) => {
             const lastAntrean = await t_antreanloket.findOne({
                 where: {
                     objectjenisantreanfk: jenis,
-                    ispanggil: 1,
+                    ispanggil: panggilStatus.belumPanggil,
                     tglinput: {
                         [Op.between]: [dateStart, dateEnd]
                     }
@@ -110,7 +118,7 @@ const panggilLoket = async (req, res) => {
             })
             if(lastAntrean === null) throw new Error("Tidak ada antrean tersedia")
             await lastAntrean.update({
-                ispanggil: 2,
+                ispanggil: panggilStatus.sedangPanggil,
                 objectloketfk: loket,
                 tglpanggil: new Date(),
             }, {
@@ -180,9 +188,9 @@ const getAllLoket = async (req, res) => {
                 }
             )
         )
-        if(lastPemanggilanAll?.ispanggil === 2){
+        if(lastPemanggilanAll?.ispanggil === panggilStatus.sedangPanggil){
             await t_antreanloket.update({
-                ispanggil: 3,
+                ispanggil: panggilStatus.selesaiPanggil,
             }, {
                 where: {
                     norec: lastPemanggilanAll.norec
@@ -259,7 +267,7 @@ const panggilUlangAntrean = async (req, res) => {
             })
             if(!antrean) throw new Error("Antrean tidak ditemukan")
             const updatedAntrean  = await antrean.update({
-                ispanggil: 2,
+                ispanggil: panggilStatus.sedangPanggil,
                 tglpanggil: new Date(),
             }, {
                 transaction: transaction,

@@ -60,7 +60,7 @@ function* onsaveOrderPelayanan({ payload: { data, history } }) {
         }
     } catch (error) {
         yield put(saveOrderPelayananRadiologiError(error));
-        toast.error(error, { autoClose: 3000 });
+        toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });
     }
 }
 
@@ -155,7 +155,7 @@ function* onUpdateTglRencanaRadiologi({ payload: { data, history } }) {
         }
     } catch (error) {
         yield put(updateTglRencanaRadiologiError(error));
-        toast.error(error, { autoClose: 3000 });
+        toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });
     }
 }
 
@@ -180,7 +180,7 @@ function* onSaveVerifikasiRadiologi({ payload: { data, history } }) {
         }
     } catch (error) {
         yield put(saveVerifikasiRadiologiError(error));
-        toast.error(error, { autoClose: 3000 });
+        toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });
     }
 }
 
@@ -205,7 +205,7 @@ function* onDeleteOrderPelayanan({ payload: { data, history } }) {
         }
     } catch (error) {
         yield put(deleteOrderPelayananError(error));
-        toast.error(error, { autoClose: 3000 });
+        toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });
     }
 }
 
@@ -230,7 +230,7 @@ function* onDeleteDetailOrderPelayanan({ payload: { data, history } }) {
         }
     } catch (error) {
         yield put(deleteDetailOrderPelayananError(error));
-        toast.error(error, { autoClose: 3000 });
+        toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });
     }
 }
 
@@ -292,7 +292,7 @@ function* onsaveExpertiseRadiologi({ payload: { data, history } }) {
         }
     } catch (error) {
         yield put(saveExpertiseRadiologiError(error));
-        toast.error(error, { autoClose: 3000 });
+        toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });
     }
 }
 

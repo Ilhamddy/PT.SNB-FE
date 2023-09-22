@@ -39,6 +39,7 @@ function* onPanggilLoket({payload: { data, callback }}) {
         yield put(panggilLoketSuccess(response.data));
     } catch (error) {
         yield put(panggilLoketError(error));
+        toast.error(error?.response?.data?.msg || "Error", {autoClose: 3000})
     }
 }
 

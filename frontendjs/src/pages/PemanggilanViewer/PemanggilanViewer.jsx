@@ -16,6 +16,7 @@ import {
   panggilUlangAntrian,
 } from '../../store/actions'
 import { useRef } from 'react'
+import { ToastContainer } from 'react-toastify'
 
 const PemanggilanViewer = () => {
   const {
@@ -69,8 +70,8 @@ const PemanggilanViewer = () => {
     onSubmit: (values) => {
       dispatch(
         panggilUlangAntrian(values, () => {
-          dispatch(getLoketSisa())
           dispatch(getAllTerpanggil())
+          dispatch(getLoketSisa())
         })
       )
     },
@@ -108,6 +109,7 @@ const PemanggilanViewer = () => {
   ]
   return (
     <div className="pemanggilan-viewer">
+      <ToastContainer />
       <h1 className="header-view">Pemanggilan Antrean Pasien</h1>
       <div className="isi-pemanggilan">
         <Row>

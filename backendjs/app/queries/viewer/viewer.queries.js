@@ -1,4 +1,9 @@
 
+export const panggilStatus = {
+	belumPanggil: 1,
+	sedangPanggil: 2,
+	selesaiPanggil: 3
+}
 
 const qGetLoket = `
 SELECT
@@ -7,12 +12,6 @@ SELECT
 FROM
     m_loket
 `
-
-const panggilStatus = {
-	ambilAntrean: 1,
-	sedangPanggil: 2,
-	selesaiDipanggil: 3
-}
 
 const qGetLoketSisa = `
 select 
@@ -53,7 +52,10 @@ FROM t_antreanloket tal
 WHERE tal.statusenabled = true  
     AND tal.tglinput > $1 AND tal.tglinput <= $2
 	AND tal.tglpanggil IS NOT NULL
-	AND tal.ispanggil = 2 OR tal.ispanggil = 3
+	AND (
+		tal.ispanggil = ${panggilStatus.sedangPanggil}
+		OR tal.ispanggil = ${panggilStatus.selesaiPanggil}
+		)
 ORDER BY tal.tglpanggil DESC
 `
 
@@ -76,7 +78,10 @@ WHERE
 	tal.statusenabled = true
 	AND tal.objectloketfk = $1
 	AND tal.tglinput > $2 AND tal.tglinput <= $3
-	AND (tal.ispanggil = 2 OR tal.ispanggil = 3)
+	AND (
+		tal.ispanggil = ${panggilStatus.sedangPanggil} 
+		OR tal.ispanggil = ${panggilStatus.selesaiPanggil}
+	)
 `
 
 const qGetLastPemanggilanAll = `
@@ -93,6 +98,7 @@ WHERE
 	tal.statusenabled = true
 	AND tal.tglinput > $1 AND tal.tglinput <= $2
 	AND tal.ispanggil = $3
+ORDER BY tal.tglpanggil DESC
 `
 
 const qGetAllTerpanggil = `
@@ -108,7 +114,7 @@ FROM t_antreanloket tal
 WHERE 
 	tal.statusenabled = true
 	AND tal.tglinput > $1 AND tal.tglinput <= $2
-	AND tal.ispanggil = 3
+	AND tal.ispanggil = ${panggilStatus.selesaiPanggil}
 `
 
 export {

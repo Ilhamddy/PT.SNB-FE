@@ -89,7 +89,7 @@ function* onSaveEmrTtv({ payload: { data, history } }) {
         // history("/registrasi/pasien-lama")
     } catch (error) {
         yield put(emrTtvSaveError(error));
-        toast.error(error, { autoClose: 3000 });
+        toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });
     }
 }
 
@@ -132,7 +132,7 @@ function* onSaveEmr({ payload: { data, history } }) {
         // history("/registrasi/pasien-lama")
     } catch (error) {
         yield put(emrSaveError(error));
-        toast.error(error, { autoClose: 3000 });
+        toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });
     }
 }
 
@@ -225,7 +225,7 @@ function* onSaveEmrDiagnosax({ payload: { data, history } }) {
         // history("/registrasi/pasien-lama")
     } catch (error) {
         yield put(emrDiagnosaxSaveError(error));
-        toast.error(error, { autoClose: 3000 });
+        toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });
     }
 }
 
@@ -254,7 +254,7 @@ function* onSaveEmrDiagnosaix({ payload: { data, history } }) {
         // history("/registrasi/pasien-lama")
     } catch (error) {
         yield put(emrDiagnosaixSaveError(error));
-        toast.error(error, { autoClose: 3000 });
+        toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });
     }
 }
 
@@ -349,7 +349,7 @@ function* onKonsulSave({ payload: { data, history, callback } }) {
         // history("/registrasi/pasien-lama")
     } catch (error) {
         yield put(konsulSaveError(error));
-        toast.error(error, { autoClose: 3000 });
+        toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });
     }
 }
 
@@ -375,7 +375,7 @@ function* onUpdateTaskId({ payload: { data, history } }) {
         // history("/registrasi/pasien-lama")
     } catch (error) {
         yield put(updateTaskIdError(error));
-        toast.error(error, { autoClose: 3000 });
+        toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });
     }
 }
 
@@ -401,7 +401,7 @@ function* onUpdateStatusPulangRJ({ payload: { data, history } }) {
         // history("/registrasi/pasien-lama")
     } catch (error) {
         yield put(updateStatusPulangRJError(error));
-        toast.error(error, { autoClose: 3000 });
+        toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });
     }
 }
 
@@ -504,7 +504,7 @@ function* onTindakanSave({ payload: { data, history } }) {
         // history("/registrasi/pasien-lama")
     } catch (error) {
         yield put(tindakanSaveError(error));
-        toast.error(error, { autoClose: 3000 });
+        toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });
     }
 }
 
@@ -600,7 +600,7 @@ function* onemrJenisPelayananSave({ payload: { data, history } }) {
         // history("/registrasi/pasien-lama")
     } catch (error) {
         yield put(emrJenisPelayananSaveError(error));
-        toast.error(error, { autoClose: 3000 });
+        toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });
     }
 }
 

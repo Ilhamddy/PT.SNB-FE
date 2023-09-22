@@ -99,7 +99,7 @@ function* onsaveDokumenRekammedis({ payload: { data, history } }) {
         // history("/registrasi/pasien-lama")
     } catch (error) {
         yield put(saveDokumenRekammedisError(error));
-        toast.error(error, { autoClose: 3000 });
+        toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });
     }
 }
 

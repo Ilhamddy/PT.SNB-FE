@@ -16,6 +16,7 @@ const Viewer = () => {
   const { tanggal, waktu } = useDate()
   const panggilLast = async (dataAll) => {
     if (dataAll?.status === 2) {
+      console.log('panggil last')
       const lastantrean = dataAll?.lastantrean
       const audioNomorAntrean = new Audio(
         process.env.REACT_APP_MEDIA_URL + '/audio/nomor_antrean.mp3'
@@ -58,6 +59,7 @@ const Viewer = () => {
     }
   }
   useEffect(() => {
+    dispatch(getAllLoket(panggilLast))
     const interval = setInterval(() => {
       dispatch(getAllLoket(panggilLast))
     }, 5000)

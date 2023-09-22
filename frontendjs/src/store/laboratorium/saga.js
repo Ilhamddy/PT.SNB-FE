@@ -87,7 +87,7 @@ function* onsaveOrderPelayanan({ payload: { data, history } }) {
         }
     } catch (error) {
         yield put(saveOrderPelayananLaboratoriumError(error));
-        toast.error(error, { autoClose: 3000 });
+        toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });
     }
 }
 
@@ -168,7 +168,7 @@ function* onUpdateTglRencanaLaboratorium({ payload: { data, history } }) {
         }
     } catch (error) {
         yield put(updateTglRencanaLaboratoriumError(error));
-        toast.error(error, { autoClose: 3000 });
+        toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });
     }
 }
 
@@ -193,7 +193,7 @@ function* onSaveVerifikasiLaboratorium({ payload: { data, history } }) {
         }
     } catch (error) {
         yield put(saveVerifikasiLaboratoriumError(error));
-        toast.error(error, { autoClose: 3000 });
+        toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });
     }
 }
 
@@ -268,7 +268,7 @@ function* onSaveNilaiNormalLaboratorium({ payload: { data, history } }) {
     } catch (error) {
         console.log(error)
         yield put(saveNilaiNormalLaboratoriumError(error));
-        toast.error(error, { autoClose: 3000 });
+        toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });
     }
 }
 
@@ -290,7 +290,7 @@ function* onsaveMasterKelUmurLaboratorium({ payload: { data, history } }) {
     } catch (error) {
         console.log(error)
         yield put(saveMasterKelUmurLaboratoriumError(error));
-        toast.error(error, { autoClose: 3000 });
+        toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });
     }
 }
 
@@ -325,7 +325,7 @@ function* onsaveMasterDKelUmurLaboratorium({ payload: { data, history } }) {
     } catch (error) {
         console.log(error)
         yield put(saveMasterDKelUmurLaboratoriumError(error));
-        toast.error(error, { autoClose: 3000 });
+        toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });
     }
 }
 
@@ -373,7 +373,7 @@ function* onsaveSetMasterNilaiNormalLab({ payload: { data, history } }) {
     } catch (error) {
         console.log(error)
         yield put(saveSetMasterNilaiNormalLabError(error));
-        toast.error(error, { autoClose: 3000 });
+        toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });
     }
 }
 
@@ -395,7 +395,7 @@ function* onsaveSetTNilaiNormalLab({ payload: { data, history } }) {
     } catch (error) {
         console.log(error)
         yield put(saveSetTNilaiNormalLabError(error));
-        toast.error(error, { autoClose: 3000 });
+        toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });
     }
 }
 

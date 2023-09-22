@@ -102,7 +102,7 @@ function* saveDaftarPasienPulang({ payload: {data, callback} }) {
         yield put(daftarPasienRIPulangSaveSuccess(response.data));
     } catch (error) {
         console.error(error)
-        toast.error(error.msg || error.message, { autoClose: 3000 });
+        toast.error(error?.response?.data?.msg || "Error" || error, { autoClose: 3000 });
         yield put({ type: DAFTARPASIEN_RI_PULANG_SAVE_ERROR, payload: error });
     }
 }
