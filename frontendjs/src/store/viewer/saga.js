@@ -3,7 +3,9 @@ import ServiceViewer from "../../services/service-viewer";
 import { 
     GET_LOKET_SISA,
     PANGGIL_LOKET,
-    GET_ALL_LOKET
+    GET_ALL_LOKET,
+    GET_ALL_TERPANGGIL,
+    PANGGIL_ULANG_ANTREAN
  } from "./actionType";
 import { 
     getLoketSisaSuccess,
@@ -11,8 +13,13 @@ import {
     panggilLoketSuccess,
     panggilLoketError,
     getAllLoketSuccess,
-    getAllLoketError
+    getAllLoketError,
+    getAllTerpanggilSuccess,
+    getAllTerpanggilError,
+    panggilUlangAntrianSuccess,
+    panggilUlangAntrianError
 } from "./action";
+import { toast } from 'react-toastify';
 
 const serviceViewer = new ServiceViewer();
 
@@ -32,15 +39,38 @@ function* onPanggilLoket({payload: { data, callback }}) {
         yield put(panggilLoketSuccess(response.data));
     } catch (error) {
         yield put(panggilLoketError(error));
+        toast.error(error?.response?.data?.msg || "Error", {autoClose: 3000})
     }
 }
 
-function* onGetAllLoket() {
+function* onGetAllLoket({payload: {callback}}) {
     try {
         const response = yield call(serviceViewer.getAllLoket);
         yield put(getAllLoketSuccess(response.data));
+        callback && callback(response.data);
     } catch (error) {
         yield put(getAllLoketError(error));
+    }
+}
+
+function* onGetAllTerpanggil({payload: {callback}}) {
+    try {
+        const response = yield call(serviceViewer.getAllTerpanggil);
+        yield put(getAllTerpanggilSuccess(response.data));
+    } catch (error) {
+        yield put(getAllTerpanggilError(error));
+    }
+}
+
+function* onPanggilUlangAntrean({payload: {data, callback}}) {
+    try {
+        const response = yield call(serviceViewer.panggilUlangAntrian, data);
+        yield put(panggilUlangAntrianSuccess(response.data));
+        callback && callback(response.data);
+        toast.success("Sukses", {autoClose: 3000})
+    } catch (error) {
+        yield put(panggilUlangAntrianError(error));
+        toast.error("Gagal", {autoClose: 3000})
     }
 }
 
@@ -56,11 +86,21 @@ export function* watchGetAllLoket(){
     yield takeEvery(GET_ALL_LOKET, onGetAllLoket);
 }
 
+export function* watchGetAllTerpanggil(){
+    yield takeEvery(GET_ALL_TERPANGGIL, onGetAllTerpanggil);
+}
+
+export function* watchPanggilUlangAntrian(){
+    yield takeEvery(PANGGIL_ULANG_ANTREAN, onPanggilUlangAntrean);
+}
+
 function* viewer() {
     yield all([
         fork(watchGetLoketSisa),
         fork(watchPanggilLoket),
-        fork(watchGetAllLoket)
+        fork(watchGetAllLoket),
+        fork(watchGetAllTerpanggil),
+        fork(watchPanggilUlangAntrian)
     ]);
   }
   

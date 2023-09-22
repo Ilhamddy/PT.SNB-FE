@@ -19,8 +19,7 @@ const updateDaftarPasien = async (norecdp) => {
                 where: {
                 norec: norecdp
                 }
-            })
-            }
+            })}
         )
     }catch(error){
         console.error(error)

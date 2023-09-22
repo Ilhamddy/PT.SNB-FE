@@ -45,9 +45,7 @@ function checkPrinterStatus(){
             rej(false)
         }, 10000)
         printer.adapter.on("data", function (data) {
-            console.log(typeof data)
             if(data.length === 0) return 
-            console.log(data)
             clearTimeout(timeout)
             res(data)
         });

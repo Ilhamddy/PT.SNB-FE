@@ -60,7 +60,7 @@ function* onSaveRegistrasi({payload: { data, history}}) {
         history("/registrasi/pasien-lama")
     } catch (error) {
         yield put(registrasiSaveError(error));
-        toast.error(error, { autoClose: 3000 });
+        toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });
     }
 }
 
@@ -118,7 +118,7 @@ function* onSaveRegistrasiRuangan({ payload: { data, history} }) {
         }
     } catch (error) {
         yield put(registrasiSaveRuanganError(error));
-        toast.error(error, { autoClose: 3000 });
+        toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });
     }
 }
 
@@ -135,7 +135,7 @@ function* onRegistrasiSavePenjaminFK({payload: {data, callback}}){
         }
     } catch (error) {
         yield put(registrasiSavePenjaminFKError(error));
-        toast.error(error, { autoClose: 3000 });
+        toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });
     }
 }
 
@@ -179,7 +179,7 @@ function* onsaveBatalRegistrasi({payload: {data, callback}}){
         }
     } catch (error) {
         yield put(saveBatalRegistrasiError(error));
-        toast.error(error, { autoClose: 3000 });
+        toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });
     }
 }
 
@@ -196,7 +196,7 @@ function* onsaveRegistrasiMutasi({payload: {data, callback}}){
         }
     } catch (error) {
         yield put(saveRegistrasiMutasiError(error));
-        toast.error(error, { autoClose: 3000 });
+        toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });
     }
 }
 

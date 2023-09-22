@@ -9,7 +9,14 @@ import * as Yup from 'yup'
 import DataTable from 'react-data-table-component'
 import { getComboViewer } from '../../store/master/action'
 import { useDispatch, useSelector } from 'react-redux'
-import { getLoketSisa, panggilLoket } from '../../store/actions'
+import {
+  getAllTerpanggil,
+  getLoketSisa,
+  panggilLoket,
+  panggilUlangAntrian,
+} from '../../store/actions'
+import { useRef } from 'react'
+import { ToastContainer } from 'react-toastify'
 
 const PemanggilanViewer = () => {
   const {
@@ -20,6 +27,7 @@ const PemanggilanViewer = () => {
     loadingSisaLoket,
     lastPemanggilan,
     lastLoket,
+    allTerpanggil,
   } = useSelector((state) => ({
     loadingCombo: state.Master.getComboViewer.loading,
     loket: state.Master.getComboViewer.data.loket,
@@ -28,7 +36,9 @@ const PemanggilanViewer = () => {
     lastPemanggilan: state.Viewer.getAntreanLoketSisa.data?.lastpemanggilan,
     lastLoket: state.Viewer.getAntreanLoketSisa.data?.lastloket,
     loadingSisaLoket: state.Viewer.getAntreanLoketSisa.loading,
+    allTerpanggil: state.Viewer.getAllTerpanggil.data?.terpanggil || [],
   }))
+  const refPanggilUlang = useRef()
   const dispatch = useDispatch()
   const vPemanggilan = useFormik({
     initialValues: {
@@ -41,20 +51,37 @@ const PemanggilanViewer = () => {
       jenis: Yup.string().required('Jenis harus diisi!'),
     }),
     onSubmit: (values) => {
-      console.log(values)
       dispatch(
         panggilLoket(values, () => {
+          dispatch(getLoketSisa())
+          dispatch(getAllTerpanggil())
+          refPanggilUlang.current?.clearValue()
+        })
+      )
+    },
+  })
+  const vPanggilUlang = useFormik({
+    initialValues: {
+      norecantrean: '',
+    },
+    validationSchema: Yup.object({
+      norecantrean: Yup.string().required('No. Rec Antrean harus diisi!'),
+    }),
+    onSubmit: (values) => {
+      dispatch(
+        panggilUlangAntrian(values, () => {
+          dispatch(getAllTerpanggil())
           dispatch(getLoketSisa())
         })
       )
     },
   })
-  const [panggilUlang, setPanggilUlang] = useState('')
   const [norm, setNoRM] = useState('')
 
   useEffect(() => {
     dispatch(getComboViewer())
     dispatch(getLoketSisa())
+    dispatch(getAllTerpanggil())
   }, [dispatch])
 
   /**
@@ -82,6 +109,7 @@ const PemanggilanViewer = () => {
   ]
   return (
     <div className="pemanggilan-viewer">
+      <ToastContainer />
       <h1 className="header-view">Pemanggilan Antrean Pasien</h1>
       <div className="isi-pemanggilan">
         <Row>
@@ -161,17 +189,30 @@ const PemanggilanViewer = () => {
                 >
                   Loket
                 </Label>
-                <Input
-                  id="panggilulang"
-                  name="panggilulang"
-                  type="text"
-                  value={panggilUlang}
+                <CustomSelect
+                  ref={refPanggilUlang}
+                  id="norecantrean"
+                  name="norecantrean"
+                  options={allTerpanggil}
                   onChange={(e) => {
-                    setPanggilUlang('panggilulang')
+                    vPanggilUlang.setFieldValue('norecantrean', e?.value || '')
                   }}
-                  invalid={panggilUlang}
+                  value={vPanggilUlang.values.norecantrean}
+                  className={`input row-header ${
+                    !!vPanggilUlang?.errors.norecantrean ? 'is-invalid' : ''
+                  }`}
                 />
-                <Button color="info" className="w-100 mt-3">
+                {vPanggilUlang.touched.norecantrean &&
+                  !!vPanggilUlang.errors.norecantrean && (
+                    <FormFeedback type="invalid">
+                      <div>{vPanggilUlang.errors.norecantrean}</div>
+                    </FormFeedback>
+                  )}
+                <Button
+                  color="info"
+                  className="w-100 mt-3"
+                  onClick={() => vPanggilUlang.handleSubmit()}
+                >
                   Panggil Ulang Antrean
                 </Button>
               </Col>

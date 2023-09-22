@@ -114,7 +114,7 @@ function* onbridgingInacbgSave({ payload: { data, history } }) {
         // history("/registrasi/pasien-lama")
     } catch (error) {
         yield put(bridgingInacbgSaveError(error));
-        toast.error(error, { autoClose: 3000 });
+        toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });
     }
 }
 
@@ -135,7 +135,7 @@ function* ontarifKlaimSave({ payload: { data, history } }) {
         // history("/registrasi/pasien-lama")
     } catch (error) {
         yield put(tarifKlaimSaveError(error));
-        toast.error(error, { autoClose: 3000 });
+        toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });
     }
 }
 
@@ -171,7 +171,7 @@ function* onstatusKlaimSave({ payload: { data, history } }) {
         // history("/registrasi/pasien-lama")
     } catch (error) {
         yield put(statusKlaimSaveError(error));
-        toast.error(error, { autoClose: 3000 });
+        toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });
     }
 }
 
@@ -192,7 +192,7 @@ function* ontarifCmgOptionsSave({ payload: { data, history } }) {
         // history("/registrasi/pasien-lama")
     } catch (error) {
         yield put(tarifCmgOptionsSaveError(error));
-        toast.error(error, { autoClose: 3000 });
+        toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });
     }
 }
 

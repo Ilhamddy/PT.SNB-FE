@@ -8,6 +8,12 @@ import {
     GET_ALL_LOKET,
     GET_ALL_LOKET_SUCCESS,
     GET_ALL_LOKET_ERROR,
+    GET_ALL_TERPANGGIL,
+    GET_ALL_TERPANGGIL_SUCCESS,
+    GET_ALL_TERPANGGIL_ERROR,
+    PANGGIL_ULANG_ANTREAN,
+    PANGGIL_ULANG_ANTREAN_SUCCESS,
+    PANGGIL_ULANG_ANTREAN_ERROR
 } from "./actionType";
 
 export const getLoketSisa = () => ({
@@ -42,8 +48,11 @@ export const panggilLoketError = (error) => ({
     payload: error,
 });
 
-export const getAllLoket = () => ({
+export const getAllLoket = (callback) => ({
     type: GET_ALL_LOKET,
+    payload: {
+        callback
+    },
 });
 
 export const getAllLoketSuccess = (data) => ({
@@ -53,5 +62,40 @@ export const getAllLoketSuccess = (data) => ({
 
 export const getAllLoketError = (error) => ({
     type: GET_ALL_LOKET_ERROR,
+    payload: error,
+});
+
+export const getAllTerpanggil = (callback) => ({
+    type: GET_ALL_TERPANGGIL,
+    payload: {
+        callback
+    },
+});
+
+export const getAllTerpanggilSuccess = (data) => ({
+    type: GET_ALL_TERPANGGIL_SUCCESS,
+    payload: data,
+});
+
+export const getAllTerpanggilError = (error) => ({
+    type: GET_ALL_TERPANGGIL_ERROR,
+    payload: error,
+});
+
+export const panggilUlangAntrian = (data, callback) => ({
+    type: PANGGIL_ULANG_ANTREAN,
+    payload: {
+        data,
+        callback
+    },
+});
+
+export const panggilUlangAntrianSuccess = (data) => ({
+    type: PANGGIL_ULANG_ANTREAN_SUCCESS,
+    payload: data,
+});
+
+export const panggilUlangAntrianError = (error) => ({
+    type: PANGGIL_ULANG_ANTREAN_ERROR,
     payload: error,
 });

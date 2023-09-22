@@ -44,8 +44,10 @@ import {
     GET_LAYANAN_FROM_MASTER_RL_ERROR,
     DELETE_MAP_RL,
     DELETE_MAP_RL_SUCCESS,
-    DELETE_MAP_RL_ERROR
-
+    DELETE_MAP_RL_ERROR,
+    UPDATE_PRINTED,
+    UPDATE_PRINTED_SUCCESS,
+    UPDATE_PRINTED_ERROR
 } from "./actionType";
 
 export const kendaliDokumenResetForm = () => ({
@@ -280,3 +282,18 @@ export const deleteMapRLError = (error) => ({
     type: DELETE_MAP_RL_ERROR,
     payload: error,
 });
+
+export const updatePrinted = (data) => ({
+    type: UPDATE_PRINTED,
+    payload: { data     }
+})
+
+export const updatePrintedSuccess = (data) => ({
+    type: UPDATE_PRINTED_SUCCESS,
+    payload: data
+})
+
+export const updatePrintedError = (error) => ({
+    type: UPDATE_PRINTED_ERROR,
+    payload: error
+})

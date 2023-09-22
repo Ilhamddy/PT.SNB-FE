@@ -29,5 +29,16 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getAllLoket
     )
+
+    app.get(
+        "/api/transaksi/viewer/get-all-terpanggil",
+        [authJwt.verifyToken],
+        controller.getAllTerpanggil
+    )
     
+    app.post(
+        "/api/transaksi/viewer/panggil-ulang-antrean",
+        [authJwt.verifyToken],
+        controller.panggilUlangAntrean
+    )
 }

@@ -74,8 +74,8 @@ function* onCreateOrUpdateKirimBarang({payload: { body }}) {
         toast.success(response.msg,  { autoClose: 3000 });
     }catch(error){
         yield put(createOrUpdateKirimBarangError(error));
-        console.error(error);
-        toast.error(error);
+        console.error(error?.response?.data?.msg);
+        toast.error(error?.response?.data?.msg || "Error");
     }
 }
 

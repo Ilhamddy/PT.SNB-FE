@@ -46,7 +46,7 @@ export default (sequelize, Sequelize) => {
             type: Sequelize.DATE
         },
         ispanggil: {
-            type: Sequelize.INTEGER
+            type: Sequelize.SMALLINT
         },
         tglpanggil: {
             type: Sequelize.DATE

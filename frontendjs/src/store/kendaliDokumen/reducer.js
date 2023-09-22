@@ -44,7 +44,10 @@ import {
     GET_LAYANAN_FROM_MASTER_RL_ERROR,
     DELETE_MAP_RL,
     DELETE_MAP_RL_SUCCESS,
-    DELETE_MAP_RL_ERROR
+    DELETE_MAP_RL_ERROR,
+    UPDATE_PRINTED,
+    UPDATE_PRINTED_ERROR,
+    UPDATE_PRINTED_SUCCESS
 } from "./actionType";
 
 const INIT_STATE = {
@@ -123,6 +126,11 @@ const INIT_STATE = {
         data: [],
         loading: false,
         error: null,
+    },
+    updatePrinted: {
+        data: [],
+        loading: false,
+        error: null
     }
 }
 
@@ -656,6 +664,40 @@ const KendaliDokumen = (state = INIT_STATE, action) => {
                 ...state,
                 deleteMapRL: {
                     ...state.deleteMapRL,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case UPDATE_PRINTED: {
+            return {
+                ...state,
+                updatePrinted: {
+                    ...state.updatePrinted,
+                    data: [],
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case UPDATE_PRINTED_SUCCESS: {
+            return {
+                ...state,
+                updatePrinted: {
+                    ...state.updatePrinted,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case UPDATE_PRINTED_ERROR: {
+            return {
+                ...state,
+                updatePrinted: {
+                    ...state.updatePrinted,
                     loading: false,
                     error: action.error,
                 }

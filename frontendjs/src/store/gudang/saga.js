@@ -80,7 +80,7 @@ function* onSaveObatGudang({payload: { data }}) {
     } catch (error) {
         console.error(error);
         yield put(obatGudangSaveError(error));
-        toast.error(error?.response.msg || "Gagal simpan gudang", { autoClose: 3000 });
+        toast.error(error?.response?.data?.msg || "Error" || "Gagal simpan gudang", { autoClose: 3000 });
     }
 }
 
@@ -103,7 +103,7 @@ function* onDetailProdukSaveOrUpdate({payload: { data, callback }}){
     } catch (error) {
         console.error(error);
         yield put(detailProdukSaveOrUpdateError(error));
-        toast.error(error?.response?.msg || "Gagal save or update detail produk", { autoClose: 3000 });
+        toast.error(error?.response?.data?.msg || "Error" || "Gagal save or update detail produk", { autoClose: 3000 });
     }
 }
 
@@ -116,7 +116,7 @@ function* onSediaanSaveOrUpdate({payload: { data, callback }}){
     } catch (error) {
         console.error(error);
         yield put(sediaanSaveOrUpdateError(error));
-        toast.error(error?.response?.msg || "Gagal save or update sediaan", { autoClose: 3000 });
+        toast.error(error?.response?.data?.msg || "Error" || "Gagal save or update sediaan", { autoClose: 3000 });
     }
 }
 
@@ -150,7 +150,7 @@ function* onSatuanSaveOrUpdate({payload: { data, callback }}){
     } catch (error) {
         console.error(error);
         yield put(satuanSaveOrUpdateError(error));
-        toast.error(error?.response?.msg || "Gagal save or update satuan", { autoClose: 3000 });
+        toast.error(error?.response?.data?.msg || "Error"|| "Gagal save or update satuan", { autoClose: 3000 });
     }
 }
 
@@ -261,7 +261,7 @@ function* onCreateOrUpdateStokOpname({payload: {data, callback}}){
     } catch (error) {
         console.error(error);
         yield put(createOrUpdateStokOpnameError(error));
-        toast.error(error?.response?.msg || "Gagal save or update stok opname", { autoClose: 3000 });
+        toast.error(error?.response?.data?.msg || "Error" || "Gagal save or update stok opname", { autoClose: 3000 });
     }
 }
 
@@ -295,7 +295,7 @@ function* onUpdateStokOpnameDetails({payload: {data, callback}}){
     } catch (error) {
         console.error(error);
         yield put(updateStokOpnameDetailsError(error));
-        toast.error(error?.response?.msg || "Gagal update stok opname", { autoClose: 3000 });
+        toast.error(error?.response?.data?.msg || "Error" || "Gagal update stok opname", { autoClose: 3000 });
     }
 }
 
