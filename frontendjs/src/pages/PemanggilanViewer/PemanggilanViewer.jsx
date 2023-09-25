@@ -17,6 +17,7 @@ import {
 } from '../../store/actions'
 import { useRef } from 'react'
 import { ToastContainer } from 'react-toastify'
+import SkalaNyeri from '../../Components/SkalaNyeri/SkalaNyeri'
 
 const PemanggilanViewer = () => {
   const {
@@ -257,6 +258,7 @@ const PemanggilanViewer = () => {
             />
           </Col>
         </Row>
+        <SkalaNyeri />
       </div>
     </div>
   )
