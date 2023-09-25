@@ -89,7 +89,10 @@ import {
     EMR_JENIS_PELAYANAN_SAVE_ERROR,
     GET_HISTORI_JENIS_PELAYANAN,
     GET_HISTORI_JENIS_PELAYANAN_SUCCESS,
-    GET_HISTORI_JENIS_PELAYANAN_ERROR
+    GET_HISTORI_JENIS_PELAYANAN_ERROR,
+    SAVE_EMR_TRIAGE_IGD,
+    SAVE_EMR_TRIAGE_IGD_SUCCESS,
+    SAVE_EMR_TRIAGE_IGD_ERROR
 } from "./actionType";
 
 export const emrResetForm = () => ({
@@ -564,4 +567,22 @@ export const getHistoriJenisPelayananSuccess = (data) => ({
 export const getHistoriJenisPelayananError = (error) => ({
     type: GET_HISTORI_JENIS_PELAYANAN_ERROR,
     payload: error,
+});
+
+export const saveEmrTriageIgd = (body, callback) => ({
+    type: SAVE_EMR_TRIAGE_IGD,
+    payload: {
+        body: body,
+        callback: callback
+    }
+});
+
+export const saveEmrTriageIgdSuccess = (data) => ({
+    type: SAVE_EMR_TRIAGE_IGD_SUCCESS,
+    payload: data
+});
+
+export const saveEmrTriageIgdError = (error) => ({
+    type: SAVE_EMR_TRIAGE_IGD_ERROR,
+    payload: error
 });
