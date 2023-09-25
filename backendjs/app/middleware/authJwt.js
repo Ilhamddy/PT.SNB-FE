@@ -89,4 +89,5 @@ const authJwt = {
   isModerator: isModerator,
   isModeratorOrAdmin: isModeratorOrAdmin
 };
+
 export default authJwt;
