@@ -16,46 +16,51 @@ const Viewer = () => {
   const { tanggal, waktu } = useDate()
   const panggilLast = async (dataAll) => {
     if (dataAll?.status === 2) {
-      console.log('panggil last')
-      const lastantrean = dataAll?.lastantrean
-      const audioNomorAntrean = new Audio(
-        process.env.REACT_APP_MEDIA_URL + '/audio/nomor_antrean.mp3'
-      )
-
-      await playAudio(audioNomorAntrean)
-      for (let i = 0; i < (lastantrean || []).length; i++) {
-        try {
-          const audio = new Audio(
-            process.env.REACT_APP_MEDIA_URL +
-              `/audio/${lastantrean[i].toLowerCase()}.mp3`
-          )
-          await playAudio(audio)
-        } catch (err) {
-          console.error(err)
-        }
-      }
-      const audioSilakanMenuju = new Audio(
-        process.env.REACT_APP_MEDIA_URL + '/audio/silakan_menuju.mp3'
-      )
-      await playAudio(audioSilakanMenuju)
-      const audioLoket = new Audio(
-        process.env.REACT_APP_MEDIA_URL + '/audio/loket.mp3'
-      )
-      await playAudio(audioLoket)
-
-      // get last char string
-      const lastLoket = dataAll?.lastloket
-      if (lastLoket) {
-        const lastChar = lastLoket?.[lastLoket?.length - 1]
-        const audioLoketNumber = new Audio(
-          process.env.REACT_APP_MEDIA_URL + `/audio/${lastChar}.mp3`
+      try {
+        console.log('panggil last')
+        const lastantrean = dataAll?.lastantrean
+        const audioNomorAntrean = new Audio(
+          process.env.REACT_APP_MEDIA_URL + '/audio/nomor_antrean.mp3'
         )
-        await playAudio(audioLoketNumber)
-      }
 
-      toast.success(
-        `antrean dengan nomor ${lastantrean} dipanggil di loket ${dataAll?.lastloket}`
-      )
+        await playAudio(audioNomorAntrean)
+        for (let i = 0; i < (lastantrean || []).length; i++) {
+          try {
+            const audio = new Audio(
+              process.env.REACT_APP_MEDIA_URL +
+                `/audio/${lastantrean[i].toLowerCase()}.mp3`
+            )
+            await playAudio(audio)
+          } catch (err) {
+            console.error(err)
+          }
+        }
+        const audioSilakanMenuju = new Audio(
+          process.env.REACT_APP_MEDIA_URL + '/audio/silakan_menuju.mp3'
+        )
+        await playAudio(audioSilakanMenuju)
+        const audioLoket = new Audio(
+          process.env.REACT_APP_MEDIA_URL + '/audio/loket.mp3'
+        )
+        await playAudio(audioLoket)
+
+        // get last char string
+        const lastLoket = dataAll?.lastloket
+        if (lastLoket) {
+          const lastChar = lastLoket?.[lastLoket?.length - 1]
+          const audioLoketNumber = new Audio(
+            process.env.REACT_APP_MEDIA_URL + `/audio/${lastChar}.mp3`
+          )
+          await playAudio(audioLoketNumber)
+        }
+
+        toast.success(
+          `antrean dengan nomor ${lastantrean} dipanggil di loket ${dataAll?.lastloket}`
+        )
+      } catch (error) {
+        console.error(error.message)
+        toast.error(error.message)
+      }
     }
   }
   useEffect(() => {
