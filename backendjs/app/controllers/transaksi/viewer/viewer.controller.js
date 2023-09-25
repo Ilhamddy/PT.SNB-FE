@@ -46,32 +46,27 @@ const getLoketSisa = async (req, res) => {
         let loketSisa = []
         // kelompokkan berdasarkan id
         loketSisaReq = loketSisaReq.sort((a, b) => b.ispanggil - a.ispanggil)
-        logger.info("loketSisaReq")
-        logger.info(loketSisaReq)
         loketSisaReq.forEach((sisa) => {
-            if(sisa.ispanggil === 2 || sisa.ispanggil === 3){
+            const foundLoketSisa = loketSisa.find((loket) => loket.id === sisa.id)
+                if(sisa.ispanggil === panggilStatus.sedangPanggil 
+                || sisa.ispanggil === panggilStatus.selesaiPanggil){
                 const foundLoketSisa = loketSisa.find((loket) => loket.id === sisa.id)
                 if(foundLoketSisa){
+                    // kalau sudah ada langsung saja jumlahkan semuanya
                     foundLoketSisa.jumlahantrean += (sisa.jumlahantrean || 0)
                     foundLoketSisa.sisaantrean += (sisa.sisaantrean || 0)
                     return
                 }
-                const foundIsPanggils = loketSisaReq.filter(
-                    (loket) => (loket.id === sisa.id) && (loket.ispanggil === 1)
-                )
-                if(foundIsPanggils.length === 0) {
-                    sisa.sisaantrean = 0
-                    loketSisa.push(sisa)
+                sisa.sisaantrean = 0
+                loketSisa.push(sisa)
+            } else {
+                if(foundLoketSisa){
+                    // kalau sudah ada langsung saja jumlahkan semuanya
+                    foundLoketSisa.sisaantrean += (sisa.jumlahantrean || 0)
+                    foundLoketSisa.antreanterakhir = sisa.jumlahantrean
                     return
                 }
-                foundIsPanggils.forEach((foundIsPanggil) => {
-                    foundIsPanggil.done = true
-                    sisa.jumlahantrean = foundIsPanggil.antreanterakhir
-                    sisa.sisaantrean = foundIsPanggil.jumlahantrean
-                    loketSisa.push(sisa)
-                })
-            }else if(!sisa.done){
-                sisa.sisaantrean = sisa.jumlahantrean
+                sisa.sisaantrean = sisa.jumlahantrean || 0
                 sisa.antreanterakhir = 0
                 loketSisa.push(sisa)
             }
@@ -114,6 +109,7 @@ const panggilLoket = async (req, res) => {
                         [Op.between]: [dateStart, dateEnd]
                     }
                 },
+                order: [['tglinput', 'ASC']], 
                 transaction: transaction
             })
             if(lastAntrean === null) throw new Error("Tidak ada antrean tersedia")
