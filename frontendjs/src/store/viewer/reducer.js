@@ -115,18 +115,14 @@ const Viewer = (state = INIT_STATE, action) => {
         }
 
         case GET_ALL_LOKET: {
-            return {
-                ...state,
-                getAllLoket: {
-                    ...state.masterGet,
-                    data: [],
-                    loading: true,
-                    error: null,
-                }
-            }
+            return state
         }
 
         case GET_ALL_LOKET_SUCCESS: {
+            // TODO: pakai long polling
+            if(JSON.stringify(action.payload) === JSON.stringify(state.getAllLoket.data)){
+                return state
+            }
             return {
                 ...state,
                 getAllLoket: {
@@ -153,7 +149,6 @@ const Viewer = (state = INIT_STATE, action) => {
                 ...state,
                 getAllTerpanggil: {
                     ...state.masterGet,
-                    data: [],
                     loading: true,
                     error: null,
                 }

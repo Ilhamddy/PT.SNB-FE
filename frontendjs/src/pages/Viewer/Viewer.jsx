@@ -17,7 +17,6 @@ const Viewer = () => {
   const panggilLast = async (dataAll) => {
     if (dataAll?.status === 2) {
       try {
-        console.log('panggil last')
         const lastantrean = dataAll?.lastantrean
         const audioNomorAntrean = new Audio(
           process.env.REACT_APP_MEDIA_URL + '/audio/nomor_antrean.mp3'

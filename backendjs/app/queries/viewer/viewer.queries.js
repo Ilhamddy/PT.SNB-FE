@@ -82,6 +82,8 @@ WHERE
 		tal.ispanggil = ${panggilStatus.sedangPanggil} 
 		OR tal.ispanggil = ${panggilStatus.selesaiPanggil}
 	)
+	AND tal.tglpanggilviewer IS NOT NULL
+ORDER BY tal.tglpanggilviewer DESC
 `
 
 const qGetLastPemanggilanAll = `
@@ -98,7 +100,24 @@ WHERE
 	tal.statusenabled = true
 	AND tal.tglinput > $1 AND tal.tglinput <= $2
 	AND tal.ispanggil = $3
-ORDER BY tal.tglpanggil DESC
+ORDER BY tal.tglpanggil ASC
+`
+
+const qGetLastPemanggilanViewer = `
+SELECT
+	tal.norec AS norec,
+    tal.ispanggil AS ispanggil,
+    mja.prefix AS prefix,
+    tal.noantrean AS noantrean,
+	ml.reportdisplay AS loket
+FROM t_antreanloket tal
+    LEFT JOIN m_jenisantrean mja ON tal.objectjenisantreanfk = mja.id
+	LEFT JOIN m_loket ml ON tal.objectloketfk = ml.id
+WHERE 
+	tal.statusenabled = true
+	AND tal.tglinput > $1 AND tal.tglinput <= $2
+	AND tal.tglpanggilviewer IS NOT NULL
+ORDER BY tal.tglpanggilviewer DESC
 `
 
 const qGetAllTerpanggil = `
@@ -124,5 +143,6 @@ export {
 	qGetAllLoket,
     qGetLastPemanggilanLoket,
 	qGetLastPemanggilanAll,
-	qGetAllTerpanggil
+	qGetAllTerpanggil,
+	qGetLastPemanggilanViewer
 }

@@ -1,5 +1,5 @@
 import pool from "../../../config/dbcon.query";
-import { qGetLoket, qGetLoketSisa, qGetLastPemanggilan, qGetAllLoket, qGetLastPemanggilanLoket, qGetLastPemanggilanAll, qGetAllTerpanggil, panggilStatus } from "../../../queries/viewer/viewer.queries";
+import { qGetLoket, qGetLoketSisa, qGetLastPemanggilan, qGetAllLoket, qGetLastPemanggilanLoket, qGetLastPemanggilanAll, qGetAllTerpanggil, panggilStatus, qGetLastPemanggilanViewer } from "../../../queries/viewer/viewer.queries";
 import db from "../../../models";
 
 const t_antreanloket = db.t_antreanloket
@@ -150,21 +150,23 @@ const getAllLoket = async (req, res) => {
         const dateNow = new Date();
         const dateStart = new Date(dateNow.getFullYear(), dateNow.getMonth(), dateNow.getDate(), 0, 0, 0);
         const dateEnd = new Date(dateNow.getFullYear(), dateNow.getMonth(), dateNow.getDate(), 23, 59, 59);
-        let lokets = (await pool.query(qGetAllLoket)).rows;
         let lastPemanggilanAll = (await pool.query(qGetLastPemanggilanAll, [
             dateStart,
             dateEnd,
             2
         ]))?.rows
-        const lastPemanggilanDone = (await pool.query(qGetLastPemanggilanAll, [
-            dateStart,
-            dateEnd,
-            3
-        ]))?.rows
-        lastPemanggilanAll = lastPemanggilanAll?.[0] || lastPemanggilanDone?.[0] || null
-        const prefix =  lastPemanggilanAll?.prefix
-        let lastAntrean = ("00" + lastPemanggilanAll?.noantrean).slice(-2)
-        lastAntrean = lastPemanggilanAll ? prefix + lastAntrean : ""
+        lastPemanggilanAll = lastPemanggilanAll?.[0] || null
+        if(lastPemanggilanAll){
+            await t_antreanloket.update({
+                ispanggil: panggilStatus.selesaiPanggil,
+                tglpanggilviewer: new Date(),
+            }, {
+                where: {
+                    norec: lastPemanggilanAll.norec
+                }
+            })
+        }
+        let lokets = (await pool.query(qGetAllLoket)).rows;
         lokets = await Promise.all(
             lokets.map(
                 async (loket) => {
@@ -184,20 +186,19 @@ const getAllLoket = async (req, res) => {
                 }
             )
         )
-        if(lastPemanggilanAll?.ispanggil === panggilStatus.sedangPanggil){
-            await t_antreanloket.update({
-                ispanggil: panggilStatus.selesaiPanggil,
-            }, {
-                where: {
-                    norec: lastPemanggilanAll.norec
-                }
-            })
-        }
+        let lastPemanggilanViewer = (await pool.query(qGetLastPemanggilanViewer, [
+            dateStart,
+            dateEnd
+        ]))?.rows
+        lastPemanggilanViewer = lastPemanggilanViewer?.[0] || null
+        const prefix =  lastPemanggilanViewer?.prefix
+        let lastAntrean = ("00" + lastPemanggilanViewer?.noantrean).slice(-2)
+        lastAntrean = lastPemanggilanViewer ? prefix + lastAntrean : ""
         const tempres = {
             loket: lokets,
             lastantrean: lastAntrean,
-            lastloket: lastPemanggilanAll?.loket || "",
-            status: lastPemanggilanAll?.ispanggil || 3
+            lastloket: lastPemanggilanViewer?.loket || "",
+            status: lastPemanggilanViewer?.ispanggil || 3
         };
         res.status(200).json({
             msg: 'Success',
@@ -206,6 +207,7 @@ const getAllLoket = async (req, res) => {
             success: true
         });
     } catch (error) {
+        console.error(error)
         logger.error(error);
         res.status(500).json({
             msg: error.message,

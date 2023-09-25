@@ -53,6 +53,9 @@ export default (sequelize, Sequelize) => {
         },
         objectloketfk: {
             type: Sequelize.INTEGER
+        },
+        tglpanggilviewer: {
+            type: Sequelize.DATE
         }
     },
     {
