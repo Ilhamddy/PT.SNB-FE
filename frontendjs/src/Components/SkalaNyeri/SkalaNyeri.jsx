@@ -79,9 +79,7 @@ const SkalaNyeri = ({ quantity, onQuantityChange }) => {
       color: '#D40B0B',
     },
   ]
-  const [qtyVal, setQtyVal] = useState(() => quantity)
   const handleValueChange = (skala) => {
-    setQtyVal(skala)
     onQuantityChange && onQuantityChange(skala)
   }
   return (
@@ -92,7 +90,7 @@ const SkalaNyeri = ({ quantity, onQuantityChange }) => {
           skala={skala.skala}
           img={skala.img}
           color={skala.color}
-          filled={skala.skala <= qtyVal}
+          filled={skala.skala <= quantity}
           onClick={() => handleValueChange(skala.skala)}
         />
       ))}

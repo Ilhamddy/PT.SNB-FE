@@ -108,6 +108,7 @@ const PemanggilanViewer = () => {
       width: '100px',
     },
   ]
+  const [skala, setSkalaNyeri] = useState(0)
   return (
     <div className="pemanggilan-viewer">
       <ToastContainer />
@@ -258,7 +259,10 @@ const PemanggilanViewer = () => {
             />
           </Col>
         </Row>
-        <SkalaNyeri />
+        <SkalaNyeri
+          quantity={skala}
+          onQuantityChange={(q) => setSkalaNyeri(q)}
+        />
       </div>
     </div>
   )
