@@ -129,4 +129,8 @@ export default class ServiceEmr {
     saveEmerTriageIgd = async (params) => {
         return await api.create("/transaksi/emr/save-emr-triage-igd", params);
     }
+
+    getComboTriageIgd = async (queries) => {
+        return await api.get(`/transaksi/emr/get-histori-jenis-pelayanan`, queries);
+    }
 }

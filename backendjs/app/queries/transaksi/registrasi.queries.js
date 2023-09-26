@@ -240,6 +240,20 @@ left join t_daftarpasien td on
 left join m_pasien mp on mp.id=td.nocmfk 
 `
 
+const qM_DaruratIgd = `
+select
+	md.id as value,
+    md.reportdisplay as label
+from m_daruratigd md 
+`
+
+const qM_HubunganKeluarga = `
+select
+	md.id as value,
+    md.reportdisplay as label
+from m_hubungankeluarga md 
+`
+
 
 export default {
     getAll,
@@ -261,5 +275,7 @@ export default {
     qNoAntrian,
     qGetPasienFormById,
     getDaftarPasienIGD,
-    qDaftarPasienTriage
+    qDaftarPasienTriage,
+    qM_DaruratIgd,
+    qM_HubunganKeluarga
 };

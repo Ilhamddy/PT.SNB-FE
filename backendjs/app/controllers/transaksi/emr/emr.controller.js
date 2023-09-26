@@ -1098,31 +1098,62 @@ const saveTriageIgd = async (req, res) => {
     const logger = res.locals.logger;
     try {
         const { pasienigd } = await db.sequelize.transaction(async (transaction) => {
-            if(req.body.norec===''){
+            // if(req.body.norec===''){
                 let norec = uuid.v4().substring(0, 32)
-                // const pasienigd = await db.t_pasienigd.create({
-                //     norec: norec,
-                //     statusenabled: true,
-                //     tglinput: new Date(),
-                //     namapasien: req.body.namapasien,
-                //     umur: req.body.umur,
-                //     keluhan: req.body.keluhan,
-                //     namapj: req.body.namapj,
-                //     nohp: req.body.nohp,
-                //     objectpegawaiinputfk:req.idPegawai,
-                //     riwayatpenyakit:req.body.riwayatpenyakit,
-                //     riwayatobat:req.body.riwayatobat
-                // }, { transaction });
+                const pasienigd = await db.t_pasienigd.create({
+                    norec: norec,
+                    statusenabled: true,
+                    tglinput: new Date(),
+                    namapasien: req.body.namapasien,
+                    umur: req.body.umurpasien,
+                    keluhan: req.body.keluhan,
+                    namapj: req.body.namakeluarga,
+                    nohp: req.body.nohpkeluarga,
+                    objectpegawaiinputfk:req.idPegawai,
+                    riwayatpenyakit:req.body.riwayatpenyakit,
+                    riwayatobat:req.body.riwayatobat,
+                    skalanyeri:req.body.skalanyeri
+                }, { transaction });
     
-                // return { pasienigd }
-            }else{
+                return { pasienigd }
+            // }else{
 
-            }
+            // }
             
         });
 
         const tempres = {
-            pasienigd: req.body
+            pasienigd: pasienigd
+        };
+        res.status(200).json({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).json({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+const getComboTriageIgd = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        let query = queries.qM_DaruratIgd
+        const result = await pool.query(query, [])
+
+        let query2 = queries.qM_HubunganKeluarga
+        const result2 = await pool.query(query2, [])
+
+        const tempres = {
+            mdaruratigd:result.rows,
+            mhubungankeluarga:result2.rows
         };
         res.status(200).json({
             msg: 'Success',
@@ -1309,7 +1340,8 @@ export default {
     getOrderResepFromDP,
     saveEmrJenisPelayanan,
     getHistoriJenisPelayananPasien,
-    saveTriageIgd
+    saveTriageIgd,
+    getComboTriageIgd
 };
 
 
