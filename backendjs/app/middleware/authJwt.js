@@ -26,6 +26,27 @@ const verifyToken = (req, res, next) => {
   });
 };
 
+const verifyTokenUser = (req, res, next) => {
+  let bearerHeader = req.headers['authorization'];
+  if (!bearerHeader) {
+    return res.status(403).send({
+      message: "No token provided!"
+    });
+  }
+  let bearer = bearerHeader.split(' ');
+  let bearerToken = bearer[1]
+  try{
+    const decoded = jwt.verify(bearerToken, config.secret);
+    req.locals.id = decoded.id;
+    req.locals.expired = decoded.expired;
+    next();
+  }catch(error){
+    res.status(401).send({
+      msg: "Unauthorized!"
+    });
+  }
+};
+
 const isAdmin = (req, res, next) => {
   User.findByPk(req.userId).then(user => {
     user.getRoles().then(roles => {
@@ -87,7 +108,8 @@ const authJwt = {
   verifyToken: verifyToken,
   isAdmin: isAdmin,
   isModerator: isModerator,
-  isModeratorOrAdmin: isModeratorOrAdmin
+  isModeratorOrAdmin: isModeratorOrAdmin,
+  verifyTokenUser: verifyTokenUser
 };
 
 export default authJwt;

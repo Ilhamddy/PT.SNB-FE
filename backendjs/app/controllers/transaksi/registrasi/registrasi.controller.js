@@ -3,11 +3,15 @@ import * as uuid from 'uuid'
 import queries from '../../../queries/transaksi/registrasi.queries';
 import db from "../../../models";
 import { createTransaction } from "../../../utils/dbutils";
-const M_pasien = db.m_pasien
+import bcrypt from "bcryptjs";
+import { pasienSignup } from "../../auth/authhelper";
+
+const m_pasien = db.m_pasien
 const running_Number = db.running_number
 const t_daftarpasien = db.t_daftarpasien
 const t_antreanpemeriksaan = db.t_antreanpemeriksaan
 const m_tempattidur = db.m_tempattidur
+
 
 const allSelect = (req, res) => {
     pool.query(queries.getAll, (error, result) => {
@@ -68,7 +72,7 @@ const addPost = (req, res) => {
 
                             }
 
-                            // res.status(200).json(result.rows);
+                            // res.status(200).send(result.rows);
 
                         });
                     }
@@ -209,55 +213,27 @@ const savePasien = async (req, res) => {
                 nocm = '0' + nocm;
         }
         const objBody = req.body
+        let userPasien = null
         let result
         if (!objBody.id) {
-            result = await M_pasien.create({
-                nocm: nocm,
-                namapasien: objBody.namapasien,
-                noidentitas: objBody.noidentitas,
-                objectjeniskelaminfk: objBody.jeniskelamin,
-                objecttitlefk: objBody.titlepasien,
-                objectagamafk: objBody.agama,
-                objectgolongandarahfk: objBody.goldarah,
-                objectkebangsaanfk: objBody.kebangsaan,
-                objectstatusperkawinanfk: objBody.statusperkawinan,
-                tgldaftar: new Date(),
-                tempatlahir: objBody.tempatlahir,
-                tgllahir: new Date(objBody.tgllahir),
-                objectpendidikanfk: objBody.pendidikan,
-                objectpekerjaanfk: objBody.pekerjaan,
-                objectetnisfk: objBody.suku,
-                objectbahasafk: objBody.bahasa,
-                alamatrmh: objBody.alamatktp,
-                rtktp: objBody.rt,
-                rwktp: objBody.rw,
-                objectdesakelurahanktpfk: objBody.desa,
-                objectnegaraktpfk: objBody.negara,
-                alamatdomisili: objBody.alamatdomisili,
-                rtdomisili: objBody.rtdomisili,
-                rwdomisili: objBody.rwdomisili,
-                objectdesakelurahandomisilifk: objBody.desaDomisili,
-                objectnegaradomisilifk: objBody.negaraDomisili,
-                statusenabled: true,
-                nobpjs: objBody.nobpjs || null,
-                nohp: objBody.nohp || null,
-                notelepon: objBody.notelepon || null,
-                namaayah: objBody.namaayah || null,
-                namasuamiistri: objBody.namasuamiistri || null,
-                namakeluarga: objBody.namakeluargalain || null,
-                namaibu: objBody.namaibu || null,
-                objectkaryawanrsfk: req.idPegawai || null,
-            }, {
-                transaction: transaction
-            })
+            result = await hCreatePasien(req, res, transaction, {objBody, nocm})
             await running_Number.update({ new_number: new_number }, {
                 where: {
                     id: 1
                 },
                 transaction: transaction
             });
+            userPasien = await pasienSignup(
+                req, 
+                res, 
+                transaction, 
+                { 
+                    norm: result.id, 
+                    noidentitas: result.noidentitas
+                })
+            userPasien = userPasien?.toJSON() || null
         } else {
-            result = await M_pasien.update({
+            result = await m_pasien.update({
                 nocm: nocm,
                 namapasien: objBody.namapasien,
                 noidentitas: objBody.noidentitas,
@@ -299,7 +275,6 @@ const savePasien = async (req, res) => {
                 transaction: transaction
             })
         }
-
         transaction.commit();
         res.status(200).send({
             data: result,
@@ -314,6 +289,8 @@ const savePasien = async (req, res) => {
         res.status(500).send({ message: error });
     }
 }
+
+
 function formatDate(date) {
     let d = new Date(date),
         month = '' + (d.getMonth() + 1),
@@ -333,7 +310,6 @@ async function saveRegistrasiPasien(req, res) {
     const [transaction, errorTransaction] = await createTransaction(db, res)
     if(errorTransaction) return
     try {
-
         let norecDP = uuid.v4().substring(0, 32)
         console.log(req.body?.penjamin)
         let objectpenjaminfk = req.body?.penjamin?.[0]?.value || null
@@ -1667,7 +1643,7 @@ const getWidgetPasienTriage = async (req, res) => {
 
 
         ];
-        res.status(200).json({
+        res.status(200).send({
             msg: 'Success',
             code: 200,
             data: taskWidgets,
@@ -1692,7 +1668,7 @@ const getDaftarPasienTriage = async (req, res) => {
         const tempres = {
             data:result.rows
         };
-        res.status(200).json({
+        res.status(200).send({
             msg: 'Success',
             code: 200,
             data: tempres,
@@ -1857,4 +1833,47 @@ const hUpdateRegistrasiPulang = async (req, res, transaction) => {
         throw new Error('cara keluar tidak ditemukan')
     }
     return { updatedBody, updatedBodyAp, updatedBodyK, updatedBodyKPindah }
+}
+
+const hCreatePasien = async (req, res, transaction, {objBody, nocm}) => {
+    const result = await m_pasien.create({
+        nocm: nocm,
+        namapasien: objBody.namapasien,
+        noidentitas: objBody.noidentitas,
+        objectjeniskelaminfk: objBody.jeniskelamin,
+        objecttitlefk: objBody.titlepasien,
+        objectagamafk: objBody.agama,
+        objectgolongandarahfk: objBody.goldarah,
+        objectkebangsaanfk: objBody.kebangsaan,
+        objectstatusperkawinanfk: objBody.statusperkawinan,
+        tgldaftar: new Date(),
+        tempatlahir: objBody.tempatlahir,
+        tgllahir: new Date(objBody.tgllahir),
+        objectpendidikanfk: objBody.pendidikan,
+        objectpekerjaanfk: objBody.pekerjaan,
+        objectetnisfk: objBody.suku,
+        objectbahasafk: objBody.bahasa,
+        alamatrmh: objBody.alamatktp,
+        rtktp: objBody.rt,
+        rwktp: objBody.rw,
+        objectdesakelurahanktpfk: objBody.desa,
+        objectnegaraktpfk: objBody.negara,
+        alamatdomisili: objBody.alamatdomisili,
+        rtdomisili: objBody.rtdomisili,
+        rwdomisili: objBody.rwdomisili,
+        objectdesakelurahandomisilifk: objBody.desaDomisili,
+        objectnegaradomisilifk: objBody.negaraDomisili,
+        statusenabled: true,
+        nobpjs: objBody.nobpjs || null,
+        nohp: objBody.nohp || null,
+        notelepon: objBody.notelepon || null,
+        namaayah: objBody.namaayah || null,
+        namasuamiistri: objBody.namasuamiistri || null,
+        namakeluarga: objBody.namakeluargalain || null,
+        namaibu: objBody.namaibu || null,
+        objectkaryawanrsfk: req.idPegawai || null,
+    }, {
+        transaction: transaction
+    })
+    return result
 }

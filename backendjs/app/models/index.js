@@ -63,6 +63,7 @@ import t_penjualanbebasdetailModel from "./t_penjualanbebasdetail.model.js";
 import t_returobatpasienModel from "./t_returobatpasien.model.js";
 import m_maprltoprodukModel from "./m_maprltoproduk.model.js";
 import t_antreanloketModel from "../models/t_antreanloket.model.js";
+import users_pasienModel from "./user_pasien.model.js";
 
 const sequelize = new Sequelize(
   config.DB,
@@ -90,6 +91,7 @@ db.Sequelize = sequelizeInstance;
 db.sequelize = sequelize;
 
 db.user = userModel(sequelize, sequelizeInstance);
+db.users_pasien = users_pasienModel(sequelize, sequelizeInstance);
 db.role = roleModel(sequelize, sequelizeInstance);
 // master
 db.m_pasien = m_pasienM(sequelize, sequelizeInstance);

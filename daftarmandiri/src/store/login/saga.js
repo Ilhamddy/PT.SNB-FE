@@ -1,189 +1,68 @@
 import { call, put, takeEvery, all, fork } from "redux-saga/effects";
 import { 
-    loginUser
+    loginUserSuccess,
+    loginUserError,
+    logoutUserSuccess,
+    logoutUserError
 } from "./action";
+import * as uuid from 'uuid'
 
 import {
-    LOGIN_USER_SUCCESS,
-    LOGIN_USER_ERROR,
+    GET_USER_LOGIN,
+    LOGIN_USER,
+    LOGOUT_USER
 } from "./actionType";
 
-// import ServicePayment from "../../services/service-payment";
-// import { toast } from "react-toastify";
+import ServiceAuth from "../../service/service-auth";
+import { toast } from "react-toastify";
+import { setAuthorization } from "../../helpers/api_helper";
 
-// const servicePayment = new ServicePayment();
+const servicePayment = new ServiceAuth();
 
+function* onLoginUser({payload: {data}}) {
+    try {
+        const newData = {...data}
+        newData.clientSecret = uuid.v4().substring(0, 32)
+        localStorage.setItem("clientSecret", JSON.stringify(newData.clientSecret || null));
+        const response = yield call(servicePayment.loginUser, newData);
+        localStorage.setItem("authUserMandiri", JSON.stringify(response || null));
+        // hanya dikirim sekali pada saat login
 
-// function* onGetPelayananFromAntrean( {payload: {norecap}}) {
-//     try {
-//         const response = yield call(servicePayment.getPelayananFromAntrean, norecap);
-//         yield put(pelayananFromDpGetSuccess(response.data));
-//     } catch (error) {
-//         yield put(pelayananFromDpGetError(error));
-//     }
-// }
+        setAuthorization(response.data.accessToken)
+        console.log(response.data)
+        toast.success(response?.data?.msg || "Sukses")
+        yield put(loginUserSuccess(response.data));
+    } catch (error) {
+        console.log(error)
+        toast.error(error?.response?.msg || "error")
+        yield put(loginUserError(error));
+    }
+}
 
-// function* onGetNotaVerifCreate( {payload: {body, callback}}) {
-//     try {
-//         const response = yield call(servicePayment.createNotaVerif, body);
-//         yield put(notaVerifCreateSuccess(response.data));
-//         toast.success(response.msg, { autoClose: 3000 });
-//         callback();
-//     } catch (error) {
-//         console.error(error)
-//         yield put(notaVerifCreateError(error));
-//     }
-// }
+function* onLogoutUser({payload: {callback}}) {
+    try{
+        localStorage.removeItem("authUserMandiri");
+        localStorage.removeItem("clientSecret");
+        setAuthorization(null)
+        callback && callback()
+        yield put(logoutUserSuccess({}))
+    }catch(error){
+        yield put(logoutUserError(error))
+    }
+}
 
-// function* onGetDaftarTagihanPasien( {payload: {body}}) {
-//     try {
-//         const response = yield call(servicePayment.getDaftarTagihanPasien, body);
-//         yield put(daftarTagihanPasienGetSuccess(response.data));
-//     } catch (error) {
-//         yield put(daftarTagihanPasienGetError(error));
-//     }
-// }
+function* onGetUserLogin() {
+    try{
+        const user = JSON.parse(localStorage.getItem("authUserMandiri")) 
+        ? JSON.parse(localStorage.getItem("authUserMandiri"))?.accessToken : null;
+        yield put(loginUserSuccess(user))
+    }catch(error){
+        console.error(error)
+    }
+}
 
-// function* onGetPelayananFromVerif( {payload: {norecnota}}) {
-//     try {
-//         const response = yield call(servicePayment.getPelayananFromVerif, norecnota);
-//         yield put(pelayananFromVerifGetSuccess(response.data));
-//     } catch (error) {
-//         console.error(error)
-//         yield put(pelayananFromVerifGetError(error));
-//     }
-// }
-
-// function* onGetBuktiBayarCreate({payload: {body, callback}}) {
-//     try {
-//         const response = yield call(servicePayment.createBuktiBayar, body);
-//         yield put(buktiBayarCreateSuccess(response.data));
-//         toast.success(response.msg, { autoClose: 3000 });
-//         callback && callback();
-//     } catch (error) {
-//         console.error(error)
-//         yield put(buktiBayarCreateError(error));
-//     }
-// }
-
-// function* onVerifNotaCancel({payload: {norecnota, norecdp, callback}}) {
-//     try {
-//         const response = yield call(servicePayment.cancelNotaVerif, [norecnota, norecdp]);
-//         yield put(verifNotaCancelSuccess(response.data));
-//         toast.success(response.msg, { autoClose: 3000 });
-//         callback && callback();
-//     } catch (error) {
-//         console.error(error)
-//         toast.error("error", { autoClose: 3000 });
-//         yield put(verifNotaCancelError(error));
-//     }
-// }
-
-// function* onBuktiBayarCancel({payload: {norecnota, norecbayar, callback}}) {
-//     try {
-//         const response = yield call(servicePayment.cancelBayar, [norecnota, norecbayar]);
-//         yield put(buktiBayarCancelSuccess(response.data));
-//         toast.success(response.msg, { autoClose: 3000 });
-//         callback && callback();
-//     } catch (error) {
-//         console.error(error)
-//         toast.error("terjadi kesalahan", { autoClose: 3000 })
-//         yield put(buktiBayarCancelError(error));
-//     }
-// }
-
-// function* onGetDaftarPiutangPasien({payload: {location}}) {
-//     try {
-//         const response = yield call(servicePayment.getAllPiutang, location);
-//         yield put(daftarPiutangPasienGetSuccess(response.data));
-//     } catch (error) {
-//         yield put(daftarPiutangPasienGetError(error));
-//     }
-// }
-
-// function* onGetPaymentForPiutang({payload: {norecpiutang}}) {
-//     try {
-//         const response = yield call(servicePayment.getPaymentForPiutang, norecpiutang);
-//         yield put(paymentPiutangPasienGetSuccess(response.data));
-//     } catch (error) {
-//         yield put(paymentPiutangPasienGetError(error));
-//     }
-// }
-
-// function* onGetLaporanPendapatanKasir({payload: {param}}) {
-//     try {
-//         const response = yield call(servicePayment.getLaporanPendapatanKasir, param);
-//         yield put(laporanPendapatanKasirGetSuccess(response.data));
-//     } catch (error) {
-//         yield put(laporanPendapatanKasirGetError(error));
-//     }
-// }
-
-// function* onGetPiutangAfterDate({payload: {queries}}){
-//     try {
-//         const response = yield call(servicePayment.getPiutangAfterDate, queries);
-//         yield put(getPiutangAfterDateSuccess(response.data));
-//     } catch (error) {
-//         yield put(getPiutangAfterDateError(error));
-//     }
-// }
-
-// export function* watchGetPelayananFromAntrean() {
-//     yield takeEvery(PELAYANAN_FROM_DP_GET, onGetPelayananFromAntrean);
-// }
-
-// export function* watchGetNotaVerifCreate() {
-//     yield takeEvery(NOTA_VERIF_CREATE, onGetNotaVerifCreate);
-// }
-
-// export function* watchGetDaftarTagihanPasien() {
-//     yield takeEvery(DAFTAR_TAGIHAN_PASIEN_GET, onGetDaftarTagihanPasien);
-// }
-
-// export function* watchGetPelayananFromVerif() {
-//     yield takeEvery(PELAYANAN_FROM_VERIF_GET, onGetPelayananFromVerif);
-// }
-
-// export function* watchGetBuktiBayarCreate() {
-//     yield takeEvery(BUKTI_BAYAR_CREATE, onGetBuktiBayarCreate);
-// }
-
-// export function* watchVerifNotaCancel() {
-//     yield takeEvery(VERIF_NOTA_CANCEL, onVerifNotaCancel);
-// }
-
-// export function* watchBuktiBayarCancel() {
-//     yield takeEvery(BUKTI_BAYAR_CANCEL, onBuktiBayarCancel);
-// }
-
-// export function* watchGetDaftarPiutangPasien() {
-//     yield takeEvery(DAFTAR_PIUTANG_PASIEN_GET, onGetDaftarPiutangPasien);
-// }
-
-// export function* watchGetPaymentForPiutang() {
-//     yield takeEvery(PAYMENT_PIUTANG_PASIEN_GET, onGetPaymentForPiutang);
-// }
-
-// export function* watchonGetLaporanPendapatanKasir() {
-//     yield takeEvery(LAPORAN_PENDAPATAN_KASIR_GET, onGetLaporanPendapatanKasir);
-// }
-
-// export function* watchGetPiutangAfterDate() {
-//     yield takeEvery(GET_PIUTANG_AFTER_DATE, onGetPiutangAfterDate);
-// }
-
-export default function* masterSaga() {
-    yield all([
-        // fork(watchGetPelayananFromAntrean),
-        // fork(watchGetNotaVerifCreate),
-        // fork(watchGetDaftarTagihanPasien),
-        // fork(watchGetPelayananFromVerif),
-        // fork(watchGetBuktiBayarCreate),
-        // fork(watchVerifNotaCancel),
-        // fork(watchBuktiBayarCancel),
-        // fork(watchGetDaftarPiutangPasien),
-        // fork(watchGetPaymentForPiutang),
-        // fork(watchonGetLaporanPendapatanKasir),
-        // fork(watchGetPiutangAfterDate)
-    ]);
+export default function* watchLoginUser() {
+    yield takeEvery(LOGIN_USER, onLoginUser);
+    yield takeEvery(LOGOUT_USER, onLogoutUser);
+    yield takeEvery(GET_USER_LOGIN, onGetUserLogin)
 }

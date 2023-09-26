@@ -5,7 +5,6 @@ import LoginSaga from "./login/saga";
 
 export default function* rootSaga() {
   yield all([
-    //public
     fork(LoginSaga),
   ]);
 }

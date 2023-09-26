@@ -4,8 +4,7 @@ import { Provider } from 'react-redux';
 import AppRoutes from './AppRoutes';
 import { Routes } from "react-router-dom";
 import "./App.css"
-
-
+import 'react-toastify/dist/ReactToastify.css';
 
 
 function App() {
