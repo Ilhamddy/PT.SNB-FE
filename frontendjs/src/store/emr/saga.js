@@ -16,7 +16,8 @@ import {
     CREATE_OR_UPDATE_RESEP_ORDER,
     GET_ORDER_RESEP_FROM_DP,
     EMR_JENIS_PELAYANAN_SAVE,
-    GET_HISTORI_JENIS_PELAYANAN
+    GET_HISTORI_JENIS_PELAYANAN,
+    SAVE_EMR_TRIAGE_IGD
 } from "./actionType";
 
 import {
@@ -48,7 +49,8 @@ import {
     getOrderResepFromDpSuccess,
     getOrderResepFromDpError,
     emrJenisPelayananSaveSuccess, emrJenisPelayananSaveError,
-    getHistoriJenisPelayananSuccess, getHistoriJenisPelayananError
+    getHistoriJenisPelayananSuccess, getHistoriJenisPelayananError,
+    saveEmrTriageIgdSuccess,saveEmrTriageIgdError
 } from "./action";
 
 import { toast } from 'react-toastify';
@@ -622,6 +624,25 @@ export function* watchgetHistoriJenisPelayanan() {
     yield takeEvery(GET_HISTORI_JENIS_PELAYANAN, ongetHistoriJenisPelayanan);
 }
 
+function* onsaveEmrTriageIgd({ payload: { body, callback } }) {
+    try {
+        const response = yield call(serviceEmr.saveEmerTriageIgd, body);
+        yield put(saveEmrTriageIgdSuccess(response.data));
+        if (response.code === 200) {
+            toast.success(response.msg, { autoClose: 3000 });
+        } else {
+            toast.error(response.msg, { autoClose: 3000 });
+        }
+        callback && callback();
+    } catch (error) {
+        yield put(saveEmrTriageIgdError(error));
+        toast.error("Gagal update order plus verif", { autoClose: 3000 });
+    }
+}
+export function* watchonsaveEmrTriageIgd() {
+    yield takeEvery(SAVE_EMR_TRIAGE_IGD, onsaveEmrTriageIgd);
+}
+
 function* emrSaga() {
     yield all([
         fork(watchGetEmrHeader),
@@ -653,7 +674,8 @@ function* emrSaga() {
         fork(watchCreateOrUpdateResepOrder),
         fork(watchGetOrderResepFromDp),
         fork(watchemrJenisPelayananSave),
-        fork(watchgetHistoriJenisPelayanan)
+        fork(watchgetHistoriJenisPelayanan),
+        fork(watchonsaveEmrTriageIgd)
     ]);
 }
 

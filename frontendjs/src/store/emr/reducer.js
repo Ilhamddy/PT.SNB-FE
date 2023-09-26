@@ -89,7 +89,10 @@ import {
     EMR_JENIS_PELAYANAN_SAVE_ERROR,
     GET_HISTORI_JENIS_PELAYANAN,
     GET_HISTORI_JENIS_PELAYANAN_SUCCESS,
-    GET_HISTORI_JENIS_PELAYANAN_ERROR
+    GET_HISTORI_JENIS_PELAYANAN_ERROR,
+    SAVE_EMR_TRIAGE_IGD,
+    SAVE_EMR_TRIAGE_IGD_SUCCESS,
+    SAVE_EMR_TRIAGE_IGD_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -254,6 +257,12 @@ const INIT_STATE = {
         loading: false,
         error: null,
     },
+    saveEmrTriageIgd: {
+        newData: null,
+        loading: false,
+        error: null,
+        success: false
+    },
 };
 
 const Emr = (state = INIT_STATE, action) => {
@@ -338,6 +347,9 @@ const Emr = (state = INIT_STATE, action) => {
                 },
                 getHistoriJenisPelayanan:{
                     ...INIT_STATE.getHistoriJenisPelayanan
+                },
+                saveEmrTriageIgd:{
+                    ...INIT_STATE.saveEmrTriageIgd
                 }
             }
         }
@@ -1350,6 +1362,41 @@ const Emr = (state = INIT_STATE, action) => {
                     error: action.error,
                 }
             }
+        }
+
+        case SAVE_EMR_TRIAGE_IGD: {
+            return {
+                ...state,
+                saveEmrTriageIgd: {
+                    ...state.saveEmrTriageIgd,
+                    data: [],
+                    loading: true,
+                    error: null,
+                },
+            };
+        }
+
+        case SAVE_EMR_TRIAGE_IGD_SUCCESS: {
+            return {
+                ...state,
+                saveEmrTriageIgd: {
+                    ...state.saveEmrTriageIgd,
+                    loading: false,
+                    data: action.payload,
+                    success: true,
+                },
+            };
+        }
+
+        case SAVE_EMR_TRIAGE_IGD_ERROR: {
+            return {
+                ...state,
+                saveEmrTriageIgd: {
+                    ...state.saveEmrTriageIgd,
+                    loading: false,
+                    error: action.payload,
+                },
+            };
         }
         
 

@@ -977,8 +977,8 @@ function getUmur(dateOfBirth, tillDate) {
 
 const getObatFromUnit = async (req, res) => {
     const logger = res.locals.logger
-    try{
-        let {idunit, isbebas} = req.query
+    try {
+        let { idunit, isbebas } = req.query
         isbebas = isbebas === "true"
         let dataGet = await pool.query(qGetObatFromUnit, [idunit, isbebas])
         const tempres = {
@@ -989,7 +989,7 @@ const getObatFromUnit = async (req, res) => {
             status: "success",
             success: true,
         });
-    }catch(error){
+    } catch (error) {
         logger.error(error)
         res.status(500).send({
             data: error,
@@ -1090,6 +1090,53 @@ const createOrUpdateEmrResepDokter = async (req, res) => {
             status: "error",
             msg: "gagal create or update resep",
             success: false,
+        });
+    }
+}
+
+const saveTriageIgd = async (req, res) => {
+    const logger = res.locals.logger;
+    try {
+        const { pasienigd } = await db.sequelize.transaction(async (transaction) => {
+            if(req.body.norec===''){
+                let norec = uuid.v4().substring(0, 32)
+                // const pasienigd = await db.t_pasienigd.create({
+                //     norec: norec,
+                //     statusenabled: true,
+                //     tglinput: new Date(),
+                //     namapasien: req.body.namapasien,
+                //     umur: req.body.umur,
+                //     keluhan: req.body.keluhan,
+                //     namapj: req.body.namapj,
+                //     nohp: req.body.nohp,
+                //     objectpegawaiinputfk:req.idPegawai,
+                //     riwayatpenyakit:req.body.riwayatpenyakit,
+                //     riwayatobat:req.body.riwayatobat
+                // }, { transaction });
+    
+                // return { pasienigd }
+            }else{
+
+            }
+            
+        });
+
+        const tempres = {
+            pasienigd: req.body
+        };
+        res.status(200).json({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).json({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
         });
     }
 }
@@ -1261,7 +1308,8 @@ export default {
     createOrUpdateEmrResepDokter,
     getOrderResepFromDP,
     saveEmrJenisPelayanan,
-    getHistoriJenisPelayananPasien
+    getHistoriJenisPelayananPasien,
+    saveTriageIgd
 };
 
 

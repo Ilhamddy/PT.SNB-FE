@@ -146,4 +146,10 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getHistoriJenisPelayananPasien
     );
+
+    app.post(
+        "/api/transaksi/emr/save-emr-triage-igd",
+        [authJwt.verifyToken],
+        controller.saveTriageIgd
+    );
 }
