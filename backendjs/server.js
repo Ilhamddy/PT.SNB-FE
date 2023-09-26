@@ -24,7 +24,7 @@ import { addResBody, logRequests } from "./app/middleware/logrequests.js";
 import farmasiRoutes from "./app/routes/transaksi/farmasi.routes.js";
 import kioskRoutes from "./app/routes/transaksi/kiosk.routes";
 import viewerRoutes from "./app/routes/transaksi/viewer.routes";
-import { decryptMandiri } from "./app/middleware/decryptMandiri";
+import { decryptMandiri } from "./app/middleware/encryptMandiri";
 
 dotenv.config()
 

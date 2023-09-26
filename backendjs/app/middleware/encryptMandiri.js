@@ -39,10 +39,14 @@ export const decryptMandiri = async (req, res, next) => {
 
 export const encryptMandiri = async (req, res, next) => {
     const logger = res.locals.logger
-    let bearerHeader = req.headers['authorization'];
-    let bearer = bearerHeader.split(' ');
-    let bearerToken = bearer[1]
+
     try{
+        if(!req.headers['authorization']){
+            throw new Error("No token provided")
+        }
+        let bearerHeader = req.headers['authorization'];
+        let bearer = bearerHeader.split(' ');
+        let bearerToken = bearer[1]
         const decoded = jwt.verify(bearerToken, config.secret);
         const user = (await m_user.findByPk(decoded.id)).toJSON()
         if(!user){
@@ -53,7 +57,7 @@ export const encryptMandiri = async (req, res, next) => {
         res.send = function(data) {
             try{
                 const newData = encrypt(data, clientSecret)
-                res.send = oldJson 
+                res.send = oldSend 
                 return res.send(newData) 
             }catch(e){
                 logger.error(e)
@@ -80,7 +84,7 @@ export const encryptMandiri = async (req, res, next) => {
     }catch(e){
         logger.error(e)
         res.status(401).send({
-            msg: "Unauthorized!"
+            msg: e?.message || "Unauthorized!"
         });
     }
 }

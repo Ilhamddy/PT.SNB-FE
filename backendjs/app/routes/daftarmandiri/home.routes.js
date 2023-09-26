@@ -1,6 +1,6 @@
 import { authJwt } from "../../middleware/index.js"
 import controller from "../../controllers/daftarmandiri/home/home.controller.js"
-import { decryptMandiri } from "../../middleware/decryptMandiri.js";
+import {  encryptMandiri } from "../../middleware/encryptMandiri.js";
 
 export default function(app) {
   app.use(function(req, res, next) {
@@ -11,10 +11,16 @@ export default function(app) {
     next();
   });
   app.post(
+    "/api/daftarmandiri/pasien-baru",
+    [],
+    
+
+  )
+  app.post(
     "/api/daftarmandiri/home-user",
     [
       authJwt.verifyTokenUser,
-      decryptMandiri
+      encryptMandiri
     ],
     controller.getHomePageUser
   );

@@ -13,7 +13,7 @@ export default function(app) {
   
     app.get(
       "/api/master/combobox",
-      [authJwt.verifyToken],
+      [],
       controller.selectComboBox
     );
 

@@ -8,4 +8,5 @@ export default class ServiceAuth {
         return await api.create(`/auth/login-user-pasien`, body, false);
     }
 
+    
 }
