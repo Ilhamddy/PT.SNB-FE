@@ -7,7 +7,7 @@ import SkalaNyeri from '../../../Components/SkalaNyeri/SkalaNyeri';
 import { useFormik } from "formik"; //yupToFormErrors
 import * as Yup from "yup";
 import { useDate } from '../../../utils/format';
-import { saveEmrTriageIgd } from '../../../store/actions';
+import { saveEmrTriageIgd, getGetComboTriageIgd } from '../../../store/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -15,10 +15,12 @@ import 'react-toastify/dist/ReactToastify.css';
 const TriageIGD = () => {
     document.title = "Triage IGD";
     const dispatch = useDispatch();
-    const { newData, successSave } = useSelector((state) => ({
+    const { newData, successSave, data } = useSelector((state) => ({
         newData: state.Emr.saveEmrTriageIgd.data,
         successSave: state.Emr.saveEmrTriageIgd.success,
+        data: state.Emr.getGetComboTriageIgd.data,
     }));
+
     const { tanggal, waktu } = useDate()
     const vSetValidation = useFormik({
         enableReinitialize: true,
@@ -52,7 +54,11 @@ const TriageIGD = () => {
 
         }
     })
-
+    useEffect(() => {
+        return () => {
+            dispatch(getGetComboTriageIgd(''));
+        }
+    }, [dispatch])
     const [skala, setSkalaNyeri] = useState(0)
     const onClickSkalaNyeri = (q) => {
         setSkalaNyeri(q)
@@ -332,12 +338,16 @@ const TriageIGD = () => {
                                                 <Input
                                                     id="hubungankeluarga"
                                                     name="hubungankeluarga"
-                                                    type="text"
+                                                    type="select"
                                                     value={vSetValidation.values.hubungankeluarga || ''}
                                                     placeholder='Hubungan Keluarga'
                                                     onChange={vSetValidation.handleChange}
                                                     onBlur={vSetValidation.handleBlur}
-                                                />
+                                                >
+                                                    {(data.mhubungankeluarga || []).map((option, index) => (
+                                                        <option key={index}>{option.label}</option>
+                                                    ))}
+                                                </Input>
                                             </Col>
                                             <Col lg={4}>
                                                 <div className="mt-2">

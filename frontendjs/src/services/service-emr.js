@@ -131,6 +131,6 @@ export default class ServiceEmr {
     }
 
     getComboTriageIgd = async (queries) => {
-        return await api.get(`/transaksi/emr/get-histori-jenis-pelayanan`, queries);
+        return await api.get(`/transaksi/emr/get-combo-triage-igd`, queries);
     }
 }
