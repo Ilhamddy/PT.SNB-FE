@@ -154,7 +154,7 @@ db.t_penjualanbebasdetail = t_penjualanbebasdetailModel(sequelize, sequelizeInst
 db.t_returobatpasien = t_returobatpasienModel(sequelize, sequelizeInstance);
 db.m_maprltoproduk = m_maprltoprodukModel(sequelize, sequelizeInstance);
 db.t_antreanloket = t_antreanloketModel(sequelize, sequelizeInstance);
-db.t_pasienigd = t_antreanloketModel(sequelize, sequelizeInstance);
+db.t_pasienigd = t_pasienigdModel(sequelize, sequelizeInstance);
 
 db.role.belongsToMany(db.user, {
   through: "user_roles",

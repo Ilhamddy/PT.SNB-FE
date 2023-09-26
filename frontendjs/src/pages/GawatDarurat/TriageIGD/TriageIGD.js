@@ -9,6 +9,8 @@ import * as Yup from "yup";
 import { useDate } from '../../../utils/format';
 import { saveEmrTriageIgd } from '../../../store/actions';
 import { useDispatch, useSelector } from 'react-redux';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const TriageIGD = () => {
     document.title = "Triage IGD";
@@ -21,6 +23,7 @@ const TriageIGD = () => {
     const vSetValidation = useFormik({
         enableReinitialize: true,
         initialValues: {
+            norec: '',
             namapasien: "",
             umurpasien: "",
             tglkedatangan: '',
@@ -29,7 +32,13 @@ const TriageIGD = () => {
             nohpkeluarga: '',
             keluhan: '',
             riwayatpenyakit: '',
-            riwayatobat: ''
+            riwayatobat: '',
+            skalanyeri: '',
+            airway: '',
+            breathing: '',
+            circulation: '',
+            disability: '',
+            kondisimental: ''
         },
         validationSchema: Yup.object({
 
@@ -43,15 +52,184 @@ const TriageIGD = () => {
 
         }
     })
-    const [currentStep, setCurrentStep] = useState(1);
 
-    const handleStepChange = (step) => {
-        setCurrentStep(step);
-    };
     const [skala, setSkalaNyeri] = useState(0)
-
+    const onClickSkalaNyeri = (q) => {
+        setSkalaNyeri(q)
+        vSetValidation.setFieldValue('skalanyeri', q)
+    }
+    const onClickCardAirway = (e) => {
+        vSetValidation.setFieldValue('airway', e)
+    }
+    const onClickCardBreathing = (e) => {
+        vSetValidation.setFieldValue('breathing', e)
+    }
+    const onClickCardCirculation = (e) => {
+        vSetValidation.setFieldValue('circulation', e)
+    }
+    const onClickCardDisability = (e) => {
+        vSetValidation.setFieldValue('disability', e)
+    }
+    const onClickCardKondisiMental = (e) => {
+        vSetValidation.setFieldValue('kondisimental', e)
+    }
+    const dataAirway = [
+        {
+            value: 1,
+            label: 'Obstruksi / partial obstruksi',
+            color: '#B7DBFD',
+            lg: 2
+        },
+        {
+            value: 2,
+            label: 'Bebas',
+            color: '#FDB7B7',
+            lg: 2
+        },
+        {
+            value: 3,
+            label: 'Bebas',
+            color: '#FCFDB7',
+            lg: 2
+        },
+        {
+            value: 4,
+            label: 'Bebas',
+            color: '#B8FDB7',
+            lg: 2
+        },
+        {
+            value: 5,
+            label: 'Bebas',
+            color: '#EBEBEB',
+            lg: 3
+        }
+    ]
+    const dataBreathing = [
+        {
+            value: 1,
+            label: 'Distress napas berat / henti napas',
+            color: '#B7DBFD',
+            lg: 2
+        },
+        {
+            value: 2,
+            label: 'Distress napas ringan sedang',
+            color: '#FDB7B7',
+            lg: 2
+        },
+        {
+            value: 3,
+            label: 'Normal',
+            color: '#FCFDB7',
+            lg: 2
+        },
+        {
+            value: 4,
+            label: 'Normal',
+            color: '#B8FDB7',
+            lg: 2
+        },
+        {
+            value: 5,
+            label: 'Normal',
+            color: '#EBEBEB',
+            lg: 3
+        }
+    ]
+    const dataCirculation = [
+        {
+            value: 1,
+            label: 'Gangguan hemodinamik berat / perdarahan tak terkontrol',
+            color: '#B7DBFD',
+            lg: 2
+        },
+        {
+            value: 2,
+            label: 'Gangguan hemodinamik sedang / ringan',
+            color: '#FDB7B7',
+            lg: 2
+        },
+        {
+            value: 3,
+            label: 'Stabil',
+            color: '#FCFDB7',
+            lg: 2
+        },
+        {
+            value: 4,
+            label: 'Stabil',
+            color: '#B8FDB7',
+            lg: 2
+        },
+        {
+            value: 5,
+            label: 'Stabil',
+            color: '#EBEBEB',
+            lg: 3
+        }
+    ]
+    const dataDisability = [
+        {
+            value: 1,
+            label: 'Unresponsive / respon to pain',
+            color: '#B7DBFD',
+            lg: 2
+        },
+        {
+            value: 2,
+            label: 'Alert, Respon to verbal',
+            color: '#FDB7B7',
+            lg: 2
+        },
+        {
+            value: 3,
+            label: 'Alert',
+            color: '#FCFDB7',
+            lg: 2
+        },
+        {
+            value: 4,
+            label: 'Alert',
+            color: '#B8FDB7',
+            lg: 2
+        },
+        {
+            value: 5,
+            label: 'Alert',
+            color: '#EBEBEB',
+            lg: 3
+        }
+    ]
+    const dataKondisiMental = [
+        {
+            value: 1,
+            label: 'Tidak Kooperatif',
+            color: '#FDB7B7',
+            lg: 2
+        },
+        {
+            value: 2,
+            label: 'Kooperatif',
+            color: '#FCFDB7',
+            lg: 2
+        },
+        {
+            value: 3,
+            label: 'Kooperatif',
+            color: '#B8FDB7',
+            lg: 2
+        },
+        {
+            value: 4,
+            label: 'Kooperatif',
+            color: '#EBEBEB',
+            lg: 3
+        }
+    ]
     return (
         <React.Fragment>
+            <ToastContainer closeButton={false} />
             <UiContent />
             <div className="page-content">
                 <Container fluid>
@@ -236,7 +414,8 @@ const TriageIGD = () => {
                                     <Col lg={8}>
                                         <SkalaNyeri
                                             quantity={skala}
-                                            onQuantityChange={(q) => setSkalaNyeri(q)}
+                                            // onQuantityChange={(q) => setSkalaNyeri(q)}
+                                            onQuantityChange={(q) => onClickSkalaNyeri(q)}
                                         />
                                     </Col>
                                     <Col lg={2}>
@@ -291,41 +470,15 @@ const TriageIGD = () => {
                                                     <Label className="form-label">Airway</Label>
                                                 </div>
                                             </Col>
-                                            <Col lg={2}>
-                                                <Card style={{ backgroundColor: '#B7DBFD' }}>
-                                                    <CardBody>
-                                                        <p style={{ textAlign: 'center' }}><span className="fw-small">Obstruksi / partial obstruksi</span></p>
-                                                    </CardBody>
-                                                </Card>
-                                            </Col>
-                                            <Col lg={2}>
-                                                <Card style={{ backgroundColor: '#FDB7B7' }}>
-                                                    <CardBody>
-                                                        <p style={{ textAlign: 'center' }}><span className="fw-small">Bebas</span></p>
-                                                    </CardBody>
-                                                </Card>
-                                            </Col>
-                                            <Col lg={2}>
-                                                <Card style={{ backgroundColor: '#FCFDB7' }}>
-                                                    <CardBody>
-                                                        <p style={{ textAlign: 'center' }}><span className="fw-small">Bebas</span></p>
-                                                    </CardBody>
-                                                </Card>
-                                            </Col>
-                                            <Col lg={2}>
-                                                <Card style={{ backgroundColor: '#B8FDB7' }}>
-                                                    <CardBody>
-                                                        <p style={{ textAlign: 'center' }}><span className="fw-small">Bebas</span></p>
-                                                    </CardBody>
-                                                </Card>
-                                            </Col>
-                                            <Col lg={3}>
-                                                <Card style={{ backgroundColor: '#EBEBEB' }}>
-                                                    <CardBody>
-                                                        <p style={{ textAlign: 'center' }}><span className="fw-small">Bebas</span></p>
-                                                    </CardBody>
-                                                </Card>
-                                            </Col>
+                                            {(dataAirway || []).map((item, key) => (
+                                                <Col key={key} lg={item.lg}>
+                                                    <Card className="card-animate" style={{ backgroundColor: vSetValidation.values.airway === item.value ? item.color : '#FFFFFF' }} onClick={() => onClickCardAirway(item.value)}>
+                                                        <CardBody>
+                                                            <p style={{ textAlign: 'center' }}><span className="fw-small">{item.label}</span></p>
+                                                        </CardBody>
+                                                    </Card>
+                                                </Col>
+                                            ))}
                                         </Row>
                                         <Row className="gy-2">
                                             <Col lg={1}>
@@ -333,41 +486,15 @@ const TriageIGD = () => {
                                                     <Label className="form-label">Breathing</Label>
                                                 </div>
                                             </Col>
-                                            <Col lg={2}>
-                                                <Card style={{ backgroundColor: '#B7DBFD' }}>
-                                                    <CardBody>
-                                                        <p style={{ textAlign: 'center' }}><span className="fw-small">Distress napas berat / henti napas</span></p>
-                                                    </CardBody>
-                                                </Card>
-                                            </Col>
-                                            <Col lg={2}>
-                                                <Card style={{ backgroundColor: '#FDB7B7' }}>
-                                                    <CardBody>
-                                                        <p style={{ textAlign: 'center' }}><span className="fw-small">Distress napas ringan sedang</span></p>
-                                                    </CardBody>
-                                                </Card>
-                                            </Col>
-                                            <Col lg={2}>
-                                                <Card style={{ backgroundColor: '#FCFDB7' }}>
-                                                    <CardBody>
-                                                        <p style={{ textAlign: 'center' }}><span className="fw-small">Normal</span></p>
-                                                    </CardBody>
-                                                </Card>
-                                            </Col>
-                                            <Col lg={2}>
-                                                <Card style={{ backgroundColor: '#B8FDB7' }}>
-                                                    <CardBody>
-                                                        <p style={{ textAlign: 'center' }}><span className="fw-small">Normal</span></p>
-                                                    </CardBody>
-                                                </Card>
-                                            </Col>
-                                            <Col lg={3}>
-                                                <Card style={{ backgroundColor: '#EBEBEB' }}>
-                                                    <CardBody>
-                                                        <p style={{ textAlign: 'center' }}><span className="fw-small">Normal</span></p>
-                                                    </CardBody>
-                                                </Card>
-                                            </Col>
+                                            {(dataBreathing || []).map((item, key) => (
+                                                <Col key={key} lg={item.lg}>
+                                                    <Card className="card-animate" style={{ backgroundColor: vSetValidation.values.breathing === item.value ? item.color : '#FFFFFF' }} onClick={() => onClickCardBreathing(item.value)}>
+                                                        <CardBody>
+                                                            <p style={{ textAlign: 'center' }}><span className="fw-small">{item.label}</span></p>
+                                                        </CardBody>
+                                                    </Card>
+                                                </Col>
+                                            ))}
                                         </Row>
                                         <Row className="gy-2">
                                             <Col lg={1}>
@@ -375,41 +502,15 @@ const TriageIGD = () => {
                                                     <Label className="form-label">Circulation</Label>
                                                 </div>
                                             </Col>
-                                            <Col lg={2}>
-                                                <Card style={{ backgroundColor: '#B7DBFD' }}>
-                                                    <CardBody>
-                                                        <p style={{ textAlign: 'center' }}><span className="fw-small">Gangguan hemodinamik berat / perdarahan tak terkontrol</span></p>
-                                                    </CardBody>
-                                                </Card>
-                                            </Col>
-                                            <Col lg={2}>
-                                                <Card style={{ backgroundColor: '#FDB7B7' }}>
-                                                    <CardBody>
-                                                        <p style={{ textAlign: 'center' }}><span className="fw-small">Gangguan hemodinamik sedang / ringan</span></p>
-                                                    </CardBody>
-                                                </Card>
-                                            </Col>
-                                            <Col lg={2}>
-                                                <Card style={{ backgroundColor: '#FCFDB7' }}>
-                                                    <CardBody>
-                                                        <p style={{ textAlign: 'center' }}><span className="fw-small">Stabil</span></p>
-                                                    </CardBody>
-                                                </Card>
-                                            </Col>
-                                            <Col lg={2}>
-                                                <Card style={{ backgroundColor: '#B8FDB7' }}>
-                                                    <CardBody>
-                                                        <p style={{ textAlign: 'center' }}><span className="fw-small">Stabil</span></p>
-                                                    </CardBody>
-                                                </Card>
-                                            </Col>
-                                            <Col lg={3}>
-                                                <Card style={{ backgroundColor: '#EBEBEB' }}>
-                                                    <CardBody>
-                                                        <p style={{ textAlign: 'center' }}><span className="fw-small">Stabil</span></p>
-                                                    </CardBody>
-                                                </Card>
-                                            </Col>
+                                            {(dataCirculation || []).map((item, key) => (
+                                                <Col key={key} lg={item.lg}>
+                                                    <Card className="card-animate" style={{ backgroundColor: vSetValidation.values.circulation === item.value ? item.color : '#FFFFFF' }} onClick={() => onClickCardCirculation(item.value)}>
+                                                        <CardBody>
+                                                            <p style={{ textAlign: 'center' }}><span className="fw-small">{item.label}</span></p>
+                                                        </CardBody>
+                                                    </Card>
+                                                </Col>
+                                            ))}
                                         </Row>
                                         <Row className="gy-2">
                                             <Col lg={1}>
@@ -417,41 +518,15 @@ const TriageIGD = () => {
                                                     <Label className="form-label">Disability</Label>
                                                 </div>
                                             </Col>
-                                            <Col lg={2}>
-                                                <Card style={{ backgroundColor: '#B7DBFD' }}>
-                                                    <CardBody>
-                                                        <p style={{ textAlign: 'center' }}><span className="fw-small">Unresponsive / respon to pain</span></p>
-                                                    </CardBody>
-                                                </Card>
-                                            </Col>
-                                            <Col lg={2}>
-                                                <Card style={{ backgroundColor: '#FDB7B7' }}>
-                                                    <CardBody>
-                                                        <p style={{ textAlign: 'center' }}><span className="fw-small">Alert, Respon to verbal</span></p>
-                                                    </CardBody>
-                                                </Card>
-                                            </Col>
-                                            <Col lg={2}>
-                                                <Card style={{ backgroundColor: '#FCFDB7' }}>
-                                                    <CardBody>
-                                                        <p style={{ textAlign: 'center' }}><span className="fw-small">Alert</span></p>
-                                                    </CardBody>
-                                                </Card>
-                                            </Col>
-                                            <Col lg={2}>
-                                                <Card style={{ backgroundColor: '#B8FDB7' }}>
-                                                    <CardBody>
-                                                        <p style={{ textAlign: 'center' }}><span className="fw-small">Alert</span></p>
-                                                    </CardBody>
-                                                </Card>
-                                            </Col>
-                                            <Col lg={3}>
-                                                <Card style={{ backgroundColor: '#EBEBEB' }}>
-                                                    <CardBody>
-                                                        <p style={{ textAlign: 'center' }}><span className="fw-small">Alert</span></p>
-                                                    </CardBody>
-                                                </Card>
-                                            </Col>
+                                            {(dataDisability || []).map((item, key) => (
+                                                <Col key={key} lg={item.lg}>
+                                                    <Card className="card-animate" style={{ backgroundColor: vSetValidation.values.disability === item.value ? item.color : '#FFFFFF' }} onClick={() => onClickCardDisability(item.value)}>
+                                                        <CardBody>
+                                                            <p style={{ textAlign: 'center' }}><span className="fw-small">{item.label}</span></p>
+                                                        </CardBody>
+                                                    </Card>
+                                                </Col>
+                                            ))}
                                         </Row>
                                         <Row className="gy-2">
                                             <Col lg={2}>
@@ -462,34 +537,15 @@ const TriageIGD = () => {
                                             <Col lg={1}>
 
                                             </Col>
-                                            <Col lg={2}>
-                                                <Card style={{ backgroundColor: '#FDB7B7' }}>
-                                                    <CardBody>
-                                                        <p style={{ textAlign: 'center' }}><span className="fw-small">Tidak Kooperatif</span></p>
-                                                    </CardBody>
-                                                </Card>
-                                            </Col>
-                                            <Col lg={2}>
-                                                <Card style={{ backgroundColor: '#FCFDB7' }}>
-                                                    <CardBody>
-                                                        <p style={{ textAlign: 'center' }}><span className="fw-small">Kooperatif</span></p>
-                                                    </CardBody>
-                                                </Card>
-                                            </Col>
-                                            <Col lg={2}>
-                                                <Card style={{ backgroundColor: '#B8FDB7' }}>
-                                                    <CardBody>
-                                                        <p style={{ textAlign: 'center' }}><span className="fw-small">Kooperatif</span></p>
-                                                    </CardBody>
-                                                </Card>
-                                            </Col>
-                                            <Col lg={3}>
-                                                <Card style={{ backgroundColor: '#EBEBEB' }}>
-                                                    <CardBody>
-                                                        <p style={{ textAlign: 'center' }}><span className="fw-small">Kooperatif</span></p>
-                                                    </CardBody>
-                                                </Card>
-                                            </Col>
+                                            {(dataKondisiMental || []).map((item, key) => (
+                                                <Col key={key} lg={item.lg}>
+                                                    <Card className="card-animate" style={{ backgroundColor: vSetValidation.values.kondisimental === item.value ? item.color : '#FFFFFF' }} onClick={() => onClickCardKondisiMental(item.value)}>
+                                                        <CardBody>
+                                                            <p style={{ textAlign: 'center' }}><span className="fw-small">{item.label}</span></p>
+                                                        </CardBody>
+                                                    </Card>
+                                                </Col>
+                                            ))}
                                         </Row>
                                     </Col>
                                     <Col lg={4}>

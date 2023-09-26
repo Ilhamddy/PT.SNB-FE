@@ -92,7 +92,10 @@ import {
     GET_HISTORI_JENIS_PELAYANAN_ERROR,
     SAVE_EMR_TRIAGE_IGD,
     SAVE_EMR_TRIAGE_IGD_SUCCESS,
-    SAVE_EMR_TRIAGE_IGD_ERROR
+    SAVE_EMR_TRIAGE_IGD_ERROR,
+    GET_COMBO_TRIAGE_IGD,
+    GET_COMBO_TRIAGE_IGD_SUCCESS,
+    GET_COMBO_TRIAGE_IGD_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -263,6 +266,11 @@ const INIT_STATE = {
         error: null,
         success: false
     },
+    getGetComboTriageIgd: {
+        data: [],
+        loading: false,
+        error: null,
+    },
 };
 
 const Emr = (state = INIT_STATE, action) => {
@@ -350,6 +358,9 @@ const Emr = (state = INIT_STATE, action) => {
                 },
                 saveEmrTriageIgd:{
                     ...INIT_STATE.saveEmrTriageIgd
+                },
+                getGetComboTriageIgd:{
+                    ...INIT_STATE.getGetComboTriageIgd
                 }
             }
         }
@@ -1397,6 +1408,39 @@ const Emr = (state = INIT_STATE, action) => {
                     error: action.payload,
                 },
             };
+        }
+
+        case GET_COMBO_TRIAGE_IGD: {
+            return {
+                ...state,
+                getGetComboTriageIgd: {
+                    ...state.getGetComboTriageIgd,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case GET_COMBO_TRIAGE_IGD_SUCCESS: {
+            return {
+                ...state,
+                getGetComboTriageIgd: {
+                    ...state.getGetComboTriageIgd,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case GET_COMBO_TRIAGE_IGD_ERROR: {
+            return {
+                ...state,
+                getGetComboTriageIgd: {
+                    ...state.getGetComboTriageIgd,
+                    loading: false,
+                    error: action.error,
+                }
+            }
         }
         
 

@@ -92,7 +92,10 @@ import {
     GET_HISTORI_JENIS_PELAYANAN_ERROR,
     SAVE_EMR_TRIAGE_IGD,
     SAVE_EMR_TRIAGE_IGD_SUCCESS,
-    SAVE_EMR_TRIAGE_IGD_ERROR
+    SAVE_EMR_TRIAGE_IGD_ERROR,
+    GET_COMBO_TRIAGE_IGD,
+    GET_COMBO_TRIAGE_IGD_SUCCESS,
+    GET_COMBO_TRIAGE_IGD_ERROR
 } from "./actionType";
 
 export const emrResetForm = () => ({
@@ -585,4 +588,19 @@ export const saveEmrTriageIgdSuccess = (data) => ({
 export const saveEmrTriageIgdError = (error) => ({
     type: SAVE_EMR_TRIAGE_IGD_ERROR,
     payload: error
+});
+
+export const getGetComboTriageIgd = (queries) => ({
+    type: GET_COMBO_TRIAGE_IGD,
+    payload: { queries: queries },
+});
+
+export const getGetComboTriageIgdSuccess = (data) => ({
+    type: GET_COMBO_TRIAGE_IGD_SUCCESS,
+    payload: data,
+});
+
+export const getGetComboTriageIgdError = (error) => ({
+    type: GET_COMBO_TRIAGE_IGD_ERROR,
+    payload: error,
 });

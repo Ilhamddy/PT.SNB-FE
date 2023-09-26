@@ -17,7 +17,7 @@ import {
     GET_ORDER_RESEP_FROM_DP,
     EMR_JENIS_PELAYANAN_SAVE,
     GET_HISTORI_JENIS_PELAYANAN,
-    SAVE_EMR_TRIAGE_IGD
+    SAVE_EMR_TRIAGE_IGD, GET_COMBO_TRIAGE_IGD
 } from "./actionType";
 
 import {
@@ -50,7 +50,8 @@ import {
     getOrderResepFromDpError,
     emrJenisPelayananSaveSuccess, emrJenisPelayananSaveError,
     getHistoriJenisPelayananSuccess, getHistoriJenisPelayananError,
-    saveEmrTriageIgdSuccess,saveEmrTriageIgdError
+    saveEmrTriageIgdSuccess,saveEmrTriageIgdError,
+    getGetComboTriageIgdSuccess,getGetComboTriageIgdError
 } from "./action";
 
 import { toast } from 'react-toastify';
@@ -643,6 +644,20 @@ export function* watchonsaveEmrTriageIgd() {
     yield takeEvery(SAVE_EMR_TRIAGE_IGD, onsaveEmrTriageIgd);
 }
 
+function* ongetGetComboTriageIgd({ payload: {queries}  }) {
+    try {
+        let response = null;
+        response = yield call(serviceEmr.getComboTriageIgd, queries);
+        yield put(getGetComboTriageIgdSuccess(response.data));
+    } catch (error) {
+        yield put(getGetComboTriageIgdError(error));
+    }
+}
+
+export function* watchgetGetComboTriageIgd() {
+    yield takeEvery(GET_COMBO_TRIAGE_IGD, ongetGetComboTriageIgd);
+}
+
 function* emrSaga() {
     yield all([
         fork(watchGetEmrHeader),
@@ -675,7 +690,8 @@ function* emrSaga() {
         fork(watchGetOrderResepFromDp),
         fork(watchemrJenisPelayananSave),
         fork(watchgetHistoriJenisPelayanan),
-        fork(watchonsaveEmrTriageIgd)
+        fork(watchonsaveEmrTriageIgd),
+        fork(watchgetGetComboTriageIgd)
     ]);
 }
 
