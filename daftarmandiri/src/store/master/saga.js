@@ -22,7 +22,6 @@ function* onGetAllMaster({payload: {data}}) {
         const response = yield call(serviceMaster.getAllMaster, data);
         yield put(getAllMasterSuccess(response));
     } catch (error) {
-        toast.error(error?.response?.msg || "error")
         yield put(getAllMasterError(error));
     }
 }
