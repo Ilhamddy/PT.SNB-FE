@@ -28,7 +28,7 @@ const getComboKiosk = async (req, res) => {
             unit: unit.rows,
             dokter: dokter.rows
         };
-        res.status(200).json({
+        res.status(200).send({
             msg: 'Success',
             code: 200,
             data: tempres,
@@ -53,7 +53,7 @@ const getCariPasien = async (req, res) => {
         // const tempres = {
         //     pasien: pasien.rows
         // };
-        res.status(200).json({
+        res.status(200).send({
             msg: 'Success',
             code: 200,
             data: pasien.rows,
@@ -144,7 +144,7 @@ const saveRegistrasiPasienKiosk = async (req, res) => {
             dataDaftar: req.body,
             namahafis:namahafis
         };
-        res.status(200).json({
+        res.status(200).send({
             msg: 'Success',
             code: 200,
             data: tempres,
@@ -203,7 +203,7 @@ const saveAntreanKiosk = async (req, res) => {
             belumdipanggil:belumdipanggil,
             datasave: req.body
         };
-        res.status(200).json({
+        res.status(200).send({
             msg: 'Success',
             code: 200,
             data: tempres,

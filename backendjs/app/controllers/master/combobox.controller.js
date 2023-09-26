@@ -614,7 +614,7 @@ const comboMappingProduk = async (req, res) => {
             instalasi: instalasi.rows,
             masterindukrl: masterIndukRL.rows,
         };
-        res.status(200).json({
+        res.status(200).send({
             msg: 'Success',
             code: 200,
             data: tempres,
@@ -640,7 +640,7 @@ const comboViewer = async (req, res) => {
             loket: loket.rows,
             jenisloket: jenisLoket.rows
         };
-        res.status(200).json({
+        res.status(200).send({
             msg: 'Success',
             code: 200,
             data: tempres,

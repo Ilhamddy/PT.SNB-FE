@@ -24,6 +24,7 @@ import { addResBody, logRequests } from "./app/middleware/logrequests.js";
 import farmasiRoutes from "./app/routes/transaksi/farmasi.routes.js";
 import kioskRoutes from "./app/routes/transaksi/kiosk.routes";
 import viewerRoutes from "./app/routes/transaksi/viewer.routes";
+import { decryptMandiri } from "./app/middleware/encryptMandiri";
 
 dotenv.config()
 
@@ -47,6 +48,7 @@ app.use('/media', express.static(__dirname + '/app/media'));
 
 app.use(addResBody)
 app.use(logRequests)
+app.use(decryptMandiri)
 
 // simple route
 app.get("/", (req, res) => {

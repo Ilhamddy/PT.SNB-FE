@@ -1,5 +1,7 @@
 import axios from "axios";
 import { api } from "../config";
+// import crypto from "crypto-browserify"
+import { decrypt, encrypt } from "./encrypt";
 
 // default
 axios.defaults.baseURL = api.API_URL;
@@ -7,7 +9,8 @@ axios.defaults.baseURL = api.API_URL;
 axios.defaults.headers.post["Content-Type"] = "application/json";
 
 // content type
-const token = JSON.parse(localStorage.getItem("authUser")) ? JSON.parse(localStorage.getItem("authUser"))?.accessToken : null;
+const token = JSON.parse(localStorage.getItem("authUserMandiri")) 
+  ? JSON.parse(localStorage.getItem("authUserMandiri"))?.accessToken : null;
 if (token)
   axios.defaults.headers.common["Authorization"] = "Bearer " + token;
 
@@ -25,14 +28,12 @@ axios.interceptors.response.use(
         message = "Internal Server Error";
         break;
       case 401:
-        window.location = '/auth-logout-basic'
         message = "Invalid credentials";
         break;
       case 404:
         message = "Sorry! the data you are looking for could not be found";
         break;
       case 403:
-        window.location = '/auth-logout-basic'
         message = "Sorry! the data you are looking for could not be found";
         break;
       default:
@@ -50,12 +51,12 @@ const setAuthorization = (token) => {
   axios.defaults.headers.common["Authorization"] = "Bearer " + token;
 };
 
+
 class APIClient {
   /**
    * Fetches data from given url
    */
-
-  get = (url, queries, axiosConfig) => {
+  get = async (url, queries, axiosConfig) => {
     let response;
     let paramKeys = [];
 
@@ -66,7 +67,7 @@ class APIClient {
       });
 
       const queryString = paramKeys && paramKeys.length ? paramKeys.join('&') : "";
-      response = axios.get(`${url}?${queryString}`, {
+      response = await axios.get(`${url}?${queryString}`, {
         headers: {
           "X-Client-Url": window.location.href,
           ...(axiosConfig?.headers || {})
@@ -74,7 +75,7 @@ class APIClient {
         ...(axiosConfig || {})
       });
     } else {
-      response = axios.get(`${url}`, {
+      response = await axios.get(`${url}`, {
         headers: {
           "X-Client-Url": window.location.href,
           ...(axiosConfig?.headers || {})
@@ -83,20 +84,45 @@ class APIClient {
       });
     }
 
+    // dari backend
+    if(response.isencrypt){
+      response = decrypt(response.dataenc).data
+    }
+
     return response;
   };
+
+
   /**
-   * post given data to url
+   * 
+   * @param {*} url 
+   * @param {*} data 
+   * @param {boolean} encryptSend if true, and there are authentication, encrypt the data default to true
+   * @param {*} axiosConfig 
+   * @returns 
    */
-  create = (url, data, axiosConfig) => {
-    return axios.post(url, data, {
+  create = async (url, data, encryptSend = true, axiosConfig) => {
+    let newData = data;
+    if(encryptSend){
+      newData = encrypt(data)
+    }
+    let response = await axios.post(url, data, {
       headers: {
         "X-Client-Url": window.location.href,
         ...(axiosConfig?.headers || {})
       },
       ...(axiosConfig || {})
     });
+    
+
+    if(response.isencrypt){
+      response = decrypt(response.dataenc).data
+    }
+
+
+    return response
   };
+
   /**
    * Updates data
    */

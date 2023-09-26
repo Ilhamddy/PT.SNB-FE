@@ -1,14 +1,18 @@
 
 //change above line to import
-import db from "../models";
-import config from "../config/auth.config";
-import pool from "../config/dbcon.query";
-import queries from '../queries/setting/mapsesions';
+import db from "../../models";
+import config from "../../config/auth.config";
+import pool from "../../config/dbcon.query";
+import queries from '../../queries/setting/mapsesions';
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
+import { pasienSignup } from "./authhelper";
+import {decrypt, encrypt} from "../../utils/encrypt"
 
 const User = db.user;
 const Role = db.role;
+const UserPasien = db.users_pasien;
+const m_pasien = db.m_pasien
 
 const Op = db.Sequelize.Op;
 
@@ -25,9 +29,6 @@ const signup = (req, res) => {
       if (req.body.roles) {
         Role.findAll({
           where: {
-            // name: {
-            //   [Op.or]: req.body.roles
-            // }
             id: req.body.roles
           }
         }).then(roles => {
@@ -58,7 +59,7 @@ const signin = (req, res) => {
         return res.status(404).send({ message: "User Not found." });
       }
 
-      var passwordIsValid = bcrypt.compareSync(
+      let passwordIsValid = bcrypt.compareSync(
         req.body.password,
         user.password
       );
@@ -72,37 +73,13 @@ const signin = (req, res) => {
         });
       }
 
-      
       try {
         pool.query(queries.getSesions, [user.id], (error, result) => {
           if (error) throw error;
-          // res.status(200).json(result.rows);
+          // res.status(200).send(result.rows);
           var resHead=result.rows;
           
-          // for (let i = 0; i < result.rows.length; i++) {
-            
-          //   if(i==0){
-          //     let tempresChild = [{ nourut: result.rows[i].nourut,reportdisplay:result.rows[i].reportdisplay,link:result.rows[i].link}]
-          //     let tempresHead = { id: result.rows[i].idhead,head:result.rows[i].head,child:tempresChild}
-          //     resHead.push(tempresHead)
-          //   }else{
-          //     for (let x = 0; x < resHead.length; x++) {
-                
-          //       if(resHead[x].id==result.rows[i].idhead){
-          //         let tempresChild = { nourut: result.rows[i].nourut,reportdisplay:result.rows[i].reportdisplay,link:result.rows[i].link}
-          //         resHead[x].child.push(tempresChild)
-          //         break;
-          //       }else{
-          //         let tempresChild = [{ nourut: result.rows[i].nourut,reportdisplay:result.rows[i].reportdisplay,link:result.rows[i].link}]
-          //         let tempresHead = { id: result.rows[i].idhead,head:result.rows[i].head,child:tempresChild}
-          //         resHead.push(tempresHead)
-          //         break;
-          //       }
-          //       // console.log(resHead[x].child)
-          //     }
-          //   }
-          // }
-
+          
           let token = jwt.sign({ id: user.id, sesion: resHead,idpegawai: user.objectpegawaifk, }, config.secret, {
             expiresIn: 86400 // 24 hours test
           });
@@ -134,7 +111,83 @@ const signin = (req, res) => {
     });
 };
 
+const signinPasien = async (req, res) => {
+  const logger = res.locals.logger;
+  try{
+    res.locals.showBodyRes()
+    const { nocm, noidentitas, clientSecret } = req.body;
+    await db.sequelize.transaction(async (transaction) => {
+      let user = await UserPasien.findOne({
+        where: {
+          norm: nocm
+        }
+      })
+      if(!user){
+        // sign up dulu kalau datanya sudah ada di m_pasien
+        user = await pasienSignup(req, res, transaction, {
+          norm: nocm,
+          noidentitas: noidentitas
+        })
+      }
+      if(!user) {
+        res.status(404).send({msg: "User Not found."})
+        return
+      }
+      await user.update({
+        clientsecret: clientSecret
+      }, {
+        transaction: transaction
+      })
+      user = user.toJSON()
+      let passwordIsValid = bcrypt.compareSync(
+        noidentitas,
+        user.password
+      );
+      if(passwordIsValid){
+        let token = jwt.sign({ 
+          id: user.id, 
+          expired: new Date() + (86400 * 1000),
+        }, config.secret, {
+          expiresIn: 86400
+        });
+        const tempres = {
+          id: user.id,
+          username: user.norm,
+          accessToken: token,
+        }
+        logger.info(clientSecret)
+        const encrypted = encrypt({
+          data: tempres,
+          msg: "sukses",
+          success: true,
+        }, clientSecret)
+        res.status(200).send(encrypted);
+        return 
+      }
+      const tempres = {
+        id: user.id,
+        username: user.norm,
+        accessToken: null,
+      }
+      res.status(200).send({
+        data: tempres,
+        msg: "success",
+        success: true,
+      });
+    })
+  } catch (error) {
+    logger.error(error);
+    res.status(500).json({
+      msg: error.message,
+      code: 500,
+      data: error,
+      success: false
+    });
+  }
+}
+
 export default {
   signin,
-  signup
+  signup,
+  signinPasien
 }

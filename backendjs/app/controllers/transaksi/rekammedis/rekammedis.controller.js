@@ -667,7 +667,7 @@ const updatePrinted = async (req, res) => {
         const tempres = {
             updateddp: updatedDP
         };
-        res.status(200).json({
+        res.status(200).send({
             msg: 'Success',
             code: 200,
             data: tempres,
@@ -691,7 +691,7 @@ const getLaporanRL3_3 = async (req, res) => {
         const tempres = {
         
         };
-        res.status(200).json({
+        res.status(200).send({
             msg: 'Success',
             code: 200,
             data: tempres,
@@ -719,7 +719,7 @@ const getDetailJenisProduk = async (req, res) => {
         const tempres = {
             detailjenisproduk: detailJenisProduk.rows
         };
-        res.status(200).json({
+        res.status(200).send({
             msg: 'Success',
             code: 200,
             data: tempres,
@@ -748,7 +748,7 @@ const getLayananJenis = async (req, res) => {
         const tempres = {
             layanan: layanan.rows
         };
-        res.status(200).json({
+        res.status(200).send({
             msg: 'Success',
             code: 200,
             data: tempres,
@@ -773,7 +773,7 @@ const getMasterRLFromInduk = async (req, res) => {
         const tempres = {
             masterrl: masterRL.rows
         };
-        res.status(200).json({
+        res.status(200).send({
             msg: 'Success',
             code: 200,
             data: tempres,
@@ -810,7 +810,7 @@ const createOrUpdateMapRL = async (req, res) => {
         const tempres = {
             rltoproduk: rlToProduk
         };
-        res.status(200).json({
+        res.status(200).send({
             msg: 'Success',
             code: 200,
             data: tempres,
@@ -835,7 +835,7 @@ const getLayananFromMasterRL = async (req, res) => {
         const tempres = {
             layanan: layanan.rows
         };
-        res.status(200).json({
+        res.status(200).send({
             msg: 'Success',
             code: 200,
             data: tempres,
@@ -872,7 +872,7 @@ const deleteMapRL = async (req, res) => {
         const tempres = {
             deleted: deleted
         };
-        res.status(200).json({
+        res.status(200).send({
             msg: 'Success',
             code: 200,
             data: tempres,

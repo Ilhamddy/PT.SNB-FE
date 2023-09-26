@@ -6,10 +6,12 @@ import { Routes, Route, useNavigate } from 'react-router-dom'
 
 //routes
 import { publicRoutes } from './allRoutes.js'
+import { ToastContainer } from 'react-toastify'
 
 const Index = () => {
   return (
     <React.Fragment>
+      <ToastContainer autoClose={3000} />
       <Routes>
         <Route>
           {publicRoutes.map((route, idx) => (

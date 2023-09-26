@@ -2,6 +2,10 @@ import {
     LOGIN_USER,
     LOGIN_USER_SUCCESS,
     LOGIN_USER_ERROR,
+    LOGOUT_USER,
+    LOGOUT_USER_SUCCESS,
+    LOGOUT_USER_ERROR,
+    GET_USER_LOGIN
 } from "./actionType";
 
 const INIT_STATE = {
@@ -45,6 +49,17 @@ const login = (state = INIT_STATE, action) => {
                     data: [],
                     loading: false,
                     error: action.payload,
+                },
+            };
+
+        case LOGOUT_USER_SUCCESS:
+            return {
+                ...state,
+                loginUser: {
+                    ...state.loginUser,
+                    data: [],
+                    loading: true,
+                    error: null,
                 },
             };
 

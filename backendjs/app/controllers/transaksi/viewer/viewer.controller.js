@@ -12,7 +12,7 @@ const pollingAntrean = async (req, res) => {
         const tempres = {
             loket
         };
-        res.status(200).json({
+        res.status(200).send({
             msg: 'Success',
             code: 200,
             data: tempres,
@@ -76,7 +76,7 @@ const getLoketSisa = async (req, res) => {
             lastpemanggilan: lastAntrean,
             lastloket: lastPemanggilan?.loket || ""
         };
-        res.status(200).json({
+        res.status(200).send({
             msg: 'Success',
             code: 200,
             data: tempres,
@@ -127,7 +127,7 @@ const panggilLoket = async (req, res) => {
         const tempres = {
         
         };
-        res.status(200).json({
+        res.status(200).send({
             msg: 'Success',
             code: 200,
             data: tempres,
@@ -200,7 +200,7 @@ const getAllLoket = async (req, res) => {
             lastloket: lastPemanggilanViewer?.loket || "",
             status: lastPemanggilanViewer?.ispanggil || 3
         };
-        res.status(200).json({
+        res.status(200).send({
             msg: 'Success',
             code: 200,
             data: tempres,
@@ -236,7 +236,7 @@ const getAllTerpanggil = async (req, res) => {
         const tempres = {
             terpanggil: terpanggils
         };
-        res.status(200).json({
+        res.status(200).send({
             msg: 'Success',
             code: 200,
             data: tempres,
@@ -279,7 +279,7 @@ const panggilUlangAntrean = async (req, res) => {
         const tempres = {
             updatedantrean: updatedAntrean
         };
-        res.status(200).json({
+        res.status(200).send({
             msg: 'Success',
             code: 200,
             data: tempres,

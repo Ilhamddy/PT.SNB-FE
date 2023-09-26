@@ -39,7 +39,6 @@ async function generateSignature(req, res) {
 
 async function generateAuthHeaders () {
 
-
     const consumerId = "20886";
     const consumerSecret = "1xNE2DE971";
     const userKey = "8d3183f515075fb411aa5d036e65af05";

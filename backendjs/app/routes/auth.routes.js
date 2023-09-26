@@ -1,5 +1,6 @@
-import { verifySignUp } from "../middleware/index.js"
-import controller from "../controllers/auth.controller.js"
+import { verifySignUp, authJwt } from "../middleware/index.js"
+import controller from "../controllers/auth/auth.controller.js"
+import { decryptMandiri } from "../middleware/encryptMandiri";
 
 export default function(app) {
   app.use(function(req, res, next) {
@@ -17,6 +18,20 @@ export default function(app) {
     ],
     controller.signup
   );
+  app.post(
+    "/api/auth/login-user-pasien",
+    [],
+    controller.signinPasien
+  );
+
+  app.get(
+    "/api/auth/verify-email/get-dummy",
+    [
+      authJwt.verifyTokenUser,
+      decryptMandiri
+    ],
+    controller.signinPasien
+  )
 
   app.post("/api/auth/signin", controller.signin);
 };

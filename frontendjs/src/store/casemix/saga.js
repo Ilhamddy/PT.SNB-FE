@@ -15,11 +15,16 @@ import {
 } from "./actionType";
 
 import {
-    listCariPasienGetSuccess, listCariPasienGetError,
-    listDaftarPasienGetSuccess, listDaftarPasienGetError,
-    listTarifPasienGetSuccess, listTarifPasienGetError,
-    listDiagnosaxGetSuccess, listDiagnosaxGetError,
-    listDiagnosaixGetSuccess, listDiagnosaixGetError,
+    listCariPasienGetSuccess, 
+    listCariPasienGetError,
+    listDaftarPasienGetSuccess, 
+    listDaftarPasienGetError,
+    listTarifPasienGetSuccess, 
+    listTarifPasienGetError,
+    listDiagnosaxGetSuccess, 
+    listDiagnosaxGetError,
+    listDiagnosaixGetSuccess, 
+    listDiagnosaixGetError,
     bridgingInacbgSaveSuccess, bridgingInacbgSaveError,
     tarifKlaimSaveSuccess,tarifKlaimSaveError,
     listCmgOptionsGetSuccess,listCmgOptionsGetError,
