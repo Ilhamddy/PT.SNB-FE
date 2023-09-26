@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react'
 import Flatpickr, { DateTimePickerProps } from 'react-flatpickr'
 import './FlatpickrDM.scss'
+import { FormFeedback } from 'reactstrap'
 
 /**
  * @typedef {object} Props
@@ -19,27 +20,25 @@ const FlatpickrDM = ({
   isError = false,
   className,
   classNameInput,
-  onChange,
   defaultValue,
   ...rest
 }) => {
   const refFp = useRef(null)
   const [dateNow] = useState(() => new Date().toISOString())
   return (
-    <div
-      className={`input d-flex kontainer-flatpickr ${
-        isError ? 'is-invalid' : ''
-      } ${className || ''}`}
-    >
+    <div className={`input d-flex kontainer-flatpickr  ${className || ''}`}>
       <Flatpickr
         options={{
           dateFormat: 'd-m-Y',
         }}
-        className={`fc-flatpickr form-control ${classNameInput}`}
+        className={`input fc-flatpickr form-control ${classNameInput} ${
+          isError ? 'is-invalid' : ''
+        }`}
         ref={refFp}
         defaultValue={defaultValue || dateNow}
         {...rest}
       />
+      <FormFeedback>{errorMsg}</FormFeedback>
       {/* tambahkan image di sini */}
     </div>
   )

@@ -61,6 +61,30 @@ const FormPasienBaru = ({ step, setStep }) => {
       setStep(step + 1)
     },
   })
+  const vStep1 = useFormik({
+    initialValues: {
+      alamat: '',
+      kelurahan: '',
+      kodepos: '',
+      kecamatan: '',
+      kabupaten: '',
+      provinsi: '',
+      negara: '',
+    },
+    validationSchema: Yup.object({
+      alamat: Yup.string().required('Alamat wajib diisi'),
+      kelurahan: Yup.string().required('Kelurahan wajib diisi'),
+      kodepos: Yup.string().required('Kode Pos wajib diisi'),
+      kecamatan: Yup.string().required('Kecamatan wajib diisi'),
+      kabupaten: Yup.string().required('Kabupaten wajib diisi'),
+      provinsi: Yup.string().required('Provinsi wajib diisi'),
+      negara: Yup.string().required('Negara wajib diisi'),
+    }),
+    onSubmit: (values, { resetForm }) => {
+      console.log('masuk')
+      setStep(step + 1)
+    },
+  })
   return (
     <div className="kontainer-konten pasien-lama-konten">
       {step === 0 && (
@@ -113,6 +137,7 @@ const FormPasienBaru = ({ step, setStep }) => {
               value={vStep0.values.tanggallahir}
               onChange={([newDate]) => {
                 newDate.setHours(0, 0, 0)
+                console.log(newDate.toISOString())
                 vStep0.setFieldValue(
                   'tanggallahir',
                   newDate.toISOString() || ''
@@ -377,6 +402,7 @@ const FormPasienBaru = ({ step, setStep }) => {
             className="btn-lama"
             type="button"
             onClick={() => {
+              console.error(vStep0.errors)
               if (step === 0) {
                 vStep0.handleSubmit()
               }
