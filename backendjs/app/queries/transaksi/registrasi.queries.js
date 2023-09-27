@@ -232,12 +232,30 @@ select
 	tp.tglupdate,
 	td.noregistrasi,
 	mp.nocm,
-	to_char( mp.tgllahir, TO_CHAR(age( mp.tgllahir,  now( )), 'YY Tahun mm Bulan DD Hari')) AS umur
+	to_char( mp.tgllahir, TO_CHAR(age( mp.tgllahir,  now( )), 'YY Tahun mm Bulan DD Hari')) AS umur,
+    to_char( mp.tgllahir, TO_CHAR(age( mp.tgllahir,  now( )), 'YY Tahun mm Bulan DD Hari')) AS umur,
+	case when tp.objectdaruratigdfk = 1 then '#B7DBFD' when tp.objectdaruratigdfk =2 then '#FDB7B7'
+	when tp.objectdaruratigdfk =3 then '#FCFDB7' when tp.objectdaruratigdfk =4 then '#B8FDB7'
+	else '#E1E1E1' end as statusdarurat
 from
 	t_pasienigd tp
 left join t_daftarpasien td on
 	td.norec = tp.objectdaftarpasienfk
 left join m_pasien mp on mp.id=td.nocmfk 
+
+`
+
+const qWidgetDaftarPasienTriage = `
+SELECT
+    COUNT(CASE WHEN tp.objectdaruratigdfk = 1 THEN tp.objectdaruratigdfk END) AS satu,
+    COUNT(CASE WHEN tp.objectdaruratigdfk = 2 THEN tp.objectdaruratigdfk END) AS dua,
+    COUNT(CASE WHEN tp.objectdaruratigdfk = 3 THEN tp.objectdaruratigdfk END) AS tiga,
+    COUNT(CASE WHEN tp.objectdaruratigdfk = 4 THEN tp.objectdaruratigdfk END) AS empat,
+    COUNT(CASE WHEN tp.objectdaruratigdfk = 5 THEN tp.objectdaruratigdfk END) AS lima
+FROM
+    t_pasienigd tp
+LEFT JOIN t_daftarpasien td ON td.norec = tp.objectdaftarpasienfk
+LEFT JOIN m_pasien mp ON mp.id = td.nocmfk;
 `
 
 const qM_DaruratIgd = `
@@ -252,6 +270,7 @@ select
 	md.id as value,
     md.reportdisplay as label
 from m_hubungankeluarga md 
+where md.statusenabled=true
 `
 
 
@@ -277,5 +296,6 @@ export default {
     getDaftarPasienIGD,
     qDaftarPasienTriage,
     qM_DaruratIgd,
-    qM_HubunganKeluarga
+    qM_HubunganKeluarga,
+    qWidgetDaftarPasienTriage
 };

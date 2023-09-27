@@ -1112,7 +1112,14 @@ const saveTriageIgd = async (req, res) => {
                     objectpegawaiinputfk:req.idPegawai,
                     riwayatpenyakit:req.body.riwayatpenyakit,
                     riwayatobat:req.body.riwayatobat,
-                    skalanyeri:req.body.skalanyeri
+                    skalanyeri:req.body.skalanyeri === '' ? 0 : req.body.skalanyeri,
+                    airway:req.body.airway === '' ? 0 : req.body.airway,
+                    breathing:req.body.breathing === '' ? 0 : req.body.breathing,
+                    circulation:req.body.circulation === '' ? 0 : req.body.circulation,
+                    disability:req.body.disability === '' ? 0 : req.body.disability,
+                    kondisimental:req.body.kondisimental === '' ? 0 : req.body.kondisimental,
+                    objectdaruratigdfk:req.body.tingkatdarurat === '' ? 0 : req.body.tingkatdarurat,
+                    objecthubunganpjfk:req.body.hubungankeluarga === '' ? 0 : req.body.hubungankeluarga
                 }, { transaction });
     
                 return { pasienigd }

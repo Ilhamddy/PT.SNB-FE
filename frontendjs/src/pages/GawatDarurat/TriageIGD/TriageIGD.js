@@ -7,14 +7,17 @@ import SkalaNyeri from '../../../Components/SkalaNyeri/SkalaNyeri';
 import { useFormik } from "formik"; //yupToFormErrors
 import * as Yup from "yup";
 import { useDate } from '../../../utils/format';
-import { saveEmrTriageIgd, getGetComboTriageIgd } from '../../../store/actions';
+import { saveEmrTriageIgd, getGetComboTriageIgd, emrResetForm } from '../../../store/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import CustomSelect from '../../Select/Select';
+import { useNavigate } from 'react-router-dom';
 
 const TriageIGD = () => {
     document.title = "Triage IGD";
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const { newData, successSave, data } = useSelector((state) => ({
         newData: state.Emr.saveEmrTriageIgd.data,
         successSave: state.Emr.saveEmrTriageIgd.success,
@@ -40,10 +43,11 @@ const TriageIGD = () => {
             breathing: '',
             circulation: '',
             disability: '',
-            kondisimental: ''
+            kondisimental: '',
+            tingkatdarurat: ''
         },
         validationSchema: Yup.object({
-
+            tingkatdarurat: Yup.string().required("Tingkat Darurat jawab wajib diisi"),
         }),
         onSubmit: (values) => {
             console.log(values);
@@ -56,8 +60,11 @@ const TriageIGD = () => {
     })
     useEffect(() => {
         return () => {
-            dispatch(getGetComboTriageIgd(''));
+            dispatch(emrResetForm());
         }
+    }, [dispatch])
+    useEffect(() => {
+        dispatch(getGetComboTriageIgd(''))
     }, [dispatch])
     const [skala, setSkalaNyeri] = useState(0)
     const onClickSkalaNyeri = (q) => {
@@ -233,6 +240,53 @@ const TriageIGD = () => {
             lg: 3
         }
     ]
+    const [dataHubungan, setdataHubungan] = useState([]);
+    const [dataTingkatDarurat, setdataTingkatDarurat] = useState([]);
+    useEffect(() => {
+        if (data) {
+            let newArray = data?.mhubungankeluarga || [];
+            newArray.push({ value: '', label: 'Isi Hubungan Keluarga' });
+            setdataHubungan(newArray.sort((a, b) => a.value - b.value))
+
+            // let newArray2 = data?.mdaruratigd || [];
+            // newArray2.push({ value: '', label: 'Isi Tingkat Darurat' });
+            // setdataTingkatDarurat(newArray2.sort((a, b) => a.value - b.value))
+        }
+    }, [data])
+    useEffect(() => {
+        if (vSetValidation.values.airway) {
+            let tempArray = []
+            if (vSetValidation.values.airway) {
+                tempArray.push({ value: vSetValidation.values.airway });
+            }
+            if (vSetValidation.values.breathing) {
+                tempArray.push({ value: vSetValidation.values.breathing });
+            }
+
+            if (vSetValidation.values.circulation) {
+                tempArray.push({ value: vSetValidation.values.circulation });
+            }
+
+            if (vSetValidation.values.disability) {
+                tempArray.push({ value: vSetValidation.values.disability });
+            }
+
+            if (vSetValidation.values.kondisimental) {
+                tempArray.push({ value: vSetValidation.values.kondisimental });
+            }
+
+            let newArray = data?.mdaruratigd?.filter(function (el) {
+                return tempArray.some(item => item.value === el.value);
+            }) || [];
+            newArray.push({ value: '', label: 'Isi Tingkat Kedaruratan' });
+            setdataTingkatDarurat(newArray.sort((a, b) => a.value - b.value))
+        }
+
+    }, [vSetValidation.values.airway, vSetValidation.values.breathing,
+    vSetValidation.values.circulation, vSetValidation.values.disability, vSetValidation.values.kondisimental, data?.mdaruratigd])
+    const handleBack = (e) => {
+        navigate(-1)
+    }
     return (
         <React.Fragment>
             <ToastContainer closeButton={false} />
@@ -335,19 +389,23 @@ const TriageIGD = () => {
                                                 </div>
                                             </Col>
                                             <Col lg={8}>
-                                                <Input
+                                                <CustomSelect
                                                     id="hubungankeluarga"
                                                     name="hubungankeluarga"
-                                                    type="select"
-                                                    value={vSetValidation.values.hubungankeluarga || ''}
-                                                    placeholder='Hubungan Keluarga'
-                                                    onChange={vSetValidation.handleChange}
-                                                    onBlur={vSetValidation.handleBlur}
-                                                >
-                                                    {(data.mhubungankeluarga || []).map((option, index) => (
-                                                        <option key={index}>{option.label}</option>
-                                                    ))}
-                                                </Input>
+                                                    options={dataHubungan || []}
+                                                    onChange={(e) => {
+                                                        vSetValidation.setFieldValue('hubungankeluarga', e?.value || '')
+                                                    }}
+                                                    value={vSetValidation.values.hubungankeluarga}
+                                                    className={`input row-header ${!!vSetValidation?.errors.hubungankeluarga ? 'is-invalid' : ''
+                                                        }`}
+                                                />
+                                                {vSetValidation.touched.hubungankeluarga &&
+                                                    !!vSetValidation.errors.hubungankeluarga && (
+                                                        <FormFeedback type="invalid">
+                                                            <div>{vSetValidation.errors.hubungankeluarga}</div>
+                                                        </FormFeedback>
+                                                    )}
                                             </Col>
                                             <Col lg={4}>
                                                 <div className="mt-2">
@@ -562,13 +620,23 @@ const TriageIGD = () => {
                                         <Label className="form-label">Tingkat Kedaruratan</Label>
                                     </Col>
                                     <Col lg={8}>
-                                        <Input
-                                            id="search"
-                                            name="search"
-                                            type="select"
-                                            // value={search}
-                                            placeholder='Riwayat Obat Terdahulu'
+                                        <CustomSelect
+                                            id="tingkatdarurat"
+                                            name="tingkatdarurat"
+                                            options={dataTingkatDarurat || []}
+                                            onChange={(e) => {
+                                                vSetValidation.setFieldValue('tingkatdarurat', e?.value || '')
+                                            }}
+                                            value={vSetValidation.values.tingkatdarurat}
+                                            className={`input row-header ${!!vSetValidation?.errors.tingkatdarurat ? 'is-invalid' : ''
+                                                }`}
                                         />
+                                        {vSetValidation.touched.tingkatdarurat &&
+                                            !!vSetValidation.errors.tingkatdarurat && (
+                                                <FormFeedback type="invalid">
+                                                    <div>{vSetValidation.errors.tingkatdarurat}</div>
+                                                </FormFeedback>
+                                            )}
                                     </Col>
                                     <Col lg={4}>
                                         <Label className="form-label">Rencana Terapi</Label>
@@ -586,8 +654,14 @@ const TriageIGD = () => {
                                     </Col>
                                     <Col lg={12} className="mr-3 me-3 mt-2">
                                         <div className="d-flex flex-wrap justify-content-end gap-2">
-                                            <Button type="submit" color="success" style={{ width: '20%' }}>Simpan</Button>
-                                            <Button type="button" color="danger" style={{ width: '20%' }}>Batal</Button>
+                                            {!successSave ? (
+                                                <>
+                                                    <Button type="submit" color="success" style={{ width: '20%' }}>Simpan</Button>
+                                                    <Button type="button" color="danger" style={{ width: '20%' }} onClick={() => { handleBack() }}>Batal</Button>
+                                                </>
+                                            ) :
+                                                <Button type="button" color="danger" style={{ width: '20%' }} onClick={() => { handleBack() }}>Kembali</Button>
+                                            }
                                         </div>
                                     </Col>
                                 </Row>

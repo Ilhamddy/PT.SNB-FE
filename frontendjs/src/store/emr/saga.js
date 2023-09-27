@@ -637,7 +637,7 @@ function* onsaveEmrTriageIgd({ payload: { body, callback } }) {
         callback && callback();
     } catch (error) {
         yield put(saveEmrTriageIgdError(error));
-        toast.error("Gagal update order plus verif", { autoClose: 3000 });
+        toast.error("Gagal Simpan Triage", { autoClose: 3000 });
     }
 }
 export function* watchonsaveEmrTriageIgd() {
