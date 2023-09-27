@@ -1,22 +1,39 @@
 import React, { useEffect, useState } from 'react';
 import withRouter from '../../../Components/Common/withRouter';
 import UiContent from '../../../Components/Common/UiContent';
-import { Button, Card, CardBody, CardHeader, Col, Container, Input, Label, Row } from 'reactstrap';
-import { widgetDaftarPasienTriageGet, daftarPasienResetForm, DaftarPasienTriageGet } from '../../../store/actions';
+import { Button, Card, CardBody, CardHeader, Col, Container, FormFeedback, Input, Label, Row } from 'reactstrap';
+import { widgetDaftarPasienTriageGet, daftarPasienResetForm, DaftarPasienTriageGet, getGetComboTriageIgd } from '../../../store/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import BreadCrumb from '../../../Components/Common/BreadCrumb';
 import CountUp from "react-countup";
 import pria from "../../../assets/images/svg/pria.svg";
 import { useNavigate } from 'react-router-dom';
+import { useFormik } from 'formik';
+import * as Yup from "yup";
+import CustomSelect from '../../Select/Select';
 
 const TriageIGD = () => {
     document.title = "Daftar Pasien Triage";
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const { datawidget, data } = useSelector((state) => ({
+    const { datawidget, data, dataCombo } = useSelector((state) => ({
         datawidget: state.DaftarPasien.widgetDaftarPasienTriageGet.data,
         data: state.DaftarPasien.DaftarPasienTriageGet.data,
+        dataCombo: state.Emr.getGetComboTriageIgd.data,
     }));
+    const vSetValidation = useFormik({
+        enableReinitialize: true,
+        initialValues: {
+            tingkatdarurat: '',
+            search: '',
+            statuspasien: ''
+        },
+        validationSchema: Yup.object({
+        }),
+        onSubmit: (values) => {
+
+        }
+    })
     const [namaPasien, setnamaPasien] = useState(null);
     useEffect(() => {
         return () => {
@@ -25,13 +42,53 @@ const TriageIGD = () => {
     }, [dispatch])
     useEffect(() => {
         dispatch(widgetDaftarPasienTriageGet());
+        dispatch(getGetComboTriageIgd(''));
     }, [dispatch])
     useEffect(() => {
-        dispatch(DaftarPasienTriageGet());
+        dispatch(DaftarPasienTriageGet({ search: '' }));
     }, [dispatch])
     const handleCard = (item) => {
         // console.log(item)
         setnamaPasien(item.namapasien)
+    };
+    const handleSelect = (nama, value) => {
+        if (nama === 'tingkatdarurat') {
+            vSetValidation.setFieldValue('tingkatdarurat', value || '')
+            dispatch(DaftarPasienTriageGet({ search: vSetValidation.values.search, tingkatdarurat: value, statuspasien: vSetValidation.values.statuspasien }));
+        } else if (nama === 'search') {
+            vSetValidation.setFieldValue('search', value || '')
+            dispatch(DaftarPasienTriageGet({ search: value, tingkatdarurat: vSetValidation.values.tingkatdarurat, statuspasien: vSetValidation.values.statuspasien }));
+        } else if (nama === 'statuspasien') {
+            vSetValidation.setFieldValue('statuspasien', value || '')
+            dispatch(DaftarPasienTriageGet({ search: vSetValidation.values.search, tingkatdarurat: vSetValidation.values.tingkatdarurat, statuspasien: value }));
+        }
+    }
+    const dataStatusPasien = [
+        {
+            value: 1,
+            label: 'Semua'
+        },
+        {
+            value: 2,
+            label: 'Terdaftar'
+        },
+        {
+            value: 3,
+            label: 'Belum Terdaftar'
+        }
+    ]
+    const handleClickButton = (e) => {
+        if (namaPasien === null) {
+            // defaultnotify('Pasien Belum Dipilih')
+            return
+        }
+
+        // if(e==='registrasi'){
+
+        // }else if(e==='edit'){
+
+        // }
+
     };
     return (
         <React.Fragment>
@@ -85,7 +142,7 @@ const TriageIGD = () => {
                                                 <span className={"avatar-title rounded-circle fs-4 bg-soft-info"}>
                                                     <h2 className="ff-secondary fw-semibold">
                                                         <span className="counter-value" style={{ fontSize: "1.5rem" }}>
-                                                        <img src={pria} alt="" className="img-fluid rounded-circle" />
+                                                            <img src={pria} alt="" className="img-fluid rounded-circle" />
                                                         </span>
                                                     </h2>
                                                 </span>
@@ -98,8 +155,8 @@ const TriageIGD = () => {
                                         <CardBody>
                                             <div className="live-preview">
                                                 <div className="d-flex flex-column gap-2">
-                                                    <Button color="info" className="btn-animation" data-text="Cetak Label Pasien"> <span>Registrasi</span> </Button>
-                                                    <Button color="info" className="btn-animation" data-text="Cetak Label Pasien"> <span>Pengkajian Medis</span> </Button>
+                                                    <Button color="info" className="btn-animation" data-text="Registrasi" onClick={() => handleClickButton('registrasi')}><span>Registrasi</span></Button>
+                                                    <Button color="info" className="btn-animation" data-text="Pengkajian Medis" > <span>Pengkajian Medis</span> </Button>
                                                 </div>
                                             </div>
                                         </CardBody>
@@ -117,7 +174,7 @@ const TriageIGD = () => {
                                                         // value={search}
                                                         placeholder='Cari Berdasarkan No.RM / Nama Pasien'
                                                         onChange={(e) => {
-                                                            // setSearch(e.target.value)
+                                                            handleSelect('search', e.target.value)
                                                         }}
                                                     />
                                                 </Col>
@@ -127,16 +184,24 @@ const TriageIGD = () => {
                                                     </div>
                                                 </Col>
                                                 <Col>
-                                                    <Input
-                                                        id="search"
-                                                        name="search"
-                                                        type="select"
-                                                        // value={search}
-                                                        placeholder='Cari Berdasarkan No.RM / Nama Pasien'
+                                                    <CustomSelect
+                                                        id="tingkatdarurat"
+                                                        name="tingkatdarurat"
+                                                        options={dataCombo?.mdaruratigd}
                                                         onChange={(e) => {
-                                                            // setSearch(e.target.value)
+                                                            handleSelect('tingkatdarurat', e?.value)
+                                                            // vSetValidation.setFieldValue('tingkatdarurat', e?.value || '')
                                                         }}
+                                                        value={vSetValidation.values.tingkatdarurat}
+                                                        className={`input row-header ${!!vSetValidation?.errors.tingkatdarurat ? 'is-invalid' : ''
+                                                            }`}
                                                     />
+                                                    {vSetValidation.touched.tingkatdarurat &&
+                                                        !!vSetValidation.errors.tingkatdarurat && (
+                                                            <FormFeedback type="invalid">
+                                                                <div>{vSetValidation.errors.tingkatdarurat}</div>
+                                                            </FormFeedback>
+                                                        )}
                                                 </Col>
                                                 <Col>
                                                     <div className="mt-2">
@@ -144,32 +209,83 @@ const TriageIGD = () => {
                                                     </div>
                                                 </Col>
                                                 <Col>
-                                                    <Input
-                                                        id="search"
-                                                        name="search"
-                                                        type="select"
-                                                        // value={search}
-                                                        placeholder='Cari Berdasarkan No.RM / Nama Pasien'
+                                                    <CustomSelect
+                                                        id="statuspasien"
+                                                        name="statuspasien"
+                                                        options={dataStatusPasien}
                                                         onChange={(e) => {
-                                                            // setSearch(e.target.value)
+                                                            handleSelect('statuspasien', e?.value)
+                                                            // vSetValidation.setFieldValue('statuspasien', e?.value || '')
                                                         }}
+                                                        value={vSetValidation.values.statuspasien}
+                                                        className={`input row-header ${!!vSetValidation?.errors.statuspasien ? 'is-invalid' : ''
+                                                            }`}
                                                     />
+                                                    {vSetValidation.touched.statuspasien &&
+                                                        !!vSetValidation.errors.statuspasien && (
+                                                            <FormFeedback type="invalid">
+                                                                <div>{vSetValidation.errors.statuspasien}</div>
+                                                            </FormFeedback>
+                                                        )}
                                                 </Col>
                                                 <Col>
-                                                    <Button onClick={()=>{navigate(`/gawatdarurat/input-pasien-triage`) }} color='info'>+</Button></Col>
+                                                    <Button onClick={() => { navigate(`/gawatdarurat/input-pasien-triage`) }} color='info'>+</Button></Col>
                                             </Row>
                                         </CardHeader>
                                         <CardBody>
                                             <div style={{ overflowY: 'auto', maxHeight: '400px' }}>
-                                                <Row className="row-cols-xxl-12 row-cols-lg-12 row-cols-1">
+                                                {(data.data || []).map((item, key) => (
+                                                    <React.Fragment key={key}>
+                                                        <Card className="product card-animate">
+                                                            <CardBody>
+                                                                <Row className="gy-3">
+                                                                    <div className="col-sm-auto">
+                                                                        <div className="avatar-md flex-shrink-0">
+                                                                            <span className={"avatar-title rounded-circle fs-4"} style={{ backgroundColor: item.statusdarurat }}>
+                                                                                <h2 className="ff-secondary fw-semibold">
+                                                                                    <span className="counter-value" style={{ fontSize: "1.5rem" }}>
+                                                                                    </span>
+                                                                                </h2>
+                                                                            </span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div className="col-sm">
+                                                                        <h5 className="card-title mb-1">{item.nocm ? item.nocm : '-'}</h5>
+                                                                        <p className="mb-0">
+                                                                            {item.namapasien && item.namapasien.length > 20
+                                                                                ? `${item.namapasien.substring(0, 20)}...`
+                                                                                : item.namapasien}
+                                                                        </p>
+                                                                        <p className="text-muted mb-0">{item.umur ? item.umur : '-'}</p>
+                                                                    </div>
+                                                                    <div className="col-sm">
+                                                                    <div className="text-lg-start">
+                                                                            <p className="text-muted mb-0">Tgl. Kedatangan {item.tglinput}</p>
+                                                                            <p className="text-muted mb-0">Pembawa Pasien {item.namapj ? item.namapj : '-'}</p>
+                                                                            <p className="text-muted mb-0">No Hp {item.nohp ? item.nohp : '-'}</p>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div className="col-sm">
+                                                                    <div className="text-lg-start">
+                                                                            <p className="text-muted mb-0">No. Registrasi : {item.noregistrasi ? item.noregistrasi : '-'}</p>
+                                                                            <p className="text-muted mb-0">DPJP Pasien : {item.namapj ? item.namapj : '-'}</p>
+                                                                            <p className="text-muted mb-0">Keluhan : {item.keluhan ? item.keluhan : '-'}</p>
+                                                                        </div>
+                                                                    </div>
+                                                                </Row>
+                                                            </CardBody>
+                                                        </Card>
+                                                    </React.Fragment>
+                                                ))}
+                                                {/* <Row className="row-cols-xxl-12 row-cols-lg-12 row-cols-1">
                                                     {(data.data || []).map((item, key) => (
                                                         <Col key={key}>
-                                                            <Card className="card-animate" onClick={()=>{handleCard(item)}}>
+                                                            <Card className="card-animate" onClick={() => { handleCard(item) }}>
                                                                 <CardBody>
                                                                     <Row className="gy-2">
                                                                         <Col xs={1}>
                                                                             <div className="avatar-md flex-shrink-0">
-                                                                                <span className={"avatar-title rounded-circle fs-4 bg-soft-info"}>
+                                                                                <span className={"avatar-title rounded-circle fs-4"} style={{ backgroundColor: item.statusdarurat }}>
                                                                                     <h2 className="ff-secondary fw-semibold">
                                                                                         <span className="counter-value" style={{ fontSize: "1.5rem" }}>
                                                                                         </span>
@@ -207,7 +323,7 @@ const TriageIGD = () => {
                                                             </Card>
                                                         </Col>
                                                     ))}
-                                                </Row>
+                                                </Row> */}
                                             </div>
                                         </CardBody>
                                     </Card>

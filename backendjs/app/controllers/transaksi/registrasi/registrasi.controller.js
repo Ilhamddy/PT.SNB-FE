@@ -137,12 +137,12 @@ const getPasienById = (req, res) => {
                         let todays = formatDate(new Date())
                         let tgldaftar = formatDate(new Date(result.rows[i].tgldaftar))
                         let statuspasien = 'LAMA'
-                        if(todays === tgldaftar)
+                        if (todays === tgldaftar)
                             statuspasien = 'BARU'
                         tempres = {
                             id: result.rows[i].id, nocm: result.rows[i].nocm, namapasien: result.rows[i].namapasien,
                             noidentitas: result.rows[i].noidentitas, nobpjs: result.rows[i].nobpjs, nohp: result.rows[i].nohp,
-                            tgllahir: result.rows[i].tgllahir, statuspasien:statuspasien
+                            tgllahir: result.rows[i].tgllahir, statuspasien: statuspasien
                         }
 
                     }
@@ -199,7 +199,7 @@ const getAllByOr = (req, res) => {
 const savePasien = async (req, res) => {
     const logger = res.locals.logger
     const [transaction, errorTransaction] = await createTransaction(db, res)
-    if(errorTransaction) return
+    if (errorTransaction) return
     try {
         const getNocm = await running_Number.findAll({
             where: {
@@ -309,7 +309,7 @@ function formatDate(date) {
 async function saveRegistrasiPasien(req, res) {
     const logger = res.locals.logger
     const [transaction, errorTransaction] = await createTransaction(db, res)
-    if(errorTransaction) return
+    if (errorTransaction) return
     try {
         let norecDP = uuid.v4().substring(0, 32)
         console.log(req.body?.penjamin)
@@ -464,7 +464,7 @@ const getNoAntrean = async (req, res) => {
 const updateRegistrasiPPulang = async (req, res) => {
     const logger = res.locals.logger
     const [transaction, errorTransaction] = await createTransaction(db, res)
-    if(errorTransaction) return
+    if (errorTransaction) return
     try {
         const norecDP = req.body.norec
         const norecAP = req.body.norecAP
@@ -648,7 +648,7 @@ const getDaftarPasienFilter = async (req, res) => {
 const saveRegistrasiPenjaminFK = async (req, res) => {
     const logger = res.locals.logger
     const [transaction, errorTransaction] = await createTransaction(db, res)
-    if(errorTransaction) return
+    if (errorTransaction) return
     try {
         let norecPenjaminFK = uuid.v4().substring(0, 32)
         const dataForm = req.body
@@ -727,7 +727,7 @@ const saveRegistrasiPenjaminFK = async (req, res) => {
 
 const getPasienNoregistrasi = async (req, res) => {
     const logger = res.locals.logger
-    try{
+    try {
         const id = parseInt(req.params.noregistrasi);
         const result = await pool.query(queries.getPasienByNoregistrasi, [id])
         if (result.rows.length == 0) {
@@ -760,7 +760,7 @@ const getPasienNoregistrasi = async (req, res) => {
                 success: true,
             });
         }
-    }catch(error){
+    } catch (error) {
         logger.error(error);
         res.status(500).send({
             status: error,
@@ -769,11 +769,11 @@ const getPasienNoregistrasi = async (req, res) => {
             code: 500
         });
     }
-    
+
 }
 const getDaftarPasienRegistrasi = async (req, res) => {
     const logger = res.locals.logger
-    try{
+    try {
         const noregistrasi = req.query.noregistrasi;
         // console.log(req.query.tglregistrasi)
         // return
@@ -800,7 +800,7 @@ const getDaftarPasienRegistrasi = async (req, res) => {
             status: "success",
             success: true,
         });
-    }catch(error){
+    } catch (error) {
         logger.error(error);
         res.status(500).send({
             data: error,
@@ -813,7 +813,7 @@ const getDaftarPasienRegistrasi = async (req, res) => {
 
 const getDaftarPasienFarmasi = async (req, res) => {
     const logger = res.locals.logger
-    try{
+    try {
         const {
             start,
             noregistrasi,
@@ -851,7 +851,7 @@ const getDaftarPasienFarmasi = async (req, res) => {
             status: "success",
             success: true,
         });
-    }catch(e){
+    } catch (e) {
         logger.error(e)
         res.status(500).send({
             data: [],
@@ -963,7 +963,7 @@ async function getWidgetDaftarPasienRegistrasi(req, res) {
 
 async function getDaftarPasienRawatJalan(req, res) {
     const logger = res.locals.logger
-    try{
+    try {
         const noregistrasi = req.query.noregistrasi;
         let tglregistrasi = ""
         if (req.query.start !== undefined) {
@@ -1333,7 +1333,7 @@ const getPasienFormById = async (req, res) => {
 async function saveBatalRegistrasi(req, res) {
     const logger = res.locals.logger
     const [transaction, errorTransaction] = await createTransaction(db, res)
-    if(errorTransaction) return
+    if (errorTransaction) return
 
     try {
         let resqueryCek = await pool.query(`select ap.objectdaftarpasienfk  from t_pelayananpasien pp
@@ -1352,7 +1352,7 @@ async function saveBatalRegistrasi(req, res) {
 
         let saveBatal
         let norec = uuid.v4().substring(0, 32)
-        
+
         saveBatal = await db.t_batalpasien.create({
             norec: norec,
             objectdaftarpasienfk: req.body.norecdp,
@@ -1374,7 +1374,7 @@ async function saveBatalRegistrasi(req, res) {
         });
         await transaction.commit();
 
-        let tempres = { batal: saveBatal, td:updatedBody }
+        let tempres = { batal: saveBatal, td: updatedBody }
         res.status(200).send({
             data: tempres,
             status: "success",
@@ -1400,12 +1400,12 @@ async function getListPasienMutasi(req, res) {
         let start = (new Date(req.query.start)).toISOString();
         let end = (new Date(req.query.end)).toISOString();
         let search = `%${req.query.search}%`
-        let instalasi =req.query.instalasi !== '' ? ` and td.objectinstalasifk = '${req.query.instalasi}'` : '';
+        let instalasi = req.query.instalasi !== '' ? ` and td.objectinstalasifk = '${req.query.instalasi}'` : '';
         let unit = req.query.unit !== '' ? ` and td.objectunitlastfk = '${req.query.unit}'` : '';
         let rekanan = req.query.rekanan !== '' ? ` and td.objectpenjaminfk = '${req.query.rekanan}'` : '';
         let pegawai = req.query.pegawai !== '' ? ` and td.objectpegawaifk = '${req.query.pegawai}'` : '';
-        console.log(start,end,search,instalasi,unit,rekanan,pegawai)
-        
+        console.log(start, end, search, instalasi, unit, rekanan, pegawai)
+
         // const result = await pool.query(queries.qResult, [start,end,search]) //,instalasi,unit,rekanan,pegawai
         const result = await queryPromise2(`select td.noregistrasi,td.norec,td.nocmfk,
         to_char(td.tglregistrasi,'dd Month YYYY') as tglregistrasi,to_char(td.tglpulang,'dd Month YYYY') as tglpulang,mp.namapasien,
@@ -1435,7 +1435,7 @@ async function getListPasienMutasi(req, res) {
 async function saveRegistrasiPasienMutasi(req, res) {
     const logger = res.locals.logger
     const [transaction, errorTransaction] = await createTransaction(db, res)
-    if(errorTransaction) return
+    if (errorTransaction) return
     try {
 
         // console.log(req.body?.penjamin)
@@ -1456,7 +1456,7 @@ async function saveRegistrasiPasienMutasi(req, res) {
         let query = `select count(norec) from t_daftarpasien
             where tglregistrasi between '${todaystart}' and '${todayend}'`
         let resultCount = await pool.query(query);
-       
+
         if (req.body.kelas === "")
             req.body.kelas = 8
         if (req.body.kamar === "")
@@ -1556,7 +1556,7 @@ async function saveRegistrasiPasienMutasi(req, res) {
 
 async function getDaftarPasienIGD(req, res) {
     const logger = res.locals.logger
-    try{
+    try {
         const noregistrasi = req.query.noregistrasi;
         let tglregistrasi = ""
         if (req.query.start !== undefined) {
@@ -1574,8 +1574,8 @@ async function getDaftarPasienIGD(req, res) {
             tglregistrasi = ` and td.tglregistrasi between '${todaystart}'
             and '${todayend}' `;
         }
-       
-       
+
+
         let query = queries.getDaftarPasienIGD + `  where td.noregistrasi ilike '%${noregistrasi}%'
         ${tglregistrasi} and td.objectinstalasifk=7
         ORDER BY td.tglregistrasi DESC`
@@ -1599,44 +1599,46 @@ async function getDaftarPasienIGD(req, res) {
 
 const getWidgetPasienTriage = async (req, res) => {
     const logger = res.locals.logger;
-    try{
+    try {
+        let query = queries.qWidgetDaftarPasienTriage
+        const result = await pool.query(query, [])
         const taskWidgets = [
             {
                 id: 1,
-                label: "Jumlah Pasien",
-                counter: 10,
+                label: "Jumlah Pasien Resusitasi",
+                counter: result.rows[0].satu,
                 badge: "ri-arrow-up-line",
                 color: "#B7DBFD",
                 decimals: 1,
             },
             {
                 id: 2,
-                label: "Jumlah Pasien",
-                counter: 10,
+                label: "Jumlah Pasien Emergency",
+                counter: result.rows[0].dua,
                 badge: "ri-arrow-down-line",
                 color: "#FDB7B7",
                 decimals: 1,
             },
             {
                 id: 3,
-                label: "Jumlah Pasien",
-                counter: 10,
+                label: "Jumlah Pasien Urgent",
+                counter: result.rows[0].tiga,
                 badge: "ri-arrow-down-line",
                 color: "#FCFDB7",
                 decimals: 1,
             },
             {
                 id: 4,
-                label: "Jumlah Pasien",
-                counter: 10,
+                label: "Jumlah Pasien Non Urgent",
+                counter: result.rows[0].empat,
                 badge: "ri-arrow-down-line",
                 color: "#B8FDB7",
                 decimals: 1,
             },
             {
                 id: 5,
-                label: "Jumlah Pasien",
-                counter: 10,
+                label: "Jumlah Pasien False Emergency",
+                counter: result.rows[0].lima,
                 badge: "ri-arrow-down-line",
                 color: "#E1E1E1",
                 decimals: 1,
@@ -1663,11 +1665,21 @@ const getWidgetPasienTriage = async (req, res) => {
 
 const getDaftarPasienTriage = async (req, res) => {
     const logger = res.locals.logger;
-    try{
-        let query = queries.qDaftarPasienTriage
-        const result = await pool.query(query, [])
+    try {
+        let param2 = ' '
+        let param3 = ' '
+        if (req.query.tingkatdarurat !== undefined && req.query.tingkatdarurat !== '')
+            param2 = ` and tp.objectdaruratigdfk=${req.query.tingkatdarurat}`
+
+        if (req.query.statuspasien==='2'){
+            param3 = ` and tp.objectdaftarpasienfk is not null`
+        }else if (req.query.statuspasien==='3'){
+            param3 = ` and tp.objectdaftarpasienfk is null`
+        }
+         
+        const result = await pool.query(queries.qDaftarPasienTriage + ` where tp.namapasien ilike '%${req.query.search}%' ${param2} ${param3}`)
         const tempres = {
-            data:result.rows
+            data: result.rows
         };
         res.status(200).send({
             msg: 'Success',
@@ -1836,7 +1848,7 @@ const hUpdateRegistrasiPulang = async (req, res, transaction) => {
     return { updatedBody, updatedBodyAp, updatedBodyK, updatedBodyKPindah }
 }
 
-const hCreatePasien = async (req, res, transaction, {objBody, nocm}) => {
+const hCreatePasien = async (req, res, transaction, { objBody, nocm }) => {
     const result = await m_pasien.create({
         nocm: nocm,
         namapasien: objBody.namapasien,
