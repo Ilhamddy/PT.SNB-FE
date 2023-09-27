@@ -8,18 +8,20 @@ export const pasienSignup = async (
     res, 
     transaction, 
     {
-        norm,
+        norm: nocm,
         noidentitas
     }) => {
     const userSignup = await m_pasien.findOne({
         where: {
-            id: norm
-        }
+            nocm: nocm,
+        },
+        transaction: transaction
+
     })
     if(!userSignup) return null
     const password = bcrypt.hashSync(noidentitas, 8)
     const userPasien = await db.users_pasien.create({
-            norm: norm,
+            norm: nocm,
             password: password,
             createdAt: new Date(),
             updatedAt: new Date(),

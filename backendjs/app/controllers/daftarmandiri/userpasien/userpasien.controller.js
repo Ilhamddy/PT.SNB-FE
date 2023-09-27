@@ -1,13 +1,39 @@
 import db from "../../../models"
+import { pasienSignup } from "../../auth/authhelper";
+import jwt from "jsonwebtoken";
+import config from "../../../config/auth.config";
+import { encrypt } from "../../../utils/encrypt";
+
 
 const m_pasien = db.m_pasien
+const running_number = db.running_number
 
 const createPasien = async (req, res) => {
     const logger = res.locals.logger;
     try{
         const bodyDummy = req.body
-        const { dataPasien } = await db.sequelize.transaction(async (transaction) => {
-            const dataPasien = await m_pasien.create({
+        const getNocm = await running_number.findAll({
+            where: {
+                id: 1
+            }
+        })
+        const getNocmData = getNocm[0].toJSON();
+        const nocm = getNocmData.new_number + 1
+        let nocmStr = getNocmData.new_number + 1
+        let totalExtension = Number(getNocmData.extention)
+        let zero = ''
+        for (let x = 0; x < totalExtension; x++) {
+            zero = zero + '0'
+        }
+        nocmStr = (zero + nocmStr).slice(-totalExtension)
+        const { dataPasien, userPasien, token } = 
+        await db.sequelize.transaction(async (transaction) => {
+            await getNocm[0].update({
+                new_number: nocm
+            }, {
+                transaction: transaction
+            })
+            let dataPasien = await m_pasien.create({
                 kdprofile: 0,
                 statusenabled: true,
                 kodeexternal: null,
@@ -50,25 +76,54 @@ const createPasien = async (req, res) => {
                 rwdomisili: bodyDummy.step2.rw,
                 objectdesakelurahandomisilifk: bodyDummy.step2.kelurahan,
                 objectnegaradomisilifk: bodyDummy.step2.negara,
-                nocm: null,
+                nocm: nocmStr,
                 objectstatuskendalirmfk: null,
             }, {
                 transaction: transaction
             })
+            dataPasien = dataPasien.toJSON()
+            const userPasien = await pasienSignup(
+                req, 
+                res, 
+                transaction, 
+                { 
+                    norm: dataPasien.nocm, 
+                    noidentitas: dataPasien.noidentitas
+                })
+            await userPasien.update({
+                clientsecret: bodyDummy.clientSecret
+            }, {
+                transaction: transaction
+            })
+            let token = jwt.sign({ 
+                    id: userPasien.id, 
+                    expired: new Date() + (86400 * 1000),
+                }, 
+                config.secret, 
+                {
+                    expiresIn: 86400
+                });
+
             return {
-                dataPasien
+                dataPasien,
+                userPasien,
+                token
             }
         });
+        const user = {
+            id: userPasien?.id,
+            username: userPasien?.norm || null,
+            accessToken: token,
+        }
         
         const tempres = {
-            datapasien: dataPasien
+            datapasien: dataPasien,
+            user: user
         };
-        res.status(200).send({
-            msg: 'Success',
-            code: 200,
-            data: tempres,
-            success: true
-        });
+
+        const data = encrypt(tempres, bodyDummy.clientSecret)
+
+        res.status(200).send(data);
     } catch (error) {
         logger.error(error);
         res.status(500).send({

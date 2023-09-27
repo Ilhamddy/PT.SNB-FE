@@ -207,17 +207,18 @@ const savePasien = async (req, res) => {
             }
         })
         let nocm = getNocm[0].new_number + 1
-        let new_number = getNocm[0].new_number + 1
-        for (let x = getNocm[0].new_number.toString().length; x < getNocm[0].extention; x++) {
-            if (nocm.toString().length !== getNocm[0].extention)
-                nocm = '0' + nocm;
+        let totalExtension = Number(getNocm[0].extention)
+        let zero = ''
+        for (let x = 0; x < totalExtension; x++) {
+            zero = zero + '0'
         }
+        nocm = (zero + nocm).slice(-totalExtension)
         const objBody = req.body
         let userPasien = null
         let result
         if (!objBody.id) {
             result = await hCreatePasien(req, res, transaction, {objBody, nocm})
-            await running_Number.update({ new_number: new_number }, {
+            await running_Number.update({ new_number: nocm }, {
                 where: {
                     id: 1
                 },
@@ -228,7 +229,7 @@ const savePasien = async (req, res) => {
                 res, 
                 transaction, 
                 { 
-                    norm: result.id, 
+                    norm: result.nocm, 
                     noidentitas: result.noidentitas
                 })
             userPasien = userPasien?.toJSON() || null

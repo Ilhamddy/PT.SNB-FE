@@ -11,6 +11,7 @@ import { getAllMaster, getDesaKelurahan } from '../../store/master/action'
 import SelectDM from '../../Components/SelectDM/SelectDM'
 import FlatpickrDM from '../../Components/FlatpickrDM/FlatpickrDM'
 import { signUpUser } from '../../store/login/action'
+import { useNavigate } from 'react-router-dom'
 
 const FormPasienBaru = ({ step, setStep }) => {
   const dispatch = useDispatch()
@@ -18,6 +19,7 @@ const FormPasienBaru = ({ step, setStep }) => {
     master: selector.Master.getAllMaster?.data?.data || null,
     desa: selector.Master.getDesaKelurahan?.data?.data || [],
   }))
+  const navigate = useNavigate()
   useEffect(() => {
     dispatch(getAllMaster())
   }, [dispatch])
@@ -147,7 +149,11 @@ const FormPasienBaru = ({ step, setStep }) => {
         step2: vStep2.values,
         step3: values,
       }
-      dispatch(signUpUser(finalVal))
+      dispatch(
+        signUpUser(finalVal, () => {
+          navigate('/login/selesai')
+        })
+      )
     },
   })
 

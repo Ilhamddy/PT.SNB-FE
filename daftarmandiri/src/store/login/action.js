@@ -60,10 +60,10 @@ export const getUserLogin = (userData) => {
     }
 }
 
-export const signUpUser = (data) => {
+export const signUpUser = (data, callback) => {
     return {
         type: SIGNUP_USER,
-        payload: data
+        payload: {data, callback}
     }
 }
 

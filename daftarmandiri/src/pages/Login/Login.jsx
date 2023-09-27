@@ -10,10 +10,15 @@ import { rgxAllNumber } from '../../utils/regexcommon'
 import { useDispatch } from 'react-redux'
 import { loginUser } from '../../store/login/action'
 import ServiceAuth from '../../service/service-auth'
+import { useNavigate, useParams } from 'react-router-dom'
+import PasienBaruSelesai from './PasienBaruSelesai'
 
 const Login = () => {
-  const [chosen, setChosen] = useState('pasien-baru')
+  const navigate = useNavigate()
   const [step, setStep] = useState(0)
+  const [done, setDone] = useState(false)
+
+  const { page } = useParams()
 
   const headerName = [
     'Pengisian Data Diri',
@@ -24,13 +29,21 @@ const Login = () => {
 
   useEffect(() => {}, [])
 
-  const isPasienLama = chosen === 'pasien-lama'
-  const stlHeader = isPasienLama ? { opacity: '0' } : { opacity: '1' }
-  const stlKontainerIsiLogin = isPasienLama ? { top: '50%' } : { top: '120px' }
+  const isPasienLama = page === 'pasien-lama'
+  const isPasienBaru = page === 'pasien-baru'
+  const isSelesai = page === 'selesai'
+  const stlHeader = !isPasienBaru ? { opacity: '0' } : { opacity: '1' }
+  console.log(done && isPasienLama)
+  const stlKontainerIsiLogin =
+    (done && isSelesai) || (done && isPasienLama)
+      ? { top: '100%' }
+      : isPasienLama
+      ? { top: '50%' }
+      : { top: '120px' }
   const stlKontainerBg = isPasienLama
     ? { left: '8px' }
     : { left: 'calc(50% + 8px)' }
-  const stlBtnTerpilih = (link) => (chosen === link ? { color: '#715A06' } : {})
+  const stlBtnTerpilih = (link) => (page === link ? { color: '#715A06' } : {})
   return (
     <div className="page-login">
       <div className="kontainer-header-login" style={stlHeader}>
@@ -54,34 +67,34 @@ const Login = () => {
         </div>
       </div>
       <div className="kontainer-isi-login" style={stlKontainerIsiLogin}>
-        <div className="pilihan-pasien">
-          <div className="kontainer-bg" style={stlKontainerBg}></div>
-          <button
-            onClick={() => setChosen('pasien-lama')}
-            className="btn-pasien"
-            style={stlBtnTerpilih('pasien-lama')}
-          >
-            Pasien Lama
-          </button>
-          <button
-            onClick={() => setChosen('pasien-baru')}
-            className="btn-pasien"
-            style={stlBtnTerpilih('pasien-baru')}
-          >
-            Pasien Baru
-          </button>
-        </div>
-        {isPasienLama ? (
-          <FormPasienLama />
-        ) : (
-          <FormPasienBaru step={step} setStep={setStep} />
+        {!isSelesai && (
+          <div className="pilihan-pasien">
+            <div className="kontainer-bg" style={stlKontainerBg}></div>
+            <button
+              onClick={() => navigate('/login/pasien-lama')}
+              className="btn-pasien"
+              style={stlBtnTerpilih('pasien-lama')}
+            >
+              Pasien Lama
+            </button>
+            <button
+              onClick={() => navigate('/login/pasien-baru')}
+              className="btn-pasien"
+              style={stlBtnTerpilih('pasien-baru')}
+            >
+              Pasien Baru
+            </button>
+          </div>
         )}
+        {isPasienLama && <FormPasienLama setDone={setDone} />}
+        {isPasienBaru && <FormPasienBaru step={step} setStep={setStep} />}
+        {isSelesai && <PasienBaruSelesai setDone={setDone} />}
       </div>
     </div>
   )
 }
 
-const FormPasienLama = () => {
+const FormPasienLama = ({ setDone }) => {
   const dispatch = useDispatch()
   const vLogin = useFormik({
     initialValues: {
@@ -96,6 +109,7 @@ const FormPasienLama = () => {
       dispatch(
         loginUser(values, () => {
           resetForm()
+          setDone(true)
         })
       )
     },

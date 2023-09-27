@@ -15,6 +15,11 @@ const INIT_STATE = {
         success: false,
         error: null,
     },
+    signupUser: {
+        data: [],
+        loading: false,
+        error: null
+    }
 }
 
 const login = (state = INIT_STATE, action) => {
@@ -60,6 +65,39 @@ const login = (state = INIT_STATE, action) => {
                     data: [],
                     loading: true,
                     error: null,
+                },
+            };
+
+        case SIGNUP_USER: 
+            return {
+                ...state,
+                signupUser: {
+                    ...state.loginUser,
+                    data: [],
+                    loading: true,
+                    error: null,
+                },
+            };
+            
+        case SIGNUP_USER_SUCCESS:
+            return {
+                ...state,
+                signupUser: {
+                    ...state.loginUser,
+                    data: action.payload,
+                    loading: false,
+                    error: null,
+                },
+            };
+
+        case SIGNUP_USER_ERROR:
+            return {
+                ...state,
+                signupUser: {
+                    ...state.loginUser,
+                    data: [],
+                    loading: false,
+                    error: action.payload,
                 },
             };
 

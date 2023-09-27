@@ -30,12 +30,13 @@ import { masterGet, desaGet, kecamatanGet } from '../../../store/master/action';
 import { registrasiSave, registrasiResetForm, registrasiGet, pasienFormQueriesGet } from "../../../store/actions";
 import CustomSelect from '../../Select/Select'
 import { rgxAllNumber, rgxNbrEmpty } from '../../../utils/regexcommon';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const PasienBaru = () => {
     document.title = "Profile Pasien Baru";
     const dispatch = useDispatch();
     const {idpasien} = useParams();
+    const navigate = useNavigate()
 
     const refAgama = useRef(null);
     const refGolDarah = useRef(null);
@@ -197,8 +198,7 @@ const PasienBaru = () => {
             negaraDomisili: Yup.string().required("negara wajib diisi"),
         }),
         onSubmit: (values) => {
-            console.log(values)
-            dispatch(registrasiSave(values, ''));
+            dispatch(registrasiSave(values, navigate));
             // console.log(values)
         }
     });

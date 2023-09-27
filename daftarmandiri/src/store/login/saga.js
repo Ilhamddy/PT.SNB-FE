@@ -22,7 +22,7 @@ import { setAuthorization } from "../../helpers/api_helper";
 
 const servicePayment = new ServiceAuth();
 
-function* onLoginUser({payload: {data}}) {
+function* onLoginUser({payload: {data, callback}}) {
     try {
         const newData = {...data}
         newData.clientSecret = uuid.v4().substring(0, 32)
@@ -30,11 +30,10 @@ function* onLoginUser({payload: {data}}) {
         const response = yield call(servicePayment.loginUser, newData);
         localStorage.setItem("authUserMandiri", JSON.stringify(response || null));
         // hanya dikirim sekali pada saat login
-
         setAuthorization(response.data.accessToken)
         console.log(response.data)
-        toast.success(response?.data?.msg || "Sukses")
         yield put(loginUserSuccess(response.data));
+        callback && callback()
     } catch (error) {
         console.log(error)
         toast.error(error?.response?.msg || "error")
@@ -64,11 +63,16 @@ function* onGetUserLogin() {
     }
 }
 
-function* onSignUpUser({payload: data}) {
+function* onSignUpUser({payload: {data, callback}}) {
     try{
-        const response = yield call(servicePayment.signUpUser, data);
-        yield put(signUpUserSuccess(response.data));
-        toast.success(response?.data?.msg || "Sukses")
+        let newData = {...data}
+        newData.clientSecret = uuid.v4().substring(0, 32)
+        localStorage.setItem("clientSecret", JSON.stringify(newData.clientSecret || null));
+        const response = yield call(servicePayment.signUpUser, newData);
+        console.log(response)
+        yield put(signUpUserSuccess(response.user));
+        localStorage.setItem("authUserMandiri", JSON.stringify(response.user || null));
+        callback && callback()
     }catch(error){
         yield put(signUpUserError(error))
         toast.error(error?.response?.msg || "error")

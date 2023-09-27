@@ -4,6 +4,7 @@ import './FlatpickrDM.scss'
 import { FormFeedback } from 'reactstrap'
 import 'flatpickr/dist/themes/light.css'
 import 'flatpickr/dist/flatpickr.css'
+import kalender from './calendar.svg'
 
 /**
  * @typedef {object} Props
@@ -57,7 +58,7 @@ const FlatpickrDM = ({
           itemRef={refItem}
           {...rest}
         />
-        <img className="img-flatpickr" alt="tbl-flatpickr" />
+        <img className="img-flatpickr" alt="tbl-flatpickr" src={kalender} />
       </div>
       {isError && errorMsg && <FormFeedback>{errorMsg}</FormFeedback>}
     </div>
