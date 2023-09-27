@@ -1,18 +1,41 @@
 .kontainer-flatpickr {
     width: 100%;
-    height: fit-content;
     display: flex;
     flex-direction: column;
+
+    .kontainer-isi-flatpickr {
+        height: fit-content;
+        display: flex;
+        flex-direction: row;
+        border: 1px solid #564405;
+        border-radius: 8px;
+        background-color: #ffffff;
+        width: 100%;
+        align-items: center;
+        &:focus-within {
+            border: 1px solid #dec15c;
+            outline: 1px solid #dec15c;
+        }
+        .fc-flatpickr {
+            height: 56px;
+            background-color: #00000000;
+            border: none;
+            padding: 0 10px;
+            width: calc(100% - 50px);
+
+            &:focus {
+                outline: none;
+                border: none;
+            }
+        }
+
+        .img-flatpickr {
+            width: 40px;
+            height: 40px;
+        }
+    }
+
     &:hover {
         cursor: pointer;
-    }
-    .fc-flatpickr {
-        border: 1px solid #564405;
-        height: 56px;
-
-        &:focus {
-            outline: none;
-            border: 2px solid #564405;
-        }
     }
 }

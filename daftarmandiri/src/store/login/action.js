@@ -5,7 +5,10 @@ import {
     LOGOUT_USER,
     LOGOUT_USER_SUCCESS,
     LOGOUT_USER_ERROR,
-    GET_USER_LOGIN
+    GET_USER_LOGIN, 
+    SIGNUP_USER,
+    SIGNUP_USER_SUCCESS,
+    SIGNUP_USER_ERROR
 } from "./actionType";
 
 export const loginUser = (data, callback) => {
@@ -54,5 +57,26 @@ export const getUserLogin = (userData) => {
     return {
         type: GET_USER_LOGIN,
         payload: userData
+    }
+}
+
+export const signUpUser = (data) => {
+    return {
+        type: SIGNUP_USER,
+        payload: data
+    }
+}
+
+export const signUpUserSuccess = (data) => {
+    return {
+        type: SIGNUP_USER_SUCCESS,
+        payload: data
+    }
+}
+
+export const signUpUserError = (error) => {
+    return {
+        type: SIGNUP_USER_ERROR,
+        payload: error
     }
 }

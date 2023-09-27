@@ -67,6 +67,8 @@ class APIClient {
       });
 
       const queryString = paramKeys && paramKeys.length ? paramKeys.join('&') : "";
+      console.log(queryString)
+
       response = await axios.get(`${url}?${queryString}`, {
         headers: {
           "X-Client-Url": window.location.href,

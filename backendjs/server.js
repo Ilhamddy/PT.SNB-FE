@@ -24,6 +24,7 @@ import { addResBody, logRequests } from "./app/middleware/logrequests.js";
 import farmasiRoutes from "./app/routes/transaksi/farmasi.routes.js";
 import kioskRoutes from "./app/routes/transaksi/kiosk.routes";
 import viewerRoutes from "./app/routes/transaksi/viewer.routes";
+import userPasienRoutes from "./app/routes/daftarmandiri/userpasien.controller";
 import { decryptMandiri } from "./app/middleware/encryptMandiri";
 
 dotenv.config()
@@ -74,7 +75,7 @@ distribusiRoutes(app);
 farmasiRoutes(app);
 kioskRoutes(app);
 viewerRoutes(app);
-
+userPasienRoutes(app);
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8000;

@@ -13,7 +13,7 @@ export default function(app) {
   
     app.get(
       "/api/master/combobox",
-      [],
+      [authJwt.verifyToken],
       controller.selectComboBox
     );
 
@@ -113,4 +113,15 @@ export default function(app) {
       controller.comboViewer
     )
 
+    app.get(
+      "/api/master/mandiri/combobox",
+      [],
+      controller.selectComboBox
+    );
+
+    app.get(
+      "/api/master/mandiri/desa-kelurahan",
+      [],
+      controller.desaKelurahan
+    );
   };

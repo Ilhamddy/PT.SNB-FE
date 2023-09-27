@@ -1,4 +1,12 @@
-.pasien-lama-konten {
+.pasien-baru-konten {
+    .input-split {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        .isi-input {
+            width: calc(50% - 20px);
+        }
+    }
     .kontainer-btn-lama {
         display: flex;
         flex-direction: row;

@@ -107,9 +107,6 @@ export default (sequelize, Sequelize) => {
         objectkaryawanrsfk: {
             type: Sequelize.INTEGER,
         },
-        // foto: {
-        //     type: Sequelize,
-        // }
         objectetnisfk: {
             type: Sequelize.INTEGER,
         },

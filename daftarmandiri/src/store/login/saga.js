@@ -3,14 +3,17 @@ import {
     loginUserSuccess,
     loginUserError,
     logoutUserSuccess,
-    logoutUserError
+    logoutUserError,
+    signUpUserSuccess,
+    signUpUserError
 } from "./action";
 import * as uuid from 'uuid'
 
 import {
     GET_USER_LOGIN,
     LOGIN_USER,
-    LOGOUT_USER
+    LOGOUT_USER,
+    SIGNUP_USER
 } from "./actionType";
 
 import ServiceAuth from "../../service/service-auth";
@@ -61,8 +64,20 @@ function* onGetUserLogin() {
     }
 }
 
+function* onSignUpUser({payload: data}) {
+    try{
+        const response = yield call(servicePayment.signUpUser, data);
+        yield put(signUpUserSuccess(response.data));
+        toast.success(response?.data?.msg || "Sukses")
+    }catch(error){
+        yield put(signUpUserError(error))
+        toast.error(error?.response?.msg || "error")
+    }
+}
+
 export default function* watchLoginUser() {
     yield takeEvery(LOGIN_USER, onLoginUser);
     yield takeEvery(LOGOUT_USER, onLogoutUser);
-    yield takeEvery(GET_USER_LOGIN, onGetUserLogin)
+    yield takeEvery(GET_USER_LOGIN, onGetUserLogin);
+    yield takeEvery(SIGNUP_USER, onSignUpUser);
 }
