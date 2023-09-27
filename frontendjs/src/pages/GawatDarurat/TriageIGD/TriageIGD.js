@@ -248,9 +248,6 @@ const TriageIGD = () => {
             newArray.push({ value: '', label: 'Isi Hubungan Keluarga' });
             setdataHubungan(newArray.sort((a, b) => a.value - b.value))
 
-            // let newArray2 = data?.mdaruratigd || [];
-            // newArray2.push({ value: '', label: 'Isi Tingkat Darurat' });
-            // setdataTingkatDarurat(newArray2.sort((a, b) => a.value - b.value))
         }
     }, [data])
     useEffect(() => {

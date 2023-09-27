@@ -262,7 +262,7 @@ const qM_DaruratIgd = `
 select
 	md.id as value,
     md.reportdisplay as label
-from m_daruratigd md 
+from m_daruratigd md order by md.id asc
 `
 
 const qM_HubunganKeluarga = `
