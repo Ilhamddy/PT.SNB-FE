@@ -25,8 +25,8 @@ const TriageIGD = () => {
         enableReinitialize: true,
         initialValues: {
             tingkatdarurat: '',
-            search:'',
-            statuspasien:''
+            search: '',
+            statuspasien: ''
         },
         validationSchema: Yup.object({
         }),
@@ -45,22 +45,22 @@ const TriageIGD = () => {
         dispatch(getGetComboTriageIgd(''));
     }, [dispatch])
     useEffect(() => {
-        dispatch(DaftarPasienTriageGet({search:''}));
+        dispatch(DaftarPasienTriageGet({ search: '' }));
     }, [dispatch])
     const handleCard = (item) => {
         // console.log(item)
         setnamaPasien(item.namapasien)
     };
-    const handleSelect = (nama,value)=>{
-        if(nama==='tingkatdarurat'){
+    const handleSelect = (nama, value) => {
+        if (nama === 'tingkatdarurat') {
             vSetValidation.setFieldValue('tingkatdarurat', value || '')
-            dispatch(DaftarPasienTriageGet({ search:vSetValidation.values.search,tingkatdarurat: value,statuspasien:vSetValidation.values.statuspasien}));
-        }else if (nama==='search'){
+            dispatch(DaftarPasienTriageGet({ search: vSetValidation.values.search, tingkatdarurat: value, statuspasien: vSetValidation.values.statuspasien }));
+        } else if (nama === 'search') {
             vSetValidation.setFieldValue('search', value || '')
-            dispatch(DaftarPasienTriageGet({ search:value,tingkatdarurat: vSetValidation.values.tingkatdarurat,statuspasien:vSetValidation.values.statuspasien}));
-        }else if (nama==='statuspasien'){
+            dispatch(DaftarPasienTriageGet({ search: value, tingkatdarurat: vSetValidation.values.tingkatdarurat, statuspasien: vSetValidation.values.statuspasien }));
+        } else if (nama === 'statuspasien') {
             vSetValidation.setFieldValue('statuspasien', value || '')
-            dispatch(DaftarPasienTriageGet({ search:vSetValidation.values.search,tingkatdarurat: vSetValidation.values.tingkatdarurat,statuspasien:value}));
+            dispatch(DaftarPasienTriageGet({ search: vSetValidation.values.search, tingkatdarurat: vSetValidation.values.tingkatdarurat, statuspasien: value }));
         }
     }
     const dataStatusPasien = [
@@ -77,6 +77,19 @@ const TriageIGD = () => {
             label: 'Belum Terdaftar'
         }
     ]
+    const handleClickButton = (e) => {
+        if (namaPasien === null) {
+            // defaultnotify('Pasien Belum Dipilih')
+            return
+        }
+
+        // if(e==='registrasi'){
+
+        // }else if(e==='edit'){
+
+        // }
+
+    };
     return (
         <React.Fragment>
             <UiContent />
@@ -142,8 +155,8 @@ const TriageIGD = () => {
                                         <CardBody>
                                             <div className="live-preview">
                                                 <div className="d-flex flex-column gap-2">
-                                                    <Button color="info" className="btn-animation" data-text="Cetak Label Pasien"> <span>Registrasi</span> </Button>
-                                                    <Button color="info" className="btn-animation" data-text="Cetak Label Pasien"> <span>Pengkajian Medis</span> </Button>
+                                                    <Button color="info" className="btn-animation" data-text="Registrasi" onClick={() => handleClickButton('registrasi')}><span>Registrasi</span></Button>
+                                                    <Button color="info" className="btn-animation" data-text="Pengkajian Medis" > <span>Pengkajian Medis</span> </Button>
                                                 </div>
                                             </div>
                                         </CardBody>
@@ -161,7 +174,7 @@ const TriageIGD = () => {
                                                         // value={search}
                                                         placeholder='Cari Berdasarkan No.RM / Nama Pasien'
                                                         onChange={(e) => {
-                                                            handleSelect('search',e.target.value)
+                                                            handleSelect('search', e.target.value)
                                                         }}
                                                     />
                                                 </Col>
@@ -176,7 +189,7 @@ const TriageIGD = () => {
                                                         name="tingkatdarurat"
                                                         options={dataCombo?.mdaruratigd}
                                                         onChange={(e) => {
-                                                            handleSelect('tingkatdarurat',e?.value)
+                                                            handleSelect('tingkatdarurat', e?.value)
                                                             // vSetValidation.setFieldValue('tingkatdarurat', e?.value || '')
                                                         }}
                                                         value={vSetValidation.values.tingkatdarurat}
@@ -196,12 +209,12 @@ const TriageIGD = () => {
                                                     </div>
                                                 </Col>
                                                 <Col>
-                                                <CustomSelect
+                                                    <CustomSelect
                                                         id="statuspasien"
                                                         name="statuspasien"
                                                         options={dataStatusPasien}
                                                         onChange={(e) => {
-                                                            handleSelect('statuspasien',e?.value)
+                                                            handleSelect('statuspasien', e?.value)
                                                             // vSetValidation.setFieldValue('statuspasien', e?.value || '')
                                                         }}
                                                         value={vSetValidation.values.statuspasien}
@@ -221,7 +234,50 @@ const TriageIGD = () => {
                                         </CardHeader>
                                         <CardBody>
                                             <div style={{ overflowY: 'auto', maxHeight: '400px' }}>
-                                                <Row className="row-cols-xxl-12 row-cols-lg-12 row-cols-1">
+                                                {(data.data || []).map((item, key) => (
+                                                    <React.Fragment key={key}>
+                                                        <Card className="product card-animate">
+                                                            <CardBody>
+                                                                <Row className="gy-3">
+                                                                    <div className="col-sm-auto">
+                                                                        <div className="avatar-md flex-shrink-0">
+                                                                            <span className={"avatar-title rounded-circle fs-4"} style={{ backgroundColor: item.statusdarurat }}>
+                                                                                <h2 className="ff-secondary fw-semibold">
+                                                                                    <span className="counter-value" style={{ fontSize: "1.5rem" }}>
+                                                                                    </span>
+                                                                                </h2>
+                                                                            </span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div className="col-sm">
+                                                                        <h5 className="card-title mb-1">{item.nocm ? item.nocm : '-'}</h5>
+                                                                        <p className="mb-0">
+                                                                            {item.namapasien && item.namapasien.length > 20
+                                                                                ? `${item.namapasien.substring(0, 20)}...`
+                                                                                : item.namapasien}
+                                                                        </p>
+                                                                        <p className="text-muted mb-0">{item.umur ? item.umur : '-'}</p>
+                                                                    </div>
+                                                                    <div className="col-sm">
+                                                                    <div className="text-lg-start">
+                                                                            <p className="text-muted mb-0">Tgl. Kedatangan {item.tglinput}</p>
+                                                                            <p className="text-muted mb-0">Pembawa Pasien {item.namapj ? item.namapj : '-'}</p>
+                                                                            <p className="text-muted mb-0">No Hp {item.nohp ? item.nohp : '-'}</p>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div className="col-sm">
+                                                                    <div className="text-lg-start">
+                                                                            <p className="text-muted mb-0">No. Registrasi : {item.noregistrasi ? item.noregistrasi : '-'}</p>
+                                                                            <p className="text-muted mb-0">DPJP Pasien : {item.namapj ? item.namapj : '-'}</p>
+                                                                            <p className="text-muted mb-0">Keluhan : {item.keluhan ? item.keluhan : '-'}</p>
+                                                                        </div>
+                                                                    </div>
+                                                                </Row>
+                                                            </CardBody>
+                                                        </Card>
+                                                    </React.Fragment>
+                                                ))}
+                                                {/* <Row className="row-cols-xxl-12 row-cols-lg-12 row-cols-1">
                                                     {(data.data || []).map((item, key) => (
                                                         <Col key={key}>
                                                             <Card className="card-animate" onClick={() => { handleCard(item) }}>
@@ -267,7 +323,7 @@ const TriageIGD = () => {
                                                             </Card>
                                                         </Col>
                                                     ))}
-                                                </Row>
+                                                </Row> */}
                                             </div>
                                         </CardBody>
                                     </Card>
