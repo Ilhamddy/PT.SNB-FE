@@ -2,23 +2,26 @@ import { InputGroup } from './Login'
 import InputDM from '../../Components/InputDM/InputDM'
 import ButtonDM from '../../Components/ButtonDM/ButtonDM'
 import './PasienBaru.scss'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import { rgxAllNumber } from '../../utils/regexcommon'
 import { useDispatch, useSelector } from 'react-redux'
-import { getAllMaster } from '../../store/master/action'
+import { getAllMaster, getDesaKelurahan } from '../../store/master/action'
 import SelectDM from '../../Components/SelectDM/SelectDM'
 import FlatpickrDM from '../../Components/FlatpickrDM/FlatpickrDM'
+import { signUpUser } from '../../store/login/action'
 
 const FormPasienBaru = ({ step, setStep }) => {
   const dispatch = useDispatch()
-  const { master } = useSelector((selector) => ({
+  const { master, desa } = useSelector((selector) => ({
     master: selector.Master.getAllMaster?.data?.data || null,
+    desa: selector.Master.getDesaKelurahan?.data?.data || [],
   }))
   useEffect(() => {
     dispatch(getAllMaster())
   }, [dispatch])
+  const refNegara = useRef(null)
   const vStep0 = useFormik({
     initialValues: {
       namalengkap: '',
@@ -66,27 +69,138 @@ const FormPasienBaru = ({ step, setStep }) => {
       alamat: '',
       kelurahan: '',
       kodepos: '',
+      rt: '',
+      rw: '',
       kecamatan: '',
+      kecamatanname: '',
       kabupaten: '',
+      kabupatenname: '',
       provinsi: '',
+      provinsiname: '',
       negara: '',
+      negaraname: '',
     },
     validationSchema: Yup.object({
       alamat: Yup.string().required('Alamat wajib diisi'),
       kelurahan: Yup.string().required('Kelurahan wajib diisi'),
       kodepos: Yup.string().required('Kode Pos wajib diisi'),
+      rt: Yup.string().required('RT wajib diisi'),
+      rw: Yup.string().required('RW wajib diisi'),
       kecamatan: Yup.string().required('Kecamatan wajib diisi'),
       kabupaten: Yup.string().required('Kabupaten wajib diisi'),
       provinsi: Yup.string().required('Provinsi wajib diisi'),
       negara: Yup.string().required('Negara wajib diisi'),
     }),
     onSubmit: (values, { resetForm }) => {
-      console.log('masuk')
       setStep(step + 1)
     },
   })
+  const vStep2 = useFormik({
+    initialValues: {
+      sesuaiktp: '',
+      alamat: '',
+      kelurahan: '',
+      kodepos: '',
+      rt: '',
+      rw: '',
+      kecamatan: '',
+      kecamatanname: '',
+      kabupaten: '',
+      kabupatenname: '',
+      provinsi: '',
+      provinsiname: '',
+      negara: '',
+      negaraname: '',
+    },
+    validationSchema: Yup.object({
+      alamat: Yup.string().required('Alamat wajib diisi'),
+      kelurahan: Yup.string().required('Kelurahan wajib diisi'),
+      kodepos: Yup.string().required('Kode Pos wajib diisi'),
+      rt: Yup.string().required('RT wajib diisi'),
+      rw: Yup.string().required('RW wajib diisi'),
+      kecamatan: Yup.string().required('Kecamatan wajib diisi'),
+      kabupaten: Yup.string().required('Kabupaten wajib diisi'),
+      provinsi: Yup.string().required('Provinsi wajib diisi'),
+      negara: Yup.string().required('Negara wajib diisi'),
+    }),
+    onSubmit: (values, { resetForm }) => {
+      setStep(step + 1)
+    },
+  })
+  const vStep3 = useFormik({
+    initialValues: {
+      namaibu: '',
+      namaayah: '',
+      nobpjs: '',
+      nohppasien: '',
+    },
+    validationSchema: Yup.object({
+      namaibu: Yup.string().required('Nama Ibu wajib diisi'),
+      namaayah: Yup.string().required('Nama Ayah wajib diisi'),
+      nobpjs: Yup.string().required('No BPJS wajib diisi'),
+      nohppasien: Yup.string().required('No HP Pasien wajib diisi'),
+    }),
+    onSubmit: (values, { resetForm }) => {
+      const finalVal = {
+        step0: vStep0.values,
+        step1: vStep1.values,
+        step2: vStep2.values,
+        step3: values,
+      }
+      dispatch(signUpUser(finalVal))
+    },
+  })
+
+  const handleKelurahanGet = (name) => {
+    dispatch(getDesaKelurahan({ param: name }))
+  }
+
+  useEffect(() => {
+    if (vStep2.values.sesuaiktp === 0) {
+      const setFF = vStep2.setFieldValue
+      setFF('alamat', vStep1.values.alamat || '')
+      setFF('kelurahan', vStep1.values.kelurahan || '')
+      setFF('kodepos', vStep1.values.kodepos || '')
+      setFF('rt', vStep1.values.rt || '')
+      setFF('rw', vStep1.values.rw || '')
+      setFF('kecamatan', vStep1.values.kecamatan || '')
+      setFF('kecamatanname', vStep1.values.kecamatanname || '')
+      setFF('kabupaten', vStep1.values.kabupaten || '')
+      setFF('kabupatenname', vStep1.values.kabupatenname || '')
+      setFF('provinsi', vStep1.values.provinsi || '')
+      setFF('provinsiname', vStep1.values.provinsiname || '')
+      setFF('negara', vStep1.values.negara || '')
+      setFF('negaraname', vStep1.values.negaraname || '')
+    }
+  }, [vStep1.values, vStep2.setFieldValue, vStep2.values.sesuaiktp])
+
+  useEffect(() => {
+    const setFF = vStep1.setFieldValue
+    const setFF2 = vStep2.setFieldValue
+    if (vStep0.values.kewarganegaraan === 1) {
+      setFF('negara', 13)
+      setFF('negaraname', 'Indonesia')
+      setFF2('negara', 13)
+      setFF2('negaraname', 'Indonesia')
+    } else {
+      setFF('negara', '')
+      setFF('negaraname', '')
+      setFF2('negara', '')
+      setFF2('negaraname', '')
+    }
+  }, [
+    vStep0.values.kewarganegaraan,
+    vStep1.setFieldValue,
+    vStep2.setFieldValue,
+    refNegara,
+  ])
+
+  const konfirmasi = [
+    { label: 'Ya', value: 0 },
+    { label: 'Tidak', value: 1 },
+  ]
   return (
-    <div className="kontainer-konten pasien-lama-konten">
+    <div className="kontainer-konten pasien-baru-konten">
       {step === 0 && (
         <>
           <InputGroup label={'Nama Lengkap'}>
@@ -136,8 +250,6 @@ const FormPasienBaru = ({ step, setStep }) => {
               className="input-login"
               value={vStep0.values.tanggallahir}
               onChange={([newDate]) => {
-                newDate.setHours(0, 0, 0)
-                console.log(newDate.toISOString())
                 vStep0.setFieldValue(
                   'tanggallahir',
                   newDate.toISOString() || ''
@@ -312,71 +424,364 @@ const FormPasienBaru = ({ step, setStep }) => {
       {step === 1 && (
         <>
           <InputGroup label={'Alamat'}>
-            <InputDM className="input-login" />
+            <InputDM
+              id="alamat"
+              name="alamat"
+              type="string"
+              className="input-login"
+              value={vStep1.values.alamat}
+              errorMsg={vStep1.errors.alamat}
+              isError={vStep1.touched.alamat && vStep1.errors.alamat}
+              onChange={(e) => {
+                vStep1.handleChange(e)
+              }}
+            />
           </InputGroup>
-          <InputGroup label={'Kelurahan'}>
-            <InputDM className="input-login" />
+          <div className="input-split">
+            <div className="isi-input">
+              <InputGroup label={'RW'}>
+                <InputDM
+                  id="rt"
+                  name="rt"
+                  type="string"
+                  className="input-login"
+                  value={vStep1.values.rt}
+                  errorMsg={vStep1.errors.rt}
+                  isError={vStep1.touched.rt && vStep1.errors.rt}
+                  onChange={(e) => {
+                    vStep1.handleChange(e)
+                  }}
+                />
+              </InputGroup>
+            </div>
+            <div className="isi-input">
+              <InputGroup label={'RT'}>
+                <InputDM
+                  id="rw"
+                  name="rw"
+                  type="string"
+                  className="input-login"
+                  value={vStep1.values.rw}
+                  errorMsg={vStep1.errors.rw}
+                  isError={vStep1.touched.rw && vStep1.errors.rw}
+                  onChange={(e) => {
+                    vStep1.handleChange(e)
+                  }}
+                />
+              </InputGroup>
+            </div>
+          </div>
+          <InputGroup label={'Kelurahan / Desa'}>
+            <SelectDM
+              id="kelurahan"
+              name="kelurahan"
+              className="input-login"
+              options={desa}
+              isError={vStep1.touched.kelurahan && vStep1.errors.kelurahan}
+              errorMsg={vStep1.errors.kelurahan}
+              onInputChange={handleKelurahanGet}
+              onChange={(e) => {
+                console.log(e)
+                vStep1.setFieldValue('kodepos', e.kodepos || '')
+                vStep1.setFieldValue('kelurahan', e.value || '')
+                vStep1.setFieldValue('kecamatan', e.valuekecamatan || '')
+                vStep1.setFieldValue('kecamatanname', e.namakecamatan || '')
+                vStep1.setFieldValue('kabupaten', e.valuekabupaten || '')
+                vStep1.setFieldValue('kabupatenname', e.namakabupaten || '')
+                vStep1.setFieldValue('provinsi', e.valuepropinsi || '')
+                vStep1.setFieldValue('provinsiname', e.namaprovinsi || '')
+              }}
+              value={vStep1.values.kelurahan}
+            />
           </InputGroup>
-          <InputGroup label={'Kode Pos'}>
-            <InputDM className="input-login" />
+          <InputGroup label={'Kode Poss'}>
+            <InputDM
+              id="kodepos"
+              name="kodepos"
+              type="string"
+              className="input-login"
+              value={vStep1.values.kodepos}
+              errorMsg={vStep1.errors.kodepos}
+              isError={vStep1.touched.kodepos && vStep1.errors.kodepos}
+              onChange={(e) => {
+                vStep1.handleChange(e)
+              }}
+            />
           </InputGroup>
           <InputGroup label={'Kecamatan'}>
-            <InputDM className="input-login" />
+            <InputDM
+              id="kecamatanname"
+              name="kecamatanname"
+              type="string"
+              className="input-login"
+              value={vStep1.values.kecamatanname}
+              errorMsg={vStep1.errors.kecamatan}
+              isError={vStep1.touched.kecamatan && vStep1.errors.kecamatan}
+              onChange={(e) => {
+                vStep1.handleChange(e)
+              }}
+            />
           </InputGroup>
           <InputGroup label={'Kabupaten'}>
-            <InputDM className="input-login" />
+            <InputDM
+              id="kabupatenname"
+              name="kabupatenname"
+              type="string"
+              className="input-login"
+              value={vStep1.values.kabupatenname}
+              errorMsg={vStep1.errors.kabupaten}
+              isError={vStep1.touched.kabupaten && vStep1.errors.kabupaten}
+              onChange={(e) => {
+                vStep1.handleChange(e)
+              }}
+            />
           </InputGroup>
           <InputGroup label={'Provinsi'}>
-            <InputDM className="input-login" />
+            <InputDM
+              id="provinsiname"
+              name="provinsiname"
+              type="string"
+              className="input-login"
+              value={vStep1.values.provinsiname}
+              errorMsg={vStep1.errors.provinsi}
+              isError={vStep1.touched.provinsi && vStep1.errors.provinsi}
+              onChange={(e) => {
+                vStep1.handleChange(e)
+              }}
+            />
           </InputGroup>
           <InputGroup label={'Negara'}>
-            <InputDM className="input-login" />
+            <SelectDM
+              id="negara"
+              name="negara"
+              className="input-login"
+              options={master?.negara || []}
+              isError={vStep2.touched.negara && vStep2.errors.negara}
+              errorMsg={vStep2.errors.negara}
+              onChange={(e) => {
+                vStep2.setFieldValue('negara', e.value || '')
+              }}
+              value={vStep2.values.negara}
+            />
           </InputGroup>
         </>
       )}
-
       {step === 2 && (
         <>
           <InputGroup label={'Apakah Alamat Domisili Sesuai Dengan KTP?'}>
-            <InputDM className="input-login" />
+            <SelectDM
+              id="sesuaiktp"
+              name="sesuaiktp"
+              className="input-login"
+              options={konfirmasi}
+              isError={vStep2.touched.sesuaiktp && vStep2.errors.sesuaiktp}
+              errorMsg={vStep2.errors.sesuaiktp}
+              onChange={(e) => {
+                vStep2.setFieldValue('sesuaiktp', e.value)
+              }}
+              value={vStep2.values.sesuaiktp}
+            />
           </InputGroup>
           <InputGroup label={'Alamat'}>
-            <InputDM className="input-login" />
+            <InputDM
+              id="alamat"
+              name="alamat"
+              type="string"
+              className="input-login"
+              value={vStep2.values.alamat}
+              errorMsg={vStep2.errors.alamat}
+              isError={vStep2.touched.alamat && vStep2.errors.alamat}
+              onChange={(e) => {
+                vStep2.handleChange(e)
+              }}
+            />
           </InputGroup>
-          <InputGroup label={'Kelurahan'}>
-            <InputDM className="input-login" />
+          <div className="input-split">
+            <div className="isi-input">
+              <InputGroup label={'RW'}>
+                <InputDM
+                  id="rt"
+                  name="rt"
+                  type="string"
+                  className="input-login"
+                  value={vStep2.values.rt}
+                  errorMsg={vStep2.errors.rt}
+                  isError={vStep2.touched.rt && vStep2.errors.rt}
+                  onChange={(e) => {
+                    vStep2.handleChange(e)
+                  }}
+                />
+              </InputGroup>
+            </div>
+            <div className="isi-input">
+              <InputGroup label={'RT'}>
+                <InputDM
+                  id="rw"
+                  name="rw"
+                  type="string"
+                  className="input-login"
+                  value={vStep2.values.rw}
+                  errorMsg={vStep2.errors.rw}
+                  isError={vStep2.touched.rw && vStep2.errors.rw}
+                  onChange={(e) => {
+                    vStep2.handleChange(e)
+                  }}
+                />
+              </InputGroup>
+            </div>
+          </div>
+          <InputGroup label={'Kelurahan / Desa'}>
+            <SelectDM
+              id="kelurahan"
+              name="kelurahan"
+              className="input-login"
+              options={desa}
+              isError={vStep2.touched.kelurahan && vStep2.errors.kelurahan}
+              errorMsg={vStep2.errors.kelurahan}
+              onInputChange={handleKelurahanGet}
+              onChange={(e) => {
+                console.log(e)
+                vStep2.setFieldValue('kodepos', e.kodepos || '')
+                vStep2.setFieldValue('kelurahan', e.value || '')
+                vStep2.setFieldValue('kecamatan', e.valuekecamatan || '')
+                vStep2.setFieldValue('kecamatanname', e.namakecamatan || '')
+                vStep2.setFieldValue('kabupaten', e.valuekabupaten || '')
+                vStep2.setFieldValue('kabupatenname', e.namakabupaten || '')
+                vStep2.setFieldValue('provinsi', e.valuepropinsi || '')
+                vStep2.setFieldValue('provinsiname', e.namaprovinsi || '')
+              }}
+              value={vStep2.values.kelurahan}
+            />
           </InputGroup>
-          <InputGroup label={'Kode Pos'}>
-            <InputDM className="input-login" />
+          <InputGroup label={'Kode Poss'}>
+            <InputDM
+              id="kodepos"
+              name="kodepos"
+              type="string"
+              className="input-login"
+              value={vStep2.values.kodepos}
+              errorMsg={vStep2.errors.kodepos}
+              isError={vStep2.touched.kodepos && vStep2.errors.kodepos}
+              onChange={(e) => {
+                vStep2.handleChange(e)
+              }}
+            />
           </InputGroup>
           <InputGroup label={'Kecamatan'}>
-            <InputDM className="input-login" />
+            <InputDM
+              id="kecamatanname"
+              name="kecamatanname"
+              type="string"
+              className="input-login"
+              value={vStep2.values.kecamatanname}
+              errorMsg={vStep2.errors.kecamatan}
+              isError={vStep2.touched.kecamatan && vStep2.errors.kecamatan}
+              onChange={(e) => {
+                vStep2.handleChange(e)
+              }}
+            />
           </InputGroup>
           <InputGroup label={'Kabupaten'}>
-            <InputDM className="input-login" />
+            <InputDM
+              id="kabupatenname"
+              name="kabupatenname"
+              type="string"
+              className="input-login"
+              value={vStep2.values.kabupatenname}
+              errorMsg={vStep2.errors.kabupaten}
+              isError={vStep2.touched.kabupaten && vStep2.errors.kabupaten}
+              onChange={(e) => {
+                vStep2.handleChange(e)
+              }}
+            />
           </InputGroup>
           <InputGroup label={'Provinsi'}>
-            <InputDM className="input-login" />
+            <InputDM
+              id="provinsiname"
+              name="provinsiname"
+              type="string"
+              className="input-login"
+              value={vStep2.values.provinsiname}
+              errorMsg={vStep2.errors.provinsi}
+              isError={vStep2.touched.provinsi && vStep2.errors.provinsi}
+              onChange={(e) => {
+                vStep2.handleChange(e)
+              }}
+            />
           </InputGroup>
           <InputGroup label={'Negara'}>
-            <InputDM className="input-login" />
+            <SelectDM
+              id="negara"
+              name="negara"
+              className="input-login"
+              options={master?.negara || []}
+              isError={vStep2.touched.negara && vStep2.errors.negara}
+              errorMsg={vStep2.errors.negara}
+              onChange={(e) => {
+                vStep2.setFieldValue('negara', e.value || '')
+              }}
+              value={vStep2.values.negara}
+            />
           </InputGroup>
         </>
       )}
-
       {step === 3 && (
         <>
           <InputGroup label={'Nama Ibu'}>
-            <InputDM className="input-login" />
+            <InputDM
+              id="namaibu"
+              name="namaibu"
+              type="string"
+              className="input-login"
+              value={vStep3.values.namaibu}
+              errorMsg={vStep3.errors.namaibu}
+              isError={vStep3.touched.namaibu && vStep2.errors.namaibu}
+              onChange={(e) => {
+                vStep3.handleChange(e)
+              }}
+            />
           </InputGroup>
           <InputGroup label={'Nama Ayah'}>
-            <InputDM className="input-login" />
+            <InputDM
+              id="namaayah"
+              name="namaayah"
+              type="string"
+              className="input-login"
+              value={vStep3.values.namaayah}
+              errorMsg={vStep3.errors.namaayah}
+              isError={vStep3.touched.namaayah && vStep2.errors.namaayah}
+              onChange={(e) => {
+                vStep3.handleChange(e)
+              }}
+            />
           </InputGroup>
           <InputGroup label={'No BPJS'}>
-            <InputDM className="input-login" />
+            <InputDM
+              id="nobpjs"
+              name="nobpjs"
+              type="string"
+              className="input-login"
+              value={vStep3.values.nobpjs}
+              errorMsg={vStep3.errors.nobpjs}
+              isError={vStep3.touched.nobpjs && vStep2.errors.nobpjs}
+              onChange={(e) => {
+                rgxAllNumber.test(e.target.value) && vStep3.handleChange(e)
+              }}
+            />
           </InputGroup>
           <InputGroup label={'No HP Pasien'}>
-            <InputDM className="input-login" />
+            <InputDM
+              id="nohppasien"
+              name="nohppasien"
+              type="string"
+              className="input-login"
+              value={vStep3.values.nohppasien}
+              errorMsg={vStep3.errors.nohppasien}
+              isError={vStep3.touched.nohppasien && vStep2.errors.nohppasien}
+              onChange={(e) => {
+                rgxAllNumber.test(e.target.value) && vStep3.handleChange(e)
+              }}
+            />
           </InputGroup>
         </>
       )}
@@ -405,6 +810,10 @@ const FormPasienBaru = ({ step, setStep }) => {
               console.error(vStep0.errors)
               if (step === 0) {
                 vStep0.handleSubmit()
+              } else if (step === 1) {
+                vStep1.handleSubmit()
+              } else if (step === 2) {
+                vStep2.handleSubmit()
               }
               window.scrollTo({
                 top: 0,
@@ -418,12 +827,14 @@ const FormPasienBaru = ({ step, setStep }) => {
         ) : (
           <ButtonDM
             className="btn-lama"
+            type="button"
             onClick={() => {
               window.scrollTo({
                 top: 0,
                 left: 0,
                 behavior: 'smooth',
               })
+              vStep3.handleSubmit()
             }}
           >
             Selesai

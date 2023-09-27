@@ -8,5 +8,8 @@ export default class ServiceAuth {
         return await api.create(`/auth/login-user-pasien`, body, false);
     }
 
+    signUpUser = async (body) => {
+        return await api.create(`/daftarmandiri/user-pasien/create-pasien`, body, false);
+    }
     
 }

@@ -1,12 +1,15 @@
 import { call, put, takeEvery, all, fork } from "redux-saga/effects";
 import { 
     getAllMasterSuccess,
-    getAllMasterError
+    getAllMasterError,
+    getDesaKelurahanSuccess,
+    getDesaKelurahanError
 } from "./action";
 import * as uuid from 'uuid'
 
 import {
-    GET_ALL_MASTER,
+    GET_ALL_MASTER, 
+    GET_DESA_KELURAHAN,
 
 } from "./actionType";
 
@@ -26,6 +29,17 @@ function* onGetAllMaster({payload: {data}}) {
     }
 }
 
+function* onGetDesaKelurahan({payload: {params}}) {
+    try {
+        console.log(params)
+        const response = yield call(serviceMaster.getDesaKelurahan, params);
+        yield put(getDesaKelurahanSuccess(response));
+    } catch (error) {
+        yield put(getDesaKelurahanError(error));
+    }
+}
+
 export default function* watchMasterSaga() {
     yield takeEvery(GET_ALL_MASTER, onGetAllMaster);
+    yield takeEvery(GET_DESA_KELURAHAN, onGetDesaKelurahan)
 }

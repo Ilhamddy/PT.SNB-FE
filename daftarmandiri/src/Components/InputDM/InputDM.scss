@@ -9,11 +9,12 @@
         background: #fdfdfd;
         width: 100%;
         height: 56px;
-        padding: 0 20px;
+        padding: 0 10px;
 
         &:focus {
             outline: none;
-            border: 2px solid #dec15c;
+            border: 1px solid #dec15c;
+            outline: 1px solid #dec15c;
         }
     }
 }
