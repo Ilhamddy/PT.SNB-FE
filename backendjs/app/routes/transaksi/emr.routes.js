@@ -152,4 +152,10 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.saveTriageIgd
     );
+
+    app.get(
+        "/api/transaksi/emr/get-combo-triage-igd",
+        [authJwt.verifyToken],
+        controller.getComboTriageIgd
+    );
 }
