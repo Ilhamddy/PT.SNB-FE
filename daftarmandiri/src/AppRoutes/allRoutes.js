@@ -6,7 +6,8 @@ import HomePage from "../pages/Home/HomePage";
 
 const publicRoutes = [
     { path: "/login/:page", component: <Login /> },
-    { path: "/", component: <HomePage />}
+    { path: "/", component: <HomePage />},
+    
 ]
 
 export { publicRoutes };

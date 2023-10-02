@@ -2,4 +2,153 @@
     width: 100%;
     height: 100vh;
     background-color: #d7b53c;
+
+    .home-header {
+        width: 100%;
+        height: fit-content;
+        padding: 20px;
+
+        .menu-header-home {
+            display: flex;
+            width: 100%;
+            height: fit-content;
+            justify-content: space-between;
+
+            .tbl-masuk {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                background-color: #00000000;
+                border: none;
+                &:focus {
+                    outline: none;
+                }
+                img {
+                    margin-right: 10px;
+                }
+                p {
+                    margin: 0;
+                }
+            }
+        }
+
+        .carousel-home {
+            margin-top: 20px;
+        }
+
+        .konten-header {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            width: 100%;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin-top: 20px;
+
+            .isi-konten-header {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                width: calc((100% / 4) - 10px);
+
+                img {
+                    width: 50px;
+                    height: 50px;
+                }
+
+                p {
+                    font-size: 11px;
+                    font-weight: 600;
+                    color: #fff;
+                    margin-top: 10px;
+                    text-align: center;
+                    color: #564405;
+                }
+            }
+        }
+    }
+
+    .home-konten {
+        display: flex;
+        flex-direction: column;
+
+        .navigasi-poliklinik {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+
+            .poliklinik-terpilih {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                width: calc(100% - (46px * 2));
+                background-color: #cda30b;
+                border-radius: 5px;
+                padding: 7px;
+                .judul-poliklinik {
+                    color: #faf6e7;
+                    font-size: 17px;
+                    font-style: normal;
+                    font-weight: 400;
+                    margin-bottom: 2px;
+                }
+
+                .jadwal-poliklinik {
+                    font-size: 13px;
+                    color: #515151;
+                    font-weight: 400;
+                    margin: 0;
+                }
+            }
+
+            .navigasi {
+                display: flex;
+                width: 32px;
+                height: 32px;
+                background-color: #e8d58f;
+                border-radius: 16px;
+                justify-content: center;
+                align-items: center;
+            }
+        }
+
+        .jadwal-dokter {
+            display: flex;
+            flex-direction: column;
+            margin-top: 15px;
+
+            .isi-jadwal-dokter {
+                margin-bottom: 15px;
+                background-color: #e8d58f;
+                border-radius: 15px;
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+                padding: 8px;
+
+                img {
+                    width: 48px;
+                    height: 48px;
+                }
+
+                .jabar {
+                    width: calc(100% - 60px);
+                    display: flex;
+                    flex-direction: column;
+
+                    .nama {
+                        margin: 0;
+                        font-weight: 500;
+                        font-size: 12px;
+                        margin-bottom: 7px;
+                    }
+                    .jadwal {
+                        margin: 0;
+                        font-size: 12px;
+                    }
+                }
+            }
+        }
+    }
 }

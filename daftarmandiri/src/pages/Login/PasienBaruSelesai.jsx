@@ -3,7 +3,7 @@ import ButtonDM from '../../Components/ButtonDM/ButtonDM'
 import './PasienBaruSelesai.scss'
 import { useSelector } from 'react-redux'
 
-const PasienBaruSelesai = ({ setDone }) => {
+const PasienBaruSelesai = ({ handleToHome }) => {
   const navigate = useNavigate()
   const { norm } = useSelector((selector) => ({
     norm: selector.Login.signupUser?.data?.username,
@@ -24,10 +24,7 @@ const PasienBaruSelesai = ({ setDone }) => {
       </p>
       <ButtonDM
         onClick={() => {
-          setDone(true)
-          setTimeout(() => {
-            navigate('/')
-          }, 2000)
+          handleToHome()
         }}
       >
         Selesai

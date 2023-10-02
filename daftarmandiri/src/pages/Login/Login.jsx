@@ -1,22 +1,25 @@
 import InputDM from '../../Components/InputDM/InputDM'
 import ButtonDM from '../../Components/ButtonDM/ButtonDM'
 import './Login.scss'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Circle } from 'rc-progress'
 import FormPasienBaru from './PasienBaru'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import { rgxAllNumber } from '../../utils/regexcommon'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { loginUser } from '../../store/login/action'
 import ServiceAuth from '../../service/service-auth'
 import { useNavigate, useParams } from 'react-router-dom'
 import PasienBaruSelesai from './PasienBaruSelesai'
+import KontainerPage from '../../Components/KontainerPage/KontainerPage'
 
 const Login = () => {
   const navigate = useNavigate()
+
   const [step, setStep] = useState(0)
   const [done, setDone] = useState(false)
+  const refKontainer = useRef(null)
 
   const { page } = useParams()
 
@@ -33,40 +36,44 @@ const Login = () => {
   const isPasienBaru = page === 'pasien-baru'
   const isSelesai = page === 'selesai'
   const stlHeader = !isPasienBaru ? { opacity: '0' } : { opacity: '1' }
-  console.log(done && isPasienLama)
-  const stlKontainerIsiLogin =
-    (done && isSelesai) || (done && isPasienLama)
-      ? { top: '100%' }
-      : isPasienLama
-      ? { top: '50%' }
-      : { top: '120px' }
+  const topBody = isPasienLama ? '50%' : '120px'
   const stlKontainerBg = isPasienLama
     ? { left: '8px' }
     : { left: 'calc(50% + 8px)' }
   const stlBtnTerpilih = (link) => (page === link ? { color: '#715A06' } : {})
+  const handleToHome = () => {
+    refKontainer.current.handleToNextPage(() => {
+      navigate('/')
+    })
+  }
   return (
     <div className="page-login">
-      <div className="kontainer-header-login" style={stlHeader}>
-        <div className="kontainer-progress-bar">
-          <Circle
-            className="progress-bar"
-            percent={((step + 1) / 4) * 100}
-            strokeWidth={10}
-            trailWidth={10}
-            strokeColor="#715A06"
-            trailColor="#F0E2B3"
-          />
-          <p className="teks">{step + 1}/4</p>
-        </div>
-        <div className="kontainer-header">
-          <h2>{headerName[step]}</h2>
-          <h3>
-            Selanjutnya :{' '}
-            {headerName[step + 1] && 'Pendaftaran Pasien Baru Selesai'}
-          </h3>
-        </div>
-      </div>
-      <div className="kontainer-isi-login" style={stlKontainerIsiLogin}>
+      <KontainerPage
+        top={topBody}
+        header={
+          <div className="header-login" style={stlHeader}>
+            <div className="kontainer-progress-bar">
+              <Circle
+                className="progress-bar"
+                percent={((step + 1) / 4) * 100}
+                strokeWidth={10}
+                trailWidth={10}
+                strokeColor="#715A06"
+                trailColor="#F0E2B3"
+              />
+              <p className="teks">{step + 1}/4</p>
+            </div>
+            <div className="kontainer-header">
+              <h2>{headerName[step]}</h2>
+              <h3>
+                Selanjutnya :{' '}
+                {headerName[step + 1] && 'Pendaftaran Pasien Baru Selesai'}
+              </h3>
+            </div>
+          </div>
+        }
+        ref={refKontainer}
+      >
         {!isSelesai && (
           <div className="pilihan-pasien">
             <div className="kontainer-bg" style={stlKontainerBg}></div>
@@ -86,16 +93,21 @@ const Login = () => {
             </button>
           </div>
         )}
-        {isPasienLama && <FormPasienLama setDone={setDone} />}
+        {isPasienLama && (
+          <FormPasienLama handleToHome={handleToHome} setDone={setDone} />
+        )}
         {isPasienBaru && <FormPasienBaru step={step} setStep={setStep} />}
         {isSelesai && <PasienBaruSelesai setDone={setDone} />}
-      </div>
+      </KontainerPage>
     </div>
   )
 }
 
-const FormPasienLama = ({ setDone }) => {
+const FormPasienLama = ({ setDone, handleToHome }) => {
   const dispatch = useDispatch()
+  const { loadingLogin } = useSelector((state) => ({
+    loadingLogin: state?.loginUser?.loading,
+  }))
   const vLogin = useFormik({
     initialValues: {
       nocm: '',
@@ -110,6 +122,7 @@ const FormPasienLama = ({ setDone }) => {
         loginUser(values, () => {
           resetForm()
           setDone(true)
+          handleToHome()
         })
       )
     },
@@ -146,6 +159,7 @@ const FormPasienLama = ({ setDone }) => {
         type="button"
         className="btn-login"
         onClick={() => vLogin.handleSubmit()}
+        disabled={loadingLogin}
       >
         Masuk
       </ButtonDM>
