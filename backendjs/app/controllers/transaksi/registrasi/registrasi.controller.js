@@ -1701,37 +1701,6 @@ const getDaftarPasienTriage = async (req, res) => {
     }
 }
 
-const updateNorecTriageIgd = async (req, res,transaction, {norecDP,norectriage}) => {
-    const logger = res.locals.logger;
-    try {
-        const { pasienigd } = await db.sequelize.transaction(async (transaction) => {
-            const pasienigd = await db.t_pasienigd.update({ objectdaftarpasienfk: req.body.norecdp }, {
-                where: {
-                    norec: req.body.norectriage
-                }
-            }, { transaction });
-            return { pasienigd }
-        });
-return pasienigd
-        // const tempres = {
-        //     pasienigd: pasienigd
-        // };
-        // res.status(200).send({
-        //     msg: 'Success',
-        //     code: 200,
-        //     data: tempres,
-        //     success: true
-        // });
-    } catch (error) {
-        logger.error(error);
-        // res.status(500).send({
-        //     msg: error.message,
-        //     code: 500,
-        //     data: error,
-        //     success: false
-        // });
-    }
-}
 
 export default {
     allSelect,
@@ -1762,8 +1731,7 @@ export default {
     getDaftarPasienFarmasi,
     getDaftarPasienIGD,
     getWidgetPasienTriage,
-    getDaftarPasienTriage,
-    updateNorecTriageIgd
+    getDaftarPasienTriage
 };
 
 const hUpdateRegistrasiPulang = async (req, res, transaction) => {
