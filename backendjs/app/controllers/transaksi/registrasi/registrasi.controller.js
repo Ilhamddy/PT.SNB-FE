@@ -217,7 +217,7 @@ const savePasien = async (req, res) => {
         let userPasien = null
         let result
         if (!objBody.id) {
-            result = await hCreatePasien(req, res, transaction, {objBody, nocm})
+            result = await hCreatePasien(req, res, transaction, { objBody, nocm })
             await running_Number.update({ new_number: nocm }, {
                 where: {
                     id: 1
@@ -225,11 +225,11 @@ const savePasien = async (req, res) => {
                 transaction: transaction
             });
             userPasien = await pasienSignup(
-                req, 
-                res, 
-                transaction, 
-                { 
-                    norm: result.nocm, 
+                req,
+                res,
+                transaction,
+                {
+                    norm: result.nocm,
                     noidentitas: result.noidentitas
                 })
             userPasien = userPasien?.toJSON() || null
@@ -312,7 +312,6 @@ async function saveRegistrasiPasien(req, res) {
     if (errorTransaction) return
     try {
         let norecDP = uuid.v4().substring(0, 32)
-        console.log(req.body?.penjamin)
         let objectpenjaminfk = req.body?.penjamin?.[0]?.value || null
         let objectpenjamin2fk = req.body?.penjamin?.[1]?.value || null
         let objectpenjamin3fk = req.body?.penjamin?.[2]?.value || null
@@ -359,7 +358,6 @@ async function saveRegistrasiPasien(req, res) {
             }
             tglpulang = null
         }
-
         const daftarPasien = await db.t_daftarpasien.create({
             norec: norecDP,
             nocmfk: req.body.id,
@@ -381,7 +379,6 @@ async function saveRegistrasiPasien(req, res) {
             statusenabled: true,
             statuspasien: req.body.statuspasien
         }, { transaction });
-
         let norecAP = uuid.v4().substring(0, 32)
         const antreanPemeriksaan = await db.t_antreanpemeriksaan.create({
             norec: norecAP,
@@ -399,15 +396,21 @@ async function saveRegistrasiPasien(req, res) {
         }, {
             transaction: transaction
         });
-        // console.log(antreanPemeriksaan);
+
         if (req.body.tujkunjungan === 2) {
-            const ttp = await db.m_tempattidur.update({
-                objectstatusbedfk: 1
-            }, {
+            const ttp = await db.m_tempattidur.update({ objectstatusbedfk: 1 }, {
                 where: {
                     id: req.body.tempattidur
                 }
             }, { transaction });
+        }
+        if (req.body.norectriage !== '') {
+            const pasienigd = await db.t_pasienigd.update({ objectdaftarpasienfk: norecDP }, {
+                where: {
+                    norec: req.body.norectriage,
+                },
+                transaction: transaction
+            });
         }
         await transaction.commit();
         let tempres = {
@@ -1671,12 +1674,12 @@ const getDaftarPasienTriage = async (req, res) => {
         if (req.query.tingkatdarurat !== undefined && req.query.tingkatdarurat !== '')
             param2 = ` and tp.objectdaruratigdfk=${req.query.tingkatdarurat}`
 
-        if (req.query.statuspasien==='2'){
+        if (req.query.statuspasien === '2') {
             param3 = ` and tp.objectdaftarpasienfk is not null`
-        }else if (req.query.statuspasien==='3'){
+        } else if (req.query.statuspasien === '3') {
             param3 = ` and tp.objectdaftarpasienfk is null`
         }
-         
+
         const result = await pool.query(queries.qDaftarPasienTriage + ` where tp.namapasien ilike '%${req.query.search}%' ${param2} ${param3}`)
         const tempres = {
             data: result.rows
@@ -1695,6 +1698,38 @@ const getDaftarPasienTriage = async (req, res) => {
             data: error,
             success: false
         });
+    }
+}
+
+const updateNorecTriageIgd = async (req, res,transaction, {norecDP,norectriage}) => {
+    const logger = res.locals.logger;
+    try {
+        const { pasienigd } = await db.sequelize.transaction(async (transaction) => {
+            const pasienigd = await db.t_pasienigd.update({ objectdaftarpasienfk: req.body.norecdp }, {
+                where: {
+                    norec: req.body.norectriage
+                }
+            }, { transaction });
+            return { pasienigd }
+        });
+return pasienigd
+        // const tempres = {
+        //     pasienigd: pasienigd
+        // };
+        // res.status(200).send({
+        //     msg: 'Success',
+        //     code: 200,
+        //     data: tempres,
+        //     success: true
+        // });
+    } catch (error) {
+        logger.error(error);
+        // res.status(500).send({
+        //     msg: error.message,
+        //     code: 500,
+        //     data: error,
+        //     success: false
+        // });
     }
 }
 
@@ -1727,7 +1762,8 @@ export default {
     getDaftarPasienFarmasi,
     getDaftarPasienIGD,
     getWidgetPasienTriage,
-    getDaftarPasienTriage
+    getDaftarPasienTriage,
+    updateNorecTriageIgd
 };
 
 const hUpdateRegistrasiPulang = async (req, res, transaction) => {
