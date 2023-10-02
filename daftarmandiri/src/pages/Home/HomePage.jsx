@@ -126,7 +126,7 @@ const HomePage = () => {
             </div>
             <div className="poliklinik-terpilih" onClick={handleToJadwal}>
               <p className="judul-poliklinik">{vHome.values.unitlabel}</p>
-              <p className="jadwal-poliklinik">Senin, 9 September 2023</p>
+              <p className="jadwal-poliklinik">Senin, 10 Oktober 2023</p>
             </div>
             <div className="navigasi" onClick={() => handlePickUnit('next')}>
               <img src={arrowKananImg} alt="navigasi" />
