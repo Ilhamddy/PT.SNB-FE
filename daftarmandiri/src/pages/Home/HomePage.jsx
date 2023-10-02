@@ -20,6 +20,11 @@ const HomePage = () => {
       navigate('/login/pasien-lama')
     })
   }
+  const handleToJadwal = () => {
+    refKontainer.current?.handleToNextPage(() => {
+      navigate('/jadwal-dokter')
+    })
+  }
   return (
     <div className="home-page">
       <KontainerPage
@@ -30,7 +35,7 @@ const HomePage = () => {
             <div className="menu-header-home">
               <button className="tbl-masuk" onClick={handleToLogin}>
                 <img src={loginImg} alt="login-img" />
-                <p>Masuk</p>
+                <p>Masuk/Daftar</p>
               </button>
               <div className="button-right">
                 <img src={helpImg} alt="help" />
@@ -72,7 +77,7 @@ const HomePage = () => {
             <div className="navigasi">
               <img src={arrowKiriImg} alt="navigasi" />
             </div>
-            <div className="poliklinik-terpilih">
+            <div className="poliklinik-terpilih" onClick={handleToJadwal}>
               <p className="judul-poliklinik">Poliklinik Kebidanan</p>
               <p className="jadwal-poliklinik">Senin, 9 September 2023</p>
             </div>
