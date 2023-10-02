@@ -66,7 +66,7 @@ const getComboJadwal = async (req, res) => {
     const logger = res.locals.logger;
     try{
         const hari = (await (pool.query(hariQueries.getAll))).rows
-        const unit = (await (pool.query(unitQueries.getAll))).rows
+        const unit = (await (pool.query(unitQueries.getPoliklinik))).rows
         const tempres = {
             hari: hari,
             unit: unit

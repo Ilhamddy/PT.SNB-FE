@@ -108,7 +108,11 @@ const HomePage = () => {
             </Carousel>
             <div className="konten-header">
               <IsiKontenHeader gbr={waitImg} text={'Pendaftaran Pasien'} />
-              <IsiKontenHeader gbr={waitImg} text={'Pendaftaran Pasien'} />
+              <IsiKontenHeader
+                gbr={waitImg}
+                text={'Jadwal Dokter'}
+                onClick={() => handleToJadwal()}
+              />
               <IsiKontenHeader gbr={waitImg} text={'Pendaftaran Pasien'} />
               <IsiKontenHeader gbr={waitImg} text={'Pendaftaran Pasien'} />
               <IsiKontenHeader gbr={waitImg} text={'Pendaftaran Pasien'} />
@@ -143,9 +147,9 @@ const HomePage = () => {
   )
 }
 
-const IsiKontenHeader = ({ gbr, text }) => {
+const IsiKontenHeader = ({ gbr, text, ...rest }) => {
   return (
-    <div className="isi-konten-header">
+    <div className="isi-konten-header" {...rest}>
       <img className="gbr-konten" src={gbr} alt={text} />
       <p className="isi-konten">{text}</p>
     </div>
