@@ -65,6 +65,7 @@ import m_maprltoprodukModel from "./m_maprltoproduk.model.js";
 import t_antreanloketModel from "../models/t_antreanloket.model.js";
 import users_pasienModel from "./user_pasien.model.js";
 import t_pasienigdModel from "./t_pasienigd.model.js";
+import m_jadwaldokterModel from "./m_jadwaldokter.model.js";
 
 const sequelize = new Sequelize(
   config.DB,
@@ -155,6 +156,7 @@ db.t_returobatpasien = t_returobatpasienModel(sequelize, sequelizeInstance);
 db.m_maprltoproduk = m_maprltoprodukModel(sequelize, sequelizeInstance);
 db.t_antreanloket = t_antreanloketModel(sequelize, sequelizeInstance);
 db.t_pasienigd = t_pasienigdModel(sequelize, sequelizeInstance);
+db.m_jadwaldokter = m_jadwaldokterModel(sequelize, sequelizeInstance);
 
 db.role.belongsToMany(db.user, {
   through: "user_roles",

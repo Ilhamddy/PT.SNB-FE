@@ -11,4 +11,5 @@ export default class ServiceMaster {
     getDesaKelurahan = async (params) => {
         return await api.get(`/master/mandiri/desa-kelurahan`, params);
     }
+
 }

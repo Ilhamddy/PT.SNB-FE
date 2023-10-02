@@ -3,6 +3,7 @@
     position: relative;
     width: 100%;
     height: 100%;
+    min-height: 100vh;
 
     .kointainer-page-header {
         position: absolute;
@@ -13,7 +14,6 @@
         display: flex;
         flex-direction: row;
         justify-content: space-between;
-        height: 112px;
         opacity: 100%;
         align-items: center;
         transition: all 400ms ease-in-out;

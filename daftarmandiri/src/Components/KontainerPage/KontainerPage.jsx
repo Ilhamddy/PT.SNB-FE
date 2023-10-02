@@ -15,7 +15,7 @@ const KontainerPage = forwardRef(
     const heightLiteral = `calc(100vh - ${heightTxt})`
     const [stlBody, setStlBody] = useState(() => ({
       top: lastTop,
-      height: `calc(100vh - ${heightLiteral})`,
+      height: `calc(100vh)`,
     }))
     const [stlBodyKonten, setStlBodyKonten] = useState({ opacity: 0 })
 
@@ -33,7 +33,7 @@ const KontainerPage = forwardRef(
         const heightTxtTop = rgxRelative.test(top) ? top : `${top}px`
         const heightLiteralTop = `calc(100vh - ${heightTxtTop})`
         setStlHeader({ height: top, opacity: 1 })
-        setStlBody({ top: top, height: heightLiteralTop })
+        setStlBody({ top: top, height: '100vh' })
         setStlBodyKonten({ opacity: 1 })
       })
     }, [top])

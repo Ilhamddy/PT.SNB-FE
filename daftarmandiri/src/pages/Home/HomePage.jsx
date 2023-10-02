@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import KontainerPage from '../../Components/KontainerPage/KontainerPage'
 import './HomePage.scss'
 import { Carousel } from 'react-responsive-carousel'
@@ -9,12 +9,24 @@ import helpImg from './help.png'
 import loginImg from './login.png'
 import arrowKiriImg from './arrow-kiri.svg'
 import arrowKananImg from './arrow-kanan.svg'
-import dokter from './dokter.png'
+import dokterImg from './dokter.png'
 import { useNavigate } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { getComboJadwal, getJadwalDokter } from '../../store/actions'
+import { useFormik } from 'formik'
+import { JadwalDokterKomponen } from '../JadwalDokter/JadwalDokter'
 
 const HomePage = () => {
   const refKontainer = useRef(null)
+  let { hariOpt, unitOpt, dokter } = useSelector((state) => ({
+    hariOpt: state.Home.getComboJadwal?.data?.hari || [],
+    unitOpt: state.Home.getComboJadwal?.data?.unit || [],
+    dokter: state.Home.getJadwalDokter?.data?.dokter || [],
+  }))
+  const [dateToday] = useState(() => new Date())
+  unitOpt = [{ value: '', label: 'Semua Poliklinik' }, ...unitOpt]
   const navigate = useNavigate()
+  const dispatch = useDispatch()
   const handleToLogin = () => {
     refKontainer.current.handleToNextPage(() => {
       navigate('/login/pasien-lama')
@@ -24,6 +36,41 @@ const HomePage = () => {
     refKontainer.current?.handleToNextPage(() => {
       navigate('/jadwal-dokter')
     })
+  }
+  const vHome = useFormik({
+    initialValues: {
+      chosenAr: 0,
+      unitid: '',
+      unitlabel: 'Semua Poliklinik',
+    },
+    onSubmit: (values) => {
+      dispatch(
+        getJadwalDokter({ unitid: values.unitid, hariid: dateToday.getDay() })
+      )
+    },
+  })
+  useEffect(() => {
+    dispatch(getJadwalDokter({ unitid: undefined, hariid: dateToday.getDay() }))
+    dispatch(getComboJadwal())
+  }, [dispatch, dateToday])
+  const handlePickUnit = (action) => {
+    let chosenAr = 0
+    if (action === 'next') {
+      chosenAr =
+        vHome.values.chosenAr + 1 >= unitOpt.length
+          ? 0
+          : vHome.values.chosenAr + 1
+    } else {
+      chosenAr =
+        vHome.values.chosenAr - 1 < 0
+          ? unitOpt.length - 1
+          : vHome.values.chosenAr - 1
+    }
+
+    vHome.setFieldValue('chosenAr', chosenAr)
+    vHome.setFieldValue('unitid', unitOpt[chosenAr]?.value)
+    vHome.setFieldValue('unitlabel', unitOpt[chosenAr]?.label)
+    vHome.handleSubmit()
   }
   return (
     <div className="home-page">
@@ -74,44 +121,22 @@ const HomePage = () => {
       >
         <div className="home-konten">
           <div className="navigasi-poliklinik">
-            <div className="navigasi">
+            <div className="navigasi" onClick={() => handlePickUnit('before')}>
               <img src={arrowKiriImg} alt="navigasi" />
             </div>
             <div className="poliklinik-terpilih" onClick={handleToJadwal}>
-              <p className="judul-poliklinik">Poliklinik Kebidanan</p>
+              <p className="judul-poliklinik">{vHome.values.unitlabel}</p>
               <p className="jadwal-poliklinik">Senin, 9 September 2023</p>
             </div>
-            <div className="navigasi">
+            <div className="navigasi" onClick={() => handlePickUnit('next')}>
               <img src={arrowKananImg} alt="navigasi" />
             </div>
           </div>
-          <div className="jadwal-dokter">
-            <JadwalDokter
-              imgDokter={dokter}
-              namaDokter={'dr. H. Boyke Dian Nugraha, Sp.OG, MARS'}
-              jadwal={'Senin, 9 September 2023'}
-            />
-            <JadwalDokter
-              imgDokter={dokter}
-              namaDokter={'dr. H. Boyke Dian Nugraha, Sp.OG, MARS'}
-              jadwal={'Senin, 9 September 2023'}
-            />
-            <JadwalDokter
-              imgDokter={dokter}
-              namaDokter={'dr. H. Boyke Dian Nugraha, Sp.OG, MARS'}
-              jadwal={'Senin, 9 September 2023'}
-            />
-            <JadwalDokter
-              imgDokter={dokter}
-              namaDokter={'dr. H. Boyke Dian Nugraha, Sp.OG, MARS'}
-              jadwal={'Senin, 9 September 2023'}
-            />
-            <JadwalDokter
-              imgDokter={dokter}
-              namaDokter={'dr. H. Boyke Dian Nugraha, Sp.OG, MARS'}
-              jadwal={'Senin, 9 September 2023'}
-            />
-          </div>
+          <JadwalDokterKomponen
+            imgDokter={dokterImg}
+            dokters={dokter}
+            refKontainer={refKontainer}
+          />
         </div>
       </KontainerPage>
     </div>

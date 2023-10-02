@@ -88,14 +88,14 @@
                 padding: 7px;
                 .judul-poliklinik {
                     color: #faf6e7;
-                    font-size: 17px;
+                    font-size: 14px;
                     font-style: normal;
                     font-weight: 400;
                     margin-bottom: 2px;
                 }
 
                 .jadwal-poliklinik {
-                    font-size: 13px;
+                    font-size: 11px;
                     color: #515151;
                     font-weight: 400;
                     margin: 0;
@@ -110,44 +110,6 @@
                 border-radius: 16px;
                 justify-content: center;
                 align-items: center;
-            }
-        }
-
-        .jadwal-dokter {
-            display: flex;
-            flex-direction: column;
-            margin-top: 15px;
-
-            .isi-jadwal-dokter {
-                margin-bottom: 15px;
-                background-color: #e8d58f;
-                border-radius: 15px;
-                display: flex;
-                flex-direction: row;
-                justify-content: space-between;
-                padding: 8px;
-
-                img {
-                    width: 48px;
-                    height: 48px;
-                }
-
-                .jabar {
-                    width: calc(100% - 60px);
-                    display: flex;
-                    flex-direction: column;
-
-                    .nama {
-                        margin: 0;
-                        font-weight: 500;
-                        font-size: 12px;
-                        margin-bottom: 7px;
-                    }
-                    .jadwal {
-                        margin: 0;
-                        font-size: 12px;
-                    }
-                }
             }
         }
     }

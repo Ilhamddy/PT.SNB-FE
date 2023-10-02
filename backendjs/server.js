@@ -19,6 +19,7 @@ import laboratoriumRoutes from './app/routes/transaksi/laboratorium.routes.js';
 import paymentRoutes from "./app/routes/transaksi/payment.routes.js";
 import casemixRoutes from "./app/routes/transaksi/casemix.routes.js";
 import gudangRoutes from "./app/routes/transaksi/gudang.routes.js"
+import homeRoutes from "./app/routes/daftarmandiri/home.routes";
 import distribusiRoutes from "./app/routes/transaksi/distribusi.routes.js"
 import { addResBody, logRequests } from "./app/middleware/logrequests.js";
 import farmasiRoutes from "./app/routes/transaksi/farmasi.routes.js";
@@ -76,6 +77,7 @@ farmasiRoutes(app);
 kioskRoutes(app);
 viewerRoutes(app);
 userPasienRoutes(app);
+homeRoutes(app);
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8000;

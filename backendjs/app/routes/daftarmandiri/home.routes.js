@@ -14,7 +14,6 @@ export default function(app) {
     "/api/daftarmandiri/pasien-baru",
     [],
     
-
   )
   app.post(
     "/api/daftarmandiri/home-user",
@@ -24,4 +23,16 @@ export default function(app) {
     ],
     controller.getHomePageUser
   );
+
+  app.get(
+    "/api/daftarmandiri/jadwal-dokter",
+    [],
+    controller.getJadwalDokter
+  )
+
+  app.get(
+    "/api/daftarmandiri/combo-jadwal",
+    [],
+    controller.getComboJadwal
+  )
 };
