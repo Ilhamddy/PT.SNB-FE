@@ -4,7 +4,7 @@ import {
 
 const INIT_STATE = {
     kontainerPage: {
-        lastTop: 0
+        lastTop: `100vh`
     },
 }
 
