@@ -544,6 +544,7 @@ const authProtectedRoutes = [
   { path: "/registrasi/pasien-baru/:idpasien", component: <PasienBaruForm /> },
   { path: "/registrasi/pasien-ruangan/:id", component: <RegistrasiPasien /> },
   { path: "/registrasi/pasien-ruangan/:id/:norec", component: <RegistrasiPasien /> },
+  { path: "/registrasi/pasien-ruangan-triage/:id/:norectriage", component: <RegistrasiPasien /> },
   { path: "/registrasi/input-penjamin/:id/:norec", component: <RegistrasiPenjaminFK /> },
   { path: "/bukti-pendaftaran/:noregistrasi", component: <BuktiPendaftaran3 /> },
   { path: "/listdaftarpasien/daftar-pasien-rj", component: <DaftarPasienRJ /> },

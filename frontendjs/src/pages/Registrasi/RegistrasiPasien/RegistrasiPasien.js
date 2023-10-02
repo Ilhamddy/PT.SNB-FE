@@ -35,7 +35,7 @@ import CustomCheckbox from '../../../Components/CustomCheckbox/CustomCheckbox';
 
 
 const RegistrasiPasien = (props) => {
-    const { id, norec } = useParams();
+    const { id, norec, norectriage } = useParams();
     document.title = "Registrasi Pasien";
     const dispatch = useDispatch();
     const [dateStart] = useState(() => (new Date()).toISOString())
@@ -124,6 +124,7 @@ const RegistrasiPasien = (props) => {
             tempattidur: newData?.tempattidur ?? "",
             caramasuk: newData?.caramasuk ?? "",
             statuspasien:dataPas?.statuspasien ?? "",
+            norectriage : norectriage ?? ""
         },
         validationSchema: Yup.object({
             tglregistrasi: Yup.string().required("Tanggal Registrasi wajib diisi"),

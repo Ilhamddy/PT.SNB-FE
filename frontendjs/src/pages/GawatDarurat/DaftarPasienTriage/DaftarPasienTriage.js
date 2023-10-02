@@ -2,7 +2,10 @@ import React, { useEffect, useState } from 'react';
 import withRouter from '../../../Components/Common/withRouter';
 import UiContent from '../../../Components/Common/UiContent';
 import { Button, Card, CardBody, CardHeader, Col, Container, Form, FormFeedback, Input, Label, Modal, ModalBody, Row } from 'reactstrap';
-import { widgetDaftarPasienTriageGet, daftarPasienResetForm, DaftarPasienTriageGet, getGetComboTriageIgd } from '../../../store/actions';
+import {
+    widgetDaftarPasienTriageGet, daftarPasienResetForm, DaftarPasienTriageGet, getGetComboTriageIgd,
+    registrasiGetList
+} from '../../../store/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import BreadCrumb from '../../../Components/Common/BreadCrumb';
 import CountUp from "react-countup";
@@ -13,6 +16,7 @@ import * as Yup from "yup";
 import CustomSelect from '../../Select/Select';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Flatpickr from "react-flatpickr";
 
 const TriageIGD = () => {
     document.title = "Daftar Pasien Triage";
@@ -37,6 +41,7 @@ const TriageIGD = () => {
         }
     })
     const [namaPasien, setnamaPasien] = useState(null);
+    const [selectedPasien, setselectedPasien] = useState(null);
     useEffect(() => {
         return () => {
             dispatch(daftarPasienResetForm());
@@ -52,6 +57,7 @@ const TriageIGD = () => {
     const handleCard = (item) => {
         // console.log(item)
         setnamaPasien(item.namapasien)
+        setselectedPasien(item)
     };
     const handleSelect = (nama, value) => {
         if (nama === 'tingkatdarurat') {
@@ -84,6 +90,10 @@ const TriageIGD = () => {
             toast.error("Pasien Belum Dipilih", { autoClose: 3000 });
             return
         }
+        if (selectedPasien.noregistrasi !== null) {
+            toast.error("Pasien Sudah Teregistrasi", { autoClose: 3000 });
+            return
+        }
 
         if (e === 'registrasi') {
             setisRegistrasiOpen(true)
@@ -100,6 +110,7 @@ const TriageIGD = () => {
             <ModalRegistrasi
                 isRegistrasiOpen={isRegistrasiOpen}
                 toggle={() => setisRegistrasiOpen(!isRegistrasiOpen)}
+                selectedPasien={selectedPasien}
             />
             <UiContent />
             <div className="page-content">
@@ -299,12 +310,18 @@ const TriageIGD = () => {
     )
 }
 
-const ModalRegistrasi = ({ isRegistrasiOpen, toggle }) => {
-
+const ModalRegistrasi = ({ isRegistrasiOpen, toggle, selectedPasien }) => {
+    const [dateEnd] = useState(() => (new Date()).toISOString())
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const { data, loading } = useSelector((state) => ({
+        data: state.Registrasi.registrasiList.data,
+        loading: state.Registrasi.registrasiList.loading,
+    }));
     const vSetValidationModal = useFormik({
         enableReinitialize: true,
         initialValues: {
-            tingkatdarurat: '',
+            tglend: dateEnd,
             search: '',
             statuspasien: ''
         },
@@ -314,8 +331,38 @@ const ModalRegistrasi = ({ isRegistrasiOpen, toggle }) => {
 
         }
     })
+    const handleSearch = (nama, value) => {
+        if (nama === 'search') {
+            // vSetValidation.setFieldValue('tingkatdarurat', value || '')
+            dispatch(registrasiGetList(value));
+        }
+    }
+    const [datax, setDatax] = useState([]);
+    useEffect(() => {
+        setDatax(data)
+    }, [setDatax, data])
+    const [selectedPasienPopUp, setselectedPasienPopUp] = useState(null);
+    const handleCard = (item) => {
+        setselectedPasienPopUp(item)
+        const itemIndex = datax.findIndex((dataItem) => dataItem.id === item.id);
+        if (itemIndex !== -1) {
+            const updatedData = [...datax];
+            for (let i = 0; i < updatedData.length; i++) {
+                if (i !== itemIndex) {
+                    updatedData[i].color = '#FFFFFF'; 
+                }else{
+                    updatedData[i].color = '#e67e22'; 
+                }
+            }
+            setDatax(updatedData);
+        }
+    };
+const handleRegistrasi = ()=>{
+    navigate(`/registrasi/pasien-ruangan-triage/${selectedPasienPopUp.id}/${selectedPasien.norec}`);
+}
+
     return (
-        <Modal isOpen={isRegistrasiOpen} toggle={toggle} centered={true}>
+        <Modal isOpen={isRegistrasiOpen} toggle={toggle} centered={true} size="xl">
             <ModalBody>
                 <Form
                     onSubmit={(e) => {
@@ -329,7 +376,109 @@ const ModalRegistrasi = ({ isRegistrasiOpen, toggle }) => {
                         <CardHeader className="align-items-center" style={{ backgroundColor: "#e67e22" }}>
                             <h4 className="mb-0" style={{ color: 'black', textAlign: 'center' }}>Pasien Triage IGD</h4>
                         </CardHeader>
-
+                        <Card>
+                            <CardHeader className="card-header border-0">
+                                <Row className="align-items-center gy-3">
+                                    <div className="col-sm">
+                                        {/* <h5 className="card-title mb-0">Order History</h5> */}
+                                    </div>
+                                    <div className="col-sm-auto">
+                                        <div className="d-flex gap-1 flex-wrap">
+                                            <button
+                                                type="button"
+                                                className="btn btn-success add-btn"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#showModal"
+                                                id="create-btn"
+                                            // onClick={() => { setIsEdit(false); toggle(); }}
+                                            >
+                                                Belum Punya RM
+                                            </button>
+                                        </div>
+                                    </div>
+                                </Row>
+                            </CardHeader>
+                            <CardBody>
+                                <Row className="gy-3">
+                                    <Col lg={8}>
+                                        <Input
+                                            className="form-control search"
+                                            id="search"
+                                            name="search"
+                                            type="search"
+                                            // value={search}
+                                            placeholder='NIK / No. RM / Nama Pasien'
+                                            onChange={(e) => {
+                                                handleSearch('search', e.target.value)
+                                            }}
+                                        />
+                                    </Col>
+                                    <Col lg={4}>
+                                        <div className="input-group">
+                                            <Flatpickr
+                                                id="tglend"
+                                                className="form-control border-0 fs-5 dash-filter-picker shadow"
+                                                options={{
+                                                    enableTime: true,
+                                                    // mode: "range",
+                                                    dateFormat: "Y-m-d",
+                                                    defaultDate: "today"
+                                                }}
+                                                value={vSetValidationModal.values.tglend}
+                                                onChange={([newDate]) => {
+                                                    vSetValidationModal.setFieldValue("tglend", newDate.toISOString());
+                                                }}
+                                            />
+                                            <div className="input-group-text bg-secondary border-secondary text-white"><i className="ri-calendar-2-line"></i></div>
+                                        </div>
+                                    </Col>
+                                    <div style={{ overflowY: 'auto', maxHeight: '400px' }}>
+                                        {(data || []).map((item, key) => (
+                                            <React.Fragment key={key}>
+                                                <Card className="product card-animate" style={{ backgroundColor: item.color }}
+                                                    onClick={() => { handleCard(item) }}
+                                                >
+                                                    <CardBody>
+                                                        <Row className="gy-3">
+                                                            <div className="col-sm">
+                                                                <h5 className="card-title mb-1">{item.nocm ? item.nocm : '-'}</h5>
+                                                                <p className="text-muted mb-0">{item.noidentitas ? item.noidentitas : '-'}</p>
+                                                                <p className="mb-0">
+                                                                    {item.namapasien && item.namapasien.length > 20
+                                                                        ? `${item.namapasien.substring(0, 20)}...`
+                                                                        : item.namapasien}
+                                                                </p>
+                                                            </div>
+                                                            <div className="col-sm">
+                                                                <div className="text-lg-start">
+                                                                    <p className="text-muted mb-0">{item.tgllahir}</p>
+                                                                    <p className="text-muted mb-0">No Hp {item.nohp ? item.nohp : '-'}</p>
+                                                                    <p className="text-muted mb-0">{item.alamatrmh ? item.alamatrmh : '-'}</p>
+                                                                </div>
+                                                            </div>
+                                                        </Row>
+                                                    </CardBody>
+                                                </Card>
+                                            </React.Fragment>
+                                        ))}
+                                    </div>
+                                    <div className="d-flex gap-2 justify-content-center mt-4 mb-2">
+                                        <Button
+                                            onClick={() => handleRegistrasi()}
+                                            type="submit"
+                                            color="success" placement="top" id="tooltipTop" >
+                                            Registrasi
+                                        </Button>
+                                        <Button
+                                            color="info"
+                                        // onClick={() => { rest.toggle() }}
+                                        >
+                                            Edit Data Pasien
+                                        </Button>
+                                    </div>
+                                </Row>
+                            </CardBody>
+                        </Card>
                     </Card>
                 </Form>
             </ModalBody>

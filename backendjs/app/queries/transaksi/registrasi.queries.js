@@ -33,7 +33,7 @@ const getPasienByNoregistrasi = `
 // const getAllByOr = 
 //     "select id,nocm ,namapasien ,noidentitas ,nobpjs ,nohp,"+
 //     " to_char(tgllahir,'yyyy-MM-dd')tgllahir, alamatrmh  from m_pasien ";
-const getAllByOr = `select id,nocm ,namapasien ,noidentitas ,nobpjs ,nohp,to_char(tgllahir,'yyyy-MM-dd')tgllahir, alamatrmh  from m_pasien`;
+const getAllByOr = `select id,nocm ,namapasien ,noidentitas ,nobpjs ,nohp,to_char(tgllahir,'yyyy-MM-dd')tgllahir, alamatrmh,'#FFFFFF' as color  from m_pasien`;
 
 const getDaftarPasienRawatJalan = `select td.norec as norecdp,
     ta.norec as norecta,
