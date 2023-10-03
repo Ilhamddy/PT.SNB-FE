@@ -10,9 +10,9 @@ const printerSelectInput = document.querySelector('#printerSelect');
 
 document.addEventListener('DOMContentLoaded', () => {
   (async () => {
-    const printerSelect = document.getElementById('printerSelect');
-    printerSelect.innerHTML = '';
     const getPrinters = (printers) => {
+      const printerSelect = document.getElementById('printerSelect');
+      printerSelect.innerHTML = '';
       printers.forEach((printer) => {
         const option = document.createElement('option');
         option.value = printer.busNumber;
