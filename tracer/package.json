@@ -10,7 +10,8 @@
     "author": "snb",
     "license": "ISC",
     "devDependencies": {
-        "electron": "^26.1.0"
+        "electron": "^26.1.0",
+        "electron-packager": "^17.1.2"
     },
     "dependencies": {
         "@node-escpos/core": "^0.4.0",

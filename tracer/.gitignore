@@ -2,5 +2,6 @@
 
 # dependencies
 /node_modules
+/tracer-win32-x64
 hasil.pdf
 .env

@@ -43,6 +43,11 @@ contextBridge.exposeInMainWorld('electron', {
   printPOS: async (props) => {
     const print = ipcRenderer.invoke('printer:toPrintPOS', props);
     return print
+  },
+  onPrinterUpdate: (callback) => {
+    ipcRenderer.on("printer:onPrinterUpdate", (_event, value) => {
+      callback(value)
+    })
   }
 })
 

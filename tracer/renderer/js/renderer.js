@@ -10,15 +10,25 @@ const printerSelectInput = document.querySelector('#printerSelect');
 
 document.addEventListener('DOMContentLoaded', () => {
   (async () => {
-    const printerSelect = document.getElementById('printerSelect');
-    printerSelect.innerHTML = '';
+    const getPrinters = (printers) => {
+      const printerSelect = document.getElementById('printerSelect');
+      printerSelect.innerHTML = '';
+      printers.forEach((printer) => {
+        const option = document.createElement('option');
+        option.value = printer.busNumber;
+        option.text = "Printer " + printer.busNumber;
+        printerSelect.appendChild(option);
+      });
+    }
     const printers = await window.electron.getPrinterPOS();
-    printers.forEach((printer) => {
-      const option = document.createElement('option');
-      option.value = printer.busNumber;
-      option.text = "Printer " + printer.busNumber;
-      printerSelect.appendChild(option);
-    });
+    getPrinters(printers)
+    window.electron.onPrinterUpdate((printers) => {
+      if(printers){
+        console.log("onPrinter update")
+        getPrinters(printers || [])
+      }
+    })
+
   })(); 
 });
 
