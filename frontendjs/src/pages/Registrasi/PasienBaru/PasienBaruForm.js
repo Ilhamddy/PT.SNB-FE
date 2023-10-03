@@ -35,7 +35,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 const PasienBaru = () => {
     document.title = "Profile Pasien Baru";
     const dispatch = useDispatch();
-    const {idpasien} = useParams();
+    const {idpasien,norectriage} = useParams();
     const navigate = useNavigate()
 
     const refAgama = useRef(null);
@@ -131,46 +131,46 @@ const PasienBaru = () => {
     const validation = useFormik({
         enableReinitialize: true,
         initialValues: {
-            id: newData?.id ?? null,
-            namapasien: newData?.namapasien ?? "",
-            noidentitas: newData?.noidentitas ?? "",
-            jeniskelamin: newData?.jeniskelamin ?? "",
-            titlepasien: newData?.titlepasien ?? "",
-            tgllahir: newData?.tgllahir ?? "",
-            tempatlahir: newData?.tempatlahir ?? "",
-            agama: newData?.agama ?? "",
-            goldarah: newData?.goldarah ?? "",
-            kebangsaan: newData?.kebangsaan ?? "",
-            statusperkawinan: newData?.statusperkawinan ?? "",
-            pendidikan: newData?.pendidikan ?? "",
-            pekerjaan: newData?.pekerjaan ?? "",
-            suku: newData?.suku ?? "",
-            bahasa: newData?.bahasa ?? "",
-            alamatktp: newData?.alamatktp ?? "",
-            rt: newData?.rt ?? "",
-            rw: newData?.rw ?? "",
-            desa: newData?.desa ?? "",
-            kecamatan: newData?.kecamatan ?? "",
-            kota: newData?.kota ?? "",
-            provinsi: newData?.provinsi ?? "",
-            pos: newData?.pos ?? "",
-            negara: newData?.negara ?? "",
-            alamatdomisili: newData?.alamatdomisili ?? "",
-            rtdomisili: newData?.rtdomisili ?? "",
-            rwdomisili: newData?.rwdomisili ?? "",
-            desaDomisili: newData?.desaDomisili ?? "",
-            kecamatanDomisili: newData?.kecamatanDomisili ?? "",
-            kotaDomisili: newData?.kotaDomisili ?? "",
-            provinsiDomisili: newData?.provinsiDomisili ?? "",
-            posDomisili: newData?.posDomisili ?? "",
-            negaraDomisili: newData?.negaraDomisili ?? "",
-            nobpjs: newData?.nobpjs ?? "",
-            namaibu: newData?.namaibu ?? "",
-            namaayah: newData?.namaayah ?? "",
-            namasuamiistri: newData?.namasuamiistri ?? "",
-            namakeluargalain: newData?.namakeluargalain ?? "",
-            nohp: newData?.nohp ?? "",
-            notelepon: newData?.notelepon ?? "",
+            id: null,
+            namapasien: "",
+            noidentitas: "",
+            jeniskelamin: "",
+            titlepasien: "",
+            tgllahir: "",
+            tempatlahir: "",
+            agama: "",
+            goldarah: "",
+            kebangsaan: "",
+            statusperkawinan: "",
+            pendidikan: "",
+            pekerjaan: "",
+            suku: "",
+            bahasa: "",
+            alamatktp: "",
+            rt: "",
+            rw: "",
+            desa: "",
+            kecamatan: "",
+            kota: "",
+            provinsi: "",
+            pos: "",
+            negara: "",
+            alamatdomisili: "",
+            rtdomisili: "",
+            rwdomisili: "",
+            desaDomisili: "",
+            kecamatanDomisili: "",
+            kotaDomisili: "",
+            provinsiDomisili: "",
+            posDomisili: "",
+            negaraDomisili: "",
+            nobpjs: "",
+            namaibu: "",
+            namaayah: "",
+            namasuamiistri: "",
+            namakeluargalain: "",
+            nohp: "",
+            notelepon: ""
         },
         validationSchema: Yup.object({
             namapasien: Yup.string().required("Nama pasien wajib diisi"),
@@ -197,9 +197,10 @@ const PasienBaru = () => {
             desaDomisili: Yup.string().required("Desa wajib diisi"),
             negaraDomisili: Yup.string().required("negara wajib diisi"),
         }),
-        onSubmit: (values) => {
-            dispatch(registrasiSave(values, navigate));
+        onSubmit: (values,{ resetForm }) => {
+            dispatch(registrasiSave(values, navigate,norectriage));
             // console.log(values)
+            resetForm({ values: '' })
         }
     });
 
@@ -261,10 +262,15 @@ const PasienBaru = () => {
     useEffect(() => {
         const setFF = validation.setFieldValue
         setFF("id", idpasien)
-        if(idpasien){
-            dispatch(pasienFormQueriesGet({idpasien: idpasien}))
-        }
-    }, [idpasien, dispatch, validation.setFieldValue])
+        dispatch(pasienFormQueriesGet({idpasien: idpasien}))
+    }, [idpasien,dispatch, validation.setFieldValue])
+
+    // useEffect(() => {
+    //     const setFF = validation.setFieldValue
+    //     setFF("norectriage", norectriage)
+        
+    //     console.log(norectriage)
+    // }, [norectriage, validation.setFieldValue])
 
     useEffect(() => {
         const setV = validation.setValues
