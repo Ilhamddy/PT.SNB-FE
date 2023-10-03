@@ -377,7 +377,7 @@ const ModalRegistrasi = ({ isRegistrasiOpen, toggle, selectedPasien }) => {
         navigate(`/registrasi/pasien-ruangan-triage/${selectedPasienPopUp.id}/${selectedPasien.norec}`);
     }
     const handleEditPasien = () => {
-        navigate(`/registrasi/pasien-baru/${selectedPasienPopUp.id}/${selectedPasien.norec}`);
+        navigate(`/registrasi/pasien-baru-triage/${selectedPasienPopUp.id}/${selectedPasien.norec}`);
     }
 
     return (
@@ -409,7 +409,7 @@ const ModalRegistrasi = ({ isRegistrasiOpen, toggle, selectedPasien }) => {
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#showModal"
                                                 id="create-btn"
-                                            onClick={() => {navigate(`/registrasi/pasien-baru/${selectedPasien.norec}`)}}
+                                            onClick={() => {navigate(`/registrasi/pasien-baru-triage/${selectedPasien.norec}`)}}
                                             >
                                                 Belum Punya RM
                                             </button>
