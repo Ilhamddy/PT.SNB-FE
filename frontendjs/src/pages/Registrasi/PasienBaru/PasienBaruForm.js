@@ -262,6 +262,7 @@ const PasienBaru = () => {
     useEffect(() => {
         const setFF = validation.setFieldValue
         setFF("id", idpasien)
+        console.log(idpasien)
         dispatch(pasienFormQueriesGet({idpasien: idpasien}))
     }, [idpasien,dispatch, validation.setFieldValue])
 

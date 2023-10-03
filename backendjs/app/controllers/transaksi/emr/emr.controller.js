@@ -567,10 +567,13 @@ async function getListComboDiagnosa(req, res) {
         const result3 = await queryPromise2(`SELECT id as value,reportdisplay as label
             FROM m_jenispelayanan
         `);
+        const result4 = await queryPromise2(`SELECT id as value,reportdisplay as label
+            FROM m_jenisoperasi
+        `);
 
         let tempres = {
             tipediagnosa: result.rows, jeniskasus: result2.rows,
-            jenispelayanan: result3.rows
+            jenispelayanan: result3.rows, jenisoperasi :result4.rows
         }
         res.status(200).send({
             data: tempres,

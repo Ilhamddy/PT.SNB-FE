@@ -235,7 +235,7 @@ const savePasien = async (req, res) => {
             userPasien = userPasien?.toJSON() || null
         } else {
             result = await m_pasien.update({
-                nocm: nocm,
+                // nocm: nocm,
                 namapasien: objBody.namapasien,
                 noidentitas: objBody.noidentitas,
                 objectjeniskelaminfk: objBody.jeniskelamin,

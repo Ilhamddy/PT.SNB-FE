@@ -236,7 +236,7 @@ select
     to_char( mp.tgllahir, TO_CHAR(age( mp.tgllahir,  now( )), 'YY Tahun mm Bulan DD Hari')) AS umur,
 	case when tp.objectdaruratigdfk = 1 then '#B7DBFD' when tp.objectdaruratigdfk =2 then '#FDB7B7'
 	when tp.objectdaruratigdfk =3 then '#FCFDB7' when tp.objectdaruratigdfk =4 then '#B8FDB7'
-	else '#E1E1E1' end as statusdarurat
+	else '#E1E1E1' end as statusdarurat, '#FFFFFF' as color
 from
 	t_pasienigd tp
 left join t_daftarpasien td on
