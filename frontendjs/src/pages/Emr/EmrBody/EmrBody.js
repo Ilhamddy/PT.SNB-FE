@@ -21,6 +21,7 @@ import Tagihan from '../Tagihan/Tagihan';
 import OrderRadiologi from '../Penunjang/Radiologi/OrderRadiologi/OrderRadiologi';
 import OrderLaboratorium from '../Penunjang/Laboratorium/OrderLaboratorium/OrderLaboratorium';
 import OrderResep from '../Penunjang/OrderResep/OrderResep';
+import OrderOperasi from '../Penunjang/OrderOperasi/OrderOperasi';
 
 const EmrBody = () => {
     const { norecdp, norecap, tab } = useParams();
@@ -63,6 +64,14 @@ const EmrBody = () => {
         }
     };
 
+     // Pills Operasi
+     const [pillsTabOperasi, setpillsTabOperasi] = useState("1");
+     const pillsToggleOperasi = (tab) => {
+         if (pillsTabOperasi !== tab) {
+             setpillsTabOperasi(tab);
+         }
+     };
+
     const taskWidgets = [
         {
             id: "rawat-jalan",
@@ -79,6 +88,10 @@ const EmrBody = () => {
         {
             id: "penunjang",
             label: "Penunjang",
+        },
+        {
+            id: "operasi",
+            label: "Operasi",
         },
 
     ];
@@ -132,6 +145,12 @@ const EmrBody = () => {
         {
             id: 3,
             label: "Resep",
+        },
+    ];
+    const taskOperasi = [
+        {
+            id: 1,
+            label: "Order Operasi",
         },
     ];
 
@@ -308,6 +327,31 @@ const EmrBody = () => {
                                 <TabContent activeTab={pillsTabPenunjang} className="text-muted">
                                     <TabPane tabId="3" id="penunjang-2">
                                         <OrderResep />
+                                    </TabPane>
+                                </TabContent>
+                            </TabPane>
+
+                            <TabPane tabId="operasi" id="home-1">
+                                <div className="card-header align-items-center d-flex">
+                                    <div className="flex-shrink-0 ms-2">
+                                        <Nav tabs className="nav justify-content-end nav-tabs-custom rounded card-header-tabs border-bottom-0">
+                                            {taskOperasi.map((item, key) => (
+                                                <NavItem key={key}>
+                                                    <NavLink style={{ cursor: "pointer" }} className={classnames({ active: pillsTabOperasi === `${item.id}`, })} onClick={() => { pillsToggleOperasi(`${item.id}`); }}>
+                                                        <span className="fw-semibold">{item.label}</span>
+                                                    </NavLink>
+                                                </NavItem>
+                                            ))}
+                                        </Nav>
+                                    </div>
+                                </div>
+                                <TabContent activeTab={pillsTabOperasi} className="text-muted">
+                                    <TabPane tabId="1" id="operasi-1">
+                                        <Card>
+                                            <CardBody>
+                                            <OrderOperasi />  
+                                            </CardBody>
+                                        </Card>                                     
                                     </TabPane>
                                 </TabContent>
                             </TabPane>

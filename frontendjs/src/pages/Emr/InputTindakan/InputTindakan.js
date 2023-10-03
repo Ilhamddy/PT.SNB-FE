@@ -1,22 +1,14 @@
-import React, { useEffect, useState, useCallback, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import {
-    Card, CardBody, CardHeader, Col, Container, Row, Nav, NavItem,
-    NavLink, TabContent, TabPane, Button, Label, Input, Table,
-    FormFeedback, Form, DropdownItem, DropdownMenu, DropdownToggle, UncontrolledDropdown,
-    UncontrolledTooltip, ListGroup, ListGroupItem
+    Col, Row, Button, Label, Input, 
+    FormFeedback, Form
 } from 'reactstrap';
-import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useSelector, useDispatch } from "react-redux";
-import BreadCrumb from '../../../Components/Common/BreadCrumb';
-import UiContent from '../../../Components/Common/UiContent';
-import { Link, useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
-import classnames from "classnames";
-import { useFormik, yupToFormErrors } from "formik";
+import { useFormik } from "formik";
 import * as Yup from "yup";
 import CustomSelect from '../../Select/Select';
-import Flatpickr from "react-flatpickr";
 
 import {
     comboHistoryUnitGet, comboTindakanGet, comboJenisPelaksanaGet, comboNamaPelaksanaGet,
