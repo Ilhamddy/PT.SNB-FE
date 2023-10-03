@@ -54,7 +54,7 @@ function* onSaveRegistrasi({ payload: { data, history,norectriage } }) {
         yield put(registrasiSaveSuccess(response.data));
         if (response.code === 200) {
             toast.success(response.msg, { autoClose: 3000 });
-            if (norectriage == undefined) {
+            if (norectriage === undefined) {
                 if (data.id !== undefined) {
                     history(`/registrasi/pasien-ruangan/${data.id}`);
                 } else {
