@@ -35,11 +35,13 @@ const getJadwalDokter = async (req, res) => {
     try{
         let {
             unitid,
-            hariid
+            hariid,
+            dokterid
         } = req.query;
         let dokters = (await pool.query(qGetJadwalDokter, [
             unitid === "" ? -1 : unitid,
-            hariid === "" ? -1 : hariid
+            hariid === "" ? -1 : hariid,
+            dokterid === "" ? -1 : dokterid
         ])).rows
         dokters = groupBy(dokters, "dokterid", "doktername", "spesialisasi", "unitdokter")
         const tempres = {
@@ -61,6 +63,7 @@ const getJadwalDokter = async (req, res) => {
         });
     }
 }
+
 
 const getComboJadwal = async (req, res) => {
     const logger = res.locals.logger;

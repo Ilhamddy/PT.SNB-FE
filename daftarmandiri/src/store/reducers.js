@@ -4,6 +4,7 @@ import Login from "./login/reducer";
 import Master from "./master/reducer";
 import DOM from "./dom/reducer";
 import Home from "./home/reducer";
+import DaftarPasienLama from "./daftarPasienLama/reducer"
 
 
 const rootReducer = combineReducers({
@@ -11,7 +12,8 @@ const rootReducer = combineReducers({
     Login,
     Master,
     DOM,
-    Home
+    Home,
+    DaftarPasienLama,
 });
 
 export default rootReducer;

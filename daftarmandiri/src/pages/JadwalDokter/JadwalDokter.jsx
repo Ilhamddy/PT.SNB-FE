@@ -11,6 +11,7 @@ import { useFormik } from 'formik'
 import ModalSelectDM from '../../Components/ModalSelectDM/ModalSelectDM'
 import LoadingDM from '../../Components/LoadingDM/LoadingDM'
 import { useNavigate } from 'react-router-dom'
+import { BackKomponen } from '../../Components/BackKomponen/BackKomponen'
 
 const JadwalDokter = () => {
   const { dokter, loadingDokter, hariOpt, unitOpt } = useSelector((state) => ({
@@ -25,6 +26,7 @@ const JadwalDokter = () => {
       unitlabel: 'Semua Poliklinik',
       hariid: '',
       harilabel: 'Semua Hari',
+      dokterid: '',
     },
     onSubmit: (values) => {
       dispatch(getJadwalDokter(values))
@@ -33,7 +35,13 @@ const JadwalDokter = () => {
   const refKontainer = useRef(null)
   const dispatch = useDispatch()
   useEffect(() => {
-    dispatch(getJadwalDokter({ unitid: undefined, hariid: undefined }))
+    dispatch(
+      getJadwalDokter({
+        unitid: undefined,
+        hariid: undefined,
+        dokterid: undefined,
+      })
+    )
     dispatch(getComboJadwal())
   }, [dispatch])
 
@@ -140,28 +148,6 @@ export const JadwalDokterKomponen = ({ imgDokter, dokters, refKontainer }) => {
           })}
         </div>
       ))}
-    </div>
-  )
-}
-
-export const BackKomponen = ({ text, refKontainer }) => {
-  const navigate = useNavigate()
-  const handleBack = () => {
-    refKontainer.current.handleToNextPage(() => {
-      navigate(-1)
-    })
-  }
-  return (
-    <div className="back-komponen-dm">
-      <button
-        className="tbl-back"
-        onClick={() => {
-          handleBack()
-        }}
-      >
-        <img src={arrowKiriImg} alt="tbl-back" />
-      </button>
-      <p>{text}</p>
     </div>
   )
 }
