@@ -349,17 +349,20 @@ const ModalRegistrasi = ({ isRegistrasiOpen, toggle, selectedPasien }) => {
             const updatedData = [...datax];
             for (let i = 0; i < updatedData.length; i++) {
                 if (i !== itemIndex) {
-                    updatedData[i].color = '#FFFFFF'; 
-                }else{
-                    updatedData[i].color = '#e67e22'; 
+                    updatedData[i].color = '#FFFFFF';
+                } else {
+                    updatedData[i].color = '#e67e22';
                 }
             }
             setDatax(updatedData);
         }
     };
-const handleRegistrasi = ()=>{
-    navigate(`/registrasi/pasien-ruangan-triage/${selectedPasienPopUp.id}/${selectedPasien.norec}`);
-}
+    const handleRegistrasi = () => {
+        navigate(`/registrasi/pasien-ruangan-triage/${selectedPasienPopUp.id}/${selectedPasien.norec}`);
+    }
+    const handleEditPasien = () => {
+        navigate(`/registrasi/pasien-baru/${selectedPasienPopUp.id}`);
+    }
 
     return (
         <Modal isOpen={isRegistrasiOpen} toggle={toggle} centered={true} size="xl">
@@ -390,7 +393,7 @@ const handleRegistrasi = ()=>{
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#showModal"
                                                 id="create-btn"
-                                            // onClick={() => { setIsEdit(false); toggle(); }}
+                                            onClick={() => {navigate(`/registrasi/pasien-baru`)}}
                                             >
                                                 Belum Punya RM
                                             </button>
@@ -471,7 +474,7 @@ const handleRegistrasi = ()=>{
                                         </Button>
                                         <Button
                                             color="info"
-                                        // onClick={() => { rest.toggle() }}
+                                            onClick={() => handleEditPasien()}
                                         >
                                             Edit Data Pasien
                                         </Button>
