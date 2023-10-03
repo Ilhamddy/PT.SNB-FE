@@ -7,6 +7,7 @@ const isMac = process.platform === 'darwin';
 const escpos = require("node-escpos");
 const db = require("./src/model/index");
 const handlerRoutes = require('./src/handler/handlerRoutes');
+const { sendPrinter } = require('./src/handler/handler');
 
 let mainWindow;
 let aboutWindow;
@@ -58,10 +59,12 @@ app.on('ready', async () => {
 
   const mainMenu = Menu.buildFromTemplate(menu);
   Menu.setApplicationMenu(mainMenu);
+  sendPrinter(mainWindow)
 
   // Remove variable from memory
   mainWindow.on('closed', () => (mainWindow = null));
 });
+
 
 // Menu template
 const menu = [

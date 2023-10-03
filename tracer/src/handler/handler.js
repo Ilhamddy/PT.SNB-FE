@@ -9,7 +9,6 @@ const path = require('path');
 
 const toPrintPOS = async (e, {devicePrintBus}) => {
     const devices = await USB.findPrinter();
-    console.log(devices)
     const deviceChosen = devices.find((device) => {
         return device.busNumber === devicePrintBus
     })
@@ -56,13 +55,25 @@ const toGetListPrinter = async (e) => {
     return printers
 }
 
+const sendPrinter = async (mainWindow) => {
+    USB.on("attach", async () => {
+        const devices = await USB.findPrinter();
+        mainWindow.webContents.send('printer:onPrinterUpdate', devices)
+    })
+    USB.on("detach", async () => {
+        const devices = await USB.findPrinter();
+        mainWindow.webContents.send('printer:onPrinterUpdate', devices)
+    })
+}
+
 
 module.exports = {
     toPrintPOS,
     toGetHTML,
     toGetListPosPrinter,
     toPrint,
-    toGetListPrinter
+    toGetListPrinter, 
+    sendPrinter
 }
 
 //helper
