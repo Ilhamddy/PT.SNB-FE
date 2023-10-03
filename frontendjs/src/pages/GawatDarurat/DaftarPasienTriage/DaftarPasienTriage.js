@@ -54,10 +54,26 @@ const TriageIGD = () => {
     useEffect(() => {
         dispatch(DaftarPasienTriageGet({ search: '' }));
     }, [dispatch])
+    const [datax, setDatax] = useState([]);
+    useEffect(() => {
+        setDatax(data.data)
+    }, [setDatax, data])
     const handleCard = (item) => {
         // console.log(item)
         setnamaPasien(item.namapasien)
         setselectedPasien(item)
+        const itemIndex = datax.findIndex((dataItem) => dataItem.norec === item.norec);
+        if (itemIndex !== -1) {
+            const updatedData = [...datax];
+            for (let i = 0; i < updatedData.length; i++) {
+                if (i !== itemIndex) {
+                    updatedData[i].color = '#FFFFFF';
+                } else {
+                    updatedData[i].color = '#F2E9CA';
+                }
+            }
+            setDatax(updatedData);
+        }
     };
     const handleSelect = (nama, value) => {
         if (nama === 'tingkatdarurat') {
@@ -254,9 +270,9 @@ const TriageIGD = () => {
                                         </CardHeader>
                                         <CardBody>
                                             <div style={{ overflowY: 'auto', maxHeight: '400px' }}>
-                                                {(data.data || []).map((item, key) => (
+                                                {(datax || []).map((item, key) => (
                                                     <React.Fragment key={key}>
-                                                        <Card className="product card-animate" onClick={() => { handleCard(item) }}>
+                                                        <Card className="product card-animate" style={{ backgroundColor: item.color }} onClick={() => { handleCard(item) }}>
                                                             <CardBody>
                                                                 <Row className="gy-3">
                                                                     <div className="col-sm-auto">
@@ -351,7 +367,7 @@ const ModalRegistrasi = ({ isRegistrasiOpen, toggle, selectedPasien }) => {
                 if (i !== itemIndex) {
                     updatedData[i].color = '#FFFFFF';
                 } else {
-                    updatedData[i].color = '#e67e22';
+                    updatedData[i].color = '#F2E9CA';
                 }
             }
             setDatax(updatedData);
