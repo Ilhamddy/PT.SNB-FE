@@ -5,7 +5,7 @@ import KontainerPage from '../../Components/KontainerPage/KontainerPage'
 import { useDispatch, useSelector } from 'react-redux'
 import { BackKomponen } from '../../Components/BackKomponen/BackKomponen'
 import { getJadwalDokterDaftar } from '../../store/actions'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import ButtonDM from '../../Components/ButtonDM/ButtonDM'
 import './DokterPage.scss'
 import FlatpickrDM from '../../Components/FlatpickrDM/FlatpickrDM'
@@ -20,6 +20,7 @@ const DokterPage = () => {
   const { dokter } = useSelector((state) => ({
     dokter: state.DaftarPasienLama.getJadwalDokter?.data?.dokter || [],
   }))
+
   const vJadwal = useFormik({
     initialValues: {
       jadwal: '',
@@ -30,7 +31,9 @@ const DokterPage = () => {
     onSubmit: (values) => {
       refKontainer.current.handleToNextPage(() => {
         navigate(
-          `/daftar/pasien-lama?tglinput=${encodeURIComponent(values.jadwal)}`
+          `/daftar/pasien-lama?jadwal=${encodeURIComponent(
+            values.jadwal
+          )}&iddokter=${idDokter}`
         )
       })
     },
@@ -46,6 +49,13 @@ const DokterPage = () => {
       })
     )
   }, [dispatch, dateNow, idDokter])
+
+  const disableJadwal = (date) => {
+    const foundDay = dokterDate.find((item) => {
+      return item.hariid === date.getDay()
+    })
+    return !foundDay
+  }
   return (
     <KontainerPage top={'0'} ref={refKontainer} className="dokter-page">
       <BackKomponen text={'Profil Dokter'} refKontainer={refKontainer} />
@@ -62,6 +72,7 @@ const DokterPage = () => {
             name="jadwal"
             placeholder="Pilih Jadwal"
             value={vJadwal.values.jadwal}
+            options={{ disable: [disableJadwal] }}
             onChange={([newDate]) => {
               vJadwal.setFieldValue('jadwal', newDate.toISOString() || '')
             }}

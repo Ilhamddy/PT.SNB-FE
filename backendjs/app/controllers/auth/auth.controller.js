@@ -148,7 +148,7 @@ const signinPasien = async (req, res) => {
           id: user.id, 
           expired: new Date() + (86400 * 1000),
         }, config.secret, {
-          expiresIn: 86400
+          expiresIn: 86400 * 1000
         });
         const tempres = {
           id: user.id,
@@ -165,13 +165,13 @@ const signinPasien = async (req, res) => {
         return 
       }
       const tempres = {
-        id: user.id,
-        username: user.norm,
+        id: null,
+        username: null,
         accessToken: null,
       }
-      res.status(200).send({
+      res.status(404).send({
         data: tempres,
-        msg: "success",
+        msg: "failed",
         success: true,
       });
     })

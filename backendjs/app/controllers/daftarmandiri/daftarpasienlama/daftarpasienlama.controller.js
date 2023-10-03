@@ -1,51 +1,19 @@
 import db from "../../../models";
 import pool from "../../../config/dbcon.query";
-import { qGetJadwalDokter } from "../../../queries/daftarmandiri/home/home.queries";
+import { qGetDokter } from "../../../queries/daftarmandiri/daftarpasienlama/daftarpasienlama.queries";
 import { groupBy } from "../../../utils/arutils";
 import hariQueries from "../../../queries/master/hari/hari.queries";
 import unitQueries from "../../../queries/master/unit/unit.queries";
+import pegawaiQueries from "../../../queries/master/pegawai/pegawai.queries";
+import rekananQueries from "../../../queries/master/rekanan/rekanan.queries";
+import { qGetDaftarPasienLama } from "../../../queries/daftarmandiri/daftarpasienlama/daftarpasienlama.queries";
 
-const getHomePageUser = async (req, res) => {
+const getPasienLama = async (req, res) => {
     const logger = res.locals.logger;
     try{
+        const pasien = await pool.query(qGetDaftarPasienLama, [req.id])
         const tempres = {
-        
-        };
-        res.status(200).send({
-            msg: 'Success',
-            code: 200,
-            data: tempres,
-            success: true
-        });
-    } catch (error) {
-        logger.error(error);
-        res.status(500).json({
-            msg: error.message,
-            code: 500,
-            data: error,
-            success: false
-        });
-    }
-}
-
-
-
-const getJadwalDokter = async (req, res) => {
-    const logger = res.locals.logger;
-    try{
-        let {
-            unitid,
-            hariid,
-            dokterid
-        } = req.query;
-        let dokters = (await pool.query(qGetJadwalDokter, [
-            unitid === "" ? -1 : unitid,
-            hariid === "" ? -1 : hariid,
-            dokterid === "" ? -1 : dokterid
-        ])).rows
-        dokters = groupBy(dokters, "dokterid", "doktername", "spesialisasi", "unitdokter")
-        const tempres = {
-            dokter: dokters
+            pasien: pasien.rows?.[0] || null
         };
         res.status(200).send({
             msg: 'Success',
@@ -64,15 +32,17 @@ const getJadwalDokter = async (req, res) => {
     }
 }
 
-
-const getComboJadwal = async (req, res) => {
+const getComboDaftar = async (req, res) => {
     const logger = res.locals.logger;
     try{
-        const hari = (await (pool.query(hariQueries.getAll))).rows
-        const unit = (await (pool.query(unitQueries.getPoliklinik))).rows
+        const poliklinik = (await pool.query(unitQueries.getPoliklinik)).rows
+        const dokter = (await pool.query(pegawaiQueries.getDokter)).rows
+        const penjamin = (await pool.query(rekananQueries.getPenjamin)).rows
+
         const tempres = {
-            hari: hari,
-            unit: unit
+            poliklinik,
+            dokter,
+            penjamin
         };
         res.status(200).send({
             msg: 'Success',
@@ -91,10 +61,33 @@ const getComboJadwal = async (req, res) => {
     }
 }
 
+const getDokter = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const iddokter = req.query.iddokter
+        const dokter = (await pool.query(qGetDokter, [iddokter])).rows?.[0]
+        const tempres = {
+            dokter: dokter || null
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
 
 export default {
-    getHomePageUser,
-    getJadwalDokter,
-    getComboJadwal,
-    
+    getPasienLama,
+    getComboDaftar,
+    getDokter
 }

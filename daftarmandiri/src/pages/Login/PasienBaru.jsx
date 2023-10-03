@@ -486,8 +486,8 @@ const FormPasienBaru = ({ step, setStep }) => {
               isError={vStep1.touched.kelurahan && vStep1.errors.kelurahan}
               errorMsg={vStep1.errors.kelurahan}
               onInputChange={handleKelurahanGet}
+              value={vStep1.values.kelurahan}
               onChange={(e) => {
-                console.log(e)
                 vStep1.setFieldValue('kodepos', e.kodepos || '')
                 vStep1.setFieldValue('kelurahan', e.value || '')
                 vStep1.setFieldValue('kecamatan', e.valuekecamatan || '')
@@ -497,7 +497,6 @@ const FormPasienBaru = ({ step, setStep }) => {
                 vStep1.setFieldValue('provinsi', e.valuepropinsi || '')
                 vStep1.setFieldValue('provinsiname', e.namaprovinsi || '')
               }}
-              value={vStep1.values.kelurahan}
             />
           </InputGroup>
           <InputGroup label={'Kode Poss'}>

@@ -53,10 +53,10 @@ export const logoutUserError = (error) => {
     }
 }
 
-export const getUserLogin = (userData) => {
+export const getUserLogin = () => {
     return {
         type: GET_USER_LOGIN,
-        payload: userData
+        payload: {}
     }
 }
 

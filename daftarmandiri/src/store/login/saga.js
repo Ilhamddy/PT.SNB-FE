@@ -28,9 +28,9 @@ function* onLoginUser({payload: {data, callback}}) {
         newData.clientSecret = uuid.v4().substring(0, 32)
         localStorage.setItem("clientSecret", JSON.stringify(newData.clientSecret || null));
         const response = yield call(servicePayment.loginUser, newData);
-        localStorage.setItem("authUserMandiri", JSON.stringify(response || null));
+        localStorage.setItem("authUserMandiri", JSON.stringify(response.data || null));
         // hanya dikirim sekali pada saat login
-        setAuthorization(response.data.accessToken)
+        setAuthorization(response?.data?.accessToken)
         console.log(response.data)
         yield put(loginUserSuccess(response.data));
         callback && callback()
@@ -56,7 +56,7 @@ function* onLogoutUser({payload: {callback}}) {
 function* onGetUserLogin() {
     try{
         const user = JSON.parse(localStorage.getItem("authUserMandiri")) 
-        ? JSON.parse(localStorage.getItem("authUserMandiri"))?.accessToken : null;
+        ? JSON.parse(localStorage.getItem("authUserMandiri")) : null;
         yield put(loginUserSuccess(user))
     }catch(error){
         console.error(error)
