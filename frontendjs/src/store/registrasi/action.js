@@ -47,14 +47,14 @@ export const registrasiResetForm = () => ({
 });
 
 // common success
-export const registrasiSave = (data, history) => ({
+export const registrasiSave = (data, history,norectriage) => ({
     type: REGISTRASI_SAVE,
-    payload: { data, history },
+    payload: { data, history,norectriage },
 });
 // common error
-export const registrasiSaveSuccess = (data, history) => ({
+export const registrasiSaveSuccess = (data, history,norectriage) => ({
     type: REGISTRASI_SAVE_SUCCESS,
-    payload: { data, history},
+    payload: { data, history,norectriage},
 });
 
 export const registrasiSaveError = (error) => ({

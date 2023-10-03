@@ -46,25 +46,37 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const serviceRegistrasi = new ServiceRegistrasi();
 
-function* onSaveRegistrasi({payload: { data, history}}) {
+function* onSaveRegistrasi({ payload: { data, history,norectriage } }) {
     try {
         let response = null;
         response = yield call(serviceRegistrasi.createPasienBaru, data);
-        
+
         yield put(registrasiSaveSuccess(response.data));
-        if(response.code===200){
+        if (response.code === 200) {
             toast.success(response.msg, { autoClose: 3000 });
-        }else{
+            if (norectriage == undefined) {
+                if (data.id !== undefined) {
+                    history(`/registrasi/pasien-ruangan/${data.id}`);
+                } else {
+                    history(`/registrasi/pasien-ruangan/${response.data.id}`);
+                }
+            }else{
+                if (data.id !== undefined) {
+                    history(`/registrasi/pasien-ruangan-triage/${data.id}/${norectriage}`);
+                } else {
+                    history(`/registrasi/pasien-ruangan-triage/${response.data.id}/${norectriage}`);
+                }
+            }
+        } else {
             toast.error(response.msg, { autoClose: 3000 });
         }
-        history("/registrasi/pasien-lama")
     } catch (error) {
         yield put(registrasiSaveError(error));
         toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });
     }
 }
 
-function* onGetRegistrasiList({payload: {nocm}}) {
+function* onGetRegistrasiList({ payload: { nocm } }) {
     try {
         const response = yield call(serviceRegistrasi.getAllPasienByOr, nocm);
         yield put(registrasiGetListSuccess(response.data));
@@ -73,7 +85,7 @@ function* onGetRegistrasiList({payload: {nocm}}) {
     }
 }
 
-function* onGetRegistrasiListByOr({payload: {nocm}}) {
+function* onGetRegistrasiListByOr({ payload: { nocm } }) {
     try {
         const response = yield call(serviceRegistrasi.getAllPasienByOr, nocm);
         yield put(registrasiGetListByOrSuccess(response.data));
@@ -82,7 +94,7 @@ function* onGetRegistrasiListByOr({payload: {nocm}}) {
     }
 }
 
-function* onGetRegistrasi({payload: {id}}) {
+function* onGetRegistrasi({ payload: { id } }) {
     try {
         const response = yield call(serviceRegistrasi.getPasien, id);
         yield put(registrasiGetSuccess(response.data));
@@ -91,7 +103,7 @@ function* onGetRegistrasi({payload: {id}}) {
     }
 }
 
-function* onGetRegistrasiNorec({payload: {norec}}) {
+function* onGetRegistrasiNorec({ payload: { norec } }) {
     try {
         const response = yield call(serviceRegistrasi.getRegistrasiPasienNorec, norec);
         yield put(registrasiRuanganNorecGetSuccess(response.data));
@@ -101,7 +113,7 @@ function* onGetRegistrasiNorec({payload: {norec}}) {
 }
 
 
-function* onSaveRegistrasiRuangan({ payload: { data, history} }) {
+function* onSaveRegistrasiRuangan({ payload: { data, history } }) {
     try {
         let response = null;
         if (data.id) {
@@ -109,11 +121,11 @@ function* onSaveRegistrasiRuangan({ payload: { data, history} }) {
         } else {
             response = yield call(serviceRegistrasi.createPasienBaru, data);
         }
-        
+
         yield put(registrasiSaveRuanganSuccess(response.data));
-        if(response.code===200){
+        if (response.code === 200) {
             toast.success(response.msg, { autoClose: 3000 });
-        }else{
+        } else {
             toast.error(response.msg, { autoClose: 3000 });
         }
     } catch (error) {
@@ -122,15 +134,15 @@ function* onSaveRegistrasiRuangan({ payload: { data, history} }) {
     }
 }
 
-function* onRegistrasiSavePenjaminFK({payload: {data, callback}}){
+function* onRegistrasiSavePenjaminFK({ payload: { data, callback } }) {
     try {
         const response = yield call(serviceRegistrasi.saveRegistrasiPenjaminFK, data);
         yield put(registrasiSavePenjaminFKSuccess(response.data));
-        if(response.code===200){
+        if (response.code === 200) {
             toast.success(response.msg, { autoClose: 3000 });
             callback && callback();
             console.log("success")
-        }else{
+        } else {
             toast.error(response.msg, { autoClose: 3000 });
         }
     } catch (error) {
@@ -139,7 +151,7 @@ function* onRegistrasiSavePenjaminFK({payload: {data, callback}}){
     }
 }
 
-function* onGetRegistrasiNoregistrasi({payload: {noregistrasi}}) {
+function* onGetRegistrasiNoregistrasi({ payload: { noregistrasi } }) {
     try {
         const response = yield call(serviceRegistrasi.getPasienByNoregistrasi, noregistrasi);
         yield put(registrasiNoregistrasiGetSuccess(response.data));
@@ -148,7 +160,7 @@ function* onGetRegistrasiNoregistrasi({payload: {noregistrasi}}) {
     }
 }
 
-function* onGetRegistrasiNoBPJS({payload: {nobpjs}}) {
+function* onGetRegistrasiNoBPJS({ payload: { nobpjs } }) {
     try {
         const response = yield call(serviceRegistrasi.getListBPJS, nobpjs);
         yield put(registrasiNoBPJSGetSuccess(response.data));
@@ -157,7 +169,7 @@ function* onGetRegistrasiNoBPJS({payload: {nobpjs}}) {
     }
 }
 
-function* onGetPasienFormQueries({payload: {queries}}) {
+function* onGetPasienFormQueries({ payload: { queries } }) {
     try {
         const response = yield call(serviceRegistrasi.getPasienFormById, queries);
         yield put(pasienFormQueriesGetSuccess(response.data));
@@ -166,15 +178,15 @@ function* onGetPasienFormQueries({payload: {queries}}) {
     }
 }
 
-function* onsaveBatalRegistrasi({payload: {data, callback}}){
+function* onsaveBatalRegistrasi({ payload: { data, callback } }) {
     try {
         const response = yield call(serviceRegistrasi.saveBatalRegistrasi, data);
         yield put(saveBatalRegistrasiSuccess(response.data));
-        if(response.code===200){
+        if (response.code === 200) {
             toast.success(response.msg, { autoClose: 3000 });
             callback && callback();
             console.log("success")
-        }else{
+        } else {
             toast.error(response.msg, { autoClose: 3000 });
         }
     } catch (error) {
@@ -183,15 +195,15 @@ function* onsaveBatalRegistrasi({payload: {data, callback}}){
     }
 }
 
-function* onsaveRegistrasiMutasi({payload: {data, callback}}){
+function* onsaveRegistrasiMutasi({ payload: { data, callback } }) {
     try {
         const response = yield call(serviceRegistrasi.saveRegistrasiMutasi, data);
         yield put(saveRegistrasiMutasiSuccess(response.data));
-        if(response.code===200){
+        if (response.code === 200) {
             toast.success(response.msg, { autoClose: 3000 });
             callback && callback();
             console.log("success")
-        }else{
+        } else {
             toast.error(response.msg, { autoClose: 3000 });
         }
     } catch (error) {
