@@ -28,6 +28,7 @@ WHERE
     mj.statusenabled = true
     AND ($1 = -1 OR mu.id = $1)
     AND ($2 = -1 OR mj.objectharifk = $2)
+    AND ($3 = -1 OR mp.id = $3)
 GROUP BY 
     mj.objectpegawaifk,
     mp.namalengkap,
@@ -37,7 +38,6 @@ GROUP BY
     mup.namaunit
 ORDER BY
     mh.id ASC
-
 `
 
 export {

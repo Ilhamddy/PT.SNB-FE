@@ -45,12 +45,22 @@ const HomePage = () => {
     },
     onSubmit: (values) => {
       dispatch(
-        getJadwalDokter({ unitid: values.unitid, hariid: dateToday.getDay() })
+        getJadwalDokter({
+          unitid: values.unitid,
+          hariid: dateToday.getDay(),
+          dokterid: undefined,
+        })
       )
     },
   })
   useEffect(() => {
-    dispatch(getJadwalDokter({ unitid: undefined, hariid: dateToday.getDay() }))
+    dispatch(
+      getJadwalDokter({
+        unitid: undefined,
+        hariid: dateToday.getDay(),
+        dokterid: undefined,
+      })
+    )
     dispatch(getComboJadwal())
   }, [dispatch, dateToday])
   const handlePickUnit = (action) => {
