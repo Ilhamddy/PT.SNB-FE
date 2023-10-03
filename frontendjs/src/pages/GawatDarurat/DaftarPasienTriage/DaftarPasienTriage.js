@@ -409,7 +409,7 @@ const ModalRegistrasi = ({ isRegistrasiOpen, toggle, selectedPasien }) => {
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#showModal"
                                                 id="create-btn"
-                                            onClick={() => {navigate(`/registrasi/pasien-baru-triage/${selectedPasien.norec}`)}}
+                                                onClick={() => { navigate(`/registrasi/pasien-baru-triage/${selectedPasien.norec}`) }}
                                             >
                                                 Belum Punya RM
                                             </button>
