@@ -1,0 +1,14 @@
+.input-group-dm {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    margin-bottom: 20px;
+
+    .label-dm {
+        font-size: 14px;
+        font-weight: 600;
+        color: #564405;
+        margin-bottom: 8px;
+    }
+}

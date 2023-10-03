@@ -59,7 +59,6 @@ class APIClient {
   get = async (url, queries, axiosConfig) => {
     let response;
     let paramKeys = [];
-
     if (queries && Object.keys(queries).length > 0) {
       Object.keys(queries).map(key => {
         paramKeys.push(key + '=' + (queries[key] || ''));
@@ -67,22 +66,22 @@ class APIClient {
       });
 
       const queryString = paramKeys && paramKeys.length ? paramKeys.join('&') : "";
-      console.log(queryString)
 
       response = await axios.get(`${url}?${queryString}`, {
+        ...(axiosConfig || {}),
         headers: {
           "X-Client-Url": window.location.href,
           ...(axiosConfig?.headers || {})
         },
-        ...(axiosConfig || {})
+
       });
     } else {
       response = await axios.get(`${url}`, {
+        ...(axiosConfig || {}),
         headers: {
           "X-Client-Url": window.location.href,
           ...(axiosConfig?.headers || {})
         },
-        ...(axiosConfig || {})
       });
     }
 

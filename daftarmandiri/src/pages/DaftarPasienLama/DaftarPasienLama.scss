@@ -1,0 +1,69 @@
+.daftar-pasien-lama-page {
+    .header-daftar-pasien-lama {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        position: relative;
+        width: 100%;
+        height: 112px;
+        .kontainer-progress-bar {
+            width: 30%;
+            height: 80%;
+            position: relative;
+
+            .progress-bar {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                top: 0;
+                left: 0;
+            }
+
+            .teks {
+                font-size: 14px;
+                font-weight: 500;
+                color: #715a06;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
+        }
+
+        .kontainer-header {
+            display: flex;
+            flex-direction: column;
+            color: #715a06;
+            h2 {
+                font-size: 18px;
+                font-weight: 600;
+            }
+            h3 {
+                font-size: 12px;
+                font-weight: 400;
+                margin: 0;
+            }
+        }
+    }
+
+    .body-daftar-pasien-lama {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+
+        .input-pasien-lama {
+            width: 100%;
+        }
+
+        .buttons-done {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+
+            .button {
+                width: 48%;
+            }
+        }
+    }
+}

@@ -37,8 +37,8 @@ const verifyTokenUser = (req, res, next) => {
   let bearerToken = bearer[1]
   try{
     const decoded = jwt.verify(bearerToken, config.secret);
-    req.locals.id = decoded.id;
-    req.locals.expired = decoded.expired;
+    req.id = decoded.id;
+    req.expired = decoded.expired;
     next();
   }catch(error){
     res.status(401).send({

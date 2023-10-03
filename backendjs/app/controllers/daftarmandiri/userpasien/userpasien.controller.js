@@ -101,7 +101,7 @@ const createPasien = async (req, res) => {
                 }, 
                 config.secret, 
                 {
-                    expiresIn: 86400
+                    expiresIn: 86400 * 1000
                 });
 
             return {

@@ -18,10 +18,11 @@ import { JadwalDokterKomponen } from '../JadwalDokter/JadwalDokter'
 
 const HomePage = () => {
   const refKontainer = useRef(null)
-  let { hariOpt, unitOpt, dokter } = useSelector((state) => ({
+  let { hariOpt, unitOpt, dokter, user } = useSelector((state) => ({
     hariOpt: state.Home.getComboJadwal?.data?.hari || [],
     unitOpt: state.Home.getComboJadwal?.data?.unit || [],
     dokter: state.Home.getJadwalDokter?.data?.dokter || [],
+    user: state.Login.loginUser?.data || null,
   }))
   const [dateToday] = useState(() => new Date())
   unitOpt = [{ value: '', label: 'Semua Poliklinik' }, ...unitOpt]
@@ -35,6 +36,11 @@ const HomePage = () => {
   const handleToJadwal = () => {
     refKontainer.current?.handleToNextPage(() => {
       navigate('/jadwal-dokter')
+    })
+  }
+  const handleToDaftar = () => {
+    refKontainer.current?.handleToNextPage(() => {
+      navigate('/daftar/pasien-lama')
     })
   }
   const vHome = useFormik({
@@ -90,10 +96,14 @@ const HomePage = () => {
         header={
           <div className="home-header">
             <div className="menu-header-home">
-              <button className="tbl-masuk" onClick={handleToLogin}>
-                <img src={loginImg} alt="login-img" />
-                <p>Masuk/Daftar</p>
-              </button>
+              {user ? (
+                <p>Hi, {user.username}</p>
+              ) : (
+                <button className="tbl-masuk" onClick={handleToLogin}>
+                  <img src={loginImg} alt="login-img" />
+                  <p>Masuk/Daftar</p>
+                </button>
+              )}
               <div className="button-right">
                 <img src={helpImg} alt="help" />
               </div>
@@ -117,7 +127,13 @@ const HomePage = () => {
               </div>
             </Carousel>
             <div className="konten-header">
-              <IsiKontenHeader gbr={waitImg} text={'Pendaftaran Pasien'} />
+              <IsiKontenHeader
+                gbr={waitImg}
+                text={'Pendaftaran Pasien'}
+                onClick={() => {
+                  handleToDaftar()
+                }}
+              />
               <IsiKontenHeader
                 gbr={waitImg}
                 text={'Jadwal Dokter'}

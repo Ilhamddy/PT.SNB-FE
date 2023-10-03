@@ -66,19 +66,19 @@ export const encryptMandiri = async (req, res, next) => {
                 });
             }
         }
-        let oldJson = res.json;    
-        res.json = function(data) {
-            try{
-                const newData = encrypt(data, clientSecret)
-                res.json = oldJson 
-                return res.json(newData) 
-            }catch(e){
-                logger.error(e)
-                res.status(401).send({
-                    msg: "Unauthorized!"
-                });
-            }
-        }
+        // let oldJson = res.json;    
+        // res.json = function(data) {
+        //     try{
+        //         const newData = encrypt(data, clientSecret)
+        //         res.json = oldJson 
+        //         return res.json(newData) 
+        //     }catch(e){
+        //         logger.error(e)
+        //         res.status(401).send({
+        //             msg: "Unauthorized!"
+        //         });
+        //     }
+        // }
     
         next();
     }catch(e){

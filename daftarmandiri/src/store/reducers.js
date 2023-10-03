@@ -4,7 +4,7 @@ import Login from "./login/reducer";
 import Master from "./master/reducer";
 import DOM from "./dom/reducer";
 import Home from "./home/reducer";
-import DaftarPasienLama from "./daftarPasienLama/reducer"
+import DaftarPasienLama from "./daftarpasienlama/reducer"
 
 
 const rootReducer = combineReducers({
