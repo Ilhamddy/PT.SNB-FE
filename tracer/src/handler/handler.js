@@ -80,8 +80,6 @@ module.exports = {
 const hPrintAll = async (datas, device) => {
     const printed = await Promise.all(
         datas.map(async (data, index) => {
-            if(index >= 10) return
-
             const print = await printPromise({device}, async (printer) => {
                 let newPrinter = printer
                 newPrinter
