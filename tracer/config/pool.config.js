@@ -1,16 +1,25 @@
-const config = require("./pool.config.js");
 const pg = require("pg");
 
 const dotenv = require("dotenv")
 
 dotenv.config();
+const environment = {
+    NODE_ENV: "development",
+    PORT: 8085,
+    API_HOST: "103.149.177.11",
+    API_USER: "postgres",
+    API_PASSWORD: "@b3rd1k4r1@",
+    API_DB: "standart_v1",
+    API_dialect: "postgres"
+}
+
 
 const dbConfig =  {
-    HOST: process.env.API_HOST,
-    USER: process.env.API_USER,
-    PASSWORD: process.env.API_PASSWORD,
-    DB: process.env.API_DB,
-    dialect: process.env.API_USER,
+    HOST: environment.API_HOST,
+    USER: environment.API_USER,
+    PASSWORD: environment.API_PASSWORD,
+    DB: environment.API_DB,
+    dialect: environment.API_USER,
     PORT: 5432,
     pool: {
         max: 5,
@@ -32,5 +41,6 @@ const pool = new Pool({
 
 module.exports = {
     pool,
-    dbConfig
+    dbConfig,
+    environment
 } ;

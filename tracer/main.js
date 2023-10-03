@@ -2,12 +2,13 @@
 const path = require('path');
 const { app, BrowserWindow, Menu, ipcMain, shell } = require('electron');
 const PDFWindow = require('electron-pdf-window');
-const isDev = process.env.NODE_ENV !== 'production';
 const isMac = process.platform === 'darwin';
 const escpos = require("node-escpos");
 const db = require("./src/model/index");
 const handlerRoutes = require('./src/handler/handlerRoutes');
 const { sendPrinter } = require('./src/handler/handler');
+const { environment } = require('./config/pool.config');
+const isDev = environment.NODE_ENV !== 'production';
 
 let mainWindow;
 let aboutWindow;
@@ -28,9 +29,9 @@ async function createMainWindow() {
   });
 
   // Show devtools automatically if in development
-  if (isDev) {
-    mainWindow.webContents.openDevTools();
-  }
+  // if (isDev) {
+  //   mainWindow.webContents.openDevTools();
+  // }
 
   mainWindow.loadFile(path.join(__dirname, './renderer/index.html'));
 }
