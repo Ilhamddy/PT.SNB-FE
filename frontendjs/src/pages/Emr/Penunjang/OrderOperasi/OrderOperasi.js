@@ -5,7 +5,7 @@ import * as Yup from "yup";
 import CustomSelect from '../../../Select/Select';
 import {
     comboHistoryUnitGet, comboNamaPelaksanaGet,
-    emrDiagnosaxGet, emrComboGet
+    emrDiagnosaxGet, emrComboGet, saveOrderOperasi
 } from "../../../../store/actions";
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -15,13 +15,16 @@ const OrderOperasi = () => {
     const { norecdp, norecap } = useParams();
     const [dateNow] = useState(() => new Date().toISOString())
     const { dataCombo, dataNamaPelaksana, dataDiagnosa,
-        dataComboEmr
+        dataComboEmr,newData
     } = useSelector((state) => ({
         dataCombo: state.Emr.comboHistoryUnitGet.data,
         // dataPasienReg: state.Registrasi.registrasiRuangNorecGet.data || null,
         dataNamaPelaksana: state.Emr.comboNamaPelaksanaGet.data,
         dataDiagnosa: state.Emr.emrDiagnosaxGet.data,
         dataComboEmr: state.Emr.emrComboGet.data,
+        newData: state.Emr.saveOrderOperasi.newData,
+        success: state.Emr.saveOrderOperasi.success,
+        loading: state.Emr.saveOrderOperasi.loading,
     }));
     const vSetValidation = useFormik({
         enableReinitialize: true,
@@ -33,7 +36,8 @@ const OrderOperasi = () => {
             rencanaOperasi: dateNow,
             formCheckCito: '',
             kodediagnosa: '',
-            catatan: ''
+            catatan: '',
+            objectantreanpemeriksaanfk: '',
         },
         validationSchema: Yup.object({
             unitlast: Yup.string().required("Unit Harus Diisi jawab wajib diisi"),
@@ -44,10 +48,10 @@ const OrderOperasi = () => {
             catatan: Yup.string().required("Catatan Harus Diisi jawab wajib diisi"),
         }),
         onSubmit: (values) => {
-            console.log(values);
-            // dispatch(saveEmrTriageIgd(values, () => {
-            //     // dispatch(lainLainGet())
-            // }));
+            // console.log(values);
+            dispatch(saveOrderOperasi(values, () => {
+                // dispatch(lainLainGet())
+            }));
 
         }
     })
@@ -63,6 +67,10 @@ const OrderOperasi = () => {
         if (characterEntered.length > 3) {
             dispatch(emrDiagnosaxGet(characterEntered, 'diagnosa10'));
         }
+    }
+    const handleUnitLast =(e)=>{
+        vSetValidation.setFieldValue('unitlast', e.value)
+        vSetValidation.setFieldValue('objectantreanpemeriksaanfk', e.norec)
     }
     return (
         <React.Fragment>
@@ -90,7 +98,7 @@ const OrderOperasi = () => {
                                         options={dataCombo}
                                         value={vSetValidation.values.unitlast || ""}
                                         className={`input ${vSetValidation.errors.unitlast ? "is-invalid" : ""}`}
-                                        onChange={value => vSetValidation.setFieldValue('unitlast', value.value)}
+                                        onChange={value => (handleUnitLast(value))}
                                     />
                                     {vSetValidation.touched.unitlast && vSetValidation.errors.unitlast ? (
                                         <FormFeedback type="invalid"><div>{vSetValidation.errors.unitlast}</div></FormFeedback>
@@ -199,8 +207,8 @@ const OrderOperasi = () => {
                             </Col>
                             <Col lg={2} md={2}>
                                 <div className="form-check ms-2">
-                                    <Input className="form-check-input" type="checkbox" id="formCheckCito" 
-                                    onChange={value => vSetValidation.setFieldValue('formCheckCito', value.target.checked)}/>
+                                    <Input className="form-check-input" type="checkbox" id="formCheckCito"
+                                        onChange={value => vSetValidation.setFieldValue('formCheckCito', value.target.checked)} />
                                     <Label className="form-check-label" htmlFor="formCheckCito" style={{ color: "black" }} >
                                         Cito
                                     </Label>

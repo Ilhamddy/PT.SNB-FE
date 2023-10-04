@@ -95,7 +95,13 @@ import {
     SAVE_EMR_TRIAGE_IGD_ERROR,
     GET_COMBO_TRIAGE_IGD,
     GET_COMBO_TRIAGE_IGD_SUCCESS,
-    GET_COMBO_TRIAGE_IGD_ERROR
+    GET_COMBO_TRIAGE_IGD_ERROR,
+    GET_HISTORI_TRIAGE_BYNOREC,
+    GET_HISTORI_TRIAGE_BYNOREC_SUCCESS,
+    GET_HISTORI_TRIAGE_BYNOREC_ERROR,
+    SAVE_ORDER_OPERASI,
+    SAVE_ORDER_OPERASI_SUCCESS,
+    SAVE_ORDER_OPERASI_ERROR
 } from "./actionType";
 
 export const emrResetForm = () => ({
@@ -603,4 +609,37 @@ export const getGetComboTriageIgdSuccess = (data) => ({
 export const getGetComboTriageIgdError = (error) => ({
     type: GET_COMBO_TRIAGE_IGD_ERROR,
     payload: error,
+});
+
+export const getHistoriTriagiByNorec = (queries) => ({
+    type: GET_HISTORI_TRIAGE_BYNOREC,
+    payload: { queries: queries },
+});
+
+export const getHistoriTriagiByNorecSuccess = (data) => ({
+    type: GET_HISTORI_TRIAGE_BYNOREC_SUCCESS,
+    payload: data,
+});
+
+export const getHistoriTriagiByNorecError = (error) => ({
+    type: GET_HISTORI_TRIAGE_BYNOREC_ERROR,
+    payload: error,
+});
+
+export const saveOrderOperasi = (body, callback) => ({
+    type: SAVE_ORDER_OPERASI,
+    payload: {
+        body: body,
+        callback: callback
+    }
+});
+
+export const saveOrderOperasiSuccess = (data) => ({
+    type: SAVE_ORDER_OPERASI_SUCCESS,
+    payload: data
+});
+
+export const saveOrderOperasiError = (error) => ({
+    type: SAVE_ORDER_OPERASI_ERROR,
+    payload: error
 });

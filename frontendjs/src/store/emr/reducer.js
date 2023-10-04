@@ -95,7 +95,13 @@ import {
     SAVE_EMR_TRIAGE_IGD_ERROR,
     GET_COMBO_TRIAGE_IGD,
     GET_COMBO_TRIAGE_IGD_SUCCESS,
-    GET_COMBO_TRIAGE_IGD_ERROR
+    GET_COMBO_TRIAGE_IGD_ERROR,
+    GET_HISTORI_TRIAGE_BYNOREC,
+    GET_HISTORI_TRIAGE_BYNOREC_SUCCESS,
+    GET_HISTORI_TRIAGE_BYNOREC_ERROR,
+    SAVE_ORDER_OPERASI,
+    SAVE_ORDER_OPERASI_SUCCESS,
+    SAVE_ORDER_OPERASI_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -218,7 +224,7 @@ const INIT_STATE = {
         loading: false,
         error: null,
     },
-    tindakanSave:{
+    tindakanSave: {
         newData: null,
         loading: false,
         error: null,
@@ -271,6 +277,17 @@ const INIT_STATE = {
         loading: false,
         error: null,
     },
+    getHistoriTriagiByNorec: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    saveOrderOperasi: {
+        newData: null,
+        loading: false,
+        error: null,
+        success: false
+    },
 };
 
 const Emr = (state = INIT_STATE, action) => {
@@ -278,90 +295,96 @@ const Emr = (state = INIT_STATE, action) => {
         case EMR_RESET_FORM: {
             return {
                 ...state,
-                emrHeaderGet:{
+                emrHeaderGet: {
                     ...INIT_STATE.emrHeaderGet,
                 },
                 emrTtvSave: {
                     ...INIT_STATE.emrTtvSave,
                 },
-                emrTtvGet:{
+                emrTtvGet: {
                     ...INIT_STATE.emrTtvGet,
                 },
-                emrSave:{
+                emrSave: {
                     ...INIT_STATE.emrSave
                 },
-                emrGet:{
+                emrGet: {
                     ...INIT_STATE.emrGet,
                 },
-                emrComboGet:{
+                emrComboGet: {
                     ...INIT_STATE.emrComboGet,
                 },
-                emrDiagnosaxGet:{
+                emrDiagnosaxGet: {
                     ...INIT_STATE.emrDiagnosaxGet,
                 },
-                emrDiagnosaixGet:{
+                emrDiagnosaixGet: {
                     ...INIT_STATE.emrDiagnosaixGet,
                 },
-                emrDiagnosaxSave:{
+                emrDiagnosaxSave: {
                     ...INIT_STATE.emrDiagnosaxSave
                 },
-                emrDiagnosaixSave:{
+                emrDiagnosaixSave: {
                     ...INIT_STATE.emrDiagnosaixSave
                 },
-                emrListDiagnosaxGet:{
+                emrListDiagnosaxGet: {
                     ...INIT_STATE.emrListDiagnosaxGet
                 },
-                emrListDiagnosaixGet:{
+                emrListDiagnosaixGet: {
                     ...INIT_STATE.emrListDiagnosaixGet
                 },
-                deleteDiagnosax:{
+                deleteDiagnosax: {
                     ...INIT_STATE.deleteDiagnosax
                 },
-                deleteDiagnosaix:{
+                deleteDiagnosaix: {
                     ...INIT_STATE.deleteDiagnosaix
                 },
-                konsulSave:{
+                konsulSave: {
                     ...INIT_STATE.konsulSave
                 },
-                updateTaskId:{
+                updateTaskId: {
                     ...INIT_STATE.updateTaskId
                 },
-                updateStatusPulangRJ:{
+                updateStatusPulangRJ: {
                     ...INIT_STATE.updateStatusPulangRJ
                 },
-                comboHistoryUnitGet:{
+                comboHistoryUnitGet: {
                     ...INIT_STATE.comboHistoryUnitGet
                 },
-                comboTindakanGet:{
+                comboTindakanGet: {
                     ...INIT_STATE.comboTindakanGet
                 },
-                comboJenisPelaksanaGet:{
+                comboJenisPelaksanaGet: {
                     ...INIT_STATE.comboJenisPelaksanaGet
                 },
-                comboNamaPelaksanaGet:{
+                comboNamaPelaksanaGet: {
                     ...INIT_STATE.comboNamaPelaksanaGet
                 },
-                tindakanSave:{
+                tindakanSave: {
                     ...INIT_STATE.tindakanSave
                 },
-                listTagihanGet:{
+                listTagihanGet: {
                     ...INIT_STATE.listTagihanGet
                 },
-                comboTindakanRadiologiGet:{
+                comboTindakanRadiologiGet: {
                     ...INIT_STATE.comboTindakanRadiologiGet
                 },
-                emrJenisPelayananSave:{
+                emrJenisPelayananSave: {
                     ...INIT_STATE.emrJenisPelayananSave
                 },
-                getHistoriJenisPelayanan:{
+                getHistoriJenisPelayanan: {
                     ...INIT_STATE.getHistoriJenisPelayanan
                 },
-                saveEmrTriageIgd:{
+                saveEmrTriageIgd: {
                     ...INIT_STATE.saveEmrTriageIgd
                 },
-                getGetComboTriageIgd:{
+                getGetComboTriageIgd: {
                     ...INIT_STATE.getGetComboTriageIgd
-                }
+                },
+                getHistoriTriagiByNorec: {
+                    ...INIT_STATE.getHistoriTriagiByNorec
+                },
+                saveOrderOperasi: {
+                    ...INIT_STATE.saveOrderOperasi
+                },
             }
         }
 
@@ -1199,7 +1222,7 @@ const Emr = (state = INIT_STATE, action) => {
                 }
             }
         }
-            
+
         case GET_OBAT_FROM_UNIT: {
             return {
                 ...state,
@@ -1442,7 +1465,75 @@ const Emr = (state = INIT_STATE, action) => {
                 }
             }
         }
-        
+
+        case GET_HISTORI_TRIAGE_BYNOREC: {
+            return {
+                ...state,
+                getHistoriTriagiByNorec: {
+                    ...state.getHistoriTriagiByNorec,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case GET_HISTORI_TRIAGE_BYNOREC_SUCCESS: {
+            return {
+                ...state,
+                getHistoriTriagiByNorec: {
+                    ...state.getHistoriTriagiByNorec,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case GET_HISTORI_TRIAGE_BYNOREC_ERROR: {
+            return {
+                ...state,
+                getHistoriTriagiByNorec: {
+                    ...state.getHistoriTriagiByNorec,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case SAVE_ORDER_OPERASI: {
+            return {
+                ...state,
+                saveOrderOperasi: {
+                    ...state.saveOrderOperasi,
+                    data: [],
+                    loading: true,
+                    error: null,
+                },
+            };
+        }
+
+        case SAVE_ORDER_OPERASI_SUCCESS: {
+            return {
+                ...state,
+                saveOrderOperasi: {
+                    ...state.saveOrderOperasi,
+                    loading: false,
+                    data: action.payload,
+                    success: true,
+                },
+            };
+        }
+
+        case SAVE_ORDER_OPERASI_ERROR: {
+            return {
+                ...state,
+                saveOrderOperasi: {
+                    ...state.saveOrderOperasi,
+                    loading: false,
+                    error: action.payload,
+                },
+            };
+        }
+
 
         default: {
             return { ...state };

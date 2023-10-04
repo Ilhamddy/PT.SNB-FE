@@ -1680,7 +1680,7 @@ const getDaftarPasienTriage = async (req, res) => {
             param3 = ` and tp.objectdaftarpasienfk is null`
         }
 
-        const result = await pool.query(queries.qDaftarPasienTriage + ` where tp.namapasien ilike '%${req.query.search}%' ${param2} ${param3}`)
+        const result = await pool.query(queries.qDaftarPasienTriage + ` where td.objectstatuspulangfk is null and tp.namapasien ilike '%${req.query.search}%' ${param2} ${param3}`)
         const tempres = {
             data: result.rows
         };

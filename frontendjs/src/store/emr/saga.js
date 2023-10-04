@@ -17,7 +17,9 @@ import {
     GET_ORDER_RESEP_FROM_DP,
     EMR_JENIS_PELAYANAN_SAVE,
     GET_HISTORI_JENIS_PELAYANAN,
-    SAVE_EMR_TRIAGE_IGD, GET_COMBO_TRIAGE_IGD
+    SAVE_EMR_TRIAGE_IGD, GET_COMBO_TRIAGE_IGD,
+    GET_HISTORI_TRIAGE_BYNOREC,
+    SAVE_ORDER_OPERASI
 } from "./actionType";
 
 import {
@@ -51,7 +53,9 @@ import {
     emrJenisPelayananSaveSuccess, emrJenisPelayananSaveError,
     getHistoriJenisPelayananSuccess, getHistoriJenisPelayananError,
     saveEmrTriageIgdSuccess,saveEmrTriageIgdError,
-    getGetComboTriageIgdSuccess,getGetComboTriageIgdError
+    getGetComboTriageIgdSuccess,getGetComboTriageIgdError,
+    getHistoriTriagiByNorecSuccess, getHistoriTriagiByNorecError,
+    saveOrderOperasiSuccess,saveOrderOperasiError
 } from "./action";
 
 import { toast } from 'react-toastify';
@@ -658,6 +662,39 @@ export function* watchgetGetComboTriageIgd() {
     yield takeEvery(GET_COMBO_TRIAGE_IGD, ongetGetComboTriageIgd);
 }
 
+function* ongetHistoriTriagiByNorec({ payload: {queries}  }) {
+    try {
+        let response = null;
+        response = yield call(serviceEmr.getHistoriTriagiByNorec, queries);
+        yield put(getHistoriTriagiByNorecSuccess(response.data));
+    } catch (error) {
+        yield put(getHistoriTriagiByNorecError(error));
+    }
+}
+
+export function* watchgetHistoriTriagiByNorec() {
+    yield takeEvery(GET_HISTORI_TRIAGE_BYNOREC, ongetHistoriTriagiByNorec);
+}
+
+function* onsaveOrderOperasi({ payload: { body, callback } }) {
+    try {
+        const response = yield call(serviceEmr.saveOrderOperasi, body);
+        yield put(saveOrderOperasiSuccess(response.data));
+        if (response.code === 200) {
+            toast.success(response.msg, { autoClose: 3000 });
+        } else {
+            toast.error(response.msg, { autoClose: 3000 });
+        }
+        callback && callback();
+    } catch (error) {
+        yield put(saveOrderOperasiError(error));
+        toast.error("Gagal Simpan Order Operasi", { autoClose: 3000 });
+    }
+}
+export function* watchonsaveOrderOperasi() {
+    yield takeEvery(SAVE_ORDER_OPERASI, onsaveOrderOperasi);
+}
+
 function* emrSaga() {
     yield all([
         fork(watchGetEmrHeader),
@@ -691,7 +728,9 @@ function* emrSaga() {
         fork(watchemrJenisPelayananSave),
         fork(watchgetHistoriJenisPelayanan),
         fork(watchonsaveEmrTriageIgd),
-        fork(watchgetGetComboTriageIgd)
+        fork(watchgetGetComboTriageIgd),
+        fork(watchgetHistoriTriagiByNorec),
+        fork(watchonsaveOrderOperasi)
     ]);
 }
 
