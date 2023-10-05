@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import withRouter from "../../../Components/Common/withRouter"
 import UiContent from "../../../Components/Common/UiContent";
 import BreadCrumb from "../../../Components/Common/BreadCrumb";
@@ -7,9 +7,16 @@ import KontainerFlatpickr from "../../../Components/KontainerFlatpickr/Kontainer
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import CustomSelect from "../../Select/Select";
+import { bedahSentralResetForm, widgetOrderOperasiGet } from "../../../store/actions";
+import { useDispatch, useSelector } from "react-redux";
+import CountUp from "react-countup";
 
 const DaftarOrderOperasi = () => {
     document.title = "Daftar Order Operasi";
+    const dispatch = useDispatch();
+    const { datawidget, data, dataCombo } = useSelector((state) => ({
+        datawidget: state.BedahSentral.widgetOrderOperasiGet.data
+    }));
     const [dateNow] = useState(() => new Date().toISOString())
     const vSetValidation = useFormik({
         enableReinitialize: true,
@@ -17,7 +24,7 @@ const DaftarOrderOperasi = () => {
             dateStart: dateNow,
             dateEnd: dateNow,
             unitOrder: '',
-            search:''
+            search: ''
         },
         validationSchema: Yup.object({
             // tingkatdarurat: Yup.string().required("Tingkat Darurat jawab wajib diisi"),
@@ -42,6 +49,14 @@ const DaftarOrderOperasi = () => {
             .split("T")[0];
         vSetValidation.setFieldValue('dateEnd', dateString)
     }
+    useEffect(() => {
+        return () => {
+            dispatch(bedahSentralResetForm());
+        }
+    }, [dispatch])
+    useEffect(() => {
+        dispatch(widgetOrderOperasiGet(''));
+    }, [dispatch])
     return (
         <React.Fragment>
             <UiContent />
@@ -50,6 +65,42 @@ const DaftarOrderOperasi = () => {
                     <BreadCrumb title="Daftar Order Operasi" pageTitle="Forms" />
                     <Card>
                         <Row>
+                            {datawidget.map((item, key) => (
+                                <Col xxl={4} sm={6} key={key}>
+                                    <Card className="card-animate">
+                                        <CardBody>
+                                            <div className="d-flex justify-content-between">
+                                                <div>
+                                                    <p className="fw-medium text-muted mb-0">Total Pasien {item.label}</p>
+                                                    <h2 className="mt-4 ff-secondary fw-semibold">
+                                                        <span className="counter-value" style={{ fontSize: "1.5rem" }}>
+                                                            <CountUp
+                                                                start={0}
+                                                                end={item.counter}
+                                                                decimal={item.decimals}
+                                                                duration={3}
+                                                            />
+                                                        </span>
+                                                    </h2>
+                                                </div>
+                                                <div>
+                                                    <div className="avatar-md flex-shrink-0">
+                                                        <span className={"avatar-title rounded-circle fs-4 bg-soft-" + item.iconClass + " text-" + item.iconClass}>
+                                                            <img src={item.icon}
+                                                                alt="" className="avatar-md" />
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </CardBody>
+                                        <div className="card-footer p-2" style={{ backgroundColor: '#e67e22' }}>
+                                            <div className="text-center">
+                                                {/* <Link to="#" className="link-light" onClick={() => handleClickCard(item)}>View <i className="ri-arrow-right-s-line align-middle lh-1"></i></Link> */}
+                                            </div>
+                                        </div>
+                                    </Card>
+                                </Col>
+                            ))}
                             <Col lg={3}>
                                 <Card>
                                     <CardBody className="p-4 text-center">

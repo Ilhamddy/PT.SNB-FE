@@ -4,8 +4,8 @@ const api = new APIClient();
 
 export default class ServiceBedahSentral {
 
-    getWidgetDaftarOrderRadiologi = async (param) => {
-        return await api.get(`/transaksi/radiologi/widget-daftar-order-radiologi?noregistrasi=${param}`);
+    getwidgetOrderOperasi = async (param) => {
+        return await api.get(`/transaksi/operasi/get-widget-order-operasi`,param);
     }
 
 }
