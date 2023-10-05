@@ -10,7 +10,10 @@ import {
     GET_DOKTER_PASIEN_ERROR,
     GET_COMBO_DAFTAR,
     GET_COMBO_DAFTAR_SUCCESS,
-    GET_COMBO_DAFTAR_ERROR
+    GET_COMBO_DAFTAR_ERROR,
+    SAVE_PASIEN_MANDIRI,
+    SAVE_PASIEN_MANDIRI_SUCCESS,
+    SAVE_PASIEN_MANDIRI_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -30,6 +33,11 @@ const INIT_STATE = {
         error: null,
     },
     getComboDaftar: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    savePasienMandiri: {
         data: [],
         loading: false,
         error: null,
@@ -165,6 +173,38 @@ const daftarPasienLama = (state = INIT_STATE, action) => {
                 getComboDaftar: {
                     ...state.loginUser,
                     data: [],
+                    loading: false,
+                    error: action.payload,
+                },
+            };
+
+        case SAVE_PASIEN_MANDIRI:
+            return {
+                ...state,
+                savePasienMandiri: {
+                    ...state.loginUser,
+                    data: [],
+                    loading: true,
+                    error: null,
+                },
+            };
+        
+        case SAVE_PASIEN_MANDIRI_SUCCESS:
+            return {
+                ...state,
+                savePasienMandiri: {
+                    ...state.loginUser,
+                    data: action.payload,
+                    loading: false,
+                    error: null,
+                },
+            };
+
+        case SAVE_PASIEN_MANDIRI_ERROR:
+            return {
+                ...state,
+                savePasienMandiri: {
+                    ...state.loginUser,
                     loading: false,
                     error: action.payload,
                 },

@@ -1,26 +1,17 @@
 import React, { useEffect } from "react";
 import { Navigate, Route } from "react-router-dom";
 import {setAuthorization} from "../helpers/api_helper";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
-import { useProfile } from "../hooks/user";
-
-import { logoutUser } from "../store/actions";
-import { useCheckActivity } from "../utils/auth";
 
 const AuthProtected = (props) => {
-  const dispatch = useDispatch();
-  const { userProfile, loading, error } = useProfile();
+  const {userid} = useSelector((state) => ({
+    userid: state.Login.loginUser?.data?.id || null,
+  }))
 
-  useCheckActivity();
-
-  /*
-    Navigate is un-auth access protected routes via url
-    */
-
-  if (!userProfile && !loading) {
+  if (!userid) {
     return (
-      <Navigate to={{ pathname: "/login-based", state: { from: props.location } }} />
+      <Navigate to={{ pathname: "/login/pasien-lama"}} />
     );
   }
 

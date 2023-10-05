@@ -10,7 +10,10 @@ import {
     GET_DOKTER_PASIEN_ERROR,
     GET_COMBO_DAFTAR,
     GET_COMBO_DAFTAR_SUCCESS,
-    GET_COMBO_DAFTAR_ERROR
+    GET_COMBO_DAFTAR_ERROR,
+    SAVE_PASIEN_MANDIRI,
+    SAVE_PASIEN_MANDIRI_SUCCESS,
+    SAVE_PASIEN_MANDIRI_ERROR
 } from "./actionType";
 
 export const getJadwalDokterDaftar = (queries) => {
@@ -93,6 +96,27 @@ export const getComboDaftarSuccess = (data) => {
 export const getComboDaftarError = (error) => {
     return {
         type: GET_COMBO_DAFTAR_ERROR,
+        payload: error
+    }
+}
+
+export const savePasienMandiri = (data, callback) => {
+    return {
+        type: SAVE_PASIEN_MANDIRI,
+        payload: {data, callback: callback}
+    }
+}
+
+export const savePasienMandiriSuccess = (data) => {
+    return {
+        type: SAVE_PASIEN_MANDIRI_SUCCESS,
+        payload: data
+    }
+}
+
+export const savePasienMandiriError = (error) => {
+    return {
+        type: SAVE_PASIEN_MANDIRI_ERROR,
         payload: error
     }
 }

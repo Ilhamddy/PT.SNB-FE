@@ -142,7 +142,10 @@ export default (sequelize, Sequelize) => {
         },
         objectstatuskendalirmfk: {
             type: Sequelize.INTEGER,
-        }
+        },
+        nocmtemp: {
+            type: Sequelize.STRING,
+        },
     }, {
         tableName: "m_pasien", // relation "user" does not exist
         createdAt: false,

@@ -12,7 +12,12 @@ import arrowKananImg from './arrow-kanan.svg'
 import dokterImg from './dokter.png'
 import { useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { getComboJadwal, getJadwalDokter } from '../../store/actions'
+import {
+  getComboJadwal,
+  getJadwalDokter,
+  getPasienLama,
+  logoutUser,
+} from '../../store/actions'
 import { useFormik } from 'formik'
 import { JadwalDokterKomponen } from '../JadwalDokter/JadwalDokter'
 
@@ -22,7 +27,9 @@ const HomePage = () => {
     hariOpt: state.Home.getComboJadwal?.data?.hari || [],
     unitOpt: state.Home.getComboJadwal?.data?.unit || [],
     dokter: state.Home.getJadwalDokter?.data?.dokter || [],
-    user: state.Login.loginUser?.data || null,
+    user: Array.isArray(state.Login.loginUser?.data)
+      ? null
+      : state.Login.loginUser?.data,
   }))
   const [dateToday] = useState(() => new Date())
   unitOpt = [{ value: '', label: 'Semua Poliklinik' }, ...unitOpt]
@@ -40,7 +47,7 @@ const HomePage = () => {
   }
   const handleToDaftar = () => {
     refKontainer.current?.handleToNextPage(() => {
-      navigate('/daftar/pasien-lama')
+      navigate('/daftar/pasien-lama/0')
     })
   }
   const vHome = useFormik({
@@ -68,6 +75,7 @@ const HomePage = () => {
       })
     )
     dispatch(getComboJadwal())
+    dispatch(getPasienLama())
   }, [dispatch, dateToday])
   const handlePickUnit = (action) => {
     let chosenAr = 0
@@ -97,7 +105,12 @@ const HomePage = () => {
           <div className="home-header">
             <div className="menu-header-home">
               {user ? (
-                <p>Hi, {user.username}</p>
+                <p
+                  className="nama-pasien"
+                  onClick={() => dispatch(logoutUser())}
+                >
+                  Hi, {user?.namapasien}
+                </p>
               ) : (
                 <button className="tbl-masuk" onClick={handleToLogin}>
                   <img src={loginImg} alt="login-img" />
@@ -140,7 +153,7 @@ const HomePage = () => {
                 onClick={() => handleToJadwal()}
               />
               <IsiKontenHeader gbr={waitImg} text={'Pendaftaran Pasien'} />
-              <IsiKontenHeader gbr={waitImg} text={'Pendaftaran Pasien'} />
+              <IsiKontenHeader gbr={waitImg} text={'Riwayat Pendaftaran'} />
               <IsiKontenHeader gbr={waitImg} text={'Pendaftaran Pasien'} />
               <IsiKontenHeader gbr={waitImg} text={'Pendaftaran Pasien'} />
               <IsiKontenHeader gbr={waitImg} text={'Pendaftaran Pasien'} />

@@ -138,6 +138,17 @@ const signinPasien = async (req, res) => {
       }, {
         transaction: transaction
       })
+      const pasien = await m_pasien.findOne({
+        where: {
+          [Op.or]: [
+            {
+              nocm: nocm
+            }, 
+            {
+              nocmtemp: nocm
+            }]
+        }
+      })
       user = user.toJSON()
       let passwordIsValid = bcrypt.compareSync(
         noidentitas,
@@ -154,6 +165,7 @@ const signinPasien = async (req, res) => {
           id: user.id,
           username: user.norm,
           accessToken: token,
+          namapasien: pasien.namapasien || null
         }
         logger.info(clientSecret)
         const encrypted = encrypt({
@@ -168,6 +180,7 @@ const signinPasien = async (req, res) => {
         id: null,
         username: null,
         accessToken: null,
+        namapasien: null
       }
       res.status(404).send({
         data: tempres,
@@ -177,7 +190,7 @@ const signinPasien = async (req, res) => {
     })
   } catch (error) {
     logger.error(error);
-    res.status(500).json({
+    res.status(500).send({
       msg: error.message,
       code: 500,
       data: error,

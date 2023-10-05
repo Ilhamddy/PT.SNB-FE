@@ -73,7 +73,11 @@ const getCariPasien = async (req, res) => {
 const saveRegistrasiPasienKiosk = async (req, res) => {
     const logger = res.locals.logger;
     try {
-        const { daftarPasien, antreanPemeriksaan,namahafis } = await db.sequelize.transaction(async (transaction) => {
+        const { 
+            daftarPasien, 
+            antreanPemeriksaan,
+            namahafis 
+        } = await db.sequelize.transaction(async (transaction) => {
             let queryNamaHafis = `select mp.reportdisplay from m_pegawai mp
             where mp.id='${req.body.iddoktertujuan}'`
             let resultqueryNamaHafis = await pool.query(queryNamaHafis);

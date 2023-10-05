@@ -3,7 +3,8 @@ import { pasienSignup } from "../../auth/authhelper";
 import jwt from "jsonwebtoken";
 import config from "../../../config/auth.config";
 import { encrypt } from "../../../utils/encrypt";
-
+import { Op } from "sequelize";
+import { getDateStartEnd, getDateStartEndMonth } from "../../../utils/dateutils";
 
 const m_pasien = db.m_pasien
 const running_number = db.running_number
@@ -11,7 +12,7 @@ const running_number = db.running_number
 const createPasien = async (req, res) => {
     const logger = res.locals.logger;
     try{
-        const bodyDummy = req.body
+        const bodyReq = req.body
         const getNocm = await running_number.findAll({
             where: {
                 id: 1
@@ -26,6 +27,7 @@ const createPasien = async (req, res) => {
             zero = zero + '0'
         }
         nocmStr = (zero + nocmStr).slice(-totalExtension)
+        const nocmSementara = await hCreateCMSementara()
         const { dataPasien, userPasien, token } = 
         await db.sequelize.transaction(async (transaction) => {
             await getNocm[0].update({
@@ -37,47 +39,48 @@ const createPasien = async (req, res) => {
                 kdprofile: 0,
                 statusenabled: true,
                 kodeexternal: null,
-                namaexternal: bodyDummy.step0.namalengkap,
-                reportdisplay: bodyDummy.step0.namalengkap,
-                objectagamafk: bodyDummy.step0.agama,
-                objectgolongandarahfk: bodyDummy.step0.golongandarah,
-                objectjeniskelaminfk: bodyDummy.step0.jeniskelamin,
-                namapasien: bodyDummy.step0.namalengkap,
+                namaexternal: bodyReq.step0.namalengkap,
+                reportdisplay: bodyReq.step0.namalengkap,
+                objectagamafk: bodyReq.step0.agama,
+                objectgolongandarahfk: bodyReq.step0.golongandarah,
+                objectjeniskelaminfk: bodyReq.step0.jeniskelamin,
+                namapasien: bodyReq.step0.namalengkap,
                 nikibu: null,
-                objectpekerjaanfk: bodyDummy.step0.pekerjaan,
-                objectpendidikanfk: bodyDummy.step0.pendidikanterakhir,
-                objectstatusperkawinanfk: bodyDummy.step0.statusperkawinan,
+                objectpekerjaanfk: bodyReq.step0.pekerjaan,
+                objectpendidikanfk: bodyReq.step0.pendidikanterakhir,
+                objectstatusperkawinanfk: bodyReq.step0.statusperkawinan,
                 tgldaftar: new Date(),
-                tgllahir: new Date(bodyDummy.step0.tanggallahir),
+                tgllahir: new Date(bodyReq.step0.tanggallahir),
                 objecttitlefk: null,
-                namaibu: bodyDummy.step3.namaibu,
-                notelepon: bodyDummy.step3.nohppasien,
-                noidentitas: bodyDummy.step0.noidentitas,
+                namaibu: bodyReq.step3.namaibu,
+                notelepon: bodyReq.step3.nohppasien,
+                noidentitas: bodyReq.step0.noidentitas,
                 tglmeninggal: null,
-                objectkebangsaanfk: bodyDummy.step0.kewarganegaraan,
-                objectnegaraktpfk: bodyDummy.step1.negara,
-                namaayah: bodyDummy.step3.namaayah,
-                namasuamiistri: bodyDummy.step0.namapasangan,
-                nobpjs: bodyDummy.step0.noidentitas,
-                nohp: bodyDummy.step3.nohppasien,
-                tempatlahir: bodyDummy.step0.tempatlahir,
+                objectkebangsaanfk: bodyReq.step0.kewarganegaraan,
+                objectnegaraktpfk: bodyReq.step1.negara,
+                namaayah: bodyReq.step3.namaayah,
+                namasuamiistri: bodyReq.step0.namapasangan,
+                nobpjs: bodyReq.step0.noidentitas,
+                nohp: bodyReq.step3.nohppasien,
+                tempatlahir: bodyReq.step0.tempatlahir,
                 jamlahir: null,
                 namakeluarga: null,
-                alamatrmh: bodyDummy.step1.alamat,
+                alamatrmh: bodyReq.step1.alamat,
                 nocmibu: null,
                 objectkaryawanrsfk: null,
-                objectetnisfk: bodyDummy.step0.suku,
-                objectbahasafk: bodyDummy.step0.bahasayangdikuasai,
-                alamatdomisili: bodyDummy.step2.alamat,
-                rtktp: bodyDummy.step1.rt,
-                rwktp: bodyDummy.step1.rw,
-                objectdesakelurahanktpfk: bodyDummy.step1.kelurahan,
-                rtdomisili: bodyDummy.step2.rt,
-                rwdomisili: bodyDummy.step2.rw,
-                objectdesakelurahandomisilifk: bodyDummy.step2.kelurahan,
-                objectnegaradomisilifk: bodyDummy.step2.negara,
-                nocm: nocmStr,
+                objectetnisfk: bodyReq.step0.suku,
+                objectbahasafk: bodyReq.step0.bahasayangdikuasai,
+                alamatdomisili: bodyReq.step2.alamat,
+                rtktp: bodyReq.step1.rt,
+                rwktp: bodyReq.step1.rw,
+                objectdesakelurahanktpfk: bodyReq.step1.kelurahan,
+                rtdomisili: bodyReq.step2.rt,
+                rwdomisili: bodyReq.step2.rw,
+                objectdesakelurahandomisilifk: bodyReq.step2.kelurahan,
+                objectnegaradomisilifk: bodyReq.step2.negara,
+                nocm: null,
                 objectstatuskendalirmfk: null,
+                nocmtemp: nocmSementara,
             }, {
                 transaction: transaction
             })
@@ -87,11 +90,11 @@ const createPasien = async (req, res) => {
                 res, 
                 transaction, 
                 { 
-                    norm: dataPasien.nocm, 
+                    norm: dataPasien.nocmtemp, 
                     noidentitas: dataPasien.noidentitas
                 })
             await userPasien.update({
-                clientsecret: bodyDummy.clientSecret
+                clientsecret: bodyReq.clientSecret
             }, {
                 transaction: transaction
             })
@@ -114,6 +117,7 @@ const createPasien = async (req, res) => {
             id: userPasien?.id,
             username: userPasien?.norm || null,
             accessToken: token,
+            namapasien: dataPasien?.namapasien || null
         }
         
         const tempres = {
@@ -121,7 +125,7 @@ const createPasien = async (req, res) => {
             user: user
         };
 
-        const data = encrypt(tempres, bodyDummy.clientSecret)
+        const data = encrypt(tempres, bodyReq.clientSecret)
 
         res.status(200).send(data);
     } catch (error) {
@@ -135,7 +139,26 @@ const createPasien = async (req, res) => {
     }
 }
 
-
 export default {
     createPasien
+}
+
+const hCreateCMSementara = async () => {
+    let zeroSement = ''
+    for (let x = 0; x < 3; x++) {
+        zeroSement = zeroSement + '0'
+    }
+    const {monthStart, monthEnd} = getDateStartEndMonth()
+    const total = await m_pasien.count({
+        where: {
+            tgldaftar: {
+                [Op.between]: [monthStart, monthEnd]
+            }
+        }
+    })
+    let nocmSementara = (zeroSement + total).slice(-3)
+    let bulan = (monthStart.getMonth() + 1).toString().slice(-2)
+    let tahun = monthStart.getFullYear().toString().slice(-2)
+    nocmSementara = "HT" + tahun + bulan + nocmSementara
+    return nocmSementara
 }

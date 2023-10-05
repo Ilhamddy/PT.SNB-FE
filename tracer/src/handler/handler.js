@@ -80,6 +80,13 @@ module.exports = {
 const hPrintAll = async (datas, device) => {
     const printed = await Promise.all(
         datas.map(async (data, index) => {
+            let penjamins = [data.penjamin || null, 
+                data.penjamin2 || null, 
+                data.penjamin3 || null]
+            penjamins = penjamins.filter((penjamin) => {
+                return penjamin !== null
+            })
+            const rgxAllPeriods = /\./g
             const print = await printPromise({device}, async (printer) => {
                 let newPrinter = printer
                 newPrinter
@@ -89,6 +96,13 @@ const hPrintAll = async (datas, device) => {
                 .size(1, 1)
                 .tableCustom(
                     [
+                        { text: "No Rekammedis", align: "LEFT", width: 0.5, style: "B" },
+                        { text: data.nocm || data.nocmtemp, align: "RIGHT", width: 0.5 },
+                    ],
+                    { encoding: "cp857", size: [1, 1] }, // Optional
+                )
+                .tableCustom(
+                    [
                         { text: "Nama", align: "LEFT", width: 0.5, style: "B" },
                         { text: data.namapasien, align: "RIGHT", width: 0.5 },
                     ],
@@ -96,14 +110,21 @@ const hPrintAll = async (datas, device) => {
                 )
                 .tableCustom(
                     [
-                        { text: "No Regis", align: "LEFT", width: 0.5, style: "B" },
+                        { text: "No Registrasi", align: "LEFT", width: 0.5, style: "B" },
                         { text: data.noregistrasi, align: "RIGHT", width: 0.5 },
                     ],
                     { encoding: "cp857", size: [1, 1] }, // Optional
                 )
                 .tableCustom(
                     [
-                        { text: "Poli Tujuan", align: "LEFT", width: 0.5, style: "B" },
+                        { text: "Penjamin", align: "LEFT", width: 0.5, style: "B" },
+                        { text: penjamins.length === 0 ? "-" : penjamins.join(", "), align: "RIGHT", width: 0.5 },
+                    ],
+                    { encoding: "cp857", size: [1, 1] }, // Optional
+                )
+                .tableCustom(
+                    [
+                        { text: "Unit Tujuan", align: "LEFT", width: 0.5, style: "B" },
                         { text: data.namaunit, align: "RIGHT", width: 0.5 },
                     ],
                     { encoding: "cp857", size: [1, 1] }, // Optional
@@ -117,20 +138,24 @@ const hPrintAll = async (datas, device) => {
                 )
                 .tableCustom(
                     [
-                        { text: "Tanggal Regis", align: "LEFT", width: 0.5, style: "B" },
+                        { text: "Tanggal Registrasi", align: "LEFT", width: 0.5, style: "B" },
                         { text: new Date(data.tglregistrasi).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' }), align: "RIGHT", width: 0.5 },
                     ],
                     { encoding: "cp857", size: [1, 1] }, // Optional
                 )
                 .size(5, 5)
                 .style("B")
-                .text("BARU")
+                .text(data.statuspasien)
                 .size(1, 1)
                 .style("normal")
                 .tableCustom(
                     [
                         { 
-                            text: "Tanggal Cetak: " + (new Date()).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' }), 
+                            text: "Tanggal Cetak: " 
+                            + (new Date()).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' }).replace(rgxAllPeriods, ":")
+                            + " " 
+                            + (new Date()).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' }) 
+                            ,
                             align: "CENTER", 
                             width: 1
                         },

@@ -6,7 +6,7 @@ const algorithm = 'aes-256-ctr'
 
 export function encrypt(data) {
     let key = JSON.parse(localStorage.getItem("clientSecret")) 
-        ? JSON.parse(localStorage.getItem("clientSecret"))?.accessToken : null;
+        ? JSON.parse(localStorage.getItem("clientSecret")) : null;
     if(!key) throw new Error("No key provided");
     key = Buffer.concat([Buffer.from(key), Buffer.alloc(32)], 32)
     const json = {dataenc: data};

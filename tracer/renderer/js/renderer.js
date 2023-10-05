@@ -33,6 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if(!printStart) {
         return;
       }
+      console.log("print")
       const printerSelect = document.getElementById('printerSelect');
       const busPrint = isNaN(Number(printerSelect.value)) ? -1 : Number(printerSelect.value)
     
@@ -43,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }catch(error){
         console.error(error)
       }
-    }, 3000)
+    }, 6000)
   })(); 
 });
 

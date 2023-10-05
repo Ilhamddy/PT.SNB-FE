@@ -7,7 +7,9 @@ import {
     getDokterPasienSuccess,
     getDokterPasienError,
     getComboDaftarSuccess,
-    getComboDaftarError
+    getComboDaftarError,
+    savePasienMandiriSuccess,
+    savePasienMandiriError
 } from "./action";
 import * as uuid from 'uuid'
 
@@ -15,7 +17,8 @@ import {
     GET_JADWAL_DOKTER,
     GET_PASIEN_LAMA,
     GET_DOKTER_PASIEN,
-    GET_COMBO_DAFTAR
+    GET_COMBO_DAFTAR,
+    SAVE_PASIEN_MANDIRI
 } from "./actionType";
 
 import ServiceHome from "../../service/service-home";
@@ -61,10 +64,23 @@ function* onGetComboDaftar({payload: {queries}}) {
     }
 }
 
+function* onSavePasienMandiri({payload: {data, callback}}) {
+    try{
+        const response = yield call(serviceDaftar.savePasienMandiri, data);
+        yield put(savePasienMandiriSuccess(response.data));
+        toast.success(response.data.msg || "Sukses menyimpan data pasien mandiri")
+        callback && callback()
+    } catch (error) {
+        yield put(savePasienMandiriError(error));
+        toast.error(error.msg || "Gagal menyimpan data pasien mandiri")
+    }
+}
+
 
 export default function* watchLoginUser() {
     yield takeEvery(GET_JADWAL_DOKTER, onGetJadwalDokter);
     yield takeEvery(GET_PASIEN_LAMA, onGetPasienLama);
     yield takeEvery(GET_DOKTER_PASIEN, onGetDokterPasien);
     yield takeEvery(GET_COMBO_DAFTAR, onGetComboDaftar);
+    yield takeEvery(SAVE_PASIEN_MANDIRI, onSavePasienMandiri)
 }
