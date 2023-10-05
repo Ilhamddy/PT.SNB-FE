@@ -101,7 +101,10 @@ import {
     GET_HISTORI_TRIAGE_BYNOREC_ERROR,
     SAVE_ORDER_OPERASI,
     SAVE_ORDER_OPERASI_SUCCESS,
-    SAVE_ORDER_OPERASI_ERROR
+    SAVE_ORDER_OPERASI_ERROR,
+    GET_HISTORI_ORDER_OPERASI,
+    GET_HISTORI_ORDER_OPERASI_SUCCESS,
+    GET_HISTORI_ORDER_OPERASI_ERROR
 } from "./actionType";
 
 export const emrResetForm = () => ({
@@ -642,4 +645,19 @@ export const saveOrderOperasiSuccess = (data) => ({
 export const saveOrderOperasiError = (error) => ({
     type: SAVE_ORDER_OPERASI_ERROR,
     payload: error
+});
+
+export const getHistoriOrderOperasi = (queries) => ({
+    type: GET_HISTORI_ORDER_OPERASI,
+    payload: { queries: queries },
+});
+
+export const getHistoriOrderOperasiSuccess = (data) => ({
+    type: GET_HISTORI_ORDER_OPERASI_SUCCESS,
+    payload: data,
+});
+
+export const getHistoriOrderOperasiError = (error) => ({
+    type: GET_HISTORI_ORDER_OPERASI_ERROR,
+    payload: error,
 });

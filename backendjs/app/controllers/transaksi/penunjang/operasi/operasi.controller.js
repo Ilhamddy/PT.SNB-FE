@@ -1,6 +1,6 @@
 import pool from "../../../../config/dbcon.query";
 import * as uuid from 'uuid'
-import queries from '../../../../queries/penunjang/radiologi/radiologi.queries';
+import queries from '../../../../queries/penunjang/operasi/operasi.queries';
 import db from "../../../../models";
 
 const queryPromise2 = (query) => {
@@ -89,6 +89,33 @@ const saveOrderOperasi = async (req, res) => {
     }
 }
 
+const getHistoriOrderOperasi = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const result = await queryPromise2(`select nocmfk from t_daftarpasien
+            where norec='${req.query.norecdp}'
+            `);
+            // console.log(result.rows[0].nocmfk)
+        const resultlist = await pool.query(queries.qResult, [result.rows[0].nocmfk]);
+        
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: resultlist.rows,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export default {
-    saveOrderOperasi
+    saveOrderOperasi,
+    getHistoriOrderOperasi
 }

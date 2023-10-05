@@ -5,17 +5,21 @@ import * as Yup from "yup";
 import CustomSelect from '../../../Select/Select';
 import {
     comboHistoryUnitGet, comboNamaPelaksanaGet,
-    emrDiagnosaxGet, emrComboGet, saveOrderOperasi
+    emrDiagnosaxGet, emrComboGet, saveOrderOperasi,getHistoriOrderOperasi
 } from "../../../../store/actions";
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import KontainerFlatpickr from '../../../../Components/KontainerFlatpickr/KontainerFlatpickr';
+import DataTable from 'react-data-table-component';
+import LoadingTable from '../../../../Components/Table/LoadingTable';
+import { dateTimeLocal } from '../../../../utils/format';
+
 const OrderOperasi = () => {
     const dispatch = useDispatch();
     const { norecdp, norecap } = useParams();
     const [dateNow] = useState(() => new Date().toISOString())
     const { dataCombo, dataNamaPelaksana, dataDiagnosa,
-        dataComboEmr,newData
+        dataComboEmr, newData, dataOrder, loadingOrder
     } = useSelector((state) => ({
         dataCombo: state.Emr.comboHistoryUnitGet.data,
         // dataPasienReg: state.Registrasi.registrasiRuangNorecGet.data || null,
@@ -25,6 +29,9 @@ const OrderOperasi = () => {
         newData: state.Emr.saveOrderOperasi.newData,
         success: state.Emr.saveOrderOperasi.success,
         loading: state.Emr.saveOrderOperasi.loading,
+        dataOrder: state.Emr.getHistoriOrderOperasi.data,
+        loadingOrder: state.Emr.getHistoriOrderOperasi.loading,
+        successOrder: state.Emr.getHistoriOrderOperasi.success,
     }));
     const vSetValidation = useFormik({
         enableReinitialize: true,
@@ -60,17 +67,92 @@ const OrderOperasi = () => {
             dispatch(comboHistoryUnitGet(norecdp));
             dispatch(comboNamaPelaksanaGet(''));
             dispatch(emrComboGet(norecdp, 'combo'));
+            dispatch(getHistoriOrderOperasi({
+                norecdp:norecdp
+            }));
         }
     }, [norecdp, dispatch])
-
     const handleDiagnosa = characterEntered => {
         if (characterEntered.length > 3) {
             dispatch(emrDiagnosaxGet(characterEntered, 'diagnosa10'));
         }
     }
-    const handleUnitLast =(e)=>{
+    const handleUnitLast = (e) => {
         vSetValidation.setFieldValue('unitlast', e.value)
         vSetValidation.setFieldValue('objectantreanpemeriksaanfk', e.norec)
+    }
+    const columnsRiwayat = [
+       
+        {
+            name: <span className='font-weight-bold fs-13'>Tgl. Order</span>,
+            selector: row => dateTimeLocal(row.tglinput),
+            sortable: true,
+            width: "150px"
+        },
+        {
+
+            name: <span className='font-weight-bold fs-13'>Rencana Operasi</span>,
+            selector: row => row.tglinput,
+            sortable: true,
+            width: "150px"
+        },
+        {
+
+            name: <span className='font-weight-bold fs-13'>No RM</span>,
+            selector: row => row.nocm,
+            sortable: true,
+            width: "150px"
+        },
+        {
+
+            name: <span className='font-weight-bold fs-13'>Unit Order</span>,
+            selector: row => row.namaunit,
+            sortable: true,
+            width: "150px",
+        },
+        {
+
+            name: <span className='font-weight-bold fs-13'>Operasi</span>,
+            selector: row => row.namaoperasi,
+            sortable: true,
+            width: "150px",
+        },
+        {
+
+            name: <span className='font-weight-bold fs-13'>Diagnosa</span>,
+            selector: row => row.kodeexternal,
+            sortable: true,
+            // width: "250px",
+        },
+        {
+
+            name: <span className='font-weight-bold fs-13'>Dokter Operator</span>,
+            selector: row => row.namalengkap,
+            sortable: true,
+            // width: "250px",
+        },
+        {
+
+            name: <span className='font-weight-bold fs-13'>Status</span>,
+            selector: row => row.statusoperasi,
+            sortable: true,
+            // width: "250px",
+        },
+    ];
+    const tableCustomStyles = {
+        headRow: {
+            style: {
+                color: '#ffffff',
+                backgroundColor: '#e67e22',
+            },
+        },
+        rows: {
+            style: {
+                color: "black",
+                backgroundColor: "#f1f2f6"
+            },
+
+        }
     }
     return (
         <React.Fragment>
@@ -277,7 +359,17 @@ const OrderOperasi = () => {
                                 <h4 className="card-title mb-0" style={{ color: '#ffffff' }}>Riwayat Order Operasi</h4>
                             </CardHeader>
                             <CardBody>
-
+                                <div id="table-gridjs">
+                                    <DataTable
+                                        fixedHeader
+                                        columns={columnsRiwayat}
+                                        pagination
+                                        data={dataOrder}
+                                        progressPending={loadingOrder}
+                                        customStyles={tableCustomStyles}
+                                        progressComponent={<LoadingTable />}
+                                    />
+                                </div>
                             </CardBody>
                         </Card>
                     </Col>

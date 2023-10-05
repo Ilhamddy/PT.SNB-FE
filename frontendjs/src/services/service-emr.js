@@ -141,4 +141,8 @@ export default class ServiceEmr {
     saveOrderOperasi = async (params) => {
         return await api.create("/transaksi/operasi/save-order-operasi", params);
     }
+
+    getHistoriOrderOperasi = async (queries) => {
+        return await api.get(`/transaksi/operasi/get-histori-order-operasi`, queries);
+    }
 }

@@ -14,4 +14,10 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.saveOrderOperasi
     )
+
+    app.get(
+        "/api/transaksi/operasi/get-histori-order-operasi",
+        [authJwt.verifyToken],
+        controller.getHistoriOrderOperasi
+    );
 }
