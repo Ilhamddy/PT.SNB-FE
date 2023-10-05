@@ -7,6 +7,7 @@ const heightInput = document.querySelector('#height');
 const widthInput = document.querySelector('#width');
 const printerSelectInput = document.querySelector('#printerSelect');
 
+var printStart = false
 
 document.addEventListener('DOMContentLoaded', () => {
   (async () => {
@@ -28,7 +29,21 @@ document.addEventListener('DOMContentLoaded', () => {
         getPrinters(printers || [])
       }
     })
-
+    const interval = setInterval(async () => {
+      if(!printStart) {
+        return;
+      }
+      const printerSelect = document.getElementById('printerSelect');
+      const busPrint = isNaN(Number(printerSelect.value)) ? -1 : Number(printerSelect.value)
+    
+      try{
+        await window.electron.printPOS({
+          devicePrintBus: busPrint,
+        });
+      }catch(error){
+        console.error(error)
+      }
+    }, 3000)
   })(); 
 });
 
@@ -66,19 +81,17 @@ function isFileImage(file) {
 // Resize image
 async function printToPrinter(e) {
   e.preventDefault();
-  const printerSelect = document.getElementById('printerSelect');
-  const busPrint = isNaN(Number(printerSelect.value)) ? -1 : Number(printerSelect.value)
-  console.log(busPrint)
-
-  try{
-    await window.electron.printPOS({
-      devicePrintBus: busPrint,
-    });
-  }catch(error){
-    console.error(error)
+  const tblPrinter = document.getElementById("tbl-print")
+  if(!printStart){
+    printStart = true
+    tblPrinter.innerHTML = "Stop Print"
+  } else {
+    printStart = false
+    tblPrinter.innerHTML = "Print"
   }
-
 }
+
+
 
 
 
