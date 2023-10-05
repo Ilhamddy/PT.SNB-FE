@@ -3,8 +3,12 @@ const { qTracerNotPrinted } = require("./queries/printedtracer.queries")
 const db = require("./model")
 
 const getDataNotPrinted = async () => {
-    const data = await pool.query(qTracerNotPrinted)
-    return data.rows
+    const dateToday = new Date();
+    dateToday.setHours(0, 0, 0, 0);
+    const dateTodayEnd = new Date();
+    dateTodayEnd.setHours(23, 59, 59, 999);
+    const data = await pool.query(qTracerNotPrinted, [dateToday, dateTodayEnd]);
+    return data.rows;
 }
 
 

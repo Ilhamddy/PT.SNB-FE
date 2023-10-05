@@ -15,14 +15,14 @@ const toPrintPOS = async (e, {devicePrintBus}) => {
     if(!deviceChosen) {
         throw new Error("Device not found")
     }
-    const datas = await getDataNotPrinted()
+
     const device = new USB(
       deviceChosen.deviceDescriptor.idVendor, 
       deviceChosen.deviceDescriptor.idProduct
-    )
+    );
 
+    const datas = await getDataNotPrinted()
     await hPrintAll(datas, device)
-    
 }
   
 const toGetHTML = async (e, options) => {
