@@ -8,7 +8,8 @@ join m_pasien mp on mp.id=td.nocmfk
 join m_unit mu on mu.id=to2.objectunitasalfk
 join m_icdx mi on mi.id=to2.objecticdxfk
 join m_pegawai mp2 on mp2.id=to2.objectdokteroperatorfk
-join m_statusoperasi ms on ms.id=to2.objectstatusoperasifk`
+join m_statusoperasi ms on ms.id=to2.objectstatusoperasifk
+where td.nocmfk=$1`
 
 export default {
     qResult

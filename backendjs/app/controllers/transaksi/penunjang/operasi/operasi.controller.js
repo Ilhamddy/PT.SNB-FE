@@ -92,7 +92,11 @@ const saveOrderOperasi = async (req, res) => {
 const getHistoriOrderOperasi = async (req, res) => {
     const logger = res.locals.logger;
     try{
-        const resultlist = await pool.query(queries.qResult, [req.body.nocmfk]);
+        const result = await queryPromise2(`select nocmfk from t_daftarpasien
+            where norec='${req.query.norecdp}'
+            `);
+            // console.log(result.rows[0].nocmfk)
+        const resultlist = await pool.query(queries.qResult, [result.rows[0].nocmfk]);
         
         res.status(200).send({
             msg: 'Success',
