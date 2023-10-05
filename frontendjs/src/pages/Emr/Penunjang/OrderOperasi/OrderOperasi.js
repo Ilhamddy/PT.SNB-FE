@@ -54,10 +54,13 @@ const OrderOperasi = () => {
             kodediagnosa: Yup.string().required("Diagnosa Harus Diisi jawab wajib diisi"),
             catatan: Yup.string().required("Catatan Harus Diisi jawab wajib diisi"),
         }),
-        onSubmit: (values) => {
+        onSubmit: (values, { resetForm }) => {
             // console.log(values);
             dispatch(saveOrderOperasi(values, () => {
-                // dispatch(lainLainGet())
+                resetForm({ values: '' })
+                dispatch(getHistoriOrderOperasi({
+                    norecdp:norecdp
+                }));
             }));
 
         }

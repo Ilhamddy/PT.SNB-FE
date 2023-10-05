@@ -89,6 +89,7 @@ import PageState from "./pageState/reducer"
 import Distribusi from "./distribusi/reducer";
 import Farmasi from "./farmasi/reducer"
 import Viewer from "./viewer/reducer";
+import BedahSentral from "./bedahSentral/reducer";
 
 
 const rootReducer = combineReducers({
@@ -133,7 +134,8 @@ const rootReducer = combineReducers({
     Distribusi,
     PageState,
     Farmasi,
-    Viewer
+    Viewer,
+    BedahSentral
 });
 
 export default rootReducer;

@@ -44,7 +44,6 @@ import {
     SAVE_EXPERTISE_RADIOLOGI_SUCCESS,
     SAVE_EXPERTISE_RADIOLOGI_ERROR
 } from "./actionType";
-import { DELETE_ORDER } from "../ecommerce/actionType";
 
 const INIT_STATE = {
     saveOrderPelayananRadiologi: {
