@@ -3,13 +3,15 @@
 
 const qGetDaftarPasienLama = `
 SELECT
+    mp.id AS nocmfk,
     mp.nocm AS nocm,
-    mp.namapasien AS namapasien
+    mp.nocmtemp AS nocmtemp,
+    mp.namapasien AS namapasien,
+    mp.tgldaftar AS tgldaftar
 FROM users_pasien up
-    LEFT JOIN m_pasien mp ON mp.nocm = up.norm
+    LEFT JOIN m_pasien mp ON (mp.nocm = up.norm OR mp.nocmtemp = up.norm)
 WHERE up.id = $1
 `
-
 
 
 const qGetDokter = `

@@ -12,8 +12,11 @@ const publicRoutes = [
     { path: "/", component: <HomePage />},
     { path: "/jadwal-dokter", component: <JadwalDokter />},
     { path: "/dokter/:idDokter", component: <DokterPage />},
-    { path: "/daftar/pasien-lama", component: <DaftarPasienLama />},
     
 ]
 
-export { publicRoutes };
+const protectedRoutes = [
+    { path: "/daftar/pasien-lama/:step", component: <DaftarPasienLama />}
+]
+
+export { publicRoutes, protectedRoutes };

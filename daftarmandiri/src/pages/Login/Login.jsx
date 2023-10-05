@@ -97,7 +97,7 @@ const Login = () => {
           <FormPasienLama handleToHome={handleToHome} setDone={setDone} />
         )}
         {isPasienBaru && <FormPasienBaru step={step} setStep={setStep} />}
-        {isSelesai && <PasienBaruSelesai setDone={setDone} />}
+        {isSelesai && <PasienBaruSelesai handleToHome={handleToHome} />}
       </KontainerPage>
     </div>
   )

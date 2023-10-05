@@ -6,12 +6,19 @@ import InputGroupDM from '../../Components/InputGroupDM/InputGroupDM'
 import InputDM from '../../Components/InputDM/InputDM'
 import SelectDM from '../../Components/SelectDM/SelectDM'
 import ButtonDM from '../../Components/ButtonDM/ButtonDM'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import LoadingDM from '../../Components/LoadingDM/LoadingDM'
+import {
+  createSearchParams,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import {
   getComboDaftar,
   getDokterPasien,
   getPasienLama,
+  savePasienMandiri,
 } from '../../store/actions'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
@@ -19,18 +26,33 @@ import { toast } from 'react-toastify'
 import FlatpickrDM from '../../Components/FlatpickrDM/FlatpickrDM'
 
 const DaftarPasienLama = () => {
-  const { poliklinik, dokter, penjamin, pasien, dokterTerpilih } = useSelector(
-    (state) => ({
-      poliklinik: state.DaftarPasienLama.getComboDaftar?.data?.poliklinik || [],
-      dokter: state.DaftarPasienLama.getComboDaftar?.data?.dokter || [],
-      penjamin: state.DaftarPasienLama.getComboDaftar?.data?.penjamin || [],
-      pasien: state.DaftarPasienLama.getPasienLama?.data?.pasien || [],
-      dokterTerpilih: state.DaftarPasienLama.getDokter?.data?.dokter || [],
-    })
-  )
+  const {
+    poliklinik,
+    dokter,
+    penjamin,
+    pasien,
+    loadingPasien,
+    dokterTerpilih,
+    isNotPasienSementara,
+    loadingSubmit,
+  } = useSelector((state) => ({
+    poliklinik: state.DaftarPasienLama.getComboDaftar?.data?.poliklinik || [],
+    dokter: state.DaftarPasienLama.getComboDaftar?.data?.dokter || [],
+    penjamin: state.DaftarPasienLama.getComboDaftar?.data?.penjamin || [],
+    pasien: state.DaftarPasienLama.getPasienLama?.data?.pasien || [],
+    isNotPasienSementara:
+      state.DaftarPasienLama.getPasienLama?.data?.isNotPasienSementara || false,
+    loadingPasien: state.DaftarPasienLama.getPasienLama.loading || false,
+    dokterTerpilih: state.DaftarPasienLama.getDokter?.data?.dokter || [],
+    loadingSubmit: state.DaftarPasienLama.savePasienMandiri.loading || false,
+  }))
+  let { step } = useParams()
+  const [searchParams] = useSearchParams()
+  step = Number(step)
   const [dateNow] = useState(() => new Date().toISOString())
   const vDaftar = useFormik({
     initialValues: {
+      nocmfk: '',
       norm: '',
       namapasien: '',
       poliklinik: '',
@@ -41,26 +63,38 @@ const DaftarPasienLama = () => {
       jadwal: dateNow,
     },
     validationSchema: Yup.object({
+      nocmfk: Yup.string().required('No RM harus diisi'),
       norm: Yup.string().required('No RM harus diisi'),
       namapasien: Yup.string().required('Nama Pasien harus diisi'),
       poliklinik: Yup.string().required('Poliklinik harus diisi'),
       dokter: Yup.string().required('Dokter harus diisi'),
+      jenispenjamin: Yup.string().required('Jenis Penjamin kosong'),
       penjamin: Yup.string().required('Penjamin harus diisi'),
-      noasuransi: Yup.string().required('No Asuransi harus diisi'),
       jadwal: Yup.string().required('Jadwal harus diisi'),
+      noasuransi: Yup.string().when('penjamin', {
+        is: (val) => val !== '3',
+        then: () => Yup.string().required('No Asuransi Harus Diisi'),
+      }),
+      rujukan: Yup.string().when('penjamin', {
+        is: (val) => val === '1',
+        then: () => Yup.string().required('Rujukan Harus Diisi'),
+      }),
     }),
     onSubmit: (values) => {
-      console.log(values)
       if (step === 1) {
-        toast.success('Pendaftaran Berhasil')
+        dispatch(
+          savePasienMandiri(values, () => {
+            refKontainer.current.handleToNextPage(() => {
+              navigate('/')
+            })
+          })
+        )
       } else {
-        setStep(1)
+        navigate(`/daftar/pasien-lama/1?${createSearchParams(searchParams)}`)
       }
     },
   })
   const refKontainer = useRef(null)
-  const [searchParams] = useSearchParams()
-  const [step, setStep] = useState(0)
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const headerName = ['Pengisian Data Kunjugan', 'Konfirmasi Data Kunjungan']
@@ -72,10 +106,11 @@ const DaftarPasienLama = () => {
   useEffect(() => {
     const setFF = vDaftar.setFieldValue
     if (pasien.nocm && pasien.namapasien) {
+      setFF('nocmfk', pasien.nocmfk)
       setFF('norm', pasien.nocm)
       setFF('namapasien', pasien.namapasien)
     }
-  }, [pasien.nocm, pasien.namapasien, vDaftar.setFieldValue])
+  }, [pasien.nocm, pasien.namapasien, pasien.nocmfk, vDaftar.setFieldValue])
   useEffect(() => {
     const setFF = vDaftar.setFieldValue
     if (dokterTerpilih.iddokter && dokterTerpilih.idunit) {
@@ -93,6 +128,238 @@ const DaftarPasienLama = () => {
     dispatch(getComboDaftar())
     setFF('jadwal', decodeURIComponent(jadwal))
   }, [dispatch, id, jadwal, vDaftar.setFieldValue])
+
+  const kontenLogin = (
+    <>
+      {!isNotPasienSementara && (
+        <div>Mohon untuk aktifkan akun anda di rumah sakit</div>
+      )}
+      {step === 0 && isNotPasienSementara && (
+        <>
+          <InputGroupDM label="No. RM">
+            <InputDM
+              id="norm"
+              name="norm"
+              type="string"
+              className="input-pasien-lama"
+              disabled
+              value={vDaftar.values.norm}
+              errorMsg={vDaftar.errors.norm}
+              isError={vDaftar.touched.norm && vDaftar.errors.norm}
+              onChange={vDaftar.handleChange}
+            />
+          </InputGroupDM>
+          <InputGroupDM label="Nama Pasien">
+            <InputDM
+              id="namapasien"
+              name="norm"
+              disabled
+              type="string"
+              className="input-pasien-lama"
+              value={vDaftar.values.namapasien}
+              errorMsg={vDaftar.errors.namapasien}
+              isError={vDaftar.touched.namapasien && vDaftar.errors.namapasien}
+              onChange={vDaftar.handleChange}
+            />
+          </InputGroupDM>
+          <InputGroupDM label="Poliklinik">
+            <SelectDM
+              className="input-pasien-lama"
+              id="poliklinik"
+              name="poliklinik"
+              options={poliklinik}
+              isError={vDaftar.touched.poliklinik && vDaftar.errors.poliklinik}
+              errorMsg={vDaftar.errors.poliklinik}
+              value={vDaftar.values.poliklinik}
+              onChange={(e) => {
+                vDaftar.setFieldValue('poliklinik', e.value)
+              }}
+            />
+          </InputGroupDM>
+          <InputGroupDM label="Dokter Tujuan">
+            <SelectDM
+              className="input-pasien-lama"
+              id="dokter"
+              name="dokter"
+              options={dokter}
+              isError={vDaftar.touched.dokter && vDaftar.errors.dokter}
+              errorMsg={vDaftar.errors.dokter}
+              value={vDaftar.values.dokter}
+              onChange={(e) => {
+                vDaftar.setFieldValue('dokter', e.value)
+              }}
+            />
+          </InputGroupDM>
+          <InputGroupDM label="Penjamin">
+            <SelectDM
+              className="input-pasien-lama"
+              id="penjamin"
+              name="penjamin"
+              options={penjamin}
+              isError={vDaftar.touched.penjamin && vDaftar.errors.penjamin}
+              errorMsg={vDaftar.errors.penjamin}
+              value={vDaftar.values.penjamin}
+              onChange={(e) => {
+                vDaftar.setFieldValue('penjamin', e.value)
+                vDaftar.setFieldValue('jenispenjamin', e.objectjenispenjaminfk)
+              }}
+            />
+          </InputGroupDM>
+          {vDaftar.values.penjamin !== 3 && (
+            <InputGroupDM label="No Asuransi">
+              <InputDM
+                id="noasuransi"
+                name="noasuransi"
+                type="string"
+                className="input-pasien-lama"
+                value={vDaftar.values.noasuransi}
+                errorMsg={vDaftar.errors.noasuransi}
+                isError={
+                  vDaftar.touched.noasuransi && vDaftar.errors.noasuransi
+                }
+                onChange={vDaftar.handleChange}
+              />
+            </InputGroupDM>
+          )}
+          {vDaftar.values.penjamin === 1 && (
+            <InputGroupDM label="Pilih Rujukan">
+              <SelectDM className="input-pasien-lama" />
+            </InputGroupDM>
+          )}
+          <div className="buttons-done">
+            <ButtonDM className="button" onClick={handleKembali}>
+              Kembali
+            </ButtonDM>
+            <ButtonDM
+              className="button"
+              type="button"
+              onClick={() => {
+                vDaftar.handleSubmit()
+                window.scrollTo({
+                  top: 0,
+                  left: 0,
+                  behavior: 'smooth',
+                })
+              }}
+              isLoading={loadingSubmit}
+            >
+              Daftar
+            </ButtonDM>
+          </div>
+        </>
+      )}
+      {step === 1 && isNotPasienSementara && (
+        <>
+          <InputGroupDM label="No. RM">
+            <InputDM
+              id="norm"
+              name="norm"
+              type="string"
+              className="input-pasien-lama"
+              value={vDaftar.values.norm}
+              errorMsg={vDaftar.errors.norm}
+              isError={vDaftar.touched.norm && vDaftar.errors.norm}
+              onChange={vDaftar.handleChange}
+              disabled
+            />
+          </InputGroupDM>
+          <InputGroupDM label="Nama Pasien">
+            <InputDM
+              id="namapasien"
+              name="norm"
+              type="string"
+              className="input-pasien-lama"
+              value={vDaftar.values.namapasien}
+              errorMsg={vDaftar.errors.namapasien}
+              isError={vDaftar.touched.namapasien && vDaftar.errors.namapasien}
+              disabled
+              onChange={vDaftar.handleChange}
+            />
+          </InputGroupDM>
+          <InputGroupDM label="Poliklinik">
+            <SelectDM
+              className="input-pasien-lama"
+              id="poliklinik"
+              name="poliklinik"
+              options={poliklinik}
+              isError={vDaftar.touched.poliklinik && vDaftar.errors.poliklinik}
+              errorMsg={vDaftar.errors.poliklinik}
+              value={vDaftar.values.poliklinik}
+              onChange={(e) => {
+                vDaftar.setFieldValue('poliklinik', e.value)
+              }}
+              isDisabled
+            />
+          </InputGroupDM>
+          <InputGroupDM label="Dokter Tujuan">
+            <SelectDM
+              className="input-pasien-lama"
+              id="dokter"
+              name="dokter"
+              options={dokter}
+              isError={vDaftar.touched.dokter && vDaftar.errors.dokter}
+              errorMsg={vDaftar.errors.dokter}
+              value={vDaftar.values.dokter}
+              onChange={(e) => {
+                vDaftar.setFieldValue('dokter', e.value)
+              }}
+              isDisabled
+            />
+          </InputGroupDM>
+          <InputGroupDM label="rencana kunjungan">
+            <FlatpickrDM
+              className="input-daftar"
+              name="jadwal"
+              placeholder="Pilih Jadwal"
+              value={vDaftar.values.jadwal}
+              onChange={([newDate]) => {
+                vDaftar.setFieldValue('jadwal', newDate.toISOString() || '')
+              }}
+              errorMsg={vDaftar.errors.jadwal}
+              isError={vDaftar.errors.jadwal && vDaftar.touched.jadwal}
+              disabled
+            />
+          </InputGroupDM>
+          <InputGroupDM label="Penjamin">
+            <SelectDM
+              className="input-pasien-lama"
+              id="penjamin"
+              name="penjamin"
+              options={penjamin}
+              isError={vDaftar.touched.penjamin && vDaftar.errors.penjamin}
+              errorMsg={vDaftar.errors.penjamin}
+              value={vDaftar.values.penjamin}
+              onChange={(e) => {
+                vDaftar.setFieldValue('penjamin', e.value)
+              }}
+              isDisabled
+            />
+          </InputGroupDM>
+          <div className="buttons-done">
+            <ButtonDM className="button" onClick={handleKembali}>
+              Kembali
+            </ButtonDM>
+            <ButtonDM
+              className="button"
+              type="button"
+              onClick={() => {
+                vDaftar.handleSubmit()
+                window.scrollTo({
+                  top: 0,
+                  left: 0,
+                  behavior: 'smooth',
+                })
+              }}
+              isLoading={loadingSubmit}
+            >
+              Selesai
+            </ButtonDM>
+          </div>
+        </>
+      )}
+    </>
+  )
+
   return (
     <KontainerPage
       top={'120px'}
@@ -123,228 +390,7 @@ const DaftarPasienLama = () => {
       }
     >
       <div className="body-daftar-pasien-lama">
-        {step === 0 && (
-          <>
-            <InputGroupDM label="No. RM">
-              <InputDM
-                id="norm"
-                name="norm"
-                type="string"
-                className="input-pasien-lama"
-                value={vDaftar.values.norm}
-                errorMsg={vDaftar.errors.norm}
-                isError={vDaftar.touched.norm && vDaftar.errors.norm}
-                onChange={vDaftar.handleChange}
-              />
-            </InputGroupDM>
-            <InputGroupDM label="Nama Pasien">
-              <InputDM
-                id="namapasien"
-                name="norm"
-                type="string"
-                className="input-pasien-lama"
-                value={vDaftar.values.namapasien}
-                errorMsg={vDaftar.errors.namapasien}
-                isError={
-                  vDaftar.touched.namapasien && vDaftar.errors.namapasien
-                }
-                onChange={vDaftar.handleChange}
-              />
-            </InputGroupDM>
-            <InputGroupDM label="Poliklinik">
-              <SelectDM
-                className="input-pasien-lama"
-                id="poliklinik"
-                name="poliklinik"
-                options={poliklinik}
-                isError={
-                  vDaftar.touched.poliklinik && vDaftar.errors.poliklinik
-                }
-                errorMsg={vDaftar.errors.poliklinik}
-                value={vDaftar.values.poliklinik}
-                onChange={(e) => {
-                  vDaftar.setFieldValue('poliklinik', e.value)
-                }}
-              />
-            </InputGroupDM>
-            <InputGroupDM label="Dokter Tujuan">
-              <SelectDM
-                className="input-pasien-lama"
-                id="dokter"
-                name="dokter"
-                options={dokter}
-                isError={vDaftar.touched.dokter && vDaftar.errors.dokter}
-                errorMsg={vDaftar.errors.dokter}
-                value={vDaftar.values.dokter}
-                onChange={(e) => {
-                  vDaftar.setFieldValue('dokter', e.value)
-                }}
-              />
-            </InputGroupDM>
-            <InputGroupDM label="Penjamin">
-              <SelectDM
-                className="input-pasien-lama"
-                id="penjamin"
-                name="penjamin"
-                options={penjamin}
-                isError={vDaftar.touched.penjamin && vDaftar.errors.penjamin}
-                errorMsg={vDaftar.errors.penjamin}
-                value={vDaftar.values.penjamin}
-                onChange={(e) => {
-                  vDaftar.setFieldValue('penjamin', e.value)
-                }}
-              />
-            </InputGroupDM>
-            <InputGroupDM label="No Asuransi">
-              <InputDM
-                id="noasuransi"
-                name="noasuransi"
-                type="string"
-                className="input-pasien-lama"
-                value={vDaftar.values.noasuransi}
-                errorMsg={vDaftar.errors.noasuransi}
-                isError={
-                  vDaftar.touched.noasuransi && vDaftar.errors.noasuransi
-                }
-                onChange={vDaftar.handleChange}
-              />
-            </InputGroupDM>
-            <InputGroupDM label="Pilih Rujukan">
-              <SelectDM className="input-pasien-lama" />
-            </InputGroupDM>
-            <div className="buttons-done">
-              <ButtonDM className="button" onClick={handleKembali}>
-                Kembali
-              </ButtonDM>
-              <ButtonDM
-                className="button"
-                type="button"
-                onClick={() => {
-                  vDaftar.handleSubmit()
-                  window.scrollTo({
-                    top: 0,
-                    left: 0,
-                    behavior: 'smooth',
-                  })
-                }}
-              >
-                Daftar
-              </ButtonDM>
-            </div>
-          </>
-        )}
-        {step === 1 && (
-          <>
-            <InputGroupDM label="No. RM">
-              <InputDM
-                id="norm"
-                name="norm"
-                type="string"
-                className="input-pasien-lama"
-                value={vDaftar.values.norm}
-                errorMsg={vDaftar.errors.norm}
-                isError={vDaftar.touched.norm && vDaftar.errors.norm}
-                onChange={vDaftar.handleChange}
-                disabled
-              />
-            </InputGroupDM>
-            <InputGroupDM label="Nama Pasien">
-              <InputDM
-                id="namapasien"
-                name="norm"
-                type="string"
-                className="input-pasien-lama"
-                value={vDaftar.values.namapasien}
-                errorMsg={vDaftar.errors.namapasien}
-                isError={
-                  vDaftar.touched.namapasien && vDaftar.errors.namapasien
-                }
-                disabled
-                onChange={vDaftar.handleChange}
-              />
-            </InputGroupDM>
-            <InputGroupDM label="Poliklinik">
-              <SelectDM
-                className="input-pasien-lama"
-                id="poliklinik"
-                name="poliklinik"
-                options={poliklinik}
-                isError={
-                  vDaftar.touched.poliklinik && vDaftar.errors.poliklinik
-                }
-                errorMsg={vDaftar.errors.poliklinik}
-                value={vDaftar.values.poliklinik}
-                onChange={(e) => {
-                  vDaftar.setFieldValue('poliklinik', e.value)
-                }}
-                isDisabled
-              />
-            </InputGroupDM>
-            <InputGroupDM label="Dokter Tujuan">
-              <SelectDM
-                className="input-pasien-lama"
-                id="dokter"
-                name="dokter"
-                options={dokter}
-                isError={vDaftar.touched.dokter && vDaftar.errors.dokter}
-                errorMsg={vDaftar.errors.dokter}
-                value={vDaftar.values.dokter}
-                onChange={(e) => {
-                  vDaftar.setFieldValue('dokter', e.value)
-                }}
-                isDisabled
-              />
-            </InputGroupDM>
-            <InputGroupDM label="rencana kunjungan">
-              <FlatpickrDM
-                className="input-daftar"
-                name="jadwal"
-                placeholder="Pilih Jadwal"
-                value={vDaftar.values.jadwal}
-                onChange={([newDate]) => {
-                  vDaftar.setFieldValue('jadwal', newDate.toISOString() || '')
-                }}
-                errorMsg={vDaftar.errors.jadwal}
-                isError={vDaftar.errors.jadwal && vDaftar.touched.jadwal}
-                disabled
-              />
-            </InputGroupDM>
-            <InputGroupDM label="Penjamin">
-              <SelectDM
-                className="input-pasien-lama"
-                id="penjamin"
-                name="penjamin"
-                options={penjamin}
-                isError={vDaftar.touched.penjamin && vDaftar.errors.penjamin}
-                errorMsg={vDaftar.errors.penjamin}
-                value={vDaftar.values.penjamin}
-                onChange={(e) => {
-                  vDaftar.setFieldValue('penjamin', e.value)
-                }}
-                isDisabled
-              />
-            </InputGroupDM>
-            <div className="buttons-done">
-              <ButtonDM className="button" onClick={handleKembali}>
-                Kembali
-              </ButtonDM>
-              <ButtonDM
-                className="button"
-                type="button"
-                onClick={() => {
-                  vDaftar.handleSubmit()
-                  window.scrollTo({
-                    top: 0,
-                    left: 0,
-                    behavior: 'smooth',
-                  })
-                }}
-              >
-                Selesai
-              </ButtonDM>
-            </div>
-          </>
-        )}
+        {loadingPasien ? <LoadingDM /> : kontenLogin}
       </div>
     </KontainerPage>
   )

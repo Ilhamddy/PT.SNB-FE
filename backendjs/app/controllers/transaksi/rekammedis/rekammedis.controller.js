@@ -656,7 +656,7 @@ const updatePrinted = async (req, res) => {
             })
 
             const updatedDP = await dpmodel.update({
-                isprinted: true,
+                isprinted: false,
             }, {
                 transaction: transaction
             })

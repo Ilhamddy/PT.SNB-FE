@@ -31,7 +31,7 @@ const DokterPage = () => {
     onSubmit: (values) => {
       refKontainer.current.handleToNextPage(() => {
         navigate(
-          `/daftar/pasien-lama?jadwal=${encodeURIComponent(
+          `/daftar/pasien-lama/0?jadwal=${encodeURIComponent(
             values.jadwal
           )}&iddokter=${idDokter}`
         )
@@ -56,6 +56,9 @@ const DokterPage = () => {
     })
     return !foundDay
   }
+  const disableBeforeToday = (date) => {
+    return date < dateNow
+  }
   return (
     <KontainerPage top={'0'} ref={refKontainer} className="dokter-page">
       <BackKomponen text={'Profil Dokter'} refKontainer={refKontainer} />
@@ -72,7 +75,7 @@ const DokterPage = () => {
             name="jadwal"
             placeholder="Pilih Jadwal"
             value={vJadwal.values.jadwal}
-            options={{ disable: [disableJadwal] }}
+            options={{ disable: [disableJadwal, disableBeforeToday] }}
             onChange={([newDate]) => {
               vJadwal.setFieldValue('jadwal', newDate.toISOString() || '')
             }}

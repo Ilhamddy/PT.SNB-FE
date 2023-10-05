@@ -1,5 +1,6 @@
 import bcrypt from "bcryptjs"
 import db from "../../models"
+import { Op } from "sequelize"
 
 const m_pasien = db.m_pasien
 
@@ -13,7 +14,11 @@ export const pasienSignup = async (
     }) => {
     const userSignup = await m_pasien.findOne({
         where: {
-            nocm: nocm,
+            [Op.or]: [{
+                nocm: nocm,
+            }, {
+                nocmtemp: nocm
+            }]
         },
         transaction: transaction
 

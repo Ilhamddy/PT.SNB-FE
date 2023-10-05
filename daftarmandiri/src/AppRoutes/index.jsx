@@ -1,18 +1,21 @@
 import React, { useEffect } from 'react'
-import { Routes, Route, useNavigate } from 'react-router-dom'
+import { Routes, Route, useNavigate, useLocation } from 'react-router-dom'
 
 //Layouts
 // import NonAuthLayout from '../Layouts/NonAuthLayout'
 
 //routes
-import { publicRoutes } from './allRoutes.js'
+import { publicRoutes, protectedRoutes } from './allRoutes.js'
 import { ToastContainer } from 'react-toastify'
 import { setAuthorization } from '../helpers/api_helper.js'
 import { getUserLogin } from '../store/actions.js'
 import { useDispatch } from 'react-redux'
+import { AuthProtected } from './AuthProtected.js'
 
 const Index = () => {
   const dispatch = useDispatch()
+  const location = useLocation()
+
   useEffect(() => {
     const token = localStorage.getItem('authUserMandiri')
       ? JSON.parse(localStorage.getItem('authUserMandiri'))?.accessToken
@@ -20,7 +23,7 @@ const Index = () => {
 
     dispatch(getUserLogin())
     setAuthorization(token)
-  }, [dispatch])
+  }, [dispatch, location])
   return (
     <React.Fragment>
       <ToastContainer autoClose={3000} />
@@ -36,23 +39,14 @@ const Index = () => {
           ))}
         </Route>
         <Route>
-          {/* TODO: lanjutkan authprotectedroutes */}
-          {/* {authProtectedRoutes.map((route, idx) => (
+          {protectedRoutes.map((route, idx) => (
             <Route
               path={route.path}
-              element={
-                <AuthProtected>
-                  {route.isLayout === false ? (
-                    route.component
-                  ) : (
-                    <VerticalLayout>{route.component}</VerticalLayout>
-                  )}
-                </AuthProtected>
-              }
+              element={<AuthProtected>{route.component}</AuthProtected>}
               key={idx}
               exact={true}
-            /> 
-          ))} */}
+            />
+          ))}
         </Route>
       </Routes>
     </React.Fragment>

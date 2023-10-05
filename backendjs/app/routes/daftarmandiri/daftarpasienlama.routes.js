@@ -34,4 +34,12 @@ export default function(app) {
     ],
     controller.getDokter
   );
+  app.post(
+    "/api/daftarmandiri/daftar-pasien-lama/save-pasien-mandiri",
+    [      
+      authJwt.verifyTokenUser,
+      encryptMandiri
+    ],
+    controller.savePasienMandiri
+  )
 };
