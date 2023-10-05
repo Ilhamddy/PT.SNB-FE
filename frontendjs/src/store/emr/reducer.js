@@ -101,7 +101,10 @@ import {
     GET_HISTORI_TRIAGE_BYNOREC_ERROR,
     SAVE_ORDER_OPERASI,
     SAVE_ORDER_OPERASI_SUCCESS,
-    SAVE_ORDER_OPERASI_ERROR
+    SAVE_ORDER_OPERASI_ERROR,
+    GET_HISTORI_ORDER_OPERASI,
+    GET_HISTORI_ORDER_OPERASI_SUCCESS,
+    GET_HISTORI_ORDER_OPERASI_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -288,6 +291,11 @@ const INIT_STATE = {
         error: null,
         success: false
     },
+    getHistoriOrderOperasi: {
+        data: [],
+        loading: false,
+        error: null,
+    },
 };
 
 const Emr = (state = INIT_STATE, action) => {
@@ -385,6 +393,9 @@ const Emr = (state = INIT_STATE, action) => {
                 saveOrderOperasi: {
                     ...INIT_STATE.saveOrderOperasi
                 },
+                getHistoriOrderOperasi:{
+                    ...INIT_STATE.getHistoriOrderOperasi
+                }
             }
         }
 
@@ -1532,6 +1543,39 @@ const Emr = (state = INIT_STATE, action) => {
                     error: action.payload,
                 },
             };
+        }
+
+        case GET_HISTORI_ORDER_OPERASI: {
+            return {
+                ...state,
+                getHistoriOrderOperasi: {
+                    ...state.getHistoriOrderOperasi,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case GET_HISTORI_ORDER_OPERASI_SUCCESS: {
+            return {
+                ...state,
+                getHistoriOrderOperasi: {
+                    ...state.getHistoriOrderOperasi,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case GET_HISTORI_ORDER_OPERASI_ERROR: {
+            return {
+                ...state,
+                getHistoriOrderOperasi: {
+                    ...state.getHistoriOrderOperasi,
+                    loading: false,
+                    error: action.error,
+                }
+            }
         }
 
 
