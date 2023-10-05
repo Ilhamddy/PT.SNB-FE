@@ -106,17 +106,18 @@ const TriageIGD = () => {
             toast.error("Pasien Belum Dipilih", { autoClose: 3000 });
             return
         }
-        if (selectedPasien.noregistrasi !== null) {
-            toast.error("Pasien Sudah Teregistrasi", { autoClose: 3000 });
-            return
-        }
+        
 
         if (e === 'registrasi') {
-            setisRegistrasiOpen(true)
+            if (selectedPasien.noregistrasi !== null) {
+                toast.error("Pasien Sudah Teregistrasi", { autoClose: 3000 });
+                return
+            }else{
+                setisRegistrasiOpen(true)
+            }
+        } else if(e==='pengkajian'){
+            navigate(`/gawatdarurat/input-pasien-triage-edit/${selectedPasien.norec}`)
         }
-        // else if(e==='edit'){
-
-        // }
 
     };
     const [isRegistrasiOpen, setisRegistrasiOpen] = useState(false);
@@ -192,7 +193,7 @@ const TriageIGD = () => {
                                             <div className="live-preview">
                                                 <div className="d-flex flex-column gap-2">
                                                     <Button color="info" className="btn-animation" data-text="Registrasi" onClick={() => handleClickButton('registrasi')}><span>Registrasi</span></Button>
-                                                    <Button color="info" className="btn-animation" data-text="Pengkajian Medis" > <span>Pengkajian Medis</span> </Button>
+                                                    <Button color="info" className="btn-animation" data-text="Pengkajian Medis" onClick={() => handleClickButton('pengkajian')}> <span>Pengkajian Medis</span> </Button>
                                                 </div>
                                             </div>
                                         </CardBody>
@@ -409,7 +410,7 @@ const ModalRegistrasi = ({ isRegistrasiOpen, toggle, selectedPasien }) => {
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#showModal"
                                                 id="create-btn"
-                                            onClick={() => {navigate(`/registrasi/pasien-baru-triage/${selectedPasien.norec}`)}}
+                                                onClick={() => { navigate(`/registrasi/pasien-baru-triage/${selectedPasien.norec}`) }}
                                             >
                                                 Belum Punya RM
                                             </button>

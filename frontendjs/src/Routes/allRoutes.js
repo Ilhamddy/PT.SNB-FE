@@ -627,6 +627,7 @@ const authProtectedRoutes = [
   { path: "/gawatdarurat/daftar-pasien-igd", component: <DaftarPasienIGD /> },
   { path: "/gawatdarurat/daftar-pasien-triage", component: <DaftarPasienTriage /> },
   { path: "/gawatdarurat/input-pasien-triage", component: <TriageIGD /> },
+  { path: "/gawatdarurat/input-pasien-triage-edit/:norec", component: <TriageIGD /> },
 ];
 
 const publicRoutes = [

@@ -133,4 +133,12 @@ export default class ServiceEmr {
     getComboTriageIgd = async (queries) => {
         return await api.get(`/transaksi/emr/get-combo-triage-igd`, queries);
     }
+
+    getHistoriTriagiByNorec = async (queries) => {
+        return await api.get(`/transaksi/emr/get-histori-triage-bynorec`, queries);
+    }
+
+    saveOrderOperasi = async (params) => {
+        return await api.create("/transaksi/operasi/save-order-operasi", params);
+    }
 }

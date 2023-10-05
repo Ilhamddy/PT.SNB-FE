@@ -7,21 +7,23 @@ import SkalaNyeri from '../../../Components/SkalaNyeri/SkalaNyeri';
 import { useFormik } from "formik"; //yupToFormErrors
 import * as Yup from "yup";
 import { useDate } from '../../../utils/format';
-import { saveEmrTriageIgd, getGetComboTriageIgd, emrResetForm } from '../../../store/actions';
+import { saveEmrTriageIgd, getGetComboTriageIgd, emrResetForm,getHistoriTriagiByNorec } from '../../../store/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import CustomSelect from '../../Select/Select';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate,useParams } from 'react-router-dom';
 
 const TriageIGD = () => {
     document.title = "Triage IGD";
+    const { norec } = useParams();
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const { newData, successSave, data } = useSelector((state) => ({
+    const { newData, successSave, data,dataHistory } = useSelector((state) => ({
         newData: state.Emr.saveEmrTriageIgd.data,
         successSave: state.Emr.saveEmrTriageIgd.success,
         data: state.Emr.getGetComboTriageIgd.data,
+        dataHistory: state.Emr.getHistoriTriagiByNorec.data,
     }));
 
     const { tanggal, waktu } = useDate()
@@ -44,7 +46,8 @@ const TriageIGD = () => {
             circulation: '',
             disability: '',
             kondisimental: '',
-            tingkatdarurat: ''
+            tingkatdarurat: '',
+            rencanaterapi:''
         },
         validationSchema: Yup.object({
             tingkatdarurat: Yup.string().required("Tingkat Darurat jawab wajib diisi"),
@@ -63,6 +66,9 @@ const TriageIGD = () => {
             dispatch(emrResetForm());
         }
     }, [dispatch])
+    useEffect(() => {
+        norec && dispatch(getHistoriTriagiByNorec({norec:norec}));
+    }, [dispatch, norec]);
     useEffect(() => {
         dispatch(getGetComboTriageIgd(''))
     }, [dispatch])
@@ -216,25 +222,25 @@ const TriageIGD = () => {
     ]
     const dataKondisiMental = [
         {
-            value: 1,
+            value: 2,
             label: 'Tidak Kooperatif',
             color: '#FDB7B7',
             lg: 2
         },
         {
-            value: 2,
+            value: 3,
             label: 'Kooperatif',
             color: '#FCFDB7',
             lg: 2
         },
         {
-            value: 3,
+            value: 4,
             label: 'Kooperatif',
             color: '#B8FDB7',
             lg: 2
         },
         {
-            value: 4,
+            value: 5,
             label: 'Kooperatif',
             color: '#EBEBEB',
             lg: 3
@@ -284,6 +290,31 @@ const TriageIGD = () => {
     const handleBack = (e) => {
         navigate(-1)
     }
+    useEffect(() => {
+        if (dataHistory && data) {
+            if (dataHistory[0] !== undefined) {
+            const setFF = vSetValidation.setFieldValue
+            setFF("norec", dataHistory[0].norec || "")
+            setFF("namapasien", dataHistory[0].namapasien || "")
+            setFF("umurpasien", dataHistory[0].umur || "")
+            setFF("keluhan", dataHistory[0].keluhan || "")
+            setFF("namakeluarga", dataHistory[0].namapj || "")
+            setFF("nohpkeluarga", dataHistory[0].nohp || "")
+            setFF("tglkedatangan", dataHistory[0].tglinput || "")
+            setFF("riwayatpenyakit", dataHistory[0].riwayatpenyakit || "")
+            setFF("riwayatobat", dataHistory[0].riwayatobat || "")
+            setFF("skalanyeri", dataHistory[0].skalanyeri || "")
+            setFF("airway", dataHistory[0].airway || "")
+            setFF("breathing", dataHistory[0].breathing || "")
+            setFF("circulation", dataHistory[0].circulation || "")
+            setFF("disability", dataHistory[0].disability || "")
+            setFF("kondisimental", dataHistory[0].kondisimental || "")
+            setFF("tingkatdarurat", dataHistory[0].objectdaruratigdfk || "")
+            setFF("rencanaterapi", dataHistory[0].rencanaterapi || "")
+            setSkalaNyeri(dataHistory[0].skalanyeri)
+            }
+        }
+    }, [data,dataHistory,vSetValidation.setFieldValue])
     return (
         <React.Fragment>
             <ToastContainer closeButton={false} />
@@ -371,7 +402,7 @@ const TriageIGD = () => {
                                             </Col>
                                             <Col lg={8}>
                                                 <Input
-                                                    id="namakeluarga"
+                                                    id="nohp"
                                                     name="namakeluarga"
                                                     type="text"
                                                     value={vSetValidation.values.namakeluarga || ''}
@@ -618,7 +649,7 @@ const TriageIGD = () => {
                                     </Col>
                                     <Col lg={8}>
                                         <CustomSelect
-                                            id="tingkatdarurat"
+                                            id="rencanaterapi"
                                             name="tingkatdarurat"
                                             options={dataTingkatDarurat || []}
                                             onChange={(e) => {

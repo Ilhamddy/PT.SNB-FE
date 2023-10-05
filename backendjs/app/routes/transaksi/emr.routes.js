@@ -158,4 +158,10 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getComboTriageIgd
     );
+
+    app.get(
+        "/api/transaksi/emr/get-histori-triage-bynorec",
+        [authJwt.verifyToken],
+        controller.getHistoriTriagiByNorec
+    );
 }

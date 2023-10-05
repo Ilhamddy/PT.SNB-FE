@@ -573,7 +573,7 @@ async function getListComboDiagnosa(req, res) {
 
         let tempres = {
             tipediagnosa: result.rows, jeniskasus: result2.rows,
-            jenispelayanan: result3.rows, jenisoperasi :result4.rows
+            jenispelayanan: result3.rows, jenisoperasi: result4.rows
         }
         res.status(200).send({
             data: tempres,
@@ -1101,7 +1101,7 @@ const saveTriageIgd = async (req, res) => {
     const logger = res.locals.logger;
     try {
         const { pasienigd } = await db.sequelize.transaction(async (transaction) => {
-            // if(req.body.norec===''){
+            if (req.body.norec === '') {
                 let norec = uuid.v4().substring(0, 32)
                 const pasienigd = await db.t_pasienigd.create({
                     norec: norec,
@@ -1112,24 +1112,52 @@ const saveTriageIgd = async (req, res) => {
                     keluhan: req.body.keluhan,
                     namapj: req.body.namakeluarga,
                     nohp: req.body.nohpkeluarga,
-                    objectpegawaiinputfk:req.idPegawai,
-                    riwayatpenyakit:req.body.riwayatpenyakit,
-                    riwayatobat:req.body.riwayatobat,
-                    skalanyeri:req.body.skalanyeri === '' ? 0 : req.body.skalanyeri,
-                    airway:req.body.airway === '' ? 0 : req.body.airway,
-                    breathing:req.body.breathing === '' ? 0 : req.body.breathing,
-                    circulation:req.body.circulation === '' ? 0 : req.body.circulation,
-                    disability:req.body.disability === '' ? 0 : req.body.disability,
-                    kondisimental:req.body.kondisimental === '' ? 0 : req.body.kondisimental,
-                    objectdaruratigdfk:req.body.tingkatdarurat === '' ? 0 : req.body.tingkatdarurat,
-                    objecthubunganpjfk:req.body.hubungankeluarga === '' ? 0 : req.body.hubungankeluarga
+                    objectpegawaiinputfk: req.idPegawai,
+                    riwayatpenyakit: req.body.riwayatpenyakit,
+                    riwayatobat: req.body.riwayatobat,
+                    skalanyeri: req.body.skalanyeri === '' ? 0 : req.body.skalanyeri,
+                    airway: req.body.airway === '' ? 0 : req.body.airway,
+                    breathing: req.body.breathing === '' ? 0 : req.body.breathing,
+                    circulation: req.body.circulation === '' ? 0 : req.body.circulation,
+                    disability: req.body.disability === '' ? 0 : req.body.disability,
+                    kondisimental: req.body.kondisimental === '' ? 0 : req.body.kondisimental,
+                    objectdaruratigdfk: req.body.tingkatdarurat === '' ? 0 : req.body.tingkatdarurat,
+                    objecthubunganpjfk: req.body.hubungankeluarga === '' ? 0 : req.body.hubungankeluarga,
+                    rencanaterapi: req.body.rencanaterapi
                 }, { transaction });
-    
-                return { pasienigd }
-            // }else{
 
-            // }
-            
+                return { pasienigd }
+            } else {
+                const pasienigd = await db.t_pasienigd.update({
+                    statusenabled: true,
+                    tglinput: new Date(),
+                    namapasien: req.body.namapasien,
+                    umur: req.body.umurpasien,
+                    keluhan: req.body.keluhan,
+                    namapj: req.body.namakeluarga,
+                    nohp: req.body.nohpkeluarga,
+                    objectpegawaiinputfk: req.idPegawai,
+                    riwayatpenyakit: req.body.riwayatpenyakit,
+                    riwayatobat: req.body.riwayatobat,
+                    skalanyeri: req.body.skalanyeri === '' ? 0 : req.body.skalanyeri,
+                    airway: req.body.airway === '' ? 0 : req.body.airway,
+                    breathing: req.body.breathing === '' ? 0 : req.body.breathing,
+                    circulation: req.body.circulation === '' ? 0 : req.body.circulation,
+                    disability: req.body.disability === '' ? 0 : req.body.disability,
+                    kondisimental: req.body.kondisimental === '' ? 0 : req.body.kondisimental,
+                    objectdaruratigdfk: req.body.tingkatdarurat === '' ? 0 : req.body.tingkatdarurat,
+                    objecthubunganpjfk: req.body.hubungankeluarga === '' ? 0 : req.body.hubungankeluarga,
+                    rencanaterapi: req.body.rencanaterapi
+                }, {
+                    where: {
+                        norec: req.body.norec,
+                    },
+                    transaction: transaction
+                });
+
+                return { pasienigd }
+            }
+
         });
 
         const tempres = {
@@ -1154,7 +1182,7 @@ const saveTriageIgd = async (req, res) => {
 
 const getComboTriageIgd = async (req, res) => {
     const logger = res.locals.logger;
-    try{
+    try {
         let query = queries.qM_DaruratIgd
         const result = await pool.query(query, [])
 
@@ -1162,8 +1190,8 @@ const getComboTriageIgd = async (req, res) => {
         const result2 = await pool.query(query2, [])
 
         const tempres = {
-            mdaruratigd:result.rows,
-            mhubungankeluarga:result2.rows
+            mdaruratigd: result.rows,
+            mhubungankeluarga: result2.rows
         };
         res.status(200).json({
             msg: 'Success',
@@ -1324,6 +1352,32 @@ const getHistoriJenisPelayananPasien = async (req, res) => {
     }
 }
 
+const getHistoriTriagiByNorec = async (req, res) => {
+    const logger = res.locals.logger;
+    try {
+        const result = await queryPromise2(`select tp.norec,tp.namapasien,tp.umur,tp.keluhan,tp.namapj,tp.nohp,to_char(tp.tglinput,
+            'dd Month YYYY hh:ii') as tglinput, tp.riwayatpenyakit,tp.riwayatobat,tp.skalanyeri,
+            tp.airway,tp.breathing,tp.circulation,tp.disability,tp.kondisimental,tp.objectdaruratigdfk,
+            tp.rencanaterapi from t_pasienigd tp  where tp.norec='${req.query.norec}'
+            `);
+
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: result.rows,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 
 export default {
     saveEmrPasienTtv,
@@ -1351,7 +1405,8 @@ export default {
     saveEmrJenisPelayanan,
     getHistoriJenisPelayananPasien,
     saveTriageIgd,
-    getComboTriageIgd
+    getComboTriageIgd,
+    getHistoriTriagiByNorec
 };
 
 

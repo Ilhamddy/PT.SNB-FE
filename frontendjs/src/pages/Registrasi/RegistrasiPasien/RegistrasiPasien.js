@@ -92,7 +92,6 @@ const RegistrasiPasien = (props) => {
         error: state.Master.comboRegistrasiGet.error,
         dataPas: state.Registrasi.registrasiGet.data,
         dtRuangNorec: state.Registrasi.registrasiRuangNorecGet.data,
-        
     }));
     useEffect(() => {
         return () => {
