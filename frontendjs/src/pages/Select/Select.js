@@ -20,7 +20,7 @@ const CustomSelect = React.forwardRef(({ onChange, options, value, className, ..
       }
     return(
         <Select 
-            className={className + " custom-select-row-header"}
+            className={className}
             {...rest}
             value={defaultValue(options,value)}
             onChange={value=>onChange(value)}
@@ -36,7 +36,6 @@ const CustomSelect = React.forwardRef(({ onChange, options, value, className, ..
                     primary: '#ECB349',
                 },
             })}
-            menuPortalTarget={document.body}
             styles={customStyles}
         />
     )
