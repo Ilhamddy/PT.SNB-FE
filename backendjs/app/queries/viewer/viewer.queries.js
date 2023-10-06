@@ -136,6 +136,7 @@ WHERE
 	AND (
 		tal.ispanggil = ${panggilStatus.selesaiPanggil}
 		OR tal.ispanggil = ${panggilStatus.sedangPanggil})
+ORDER BY tal.tglpanggil DESC
 `
 
 export {
