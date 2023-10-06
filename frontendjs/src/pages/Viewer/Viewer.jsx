@@ -7,6 +7,7 @@ import { getAllLoket } from '../../store/actions'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-responsive-carousel/lib/styles/carousel.min.css'
 import { Carousel } from 'react-responsive-carousel'
+import { useState } from 'react'
 
 const Viewer = () => {
   const dispatch = useDispatch()
@@ -16,10 +17,11 @@ const Viewer = () => {
     lastAntrean: state.Viewer.getAllLoket?.data?.lastantrean,
   }))
   const { tanggal, waktu } = useDate()
+  const [audioAntre, setAudioAntre] = useState(true)
   const panggilLast = async (dataAll) => {
+    setAudioAntre(true)
     if (dataAll?.status === 2) {
       try {
-        console.log(dataAll)
         const lastantrean = dataAll?.lastantrean
         const audioNomorAntrean = new Audio(
           process.env.REACT_APP_MEDIA_URL + '/audio/nomor_antrean.mp3'
@@ -44,16 +46,30 @@ const Viewer = () => {
         const audioLoket = new Audio(
           process.env.REACT_APP_MEDIA_URL + '/audio/loket.mp3'
         )
-        await playAudio(audioLoket)
+        const lastLoket = dataAll?.lastloket?.toLowerCase()
 
         // get last char string
-        const lastLoket = dataAll?.lastloket
         if (lastLoket) {
-          const lastChar = lastLoket?.[lastLoket?.length - 1]
-          const audioLoketNumber = new Audio(
-            process.env.REACT_APP_MEDIA_URL + `/audio/${lastChar}.mp3`
-          )
-          await playAudio(audioLoketNumber)
+          let lastText = lastLoket?.split(' ')
+          if (lastText.length > 1) {
+            await playAudio(audioLoket)
+          }
+          lastText = lastText[lastText.length - 1]
+
+          if (!Number.isNaN(Number(lastText))) {
+            for (let i = 0; i < lastText.length; i++) {
+              const char = lastText[i]
+              const audioLoketNumber = new Audio(
+                process.env.REACT_APP_MEDIA_URL + `/audio/${char}.mp3`
+              )
+              await playAudio(audioLoketNumber)
+            }
+          } else {
+            const audioLoketNumber = new Audio(
+              process.env.REACT_APP_MEDIA_URL + `/audio/${lastText}.mp3`
+            )
+            await playAudio(audioLoketNumber)
+          }
         }
 
         toast.success(
@@ -64,6 +80,7 @@ const Viewer = () => {
         toast.error(error.message)
       }
     }
+    setAudioAntre(false)
   }
   useEffect(() => {
     dispatch(getAllLoket(panggilLast))
@@ -96,6 +113,7 @@ const Viewer = () => {
         </div>
         <Carousel
           autoFocus
+          autoPlay
           selectedItem={0}
           infiniteLoop={true}
           showThumbs={false}

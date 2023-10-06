@@ -89,6 +89,10 @@ const PemanggilanViewer = () => {
     dispatch(getComboViewer())
     dispatch(getLoketSisa())
     dispatch(getAllTerpanggil())
+    const interval = setInterval(() => {
+      dispatch(getLoketSisa())
+    }, 4000)
+    return () => clearInterval(interval)
   }, [dispatch])
 
   /**
