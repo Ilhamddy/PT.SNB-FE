@@ -8,4 +8,8 @@ export default class ServiceBedahSentral {
         return await api.get(`/transaksi/operasi/get-widget-order-operasi`,param);
     }
 
+    getDaftarOrderOperasi = async (param) => {
+        return await api.get(`/transaksi/operasi/get-daftar-order-operasi`,param);
+    }
+
 }
