@@ -30,7 +30,7 @@ where to2.tglinput between $1 and $2
 ) as x`
 
 const qDaftarOrderOperasi =`
-select x.colorjenisoperasi,x.jenisoperasi,x.namapasien,x.noregistrasi,x.umur,x.nocm,x.norec,x.tglinput,x.tglrencana,
+select x.objectunitasalfk,x.colorjenisoperasi,x.jenisoperasi,x.namapasien,x.noregistrasi,x.umur,x.nocm,x.norec,x.tglinput,x.tglrencana,
 x.namaunit,x.namaoperasi,x.kodeexternal,
 x.namalengkap,x.statusoperasi,
 case when x.days<1825 then 'baby' 
@@ -41,13 +41,14 @@ when x.days<23724  and x.objectjeniskelaminfk=2 then 'dewasaperempuan'
 when x.days>23724  and x.objectjeniskelaminfk=1 then 'kakek'
 when x.days>23724  and x.objectjeniskelaminfk=2 then 'nenek' else 'baby' end as profile,
 x.tgllahir,x.objectjeniskelaminfk from(
-select case when to2.objectjenisoperasifk=1 then '#FFB2B2' when to2.objectjenisoperasifk=2 then '#FFE0B2'
+select to2.objectunitasalfk,case when to2.objectjenisoperasifk=1 then '#FFB2B2' when to2.objectjenisoperasifk=2 then '#FFE0B2'
 when to2.objectjenisoperasifk=3 then '#B8FFB2' else '#5AEBFF' end as colorjenisoperasi,mj.reportdisplay as jenisoperasi,mp.namapasien,td.noregistrasi,mp.nocm,to2.norec,to2.tglinput,to_char(to2.tglrencana,'dd Month YYYY hh:ii') as tglrencana,
 mu.namaunit,to2.namaoperasi,mi.kodeexternal,
 mp2.namalengkap,ms.reportdisplay as statusoperasi,
 (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY')) AS days,
 to_char(mp.tgllahir, 'DD-MM-YYYY') as tgllahir,mp.objectjeniskelaminfk,
-DATE_PART('year',CURRENT_DATE) - DATE_PART('year', mp.tgllahir::date) || ' Tahun' as umur from t_orderoperasi to2 
+DATE_PART('year',CURRENT_DATE) - DATE_PART('year', mp.tgllahir::date) || ' Tahun ' ||
+DATE_PART('month',CURRENT_DATE) - DATE_PART('month', mp.tgllahir::date) || ' Bulan' as umur from t_orderoperasi to2 
 join t_antreanpemeriksaan ta on ta.norec=to2.objectantreanpemeriksaanfk
 join t_daftarpasien td on td.norec=ta.objectdaftarpasienfk
 join m_pasien mp on mp.id=td.nocmfk
@@ -56,7 +57,7 @@ join m_icdx mi on mi.id=to2.objecticdxfk
 join m_pegawai mp2 on mp2.id=to2.objectdokteroperatorfk
 join m_statusoperasi ms on ms.id=to2.objectstatusoperasifk
 join m_jenisoperasi mj on mj.id=to2.objectjenisoperasifk
-where to2.tglinput between $1 and $2
+
 ) as x`
 
 export default {

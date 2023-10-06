@@ -172,7 +172,13 @@ const getWidgetOrderOperasi = async (req, res) => {
 const getDaftarOrderOperasi = async (req, res) => {
     const logger = res.locals.logger;
     try{
-        const resultlist = await pool.query(queries.qDaftarOrderOperasi, [req.query.dateStart,req.query.dateEnd]);
+        let unit = ' '
+        if(req.query.unitOrder!==''){
+            unit= ` and x.objectunitasalfk=${req.query.unitOrder}`
+        }
+        
+        let query = queries.qDaftarOrderOperasi + ` where x.tglinput between '${req.query.dateStart}' and '${req.query.dateEnd}' ${unit} and x.namapasien ilike '%${req.query.search}%'`
+        const resultlist = await pool.query(query);
         res.status(200).send({
             msg: 'Success',
             code: 200,

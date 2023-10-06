@@ -7,7 +7,11 @@ import KontainerFlatpickr from "../../../Components/KontainerFlatpickr/Kontainer
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import CustomSelect from "../../Select/Select";
-import { bedahSentralResetForm, widgetOrderOperasiGet, getDaftarOrderOperasi } from "../../../store/actions";
+import {
+    bedahSentralResetForm, widgetOrderOperasiGet, getDaftarOrderOperasi,
+    
+} from "../../../store/actions";
+import { comboRegistrasiGet } from '../../../store/master/action';
 import { useDispatch, useSelector } from "react-redux";
 import CountUp from "react-countup";
 import pria from "../../../assets/images/svg/pria.svg"
@@ -23,7 +27,8 @@ const DaftarOrderOperasi = () => {
     const dispatch = useDispatch();
     const { datawidget, data, dataCombo } = useSelector((state) => ({
         datawidget: state.BedahSentral.widgetOrderOperasiGet.data,
-        data: state.BedahSentral.getDaftarOrderOperasi.data
+        data: state.BedahSentral.getDaftarOrderOperasi.data,
+        dataCombo: state.Master.comboRegistrasiGet.data,
     }));
     const [dateNow] = useState(() => new Date().toISOString())
     const vSetValidation = useFormik({
@@ -39,10 +44,12 @@ const DaftarOrderOperasi = () => {
         }),
         onSubmit: (values) => {
             console.log(values);
-            // dispatch(saveEmrTriageIgd(values, () => {
-            //     // dispatch(lainLainGet())
-            // }));
-
+            dispatch(getDaftarOrderOperasi({
+                dateStart: vSetValidation.values.dateStart,
+                dateEnd: vSetValidation.values.dateEnd,
+                unitOrder:vSetValidation.values.unitOrder,
+                search:vSetValidation.values.search
+            }));
         }
     })
     const handleBeginOnChangeStart = (newBeginValue) => {
@@ -70,8 +77,9 @@ const DaftarOrderOperasi = () => {
         dispatch(getDaftarOrderOperasi({
             dateStart: vSetValidation.values.dateStart,
             dateEnd: vSetValidation.values.dateEnd,
+            unitOrder:vSetValidation.values.unitOrder
         }));
-    }, [dispatch, vSetValidation.values])
+    }, [dispatch, vSetValidation.values.dateStart, vSetValidation.values.dateEnd,vSetValidation.values.unitOrder])
     const [datax, setDatax] = useState([]);
     useEffect(() => {
         setDatax(data)
@@ -93,6 +101,18 @@ const DaftarOrderOperasi = () => {
             setDatax(updatedData);
         }
     };
+    useEffect(() => {
+        dispatch(comboRegistrasiGet());
+    }, [dispatch]);
+    const [dataUnit, setdataUnit] = useState([]);
+    const handleInputUnit = characterEntered => {
+        if (characterEntered.length > 3) {
+            var newArray = dataCombo.unit.filter(function (el) {
+                return el.objectinstalasifk === 1;
+            });
+            setdataUnit(newArray)
+        }
+    }
     return (
         <React.Fragment>
             <UiContent />
@@ -211,13 +231,14 @@ const DaftarOrderOperasi = () => {
                                                     <CustomSelect
                                                         id="unitOrder"
                                                         name="unitOrder"
-                                                        options={[]}
+                                                        options={dataUnit}
                                                         onChange={(e) => {
                                                             vSetValidation.setFieldValue('unitOrder', e?.value || '')
                                                         }}
                                                         value={vSetValidation.values.unitOrder}
                                                         className={`input row-header ${!!vSetValidation?.errors.unitOrder ? 'is-invalid' : ''
                                                             }`}
+                                                        onInputChange={handleInputUnit}
                                                     />
                                                     {vSetValidation.touched.unitOrder &&
                                                         !!vSetValidation.errors.unitOrder && (
@@ -263,7 +284,7 @@ const DaftarOrderOperasi = () => {
                                                     >
                                                         <CardBody>
                                                             <Row className="gy-3">
-                                                            <h6 className="card-title mb-0">Handle to Forcast <span className="badge align-middle fs-10" style={{backgroundColor:item.colorjenisoperasi}}>{item.jenisoperasi}</span></h6>
+                                                                <h6 className="card-title mb-0"><span className="badge align-middle fs-10" style={{ backgroundColor: item.colorjenisoperasi }}>{item.jenisoperasi}</span></h6>
                                                                 <div className="col-sm-auto">
                                                                     <div className="avatar-md flex-shrink-0">
                                                                         <span className={"avatar-title rounded-circle fs-4"} style={{ backgroundColor: item.statusdarurat }}>
