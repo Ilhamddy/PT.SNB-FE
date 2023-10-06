@@ -17,8 +17,6 @@ const Viewer = () => {
   }))
   const { tanggal, waktu } = useDate()
   const panggilLast = async (dataAll) => {
-    console.log(dataAll)
-
     if (dataAll?.status === 2) {
       try {
         console.log(dataAll)
@@ -71,7 +69,7 @@ const Viewer = () => {
     dispatch(getAllLoket(panggilLast))
     const interval = setInterval(() => {
       dispatch(getAllLoket(panggilLast))
-    }, 5000)
+    }, 10000)
     return () => clearInterval(interval)
   }, [dispatch])
 
