@@ -321,6 +321,10 @@ import PemanggilanViewer from "../pages/PemanggilanViewer/PemanggilanViewer";
 import DaftarPasienTriage from "../pages/GawatDarurat/DaftarPasienTriage/DaftarPasienTriage";
 import TriageIGD from "../pages/GawatDarurat/TriageIGD/TriageIGD";
 
+// Bedah Sentral
+import DaftarOrderOperasi from "../pages/BedahSentral/DaftarOrderOperasi/DaftarOrderOperasi";
+import DaftarPasienOperasi from "../pages/BedahSentral/DaftarPasienOperasi/DaftarPasienOperasi";
+
 
 
 
@@ -628,6 +632,10 @@ const authProtectedRoutes = [
   { path: "/gawatdarurat/daftar-pasien-triage", component: <DaftarPasienTriage /> },
   { path: "/gawatdarurat/input-pasien-triage", component: <TriageIGD /> },
   { path: "/gawatdarurat/input-pasien-triage-edit/:norec", component: <TriageIGD /> },
+
+  // Bedah Sentral
+  { path: "/bedahsentral/daftar-order-operasi", component: <DaftarOrderOperasi /> },
+  { path: "/bedahsentral/daftar-pasien-operasi", component: <DaftarPasienOperasi /> },
 ];
 
 const publicRoutes = [

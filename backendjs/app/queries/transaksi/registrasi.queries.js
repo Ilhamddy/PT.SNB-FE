@@ -255,7 +255,7 @@ SELECT
 FROM
     t_pasienigd tp
 LEFT JOIN t_daftarpasien td ON td.norec = tp.objectdaftarpasienfk
-LEFT JOIN m_pasien mp ON mp.id = td.nocmfk;
+LEFT JOIN m_pasien mp ON mp.id = td.nocmfk where td.objectstatuspulangfk is null
 `
 
 const qM_DaruratIgd = `

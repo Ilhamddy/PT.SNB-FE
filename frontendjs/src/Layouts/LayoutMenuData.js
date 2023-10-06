@@ -31,6 +31,7 @@ const Navdata = () => {
     const [isMaps, setIsMaps] = useState(false);
     const [isMultiLevel, setIsMultiLevel] = useState(false);
     const [isListGawatDarurat, setListGawatDarurat] = useState(false);
+    const [isListBedahSentral, setListBedahSentral] = useState(false);
 
     // Apps
     const [isEmail, setEmail] = useState(false);
@@ -856,7 +857,39 @@ const Navdata = () => {
                 },
             ],
         },
-        
+        // Bedah Sentral
+        {
+            id: "loket_bedah",
+            label: "Bedah Sentral",
+            icon: "ri-service-fill",
+            link: "/#",
+            click: function (e) {
+                e.preventDefault();
+                setListBedahSentral(!isListBedahSentral);
+                setIscurrentState('ListBedahSentral');
+                updateIconSidebar(e);
+            },
+            stateVariables: isListBedahSentral,
+            isAllowed: () => {
+                return isAllowedAccess(getUserPermissions(), [
+                    "REGISTRASI_VIEW","BEDAHSENTRAL_VIEW"
+                ]);
+            },
+            subItems: [
+                {
+                    id: "registrasi-pasien-lama",
+                    label: "Daftar Order Operasi",
+                    link: "/bedahsentral/daftar-order-operasi",
+                    parentId: "ListBedahSentral",
+                },
+                {
+                    id: "registrasi-pasien-lama",
+                    label: "Daftar Pasien Operasi",
+                    link: "/bedahsentral/daftar-pasien-operasi",
+                    parentId: "ListBedahSentral",
+                },
+            ],
+        },
     ];
     return <React.Fragment>{menuItems}</React.Fragment>;
 };

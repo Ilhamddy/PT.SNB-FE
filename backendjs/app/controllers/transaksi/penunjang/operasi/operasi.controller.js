@@ -115,7 +115,55 @@ const getHistoriOrderOperasi = async (req, res) => {
     }
 }
 
+const getWidgetOrderOperasi = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        
+        const taskWidgets = [
+            {
+                id: 1,
+                label: "Jumlah Pasien Resusitasi",
+                counter: 1,
+                badge: "ri-arrow-up-line",
+                color: "#B7DBFD",
+                decimals: 1,
+            },
+            {
+                id: 2,
+                label: "Jumlah Pasien Emergency",
+                counter: 2,
+                badge: "ri-arrow-down-line",
+                color: "#FDB7B7",
+                decimals: 1,
+            },
+            {
+                id: 3,
+                label: "Jumlah Pasien Urgent",
+                counter: 3,
+                badge: "ri-arrow-down-line",
+                color: "#FCFDB7",
+                decimals: 1,
+            },
+        ];
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: taskWidgets,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export default {
     saveOrderOperasi,
-    getHistoriOrderOperasi
+    getHistoriOrderOperasi,
+    getWidgetOrderOperasi
 }
