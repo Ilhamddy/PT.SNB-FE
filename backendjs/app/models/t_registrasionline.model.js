@@ -32,7 +32,7 @@ export default (sequelize, Sequelize) => {
         tglrencana: {
             type: Sequelize.DATE
         },
-        objectjadwaldokter: {
+        objectjadwaldokterfk: {
             type: Sequelize.INTEGER
         },
         tglinput: {

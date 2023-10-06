@@ -39,6 +39,7 @@ const PemanggilanViewer = () => {
     loadingSisaLoket: state.Viewer.getAntreanLoketSisa.loading,
     allTerpanggil: state.Viewer.getAllTerpanggil.data?.terpanggil || [],
   }))
+  const [timeoutPanggil, setTimeoutPanggil] = useState(false)
   const refPanggilUlang = useRef()
   const dispatch = useDispatch()
   const vPemanggilan = useFormik({
@@ -69,6 +70,11 @@ const PemanggilanViewer = () => {
       norecantrean: Yup.string().required('No. Rec Antrean harus diisi!'),
     }),
     onSubmit: (values) => {
+      if (timeoutPanggil) return
+      setTimeoutPanggil(true)
+      setTimeout(() => {
+        setTimeoutPanggil(false)
+      }, 4000)
       dispatch(
         panggilUlangAntrian(values, () => {
           dispatch(getAllTerpanggil())

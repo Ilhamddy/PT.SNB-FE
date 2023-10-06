@@ -6,6 +6,7 @@ import HomePage from "../pages/Home/HomePage";
 import JadwalDokter from "../pages/JadwalDokter/JadwalDokter";
 import DokterPage from "../pages/DokterPage/DokterPage";
 import DaftarPasienLama from "../pages/DaftarPasienLama/DaftarPasienLama";
+import RiwayatPendaftaran from "../pages/RiwayatPendaftaran/RiwayatPendaftaran";
 
 const publicRoutes = [
     { path: "/login/:page", component: <Login /> },
@@ -16,7 +17,8 @@ const publicRoutes = [
 ]
 
 const protectedRoutes = [
-    { path: "/daftar/pasien-lama/:step", component: <DaftarPasienLama />}
+    { path: "/daftar/pasien-lama/:step", component: <DaftarPasienLama />},
+    { path: "/riwayat-daftar", component: <RiwayatPendaftaran />}
 ]
 
 export { publicRoutes, protectedRoutes };

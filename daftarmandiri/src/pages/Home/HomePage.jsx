@@ -45,6 +45,11 @@ const HomePage = () => {
       navigate('/jadwal-dokter')
     })
   }
+  const handleToRiwayat = () => {
+    refKontainer.current?.handleToNextPage(() => {
+      navigate('/riwayat-daftar')
+    })
+  }
   const handleToDaftar = () => {
     refKontainer.current?.handleToNextPage(() => {
       navigate('/daftar/pasien-lama/0')
@@ -99,7 +104,7 @@ const HomePage = () => {
   return (
     <div className="home-page">
       <KontainerPage
-        top={'490px'}
+        top={'400px'}
         ref={refKontainer}
         header={
           <div className="home-header">
@@ -153,11 +158,11 @@ const HomePage = () => {
                 onClick={() => handleToJadwal()}
               />
               <IsiKontenHeader gbr={waitImg} text={'Pendaftaran Pasien'} />
-              <IsiKontenHeader gbr={waitImg} text={'Riwayat Pendaftaran'} />
-              <IsiKontenHeader gbr={waitImg} text={'Pendaftaran Pasien'} />
-              <IsiKontenHeader gbr={waitImg} text={'Pendaftaran Pasien'} />
-              <IsiKontenHeader gbr={waitImg} text={'Pendaftaran Pasien'} />
-              <IsiKontenHeader gbr={waitImg} text={'Pendaftaran Pasien'} />
+              <IsiKontenHeader
+                gbr={waitImg}
+                text={'Riwayat Pendaftaran'}
+                onClick={() => handleToRiwayat()}
+              />
             </div>
           </div>
         }

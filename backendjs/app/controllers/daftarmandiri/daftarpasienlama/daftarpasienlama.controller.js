@@ -96,7 +96,7 @@ const savePasienMandiri = async (req, res) => {
     const logger = res.locals.logger;
     try{
         const {daftarPasien, antreanPemeriksaan} = await db.sequelize.transaction(async (transaction) => {
-            const {dokter, penjamin, nocmfk, poliklinik, jenispenjamin} = req.body
+            const {dokter, penjamin, nocmfk, poliklinik, jenispenjamin, jadwal} = req.body
             let norecDP = uuid.v4().substring(0, 32)
             let objectpenjaminfk = penjamin || null
 
@@ -117,7 +117,7 @@ const savePasienMandiri = async (req, res) => {
                 norec: norecDP,
                 nocmfk: nocmfk,
                 noregistrasi: noregistrasi,
-                tglregistrasi: new Date(),
+                tglregistrasi: new Date(jadwal),
                 objectunitlastfk: poliklinik,
                 objectdokterpemeriksafk: dokter,
                 objectpegawaifk: null,
@@ -135,6 +135,21 @@ const savePasienMandiri = async (req, res) => {
                 statusenabled: true,
             }, { transaction });
             const norecRegistrasi = uuid.v4().substring(0, 32)
+            const regisOnline = await db.t_registrasionline.create({
+                norec: norecRegistrasi,
+                kdprofile: 0,
+                statusenabled: true,
+                nocmfk: daftarPasien.nocmfk,
+                noreservasi: "",
+                objectunitfk: poliklinik,
+                objectdokterfk: dokter,
+                tglrencana: new Date(jadwal),
+                objectjadwaldokterfk: null,
+                tglinput: new Date(),
+                objectdaftarpasienfk: daftarPasien.norec
+            }, {
+                transaction: transaction
+            })
             let norecAP = uuid.v4().substring(0, 32)
             const antreanPemeriksaan = await db.t_antreanpemeriksaan.create({
                 norec: norecAP,
