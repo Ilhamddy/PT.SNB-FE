@@ -55,6 +55,11 @@ const HomePage = () => {
       navigate('/daftar/pasien-lama/0')
     })
   }
+  const handleToAkun = () => {
+    refKontainer.current?.handleToNextPage(() => {
+      navigate('/akun')
+    })
+  }
   const vHome = useFormik({
     initialValues: {
       chosenAr: 0,
@@ -110,10 +115,7 @@ const HomePage = () => {
           <div className="home-header">
             <div className="menu-header-home">
               {user ? (
-                <p
-                  className="nama-pasien"
-                  onClick={() => dispatch(logoutUser())}
-                >
+                <p className="nama-pasien" onClick={() => handleToAkun()}>
                   Hi, {user?.namapasien}
                 </p>
               ) : (
