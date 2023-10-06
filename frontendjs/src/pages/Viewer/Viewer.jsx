@@ -97,7 +97,6 @@ const Viewer = () => {
           <div className="kontainer-video"></div>
         </div>
         <Carousel
-          autoPlay={true}
           autoFocus
           selectedItem={0}
           infiniteLoop={true}
