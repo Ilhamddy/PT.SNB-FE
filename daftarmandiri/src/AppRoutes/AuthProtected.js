@@ -18,7 +18,7 @@ const AuthProtected = (props) => {
 
   if (!userid) {
     return (
-      <Navigate to={{ pathname: "/login/pasien-lama"}} />
+      <Navigate to={{ pathname: "/login/pasien-lama"}} replace/>
     );
   }
 

@@ -67,6 +67,7 @@ const DokterPage = () => {
           dokters={dokter}
           imgDokter={dokterImg}
           refKontainer={refKontainer}
+          canClick={false}
         />
         <div className="input-group">
           <label>Pilih Jadwal</label>

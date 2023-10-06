@@ -138,7 +138,7 @@ const FormPasienLama = ({ setDone, handleToHome }) => {
           errorMsg={vLogin.errors.nocm}
           isError={vLogin.touched.nocm && vLogin.errors.nocm}
           onChange={(e) => {
-            rgxAllNumber.test(e.target.value) && vLogin.handleChange(e)
+            vLogin.handleChange(e)
           }}
         />
       </InputGroup>

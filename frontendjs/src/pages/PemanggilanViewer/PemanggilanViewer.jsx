@@ -84,20 +84,22 @@ const PemanggilanViewer = () => {
     },
   })
 
-  const [interval, setInterval] = useState(null)
+  const [intervalstate, setIntervalState] = useState(null)
 
   useEffect(() => {
-    clearInterval(interval)
+    clearInterval(intervalstate)
     dispatch(getComboViewer())
     dispatch(getLoketSisa())
     dispatch(getAllTerpanggil({ loketid: vPemanggilan.values.loket }))
     const newInterval = setInterval(() => {
+      dispatch(getComboViewer())
       dispatch(getLoketSisa())
       dispatch(getAllTerpanggil({ loketid: vPemanggilan.values.loket }))
     }, 4000)
-    setInterval(newInterval)
-    return () => clearInterval(interval)
-  }, [dispatch, vPemanggilan.values.loket, interval])
+    setIntervalState(newInterval)
+    return () => clearInterval(newInterval)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch, vPemanggilan.values.loket])
 
   /**
    * @type {import("react-data-table-component").TableColumn[]}
