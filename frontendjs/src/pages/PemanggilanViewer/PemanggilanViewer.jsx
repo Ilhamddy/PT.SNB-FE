@@ -195,7 +195,7 @@ const PemanggilanViewer = () => {
                   htmlFor="panggilulang"
                   className="form-label"
                 >
-                  Panggil Ulang
+                  Panggil Ulang Antrean
                 </Label>
                 <CustomSelect
                   ref={refPanggilUlang}
