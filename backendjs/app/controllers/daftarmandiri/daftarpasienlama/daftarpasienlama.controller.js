@@ -106,7 +106,7 @@ const savePasienMandiri = async (req, res) => {
             todayEnd.setHours(23, 59, 59, 999)
             let resultCountNoantrianDokter = await pool.query(queriesRegistrasi.qNoAntrian, [dokter, todayStart, todayEnd]);
             let noantrian = parseFloat(resultCountNoantrianDokter.rows[0].count) + 1
-            const noregistrasi = await hCreateNoreg()
+            const noregistrasi = await hCreateNoreg(jadwal)
             const pasien = await pool.query(qGetDaftarPasienLama, [req.id])
             let statuspasien = 'LAMA'
             if(pasien.tgldaftar > todayStart && pasien.tgldaftar < todayEnd){
@@ -140,7 +140,7 @@ const savePasienMandiri = async (req, res) => {
                 kdprofile: 0,
                 statusenabled: true,
                 nocmfk: daftarPasien.nocmfk,
-                noreservasi: "",
+                noreservasi: "R" + noregistrasi,
                 objectunitfk: poliklinik,
                 objectdokterfk: dokter,
                 tglrencana: new Date(jadwal),
@@ -154,7 +154,7 @@ const savePasienMandiri = async (req, res) => {
             const antreanPemeriksaan = await db.t_antreanpemeriksaan.create({
                 norec: norecAP,
                 objectdaftarpasienfk: norecDP,
-                tglmasuk: new Date(),
+                tglmasuk: new Date(jadwal),
                 tglkeluar: null,
                 objectdokterpemeriksafk: dokter,
                 objectunitfk: poliklinik,
@@ -222,11 +222,11 @@ export default {
     savePasienMandiri
 }
 
-const hCreateNoreg = async () => {
-    let today = new Date();
-    let todayStart = new Date();
+const hCreateNoreg = async (date) => {
+    let today = new Date(date);
+    let todayStart = new Date(date);
     todayStart.setHours(0, 0, 0, 0)
-    let todayEnd = new Date();
+    let todayEnd = new Date(date);
     todayEnd.setHours(23, 59, 59, 999)
     let todayMonth = '' + (today.getMonth() + 1)
     if (todayMonth.length < 2)

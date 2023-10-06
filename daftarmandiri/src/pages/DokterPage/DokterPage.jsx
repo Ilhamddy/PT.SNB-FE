@@ -57,7 +57,7 @@ const DokterPage = () => {
     return !foundDay
   }
   const disableBeforeToday = (date) => {
-    return date < dateNow
+    return date <= new Date(dateNow - 24 * 60 * 60 * 1000)
   }
   return (
     <KontainerPage top={'0'} ref={refKontainer} className="dokter-page">

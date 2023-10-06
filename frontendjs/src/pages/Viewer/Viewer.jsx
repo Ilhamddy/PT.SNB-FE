@@ -19,7 +19,6 @@ const Viewer = () => {
   const { tanggal, waktu } = useDate()
   const [audioAntre, setAudioAntre] = useState(true)
   const panggilLast = async (dataAll) => {
-    setAudioAntre(true)
     if (dataAll?.status === 2) {
       try {
         const lastantrean = dataAll?.lastantrean
@@ -80,7 +79,6 @@ const Viewer = () => {
         toast.error(error.message)
       }
     }
-    setAudioAntre(false)
   }
   useEffect(() => {
     dispatch(getAllLoket(panggilLast))
