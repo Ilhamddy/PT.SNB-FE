@@ -259,10 +259,11 @@ const DaftarOrderOperasi = () => {
                                             {(datax || []).map((item, key) => (
                                                 <React.Fragment key={key}>
                                                     <Card className="product card-animate" style={{ backgroundColor: item.color }}
-                                                    onClick={() => { handleCard(item) }}
+                                                        onClick={() => { handleCard(item) }}
                                                     >
                                                         <CardBody>
                                                             <Row className="gy-3">
+                                                            <h6 className="card-title mb-0">Handle to Forcast <span className="badge align-middle fs-10" style={{backgroundColor:item.colorjenisoperasi}}>{item.jenisoperasi}</span></h6>
                                                                 <div className="col-sm-auto">
                                                                     <div className="avatar-md flex-shrink-0">
                                                                         <span className={"avatar-title rounded-circle fs-4"} style={{ backgroundColor: item.statusdarurat }}>
@@ -274,15 +275,15 @@ const DaftarOrderOperasi = () => {
                                                                                         <img src={pria} alt="" className="img-fluid rounded-circle" />
                                                                                     ) : item.profile === 'anaklaki' ? (
                                                                                         <img src={anaklaki} alt="" className="img-fluid rounded-circle" />
-                                                                                    )  : item.profile === 'anakperempuan' ? (
+                                                                                    ) : item.profile === 'anakperempuan' ? (
                                                                                         <img src={anakperempuan} alt="" className="img-fluid rounded-circle" />
-                                                                                    )  : item.profile === 'dewasaperempuan' ? (
+                                                                                    ) : item.profile === 'dewasaperempuan' ? (
                                                                                         <img src={dewasaperempuan} alt="" className="img-fluid rounded-circle" />
-                                                                                    )  : item.profile === 'kakek' ? (
+                                                                                    ) : item.profile === 'kakek' ? (
                                                                                         <img src={kakek} alt="" className="img-fluid rounded-circle" />
-                                                                                    )  : item.profile === 'nenek' ? (
+                                                                                    ) : item.profile === 'nenek' ? (
                                                                                         <img src={nenek} alt="" className="img-fluid rounded-circle" />
-                                                                                    )  : (
+                                                                                    ) : (
                                                                                         // Render when none of the conditions are met
                                                                                         <p>No profile image available</p>
                                                                                     )}

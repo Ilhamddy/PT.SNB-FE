@@ -30,7 +30,7 @@ where to2.tglinput between $1 and $2
 ) as x`
 
 const qDaftarOrderOperasi =`
-select x.namapasien,x.noregistrasi,x.umur,x.nocm,x.norec,x.tglinput,x.tglrencana,
+select x.colorjenisoperasi,x.jenisoperasi,x.namapasien,x.noregistrasi,x.umur,x.nocm,x.norec,x.tglinput,x.tglrencana,
 x.namaunit,x.namaoperasi,x.kodeexternal,
 x.namalengkap,x.statusoperasi,
 case when x.days<1825 then 'baby' 
@@ -41,7 +41,8 @@ when x.days<23724  and x.objectjeniskelaminfk=2 then 'dewasaperempuan'
 when x.days>23724  and x.objectjeniskelaminfk=1 then 'kakek'
 when x.days>23724  and x.objectjeniskelaminfk=2 then 'nenek' else 'baby' end as profile,
 x.tgllahir,x.objectjeniskelaminfk from(
-select mp.namapasien,td.noregistrasi,mp.nocm,to2.norec,to2.tglinput,to_char(to2.tglrencana,'dd Month YYYY hh:ii') as tglrencana,
+select case when to2.objectjenisoperasifk=1 then '#FFB2B2' when to2.objectjenisoperasifk=2 then '#FFE0B2'
+when to2.objectjenisoperasifk=3 then '#B8FFB2' else '#5AEBFF' end as colorjenisoperasi,mj.reportdisplay as jenisoperasi,mp.namapasien,td.noregistrasi,mp.nocm,to2.norec,to2.tglinput,to_char(to2.tglrencana,'dd Month YYYY hh:ii') as tglrencana,
 mu.namaunit,to2.namaoperasi,mi.kodeexternal,
 mp2.namalengkap,ms.reportdisplay as statusoperasi,
 (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY')) AS days,
@@ -54,6 +55,7 @@ join m_unit mu on mu.id=to2.objectunitasalfk
 join m_icdx mi on mi.id=to2.objecticdxfk
 join m_pegawai mp2 on mp2.id=to2.objectdokteroperatorfk
 join m_statusoperasi ms on ms.id=to2.objectstatusoperasifk
+join m_jenisoperasi mj on mj.id=to2.objectjenisoperasifk
 where to2.tglinput between $1 and $2
 ) as x`
 
