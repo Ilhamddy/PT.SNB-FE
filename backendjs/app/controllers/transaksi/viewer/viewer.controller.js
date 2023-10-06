@@ -55,6 +55,7 @@ const getLoketSisa = async (req, res) => {
                     // kalau sudah ada langsung saja jumlahkan semuanya
                     foundLoketSisa.jumlahantrean += (sisa.jumlahantrean || 0)
                     foundLoketSisa.sisaantrean += (sisa.sisaantrean || 0)
+                    foundLoketSisa.antreanterakhir = foundLoketSisa.jumlahantrean - foundLoketSisa.sisaantrean
                     return
                 }
                 sisa.sisaantrean = 0
@@ -63,7 +64,6 @@ const getLoketSisa = async (req, res) => {
                 if(foundLoketSisa){
                     // kalau sudah ada langsung saja jumlahkan semuanya
                     foundLoketSisa.sisaantrean += (sisa.jumlahantrean || 0)
-                    foundLoketSisa.antreanterakhir = sisa.jumlahantrean
                     return
                 }
                 sisa.sisaantrean = sisa.jumlahantrean || 0
@@ -192,13 +192,15 @@ const getAllLoket = async (req, res) => {
         ]))?.rows
         lastPemanggilanViewer = lastPemanggilanViewer?.[0] || null
         const prefix =  lastPemanggilanViewer?.prefix
-        let lastAntrean = ("00" + lastPemanggilanViewer?.noantrean).slice(-2)
-        lastAntrean = lastPemanggilanViewer ? prefix + lastAntrean : ""
+        let lastAntrean = ("00" + (
+            lastPemanggilanAll?.noantrean ||
+            lastPemanggilanViewer?.noantrean)).slice(-2)
+        lastAntrean = lastPemanggilanViewer || lastPemanggilanViewer ? prefix + lastAntrean : ""
         const tempres = {
             loket: lokets,
             lastantrean: lastAntrean,
-            lastloket: lastPemanggilanViewer?.loket || "",
-            status: lastPemanggilanViewer?.ispanggil || 3
+            lastloket: lastPemanggilanAll?.loket ||  lastPemanggilanViewer?.loket || "",
+            status: lastPemanggilanAll?.ispanggil || lastPemanggilanViewer?.ispanggil || 3
         };
         res.status(200).send({
             msg: 'Success',

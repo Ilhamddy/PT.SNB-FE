@@ -99,19 +99,19 @@ const PemanggilanViewer = () => {
       name: <span className="font-weight-bold fs-13">Jenis</span>,
       selector: (row) => row.label,
       sortable: true,
-      width: '150px',
+      width: '250px',
     },
     {
       name: <span className="font-weight-bold fs-13">Antrean Sisa</span>,
       sortable: true,
       selector: (row) => `${row.sisaantrean}`,
-      width: '100px',
+      width: '150px',
     },
     {
       name: <span className="font-weight-bold fs-13">Antrean Terakhir</span>,
       sortable: true,
       selector: (row) => `${row.antreanterakhir}`,
-      width: '100px',
+      width: '150px',
     },
   ]
   const [skala, setSkalaNyeri] = useState(0)
@@ -195,7 +195,7 @@ const PemanggilanViewer = () => {
                   htmlFor="panggilulang"
                   className="form-label"
                 >
-                  Loket
+                  Panggil Ulang
                 </Label>
                 <CustomSelect
                   ref={refPanggilUlang}

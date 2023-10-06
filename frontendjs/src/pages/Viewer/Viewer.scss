@@ -94,12 +94,9 @@
             }
         }
 
-        .kontainer-loket {
+        .loket-group {
             display: flex;
-            flex-direction: row;
-            align-items: center;
-            height: 220px;
-
+            overflow: hidden;
             .loket-available {
                 display: flex;
                 flex-direction: column;

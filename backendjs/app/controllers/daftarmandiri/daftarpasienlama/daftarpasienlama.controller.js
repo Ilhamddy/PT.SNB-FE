@@ -134,7 +134,7 @@ const savePasienMandiri = async (req, res) => {
                 objectcaramasukfk: null,
                 statusenabled: true,
             }, { transaction });
-            const norecRegistrasi = uuid.v4().substring(0, 32)
+            const norecRegistrasi = uuid.v4().substring(0, 32);
             const regisOnline = await db.t_registrasionline.create({
                 norec: norecRegistrasi,
                 kdprofile: 0,
@@ -149,8 +149,8 @@ const savePasienMandiri = async (req, res) => {
                 objectdaftarpasienfk: daftarPasien.norec
             }, {
                 transaction: transaction
-            })
-            let norecAP = uuid.v4().substring(0, 32)
+            });
+            let norecAP = uuid.v4().substring(0, 32);
             const antreanPemeriksaan = await db.t_antreanpemeriksaan.create({
                 norec: norecAP,
                 objectdaftarpasienfk: norecDP,
