@@ -39,6 +39,7 @@ const PemanggilanViewer = () => {
     loadingSisaLoket: state.Viewer.getAntreanLoketSisa.loading,
     allTerpanggil: state.Viewer.getAllTerpanggil.data?.terpanggil || [],
   }))
+  const [timeoutPanggil, setTimeoutPanggil] = useState(false)
   const refPanggilUlang = useRef()
   const dispatch = useDispatch()
   const vPemanggilan = useFormik({
@@ -69,6 +70,11 @@ const PemanggilanViewer = () => {
       norecantrean: Yup.string().required('No. Rec Antrean harus diisi!'),
     }),
     onSubmit: (values) => {
+      if (timeoutPanggil) return
+      setTimeoutPanggil(true)
+      setTimeout(() => {
+        setTimeoutPanggil(false)
+      }, 4000)
       dispatch(
         panggilUlangAntrian(values, () => {
           dispatch(getAllTerpanggil())
@@ -83,6 +89,10 @@ const PemanggilanViewer = () => {
     dispatch(getComboViewer())
     dispatch(getLoketSisa())
     dispatch(getAllTerpanggil())
+    const interval = setInterval(() => {
+      dispatch(getLoketSisa())
+    }, 4000)
+    return () => clearInterval(interval)
   }, [dispatch])
 
   /**
@@ -93,19 +103,19 @@ const PemanggilanViewer = () => {
       name: <span className="font-weight-bold fs-13">Jenis</span>,
       selector: (row) => row.label,
       sortable: true,
-      width: '150px',
+      width: '250px',
     },
     {
       name: <span className="font-weight-bold fs-13">Antrean Sisa</span>,
       sortable: true,
       selector: (row) => `${row.sisaantrean}`,
-      width: '100px',
+      width: '150px',
     },
     {
       name: <span className="font-weight-bold fs-13">Antrean Terakhir</span>,
       sortable: true,
       selector: (row) => `${row.antreanterakhir}`,
-      width: '100px',
+      width: '150px',
     },
   ]
   const [skala, setSkalaNyeri] = useState(0)
@@ -189,7 +199,7 @@ const PemanggilanViewer = () => {
                   htmlFor="panggilulang"
                   className="form-label"
                 >
-                  Loket
+                  Panggil Ulang Antrean
                 </Label>
                 <CustomSelect
                   ref={refPanggilUlang}
@@ -218,7 +228,7 @@ const PemanggilanViewer = () => {
                   Panggil Ulang Antrean
                 </Button>
               </Col>
-              <Col sm={6}>
+              {/* <Col sm={6}>
                 <Label
                   style={{ color: 'black' }}
                   htmlFor="norm"
@@ -242,7 +252,7 @@ const PemanggilanViewer = () => {
                 >
                   Simpan No RM
                 </Button>
-              </Col>
+              </Col> */}
             </Row>
           </Col>
           <Col lg={6}>
@@ -259,10 +269,6 @@ const PemanggilanViewer = () => {
             />
           </Col>
         </Row>
-        <SkalaNyeri
-          quantity={skala}
-          onQuantityChange={(q) => setSkalaNyeri(q)}
-        />
       </div>
     </div>
   )

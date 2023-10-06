@@ -96,7 +96,7 @@ const savePasienMandiri = async (req, res) => {
     const logger = res.locals.logger;
     try{
         const {daftarPasien, antreanPemeriksaan} = await db.sequelize.transaction(async (transaction) => {
-            const {dokter, penjamin, nocmfk, poliklinik, jenispenjamin} = req.body
+            const {dokter, penjamin, nocmfk, poliklinik, jenispenjamin, jadwal} = req.body
             let norecDP = uuid.v4().substring(0, 32)
             let objectpenjaminfk = penjamin || null
 
@@ -106,7 +106,7 @@ const savePasienMandiri = async (req, res) => {
             todayEnd.setHours(23, 59, 59, 999)
             let resultCountNoantrianDokter = await pool.query(queriesRegistrasi.qNoAntrian, [dokter, todayStart, todayEnd]);
             let noantrian = parseFloat(resultCountNoantrianDokter.rows[0].count) + 1
-            const noregistrasi = await hCreateNoreg()
+            const noregistrasi = await hCreateNoreg(jadwal)
             const pasien = await pool.query(qGetDaftarPasienLama, [req.id])
             let statuspasien = 'LAMA'
             if(pasien.tgldaftar > todayStart && pasien.tgldaftar < todayEnd){
@@ -117,7 +117,7 @@ const savePasienMandiri = async (req, res) => {
                 norec: norecDP,
                 nocmfk: nocmfk,
                 noregistrasi: noregistrasi,
-                tglregistrasi: new Date(),
+                tglregistrasi: new Date(jadwal),
                 objectunitlastfk: poliklinik,
                 objectdokterpemeriksafk: dokter,
                 objectpegawaifk: null,
@@ -134,12 +134,27 @@ const savePasienMandiri = async (req, res) => {
                 objectcaramasukfk: null,
                 statusenabled: true,
             }, { transaction });
-            const norecRegistrasi = uuid.v4().substring(0, 32)
-            let norecAP = uuid.v4().substring(0, 32)
+            const norecRegistrasi = uuid.v4().substring(0, 32);
+            const regisOnline = await db.t_registrasionline.create({
+                norec: norecRegistrasi,
+                kdprofile: 0,
+                statusenabled: true,
+                nocmfk: daftarPasien.nocmfk,
+                noreservasi: "R" + noregistrasi,
+                objectunitfk: poliklinik,
+                objectdokterfk: dokter,
+                tglrencana: new Date(jadwal),
+                objectjadwaldokterfk: null,
+                tglinput: new Date(),
+                objectdaftarpasienfk: daftarPasien.norec
+            }, {
+                transaction: transaction
+            });
+            let norecAP = uuid.v4().substring(0, 32);
             const antreanPemeriksaan = await db.t_antreanpemeriksaan.create({
                 norec: norecAP,
                 objectdaftarpasienfk: norecDP,
-                tglmasuk: new Date(),
+                tglmasuk: new Date(jadwal),
                 tglkeluar: null,
                 objectdokterpemeriksafk: dokter,
                 objectunitfk: poliklinik,
@@ -207,11 +222,11 @@ export default {
     savePasienMandiri
 }
 
-const hCreateNoreg = async () => {
-    let today = new Date();
-    let todayStart = new Date();
+const hCreateNoreg = async (date) => {
+    let today = new Date(date);
+    let todayStart = new Date(date);
     todayStart.setHours(0, 0, 0, 0)
-    let todayEnd = new Date();
+    let todayEnd = new Date(date);
     todayEnd.setHours(23, 59, 59, 999)
     let todayMonth = '' + (today.getMonth() + 1)
     if (todayMonth.length < 2)

@@ -84,8 +84,8 @@ const DaftarPasienLama = () => {
       if (step === 1) {
         dispatch(
           savePasienMandiri(values, () => {
-            refKontainer.current.handleToNextPage(() => {
-              navigate('/')
+            refKontainer.current?.handleToNextPage(() => {
+              navigate('/riwayat-daftar')
             })
           })
         )

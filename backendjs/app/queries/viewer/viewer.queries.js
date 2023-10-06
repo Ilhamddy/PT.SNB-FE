@@ -133,7 +133,10 @@ FROM t_antreanloket tal
 WHERE 
 	tal.statusenabled = true
 	AND tal.tglinput > $1 AND tal.tglinput <= $2
-	AND tal.ispanggil = ${panggilStatus.selesaiPanggil}
+	AND (
+		tal.ispanggil = ${panggilStatus.selesaiPanggil}
+		OR tal.ispanggil = ${panggilStatus.sedangPanggil})
+ORDER BY tal.tglpanggil DESC
 `
 
 export {

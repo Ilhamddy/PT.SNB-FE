@@ -50,8 +50,7 @@ const Viewer = (state = INIT_STATE, action) => {
             return {
                 ...state,
                 getAntreanLoketSisa: {
-                    ...state.masterGet,
-                    data: [],
+                    ...state.getAntreanLoketSisa,
                     loading: true,
                     error: null,
                 }
@@ -59,10 +58,14 @@ const Viewer = (state = INIT_STATE, action) => {
         }
 
         case GET_LOKET_SISA_SUCCESS: {
+            console.log('GET_LOKET_SISA_SUCCESS', action.payload)
+            if(JSON.stringify(action.payload) === JSON.stringify(state.getAntreanLoketSisa.data)){
+                return state
+            }
             return {
                 ...state,
                 getAntreanLoketSisa: {
-                    ...state.masterGet,
+                    ...state.getAntreanLoketSisa,
                     loading: false,
                     data: action.payload,
                 }
@@ -73,7 +76,7 @@ const Viewer = (state = INIT_STATE, action) => {
             return {
                 ...state,
                 getAntreanLoketSisa: {
-                    ...state.masterGet,
+                    ...state.getAntreanLoketSisa,
                     loading: false,
                     error: action.payload,
                 }
@@ -84,7 +87,7 @@ const Viewer = (state = INIT_STATE, action) => {
             return {
                 ...state,
                 panggilLoket: {
-                    ...state.masterGet,
+                    ...state.panggilLoket,
                     data: [],
                     loading: true,
                     error: null,
@@ -96,7 +99,7 @@ const Viewer = (state = INIT_STATE, action) => {
             return {
                 ...state,
                 panggilLoket: {
-                    ...state.masterGet,
+                    ...state.panggilLoket,
                     loading: false,
                     data: action.payload,
                 }
@@ -107,7 +110,7 @@ const Viewer = (state = INIT_STATE, action) => {
             return {
                 ...state,
                 panggilLoket: {
-                    ...state.masterGet,
+                    ...state.panggilLoket,
                     loading: false,
                     error: action.payload,
                 }
@@ -126,7 +129,7 @@ const Viewer = (state = INIT_STATE, action) => {
             return {
                 ...state,
                 getAllLoket: {
-                    ...state.masterGet,
+                    ...state.getAllLoket,
                     loading: false,
                     data: action.payload,
                 }
@@ -137,7 +140,7 @@ const Viewer = (state = INIT_STATE, action) => {
             return {
                 ...state,
                 getAllLoket: {
-                    ...state.masterGet,
+                    ...state.getAllLoket,
                     loading: false,
                     error: action.payload,
                 }
@@ -148,7 +151,7 @@ const Viewer = (state = INIT_STATE, action) => {
             return {
                 ...state,
                 getAllTerpanggil: {
-                    ...state.masterGet,
+                    ...state.getAllLoket,
                     loading: true,
                     error: null,
                 }
