@@ -4,7 +4,7 @@ import { logoutUser } from '../../store/actions'
 import { useRef } from 'react'
 import KontainerPage from '../../Components/KontainerPage/KontainerPage'
 
-const AkunPage = ({}) => {
+const AkunPage = () => {
   const refKontainer = useRef(null)
   const dispatch = useDispatch()
   return (
