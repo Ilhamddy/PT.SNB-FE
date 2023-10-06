@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux'
 const PasienBaruSelesai = ({ handleToHome }) => {
   const navigate = useNavigate()
   const { norm } = useSelector((selector) => ({
-    norm: selector.Login.signupUser?.data?.username,
+    norm: selector.UserPasien.signupUser?.data?.username,
   }))
   console.log(norm)
   return (

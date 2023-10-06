@@ -5,7 +5,11 @@ import {
     logoutUserSuccess,
     logoutUserError,
     signUpUserSuccess,
-    signUpUserError
+    signUpUserError,
+    getRiwayatRegistrasiSuccess,
+    getRiwayatRegistrasiError,
+    batalRegisSuccess,
+    batalRegisError
 } from "./action";
 import * as uuid from 'uuid'
 
@@ -13,21 +17,23 @@ import {
     GET_USER_LOGIN,
     LOGIN_USER,
     LOGOUT_USER,
-    SIGNUP_USER
+    SIGNUP_USER,
+    GET_RIWAYAT_REGISTRASI,
+    BATAL_REGIS
 } from "./actionType";
 
-import ServiceAuth from "../../service/service-auth";
+import ServiceUserPasien from "../../service/service-userpasien";
 import { toast } from "react-toastify";
 import { setAuthorization } from "../../helpers/api_helper";
 
-const servicePayment = new ServiceAuth();
+const serviceUserPasien = new ServiceUserPasien();
 
 function* onLoginUser({payload: {data, callback}}) {
     try {
         const newData = {...data}
         newData.clientSecret = uuid.v4().substring(0, 32)
         localStorage.setItem("clientSecret", JSON.stringify(newData.clientSecret || null));
-        const response = yield call(servicePayment.loginUser, newData);
+        const response = yield call(serviceUserPasien.loginUser, newData);
         localStorage.setItem("authUserMandiri", JSON.stringify(response.data || null));
         // hanya dikirim sekali pada saat login
         setAuthorization(response?.data?.accessToken)
@@ -68,7 +74,7 @@ function* onSignUpUser({payload: {data, callback}}) {
         let newData = {...data}
         newData.clientSecret = uuid.v4().substring(0, 32)
         localStorage.setItem("clientSecret", JSON.stringify(newData.clientSecret || null));
-        const response = yield call(servicePayment.signUpUser, newData);
+        const response = yield call(serviceUserPasien.signUpUser, newData);
         console.log(response)
         yield put(signUpUserSuccess(response.user));
         localStorage.setItem("authUserMandiri", JSON.stringify(response.user || null));
@@ -79,9 +85,33 @@ function* onSignUpUser({payload: {data, callback}}) {
     }
 }
 
+function* onGetRiwayatRegistrasi({payload: {queries}}) {
+    try{
+        const response = yield call(serviceUserPasien.getRiwayatRegistrasi, queries);
+        yield put(getRiwayatRegistrasiSuccess(response.data));
+    }catch(error){
+        yield put(getRiwayatRegistrasiError(error))
+        toast.error(error?.response?.msg || "error")
+    }
+}
+
+function* onBatalRegis({payload: {data, callback}}){
+    try{
+        const response = yield call(serviceUserPasien.batalRegis, data);
+        yield put(batalRegisSuccess(response.data));
+        callback && callback()
+    }catch(error){
+        console.error(error)
+        yield put(batalRegisError(error))
+        toast.error(error?.response?.msg || "error")
+    }
+}
+
 export default function* watchLoginUser() {
     yield takeEvery(LOGIN_USER, onLoginUser);
     yield takeEvery(LOGOUT_USER, onLogoutUser);
     yield takeEvery(GET_USER_LOGIN, onGetUserLogin);
     yield takeEvery(SIGNUP_USER, onSignUpUser);
+    yield takeEvery(GET_RIWAYAT_REGISTRASI, onGetRiwayatRegistrasi)
+    yield takeEvery(BATAL_REGIS, onBatalRegis)
 }

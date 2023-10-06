@@ -151,7 +151,7 @@ const Viewer = (state = INIT_STATE, action) => {
             return {
                 ...state,
                 getAllTerpanggil: {
-                    ...state.getAllLoket,
+                    ...state.getAllTerpanggil,
                     loading: true,
                     error: null,
                 }
@@ -162,7 +162,7 @@ const Viewer = (state = INIT_STATE, action) => {
             return {
                 ...state,
                 getAllTerpanggil: {
-                    ...state.masterGet,
+                    ...state.getAllTerpanggil,
                     loading: false,
                     data: action.payload,
                 }
@@ -173,7 +173,7 @@ const Viewer = (state = INIT_STATE, action) => {
             return {
                 ...state,
                 getAllTerpanggil: {
-                    ...state.masterGet,
+                    ...state.getAllTerpanggil,
                     loading: false,
                     error: action.payload,
                 }
@@ -184,7 +184,7 @@ const Viewer = (state = INIT_STATE, action) => {
             return {
                 ...state,
                 panggilUlangAntrean: {
-                    ...state.masterGet,
+                    ...state.panggilUlangAntrean,
                     data: [],
                     loading: true,
                     error: null,
@@ -196,7 +196,7 @@ const Viewer = (state = INIT_STATE, action) => {
             return {
                 ...state,
                 panggilUlangAntrean: {
-                    ...state.masterGet,
+                    ...state.panggilUlangAntrean,
                     loading: false,
                     data: action.payload,
                 }
@@ -207,7 +207,7 @@ const Viewer = (state = INIT_STATE, action) => {
             return {
                 ...state,
                 panggilUlangAntrean: {
-                    ...state.masterGet,
+                    ...state.panggilUlangAntrean,
                     loading: false,
                     error: action.payload,
                 }

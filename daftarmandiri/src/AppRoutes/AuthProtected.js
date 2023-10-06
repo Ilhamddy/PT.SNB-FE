@@ -5,9 +5,16 @@ import { useDispatch, useSelector } from "react-redux";
 
 
 const AuthProtected = (props) => {
-  const {userid} = useSelector((state) => ({
-    userid: state.Login.loginUser?.data?.id || null,
-  }))
+  const {userid} = useSelector((state) =>  {
+    const user = localStorage.getItem('authUserMandiri')
+      ? JSON.parse(localStorage.getItem('authUserMandiri'))
+      : null
+    
+    return {
+      userid: state.UserPasien.loginUser?.data?.id || user || null,
+    }
+  })
+
 
   if (!userid) {
     return (

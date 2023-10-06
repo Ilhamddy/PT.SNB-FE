@@ -1,6 +1,6 @@
 import { combineReducers } from "redux";
 
-import Login from "./login/reducer";
+import UserPasien from "./userpasien/reducer";
 import Master from "./master/reducer";
 import DOM from "./dom/reducer";
 import Home from "./home/reducer";
@@ -9,7 +9,7 @@ import DaftarPasienLama from "./daftarpasienlama/reducer"
 
 const rootReducer = combineReducers({
     // public
-    Login,
+    UserPasien,
     Master,
     DOM,
     Home,

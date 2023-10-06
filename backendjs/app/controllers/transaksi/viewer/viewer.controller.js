@@ -224,9 +224,10 @@ const getAllTerpanggil = async (req, res) => {
     const logger = res.locals.logger;
     try{
         const dateNow = new Date();
+        const {loketid} = req.query
         const dateStart = new Date(dateNow.getFullYear(), dateNow.getMonth(), dateNow.getDate(), 0, 0, 0);
         const dateEnd = new Date(dateNow.getFullYear(), dateNow.getMonth(), dateNow.getDate(), 23, 59, 59);
-        let terpanggils = (await pool.query(qGetAllTerpanggil, [dateStart, dateEnd])).rows;
+        let terpanggils = (await pool.query(qGetAllTerpanggil, [dateStart, dateEnd, loketid])).rows;
         terpanggils = terpanggils.map((terpanggil) => {
             const newTerpanggil = {...terpanggil}
             const prefix =  terpanggil?.prefix

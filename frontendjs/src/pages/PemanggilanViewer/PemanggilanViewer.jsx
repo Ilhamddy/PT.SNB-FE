@@ -56,7 +56,7 @@ const PemanggilanViewer = () => {
       dispatch(
         panggilLoket(values, () => {
           dispatch(getLoketSisa())
-          dispatch(getAllTerpanggil())
+          dispatch(getAllTerpanggil({ loketid: vPemanggilan.values.loket }))
           refPanggilUlang.current?.clearValue()
         })
       )
@@ -77,23 +77,27 @@ const PemanggilanViewer = () => {
       }, 4000)
       dispatch(
         panggilUlangAntrian(values, () => {
-          dispatch(getAllTerpanggil())
+          dispatch(getAllTerpanggil({ loketid: vPemanggilan.values.loket }))
           dispatch(getLoketSisa())
         })
       )
     },
   })
-  const [norm, setNoRM] = useState('')
+
+  const [interval, setInterval] = useState(null)
 
   useEffect(() => {
+    clearInterval(interval)
     dispatch(getComboViewer())
     dispatch(getLoketSisa())
-    dispatch(getAllTerpanggil())
-    const interval = setInterval(() => {
+    dispatch(getAllTerpanggil({ loketid: vPemanggilan.values.loket }))
+    const newInterval = setInterval(() => {
       dispatch(getLoketSisa())
+      dispatch(getAllTerpanggil({ loketid: vPemanggilan.values.loket }))
     }, 4000)
+    setInterval(newInterval)
     return () => clearInterval(interval)
-  }, [dispatch])
+  }, [dispatch, vPemanggilan.values.loket, interval])
 
   /**
    * @type {import("react-data-table-component").TableColumn[]}
@@ -187,8 +191,10 @@ const PemanggilanViewer = () => {
               <Col sm={6}>
                 <div className="isi-antrean">
                   <p className="judul">Antrean sekarang</p>
-                  <p className="antrean">{lastPemanggilan}</p>
-                  <p className="loket">{lastLoket}</p>
+                  <p className="antrean">{allTerpanggil[0]?.label || ''}</p>
+                  <p className="loket">
+                    {loket?.[vPemanggilan.values.loket - 1]?.label || ''}
+                  </p>
                 </div>
               </Col>
             </Row>

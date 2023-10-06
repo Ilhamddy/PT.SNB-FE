@@ -53,9 +53,9 @@ function* onGetAllLoket({payload: {callback}}) {
     }
 }
 
-function* onGetAllTerpanggil({payload: {callback}}) {
+function* onGetAllTerpanggil({payload: {queries}}) {
     try {
-        const response = yield call(serviceViewer.getAllTerpanggil);
+        const response = yield call(serviceViewer.getAllTerpanggil, queries);
         yield put(getAllTerpanggilSuccess(response.data));
     } catch (error) {
         yield put(getAllTerpanggilError(error));

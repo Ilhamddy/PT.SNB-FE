@@ -136,6 +136,7 @@ WHERE
 	AND (
 		tal.ispanggil = ${panggilStatus.selesaiPanggil}
 		OR tal.ispanggil = ${panggilStatus.sedangPanggil})
+	AND tal.objectloketfk = $3
 ORDER BY tal.tglpanggil DESC
 `
 

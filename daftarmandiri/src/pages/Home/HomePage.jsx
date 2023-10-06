@@ -27,9 +27,9 @@ const HomePage = () => {
     hariOpt: state.Home.getComboJadwal?.data?.hari || [],
     unitOpt: state.Home.getComboJadwal?.data?.unit || [],
     dokter: state.Home.getJadwalDokter?.data?.dokter || [],
-    user: Array.isArray(state.Login.loginUser?.data)
+    user: Array.isArray(state.UserPasien.loginUser?.data)
       ? null
-      : state.Login.loginUser?.data,
+      : state.UserPasien.loginUser?.data,
   }))
   const [dateToday] = useState(() => new Date())
   unitOpt = [{ value: '', label: 'Semua Poliklinik' }, ...unitOpt]
@@ -53,6 +53,11 @@ const HomePage = () => {
   const handleToDaftar = () => {
     refKontainer.current?.handleToNextPage(() => {
       navigate('/daftar/pasien-lama/0')
+    })
+  }
+  const handleToAkun = () => {
+    refKontainer.current?.handleToNextPage(() => {
+      navigate('/akun')
     })
   }
   const vHome = useFormik({
@@ -110,10 +115,7 @@ const HomePage = () => {
           <div className="home-header">
             <div className="menu-header-home">
               {user ? (
-                <p
-                  className="nama-pasien"
-                  onClick={() => dispatch(logoutUser())}
-                >
+                <p className="nama-pasien" onClick={() => handleToAkun()}>
                   Hi, {user?.namapasien}
                 </p>
               ) : (

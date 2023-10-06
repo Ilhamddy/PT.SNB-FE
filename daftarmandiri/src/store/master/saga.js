@@ -13,9 +13,7 @@ import {
 
 } from "./actionType";
 
-import ServiceAuth from "../../service/service-auth";
 import { toast } from "react-toastify";
-import { setAuthorization } from "../../helpers/api_helper";
 import ServiceMaster from "../../service/service-master";
 
 const serviceMaster = new ServiceMaster();

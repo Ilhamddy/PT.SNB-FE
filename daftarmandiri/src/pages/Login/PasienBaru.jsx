@@ -10,7 +10,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { getAllMaster, getDesaKelurahan } from '../../store/master/action'
 import SelectDM from '../../Components/SelectDM/SelectDM'
 import FlatpickrDM from '../../Components/FlatpickrDM/FlatpickrDM'
-import { signUpUser } from '../../store/login/action'
+import { signUpUser } from '../../store/userpasien/action'
 import { useNavigate } from 'react-router-dom'
 
 const FormPasienBaru = ({ step, setStep }) => {

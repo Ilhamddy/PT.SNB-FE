@@ -1,0 +1,134 @@
+.riwayat-pendaftaran {
+    .page-riwayat-pendaftaran {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+
+        .judul-hari-ini {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .card-hari-ini {
+            border-radius: 15px;
+            background-color: #e8d58f;
+            width: 100%;
+            padding: 20px 12px;
+            margin-bottom: 12px;
+            .reservasi {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+                margin-bottom: 12px;
+
+                .kode {
+                    font-size: 14px;
+                    font-weight: 400;
+                    margin-right: 8px;
+                    margin-bottom: 0;
+                    span {
+                        font-size: 12px;
+                        font-weight: 500;
+                    }
+                }
+
+                .btn-placeholder {
+                    width: 20px;
+                    height: 20px;
+                    object-fit: contain;
+                }
+            }
+
+            .nama-dokter {
+                color: #08080d;
+                font-size: 16px;
+                font-style: normal;
+                font-weight: 600;
+            }
+
+            .poliklinik {
+                font-size: 12px;
+                font-weight: 400;
+            }
+
+            .btn-terdaftar {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+
+                button {
+                    &:last-child {
+                        margin-left: 12px;
+                        width: 60px;
+                    }
+                }
+            }
+        }
+
+        .judul-sebelumnya {
+            font-size: 20px;
+            font-weight: 500;
+            margin-top: 24px;
+            margin-bottom: 12px;
+        }
+
+        .card-sebelumnya {
+            border-radius: 15px;
+            background-color: #e8d58f;
+            width: 100%;
+            padding: 20px 12px;
+            margin-bottom: 12px;
+            .reservasi {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+                margin-bottom: 12px;
+                .kode {
+                    font-size: 14px;
+                    font-weight: 400;
+                    margin-right: 8px;
+                    margin-bottom: 0;
+                    span {
+                        font-size: 12px;
+                        font-weight: 500;
+                    }
+                }
+
+                .btn-placeholder {
+                    width: 20px;
+                    height: 20px;
+                    object-fit: contain;
+                }
+            }
+
+            .nama-dokter {
+                color: #08080d;
+                font-size: 16px;
+                font-style: normal;
+                font-weight: 600;
+                margin-bottom: 5px;
+            }
+
+            .poliklinik {
+                font-size: 12px;
+                font-weight: 400;
+            }
+
+            .btn-terdaftar {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+
+                button {
+                    &:last-child {
+                        margin-left: 12px;
+                        width: 60px;
+                    }
+                }
+            }
+        }
+    }
+}
