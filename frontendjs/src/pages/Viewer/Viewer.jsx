@@ -97,12 +97,15 @@ const Viewer = () => {
           <div className="kontainer-video"></div>
         </div>
         <Carousel
-          autoPlay
-          infiniteLoop
+          autoPlay={true}
+          autoFocus
+          selectedItem={0}
+          infiniteLoop={true}
           showThumbs={false}
           showIndicators={false}
           showStatus={false}
-          showArrows={false}
+          showArrows={true}
+          interval={6000}
         >
           {groupLoket.map((group, i) => {
             return (
