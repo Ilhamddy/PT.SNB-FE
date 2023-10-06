@@ -224,7 +224,7 @@ const PemanggilanViewer = () => {
                   Panggil Ulang Antrean
                 </Button>
               </Col>
-              <Col sm={6}>
+              {/* <Col sm={6}>
                 <Label
                   style={{ color: 'black' }}
                   htmlFor="norm"
@@ -248,7 +248,7 @@ const PemanggilanViewer = () => {
                 >
                   Simpan No RM
                 </Button>
-              </Col>
+              </Col> */}
             </Row>
           </Col>
           <Col lg={6}>
