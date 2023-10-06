@@ -265,10 +265,6 @@ const PemanggilanViewer = () => {
             />
           </Col>
         </Row>
-        <SkalaNyeri
-          quantity={skala}
-          onQuantityChange={(q) => setSkalaNyeri(q)}
-        />
       </div>
     </div>
   )
