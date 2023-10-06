@@ -4,7 +4,9 @@ import jwt from "jsonwebtoken";
 import config from "../../../config/auth.config";
 import { encrypt } from "../../../utils/encrypt";
 import { Op } from "sequelize";
+import pool from "../../../config/dbcon.query";
 import { getDateStartEnd, getDateStartEndMonth } from "../../../utils/dateutils";
+import userpasienQueries from "../../../queries/daftarmandiri/userpasien/userpasien.queries";
 
 const m_pasien = db.m_pasien
 const running_number = db.running_number
@@ -139,8 +141,81 @@ const createPasien = async (req, res) => {
     }
 }
 
+const getRiwayatReservasi = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const {monthStart, monthEnd} = getDateStartEndMonth();
+        const {todayStart, todayEnd} = getDateStartEnd();
+        const riwayat = await pool.query(userpasienQueries.qGetRiwayatRegistrasi, 
+            [
+                req.id, 
+                '1970-01-1 00:00:00', 
+                todayStart
+            ])
+        const riwayatToday = await pool.query(userpasienQueries.qGetRiwayatRegistrasi, 
+            [
+                req.id, 
+                todayStart, 
+                todayEnd
+            ])
+        const tempres = {
+            riwayat: riwayat.rows,
+            riwayatToday: riwayatToday.rows
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+const batalRegis = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const updated = await db.sequelize.transaction(async (transaction) => {
+            const {norec} = req.body
+            db.t_registrasionline.update({
+                statusenabled: false
+            }, {
+                transaction: transaction,
+            })
+            return {updated: norec}
+        });
+        
+        const tempres = {
+            updated
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export default {
-    createPasien
+    createPasien,
+    getRiwayatReservasi,
+    batalRegis
 }
 
 const hCreateCMSementara = async () => {

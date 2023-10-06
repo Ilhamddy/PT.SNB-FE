@@ -65,10 +65,10 @@ export const getAllLoketError = (error) => ({
     payload: error,
 });
 
-export const getAllTerpanggil = (callback) => ({
+export const getAllTerpanggil = (queries) => ({
     type: GET_ALL_TERPANGGIL,
     payload: {
-        callback
+        queries
     },
 });
 

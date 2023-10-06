@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 
 const useProfile = () => {
 
-  const { data: userProfile, loading, error } = useSelector((selector) => selector.Login)
+  const { data: userProfile, loading, error } = useSelector((selector) => selector.UserPasien)
 
 
   return { userProfile, loading, error };

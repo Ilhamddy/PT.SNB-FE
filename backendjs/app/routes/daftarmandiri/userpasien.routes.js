@@ -15,4 +15,14 @@ export default function(app) {
     [],
     controller.createPasien
   )
+  app.get(
+    "/api/daftarmandiri/user-pasien/riwayat-reservasi",
+    [authJwt.verifyTokenUser, encryptMandiri],
+    controller.getRiwayatReservasi
+  )
+  app.post(
+    "/api/daftarmandiri/user-pasien/batal-regis",
+    [authJwt.verifyTokenUser, encryptMandiri],
+    controller.batalRegis
+  )
 };

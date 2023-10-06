@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 const AuthProtected = (props) => {
   const {userid} = useSelector((state) => ({
-    userid: state.Login.loginUser?.data?.id || null,
+    userid: state.UserPasien.loginUser?.data?.id || null,
   }))
 
   if (!userid) {

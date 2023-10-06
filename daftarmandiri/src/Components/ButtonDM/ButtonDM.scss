@@ -10,4 +10,19 @@
     background-color: #cda30b;
     justify-content: center;
     color: #faf6e7;
+
+    &-secondary {
+        display: flex;
+        border: none;
+        flex-direction: row;
+        align-items: center;
+        padding: 18px;
+        border-radius: 10px;
+        font-size: 16px;
+        font-weight: 600;
+        justify-content: center;
+        border: 1px solid #cda30b;
+        background-color: #f7f7f7;
+        color: #cda30b;
+    }
 }

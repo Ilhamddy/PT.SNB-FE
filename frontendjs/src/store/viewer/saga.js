@@ -53,11 +53,14 @@ function* onGetAllLoket({payload: {callback}}) {
     }
 }
 
-function* onGetAllTerpanggil({payload: {callback}}) {
+function* onGetAllTerpanggil({payload: {queries}}) {
     try {
-        const response = yield call(serviceViewer.getAllTerpanggil);
+        console.log(queries)
+        const response = yield call(serviceViewer.getAllTerpanggil, queries);
+        console.log(response)
         yield put(getAllTerpanggilSuccess(response.data));
     } catch (error) {
+        console.error(error)
         yield put(getAllTerpanggilError(error));
     }
 }

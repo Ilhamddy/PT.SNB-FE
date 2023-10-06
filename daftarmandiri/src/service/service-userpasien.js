@@ -11,5 +11,13 @@ export default class ServiceAuth {
     signUpUser = async (body) => {
         return await api.create(`/daftarmandiri/user-pasien/create-pasien`, body, false);
     }
+
+    getRiwayatRegistrasi = async () => {
+        return await api.get(`/daftarmandiri/user-pasien/riwayat-reservasi`);
+    }
+
+    batalRegis = async () => {
+        return await api.post(`/daftarmandiri/user-pasien/batal-regis`);
+    }
     
 }

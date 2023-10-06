@@ -27,9 +27,9 @@ const HomePage = () => {
     hariOpt: state.Home.getComboJadwal?.data?.hari || [],
     unitOpt: state.Home.getComboJadwal?.data?.unit || [],
     dokter: state.Home.getJadwalDokter?.data?.dokter || [],
-    user: Array.isArray(state.Login.loginUser?.data)
+    user: Array.isArray(state.UserPasien.loginUser?.data)
       ? null
-      : state.Login.loginUser?.data,
+      : state.UserPasien.loginUser?.data,
   }))
   const [dateToday] = useState(() => new Date())
   unitOpt = [{ value: '', label: 'Semua Poliklinik' }, ...unitOpt]
