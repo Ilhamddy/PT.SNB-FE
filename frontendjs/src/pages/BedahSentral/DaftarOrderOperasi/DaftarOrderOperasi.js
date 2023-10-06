@@ -9,7 +9,7 @@ import * as Yup from "yup";
 import CustomSelect from "../../Select/Select";
 import {
     bedahSentralResetForm, widgetOrderOperasiGet, getDaftarOrderOperasi,
-    
+
 } from "../../../store/actions";
 import { comboRegistrasiGet } from '../../../store/master/action';
 import { useDispatch, useSelector } from "react-redux";
@@ -47,8 +47,8 @@ const DaftarOrderOperasi = () => {
             dispatch(getDaftarOrderOperasi({
                 dateStart: vSetValidation.values.dateStart,
                 dateEnd: vSetValidation.values.dateEnd,
-                unitOrder:vSetValidation.values.unitOrder,
-                search:vSetValidation.values.search
+                unitOrder: vSetValidation.values.unitOrder,
+                search: vSetValidation.values.search
             }));
         }
     })
@@ -77,17 +77,18 @@ const DaftarOrderOperasi = () => {
         dispatch(getDaftarOrderOperasi({
             dateStart: vSetValidation.values.dateStart,
             dateEnd: vSetValidation.values.dateEnd,
-            unitOrder:vSetValidation.values.unitOrder
+            unitOrder: vSetValidation.values.unitOrder
         }));
-    }, [dispatch, vSetValidation.values.dateStart, vSetValidation.values.dateEnd,vSetValidation.values.unitOrder])
+    }, [dispatch, vSetValidation.values.dateStart, vSetValidation.values.dateEnd, vSetValidation.values.unitOrder])
     const [datax, setDatax] = useState([]);
     useEffect(() => {
         setDatax(data)
     }, [setDatax, data])
+    const [selectedPasien, setselectedPasien] = useState(null);
     const handleCard = (item) => {
         // console.log(item)
         // setnamaPasien(item.namapasien)
-        // setselectedPasien(item)
+        setselectedPasien(item)
         const itemIndex = datax.findIndex((dataItem) => dataItem.norec === item.norec);
         if (itemIndex !== -1) {
             const updatedData = [...datax];
@@ -172,8 +173,8 @@ const DaftarOrderOperasi = () => {
                                                 </h2>
                                             </span>
                                         </div>
-                                        {/* <h5 className="card-title mb-1">{namaPasien}</h5> */}
-                                        {/* <p className="text-muted mb-0">Graphic Designer</p> */}
+                                        <h5 className="card-title mb-1">{selectedPasien && selectedPasien.namapasien ? selectedPasien.namapasien : '-'}</h5>
+                                        <p className="text-muted mb-0">{selectedPasien && selectedPasien.jeniskelamin ? selectedPasien.jeniskelamin : '-'}</p>
                                     </CardBody>
                                 </Card>
                                 <Card>
@@ -284,7 +285,7 @@ const DaftarOrderOperasi = () => {
                                                     >
                                                         <CardBody>
                                                             <Row className="gy-3">
-                                                                <h6 className="card-title mb-0"><span className="badge align-middle fs-10" style={{ backgroundColor: item.colorjenisoperasi }}>{item.jenisoperasi}</span></h6>
+                                                                <h6 className="card-title mb-0"><span className="badge align-middle fs-10" style={{ backgroundColor: item.colorjenisoperasi,color:"black" }}>{item.jenisoperasi}</span></h6>
                                                                 <div className="col-sm-auto">
                                                                     <div className="avatar-md flex-shrink-0">
                                                                         <span className={"avatar-title rounded-circle fs-4"} style={{ backgroundColor: item.statusdarurat }}>

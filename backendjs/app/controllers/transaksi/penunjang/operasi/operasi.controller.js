@@ -118,7 +118,7 @@ const getHistoriOrderOperasi = async (req, res) => {
 const getWidgetOrderOperasi = async (req, res) => {
     const logger = res.locals.logger;
     try {
-        const resultlist = await pool.query(queries.qWidgetOrderOperasi, [req.query.dateStart,req.query.dateEnd]);
+        const resultlist = await pool.query(queries.qWidgetOrderOperasi, [req.query.dateStart, req.query.dateEnd]);
 
         const taskWidgets = [
             {
@@ -171,13 +171,15 @@ const getWidgetOrderOperasi = async (req, res) => {
 
 const getDaftarOrderOperasi = async (req, res) => {
     const logger = res.locals.logger;
-    try{
+    try {
         let unit = ' '
-        if(req.query.unitOrder!==''){
-            unit= ` and x.objectunitasalfk=${req.query.unitOrder}`
+        if (req.query.unitOrder !== '') {
+            unit = ` and x.objectunitasalfk=${req.query.unitOrder}`
         }
-        
-        let query = queries.qDaftarOrderOperasi + ` where x.tglinput between '${req.query.dateStart}' and '${req.query.dateEnd}' ${unit} and x.namapasien ilike '%${req.query.search}%'`
+        let search = ' '
+        if (req.query.search !== undefined)
+            search = req.query.search
+        let query = queries.qDaftarOrderOperasi + ` where x.tglinput between '${req.query.dateStart}' and '${req.query.dateEnd}' ${unit} and x.namapasien ilike '%${search}%'`
         const resultlist = await pool.query(query);
         res.status(200).send({
             msg: 'Success',
