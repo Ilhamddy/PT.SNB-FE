@@ -105,9 +105,16 @@ const JadwalDokter = () => {
   )
 }
 
-export const JadwalDokterKomponen = ({ imgDokter, dokters, refKontainer }) => {
+// TODO: canclick hapus
+export const JadwalDokterKomponen = ({
+  imgDokter,
+  dokters,
+  refKontainer,
+  canClick = true,
+}) => {
   const navigate = useNavigate()
   const handleToDokter = (dokter) => {
+    if (!canClick) return
     refKontainer.current.handleToNextPage(() => {
       navigate(`/dokter/${dokter.dokterid}`)
     })

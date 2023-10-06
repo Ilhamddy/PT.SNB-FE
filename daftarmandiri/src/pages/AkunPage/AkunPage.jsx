@@ -8,8 +8,10 @@ const AkunPage = ({}) => {
   const refKontainer = useRef(null)
   const dispatch = useDispatch()
   return (
-    <KontainerPage top={'0'} ref={refKontainer}>
-      <ButtonDM onClick={() => dispatch(logoutUser())}>Keluar</ButtonDM>
+    <KontainerPage top={'0'} ref={refKontainer} className="akun-page">
+      <div className="akun-kontainer">
+        <ButtonDM onClick={() => dispatch(logoutUser())}>Keluar</ButtonDM>
+      </div>
     </KontainerPage>
   )
 }
