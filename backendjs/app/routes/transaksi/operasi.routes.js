@@ -26,4 +26,10 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getWidgetOrderOperasi
     );
+
+    app.get(
+        "/api/transaksi/operasi/get-daftar-order-operasi",
+        [authJwt.verifyToken],
+        controller.getDaftarOrderOperasi
+    );
 }
