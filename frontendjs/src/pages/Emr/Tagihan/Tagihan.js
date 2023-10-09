@@ -31,25 +31,25 @@ const Tagihan = ({ show }) => {
     const { norecdp, norecap } = useParams();
     const dispatch = useDispatch();
     const { dataTagihan, loadingTagihan, successTagihan, dataTagihanPrint,
-    dataPasienReg } = useSelector((state) => ({
-        dataTagihan: state.Emr.listTagihanGet.data,
-        loadingTagihan: state.Emr.listTagihanGet.loading,
-        successTagihan: state.Emr.listTagihanGet.success,
-        dataTagihanPrint: state.Emr.listTagihanPrintGet.data || [],
-        dataPasienReg: state.Registrasi.registrasiRuangNorecGet.data || null,
-    }));
+        dataPasienReg } = useSelector((state) => ({
+            dataTagihan: state.Emr.listTagihanGet.data,
+            loadingTagihan: state.Emr.listTagihanGet.loading,
+            successTagihan: state.Emr.listTagihanGet.success,
+            dataTagihanPrint: state.Emr.listTagihanPrintGet.data || [],
+            dataPasienReg: state.Registrasi.registrasiRuangNorecGet.data || null,
+        }));
     useEffect(() => {
-        if(show==='2'){
+        if (show === '2') {
             if (norecdp) {
                 dispatch(listTagihanGet(norecdp));
                 dispatch(listTagihanPrintGet(norecdp));
             }
         }
 
-    }, [show,norecdp, dispatch])
+    }, [show, norecdp, dispatch])
 
     const refPrintBilling = useRef(null);
-    
+
     const tableCustomStyles = {
         headRow: {
             style: {
@@ -64,7 +64,7 @@ const Tagihan = ({ show }) => {
             },
         }
     }
-    
+
     const columns = [
         {
             name: <span className='font-weight-bold fs-13'>Detail</span>,
@@ -131,13 +131,13 @@ const Tagihan = ({ show }) => {
             selector: row => row.qty,
             sortable: true,
             width: "100px"
-        },{
+        }, {
 
             name: <span className='font-weight-bold fs-13'>Jasa</span>,
             selector: row => row.jasa,
             sortable: true,
             width: "100px"
-        },{
+        }, {
 
             name: <span className='font-weight-bold fs-13'>Cito</span>,
             selector: row => row.statuscito,
@@ -150,7 +150,7 @@ const Tagihan = ({ show }) => {
             selector: row => row.discount,
             sortable: true,
             width: "100px"
-        },{
+        }, {
 
             name: <span className='font-weight-bold fs-13'>Total</span>,
             selector: row => row.total?.toLocaleString('id-ID'),
@@ -201,11 +201,11 @@ const Tagihan = ({ show }) => {
                                             <h5 className="mb-3">Your Cart is Empty!</h5>
                                             <Link to="/apps-ecommerce-products" className="btn btn-success w-md mb-3">Shop Now</Link>
                                         </div>
-                                        
+
                                     </div>
                                 </SimpleBar>
                                 <Button onClick={() => handlePrint()}>
-                                    Print Tagihan   
+                                    Print Tagihan
                                 </Button>
                             </DropdownMenu>
                         </Dropdown>
@@ -221,19 +221,21 @@ const Tagihan = ({ show }) => {
                                 progressPending={loadingTagihan}
                                 customStyles={tableCustomStyles}
                                 progressComponent={<LoadingTable />}
+                                expandableRows
+                                expandableRowsComponent={ExpandablePetugas}
                             />
-                            
+
                         </div>
                     </CardBody>
 
                 </Card>
             </Row>
-            <PrintTemplate 
-                ContentPrint={<PrintRekapBiaya 
+            <PrintTemplate
+                ContentPrint={<PrintRekapBiaya
                     dataRekap={dataTagihanPrint?.billing || []}
                     dataPasien={dataPasienReg || null}
-                    />
-                    
+                />
+
                 }
                 ref={refPrintBilling}
             />
@@ -244,7 +246,31 @@ const Tagihan = ({ show }) => {
 
 Tagihan.propTypes = {
     show: PropTypes.any,
-  };
+};
+
+const ExpandablePetugas = ({ data }) => {
+
+    return (
+        <table className="table">
+            <thead className="thead-light">
+                <tr>
+                    <th scope="col" style={{ width: "5%" }}>No</th>
+                    <th scope="col" style={{ width: "40%" }}>Pelaksana Tindakan Operasi</th>
+                    <th scope="col" style={{ width: "55%" }}>Pegawai</th>
+                </tr>
+            </thead>
+            <tbody>
+            {(data.listpetugas || []).map((item, key) =>
+                <tr key={key}>
+                    <th scope="row">{key + 1}</th>
+                    <td>{item.reportdisplay}</td>
+                    <td>{item.namalengkap}</td>
+                </tr>
+            )}
+            </tbody>
+        </table>
+    )
+}
 
 
 export default (Tagihan)

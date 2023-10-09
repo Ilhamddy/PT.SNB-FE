@@ -67,6 +67,9 @@ export default (sequelize, Sequelize) => {
         objectjenisoperasifk:{
             type: Sequelize.INTEGER
         },
+        objectantreanpemeriksaanoperasifk: {
+            type: Sequelize.CHAR(32),
+        },
     }, {
         tableName: "t_orderoperasi",
         createdAt: false,

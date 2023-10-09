@@ -4,7 +4,16 @@ WIDGET_ORDER_OPERASI_GET_SUCCESS,
 WIDGET_ORDER_OPERASI_GET_ERROR,
 GET_DAFTAR_ORDER_OPERASI,
 GET_DAFTAR_ORDER_OPERASI_SUCCESS,
-GET_DAFTAR_ORDER_OPERASI_ERROR } from "./actionType";
+GET_DAFTAR_ORDER_OPERASI_ERROR,
+GET_COMBO_ORDER_OPERASI,
+GET_COMBO_ORDER_OPERASI_SUCCESS,
+GET_COMBO_ORDER_OPERASI_ERROR,
+UPDATE_ORDER_OPERASI,
+UPDATE_ORDER_OPERASI_SUCCESS,
+UPDATE_ORDER_OPERASI_ERROR,
+GET_DAFTAR_PASIEN_OPERASI,
+GET_DAFTAR_PASIEN_OPERASI_SUCCESS,
+GET_DAFTAR_PASIEN_OPERASI_ERROR } from "./actionType";
 
 export const bedahSentralResetForm = () => ({
     type: BEDAH_SENTRAL_RESET_FORM,
@@ -37,5 +46,53 @@ export const getDaftarOrderOperasiSuccess = (data) => ({
 
 export const getDaftarOrderOperasiError = (error) => ({
     type: GET_DAFTAR_ORDER_OPERASI_ERROR,
+    payload: error,
+});
+
+export const getComboOrderOperasi = (queries) => ({
+    type: GET_COMBO_ORDER_OPERASI,
+    payload: { queries: queries },
+});
+
+export const getComboOrderOperasiSuccess = (data) => ({
+    type: GET_COMBO_ORDER_OPERASI_SUCCESS,
+    payload: data,
+});
+
+export const getComboOrderOperasiError = (error) => ({
+    type: GET_COMBO_ORDER_OPERASI_ERROR,
+    payload: error,
+});
+
+export const updateOrderOperasi = (body, callback) => ({
+    type: UPDATE_ORDER_OPERASI,
+    payload: {
+        body: body,
+        callback: callback
+    }
+});
+
+export const updateOrderOperasiSuccess = (data) => ({
+    type: UPDATE_ORDER_OPERASI_SUCCESS,
+    payload: data
+});
+
+export const updateOrderOperasiError = (error) => ({
+    type: UPDATE_ORDER_OPERASI_ERROR,
+    payload: error
+});
+
+export const getDaftarPasienOperasi = (queries) => ({
+    type: GET_DAFTAR_PASIEN_OPERASI,
+    payload: { queries: queries },
+});
+
+export const getDaftarPasienOperasiSuccess = (data) => ({
+    type: GET_DAFTAR_PASIEN_OPERASI_SUCCESS,
+    payload: data,
+});
+
+export const getDaftarPasienOperasiError = (error) => ({
+    type: GET_DAFTAR_PASIEN_OPERASI_ERROR,
     payload: error,
 });

@@ -208,7 +208,8 @@ async function getListTagihan(req, res) {
             tp.jasa,
             '' as petugas,
             case when tp.iscito=true then '✓' else '✕' end as statuscito,
-            tp.total
+            tp.total,
+            '' as listpetugas
         from
             t_daftarpasien td
         join t_antreanpemeriksaan ta on
@@ -225,16 +226,18 @@ async function getListTagihan(req, res) {
 
         for (let i = 0; i < resultlist.rows.length; ++i) {
             const resultlistPetugas = await queryPromise2(`select
-                tp.norec,mp.namalengkap 
+                tp.norec,mp.namalengkap,mj.reportdisplay
             from
                 t_pelayananpasienpetugas tp
-            join m_pegawai mp on mp.id=tp.objectpegawaifk 
+            join m_pegawai mp on mp.id=tp.objectpegawaifk
+            join m_jenispelaksana mj on mj.id=tp.objectjenispelaksanafk
             where tp.statusenabled = true and tp.objectpelayananpasienfk='${resultlist.rows[i].norec}'`);
             let tempPetugas = ''
             for (let x = 0; x < resultlistPetugas.rows.length; ++x) {
                 tempPetugas = tempPetugas +resultlistPetugas.rows[x].namalengkap +', '
             }
             resultlist.rows[i].petugas = tempPetugas
+            resultlist.rows[i].listpetugas = resultlistPetugas.rows
         }
         let tempres = resultlist.rows
 

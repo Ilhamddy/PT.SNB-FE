@@ -2,14 +2,14 @@ import React, { useEffect, useState } from "react"
 import withRouter from "../../../Components/Common/withRouter"
 import UiContent from "../../../Components/Common/UiContent";
 import BreadCrumb from "../../../Components/Common/BreadCrumb";
-import { Button, Card, CardBody, CardHeader, Col, Container, Form, FormFeedback, Input, Row } from "reactstrap";
+import { Button, Card, CardBody, CardHeader, Col, Container, Form, FormFeedback, Input, Label, Modal, ModalBody, Nav, NavItem, NavLink, Row, TabContent, TabPane, Table } from "reactstrap";
 import KontainerFlatpickr from "../../../Components/KontainerFlatpickr/KontainerFlatpickr";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import CustomSelect from "../../Select/Select";
 import {
     bedahSentralResetForm, widgetOrderOperasiGet, getDaftarOrderOperasi,
-    
+    getComboOrderOperasi,updateOrderOperasi
 } from "../../../store/actions";
 import { comboRegistrasiGet } from '../../../store/master/action';
 import { useDispatch, useSelector } from "react-redux";
@@ -21,6 +21,8 @@ import kakek from "../../../assets/images/svg/kakek.svg"
 import nenek from "../../../assets/images/svg/nenek.svg"
 import anakperempuan from "../../../assets/images/svg/anakperempuan.svg"
 import dewasaperempuan from "../../../assets/images/svg/dewasaperempuan.svg"
+import classnames from "classnames";
+import { ToastContainer, toast } from 'react-toastify';
 
 const DaftarOrderOperasi = () => {
     document.title = "Daftar Order Operasi";
@@ -47,8 +49,9 @@ const DaftarOrderOperasi = () => {
             dispatch(getDaftarOrderOperasi({
                 dateStart: vSetValidation.values.dateStart,
                 dateEnd: vSetValidation.values.dateEnd,
-                unitOrder:vSetValidation.values.unitOrder,
-                search:vSetValidation.values.search
+                unitOrder: vSetValidation.values.unitOrder,
+                search: vSetValidation.values.search,
+                status:''
             }));
         }
     })
@@ -77,17 +80,19 @@ const DaftarOrderOperasi = () => {
         dispatch(getDaftarOrderOperasi({
             dateStart: vSetValidation.values.dateStart,
             dateEnd: vSetValidation.values.dateEnd,
-            unitOrder:vSetValidation.values.unitOrder
+            unitOrder: vSetValidation.values.unitOrder,
+            status:''
         }));
-    }, [dispatch, vSetValidation.values.dateStart, vSetValidation.values.dateEnd,vSetValidation.values.unitOrder])
+    }, [dispatch, vSetValidation.values.dateStart, vSetValidation.values.dateEnd, vSetValidation.values.unitOrder])
     const [datax, setDatax] = useState([]);
     useEffect(() => {
         setDatax(data)
     }, [setDatax, data])
+    const [selectedPasien, setselectedPasien] = useState(null);
     const handleCard = (item) => {
         // console.log(item)
         // setnamaPasien(item.namapasien)
-        // setselectedPasien(item)
+        setselectedPasien(item)
         const itemIndex = datax.findIndex((dataItem) => dataItem.norec === item.norec);
         if (itemIndex !== -1) {
             const updatedData = [...datax];
@@ -113,8 +118,33 @@ const DaftarOrderOperasi = () => {
             setdataUnit(newArray)
         }
     }
+    // Pills Tabs
+    const [pillsTab, setpillsTab] = useState("3");
+    const pillsToggle = (tab) => {
+        if (pillsTab !== tab) {
+            setpillsTab(tab);
+        }
+    };
+    const handleClickButton = (e) => {
+        if (selectedPasien === null) {
+            toast.error("Pasien Belum Dipilih", { autoClose: 3000 });
+            return
+        }
+
+        if (e === 'Verifikasi') {
+            setisVerifikasiOpen(true)
+        }
+
+    };
+    const [isVerifikasiOpen, setisVerifikasiOpen] = useState(false);
     return (
         <React.Fragment>
+            <ToastContainer closeButton={false} />
+            <ModalVerifikasi
+                isVerifikasiOpen={isVerifikasiOpen}
+                toggle={() => setisVerifikasiOpen(!isVerifikasiOpen)}
+                selectedPasien={selectedPasien}
+            />
             <UiContent />
             <div className="page-content">
                 <Container fluid>
@@ -172,18 +202,98 @@ const DaftarOrderOperasi = () => {
                                                 </h2>
                                             </span>
                                         </div>
-                                        {/* <h5 className="card-title mb-1">{namaPasien}</h5> */}
-                                        {/* <p className="text-muted mb-0">Graphic Designer</p> */}
+                                        <h5 className="card-title mb-1">{selectedPasien && selectedPasien.namapasien ? selectedPasien.namapasien : '-'}</h5>
+                                        <p className="text-muted mb-0">{selectedPasien && selectedPasien.jeniskelamin ? selectedPasien.jeniskelamin : '-'}</p>
                                     </CardBody>
                                 </Card>
                                 <Card>
                                     <CardBody>
-                                        <div className="live-preview">
-                                            <div className="d-flex flex-column gap-2">
-                                                {/* <Button color="info" className="btn-animation" data-text="Registrasi" onClick={() => handleClickButton('registrasi')}><span>Registrasi</span></Button>
-                                                    <Button color="info" className="btn-animation" data-text="Pengkajian Medis" onClick={() => handleClickButton('pengkajian')}> <span>Pengkajian Medis</span> </Button> */}
-                                            </div>
-                                        </div>
+                                        <Nav pills className="nav-success mb-3">
+                                            <NavItem>
+                                                <NavLink style={{ cursor: "pointer" }} className={classnames({ active: pillsTab === "1", })} onClick={() => { pillsToggle("1"); }} >
+                                                    Profile
+                                                </NavLink>
+                                            </NavItem>
+                                            <NavItem>
+                                                <NavLink style={{ cursor: "pointer" }} className={classnames({ active: pillsTab === "2", })} onClick={() => { pillsToggle("2"); }} >
+                                                    Riwayat
+                                                </NavLink>
+                                            </NavItem>
+                                            <NavItem>
+                                                <NavLink style={{ cursor: "pointer" }} className={classnames({ active: pillsTab === "3", })} onClick={() => { pillsToggle("3"); }} >
+                                                    Action
+                                                </NavLink>
+                                            </NavItem>
+                                        </Nav>
+
+                                        <TabContent activeTab={pillsTab} className="text-muted">
+                                            <TabPane tabId="1" id="home-1">
+                                                <Card>
+                                                    <CardBody>
+                                                        <div className="table-responsive">
+                                                            <Table className="table-borderless mb-0">
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <th className="ps-0" scope="row">Tgl. Order :</th>
+                                                                        <td className="text-muted">{selectedPasien && selectedPasien.tglinputx ? selectedPasien.tglinputx : '-'}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th className="ps-0" scope="row">Rencana Operasi :</th>
+                                                                        <td className="text-muted">{selectedPasien && selectedPasien.tglrencana ? selectedPasien.tglrencana : '-'}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th className="ps-0" scope="row">Kelas :</th>
+                                                                        <td className="text-muted">{selectedPasien && selectedPasien.namakelas ? selectedPasien.namakelas : '-'}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th className="ps-0" scope="row">Penjamin :</th>
+                                                                        <td className="text-muted">{selectedPasien && selectedPasien.jenispenjamin ? selectedPasien.jenispenjamin : '-'}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th className="ps-0" scope="row">Diorder Oleh :</th>
+                                                                        <td className="text-muted">{selectedPasien && selectedPasien.pengorder ? selectedPasien.pengorder : '-'}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th className="ps-0" scope="row">Diagnosa :</th>
+                                                                        <td className="text-muted">{selectedPasien && selectedPasien.kodeexternal ? selectedPasien.kodeexternal : '-'}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th className="ps-0" scope="row">Keterangan :</th>
+                                                                        <td className="text-muted">{selectedPasien && selectedPasien.catatanorder ? selectedPasien.catatanorder : '-'}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th className="ps-0" scope="row">Nama Operasi :</th>
+                                                                        <td className="text-muted">{selectedPasien && selectedPasien.namaoperasi ? selectedPasien.namaoperasi : '-'}</td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </Table>
+                                                        </div>
+                                                    </CardBody>
+                                                </Card>
+                                            </TabPane>
+                                            <TabPane tabId="2" id="home-1">
+                                                <Card>
+                                                    <CardBody>
+                                                        <div className="table-responsive">
+
+                                                        </div>
+                                                    </CardBody>
+                                                </Card>
+                                            </TabPane>
+                                            <TabPane tabId="3" id="home-1">
+                                                <Card>
+                                                    <CardBody>
+                                                        <div className="live-preview">
+                                                            <div className="d-flex flex-column gap-2">
+                                                                <Button color="info" className="btn-animation" data-text="Verifikasi"
+                                                                    onClick={() => handleClickButton('Verifikasi')}
+                                                                ><span>Verifikasi</span></Button>
+                                                            </div>
+                                                        </div>
+                                                    </CardBody>
+                                                </Card>
+                                            </TabPane>
+                                        </TabContent>
                                     </CardBody>
                                 </Card>
                             </Col>
@@ -284,7 +394,7 @@ const DaftarOrderOperasi = () => {
                                                     >
                                                         <CardBody>
                                                             <Row className="gy-3">
-                                                                <h6 className="card-title mb-0"><span className="badge align-middle fs-10" style={{ backgroundColor: item.colorjenisoperasi }}>{item.jenisoperasi}</span></h6>
+                                                                <h6 className="card-title mb-0"><span className="badge align-middle fs-10" style={{ backgroundColor: item.colorjenisoperasi, color: "black" }}>{item.jenisoperasi}</span></h6>
                                                                 <div className="col-sm-auto">
                                                                     <div className="avatar-md flex-shrink-0">
                                                                         <span className={"avatar-title rounded-circle fs-4"} style={{ backgroundColor: item.statusdarurat }}>
@@ -322,11 +432,12 @@ const DaftarOrderOperasi = () => {
                                                                             : item.namapasien}
                                                                     </p>
                                                                     <p className="text-muted mb-0">{item.umur ? item.umur : '-'}</p>
+                                                                    <p className="text-muted mb-0">{item.statusoperasi ? item.statusoperasi : '-'}</p>
                                                                 </div>
                                                                 <div className="col-sm">
                                                                     <div className="text-lg-start">
                                                                         <p className="text-muted mb-0">Poli Order {item.namaunit}</p>
-                                                                        <p className="text-muted mb-0">Tgl. Order {item.tglinput ? item.tglinput : '-'}</p>
+                                                                        <p className="text-muted mb-0">Tgl. Order {item.tglinputx ? item.tglinputx : '-'}</p>
                                                                         <p className="text-muted mb-0">Jadwal Operasi {item.tglrencana ? item.tglrencana : '-'}</p>
                                                                     </div>
                                                                 </div>
@@ -351,6 +462,426 @@ const DaftarOrderOperasi = () => {
                 </Container>
             </div>
         </React.Fragment>
+    )
+}
+
+const ModalVerifikasi = ({ isVerifikasiOpen, toggle, selectedPasien }) => {
+    const dispatch = useDispatch();
+    const [dateEnd] = useState(() => (new Date()).toISOString())
+    const { dataComboOperasi,newData,success,loading } = useSelector((state) => ({
+        dataComboOperasi: state.BedahSentral.getComboOrderOperasi.data,
+        newData: state.BedahSentral.updateOrderOperasi.newData,
+        success: state.BedahSentral.updateOrderOperasi.success,
+        loading: state.BedahSentral.updateOrderOperasi.loading,
+    }));
+    const vSetValidationModal = useFormik({
+        enableReinitialize: true,
+        initialValues: {
+            norecdp: selectedPasien?.norecdp ?? '',
+            norec:selectedPasien?.norec ?? '',
+            rencanaOperasi: selectedPasien?.tglrencanax ?? '',
+            nocm: selectedPasien?.nocm ?? '',
+            namapasien: selectedPasien?.namapasien ?? '',
+            unitasal: selectedPasien?.namaunit ?? '',
+            tglorder: selectedPasien?.tglinputx ?? '',
+            diagnosa: selectedPasien?.kodeexternal ?? '',
+            catatanorder: selectedPasien?.catatanorder ?? '',
+            statusVerifikasi: selectedPasien?.objectstatusoperasifk ?? '',
+            formCheckCito: selectedPasien?.iscito ?? '',
+            namaOperasi: selectedPasien?.namaoperasi ?? '',
+            drOperator: selectedPasien?.objectdokteroperatorfk ?? '',
+            jenisOperasi: selectedPasien?.objectjenisoperasifk ?? '',
+            kamarOperasi: selectedPasien?.objectkamarfk ?? '',
+            catatanVerifikasi: selectedPasien?.catatanverif ?? '',
+            objectunitasalfk:selectedPasien?.objectunitasalfk ?? ''
+        },
+        validationSchema: Yup.object({
+        }),
+        onSubmit: (values, { resetForm }) => {
+            // console.log(values);
+            dispatch(updateOrderOperasi(values, () => {
+                // resetForm({ values: '' })
+            }));
+
+        }
+    })
+    useEffect(() => {
+        dispatch(getComboOrderOperasi());
+    }, [dispatch]);
+    return (
+        <Modal isOpen={isVerifikasiOpen} toggle={toggle} centered={true} size="xl">
+            <ModalBody>
+                <Form
+                    onSubmit={(e) => {
+                        e.preventDefault();
+                        vSetValidationModal.handleSubmit();
+                        return false;
+                    }}
+                    className="gy-4"
+                    action="#">
+                    <Card>
+                        <CardHeader className="align-items-center" style={{ backgroundColor: "#e67e22" }}>
+                            <h4 className="mb-0" style={{ color: 'black', textAlign: 'center' }}>Verifikasi Order Operasi</h4>
+                        </CardHeader>
+                        <CardBody>
+                            <Row className="gy-3">
+                                <Col lg={6}>
+                                    <Row className="gy-3">
+                                        <Col lg={6}>
+                                            <div className="mt-2">
+                                                <Label className="form-label">No RM</Label>
+                                            </div>
+                                        </Col>
+                                        <Col lg={6}>
+                                            <Input
+                                                id="nocm"
+                                                name="nocm"
+                                                type="text"
+                                                value={vSetValidationModal.values.nocm}
+                                                onChange={(e) => {
+                                                    vSetValidationModal.setFieldValue('nocm', e.target.value)
+                                                }}
+                                                invalid={vSetValidationModal.touched?.nocm &&
+                                                    !!vSetValidationModal.errors?.nocm}
+                                                disabled
+                                            />
+                                            {vSetValidationModal.touched?.nocm
+                                                && !!vSetValidationModal.errors.nocm && (
+                                                    <FormFeedback type="invalid">
+                                                        <div>{vSetValidationModal.errors.nocm}</div>
+                                                    </FormFeedback>
+                                                )}
+                                        </Col>
+                                        <Col lg={6}>
+                                            <div className="mt-2">
+                                                <Label className="form-label">Nama Pasien</Label>
+                                            </div>
+                                        </Col>
+                                        <Col lg={6}>
+                                            <Input
+                                                id="namapasien"
+                                                name="namapasien"
+                                                type="text"
+                                                value={vSetValidationModal.values.namapasien}
+                                                onChange={(e) => {
+                                                    vSetValidationModal.setFieldValue('namapasien', e.target.value)
+                                                }}
+                                                invalid={vSetValidationModal.touched?.namapasien &&
+                                                    !!vSetValidationModal.errors?.namapasien}
+                                                disabled
+                                            />
+                                            {vSetValidationModal.touched?.namapasien
+                                                && !!vSetValidationModal.errors.namapasien && (
+                                                    <FormFeedback type="invalid">
+                                                        <div>{vSetValidationModal.errors.namapasien}</div>
+                                                    </FormFeedback>
+                                                )}
+                                        </Col>
+                                        <Col lg={6}>
+                                            <div className="mt-2">
+                                                <Label className="form-label">Unit Asal</Label>
+                                            </div>
+                                        </Col>
+                                        <Col lg={6}>
+                                            <Input
+                                                id="unitasal"
+                                                name="unitasal"
+                                                type="text"
+                                                value={vSetValidationModal.values.unitasal}
+                                                onChange={(e) => {
+                                                    vSetValidationModal.setFieldValue('unitasal', e.target.value)
+                                                }}
+                                                invalid={vSetValidationModal.touched?.unitasal &&
+                                                    !!vSetValidationModal.errors?.unitasal}
+                                                disabled
+                                            />
+                                            {vSetValidationModal.touched?.unitasal
+                                                && !!vSetValidationModal.errors.unitasal && (
+                                                    <FormFeedback type="invalid">
+                                                        <div>{vSetValidationModal.errors.unitasal}</div>
+                                                    </FormFeedback>
+                                                )}
+                                        </Col>
+                                        <Col lg={6}>
+                                            <div className="mt-2">
+                                                <Label className="form-label">Tgl. Order</Label>
+                                            </div>
+                                        </Col>
+                                        <Col lg={6}>
+                                            <Input
+                                                id="tglorder"
+                                                name="tglorder"
+                                                type="text"
+                                                value={vSetValidationModal.values.tglorder}
+                                                onChange={(e) => {
+                                                    vSetValidationModal.setFieldValue('tglorder', e.target.value)
+                                                }}
+                                                invalid={vSetValidationModal.touched?.tglorder &&
+                                                    !!vSetValidationModal.errors?.tglorder}
+                                                disabled
+                                            />
+                                            {vSetValidationModal.touched?.tglorder
+                                                && !!vSetValidationModal.errors.tglorder && (
+                                                    <FormFeedback type="invalid">
+                                                        <div>{vSetValidationModal.errors.tglorder}</div>
+                                                    </FormFeedback>
+                                                )}
+                                        </Col>
+                                        <Col lg={6}>
+                                            <div className="mt-2">
+                                                <Label className="form-label">Diagnosa</Label>
+                                            </div>
+                                        </Col>
+                                        <Col lg={6}>
+                                            <Input
+                                                id="diagnosa"
+                                                name="diagnosa"
+                                                type="text"
+                                                value={vSetValidationModal.values.diagnosa}
+                                                onChange={(e) => {
+                                                    vSetValidationModal.setFieldValue('diagnosa', e.target.value)
+                                                }}
+                                                invalid={vSetValidationModal.touched?.diagnosa &&
+                                                    !!vSetValidationModal.errors?.diagnosa}
+                                                disabled
+                                            />
+                                            {vSetValidationModal.touched?.diagnosa
+                                                && !!vSetValidationModal.errors.diagnosa && (
+                                                    <FormFeedback type="invalid">
+                                                        <div>{vSetValidationModal.errors.diagnosa}</div>
+                                                    </FormFeedback>
+                                                )}
+                                        </Col>
+                                        <Col lg={6}>
+                                            <div className="mt-2">
+                                                <Label className="form-label">Catatan Order</Label>
+                                            </div>
+                                        </Col>
+                                        <Col lg={6}>
+                                            <Input
+                                                id="catatanorder"
+                                                name="catatanorder"
+                                                type="textarea"
+                                                value={vSetValidationModal.values.catatanorder}
+                                                onChange={(e) => {
+                                                    vSetValidationModal.setFieldValue('catatanorder', e.target.value)
+                                                }}
+                                                invalid={vSetValidationModal.touched?.catatanorder &&
+                                                    !!vSetValidationModal.errors?.catatanorder}
+                                                disabled
+                                            />
+                                            {vSetValidationModal.touched?.catatanorder
+                                                && !!vSetValidationModal.errors.catatanorder && (
+                                                    <FormFeedback type="invalid">
+                                                        <div>{vSetValidationModal.errors.catatanorder}</div>
+                                                    </FormFeedback>
+                                                )}
+                                        </Col>
+                                    </Row>
+                                </Col>
+                                <Col lg={6}>
+                                    <Row className="gy-3">
+                                        <Col lg={4}>
+                                            <div className="mt-2">
+                                                <Label className="form-label">Status Verifikasi</Label>
+                                            </div>
+                                        </Col>
+                                        <Col lg={8}>
+                                            <CustomSelect
+                                                id="statusVerifikasi"
+                                                name="statusVerifikasi"
+                                                options={dataComboOperasi.statusverifikasi}
+                                                onChange={(e) => {
+                                                    vSetValidationModal.setFieldValue('statusVerifikasi', e?.value || '')
+                                                }}
+                                                value={vSetValidationModal.values.statusVerifikasi}
+                                                className={`input row-header ${!!vSetValidationModal?.errors.statusVerifikasi ? 'is-invalid' : ''
+                                                    }`}
+                                            />
+                                            {vSetValidationModal.touched.statusVerifikasi &&
+                                                !!vSetValidationModal.errors.statusVerifikasi && (
+                                                    <FormFeedback type="invalid">
+                                                        <div>{vSetValidationModal.errors.statusVerifikasi}</div>
+                                                    </FormFeedback>
+                                                )}
+                                        </Col>
+                                        <Col lg={4}>
+                                            <div className="mt-2">
+                                                <Label className="form-label">Rencana Operasi</Label>
+                                            </div>
+                                        </Col>
+                                        <Col lg={8}>
+                                            <Row>
+                                                <Col lg={8}>
+                                                    <KontainerFlatpickr
+                                                        isError={vSetValidationModal.touched?.rencanaOperasi &&
+                                                            !!vSetValidationModal.errors?.rencanaOperasi}
+                                                        id="rencanaOperasi"
+                                                        options={{
+                                                            dateFormat: 'Y-m-d H:i',
+                                                            defaultDate: 'today',
+                                                            enableTime: true,
+                                                            time_24hr: true
+                                                        }}
+                                                        value={vSetValidationModal.values.rencanaOperasi}
+                                                        onChange={([newDate]) => {
+                                                            vSetValidationModal.setFieldValue('rencanaOperasi', newDate.toISOString())
+                                                        }}
+                                                    />
+                                                    {vSetValidationModal.touched?.rencanaOperasi
+                                                        && !!vSetValidationModal.errors.rencanaOperasi && (
+                                                            <FormFeedback type="invalid">
+                                                                <div>{vSetValidationModal.errors.rencanaOperasi}</div>
+                                                            </FormFeedback>
+                                                        )}
+                                                </Col>
+                                                <Col lg={4}>
+                                                    <div className="form-check ms-2">
+                                                        <Input className="form-check-input" type="checkbox" id="formCheckCito"
+                                                            onChange={value => vSetValidationModal.setFieldValue('formCheckCito', value.target.checked)} />
+                                                        <Label className="form-check-label" htmlFor="formCheckCito" style={{ color: "black" }} >
+                                                            Cito
+                                                        </Label>
+                                                    </div>
+                                                </Col>
+                                            </Row>
+                                        </Col>
+                                        <Col lg={4}>
+                                            <div className="mt-2">
+                                                <Label className="form-label">Nama Operasi</Label>
+                                            </div>
+                                        </Col>
+                                        <Col lg={8}>
+                                            <Input
+                                                id="namaOperasi"
+                                                name="namaOperasi"
+                                                type="text"
+                                                value={vSetValidationModal.values.namaOperasi}
+                                                onChange={(e) => {
+                                                    vSetValidationModal.setFieldValue('namaOperasi', e.target.value)
+                                                }}
+                                                invalid={vSetValidationModal.touched?.namaOperasi &&
+                                                    !!vSetValidationModal.errors?.namaOperasi}
+                                            />
+                                            {vSetValidationModal.touched?.namaOperasi
+                                                && !!vSetValidationModal.errors.namaOperasi && (
+                                                    <FormFeedback type="invalid">
+                                                        <div>{vSetValidationModal.errors.namaOperasi}</div>
+                                                    </FormFeedback>
+                                                )}
+                                        </Col>
+                                        <Col lg={4}>
+                                            <div className="mt-2">
+                                                <Label className="form-label">Dokter Operator</Label>
+                                            </div>
+                                        </Col>
+                                        <Col lg={8}>
+                                            <CustomSelect
+                                                id="drOperator"
+                                                name="drOperator"
+                                                options={dataComboOperasi.pegawai}
+                                                onChange={(e) => {
+                                                    vSetValidationModal.setFieldValue('drOperator', e?.value || '')
+                                                }}
+                                                value={vSetValidationModal.values.drOperator}
+                                                className={`input row-header ${!!vSetValidationModal?.errors.drOperator ? 'is-invalid' : ''
+                                                    }`}
+                                            />
+                                            {vSetValidationModal.touched.drOperator &&
+                                                !!vSetValidationModal.errors.drOperator && (
+                                                    <FormFeedback type="invalid">
+                                                        <div>{vSetValidationModal.errors.drOperator}</div>
+                                                    </FormFeedback>
+                                                )}
+                                        </Col>
+                                        <Col lg={4}>
+                                            <div className="mt-2">
+                                                <Label className="form-label">Jenis Operasi</Label>
+                                            </div>
+                                        </Col>
+                                        <Col lg={8}>
+                                            <CustomSelect
+                                                id="jenisOperasi"
+                                                name="jenisOperasi"
+                                                options={dataComboOperasi.jenisoperasi}
+                                                onChange={(e) => {
+                                                    vSetValidationModal.setFieldValue('jenisOperasi', e?.value || '')
+                                                }}
+                                                value={vSetValidationModal.values.jenisOperasi}
+                                                className={`input row-header ${!!vSetValidationModal?.errors.jenisOperasi ? 'is-invalid' : ''
+                                                    }`}
+                                            />
+                                            {vSetValidationModal.touched.jenisOperasi &&
+                                                !!vSetValidationModal.errors.jenisOperasi && (
+                                                    <FormFeedback type="invalid">
+                                                        <div>{vSetValidationModal.errors.jenisOperasi}</div>
+                                                    </FormFeedback>
+                                                )}
+                                        </Col>
+                                        <Col lg={4}>
+                                            <div className="mt-2">
+                                                <Label className="form-label">Kamar Operasi</Label>
+                                            </div>
+                                        </Col>
+                                        <Col lg={8}>
+                                            <CustomSelect
+                                                id="kamarOperasi"
+                                                name="kamarOperasi"
+                                                options={dataComboOperasi.kamaroperasi}
+                                                onChange={(e) => {
+                                                    vSetValidationModal.setFieldValue('kamarOperasi', e?.value || '')
+                                                }}
+                                                value={vSetValidationModal.values.kamarOperasi}
+                                                className={`input row-header ${!!vSetValidationModal?.errors.kamarOperasi ? 'is-invalid' : ''
+                                                    }`}
+                                            />
+                                            {vSetValidationModal.touched.kamarOperasi &&
+                                                !!vSetValidationModal.errors.kamarOperasi && (
+                                                    <FormFeedback type="invalid">
+                                                        <div>{vSetValidationModal.errors.kamarOperasi}</div>
+                                                    </FormFeedback>
+                                                )}
+                                        </Col>
+                                        <Col lg={4}>
+                                            <div className="mt-2">
+                                                <Label className="form-label">Catatan Verifikasi</Label>
+                                            </div>
+                                        </Col>
+                                        <Col lg={8}>
+                                            <Input
+                                                id="catatanVerifikasi"
+                                                name="catatanVerifikasi"
+                                                type="textarea"
+                                                value={vSetValidationModal.values.catatanVerifikasi}
+                                                onChange={(e) => {
+                                                    vSetValidationModal.setFieldValue('catatanVerifikasi', e.target.value)
+                                                }}
+                                                invalid={vSetValidationModal.touched?.catatanVerifikasi &&
+                                                    !!vSetValidationModal.errors?.catatanVerifikasi}
+                                            />
+                                            {vSetValidationModal.touched?.catatanVerifikasi
+                                                && !!vSetValidationModal.errors.catatanVerifikasi && (
+                                                    <FormFeedback type="invalid">
+                                                        <div>{vSetValidationModal.errors.catatanVerifikasi}</div>
+                                                    </FormFeedback>
+                                                )}
+                                        </Col>
+                                    </Row>
+                                </Col>
+                                <Col lg={12} className="mr-3 me-3 mt-2">
+                                    <div className="d-flex flex-wrap justify-content-end gap-2">
+                                        <Button type="submit" color="success" style={{ width: '20%' }}>Simpan</Button>
+                                        <Button type="button" color="danger" style={{ width: '20%' }}
+                                        onClick={() => { toggle()}}
+                                        >Batal</Button>
+                                    </div>
+                                </Col>
+                            </Row>
+                        </CardBody>
+                    </Card>
+                </Form>
+            </ModalBody>
+        </Modal>
     )
 }
 export default withRouter(DaftarOrderOperasi)

@@ -118,7 +118,7 @@ const getHistoriOrderOperasi = async (req, res) => {
 const getWidgetOrderOperasi = async (req, res) => {
     const logger = res.locals.logger;
     try {
-        const resultlist = await pool.query(queries.qWidgetOrderOperasi, [req.query.dateStart,req.query.dateEnd]);
+        const resultlist = await pool.query(queries.qWidgetOrderOperasi, [req.query.dateStart, req.query.dateEnd]);
 
         const taskWidgets = [
             {
@@ -171,13 +171,142 @@ const getWidgetOrderOperasi = async (req, res) => {
 
 const getDaftarOrderOperasi = async (req, res) => {
     const logger = res.locals.logger;
-    try{
+    try {
         let unit = ' '
-        if(req.query.unitOrder!==''){
-            unit= ` and x.objectunitasalfk=${req.query.unitOrder}`
+        if (req.query.unitOrder !== '') {
+            unit = ` and x.objectunitasalfk=${req.query.unitOrder}`
         }
-        
-        let query = queries.qDaftarOrderOperasi + ` where x.tglinput between '${req.query.dateStart}' and '${req.query.dateEnd}' ${unit} and x.namapasien ilike '%${req.query.search}%'`
+        let search = ' '
+        if (req.query.search !== undefined)
+            search = req.query.search
+        let statusOperasi = ' '
+        if (req.query.status === '2') {
+            statusOperasi = ` and x.objectstatusoperasifk in (2,3,4)`
+        }
+        let query = queries.qDaftarOrderOperasi + ` where x.tglinput between '${req.query.dateStart}' and '${req.query.dateEnd}' ${unit} and x.namapasien ilike '%${search}%' ${statusOperasi}`
+        const resultlist = await pool.query(query);
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: resultlist.rows,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+const getComboOperasi = async (req, res) => {
+    const logger = res.locals.logger;
+    try {
+        const result1 = await pool.query(queries.qStatusVerifikasi, []);
+        const result2 = await pool.query(queries.qPegawai, []);
+        const result3 = await pool.query(queries.qJenisOperasi, []);
+        const result4 = await pool.query(queries.qKamarOperasi, []);
+        const tempres = {
+            statusverifikasi: result1.rows,
+            pegawai: result2.rows,
+            jenisoperasi: result3.rows,
+            kamaroperasi: result4.rows
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+const updateOrderOperasi = async (req, res) => {
+    const logger = res.locals.logger;
+    try {
+        const { orderOperasi,antreanpemeriksaan } = await db.sequelize.transaction(async (transaction) => {
+            let norecAP = uuid.v4().substring(0, 32)
+            const antreanpemeriksaan = await db.t_antreanpemeriksaan.create({
+                norec: norecAP,
+                objectdaftarpasienfk: req.body.norecdp,
+                tglmasuk: req.body.rencanaOperasi,
+                tglkeluar: req.body.rencanaOperasi,
+                objectunitfk: 11,
+                objectkelasfk: 8,
+                taskid: 3,
+                statusenabled: true,
+                objectunitasalfk: req.body.objectunitasalfk,
+                objectkamarfk:req.body.kamarOperasi
+            }, { transaction });
+
+            const orderOperasi = await db.t_orderoperasi.update({
+                tglrencana: req.body.rencanaOperasi,
+                iscito: req.body.formCheckCito !== true ? false : req.body.formCheckCito,
+                namaoperasi: req.body.namaoperasi,
+                objectdokteroperatorfk: req.body.drOperator,
+                objectjenisoperasifk: req.body.jenisOperasi,
+                objectkamarfk: req.body.kamarOperasi,
+                objectpegawaiveriffk: req.idPegawai,
+                catatanverif: req.body.catatanVerifikasi,
+                objectstatusoperasifk: req.body.statusVerifikasi,
+                tglverif: new Date(),
+                objectantreanpemeriksaanoperasifk:norecAP
+            }, {
+                where: {
+                    norec: req.body.norec,
+                },
+                transaction: transaction
+            });
+
+            return { orderOperasi, antreanpemeriksaan }
+        });
+
+        const tempres = {
+            orderOperasi: orderOperasi
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+const getDaftarPasienOperasi = async (req, res) => {
+    const logger = res.locals.logger;
+    try {
+        let unit = ' '
+        if (req.query.unitOrder !== '') {
+            unit = ` and x.objectunitasalfk=${req.query.unitOrder}`
+        }
+        let search = ' '
+        if (req.query.search !== undefined)
+            search = req.query.search
+        let statusOperasi = ' '
+        // if (req.query.status === '2') {
+        //     statusOperasi = ` and x.objectstatusoperasifk in (2,3,4)`
+        // }
+        let query = queries.qDaftarPasienOperasi + ` where x.tglinput between '${req.query.dateStart}' and '${req.query.dateEnd}' ${unit} and x.namapasien ilike '%${search}%' ${statusOperasi}`
         const resultlist = await pool.query(query);
         res.status(200).send({
             msg: 'Success',
@@ -200,5 +329,8 @@ export default {
     saveOrderOperasi,
     getHistoriOrderOperasi,
     getWidgetOrderOperasi,
-    getDaftarOrderOperasi
+    getDaftarOrderOperasi,
+    getComboOperasi,
+    updateOrderOperasi,
+    getDaftarPasienOperasi
 }
