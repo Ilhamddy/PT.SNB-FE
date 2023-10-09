@@ -130,7 +130,7 @@ const DaftarPasienOperasi = () => {
             <UiContent />
             <div className="page-content">
                 <Container fluid>
-                    <BreadCrumb title="Daftar Order Operasi" pageTitle="Forms" />
+                    <BreadCrumb title="Daftar Pasien Operasi" pageTitle="Forms" />
                     <Card>
                         <Row>
                             <Col lg={3}>
