@@ -1,10 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-/**
- * FIXME: somehow error clastlist dari sini
- */
-
 export const useCheckActivity = () => {
     const history = useNavigate();
 

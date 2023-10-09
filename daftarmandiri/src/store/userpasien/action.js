@@ -14,7 +14,10 @@ import {
     GET_RIWAYAT_REGISTRASI_ERROR,
     BATAL_REGIS,
     BATAL_REGIS_SUCCESS,
-    BATAL_REGIS_ERROR
+    BATAL_REGIS_ERROR,
+    GET_PASIEN_EDIT,
+    GET_PASIEN_EDIT_SUCCESS,
+    GET_PASIEN_EDIT_ERROR
 } from "./actionType";
 
 export const loginUser = (data, callback) => {
@@ -125,6 +128,27 @@ export const batalRegisSuccess = (data) => {
 export const batalRegisError = (error) => {
     return {
         type: BATAL_REGIS_ERROR,
+        payload: error
+    }
+}
+
+export const getPasienEdit = (queries) => {
+    return {
+        type: GET_PASIEN_EDIT,
+        payload: {queries}
+    }
+}
+
+export const getPasienEditSuccess = (data) => {
+    return {
+        type: GET_PASIEN_EDIT_SUCCESS,
+        payload: data
+    }
+}
+
+export const getPasienEditError = (error) => {
+    return {
+        type: GET_PASIEN_EDIT_ERROR,
         payload: error
     }
 }

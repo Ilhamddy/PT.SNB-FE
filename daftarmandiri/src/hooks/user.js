@@ -2,12 +2,18 @@ import { useEffect, useState } from "react";
 import { getLoggedinUser } from "../helpers/api_helper";
 import { useSelector } from "react-redux";
 
-const useProfile = () => {
+const useUser = () => {
+  const {user} = useSelector((state) =>  {
+    const user = localStorage.getItem('authUserMandiri')
+      ? JSON.parse(localStorage.getItem('authUserMandiri'))
+      : null
+    
+    return {
+      user: state.UserPasien.loginUser?.data || user || null,
+    }
+  })
 
-  const { data: userProfile, loading, error } = useSelector((selector) => selector.UserPasien)
-
-
-  return { userProfile, loading, error };
+  return user;
 };
 
-export { useProfile };
+export { useUser };

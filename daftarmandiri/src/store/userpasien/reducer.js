@@ -11,7 +11,10 @@ import {
     GET_RIWAYAT_REGISTRASI_ERROR,
     BATAL_REGIS,
     BATAL_REGIS_SUCCESS,
-    BATAL_REGIS_ERROR
+    BATAL_REGIS_ERROR,
+    GET_PASIEN_EDIT,
+    GET_PASIEN_EDIT_SUCCESS,
+    GET_PASIEN_EDIT_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -32,6 +35,11 @@ const INIT_STATE = {
         error: null
     },
     batalRegis: {
+        data: [],
+        loading: false,
+        error: null
+    },
+    getPasienEdit: {
         data: [],
         loading: false,
         error: null
@@ -177,6 +185,39 @@ const login = (state = INIT_STATE, action) => {
                 ...state,
                 batalRegis: {
                     ...state.batalRegis,
+                    data: [],
+                    loading: false,
+                    error: action.payload,
+                },
+            }
+
+        case GET_PASIEN_EDIT:
+            return {
+                ...state,
+                getPasienEdit: {
+                    ...state.getPasienEdit,
+                    data: [],
+                    loading: true,
+                    error: null,
+                },
+            }
+
+        case GET_PASIEN_EDIT_SUCCESS:
+            return {
+                ...state,
+                getPasienEdit: {
+                    ...state.getPasienEdit,
+                    data: action.payload,
+                    loading: false,
+                    error: null,
+                },
+            }
+        
+        case GET_PASIEN_EDIT_ERROR:
+            return {
+                ...state,
+                getPasienEdit: {
+                    ...state.getPasienEdit,
                     data: [],
                     loading: false,
                     error: action.payload,

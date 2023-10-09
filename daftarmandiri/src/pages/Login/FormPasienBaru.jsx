@@ -10,19 +10,19 @@ import { useDispatch, useSelector } from 'react-redux'
 import { getAllMaster, getDesaKelurahan } from '../../store/master/action'
 import SelectDM from '../../Components/SelectDM/SelectDM'
 import FlatpickrDM from '../../Components/FlatpickrDM/FlatpickrDM'
-import { signUpUser } from '../../store/userpasien/action'
+import { getPasienEdit, signUpUser } from '../../store/userpasien/action'
 import { useNavigate } from 'react-router-dom'
+import { useUser } from '../../hooks/user'
 
 const FormPasienBaru = ({ step, setStep }) => {
   const dispatch = useDispatch()
-  const { master, desa } = useSelector((selector) => ({
+  const user = useUser()
+  const { master, desa, allStep } = useSelector((selector) => ({
     master: selector.Master.getAllMaster?.data?.data || null,
     desa: selector.Master.getDesaKelurahan?.data?.data || [],
+    allStep: selector.UserPasien.getPasienEdit?.data || null,
   }))
   const navigate = useNavigate()
-  useEffect(() => {
-    dispatch(getAllMaster())
-  }, [dispatch])
   const refNegara = useRef(null)
   const vStep0 = useFormik({
     initialValues: {
@@ -62,7 +62,6 @@ const FormPasienBaru = ({ step, setStep }) => {
       namapasangan: Yup.string().required('Nama Pasangan wajib diisi'),
     }),
     onSubmit: (values, { resetForm }) => {
-      console.log('masuk')
       setStep(step + 1)
     },
   })
@@ -85,7 +84,7 @@ const FormPasienBaru = ({ step, setStep }) => {
     validationSchema: Yup.object({
       alamat: Yup.string().required('Alamat wajib diisi'),
       kelurahan: Yup.string().required('Kelurahan wajib diisi'),
-      kodepos: Yup.string().required('Kode Pos wajib diisi'),
+      // kodepos: Yup.string().required('Kode Pos wajib diisi'),
       rt: Yup.string().required('RT wajib diisi'),
       rw: Yup.string().required('RW wajib diisi'),
       kecamatan: Yup.string().required('Kecamatan wajib diisi'),
@@ -99,7 +98,7 @@ const FormPasienBaru = ({ step, setStep }) => {
   })
   const vStep2 = useFormik({
     initialValues: {
-      sesuaiktp: '',
+      sesuaiktp: 1,
       alamat: '',
       kelurahan: '',
       kodepos: '',
@@ -117,7 +116,7 @@ const FormPasienBaru = ({ step, setStep }) => {
     validationSchema: Yup.object({
       alamat: Yup.string().required('Alamat wajib diisi'),
       kelurahan: Yup.string().required('Kelurahan wajib diisi'),
-      kodepos: Yup.string().required('Kode Pos wajib diisi'),
+      // kodepos: Yup.string().required('Kode Pos wajib diisi'),
       rt: Yup.string().required('RT wajib diisi'),
       rw: Yup.string().required('RW wajib diisi'),
       kecamatan: Yup.string().required('Kecamatan wajib diisi'),
@@ -149,9 +148,14 @@ const FormPasienBaru = ({ step, setStep }) => {
         step2: vStep2.values,
         step3: values,
       }
+      const userBefore = user
       dispatch(
         signUpUser(finalVal, () => {
-          navigate('/login/selesai')
+          if (!userBefore) {
+            navigate('/login/selesai')
+          } else {
+            navigate('/')
+          }
         })
       )
     },
@@ -162,7 +166,8 @@ const FormPasienBaru = ({ step, setStep }) => {
   }
 
   useEffect(() => {
-    if (vStep2.values.sesuaiktp === 0) {
+    if (vStep2.values.sesuaiktp === 0 && vStep1.values.alamat) {
+      console.log('masuk23')
       const setFF = vStep2.setFieldValue
       setFF('alamat', vStep1.values.alamat || '')
       setFF('kelurahan', vStep1.values.kelurahan || '')
@@ -201,10 +206,41 @@ const FormPasienBaru = ({ step, setStep }) => {
     refNegara,
   ])
 
+  useEffect(() => {
+    const setV0 = vStep0.setValues
+    const setV1 = vStep1.setValues
+    const setV2 = vStep2.setValues
+    const setV3 = vStep3.setValues
+    if (allStep.step0) {
+      setV0(allStep.step0)
+    }
+    if (allStep.step1) {
+      setV1(allStep.step1)
+    }
+    if (allStep.step2) {
+      setV2(allStep.step2)
+    }
+    if (allStep.step3) {
+      setV3(allStep.step3)
+    }
+  }, [
+    allStep,
+    vStep0.setValues,
+    vStep1.setValues,
+    vStep2.setValues,
+    vStep3.setValues,
+  ])
+
+  useEffect(() => {
+    dispatch(getAllMaster())
+    dispatch(getPasienEdit())
+  }, [dispatch])
+
   const konfirmasi = [
     { label: 'Ya', value: 0 },
     { label: 'Tidak', value: 1 },
   ]
+  console.log(user)
   return (
     <div className="kontainer-konten pasien-baru-konten">
       {step === 0 && (
@@ -221,6 +257,7 @@ const FormPasienBaru = ({ step, setStep }) => {
               onChange={(e) => {
                 vStep0.handleChange(e)
               }}
+              disabled={!!user}
             />
           </InputGroup>
           <InputGroup label={'No Identitas'}>
@@ -235,6 +272,7 @@ const FormPasienBaru = ({ step, setStep }) => {
               onChange={(e) => {
                 vStep0.handleChange(e)
               }}
+              disabled={!!user}
             />
           </InputGroup>
           <InputGroup label={'Tempat Lahir'}>
@@ -249,6 +287,7 @@ const FormPasienBaru = ({ step, setStep }) => {
               onChange={(e) => {
                 vStep0.handleChange(e)
               }}
+              disabled={!!user}
             />
           </InputGroup>
           <InputGroup label={'Tanggal Lahir'}>
@@ -261,6 +300,7 @@ const FormPasienBaru = ({ step, setStep }) => {
                   newDate.toISOString() || ''
                 )
               }}
+              disabled={!!user}
               errorMsg={vStep0.errors.tanggallahir}
               isError={
                 vStep0.touched.tanggallahir && vStep0.errors.tanggallahir
@@ -281,6 +321,7 @@ const FormPasienBaru = ({ step, setStep }) => {
                 vStep0.setFieldValue('jeniskelamin', e.value || '')
               }}
               value={vStep0.values.jeniskelamin}
+              isDisabled={!!user}
             />
           </InputGroup>
           <InputGroup label={'Golongan Darah'}>
@@ -297,6 +338,7 @@ const FormPasienBaru = ({ step, setStep }) => {
                 vStep0.setFieldValue('golongandarah', e.value || '')
               }}
               value={vStep0.values.golongandarah}
+              isDisabled={!!user}
             />
           </InputGroup>
           <InputGroup label={'Agama'}>
@@ -312,6 +354,7 @@ const FormPasienBaru = ({ step, setStep }) => {
                 console.log(e.value)
               }}
               value={vStep0.values.agama}
+              isDisabled={!!user}
             />
           </InputGroup>
           <InputGroup label={'Kewarganegaraan'}>
@@ -328,6 +371,7 @@ const FormPasienBaru = ({ step, setStep }) => {
                 vStep0.setFieldValue('kewarganegaraan', e.value || '')
               }}
               value={vStep0.values.kewarganegaraan}
+              isDisabled={!!user}
             />
           </InputGroup>
           <InputGroup label={'Suku'}>
@@ -342,6 +386,7 @@ const FormPasienBaru = ({ step, setStep }) => {
                 vStep0.setFieldValue('suku', e.value || '')
               }}
               value={vStep0.values.suku}
+              isDisabled={!!user}
             />
           </InputGroup>
           <InputGroup label={'Bahasa Yang Dikuasai'}>
@@ -359,6 +404,7 @@ const FormPasienBaru = ({ step, setStep }) => {
                 vStep0.setFieldValue('bahasayangdikuasai', e.value || '')
               }}
               value={vStep0.values.bahasayangdikuasai}
+              isDisabled={!!user}
             />
           </InputGroup>
           <InputGroup label={'Pendidikan Terakhir'}>
@@ -376,6 +422,7 @@ const FormPasienBaru = ({ step, setStep }) => {
                 vStep0.setFieldValue('pendidikanterakhir', e.value || '')
               }}
               value={vStep0.values.pendidikanterakhir}
+              isDisabled={!!user}
             />
           </InputGroup>
           <InputGroup label={'Pekerjaan'}>
@@ -390,6 +437,7 @@ const FormPasienBaru = ({ step, setStep }) => {
                 vStep0.setFieldValue('pekerjaan', e.value || '')
               }}
               value={vStep0.values.pekerjaan}
+              isDisabled={!!user}
             />
           </InputGroup>
           <InputGroup label={'Status Perkawinan'}>
@@ -407,6 +455,7 @@ const FormPasienBaru = ({ step, setStep }) => {
                 vStep0.setFieldValue('statusperkawinan', e.value || '')
               }}
               value={vStep0.values.statusperkawinan}
+              isDisabled={!!user}
             />
           </InputGroup>
           <InputGroup label={'Nama Pasangan'}>
@@ -423,6 +472,7 @@ const FormPasienBaru = ({ step, setStep }) => {
               onChange={(e) => {
                 vStep0.handleChange(e)
               }}
+              isDisabled={!!user}
             />
           </InputGroup>
         </>
@@ -441,6 +491,7 @@ const FormPasienBaru = ({ step, setStep }) => {
               onChange={(e) => {
                 vStep1.handleChange(e)
               }}
+              disabled={!!user}
             />
           </InputGroup>
           <div className="input-split">
@@ -457,6 +508,7 @@ const FormPasienBaru = ({ step, setStep }) => {
                   onChange={(e) => {
                     vStep1.handleChange(e)
                   }}
+                  disabled={!!user}
                 />
               </InputGroup>
             </div>
@@ -473,6 +525,7 @@ const FormPasienBaru = ({ step, setStep }) => {
                   onChange={(e) => {
                     vStep1.handleChange(e)
                   }}
+                  disabled={!!user}
                 />
               </InputGroup>
             </div>
@@ -487,19 +540,38 @@ const FormPasienBaru = ({ step, setStep }) => {
               errorMsg={vStep1.errors.kelurahan}
               onInputChange={handleKelurahanGet}
               value={vStep1.values.kelurahan}
+              valueInit={
+                allStep.step1?.kelurahan
+                  ? {
+                      value: allStep.step1.kelurahan,
+                      label: allStep.step1.kelurahanname,
+                    }
+                  : null
+              }
               onChange={(e) => {
-                vStep1.setFieldValue('kodepos', e.kodepos || '')
+                if (
+                  e.valuekecamatan &&
+                  e.namakecamatan &&
+                  e.valuekabupaten &&
+                  e.valuepropinsi &&
+                  e.namaprovinsi
+                ) {
+                  vStep1.setFieldValue('kecamatan', e.valuekecamatan || '')
+                  vStep1.setFieldValue('kecamatanname', e.namakecamatan || '')
+                  vStep1.setFieldValue('kabupaten', e.valuekabupaten || '')
+                  vStep1.setFieldValue('kabupatenname', e.namakabupaten || '')
+                  vStep1.setFieldValue('provinsi', e.valuepropinsi || '')
+                  vStep1.setFieldValue('provinsiname', e.namaprovinsi || '')
+                }
+                if (e.kodepos) {
+                  vStep1.setFieldValue('kodepos', e.kodepos || '')
+                }
                 vStep1.setFieldValue('kelurahan', e.value || '')
-                vStep1.setFieldValue('kecamatan', e.valuekecamatan || '')
-                vStep1.setFieldValue('kecamatanname', e.namakecamatan || '')
-                vStep1.setFieldValue('kabupaten', e.valuekabupaten || '')
-                vStep1.setFieldValue('kabupatenname', e.namakabupaten || '')
-                vStep1.setFieldValue('provinsi', e.valuepropinsi || '')
-                vStep1.setFieldValue('provinsiname', e.namaprovinsi || '')
               }}
+              isDisabled={!!user}
             />
           </InputGroup>
-          <InputGroup label={'Kode Poss'}>
+          <InputGroup label={'Kode Pos'}>
             <InputDM
               id="kodepos"
               name="kodepos"
@@ -511,6 +583,7 @@ const FormPasienBaru = ({ step, setStep }) => {
               onChange={(e) => {
                 vStep1.handleChange(e)
               }}
+              disabled={!!user}
             />
           </InputGroup>
           <InputGroup label={'Kecamatan'}>
@@ -525,6 +598,7 @@ const FormPasienBaru = ({ step, setStep }) => {
               onChange={(e) => {
                 vStep1.handleChange(e)
               }}
+              disabled={!!user}
             />
           </InputGroup>
           <InputGroup label={'Kabupaten'}>
@@ -539,6 +613,7 @@ const FormPasienBaru = ({ step, setStep }) => {
               onChange={(e) => {
                 vStep1.handleChange(e)
               }}
+              disabled={!!user}
             />
           </InputGroup>
           <InputGroup label={'Provinsi'}>
@@ -553,6 +628,7 @@ const FormPasienBaru = ({ step, setStep }) => {
               onChange={(e) => {
                 vStep1.handleChange(e)
               }}
+              disabled={!!user}
             />
           </InputGroup>
           <InputGroup label={'Negara'}>
@@ -561,12 +637,13 @@ const FormPasienBaru = ({ step, setStep }) => {
               name="negara"
               className="input-login"
               options={master?.negara || []}
-              isError={vStep2.touched.negara && vStep2.errors.negara}
-              errorMsg={vStep2.errors.negara}
+              isError={vStep1.touched.negara && vStep1.errors.negara}
+              errorMsg={vStep1.errors.negara}
               onChange={(e) => {
-                vStep2.setFieldValue('negara', e.value || '')
+                vStep1.setFieldValue('negara', e.value || '')
               }}
-              value={vStep2.values.negara}
+              value={vStep1.values.negara}
+              isDisabled={!!user}
             />
           </InputGroup>
         </>
@@ -656,9 +733,17 @@ const FormPasienBaru = ({ step, setStep }) => {
                 vStep2.setFieldValue('provinsiname', e.namaprovinsi || '')
               }}
               value={vStep2.values.kelurahan}
+              valueInit={
+                allStep.step2?.kelurahan
+                  ? {
+                      value: allStep.step2.kelurahan,
+                      label: allStep.step2.kelurahanname,
+                    }
+                  : null
+              }
             />
           </InputGroup>
-          <InputGroup label={'Kode Poss'}>
+          <InputGroup label={'Kode Pos'}>
             <InputDM
               id="kodepos"
               name="kodepos"
@@ -744,6 +829,7 @@ const FormPasienBaru = ({ step, setStep }) => {
               onChange={(e) => {
                 vStep3.handleChange(e)
               }}
+              disabled={!!user}
             />
           </InputGroup>
           <InputGroup label={'Nama Ayah'}>
@@ -758,6 +844,7 @@ const FormPasienBaru = ({ step, setStep }) => {
               onChange={(e) => {
                 vStep3.handleChange(e)
               }}
+              disabled={!!user}
             />
           </InputGroup>
           <InputGroup label={'No BPJS'}>
@@ -772,6 +859,7 @@ const FormPasienBaru = ({ step, setStep }) => {
               onChange={(e) => {
                 rgxAllNumber.test(e.target.value) && vStep3.handleChange(e)
               }}
+              disabled={!!user}
             />
           </InputGroup>
           <InputGroup label={'No HP Pasien'}>
@@ -786,6 +874,7 @@ const FormPasienBaru = ({ step, setStep }) => {
               onChange={(e) => {
                 rgxAllNumber.test(e.target.value) && vStep3.handleChange(e)
               }}
+              disabled={!!user}
             />
           </InputGroup>
         </>
@@ -812,12 +901,13 @@ const FormPasienBaru = ({ step, setStep }) => {
             className="btn-lama"
             type="button"
             onClick={() => {
-              console.error(vStep0.errors)
               if (step === 0) {
                 vStep0.handleSubmit()
               } else if (step === 1) {
                 vStep1.handleSubmit()
               } else if (step === 2) {
+                console.error(vStep2.errors)
+                console.error(vStep2.touched)
                 vStep2.handleSubmit()
               }
               window.scrollTo({

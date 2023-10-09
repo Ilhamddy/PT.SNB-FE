@@ -8,7 +8,6 @@ const PasienBaruSelesai = ({ handleToHome }) => {
   const { norm } = useSelector((selector) => ({
     norm: selector.UserPasien.signupUser?.data?.username,
   }))
-  console.log(norm)
   return (
     <div className="kontainer-konten pasien-baru-selesai-konten">
       <p className="teks-pasien-baru">
