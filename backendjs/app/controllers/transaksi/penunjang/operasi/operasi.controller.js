@@ -180,7 +180,7 @@ const getDaftarOrderOperasi = async (req, res) => {
         if (req.query.search !== undefined)
             search = req.query.search
         let statusOperasi = ' '
-        if(req.query.status ==='2'){
+        if (req.query.status === '2') {
             statusOperasi = ` and x.objectstatusoperasifk in (2,3,4)`
         }
         let query = queries.qDaftarOrderOperasi + ` where x.tglinput between '${req.query.dateStart}' and '${req.query.dateEnd}' ${unit} and x.namapasien ilike '%${search}%' ${statusOperasi}`
@@ -204,16 +204,16 @@ const getDaftarOrderOperasi = async (req, res) => {
 
 const getComboOperasi = async (req, res) => {
     const logger = res.locals.logger;
-    try{
+    try {
         const result1 = await pool.query(queries.qStatusVerifikasi, []);
         const result2 = await pool.query(queries.qPegawai, []);
         const result3 = await pool.query(queries.qJenisOperasi, []);
         const result4 = await pool.query(queries.qKamarOperasi, []);
         const tempres = {
-            statusverifikasi:result1.rows,
-            pegawai:result2.rows,
-            jenisoperasi:result3.rows,
-            kamaroperasi:result4.rows
+            statusverifikasi: result1.rows,
+            pegawai: result2.rows,
+            jenisoperasi: result3.rows,
+            kamaroperasi: result4.rows
         };
         res.status(200).send({
             msg: 'Success',
@@ -234,19 +234,34 @@ const getComboOperasi = async (req, res) => {
 
 const updateOrderOperasi = async (req, res) => {
     const logger = res.locals.logger;
-    try{
-        const {orderOperasi}=await db.sequelize.transaction(async (transaction) => {
+    try {
+        const { orderOperasi,antreanpemeriksaan } = await db.sequelize.transaction(async (transaction) => {
+            let norecAP = uuid.v4().substring(0, 32)
+            const antreanpemeriksaan = await db.t_antreanpemeriksaan.create({
+                norec: norecAP,
+                objectdaftarpasienfk: req.body.norecdp,
+                tglmasuk: req.body.rencanaOperasi,
+                tglkeluar: req.body.rencanaOperasi,
+                objectunitfk: 11,
+                objectkelasfk: 8,
+                taskid: 3,
+                statusenabled: true,
+                objectunitasalfk: req.body.objectunitasalfk,
+                objectkamarfk:req.body.kamarOperasi
+            }, { transaction });
+
             const orderOperasi = await db.t_orderoperasi.update({
                 tglrencana: req.body.rencanaOperasi,
                 iscito: req.body.formCheckCito !== true ? false : req.body.formCheckCito,
                 namaoperasi: req.body.namaoperasi,
                 objectdokteroperatorfk: req.body.drOperator,
                 objectjenisoperasifk: req.body.jenisOperasi,
-                objectkamarfk:req.body.kamarOperasi,
-                objectpegawaiveriffk:req.idPegawai,
-                catatanverif:req.body.catatanVerifikasi,
-                objectstatusoperasifk:req.body.statusVerifikasi,
-                tglverif:new Date()
+                objectkamarfk: req.body.kamarOperasi,
+                objectpegawaiveriffk: req.idPegawai,
+                catatanverif: req.body.catatanVerifikasi,
+                objectstatusoperasifk: req.body.statusVerifikasi,
+                tglverif: new Date(),
+                objectantreanpemeriksaanoperasifk:norecAP
             }, {
                 where: {
                     norec: req.body.norec,
@@ -254,11 +269,11 @@ const updateOrderOperasi = async (req, res) => {
                 transaction: transaction
             });
 
-            return { orderOperasi }
+            return { orderOperasi, antreanpemeriksaan }
         });
-        
+
         const tempres = {
-            orderOperasi:orderOperasi
+            orderOperasi: orderOperasi
         };
         res.status(200).send({
             msg: 'Success',

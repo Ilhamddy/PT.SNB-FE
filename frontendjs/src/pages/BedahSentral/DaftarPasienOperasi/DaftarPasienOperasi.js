@@ -107,7 +107,7 @@ const DaftarPasienOperasi = () => {
             return
         }
 
-        if (e === 'Verifikasi') {
+        if (e === 'Pengkajian') {
             // setisVerifikasiOpen(true)
         }
 
@@ -228,9 +228,9 @@ const DaftarPasienOperasi = () => {
                                                     <CardBody>
                                                         <div className="live-preview">
                                                             <div className="d-flex flex-column gap-2">
-                                                                <Button color="info" className="btn-animation" data-text="Verifikasi"
-                                                                    onClick={() => handleClickButton('Verifikasi')}
-                                                                ><span>Verifikasi</span></Button>
+                                                                <Button color="info" className="btn-animation" data-text="Pengkajian"
+                                                                    onClick={() => handleClickButton('Pengkajian')}
+                                                                ><span>Pengkajian</span></Button>
                                                             </div>
                                                         </div>
                                                     </CardBody>

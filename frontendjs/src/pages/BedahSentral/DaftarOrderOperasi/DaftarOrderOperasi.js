@@ -477,6 +477,7 @@ const ModalVerifikasi = ({ isVerifikasiOpen, toggle, selectedPasien }) => {
     const vSetValidationModal = useFormik({
         enableReinitialize: true,
         initialValues: {
+            norecdp: selectedPasien?.norecdp ?? '',
             norec:selectedPasien?.norec ?? '',
             rencanaOperasi: selectedPasien?.tglrencanax ?? '',
             nocm: selectedPasien?.nocm ?? '',
@@ -491,7 +492,8 @@ const ModalVerifikasi = ({ isVerifikasiOpen, toggle, selectedPasien }) => {
             drOperator: selectedPasien?.objectdokteroperatorfk ?? '',
             jenisOperasi: selectedPasien?.objectjenisoperasifk ?? '',
             kamarOperasi: selectedPasien?.objectkamarfk ?? '',
-            catatanVerifikasi: selectedPasien?.catatanverif ?? ''
+            catatanVerifikasi: selectedPasien?.catatanverif ?? '',
+            objectunitasalfk:selectedPasien?.objectunitasalfk ?? ''
         },
         validationSchema: Yup.object({
         }),
