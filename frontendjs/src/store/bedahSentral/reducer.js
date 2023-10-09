@@ -11,7 +11,10 @@ import {
     GET_COMBO_ORDER_OPERASI_ERROR,
     UPDATE_ORDER_OPERASI,
     UPDATE_ORDER_OPERASI_SUCCESS,
-    UPDATE_ORDER_OPERASI_ERROR
+    UPDATE_ORDER_OPERASI_ERROR,
+    GET_DAFTAR_PASIEN_OPERASI,
+    GET_DAFTAR_PASIEN_OPERASI_SUCCESS,
+    GET_DAFTAR_PASIEN_OPERASI_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -36,6 +39,11 @@ const INIT_STATE = {
         error: null,
         success: false
     },
+    getDaftarPasienOperasi:{
+        data: [],
+        loading: false,
+        error: null,
+    }
 }
 
 const BedahSentral = (state = INIT_STATE, action) => {
@@ -54,6 +62,9 @@ const BedahSentral = (state = INIT_STATE, action) => {
                 },
                 updateOrderOperasi:{
                     ...INIT_STATE.updateOrderOperasi
+                },
+                getDaftarPasienOperasi:{
+                    ...INIT_STATE.getDaftarPasienOperasi
                 }
             }
         }
@@ -190,6 +201,39 @@ const BedahSentral = (state = INIT_STATE, action) => {
                     error: action.payload,
                 },
             };
+        }
+
+        case GET_DAFTAR_PASIEN_OPERASI: {
+            return {
+                ...state,
+                getDaftarPasienOperasi: {
+                    ...state.getDaftarPasienOperasi,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case GET_DAFTAR_PASIEN_OPERASI_SUCCESS: {
+            return {
+                ...state,
+                getDaftarPasienOperasi: {
+                    ...state.getDaftarPasienOperasi,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case GET_DAFTAR_PASIEN_OPERASI_ERROR: {
+            return {
+                ...state,
+                getDaftarPasienOperasi: {
+                    ...state.getDaftarPasienOperasi,
+                    loading: false,
+                    error: action.error,
+                }
+            }
         }
 
         default: {

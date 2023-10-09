@@ -3,14 +3,16 @@ import ServiceBedahSentral from "../../services/service-bedahsentral";
 
 import {
     WIDGET_ORDER_OPERASI_GET, GET_DAFTAR_ORDER_OPERASI,
-    GET_COMBO_ORDER_OPERASI, UPDATE_ORDER_OPERASI
+    GET_COMBO_ORDER_OPERASI, UPDATE_ORDER_OPERASI,
+    GET_DAFTAR_PASIEN_OPERASI
 } from "./actionType";
 
 import {
     widgetOrderOperasiGetSuccess, widgetOrderOperasiGetError,
     getDaftarOrderOperasiSuccess, getDaftarOrderOperasiError,
     getComboOrderOperasiSuccess, getComboOrderOperasiError,
-    updateOrderOperasiSuccess, updateOrderOperasiError
+    updateOrderOperasiSuccess, updateOrderOperasiError,
+    getDaftarPasienOperasiSuccess, getDaftarPasienOperasiError
 } from "./action";
 
 import { toast } from 'react-toastify';
@@ -80,12 +82,27 @@ export function* watchonupdateOrderOperasi() {
     yield takeEvery(UPDATE_ORDER_OPERASI, onupdateOrderOperasi);
 }
 
+function* ongetDaftarPasienOperasi({ payload: {queries}  }) {
+    try {
+        let response = null;
+        response = yield call(serviceBedahSentral.getDaftarPasienOperasi, queries);
+        yield put(getDaftarPasienOperasiSuccess(response.data));
+    } catch (error) {
+        yield put(getDaftarPasienOperasiError(error));
+    }
+}
+
+export function* watchongetDaftarPasienOperasi() {
+    yield takeEvery(GET_DAFTAR_PASIEN_OPERASI, ongetDaftarPasienOperasi);
+}
+
 function* bedahSentralSaga() {
     yield all([
         fork(watchonwidgetOrderOperasiGet),
         fork(watchongetDaftarOrderOperasi),
         fork(watchongetComboOrderOperasi),
-        fork(watchonupdateOrderOperasi)
+        fork(watchonupdateOrderOperasi),
+        fork(watchongetDaftarPasienOperasi)
     ]);
 }
 

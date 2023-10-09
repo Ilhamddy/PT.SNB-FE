@@ -42,4 +42,9 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.updateOrderOperasi
     )
+    app.get(
+        "/api/transaksi/operasi/get-daftar-pasien-operasi",
+        [authJwt.verifyToken],
+        controller.getDaftarPasienOperasi
+    );
 }

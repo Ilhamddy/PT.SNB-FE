@@ -9,7 +9,7 @@ import BreadCrumb from "../../../Components/Common/BreadCrumb"
 import { ToastContainer, toast } from "react-toastify"
 import classnames from "classnames";
 import {
-    bedahSentralResetForm, getDaftarOrderOperasi,
+    bedahSentralResetForm, getDaftarPasienOperasi,
     getComboOrderOperasi
 } from "../../../store/actions";
 import { useDispatch, useSelector } from "react-redux"
@@ -24,13 +24,15 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import CustomSelect from "../../Select/Select";
 import KontainerFlatpickr from "../../../Components/KontainerFlatpickr/KontainerFlatpickr";
+import { Link, useNavigate } from "react-router-dom";
 
 const DaftarPasienOperasi = () => {
     document.title = "Daftar Pasien Operasi";
     const dispatch = useDispatch();
+    const history = useNavigate();
     const { datawidget, data, dataCombo } = useSelector((state) => ({
         datawidget: state.BedahSentral.widgetOrderOperasiGet.data,
-        data: state.BedahSentral.getDaftarOrderOperasi.data,
+        data: state.BedahSentral.getDaftarPasienOperasi.data,
         dataCombo: state.Master.comboRegistrasiGet.data,
     }));
     const [dateNow] = useState(() => new Date().toISOString())
@@ -47,11 +49,12 @@ const DaftarPasienOperasi = () => {
         }),
         onSubmit: (values) => {
             console.log(values);
-            dispatch(getDaftarOrderOperasi({
+            dispatch(getDaftarPasienOperasi({
                 dateStart: vSetValidation.values.dateStart,
                 dateEnd: vSetValidation.values.dateEnd,
                 unitOrder: vSetValidation.values.unitOrder,
-                search: vSetValidation.values.search
+                search: vSetValidation.values.search,
+                status: 2
             }));
         }
     })
@@ -108,12 +111,12 @@ const DaftarPasienOperasi = () => {
         }
 
         if (e === 'Pengkajian') {
-            // setisVerifikasiOpen(true)
+            history(`/emr-pasien/${selectedPasien.norecdp}/${selectedPasien.norecta}/rawat-jalan`)
         }
 
     };
     useEffect(() => {
-        dispatch(getDaftarOrderOperasi({
+        dispatch(getDaftarPasienOperasi({
             dateStart: vSetValidation.values.dateStart,
             dateEnd: vSetValidation.values.dateEnd,
             unitOrder: vSetValidation.values.unitOrder,

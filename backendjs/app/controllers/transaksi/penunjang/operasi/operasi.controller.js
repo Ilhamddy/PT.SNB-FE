@@ -292,11 +292,45 @@ const updateOrderOperasi = async (req, res) => {
     }
 }
 
+const getDaftarPasienOperasi = async (req, res) => {
+    const logger = res.locals.logger;
+    try {
+        let unit = ' '
+        if (req.query.unitOrder !== '') {
+            unit = ` and x.objectunitasalfk=${req.query.unitOrder}`
+        }
+        let search = ' '
+        if (req.query.search !== undefined)
+            search = req.query.search
+        let statusOperasi = ' '
+        // if (req.query.status === '2') {
+        //     statusOperasi = ` and x.objectstatusoperasifk in (2,3,4)`
+        // }
+        let query = queries.qDaftarPasienOperasi + ` where x.tglinput between '${req.query.dateStart}' and '${req.query.dateEnd}' ${unit} and x.namapasien ilike '%${search}%' ${statusOperasi}`
+        const resultlist = await pool.query(query);
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: resultlist.rows,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export default {
     saveOrderOperasi,
     getHistoriOrderOperasi,
     getWidgetOrderOperasi,
     getDaftarOrderOperasi,
     getComboOperasi,
-    updateOrderOperasi
+    updateOrderOperasi,
+    getDaftarPasienOperasi
 }

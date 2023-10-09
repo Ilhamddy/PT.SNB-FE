@@ -20,4 +20,8 @@ export default class ServiceBedahSentral {
         return await api.create("/transaksi/operasi/update-order-operasi", params);
     }
 
+    getDaftarPasienOperasi = async (param) => {
+        return await api.get(`/transaksi/operasi/get-daftar-pasien-operasi`,param);
+    }
+
 }
