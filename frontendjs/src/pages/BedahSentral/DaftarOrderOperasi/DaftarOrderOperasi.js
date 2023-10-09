@@ -50,7 +50,8 @@ const DaftarOrderOperasi = () => {
                 dateStart: vSetValidation.values.dateStart,
                 dateEnd: vSetValidation.values.dateEnd,
                 unitOrder: vSetValidation.values.unitOrder,
-                search: vSetValidation.values.search
+                search: vSetValidation.values.search,
+                status:''
             }));
         }
     })
@@ -79,7 +80,8 @@ const DaftarOrderOperasi = () => {
         dispatch(getDaftarOrderOperasi({
             dateStart: vSetValidation.values.dateStart,
             dateEnd: vSetValidation.values.dateEnd,
-            unitOrder: vSetValidation.values.unitOrder
+            unitOrder: vSetValidation.values.unitOrder,
+            status:''
         }));
     }, [dispatch, vSetValidation.values.dateStart, vSetValidation.values.dateEnd, vSetValidation.values.unitOrder])
     const [datax, setDatax] = useState([]);
