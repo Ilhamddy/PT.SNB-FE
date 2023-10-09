@@ -149,15 +149,16 @@ const FormPasienBaru = ({ step, setStep }) => {
         step3: values,
       }
       const userBefore = user
-      dispatch(
-        signUpUser(finalVal, () => {
-          if (!userBefore) {
-            navigate('/login/selesai')
-          } else {
-            navigate('/')
-          }
-        })
-      )
+      !userBefore &&
+        dispatch(
+          signUpUser(finalVal, () => {
+            if (!userBefore) {
+              navigate('/login/selesai')
+            }
+          })
+        )
+      // TODO: login
+      userBefore && dispatch()
     },
   })
 
