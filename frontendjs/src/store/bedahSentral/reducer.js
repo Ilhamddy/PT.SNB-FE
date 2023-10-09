@@ -5,7 +5,10 @@ import {
     WIDGET_ORDER_OPERASI_GET_ERROR,
     GET_DAFTAR_ORDER_OPERASI,
     GET_DAFTAR_ORDER_OPERASI_SUCCESS,
-    GET_DAFTAR_ORDER_OPERASI_ERROR
+    GET_DAFTAR_ORDER_OPERASI_ERROR,
+    GET_COMBO_ORDER_OPERASI,
+    GET_COMBO_ORDER_OPERASI_SUCCESS,
+    GET_COMBO_ORDER_OPERASI_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -19,6 +22,11 @@ const INIT_STATE = {
         loading: false,
         error: null,
     },
+    getComboOrderOperasi:{
+        data: [],
+        loading: false,
+        error: null,
+    }
 }
 
 const BedahSentral = (state = INIT_STATE, action) => {
@@ -31,6 +39,9 @@ const BedahSentral = (state = INIT_STATE, action) => {
                 },
                 getDaftarOrderOperasi:{
                     ...INIT_STATE.getDaftarOrderOperasi
+                },
+                getComboOrderOperasi:{
+                    ...INIT_STATE.getComboOrderOperasi
                 }
             }
         }
@@ -95,6 +106,39 @@ const BedahSentral = (state = INIT_STATE, action) => {
                 ...state,
                 getDaftarOrderOperasi: {
                     ...state.getDaftarOrderOperasi,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case GET_COMBO_ORDER_OPERASI: {
+            return {
+                ...state,
+                getComboOrderOperasi: {
+                    ...state.getComboOrderOperasi,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case GET_COMBO_ORDER_OPERASI_SUCCESS: {
+            return {
+                ...state,
+                getComboOrderOperasi: {
+                    ...state.getComboOrderOperasi,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case GET_COMBO_ORDER_OPERASI_ERROR: {
+            return {
+                ...state,
+                getComboOrderOperasi: {
+                    ...state.getComboOrderOperasi,
                     loading: false,
                     error: action.error,
                 }
