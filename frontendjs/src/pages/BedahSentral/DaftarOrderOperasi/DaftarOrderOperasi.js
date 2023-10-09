@@ -430,6 +430,7 @@ const DaftarOrderOperasi = () => {
                                                                             : item.namapasien}
                                                                     </p>
                                                                     <p className="text-muted mb-0">{item.umur ? item.umur : '-'}</p>
+                                                                    <p className="text-muted mb-0">{item.statusoperasi ? item.statusoperasi : '-'}</p>
                                                                 </div>
                                                                 <div className="col-sm">
                                                                     <div className="text-lg-start">
