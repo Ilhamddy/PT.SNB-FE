@@ -8,7 +8,10 @@ import {
     GET_DAFTAR_ORDER_OPERASI_ERROR,
     GET_COMBO_ORDER_OPERASI,
     GET_COMBO_ORDER_OPERASI_SUCCESS,
-    GET_COMBO_ORDER_OPERASI_ERROR
+    GET_COMBO_ORDER_OPERASI_ERROR,
+    UPDATE_ORDER_OPERASI,
+    UPDATE_ORDER_OPERASI_SUCCESS,
+    UPDATE_ORDER_OPERASI_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -26,7 +29,13 @@ const INIT_STATE = {
         data: [],
         loading: false,
         error: null,
-    }
+    },
+    updateOrderOperasi: {
+        newData: null,
+        loading: false,
+        error: null,
+        success: false
+    },
 }
 
 const BedahSentral = (state = INIT_STATE, action) => {
@@ -42,6 +51,9 @@ const BedahSentral = (state = INIT_STATE, action) => {
                 },
                 getComboOrderOperasi:{
                     ...INIT_STATE.getComboOrderOperasi
+                },
+                updateOrderOperasi:{
+                    ...INIT_STATE.updateOrderOperasi
                 }
             }
         }
@@ -143,6 +155,41 @@ const BedahSentral = (state = INIT_STATE, action) => {
                     error: action.error,
                 }
             }
+        }
+
+        case UPDATE_ORDER_OPERASI: {
+            return {
+                ...state,
+                updateOrderOperasi: {
+                    ...state.updateOrderOperasi,
+                    data: [],
+                    loading: true,
+                    error: null,
+                },
+            };
+        }
+
+        case UPDATE_ORDER_OPERASI_SUCCESS: {
+            return {
+                ...state,
+                updateOrderOperasi: {
+                    ...state.updateOrderOperasi,
+                    loading: false,
+                    data: action.payload,
+                    success: true,
+                },
+            };
+        }
+
+        case UPDATE_ORDER_OPERASI_ERROR: {
+            return {
+                ...state,
+                updateOrderOperasi: {
+                    ...state.updateOrderOperasi,
+                    loading: false,
+                    error: action.payload,
+                },
+            };
         }
 
         default: {

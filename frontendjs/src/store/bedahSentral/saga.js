@@ -3,13 +3,14 @@ import ServiceBedahSentral from "../../services/service-bedahsentral";
 
 import {
     WIDGET_ORDER_OPERASI_GET, GET_DAFTAR_ORDER_OPERASI,
-    GET_COMBO_ORDER_OPERASI
+    GET_COMBO_ORDER_OPERASI, UPDATE_ORDER_OPERASI
 } from "./actionType";
 
 import {
     widgetOrderOperasiGetSuccess, widgetOrderOperasiGetError,
     getDaftarOrderOperasiSuccess, getDaftarOrderOperasiError,
-    getComboOrderOperasiSuccess, getComboOrderOperasiError
+    getComboOrderOperasiSuccess, getComboOrderOperasiError,
+    updateOrderOperasiSuccess, updateOrderOperasiError
 } from "./action";
 
 import { toast } from 'react-toastify';
@@ -52,6 +53,7 @@ function* ongetComboOrderOperasi({ payload: {queries}  }) {
         yield put(getComboOrderOperasiSuccess(response.data));
     } catch (error) {
         yield put(getComboOrderOperasiError(error));
+
     }
 }
 
@@ -59,11 +61,31 @@ export function* watchongetComboOrderOperasi() {
     yield takeEvery(GET_COMBO_ORDER_OPERASI, ongetComboOrderOperasi);
 }
 
+function* onupdateOrderOperasi({ payload: { body, callback } }) {
+    try {
+        const response = yield call(serviceBedahSentral.updateOrderOperasi, body);
+        yield put(updateOrderOperasiSuccess(response.data));
+        if (response.code === 200) {
+            toast.success(response.msg, { autoClose: 3000 });
+        } else {
+            toast.error(response.msg, { autoClose: 3000 });
+        }
+        callback && callback();
+    } catch (error) {
+        yield put(updateOrderOperasiError(error));
+        toast.error("Gagal Simpan Order Operasi", { autoClose: 3000 });
+    }
+}
+export function* watchonupdateOrderOperasi() {
+    yield takeEvery(UPDATE_ORDER_OPERASI, onupdateOrderOperasi);
+}
+
 function* bedahSentralSaga() {
     yield all([
         fork(watchonwidgetOrderOperasiGet),
         fork(watchongetDaftarOrderOperasi),
-        fork(watchongetComboOrderOperasi)
+        fork(watchongetComboOrderOperasi),
+        fork(watchonupdateOrderOperasi)
     ]);
 }
 

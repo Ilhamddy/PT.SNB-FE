@@ -32,4 +32,14 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getDaftarOrderOperasi
     );
+    app.get(
+        "/api/transaksi/operasi/get-combo-order-operasi",
+        [authJwt.verifyToken],
+        controller.getComboOperasi
+    );
+    app.post(
+        "/api/transaksi/operasi/update-order-operasi",
+        [authJwt.verifyToken],
+        controller.updateOrderOperasi
+    )
 }

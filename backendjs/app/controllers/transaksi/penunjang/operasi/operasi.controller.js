@@ -198,9 +198,86 @@ const getDaftarOrderOperasi = async (req, res) => {
     }
 }
 
+const getComboOperasi = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const result1 = await pool.query(queries.qStatusVerifikasi, []);
+        const result2 = await pool.query(queries.qPegawai, []);
+        const result3 = await pool.query(queries.qJenisOperasi, []);
+        const result4 = await pool.query(queries.qKamarOperasi, []);
+        const tempres = {
+            statusverifikasi:result1.rows,
+            pegawai:result2.rows,
+            jenisoperasi:result3.rows,
+            kamaroperasi:result4.rows
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+const updateOrderOperasi = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const {orderOperasi}=await db.sequelize.transaction(async (transaction) => {
+            const orderOperasi = await db.t_orderoperasi.update({
+                tglrencana: req.body.rencanaOperasi,
+                iscito: req.body.formCheckCito !== true ? false : req.body.formCheckCito,
+                namaoperasi: req.body.namaoperasi,
+                objectdokteroperatorfk: req.body.drOperator,
+                objectjenisoperasifk: req.body.jenisOperasi,
+                objectkamarfk:req.body.kamarOperasi,
+                objectpegawaiveriffk:req.idPegawai,
+                catatanverif:req.body.catatanVerifikasi,
+                objectstatusoperasifk:req.body.statusVerifikasi,
+                tglverif:new Date()
+            }, {
+                where: {
+                    norec: req.body.norec,
+                },
+                transaction: transaction
+            });
+
+            return { orderOperasi }
+        });
+        
+        const tempres = {
+            orderOperasi:orderOperasi
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export default {
     saveOrderOperasi,
     getHistoriOrderOperasi,
     getWidgetOrderOperasi,
-    getDaftarOrderOperasi
+    getDaftarOrderOperasi,
+    getComboOperasi,
+    updateOrderOperasi
 }

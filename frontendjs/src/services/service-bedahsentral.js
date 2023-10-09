@@ -16,4 +16,8 @@ export default class ServiceBedahSentral {
         return await api.get(`/transaksi/operasi/get-combo-order-operasi`,param);
     }
 
+    updateOrderOperasi = async (params) => {
+        return await api.create("/transaksi/operasi/update-order-operasi", params);
+    }
+
 }
