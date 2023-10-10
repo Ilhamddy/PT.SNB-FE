@@ -137,35 +137,3 @@
         }
     }
 }
-
-.back-komponen-dm {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    width: 100%;
-    height: 40px;
-    margin-bottom: 20px;
-
-    .tbl-back {
-        width: 30px;
-        height: 30px;
-        border: none;
-        padding: 0;
-        background-color: #00000000;
-        img {
-            width: 100%;
-            height: 100%;
-        }
-    }
-
-    p {
-        margin: 0;
-        color: #08080d;
-        font-size: 16px;
-        font-style: normal;
-        font-weight: 600;
-        line-height: normal;
-        width: calc(100% - 20px);
-        text-align: center;
-    }
-}
