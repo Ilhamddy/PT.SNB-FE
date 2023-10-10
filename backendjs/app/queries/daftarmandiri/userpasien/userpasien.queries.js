@@ -115,7 +115,7 @@ FROM users_pasien up
     LEFT JOIN m_pasien mp ON (up.norm = mp.nocm OR up.norm = mp.nocmtemp)
     LEFT JOIN m_penjaminpasien mpp ON mpp.nocmfk = mp.id
     LEFT JOIN m_rekanan mr ON mpp.objectrekananfk = mr.id
-WHERE up.id = $1
+WHERE up.id = $1 AND mpp.statusenabled = true
 `
 
 export default {

@@ -55,7 +55,7 @@ const PenjaminPage = () => {
     },
   })
   penjamin = penjamin.filter((val) => val.value !== 3)
-  if (pasienAkun) {
+  if (pasienAkun && pasienAkun.nobpjs) {
     penjaminPasien = [
       {
         nokartu: pasienAkun.nobpjs,
