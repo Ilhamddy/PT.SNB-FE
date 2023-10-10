@@ -17,7 +17,10 @@ import {
     GET_PASIEN_EDIT_ERROR,
     UPDATE_PASIEN,
     UPDATE_PASIEN_SUCCESS,
-    UPDATE_PASIEN_ERROR
+    UPDATE_PASIEN_ERROR,
+    GET_PASIEN_AKUN,
+    GET_PASIEN_AKUN_SUCCESS,
+    GET_PASIEN_AKUN_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -48,6 +51,11 @@ const INIT_STATE = {
         error: null
     },
     updatePasien: {
+        data: [],
+        loading: false,
+        error: null
+    },
+    getPasienAkun: {
         data: [],
         loading: false,
         error: null
@@ -259,6 +267,39 @@ const login = (state = INIT_STATE, action) => {
                 ...state,
                 updatePasien: {
                     ...state.updatePasien,
+                    data: [],
+                    loading: false,
+                    error: action.payload,
+                },
+            }
+
+        case GET_PASIEN_AKUN:
+            return {
+                ...state,
+                getPasienAkun: {
+                    ...state.getPasienAkun,
+                    data: [],
+                    loading: true,
+                    error: null,
+                },
+            }
+
+        case GET_PASIEN_AKUN_SUCCESS:
+            return {
+                ...state,
+                getPasienAkun: {
+                    ...state.getPasienAkun,
+                    data: action.payload,
+                    loading: false,
+                    error: null,
+                },
+            }
+        
+        case GET_PASIEN_AKUN_ERROR:
+            return {
+                ...state,
+                getPasienAkun: {
+                    ...state.getPasienAkun,
                     data: [],
                     loading: false,
                     error: action.payload,

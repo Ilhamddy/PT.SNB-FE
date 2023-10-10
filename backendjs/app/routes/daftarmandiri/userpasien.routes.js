@@ -35,4 +35,9 @@ export default function(app) {
     [authJwt.verifyTokenUser, encryptMandiri],
     controller.getPasienEdit
   )
+  app.get(
+    "/api/daftarmandiri/user-pasien/get-pasien-akun",
+    [authJwt.verifyTokenUser, encryptMandiri],
+    controller.getPasienAkun
+  )
 };

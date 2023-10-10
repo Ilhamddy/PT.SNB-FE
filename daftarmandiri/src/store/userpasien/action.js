@@ -20,7 +20,10 @@ import {
     GET_PASIEN_EDIT_ERROR,
     UPDATE_PASIEN,
     UPDATE_PASIEN_SUCCESS,
-    UPDATE_PASIEN_ERROR
+    UPDATE_PASIEN_ERROR,
+    GET_PASIEN_AKUN,
+    GET_PASIEN_AKUN_SUCCESS,
+    GET_PASIEN_AKUN_ERROR
 } from "./actionType";
 
 export const loginUser = (data, callback) => {
@@ -173,6 +176,27 @@ export const updatePasienSuccess = (data) => {
 export const updatePasienError = (error) => {
     return {
         type: UPDATE_PASIEN_ERROR,
+        payload: error
+    }
+}
+
+export const getPasienAkun = (queries) => {
+    return {
+        type: GET_PASIEN_AKUN,
+        payload: {queries}
+    }
+}
+
+export const getPasienAkunSuccess = (data) => {
+    return {
+        type: GET_PASIEN_AKUN_SUCCESS,
+        payload: data
+    }
+}
+
+export const getPasienAkunError = (error) => {
+    return {
+        type: GET_PASIEN_AKUN_ERROR,
         payload: error
     }
 }

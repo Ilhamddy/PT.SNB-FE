@@ -229,11 +229,36 @@ const getPasienEdit = async (req, res) => {
     }
 }
 
+const getPasienAkun = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const pasienAkun = await pool.query(userpasienQueries.qGetPasienAkun, [req.id])
+        const tempres = {
+            pasienAkun: pasienAkun.rows[0]
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export default {
     createPasien,
     getRiwayatReservasi,
     batalRegis,
-    getPasienEdit
+    getPasienEdit,
+    getPasienAkun
 }
 
 const hCreatePasien = async (req, res, transaction) => {

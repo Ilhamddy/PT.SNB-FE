@@ -83,7 +83,20 @@ FROM users_pasien up
 WHERE up.id = $1
 `
 
+const qGetPasienAkun = `
+SELECT
+    mp.namapasien AS namalengkap,
+    mp.noidentitas,
+    mp.nocm AS nocm,
+    mp.nocmtemp AS nocmtemp,
+    mp.nohp AS nohp
+FROM users_pasien up
+    LEFT JOIN m_pasien mp ON (up.norm = mp.nocm OR up.norm = mp.nocmtemp)
+WHERE up.id = $1
+`
+
 export default {
     qGetRiwayatRegistrasi,
-    qGetPasienEdit
+    qGetPasienEdit,
+    qGetPasienAkun
 }
