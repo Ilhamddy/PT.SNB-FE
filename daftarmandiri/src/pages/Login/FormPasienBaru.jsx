@@ -904,6 +904,8 @@ const FormPasienBaru = ({ step, setStep }) => {
           onClick={() => {
             if (step > 0) {
               setStep(step - 1)
+            } else {
+              navigate('/akun')
             }
             window.scrollTo({
               top: 0,
