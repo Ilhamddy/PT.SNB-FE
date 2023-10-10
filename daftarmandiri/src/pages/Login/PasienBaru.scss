@@ -18,4 +18,23 @@
             width: calc(50% - 10px);
         }
     }
+
+    .input-group-pasien-baru {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        width: 100%;
+
+        .label-login {
+            font-size: 14px;
+            font-weight: 600;
+            color: #564405;
+            margin-bottom: 8px;
+        }
+
+        .input-login {
+            margin-bottom: 20px;
+            width: 100%;
+        }
+    }
 }

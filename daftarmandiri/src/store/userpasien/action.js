@@ -17,7 +17,10 @@ import {
     BATAL_REGIS_ERROR,
     GET_PASIEN_EDIT,
     GET_PASIEN_EDIT_SUCCESS,
-    GET_PASIEN_EDIT_ERROR
+    GET_PASIEN_EDIT_ERROR,
+    UPDATE_PASIEN,
+    UPDATE_PASIEN_SUCCESS,
+    UPDATE_PASIEN_ERROR
 } from "./actionType";
 
 export const loginUser = (data, callback) => {
@@ -149,6 +152,27 @@ export const getPasienEditSuccess = (data) => {
 export const getPasienEditError = (error) => {
     return {
         type: GET_PASIEN_EDIT_ERROR,
+        payload: error
+    }
+}
+
+export const updatePasien = (data, callback) => {
+    return {
+        type: UPDATE_PASIEN,
+        payload: {data, callback}
+    }
+}
+
+export const updatePasienSuccess = (data) => {
+    return {
+        type: UPDATE_PASIEN_SUCCESS,
+        payload: data
+    }
+}
+
+export const updatePasienError = (error) => {
+    return {
+        type: UPDATE_PASIEN_ERROR,
         payload: error
     }
 }

@@ -53,7 +53,7 @@ const createPasien = async (req, res) => {
             user: user
         };
 
-        const data = encrypt(tempres, bodyReq.clientSecret)
+        const data = encrypt(tempres, bodyReq.clientSecret || userPasien.clientsecret)
 
         res.status(200).send(data);
     } catch (error) {
@@ -309,7 +309,7 @@ const hCreatePasien = async (req, res, transaction) => {
         transaction: transaction
     })
     dataPasien = dataPasien.toJSON();
-    const userPasien = await pasienSignup(
+    let userPasien = await pasienSignup(
         req, 
         res, 
         transaction, 
@@ -322,6 +322,7 @@ const hCreatePasien = async (req, res, transaction) => {
     }, {
         transaction: transaction
     })
+    userPasien = userPasien?.toJSON() || null;
     let token = jwt.sign({ 
             id: userPasien.id, 
             expired: new Date() + (86400 * 1000),
@@ -399,9 +400,9 @@ const hUpdatePasien = async (req, res, transaction) => {
         rwdomisili: bodyReq.step2.rw,
         objectdesakelurahandomisilifk: bodyReq.step2.kelurahan,
         objectnegaradomisilifk: bodyReq.step2.negara,
-        nocm: bodyReq.step0.nocm || null,
+        // nocm: bodyReq.step0.nocm || null,
         objectstatuskendalirmfk: null,
-        nocmtemp: bodyReq.step0.nocmtemp || null,
+        // nocmtemp: bodyReq.step0.nocmtemp || null,
     }, {
         transaction: transaction
     })

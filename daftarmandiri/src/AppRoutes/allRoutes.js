@@ -23,6 +23,7 @@ const protectedRoutes = [
     { path: "/riwayat-daftar", component: <RiwayatPendaftaran />},
     { path: "/akun", component: <AkunPage />},
     { path: "/akun/edit", component: <EditAkunPage />}
+    
 ]
 
 export { publicRoutes, protectedRoutes };

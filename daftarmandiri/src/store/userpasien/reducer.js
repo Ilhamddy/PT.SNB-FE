@@ -14,7 +14,10 @@ import {
     BATAL_REGIS_ERROR,
     GET_PASIEN_EDIT,
     GET_PASIEN_EDIT_SUCCESS,
-    GET_PASIEN_EDIT_ERROR
+    GET_PASIEN_EDIT_ERROR,
+    UPDATE_PASIEN,
+    UPDATE_PASIEN_SUCCESS,
+    UPDATE_PASIEN_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -40,6 +43,11 @@ const INIT_STATE = {
         error: null
     },
     getPasienEdit: {
+        data: [],
+        loading: false,
+        error: null
+    },
+    updatePasien: {
         data: [],
         loading: false,
         error: null
@@ -218,6 +226,39 @@ const login = (state = INIT_STATE, action) => {
                 ...state,
                 getPasienEdit: {
                     ...state.getPasienEdit,
+                    data: [],
+                    loading: false,
+                    error: action.payload,
+                },
+            }
+
+        case UPDATE_PASIEN:
+            return {
+                ...state,
+                updatePasien: {
+                    ...state.updatePasien,
+                    data: [],
+                    loading: true,
+                    error: null,
+                },
+            }
+
+        case UPDATE_PASIEN_SUCCESS:
+            return {
+                ...state,
+                updatePasien: {
+                    ...state.updatePasien,
+                    data: action.payload,
+                    loading: false,
+                    error: null,
+                },
+            }
+
+        case UPDATE_PASIEN_ERROR:
+            return {
+                ...state,
+                updatePasien: {
+                    ...state.updatePasien,
                     data: [],
                     loading: false,
                     error: action.payload,

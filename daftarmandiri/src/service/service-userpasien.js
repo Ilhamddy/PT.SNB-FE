@@ -23,4 +23,8 @@ export default class ServiceAuth {
     getPasienEdit = async (queries) => {
         return await api.get(`/daftarmandiri/user-pasien/get-pasien-edit`, queries)
     }
+
+    updatePasien = async (data) => {
+        return await api.create(`/daftarmandiri/user-pasien/update-pasien`, data)
+    }
 }

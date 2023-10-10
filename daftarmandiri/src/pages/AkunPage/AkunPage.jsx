@@ -5,10 +5,12 @@ import { useRef } from 'react'
 import KontainerPage from '../../Components/KontainerPage/KontainerPage'
 import './AkunPage.scss'
 import ExpandRight from './expand-right.svg'
+import { useNavigate } from 'react-router-dom'
 
 const AkunPage = () => {
   const refKontainer = useRef(null)
   const dispatch = useDispatch()
+  const navigate = useNavigate()
   return (
     <KontainerPage
       top={'0'}
@@ -18,7 +20,15 @@ const AkunPage = () => {
     >
       <div className="akun-kontainer">
         <div className="opsi-akun">
-          <ButtonOpsi>Edit Data Pasien</ButtonOpsi>
+          <ButtonOpsi
+            onClick={() => {
+              refKontainer.current.handleToNextPage(() => {
+                navigate('/akun/edit')
+              })
+            }}
+          >
+            Edit Data Pasien
+          </ButtonOpsi>
           <ButtonOpsi>Penjamin Pasien</ButtonOpsi>
         </div>
         <ButtonDM onClick={() => dispatch(logoutUser())}>Keluar</ButtonDM>

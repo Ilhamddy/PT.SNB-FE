@@ -11,7 +11,9 @@ import {
     batalRegisSuccess,
     batalRegisError,
     getPasienEditSuccess,
-    getPasienEditError
+    getPasienEditError,
+    updatePasienSuccess,
+    updatePasienError
 } from "./action";
 import * as uuid from 'uuid'
 
@@ -22,7 +24,8 @@ import {
     SIGNUP_USER,
     GET_RIWAYAT_REGISTRASI,
     BATAL_REGIS,
-    GET_PASIEN_EDIT
+    GET_PASIEN_EDIT,
+    UPDATE_PASIEN
 } from "./actionType";
 
 import ServiceUserPasien from "../../service/service-userpasien";
@@ -121,6 +124,19 @@ function* onGetPasienEdit({payload: {queries}}){
     }
 }
 
+function* onUpdatePasien({payload: {data, callback}}){
+    try{
+        const response = yield call(serviceUserPasien.updatePasien, data);
+        yield put(updatePasienSuccess(response.data)); 
+        toast.success(response.msg || "Sukses update")
+        callback && callback()
+    }catch(error){
+        console.error(error)
+        yield put(updatePasienError(error))
+        toast.error(error?.response?.msg || "error")
+    }
+}
+
 export default function* watchLoginUser() {
     yield takeEvery(LOGIN_USER, onLoginUser);
     yield takeEvery(LOGOUT_USER, onLogoutUser);
@@ -129,4 +145,5 @@ export default function* watchLoginUser() {
     yield takeEvery(GET_RIWAYAT_REGISTRASI, onGetRiwayatRegistrasi)
     yield takeEvery(BATAL_REGIS, onBatalRegis);
     yield takeEvery(GET_PASIEN_EDIT, onGetPasienEdit);
+    yield takeEvery(UPDATE_PASIEN, onUpdatePasien)
 }
