@@ -132,6 +132,10 @@ const DaftarOrderOperasi = () => {
         }
 
         if (e === 'Verifikasi') {
+            if(selectedPasien.objectstatusoperasifk !==1){
+                toast.error("Pasien Sudah "+selectedPasien.statusoperasi,{autoClose:300})
+                return
+            }
             setisVerifikasiOpen(true)
         }
 
