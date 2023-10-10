@@ -192,7 +192,12 @@ const IsiListPenjamin = ({ data, onEdit, ...rest }) => {
           <img className="dropdown" alt="drop-down" src={GbrDropDown} />
         )}
       </div>
-      <div className="menu" style={open ? { height: 60 } : { height: '0' }}>
+      <div
+        className="menu"
+        style={
+          open ? { height: 88 } : { height: '0', padding: 0, border: 'none' }
+        }
+      >
         <div className="tbl">
           <ButtonDM className="isi-tbl">Hapus</ButtonDM>
           <ButtonDM className="isi-tbl" onClick={() => onEdit()}>

@@ -97,6 +97,10 @@
                         width: 100%;
                         overflow: hidden;
                         transition: all 0.3s ease-in-out;
+                        background-color: #fdfdfd;
+                        border: 1px solid #e8d58f;
+                        padding: 14px;
+                        border-radius: 10px;
                         .tbl {
                             display: flex;
                             flex-direction: row;
