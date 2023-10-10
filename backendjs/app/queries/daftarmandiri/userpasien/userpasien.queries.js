@@ -83,7 +83,45 @@ FROM users_pasien up
 WHERE up.id = $1
 `
 
+const qGetPasienAkun = `
+SELECT
+    mp.namapasien AS namalengkap,
+    mp.noidentitas,
+    mp.nocm AS nocm,
+    mp.nocmtemp AS nocmtemp,
+    mp.nohp AS nohp,
+    mp.nobpjs AS nobpjs
+FROM users_pasien up
+    LEFT JOIN m_pasien mp ON (up.norm = mp.nocm OR up.norm = mp.nocmtemp)
+WHERE up.id = $1
+`
+
+const qGetAllPasienFromUser = `
+SELECT
+    mp.*
+FROM users_pasien up
+    LEFT JOIN m_pasien mp ON (up.norm = mp.nocm OR up.norm = mp.nocmtemp)
+WHERE up.id = $1
+`
+
+const qGetPenjaminPasien = `
+SELECT
+    mpp.id AS id,
+    mpp.nocmfk AS nocmfk,
+    mpp.nokartu AS nokartu,
+    mpp.objectrekananfk AS rekanan,
+    mr.namarekanan AS namarekanan
+FROM users_pasien up
+    LEFT JOIN m_pasien mp ON (up.norm = mp.nocm OR up.norm = mp.nocmtemp)
+    LEFT JOIN m_penjaminpasien mpp ON mpp.nocmfk = mp.id
+    LEFT JOIN m_rekanan mr ON mpp.objectrekananfk = mr.id
+WHERE up.id = $1 AND mpp.statusenabled = true
+`
+
 export default {
     qGetRiwayatRegistrasi,
-    qGetPasienEdit
+    qGetPasienEdit,
+    qGetPasienAkun,
+    qGetAllPasienFromUser,
+    qGetPenjaminPasien
 }

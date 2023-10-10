@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import arrowKiriImg from './arrow_left.svg'
+import './BackKomponen.scss'
 
 export const BackKomponen = ({ text, refKontainer }) => {
   const navigate = useNavigate()

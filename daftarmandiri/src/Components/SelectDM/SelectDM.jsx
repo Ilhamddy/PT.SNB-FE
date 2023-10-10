@@ -59,7 +59,6 @@ const SelectDM = React.forwardRef(
           value={onValueChange(newOpt, rest.value)}
           ref={ref}
           theme={theme || config}
-          menuPortalTarget={document.body}
           styles={customStyles}
           options={newOpt}
         />

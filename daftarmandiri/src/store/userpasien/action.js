@@ -17,7 +17,22 @@ import {
     BATAL_REGIS_ERROR,
     GET_PASIEN_EDIT,
     GET_PASIEN_EDIT_SUCCESS,
-    GET_PASIEN_EDIT_ERROR
+    GET_PASIEN_EDIT_ERROR,
+    UPDATE_PASIEN,
+    UPDATE_PASIEN_SUCCESS,
+    UPDATE_PASIEN_ERROR,
+    GET_PASIEN_AKUN,
+    GET_PASIEN_AKUN_SUCCESS,
+    GET_PASIEN_AKUN_ERROR,
+    GET_COMBO_PENJAMIN,
+    GET_COMBO_PENJAMIN_SUCCESS,
+    GET_COMBO_PENJAMIN_ERROR,
+    UPSERT_PENJAMIN,
+    UPSERT_PENJAMIN_SUCCESS,
+    UPSERT_PENJAMIN_ERROR,
+    GET_PENJAMIN_PASIEN,
+    GET_PENJAMIN_PASIEN_SUCCESS,
+    GET_PENJAMIN_PASIEN_ERROR
 } from "./actionType";
 
 export const loginUser = (data, callback) => {
@@ -149,6 +164,111 @@ export const getPasienEditSuccess = (data) => {
 export const getPasienEditError = (error) => {
     return {
         type: GET_PASIEN_EDIT_ERROR,
+        payload: error
+    }
+}
+
+export const updatePasien = (data, callback) => {
+    return {
+        type: UPDATE_PASIEN,
+        payload: {data, callback}
+    }
+}
+
+export const updatePasienSuccess = (data) => {
+    return {
+        type: UPDATE_PASIEN_SUCCESS,
+        payload: data
+    }
+}
+
+export const updatePasienError = (error) => {
+    return {
+        type: UPDATE_PASIEN_ERROR,
+        payload: error
+    }
+}
+
+export const getPasienAkun = (queries) => {
+    return {
+        type: GET_PASIEN_AKUN,
+        payload: {queries}
+    }
+}
+
+export const getPasienAkunSuccess = (data) => {
+    return {
+        type: GET_PASIEN_AKUN_SUCCESS,
+        payload: data
+    }
+}
+
+export const getPasienAkunError = (error) => {
+    return {
+        type: GET_PASIEN_AKUN_ERROR,
+        payload: error
+    }
+}
+
+export const getComboPenjamin = () => {
+    return {
+        type: GET_COMBO_PENJAMIN,
+        payload: {}
+    }
+}
+
+export const getComboPenjaminSuccess = (data) => {
+    return {
+        type: GET_COMBO_PENJAMIN_SUCCESS,
+        payload: data
+    }
+}
+
+export const getComboPenjaminError = (error) => {
+    return {
+        type: GET_COMBO_PENJAMIN_ERROR,
+        payload: error
+    }
+}
+
+export const upsertPenjamin = (data, callback) => {
+    return {
+        type: UPSERT_PENJAMIN,
+        payload: {data, callback}
+    }
+}
+
+export const upsertPenjaminSuccess = (data) => {
+    return {
+        type: UPSERT_PENJAMIN_SUCCESS,
+        payload: data
+    }
+}
+
+export const upsertPenjaminError = (error) => {
+    return {
+        type: UPSERT_PENJAMIN_ERROR,
+        payload: error
+    }
+}
+
+export const getPenjaminPasien = () => {
+    return {
+        type: GET_PENJAMIN_PASIEN,
+        payload: {}
+    }
+}
+
+export const getPenjaminPasienSuccess = (data) => {
+    return {
+        type: GET_PENJAMIN_PASIEN_SUCCESS,
+        payload: data
+    }
+}
+
+export const getPenjaminPasienError = (error) => {
+    return {
+        type: GET_PENJAMIN_PASIEN_ERROR,
         payload: error
     }
 }

@@ -11,7 +11,17 @@ import {
     batalRegisSuccess,
     batalRegisError,
     getPasienEditSuccess,
-    getPasienEditError
+    getPasienEditError,
+    updatePasienSuccess,
+    updatePasienError,
+    getPasienAkunSuccess,
+    getPasienAkunError,
+    getComboPenjaminSuccess,
+    getComboPenjaminError,
+    upsertPenjaminSuccess,
+    upsertPenjaminError,
+    getPenjaminPasienSuccess,
+    getPenjaminPasienError
 } from "./action";
 import * as uuid from 'uuid'
 
@@ -22,7 +32,12 @@ import {
     SIGNUP_USER,
     GET_RIWAYAT_REGISTRASI,
     BATAL_REGIS,
-    GET_PASIEN_EDIT
+    GET_PASIEN_EDIT,
+    UPDATE_PASIEN,
+    GET_PASIEN_AKUN,
+    GET_COMBO_PENJAMIN,
+    UPSERT_PENJAMIN,
+    GET_PENJAMIN_PASIEN
 } from "./actionType";
 
 import ServiceUserPasien from "../../service/service-userpasien";
@@ -121,6 +136,62 @@ function* onGetPasienEdit({payload: {queries}}){
     }
 }
 
+function* onUpdatePasien({payload: {data, callback}}){
+    try{
+        const response = yield call(serviceUserPasien.updatePasien, data);
+        yield put(updatePasienSuccess(response.data)); 
+        toast.success(response.msg || "Sukses update")
+        callback && callback()
+    }catch(error){
+        console.error(error)
+        yield put(updatePasienError(error))
+        toast.error(error?.response?.msg || "error")
+    }
+}
+
+function* onGetPasienAkun({payload: {queries}}){
+    try{
+        const response = yield call(serviceUserPasien.getPasienAkun, queries);
+        yield put(getPasienAkunSuccess(response.data)); 
+    }catch(error){
+        console.error(error)
+        yield put(getPasienAkunError(error))
+    }
+}
+
+function* onGetComboPenjamin(){
+    try{
+        const response = yield call(serviceUserPasien.getComboPenjamin);
+        yield put(getComboPenjaminSuccess(response.data)); 
+    }catch(error){
+        console.error(error)
+        yield put(getComboPenjaminError(error))
+    }
+}
+
+function* onUpsertPenjamin({payload: {data, callback}}){
+    try{
+        const response = yield call(serviceUserPasien.upsertPenjamin, data);
+        yield put(upsertPenjaminSuccess(response.data)); 
+        toast.success(response.msg || "Sukses update")
+        callback && callback()
+    }catch(error){
+        console.error(error)
+        yield put(upsertPenjaminError(error))
+        toast.error(error?.response?.msg || "error")
+    }
+}
+
+function* onGetPenjaminPasien(){
+    try{
+        const response = yield call(serviceUserPasien.getPenjaminPasien);
+        yield put(getPenjaminPasienSuccess(response.data)); 
+    }catch(error){
+        console.error(error)
+        yield put(getPenjaminPasienError(error))
+    }
+}
+
 export default function* watchLoginUser() {
     yield takeEvery(LOGIN_USER, onLoginUser);
     yield takeEvery(LOGOUT_USER, onLogoutUser);
@@ -129,4 +200,9 @@ export default function* watchLoginUser() {
     yield takeEvery(GET_RIWAYAT_REGISTRASI, onGetRiwayatRegistrasi)
     yield takeEvery(BATAL_REGIS, onBatalRegis);
     yield takeEvery(GET_PASIEN_EDIT, onGetPasienEdit);
+    yield takeEvery(UPDATE_PASIEN, onUpdatePasien);
+    yield takeEvery(GET_PASIEN_AKUN, onGetPasienAkun);
+    yield takeEvery(GET_COMBO_PENJAMIN, onGetComboPenjamin);
+    yield takeEvery(UPSERT_PENJAMIN, onUpsertPenjamin);
+    yield takeEvery(GET_PENJAMIN_PASIEN, onGetPenjaminPasien);
 }

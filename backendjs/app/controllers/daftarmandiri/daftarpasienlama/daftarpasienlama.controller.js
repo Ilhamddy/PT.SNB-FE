@@ -3,7 +3,6 @@ import * as uuid from 'uuid';
 import pool from "../../../config/dbcon.query";
 import { qGetDokter } from "../../../queries/daftarmandiri/daftarpasienlama/daftarpasienlama.queries";
 import { groupBy } from "../../../utils/arutils";
-import hariQueries from "../../../queries/master/hari/hari.queries";
 import unitQueries from "../../../queries/master/unit/unit.queries";
 import pegawaiQueries from "../../../queries/master/pegawai/pegawai.queries";
 import rekananQueries from "../../../queries/master/rekanan/rekanan.queries";

@@ -9,6 +9,7 @@ import DaftarPasienLama from "../pages/DaftarPasienLama/DaftarPasienLama";
 import RiwayatPendaftaran from "../pages/RiwayatPendaftaran/RiwayatPendaftaran";
 import AkunPage from "../pages/AkunPage/AkunPage";
 import EditAkunPage from "../pages/EditAkunPage/EditAkunPage";
+import PenjaminPage from "../pages/PenjaminPage/PenjaminPage";
 
 const publicRoutes = [
     { path: "/login/:page", component: <Login /> },
@@ -22,7 +23,8 @@ const protectedRoutes = [
     { path: "/daftar/pasien-lama/:step", component: <DaftarPasienLama />},
     { path: "/riwayat-daftar", component: <RiwayatPendaftaran />},
     { path: "/akun", component: <AkunPage />},
-    { path: "/akun/edit", component: <EditAkunPage />}
+    { path: "/akun/edit", component: <EditAkunPage />},
+    { path: "/akun/penjamin", component: <PenjaminPage />}
 ]
 
 export { publicRoutes, protectedRoutes };

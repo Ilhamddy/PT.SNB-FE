@@ -8,13 +8,14 @@ import pool from "../../../config/dbcon.query";
 import { getDateStartEnd, getDateStartEndMonth } from "../../../utils/dateutils";
 import userpasienQueries from "../../../queries/daftarmandiri/userpasien/userpasien.queries";
 import bcrypt from "bcryptjs"
+import rekananQueries from "../../../queries/master/rekanan/rekanan.queries";
 
 
 const m_pasien = db.m_pasien
 const running_number = db.running_number
 const users_pasien = db.users_pasien
 
-const createPasien = async (req, res) => {
+const upsertPasien = async (req, res) => {
     const logger = res.locals.logger;
     try{
         const bodyReq = req.body
@@ -53,7 +54,7 @@ const createPasien = async (req, res) => {
             user: user
         };
 
-        const data = encrypt(tempres, bodyReq.clientSecret)
+        const data = encrypt(tempres, bodyReq.clientSecret || userPasien.clientsecret)
 
         res.status(200).send(data);
     } catch (error) {
@@ -229,11 +230,156 @@ const getPasienEdit = async (req, res) => {
     }
 }
 
+const getPasienAkun = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const pasienAkun = await pool.query(userpasienQueries.qGetPasienAkun, [req.id])
+        const tempres = {
+            pasienAkun: pasienAkun.rows[0]
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+const getComboPenjamin = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const penjamin = (await pool.query(rekananQueries.getPenjamin)).rows
+        const tempres = {
+            penjamin: penjamin
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+const upsertPenjamin = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const {penjamin} = await db.sequelize.transaction(async (transaction) => {
+            const bodyReq = req.body
+            const pasien = (await pool.query(userpasienQueries.qGetAllPasienFromUser, [req.id])).rows[0]
+            if(!bodyReq.penjamin || !bodyReq.nokartu) 
+                throw new Error('Penjamin dan No Kartu harus diisi')
+            let penjamin = null
+            let pasienUpdate = null
+            if(bodyReq.penjamin === 1){
+                pasienUpdate = await db.m_pasien.findOne({
+                    where: {
+                        id: pasien?.id
+                    }
+                })
+                pasienUpdate = await pasienUpdate.update({
+                    nobpjs: bodyReq.nokartu,
+                }, {
+                    transaction: transaction
+                })
+                pasienUpdate = pasienUpdate?.toJSON() || null
+            }else if(!bodyReq.idpenjamin){
+                penjamin = await db.m_penjaminpasien.create({
+                    kdprofile: 0,
+                    statusenabled: true,
+                    nocmfk: pasien?.id,
+                    objectrekananfk: bodyReq.penjamin,
+                    nokartu: bodyReq.nokartu,
+                }, {
+                    transaction: transaction
+                })
+            } else{
+                const penjaminModel = await db.m_penjaminpasien.findOne({
+                    where: {
+                        id: bodyReq.idpenjamin
+                    }
+                })
+                await penjaminModel.update({
+                    objectrekananfk: bodyReq.penjamin,
+                    nokartu: bodyReq.nokartu,
+                }, {
+                    transaction: transaction
+                })
+                penjamin = penjaminModel?.toJSON() || null
+            }
+            return {penjamin}
+        });
+        
+        const tempres = {
+            penjamin
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+const getPenjaminPasien = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const penjamin = (await pool.query(userpasienQueries.qGetPenjaminPasien, [req.id])).rows
+        const tempres = {
+            penjamin: penjamin
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export default {
-    createPasien,
+    upsertPasien,
     getRiwayatReservasi,
     batalRegis,
-    getPasienEdit
+    getPasienEdit,
+    getPasienAkun,
+    getComboPenjamin,
+    upsertPenjamin,
+    getPenjaminPasien
 }
 
 const hCreatePasien = async (req, res, transaction) => {
@@ -284,7 +430,7 @@ const hCreatePasien = async (req, res, transaction) => {
         objectnegaraktpfk: bodyReq.step1.negara,
         namaayah: bodyReq.step3.namaayah,
         namasuamiistri: bodyReq.step0.namapasangan,
-        nobpjs: bodyReq.step0.noidentitas,
+        nobpjs: bodyReq.step3.nobpjs || null,
         nohp: bodyReq.step3.nohppasien,
         tempatlahir: bodyReq.step0.tempatlahir,
         jamlahir: null,
@@ -309,7 +455,7 @@ const hCreatePasien = async (req, res, transaction) => {
         transaction: transaction
     })
     dataPasien = dataPasien.toJSON();
-    const userPasien = await pasienSignup(
+    let userPasien = await pasienSignup(
         req, 
         res, 
         transaction, 
@@ -322,6 +468,7 @@ const hCreatePasien = async (req, res, transaction) => {
     }, {
         transaction: transaction
     })
+    userPasien = userPasien?.toJSON() || null;
     let token = jwt.sign({ 
             id: userPasien.id, 
             expired: new Date() + (86400 * 1000),
@@ -381,7 +528,7 @@ const hUpdatePasien = async (req, res, transaction) => {
         objectnegaraktpfk: bodyReq.step1.negara,
         namaayah: bodyReq.step3.namaayah,
         namasuamiistri: bodyReq.step0.namapasangan,
-        nobpjs: bodyReq.step0.noidentitas,
+        nobpjs: bodyReq.step3.nobpjs || null,
         nohp: bodyReq.step3.nohppasien,
         tempatlahir: bodyReq.step0.tempatlahir,
         jamlahir: null,
@@ -399,9 +546,9 @@ const hUpdatePasien = async (req, res, transaction) => {
         rwdomisili: bodyReq.step2.rw,
         objectdesakelurahandomisilifk: bodyReq.step2.kelurahan,
         objectnegaradomisilifk: bodyReq.step2.negara,
-        nocm: bodyReq.step0.nocm || null,
+        // nocm: bodyReq.step0.nocm || null,
         objectstatuskendalirmfk: null,
-        nocmtemp: bodyReq.step0.nocmtemp || null,
+        // nocmtemp: bodyReq.step0.nocmtemp || null,
     }, {
         transaction: transaction
     })

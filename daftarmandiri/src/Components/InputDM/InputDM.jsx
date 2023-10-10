@@ -19,7 +19,7 @@ const InputDM = ({ errorMsg, isError, className, classNameInput, ...rest }) => {
       <input
         className={`input d-flex kontainer-input-dm ${
           isError ? 'is-invalid' : ''
-        } ${classNameInput || ''}`}
+        } ${classNameInput || ''} ${rest.disabled ? 'input-disabled' : ''}`}
         {...rest}
       ></input>
       {isError && <FormFeedback>{errorMsg}</FormFeedback>}
