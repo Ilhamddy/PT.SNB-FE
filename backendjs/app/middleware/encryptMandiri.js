@@ -56,6 +56,10 @@ export const encryptMandiri = async (req, res, next) => {
         let oldSend = res.send;    
         res.send = function(data) {
             try{
+                if(data.isencrypt){
+                    res.send = oldSend 
+                    return res.send(data)
+                }
                 const newData = encrypt(data, clientSecret)
                 res.send = oldSend 
                 return res.send(newData) 

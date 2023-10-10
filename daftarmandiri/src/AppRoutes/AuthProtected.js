@@ -11,7 +11,7 @@ const AuthProtected = (props) => {
       : null
     
     return {
-      userid: state.UserPasien.loginUser?.data?.id || user || null,
+      userid: state.UserPasien.loginUser?.data?.id || user?.id || null,
     }
   })
 

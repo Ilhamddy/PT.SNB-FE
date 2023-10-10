@@ -3,8 +3,20 @@ import './KontainerPage.scss'
 import { useDispatch, useSelector } from 'react-redux'
 import { onChangePage } from '../../store/actions'
 
+/**
+
+ * @type {React.ForwardRefExoticComponent<{
+ * children: JSX.Element,
+ * header: JSX.Element,
+ * top: string,
+ * className: string,
+ * classNameKonten: string
+ * } & React.RefAttributes<{
+ * handleToNextPage: (callback?: () => void) => void
+ * }>>}
+ */
 const KontainerPage = forwardRef(
-  ({ children, header, top, className }, ref) => {
+  ({ children, header, top, className, classNameKonten }, ref) => {
     const lastTop = useSelector((state) => state.DOM.kontainerPage.lastTop)
     const [stlHeader, setStlHeader] = useState(() => ({
       height: lastTop,
@@ -52,7 +64,7 @@ const KontainerPage = forwardRef(
           {header || ''}
         </div>
         <div className="kontainer-page-konten" style={stlBody}>
-          <div className="konten" style={stlBodyKonten}>
+          <div className={`konten ${classNameKonten}`} style={stlBodyKonten}>
             {children}
           </div>
         </div>

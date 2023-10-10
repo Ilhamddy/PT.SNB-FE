@@ -1,7 +1,51 @@
 .akun-page {
-    akun-kontainer {
-        width: 100%;
-        display: flex;
-        flex-direction: column;
+    .konten-akun {
+        // 30 px adalah tinggi .kontainer-page-konten
+        height: calc(100vh - 60px);
+
+        .akun-kontainer {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+
+            .opsi-akun {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                .button-opsi {
+                    width: 100%;
+                    height: 48px;
+                    padding: 8px 16px;
+                    border-radius: 10px;
+                    background-color: #e8d58f;
+                    border: none;
+                    display: flex;
+                    margin-bottom: 16px;
+
+                    .konten-btn {
+                        width: calc(100% - 32px);
+                        height: 100%;
+                        display: flex;
+                        justify-content: flex-start;
+                        align-items: center;
+                    }
+                    .kontainer-expand {
+                        width: 32px;
+                        height: 32px;
+                        border-radius: 50%;
+                        background-color: #d7b53c;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        img {
+                            width: 10px;
+                            height: 14px;
+                        }
+                    }
+                }
+            }
+        }
     }
 }

@@ -18,10 +18,18 @@ import './SelectDM.scss'
  * @type {import('react').FC<SelectProps & Props >}
  */
 const SelectDM = React.forwardRef(
-  ({ className, classNameInput, isError, errorMsg, theme, ...rest }, ref) => {
+  (
+    { className, classNameInput, isError, errorMsg, theme, valueInit, ...rest },
+    ref
+  ) => {
     const onValueChange = (options, value) => {
       return options ? options.find((option) => option.value === value) : ''
     }
+    const newOpt =
+      (rest.options || [])?.length === 0 && valueInit
+        ? [{ ...valueInit }]
+        : rest.options
+
     const customStyles = {
       menuPortal: (provided) => ({ ...provided, zIndex: 30 }),
       menu: (provided) => ({ ...provided, zIndex: 30, borderRadius: 5 }),
@@ -48,11 +56,12 @@ const SelectDM = React.forwardRef(
             classNameInput || ''
           }`}
           {...rest}
-          value={onValueChange(rest.options, rest.value)}
+          value={onValueChange(newOpt, rest.value)}
           ref={ref}
           theme={theme || config}
           menuPortalTarget={document.body}
           styles={customStyles}
+          options={newOpt}
         />
         {isError && <FormFeedback>{errorMsg}</FormFeedback>}
       </div>

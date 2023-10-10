@@ -15,6 +15,11 @@ export default function(app) {
     [],
     controller.createPasien
   )
+  app.post(
+    "/api/daftarmandiri/user-pasien/update-pasien",
+    [authJwt.verifyTokenUser, encryptMandiri],
+    controller.createPasien
+  )
   app.get(
     "/api/daftarmandiri/user-pasien/riwayat-reservasi",
     [authJwt.verifyTokenUser, encryptMandiri],
@@ -24,5 +29,10 @@ export default function(app) {
     "/api/daftarmandiri/user-pasien/batal-regis",
     [authJwt.verifyTokenUser, encryptMandiri],
     controller.batalRegis
+  )
+  app.get(
+    "/api/daftarmandiri/user-pasien/get-pasien-edit",
+    [authJwt.verifyTokenUser, encryptMandiri],
+    controller.getPasienEdit
   )
 };
