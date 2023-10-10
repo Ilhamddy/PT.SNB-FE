@@ -142,7 +142,7 @@ const FormPasienBaru = ({ step, setStep }) => {
     validationSchema: Yup.object({
       namaibu: Yup.string().required('Nama Ibu wajib diisi'),
       namaayah: Yup.string().required('Nama Ayah wajib diisi'),
-      nobpjs: Yup.string().required('No BPJS wajib diisi'),
+      // nobpjs: Yup.string().required('No BPJS wajib diisi'),
       nohppasien: Yup.string().required('No HP Pasien wajib diisi'),
     }),
     onSubmit: (values, { resetForm }) => {

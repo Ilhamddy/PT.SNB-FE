@@ -20,7 +20,16 @@ import {
     UPDATE_PASIEN_ERROR,
     GET_PASIEN_AKUN,
     GET_PASIEN_AKUN_SUCCESS,
-    GET_PASIEN_AKUN_ERROR
+    GET_PASIEN_AKUN_ERROR,
+    GET_COMBO_PENJAMIN,
+    GET_COMBO_PENJAMIN_SUCCESS,
+    GET_COMBO_PENJAMIN_ERROR,
+    UPSERT_PENJAMIN,
+    UPSERT_PENJAMIN_SUCCESS,
+    UPSERT_PENJAMIN_ERROR,
+    GET_PENJAMIN_PASIEN,
+    GET_PENJAMIN_PASIEN_SUCCESS,
+    GET_PENJAMIN_PASIEN_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -56,6 +65,21 @@ const INIT_STATE = {
         error: null
     },
     getPasienAkun: {
+        data: [],
+        loading: false,
+        error: null
+    },
+    getComboPenjamin: {
+        data: [],
+        loading: false,
+        error: null
+    },
+    upsertPenjamin: {
+        data: [],
+        loading: false,
+        error: null
+    },
+    getPenjaminPasien: {
         data: [],
         loading: false,
         error: null
@@ -305,6 +329,105 @@ const login = (state = INIT_STATE, action) => {
                     error: action.payload,
                 },
             }
+
+        case GET_COMBO_PENJAMIN: 
+            return {
+                ...state,
+                getComboPenjamin: {
+                    ...state.getComboPenjamin,
+                    data: [],
+                    loading: true,
+                    error: null,
+                },
+            };
+
+        case GET_COMBO_PENJAMIN_SUCCESS:
+            return {
+                ...state,
+                getComboPenjamin: {
+                    ...state.getComboPenjamin,
+                    data: action.payload,
+                    loading: false,
+                    error: null,
+                },
+            };
+
+        case GET_COMBO_PENJAMIN_ERROR:
+            return {
+                ...state,
+                getComboPenjamin: {
+                    ...state.getComboPenjamin,
+                    data: [],
+                    loading: false,
+                    error: action.payload,
+                },
+            };
+
+        case UPSERT_PENJAMIN:
+            return {
+                ...state,
+                upsertPenjamin: {
+                    ...state.upsertPenjamin,
+                    data: [],
+                    loading: true,
+                    error: null,
+                },
+            };
+
+        case UPSERT_PENJAMIN_SUCCESS:
+            return {
+                ...state,
+                upsertPenjamin: {
+                    ...state.upsertPenjamin,
+                    data: action.payload,
+                    loading: false,
+                    error: null,
+                },
+            };
+
+        case UPSERT_PENJAMIN_ERROR:
+            return {
+                ...state,
+                upsertPenjamin: {
+                    ...state.upsertPenjamin,
+                    data: [],
+                    loading: false,
+                    error: action.payload,
+                },
+            };
+
+        case GET_PENJAMIN_PASIEN:
+            return {
+                ...state,
+                getPenjaminPasien: {
+                    ...state.getPenjaminPasien,
+                    data: [],
+                    loading: true,
+                    error: null,
+                },
+            };
+        
+        case GET_PENJAMIN_PASIEN_SUCCESS:
+            return {
+                ...state,
+                getPenjaminPasien: {
+                    ...state.getPenjaminPasien,
+                    data: action.payload,
+                    loading: false,
+                    error: null,
+                },
+            };
+
+        case GET_PENJAMIN_PASIEN_ERROR:
+            return {
+                ...state,
+                getPenjaminPasien: {
+                    ...state.getPenjaminPasien,
+                    data: [],
+                    loading: false,
+                    error: action.payload,
+                },
+            };
 
         default:
             return { ...state };

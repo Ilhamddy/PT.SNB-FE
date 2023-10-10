@@ -13,12 +13,12 @@ export default function(app) {
   app.post(
     "/api/daftarmandiri/user-pasien/create-pasien",
     [],
-    controller.createPasien
+    controller.upsertPasien
   )
   app.post(
     "/api/daftarmandiri/user-pasien/update-pasien",
     [authJwt.verifyTokenUser, encryptMandiri],
-    controller.createPasien
+    controller.upsertPasien
   )
   app.get(
     "/api/daftarmandiri/user-pasien/riwayat-reservasi",
@@ -39,5 +39,20 @@ export default function(app) {
     "/api/daftarmandiri/user-pasien/get-pasien-akun",
     [authJwt.verifyTokenUser, encryptMandiri],
     controller.getPasienAkun
+  )
+  app.get(
+    "/api/daftarmandiri/user-pasien/get-combo-penjamin",
+    [authJwt.verifyTokenUser, encryptMandiri],
+    controller.getComboPenjamin
+  )
+  app.post(
+    "/api/daftarmandiri/user-pasien/upsert-penjamin",
+    [authJwt.verifyTokenUser, encryptMandiri],
+    controller.upsertPenjamin
+  )
+  app.get(
+    "/api/daftarmandiri/user-pasien/get-penjamin-pasien",
+    [authJwt.verifyTokenUser, encryptMandiri],
+    controller.getPenjaminPasien
   )
 };
