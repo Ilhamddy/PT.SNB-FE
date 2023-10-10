@@ -606,7 +606,7 @@ const FormPasienBaru = ({ step, setStep }) => {
               onChange={(e) => {
                 vStep1.handleChange(e)
               }}
-              disabled={isEdit}
+              disabled={true}
             />
           </InputGroup>
           <InputGroup label={'Kabupaten'}>
@@ -621,7 +621,7 @@ const FormPasienBaru = ({ step, setStep }) => {
               onChange={(e) => {
                 vStep1.handleChange(e)
               }}
-              disabled={isEdit}
+              disabled={true}
             />
           </InputGroup>
           <InputGroup label={'Provinsi'}>
@@ -636,7 +636,7 @@ const FormPasienBaru = ({ step, setStep }) => {
               onChange={(e) => {
                 vStep1.handleChange(e)
               }}
-              disabled={isEdit}
+              disabled={true}
             />
           </InputGroup>
           <InputGroup label={'Negara'}>
@@ -784,6 +784,7 @@ const FormPasienBaru = ({ step, setStep }) => {
               onChange={(e) => {
                 vStep2.handleChange(e)
               }}
+              disabled={true}
             />
           </InputGroup>
           <InputGroup label={'Kabupaten'}>
@@ -798,6 +799,7 @@ const FormPasienBaru = ({ step, setStep }) => {
               onChange={(e) => {
                 vStep2.handleChange(e)
               }}
+              disabled={true}
             />
           </InputGroup>
           <InputGroup label={'Provinsi'}>
@@ -812,6 +814,7 @@ const FormPasienBaru = ({ step, setStep }) => {
               onChange={(e) => {
                 vStep2.handleChange(e)
               }}
+              disabled={true}
             />
           </InputGroup>
           <InputGroup label={'Negara'}>
