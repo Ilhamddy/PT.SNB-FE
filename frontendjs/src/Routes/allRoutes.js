@@ -324,6 +324,7 @@ import TriageIGD from "../pages/GawatDarurat/TriageIGD/TriageIGD";
 // Bedah Sentral
 import DaftarOrderOperasi from "../pages/BedahSentral/DaftarOrderOperasi/DaftarOrderOperasi";
 import DaftarPasienOperasi from "../pages/BedahSentral/DaftarPasienOperasi/DaftarPasienOperasi";
+import VerifikasiPasienOnline from "../pages/VerifikasiPasienOnline/VerifikasiPasienOnline";
 
 
 
@@ -566,6 +567,7 @@ const authProtectedRoutes = [
   { path: "/bGlzdGRhZnRhcnBhc2llbi9kYWZ0YXJwYXNpZW5tdXRhc2k=", component:<DaftarPasienMutasi/>},
   { path: "/registrasi/mutasi-pasien/:id/:norec", component: <RegistrasiMutasiPasien/> },
   { path: "/listdaftarpasien/daftar-pasien-igd", component: <DaftarPasienIGD /> },
+  { path: "/bGlzdGRhZnRhcnBhc2llbi9kYWZ0YXItcGFzaWVuLWlnZA==", component: <VerifikasiPasienOnline />},
  
 
   // rekam medis

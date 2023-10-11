@@ -273,7 +273,6 @@ const KendaliDokumen = () => {
                                     <Row>
                                         <Col sm={3}>
                                             <KontainerFlatpickr
-                                            
                                                 options={{
                                                     // mode: "range",
                                                     dateFormat: "Y-m-d",

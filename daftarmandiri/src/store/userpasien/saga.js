@@ -109,7 +109,6 @@ function* onGetRiwayatRegistrasi({payload: {queries}}) {
         yield put(getRiwayatRegistrasiSuccess(response.data));
     }catch(error){
         yield put(getRiwayatRegistrasiError(error))
-        toast.error(error?.response?.msg || "error")
     }
 }
 

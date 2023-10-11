@@ -90,6 +90,7 @@ import Distribusi from "./distribusi/reducer";
 import Farmasi from "./farmasi/reducer"
 import Viewer from "./viewer/reducer";
 import BedahSentral from "./bedahSentral/reducer";
+import DaftarPasienOnline from "./daftarPasienOnline/reducer"
 
 
 const rootReducer = combineReducers({
@@ -135,7 +136,8 @@ const rootReducer = combineReducers({
     PageState,
     Farmasi,
     Viewer,
-    BedahSentral
+    BedahSentral,
+    DaftarPasienOnline
 });
 
 export default rootReducer;

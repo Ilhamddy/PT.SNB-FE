@@ -11,19 +11,19 @@ import UiContent from '../../../Components/Common/UiContent';
 import { Link, useNavigate } from "react-router-dom";
 import withRouter from '../../../Components/Common/withRouter';
 import DataTable from 'react-data-table-component';
-import classnames from "classnames";
 //import images
-import userDummy from "../../../assets/images/users/user-dummy-img.jpg";
 
 import patient from "../../../assets/images/users/icons8-patient-64.png";
 
 import { ToastContainer, toast } from 'react-toastify';
 import LoadingTable from '../../../Components/Table/LoadingTable';
 import { dateLocal } from '../../../utils/format';
+import ActionPasienRegistrasi from '../../../Components/ActionPasienRegistrasi/ActionPasienRegistrasi';
 
 const RegistrasiList = () => {
     const dispatch = useDispatch();
-    const history = useNavigate();
+    const navigate = useNavigate();
+
     const { data, loading, error } = useSelector((state) => ({
         data: state.Registrasi.registrasiList.data,
         loading: state.Registrasi.registrasiList.loading,
@@ -34,56 +34,35 @@ const RegistrasiList = () => {
         dispatch(registrasiGetList(''));
     }, [dispatch]);
 
-    // Pills Tabs
-    const [pillsTab, setpillsTab] = useState("3");
-    const pillsToggle = (tab) => {
-        if (pillsTab !== tab) {
-            setpillsTab(tab);
-        }
-    };
 
     // Profil
-    const [namaPasien, setnamaPasien] = useState(null);
-    const [noIdentitas, setnoIdentitas] = useState(null);
-    const [norm, setnorm] = useState(null);
-    const [nohp, setnohp] = useState(null);
-    const [alamat, setalamat] = useState(null);
+    const [profil, setProfil] = useState({
+        namaPasien: null,
+        noIdentitas: null,
+        norm: null,
+        nohp: null,
+        alamat: null,
+        search: null,
+        idcmfk: null,
+    })
     const [search, setSearch] = useState('')
-    const [idcmfk, setidcmfk] = useState(null);
     const [statusNotif, setstatusNotif] = useState(false);
 
     const handleClick = (e) => {
-        setnamaPasien(e.namapasien)
-        setnoIdentitas(e.noidentitas)
-        setnorm(e.nocm)
-        setnohp(e.nohp)
-        setalamat(e.alamatrmh)
-        setidcmfk(e.id)
-        // console.log('this is:', e.namapasien);
+        setProfil({
+            namaPasien: e.namapasien,
+            noIdentitas: e.noidentitas,
+            norm: e.nocm,
+            nohp: e.nohp,
+            alamat: e.alamatrmh,
+            idcmfk: e.id
+        })
     };
 
-    const defaultnotify = (pesan) => toast(pesan, { position: "top-right", hideProgressBar: false, className: 'bg-warning text-white', progress: undefined });
-
-    const handleClickButton = (e) => {
-        if (idcmfk === null){
-            defaultnotify('Pasien Belum Dipilih')
-            return
-        }
-        
-        if(e==='registrasi'){
-            history(`/registrasi/pasien-ruangan/${idcmfk}`);
-        }else if(e==='edit'){
-            history(`/registrasi/pasien-baru/${idcmfk}`);
-        }
-         
-    };
 
     const handleFilter = (e) => {
         if (e.keyCode === 13) {
-            // console.log(search)
-            // useEffect(() => {
             dispatch(registrasiGetList(search));
-            // }, [dispatch]);
         }
     }
 
@@ -144,8 +123,48 @@ const RegistrasiList = () => {
             sortable: false,
             width: "150px"
         },
-
     ];
+
+    const buttonAction = [
+        {
+            name: 'Registrasi',
+            onClick: (profil) => {
+                navigate(`/registrasi/pasien-ruangan/${profil?.idcmfk}`)
+            },
+        },
+        {
+            name: 'Edit Data Pasien',
+            onClick: (profil) => {
+                navigate(`/registrasi/pasien-baru/${profil?.idcmfk}`)
+            },
+        },
+        {
+            name: 'Cetak Kartu Pasien',
+            onClick: (profil) => {
+                navigate(`/registrasi/pasien-baru/${profil?.idcmfk}`)
+            },
+        },
+        {
+            name: 'Cek kepesertaan',
+            onClick: (profil) => {},
+        },
+        {
+            name: 'Cek Rujukan',
+            onClick: (profil) => {},
+        },
+        {
+            name: '[BPJS] Buat Surkon/SPRI',
+            onClick: (profil) => {},
+        },
+        {
+            name: 'Cetak Kartu Pasien',
+            onClick: (profil) => {},
+        },
+        {
+            name: 'Cetak Label Pasien',
+            onClick: (profil) => {},
+        },
+    ]
 
 
     return (
@@ -156,117 +175,7 @@ const RegistrasiList = () => {
                     <BreadCrumb title="Pasien Lama" pageTitle="Forms" />
                     <Row>
                         <Col lg={3}>
-                            <Card>
-                                <CardBody>
-                                    <div className="text-center mt-3">
-                                        <img src={userDummy}
-                                            className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image"
-                                            alt="user-profile" />
-                                        <h5 className="fs-17 mb-1">{namaPasien}</h5>
-                                        <p className="text-muted mb-0">{noIdentitas}</p>
-                                    </div>
-                                </CardBody>
-                            </Card>
-
-                            <Card>
-                                <CardBody>
-                                    <Nav pills className="nav-success mb-3">
-                                        <NavItem>
-                                            <NavLink style={{ cursor: "pointer" }} className={classnames({ active: pillsTab === "1", })} onClick={() => { pillsToggle("1"); }} >
-                                                Profile
-                                            </NavLink>
-                                        </NavItem>
-                                        <NavItem>
-                                            <NavLink style={{ cursor: "pointer" }} className={classnames({ active: pillsTab === "2", })} onClick={() => { pillsToggle("2"); }} >
-                                                Riwayat
-                                            </NavLink>
-                                        </NavItem>
-                                        <NavItem>
-                                            <NavLink style={{ cursor: "pointer" }} className={classnames({ active: pillsTab === "3", })} onClick={() => { pillsToggle("3"); }} >
-                                                Action
-                                            </NavLink>
-                                        </NavItem>
-                                    </Nav>
-
-                                    <TabContent activeTab={pillsTab} className="text-muted">
-                                        <TabPane tabId="1" id="home-1">
-                                            <Card>
-                                                <CardBody>
-                                                    <div className="table-responsive">
-                                                        <Table className="table-borderless mb-0">
-                                                            <tbody>
-                                                                <tr>
-                                                                    <th className="ps-0" scope="row">NoRM :</th>
-                                                                    <td className="text-muted">{norm}</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <th className="ps-0" scope="row">No Hp :</th>
-                                                                    <td className="text-muted">{nohp}</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <th className="ps-0" scope="row">Alamat :</th>
-                                                                    <td className="text-muted">{alamat}</td>
-                                                                </tr>
-                                                            </tbody>
-                                                        </Table>
-                                                    </div>
-                                                </CardBody>
-                                            </Card>
-                                        </TabPane>
-
-                                        <TabPane tabId="2" id="profile-1">
-                                            <div className="d-flex">
-                                                <div className="flex-shrink-0">
-                                                    <i className="ri-checkbox-circle-fill text-success"></i>
-                                                </div>
-                                                <div className="flex-grow-1 ms-2">
-                                                    In some designs, you might adjust your tracking to create a certain artistic effect. It can also help you fix fonts that are poorly spaced to begin with.
-                                                </div>
-                                            </div>
-                                            <div className="d-flex mt-2">
-                                                <div className="flex-shrink-0">
-                                                    <i className="ri-checkbox-circle-fill text-success"></i>
-                                                </div>
-                                                <div className="flex-grow-1 ms-2">
-                                                    A wonderful serenity has taken possession of my entire soul, like these sweet mornings of spring which I enjoy with my whole heart.
-                                                </div>
-                                            </div>
-                                        </TabPane>
-                                        <TabPane tabId="3" id="messages-1" >
-                                            <div className="live-preview">
-                                                <div className="d-flex flex-column gap-2">
-                                                    <Button color="info" className="btn-animation" data-text="Registrasi" onClick={() => handleClickButton('registrasi')}><span>Registrasi</span></Button>
-                                                    <Button color="info" className="btn-animation" data-text="Edit Data Pasien" onClick={() => handleClickButton('edit')}> <span>Edit Data Pasien</span> </Button>
-                                                    <Button color="info" className="btn-animation" data-text="[BPJS] Cek Kepesertaan"> <span>[BPJS] Cek Kepesertaan</span> </Button>
-                                                    <Button color="info" className="btn-animation" data-text="[BPJS] Cek Rujukan"> <span>[BPJS] Cek Rujukan</span> </Button>
-                                                    <Button color="info" className="btn-animation" data-text="[BPJS] Buat Surkon/SPRI"> <span>[BPJS] Buat Surkon/SPRI</span> </Button>
-                                                    <Button color="info" className="btn-animation" data-text="Cetak Kartu Pasien"> <span>Cetak Kartu Pasien</span> </Button>
-                                                    <Button color="info" className="btn-animation" data-text="Cetak Label Pasien"> <span>Cetak Label Pasien</span> </Button>
-                                                    <ToastContainer autoClose={2000} />
-                                                </div>
-                                            </div>
-                                        </TabPane>
-                                        <TabPane tabId="4" id="settings-1">
-                                            <div className="d-flex mt-2">
-                                                <div className="flex-shrink-0">
-                                                    <i className="ri-checkbox-circle-fill text-success"></i>
-                                                </div>
-                                                <div className="flex-grow-1 ms-2">
-                                                    For that very reason, I went on a quest and spoke to many different professional graphic designers and asked them what graphic design tips they live.
-                                                </div>
-                                            </div>
-                                            <div className="d-flex mt-2">
-                                                <div className="flex-shrink-0">
-                                                    <i className="ri-checkbox-circle-fill text-success"></i>
-                                                </div>
-                                                <div className="flex-grow-1 ms-2">
-                                                    After gathering lots of different opinions and graphic design basics, I came up with a list of 30 graphic design tips that you can start implementing.
-                                                </div>
-                                            </div>
-                                        </TabPane>
-                                    </TabContent>
-                                </CardBody>
-                            </Card>
+                            <ActionPasienRegistrasi profil={profil} buttonAction={buttonAction}/>
                         </Col>
                         <Col lg={9}>
                             <Card>

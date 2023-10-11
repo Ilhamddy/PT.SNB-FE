@@ -127,4 +127,12 @@ export default class ServiceRegistrasi {
     getDaftarPasienTriage = async (param) => {
         return await api.get(`/transaksi/registrasi/daftar-pasien-triage`, param);
     }
+
+    getComboVerifikasiOnline = async () => {
+        return await api.get(`/transaksi/registrasi/get-combo-verifikasi-online`)
+    }
+
+    getDaftarPasienOnline = async (queries) => {
+        return await api.get(`/transaksi/registrasi/daftar-pasien-online`, queries)
+    }
 }

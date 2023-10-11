@@ -131,10 +131,7 @@ const DaftarPasienLama = () => {
 
   const kontenLogin = (
     <>
-      {!isNotPasienSementara && (
-        <div>Mohon untuk aktifkan akun anda di rumah sakit</div>
-      )}
-      {step === 0 && isNotPasienSementara && (
+      {step === 0 && (
         <>
           <InputGroupDM label="No. RM">
             <InputDM
@@ -248,7 +245,7 @@ const DaftarPasienLama = () => {
           </div>
         </>
       )}
-      {step === 1 && isNotPasienSementara && (
+      {step === 1 && (
         <>
           <InputGroupDM label="No. RM">
             <InputDM
