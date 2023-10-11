@@ -172,4 +172,16 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getDaftarPasienTriage
     );
+    
+    app.get(
+        "/api/transaksi/registrasi/daftar-pasien-online",
+        [authJwt.verifyToken],
+        controller.getPasienOnline
+    )
+
+    app.get(
+        "/api/transaksi/registrasi/get-combo-verifikasi-online",
+        [authJwt.verifyToken],
+        controller.getComboVerifikasi
+    )
 };

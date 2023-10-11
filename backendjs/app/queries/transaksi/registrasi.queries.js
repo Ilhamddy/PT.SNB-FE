@@ -33,7 +33,11 @@ const getPasienByNoregistrasi = `
 // const getAllByOr = 
 //     "select id,nocm ,namapasien ,noidentitas ,nobpjs ,nohp,"+
 //     " to_char(tgllahir,'yyyy-MM-dd')tgllahir, alamatrmh  from m_pasien ";
-const getAllByOr = `select id,nocm ,namapasien ,noidentitas ,nobpjs ,nohp,to_char(tgllahir,'yyyy-MM-dd')tgllahir, alamatrmh,'#FFFFFF' as color  from m_pasien`;
+const getAllByOr = `
+select 
+    id,
+    nocm ,namapasien ,noidentitas ,nobpjs ,nohp,to_char(tgllahir,'yyyy-MM-dd')tgllahir, alamatrmh,'#FFFFFF' as color  
+from m_pasien`;
 
 const getDaftarPasienRawatJalan = `select td.norec as norecdp,
     ta.norec as norecta,
@@ -78,15 +82,24 @@ const getDaftarPasienIGD = `select td.norec as norecdp,
     left join t_rm_lokasidokumen trm on trm.objectantreanpemeriksaanfk=ta.norec `;
 
 
-const getDaftarPasienRegistrasi = `select td.norec as norecdp,mj.jenispenjamin,mi.namainstalasi,mp.nocm,td.noregistrasi,mp.namapasien,
-to_char(td.tglregistrasi,'yyyy-MM-dd') as tglregistrasi,mu.namaunit,
-mp2.reportdisplay || '-' ||ta.noantrian as noantrian,mp2.namalengkap as namadokter  from t_daftarpasien td 
-join m_pasien mp on mp.id=td.nocmfk 
-join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk =td.norec and td.objectunitlastfk=ta.objectunitfk
-join m_unit mu on mu.id=ta.objectunitfk 
-join m_pegawai mp2 on mp2.id=ta.objectdokterpemeriksafk
-join m_instalasi mi on mi.id=mu.objectinstalasifk
-join m_jenispenjamin mj on mj.id=td.objectjenispenjaminfk`;
+const getDaftarPasienRegistrasi = (query) => `
+SELECT 
+    td.norec as norecdp,
+    mj.jenispenjamin,
+    mi.namainstalasi,
+    mp.nocm,td.noregistrasi,
+    mp.namapasien,
+    to_char(td.tglregistrasi,'yyyy-MM-dd') as tglregistrasi,mu.namaunit,
+    mp2.reportdisplay || '-' ||ta.noantrian as noantrian,
+    mp2.namalengkap as namadokter 
+FROM t_daftarpasien td 
+    join m_pasien mp on mp.id=td.nocmfk 
+    join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk =td.norec and td.objectunitlastfk=ta.objectunitfk
+    join m_unit mu on mu.id=ta.objectunitfk 
+    join m_pegawai mp2 on mp2.id=ta.objectdokterpemeriksafk
+    join m_instalasi mi on mi.id=mu.objectinstalasifk
+    join m_jenispenjamin mj on mj.id=td.objectjenispenjaminfk
+` + query;
 
 const getHeaderEmr = `select mu2.namaunit as ruanganta,mr.namarekanan,to_char( mp.tgllahir, TO_CHAR(age( mp.tgllahir,  now( )), 'YY Tahun mm Bulan DD Hari')) AS umur,
 mj2.jeniskelamin,td.norec as norecdp,ta.norec as norecta,mj.jenispenjamin,ta.taskid,mi.namainstalasi,mp.nocm,td.noregistrasi,mp.namapasien,
@@ -148,7 +161,7 @@ const qGetPasienFormById = `
     mp.namakeluarga AS namakeluargalain,
     mp.nohp AS nohp,
     mp.notelepon AS notelepon
-        FROM m_pasien mp
+FROM m_pasien mp
         LEFT JOIN m_negara mnk ON mnk.id = mp.objectnegaraktpfk
         LEFT JOIN m_desakelurahan mdk ON mdk.id = mp.objectdesakelurahanktpfk
         LEFT JOIN m_provinsi mpk ON mpk.id = mdk.objectprovinsifk
@@ -272,6 +285,55 @@ select
 from m_hubungankeluarga md 
 where md.statusenabled=true
 `
+
+const qGetPasienOnline = `
+SELECT
+    mp.id AS nocmfk,
+    mp.nocm,
+    mp.nocmtemp,
+    tro.noreservasi,
+    tro.tglinput,
+    tro.tglrencana,
+    mp.namapasien,
+    mp.tgllahir,
+    td.tglregistrasi,
+    mu.namaunit,
+    mr.namarekanan,
+    mp.nohp,
+    td.objectpenjaminfk
+FROM t_registrasionline tro
+    LEFT JOIN t_daftarpasien td ON td.norec = tro.objectdaftarpasienfk
+    LEFT JOIN m_pasien mp ON mp.id = td.nocmfk
+    LEFT JOIN m_unit mu ON mu.id = td.objectunitlastfk
+    LEFT JOIN m_rekanan mr ON mr.id = td.objectpenjaminfk
+WHERE 
+    tro.statusenabled = true
+    --- find by nocmtemp or namapasien, if empty string, find all
+    AND (
+        ($1 = '') 
+        OR mp.nocmtemp ILIKE '%' || $1 || '%' 
+        OR mp.namapasien ILIKE '%' || $1 || '%' 
+    )
+    --- find by TGLRENCANA, if both empty, find all
+    AND 
+        CASE 
+            WHEN (($2 = '') OR ($3 = '')) 
+            THEN TRUE
+            ELSE (
+                cast($2 AS TIMESTAMP) > tro.tglrencana 
+                AND cast($3 AS TIMESTAMP) < tro.tglrencana
+            )
+        END
+    --- find by unit, if empty, find all
+    AND 
+        CASE 
+            WHEN (NULLIF($4, '')::int IS NULL)
+            THEN TRUE
+            ELSE mu.id = NULLIF($4, '')::int
+        END
+ORDER BY tro.tglinput DESC
+`
+
 const qListPelayananPasienTemp =`select tp.norec,tp.harga,tp.total,tp.qty,
 mp.namaproduk, mk.namakelas,mu.namaunit from t_pelayananpasientemp tp 
 join t_daftarpasien td on td.norec=tp.objectdaftarpasienfk
@@ -304,5 +366,6 @@ export default {
     qM_DaruratIgd,
     qM_HubunganKeluarga,
     qWidgetDaftarPasienTriage,
+    qGetPasienOnline,
     qListPelayananPasienTemp
 };

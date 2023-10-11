@@ -1,9 +1,16 @@
 import { useRef } from "react"
-import Flatpickr from "react-flatpickr"
+import Flatpickr,  { DateTimePickerProps } from "react-flatpickr"
 import "./KontainerFlatpickr.scss"
 
 /**
- * @type {typeof Flatpickr}
+ * @typedef {object} Props
+ * @prop {string} [className]
+ * @prop {boolean} isError
+ *
+ */
+
+/**
+ * @type {import('react').FC<Props & DateTimePickerProps}
  */
 const KontainerFlatpickr = ({
     className = "",

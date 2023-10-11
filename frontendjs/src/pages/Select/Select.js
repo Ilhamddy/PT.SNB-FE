@@ -17,15 +17,16 @@ const CustomSelect = React.forwardRef(({ onChange, options, value, className, ..
     const customStyles = {
         menuPortal: provided => ({ ...provided, zIndex: 30 }),
         menu: provided => ({ ...provided, zIndex: 30, borderRadius: 5 })
-      }
+    }
     return(
         <Select 
             className={className}
             {...rest}
             value={defaultValue(options,value)}
-            onChange={value=>onChange(value)}
+            onChange={value => onChange(value)}
             options={options}
             ref={ref}
+            styles={customStyles}
             theme={(theme) => ({
                 ...theme,
                 borderRadius: 5,
@@ -36,7 +37,6 @@ const CustomSelect = React.forwardRef(({ onChange, options, value, className, ..
                     primary: '#ECB349',
                 },
             })}
-            styles={customStyles}
         />
     )
 })

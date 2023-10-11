@@ -70,15 +70,10 @@ const DaftarPasienRegistrasi = () => {
     }
     const handleClickCari = () => {
         dispatch(daftarPasienRegistrasiGet(`${search}&start=${dateStart}&end=${dateEnd}`));
-        // dispatch(widgetdaftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}`));
     }
     const handleFilter = (e) => {
         if (e.keyCode === 13) {
-            // console.log(search)
-            // useEffect(() => {
             dispatch(daftarPasienRegistrasiGet(`${search}&start=${dateStart}&end=${dateEnd}`));
-            // dispatch(widgetdaftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}`));
-            // }, [dispatch]);
         }
     }
     useEffect(() => {
