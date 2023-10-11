@@ -104,7 +104,16 @@ import {
     SAVE_ORDER_OPERASI_ERROR,
     GET_HISTORI_ORDER_OPERASI,
     GET_HISTORI_ORDER_OPERASI_SUCCESS,
-    GET_HISTORI_ORDER_OPERASI_ERROR
+    GET_HISTORI_ORDER_OPERASI_ERROR,
+    SAVE_PELAYANAN_PASIEN_TEMP,
+    SAVE_PELAYANAN_PASIEN_TEMP_SUCCESS,
+    SAVE_PELAYANAN_PASIEN_TEMP_ERROR,
+    GET_LIST_PELAYANAN_PASIEN_TEMP,
+    GET_LIST_PELAYANAN_PASIEN_TEMP_SUCCESS,
+    GET_LIST_PELAYANAN_PASIEN_TEMP_ERROR,
+    DELETE_PELAYANAN_PASIEN_TEMP,
+    DELETE_PELAYANAN_PASIEN_TEMP_SUCCESS,
+    DELETE_PELAYANAN_PASIEN_TEMP_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -296,6 +305,23 @@ const INIT_STATE = {
         loading: false,
         error: null,
     },
+    savePelayananPasienTemp: {
+        newData: null,
+        loading: false,
+        error: null,
+        success: false
+    },
+    getListPelayananPasienTemp: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    deletePelayananPasienTemp: {
+        newData: null,
+        loading: false,
+        error: null,
+        success: false
+    },
 };
 
 const Emr = (state = INIT_STATE, action) => {
@@ -395,6 +421,15 @@ const Emr = (state = INIT_STATE, action) => {
                 },
                 getHistoriOrderOperasi:{
                     ...INIT_STATE.getHistoriOrderOperasi
+                },
+                savePelayananPasienTemp:{
+                    ...INIT_STATE.savePelayananPasienTemp
+                },
+                getListPelayananPasienTemp:{
+                    ...INIT_STATE.getListPelayananPasienTemp
+                },
+                deletePelayananPasienTemp:{
+                    ...INIT_STATE.deletePelayananPasienTemp
                 }
             }
         }
@@ -1576,6 +1611,109 @@ const Emr = (state = INIT_STATE, action) => {
                     error: action.error,
                 }
             }
+        }
+
+        case SAVE_PELAYANAN_PASIEN_TEMP: {
+            return {
+                ...state,
+                savePelayananPasienTemp: {
+                    ...state.savePelayananPasienTemp,
+                    data: [],
+                    loading: true,
+                    error: null,
+                },
+            };
+        }
+
+        case SAVE_PELAYANAN_PASIEN_TEMP_SUCCESS: {
+            return {
+                ...state,
+                savePelayananPasienTemp: {
+                    ...state.savePelayananPasienTemp,
+                    loading: false,
+                    data: action.payload,
+                    success: true,
+                },
+            };
+        }
+
+        case SAVE_PELAYANAN_PASIEN_TEMP_ERROR: {
+            return {
+                ...state,
+                savePelayananPasienTemp: {
+                    ...state.savePelayananPasienTemp,
+                    loading: false,
+                    error: action.payload,
+                },
+            };
+        }
+
+        case GET_LIST_PELAYANAN_PASIEN_TEMP: {
+            return {
+                ...state,
+                getListPelayananPasienTemp: {
+                    ...state.getListPelayananPasienTemp,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case GET_LIST_PELAYANAN_PASIEN_TEMP_SUCCESS: {
+            return {
+                ...state,
+                getListPelayananPasienTemp: {
+                    ...state.getListPelayananPasienTemp,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case GET_LIST_PELAYANAN_PASIEN_TEMP_ERROR: {
+            return {
+                ...state,
+                getListPelayananPasienTemp: {
+                    ...state.getListPelayananPasienTemp,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case DELETE_PELAYANAN_PASIEN_TEMP: {
+            return {
+                ...state,
+                deletePelayananPasienTemp: {
+                    ...state.deletePelayananPasienTemp,
+                    data: [],
+                    loading: true,
+                    error: null,
+                },
+            };
+        }
+
+        case DELETE_PELAYANAN_PASIEN_TEMP_SUCCESS: {
+            return {
+                ...state,
+                deletePelayananPasienTemp: {
+                    ...state.deletePelayananPasienTemp,
+                    loading: false,
+                    data: action.payload,
+                    success: true,
+                },
+            };
+        }
+
+        case DELETE_PELAYANAN_PASIEN_TEMP_ERROR: {
+            return {
+                ...state,
+                deletePelayananPasienTemp: {
+                    ...state.deletePelayananPasienTemp,
+                    loading: false,
+                    error: action.payload,
+                },
+            };
         }
 
 

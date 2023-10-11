@@ -272,7 +272,13 @@ select
 from m_hubungankeluarga md 
 where md.statusenabled=true
 `
-
+const qListPelayananPasienTemp =`select tp.norec,tp.harga,tp.total,tp.qty,
+mp.namaproduk, mk.namakelas,mu.namaunit from t_pelayananpasientemp tp 
+join t_daftarpasien td on td.norec=tp.objectdaftarpasienfk
+join m_produk mp on mp.id=tp.objectprodukfk
+join m_kelas mk on mk.id=tp.objectkelasfk
+left join m_unit mu on mu.id=tp.objectunitfk
+where td.norec=$1`
 
 export default {
     getAll,
@@ -297,5 +303,6 @@ export default {
     qDaftarPasienTriage,
     qM_DaruratIgd,
     qM_HubunganKeluarga,
-    qWidgetDaftarPasienTriage
+    qWidgetDaftarPasienTriage,
+    qListPelayananPasienTemp
 };

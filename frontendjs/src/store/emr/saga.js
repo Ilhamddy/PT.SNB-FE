@@ -20,7 +20,9 @@ import {
     SAVE_EMR_TRIAGE_IGD, GET_COMBO_TRIAGE_IGD,
     GET_HISTORI_TRIAGE_BYNOREC,
     SAVE_ORDER_OPERASI,
-    GET_HISTORI_ORDER_OPERASI
+    GET_HISTORI_ORDER_OPERASI,
+    SAVE_PELAYANAN_PASIEN_TEMP, GET_LIST_PELAYANAN_PASIEN_TEMP,
+    DELETE_PELAYANAN_PASIEN_TEMP
 } from "./actionType";
 
 import {
@@ -57,7 +59,10 @@ import {
     getGetComboTriageIgdSuccess,getGetComboTriageIgdError,
     getHistoriTriagiByNorecSuccess, getHistoriTriagiByNorecError,
     saveOrderOperasiSuccess,saveOrderOperasiError,
-    getHistoriOrderOperasiSuccess, getHistoriOrderOperasiError
+    getHistoriOrderOperasiSuccess, getHistoriOrderOperasiError,
+    savePelayananPasienTempSuccess, savePelayananPasienTempError,
+    getListPelayananPasienTempSuccess, getListPelayananPasienTempError,
+    deletePelayananPasienTempSuccess, deletePelayananPasienTempError
 } from "./action";
 
 import { toast } from 'react-toastify';
@@ -711,6 +716,58 @@ export function* watchgetHistoriOrderOperasi() {
     yield takeEvery(GET_HISTORI_ORDER_OPERASI, ongetHistoriOrderOperasi);
 }
 
+function* onsavePelayananPasienTemp({ payload: { body, callback } }) {
+    try {
+        const response = yield call(serviceEmr.savePelayananPasienTemp, body);
+        yield put(savePelayananPasienTempSuccess(response.data));
+        if (response.code === 200) {
+            toast.success(response.msg, { autoClose: 3000 });
+        } else {
+            toast.error(response.msg, { autoClose: 3000 });
+        }
+        callback && callback();
+    } catch (error) {
+        yield put(savePelayananPasienTempError(error));
+        toast.error("Gagal Simpan", { autoClose: 3000 });
+    }
+}
+export function* watchonsavePelayananPasienTemp() {
+    yield takeEvery(SAVE_PELAYANAN_PASIEN_TEMP, onsavePelayananPasienTemp);
+}
+
+function* ongetListPelayananPasienTemp({ payload: {queries}  }) {
+    try {
+        let response = null;
+        response = yield call(serviceEmr.getListPelayananPasienTemp, queries);
+        yield put(getListPelayananPasienTempSuccess(response.data));
+    } catch (error) {
+        yield put(getListPelayananPasienTempError(error));
+    }
+}
+
+export function* watchgetListPelayananPasienTemp() {
+    yield takeEvery(GET_LIST_PELAYANAN_PASIEN_TEMP, ongetListPelayananPasienTemp);
+}
+
+function* ondeletePelayananPasienTemp({ payload: { body, callback } }) {
+    try {
+        const response = yield call(serviceEmr.deletePelayananPasienTemp, body);
+        yield put(deletePelayananPasienTempSuccess(response.data));
+        if (response.code === 200) {
+            toast.success(response.msg, { autoClose: 3000 });
+        } else {
+            toast.error(response.msg, { autoClose: 3000 });
+        }
+        callback && callback();
+    } catch (error) {
+        yield put(deletePelayananPasienTempError(error));
+        toast.error("Gagal Simpan", { autoClose: 3000 });
+    }
+}
+export function* watchondeletePelayananPasienTemp() {
+    yield takeEvery(DELETE_PELAYANAN_PASIEN_TEMP, ondeletePelayananPasienTemp);
+}
+
 function* emrSaga() {
     yield all([
         fork(watchGetEmrHeader),
@@ -747,7 +804,10 @@ function* emrSaga() {
         fork(watchgetGetComboTriageIgd),
         fork(watchgetHistoriTriagiByNorec),
         fork(watchonsaveOrderOperasi),
-        fork(watchgetHistoriOrderOperasi)
+        fork(watchgetHistoriOrderOperasi),
+        fork(watchonsavePelayananPasienTemp),
+        fork(watchgetListPelayananPasienTemp),
+        fork(watchondeletePelayananPasienTemp)
     ]);
 }
 

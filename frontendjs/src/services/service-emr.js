@@ -145,4 +145,16 @@ export default class ServiceEmr {
     getHistoriOrderOperasi = async (queries) => {
         return await api.get(`/transaksi/operasi/get-histori-order-operasi`, queries);
     }
+
+    savePelayananPasienTemp = async (params) => {
+        return await api.create("/transaksi/tindakan/save-pelayanan-pasien-temp", params);
+    }
+
+    getListPelayananPasienTemp = async (queries) => {
+        return await api.get(`/transaksi/tindakan/list-pelayanan-pasien-temp`, queries);
+    }
+
+    deletePelayananPasienTemp = async (params) => {
+        return await api.create("/transaksi/tindakan/delete-pelayanan-pasien-temp", params);
+    }
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { Accordion, AccordionItem, Button, Card, CardBody, CardHeader, Col, Collapse, DropdownToggle, Form, FormFeedback, Input, Label, Row, UncontrolledDropdown, UncontrolledTooltip } from "reactstrap"
 import UiContent from "../../../Components/Common/UiContent"
 import CountUp from "react-countup";
@@ -9,11 +9,17 @@ import { onChangeStrNbr } from "../../../utils/format";
 import classnames from "classnames";
 import {
     emrDiagnosaxSave, emrResetForm, emrComboGet, emrDiagnosaxGet, emrListDiagnosaxGet,
-    deleteDiagnosax, comboHistoryUnitGet, emrDiagnosaixGet, emrListDiagnosaixGet
+    deleteDiagnosax, comboHistoryUnitGet, emrDiagnosaixGet, emrListDiagnosaixGet,
+    deleteDiagnosaix, emrDiagnosaixSave, comboTindakanGet, savePelayananPasienTemp,
+    getListPelayananPasienTemp,deletePelayananPasienTemp
 } from "../../../store/actions";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import DataTable from "react-data-table-component";
+import DeleteModalCustom from "../../../Components/Common/DeleteModalCustom";
+import KontainerFlatpickr from "../../../Components/KontainerFlatpickr/KontainerFlatpickr";
+import { dateTimeLocal } from '../../../utils/format';
+import LoadingTable from "../../../Components/Table/LoadingTable";
 
 const EfisiensiBPJS = () => {
     const { norecdp, norecap } = useParams();
@@ -21,7 +27,10 @@ const EfisiensiBPJS = () => {
     const { dataDiagnosa,
         loadingDiagnosa, successDiagnosa, dataCombo, dataRiwayat, loadingRiwayat, successRiwayat,
         dataHistory, dataDiagnosa9, dataRiwayat9, loadingRiwayat9, successRiwayat9,
-        newDataDiagnosax,successDiagnosax,loadingDiagnosax } = useSelector((state) => ({
+        newDataDiagnosax, successDiagnosax, loadingDiagnosax,
+        newDataDelete, newDataDeleteix, dataTindakan,
+        newDataPelayanan, dataListTindakan, loadingListTindakan,
+        newDataDeletePelayanan } = useSelector((state) => ({
             dataCombo: state.Emr.emrComboGet.data,
             dataDiagnosa: state.Emr.emrDiagnosaxGet.data,
             loadingDiagnosa: state.Emr.emrDiagnosaxGet.loading,
@@ -37,6 +46,13 @@ const EfisiensiBPJS = () => {
             newDataDiagnosax: state.Emr.emrDiagnosaxSave.newData,
             successDiagnosax: state.Emr.emrDiagnosaxSave.success,
             loadingDiagnosax: state.Emr.emrDiagnosaxSave.loading,
+            newDataDelete: state.Emr.deleteDiagnosax.newData,
+            newDataDeleteix: state.Emr.deleteDiagnosaix.newData,
+            dataTindakan: state.Emr.comboTindakanGet.data,
+            newDataPelayanan: state.Emr.savePelayananPasienTemp.newData,
+            dataListTindakan: state.Emr.getListPelayananPasienTemp.data,
+            loadingListTindakan: state.Emr.getListPelayananPasienTemp.loading,
+            newDataDeletePelayanan: state.Emr.deletePelayananPasienTemp.newData,
         }));
     useEffect(() => {
         if (norecdp) {
@@ -46,6 +62,7 @@ const EfisiensiBPJS = () => {
             dispatch(comboHistoryUnitGet(norecdp));
             dispatch(emrDiagnosaixGet('', 'diagnosa9'));
             dispatch(emrListDiagnosaixGet(norecdp))
+            dispatch(getListPelayananPasienTemp({ norecdp: norecdp }));
         }
     }, [norecdp, dispatch])
     const datawidget = [
@@ -71,11 +88,11 @@ const EfisiensiBPJS = () => {
         initialValues: {
             norecap: '',
             tipediagnosa: '',
-            kodediagnosa:'',
-            kasuspenyakit:'',
-            keteranganicd10:'',
-            idlabel:3,
-            label:'DIAGNOSA'
+            kodediagnosa: '',
+            kasuspenyakit: '',
+            keteranganicd10: '',
+            idlabel: 3,
+            label: 'DIAGNOSA'
         },
         validationSchema: Yup.object({
             norecap: Yup.string().required("Unit wajib diisi"),
@@ -92,13 +109,19 @@ const EfisiensiBPJS = () => {
     const vSetValidationDiagnosa9 = useFormik({
         enableReinitialize: true,
         initialValues: {
-            search: '',
-            statuspasien: ''
+            norecap: '',
+            kodediagnosa9: '',
+            jumlahtindakan: '',
+            keteranganicd9: '',
+            idlabel: 3,
+            label: 'DIAGNOSA'
         },
         validationSchema: Yup.object({
         }),
         onSubmit: (values) => {
-
+            dispatch(emrDiagnosaixSave(values, () => {
+                dispatch(emrListDiagnosaixGet(norecdp));
+            }));
         }
     })
     const [stateDeleteDiagnosa, setstateDeleteDiagnosa] = useState(10)
@@ -184,8 +207,166 @@ const EfisiensiBPJS = () => {
             sortable: true
         },
     ];
+    const handleDeleteOrder = () => {
+        if (product) {
+            if (stateDeleteDiagnosa === 10) {
+                dispatch(deleteDiagnosax(product.norec));
+            } else if (stateDeleteDiagnosa === 9) {
+                dispatch(deleteDiagnosaix(product.norec));
+            }else if (stateDeleteDiagnosa === 1) {
+                let  tempValue = {
+                    "norec": product.norec
+                }
+                dispatch(deletePelayananPasienTemp(tempValue, () => {
+                    dispatch(getListPelayananPasienTemp({ norecdp: norecdp }));
+                }));
+            }
+
+            setDeleteModal(false);
+        }
+    };
+    useEffect(() => {
+        dispatch(emrListDiagnosaxGet(norecdp));
+    }, [newDataDelete, norecdp, dispatch])
+    useEffect(() => {
+        dispatch(emrListDiagnosaixGet(norecdp));
+    }, [newDataDeleteix, norecdp, dispatch])
+    const [dateNow] = useState(() => new Date().toISOString())
+    const [count, setCount] = useState(1);
+    const [harga, setHarga] = useState(0);
+    const vSetValidationTindakan = useFormik({
+        enableReinitialize: true,
+        initialValues: {
+            objectkelasfk: '',
+            unitlast: '',
+            quantity: count,
+            tindakan: '',
+            tgltindakan: dateNow,
+            norecdp: norecdp,
+            harga: harga
+        },
+        validationSchema: Yup.object({
+            unitlast: Yup.string().required("Unit wajib diisi"),
+            tindakan: Yup.string().required("Tindakan wajib diisi"),
+        }),
+        onSubmit: (values, { resetForm }) => {
+            dispatch(savePelayananPasienTemp(values, () => {
+                dispatch(getListPelayananPasienTemp({ norecdp: norecdp }));
+                resetForm({ values: '' })
+            }));
+        }
+    })
+
+
+    const onClickCount = (temp) => {
+        if (temp === 'min') {
+            if (count > 0) {
+                setCount(count - 1)
+                vSetValidationTindakan.setFieldValue('quantity', count - 1)
+            }
+        } else {
+            setCount(count + 1)
+            vSetValidationTindakan.setFieldValue('quantity', count + 1)
+        }
+
+    }
+    const hargaRef = useRef(0);
+    const handleTindakanSelcted = (selected) => {
+        vSetValidationTindakan.setFieldValue('tindakan', selected.value)
+        setHarga(selected.totalharga)
+        hargaRef.current = selected.totalharga
+
+    }
+    const handleTindakan = characterEntered => {
+        if (characterEntered.length > 3) {
+            // useEffect(() => {
+            dispatch(comboTindakanGet(vSetValidationTindakan.values.objectkelasfk + '&objectunitfk=' + vSetValidationTindakan.values.unitlast + '&namaproduk=' + characterEntered));
+            // }, [dispatch]);
+        }
+    };
+    const tableCustomStyles = {
+        headRow: {
+            style: {
+                color: '#ffffff',
+                backgroundColor: '#e67e22',
+            },
+        },
+        rows: {
+            style: {
+                color: "black",
+                backgroundColor: "#f1f2f6"
+            },
+        }
+    }
+    const columns = [
+        {
+            name: <span className='font-weight-bold fs-13'>Detail</span>,
+            sortable: false,
+            cell: (data) => {
+                return (
+                    <div className="hstack gap-3 flex-wrap">
+                        <UncontrolledDropdown className="dropdown d-inline-block">
+                            <DropdownToggle className="btn btn-soft-secondary btn-sm" tag="button" id="tooltipTop2" type="button" onClick={() => onClickDelete(data,1)}>
+                                <i className="ri-delete-bin-2-line"></i>
+                            </DropdownToggle>
+                        </UncontrolledDropdown>
+                        {/* <UncontrolledTooltip placement="top" target="tooltipTop2" > Delete </UncontrolledTooltip> */}
+                    </div>
+                );
+            },
+            width: "100px"
+        },
+        {
+            name: <span className='font-weight-bold fs-13'>Tindakan</span>,
+            selector: row => row.namaproduk,
+            sortable: true,
+            width: "250px"
+        },
+        {
+            name: <span className='font-weight-bold fs-13'>Nama Unit</span>,
+            selector: row => row.namaunit,
+            sortable: true,
+            width: "250px"
+        },
+        {
+            name: <span className='font-weight-bold fs-13'>Kelas</span>,
+            selector: row => row.namakelas,
+            sortable: true,
+            // selector: row => (<button className="btn btn-sm btn-soft-info" onClick={() => handleClick(dataTtv)}>{row.noregistrasi}</button>),
+            width: "160px",
+            wrap: true,
+        },
+        {
+
+            name: <span className='font-weight-bold fs-13'>Harga</span>,
+            selector: row => row.harga,
+            sortable: true,
+            width: "150px"
+        },
+        {
+
+            name: <span className='font-weight-bold fs-13'>QTY</span>,
+            selector: row => row.qty,
+            sortable: true,
+            width: "100px"
+        },
+        {
+
+            name: <span className='font-weight-bold fs-13'>Total</span>,
+            selector: row => row.total,
+            sortable: true,
+            width: "100",
+        },
+    ];
     return (
         <React.Fragment>
+            <DeleteModalCustom
+                show={deleteModal}
+                onDeleteClick={handleDeleteOrder}
+                onCloseClick={() => setDeleteModal(false)}
+                msgHDelete='Apa Kamu Yakin ?'
+                msgBDelete='Yakin ingin menghapus data ini?'
+            />
             <Row className="gy-4">
                 <UiContent />
                 <Row className="row-cols-xxl-4 row-cols-lg-3 row-cols-1">
@@ -337,62 +518,62 @@ const EfisiensiBPJS = () => {
                                     </Col>
                                     <Col lg={4}>
                                         <CustomSelect
-                                            id="diagnosa"
-                                            name="diagnosa"
+                                            id="kodediagnosa9"
+                                            name="kodediagnosa9"
                                             options={dataDiagnosa9}
                                             onChange={(e) => {
-                                                vSetValidationDiagnosa9.setFieldValue('diagnosa', e?.value || '')
+                                                vSetValidationDiagnosa9.setFieldValue('kodediagnosa9', e?.value || '')
                                             }}
-                                            value={vSetValidationDiagnosa9.values.diagnosa}
-                                            className={`input row-header ${!!vSetValidationDiagnosa9?.errors.diagnosa ? 'is-invalid' : ''
+                                            value={vSetValidationDiagnosa9.values.kodediagnosa9}
+                                            className={`input row-header ${!!vSetValidationDiagnosa9?.errors.kodediagnosa9 ? 'is-invalid' : ''
                                                 }`}
                                         />
-                                        {vSetValidationDiagnosa9.touched.diagnosa &&
-                                            !!vSetValidationDiagnosa9.errors.diagnosa && (
+                                        {vSetValidationDiagnosa9.touched.kodediagnosa9 &&
+                                            !!vSetValidationDiagnosa9.errors.kodediagnosa9 && (
                                                 <FormFeedback type="invalid">
-                                                    <div>{vSetValidationDiagnosa9.errors.diagnosa}</div>
+                                                    <div>{vSetValidationDiagnosa9.errors.kodediagnosa9}</div>
                                                 </FormFeedback>
                                             )}
                                     </Col>
                                     <Col lg={2}>
                                         <Input
-                                            id="jumlah"
-                                            name="jumlah"
+                                            id="jumlahtindakan"
+                                            name="jumlahtindakan"
                                             type="number"
-                                            value={vSetValidationDiagnosa9.values.jumlah}
+                                            value={vSetValidationDiagnosa9.values.jumlahtindakan}
                                             onChange={(e) => {
                                                 const newVal = onChangeStrNbr(
                                                     e.target.value,
-                                                    vSetValidationDiagnosa9.values.jumlah
+                                                    vSetValidationDiagnosa9.values.jumlahtindakan
                                                 )
-                                                vSetValidationDiagnosa9.setFieldValue('jumlah', newVal)
+                                                vSetValidationDiagnosa9.setFieldValue('jumlahtindakan', newVal)
                                             }}
-                                            invalid={vSetValidationDiagnosa9.touched?.jumlah &&
-                                                !!vSetValidationDiagnosa9.errors?.jumlah}
+                                            invalid={vSetValidationDiagnosa9.touched?.jumlahtindakan &&
+                                                !!vSetValidationDiagnosa9.errors?.jumlahtindakan}
                                         />
-                                        {vSetValidationDiagnosa9.touched?.jumlah
-                                            && !!vSetValidationDiagnosa9.errors.jumlah && (
+                                        {vSetValidationDiagnosa9.touched?.jumlahtindakan
+                                            && !!vSetValidationDiagnosa9.errors.jumlahtindakan && (
                                                 <FormFeedback type="invalid">
-                                                    <div>{vSetValidationDiagnosa9.errors.jumlah}</div>
+                                                    <div>{vSetValidationDiagnosa9.errors.jumlahtindakan}</div>
                                                 </FormFeedback>
                                             )}
                                     </Col>
                                     <Col lg={4}>
                                         <CustomSelect
-                                            id="unit"
-                                            name="unit"
+                                            id="norecap"
+                                            name="norecap"
                                             options={dataHistory}
                                             onChange={(e) => {
-                                                vSetValidationDiagnosa9.setFieldValue('unit', e?.value || '')
+                                                vSetValidationDiagnosa9.setFieldValue('norecap', e?.norec || '')
                                             }}
-                                            value={vSetValidationDiagnosa9.values.unit}
-                                            className={`input row-header ${!!vSetValidationDiagnosa9?.errors.unit ? 'is-invalid' : ''
+                                            value={vSetValidationDiagnosa9.values.norecap}
+                                            className={`input row-header ${!!vSetValidationDiagnosa9?.errors.norecap ? 'is-invalid' : ''
                                                 }`}
                                         />
-                                        {vSetValidationDiagnosa9.touched.unit &&
-                                            !!vSetValidationDiagnosa9.errors.unit && (
+                                        {vSetValidationDiagnosa9.touched.norecap &&
+                                            !!vSetValidationDiagnosa9.errors.norecap && (
                                                 <FormFeedback type="invalid">
-                                                    <div>{vSetValidationDiagnosa9.errors.unit}</div>
+                                                    <div>{vSetValidationDiagnosa9.errors.norecap}</div>
                                                 </FormFeedback>
                                             )}
                                     </Col>
@@ -413,17 +594,161 @@ const EfisiensiBPJS = () => {
                     </CardBody>
                 </Card>
                 <Card>
+                    <CardHeader className="align-items-center" style={{ backgroundColor: "#e67e22" }}>
+                        <h4 className="mb-0" style={{ color: 'black', textAlign: 'center' }}>Penginputan Tindakan</h4>
+                    </CardHeader>
                     <CardBody>
-                        <Row className="gy-4">
-                            <Col lg={12} className="mr-3 me-3 mt-2">
-                                <div className="d-flex flex-wrap justify-content-end gap-2">
-                                    <Button type="submit" color="success" style={{ width: '20%' }}>Grouping</Button>
-                                </div>
-                            </Col>
-                            <Col lg={12}>
+                        <Form
+                            onSubmit={(e) => {
+                                e.preventDefault();
+                                vSetValidationTindakan.handleSubmit();
+                                return false;
+                            }}
+                            className="gy-4"
+                            action="#">
+                            <Row className="gy-4">
+                                <Col lg={2}>
+                                    <div className="mt-2">
+                                        <Label className="form-label">Unit</Label>
+                                    </div>
+                                </Col>
+                                <Col lg={4}>
+                                    <CustomSelect
+                                        id="unitlast"
+                                        name="unitlast"
+                                        options={dataHistory}
+                                        onChange={(e) => {
+                                            vSetValidationTindakan.setFieldValue('unitlast', e?.value || '')
+                                            vSetValidationTindakan.setFieldValue('objectkelasfk', e?.objectkelasfk || '')
+                                        }}
+                                        value={vSetValidationTindakan.values.unitlast}
+                                        className={`input row-header ${!!vSetValidationTindakan?.errors.unitlast ? 'is-invalid' : ''
+                                            }`}
+                                    />
+                                    {vSetValidationTindakan.touched.unitlast &&
+                                        !!vSetValidationTindakan.errors.unitlast && (
+                                            <FormFeedback type="invalid">
+                                                <div>{vSetValidationTindakan.errors.unitlast}</div>
+                                            </FormFeedback>
+                                        )}
+                                </Col>
+                                <Col lg={2}>
+                                    <div className="mt-2">
+                                        <Label className="form-label">Tanggal Tindakan</Label>
+                                    </div>
+                                </Col>
+                                <Col lg={4}>
+                                    <KontainerFlatpickr
+                                        isError={vSetValidationTindakan.touched?.tgltindakan &&
+                                            !!vSetValidationTindakan.errors?.tgltindakan}
+                                        id="tgltindakan"
+                                        options={{
+                                            dateFormat: 'Y-m-d H:i',
+                                            defaultDate: 'today',
+                                            enableTime: true,
+                                            time_24hr: true
+                                        }}
+                                        value={vSetValidationTindakan.values.tgltindakan}
+                                        onChange={([newDate]) => {
+                                            vSetValidationTindakan.setFieldValue('tgltindakan', newDate.toISOString())
+                                        }}
+                                    />
+                                    {vSetValidationTindakan.touched?.tgltindakan
+                                        && !!vSetValidationTindakan.errors.tgltindakan && (
+                                            <FormFeedback type="invalid">
+                                                <div>{vSetValidationTindakan.errors.tgltindakan}</div>
+                                            </FormFeedback>
+                                        )}
+                                </Col>
+                                <Col lg={2}>
+                                    <div className="mt-2">
+                                        <Label className="form-label">Nama Tindakan</Label>
+                                    </div>
+                                </Col>
+                                <Col lg={4}>
+                                    <CustomSelect
+                                        id="tindakan"
+                                        name="tindakan"
+                                        options={dataTindakan}
+                                        onChange={handleTindakanSelcted}
+                                        onInputChange={handleTindakan}
+                                        value={vSetValidationTindakan.values.tindakan}
+                                        className={`input row-header ${!!vSetValidationTindakan?.errors.tindakan ? 'is-invalid' : ''
+                                            }`}
+                                    />
+                                    {vSetValidationTindakan.touched.tindakan &&
+                                        !!vSetValidationTindakan.errors.tindakan && (
+                                            <FormFeedback type="invalid">
+                                                <div>{vSetValidationTindakan.errors.tindakan}</div>
+                                            </FormFeedback>
+                                        )}
+                                </Col>
+                                <Col lg={2}>
+                                    <div className="mt-2">
+                                        <Label style={{ color: "black" }} htmlFor="qty" className="form-label fw-semibold">Quantity</Label>
+                                    </div>
+                                </Col>
+                                <Col lg={2}>
+                                    <div>
+                                        <div className="input-step">
+                                            <button type="button" className="minus" onClick={() => onClickCount('min')}>
+                                                –
+                                            </button>
+                                            <Input
+                                                type="number"
+                                                className="product-quantity"
+                                                id="product-qty-1"
+                                                value={count}
+                                                readOnly
+                                            />
+                                            <button type="button" className="plus" onClick={() => onClickCount('plus')}>
+                                                +
+                                            </button>
+                                        </div>
+                                    </div>
+                                </Col>
+                                <Col lg={2}>
+                                    <div>
+                                        <Input
+                                            type="text"
+                                            className="form-control bg-light border-0 product-line-price"
+                                            id="harga"
+                                            placeholder="Rp.0.00"
+                                            value={"Rp " + harga * count}
+                                            readOnly
+                                        />
+                                    </div>
+                                </Col>
+                                <Col lg={12} className="mr-3 me-3 mt-2">
+                                    <div className="d-flex flex-wrap justify-content-end gap-2">
+                                        <Button type="submit" color="success" style={{ width: '20%' }}>Simpan</Button>
+                                        <Button type="button" color="danger" style={{ width: '20%' }}
+                                        // onClick={() => { toggle()}}
+                                        >Batal</Button>
+                                    </div>
+                                </Col>
+                            </Row>
+                        </Form>
+                    </CardBody>
+                </Card>
+                <Card>
+                    <CardHeader className="align-items-center" style={{ backgroundColor: "#e67e22" }}>
+                        <h4 className="mb-0" style={{ color: 'black', textAlign: 'center' }}>List Tindakan</h4>
+                    </CardHeader>
+                    <CardBody>
+                        <div id="table-gridjs">
+                            <DataTable
+                                fixedHeader
+                                fixedHeaderScrollHeight="330px"
+                                columns={columns}
+                                pagination
+                                data={dataListTindakan}
+                                progressPending={loadingListTindakan}
+                                customStyles={tableCustomStyles}
+                                progressComponent={<LoadingTable />}
+                            />
 
-                            </Col>
-                        </Row>
+                        </div>
                     </CardBody>
                 </Card>
             </Row>
