@@ -15,6 +15,8 @@ import {
   getDaftarPasienOnline,
 } from '../../store/actions'
 import { dateLocal } from '../../utils/format'
+import NoDataTable from '../../Components/Table/NoDataTable'
+import LoadingTable from '../../Components/Table/LoadingTable'
 
 const VerifikasiPasienOnline = () => {
   const dispatch = useDispatch()
@@ -72,6 +74,49 @@ const VerifikasiPasienOnline = () => {
           toast.warning('Pasien sudah terverifikasi', { autoClose: 3000 })
         }
       },
+    },
+  ]
+
+  /**
+   * @type {import("react-data-table-component").TableColumn[]}
+   */
+  const columnsDetail = [
+    {
+      name: <span className="font-weight-bold fs-13">Kemasan</span>,
+      selector: (row) =>
+        (row.racikan || [])?.length === 0 ? 'Non Racikan' : 'Racikan',
+      sortable: true,
+      width: '100px',
+    },
+    {
+      name: <span className="font-weight-bold fs-13">Obat</span>,
+      sortable: true,
+      selector: (row) => `${row.namaobat || ''}`,
+      width: '100px',
+    },
+    {
+      name: <span className="font-weight-bold fs-13">Qty</span>,
+      sortable: true,
+      selector: (row) => `${row.qty}`,
+      width: '150px',
+    },
+    {
+      name: <span className="font-weight-bold fs-13">Satuan</span>,
+      sortable: true,
+      selector: (row) => `${row.namasatuan || ''}`,
+      width: '100px',
+    },
+    {
+      name: <span className="font-weight-bold fs-13">Signa</span>,
+      sortable: true,
+      selector: (row) => `${row.namasigna || ''}`,
+      width: '150px',
+    },
+    {
+      name: <span className="font-weight-bold fs-13">Keterangan</span>,
+      sortable: true,
+      selector: (row) => `${row.namaketerangan}`,
+      width: '100px',
     },
   ]
 
@@ -151,6 +196,18 @@ const VerifikasiPasienOnline = () => {
                 </div>
               </Col>
             </Row>
+            {/* <DataTable
+              fixedHeader
+              fixedHeaderScrollHeight="700px"
+              columns={columnsDetail}
+              data={data.resep || []}
+              progressPending={false}
+              customStyles={subTableCustomStyles}
+              progressComponent={<LoadingTable />}
+              expandableRowDisabled={(row) => (row.racikan || [])?.length === 0}
+              expandableRows
+              noDataComponent={<NoDataTable dataName={'data obat'} />}
+            /> */}
             <Row className="mt-3">
               {daftarPasienOnline.map((item, key) => (
                 <Card
