@@ -243,7 +243,7 @@ const EfisiensiBPJS = () => {
             tindakan: '',
             tgltindakan: dateNow,
             norecdp: norecdp,
-            harga: harga
+            harga: 0
         },
         validationSchema: Yup.object({
             unitlast: Yup.string().required("Unit wajib diisi"),
@@ -273,10 +273,15 @@ const EfisiensiBPJS = () => {
     const hargaRef = useRef(0);
     const handleTindakanSelcted = (selected) => {
         vSetValidationTindakan.setFieldValue('tindakan', selected.value)
+        vSetValidationTindakan.setFieldValue('harga', selected.totalharga)
         setHarga(selected.totalharga)
         hargaRef.current = selected.totalharga
 
     }
+    const handleUnitLast = (selected) => {
+        vSetValidationTindakan.setFieldValue('unitlast', selected.value)
+        vSetValidationTindakan.setFieldValue('objectkelasfk', selected.objectkelasfk)
+    };
     const handleTindakan = characterEntered => {
         if (characterEntered.length > 3) {
             // useEffect(() => {
@@ -617,10 +622,7 @@ const EfisiensiBPJS = () => {
                                         id="unitlast"
                                         name="unitlast"
                                         options={dataHistory}
-                                        onChange={(e) => {
-                                            vSetValidationTindakan.setFieldValue('unitlast', e?.value || '')
-                                            vSetValidationTindakan.setFieldValue('objectkelasfk', e?.objectkelasfk || '')
-                                        }}
+                                        onChange={handleUnitLast}
                                         value={vSetValidationTindakan.values.unitlast}
                                         className={`input row-header ${!!vSetValidationTindakan?.errors.unitlast ? 'is-invalid' : ''
                                             }`}
