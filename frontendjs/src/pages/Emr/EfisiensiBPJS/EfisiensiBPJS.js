@@ -432,6 +432,7 @@ const EfisiensiBPJS = () => {
                                             value={vSetValidationDiagnosa.values.kodediagnosa}
                                             className={`input row-header ${!!vSetValidationDiagnosa?.errors.kodediagnosa ? 'is-invalid' : ''
                                                 }`}
+                                                placeholder='Diagnosa...'
                                         />
                                         {vSetValidationDiagnosa.touched.kodediagnosa &&
                                             !!vSetValidationDiagnosa.errors.kodediagnosa && (
@@ -451,6 +452,7 @@ const EfisiensiBPJS = () => {
                                             value={vSetValidationDiagnosa.values.tipediagnosa}
                                             className={`input row-header ${!!vSetValidationDiagnosa?.errors.tipediagnosa ? 'is-invalid' : ''
                                                 }`}
+                                                placeholder="Tipe Diagnosa..."
                                         />
                                         {vSetValidationDiagnosa.touched.tipediagnosa &&
                                             !!vSetValidationDiagnosa.errors.tipediagnosa && (
@@ -470,6 +472,7 @@ const EfisiensiBPJS = () => {
                                             value={vSetValidationDiagnosa.values.kasuspenyakit}
                                             className={`input row-header ${!!vSetValidationDiagnosa?.errors.kasuspenyakit ? 'is-invalid' : ''
                                                 }`}
+                                                placeholder='Kasus Penyakit...'
                                         />
                                         {vSetValidationDiagnosa.touched.kasuspenyakit &&
                                             !!vSetValidationDiagnosa.errors.kasuspenyakit && (
@@ -489,6 +492,7 @@ const EfisiensiBPJS = () => {
                                             value={vSetValidationDiagnosa.values.norecap}
                                             className={`input row-header ${!!vSetValidationDiagnosa?.errors.norecap ? 'is-invalid' : ''
                                                 }`}
+                                                placeholder='Unit...'
                                         />
                                         {vSetValidationDiagnosa.touched.norecap &&
                                             !!vSetValidationDiagnosa.errors.norecap && (
@@ -532,6 +536,7 @@ const EfisiensiBPJS = () => {
                                             value={vSetValidationDiagnosa9.values.kodediagnosa9}
                                             className={`input row-header ${!!vSetValidationDiagnosa9?.errors.kodediagnosa9 ? 'is-invalid' : ''
                                                 }`}
+                                                placeholder='Diagnosa...'
                                         />
                                         {vSetValidationDiagnosa9.touched.kodediagnosa9 &&
                                             !!vSetValidationDiagnosa9.errors.kodediagnosa9 && (
@@ -555,6 +560,7 @@ const EfisiensiBPJS = () => {
                                             }}
                                             invalid={vSetValidationDiagnosa9.touched?.jumlahtindakan &&
                                                 !!vSetValidationDiagnosa9.errors?.jumlahtindakan}
+                                                placeholder="Jumlah..."
                                         />
                                         {vSetValidationDiagnosa9.touched?.jumlahtindakan
                                             && !!vSetValidationDiagnosa9.errors.jumlahtindakan && (
@@ -574,6 +580,7 @@ const EfisiensiBPJS = () => {
                                             value={vSetValidationDiagnosa9.values.norecap}
                                             className={`input row-header ${!!vSetValidationDiagnosa9?.errors.norecap ? 'is-invalid' : ''
                                                 }`}
+                                                placeholder='Unit...'
                                         />
                                         {vSetValidationDiagnosa9.touched.norecap &&
                                             !!vSetValidationDiagnosa9.errors.norecap && (
