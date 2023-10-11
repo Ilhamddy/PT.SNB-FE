@@ -104,7 +104,16 @@ import {
     SAVE_ORDER_OPERASI_ERROR,
     GET_HISTORI_ORDER_OPERASI,
     GET_HISTORI_ORDER_OPERASI_SUCCESS,
-    GET_HISTORI_ORDER_OPERASI_ERROR
+    GET_HISTORI_ORDER_OPERASI_ERROR,
+    SAVE_PELAYANAN_PASIEN_TEMP,
+    SAVE_PELAYANAN_PASIEN_TEMP_SUCCESS,
+    SAVE_PELAYANAN_PASIEN_TEMP_ERROR,
+    GET_LIST_PELAYANAN_PASIEN_TEMP,
+    GET_LIST_PELAYANAN_PASIEN_TEMP_SUCCESS,
+    GET_LIST_PELAYANAN_PASIEN_TEMP_ERROR,
+    DELETE_PELAYANAN_PASIEN_TEMP,
+    DELETE_PELAYANAN_PASIEN_TEMP_SUCCESS,
+    DELETE_PELAYANAN_PASIEN_TEMP_ERROR
 } from "./actionType";
 
 export const emrResetForm = () => ({
@@ -660,4 +669,55 @@ export const getHistoriOrderOperasiSuccess = (data) => ({
 export const getHistoriOrderOperasiError = (error) => ({
     type: GET_HISTORI_ORDER_OPERASI_ERROR,
     payload: error,
+});
+
+export const savePelayananPasienTemp = (body, callback) => ({
+    type: SAVE_PELAYANAN_PASIEN_TEMP,
+    payload: {
+        body: body,
+        callback: callback
+    }
+});
+
+export const savePelayananPasienTempSuccess = (data) => ({
+    type: SAVE_PELAYANAN_PASIEN_TEMP_SUCCESS,
+    payload: data
+});
+
+export const savePelayananPasienTempError = (error) => ({
+    type: SAVE_PELAYANAN_PASIEN_TEMP_ERROR,
+    payload: error
+});
+
+export const getListPelayananPasienTemp = (queries) => ({
+    type: GET_LIST_PELAYANAN_PASIEN_TEMP,
+    payload: { queries: queries },
+});
+
+export const getListPelayananPasienTempSuccess = (data) => ({
+    type: GET_LIST_PELAYANAN_PASIEN_TEMP_SUCCESS,
+    payload: data,
+});
+
+export const getListPelayananPasienTempError = (error) => ({
+    type: GET_LIST_PELAYANAN_PASIEN_TEMP_ERROR,
+    payload: error,
+});
+
+export const deletePelayananPasienTemp = (body, callback) => ({
+    type: DELETE_PELAYANAN_PASIEN_TEMP,
+    payload: {
+        body: body,
+        callback: callback
+    }
+});
+
+export const deletePelayananPasienTempSuccess = (data) => ({
+    type: DELETE_PELAYANAN_PASIEN_TEMP_SUCCESS,
+    payload: data
+});
+
+export const deletePelayananPasienTempError = (error) => ({
+    type: DELETE_PELAYANAN_PASIEN_TEMP_ERROR,
+    payload: error
 });

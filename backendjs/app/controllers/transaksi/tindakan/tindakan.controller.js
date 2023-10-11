@@ -290,7 +290,102 @@ const getAllBillingPrint = async (req, res) => {
     }
 }
 
+const savePelayananPasienTemp = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const {pelayananPasien} =await db.sequelize.transaction(async (transaction) => {
+            let norec = uuid.v4().substring(0, 32)
+            const pelayananPasien = await db.t_pelayananpasientemp.create({
+                norec: norec,
+                statusenabled: true,
+                objectdaftarpasienfk: req.body.norecdp,
+                objectprodukfk: req.body.tindakan,
+                harga: req.body.harga,
+                qty: req.body.quantity,
+                total: req.body.harga*req.body.quantity,
+                objectkelasfk: req.body.objectkelasfk,
+                objectunitfk:req.body.unitlast
+            }, { transaction });
 
+            return { pelayananPasien }
+        });
+        
+        const tempres = {
+            pelayananPasien:pelayananPasien
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+const getListPelayananPasienTemp = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const resultlist = await pool.query(queries.qListPelayananPasienTemp, [req.query.norecdp]);
+        const tempres = {
+            
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: resultlist.rows,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+const deletePelayananPasienTemp = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const {pelayananPasien}=await db.sequelize.transaction(async (transaction) => {
+            const pelayananPasien = await db.t_pelayananpasientemp.destroy( {
+                where: {
+                    norec: req.body.norec,
+                },
+                transaction: transaction
+            });
+            return {pelayananPasien}
+        });
+        
+        const tempres = {
+            pelayananPasien:pelayananPasien
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
 export default {
     getListAntreanPemeriksaan,
     getListProdukToKelasToUnit,
@@ -298,5 +393,8 @@ export default {
     getListNamaPelaksana,
     saveTindakanPasien,
     getListTagihan,
-    getAllBillingPrint
+    getAllBillingPrint,
+    savePelayananPasienTemp,
+    getListPelayananPasienTemp,
+    deletePelayananPasienTemp
 };

@@ -22,6 +22,7 @@ import OrderRadiologi from '../Penunjang/Radiologi/OrderRadiologi/OrderRadiologi
 import OrderLaboratorium from '../Penunjang/Laboratorium/OrderLaboratorium/OrderLaboratorium';
 import OrderResep from '../Penunjang/OrderResep/OrderResep';
 import OrderOperasi from '../Penunjang/OrderOperasi/OrderOperasi';
+import EfisiensiBPJS from '../EfisiensiBPJS/EfisiensiBPJS';
 
 const EmrBody = () => {
     const { norecdp, norecap, tab } = useParams();
@@ -131,6 +132,10 @@ const EmrBody = () => {
         {
             id: 2,
             label: "Tagihan",
+        },
+        {
+            id: 3,
+            label: "Efisiensi BPJS",
         },
     ];
     const taskPenunjang = [
@@ -267,7 +272,7 @@ const EmrBody = () => {
                             <TabPane tabId="billing" id="home-1">
                                 <Card>
                                     <div className="card-header align-items-center d-flex">
-                                        <div className="flex-shrink-0 ms-2">
+                                        {/* <div className="flex-shrink-0 ms-2"> */}
                                             <Nav tabs className="nav justify-content-end nav-tabs-custom rounded card-header-tabs border-bottom-0">
                                                 {taskBilling.map((item, key) => (
                                                     <NavItem key={key}>
@@ -277,7 +282,7 @@ const EmrBody = () => {
                                                     </NavItem>
                                                 ))}
                                             </Nav>
-                                        </div>
+                                        {/* </div> */}
                                     </div>
                                     <TabContent activeTab={pillsTabBilling} className="text-muted">
                                         <TabPane tabId="1" id="ttv-1">
@@ -293,6 +298,15 @@ const EmrBody = () => {
                                             <Card>
                                                 <CardBody>
                                                     <Tagihan show={pillsTabBilling} />
+                                                </CardBody>
+                                            </Card>
+                                        </TabPane>
+                                    </TabContent>
+                                    <TabContent activeTab={pillsTabBilling} className="text-muted">
+                                        <TabPane tabId="3" id="ttv-3">
+                                            <Card>
+                                                <CardBody>
+                                                    <EfisiensiBPJS/>
                                                 </CardBody>
                                             </Card>
                                         </TabPane>

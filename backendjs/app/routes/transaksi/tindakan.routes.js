@@ -53,5 +53,20 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getAllBillingPrint
     );
-    
+
+    app.post(
+        "/api/transaksi/tindakan/save-pelayanan-pasien-temp",
+        [authJwt.verifyToken],
+        controller.savePelayananPasienTemp
+    );
+    app.get(
+        "/api/transaksi/tindakan/list-pelayanan-pasien-temp",
+        [authJwt.verifyToken],
+        controller.getListPelayananPasienTemp
+    );
+    app.post(
+        "/api/transaksi/tindakan/delete-pelayanan-pasien-temp",
+        [authJwt.verifyToken],
+        controller.deletePelayananPasienTemp
+    );
 }
