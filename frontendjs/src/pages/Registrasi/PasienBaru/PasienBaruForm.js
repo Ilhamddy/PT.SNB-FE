@@ -170,7 +170,9 @@ const PasienBaru = () => {
             namasuamiistri: "",
             namakeluargalain: "",
             nohp: "",
-            notelepon: ""
+            notelepon: "",
+            nocm: "",
+            nocmtemp: "",
         },
         validationSchema: Yup.object({
             namapasien: Yup.string().required("Nama pasien wajib diisi"),
@@ -1355,7 +1357,11 @@ const PasienBaru = () => {
                                         <Row>
                                             <Col md={12}>
                                                 <div className='text-center'>
-                                                    <Button className='me-3' type="submit" color="success" disabled={loadingSave}>Simpan</Button>
+                                                    <Button className='me-3' type="submit" color="success" disabled={loadingSave}>{
+                                                        !validation.values.nocm 
+                                                        && validation.values.nocmtemp 
+                                                        ? "Verifikasi" : "Simpan"}
+                                                    </Button>
                                                     <Button
                                                         type="button" 
                                                         color="danger" 

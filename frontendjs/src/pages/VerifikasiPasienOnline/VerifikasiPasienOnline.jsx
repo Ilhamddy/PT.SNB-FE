@@ -17,6 +17,7 @@ import {
 import { dateLocal } from '../../utils/format'
 import NoDataTable from '../../Components/Table/NoDataTable'
 import LoadingTable from '../../Components/Table/LoadingTable'
+import DataTable from 'react-data-table-component'
 
 const VerifikasiPasienOnline = () => {
   const dispatch = useDispatch()
@@ -82,41 +83,59 @@ const VerifikasiPasienOnline = () => {
    */
   const columnsDetail = [
     {
-      name: <span className="font-weight-bold fs-13">Kemasan</span>,
-      selector: (row) =>
-        (row.racikan || [])?.length === 0 ? 'Non Racikan' : 'Racikan',
+      cell: (item) => (
+        <Card
+          className="product card-animate w-100"
+          style={{ backgroundColor: item.color }}
+          onClick={() => {
+            handleCard(item)
+          }}
+        >
+          <CardBody>
+            <Row className="gy-3">
+              <div className="col-sm">
+                <h5 className="card-title mb-1">
+                  {item.nocm ? item.nocm : '-'} /{' '}
+                  {item.noreservasi ? item.noreservasi : '-'}
+                </h5>
+                <p className="mb-0">
+                  {item.namapasien && item.namapasien.length > 15
+                    ? `${item.namapasien.substring(0, 15)}...`
+                    : item.namapasien}
+                </p>
+                <p className="text-muted mb-0">
+                  Tanggal Lahir: {dateLocal(item.tgllahir) || '-'}
+                </p>
+              </div>
+              <div className="col-sm">
+                <div className="text-lg-start">
+                  <p className="text-muted mb-0">
+                    Tgl. Booking: {dateLocal(item.tglinput) || '-'}
+                  </p>
+                  <p className="text-muted mb-0">
+                    Tgl. Kunjungan: {dateLocal(item.tglrencana) || '-'}
+                  </p>
+                  <p className="text-muted mb-0">{item.namaunit || '-'}</p>
+                </div>
+              </div>
+              <div className="col-sm">
+                <div className="text-lg-start">
+                  <p className="text-muted mb-0">
+                    Penjamin : {item.namarekanan || '-'}
+                  </p>
+                  <p className="text-muted mb-0">
+                    DPJP Pasien : {item.nokartu || '-'}
+                  </p>
+                  <p className="text-muted mb-0">
+                    Status : {item.nocm ? 'Terverif' : 'Belum Verif'}
+                  </p>
+                </div>
+              </div>
+            </Row>
+          </CardBody>
+        </Card>
+      ),
       sortable: true,
-      width: '100px',
-    },
-    {
-      name: <span className="font-weight-bold fs-13">Obat</span>,
-      sortable: true,
-      selector: (row) => `${row.namaobat || ''}`,
-      width: '100px',
-    },
-    {
-      name: <span className="font-weight-bold fs-13">Qty</span>,
-      sortable: true,
-      selector: (row) => `${row.qty}`,
-      width: '150px',
-    },
-    {
-      name: <span className="font-weight-bold fs-13">Satuan</span>,
-      sortable: true,
-      selector: (row) => `${row.namasatuan || ''}`,
-      width: '100px',
-    },
-    {
-      name: <span className="font-weight-bold fs-13">Signa</span>,
-      sortable: true,
-      selector: (row) => `${row.namasigna || ''}`,
-      width: '150px',
-    },
-    {
-      name: <span className="font-weight-bold fs-13">Keterangan</span>,
-      sortable: true,
-      selector: (row) => `${row.namaketerangan}`,
-      width: '100px',
     },
   ]
 
@@ -136,135 +155,86 @@ const VerifikasiPasienOnline = () => {
             />
           </Col>
           <Col lg={9}>
-            <Row>
-              <ColLabelInput lg={3} label="Tgl Kunjungan">
-                <KontainerFlatpickr
-                  id="end"
-                  options={{
-                    dateFormat: 'd/m/Y',
-                    defaultDate: 'today',
-                  }}
-                  value={vQueries.values.end}
-                  onChange={([newDate]) => {
-                    vQueries.setFieldValue(
-                      'tglregistrasi',
-                      newDate.toISOString()
-                    )
-                  }}
-                />
-              </ColLabelInput>
-              <ColLabelInput lg={3} label="Poliklinik">
-                <CustomSelect
-                  id="unit"
-                  name="unit"
-                  options={unit}
-                  value={vQueries.values.unit || ''}
-                  className={`input ${
-                    vQueries.errors.unit ? 'is-invalid' : ''
-                  }`}
-                  onChange={(value) =>
-                    vQueries.setFieldValue('unit', value?.value || '')
-                  }
-                />
-              </ColLabelInput>
-              <ColLabelInput lg={3} label="No RM Sementara / Nama">
-                <Input
-                  id="nocmnamapasien"
-                  name="nocmnamapasien"
-                  type="text"
-                  placeholder="Masukkan No RM Sementara / Nama"
-                  onChange={vQueries.handleChange}
-                  onBlur={vQueries.handleBlur}
-                  value={vQueries.values.nocmnamapasien || ''}
-                />
-              </ColLabelInput>
-              <Col lg={3}>
-                <div className="d-flex flex-column flex-column-reverse h-100">
-                  <Row>
-                    <Col>
-                      <Button
-                        type="button"
-                        color="info"
-                        onClick={() => {
-                          vQueries.handleSubmit()
-                        }}
-                      >
-                        Cari
-                      </Button>
-                    </Col>
-                  </Row>
-                </div>
-              </Col>
-            </Row>
-            {/* <DataTable
-              fixedHeader
-              fixedHeaderScrollHeight="700px"
-              columns={columnsDetail}
-              data={data.resep || []}
-              progressPending={false}
-              customStyles={subTableCustomStyles}
-              progressComponent={<LoadingTable />}
-              expandableRowDisabled={(row) => (row.racikan || [])?.length === 0}
-              expandableRows
-              noDataComponent={<NoDataTable dataName={'data obat'} />}
-            /> */}
-            <Row className="mt-3">
-              {daftarPasienOnline.map((item, key) => (
-                <Card
-                  className="product card-animate"
-                  style={{ backgroundColor: item.color }}
-                  onClick={() => {
-                    handleCard(item)
-                  }}
-                  key={key}
-                >
-                  <CardBody>
-                    <Row className="gy-3">
-                      <div className="col-sm">
-                        <h5 className="card-title mb-1">
-                          {item.nocm ? item.nocm : '-'} /{' '}
-                          {item.noreservasi ? item.noreservasi : '-'}
-                        </h5>
-                        <p className="mb-0">
-                          {item.namapasien && item.namapasien.length > 15
-                            ? `${item.namapasien.substring(0, 15)}...`
-                            : item.namapasien}
-                        </p>
-                        <p className="text-muted mb-0">
-                          Tanggal Lahir: {dateLocal(item.tgllahir) || '-'}
-                        </p>
-                      </div>
-                      <div className="col-sm">
-                        <div className="text-lg-start">
-                          <p className="text-muted mb-0">
-                            Tgl. Booking: {dateLocal(item.tglinput) || '-'}
-                          </p>
-                          <p className="text-muted mb-0">
-                            Tgl. Kunjungan: {dateLocal(item.tglrencana) || '-'}
-                          </p>
-                          <p className="text-muted mb-0">
-                            {item.namaunit || '-'}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="col-sm">
-                        <div className="text-lg-start">
-                          <p className="text-muted mb-0">
-                            Penjamin : {item.namarekanan || '-'}
-                          </p>
-                          <p className="text-muted mb-0">
-                            DPJP Pasien : {item.nokartu || '-'}
-                          </p>
-                          <p className="text-muted mb-0">
-                            Status : {item.nocm ? 'Terverif' : 'Belum Verif'}
-                          </p>
-                        </div>
-                      </div>
+            <Card className="p-3">
+              <Row>
+                <ColLabelInput lg={3} label="Tgl Kunjungan">
+                  <KontainerFlatpickr
+                    id="end"
+                    options={{
+                      dateFormat: 'd/m/Y',
+                      defaultDate: 'today',
+                    }}
+                    value={vQueries.values.end}
+                    onChange={([newDate]) => {
+                      vQueries.setFieldValue(
+                        'tglregistrasi',
+                        newDate.toISOString()
+                      )
+                    }}
+                  />
+                </ColLabelInput>
+                <ColLabelInput lg={3} label="Poliklinik">
+                  <CustomSelect
+                    id="unit"
+                    name="unit"
+                    options={unit}
+                    value={vQueries.values.unit || ''}
+                    className={`input ${
+                      vQueries.errors.unit ? 'is-invalid' : ''
+                    }`}
+                    onChange={(value) =>
+                      vQueries.setFieldValue('unit', value?.value || '')
+                    }
+                  />
+                </ColLabelInput>
+                <ColLabelInput lg={3} label="No RM Sementara / Nama">
+                  <Input
+                    id="nocmnamapasien"
+                    name="nocmnamapasien"
+                    type="text"
+                    placeholder="Masukkan No RM Sementara / Nama"
+                    onChange={vQueries.handleChange}
+                    onBlur={vQueries.handleBlur}
+                    value={vQueries.values.nocmnamapasien || ''}
+                  />
+                </ColLabelInput>
+                <Col lg={3}>
+                  <div className="d-flex flex-column flex-column-reverse h-100">
+                    <Row>
+                      <Col>
+                        <Button
+                          type="button"
+                          color="info"
+                          onClick={() => {
+                            vQueries.handleSubmit()
+                          }}
+                        >
+                          Cari
+                        </Button>
+                      </Col>
                     </Row>
-                  </CardBody>
-                </Card>
-              ))}
-            </Row>
+                  </div>
+                </Col>
+              </Row>
+              <DataTable
+                noHeader={false}
+                columns={columnsDetail}
+                data={daftarPasienOnline || []}
+                pagination
+                progressPending={false}
+                progressComponent={<LoadingTable />}
+                noDataComponent={<NoDataTable dataName={'data obat'} />}
+                customStyles={{
+                  rows: {
+                    style: {
+                      color: 'black',
+                      borderTop: 'none',
+                      borderBottom: 'none !important',
+                    },
+                  },
+                }}
+              />
+            </Card>
           </Col>
         </Row>
       </Container>

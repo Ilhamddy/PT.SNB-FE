@@ -241,8 +241,14 @@ const savePasien = async (req, res) => {
                 })
             userPasien = userPasien?.toJSON() || null
         } else {
-            result = await m_pasien.update({
-                // nocm: nocm,
+            const pasienBefore = await m_pasien.findOne({
+                where: {
+                    id: objBody.id
+                },
+                transaction: transaction
+            })
+            result = await pasienBefore.update({
+                nocm: pasienBefore.nocm || nocm,
                 namapasien: objBody.namapasien,
                 noidentitas: objBody.noidentitas,
                 objectjeniskelaminfk: objBody.jeniskelamin,
@@ -276,11 +282,6 @@ const savePasien = async (req, res) => {
                 namakeluarga: objBody.namakeluargalain || null,
                 namaibu: objBody.namaibu || null,
                 objectkaryawanrsfk: req.idPegawai || null,
-            }, {
-                where: {
-                    id: objBody.id
-                },
-                transaction: transaction
             })
         }
         transaction.commit();
@@ -1318,9 +1319,22 @@ const getPasienFormById = async (req, res) => {
     const logger = res.locals.logger
     try {
         const { idpasien } = req.query
-        const pasien = (await pool.query(queries.qGetPasienFormById, [Number(idpasien)])).rows
+        let pasien = (await pool.query(queries.qGetPasienFormById, [Number(idpasien)])).rows
+        pasien = pasien?.[0] || null
+        if(pasien){
+            // fix sementara postgre gak menemrima kapital
+            pasien.alamatDomisili = pasien.alamatdomisili
+            pasien.desaDomisili = pasien.desadomisili
+            pasien.labelDesaDomisili = pasien.labeldesadomisili
+            pasien.kecamatanDomisili = pasien.kecamatandomisili
+            pasien.kotaDomisili = pasien.kotadomisili
+            pasien.provinsiDomisili = pasien.provinsidomisili
+            pasien.posDomisili = pasien.posdomisili
+            pasien.negaraDomisili = pasien.negaradomisili
+            pasien.labelNegaraDomisili = pasien.labelnegaradomisili
+        }
         const tempres = {
-            pasien: pasien?.[0] || null
+            pasien: pasien
         }
         res.status(200).send({
             data: tempres,

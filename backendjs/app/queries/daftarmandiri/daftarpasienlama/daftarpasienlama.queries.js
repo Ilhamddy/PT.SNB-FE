@@ -18,7 +18,7 @@ const qGetDokter = `
 SELECT
     mp.id AS iddokter,
     mp.namaexternal AS namadokter,
-    mp.nippns AS nippns,
+    mp.nip AS nip,
     mp.objectunitfk AS idunit,
     mu.namaunit AS namaunit
 FROM m_pegawai mp

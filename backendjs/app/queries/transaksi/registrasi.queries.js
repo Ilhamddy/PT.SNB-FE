@@ -147,12 +147,14 @@ const qGetPasienFormById = `
     mnk.namanegara AS labelNegara,
     mp.rtdomisili AS rtdomisili,
     mp.rwdomisili AS rwdomisili,
-    mp.objectdesakelurahanktpfk AS desaDommisili,
+    mp.alamatdomisili AS alamatDomisili,
+    mp.objectdesakelurahanktpfk AS desaDomisili, 
     mdd.namadesakelurahan AS labelDesaDomisili,
     mkcd.namakecamatan AS kecamatanDomisili,
     mkbd.namakabupaten AS kotaDomisili,
     mpd.namaprovinsi AS provinsiDomisili,
     mdd.kodepos AS posDomisili,
+    mnd.id AS negaraDomisili,
     mnd.namanegara AS labelNegaraDomisili,
     mp.nobpjs AS nobpjs,
     mp.namaibu AS namaibu,
@@ -160,7 +162,9 @@ const qGetPasienFormById = `
     mp.namasuamiistri AS namasuamiistri,
     mp.namakeluarga AS namakeluargalain,
     mp.nohp AS nohp,
-    mp.notelepon AS notelepon
+    mp.notelepon AS notelepon,
+    mp.nocm AS nocm,
+    mp.nocmtemp AS nocmtemp
 FROM m_pasien mp
         LEFT JOIN m_negara mnk ON mnk.id = mp.objectnegaraktpfk
         LEFT JOIN m_desakelurahan mdk ON mdk.id = mp.objectdesakelurahanktpfk

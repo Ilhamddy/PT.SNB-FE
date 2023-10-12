@@ -70,6 +70,7 @@ const getDokter = async (req, res) => {
     const logger = res.locals.logger;
     try{
         const iddokter = req.query.iddokter
+        console.log(iddokter)
         const dokter = (await pool.query(qGetDokter, [iddokter])).rows?.[0]
         const tempres = {
             dokter: dokter || null

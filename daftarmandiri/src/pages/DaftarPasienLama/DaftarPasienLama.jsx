@@ -105,9 +105,9 @@ const DaftarPasienLama = () => {
   }
   useEffect(() => {
     const setFF = vDaftar.setFieldValue
-    if (pasien.nocm && pasien.namapasien) {
+    if (pasien.namapasien) {
       setFF('nocmfk', pasien.nocmfk)
-      setFF('norm', pasien.nocm)
+      setFF('norm', pasien.nocm || pasien.nocmtemp || '')
       setFF('namapasien', pasien.namapasien)
     }
   }, [pasien.nocm, pasien.namapasien, pasien.nocmfk, vDaftar.setFieldValue])
