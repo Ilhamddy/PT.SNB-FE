@@ -69,4 +69,9 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.deletePelayananPasienTemp
     );
+    app.get(
+        "/api/transaksi/tindakan/widget-efisiensi-klaim",
+        [authJwt.verifyToken],
+        controller.getWidgetEfisiensiKlaim
+    );
 }

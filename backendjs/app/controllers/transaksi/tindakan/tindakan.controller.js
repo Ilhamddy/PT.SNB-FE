@@ -111,7 +111,7 @@ async function getListNamaPelaksana(req, res) {
 async function saveTindakanPasien(req, res) {
     const logger = res.locals.logger
     const [transaction, errorTransaction] = await createTransaction(db, res)
-    if(errorTransaction) return
+    if (errorTransaction) return
     try {
         let newArray = [{ objectjenispelaksana: req.body.jenispelaksana1, objectnamapelaksana: req.body.namapelaksana1 }];
         if (req.body.jenispelaksana2 !== '')
@@ -234,7 +234,7 @@ async function getListTagihan(req, res) {
             where tp.statusenabled = true and tp.objectpelayananpasienfk='${resultlist.rows[i].norec}'`);
             let tempPetugas = ''
             for (let x = 0; x < resultlistPetugas.rows.length; ++x) {
-                tempPetugas = tempPetugas +resultlistPetugas.rows[x].namalengkap +', '
+                tempPetugas = tempPetugas + resultlistPetugas.rows[x].namalengkap + ', '
             }
             resultlist.rows[i].petugas = tempPetugas
             resultlist.rows[i].listpetugas = resultlistPetugas.rows
@@ -255,7 +255,7 @@ async function getListTagihan(req, res) {
 
 const getAllBillingPrint = async (req, res) => {
     const logger = res.locals.logger
-    try{
+    try {
         const norecdp = req.query.norecdp;
         const queryBilling = `
             select variabelbpjs, sum(totalharga) from (
@@ -279,7 +279,7 @@ const getAllBillingPrint = async (req, res) => {
             msg: 'Get all billing success',
             code: 200
         });
-    }catch(e){
+    } catch (e) {
         logger.error(e)
         res.status(201).send({
             status: e,
@@ -292,8 +292,8 @@ const getAllBillingPrint = async (req, res) => {
 
 const savePelayananPasienTemp = async (req, res) => {
     const logger = res.locals.logger;
-    try{
-        const {pelayananPasien} =await db.sequelize.transaction(async (transaction) => {
+    try {
+        const { pelayananPasien } = await db.sequelize.transaction(async (transaction) => {
             let norec = uuid.v4().substring(0, 32)
             const pelayananPasien = await db.t_pelayananpasientemp.create({
                 norec: norec,
@@ -302,16 +302,16 @@ const savePelayananPasienTemp = async (req, res) => {
                 objectprodukfk: req.body.tindakan,
                 harga: req.body.harga,
                 qty: req.body.quantity,
-                total: req.body.harga*req.body.quantity,
+                total: req.body.harga * req.body.quantity,
                 objectkelasfk: req.body.objectkelasfk,
-                objectunitfk:req.body.unitlast
+                objectunitfk: req.body.unitlast
             }, { transaction });
 
             return { pelayananPasien }
         });
-        
+
         const tempres = {
-            pelayananPasien:pelayananPasien
+            pelayananPasien: pelayananPasien
         };
         res.status(200).send({
             msg: 'Success',
@@ -332,10 +332,10 @@ const savePelayananPasienTemp = async (req, res) => {
 
 const getListPelayananPasienTemp = async (req, res) => {
     const logger = res.locals.logger;
-    try{
+    try {
         const resultlist = await pool.query(queries.qListPelayananPasienTemp, [req.query.norecdp]);
         const tempres = {
-            
+
         };
         res.status(200).send({
             msg: 'Success',
@@ -356,24 +356,68 @@ const getListPelayananPasienTemp = async (req, res) => {
 
 const deletePelayananPasienTemp = async (req, res) => {
     const logger = res.locals.logger;
-    try{
-        const {pelayananPasien}=await db.sequelize.transaction(async (transaction) => {
-            const pelayananPasien = await db.t_pelayananpasientemp.destroy( {
+    try {
+        const { pelayananPasien } = await db.sequelize.transaction(async (transaction) => {
+            const pelayananPasien = await db.t_pelayananpasientemp.destroy({
                 where: {
                     norec: req.body.norec,
                 },
                 transaction: transaction
             });
-            return {pelayananPasien}
+            return { pelayananPasien }
         });
-        
+
         const tempres = {
-            pelayananPasien:pelayananPasien
+            pelayananPasien: pelayananPasien
         };
         res.status(200).send({
             msg: 'Success',
             code: 200,
             data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+const getWidgetEfisiensiKlaim = async (req, res) => {
+    const logger = res.locals.logger;
+    try {
+        const resultlist = await pool.query(queries.qListTotalKlaim, [req.query.norecdp]);
+        const datawidget = [
+            {
+                id: 1,
+                label: 'Biaya Pasien Saat Ini',
+                total: resultlist.rows[0].total
+            },
+            {
+                id: 2,
+                label: 'Biaya Tambahan',
+                total: parseFloat(resultlist.rows[0].nominalklaim)
+            },
+            {
+                id: 3,
+                label: 'Total Biaya Keseluruhan'
+            },
+            {
+                id: 4,
+                label: 'Estimasi Klaim BPJS'
+            },
+        ]
+        const tempres = {
+
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: datawidget,
             success: true
         });
     } catch (error) {
@@ -396,5 +440,6 @@ export default {
     getAllBillingPrint,
     savePelayananPasienTemp,
     getListPelayananPasienTemp,
-    deletePelayananPasienTemp
+    deletePelayananPasienTemp,
+    getWidgetEfisiensiKlaim
 };

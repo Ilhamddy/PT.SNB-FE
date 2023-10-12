@@ -22,7 +22,7 @@ import {
     SAVE_ORDER_OPERASI,
     GET_HISTORI_ORDER_OPERASI,
     SAVE_PELAYANAN_PASIEN_TEMP, GET_LIST_PELAYANAN_PASIEN_TEMP,
-    DELETE_PELAYANAN_PASIEN_TEMP
+    DELETE_PELAYANAN_PASIEN_TEMP, GET_WIDGET_EFISIENSI_KLAIM
 } from "./actionType";
 
 import {
@@ -62,7 +62,8 @@ import {
     getHistoriOrderOperasiSuccess, getHistoriOrderOperasiError,
     savePelayananPasienTempSuccess, savePelayananPasienTempError,
     getListPelayananPasienTempSuccess, getListPelayananPasienTempError,
-    deletePelayananPasienTempSuccess, deletePelayananPasienTempError
+    deletePelayananPasienTempSuccess, deletePelayananPasienTempError,
+    getWidgetEfisiensiKlaimSuccess, getWidgetEfisiensiKlaimError
 } from "./action";
 
 import { toast } from 'react-toastify';
@@ -768,6 +769,20 @@ export function* watchondeletePelayananPasienTemp() {
     yield takeEvery(DELETE_PELAYANAN_PASIEN_TEMP, ondeletePelayananPasienTemp);
 }
 
+function* ongetWidgetEfisiensiKlaim({ payload: {queries}  }) {
+    try {
+        let response = null;
+        response = yield call(serviceEmr.getWidgetEfisiensiKlaim, queries);
+        yield put(getWidgetEfisiensiKlaimSuccess(response.data));
+    } catch (error) {
+        yield put(getWidgetEfisiensiKlaimError(error));
+    }
+}
+
+export function* watchgetWidgetEfisiensiKlaim() {
+    yield takeEvery(GET_WIDGET_EFISIENSI_KLAIM, ongetWidgetEfisiensiKlaim);
+}
+
 function* emrSaga() {
     yield all([
         fork(watchGetEmrHeader),
@@ -807,7 +822,8 @@ function* emrSaga() {
         fork(watchgetHistoriOrderOperasi),
         fork(watchonsavePelayananPasienTemp),
         fork(watchgetListPelayananPasienTemp),
-        fork(watchondeletePelayananPasienTemp)
+        fork(watchondeletePelayananPasienTemp),
+        fork(watchgetWidgetEfisiensiKlaim)
     ]);
 }
 

@@ -11,7 +11,7 @@ import {
     emrDiagnosaxSave, emrResetForm, emrComboGet, emrDiagnosaxGet, emrListDiagnosaxGet,
     deleteDiagnosax, comboHistoryUnitGet, emrDiagnosaixGet, emrListDiagnosaixGet,
     deleteDiagnosaix, emrDiagnosaixSave, comboTindakanGet, savePelayananPasienTemp,
-    getListPelayananPasienTemp,deletePelayananPasienTemp
+    getListPelayananPasienTemp, deletePelayananPasienTemp, getWidgetEfisiensiKlaim
 } from "../../../store/actions";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
@@ -30,7 +30,7 @@ const EfisiensiBPJS = () => {
         newDataDiagnosax, successDiagnosax, loadingDiagnosax,
         newDataDelete, newDataDeleteix, dataTindakan,
         newDataPelayanan, dataListTindakan, loadingListTindakan,
-        newDataDeletePelayanan } = useSelector((state) => ({
+        newDataDeletePelayanan, dataWidget } = useSelector((state) => ({
             dataCombo: state.Emr.emrComboGet.data,
             dataDiagnosa: state.Emr.emrDiagnosaxGet.data,
             loadingDiagnosa: state.Emr.emrDiagnosaxGet.loading,
@@ -53,6 +53,7 @@ const EfisiensiBPJS = () => {
             dataListTindakan: state.Emr.getListPelayananPasienTemp.data,
             loadingListTindakan: state.Emr.getListPelayananPasienTemp.loading,
             newDataDeletePelayanan: state.Emr.deletePelayananPasienTemp.newData,
+            dataWidget: state.Emr.getWidgetEfisiensiKlaim.data,
         }));
     useEffect(() => {
         if (norecdp) {
@@ -63,6 +64,7 @@ const EfisiensiBPJS = () => {
             dispatch(emrDiagnosaixGet('', 'diagnosa9'));
             dispatch(emrListDiagnosaixGet(norecdp))
             dispatch(getListPelayananPasienTemp({ norecdp: norecdp }));
+            dispatch(getWidgetEfisiensiKlaim({ norecdp: norecdp }))
         }
     }, [norecdp, dispatch])
     const datawidget = [
@@ -213,8 +215,8 @@ const EfisiensiBPJS = () => {
                 dispatch(deleteDiagnosax(product.norec));
             } else if (stateDeleteDiagnosa === 9) {
                 dispatch(deleteDiagnosaix(product.norec));
-            }else if (stateDeleteDiagnosa === 1) {
-                let  tempValue = {
+            } else if (stateDeleteDiagnosa === 1) {
+                let tempValue = {
                     "norec": product.norec
                 }
                 dispatch(deletePelayananPasienTemp(tempValue, () => {
@@ -311,7 +313,7 @@ const EfisiensiBPJS = () => {
                 return (
                     <div className="hstack gap-3 flex-wrap">
                         <UncontrolledDropdown className="dropdown d-inline-block">
-                            <DropdownToggle className="btn btn-soft-secondary btn-sm" tag="button" id="tooltipTop2" type="button" onClick={() => onClickDelete(data,1)}>
+                            <DropdownToggle className="btn btn-soft-secondary btn-sm" tag="button" id="tooltipTop2" type="button" onClick={() => onClickDelete(data, 1)}>
                                 <i className="ri-delete-bin-2-line"></i>
                             </DropdownToggle>
                         </UncontrolledDropdown>
@@ -375,26 +377,24 @@ const EfisiensiBPJS = () => {
             <Row className="gy-4">
                 <UiContent />
                 <Row className="row-cols-xxl-4 row-cols-lg-3 row-cols-1">
-                    {datawidget.map((item, key) => (
+                    {dataWidget.map((item, key) => (
                         <Col key={key}>
                             <Card className="card-animate" style={{ backgroundColor: '#ffeaa7' }}>
                                 <CardBody>
                                     <div className="d-flex justify-content-between">
                                         <div>
                                             <p className="fw-medium mb-0">{item.label}</p>
-
-                                        </div>
-                                        <div>
-                                            <div className="avatar-md flex-shrink-0">
-
-                                                <CountUp
-                                                    start={0}
-                                                    end={item.counter}
-                                                    decimal={item.decimals}
-                                                    duration={3}
-                                                />
-
-                                            </div>
+                                            <h2 className="mt-4 ff-secondary fw-semibold">
+                                                    <span className="counter-value" style={{ fontSize: "2rem" }}>
+                                                        <CountUp
+                                                            start={0}
+                                                            end={item.total}
+                                                            decimal={item.decimals}
+                                                            // suffix={item.suffix}
+                                                            duration={3}
+                                                        />
+                                                    </span>
+                                                </h2>
                                         </div>
                                     </div>
                                 </CardBody>
@@ -432,7 +432,7 @@ const EfisiensiBPJS = () => {
                                             value={vSetValidationDiagnosa.values.kodediagnosa}
                                             className={`input row-header ${!!vSetValidationDiagnosa?.errors.kodediagnosa ? 'is-invalid' : ''
                                                 }`}
-                                                placeholder='Diagnosa...'
+                                            placeholder='Diagnosa...'
                                         />
                                         {vSetValidationDiagnosa.touched.kodediagnosa &&
                                             !!vSetValidationDiagnosa.errors.kodediagnosa && (
@@ -452,7 +452,7 @@ const EfisiensiBPJS = () => {
                                             value={vSetValidationDiagnosa.values.tipediagnosa}
                                             className={`input row-header ${!!vSetValidationDiagnosa?.errors.tipediagnosa ? 'is-invalid' : ''
                                                 }`}
-                                                placeholder="Tipe Diagnosa..."
+                                            placeholder="Tipe Diagnosa..."
                                         />
                                         {vSetValidationDiagnosa.touched.tipediagnosa &&
                                             !!vSetValidationDiagnosa.errors.tipediagnosa && (
@@ -472,7 +472,7 @@ const EfisiensiBPJS = () => {
                                             value={vSetValidationDiagnosa.values.kasuspenyakit}
                                             className={`input row-header ${!!vSetValidationDiagnosa?.errors.kasuspenyakit ? 'is-invalid' : ''
                                                 }`}
-                                                placeholder='Kasus Penyakit...'
+                                            placeholder='Kasus Penyakit...'
                                         />
                                         {vSetValidationDiagnosa.touched.kasuspenyakit &&
                                             !!vSetValidationDiagnosa.errors.kasuspenyakit && (
@@ -492,7 +492,7 @@ const EfisiensiBPJS = () => {
                                             value={vSetValidationDiagnosa.values.norecap}
                                             className={`input row-header ${!!vSetValidationDiagnosa?.errors.norecap ? 'is-invalid' : ''
                                                 }`}
-                                                placeholder='Unit...'
+                                            placeholder='Unit...'
                                         />
                                         {vSetValidationDiagnosa.touched.norecap &&
                                             !!vSetValidationDiagnosa.errors.norecap && (
@@ -536,7 +536,7 @@ const EfisiensiBPJS = () => {
                                             value={vSetValidationDiagnosa9.values.kodediagnosa9}
                                             className={`input row-header ${!!vSetValidationDiagnosa9?.errors.kodediagnosa9 ? 'is-invalid' : ''
                                                 }`}
-                                                placeholder='Diagnosa...'
+                                            placeholder='Diagnosa...'
                                         />
                                         {vSetValidationDiagnosa9.touched.kodediagnosa9 &&
                                             !!vSetValidationDiagnosa9.errors.kodediagnosa9 && (
@@ -560,7 +560,7 @@ const EfisiensiBPJS = () => {
                                             }}
                                             invalid={vSetValidationDiagnosa9.touched?.jumlahtindakan &&
                                                 !!vSetValidationDiagnosa9.errors?.jumlahtindakan}
-                                                placeholder="Jumlah..."
+                                            placeholder="Jumlah..."
                                         />
                                         {vSetValidationDiagnosa9.touched?.jumlahtindakan
                                             && !!vSetValidationDiagnosa9.errors.jumlahtindakan && (
@@ -580,7 +580,7 @@ const EfisiensiBPJS = () => {
                                             value={vSetValidationDiagnosa9.values.norecap}
                                             className={`input row-header ${!!vSetValidationDiagnosa9?.errors.norecap ? 'is-invalid' : ''
                                                 }`}
-                                                placeholder='Unit...'
+                                            placeholder='Unit...'
                                         />
                                         {vSetValidationDiagnosa9.touched.norecap &&
                                             !!vSetValidationDiagnosa9.errors.norecap && (

@@ -157,4 +157,8 @@ export default class ServiceEmr {
     deletePelayananPasienTemp = async (params) => {
         return await api.create("/transaksi/tindakan/delete-pelayanan-pasien-temp", params);
     }
+
+    getWidgetEfisiensiKlaim = async (queries) => {
+        return await api.get(`/transaksi/tindakan/widget-efisiensi-klaim`, queries);
+    }
 }

@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Button, Card, CardBody, CardHeader, Col, Form, FormFeedback, Input, Label, Row } from 'reactstrap';
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import CustomSelect from '../../../Select/Select';
 import {
     comboHistoryUnitGet, comboNamaPelaksanaGet,
-    emrDiagnosaxGet, emrComboGet, saveOrderOperasi,getHistoriOrderOperasi
+    emrDiagnosaxGet, emrComboGet, saveOrderOperasi, getHistoriOrderOperasi
 } from "../../../../store/actions";
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -18,6 +18,10 @@ const OrderOperasi = () => {
     const dispatch = useDispatch();
     const { norecdp, norecap } = useParams();
     const [dateNow] = useState(() => new Date().toISOString())
+    const refunitlast = useRef(null);
+    const refdokterOperator = useRef(null);
+    const refjenisOperasi = useRef(null);
+    const refkodediagnosa = useRef(null);
     const { dataCombo, dataNamaPelaksana, dataDiagnosa,
         dataComboEmr, newData, dataOrder, loadingOrder
     } = useSelector((state) => ({
@@ -48,30 +52,40 @@ const OrderOperasi = () => {
         },
         validationSchema: Yup.object({
             unitlast: Yup.string().required("Unit Harus Diisi jawab wajib diisi"),
-            namaoperasi: Yup.string().required("Nama Operasi Harus Diisi jawab wajib diisi"),
-            dokterOperator: Yup.string().required("Dokter Operator Diisi jawab wajib diisi"),
-            jenisOperasi: Yup.string().required("Jenis Operasi Harus Diisi jawab wajib diisi"),
-            kodediagnosa: Yup.string().required("Diagnosa Harus Diisi jawab wajib diisi"),
-            catatan: Yup.string().required("Catatan Harus Diisi jawab wajib diisi"),
+            // namaoperasi: Yup.string().required("Nama Operasi Harus Diisi jawab wajib diisi"),
+            // dokterOperator: Yup.string().required("Dokter Operator Diisi jawab wajib diisi"),
+            // jenisOperasi: Yup.string().required("Jenis Operasi Harus Diisi jawab wajib diisi"),
+            // kodediagnosa: Yup.string().required("Diagnosa Harus Diisi jawab wajib diisi"),
+            // catatan: Yup.string().required("Catatan Harus Diisi jawab wajib diisi"),
         }),
         onSubmit: (values, { resetForm }) => {
             // console.log(values);
             dispatch(saveOrderOperasi(values, () => {
                 resetForm({ values: '' })
                 dispatch(getHistoriOrderOperasi({
-                    norecdp:norecdp
+                    norecdp: norecdp
                 }));
             }));
-
+            handleClickReset()
         }
     })
+    const handleClickReset = (e) => {
+        // vSetValidation.setFieldValue('unitlast', '')
+        // vSetValidation.setFieldValue('namaoperasi', '')
+        // vSetValidation.setFieldValue('dokterOperator', '')
+        // vSetValidation.setFieldValue('keteranganicd10', '')
+        refunitlast.current?.clearValue()
+        refdokterOperator.current?.clearValue()
+        refjenisOperasi.current?.clearValue()
+        refkodediagnosa.current?.clearValue()
+    };
     useEffect(() => {
         if (norecdp) {
             dispatch(comboHistoryUnitGet(norecdp));
             dispatch(comboNamaPelaksanaGet(''));
             dispatch(emrComboGet(norecdp, 'combo'));
             dispatch(getHistoriOrderOperasi({
-                norecdp:norecdp
+                norecdp: norecdp
             }));
         }
     }, [norecdp, dispatch])
@@ -81,11 +95,11 @@ const OrderOperasi = () => {
         }
     }
     const handleUnitLast = (e) => {
-        vSetValidation.setFieldValue('unitlast', e.value)
-        vSetValidation.setFieldValue('objectantreanpemeriksaanfk', e.norec)
+        vSetValidation.setFieldValue('unitlast', e?.value || "")
+        vSetValidation.setFieldValue('objectantreanpemeriksaanfk', e?.norec || "")
     }
     const columnsRiwayat = [
-       
+
         {
             name: <span className='font-weight-bold fs-13'>Tgl. Order</span>,
             selector: row => dateTimeLocal(row.tglinput),
@@ -97,7 +111,7 @@ const OrderOperasi = () => {
             name: <span className='font-weight-bold fs-13'>Rencana Operasi</span>,
             selector: row => row.tglinput,
             sortable: true,
-            width: "150px"
+            width: "200px"
         },
         {
 
@@ -136,6 +150,13 @@ const OrderOperasi = () => {
         },
         {
 
+            name: <span className='font-weight-bold fs-13'>Cito</span>,
+            selector: row => row.statuscito,
+            sortable: true,
+            // width: "250px",
+        },
+        {
+
             name: <span className='font-weight-bold fs-13'>Status</span>,
             selector: row => row.statusoperasi,
             sortable: true,
@@ -157,6 +178,7 @@ const OrderOperasi = () => {
 
         }
     }
+
     return (
         <React.Fragment>
             <Form
@@ -183,7 +205,8 @@ const OrderOperasi = () => {
                                         options={dataCombo}
                                         value={vSetValidation.values.unitlast || ""}
                                         className={`input ${vSetValidation.errors.unitlast ? "is-invalid" : ""}`}
-                                        onChange={value => (handleUnitLast(value))}
+                                        onChange={value => (handleUnitLast(value ))}
+                                        ref={refunitlast}
                                     />
                                     {vSetValidation.touched.unitlast && vSetValidation.errors.unitlast ? (
                                         <FormFeedback type="invalid"><div>{vSetValidation.errors.unitlast}</div></FormFeedback>
@@ -229,7 +252,8 @@ const OrderOperasi = () => {
                                         options={dataNamaPelaksana}
                                         value={vSetValidation.values.dokterOperator || ""}
                                         className={`input ${vSetValidation.errors.dokterOperator ? "is-invalid" : ""}`}
-                                        onChange={value => vSetValidation.setFieldValue('dokterOperator', value.value)}
+                                        onChange={value => vSetValidation.setFieldValue('dokterOperator', value?.value || "")}
+                                        ref={refdokterOperator}
                                     />
                                     {vSetValidation.touched.dokterOperator && vSetValidation.errors.dokterOperator ? (
                                         <FormFeedback type="invalid"><div>{vSetValidation.errors.dokterOperator}</div></FormFeedback>
@@ -249,7 +273,8 @@ const OrderOperasi = () => {
                                         options={dataComboEmr.jenisoperasi}
                                         value={vSetValidation.values.jenisOperasi || ""}
                                         className={`input ${vSetValidation.errors.jenisOperasi ? "is-invalid" : ""}`}
-                                        onChange={value => vSetValidation.setFieldValue('jenisOperasi', value.value)}
+                                        onChange={value => vSetValidation.setFieldValue('jenisOperasi', value?.value || "")}
+                                        ref={refjenisOperasi}
                                     />
                                     {vSetValidation.touched.jenisOperasi && vSetValidation.errors.jenisOperasi ? (
                                         <FormFeedback type="invalid"><div>{vSetValidation.errors.jenisOperasi}</div></FormFeedback>
@@ -314,6 +339,7 @@ const OrderOperasi = () => {
                                         className={`input ${vSetValidation.errors.kodediagnosa ? "is-invalid" : ""}`}
                                         onChange={value => vSetValidation.setFieldValue('kodediagnosa', value?.value || "")}
                                         onInputChange={handleDiagnosa}
+                                        ref={refkodediagnosa}
                                     />
                                     {vSetValidation.touched.kodediagnosa && vSetValidation.errors.kodediagnosa ? (
                                         <FormFeedback type="invalid"><div>{vSetValidation.errors.kodediagnosa}</div></FormFeedback>
