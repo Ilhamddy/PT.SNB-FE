@@ -4,10 +4,10 @@ import { Link } from 'react-router-dom';
 import { discoverItemsData } from '../../../common/data';
 
 const favouriteBtn = (ele) => {
-    if (ele.closest("button").classList.contains("active")) {
-        ele.closest("button").classList.remove("active");
+    if (ele.closest("button").classList?.contains("active")) {
+        ele.closest("button").classList?.remove("active");
     } else {
-        ele.closest("button").classList.add("active");
+        ele.closest("button").classList?.add("active");
     }
 };
 

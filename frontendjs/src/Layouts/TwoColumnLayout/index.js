@@ -19,20 +19,20 @@ const TwoColumnLayout = (props) => {
     const navData = navdata().props.children;
 
     const activateParentDropdown = useCallback((item) => {
-        item.classList.add("active");
+        item.classList?.add("active");
         let parentCollapseDiv = item.closest(".collapse.menu-dropdown");
         if (parentCollapseDiv) {
             // to set aria expand true remaining
-            parentCollapseDiv.classList.add("show");
-            parentCollapseDiv.parentElement.children[0].classList.add("active");
+            parentCollapseDiv.classList?.add("show");
+            parentCollapseDiv.parentElement.children[0].classList?.add("active");
             parentCollapseDiv.parentElement.children[0].setAttribute("aria-expanded", "true");
             if (parentCollapseDiv.parentElement.closest(".collapse.menu-dropdown")) {
-                parentCollapseDiv.parentElement.closest(".collapse").classList.add("show");
+                parentCollapseDiv.parentElement.closest(".collapse").classList?.add("show");
                 const parentParentCollapse = parentCollapseDiv.parentElement.closest(".collapse").previousElementSibling;
                 if (parentParentCollapse) {
-                    parentParentCollapse.classList.add("active");
+                    parentParentCollapse.classList?.add("active");
                     if (parentParentCollapse.closest(".collapse.menu-dropdown")) {
-                        parentParentCollapse.closest(".collapse.menu-dropdown").classList.add("show");
+                        parentParentCollapse.closest(".collapse.menu-dropdown").classList?.add("show");
                     }
                 }
             }
@@ -60,7 +60,7 @@ const TwoColumnLayout = (props) => {
             } else {
                 id = pathName.replace("/", "");
             }
-            if (id) document.body.classList.add('twocolumn-panel');
+            if (id) document.body.classList?.add('twocolumn-panel');
             activateIconSidebarActive(id);
         }
     }, [props.router.location.pathname, activateParentDropdown]);
@@ -73,37 +73,37 @@ const TwoColumnLayout = (props) => {
     function activateIconSidebarActive(id) {
         var menu = document.querySelector("#two-column-menu .simplebar-content-wrapper a[subitems='" + id + "'].nav-icon");
         if (menu !== null) {
-            menu.classList.add("active");
+            menu.classList?.add("active");
         }
     }
 
     const removeActivation = (items) => {
-        let activeItems = items.filter((x) => x.classList.contains("active"));
+        let activeItems = items.filter((x) => x.classList?.contains("active"));
         activeItems.forEach((item) => {
-            if (item.classList.contains("menu-link")) {
-                if (!item.classList.contains("active")) {
+            if (item.classList?.contains("menu-link")) {
+                if (!item.classList?.contains("active")) {
                     item.setAttribute("aria-expanded", false);
                 }
-                item.nextElementSibling.classList.remove("show");
+                item.nextElementSibling.classList?.remove("show");
             }
-            if (item.classList.contains("nav-link")) {
+            if (item.classList?.contains("nav-link")) {
                 if (item.nextElementSibling) {
-                    item.nextElementSibling.classList.remove("show");
+                    item.nextElementSibling.classList?.remove("show");
                 }
                 item.setAttribute("aria-expanded", false);
             }
-            item.classList.remove("active");
+            item.classList?.remove("active");
         });
 
         const ul = document.getElementById("two-column-menu");
         const iconItems = ul.getElementsByTagName("a");
         let itemsArray = [...iconItems];
-        let activeIconItems = itemsArray.filter((x) => x.classList.contains("active"));
+        let activeIconItems = itemsArray.filter((x) => x.classList?.contains("active"));
         activeIconItems.forEach((item) => {
-            item.classList.remove("active");
+            item.classList?.remove("active");
             var id = item.getAttribute("subitems");
             if (document.getElementById(id))
-                document.getElementById(id).classList.remove("show");
+                document.getElementById(id).classList?.remove("show");
         });
     };
 

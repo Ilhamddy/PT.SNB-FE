@@ -82,14 +82,14 @@ const EmailToolbar = () => {
     // SideBar Open
     function sidebarOpen(value, ele) {
         const element = document.getElementsByTagName('body')[0];
-        element.classList.add(value);
-        ele.closest("li").classList.remove("unread");
+        element.classList?.add(value);
+        ele.closest("li").classList?.remove("unread");
     }
 
     // SideBar Close
     function sidebarClose(value) {
         const element = document.getElementsByTagName('body')[0];
-        element.classList.remove(value);
+        element.classList?.remove(value);
     }
 
     useEffect(() => {
@@ -125,9 +125,9 @@ const EmailToolbar = () => {
         }
 
         if (check) {
-            activeList.classList.add("active");
+            activeList.classList?.add("active");
         } else {
-            activeList.classList.remove("active");
+            activeList.classList?.remove("active");
         }
     };
 
@@ -140,13 +140,13 @@ const EmailToolbar = () => {
 
         if (checkall.checked) {
             element.forEach((node) => {
-                node.classList.add("active");
+                node.classList?.add("active");
                 node.firstChild.firstChild.firstChild.checked = true;
             });
         } else {
             ele.style.display = 'none';
             element.forEach((node) => {
-                node.classList.remove("active");
+                node.classList?.remove("active");
                 node.firstChild.firstChild.firstChild.checked = false;
             });
         }
@@ -160,11 +160,11 @@ const EmailToolbar = () => {
         const checkall = document.getElementById("checkall");
         element.forEach((element) => {
 
-            if (element.classList.contains('active')) {
+            if (element.classList?.contains('active')) {
                 var forId = element.querySelector('.form-check-input').value;
                 dispatch(deleteMail(forId));
             }
-            element.classList.remove("active");
+            element.classList?.remove("active");
             element.querySelector('.form-check-input').checked = false;
 
         });
@@ -181,16 +181,16 @@ const EmailToolbar = () => {
         }
 
         document.querySelectorAll(".message-list li.unread").forEach(function (element) {
-            if (element.classList.contains("unread")) { element.classList.remove("unread"); }
+            if (element.classList?.contains("unread")) { element.classList?.remove("unread"); }
         });
     };
 
 
     const favouriteBtn = (ele) => {
-        if (ele.closest("button").classList.contains("active")) {
-            ele.closest("button").classList.remove("active");
+        if (ele.closest("button").classList?.contains("active")) {
+            ele.closest("button").classList?.remove("active");
         } else {
-            ele.closest("button").classList.add("active");
+            ele.closest("button").classList?.add("active");
         }
     };
 

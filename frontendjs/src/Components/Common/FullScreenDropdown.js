@@ -11,7 +11,7 @@ const FullScreenDropdown = () => {
     */
     const toggleFullscreen = () => {
         let document = window.document;
-        document.body.classList.add("fullscreen-enable");
+        document.body.classList?.add("fullscreen-enable");
 
         if (
             !document.fullscreenElement &&
@@ -45,7 +45,7 @@ const FullScreenDropdown = () => {
                 !document.mozFullScreen &&
                 !document.msFullscreenElement
             )
-                document.body.classList.remove("fullscreen-enable");
+                document.body.classList?.remove("fullscreen-enable");
         };
         document.addEventListener("fullscreenchange", exitHandler);
         document.addEventListener("webkitfullscreenchange", exitHandler);

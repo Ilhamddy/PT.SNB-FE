@@ -51,25 +51,25 @@ const HorizontalLayout = (props) => {
     }, [path, props.layoutType]);
 
     function activateParentDropdown(item) {
-        item.classList.add("active");
+        item.classList?.add("active");
         let parentCollapseDiv = item.closest(".collapse.menu-dropdown");
 
         if (parentCollapseDiv) {
 
             // to set aria expand true remaining
-            parentCollapseDiv.classList.add("show");
-            parentCollapseDiv.parentElement.children[0].classList.add("active");
+            parentCollapseDiv.classList?.add("show");
+            parentCollapseDiv.parentElement.children[0].classList?.add("active");
             parentCollapseDiv.parentElement.children[0].setAttribute("aria-expanded", "true");
             if (parentCollapseDiv.parentElement.closest(".collapse.menu-dropdown")) {
-                parentCollapseDiv.parentElement.closest(".collapse").classList.add("show");
+                parentCollapseDiv.parentElement.closest(".collapse").classList?.add("show");
                 var parentElementDiv = parentCollapseDiv.parentElement.closest(".collapse").previousElementSibling;
                 if (parentElementDiv)
                     if (parentElementDiv.closest(".collapse"))
-                        parentElementDiv.closest(".collapse").classList.add("show")
-                parentElementDiv.classList.add("active");
+                        parentElementDiv.closest(".collapse").classList?.add("show")
+                parentElementDiv.classList?.add("active");
                 var parentElementSibling = parentElementDiv.parentElement.parentElement.parentElement.previousElementSibling;
                 if (parentElementSibling) {
-                    parentElementSibling.classList.add("active");
+                    parentElementSibling.classList?.add("active");
                 }
             }
             return false;
@@ -78,24 +78,24 @@ const HorizontalLayout = (props) => {
     }
 
     const removeActivation = (items) => {
-        let actiItems = items.filter((x) => x.classList.contains("active"));
+        let actiItems = items.filter((x) => x.classList?.contains("active"));
 
         actiItems.forEach((item) => {
-            if (item.classList.contains("menu-link")) {
-                if (!item.classList.contains("active")) {
+            if (item.classList?.contains("menu-link")) {
+                if (!item.classList?.contains("active")) {
                     item.setAttribute("aria-expanded", false);
                 }
                 if (item.nextElementSibling) {
-                    item.nextElementSibling.classList.remove("show");
+                    item.nextElementSibling.classList?.remove("show");
                 }
             }
-            if (item.classList.contains("nav-link")) {
+            if (item.classList?.contains("nav-link")) {
                 if (item.nextElementSibling) {
-                    item.nextElementSibling.classList.remove("show");
+                    item.nextElementSibling.classList?.remove("show");
                 }
                 item.setAttribute("aria-expanded", false);
             }
-            item.classList.remove("active");
+            item.classList?.remove("active");
         });
     };
 

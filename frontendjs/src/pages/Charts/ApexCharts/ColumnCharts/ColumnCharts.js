@@ -934,13 +934,13 @@ const DynamicColumn = ({dataColors}) => {
 
                     if (opts.selectedDataPoints[0].length === 1) {
                         if (quarterChartEl) {
-                            if (quarterChartEl.classList.contains("active")) {
+                            if (quarterChartEl.classList?.contains("active")) {
                                 updateQuarterChart(chart, "barQuarter");
                             } else {
                                 if (yearChartEl) {
-                                    yearChartEl.classList.add("chart-quarter-activated");
+                                    yearChartEl.classList?.add("chart-quarter-activated");
                                 }
-                                quarterChartEl.classList.add("active");
+                                quarterChartEl.classList?.add("active");
                                 updateQuarterChart(chart, "barQuarter");
                             }
                         }
@@ -950,10 +950,10 @@ const DynamicColumn = ({dataColors}) => {
 
                     if (opts.selectedDataPoints[0].length === 0) {
                         if (yearChartEl) {
-                            yearChartEl.classList.remove("chart-quarter-activated");
+                            yearChartEl.classList?.remove("chart-quarter-activated");
                         }
                         if (quarterChartEl) {
-                            quarterChartEl.classList.remove("active");
+                            quarterChartEl.classList?.remove("active");
                         }
                     }
                 },

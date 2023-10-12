@@ -11,10 +11,10 @@ const Marketplace = () => {
     document.title = "Marketplace | Velzon - React Admin & Dashboard Template";
 
     const favouriteBtn = (ele) => {
-        if (ele.closest("button").classList.contains("active")) {
-            ele.closest("button").classList.remove("active");
+        if (ele.closest("button").classList?.contains("active")) {
+            ele.closest("button").classList?.remove("active");
         } else {
-            ele.closest("button").classList.add("active");
+            ele.closest("button").classList?.add("active");
         }
     };
 

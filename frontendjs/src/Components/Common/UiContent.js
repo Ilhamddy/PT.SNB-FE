@@ -9,12 +9,12 @@ const UiContent = () => {
                 var code = card.querySelector(".code-view");
                 if (check.checked) {
                     // do this
-                    preview.classList.add("d-none");
-                    code.classList.remove("d-none");
+                    preview.classList?.add("d-none");
+                    code.classList?.remove("d-none");
                 } else {
                     // do that
-                    preview.classList.remove("d-none");
-                    code.classList.add("d-none");
+                    preview.classList?.remove("d-none");
+                    code.classList?.add("d-none");
                 }
             });
         });

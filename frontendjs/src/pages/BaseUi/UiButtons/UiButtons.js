@@ -13,10 +13,10 @@ import { DefaultButtonsExample, OutlineButtonsExample, RoundedButtonsExample, So
 const UiButtons = () => {
     document.title="Buttons | Velzon - React Admin & Dashboard Template";
     const favouriteBtn = (ele) => {
-        if (ele.closest("button").classList.contains("active")) {
-            ele.closest("button").classList.remove("active");
+        if (ele.closest("button").classList?.contains("active")) {
+            ele.closest("button").classList?.remove("active");
         } else {
-            ele.closest("button").classList.add("active");
+            ele.closest("button").classList?.add("active");
         }
     };
     return (
