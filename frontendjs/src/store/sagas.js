@@ -81,6 +81,7 @@ import farmasiSaga from "./farmasi/saga"
 import viewerSaga from "./viewer/saga"
 import bedahSentralSaga from "./bedahSentral/saga";
 import daftarPasienOnline from "./daftarPasienOnline/saga"
+import beritaSaga from "./berita/saga"
 
 
 export default function* rootSaga() {
@@ -126,6 +127,7 @@ export default function* rootSaga() {
     fork(farmasiSaga),
     fork(viewerSaga),
     fork(bedahSentralSaga),
-    fork(daftarPasienOnline)
+    fork(daftarPasienOnline),
+    fork(beritaSaga)
   ]);
 }
