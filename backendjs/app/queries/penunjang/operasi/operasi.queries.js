@@ -1,7 +1,7 @@
 const qResult =`
 select mp.nocm,to2.norec,to_char(to2.tglinput,
-    'dd Month YYYY hh:ii') as tglinput,to_char(to2.tglrencana,
-        'dd Month YYYY hh:ii') as tglrencana,
+    'dd Month YYYY HH24:MI') as tglinput,to_char(to2.tglrencana,
+        'dd Month YYYY HH24:MI') as tglrencana,
 mu.namaunit,to2.namaoperasi,mi.kodeexternal,
 mp2.namalengkap,ms.reportdisplay as statusoperasi from t_orderoperasi to2 
 join t_antreanpemeriksaan ta on ta.norec=to2.objectantreanpemeriksaanfk

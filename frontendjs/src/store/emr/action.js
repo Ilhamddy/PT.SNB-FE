@@ -113,7 +113,10 @@ import {
     GET_LIST_PELAYANAN_PASIEN_TEMP_ERROR,
     DELETE_PELAYANAN_PASIEN_TEMP,
     DELETE_PELAYANAN_PASIEN_TEMP_SUCCESS,
-    DELETE_PELAYANAN_PASIEN_TEMP_ERROR
+    DELETE_PELAYANAN_PASIEN_TEMP_ERROR,
+    GET_WIDGET_EFISIENSI_KLAIM,
+    GET_WIDGET_EFISIENSI_KLAIM_SUCCESS,
+    GET_WIDGET_EFISIENSI_KLAIM_ERROR
 } from "./actionType";
 
 export const emrResetForm = () => ({
@@ -720,4 +723,19 @@ export const deletePelayananPasienTempSuccess = (data) => ({
 export const deletePelayananPasienTempError = (error) => ({
     type: DELETE_PELAYANAN_PASIEN_TEMP_ERROR,
     payload: error
+});
+
+export const getWidgetEfisiensiKlaim = (queries) => ({
+    type: GET_WIDGET_EFISIENSI_KLAIM,
+    payload: { queries: queries },
+});
+
+export const getWidgetEfisiensiKlaimSuccess = (data) => ({
+    type: GET_WIDGET_EFISIENSI_KLAIM_SUCCESS,
+    payload: data,
+});
+
+export const getWidgetEfisiensiKlaimError = (error) => ({
+    type: GET_WIDGET_EFISIENSI_KLAIM_ERROR,
+    payload: error,
 });

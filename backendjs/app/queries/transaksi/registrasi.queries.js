@@ -342,6 +342,12 @@ join m_kelas mk on mk.id=tp.objectkelasfk
 left join m_unit mu on mu.id=tp.objectunitfk
 where td.norec=$1`
 
+const qListTotalKlaim = `select sum(tp.total) as total,td.nominalklaim  from t_daftarpasien td 
+join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk=td.norec 
+join t_pelayananpasien tp on tp.objectantreanpemeriksaanfk=ta.norec
+where td.norec=$1
+group by tp.total,td.nominalklaim`
+
 export default {
     getAll,
     addPost,
@@ -367,5 +373,6 @@ export default {
     qM_HubunganKeluarga,
     qWidgetDaftarPasienTriage,
     qGetPasienOnline,
-    qListPelayananPasienTemp
+    qListPelayananPasienTemp,
+    qListTotalKlaim
 };

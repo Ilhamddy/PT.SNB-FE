@@ -113,7 +113,10 @@ import {
     GET_LIST_PELAYANAN_PASIEN_TEMP_ERROR,
     DELETE_PELAYANAN_PASIEN_TEMP,
     DELETE_PELAYANAN_PASIEN_TEMP_SUCCESS,
-    DELETE_PELAYANAN_PASIEN_TEMP_ERROR
+    DELETE_PELAYANAN_PASIEN_TEMP_ERROR,
+    GET_WIDGET_EFISIENSI_KLAIM,
+    GET_WIDGET_EFISIENSI_KLAIM_SUCCESS,
+    GET_WIDGET_EFISIENSI_KLAIM_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -322,6 +325,11 @@ const INIT_STATE = {
         error: null,
         success: false
     },
+    getWidgetEfisiensiKlaim: {
+        data: [],
+        loading: false,
+        error: null,
+    },
 };
 
 const Emr = (state = INIT_STATE, action) => {
@@ -430,6 +438,9 @@ const Emr = (state = INIT_STATE, action) => {
                 },
                 deletePelayananPasienTemp:{
                     ...INIT_STATE.deletePelayananPasienTemp
+                },
+                getWidgetEfisiensiKlaim:{
+                    ...INIT_STATE.getWidgetEfisiensiKlaim
                 }
             }
         }
@@ -1714,6 +1725,39 @@ const Emr = (state = INIT_STATE, action) => {
                     error: action.payload,
                 },
             };
+        }
+
+        case GET_WIDGET_EFISIENSI_KLAIM: {
+            return {
+                ...state,
+                getWidgetEfisiensiKlaim: {
+                    ...state.getWidgetEfisiensiKlaim,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case GET_WIDGET_EFISIENSI_KLAIM_SUCCESS: {
+            return {
+                ...state,
+                getWidgetEfisiensiKlaim: {
+                    ...state.getWidgetEfisiensiKlaim,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case GET_WIDGET_EFISIENSI_KLAIM_ERROR: {
+            return {
+                ...state,
+                getWidgetEfisiensiKlaim: {
+                    ...state.getWidgetEfisiensiKlaim,
+                    loading: false,
+                    error: action.error,
+                }
+            }
         }
 
 
