@@ -124,7 +124,7 @@ const VerifikasiPasienOnline = () => {
                     Penjamin : {item.namarekanan || '-'}
                   </p>
                   <p className="text-muted mb-0">
-                    DPJP Pasien : {item.nokartu || '-'}
+                    No Kartu : {item.nokartu || '-'}
                   </p>
                   <p className="text-muted mb-0">
                     Status : {item.nocm ? 'Terverif' : 'Belum Verif'}
