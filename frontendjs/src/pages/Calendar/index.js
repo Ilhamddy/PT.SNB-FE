@@ -274,35 +274,35 @@ const Calender = () => {
   });
 
   const submitOtherEvent = () => {
-    document.getElementById("form-event").classList.remove("view-event");
+    document.getElementById("form-event").classList?.remove("view-event");
 
     document
       .getElementById("event-title")
-      .classList.replace("d-none", "d-block");
+      .classList?.replace("d-none", "d-block");
     document
       .getElementById("event-category")
-      .classList.replace("d-none", "d-block");
+      .classList?.replace("d-none", "d-block");
     document
       .getElementById("event-start-date")
-      .parentNode.classList.remove("d-none");
+      .parentNode.classList?.remove("d-none");
     document
       .getElementById("event-start-date")
-      .classList.replace("d-none", "d-block");
+      .classList?.replace("d-none", "d-block");
     document
       .getElementById("event-location")
-      .classList.replace("d-none", "d-block");
+      .classList?.replace("d-none", "d-block");
     document
       .getElementById("event-description")
-      .classList.replace("d-none", "d-block");
+      .classList?.replace("d-none", "d-block");
     document
       .getElementById("event-start-date-tag")
-      .classList.replace("d-block", "d-none");
+      .classList?.replace("d-block", "d-none");
     document
       .getElementById("event-location-tag")
-      .classList.replace("d-block", "d-none");
+      .classList?.replace("d-block", "d-none");
     document
       .getElementById("event-description-tag")
-      .classList.replace("d-block", "d-none");
+      .classList?.replace("d-block", "d-none");
 
     setIsEditButton(true);
   };
@@ -339,7 +339,7 @@ const Calender = () => {
     const draggedEl = event.draggedEl;
     const draggedElclass = draggedEl.className;
     if (
-      draggedEl.classList.contains("external-event") &&
+      draggedEl.classList?.contains("external-event") &&
       draggedElclass.indexOf("fc-event-draggable") === -1
     ) {
       const modifiedData = {

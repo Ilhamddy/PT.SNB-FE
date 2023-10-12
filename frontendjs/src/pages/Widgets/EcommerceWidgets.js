@@ -38,8 +38,8 @@ const EcommerceWidgets = () => {
             var payamount = checkedElem.querySelector(".pay-amount").innerHTML
             document.querySelector("#notification-overlay .success-pay").innerHTML = payamount
         } else {
-            document.getElementById("notification-warn").classList.remove("d-none");
-            setTimeout(() => document.getElementById("notification-warn").classList.add("d-none"), 2000);
+            document.getElementById("notification-warn").classList?.remove("d-none");
+            setTimeout(() => document.getElementById("notification-warn").classList?.add("d-none"), 2000);
         }
     }
 

@@ -64,11 +64,11 @@ const UiCards = () => {
 
 // Card Spinner
 const spinner = (id) => {
-    document.getElementById(id).classList.remove("d-none");
-    document.getElementById(id).classList.add("d-block");
+    document.getElementById(id).classList?.remove("d-none");
+    document.getElementById(id).classList?.add("d-block");
     setTimeout(function () {
-        document.getElementById(id).classList.remove("d-block");
-        document.getElementById(id).classList.add("d-none");
+        document.getElementById(id).classList?.remove("d-block");
+        document.getElementById(id).classList?.add("d-none");
     }, 3000);
 };
 

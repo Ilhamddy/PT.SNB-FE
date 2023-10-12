@@ -180,13 +180,13 @@ const FileManager = () => {
     // SideBar Open
     function sidebarOpen(value) {
         const element = document.getElementsByTagName('body')[0];
-        element.classList.add(value);
+        element.classList?.add(value);
     }
 
     // SideBar Close
     function sidebarClose(value) {
         const element = document.getElementsByTagName('body')[0];
-        element.classList.remove(value);
+        element.classList?.remove(value);
     }
 
     useEffect(() => {
@@ -194,10 +194,10 @@ const FileManager = () => {
     }, []);
 
     const favouriteBtn = (ele) => {
-        if (ele.closest("button").classList.contains("active")) {
-            ele.closest("button").classList.remove("active");
+        if (ele.closest("button").classList?.contains("active")) {
+            ele.closest("button").classList?.remove("active");
         } else {
-            ele.closest("button").classList.add("active");
+            ele.closest("button").classList?.add("active");
         }
     };
 

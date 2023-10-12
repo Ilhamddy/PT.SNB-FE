@@ -9,9 +9,15 @@ export const useCheckActivity = () => {
         function checkActivity() {
             timeout && clearTimeout(timeout);
             timeout = setTimeout(() => { 
-                history(`/logout`); 
+                try{
+                    history(`/logout`); 
+                } catch(error) {
+                    console.error(error);
+                }
             }, 30 * 60 * 1000);
         }
+        checkActivity();
+
         try{
             document.addEventListener('keydown', checkActivity);
             document.addEventListener('mousedown', checkActivity);
@@ -20,7 +26,6 @@ export const useCheckActivity = () => {
             console.error(error);
         }
         
-        checkActivity();
         return () => {
             clearTimeout(timeout);
             try{
