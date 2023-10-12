@@ -247,6 +247,14 @@ const savePasien = async (req, res) => {
                 },
                 transaction: transaction
             })
+            if(!pasienBefore.nocm) {
+                await running_Number.update({ new_number: nocm }, {
+                    where: {
+                        id: 1
+                    },
+                    transaction: transaction
+                });
+            }
             result = await pasienBefore.update({
                 nocm: pasienBefore.nocm || nocm,
                 namapasien: objBody.namapasien,
@@ -1332,6 +1340,7 @@ const getPasienFormById = async (req, res) => {
             pasien.posDomisili = pasien.posdomisili
             pasien.negaraDomisili = pasien.negaradomisili
             pasien.labelNegaraDomisili = pasien.labelnegaradomisili
+            pasien.needVerif = !pasien.nocm && pasien.nocmtemp
         }
         const tempres = {
             pasien: pasien
@@ -1730,7 +1739,8 @@ const getPasienOnline = async (req, res) => {
             tglmasuk,
             unit
         } = req.query
-        const {todayStart, todayEnd} = getDateStartEndNull(tglmasuk || null)
+        const {todayStart, todayEnd} = getDateStartEndNull(tglmasuk ? 
+            new Date(tglmasuk) : null)
         const pasien = await pool.query(queries.qGetPasienOnline, [
             nocmnamapasien || '',
             todayStart || '',

@@ -46,7 +46,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const serviceRegistrasi = new ServiceRegistrasi();
 
-function* onSaveRegistrasi({ payload: { data, history,norectriage } }) {
+function* onSaveRegistrasi({ payload: { data, callback } }) {
     try {
         let response = null;
         response = yield call(serviceRegistrasi.createPasienBaru, data);
@@ -54,19 +54,7 @@ function* onSaveRegistrasi({ payload: { data, history,norectriage } }) {
         yield put(registrasiSaveSuccess(response.data));
         if (response.code === 200) {
             toast.success(response.msg, { autoClose: 3000 });
-            if (norectriage === undefined) {
-                if (data.id !== undefined) {
-                    history(`/registrasi/pasien-ruangan/${data.id}`);
-                } else {
-                    history(`/registrasi/pasien-ruangan/${response.data.id}`);
-                }
-            }else{
-                if (data.id !== undefined) {
-                    history(`/registrasi/pasien-ruangan-triage/${data.id}/${norectriage}`);
-                } else {
-                    history(`/registrasi/pasien-ruangan-triage/${response.data.id}/${norectriage}`);
-                }
-            }
+            callback && callback(response);
         } else {
             toast.error(response.msg, { autoClose: 3000 });
         }

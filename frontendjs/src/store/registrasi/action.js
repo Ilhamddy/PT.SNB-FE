@@ -47,9 +47,9 @@ export const registrasiResetForm = () => ({
 });
 
 // common success
-export const registrasiSave = (data, history,norectriage) => ({
+export const registrasiSave = (data, callback) => ({
     type: REGISTRASI_SAVE,
-    payload: { data, history,norectriage },
+    payload: { data, callback },
 });
 // common error
 export const registrasiSaveSuccess = (data, history,norectriage) => ({

@@ -9,7 +9,7 @@ import KontainerFlatpickr from '../../Components/KontainerFlatpickr/KontainerFla
 import CustomSelect from '../Select/Select'
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import {
   getComboVerifikasiOnline,
   getDaftarPasienOnline,
@@ -22,11 +22,14 @@ import DataTable from 'react-data-table-component'
 const VerifikasiPasienOnline = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  const { unit, daftarPasienOnline } = useSelector((state) => ({
+  const { unit, daftarPasienOnline, loading } = useSelector((state) => ({
     unit: state.DaftarPasienOnline.getComboVerifikasiOnline.data?.unit,
     daftarPasienOnline:
       state.DaftarPasienOnline.getDaftarPasienOnline?.data?.pasien || [],
+    loading: state.DaftarPasienOnline.getDaftarPasienOnline?.loading || false,
   }))
+  const [searchParams, setSearchParams] = useSearchParams()
+
   const [profil, setProfil] = useState({
     namaPasien: null,
     noIdentitas: null,
@@ -78,6 +81,7 @@ const VerifikasiPasienOnline = () => {
     },
   ]
 
+  const [page] = useState(() => searchParams.get('page') || 1)
   /**
    * @type {import("react-data-table-component").TableColumn[]}
    */
@@ -95,7 +99,7 @@ const VerifikasiPasienOnline = () => {
             <Row className="gy-3">
               <div className="col-sm">
                 <h5 className="card-title mb-1">
-                  {item.nocm ? item.nocm : '-'} /{' '}
+                  {item.nocm || item.nocmtemp || '-'} /{' '}
                   {item.noreservasi ? item.noreservasi : '-'}
                 </h5>
                 <p className="mb-0">
@@ -166,10 +170,7 @@ const VerifikasiPasienOnline = () => {
                     }}
                     value={vQueries.values.end}
                     onChange={([newDate]) => {
-                      vQueries.setFieldValue(
-                        'tglregistrasi',
-                        newDate.toISOString()
-                      )
+                      vQueries.setFieldValue('tglmasuk', newDate.toISOString())
                     }}
                   />
                 </ColLabelInput>
@@ -220,8 +221,13 @@ const VerifikasiPasienOnline = () => {
                 noHeader={false}
                 columns={columnsDetail}
                 data={daftarPasienOnline || []}
+                paginationDefaultPage={page || 1}
+                onChangePage={(page) => {
+                  searchParams.set('page', page)
+                  setSearchParams(searchParams)
+                }}
                 pagination
-                progressPending={false}
+                progressPending={loading}
                 progressComponent={<LoadingTable />}
                 noDataComponent={<NoDataTable dataName={'data obat'} />}
                 customStyles={{

@@ -200,7 +200,23 @@ const PasienBaru = () => {
             negaraDomisili: Yup.string().required("negara wajib diisi"),
         }),
         onSubmit: (values,{ resetForm }) => {
-            dispatch(registrasiSave(values, navigate,norectriage));
+            dispatch(registrasiSave(values, (response) => {
+                if (pasienFormQueries && pasienFormQueries.needVerif) {
+                    navigate(`/bGlzdGRhZnRhcnBhc2llbi9kYWZ0YXItcGFzaWVuLWlnZA==`)
+                } else if (norectriage === undefined) {
+                    if (data.id !== undefined) {
+                        navigate(`/registrasi/pasien-ruangan/${values.id}`);
+                    } else {
+                        navigate(`/registrasi/pasien-ruangan/${response.data.id}`);
+                    }
+                }else{
+                    if (data.id !== undefined) {
+                        navigate(`/registrasi/pasien-ruangan-triage/${data.id}/${norectriage}`);
+                    } else {
+                        navigate(`/registrasi/pasien-ruangan-triage/${response.data.id}/${norectriage}`);
+                    }
+                }
+            }));
             // console.log(values)
             resetForm({ values: '' })
         }
@@ -1358,8 +1374,7 @@ const PasienBaru = () => {
                                             <Col md={12}>
                                                 <div className='text-center'>
                                                     <Button className='me-3' type="submit" color="success" disabled={loadingSave}>{
-                                                        !validation.values.nocm 
-                                                        && validation.values.nocmtemp 
+                                                        !!pasienFormQueries?.needVerif
                                                         ? "Verifikasi" : "Simpan"}
                                                     </Button>
                                                     <Button

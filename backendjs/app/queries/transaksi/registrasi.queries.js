@@ -324,8 +324,8 @@ WHERE
             WHEN (($2 = '') OR ($3 = '')) 
             THEN TRUE
             ELSE (
-                cast($2 AS TIMESTAMP) > tro.tglrencana 
-                AND cast($3 AS TIMESTAMP) < tro.tglrencana
+                tro.tglrencana >= cast($2 AS TIMESTAMP) 
+                AND tro.tglrencana < cast($3 AS TIMESTAMP)
             )
         END
     --- find by unit, if empty, find all

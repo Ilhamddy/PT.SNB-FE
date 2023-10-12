@@ -224,7 +224,7 @@ const Navdata = () => {
                     label: "Registrasi Online",
                     link: "/bGlzdGRhZnRhcnBhc2llbi9kYWZ0YXItcGFzaWVuLWlnZA==",
                     parentId: "registrasi",
-                    isAllowed: () => {
+                    isAllowed: () => {  
                         return isAllowedAccess(getUserPermissions(), [
                             "REGISTRASI_VIEW",
                         ]);
