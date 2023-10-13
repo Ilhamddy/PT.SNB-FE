@@ -10,13 +10,14 @@ import RiwayatPendaftaran from "../pages/RiwayatPendaftaran/RiwayatPendaftaran";
 import AkunPage from "../pages/AkunPage/AkunPage";
 import EditAkunPage from "../pages/EditAkunPage/EditAkunPage";
 import PenjaminPage from "../pages/PenjaminPage/PenjaminPage";
+import BeritaPage from "../pages/BeritaPage/BeritaPage";
 
 const publicRoutes = [
     { path: "/login/:page", component: <Login /> },
     { path: "/", component: <HomePage />},
     { path: "/jadwal-dokter", component: <JadwalDokter />},
     { path: "/dokter/:idDokter", component: <DokterPage />},
-    
+    { path: "/berita/:norecberita", component: <BeritaPage />},
 ]
 
 const protectedRoutes = [

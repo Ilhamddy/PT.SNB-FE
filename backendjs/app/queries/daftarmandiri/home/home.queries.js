@@ -40,6 +40,26 @@ ORDER BY
     mh.id ASC
 `
 
+const qGetBerita = `
+SELECT 
+    norec,
+    gambar,
+    judul,
+    isi
+FROM t_berita
+`
+
+const qGetBeritaHome = qGetBerita + `
+WHERE statusenabled = true
+    AND now() BETWEEN tglawal AND tglakhir
+`
+
+const qGetBeritaNorec = qGetBerita + `
+WHERE statusenabled = true AND norec = $1
+`
+
 export {
-    qGetJadwalDokter
+    qGetJadwalDokter,
+    qGetBeritaHome,
+    qGetBeritaNorec
 }

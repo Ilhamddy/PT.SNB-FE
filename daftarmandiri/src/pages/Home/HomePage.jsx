@@ -13,6 +13,7 @@ import dokterImg from './dokter.png'
 import { useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import {
+  getBeritaHome,
   getComboJadwal,
   getJadwalDokter,
   getPasienLama,
@@ -23,13 +24,14 @@ import { JadwalDokterKomponen } from '../JadwalDokter/JadwalDokter'
 
 const HomePage = () => {
   const refKontainer = useRef(null)
-  let { hariOpt, unitOpt, dokter, user } = useSelector((state) => ({
+  let { hariOpt, unitOpt, dokter, user, berita } = useSelector((state) => ({
     hariOpt: state.Home.getComboJadwal?.data?.hari || [],
     unitOpt: state.Home.getComboJadwal?.data?.unit || [],
     dokter: state.Home.getJadwalDokter?.data?.dokter || [],
     user: Array.isArray(state.UserPasien.loginUser?.data)
       ? null
       : state.UserPasien.loginUser?.data,
+    berita: state.Home.getBeritaHome?.data?.berita || [],
   }))
   const [dateToday] = useState(() => new Date())
   unitOpt = [{ value: '', label: 'Semua Poliklinik' }, ...unitOpt]
@@ -86,6 +88,7 @@ const HomePage = () => {
     )
     dispatch(getComboJadwal())
     dispatch(getPasienLama())
+    dispatch(getBeritaHome())
   }, [dispatch, dateToday])
   const handlePickUnit = (action) => {
     let chosenAr = 0
@@ -107,89 +110,96 @@ const HomePage = () => {
     vHome.handleSubmit()
   }
   return (
-    <div className="home-page">
-      <KontainerPage
-        top={'400px'}
-        ref={refKontainer}
-        header={
-          <div className="home-header">
-            <div className="menu-header-home">
-              {user ? (
-                <p className="nama-pasien" onClick={() => handleToAkun()}>
-                  Hi, {user?.namapasien}
-                </p>
-              ) : (
-                <button className="tbl-masuk" onClick={handleToLogin}>
-                  <img src={loginImg} alt="login-img" />
-                  <p>Masuk/Daftar</p>
-                </button>
-              )}
-              <div className="button-right">
-                <img src={helpImg} alt="help" />
-              </div>
+    <KontainerPage
+      top={'400px'}
+      ref={refKontainer}
+      className="home-page"
+      header={
+        <div className="home-header">
+          <div className="menu-header-home">
+            {user ? (
+              <p className="nama-pasien" onClick={() => handleToAkun()}>
+                Hi, {user?.namapasien}
+              </p>
+            ) : (
+              <button className="tbl-masuk" onClick={handleToLogin}>
+                <img src={loginImg} alt="login-img" />
+                <p>Masuk/Daftar</p>
+              </button>
+            )}
+            <div className="button-right">
+              <img src={helpImg} alt="help" />
             </div>
-            <Carousel
-              autoPlay
-              showThumbs={false}
-              showIndicators={false}
-              showStatus={false}
-              className="carousel-home"
-              infiniteLoop
-            >
-              <div>
-                <img src={prambanan} alt="pram" />
-              </div>
-              <div>
-                <img src={prambanan} alt="pram" />
-              </div>
-              <div>
-                <img src={prambanan} alt="pram" />
-              </div>
-            </Carousel>
-            <div className="konten-header">
-              <IsiKontenHeader
-                gbr={waitImg}
-                text={'Pendaftaran Pasien'}
+          </div>
+          <Carousel
+            autoPlay
+            showThumbs={false}
+            showIndicators={false}
+            showStatus={false}
+            className="carousel-home"
+            infiniteLoop
+          >
+            {berita.map((item, index) => (
+              <div
+                className="kontainer-image"
                 onClick={() => {
-                  handleToDaftar()
+                  refKontainer.current?.handleToNextPage(() => {
+                    navigate(`/berita/${item.norec}`)
+                  })
                 }}
-              />
-              <IsiKontenHeader
-                gbr={waitImg}
-                text={'Jadwal Dokter'}
-                onClick={() => handleToJadwal()}
-              />
-              <IsiKontenHeader gbr={waitImg} text={'Pendaftaran Pasien'} />
-              <IsiKontenHeader
-                gbr={waitImg}
-                text={'Riwayat Pendaftaran'}
-                onClick={() => handleToRiwayat()}
-              />
-            </div>
+              >
+                <img
+                  src={
+                    process.env.REACT_APP_MEDIA_UPLOAD_URL + `/${item.gambar}`
+                  }
+                  alt="pram"
+                />
+              </div>
+            ))}
+          </Carousel>
+          <div className="konten-header">
+            <IsiKontenHeader
+              gbr={waitImg}
+              text={'Pendaftaran Pasien'}
+              onClick={() => {
+                handleToDaftar()
+              }}
+            />
+            <IsiKontenHeader
+              gbr={waitImg}
+              text={'Jadwal Dokter'}
+              onClick={() => handleToJadwal()}
+            />
+            <IsiKontenHeader gbr={waitImg} text={'Pendaftaran Pasien'} />
+            <IsiKontenHeader
+              gbr={waitImg}
+              text={'Riwayat Pendaftaran'}
+              onClick={() => handleToRiwayat()}
+            />
           </div>
-        }
-      >
-        <div className="home-konten">
-          <div className="navigasi-poliklinik">
-            <div className="navigasi" onClick={() => handlePickUnit('before')}>
-              <img src={arrowKiriImg} alt="navigasi" />
-            </div>
-            <div className="poliklinik-terpilih" onClick={handleToJadwal}>
-              <p className="judul-poliklinik">{vHome.values.unitlabel}</p>
-              <p className="jadwal-poliklinik">Senin, 10 Oktober 2023</p>
-            </div>
-            <div className="navigasi" onClick={() => handlePickUnit('next')}>
-              <img src={arrowKananImg} alt="navigasi" />
-            </div>
-          </div>
-          <JadwalDokterKomponen
-            imgDokter={dokterImg}
-            dokters={dokter}
-            refKontainer={refKontainer}
-          />
         </div>
-      </KontainerPage>
-    </div>
+      }
+    >
+      <div className="home-konten">
+        <div className="navigasi-poliklinik">
+          <div className="navigasi" onClick={() => handlePickUnit('before')}>
+            <img src={arrowKiriImg} alt="navigasi" />
+          </div>
+          <div className="poliklinik-terpilih" onClick={handleToJadwal}>
+            <p className="judul-poliklinik">{vHome.values.unitlabel}</p>
+            <p className="jadwal-poliklinik">Senin, 10 Oktober 2023</p>
+          </div>
+          <div className="navigasi" onClick={() => handlePickUnit('next')}>
+            <img src={arrowKananImg} alt="navigasi" />
+          </div>
+        </div>
+        <JadwalDokterKomponen
+          imgDokter={dokterImg}
+          dokters={dokter}
+          refKontainer={refKontainer}
+        />
+      </div>
+    </KontainerPage>
   )
 }
 
@@ -198,18 +208,6 @@ const IsiKontenHeader = ({ gbr, text, ...rest }) => {
     <div className="isi-konten-header" {...rest}>
       <img className="gbr-konten" src={gbr} alt={text} />
       <p className="isi-konten">{text}</p>
-    </div>
-  )
-}
-
-const JadwalDokter = ({ imgDokter, namaDokter, jadwal }) => {
-  return (
-    <div className="isi-jadwal-dokter">
-      <img src={imgDokter} alt={namaDokter} />
-      <div className="jabar">
-        <p className="nama">{namaDokter}</p>
-        <p className="jadwal">{jadwal}</p>
-      </div>
     </div>
   )
 }

@@ -173,8 +173,6 @@ const Login = (props) => {
                             invalid={
                               validation.touched.email &&
                               validation.errors.email
-                                ? true
-                                : false
                             }
                           />
                           {validation.touched.email &&

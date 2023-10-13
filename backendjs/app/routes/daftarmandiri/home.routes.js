@@ -35,4 +35,16 @@ export default function(app) {
     [],
     controller.getComboJadwal
   )
+
+  app.get(
+    "/api/daftarmandiri/berita-home",
+    [],
+    controller.getBeritaHome
+  )
+
+  app.get(
+    "/api/daftarmandiri/berita",
+    [],
+    controller.getBerita
+  )
 };

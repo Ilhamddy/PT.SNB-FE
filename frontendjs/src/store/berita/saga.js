@@ -1,33 +1,76 @@
 import { call, put, takeEvery, all, fork } from "redux-saga/effects";
 import ServiceFiles from "../../services/service-files";
+import ServiceAdminDaftarMandiri from "../../services/service-admindaftarmandiri";
 
 import {
-    UPLOAD_IMAGE
+    UPLOAD_BERITA,
+    UPLOAD_IMAGE,
+    UPLOAD_IMAGE_SUCCESS
 } from "./actionType";
 
 import {
     uploadImageSuccess, 
-    uploadImageError
+    uploadImageError,
+    uploadBeritaSuccess,
+    uploadBeritaError,
+    uploadBerita
 } from "./action";
 
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const serviceFiles = new ServiceFiles();
+const serviceADM = new ServiceAdminDaftarMandiri();
 
-function* onUploadImage({ payload: { data } }) {
+
+function* onUploadImage({ payload: { dataImg, data } }) {
     try {
-        console.log("masuk")
-        const response = yield call(serviceFiles.uploadImage, data);
-        yield put(uploadImageSuccess(response.data));
+        const response = yield call(serviceFiles.uploadImage, dataImg);
+        console.log(response)
+
+        yield put(uploadImageSuccess(
+            response.data, 
+            data
+        ));
     } catch (error) {
         console.error(error)
         yield put(uploadImageError(error));
     }
 }
 
+function* onUploadImageSuccess({payload: {dataSend, dataResp}}) {
+    try{
+        if(!dataResp.uri){
+            throw new Error("Upload Image Gagal")
+        }
+        const dataFinal = {
+            ...dataSend,
+            imageuri: dataResp.uri
+        }
+        dataFinal.image && delete dataFinal.image
+        yield put(uploadBerita(dataFinal));
+    } catch (e) {
+        console.error(e)
+        toast.error("upload image gagal")
+    }
+}
+
+function* onUploadBerita({payload: {data}}) {
+    try {
+        const response = yield call(serviceADM.uploadBerita, data);
+        yield put(uploadBeritaSuccess(response.data));
+        toast.success('Upload Berita Berhasil')
+
+    } catch (error) {
+        console.error(error)
+        toast.error("upload berita gagal")
+        yield put(uploadBeritaError(error));
+    }
+}
 
 
 export default function* beritaSaga() {
     yield takeEvery(UPLOAD_IMAGE, onUploadImage);
+    yield takeEvery(UPLOAD_IMAGE_SUCCESS, onUploadImageSuccess);
+    yield takeEvery(UPLOAD_BERITA, onUploadBerita)
 }

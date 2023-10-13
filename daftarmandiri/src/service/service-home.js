@@ -4,11 +4,19 @@ const api = new APIClient();
 
 export default class ServiceMaster {
 
-    getJadwalDokter = async (params) => {
-        return await api.get(`/daftarmandiri/jadwal-dokter`, params);
+    getJadwalDokter = async (queries) => {
+        return await api.get(`/daftarmandiri/jadwal-dokter`, queries);
     }
 
-    getComboJadwal = async (params) => {
-        return await api.get(`/daftarmandiri/combo-jadwal`, params);
+    getComboJadwal = async (queries) => {
+        return await api.get(`/daftarmandiri/combo-jadwal`, queries);
+    }
+
+    getBeritaHome = async () => {
+        return await api.get(`/daftarmandiri/berita-home`);
+    }
+
+    getBerita = async (queries) => {
+        return await api.get(`/daftarmandiri/berita`, queries);
     }
 }

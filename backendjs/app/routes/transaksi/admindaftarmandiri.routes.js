@@ -1,8 +1,6 @@
 import { authJwt } from "../../middleware/index.js";
-import controller from "../../controllers/transaksi/files/files.controller.js";
-import multer from "multer";
+import controller from "../../controllers/transaksi/admindaftarmandiri/admindaftarmandiri.controller.js";
 
-const upload = multer({dest: '../../media/upload'})
 // eslint-disable-next-line max-lines-per-function
 export default function (app) {
     app.use(function (req, res, next) {
@@ -14,8 +12,8 @@ export default function (app) {
     });
 
     app.post(
-        "/api/files/upload-image",
-        [authJwt.verifyToken, upload.single("file")],
-        controller.postImage
+        "/api/admindaftarmandiri/upload-berita",
+        [authJwt.verifyToken],
+        controller.uploadBerita
     );
 }

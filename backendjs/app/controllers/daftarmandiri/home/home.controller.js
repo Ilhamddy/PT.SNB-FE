@@ -1,6 +1,6 @@
 import db from "../../../models";
 import pool from "../../../config/dbcon.query";
-import { qGetJadwalDokter } from "../../../queries/daftarmandiri/home/home.queries";
+import { qGetJadwalDokter, qGetBeritaHome, qGetBeritaNorec} from "../../../queries/daftarmandiri/home/home.queries";
 import { groupBy } from "../../../utils/arutils";
 import hariQueries from "../../../queries/master/hari/hari.queries";
 import unitQueries from "../../../queries/master/unit/unit.queries";
@@ -91,10 +91,62 @@ const getComboJadwal = async (req, res) => {
     }
 }
 
+const getBeritaHome = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const berita = (await (pool.query(qGetBeritaHome))).rows
+        const tempres = {
+            berita: berita
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+const getBerita = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const norec = req.query.norec
+        const berita = (await pool.query(qGetBeritaNorec, [norec])).rows
+        if(berita.length === 0){
+            throw new Error("Berita tidak ditemukan")
+        }
+        const tempres = {
+            berita: berita[0]
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
 
 export default {
     getHomePageUser,
     getJadwalDokter,
     getComboJadwal,
-    
+    getBeritaHome,
+    getBerita
 }

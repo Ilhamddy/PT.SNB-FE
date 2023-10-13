@@ -30,6 +30,7 @@ import daftarpasienlamaRoutes from "./app/routes/daftarmandiri/daftarpasienlama.
 import { decryptMandiri } from "./app/middleware/encryptMandiri";
 import operasiRoutes from "./app/routes/transaksi/operasi.routes";
 import filesRoutes from "./app/routes/transaksi/files.routes";
+import adminDaftarMandiriRoutes from "./app/routes/transaksi/admindaftarmandiri.routes"
 
 dotenv.config()
 
@@ -84,6 +85,7 @@ homeRoutes(app);
 daftarpasienlamaRoutes(app);
 operasiRoutes(app);
 filesRoutes(app);
+adminDaftarMandiriRoutes(app);
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8000;

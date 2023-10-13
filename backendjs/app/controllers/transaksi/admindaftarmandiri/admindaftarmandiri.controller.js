@@ -11,30 +11,29 @@ import { generateKodeBatch, hCreateKartuStok } from "../gudang/gudang.controller
 import fs from 'fs';
 import path from "path";
 
-
-const postImage = async (req, res) => {
+const uploadBerita = async (req, res) => {
     const logger = res.locals.logger;
-    const tempPath = req.file.path;
     try{
-        const __dirname = path.resolve(path.dirname(''));
-        const folderImage = "./app/media/upload/"
-        const fileName = uuid.v4().substring(0, 32);
-        const extension = path.extname(req.file.originalname).toLowerCase()
-        const targetPath = path.join(__dirname, 
-            folderImage 
-            + fileName 
-            + extension
+        const bodyReq = req.body
+        const {berita} = await db.sequelize.transaction(
+            async (transaction) => {
+                const berita = await db.t_berita.create({
+                    norec: uuid.v4().substring(0, 32),
+                    statusenabled: true,
+                    gambar: bodyReq.imageuri,
+                    judul: bodyReq.judul,
+                    isi: bodyReq.konten,
+                    tglposting: new Date(),
+                    tglawal: new Date(bodyReq.tglawal),
+                    tglakhir: new Date(bodyReq.tglakhir),
+                    objectpegawaifk: req.idPegawai,
+                })
+                return {berita}
+            }
         );
-    
-
-        await db.sequelize.transaction(async (transaction) => {
-            
-        });
         
-        fs.renameSync(tempPath, targetPath);
- 
         const tempres = {
-            uri: fileName + extension
+            berita: berita
         };
         res.status(200).send({
             msg: 'Success',
@@ -44,7 +43,6 @@ const postImage = async (req, res) => {
         });
     } catch (error) {
         logger.error(error);
-        fs.unlinkSync(tempPath);
         res.status(500).send({
             msg: error.message,
             code: 500,
@@ -55,5 +53,5 @@ const postImage = async (req, res) => {
 }
 
 export default {
-    postImage
+    uploadBerita
 }

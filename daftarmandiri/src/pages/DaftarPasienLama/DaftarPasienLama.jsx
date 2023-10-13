@@ -110,7 +110,13 @@ const DaftarPasienLama = () => {
       setFF('norm', pasien.nocm || pasien.nocmtemp || '')
       setFF('namapasien', pasien.namapasien)
     }
-  }, [pasien.nocm, pasien.namapasien, pasien.nocmfk, vDaftar.setFieldValue])
+  }, [
+    pasien.nocm,
+    pasien.namapasien,
+    pasien.nocmfk,
+    pasien.nocmtemp,
+    vDaftar.setFieldValue,
+  ])
   useEffect(() => {
     const setFF = vDaftar.setFieldValue
     if (dokterTerpilih.iddokter && dokterTerpilih.idunit) {
