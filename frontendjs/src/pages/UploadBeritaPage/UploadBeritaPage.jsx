@@ -28,7 +28,7 @@ const UploadBeritaPage = () => {
   const { loading, data } = useSelector((state) => ({
     loading:
       state.Berita.uploadImage?.loading || state.Berita.uploadBerita?.loading,
-    data: state.Berita.getBeritaNorec.data.data?.berita || null,
+    data: state.Berita.getBeritaNorec?.data.data?.berita || null,
   }))
 
   const [editor, setEditor] = useState(null)
