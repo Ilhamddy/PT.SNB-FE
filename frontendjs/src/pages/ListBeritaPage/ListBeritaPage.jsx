@@ -29,6 +29,13 @@ import NoDataTable from '../../Components/Table/NoDataTable'
 import DataTable from 'react-data-table-component'
 import LoadingTable from '../../Components/Table/LoadingTable'
 import { useNavigate } from 'react-router-dom'
+import {
+  dateTimeISOString,
+  dateTimeLocal,
+  onChangeStrNbr,
+  strNumber,
+  strToNumber,
+} from '../../utils/format'
 
 const ListBeritaPage = () => {
   const dispatch = useDispatch()
@@ -79,7 +86,19 @@ const ListBeritaPage = () => {
       name: <span className="font-weight-bold fs-13">Judul Berita</span>,
       sortable: true,
       selector: (row) => row.judul,
-      width: '500px',
+      width: '300px',
+    },
+    {
+      name: <span className="font-weight-bold fs-13">Tanggal Awal</span>,
+      sortable: true,
+      selector: (row) => dateTimeLocal(row.tglawal),
+      width: '300px',
+    },
+    {
+      name: <span className="font-weight-bold fs-13">Tanggal Berakhir</span>,
+      sortable: true,
+      selector: (row) => dateTimeLocal(row.tglakhir),
+      width: '300px',
     },
   ]
 
