@@ -45,7 +45,10 @@ SELECT
     norec,
     gambar,
     judul,
-    isi
+    isi,
+    tglposting,
+    tglawal,
+    tglakhir
 FROM t_berita
 `
 

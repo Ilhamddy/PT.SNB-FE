@@ -4,6 +4,7 @@ import { getBeritaQuery } from '../../store/actions'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import './BeritaPage.scss'
+import { dateTimeLocal } from '../../utils/format'
 
 const BeritaPage = () => {
   const refKontainer = useRef(null)
@@ -23,6 +24,7 @@ const BeritaPage = () => {
         src={`${process.env.REACT_APP_MEDIA_UPLOAD_URL}/${berita?.gambar}`}
         alt={berita?.judul}
       />
+      <p>{dateTimeLocal(berita?.tglposting)}</p>
       <div
         className="konten"
         dangerouslySetInnerHTML={{ __html: berita?.isi || '' }}
