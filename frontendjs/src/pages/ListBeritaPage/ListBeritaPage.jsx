@@ -106,7 +106,7 @@ const ListBeritaPage = () => {
               <Button
                 color="info"
                 onClick={() => {
-                  navigate('/admin-konten/list-berita')
+                  navigate('/admin-konten/berita')
                 }}
               >
                 Tambah Berita

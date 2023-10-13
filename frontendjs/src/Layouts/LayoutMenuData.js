@@ -923,7 +923,7 @@ const Navdata = () => {
                 {
                     id: "berita",
                     label: "Berita",
-                    link: "/admin-konten/berita",
+                    link: "/admin-konten/list-berita",
                     parentId: "registrasi",
                     isAllowed: () => {
                         return isAllowedAccess(getUserPermissions(), [
