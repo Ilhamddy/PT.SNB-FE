@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import './BeritaPage.scss'
 import { dateTimeLocal } from '../../utils/format'
+import BackKomponen from '../../Components/BackKomponen/BackKomponen'
 
 const BeritaPage = () => {
   const refKontainer = useRef(null)
@@ -18,7 +19,8 @@ const BeritaPage = () => {
   }, [])
   return (
     <KontainerPage top={0} ref={refKontainer} className="berita-page">
-      <h1>{berita?.judul}</h1>
+      <BackKomponen text={'Berita'} refKontainer={refKontainer} />
+      <h2>{berita?.judul}</h2>
       <img
         className="gbr-headline"
         src={`${process.env.REACT_APP_MEDIA_UPLOAD_URL}/${berita?.gambar}`}
@@ -26,7 +28,7 @@ const BeritaPage = () => {
       />
       <p>{dateTimeLocal(berita?.tglposting)}</p>
       <div
-        className="konten"
+        className="konten-berita"
         dangerouslySetInnerHTML={{ __html: berita?.isi || '' }}
       ></div>
     </KontainerPage>

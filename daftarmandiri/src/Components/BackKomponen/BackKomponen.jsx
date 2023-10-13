@@ -20,7 +20,7 @@ export const BackKomponen = ({ text, refKontainer }) => {
       >
         <img src={arrowKiriImg} alt="tbl-back" />
       </button>
-      <p>{text}</p>
+      <p className="teks-back">{text}</p>
     </div>
   )
 }
