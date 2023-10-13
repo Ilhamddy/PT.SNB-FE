@@ -14,20 +14,30 @@ import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import { useState } from 'react'
 import FormData from 'form-data'
-import { uploadImage } from '../../store/actions'
+import { getBeritaNorec, getListBerita, uploadImage } from '../../store/actions'
 import { useDispatch, useSelector } from 'react-redux'
 import { CKEditor } from '@ckeditor/ckeditor5-react'
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
 import KontainerFlatpickr from '../../Components/KontainerFlatpickr/KontainerFlatpickr'
+import { useEffect } from 'react'
+import { useParams } from 'react-router-dom'
+import { useRef } from 'react'
 
 const UploadBeritaPage = () => {
   const dispatch = useDispatch()
-  const { loading } = useSelector((state) => ({
+  const { loading, data } = useSelector((state) => ({
     loading:
       state.Berita.uploadImage?.loading || state.Berita.uploadBerita?.loading,
+    data: state.Berita.getBeritaNorec.data.data?.berita || null,
   }))
+
+  const [editor, setEditor] = useState(null)
+
+  const { norecberita } = useParams()
+
   const validation = useFormik({
     initialValues: {
+      norec: '',
       judul: '',
       konten: '',
       image: null,
@@ -51,6 +61,18 @@ const UploadBeritaPage = () => {
 
   const imageFile = validation.values.image
 
+  useEffect(() => {
+    dispatch(getBeritaNorec({ norecberita: norecberita }))
+  }, [dispatch, norecberita])
+
+  useEffect(() => {
+    validation.setFieldValue('norec', data?.norec || '')
+    validation.setFieldValue('judul', data?.judul || '')
+    validation.setFieldValue('konten', data?.isi || '')
+    editor?.setData(data?.isi || '')
+    validation.setFieldValue('tglawal', data?.tglawal || '')
+    validation.setFieldValue('tglakhir', data?.tglakhir || '')
+  }, [data, editor])
   return (
     <div className="page-content">
       <ToastContainer closeButton={false} />
@@ -105,6 +127,9 @@ const UploadBeritaPage = () => {
             <Col sm={12} className="mb-5">
               <Label>Konten</Label>
               <CKEditor
+                onReady={(editor) => {
+                  setEditor(editor)
+                }}
                 editor={ClassicEditor}
                 config={{
                   toolbar: {
@@ -121,7 +146,6 @@ const UploadBeritaPage = () => {
                 data={validation.values.konten || ''}
                 onChange={(event, editor) => {
                   const data = editor.getData()
-                  console.log(data)
                   validation.setFieldValue('konten', data)
                 }}
               />
@@ -183,7 +207,7 @@ const UploadBeritaPage = () => {
                 onClick={() => validation.handleSubmit()}
                 disabled={loading}
               >
-                Upload
+                {norecberita ? 'Update' : 'Kirim  '}
               </Button>
             </Col>
           </Row>

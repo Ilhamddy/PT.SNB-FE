@@ -5,7 +5,9 @@ import ServiceAdminDaftarMandiri from "../../services/service-admindaftarmandiri
 import {
     UPLOAD_BERITA,
     UPLOAD_IMAGE,
-    UPLOAD_IMAGE_SUCCESS
+    UPLOAD_IMAGE_SUCCESS,
+    GET_LIST_BERITA,
+    GET_BERITA_NOREC
 } from "./actionType";
 
 import {
@@ -13,7 +15,11 @@ import {
     uploadImageError,
     uploadBeritaSuccess,
     uploadBeritaError,
-    uploadBerita
+    uploadBerita,
+    getListBeritaSuccess,
+    getListBeritaError,
+    getBeritaNorecSuccess,
+    getBeritaNorecError
 } from "./action";
 
 import { toast } from 'react-toastify';
@@ -68,9 +74,32 @@ function* onUploadBerita({payload: {data}}) {
     }
 }
 
+function* onGetListBerita() {
+    try {
+        const response = yield call(serviceADM.getBerita);
+        yield put(getListBeritaSuccess(response.data));
+    } catch (error) {
+        console.error(error)
+        yield put(getListBeritaError(error));
+    }
+}
+
+function* onGetBeritaNorec({payload: {queries}}) {
+    try {
+        const response = yield call(serviceADM.getBeritaNorec, queries);
+        console.log(response.data)
+        yield put(getBeritaNorecSuccess(response.data));
+    } catch (error) {
+        console.error(error)
+        yield put(getBeritaNorecError(error));
+    }
+}
+
 
 export default function* beritaSaga() {
     yield takeEvery(UPLOAD_IMAGE, onUploadImage);
     yield takeEvery(UPLOAD_IMAGE_SUCCESS, onUploadImageSuccess);
     yield takeEvery(UPLOAD_BERITA, onUploadBerita)
+    yield takeEvery(GET_LIST_BERITA, onGetListBerita)
+    yield takeEvery(GET_BERITA_NOREC, onGetBeritaNorec)
 }

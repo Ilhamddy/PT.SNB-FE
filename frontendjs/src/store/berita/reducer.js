@@ -5,7 +5,13 @@ import {
     UPLOAD_IMAGE_ERROR,
     UPLOAD_BERITA,
     UPLOAD_BERITA_SUCCESS,
-    UPLOAD_BERITA_ERROR
+    UPLOAD_BERITA_ERROR,
+    GET_LIST_BERITA,
+    GET_LIST_BERITA_SUCCESS,
+    GET_LIST_BERITA_ERROR,
+    GET_BERITA_NOREC,
+    GET_BERITA_NOREC_SUCCESS,
+    GET_BERITA_NOREC_ERROR,
 } from "./actionType";
 
 const INIT_STATE = {
@@ -15,6 +21,16 @@ const INIT_STATE = {
         error: null,
     },
     uploadBerita: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    getListBerita: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    getBeritaNorec: {
         data: [],
         loading: false,
         error: null,
@@ -87,6 +103,76 @@ const Berita = (state= INIT_STATE,action)=>{
             return {
                 ...state,
                 uploadBerita: {
+                    ...state.listCariPasienGet,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case GET_LIST_BERITA: {
+            return {
+                ...state,
+                getListBerita: {
+                    ...state.listCariPasienGet,
+                    data: [],
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case GET_LIST_BERITA_SUCCESS: {
+            return {
+                ...state,
+                getListBerita: {
+                    ...state.listCariPasienGet,
+                    data: action.payload,
+                    loading: false,
+                    error: null,
+                }
+            }
+        }
+
+        case GET_LIST_BERITA_ERROR: {
+            return {
+                ...state,
+                getListBerita: {
+                    ...state.listCariPasienGet,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case GET_BERITA_NOREC: {
+            return {
+                ...state,
+                getBeritaNorec: {
+                    ...state.listCariPasienGet,
+                    data: [],
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case GET_BERITA_NOREC_SUCCESS: {
+            return {
+                ...state,
+                getBeritaNorec: {
+                    ...state.listCariPasienGet,
+                    data: action.payload,
+                    loading: false,
+                    error: null,
+                }
+            }
+        }
+
+        case GET_BERITA_NOREC_ERROR: {
+            return {
+                ...state,
+                getBeritaNorec: {
                     ...state.listCariPasienGet,
                     loading: false,
                     error: action.error,

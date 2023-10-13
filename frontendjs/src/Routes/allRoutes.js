@@ -326,6 +326,7 @@ import DaftarOrderOperasi from "../pages/BedahSentral/DaftarOrderOperasi/DaftarO
 import DaftarPasienOperasi from "../pages/BedahSentral/DaftarPasienOperasi/DaftarPasienOperasi";
 import VerifikasiPasienOnline from "../pages/VerifikasiPasienOnline/VerifikasiPasienOnline";
 import UploadBeritaPage from "../pages/UploadBeritaPage/UploadBeritaPage";
+import ListBeritaPage from "../pages/ListBeritaPage/ListBeritaPage";
 
 
 
@@ -570,7 +571,10 @@ const authProtectedRoutes = [
   { path: "/listdaftarpasien/daftar-pasien-igd", component: <DaftarPasienIGD /> },
   { path: "/bGlzdGRhZnRhcnBhc2llbi9kYWZ0YXItcGFzaWVuLWlnZA==", component: <VerifikasiPasienOnline />},
  
-  { path: "/registrasi/berita", component: <UploadBeritaPage />},
+  { path: "/admin-konten/berita", component: <UploadBeritaPage />},
+  { path: "/admin-konten/berita/:norecberita", component: <UploadBeritaPage />},
+  { path: "/admin-konten/list-berita", component: <ListBeritaPage />},
+
 
   // rekam medis
   { path: "/rekammedis/kendalidokumen", component: <KendaliDokumen /> },

@@ -16,4 +16,16 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.uploadBerita
     );
+
+    app.get(
+        "/api/admindaftarmandiri/get-berita",
+        [authJwt.verifyToken],
+        controller.getBerita
+    );
+
+    app.get(
+        "/api/admindaftarmandiri/get-berita-norec",
+        [authJwt.verifyToken],
+        controller.getBeritaNorec
+    )
 }

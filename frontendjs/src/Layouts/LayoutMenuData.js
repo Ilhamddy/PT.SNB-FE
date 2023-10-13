@@ -32,6 +32,7 @@ const Navdata = () => {
     const [isMultiLevel, setIsMultiLevel] = useState(false);
     const [isListGawatDarurat, setListGawatDarurat] = useState(false);
     const [isListBedahSentral, setListBedahSentral] = useState(false);
+    const [isListAdminKonten, setIsListAdminKonten] = useState(false)
 
     // Apps
     const [isEmail, setEmail] = useState(false);
@@ -899,6 +900,38 @@ const Navdata = () => {
                     link: "/bedahsentral/daftar-pasien-operasi",
                     parentId: "ListBedahSentral",
                 },
+            ],
+        },
+        {
+            id: "admin-konten",
+            label: "Konten",
+            icon: "bx bx-been-here",
+            link: "/#",
+            click: function (e) {
+                e.preventDefault();
+                setIsListAdminKonten(!isListAdminKonten);
+                setIscurrentState('AdminKonten');
+                updateIconSidebar(e);
+            },
+            stateVariables: isListAdminKonten,
+            isAllowed: () => {
+                return isAllowedAccess(getUserPermissions(), [
+                    "REGISTRASI_VIEW",
+                ]);
+            },
+            subItems: [
+                {
+                    id: "berita",
+                    label: "Berita",
+                    link: "/admin-konten/berita",
+                    parentId: "registrasi",
+                    isAllowed: () => {
+                        return isAllowedAccess(getUserPermissions(), [
+                            "REGISTRASI_VIEW", "REGISTRASI_CREATE"
+                        ]);
+                    }
+                },
+
             ],
         },
     ];
