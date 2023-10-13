@@ -14,40 +14,45 @@ import path from "path";
 
 const postImage = async (req, res) => {
     const logger = res.locals.logger;
+    const tempPath = req.file.path;
     try{
         const __dirname = path.resolve(path.dirname(''));
-        const tempPath = req.file.path;
-        const targetPath = path.join(__dirname, "./app/media/upload/image.png");
+        const folderImage = "./app/media/upload/image"
+        const fileName = uuid.v4().substring(0, 32);
+        const extension = path.extname(req.file.originalname).toLowerCase()
+        const targetPath = path.join(__dirname, 
+            folderImage 
+            + fileName 
+            + extension
+        );
     
-        if (path.extname(req.file.originalname).toLowerCase() === ".png") {
-          fs.renameSync(tempPath, targetPath);
-          res
-            .status(200)
-            .contentType("text/plain")
-            .end("File uploaded!");
-        } else {
-          fs.unlinkSync(tempPath);
-          res
+
+        await db.sequelize.transaction(async (transaction) => {
+            
+        });
+        
+        fs.renameSync(tempPath, targetPath);
+        res
+          .status(200)
+          .contentType("text/plain")
+          .end("File uploaded!");
+      
+        const tempres = {
+            uri: fileName + extension
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        fs.unlinkSync(tempPath);
+        res
             .status(403)
             .contentType("text/plain")
             .end("Only .png files are allowed!");
-        }
-    
-        // await db.sequelize.transaction(async (transaction) => {
-            
-        // });
-        
-        // const tempres = {
-        
-        // };
-        // res.status(200).send({
-        //     msg: 'Success',
-        //     code: 200,
-        //     data: tempres,
-        //     success: true
-        // });
-    } catch (error) {
-        logger.error(error);
         res.status(500).send({
             msg: error.message,
             code: 500,

@@ -23,9 +23,9 @@ export const getDateStartEndNull = (date) => {
             todayEnd: null
         }
     } // not default to today, if null, then return null
-    let todayStart = date
+    let todayStart = new Date(date)
     todayStart.setHours(0, 0, 0, 0)
-    let todayEnd = new Date()
+    let todayEnd = new Date(date)
     todayEnd.setHours(23, 59, 59, 999)
     return {
         todayStart,

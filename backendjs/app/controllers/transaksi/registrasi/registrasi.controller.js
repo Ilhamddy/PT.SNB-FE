@@ -1739,8 +1739,7 @@ const getPasienOnline = async (req, res) => {
             tglmasuk,
             unit
         } = req.query
-        const {todayStart, todayEnd} = getDateStartEndNull(tglmasuk ? 
-            new Date(tglmasuk) : null)
+        const {todayStart, todayEnd} = getDateStartEndNull(tglmasuk)
         const pasien = await pool.query(queries.qGetPasienOnline, [
             nocmnamapasien || '',
             todayStart || '',
