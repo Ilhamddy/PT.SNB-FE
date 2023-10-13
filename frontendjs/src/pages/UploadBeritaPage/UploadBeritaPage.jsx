@@ -66,13 +66,14 @@ const UploadBeritaPage = () => {
   }, [dispatch, norecberita])
 
   useEffect(() => {
-    validation.setFieldValue('norec', data?.norec || '')
-    validation.setFieldValue('judul', data?.judul || '')
-    validation.setFieldValue('konten', data?.isi || '')
+    const setFF = validation.setFieldValue
+    setFF('norec', data?.norec || '')
+    setFF('judul', data?.judul || '')
+    setFF('konten', data?.isi || '')
     editor?.setData(data?.isi || '')
-    validation.setFieldValue('tglawal', data?.tglawal || '')
-    validation.setFieldValue('tglakhir', data?.tglakhir || '')
-  }, [data, editor])
+    setFF('tglawal', data?.tglawal || '')
+    setFF('tglakhir', data?.tglakhir || '')
+  }, [data, editor, validation.setFieldValue])
   return (
     <div className="page-content">
       <ToastContainer closeButton={false} />

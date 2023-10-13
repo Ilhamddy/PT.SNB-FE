@@ -39,7 +39,7 @@ const ListBeritaPage = () => {
   const navigate = useNavigate()
   useEffect(() => {
     dispatch(getListBerita())
-  }, [])
+  }, [dispatch])
   /**
    * @type {import("react-data-table-component").TableColumn[]}
    */
