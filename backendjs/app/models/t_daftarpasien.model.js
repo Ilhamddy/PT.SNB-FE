@@ -10,17 +10,17 @@ export default (sequelize, Sequelize) => {
             autoIncrement: true,
             primaryKey: true,
             type: Sequelize.CHAR(32)
-          },
+        },
         statusenabled: {
             type: Sequelize.BOOLEAN,
         },
-        nocmfk:{
+        nocmfk: {
             type: Sequelize.INTEGER
         },
-        noregistrasi:{
+        noregistrasi: {
             type: Sequelize.STRING
         },
-        tglregistrasi:{
+        tglregistrasi: {
             type: 'TIMESTAMP'
         },
         objectdokterpemeriksafk: {
@@ -68,10 +68,10 @@ export default (sequelize, Sequelize) => {
         tglpulang: {
             type: Sequelize.DATE
         },
-        tglregistrasi:{
+        tglregistrasi: {
             type: Sequelize.DATE
         },
-        objectunitasalfk:{
+        objectunitasalfk: {
             type: Sequelize.INTEGER
         },
         keteranganpenyebabkematian: {
@@ -185,12 +185,15 @@ export default (sequelize, Sequelize) => {
         status_grouping: {
             type: Sequelize.STRING
         },
-        objectjenispelayananfk:{
+        objectjenispelayananfk: {
             type: Sequelize.INTEGER
         },
-        isprinted:{
+        isprinted: {
             type: Sequelize.BOOLEAN
-        } 
+        },
+        nominalklaim: {
+            type: Sequelize.FLOAT
+        }
     }, {
         tableName: "t_daftarpasien", // relation "user" does not exist
         createdAt: false,
