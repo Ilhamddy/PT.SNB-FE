@@ -5,7 +5,8 @@ import {
     PANGGIL_LOKET,
     GET_ALL_LOKET,
     GET_ALL_TERPANGGIL,
-    PANGGIL_ULANG_ANTREAN
+    PANGGIL_ULANG_ANTREAN,
+    GET_JADWAL_DOKTER
  } from "./actionType";
 import { 
     getLoketSisaSuccess,
@@ -17,7 +18,9 @@ import {
     getAllTerpanggilSuccess,
     getAllTerpanggilError,
     panggilUlangAntrianSuccess,
-    panggilUlangAntrianError
+    panggilUlangAntrianError,
+    getJadwalDokterSuccess,
+    getJadwalDokterError
 } from "./action";
 import { toast } from 'react-toastify';
 
@@ -74,6 +77,15 @@ function* onPanggilUlangAntrean({payload: {data, callback}}) {
     }
 }
 
+function* onGetJadwalDokter({payload: {queries}}) {
+    try{
+        const response = yield call(serviceViewer.getJadwalDokter, queries);
+        yield put(getJadwalDokterSuccess(response.data));
+    } catch (error) {
+        yield put(getJadwalDokterError(error));
+    }
+}
+
 export function* watchGetLoketSisa(){
     yield takeEvery(GET_LOKET_SISA, onGetLoketSisa);
 }
@@ -94,13 +106,18 @@ export function* watchPanggilUlangAntrian(){
     yield takeEvery(PANGGIL_ULANG_ANTREAN, onPanggilUlangAntrean);
 }
 
+export function* watchGetJadwalDokter(){
+    yield takeEvery(GET_JADWAL_DOKTER, onGetJadwalDokter);
+}
+
 function* viewer() {
     yield all([
         fork(watchGetLoketSisa),
         fork(watchPanggilLoket),
         fork(watchGetAllLoket),
         fork(watchGetAllTerpanggil),
-        fork(watchPanggilUlangAntrian)
+        fork(watchPanggilUlangAntrian),
+        fork(watchGetJadwalDokter)
     ]);
   }
   

@@ -99,17 +99,21 @@
             width: 100vw;
             margin-top: 30px;
             margin-left: 10px;
+            flex-wrap: wrap;
+
             .ruang-available {
                 display: flex;
                 flex-direction: column;
                 align-items: center;
                 width: 30%;
-                height: 95%;
                 border-radius: 15px;
                 margin-right: 3%;
                 background-color: #eee7df;
                 border-radius: 16px;
                 overflow: hidden;
+                min-height: 260px;
+                justify-content: space-between;
+                margin-bottom: 20px;
 
                 .isi-konten {
                     display: flex;

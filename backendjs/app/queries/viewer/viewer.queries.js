@@ -142,14 +142,34 @@ ORDER BY tal.tglpanggil DESC
 
 const qGetJadwalDokter = `
 SELECT
-	tjd.jam_mulai,
-	tjd.jam_selesai,
-	tjd.objectunitfk,
-	tjd.objectkamarfk,
-	mk.namakamar
-FROM t_jadwaldokter tjd
-	LEFT JOIN m_kamar mk ON tjd.objectkamarfk = mk.id
-WHERE tjd.objectharifk = $1
+	mjd.jam_mulai,
+	mjd.jam_selesai,
+	mjd.objectunitfk,
+	mjd.objectkamarfk,
+	mk.namakamar,
+	mjd.objectpegawaifk,
+	mp.namaexternal AS namadokter,
+	mu.namaunit AS namaunit
+FROM m_jadwaldokter mjd
+	LEFT JOIN m_kamar mk ON mjd.objectkamarfk = mk.id
+	LEFT JOIN m_pegawai mp ON mjd.objectpegawaifk = mp.id
+	LEFT JOIN m_unit mu ON mjd.objectunitfk = mu.id
+WHERE mjd.objectharifk = $1
+ORDER BY mk.id ASC
+`
+
+const qGetLastAntrean = `
+SELECT
+	tap.noantrian AS noantrian,
+	mpeg.namaexternal AS namadokter,
+	mpeg.id AS iddokter,
+	mpeg.reportdisplay AS reportdisplay
+FROM t_antreanpemeriksaan tap
+	LEFT JOIN m_pegawai mpeg ON tap.objectdokterpemeriksafk = mpeg.id
+WHERE tap.objectdokterpemeriksafk = $1
+	AND tap.statusenabled = true
+ORDER BY 
+	tap.tgldipanggildokter DESC
 `
 
 export {
@@ -161,5 +181,6 @@ export {
 	qGetLastPemanggilanAll,
 	qGetAllTerpanggil,
 	qGetLastPemanggilanViewer,
-	qGetJadwalDokter
+	qGetJadwalDokter,
+	qGetLastAntrean
 }

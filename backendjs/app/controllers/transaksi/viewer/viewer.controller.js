@@ -1,5 +1,5 @@
 import pool from "../../../config/dbcon.query";
-import { qGetLoket, qGetLoketSisa, qGetLastPemanggilan, qGetAllLoket, qGetLastPemanggilanLoket, qGetLastPemanggilanAll, qGetAllTerpanggil, panggilStatus, qGetLastPemanggilanViewer, qGetJadwalDokter } from "../../../queries/viewer/viewer.queries";
+import { qGetLoket, qGetLoketSisa, qGetLastPemanggilan, qGetAllLoket, qGetLastPemanggilanLoket, qGetLastPemanggilanAll, qGetAllTerpanggil, panggilStatus, qGetLastPemanggilanViewer, qGetJadwalDokter, qGetLastAntrean } from "../../../queries/viewer/viewer.queries";
 import db from "../../../models";
 
 const t_antreanloket = db.t_antreanloket
@@ -303,7 +303,16 @@ const getJadwalDokter = async (req, res) => {
     const logger = res.locals.logger;
     try{
         const day = (new Date()).getDay();
-        const jadwal = pool.query(qGetJadwalDokter, [day])
+        let jadwal = (await pool.query(qGetJadwalDokter, [day])).rows
+        jadwal = await Promise.all(
+            jadwal.map(async (item) => {
+                const antrean = (await pool.query(qGetLastAntrean, [item.objectpegawaifk])).rows
+                const itemAntrean = antrean?.[0]
+                item.lastAntrean = itemAntrean?.reportdisplay + itemAntrean?.noantrian 
+                return item
+            })
+        )
+
         const tempres = {
             jadwal: jadwal
         };
