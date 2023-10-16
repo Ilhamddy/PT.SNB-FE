@@ -2,9 +2,13 @@ import { useDate } from '../../utils/format'
 import logoSNB from './logo-snb.svg'
 import { ToastContainer, toast } from 'react-toastify'
 import './ViewerPoli.scss'
+import { useEffect } from 'react'
+import { useDispatch } from 'react-redux'
 
 const ViewerPoli = () => {
   const { tanggal, waktu } = useDate()
+  const dispatch = useDispatch()
+  useEffect(() => {}, [])
 
   return (
     <div className="viewer-poli">

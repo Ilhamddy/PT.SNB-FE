@@ -22,4 +22,8 @@ export default class ServiceViewer {
     panggilUlangAntrian = async (data) => {
         return await api.create("/transaksi/viewer/panggil-ulang-antrean", data)
     }
+
+    getJadwalDokter = async (queries) => {
+        return await api.get("/transaksi/viewer/get-jadwal-dokter", queries)
+    }
 }

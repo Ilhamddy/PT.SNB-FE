@@ -320,7 +320,6 @@ const DaftarPasienLama = () => {
               }}
               errorMsg={vDaftar.errors.jadwal}
               isError={vDaftar.errors.jadwal && vDaftar.touched.jadwal}
-              disabled
             />
           </InputGroupDM>
           <InputGroupDM label="Penjamin">
