@@ -329,6 +329,9 @@ import UploadBeritaPage from "../pages/UploadBeritaPage/UploadBeritaPage";
 import ListBeritaPage from "../pages/ListBeritaPage/ListBeritaPage";
 import ViewerPoli from "../pages/ViewerPoli/ViewerPoli";
 
+// Sumber Daya Manusia
+import DaftarPegawai from "../pages/SumberDayaManusia/DaftarPegawai/DaftarPegawai";
+
 
 
 
@@ -647,6 +650,9 @@ const authProtectedRoutes = [
   // Bedah Sentral
   { path: "/bedahsentral/daftar-order-operasi", component: <DaftarOrderOperasi /> },
   { path: "/bedahsentral/daftar-pasien-operasi", component: <DaftarPasienOperasi /> },
+
+  // Sumber Daya Manusia
+  { path: "/sumberdayamanusia/daftar-pegawai", component: <DaftarPegawai /> },
 ];
 
 const publicRoutes = [
