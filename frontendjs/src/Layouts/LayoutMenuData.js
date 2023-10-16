@@ -938,8 +938,8 @@ const Navdata = () => {
         // SDM
         {
             id: "loket_sdm",
-            label: "Bedah Sentral",
-            icon: "ri-service-fill",
+            label: "Sumber Daya Manusia",
+            icon: "ri-contacts-book-2-fill",
             link: "/#",
             click: function (e) {
                 e.preventDefault();
