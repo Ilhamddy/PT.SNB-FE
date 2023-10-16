@@ -3,15 +3,20 @@ import logoSNB from './logo-snb.svg'
 import { ToastContainer, toast } from 'react-toastify'
 import './ViewerPoli.scss'
 import { useEffect } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { getJadwalDokter } from '../../store/viewer/action'
 
 const ViewerPoli = () => {
   const { tanggal, waktu } = useDate()
   const dispatch = useDispatch()
 
+  const { jadwalDokter } = useSelector((state) => ({
+    jadwalDokter: state.Viewer.getJadwalDokter.data.jadwal || [],
+  }))
+
   useEffect(() => {
-    dispatch()
-  }, [])
+    dispatch(getJadwalDokter())
+  }, [dispatch])
 
   return (
     <div className="viewer-poli">
@@ -25,30 +30,16 @@ const ViewerPoli = () => {
       </div>
       <div className="konten-viewer">
         <div className="ruang-group">
-          <div className="ruang-available">
-            <div className="isi-konten">
-              <p className="nama-poliklinik">Poliklinik Bedah Tulang</p>
-              <p className="nama-dokter">dr. Meiningsih Kusumawati, Sp.Rad</p>
-              <p className="nomor-antrean">MK01</p>
+          {jadwalDokter.map((item, key) => (
+            <div className="ruang-available" key={key}>
+              <div className="isi-konten">
+                <p className="nama-poliklinik">{item.namaunit}</p>
+                <p className="nama-dokter">{item.namadokter}</p>
+                <p className="nomor-antrean">MK01</p>
+              </div>
+              <p className="nama-ruang">{item.namakamar}</p>
             </div>
-            <p className="nama-ruang">Ruang 1</p>
-          </div>
-          <div className="ruang-available">
-            <div className="isi-konten">
-              <p className="nama-poliklinik">Poliklinik Bedah Tulang</p>
-              <p className="nama-dokter">dr. Meiningsih Kusumawati, Sp.Rad</p>
-              <p className="nomor-antrean">MK01</p>
-            </div>
-            <p className="nama-ruang">Ruang 2</p>
-          </div>
-          <div className="ruang-available">
-            <div className="isi-konten">
-              <p className="nama-poliklinik">Poliklinik Bedah Tulang</p>
-              <p className="nama-dokter">dr. Meiningsih Kusumawati, Sp.Rad</p>
-              <p className="nomor-antrean">MK01</p>
-            </div>
-            <p className="nama-ruang">Ruang 3</p>
-          </div>
+          ))}
         </div>
       </div>
       <p className="running-text-viewer">

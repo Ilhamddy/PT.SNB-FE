@@ -13,7 +13,10 @@ import {
     GET_ALL_TERPANGGIL_ERROR,
     PANGGIL_ULANG_ANTREAN,
     PANGGIL_ULANG_ANTREAN_SUCCESS,
-    PANGGIL_ULANG_ANTREAN_ERROR
+    PANGGIL_ULANG_ANTREAN_ERROR,
+    GET_JADWAL_DOKTER,
+    GET_JADWAL_DOKTER_SUCCESS,
+    GET_JADWAL_DOKTER_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -40,6 +43,11 @@ const INIT_STATE = {
     panggilUlangAntrean: {
         data: [],
         loading: false, 
+        error: null,
+    },
+    getJadwalDokter: {
+        data: [],
+        loading: false,
         error: null,
     }
 };
@@ -208,6 +216,39 @@ const Viewer = (state = INIT_STATE, action) => {
                 ...state,
                 panggilUlangAntrean: {
                     ...state.panggilUlangAntrean,
+                    loading: false,
+                    error: action.payload,
+                }
+            }
+        }
+
+        case GET_JADWAL_DOKTER: {
+            return {
+                ...state,
+                getJadwalDokter: {
+                    ...state.getJadwalDokter,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case GET_JADWAL_DOKTER_SUCCESS: {
+            return {
+                ...state,
+                getJadwalDokter: {
+                    ...state.getJadwalDokter,
+                    loading: false,
+                    data: action.payload,
+                }
+            }
+        }
+
+        case GET_JADWAL_DOKTER_ERROR: {
+            return {
+                ...state,
+                getJadwalDokter: {
+                    ...state.getJadwalDokter,
                     loading: false,
                     error: action.payload,
                 }

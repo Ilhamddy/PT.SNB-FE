@@ -56,6 +56,12 @@ export default (sequelize, Sequelize) => {
         },
         tglkeluar: {
             type: 'TIMESTAMP'
+        },
+        tgldipanggildokter: {
+            type: 'TIMESTAMP'
+        },
+        tgldipanggilperawat: {
+            type: Sequelize.DATE
         }
     }, {
         tableName: "t_antreanpemeriksaan", // relation "user" does not exist

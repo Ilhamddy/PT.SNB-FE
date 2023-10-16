@@ -886,13 +886,20 @@ async function updateTaskid(req, res) {
     const [transaction, errorTransaction] = await createTransaction(db, res)
     if (errorTransaction) return
     try {
-        const antreanpemeriksaan = await db.t_antreanpemeriksaan.update({
-            taskid: req.body.taskid
-        }, {
-            where: {
-                norec: req.body.norec
-            }
-        }, { transaction });
+        let edit = {
+            taskid: req.body.taskid,
+        }
+        if (req.body.taskid === 4){
+            edit.tgldipanggildokter = new Date()
+        }
+        const antreanpemeriksaan = await db.t_antreanpemeriksaan.update(
+            edit, {
+                where: {
+                    norec: req.body.norec
+                }
+            }, { 
+                transaction 
+            });
         console.log(antreanpemeriksaan);
         await transaction.commit();
         let tempres = { antreanpemeriksaan: antreanpemeriksaan }
