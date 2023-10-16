@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react"
-import { Accordion, AccordionItem, Button, Card, CardBody, CardHeader, Col, Collapse, DropdownToggle, Form, FormFeedback, Input, Label, Row, UncontrolledDropdown, UncontrolledTooltip } from "reactstrap"
+import { Accordion, AccordionItem, Button, Card, CardBody, CardHeader, Col, Collapse, DropdownToggle, Form, FormFeedback, Input, Label, Row, Spinner, UncontrolledDropdown, UncontrolledTooltip } from "reactstrap"
 import UiContent from "../../../Components/Common/UiContent"
 import CountUp from "react-countup";
 import { useFormik } from 'formik';
@@ -11,7 +11,8 @@ import {
     emrDiagnosaxSave, emrResetForm, emrComboGet, emrDiagnosaxGet, emrListDiagnosaxGet,
     deleteDiagnosax, comboHistoryUnitGet, emrDiagnosaixGet, emrListDiagnosaixGet,
     deleteDiagnosaix, emrDiagnosaixSave, comboTindakanGet, savePelayananPasienTemp,
-    getListPelayananPasienTemp, deletePelayananPasienTemp, getWidgetEfisiensiKlaim
+    getListPelayananPasienTemp, deletePelayananPasienTemp, getWidgetEfisiensiKlaim,
+    bridgingInacbgSave, updateEstimasiKlaim
 } from "../../../store/actions";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
@@ -20,6 +21,7 @@ import DeleteModalCustom from "../../../Components/Common/DeleteModalCustom";
 import KontainerFlatpickr from "../../../Components/KontainerFlatpickr/KontainerFlatpickr";
 import { dateTimeLocal } from '../../../utils/format';
 import LoadingTable from "../../../Components/Table/LoadingTable";
+import { toast } from "react-toastify";
 
 const EfisiensiBPJS = () => {
     const { norecdp, norecap } = useParams();
@@ -30,7 +32,12 @@ const EfisiensiBPJS = () => {
         newDataDiagnosax, successDiagnosax, loadingDiagnosax,
         newDataDelete, newDataDeleteix, dataTindakan,
         newDataPelayanan, dataListTindakan, loadingListTindakan,
-        newDataDeletePelayanan, dataWidget } = useSelector((state) => ({
+        newDataDeletePelayanan, dataWidget,
+        newData, success, loading, error, newDataUpdateEstimasiKlaim,successUpdateEstimasiKlaim } = useSelector((state) => ({
+            newData: state.Casemix.bridgingInacbgSave.newData,
+            success: state.Casemix.bridgingInacbgSave.success,
+            loading: state.Casemix.bridgingInacbgSave.loading,
+            error: state.Casemix.bridgingInacbgSave.error,
             dataCombo: state.Emr.emrComboGet.data,
             dataDiagnosa: state.Emr.emrDiagnosaxGet.data,
             loadingDiagnosa: state.Emr.emrDiagnosaxGet.loading,
@@ -54,6 +61,8 @@ const EfisiensiBPJS = () => {
             loadingListTindakan: state.Emr.getListPelayananPasienTemp.loading,
             newDataDeletePelayanan: state.Emr.deletePelayananPasienTemp.newData,
             dataWidget: state.Emr.getWidgetEfisiensiKlaim.data,
+            newDataUpdateEstimasiKlaim: state.Emr.updateEstimasiKlaim.newData,
+            successUpdateEstimasiKlaim: state.Emr.updateEstimasiKlaim.success,
         }));
     useEffect(() => {
         if (norecdp) {
@@ -67,24 +76,7 @@ const EfisiensiBPJS = () => {
             dispatch(getWidgetEfisiensiKlaim({ norecdp: norecdp }))
         }
     }, [norecdp, dispatch])
-    const datawidget = [
-        {
-            id: 1,
-            label: 'Biaya Pasien Saat Ini'
-        },
-        {
-            id: 2,
-            label: 'Biaya Tambahan'
-        },
-        {
-            id: 3,
-            label: 'Total Biaya Keseluruhan'
-        },
-        {
-            id: 4,
-            label: 'Estimasi Klaim BPJS'
-        },
-    ]
+
     const vSetValidationDiagnosa = useFormik({
         enableReinitialize: true,
         initialValues: {
@@ -241,7 +233,7 @@ const EfisiensiBPJS = () => {
         initialValues: {
             objectkelasfk: '',
             unitlast: '',
-            quantity: count,
+            quantity: 0,
             tindakan: '',
             tgltindakan: dateNow,
             norecdp: norecdp,
@@ -278,6 +270,7 @@ const EfisiensiBPJS = () => {
         vSetValidationTindakan.setFieldValue('harga', selected.totalharga)
         setHarga(selected.totalharga)
         hargaRef.current = selected.totalharga
+        vSetValidationTindakan.setFieldValue('quantity', count)
 
     }
     const handleUnitLast = (selected) => {
@@ -365,6 +358,152 @@ const EfisiensiBPJS = () => {
             width: "100",
         },
     ];
+    const handleDiagnosa = characterEntered => {
+        if (characterEntered.length > 3) {
+            dispatch(emrDiagnosaxGet(characterEntered, 'diagnosa10'));
+        }
+    };
+    const handleClickGrouping = (e) => {
+        let tempData = []
+
+        if (dataRiwayat.length === 0) {
+            toast.error('Diagnosa 10 Belum Diisi', { autoClose: 3000 });
+        }
+        // UNU Grouper
+        let paramDiagnosa = ''
+        for (let x = 0; x < dataRiwayat.length; x++) {
+            if (paramDiagnosa === '') {
+                paramDiagnosa = dataRiwayat[x].kodediagnosa
+            } else {
+                paramDiagnosa = paramDiagnosa + '#' + dataRiwayat[x].kodediagnosa
+            }
+        }
+        let paramDiagnosa9 = ''
+        for (let x = 0; x < dataRiwayat9.length; x++) {
+            if (paramDiagnosa9 === '') {
+                paramDiagnosa9 = dataRiwayat9[x].kodediagnosa
+            } else {
+                paramDiagnosa9 = paramDiagnosa9 + '#' + dataRiwayat9[x].kodediagnosa
+            }
+        }
+        const jsonNew_Claim = {
+            "metadata": {
+                "method": "new_claim"
+            },
+            "data": {
+                "nomor_kartu": '000000000001COBA',
+                "nomor_sep": '0123456789COBA',
+                "nomor_rm": '000COBA',
+                "nama_pasien": 'COBA',
+                "tgl_lahir": '1940-01-01 02:00:00',
+                "gender": '2'
+            }
+        };
+        tempData.push(jsonNew_Claim)
+        const jsonSet_Claim = {
+            "metadata": {
+                "method": "set_claim_data",
+                "nomor_sep": '0123456789COBA'
+            },
+            "data": {
+                "nomor_sep": '0123456789COBA',
+                "nomor_kartu": '000000000001COBA',
+                "tgl_masuk": "2023-01-25 12:55:00",
+                "tgl_pulang": "2023-01-25 12:55:00",
+                "cara_masuk": 'gp',
+                "jenis_rawat": '1',
+                "kelas_rawat": "3",
+                "adl_sub_acute": "",
+                "adl_chronic": "",
+                "icu_indikator": "",
+                "icu_los": "",
+                "ventilator_hour": "",
+                "ventilator": {
+                    "use_ind": "",
+                    "start_dttm": "",
+                    "stop_dttm": ""
+                },
+                "upgrade_class_ind": "0",
+                "upgrade_class_class": "",
+                "upgrade_class_los": "",
+                "upgrade_class_payor": "",
+                "add_payment_pct": "",
+                "birth_weight": 0,
+                "sistole": "",
+                "diastole": '',
+                "discharge_status": 1,
+                "diagnosa": paramDiagnosa,//unu Grouper
+                "procedure": paramDiagnosa9,
+                "diagnosa_inagrouper": "#",
+                "procedure_inagrouper": "#",
+                "tarif_rs": {
+                    "prosedur_non_bedah": 0,
+                    "prosedur_bedah": 0,
+                    "konsultasi": 0,
+                    "tenaga_ahli": 0,
+                    "keperawatan": 0,
+                    "penunjang": 0,
+                    "radiologi": 0,
+                    "laboratorium": 0,
+                    "pelayanan_darah": 0,
+                    "rehabilitasi": 0,
+                    "kamar": 0,
+                    "rawat_intensif": 0,
+                    "obat": 0,
+                    "obat_kronis": 0,
+                    "obat_kemoterapi": 0,
+                    "alkes": 0,
+                    "bmhp": 0,
+                    "sewa_alat": 0
+                },
+                "tarif_poli_eks": "0",
+                "nama_dokter": 'COBA',
+                "kode_tarif": "AP",
+                "payor_id": "3",
+                "payor_cd": "JKN",
+                "cob_cd": "",
+                "coder_nik": "123123123123"
+            }
+        };
+        tempData.push(jsonSet_Claim)
+        const jsonGrouper = {
+            "metadata": {
+                "method": "grouper",
+                "stage": "1"
+            },
+            "data": {
+                "nomor_sep": '0123456789COBA'
+            }
+        };
+        tempData.push(jsonGrouper)
+        dispatch(bridgingInacbgSave(tempData))
+    }
+    useEffect(() => {
+        if (newData !== null) {
+            let tempData = []
+            if (newData?.data[2]?.dataResponse !== undefined) {
+                const jsonGrouper = {
+                    "metadata": {
+                        "method": "delete_claim"
+                    },
+                    "data": {
+                        "nomor_sep": "0123456789COBA",
+                        "coder_nik": "123123123123"
+                    }
+                };
+                tempData.push(jsonGrouper)
+                dispatch(bridgingInacbgSave(tempData))
+                const tempValue = {
+                    norec: norecdp,
+                    nominalklaim: newData.data[2].dataResponse.response.cbg.tariff
+                }
+                dispatch(updateEstimasiKlaim(tempValue))
+                dispatch(updateEstimasiKlaim(tempValue, () => {
+                    dispatch(getWidgetEfisiensiKlaim({ norecdp: norecdp }));
+                }));
+            }
+        }
+    }, [newData, norecdp, dispatch])
     return (
         <React.Fragment>
             <DeleteModalCustom
@@ -385,16 +524,16 @@ const EfisiensiBPJS = () => {
                                         <div>
                                             <p className="fw-medium mb-0">{item.label}</p>
                                             <h2 className="mt-4 ff-secondary fw-semibold">
-                                                    <span className="counter-value" style={{ fontSize: "2rem" }}>
-                                                        <CountUp
-                                                            start={0}
-                                                            end={item.total}
-                                                            decimal={item.decimals}
-                                                            // suffix={item.suffix}
-                                                            duration={3}
-                                                        />
-                                                    </span>
-                                                </h2>
+                                                <span className="counter-value" style={{ fontSize: "2rem", color:item.color }}>
+                                                    <CountUp
+                                                        start={0}
+                                                        end={item.total}
+                                                        decimal={item.decimals}
+                                                        // suffix={item.suffix}
+                                                        duration={3}
+                                                    />
+                                                </span>
+                                            </h2>
                                         </div>
                                     </div>
                                 </CardBody>
@@ -433,6 +572,7 @@ const EfisiensiBPJS = () => {
                                             className={`input row-header ${!!vSetValidationDiagnosa?.errors.kodediagnosa ? 'is-invalid' : ''
                                                 }`}
                                             placeholder='Diagnosa...'
+                                            onInputChange={handleDiagnosa}
                                         />
                                         {vSetValidationDiagnosa.touched.kodediagnosa &&
                                             !!vSetValidationDiagnosa.errors.kodediagnosa && (
@@ -745,6 +885,21 @@ const EfisiensiBPJS = () => {
                         <h4 className="mb-0" style={{ color: 'black', textAlign: 'center' }}>List Tindakan</h4>
                     </CardHeader>
                     <CardBody>
+                        <Col lg={12} className="mr-3 me-3 mt-2">
+                            <div className="d-flex flex-wrap justify-content-end gap-2">
+                                <Button
+                                    disabled={error ? null : loading ? true : false}
+                                    type="submit" color="success" style={{ width: '20%' }}
+                                    onClick={() => handleClickGrouping()}>
+                                    {error ? null : loading ? (
+                                        <Spinner size="sm" className="me-2">
+                                            {' '}
+                                            Loading...{' '}
+                                        </Spinner>
+                                    ) : null}Grouping</Button>
+
+                            </div>
+                        </Col>
                         <div id="table-gridjs">
                             <DataTable
                                 fixedHeader

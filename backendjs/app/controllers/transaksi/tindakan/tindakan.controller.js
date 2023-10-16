@@ -391,24 +391,37 @@ const getWidgetEfisiensiKlaim = async (req, res) => {
     const logger = res.locals.logger;
     try {
         const resultlist = await pool.query(queries.qListTotalKlaim, [req.query.norecdp]);
+        const resultlist2 = await pool.query(queries.qBiayaTambahan, [req.query.norecdp]);
+        let color = 'black'
+        if (parseFloat(resultlist.rows[0].nominalklaim) !== null) {
+            if ((parseFloat(resultlist.rows[0].total) + parseFloat(resultlist2.rows[0].total))>parseFloat(resultlist.rows[0].nominalklaim)){
+                color = 'red'
+            }
+        }
         const datawidget = [
             {
                 id: 1,
                 label: 'Biaya Pasien Saat Ini',
-                total: resultlist.rows[0].total
+                total: resultlist.rows[0].total,
+                color: 'black'
             },
             {
                 id: 2,
                 label: 'Biaya Tambahan',
-                total: parseFloat(resultlist.rows[0].nominalklaim)
+                total: resultlist2.rows[0].total,
+                color: 'black'
             },
             {
                 id: 3,
-                label: 'Total Biaya Keseluruhan'
+                label: 'Total Biaya Keseluruhan',
+                total: parseFloat(resultlist.rows[0].total) + parseFloat(resultlist2.rows[0].total),
+                color: color
             },
             {
                 id: 4,
-                label: 'Estimasi Klaim BPJS'
+                label: 'Estimasi Klaim BPJS',
+                total: parseFloat(resultlist.rows[0].nominalklaim),
+                color: 'black'
             },
         ]
         const tempres = {
@@ -418,6 +431,42 @@ const getWidgetEfisiensiKlaim = async (req, res) => {
             msg: 'Success',
             code: 200,
             data: datawidget,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+const updateEstimasiKlaim = async (req, res) => {
+    const logger = res.locals.logger;
+    try {
+        const { daftarPasien } = await db.sequelize.transaction(async (transaction) => {
+
+            const daftarPasien = await db.t_daftarpasien.update({
+                nominalklaim: req.body.nominalklaim
+            }, {
+                where: {
+                    norec: req.body.norec,
+                },
+                transaction: transaction
+            });
+
+            return { daftarPasien }
+        });
+        const tempres = {
+            daftarPasien: daftarPasien
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
             success: true
         });
     } catch (error) {
@@ -441,5 +490,6 @@ export default {
     savePelayananPasienTemp,
     getListPelayananPasienTemp,
     deletePelayananPasienTemp,
-    getWidgetEfisiensiKlaim
+    getWidgetEfisiensiKlaim,
+    updateEstimasiKlaim
 };

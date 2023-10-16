@@ -116,7 +116,10 @@ import {
     DELETE_PELAYANAN_PASIEN_TEMP_ERROR,
     GET_WIDGET_EFISIENSI_KLAIM,
     GET_WIDGET_EFISIENSI_KLAIM_SUCCESS,
-    GET_WIDGET_EFISIENSI_KLAIM_ERROR
+    GET_WIDGET_EFISIENSI_KLAIM_ERROR,
+    UPDATE_ESTIMASI_KLAIM,
+    UPDATE_ESTIMASI_KLAIM_SUCCESS,
+    UPDATE_ESTIMASI_KLAIM_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -330,6 +333,12 @@ const INIT_STATE = {
         loading: false,
         error: null,
     },
+    updateEstimasiKlaim:{
+        newData: null,
+        loading: false,
+        error: null,
+        success: false
+    }
 };
 
 const Emr = (state = INIT_STATE, action) => {
@@ -441,6 +450,9 @@ const Emr = (state = INIT_STATE, action) => {
                 },
                 getWidgetEfisiensiKlaim:{
                     ...INIT_STATE.getWidgetEfisiensiKlaim
+                },
+                updateEstimasiKlaim:{
+                    ...INIT_STATE.updateEstimasiKlaim
                 }
             }
         }
@@ -1758,6 +1770,41 @@ const Emr = (state = INIT_STATE, action) => {
                     error: action.error,
                 }
             }
+        }
+
+        case UPDATE_ESTIMASI_KLAIM: {
+            return {
+                ...state,
+                updateEstimasiKlaim: {
+                    ...state.updateEstimasiKlaim,
+                    data: [],
+                    loading: true,
+                    error: null,
+                },
+            };
+        }
+
+        case UPDATE_ESTIMASI_KLAIM_SUCCESS: {
+            return {
+                ...state,
+                updateEstimasiKlaim: {
+                    ...state.updateEstimasiKlaim,
+                    loading: false,
+                    data: action.payload,
+                    success: true,
+                },
+            };
+        }
+
+        case UPDATE_ESTIMASI_KLAIM_ERROR: {
+            return {
+                ...state,
+                updateEstimasiKlaim: {
+                    ...state.updateEstimasiKlaim,
+                    loading: false,
+                    error: action.payload,
+                },
+            };
         }
 
 

@@ -22,7 +22,8 @@ import {
     SAVE_ORDER_OPERASI,
     GET_HISTORI_ORDER_OPERASI,
     SAVE_PELAYANAN_PASIEN_TEMP, GET_LIST_PELAYANAN_PASIEN_TEMP,
-    DELETE_PELAYANAN_PASIEN_TEMP, GET_WIDGET_EFISIENSI_KLAIM
+    DELETE_PELAYANAN_PASIEN_TEMP, GET_WIDGET_EFISIENSI_KLAIM,
+    UPDATE_ESTIMASI_KLAIM
 } from "./actionType";
 
 import {
@@ -63,7 +64,8 @@ import {
     savePelayananPasienTempSuccess, savePelayananPasienTempError,
     getListPelayananPasienTempSuccess, getListPelayananPasienTempError,
     deletePelayananPasienTempSuccess, deletePelayananPasienTempError,
-    getWidgetEfisiensiKlaimSuccess, getWidgetEfisiensiKlaimError
+    getWidgetEfisiensiKlaimSuccess, getWidgetEfisiensiKlaimError,
+    updateEstimasiKlaimSuccess, updateEstimasiKlaimError
 } from "./action";
 
 import { toast } from 'react-toastify';
@@ -779,6 +781,25 @@ function* ongetWidgetEfisiensiKlaim({ payload: {queries}  }) {
     }
 }
 
+function* onupdateEstimasiKlaim({ payload: { body, callback } }) {
+    try {
+        const response = yield call(serviceEmr.updateEstimasiKlaim, body);
+        yield put(updateEstimasiKlaimSuccess(response.data));
+        if (response.code === 200) {
+            toast.success(response.msg, { autoClose: 3000 });
+        } else {
+            toast.error(response.msg, { autoClose: 3000 });
+        }
+        callback && callback();
+    } catch (error) {
+        yield put(updateEstimasiKlaimError(error));
+        toast.error("Gagal Simpan", { autoClose: 3000 });
+    }
+}
+export function* watchonupdateEstimasiKlaim() {
+    yield takeEvery(UPDATE_ESTIMASI_KLAIM, onupdateEstimasiKlaim);
+}
+
 export function* watchgetWidgetEfisiensiKlaim() {
     yield takeEvery(GET_WIDGET_EFISIENSI_KLAIM, ongetWidgetEfisiensiKlaim);
 }
@@ -823,7 +844,8 @@ function* emrSaga() {
         fork(watchonsavePelayananPasienTemp),
         fork(watchgetListPelayananPasienTemp),
         fork(watchondeletePelayananPasienTemp),
-        fork(watchgetWidgetEfisiensiKlaim)
+        fork(watchgetWidgetEfisiensiKlaim),
+        fork(watchonupdateEstimasiKlaim)
     ]);
 }
 

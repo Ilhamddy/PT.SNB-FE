@@ -74,4 +74,9 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getWidgetEfisiensiKlaim
     );
+    app.post(
+        "/api/transaksi/tindakan/update-estimasi-klaim",
+        [authJwt.verifyToken],
+        controller.updateEstimasiKlaim
+    );
 }

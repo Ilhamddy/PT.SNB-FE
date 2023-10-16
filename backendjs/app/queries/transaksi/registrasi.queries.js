@@ -351,6 +351,8 @@ join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk=td.norec
 join t_pelayananpasien tp on tp.objectantreanpemeriksaanfk=ta.norec
 where td.norec=$1
 group by tp.total,td.nominalklaim`
+const qBiayaTambahan = `select sum(total) as total from t_pelayananpasientemp tp 
+where objectdaftarpasienfk=$1`
 
 export default {
     getAll,
@@ -378,5 +380,6 @@ export default {
     qWidgetDaftarPasienTriage,
     qGetPasienOnline,
     qListPelayananPasienTemp,
-    qListTotalKlaim
+    qListTotalKlaim,
+    qBiayaTambahan
 };

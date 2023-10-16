@@ -161,4 +161,8 @@ export default class ServiceEmr {
     getWidgetEfisiensiKlaim = async (queries) => {
         return await api.get(`/transaksi/tindakan/widget-efisiensi-klaim`, queries);
     }
+
+    updateEstimasiKlaim = async (params) => {
+        return await api.create("/transaksi/tindakan/update-estimasi-klaim", params);
+    }
 }
