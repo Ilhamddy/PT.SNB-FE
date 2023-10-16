@@ -140,6 +140,18 @@ WHERE
 ORDER BY tal.tglpanggil DESC
 `
 
+const qGetJadwalDokter = `
+SELECT
+	tjd.jam_mulai,
+	tjd.jam_selesai,
+	tjd.objectunitfk,
+	tjd.objectkamarfk,
+	mk.namakamar
+FROM t_jadwaldokter tjd
+	LEFT JOIN m_kamar mk ON tjd.objectkamarfk = mk.id
+WHERE tjd.objectharifk = $1
+`
+
 export {
     qGetLoket,
     qGetLoketSisa,
@@ -148,5 +160,6 @@ export {
     qGetLastPemanggilanLoket,
 	qGetLastPemanggilanAll,
 	qGetAllTerpanggil,
-	qGetLastPemanggilanViewer
+	qGetLastPemanggilanViewer,
+	qGetJadwalDokter
 }

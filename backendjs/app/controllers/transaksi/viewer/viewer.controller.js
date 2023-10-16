@@ -1,5 +1,5 @@
 import pool from "../../../config/dbcon.query";
-import { qGetLoket, qGetLoketSisa, qGetLastPemanggilan, qGetAllLoket, qGetLastPemanggilanLoket, qGetLastPemanggilanAll, qGetAllTerpanggil, panggilStatus, qGetLastPemanggilanViewer } from "../../../queries/viewer/viewer.queries";
+import { qGetLoket, qGetLoketSisa, qGetLastPemanggilan, qGetAllLoket, qGetLastPemanggilanLoket, qGetLastPemanggilanAll, qGetAllTerpanggil, panggilStatus, qGetLastPemanggilanViewer, qGetJadwalDokter } from "../../../queries/viewer/viewer.queries";
 import db from "../../../models";
 
 const t_antreanloket = db.t_antreanloket
@@ -299,11 +299,38 @@ const panggilUlangAntrean = async (req, res) => {
     }
 }
 
+const getJadwalDokter = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const day = (new Date()).getDay();
+        const jadwal = pool.query(qGetJadwalDokter, [day])
+        const tempres = {
+            jadwal: jadwal
+        };
+
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export default {
     pollingAntrean,
     getLoketSisa,
     panggilLoket,
     getAllLoket,
     getAllTerpanggil,
-    panggilUlangAntrean
+    panggilUlangAntrean,
+    getJadwalDokter
 }

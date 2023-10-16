@@ -327,6 +327,7 @@ import DaftarPasienOperasi from "../pages/BedahSentral/DaftarPasienOperasi/Dafta
 import VerifikasiPasienOnline from "../pages/VerifikasiPasienOnline/VerifikasiPasienOnline";
 import UploadBeritaPage from "../pages/UploadBeritaPage/UploadBeritaPage";
 import ListBeritaPage from "../pages/ListBeritaPage/ListBeritaPage";
+import ViewerPoli from "../pages/ViewerPoli/ViewerPoli";
 
 
 
@@ -565,6 +566,8 @@ const authProtectedRoutes = [
   { path: "/listdaftarpasien/daftar-pasien-farmasi", component:<DaftarPasienFarmasi/>},
   //viewer
   { path: "/cmVnaXN0cmFzaS92aWV3ZXI=", component: <Viewer />, isLayout: false},
+  { path: "/viewer/poli", component: <ViewerPoli />, isLayout: false},
+
   { path: "/cmVnaXN0cmFzaS92aWV3ZXIvcGVtYW5nZ2lsYW4=", component: <PemanggilanViewer />, isLayout: false},
   { path: "/bGlzdGRhZnRhcnBhc2llbi9kYWZ0YXJwYXNpZW5tdXRhc2k=", component:<DaftarPasienMutasi/>},
   { path: "/registrasi/mutasi-pasien/:id/:norec", component: <RegistrasiMutasiPasien/> },
