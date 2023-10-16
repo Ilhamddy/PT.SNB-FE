@@ -504,15 +504,6 @@ const EfisiensiBPJS = () => {
             }
         }
     }, [newData, norecdp, dispatch])
-    // useEffect(() => {
-    //     console.log('masukkkkkk')
-    //     if (newDataUpdateEstimasiKlaim !== null) {
-    //         console.log(newDataUpdateEstimasiKlaim?.data)
-    //         if (newDataUpdateEstimasiKlaim?.data?.daftarPasien[0] !== undefined) {
-    //             dispatch(getWidgetEfisiensiKlaim({ norecdp: norecdp }))
-    //         }
-    //     }
-    // }, [newDataUpdateEstimasiKlaim,norecdp, dispatch])
     return (
         <React.Fragment>
             <DeleteModalCustom
