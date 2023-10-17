@@ -77,10 +77,11 @@ function* onPanggilUlangAntrean({payload: {data, callback}}) {
     }
 }
 
-function* onGetJadwalDokter({payload: {queries}}) {
+function* onGetJadwalDokter({payload: {queries, callback}}) {
     try{
         const response = yield call(serviceViewer.getJadwalDokter, queries);
         yield put(getJadwalDokterSuccess(response.data));
+        callback && callback(response.data)
     } catch (error) {
         yield put(getJadwalDokterError(error));
     }

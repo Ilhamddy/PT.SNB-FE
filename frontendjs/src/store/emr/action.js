@@ -363,9 +363,9 @@ export const konsulSaveError = (error) => ({
 });
 
 // common success
-export const updateTaskId = (data, history) => ({
+export const updateTaskId = (data, callback) => ({
     type: UPDATE_TASKID,
-    payload: { data, history },
+    payload: { data, callback },
 });
 
 // common error

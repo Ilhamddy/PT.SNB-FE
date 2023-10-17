@@ -142,6 +142,7 @@ ORDER BY tal.tglpanggil DESC
 
 const qGetJadwalDokter = `
 SELECT
+	mjd.id AS idjadwal,
 	mjd.jam_mulai,
 	mjd.jam_selesai,
 	mjd.objectunitfk,
@@ -160,14 +161,24 @@ ORDER BY mk.id ASC
 
 const qGetLastAntrean = `
 SELECT
+	tap.norec AS norecap,
 	tap.noantrian AS noantrian,
 	mpeg.namaexternal AS namadokter,
 	mpeg.id AS iddokter,
-	mpeg.reportdisplay AS reportdisplay
+	mpeg.reportdisplay AS reportdisplay,
+	tap.tgldipanggildokter AS tgldipanggildokter,
+	tap.objectstatuspanggilfk AS objectstatuspanggilfk
 FROM t_antreanpemeriksaan tap
 	LEFT JOIN m_pegawai mpeg ON tap.objectdokterpemeriksafk = mpeg.id
 WHERE tap.objectdokterpemeriksafk = $1
+	AND tap.tgldipanggildokter BETWEEN $2 AND $3
 	AND tap.statusenabled = true
+	AND 
+		CASE 
+			WHEN (NULLIF($4, '')::int IS NULL)
+			THEN TRUE
+			ELSE tap.objectstatuspanggilfk = NULLIF($4, '')::int
+		END
 ORDER BY 
 	tap.tgldipanggildokter DESC
 `

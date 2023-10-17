@@ -291,9 +291,14 @@ const DaftarPasienRJ = () => {
     const handleClickPanggil = (e) => {
         let temp = {
             norec: e.norecta,
-            taskid: 4
+            taskid: 4,
+            objectstatuspanggilfk: 2
         }
-        dispatch(updateTaskId(temp));
+        dispatch(updateTaskId(temp, () => {
+            dispatch(
+                daftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}&unit=${tempSelctUnit}`));
+            dispatch(widgetdaftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}`));
+        }));
     };
     const handleClickPulang = (e) => {
         setstatusPulangModal(true);

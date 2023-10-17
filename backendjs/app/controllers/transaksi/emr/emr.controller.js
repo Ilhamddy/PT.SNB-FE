@@ -888,6 +888,7 @@ async function updateTaskid(req, res) {
     try {
         let edit = {
             taskid: req.body.taskid,
+            objectstatuspanggilfk: req.body.objectstatuspanggilfk || 1,
         }
         if (req.body.taskid === 4){
             edit.tgldipanggildokter = new Date()
