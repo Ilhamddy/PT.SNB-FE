@@ -92,6 +92,7 @@ import Viewer from "./viewer/reducer";
 import BedahSentral from "./bedahSentral/reducer";
 import DaftarPasienOnline from "./daftarPasienOnline/reducer"
 import Berita from "./berita/reducer"
+import sumberDayaManusia from "./sumberDayaManusia/reducer";
 
 
 const rootReducer = combineReducers({
@@ -139,7 +140,8 @@ const rootReducer = combineReducers({
     Viewer,
     BedahSentral,
     DaftarPasienOnline,
-    Berita
+    Berita,
+    sumberDayaManusia
 });
 
 export default rootReducer;
