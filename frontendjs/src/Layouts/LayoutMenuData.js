@@ -32,7 +32,8 @@ const Navdata = () => {
     const [isMultiLevel, setIsMultiLevel] = useState(false);
     const [isListGawatDarurat, setListGawatDarurat] = useState(false);
     const [isListBedahSentral, setListBedahSentral] = useState(false);
-    const [isListAdminKonten, setIsListAdminKonten] = useState(false)
+    const [isListAdminKonten, setIsListAdminKonten] = useState(false);
+    const [isSumberDayaManusia, setSumberDayaManusia] = useState(false);
 
     // Apps
     const [isEmail, setEmail] = useState(false);
@@ -932,6 +933,33 @@ const Navdata = () => {
                     }
                 },
 
+            ],
+        },
+        // SDM
+        {
+            id: "loket_sdm",
+            label: "Sumber Daya Manusia",
+            icon: "ri-contacts-book-2-fill",
+            link: "/#",
+            click: function (e) {
+                e.preventDefault();
+                setSumberDayaManusia(!isSumberDayaManusia);
+                setIscurrentState('SumberDayaManusia');
+                updateIconSidebar(e);
+            },
+            stateVariables: isSumberDayaManusia,
+            isAllowed: () => {
+                return isAllowedAccess(getUserPermissions(), [
+                    "REGISTRASI_VIEW","SDM_VIEW"
+                ]);
+            },
+            subItems: [
+                {
+                    id: "registrasi-pasien-lama",
+                    label: "Daftar Pegawai",
+                    link: "/sumberdayamanusia/daftar-pegawai",
+                    parentId: "SumberDayaManusia",
+                },
             ],
         },
     ];

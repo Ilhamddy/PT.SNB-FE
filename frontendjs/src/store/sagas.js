@@ -82,6 +82,7 @@ import viewerSaga from "./viewer/saga"
 import bedahSentralSaga from "./bedahSentral/saga";
 import daftarPasienOnline from "./daftarPasienOnline/saga"
 import beritaSaga from "./berita/saga"
+import sumberDayaManusia from "./sumberDayaManusia/saga";
 
 
 export default function* rootSaga() {
@@ -128,6 +129,7 @@ export default function* rootSaga() {
     fork(viewerSaga),
     fork(bedahSentralSaga),
     fork(daftarPasienOnline),
-    fork(beritaSaga)
+    fork(beritaSaga),
+    fork(sumberDayaManusia)
   ]);
 }
