@@ -331,6 +331,7 @@ import ViewerPoli from "../pages/ViewerPoli/ViewerPoli";
 
 // Sumber Daya Manusia
 import DaftarPegawai from "../pages/SumberDayaManusia/DaftarPegawai/DaftarPegawai";
+import BiodataPegawai from "../pages/SumberDayaManusia/BiodataPegawai/BiodataPegawai";
 
 
 
@@ -653,6 +654,7 @@ const authProtectedRoutes = [
 
   // Sumber Daya Manusia
   { path: "/sumberdayamanusia/daftar-pegawai", component: <DaftarPegawai /> },
+  { path: "/sumberdayamanusia/biodata-pegawai", component: <BiodataPegawai /> },
 ];
 
 const publicRoutes = [
