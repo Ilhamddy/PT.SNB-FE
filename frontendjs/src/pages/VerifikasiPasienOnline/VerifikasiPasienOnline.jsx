@@ -65,6 +65,7 @@ const VerifikasiPasienOnline = () => {
       alamat: null,
       search: null,
       idcmfk: data.nocmfk,
+      norecdp: data.norecdp,
     })
   }
 
@@ -73,7 +74,9 @@ const VerifikasiPasienOnline = () => {
       name: 'Verifikasi Pasien Baru',
       onClick: (profil) => {
         if (!profil.norm) {
-          navigate(`/registrasi/pasien-baru/${profil?.idcmfk}`)
+          navigate(
+            `/registrasi/pasien-baru/${profil?.idcmfk}?norecdp=${profil?.norecdp}`
+          )
         } else {
           toast.warning('Pasien sudah terverifikasi', { autoClose: 3000 })
         }
@@ -100,7 +103,7 @@ const VerifikasiPasienOnline = () => {
               <div className="col-sm">
                 <h5 className="card-title mb-1">
                   {item.nocm || item.nocmtemp || '-'} /{' '}
-                  {item.noreservasi ? item.noreservasi : '-'}
+                  {item.noreservasi || '-'}
                 </h5>
                 <p className="mb-0">
                   {item.namapasien && item.namapasien.length > 15

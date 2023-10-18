@@ -304,7 +304,9 @@ SELECT
     mu.namaunit,
     mr.namarekanan,
     mp.nohp,
-    td.objectpenjaminfk
+    td.objectpenjaminfk,
+    td.noregistrasi AS noregistrasi,
+    td.norec AS norecdp
 FROM t_registrasionline tro
     LEFT JOIN t_daftarpasien td ON td.norec = tro.objectdaftarpasienfk
     LEFT JOIN m_pasien mp ON mp.id = td.nocmfk

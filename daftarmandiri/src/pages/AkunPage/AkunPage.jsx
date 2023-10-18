@@ -29,7 +29,7 @@ const AkunPage = () => {
     >
       <div className="akun-kontainer">
         <div>
-          <BackKomponen text={'Akun'} refKontainer={refKontainer} />
+          <BackKomponen text={'Akun'} refKontainer={refKontainer} toHome />
           <div className="opsi-akun">
             <div className="data-akun">
               <img className="gbr-akun" alt="" src={DokterTemp} />

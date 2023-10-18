@@ -47,7 +47,12 @@ const FormPasienBaru = ({ step, setStep }) => {
     },
     validationSchema: Yup.object({
       namalengkap: Yup.string().required('Nama wajib diisi'),
-      noidentitas: Yup.string().required('No Identitas wajib diisi'),
+      noidentitas: Yup.string()
+        .required('No Identitas wajib diisi')
+        .when('kewarganegaraan', {
+          is: (val) => val === '1',
+          then: () => Yup.string().length(16, 'No Identitas harus 16 digit'),
+        }),
       tempatlahir: Yup.string().required('Tempat Lahir wajib diisi'),
       tanggallahir: Yup.string().required('Tanggal Lahir wajib diisi'),
       jeniskelamin: Yup.string().required('Jenis Kelamin wajib diisi'),
@@ -143,9 +148,14 @@ const FormPasienBaru = ({ step, setStep }) => {
       namaibu: Yup.string().required('Nama Ibu wajib diisi'),
       namaayah: Yup.string().required('Nama Ayah wajib diisi'),
       // nobpjs: Yup.string().required('No BPJS wajib diisi'),
-      nohppasien: Yup.string().required('No HP Pasien wajib diisi'),
+      nohppasien: Yup.string()
+        .required('No HP Pasien wajib diisi')
+        .min(10, 'No HP Pasien minimal 10 digit')
+        .max(13, 'No HP Pasien maksimal 13 digit')
+        .matches(rgxAllNumber, 'No HP Pasien harus angka'),
     }),
     onSubmit: (values, { resetForm }) => {
+      console.log('masuk')
       const finalVal = {
         step0: vStep0.values,
         step1: vStep1.values,
@@ -175,7 +185,6 @@ const FormPasienBaru = ({ step, setStep }) => {
 
   useEffect(() => {
     if (vStep2.values.sesuaiktp === 0 && vStep1.values.alamat) {
-      console.log('masuk23')
       const setFF = vStep2.setFieldValue
       setFF('alamat', vStep1.values.alamat || '')
       setFF('kelurahan', vStep1.values.kelurahan || '')
@@ -248,11 +257,28 @@ const FormPasienBaru = ({ step, setStep }) => {
     { label: 'Ya', value: 0 },
     { label: 'Tidak', value: 1 },
   ]
-  console.log(user)
+  console.log(vStep0.values.kewarganegaraan)
   return (
     <div className="kontainer-konten pasien-baru-konten">
       {step === 0 && (
         <>
+          <InputGroup label={'Kewarganegaraan'}>
+            <SelectDM
+              id="kewarganegaraan"
+              name="kewarganegaraan"
+              className="input-login"
+              options={master?.kebangsaan || []}
+              isError={
+                vStep0.touched.kewarganegaraan && vStep0.errors.kewarganegaraan
+              }
+              errorMsg={vStep0.errors.kewarganegaraan}
+              onChange={(e) => {
+                vStep0.setFieldValue('kewarganegaraan', e.value || '')
+              }}
+              value={vStep0.values.kewarganegaraan}
+              isDisabled={isEdit}
+            />
+          </InputGroup>
           <InputGroup label={'Nama Lengkap'}>
             <InputDM
               id="namalengkap"
@@ -365,23 +391,7 @@ const FormPasienBaru = ({ step, setStep }) => {
               isDisabled={isEdit}
             />
           </InputGroup>
-          <InputGroup label={'Kewarganegaraan'}>
-            <SelectDM
-              id="kewarganegaraan"
-              name="kewarganegaraan"
-              className="input-login"
-              options={master?.kebangsaan || []}
-              isError={
-                vStep0.touched.kewarganegaraan && vStep0.errors.kewarganegaraan
-              }
-              errorMsg={vStep0.errors.kewarganegaraan}
-              onChange={(e) => {
-                vStep0.setFieldValue('kewarganegaraan', e.value || '')
-              }}
-              value={vStep0.values.kewarganegaraan}
-              isDisabled={isEdit}
-            />
-          </InputGroup>
+
           <InputGroup label={'Suku'}>
             <SelectDM
               id="suku"
@@ -504,7 +514,7 @@ const FormPasienBaru = ({ step, setStep }) => {
           </InputGroup>
           <div className="input-split">
             <div className="isi-input">
-              <InputGroup label={'RW'}>
+              <InputGroup label={'RT'}>
                 <InputDM
                   id="rt"
                   name="rt"
@@ -521,7 +531,7 @@ const FormPasienBaru = ({ step, setStep }) => {
               </InputGroup>
             </div>
             <div className="isi-input">
-              <InputGroup label={'RT'}>
+              <InputGroup label={'RW'}>
                 <InputDM
                   id="rw"
                   name="rw"
@@ -681,6 +691,7 @@ const FormPasienBaru = ({ step, setStep }) => {
               value={vStep2.values.alamat}
               errorMsg={vStep2.errors.alamat}
               isError={vStep2.touched.alamat && vStep2.errors.alamat}
+              disabled={vStep2.values.sesuaiktp === 0}
               onChange={(e) => {
                 vStep2.handleChange(e)
               }}
@@ -688,7 +699,7 @@ const FormPasienBaru = ({ step, setStep }) => {
           </InputGroup>
           <div className="input-split">
             <div className="isi-input">
-              <InputGroup label={'RW'}>
+              <InputGroup label={'RT'}>
                 <InputDM
                   id="rt"
                   name="rt"
@@ -697,6 +708,7 @@ const FormPasienBaru = ({ step, setStep }) => {
                   value={vStep2.values.rt}
                   errorMsg={vStep2.errors.rt}
                   isError={vStep2.touched.rt && vStep2.errors.rt}
+                  disabled={vStep2.values.sesuaiktp === 0}
                   onChange={(e) => {
                     vStep2.handleChange(e)
                   }}
@@ -704,7 +716,7 @@ const FormPasienBaru = ({ step, setStep }) => {
               </InputGroup>
             </div>
             <div className="isi-input">
-              <InputGroup label={'RT'}>
+              <InputGroup label={'RW'}>
                 <InputDM
                   id="rw"
                   name="rw"
@@ -713,6 +725,7 @@ const FormPasienBaru = ({ step, setStep }) => {
                   value={vStep2.values.rw}
                   errorMsg={vStep2.errors.rw}
                   isError={vStep2.touched.rw && vStep2.errors.rw}
+                  disabled={vStep2.values.sesuaiktp === 0}
                   onChange={(e) => {
                     vStep2.handleChange(e)
                   }}
@@ -728,6 +741,7 @@ const FormPasienBaru = ({ step, setStep }) => {
               options={desa}
               isError={vStep2.touched.kelurahan && vStep2.errors.kelurahan}
               errorMsg={vStep2.errors.kelurahan}
+              isDisabled={vStep2.values.sesuaiktp === 0}
               onInputChange={handleKelurahanGet}
               onChange={(e) => {
                 console.log(e)
@@ -764,6 +778,7 @@ const FormPasienBaru = ({ step, setStep }) => {
               name="kodepos"
               type="string"
               className="input-login"
+              disabled={vStep2.values.sesuaiktp === 0}
               value={vStep2.values.kodepos}
               errorMsg={vStep2.errors.kodepos}
               isError={vStep2.touched.kodepos && vStep2.errors.kodepos}
@@ -829,6 +844,7 @@ const FormPasienBaru = ({ step, setStep }) => {
                 vStep2.setFieldValue('negara', e.value || '')
               }}
               value={vStep2.values.negara}
+              isDisabled={vStep2.values.sesuaiktp === 0}
             />
           </InputGroup>
         </>
@@ -843,7 +859,7 @@ const FormPasienBaru = ({ step, setStep }) => {
               className="input-login"
               value={vStep3.values.namaibu}
               errorMsg={vStep3.errors.namaibu}
-              isError={vStep3.touched.namaibu && vStep2.errors.namaibu}
+              isError={vStep3.touched.namaibu && vStep3.errors.namaibu}
               onChange={(e) => {
                 vStep3.handleChange(e)
               }}
@@ -858,7 +874,7 @@ const FormPasienBaru = ({ step, setStep }) => {
               className="input-login"
               value={vStep3.values.namaayah}
               errorMsg={vStep3.errors.namaayah}
-              isError={vStep3.touched.namaayah && vStep2.errors.namaayah}
+              isError={vStep3.touched.namaayah && vStep3.errors.namaayah}
               onChange={(e) => {
                 vStep3.handleChange(e)
               }}
@@ -873,7 +889,7 @@ const FormPasienBaru = ({ step, setStep }) => {
               className="input-login"
               value={vStep3.values.nobpjs}
               errorMsg={vStep3.errors.nobpjs}
-              isError={vStep3.touched.nobpjs && vStep2.errors.nobpjs}
+              isError={vStep3.touched.nobpjs && vStep3.errors.nobpjs}
               onChange={(e) => {
                 rgxAllNumber.test(e.target.value) && vStep3.handleChange(e)
               }}
@@ -888,7 +904,7 @@ const FormPasienBaru = ({ step, setStep }) => {
               className="input-login"
               value={vStep3.values.nohppasien}
               errorMsg={vStep3.errors.nohppasien}
-              isError={vStep3.touched.nohppasien && vStep2.errors.nohppasien}
+              isError={vStep3.touched.nohppasien && vStep3.errors.nohppasien}
               onChange={(e) => {
                 rgxAllNumber.test(e.target.value) && vStep3.handleChange(e)
               }}
@@ -949,6 +965,7 @@ const FormPasienBaru = ({ step, setStep }) => {
                 left: 0,
                 behavior: 'smooth',
               })
+              console.log(vStep3.errors)
               vStep3.handleSubmit()
             }}
           >

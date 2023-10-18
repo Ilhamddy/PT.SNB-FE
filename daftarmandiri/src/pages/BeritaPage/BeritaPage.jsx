@@ -16,7 +16,7 @@ const BeritaPage = () => {
   }))
   useEffect(() => {
     dispatch(getBeritaQuery({ norec: norecberita }))
-  }, [])
+  }, [norecberita, dispatch])
   return (
     <KontainerPage top={0} ref={refKontainer} className="berita-page">
       <BackKomponen text={'Berita'} refKontainer={refKontainer} />

@@ -9,6 +9,7 @@ import { getDateStartEnd, getDateStartEndMonth } from "../../../utils/dateutils"
 import userpasienQueries from "../../../queries/daftarmandiri/userpasien/userpasien.queries";
 import bcrypt from "bcryptjs"
 import rekananQueries from "../../../queries/master/rekanan/rekanan.queries";
+import * as uuid from "uuid";
 
 
 const m_pasien = db.m_pasien
@@ -86,9 +87,16 @@ const getRiwayatReservasi = async (req, res) => {
                 todayStart, 
                 todayEnd
             ])
+        const riwayatMendatang = await pool.query(userpasienQueries.qGetRiwayatRegistrasi,
+            [
+                req.id, 
+                todayEnd, 
+                '9999-12-31 23:59:59'
+            ])
         const tempres = {
             riwayat: riwayat.rows,
-            riwayatToday: riwayatToday.rows
+            riwayatToday: riwayatToday.rows,
+            riwayatMendatang: riwayatMendatang.rows
         };
         res.status(200).send({
             msg: 'Success',
@@ -111,14 +119,26 @@ const batalRegis = async (req, res) => {
     const logger = res.locals.logger;
     try{
         const updated = await db.sequelize.transaction(async (transaction) => {
-            const {norec} = req.body
-            await db.t_registrasionline.update({
+            const {norec, alasan} = req.body
+            const registrasiModel = await db.t_registrasionline.findOne({
+                where: {
+                    norec: norec,
+                },
+                transaction: transaction
+            })
+            await registrasiModel.update({
                 statusenabled: false
             }, {
-                where: {
-                    norec: norec
-                },
-                transaction: transaction,
+                transaction: transaction
+            })
+            const regisVal = registrasiModel?.toJSON() || null
+            await db.t_batalpasien.create({
+                norec: uuid.v4().substring(0, 32),
+                objectdaftarpasienfk: regisVal?.objectdaftarpasienfk || null,
+                objectpegawaifk: null,
+                alasanbatal: alasan || '',
+                objectbatalpasienfk: null,
+                tglbatal: new Date()
             })
             return {updated: norec}
         });

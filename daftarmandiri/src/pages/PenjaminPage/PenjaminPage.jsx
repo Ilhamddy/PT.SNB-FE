@@ -19,6 +19,7 @@ import SelectDM from '../../Components/SelectDM/SelectDM'
 import GbrBPJS from './gbr-bpjs.svg'
 import GbrDropDown from './drop-down.svg'
 import GbrDropUp from './drop-up.svg'
+import GbrPenjamin from './love.png'
 
 const PenjaminPage = () => {
   const refKontainer = useRef(null)
@@ -181,7 +182,11 @@ const IsiListPenjamin = ({ data, onEdit, ...rest }) => {
   return (
     <li className="isi-list-penjamin" {...rest}>
       <div className="utama" onClick={() => setOpen(!open)}>
-        <img alt="" src={GbrBPJS} className="gbr-penjamin" />
+        <img
+          alt=""
+          src={data.rekanan === 1 ? GbrBPJS : GbrPenjamin}
+          className="gbr-penjamin"
+        />
         <div className="teks-rekanan">
           <p>{data.namarekanan}</p>
           <p>{data.nokartu}</p>

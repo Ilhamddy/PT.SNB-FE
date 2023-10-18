@@ -107,17 +107,17 @@ const savePasienMandiri = async (req, res) => {
             let resultCountNoantrianDokter = await pool.query(queriesRegistrasi.qNoAntrian, [dokter, todayStart, todayEnd]);
             let noantrian = parseFloat(resultCountNoantrianDokter.rows[0].count) + 1
             const noregistrasi = await hCreateNoreg(jadwal)
-            const pasien = await pool.query(qGetDaftarPasienLama, [req.id])
+            const pasien = (await pool.query(qGetDaftarPasienLama, [req.id])).rows[0]
             let statuspasien = 'LAMA'
-            if(pasien.tgldaftar > todayStart && pasien.tgldaftar < todayEnd){
+            if(pasien?.tgldaftar > todayStart && pasien?.tgldaftar < todayEnd){
                 statuspasien = 'BARU'
             }
 
             const daftarPasien = await db.t_daftarpasien.create({
                 norec: norecDP,
                 nocmfk: nocmfk,
-                noregistrasi: noregistrasi,
-                tglregistrasi: new Date(jadwal),
+                noregistrasi: !pasien.nocm ? null : noregistrasi,
+                tglregistrasi: !pasien.nocm ? null : new Date(jadwal),
                 objectunitlastfk: poliklinik,
                 objectdokterpemeriksafk: dokter,
                 objectpegawaifk: null,
@@ -151,22 +151,26 @@ const savePasienMandiri = async (req, res) => {
                 transaction: transaction
             });
             let norecAP = uuid.v4().substring(0, 32);
-            const antreanPemeriksaan = await db.t_antreanpemeriksaan.create({
-                norec: norecAP,
-                objectdaftarpasienfk: norecDP,
-                tglmasuk: new Date(jadwal),
-                tglkeluar: null,
-                objectdokterpemeriksafk: dokter,
-                objectunitfk: poliklinik,
-                noantrian: noantrian,
-                objectkamarfk: null,
-                objectkelasfk: null,
-                nobed: null,
-                taskid: 3,
-                statusenabled: true
-            }, {
-                transaction: transaction
-            });
+            let antreanPemeriksaan = null
+            if(pasien.nocm){
+                antreanPemeriksaan = await db.t_antreanpemeriksaan.create({
+                    norec: norecAP,
+                    objectdaftarpasienfk: norecDP,
+                    tglmasuk: new Date(jadwal),
+                    tglkeluar: null,
+                    objectdokterpemeriksafk: dokter,
+                    objectunitfk: poliklinik,
+                    noantrian: noantrian,
+                    objectkamarfk: null,
+                    objectkelasfk: null,
+                    nobed: null,
+                    taskid: 3,
+                    statusenabled: true
+                }, {
+                    transaction: transaction
+                });
+            }
+
             return { daftarPasien, antreanPemeriksaan }
         });
         let tempres = {
@@ -222,7 +226,7 @@ export default {
     savePasienMandiri
 }
 
-const hCreateNoreg = async (date) => {
+export const hCreateNoreg = async (date) => {
     let today = new Date(date);
     let todayStart = new Date(date);
     todayStart.setHours(0, 0, 0, 0)

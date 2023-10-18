@@ -30,12 +30,13 @@ import { masterGet, desaGet, kecamatanGet } from '../../../store/master/action';
 import { registrasiSave, registrasiResetForm, registrasiGet, pasienFormQueriesGet } from "../../../store/actions";
 import CustomSelect from '../../Select/Select'
 import { rgxAllNumber, rgxNbrEmpty } from '../../../utils/regexcommon';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 
 const PasienBaru = () => {
     document.title = "Profile Pasien Baru";
     const dispatch = useDispatch();
     const {idpasien,norectriage} = useParams();
+    const [searchParams] = useSearchParams()
     const navigate = useNavigate()
 
     const refAgama = useRef(null);
@@ -173,6 +174,7 @@ const PasienBaru = () => {
             notelepon: "",
             nocm: "",
             nocmtemp: "",
+            norecdp: "",
         },
         validationSchema: Yup.object({
             namapasien: Yup.string().required("Nama pasien wajib diisi"),
@@ -216,9 +218,9 @@ const PasienBaru = () => {
                         navigate(`/registrasi/pasien-ruangan-triage/${response.data.id}/${norectriage}`);
                     }
                 }
+                resetForm({ values: '' })
             }));
             // console.log(values)
-            resetForm({ values: '' })
         }
     });
 
@@ -280,9 +282,8 @@ const PasienBaru = () => {
     useEffect(() => {
         const setFF = validation.setFieldValue
         setFF("id", idpasien)
-        console.log(idpasien)
         dispatch(pasienFormQueriesGet({idpasien: idpasien}))
-    }, [idpasien,dispatch, validation.setFieldValue])
+    }, [idpasien,dispatch, validation.setFieldValue, ])
 
     // useEffect(() => {
     //     const setFF = validation.setFieldValue
@@ -293,11 +294,14 @@ const PasienBaru = () => {
 
     useEffect(() => {
         const setV = validation.setValues
-        console.log(pasienFormQueries)
         if(pasienFormQueries){
-            setV(pasienFormQueries)
+            setV({
+                ...validation.initialValues,
+                ...pasienFormQueries, 
+                norecdp: searchParams.get("norecdp") || ''
+            })
         }
-    }, [pasienFormQueries, validation.setValues])
+    }, [pasienFormQueries, validation.setValues, validation.initialValues, searchParams.get("norecdp")])
 
 
     const handleChangeKebangsaan = (selected) => {

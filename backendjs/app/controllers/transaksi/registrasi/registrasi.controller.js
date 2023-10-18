@@ -9,6 +9,7 @@ import bcrypt from "bcryptjs";
 import { pasienSignup } from "../../auth/authhelper";
 import { belumDiperiksa, iconPenunjang, iconRI, iconRJ, sedangDiperiksa, selesaiDiperiksa, siapPakai, totalTempatRusak, totalTempatTerisi } from "./icon";
 import { getDateStartEnd, getDateStartEndNull } from "../../../utils/dateutils";
+import { hCreateNoreg } from "../../daftarmandiri/daftarpasienlama/daftarpasienlama.controller";
 
 const m_pasien = db.m_pasien
 const running_Number = db.running_number
@@ -241,56 +242,13 @@ const savePasien = async (req, res) => {
                 })
             userPasien = userPasien?.toJSON() || null
         } else {
-            const pasienBefore = await m_pasien.findOne({
-                where: {
-                    id: objBody.id
-                },
-                transaction: transaction
-            })
-            if(!pasienBefore.nocm) {
-                await running_Number.update({ new_number: nocm }, {
-                    where: {
-                        id: 1
-                    },
-                    transaction: transaction
-                });
-            }
-            result = await pasienBefore.update({
-                nocm: pasienBefore.nocm || nocm,
-                namapasien: objBody.namapasien,
-                noidentitas: objBody.noidentitas,
-                objectjeniskelaminfk: objBody.jeniskelamin,
-                objecttitlefk: objBody.titlepasien,
-                objectagamafk: objBody.agama,
-                objectgolongandarahfk: objBody.goldarah,
-                objectkebangsaanfk: objBody.kebangsaan,
-                objectstatusperkawinanfk: objBody.statusperkawinan,
-                tempatlahir: objBody.tempatlahir,
-                tgllahir: new Date(objBody.tgllahir),
-                objectpendidikanfk: objBody.pendidikan,
-                objectpekerjaanfk: objBody.pekerjaan,
-                objectetnisfk: objBody.suku,
-                objectbahasafk: objBody.bahasa,
-                alamatrmh: objBody.alamatktp,
-                rtktp: objBody.rt,
-                rwktp: objBody.rw,
-                objectdesakelurahanktpfk: objBody.desa,
-                objectnegaraktpfk: objBody.negara,
-                alamatdomisili: objBody.alamatdomisili,
-                rtdomisili: objBody.rtdomisili,
-                rwdomisili: objBody.rwdomisili,
-                objectdesakelurahandomisilifk: objBody.desaDomisili,
-                objectnegaradomisilifk: objBody.negaraDomisili,
-                statusenabled: true,
-                nobpjs: objBody.nobpjs || null,
-                nohp: objBody.nohp || null,
-                notelepon: objBody.notelepon || null,
-                namaayah: objBody.namaayah || null,
-                namasuamiistri: objBody.namasuamiistri || null,
-                namakeluarga: objBody.namakeluargalain || null,
-                namaibu: objBody.namaibu || null,
-                objectkaryawanrsfk: req.idPegawai || null,
-            })
+            result = await hUpdatePasien(
+                req, 
+                res, 
+                transaction, 
+                {
+                    nocm
+                })
         }
         transaction.commit();
         res.status(200).send({
@@ -1983,4 +1941,104 @@ const hCreatePasien = async (req, res, transaction, { objBody, nocm }) => {
         transaction: transaction
     })
     return result
+}
+
+const hUpdatePasien = async (req, res, transaction, {nocm}) => {
+    const objBody = req.body
+    const pasienBefore = await m_pasien.findOne({
+        where: {
+            id: objBody.id
+        },
+        transaction: transaction
+    })
+    if(!pasienBefore.nocm) {
+        await running_Number.update({ new_number: nocm }, {
+            where: {
+                id: 1
+            },
+            transaction: transaction
+        });
+    }
+    let dataBefore = pasienBefore?.toJSON() || null
+    let antreanPemeriksaan = null
+    if(!dataBefore.nocm) { 
+        // buat antrean karena pasien baru belum terverifikasi
+        const norecdp = objBody.norecdp
+        const noregistrasi = await hCreateNoreg(new Date())
+        const daftarPasienModel = await db.t_daftarpasien.findOne({
+            where: {
+                norec: norecdp
+            },
+            transaction: transaction
+        })
+        await daftarPasienModel.update({
+            noregistrasi: noregistrasi,
+            tglregistrasi: new Date(),
+        }, {
+            transaction: transaction
+        })
+        const daftarPasienVal = daftarPasienModel.toJSON()
+        const dokter = daftarPasienVal.objectdokterpemeriksafk
+        const {
+            todayStart,
+            todayEnd
+        } = getDateStartEnd()
+        let resultCountNoantrianDokter = await pool.query(queries.qNoAntrian, [dokter, todayStart, todayEnd]);
+        let noantrian = parseFloat(resultCountNoantrianDokter.rows[0].count) + 1
+        antreanPemeriksaan = await db.t_antreanpemeriksaan.create({
+            norec: uuid.v4().substring(0, 32),
+            objectdaftarpasienfk: norecdp,
+            tglmasuk: new Date(),
+            tglkeluar: null,
+            objectdokterpemeriksafk: dokter,
+            objectunitfk: daftarPasienVal.objectunitlastfk,
+            noantrian: noantrian,
+            objectkamarfk: null,
+            objectkelasfk: null,
+            nobed: null,
+            taskid: 3,
+            statusenabled: true
+        }, {
+            transaction: transaction
+        });
+    }
+    await pasienBefore.update({
+        nocm: pasienBefore.nocm || nocm,
+        namapasien: objBody.namapasien,
+        noidentitas: objBody.noidentitas,
+        objectjeniskelaminfk: objBody.jeniskelamin,
+        objecttitlefk: objBody.titlepasien,
+        objectagamafk: objBody.agama,
+        objectgolongandarahfk: objBody.goldarah,
+        objectkebangsaanfk: objBody.kebangsaan,
+        objectstatusperkawinanfk: objBody.statusperkawinan,
+        tempatlahir: objBody.tempatlahir,
+        tgllahir: new Date(objBody.tgllahir),
+        objectpendidikanfk: objBody.pendidikan,
+        objectpekerjaanfk: objBody.pekerjaan,
+        objectetnisfk: objBody.suku,
+        objectbahasafk: objBody.bahasa,
+        alamatrmh: objBody.alamatktp,
+        rtktp: objBody.rt,
+        rwktp: objBody.rw,
+        objectdesakelurahanktpfk: objBody.desa,
+        objectnegaraktpfk: objBody.negara,
+        alamatdomisili: objBody.alamatdomisili,
+        rtdomisili: objBody.rtdomisili,
+        rwdomisili: objBody.rwdomisili,
+        objectdesakelurahandomisilifk: objBody.desaDomisili,
+        objectnegaradomisilifk: objBody.negaraDomisili,
+        statusenabled: true,
+        nobpjs: objBody.nobpjs || null,
+        nohp: objBody.nohp || null,
+        notelepon: objBody.notelepon || null,
+        namaayah: objBody.namaayah || null,
+        namasuamiistri: objBody.namasuamiistri || null,
+        namakeluarga: objBody.namakeluargalain || null,
+        namaibu: objBody.namaibu || null,
+        objectkaryawanrsfk: req.idPegawai || null,
+    }, {
+        transaction: transaction
+    })
+    return pasienBefore.toJSON()
 }
