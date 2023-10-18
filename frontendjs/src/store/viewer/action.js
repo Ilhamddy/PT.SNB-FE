@@ -103,10 +103,11 @@ export const panggilUlangAntrianError = (error) => ({
     payload: error,
 });
 
-export const getJadwalDokter = (queries) => ({
+export const getJadwalDokter = (queries, callback) => ({
     type: GET_JADWAL_DOKTER,
     payload: {
-        queries
+        queries,
+        callback
     },
 });
 

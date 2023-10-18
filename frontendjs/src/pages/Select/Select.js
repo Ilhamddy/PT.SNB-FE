@@ -12,6 +12,14 @@ import {Props as StateManagerProps} from 'react-select';
  */
 const CustomSelect = React.forwardRef(({ onChange, options, value, className, ...rest}, ref) =>{
     const defaultValue = (options,value)=>{
+        if(rest.isMulti){
+            let newOptions = []
+            value.forEach(val => {
+                const opt = options.find(option => option.value === val.value)
+                opt && newOptions.push(opt)
+            })
+            return newOptions
+        }
         return options ? options.find(option => option.value === value) : ""
     }
     const customStyles = {

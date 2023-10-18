@@ -17,6 +17,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import {
   getComboDaftar,
   getDokterPasien,
+  getJadwalDokterDaftar,
   getPasienLama,
   savePasienMandiri,
 } from '../../store/actions'
@@ -35,6 +36,7 @@ const DaftarPasienLama = () => {
     dokterTerpilih,
     isNotPasienSementara,
     loadingSubmit,
+    dokterDate,
   } = useSelector((state) => ({
     poliklinik: state.DaftarPasienLama.getComboDaftar?.data?.poliklinik || [],
     dokter: state.DaftarPasienLama.getComboDaftar?.data?.dokter || [],
@@ -45,7 +47,10 @@ const DaftarPasienLama = () => {
     loadingPasien: state.DaftarPasienLama.getPasienLama.loading || false,
     dokterTerpilih: state.DaftarPasienLama.getDokter?.data?.dokter || [],
     loadingSubmit: state.DaftarPasienLama.savePasienMandiri.loading || false,
+    dokterDate: state.DaftarPasienLama.getJadwalDokter?.data?.dokter || [],
   }))
+  const dDate = dokterDate?.[0]?.values || []
+
   let { step } = useParams()
   const [searchParams] = useSearchParams()
   step = Number(step)
@@ -134,6 +139,28 @@ const DaftarPasienLama = () => {
     dispatch(getComboDaftar())
     setFF('jadwal', decodeURIComponent(jadwal))
   }, [dispatch, id, jadwal, vDaftar.setFieldValue])
+
+  useEffect(() => {
+    dispatch(
+      getJadwalDokterDaftar({
+        unitid: undefined,
+        hariid: undefined,
+        dokterid: vDaftar.values.dokter,
+      })
+    )
+  }, [vDaftar.values.dokter])
+
+  const disableJadwal = (date) => {
+    const foundDay = dDate.find((item) => {
+      return item.hariid === date.getDay()
+    })
+    return !foundDay
+  }
+  const disableBeforeToday = (date) => {
+    console.log(date)
+    let dateNowDate = new Date(dateNow)
+    return date <= new Date(dateNowDate - 24 * 60 * 60 * 1000)
+  }
 
   const kontenLogin = (
     <>
@@ -315,6 +342,7 @@ const DaftarPasienLama = () => {
               name="jadwal"
               placeholder="Pilih Jadwal"
               value={vDaftar.values.jadwal}
+              options={{ disable: [disableJadwal, disableBeforeToday] }}
               onChange={([newDate]) => {
                 vDaftar.setFieldValue('jadwal', newDate.toISOString() || '')
               }}

@@ -304,7 +304,9 @@ SELECT
     mu.namaunit,
     mr.namarekanan,
     mp.nohp,
-    td.objectpenjaminfk
+    td.objectpenjaminfk,
+    td.noregistrasi AS noregistrasi,
+    td.norec AS norecdp
 FROM t_registrasionline tro
     LEFT JOIN t_daftarpasien td ON td.norec = tro.objectdaftarpasienfk
     LEFT JOIN m_pasien mp ON mp.id = td.nocmfk
@@ -317,6 +319,7 @@ WHERE
         ($1 = '') 
         OR mp.nocmtemp ILIKE '%' || $1 || '%' 
         OR mp.namapasien ILIKE '%' || $1 || '%' 
+        OR tro.noreservasi ILIKE '%' || $1 || '%'
     )
     --- find by TGLRENCANA, if both empty, find all
     AND 
@@ -334,6 +337,15 @@ WHERE
             WHEN (NULLIF($4, '')::int IS NULL)
             THEN TRUE
             ELSE mu.id = NULLIF($4, '')::int
+        END
+    --- find by jenispasien
+    AND 
+        CASE 
+            WHEN (NULLIF($5, '')::int IS NULL)
+                THEN TRUE
+            WHEN (NULLIF($5, '')::int = 1)
+                THEN mp.nocm IS NULL
+            ELSE mp.nocm IS NOT NULL
         END
 ORDER BY tro.tglinput DESC
 `

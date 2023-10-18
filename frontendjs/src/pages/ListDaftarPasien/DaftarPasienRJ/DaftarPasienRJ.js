@@ -151,6 +151,13 @@ const DaftarPasienRJ = () => {
             },
         },
         {
+            name: <span className='font-weight-bold fs-13'>No Antrean</span>,
+            selector: row => row.noantrian,
+            sortable: true,
+            width: "100px",
+            wrap: true
+        },
+        {
             name: <span className='font-weight-bold fs-13'>Tgl Registrasi</span>,
             selector: row => dateTimeLocal(row.tglregistrasi),
             sortable: true,
@@ -291,9 +298,14 @@ const DaftarPasienRJ = () => {
     const handleClickPanggil = (e) => {
         let temp = {
             norec: e.norecta,
-            taskid: 4
+            taskid: 4,
+            objectstatuspanggilfk: 2
         }
-        dispatch(updateTaskId(temp));
+        dispatch(updateTaskId(temp, () => {
+            dispatch(
+                daftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}&unit=${tempSelctUnit}`));
+            dispatch(widgetdaftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}`));
+        }));
     };
     const handleClickPulang = (e) => {
         setstatusPulangModal(true);

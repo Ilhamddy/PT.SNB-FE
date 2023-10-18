@@ -28,6 +28,7 @@ FROM t_antreanpemeriksaan ta
 WHERE (td.isprinted IS null OR td.isprinted != true) 
 	AND td.tglregistrasi BETWEEN $1 AND $2
 	AND (td.objectinstalasifk = 1 OR td.objectinstalasifk = 7)
+	AND td.noregistrasi IS NOT NULL --- belum terdaftar
 ORDER BY td.tglregistrasi ASC
 
 `

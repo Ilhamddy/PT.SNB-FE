@@ -101,7 +101,7 @@ function* onGetRegistrasiNorec({ payload: { norec } }) {
 }
 
 
-function* onSaveRegistrasiRuangan({ payload: { data, history } }) {
+function* onSaveRegistrasiRuangan({ payload: { data, callback } }) {
     try {
         let response = null;
         if (data.id) {
@@ -116,6 +116,7 @@ function* onSaveRegistrasiRuangan({ payload: { data, history } }) {
         } else {
             toast.error(response.msg, { autoClose: 3000 });
         }
+        callback && callback()
     } catch (error) {
         yield put(registrasiSaveRuanganError(error));
         toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });

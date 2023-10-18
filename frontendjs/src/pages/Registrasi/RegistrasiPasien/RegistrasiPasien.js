@@ -104,6 +104,7 @@ const RegistrasiPasien = (props) => {
     const validation = useFormik({
         enableReinitialize: true,
         initialValues: {
+            norecdp: newData?.norecdp ?? "",
             id: newData?.id ?? id,
             tglregistrasi: newData?.tglregistrasi ?? dateStart,
             unittujuan: newData?.unittujuan ?? "",
@@ -135,10 +136,6 @@ const RegistrasiPasien = (props) => {
             dokter: Yup.string().required("Dokter wajib diisi"),
             penanggungjawab: Yup.string().required("Penanggung jawab wajib diisi"),
             caramasuk: Yup.string().required("Cara Masuk wajib diisi"),
-            // kelas: Yup.string().when("tujkunjungan",{
-            //     is:(val) => val ==="2",
-            //     then: Yup.string().required("Kelas Harus di isi")
-            // })
             kelas: Yup.string().when("tujkunjungan", (tujkunjungan, schema) => {
                 if (tujkunjungan[0] === '2') {
                     return schema
@@ -146,7 +143,7 @@ const RegistrasiPasien = (props) => {
                 } else return schema
             }),
             kamar: Yup.string().when("kelas", (kelas, schema) => {
-                if (kelas[0] !== undefined) {
+                if (kelas[0] !== undefined && kelas[0] !== '8') {
                     return schema
                         .required("Kamar Harus di isi")
                 } else return schema
@@ -160,7 +157,11 @@ const RegistrasiPasien = (props) => {
         }),
         onSubmit: (values) => {
             // console.log(values)
-            dispatch(registrasiSaveRuangan(values, ''));
+            dispatch(registrasiSaveRuangan(values, () => {
+                if(dtRuangNorec && !dtRuangNorec?.noregistrasi){
+                    navigate(`/bGlzdGRhZnRhcnBhc2llbi9kYWZ0YXItcGFzaWVuLWlnZA==`)
+                }
+            }));
         }
     });
 
@@ -178,7 +179,7 @@ const RegistrasiPasien = (props) => {
             validation.setFieldValue('unittujuan', unitLastFk);
             setdataUnit(newArray);
             const idKelas = dtRuangNorec?.objectkelasfk || ""
-            validation.setFieldValue('kelas', idKelas);
+            validation.setFieldValue('kelas', idKelas || undefined);
             let newArrayKamar = data?.kamar?.filter(function (item) {
                 if (item.objectkelasfk === idKelas && item.objectunitfk === unitLastFk)
                     return true;
@@ -209,6 +210,9 @@ const RegistrasiPasien = (props) => {
             validation.setFieldValue('penjamin', penjamin);
             validation.setFieldValue('dokter', dtRuangNorec?.objectdokterpemeriksafk || "");
             validation.setFieldValue('penanggungjawab', dtRuangNorec?.objectpjpasienfk || "");
+            validation.setFieldValue('isVerif', !dtRuangNorec?.noregistrasi)
+            validation.setFieldValue('norecdp', dtRuangNorec?.norec || "")
+            validation.setFieldValue('caramasuk', dtRuangNorec?.objectcaramasukfk || "")
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [dtRuangNorec, validation.setFieldValue, data])
@@ -530,6 +534,7 @@ const RegistrasiPasien = (props) => {
                         <Form onSubmit={(e) => {
                             e.preventDefault();
                             validation.handleSubmit();
+                            console.log(validation.errors)
                             return false;
                         }}
                             className="gy-4"
@@ -822,7 +827,9 @@ const RegistrasiPasien = (props) => {
                                             </Card>
                                         </Col>
                                         <Col lg={12} style={{ textAlign: 'right' }}>
-                                            {!successReg && (!norec || !dtRuangNorec) && <Button type="submit" color="info" disabled={loadingSave}> SIMPAN </Button>}
+                                            {!successReg &&
+                                                (!norec || !dtRuangNorec || (dtRuangNorec && !dtRuangNorec?.noregistrasi)) 
+                                                && <Button type="submit" color="info" disabled={loadingSave}> {dtRuangNorec && !dtRuangNorec?.noregistrasi ? `Verifikasi` : `SIMPAN`} </Button>}
                                         </Col>
                                         {/* contoh pakai checkbox */}
                                         {/* <CustomCheckbox 

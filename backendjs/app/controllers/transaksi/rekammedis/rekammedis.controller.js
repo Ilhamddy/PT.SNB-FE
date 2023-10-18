@@ -26,7 +26,6 @@ async function getListDaftarDokumenRekammedis(req, res) {
     try {
         let tglregistrasi = ""
         if (req.query.start !== undefined) {
-
             tglregistrasi = ` and dp.tglregistrasi between '${req.query.start}'
          and '${req.query.end} 23:59' `;
         } else {
@@ -65,7 +64,8 @@ async function getListDaftarDokumenRekammedis(req, res) {
         join m_pasien mp on mp.id=dp.nocmfk
         left join m_rm_statuskendali mrm on mrm.id=mp.objectstatuskendalirmfk
         left join t_rm_lokasidokumen trm on trm.objectantreanpemeriksaanfk=ta.norec
-        where dp.noregistrasi ilike '%${req.query.noregistrasi}%' ${tglregistrasi} ${taskid}
+        where dp.noregistrasi ilike '%${req.query.noregistrasi}%' ${tglregistrasi} ${taskid} 
+        AND dp.noregistrasi IS NOT NULL --- jika null maka masih belum teregistrasi
         `);
 
         let tempres = resultlistantreanpemeriksaan.rows

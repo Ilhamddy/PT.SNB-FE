@@ -374,7 +374,7 @@ export function* watchonKonsulSave() {
     yield takeEvery(KONSUL_SAVE, onKonsulSave);
 }
 
-function* onUpdateTaskId({ payload: { data, history } }) {
+function* onUpdateTaskId({ payload: { data, callback } }) {
     try {
         let response = null;
         if (data.norec !== '') {
@@ -389,7 +389,7 @@ function* onUpdateTaskId({ payload: { data, history } }) {
         } else {
             toast.error(response.msg, { autoClose: 3000 });
         }
-        // history("/registrasi/pasien-lama")
+        callback && callback()
     } catch (error) {
         yield put(updateTaskIdError(error));
         toast.error(error?.response?.data?.msg || "Error", { autoClose: 3000 });

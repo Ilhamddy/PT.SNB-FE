@@ -62,7 +62,10 @@ export default (sequelize, Sequelize) => {
         },
         tgldipanggilperawat: {
             type: Sequelize.DATE
-        }
+        },
+        objectstatuspanggilfk: {
+            type: Sequelize.INTEGER
+        },
     }, {
         tableName: "t_antreanpemeriksaan", // relation "user" does not exist
         createdAt: false,

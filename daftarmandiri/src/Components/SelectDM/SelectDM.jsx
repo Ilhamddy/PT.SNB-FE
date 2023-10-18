@@ -31,8 +31,8 @@ const SelectDM = React.forwardRef(
         : rest.options
 
     const customStyles = {
-      menuPortal: (provided) => ({ ...provided, zIndex: 30 }),
-      menu: (provided) => ({ ...provided, zIndex: 30, borderRadius: 5 }),
+      menuPortal: (provided) => ({ ...provided, zIndex: 15 }),
+      menu: (provided) => ({ ...provided, zIndex: 15, borderRadius: 5 }),
     }
     // https://react-select.com/styles#overriding-the-theme
     const config = (th) => {

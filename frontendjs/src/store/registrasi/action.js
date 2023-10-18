@@ -132,9 +132,9 @@ export const registrasiNoregistrasiResetForm = () => ({
 });
 
 // common success
-export const registrasiSaveRuangan = (data, history) => ({
+export const registrasiSaveRuangan = (data, callback) => ({
     type: REGISTRASI_SAVE_RUANGAN,
-    payload: { data, history },
+    payload: { data, callback },
 });
 // common error
 export const registrasiSaveRuanganSuccess = (data, history) => ({

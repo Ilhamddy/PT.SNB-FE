@@ -2,13 +2,19 @@ import { useNavigate } from 'react-router-dom'
 import arrowKiriImg from './arrow_left.svg'
 import './BackKomponen.scss'
 
-export const BackKomponen = ({ text, refKontainer }) => {
+export const BackKomponen = ({ text, refKontainer, toHome }) => {
   const navigate = useNavigate()
   const handleBack = () => {
     if (!refKontainer.current) return navigate(-1)
-    refKontainer.current.handleToNextPage(() => {
-      navigate(-1)
-    })
+    if (toHome) {
+      refKontainer.current.handleToNextPage(() => {
+        navigate('/')
+      })
+    } else {
+      refKontainer.current.handleToNextPage(() => {
+        navigate(-1)
+      })
+    }
   }
   return (
     <div className="back-komponen-dm">
