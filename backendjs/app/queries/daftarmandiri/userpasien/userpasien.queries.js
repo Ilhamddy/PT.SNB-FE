@@ -12,12 +12,14 @@ SELECT
     tro.noreservasi AS noreservasi,
     mp.namalengkap AS namadokter,
     mu.namaunit AS namaunit,
-    tro.tglinput AS tglinput
+    tro.tglinput AS tglinput,
+    td.noregistrasi AS noregistrasi
 FROM users_pasien up
     LEFT JOIN m_pasien mpas ON (up.norm = mpas.nocm OR up.norm = mpas.nocmtemp)
     LEFT JOIN t_registrasionline tro ON tro.nocmfk = mpas.id
     LEFT JOIN m_unit mu ON tro.objectunitfk = mu.id
     LEFT JOIN m_pegawai mp ON tro.objectdokterfk = mp.id
+    LEFT JOIN t_daftarpasien td ON tro.objectdaftarpasienfk = td.norec
 WHERE up.id = $1 AND (tro.tglrencana >= $2 AND tro.tglrencana < $3)
     AND tro.statusenabled = true
 ORDER BY tro.tglrencana DESC

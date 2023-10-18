@@ -280,6 +280,8 @@ function formatDate(date) {
     return [year, month, day].join('-');
 }
 
+// sementara aja nanti refactor TODO:
+// eslint-disable-next-line max-lines-per-function
 async function saveRegistrasiPasien(req, res) {
     const logger = res.locals.logger
     const [transaction, errorTransaction] = await createTransaction(db, res)
@@ -1998,32 +2000,7 @@ const hUpdatePasien = async (req, res, transaction, {nocm}) => {
             transaction: transaction
         });
     }
-    let dataBefore = pasienBefore?.toJSON() || null
-    let antreanPemeriksaan = null
-    if(!dataBefore.nocm) { 
-        // buat antrean karena pasien baru belum terverifikasi
-        // const norecdp = objBody.norecdp
-        // const noregistrasi = await hCreateNoreg(new Date())
-        // const daftarPasienModel = await db.t_daftarpasien.findOne({
-        //     where: {
-        //         norec: norecdp
-        //     },
-        //     transaction: transaction
-        // })
-        // await daftarPasienModel.update({
-        //     noregistrasi: noregistrasi,
-        //     tglregistrasi: new Date(),
-        // }, {
-        //     transaction: transaction
-        // })
-        // const daftarPasienVal = daftarPasienModel.toJSON()
-        // const dokter = daftarPasienVal.objectdokterpemeriksafk
-        // const {
-        //     todayStart,
-        //     todayEnd
-        // } = getDateStartEnd()
 
-    }
     await pasienBefore.update({
         nocm: pasienBefore.nocm || nocm,
         namapasien: objBody.namapasien,
