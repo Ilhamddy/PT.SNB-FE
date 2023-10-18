@@ -149,6 +149,9 @@ const DaftarPegawai = () => {
 
         })
     };
+    const handleClickTambah = (e)=>{
+        navigate(`/sumberdayamanusia/biodata-pegawai`)
+    }
     return (
         <React.Fragment>
             <ToastContainer closeButton={false} />
@@ -187,7 +190,8 @@ const DaftarPegawai = () => {
                                         action="#">
                                         <Row className="gy-4">
                                             <Col lg={3}>
-                                                <Button type="button" color="info" placement="top">
+                                                <Button type="button" color="info" placement="top"
+                                                onClick={() => handleClickTambah()}>
                                                     Tambah Pegawai
                                                 </Button>
                                             </Col>
