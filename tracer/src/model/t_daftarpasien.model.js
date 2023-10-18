@@ -17,6 +17,7 @@ module.exports = (sequelize, Sequelize) => {
         nocmfk:{
             type: Sequelize.INTEGER
         },
+        // no registrasi bisa null, jika belum diverifikasi
         noregistrasi:{
             type: Sequelize.STRING
         },
