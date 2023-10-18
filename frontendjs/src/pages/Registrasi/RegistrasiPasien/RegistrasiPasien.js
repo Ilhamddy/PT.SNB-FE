@@ -157,7 +157,11 @@ const RegistrasiPasien = (props) => {
         }),
         onSubmit: (values) => {
             // console.log(values)
-            dispatch(registrasiSaveRuangan(values, ''));
+            dispatch(registrasiSaveRuangan(values, () => {
+                if(dtRuangNorec && !dtRuangNorec?.noregistrasi){
+                    navigate(`/bGlzdGRhZnRhcnBhc2llbi9kYWZ0YXItcGFzaWVuLWlnZA==`)
+                }
+            }));
         }
     });
 
