@@ -204,7 +204,11 @@ const PasienBaru = () => {
         onSubmit: (values,{ resetForm }) => {
             dispatch(registrasiSave(values, (response) => {
                 if (pasienFormQueries && pasienFormQueries.needVerif) {
-                    navigate(`/bGlzdGRhZnRhcnBhc2llbi9kYWZ0YXItcGFzaWVuLWlnZA==`)
+                    if (!values.norecdp){
+                        navigate(`/bGlzdGRhZnRhcnBhc2llbi9kYWZ0YXItcGFzaWVuLWlnZA==`)
+                    } else {
+                        navigate(`/registrasi/pasien-ruangan/${response.data.id}/${values.norecdp}`)
+                    }
                 } else if (norectriage === undefined) {
                     if (data.id !== undefined) {
                         navigate(`/registrasi/pasien-ruangan/${values.id}`);
