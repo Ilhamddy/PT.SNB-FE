@@ -208,6 +208,7 @@ const RegistrasiPasien = (props) => {
             validation.setFieldValue('penanggungjawab', dtRuangNorec?.objectpjpasienfk || "");
             validation.setFieldValue('isVerif', !dtRuangNorec?.noregistrasi)
             validation.setFieldValue('norecdp', dtRuangNorec?.norec || "")
+            validation.setFieldValue('caramasuk', dtRuangNorec?.objectcaramasukfk || "")
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [dtRuangNorec, validation.setFieldValue, data])
