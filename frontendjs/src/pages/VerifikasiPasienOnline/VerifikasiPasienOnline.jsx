@@ -45,6 +45,7 @@ const VerifikasiPasienOnline = () => {
       nocmnamapasien: '',
       tglmasuk: '',
       unit: '',
+      jenispasien: '',
     },
     onSubmit: (values) => {
       dispatch(getDaftarPasienOnline(values))
@@ -58,6 +59,7 @@ const VerifikasiPasienOnline = () => {
 
   const handleCard = (data) => {
     setProfil({
+      index: data.index,
       namaPasien: data.namapasien,
       noIdentitas: null,
       norm: data.nocm,
@@ -84,18 +86,29 @@ const VerifikasiPasienOnline = () => {
     },
   ]
 
+  const jenisPasien = [
+    {
+      value: 1,
+      label: 'Pasien Baru',
+    },
+    {
+      value: 2,
+      label: 'Pasien Lama',
+    },
+  ]
+
   const [page] = useState(() => searchParams.get('page') || 1)
   /**
    * @type {import("react-data-table-component").TableColumn[]}
    */
   const columnsDetail = [
     {
-      cell: (item) => (
+      cell: (item, index) => (
         <Card
           className="product card-animate w-100"
-          style={{ backgroundColor: item.color }}
+          style={index === profil.index ? { backgroundColor: '#FFEA9E' } : {}}
           onClick={() => {
-            handleCard(item)
+            handleCard({ index: index, ...item })
           }}
         >
           <CardBody>
@@ -106,8 +119,8 @@ const VerifikasiPasienOnline = () => {
                   {item.noreservasi || '-'}
                 </h5>
                 <p className="mb-0">
-                  {item.namapasien && item.namapasien.length > 15
-                    ? `${item.namapasien.substring(0, 15)}...`
+                  {item.namapasien && item.namapasien.length > 30
+                    ? `${item.namapasien.substring(0, 30)}...`
                     : item.namapasien}
                 </p>
                 <p className="text-muted mb-0">
@@ -164,7 +177,21 @@ const VerifikasiPasienOnline = () => {
           <Col lg={9}>
             <Card className="p-3">
               <Row>
-                <ColLabelInput lg={3} label="Tgl Kunjungan">
+                <ColLabelInput lg={4} label="Jenis pasien">
+                  <CustomSelect
+                    id="jenispasien"
+                    name="jenispasien"
+                    options={jenisPasien}
+                    value={vQueries.values.jenispasien || ''}
+                    className={`input ${
+                      vQueries.errors.jenispasien ? 'is-invalid' : ''
+                    }`}
+                    onChange={(value) =>
+                      vQueries.setFieldValue('jenispasien', value?.value || '')
+                    }
+                  />
+                </ColLabelInput>
+                <ColLabelInput lg={4} label="Tgl Kunjungan">
                   <KontainerFlatpickr
                     id="end"
                     options={{
@@ -177,7 +204,7 @@ const VerifikasiPasienOnline = () => {
                     }}
                   />
                 </ColLabelInput>
-                <ColLabelInput lg={3} label="Poliklinik">
+                <ColLabelInput lg={4} label="Poliklinik">
                   <CustomSelect
                     id="unit"
                     name="unit"
@@ -191,12 +218,16 @@ const VerifikasiPasienOnline = () => {
                     }
                   />
                 </ColLabelInput>
-                <ColLabelInput lg={3} label="No RM Sementara / Nama">
+                <ColLabelInput
+                  lg={4}
+                  label="No RM / Nama / No Reservasi"
+                  className="mt-3"
+                >
                   <Input
                     id="nocmnamapasien"
                     name="nocmnamapasien"
                     type="text"
-                    placeholder="Masukkan No RM Sementara / Nama"
+                    placeholder="Masukkan No RM / Nama / No Reservasi"
                     onChange={vQueries.handleChange}
                     onBlur={vQueries.handleBlur}
                     value={vQueries.values.nocmnamapasien || ''}

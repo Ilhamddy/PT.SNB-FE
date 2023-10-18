@@ -1732,14 +1732,16 @@ const getPasienOnline = async (req, res) => {
         const {
             nocmnamapasien,
             tglmasuk,
-            unit
+            unit,
+            jenispasien
         } = req.query
         const {todayStart, todayEnd} = getDateStartEndNull(tglmasuk)
         const pasien = await pool.query(queries.qGetPasienOnline, [
             nocmnamapasien || '',
             todayStart || '',
             todayEnd || '',
-            unit || ''
+            unit || '',
+            jenispasien || ''
         ])
         const tempres = {
             pasien: pasien.rows
