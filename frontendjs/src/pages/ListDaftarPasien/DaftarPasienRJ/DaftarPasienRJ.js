@@ -151,6 +151,13 @@ const DaftarPasienRJ = () => {
             },
         },
         {
+            name: <span className='font-weight-bold fs-13'>No Antrean</span>,
+            selector: row => row.noantrian,
+            sortable: true,
+            width: "100px",
+            wrap: true
+        },
+        {
             name: <span className='font-weight-bold fs-13'>Tgl Registrasi</span>,
             selector: row => dateTimeLocal(row.tglregistrasi),
             sortable: true,

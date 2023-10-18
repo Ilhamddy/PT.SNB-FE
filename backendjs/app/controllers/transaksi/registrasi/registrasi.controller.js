@@ -1022,7 +1022,7 @@ async function getDaftarPasienRawatJalan(req, res) {
         // let query = queries.getAllByOr + ` where nocm ilike '%` + nocm + `%'` + ` or namapasien ilike '%` + nocm + `%' limit 200`
         let query = queries.getDaftarPasienRawatJalan + `  where td.noregistrasi ilike '%${noregistrasi}%'
         ${tglregistrasi} ${taskid} and td.objectinstalasifk=1 and trm.objectstatuskendalirmfk is not null
-        ${unit} ORDER BY td.tglregistrasi DESC`
+        ${unit} ORDER BY td.noregistrasi DESC`
         const resultCountNoantrianDokter = await pool.query(query, [])
         res.status(200).send({
             data: resultCountNoantrianDokter.rows,
