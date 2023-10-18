@@ -106,7 +106,7 @@ const VerifikasiPasienOnline = () => {
       cell: (item, index) => (
         <Card
           className="product card-animate w-100"
-          style={index === profil.index ? { backgroundColor: '#FFEA9E' } : {}}
+          style={index === profil.index ? { backgroundColor: '#F2E9CA' } : {}}
           onClick={() => {
             handleCard({ index: index, ...item })
           }}
