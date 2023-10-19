@@ -29,7 +29,10 @@ import {
     UPSERT_PENJAMIN_ERROR,
     GET_PENJAMIN_PASIEN,
     GET_PENJAMIN_PASIEN_SUCCESS,
-    GET_PENJAMIN_PASIEN_ERROR
+    GET_PENJAMIN_PASIEN_ERROR,
+    GET_ANTREAN_PEMERIKSAAN,
+    GET_ANTREAN_PEMERIKSAAN_SUCCESS,
+    GET_ANTREAN_PEMERIKSAAN_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -80,6 +83,11 @@ const INIT_STATE = {
         error: null
     },
     getPenjaminPasien: {
+        data: [],
+        loading: false,
+        error: null
+    },
+    getAntreanPemeriksaan: {
         data: [],
         loading: false,
         error: null
@@ -423,6 +431,38 @@ const login = (state = INIT_STATE, action) => {
                 ...state,
                 getPenjaminPasien: {
                     ...state.getPenjaminPasien,
+                    data: [],
+                    loading: false,
+                    error: action.payload,
+                },
+            };
+
+        case GET_ANTREAN_PEMERIKSAAN:
+            return {
+                ...state,
+                getAntreanPemeriksaan: {
+                    ...state.getAntreanPemeriksaan,
+                    loading: true,
+                    error: null,
+                },
+            };
+
+        case GET_ANTREAN_PEMERIKSAAN_SUCCESS:
+            return {
+                ...state,
+                getAntreanPemeriksaan: {
+                    ...state.getAntreanPemeriksaan,
+                    data: action.payload,
+                    loading: false,
+                    error: null,
+                },
+            };
+
+        case GET_ANTREAN_PEMERIKSAAN_ERROR:
+            return {
+                ...state,
+                getAntreanPemeriksaan: {
+                    ...state.getAntreanPemeriksaan,
                     data: [],
                     loading: false,
                     error: action.payload,

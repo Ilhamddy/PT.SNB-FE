@@ -42,6 +42,11 @@ const HomePage = () => {
       navigate('/login/pasien-lama')
     })
   }
+  const handleToAntrean = () => {
+    refKontainer.current?.handleToNextPage(() => {
+      navigate('/akun/antrean-online')
+    })
+  }
   const handleToJadwal = () => {
     refKontainer.current?.handleToNextPage(() => {
       navigate('/jadwal-dokter')
@@ -170,7 +175,11 @@ const HomePage = () => {
               text={'Jadwal Dokter'}
               onClick={() => handleToJadwal()}
             />
-            <IsiKontenHeader gbr={waitImg} text={'Pendaftaran Pasien'} />
+            <IsiKontenHeader
+              gbr={waitImg}
+              text={'Antrean Online'}
+              onClick={handleToAntrean}
+            />
             <IsiKontenHeader
               gbr={waitImg}
               text={'Riwayat Pendaftaran'}

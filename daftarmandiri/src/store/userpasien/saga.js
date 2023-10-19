@@ -21,7 +21,9 @@ import {
     upsertPenjaminSuccess,
     upsertPenjaminError,
     getPenjaminPasienSuccess,
-    getPenjaminPasienError
+    getPenjaminPasienError,
+    getAntreanPemeriksaanSuccess,
+    getAntreanPemeriksaanError,
 } from "./action";
 import * as uuid from 'uuid'
 
@@ -37,7 +39,8 @@ import {
     GET_PASIEN_AKUN,
     GET_COMBO_PENJAMIN,
     UPSERT_PENJAMIN,
-    GET_PENJAMIN_PASIEN
+    GET_PENJAMIN_PASIEN,
+    GET_ANTREAN_PEMERIKSAAN
 } from "./actionType";
 
 import ServiceUserPasien from "../../service/service-userpasien";
@@ -191,6 +194,16 @@ function* onGetPenjaminPasien(){
     }
 }
 
+function* onGetAntreanPemeriksaan(){
+    try{
+        const response = yield call(serviceUserPasien.getAntreanPemeriksaan);
+        yield put(getAntreanPemeriksaanSuccess(response.data)); 
+    }catch(error){
+        console.error(error)
+        yield put(getAntreanPemeriksaanError(error))
+    }
+}
+
 export default function* watchLoginUser() {
     yield takeEvery(LOGIN_USER, onLoginUser);
     yield takeEvery(LOGOUT_USER, onLogoutUser);
@@ -204,4 +217,5 @@ export default function* watchLoginUser() {
     yield takeEvery(GET_COMBO_PENJAMIN, onGetComboPenjamin);
     yield takeEvery(UPSERT_PENJAMIN, onUpsertPenjamin);
     yield takeEvery(GET_PENJAMIN_PASIEN, onGetPenjaminPasien);
+    yield takeEvery(GET_ANTREAN_PEMERIKSAAN, onGetAntreanPemeriksaan);
 }
