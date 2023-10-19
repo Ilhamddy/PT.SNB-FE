@@ -28,6 +28,11 @@ const AntreanOnlinePage = () => {
       <BackKomponen text={'Antrean'} refKontainer={refKontainer} />
       <div className="konten-antrean">
         <img className="gbr-antrean" src={MenungguImg} alt="" />
+        {!antreanPasien && (
+          <p>
+            Anda masih belum memiliki antrean. Silahkan daftar terlebih dahulu.
+          </p>
+        )}
         <div className="kontainer-antrean">
           <p className="sekarang">Antrean Sekarang</p>
           <p className="antrean">{antreanTerakhir?.kodeantrean}</p>
