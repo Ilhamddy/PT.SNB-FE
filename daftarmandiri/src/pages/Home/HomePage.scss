@@ -71,6 +71,10 @@
                 flex-direction: column;
                 align-items: center;
                 width: calc((100% / 4) - 10px);
+                background-color: #f0e2b3;
+                padding: 10px;
+                justify-content: space-between;
+                border-radius: 12px;
 
                 img {
                     width: 50px;
@@ -85,6 +89,7 @@
                     margin-top: 10px;
                     text-align: center;
                     color: #564405;
+                    margin-bottom: 0;
                 }
             }
         }

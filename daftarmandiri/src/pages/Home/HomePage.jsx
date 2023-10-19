@@ -21,6 +21,10 @@ import {
 } from '../../store/actions'
 import { useFormik } from 'formik'
 import { JadwalDokterKomponen } from '../JadwalDokter/JadwalDokter'
+import JadwalDokterImg from './jadwal-dokter.svg'
+import LiveAntreanImg from './live-antrean.svg'
+import PendaftaranPasienImg from './pendaftaran-pasien.svg'
+import RiwayatPendaftaranImg from './riwayat-pendaftaran.svg'
 
 const HomePage = () => {
   const refKontainer = useRef(null)
@@ -116,7 +120,7 @@ const HomePage = () => {
   }
   return (
     <KontainerPage
-      top={'400px'}
+      top={'410px'}
       ref={refKontainer}
       className="home-page"
       header={
@@ -164,24 +168,24 @@ const HomePage = () => {
           </Carousel>
           <div className="konten-header">
             <IsiKontenHeader
-              gbr={waitImg}
+              gbr={PendaftaranPasienImg}
               text={'Pendaftaran Pasien'}
               onClick={() => {
                 handleToDaftar()
               }}
             />
             <IsiKontenHeader
-              gbr={waitImg}
+              gbr={JadwalDokterImg}
               text={'Jadwal Dokter'}
               onClick={() => handleToJadwal()}
             />
             <IsiKontenHeader
-              gbr={waitImg}
+              gbr={LiveAntreanImg}
               text={'Antrean Online'}
               onClick={handleToAntrean}
             />
             <IsiKontenHeader
-              gbr={waitImg}
+              gbr={RiwayatPendaftaranImg}
               text={'Riwayat Pendaftaran'}
               onClick={() => handleToRiwayat()}
             />
