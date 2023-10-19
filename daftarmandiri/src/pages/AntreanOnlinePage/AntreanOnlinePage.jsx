@@ -29,7 +29,7 @@ const AntreanOnlinePage = () => {
       <div className="konten-antrean">
         <img className="gbr-antrean" src={MenungguImg} alt="" />
         {!antreanPasien && (
-          <p>
+          <p className="teks-belum-ada">
             Anda masih belum memiliki antrean. Silahkan daftar terlebih dahulu.
           </p>
         )}
