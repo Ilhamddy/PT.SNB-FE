@@ -33,24 +33,28 @@ const AntreanOnlinePage = () => {
             Anda masih belum memiliki antrean. Silahkan daftar terlebih dahulu.
           </p>
         )}
-        <div className="kontainer-antrean">
-          <p className="sekarang">Antrean Sekarang</p>
-          <p className="antrean">{antreanTerakhir?.kodeantrean}</p>
-        </div>
-        <div className="kontainer-dokter">
-          <img className="foto-dokter" src={DokterImg} alt="foto dokter" />
-          <div className="konten-dokter">
-            <p className="nama-dokter">{antreanPasien?.namadokter}</p>
-            <p className="deskripsi">{antreanPasien?.namaunit}</p>
-            <p className="deskripsi">
-              {dateLocal(antreanPasien?.tglregistrasi)}
-            </p>
-          </div>
-        </div>
-        <div className="kontainer-antrean">
-          <p className="sekarang">Antrean Anda</p>
-          <p className="antrean">{antreanPasien?.kodeantrean}</p>
-        </div>
+        {!!antreanPasien && (
+          <>
+            <div className="kontainer-antrean">
+              <p className="sekarang">Antrean Sekarang</p>
+              <p className="antrean">{antreanTerakhir?.kodeantrean}</p>
+            </div>
+            <div className="kontainer-dokter">
+              <img className="foto-dokter" src={DokterImg} alt="foto dokter" />
+              <div className="konten-dokter">
+                <p className="nama-dokter">{antreanPasien?.namadokter}</p>
+                <p className="deskripsi">{antreanPasien?.namaunit}</p>
+                <p className="deskripsi">
+                  {dateLocal(antreanPasien?.tglregistrasi)}
+                </p>
+              </div>
+            </div>
+            <div className="kontainer-antrean">
+              <p className="sekarang">Antrean Anda</p>
+              <p className="antrean">{antreanPasien?.kodeantrean}</p>
+            </div>
+          </>
+        )}
       </div>
     </KontainerPage>
   )
