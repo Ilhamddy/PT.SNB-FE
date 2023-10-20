@@ -178,11 +178,11 @@
                 background-color: #eee7df;
                 border-radius: 16px;
                 overflow: hidden;
-                min-height: 250px;
+                min-height: 300px;
                 justify-content: space-between;
                 margin-bottom: 20px;
                 &:first-child {
-                    margin-top: 20px;
+                    margin-top: 30px;
                 }
                 .nomor-terpanggil {
                     font-size: 25px;
@@ -220,6 +220,69 @@
 
                 .nama-ruang {
                     font-size: 25px;
+                    font-weight: 700;
+                    background: rgba(230, 126, 34, 0.8);
+                    width: 100%;
+                    text-align: center;
+                    margin-bottom: 0;
+                    padding: 10px;
+                }
+            }
+
+            .ruang-available-sebelumnya {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                width: 80%;
+                border-radius: 15px;
+                margin-right: 3%;
+                background-color: #eee7df;
+                border-radius: 16px;
+                overflow: hidden;
+                min-height: 220px;
+                justify-content: space-between;
+                margin-bottom: 20px;
+                &:first-child {
+                    margin-top: 20px;
+                }
+                .nomor-terpanggil {
+                    font-size: 20px;
+                    font-weight: 700;
+                    background: rgba(230, 126, 34, 0.8);
+                    width: 100%;
+                    text-align: center;
+                    margin-bottom: 0;
+                    padding: 10px;
+                }
+
+                .isi-konten {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+
+                    p {
+                        text-align: center;
+                    }
+
+                    .nama-poliklinik {
+                        font-size: 14px;
+                        font-weight: 500;
+                        margin-bottom: 4px;
+                    }
+                    .nama-dokter {
+                        font-size: 14px;
+                        font-style: italic;
+                        margin-bottom: 4px;
+                    }
+                    .nomor-antrean {
+                        font-size: 30px;
+                        font-weight: 600;
+                        margin-bottom: 0;
+                    }
+                }
+
+                .nama-ruang {
+                    font-size: 16px;
                     font-weight: 700;
                     background: rgba(230, 126, 34, 0.8);
                     width: 100%;

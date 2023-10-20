@@ -329,7 +329,7 @@ const getJadwalDokter = async (req, res) => {
                 jadwal = jadwal.filter((jadwal) => {
                     return !!unitFilter.find((filter) => filter.value === jadwal.objectunitfk)
                 })
-                jadwal = hProcessJadwal(req, res, transaction, {jadwal})
+                jadwal = await hProcessJadwal(req, res, transaction, {jadwal})
                 let lastTerpanggil = [...jadwal].filter(item => 
                     item?.antrean.objectstatuspanggilfk === 3
                 )

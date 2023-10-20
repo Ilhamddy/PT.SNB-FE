@@ -259,7 +259,7 @@ const ViewerPoli = () => {
             </div>
             <p className="nama-ruang">{allTerpanggil?.namakamar || '-'}</p>
           </div>
-          <div className="ruang-available">
+          <div className="ruang-available-sebelumnya">
             <p className="nomor-terpanggil">Panggilan sebelumnya</p>
             <div className="isi-konten">
               <p className="nama-poliklinik">
