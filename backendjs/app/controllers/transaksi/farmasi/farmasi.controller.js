@@ -443,6 +443,7 @@ const getAntreanFromDP = async (req, res) => {
                         },
                         transaction: transaction
                     })
+
                     if(!dataApFarmasi){
                         dataApFarmasi = await db.t_antreanpemeriksaan.create({
                             ...dataAp,
@@ -452,6 +453,11 @@ const getAntreanFromDP = async (req, res) => {
                         }, {
                             transaction: transaction
                         })
+                    }else{
+                        const dataBefore = antreanFarmasi.find((item) => {
+                            return item.norec === dataApFarmasi.norec
+                        })
+                        if(dataBefore) return null
                     }
                     dataApFarmasi = dataApFarmasi.toJSON()
                     return {
@@ -459,6 +465,7 @@ const getAntreanFromDP = async (req, res) => {
                     }
                 }
             ))
+            antreanNonFarmasi = antreanNonFarmasi.filter((item) => item !== null)
             return {
                 antrean: [...antreanFarmasi, ...antreanNonFarmasi]
             }
