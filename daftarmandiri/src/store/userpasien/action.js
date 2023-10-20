@@ -32,7 +32,10 @@ import {
     UPSERT_PENJAMIN_ERROR,
     GET_PENJAMIN_PASIEN,
     GET_PENJAMIN_PASIEN_SUCCESS,
-    GET_PENJAMIN_PASIEN_ERROR
+    GET_PENJAMIN_PASIEN_ERROR,
+    GET_ANTREAN_PEMERIKSAAN,
+    GET_ANTREAN_PEMERIKSAAN_SUCCESS,
+    GET_ANTREAN_PEMERIKSAAN_ERROR
 } from "./actionType";
 
 export const loginUser = (data, callback) => {
@@ -269,6 +272,29 @@ export const getPenjaminPasienSuccess = (data) => {
 export const getPenjaminPasienError = (error) => {
     return {
         type: GET_PENJAMIN_PASIEN_ERROR,
+        payload: error
+    }
+}
+
+export const getAntreanPemeriksaan = (queries) => {
+    return {
+        type: GET_ANTREAN_PEMERIKSAAN,
+        payload: {
+            queries
+        }
+    }
+}
+
+export const getAntreanPemeriksaanSuccess = (data) => {
+    return {
+        type: GET_ANTREAN_PEMERIKSAAN_SUCCESS,
+        payload: data
+    }
+}
+
+export const getAntreanPemeriksaanError = (error) => {
+    return {
+        type: GET_ANTREAN_PEMERIKSAAN_ERROR,
         payload: error
     }
 }

@@ -25,7 +25,10 @@ import {
     GET_ANTREAN_FROM_DP_ERROR,
     CREATE_OR_UPDATE_ORDER_PLUS_VERIF,
     CREATE_OR_UPDATE_ORDER_PLUS_VERIF_SUCCESS,
-    CREATE_OR_UPDATE_ORDER_PLUS_VERIF_ERROR
+    CREATE_OR_UPDATE_ORDER_PLUS_VERIF_ERROR,
+    CREATE_ANTREAN_FARMASI,
+    CREATE_ANTREAN_FARMASI_SUCCESS,
+    CREATE_ANTREAN_FARMASI_ERROR
 } from "./actionType";
 
 
@@ -183,5 +186,23 @@ export const createOrUpdateOrderPlusVerifSuccess = (data) => ({
 
 export const createOrUpdateOrderPlusVerifError = (error) => ({
     type: CREATE_OR_UPDATE_ORDER_PLUS_VERIF_ERROR,
+    payload: error
+});
+
+export const createAntreanFarmasi = (body, callback) => ({
+    type: CREATE_ANTREAN_FARMASI,
+    payload: {
+        body: body,
+        callback: callback
+    }
+});
+
+export const createAntreanFarmasiSuccess = (data) => ({
+    type: CREATE_ANTREAN_FARMASI_SUCCESS,
+    payload: data
+});
+
+export const createAntreanFarmasiError = (error) => ({
+    type: CREATE_ANTREAN_FARMASI_ERROR,
     payload: error
 });

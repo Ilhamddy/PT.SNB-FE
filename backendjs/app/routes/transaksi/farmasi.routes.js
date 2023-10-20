@@ -64,4 +64,9 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.createOrUpdateOrderPlusVerif
     )
+    app.post(
+        "/api/transaksi/farmasi/create-antrean-farmasi",
+        [authJwt.verifyToken],
+        controller.createAntreanFarmasi
+    )
 }

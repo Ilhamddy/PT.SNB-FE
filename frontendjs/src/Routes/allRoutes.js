@@ -332,6 +332,7 @@ import ViewerPoli from "../pages/ViewerPoli/ViewerPoli";
 // Sumber Daya Manusia
 import DaftarPegawai from "../pages/SumberDayaManusia/DaftarPegawai/DaftarPegawai";
 import BiodataPegawai from "../pages/SumberDayaManusia/BiodataPegawai/BiodataPegawai";
+import AddObatFarmasi from "../pages/AddObatFarmasi/AddObatFarmasi";
 
 
 
@@ -641,6 +642,7 @@ const authProtectedRoutes = [
   { path: "/farmasi/penjualan-obat-bebas", component: <PenjualanObatBebas /> },
   { path: "/farmasi/list-verif-obat/:norecdp", component: <ListVerifObat />},
   { path: "/farmasi/tambah-obat-farmasi/:norecap", component: <TambahObatFarmasi />},
+  { path: "/farmasi/add-obat-farmasi", component: <AddObatFarmasi />},
 
   // Gawat Darurat
   { path: "/gawatdarurat/daftar-pasien-igd", component: <DaftarPasienIGD /> },

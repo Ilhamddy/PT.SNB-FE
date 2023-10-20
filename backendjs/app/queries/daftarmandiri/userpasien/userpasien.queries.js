@@ -120,10 +120,55 @@ FROM users_pasien up
 WHERE up.id = $1 AND mpp.statusenabled = true
 `
 
+const qGetAntreanPasien = `
+SELECT
+    td.noregistrasi AS noregistrasi,
+    tap.noantrian AS noantrian,
+    mpeg.namalengkap AS namadokter,
+    mpeg.reportdisplay AS reportdisplay,
+    mpeg.id AS iddokter,
+    mu.namaunit AS namaunit,
+    mpeg.reportdisplay || tap.noantrian AS kodeantrean,
+    td.tglregistrasi AS tglregistrasi
+FROM users_pasien up
+    LEFT JOIN m_pasien mp ON (up.norm = mp.nocm OR up.norm = mp.nocmtemp)
+    LEFT JOIN t_daftarpasien td ON td.nocmfk = mp.id
+    LEFT JOIN t_antreanpemeriksaan tap ON tap.objectdaftarpasienfk = td.norec
+    LEFT JOIN m_pegawai mpeg ON td.objectdokterpemeriksafk = mpeg.id
+    LEFT JOIN m_unit mu ON td.objectunitlastfk = mu.id
+WHERE up.id = $1
+    AND td.statusenabled = true
+    AND td.tglregistrasi > $2
+    AND td.tglregistrasi <= $3
+ORDER BY tap.tglregistrasi DESC
+LIMIT 1
+`
+
+const qGetAntreanTerakhir = `
+SELECT
+    td.noregistrasi AS noregistrasi,
+    tap.noantrian AS noantrian,
+    mpeg.namalengkap AS namadokter,
+    mpeg.reportdisplay AS reportdisplay,
+    mpeg.reportdisplay || tap.noantrian AS kodeantrean,
+    td.tglregistrasi AS tglregistrasi
+FROM t_daftarpasien td
+    LEFT JOIN t_antreanpemeriksaan tap ON tap.objectdaftarpasienfk = td.norec
+    LEFT JOIN m_pegawai mpeg ON td.objectdokterpemeriksafk = mpeg.id
+WHERE td.objectdokterpemeriksafk = $1
+    AND td.statusenabled = true
+    AND td.tglregistrasi > $2
+    AND td.tglregistrasi <= $3
+ORDER BY tap.tgldipanggildokter DESC
+LIMIT 1
+`
+
 export default {
     qGetRiwayatRegistrasi,
     qGetPasienEdit,
     qGetPasienAkun,
     qGetAllPasienFromUser,
-    qGetPenjaminPasien
+    qGetPenjaminPasien,
+    qGetAntreanPasien,
+    qGetAntreanTerakhir
 }

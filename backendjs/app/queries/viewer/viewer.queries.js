@@ -140,7 +140,7 @@ WHERE
 ORDER BY tal.tglpanggil DESC
 `
 
-const qGetJadwalDokter = `
+const jadwalDokter = `
 SELECT
 	mjd.id AS idjadwal,
 	mjd.jam_mulai,
@@ -155,23 +155,37 @@ FROM m_jadwaldokter mjd
 	LEFT JOIN m_kamar mk ON mjd.objectkamarfk = mk.id
 	LEFT JOIN m_pegawai mp ON mjd.objectpegawaifk = mp.id
 	LEFT JOIN m_unit mu ON mjd.objectunitfk = mu.id
+`
+
+const qGetJadwalDokter = jadwalDokter +  `
 WHERE mjd.objectharifk = $1
 ORDER BY mk.id ASC
 `
 
-const qGetLastAntrean = `
+const qGetJadwalDokterNorec = jadwalDokter + `
+WHERE mjd.objectpegawaifk = $1
+ORDER BY mk.id ASC
+`
+
+
+const qGetLastAntrean =  `
 SELECT
 	tap.norec AS norecap,
 	tap.noantrian AS noantrian,
 	mpeg.namaexternal AS namadokter,
-	mpeg.id AS iddokter,
+	mpeg.id AS objectdokterpemeriksafk,
 	mpeg.reportdisplay AS reportdisplay,
 	tap.tgldipanggildokter AS tgldipanggildokter,
 	tap.objectstatuspanggilfk AS objectstatuspanggilfk
 FROM t_antreanpemeriksaan tap
 	LEFT JOIN m_pegawai mpeg ON tap.objectdokterpemeriksafk = mpeg.id
-WHERE tap.objectdokterpemeriksafk = $1
-	AND tap.tgldipanggildokter BETWEEN $2 AND $3
+WHERE 
+	CASE 
+		WHEN (NULLIF($1, '')::int IS NULL)
+		THEN TRUE
+		ELSE tap.objectdokterpemeriksafk = NULLIF($1, '')::int
+	END
+	AND tap.tgldipanggildokter > $2 AND tap.tgldipanggildokter < $3
 	AND tap.statusenabled = true
 	AND 
 		CASE 
@@ -193,5 +207,6 @@ export {
 	qGetAllTerpanggil,
 	qGetLastPemanggilanViewer,
 	qGetJadwalDokter,
-	qGetLastAntrean
+	qGetLastAntrean,
+	qGetJadwalDokterNorec
 }

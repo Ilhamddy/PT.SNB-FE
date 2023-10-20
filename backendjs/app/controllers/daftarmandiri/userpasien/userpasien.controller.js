@@ -391,6 +391,47 @@ const getPenjaminPasien = async (req, res) => {
     }
 }
 
+const getAntreanPemeriksaan = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const {todayStart, todayEnd} = getDateStartEnd();
+        const antreanPasien = (await pool.query(
+            userpasienQueries.qGetAntreanPasien, 
+            [
+                req.id,
+                todayStart,
+                todayEnd
+            ]
+        )).rows[0]
+        const antreanTerakhir = (await pool.query(
+            userpasienQueries.qGetAntreanTerakhir, 
+            [
+                antreanPasien?.iddokter || -1,
+                todayStart,
+                todayEnd
+            ]
+        )).rows[0]
+        const tempres = {
+            antreanPasien: antreanPasien || null,
+            antreanTerakhir: antreanTerakhir || null
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export default {
     upsertPasien,
     getRiwayatReservasi,
@@ -399,7 +440,8 @@ export default {
     getPasienAkun,
     getComboPenjamin,
     upsertPenjamin,
-    getPenjaminPasien
+    getPenjaminPasien,
+    getAntreanPemeriksaan
 }
 
 const hCreatePasien = async (req, res, transaction) => {

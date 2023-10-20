@@ -1,0 +1,102 @@
+.antrean-online-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .konten-antrean {
+        width: 100%;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        .gbr-antrean {
+            width: 200px;
+            object-fit: contain;
+            margin-bottom: 13px;
+        }
+
+        .teks-belum-ada {
+            color: #715a06;
+            text-align: center;
+            font-size: 18px;
+            font-style: normal;
+            font-weight: 600;
+            line-height: normal;
+            margin-bottom: 3px;
+            text-align: center;
+        }
+
+        .kontainer-antrean {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #e8d58f;
+            width: 100%;
+            padding: 15px;
+            border-radius: 15px;
+
+            .sekarang {
+                color: #715a06;
+                text-align: center;
+                font-size: 18px;
+                font-style: normal;
+                font-weight: 600;
+                line-height: normal;
+                margin-bottom: 3px;
+            }
+
+            .antrean {
+                color: #715a06;
+                text-align: center;
+                font-size: 81px;
+                font-style: normal;
+                font-weight: 600;
+                line-height: normal;
+                margin-bottom: 0;
+            }
+        }
+
+        .kontainer-dokter {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            background-color: #e8d58f;
+            width: 100%;
+            padding: 15px;
+            border-radius: 15px;
+            border-top: 3px dashed #faf6e7;
+            border-bottom: 3px dashed #faf6e7;
+
+            .foto-dokter {
+                width: 48px;
+                height: 48px;
+                margin-right: 10px;
+                border-radius: 25px;
+            }
+
+            .konten-dokter {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+
+                .nama-dokter {
+                    color: #08080d;
+                    font-size: 13px;
+                    font-style: normal;
+                    font-weight: 500;
+                    line-height: normal;
+                    margin-bottom: 0;
+                }
+
+                .deskripsi {
+                    color: #08080d;
+                    font-size: 11px;
+                    font-style: normal;
+                    font-weight: 300;
+                    line-height: normal;
+                    margin-bottom: 0;
+                }
+            }
+        }
+    }
+}

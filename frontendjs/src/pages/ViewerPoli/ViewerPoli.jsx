@@ -42,17 +42,16 @@ const ViewerPoli = () => {
   )
   const [show, setShow] = useState(() => list.length === 0)
 
-  const [blip, setBlip] = useState(false)
   const [intervalVal, setIntervalVal] = useState(null)
 
-  let { jadwalDokter, unit, terpanggil, lastTerpanggil } = useSelector(
-    (state) => ({
+  let { jadwalDokter, unit, terpanggil, lastTerpanggil, terpanggilKedua } =
+    useSelector((state) => ({
       jadwalDokter: state.Viewer.getJadwalDokter.data.jadwal || [],
       unit: state.Viewer.getJadwalDokter.data.unit || [],
       terpanggil: state.Viewer.getJadwalDokter.data.terpanggil || [],
       lastTerpanggil: state.Viewer.getJadwalDokter.data.lastTerpanggil || [],
-    })
-  )
+      terpanggilKedua: state.Viewer.getJadwalDokter.data.terpanggilKedua || [],
+    }))
 
   const panggilLast = async (dataAll) => {
     if (dataAll?.terpanggil?.antrean?.lastAntrean) {
@@ -161,32 +160,14 @@ const ViewerPoli = () => {
   }, [dispatch, list])
 
   const idLast = terpanggil.idjadwal || lastTerpanggil.idjadwal
-  useEffect(() => {
-    let lastBlip = blip
-    const interval = setInterval(() => {
-      setBlip(!lastBlip)
-      lastBlip = !lastBlip
-      console.log('masuk')
-    }, 1000)
-    setTimeout(() => {
-      interval && clearInterval(interval)
-      setBlip(false)
-    }, 10000)
-    return () => {
-      clearInterval(interval)
-      setBlip(false)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [idLast])
 
-  jadwalDokter = groupArray(jadwalDokter, 6)
-
-  const styleBlip = (isBlip) =>
-    isBlip
-      ? {
-          backgroundColor: 'rgba(230, 126, 34, 0.8)',
-        }
-      : {}
+  jadwalDokter = groupArray(jadwalDokter, 4)
+  const allTerpanggil = Array.isArray(terpanggil)
+    ? Array.isArray(lastTerpanggil)
+      ? null
+      : lastTerpanggil
+    : terpanggil
+  console.log(allTerpanggil)
 
   return (
     <div className="viewer-poli">
@@ -235,35 +216,65 @@ const ViewerPoli = () => {
           <p className="tgl-berjalan">{tanggal}</p>
         </div>
       </div>
-      <div className="konten-viewer">
-        <Carousel
-          autoFocus
-          autoPlay
-          infiniteLoop={true}
-          showThumbs={false}
-          showStatus={false}
-          showArrows={true}
-          interval={7000}
-        >
-          {jadwalDokter.map((item, key) => (
-            <div className="ruang-group" key={key}>
-              {item.map((item, key) => (
-                <div
-                  className="ruang-available"
-                  key={key}
-                  style={styleBlip(item.idjadwal === idLast && blip)}
-                >
-                  <div className="isi-konten">
-                    <p className="nama-poliklinik">{item.namaunit}</p>
-                    <p className="nama-dokter">{item.namadokter}</p>
-                    <p className="nomor-antrean">{item?.antrean.lastAntrean}</p>
+      <div className="kontainer-konten">
+        <div className="konten-viewer">
+          <Carousel
+            autoFocus
+            autoPlay
+            infiniteLoop={true}
+            showThumbs={false}
+            showStatus={false}
+            showArrows={true}
+            interval={7000}
+          >
+            {jadwalDokter.map((item, key) => (
+              <div className="ruang-group" key={key}>
+                {item.map((item, key) => (
+                  <div className="ruang-available" key={key}>
+                    <div className="isi-konten">
+                      <p className="nama-poliklinik">{item.namaunit}</p>
+                      <p className="nama-dokter">{item.namadokter}</p>
+                      <p className="nomor-antrean">
+                        {item?.antrean.lastAntrean}
+                      </p>
+                    </div>
+                    <p className="nama-ruang">{item.namakamar}</p>
                   </div>
-                  <p className="nama-ruang">{item.namakamar}</p>
-                </div>
-              ))}
+                ))}
+              </div>
+            ))}
+          </Carousel>
+        </div>
+        <div className="terakhir-panggil">
+          <div className="ruang-available">
+            <p className="nomor-terpanggil">Antrean Terpanggil</p>
+            <div className="isi-konten">
+              <p className="nama-poliklinik">
+                {allTerpanggil?.namaunit || '-'}
+              </p>
+              <p className="nama-dokter">{allTerpanggil?.namadokter || '-'}</p>
+              <p className="nomor-antrean">
+                {allTerpanggil?.antrean?.lastAntrean || '-'}
+              </p>
             </div>
-          ))}
-        </Carousel>
+            <p className="nama-ruang">{allTerpanggil?.namakamar || '-'}</p>
+          </div>
+          <div className="ruang-available-sebelumnya">
+            <p className="nomor-terpanggil">Panggilan sebelumnya</p>
+            <div className="isi-konten">
+              <p className="nama-poliklinik">
+                {terpanggilKedua?.namaunit || '-'}
+              </p>
+              <p className="nama-dokter">
+                {terpanggilKedua?.namadokter || '-'}
+              </p>
+              <p className="nomor-antrean">
+                {terpanggilKedua?.antrean?.lastAntrean || '-'}
+              </p>
+            </div>
+            <p className="nama-ruang">{terpanggilKedua?.namakamar || '-'}</p>
+          </div>
+        </div>
       </div>
       <p className="running-text-viewer">
         Teks yang sangat panjang dan super duper panjang kdjfsa Teks yang sangat
