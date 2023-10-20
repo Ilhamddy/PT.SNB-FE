@@ -174,7 +174,7 @@ const ListVerifObat = () => {
                             progressPending={false}
                             customStyles={tableCustomStyles}
                             progressComponent={<LoadingTable />}
-                            noDataComponent={<NoDataTable dataName={"data order"}/>}
+                            noDataComponent={<NoDataTable dataName={"order"}/>}
                         />
                     </Row>
                 </Card>
@@ -209,6 +209,12 @@ const ModalTambahObat = ({dataModal, ...rest}) => {
             sortable: true,
             selector: row => row.tanggalregistrasi,
             width: "120px"
+        },
+        {
+            name: <span className='font-weight-bold fs-13'>Unit</span>,
+            sortable: true,
+            selector: row => row.namaunitasal || row.namaunit,
+            width: "200px"
         },
         {
             name: <span className='font-weight-bold fs-13'>Penjamin</span>,

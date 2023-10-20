@@ -203,7 +203,7 @@ GROUP BY
     tdp.objectpenjaminfk
 `
 
-const qGetAntreanFromDP = `
+const qGetAntreanFromNorec = `
 SELECT
     row_number() OVER (ORDER BY tap.tglmasuk) AS no,
     tap.norec AS norecap,
@@ -212,11 +212,14 @@ SELECT
     tap.tglkeluar AS tanggalkeluar,
     tdp.objectpenjaminfk AS penjamin,
     mr.namarekanan AS namarekanan,
-    mu.namaunit AS namaunit
+    mu.namaunit AS namaunit,
+    muasal.namaunit AS namaunitasal
 FROM t_antreanpemeriksaan tap
     LEFT JOIN t_daftarpasien tdp ON tdp.norec = tap.objectdaftarpasienfk
     LEFT JOIN m_rekanan mr ON tdp.objectpenjaminfk = mr.id
-WHERE tap.objectdaftarpasienfk = $1
+    LEFT JOIN m_unit mu ON mu.id = tap.objectunitfk
+    LEFT JOIN m_unit muasal ON muasal.id = tap.objectunitasalfk
+WHERE tap.norec = $1
     AND tap.statusenabled = true
 ORDER BY tap.tglmasuk
 `
@@ -228,5 +231,5 @@ export {
     qGetObatFromUnit,
     qGetOrderResepFromDP,
     qGetOrderVerifResepFromDP,
-    qGetAntreanFromDP
+    qGetAntreanFromNorec as qGetAntreanFromDP
 }

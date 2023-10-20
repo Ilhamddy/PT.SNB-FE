@@ -415,9 +415,65 @@ const getAntreanFromDP = async (req, res) => {
     const logger = res.locals.logger
     try{
         const { norecdp } = req.query
-        let dataAllAntrean = await pool.query(qGetAntreanFromDP, [norecdp])
+        const {antrean} = await db.sequelize.transaction(async (transaction) => {
+            let dataAllAntrean = await db.t_antreanpemeriksaan.findAll({
+                where: {
+                    objectdaftarpasienfk: norecdp
+                },
+                transaction: transaction
+            })
+            let antreanFarmasi = [...dataAllAntrean].filter((item) => {
+                return item.objectunitfk === 14
+            })
+            antreanFarmasi = antreanFarmasi.map((item) => {
+                return {
+                    ...item.toJSON()
+                }
+            })
+            let antreanNonFarmasi = [...dataAllAntrean].filter((item) => {
+                return item.objectunitfk !== 14
+            })
+            antreanNonFarmasi = 
+                await Promise.all(antreanNonFarmasi.map(async (item) => {
+                    const dataAp = item.toJSON()
+                    let dataApFarmasi = await  db.t_antreanpemeriksaan.findOne({
+                        where: {
+                            objectdaftarpasienfk: dataAp.objectdaftarpasienfk,
+                            objectunitasalfk: dataAp.objectunitfk
+                        },
+                        transaction: transaction
+                    })
+                    if(!dataApFarmasi){
+                        dataApFarmasi = await db.t_antreanpemeriksaan.create({
+                            ...dataAp,
+                            norec: uuid.v4().substring(0, 32),
+                            objectunitasalfk: dataAp.objectunitfk,
+                            objectunitfk: 14,
+                        }, {
+                            transaction: transaction
+                        })
+                    }
+                    dataApFarmasi = dataApFarmasi.toJSON()
+                    return {
+                        ...dataApFarmasi,
+                    }
+                }
+            ))
+            return {
+                antrean: [...antreanFarmasi, ...antreanNonFarmasi]
+            }
+        })
+        const dataAllAntrean = await Promise.all( 
+            antrean.map(async (item) => {
+                let dataAllAntrean = (await pool.query(qGetAntreanFromDP, [item.norec]))
+                .rows[0]
+                return {
+                    ...dataAllAntrean
+                }
+            })
+        )
         const tempres = {
-            dataantrean: dataAllAntrean.rows
+            dataantrean: dataAllAntrean
         }
         res.status(200).send({
             data: tempres,
@@ -426,6 +482,7 @@ const getAntreanFromDP = async (req, res) => {
             msg: "sukses get resep from dp"
         });
     }catch(error){
+        logger.error(error);
         res.status(500).send({
             data: error,
             status: "error",
