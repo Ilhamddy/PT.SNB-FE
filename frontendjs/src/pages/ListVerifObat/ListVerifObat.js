@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import {useDispatch, useSelector} from "react-redux"
-import { createOrUpdateRetur, getAllVerifResep, getAntreanFromDP } from "../../store/farmasi/action"
+import { createAntreanFarmasi, createOrUpdateRetur, getAllVerifResep, getAntreanFromDP } from "../../store/farmasi/action"
 import { ToastContainer } from "react-toastify"
 import { Card, CardBody, Col, Container, Nav, NavItem, NavLink, Row, TabContent, TabPane, Table, Input, Form, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem, UncontrolledTooltip, Button, FormFeedback, Label, Modal, ModalBody } from "reactstrap";
 import DataTable from "react-data-table-component";
@@ -184,6 +184,7 @@ const ListVerifObat = () => {
 }
 
 const ModalTambahObat = ({dataModal, ...rest}) => {
+    const {norecdp} = useParams();
 
     const {
         dataAntrean
@@ -191,7 +192,7 @@ const ModalTambahObat = ({dataModal, ...rest}) => {
         dataAntrean: state.Farmasi.getAntreanFromDP?.data?.dataantrean || []
     }))
     const navigate = useNavigate();
-
+    const dispatch = useDispatch();
 
     /**
      * @type {import("react-data-table-component").TableColumn[]}
@@ -252,6 +253,19 @@ const ModalTambahObat = ({dataModal, ...rest}) => {
                     noDataComponent={<NoDataTable dataName={"antrean pasien"}/>}
                     />
             </ModalBody>
+            {/* <Row className="d-flex gap-2 justify-content-center mb-3">
+                <Col lg={3}>
+                    <Button color="success" onClick={() => {
+                        dispatch(createAntreanFarmasi({
+                            norecdp: norecdp
+                        }, () => {
+                            dispatch(getAntreanFromDP({norecdp: norecdp}))
+                        }))
+                    }}>
+                        Tambah Resep
+                    </Button>
+                </Col>
+            </Row> */}
         </Modal>
     )
 }

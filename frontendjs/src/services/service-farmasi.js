@@ -39,4 +39,8 @@ export default class ServiceFarmasi {
     createOrUpdateOrderPlusVerif = async (body) => {
         return await api.create(`/transaksi/farmasi/create-or-update-order-plus-verif`, body);
     }
+
+    createAntreanFarmasi = async (body) => {
+        return await api.create(`/transaksi/farmasi/create-antrean-farmasi`, body)
+    }
 }

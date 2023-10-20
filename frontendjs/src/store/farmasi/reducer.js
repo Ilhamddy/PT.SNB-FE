@@ -25,7 +25,10 @@ import {
     GET_ANTREAN_FROM_DP_ERROR,
     CREATE_OR_UPDATE_ORDER_PLUS_VERIF,
     CREATE_OR_UPDATE_ORDER_PLUS_VERIF_SUCCESS,
-    CREATE_OR_UPDATE_ORDER_PLUS_VERIF_ERROR
+    CREATE_OR_UPDATE_ORDER_PLUS_VERIF_ERROR,
+    CREATE_ANTREAN_FARMASI,
+    CREATE_ANTREAN_FARMASI_SUCCESS,
+    CREATE_ANTREAN_FARMASI_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -65,6 +68,11 @@ const INIT_STATE = {
         error: null,
     },
     createOrUpdateOrderPlusVerif: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    createAntreanFarmasi: {
         data: [],
         loading: false,
         error: null,
@@ -371,6 +379,40 @@ const Farmasi = (state = INIT_STATE, action) => {
                 ...state,
                 createOrUpdateOrderPlusVerif: {
                     ...state.createOrUpdateOrderPlusVerif,
+                    loading: false,
+                    error: action.payload,
+                },
+            };
+        }
+        
+        case CREATE_ANTREAN_FARMASI: {
+            return {
+                ...state,
+                createAntreanFarmasi: {
+                    ...state.createAntreanFarmasi,
+                    data: [],
+                    loading: true,
+                    error: null,
+                },
+            };
+        }
+
+        case CREATE_ANTREAN_FARMASI_SUCCESS: {
+            return {
+                ...state,
+                createAntreanFarmasi: {
+                    ...state.createAntreanFarmasi,
+                    loading: false,
+                    data: action.payload,
+                },
+            };
+        }
+
+        case CREATE_ANTREAN_FARMASI_ERROR: {
+            return {
+                ...state,
+                createAntreanFarmasi: {
+                    ...state.createAntreanFarmasi,
                     loading: false,
                     error: action.payload,
                 },

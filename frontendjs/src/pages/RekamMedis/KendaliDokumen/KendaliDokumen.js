@@ -168,15 +168,11 @@ const KendaliDokumen = () => {
     const [dateEnd, setdateEnd] = useState(`${current.getFullYear()}-${current.getMonth() + 1}-${current.getDate()}`);
     const [search, setSearch] = useState('')
     const handleBeginOnChangeStart = (newBeginValue) => {
-        var dateString = new Date(newBeginValue.getTime() - (newBeginValue.getTimezoneOffset() * 60000))
-            .toISOString()
-            .split("T")[0];
+        var dateString = new Date(newBeginValue).toISOString();
         setdateStart(dateString)
     }
     const handleBeginOnChangeEnd = (newBeginValue) => {
-        var dateString = new Date(newBeginValue.getTime() - (newBeginValue.getTimezoneOffset() * 60000))
-            .toISOString()
-            .split("T")[0];
+        var dateString = new Date(newBeginValue).toISOString();
         setdateEnd(dateString)
     }
 

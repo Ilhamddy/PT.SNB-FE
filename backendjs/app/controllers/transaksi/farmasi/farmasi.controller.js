@@ -90,7 +90,7 @@ const getOrderResepFromNorec = async (req, res) => {
     }
 }
 
-const createOrUpdateVerifResep = async (req, res) => {
+const upsertVerifResep = async (req, res) => {
     const logger = res.locals.logger
     const [transaction, errorTransaction] = await createTransaction(db, res)
     try{
@@ -435,7 +435,7 @@ const getAntreanFromDP = async (req, res) => {
     }
 }
 
-const createOrUpdateOrderPlusVerif = async (req, res) => {
+const upsertOrderPlusVerif = async (req, res) => {
     const logger = res.locals.logger
     const [transaction, errorTransaction] = await createTransaction(db, res)
     if(errorTransaction) return
@@ -536,16 +536,71 @@ const createOrUpdateOrderPlusVerif = async (req, res) => {
     }
 }
 
+const createAntreanFarmasi = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const { norecdp } = req.body;
+        const {antreanPemeriksaan} = 
+            await db.sequelize.transaction(async (transaction) => {
+                let norecAP = uuid.v4().substring(0, 32)
+                const daftarPasien = await db.t_daftarpasien.findOne({
+                    where: {
+                        norec: norecdp
+                    },
+                    transaction: transaction
+                });
+                //TODO: noantrean masih null
+                const antreanPemeriksaan = await db.t_antreanpemeriksaan.create({
+                    norec: norecAP,
+                    objectdaftarpasienfk: norecdp,
+                    tglmasuk: new Date(),
+                    tglkeluar: null,
+                    objectdokterpemeriksafk: daftarPasien.objectdokterpemeriksafk,
+                    objectunitfk: 14,
+                    noantrian: null,
+                    objectkamarfk: null,
+                    objectkelasfk: null,
+                    nobed: null,
+                    taskid: 6,
+                    statusenabled: true
+                }, {
+                    transaction: transaction
+                });
+
+                return {antreanPemeriksaan}
+            });
+        
+        const tempres = {
+            antreanPemeriksaan
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export default {
     getOrderResepQuery,
     getOrderResepFromNorec,
-    createOrUpdateVerifResep,
+    createOrUpdateVerifResep: upsertVerifResep,
     createOrUpdatePenjualanBebas,
     getPasienFromNoCm,
     getAllVerifResep,
     createOrUpdateRetur,
     getAntreanFromDP,
-    createOrUpdateOrderPlusVerif
+    createOrUpdateOrderPlusVerif: upsertOrderPlusVerif,
+    createAntreanFarmasi
 }
 
 const hCreateAntreanPemeriksaan = async(

@@ -211,13 +211,13 @@ SELECT
     tdp.tglregistrasi AS tanggalregistrasi,
     tap.tglkeluar AS tanggalkeluar,
     tdp.objectpenjaminfk AS penjamin,
-    mr.namarekanan AS namarekanan
+    mr.namarekanan AS namarekanan,
+    mu.namaunit AS namaunit
 FROM t_antreanpemeriksaan tap
     LEFT JOIN t_daftarpasien tdp ON tdp.norec = tap.objectdaftarpasienfk
     LEFT JOIN m_rekanan mr ON tdp.objectpenjaminfk = mr.id
 WHERE tap.objectdaftarpasienfk = $1
     AND tap.statusenabled = true
-    AND tap.objectunitfk = 14
 ORDER BY tap.tglmasuk
 `
 

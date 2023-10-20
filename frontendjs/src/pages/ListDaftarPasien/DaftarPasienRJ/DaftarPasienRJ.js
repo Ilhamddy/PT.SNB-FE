@@ -254,15 +254,11 @@ const DaftarPasienRJ = () => {
         }
     )
     const handleBeginOnChangeStart = (newBeginValue) => {
-        var dateString = new Date(newBeginValue.getTime() - (newBeginValue.getTimezoneOffset() * 60000))
-            .toISOString()
-            .split("T")[0];
+        var dateString = new Date(newBeginValue).toISOString()
         setdateStart(dateString)
     }
     const handleBeginOnChangeEnd = (newBeginValue) => {
-        var dateString = new Date(newBeginValue.getTime() - (newBeginValue.getTimezoneOffset() * 60000))
-            .toISOString()
-            .split("T")[0];
+        var dateString = new Date(newBeginValue).toISOString()
         setdateEnd(dateString)
     }
 
@@ -324,16 +320,7 @@ const DaftarPasienRJ = () => {
             dispatch(widgetdaftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}`));
         }
     }, [newDataDokumen, search, dateStart, dateEnd, idPencarian, tempSelctUnit, dispatch])
-    // useEffect(() => {
-    //     return () => {
-    //         if(dataCombo.unit){
-    //             var newArray = dataCombo.unit.filter(function (el) {
-    //                 return el.objectinstalasifk === 1;
-    //             });
-    //             setdataUnit(newArray)
-    //         }
-    //     }
-    // }, [dataCombo])
+
     const handleSelectSingle = (e) => {
         settempSelctUnit(e)
     };

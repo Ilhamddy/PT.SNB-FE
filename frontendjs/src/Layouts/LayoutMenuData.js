@@ -627,6 +627,18 @@ const Navdata = () => {
                         ]);
                     }
                 },
+                {
+                    id: "List Registrasi",
+                    label: "List Registrasi",
+                    link: "/farmasi/add-obat-farmasi",
+                    parentId: "farmasi",
+                    isAllowed: () => {
+                        return isAllowedAccess(getUserPermissions(), [
+                            "REGISTRASI_VIEW",
+                        ]);
+                    }
+                },
+
             ]
         },
         {

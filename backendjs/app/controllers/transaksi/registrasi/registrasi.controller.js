@@ -396,7 +396,7 @@ async function saveRegistrasiPasien(req, res) {
             norec: norecAP,
             objectdaftarpasienfk: daftarPasien.norec,
             tglmasuk: req.body.tglregistrasi,
-            tglkeluar: req.body.tglregistrasi,
+            tglkeluar: null,
             objectdokterpemeriksafk: req.body.dokter,
             objectunitfk: req.body.unittujuan,
             noantrian: noantrian,

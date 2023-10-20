@@ -19,7 +19,9 @@ import {
     getAntreanFromDPSuccess,
     getAntreanFromDPError,
     createOrUpdateOrderPlusVerifSuccess,
-    createOrUpdateOrderPlusVerifError
+    createOrUpdateOrderPlusVerifError,
+    createAntreanFarmasiSuccess,
+    createAntreanFarmasiError
 } from "./action";
 
 import {
@@ -31,7 +33,8 @@ import {
     GET_ALL_VERIF_RESEP,
     CREATE_OR_UPDATE_RETUR,
     GET_ANTREAN_FROM_DP,
-    CREATE_OR_UPDATE_ORDER_PLUS_VERIF
+    CREATE_OR_UPDATE_ORDER_PLUS_VERIF,
+    CREATE_ANTREAN_FARMASI
 } from "./actionType";
 
 import {
@@ -137,6 +140,18 @@ function* onCreateOrUpdateOrderPlusVerif({ payload: { body, callback } }) {
     }
 }
 
+function* onCreateAntreanFarmasi({ payload: { body, callback } }) {
+    try {
+        const response = yield call(serviceFarmasi.createAntreanFarmasi, body);
+        yield put(createAntreanFarmasiSuccess(response.data));
+        toast.success("Sukses insert antrean farmasi", { autoClose: 3000 });
+        callback && callback();
+    } catch (error) {
+        yield put(createAntreanFarmasiError(error));
+        toast.error("Gagal insert antrean farmasi", { autoClose: 3000 });
+    }
+}
+
 export function* watchGetOrderResepQuery() {
     yield takeEvery(GET_ORDER_RESEP_QUERY, onGetOrderResepQuery);
 }
@@ -173,6 +188,10 @@ export function* watchCreateOrUpdateOrderPlusVerif(){
     yield takeEvery(CREATE_OR_UPDATE_ORDER_PLUS_VERIF, onCreateOrUpdateOrderPlusVerif);
 }
 
+export function* watchCreateAntreanFarmasi(){
+    yield takeEvery(CREATE_ANTREAN_FARMASI, onCreateAntreanFarmasi);
+}
+
 function* farmasiSaga() {
     yield all([
         fork(watchGetOrderResepQuery),
@@ -183,7 +202,8 @@ function* farmasiSaga() {
         fork(watchGetAllVerifResep),
         fork(watchCreateOrUpdateRetur),
         fork(watchGetAntreanFromDP),
-        fork(watchCreateOrUpdateOrderPlusVerif)
+        fork(watchCreateOrUpdateOrderPlusVerif),
+        fork(watchCreateAntreanFarmasi)
     ]);
 }
 

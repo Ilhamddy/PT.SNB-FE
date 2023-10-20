@@ -87,15 +87,11 @@ const DaftarPasienFarmasi = () => {
     }
     const handleFilter = (e) => {
         if (e.keyCode === 13) {
-            // console.log(search)
-            // useEffect(() => {
             dispatch(getDaftarPasienFarmasi({
                 noregistrasi: search,
                 start: dateStart,
                 end: dateEnd
             }));
-            // dispatch(widgetdaftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}`));
-            // }, [dispatch]);
         }
     }
     useEffect(() => {
@@ -209,42 +205,8 @@ const DaftarPasienFarmasi = () => {
             <UiContent />
             <div className="page-content daftar-pasien-farmasi">
                 <Container fluid>
-                    <BreadCrumb title="Daftar Pasien Registrasi" pageTitle="Forms" />
-
+                    <BreadCrumb title="Daftar Pasien Farmasi" pageTitle="Forms" />
                     <Row>
-                        {datawidget.map((item, key) => (
-                            <Col xxl={4} sm={6} key={key}>
-                                <Card className="card-animate">
-                                    <CardBody>
-                                        <div className="d-flex justify-content-between">
-                                            <div>
-                                                <p className="fw-medium text-muted mb-0">Total Pasien {item.label}</p>
-                                                <h2 className="mt-4 ff-secondary fw-semibold">
-                                                    <span className="counter-value" style={{ fontSize: "5rem" }}>
-                                                        <CountUp
-                                                            start={0}
-                                                            end={item.counter}
-                                                            decimal={item.decimals}
-
-                                                            duration={3}
-                                                        />
-                                                    </span>
-                                                </h2>
-                                            </div>
-                                            <div>
-                                                <div className="avatar-xl flex-shrink-0">
-                                                    <span className={"avatar-title rounded-circle fs-4 bg-soft-" + item.iconClass + " text-" + item.iconClass}>
-
-                                                        <img src={item.icon}
-                                                            alt="" className="avatar-lg" />
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </CardBody>
-                                </Card>
-                            </Col>
-                        ))}
                         <Col lg={3}>
                             <Card>
                                 <CardBody>
