@@ -44,14 +44,14 @@ const ViewerPoli = () => {
 
   const [intervalVal, setIntervalVal] = useState(null)
 
-  let { jadwalDokter, unit, terpanggil, lastTerpanggil } = useSelector(
-    (state) => ({
+  let { jadwalDokter, unit, terpanggil, lastTerpanggil, terpanggilKedua } =
+    useSelector((state) => ({
       jadwalDokter: state.Viewer.getJadwalDokter.data.jadwal || [],
       unit: state.Viewer.getJadwalDokter.data.unit || [],
       terpanggil: state.Viewer.getJadwalDokter.data.terpanggil || [],
       lastTerpanggil: state.Viewer.getJadwalDokter.data.lastTerpanggil || [],
-    })
-  )
+      terpanggilKedua: state.Viewer.getJadwalDokter.data.terpanggilKedua || [],
+    }))
 
   const panggilLast = async (dataAll) => {
     if (dataAll?.terpanggil?.antrean?.lastAntrean) {
@@ -247,7 +247,7 @@ const ViewerPoli = () => {
         </div>
         <div className="terakhir-panggil">
           <div className="ruang-available">
-            <p className="nomor-terpanggil">Nomor Terpanggil</p>
+            <p className="nomor-terpanggil">Antrean Terpanggil</p>
             <div className="isi-konten">
               <p className="nama-poliklinik">
                 {allTerpanggil?.namaunit || '-'}
@@ -258,6 +258,21 @@ const ViewerPoli = () => {
               </p>
             </div>
             <p className="nama-ruang">{allTerpanggil?.namakamar || '-'}</p>
+          </div>
+          <div className="ruang-available">
+            <p className="nomor-terpanggil">Panggilan sebelumnya</p>
+            <div className="isi-konten">
+              <p className="nama-poliklinik">
+                {terpanggilKedua?.namaunit || '-'}
+              </p>
+              <p className="nama-dokter">
+                {terpanggilKedua?.namadokter || '-'}
+              </p>
+              <p className="nomor-antrean">
+                {terpanggilKedua?.antrean?.lastAntrean || '-'}
+              </p>
+            </div>
+            <p className="nama-ruang">{terpanggilKedua?.namakamar || '-'}</p>
           </div>
         </div>
       </div>

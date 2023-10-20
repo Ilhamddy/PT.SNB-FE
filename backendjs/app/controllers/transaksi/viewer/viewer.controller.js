@@ -1,5 +1,5 @@
 import pool from "../../../config/dbcon.query";
-import { qGetLoket, qGetLoketSisa, qGetLastPemanggilan, qGetAllLoket, qGetLastPemanggilanLoket, qGetLastPemanggilanAll, qGetAllTerpanggil, panggilStatus, qGetLastPemanggilanViewer, qGetJadwalDokter, qGetLastAntrean } from "../../../queries/viewer/viewer.queries";
+import { qGetLoket, qGetLoketSisa, qGetLastPemanggilan, qGetAllLoket, qGetLastPemanggilanLoket, qGetLastPemanggilanAll, qGetAllTerpanggil, panggilStatus, qGetLastPemanggilanViewer, qGetJadwalDokter, qGetLastAntrean, qGetJadwalDokterNorec } from "../../../queries/viewer/viewer.queries";
 import db from "../../../models";
 import { getDateStartEnd } from "../../../utils/dateutils";
 import { groupBy } from "../../../utils/arutils";
@@ -305,7 +305,7 @@ const panggilUlangAntrean = async (req, res) => {
 const getJadwalDokter = async (req, res) => {
     const logger = res.locals.logger;
     try{
-        const { jadwal, unit, lastTerpanggil, terpanggil } = await
+        const { jadwal, unit, lastTerpanggil, terpanggil, terpanggilKedua } = await
             db.sequelize.transaction(async (transaction) => {
                 const unitFilter = JSON.parse(decodeURIComponent(req.query.unit)) || []
                 const isPanggil = req.query.ispanggil === "true"
@@ -329,48 +329,20 @@ const getJadwalDokter = async (req, res) => {
                 jadwal = jadwal.filter((jadwal) => {
                     return !!unitFilter.find((filter) => filter.value === jadwal.objectunitfk)
                 })
-                const {todayStart, todayEnd} = getDateStartEnd()
-                jadwal = await Promise.all(
-                    jadwal.map(async (item) => {
-                        const antrean = (await pool.query(qGetLastAntrean, [
-                            item.objectpegawaifk, 
-                            todayStart, 
-                            todayEnd, 
-                            2
-                        ])).rows
-                        let itemAntreanPanggil = antrean?.[0]
-                        if(!itemAntreanPanggil){
-                            const antreanSelesai = (await pool.query(qGetLastAntrean, [
-                                item.objectpegawaifk, 
-                                todayStart, 
-                                todayEnd, 
-                                3
-                            ])).rows
-                            itemAntreanPanggil = antreanSelesai?.[0]
-                        }
-                        itemAntreanPanggil = itemAntreanPanggil || null
-                        item.antrean = {
-                            norecap: itemAntreanPanggil?.norecap,
-                            lastAntrean: itemAntreanPanggil?.reportdisplay + itemAntreanPanggil?.noantrian,
-                            objectstatuspanggilfk:  itemAntreanPanggil?.objectstatuspanggilfk,
-                        }
-                        return item
-                    })
-                )
-                
+                jadwal = hProcessJadwal(req, res, transaction, {jadwal})
                 let lastTerpanggil = [...jadwal].filter(item => 
                     item?.antrean.objectstatuspanggilfk === 3
                 )
-                lastTerpanggil = lastTerpanggil.sort((a, b) => {
-                    return b.tgldipanggildokter - a.tgldipanggildokter
-                })[0] || null
+                const terpanggilSort = lastTerpanggil.sort((a, b) => {
+                    return b.antrean.tgldipanggildokter - a.antrean.tgldipanggildokter
+                })
+                lastTerpanggil = terpanggilSort[0] || null
                 let terpanggil = [...jadwal].filter(item => 
                     item?.antrean.objectstatuspanggilfk === 2  
                 )
                 terpanggil = terpanggil.sort((a, b) => {
-                    return a.tgldipanggildokter - b.tgldipanggildokter
+                    return a.antrean.tgldipanggildokter - b.antrean.tgldipanggildokter
                 })[0] || null
-        
                 let antreanData = null
                 if(isPanggil && terpanggil?.antrean) {
                     let antreanUpdate 
@@ -389,11 +361,36 @@ const getJadwalDokter = async (req, res) => {
                     })
                 }
 
+                
+                let terpanggilKedua = null
+
+                const {todayStart, todayEnd} = getDateStartEnd()
+                let allTerpanggil = terpanggil || lastTerpanggil
+                if(allTerpanggil){
+                    let antreanKedua = (await pool.query(qGetLastAntrean, [
+                        '', 
+                        todayStart, 
+                        new Date(allTerpanggil.antrean.tgldipanggildokter), 
+                        3
+                    ])).rows
+                    antreanKedua = antreanKedua?.[0] || null
+                    terpanggilKedua = await pool.query(qGetJadwalDokterNorec, [antreanKedua?.objectdokterpemeriksafk])
+                    terpanggilKedua = terpanggilKedua.rows[0] || null
+                    terpanggilKedua.antrean = {
+                        norecap: antreanKedua?.norecap,
+                        lastAntrean: antreanKedua?.reportdisplay + antreanKedua?.noantrian,
+                        objectstatuspanggilfk:  antreanKedua?.objectstatuspanggilfk,
+                        tgldipanggildokter: antreanKedua?.tgldipanggildokter,
+                        objectdokterpemeriksafk: antreanKedua?.objectdokterpemeriksafk,
+                    }
+                }
+
                 return {
                     jadwal,
                     unit,
                     lastTerpanggil,
-                    terpanggil
+                    terpanggil,
+                    terpanggilKedua
                 }
             })
 
@@ -401,9 +398,9 @@ const getJadwalDokter = async (req, res) => {
             jadwal: jadwal,
             unit: unit,
             lastTerpanggil: lastTerpanggil,
-            terpanggil: terpanggil
+            terpanggil: terpanggil,
+            terpanggilKedua: terpanggilKedua
         };
-        res.locals.showBodyRes();
 
         res.status(200).send({
             msg: 'Success',
@@ -430,4 +427,38 @@ export default {
     getAllTerpanggil,
     panggilUlangAntrean,
     getJadwalDokter
+}
+
+const hProcessJadwal = async (req, res, transaction, {jadwal}) => {
+    const {todayStart, todayEnd} = getDateStartEnd()
+    const newJadwal = await Promise.all(
+        jadwal.map(async (item) => {
+            const antrean = (await pool.query(qGetLastAntrean, [
+                item.objectpegawaifk, 
+                todayStart, 
+                todayEnd, 
+                2
+            ])).rows
+            let itemAntreanPanggil = antrean?.[0]
+            if(!itemAntreanPanggil){
+                const antreanSelesai = (await pool.query(qGetLastAntrean, [
+                    item.objectpegawaifk, 
+                    todayStart, 
+                    todayEnd, 
+                    3
+                ])).rows
+                itemAntreanPanggil = antreanSelesai?.[0]
+            }
+            itemAntreanPanggil = itemAntreanPanggil || null
+            item.antrean = {
+                norecap: itemAntreanPanggil?.norecap,
+                lastAntrean: itemAntreanPanggil?.reportdisplay + itemAntreanPanggil?.noantrian,
+                objectstatuspanggilfk:  itemAntreanPanggil?.objectstatuspanggilfk,
+                tgldipanggildokter: itemAntreanPanggil?.tgldipanggildokter,
+                objectdokterpemeriksafk: itemAntreanPanggil?.objectdokterpemeriksafk,
+            }
+            return item
+        })
+    )
+    return newJadwal
 }

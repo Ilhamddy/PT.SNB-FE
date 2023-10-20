@@ -165,6 +165,8 @@
             width: 40%;
             height: 100%;
             justify-content: center;
+            border-left: 10px solid #000000 !important;
+            background-color: #ffffff;
 
             .ruang-available {
                 display: flex;
@@ -176,9 +178,12 @@
                 background-color: #eee7df;
                 border-radius: 16px;
                 overflow: hidden;
-                min-height: 300px;
+                min-height: 250px;
                 justify-content: space-between;
                 margin-bottom: 20px;
+                &:first-child {
+                    margin-top: 20px;
+                }
                 .nomor-terpanggil {
                     font-size: 25px;
                     font-weight: 700;
