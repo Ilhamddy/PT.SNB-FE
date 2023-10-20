@@ -655,6 +655,7 @@ const authProtectedRoutes = [
   // Sumber Daya Manusia
   { path: "/sumberdayamanusia/daftar-pegawai", component: <DaftarPegawai /> },
   { path: "/sumberdayamanusia/biodata-pegawai", component: <BiodataPegawai /> },
+  { path: "/sumberdayamanusia/biodata-pegawai/:idPegawai", component: <BiodataPegawai /> },
 ];
 
 const publicRoutes = [

@@ -889,7 +889,7 @@ const EfisiensiBPJS = () => {
                             <div className="d-flex flex-wrap justify-content-end gap-2">
                                 <Button
                                     disabled={error ? null : loading ? true : false}
-                                    type="submit" color="success" style={{ width: '20%' }}
+                                    type="button" color="success" style={{ width: '20%' }}
                                     onClick={() => handleClickGrouping()}>
                                     {error ? null : loading ? (
                                         <Spinner size="sm" className="me-2">

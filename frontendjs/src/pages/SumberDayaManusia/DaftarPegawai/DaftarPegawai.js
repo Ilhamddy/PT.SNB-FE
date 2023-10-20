@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react"
 import withRouter from "../../../Components/Common/withRouter"
 import { ToastContainer } from "react-toastify";
 import UiContent from "../../../Components/Common/UiContent";
-import { Button, Card, CardBody, CardHeader, Col, Container, DropdownToggle, Form, FormFeedback, Input, Row, UncontrolledDropdown } from "reactstrap";
+import { Button, Card, CardBody, CardHeader, Col, Container, DropdownItem, DropdownMenu, DropdownToggle, Form, FormFeedback, Input, Row, UncontrolledDropdown } from "reactstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import BreadCrumb from "../../../Components/Common/BreadCrumb";
@@ -67,6 +67,9 @@ const DaftarPegawai = () => {
             },
         }
     }
+    const handleClickEdit = (e) => {
+        navigate(`/sumberdayamanusia/biodata-pegawai/${e.id}`)
+    };
     const columns = [
         {
             name: <span className='font-weight-bold fs-13'>Detail</span>,
@@ -76,10 +79,12 @@ const DaftarPegawai = () => {
                     <div className="hstack gap-3 flex-wrap">
                         <UncontrolledDropdown className="dropdown d-inline-block">
                             <DropdownToggle className="btn btn-soft-secondary btn-sm" tag="button" id="tooltipTop2" type="button"
-                            // onClick={() => onClickDelete(data, 1)}
                             >
                                 <i className="ri-apps-2-line"></i>
                             </DropdownToggle>
+                            <DropdownMenu className="dropdown-menu-end">
+                                <DropdownItem href="#!" onClick={() => handleClickEdit(data)}><i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>Edit</DropdownItem>
+                            </DropdownMenu>
                         </UncontrolledDropdown>
                         {/* <UncontrolledTooltip placement="top" target="tooltipTop2" > Delete </UncontrolledTooltip> */}
                     </div>

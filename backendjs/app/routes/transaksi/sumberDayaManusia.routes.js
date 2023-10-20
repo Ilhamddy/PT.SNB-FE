@@ -19,5 +19,15 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getComboSDM
     );
+    app.post(
+        "/api/transaksi/sumber-daya-manusia/save-biodata-pasien",
+        [authJwt.verifyToken],
+        controller.saveBiodataPegawai
+    )
+    app.get(
+        "/api/transaksi/sumber-daya-manusia/get-pegawai-byid",
+        [authJwt.verifyToken],
+        controller.getPegawaiById
+    );
 
 }
