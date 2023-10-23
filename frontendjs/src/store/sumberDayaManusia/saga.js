@@ -7,7 +7,8 @@ import {
     SAVE_BIODATA_PEGAWAI,
     GET_PEGAWAI_BYID,
     GET_COMBO_JADWAL,
-    GET_JADWAL_DOKTER_SDM
+    GET_JADWAL_DOKTER_SDM,
+    UPSERT_JADWAL
 } from "./actionType";
 
 import {
@@ -22,7 +23,9 @@ import {
     getComboJadwalSuccess,
     getComboJadwalError,
     getJadwalDokterSDMSuccess,
-    getJadwalDokterSDMError
+    getJadwalDokterSDMError,
+    upsertJadwalSuccess,
+    upsertJadwalError
 } from "./action";
 
 import { toast } from 'react-toastify';
@@ -117,6 +120,21 @@ export function* watchonGetJadwalDokterSDM() {
     yield takeEvery(GET_JADWAL_DOKTER_SDM, onGetJadwalDokterSDM);
 }
 
+function* onUpsertJadwal({ payload: { body, callback } }) {
+    try {
+        const response = yield call(serviceSDM.upsertJadwal, body);
+        yield put(upsertJadwalSuccess(response.data || null));
+        toast.success(response.msg, { autoClose: 3000 });
+        callback && callback();
+    } catch(error) {
+        yield put(upsertJadwalError(error));
+    }
+}
+
+export function* watchonUpsertJadwal() {
+    yield takeEvery(UPSERT_JADWAL, onUpsertJadwal);
+}
+
 function* sumberDayaManusia() {
     yield all([
         fork(watchongetDaftarPegawai),
@@ -124,7 +142,8 @@ function* sumberDayaManusia() {
         fork(watchonsaveBiodataPegawai),
         fork(watchongetPegawaiById),
         fork(watchonGetComboJadwal),
-        fork(watchonGetJadwalDokterSDM)
+        fork(watchonGetJadwalDokterSDM),
+        fork(watchonUpsertJadwal)
     ]);
 }
 

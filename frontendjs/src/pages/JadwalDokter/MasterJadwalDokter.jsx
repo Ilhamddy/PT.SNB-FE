@@ -24,11 +24,13 @@ import { useEffect } from 'react'
 import {
   getComboJadwal,
   getJadwalDokterSDM,
+  upsertJadwal,
 } from '../../store/sumberDayaManusia/action'
 import { useDispatch, useSelector } from 'react-redux'
 import LoadingTable from '../../Components/Table/LoadingTable'
 import NoDataTable from '../../Components/Table/NoDataTable'
 import { dateTimeLocal, timeLocal } from '../../utils/format'
+import * as Yup from 'yup'
 
 const MasterJadwalDokter = () => {
   const { comboJadwal, jadwal } = useSelector((state) => ({
@@ -45,6 +47,23 @@ const MasterJadwalDokter = () => {
       unit: '',
       jamkerjastart: '',
       jamkerjaend: '',
+    },
+    validationSchema: Yup.object({
+      dokter: Yup.string().required('Dokter harus diisi'),
+      ruangrawat: Yup.string().required('Ruang Rawat harus diisi'),
+      nip: Yup.string().required('NIP harus diisi'),
+      hari: Yup.string().required('Hari harus diisi'),
+      unit: Yup.string().required('Unit harus diisi'),
+      jamkerjastart: Yup.string().required('Jam Kerja Start harus diisi'),
+      jamkerjaend: Yup.string().required('Jam Kerja End harus diisi'),
+    }),
+    onSubmit: async (values, { resetForm }) => {
+      dispatch(
+        upsertJadwal(values, () => {
+          dispatch(getComboJadwal())
+          resetForm()
+        })
+      )
     },
   })
   const dispatch = useDispatch()
@@ -163,6 +182,7 @@ const MasterJadwalDokter = () => {
                 options={comboJadwal?.dokter || []}
                 isClearEmpty
                 onChange={(e) => {
+                  vJadwal.setFieldValue('nip', e?.nip || '')
                   vJadwal.setFieldValue('dokter', e?.value || '')
                 }}
                 value={vJadwal.values.dokter}
@@ -352,7 +372,12 @@ const MasterJadwalDokter = () => {
           </Row>
           <Row className="d-flex justify-content-center">
             <Col className="d-flex" lg={4}>
-              <Button color="success">
+              <Button
+                color="success"
+                onClick={() => {
+                  vJadwal.handleSubmit()
+                }}
+              >
                 {vJadwal.values.idjadwal ? 'Edit' : 'Tambah'}
               </Button>
               <Button

@@ -18,6 +18,9 @@ import {
     GET_JADWAL_DOKTER_SDM,
     GET_JADWAL_DOKTER_SDM_SUCCESS,
     GET_JADWAL_DOKTER_SDM_ERROR,
+    UPSERT_JADWAL,
+    UPSERT_JADWAL_SUCCESS,
+    UPSERT_JADWAL_ERROR,
 } from "./actionType";
 
 export const sdmResetForm = () => ({
@@ -115,4 +118,22 @@ export const getJadwalDokterSDMSuccess = (data) => ({
 export const getJadwalDokterSDMError = (error) => ({
     type: GET_JADWAL_DOKTER_SDM_ERROR,
     payload: error,
+});
+
+export const upsertJadwal = (body, callback) => ({
+    type: UPSERT_JADWAL,
+    payload: {
+        body: body,
+        callback: callback
+    }
+});
+
+export const upsertJadwalSuccess = (data) => ({
+    type: UPSERT_JADWAL_SUCCESS,
+    payload: data
+});
+
+export const upsertJadwalError = (error) => ({
+    type: UPSERT_JADWAL_ERROR,
+    payload: error
 });

@@ -46,3 +46,7 @@ export const getDateStartEndMonth = () => {
         monthEnd
     }
 }
+
+export const getTimeOnly = (date) => {
+    return (new Date(date)).toISOString().split('T')[1].split('.')[0]
+}

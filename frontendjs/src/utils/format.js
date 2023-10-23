@@ -77,7 +77,8 @@ export const timeLocal = (date) => {
                     hour: '2-digit', 
                     minute: '2-digit', 
                     second: '2-digit' 
-            }) 
+            })
+            .replace(/\./g,':')
     }catch(e){
         return "-"
     }

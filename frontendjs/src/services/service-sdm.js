@@ -22,4 +22,7 @@ export default class ServiceSDM {
     getJadwalDokter = async (queries) => {
         return await api.get(`/transaksi/sumber-daya-manusia/get-jadwal-dokter`, queries)
     }
+    upsertJadwal = async (params) => {
+        return await api.create(`/transaksi/sumber-daya-manusia/upsert-jadwal`, params)
+    }
 }

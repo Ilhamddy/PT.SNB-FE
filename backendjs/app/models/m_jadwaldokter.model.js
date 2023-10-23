@@ -39,6 +39,9 @@ export default (sequelize, Sequelize) => {
         objectstatushadirfk: {
             type: Sequelize.INTEGER,
         },
+        objectkamarfk: {
+            type: Sequelize.INTEGER,
+        },
     }, {
         tableName: "m_jadwaldokter", // relation "user" does not exist
         createdAt: false,

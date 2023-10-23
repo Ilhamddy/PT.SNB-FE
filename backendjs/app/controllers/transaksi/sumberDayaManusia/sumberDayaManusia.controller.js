@@ -6,6 +6,7 @@ import unitQueries from '../../../queries/master/unit/unit.queries'
 import pegawaiQueries from '../../../queries/master/pegawai/pegawai.queries'
 import kamarQueries from "../../../queries/master/kamar/kamar.queries";
 import hariQueries from "../../../queries/master/hari/hari.queries";
+import { getTimeOnly } from "../../../utils/dateutils";
 
 const queryPromise2 = (query) => {
     return new Promise((resolve, reject) => {
@@ -345,11 +346,77 @@ const getJadwalDokter = async (req, res) => {
     }
 }
 
+const upsertJadwal = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const reqBody = req.body
+        const {jadwal} = 
+            await db.sequelize.transaction(async (transaction) => {
+                let jadwal = null
+                if(reqBody.idjadwal){
+                    const jadwalModel = await db.m_jadwaldokter.findOne({
+                        where: {
+                            id: reqBody.idjadwal,
+                        },
+                        transaction: transaction
+                    })
+                    await jadwalModel?.update({
+                        objectpegawaifk: reqBody.dokter,
+                        objectharifk: reqBody.hari,
+                        jam_mulai: getTimeOnly(reqBody.jamkerjastart),
+                        jam_selesai: getTimeOnly(reqBody.jamkerjaend),
+                        objectunitfk: reqBody.unit,
+                        objectkamarfk: reqBody.ruangrawat,
+                    })
+                    jadwal = jadwalModel.toJSON()
+                } else{
+                    const jadwalModel = await db.m_jadwaldokter.create({
+                        kdprofile: 0,
+                        statusenabled: true,
+                        kodeexternal: null,
+                        objectpegawaifk: reqBody.dokter,
+                        objectharifk: reqBody.hari,
+                        jam_mulai: getTimeOnly(reqBody.jamkerjastart),
+                        jam_selesai: getTimeOnly(reqBody.jamkerjaend),
+                        objectunitfk: reqBody.unit,
+                        objectstatushadirfk: null,
+                        objectkamarfk: reqBody.ruangrawat,
+                    }, { 
+                        transaction 
+                    });
+                    jadwal = jadwalModel.toJSON()
+                }
+                return {
+                    jadwal
+                }
+            });
+        
+        const tempres = {
+            jadwal: jadwal
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export default {
     getDaftarPegawai,
     getComboSDM,
     saveBiodataPegawai,
     getPegawaiById,
     getComboJadwal,
-    getJadwalDokter
+    getJadwalDokter,
+    upsertJadwal
 }

@@ -39,4 +39,9 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getJadwalDokter
     );
+    app.post(
+        "/api/transaksi/sumber-daya-manusia/upsert-jadwal",
+        [authJwt.verifyToken],
+        controller.upsertJadwal
+    )
 }
