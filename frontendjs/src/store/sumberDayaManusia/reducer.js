@@ -3,7 +3,9 @@ import {
     GET_DAFTAR_PEGAWAI, GET_DAFTAR_PEGAWAI_SUCCESS, GET_DAFTAR_PEGAWAI_ERROR,
     GET_COMBO_SDM, GET_COMBO_SDM_SUCCESS, GET_COMBO_SDM_ERROR,
     SAVE_BIODATA_PEGAWAI, SAVE_BIODATA_PEGAWAI_SUCCESS, SAVE_BIODATA_PEGAWAI_ERROR,
-    GET_PEGAWAI_BYID, GET_PEGAWAI_BYID_SUCCESS, GET_PEGAWAI_BYID_ERROR
+    GET_PEGAWAI_BYID, GET_PEGAWAI_BYID_SUCCESS, GET_PEGAWAI_BYID_ERROR,
+    GET_USER_ROLE_BYID_PEGAWAI, GET_USER_ROLE_BYID_PEGAWAI_SUCCESS, GET_USER_ROLE_BYID_PEGAWAI_ERROR,
+    SAVE_SIGNUP_USER_ROLE, SAVE_SIGNUP_USER_ROLE_SUCCESS, SAVE_SIGNUP_USER_ROLE_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -27,6 +29,17 @@ const INIT_STATE = {
         data: [],
         loading: false,
         error: null,
+    },
+    getUserRoleById: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    saveSignupUserRole:{
+        newData: null,
+        loading: false,
+        error: null,
+        success: false
     }
 }
 
@@ -44,8 +57,14 @@ const sumberDayaManusia = (state = INIT_STATE, action) => {
                 saveBiodataPegawai: {
                     ...INIT_STATE.saveBiodataPegawai
                 },
-                getPegawaiById:{
+                getPegawaiById: {
                     ...INIT_STATE.getPegawaiById
+                },
+                getUserRoleById:{
+                    ...INIT_STATE.getUserRoleById
+                },
+                saveSignupUserRole:{
+                    ...INIT_STATE.saveSignupUserRole
                 }
             }
         }
@@ -182,6 +201,74 @@ const sumberDayaManusia = (state = INIT_STATE, action) => {
                     error: action.error,
                 }
             }
+        }
+
+        case GET_USER_ROLE_BYID_PEGAWAI: {
+            return {
+                ...state,
+                getUserRoleById: {
+                    ...state.getUserRoleById,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case GET_USER_ROLE_BYID_PEGAWAI_SUCCESS: {
+            return {
+                ...state,
+                getUserRoleById: {
+                    ...state.getUserRoleById,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case GET_USER_ROLE_BYID_PEGAWAI_ERROR: {
+            return {
+                ...state,
+                getUserRoleById: {
+                    ...state.getUserRoleById,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case SAVE_SIGNUP_USER_ROLE: {
+            return {
+                ...state,
+                saveSignupUserRole: {
+                    ...state.saveSignupUserRole,
+                    data: [],
+                    loading: true,
+                    error: null,
+                },
+            };
+        }
+
+        case SAVE_SIGNUP_USER_ROLE_SUCCESS: {
+            return {
+                ...state,
+                saveSignupUserRole: {
+                    ...state.saveSignupUserRole,
+                    loading: false,
+                    data: action.payload,
+                    success: true,
+                },
+            };
+        }
+
+        case SAVE_SIGNUP_USER_ROLE_ERROR: {
+            return {
+                ...state,
+                saveSignupUserRole: {
+                    ...state.saveSignupUserRole,
+                    loading: false,
+                    error: action.payload,
+                },
+            };
         }
 
         default: {

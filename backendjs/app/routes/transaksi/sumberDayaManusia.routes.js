@@ -29,5 +29,10 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getPegawaiById
     );
+    app.get(
+        "/api/transaksi/sumber-daya-manusia/get-user-role-byid",
+        [authJwt.verifyToken],
+        controller.getUserRoleById
+    );
 
 }

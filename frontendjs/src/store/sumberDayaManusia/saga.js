@@ -3,14 +3,16 @@ import ServiceSDM from "../../services/service-sdm";
 
 import {
     GET_DAFTAR_PEGAWAI,GET_COMBO_SDM, SAVE_BIODATA_PEGAWAI,
-    GET_PEGAWAI_BYID
+    GET_PEGAWAI_BYID, GET_USER_ROLE_BYID_PEGAWAI,SAVE_SIGNUP_USER_ROLE
 } from "./actionType";
 
 import {
     getDaftarPegawaiSuccess, getDaftarPegawaiError,
     getComboSDMSuccess, getComboSDMError,
     saveBiodataPegawaiSuccess, saveBiodataPegawaiError,
-    getPegawaiByIdSuccess, getPegawaiByIdError
+    getPegawaiByIdSuccess, getPegawaiByIdError,
+    getUserRoleByIdSuccess, getUserRoleByIdError,
+    saveSignupUserRoleSuccess, saveSignupUserRoleError
 } from "./action";
 
 import { toast } from 'react-toastify';
@@ -79,12 +81,48 @@ export function* watchongetPegawaiById() {
     yield takeEvery(GET_PEGAWAI_BYID, ongetPegawaiById);
 }
 
+function* ongetUserRoleById({ payload: { queries } }) {
+    try {
+        let response = null;
+        response = yield call(serviceSDM.getUserRoleById, queries);
+        yield put(getUserRoleByIdSuccess(response.data));
+    } catch (error) {
+        yield put(getUserRoleByIdError(error));
+        toast.error("Gagal Simpan ", { autoClose: 3000 });
+    }
+}
+export function* watchongetUserRoleById() {
+    yield takeEvery(GET_USER_ROLE_BYID_PEGAWAI, ongetUserRoleById);
+}
+
+function* onsaveSignupUserRole({ payload: { body, callback } }) {
+    try {
+        const response = yield call(serviceSDM.saveSignupUserRole, body);
+        yield put(saveSignupUserRoleSuccess(response.data));
+        if (response.code === 200) {
+            toast.success(response.msg, { autoClose: 3000 });
+        } else {
+            toast.error(response.msg, { autoClose: 3000 });
+        }
+        callback && callback();
+    } catch (error) {
+        console.log(error)
+        yield put(saveSignupUserRoleError(error));
+        toast.error("Gagal Simpan ", { autoClose: 3000 });
+    }
+}
+export function* watchonsaveSignupUserRole() {
+    yield takeEvery(SAVE_SIGNUP_USER_ROLE, onsaveSignupUserRole);
+}
+
 function* sumberDayaManusia() {
     yield all([
         fork(watchongetDaftarPegawai),
         fork(watchongetComboSDM),
         fork(watchonsaveBiodataPegawai),
-        fork(watchongetPegawaiById)
+        fork(watchongetPegawaiById),
+        fork(watchongetUserRoleById),
+        fork(watchonsaveSignupUserRole)
     ]);
 }
 

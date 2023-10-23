@@ -75,6 +75,7 @@ const getComboSDM = async (req, res) => {
         const result11 = await pool.query(queries.qJabatan, []);
         const result12 = await pool.query(queries.qGolonganPtkp, []);
         const result13 = await pool.query(queries.qUnitKerja, []);
+        const result14 = await pool.query(queries.qRole, []);
         const tempres = {
             unit: result1.rows,
             jenisKelamin: result2.rows,
@@ -88,7 +89,8 @@ const getComboSDM = async (req, res) => {
             profesi:result10.rows,
             jabatan:result11.rows,
             golonganPtkp:result12.rows,
-            unitKerja:result13.rows
+            unitKerja:result13.rows,
+            roles:result14.rows
         };
         res.status(200).send({
             msg: 'Success',
@@ -191,13 +193,13 @@ const saveBiodataPegawai = async (req, res) => {
                 pegawai = await db.m_pegawai.update({
                     nosk: req.body.noSK,nosip: req.body.noSIP,
                     nostr: req.body.noSTR,npwp: req.body.npwp,
-                    objectgolonganfk: req.body.golongan,objectstatuspegawaifk: req.body.statusPegawai,
-                    objectprofesipegawaifk: req.body.profesi,objectjabatanfk: req.body.jabatan,
-                    tglmasuk: req.body.tglSKStart,tglpensiun: req.body.tglSKend,
-                    tglterbitsip: req.body.tglSIPStart,tglberakhirsip: req.body.tglSIPend,tglterbitstr: req.body.tglSTRStart,
-                    tglberakhirstr: req.body.tglSTRend,objectgolonganptkpfk: req.body.golonganPTKP,qtyanak: req.body.jumlahAnak,
-                    qtytanggungan: req.body.jumlahTanggungan,
-                    objectunitfk: req.body.unitPelayanan,objectunitkerjafk: req.body.unitKerja,
+                    objectgolonganfk: req.body.golongan || null,objectstatuspegawaifk: req.body.statusPegawai || null,
+                    objectprofesipegawaifk: req.body.profesi || null,objectjabatanfk: req.body.jabatan || null,
+                    tglmasuk: req.body.tglSKStart || null,tglpensiun: req.body.tglSKend || null,
+                    tglterbitsip: req.body.tglSIPStart || null,tglberakhirsip: req.body.tglSIPend || null,tglterbitstr: req.body.tglSTRStart || null,
+                    tglberakhirstr: req.body.tglSTRend || null,objectgolonganptkpfk: req.body.golonganPTKP || null,qtyanak: req.body.jumlahAnak || null,
+                    qtytanggungan: req.body.jumlahTanggungan || null,
+                    objectunitfk: req.body.unitPelayanan,objectunitkerjafk: req.body.unitKerja || null,
                 }, {
                     where: {
                         id: req.body.idPegawai,
@@ -229,7 +231,6 @@ const saveBiodataPegawai = async (req, res) => {
     }
 }
 
-
 const getPegawaiById = async (req, res) => {
     const logger = res.locals.logger;
     try{
@@ -254,9 +255,34 @@ const getPegawaiById = async (req, res) => {
     }
 }
 
+const getUserRoleById = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const result1 = await pool.query(queries.qUserRoleById, [req.query.idPegawai]);
+        const tempres = {
+        
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: result1.rows,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export default {
     getDaftarPegawai,
     getComboSDM,
     saveBiodataPegawai,
-    getPegawaiById
+    getPegawaiById,
+    getUserRoleById
 }

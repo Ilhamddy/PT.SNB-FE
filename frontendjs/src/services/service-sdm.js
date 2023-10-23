@@ -16,4 +16,10 @@ export default class ServiceSDM {
     getPegawaiById = async (param) => {
         return await api.get(`/transaksi/sumber-daya-manusia/get-pegawai-byid`,param);
     }
+    getUserRoleById = async (param) => {
+        return await api.get(`/transaksi/sumber-daya-manusia/get-user-role-byid`,param);
+    }
+    saveSignupUserRole = async (params) => {
+        return await api.create("/auth/signup", params);
+    }
 }
