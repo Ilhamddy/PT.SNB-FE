@@ -334,6 +334,7 @@ import DaftarPegawai from "../pages/SumberDayaManusia/DaftarPegawai/DaftarPegawa
 import BiodataPegawai from "../pages/SumberDayaManusia/BiodataPegawai/BiodataPegawai";
 import AddObatFarmasi from "../pages/AddObatFarmasi/AddObatFarmasi";
 import MasterJadwalDokter from "../pages/JadwalDokter/MasterJadwalDokter";
+import ViewerOperasi from "../pages/ViewerOperasi/ViewerOperasi";
 
 
 
@@ -573,6 +574,7 @@ const authProtectedRoutes = [
   //viewer
   { path: "/cmVnaXN0cmFzaS92aWV3ZXI=", component: <Viewer />, isLayout: false},
   { path: "/viewer/poli", component: <ViewerPoli />, isLayout: false},
+  { path: "/viewer/operasi", component: <ViewerOperasi />, isLayout: false},
 
   { path: "/cmVnaXN0cmFzaS92aWV3ZXIvcGVtYW5nZ2lsYW4=", component: <PemanggilanViewer />, isLayout: false},
   { path: "/bGlzdGRhZnRhcnBhc2llbi9kYWZ0YXJwYXNpZW5tdXRhc2k=", component:<DaftarPasienMutasi/>},
