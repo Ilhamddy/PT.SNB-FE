@@ -6,7 +6,8 @@ import {
     GET_COMBO_SDM, 
     SAVE_BIODATA_PEGAWAI,
     GET_PEGAWAI_BYID,
-    GET_COMBO_JADWAL
+    GET_COMBO_JADWAL,
+    GET_JADWAL_DOKTER_SDM
 } from "./actionType";
 
 import {
@@ -19,7 +20,9 @@ import {
     getPegawaiByIdSuccess, 
     getPegawaiByIdError,
     getComboJadwalSuccess,
-    getComboJadwalError
+    getComboJadwalError,
+    getJadwalDokterSDMSuccess,
+    getJadwalDokterSDMError
 } from "./action";
 
 import { toast } from 'react-toastify';
@@ -101,13 +104,27 @@ export function* watchonGetComboJadwal() {
     yield takeEvery(GET_COMBO_JADWAL, onGetComboJadawal);
 }
 
+function* onGetJadwalDokterSDM({ payload: { queries } }) {
+    try {
+        const response = yield call(serviceSDM.getJadwalDokter, queries);
+        yield put(getJadwalDokterSDMSuccess(response.data || null));
+    } catch(error) {
+        yield put(getJadwalDokterSDMError(error));
+    }
+}
+
+export function* watchonGetJadwalDokterSDM() {
+    yield takeEvery(GET_JADWAL_DOKTER_SDM, onGetJadwalDokterSDM);
+}
+
 function* sumberDayaManusia() {
     yield all([
         fork(watchongetDaftarPegawai),
         fork(watchongetComboSDM),
         fork(watchonsaveBiodataPegawai),
         fork(watchongetPegawaiById),
-        fork(watchonGetComboJadwal)
+        fork(watchonGetComboJadwal),
+        fork(watchonGetJadwalDokterSDM)
     ]);
 }
 

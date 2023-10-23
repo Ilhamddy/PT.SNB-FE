@@ -37,6 +37,29 @@ const qJabatan =`select id as value,reportdisplay as label from m_jabatan ms`
 const qGolonganPtkp =`select id as value,reportdisplay as label from m_golonganptkp ms`
 const qUnitKerja =`select id as value,reportdisplay as label from m_unitkerja ms`
 
+const qJadwalDokter = `
+SELECT
+    mj.id AS id,
+    mj.kdprofile AS kdprofile,
+    mj.statusenabled AS statusenabled,
+    mj.kodeexternal AS kodeexternal,
+    mj.objectpegawaifk AS objectpegawaifk,
+    mp.namalengkap AS namalengkap,
+    mp.nip AS nip,
+    mj.objectharifk AS objectharifk,
+    mh.reportdisplay AS namahari,
+    mj.jam_mulai AS jam_mulai,
+    mj.jam_selesai AS jam_selesai,
+    mj.objectunitfk AS objectunitfk,
+    mu.namaunit AS namaunit,
+    mj.objectstatushadirfk AS objectstatushadirfk,
+    mj.objectkamarfk AS objectkamarfk
+FROM m_jadwaldokter mj
+    LEFT JOIN m_pegawai mp ON mp.id = mj.objectpegawaifk
+    LEFT JOIN m_hari mh ON mh.id = mj.objectharifk
+    LEFT JOIN m_unit mu ON mu.id = mj.objectunitfk
+`
+
 
 export default {
     qDaftarPegawai,
@@ -54,4 +77,5 @@ export default {
     qJabatan,
     qGolonganPtkp,
     qUnitKerja,
+    qJadwalDokter
 }

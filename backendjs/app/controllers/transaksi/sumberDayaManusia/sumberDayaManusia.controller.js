@@ -261,10 +261,10 @@ const getPegawaiById = async (req, res) => {
 const getComboJadwal = async (req, res) => {
     const logger = res.locals.logger;
     try{
-        const dokter = await pool.query(pegawaiQueries.getDokter)
-        const poliklinik = await pool.query(unitQueries.getPoliklinik)
-        const kamar = await pool.query(kamarQueries.getAll)
-        const hari = await pool.query(hariQueries.getAll)
+        const dokter = (await pool.query(pegawaiQueries.getDokterNip)).rows
+        const poliklinik = (await pool.query(unitQueries.getPoliklinik)).rows
+        const kamar = (await pool.query(kamarQueries.getAll)).rows
+        const hari = (await pool.query(hariQueries.getAll)).rows
 
         const tempres = {
             dokter: dokter,
@@ -288,10 +288,68 @@ const getComboJadwal = async (req, res) => {
         });
     }
 }
+
+const getJadwalDokter = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        let jadwal = (await pool.query(queries.qJadwalDokter, [])).rows
+        jadwal = jadwal.map(item => {
+            const dateNow = new Date().toLocaleDateString("id-ID",
+                {
+                    year: "numeric",
+                     month: "2-digit", 
+                     day: "2-digit", 
+                })
+            const parts = dateNow.split("/")
+            const partsTimeMulai = item.jam_mulai.split(":")
+            const partsTimeSelesai = item.jam_selesai.split(":")
+            const dateMulai = new Date(
+                parts[2], 
+                parts[1] - 1, 
+                parts[0], 
+                partsTimeMulai[0], 
+                partsTimeMulai[1], 
+                partsTimeMulai[2]
+            )
+            const dateSelesai = new Date(
+                parts[2], 
+                parts[1] - 1, 
+                parts[0], 
+                partsTimeSelesai[0], 
+                partsTimeSelesai[1], 
+                partsTimeSelesai[2]
+            )
+            return {
+                ...item,
+                jam_mulai: dateMulai.toISOString(),
+                jam_selesai: dateSelesai.toISOString(),
+            }
+        })
+        const tempres = {
+            jadwal: jadwal
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export default {
     getDaftarPegawai,
     getComboSDM,
     saveBiodataPegawai,
     getPegawaiById,
-    getComboJadwal
+    getComboJadwal,
+    getJadwalDokter
 }

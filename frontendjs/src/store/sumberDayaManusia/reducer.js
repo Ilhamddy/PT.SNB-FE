@@ -15,6 +15,9 @@ import {
     GET_COMBO_JADWAL,
     GET_COMBO_JADWAL_SUCCESS,
     GET_COMBO_JADWAL_ERROR,
+    GET_JADWAL_DOKTER_SDM,
+    GET_JADWAL_DOKTER_SDM_SUCCESS,
+    GET_JADWAL_DOKTER_SDM_ERROR,  
 } from "./actionType";
 
 const INIT_STATE = {
@@ -43,6 +46,11 @@ const INIT_STATE = {
         data: [],
         loading: false,
         error: null,
+    },
+    getJadwalDokterSDM: {
+        data: [],
+        loading: false,
+        error: null,
     }
 }
 
@@ -65,6 +73,9 @@ const sumberDayaManusia = (state = INIT_STATE, action) => {
                 },
                 getComboJadwal: {
                     ...INIT_STATE.getComboJadwal
+                },
+                getJadwalDokterSDM: {
+                    ...INIT_STATE.getJadwalDokterSDM
                 }
             }
         }
@@ -230,6 +241,39 @@ const sumberDayaManusia = (state = INIT_STATE, action) => {
                 ...state,
                 getComboJadwal: {
                     ...state.getComboJadwal,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case GET_JADWAL_DOKTER_SDM: {
+            return {
+                ...state,
+                getJadwalDokterSDM: {
+                    ...state.getJadwalDokterSDM,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case GET_JADWAL_DOKTER_SDM_SUCCESS: {
+            return {
+                ...state,
+                getJadwalDokterSDM: {
+                    ...state.getJadwalDokterSDM,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case GET_JADWAL_DOKTER_SDM_ERROR: {
+            return {
+                ...state,
+                getJadwalDokterSDM: {
+                    ...state.getJadwalDokterSDM,
                     loading: false,
                     error: action.error,
                 }

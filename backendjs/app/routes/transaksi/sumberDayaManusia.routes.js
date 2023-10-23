@@ -34,4 +34,9 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getComboJadwal
     );
+    app.get(
+        "/api/transaksi/sumber-daya-manusia/get-jadwal-dokter",
+        [authJwt.verifyToken],
+        controller.getJadwalDokter
+    );
 }

@@ -15,6 +15,9 @@ import {
     GET_COMBO_JADWAL,
     GET_COMBO_JADWAL_SUCCESS,
     GET_COMBO_JADWAL_ERROR,
+    GET_JADWAL_DOKTER_SDM,
+    GET_JADWAL_DOKTER_SDM_SUCCESS,
+    GET_JADWAL_DOKTER_SDM_ERROR,
 } from "./actionType";
 
 export const sdmResetForm = () => ({
@@ -96,5 +99,20 @@ export const getComboJadwalSuccess = (data) => ({
 
 export const getComboJadwalError = (error) => ({
     type: GET_COMBO_JADWAL_ERROR,
+    payload: error,
+});
+
+export const getJadwalDokterSDM = (queries) => ({
+    type: GET_JADWAL_DOKTER_SDM,
+    payload: { queries: queries },
+});
+
+export const getJadwalDokterSDMSuccess = (data) => ({
+    type: GET_JADWAL_DOKTER_SDM_SUCCESS,
+    payload: data,
+});
+
+export const getJadwalDokterSDMError = (error) => ({
+    type: GET_JADWAL_DOKTER_SDM_ERROR,
     payload: error,
 });

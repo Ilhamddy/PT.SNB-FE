@@ -19,4 +19,7 @@ export default class ServiceSDM {
     getComboJadwal = async (param) => {
         return await api.get(`/transaksi/sumber-daya-manusia/combo-jadwal`, param)
     }
+    getJadwalDokter = async (queries) => {
+        return await api.get(`/transaksi/sumber-daya-manusia/get-jadwal-dokter`, queries)
+    }
 }

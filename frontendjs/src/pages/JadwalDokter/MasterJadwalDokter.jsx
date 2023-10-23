@@ -16,14 +16,29 @@ import {
   UncontrolledDropdown,
   FormFeedback,
   Button,
+  UncontrolledTooltip,
 } from 'reactstrap'
 import KontainerFlatpickr from '../../Components/KontainerFlatpickr/KontainerFlatpickr'
 import DataTable from 'react-data-table-component'
+import { useEffect } from 'react'
+import {
+  getComboJadwal,
+  getJadwalDokterSDM,
+} from '../../store/sumberDayaManusia/action'
+import { useDispatch, useSelector } from 'react-redux'
+import LoadingTable from '../../Components/Table/LoadingTable'
+import NoDataTable from '../../Components/Table/NoDataTable'
+import { dateTimeLocal, timeLocal } from '../../utils/format'
 
 const MasterJadwalDokter = () => {
+  const { comboJadwal, jadwal } = useSelector((state) => ({
+    comboJadwal: state.sumberDayaManusia.getComboJadwal.data || null,
+    jadwal: state.sumberDayaManusia.getJadwalDokterSDM.data.jadwal || [],
+  }))
   const vJadwal = useFormik({
     initialValues: {
-      namadokter: '',
+      idjadwal: '',
+      dokter: '',
       ruangrawat: '',
       nip: '',
       hari: '',
@@ -32,6 +47,99 @@ const MasterJadwalDokter = () => {
       jamkerjaend: '',
     },
   })
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    dispatch(getComboJadwal())
+    dispatch(getJadwalDokterSDM())
+  }, [dispatch])
+
+  const setJadwalNow = (row) => {
+    vJadwal.setFieldValue('idjadwal', row.id)
+    vJadwal.setFieldValue('dokter', row.objectpegawaifk)
+    vJadwal.setFieldValue('ruangrawat', row.objectkamarfk)
+    vJadwal.setFieldValue('nip', row.nip)
+    vJadwal.setFieldValue('hari', row.objectharifk)
+    vJadwal.setFieldValue('unit', row.objectunitfk)
+    vJadwal.setFieldValue('jamkerjastart', row.jam_mulai)
+    vJadwal.setFieldValue('jamkerjaend', row.jam_selesai)
+  }
+
+  const columns = [
+    {
+      name: <span className="font-weight-bold fs-13">Detail</span>,
+      sortable: false,
+      cell: (row) => {
+        return (
+          <div className="hstack gap-3 flex-wrap">
+            <UncontrolledTooltip placement="top" target="tooltipTop2">
+              {' '}
+              Pengkajian Pasien{' '}
+            </UncontrolledTooltip>
+            <UncontrolledDropdown className="dropdown d-inline-block">
+              <DropdownToggle
+                className="btn btn-soft-secondary btn-sm"
+                tag="button"
+                id="tooltipTop2"
+              >
+                <i className="ri-apps-2-line"></i>
+              </DropdownToggle>
+              <DropdownMenu className="dropdown-menu-end">
+                <DropdownItem onClick={() => setJadwalNow(row)}>
+                  <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
+                  Edit
+                </DropdownItem>
+              </DropdownMenu>
+            </UncontrolledDropdown>
+          </div>
+        )
+      },
+      width: '50px',
+    },
+    {
+      name: <span className="font-weight-bold fs-13">NIP</span>,
+      sortable: true,
+      selector: (row) => row.nip,
+      width: '120px',
+    },
+    {
+      name: <span className="font-weight-bold fs-13">Nama Lengkap</span>,
+      sortable: true,
+      selector: (row) => row.namalengkap,
+      width: '250px',
+    },
+    {
+      name: <span className="font-weight-bold fs-13">Hari</span>,
+      sortable: true,
+      selector: (row) => row.namahari,
+      width: '100px',
+    },
+    {
+      name: <span className="font-weight-bold fs-13">Jam Mulai</span>,
+      sortable: true,
+      selector: (row) => timeLocal(row.jam_mulai),
+      width: '100px',
+    },
+    {
+      name: <span className="font-weight-bold fs-13">Jam Selesai</span>,
+      sortable: true,
+      selector: (row) => timeLocal(row.jam_selesai),
+      width: '100px',
+    },
+    {
+      name: <span className="font-weight-bold fs-13">Unit</span>,
+      sortable: true,
+      selector: (row) => row.namaunit,
+      width: '160px',
+    },
+    {
+      name: <span className="font-weight-bold fs-13">Aktif</span>,
+      sortable: true,
+      selector: (row) => (row.statusenabled ? 'Aktif' : 'Tidak Aktif'),
+      width: '120px',
+    },
+  ]
+
   return (
     <div className="page-content page-penerimaan-barang">
       <ToastContainer closeButton={false} />
@@ -50,20 +158,21 @@ const MasterJadwalDokter = () => {
             </Col>
             <Col lg={4} className="mb-2">
               <CustomSelect
-                id="namadokter"
-                name="namadokter"
-                options={[]}
+                id="dokter"
+                name="dokter"
+                options={comboJadwal?.dokter || []}
+                isClearEmpty
                 onChange={(e) => {
-                  vJadwal.setFieldValue('namadokter', e?.value || '')
+                  vJadwal.setFieldValue('dokter', e?.value || '')
                 }}
-                value={vJadwal.values.namadokter}
+                value={vJadwal.values.dokter}
                 className={`input row-header ${
-                  !!vJadwal?.errors.namadokter ? 'is-invalid' : ''
+                  !!vJadwal?.errors.dokter ? 'is-invalid' : ''
                 }`}
               />
-              {vJadwal.touched.namadokter && !!vJadwal.errors.namadokter && (
+              {vJadwal.touched.dokter && !!vJadwal.errors.dokter && (
                 <FormFeedback type="invalid">
-                  <div>{vJadwal.errors.namadokter}</div>
+                  <div>{vJadwal.errors.dokter}</div>
                 </FormFeedback>
               )}
             </Col>
@@ -80,7 +189,8 @@ const MasterJadwalDokter = () => {
               <CustomSelect
                 id="ruangrawat"
                 name="ruangrawat"
-                options={[]}
+                options={comboJadwal?.kamar || []}
+                isClearEmpty
                 onChange={(e) => {
                   vJadwal.setFieldValue('ruangrawat', e?.value || '')
                 }}
@@ -109,6 +219,7 @@ const MasterJadwalDokter = () => {
                 id="nip"
                 name="nip"
                 type="text"
+                disabled
                 value={vJadwal.values.nip}
                 onChange={(e) => {
                   vJadwal.setFieldValue('nip', e.target.value)
@@ -134,7 +245,8 @@ const MasterJadwalDokter = () => {
               <CustomSelect
                 id="hari"
                 name="hari"
-                options={[]}
+                options={comboJadwal?.hari || []}
+                isClearEmpty
                 onChange={(e) => {
                   vJadwal.setFieldValue('hari', e?.value || '')
                 }}
@@ -162,7 +274,8 @@ const MasterJadwalDokter = () => {
               <CustomSelect
                 id="unit"
                 name="unit"
-                options={[]}
+                isClearEmpty
+                options={comboJadwal?.poliklinik || []}
                 onChange={(e) => {
                   vJadwal.setFieldValue('unit', e?.value || '')
                 }}
@@ -238,16 +351,55 @@ const MasterJadwalDokter = () => {
             </Col>
           </Row>
           <Row className="d-flex justify-content-center">
-            <Col className="d-flex" lg={3}>
-              <Button color="success">Tambah / Edit</Button>
-              <Button color="danger ms-3">Hapus</Button>
+            <Col className="d-flex" lg={4}>
+              <Button color="success">
+                {vJadwal.values.idjadwal ? 'Edit' : 'Tambah'}
+              </Button>
+              <Button
+                color="warning"
+                className="ms-3"
+                onClick={() => {
+                  vJadwal.resetForm()
+                }}
+              >
+                Batal
+              </Button>
+              <Button color="danger" className="ms-3">
+                Hapus
+              </Button>
             </Col>
           </Row>
-          <DataTable />
+          <DataTable
+            className="mt-3"
+            fixedHeader
+            fixedHeaderScrollHeight="700px"
+            columns={columns}
+            pagination
+            data={jadwal}
+            progressPending={false}
+            customStyles={tableCustomStyles}
+            progressComponent={<LoadingTable />}
+            noDataComponent={<NoDataTable dataName={'jadwal'} />}
+          />
         </Card>
       </Container>
     </div>
   )
+}
+
+const tableCustomStyles = {
+  headRow: {
+    style: {
+      color: '#ffffff',
+      backgroundColor: '#e67e22',
+    },
+  },
+  rows: {
+    style: {
+      color: 'black',
+      backgroundColor: '#f1f2f6',
+    },
+  },
 }
 
 export default MasterJadwalDokter

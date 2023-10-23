@@ -64,6 +64,26 @@ export const dateLocal = (date) => {
 }
 
 /**
+ * mengubah format date menjadi time string
+ * @param {string | Date} date
+ * @returns {string} format hasil "hh:mm:ss"
+ */
+
+export const timeLocal = (date) => {
+    try{
+        return new Date(date)
+            .toLocaleTimeString("id-ID", 
+                { 
+                    hour: '2-digit', 
+                    minute: '2-digit', 
+                    second: '2-digit' 
+            }) 
+    }catch(e){
+        return "-"
+    }
+}
+
+/**
  * mereturn waktu realtime yang berubah setiap detik
  * @returns {{tanggal: string, waktu: string, ucapan: string}}
  */
