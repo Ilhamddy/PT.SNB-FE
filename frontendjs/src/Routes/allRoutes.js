@@ -333,6 +333,7 @@ import ViewerPoli from "../pages/ViewerPoli/ViewerPoli";
 import DaftarPegawai from "../pages/SumberDayaManusia/DaftarPegawai/DaftarPegawai";
 import BiodataPegawai from "../pages/SumberDayaManusia/BiodataPegawai/BiodataPegawai";
 import AddObatFarmasi from "../pages/AddObatFarmasi/AddObatFarmasi";
+import MasterJadwalDokter from "../pages/JadwalDokter/MasterJadwalDokter";
 
 
 
@@ -657,6 +658,7 @@ const authProtectedRoutes = [
   // Sumber Daya Manusia
   { path: "/sumberdayamanusia/daftar-pegawai", component: <DaftarPegawai /> },
   { path: "/sumberdayamanusia/biodata-pegawai", component: <BiodataPegawai /> },
+  { path: "/sumberdayamanusia/jadwal-dokter", component: <MasterJadwalDokter />}
 ];
 
 const publicRoutes = [

@@ -157,6 +157,7 @@ const ViewerPoli = () => {
     return () => {
       clearInterval(interval)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, list])
 
   const idLast = terpanggil.idjadwal || lastTerpanggil.idjadwal
@@ -247,7 +248,7 @@ const ViewerPoli = () => {
         </div>
         <div className="terakhir-panggil">
           <div className="ruang-available">
-            <p className="nomor-terpanggil">Antrean Terpanggil</p>
+            <p className="nomor-terpanggil">Antrean Dipanggil</p>
             <div className="isi-konten">
               <p className="nama-poliklinik">
                 {allTerpanggil?.namaunit || '-'}
