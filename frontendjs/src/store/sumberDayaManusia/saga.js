@@ -3,7 +3,10 @@ import ServiceSDM from "../../services/service-sdm";
 
 import {
     GET_DAFTAR_PEGAWAI,GET_COMBO_SDM, SAVE_BIODATA_PEGAWAI,
-    GET_PEGAWAI_BYID, GET_USER_ROLE_BYID_PEGAWAI,SAVE_SIGNUP_USER_ROLE
+    GET_PEGAWAI_BYID, GET_USER_ROLE_BYID_PEGAWAI,SAVE_SIGNUP_USER_ROLE,
+    GET_COMBO_JADWAL,
+    GET_JADWAL_DOKTER_SDM,
+    UPSERT_JADWAL
 } from "./actionType";
 
 import {
@@ -12,7 +15,13 @@ import {
     saveBiodataPegawaiSuccess, saveBiodataPegawaiError,
     getPegawaiByIdSuccess, getPegawaiByIdError,
     getUserRoleByIdSuccess, getUserRoleByIdError,
-    saveSignupUserRoleSuccess, saveSignupUserRoleError
+    saveSignupUserRoleSuccess, saveSignupUserRoleError,
+    getComboJadwalSuccess,
+    getComboJadwalError,
+    getJadwalDokterSDMSuccess,
+    getJadwalDokterSDMError,
+    upsertJadwalSuccess,
+    upsertJadwalError
 } from "./action";
 
 import { toast } from 'react-toastify';
@@ -115,6 +124,48 @@ export function* watchonsaveSignupUserRole() {
     yield takeEvery(SAVE_SIGNUP_USER_ROLE, onsaveSignupUserRole);
 }
 
+function* onGetComboJadawal({ payload: { queries } }) {
+    try {
+        const response = yield call(serviceSDM.getComboJadwal, queries);
+        yield put(getComboJadwalSuccess(response.data || null));
+    } catch(error) {
+        yield put(getComboJadwalError(error));
+    }
+}
+
+export function* watchonGetComboJadwal() {
+    yield takeEvery(GET_COMBO_JADWAL, onGetComboJadawal);
+}
+
+function* onGetJadwalDokterSDM({ payload: { queries } }) {
+    try {
+        const response = yield call(serviceSDM.getJadwalDokter, queries);
+        yield put(getJadwalDokterSDMSuccess(response.data || null));
+    } catch(error) {
+        yield put(getJadwalDokterSDMError(error));
+    }
+}
+
+export function* watchonGetJadwalDokterSDM() {
+    yield takeEvery(GET_JADWAL_DOKTER_SDM, onGetJadwalDokterSDM);
+}
+
+function* onUpsertJadwal({ payload: { body, callback } }) {
+    try {
+        const response = yield call(serviceSDM.upsertJadwal, body);
+        yield put(upsertJadwalSuccess(response.data || null));
+        toast.success(response.msg, { autoClose: 3000 });
+        console.log(callback)
+        callback && callback();
+    } catch(error) {
+        yield put(upsertJadwalError(error));
+    }
+}
+
+export function* watchonUpsertJadwal() {
+    yield takeEvery(UPSERT_JADWAL, onUpsertJadwal);
+}
+
 function* sumberDayaManusia() {
     yield all([
         fork(watchongetDaftarPegawai),
@@ -122,7 +173,10 @@ function* sumberDayaManusia() {
         fork(watchonsaveBiodataPegawai),
         fork(watchongetPegawaiById),
         fork(watchongetUserRoleById),
-        fork(watchonsaveSignupUserRole)
+        fork(watchonsaveSignupUserRole),
+        fork(watchonGetComboJadwal),
+        fork(watchonGetJadwalDokterSDM),
+        fork(watchonUpsertJadwal)
     ]);
 }
 

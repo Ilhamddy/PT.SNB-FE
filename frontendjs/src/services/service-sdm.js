@@ -22,4 +22,13 @@ export default class ServiceSDM {
     saveSignupUserRole = async (params) => {
         return await api.create("/auth/signup", params);
     }
+    getComboJadwal = async (param) => {
+        return await api.get(`/transaksi/sumber-daya-manusia/combo-jadwal`, param)
+    }
+    getJadwalDokter = async (queries) => {
+        return await api.get(`/transaksi/sumber-daya-manusia/get-jadwal-dokter`, queries)
+    }
+    upsertJadwal = async (params) => {
+        return await api.create(`/transaksi/sumber-daya-manusia/upsert-jadwal`, params)
+    }
 }

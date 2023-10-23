@@ -2,6 +2,11 @@ import pool from "../../../config/dbcon.query";
 import * as uuid from 'uuid'
 import db from "../../../models";
 import queries from '../../../queries/sumberDayaManusia/sumberDayaManusia.queries';
+import unitQueries from '../../../queries/master/unit/unit.queries'
+import pegawaiQueries from '../../../queries/master/pegawai/pegawai.queries'
+import kamarQueries from "../../../queries/master/kamar/kamar.queries";
+import hariQueries from "../../../queries/master/hari/hari.queries";
+import { getTimeOnly } from "../../../utils/dateutils";
 
 const queryPromise2 = (query) => {
     return new Promise((resolve, reject) => {
@@ -279,10 +284,167 @@ const getUserRoleById = async (req, res) => {
     }
 }
 
+const getComboJadwal = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const dokter = (await pool.query(pegawaiQueries.getDokterNip)).rows
+        const poliklinik = (await pool.query(unitQueries.getPoliklinik)).rows
+        const kamar = (await pool.query(kamarQueries.getAllRj)).rows
+        const hari = (await pool.query(hariQueries.getAll)).rows
+
+        const tempres = {
+            dokter: dokter,
+            poliklinik: poliklinik,
+            kamar: kamar,
+            hari: hari
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+const getJadwalDokter = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        let jadwal = (await pool.query(queries.qJadwalDokter, [])).rows
+        jadwal = jadwal.map(item => {
+            const dateNow = new Date().toLocaleDateString("id-ID",
+                {
+                    year: "numeric",
+                     month: "2-digit", 
+                     day: "2-digit", 
+                })
+            const parts = dateNow.split("/")
+            const partsTimeMulai = item.jam_mulai.split(":")
+            const partsTimeSelesai = item.jam_selesai.split(":")
+            const dateMulai = new Date(
+                parts[2], 
+                parts[1] - 1, 
+                parts[0], 
+                partsTimeMulai[0], 
+                partsTimeMulai[1], 
+                partsTimeMulai[2]
+            )
+            const dateSelesai = new Date(
+                parts[2], 
+                parts[1] - 1, 
+                parts[0], 
+                partsTimeSelesai[0], 
+                partsTimeSelesai[1], 
+                partsTimeSelesai[2]
+            )
+            return {
+                ...item,
+                jam_mulai: dateMulai.toISOString(),
+                jam_selesai: dateSelesai.toISOString(),
+            }
+        })
+        const tempres = {
+            jadwal: jadwal
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+const upsertJadwal = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const reqBody = req.body
+        const {jadwal} = 
+            await db.sequelize.transaction(async (transaction) => {
+                let jadwal = null
+                if(reqBody.idjadwal){
+                    const jadwalModel = await db.m_jadwaldokter.findOne({
+                        where: {
+                            id: reqBody.idjadwal,
+                        },
+                        transaction: transaction
+                    })
+                    await jadwalModel?.update({
+                        objectpegawaifk: reqBody.dokter,
+                        objectharifk: reqBody.hari,
+                        jam_mulai: getTimeOnly(reqBody.jamkerjastart),
+                        jam_selesai: getTimeOnly(reqBody.jamkerjaend),
+                        objectunitfk: reqBody.unit,
+                        objectkamarfk: reqBody.ruangrawat,
+                    }, {
+                        transaction: transaction
+                    })
+                    jadwal = jadwalModel.toJSON()
+                } else{
+                    const jadwalModel = await db.m_jadwaldokter.create({
+                        kdprofile: 0,
+                        statusenabled: true,
+                        kodeexternal: null,
+                        objectpegawaifk: reqBody.dokter,
+                        objectharifk: reqBody.hari,
+                        jam_mulai: getTimeOnly(reqBody.jamkerjastart),
+                        jam_selesai: getTimeOnly(reqBody.jamkerjaend),
+                        objectunitfk: reqBody.unit,
+                        objectstatushadirfk: null,
+                        objectkamarfk: reqBody.ruangrawat,
+                    }, { 
+                        transaction 
+                    });
+                    jadwal = jadwalModel.toJSON()
+                }
+                return {
+                    jadwal
+                }
+            });
+        
+        const tempres = {
+            jadwal: jadwal
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export default {
     getDaftarPegawai,
     getComboSDM,
     saveBiodataPegawai,
     getPegawaiById,
-    getUserRoleById
+    getUserRoleById,
+    getComboJadwal,
+    getJadwalDokter,
+    upsertJadwal
 }

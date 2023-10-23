@@ -35,4 +35,19 @@ export default function (app) {
         controller.getUserRoleById
     );
 
+    app.get(
+        "/api/transaksi/sumber-daya-manusia/combo-jadwal",
+        [authJwt.verifyToken],
+        controller.getComboJadwal
+    );
+    app.get(
+        "/api/transaksi/sumber-daya-manusia/get-jadwal-dokter",
+        [authJwt.verifyToken],
+        controller.getJadwalDokter
+    );
+    app.post(
+        "/api/transaksi/sumber-daya-manusia/upsert-jadwal",
+        [authJwt.verifyToken],
+        controller.upsertJadwal
+    )
 }

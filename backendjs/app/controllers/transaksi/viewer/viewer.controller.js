@@ -376,12 +376,14 @@ const getJadwalDokter = async (req, res) => {
                     antreanKedua = antreanKedua?.[0] || null
                     terpanggilKedua = await pool.query(qGetJadwalDokterNorec, [antreanKedua?.objectdokterpemeriksafk])
                     terpanggilKedua = terpanggilKedua.rows[0] || null
-                    terpanggilKedua.antrean = {
-                        norecap: antreanKedua?.norecap,
-                        lastAntrean: antreanKedua?.reportdisplay + antreanKedua?.noantrian,
-                        objectstatuspanggilfk:  antreanKedua?.objectstatuspanggilfk,
-                        tgldipanggildokter: antreanKedua?.tgldipanggildokter,
-                        objectdokterpemeriksafk: antreanKedua?.objectdokterpemeriksafk,
+                    if(terpanggilKedua){
+                        terpanggilKedua.antrean = {
+                            norecap: antreanKedua?.norecap,
+                            lastAntrean: antreanKedua?.reportdisplay + antreanKedua?.noantrian,
+                            objectstatuspanggilfk:  antreanKedua?.objectstatuspanggilfk,
+                            tgldipanggildokter: antreanKedua?.tgldipanggildokter,
+                            objectdokterpemeriksafk: antreanKedua?.objectdokterpemeriksafk,
+                        }
                     }
                 }
 

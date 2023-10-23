@@ -5,7 +5,16 @@ import {
     SAVE_BIODATA_PEGAWAI, SAVE_BIODATA_PEGAWAI_SUCCESS, SAVE_BIODATA_PEGAWAI_ERROR,
     GET_PEGAWAI_BYID, GET_PEGAWAI_BYID_SUCCESS, GET_PEGAWAI_BYID_ERROR,
     GET_USER_ROLE_BYID_PEGAWAI, GET_USER_ROLE_BYID_PEGAWAI_SUCCESS, GET_USER_ROLE_BYID_PEGAWAI_ERROR,
-    SAVE_SIGNUP_USER_ROLE, SAVE_SIGNUP_USER_ROLE_SUCCESS, SAVE_SIGNUP_USER_ROLE_ERROR
+    SAVE_SIGNUP_USER_ROLE, SAVE_SIGNUP_USER_ROLE_SUCCESS, SAVE_SIGNUP_USER_ROLE_ERROR,
+    GET_COMBO_JADWAL,
+    GET_COMBO_JADWAL_SUCCESS,
+    GET_COMBO_JADWAL_ERROR,
+    GET_JADWAL_DOKTER_SDM,
+    GET_JADWAL_DOKTER_SDM_SUCCESS,
+    GET_JADWAL_DOKTER_SDM_ERROR, 
+    UPSERT_JADWAL,
+    UPSERT_JADWAL_SUCCESS,
+    UPSERT_JADWAL_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -35,12 +44,28 @@ const INIT_STATE = {
         loading: false,
         error: null,
     },
+    getComboJadwal: {
+        data: [],
+        loading: false,
+        error: null,
+    },
     saveSignupUserRole:{
         newData: null,
         loading: false,
         error: null,
         success: false
-    }
+    },
+    getJadwalDokterSDM: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    upsertJadwal:{
+        newData: null,
+        loading: false,
+        error: null,
+        success: false
+    },
 }
 
 const sumberDayaManusia = (state = INIT_STATE, action) => {
@@ -65,6 +90,15 @@ const sumberDayaManusia = (state = INIT_STATE, action) => {
                 },
                 saveSignupUserRole:{
                     ...INIT_STATE.saveSignupUserRole
+                },
+                getComboJadwal: {
+                    ...INIT_STATE.getComboJadwal
+                },
+                getJadwalDokterSDM: {
+                    ...INIT_STATE.getJadwalDokterSDM
+                },
+                upsertJadwal:{
+                    ...INIT_STATE.upsertJadwal
                 }
             }
         }
@@ -208,17 +242,36 @@ const sumberDayaManusia = (state = INIT_STATE, action) => {
                 ...state,
                 getUserRoleById: {
                     ...state.getUserRoleById,
+                }
+            }
+        }
+
+        case GET_COMBO_JADWAL: {
+            return {
+                ...state,
+                getComboJadwal: {
+                    ...state.getComboJadwal,
                     loading: true,
                     error: null,
                 }
             }
         }
 
+
         case GET_USER_ROLE_BYID_PEGAWAI_SUCCESS: {
             return {
                 ...state,
                 getUserRoleById: {
                     ...state.getUserRoleById,
+                }
+            }
+        }
+
+        case GET_COMBO_JADWAL_SUCCESS: {
+            return {
+                ...state,
+                getComboJadwal: {
+                    ...state.getComboJadwal,
                     data: action.payload,
                     loading: false,
                 }
@@ -230,6 +283,15 @@ const sumberDayaManusia = (state = INIT_STATE, action) => {
                 ...state,
                 getUserRoleById: {
                     ...state.getUserRoleById,
+                }
+            }
+        }
+
+        case GET_COMBO_JADWAL_ERROR: {
+            return {
+                ...state,
+                getComboJadwal: {
+                    ...state.getComboJadwal,
                     loading: false,
                     error: action.error,
                 }
@@ -270,6 +332,75 @@ const sumberDayaManusia = (state = INIT_STATE, action) => {
                 },
             };
         }
+
+        case GET_JADWAL_DOKTER_SDM: {
+            return {
+                ...state,
+                getJadwalDokterSDM: {
+                    ...state.getJadwalDokterSDM,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case GET_JADWAL_DOKTER_SDM_SUCCESS: {
+            return {
+                ...state,
+                getJadwalDokterSDM: {
+                    ...state.getJadwalDokterSDM,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case GET_JADWAL_DOKTER_SDM_ERROR: {
+            return {
+                ...state,
+                getJadwalDokterSDM: {
+                    ...state.getJadwalDokterSDM,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case UPSERT_JADWAL: {
+            return {
+                ...state,
+                upsertJadwal: {
+                    ...state.upsertJadwal,
+                    data: [],
+                    loading: true,
+                    error: null,
+                },
+            };
+        }
+
+        case UPSERT_JADWAL_SUCCESS: {
+            return {
+                ...state,
+                upsertJadwal: {
+                    ...state.upsertJadwal,
+                    loading: false,
+                    data: action.payload,
+                    success: true,
+                },
+            };
+        }
+
+        case UPSERT_JADWAL_ERROR: {
+            return {
+                ...state,
+                upsertJadwal: {
+                    ...state.upsertJadwal,
+                    loading: false,
+                    error: action.payload,
+                },
+            };
+        }
+        
 
         default: {
             return { ...state };

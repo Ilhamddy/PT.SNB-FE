@@ -972,6 +972,12 @@ const Navdata = () => {
                     link: "/sumberdayamanusia/daftar-pegawai",
                     parentId: "SumberDayaManusia",
                 },
+                {
+                    id: "jadwal-dokter",
+                    label: "Jadwal Dokter",
+                    link: "/sumberdayamanusia/jadwal-dokter",
+                    parentId: "SumberDayaManusia",
+                },
             ],
         },
     ];
