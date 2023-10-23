@@ -2,12 +2,15 @@ import { call, put, takeEvery, all, fork } from "redux-saga/effects";
 import ServiceSDM from "../../services/service-sdm";
 
 import {
-    GET_DAFTAR_PEGAWAI,GET_COMBO_SDM
+    GET_DAFTAR_PEGAWAI,GET_COMBO_SDM, SAVE_BIODATA_PEGAWAI,
+    GET_PEGAWAI_BYID
 } from "./actionType";
 
 import {
     getDaftarPegawaiSuccess, getDaftarPegawaiError,
-    getComboSDMSuccess, getComboSDMError
+    getComboSDMSuccess, getComboSDMError,
+    saveBiodataPegawaiSuccess, saveBiodataPegawaiError,
+    getPegawaiByIdSuccess, getPegawaiByIdError
 } from "./action";
 
 import { toast } from 'react-toastify';
@@ -43,10 +46,45 @@ export function* watchongetComboSDM() {
     yield takeEvery(GET_COMBO_SDM, ongetComboSDM);
 }
 
+function* onsaveBiodataPegawai({ payload: { body, callback } }) {
+    try {
+        const response = yield call(serviceSDM.saveBiodataPegawai, body);
+        yield put(saveBiodataPegawaiSuccess(response.data));
+        if (response.code === 200) {
+            toast.success(response.msg, { autoClose: 3000 });
+        } else {
+            toast.error(response.msg, { autoClose: 3000 });
+        }
+        callback && callback();
+    } catch (error) {
+        yield put(saveBiodataPegawaiError(error));
+        toast.error("Gagal Simpan ", { autoClose: 3000 });
+    }
+}
+export function* watchonsaveBiodataPegawai() {
+    yield takeEvery(SAVE_BIODATA_PEGAWAI, onsaveBiodataPegawai);
+}
+
+function* ongetPegawaiById({ payload: { queries } }) {
+    try {
+        let response = null;
+        response = yield call(serviceSDM.getPegawaiById, queries);
+        yield put(getPegawaiByIdSuccess(response.data));
+    } catch (error) {
+        yield put(getPegawaiByIdError(error));
+        toast.error("Gagal Simpan ", { autoClose: 3000 });
+    }
+}
+export function* watchongetPegawaiById() {
+    yield takeEvery(GET_PEGAWAI_BYID, ongetPegawaiById);
+}
+
 function* sumberDayaManusia() {
     yield all([
         fork(watchongetDaftarPegawai),
-        fork(watchongetComboSDM)
+        fork(watchongetComboSDM),
+        fork(watchonsaveBiodataPegawai),
+        fork(watchongetPegawaiById)
     ]);
 }
 

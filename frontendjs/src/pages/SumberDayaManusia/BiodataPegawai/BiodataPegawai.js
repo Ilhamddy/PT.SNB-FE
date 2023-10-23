@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { ToastContainer } from "react-toastify";
 import UiContent from "../../../Components/Common/UiContent";
-import { Button, Card, CardBody, Col, Container, Form, FormFeedback, Input, Label, Nav, NavItem, NavLink, Row, TabContent, TabPane } from "reactstrap";
+import { Button, Card, CardBody, Col, Container, Form, FormFeedback, Input, Label, Nav, NavItem, NavLink, Row, Spinner, TabContent, TabPane } from "reactstrap";
 import BreadCrumb from "../../../Components/Common/BreadCrumb";
 import classnames from "classnames";
 import { useFormik } from "formik";
@@ -9,32 +9,52 @@ import * as Yup from "yup";
 import { onChangeStrNbr, onChangeStrNbrNeg } from "../../../utils/format";
 import CustomSelect from "../../Select/Select";
 import KontainerFlatpickr from "../../../Components/KontainerFlatpickr/KontainerFlatpickr";
+import {
+    sdmResetForm, saveBiodataPegawai, getComboSDM, getPegawaiById
+} from "../../../store/actions";
+import { desaGet } from '../../../store/master/action';
+import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 
 const BiodataPegawai = () => {
     document.title = "Biodata Pegawai";
+    const dispatch = useDispatch();
+    const { idPegawai } = useParams();
     const [dateNow] = useState(() => new Date().toISOString())
+    const { data, loading, dataCombo,
+        newData, success, error, dataPegawai, dataDesa } = useSelector((state) => ({
+            dataCombo: state.sumberDayaManusia.getComboSDM.data,
+            newData: state.sumberDayaManusia.saveBiodataPegawai.data,
+            success: state.sumberDayaManusia.saveBiodataPegawai.success,
+            loading: state.sumberDayaManusia.saveBiodataPegawai.loading,
+            error: state.sumberDayaManusia.saveBiodataPegawai.error,
+            dataPegawai: state.sumberDayaManusia.getPegawaiById.data,
+            dataDesa: state.Master.desaGet.data,
+        }));
     const vSetValidationBiodata = useFormik({
         enableReinitialize: true,
         initialValues: {
+            task: 1,
+            idPegawai: '',
             nip: '',
             gelardepan: '',
-            namalengkap:'',
-            gelarbelakang:'',
-            namalengkap2:'',
-            nik:'',
-            inisialNama:'',
-            jenisKelamin:'',
-            tempatLahir:'',
-            tglLahir:'',
-            agama:'',
-            golonganDarah:'',
-            suku:'',
-            noTelp:'',
-            noHp:'',
-            email:'',
-            pendidikanTerakhir:'',
-            statusPernikahan:'',
-            namaIbuKandung:'',
+            namalengkap: '',
+            gelarbelakang: '',
+            namalengkap2: '',
+            nik: '',
+            inisialNama: '',
+            jenisKelamin: '',
+            tempatLahir: '',
+            tglLahir: '',
+            agama: '',
+            golonganDarah: '',
+            suku: '',
+            noTelp: '',
+            noHp: '',
+            email: '',
+            pendidikanTerakhir: '',
+            statusPernikahan: '',
+            namaIbuKandung: '',
         },
         validationSchema: Yup.object({
             nip: Yup.string().required("NIP wajib diisi"),
@@ -57,32 +77,85 @@ const BiodataPegawai = () => {
             namaIbuKandung: Yup.string().required("Nama Ibu Kandung wajib diisi"),
         }),
         onSubmit: (values) => {
+            dispatch(saveBiodataPegawai(values, () => {
+
+            }));
         }
     })
     const vSetValidationAlamat = useFormik({
         enableReinitialize: true,
         initialValues: {
-            comboUnit: '',
-            search: ''
+            task: 2,
+            idPegawai: '',
+            alamat: '',
+            rt: '',
+            rw: '',
+            desa: '',
+            kodepos: '',
+            kecamatan: '',
+            kabupaten: '',
+            provinsi: '',
+            alamatDomisili: '',
+            rtDomisili: '',
+            rwDomisili: '',
+            desaDomisili: '',
+            kodeposDomisili: '',
+            kecamatanDomisili: '',
+            kabupatenDomisili: '',
+            provinsiDomisili: '',
         },
         validationSchema: Yup.object({
             // tingkatdarurat: Yup.string().required("Tingkat Darurat jawab wajib diisi"),
         }),
         onSubmit: (values) => {
+            dispatch(saveBiodataPegawai(values, () => {
+
+            }));
         }
     })
     const vSetValidationStatusPegawai = useFormik({
         enableReinitialize: true,
         initialValues: {
-            comboUnit: '',
-            search: ''
+            task: 3,
+            idPegawai: '',
+            noSK: '',
+            noSIP: '',
+            noSTR: '',
+            npwp: '',
+            golongan: '',
+            statusPegawai: '',
+            profesi: '',
+            jabatan: '',
+            tglSKStart: '',
+            tglSKend: '',
+            tglSIPStart: '',
+            tglSIPend: '',
+            tglSTRStart: '',
+            tglSTRend: '',
+            golonganPTKP: '',
+            jumlahAnak: '',
+            jumlahTanggungan: '',
+            unitPelayanan: '',
+            unitKerja: '',
         },
         validationSchema: Yup.object({
             // tingkatdarurat: Yup.string().required("Tingkat Darurat jawab wajib diisi"),
         }),
         onSubmit: (values) => {
+            dispatch(saveBiodataPegawai(values, () => {
+
+            }));
         }
     })
+    useEffect(() => {
+        return () => {
+            dispatch(sdmResetForm());
+        }
+    }, [dispatch])
+    useEffect(() => {
+        dispatch(getComboSDM())
+        dispatch(desaGet(''));
+    }, [dispatch])
     const [activeTab, setActiveTab] = useState("1");
     const toggleTab = (tab, type) => {
         if (activeTab !== tab) {
@@ -118,6 +191,117 @@ const BiodataPegawai = () => {
             setpillsTab(tab);
         }
     };
+    useEffect(() => {
+        const setFF = vSetValidationBiodata.setFieldValue
+        const setFF2 = vSetValidationAlamat.setFieldValue
+        const setFF3 = vSetValidationStatusPegawai.setFieldValue
+        if (newData !== null) {
+            if (newData?.pegawai?.id !== undefined) {
+                setFF('idPegawai', newData.pegawai.id)
+                setFF2('idPegawai', newData.pegawai.id)
+                setFF3('idPegawai', newData.pegawai.id)
+            }
+        }
+    }, [newData, vSetValidationBiodata.setFieldValue, vSetValidationAlamat.setFieldValue,vSetValidationStatusPegawai.setFieldValue, success])
+    useEffect(() => {
+        if (idPegawai !== undefined) {
+            const setFF = vSetValidationBiodata.setFieldValue
+            setFF("idPegawai", idPegawai)
+            const setFF2 = vSetValidationAlamat.setFieldValue
+            setFF2("idPegawai", idPegawai)
+            const setFF3 = vSetValidationStatusPegawai.setFieldValue
+            setFF3("idPegawai", idPegawai)
+            dispatch(getPegawaiById({ idPegawai: idPegawai }))
+        }
+    }, [idPegawai, dispatch, vSetValidationBiodata.setFieldValue, vSetValidationAlamat.setFieldValue,vSetValidationStatusPegawai.setFieldValue])
+    useEffect(() => {
+        const setFF = vSetValidationBiodata.setFieldValue
+        const setFF2 = vSetValidationAlamat.setFieldValue
+        if (dataPegawai[0] !== undefined) {
+            if (dataPegawai[0]?.namalengkap !== undefined) {
+                setFF('gelardepan', dataPegawai[0]?.gelardepan)
+                setFF('gelarbelakang', dataPegawai[0]?.gelarbelakang)
+                setFF('namalengkap', dataPegawai[0]?.nama)
+                setFF('nik', dataPegawai[0]?.noidentitas)
+                setFF('nip', dataPegawai[0]?.nip)
+                setFF('inisialNama', dataPegawai[0]?.reportdisplay)
+                setFF('jenisKelamin', dataPegawai[0]?.objectjeniskelaminfk)
+                setFF('tempatLahir', dataPegawai[0]?.tempatlahir)
+                setFF('tglLahir', dataPegawai[0]?.tgllahir)
+                setFF('objectagamafk', dataPegawai[0]?.agama)
+                setFF('golonganDarah', dataPegawai[0]?.objectgolongandarahfk)
+                setFF('objectetnisfk', dataPegawai[0]?.suku)
+                setFF('noTelp', dataPegawai[0]?.notlp)
+                setFF('noHp', dataPegawai[0]?.nohandphone)
+                setFF('email', dataPegawai[0]?.email)
+                setFF('pendidikanTerakhir', dataPegawai[0]?.objectpendidikanterakhirfk)
+                setFF('statusPernikahan', dataPegawai[0]?.objectstatusperkawinanpegawaifk)
+                setFF('namaIbuKandung', dataPegawai[0]?.namaibu)
+                setFF('agama', dataPegawai[0]?.objectagamafk)
+                setFF('suku', dataPegawai[0]?.objectetnisfk)
+                setFF2('alamat', dataPegawai[0]?.alamatktp)
+                setFF2('rt', dataPegawai[0]?.rtktp)
+                setFF2('rw', dataPegawai[0]?.rwktp)
+                setFF2('desa', dataPegawai[0]?.objectdesakelurahanktpfk)
+                setFF2('alamatDomisili', dataPegawai[0]?.alamatdom)
+                setFF2('rtDomisili', dataPegawai[0]?.rtdom)
+                setFF2('rwDomisili', dataPegawai[0]?.rwdom)
+                setFF2('desaDomisili', dataPegawai[0]?.objectdesakelurahandomfk)
+            }
+        }
+    }, [dataPegawai, vSetValidationBiodata.setFieldValue, vSetValidationAlamat.setFieldValue])
+    const handleDesa = characterEntered => {
+        if (characterEntered.length > 3) {
+            // useEffect(() => {
+            dispatch(desaGet(characterEntered));
+            // }, [dispatch]);
+        }
+    };
+    const handleChangeDesa = (selected) => {
+        vSetValidationAlamat.setFieldValue('desa', selected?.value || "")
+        vSetValidationAlamat.setFieldValue('kecamatan', selected?.namakecamatan || "")
+        vSetValidationAlamat.setFieldValue('kabupaten', selected?.namakabupaten || "")
+        vSetValidationAlamat.setFieldValue('provinsi', selected?.namaprovinsi || "")
+        vSetValidationAlamat.setFieldValue('kodepos', selected?.kodepos || "")
+        // console.log(selected);
+    };
+    const handleChangeDesaDomisili = (selected) => {
+        vSetValidationAlamat.setFieldValue('desaDomisili', selected?.value || "")
+        vSetValidationAlamat.setFieldValue('kecamatanDomisili', selected?.namakecamatan || "")
+        vSetValidationAlamat.setFieldValue('kabupatenDomisili', selected?.namakabupaten || "")
+        vSetValidationAlamat.setFieldValue('provinsiDomisili', selected?.namaprovinsi || "")
+        vSetValidationAlamat.setFieldValue('kodeposDomisili', selected?.kodepos || "")
+        // console.log(selected);
+    };
+    const handleDesaDomisili = characterEntered => {
+        if (characterEntered.length > 3) {
+            // useEffect(() => {
+            dispatch(desaGet(characterEntered));
+            // }, [dispatch]);
+        }
+    };
+    const handleCheck = (e) => {
+        vSetValidationAlamat.setFieldValue('formCheckCito', e)
+        if (e === true) {
+            vSetValidationAlamat.setFieldValue('desaDomisili', vSetValidationAlamat.values.desa || "")
+            vSetValidationAlamat.setFieldValue('kecamatanDomisili', vSetValidationAlamat.values.kecamatan || "")
+            vSetValidationAlamat.setFieldValue('kabupatenDomisili', vSetValidationAlamat.values.kabupaten || "")
+            vSetValidationAlamat.setFieldValue('provinsiDomisili', vSetValidationAlamat.values.provinsi || "")
+            vSetValidationAlamat.setFieldValue('kodeposDomisili', vSetValidationAlamat.values.kodepos || "")
+            vSetValidationAlamat.setFieldValue('alamatDomisili', vSetValidationAlamat.values.alamat || "")
+            vSetValidationAlamat.setFieldValue('rtDomisili', vSetValidationAlamat.values.rt || "")
+            vSetValidationAlamat.setFieldValue('rwDomisili', vSetValidationAlamat.values.rw || "")
+        } else {
+            vSetValidationAlamat.setFieldValue('desaDomisili', "")
+            vSetValidationAlamat.setFieldValue('kecamatanDomisili', "")
+            vSetValidationAlamat.setFieldValue('kabupatenDomisili', "")
+            vSetValidationAlamat.setFieldValue('provinsiDomisili', "")
+            vSetValidationAlamat.setFieldValue('kodeposDomisili', "")
+            vSetValidationAlamat.setFieldValue('alamatDomisili', "")
+            vSetValidationAlamat.setFieldValue('rtDomisili', "")
+            vSetValidationAlamat.setFieldValue('rwDomisili', "")
+        }
+    }
     return (
         <React.Fragment>
             <ToastContainer closeButton={false} />
@@ -251,7 +435,7 @@ const BiodataPegawai = () => {
                                                                         id="namalengkap2"
                                                                         name="namalengkap2"
                                                                         type="text"
-                                                                        value={vSetValidationBiodata.values.namalengkap2}
+                                                                        value={vSetValidationBiodata.values.gelardepan + vSetValidationBiodata.values.namalengkap + vSetValidationBiodata.values.gelarbelakang}
                                                                         onChange={(e) => {
                                                                             vSetValidationBiodata.setFieldValue('namalengkap2', e.target.value)
                                                                         }}
@@ -278,11 +462,7 @@ const BiodataPegawai = () => {
                                                                         type="text"
                                                                         value={vSetValidationBiodata.values.nik}
                                                                         onChange={(e) => {
-                                                                            const newVal = onChangeStrNbrNeg(
-                                                                                e.target.value,
-                                                                                vSetValidationBiodata.values.nik
-                                                                            )
-                                                                            vSetValidationBiodata.setFieldValue('nik', newVal)
+                                                                            vSetValidationBiodata.setFieldValue('nik', e.target.value)
                                                                         }}
                                                                         invalid={vSetValidationBiodata.touched?.nik &&
                                                                             !!vSetValidationBiodata.errors?.nik}
@@ -327,7 +507,7 @@ const BiodataPegawai = () => {
                                                                     <CustomSelect
                                                                         id="jenisKelamin"
                                                                         name="jenisKelamin"
-                                                                        options={[]}
+                                                                        options={dataCombo.jenisKelamin}
                                                                         onChange={(e) => {
                                                                             vSetValidationBiodata.setFieldValue('jenisKelamin', e?.value || '')
                                                                         }}
@@ -396,7 +576,7 @@ const BiodataPegawai = () => {
                                                                     <CustomSelect
                                                                         id="agama"
                                                                         name="agama"
-                                                                        options={[]}
+                                                                        options={dataCombo.agama}
                                                                         onChange={(e) => {
                                                                             vSetValidationBiodata.setFieldValue('agama', e?.value || '')
                                                                         }}
@@ -424,7 +604,7 @@ const BiodataPegawai = () => {
                                                                     <CustomSelect
                                                                         id="golonganDarah"
                                                                         name="golonganDarah"
-                                                                        options={[]}
+                                                                        options={dataCombo.golonganDarah}
                                                                         onChange={(e) => {
                                                                             vSetValidationBiodata.setFieldValue('golonganDarah', e?.value || '')
                                                                         }}
@@ -448,7 +628,7 @@ const BiodataPegawai = () => {
                                                                     <CustomSelect
                                                                         id="suku"
                                                                         name="suku"
-                                                                        options={[]}
+                                                                        options={dataCombo.etnis}
                                                                         onChange={(e) => {
                                                                             vSetValidationBiodata.setFieldValue('suku', e?.value || '')
                                                                         }}
@@ -475,11 +655,7 @@ const BiodataPegawai = () => {
                                                                         type="text"
                                                                         value={vSetValidationBiodata.values.noTelp}
                                                                         onChange={(e) => {
-                                                                            const newVal = onChangeStrNbr(
-                                                                                e.target.value,
-                                                                                vSetValidationBiodata.values.noTelp
-                                                                            )
-                                                                            vSetValidationBiodata.setFieldValue('noTelp', newVal)
+                                                                            vSetValidationBiodata.setFieldValue('noTelp', e.target.value)
                                                                         }}
                                                                         invalid={vSetValidationBiodata.touched?.noTelp &&
                                                                             !!vSetValidationBiodata.errors?.noTelp}
@@ -498,11 +674,7 @@ const BiodataPegawai = () => {
                                                                         type="text"
                                                                         value={vSetValidationBiodata.values.noHp}
                                                                         onChange={(e) => {
-                                                                            const newVal = onChangeStrNbr(
-                                                                                e.target.value,
-                                                                                vSetValidationBiodata.values.noHp
-                                                                            )
-                                                                            vSetValidationBiodata.setFieldValue('noHp', newVal)
+                                                                            vSetValidationBiodata.setFieldValue('noHp', e.target.value)
                                                                         }}
                                                                         invalid={vSetValidationBiodata.touched?.noHp &&
                                                                             !!vSetValidationBiodata.errors?.noHp}
@@ -547,7 +719,7 @@ const BiodataPegawai = () => {
                                                                     <CustomSelect
                                                                         id="pendidikanTerakhir"
                                                                         name="pendidikanTerakhir"
-                                                                        options={[]}
+                                                                        options={dataCombo.pendidikan}
                                                                         onChange={(e) => {
                                                                             vSetValidationBiodata.setFieldValue('pendidikanTerakhir', e?.value || '')
                                                                         }}
@@ -571,7 +743,7 @@ const BiodataPegawai = () => {
                                                                     <CustomSelect
                                                                         id="statusPernikahan"
                                                                         name="statusPernikahan"
-                                                                        options={[]}
+                                                                        options={dataCombo.perkawinan}
                                                                         onChange={(e) => {
                                                                             vSetValidationBiodata.setFieldValue('statusPernikahan', e?.value || '')
                                                                         }}
@@ -614,7 +786,9 @@ const BiodataPegawai = () => {
                                                         </Col>
                                                         <Col lg={12} className="mr-3 me-3 mt-2">
                                                             <div className="d-flex flex-wrap justify-content-end gap-2">
-                                                                <Button type="submit" color="success" style={{ width: '20%' }}>Simpan</Button>
+                                                                <Button
+
+                                                                    type="submit" color="success" style={{ width: '20%' }}>Simpan</Button>
                                                                 <Button type="button" color="danger" style={{ width: '20%' }}
                                                                 // onClick={() => { handleBack() }}
                                                                 >Batal</Button>
@@ -682,11 +856,7 @@ const BiodataPegawai = () => {
                                                                         type="text"
                                                                         value={vSetValidationAlamat.values.rt}
                                                                         onChange={(e) => {
-                                                                            const newVal = onChangeStrNbr(
-                                                                                e.target.value,
-                                                                                vSetValidationAlamat.values.rt
-                                                                            )
-                                                                            vSetValidationAlamat.setFieldValue('rt', newVal)
+                                                                            vSetValidationAlamat.setFieldValue('rt', e.target.value)
                                                                         }}
                                                                         invalid={vSetValidationAlamat.touched?.rt &&
                                                                             !!vSetValidationAlamat.errors?.rt}
@@ -705,11 +875,7 @@ const BiodataPegawai = () => {
                                                                         type="text"
                                                                         value={vSetValidationAlamat.values.rw}
                                                                         onChange={(e) => {
-                                                                            const newVal = onChangeStrNbr(
-                                                                                e.target.value,
-                                                                                vSetValidationAlamat.values.rw
-                                                                            )
-                                                                            vSetValidationAlamat.setFieldValue('rw', newVal)
+                                                                            vSetValidationAlamat.setFieldValue('rw', e.target.value)
                                                                         }}
                                                                         invalid={vSetValidationAlamat.touched?.rw &&
                                                                             !!vSetValidationAlamat.errors?.rw}
@@ -730,10 +896,9 @@ const BiodataPegawai = () => {
                                                                     <CustomSelect
                                                                         id="desa"
                                                                         name="desa"
-                                                                        options={[]}
-                                                                        onChange={(e) => {
-                                                                            vSetValidationAlamat.setFieldValue('desa', e?.value || '')
-                                                                        }}
+                                                                        options={dataDesa}
+                                                                        onChange={handleChangeDesa}
+                                                                        onInputChange={handleDesa}
                                                                         value={vSetValidationAlamat.values.desa}
                                                                         className={`input row-header ${!!vSetValidationAlamat?.errors.desa ? 'is-invalid' : ''
                                                                             }`}
@@ -805,20 +970,20 @@ const BiodataPegawai = () => {
                                                                     </div>
                                                                 </Col>
                                                                 <Col lg={8}>
-                                                                    <CustomSelect
+                                                                    <Input
                                                                         id="kabupaten"
                                                                         name="kabupaten"
-                                                                        options={[]}
-                                                                        onChange={(e) => {
-                                                                            vSetValidationAlamat.setFieldValue('kabupaten', e?.value || '')
-                                                                        }}
+                                                                        type="text"
                                                                         value={vSetValidationAlamat.values.kabupaten}
-                                                                        className={`input row-header ${!!vSetValidationAlamat?.errors.kabupaten ? 'is-invalid' : ''
-                                                                            }`}
+                                                                        onChange={(e) => {
+                                                                            vSetValidationAlamat.setFieldValue('kabupaten', e.target.value)
+                                                                        }}
+                                                                        invalid={vSetValidationAlamat.touched?.kabupaten &&
+                                                                            !!vSetValidationAlamat.errors?.kabupaten}
                                                                         disabled
                                                                     />
-                                                                    {vSetValidationAlamat.touched.kabupaten &&
-                                                                        !!vSetValidationAlamat.errors.kabupaten && (
+                                                                    {vSetValidationAlamat.touched?.kabupaten
+                                                                        && !!vSetValidationAlamat.errors.kabupaten && (
                                                                             <FormFeedback type="invalid">
                                                                                 <div>{vSetValidationAlamat.errors.kabupaten}</div>
                                                                             </FormFeedback>
@@ -861,7 +1026,10 @@ const BiodataPegawai = () => {
                                                                 <Col lg={12}>
                                                                     <div className="form-check ms-2">
                                                                         <Input className="form-check-input" type="checkbox" id="formCheckCito"
-                                                                            onChange={value => vSetValidationAlamat.setFieldValue('formCheckCito', value.target.checked)} />
+                                                                            onChange={value =>
+                                                                                // vSetValidationAlamat.setFieldValue('formCheckCito', value.target.checked)} 
+                                                                                handleCheck(value.target.checked)}
+                                                                        />
                                                                         <Label className="form-check-label" htmlFor="formCheckCito" style={{ color: "black" }} >
                                                                             Sesuai dengan KTP
                                                                         </Label>
@@ -951,10 +1119,9 @@ const BiodataPegawai = () => {
                                                                     <CustomSelect
                                                                         id="desaDomisili"
                                                                         name="desaDomisili"
-                                                                        options={[]}
-                                                                        onChange={(e) => {
-                                                                            vSetValidationAlamat.setFieldValue('desaDomisili', e?.value || '')
-                                                                        }}
+                                                                        options={dataDesa}
+                                                                        onChange={handleChangeDesaDomisili}
+                                                                        onInputChange={handleDesaDomisili}
                                                                         value={vSetValidationAlamat.values.desaDomisili}
                                                                         className={`input row-header ${!!vSetValidationAlamat?.errors.desaDomisili ? 'is-invalid' : ''
                                                                             }`}
@@ -1026,20 +1193,20 @@ const BiodataPegawai = () => {
                                                                     </div>
                                                                 </Col>
                                                                 <Col lg={8}>
-                                                                    <CustomSelect
+                                                                    <Input
                                                                         id="kabupatenDomisili"
                                                                         name="kabupatenDomisili"
-                                                                        options={[]}
-                                                                        onChange={(e) => {
-                                                                            vSetValidationAlamat.setFieldValue('kabupatenDomisili', e?.value || '')
-                                                                        }}
+                                                                        type="text"
                                                                         value={vSetValidationAlamat.values.kabupatenDomisili}
-                                                                        className={`input row-header ${!!vSetValidationAlamat?.errors.kabupatenDomisili ? 'is-invalid' : ''
-                                                                            }`}
+                                                                        onChange={(e) => {
+                                                                            vSetValidationAlamat.setFieldValue('kabupatenDomisili', e.target.value)
+                                                                        }}
+                                                                        invalid={vSetValidationAlamat.touched?.kabupatenDomisili &&
+                                                                            !!vSetValidationAlamat.errors?.kabupatenDomisili}
                                                                         disabled
                                                                     />
-                                                                    {vSetValidationAlamat.touched.kabupatenDomisili &&
-                                                                        !!vSetValidationAlamat.errors.kabupatenDomisili && (
+                                                                    {vSetValidationAlamat.touched?.kabupatenDomisili
+                                                                        && !!vSetValidationAlamat.errors.kabupatenDomisili && (
                                                                             <FormFeedback type="invalid">
                                                                                 <div>{vSetValidationAlamat.errors.kabupatenDomisili}</div>
                                                                             </FormFeedback>
@@ -1071,6 +1238,16 @@ const BiodataPegawai = () => {
                                                                         )}
                                                                 </Col>
                                                             </Row>
+                                                        </Col>
+                                                        <Col lg={12} className="mr-3 me-3 mt-2">
+                                                            <div className="d-flex flex-wrap justify-content-end gap-2">
+                                                                <Button
+
+                                                                    type="submit" color="success" style={{ width: '20%' }}>Simpan</Button>
+                                                                <Button type="button" color="danger" style={{ width: '20%' }}
+                                                                // onClick={() => { handleBack() }}
+                                                                >Batal</Button>
+                                                            </div>
                                                         </Col>
                                                     </Row>
                                                 </Form>
@@ -1202,7 +1379,7 @@ const BiodataPegawai = () => {
                                                                     <CustomSelect
                                                                         id="golongan"
                                                                         name="golongan"
-                                                                        options={[]}
+                                                                        options={dataCombo.golonganPegawai}
                                                                         onChange={(e) => {
                                                                             vSetValidationStatusPegawai.setFieldValue('golongan', e?.value || '')
                                                                         }}
@@ -1226,7 +1403,7 @@ const BiodataPegawai = () => {
                                                                     <CustomSelect
                                                                         id="statusPegawai"
                                                                         name="statusPegawai"
-                                                                        options={[]}
+                                                                        options={dataCombo.statusPegawai}
                                                                         onChange={(e) => {
                                                                             vSetValidationStatusPegawai.setFieldValue('statusPegawai', e?.value || '')
                                                                         }}
@@ -1250,7 +1427,7 @@ const BiodataPegawai = () => {
                                                                     <CustomSelect
                                                                         id="profesi"
                                                                         name="profesi"
-                                                                        options={[]}
+                                                                        options={dataCombo.profesi}
                                                                         onChange={(e) => {
                                                                             vSetValidationStatusPegawai.setFieldValue('profesi', e?.value || '')
                                                                         }}
@@ -1274,7 +1451,7 @@ const BiodataPegawai = () => {
                                                                     <CustomSelect
                                                                         id="jabatan"
                                                                         name="jabatan"
-                                                                        options={[]}
+                                                                        options={dataCombo.jabatan}
                                                                         onChange={(e) => {
                                                                             vSetValidationStatusPegawai.setFieldValue('jabatan', e?.value || '')
                                                                         }}
@@ -1307,7 +1484,7 @@ const BiodataPegawai = () => {
                                                                             dateFormat: 'Y-m-d',
                                                                             defaultDate: 'today',
                                                                         }}
-                                                                        value={vSetValidationStatusPegawai.values.tglSKStart}
+                                                                        value={vSetValidationStatusPegawai.values.tglSKStart || dateNow}
                                                                         onChange={([newDate]) => {
                                                                             vSetValidationStatusPegawai.setFieldValue('tglSKStart', newDate.toISOString())
                                                                         }}
@@ -1333,7 +1510,7 @@ const BiodataPegawai = () => {
                                                                             dateFormat: 'Y-m-d',
                                                                             defaultDate: 'today',
                                                                         }}
-                                                                        value={vSetValidationStatusPegawai.values.tglSKend}
+                                                                        value={vSetValidationStatusPegawai.values.tglSKend || dateNow}
                                                                         onChange={([newDate]) => {
                                                                             vSetValidationStatusPegawai.setFieldValue('tglSKend', newDate.toISOString())
                                                                         }}
@@ -1359,7 +1536,7 @@ const BiodataPegawai = () => {
                                                                             dateFormat: 'Y-m-d',
                                                                             defaultDate: 'today',
                                                                         }}
-                                                                        value={vSetValidationStatusPegawai.values.tglSIPStart}
+                                                                        value={vSetValidationStatusPegawai.values.tglSIPStart || dateNow}
                                                                         onChange={([newDate]) => {
                                                                             vSetValidationStatusPegawai.setFieldValue('tglSIPStart', newDate.toISOString())
                                                                         }}
@@ -1385,7 +1562,7 @@ const BiodataPegawai = () => {
                                                                             dateFormat: 'Y-m-d',
                                                                             defaultDate: 'today',
                                                                         }}
-                                                                        value={vSetValidationStatusPegawai.values.tglSIPend}
+                                                                        value={vSetValidationStatusPegawai.values.tglSIPend || dateNow}
                                                                         onChange={([newDate]) => {
                                                                             vSetValidationStatusPegawai.setFieldValue('tglSIPend', newDate.toISOString())
                                                                         }}
@@ -1411,7 +1588,7 @@ const BiodataPegawai = () => {
                                                                             dateFormat: 'Y-m-d',
                                                                             defaultDate: 'today',
                                                                         }}
-                                                                        value={vSetValidationStatusPegawai.values.tglSTRStart}
+                                                                        value={vSetValidationStatusPegawai.values.tglSTRStart || dateNow}
                                                                         onChange={([newDate]) => {
                                                                             vSetValidationStatusPegawai.setFieldValue('tglSTRStart', newDate.toISOString())
                                                                         }}
@@ -1437,7 +1614,7 @@ const BiodataPegawai = () => {
                                                                             dateFormat: 'Y-m-d',
                                                                             defaultDate: 'today',
                                                                         }}
-                                                                        value={vSetValidationStatusPegawai.values.tglSTRend}
+                                                                        value={vSetValidationStatusPegawai.values.tglSTRend || dateNow}
                                                                         onChange={([newDate]) => {
                                                                             vSetValidationStatusPegawai.setFieldValue('tglSTRend', newDate.toISOString())
                                                                         }}
@@ -1458,7 +1635,7 @@ const BiodataPegawai = () => {
                                                                     <CustomSelect
                                                                         id="golonganPTKP"
                                                                         name="golonganPTKP"
-                                                                        options={[]}
+                                                                        options={dataCombo.golonganPtkp}
                                                                         onChange={(e) => {
                                                                             vSetValidationStatusPegawai.setFieldValue('golonganPTKP', e?.value || '')
                                                                         }}
@@ -1538,7 +1715,7 @@ const BiodataPegawai = () => {
                                                                     <CustomSelect
                                                                         id="unitPelayanan"
                                                                         name="unitPelayanan"
-                                                                        options={[]}
+                                                                        options={dataCombo.unit}
                                                                         onChange={(e) => {
                                                                             vSetValidationStatusPegawai.setFieldValue('unitPelayanan', e?.value || '')
                                                                         }}
@@ -1562,7 +1739,7 @@ const BiodataPegawai = () => {
                                                                     <CustomSelect
                                                                         id="unitKerja"
                                                                         name="unitKerja"
-                                                                        options={[]}
+                                                                        options={dataCombo.unitKerja}
                                                                         onChange={(e) => {
                                                                             vSetValidationStatusPegawai.setFieldValue('unitKerja', e?.value || '')
                                                                         }}
@@ -1578,6 +1755,16 @@ const BiodataPegawai = () => {
                                                                         )}
                                                                 </Col>
                                                             </Row>
+                                                        </Col>
+                                                        <Col lg={12} className="mr-3 me-3 mt-2">
+                                                            <div className="d-flex flex-wrap justify-content-end gap-2">
+                                                                <Button
+
+                                                                    type="submit" color="success" style={{ width: '20%' }}>Simpan</Button>
+                                                                <Button type="button" color="danger" style={{ width: '20%' }}
+                                                                // onClick={() => { handleBack() }}
+                                                                >Batal</Button>
+                                                            </div>
                                                         </Col>
                                                     </Row>
                                                 </Form>
