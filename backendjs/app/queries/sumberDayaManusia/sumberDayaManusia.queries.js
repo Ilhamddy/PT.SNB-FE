@@ -36,6 +36,8 @@ const qProfesiPegawai =`select id as value,reportdisplay as label from m_profesi
 const qJabatan =`select id as value,reportdisplay as label from m_jabatan ms` 
 const qGolonganPtkp =`select id as value,reportdisplay as label from m_golonganptkp ms`
 const qUnitKerja =`select id as value,reportdisplay as label from m_unitkerja ms`
+
+
 export default {
     qDaftarPegawai,
     qUnit,
@@ -51,5 +53,5 @@ export default {
     qProfesiPegawai,
     qJabatan,
     qGolonganPtkp,
-    qUnitKerja
+    qUnitKerja,
 }

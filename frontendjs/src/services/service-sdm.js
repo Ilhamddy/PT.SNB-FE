@@ -16,4 +16,7 @@ export default class ServiceSDM {
     getPegawaiById = async (param) => {
         return await api.get(`/transaksi/sumber-daya-manusia/get-pegawai-byid`,param);
     }
+    getComboJadwal = async (param) => {
+        return await api.get(`/transaksi/sumber-daya-manusia/combo-jadwal`, param)
+    }
 }

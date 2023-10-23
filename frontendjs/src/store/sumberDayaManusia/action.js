@@ -1,8 +1,21 @@
-import { SDM_RESET_FORM,
-GET_DAFTAR_PEGAWAI,GET_DAFTAR_PEGAWAI_SUCCESS,GET_DAFTAR_PEGAWAI_ERROR,
-GET_COMBO_SDM,GET_COMBO_SDM_SUCCESS,GET_COMBO_SDM_ERROR,
-SAVE_BIODATA_PEGAWAI,SAVE_BIODATA_PEGAWAI_SUCCESS,SAVE_BIODATA_PEGAWAI_ERROR,
-GET_PEGAWAI_BYID,GET_PEGAWAI_BYID_SUCCESS,GET_PEGAWAI_BYID_ERROR } from "./actionType";
+import { 
+    SDM_RESET_FORM,
+    GET_DAFTAR_PEGAWAI,
+    GET_DAFTAR_PEGAWAI_SUCCESS,
+    GET_DAFTAR_PEGAWAI_ERROR,
+    GET_COMBO_SDM,
+    GET_COMBO_SDM_SUCCESS,
+    GET_COMBO_SDM_ERROR,
+    SAVE_BIODATA_PEGAWAI,
+    SAVE_BIODATA_PEGAWAI_SUCCESS,
+    SAVE_BIODATA_PEGAWAI_ERROR,
+    GET_PEGAWAI_BYID,
+    GET_PEGAWAI_BYID_SUCCESS,
+    GET_PEGAWAI_BYID_ERROR ,
+    GET_COMBO_JADWAL,
+    GET_COMBO_JADWAL_SUCCESS,
+    GET_COMBO_JADWAL_ERROR,
+} from "./actionType";
 
 export const sdmResetForm = () => ({
     type: SDM_RESET_FORM,
@@ -68,5 +81,20 @@ export const getPegawaiByIdSuccess = (data) => ({
 
 export const getPegawaiByIdError = (error) => ({
     type: GET_PEGAWAI_BYID_ERROR,
+    payload: error,
+});
+
+export const getComboJadwal = (queries) => ({
+    type: GET_COMBO_JADWAL,
+    payload: { queries: queries },
+});
+
+export const getComboJadwalSuccess = (data) => ({
+    type: GET_COMBO_JADWAL_SUCCESS,
+    payload: data,
+});
+
+export const getComboJadwalError = (error) => ({
+    type: GET_COMBO_JADWAL_ERROR,
     payload: error,
 });

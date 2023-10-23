@@ -15,6 +15,7 @@ SELECT
 FROM 
     m_pegawai 
 WHERE objectprofesipegawaifk=1
+AND statusenabled = true
 `
 
 export default {

@@ -2,15 +2,24 @@ import { call, put, takeEvery, all, fork } from "redux-saga/effects";
 import ServiceSDM from "../../services/service-sdm";
 
 import {
-    GET_DAFTAR_PEGAWAI,GET_COMBO_SDM, SAVE_BIODATA_PEGAWAI,
-    GET_PEGAWAI_BYID
+    GET_DAFTAR_PEGAWAI,
+    GET_COMBO_SDM, 
+    SAVE_BIODATA_PEGAWAI,
+    GET_PEGAWAI_BYID,
+    GET_COMBO_JADWAL
 } from "./actionType";
 
 import {
-    getDaftarPegawaiSuccess, getDaftarPegawaiError,
-    getComboSDMSuccess, getComboSDMError,
-    saveBiodataPegawaiSuccess, saveBiodataPegawaiError,
-    getPegawaiByIdSuccess, getPegawaiByIdError
+    getDaftarPegawaiSuccess, 
+    getDaftarPegawaiError,
+    getComboSDMSuccess, 
+    getComboSDMError,
+    saveBiodataPegawaiSuccess, 
+    saveBiodataPegawaiError,
+    getPegawaiByIdSuccess, 
+    getPegawaiByIdError,
+    getComboJadwalSuccess,
+    getComboJadwalError
 } from "./action";
 
 import { toast } from 'react-toastify';
@@ -79,12 +88,26 @@ export function* watchongetPegawaiById() {
     yield takeEvery(GET_PEGAWAI_BYID, ongetPegawaiById);
 }
 
+function* onGetComboJadawal({ payload: { queries } }) {
+    try {
+        const response = yield call(serviceSDM.getComboJadwal, queries);
+        yield put(getComboJadwalSuccess(response.data || null));
+    } catch(error) {
+        yield put(getComboJadwalError(error));
+    }
+}
+
+export function* watchonGetComboJadwal() {
+    yield takeEvery(GET_COMBO_JADWAL, onGetComboJadawal);
+}
+
 function* sumberDayaManusia() {
     yield all([
         fork(watchongetDaftarPegawai),
         fork(watchongetComboSDM),
         fork(watchonsaveBiodataPegawai),
-        fork(watchongetPegawaiById)
+        fork(watchongetPegawaiById),
+        fork(watchonGetComboJadwal)
     ]);
 }
 

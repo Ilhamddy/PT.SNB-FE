@@ -1,9 +1,20 @@
 import {
     SDM_RESET_FORM,
-    GET_DAFTAR_PEGAWAI, GET_DAFTAR_PEGAWAI_SUCCESS, GET_DAFTAR_PEGAWAI_ERROR,
-    GET_COMBO_SDM, GET_COMBO_SDM_SUCCESS, GET_COMBO_SDM_ERROR,
-    SAVE_BIODATA_PEGAWAI, SAVE_BIODATA_PEGAWAI_SUCCESS, SAVE_BIODATA_PEGAWAI_ERROR,
-    GET_PEGAWAI_BYID, GET_PEGAWAI_BYID_SUCCESS, GET_PEGAWAI_BYID_ERROR
+    GET_DAFTAR_PEGAWAI, 
+    GET_DAFTAR_PEGAWAI_SUCCESS, 
+    GET_DAFTAR_PEGAWAI_ERROR,
+    GET_COMBO_SDM, 
+    GET_COMBO_SDM_SUCCESS, 
+    GET_COMBO_SDM_ERROR,
+    SAVE_BIODATA_PEGAWAI, 
+    SAVE_BIODATA_PEGAWAI_SUCCESS, 
+    SAVE_BIODATA_PEGAWAI_ERROR,
+    GET_PEGAWAI_BYID, 
+    GET_PEGAWAI_BYID_SUCCESS, 
+    GET_PEGAWAI_BYID_ERROR,
+    GET_COMBO_JADWAL,
+    GET_COMBO_JADWAL_SUCCESS,
+    GET_COMBO_JADWAL_ERROR,
 } from "./actionType";
 
 const INIT_STATE = {
@@ -27,6 +38,11 @@ const INIT_STATE = {
         data: [],
         loading: false,
         error: null,
+    },
+    getComboJadwal: {
+        data: [],
+        loading: false,
+        error: null,
     }
 }
 
@@ -46,6 +62,9 @@ const sumberDayaManusia = (state = INIT_STATE, action) => {
                 },
                 getPegawaiById:{
                     ...INIT_STATE.getPegawaiById
+                },
+                getComboJadwal: {
+                    ...INIT_STATE.getComboJadwal
                 }
             }
         }
@@ -183,6 +202,40 @@ const sumberDayaManusia = (state = INIT_STATE, action) => {
                 }
             }
         }
+
+        case GET_COMBO_JADWAL: {
+            return {
+                ...state,
+                getComboJadwal: {
+                    ...state.getComboJadwal,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case GET_COMBO_JADWAL_SUCCESS: {
+            return {
+                ...state,
+                getComboJadwal: {
+                    ...state.getComboJadwal,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case GET_COMBO_JADWAL_ERROR: {
+            return {
+                ...state,
+                getComboJadwal: {
+                    ...state.getComboJadwal,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+        
 
         default: {
             return { ...state };

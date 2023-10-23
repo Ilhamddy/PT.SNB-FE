@@ -29,5 +29,9 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getPegawaiById
     );
-
+    app.get(
+        "/api/transaksi/sumber-daya-manusia/combo-jadwal",
+        [authJwt.verifyToken],
+        controller.getComboJadwal
+    );
 }

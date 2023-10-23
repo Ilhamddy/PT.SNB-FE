@@ -2,6 +2,10 @@ import pool from "../../../config/dbcon.query";
 import * as uuid from 'uuid'
 import db from "../../../models";
 import queries from '../../../queries/sumberDayaManusia/sumberDayaManusia.queries';
+import unitQueries from '../../../queries/master/unit/unit.queries'
+import pegawaiQueries from '../../../queries/master/pegawai/pegawai.queries'
+import kamarQueries from "../../../queries/master/kamar/kamar.queries";
+import hariQueries from "../../../queries/master/hari/hari.queries";
 
 const queryPromise2 = (query) => {
     return new Promise((resolve, reject) => {
@@ -254,9 +258,40 @@ const getPegawaiById = async (req, res) => {
     }
 }
 
+const getComboJadwal = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const dokter = await pool.query(pegawaiQueries.getDokter)
+        const poliklinik = await pool.query(unitQueries.getPoliklinik)
+        const kamar = await pool.query(kamarQueries.getAll)
+        const hari = await pool.query(hariQueries.getAll)
+
+        const tempres = {
+            dokter: dokter,
+            poliklinik: poliklinik,
+            kamar: kamar,
+            hari: hari
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
 export default {
     getDaftarPegawai,
     getComboSDM,
     saveBiodataPegawai,
-    getPegawaiById
+    getPegawaiById,
+    getComboJadwal
 }
