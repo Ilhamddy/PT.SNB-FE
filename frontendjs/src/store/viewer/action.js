@@ -16,7 +16,10 @@ import {
     PANGGIL_ULANG_ANTREAN_ERROR,
     GET_JADWAL_DOKTER,
     GET_JADWAL_DOKTER_SUCCESS,
-    GET_JADWAL_DOKTER_ERROR
+    GET_JADWAL_DOKTER_ERROR,
+    GET_JADWAL_OPERASI,
+    GET_JADWAL_OPERASI_SUCCESS,
+    GET_JADWAL_OPERASI_ERROR
 } from "./actionType";
 
 export const getLoketSisa = () => ({
@@ -118,5 +121,22 @@ export const getJadwalDokterSuccess = (data) => ({
 
 export const getJadwalDokterError = (error) => ({
     type: GET_JADWAL_DOKTER_ERROR,
+    payload: error,
+});
+
+export const getJadwalOperasi = (queries, callback) => ({
+    type: GET_JADWAL_OPERASI,
+    payload: {
+        queries,
+    },
+});
+
+export const getJadwalOperasiSuccess = (data) => ({
+    type: GET_JADWAL_OPERASI_SUCCESS,
+    payload: data,
+});
+
+export const getJadwalOperasiError = (error) => ({
+    type: GET_JADWAL_OPERASI_ERROR,
     payload: error,
 });

@@ -47,4 +47,10 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getJadwalDokter
     )
+
+    app.get(
+        "/api/transaksi/viewer/get-jadwal-operasi",
+        [authJwt.verifyToken],
+        controller.getJadwalOperasi
+    )
 }
