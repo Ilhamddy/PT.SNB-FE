@@ -125,6 +125,7 @@ function* onUpsertJadwal({ payload: { body, callback } }) {
         const response = yield call(serviceSDM.upsertJadwal, body);
         yield put(upsertJadwalSuccess(response.data || null));
         toast.success(response.msg, { autoClose: 3000 });
+        console.log(callback)
         callback && callback();
     } catch(error) {
         yield put(upsertJadwalError(error));

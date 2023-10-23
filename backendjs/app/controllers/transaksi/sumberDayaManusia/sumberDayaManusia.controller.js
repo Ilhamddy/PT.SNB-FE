@@ -264,7 +264,7 @@ const getComboJadwal = async (req, res) => {
     try{
         const dokter = (await pool.query(pegawaiQueries.getDokterNip)).rows
         const poliklinik = (await pool.query(unitQueries.getPoliklinik)).rows
-        const kamar = (await pool.query(kamarQueries.getAll)).rows
+        const kamar = (await pool.query(kamarQueries.getAllRj)).rows
         const hari = (await pool.query(hariQueries.getAll)).rows
 
         const tempres = {
@@ -367,6 +367,8 @@ const upsertJadwal = async (req, res) => {
                         jam_selesai: getTimeOnly(reqBody.jamkerjaend),
                         objectunitfk: reqBody.unit,
                         objectkamarfk: reqBody.ruangrawat,
+                    }, {
+                        transaction: transaction
                     })
                     jadwal = jadwalModel.toJSON()
                 } else{

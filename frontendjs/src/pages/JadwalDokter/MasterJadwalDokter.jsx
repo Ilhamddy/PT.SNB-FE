@@ -60,7 +60,7 @@ const MasterJadwalDokter = () => {
     onSubmit: async (values, { resetForm }) => {
       dispatch(
         upsertJadwal(values, () => {
-          dispatch(getComboJadwal())
+          dispatch(getJadwalDokterSDM())
           resetForm()
         })
       )
