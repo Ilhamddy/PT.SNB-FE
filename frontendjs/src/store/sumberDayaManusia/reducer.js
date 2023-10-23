@@ -242,6 +242,31 @@ const sumberDayaManusia = (state = INIT_STATE, action) => {
                 ...state,
                 getUserRoleById: {
                     ...state.getUserRoleById,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+
+        case GET_USER_ROLE_BYID_PEGAWAI_SUCCESS: {
+            return {
+                ...state,
+                getUserRoleById: {
+                    ...state.getUserRoleById,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case GET_USER_ROLE_BYID_PEGAWAI_ERROR: {
+            return {
+                ...state,
+                getUserRoleById: {
+                    ...state.getUserRoleById,
+                    loading: false,
+                    error: action.error,
                 }
             }
         }
@@ -257,16 +282,6 @@ const sumberDayaManusia = (state = INIT_STATE, action) => {
             }
         }
 
-
-        case GET_USER_ROLE_BYID_PEGAWAI_SUCCESS: {
-            return {
-                ...state,
-                getUserRoleById: {
-                    ...state.getUserRoleById,
-                }
-            }
-        }
-
         case GET_COMBO_JADWAL_SUCCESS: {
             return {
                 ...state,
@@ -274,15 +289,6 @@ const sumberDayaManusia = (state = INIT_STATE, action) => {
                     ...state.getComboJadwal,
                     data: action.payload,
                     loading: false,
-                }
-            }
-        }
-
-        case GET_USER_ROLE_BYID_PEGAWAI_ERROR: {
-            return {
-                ...state,
-                getUserRoleById: {
-                    ...state.getUserRoleById,
                 }
             }
         }

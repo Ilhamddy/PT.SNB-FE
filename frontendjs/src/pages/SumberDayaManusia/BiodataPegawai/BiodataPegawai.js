@@ -172,7 +172,7 @@ const BiodataPegawai = () => {
         onSubmit: (values,{ resetForm }) => {
             values.password= values.username +`@123`
             dispatch(saveSignupUserRole(values, () => {
-                resetForm({ values: '' })
+                resetForm()
             }));
         }
     })
@@ -420,6 +420,7 @@ const BiodataPegawai = () => {
     const handleClick = (e) => {
 
     };
+    console.log(dataUserRole)
     return (
         <React.Fragment>
             <ToastContainer closeButton={false} />
