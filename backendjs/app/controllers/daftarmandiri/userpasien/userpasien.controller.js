@@ -446,27 +446,7 @@ export default {
 
 const hCreatePasien = async (req, res, transaction) => {
     const bodyReq = req.body
-    const getNocm = await running_number.findAll({
-        where: {
-            id: 1
-        },
-        transaction: transaction
-    })
-    const getNocmData = getNocm[0].toJSON();
-    const nocm = getNocmData.new_number + 1
-    let nocmStr = getNocmData.new_number + 1
-    let totalExtension = Number(getNocmData.extention)
-    let zero = ''
-    for (let x = 0; x < totalExtension; x++) {
-        zero = zero + '0'
-    }
-    nocmStr = (zero + nocmStr).slice(-totalExtension)
     const nocmSementara = await hCreateCMSementara()
-    await getNocm[0].update({
-        new_number: nocm
-    }, {
-        transaction: transaction
-    })
     let dataPasien = await m_pasien.create({
         kdprofile: 0,
         statusenabled: true,

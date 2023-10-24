@@ -16,8 +16,8 @@ import { useEffect, useState } from "react"
  * - dateLocal: mengubah format date menjadi tanggal
  * - dateTimeISOString: mengubah format date menjadi tanggal dan waktu dalam bentuk ISOString
  * - strToNumber: mengubah format string ("1.000") menjadi number (1000)
- * - onChangeStrNbr: untuk input; mengubah format string ("1.000") menjadi number (1000)
- * - onChangeStrNbrNeg: untuk input; mengubah format string ("1.000") menjadi number (1000) dan bisa negatif
+ * - onChangeStrNbr: untuk input; mengubah format number (1000.2) menjadi string ("1.000,2")
+ * - onChangeStrNbrNeg: untuk input; mengubah format string (1000.2) menjadi number (1.000,2) dan bisa negatif
  */
 
 
