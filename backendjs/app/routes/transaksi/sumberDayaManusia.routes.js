@@ -49,5 +49,10 @@ export default function (app) {
         "/api/transaksi/sumber-daya-manusia/upsert-jadwal",
         [authJwt.verifyToken],
         controller.upsertJadwal
+    );
+    app.post(
+        "/api/transaksi/sumber-daya-manusia/update-user-role",
+        [authJwt.verifyToken],
+        controller.updateUserRole
     )
 }
