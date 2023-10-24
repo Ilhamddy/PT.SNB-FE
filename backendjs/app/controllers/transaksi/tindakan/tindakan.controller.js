@@ -47,7 +47,7 @@ async function getListProdukToKelasToUnit(req, res) {
         const resultlistantreanpemeriksaan = await queryPromise2(`select mp.namaproduk as label,mp.id as value,mth.objectkelasfk,mm.objectunitfk,mu.reportdisplay,mth.totalharga  from m_mapunittoproduk mm
         join m_produk mp on mp.id=mm.objectprodukfk
         join m_unit mu on mu.id=mm.objectunitfk
-        join m_totalhargaprodukbykelas mth on mth.objectmapunittoprodukfk=mm.id and mth.objectprodukfk=mp.id
+        join m_totalhargaprodukbykelas mth on mth.objectprodukfk=mp.id
         where mth.objectkelasfk =${objectkelasfk} and mm.objectunitfk =${objectunitfk} 
         and mp.namaproduk ilike '%${req.query.namaproduk}%'`);
 
