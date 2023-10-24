@@ -420,7 +420,7 @@ const BiodataPegawai = () => {
     const [disabledUsername, setdisabledUsername] = useState(false);
     const handleClick = (e) => {
         vSetValidationUserName.setFieldValue('statusEnabled', 2)
-        if(e.status==='AKTIP'){
+        if (e.status === 'AKTIP') {
             vSetValidationUserName.setFieldValue('statusEnabled', 1)
         }
         setdisabledUsername(true)
@@ -428,12 +428,15 @@ const BiodataPegawai = () => {
         vSetValidationUserName.setFieldValue('roles', e.idrole)
         vSetValidationUserName.setFieldValue('idUser', e.id)
     };
-    const handleClickBatal = (e)=>{
+    const handleClickBatal = (e) => {
         setdisabledUsername(false)
         vSetValidationUserName.setFieldValue('statusEnabled', '')
         vSetValidationUserName.setFieldValue('username', '')
         vSetValidationUserName.setFieldValue('roles', '')
         vSetValidationUserName.setFieldValue('idUser', '')
+    }
+    const handleClickResetPassword = (e)=>{
+        
     }
     return (
         <React.Fragment>
@@ -1974,7 +1977,7 @@ const BiodataPegawai = () => {
                                                                         }}
                                                                         invalid={vSetValidationUserName.touched?.username &&
                                                                             !!vSetValidationUserName.errors?.username}
-                                                                            disabled={disabledUsername}
+                                                                        disabled={disabledUsername}
                                                                     />
                                                                     {vSetValidationUserName.touched?.username
                                                                         && !!vSetValidationUserName.errors.username && (
@@ -2016,8 +2019,11 @@ const BiodataPegawai = () => {
 
                                                                     type="submit" color="success" style={{ width: '20%' }}>Simpan</Button>
                                                                 <Button type="button" color="danger" style={{ width: '20%' }}
-                                                                onClick={() => { handleClickBatal() }}
+                                                                    onClick={() => { handleClickBatal() }}
                                                                 >Batal</Button>
+                                                                <Button type="button" color="warning" style={{ width: '20%' }}
+                                                                    onClick={() => { handleClickResetPassword() }}
+                                                                >Reset Password</Button>
                                                             </div>
                                                         </Col>
                                                     </Row>

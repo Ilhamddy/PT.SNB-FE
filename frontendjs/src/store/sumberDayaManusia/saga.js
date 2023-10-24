@@ -2,8 +2,8 @@ import { call, put, takeEvery, all, fork } from "redux-saga/effects";
 import ServiceSDM from "../../services/service-sdm";
 
 import {
-    GET_DAFTAR_PEGAWAI,GET_COMBO_SDM, SAVE_BIODATA_PEGAWAI,
-    GET_PEGAWAI_BYID, GET_USER_ROLE_BYID_PEGAWAI,SAVE_SIGNUP_USER_ROLE,
+    GET_DAFTAR_PEGAWAI, GET_COMBO_SDM, SAVE_BIODATA_PEGAWAI,
+    GET_PEGAWAI_BYID, GET_USER_ROLE_BYID_PEGAWAI, SAVE_SIGNUP_USER_ROLE,
     GET_COMBO_JADWAL,
     GET_JADWAL_DOKTER_SDM,
     UPSERT_JADWAL
@@ -29,7 +29,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const serviceSDM = new ServiceSDM();
 
-function* ongetDaftarPegawai({ payload: {queries}  }) {
+function* ongetDaftarPegawai({ payload: { queries } }) {
     try {
         let response = null;
         response = yield call(serviceSDM.getDaftarPegawai, queries);
@@ -43,7 +43,7 @@ export function* watchongetDaftarPegawai() {
     yield takeEvery(GET_DAFTAR_PEGAWAI, ongetDaftarPegawai);
 }
 
-function* ongetComboSDM({ payload: {queries}  }) {
+function* ongetComboSDM({ payload: { queries } }) {
     try {
         let response = null;
         response = yield call(serviceSDM.getComboSDM, queries);
@@ -106,7 +106,13 @@ export function* watchongetUserRoleById() {
 
 function* onsaveSignupUserRole({ payload: { body, callback } }) {
     try {
-        const response = yield call(serviceSDM.saveSignupUserRole, body);
+        let response = null
+        if (body.idUser === '') {
+            response = yield call(serviceSDM.saveSignupUserRole, body);
+        } else {
+            response = yield call(serviceSDM.updateUserRole, body);
+        }
+
         yield put(saveSignupUserRoleSuccess(response.data));
         if (response.code === 200) {
             toast.success(response.msg, { autoClose: 3000 });
@@ -128,7 +134,7 @@ function* onGetComboJadawal({ payload: { queries } }) {
     try {
         const response = yield call(serviceSDM.getComboJadwal, queries);
         yield put(getComboJadwalSuccess(response.data || null));
-    } catch(error) {
+    } catch (error) {
         yield put(getComboJadwalError(error));
     }
 }
@@ -141,7 +147,7 @@ function* onGetJadwalDokterSDM({ payload: { queries } }) {
     try {
         const response = yield call(serviceSDM.getJadwalDokter, queries);
         yield put(getJadwalDokterSDMSuccess(response.data || null));
-    } catch(error) {
+    } catch (error) {
         yield put(getJadwalDokterSDMError(error));
     }
 }
@@ -157,7 +163,7 @@ function* onUpsertJadwal({ payload: { body, callback } }) {
         toast.success(response.msg, { autoClose: 3000 });
         console.log(callback)
         callback && callback();
-    } catch(error) {
+    } catch (error) {
         yield put(upsertJadwalError(error));
     }
 }
