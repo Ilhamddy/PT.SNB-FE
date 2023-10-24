@@ -25,7 +25,7 @@ const BiodataPegawai = () => {
     const [dateNow] = useState(() => new Date().toISOString())
     const { data, loading, dataCombo,
         newData, success, error, dataPegawai, dataDesa, dataUserRole,
-        loadingUserRole,newDataSignup } = useSelector((state) => ({
+        loadingUserRole, newDataSignup } = useSelector((state) => ({
             dataCombo: state.sumberDayaManusia.getComboSDM.data,
             newData: state.sumberDayaManusia.saveBiodataPegawai.data,
             success: state.sumberDayaManusia.saveBiodataPegawai.success,
@@ -157,20 +157,20 @@ const BiodataPegawai = () => {
         enableReinitialize: true,
         initialValues: {
             task: 4,
-            statusEnabled:'',
-            username:'',
-            roles:'',
-            idUser:'',
-            idpegawai:'',
-            password:''
+            statusEnabled: '',
+            username: '',
+            roles: '',
+            idUser: '',
+            idpegawai: '',
+            password: ''
         },
         validationSchema: Yup.object({
             statusEnabled: Yup.string().required("Status Enabled wajib diisi"),
             username: Yup.string().required("User Name wajib diisi"),
             roles: Yup.string().required("Role Applikasi wajib diisi"),
         }),
-        onSubmit: (values,{ resetForm }) => {
-            values.password= values.username +`@123`
+        onSubmit: (values, { resetForm }) => {
+            values.password = values.username + `@123`
             dispatch(saveSignupUserRole(values, () => {
                 resetForm()
             }));
@@ -244,12 +244,12 @@ const BiodataPegawai = () => {
             }
         }
     }, [newData, vSetValidationBiodata.setFieldValue, vSetValidationAlamat.setFieldValue, vSetValidationStatusPegawai.setFieldValue, success,
-    vSetValidationUserName.setFieldValue])
+        vSetValidationUserName.setFieldValue])
     useEffect(() => {
-        if (newDataSignup !== null) {
+        if (newDataSignup !== null && newDataSignup !== undefined) {
             dispatch(getUserRoleById({ idPegawai: idPegawai }))
         }
-    }, [newDataSignup,dispatch,idPegawai])
+    }, [newDataSignup, dispatch, idPegawai])
     useEffect(() => {
         if (idPegawai !== undefined) {
             const setFF = vSetValidationBiodata.setFieldValue
@@ -321,7 +321,7 @@ const BiodataPegawai = () => {
                 setFF3('unitKerja', dataPegawai[0]?.objectunitkerjafk)
             }
         }
-    }, [dataPegawai, vSetValidationBiodata.setFieldValue, vSetValidationAlamat.setFieldValue,vSetValidationStatusPegawai.setFieldValue])
+    }, [dataPegawai, vSetValidationBiodata.setFieldValue, vSetValidationAlamat.setFieldValue, vSetValidationStatusPegawai.setFieldValue])
     const handleDesa = characterEntered => {
         if (characterEntered.length > 3) {
             // useEffect(() => {
@@ -417,10 +417,24 @@ const BiodataPegawai = () => {
             width: "150px"
         },
     ];
+    const [disabledUsername, setdisabledUsername] = useState(false);
     const handleClick = (e) => {
-
+        vSetValidationUserName.setFieldValue('statusEnabled', 2)
+        if(e.status==='AKTIP'){
+            vSetValidationUserName.setFieldValue('statusEnabled', 1)
+        }
+        setdisabledUsername(true)
+        vSetValidationUserName.setFieldValue('username', e.username)
+        vSetValidationUserName.setFieldValue('roles', e.idrole)
+        vSetValidationUserName.setFieldValue('idUser', e.id)
     };
-    console.log(dataUserRole)
+    const handleClickBatal = (e)=>{
+        setdisabledUsername(false)
+        vSetValidationUserName.setFieldValue('statusEnabled', '')
+        vSetValidationUserName.setFieldValue('username', '')
+        vSetValidationUserName.setFieldValue('roles', '')
+        vSetValidationUserName.setFieldValue('idUser', '')
+    }
     return (
         <React.Fragment>
             <ToastContainer closeButton={false} />
@@ -1960,6 +1974,7 @@ const BiodataPegawai = () => {
                                                                         }}
                                                                         invalid={vSetValidationUserName.touched?.username &&
                                                                             !!vSetValidationUserName.errors?.username}
+                                                                            disabled={disabledUsername}
                                                                     />
                                                                     {vSetValidationUserName.touched?.username
                                                                         && !!vSetValidationUserName.errors.username && (
@@ -2001,7 +2016,7 @@ const BiodataPegawai = () => {
 
                                                                     type="submit" color="success" style={{ width: '20%' }}>Simpan</Button>
                                                                 <Button type="button" color="danger" style={{ width: '20%' }}
-                                                                // onClick={() => { handleBack() }}
+                                                                onClick={() => { handleClickBatal() }}
                                                                 >Batal</Button>
                                                             </div>
                                                         </Col>
