@@ -165,4 +165,8 @@ export default class ServiceEmr {
     updateEstimasiKlaim = async (params) => {
         return await api.create("/transaksi/tindakan/update-estimasi-klaim", params);
     }
+
+    comboAllTindakan = async (queries) => {
+        return await api.get(`/transaksi/tindakan/all-list-produk`, queries);
+    }
 }

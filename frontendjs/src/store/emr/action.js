@@ -1,3 +1,4 @@
+import { GET_ALL_LOKET } from "../viewer/actionType";
 import {
     EMR_RESET_FORM,
     EMR_HEADER_GET,
@@ -119,7 +120,8 @@ import {
     GET_WIDGET_EFISIENSI_KLAIM_ERROR,
     UPDATE_ESTIMASI_KLAIM,
     UPDATE_ESTIMASI_KLAIM_SUCCESS,
-    UPDATE_ESTIMASI_KLAIM_ERROR
+    UPDATE_ESTIMASI_KLAIM_ERROR,
+    COMBO_ALL_TINDAKAN_GET,COMBO_ALL_TINDAKAN_GET_SUCCESS,COMBO_ALL_TINDAKAN_GET_ERROR
 } from "./actionType";
 
 export const emrResetForm = () => ({
@@ -759,4 +761,19 @@ export const updateEstimasiKlaimSuccess = (data) => ({
 export const updateEstimasiKlaimError = (error) => ({
     type: UPDATE_ESTIMASI_KLAIM_ERROR,
     payload: error
+});
+
+export const comboAllTindakan = (queries) => ({
+    type: COMBO_ALL_TINDAKAN_GET,
+    payload: { queries: queries },
+});
+
+export const comboAllTindakanSuccess = (data) => ({
+    type: COMBO_ALL_TINDAKAN_GET_SUCCESS,
+    payload: data,
+});
+
+export const comboAllTindakanError = (error) => ({
+    type: COMBO_ALL_TINDAKAN_GET_ERROR,
+    payload: error,
 });

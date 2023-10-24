@@ -23,7 +23,7 @@ import {
     GET_HISTORI_ORDER_OPERASI,
     SAVE_PELAYANAN_PASIEN_TEMP, GET_LIST_PELAYANAN_PASIEN_TEMP,
     DELETE_PELAYANAN_PASIEN_TEMP, GET_WIDGET_EFISIENSI_KLAIM,
-    UPDATE_ESTIMASI_KLAIM
+    UPDATE_ESTIMASI_KLAIM, COMBO_ALL_TINDAKAN_GET
 } from "./actionType";
 
 import {
@@ -65,7 +65,8 @@ import {
     getListPelayananPasienTempSuccess, getListPelayananPasienTempError,
     deletePelayananPasienTempSuccess, deletePelayananPasienTempError,
     getWidgetEfisiensiKlaimSuccess, getWidgetEfisiensiKlaimError,
-    updateEstimasiKlaimSuccess, updateEstimasiKlaimError
+    updateEstimasiKlaimSuccess, updateEstimasiKlaimError,
+    comboAllTindakanSuccess, comboAllTindakanError
 } from "./action";
 
 import { toast } from 'react-toastify';
@@ -804,6 +805,20 @@ export function* watchgetWidgetEfisiensiKlaim() {
     yield takeEvery(GET_WIDGET_EFISIENSI_KLAIM, ongetWidgetEfisiensiKlaim);
 }
 
+function* oncomboAllTindakan({ payload: {queries}  }) {
+    try {
+        let response = null;
+        response = yield call(serviceEmr.comboAllTindakan, queries);
+        yield put(comboAllTindakanSuccess(response.data));
+    } catch (error) {
+        yield put(comboAllTindakanError(error));
+    }
+}
+
+export function* watchcomboAllTindakan() {
+    yield takeEvery(COMBO_ALL_TINDAKAN_GET, oncomboAllTindakan);
+}
+
 function* emrSaga() {
     yield all([
         fork(watchGetEmrHeader),
@@ -845,7 +860,8 @@ function* emrSaga() {
         fork(watchgetListPelayananPasienTemp),
         fork(watchondeletePelayananPasienTemp),
         fork(watchgetWidgetEfisiensiKlaim),
-        fork(watchonupdateEstimasiKlaim)
+        fork(watchonupdateEstimasiKlaim),
+        fork(watchcomboAllTindakan)
     ]);
 }
 
