@@ -2,24 +2,20 @@ import { call, put, takeEvery, all, fork } from "redux-saga/effects";
 import ServiceSDM from "../../services/service-sdm";
 
 import {
-    GET_DAFTAR_PEGAWAI,
-    GET_COMBO_SDM, 
-    SAVE_BIODATA_PEGAWAI,
-    GET_PEGAWAI_BYID,
+    GET_DAFTAR_PEGAWAI,GET_COMBO_SDM, SAVE_BIODATA_PEGAWAI,
+    GET_PEGAWAI_BYID, GET_USER_ROLE_BYID_PEGAWAI,SAVE_SIGNUP_USER_ROLE,
     GET_COMBO_JADWAL,
     GET_JADWAL_DOKTER_SDM,
     UPSERT_JADWAL
 } from "./actionType";
 
 import {
-    getDaftarPegawaiSuccess, 
-    getDaftarPegawaiError,
-    getComboSDMSuccess, 
-    getComboSDMError,
-    saveBiodataPegawaiSuccess, 
-    saveBiodataPegawaiError,
-    getPegawaiByIdSuccess, 
-    getPegawaiByIdError,
+    getDaftarPegawaiSuccess, getDaftarPegawaiError,
+    getComboSDMSuccess, getComboSDMError,
+    saveBiodataPegawaiSuccess, saveBiodataPegawaiError,
+    getPegawaiByIdSuccess, getPegawaiByIdError,
+    getUserRoleByIdSuccess, getUserRoleByIdError,
+    saveSignupUserRoleSuccess, saveSignupUserRoleError,
     getComboJadwalSuccess,
     getComboJadwalError,
     getJadwalDokterSDMSuccess,
@@ -94,6 +90,40 @@ export function* watchongetPegawaiById() {
     yield takeEvery(GET_PEGAWAI_BYID, ongetPegawaiById);
 }
 
+function* ongetUserRoleById({ payload: { queries } }) {
+    try {
+        let response = null;
+        response = yield call(serviceSDM.getUserRoleById, queries);
+        yield put(getUserRoleByIdSuccess(response.data));
+    } catch (error) {
+        yield put(getUserRoleByIdError(error));
+        toast.error("Gagal Simpan ", { autoClose: 3000 });
+    }
+}
+export function* watchongetUserRoleById() {
+    yield takeEvery(GET_USER_ROLE_BYID_PEGAWAI, ongetUserRoleById);
+}
+
+function* onsaveSignupUserRole({ payload: { body, callback } }) {
+    try {
+        const response = yield call(serviceSDM.saveSignupUserRole, body);
+        yield put(saveSignupUserRoleSuccess(response.data));
+        if (response.code === 200) {
+            toast.success(response.msg, { autoClose: 3000 });
+        } else {
+            toast.error(response.msg, { autoClose: 3000 });
+        }
+        callback && callback();
+    } catch (error) {
+        console.log(error)
+        yield put(saveSignupUserRoleError(error));
+        toast.error("Gagal Simpan ", { autoClose: 3000 });
+    }
+}
+export function* watchonsaveSignupUserRole() {
+    yield takeEvery(SAVE_SIGNUP_USER_ROLE, onsaveSignupUserRole);
+}
+
 function* onGetComboJadawal({ payload: { queries } }) {
     try {
         const response = yield call(serviceSDM.getComboJadwal, queries);
@@ -142,6 +172,8 @@ function* sumberDayaManusia() {
         fork(watchongetComboSDM),
         fork(watchonsaveBiodataPegawai),
         fork(watchongetPegawaiById),
+        fork(watchongetUserRoleById),
+        fork(watchonsaveSignupUserRole),
         fork(watchonGetComboJadwal),
         fork(watchonGetJadwalDokterSDM),
         fork(watchonUpsertJadwal)

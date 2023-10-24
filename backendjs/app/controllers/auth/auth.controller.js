@@ -7,7 +7,7 @@ import queries from '../../queries/setting/mapsesions';
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import { pasienSignup } from "./authhelper";
-import {decrypt, encrypt} from "../../utils/encrypt"
+import { decrypt, encrypt } from "../../utils/encrypt"
 
 const User = db.user;
 const Role = db.role;
@@ -17,13 +17,14 @@ const m_pasien = db.m_pasien
 const Op = db.Sequelize.Op;
 
 
-const signup = (req, res) => {
+const signup = async (req, res) => {
+  // const logger = res.locals.logger;
   // Save User to Database
   User.create({
     username: req.body.username,
-    email: req.body.email,
+    // email: req.body.email,
     password: bcrypt.hashSync(req.body.password, 8),
-    // objectaccesmodulfk: req.body.objectaccesmodulfk
+    objectpegawaifk: req.body.idpegawai
   })
     .then(user => {
       if (req.body.roles) {
@@ -33,18 +34,35 @@ const signup = (req, res) => {
           }
         }).then(roles => {
           user.setRoles(roles).then(() => {
-            res.send({ message: "User was registered successfully!" });
+            // res.send({ message: "User was registered successfully!" });
+            res.status(200).send({
+              msg: 'User Berhasil Didaftarkan',
+              code: 200,
+              // data: tempres,
+              success: true
+            });
           });
         });
       } else {
         // user role = 1
         user.setRoles([1]).then(() => {
-          res.send({ message: "User was registered successfully!" });
+          // res.send({ message: "User was registered successfully!" });
+          res.status(200).send({
+            msg: 'User Berhasil Didaftarkan',
+            code: 200,
+            // data: tempres,
+            success: true
+          });
         });
       }
     })
     .catch(err => {
-      res.status(500).send({ message: err.message });
+      // res.status(500).send({ message: err.message });
+      res.status(201).send({
+        success: false,
+        msg: err.message,
+        code: 201
+      });
     });
 };
 
@@ -77,10 +95,10 @@ const signin = (req, res) => {
         pool.query(queries.getSesions, [user.id], (error, result) => {
           if (error) throw error;
           // res.status(200).send(result.rows);
-          var resHead=result.rows;
-          
-          
-          let token = jwt.sign({ id: user.id, sesion: resHead,idpegawai: user.objectpegawaifk, }, config.secret, {
+          var resHead = result.rows;
+
+
+          let token = jwt.sign({ id: user.id, sesion: resHead, idpegawai: user.objectpegawaifk, }, config.secret, {
             expiresIn: 86400 // 24 hours test
           });
 
@@ -113,7 +131,7 @@ const signin = (req, res) => {
 
 const signinPasien = async (req, res) => {
   const logger = res.locals.logger;
-  try{
+  try {
     res.locals.showBodyRes()
     const { nocm, noidentitas, clientSecret } = req.body;
     await db.sequelize.transaction(async (transaction) => {
@@ -122,15 +140,15 @@ const signinPasien = async (req, res) => {
           norm: nocm
         }
       })
-      if(!user){
+      if (!user) {
         // sign up dulu kalau datanya sudah ada di m_pasien
         user = await pasienSignup(req, res, transaction, {
           norm: nocm,
           noidentitas: noidentitas
         })
       }
-      if(!user) {
-        res.status(404).send({msg: "User Not found."})
+      if (!user) {
+        res.status(404).send({ msg: "User Not found." })
         return
       }
       await user.update({
@@ -143,7 +161,7 @@ const signinPasien = async (req, res) => {
           [Op.or]: [
             {
               nocm: nocm
-            }, 
+            },
             {
               nocmtemp: nocm
             }]
@@ -154,9 +172,9 @@ const signinPasien = async (req, res) => {
         noidentitas,
         user.password
       );
-      if(passwordIsValid){
-        let token = jwt.sign({ 
-          id: user.id, 
+      if (passwordIsValid) {
+        let token = jwt.sign({
+          id: user.id,
           expired: new Date() + (86400 * 1000),
         }, config.secret, {
           expiresIn: 86400 * 1000
@@ -174,7 +192,7 @@ const signinPasien = async (req, res) => {
           success: true,
         }, clientSecret)
         res.status(200).send(encrypted);
-        return 
+        return
       }
       const tempres = {
         id: null,

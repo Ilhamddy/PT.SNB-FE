@@ -30,6 +30,12 @@ export default function (app) {
         controller.getPegawaiById
     );
     app.get(
+        "/api/transaksi/sumber-daya-manusia/get-user-role-byid",
+        [authJwt.verifyToken],
+        controller.getUserRoleById
+    );
+
+    app.get(
         "/api/transaksi/sumber-daya-manusia/combo-jadwal",
         [authJwt.verifyToken],
         controller.getComboJadwal

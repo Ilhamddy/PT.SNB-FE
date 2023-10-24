@@ -36,7 +36,12 @@ const qProfesiPegawai =`select id as value,reportdisplay as label from m_profesi
 const qJabatan =`select id as value,reportdisplay as label from m_jabatan ms` 
 const qGolonganPtkp =`select id as value,reportdisplay as label from m_golonganptkp ms`
 const qUnitKerja =`select id as value,reportdisplay as label from m_unitkerja ms`
-
+const qUserRoleById=` select row_number() OVER (ORDER BY u.id) AS no,u.id,u.username ,r.permission, r."name" as namerole,case when ur.statusenabled=true then 'AKTIP'
+else 'NON AKTIP' end as status  from user_roles as ur 
+join roles as r on r.id=ur.roleid
+join users u on u.id=ur.userid  where u.objectpegawaifk=$1`
+const qRole = `select r.id as value,r.name as label,r."permission"  from roles r 
+`
 const qJadwalDokter = `
 SELECT
     mj.id AS id,
@@ -59,8 +64,6 @@ FROM m_jadwaldokter mj
     LEFT JOIN m_hari mh ON mh.id = mj.objectharifk
     LEFT JOIN m_unit mu ON mu.id = mj.objectunitfk
 `
-
-
 export default {
     qDaftarPegawai,
     qUnit,
@@ -77,5 +80,6 @@ export default {
     qJabatan,
     qGolonganPtkp,
     qUnitKerja,
+    qUserRoleById,qRole,
     qJadwalDokter
 }

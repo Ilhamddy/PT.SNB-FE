@@ -10,11 +10,13 @@ import { onChangeStrNbr, onChangeStrNbrNeg } from "../../../utils/format";
 import CustomSelect from "../../Select/Select";
 import KontainerFlatpickr from "../../../Components/KontainerFlatpickr/KontainerFlatpickr";
 import {
-    sdmResetForm, saveBiodataPegawai, getComboSDM, getPegawaiById
+    sdmResetForm, saveBiodataPegawai, getComboSDM, getPegawaiById, getUserRoleById, saveSignupUserRole
 } from "../../../store/actions";
 import { desaGet } from '../../../store/master/action';
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
+import DataTable from "react-data-table-component";
+import LoadingTable from "../../../Components/Table/LoadingTable";
 
 const BiodataPegawai = () => {
     document.title = "Biodata Pegawai";
@@ -22,7 +24,8 @@ const BiodataPegawai = () => {
     const { idPegawai } = useParams();
     const [dateNow] = useState(() => new Date().toISOString())
     const { data, loading, dataCombo,
-        newData, success, error, dataPegawai, dataDesa } = useSelector((state) => ({
+        newData, success, error, dataPegawai, dataDesa, dataUserRole,
+        loadingUserRole,newDataSignup } = useSelector((state) => ({
             dataCombo: state.sumberDayaManusia.getComboSDM.data,
             newData: state.sumberDayaManusia.saveBiodataPegawai.data,
             success: state.sumberDayaManusia.saveBiodataPegawai.success,
@@ -30,6 +33,9 @@ const BiodataPegawai = () => {
             error: state.sumberDayaManusia.saveBiodataPegawai.error,
             dataPegawai: state.sumberDayaManusia.getPegawaiById.data,
             dataDesa: state.Master.desaGet.data,
+            dataUserRole: state.sumberDayaManusia.getUserRoleById.data,
+            loadingUserRole: state.sumberDayaManusia.getUserRoleById.loading,
+            newDataSignup: state.sumberDayaManusia.saveSignupUserRole.data,
         }));
     const vSetValidationBiodata = useFormik({
         enableReinitialize: true,
@@ -147,6 +153,29 @@ const BiodataPegawai = () => {
             }));
         }
     })
+    const vSetValidationUserName = useFormik({
+        enableReinitialize: true,
+        initialValues: {
+            task: 4,
+            statusEnabled:'',
+            username:'',
+            roles:'',
+            idUser:'',
+            idpegawai:'',
+            password:''
+        },
+        validationSchema: Yup.object({
+            statusEnabled: Yup.string().required("Status Enabled wajib diisi"),
+            username: Yup.string().required("User Name wajib diisi"),
+            roles: Yup.string().required("Role Applikasi wajib diisi"),
+        }),
+        onSubmit: (values,{ resetForm }) => {
+            values.password= values.username +`@123`
+            dispatch(saveSignupUserRole(values, () => {
+                resetForm()
+            }));
+        }
+    })
     useEffect(() => {
         return () => {
             dispatch(sdmResetForm());
@@ -184,6 +213,16 @@ const BiodataPegawai = () => {
             label: "User Name",
         },
     ];
+    const dataStatusEnabled = [
+        {
+            value: 1,
+            label: "Aktip",
+        },
+        {
+            value: 2,
+            label: "Non Aktip",
+        },
+    ];
     // Pills
     const [pillsTab, setpillsTab] = useState("1");
     const pillsToggleBilling = (tab) => {
@@ -195,14 +234,22 @@ const BiodataPegawai = () => {
         const setFF = vSetValidationBiodata.setFieldValue
         const setFF2 = vSetValidationAlamat.setFieldValue
         const setFF3 = vSetValidationStatusPegawai.setFieldValue
+        const setFF4 = vSetValidationUserName.setFieldValue
         if (newData !== null) {
             if (newData?.pegawai?.id !== undefined) {
                 setFF('idPegawai', newData.pegawai.id)
                 setFF2('idPegawai', newData.pegawai.id)
                 setFF3('idPegawai', newData.pegawai.id)
+                setFF4('idpegawai', newData.pegawai.id)
             }
         }
-    }, [newData, vSetValidationBiodata.setFieldValue, vSetValidationAlamat.setFieldValue,vSetValidationStatusPegawai.setFieldValue, success])
+    }, [newData, vSetValidationBiodata.setFieldValue, vSetValidationAlamat.setFieldValue, vSetValidationStatusPegawai.setFieldValue, success,
+    vSetValidationUserName.setFieldValue])
+    useEffect(() => {
+        if (newDataSignup !== null) {
+            dispatch(getUserRoleById({ idPegawai: idPegawai }))
+        }
+    }, [newDataSignup,dispatch,idPegawai])
     useEffect(() => {
         if (idPegawai !== undefined) {
             const setFF = vSetValidationBiodata.setFieldValue
@@ -211,12 +258,17 @@ const BiodataPegawai = () => {
             setFF2("idPegawai", idPegawai)
             const setFF3 = vSetValidationStatusPegawai.setFieldValue
             setFF3("idPegawai", idPegawai)
+            const setFF4 = vSetValidationUserName.setFieldValue
+            setFF4("idpegawai", idPegawai)
             dispatch(getPegawaiById({ idPegawai: idPegawai }))
+            dispatch(getUserRoleById({ idPegawai: idPegawai }))
         }
-    }, [idPegawai, dispatch, vSetValidationBiodata.setFieldValue, vSetValidationAlamat.setFieldValue,vSetValidationStatusPegawai.setFieldValue])
+    }, [idPegawai, dispatch, vSetValidationBiodata.setFieldValue, vSetValidationAlamat.setFieldValue, vSetValidationStatusPegawai.setFieldValue,
+        vSetValidationUserName.setFieldValue])
     useEffect(() => {
         const setFF = vSetValidationBiodata.setFieldValue
         const setFF2 = vSetValidationAlamat.setFieldValue
+        const setFF3 = vSetValidationStatusPegawai.setFieldValue
         if (dataPegawai[0] !== undefined) {
             if (dataPegawai[0]?.namalengkap !== undefined) {
                 setFF('gelardepan', dataPegawai[0]?.gelardepan)
@@ -247,9 +299,29 @@ const BiodataPegawai = () => {
                 setFF2('rtDomisili', dataPegawai[0]?.rtdom)
                 setFF2('rwDomisili', dataPegawai[0]?.rwdom)
                 setFF2('desaDomisili', dataPegawai[0]?.objectdesakelurahandomfk)
+
+                setFF3('noSK', dataPegawai[0]?.nosk)
+                setFF3('noSIP', dataPegawai[0]?.nosip)
+                setFF3('noSTR', dataPegawai[0]?.nostr)
+                setFF3('npwp', dataPegawai[0]?.npwp)
+                setFF3('golongan', dataPegawai[0]?.objectgolonganfk)
+                setFF3('statusPegawai', dataPegawai[0]?.objectstatuspegawaifk)
+                setFF3('profesi', dataPegawai[0]?.objectprofesipegawaifk)
+                setFF3('jabatan', dataPegawai[0]?.objectjabatanfk)
+                setFF3('tglSKStart', dataPegawai[0]?.tglmasuk)
+                setFF3('tglSKend', dataPegawai[0]?.tglpensiun)
+                setFF3('tglSIPStart', dataPegawai[0]?.tglterbitsip)
+                setFF3('tglSIPend', dataPegawai[0]?.tglberakhirsip)
+                setFF3('tglSTRStart', dataPegawai[0]?.tglterbitstr)
+                setFF3('tglSTRend', dataPegawai[0]?.tglberakhirstr)
+                setFF3('golonganPTKP', dataPegawai[0]?.objectgolonganptkpfk)
+                setFF3('jumlahAnak', dataPegawai[0]?.qtyanak)
+                setFF3('jumlahTanggungan', dataPegawai[0]?.qtytanggungan)
+                setFF3('unitPelayanan', dataPegawai[0]?.objectunitfk)
+                setFF3('unitKerja', dataPegawai[0]?.objectunitkerjafk)
             }
         }
-    }, [dataPegawai, vSetValidationBiodata.setFieldValue, vSetValidationAlamat.setFieldValue])
+    }, [dataPegawai, vSetValidationBiodata.setFieldValue, vSetValidationAlamat.setFieldValue,vSetValidationStatusPegawai.setFieldValue])
     const handleDesa = characterEntered => {
         if (characterEntered.length > 3) {
             // useEffect(() => {
@@ -302,6 +374,53 @@ const BiodataPegawai = () => {
             vSetValidationAlamat.setFieldValue('rwDomisili', "")
         }
     }
+    const tableCustomStyles = {
+        headRow: {
+            style: {
+                color: '#ffffff',
+                backgroundColor: '#e67e22',
+            },
+        },
+        rows: {
+            style: {
+                color: "black",
+                backgroundColor: "#f1f2f6"
+            },
+        }
+    }
+    const columns = [
+        {
+            name: <span className='font-weight-bold fs-13'>No</span>,
+            selector: row => row.no,
+            sortable: true,
+            width: "50px"
+        },
+        {
+            name: <span className='font-weight-bold fs-13'>Status Enabled</span>,
+            selector: row => row.status,
+            sortable: true,
+            width: "150px"
+        },
+        {
+            name: <span className='font-weight-bold fs-13'>User Name</span>,
+            selector: row => row.username,
+            sortable: true,
+            // selector: row => (<button className="btn btn-sm btn-soft-info" onClick={() => handleClick(dataTtv)}>{row.noregistrasi}</button>),
+            width: "160px",
+            wrap: true,
+        },
+        {
+
+            name: <span className='font-weight-bold fs-13'>Role</span>,
+            selector: row => row.namerole,
+            sortable: true,
+            width: "150px"
+        },
+    ];
+    const handleClick = (e) => {
+
+    };
+    console.log(dataUserRole)
     return (
         <React.Fragment>
             <ToastContainer closeButton={false} />
@@ -319,7 +438,7 @@ const BiodataPegawai = () => {
                                     {taskBiodata.map((item, key) => (
                                         <NavItem key={key}>
                                             <NavLink style={{ cursor: "pointer" }} className={classnames({ active: pillsTab === `${item.id}` }, "fw-semibold")} onClick={() => { pillsToggleBilling(`${item.id}`); }}>
-                                                <i className="ri-book-3-line me-1 align-bottom"></i>{" "}{item.label}
+                                                {" "}{item.label}
                                             </NavLink>
                                         </NavItem>
                                     ))}
@@ -1354,11 +1473,7 @@ const BiodataPegawai = () => {
                                                                         type="text"
                                                                         value={vSetValidationStatusPegawai.values.npwp}
                                                                         onChange={(e) => {
-                                                                            const newVal = onChangeStrNbr(
-                                                                                e.target.value,
-                                                                                vSetValidationStatusPegawai.values.npwp
-                                                                            )
-                                                                            vSetValidationStatusPegawai.setFieldValue('npwp', newVal)
+                                                                            vSetValidationStatusPegawai.setFieldValue('npwp', e.target.value)
                                                                         }}
                                                                         invalid={vSetValidationStatusPegawai.touched?.npwp &&
                                                                             !!vSetValidationStatusPegawai.errors?.npwp}
@@ -1751,6 +1866,130 @@ const BiodataPegawai = () => {
                                                                         !!vSetValidationStatusPegawai.errors.unitKerja && (
                                                                             <FormFeedback type="invalid">
                                                                                 <div>{vSetValidationStatusPegawai.errors.unitKerja}</div>
+                                                                            </FormFeedback>
+                                                                        )}
+                                                                </Col>
+                                                            </Row>
+                                                        </Col>
+                                                        <Col lg={12} className="mr-3 me-3 mt-2">
+                                                            <div className="d-flex flex-wrap justify-content-end gap-2">
+                                                                <Button
+
+                                                                    type="submit" color="success" style={{ width: '20%' }}>Simpan</Button>
+                                                                <Button type="button" color="danger" style={{ width: '20%' }}
+                                                                // onClick={() => { handleBack() }}
+                                                                >Batal</Button>
+                                                            </div>
+                                                        </Col>
+                                                    </Row>
+                                                </Form>
+                                            </CardBody>
+                                        </Card>
+                                    </TabPane>
+                                </TabContent>
+                                <TabContent activeTab={pillsTab} className="text-muted">
+                                    <TabPane tabId="4" id="ttv-1">
+                                        <Card>
+                                            <CardBody>
+                                                <Form
+                                                    onSubmit={(e) => {
+                                                        e.preventDefault();
+                                                        vSetValidationUserName.handleSubmit();
+                                                        return false;
+                                                    }}
+                                                    className="gy-4"
+                                                    action="#">
+                                                    <Row>
+                                                        <Col lg={6}>
+                                                            <div id="table-gridjs">
+                                                                <DataTable
+                                                                    fixedHeader
+                                                                    fixedHeaderScrollHeight="330px"
+                                                                    columns={columns}
+                                                                    pagination
+                                                                    data={dataUserRole}
+                                                                    progressPending={loadingUserRole}
+                                                                    customStyles={tableCustomStyles}
+                                                                    progressComponent={<LoadingTable />}
+                                                                    onRowClicked={(row) => handleClick(row)}
+                                                                    pointerOnHover
+                                                                    highlightOnHover
+                                                                />
+                                                            </div>
+                                                        </Col>
+                                                        <Col lg={6}>
+                                                            <Row className="gy-2">
+                                                                <Col lg={4}>
+                                                                    <div className="mt-2">
+                                                                        <Label style={{ color: "black" }} htmlFor="unitlast" className="form-label">Status Enabled</Label>
+                                                                    </div>
+                                                                </Col>
+                                                                <Col lg={8}>
+                                                                    <CustomSelect
+                                                                        id="statusEnabled"
+                                                                        name="statusEnabled"
+                                                                        options={dataStatusEnabled}
+                                                                        isClearEmpty
+                                                                        onChange={(e) => {
+                                                                            vSetValidationUserName.setFieldValue('statusEnabled', e?.value || '')
+                                                                        }}
+                                                                        value={vSetValidationUserName.values.statusEnabled}
+                                                                        className={`input row-header ${!!vSetValidationUserName?.errors.statusEnabled ? 'is-invalid' : ''
+                                                                            }`}
+                                                                    />
+                                                                    {vSetValidationUserName.touched.statusEnabled &&
+                                                                        !!vSetValidationUserName.errors.statusEnabled && (
+                                                                            <FormFeedback type="invalid">
+                                                                                <div>{vSetValidationUserName.errors.statusEnabled}</div>
+                                                                            </FormFeedback>
+                                                                        )}
+                                                                </Col>
+                                                                <Col lg={4}>
+                                                                    <div className="mt-2">
+                                                                        <Label style={{ color: "black" }} htmlFor="unitlast" className="form-label">User Name</Label>
+                                                                    </div>
+                                                                </Col>
+                                                                <Col lg={8}>
+                                                                    <Input
+                                                                        id="username"
+                                                                        name="username"
+                                                                        type="text"
+                                                                        value={vSetValidationUserName.values.username}
+                                                                        onChange={(e) => {
+                                                                            vSetValidationUserName.setFieldValue('username', e.target.value)
+                                                                        }}
+                                                                        invalid={vSetValidationUserName.touched?.username &&
+                                                                            !!vSetValidationUserName.errors?.username}
+                                                                    />
+                                                                    {vSetValidationUserName.touched?.username
+                                                                        && !!vSetValidationUserName.errors.username && (
+                                                                            <FormFeedback type="invalid">
+                                                                                <div>{vSetValidationUserName.errors.username}</div>
+                                                                            </FormFeedback>
+                                                                        )}
+                                                                </Col>
+                                                                <Col lg={4}>
+                                                                    <div className="mt-2">
+                                                                        <Label style={{ color: "black" }} htmlFor="unitlast" className="form-label">Role</Label>
+                                                                    </div>
+                                                                </Col>
+                                                                <Col lg={8}>
+                                                                    <CustomSelect
+                                                                        id="roles"
+                                                                        name="roles"
+                                                                        options={dataCombo.roles}
+                                                                        isClearEmpty
+                                                                        onChange={(e) => {
+                                                                            vSetValidationUserName.setFieldValue('roles', e?.value || '')
+                                                                        }}
+                                                                        value={vSetValidationUserName.values.roles}
+                                                                        className={`input row-header ${!!vSetValidationUserName?.errors.roles ? 'is-invalid' : ''
+                                                                            }`}
+                                                                    />
+                                                                    {vSetValidationUserName.touched.roles &&
+                                                                        !!vSetValidationUserName.errors.roles && (
+                                                                            <FormFeedback type="invalid">
+                                                                                <div>{vSetValidationUserName.errors.roles}</div>
                                                                             </FormFeedback>
                                                                         )}
                                                                 </Col>

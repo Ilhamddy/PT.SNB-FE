@@ -1,23 +1,20 @@
 import {
     SDM_RESET_FORM,
-    GET_DAFTAR_PEGAWAI, 
-    GET_DAFTAR_PEGAWAI_SUCCESS, 
-    GET_DAFTAR_PEGAWAI_ERROR,
-    GET_COMBO_SDM, 
-    GET_COMBO_SDM_SUCCESS, 
-    GET_COMBO_SDM_ERROR,
-    SAVE_BIODATA_PEGAWAI, 
-    SAVE_BIODATA_PEGAWAI_SUCCESS, 
-    SAVE_BIODATA_PEGAWAI_ERROR,
-    GET_PEGAWAI_BYID, 
-    GET_PEGAWAI_BYID_SUCCESS, 
-    GET_PEGAWAI_BYID_ERROR,
+    GET_DAFTAR_PEGAWAI, GET_DAFTAR_PEGAWAI_SUCCESS, GET_DAFTAR_PEGAWAI_ERROR,
+    GET_COMBO_SDM, GET_COMBO_SDM_SUCCESS, GET_COMBO_SDM_ERROR,
+    SAVE_BIODATA_PEGAWAI, SAVE_BIODATA_PEGAWAI_SUCCESS, SAVE_BIODATA_PEGAWAI_ERROR,
+    GET_PEGAWAI_BYID, GET_PEGAWAI_BYID_SUCCESS, GET_PEGAWAI_BYID_ERROR,
+    GET_USER_ROLE_BYID_PEGAWAI, GET_USER_ROLE_BYID_PEGAWAI_SUCCESS, GET_USER_ROLE_BYID_PEGAWAI_ERROR,
+    SAVE_SIGNUP_USER_ROLE, SAVE_SIGNUP_USER_ROLE_SUCCESS, SAVE_SIGNUP_USER_ROLE_ERROR,
     GET_COMBO_JADWAL,
     GET_COMBO_JADWAL_SUCCESS,
     GET_COMBO_JADWAL_ERROR,
     GET_JADWAL_DOKTER_SDM,
     GET_JADWAL_DOKTER_SDM_SUCCESS,
-    GET_JADWAL_DOKTER_SDM_ERROR,  
+    GET_JADWAL_DOKTER_SDM_ERROR, 
+    UPSERT_JADWAL,
+    UPSERT_JADWAL_SUCCESS,
+    UPSERT_JADWAL_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -42,16 +39,33 @@ const INIT_STATE = {
         loading: false,
         error: null,
     },
+    getUserRoleById: {
+        data: [],
+        loading: false,
+        error: null,
+    },
     getComboJadwal: {
         data: [],
         loading: false,
         error: null,
     },
+    saveSignupUserRole:{
+        newData: null,
+        loading: false,
+        error: null,
+        success: false
+    },
     getJadwalDokterSDM: {
         data: [],
         loading: false,
         error: null,
-    }
+    },
+    upsertJadwal:{
+        newData: null,
+        loading: false,
+        error: null,
+        success: false
+    },
 }
 
 const sumberDayaManusia = (state = INIT_STATE, action) => {
@@ -68,14 +82,23 @@ const sumberDayaManusia = (state = INIT_STATE, action) => {
                 saveBiodataPegawai: {
                     ...INIT_STATE.saveBiodataPegawai
                 },
-                getPegawaiById:{
+                getPegawaiById: {
                     ...INIT_STATE.getPegawaiById
+                },
+                getUserRoleById:{
+                    ...INIT_STATE.getUserRoleById
+                },
+                saveSignupUserRole:{
+                    ...INIT_STATE.saveSignupUserRole
                 },
                 getComboJadwal: {
                     ...INIT_STATE.getComboJadwal
                 },
                 getJadwalDokterSDM: {
                     ...INIT_STATE.getJadwalDokterSDM
+                },
+                upsertJadwal:{
+                    ...INIT_STATE.upsertJadwal
                 }
             }
         }
@@ -214,6 +237,40 @@ const sumberDayaManusia = (state = INIT_STATE, action) => {
             }
         }
 
+        case GET_USER_ROLE_BYID_PEGAWAI: {
+            return {
+                ...state,
+                getUserRoleById: {
+                    ...state.getUserRoleById,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+
+        case GET_USER_ROLE_BYID_PEGAWAI_SUCCESS: {
+            return {
+                ...state,
+                getUserRoleById: {
+                    ...state.getUserRoleById,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case GET_USER_ROLE_BYID_PEGAWAI_ERROR: {
+            return {
+                ...state,
+                getUserRoleById: {
+                    ...state.getUserRoleById,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
         case GET_COMBO_JADWAL: {
             return {
                 ...state,
@@ -247,6 +304,41 @@ const sumberDayaManusia = (state = INIT_STATE, action) => {
             }
         }
 
+        case SAVE_SIGNUP_USER_ROLE: {
+            return {
+                ...state,
+                saveSignupUserRole: {
+                    ...state.saveSignupUserRole,
+                    data: [],
+                    loading: true,
+                    error: null,
+                },
+            };
+        }
+
+        case SAVE_SIGNUP_USER_ROLE_SUCCESS: {
+            return {
+                ...state,
+                saveSignupUserRole: {
+                    ...state.saveSignupUserRole,
+                    loading: false,
+                    data: action.payload,
+                    success: true,
+                },
+            };
+        }
+
+        case SAVE_SIGNUP_USER_ROLE_ERROR: {
+            return {
+                ...state,
+                saveSignupUserRole: {
+                    ...state.saveSignupUserRole,
+                    loading: false,
+                    error: action.payload,
+                },
+            };
+        }
+
         case GET_JADWAL_DOKTER_SDM: {
             return {
                 ...state,
@@ -278,6 +370,41 @@ const sumberDayaManusia = (state = INIT_STATE, action) => {
                     error: action.error,
                 }
             }
+        }
+
+        case UPSERT_JADWAL: {
+            return {
+                ...state,
+                upsertJadwal: {
+                    ...state.upsertJadwal,
+                    data: [],
+                    loading: true,
+                    error: null,
+                },
+            };
+        }
+
+        case UPSERT_JADWAL_SUCCESS: {
+            return {
+                ...state,
+                upsertJadwal: {
+                    ...state.upsertJadwal,
+                    loading: false,
+                    data: action.payload,
+                    success: true,
+                },
+            };
+        }
+
+        case UPSERT_JADWAL_ERROR: {
+            return {
+                ...state,
+                upsertJadwal: {
+                    ...state.upsertJadwal,
+                    loading: false,
+                    error: action.payload,
+                },
+            };
         }
         
 
