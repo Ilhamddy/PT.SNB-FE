@@ -15,14 +15,32 @@ SELECT
     tro.tglinput AS tglinput,
     td.noregistrasi AS noregistrasi,
     mpas.nocm AS nocm,
-    mpas.nocmtemp AS nocmtemp
+    mpas.nocmtemp AS nocmtemp,
+    td.objectpenjaminfk AS penjamin,
+    mr.namarekanan AS namarekanan
 FROM users_pasien up
     LEFT JOIN m_pasien mpas ON (up.norm = mpas.nocm OR up.norm = mpas.nocmtemp)
     LEFT JOIN t_registrasionline tro ON tro.nocmfk = mpas.id
     LEFT JOIN m_unit mu ON tro.objectunitfk = mu.id
     LEFT JOIN m_pegawai mp ON tro.objectdokterfk = mp.id
     LEFT JOIN t_daftarpasien td ON tro.objectdaftarpasienfk = td.norec
-WHERE up.id = $1 AND (tro.tglrencana >= $2 AND tro.tglrencana < $3)
+    LEFT JOIN m_rekanan mr ON td.objectpenjaminfk = mr.id
+WHERE up.id = $1 
+    AND 
+        CASE 
+            WHEN (($2 <> '') IS TRUE) THEN tro.tglrencana >= cast($2 AS TIMESTAMP)  
+            ELSE TRUE
+        END
+    AND
+        CASE 
+            WHEN (($3 <> '') IS TRUE) THEN tro.tglrencana < cast($3 AS TIMESTAMP) 
+            ELSE TRUE
+        END
+    AND
+        CASE 
+            WHEN (($4 <> '') IS TRUE) THEN tro.norec = $4 
+            ELSE TRUE
+        END
     AND tro.statusenabled = true
 ORDER BY tro.tglrencana DESC
 `

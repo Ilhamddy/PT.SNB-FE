@@ -60,4 +60,9 @@ export default function(app) {
     [authJwt.verifyTokenUser, encryptMandiri],
     controller.getAntreanPemeriksaan
   )
+  app.get(
+    "/api/daftarmandiri/user-pasien/get-registrasi-norec",
+    [authJwt.verifyTokenUser, encryptMandiri],
+    controller.getRegistrasiNorec
+  )
 };
