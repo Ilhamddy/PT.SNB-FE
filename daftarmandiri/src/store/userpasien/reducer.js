@@ -32,7 +32,10 @@ import {
     GET_PENJAMIN_PASIEN_ERROR,
     GET_ANTREAN_PEMERIKSAAN,
     GET_ANTREAN_PEMERIKSAAN_SUCCESS,
-    GET_ANTREAN_PEMERIKSAAN_ERROR
+    GET_ANTREAN_PEMERIKSAAN_ERROR,
+    GET_REGISTRASI_NOREC,
+    GET_REGISTRASI_NOREC_SUCCESS,
+    GET_REGISTRASI_NOREC_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -88,6 +91,11 @@ const INIT_STATE = {
         error: null
     },
     getAntreanPemeriksaan: {
+        data: [],
+        loading: false,
+        error: null
+    },
+    getRegistrasiNorec: {
         data: [],
         loading: false,
         error: null
@@ -463,6 +471,38 @@ const login = (state = INIT_STATE, action) => {
                 ...state,
                 getAntreanPemeriksaan: {
                     ...state.getAntreanPemeriksaan,
+                    data: [],
+                    loading: false,
+                    error: action.payload,
+                },
+            };
+
+        case GET_REGISTRASI_NOREC:
+            return {
+                ...state,
+                getRegistrasiNorec: {
+                    ...state.getRegistrasiNorec,
+                    loading: true,
+                    error: null,
+                },
+            };
+        
+        case GET_REGISTRASI_NOREC_SUCCESS:
+            return {
+                ...state,
+                getRegistrasiNorec: {
+                    ...state.getRegistrasiNorec,
+                    data: action.payload,
+                    loading: false,
+                    error: null,
+                },
+            };
+
+        case GET_REGISTRASI_NOREC_ERROR:
+            return {
+                ...state,
+                getRegistrasiNorec: {
+                    ...state.getRegistrasiNorec,
                     data: [],
                     loading: false,
                     error: action.payload,

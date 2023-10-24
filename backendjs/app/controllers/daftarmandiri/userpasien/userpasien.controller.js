@@ -73,25 +73,27 @@ const upsertPasien = async (req, res) => {
 const getRiwayatReservasi = async (req, res) => {
     const logger = res.locals.logger;
     try{
-        const {monthStart, monthEnd} = getDateStartEndMonth();
         const {todayStart, todayEnd} = getDateStartEnd();
         const riwayat = await pool.query(userpasienQueries.qGetRiwayatRegistrasi, 
             [
                 req.id, 
                 '1970-01-1 00:00:00', 
-                todayStart
+                todayStart,
+                ''
             ])
         const riwayatToday = await pool.query(userpasienQueries.qGetRiwayatRegistrasi, 
             [
                 req.id, 
                 todayStart, 
-                todayEnd
+                todayEnd,
+                ''
             ])
         const riwayatMendatang = await pool.query(userpasienQueries.qGetRiwayatRegistrasi,
             [
                 req.id, 
                 todayEnd, 
-                '9999-12-31 23:59:59'
+                '9999-12-31 23:59:59',
+                ''
             ])
         const tempres = {
             riwayat: riwayat.rows,
@@ -114,6 +116,7 @@ const getRiwayatReservasi = async (req, res) => {
         });
     }
 }
+
 
 const batalRegis = async (req, res) => {
     const logger = res.locals.logger;
@@ -432,6 +435,36 @@ const getAntreanPemeriksaan = async (req, res) => {
     }
 }
 
+const getRegistrasiNorec = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const registrasi = await pool.query(userpasienQueries.qGetRiwayatRegistrasi, 
+            [
+                req.id, 
+                '', 
+                '',
+                req.query.norec
+            ])
+        const tempres = {
+            registrasi: registrasi.rows[0]
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export default {
     upsertPasien,
     getRiwayatReservasi,
@@ -441,7 +474,8 @@ export default {
     getComboPenjamin,
     upsertPenjamin,
     getPenjaminPasien,
-    getAntreanPemeriksaan
+    getAntreanPemeriksaan,
+    getRegistrasiNorec
 }
 
 const hCreatePasien = async (req, res, transaction) => {

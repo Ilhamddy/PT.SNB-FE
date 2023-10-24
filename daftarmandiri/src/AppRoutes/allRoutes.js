@@ -12,6 +12,7 @@ import EditAkunPage from "../pages/EditAkunPage/EditAkunPage";
 import PenjaminPage from "../pages/PenjaminPage/PenjaminPage";
 import BeritaPage from "../pages/BeritaPage/BeritaPage";
 import AntreanOnlinePage from "../pages/AntreanOnlinePage/AntreanOnlinePage"; 
+import DetailPendaftaran from "../pages/DetailPendaftaran/DetailPendaftaran";
 
 const publicRoutes = [
     { path: "/login/:page", component: <Login /> },
@@ -28,6 +29,7 @@ const protectedRoutes = [
     { path: "/akun/edit", component: <EditAkunPage />},
     { path: "/akun/penjamin", component: <PenjaminPage />},
     { path: "/akun/antrean-online", component: <AntreanOnlinePage />},
+    { path: "/akun/detail-pendaftaran/:norec", component: <DetailPendaftaran />},
 ]
 
 export { publicRoutes, protectedRoutes };

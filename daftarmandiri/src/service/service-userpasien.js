@@ -47,4 +47,8 @@ export default class ServiceAuth {
     getAntreanPemeriksaan = async () => {
         return await api.get(`/daftarmandiri/user-pasien/get-antrean-pemeriksaan`)
     }
+
+    getRegistrasiNorec = async (queries) => {
+        return await api.get(`/daftarmandiri/user-pasien/get-registrasi-norec`, queries)
+    }
 }

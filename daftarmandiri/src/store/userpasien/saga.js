@@ -24,6 +24,8 @@ import {
     getPenjaminPasienError,
     getAntreanPemeriksaanSuccess,
     getAntreanPemeriksaanError,
+    getRegistrasiNorecSuccess,
+    getRegistrasiNorecError
 } from "./action";
 import * as uuid from 'uuid'
 
@@ -40,7 +42,8 @@ import {
     GET_COMBO_PENJAMIN,
     UPSERT_PENJAMIN,
     GET_PENJAMIN_PASIEN,
-    GET_ANTREAN_PEMERIKSAAN
+    GET_ANTREAN_PEMERIKSAAN,
+    GET_REGISTRASI_NOREC
 } from "./actionType";
 
 import ServiceUserPasien from "../../service/service-userpasien";
@@ -204,6 +207,16 @@ function* onGetAntreanPemeriksaan(){
     }
 }
 
+function* onGetRegistrasiNorec({payload: {queries}}){
+    try{
+        const response = yield call(serviceUserPasien.getRegistrasiNorec, queries);
+        yield put(getRegistrasiNorecSuccess(response.data)); 
+    }catch(error){
+        console.error(error)
+        yield put(getRegistrasiNorecError(error))
+    }
+}
+
 export default function* watchLoginUser() {
     yield takeEvery(LOGIN_USER, onLoginUser);
     yield takeEvery(LOGOUT_USER, onLogoutUser);
@@ -218,4 +231,5 @@ export default function* watchLoginUser() {
     yield takeEvery(UPSERT_PENJAMIN, onUpsertPenjamin);
     yield takeEvery(GET_PENJAMIN_PASIEN, onGetPenjaminPasien);
     yield takeEvery(GET_ANTREAN_PEMERIKSAAN, onGetAntreanPemeriksaan);
+    yield takeEvery(GET_REGISTRASI_NOREC, onGetRegistrasiNorec);
 }

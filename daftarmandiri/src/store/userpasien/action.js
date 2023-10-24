@@ -35,7 +35,10 @@ import {
     GET_PENJAMIN_PASIEN_ERROR,
     GET_ANTREAN_PEMERIKSAAN,
     GET_ANTREAN_PEMERIKSAAN_SUCCESS,
-    GET_ANTREAN_PEMERIKSAAN_ERROR
+    GET_ANTREAN_PEMERIKSAAN_ERROR,
+    GET_REGISTRASI_NOREC,
+    GET_REGISTRASI_NOREC_SUCCESS,
+    GET_REGISTRASI_NOREC_ERROR
 } from "./actionType";
 
 export const loginUser = (data, callback) => {
@@ -295,6 +298,29 @@ export const getAntreanPemeriksaanSuccess = (data) => {
 export const getAntreanPemeriksaanError = (error) => {
     return {
         type: GET_ANTREAN_PEMERIKSAAN_ERROR,
+        payload: error
+    }
+}
+
+export const getRegistrasiNorec = (queries) => {
+    return {
+        type: GET_REGISTRASI_NOREC,
+        payload: {
+            queries
+        }
+    }
+}
+
+export const getRegistrasiNorecSuccess = (data) => {
+    return {
+        type: GET_REGISTRASI_NOREC_SUCCESS,
+        payload: data
+    }
+}
+
+export const getRegistrasiNorecError = (error) => {
+    return {
+        type: GET_REGISTRASI_NOREC_ERROR,
         payload: error
     }
 }

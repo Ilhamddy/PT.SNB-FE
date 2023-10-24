@@ -11,10 +11,12 @@ import { Button, Modal } from 'reactstrap'
 import InputGroupDM from '../../Components/InputGroupDM/InputGroupDM'
 import InputDM from '../../Components/InputDM/InputDM'
 import BackKomponen from '../../Components/BackKomponen/BackKomponen'
+import { useNavigate } from 'react-router-dom'
 
 const RiwayatPendaftaran = () => {
   const refKontainer = useRef(null)
   const dispatch = useDispatch()
+  const navigate = useNavigate()
   const vBatal = useFormik({
     initialValues: {
       norec: '',
@@ -133,7 +135,14 @@ const RiwayatPendaftaran = () => {
               <p>Tidak ada riwayat pendaftaran hari ini</p>
             )}
             {riwayatToday.map((data) => (
-              <div className="card-hari-ini">
+              <div
+                className="card-hari-ini"
+                onClick={() => {
+                  refKontainer.current.handleToNextPage(() => {
+                    navigate(`/akun/detail-pendaftaran/${data.norec}`)
+                  })
+                }}
+              >
                 <div className="reservasi">
                   <p className="kode">
                     Kode Reservasi: <span>{data.noreservasi}</span>
