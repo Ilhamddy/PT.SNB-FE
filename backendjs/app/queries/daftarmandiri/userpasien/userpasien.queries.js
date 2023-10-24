@@ -13,7 +13,9 @@ SELECT
     mp.namalengkap AS namadokter,
     mu.namaunit AS namaunit,
     tro.tglinput AS tglinput,
-    td.noregistrasi AS noregistrasi
+    td.noregistrasi AS noregistrasi,
+    mpas.nocm AS nocm,
+    mpas.nocmtemp AS nocmtemp
 FROM users_pasien up
     LEFT JOIN m_pasien mpas ON (up.norm = mpas.nocm OR up.norm = mpas.nocmtemp)
     LEFT JOIN t_registrasionline tro ON tro.nocmfk = mpas.id

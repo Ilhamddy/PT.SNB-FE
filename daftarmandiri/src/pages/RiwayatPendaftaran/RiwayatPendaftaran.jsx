@@ -113,7 +113,9 @@ const RiwayatPendaftaran = () => {
                 <p className="nama-dokter">{data.namadokter}</p>
                 <p className="poliklinik">{data.namaunit}</p>
                 <div className="btn-terdaftar">
-                  <ButtonDM className="p-2">Terdaftar</ButtonDM>
+                  <ButtonDM className="p-2">
+                    {!data.nocm ? 'Verifikasi' : 'Terdaftar'}
+                  </ButtonDM>
                   <ButtonDM
                     buttonType="secondary"
                     className="p-2"
@@ -141,7 +143,9 @@ const RiwayatPendaftaran = () => {
                 <p className="nama-dokter">{data.namadokter}</p>
                 <p className="poliklinik">{data.namaunit}</p>
                 <div className="btn-terdaftar">
-                  <ButtonDM className="p-2">Terdaftar</ButtonDM>
+                  <ButtonDM className="p-2">
+                    {!data.nocm ? 'Verifikasi' : 'Terdaftar'}
+                  </ButtonDM>
                   <ButtonDM
                     buttonType="secondary"
                     className="p-2"

@@ -7,5 +7,11 @@
     },
     "files.exclude": {
         "**/frontendjs/**": true
+    },
+    "[html]": {
+        "editor.tabSize": 4
+    },
+    "[javascriptreact]": {
+        "editor.tabSize": 2
     }
 }
