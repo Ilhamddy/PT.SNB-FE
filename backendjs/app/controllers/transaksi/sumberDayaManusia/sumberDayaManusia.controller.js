@@ -438,6 +438,33 @@ const upsertJadwal = async (req, res) => {
     }
 }
 
+const updateUserRole = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const { pegawai } = await db.sequelize.transaction(async (transaction) => {
+            
+            return { pegawai }
+        });
+        const tempres = {
+        
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export default {
     getDaftarPegawai,
     getComboSDM,
