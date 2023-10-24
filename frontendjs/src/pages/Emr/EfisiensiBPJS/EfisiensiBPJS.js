@@ -322,12 +322,12 @@ const EfisiensiBPJS = () => {
             sortable: true,
             width: "250px"
         },
-        {
-            name: <span className='font-weight-bold fs-13'>Nama Unit</span>,
-            selector: row => row.namaunit,
-            sortable: true,
-            width: "250px"
-        },
+        // {
+        //     name: <span className='font-weight-bold fs-13'>Nama Unit</span>,
+        //     selector: row => row.namaunit,
+        //     sortable: true,
+        //     width: "250px"
+        // },
         {
             name: <span className='font-weight-bold fs-13'>Kelas</span>,
             selector: row => row.namakelas,
