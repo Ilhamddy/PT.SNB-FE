@@ -6,7 +6,7 @@ import {
     GET_PEGAWAI_BYID, GET_USER_ROLE_BYID_PEGAWAI, SAVE_SIGNUP_USER_ROLE,
     GET_COMBO_JADWAL,
     GET_JADWAL_DOKTER_SDM,
-    UPSERT_JADWAL
+    UPSERT_JADWAL,UPDATE_RESET_PASSWORD
 } from "./actionType";
 
 import {
@@ -21,7 +21,8 @@ import {
     getJadwalDokterSDMSuccess,
     getJadwalDokterSDMError,
     upsertJadwalSuccess,
-    upsertJadwalError
+    upsertJadwalError,
+    updateResetPasswordSuccess, updateResetPasswordError
 } from "./action";
 
 import { toast } from 'react-toastify';
@@ -161,7 +162,7 @@ function* onUpsertJadwal({ payload: { body, callback } }) {
         const response = yield call(serviceSDM.upsertJadwal, body);
         yield put(upsertJadwalSuccess(response.data || null));
         toast.success(response.msg, { autoClose: 3000 });
-        console.log(callback)
+        // console.log(callback)
         callback && callback();
     } catch (error) {
         yield put(upsertJadwalError(error));
@@ -170,6 +171,22 @@ function* onUpsertJadwal({ payload: { body, callback } }) {
 
 export function* watchonUpsertJadwal() {
     yield takeEvery(UPSERT_JADWAL, onUpsertJadwal);
+}
+
+function* onupdateResetPassword({ payload: { body, callback } }) {
+    try {
+        const response = yield call(serviceSDM.updateResetPassword, body);
+        yield put(updateResetPasswordSuccess(response.data || null));
+        toast.success(response.msg, { autoClose: 3000 });
+        console.log(callback)
+        callback && callback();
+    } catch (error) {
+        yield put(updateResetPasswordError(error));
+    }
+}
+
+export function* watchonupdateResetPassword() {
+    yield takeEvery(UPDATE_RESET_PASSWORD, onupdateResetPassword);
 }
 
 function* sumberDayaManusia() {
@@ -182,7 +199,8 @@ function* sumberDayaManusia() {
         fork(watchonsaveSignupUserRole),
         fork(watchonGetComboJadwal),
         fork(watchonGetJadwalDokterSDM),
-        fork(watchonUpsertJadwal)
+        fork(watchonUpsertJadwal),
+        fork(watchonupdateResetPassword)
     ]);
 }
 

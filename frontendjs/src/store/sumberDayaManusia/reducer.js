@@ -14,7 +14,8 @@ import {
     GET_JADWAL_DOKTER_SDM_ERROR, 
     UPSERT_JADWAL,
     UPSERT_JADWAL_SUCCESS,
-    UPSERT_JADWAL_ERROR
+    UPSERT_JADWAL_ERROR,
+    UPDATE_RESET_PASSWORD,UPDATE_RESET_PASSWORD_SUCCESS,UPDATE_RESET_PASSWORD_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -66,6 +67,12 @@ const INIT_STATE = {
         error: null,
         success: false
     },
+    updateResetPassword:{
+        newData: null,
+        loading: false,
+        error: null,
+        success: false
+    },
 }
 
 const sumberDayaManusia = (state = INIT_STATE, action) => {
@@ -99,6 +106,9 @@ const sumberDayaManusia = (state = INIT_STATE, action) => {
                 },
                 upsertJadwal:{
                     ...INIT_STATE.upsertJadwal
+                },
+                updateResetPassword:{
+                    ...INIT_STATE.updateResetPassword
                 }
             }
         }
@@ -401,6 +411,41 @@ const sumberDayaManusia = (state = INIT_STATE, action) => {
                 ...state,
                 upsertJadwal: {
                     ...state.upsertJadwal,
+                    loading: false,
+                    error: action.payload,
+                },
+            };
+        }
+
+        case UPDATE_RESET_PASSWORD: {
+            return {
+                ...state,
+                updateResetPassword: {
+                    ...state.updateResetPassword,
+                    data: [],
+                    loading: true,
+                    error: null,
+                },
+            };
+        }
+
+        case UPDATE_RESET_PASSWORD_SUCCESS: {
+            return {
+                ...state,
+                updateResetPassword: {
+                    ...state.updateResetPassword,
+                    loading: false,
+                    data: action.payload,
+                    success: true,
+                },
+            };
+        }
+
+        case UPDATE_RESET_PASSWORD_ERROR: {
+            return {
+                ...state,
+                updateResetPassword: {
+                    ...state.updateResetPassword,
                     loading: false,
                     error: action.payload,
                 },

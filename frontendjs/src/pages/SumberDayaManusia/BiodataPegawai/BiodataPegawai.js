@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { ToastContainer } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import UiContent from "../../../Components/Common/UiContent";
 import { Button, Card, CardBody, Col, Container, Form, FormFeedback, Input, Label, Nav, NavItem, NavLink, Row, Spinner, TabContent, TabPane } from "reactstrap";
 import BreadCrumb from "../../../Components/Common/BreadCrumb";
@@ -10,7 +10,8 @@ import { onChangeStrNbr, onChangeStrNbrNeg } from "../../../utils/format";
 import CustomSelect from "../../Select/Select";
 import KontainerFlatpickr from "../../../Components/KontainerFlatpickr/KontainerFlatpickr";
 import {
-    sdmResetForm, saveBiodataPegawai, getComboSDM, getPegawaiById, getUserRoleById, saveSignupUserRole
+    sdmResetForm, saveBiodataPegawai, getComboSDM, getPegawaiById, getUserRoleById, saveSignupUserRole,
+    updateResetPassword
 } from "../../../store/actions";
 import { desaGet } from '../../../store/master/action';
 import { useDispatch, useSelector } from "react-redux";
@@ -25,7 +26,7 @@ const BiodataPegawai = () => {
     const [dateNow] = useState(() => new Date().toISOString())
     const { data, loading, dataCombo,
         newData, success, error, dataPegawai, dataDesa, dataUserRole,
-        loadingUserRole, newDataSignup } = useSelector((state) => ({
+        loadingUserRole, newDataSignup,newDataReset } = useSelector((state) => ({
             dataCombo: state.sumberDayaManusia.getComboSDM.data,
             newData: state.sumberDayaManusia.saveBiodataPegawai.data,
             success: state.sumberDayaManusia.saveBiodataPegawai.success,
@@ -36,6 +37,7 @@ const BiodataPegawai = () => {
             dataUserRole: state.sumberDayaManusia.getUserRoleById.data,
             loadingUserRole: state.sumberDayaManusia.getUserRoleById.loading,
             newDataSignup: state.sumberDayaManusia.saveSignupUserRole.data,
+            newDataReset: state.sumberDayaManusia.updateResetPassword.data,
         }));
     const vSetValidationBiodata = useFormik({
         enableReinitialize: true,
@@ -436,7 +438,17 @@ const BiodataPegawai = () => {
         vSetValidationUserName.setFieldValue('idUser', '')
     }
     const handleClickResetPassword = (e)=>{
-        
+        if(vSetValidationUserName.values.idUser===''){
+            toast.error("Role Pasien Belum Dipilih", { autoClose: 3000 });
+            return
+        }
+        const values ={
+            idUser:vSetValidationUserName.values.idUser,
+            password:vSetValidationUserName.values.username + `@123`
+        }
+        dispatch(updateResetPassword(values, () => {
+            // resetForm()
+        }));
     }
     return (
         <React.Fragment>

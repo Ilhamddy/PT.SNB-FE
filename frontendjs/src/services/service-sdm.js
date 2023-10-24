@@ -34,4 +34,7 @@ export default class ServiceSDM {
     updateUserRole = async (params) => {
         return await api.create(`/transaksi/sumber-daya-manusia/update-user-role`, params)
     }
+    updateResetPassword = async (params) => {
+        return await api.create(`/transaksi/sumber-daya-manusia/update-reset-password`, params)
+    }
 }
