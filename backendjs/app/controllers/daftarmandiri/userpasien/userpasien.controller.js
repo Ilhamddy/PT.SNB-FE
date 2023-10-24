@@ -615,7 +615,10 @@ const hCreateCMSementara = async () => {
     const total = await m_pasien.count({
         where: {
             tgldaftar: {
-                [Op.between]: [monthStart, monthEnd]
+                [Op.between]: [monthStart, monthEnd],
+            },
+            nocmtemp: {
+                [Op.not]: null
             }
         }
     })
