@@ -442,7 +442,14 @@ const updateUserRole = async (req, res) => {
     const logger = res.locals.logger;
     try{
         const { pegawai } = await db.sequelize.transaction(async (transaction) => {
-            
+            const pegawai = await db.user_roles.update({
+                roleid: req.body.roles,statusenabled: req.body.statusEnabled,
+            }, {
+                where: {
+                    userid: req.body.idUser,
+                },
+                transaction: transaction
+            });
             return { pegawai }
         });
         const tempres = {
@@ -451,7 +458,7 @@ const updateUserRole = async (req, res) => {
         res.status(200).send({
             msg: 'Success',
             code: 200,
-            data: tempres,
+            data: pegawai,
             success: true
         });
     } catch (error) {
@@ -473,5 +480,6 @@ export default {
     getUserRoleById,
     getComboJadwal,
     getJadwalDokter,
-    upsertJadwal
+    upsertJadwal,
+    updateUserRole,
 }

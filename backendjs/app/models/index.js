@@ -4,6 +4,7 @@ import {Sequelize} from "sequelize";
 
 import userModel from "../models/user.model.js"
 import roleModel from "../models/role.model.js"
+import user_rolesModel from "./user_roles.model.js";
 // master
 import m_pasienM from "../models/m_pasien.model.js";
 import running_numberM from "../models/running_number.model.js";
@@ -101,6 +102,7 @@ db.sequelize = sequelize;
 db.user = userModel(sequelize, sequelizeInstance);
 db.users_pasien = users_pasienModel(sequelize, sequelizeInstance);
 db.role = roleModel(sequelize, sequelizeInstance);
+db.user_roles = user_rolesModel(sequelize, sequelizeInstance);
 // master
 db.m_pasien = m_pasienM(sequelize, sequelizeInstance);
 db.running_number = running_numberM(sequelize,sequelizeInstance);
