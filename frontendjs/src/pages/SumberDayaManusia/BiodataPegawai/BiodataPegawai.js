@@ -218,11 +218,11 @@ const BiodataPegawai = () => {
     const dataStatusEnabled = [
         {
             value: 1,
-            label: "Aktip",
+            label: "Aktif",
         },
         {
             value: 2,
-            label: "Non Aktip",
+            label: "Non Aktif",
         },
     ];
     // Pills
@@ -422,7 +422,7 @@ const BiodataPegawai = () => {
     const [disabledUsername, setdisabledUsername] = useState(false);
     const handleClick = (e) => {
         vSetValidationUserName.setFieldValue('statusEnabled', 2)
-        if (e.status === 'AKTIP') {
+        if (e.status === 'AKTIF') {
             vSetValidationUserName.setFieldValue('statusEnabled', 1)
         }
         setdisabledUsername(true)

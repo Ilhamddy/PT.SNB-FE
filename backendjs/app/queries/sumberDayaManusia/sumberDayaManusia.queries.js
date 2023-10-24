@@ -1,5 +1,5 @@
 const qDaftarPegawai = `select row_number() OVER (ORDER BY mp.id) AS no,mp.nip,mp.id,mp.namalengkap,mp.reportdisplay as inisial,
-case when mp.statusenabled=true then 'AKTIP' else 'NON AKTIP' end as status,ms.reportdisplay as statuspegawai,mu.namaunit,
+case when mp.statusenabled=true then 'AKTIF' else 'NON AKTIF' end as status,ms.reportdisplay as statuspegawai,mu.namaunit,
 mp2.reportdisplay as profesi  from m_pegawai mp
 left join m_unit mu on mu.id=mp.objectunitfk 
 left join m_statuspegawai ms on ms.id=mp.objectstatuspegawaifk
@@ -37,8 +37,8 @@ const qJabatan =`select id as value,reportdisplay as label from m_jabatan ms`
 const qGolonganPtkp =`select id as value,reportdisplay as label from m_golonganptkp ms`
 const qUnitKerja =`select id as value,reportdisplay as label from m_unitkerja ms`
 const qUserRoleById=` select row_number() OVER (ORDER BY u.id) AS no,u.id,u.username ,r.permission, r."name" as namerole,
-r.id as idrole,case when ur.statusenabled=true then 'AKTIP'
-else 'NON AKTIP' end as status  from user_roles as ur 
+r.id as idrole,case when ur.statusenabled=true then 'AKTIF'
+else 'NON AKTIF' end as status  from user_roles as ur 
 join roles as r on r.id=ur.roleid
 join users u on u.id=ur.userid  where u.objectpegawaifk=$1`
 const qRole = `select r.id as value,r.name as label,r."permission"  from roles r 

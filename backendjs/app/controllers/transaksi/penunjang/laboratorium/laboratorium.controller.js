@@ -654,7 +654,7 @@ async function getMasterLayananLaboratorium(req, res) {
     try {
 
         const resultlist = await queryPromise2(`select
-        mp.id,case when mp.statusenabled = true then 'AKTIP' else 'NONAKTIP' end as status,
+        mp.id,case when mp.statusenabled = true then 'AKTIF' else 'NONAKTIF' end as status,
         mp.kodeexternal,
         mp.namaproduk,md.detailjenisproduk 
     from
