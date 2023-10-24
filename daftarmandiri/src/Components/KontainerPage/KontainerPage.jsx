@@ -59,13 +59,15 @@ const KontainerPage = forwardRef(
       handleToNextPage,
     }))
     return (
-      <div className={`kontainer-page ${className}`}>
-        <div className="kontainer-page-header" style={stlHeader}>
-          {header || ''}
-        </div>
-        <div className="kontainer-page-konten" style={stlBody}>
-          <div className={`konten ${classNameKonten}`} style={stlBodyKonten}>
-            {children}
+      <div className="kontainer-page-width">
+        <div className={`kontainer-page ${className}`}>
+          <div className="kontainer-page-header" style={stlHeader}>
+            {header || ''}
+          </div>
+          <div className="kontainer-page-konten" style={stlBody}>
+            <div className={`konten ${classNameKonten}`} style={stlBodyKonten}>
+              {children}
+            </div>
           </div>
         </div>
       </div>

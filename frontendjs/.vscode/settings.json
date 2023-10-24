@@ -8,9 +8,5 @@
     },
     "[javascriptreact]": {
         "editor.tabSize": 2
-    },
-    "[javascript]": {
-        "editor.tabSize": 2,
-        "editor.detectIndentation": true
     }
 }
