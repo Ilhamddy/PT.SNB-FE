@@ -89,13 +89,13 @@ const getComboSDM = async (req, res) => {
             pendidikan: result5.rows,
             perkawinan: result6.rows,
             agama: result7.rows,
-            golonganPegawai :result8.rows,
-            statusPegawai:result9.rows,
-            profesi:result10.rows,
-            jabatan:result11.rows,
-            golonganPtkp:result12.rows,
-            unitKerja:result13.rows,
-            roles:result14.rows
+            golonganPegawai: result8.rows,
+            statusPegawai: result9.rows,
+            profesi: result10.rows,
+            jabatan: result11.rows,
+            golonganPtkp: result12.rows,
+            unitKerja: result13.rows,
+            roles: result14.rows
         };
         res.status(200).send({
             msg: 'Success',
@@ -119,14 +119,14 @@ const saveBiodataPegawai = async (req, res) => {
     try {
         const { pegawai } = await db.sequelize.transaction(async (transaction) => {
             let pegawai = ''
-            if(req.body.task===1){
+            if (req.body.task === 1) {
                 if (req.body.idPegawai === '') {
                     pegawai = await db.m_pegawai.create({
                         statusenabled: true,
-                        nama:req.body.namalengkap,
+                        nama: req.body.namalengkap,
                         namaexternal: req.body.gelardepan + req.body.namalengkap + req.body.gelarbelakang,
                         reportdisplay: req.body.inisialNama,
-                        namahafis:req.body.inisialNama,
+                        namahafis: req.body.inisialNama,
                         namalengkap: req.body.gelardepan + req.body.namalengkap + req.body.gelarbelakang,
                         gelardepan: req.body.gelardepan,
                         gelarbelakang: req.body.gelarbelakang,
@@ -148,10 +148,10 @@ const saveBiodataPegawai = async (req, res) => {
                 } else {
                     pegawai = await db.m_pegawai.update({
                         statusenabled: true,
-                        nama:req.body.namalengkap,
+                        nama: req.body.namalengkap,
                         namaexternal: req.body.gelardepan + req.body.namalengkap + req.body.gelarbelakang,
                         reportdisplay: req.body.inisialNama,
-                        namahafis:req.body.inisialNama,
+                        namahafis: req.body.inisialNama,
                         namalengkap: req.body.gelardepan + req.body.namalengkap + req.body.gelarbelakang,
                         gelardepan: req.body.gelardepan,
                         gelarbelakang: req.body.gelarbelakang,
@@ -176,7 +176,7 @@ const saveBiodataPegawai = async (req, res) => {
                         transaction: transaction
                     });
                 }
-            }else if(req.body.task===2){
+            } else if (req.body.task === 2) {
                 pegawai = await db.m_pegawai.update({
                     alamatktp: req.body.alamat,
                     rtktp: req.body.rt,
@@ -194,17 +194,17 @@ const saveBiodataPegawai = async (req, res) => {
                     },
                     transaction: transaction
                 });
-            }else if(req.body.task===3){
+            } else if (req.body.task === 3) {
                 pegawai = await db.m_pegawai.update({
-                    nosk: req.body.noSK,nosip: req.body.noSIP,
-                    nostr: req.body.noSTR,npwp: req.body.npwp,
-                    objectgolonganfk: req.body.golongan || null,objectstatuspegawaifk: req.body.statusPegawai || null,
-                    objectprofesipegawaifk: req.body.profesi || null,objectjabatanfk: req.body.jabatan || null,
-                    tglmasuk: req.body.tglSKStart || null,tglpensiun: req.body.tglSKend || null,
-                    tglterbitsip: req.body.tglSIPStart || null,tglberakhirsip: req.body.tglSIPend || null,tglterbitstr: req.body.tglSTRStart || null,
-                    tglberakhirstr: req.body.tglSTRend || null,objectgolonganptkpfk: req.body.golonganPTKP || null,qtyanak: req.body.jumlahAnak || null,
+                    nosk: req.body.noSK, nosip: req.body.noSIP,
+                    nostr: req.body.noSTR, npwp: req.body.npwp,
+                    objectgolonganfk: req.body.golongan || null, objectstatuspegawaifk: req.body.statusPegawai || null,
+                    objectprofesipegawaifk: req.body.profesi || null, objectjabatanfk: req.body.jabatan || null,
+                    tglmasuk: req.body.tglSKStart || null, tglpensiun: req.body.tglSKend || null,
+                    tglterbitsip: req.body.tglSIPStart || null, tglberakhirsip: req.body.tglSIPend || null, tglterbitstr: req.body.tglSTRStart || null,
+                    tglberakhirstr: req.body.tglSTRend || null, objectgolonganptkpfk: req.body.golonganPTKP || null, qtyanak: req.body.jumlahAnak || null,
                     qtytanggungan: req.body.jumlahTanggungan || null,
-                    objectunitfk: req.body.unitPelayanan,objectunitkerjafk: req.body.unitKerja || null,
+                    objectunitfk: req.body.unitPelayanan, objectunitkerjafk: req.body.unitKerja || null,
                 }, {
                     where: {
                         id: req.body.idPegawai,
@@ -212,7 +212,7 @@ const saveBiodataPegawai = async (req, res) => {
                     transaction: transaction
                 });
             }
-            
+
 
             return { pegawai }
         });
@@ -238,10 +238,10 @@ const saveBiodataPegawai = async (req, res) => {
 
 const getPegawaiById = async (req, res) => {
     const logger = res.locals.logger;
-    try{
+    try {
         const result1 = await pool.query(queries.qPegawaiById, [req.query.idPegawai]);
         const tempres = {
-        
+
         };
         res.status(200).send({
             msg: 'Success',
@@ -262,10 +262,10 @@ const getPegawaiById = async (req, res) => {
 
 const getUserRoleById = async (req, res) => {
     const logger = res.locals.logger;
-    try{
+    try {
         const result1 = await pool.query(queries.qUserRoleById, [req.query.idPegawai]);
         const tempres = {
-        
+
         };
         res.status(200).send({
             msg: 'Success',
@@ -286,7 +286,7 @@ const getUserRoleById = async (req, res) => {
 
 const getComboJadwal = async (req, res) => {
     const logger = res.locals.logger;
-    try{
+    try {
         const dokter = (await pool.query(pegawaiQueries.getDokterNip)).rows
         const poliklinik = (await pool.query(unitQueries.getPoliklinik)).rows
         const kamar = (await pool.query(kamarQueries.getAllRj)).rows
@@ -317,32 +317,32 @@ const getComboJadwal = async (req, res) => {
 
 const getJadwalDokter = async (req, res) => {
     const logger = res.locals.logger;
-    try{
+    try {
         let jadwal = (await pool.query(queries.qJadwalDokter, [])).rows
         jadwal = jadwal.map(item => {
             const dateNow = new Date().toLocaleDateString("id-ID",
                 {
                     year: "numeric",
-                     month: "2-digit", 
-                     day: "2-digit", 
+                    month: "2-digit",
+                    day: "2-digit",
                 })
             const parts = dateNow.split("/")
             const partsTimeMulai = item.jam_mulai.split(":")
             const partsTimeSelesai = item.jam_selesai.split(":")
             const dateMulai = new Date(
-                parts[2], 
-                parts[1] - 1, 
-                parts[0], 
-                partsTimeMulai[0], 
-                partsTimeMulai[1], 
+                parts[2],
+                parts[1] - 1,
+                parts[0],
+                partsTimeMulai[0],
+                partsTimeMulai[1],
                 partsTimeMulai[2]
             )
             const dateSelesai = new Date(
-                parts[2], 
-                parts[1] - 1, 
-                parts[0], 
-                partsTimeSelesai[0], 
-                partsTimeSelesai[1], 
+                parts[2],
+                parts[1] - 1,
+                parts[0],
+                partsTimeSelesai[0],
+                partsTimeSelesai[1],
                 partsTimeSelesai[2]
             )
             return {
@@ -373,12 +373,12 @@ const getJadwalDokter = async (req, res) => {
 
 const upsertJadwal = async (req, res) => {
     const logger = res.locals.logger;
-    try{
+    try {
         const reqBody = req.body
-        const {jadwal} = 
+        const { jadwal } =
             await db.sequelize.transaction(async (transaction) => {
                 let jadwal = null
-                if(reqBody.idjadwal){
+                if (reqBody.idjadwal) {
                     const jadwalModel = await db.m_jadwaldokter.findOne({
                         where: {
                             id: reqBody.idjadwal,
@@ -396,7 +396,7 @@ const upsertJadwal = async (req, res) => {
                         transaction: transaction
                     })
                     jadwal = jadwalModel.toJSON()
-                } else{
+                } else {
                     const jadwalModel = await db.m_jadwaldokter.create({
                         kdprofile: 0,
                         statusenabled: true,
@@ -408,8 +408,8 @@ const upsertJadwal = async (req, res) => {
                         objectunitfk: reqBody.unit,
                         objectstatushadirfk: null,
                         objectkamarfk: reqBody.ruangrawat,
-                    }, { 
-                        transaction 
+                    }, {
+                        transaction
                     });
                     jadwal = jadwalModel.toJSON()
                 }
@@ -417,7 +417,7 @@ const upsertJadwal = async (req, res) => {
                     jadwal
                 }
             });
-        
+
         const tempres = {
             jadwal: jadwal
         };
@@ -425,6 +425,44 @@ const upsertJadwal = async (req, res) => {
             msg: 'Success',
             code: 200,
             data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+const updateUserRole = async (req, res) => {
+    const logger = res.locals.logger;
+    try {
+        const { pegawai } = await db.sequelize.transaction(async (transaction) => {
+            let status = true
+            if (req.body.statusEnabled === 2) {
+                status = false
+            }
+            const pegawai = await db.user_roles.update({
+                roleid: req.body.roles, statusenabled: status,
+            }, {
+                where: {
+                    userid: req.body.idUser,
+                },
+                transaction: transaction
+            });
+            return { pegawai }
+        });
+        const tempres = {
+
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: pegawai,
             success: true
         });
     } catch (error) {
@@ -446,5 +484,6 @@ export default {
     getUserRoleById,
     getComboJadwal,
     getJadwalDokter,
-    upsertJadwal
+    upsertJadwal,
+    updateUserRole,
 }

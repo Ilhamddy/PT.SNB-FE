@@ -31,4 +31,7 @@ export default class ServiceSDM {
     upsertJadwal = async (params) => {
         return await api.create(`/transaksi/sumber-daya-manusia/upsert-jadwal`, params)
     }
+    updateUserRole = async (params) => {
+        return await api.create(`/transaksi/sumber-daya-manusia/update-user-role`, params)
+    }
 }
