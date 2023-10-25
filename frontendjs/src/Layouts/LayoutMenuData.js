@@ -1007,6 +1007,12 @@ const Navdata = () => {
                     link: "/sysadmin/daftar-kamar",
                     parentId: "sysadmin",
                 },
+                {
+                    id: "daftar-unit",
+                    label: "Daftar Unit",
+                    link: "/sysadmin/daftar-unit",
+                    parentId: "sysadmin",
+                },
             ]
         }
     ];
