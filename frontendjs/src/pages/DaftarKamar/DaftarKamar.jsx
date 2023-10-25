@@ -145,13 +145,13 @@ const DaftarKamar = () => {
       selector: (row) => row.kelas,
       sortable: true,
       // selector: row => (<button className="btn btn-sm btn-soft-info" onClick={() => handleClick(dataTtv)}>{row.noregistrasi}</button>),
-      width: '100px',
+      width: '120px',
     },
     {
       name: <span className="font-weight-bold fs-13">No Bed</span>,
       selector: (row) => row.nobed,
       sortable: true,
-      width: '200px',
+      width: '100px',
     },
     {
       name: <span className="font-weight-bold fs-13">Status Bed</span>,
