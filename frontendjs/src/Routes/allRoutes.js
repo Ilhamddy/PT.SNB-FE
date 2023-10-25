@@ -577,7 +577,6 @@ const authProtectedRoutes = [
   { path: "/cmVnaXN0cmFzaS92aWV3ZXIvcGVtYW5nZ2lsYW4=", component: <PemanggilanViewer />, isLayout: false},
   { path: "/viewer/poli", component: <ViewerPoli />, isLayout: false},
   { path: "/viewer/operasi", component: <ViewerOperasi />, isLayout: false},
-  { path: "/viewer/edit/daftar-kamar", component: <DaftarKamar />},
 
   { path: "/bGlzdGRhZnRhcnBhc2llbi9kYWZ0YXJwYXNpZW5tdXRhc2k=", component:<DaftarPasienMutasi/>},
   { path: "/registrasi/mutasi-pasien/:id/:norec", component: <RegistrasiMutasiPasien/> },
@@ -664,6 +663,10 @@ const authProtectedRoutes = [
   { path: "/sumberdayamanusia/biodata-pegawai", component: <BiodataPegawai /> },
   { path: "/sumberdayamanusia/jadwal-dokter", component: <MasterJadwalDokter />},
   { path: "/sumberdayamanusia/biodata-pegawai/:idPegawai", component: <BiodataPegawai /> },
+
+  // sysadmin
+  { path: "/sysadmin/daftar-kamar", component: <DaftarKamar />},
+
 ];
 
 const publicRoutes = [

@@ -34,6 +34,8 @@ const Navdata = () => {
     const [isListBedahSentral, setListBedahSentral] = useState(false);
     const [isListAdminKonten, setIsListAdminKonten] = useState(false);
     const [isSumberDayaManusia, setSumberDayaManusia] = useState(false);
+    const [isSysAdmin, setIsSysAdmin] = useState(false);
+
 
     // Apps
     const [isEmail, setEmail] = useState(false);
@@ -980,6 +982,33 @@ const Navdata = () => {
                 },
             ],
         },
+        // sysadmin
+        {
+            id: "sysadmin",
+            label: "Sysadmin",
+            icon: "ri-contacts-book-2-fill",
+            link: "/#",
+            click: function (e) {
+                e.preventDefault();
+                setIsSysAdmin(!isSysAdmin);
+                setIscurrentState('Sysadmin');
+                updateIconSidebar(e);
+            },
+            stateVariables: isSysAdmin,
+            isAllowed: () => {
+                return isAllowedAccess(getUserPermissions(), [
+                    "REGISTRASI_VIEW","SYSADMIN_VIEW"
+                ]);
+            },
+            subItems: [
+                {
+                    id: "registrasi-pasien-lama",
+                    label: "Daftar Kamar",
+                    link: "/sysadmin/daftar-kamar",
+                    parentId: "sysadmin",
+                },
+            ]
+        }
     ];
     return <React.Fragment>{menuItems}</React.Fragment>;
 };
