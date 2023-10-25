@@ -430,7 +430,7 @@ const DaftarKamar = () => {
                   columns={columnsBed}
                   data={data.tempattidur}
                   progressPending={false}
-                  customStyles={tableCustomStyles}
+                  customStyles={subTableCustomStyles}
                   progressComponent={<LoadingTable />}
                   noDataComponent={<NoDataTable dataName={'kamar'} />}
                 />
@@ -452,6 +452,21 @@ const tableCustomStyles = {
     style: {
       color: '#ffffff',
       backgroundColor: '#e67e22',
+    },
+  },
+  rows: {
+    style: {
+      color: 'black',
+      backgroundColor: '#f1f2f6',
+    },
+  },
+}
+
+const subTableCustomStyles = {
+  headRow: {
+    style: {
+      color: '#ffffff',
+      backgroundColor: '#FFC727',
     },
   },
   rows: {
