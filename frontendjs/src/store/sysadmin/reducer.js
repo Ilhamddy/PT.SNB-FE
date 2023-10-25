@@ -10,7 +10,16 @@ import {
     GET_COMBO_TEMPAT_TIDUR_ERROR,
     UPSERT_TEMPAT_TIDUR,
     UPSERT_TEMPAT_TIDUR_SUCCESS,
-    UPSERT_TEMPAT_TIDUR_ERROR
+    UPSERT_TEMPAT_TIDUR_ERROR,
+    GET_ALL_UNIT,
+    GET_ALL_UNIT_SUCCESS,
+    GET_ALL_UNIT_ERROR,
+    GET_COMBO_DAFTAR_UNIT,
+    GET_COMBO_DAFTAR_UNIT_SUCCESS,
+    GET_COMBO_DAFTAR_UNIT_ERROR,
+    UPSERT_UNIT,
+    UPSERT_UNIT_SUCCESS,
+    UPSERT_UNIT_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -33,10 +42,25 @@ const INIT_STATE = {
         data: [],
         loading: false,
         error: null,
+    },
+    getAllUnit: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    getComboDaftarUnit: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    upsertUnit: {
+        data: [],
+        loading: false,
+        error: null,
     }
 };
 
-const TempatTidur = (state = INIT_STATE, action) => {
+const Sysadmin = (state = INIT_STATE, action) => {
     switch (action.type) {
         case GET_TEMPAT_TIDUR: {
             return {
@@ -170,8 +194,108 @@ const TempatTidur = (state = INIT_STATE, action) => {
             }
         }
 
+        case GET_ALL_UNIT: {
+            return {
+                ...state,
+                getAllUnit: {
+                    ...state.getAllUnit,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case GET_ALL_UNIT_SUCCESS: {
+            return {
+                ...state,
+                getAllUnit: {
+                    ...state.getAllUnit,
+                    loading: false,
+                    data: action.payload,
+                }
+            }
+        }
+
+        case GET_ALL_UNIT_ERROR: {
+            return {
+                ...state,
+                getAllUnit: {
+                    ...state.getAllUnit,
+                    loading: false,
+                    error: action.payload,
+                }
+            }
+        }
+
+        case GET_COMBO_DAFTAR_UNIT: {
+            return {
+                ...state,
+                getComboDaftarUnit: {
+                    ...state.getComboDaftarUnit,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case GET_COMBO_DAFTAR_UNIT_SUCCESS: {
+            return {
+                ...state,
+                getComboDaftarUnit: {
+                    ...state.getComboDaftarUnit,
+                    loading: false,
+                    data: action.payload,
+                }
+            }
+        }
+
+        case GET_COMBO_DAFTAR_UNIT_ERROR: {
+            return {
+                ...state,
+                getComboDaftarUnit: {
+                    ...state.getComboDaftarUnit,
+                    loading: false,
+                    error: action.payload,
+                }
+            }
+        }
+
+        case UPSERT_UNIT: {
+            return {
+                ...state,
+                upsertUnit: {
+                    ...state.upsertUnit,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case UPSERT_UNIT_SUCCESS: {
+            return {
+                ...state,
+                upsertUnit: {
+                    ...state.upsertUnit,
+                    loading: false,
+                    data: action.payload,
+                }
+            }
+        }
+
+        case UPSERT_UNIT_ERROR: {
+            return {
+                ...state,
+                upsertUnit: {
+                    ...state.upsertUnit,
+                    loading: false,
+                    error: action.payload,
+                }
+            }
+        }
+
+
         default: return { ...state };
     }
 }
 
-export default TempatTidur
+export default Sysadmin

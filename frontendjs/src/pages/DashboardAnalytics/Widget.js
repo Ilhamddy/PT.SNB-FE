@@ -6,6 +6,7 @@ import CountUp from "react-countup";
 import FeatherIcon from "feather-icons-react";
 
 const Widget = () => {
+    
     return (
         <React.Fragment>
             <Row>

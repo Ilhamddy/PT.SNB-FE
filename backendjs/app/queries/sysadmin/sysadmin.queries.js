@@ -79,7 +79,30 @@ GROUP BY
 	mu.namaunit
 `
 
+const qGetAllUnit = `
+SELECT
+	mu.id AS idunit,
+	mu.kdprofile AS kdprofile,
+	mu.statusenabled AS statusenabled,
+	mu.kodeexternal AS kodeexternal,
+	mu.namaexternal AS namaexternal,
+	mu.reportdisplay AS reportdisplay,
+	mu.objectinstalasifk AS objectinstalasifk,
+	mi.namainstalasi AS namainstalasi,
+	mu.namaunit AS namaunit
+FROM m_unit mu
+	LEFT JOIN m_instalasi mi ON mu.objectinstalasifk = mi.id
+WHERE 
+	CASE
+		WHEN (NULLIF($1, '')::int IS NULL)
+		THEN TRUE
+		ELSE mu.objectinstalasifk = NULLIF($1, '')::int
+	END
+ORDER BY mu.id ASC
+`
+
 export {
     qGetTempatTidur,
-    qGetUnitTempatTidur
+    qGetUnitTempatTidur,
+	qGetAllUnit
 }

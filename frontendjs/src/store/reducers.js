@@ -93,7 +93,7 @@ import BedahSentral from "./bedahSentral/reducer";
 import DaftarPasienOnline from "./daftarPasienOnline/reducer"
 import Berita from "./berita/reducer"
 import sumberDayaManusia from "./sumberDayaManusia/reducer";
-import TempatTidur from "./tempattidur/reducer";
+import Sysadmin from "./sysadmin/reducer";
 
 
 const rootReducer = combineReducers({
@@ -143,7 +143,7 @@ const rootReducer = combineReducers({
     DaftarPasienOnline,
     Berita,
     sumberDayaManusia,
-    TempatTidur
+    Sysadmin
 });
 
 export default rootReducer;

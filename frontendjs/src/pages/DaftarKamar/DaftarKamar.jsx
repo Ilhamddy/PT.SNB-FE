@@ -20,7 +20,7 @@ import {
   getTempatTidur,
   getUnitTempatTidur,
   upsertTempatTidur,
-} from '../../store/tempattidur/action'
+} from '../../store/sysadmin/action'
 import { Link, useNavigate } from 'react-router-dom'
 import ColLabelInput from '../../Components/ColLabelInput/ColLabelInput'
 import { useFormik } from 'formik'
@@ -28,17 +28,18 @@ import CustomSelect from '../Select/Select'
 import DataTable from 'react-data-table-component'
 import LoadingTable from '../../Components/Table/LoadingTable'
 import NoDataTable from '../../Components/Table/NoDataTable'
+import * as Yup from 'yup'
 
 const DaftarKamar = () => {
   const dispatch = useDispatch()
   const { tempatTidur, unitBed, unit, kelas, kamar, statusBed } = useSelector(
     (state) => ({
-      tempatTidur: state.TempatTidur.getTempatTidur.data || null,
-      unitBed: state.TempatTidur.getUnitTempatTidur.data?.kamars || [],
-      unit: state.TempatTidur.getComboTempatTidur.data?.unit || [],
-      kelas: state.TempatTidur.getComboTempatTidur.data?.kelas || [],
-      kamar: state.TempatTidur.getComboTempatTidur.data?.kamar || [],
-      statusBed: state.TempatTidur.getComboTempatTidur.data?.statusBed || [],
+      tempatTidur: state.Sysadmin.getTempatTidur.data || null,
+      unitBed: state.Sysadmin.getUnitTempatTidur.data?.kamars || [],
+      unit: state.Sysadmin.getComboTempatTidur.data?.unit || [],
+      kelas: state.Sysadmin.getComboTempatTidur.data?.kelas || [],
+      kamar: state.Sysadmin.getComboTempatTidur.data?.kamar || [],
+      statusBed: state.Sysadmin.getComboTempatTidur.data?.statusBed || [],
     })
   )
 
@@ -61,6 +62,12 @@ const DaftarKamar = () => {
       nobed: '',
       status: '',
     },
+    validationSchema: Yup.object({
+      kamar: Yup.string().required('Kamar harus diisi!'),
+      kelas: Yup.string().required('Kelas harus diisi!'),
+      nobed: Yup.string().required('No bed harus diisi!'),
+      status: Yup.string().required('Status harus diisi!'),
+    }),
     onSubmit: (values, { resetForm }) => {
       dispatch(
         upsertTempatTidur(values, () => {
