@@ -220,7 +220,7 @@ const DaftarUnit = () => {
         </Row>
       </Modal>
       <Container fluid>
-        <BreadCrumb title="Daftar Kasur" pageTitle="Kasur" />
+        <BreadCrumb title="Daftar Unit" pageTitle="unit" />
         <Card className="p-5">
           <Row>
             <ColLabelInput lg={3} label={'Instalasi'} inputId={'kelas-input'}>
