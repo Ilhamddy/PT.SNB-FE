@@ -54,4 +54,16 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.upsertUnit
     )
+
+    app.get(
+        "/api/transaksi/sysadmin/get-all-kamar",
+        [authJwt.verifyToken],
+        controller.getAllKamar
+    )
+
+    app.get(
+        "/api/transaksi/sysadmin/get-combo-daftar-kamar",
+        [authJwt.verifyToken],
+        controller.getComboDaftarKamar
+    )
 }

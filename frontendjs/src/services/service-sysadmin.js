@@ -30,4 +30,12 @@ export default class ServiceTempatTidur {
     upsertUnit = async (body) => {
         return await api.create("/transaksi/sysadmin/upsert-unit", body)
     }
+
+    getAllKamar = async (queries) => {
+        return await api.get("/transaksi/sysadmin/get-all-kamar", queries)
+    }
+
+    getComboDaftarKamar = async (queries) => {
+        return await api.get("/transaksi/sysadmin/get-combo-daftar-kamar", queries)
+    }
 }
