@@ -3,6 +3,7 @@ import {
     qGetAllUnit,
     qGetTempatTidur, 
     qGetUnitTempatTidur, 
+    qRoles, 
     statusBed 
 } from "../../../queries/sysadmin/sysadmin.queries";
 import db from "../../../models";
@@ -295,9 +296,10 @@ const upsertUnit = async (req, res) => {
 const getComboSysadmin = async (req, res) => {
     const logger = res.locals.logger;
     try{
-        
+        const result1 = await pool.query(qRoles)
+       
         const tempres = {
-        
+            role: result1.rows
         };
         res.status(200).send({
             msg: 'Success',
