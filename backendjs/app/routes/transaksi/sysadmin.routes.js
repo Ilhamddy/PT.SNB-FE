@@ -66,4 +66,9 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getComboDaftarKamar
     )
+    app.get(
+        "/api/transaksi/sysadmin/get-combo-sysadmin",
+        [authJwt.verifyToken],
+        controller.getComboSysadmin
+    )
 }
