@@ -1,10 +1,10 @@
 export const statusBed = {
-    ISI: 1,
-    KOSONG: 2,
-    ADMINISTRASI: 3,
-    TIDAK_TERPAKAI: 4,
-    DIBERSIHKAN: 5,
-    RUSAK: 6,
+	ISI: 1,
+	KOSONG: 2,
+	ADMINISTRASI: 3,
+	TIDAK_TERPAKAI: 4,
+	DIBERSIHKAN: 5,
+	RUSAK: 6,
 }
 
 
@@ -100,6 +100,7 @@ WHERE
 	END
 ORDER BY mu.id ASC
 `
+const qRoles = `select row_number() OVER (ORDER BY r.id) AS no,r.name,"permission"  from roles r`
 
 const qGetAllKamar = `
 SELECT
@@ -153,5 +154,6 @@ export {
     qGetTempatTidur,
     qGetUnitTempatTidur,
 	qGetAllUnit,
-	qGetAllKamar
+	qGetAllKamar,
+	qRoles
 }
