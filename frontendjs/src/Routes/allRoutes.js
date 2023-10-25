@@ -339,6 +339,7 @@ import ViewerOperasi from "../pages/ViewerOperasi/ViewerOperasi";
 // sysadmin
 import DaftarBed from "../pages/DaftarBed/DaftarBed";
 import DaftarUnit from "../pages/DaftarUnit/DaftarUnit";
+import DaftarKamar from "../pages/DaftarKamar/DaftarKamar";
 
 
 
@@ -670,6 +671,7 @@ const authProtectedRoutes = [
   // sysadmin
   { path: "/sysadmin/daftar-bed", component: <DaftarBed />},
   { path: "/sysadmin/daftar-unit", component: <DaftarUnit />},
+  { path: "/sysadmin/daftar-kamar", component: <DaftarKamar />},
 
 ];
 

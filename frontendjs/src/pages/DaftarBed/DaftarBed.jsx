@@ -30,7 +30,7 @@ import LoadingTable from '../../Components/Table/LoadingTable'
 import NoDataTable from '../../Components/Table/NoDataTable'
 import * as Yup from 'yup'
 
-const DaftarKamar = () => {
+const DaftarBed = () => {
   const dispatch = useDispatch()
   const { tempatTidur, unitBed, unit, kelas, kamar, statusBed } = useSelector(
     (state) => ({
@@ -484,4 +484,4 @@ const subTableCustomStyles = {
   },
 }
 
-export default DaftarKamar
+export default DaftarBed

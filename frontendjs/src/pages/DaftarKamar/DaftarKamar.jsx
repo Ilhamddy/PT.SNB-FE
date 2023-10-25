@@ -12,3 +12,5 @@ const DaftarKamar = () => {
     </div>
   )
 }
+
+export default DaftarKamar
