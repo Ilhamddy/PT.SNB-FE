@@ -10,6 +10,7 @@ import { pasienSignup } from "../../auth/authhelper";
 import { belumDiperiksa, iconPenunjang, iconRI, iconRJ, sedangDiperiksa, selesaiDiperiksa, siapPakai, totalTempatRusak, totalTempatTerisi } from "./icon";
 import { getDateStartEnd, getDateStartEndNull } from "../../../utils/dateutils";
 import { hCreateNoreg } from "../../daftarmandiri/daftarpasienlama/daftarpasienlama.controller";
+import { daftarUnit } from "../../../queries/farmasi/farmasi.queries";
 
 const m_pasien = db.m_pasien
 const running_Number = db.running_number
@@ -850,7 +851,10 @@ const getDaftarPasienFarmasi = async (req, res) => {
             tglregistrasi = ` and td.tglregistrasi between '${todaystart}'
             and '${todayend}' `;
         }
-        let query = queries.getDaftarPasienRegistrasi(`where td.statusenabled=true AND ta.objectunitfk = 14`) 
+        let query = queries.getDaftarPasienRegistrasi(`
+        where 
+            td.statusenabled=true 
+        AND ta.objectunitfk = ${daftarUnit.UNIT_FARMASI}`) 
         const result = await pool.query(query)
         //TODO: harusnya level query
         let final = []

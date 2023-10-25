@@ -337,6 +337,8 @@ import MasterJadwalDokter from "../pages/JadwalDokter/MasterJadwalDokter";
 import ViewerOperasi from "../pages/ViewerOperasi/ViewerOperasi";
 
 // sysadmin
+import DaftarBed from "../pages/DaftarBed/DaftarBed";
+import DaftarUnit from "../pages/DaftarUnit/DaftarUnit";
 import DaftarKamar from "../pages/DaftarKamar/DaftarKamar";
 import RoleAcces from "../pages/SysAdmin/RoleAcces/RoleAcces";
 
@@ -668,6 +670,8 @@ const authProtectedRoutes = [
   { path: "/sumberdayamanusia/biodata-pegawai/:idPegawai", component: <BiodataPegawai /> },
 
   // sysadmin
+  { path: "/sysadmin/daftar-bed", component: <DaftarBed />},
+  { path: "/sysadmin/daftar-unit", component: <DaftarUnit />},
   { path: "/sysadmin/daftar-kamar", component: <DaftarKamar />},
   { path: "/sysadmin/role-acces", component: <RoleAcces />},
 ];

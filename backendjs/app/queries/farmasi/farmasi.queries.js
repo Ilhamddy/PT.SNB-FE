@@ -1,3 +1,7 @@
+export const daftarUnit = {
+    UNIT_FARMASI: 14,
+    GUDANG_FARMASI: 16
+}
 const qGetObatFromProduct = `
 SELECT
     tsu.objectprodukfk AS value,

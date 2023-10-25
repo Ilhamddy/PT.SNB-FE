@@ -83,7 +83,7 @@ import bedahSentralSaga from "./bedahSentral/saga";
 import daftarPasienOnline from "./daftarPasienOnline/saga"
 import beritaSaga from "./berita/saga"
 import sumberDayaManusia from "./sumberDayaManusia/saga";
-import TempatTidurSaga from "./tempattidur/saga";
+import SysadminSaga from "./sysadmin/saga";
 
 
 export default function* rootSaga() {
@@ -132,6 +132,6 @@ export default function* rootSaga() {
     fork(daftarPasienOnline),
     fork(beritaSaga),
     fork(sumberDayaManusia),
-    fork(TempatTidurSaga),
+    fork(SysadminSaga),
   ]);
 }

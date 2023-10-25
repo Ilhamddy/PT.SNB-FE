@@ -6,7 +6,7 @@ import {
     createTransaction
 } from "../../../utils/dbutils";
 import { hProcessOrderResep } from "../emr/emr.controller";
-import { qGetAllVerif, qGetObatFromProduct, qGetPasienFromId } from "../../../queries/farmasi/farmasi.queries";
+import { daftarUnit, qGetAllVerif, qGetObatFromProduct, qGetPasienFromId } from "../../../queries/farmasi/farmasi.queries";
 import { generateKodeBatch, hCreateKartuStok } from "../gudang/gudang.controller";
 
 const t_verifresep = db.t_verifresep
@@ -423,7 +423,7 @@ const getAntreanFromDP = async (req, res) => {
                 transaction: transaction
             })
             let antreanFarmasi = [...dataAllAntrean].filter((item) => {
-                return item.objectunitfk === 14
+                return item.objectunitfk === daftarUnit.UNIT_FARMASI
             })
             antreanFarmasi = antreanFarmasi.map((item) => {
                 return {
@@ -431,7 +431,7 @@ const getAntreanFromDP = async (req, res) => {
                 }
             })
             let antreanNonFarmasi = [...dataAllAntrean].filter((item) => {
-                return item.objectunitfk !== 14
+                return item.objectunitfk !== daftarUnit.UNIT_FARMASI
             })
             antreanNonFarmasi = 
                 await Promise.all(antreanNonFarmasi.map(async (item) => {
@@ -449,7 +449,7 @@ const getAntreanFromDP = async (req, res) => {
                             ...dataAp,
                             norec: uuid.v4().substring(0, 32),
                             objectunitasalfk: dataAp.objectunitfk,
-                            objectunitfk: 14,
+                            objectunitfk: daftarUnit.UNIT_FARMASI,
                         }, {
                             transaction: transaction
                         })
@@ -620,7 +620,7 @@ const createAntreanFarmasi = async (req, res) => {
                     tglmasuk: new Date(),
                     tglkeluar: null,
                     objectdokterpemeriksafk: daftarPasien.objectdokterpemeriksafk,
-                    objectunitfk: 14,
+                    objectunitfk: daftarUnit.UNIT_FARMASI,
                     noantrian: null,
                     objectkamarfk: null,
                     objectkelasfk: null,

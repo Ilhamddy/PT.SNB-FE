@@ -73,6 +73,7 @@ import m_penjaminpasienModel from "./m_penjaminpasien.model.js";
 import t_pelayananpasientempModel from "./t_pelayananpasientemp.model.js";
 import t_beritaModel from "./t_berita.model.js";
 import m_pegawaiModel from "./m_pegawai.model.js";
+import m_unitModel from "./m_unit.model.js";
 
 const sequelize = new Sequelize(
   config.DB,
@@ -107,6 +108,7 @@ db.user_roles = user_rolesModel(sequelize, sequelizeInstance);
 db.m_pasien = m_pasienM(sequelize, sequelizeInstance);
 db.running_number = running_numberM(sequelize,sequelizeInstance);
 db.m_tempattidur = m_tempattidurM(sequelize,sequelizeInstance);
+db.m_unit = m_unitModel(sequelize,sequelizeInstance);
 // transaksi
 db.t_daftarpasien = t_daftarpasienM(sequelize,sequelizeInstance);
 db.t_antreanpemeriksaan = t_antreanpemeriksaanM(sequelize,sequelizeInstance);
