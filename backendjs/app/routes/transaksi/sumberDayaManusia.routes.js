@@ -54,5 +54,10 @@ export default function (app) {
         "/api/transaksi/sumber-daya-manusia/update-user-role",
         [authJwt.verifyToken],
         controller.updateUserRole
-    )
+    );
+    app.post(
+        "/api/transaksi/sumber-daya-manusia/update-reset-password",
+        [authJwt.verifyToken],
+        controller.updateResetPassword
+    );
 }

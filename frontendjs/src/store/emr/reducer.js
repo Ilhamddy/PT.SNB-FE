@@ -119,7 +119,8 @@ import {
     GET_WIDGET_EFISIENSI_KLAIM_ERROR,
     UPDATE_ESTIMASI_KLAIM,
     UPDATE_ESTIMASI_KLAIM_SUCCESS,
-    UPDATE_ESTIMASI_KLAIM_ERROR
+    UPDATE_ESTIMASI_KLAIM_ERROR,
+    COMBO_ALL_TINDAKAN_GET, COMBO_ALL_TINDAKAN_GET_SUCCESS, COMBO_ALL_TINDAKAN_GET_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -338,7 +339,12 @@ const INIT_STATE = {
         loading: false,
         error: null,
         success: false
-    }
+    },
+    comboAllTindakan: {
+        data: [],
+        loading: false,
+        error: null,
+    },
 };
 
 const Emr = (state = INIT_STATE, action) => {
@@ -453,6 +459,9 @@ const Emr = (state = INIT_STATE, action) => {
                 },
                 updateEstimasiKlaim:{
                     ...INIT_STATE.updateEstimasiKlaim
+                },
+                comboAllTindakan:{
+                    ...INIT_STATE.comboAllTindakan
                 }
             }
         }
@@ -1805,6 +1814,39 @@ const Emr = (state = INIT_STATE, action) => {
                     error: action.payload,
                 },
             };
+        }
+
+        case COMBO_ALL_TINDAKAN_GET: {
+            return {
+                ...state,
+                comboAllTindakan: {
+                    ...state.comboAllTindakan,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case COMBO_ALL_TINDAKAN_GET_SUCCESS: {
+            return {
+                ...state,
+                comboAllTindakan: {
+                    ...state.comboAllTindakan,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case COMBO_ALL_TINDAKAN_GET_ERROR: {
+            return {
+                ...state,
+                comboAllTindakan: {
+                    ...state.comboAllTindakan,
+                    loading: false,
+                    error: action.error,
+                }
+            }
         }
 
 

@@ -10,7 +10,7 @@ import classnames from "classnames";
 import {
     emrDiagnosaxSave, emrResetForm, emrComboGet, emrDiagnosaxGet, emrListDiagnosaxGet,
     deleteDiagnosax, comboHistoryUnitGet, emrDiagnosaixGet, emrListDiagnosaixGet,
-    deleteDiagnosaix, emrDiagnosaixSave, comboTindakanGet, savePelayananPasienTemp,
+    deleteDiagnosaix, emrDiagnosaixSave, comboAllTindakan, savePelayananPasienTemp,
     getListPelayananPasienTemp, deletePelayananPasienTemp, getWidgetEfisiensiKlaim,
     bridgingInacbgSave, updateEstimasiKlaim
 } from "../../../store/actions";
@@ -33,7 +33,7 @@ const EfisiensiBPJS = () => {
         newDataDelete, newDataDeleteix, dataTindakan,
         newDataPelayanan, dataListTindakan, loadingListTindakan,
         newDataDeletePelayanan, dataWidget,
-        newData, success, loading, error, newDataUpdateEstimasiKlaim,successUpdateEstimasiKlaim } = useSelector((state) => ({
+        newData, success, loading, error, newDataUpdateEstimasiKlaim, successUpdateEstimasiKlaim } = useSelector((state) => ({
             newData: state.Casemix.bridgingInacbgSave.newData,
             success: state.Casemix.bridgingInacbgSave.success,
             loading: state.Casemix.bridgingInacbgSave.loading,
@@ -55,7 +55,7 @@ const EfisiensiBPJS = () => {
             loadingDiagnosax: state.Emr.emrDiagnosaxSave.loading,
             newDataDelete: state.Emr.deleteDiagnosax.newData,
             newDataDeleteix: state.Emr.deleteDiagnosaix.newData,
-            dataTindakan: state.Emr.comboTindakanGet.data,
+            dataTindakan: state.Emr.comboAllTindakan.data,
             newDataPelayanan: state.Emr.savePelayananPasienTemp.newData,
             dataListTindakan: state.Emr.getListPelayananPasienTemp.data,
             loadingListTindakan: state.Emr.getListPelayananPasienTemp.loading,
@@ -240,7 +240,7 @@ const EfisiensiBPJS = () => {
             harga: 0
         },
         validationSchema: Yup.object({
-            unitlast: Yup.string().required("Unit wajib diisi"),
+            // unitlast: Yup.string().required("Unit wajib diisi"),
             tindakan: Yup.string().required("Tindakan wajib diisi"),
         }),
         onSubmit: (values, { resetForm }) => {
@@ -271,7 +271,7 @@ const EfisiensiBPJS = () => {
         setHarga(selected.totalharga)
         hargaRef.current = selected.totalharga
         vSetValidationTindakan.setFieldValue('quantity', count)
-
+        vSetValidationTindakan.setFieldValue('objectkelasfk', selected.objectkelasfk)
     }
     const handleUnitLast = (selected) => {
         vSetValidationTindakan.setFieldValue('unitlast', selected.value)
@@ -280,7 +280,7 @@ const EfisiensiBPJS = () => {
     const handleTindakan = characterEntered => {
         if (characterEntered.length > 3) {
             // useEffect(() => {
-            dispatch(comboTindakanGet(vSetValidationTindakan.values.objectkelasfk + '&objectunitfk=' + vSetValidationTindakan.values.unitlast + '&namaproduk=' + characterEntered));
+            dispatch(comboAllTindakan({ namaproduk: characterEntered }));
             // }, [dispatch]);
         }
     };
@@ -322,12 +322,12 @@ const EfisiensiBPJS = () => {
             sortable: true,
             width: "250px"
         },
-        {
-            name: <span className='font-weight-bold fs-13'>Nama Unit</span>,
-            selector: row => row.namaunit,
-            sortable: true,
-            width: "250px"
-        },
+        // {
+        //     name: <span className='font-weight-bold fs-13'>Nama Unit</span>,
+        //     selector: row => row.namaunit,
+        //     sortable: true,
+        //     width: "250px"
+        // },
         {
             name: <span className='font-weight-bold fs-13'>Kelas</span>,
             selector: row => row.namakelas,
@@ -515,6 +515,7 @@ const EfisiensiBPJS = () => {
             />
             <Row className="gy-4">
                 <UiContent />
+                <p style={{ fontSize: '20px', textAlign: 'center', color: 'red' }} className="fw-semibold">informasi harga pada tab ini hanya digunakan untuk melakukan simulasi estimasi harga sebagai referensi</p>
                 <Row className="row-cols-xxl-4 row-cols-lg-3 row-cols-1">
                     {dataWidget.map((item, key) => (
                         <Col key={key}>
@@ -524,7 +525,7 @@ const EfisiensiBPJS = () => {
                                         <div>
                                             <p className="fw-medium mb-0">{item.label}</p>
                                             <h2 className="mt-4 ff-secondary fw-semibold">
-                                                <span className="counter-value" style={{ fontSize: "2rem", color:item.color }}>
+                                                <span className="counter-value" style={{ fontSize: "2rem", color: item.color }}>
                                                     <CountUp
                                                         start={0}
                                                         end={item.total}
@@ -759,7 +760,7 @@ const EfisiensiBPJS = () => {
                             className="gy-4"
                             action="#">
                             <Row className="gy-4">
-                                <Col lg={2}>
+                                {/* <Col lg={2}>
                                     <div className="mt-2">
                                         <Label className="form-label">Unit</Label>
                                     </div>
@@ -780,7 +781,7 @@ const EfisiensiBPJS = () => {
                                                 <div>{vSetValidationTindakan.errors.unitlast}</div>
                                             </FormFeedback>
                                         )}
-                                </Col>
+                                </Col> */}
                                 <Col lg={2}>
                                     <div className="mt-2">
                                         <Label className="form-label">Tanggal Tindakan</Label>

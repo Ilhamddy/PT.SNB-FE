@@ -47,7 +47,7 @@ async function getListProdukToKelasToUnit(req, res) {
         const resultlistantreanpemeriksaan = await queryPromise2(`select mp.namaproduk as label,mp.id as value,mth.objectkelasfk,mm.objectunitfk,mu.reportdisplay,mth.totalharga  from m_mapunittoproduk mm
         join m_produk mp on mp.id=mm.objectprodukfk
         join m_unit mu on mu.id=mm.objectunitfk
-        join m_totalhargaprodukbykelas mth on mth.objectmapunittoprodukfk=mm.id and mth.objectprodukfk=mp.id
+        join m_totalhargaprodukbykelas mth on mth.objectprodukfk=mp.id
         where mth.objectkelasfk =${objectkelasfk} and mm.objectunitfk =${objectunitfk} 
         and mp.namaproduk ilike '%${req.query.namaproduk}%'`);
 
@@ -304,7 +304,7 @@ const savePelayananPasienTemp = async (req, res) => {
                 qty: req.body.quantity,
                 total: req.body.harga * req.body.quantity,
                 objectkelasfk: req.body.objectkelasfk,
-                objectunitfk: req.body.unitlast
+                // objectunitfk: req.body.unitlast
             }, { transaction });
 
             return { pelayananPasien }
@@ -479,6 +479,32 @@ const updateEstimasiKlaim = async (req, res) => {
         });
     }
 }
+
+async function getAllListProduk(req, res) {
+    const logger = res.locals.logger
+    try {
+        const resultlistantreanpemeriksaan = await queryPromise2(`select mp.namaproduk ||' ('||mk.namakelas||')' as label,mp.id as value,mth.objectkelasfk,mm.objectunitfk,mu.reportdisplay,mth.totalharga  from m_mapunittoproduk mm
+        join m_produk mp on mp.id=mm.objectprodukfk
+        join m_unit mu on mu.id=mm.objectunitfk
+        join m_totalhargaprodukbykelas mth on mth.objectprodukfk=mp.id
+        join m_kelas mk on mk.id=mth.objectkelasfk
+        where mp.namaproduk ilike '%${req.query.namaproduk}%'`);
+
+        let tempres = resultlistantreanpemeriksaan.rows
+
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+        });
+
+    } catch (error) {
+        logger.error(error)
+        res.status(500).send({ message: error });
+    }
+
+}
+
 export default {
     getListAntreanPemeriksaan,
     getListProdukToKelasToUnit,
@@ -491,5 +517,6 @@ export default {
     getListPelayananPasienTemp,
     deletePelayananPasienTemp,
     getWidgetEfisiensiKlaim,
-    updateEstimasiKlaim
+    updateEstimasiKlaim,
+    getAllListProduk
 };

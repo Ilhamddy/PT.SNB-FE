@@ -55,7 +55,7 @@ async function getDetailJenisProdukLab(req, res) {
                     const resultlistantreanpemeriksaan = await queryPromise2(`select mp.namaproduk as label,mp.id as value,mth.objectkelasfk,mm.objectunitfk,mu.reportdisplay,mth.totalharga  from m_mapunittoproduk mm
                         join m_produk mp on mp.id=mm.objectprodukfk
                         join m_unit mu on mu.id=mm.objectunitfk
-                        join m_totalhargaprodukbykelas mth on mth.objectmapunittoprodukfk=mm.id and mth.objectprodukfk=mp.id
+                        join m_totalhargaprodukbykelas mth on mth.objectprodukfk=mp.id
                         where mth.objectkelasfk =8 and mm.objectunitfk =12 
                         and mp.id =${resultlistOrder.rows[x].value}`);
                     for (let y = 0; y < resultlistantreanpemeriksaan.rows.length; y++) {
@@ -654,7 +654,7 @@ async function getMasterLayananLaboratorium(req, res) {
     try {
 
         const resultlist = await queryPromise2(`select
-        mp.id,case when mp.statusenabled = true then 'AKTIP' else 'NONAKTIP' end as status,
+        mp.id,case when mp.statusenabled = true then 'AKTIF' else 'NONAKTIF' end as status,
         mp.kodeexternal,
         mp.namaproduk,md.detailjenisproduk 
     from

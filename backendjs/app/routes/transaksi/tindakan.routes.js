@@ -25,6 +25,12 @@ export default function (app) {
     );
 
     app.get(
+        "/api/transaksi/tindakan/all-list-produk",
+        [authJwt.verifyToken],
+        controller.getAllListProduk
+    );
+
+    app.get(
         "/api/transaksi/tindakan/list-jenis-pelaksana",
         [authJwt.verifyToken],
         controller.getListJenisPelaksana

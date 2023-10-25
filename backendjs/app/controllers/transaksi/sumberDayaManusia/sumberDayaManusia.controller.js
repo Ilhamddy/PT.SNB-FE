@@ -7,6 +7,7 @@ import pegawaiQueries from '../../../queries/master/pegawai/pegawai.queries'
 import kamarQueries from "../../../queries/master/kamar/kamar.queries";
 import hariQueries from "../../../queries/master/hari/hari.queries";
 import { getTimeOnly } from "../../../utils/dateutils";
+import bcrypt from "bcryptjs";
 
 const queryPromise2 = (query) => {
     return new Promise((resolve, reject) => {
@@ -476,6 +477,41 @@ const updateUserRole = async (req, res) => {
     }
 }
 
+const updateResetPassword = async (req, res) => {
+    const logger = res.locals.logger;
+    try {
+        const { pegawai } = await db.sequelize.transaction(async (transaction) => {
+           
+            const pegawai = await db.user.update({
+                password: bcrypt.hashSync(req.body.password, 8),
+            }, {
+                where: {
+                    id: req.body.idUser,
+                },
+                transaction: transaction
+            });
+            return { pegawai }
+        });
+        const tempres = {
+
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: pegawai,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export default {
     getDaftarPegawai,
     getComboSDM,
@@ -486,4 +522,5 @@ export default {
     getJadwalDokter,
     upsertJadwal,
     updateUserRole,
+    updateResetPassword
 }

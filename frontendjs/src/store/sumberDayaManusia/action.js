@@ -13,7 +13,8 @@ GET_JADWAL_DOKTER_SDM_SUCCESS,
 GET_JADWAL_DOKTER_SDM_ERROR,
 UPSERT_JADWAL,
 UPSERT_JADWAL_SUCCESS,
-UPSERT_JADWAL_ERROR, } from "./actionType";
+UPSERT_JADWAL_ERROR,
+UPDATE_RESET_PASSWORD,UPDATE_RESET_PASSWORD_SUCCESS,UPDATE_RESET_PASSWORD_ERROR } from "./actionType";
 
 export const sdmResetForm = () => ({
     type: SDM_RESET_FORM,
@@ -159,5 +160,23 @@ export const upsertJadwalSuccess = (data) => ({
 
 export const upsertJadwalError = (error) => ({
     type: UPSERT_JADWAL_ERROR,
+    payload: error
+});
+
+export const updateResetPassword = (body, callback) => ({
+    type: UPDATE_RESET_PASSWORD,
+    payload: {
+        body: body,
+        callback: callback
+    }
+});
+
+export const updateResetPasswordSuccess = (data) => ({
+    type: UPDATE_RESET_PASSWORD_SUCCESS,
+    payload: data
+});
+
+export const updateResetPasswordError = (error) => ({
+    type: UPDATE_RESET_PASSWORD_ERROR,
     payload: error
 });
