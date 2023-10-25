@@ -129,6 +129,12 @@ const DaftarKamar = () => {
   ]
   const columnsBed = [
     {
+      name: <span className="font-weight-bold fs-13">Nama Bed</span>,
+      selector: (row) => row.namatt,
+      sortable: true,
+      width: '200px',
+    },
+    {
       name: <span className="font-weight-bold fs-13">Kamar</span>,
       selector: (row) => row.namakamar,
       sortable: true,
@@ -139,13 +145,13 @@ const DaftarKamar = () => {
       selector: (row) => row.kelas,
       sortable: true,
       // selector: row => (<button className="btn btn-sm btn-soft-info" onClick={() => handleClick(dataTtv)}>{row.noregistrasi}</button>),
-      width: '100px',
+      width: '120px',
     },
     {
       name: <span className="font-weight-bold fs-13">No Bed</span>,
       selector: (row) => row.nobed,
       sortable: true,
-      width: '200px',
+      width: '100px',
     },
     {
       name: <span className="font-weight-bold fs-13">Status Bed</span>,
@@ -424,7 +430,7 @@ const DaftarKamar = () => {
                   columns={columnsBed}
                   data={data.tempattidur}
                   progressPending={false}
-                  customStyles={tableCustomStyles}
+                  customStyles={subTableCustomStyles}
                   progressComponent={<LoadingTable />}
                   noDataComponent={<NoDataTable dataName={'kamar'} />}
                 />
@@ -446,6 +452,21 @@ const tableCustomStyles = {
     style: {
       color: '#ffffff',
       backgroundColor: '#e67e22',
+    },
+  },
+  rows: {
+    style: {
+      color: 'black',
+      backgroundColor: '#f1f2f6',
+    },
+  },
+}
+
+const subTableCustomStyles = {
+  headRow: {
+    style: {
+      color: '#ffffff',
+      backgroundColor: '#FFC727',
     },
   },
   rows: {
