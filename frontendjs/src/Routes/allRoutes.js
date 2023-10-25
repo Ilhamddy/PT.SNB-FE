@@ -335,6 +335,8 @@ import BiodataPegawai from "../pages/SumberDayaManusia/BiodataPegawai/BiodataPeg
 import AddObatFarmasi from "../pages/AddObatFarmasi/AddObatFarmasi";
 import MasterJadwalDokter from "../pages/JadwalDokter/MasterJadwalDokter";
 import ViewerOperasi from "../pages/ViewerOperasi/ViewerOperasi";
+
+// sysadmin
 import DaftarKamar from "../pages/DaftarKamar/DaftarKamar";
 
 
