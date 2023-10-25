@@ -101,8 +101,57 @@ WHERE
 ORDER BY mu.id ASC
 `
 
+const qGetAllKamar = `
+SELECT
+	mk.id AS idkamar,
+	mk.kdprofile AS kdprofile,
+	mk.statusenabled AS statusenabled,
+	mk.kodeexternal AS kodeexternal,
+	mk.namaexternal AS namaexternal,
+	mk.reportdisplay AS reportdisplay,
+	mk.objectkelasfk AS objectkelasfk,
+	mkel.namakelas AS namakelas,
+	mk.objectunitfk AS objectunitfk,
+	mu.namaunit AS namaunit,
+	mk.namakamar AS namakamar,
+	mk.qtybed AS qtybed,
+	mk.jumlahbedisi AS jumlahbedisi,
+	mk.jumlahbedkosong AS jumlahbedkosong,
+	mk.keterangan AS keterangan,
+	mk.objectprodukfk AS objectprodukfk,
+	mk.objectruangperawatankemenkesfk AS objectruangperawatankemenkesfk,
+	mk.tglupdate AS tglupdate,
+	mk.produkfk AS produkfk
+FROM m_kamar mk
+	LEFT JOIN m_kelas mkel ON mk.objectkelasfk = mkel.id
+	LEFT JOIN m_unit mu ON mk.objectunitfk = mu.id
+WHERE 
+	true 
+	AND
+		CASE
+			WHEN (NULLIF($1, '')::int IS NULL)
+			THEN TRUE
+			ELSE mk.objectunitfk = NULLIF($1, '')::int
+		END
+	AND
+		CASE
+			WHEN (NULLIF($2, '')::int IS NULL)
+			THEN TRUE
+			ELSE mk.objectkelasfk = NULLIF($2, '')::int
+		END
+	AND 
+		CASE
+			WHEN $3 = ''
+			THEN TRUE
+			ELSE mk.namakamar ILIKE '%' || $3 || '%'
+		END
+ORDER BY mk.id ASC
+			
+`
+
 export {
     qGetTempatTidur,
     qGetUnitTempatTidur,
-	qGetAllUnit
+	qGetAllUnit,
+	qGetAllKamar
 }

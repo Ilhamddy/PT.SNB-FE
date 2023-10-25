@@ -105,7 +105,7 @@ const DaftarUnit = () => {
           Edit
         </Button>
       ),
-      sortable: true,
+      sortable: false,
       width: '150px',
     },
   ]

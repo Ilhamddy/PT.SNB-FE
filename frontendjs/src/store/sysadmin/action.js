@@ -19,7 +19,13 @@ import {
     GET_COMBO_DAFTAR_UNIT_ERROR,
     UPSERT_UNIT,
     UPSERT_UNIT_SUCCESS,
-    UPSERT_UNIT_ERROR
+    UPSERT_UNIT_ERROR,
+    GET_ALL_KAMAR,
+    GET_ALL_KAMAR_SUCCESS,
+    GET_ALL_KAMAR_ERROR,
+    GET_COMBO_DAFTAR_KAMAR,
+    GET_COMBO_DAFTAR_KAMAR_SUCCESS,
+    GET_COMBO_DAFTAR_KAMAR_ERROR,
 } from "./actionType";
 
 
@@ -141,5 +147,39 @@ export const upsertUnitSuccess = (data) => ({
 
 export const upsertUnitError = (error) => ({
     type: UPSERT_UNIT_ERROR,
+    payload: error,
+});
+
+export const getAllKamar = (queries) => ({
+    type: GET_ALL_KAMAR,
+    payload: {
+        queries,
+    },
+});
+
+export const getAllKamarSuccess = (data) => ({
+    type: GET_ALL_KAMAR_SUCCESS,
+    payload: data,
+});
+
+export const getAllKamarError = (error) => ({
+    type: GET_ALL_KAMAR_ERROR,
+    payload: error,
+});
+
+export const getComboDaftarKamar = (queries) => ({
+    type: GET_COMBO_DAFTAR_KAMAR,
+    payload: {
+        queries,
+    },
+});
+
+export const getComboDaftarKamarSuccess = (data) => ({
+    type: GET_COMBO_DAFTAR_KAMAR_SUCCESS,
+    payload: data,
+});
+
+export const getComboDaftarKamarError = (error) => ({
+    type: GET_COMBO_DAFTAR_KAMAR_ERROR,
     payload: error,
 });

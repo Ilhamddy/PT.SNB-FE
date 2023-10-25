@@ -1003,7 +1003,7 @@ const Navdata = () => {
             subItems: [
                 {
                     id: "daftar-bed",
-                    label: "Daftar Kasur",
+                    label: "Daftar Bed",
                     link: "/sysadmin/daftar-bed",
                     parentId: "sysadmin",
                 },
@@ -1011,6 +1011,12 @@ const Navdata = () => {
                     id: "daftar-unit",
                     label: "Daftar Unit",
                     link: "/sysadmin/daftar-unit",
+                    parentId: "sysadmin",
+                },
+                {
+                    id: "daftar-kamar",
+                    label: "Daftar Kamar",
+                    link: "/sysadmin/daftar-kamar",
                     parentId: "sysadmin",
                 },
             ]

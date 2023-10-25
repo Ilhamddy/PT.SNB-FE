@@ -1,5 +1,6 @@
 import pool from "../../../config/dbcon.query";
 import { 
+    qGetAllKamar,
     qGetAllUnit,
     qGetTempatTidur, 
     qGetUnitTempatTidur, 
@@ -292,6 +293,61 @@ const upsertUnit = async (req, res) => {
     }
 }
 
+const getComboDaftarKamar = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const unit = (await pool.query(unitQueries.getRawatInap)).rows;
+        const kelas = (await pool.query(kelasQueries.getAll)).rows;
+        const tempres = {
+            unit,
+            kelas
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+const getAllKamar = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const { kelas, unit, kamar: qKamar } = req.query;
+        const kamar = (await pool.query(qGetAllKamar, [
+            unit || '', 
+            kelas || '', 
+            qKamar || ''
+        ])).rows
+        const tempres = {
+            kamar: kamar
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export default {
     getTempatTidur,
     getUnitTempatTidur,
@@ -299,5 +355,7 @@ export default {
     upsertTempatTidur,
     getAllUnit,
     getComboDaftarUnit,
-    upsertUnit
+    upsertUnit,
+    getAllKamar,
+    getComboDaftarKamar
 }

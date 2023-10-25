@@ -19,7 +19,13 @@ import {
     GET_COMBO_DAFTAR_UNIT_ERROR,
     UPSERT_UNIT,
     UPSERT_UNIT_SUCCESS,
-    UPSERT_UNIT_ERROR
+    UPSERT_UNIT_ERROR,
+    GET_ALL_KAMAR,
+    GET_ALL_KAMAR_SUCCESS,
+    GET_ALL_KAMAR_ERROR,
+    GET_COMBO_DAFTAR_KAMAR,
+    GET_COMBO_DAFTAR_KAMAR_SUCCESS,
+    GET_COMBO_DAFTAR_KAMAR_ERROR,
 } from "./actionType";
 
 const INIT_STATE = {
@@ -57,7 +63,17 @@ const INIT_STATE = {
         data: [],
         loading: false,
         error: null,
-    }
+    },
+    getAllKamar: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    getComboDaftarKamar: {
+        data: [],
+        loading: false,
+        error: null,
+    },
 };
 
 const Sysadmin = (state = INIT_STATE, action) => {
@@ -287,6 +303,72 @@ const Sysadmin = (state = INIT_STATE, action) => {
                 ...state,
                 upsertUnit: {
                     ...state.upsertUnit,
+                    loading: false,
+                    error: action.payload,
+                }
+            }
+        }
+
+        case GET_ALL_KAMAR: {
+            return {
+                ...state,
+                getAllKamar: {
+                    ...state.getAllKamar,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case GET_ALL_KAMAR_SUCCESS: {
+            return {
+                ...state,
+                getAllKamar: {
+                    ...state.getAllKamar,
+                    loading: false,
+                    data: action.payload,
+                }
+            }
+        }
+
+        case GET_ALL_KAMAR_ERROR: {
+            return {
+                ...state,
+                getAllKamar: {
+                    ...state.getAllKamar,
+                    loading: false,
+                    error: action.payload,
+                }
+            }
+        }
+
+        case GET_COMBO_DAFTAR_KAMAR: {
+            return {
+                ...state,
+                getComboDaftarKamar: {
+                    ...state.getComboDaftarKamar,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case GET_COMBO_DAFTAR_KAMAR_SUCCESS: {
+            return {
+                ...state,
+                getComboDaftarKamar: {
+                    ...state.getComboDaftarKamar,
+                    loading: false,
+                    data: action.payload,
+                }
+            }
+        }
+
+        case GET_COMBO_DAFTAR_KAMAR_ERROR: {
+            return {
+                ...state,
+                getComboDaftarKamar: {
+                    ...state.getComboDaftarKamar,
                     loading: false,
                     error: action.payload,
                 }
