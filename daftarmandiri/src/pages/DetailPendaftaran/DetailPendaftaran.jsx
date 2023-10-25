@@ -23,7 +23,7 @@ const DetailPendaftaran = () => {
     <KontainerPage top={'0'} ref={refKontainer} className="detail-pendaftaran">
       <div className="page-detail-pendaftaran">
         <BackKomponen refKontainer={refKontainer} text="Pilih Jadwal" />
-        <img src={BgPendaftaran} className="bg-pendaftaran" />
+        <img alt="" src={BgPendaftaran} className="bg-pendaftaran" />
         <div className="kontainer-pasien-baru">
           <h3 className="judul-pasien">
             {!dataRegistrasi?.nocm ? (

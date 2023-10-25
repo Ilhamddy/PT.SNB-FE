@@ -186,7 +186,7 @@ const DaftarKamar = () => {
     dispatch(getComboTempatTidur())
   }, [dispatch, vFilter.initialValues])
   return (
-    <div className="page-content page-list-penerimaan">
+    <div className="page-content page-daftar-kamar">
       <ToastContainer closeButton={false} />
       <Modal
         isOpen={vTempatTidur.values.open}
