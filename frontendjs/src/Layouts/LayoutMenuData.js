@@ -1007,6 +1007,12 @@ const Navdata = () => {
                     link: "/sysadmin/daftar-kamar",
                     parentId: "sysadmin",
                 },
+                {
+                    id: "registrasi-pasien-lama",
+                    label: "Role Acces",
+                    link: "/sysadmin/role-acces",
+                    parentId: "sysadmin",
+                },
             ]
         }
     ];
