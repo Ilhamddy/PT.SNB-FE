@@ -238,9 +238,6 @@ const DaftarPasienRI = () => {
                                                         />
                                                     </span>
                                                 </h2>
-                                                {/* <p className="mb-0 text-muted"><span className={"badge bg-light mb-0 text-" + item.badgeClass}>
-                                                    <i className={"align-middle " + item.badge}></i> {item.percentage}
-                                                </span> vs. previous month</p> */}
                                             </div>
                                             <div>
                                                 <div className="avatar-xl flex-shrink-0">
@@ -270,7 +267,6 @@ const DaftarPasienRI = () => {
                                 </CardBody>
                             </Card>
                         </Col>
-
                         <Col lg={9}>
                             <Card>
                                 <CardHeader className="align-items-center d-flex">

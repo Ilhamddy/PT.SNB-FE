@@ -271,24 +271,6 @@ const DepositModal = ({toggle, norecdp}) => {
                                         </>
                                     }
                                 </Row>
-                                {/* {index === validation.values.payment.length - 1 && 
-                                <div className="d-flex flex-column align-items-center">
-                                    <Row>
-                                        <Col lg={5}>
-                                            <Button type="button" color="info" className="rounded-pill" placement="top" onClick={() => addPayment()}>
-                                                +
-                                            </Button>
-                                        </Col>
-                                        {
-                                            validation.values.payment.length > 1 && <Col lg={5}>
-                                                <Button type="button" color="danger" className="rounded-pill" placement="top" onClick={() => deleteLastPayment()}>
-                                                    -
-                                                </Button>
-                                            </Col>
-                                        }
-                                    </Row>
-                                </div>
-                                } */}
                             </Row>
                         )}
                         <Row className="mb-2">

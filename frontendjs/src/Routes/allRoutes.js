@@ -335,6 +335,7 @@ import BiodataPegawai from "../pages/SumberDayaManusia/BiodataPegawai/BiodataPeg
 import AddObatFarmasi from "../pages/AddObatFarmasi/AddObatFarmasi";
 import MasterJadwalDokter from "../pages/JadwalDokter/MasterJadwalDokter";
 import ViewerOperasi from "../pages/ViewerOperasi/ViewerOperasi";
+import DaftarKamar from "../pages/DaftarKamar/DaftarKamar";
 
 
 
@@ -573,10 +574,11 @@ const authProtectedRoutes = [
   { path: "/listdaftarpasien/daftar-pasien-farmasi", component:<DaftarPasienFarmasi/>},
   //viewer
   { path: "/cmVnaXN0cmFzaS92aWV3ZXI=", component: <Viewer />, isLayout: false},
+  { path: "/cmVnaXN0cmFzaS92aWV3ZXIvcGVtYW5nZ2lsYW4=", component: <PemanggilanViewer />, isLayout: false},
   { path: "/viewer/poli", component: <ViewerPoli />, isLayout: false},
   { path: "/viewer/operasi", component: <ViewerOperasi />, isLayout: false},
+  { path: "/viewer/edit/daftar-kamar", component: <DaftarKamar />},
 
-  { path: "/cmVnaXN0cmFzaS92aWV3ZXIvcGVtYW5nZ2lsYW4=", component: <PemanggilanViewer />, isLayout: false},
   { path: "/bGlzdGRhZnRhcnBhc2llbi9kYWZ0YXJwYXNpZW5tdXRhc2k=", component:<DaftarPasienMutasi/>},
   { path: "/registrasi/mutasi-pasien/:id/:norec", component: <RegistrasiMutasiPasien/> },
   { path: "/listdaftarpasien/daftar-pasien-igd", component: <DaftarPasienIGD /> },

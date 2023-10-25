@@ -4,6 +4,9 @@ import db from "../../../models";
 import { getDateStartEnd } from "../../../utils/dateutils";
 import { groupBy } from "../../../utils/arutils";
 import unitQueries from "../../../queries/master/unit/unit.queries";
+import kelasQueries from "../../../queries/master/kelas/kelas.queries";
+import kamarQueries from "../../../queries/master/kamar/kamar.queries";
+import statusbedQueries from "../../../queries/master/statusbed/statusbed.queries";
 
 const t_antreanloket = db.t_antreanloket
 const Op = db.Sequelize.Op;
@@ -445,6 +448,7 @@ const getJadwalOperasi = async (req, res) => {
     }
 }
 
+
 export default {
     pollingAntrean,
     getLoketSisa,
@@ -453,7 +457,7 @@ export default {
     getAllTerpanggil,
     panggilUlangAntrean,
     getJadwalDokter,
-    getJadwalOperasi
+    getJadwalOperasi,
 }
 
 const hProcessJadwal = async (req, res, transaction, {jadwal}) => {

@@ -190,7 +190,6 @@ const Diagnosaix = () => {
             selector: row => row.keterangan,
             sortable: true
         },
-
     ];
     return (
         <React.Fragment>

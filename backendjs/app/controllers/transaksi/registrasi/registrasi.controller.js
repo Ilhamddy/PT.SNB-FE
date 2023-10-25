@@ -14,8 +14,6 @@ import { hCreateNoreg } from "../../daftarmandiri/daftarpasienlama/daftarpasienl
 const m_pasien = db.m_pasien
 const running_Number = db.running_number
 const t_daftarpasien = db.t_daftarpasien
-const t_antreanpemeriksaan = db.t_antreanpemeriksaan
-const m_tempattidur = db.m_tempattidur
 
 
 const allSelect = (req, res) => {
@@ -1263,8 +1261,6 @@ async function getWidgetDaftarPasienRI(req, res) {
             success: false,
         });
     }
-
-
 }
 
 async function getDaftarPasienRawatInap(req, res) {

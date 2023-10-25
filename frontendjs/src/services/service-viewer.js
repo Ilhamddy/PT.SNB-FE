@@ -30,4 +30,5 @@ export default class ServiceViewer {
     getJadwalOperasi = async (queries) => {
         return await api.get("/transaksi/viewer/get-jadwal-operasi", queries)
     }
+    
 }

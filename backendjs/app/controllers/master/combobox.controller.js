@@ -20,7 +20,7 @@ import queriesHubunganKeluarga from '../../queries/master/hubunganKeluarga/hubun
 import queriesPegawai from '../../queries/master/pegawai/pegawai.queries'
 import queriesKelas from '../../queries/master/kelas/kelas.queries'
 import queriesKamar from '../../queries/master/kamar/kamar.queries'
-import queriesTempatTidur from '../../queries/master/tempattidur/tempattidur.queires'
+import queriesTempatTidur from '../../queries/master/tempattidur/tempattidur.queries'
 import queriesStatusKecelakaan from '../../queries/master/statuskecelakaan/statuskecelakaan.queries'
 import queriesStatusPulangRI from '../../queries/master/statuspulangri/statuspulangri.queries'
 import queriesKondisiPulangRI from '../../queries/master/kondisipulangri/kondisipulangri.queries'

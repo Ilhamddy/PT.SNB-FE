@@ -115,7 +115,12 @@ left join m_jeniskelamin mj2 on mj2.id=mp.objectjeniskelaminfk
 left join m_rekanan mr on mr.id=td.objectpenjaminfk
 left join m_unit mu2 on mu2.id=ta.objectunitfk `;
 
-const widgetgetDaftarPasienRawatInap = `select objectstatusbedfk  from m_tempattidur mt where statusenabled =true`;
+const widgetgetDaftarPasienRawatInap = `
+select 
+    objectstatusbedfk 
+from 
+    m_tempattidur mt 
+where statusenabled =true`;
 
 const qGetPasienFormById = `
     SELECT
@@ -166,17 +171,17 @@ const qGetPasienFormById = `
     mp.nocm AS nocm,
     mp.nocmtemp AS nocmtemp
 FROM m_pasien mp
-        LEFT JOIN m_negara mnk ON mnk.id = mp.objectnegaraktpfk
-        LEFT JOIN m_desakelurahan mdk ON mdk.id = mp.objectdesakelurahanktpfk
-        LEFT JOIN m_provinsi mpk ON mpk.id = mdk.objectprovinsifk
-        LEFT JOIN m_kabupaten mkbk ON mkbk.id = mdk.objectkabupatenfk
-        LEFT JOIN m_kecamatan mkck ON mkck.id = mdk.objectkecamatanfk
-        LEFT JOIN m_negara mnd ON mnk.id = mp.objectnegaradomisilifk
-        LEFT JOIN m_desakelurahan mdd ON mdd.id = mp.objectdesakelurahandomisilifk
-        LEFT JOIN m_provinsi mpd ON mpd.id = mdd.objectprovinsifk
-        LEFT JOIN m_kabupaten mkbd ON mkbd.id = mdd.objectkabupatenfk
-        LEFT JOIN m_kecamatan mkcd ON mkcd.id = mdd.objectkecamatanfk
-            WHERE mp.id = $1
+    LEFT JOIN m_negara mnk ON mnk.id = mp.objectnegaraktpfk
+    LEFT JOIN m_desakelurahan mdk ON mdk.id = mp.objectdesakelurahanktpfk
+    LEFT JOIN m_provinsi mpk ON mpk.id = mdk.objectprovinsifk
+    LEFT JOIN m_kabupaten mkbk ON mkbk.id = mdk.objectkabupatenfk
+    LEFT JOIN m_kecamatan mkck ON mkck.id = mdk.objectkecamatanfk
+    LEFT JOIN m_negara mnd ON mnk.id = mp.objectnegaradomisilifk
+    LEFT JOIN m_desakelurahan mdd ON mdd.id = mp.objectdesakelurahandomisilifk
+    LEFT JOIN m_provinsi mpd ON mpd.id = mdd.objectprovinsifk
+    LEFT JOIN m_kabupaten mkbd ON mkbd.id = mdd.objectkabupatenfk
+    LEFT JOIN m_kecamatan mkcd ON mkcd.id = mdd.objectkecamatanfk
+WHERE mp.id = $1
 `
 
 const getDaftarPasienRawatInap = `SELECT 

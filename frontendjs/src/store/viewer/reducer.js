@@ -19,7 +19,7 @@ import {
     GET_JADWAL_DOKTER_ERROR,
     GET_JADWAL_OPERASI,
     GET_JADWAL_OPERASI_SUCCESS,
-    GET_JADWAL_OPERASI_ERROR
+    GET_JADWAL_OPERASI_ERROR,
 } from "./actionType";
 
 const INIT_STATE = {
@@ -57,7 +57,7 @@ const INIT_STATE = {
         data: [],
         loading: false,
         error: null,
-    }
+    },
 };
 
 const Viewer = (state = INIT_STATE, action) => {
@@ -295,6 +295,7 @@ const Viewer = (state = INIT_STATE, action) => {
                 }
             }
         }
+
 
         default: return { ...state };
     }

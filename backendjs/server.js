@@ -32,6 +32,7 @@ import operasiRoutes from "./app/routes/transaksi/operasi.routes";
 import filesRoutes from "./app/routes/transaksi/files.routes";
 import adminDaftarMandiriRoutes from "./app/routes/transaksi/admindaftarmandiri.routes"
 import sumberDayaManusiaRoutes from "./app/routes/transaksi/sumberDayaManusia.routes";
+import tempattidurRoutes from "./app/routes/transaksi/tempattidur.routes";
 
 dotenv.config()
 
@@ -89,6 +90,7 @@ operasiRoutes(app);
 filesRoutes(app);
 adminDaftarMandiriRoutes(app);
 sumberDayaManusiaRoutes(app);
+tempattidurRoutes(app);
 // set port, listen for requests
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {

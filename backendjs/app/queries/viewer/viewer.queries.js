@@ -1,9 +1,9 @@
-
 export const panggilStatus = {
 	belumPanggil: 1,
 	sedangPanggil: 2,
 	selesaiPanggil: 3
 }
+
 
 const qGetLoket = `
 SELECT
@@ -197,6 +197,8 @@ ORDER BY
 	tap.tgldipanggildokter DESC
 `
 
+
+
 export {
     qGetLoket,
     qGetLoketSisa,
@@ -208,5 +210,5 @@ export {
 	qGetLastPemanggilanViewer,
 	qGetJadwalDokter,
 	qGetLastAntrean,
-	qGetJadwalDokterNorec
+	qGetJadwalDokterNorec,
 }

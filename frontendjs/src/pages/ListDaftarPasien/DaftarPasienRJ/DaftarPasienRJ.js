@@ -22,8 +22,7 @@ import {
     daftarPasienRJGet, widgetdaftarPasienRJGet, updateTaskId,
     saveDokumenRekammedis, kendaliDokumenResetForm
 } from '../../../store/actions';
-// Imported Images
-import pac from "../../../assets/images/sudah-periksa.png";
+
 //import images
 import userDummy from "../../../assets/images/users/user-dummy-img.jpg";
 import KonsulModal from '../../../Components/Common/KonsulModal';
@@ -392,7 +391,6 @@ const DaftarPasienRJ = () => {
                                 </Card>
                             </Col>
                         ))}
-
                         <Col lg={3}>
                             <Card>
                                 <CardBody>

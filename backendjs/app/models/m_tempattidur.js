@@ -24,6 +24,18 @@ export default (sequelize, Sequelize) => {
         objectstatusbedfk:{
             type: Sequelize.INTEGER
         },
+        nomorbed: {
+            type: Sequelize.SMALLINT
+        },
+        objectruangperawatankemenkesfk: {
+            type: Sequelize.INTEGER
+        },
+        idttsirs: {
+            type: Sequelize.INTEGER
+        },
+        idkelassirs: {
+            type: Sequelize.INTEGER
+        },
     }, {
         tableName: "m_tempattidur", // relation "user" does not exist
         createdAt: false,
