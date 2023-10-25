@@ -129,6 +129,12 @@ const DaftarKamar = () => {
   ]
   const columnsBed = [
     {
+      name: <span className="font-weight-bold fs-13">Nama Bed</span>,
+      selector: (row) => row.namatt,
+      sortable: true,
+      width: '200px',
+    },
+    {
       name: <span className="font-weight-bold fs-13">Kamar</span>,
       selector: (row) => row.namakamar,
       sortable: true,

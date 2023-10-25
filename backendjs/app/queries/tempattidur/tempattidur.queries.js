@@ -45,6 +45,7 @@ SELECT
 	json_agg(
 		json_build_object(
 			'id', mt.id,
+			'namatt', mt.reportdisplay,
 			'kamarid', mk.id,
 			'namakamar', mk.reportdisplay,
 			'kelas', mkel.namakelas,
