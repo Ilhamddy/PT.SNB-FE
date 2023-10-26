@@ -445,7 +445,6 @@ const Sysadmin = (state = INIT_STATE, action) => {
             }
         }
 
-        
         case UPSERT_KAMAR_SUCCESS: {
             return {
                 ...state,
@@ -478,7 +477,7 @@ const Sysadmin = (state = INIT_STATE, action) => {
                 }
             }
         }
-        
+
         case UPSERT_ROLES_SUCCESS: {
             return {
                 ...state,
@@ -501,6 +500,38 @@ const Sysadmin = (state = INIT_STATE, action) => {
             }
         }
        
+        case GET_MAP_ROLE_PERMISSIONS: {
+            return {
+                ...state,
+                getMapRolePermissions: {
+                    ...state.getMapRolePermissions,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case GET_MAP_ROLE_PERMISSIONS_SUCCESS: {
+            return {
+                ...state,
+                getMapRolePermissions: {
+                    ...state.getMapRolePermissions,
+                    loading: false,
+                    data: action.payload,
+                }
+            }
+        }
+
+        case GET_MAP_ROLE_PERMISSIONS_ERROR: {
+            return {
+                ...state,
+                getMapRolePermissions: {
+                    ...state.getMapRolePermissions,
+                    loading: false,
+                    error: action.payload,
+                }
+            }
+        }
 
         default: return { ...state };
     }
