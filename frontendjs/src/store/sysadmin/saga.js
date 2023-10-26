@@ -9,7 +9,8 @@ import {
     GET_COMBO_DAFTAR_UNIT,
     UPSERT_UNIT,
     GET_ALL_KAMAR,
-    GET_COMBO_DAFTAR_KAMAR
+    GET_COMBO_DAFTAR_KAMAR,
+    GET_COMBO_SYSADMIN
  } from "./actionType";
 import { 
     getTempatTidurSuccess,
@@ -29,7 +30,8 @@ import {
     getAllKamarSuccess,
     getAllKamarError,
     getComboDaftarKamarSuccess,
-    getComboDaftarKamarError
+    getComboDaftarKamarError,
+    getComboSysadminSuccess,getComboSysadminError
 } from "./action";
 import { toast } from 'react-toastify';
 
@@ -123,6 +125,15 @@ function* onGetComboDaftarKamar({payload: {queries}}) {
     }
 }
 
+function* ongetComboSysadmin({payload: {queries}}) {
+    try{
+        const response = yield call(serviceSysadmin.getComboSysadmin, queries);
+        yield put(getComboSysadminSuccess(response.data));
+    } catch (error) {
+        yield put(getComboSysadminError(error));
+    }
+}
+
 export default function* SysadminSaga() {
     yield takeEvery(GET_TEMPAT_TIDUR, onGetTempatTidur)
     yield takeEvery(GET_UNIT_TEMPAT_TIDUR, onGetUnitTempatTidur)
@@ -133,4 +144,5 @@ export default function* SysadminSaga() {
     yield takeEvery(UPSERT_UNIT, onUpsertUnit)
     yield takeEvery(GET_ALL_KAMAR, onGetAllKamar)
     yield takeEvery(GET_COMBO_DAFTAR_KAMAR, onGetComboDaftarKamar)
+    yield takeEvery(GET_COMBO_SYSADMIN, ongetComboSysadmin)
 }
