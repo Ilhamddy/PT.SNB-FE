@@ -1,0 +1,9 @@
+{
+    "script": "npm start",
+    "watch": true,
+    "ignore_watch": ["log"],
+    "watch_options": {
+        "followSymlinks": false
+    },
+    "name": "server"
+}
