@@ -114,7 +114,7 @@ const signin = async (req, res) => {
       id: user.id,
       username: user.username,
       email: user.email,
-      roles: `["ROLE_ADMIN"]`,//authorities,
+      roles: authorities,
       accessToken: token,
       status: "success",
       success: true,
