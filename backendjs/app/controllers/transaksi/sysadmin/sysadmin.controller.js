@@ -1,5 +1,6 @@
 import pool from "../../../config/dbcon.query";
 import {
+    qCountRole,
     qGetAllKamar,
     qGetAllUnit,
     qGetTempatTidur,
@@ -456,8 +457,11 @@ const saveRoles = async (req, res) => {
     try {
         const { setRole } = await db.sequelize.transaction(async (transaction) => {
             let setRole = ''
+            const result1 = await pool.query(qCountRole)
+
             setRole = await db.role.create({
-                name: req.query.nameRole,
+                id:parseFloat(result1.rows[0].jml)+1,
+                name: req.body.nameRole,
             }, { transaction });
 
             return { setRole }

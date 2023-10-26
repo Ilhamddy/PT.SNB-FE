@@ -143,7 +143,7 @@ function* onupsertRoles({payload: {data, callback}}) {
     try{
         const response = yield call(serviceSysadmin.upsertRoles, data);
         yield put(upsertRolesSuccess(response.data));
-        toast.success(response.message);
+        toast.success(response.msg);
         callback && callback(response);
     } catch (error) {
         yield put(upsertRolesError(error));

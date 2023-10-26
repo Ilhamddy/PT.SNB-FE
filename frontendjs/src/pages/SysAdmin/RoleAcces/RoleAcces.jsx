@@ -29,7 +29,7 @@ const RoleAcces = () => {
       nameRole: ''
     },
     validationSchema: Yup.object({
-      // nip: Yup.string().required("NIP wajib diisi"),
+      nameRole: Yup.string().required("Nama Role wajib diisi"),
     }),
     onSubmit: (values) => {
       dispatch(
@@ -90,6 +90,7 @@ const RoleAcces = () => {
           <div className="hstack gap-3 flex-wrap">
             <UncontrolledDropdown className="dropdown d-inline-block">
               <DropdownToggle className="btn btn-soft-secondary btn-sm" tag="button" id="tooltipTop2" type="button"
+                onClick={() => handleClick(data)}
               >
                 <i className="ri-pencil-fill"></i>
               </DropdownToggle>
@@ -119,6 +120,15 @@ const RoleAcces = () => {
       }))
     }
   }
+  const [selected, setselected] = useState({
+    name: null,
+
+  })
+  const handleClick = (e) => {
+    setselected({
+      name: e.name,
+    })
+  };
   return (
     <React.Fragment>
       <ToastContainer closeButton={false} />
@@ -223,30 +233,52 @@ const RoleAcces = () => {
                 <Card>
                   <CardBody>
                     <Row className="gy-2">
-                      <Col lg={4}>
+                      <Col lg={2}>
                         <div className="mt-2">
-                          <Label style={{ color: "black" }} htmlFor="unitlast" className="form-label">Nama Role</Label>
+                          <Label style={{ color: "black" }} htmlFor="unitlast" className="form-label">Role :</Label>
                         </div>
                       </Col>
-                      <Col lg={8}>
+                      <Col lg={6}>
+                        <div className="mt-2">
+                          <Label style={{ color: "black" }} htmlFor="unitlast" className="form-label">{selected && selected.name ? selected.name : '-'}</Label>
+                        </div>
+                      </Col>
+                      <Col lg={4}>
                         <Input
-                          id="nameRole"
-                          name="nameRole"
+                          id="cariPermision"
+                          name="cariPermision"
                           type="text"
-                          value={vSetValidationRole.values.nameRole}
+                          value={vSetValidationRole.values.cariPermision}
                           onChange={(e) => {
-                            vSetValidationRole.setFieldValue('nameRole', e.target.value)
+                            vSetValidationRole.setFieldValue('cariPermision', e.target.value)
                           }}
-                          invalid={vSetValidationRole.touched?.nameRole &&
-                            !!vSetValidationRole.errors?.nameRole}
+                          invalid={vSetValidationRole.touched?.cariPermision &&
+                            !!vSetValidationRole.errors?.cariPermision}
                         />
-                        {vSetValidationRole.touched?.nameRole
-                          && !!vSetValidationRole.errors.nameRole && (
+                        {vSetValidationRole.touched?.cariPermision
+                          && !!vSetValidationRole.errors.cariPermision && (
                             <FormFeedback type="invalid">
-                              <div>{vSetValidationRole.errors.nameRole}</div>
+                              <div>{vSetValidationRole.errors.cariPermision}</div>
                             </FormFeedback>
                           )}
                       </Col>
+                      <Col lg={12}>
+                        <div id="table-gridjs">
+                          <DataTable
+                            fixedHeader
+                            fixedHeaderScrollHeight="330px"
+                            columns={columns}
+                            pagination
+                            data={dataCombo.role}
+                            progressPending={loadingCombo}
+                            customStyles={tableCustomStyles}
+                            progressComponent={<LoadingTable />}
+                            // onRowClicked={(row) => handleClick(row)}
+                            pointerOnHover
+                            highlightOnHover
+                          />
+                        </div>
+                        </Col>
                     </Row>
                   </CardBody>
                 </Card>
