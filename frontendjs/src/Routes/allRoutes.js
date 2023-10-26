@@ -341,9 +341,7 @@ import DaftarBed from "../pages/DaftarBed/DaftarBed";
 import DaftarUnit from "../pages/DaftarUnit/DaftarUnit";
 import DaftarKamar from "../pages/DaftarKamar/DaftarKamar";
 import RoleAcces from "../pages/SysAdmin/RoleAcces/RoleAcces";
-
-
-
+import ViewerBed from "../pages/ViewerBed/ViewerBed";
 
 const authProtectedRoutes = [
   { path: "/dashboard-analytics", component: <DashboardAnalytics /> },
@@ -582,6 +580,7 @@ const authProtectedRoutes = [
   { path: "/cmVnaXN0cmFzaS92aWV3ZXIvcGVtYW5nZ2lsYW4=", component: <PemanggilanViewer />, isLayout: false},
   { path: "/viewer/poli", component: <ViewerPoli />, isLayout: false},
   { path: "/viewer/operasi", component: <ViewerOperasi />, isLayout: false},
+  { path: "/viewer/bed", component: <ViewerBed />, isLayout: false},
 
   { path: "/bGlzdGRhZnRhcnBhc2llbi9kYWZ0YXJwYXNpZW5tdXRhc2k=", component:<DaftarPasienMutasi/>},
   { path: "/registrasi/mutasi-pasien/:id/:norec", component: <RegistrasiMutasiPasien/> },
