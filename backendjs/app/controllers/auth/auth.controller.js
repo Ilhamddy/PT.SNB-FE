@@ -94,7 +94,7 @@ const signin = async (req, res) => {
   
     const result = await pool.query(queries.getSesions, [user.id]);
       // res.status(200).send(result.rows);
-    var resHead = result.rows;
+    let resHead = result.rows;
 
     let token = jwt.sign({ id: user.id, sesion: resHead, idpegawai: user.objectpegawaifk, }, config.secret, {
       expiresIn: 86400 // 24 hours test
