@@ -100,6 +100,7 @@ const signin = async (req, res) => {
     let token = jwt.sign({ id: user.id, sesion: resHead, idpegawai: user.objectpegawaifk, }, config.secret, {
       expiresIn: 86400 // 24 hours test
     });
+    logger.info("masuk")
 
     let authorities = [];
     const roles = await user.getRoles()
