@@ -71,4 +71,10 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getComboSysadmin
     )
+
+    app.post(
+        "/api/transaksi/sysadmin/upsert-kamar",
+        [authJwt.verifyToken],
+        controller.upsertKamar
+    )
 }

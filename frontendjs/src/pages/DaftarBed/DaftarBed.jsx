@@ -302,7 +302,7 @@ const DaftarBed = () => {
               )}
             </ColLabelInput>
           </Row>
-          <Row className="p-4 ">
+          <Row className="p-4">
             <ColLabelInput lg={'auto'} label={''} inputId={'btn-cari'}>
               <Button
                 id="btn-cari"

@@ -10,7 +10,8 @@ import {
     UPSERT_UNIT,
     GET_ALL_KAMAR,
     GET_COMBO_DAFTAR_KAMAR,
-    GET_COMBO_SYSADMIN
+    GET_COMBO_SYSADMIN,
+    UPSERT_KAMAR
  } from "./actionType";
 import { 
     getTempatTidurSuccess,
@@ -31,7 +32,10 @@ import {
     getAllKamarError,
     getComboDaftarKamarSuccess,
     getComboDaftarKamarError,
-    getComboSysadminSuccess,getComboSysadminError
+    getComboSysadminSuccess,
+    getComboSysadminError,
+    upsertKamarSuccess,
+    upsertKamarError
 } from "./action";
 import { toast } from 'react-toastify';
 
@@ -69,11 +73,11 @@ function* onUpsertTempatTidur({payload: {data, callback}}) {
     try{
         const response = yield call(serviceSysadmin.upsertTempatTidur, data);
         yield put(upsertTempatTidurSuccess(response.data));
-        toast.success(response.message);
+        toast.success(response.msg || "Sukses");
         callback && callback(response);
     } catch (error) {
         yield put(upsertTempatTidurError(error));
-        toast.error(error.message);
+        toast.error(error.msg || "Gagal");
     }
 }
 
@@ -99,11 +103,11 @@ function* onUpsertUnit({payload: {data, callback}}) {
     try{
         const response = yield call(serviceSysadmin.upsertUnit, data);
         yield put(upsertUnitSuccess(response.data));
-        toast.success(response.message);
+        toast.success(response.msg || "Sukses");
         callback && callback(response);
     } catch (error) {
         yield put(upsertUnitError(error));
-        toast.error(error.message);
+        toast.error(error.msg || "Gagal");
     }
 }
 
@@ -134,6 +138,18 @@ function* ongetComboSysadmin({payload: {queries}}) {
     }
 }
 
+function* onUpsertKamar({payload: {data, callback}}) {
+    try{
+        const response = yield call(serviceSysadmin.upsertKamar, data);
+        yield put(upsertKamarSuccess(response.data));
+        toast.success(response.msg || "Sukses");
+        callback && callback(response);
+    } catch (error) {
+        yield put(upsertKamarError(error));
+        toast.error(error.msg || "Gagal");
+    }
+}
+
 export default function* SysadminSaga() {
     yield takeEvery(GET_TEMPAT_TIDUR, onGetTempatTidur)
     yield takeEvery(GET_UNIT_TEMPAT_TIDUR, onGetUnitTempatTidur)
@@ -145,4 +161,5 @@ export default function* SysadminSaga() {
     yield takeEvery(GET_ALL_KAMAR, onGetAllKamar)
     yield takeEvery(GET_COMBO_DAFTAR_KAMAR, onGetComboDaftarKamar)
     yield takeEvery(GET_COMBO_SYSADMIN, ongetComboSysadmin)
+    yield takeEvery(UPSERT_KAMAR, onUpsertKamar)
 }

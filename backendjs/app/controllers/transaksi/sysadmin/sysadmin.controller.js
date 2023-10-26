@@ -351,6 +351,80 @@ const getAllKamar = async (req, res) => {
     }
 }
 
+const upsertKamar = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const reqBody = req.body
+        const {dataKamar} = await db.sequelize.transaction(async (transaction) => {
+            let dataKamar = null
+            if(reqBody.idkamar){
+                const kamarModel = await db.m_kamar.findOne({
+                    where: {
+                        id: reqBody.idkamar
+                    }
+                })
+                if(!kamarModel){
+                    throw new Error("Kamar tidak ditemukan")
+                }
+                await kamarModel.update({
+                    statusenabled: reqBody.statusenabled,
+                    namaexternal: reqBody.namakamar,
+                    reportdisplay: reqBody.namakamar,
+                    objectkelasfk: reqBody.kelas,
+                    objectunitfk: reqBody.unit,
+                    namakamar: reqBody.namakamar,
+                    tglupdate: new Date()
+                }, {
+                    transaction: transaction
+                })
+                dataKamar = kamarModel.toJSON()
+            }else{
+                const created = await db.m_kamar.create({
+                    kdprofile: 0,
+                    statusenabled: reqBody.statusenabled,
+                    namaexternal: reqBody.namakamar,
+                    reportdisplay: reqBody.namakamar,
+                    objectkelasfk: reqBody.kelas,
+                    objectunitfk: reqBody.unit,
+                    namakamar: reqBody.namakamar,
+                    qtybed: 0,
+                    jumlahbedisi: 0,
+                    jumlahbedkosong: 0,
+                    keterangan: null,
+                    objectprodukfk: null,
+                    objectruangperawatankemenkesfk: null,
+                    tglupdate: new Date(),
+                    produkfk: null,
+                }, {
+                    transaction: transaction
+                })
+                dataKamar = created.toJSON()
+            }
+            return {
+                dataKamar: dataKamar
+            }
+        });
+        
+        const tempres = {
+            dataKamar: dataKamar
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 const getComboSysadmin = async (req, res) => {
     const logger = res.locals.logger;
     try{
@@ -376,6 +450,7 @@ const getComboSysadmin = async (req, res) => {
         });
     }
 }
+
 export default {
     getTempatTidur,
     getUnitTempatTidur,
@@ -386,5 +461,6 @@ export default {
     upsertUnit,
     getAllKamar,
     getComboDaftarKamar,
-    getComboSysadmin
+    getComboSysadmin,
+    upsertKamar
 }

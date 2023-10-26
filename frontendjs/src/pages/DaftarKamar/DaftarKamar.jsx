@@ -14,12 +14,17 @@ import ColLabelInput from '../../Components/ColLabelInput/ColLabelInput'
 import { useFormik } from 'formik'
 import CustomSelect from '../Select/Select'
 import { useEffect } from 'react'
-import { getAllKamar, getComboDaftarKamar } from '../../store/sysadmin/action'
+import {
+  getAllKamar,
+  getComboDaftarKamar,
+  upsertKamar,
+} from '../../store/sysadmin/action'
 import { useDispatch, useSelector } from 'react-redux'
 import LoadingTable from '../../Components/Table/LoadingTable'
 import NoDataTable from '../../Components/Table/NoDataTable'
 import DataTable from 'react-data-table-component'
 import * as Yup from 'yup'
+import { onChangeStrNbr } from '../../utils/format'
 
 const DaftarKamar = () => {
   const { dataKamar, comboDaftarKamar } = useSelector((state) => ({
@@ -40,8 +45,9 @@ const DaftarKamar = () => {
   const vTambah = useFormik({
     initialValues: {
       isOpen: false,
+      idkamar: '',
       namakamar: '',
-      instalasi: '',
+      instalasi: 2,
       unit: '',
       kelas: '',
       statusenabled: true,
@@ -51,10 +57,13 @@ const DaftarKamar = () => {
       instalasi: Yup.string().required('Instalasi harus diisi'),
       unit: Yup.string().required('Unit harus diisi'),
       kelas: Yup.string().required('Kelas harus diisi'),
-      statusenabled: Yup.boolean().required('Status Enabled harus diisi'),
     }),
     onSubmit: (values) => {
-      console.log(values)
+      dispatch(
+        upsertKamar(values, () => {
+          dispatch(getAllKamar(vFilter.values))
+        })
+      )
     },
   })
   useEffect(() => {
@@ -63,6 +72,7 @@ const DaftarKamar = () => {
   }, [dispatch, vFilter.initialValues])
 
   const handleOpen = (row) => {
+    vTambah.setFieldValue('idkamar', row.idkamar)
     vTambah.setFieldValue('isOpen', true)
     vTambah.setFieldValue('namakamar', row.namakamar)
     vTambah.setFieldValue('instalasi', row.objectinstalasifk)
@@ -106,7 +116,7 @@ const DaftarKamar = () => {
       cell: (row) => (
         <Button
           color="info"
-          onClick={(row) => {
+          onClick={() => {
             handleOpen(row)
           }}
         >
@@ -117,16 +127,53 @@ const DaftarKamar = () => {
       width: '150px',
     },
   ]
+  console.log(vTambah.values)
   return (
     <div className="page-content page-daftar-kamar">
       <Modal
-        isOpen={vTambah.values.open}
+        isOpen={vTambah.values.isOpen}
         toggle={() => vTambah.resetForm()}
         centered
       >
         <Card className="p-3">
           <Row>
-            <ColLabelInput lg={6} label={'instalasi'} inputId={'instalasi'}>
+            {vTambah.values.idkamar && (
+              <ColLabelInput
+                className="mb-2"
+                lg={6}
+                label={'instalasi'}
+                inputId={'instalasi'}
+              >
+                <Input
+                  id="idkamar"
+                  name="idkamar"
+                  type="text"
+                  value={vTambah.values.idkamar}
+                  disabled
+                  onChange={(e) => {
+                    const newVal = onChangeStrNbr(
+                      e.target.value,
+                      vTambah.values.idkamar
+                    )
+                    vTambah.setFieldValue('idkamar', newVal)
+                  }}
+                  invalid={
+                    vTambah.touched?.idkamar && !!vTambah.errors?.idkamar
+                  }
+                />
+                {vTambah.touched?.idkamar && !!vTambah.errors.idkamar && (
+                  <FormFeedback type="invalid">
+                    <div>{vTambah.errors.idkamar}</div>
+                  </FormFeedback>
+                )}
+              </ColLabelInput>
+            )}
+            <ColLabelInput
+              className="mb-2"
+              lg={6}
+              label={'instalasi'}
+              inputId={'instalasi'}
+            >
               <CustomSelect
                 id="instalasi"
                 name="instalasi"
@@ -134,6 +181,7 @@ const DaftarKamar = () => {
                 onChange={(e) => {
                   vTambah.setFieldValue('instalasi', e?.value || '')
                 }}
+                isDisabled
                 value={vTambah.values.instalasi}
                 className={`input row-header ${
                   !!vTambah?.errors.instalasi ? 'is-invalid' : ''
@@ -145,7 +193,12 @@ const DaftarKamar = () => {
                 </FormFeedback>
               )}
             </ColLabelInput>
-            <ColLabelInput lg={6} label={'unit'} inputId={'unit'}>
+            <ColLabelInput
+              className="mb-2"
+              lg={6}
+              label={'unit'}
+              inputId={'unit'}
+            >
               <CustomSelect
                 id="unit"
                 name="unit"
@@ -164,7 +217,12 @@ const DaftarKamar = () => {
                 </FormFeedback>
               )}
             </ColLabelInput>
-            <ColLabelInput lg={6} label={'kelas'} inputId={'kelas'}>
+            <ColLabelInput
+              className="mb-2"
+              lg={6}
+              label={'kelas'}
+              inputId={'kelas'}
+            >
               <CustomSelect
                 id="kelas"
                 name="kelas"
@@ -183,14 +241,19 @@ const DaftarKamar = () => {
                 </FormFeedback>
               )}
             </ColLabelInput>
-            <ColLabelInput lg={6} label={'kelas'} inputId={'kelas'}>
+            <ColLabelInput
+              className="mb-2"
+              lg={6}
+              label={'Nama Kamar'}
+              inputId={'Nama Kamar'}
+            >
               <Input
                 id="namakamar"
                 name="namakamar"
                 type="text"
                 value={vTambah.values.namakamar}
                 onChange={(e) => {
-                  vTambah.setFieldValue('namakamar ', e.target.value)
+                  vTambah.setFieldValue('namakamar', e.target.value)
                 }}
                 invalid={
                   vTambah.touched?.namakamar && !!vTambah.errors?.namakamar
@@ -202,28 +265,57 @@ const DaftarKamar = () => {
                 </FormFeedback>
               )}
             </ColLabelInput>
-            <ColLabelInput lg={6} label={'Status Enabled'} inputId={'status'}>
-              <CustomSelect
-                id="statusenabled"
-                name="statusenabled"
-                options={[
-                  { value: true, label: 'Aktif' },
-                  { value: false, label: 'Tidak Aktif' },
-                ]}
-                onChange={(e) => {
-                  vTambah.setFieldValue('statusenabled', e?.value || '')
+            {vTambah.values.idkamar && (
+              <ColLabelInput
+                className="mb-2"
+                lg={6}
+                label={'Status Enabled'}
+                inputId={'status'}
+              >
+                <CustomSelect
+                  id="statusenabled"
+                  name="statusenabled"
+                  options={[
+                    { value: true, label: 'Aktif' },
+                    { value: false, label: 'Tidak Aktif' },
+                  ]}
+                  onChange={(e) => {
+                    vTambah.setFieldValue('statusenabled', e?.value || '')
+                  }}
+                  value={vTambah.values.statusenabled}
+                  className={`input row-header ${
+                    !!vTambah?.errors.statusenabled ? 'is-invalid' : ''
+                  }`}
+                />
+                {vTambah.touched.statusenabled &&
+                  !!vTambah.errors.statusenabled && (
+                    <FormFeedback type="invalid">
+                      <div>{vTambah.errors.statusenabled}</div>
+                    </FormFeedback>
+                  )}
+              </ColLabelInput>
+            )}
+          </Row>
+          <Row className="justify-content-center">
+            <ColLabelInput lg="auto">
+              <Button
+                color="success"
+                onClick={() => {
+                  vTambah.handleSubmit()
                 }}
-                value={vTambah.values.statusenabled}
-                className={`input row-header ${
-                  !!vTambah?.errors.statusenabled ? 'is-invalid' : ''
-                }`}
-              />
-              {vTambah.touched.statusenabled &&
-                !!vTambah.errors.statusenabled && (
-                  <FormFeedback type="invalid">
-                    <div>{vTambah.errors.statusenabled}</div>
-                  </FormFeedback>
-                )}
+              >
+                {vTambah.values.idkamar ? 'Edit' : 'Simpat'}
+              </Button>
+            </ColLabelInput>
+            <ColLabelInput lg="auto">
+              <Button
+                color="danger"
+                onClick={() => {
+                  vTambah.resetForm()
+                }}
+              >
+                Batal
+              </Button>
             </ColLabelInput>
           </Row>
         </Card>
@@ -304,7 +396,14 @@ const DaftarKamar = () => {
               </Button>
             </ColLabelInput>
             <ColLabelInput lg="auto">
-              <Button color="info">Tambah</Button>
+              <Button
+                color="info"
+                onClick={() => {
+                  vTambah.setFieldValue('isOpen', true)
+                }}
+              >
+                Tambah
+              </Button>
             </ColLabelInput>
           </Row>
           <Row>

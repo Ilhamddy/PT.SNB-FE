@@ -26,7 +26,12 @@ import {
     GET_COMBO_DAFTAR_KAMAR,
     GET_COMBO_DAFTAR_KAMAR_SUCCESS,
     GET_COMBO_DAFTAR_KAMAR_ERROR,
-    GET_COMBO_SYSADMIN, GET_COMBO_SYSADMIN_SUCCESS, GET_COMBO_SYSADMIN_ERROR
+    GET_COMBO_SYSADMIN, 
+    GET_COMBO_SYSADMIN_SUCCESS,
+    GET_COMBO_SYSADMIN_ERROR,
+    UPSERT_KAMAR,
+    UPSERT_KAMAR_SUCCESS,
+    UPSERT_KAMAR_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -80,6 +85,11 @@ const INIT_STATE = {
         loading: false,
         error: null,
     },
+    upsertKamar: {
+        data: [],
+        loading: false,
+        error: null,
+    }
 };
 
 const Sysadmin = (state = INIT_STATE, action) => {
@@ -408,6 +418,39 @@ const Sysadmin = (state = INIT_STATE, action) => {
                 ...state,
                 getComboSysadmin: {
                     ...state.getComboSysadmin,
+                    loading: false,
+                    error: action.payload,
+                }
+            }
+        }
+
+        case UPSERT_KAMAR: {
+            return {
+                ...state,
+                upsertKamar: {
+                    ...state.upsertKamar,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case UPSERT_KAMAR_SUCCESS: {
+            return {
+                ...state,
+                upsertKamar: {
+                    ...state.upsertKamar,
+                    loading: false,
+                    data: action.payload,
+                }
+            }
+        }
+
+        case UPSERT_KAMAR_ERROR: {
+            return {
+                ...state,
+                upsertKamar: {
+                    ...state.upsertKamar,
                     loading: false,
                     error: action.payload,
                 }
