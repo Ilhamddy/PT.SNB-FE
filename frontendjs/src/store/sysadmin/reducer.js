@@ -94,7 +94,12 @@ const INIT_STATE = {
         data: [],
         loading: false,
         error: null,
-    }
+    },
+    getMapRolePermissions: {
+        data: [],
+        loading: false,
+        error: null,
+    },
 };
 
 const Sysadmin = (state = INIT_STATE, action) => {
@@ -429,17 +434,6 @@ const Sysadmin = (state = INIT_STATE, action) => {
             }
         }
 
-        case UPSERT_ROLES: {
-            return {
-                ...state,
-                upsertRoles: {
-                    ...state.upsertRoles,
-                    loading: true,
-                    error: null,
-                }
-            }
-        }
-
         case UPSERT_KAMAR: {
             return {
                 ...state,
@@ -451,21 +445,45 @@ const Sysadmin = (state = INIT_STATE, action) => {
             }
         }
 
-        case UPSERT_ROLES_SUCCESS: {
-            return {
-                ...state,
-                upsertRoles: {
-                    ...state.upsertRoles,
-                    loading: false,
-                    data: action.payload,
-                }
-            }
-        }
+        
         case UPSERT_KAMAR_SUCCESS: {
             return {
                 ...state,
                 upsertKamar: {
                     ...state.upsertKamar,
+                    loading: false,
+                    data: action.payload,
+                }
+            }
+        }
+
+        case UPSERT_KAMAR_ERROR: {
+            return {
+                ...state,
+                upsertKamar: {
+                    ...state.upsertKamar,
+                    loading: false,
+                    error: action.payload,
+                }
+            }
+        }
+
+        case UPSERT_ROLES: {
+            return {
+                ...state,
+                upsertRoles: {
+                    ...state.upsertRoles,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+        
+        case UPSERT_ROLES_SUCCESS: {
+            return {
+                ...state,
+                upsertRoles: {
+                    ...state.upsertRoles,
                     loading: false,
                     data: action.payload,
                 }
@@ -482,16 +500,7 @@ const Sysadmin = (state = INIT_STATE, action) => {
                 }
             }
         }
-        case UPSERT_KAMAR_ERROR: {
-            return {
-                ...state,
-                upsertKamar: {
-                    ...state.upsertKamar,
-                    loading: false,
-                    error: action.payload,
-                }
-            }
-        }
+       
 
         default: return { ...state };
     }
