@@ -56,6 +56,30 @@ export const createLogger = (logname) => {
 
     const fnFatal = (content) => fnLog(content, "FATAL")
 
+    const fnLogImmediate = (content) => {
+        const formatted_date_time = createFormattedDateTime()
+        let current_datetime = new Date();
+        const formatted_date = current_datetime.getFullYear() +
+            "-" +
+            (current_datetime.getMonth() + 1) +
+            "-" +
+            current_datetime.getDate() 
+        let log = `[${formatted_date_time}] [${logName}] ${content}`;
+        if(process.env.NODE_ENV === "development"){
+            console.log(log)
+        } else{
+            const __dirname = path.resolve(path.dirname(''));
+            const dirPath = path.join(__dirname, "logs");
+        
+            const filePath = path.join(__dirname, "logs", `${formatted_date}.log`);
+            if (!fs.existsSync(dirPath)){
+                fs.mkdirSync(dirPath);
+            }
+            const stream = fs.createWriteStream(filePath, {flags: 'a'});
+            stream.write(log);
+            stream.end()
+        }
+    }
 
     const fnPrint = (newLogName) => {
         let current_datetime = new Date();
@@ -93,6 +117,7 @@ export const createLogger = (logname) => {
         warn: fnWarn,
         error: fnError,
         fatal: fnFatal,
-        print: fnPrint
+        print: fnPrint,
+        infoImmediate: fnLogImmediate
     }
 }

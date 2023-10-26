@@ -68,7 +68,7 @@ const signup = async (req, res) => {
 
 const signin = async (req, res) => {
   const logger = res.locals.logger;
-  logger.info("masuk pertama")
+  logger.infoImmediate("masuk pertama")
   try{
     const user = await User.findOne({
       where: {
@@ -93,6 +93,7 @@ const signin = async (req, res) => {
         status: "errors"
       });
     }
+    logger.infoImmediate("masuk0")
   
     const result = await pool.query(queries.getSesions, [user.id]);
       // res.status(200).send(result.rows);
@@ -101,13 +102,14 @@ const signin = async (req, res) => {
     let token = jwt.sign({ id: user.id, sesion: resHead, idpegawai: user.objectpegawaifk, }, config.secret, {
       expiresIn: 86400 // 24 hours test
     });
-    logger.info("masuk")
+    logger.infoImmediate("masuk")
 
     let authorities = [];
     const roles = await user.getRoles()
     for (let i = 0; i < roles.length; i++) {
       authorities.push("ROLE_" + roles[i].name.toUpperCase());
     }
+    logger.infoImmediate("masuk2")
     res.status(200).send({
       id: user.id,
       username: user.username,
@@ -122,10 +124,6 @@ const signin = async (req, res) => {
     logger.error(e);
     res.status(500).send({ message: e, status: "errors" });
   }
-
-
-  
-  
 
 };
 
