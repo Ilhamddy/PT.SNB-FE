@@ -67,6 +67,7 @@ const signup = async (req, res) => {
 };
 
 const signin = (req, res) => {
+  const logger = res.locals.logger;
   User.findOne({
     where: {
       username: req.body.username
@@ -120,11 +121,13 @@ const signin = (req, res) => {
           });
         });
       } catch (e) {
+        logger.error(e);
         res.status(500).send({ message: e, status: "errors" });
       }
 
     })
     .catch(err => {
+      logger.error(err);
       res.status(500).send({ message: err.message, status: "errors" });
     });
 };

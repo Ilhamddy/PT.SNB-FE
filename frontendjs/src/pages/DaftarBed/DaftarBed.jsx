@@ -200,129 +200,131 @@ const DaftarBed = () => {
         toggle={() => vTempatTidur.resetForm()}
         centered
       >
-        <Row className="p-4 pb-0">
-          <ColLabelInput
-            className="mt-2"
-            lg={6}
-            label={'Kamar'}
-            inputId={'Kamar'}
-          >
-            <CustomSelect
-              id="kamar"
-              name="kamar"
-              options={kamar}
-              onChange={(e) => {
-                vTempatTidur.setFieldValue('kamar', e?.value || '')
-              }}
-              value={vTempatTidur.values.kamar}
-              className={`input row-header ${
-                !!vTempatTidur?.errors.kamar ? 'is-invalid' : ''
-              }`}
-              isDisabled
-            />
-            {vTempatTidur.touched.kamar && !!vTempatTidur.errors.kamar && (
-              <FormFeedback type="invalid">
-                <div>{vTempatTidur.errors.kamar}</div>
-              </FormFeedback>
-            )}
-          </ColLabelInput>
-          <ColLabelInput
-            className="mt-2"
-            lg={6}
-            label={'Kelas'}
-            inputId={'Kelas'}
-          >
-            <CustomSelect
-              id="kelas"
-              name="kelas"
-              options={kelas}
-              onChange={(e) => {
-                vTempatTidur.setFieldValue('kelas', e?.value || '')
-              }}
-              value={vTempatTidur.values.kelas}
-              className={`input row-header ${
-                !!vTempatTidur?.errors.kelas ? 'is-invalid' : ''
-              }`}
-              isDisabled
-            />
-            {vTempatTidur.touched.kelas && !!vTempatTidur.errors.kelas && (
-              <FormFeedback type="invalid">
-                <div>{vTempatTidur.errors.kelas}</div>
-              </FormFeedback>
-            )}
-          </ColLabelInput>
-          <ColLabelInput
-            className="mt-2"
-            lg={6}
-            label={'No Bed'}
-            inputId={'no-bed'}
-          >
-            <Input
-              id="nobed"
-              name="nobed"
-              type="text"
-              value={vTempatTidur.values.nobed}
-              onChange={(e) => {
-                vTempatTidur.setFieldValue('nobed', e.target.value)
-              }}
-              invalid={
-                vTempatTidur.touched?.nobed && !!vTempatTidur.errors?.nobed
-              }
-              disabled
-            />
-            {vTempatTidur.touched?.nobed && !!vTempatTidur.errors.nobed && (
-              <FormFeedback type="invalid">
-                <div>{vTempatTidur.errors.nobed}</div>
-              </FormFeedback>
-            )}
-          </ColLabelInput>
-          <ColLabelInput
-            className="mt-2"
-            lg={6}
-            label={'Status'}
-            inputId={'status-bed'}
-          >
-            <CustomSelect
-              id="status-bed"
-              name="status"
-              options={statusBed}
-              onChange={(e) => {
-                vTempatTidur.setFieldValue('status', e?.value || '')
-              }}
-              value={vTempatTidur.values.status}
-              className={`input row-header ${
-                !!vTempatTidur?.errors.status ? 'is-invalid' : ''
-              }`}
-            />
-            {vTempatTidur.touched.status && !!vTempatTidur.errors.status && (
-              <FormFeedback type="invalid">
-                <div>{vTempatTidur.errors.status}</div>
-              </FormFeedback>
-            )}
-          </ColLabelInput>
-        </Row>
-        <Row className="p-4 ">
-          <ColLabelInput lg={'auto'} label={''} inputId={'btn-cari'}>
-            <Button
-              id="btn-cari"
-              color="success"
-              onClick={() => {
-                vTempatTidur.handleSubmit()
-              }}
+        <Card className="p-3">
+          <Row>
+            <ColLabelInput
+              className="mt-2"
+              lg={6}
+              label={'Kamar'}
+              inputId={'Kamar'}
             >
-              Edit
-            </Button>
-          </ColLabelInput>
-          <ColLabelInput lg={'auto'} label={''} inputId={'btn-cari'}>
-            <Button
-              id="btn-cari"
-              color="danger"
-              onClick={() => vTempatTidur.resetForm()}
+              <CustomSelect
+                id="kamar"
+                name="kamar"
+                options={kamar}
+                onChange={(e) => {
+                  vTempatTidur.setFieldValue('kamar', e?.value || '')
+                }}
+                value={vTempatTidur.values.kamar}
+                className={`input row-header ${
+                  !!vTempatTidur?.errors.kamar ? 'is-invalid' : ''
+                }`}
+                isDisabled
+              />
+              {vTempatTidur.touched.kamar && !!vTempatTidur.errors.kamar && (
+                <FormFeedback type="invalid">
+                  <div>{vTempatTidur.errors.kamar}</div>
+                </FormFeedback>
+              )}
+            </ColLabelInput>
+            <ColLabelInput
+              className="mt-2"
+              lg={6}
+              label={'Kelas'}
+              inputId={'Kelas'}
             >
-              Batal
-            </Button>
-          </ColLabelInput>
-        </Row>
+              <CustomSelect
+                id="kelas"
+                name="kelas"
+                options={kelas}
+                onChange={(e) => {
+                  vTempatTidur.setFieldValue('kelas', e?.value || '')
+                }}
+                value={vTempatTidur.values.kelas}
+                className={`input row-header ${
+                  !!vTempatTidur?.errors.kelas ? 'is-invalid' : ''
+                }`}
+                isDisabled
+              />
+              {vTempatTidur.touched.kelas && !!vTempatTidur.errors.kelas && (
+                <FormFeedback type="invalid">
+                  <div>{vTempatTidur.errors.kelas}</div>
+                </FormFeedback>
+              )}
+            </ColLabelInput>
+            <ColLabelInput
+              className="mt-2"
+              lg={6}
+              label={'No Bed'}
+              inputId={'no-bed'}
+            >
+              <Input
+                id="nobed"
+                name="nobed"
+                type="text"
+                value={vTempatTidur.values.nobed}
+                onChange={(e) => {
+                  vTempatTidur.setFieldValue('nobed', e.target.value)
+                }}
+                invalid={
+                  vTempatTidur.touched?.nobed && !!vTempatTidur.errors?.nobed
+                }
+                disabled
+              />
+              {vTempatTidur.touched?.nobed && !!vTempatTidur.errors.nobed && (
+                <FormFeedback type="invalid">
+                  <div>{vTempatTidur.errors.nobed}</div>
+                </FormFeedback>
+              )}
+            </ColLabelInput>
+            <ColLabelInput
+              className="mt-2"
+              lg={6}
+              label={'Status'}
+              inputId={'status-bed'}
+            >
+              <CustomSelect
+                id="status-bed"
+                name="status"
+                options={statusBed}
+                onChange={(e) => {
+                  vTempatTidur.setFieldValue('status', e?.value || '')
+                }}
+                value={vTempatTidur.values.status}
+                className={`input row-header ${
+                  !!vTempatTidur?.errors.status ? 'is-invalid' : ''
+                }`}
+              />
+              {vTempatTidur.touched.status && !!vTempatTidur.errors.status && (
+                <FormFeedback type="invalid">
+                  <div>{vTempatTidur.errors.status}</div>
+                </FormFeedback>
+              )}
+            </ColLabelInput>
+          </Row>
+          <Row className="p-4 ">
+            <ColLabelInput lg={'auto'} label={''} inputId={'btn-cari'}>
+              <Button
+                id="btn-cari"
+                color="success"
+                onClick={() => {
+                  vTempatTidur.handleSubmit()
+                }}
+              >
+                Edit
+              </Button>
+            </ColLabelInput>
+            <ColLabelInput lg={'auto'} label={''} inputId={'btn-cari'}>
+              <Button
+                id="btn-cari"
+                color="danger"
+                onClick={() => vTempatTidur.resetForm()}
+              >
+                Batal
+              </Button>
+            </ColLabelInput>
+          </Row>
+        </Card>
       </Modal>
       <Container fluid>
         <BreadCrumb title="Daftar Kasur" pageTitle="Kasur" />

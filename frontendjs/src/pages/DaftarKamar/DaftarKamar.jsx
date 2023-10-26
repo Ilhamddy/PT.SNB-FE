@@ -1,5 +1,14 @@
 import { ToastContainer } from 'react-toastify'
-import { Button, Card, Container, FormFeedback, Input, Row } from 'reactstrap'
+import {
+  Button,
+  Card,
+  Col,
+  Container,
+  FormFeedback,
+  Input,
+  Modal,
+  Row,
+} from 'reactstrap'
 import BreadCrumb from '../../Components/Common/BreadCrumb'
 import ColLabelInput from '../../Components/ColLabelInput/ColLabelInput'
 import { useFormik } from 'formik'
@@ -10,6 +19,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import LoadingTable from '../../Components/Table/LoadingTable'
 import NoDataTable from '../../Components/Table/NoDataTable'
 import DataTable from 'react-data-table-component'
+import * as Yup from 'yup'
 
 const DaftarKamar = () => {
   const { dataKamar, comboDaftarKamar } = useSelector((state) => ({
@@ -27,10 +37,39 @@ const DaftarKamar = () => {
       dispatch(getAllKamar(values))
     },
   })
+  const vTambah = useFormik({
+    initialValues: {
+      isOpen: false,
+      namakamar: '',
+      instalasi: '',
+      unit: '',
+      kelas: '',
+      statusenabled: true,
+    },
+    validationSchema: Yup.object({
+      namakamar: Yup.string().required('Nama Kamar harus diisi'),
+      instalasi: Yup.string().required('Instalasi harus diisi'),
+      unit: Yup.string().required('Unit harus diisi'),
+      kelas: Yup.string().required('Kelas harus diisi'),
+      statusenabled: Yup.boolean().required('Status Enabled harus diisi'),
+    }),
+    onSubmit: (values) => {
+      console.log(values)
+    },
+  })
   useEffect(() => {
     dispatch(getAllKamar(vFilter.initialValues))
     dispatch(getComboDaftarKamar())
   }, [dispatch, vFilter.initialValues])
+
+  const handleOpen = (row) => {
+    vTambah.setFieldValue('isOpen', true)
+    vTambah.setFieldValue('namakamar', row.namakamar)
+    vTambah.setFieldValue('instalasi', row.objectinstalasifk)
+    vTambah.setFieldValue('unit', row.objectunitfk)
+    vTambah.setFieldValue('kelas', row.objectkelasfk)
+    vTambah.setFieldValue('statusenabled', row.statusenabled)
+  }
   const columns = [
     {
       name: <span className="font-weight-bold fs-13">Id Kamar</span>,
@@ -65,7 +104,12 @@ const DaftarKamar = () => {
     {
       name: <span className="font-weight-bold fs-13">Aksi</span>,
       cell: (row) => (
-        <Button color="info" onClick={() => {}}>
+        <Button
+          color="info"
+          onClick={(row) => {
+            handleOpen(row)
+          }}
+        >
           Edit
         </Button>
       ),
@@ -75,6 +119,115 @@ const DaftarKamar = () => {
   ]
   return (
     <div className="page-content page-daftar-kamar">
+      <Modal
+        isOpen={vTambah.values.open}
+        toggle={() => vTambah.resetForm()}
+        centered
+      >
+        <Card className="p-3">
+          <Row>
+            <ColLabelInput lg={6} label={'instalasi'} inputId={'instalasi'}>
+              <CustomSelect
+                id="instalasi"
+                name="instalasi"
+                options={comboDaftarKamar?.instalasi || []}
+                onChange={(e) => {
+                  vTambah.setFieldValue('instalasi', e?.value || '')
+                }}
+                value={vTambah.values.instalasi}
+                className={`input row-header ${
+                  !!vTambah?.errors.instalasi ? 'is-invalid' : ''
+                }`}
+              />
+              {vTambah.touched.instalasi && !!vTambah.errors.instalasi && (
+                <FormFeedback type="invalid">
+                  <div>{vTambah.errors.instalasi}</div>
+                </FormFeedback>
+              )}
+            </ColLabelInput>
+            <ColLabelInput lg={6} label={'unit'} inputId={'unit'}>
+              <CustomSelect
+                id="unit"
+                name="unit"
+                options={comboDaftarKamar?.unit || []}
+                onChange={(e) => {
+                  vTambah.setFieldValue('unit', e?.value || '')
+                }}
+                value={vTambah.values.unit}
+                className={`input row-header ${
+                  !!vTambah?.errors.unit ? 'is-invalid' : ''
+                }`}
+              />
+              {vTambah.touched.unit && !!vTambah.errors.unit && (
+                <FormFeedback type="invalid">
+                  <div>{vTambah.errors.unit}</div>
+                </FormFeedback>
+              )}
+            </ColLabelInput>
+            <ColLabelInput lg={6} label={'kelas'} inputId={'kelas'}>
+              <CustomSelect
+                id="kelas"
+                name="kelas"
+                options={comboDaftarKamar?.kelas || []}
+                onChange={(e) => {
+                  vTambah.setFieldValue('kelas', e?.value || '')
+                }}
+                value={vTambah.values.kelas}
+                className={`input row-header ${
+                  !!vTambah?.errors.kelas ? 'is-invalid' : ''
+                }`}
+              />
+              {vTambah.touched.kelas && !!vTambah.errors.kelas && (
+                <FormFeedback type="invalid">
+                  <div>{vTambah.errors.kelas}</div>
+                </FormFeedback>
+              )}
+            </ColLabelInput>
+            <ColLabelInput lg={6} label={'kelas'} inputId={'kelas'}>
+              <Input
+                id="namakamar"
+                name="namakamar"
+                type="text"
+                value={vTambah.values.namakamar}
+                onChange={(e) => {
+                  vTambah.setFieldValue('namakamar ', e.target.value)
+                }}
+                invalid={
+                  vTambah.touched?.namakamar && !!vTambah.errors?.namakamar
+                }
+              />
+              {vTambah.touched?.namakamar && !!vTambah.errors.namakamar && (
+                <FormFeedback type="invalid">
+                  <div>{vTambah.errors.namakamar}</div>
+                </FormFeedback>
+              )}
+            </ColLabelInput>
+            <ColLabelInput lg={6} label={'Status Enabled'} inputId={'status'}>
+              <CustomSelect
+                id="statusenabled"
+                name="statusenabled"
+                options={[
+                  { value: true, label: 'Aktif' },
+                  { value: false, label: 'Tidak Aktif' },
+                ]}
+                onChange={(e) => {
+                  vTambah.setFieldValue('statusenabled', e?.value || '')
+                }}
+                value={vTambah.values.statusenabled}
+                className={`input row-header ${
+                  !!vTambah?.errors.statusenabled ? 'is-invalid' : ''
+                }`}
+              />
+              {vTambah.touched.statusenabled &&
+                !!vTambah.errors.statusenabled && (
+                  <FormFeedback type="invalid">
+                    <div>{vTambah.errors.statusenabled}</div>
+                  </FormFeedback>
+                )}
+            </ColLabelInput>
+          </Row>
+        </Card>
+      </Modal>
       <ToastContainer closeButton={false} />
       <Container fluid>
         <BreadCrumb title="Daftar Kamar" pageTitle="Kamar" />

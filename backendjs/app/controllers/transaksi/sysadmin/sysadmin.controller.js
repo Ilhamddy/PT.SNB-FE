@@ -298,9 +298,11 @@ const getComboDaftarKamar = async (req, res) => {
     try{
         const unit = (await pool.query(unitQueries.getRawatInap)).rows;
         const kelas = (await pool.query(kelasQueries.getAll)).rows;
+        const instalasi = (await pool.query(instalasiQueries.getAll)).rows;
         const tempres = {
             unit,
-            kelas
+            kelas,
+            instalasi
         };
         res.status(200).send({
             msg: 'Success',
@@ -371,7 +373,6 @@ const getComboSysadmin = async (req, res) => {
         });
     }
 }
-
 export default {
     getTempatTidur,
     getUnitTempatTidur,
