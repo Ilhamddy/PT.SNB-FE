@@ -1,7 +1,7 @@
 {
     "script": "npm start",
     "watch": true,
-    "ignore_watch": ["log"],
+    "ignore_watch": ["logs"],
     "watch_options": {
         "followSymlinks": false
     },
