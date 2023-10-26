@@ -98,6 +98,13 @@ const RoleAcces = () => {
       // width: "150px"
     },
   ];
+  const handleRole = (characterEntered) => {
+    if (characterEntered.length > 3) {
+      dispatch(getComboSysadmin({
+        cari:characterEntered
+      }))
+    }
+};
   return (
     <React.Fragment>
       <ToastContainer closeButton={false} />
@@ -131,6 +138,7 @@ const RoleAcces = () => {
                           value={vSetValidationRole.values.nameRole}
                           onChange={(e) => {
                             vSetValidationRole.setFieldValue('nameRole', e.target.value)
+                            // handleRole(e.target.value)
                           }}
                           invalid={vSetValidationRole.touched?.nameRole &&
                             !!vSetValidationRole.errors?.nameRole}

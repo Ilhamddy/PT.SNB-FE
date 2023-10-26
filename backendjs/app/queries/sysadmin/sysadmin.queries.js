@@ -101,7 +101,7 @@ WHERE
 ORDER BY mu.id ASC
 `
 const qRoles = `select row_number() OVER (ORDER BY r.id) AS no,r.name,r.permission,
-r.id  from roles r where r.name ilike '%' || $1 || '%'`
+r.id  from roles r`
 
 const qGetAllKamar = `
 SELECT

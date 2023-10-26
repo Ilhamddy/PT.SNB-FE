@@ -355,9 +355,7 @@ const getComboSysadmin = async (req, res) => {
     const logger = res.locals.logger;
     try{
         
-        const result1 = await pool.query(qRoles, [
-            req.query.cari || '', 
-        ])
+        const result1 = await pool.query(qRoles)
        
         const tempres = {
             role: result1.rows

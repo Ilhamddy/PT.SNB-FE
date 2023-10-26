@@ -105,16 +105,16 @@ const signin = async (req, res) => {
     logger.infoImmediate("masuk")
 
     let authorities = [];
-    const roles = await user.getRoles()
-    for (let i = 0; i < roles.length; i++) {
-      authorities.push("ROLE_" + roles[i].name.toUpperCase());
-    }
+    // const roles = await user.getRoles()
+    // for (let i = 0; i < roles.length; i++) {
+    //   authorities.push("ROLE_" + roles[i].name.toUpperCase());
+    // }
     logger.infoImmediate("masuk2")
     res.status(200).send({
       id: user.id,
       username: user.username,
       email: user.email,
-      // roles: authorities,
+      roles: `["ROLE_ADMIN"]`,//authorities,
       accessToken: token,
       status: "success",
       success: true,
