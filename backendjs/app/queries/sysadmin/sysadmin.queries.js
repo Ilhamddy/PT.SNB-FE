@@ -155,6 +155,11 @@ WHERE
 ORDER BY mk.id ASC
 			
 `
+const qMapRolePermissions =` select rp.roleid,rp.permissionid,p."name" as premissions,r."name",ur.userid   from role_permissions rp
+left join permissions p on p.id=rp.permissionid
+left join roles r on r.id=rp.roleid
+left join user_roles ur on  r.id=ur.roleid
+order by ur.userid`
 
 export {
 	qGetTempatTidur,
@@ -162,5 +167,6 @@ export {
 	qGetAllUnit,
 	qGetAllKamar,
 	qRoles,
-	qCountRole
+	qCountRole,
+	qMapRolePermissions
 }

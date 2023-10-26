@@ -5,6 +5,7 @@ import {
     qGetAllUnit,
     qGetTempatTidur,
     qGetUnitTempatTidur,
+    qMapRolePermissions,
     qRoles,
     statusBed
 } from "../../../queries/sysadmin/sysadmin.queries";
@@ -486,6 +487,30 @@ const saveRoles = async (req, res) => {
         });
     }
 }
+
+const getMapRolePermissions = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const result1 = await pool.query(qMapRolePermissions)
+        const tempres = {
+        
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: result1.rows,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
 export default {
     getTempatTidur,
     getUnitTempatTidur,
@@ -498,5 +523,6 @@ export default {
     getComboDaftarKamar,
     getComboSysadmin,
     saveRoles,
-    upsertKamar
+    upsertKamar,
+    getMapRolePermissions
 }
