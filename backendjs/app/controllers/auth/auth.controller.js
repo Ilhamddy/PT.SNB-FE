@@ -77,6 +77,7 @@ const signin = async (req, res) => {
     if (!user) {
       return res.status(404).send({ message: "User Not found." });
     }
+    res.locals.showBodyRes()
   
     let passwordIsValid = bcrypt.compareSync(
       req.body.password,
