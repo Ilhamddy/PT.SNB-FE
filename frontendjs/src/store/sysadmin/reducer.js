@@ -27,7 +27,10 @@ import {
     GET_COMBO_DAFTAR_KAMAR_SUCCESS,
     GET_COMBO_DAFTAR_KAMAR_ERROR,
     GET_COMBO_SYSADMIN, GET_COMBO_SYSADMIN_SUCCESS, GET_COMBO_SYSADMIN_ERROR,
-    UPSERT_ROLES, UPSERT_ROLES_SUCCESS,UPSERT_ROLES_ERROR
+    UPSERT_ROLES, UPSERT_ROLES_SUCCESS,UPSERT_ROLES_ERROR,
+    UPSERT_KAMAR,
+    UPSERT_KAMAR_SUCCESS,
+    UPSERT_KAMAR_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -82,6 +85,11 @@ const INIT_STATE = {
         error: null,
     },
     upsertRoles:{
+        data: [],
+        loading: false,
+        error: null,
+    },
+    upsertKamar: {
         data: [],
         loading: false,
         error: null,
@@ -431,11 +439,32 @@ const Sysadmin = (state = INIT_STATE, action) => {
             }
         }
 
+        case UPSERT_KAMAR: {
+            return {
+                ...state,
+                upsertKamar: {
+                    ...state.upsertKamar,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
         case UPSERT_ROLES_SUCCESS: {
             return {
                 ...state,
                 upsertRoles: {
                     ...state.upsertRoles,
+                    loading: false,
+                    data: action.payload,
+                }
+            }
+        }
+        case UPSERT_KAMAR_SUCCESS: {
+            return {
+                ...state,
+                upsertKamar: {
+                    ...state.upsertKamar,
                     loading: false,
                     data: action.payload,
                 }
@@ -447,6 +476,16 @@ const Sysadmin = (state = INIT_STATE, action) => {
                 ...state,
                 upsertRoles: {
                     ...state.upsertRoles,
+                    loading: true,
+                    error: action.payload,
+                }
+            }
+        }
+        case UPSERT_KAMAR_ERROR: {
+            return {
+                ...state,
+                upsertKamar: {
+                    ...state.upsertKamar,
                     loading: false,
                     error: action.payload,
                 }

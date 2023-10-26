@@ -42,7 +42,7 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getAllUnit
     )
-    
+
     app.get(
         "/api/transaksi/sysadmin/get-combo-daftar-unit",
         [authJwt.verifyToken],
@@ -75,5 +75,11 @@ export default function (app) {
         "/api/transaksi/sysadmin/save-roles",
         [authJwt.verifyToken],
         controller.saveRoles
+    )
+
+    app.post(
+        "/api/transaksi/sysadmin/upsert-kamar",
+        [authJwt.verifyToken],
+        controller.upsertKamar
     )
 }
