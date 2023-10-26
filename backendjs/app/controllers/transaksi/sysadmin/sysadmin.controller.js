@@ -1,11 +1,11 @@
 import pool from "../../../config/dbcon.query";
-import { 
+import {
     qGetAllKamar,
     qGetAllUnit,
-    qGetTempatTidur, 
-    qGetUnitTempatTidur, 
-    qRoles, 
-    statusBed 
+    qGetTempatTidur,
+    qGetUnitTempatTidur,
+    qRoles,
+    statusBed
 } from "../../../queries/sysadmin/sysadmin.queries";
 import db from "../../../models";
 import { getDateStartEnd } from "../../../utils/dateutils";
@@ -20,7 +20,7 @@ import statusbedQueries from "../../../queries/master/statusbed/statusbed.querie
 
 const getTempatTidur = async (req, res) => {
     const logger = res.locals.logger;
-    try{
+    try {
         const statusRusak = (await pool.query(qGetTempatTidur, [statusBed.RUSAK]))
             .rows[0]
             ?.total || 0;
@@ -54,7 +54,7 @@ const getTempatTidur = async (req, res) => {
 
 const getUnitTempatTidur = async (req, res) => {
     const logger = res.locals.logger;
-    try{
+    try {
         const {
             unit,
             kelas
@@ -82,7 +82,7 @@ const getUnitTempatTidur = async (req, res) => {
 
 const getComboTempatTidur = async (req, res) => {
     const logger = res.locals.logger;
-    try{
+    try {
         const unit = (await pool.query(unitQueries.getRawatInap)).rows;
         const kelas = (await pool.query(kelasQueries.getAll)).rows;
         const kamar = (await pool.query(kamarQueries.getAll)).rows;
@@ -112,16 +112,16 @@ const getComboTempatTidur = async (req, res) => {
 
 const upsertTempatTidur = async (req, res) => {
     const logger = res.locals.logger;
-    try{
+    try {
         const bodyReq = req.body
-        const {ttData} = await db.sequelize.transaction(async (transaction) => {
+        const { ttData } = await db.sequelize.transaction(async (transaction) => {
             let ttData = null
             const ttModel = await db.m_tempattidur.findOne({
                 where: {
                     id: bodyReq.id
                 }
             })
-            if(!ttModel){
+            if (!ttModel) {
                 const created = await db.m_tempattidur.create({
                     statusenabled: true,
                     reportdisplay: bodyReq.kamar + ' - ' + bodyReq.nobed,
@@ -131,8 +131,8 @@ const upsertTempatTidur = async (req, res) => {
                     objectruangperawatankemenkesfk: null,
                     idttsirs: null,
                     idkelassirs: null,
-                }, { 
-                    transaction 
+                }, {
+                    transaction
                 })
                 ttData = created.toJSON()
             } else {
@@ -145,8 +145,8 @@ const upsertTempatTidur = async (req, res) => {
                     objectruangperawatankemenkesfk: null,
                     idttsirs: null,
                     idkelassirs: null,
-                }, { 
-                    transaction 
+                }, {
+                    transaction
                 })
                 ttData = ttModel.toJSON()
             }
@@ -154,7 +154,7 @@ const upsertTempatTidur = async (req, res) => {
                 ttData
             }
         });
-        
+
         const tempres = {
             ttData: ttData
         };
@@ -177,10 +177,10 @@ const upsertTempatTidur = async (req, res) => {
 
 const getAllUnit = async (req, res) => {
     const logger = res.locals.logger;
-    try{
-        const {instalasi} = req.query;
+    try {
+        const { instalasi } = req.query;
         const unit = (await pool.query(qGetAllUnit, [instalasi || ''])).rows;
-        
+
         const tempres = {
             unit: unit
         };
@@ -203,7 +203,7 @@ const getAllUnit = async (req, res) => {
 
 const getComboDaftarUnit = async (req, res) => {
     const logger = res.locals.logger;
-    try{
+    try {
         const instalasi = await pool.query(instalasiQueries.getAll)
         const tempres = {
             instalasi: instalasi.rows
@@ -227,12 +227,12 @@ const getComboDaftarUnit = async (req, res) => {
 
 const upsertUnit = async (req, res) => {
     const logger = res.locals.logger;
-    try{
+    try {
         const reqBody = req.body
-        const {unit} = 
+        const { unit } =
             await db.sequelize.transaction(async (transaction) => {
                 let unitData = null
-                if(!reqBody.idunit){
+                if (!reqBody.idunit) {
                     const created = await db.m_unit.create({
                         kdprofile: 0,
                         statusenabled: true,
@@ -240,7 +240,7 @@ const upsertUnit = async (req, res) => {
                         namaexternal: reqBody.namaunit,
                         reportdisplay: reqBody.namaunit,
                         objectinstalasifk: reqBody.instalasi,
-                        namaunit:reqBody.namaunit,
+                        namaunit: reqBody.namaunit,
                     }, {
                         transaction: transaction
                     })
@@ -250,7 +250,7 @@ const upsertUnit = async (req, res) => {
                         transaction: transaction
                     })
                     unitData = created.toJSON()
-                } else{
+                } else {
                     const unit = await db.m_unit.findOne({
                         where: {
                             id: reqBody.idunit
@@ -263,7 +263,7 @@ const upsertUnit = async (req, res) => {
                         namaexternal: reqBody.namaunit,
                         reportdisplay: reqBody.namaunit,
                         objectinstalasifk: reqBody.instalasi,
-                        namaunit:reqBody.namaunit,
+                        namaunit: reqBody.namaunit,
                     }, {
                         transaction: transaction
                     })
@@ -273,7 +273,7 @@ const upsertUnit = async (req, res) => {
                     unit: unitData
                 }
             });
-        
+
         const tempres = {
             unit
         };
@@ -296,7 +296,7 @@ const upsertUnit = async (req, res) => {
 
 const getComboDaftarKamar = async (req, res) => {
     const logger = res.locals.logger;
-    try{
+    try {
         const unit = (await pool.query(unitQueries.getRawatInap)).rows;
         const kelas = (await pool.query(kelasQueries.getAll)).rows;
         const instalasi = (await pool.query(instalasiQueries.getAll)).rows;
@@ -324,11 +324,11 @@ const getComboDaftarKamar = async (req, res) => {
 
 const getAllKamar = async (req, res) => {
     const logger = res.locals.logger;
-    try{
+    try {
         const { kelas, unit, kamar: qKamar } = req.query;
         const kamar = (await pool.query(qGetAllKamar, [
-            unit || '', 
-            kelas || '', 
+            unit || '',
+            kelas || '',
             qKamar || ''
         ])).rows
         const tempres = {
@@ -353,10 +353,10 @@ const getAllKamar = async (req, res) => {
 
 const getComboSysadmin = async (req, res) => {
     const logger = res.locals.logger;
-    try{
-        
-        const result1 = await pool.query(qRoles)
-       
+    try {
+
+        const result1 = await pool.query(qRoles, [req.query.cari || ''])
+
         const tempres = {
             role: result1.rows
         };
@@ -364,6 +364,37 @@ const getComboSysadmin = async (req, res) => {
             msg: 'Success',
             code: 200,
             data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+const saveRoles = async (req, res) => {
+    const logger = res.locals.logger;
+    try {
+        const { setRole } = await db.sequelize.transaction(async (transaction) => {
+            let setRole = ''
+            setRole = await db.role.create({
+                name: req.query.nameRole,
+            }, { transaction });
+
+            return { setRole }
+        });
+
+        // const tempres = {
+
+        // };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: setRole,
             success: true
         });
     } catch (error) {
@@ -386,5 +417,6 @@ export default {
     upsertUnit,
     getAllKamar,
     getComboDaftarKamar,
-    getComboSysadmin
+    getComboSysadmin,
+    saveRoles
 }

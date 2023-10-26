@@ -71,4 +71,9 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getComboSysadmin
     )
+    app.post(
+        "/api/transaksi/sysadmin/save-roles",
+        [authJwt.verifyToken],
+        controller.saveRoles
+    )
 }

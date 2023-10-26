@@ -10,7 +10,8 @@ import {
     UPSERT_UNIT,
     GET_ALL_KAMAR,
     GET_COMBO_DAFTAR_KAMAR,
-    GET_COMBO_SYSADMIN
+    GET_COMBO_SYSADMIN,
+    UPSERT_ROLES
  } from "./actionType";
 import { 
     getTempatTidurSuccess,
@@ -31,7 +32,8 @@ import {
     getAllKamarError,
     getComboDaftarKamarSuccess,
     getComboDaftarKamarError,
-    getComboSysadminSuccess,getComboSysadminError
+    getComboSysadminSuccess,getComboSysadminError,
+    upsertRolesSuccess,upsertRolesError
 } from "./action";
 import { toast } from 'react-toastify';
 
@@ -134,6 +136,18 @@ function* ongetComboSysadmin({payload: {queries}}) {
     }
 }
 
+function* onupsertRoles({payload: {data, callback}}) {
+    try{
+        const response = yield call(serviceSysadmin.upsertRoles, data);
+        yield put(upsertRolesSuccess(response.data));
+        toast.success(response.message);
+        callback && callback(response);
+    } catch (error) {
+        yield put(upsertRolesError(error));
+        toast.error(error.message);
+    }
+}
+
 export default function* SysadminSaga() {
     yield takeEvery(GET_TEMPAT_TIDUR, onGetTempatTidur)
     yield takeEvery(GET_UNIT_TEMPAT_TIDUR, onGetUnitTempatTidur)
@@ -145,4 +159,5 @@ export default function* SysadminSaga() {
     yield takeEvery(GET_ALL_KAMAR, onGetAllKamar)
     yield takeEvery(GET_COMBO_DAFTAR_KAMAR, onGetComboDaftarKamar)
     yield takeEvery(GET_COMBO_SYSADMIN, ongetComboSysadmin)
+    yield takeEvery(UPSERT_ROLES, onupsertRoles)
 }

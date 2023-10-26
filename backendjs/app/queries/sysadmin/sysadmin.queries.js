@@ -101,7 +101,9 @@ WHERE
 ORDER BY mu.id ASC
 `
 const qRoles = `select row_number() OVER (ORDER BY r.id) AS no,r.name,r.permission,
-r.id  from roles r`
+r.id  from roles r where r.name ILIKE '%' || $1 || '%'`
+
+const qCountRole = `select count(id) as jml from roles`
 
 const qGetAllKamar = `
 SELECT
@@ -155,9 +157,10 @@ ORDER BY mk.id ASC
 `
 
 export {
-    qGetTempatTidur,
-    qGetUnitTempatTidur,
+	qGetTempatTidur,
+	qGetUnitTempatTidur,
 	qGetAllUnit,
 	qGetAllKamar,
-	qRoles
+	qRoles,
+	qCountRole
 }

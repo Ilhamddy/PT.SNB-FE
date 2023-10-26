@@ -10,7 +10,7 @@ import * as Yup from "yup";
 import DataTable from "react-data-table-component";
 import LoadingTable from "../../../Components/Table/LoadingTable";
 import {
-  getComboSysadmin
+  getComboSysadmin, upsertRoles
 } from '../../../store/sysadmin/action'
 
 const RoleAcces = () => {
@@ -25,19 +25,26 @@ const RoleAcces = () => {
     enableReinitialize: true,
     initialValues: {
       task: 1,
+      cariRole: '',
+      nameRole: ''
     },
     validationSchema: Yup.object({
-      nip: Yup.string().required("NIP wajib diisi"),
+      // nip: Yup.string().required("NIP wajib diisi"),
     }),
     onSubmit: (values) => {
-      // dispatch(saveBiodataPegawai(values, () => {
-
-      // }));
+      dispatch(
+        upsertRoles(values, () => {
+          vSetValidationRole.resetForm()
+          dispatch(getComboSysadmin({
+            cari: ''
+          }))
+        })
+      )
     }
   })
   useEffect(() => {
     dispatch(getComboSysadmin({
-      cari:''
+      cari: ''
     }))
   }, [dispatch])
   const tableCustomStyles = {
@@ -101,10 +108,17 @@ const RoleAcces = () => {
   const handleRole = (characterEntered) => {
     if (characterEntered.length > 3) {
       dispatch(getComboSysadmin({
-        cari:characterEntered
+        cari: characterEntered
       }))
     }
-};
+  };
+  const handleRoleKeyKpres = (e) => {
+    if (e.keyCode === 13) {
+      dispatch(getComboSysadmin({
+        cari: vSetValidationRole.values.cariRole
+      }))
+    }
+  }
   return (
     <React.Fragment>
       <ToastContainer closeButton={false} />
@@ -138,7 +152,6 @@ const RoleAcces = () => {
                           value={vSetValidationRole.values.nameRole}
                           onChange={(e) => {
                             vSetValidationRole.setFieldValue('nameRole', e.target.value)
-                            // handleRole(e.target.value)
                           }}
                           invalid={vSetValidationRole.touched?.nameRole &&
                             !!vSetValidationRole.errors?.nameRole}
@@ -170,10 +183,12 @@ const RoleAcces = () => {
                             value={vSetValidationRole.values.cariRole}
                             onChange={(e) => {
                               vSetValidationRole.setFieldValue('cariRole', e.target.value)
+                              handleRole(e.target.value)
                             }}
                             invalid={vSetValidationRole.touched?.cariRole &&
                               !!vSetValidationRole.errors?.cariRole}
                             placeholder="Cari Role..."
+                            onKeyDown={handleRoleKeyKpres}
                           />
                           {vSetValidationRole.touched?.cariRole
                             && !!vSetValidationRole.errors.cariRole && (
