@@ -42,6 +42,9 @@ export default class ServiceTempatTidur {
         return await api.get("/transaksi/sysadmin/get-combo-sysadmin", queries)
     }
 
+    upsertRoles = async (body) => {
+        return await api.create("/transaksi/sysadmin/save-roles", body)
+    }
     upsertKamar = async (body) => {
         return await api.create("/transaksi/sysadmin/upsert-kamar", body)
     }

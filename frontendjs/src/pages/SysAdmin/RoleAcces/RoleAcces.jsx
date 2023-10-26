@@ -10,7 +10,7 @@ import * as Yup from "yup";
 import DataTable from "react-data-table-component";
 import LoadingTable from "../../../Components/Table/LoadingTable";
 import {
-  getComboSysadmin
+  getComboSysadmin, upsertRoles
 } from '../../../store/sysadmin/action'
 
 const RoleAcces = () => {
@@ -25,19 +25,26 @@ const RoleAcces = () => {
     enableReinitialize: true,
     initialValues: {
       task: 1,
+      cariRole: '',
+      nameRole: ''
     },
     validationSchema: Yup.object({
-      nip: Yup.string().required("NIP wajib diisi"),
+      nameRole: Yup.string().required("Nama Role wajib diisi"),
     }),
     onSubmit: (values) => {
-      // dispatch(saveBiodataPegawai(values, () => {
-
-      // }));
+      dispatch(
+        upsertRoles(values, () => {
+          vSetValidationRole.resetForm()
+          dispatch(getComboSysadmin({
+            cari: ''
+          }))
+        })
+      )
     }
   })
   useEffect(() => {
     dispatch(getComboSysadmin({
-      cari:''
+      cari: ''
     }))
   }, [dispatch])
   const tableCustomStyles = {
@@ -83,6 +90,7 @@ const RoleAcces = () => {
           <div className="hstack gap-3 flex-wrap">
             <UncontrolledDropdown className="dropdown d-inline-block">
               <DropdownToggle className="btn btn-soft-secondary btn-sm" tag="button" id="tooltipTop2" type="button"
+                onClick={() => handleClick(data)}
               >
                 <i className="ri-pencil-fill"></i>
               </DropdownToggle>
@@ -101,10 +109,26 @@ const RoleAcces = () => {
   const handleRole = (characterEntered) => {
     if (characterEntered.length > 3) {
       dispatch(getComboSysadmin({
-        cari:characterEntered
+        cari: characterEntered
       }))
     }
-};
+  };
+  const handleRoleKeyKpres = (e) => {
+    if (e.keyCode === 13) {
+      dispatch(getComboSysadmin({
+        cari: vSetValidationRole.values.cariRole
+      }))
+    }
+  }
+  const [selected, setselected] = useState({
+    name: null,
+
+  })
+  const handleClick = (e) => {
+    setselected({
+      name: e.name,
+    })
+  };
   return (
     <React.Fragment>
       <ToastContainer closeButton={false} />
@@ -138,7 +162,6 @@ const RoleAcces = () => {
                           value={vSetValidationRole.values.nameRole}
                           onChange={(e) => {
                             vSetValidationRole.setFieldValue('nameRole', e.target.value)
-                            // handleRole(e.target.value)
                           }}
                           invalid={vSetValidationRole.touched?.nameRole &&
                             !!vSetValidationRole.errors?.nameRole}
@@ -170,10 +193,12 @@ const RoleAcces = () => {
                             value={vSetValidationRole.values.cariRole}
                             onChange={(e) => {
                               vSetValidationRole.setFieldValue('cariRole', e.target.value)
+                              handleRole(e.target.value)
                             }}
                             invalid={vSetValidationRole.touched?.cariRole &&
                               !!vSetValidationRole.errors?.cariRole}
                             placeholder="Cari Role..."
+                            onKeyDown={handleRoleKeyKpres}
                           />
                           {vSetValidationRole.touched?.cariRole
                             && !!vSetValidationRole.errors.cariRole && (
@@ -208,30 +233,52 @@ const RoleAcces = () => {
                 <Card>
                   <CardBody>
                     <Row className="gy-2">
-                      <Col lg={4}>
+                      <Col lg={2}>
                         <div className="mt-2">
-                          <Label style={{ color: "black" }} htmlFor="unitlast" className="form-label">Nama Role</Label>
+                          <Label style={{ color: "black" }} htmlFor="unitlast" className="form-label">Role :</Label>
                         </div>
                       </Col>
-                      <Col lg={8}>
+                      <Col lg={6}>
+                        <div className="mt-2">
+                          <Label style={{ color: "black" }} htmlFor="unitlast" className="form-label">{selected && selected.name ? selected.name : '-'}</Label>
+                        </div>
+                      </Col>
+                      <Col lg={4}>
                         <Input
-                          id="nameRole"
-                          name="nameRole"
+                          id="cariPermision"
+                          name="cariPermision"
                           type="text"
-                          value={vSetValidationRole.values.nameRole}
+                          value={vSetValidationRole.values.cariPermision}
                           onChange={(e) => {
-                            vSetValidationRole.setFieldValue('nameRole', e.target.value)
+                            vSetValidationRole.setFieldValue('cariPermision', e.target.value)
                           }}
-                          invalid={vSetValidationRole.touched?.nameRole &&
-                            !!vSetValidationRole.errors?.nameRole}
+                          invalid={vSetValidationRole.touched?.cariPermision &&
+                            !!vSetValidationRole.errors?.cariPermision}
                         />
-                        {vSetValidationRole.touched?.nameRole
-                          && !!vSetValidationRole.errors.nameRole && (
+                        {vSetValidationRole.touched?.cariPermision
+                          && !!vSetValidationRole.errors.cariPermision && (
                             <FormFeedback type="invalid">
-                              <div>{vSetValidationRole.errors.nameRole}</div>
+                              <div>{vSetValidationRole.errors.cariPermision}</div>
                             </FormFeedback>
                           )}
                       </Col>
+                      <Col lg={12}>
+                        <div id="table-gridjs">
+                          <DataTable
+                            fixedHeader
+                            fixedHeaderScrollHeight="330px"
+                            columns={columns}
+                            pagination
+                            data={dataCombo.role}
+                            progressPending={loadingCombo}
+                            customStyles={tableCustomStyles}
+                            progressComponent={<LoadingTable />}
+                            // onRowClicked={(row) => handleClick(row)}
+                            pointerOnHover
+                            highlightOnHover
+                          />
+                        </div>
+                        </Col>
                     </Row>
                   </CardBody>
                 </Card>

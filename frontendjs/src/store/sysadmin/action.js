@@ -26,9 +26,8 @@ import {
     GET_COMBO_DAFTAR_KAMAR,
     GET_COMBO_DAFTAR_KAMAR_SUCCESS,
     GET_COMBO_DAFTAR_KAMAR_ERROR,
-    GET_COMBO_SYSADMIN,
-    GET_COMBO_SYSADMIN_SUCCESS,
-    GET_COMBO_SYSADMIN_ERROR,
+    GET_COMBO_SYSADMIN,GET_COMBO_SYSADMIN_SUCCESS,GET_COMBO_SYSADMIN_ERROR,
+    UPSERT_ROLES,UPSERT_ROLES_SUCCESS,UPSERT_ROLES_ERROR,
     UPSERT_KAMAR,
     UPSERT_KAMAR_SUCCESS,
     UPSERT_KAMAR_ERROR
@@ -207,12 +206,29 @@ export const getComboSysadminError = (error) => ({
     payload: error,
 });
 
+export const upsertRoles = (data, callback) => ({
+    type: UPSERT_ROLES,
+        payload: {
+            data,
+            callback
+        },
+    });
 export const upsertKamar = (data, callback) => ({
     type: UPSERT_KAMAR,
     payload: {
         data,
         callback
     },
+});
+
+export const upsertRolesSuccess = (data) => ({
+    type: UPSERT_ROLES_SUCCESS,
+    payload: data,
+});
+
+export const upsertRolesError = (error) => ({
+    type: UPSERT_ROLES_ERROR,
+    payload: error,
 });
 
 export const upsertKamarSuccess = (data) => ({

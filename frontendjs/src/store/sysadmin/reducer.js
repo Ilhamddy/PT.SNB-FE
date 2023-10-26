@@ -26,12 +26,12 @@ import {
     GET_COMBO_DAFTAR_KAMAR,
     GET_COMBO_DAFTAR_KAMAR_SUCCESS,
     GET_COMBO_DAFTAR_KAMAR_ERROR,
-    GET_COMBO_SYSADMIN, 
-    GET_COMBO_SYSADMIN_SUCCESS,
-    GET_COMBO_SYSADMIN_ERROR,
+    GET_COMBO_SYSADMIN, GET_COMBO_SYSADMIN_SUCCESS, GET_COMBO_SYSADMIN_ERROR,
+    UPSERT_ROLES, UPSERT_ROLES_SUCCESS,UPSERT_ROLES_ERROR,
     UPSERT_KAMAR,
     UPSERT_KAMAR_SUCCESS,
-    UPSERT_KAMAR_ERROR
+    UPSERT_KAMAR_ERROR,
+    GET_MAP_ROLE_PERMISSIONS,GET_MAP_ROLE_PERMISSIONS_SUCCESS,GET_MAP_ROLE_PERMISSIONS_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -85,11 +85,21 @@ const INIT_STATE = {
         loading: false,
         error: null,
     },
+    upsertRoles:{
+        data: [],
+        loading: false,
+        error: null,
+    },
     upsertKamar: {
         data: [],
         loading: false,
         error: null,
-    }
+    },
+    getMapRolePermissions: {
+        data: [],
+        loading: false,
+        error: null,
+    },
 };
 
 const Sysadmin = (state = INIT_STATE, action) => {
@@ -435,6 +445,7 @@ const Sysadmin = (state = INIT_STATE, action) => {
             }
         }
 
+        
         case UPSERT_KAMAR_SUCCESS: {
             return {
                 ...state,
@@ -456,6 +467,40 @@ const Sysadmin = (state = INIT_STATE, action) => {
                 }
             }
         }
+
+        case UPSERT_ROLES: {
+            return {
+                ...state,
+                upsertRoles: {
+                    ...state.upsertRoles,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+        
+        case UPSERT_ROLES_SUCCESS: {
+            return {
+                ...state,
+                upsertRoles: {
+                    ...state.upsertRoles,
+                    loading: false,
+                    data: action.payload,
+                }
+            }
+        }
+
+        case UPSERT_ROLES_ERROR: {
+            return {
+                ...state,
+                upsertRoles: {
+                    ...state.upsertRoles,
+                    loading: true,
+                    error: action.payload,
+                }
+            }
+        }
+       
 
         default: return { ...state };
     }

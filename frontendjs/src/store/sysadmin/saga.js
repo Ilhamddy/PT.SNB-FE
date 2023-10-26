@@ -11,6 +11,7 @@ import {
     GET_ALL_KAMAR,
     GET_COMBO_DAFTAR_KAMAR,
     GET_COMBO_SYSADMIN,
+    UPSERT_ROLES,
     UPSERT_KAMAR
  } from "./actionType";
 import { 
@@ -32,8 +33,8 @@ import {
     getAllKamarError,
     getComboDaftarKamarSuccess,
     getComboDaftarKamarError,
-    getComboSysadminSuccess,
-    getComboSysadminError,
+    getComboSysadminSuccess,getComboSysadminError,
+    upsertRolesSuccess,upsertRolesError,
     upsertKamarSuccess,
     upsertKamarError
 } from "./action";
@@ -138,6 +139,17 @@ function* ongetComboSysadmin({payload: {queries}}) {
     }
 }
 
+function* onupsertRoles({payload: {data, callback}}) {
+    try{
+        const response = yield call(serviceSysadmin.upsertRoles, data);
+        yield put(upsertRolesSuccess(response.data));
+        toast.success(response.msg);
+        callback && callback(response);
+    } catch (error) {
+        yield put(upsertRolesError(error));
+        toast.error(error.message);
+    }
+}
 function* onUpsertKamar({payload: {data, callback}}) {
     try{
         const response = yield call(serviceSysadmin.upsertKamar, data);
@@ -161,5 +173,6 @@ export default function* SysadminSaga() {
     yield takeEvery(GET_ALL_KAMAR, onGetAllKamar)
     yield takeEvery(GET_COMBO_DAFTAR_KAMAR, onGetComboDaftarKamar)
     yield takeEvery(GET_COMBO_SYSADMIN, ongetComboSysadmin)
+    yield takeEvery(UPSERT_ROLES, onupsertRoles)
     yield takeEvery(UPSERT_KAMAR, onUpsertKamar)
 }

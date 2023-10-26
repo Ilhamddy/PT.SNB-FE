@@ -69,7 +69,7 @@ const signup = async (req, res) => {
 const signin = async (req, res) => {
   const logger = res.locals.logger;
   logger.infoImmediate("masuk pertama")
-  try{
+  try {
     const user = await User.findOne({
       where: {
         username: req.body.username
@@ -79,12 +79,12 @@ const signin = async (req, res) => {
       return res.status(404).send({ message: "User Not found." });
     }
     res.locals.showBodyRes()
-  
+
     let passwordIsValid = bcrypt.compareSync(
       req.body.password,
       user.password
     );
-  
+
     if (!passwordIsValid) {
       return res.status(200).send({
         accessToken: null,
@@ -93,34 +93,45 @@ const signin = async (req, res) => {
         status: "errors"
       });
     }
-    logger.infoImmediate("masuk0")
-  
-    const result = await pool.query(queries.getSesions, [user.id]);
-      // res.status(200).send(result.rows);
-    let resHead = result.rows;
+    // logger.infoImmediate("masuk0")
 
-    let token = jwt.sign({ id: user.id, sesion: resHead, idpegawai: user.objectpegawaifk, }, config.secret, {
+    // const result = await pool.query(queries.getSesions, [user.id]);
+    const result2 = await pool.query(queries.getSesionsNew, [user.id]);
+    // res.status(200).send(result.rows);
+    // let resHead = result.rows;
+    let resHead = [];
+    for (let i = 0; i < result2.rows.length; i++) {
+      resHead.push(result2.rows[i].premissions.toUpperCase());
+    }
+    let resHead2 = [
+      {
+        name:result2?.rows[0]?.name || '',
+        permission:resHead
+      }
+    ];
+    let token = jwt.sign({ id: user.id, sesion: resHead2, idpegawai: user.objectpegawaifk, }, config.secret, {
       expiresIn: 86400 // 24 hours test
     });
-    logger.infoImmediate("masuk")
+    // logger.infoImmediate("masuk")
 
-    let authorities = [];
-    const roles = await user.getRoles()
-    for (let i = 0; i < roles.length; i++) {
-      authorities.push("ROLE_" + roles[i].name.toUpperCase());
-    }
-    logger.infoImmediate("masuk2")
+    // let authorities = [];
+    // const roles = await user.getRoles()
+    // for (let i = 0; i < roles.length; i++) {
+    //   authorities.push("ROLE_" + roles[i].name.toUpperCase());
+    // }
+
+    // logger.infoImmediate("masuk2")
     res.status(200).send({
       id: user.id,
       username: user.username,
       email: user.email,
-      roles: `["ROLE_ADMIN"]`,//authorities,
+      // roles: authorities,
       accessToken: token,
       status: "success",
       success: true,
       // sesion: resHead
     });
-  }catch(e){
+  } catch (e) {
     logger.error(e);
     res.status(500).send({ message: e, status: "errors" });
   }
