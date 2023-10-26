@@ -115,6 +115,8 @@ SELECT
 	mkel.namakelas AS namakelas,
 	mk.objectunitfk AS objectunitfk,
 	mu.namaunit AS namaunit,
+	mu.objectinstalasifk AS objectinstalasifk,
+	mi.namainstalasi AS namainstalasi,
 	mk.namakamar AS namakamar,
 	mk.qtybed AS qtybed,
 	mk.jumlahbedisi AS jumlahbedisi,
@@ -127,6 +129,7 @@ SELECT
 FROM m_kamar mk
 	LEFT JOIN m_kelas mkel ON mk.objectkelasfk = mkel.id
 	LEFT JOIN m_unit mu ON mk.objectunitfk = mu.id
+	LEFT JOIN m_instalasi mi ON mu.objectinstalasifk = mi.id
 WHERE 
 	true 
 	AND
