@@ -1,18 +1,26 @@
 import React, { useEffect, useState } from "react"
 import withRouter from "../../../Components/Common/withRouter"
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { ToastContainer } from "react-toastify";
-import { Card, Col, Container, Row, Form, Input, Label, FormFeedback, CardBody, Button } from "reactstrap";
+import { Card, Col, Container, Row, Form, Input, Label, FormFeedback, CardBody, Button, UncontrolledDropdown, DropdownToggle } from "reactstrap";
 import BreadCrumb from "../../../Components/Common/BreadCrumb";
 import UiContent from "../../../Components/Common/UiContent";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import DataTable from "react-data-table-component";
 import LoadingTable from "../../../Components/Table/LoadingTable";
+import {
+  getComboSysadmin
+} from '../../../store/sysadmin/action'
 
 const RoleAcces = () => {
   document.title = "Role Acces";
   const dispatch = useDispatch();
+  const { dataCombo,
+    loadingCombo } = useSelector((state) => ({
+      dataCombo: state.Sysadmin.getComboSysadmin.data || [],
+      loadingCombo: state.Sysadmin.getComboSysadmin.loading,
+    }));
   const vSetValidationRole = useFormik({
     enableReinitialize: true,
     initialValues: {
@@ -27,49 +35,69 @@ const RoleAcces = () => {
       // }));
     }
   })
+  useEffect(() => {
+    dispatch(getComboSysadmin({
+      cari:''
+    }))
+  }, [dispatch])
   const tableCustomStyles = {
     headRow: {
-        style: {
-            color: '#ffffff',
-            backgroundColor: '#e67e22',
-        },
+      style: {
+        color: '#ffffff',
+        backgroundColor: '#e67e22',
+      },
     },
     rows: {
-        style: {
-            color: "black",
-            backgroundColor: "#f1f2f6"
-        },
+      style: {
+        color: "black",
+        backgroundColor: "#f1f2f6"
+      },
     }
-}
-const columns = [
+  }
+  const columns = [
     {
-        name: <span className='font-weight-bold fs-13'>No</span>,
-        selector: row => row.no,
-        sortable: true,
-        width: "50px"
+      name: <span className='font-weight-bold fs-13'>No</span>,
+      selector: row => row.no,
+      sortable: true,
+      width: "50px"
     },
     {
-        name: <span className='font-weight-bold fs-13'>Status Enabled</span>,
-        selector: row => row.status,
-        sortable: true,
-        width: "150px"
+      name: <span className='font-weight-bold fs-13'>ID</span>,
+      selector: row => row.id,
+      sortable: true,
+      width: "50px"
     },
     {
-        name: <span className='font-weight-bold fs-13'>User Name</span>,
-        selector: row => row.username,
-        sortable: true,
-        // selector: row => (<button className="btn btn-sm btn-soft-info" onClick={() => handleClick(dataTtv)}>{row.noregistrasi}</button>),
-        width: "160px",
-        wrap: true,
+      name: <span className='font-weight-bold fs-13'>Nama Role</span>,
+      selector: row => row.name,
+      sortable: true,
+      // selector: row => (<button className="btn btn-sm btn-soft-info" onClick={() => handleClick(dataTtv)}>{row.noregistrasi}</button>),
+      // width: "250px",
+      wrap: true,
     },
     {
 
-        name: <span className='font-weight-bold fs-13'>Role</span>,
-        selector: row => row.namerole,
-        sortable: true,
-        width: "150px"
+      name: <span className='font-weight-bold fs-13'>Akses Modul</span>,
+      cell: (data) => {
+        return (
+          <div className="hstack gap-3 flex-wrap">
+            <UncontrolledDropdown className="dropdown d-inline-block">
+              <DropdownToggle className="btn btn-soft-secondary btn-sm" tag="button" id="tooltipTop2" type="button"
+              >
+                <i className="ri-pencil-fill"></i>
+              </DropdownToggle>
+              {/* <DropdownMenu className="dropdown-menu-end">
+                <DropdownItem href="#!" onClick={() => handleClickEdit(data)}><i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>Edit</DropdownItem>
+              </DropdownMenu> */}
+            </UncontrolledDropdown>
+            {/* <UncontrolledTooltip placement="top" target="tooltipTop2" > Delete </UncontrolledTooltip> */}
+          </div>
+        );
+      },
+      sortable: false,
+      // width: "150px"
     },
-];
+  ];
   return (
     <React.Fragment>
       <ToastContainer closeButton={false} />
@@ -154,8 +182,8 @@ const columns = [
                             fixedHeaderScrollHeight="330px"
                             columns={columns}
                             pagination
-                            data={[]}
-                            // progressPending={loadingUserRole}
+                            data={dataCombo.role}
+                            progressPending={loadingCombo}
                             customStyles={tableCustomStyles}
                             progressComponent={<LoadingTable />}
                             // onRowClicked={(row) => handleClick(row)}

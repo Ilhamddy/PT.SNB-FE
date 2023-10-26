@@ -26,6 +26,7 @@ import {
     GET_COMBO_DAFTAR_KAMAR,
     GET_COMBO_DAFTAR_KAMAR_SUCCESS,
     GET_COMBO_DAFTAR_KAMAR_ERROR,
+    GET_COMBO_SYSADMIN,GET_COMBO_SYSADMIN_SUCCESS,GET_COMBO_SYSADMIN_ERROR
 } from "./actionType";
 
 
@@ -181,5 +182,22 @@ export const getComboDaftarKamarSuccess = (data) => ({
 
 export const getComboDaftarKamarError = (error) => ({
     type: GET_COMBO_DAFTAR_KAMAR_ERROR,
+    payload: error,
+});
+
+export const getComboSysadmin = (queries) => ({
+    type: GET_COMBO_SYSADMIN,
+    payload: {
+        queries,
+    },
+});
+
+export const getComboSysadminSuccess = (data) => ({
+    type: GET_COMBO_SYSADMIN_SUCCESS,
+    payload: data,
+});
+
+export const getComboSysadminError = (error) => ({
+    type: GET_COMBO_SYSADMIN_ERROR,
     payload: error,
 });

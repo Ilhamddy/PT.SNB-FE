@@ -38,4 +38,7 @@ export default class ServiceTempatTidur {
     getComboDaftarKamar = async (queries) => {
         return await api.get("/transaksi/sysadmin/get-combo-daftar-kamar", queries)
     }
+    getComboSysadmin = async (queries) => {
+        return await api.get("/transaksi/sysadmin/get-combo-sysadmin", queries)
+    }
 }

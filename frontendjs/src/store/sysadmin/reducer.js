@@ -26,6 +26,7 @@ import {
     GET_COMBO_DAFTAR_KAMAR,
     GET_COMBO_DAFTAR_KAMAR_SUCCESS,
     GET_COMBO_DAFTAR_KAMAR_ERROR,
+    GET_COMBO_SYSADMIN, GET_COMBO_SYSADMIN_SUCCESS, GET_COMBO_SYSADMIN_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -70,6 +71,11 @@ const INIT_STATE = {
         error: null,
     },
     getComboDaftarKamar: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    getComboSysadmin: {
         data: [],
         loading: false,
         error: null,
@@ -375,6 +381,38 @@ const Sysadmin = (state = INIT_STATE, action) => {
             }
         }
 
+        case GET_COMBO_SYSADMIN: {
+            return {
+                ...state,
+                getComboSysadmin: {
+                    ...state.getComboSysadmin,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case GET_COMBO_SYSADMIN_SUCCESS: {
+            return {
+                ...state,
+                getComboSysadmin: {
+                    ...state.getComboSysadmin,
+                    loading: false,
+                    data: action.payload,
+                }
+            }
+        }
+
+        case GET_COMBO_SYSADMIN_ERROR: {
+            return {
+                ...state,
+                getComboSysadmin: {
+                    ...state.getComboSysadmin,
+                    loading: false,
+                    error: action.payload,
+                }
+            }
+        }
 
         default: return { ...state };
     }
