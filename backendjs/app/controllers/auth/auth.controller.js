@@ -91,6 +91,7 @@ const signin = (req, res) => {
           status: "errors"
         });
       }
+      logger.info("coba masuk")
 
       try {
         pool.query(queries.getSesions, [user.id], (error, result) => {
