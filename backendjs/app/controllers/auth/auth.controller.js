@@ -68,6 +68,7 @@ const signup = async (req, res) => {
 
 const signin = async (req, res) => {
   const logger = res.locals.logger;
+  logger.info("masuk pertama")
   try{
     const user = await User.findOne({
       where: {
