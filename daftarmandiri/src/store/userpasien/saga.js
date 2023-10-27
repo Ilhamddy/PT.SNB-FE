@@ -218,18 +218,20 @@ function* onGetRegistrasiNorec({payload: {queries}}){
 }
 
 export default function* watchLoginUser() {
-    yield takeEvery(LOGIN_USER, onLoginUser);
-    yield takeEvery(LOGOUT_USER, onLogoutUser);
-    yield takeEvery(GET_USER_LOGIN, onGetUserLogin);
-    yield takeEvery(SIGNUP_USER, onSignUpUser);
-    yield takeEvery(GET_RIWAYAT_REGISTRASI, onGetRiwayatRegistrasi)
-    yield takeEvery(BATAL_REGIS, onBatalRegis);
-    yield takeEvery(GET_PASIEN_EDIT, onGetPasienEdit);
-    yield takeEvery(UPDATE_PASIEN, onUpdatePasien);
-    yield takeEvery(GET_PASIEN_AKUN, onGetPasienAkun);
-    yield takeEvery(GET_COMBO_PENJAMIN, onGetComboPenjamin);
-    yield takeEvery(UPSERT_PENJAMIN, onUpsertPenjamin);
-    yield takeEvery(GET_PENJAMIN_PASIEN, onGetPenjaminPasien);
-    yield takeEvery(GET_ANTREAN_PEMERIKSAAN, onGetAntreanPemeriksaan);
-    yield takeEvery(GET_REGISTRASI_NOREC, onGetRegistrasiNorec);
+    yield all([
+        takeEvery(LOGIN_USER, onLoginUser),
+        takeEvery(LOGOUT_USER, onLogoutUser),
+        takeEvery(GET_USER_LOGIN, onGetUserLogin),
+        takeEvery(SIGNUP_USER, onSignUpUser),
+        takeEvery(GET_RIWAYAT_REGISTRASI, onGetRiwayatRegistrasi),
+        takeEvery(BATAL_REGIS, onBatalRegis),
+        takeEvery(GET_PASIEN_EDIT, onGetPasienEdit),
+        takeEvery(UPDATE_PASIEN, onUpdatePasien),
+        takeEvery(GET_PASIEN_AKUN, onGetPasienAkun),
+        takeEvery(GET_COMBO_PENJAMIN, onGetComboPenjamin),
+        takeEvery(UPSERT_PENJAMIN, onUpsertPenjamin),
+        takeEvery(GET_PENJAMIN_PASIEN, onGetPenjaminPasien),
+        takeEvery(GET_ANTREAN_PEMERIKSAAN, onGetAntreanPemeriksaan),
+        takeEvery(GET_REGISTRASI_NOREC, onGetRegistrasiNorec)
+    ])
 }

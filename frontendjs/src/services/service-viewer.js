@@ -24,11 +24,11 @@ export default class ServiceViewer {
     }
 
     getJadwalDokter = async (queries) => {
-        return await api.get("/transaksi/viewer/get-jadwal-dokter", queries)
+        return api.get("/transaksi/viewer/get-jadwal-dokter", queries)
     }
 
-    getJadwalOperasi = async (queries) => {
-        return await api.get("/transaksi/viewer/get-jadwal-operasi", queries)
+    getJadwalOperasi = (queries) => {
+        return api.get("/transaksi/viewer/get-jadwal-operasi", queries)
     }
     
 }

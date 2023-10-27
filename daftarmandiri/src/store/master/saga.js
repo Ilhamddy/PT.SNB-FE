@@ -1,4 +1,4 @@
-import { call, put, takeEvery, all, fork } from "redux-saga/effects";
+import { call, put, takeEvery, all, fork, take } from "redux-saga/effects";
 import { 
     getAllMasterSuccess,
     getAllMasterError,
@@ -38,6 +38,8 @@ function* onGetDesaKelurahan({payload: {params}}) {
 }
 
 export default function* watchMasterSaga() {
-    yield takeEvery(GET_ALL_MASTER, onGetAllMaster);
-    yield takeEvery(GET_DESA_KELURAHAN, onGetDesaKelurahan)
+    yield all([
+        takeEvery(GET_ALL_MASTER, onGetAllMaster),
+        takeEvery(GET_DESA_KELURAHAN, onGetDesaKelurahan)
+    ])
 }
