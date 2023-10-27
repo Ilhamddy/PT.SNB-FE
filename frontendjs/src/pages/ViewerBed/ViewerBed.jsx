@@ -314,6 +314,58 @@ const ViewerBed = () => {
                     <p>-</p>
                   </div>
                 </div>
+                <div className="row-bed">
+                  <div className="kontainer-data-ruangan">
+                    <p className="ruangan">Ruangan</p>
+                  </div>
+                  <div className="kontainer-data-kelas-table">
+                    <p>4</p>
+                  </div>
+                  <div className="kontainer-data-kelas-table">
+                    <p>-</p>
+                  </div>
+                  <div className="kontainer-data-kelas-table">
+                    <p>-</p>
+                  </div>
+                  <div className="kontainer-data-kelas-table">
+                    <p>-</p>
+                  </div>
+                  <div className="kontainer-data-kelas-table">
+                    <p>-</p>
+                  </div>
+                  <div className="kontainer-data-kelas-table">
+                    <p>-</p>
+                  </div>
+                  <div className="kontainer-data-kelas-table">
+                    <p>-</p>
+                  </div>
+                </div>
+                <div className="row-bed bg-genap">
+                  <div className="kontainer-data-ruangan">
+                    <p className="ruangan">Ruangan</p>
+                  </div>
+                  <div className="kontainer-data-kelas-table">
+                    <p>4</p>
+                  </div>
+                  <div className="kontainer-data-kelas-table">
+                    <p>-</p>
+                  </div>
+                  <div className="kontainer-data-kelas-table">
+                    <p>-</p>
+                  </div>
+                  <div className="kontainer-data-kelas-table">
+                    <p>-</p>
+                  </div>
+                  <div className="kontainer-data-kelas-table">
+                    <p>-</p>
+                  </div>
+                  <div className="kontainer-data-kelas-table">
+                    <p>-</p>
+                  </div>
+                  <div className="kontainer-data-kelas-table">
+                    <p>-</p>
+                  </div>
+                </div>
               </div>
             </div>
             <div className="legend">
