@@ -78,9 +78,11 @@ function* onSavePasienMandiri({payload: {data, callback}}) {
 
 
 export default function* watchLoginUser() {
-    yield takeEvery(GET_JADWAL_DOKTER, onGetJadwalDokter);
-    yield takeEvery(GET_PASIEN_LAMA, onGetPasienLama);
-    yield takeEvery(GET_DOKTER_PASIEN, onGetDokterPasien);
-    yield takeEvery(GET_COMBO_DAFTAR, onGetComboDaftar);
-    yield takeEvery(SAVE_PASIEN_MANDIRI, onSavePasienMandiri)
+    yield all([
+        takeEvery(GET_JADWAL_DOKTER, onGetJadwalDokter),
+        takeEvery(GET_PASIEN_LAMA, onGetPasienLama),
+        takeEvery(GET_DOKTER_PASIEN, onGetDokterPasien),
+        takeEvery(GET_COMBO_DAFTAR, onGetComboDaftar),
+        takeEvery(SAVE_PASIEN_MANDIRI, onSavePasienMandiri)
+    ])
 }

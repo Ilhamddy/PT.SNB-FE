@@ -60,8 +60,10 @@ function* onGetBeritaQuery({payload: {queries}}){
 }
 
 export default function* watchLoginUser() {
-    yield takeEvery(GET_JADWAL_DOKTER, onGetJadwalDokter);
-    yield takeEvery(GET_COMBO_JADWAL, onGetComboJadwal);
-    yield takeEvery(GET_BERITA_HOME, onGetBeritaHome);
-    yield takeEvery(GET_BERITA_QUERY, onGetBeritaQuery);
+    yield all([
+        takeEvery(GET_JADWAL_DOKTER, onGetJadwalDokter),
+        takeEvery(GET_COMBO_JADWAL, onGetComboJadwal),
+        takeEvery(GET_BERITA_HOME, onGetBeritaHome),
+        takeEvery(GET_BERITA_QUERY, onGetBeritaQuery)
+    ])
 }

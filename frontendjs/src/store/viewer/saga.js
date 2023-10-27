@@ -99,12 +99,35 @@ function* onGetJadwalOperasi({payload: {queries}}) {
     }
 }
 
+// JANGAN HAPUS, CONTOH CANCEL
+// function* onGetJadwalOperasi({payload: {queries}}) {
+//     const controller = new AbortController();
+//     try{
+//         const request = serviceViewer.getJadwalOperasi
+//         const response = yield call(serviceViewer.getJadwalOperasi, queries, {signal: controller.signal});
+//         yield put(getJadwalOperasiSuccess(response.data));
+//     } catch (error) {
+//         yield put(getJadwalOperasiError(error));
+//     } finally{
+//         if(yield cancelled()){
+//             controller.abort()
+//         }
+//     }
+// }
+
+// ini untuk ngecancel
+// export function* watchGetJaadwalOperasi() {
+//     yield takeEvery(GET_JADWAL_OPERASI, onGetJadwalOperasi);
+// }
+
 export default function* viewer() {
-    yield takeEvery(GET_LOKET_SISA, onGetLoketSisa);
-    yield takeEvery(PANGGIL_LOKET, onPanggilLoket);
-    yield takeEvery(GET_ALL_LOKET, onGetAllLoket);
-    yield takeEvery(GET_ALL_TERPANGGIL, onGetAllTerpanggil);
-    yield takeEvery(PANGGIL_ULANG_ANTREAN, onPanggilUlangAntrean);
-    yield takeEvery(GET_JADWAL_DOKTER, onGetJadwalDokter);
-    yield takeEvery(GET_JADWAL_OPERASI, onGetJadwalOperasi);
+    yield all([
+        takeEvery(GET_LOKET_SISA, onGetLoketSisa),
+        takeEvery(PANGGIL_LOKET, onPanggilLoket),
+        takeEvery(GET_ALL_LOKET, onGetAllLoket),
+        takeEvery(GET_ALL_TERPANGGIL, onGetAllTerpanggil),
+        takeEvery(PANGGIL_ULANG_ANTREAN, onPanggilUlangAntrean),
+        takeEvery(GET_JADWAL_DOKTER, onGetJadwalDokter),
+        takeEvery(GET_JADWAL_OPERASI, onGetJadwalOperasi)
+    ])
 }

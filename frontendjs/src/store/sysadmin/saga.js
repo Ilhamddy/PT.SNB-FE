@@ -174,17 +174,19 @@ function* ongetMapRolePermissions({payload: {queries}}) {
 }
 
 export default function* SysadminSaga() {
-    yield takeEvery(GET_TEMPAT_TIDUR, onGetTempatTidur)
-    yield takeEvery(GET_UNIT_TEMPAT_TIDUR, onGetUnitTempatTidur)
-    yield takeEvery(GET_COMBO_TEMPAT_TIDUR, onGetComboTempatTidur)
-    yield takeEvery(UPSERT_TEMPAT_TIDUR, onUpsertTempatTidur)
-    yield takeEvery(GET_ALL_UNIT, onGetAllUnit)
-    yield takeEvery(GET_COMBO_DAFTAR_UNIT, onGetComboDaftarUnit)
-    yield takeEvery(UPSERT_UNIT, onUpsertUnit)
-    yield takeEvery(GET_ALL_KAMAR, onGetAllKamar)
-    yield takeEvery(GET_COMBO_DAFTAR_KAMAR, onGetComboDaftarKamar)
-    yield takeEvery(GET_COMBO_SYSADMIN, ongetComboSysadmin)
-    yield takeEvery(UPSERT_ROLES, onupsertRoles)
-    yield takeEvery(UPSERT_KAMAR, onUpsertKamar)
-    yield takeEvery(GET_MAP_ROLE_PERMISSIONS, ongetMapRolePermissions)
+    yield all([
+        takeEvery(GET_TEMPAT_TIDUR, onGetTempatTidur),
+        takeEvery(GET_UNIT_TEMPAT_TIDUR, onGetUnitTempatTidur),
+        takeEvery(GET_COMBO_TEMPAT_TIDUR, onGetComboTempatTidur),
+        takeEvery(UPSERT_TEMPAT_TIDUR, onUpsertTempatTidur),
+        takeEvery(GET_ALL_UNIT, onGetAllUnit),
+        takeEvery(GET_COMBO_DAFTAR_UNIT, onGetComboDaftarUnit),
+        takeEvery(UPSERT_UNIT, onUpsertUnit),
+        takeEvery(GET_ALL_KAMAR, onGetAllKamar),
+        takeEvery(GET_COMBO_DAFTAR_KAMAR, onGetComboDaftarKamar),
+        takeEvery(GET_COMBO_SYSADMIN, ongetComboSysadmin),
+        takeEvery(UPSERT_ROLES, onupsertRoles),
+        takeEvery(UPSERT_KAMAR, onUpsertKamar),
+        takeEvery(GET_MAP_ROLE_PERMISSIONS, ongetMapRolePermissions)
+    ]);
 }
