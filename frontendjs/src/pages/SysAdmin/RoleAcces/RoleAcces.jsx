@@ -10,16 +10,18 @@ import * as Yup from "yup";
 import DataTable from "react-data-table-component";
 import LoadingTable from "../../../Components/Table/LoadingTable";
 import {
-  getComboSysadmin, upsertRoles
+  getComboSysadmin, upsertRoles, getMapRolePermissions
 } from '../../../store/sysadmin/action'
 
 const RoleAcces = () => {
   document.title = "Role Acces";
   const dispatch = useDispatch();
   const { dataCombo,
-    loadingCombo } = useSelector((state) => ({
+    loadingCombo, dataMapPermissions, loadingMapPermissions } = useSelector((state) => ({
       dataCombo: state.Sysadmin.getComboSysadmin.data || [],
       loadingCombo: state.Sysadmin.getComboSysadmin.loading,
+      dataMapPermissions: state.Sysadmin.getMapRolePermissions.data || [],
+      loadingMapPermissions: state.Sysadmin.getMapRolePermissions.loading,
     }));
   const vSetValidationRole = useFormik({
     enableReinitialize: true,
@@ -46,7 +48,18 @@ const RoleAcces = () => {
     dispatch(getComboSysadmin({
       cari: ''
     }))
+    dispatch(getMapRolePermissions(''))
   }, [dispatch])
+  const [tempPermissions, settempPermissions] = useState([])
+  const [tempMapPermissions, settempMapPermissions] = useState([])
+  useEffect(() => {
+    if (dataCombo?.permissions) {
+      settempPermissions(dataCombo.permissions)
+    }
+  }, [dataCombo])
+  const displayDelete = (value, data) => {
+    console.log(value, data)
+  };
   const tableCustomStyles = {
     headRow: {
       style: {
@@ -106,6 +119,35 @@ const RoleAcces = () => {
       // width: "150px"
     },
   ];
+  const columnsMap = [
+    {
+      name: <span className='font-weight-bold fs-13'>No</span>,
+      selector: row => row.no,
+      sortable: true,
+      width: "50px"
+    },
+    {
+      name: <span className='font-weight-bold fs-13'>ID</span>,
+      selector: row => row.id,
+      sortable: true,
+      width: "50px"
+    },
+    {
+      name: <span className='font-weight-bold fs-13'>Nama Role</span>,
+      selector: row => row.name,
+      sortable: true,
+      // selector: row => (<button className="btn btn-sm btn-soft-info" onClick={() => handleClick(dataTtv)}>{row.noregistrasi}</button>),
+      // width: "250px",
+      wrap: true,
+    },
+    {
+      name: <span className='font-weight-bold fs-13'>#</span>,//<Input className="form-check-input fs-15" type="checkbox" name="checkAll" value="option1" />,
+      cell: (data) => (
+        <Input className="form-check-input" type="checkbox" id="formCheckCito" checked={data.cheked}
+          onChange={value => (displayDelete(value.target.checked, data))} />
+      ),
+    },
+  ];
   const handleRole = (characterEntered) => {
     if (characterEntered.length > 3) {
       dispatch(getComboSysadmin({
@@ -128,7 +170,23 @@ const RoleAcces = () => {
     setselected({
       name: e.name,
     })
+    let temp = tempPermissions
+    temp.forEach(element => {
+      element.cheked=false
+    });
+    const filteredData = dataMapPermissions.filter(item => item.roleid === e.id);
+    temp.forEach(element => {
+      filteredData.forEach(element2 => {
+        if(element.id===element2.permissionid){
+          element.cheked=true
+        }
+      });
+    });
+    settempMapPermissions([...temp])
+    settempPermissions([...temp])
+    console.log(temp)
   };
+ 
   return (
     <React.Fragment>
       <ToastContainer closeButton={false} />
@@ -267,9 +325,9 @@ const RoleAcces = () => {
                           <DataTable
                             fixedHeader
                             fixedHeaderScrollHeight="330px"
-                            columns={columns}
+                            columns={columnsMap}
                             pagination
-                            data={dataCombo.role}
+                            data={tempPermissions}
                             progressPending={loadingCombo}
                             customStyles={tableCustomStyles}
                             progressComponent={<LoadingTable />}
@@ -278,7 +336,7 @@ const RoleAcces = () => {
                             highlightOnHover
                           />
                         </div>
-                        </Col>
+                      </Col>
                     </Row>
                   </CardBody>
                 </Card>
