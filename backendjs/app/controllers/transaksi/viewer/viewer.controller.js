@@ -1,12 +1,13 @@
 import pool from "../../../config/dbcon.query";
-import { qGetLoket, qGetLoketSisa, qGetLastPemanggilan, qGetAllLoket, qGetLastPemanggilanLoket, qGetLastPemanggilanAll, qGetAllTerpanggil, panggilStatus, qGetLastPemanggilanViewer, qGetJadwalDokter, qGetLastAntrean, qGetJadwalDokterNorec } from "../../../queries/viewer/viewer.queries";
+import { qGetLoket, qGetLoketSisa, qGetLastPemanggilan, qGetAllLoket, qGetLastPemanggilanLoket, qGetLastPemanggilanAll, qGetAllTerpanggil, panggilStatus, qGetLastPemanggilanViewer, qGetJadwalDokter, qGetLastAntrean, qGetJadwalDokterNorec, qGetKamarTempatTidur, qGetKelasTempatTidur } from "../../../queries/viewer/viewer.queries";
 import db from "../../../models";
 import { getDateStartEnd } from "../../../utils/dateutils";
-import { groupBy } from "../../../utils/arutils";
+import { groupBy, groupCountBy } from "../../../utils/arutils";
 import unitQueries from "../../../queries/master/unit/unit.queries";
 import kelasQueries from "../../../queries/master/kelas/kelas.queries";
 import kamarQueries from "../../../queries/master/kamar/kamar.queries";
 import statusbedQueries from "../../../queries/master/statusbed/statusbed.queries";
+import { statusBed } from "../../../queries/sysadmin/sysadmin.queries";
 
 const t_antreanloket = db.t_antreanloket
 const Op = db.Sequelize.Op;
@@ -448,6 +449,69 @@ const getJadwalOperasi = async (req, res) => {
     }
 }
 
+const getAllBed = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        let kamars = (await pool.query(qGetKamarTempatTidur, ['', ''])).rows
+        const kelas = (await pool.query(qGetKelasTempatTidur, ['', ''])).rows
+        kamars = kamars.map((kamar) => {
+            let newKamar = {...kamar}
+            newKamar.kelas = groupCountBy(
+                newKamar.tempattidur, 
+                (item) => {
+                    const filteredIsi = [...item.values].filter((isi) => isi.status === statusBed.ISI)
+                    const filteredKosong = [...item.values].filter((isi) => isi.status === statusBed.KOSONG)
+                    const filteredRusak = [...item.values].filter((isi) => isi.status === statusBed.RUSAK)
+                    return {
+                        ...item,
+                        totalisi: filteredIsi.length.toString(),
+                        totalkosong: filteredKosong.length.toString(),
+                        totalrusak: filteredRusak.length.toString(),
+                    }
+                }, 
+                "kelasid", 
+                "kelas"
+            )
+            kelas.forEach((kelas) => {
+                const foundKamar = 
+                    newKamar.kelas.find((kelasKamar) => kelasKamar.kelasid === kelas.kelasid)
+                if(!foundKamar){
+                    newKamar.kelas.push({
+                        kelasid: kelas.kelasid,
+                        kelas: kelas.namakelas,
+                        values: [],
+                        totalisi: "-",
+                        totalkosong: "-",
+                        totalrusak: "-"
+                    })
+                }
+            })
+            newKamar.kelas = newKamar.kelas.sort((a, b) => a.kelasid - b.kelasid)
+            delete newKamar.tempattidur
+            return newKamar
+        })
+        
+        const tempres = {
+            kamar: kamars,
+            kelas: kelas
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 
 export default {
     pollingAntrean,
@@ -458,6 +522,7 @@ export default {
     panggilUlangAntrean,
     getJadwalDokter,
     getJadwalOperasi,
+    getAllBed
 }
 
 const hProcessJadwal = async (req, res, transaction, {jadwal}) => {

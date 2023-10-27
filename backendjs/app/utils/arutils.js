@@ -59,3 +59,13 @@ export const groupBy = (ar, key, ...restToJoin) =>  {
     })
     return hasil; 
 }
+
+export const groupCountBy = (ar, getCount, key, ...restToJoin) =>  {
+    const hasilGroupBy = groupBy(ar, key, ...restToJoin)
+    return hasilGroupBy.map((item) => {
+        let newItem = getCount(item)
+        return ({
+            ...newItem,
+        })
+    })
+}

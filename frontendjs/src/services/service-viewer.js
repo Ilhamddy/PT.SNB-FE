@@ -31,4 +31,7 @@ export default class ServiceViewer {
         return api.get("/transaksi/viewer/get-jadwal-operasi", queries)
     }
     
+    getAllBed = (queries) => {
+        return api.get("/transaksi/viewer/get-all-bed", queries)
+    }
 }

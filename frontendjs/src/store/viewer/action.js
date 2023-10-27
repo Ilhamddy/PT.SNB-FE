@@ -20,15 +20,9 @@ import {
     GET_JADWAL_OPERASI,
     GET_JADWAL_OPERASI_SUCCESS,
     GET_JADWAL_OPERASI_ERROR,
-    GET_TEMPAT_TIDUR,
-    GET_TEMPAT_TIDUR_SUCCESS,
-    GET_TEMPAT_TIDUR_ERROR,
-    GET_UNIT_TEMPAT_TIDUR,
-    GET_UNIT_TEMPAT_TIDUR_SUCCESS,
-    GET_UNIT_TEMPAT_TIDUR_ERROR,
-    GET_COMBO_TEMPAT_TIDUR,
-    GET_COMBO_TEMPAT_TIDUR_SUCCESS,
-    GET_COMBO_TEMPAT_TIDUR_ERROR,
+    GET_ALL_BED,
+    GET_ALL_BED_SUCCESS,
+    GET_ALL_BED_ERROR
 } from "./actionType";
 
 export const getLoketSisa = () => ({
@@ -149,3 +143,20 @@ export const getJadwalOperasiError = (error) => ({
     type: GET_JADWAL_OPERASI_ERROR,
     payload: error,
 });
+
+export const getAllBed = (queries) => ({
+    type: GET_ALL_BED,
+    payload: {
+        queries,
+    },
+})
+
+export const getAllBedSuccess = (data) => ({
+    type: GET_ALL_BED_SUCCESS,
+    payload: data,
+})
+
+export const getAllBedError = (error) => ({
+    type: GET_ALL_BED_ERROR,
+    payload: error,
+})

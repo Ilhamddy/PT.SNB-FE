@@ -8,6 +8,7 @@ import {
     PANGGIL_ULANG_ANTREAN,
     GET_JADWAL_DOKTER,
     GET_JADWAL_OPERASI,
+    GET_ALL_BED,
  } from "./actionType";
 import { 
     getLoketSisaSuccess,
@@ -24,6 +25,8 @@ import {
     getJadwalDokterError,
     getJadwalOperasiSuccess,
     getJadwalOperasiError,
+    getAllBedSuccess,
+    getAllBedError
 } from "./action";
 import { toast } from 'react-toastify';
 
@@ -99,6 +102,28 @@ function* onGetJadwalOperasi({payload: {queries}}) {
     }
 }
 
+function* onGetBed({payload: {queries}}) {
+    try{
+        const response = yield call(serviceViewer.getAllBed, queries);
+        yield put(getAllBedSuccess(response.data));
+    } catch (error) {
+        yield put(getAllBedError(error));
+    }
+}
+
+export default function* viewer() {
+    yield all([
+        takeEvery(GET_LOKET_SISA, onGetLoketSisa),
+        takeEvery(PANGGIL_LOKET, onPanggilLoket),
+        takeEvery(GET_ALL_LOKET, onGetAllLoket),
+        takeEvery(GET_ALL_TERPANGGIL, onGetAllTerpanggil),
+        takeEvery(PANGGIL_ULANG_ANTREAN, onPanggilUlangAntrean),
+        takeEvery(GET_JADWAL_DOKTER, onGetJadwalDokter),
+        takeEvery(GET_JADWAL_OPERASI, onGetJadwalOperasi),
+        takeEvery(GET_ALL_BED, onGetBed)
+    ])
+}
+
 // JANGAN HAPUS, CONTOH CANCEL
 // function* onGetJadwalOperasi({payload: {queries}}) {
 //     const controller = new AbortController();
@@ -116,18 +141,6 @@ function* onGetJadwalOperasi({payload: {queries}}) {
 // }
 
 // ini untuk ngecancel
-// export function* watchGetJaadwalOperasi() {
+// export function* watchGetJadwalOperasi() {
 //     yield takeEvery(GET_JADWAL_OPERASI, onGetJadwalOperasi);
 // }
-
-export default function* viewer() {
-    yield all([
-        takeEvery(GET_LOKET_SISA, onGetLoketSisa),
-        takeEvery(PANGGIL_LOKET, onPanggilLoket),
-        takeEvery(GET_ALL_LOKET, onGetAllLoket),
-        takeEvery(GET_ALL_TERPANGGIL, onGetAllTerpanggil),
-        takeEvery(PANGGIL_ULANG_ANTREAN, onPanggilUlangAntrean),
-        takeEvery(GET_JADWAL_DOKTER, onGetJadwalDokter),
-        takeEvery(GET_JADWAL_OPERASI, onGetJadwalOperasi)
-    ])
-}

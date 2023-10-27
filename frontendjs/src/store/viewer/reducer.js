@@ -20,6 +20,9 @@ import {
     GET_JADWAL_OPERASI,
     GET_JADWAL_OPERASI_SUCCESS,
     GET_JADWAL_OPERASI_ERROR,
+    GET_ALL_BED,
+    GET_ALL_BED_SUCCESS,
+    GET_ALL_BED_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -58,6 +61,11 @@ const INIT_STATE = {
         loading: false,
         error: null,
     },
+    getAllBed: {
+        data: [],
+        loading: false,
+        error: null,
+    }
 };
 
 const Viewer = (state = INIT_STATE, action) => {
@@ -290,6 +298,39 @@ const Viewer = (state = INIT_STATE, action) => {
                 ...state,
                 getJadwalOperasi: {
                     ...state.getJadwalOperasi,
+                    loading: false,
+                    error: action.payload,
+                }
+            }
+        }
+
+        case GET_ALL_BED: {
+            return {
+                ...state,
+                getAllBed: {
+                    ...state.getAllBed,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case GET_ALL_BED_SUCCESS: {
+            return {
+                ...state,
+                getAllBed: {
+                    ...state.getAllBed,
+                    loading: false,
+                    data: action.payload,
+                }
+            }
+        }
+
+        case GET_ALL_BED_ERROR: {
+            return {
+                ...state,
+                getAllBed: {
+                    ...state.getAllBed,
                     loading: false,
                     error: action.payload,
                 }

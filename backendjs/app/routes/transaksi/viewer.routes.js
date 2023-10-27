@@ -54,4 +54,9 @@ export default function (app) {
         controller.getJadwalOperasi
     )
 
+    app.get(
+        "/api/transaksi/viewer/get-all-bed",
+        [authJwt.verifyToken],
+        controller.getAllBed
+    )
 }
