@@ -212,6 +212,7 @@ FROM t_orderoperasi too
 WHERE too.statusenabled = true
 	AND too.tglrencana IS NOT NULL
 	AND	too.tglrencana > $1
+ORDER BY too.tglrencana ASC
 `
 
 const qGetKamarTempatTidur = `
