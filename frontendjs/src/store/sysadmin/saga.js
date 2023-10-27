@@ -12,7 +12,8 @@ import {
     GET_COMBO_DAFTAR_KAMAR,
     GET_COMBO_SYSADMIN,
     UPSERT_ROLES,
-    UPSERT_KAMAR
+    UPSERT_KAMAR,
+    GET_MAP_ROLE_PERMISSIONS
  } from "./actionType";
 import { 
     getTempatTidurSuccess,
@@ -36,7 +37,8 @@ import {
     getComboSysadminSuccess,getComboSysadminError,
     upsertRolesSuccess,upsertRolesError,
     upsertKamarSuccess,
-    upsertKamarError
+    upsertKamarError,
+    getMapRolePermissionsSuccess,getMapRolePermissionsError
 } from "./action";
 import { toast } from 'react-toastify';
 
@@ -162,6 +164,15 @@ function* onUpsertKamar({payload: {data, callback}}) {
     }
 }
 
+function* ongetMapRolePermissions({payload: {queries}}) {
+    try{
+        const response = yield call(serviceSysadmin.getMapRolePermissions, queries);
+        yield put(getMapRolePermissionsSuccess(response.data));
+    } catch (error) {
+        yield put(getMapRolePermissionsError(error));
+    }
+}
+
 export default function* SysadminSaga() {
     yield takeEvery(GET_TEMPAT_TIDUR, onGetTempatTidur)
     yield takeEvery(GET_UNIT_TEMPAT_TIDUR, onGetUnitTempatTidur)
@@ -175,4 +186,5 @@ export default function* SysadminSaga() {
     yield takeEvery(GET_COMBO_SYSADMIN, ongetComboSysadmin)
     yield takeEvery(UPSERT_ROLES, onupsertRoles)
     yield takeEvery(UPSERT_KAMAR, onUpsertKamar)
+    yield takeEvery(GET_MAP_ROLE_PERMISSIONS, ongetMapRolePermissions)
 }

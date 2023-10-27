@@ -48,4 +48,7 @@ export default class ServiceTempatTidur {
     upsertKamar = async (body) => {
         return await api.create("/transaksi/sysadmin/upsert-kamar", body)
     }
+    getMapRolePermissions = async (queries) => {
+        return await api.get("/transaksi/sysadmin/get-map-role-permissions", queries)
+    }
 }

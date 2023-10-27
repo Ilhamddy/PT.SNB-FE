@@ -30,7 +30,8 @@ import {
     UPSERT_ROLES,UPSERT_ROLES_SUCCESS,UPSERT_ROLES_ERROR,
     UPSERT_KAMAR,
     UPSERT_KAMAR_SUCCESS,
-    UPSERT_KAMAR_ERROR
+    UPSERT_KAMAR_ERROR,
+    GET_MAP_ROLE_PERMISSIONS, GET_MAP_ROLE_PERMISSIONS_SUCCESS, GET_MAP_ROLE_PERMISSIONS_ERROR
 } from "./actionType";
 
 
@@ -238,5 +239,22 @@ export const upsertKamarSuccess = (data) => ({
 
 export const upsertKamarError = (error) => ({
     type: UPSERT_KAMAR_ERROR,
+    payload: error,
+});
+
+export const getMapRolePermissions = (queries) => ({
+    type: GET_MAP_ROLE_PERMISSIONS,
+    payload: {
+        queries,
+    },
+});
+
+export const getMapRolePermissionsSuccess = (data) => ({
+    type: GET_MAP_ROLE_PERMISSIONS_SUCCESS,
+    payload: data,
+});
+
+export const getMapRolePermissionsError = (error) => ({
+    type: GET_MAP_ROLE_PERMISSIONS_ERROR,
     payload: error,
 });
