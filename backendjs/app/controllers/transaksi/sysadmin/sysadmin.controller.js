@@ -6,6 +6,7 @@ import {
     qGetTempatTidur,
     qGetUnitTempatTidur,
     qMapRolePermissions,
+    qPermissions,
     qRoles,
     statusBed
 } from "../../../queries/sysadmin/sysadmin.queries";
@@ -432,9 +433,10 @@ const getComboSysadmin = async (req, res) => {
     try {
 
         const result1 = await pool.query(qRoles, [req.query.cari || ''])
-
+        const result2 = await pool.query(qPermissions)
         const tempres = {
-            role: result1.rows
+            role: result1.rows,
+            permissions:result2.rows
         };
         res.status(200).send({
             msg: 'Success',

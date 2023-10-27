@@ -76,10 +76,14 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.saveRoles
     )
-
     app.post(
         "/api/transaksi/sysadmin/upsert-kamar",
         [authJwt.verifyToken],
         controller.upsertKamar
+    )
+    app.get(
+        "/api/transaksi/sysadmin/get-map-role-permissions",
+        [authJwt.verifyToken],
+        controller.getMapRolePermissions
     )
 }
