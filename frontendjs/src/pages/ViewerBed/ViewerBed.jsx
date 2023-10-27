@@ -26,7 +26,7 @@ const ViewerBed = () => {
     dispatch(getAllBed({}))
     const interval = setInterval(() => {
       dispatch(getAllBed({}))
-    }, 11000)
+    }, 15000)
     setIntervalVal(interval)
     return () => {
       clearInterval(interval)

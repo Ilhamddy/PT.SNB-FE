@@ -1,5 +1,5 @@
 import pool from "../../../config/dbcon.query";
-import { qGetLoket, qGetLoketSisa, qGetLastPemanggilan, qGetAllLoket, qGetLastPemanggilanLoket, qGetLastPemanggilanAll, qGetAllTerpanggil, panggilStatus, qGetLastPemanggilanViewer, qGetJadwalDokter, qGetLastAntrean, qGetJadwalDokterNorec, qGetKamarTempatTidur, qGetKelasTempatTidur } from "../../../queries/viewer/viewer.queries";
+import { qGetLoket, qGetLoketSisa, qGetLastPemanggilan, qGetAllLoket, qGetLastPemanggilanLoket, qGetLastPemanggilanAll, qGetAllTerpanggil, panggilStatus, qGetLastPemanggilanViewer, qGetJadwalDokter, qGetLastAntrean, qGetJadwalDokterNorec, qGetKamarTempatTidur, qGetKelasTempatTidur, qGetDaftarOperasi } from "../../../queries/viewer/viewer.queries";
 import db from "../../../models";
 import { getDateStartEnd } from "../../../utils/dateutils";
 import { groupBy, groupCountBy } from "../../../utils/arutils";
@@ -428,9 +428,10 @@ const getJadwalDokter = async (req, res) => {
 const getJadwalOperasi = async (req, res) => {
     const logger = res.locals.logger;
     try{
-        
+        const {todayStart} = getDateStartEnd()
+        const jadwal = await pool.query(qGetDaftarOperasi, [todayStart])
         const tempres = {
-        
+            jadwal: jadwal.rows
         };
         res.status(200).send({
             msg: 'Success',

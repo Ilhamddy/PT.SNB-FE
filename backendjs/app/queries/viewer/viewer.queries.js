@@ -199,6 +199,21 @@ ORDER BY
 	tap.tgldipanggildokter DESC
 `
 
+const qGetDaftarOperasi = `
+SELECT
+	too.norec AS norecoperasi,
+	too.nomororder AS nomororder,
+	too.tglrencana AS tglrencana,
+	mpeg.namaexternal AS namadokter,
+	ms.reportdisplay AS spesialisasi
+FROM t_orderoperasi too
+	LEFT JOIN m_pegawai mpeg ON too.objectdokteroperatorfk = mpeg.id
+	LEFT JOIN m_spesialisasi ms ON mpeg.objectspesialisasifk = ms.id
+WHERE too.statusenabled = true
+	AND too.tglrencana IS NOT NULL
+	AND	too.tglrencana > $1
+`
+
 const qGetKamarTempatTidur = `
 SELECT
 	mk.id AS kamarid,
@@ -333,6 +348,7 @@ export {
 	qGetJadwalDokter,
 	qGetLastAntrean,
 	qGetJadwalDokterNorec,
+	qGetDaftarOperasi,
 	qGetKamarTempatTidur,
 	qGetKelasTempatTidur
 }

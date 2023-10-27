@@ -88,10 +88,8 @@ const Viewer = () => {
     return () => clearInterval(interval)
   }, [dispatch])
 
-  const groupLoket = groupArray(loket, 4)
-
   return (
-    <div className="viewer-aplikasi">
+    <div className="viewer-bed">
       <ToastContainer />
       <div className="header-viewer">
         <img className="gbr-header" src={logoSNB} alt="gbr snb" />
@@ -100,45 +98,11 @@ const Viewer = () => {
           <p className="tgl-berjalan">{tanggal}</p>
         </div>
       </div>
-      <div className="konten-viewer">
-        <div className="antrean-aktif-video">
-          <div className="antrean-aktif">
-            <p className="judul">Antrean Dipanggil</p>
-            <p className="nomor">{lastAntrean}</p>
-            <p className="loket">{lastLoket}</p>
-          </div>
-          <div className="kontainer-video"></div>
-        </div>
-        <Carousel
-          autoFocus
-          autoPlay
-          selectedItem={0}
-          infiniteLoop={true}
-          showThumbs={false}
-          showIndicators={false}
-          showStatus={false}
-          showArrows={true}
-          interval={6000}
-        >
-          {groupLoket.map((group, i) => {
-            return (
-              <div className="loket-group" key={i}>
-                {group.map((item, index) => (
-                  <LoketAvailable
-                    key={index}
-                    loketNumber={item.label}
-                    isi={item.lastAntrean}
-                  />
-                ))}
-              </div>
-            )
-          })}
-        </Carousel>
+      <div className="kontainer-konten">
+        <h1 className="judul-viewer-bed">
+          Informasi Ketersediaan Tempat Tidur
+        </h1>
       </div>
-      <p className="running-text-viewer">
-        Teks yang sangat panjang dan super duper panjang kdjfsa Teks yang sangat
-        panjang dan super duper panjang kdjfsa
-      </p>
     </div>
   )
 }
