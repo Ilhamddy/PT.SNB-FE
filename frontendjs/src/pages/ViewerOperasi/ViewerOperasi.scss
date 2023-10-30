@@ -63,7 +63,7 @@
         }
 
         .kontainer-splitter {
-            height: 100%;
+            height: calc(100vh - 220px);
             display: flex;
             flex-direction: row;
             overflow: hidden;

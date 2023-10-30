@@ -107,19 +107,6 @@ const Viewer = () => {
   )
 }
 
-function groupArray(array, size) {
-  // Create an empty array to store the result
-  let result = []
-  // Loop through the array with a step of size
-  for (let i = 0; i < array.length; i += size) {
-    // Slice a subarray from the original array and push it to the result
-    let subarray = array.slice(i, i + size)
-    result.push(subarray)
-  }
-  // Return the result
-  return result
-}
-
 async function playAudio(audio) {
   try {
     await audio.play()

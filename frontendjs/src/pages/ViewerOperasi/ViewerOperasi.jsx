@@ -1,5 +1,5 @@
 import { ToastContainer } from 'react-toastify'
-import { useDate } from '../../utils/format'
+import { groupArray, useDate } from '../../utils/format'
 import logoSNB from './logo-snb.svg'
 import { useEffect } from 'react'
 import { shallowEqual, useDispatch, useSelector } from 'react-redux'
@@ -8,11 +8,12 @@ import './ViewerOperasi.scss'
 import ClockImg from './clock.svg'
 import HealthImg from './health.svg'
 import MedicalImg from './medical.svg'
+import { Carousel } from 'react-responsive-carousel'
 
 const ViewerOperasi = () => {
   const { tanggal, waktu } = useDate()
   const dispatch = useDispatch()
-  const { jadwal } = useSelector(
+  let { jadwal } = useSelector(
     (state) => ({
       jadwal: state.Viewer.getJadwalOperasi?.data?.jadwal || [],
     }),
@@ -21,6 +22,8 @@ const ViewerOperasi = () => {
   useEffect(() => {
     dispatch(getJadwalOperasi())
   }, [dispatch])
+  const jadwalGroup = groupArray(jadwal, 8)
+
   return (
     <div className="viewer-operasi">
       <ToastContainer />
@@ -33,36 +36,49 @@ const ViewerOperasi = () => {
       </div>
       <div className="konten-viewer">
         <h1 className="judul-informasi">Informasi Jadwal Tindakan Operasi</h1>
-        <div className="kontainer-splitter">
-          <div className="kontainer-data">
-            {jadwal.map((item, index) =>
-              index < 4 ? (
-                <CardContent
-                  key={index}
-                  tanggal={item.tglrencana}
-                  noorder={item.nomororder}
-                  spesialisasi={item.spesialisasi}
-                />
-              ) : (
-                <></>
-              )
-            )}
-          </div>
-          <div className="kontainer-data">
-            {jadwal.map((item, index) =>
-              index >= 4 && index < 8 ? (
-                <CardContent
-                  key={index}
-                  tanggal={item.tglrencana}
-                  noorder={item.nomororder}
-                  spesialisasi={item.spesialisasi}
-                />
-              ) : (
-                <></>
-              )
-            )}
-          </div>
-        </div>
+        <Carousel
+          autoFocus
+          autoPlay
+          infiniteLoop
+          showThumbs={false}
+          showStatus={false}
+          showArrows={true}
+          interval={7000}
+          showIndicators={false}
+        >
+          {jadwalGroup.map((jadwal, key) => (
+            <div className="kontainer-splitter" key={key}>
+              <div className="kontainer-data">
+                {jadwal.map((item, index) =>
+                  index % 2 === 0 ? (
+                    <CardContent
+                      key={index}
+                      tanggal={item.tglrencana}
+                      noorder={item.nomororder}
+                      spesialisasi={item.spesialisasi}
+                    />
+                  ) : (
+                    <></>
+                  )
+                )}
+              </div>
+              <div className="kontainer-data">
+                {jadwal.map((item, index) =>
+                  index % 2 !== 0 ? (
+                    <CardContent
+                      key={index}
+                      tanggal={item.tglrencana}
+                      noorder={item.nomororder}
+                      spesialisasi={item.spesialisasi}
+                    />
+                  ) : (
+                    <></>
+                  )
+                )}
+              </div>
+            </div>
+          ))}
+        </Carousel>
       </div>
     </div>
   )

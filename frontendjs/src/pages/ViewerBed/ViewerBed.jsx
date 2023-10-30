@@ -1,5 +1,5 @@
 import { ToastContainer } from 'react-toastify'
-import { useDate } from '../../utils/format'
+import { groupArray, useDate } from '../../utils/format'
 import logoSNB from './logo-snb.svg'
 import { useEffect, useState } from 'react'
 import { shallowEqual, useDispatch, useSelector } from 'react-redux'
@@ -157,19 +157,6 @@ const ViewerBed = () => {
       </div>
     </div>
   )
-}
-
-function groupArray(array, size) {
-  // Create an empty array to store the result
-  let result = []
-  // Loop through the array with a step of size
-  for (let i = 0; i < array.length; i += size) {
-    // Slice a subarray from the original array and push it to the result
-    let subarray = array.slice(i, i + size)
-    result.push(subarray)
-  }
-  // Return the result
-  return result
 }
 
 export default ViewerBed
