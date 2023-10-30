@@ -59,6 +59,9 @@ import {
     UPDATE_STOK_OPNAME_DETAILS,
     UPDATE_STOK_OPNAME_DETAILS_SUCCESS,
     UPDATE_STOK_OPNAME_DETAILS_ERROR,
+    CREATE_OR_UPDATE_PEMESANAN,
+    CREATE_OR_UPDATE_PEMESANAN_SUCCESS,
+    CREATE_OR_UPDATE_PEMESANAN_ERROR
 } from "./actionType";
 
 
@@ -359,5 +362,20 @@ export const updateStokOpnameDetailsSuccess = (data) => ({
 
 export const updateStokOpnameDetailsError = (data) => ({
     type: UPDATE_STOK_OPNAME_DETAILS_ERROR,
+    payload: { data: data },
+})
+
+export const createOrUpdatePemesanan = (data, callback) => ({
+    type: CREATE_OR_UPDATE_PEMESANAN,
+    payload: { data: data, callback: callback },
+})
+
+export const createOrUpdatePemesananSuccess = (data) => ({
+    type: CREATE_OR_UPDATE_PEMESANAN_SUCCESS,
+    payload: { data: data },
+})
+
+export const createOrUpdatePemesananError = (data) => ({
+    type: CREATE_OR_UPDATE_PEMESANAN_ERROR,
     payload: { data: data },
 })

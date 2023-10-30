@@ -24,7 +24,7 @@ import CustomSelect from "../Select/Select";
 import { useDispatch, useSelector } from "react-redux";
 import DataTable from "react-data-table-component";
 import Flatpickr from "react-flatpickr";
-import { onChangeStrNbr, strToNumber } from "../../utils/format";
+import { dateLocal, onChangeStrNbr, strToNumber } from "../../utils/format";
 import { comboPenerimaanBarangGet } from "../../store/master/action";
 import { kemasanFromProdukGet, penerimaanSaveOrUpdate, penerimaanQueryGet } from "../../store/gudang/action";
 import LoadingTable from "../../Components/Table/LoadingTable";
@@ -33,7 +33,6 @@ import NoDataTable from "../../Components/Table/NoDataTable";
 const PenerimaanProduk = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const refSatuanTerima = useRef(null);
     const {norecpenerimaan} = useParams();
 
     const [dateNow] = useState(() => (new Date()).toISOString())
@@ -232,145 +231,6 @@ const PenerimaanProduk = () => {
         handleChangeDetail('jumlahterima', newVal)
     }
 
-    // Perhitungan satuan jumlah terima, harga, Diskon, dan ppn
-    // saat jumlah, terima, harga sudah diinput akan otomatis menghitung total harga
-    useEffect(() => {
-        const setFF = vDetail.setFieldValue
-        const calcualteSatuanTerima = () => {
-            let newValTerima
-            if(detail.checkedharga === "0"){
-                const hargaSatuan = detail.hargasatuankecil
-                newValTerima = 
-                    strToNumber(hargaSatuan) *
-                    detail.konversisatuan
-                const newValTerimaStr = onChangeStrNbr(
-                    newValTerima,
-                    detail.hargasatuankecil
-                )
-                setFF(
-                    "hargasatuanterima", 
-                    newValTerimaStr
-                )
-            }else{
-                newValTerima 
-                    = strToNumber(detail.hargasatuanterima)
-                let newValKecil = 
-                    newValTerima /
-                    (detail.konversisatuan || 1)
-                const newValKecilStr = onChangeStrNbr(
-                    newValKecil,
-                    detail.hargasatuankecil
-                )
-                setFF(
-                    "hargasatuankecil", 
-                    newValKecilStr
-                )
-                let newValSubtotal =
-                    strToNumber(newValKecilStr) *
-                    strToNumber(detail.jumlahterima || 0)
-                newValSubtotal = onChangeStrNbr(
-                    newValSubtotal,
-                    detail.subtotalproduk
-                )
-                setFF(
-                    "subtotalproduk",
-                    newValSubtotal
-                )
-            }
-            return newValTerima
-        }
-        const calculateSubtotal = (newValTerima) => {
-            let newValSubtotal = 
-                newValTerima * 
-                strToNumber(detail.jumlahterima || 0)
-            const newValSubtotalStr = onChangeStrNbr(
-                newValSubtotal,
-                detail.subtotalproduk
-            )
-            setFF(
-                "subtotalproduk",
-                newValSubtotalStr
-            )
-            return newValSubtotal
-        }
-
-        const calculateDiskon = (newValSubtotal) => {
-            let newValDiskon
-            if(detail.checkeddiskon === "0"){
-                const diskonPersen = detail.diskonpersen
-                newValDiskon = 
-                    strToNumber(diskonPersen) *
-                    newValSubtotal /
-                    100
-                const newValDiskonStr = onChangeStrNbr(
-                    newValDiskon,
-                    detail.diskonpersen
-                )
-                setFF(
-                    "diskonrupiah", 
-                    newValDiskonStr
-                )
-            }else{
-                newValDiskon 
-                    = strToNumber(detail.diskonrupiah);
-            }
-            return newValDiskon
-        }
-        const calculatePpn = (newValSubtotal, newValDiskon) => {
-            const ppnPersen = detail.ppnpersenproduk
-            let newValPpn =
-                newValSubtotal - newValDiskon
-            newValPpn = newValPpn *
-                strToNumber(ppnPersen)/
-                100
-            const newValPpnStr = onChangeStrNbr(
-                newValPpn,
-                detail.ppnrupiahproduk
-            )
-            setFF(
-                "ppnrupiahproduk",
-                newValPpnStr
-            )
-            return newValPpn
-        }
-
-        const calculateTotal = (newValSubtotal, newValDiskon, newValPpn) => {
-            let newValTotal =
-                newValSubtotal -
-                newValDiskon +
-                newValPpn
-            newValTotal = onChangeStrNbr(
-                newValTotal,
-                detail.totalproduk
-            )
-            setFF(
-                "totalproduk",
-                newValTotal
-            )
-            return newValTotal
-        }
-
-        const newValTerima = calcualteSatuanTerima()
-        const newValSubtotal = calculateSubtotal(newValTerima)
-        const newValDiskon = calculateDiskon(newValSubtotal)
-        const newValPpn = calculatePpn(newValSubtotal, newValDiskon)
-        calculateTotal(newValSubtotal, newValDiskon, newValPpn)
-        
-    }, [
-        detail.hargasatuankecil, 
-        detail.hargasatuanterima, 
-        detail.checkedharga,
-        detail.konversisatuan,
-        detail.jumlahterima,
-        detail.subtotalproduk,
-        detail.diskonrupiah,
-        detail.totalproduk,
-        detail.checkeddiskon,
-        detail.diskonpersen,
-        detail.ppnpersenproduk,
-        detail.ppnrupiahproduk,
-        vDetail.setFieldValue
-    ])
 
     let subtotal = validation.values.detail.reduce((prev, curr) =>
         prev + strToNumber(curr.subtotalproduk)
@@ -393,37 +253,8 @@ const PenerimaanProduk = () => {
     total = "Rp" + total.toLocaleString("id-ID", {maximumFractionDigits: 5})
 
 
-    useEffect(() => {
-        const idProduk = detail.produk.idproduk
-        const setFF = vDetail.setFieldValue
-        const onGetSatuanSuccess = (data) => {
-            // reset value jika ada satuan baru
-            if(Array.isArray(data) && data.length === 0) {
-                refSatuanTerima.current?.clearValue();
-                return
-            }
-            const newData = [...data.satuan]
-            const dataSatuan = newData.find((val) => val.value === detail.satuanterima)
-            if(!dataSatuan) {
-                refSatuanTerima.current?.clearValue();
-                return
-            }
-            setFF("satuanterima", dataSatuan?.value || "")
-            setFF("namasatuanterima", dataSatuan?.label || "")
-            setFF("konversisatuan", dataSatuan?.nilaikonversi || "")
-        }
-        idProduk && 
-            dispatch(
-                kemasanFromProdukGet(
-                    { idproduk: idProduk }, 
-                    onGetSatuanSuccess
-                ))
-    }, [
-        dispatch, 
-        detail.produk.idproduk,
-        detail.satuanterima,
-        vDetail.setFieldValue
-    ])
+    const refSatuanTerima = useGetKemasan(vDetail, detail)
+    useCalculatePenerimaan(vDetail, detail)
 
     useEffect(() => {
         dispatch(comboPenerimaanBarangGet())
@@ -543,7 +374,7 @@ const PenerimaanProduk = () => {
         {
             name: <span className='font-weight-bold fs-13'>E.D</span>,
             sortable: true,
-            selector: row => `${row.tanggaled}`,
+            selector: row => dateLocal(row.tanggaled),
             width: "100px"
         },
         {
@@ -1571,6 +1402,135 @@ const PenerimaanProduk = () => {
 }
 
 
+const useGetKemasan = (vDetail, detail) => {
+    const dispatch = useDispatch()
+    const refSatuanTerima = useRef(null)
+    useEffect(() => {
+        const idProduk = detail.produk.idproduk
+        const setFF = vDetail.setFieldValue
+        const onGetSatuanSuccess = (data) => {
+            // reset value jika ada satuan baru
+            if (Array.isArray(data) && data.length === 0) {
+                refSatuanTerima.current?.clearValue()
+                return
+            }
+            const newData = [...data.satuan]
+            const dataSatuan = newData.find(
+                (val) => val.value === detail.satuanterima
+            )
+            if (!dataSatuan) {
+                refSatuanTerima.current?.clearValue()
+                return
+            }
+            setFF('satuanterima', dataSatuan?.value || '')
+            setFF('namasatuanterima', dataSatuan?.label || '')
+            setFF('konversisatuan', dataSatuan?.nilaikonversi || '')
+        }
+        idProduk &&
+            dispatch(kemasanFromProdukGet({ idproduk: idProduk }, onGetSatuanSuccess))
+        
+        }, [
+            dispatch,
+            detail.produk.idproduk,
+            detail.satuanterima,
+            vDetail.setFieldValue,
+        ])
+    return refSatuanTerima
+}
+
+
+// Perhitungan satuan jumlah terima, harga, Diskon, dan ppn
+// saat jumlah, terima, harga sudah diinput akan otomatis menghitung total harga
+const useCalculatePenerimaan = (vDetail, detail) => {
+    useEffect(() => {
+    const setFF = vDetail.setFieldValue
+    const calcualteSatuanTerima = () => {
+        let newValTerima
+        if (detail.checkedharga === '0') {
+        const hargaSatuan = detail.hargasatuankecil
+        newValTerima = strToNumber(hargaSatuan) * detail.konversisatuan
+        const newValTerimaStr = onChangeStrNbr(
+            newValTerima,
+            detail.hargasatuankecil
+        )
+        setFF('hargasatuanterima', newValTerimaStr)
+        } else {
+        newValTerima = strToNumber(detail.hargasatuanterima)
+        let newValKecil = newValTerima / (detail.konversisatuan || 1)
+        const newValKecilStr = onChangeStrNbr(
+            newValKecil,
+            detail.hargasatuankecil
+        )
+        setFF('hargasatuankecil', newValKecilStr)
+        let newValSubtotal =
+            strToNumber(newValKecilStr) * strToNumber(detail.jumlahterima || 0)
+        newValSubtotal = onChangeStrNbr(newValSubtotal, detail.subtotalproduk)
+        setFF('subtotalproduk', newValSubtotal)
+        }
+        return newValTerima
+    }
+    const calculateSubtotal = (newValTerima) => {
+        let newValSubtotal = newValTerima * strToNumber(detail.jumlahterima || 0)
+        const newValSubtotalStr = onChangeStrNbr(
+        newValSubtotal,
+        detail.subtotalproduk
+        )
+        setFF('subtotalproduk', newValSubtotalStr)
+        return newValSubtotal
+    }
+
+    const calculateDiskon = (newValSubtotal) => {
+        let newValDiskon
+        if (detail.checkeddiskon === '0') {
+        const diskonPersen = detail.diskonpersen
+        newValDiskon = (strToNumber(diskonPersen) * newValSubtotal) / 100
+        const newValDiskonStr = onChangeStrNbr(
+            newValDiskon,
+            detail.diskonpersen
+        )
+        setFF('diskonrupiah', newValDiskonStr)
+        } else {
+        newValDiskon = strToNumber(detail.diskonrupiah)
+        }
+        return newValDiskon
+    }
+    const calculatePpn = (newValSubtotal, newValDiskon) => {
+        const ppnPersen = detail.ppnpersenproduk
+        let newValPpn = newValSubtotal - newValDiskon
+        newValPpn = (newValPpn * strToNumber(ppnPersen)) / 100
+        const newValPpnStr = onChangeStrNbr(newValPpn, detail.ppnrupiahproduk)
+        setFF('ppnrupiahproduk', newValPpnStr)
+        return newValPpn
+    }
+
+    const calculateTotal = (newValSubtotal, newValDiskon, newValPpn) => {
+        let newValTotal = newValSubtotal - newValDiskon + newValPpn
+        newValTotal = onChangeStrNbr(newValTotal, detail.totalproduk)
+        setFF('totalproduk', newValTotal)
+        return newValTotal
+    }
+
+    const newValTerima = calcualteSatuanTerima()
+    const newValSubtotal = calculateSubtotal(newValTerima)
+    const newValDiskon = calculateDiskon(newValSubtotal)
+    const newValPpn = calculatePpn(newValSubtotal, newValDiskon)
+    calculateTotal(newValSubtotal, newValDiskon, newValPpn)
+    }, [
+        detail.hargasatuankecil,
+        detail.hargasatuanterima,
+        detail.checkedharga,
+        detail.konversisatuan,
+        detail.jumlahterima,
+        detail.subtotalproduk,
+        detail.diskonrupiah,
+        detail.totalproduk,
+        detail.checkeddiskon,
+        detail.diskonpersen,
+        detail.ppnpersenproduk,
+        detail.ppnrupiahproduk,
+        vDetail.setFieldValue,
+    ])
+}
 
 
 const tableCustomStyles = {

@@ -83,4 +83,8 @@ export default class ServiceGudang {
     updateStokOpnameDetails = async (body) => {
         return await api.create(`/transaksi/gudang/update-stok-opname-details`, body)
     }
+
+    createOrUpdatePemesanan = async (body) => {
+        return await api.create(`/transaksi/gudang/create-or-update-pemesanan`, body)
+    }
 }

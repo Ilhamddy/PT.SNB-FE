@@ -43,4 +43,5 @@ export default class ServiceFarmasi {
     createAntreanFarmasi = async (body) => {
         return await api.create(`/transaksi/farmasi/create-antrean-farmasi`, body)
     }
+    
 }

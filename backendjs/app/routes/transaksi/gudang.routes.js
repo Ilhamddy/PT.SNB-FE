@@ -131,4 +131,10 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.updatedStokOpnameDetails
     )
+
+    app.post(
+        "/api/transaksi/gudang/create-or-update-pemesanan",
+        [authJwt.verifyToken],
+        controller.createOrUpdatePemesanan
+    )
 }

@@ -75,6 +75,7 @@ import t_beritaModel from "./t_berita.model.js";
 import m_pegawaiModel from "./m_pegawai.model.js";
 import m_unitModel from "./m_unit.model.js";
 import m_kamarModel from "./m_kamar.model.js"
+import t_pemesananbarangModel from "./t_pemesananbarang.model.js";
 
 const sequelize = new Sequelize(
   config.DB,
@@ -175,6 +176,7 @@ db.t_pelayananpasientemp = t_pelayananpasientempModel(sequelize, sequelizeInstan
 db.t_berita = t_beritaModel(sequelize, sequelizeInstance);
 db.m_pegawai = m_pegawaiModel(sequelize, sequelizeInstance);
 db.m_kamar = m_kamarModel(sequelize, sequelizeInstance);
+db.t_pemesananbarang = t_pemesananbarangModel(sequelize, sequelizeInstance);
 
 db.role.belongsToMany(db.user, {
   through: "user_roles",

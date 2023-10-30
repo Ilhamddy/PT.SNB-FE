@@ -41,7 +41,9 @@ import {
     getStokOpnameDetailSuccess,
     getStokOpnameDetailError,
     updateStokOpnameDetailsSuccess,
-    updateStokOpnameDetailsError
+    updateStokOpnameDetailsError,
+    createOrUpdatePemesananSuccess,
+    createOrUpdatePemesananError
 } from "./action";
 
 
@@ -67,7 +69,8 @@ import {
     CREATE_OR_UPDATE_STOK_OPNAME,
     GET_STOK_OPNAME,
     GET_STOK_OPNAME_DETAIL,
-    UPDATE_STOK_OPNAME_DETAILS
+    UPDATE_STOK_OPNAME_DETAILS,
+    CREATE_OR_UPDATE_PEMESANAN
 } from "./actionType";
 
 const serviceGudang = new ServiceGudang();
@@ -299,110 +302,43 @@ function* onUpdateStokOpnameDetails({payload: {data, callback}}){
     }
 }
 
-
-
-export function* watchSaveObatGudang() {
-    yield takeEvery(OBAT_GUDANG_SAVE, onSaveObatGudang);
-}
-
-export function* watchGetLainLain(){
-    yield takeEvery(LAIN_LAIN_GET, onGetLainLain);
-}
-
-export function* watchDetailProdukSaveOrUpdate(){
-    yield takeEvery(DETAIL_PRODUK_SAVE_OR_UPDATE, onDetailProdukSaveOrUpdate);
-}
-
-export function* watchSediaanSaveOrUpdate(){
-    yield takeEvery(SEDIAAN_SAVE_OR_UPDATE, onSediaanSaveOrUpdate);
-}
-
-export function* watchSatuanSaveOrUpdate(){
-    yield takeEvery(SATUAN_SAVE_OR_UPDATE, onSatuanSaveOrUpdate);
-}
-
-export function* watchProdukKonversiQueryGet(){
-    yield takeEvery(KONVERSI_PRODUK_QUERY_GET, onKonversiProdukQueryGet);
-}
-
-export function* watchKemasanKonversiQueryGet(){
-    yield takeEvery(KONVERSI_KEMASAN_QUERY_GET, onKonversiKemasanQueryGet);
-}
-
-export function* watchSaveOrUpdateKemasan(){
-    yield takeEvery(KEMASAN_SAVE_OR_UPDATE, onSaveOrUpdateKemasan);
-}
-
-export function* watchProdukMasterGet(){
-    yield takeEvery(PRODUK_MASTER_GET, onProdukMasterGet);
-}
-
-export function* watchProdukEditGet(){
-    yield takeEvery(PRODUK_EDIT_GET, onProdukEditGet);
-}
-
-export function* watchKemasanFromProdukGet(){
-    yield takeEvery(KEMASAN_FROM_PRODUK_GET, onKemasanFromProdukGet);
-}
-
-export function* watchPenerimaanSaveOrUpdate(){
-    yield takeEvery(PENERIMAAN_SAVE_OR_UPDATE, onPenerimaanSaveOrUpdate);
-}
-
-export function* watchPenerimaanQueryGet(){
-    yield takeEvery(PENERIMAAN_QUERY_GET, onPenerimaanQueryGet);
-}
-
-export function* watchPenerimaanListQueryGet(){
-    yield takeEvery(PENERIMAAN_LIST_QUERY_GET, onPenerimaanListQueryGet);
-}
-
-export function* watchKartuStokQueryGet(){
-    yield takeEvery(KARTU_STOK_QUERY_GET, onKartuStokQueryGet);
-}
-
-export function* watchGetStokUnitGudang(){
-    yield takeEvery(GET_STOK_UNIT_GUDANG, onGetStokUnitGudang);
-}
-
-export function* watchCreateOrUpdateStokOpname(){
-    yield takeEvery(CREATE_OR_UPDATE_STOK_OPNAME, onCreateOrUpdateStokOpname);
-}
-
-export function* watchGetStokOpname(){
-    yield takeEvery(GET_STOK_OPNAME, onGetStokOpname);
-}
-
-export function* watchGetStokOpnameDetail(){
-    yield takeEvery(GET_STOK_OPNAME_DETAIL, onGetStokOpnameDetail);
-}
-
-export function* watchUpdateStokOpnameDetails(){
-    yield takeEvery(UPDATE_STOK_OPNAME_DETAILS, onUpdateStokOpnameDetails);
+function* onCreateOrUpdatePemesanan({payload: {data, callback}}){
+    try {
+        let response = yield call(serviceGudang.createOrUpdatePemesanan, data);
+        yield put(createOrUpdatePemesananSuccess(response.data));
+        toast.success(response.msg || "Sukses", { autoClose: 3000 })
+        callback &&
+            callback(response.data || null);
+    } catch (error) {
+        console.error(error);
+        yield put(createOrUpdatePemesananError(error));
+        toast.error(error?.response?.data?.msg || "Error" || "Gagal save or update pemesanan", { autoClose: 3000 });
+    }
 }
 
 function* registrasiSaga() {
     yield all([
-        fork(watchSaveObatGudang),
-        fork(watchGetLainLain),
-        fork(watchDetailProdukSaveOrUpdate),
-        fork(watchSediaanSaveOrUpdate),
-        fork(watchSatuanSaveOrUpdate),
-        fork(watchProdukKonversiQueryGet),
-        fork(watchKemasanKonversiQueryGet),
-        fork(watchSaveOrUpdateKemasan),
-        fork(watchProdukMasterGet),
-        fork(watchProdukEditGet),
-        fork(watchKemasanFromProdukGet),
-        fork(watchPenerimaanSaveOrUpdate),
-        fork(watchPenerimaanQueryGet),
-        fork(watchPenerimaanListQueryGet),
-        fork(watchKartuStokQueryGet),
-        fork(watchGetStokUnitGudang),
-        fork(watchCreateOrUpdateStokOpname),
-        fork(watchGetStokOpname),
-        fork(watchGetStokOpnameDetail),
-        fork(watchUpdateStokOpnameDetails)
+        takeEvery(OBAT_GUDANG_SAVE, onSaveObatGudang),
+        takeEvery(LAIN_LAIN_GET, onGetLainLain),
+        takeEvery(DETAIL_PRODUK_SAVE_OR_UPDATE, onDetailProdukSaveOrUpdate),
+        takeEvery(SEDIAAN_SAVE_OR_UPDATE, onSediaanSaveOrUpdate),
+        takeEvery(SATUAN_SAVE_OR_UPDATE, onSatuanSaveOrUpdate),
+        takeEvery(KONVERSI_PRODUK_QUERY_GET, onKonversiProdukQueryGet),
+        takeEvery(KONVERSI_KEMASAN_QUERY_GET, onKonversiKemasanQueryGet),
+        takeEvery(KEMASAN_SAVE_OR_UPDATE, onSaveOrUpdateKemasan),
+        takeEvery(PRODUK_MASTER_GET, onProdukMasterGet),
+        takeEvery(PRODUK_EDIT_GET, onProdukEditGet),
+        takeEvery(KEMASAN_FROM_PRODUK_GET, onKemasanFromProdukGet),
+        takeEvery(PENERIMAAN_SAVE_OR_UPDATE, onPenerimaanSaveOrUpdate),
+        takeEvery(PENERIMAAN_QUERY_GET, onPenerimaanQueryGet),
+        takeEvery(PENERIMAAN_LIST_QUERY_GET, onPenerimaanListQueryGet),
+        takeEvery(KARTU_STOK_QUERY_GET, onKartuStokQueryGet),
+        takeEvery(GET_STOK_UNIT_GUDANG, onGetStokUnitGudang),
+        takeEvery(CREATE_OR_UPDATE_STOK_OPNAME, onCreateOrUpdateStokOpname),
+        takeEvery(GET_STOK_OPNAME, onGetStokOpname),
+        takeEvery(GET_STOK_OPNAME_DETAIL, onGetStokOpnameDetail),
+        takeEvery(UPDATE_STOK_OPNAME_DETAILS, onUpdateStokOpnameDetails),
+        takeEvery(CREATE_OR_UPDATE_PEMESANAN, onCreateOrUpdatePemesanan)
     ]);
 }
 

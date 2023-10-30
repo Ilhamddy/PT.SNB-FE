@@ -26,6 +26,7 @@ import {
 } from "./imagesementara";
 import LoadingTable from "../../Components/Table/LoadingTable";
 import NoDataTable from "../../Components/Table/NoDataTable";
+import { dateLocal } from "../../utils/format";
 
 
 
@@ -87,7 +88,7 @@ const PenerimaanProdukList = () => {
         {
             name: <span className='font-weight-bold fs-13'>Tanggal Pemesanan</span>,
             sortable: true,
-            selector: row => row.tanggalpesan,
+            selector: row => dateLocal(row.tanggalpesan),
             width: "120px"
         },
         {

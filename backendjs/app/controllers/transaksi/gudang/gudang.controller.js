@@ -627,6 +627,53 @@ const createOrUpdatePenerimaan = async (req, res) => {
     }
 }
 
+const createOrUpdatePemesanan = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const bodyReq = req.body
+        const {newPemesanan} = await db.sequelize.transaction(async (transaction) => {
+            const created = await db.t_pemesananbarang.create({
+                norec: uuid.v4().substring(0, 32),
+                kdprofile: 0,
+                statusenabled: true,
+                no_order: bodyReq.penerimaan.nomorpo,
+                tglorder: new Date(bodyReq.penerimaan.tanggalpesan),
+                objectrekananfk: bodyReq.penerimaan.namasupplier,
+                objectunitfk: bodyReq.penerimaan.unitpesan,
+                objectasalprodukfk: bodyReq.penerimaan.sumberdana,
+                keterangan: null,
+                objectpegawaifk: req.idPegawai,
+                tglinput: new Date(),
+                tglupdate: new Date()
+            }, {
+                transaction: transaction
+            })
+            const newPemesanan = created.toJSON();
+            return {
+                newPemesanan: newPemesanan
+            }
+        });
+        
+        const tempres = {
+            newPemesanan
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 const getPenerimaan = async (req, res) => {
     const logger = res.locals.logger
     try{
@@ -1004,7 +1051,8 @@ export default {
     createOrUpdateStokOpname,
     getStokOpname,
     getStokOpnameDetail,
-    updatedStokOpnameDetails
+    updatedStokOpnameDetails,
+    createOrUpdatePemesanan
 }
 
 const hCreateOrUpdatePenerimaan = async (req, res, transaction) => {
