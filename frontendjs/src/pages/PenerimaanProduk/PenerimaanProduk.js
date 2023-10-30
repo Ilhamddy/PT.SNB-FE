@@ -1188,7 +1188,7 @@ const PenerimaanProduk = () => {
                         onClick={() => {
                             vDetail.handleSubmit();
                         }}
-                        color="info" 
+                        color="success" 
                         placement="top" 
                         formTarget="form-input-produk-detail"
                         id="tooltipTop" >
@@ -1233,7 +1233,7 @@ const PenerimaanProduk = () => {
                     className="d-flex justify-content-around align-items-end">
                     <Button 
                         type="submit" 
-                        color="info" 
+                        color="success" 
                         placement="top" 
                         formTarget="form-input-penerimaan"
                         >

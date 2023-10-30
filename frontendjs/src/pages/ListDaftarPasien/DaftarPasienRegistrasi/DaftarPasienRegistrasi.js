@@ -202,7 +202,6 @@ const DaftarPasienRegistrasi = () => {
                                                             start={0}
                                                             end={item.counter}
                                                             decimal={item.decimals}
-
                                                             duration={3}
                                                         />
                                                     </span>
@@ -212,7 +211,6 @@ const DaftarPasienRegistrasi = () => {
                                             <div>
                                                 <div className="avatar-xl flex-shrink-0">
                                                     <span className={"avatar-title rounded-circle fs-4 bg-soft-" + item.iconClass + " text-" + item.iconClass}>
-
                                                         <img src={item.icon}
                                                             alt="" className="avatar-lg" />
                                                     </span>

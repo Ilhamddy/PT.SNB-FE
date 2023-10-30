@@ -153,10 +153,17 @@ const PenerimaanProdukList = () => {
                         />
                     </Row>
                     <Row className="d-flex flex-row-reverse mb-3">
-                        <Col lg={2} className="d-flex flex-row-reverse">
+                        <Col lg={"auto"} className="d-flex flex-row-reverse">
                             <Link to={"/farmasi/gudang/penerimaan-produk"}>
                                 <Button color={"info"}>
                                     Tambah
+                                </Button>
+                            </Link>
+                        </Col>
+                        <Col lg={"auto"} className="d-flex flex-row-reverse">
+                            <Link to={"/farmasi/gudang/pemesanan-barang"}>
+                                <Button color={"info"}>
+                                    Pesan Dummy
                                 </Button>
                             </Link>
                         </Col>
@@ -264,7 +271,7 @@ const Widget = ({title, end, image}) => {
                         <div>
                             <p className="fw-medium text-muted mb-0">{title}</p>
                             <h2 className="mt-4 ff-secondary fw-semibold">
-                                <span className="counter-value" style={{ fontSize: "5rem" }}>
+                                <span className="counter-value" style={{ fontSize: "1.5rem" }}>
                                     <CountUp
                                         start={0}
                                         end={end}
@@ -276,12 +283,12 @@ const Widget = ({title, end, image}) => {
                             </h2>
                         </div>
                         <div>
-                            <div className="avatar-xl flex-shrink-0">
+                            <div className="avatar-md flex-shrink-0">
                                 <span 
                                     className={"avatar-title rounded-circle fs-4"} 
                                     style={{backgroundColor: "#CC845C"}}>
                                     <img src={image}
-                                        alt="" className="avatar-lg" />
+                                        alt="" className="avatar-md" />
                                 </span>
                             </div>
                         </div>
