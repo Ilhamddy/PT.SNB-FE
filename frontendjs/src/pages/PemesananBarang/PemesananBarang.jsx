@@ -99,7 +99,7 @@ const PemesananProduk = () => {
       }),
       detail: Yup.array(),
     }),
-    onSubmit: (values) => {
+    onSubmit: (values, { resetForm }) => {
       /**
        * @type {typeof values}
        */
@@ -367,7 +367,7 @@ const PemesananProduk = () => {
       name: <span className="font-weight-bold fs-13">Harga satuan kecil</span>,
       sortable: true,
       selector: (row) => `Rp${row.hargasatuankecil?.toLocaleString('id-ID')}`,
-      width: '100px',
+      width: '140px',
     },
     {
       name: <span className="font-weight-bold fs-13">Diskon</span>,
@@ -386,18 +386,6 @@ const PemesananProduk = () => {
       sortable: true,
       selector: (row) => `Rp${row.totalproduk}`,
       width: '150px',
-    },
-    {
-      name: <span className="font-weight-bold fs-13">E.D</span>,
-      sortable: true,
-      selector: (row) => dateLocal(row.tanggaled),
-      width: '100px',
-    },
-    {
-      name: <span className="font-weight-bold fs-13">No Batch</span>,
-      sortable: true,
-      selector: (row) => row.nobatch,
-      width: '100px',
     },
   ]
 
