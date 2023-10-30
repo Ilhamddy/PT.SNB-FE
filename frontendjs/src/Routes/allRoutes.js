@@ -342,6 +342,7 @@ import DaftarUnit from "../pages/DaftarUnit/DaftarUnit";
 import DaftarKamar from "../pages/DaftarKamar/DaftarKamar";
 import RoleAcces from "../pages/SysAdmin/RoleAcces/RoleAcces";
 import ViewerBed from "../pages/ViewerBed/ViewerBed";
+import PemesananProduk from "../pages/PemesananBarang/PemesananBarang";
 
 const authProtectedRoutes = [
   { path: "/dashboard-analytics", component: <DashboardAnalytics /> },
@@ -637,6 +638,9 @@ const authProtectedRoutes = [
   { path: "/farmasi/gudang/stok-unit", component: <StokUnitList />},
   { path: "/farmasi/gudang/stok-opname/:tabopen", component: <StokOpname />},
   { path: "/farmasi/gudang/stok-opname/:tabopen/:norecstokopname", component: <StokOpname />},
+
+  // gudang
+  { path: "/farmasi/gudang/pemesanan-barang", component: <PemesananProduk />},
 
   //distribusi 
   { path: "/farmasi/gudang/distribusi-order", component: <DistribusiOrder /> },

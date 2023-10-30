@@ -22,7 +22,7 @@ const CustomSelect = React.forwardRef(({
     const refComp = useRef(null)
     const refUsed = ref || refComp
     useEffect(() => {
-        if(value === '' && isClearEmpty){
+        if(value === '' && isClearEmpty && onChange){
             refUsed?.current?.clearValue()
             onChange(value)
         }

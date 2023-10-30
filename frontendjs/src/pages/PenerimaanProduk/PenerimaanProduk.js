@@ -267,7 +267,7 @@ const PenerimaanProduk = () => {
                 )
                 let newValSubtotal =
                     strToNumber(newValKecilStr) *
-                    (detail.jumlahterima || 0)
+                    strToNumber(detail.jumlahterima || 0)
                 newValSubtotal = onChangeStrNbr(
                     newValSubtotal,
                     detail.subtotalproduk
@@ -282,7 +282,7 @@ const PenerimaanProduk = () => {
         const calculateSubtotal = (newValTerima) => {
             let newValSubtotal = 
                 newValTerima * 
-                (detail.jumlahterima || 0)
+                strToNumber(detail.jumlahterima || 0)
             const newValSubtotalStr = onChangeStrNbr(
                 newValSubtotal,
                 detail.subtotalproduk
