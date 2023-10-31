@@ -164,7 +164,9 @@ const qGetPenerimaan = qGetPenerimaanFE + `
             WHERE tpb.norec = $1`
 
 const qGetListPenerimaan = qGetPenerimaanFE + `
-            WHERE tpb.statusenabled = true
+WHERE tpb.statusenabled = true
+ORDER BY tpb.tglterima DESC
+
 `
 
 const qGetKartuStok = `

@@ -339,19 +339,19 @@ const PenerimaanProduk = ({isPesan}) => {
         {
             name: <span className='font-weight-bold fs-13'>Diskon</span>,
             sortable: true,
-            selector: row => `Rp${row.diskonrupiah}`,
+            selector: row => `Rp${row.diskonrupiah?.toLocaleString("id-ID")}`,
             width: "150px"
         },
         {
             name: <span className='font-weight-bold fs-13'>PPN</span>,
             sortable: true,
-            selector: row => `Rp${row.ppnrupiahproduk}`,
+            selector: row => `Rp${row.ppnrupiahproduk?.toLocaleString("id-ID")}`,
             width: "150px"
         },
         {
             name: <span className='font-weight-bold fs-13'>Total</span>,
             sortable: true,
-            selector: row => `Rp${row.totalproduk}`,
+            selector: row => `Rp${row.totalproduk?.toLocaleString("id-ID")}`,
             width: "150px"
         },
     ];
