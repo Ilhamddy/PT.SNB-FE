@@ -159,6 +159,9 @@ const qMapRolePermissions =`select roleid,permissionid from role_permissions`
 
 const qPermissions =`select row_number() OVER (ORDER BY p.id) AS no,p.id,p.name,'' as cheked from permissions p `
 
+const qChekMapPermissions =`SELECT roleid, permissionid, statusenabled
+FROM public.role_permissions where roleid=$1 and permissionid=$2`
+
 export {
 	qGetTempatTidur,
 	qGetUnitTempatTidur,
@@ -167,5 +170,6 @@ export {
 	qRoles,
 	qCountRole,
 	qMapRolePermissions,
-	qPermissions
+	qPermissions,
+	qChekMapPermissions
 }

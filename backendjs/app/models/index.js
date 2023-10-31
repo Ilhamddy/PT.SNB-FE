@@ -76,6 +76,7 @@ import m_pegawaiModel from "./m_pegawai.model.js";
 import m_unitModel from "./m_unit.model.js";
 import m_kamarModel from "./m_kamar.model.js"
 import t_pemesananbarangModel from "./t_pemesananbarang.model.js";
+import role_permissionsModel from "./role_permissions.model.js";
 
 const sequelize = new Sequelize(
   config.DB,
@@ -106,6 +107,7 @@ db.user = userModel(sequelize, sequelizeInstance);
 db.users_pasien = users_pasienModel(sequelize, sequelizeInstance);
 db.role = roleModel(sequelize, sequelizeInstance);
 db.user_roles = user_rolesModel(sequelize, sequelizeInstance);
+db.role_permissions = role_permissionsModel(sequelize,sequelizeInstance)
 // master
 db.m_pasien = m_pasienM(sequelize, sequelizeInstance);
 db.running_number = running_numberM(sequelize,sequelizeInstance);

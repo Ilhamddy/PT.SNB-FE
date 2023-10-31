@@ -5,7 +5,7 @@ const getSesions =
 const getSesionsNew =`select p."name" as premissions,r."name"   from role_permissions rp
 left join permissions p on p.id=rp.permissionid
 left join roles r on r.id=rp.roleid
-join user_roles ur on  r.id=ur.roleid where ur.userid =$1 and ur.statusenabled =true`;
+join user_roles ur on  r.id=ur.roleid where ur.userid =$1 and ur.statusenabled =true and rp.statusenabled =true`;
 
 export default {
     getSesions,

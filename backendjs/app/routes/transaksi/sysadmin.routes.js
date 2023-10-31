@@ -86,4 +86,9 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getMapRolePermissions
     )
+    app.post(
+        "/api/transaksi/sysadmin/upsert-role-permissions",
+        [authJwt.verifyToken],
+        controller.saveRolePermissions
+    )
 }

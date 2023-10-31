@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import withRouter from "../../../Components/Common/withRouter"
 import { useDispatch, useSelector } from "react-redux";
-import { ToastContainer } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import { Card, Col, Container, Row, Form, Input, Label, FormFeedback, CardBody, Button, UncontrolledDropdown, DropdownToggle } from "reactstrap";
 import BreadCrumb from "../../../Components/Common/BreadCrumb";
 import UiContent from "../../../Components/Common/UiContent";
@@ -10,18 +10,22 @@ import * as Yup from "yup";
 import DataTable from "react-data-table-component";
 import LoadingTable from "../../../Components/Table/LoadingTable";
 import {
-  getComboSysadmin, upsertRoles, getMapRolePermissions
+  getComboSysadmin, upsertRoles, getMapRolePermissions, upsertRolePermissions
 } from '../../../store/sysadmin/action'
 
 const RoleAcces = () => {
   document.title = "Role Acces";
   const dispatch = useDispatch();
   const { dataCombo,
-    loadingCombo, dataMapPermissions, loadingMapPermissions } = useSelector((state) => ({
+    loadingCombo, dataMapPermissions, loadingMapPermissions,
+    newData, success, loading } = useSelector((state) => ({
       dataCombo: state.Sysadmin.getComboSysadmin.data || [],
       loadingCombo: state.Sysadmin.getComboSysadmin.loading,
       dataMapPermissions: state.Sysadmin.getMapRolePermissions.data || [],
       loadingMapPermissions: state.Sysadmin.getMapRolePermissions.loading,
+      newData: state.Sysadmin.upsertRolePermissions.newData,
+      success: state.Sysadmin.upsertRolePermissions.success,
+      loading: state.Sysadmin.upsertRolePermissions.loading,
     }));
   const vSetValidationRole = useFormik({
     enableReinitialize: true,
@@ -51,14 +55,35 @@ const RoleAcces = () => {
     dispatch(getMapRolePermissions(''))
   }, [dispatch])
   const [tempPermissions, settempPermissions] = useState([])
-  const [tempMapPermissions, settempMapPermissions] = useState([])
   useEffect(() => {
     if (dataCombo?.permissions) {
       settempPermissions(dataCombo.permissions)
     }
   }, [dataCombo])
   const displayDelete = (value, data) => {
-    console.log(value, data)
+    if (selected.name === null) {
+      toast.error("Role Belum Dipilih", { autoClose: 3000 });
+      return
+    }
+    let temp = tempPermissions
+    temp.forEach(element => {
+      if (element.id === data.id) {
+        if (value === true) {
+          element.cheked = true
+        } else {
+          element.cheked = false
+        }
+      }
+    });
+    settempPermissions([...temp])
+    const values = {
+      role: selected.idRole,
+      permissionid: data.id,
+      value: value
+    }
+    dispatch(upsertRolePermissions(values, () => {
+      // resetForm()
+    }));
   };
   const tableCustomStyles = {
     headRow: {
@@ -133,7 +158,7 @@ const RoleAcces = () => {
       width: "50px"
     },
     {
-      name: <span className='font-weight-bold fs-13'>Nama Role</span>,
+      name: <span className='font-weight-bold fs-13'>Permissions</span>,
       selector: row => row.name,
       sortable: true,
       // selector: row => (<button className="btn btn-sm btn-soft-info" onClick={() => handleClick(dataTtv)}>{row.noregistrasi}</button>),
@@ -164,29 +189,28 @@ const RoleAcces = () => {
   }
   const [selected, setselected] = useState({
     name: null,
-
+    idRole: null
   })
   const handleClick = (e) => {
     setselected({
       name: e.name,
+      idRole: e.id
     })
     let temp = tempPermissions
     temp.forEach(element => {
-      element.cheked=false
+      element.cheked = false
     });
     const filteredData = dataMapPermissions.filter(item => item.roleid === e.id);
     temp.forEach(element => {
       filteredData.forEach(element2 => {
-        if(element.id===element2.permissionid){
-          element.cheked=true
+        if (element.id === element2.permissionid) {
+          element.cheked = true
         }
       });
     });
-    settempMapPermissions([...temp])
     settempPermissions([...temp])
-    console.log(temp)
   };
- 
+
   return (
     <React.Fragment>
       <ToastContainer closeButton={false} />

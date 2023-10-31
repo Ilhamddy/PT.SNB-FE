@@ -26,12 +26,13 @@ import {
     GET_COMBO_DAFTAR_KAMAR,
     GET_COMBO_DAFTAR_KAMAR_SUCCESS,
     GET_COMBO_DAFTAR_KAMAR_ERROR,
-    GET_COMBO_SYSADMIN,GET_COMBO_SYSADMIN_SUCCESS,GET_COMBO_SYSADMIN_ERROR,
-    UPSERT_ROLES,UPSERT_ROLES_SUCCESS,UPSERT_ROLES_ERROR,
+    GET_COMBO_SYSADMIN, GET_COMBO_SYSADMIN_SUCCESS, GET_COMBO_SYSADMIN_ERROR,
+    UPSERT_ROLES, UPSERT_ROLES_SUCCESS, UPSERT_ROLES_ERROR,
     UPSERT_KAMAR,
     UPSERT_KAMAR_SUCCESS,
     UPSERT_KAMAR_ERROR,
-    GET_MAP_ROLE_PERMISSIONS, GET_MAP_ROLE_PERMISSIONS_SUCCESS, GET_MAP_ROLE_PERMISSIONS_ERROR
+    GET_MAP_ROLE_PERMISSIONS, GET_MAP_ROLE_PERMISSIONS_SUCCESS, GET_MAP_ROLE_PERMISSIONS_ERROR,
+    UPSERT_ROLE_PERMISSIONS, UPSERT_ROLE_PERMISSIONS_SUCCESS, UPSERT_ROLE_PERMISSIONS_ERROR
 } from "./actionType";
 
 
@@ -209,13 +210,6 @@ export const getComboSysadminError = (error) => ({
 
 export const upsertRoles = (data, callback) => ({
     type: UPSERT_ROLES,
-        payload: {
-            data,
-            callback
-        },
-    });
-export const upsertKamar = (data, callback) => ({
-    type: UPSERT_KAMAR,
     payload: {
         data,
         callback
@@ -230,6 +224,14 @@ export const upsertRolesSuccess = (data) => ({
 export const upsertRolesError = (error) => ({
     type: UPSERT_ROLES_ERROR,
     payload: error,
+});
+
+export const upsertKamar = (data, callback) => ({
+    type: UPSERT_KAMAR,
+    payload: {
+        data,
+        callback
+    },
 });
 
 export const upsertKamarSuccess = (data) => ({
@@ -256,5 +258,23 @@ export const getMapRolePermissionsSuccess = (data) => ({
 
 export const getMapRolePermissionsError = (error) => ({
     type: GET_MAP_ROLE_PERMISSIONS_ERROR,
+    payload: error,
+});
+
+export const upsertRolePermissions = (data, callback) => ({
+    type: UPSERT_ROLE_PERMISSIONS,
+    payload: {
+        data,
+        callback
+    },
+});
+
+export const upsertRolePermissionsSuccess = (data) => ({
+    type: UPSERT_ROLE_PERMISSIONS_SUCCESS,
+    payload: data,
+});
+
+export const upsertRolePermissionsError = (error) => ({
+    type: UPSERT_ROLE_PERMISSIONS_ERROR,
     payload: error,
 });
