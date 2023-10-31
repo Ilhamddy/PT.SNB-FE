@@ -625,6 +625,30 @@ const getPiutangAfterDate = async (req, res) => {
     }
 }
 
+const getDaftarVerifikasiRemunerasi = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const result1 = await pool.query(qDaftarVerifikasi, [req.body.tglawal, req.body.tglakhir])
+        const tempres = {
+        
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: result1.rows,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 
 export default {
     getPelayananFromDP,
@@ -637,7 +661,8 @@ export default {
     getAllPiutang,
     getPaymentForPiutang,
     getLaporanPendapatanKasir,
-    getPiutangAfterDate
+    getPiutangAfterDate,
+    getDaftarVerifikasiRemunerasi
 }
 
 
