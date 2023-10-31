@@ -23,8 +23,8 @@ export default (sequelize, Sequelize) => {
     },
   }, {
     tableName: "user_roles", // relation "user" does not exist
-    createdAt: false,
-    updatedAt: false,
+    createdAt: true,
+    updatedAt: true,
   });
 
   return user_roles;

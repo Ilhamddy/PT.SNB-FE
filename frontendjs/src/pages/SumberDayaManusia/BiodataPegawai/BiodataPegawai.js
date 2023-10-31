@@ -173,8 +173,10 @@ const BiodataPegawai = () => {
         }),
         onSubmit: (values, { resetForm }) => {
             values.password = values.username + `@123`
+            console.log(values)
             dispatch(saveSignupUserRole(values, () => {
                 resetForm()
+                dispatch(getUserRoleById({ idPegawai: idPegawai }))
             }));
         }
     })
@@ -247,11 +249,11 @@ const BiodataPegawai = () => {
         }
     }, [newData, vSetValidationBiodata.setFieldValue, vSetValidationAlamat.setFieldValue, vSetValidationStatusPegawai.setFieldValue, success,
         vSetValidationUserName.setFieldValue])
-    useEffect(() => {
-        if (newDataSignup !== null && newDataSignup !== undefined) {
-            dispatch(getUserRoleById({ idPegawai: idPegawai }))
-        }
-    }, [newDataSignup, dispatch, idPegawai])
+    // useEffect(() => {
+    //     if (newDataSignup !== null && newDataSignup !== undefined) {
+    //         dispatch(getUserRoleById({ idPegawai: idPegawai }))
+    //     }
+    // }, [newDataSignup, dispatch, idPegawai])
     useEffect(() => {
         if (idPegawai !== undefined) {
             const setFF = vSetValidationBiodata.setFieldValue
@@ -261,7 +263,7 @@ const BiodataPegawai = () => {
             const setFF3 = vSetValidationStatusPegawai.setFieldValue
             setFF3("idPegawai", idPegawai)
             const setFF4 = vSetValidationUserName.setFieldValue
-            setFF4("idpegawai", idPegawai)
+            setFF4("idpegawai", parseFloat(idPegawai))
             dispatch(getPegawaiById({ idPegawai: idPegawai }))
             dispatch(getUserRoleById({ idPegawai: idPegawai }))
         }
