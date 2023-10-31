@@ -21,19 +21,19 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import CustomSelect from "../Select/Select";
-import { useDispatch, useSelector } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import DataTable from "react-data-table-component";
 import Flatpickr from "react-flatpickr";
 import { dateLocal, onChangeStrNbr, strToNumber } from "../../utils/format";
 import { comboPenerimaanBarangGet } from "../../store/master/action";
-import { kemasanFromProdukGet, penerimaanSaveOrUpdate, penerimaanQueryGet } from "../../store/gudang/action";
+import { kemasanFromProdukGet, penerimaanSaveOrUpdate, penerimaanQueryGet, getPemesanan } from "../../store/gudang/action";
 import LoadingTable from "../../Components/Table/LoadingTable";
 import NoDataTable from "../../Components/Table/NoDataTable";
 
-const PenerimaanProduk = () => {
+const PenerimaanProduk = ({isPesan}) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const {norecpenerimaan} = useParams();
+    const {norecpenerimaan, norecpesan} = useParams();
 
     const [dateNow] = useState(() => (new Date()).toISOString())
 
@@ -44,7 +44,8 @@ const PenerimaanProduk = () => {
         kemasanProduk,
         asalProduk,
         unit,
-        penerimaanQuery
+        detailPemesanan,
+        detailPemesananPenerimaan
     } = useSelector((state) => ({
         supplier: state.Master.comboPenerimaanBarangGet?.data?.supplier || [],
         produk: state.Master.comboPenerimaanBarangGet?.data?.produk || [],
@@ -52,13 +53,15 @@ const PenerimaanProduk = () => {
         kemasanProduk: state.Gudang.kemasanFromProdukGet?.data?.satuan || [],
         asalProduk: state.Master.comboPenerimaanBarangGet?.data?.asalproduk || [],
         unit: state.Master.comboPenerimaanBarangGet?.data?.unit || [],
-        penerimaanQuery: state.Gudang.penerimaanQueryGet?.data || null,
-    }))
+        detailPemesanan: state.Gudang.getPemesanan.data?.detailPemesanan || [],
+        detailPemesananPenerimaan: state.Gudang.penerimaanQueryGet.data?.detailPemesanan || [],
+    }), shallowEqual)
 
     const validation = useFormik({
         enableReinitialize: true,
         initialValues: {
             norecpenerimaan: "",
+            norecpemesanan: "",
             penerimaan: {
                 nomorterima: "",
                 tanggalterima: dateNow,
@@ -254,47 +257,104 @@ const PenerimaanProduk = () => {
 
 
     const refSatuanTerima = useGetKemasan(vDetail, detail)
+    useGetData()
+    useFillInitialInput(isPesan, validation)
     useCalculatePenerimaan(vDetail, detail)
+    useSetNorecPenerimaan(validation)
 
-    useEffect(() => {
-        dispatch(comboPenerimaanBarangGet())
-    }, [dispatch])
-
-    useEffect(() => {
-        const setFF = validation.setFieldValue
-        norecpenerimaan && 
-            dispatch(penerimaanQueryGet({norecpenerimaan: norecpenerimaan}))
-
-        setFF("norecpenerimaan", norecpenerimaan)
-    }, [dispatch, norecpenerimaan, validation.setFieldValue])
-
-    useEffect(() => {
-        console.log(vDetail.values.satuanterima)
-    }, [vDetail.values.satuanterima ])
-
-    useEffect(() => {
-        const setFF = validation.setFieldValue
-        if(penerimaanQuery.detailPenerimaan){
-            const detailPenerimaan = penerimaanQuery.detailPenerimaan.map((values, index) => ({
-                ...values,
-                indexDetail: index,
-            }))
-            setFF("detail", detailPenerimaan || [])
-        }
-        if(penerimaanQuery.penerimaan){
-            setFF("penerimaan", penerimaanQuery.penerimaan)
-        }
-        if(!norecpenerimaan){
-            setFF("detail", [])
-            setFF("penerimaan", validation.initialValues.penerimaan)
-        }
-    }, [penerimaanQuery, 
-        validation.setFieldValue, 
-        norecpenerimaan, 
-        validation.initialValues.penerimaan
-    ])
-
-
+    /**
+     * @type {import("react-data-table-component").TableColumn<typeof vDetail.values>[]}
+     */
+    const columnsPesan = [
+        {
+            name: <span className='font-weight-bold fs-13'>Detail</span>,
+            cell: (row) => (
+                <div className="hstack gap-3 flex-wrap">
+                    <UncontrolledTooltip 
+                        placement="top" 
+                        target="edit-produk" > 
+                        Detail Produk 
+                    </UncontrolledTooltip>
+                    <UncontrolledDropdown className="dropdown d-inline-block">
+                        <DropdownToggle 
+                            className="btn btn-soft-secondary btn-sm" 
+                            itemType="button"
+                            id="edit-produk">
+                            <i className="ri-apps-2-line"></i>
+                        </DropdownToggle>
+                        <DropdownMenu className="dropdown-menu-end">
+                            <DropdownItem onClick={() => {
+                                vDetail.setValues({
+                                    ...vDetail.initialValues,
+                                    ...row
+                                })
+                                }}>
+                                <i className="ri-mail-send-fill align-bottom me-2 text-muted">
+                                </i>
+                                Terima
+                            </DropdownItem>
+                        </DropdownMenu>
+                    </UncontrolledDropdown>
+                </div>)
+                ,
+            sortable: true,
+            width: "70px",
+            wrap: true
+        },
+        {
+            name: <span className='font-weight-bold fs-13'>Nama produk</span>,
+            sortable: true,
+            selector: row => row.produk.namaproduk,
+            width: "120px"
+        },
+        {
+            name: <span className='font-weight-bold fs-13'>Qty Pemesanan</span>,
+            selector: row => row.jumlahterima,
+            sortable: true,
+            width: "110px"
+        },
+        {
+            name: <span className='font-weight-bold fs-13'>Qty Penerimaan</span>,
+            selector: row => {
+                const qtyPenerimaan = validation.values.detail.reduce((prev, curr) => {
+                    console.log("curr", curr)
+                    console.log("row", row)
+                    if(curr.produk.idproduk === row.produk.idproduk){
+                        return prev + (curr.jumlahterima ? Number(curr.jumlahterima) : 0)
+                    }
+                    return prev
+                }, 0)
+                console.log(qtyPenerimaan)
+                return qtyPenerimaan
+            },
+            sortable: true,
+            width: "110px"
+        },
+        {
+            name: <span className='font-weight-bold fs-13'>Harga satuan kecil</span>,
+            sortable: true,
+            selector: row => `Rp${row.hargasatuankecil?.toLocaleString("id-ID")}`,
+            width: "100px"
+        },
+        {
+            name: <span className='font-weight-bold fs-13'>Diskon</span>,
+            sortable: true,
+            selector: row => `Rp${row.diskonrupiah}`,
+            width: "150px"
+        },
+        {
+            name: <span className='font-weight-bold fs-13'>PPN</span>,
+            sortable: true,
+            selector: row => `Rp${row.ppnrupiahproduk}`,
+            width: "150px"
+        },
+        {
+            name: <span className='font-weight-bold fs-13'>Total</span>,
+            sortable: true,
+            selector: row => `Rp${row.totalproduk}`,
+            width: "150px"
+        },
+    ];
 
     /**
      * @type {import("react-data-table-component").TableColumn<typeof vDetail.values>[]}
@@ -345,7 +405,7 @@ const PenerimaanProduk = () => {
             name: <span className='font-weight-bold fs-13'>Qty Penerimaan</span>,
             selector: row => row.jumlahterima,
             sortable: true,
-            width: "100px"
+            width: "110px"
         },
         {
             name: <span className='font-weight-bold fs-13'>Harga satuan kecil</span>,
@@ -363,7 +423,7 @@ const PenerimaanProduk = () => {
             name: <span className='font-weight-bold fs-13'>PPN</span>,
             sortable: true,
             selector: row => `Rp${row.ppnrupiahproduk}`,
-            width: "100px"
+            width: "150px"
         },
         {
             name: <span className='font-weight-bold fs-13'>Total</span>,
@@ -375,7 +435,7 @@ const PenerimaanProduk = () => {
             name: <span className='font-weight-bold fs-13'>E.D</span>,
             sortable: true,
             selector: row => dateLocal(row.tanggaled),
-            width: "100px"
+            width: "150px"
         },
         {
             name: <span className='font-weight-bold fs-13'>No Batch</span>,
@@ -666,6 +726,26 @@ const PenerimaanProduk = () => {
         </Card>
     )
 
+    const ListPesan = (
+        <Card className="p-5 pb-0">
+            <h4>
+                Pemesanan
+            </h4>
+            <Row className="mb-5">
+                <DataTable
+                    fixedHeader
+                    columns={columnsPesan}
+                    pagination
+                    data={detailPemesananPenerimaan.length > 0 && !isPesan ? detailPemesananPenerimaan : (detailPemesanan || [])}
+                    progressPending={false}
+                    customStyles={tableCustomStyles}
+                    progressComponent={<LoadingTable />}
+                    noDataComponent={<NoDataTable />}
+                    />
+            </Row>
+        </Card>
+    )
+
     const InputProdukDetail = (
         <Card className="p-5">
             <Row className="mb-2">
@@ -826,8 +906,9 @@ const PenerimaanProduk = () => {
                                     type="radio" 
                                     id={`radio-satuan-kecil`}   
                                     checked={detail.checkedharga === "0"}
-                                    onClick={e => { 
-                                        handleChangeDetail("checkedharga", "0")
+                                    onChange={e => { 
+                                        e.target.checked &&
+                                            handleChangeDetail("checkedharga", "0")
                                     }}/>
                                 <Label className="form-check-label ms-2" 
                                     htmlFor={`radio-satuan-kecil`} 
@@ -866,8 +947,9 @@ const PenerimaanProduk = () => {
                                     type="radio" 
                                     id={`radio-satuan-terima`}   
                                     checked={detail.checkedharga === "1"}
-                                    onClick={e => { 
-                                        handleChangeDetail("checkedharga", "1")
+                                    onChange={e => { 
+                                        e.target.checked &&
+                                            handleChangeDetail("checkedharga", "1")
                                     }}/>
                                 <Label className="form-check-label ms-2" 
                                     htmlFor={`radio-satuan-terima`} 
@@ -912,8 +994,9 @@ const PenerimaanProduk = () => {
                                     type="radio" 
                                     id={`radio-diskon-persen`}   
                                     checked={detail.checkeddiskon === "0"}
-                                    onClick={e => { 
-                                        handleChangeDetail("checkeddiskon", "0")
+                                    onChange={e => { 
+                                        e.target.checked &&
+                                            handleChangeDetail("checkeddiskon", "0")
                                     }}/>
                                 <Label className="form-check-label ms-2" 
                                     htmlFor={`radio-diskon-persen`} 
@@ -952,8 +1035,9 @@ const PenerimaanProduk = () => {
                                     type="radio" 
                                     id={`radio-diskon-rupiah`}   
                                     checked={detail.checkeddiskon === "1"}
-                                    onClick={e => { 
-                                        handleChangeDetail("checkeddiskon", "1")
+                                    onChange={e => { 
+                                        e.target.checked &&
+                                            handleChangeDetail("checkeddiskon", "1")
                                     }}/>
                                 <Label className="form-check-label ms-2" 
                                     htmlFor={`radio-diskon-rupiah`} 
@@ -1393,6 +1477,7 @@ const PenerimaanProduk = () => {
                     className="gy-4"
                     id="form-input-penerimaan">
                     {InputUmumTerima}
+                    {(isPesan || (detailPemesananPenerimaan.length > 0 && !isPesan)) && ListPesan}
                     {InputProdukDetail}
                     {ListDetail}
                 </Form>
@@ -1435,7 +1520,84 @@ const useGetKemasan = (vDetail, detail) => {
             detail.satuanterima,
             vDetail.setFieldValue,
         ])
+    
     return refSatuanTerima
+}
+
+const useSetNorecPenerimaan = (validation) => {
+    const {norecpenerimaan, norecpesan} = useParams();
+    const dispatch = useDispatch();
+    useEffect(() => {
+        const setFF = validation.setFieldValue
+        norecpenerimaan && 
+            dispatch(penerimaanQueryGet({norecpenerimaan: norecpenerimaan}))
+        setFF("norecpenerimaan", norecpenerimaan)
+        setFF("norecpemesanan", norecpesan)
+    }, [dispatch, norecpenerimaan, validation.setFieldValue, norecpesan])
+}
+
+const useGetData = () => {
+    const {norecpesan} = useParams();
+    const dispatch = useDispatch();
+    useEffect(() => {
+        dispatch(comboPenerimaanBarangGet())
+    }, [dispatch])
+    useEffect(() => {
+        norecpesan && dispatch(getPemesanan({ norecpesan: norecpesan }))
+    }, [norecpesan, dispatch])
+}
+
+// saat awal, masukkan data2 dari api ke dalam input
+const useFillInitialInput = (isPesan, validation) => {
+    const {norecpenerimaan, norecpesan} = useParams();
+    const {
+        penerimaanQuery,
+        pemesanan
+    } = useSelector((state) => ({
+        penerimaanQuery: state.Gudang.penerimaanQueryGet?.data || null,
+        pemesanan: state.Gudang.getPemesanan?.data?.pemesanan || null,
+    }), shallowEqual)
+    useEffect(() => {
+        const setFF = validation.setFieldValue
+        if(norecpenerimaan){
+            // jika penerimaan
+            if(penerimaanQuery.detailPenerimaan){
+                const detailPenerimaan = penerimaanQuery.detailPenerimaan.map((values, index) => ({
+                    ...values,
+                    indexDetail: index,
+                }))
+                setFF("detail", detailPenerimaan || [])
+            }
+            if(penerimaanQuery.penerimaan){
+                setFF("penerimaan", penerimaanQuery.penerimaan)
+            }
+        } else {
+            // jika kosong atau pemesanan
+            if(!isPesan){
+                setFF("detail", [])
+                setFF("penerimaan", validation.initialValues.penerimaan)
+            }
+            if(isPesan && norecpesan && pemesanan){
+                setFF("penerimaan", {
+                    ...validation.initialValues.penerimaan,
+                    namasupplier: pemesanan.namasupplier,
+                    nomorpo: pemesanan.nomorpo,
+                    tanggalpesan: pemesanan.tanggalpesan,
+                    unitpesan: pemesanan.unitpesan,
+                    sumberdana: pemesanan.sumberdana,
+                    keterangan: pemesanan.keterangan || "",
+                })
+            }
+        }
+    }, [
+        penerimaanQuery, 
+        validation.setFieldValue, 
+        norecpenerimaan, 
+        norecpesan,
+        validation.initialValues.penerimaan,
+        isPesan,
+        pemesanan,
+    ])
 }
 
 

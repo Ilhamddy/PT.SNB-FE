@@ -639,6 +639,8 @@ const getPenerimaan = async (req, res) => {
             (await pool.query(qGetDetailPenerimaan, [norecpenerimaan])).rows
         let penerimaan = 
             (await pool.query(qGetPenerimaan, [norecpenerimaan])).rows[0]
+        let detailPemesanan = 
+            (await pool.query(qGetDetailPemesanan, [penerimaan.norecpemesanan])).rows
 
         detailPenerimaan = detailPenerimaan.map((item) => ({
             ...item,
@@ -655,7 +657,8 @@ const getPenerimaan = async (req, res) => {
         }))
         let tempres = {
             detailPenerimaan: detailPenerimaan,
-            penerimaan: penerimaan
+            penerimaan: penerimaan,
+            detailPemesanan: detailPemesanan
         }
         res.status(200).send({
             data: tempres,
@@ -1251,7 +1254,8 @@ const hCreateOrUpdatePenerimaan = async (req, res, transaction) => {
             keterangan: bodyPenerimaan.keterangan,
             objectpegawaifk: req.idPegawai,
             tglinput: new Date(),
-            tglupdate: new Date()
+            tglupdate: new Date(),
+            objectpemesananbarangfk: req.body.norecpemesanan
         }, {
             transaction: transaction
         })

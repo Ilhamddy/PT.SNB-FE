@@ -150,6 +150,7 @@ SELECT
     tpb.tgljatuhtempo AS tanggaljatuhtempo,
     tpb.objectasalprodukfk AS sumberdana,
     tpb.keterangan AS keterangan,
+    tpb.objectpemesananbarangfk AS norecpemesanan,
     '' AS subtotal,
     '' AS ppnrupiah,
     '' AS diskonrupiah,

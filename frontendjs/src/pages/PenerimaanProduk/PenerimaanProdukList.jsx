@@ -163,6 +163,16 @@ const PenerimaanProdukList = () => {
                 <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
                 Edit
               </DropdownItem>
+              <DropdownItem
+                onClick={() =>
+                  navigate(
+                    `/farmasi/gudang/penerimaan-produk-pemesanan/${row.norecpemesanan}`
+                  )
+                }
+              >
+                <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
+                Terima Barang
+              </DropdownItem>
             </DropdownMenu>
           </UncontrolledDropdown>
         </div>

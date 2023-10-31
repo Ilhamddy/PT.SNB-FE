@@ -52,7 +52,10 @@ export default (sequelize, Sequelize) => {
         },
         tglupdate: {
             type: Sequelize.DATE,
-        }
+        },
+        objectpemesananbarangfk: {
+            type: Sequelize.CHAR(32),
+        },
     }, {
         tableName: "t_penerimaanbarang", // relation "user" does not exist
         createdAt: false,
