@@ -207,7 +207,7 @@ const PemesananBarang = () => {
       const existSameProduk = !!findSameProduk
       const isEdit = newValues.indexDetail !== ''
       if (existSameProduk) {
-        toast.error('Produk dengan batch sama sudah ada')
+        toast.error('Produk yang sama sudah ada')
         return
       }
       if (isEdit) {
