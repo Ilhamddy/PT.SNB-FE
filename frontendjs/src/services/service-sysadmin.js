@@ -51,4 +51,7 @@ export default class ServiceTempatTidur {
     getMapRolePermissions = async (queries) => {
         return await api.get("/transaksi/sysadmin/get-map-role-permissions", queries)
     }
+    upsertRolePermissions = async (body) => {
+        return await api.create("/transaksi/sysadmin/upsert-role-permissions", body)
+    }
 }

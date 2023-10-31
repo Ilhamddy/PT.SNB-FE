@@ -36,7 +36,7 @@ const qProfesiPegawai =`select id as value,reportdisplay as label from m_profesi
 const qJabatan =`select id as value,reportdisplay as label from m_jabatan ms` 
 const qGolonganPtkp =`select id as value,reportdisplay as label from m_golonganptkp ms`
 const qUnitKerja =`select id as value,reportdisplay as label from m_unitkerja ms`
-const qUserRoleById=` select row_number() OVER (ORDER BY u.id) AS no,u.id,u.username ,r.permission, r."name" as namerole,
+const qUserRoleById=`select row_number() OVER (ORDER BY u.id) AS no,u.id,u.username ,r.permission, r."name" as namerole,
 r.id as idrole,case when ur.statusenabled=true then 'AKTIF'
 else 'NON AKTIF' end as status  from user_roles as ur 
 join roles as r on r.id=ur.roleid

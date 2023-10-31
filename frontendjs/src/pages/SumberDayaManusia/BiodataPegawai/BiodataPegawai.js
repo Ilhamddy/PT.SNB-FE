@@ -26,7 +26,7 @@ const BiodataPegawai = () => {
     const [dateNow] = useState(() => new Date().toISOString())
     const { data, loading, dataCombo,
         newData, success, error, dataPegawai, dataDesa, dataUserRole,
-        loadingUserRole, newDataSignup,newDataReset } = useSelector((state) => ({
+        loadingUserRole, newDataSignup, newDataReset } = useSelector((state) => ({
             dataCombo: state.sumberDayaManusia.getComboSDM.data,
             newData: state.sumberDayaManusia.saveBiodataPegawai.data,
             success: state.sumberDayaManusia.saveBiodataPegawai.success,
@@ -173,8 +173,13 @@ const BiodataPegawai = () => {
         }),
         onSubmit: (values, { resetForm }) => {
             values.password = values.username + `@123`
+            if (values.idpegawai === '') {
+                toast.error("ID Pegawai Tidak Ada, Silahkan Kembali, dan masuk lagi", { autoClose: 3000 });
+                return
+            }
             dispatch(saveSignupUserRole(values, () => {
                 resetForm()
+                dispatch(getUserRoleById({ idPegawai: idPegawai }))
             }));
         }
     })
@@ -247,11 +252,11 @@ const BiodataPegawai = () => {
         }
     }, [newData, vSetValidationBiodata.setFieldValue, vSetValidationAlamat.setFieldValue, vSetValidationStatusPegawai.setFieldValue, success,
         vSetValidationUserName.setFieldValue])
-    useEffect(() => {
-        if (newDataSignup !== null && newDataSignup !== undefined) {
-            dispatch(getUserRoleById({ idPegawai: idPegawai }))
-        }
-    }, [newDataSignup, dispatch, idPegawai])
+    // useEffect(() => {
+    //     if (newDataSignup !== null && newDataSignup !== undefined) {
+    //         dispatch(getUserRoleById({ idPegawai: idPegawai }))
+    //     }
+    // }, [newDataSignup, dispatch, idPegawai])
     useEffect(() => {
         if (idPegawai !== undefined) {
             const setFF = vSetValidationBiodata.setFieldValue
@@ -261,7 +266,7 @@ const BiodataPegawai = () => {
             const setFF3 = vSetValidationStatusPegawai.setFieldValue
             setFF3("idPegawai", idPegawai)
             const setFF4 = vSetValidationUserName.setFieldValue
-            setFF4("idpegawai", idPegawai)
+            setFF4("idpegawai", parseFloat(idPegawai))
             dispatch(getPegawaiById({ idPegawai: idPegawai }))
             dispatch(getUserRoleById({ idPegawai: idPegawai }))
         }
@@ -437,14 +442,14 @@ const BiodataPegawai = () => {
         vSetValidationUserName.setFieldValue('roles', '')
         vSetValidationUserName.setFieldValue('idUser', '')
     }
-    const handleClickResetPassword = (e)=>{
-        if(vSetValidationUserName.values.idUser===''){
+    const handleClickResetPassword = (e) => {
+        if (vSetValidationUserName.values.idUser === '') {
             toast.error("Role Pasien Belum Dipilih", { autoClose: 3000 });
             return
         }
-        const values ={
-            idUser:vSetValidationUserName.values.idUser,
-            password:vSetValidationUserName.values.username + `@123`
+        const values = {
+            idUser: vSetValidationUserName.values.idUser,
+            password: vSetValidationUserName.values.username + `@123`
         }
         dispatch(updateResetPassword(values, () => {
             // resetForm()

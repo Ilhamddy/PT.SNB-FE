@@ -26,10 +26,10 @@ import {
     GET_COMBO_DAFTAR_KAMAR,
     GET_COMBO_DAFTAR_KAMAR_SUCCESS,
     GET_COMBO_DAFTAR_KAMAR_ERROR,
-    GET_COMBO_SYSADMIN, 
-    GET_COMBO_SYSADMIN_SUCCESS, 
+    GET_COMBO_SYSADMIN,
+    GET_COMBO_SYSADMIN_SUCCESS,
     GET_COMBO_SYSADMIN_ERROR,
-    UPSERT_ROLES, 
+    UPSERT_ROLES,
     UPSERT_ROLES_SUCCESS,
     UPSERT_ROLES_ERROR,
     UPSERT_KAMAR,
@@ -37,7 +37,8 @@ import {
     UPSERT_KAMAR_ERROR,
     GET_MAP_ROLE_PERMISSIONS,
     GET_MAP_ROLE_PERMISSIONS_SUCCESS,
-    GET_MAP_ROLE_PERMISSIONS_ERROR
+    GET_MAP_ROLE_PERMISSIONS_ERROR,
+    UPSERT_ROLE_PERMISSIONS, UPSERT_ROLE_PERMISSIONS_SUCCESS, UPSERT_ROLE_PERMISSIONS_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -91,7 +92,7 @@ const INIT_STATE = {
         loading: false,
         error: null,
     },
-    upsertRoles:{
+    upsertRoles: {
         data: [],
         loading: false,
         error: null,
@@ -106,6 +107,11 @@ const INIT_STATE = {
         loading: false,
         error: null,
     },
+    upsertRolePermissions: {
+        data: [],
+        loading: false,
+        error: null,
+    }
 };
 
 const Sysadmin = (state = INIT_STATE, action) => {
@@ -505,7 +511,7 @@ const Sysadmin = (state = INIT_STATE, action) => {
                 }
             }
         }
-       
+
         case GET_MAP_ROLE_PERMISSIONS: {
             return {
                 ...state,
@@ -534,6 +540,39 @@ const Sysadmin = (state = INIT_STATE, action) => {
                 getMapRolePermissions: {
                     ...state.getMapRolePermissions,
                     loading: false,
+                    error: action.payload,
+                }
+            }
+        }
+
+        case UPSERT_ROLE_PERMISSIONS: {
+            return {
+                ...state,
+                upsertRolePermissions: {
+                    ...state.upsertRolePermissions,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case UPSERT_ROLE_PERMISSIONS_SUCCESS: {
+            return {
+                ...state,
+                upsertRolePermissions: {
+                    ...state.upsertRolePermissions,
+                    loading: false,
+                    data: action.payload,
+                }
+            }
+        }
+
+        case UPSERT_ROLE_PERMISSIONS_ERROR: {
+            return {
+                ...state,
+                upsertRolePermissions: {
+                    ...state.upsertRolePermissions,
+                    loading: true,
                     error: action.payload,
                 }
             }

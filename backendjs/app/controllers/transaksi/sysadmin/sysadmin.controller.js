@@ -8,7 +8,8 @@ import {
     qMapRolePermissions,
     qPermissions,
     qRoles,
-    statusBed
+    statusBed,
+    qChekMapPermissions
 } from "../../../queries/sysadmin/sysadmin.queries";
 import db from "../../../models";
 import { getDateStartEnd } from "../../../utils/dateutils";
@@ -356,17 +357,17 @@ const getAllKamar = async (req, res) => {
 
 const upsertKamar = async (req, res) => {
     const logger = res.locals.logger;
-    try{
+    try {
         const reqBody = req.body
-        const {dataKamar} = await db.sequelize.transaction(async (transaction) => {
+        const { dataKamar } = await db.sequelize.transaction(async (transaction) => {
             let dataKamar = null
-            if(reqBody.idkamar){
+            if (reqBody.idkamar) {
                 const kamarModel = await db.m_kamar.findOne({
                     where: {
                         id: reqBody.idkamar
                     }
                 })
-                if(!kamarModel){
+                if (!kamarModel) {
                     throw new Error("Kamar tidak ditemukan")
                 }
                 await kamarModel.update({
@@ -381,7 +382,7 @@ const upsertKamar = async (req, res) => {
                     transaction: transaction
                 })
                 dataKamar = kamarModel.toJSON()
-            }else{
+            } else {
                 const created = await db.m_kamar.create({
                     kdprofile: 0,
                     statusenabled: reqBody.statusenabled,
@@ -407,7 +408,7 @@ const upsertKamar = async (req, res) => {
                 dataKamar: dataKamar
             }
         });
-        
+
         const tempres = {
             dataKamar: dataKamar
         };
@@ -436,7 +437,7 @@ const getComboSysadmin = async (req, res) => {
         const result2 = await pool.query(qPermissions)
         const tempres = {
             role: result1.rows,
-            permissions:result2.rows
+            permissions: result2.rows
         };
         res.status(200).send({
             msg: 'Success',
@@ -463,7 +464,7 @@ const saveRoles = async (req, res) => {
             const result1 = await pool.query(qCountRole)
 
             setRole = await db.role.create({
-                id:parseFloat(result1.rows[0].jml)+1,
+                id: parseFloat(result1.rows[0].jml) + 1,
                 name: req.body.nameRole,
             }, { transaction });
 
@@ -492,10 +493,10 @@ const saveRoles = async (req, res) => {
 
 const getMapRolePermissions = async (req, res) => {
     const logger = res.locals.logger;
-    try{
+    try {
         const result1 = await pool.query(qMapRolePermissions)
         const tempres = {
-        
+
         };
         res.status(200).send({
             msg: 'Success',
@@ -513,6 +514,57 @@ const getMapRolePermissions = async (req, res) => {
         });
     }
 }
+
+const saveRolePermissions = async (req, res) => {
+    const logger = res.locals.logger;
+    try {
+
+        const { rolePermissions } = await db.sequelize.transaction(async (transaction) => {
+            const result1 = await pool.query(qChekMapPermissions, [req.body.role, req.body.permissionid])
+            let rolePermissions = ''
+            if (result1.rowCount !== 0) {
+                rolePermissions = await db.role_permissions.update({
+                    statusenabled: req.body.value,
+                    updatedAt: new Date()
+                }, {
+                    where: {
+                        roleid: req.body.role,
+                        permissionid: req.body.permissionid,
+                    },
+                    transaction: transaction
+                });
+            } else {
+                rolePermissions = await db.role_permissions.create({
+                    roleid: req.body.role,
+                    permissionid: req.body.permissionid,
+                    statusenabled: true,
+                    createdAt: new Date(),
+                    updatedAt: new Date()
+                }, { transaction });
+            }
+            return { rolePermissions }
+        });
+
+        const tempres = {
+            rolePermissions: rolePermissions
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export default {
     getTempatTidur,
     getUnitTempatTidur,
@@ -526,5 +578,6 @@ export default {
     getComboSysadmin,
     saveRoles,
     upsertKamar,
-    getMapRolePermissions
+    getMapRolePermissions,
+    saveRolePermissions
 }

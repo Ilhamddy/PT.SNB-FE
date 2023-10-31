@@ -13,7 +13,8 @@ import {
     GET_COMBO_SYSADMIN,
     UPSERT_ROLES,
     UPSERT_KAMAR,
-    GET_MAP_ROLE_PERMISSIONS
+    GET_MAP_ROLE_PERMISSIONS,
+    UPSERT_ROLE_PERMISSIONS
  } from "./actionType";
 import { 
     getTempatTidurSuccess,
@@ -38,7 +39,8 @@ import {
     upsertRolesSuccess,upsertRolesError,
     upsertKamarSuccess,
     upsertKamarError,
-    getMapRolePermissionsSuccess,getMapRolePermissionsError
+    getMapRolePermissionsSuccess,getMapRolePermissionsError,
+    upsertRolePermissionsSuccess,upsertRolePermissionsError
 } from "./action";
 import { toast } from 'react-toastify';
 
@@ -173,6 +175,18 @@ function* ongetMapRolePermissions({payload: {queries}}) {
     }
 }
 
+function* onupsertRolePermissions({payload: {data, callback}}) {
+    try{
+        const response = yield call(serviceSysadmin.upsertRolePermissions, data);
+        yield put(upsertRolePermissionsSuccess(response.data));
+        toast.success(response.msg || "Sukses");
+        callback && callback(response);
+    } catch (error) {
+        yield put(upsertRolePermissionsError(error));
+        toast.error(error.msg || "Gagal");
+    }
+}
+
 export default function* SysadminSaga() {
     yield all([
         takeEvery(GET_TEMPAT_TIDUR, onGetTempatTidur),
@@ -187,6 +201,7 @@ export default function* SysadminSaga() {
         takeEvery(GET_COMBO_SYSADMIN, ongetComboSysadmin),
         takeEvery(UPSERT_ROLES, onupsertRoles),
         takeEvery(UPSERT_KAMAR, onUpsertKamar),
-        takeEvery(GET_MAP_ROLE_PERMISSIONS, ongetMapRolePermissions)
+        takeEvery(GET_MAP_ROLE_PERMISSIONS, ongetMapRolePermissions),
+        takeEvery(UPSERT_ROLE_PERMISSIONS,onupsertRolePermissions)
     ]);
 }
