@@ -19,6 +19,7 @@ import { qGetPelayananFromDp,
     qGetCaraBayarFromBB,
     qGetLaporanPendapatanKasir
 } from '../../../queries/payment/payment.queries';
+import { qDaftarVerifikasi } from '../../../queries/remunerasi/remunerasi.queries';
 import { createTransaction } from "../../../utils/dbutils"
 
 import { Op } from "sequelize";
@@ -106,8 +107,6 @@ const getPelayananFromVerif = async (req, res) => {
     }
 };
 
-
-
 const createNotaVerif = async (req, res) => {
     const logger = res.locals.logger
     const [transaction, errorTransaction] 
@@ -185,8 +184,6 @@ const createNotaVerif = async (req, res) => {
         });
     }
 }
-
-
 
 const getDaftarTagihanPasien = async (req, res) => {
     const logger = res.locals.logger
