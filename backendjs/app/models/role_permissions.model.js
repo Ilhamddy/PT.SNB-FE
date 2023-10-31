@@ -5,6 +5,12 @@
 // eslint-disable-next-line max-lines-per-function
 export default (sequelize, Sequelize) => {
   const role_permissions = sequelize.define("role_permissions", {
+    id: {
+      allowNull: false,
+      autoIncrement: true,
+      primaryKey: true,
+      type: Sequelize.INTEGER
+  },
     roleid: {
       type: Sequelize.INTEGER
     },
