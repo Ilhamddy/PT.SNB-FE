@@ -163,7 +163,7 @@ const PenerimaanProdukList = () => {
                         <Col lg={"auto"} className="d-flex flex-row-reverse">
                             <Link to={"/farmasi/gudang/pemesanan-barang"}>
                                 <Button color={"info"}>
-                                    Pesan Dummy
+                                    Pesan
                                 </Button>
                             </Link>
                         </Col>
