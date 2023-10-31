@@ -45,7 +45,9 @@ import {
     createOrUpdatePemesananSuccess,
     createOrUpdatePemesananError,
     getPemesananSuccess,
-    getPemesananError
+    getPemesananError,
+    getListPemesananSuccess,
+    getListPemesananError
 } from "./action";
 
 
@@ -73,7 +75,8 @@ import {
     GET_STOK_OPNAME_DETAIL,
     UPDATE_STOK_OPNAME_DETAILS,
     CREATE_OR_UPDATE_PEMESANAN,
-    GET_PEMESANAN
+    GET_PEMESANAN,
+    GET_LIST_PEMESANAN
 } from "./actionType";
 
 const serviceGudang = new ServiceGudang();
@@ -329,6 +332,16 @@ function* onGetPemesanan({payload: {queries}}){
     }
 }
 
+function* onGetListPemesanan({payload: {queries}}){
+    try {
+        let response = yield call(serviceGudang.getListPemesanan, queries);
+        yield put(getListPemesananSuccess(response.data));
+    } catch (error) {
+        console.error(error);
+        yield put(getListPemesananError(error));
+    }
+}
+
 function* gudangSaga() {
     yield all([
         takeEvery(OBAT_GUDANG_SAVE, onSaveObatGudang),
@@ -352,7 +365,8 @@ function* gudangSaga() {
         takeEvery(GET_STOK_OPNAME_DETAIL, onGetStokOpnameDetail),
         takeEvery(UPDATE_STOK_OPNAME_DETAILS, onUpdateStokOpnameDetails),
         takeEvery(CREATE_OR_UPDATE_PEMESANAN, onCreateOrUpdatePemesanan),
-        takeEvery(GET_PEMESANAN, onGetPemesanan)
+        takeEvery(GET_PEMESANAN, onGetPemesanan),
+        takeEvery(GET_LIST_PEMESANAN, onGetListPemesanan)
     ]);
 }
 

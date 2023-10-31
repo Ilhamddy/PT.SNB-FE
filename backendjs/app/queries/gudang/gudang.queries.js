@@ -294,7 +294,7 @@ WHERE tsod.objectstokopnamefk = $1
 
 const qGetPemesananObject = `
 SELECT
-    tpb.norec AS norecpenerimaan,
+    tpb.norec AS norecpemesanan,
     tpb.objectrekananfk AS namasupplier,
     mr.reportdisplay AS namasupplierstr,
     tpb.no_order AS nomorpo,
@@ -316,6 +316,10 @@ const qGetPemesanan = qGetPemesananObject + `
 WHERE tpb.norec = $1
 `
 
+const qGetListPemesanan = qGetPemesananObject + `
+WHERE tpb.statusenabled = true
+ORDER BY tpb.tglorder DESC
+`
 
 const qGetDetailPemesanan = `
 SELECT
@@ -367,4 +371,5 @@ export {
     qGetStokOpnameDetail,
     qGetPemesanan,
     qGetDetailPemesanan,
+    qGetListPemesanan
 }

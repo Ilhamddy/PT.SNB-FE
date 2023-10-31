@@ -65,7 +65,10 @@ import {
     CREATE_OR_UPDATE_PEMESANAN_ERROR,
     GET_PEMESANAN,
     GET_PEMESANAN_SUCCESS,
-    GET_PEMESANAN_ERROR
+    GET_PEMESANAN_ERROR,
+    GET_LIST_PEMESANAN,
+    GET_LIST_PEMESANAN_SUCCESS,
+    GET_LIST_PEMESANAN_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -175,6 +178,11 @@ const INIT_STATE = {
         error: null,
     },
     getPemesanan: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    getListPemesanan: {
         data: [],
         loading: false,
         error: null,
@@ -975,6 +983,42 @@ const Registrasi = (state = INIT_STATE, action) => {
                 ...state,
                 getPemesanan: {
                     ...state.getPemesanan,
+                    loading: false,
+                    data: [],
+                    error: action.payload.data
+                }
+            }
+        }
+
+        case GET_LIST_PEMESANAN: {
+            return {
+                ...state,
+                getListPemesanan: {
+                    ...state.getListPemesanan,
+                    loading: true,
+                    data: [],
+                    error: null
+                }
+            }
+        }
+
+        case GET_LIST_PEMESANAN_SUCCESS: {
+            return {
+                ...state,
+                getListPemesanan: {
+                    ...state.getListPemesanan,
+                    loading: false,
+                    data: action.payload.data,
+                    error: null
+                }
+            }
+        }
+
+        case GET_LIST_PEMESANAN_ERROR: {
+            return {
+                ...state,
+                getListPemesanan: {
+                    ...state.getListPemesanan,
                     loading: false,
                     data: [],
                     error: action.payload.data

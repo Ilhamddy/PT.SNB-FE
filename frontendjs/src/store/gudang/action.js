@@ -64,7 +64,10 @@ import {
     CREATE_OR_UPDATE_PEMESANAN_ERROR,
     GET_PEMESANAN,
     GET_PEMESANAN_SUCCESS,
-    GET_PEMESANAN_ERROR
+    GET_PEMESANAN_ERROR,
+    GET_LIST_PEMESANAN,
+    GET_LIST_PEMESANAN_SUCCESS,
+    GET_LIST_PEMESANAN_ERROR
 } from "./actionType";
 
 
@@ -395,5 +398,20 @@ export const getPemesananSuccess = (data) => ({
 
 export const getPemesananError = (data) => ({
     type: GET_PEMESANAN_ERROR,
+    payload: { data: data },
+})
+
+export const getListPemesanan = (queries) => ({
+    type: GET_LIST_PEMESANAN,
+    payload: { queries: queries },
+})
+
+export const getListPemesananSuccess = (data) => ({
+    type: GET_LIST_PEMESANAN_SUCCESS,
+    payload: { data: data },
+})
+
+export const getListPemesananError = (data) => ({
+    type: GET_LIST_PEMESANAN_ERROR,
     payload: { data: data },
 })

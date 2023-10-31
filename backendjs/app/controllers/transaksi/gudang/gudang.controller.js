@@ -4,6 +4,7 @@ import db from "../../../models";
 import { qGetDetailPemesanan, qGetDetailPenerimaan, qGetJenisDetailProdukLainLain, 
     qGetKartuStok, 
     qGetKemasan, 
+    qGetListPemesanan, 
     qGetListPenerimaan, 
     qGetPemesanan, 
     qGetPenerimaan, 
@@ -1069,6 +1070,43 @@ const getPemesanan = async (req, res) => {
     }
 }
 
+const getListPemesanan = async (req, res) => {
+    const logger = res.locals.logger
+    try{
+        let listPemesanan = (await pool.query(qGetListPemesanan, [])).rows
+        listPemesanan = await Promise.all(
+            listPemesanan.map(async (penerimaan) => {
+                const newPenerimaan = { ...penerimaan }
+                const listDetail = 
+                    (await pool.query(
+                        qGetDetailPemesanan, 
+                        [penerimaan.norecpemesanan]
+                        )).rows
+                newPenerimaan.detailpemesanan = listDetail
+                return newPenerimaan
+            }
+        ))
+        const tempres = {
+            listpemesanan: listPemesanan
+        }
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+            msg: 'Get list penerimaan Berhasil',
+            code: 200
+        });
+    }catch(error){
+        logger.error(error)
+        res.status(500).send({
+            data: error,
+            success: false,
+            msg: 'Get list penerimaan gagal',
+            code: 500
+        });
+    }
+}
+
 
 export default {
     createOrUpdateProdukObat,
@@ -1092,7 +1130,8 @@ export default {
     getStokOpnameDetail,
     updatedStokOpnameDetails,
     createOrUpdatePemesanan,
-    getPemesanan
+    getPemesanan,
+    getListPemesanan
 }
 
 const hCreatePesanDetail = async (req, res, transaction, {newPemesanan}) => {
