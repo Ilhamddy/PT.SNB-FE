@@ -26,7 +26,7 @@ const BiodataPegawai = () => {
     const [dateNow] = useState(() => new Date().toISOString())
     const { data, loading, dataCombo,
         newData, success, error, dataPegawai, dataDesa, dataUserRole,
-        loadingUserRole, newDataSignup,newDataReset } = useSelector((state) => ({
+        loadingUserRole, newDataSignup, newDataReset } = useSelector((state) => ({
             dataCombo: state.sumberDayaManusia.getComboSDM.data,
             newData: state.sumberDayaManusia.saveBiodataPegawai.data,
             success: state.sumberDayaManusia.saveBiodataPegawai.success,
@@ -173,7 +173,10 @@ const BiodataPegawai = () => {
         }),
         onSubmit: (values, { resetForm }) => {
             values.password = values.username + `@123`
-            console.log(values)
+            if (values.idpegawai === '') {
+                toast.error("ID Pegawai Tidak Ada, Silahkan Kembali, dan masuk lagi", { autoClose: 3000 });
+                return
+            }
             dispatch(saveSignupUserRole(values, () => {
                 resetForm()
                 dispatch(getUserRoleById({ idPegawai: idPegawai }))
@@ -439,14 +442,14 @@ const BiodataPegawai = () => {
         vSetValidationUserName.setFieldValue('roles', '')
         vSetValidationUserName.setFieldValue('idUser', '')
     }
-    const handleClickResetPassword = (e)=>{
-        if(vSetValidationUserName.values.idUser===''){
+    const handleClickResetPassword = (e) => {
+        if (vSetValidationUserName.values.idUser === '') {
             toast.error("Role Pasien Belum Dipilih", { autoClose: 3000 });
             return
         }
-        const values ={
-            idUser:vSetValidationUserName.values.idUser,
-            password:vSetValidationUserName.values.username + `@123`
+        const values = {
+            idUser: vSetValidationUserName.values.idUser,
+            password: vSetValidationUserName.values.username + `@123`
         }
         dispatch(updateResetPassword(values, () => {
             // resetForm()
