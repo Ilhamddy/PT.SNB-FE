@@ -269,22 +269,6 @@ WHERE tso.norec = $1
 GROUP BY tso.norec, tsu.objectprodukfk, mp.namaproduk, ms.id, ms.satuan, mu.id, mu.namaunit
 `
 
-/**
- * @typedef {{
- *  no: number,
- *  norecstokopnamedetail: string,
- *  namaproduk: string,
- *  objectprodukfk: number,
- *  objectsatuanstandarfk: string,
- *  namasatuan: string,
- *  stokaplikasi: number,
- *  stokfisik: number,
- *  selisih: number,
- *  keterangan: string,
- *  objectunitfk: number,
- *  namaunit: string,
- * }} StokOpnameDetail
- */
 const qGetStokOpnameDetail = `
 SELECT
     row_number() over() as no,
@@ -308,6 +292,64 @@ FROM t_stokopnamedetail tsod
 WHERE tsod.objectstokopnamefk = $1
 `
 
+const qGetPemesananObject = `
+SELECT
+    tpb.norec AS norecpemesanan,
+    tpb.objectrekananfk AS namasupplier,
+    mr.reportdisplay AS namasupplierstr,
+    tpb.no_order AS nomorpo,
+    tpb.tglorder AS tanggalpesan,
+    tpb.objectunitfk AS unitpesan,
+    mu.namaunit AS unitpesanstr,
+    tpb.objectasalprodukfk AS sumberdana,
+    tpb.keterangan AS keterangan,
+    '' AS subtotal,
+    '' AS ppnrupiah,
+    '' AS diskonrupiah,
+    '' AS total
+FROM t_pemesananbarang tpb
+    JOIN m_rekanan mr ON mr.id = tpb.objectrekananfk
+    JOIN m_unit mu ON mu.id = tpb.objectunitfk
+`
+
+const qGetPemesanan = qGetPemesananObject + `
+WHERE tpb.norec = $1
+`
+
+const qGetListPemesanan = qGetPemesananObject + `
+WHERE tpb.statusenabled = true
+ORDER BY tpb.tglorder DESC
+`
+
+const qGetDetailPemesanan = `
+SELECT
+    tpbd.norec AS norecdetailpemesanan,
+    json_build_object(
+        'idproduk', mp.id,
+        'namaproduk', mp.namaproduk,
+        'satuanjual', mp.objectsatuanstandarfk,
+        'namasatuanjual', msp.satuan 
+    )
+    AS produk,
+    msk.id AS satuanterima,
+    msk.satuan AS namasatuanterima,
+    tpbd.jumlah AS jumlahterima,
+    tpbd.hargasatuankecil AS hargasatuankecil,
+    tpbd.hargasatuanterima AS hargasatuanterima,
+    tpbd.diskonpersen AS diskonpersen,
+    tpbd.diskon AS diskonrupiah,
+    tpbd.ppn AS ppnrupiahproduk,
+    tpbd.ppnpersen AS ppnpersenproduk,
+    tpbd.subtotal AS subtotalproduk,
+    tpbd.total AS totalproduk
+FROM t_pemesananbarangdetail tpbd
+    JOIN m_produk mp ON mp.id = tpbd.objectprodukfk
+    LEFT JOIN m_satuan ms ON ms.id = tpbd.objectsatuanfk
+    JOIN m_satuan msp ON msp.id = mp.objectsatuanstandarfk
+    JOIN m_satuan msk ON msk.id = tpbd.objectsatuanfk
+WHERE tpbd.objectpemesananbarangfk = $1
+`
+
 
 export {
     qGetJenisDetailProdukLainLain,
@@ -327,4 +369,7 @@ export {
     qGetStokOpname,
     qGetStokOpnameStokUnit,
     qGetStokOpnameDetail,
+    qGetPemesanan,
+    qGetDetailPemesanan,
+    qGetListPemesanan
 }

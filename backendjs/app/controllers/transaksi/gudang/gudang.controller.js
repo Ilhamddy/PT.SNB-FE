@@ -1,10 +1,12 @@
 import pool from "../../../config/dbcon.query";
 import * as uuid from 'uuid'
 import db from "../../../models";
-import { qGetDetailPenerimaan, qGetJenisDetailProdukLainLain, 
+import { qGetDetailPemesanan, qGetDetailPenerimaan, qGetJenisDetailProdukLainLain, 
     qGetKartuStok, 
     qGetKemasan, 
+    qGetListPemesanan, 
     qGetListPenerimaan, 
+    qGetPemesanan, 
     qGetPenerimaan, 
     qGetProdukEdit, 
     qGetProdukKonversi, 
@@ -627,52 +629,6 @@ const createOrUpdatePenerimaan = async (req, res) => {
     }
 }
 
-const createOrUpdatePemesanan = async (req, res) => {
-    const logger = res.locals.logger;
-    try{
-        const bodyReq = req.body
-        const {newPemesanan} = await db.sequelize.transaction(async (transaction) => {
-            const created = await db.t_pemesananbarang.create({
-                norec: uuid.v4().substring(0, 32),
-                kdprofile: 0,
-                statusenabled: true,
-                no_order: bodyReq.penerimaan.nomorpo,
-                tglorder: new Date(bodyReq.penerimaan.tanggalpesan),
-                objectrekananfk: bodyReq.penerimaan.namasupplier,
-                objectunitfk: bodyReq.penerimaan.unitpesan,
-                objectasalprodukfk: bodyReq.penerimaan.sumberdana,
-                keterangan: null,
-                objectpegawaifk: req.idPegawai,
-                tglinput: new Date(),
-                tglupdate: new Date()
-            }, {
-                transaction: transaction
-            })
-            const newPemesanan = created.toJSON();
-            return {
-                newPemesanan: newPemesanan
-            }
-        });
-        
-        const tempres = {
-            newPemesanan
-        };
-        res.status(200).send({
-            msg: 'Success',
-            code: 200,
-            data: tempres,
-            success: true
-        });
-    } catch (error) {
-        logger.error(error);
-        res.status(500).send({
-            msg: error.message,
-            code: 500,
-            data: error,
-            success: false
-        });
-    }
-}
 
 const getPenerimaan = async (req, res) => {
     const logger = res.locals.logger
@@ -1031,6 +987,127 @@ const updatedStokOpnameDetails = async (req, res) => {
     }
 }
 
+const createOrUpdatePemesanan = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const {
+            newPemesanan, 
+            detailPesan
+        } = await db.sequelize.transaction(async (transaction) => {
+            const newPemesanan = await hUpsertPesan(req, res, transaction)
+            const detailPesan = await hCreatePesanDetail(req, res, transaction, {
+                newPemesanan: newPemesanan,
+            })
+            return {
+                newPemesanan: newPemesanan,
+                detailPesan: detailPesan
+            }
+        });
+        
+        const tempres = {
+            newPemesanan,
+            detailPesan
+        };
+        res.status(200).send({
+            msg: 'Sukses create pemesanan',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+const getPemesanan = async (req, res) => {
+    const logger = res.locals.logger
+    try{
+        const {norecpesan} = req.query
+        if(!norecpesan) throw Error("norecpesan tidak boleh kosong")
+        let detailPemesanan = 
+            (await pool.query(qGetDetailPemesanan, [norecpesan])).rows
+        let pemesanan = 
+            (await pool.query(qGetPemesanan, [norecpesan])).rows[0]
+
+        detailPemesanan = detailPemesanan.map((item) => ({
+            ...item,
+            jumlahterima: item.jumlahterima.toLocaleString('id-ID', {maximumFractionDigit: 10}),
+            hargasatuankecil: item.hargasatuankecil.toLocaleString('id-ID', {maximumFractionDigit: 10}),
+            hargasatuanterima: item.hargasatuanterima.toLocaleString('id-ID', {maximumFractionDigit: 10}),
+            diskonrupiah: item.diskonrupiah.toLocaleString('id-ID', {maximumFractionDigit: 10}),
+            diskonpersen: item.diskonpersen.toLocaleString('id-ID', {maximumFractionDigit: 10}),
+            diskonrupiah: item.diskonrupiah.toLocaleString('id-ID', {maximumFractionDigit: 10}), 
+            ppnrupiahproduk: item.ppnrupiahproduk.toLocaleString('id-ID', {maximumFractionDigit: 10}),
+            ppnpersenproduk: item.ppnpersenproduk.toLocaleString('id-ID', {maximumFractionDigit: 10}),
+            subtotalproduk: item.subtotalproduk.toLocaleString('id-ID', {maximumFractionDigit: 10}),
+            totalproduk: item.totalproduk.toLocaleString('id-ID', {maximumFractionDigit: 10}),
+        }))
+        let tempres = {
+            detailPemesanan: detailPemesanan,
+            pemesanan: pemesanan
+        }
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+            msg: 'Get penerimaan Berhasil',
+            code: 200
+        });
+    }catch(error){
+        logger.error(error)
+        res.status(500).send({
+            data: error,
+            success: false,
+            msg: 'Get penerimaan gagal',
+            code: 500
+        });
+    }
+}
+
+const getListPemesanan = async (req, res) => {
+    const logger = res.locals.logger
+    try{
+        let listPemesanan = (await pool.query(qGetListPemesanan, [])).rows
+        listPemesanan = await Promise.all(
+            listPemesanan.map(async (penerimaan) => {
+                const newPenerimaan = { ...penerimaan }
+                const listDetail = 
+                    (await pool.query(
+                        qGetDetailPemesanan, 
+                        [penerimaan.norecpemesanan]
+                        )).rows
+                newPenerimaan.detailpemesanan = listDetail
+                return newPenerimaan
+            }
+        ))
+        const tempres = {
+            listpemesanan: listPemesanan
+        }
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+            msg: 'Get list penerimaan Berhasil',
+            code: 200
+        });
+    }catch(error){
+        logger.error(error)
+        res.status(500).send({
+            data: error,
+            success: false,
+            msg: 'Get list penerimaan gagal',
+            code: 500
+        });
+    }
+}
+
+
 export default {
     createOrUpdateProdukObat,
     getLainLain,
@@ -1052,7 +1129,104 @@ export default {
     getStokOpname,
     getStokOpnameDetail,
     updatedStokOpnameDetails,
-    createOrUpdatePemesanan
+    createOrUpdatePemesanan,
+    getPemesanan,
+    getListPemesanan
+}
+
+const hCreatePesanDetail = async (req, res, transaction, {newPemesanan}) => {
+    const norec = uuid.v4().substring(0, 32)
+    const allDetail = req.body.detail || []
+    const norecpesan = req.body.norecpesan 
+    let detailPesan = []
+    if(norecpesan){
+        const allPesanBefore = await db.t_pemesananbarangdetail.findAll({
+            where: {
+                objectpemesananbarangfk: norecpesan
+            }
+        })
+        await Promise.all(
+            allPesanBefore.map(async (pesan) => {
+                await pesan.destroy({
+                    transaction: transaction
+                })
+            })
+        )
+    }
+
+    detailPesan = await Promise.all(
+        allDetail.map(
+            async (detail) => {
+                let detailPemesanan = await db.t_pemesananbarangdetail.create({
+                    norec: norec,
+                    statusenabled: true,
+                    objectpemesananbarangfk: newPemesanan.norec,
+                    objectprodukfk: detail.produk.idproduk,
+                    objectsatuanfk: detail.satuanterima,
+                    jumlah: detail.jumlahterima,
+                    hargasatuankecil: detail.hargasatuankecil,
+                    hargasatuanterima: detail.hargasatuanterima,
+                    subtotal: detail.subtotalproduk,
+                    diskonpersen: detail.diskonpersen,
+                    diskon: detail.diskonrupiah,
+                    ppnpersen: detail.ppnpersenproduk,
+                    ppn: detail.ppnrupiahproduk,
+                    total: detail.totalproduk,
+                    jumlahkonversi: detail.konversisatuan,
+                }, {
+                    transaction: transaction
+                })
+                return detailPemesanan.toJSON();
+            }
+        )
+    )
+    
+    return detailPesan
+}
+
+const hUpsertPesan = async (req, res, transaction) => {
+    const bodyReq = req.body
+    const norecpesan = bodyReq.norecpesan 
+    let newPemesanan = null
+    if(!norecpesan){
+        const created = await db.t_pemesananbarang.create({
+            norec: uuid.v4().substring(0, 32),
+            kdprofile: 0,
+            statusenabled: true,
+            no_order: bodyReq.penerimaan.nomorpo,
+            tglorder: new Date(bodyReq.penerimaan.tanggalpesan),
+            objectrekananfk: bodyReq.penerimaan.namasupplier,
+            objectunitfk: bodyReq.penerimaan.unitpesan,
+            objectasalprodukfk: bodyReq.penerimaan.sumberdana,
+            keterangan: null,
+            objectpegawaifk: req.idPegawai,
+            tglinput: new Date(),
+            tglupdate: new Date()
+        }, {
+            transaction: transaction
+        })
+        newPemesanan = created.toJSON();
+    } else{
+        const updated = await db.t_pemesananbarang.findOne({
+            where: {
+                norec: norecpesan
+            },
+        })
+        await updated.update({
+            no_order: bodyReq.penerimaan.nomorpo,
+            tglorder: new Date(bodyReq.penerimaan.tanggalpesan),
+            objectrekananfk: bodyReq.penerimaan.namasupplier,
+            objectunitfk: bodyReq.penerimaan.unitpesan,
+            objectasalprodukfk: bodyReq.penerimaan.sumberdana,
+            keterangan: null,
+            objectpegawaifk: req.idPegawai,
+            tglinput: new Date(),
+            tglupdate: new Date()
+        })
+        newPemesanan = updated.toJSON();
+    }
+
+    return newPemesanan
 }
 
 const hCreateOrUpdatePenerimaan = async (req, res, transaction) => {
