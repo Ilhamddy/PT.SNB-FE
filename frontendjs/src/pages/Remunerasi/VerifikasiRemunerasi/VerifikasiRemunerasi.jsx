@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react"
 import withRouter from "../../../Components/Common/withRouter"
 import { ToastContainer } from "react-toastify";
 import UiContent from "../../../Components/Common/UiContent";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Button, Card, CardBody, Col, Container, Form, FormFeedback, Label, Row } from "reactstrap";
 import BreadCrumb from "../../../Components/Common/BreadCrumb";
 import { useFormik } from "formik";
@@ -11,22 +11,33 @@ import CustomSelect from "../../Select/Select";
 import KontainerFlatpickr from "../../../Components/KontainerFlatpickr/KontainerFlatpickr";
 import DataTable from "react-data-table-component";
 import LoadingTable from "../../../Components/Table/LoadingTable";
+import {
+  getDaftarVerifikasiRemunerasi
+} from '../../../store/actions';
+
 
 const VerifikasiRemunerasi = () => {
   document.title = "Verifikasi Remunerasi";
   const dispatch = useDispatch();
-
+  const { dataGrid, loadingGrid } = useSelector((state) => ({
+    dataGrid: state.Payment.getDaftarVerifikasiRemunerasi.data,
+    loadingGrid: state.Payment.getDaftarVerifikasiRemunerasi.loading,
+  }));
+  const [dateNow] = useState(() => new Date().toISOString())
   const vSetValidation = useFormik({
     enableReinitialize: true,
     initialValues: {
-      comboUnit: '',
-      search: ''
+      tglAwal: '',
+      tglAkhir: ''
     },
     validationSchema: Yup.object({
       // tingkatdarurat: Yup.string().required("Tingkat Darurat jawab wajib diisi"),
     }),
     onSubmit: (values) => {
-
+      dispatch(getDaftarVerifikasiRemunerasi({
+        tglAwal: values.tglAwal || dateNow,
+        tglAkhir: values.tglAkhir || dateNow,
+      }));
     }
   })
   const tableCustomStyles = {
@@ -52,13 +63,13 @@ const VerifikasiRemunerasi = () => {
     },
     {
       name: <span className='font-weight-bold fs-13'>Tgl. Registrasi</span>,
-      selector: row => row.nip,
+      selector: row => row.tglregistrasi,
       sortable: true,
       width: "150px"
     },
     {
       name: <span className='font-weight-bold fs-13'>Tgl. Pulang</span>,
-      selector: row => row.namalengkap,
+      selector: row => row.tglpulang,
       sortable: true,
       // selector: row => (<button className="btn btn-sm btn-soft-info" onClick={() => handleClick(dataTtv)}>{row.noregistrasi}</button>),
       width: "160px",
@@ -67,42 +78,42 @@ const VerifikasiRemunerasi = () => {
     {
 
       name: <span className='font-weight-bold fs-13'>Noregistrasi</span>,
-      selector: row => row.namaunit,
+      selector: row => row.noregistrasi,
       sortable: true,
       width: "150px"
     },
     {
 
       name: <span className='font-weight-bold fs-13'>No.RM</span>,
-      selector: row => row.profesi,
+      selector: row => row.nocm,
       sortable: true,
       width: "100px"
     },
     {
 
       name: <span className='font-weight-bold fs-13'>Nama Pasien</span>,
-      selector: row => row.statuspegawai,
+      selector: row => row.namapasien,
       sortable: true,
       width: "100",
     },
     {
 
       name: <span className='font-weight-bold fs-13'>Penjamin</span>,
-      selector: row => row.status,
+      selector: row => row.namarekanan,
       sortable: true,
       width: "100",
     },
     {
 
       name: <span className='font-weight-bold fs-13'>DPJP</span>,
-      selector: row => row.status,
+      selector: row => row.dpjp,
       sortable: true,
       width: "100",
     },
     {
 
       name: <span className='font-weight-bold fs-13'>Total</span>,
-      selector: row => row.status,
+      selector: row => row.total,
       sortable: true,
       width: "100",
     },
@@ -217,7 +228,7 @@ const VerifikasiRemunerasi = () => {
                             dateFormat: 'Y-m-d',
                             defaultDate: 'today',
                           }}
-                          value={vSetValidation.values.tglAwal}
+                          value={vSetValidation.values.tglAwal || dateNow}
                           onChange={([newDate]) => {
                             vSetValidation.setFieldValue('tglAwal', newDate.toISOString())
                           }}
@@ -243,7 +254,7 @@ const VerifikasiRemunerasi = () => {
                             dateFormat: 'Y-m-d',
                             defaultDate: 'today',
                           }}
-                          value={vSetValidation.values.tglAkhir}
+                          value={vSetValidation.values.tglAkhir || dateNow}
                           onChange={([newDate]) => {
                             vSetValidation.setFieldValue('tglAkhir', newDate.toISOString())
                           }}
@@ -275,8 +286,8 @@ const VerifikasiRemunerasi = () => {
                     fixedHeaderScrollHeight="330px"
                     columns={columns}
                     pagination
-                    // data={data}
-                    // progressPending={loading}
+                    data={dataGrid}
+                    progressPending={loadingGrid}
                     customStyles={tableCustomStyles}
                     progressComponent={<LoadingTable />}
                     // onRowClicked={(row) => handleClick(row)}

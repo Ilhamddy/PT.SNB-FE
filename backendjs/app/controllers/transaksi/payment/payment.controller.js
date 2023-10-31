@@ -628,7 +628,7 @@ const getPiutangAfterDate = async (req, res) => {
 const getDaftarVerifikasiRemunerasi = async (req, res) => {
     const logger = res.locals.logger;
     try{
-        const result1 = await pool.query(qDaftarVerifikasi, [req.body.tglawal, req.body.tglakhir])
+        const result1 = await pool.query(qDaftarVerifikasi, [req.query.tglAwal, req.query.tglAkhir])
         const tempres = {
         
         };
