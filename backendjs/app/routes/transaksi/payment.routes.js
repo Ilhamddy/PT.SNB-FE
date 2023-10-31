@@ -76,4 +76,9 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getPiutangAfterDate
     );
+    app.get(
+        "/api/transaksi/payment/daftar-verifikasi-remunerasi",
+        [authJwt.verifyToken],
+        controller.getDaftarVerifikasiRemunerasi
+    );
 }
