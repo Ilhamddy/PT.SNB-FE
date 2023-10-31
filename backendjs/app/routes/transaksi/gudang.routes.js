@@ -137,4 +137,10 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.createOrUpdatePemesanan
     )
+
+    app.get(
+        "/api/transaksi/gudang/get-pemesanan",
+        [authJwt.verifyToken],
+        controller.getPemesanan
+    )
 }

@@ -62,7 +62,10 @@ import {
     UPDATE_STOK_OPNAME_DETAILS_ERROR,
     CREATE_OR_UPDATE_PEMESANAN,
     CREATE_OR_UPDATE_PEMESANAN_SUCCESS,
-    CREATE_OR_UPDATE_PEMESANAN_ERROR
+    CREATE_OR_UPDATE_PEMESANAN_ERROR,
+    GET_PEMESANAN,
+    GET_PEMESANAN_SUCCESS,
+    GET_PEMESANAN_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -167,6 +170,11 @@ const INIT_STATE = {
         error: null,
     },
     createOrUpdatePemesanan: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    getPemesanan: {
         data: [],
         loading: false,
         error: null,
@@ -938,6 +946,41 @@ const Registrasi = (state = INIT_STATE, action) => {
             }
         }
 
+        case GET_PEMESANAN: {
+            return {
+                ...state,
+                getPemesanan: {
+                    ...state.getPemesanan,
+                    loading: true,
+                    data: [],
+                    error: null
+                }
+            }
+        }
+
+        case GET_PEMESANAN_SUCCESS: {
+            return {
+                ...state,
+                getPemesanan: {
+                    ...state.getPemesanan,
+                    loading: false,
+                    data: action.payload.data,
+                    error: null
+                }
+            }
+        }
+
+        case GET_PEMESANAN_ERROR: {
+            return {
+                ...state,
+                getPemesanan: {
+                    ...state.getPemesanan,
+                    loading: false,
+                    data: [],
+                    error: action.payload.data
+                }
+            }
+        }
 
         default: {
             return { ...state };

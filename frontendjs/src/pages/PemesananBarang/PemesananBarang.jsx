@@ -33,14 +33,15 @@ import {
   penerimaanSaveOrUpdate,
   penerimaanQueryGet,
   createOrUpdatePemesanan,
+  getPemesanan,
 } from '../../store/gudang/action'
 import LoadingTable from '../../Components/Table/LoadingTable'
 import NoDataTable from '../../Components/Table/NoDataTable'
 
-const PemesananProduk = () => {
+const PemesananBarang = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  const { norecpenerimaan } = useParams()
+  const { norecpesan } = useParams()
 
   const [dateNow] = useState(() => new Date().toISOString())
 
@@ -51,7 +52,7 @@ const PemesananProduk = () => {
     kemasanProduk,
     asalProduk,
     unit,
-    penerimaanQuery,
+    pemesananQuery,
   } = useSelector(
     (state) => ({
       supplier: state.Master.comboPenerimaanBarangGet?.data?.supplier || [],
@@ -61,7 +62,7 @@ const PemesananProduk = () => {
       kemasanProduk: state.Gudang.kemasanFromProdukGet?.data?.satuan || [],
       asalProduk: state.Master.comboPenerimaanBarangGet?.data?.asalproduk || [],
       unit: state.Master.comboPenerimaanBarangGet?.data?.unit || [],
-      penerimaanQuery: state.Gudang.penerimaanQueryGet?.data || null,
+      pemesananQuery: state.Gudang.getPemesanan?.data || null,
     }),
     shallowEqual
   )
@@ -69,7 +70,7 @@ const PemesananProduk = () => {
   const validation = useFormik({
     enableReinitialize: true,
     initialValues: {
-      norecpenerimaan: '',
+      norecpesan: '',
       penerimaan: {
         nomorpo: '',
         tanggalterima: dateNow,
@@ -123,14 +124,20 @@ const PemesananProduk = () => {
         return newValDetail
       })
 
-      newVal.penerimaan.norecpenerimaan = norecpenerimaan || ''
+      newVal.penerimaan.norecpenerimaan = norecpesan || ''
       newVal.penerimaan.subtotal = strToNumber(newVal.penerimaan.subtotal)
       newVal.penerimaan.total = strToNumber(newVal.penerimaan.total)
       newVal.penerimaan.diskonrupiah = strToNumber(
         newVal.penerimaan.diskonrupiah
       )
       newVal.penerimaan.ppnrupiah = strToNumber(newVal.penerimaan.ppnrupiah)
-      dispatch(createOrUpdatePemesanan(newVal, (newNorec) => {}))
+      dispatch(
+        createOrUpdatePemesanan(newVal, (data) => {
+          navigate(
+            `/farmasi/gudang/pemesanan-barang/${data.newPemesanan.norec}`
+          )
+        })
+      )
     },
   })
 
@@ -281,34 +288,35 @@ const PemesananProduk = () => {
 
   useEffect(() => {
     const setFF = validation.setFieldValue
-    norecpenerimaan &&
-      dispatch(penerimaanQueryGet({ norecpenerimaan: norecpenerimaan }))
-
-    setFF('norecpenerimaan', norecpenerimaan)
-  }, [dispatch, norecpenerimaan, validation.setFieldValue])
+    norecpesan && dispatch(getPemesanan({ norecpesan: norecpesan }))
+    setFF('norecpesan', norecpesan)
+  }, [dispatch, norecpesan, validation.setFieldValue])
 
   useEffect(() => {
     const setFF = validation.setFieldValue
-    if (penerimaanQuery.detailPenerimaan) {
-      const detailPenerimaan = penerimaanQuery.detailPenerimaan.map(
+    if (pemesananQuery.detailPemesanan) {
+      const detailPemesanan = pemesananQuery.detailPemesanan.map(
         (values, index) => ({
           ...values,
           indexDetail: index,
         })
       )
-      setFF('detail', detailPenerimaan || [])
+      setFF('detail', detailPemesanan || [])
     }
-    if (penerimaanQuery.penerimaan) {
-      setFF('penerimaan', penerimaanQuery.penerimaan)
+    if (pemesananQuery.pemesanan) {
+      setFF('penerimaan', {
+        ...validation.initialValues.penerimaan,
+        ...pemesananQuery.pemesanan,
+      })
     }
-    if (!norecpenerimaan) {
+    if (!norecpesan) {
       setFF('detail', [])
       setFF('penerimaan', validation.initialValues.penerimaan)
     }
   }, [
-    penerimaanQuery,
+    pemesananQuery,
     validation.setFieldValue,
-    norecpenerimaan,
+    norecpesan,
     validation.initialValues.penerimaan,
   ])
 
@@ -1127,7 +1135,7 @@ const PemesananProduk = () => {
             placement="top"
             formTarget="form-input-penerimaan"
           >
-            {!!norecpenerimaan ? 'Edit' : 'Simpan'}
+            {!!norecpesan ? 'Edit' : 'Simpan'}
           </Button>
           <Link to="/farmasi/gudang/penerimaan-produk-list">
             <Button type="button" className="btn" color="danger">
@@ -1420,4 +1428,4 @@ const tableCustomStyles = {
   },
 }
 
-export default PemesananProduk
+export default PemesananBarang
