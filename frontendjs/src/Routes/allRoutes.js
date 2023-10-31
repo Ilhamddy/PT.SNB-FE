@@ -293,6 +293,8 @@ import Bayar from "../pages/Bayar/Bayar";
 
 // laporan Kasir
 import LaporanPendapatan from "../pages/Kasir/Laporan/LaporanPendapatan/LaporanPendapatan";
+import LaporanRemunerasi from "../pages/Remunerasi/LaporanRemunerasi/LaporanRemunerasi";
+import VerifikasiRemunerasi from "../pages/Remunerasi/VerifikasiRemunerasi/VerifikasiRemunerasi";
 
 import SettingProduk from "../pages/Produk/SettingProduk";
 import ListProduk from "../pages/Produk/ListProduk";
@@ -343,6 +345,8 @@ import DaftarKamar from "../pages/DaftarKamar/DaftarKamar";
 import RoleAcces from "../pages/SysAdmin/RoleAcces/RoleAcces";
 import ViewerBed from "../pages/ViewerBed/ViewerBed";
 import PemesananBarang from "../pages/PemesananBarang/PemesananBarang";
+
+
 
 const authProtectedRoutes = [
   { path: "/dashboard-analytics", component: <DashboardAnalytics /> },
@@ -623,7 +627,8 @@ const authProtectedRoutes = [
   { path: "/payment/daftar-piutang/:location", component: <DaftarPiutangPasien />},
   { path: "/payment/bayar/piutang/:norecpiutang/:norecnota", component: <BayarPiutang /> },
   { path: "/payment/laporan-pendapatan", component: <LaporanPendapatan /> },
-
+  { path: "/payment/laporan-remunerasi", component: <LaporanRemunerasi /> },
+  { path: "/payment/verifikasi-remunerasi", component: <VerifikasiRemunerasi /> },
   // casemix
   { path: "/casemix/klaiminacbg", component: <KlaimInacbg /> },
 

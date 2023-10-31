@@ -19,6 +19,7 @@ import { qGetPelayananFromDp,
     qGetCaraBayarFromBB,
     qGetLaporanPendapatanKasir
 } from '../../../queries/payment/payment.queries';
+import { qDaftarVerifikasi } from '../../../queries/remunerasi/remunerasi.queries';
 import { createTransaction } from "../../../utils/dbutils"
 
 import { Op } from "sequelize";
@@ -106,8 +107,6 @@ const getPelayananFromVerif = async (req, res) => {
     }
 };
 
-
-
 const createNotaVerif = async (req, res) => {
     const logger = res.locals.logger
     const [transaction, errorTransaction] 
@@ -185,8 +184,6 @@ const createNotaVerif = async (req, res) => {
         });
     }
 }
-
-
 
 const getDaftarTagihanPasien = async (req, res) => {
     const logger = res.locals.logger
@@ -628,6 +625,30 @@ const getPiutangAfterDate = async (req, res) => {
     }
 }
 
+const getDaftarVerifikasiRemunerasi = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const result1 = await pool.query(qDaftarVerifikasi, [req.query.tglAwal, req.query.tglAkhir])
+        const tempres = {
+        
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: result1.rows,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 
 export default {
     getPelayananFromDP,
@@ -640,7 +661,8 @@ export default {
     getAllPiutang,
     getPaymentForPiutang,
     getLaporanPendapatanKasir,
-    getPiutangAfterDate
+    getPiutangAfterDate,
+    getDaftarVerifikasiRemunerasi
 }
 
 

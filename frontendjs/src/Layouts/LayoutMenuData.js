@@ -14,6 +14,7 @@ const Navdata = () => {
     const [isLaporanRL, setLaporanRL] = useState(false);
     const [isPembayaran, setPembayaran] = useState(false);
     const [isLaporanKasir, setLaporanKasir] = useState(false);
+    const [isRemunerasi, setRemunerasi] = useState(false);
     const [isRadiologi, setRadiologi] = useState(false);
     const [isLaboratorium, setLaboratorium] = useState(false);
     const [isCasemix, setCasemix] = useState(false);
@@ -751,6 +752,48 @@ const Navdata = () => {
                     id: "laporanPendapatanKasir",
                     label: "Laporan Pendapatan Kasir",
                     link: "/payment/laporan-pendapatan",
+                    parentId: "listlaporankasir",
+                    isAllowed: () => {
+                        return isAllowedAccess(getUserPermissions(), [
+                            "REGISTRASI_VIEW",
+                        ]);
+                    }
+                },
+            ]
+        },
+        {
+            id: "listRemunerasi",
+            label: "Remunerasi",
+            icon: "ri-money-dollar-circle-line",
+            link: "/#",
+            click: function (e) {
+                e.preventDefault();
+                setRemunerasi(!isRemunerasi);
+                setIscurrentState('isRemunerasi');
+                updateIconSidebar(e);
+            },
+            stateVariables: isRemunerasi,
+            isAllowed: () => {
+                return isAllowedAccess(getUserPermissions(), [
+                    "REGISTRASI_VIEW","KASIR_VIEW"
+                ]);
+            },
+            subItems: [
+                {
+                    id: "listRemunerasi",
+                    label: "Verifikasi Remunerasi",
+                    link: "/payment/verifikasi-remunerasi",
+                    parentId: "listlaporankasir",
+                    isAllowed: () => {
+                        return isAllowedAccess(getUserPermissions(), [
+                            "REGISTRASI_VIEW",
+                        ]);
+                    }
+                },
+                {
+                    id: "listRemunerasi",
+                    label: "Laporan Remunerasi",
+                    link: "/payment/laporan-remunerasi",
                     parentId: "listlaporankasir",
                     isAllowed: () => {
                         return isAllowedAccess(getUserPermissions(), [

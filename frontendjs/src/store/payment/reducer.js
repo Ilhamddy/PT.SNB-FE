@@ -41,7 +41,8 @@ import {
     LAPORAN_PENDAPATAN_KASIR_GET_RESET,
     GET_PIUTANG_AFTER_DATE,
     GET_PIUTANG_AFTER_DATE_SUCCESS,
-    GET_PIUTANG_AFTER_DATE_ERROR
+    GET_PIUTANG_AFTER_DATE_ERROR,
+    GET_DAFTAR_VERIFIKASI_REMUNERASI, GET_DAFTAR_VERIFIKASI_REMUNERASI_SUCCESS, GET_DAFTAR_VERIFIKASI_REMUNERASI_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -106,6 +107,12 @@ const INIT_STATE = {
         error: null,
     },
     getPiutangAfterDate: {
+        data: [],
+        loading: false,
+        success: false,
+        error: null,
+    },
+    getDaftarVerifikasiRemunerasi: {
         data: [],
         loading: false,
         success: false,
@@ -557,7 +564,7 @@ const payment = (state = INIT_STATE, action) => {
                     error: null,
                 },
             };
-        
+
         case GET_PIUTANG_AFTER_DATE_SUCCESS:
             return {
                 ...state,
@@ -578,6 +585,39 @@ const payment = (state = INIT_STATE, action) => {
                     error: action.payload,
                 },
             };
+
+        case GET_DAFTAR_VERIFIKASI_REMUNERASI: {
+            return {
+                ...state,
+                getDaftarVerifikasiRemunerasi: {
+                    ...state.getDaftarVerifikasiRemunerasi,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case GET_DAFTAR_VERIFIKASI_REMUNERASI_SUCCESS: {
+            return {
+                ...state,
+                getDaftarVerifikasiRemunerasi: {
+                    ...state.getDaftarVerifikasiRemunerasi,
+                    loading: false,
+                    data: action.payload,
+                }
+            }
+        }
+
+        case GET_DAFTAR_VERIFIKASI_REMUNERASI_ERROR: {
+            return {
+                ...state,
+                getDaftarVerifikasiRemunerasi: {
+                    ...state.getDaftarVerifikasiRemunerasi,
+                    loading: false,
+                    error: action.payload,
+                }
+            }
+        }
 
         default:
             return { ...state };

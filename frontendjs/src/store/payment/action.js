@@ -1,4 +1,5 @@
-import { PELAYANAN_FROM_DP_GET,
+import {
+    PELAYANAN_FROM_DP_GET,
     PELAYANAN_FROM_DP_GET_SUCCESS,
     PELAYANAN_FROM_DP_GET_ERROR,
     PELAYANAN_FROM_DP_GET_RESET,
@@ -39,13 +40,14 @@ import { PELAYANAN_FROM_DP_GET,
     LAPORAN_PENDAPATAN_KASIR_GET_RESET,
     GET_PIUTANG_AFTER_DATE,
     GET_PIUTANG_AFTER_DATE_SUCCESS,
-    GET_PIUTANG_AFTER_DATE_ERROR
+    GET_PIUTANG_AFTER_DATE_ERROR,
+    GET_DAFTAR_VERIFIKASI_REMUNERASI, GET_DAFTAR_VERIFIKASI_REMUNERASI_SUCCESS, GET_DAFTAR_VERIFIKASI_REMUNERASI_ERROR
 } from "./actionType";
 
 export const pelayananFromDpGet = (norecap) => {
     return {
         type: PELAYANAN_FROM_DP_GET,
-        payload: {norecap}
+        payload: { norecap }
     }
 }
 
@@ -73,7 +75,7 @@ export const pelayananFromDpGetReset = () => {
 export const notaVerifCreate = (body, callback) => {
     return {
         type: NOTA_VERIF_CREATE,
-        payload: {body, callback}
+        payload: { body, callback }
     }
 }
 
@@ -94,7 +96,7 @@ export const notaVerifCreateError = (error) => {
 export const daftarTagihanPasienGet = (body, callback) => {
     return {
         type: DAFTAR_TAGIHAN_PASIEN_GET,
-        payload: {body, callback}
+        payload: { body, callback }
     }
 }
 
@@ -122,7 +124,7 @@ export const daftarTagihanPasienGetReset = () => {
 export const pelayananFromVerifGet = (norecnota) => {
     return {
         type: PELAYANAN_FROM_VERIF_GET,
-        payload: {norecnota}
+        payload: { norecnota }
     }
 }
 
@@ -149,7 +151,7 @@ export const pelayananFromVerifGetReset = () => {
 export const buktiBayarCreate = (body, callback) => {
     return {
         type: BUKTI_BAYAR_CREATE,
-        payload: {body, callback}
+        payload: { body, callback }
     }
 }
 
@@ -176,7 +178,7 @@ export const buktiBayarCreateReset = () => {
 export const verifNotaCancel = (norecnota, norecdp, callback) => {
     return {
         type: VERIF_NOTA_CANCEL,
-        payload: {norecnota, norecdp, callback}
+        payload: { norecnota, norecdp, callback }
     }
 }
 
@@ -203,7 +205,7 @@ export const verifNotaCancelReset = () => {
 export const buktiBayarCancel = (norecnota, norecbayar, callback) => {
     return {
         type: BUKTI_BAYAR_CANCEL,
-        payload: {norecnota, norecbayar, callback}
+        payload: { norecnota, norecbayar, callback }
     }
 }
 
@@ -230,7 +232,7 @@ export const buktiBayarCancelReset = () => {
 export const daftarPiutangPasienGet = (location) => {
     return {
         type: DAFTAR_PIUTANG_PASIEN_GET,
-        payload: {location}
+        payload: { location }
     }
 }
 
@@ -257,7 +259,7 @@ export const daftarPiutangPasienGetReset = () => {
 export const paymentPiutangPasienGet = (norecpiutang) => {
     return {
         type: PAYMENT_PIUTANG_PASIEN_GET,
-        payload: {norecpiutang}
+        payload: { norecpiutang }
     }
 }
 
@@ -284,7 +286,7 @@ export const paymentPiutangPasienGetReset = () => {
 export const laporanPendapatanKasirGet = (param) => {
     return {
         type: LAPORAN_PENDAPATAN_KASIR_GET,
-        payload: {param}
+        payload: { param }
     }
 }
 
@@ -309,12 +311,12 @@ export const laporanPendapatanKasirGetReset = () => {
 }
 
 export const getPiutangAfterDate = (queries = {
-    tglterakhir: null, 
+    tglterakhir: null,
     norecnota: null
 }) => {
     return {
         type: GET_PIUTANG_AFTER_DATE,
-        payload: {queries}
+        payload: { queries }
     }
 }
 
@@ -331,3 +333,20 @@ export const getPiutangAfterDateError = (error) => {
         payload: error
     }
 }
+
+export const getDaftarVerifikasiRemunerasi = (queries) => ({
+    type: GET_DAFTAR_VERIFIKASI_REMUNERASI,
+    payload: {
+        queries,
+    },
+});
+
+export const getDaftarVerifikasiRemunerasiSuccess = (data) => ({
+    type: GET_DAFTAR_VERIFIKASI_REMUNERASI_SUCCESS,
+    payload: data,
+});
+
+export const getDaftarVerifikasiRemunerasiError = (error) => ({
+    type: GET_DAFTAR_VERIFIKASI_REMUNERASI_ERROR,
+    payload: error,
+});
