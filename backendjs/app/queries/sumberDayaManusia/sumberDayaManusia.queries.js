@@ -36,12 +36,11 @@ const qProfesiPegawai =`select id as value,reportdisplay as label from m_profesi
 const qJabatan =`select id as value,reportdisplay as label from m_jabatan ms` 
 const qGolonganPtkp =`select id as value,reportdisplay as label from m_golonganptkp ms`
 const qUnitKerja =`select id as value,reportdisplay as label from m_unitkerja ms`
-const qUserRoleById=`select row_number() OVER (ORDER BY u.id) AS no,u.id,u.username ,r.permission, r."name" as namerole,
-r.id as idrole,case when ur.statusenabled=true then 'AKTIF'
-else 'NON AKTIF' end as status  from user_roles as ur 
-join roles as r on r.id=ur.roleid
-join users u on u.id=ur.userid  where u.objectpegawaifk=$1`
-const qRole = `select r.id as value,r.name as label,r."permission"  from roles r 
+const qUserRoleById=`select row_number() OVER (ORDER BY u.id) AS no,u.id,u.username,sm.reportdisplay,sm.id as idmodule,
+case when u.statusenabled=true then 'AKTIF'
+else 'NON AKTIF' end as status from users u 
+join s_modulaplikasi sm on sm.id=u.objectaccesmodulfk where u.objectpegawaifk=$1`
+const qRole = `select sm.id as value,sm.reportdisplay as label from s_modulaplikasi sm
 `
 const qJadwalDokter = `
 SELECT

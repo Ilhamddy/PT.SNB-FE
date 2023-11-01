@@ -35,7 +35,7 @@ const RoleAcces = () => {
       nameRole: ''
     },
     validationSchema: Yup.object({
-      nameRole: Yup.string().required("Nama Role wajib diisi"),
+      nameRole: Yup.string().required("Nama Modul wajib diisi"),
     }),
     onSubmit: (values) => {
       dispatch(
@@ -48,11 +48,32 @@ const RoleAcces = () => {
       )
     }
   })
+  const vSetValidationMenu = useFormik({
+    enableReinitialize: true,
+    initialValues: {
+      task: 1,
+      cariRole: '',
+      nameRole: ''
+    },
+    validationSchema: Yup.object({
+      // nameRole: Yup.string().required("Nama Modul wajib diisi"),
+    }),
+    onSubmit: (values) => {
+      dispatch(
+        // upsertRoles(values, () => {
+        //   vSetValidationRole.resetForm()
+        //   dispatch(getComboSysadmin({
+        //     cari: ''
+        //   }))
+        // })
+      )
+    }
+  })
   useEffect(() => {
     dispatch(getComboSysadmin({
       cari: ''
     }))
-    dispatch(getMapRolePermissions(''))
+    // dispatch(getMapRolePermissions(''))
   }, [dispatch])
   const [tempPermissions, settempPermissions] = useState([])
   useEffect(() => {
@@ -113,7 +134,7 @@ const RoleAcces = () => {
       width: "50px"
     },
     {
-      name: <span className='font-weight-bold fs-13'>Nama Role</span>,
+      name: <span className='font-weight-bold fs-13'>Nama Modul</span>,
       selector: row => row.name,
       sortable: true,
       // selector: row => (<button className="btn btn-sm btn-soft-info" onClick={() => handleClick(dataTtv)}>{row.noregistrasi}</button>),
@@ -147,7 +168,7 @@ const RoleAcces = () => {
   const columnsMap = [
     {
       name: <span className='font-weight-bold fs-13'>No</span>,
-      selector: row => row.no,
+      selector: row => row.nourut,
       sortable: true,
       width: "50px"
     },
@@ -158,20 +179,20 @@ const RoleAcces = () => {
       width: "50px"
     },
     {
-      name: <span className='font-weight-bold fs-13'>Permissions</span>,
-      selector: row => row.name,
+      name: <span className='font-weight-bold fs-13'>Menu</span>,
+      selector: row => row.reportdisplay,
       sortable: true,
       // selector: row => (<button className="btn btn-sm btn-soft-info" onClick={() => handleClick(dataTtv)}>{row.noregistrasi}</button>),
       // width: "250px",
       wrap: true,
     },
-    {
-      name: <span className='font-weight-bold fs-13'>#</span>,//<Input className="form-check-input fs-15" type="checkbox" name="checkAll" value="option1" />,
-      cell: (data) => (
-        <Input className="form-check-input" type="checkbox" id="formCheckCito" checked={data.cheked}
-          onChange={value => (displayDelete(value.target.checked, data))} />
-      ),
-    },
+    // {
+    //   name: <span className='font-weight-bold fs-13'>#</span>,//<Input className="form-check-input fs-15" type="checkbox" name="checkAll" value="option1" />,
+    //   cell: (data) => (
+    //     <Input className="form-check-input" type="checkbox" id="formCheckCito" checked={data.cheked}
+    //       onChange={value => (displayDelete(value.target.checked, data))} />
+    //   ),
+    // },
   ];
   const handleRole = (characterEntered) => {
     if (characterEntered.length > 3) {
@@ -197,20 +218,23 @@ const RoleAcces = () => {
       idRole: e.id
     })
     let temp = tempPermissions
-    temp.forEach(element => {
-      element.cheked = false
-    });
-    const filteredData = dataMapPermissions.filter(item => item.roleid === e.id);
-    temp.forEach(element => {
-      filteredData.forEach(element2 => {
-        if (element.id === element2.permissionid) {
-          element.cheked = true
-        }
-      });
-    });
-    settempPermissions([...temp])
+    // temp.forEach(element => {
+    //   element.cheked = false
+    // });
+    // const filteredData = dataMapPermissions.filter(item => item.roleid === e.id);
+    // temp.forEach(element => {
+    //   filteredData.forEach(element2 => {
+    //     if (element.id === element2.permissionid) {
+    //       element.cheked = true
+    //     }
+    //   });
+    // });
+    // settempPermissions([...temp])
+    dispatch(getMapRolePermissions({ idmodul: e.id }))
   };
+  const handleClickRowMenu = (e) => {
 
+  }
   return (
     <React.Fragment>
       <ToastContainer closeButton={false} />
@@ -218,22 +242,23 @@ const RoleAcces = () => {
       <div className="page-content">
         <Container fluid>
           <BreadCrumb title="Role Acces" pageTitle="Forms" />
-          <Form
-            onSubmit={(e) => {
-              e.preventDefault();
-              vSetValidationRole.handleSubmit();
-              return false;
-            }}
-            className="gy-4"
-            action="#">
-            <Row>
-              <Col lg={6}>
-                <Card>
-                  <CardBody>
+
+          <Row>
+            <Col lg={4}>
+              <Card>
+                <CardBody>
+                  <Form
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      vSetValidationRole.handleSubmit();
+                      return false;
+                    }}
+                    className="gy-4"
+                    action="#">
                     <Row className="gy-2">
                       <Col lg={4}>
                         <div className="mt-2">
-                          <Label style={{ color: "black" }} htmlFor="unitlast" className="form-label">Nama Role</Label>
+                          <Label style={{ color: "black" }} htmlFor="unitlast" className="form-label">Nama Modul</Label>
                         </div>
                       </Col>
                       <Col lg={8}>
@@ -259,8 +284,8 @@ const RoleAcces = () => {
                         <div className="d-flex flex-wrap justify-content-end gap-2">
                           <Button
 
-                            type="submit" color="success" style={{ width: '20%' }}>Simpan</Button>
-                          <Button type="button" color="danger" style={{ width: '20%' }}
+                            type="submit" color="success" style={{ width: '30%' }}>Simpan</Button>
+                          <Button type="button" color="danger" style={{ width: '30%' }}
                           // onClick={() => { handleBack() }}
                           >Batal</Button>
                         </div>
@@ -308,65 +333,140 @@ const RoleAcces = () => {
                         </div>
                       </Col>
                     </Row>
-                  </CardBody>
-                </Card>
-              </Col>
-              <Col lg={6}>
-                <Card>
-                  <CardBody>
-                    <Row className="gy-2">
-                      <Col lg={2}>
-                        <div className="mt-2">
-                          <Label style={{ color: "black" }} htmlFor="unitlast" className="form-label">Role :</Label>
-                        </div>
-                      </Col>
-                      <Col lg={6}>
-                        <div className="mt-2">
-                          <Label style={{ color: "black" }} htmlFor="unitlast" className="form-label">{selected && selected.name ? selected.name : '-'}</Label>
-                        </div>
-                      </Col>
-                      <Col lg={4}>
+                  </Form>
+                </CardBody>
+              </Card>
+            </Col>
+            <Col lg={4}>
+              <Card>
+                <CardBody>
+                  <Row className="gy-2">
+                    <Col lg={3}>
+                      <div className="mt-2">
+                        <Label style={{ color: "black" }} htmlFor="unitlast" className="form-label">Modul :</Label>
+                      </div>
+                    </Col>
+                    <Col lg={9}>
+                      <div className="mt-2">
+                        <Label style={{ color: "black" }} htmlFor="unitlast" className="form-label">{selected && selected.name ? selected.name : '-'}</Label>
+                      </div>
+                    </Col>
+                    <Col lg={12}>
+                      <div className="border-bottom">
+                        <Row className="gy-2">
+                          <Col lg={4}>
+                            <div className="mt-2">
+                              <Label style={{ color: "black" }} htmlFor="unitlast" className="form-label">Menu</Label>
+                            </div>
+                          </Col>
+                          <Col lg={8}>
+                            <Input
+                              id="namaMenu"
+                              name="namaMenu"
+                              type="text"
+                              value={vSetValidationMenu.values.namaMenu}
+                              onChange={(e) => {
+                                vSetValidationMenu.setFieldValue('namaMenu', e.target.value)
+                              }}
+                              invalid={vSetValidationMenu.touched?.namaMenu &&
+                                !!vSetValidationMenu.errors?.namaMenu}
+                            />
+                            {vSetValidationMenu.touched?.namaMenu
+                              && !!vSetValidationMenu.errors.namaMenu && (
+                                <FormFeedback type="invalid">
+                                  <div>{vSetValidationMenu.errors.namaMenu}</div>
+                                </FormFeedback>
+                              )}
+                          </Col>
+                          <Col lg={4}>
+                            <div className="mt-2">
+                              <Label style={{ color: "black" }} htmlFor="unitlast" className="form-label">Icon</Label>
+                            </div>
+                          </Col>
+                          <Col lg={8}>
+                            <Input
+                              id="namaIcon"
+                              name="namaIcon"
+                              type="text"
+                              value={vSetValidationMenu.values.namaIcon}
+                              onChange={(e) => {
+                                vSetValidationMenu.setFieldValue('namaIcon', e.target.value)
+                              }}
+                              invalid={vSetValidationMenu.touched?.namaIcon &&
+                                !!vSetValidationMenu.errors?.namaIcon}
+                            />
+                            {vSetValidationMenu.touched?.namaIcon
+                              && !!vSetValidationMenu.errors.namaIcon && (
+                                <FormFeedback type="invalid">
+                                  <div>{vSetValidationMenu.errors.namaIcon}</div>
+                                </FormFeedback>
+                              )}
+                          </Col>
+                          <Col lg={12} className="mr-3 me-3 mt-2">
+                            <div className="d-flex flex-wrap justify-content-end gap-2">
+                              <Button
+
+                                type="submit" color="success" style={{ width: '30%' }}>Simpan</Button>
+                              <Button type="button" color="danger" style={{ width: '30%' }}
+                              // onClick={() => { handleBack() }}
+                              >Batal</Button>
+                            </div>
+                          </Col>
+                        </Row>
+                      </div>
+                    </Col>
+                    {/* <Col lg={12} className="mr-3 me-3 mt-2">
+                      <div className="d-flex flex-wrap justify-content-end gap-2">
                         <Input
+                          style={{ width: '40%' }}
                           id="cariPermision"
                           name="cariPermision"
                           type="text"
-                          value={vSetValidationRole.values.cariPermision}
+                          value={vSetValidationMenu.values.cariPermision}
                           onChange={(e) => {
-                            vSetValidationRole.setFieldValue('cariPermision', e.target.value)
+                            vSetValidationMenu.setFieldValue('cariPermision', e.target.value)
                           }}
-                          invalid={vSetValidationRole.touched?.cariPermision &&
-                            !!vSetValidationRole.errors?.cariPermision}
+                          invalid={vSetValidationMenu.touched?.cariPermision &&
+                            !!vSetValidationMenu.errors?.cariPermision}
                         />
-                        {vSetValidationRole.touched?.cariPermision
-                          && !!vSetValidationRole.errors.cariPermision && (
+                        {vSetValidationMenu.touched?.cariPermision
+                          && !!vSetValidationMenu.errors.cariPermision && (
                             <FormFeedback type="invalid">
-                              <div>{vSetValidationRole.errors.cariPermision}</div>
+                              <div>{vSetValidationMenu.errors.cariPermision}</div>
                             </FormFeedback>
                           )}
-                      </Col>
-                      <Col lg={12}>
-                        <div id="table-gridjs">
-                          <DataTable
-                            fixedHeader
-                            fixedHeaderScrollHeight="330px"
-                            columns={columnsMap}
-                            pagination
-                            data={tempPermissions}
-                            progressPending={loadingCombo}
-                            customStyles={tableCustomStyles}
-                            progressComponent={<LoadingTable />}
-                            // onRowClicked={(row) => handleClick(row)}
-                            pointerOnHover
-                            highlightOnHover
-                          />
-                        </div>
-                      </Col>
-                    </Row>
-                  </CardBody>
-                </Card>
-              </Col>
-            </Row>
-          </Form>
+                      </div>
+                    </Col> */}
+                    <Col lg={12}>
+                      <div id="table-gridjs">
+                        <DataTable
+                          fixedHeader
+                          fixedHeaderScrollHeight="330px"
+                          columns={columnsMap}
+                          pagination
+                          data={dataMapPermissions}
+                          progressPending={loadingMapPermissions}
+                          customStyles={tableCustomStyles}
+                          progressComponent={<LoadingTable />}
+                          onRowClicked={(row) => handleClickRowMenu(row)}
+                          pointerOnHover
+                          highlightOnHover
+                        />
+                      </div>
+                    </Col>
+                  </Row>
+                </CardBody>
+              </Card>
+            </Col>
+            <Col lg={4}>
+              <Card>
+                <CardBody>
+
+                </CardBody>
+              </Card>
+            </Col>
+          </Row>
+
         </Container>
       </div>
     </React.Fragment>

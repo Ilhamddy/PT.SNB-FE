@@ -16,7 +16,13 @@ export default (sequelize, Sequelize) => {
       },
       objectpegawaifk: {
         type: Sequelize.INTEGER
-      }
+      },
+      objectaccesmodulfk:{
+        type: Sequelize.INTEGER
+      },
+      statusenabled: {
+        type: Sequelize.BOOLEAN,
+      },
     });
   
     return User;

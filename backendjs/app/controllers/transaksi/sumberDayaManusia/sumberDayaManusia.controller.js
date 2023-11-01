@@ -447,8 +447,8 @@ const updateUserRole = async (req, res) => {
             if (req.body.statusEnabled === 2) {
                 status = false
             }
-            const pegawai = await db.user_roles.update({
-                roleid: req.body.roles, statusenabled: status,
+            const pegawai = await db.user.update({
+                objectaccesmodulfk: req.body.roles, statusenabled: status,
             }, {
                 where: {
                     userid: req.body.idUser,

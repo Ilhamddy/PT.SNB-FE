@@ -79,6 +79,8 @@ import t_pemesananbarangModel from "./t_pemesananbarang.model.js";
 import t_pemesananbarangdetailModel from "./t_pemesananbarangdetail.model.js";
 import role_permissionsModel from "./role_permissions.model.js";
 import t_verifremunerasiModel from "./t_verifremunerasi.model.js";
+import s_modulaplikasiModel from "./s_modulaplikasi.model.js";
+import s_menumodulaplikasiModel from "./s_menumodulaplikasi.model.js";
 
 const sequelize = new Sequelize(
   config.DB,
@@ -110,6 +112,8 @@ db.users_pasien = users_pasienModel(sequelize, sequelizeInstance);
 db.role = roleModel(sequelize, sequelizeInstance);
 db.user_roles = user_rolesModel(sequelize, sequelizeInstance);
 db.role_permissions = role_permissionsModel(sequelize,sequelizeInstance)
+db.s_modulaplikasi = s_modulaplikasiModel(sequelize,sequelizeInstance)
+db.s_menumodulaplikasi = s_menumodulaplikasiModel(sequelize,sequelizeInstance)
 // master
 db.m_pasien = m_pasienM(sequelize, sequelizeInstance);
 db.running_number = running_numberM(sequelize,sequelizeInstance);

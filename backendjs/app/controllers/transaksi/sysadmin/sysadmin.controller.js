@@ -461,11 +461,49 @@ const saveRoles = async (req, res) => {
     try {
         const { setRole } = await db.sequelize.transaction(async (transaction) => {
             let setRole = ''
-            const result1 = await pool.query(qCountRole)
 
-            setRole = await db.role.create({
-                id: parseFloat(result1.rows[0].jml) + 1,
-                name: req.body.nameRole,
+            setRole = await db.s_modulaplikasi.create({
+                statusenabled:true,
+                namaexternal: req.body.nameRole,
+                reportdisplay: req.body.nameRole,
+            }, { transaction });
+
+            return { setRole }
+        });
+
+        // const tempres = {
+
+        // };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: setRole,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+const saveMenuModul = async (req, res) => {
+    const logger = res.locals.logger;
+    try {
+        const { setRole } = await db.sequelize.transaction(async (transaction) => {
+            let setRole = ''
+
+            setRole = await db.s_menumodulaplikasi.create({
+                statusenabled:true,
+                namaexternal: req.body.nameRole,
+                reportdisplay: req.body.nameRole,
+                objekmodulaplikasiid:req.body.modul,
+                nourut:req.body.nourut,
+                icon:req.body.icon
             }, { transaction });
 
             return { setRole }
@@ -494,7 +532,7 @@ const saveRoles = async (req, res) => {
 const getMapRolePermissions = async (req, res) => {
     const logger = res.locals.logger;
     try {
-        const result1 = await pool.query(qMapRolePermissions)
+        const result1 = await pool.query(qMapRolePermissions,[req.query.idmodul])
         const tempres = {
 
         };
@@ -579,5 +617,6 @@ export default {
     saveRoles,
     upsertKamar,
     getMapRolePermissions,
-    saveRolePermissions
+    saveRolePermissions,
+    saveMenuModul
 }
