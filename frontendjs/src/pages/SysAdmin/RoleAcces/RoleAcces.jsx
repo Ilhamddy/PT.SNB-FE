@@ -10,7 +10,8 @@ import * as Yup from "yup";
 import DataTable from "react-data-table-component";
 import LoadingTable from "../../../Components/Table/LoadingTable";
 import {
-  getComboSysadmin, upsertRoles, getMapRolePermissions, upsertRolePermissions
+  getComboSysadmin, upsertRoles, getMapRolePermissions, upsertRolePermissions,
+  upsertMenuModul
 } from '../../../store/sysadmin/action'
 
 const RoleAcces = () => {
@@ -51,22 +52,25 @@ const RoleAcces = () => {
   const vSetValidationMenu = useFormik({
     enableReinitialize: true,
     initialValues: {
-      task: 1,
-      cariRole: '',
-      nameRole: ''
+      modul: '',
+      namaMenu: '',
+      namaIcon: '',
+      nourut: ''
     },
     validationSchema: Yup.object({
       // nameRole: Yup.string().required("Nama Modul wajib diisi"),
     }),
     onSubmit: (values) => {
-      dispatch(
-        // upsertRoles(values, () => {
-        //   vSetValidationRole.resetForm()
-        //   dispatch(getComboSysadmin({
-        //     cari: ''
-        //   }))
-        // })
-      )
+      // values.modul = selected.idRole
+      console.log(values)
+      // dispatch(
+      // upsertMenuModul(values, () => {
+      //   vSetValidationRole.resetForm()
+      //   dispatch(getComboSysadmin({
+      //     cari: ''
+      //   }))
+      // })
+      // )
     }
   })
   useEffect(() => {
@@ -81,6 +85,12 @@ const RoleAcces = () => {
       settempPermissions(dataCombo.permissions)
     }
   }, [dataCombo])
+  useEffect(() => {
+    if (dataMapPermissions) {
+      const setFF = vSetValidationMenu.setFieldValue
+      setFF('nourut', dataMapPermissions.length + 1)
+    }
+  }, [dataMapPermissions, vSetValidationMenu.setFieldValue])
   const displayDelete = (value, data) => {
     if (selected.name === null) {
       toast.error("Role Belum Dipilih", { autoClose: 3000 });
@@ -340,82 +350,90 @@ const RoleAcces = () => {
             <Col lg={4}>
               <Card>
                 <CardBody>
-                  <Row className="gy-2">
-                    <Col lg={3}>
-                      <div className="mt-2">
-                        <Label style={{ color: "black" }} htmlFor="unitlast" className="form-label">Modul :</Label>
-                      </div>
-                    </Col>
-                    <Col lg={9}>
-                      <div className="mt-2">
-                        <Label style={{ color: "black" }} htmlFor="unitlast" className="form-label">{selected && selected.name ? selected.name : '-'}</Label>
-                      </div>
-                    </Col>
-                    <Col lg={12}>
-                      <div className="border-bottom">
-                        <Row className="gy-2">
-                          <Col lg={4}>
-                            <div className="mt-2">
-                              <Label style={{ color: "black" }} htmlFor="unitlast" className="form-label">Menu</Label>
-                            </div>
-                          </Col>
-                          <Col lg={8}>
-                            <Input
-                              id="namaMenu"
-                              name="namaMenu"
-                              type="text"
-                              value={vSetValidationMenu.values.namaMenu}
-                              onChange={(e) => {
-                                vSetValidationMenu.setFieldValue('namaMenu', e.target.value)
-                              }}
-                              invalid={vSetValidationMenu.touched?.namaMenu &&
-                                !!vSetValidationMenu.errors?.namaMenu}
-                            />
-                            {vSetValidationMenu.touched?.namaMenu
-                              && !!vSetValidationMenu.errors.namaMenu && (
-                                <FormFeedback type="invalid">
-                                  <div>{vSetValidationMenu.errors.namaMenu}</div>
-                                </FormFeedback>
-                              )}
-                          </Col>
-                          <Col lg={4}>
-                            <div className="mt-2">
-                              <Label style={{ color: "black" }} htmlFor="unitlast" className="form-label">Icon</Label>
-                            </div>
-                          </Col>
-                          <Col lg={8}>
-                            <Input
-                              id="namaIcon"
-                              name="namaIcon"
-                              type="text"
-                              value={vSetValidationMenu.values.namaIcon}
-                              onChange={(e) => {
-                                vSetValidationMenu.setFieldValue('namaIcon', e.target.value)
-                              }}
-                              invalid={vSetValidationMenu.touched?.namaIcon &&
-                                !!vSetValidationMenu.errors?.namaIcon}
-                            />
-                            {vSetValidationMenu.touched?.namaIcon
-                              && !!vSetValidationMenu.errors.namaIcon && (
-                                <FormFeedback type="invalid">
-                                  <div>{vSetValidationMenu.errors.namaIcon}</div>
-                                </FormFeedback>
-                              )}
-                          </Col>
-                          <Col lg={12} className="mr-3 me-3 mt-2">
-                            <div className="d-flex flex-wrap justify-content-end gap-2">
-                              <Button
+                  <Form
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      vSetValidationMenu.handleSubmit();
+                      return false;
+                    }}
+                    className="gy-4"
+                    action="#">
+                    <Row className="gy-2">
+                      <Col lg={3}>
+                        <div className="mt-2">
+                          <Label style={{ color: "black" }} htmlFor="unitlast" className="form-label">Modul :</Label>
+                        </div>
+                      </Col>
+                      <Col lg={9}>
+                        <div className="mt-2">
+                          <Label style={{ color: "black" }} htmlFor="unitlast" className="form-label">{selected && selected.name ? selected.name : '-'}</Label>
+                        </div>
+                      </Col>
+                      <Col lg={12}>
+                        <div className="border-bottom">
+                          <Row className="gy-2">
+                            <Col lg={4}>
+                              <div className="mt-2">
+                                <Label style={{ color: "black" }} htmlFor="unitlast" className="form-label">Menu</Label>
+                              </div>
+                            </Col>
+                            <Col lg={8}>
+                              <Input
+                                id="namaMenu"
+                                name="namaMenu"
+                                type="text"
+                                value={vSetValidationMenu.values.namaMenu}
+                                onChange={(e) => {
+                                  vSetValidationMenu.setFieldValue('namaMenu', e.target.value)
+                                }}
+                                invalid={vSetValidationMenu.touched?.namaMenu &&
+                                  !!vSetValidationMenu.errors?.namaMenu}
+                              />
+                              {vSetValidationMenu.touched?.namaMenu
+                                && !!vSetValidationMenu.errors.namaMenu && (
+                                  <FormFeedback type="invalid">
+                                    <div>{vSetValidationMenu.errors.namaMenu}</div>
+                                  </FormFeedback>
+                                )}
+                            </Col>
+                            <Col lg={4}>
+                              <div className="mt-2">
+                                <Label style={{ color: "black" }} htmlFor="unitlast" className="form-label">Icon</Label>
+                              </div>
+                            </Col>
+                            <Col lg={8}>
+                              <Input
+                                id="namaIcon"
+                                name="namaIcon"
+                                type="text"
+                                value={vSetValidationMenu.values.namaIcon}
+                                onChange={(e) => {
+                                  vSetValidationMenu.setFieldValue('namaIcon', e.target.value)
+                                }}
+                                invalid={vSetValidationMenu.touched?.namaIcon &&
+                                  !!vSetValidationMenu.errors?.namaIcon}
+                              />
+                              {vSetValidationMenu.touched?.namaIcon
+                                && !!vSetValidationMenu.errors.namaIcon && (
+                                  <FormFeedback type="invalid">
+                                    <div>{vSetValidationMenu.errors.namaIcon}</div>
+                                  </FormFeedback>
+                                )}
+                            </Col>
+                            <Col lg={12} className="mr-3 me-3 mt-2">
+                              <div className="d-flex flex-wrap justify-content-end gap-2">
+                                <Button
 
-                                type="submit" color="success" style={{ width: '30%' }}>Simpan</Button>
-                              <Button type="button" color="danger" style={{ width: '30%' }}
-                              // onClick={() => { handleBack() }}
-                              >Batal</Button>
-                            </div>
-                          </Col>
-                        </Row>
-                      </div>
-                    </Col>
-                    {/* <Col lg={12} className="mr-3 me-3 mt-2">
+                                  type="submit" color="success" style={{ width: '30%' }}>Simpan</Button>
+                                <Button type="button" color="danger" style={{ width: '30%' }}
+                                // onClick={() => { handleBack() }}
+                                >Batal</Button>
+                              </div>
+                            </Col>
+                          </Row>
+                        </div>
+                      </Col>
+                      {/* <Col lg={12} className="mr-3 me-3 mt-2">
                       <div className="d-flex flex-wrap justify-content-end gap-2">
                         <Input
                           style={{ width: '40%' }}
@@ -437,24 +455,25 @@ const RoleAcces = () => {
                           )}
                       </div>
                     </Col> */}
-                    <Col lg={12}>
-                      <div id="table-gridjs">
-                        <DataTable
-                          fixedHeader
-                          fixedHeaderScrollHeight="330px"
-                          columns={columnsMap}
-                          pagination
-                          data={dataMapPermissions}
-                          progressPending={loadingMapPermissions}
-                          customStyles={tableCustomStyles}
-                          progressComponent={<LoadingTable />}
-                          onRowClicked={(row) => handleClickRowMenu(row)}
-                          pointerOnHover
-                          highlightOnHover
-                        />
-                      </div>
-                    </Col>
-                  </Row>
+                      <Col lg={12}>
+                        <div id="table-gridjs">
+                          <DataTable
+                            fixedHeader
+                            fixedHeaderScrollHeight="330px"
+                            columns={columnsMap}
+                            pagination
+                            data={dataMapPermissions}
+                            progressPending={loadingMapPermissions}
+                            customStyles={tableCustomStyles}
+                            progressComponent={<LoadingTable />}
+                            onRowClicked={(row) => handleClickRowMenu(row)}
+                            pointerOnHover
+                            highlightOnHover
+                          />
+                        </div>
+                      </Col>
+                    </Row>
+                  </Form>
                 </CardBody>
               </Card>
             </Col>

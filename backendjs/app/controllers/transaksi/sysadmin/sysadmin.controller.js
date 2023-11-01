@@ -499,11 +499,11 @@ const saveMenuModul = async (req, res) => {
 
             setRole = await db.s_menumodulaplikasi.create({
                 statusenabled:true,
-                namaexternal: req.body.nameRole,
-                reportdisplay: req.body.nameRole,
+                namaexternal: req.body.namaMenu,
+                reportdisplay: req.body.namaMenu,
                 objekmodulaplikasiid:req.body.modul,
                 nourut:req.body.nourut,
-                icon:req.body.icon
+                icon:req.body.namaIcon
             }, { transaction });
 
             return { setRole }
