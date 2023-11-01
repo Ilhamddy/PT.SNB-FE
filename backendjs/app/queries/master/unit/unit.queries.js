@@ -1,3 +1,8 @@
+export const daftarUnit = {
+    UNIT_FARMASI: 14,
+    GUDANG_FARMASI: 16
+}
+
 const getAll =
     "SELECT id as value, namaunit as label, objectinstalasifk FROM m_unit  where statusenabled = true";
 

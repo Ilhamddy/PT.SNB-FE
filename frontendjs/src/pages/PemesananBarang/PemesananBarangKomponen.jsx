@@ -966,7 +966,7 @@ export const useGetPemesanan = (validation, isLogistik) => {
   const dispatch = useDispatch()
   useEffect(() => {
     dispatch(comboPenerimaanBarangGet({ isLogistik: isLogistik }))
-  }, [dispatch])
+  }, [dispatch, isLogistik])
 
   useEffect(() => {
     const setFF = validation.setFieldValue
