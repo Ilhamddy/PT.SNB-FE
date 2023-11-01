@@ -229,8 +229,7 @@ const KonversiProduk = ({tabId}) => {
                             customStyles={tableCustomStyles}
                             progressComponent={<LoadingTable />}
                         />
-                    </Col>
-                    
+                    </Col>   
                     <Col lg={6}>
                         <Row className="mb-2">
                             <DataTable 
