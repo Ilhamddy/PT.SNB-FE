@@ -6,46 +6,100 @@ import {
   createContext,
   useContext,
 } from 'react'
-import { Container, Form } from 'reactstrap'
-import classnames from 'classnames'
+import {
+  Button,
+  Card,
+  CardBody,
+  Col,
+  Container,
+  DropdownItem,
+  DropdownMenu,
+  DropdownToggle,
+  Form,
+  FormFeedback,
+  Input,
+  Label,
+  Row,
+  UncontrolledDropdown,
+  UncontrolledTooltip,
+} from 'reactstrap'
 import { ToastContainer, toast } from 'react-toastify'
 import BreadCrumb from '../../Components/Common/BreadCrumb'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
-import { useDispatch } from 'react-redux'
+import CustomSelect from '../Select/Select'
+import { shallowEqual, useDispatch, useSelector } from 'react-redux'
+import DataTable from 'react-data-table-component'
+import Flatpickr from 'react-flatpickr'
 import { dateLocal, onChangeStrNbr, strToNumber } from '../../utils/format'
-import { createOrUpdatePemesanan } from '../../store/gudang/action'
+import { comboPenerimaanBarangGet } from '../../store/master/action'
+import {
+  kemasanFromProdukGet,
+  penerimaanSaveOrUpdate,
+  penerimaanQueryGet,
+  getPemesanan,
+} from '../../store/gudang/action'
+import LoadingTable from '../../Components/Table/LoadingTable'
+import NoDataTable from '../../Components/Table/NoDataTable'
 import {
   InputProdukDetail,
-  InputUmumPesan,
-  ListDetailPesan,
-  useCalculatePemesanan,
-  useGetPemesanan,
-  useFillInitPemesanan,
-} from './KomponenPemesananBarang'
+  InputUmumTerima,
+  ListDetail,
+  ListPesan,
+  useCalculatePenerimaan,
+  useFillInitialInput,
+  useGetData,
+  useGetKemasan,
+  useSetNorecPenerimaan,
+} from './PenerimaanProdukKomponen'
 
-export const PemesananContext = createContext()
+export const PenerimaanContext = createContext()
 
-const PemesananBarang = () => {
+const PenerimaanProduk = ({ isPesan }) => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  const { norecpesan } = useParams()
+  const { norecpenerimaan, norecpesan } = useParams()
 
   const [dateNow] = useState(() => new Date().toISOString())
+
+  const {
+    produk,
+    satuanProduk,
+    kemasanProduk,
+    detailPemesanan,
+    detailPemesananPenerimaan,
+  } = useSelector(
+    (state) => ({
+      supplier: state.Master.comboPenerimaanBarangGet?.data?.supplier || [],
+      produk: state.Master.comboPenerimaanBarangGet?.data?.produk || [],
+      satuanProduk:
+        state.Master.comboPenerimaanBarangGet?.data?.satuanproduk || [],
+      kemasanProduk: state.Gudang.kemasanFromProdukGet?.data?.satuan || [],
+      asalProduk: state.Master.comboPenerimaanBarangGet?.data?.asalproduk || [],
+      unit: state.Master.comboPenerimaanBarangGet?.data?.unit || [],
+      detailPemesanan: state.Gudang.getPemesanan.data?.detailPemesanan || [],
+      detailPemesananPenerimaan:
+        state.Gudang.penerimaanQueryGet.data?.detailPemesanan || [],
+    }),
+    shallowEqual
+  )
 
   const validation = useFormik({
     enableReinitialize: true,
     initialValues: {
-      norecpesan: '',
+      norecpenerimaan: '',
+      norecpemesanan: '',
       penerimaan: {
-        nomorpo: '',
+        nomorterima: '',
         tanggalterima: dateNow,
-        tanggalpesan: dateNow,
         namasupplier: '',
+        nomorpo: '',
+        tanggalpesan: dateNow,
         unitpesan: '',
         tanggaljatuhtempo: dateNow,
         sumberdana: '',
+        keterangan: '',
         subtotal: '',
         ppnrupiah: '',
         diskonrupiah: '',
@@ -55,19 +109,21 @@ const PemesananBarang = () => {
     },
     validationSchema: Yup.object({
       penerimaan: Yup.object().shape({
-        nomorpo: Yup.string().required('No PO harus diisi'),
+        nomorterima: Yup.string().required('No Terima harus diisi'),
         tanggalterima: Yup.string().required('Tanggal Terima harus diisi'),
-        tanggalpesan: Yup.string().required('Tanggal Pesan harus diisi'),
         namasupplier: Yup.string().required('Nama Supplier harus diisi'),
+        nomorpo: Yup.string().required('No PO harus diisi'),
+        tanggalpesan: Yup.string().required('Tanggal Pesan harus diisi'),
         unitpesan: Yup.string().required('Unit Pesan harus diisi'),
         tanggaljatuhtempo: Yup.string().required(
           'Tanggal Jatuh Tempo harus diisi'
         ),
         sumberdana: Yup.string().required('Sumber Dana harus diisi'),
+        keterangan: Yup.string().required('Keterangan harus diisi'),
       }),
       detail: Yup.array(),
     }),
-    onSubmit: (values, { resetForm }) => {
+    onSubmit: (values) => {
       /**
        * @type {typeof values}
        */
@@ -91,7 +147,7 @@ const PemesananBarang = () => {
         return newValDetail
       })
 
-      newVal.penerimaan.norecpenerimaan = norecpesan || ''
+      newVal.penerimaan.norecpenerimaan = norecpenerimaan || ''
       newVal.penerimaan.subtotal = strToNumber(newVal.penerimaan.subtotal)
       newVal.penerimaan.total = strToNumber(newVal.penerimaan.total)
       newVal.penerimaan.diskonrupiah = strToNumber(
@@ -99,10 +155,9 @@ const PemesananBarang = () => {
       )
       newVal.penerimaan.ppnrupiah = strToNumber(newVal.penerimaan.ppnrupiah)
       dispatch(
-        createOrUpdatePemesanan(newVal, (data) => {
-          navigate(
-            `/farmasi/gudang/pemesanan-barang/${data.newPemesanan.norec}`
-          )
+        penerimaanSaveOrUpdate(newVal, (newNorec) => {
+          navigate(`/farmasi/gudang/penerimaan-produk/${newNorec}`)
+          dispatch(penerimaanQueryGet({ norecpenerimaan: norecpenerimaan }))
         })
       )
     },
@@ -131,8 +186,8 @@ const PemesananBarang = () => {
       diskonrupiah: '',
       ppnrupiahproduk: '',
       ppnpersenproduk: '',
-      // tanggaled: dateNow,
-      // nobatch: '',
+      tanggaled: dateNow,
+      nobatch: '',
       subtotalproduk: '',
       totalproduk: '',
     },
@@ -158,6 +213,8 @@ const PemesananBarang = () => {
       diskonrupiah: Yup.string().required('Diskon harus diisi'),
       ppnrupiahproduk: Yup.string().required('PPN Rupiah harus diisi'),
       ppnpersenproduk: Yup.string().required('PPN Persen harus diisi'),
+      tanggaled: Yup.string().required('Tanggal ED harus diisi'),
+      nobatch: Yup.string().required('No Batch harus diisi'),
       subtotalproduk: Yup.string().required('Subtotal harus diisi'),
       totalproduk: Yup.string().required('Total harus diisi'),
     }),
@@ -172,7 +229,7 @@ const PemesananBarang = () => {
       const existSameProduk = !!findSameProduk
       const isEdit = newValues.indexDetail !== ''
       if (existSameProduk) {
-        toast.error('Produk yang sama sudah ada')
+        toast.error('Produk dengan batch sama sudah ada')
         return
       }
       if (isEdit) {
@@ -244,31 +301,32 @@ const PemesananBarang = () => {
   )
   total = 'Rp' + total.toLocaleString('id-ID', { maximumFractionDigits: 5 })
 
-  // hooks get and calculate all
-  const refSatuanTerima = useGetPemesanan(vDetail, detail)
-  useFillInitPemesanan(validation)
-  useCalculatePemesanan(vDetail, detail)
-  useGetPemesanan(validation)
+  const refSatuanTerima = useGetKemasan(vDetail, detail)
+  useGetData()
+  useFillInitialInput(validation)
+  useCalculatePenerimaan(vDetail, detail)
+  useSetNorecPenerimaan(validation)
 
   return (
     <div className="page-content page-penerimaan-barang">
       <ToastContainer closeButton={false} />
       <Container fluid>
-        <BreadCrumb title="Pemesanan" pageTitle="Gudang" />
+        <BreadCrumb title="Penerimaan Produk" pageTitle="Gudang" />
         <Form
           onSubmit={(e) => {
             e.preventDefault()
+            console.log('Submit')
             validation.handleSubmit()
             return false
           }}
           className="gy-4"
           id="form-input-penerimaan"
         >
-          <PemesananContext.Provider
+          <PenerimaanContext.Provider
             value={{
               penerimaan: penerimaan,
-              penerimaanErr: penerimaanErr,
               penerimaanTouched: penerimaanTouched,
+              penerimaanErr: penerimaanErr,
               handleChangePenerimaan: handleChangePenerimaan,
               vDetail: vDetail,
               detail: detail,
@@ -277,21 +335,28 @@ const PemesananBarang = () => {
               handleChangeDetail: handleChangeDetail,
               handleChangeJumlahTerima: handleChangeJumlahTerima,
               refSatuanTerima: refSatuanTerima,
+              detailPemesanan: detailPemesanan,
+              detailPemesananPenerimaan: detailPemesananPenerimaan,
+              norecpesan: norecpesan,
               validation: validation,
-              subtotal: subtotal,
-              ppn: ppn,
               total: total,
+              ppn: ppn,
+              subtotal: subtotal,
               diskon: diskon,
             }}
           >
-            <InputUmumPesan />
+            <InputUmumTerima />
+            {(!!norecpesan ||
+              (detailPemesananPenerimaan.length > 0 && !norecpesan)) && (
+              <ListPesan />
+            )}
             <InputProdukDetail />
-            <ListDetailPesan />
-          </PemesananContext.Provider>
+            <ListDetail />
+          </PenerimaanContext.Provider>
         </Form>
       </Container>
     </div>
   )
 }
 
-export default PemesananBarang
+export default PenerimaanProduk

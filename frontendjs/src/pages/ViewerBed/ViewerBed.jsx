@@ -76,7 +76,7 @@ const ViewerBed = () => {
                   showThumbs={false}
                   showStatus={false}
                   showArrows={true}
-                  interval={7000}
+                  interval={160000}
                   showIndicators={false}
                 >
                   {kamar.map((itemKamar, indexKamar) => (
@@ -131,7 +131,7 @@ const ViewerBed = () => {
               showThumbs={false}
               showStatus={false}
               showArrows={true}
-              interval={7000}
+              interval={17000}
               showIndicators={false}
             >
               {kelasGrup.map((itemKelas, indexKelas) => (

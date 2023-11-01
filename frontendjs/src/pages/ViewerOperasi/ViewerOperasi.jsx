@@ -22,7 +22,7 @@ const ViewerOperasi = () => {
   useEffect(() => {
     dispatch(getJadwalOperasi())
   }, [dispatch])
-  const jadwalGroup = groupArray(jadwal, 8)
+  const jadwalGroup = groupArray(jadwal, 12)
 
   return (
     <div className="viewer-operasi">
@@ -48,34 +48,14 @@ const ViewerOperasi = () => {
         >
           {jadwalGroup.map((jadwal, key) => (
             <div className="kontainer-splitter" key={key}>
-              <div className="kontainer-data">
-                {jadwal.map((item, index) =>
-                  index % 2 === 0 ? (
-                    <CardContent
-                      key={index}
-                      tanggal={item.tglrencana}
-                      noorder={item.nomororder}
-                      spesialisasi={item.spesialisasi}
-                    />
-                  ) : (
-                    <></>
-                  )
-                )}
-              </div>
-              <div className="kontainer-data">
-                {jadwal.map((item, index) =>
-                  index % 2 !== 0 ? (
-                    <CardContent
-                      key={index}
-                      tanggal={item.tglrencana}
-                      noorder={item.nomororder}
-                      spesialisasi={item.spesialisasi}
-                    />
-                  ) : (
-                    <></>
-                  )
-                )}
-              </div>
+              {jadwal.map((item, index) => (
+                <CardContent
+                  key={index}
+                  tanggal={item.tglrencana}
+                  noorder={item.nomororder}
+                  spesialisasi={item.spesialisasi}
+                />
+              ))}
             </div>
           ))}
         </Carousel>
