@@ -100,8 +100,8 @@ WHERE
 	END
 ORDER BY mu.id ASC
 `
-const qRoles = `select row_number() OVER (ORDER BY r.id) AS no,r.name,r.permission,
-r.id  from roles r where r.name ILIKE '%' || $1 || '%'`
+const qRoles = `select row_number() OVER (ORDER BY r.id) AS no,r.reportdisplay as name,r.id from s_modulaplikasi r
+ where r.reportdisplay ILIKE '%' || $1 || '%'`
 
 const qCountRole = `select count(id) as jml from roles`
 
@@ -155,7 +155,8 @@ WHERE
 ORDER BY mk.id ASC
 			
 `
-const qMapRolePermissions =`select roleid,permissionid from role_permissions`
+const qMapRolePermissions =`select sm.id,sm.reportdisplay,sm.nourut,sm.icon,sm.statusenabled  from s_menumodulaplikasi sm
+where sm.objekmodulaplikasiid=$1`
 
 const qPermissions =`select row_number() OVER (ORDER BY p.id) AS no,p.id,p.name,'' as cheked from permissions p `
 

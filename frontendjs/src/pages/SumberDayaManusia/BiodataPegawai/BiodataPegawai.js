@@ -417,9 +417,8 @@ const BiodataPegawai = () => {
             wrap: true,
         },
         {
-
-            name: <span className='font-weight-bold fs-13'>Role</span>,
-            selector: row => row.namerole,
+            name: <span className='font-weight-bold fs-13'>Modul</span>,
+            selector: row => row.reportdisplay,
             sortable: true,
             width: "150px"
         },
@@ -2005,7 +2004,7 @@ const BiodataPegawai = () => {
                                                                 </Col>
                                                                 <Col lg={4}>
                                                                     <div className="mt-2">
-                                                                        <Label style={{ color: "black" }} htmlFor="unitlast" className="form-label">Role</Label>
+                                                                        <Label style={{ color: "black" }} htmlFor="unitlast" className="form-label">Modul</Label>
                                                                     </div>
                                                                 </Col>
                                                                 <Col lg={8}>

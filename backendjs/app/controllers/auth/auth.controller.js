@@ -22,30 +22,31 @@ const signup = async (req, res) => {
   // Save User to Database
   User.create({
     username: req.body.username,
-    // email: req.body.email,
+    statusenabled: req.body.statusEnabled,
     password: bcrypt.hashSync(req.body.password, 8),
-    objectpegawaifk: req.body.idpegawai
+    objectpegawaifk: req.body.idpegawai,
+    objectaccesmodulfk:req.body.roles
   })
     .then(user => {
-      if (req.body.roles) {
-        Role.findAll({
-          where: {
-            id: req.body.roles
-          }
-        }).then(roles => {
-          user.setRoles(roles).then(() => {
-            // res.send({ message: "User was registered successfully!" });
-            res.status(200).send({
-              msg: 'User Berhasil Didaftarkan',
-              code: 200,
-              // data: tempres,
-              success: true
-            });
-          });
-        });
-      } else {
+      // if (req.body.roles) {
+      //   Role.findAll({
+      //     where: {
+      //       id: req.body.roles
+      //     }
+      //   }).then(roles => {
+      //     user.setRoles(roles).then(() => {
+      //       // res.send({ message: "User was registered successfully!" });
+      //       res.status(200).send({
+      //         msg: 'User Berhasil Didaftarkan',
+      //         code: 200,
+      //         // data: tempres,
+      //         success: true
+      //       });
+      //     });
+      //   });
+      // } else {
         // user role = 1
-        user.setRoles([1]).then(() => {
+        // user.setRoles([1]).then(() => {
           // res.send({ message: "User was registered successfully!" });
           res.status(200).send({
             msg: 'User Berhasil Didaftarkan',
@@ -53,8 +54,8 @@ const signup = async (req, res) => {
             // data: tempres,
             success: true
           });
-        });
-      }
+        // });
+      // }
     })
     .catch(err => {
       // res.status(500).send({ message: err.message });
@@ -93,23 +94,29 @@ const signin = async (req, res) => {
         status: "errors"
       });
     }
-    // logger.infoImmediate("masuk0")
+    const result1 = await pool.query(queries.qMenuModulAplikasi, [user.objectaccesmodulfk]);
+    const result3 = await pool.query(queries.qChlidMenuModulAplikasi, [user.objectaccesmodulfk]);
+    let menuItems = [];
+    menuItems.push({ id:'Menu',label: "Menu", isHeader: true,idMenu:0,stateVariables:false});
 
-    // const result = await pool.query(queries.getSesions, [user.id]);
-    const result2 = await pool.query(queries.getSesionsNew, [user.id]);
-    // res.status(200).send(result.rows);
-    // let resHead = result.rows;
-    let resHead = [];
-    for (let i = 0; i < result2.rows.length; i++) {
-      resHead.push(result2.rows[i].premissions.toUpperCase());
-    }
-    let resHead2 = [
-      {
-        name:result2?.rows[0]?.name || '',
-        permission:resHead
-      }
-    ];
-    let token = jwt.sign({ id: user.id, sesion: resHead2, idpegawai: user.objectpegawaifk, }, config.secret, {
+    result1.rows.forEach(element => {
+      let filteredData = result3.rows.filter(item => item.idmenu === element.id);
+      menuItems.push({id:element.reportdisplay,icon:element.icon,label:element.reportdisplay,link:'/#',stateVariables:false,subItems:filteredData})
+    });
+
+    // const result2 = await pool.query(queries.getSesionsNew, [user.id]);
+    
+    // let resHead = [];
+    // for (let i = 0; i < result2.rows.length; i++) {
+    //   resHead.push(result2.rows[i].premissions.toUpperCase());
+    // }
+    // let resHead2 = [
+    //   {
+    //     name:result2?.rows[0]?.name || '',
+    //     permission:resHead
+    //   }
+    // ];
+    let token = jwt.sign({ id: user.id, sesion: menuItems, idpegawai: user.objectpegawaifk, }, config.secret, {
       expiresIn: 86400 // 24 hours test
     });
     // logger.infoImmediate("masuk")
@@ -129,7 +136,7 @@ const signin = async (req, res) => {
       accessToken: token,
       status: "success",
       success: true,
-      // sesion: resHead
+      // sesion: menuItems
     });
   } catch (e) {
     logger.error(e);

@@ -91,4 +91,9 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.saveRolePermissions
     )
+    app.post(
+        "/api/transaksi/sysadmin/upsert-menu-modul",
+        [authJwt.verifyToken],
+        controller.saveMenuModul
+    )
 }

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect,useState } from 'react';
 import PropTypes from "prop-types";
 import { Link } from 'react-router-dom';
 import { Collapse } from 'reactstrap';
@@ -10,9 +10,10 @@ import navdata from "../LayoutMenuData";
 import { withTranslation } from "react-i18next";
 import { useSelector } from 'react-redux';
 
-const VerticalLayout = (props) => {
-    const navData = navdata().props.children;
+import { getUserPermissions } from "../../helpers/parse_menu";
 
+const VerticalLayout = (props) => {
+    const [navData,setnavData] = useState(getUserPermissions())//navdata().props.children;
     /*
     layout settings
     */
@@ -132,12 +133,23 @@ const VerticalLayout = (props) => {
             item.classList?.remove("active");
         });
     };
-
+    const handleClick = (e) => {
+        let temp = [...navData]
+        temp.forEach(element => {
+            if(element.id===e.id){
+                if(element.stateVariables===true)
+                    element.stateVariables=false
+                else
+                    element.stateVariables=true
+            }
+        });
+        setnavData([...temp])
+    }
     return (
         <React.Fragment>
             {/* menu Items */}
             {(navData || []).map((item, key) => {
-                if (item.isAllowed && !item.isAllowed()) return null;
+                // if (item.isAllowed && !item.isAllowed()) return null;
 
                 return (
                     <React.Fragment key={key}>
@@ -148,7 +160,7 @@ const VerticalLayout = (props) => {
                                 (item.subItems ? (
                                     <li className="nav-item">
                                         <Link
-                                            onClick={item.click}
+                                            onClick={() => handleClick(item)}
                                             className="nav-link menu-link"
                                             to={item.link ? item.link : "/#"}
                                             data-bs-toggle="collapse"
@@ -162,7 +174,7 @@ const VerticalLayout = (props) => {
                                             <ul className="nav nav-sm flex-column test">
                                                 {/* subItms  */}
                                                 {item.subItems && ((item.subItems || []).map((subItem, key) => {
-                                                    if (item.isAllowed && !item.isAllowed()) return null;
+                                                    // if (item.isAllowed && !item.isAllowed()) return null;
 
                                                     return (
                                                         <React.Fragment key={key}>
@@ -195,7 +207,7 @@ const VerticalLayout = (props) => {
                                                                             {/* child subItms  */}
                                                                             {subItem.childItems && (
                                                                                 (subItem.childItems || []).map((childItem, key) => {
-                                                                                    if (item.isAllowed && !item.isAllowed()) return null;
+                                                                                    // if (item.isAllowed && !item.isAllowed()) return null;
                                                                                     
                                                                                     return (
                                                                                         <React.Fragment key={key}>

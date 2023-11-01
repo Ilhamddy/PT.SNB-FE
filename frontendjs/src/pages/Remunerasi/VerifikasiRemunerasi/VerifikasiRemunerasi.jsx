@@ -3,7 +3,7 @@ import withRouter from "../../../Components/Common/withRouter"
 import { ToastContainer } from "react-toastify";
 import UiContent from "../../../Components/Common/UiContent";
 import { useDispatch, useSelector } from "react-redux";
-import { Button, Card, CardBody, Col, Container, Form, FormFeedback, Label, Row } from "reactstrap";
+import { Button, Card, CardBody, Col, Container, Form, FormFeedback, Label, Modal, ModalBody, Row } from "reactstrap";
 import BreadCrumb from "../../../Components/Common/BreadCrumb";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -56,7 +56,8 @@ const VerifikasiRemunerasi = () => {
   }
   const handleClick = (e) => {
     console.log(e)
-};
+    setisVerifikasiOpen(true)
+  };
   const columns = [
     {
       name: <span className='font-weight-bold fs-13'>No</span>,
@@ -68,10 +69,10 @@ const VerifikasiRemunerasi = () => {
       name: <span className='font-weight-bold fs-13'>Detail</span>,
       cell: (data) => {
         return (
-            // <Link to={`/registrasi/pasien/${data.id}`}>Details</Link>
-            <button type='button' className="btn btn-sm btn-soft-info" onClick={() => handleClick(data)}>Verif</button>
+          // <Link to={`/registrasi/pasien/${data.id}`}>Details</Link>
+          <button type='button' className="btn btn-sm btn-soft-info" onClick={() => handleClick(data)}>Verif</button>
         );
-    },
+      },
       sortable: true,
       width: "80px"
     },
@@ -132,9 +133,16 @@ const VerifikasiRemunerasi = () => {
       width: "100",
     },
   ];
+  const [isVerifikasiOpen, setisVerifikasiOpen] = useState(false);
+  const [selectedPasien, setselectedPasien] = useState(null);
   return (
     <React.Fragment>
       <ToastContainer closeButton={false} />
+      <ModalVerifikasi
+      isVerifikasiOpen={isVerifikasiOpen}
+        toggle={() => setisVerifikasiOpen(!isVerifikasiOpen)}
+        selectedPasien={selectedPasien}
+      />
       <UiContent />
       <div className="page-content">
         <Container fluid>
@@ -315,6 +323,17 @@ const VerifikasiRemunerasi = () => {
         </Container>
       </div>
     </React.Fragment>
+  )
+}
+
+const ModalVerifikasi = ({ isVerifikasiOpen, toggle, selectedPasien }) => {
+  const dispatch = useDispatch();
+  return (
+    <Modal isOpen={isVerifikasiOpen} toggle={toggle} centered={true} size="xl">
+      <ModalBody>
+
+      </ModalBody>
+    </Modal>
   )
 }
 export default withRouter(VerifikasiRemunerasi)
