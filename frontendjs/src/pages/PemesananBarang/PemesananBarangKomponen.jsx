@@ -961,11 +961,11 @@ export const ListDetailPesan = () => {
   )
 }
 
-export const useGetPemesanan = (validation) => {
+export const useGetPemesanan = (validation, isLogistik) => {
   const { norecpesan } = useParams()
   const dispatch = useDispatch()
   useEffect(() => {
-    dispatch(comboPenerimaanBarangGet())
+    dispatch(comboPenerimaanBarangGet({ isLogistik: isLogistik }))
   }, [dispatch])
 
   useEffect(() => {

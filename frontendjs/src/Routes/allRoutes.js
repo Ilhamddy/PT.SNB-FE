@@ -644,15 +644,13 @@ const authProtectedRoutes = [
   { path: "/farmasi/gudang/stok-unit", component: <StokUnitList />},
   { path: "/farmasi/gudang/stok-opname/:tabopen", component: <StokOpname />},
   { path: "/farmasi/gudang/stok-opname/:tabopen/:norecstokopname", component: <StokOpname />},
+  { path: "/farmasi/gudang/pemesanan-barang", component: <PemesananBarang />},
+  { path: "/farmasi/gudang/pemesanan-barang/:norecpesan", component: <PemesananBarang />},
 
   // gudang logistik
   { path: "/logistik/gudang/penerimaan-produk", component: <PenerimaanProduk isLogistik />},
   { path: "/logistik/gudang/penerimaan-produk/:norecpenerimaan", component: <PenerimaanProduk isLogistik />},
-
-
-  // gudang
-  { path: "/farmasi/gudang/pemesanan-barang", component: <PemesananBarang />},
-  { path: "/farmasi/gudang/pemesanan-barang/:norecpesan", component: <PemesananBarang />},
+  { path: "/logistik/gudang/pemesanan-barang", component: <PemesananBarang isLogistik />},
 
 
   //distribusi 

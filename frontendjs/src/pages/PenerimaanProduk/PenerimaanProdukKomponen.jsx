@@ -1305,7 +1305,7 @@ export const useGetData = (isLogistik) => {
   const { norecpesan, norecpenerimaan } = useParams()
   const dispatch = useDispatch()
   useEffect(() => {
-    dispatch(comboPenerimaanBarangGet({ islogistik: isLogistik }))
+    dispatch(comboPenerimaanBarangGet({ isLogistik: isLogistik }))
   }, [dispatch, isLogistik])
   useEffect(() => {
     norecpesan && dispatch(getPemesanan({ norecpesan: norecpesan }))

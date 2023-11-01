@@ -15,11 +15,12 @@ import {
   useCalculatePemesanan,
   useGetPemesanan,
   useFillInitPemesanan,
+  useGetKemasan,
 } from './PemesananBarangKomponen'
 
 export const PemesananContext = createContext()
 
-const PemesananBarang = () => {
+const PemesananBarang = ({ isLogistik }) => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const { norecpesan } = useParams()
@@ -237,10 +238,10 @@ const PemesananBarang = () => {
   total = 'Rp' + total.toLocaleString('id-ID', { maximumFractionDigits: 5 })
 
   // hooks get and calculate all
-  const refSatuanTerima = useGetPemesanan(vDetail, detail)
+  const refSatuanTerima = useGetKemasan(vDetail, detail)
   useFillInitPemesanan(validation)
   useCalculatePemesanan(vDetail, detail)
-  useGetPemesanan(validation)
+  useGetPemesanan(validation, isLogistik)
 
   return (
     <div className="page-content page-penerimaan-barang">

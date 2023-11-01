@@ -414,7 +414,7 @@ const comboPenerimaanBarang = async (req, res) => {
     try{
         const supplier = await pool.query(queriesRekanan.getSupplier);
         let produk 
-        const isLogistik = req.query.islogistik === "true"
+        const isLogistik = req.query.isLogistik === "true"
         if(!isLogistik){
             produk = await pool.query(queriesProduk.getObatWithSatuan);
         } else{
