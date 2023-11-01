@@ -22,7 +22,7 @@ const ViewerOperasi = () => {
   useEffect(() => {
     dispatch(getJadwalOperasi())
   }, [dispatch])
-  const jadwalGroup = groupArray(jadwal, 8)
+  const jadwalGroup = groupArray(jadwal, 12)
 
   return (
     <div className="viewer-operasi">
@@ -48,34 +48,14 @@ const ViewerOperasi = () => {
         >
           {jadwalGroup.map((jadwal, key) => (
             <div className="kontainer-splitter" key={key}>
-              <div className="kontainer-data">
-                {jadwal.map((item, index) =>
-                  index % 2 === 0 ? (
-                    <CardContent
-                      key={index}
-                      tanggal={item.tglrencana}
-                      noorder={item.nomororder}
-                      spesialisasi={item.spesialisasi}
-                    />
-                  ) : (
-                    <></>
-                  )
-                )}
-              </div>
-              <div className="kontainer-data">
-                {jadwal.map((item, index) =>
-                  index % 2 !== 0 ? (
-                    <CardContent
-                      key={index}
-                      tanggal={item.tglrencana}
-                      noorder={item.nomororder}
-                      spesialisasi={item.spesialisasi}
-                    />
-                  ) : (
-                    <></>
-                  )
-                )}
-              </div>
+              {jadwal.map((item, index) => (
+                <CardContent
+                  key={index}
+                  tanggal={item.tglrencana}
+                  noorder={item.nomororder}
+                  spesialisasi={item.spesialisasi}
+                />
+              ))}
             </div>
           ))}
         </Carousel>
@@ -102,7 +82,7 @@ const CardContent = ({ tanggal, noorder, spesialisasi }) => {
       <div className="kontainer-description">
         <Description gbr={MedicalImg} description={noorder} />
         <Description gbr={HealthImg} description={spesialisasi} />
-        {/* <Description
+        <Description
           gbr={ClockImg}
           description={new Date(tanggal)
             .toLocaleTimeString('id-ID', {
@@ -110,17 +90,7 @@ const CardContent = ({ tanggal, noorder, spesialisasi }) => {
               minute: '2-digit',
             })
             .replace('.', ':')}
-        /> */}
-      </div>
-      <div className="kontainer-jam">
-        <p className="jam">
-          {new Date(tanggal)
-            .toLocaleTimeString('id-ID', {
-              hour: '2-digit',
-              minute: '2-digit',
-            })
-            .replace('.', ':')}
-        </p>
+        />
       </div>
     </div>
   )
