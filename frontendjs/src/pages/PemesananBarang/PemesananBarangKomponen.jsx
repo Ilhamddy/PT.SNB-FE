@@ -961,12 +961,12 @@ export const ListDetailPesan = () => {
   )
 }
 
-export const useGetPemesanan = (validation) => {
+export const useGetPemesanan = (validation, isLogistik) => {
   const { norecpesan } = useParams()
   const dispatch = useDispatch()
   useEffect(() => {
-    dispatch(comboPenerimaanBarangGet())
-  }, [dispatch])
+    dispatch(comboPenerimaanBarangGet({ isLogistik: isLogistik }))
+  }, [dispatch, isLogistik])
 
   useEffect(() => {
     const setFF = validation.setFieldValue

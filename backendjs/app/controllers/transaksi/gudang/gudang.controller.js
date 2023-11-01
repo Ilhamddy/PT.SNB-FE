@@ -94,7 +94,8 @@ const createOrUpdateProdukObat = async (req, res) => {
                 objectgolonganobatfk: objectBody.golonganobat || null,
                 isalkes: objectBody.tipeproduk === 3,
                 tglupdate: new Date(),
-                objectpegawaiupdatefk: req.idPegawai
+                objectpegawaiupdatefk: req.idPegawai,
+                islogistik: objectBody.tipeproduk === 4
             }, {
                 where: {
                     id: objectBody.idproduk
@@ -359,7 +360,8 @@ const getLainLain = async (req, res) => {
 const getProdukKonversi = async (req, res) => {
     const logger = res.locals.logger
     try{
-        const produk = (await pool.query(qGetProdukKonversi, [])).rows
+        const { qsearch } = req.query
+        const produk = (await pool.query(qGetProdukKonversi, [qsearch || ""])).rows
         const tempres = {
             produk: produk
         }
@@ -379,7 +381,6 @@ const getProdukKonversi = async (req, res) => {
             msg: 'Transaksi gagal',
             code: 500
         });
-        return;
     }
 }
 

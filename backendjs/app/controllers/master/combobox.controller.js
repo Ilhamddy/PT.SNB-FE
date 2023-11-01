@@ -413,7 +413,13 @@ const comboSettingProduk = async (req, res) => {
 const comboPenerimaanBarang = async (req, res) => {
     try{
         const supplier = await pool.query(queriesRekanan.getSupplier);
-        const produk = await pool.query(queriesProduk.getObatWithSatuan);
+        let produk 
+        const isLogistik = req.query.isLogistik === "true"
+        if(!isLogistik){
+            produk = await pool.query(queriesProduk.getObatWithSatuan);
+        } else{
+            produk = await pool.query(queriesProduk.qGetLogistikWithSatuan);
+        }
         const satuanProduk = await pool.query(queriesSatuan.getSatuanProduk);
         const asalproduk = await pool.query(queriesAsalProduk.getAll)
         const unit = await pool.query(queriesUnit.getAll)

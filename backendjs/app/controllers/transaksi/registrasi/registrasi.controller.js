@@ -1,7 +1,7 @@
 import pool from "../../../config/dbcon.query";
 import * as uuid from 'uuid'
 import queries from '../../../queries/transaksi/registrasi.queries';
-import queriesUnit from '../../../queries/master/unit/unit.queries';
+import queriesUnit, { daftarUnit } from '../../../queries/master/unit/unit.queries';
 
 import db from "../../../models";
 import { createTransaction } from "../../../utils/dbutils";
@@ -10,7 +10,6 @@ import { pasienSignup } from "../../auth/authhelper";
 import { belumDiperiksa, iconPenunjang, iconRI, iconRJ, sedangDiperiksa, selesaiDiperiksa, siapPakai, totalTempatRusak, totalTempatTerisi } from "./icon";
 import { getDateStartEnd, getDateStartEndNull } from "../../../utils/dateutils";
 import { hCreateNoreg } from "../../daftarmandiri/daftarpasienlama/daftarpasienlama.controller";
-import { daftarUnit } from "../../../queries/farmasi/farmasi.queries";
 
 const m_pasien = db.m_pasien
 const running_Number = db.running_number

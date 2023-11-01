@@ -47,8 +47,8 @@ export default class ServiceMaster {
         return await api.get(`/master/combobox-setting-produk`);
     }
 
-    getComboPenerimaanBarang = async () => {
-        return await api.get(`/master/combobox-penerimaan-barang`);
+    getComboPenerimaanBarang = async (queries) => {
+        return await api.get(`/master/combobox-penerimaan-barang`, queries);
     }
 
     getComboDistributionOrder = async () => {

@@ -1,20 +1,12 @@
-import {
-  useState,
-  useEffect,
-  useRef,
-  useCallback,
-  createContext,
-  useContext,
-} from 'react'
+import { useState, useCallback, createContext } from 'react'
 import { Container, Form } from 'reactstrap'
-import classnames from 'classnames'
 import { ToastContainer, toast } from 'react-toastify'
 import BreadCrumb from '../../Components/Common/BreadCrumb'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import { useDispatch } from 'react-redux'
-import { dateLocal, onChangeStrNbr, strToNumber } from '../../utils/format'
+import { onChangeStrNbr, strToNumber } from '../../utils/format'
 import { createOrUpdatePemesanan } from '../../store/gudang/action'
 import {
   InputProdukDetail,
@@ -23,11 +15,12 @@ import {
   useCalculatePemesanan,
   useGetPemesanan,
   useFillInitPemesanan,
-} from './KomponenPemesananBarang'
+  useGetKemasan,
+} from './PemesananBarangKomponen'
 
 export const PemesananContext = createContext()
 
-const PemesananBarang = () => {
+const PemesananBarang = ({ isLogistik }) => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const { norecpesan } = useParams()
@@ -245,10 +238,10 @@ const PemesananBarang = () => {
   total = 'Rp' + total.toLocaleString('id-ID', { maximumFractionDigits: 5 })
 
   // hooks get and calculate all
-  const refSatuanTerima = useGetPemesanan(vDetail, detail)
+  const refSatuanTerima = useGetKemasan(vDetail, detail)
   useFillInitPemesanan(validation)
   useCalculatePemesanan(vDetail, detail)
-  useGetPemesanan(validation)
+  useGetPemesanan(validation, isLogistik)
 
   return (
     <div className="page-content page-penerimaan-barang">

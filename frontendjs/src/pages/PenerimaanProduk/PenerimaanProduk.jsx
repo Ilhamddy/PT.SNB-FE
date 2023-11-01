@@ -54,30 +54,37 @@ import {
   useSetNorecPenerimaan,
 } from './PenerimaanProdukKomponen'
 
-export const PenerimaanContext = createContext()
+export const PenerimaanContext = createContext({
+  penerimaan: null,
+  penerimaanTouched: null,
+  penerimaanErr: null,
+  handleChangePenerimaan: null,
+  vDetail: null,
+  detail: null,
+  detailErr: null,
+  detailTouched: null,
+  handleChangeDetail: null,
+  handleChangeJumlahTerima: null,
+  refSatuanTerima: null,
+  detailPemesanan: null,
+  detailPemesananPenerimaan: null,
+  norecpesan: null,
+  validation: null,
+  total: null,
+  ppn: null,
+  subtotal: null,
+  diskon: null,
+})
 
-const PenerimaanProduk = ({ isPesan }) => {
+const PenerimaanProduk = ({ isLogistik }) => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const { norecpenerimaan, norecpesan } = useParams()
 
   const [dateNow] = useState(() => new Date().toISOString())
 
-  const {
-    produk,
-    satuanProduk,
-    kemasanProduk,
-    detailPemesanan,
-    detailPemesananPenerimaan,
-  } = useSelector(
+  const { detailPemesanan, detailPemesananPenerimaan } = useSelector(
     (state) => ({
-      supplier: state.Master.comboPenerimaanBarangGet?.data?.supplier || [],
-      produk: state.Master.comboPenerimaanBarangGet?.data?.produk || [],
-      satuanProduk:
-        state.Master.comboPenerimaanBarangGet?.data?.satuanproduk || [],
-      kemasanProduk: state.Gudang.kemasanFromProdukGet?.data?.satuan || [],
-      asalProduk: state.Master.comboPenerimaanBarangGet?.data?.asalproduk || [],
-      unit: state.Master.comboPenerimaanBarangGet?.data?.unit || [],
       detailPemesanan: state.Gudang.getPemesanan.data?.detailPemesanan || [],
       detailPemesananPenerimaan:
         state.Gudang.penerimaanQueryGet.data?.detailPemesanan || [],
@@ -302,7 +309,7 @@ const PenerimaanProduk = ({ isPesan }) => {
   total = 'Rp' + total.toLocaleString('id-ID', { maximumFractionDigits: 5 })
 
   const refSatuanTerima = useGetKemasan(vDetail, detail)
-  useGetData()
+  useGetData(isLogistik)
   useFillInitialInput(validation)
   useCalculatePenerimaan(vDetail, detail)
   useSetNorecPenerimaan(validation)
@@ -315,7 +322,6 @@ const PenerimaanProduk = ({ isPesan }) => {
         <Form
           onSubmit={(e) => {
             e.preventDefault()
-            console.log('Submit')
             validation.handleSubmit()
             return false
           }}
@@ -347,9 +353,9 @@ const PenerimaanProduk = ({ isPesan }) => {
           >
             <InputUmumTerima />
             {(!!norecpesan ||
-              (detailPemesananPenerimaan.length > 0 && !norecpesan)) && (
-              <ListPesan />
-            )}
+              (detailPemesananPenerimaan.length > 0 &&
+                !norecpesan &&
+                !norecpenerimaan)) && <ListPesan />}
             <InputProdukDetail />
             <ListDetail />
           </PenerimaanContext.Provider>

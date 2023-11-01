@@ -108,6 +108,9 @@ export default (sequelize, Sequelize) => {
         objectpegawaiupdatefk: {
             type: Sequelize.INTEGER,
         },
+        islogistik: {
+            type: Sequelize.BOOLEAN,
+        },
     }, {
         tableName: "m_produk", // relation "user" does not exist
         createdAt: false,
