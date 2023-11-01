@@ -218,8 +218,11 @@ export const comboSettingProdukGetError = (error) => ({
     payload: error,
 });
 
-export const comboPenerimaanBarangGet = () => ({
+export const comboPenerimaanBarangGet = (queries) => ({
     type: COMBO_PENERIMAAN_BARANG_GET,
+    payload: {
+        queries: queries
+    },
 });
 
 export const comboPenerimaanBarangGetSuccess = (data) => ({

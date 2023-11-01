@@ -165,9 +165,9 @@ function* onGetComboSettingProduk() {
     }
 }
 
-function* onGetComboPenerimaanBarang(){
+function* onGetComboPenerimaanBarang({payload: {queries}}){
     try {
-        const response = yield call(serviceMaster.getComboPenerimaanBarang);
+        const response = yield call(serviceMaster.getComboPenerimaanBarang, queries);
         yield put(comboPenerimaanBarangGetSuccess(response.data));
     } catch(error){
         yield put(comboPenerimaanBarangGetError(error));

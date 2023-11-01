@@ -31,15 +31,20 @@ const qGetSatuanLainLain = `
 `
 
 const qGetProdukKonversi = `
-    SELECT
+SELECT
     mp.id AS id,
     mp.statusenabled AS statusenabled,
     mp.kdprofile AS kdprofile,
     mp.namaproduk AS namaproduk,
     ms.satuan AS satuan,
     ms.id AS idsatuan
-        FROM m_produk mp
-        LEFT JOIN m_satuan ms ON mp.objectsatuanstandarfk = ms.id
+FROM m_produk mp
+    LEFT JOIN m_satuan ms ON mp.objectsatuanstandarfk = ms.id
+WHERE mp.statusenabled = true
+    AND (
+        $1 = ''
+        OR mp.namaproduk ILIKE '%' || $1 || '%' 
+    )
 `
 
 const qGetProdukKonversiFromId = `

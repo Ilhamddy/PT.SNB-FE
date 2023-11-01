@@ -78,6 +78,10 @@ const TambahProduk = ({tabId}) => {
             value: 2,
             label: "Alkes"
         },
+        {
+            value: 3,
+            label: "Logistik"
+        },
     ]
 
     useEffect(() => {

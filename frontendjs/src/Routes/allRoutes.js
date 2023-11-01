@@ -637,13 +637,18 @@ const authProtectedRoutes = [
   { path: "/farmasi/gudang/setting-produk/:tabopen", component: <SettingProduk /> },
   { path: "/farmasi/gudang/list-produk", component: <ListProduk /> },
   { path: "/farmasi/gudang/penerimaan-produk/:norecpenerimaan", component: <PenerimaanProduk /> },
-  { path: "/farmasi/gudang/penerimaan-produk-pemesanan/:norecpesan", component: <PenerimaanProduk isPesan /> },
+  { path: "/farmasi/gudang/penerimaan-produk-pemesanan/:norecpesan", component: <PenerimaanProduk /> },
   { path: "/farmasi/gudang/penerimaan-produk", component: <PenerimaanProduk /> },
   { path: "/farmasi/gudang/penerimaan-produk-list", component: <PenerimaanProdukList /> },
   { path: "/farmasi/gudang/kartu-stok", component: <KartuStok />},
   { path: "/farmasi/gudang/stok-unit", component: <StokUnitList />},
   { path: "/farmasi/gudang/stok-opname/:tabopen", component: <StokOpname />},
   { path: "/farmasi/gudang/stok-opname/:tabopen/:norecstokopname", component: <StokOpname />},
+
+  // gudang logistik
+  { path: "/logistik/gudang/penerimaan-produk", component: <PenerimaanProduk isLogistik />},
+  { path: "/logistik/gudang/penerimaan-produk/:norecpenerimaan", component: <PenerimaanProduk isLogistik />},
+
 
   // gudang
   { path: "/farmasi/gudang/pemesanan-barang", component: <PemesananBarang />},

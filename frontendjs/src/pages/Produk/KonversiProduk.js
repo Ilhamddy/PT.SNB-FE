@@ -33,11 +33,13 @@ const KonversiProduk = ({tabId}) => {
 
     const { 
         listProduk,
+        loadingProduk,
         comboSettingProduk,
         satuanProduk,
         produkTerpilih
     } = useSelector(state => ({
         listProduk: state.Gudang.konversiProdukQueryGet.data?.produk || [],
+        loadingProduk: state.Gudang.konversiProdukQueryGet.loading || false,
         comboSettingProduk: state.Master.comboSettingProdukGet.data?.satuan || [],
         satuanProduk: state.Master.comboSettingProdukGet.data?.satuanproduk || [],
         produkTerpilih: state.Gudang.konversiKemasanQueryGet
@@ -201,10 +203,14 @@ const KonversiProduk = ({tabId}) => {
                             />
                     </Col>
                     <Col lg={2}>
-                        <Button type="button"
+                        <Button 
+                            type="button"
                             color="info" 
                             className="rounded-pill" 
                             placement="top" 
+                            onClick={() => {
+                                dispatch(konversiProdukQueryGet({ qsearch: refQSearch.current }))
+                            }}
                         >
                             Cari
                         </Button>
@@ -219,7 +225,7 @@ const KonversiProduk = ({tabId}) => {
                             paginationPerPage={5}
                             paginationRowsPerPageOptions={[5]}
                             data={listProduk}
-                            progressPending={false}
+                            progressPending={loadingProduk}
                             customStyles={tableCustomStyles}
                             progressComponent={<LoadingTable />}
                         />
@@ -377,14 +383,13 @@ const KonversiProduk = ({tabId}) => {
                         </Row>
                         <Row>
                             <div className="d-flex gap-2 justify-content-center mt-4 mb-2">
-                                <Button type="submit" color="info" placement="top" id="tooltipTop" >
+                                <Button type="submit" color="success" placement="top" id="tooltipTop" >
                                     {validation.values.idkemasanproduk ? "Edit" : "Tambah"}
                                 </Button>
                                 <Button type="button" 
                                     className="btn-danger" 
                                     placement="top" 
                                     id="tooltipTop" 
-                                    onClick={() => {}}
                                     >
                                     Batal
                                 </Button>

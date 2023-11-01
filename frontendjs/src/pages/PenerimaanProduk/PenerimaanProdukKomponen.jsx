@@ -1295,22 +1295,25 @@ export const useSetNorecPenerimaan = (validation) => {
   const dispatch = useDispatch()
   useEffect(() => {
     const setFF = validation.setFieldValue
-    norecpenerimaan &&
-      dispatch(penerimaanQueryGet({ norecpenerimaan: norecpenerimaan }))
+
     setFF('norecpenerimaan', norecpenerimaan)
     setFF('norecpemesanan', norecpesan)
   }, [dispatch, norecpenerimaan, validation.setFieldValue, norecpesan])
 }
 
-export const useGetData = () => {
-  const { norecpesan } = useParams()
+export const useGetData = (isLogistik) => {
+  const { norecpesan, norecpenerimaan } = useParams()
   const dispatch = useDispatch()
   useEffect(() => {
-    dispatch(comboPenerimaanBarangGet())
-  }, [dispatch])
+    dispatch(comboPenerimaanBarangGet({ islogistik: isLogistik }))
+  }, [dispatch, isLogistik])
   useEffect(() => {
     norecpesan && dispatch(getPemesanan({ norecpesan: norecpesan }))
   }, [norecpesan, dispatch])
+  useEffect(() => {
+    norecpenerimaan &&
+      dispatch(penerimaanQueryGet({ norecpenerimaan: norecpenerimaan }))
+  }, [norecpenerimaan, dispatch])
 }
 
 // saat awal, masukkan data2 dari api ke dalam input
