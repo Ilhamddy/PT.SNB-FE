@@ -54,12 +54,26 @@ const VerifikasiRemunerasi = () => {
       },
     }
   }
+  const handleClick = (e) => {
+    console.log(e)
+};
   const columns = [
     {
       name: <span className='font-weight-bold fs-13'>No</span>,
       selector: row => row.no,
       sortable: true,
       width: "50px"
+    },
+    {
+      name: <span className='font-weight-bold fs-13'>Detail</span>,
+      cell: (data) => {
+        return (
+            // <Link to={`/registrasi/pasien/${data.id}`}>Details</Link>
+            <button type='button' className="btn btn-sm btn-soft-info" onClick={() => handleClick(data)}>Verif</button>
+        );
+    },
+      sortable: true,
+      width: "80px"
     },
     {
       name: <span className='font-weight-bold fs-13'>Tgl. Registrasi</span>,

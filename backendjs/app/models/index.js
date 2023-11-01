@@ -78,6 +78,7 @@ import m_kamarModel from "./m_kamar.model.js"
 import t_pemesananbarangModel from "./t_pemesananbarang.model.js";
 import t_pemesananbarangdetailModel from "./t_pemesananbarangdetail.model.js";
 import role_permissionsModel from "./role_permissions.model.js";
+import t_verifremunerasiModel from "./t_verifremunerasi.model.js";
 
 const sequelize = new Sequelize(
   config.DB,
@@ -181,6 +182,7 @@ db.m_pegawai = m_pegawaiModel(sequelize, sequelizeInstance);
 db.m_kamar = m_kamarModel(sequelize, sequelizeInstance);
 db.t_pemesananbarang = t_pemesananbarangModel(sequelize, sequelizeInstance);
 db.t_pemesananbarangdetail = t_pemesananbarangdetailModel(sequelize, sequelizeInstance)
+db.t_verifremunerasi = t_verifremunerasiModel(sequelize, sequelizeInstance)
 
 db.role.belongsToMany(db.user, {
   through: "user_roles",
