@@ -102,7 +102,7 @@ const CardContent = ({ tanggal, noorder, spesialisasi }) => {
       <div className="kontainer-description">
         <Description gbr={MedicalImg} description={noorder} />
         <Description gbr={HealthImg} description={spesialisasi} />
-        <Description
+        {/* <Description
           gbr={ClockImg}
           description={new Date(tanggal)
             .toLocaleTimeString('id-ID', {
@@ -110,7 +110,17 @@ const CardContent = ({ tanggal, noorder, spesialisasi }) => {
               minute: '2-digit',
             })
             .replace('.', ':')}
-        />
+        /> */}
+      </div>
+      <div className="kontainer-jam">
+        <p className="jam">
+          {new Date(tanggal)
+            .toLocaleTimeString('id-ID', {
+              hour: '2-digit',
+              minute: '2-digit',
+            })
+            .replace('.', ':')}
+        </p>
       </div>
     </div>
   )
