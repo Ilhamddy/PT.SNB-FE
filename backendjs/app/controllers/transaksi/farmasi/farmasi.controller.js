@@ -6,8 +6,9 @@ import {
     createTransaction
 } from "../../../utils/dbutils";
 import { hProcessOrderResep } from "../emr/emr.controller";
-import { daftarUnit, qGetAllVerif, qGetObatFromProduct, qGetPasienFromId } from "../../../queries/farmasi/farmasi.queries";
+import { qGetAllVerif, qGetObatFromProduct, qGetPasienFromId } from "../../../queries/farmasi/farmasi.queries";
 import { generateKodeBatch, hCreateKartuStok } from "../gudang/gudang.controller";
+import { daftarUnit } from "../../../queries/master/unit/unit.queries";
 
 const t_verifresep = db.t_verifresep
 const t_pelayananpasien = db.t_pelayananpasien
