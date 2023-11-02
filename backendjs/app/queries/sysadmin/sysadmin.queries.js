@@ -163,6 +163,10 @@ const qPermissions =`select row_number() OVER (ORDER BY p.id) AS no,p.id,p.name,
 const qChekMapPermissions =`SELECT roleid, permissionid, statusenabled
 FROM public.role_permissions where roleid=$1 and permissionid=$2`
 
+const qListChild =`select sc.reportdisplay,sc.nourut from s_childmenumodulaplikasi sc
+join s_linkmenu sl on sl.id=sc.objectlinkmenufk
+where sc.objekmenumodulaplikasiid=$1`
+
 export {
 	qGetTempatTidur,
 	qGetUnitTempatTidur,
@@ -172,5 +176,6 @@ export {
 	qCountRole,
 	qMapRolePermissions,
 	qPermissions,
-	qChekMapPermissions
+	qChekMapPermissions,
+	qListChild
 }

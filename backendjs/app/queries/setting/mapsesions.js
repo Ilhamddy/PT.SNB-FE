@@ -10,8 +10,9 @@ join user_roles ur on  r.id=ur.roleid where ur.userid =$1 and ur.statusenabled =
 const qMenuModulAplikasi=`select sm.id,sm.reportdisplay,sm.icon from s_menumodulaplikasi sm 
 where sm.objekmodulaplikasiid=$1 order by sm.nourut`
 
-const qChlidMenuModulAplikasi=`select sc.id,sm.reportdisplay as menu,sm.id as idmenu,sc.reportdisplay as label, sm.nourut,sc.nourut,sc.link  from s_menumodulaplikasi sm
+const qChlidMenuModulAplikasi=`select sc.id,sm.reportdisplay as menu,sm.id as idmenu,sc.reportdisplay as label, sm.nourut,sc.nourut,sl.reportdisplay as link  from s_menumodulaplikasi sm
 join s_childmenumodulaplikasi sc on sc.objekmenumodulaplikasiid=sm.id
+join s_linkmenu sl on sl.id=sc.objectlinkmenufk
 where sm.objekmodulaplikasiid=$1
 order by sm.nourut,sc.nourut`
 
