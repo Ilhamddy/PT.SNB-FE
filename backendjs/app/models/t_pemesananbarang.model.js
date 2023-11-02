@@ -43,7 +43,10 @@ export default (sequelize, Sequelize) => {
         },
         tglupdate: {
             type: Sequelize.DATE,
-        }
+        },
+        islogistik: {
+            type: Sequelize.BOOLEAN,
+        },
     }, {
         tableName: "t_pemesananbarang",
         createdAt: false,

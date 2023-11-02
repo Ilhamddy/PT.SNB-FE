@@ -684,7 +684,8 @@ const getPenerimaan = async (req, res) => {
 const getListPenerimaan = async (req, res) => {
     const logger = res.locals.logger
     try{
-        let listPenerimaan = (await pool.query(qGetListPenerimaan, [])).rows
+        const isLogistik = req.query.isLogistik === 'true'
+        let listPenerimaan = (await pool.query(qGetListPenerimaan, [isLogistik])).rows
         listPenerimaan = await Promise.all(
             listPenerimaan.map(async (penerimaan) => {
                 const newPenerimaan = { ...penerimaan }
@@ -1077,7 +1078,8 @@ const getPemesanan = async (req, res) => {
 const getListPemesanan = async (req, res) => {
     const logger = res.locals.logger
     try{
-        let listPemesanan = (await pool.query(qGetListPemesanan, [])).rows
+        const isLogistik = req.query.isLogistik === 'true'
+        let listPemesanan = (await pool.query(qGetListPemesanan, [isLogistik])).rows
         listPemesanan = await Promise.all(
             listPemesanan.map(async (penerimaan) => {
                 const newPenerimaan = { ...penerimaan }
@@ -1205,7 +1207,8 @@ const hUpsertPesan = async (req, res, transaction) => {
             keterangan: null,
             objectpegawaifk: req.idPegawai,
             tglinput: new Date(),
-            tglupdate: new Date()
+            tglupdate: new Date(),
+            islogistik: bodyReq.islogistik
         }, {
             transaction: transaction
         })
@@ -1256,7 +1259,8 @@ const hCreateOrUpdatePenerimaan = async (req, res, transaction) => {
             objectpegawaifk: req.idPegawai,
             tglinput: new Date(),
             tglupdate: new Date(),
-            objectpemesananbarangfk: req.body.norecpemesanan
+            objectpemesananbarangfk: req.body.norecpemesanan,
+            islogistik: req.body.islogistik
         }, {
             transaction: transaction
         })

@@ -651,7 +651,7 @@ const authProtectedRoutes = [
   { path: "/logistik/gudang/penerimaan-produk", component: <PenerimaanProduk isLogistik />},
   { path: "/logistik/gudang/penerimaan-produk/:norecpenerimaan", component: <PenerimaanProduk isLogistik />},
   { path: "/logistik/gudang/pemesanan-barang", component: <PemesananBarang isLogistik />},
-  { path: "/logistik/gudang/penerimaan-produk-list", component: <PenerimaanProdukList /> },
+  { path: "/logistik/gudang/penerimaan-produk-list", component: <PenerimaanProdukList isLogistik /> },
 
 
 

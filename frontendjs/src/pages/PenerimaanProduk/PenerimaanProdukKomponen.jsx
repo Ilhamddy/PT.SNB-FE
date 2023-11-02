@@ -387,13 +387,10 @@ export const ListPesan = () => {
       width: '150px',
     },
   ]
-  const {
-    detailPemesanan,
-    detailPemesananPenerimaan,
-    norecpesan,
-    vDetail,
-    validation,
-  } = useContext(PenerimaanContext)
+  const { detailPemesanan, detailPemesananPenerimaan, vDetail, validation } =
+    useContext(PenerimaanContext)
+  const { norecpesan } = useParams()
+  const isPesan = !!norecpesan
 
   return (
     <Card className="p-5 pb-0">
@@ -404,7 +401,7 @@ export const ListPesan = () => {
           columns={columnsPesan}
           pagination
           data={
-            detailPemesananPenerimaan.length > 0 && !norecpesan
+            detailPemesananPenerimaan.length > 0 && !isPesan
               ? detailPemesananPenerimaan
               : detailPemesanan || []
           }
@@ -427,6 +424,7 @@ export const InputProdukDetail = () => {
     handleChangeDetail,
     handleChangeJumlahTerima,
     refSatuanTerima,
+    isLogistik,
   } = useContext(PenerimaanContext)
   const { produk, satuanProduk, kemasanProduk } = useSelector((state) => ({
     produk: state.Master.comboPenerimaanBarangGet?.data?.produk || [],
@@ -473,7 +471,7 @@ export const InputProdukDetail = () => {
                 htmlFor={`satuanjual`}
                 className="form-label mt-2"
               >
-                Satuan Jual
+                Satuan {isLogistik ? `Barang` : 'Jual'}
               </Label>
               <CustomSelect
                 id="satuanjual"
@@ -1327,6 +1325,7 @@ export const useFillInitialInput = (validation) => {
     shallowEqual
   )
   useEffect(() => {
+    const isPesan = !!norecpesan
     const setFF = validation.setFieldValue
     if (norecpenerimaan) {
       // jika penerimaan
@@ -1344,11 +1343,11 @@ export const useFillInitialInput = (validation) => {
       }
     } else {
       // jika kosong atau pemesanan
-      if (!norecpesan) {
+      if (!isPesan) {
         setFF('detail', [])
         setFF('penerimaan', validation.initialValues.penerimaan)
       }
-      if (norecpesan && pemesanan) {
+      if (isPesan && pemesanan) {
         setFF('penerimaan', {
           ...validation.initialValues.penerimaan,
           namasupplier: pemesanan.namasupplier,

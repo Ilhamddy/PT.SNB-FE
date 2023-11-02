@@ -28,7 +28,7 @@ import LoadingTable from '../../Components/Table/LoadingTable'
 import NoDataTable from '../../Components/Table/NoDataTable'
 import { dateLocal } from '../../utils/format'
 
-const PenerimaanProdukList = () => {
+const PenerimaanProdukList = ({ isLogistik }) => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
@@ -41,9 +41,9 @@ const PenerimaanProdukList = () => {
   )
 
   useEffect(() => {
-    dispatch(penerimaanListQueryGet({}))
-    dispatch(getListPemesanan({}))
-  }, [dispatch])
+    dispatch(penerimaanListQueryGet({ isLogistik: isLogistik || false }))
+    dispatch(getListPemesanan({ isLogistik: isLogistik || false }))
+  }, [dispatch, isLogistik])
 
   /**
    * @type {import("react-data-table-component").TableColumn[]}
@@ -247,7 +247,13 @@ const PenerimaanProdukList = () => {
               <h4 className="mb-0">Penerimaan</h4>
             </Col>
             <Col lg={'auto'} className="d-flex flex-row-reverse">
-              <Link to={'/farmasi/gudang/penerimaan-produk'}>
+              <Link
+                to={
+                  isLogistik
+                    ? '/logistik/gudang/penerimaan-produk'
+                    : '/farmasi/gudang/penerimaan-produk'
+                }
+              >
                 <Button color={'info'}>Tambah</Button>
               </Link>
             </Col>
@@ -274,7 +280,13 @@ const PenerimaanProdukList = () => {
               <h4 className="mb-0">Pemesanan</h4>
             </Col>
             <Col lg={'auto'} className="d-flex flex-row-reverse">
-              <Link to={'/farmasi/gudang/pemesanan-barang'}>
+              <Link
+                to={
+                  isLogistik
+                    ? '/logistik/gudang/pemesanan-barang'
+                    : '/farmasi/gudang/pemesanan-barang'
+                }
+              >
                 <Button color={'info'}>Pesan</Button>
               </Link>
             </Col>
