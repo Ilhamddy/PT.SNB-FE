@@ -96,4 +96,9 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.saveMenuModul
     )
+    app.get(
+        "/api/transaksi/sysadmin/get-list-child-menu",
+        [authJwt.verifyToken],
+        controller.getListChildMenu
+    )
 }

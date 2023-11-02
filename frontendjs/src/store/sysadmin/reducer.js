@@ -38,7 +38,8 @@ import {
     GET_MAP_ROLE_PERMISSIONS,
     GET_MAP_ROLE_PERMISSIONS_SUCCESS,
     GET_MAP_ROLE_PERMISSIONS_ERROR,
-    UPSERT_ROLE_PERMISSIONS, UPSERT_ROLE_PERMISSIONS_SUCCESS, UPSERT_ROLE_PERMISSIONS_ERROR
+    UPSERT_ROLE_PERMISSIONS, UPSERT_ROLE_PERMISSIONS_SUCCESS, UPSERT_ROLE_PERMISSIONS_ERROR,
+    UPSERT_MENU_MODUL, UPSERT_MENU_MODUL_ERROR,UPSERT_MENU_MODUL_SUCCESS
 } from "./actionType";
 
 const INIT_STATE = {
@@ -108,6 +109,11 @@ const INIT_STATE = {
         error: null,
     },
     upsertRolePermissions: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    upsertMenuModul: {
         data: [],
         loading: false,
         error: null,
@@ -572,6 +578,39 @@ const Sysadmin = (state = INIT_STATE, action) => {
                 ...state,
                 upsertRolePermissions: {
                     ...state.upsertRolePermissions,
+                    loading: true,
+                    error: action.payload,
+                }
+            }
+        }
+
+        case UPSERT_MENU_MODUL: {
+            return {
+                ...state,
+                upsertMenuModul: {
+                    ...state.upsertMenuModul,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case UPSERT_MENU_MODUL_SUCCESS: {
+            return {
+                ...state,
+                upsertMenuModul: {
+                    ...state.upsertMenuModul,
+                    loading: false,
+                    data: action.payload,
+                }
+            }
+        }
+
+        case UPSERT_MENU_MODUL_ERROR: {
+            return {
+                ...state,
+                upsertMenuModul: {
+                    ...state.upsertMenuModul,
                     loading: true,
                     error: action.payload,
                 }

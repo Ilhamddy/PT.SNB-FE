@@ -9,7 +9,8 @@ import {
     qPermissions,
     qRoles,
     statusBed,
-    qChekMapPermissions
+    qChekMapPermissions,
+    qListChild
 } from "../../../queries/sysadmin/sysadmin.queries";
 import db from "../../../models";
 import { getDateStartEnd } from "../../../utils/dateutils";
@@ -496,16 +497,28 @@ const saveMenuModul = async (req, res) => {
     try {
         const { setRole } = await db.sequelize.transaction(async (transaction) => {
             let setRole = ''
-
-            setRole = await db.s_menumodulaplikasi.create({
-                statusenabled:true,
-                namaexternal: req.body.nameRole,
-                reportdisplay: req.body.nameRole,
-                objekmodulaplikasiid:req.body.modul,
-                nourut:req.body.nourut,
-                icon:req.body.icon
-            }, { transaction });
-
+            if(req.body.idMenu!==''){
+                setRole = await db.s_menumodulaplikasi.update({
+                    namaexternal: req.body.namaMenu,
+                    reportdisplay: req.body.namaMenu,
+                    nourut:req.body.nourut,
+                    icon:req.body.namaIcon
+                }, {
+                    where: {
+                        id: req.body.idMenu
+                    },
+                    transaction: transaction
+                });
+            }else{
+                setRole = await db.s_menumodulaplikasi.create({
+                    statusenabled:true,
+                    namaexternal: req.body.namaMenu,
+                    reportdisplay: req.body.namaMenu,
+                    objekmodulaplikasiid:req.body.modul,
+                    nourut:req.body.nourut,
+                    icon:req.body.namaIcon
+                }, { transaction });
+            }
             return { setRole }
         });
 
@@ -603,6 +616,30 @@ const saveRolePermissions = async (req, res) => {
     }
 }
 
+const getListChildMenu = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const result1 = await pool.query(qListChild,[req.query.idMenu])
+        const tempres = {
+        
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: result1.rows,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export default {
     getTempatTidur,
     getUnitTempatTidur,
@@ -618,5 +655,6 @@ export default {
     upsertKamar,
     getMapRolePermissions,
     saveRolePermissions,
-    saveMenuModul
+    saveMenuModul,
+    getListChildMenu
 }

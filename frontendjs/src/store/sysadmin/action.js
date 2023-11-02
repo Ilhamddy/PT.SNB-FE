@@ -32,7 +32,8 @@ import {
     UPSERT_KAMAR_SUCCESS,
     UPSERT_KAMAR_ERROR,
     GET_MAP_ROLE_PERMISSIONS, GET_MAP_ROLE_PERMISSIONS_SUCCESS, GET_MAP_ROLE_PERMISSIONS_ERROR,
-    UPSERT_ROLE_PERMISSIONS, UPSERT_ROLE_PERMISSIONS_SUCCESS, UPSERT_ROLE_PERMISSIONS_ERROR
+    UPSERT_ROLE_PERMISSIONS, UPSERT_ROLE_PERMISSIONS_SUCCESS, UPSERT_ROLE_PERMISSIONS_ERROR,
+    UPSERT_MENU_MODUL,UPSERT_MENU_MODUL_SUCCESS,UPSERT_MENU_MODUL_ERROR
 } from "./actionType";
 
 
@@ -276,5 +277,23 @@ export const upsertRolePermissionsSuccess = (data) => ({
 
 export const upsertRolePermissionsError = (error) => ({
     type: UPSERT_ROLE_PERMISSIONS_ERROR,
+    payload: error,
+});
+
+export const upsertMenuModul = (data, callback) => ({
+    type: UPSERT_MENU_MODUL,
+    payload: {
+        data,
+        callback
+    },
+});
+
+export const upsertMenuModulSuccess = (data) => ({
+    type: UPSERT_MENU_MODUL_SUCCESS,
+    payload: data,
+});
+
+export const upsertMenuModulError = (error) => ({
+    type: UPSERT_MENU_MODUL_ERROR,
     payload: error,
 });

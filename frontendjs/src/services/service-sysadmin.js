@@ -54,4 +54,7 @@ export default class ServiceTempatTidur {
     upsertRolePermissions = async (body) => {
         return await api.create("/transaksi/sysadmin/upsert-role-permissions", body)
     }
+    upsertMenuModul = async (body) => {
+        return await api.create("/transaksi/sysadmin/upsert-menu-modul", body)
+    }
 }
