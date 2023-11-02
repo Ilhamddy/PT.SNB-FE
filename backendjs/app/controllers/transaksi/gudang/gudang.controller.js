@@ -1303,65 +1303,46 @@ const hCreateOrUpdateDetailPenerimaan = async (
     createdOrUpdatedDetailPenerimaan = await Promise.all(
         arDetail.map(async (bodyDetail) => {
             let norecDetailPenerimaan = bodyDetail.norecdetailpenerimaan
-            let prev = null
             let updatedValue = null
+            let prevsVal = []
             if(!norecDetailPenerimaan){
-                prev = await t_penerimaanbarangdetail.findOne({
+                let prevs = await t_penerimaanbarangdetail.findAll({
                     where: {
-                        norec: norecDetailPenerimaan
+                        objectpenerimaanbarangfk: norecpenerimaan
                     },
                     lock: transaction.LOCK.UPDATE,
                     transaction: transaction
                 })
+                prevsVal = prevs.map((prev) => prev.toJSON())
+                await Promise.all(
+                    prevs.map(async (prev) => {
+                        await prev.destroy()
+                    })
+                )
             }
-            if(!norecDetailPenerimaan || !prev){
-                norecDetailPenerimaan = uuid.v4().substring(0, 32)
-                updatedValue = await t_penerimaanbarangdetail.create({
-                    norec: uuid.v4().substring(0, 32),
-                    statusenabled: true,
-                    objectpenerimaanbarangfk: norecpenerimaan,
-                    objectprodukfk: bodyDetail.produk.idproduk,
-                    ed: new Date(bodyDetail.tanggaled),
-                    nobatch: bodyDetail.nobatch,
-                    objectsatuanfk: bodyDetail.satuanterima,
-                    jumlah: bodyDetail.jumlahterima,
-                    hargasatuankecil: bodyDetail.hargasatuankecil,
-                    hargasatuanterima: bodyDetail.hargasatuanterima,
-                    subtotal: bodyDetail.subtotalproduk,
-                    diskonpersen: bodyDetail.diskonpersen,
-                    diskon: bodyDetail.diskonrupiah,
-                    ppnpersen: bodyDetail.ppnpersenproduk,
-                    ppn: bodyDetail.ppnrupiahproduk,
-                    total: bodyDetail.totalproduk,
-                    jumlahkonversi: bodyDetail.konversisatuan
-                }, {
-                    transaction: transaction
-                }) 
-            }else{
-                let updated = await prev.update({
-                    objectprodukfk: bodyDetail.produk.idproduk,
-                    ed: new Date(bodyDetail.tanggaled),
-                    nobatch: bodyDetail.nobatch,
-                    objectsatuanfk: bodyDetail.produk.satuanjual,
-                    jumlah: bodyDetail.jumlahterima,
-                    hargasatuankecil: bodyDetail.hargasatuankecil,
-                    hargasatuanterima: bodyDetail.hargasatuanterima,
-                    subtotal: bodyDetail.subtotalproduk,
-                    diskonpersen: bodyDetail.diskonpersen,
-                    diskon: bodyDetail.diskonrupiah,
-                    ppnpersen: bodyDetail.ppnpersenproduk,
-                    ppn: bodyDetail.ppnrupiahproduk,
-                    total: bodyDetail.totalproduk,
-                    jumlahkonversi: bodyDetail.konversisatuan
-                }, {
-                    returning: true,
-                    transaction: transaction
-                })
-                updated = updated?.toJSON() || null
-                updatedValue = updated ;
-            }
+            updatedValue = await t_penerimaanbarangdetail.create({
+                norec: uuid.v4().substring(0, 32),
+                statusenabled: true,
+                objectpenerimaanbarangfk: norecpenerimaan,
+                objectprodukfk: bodyDetail.produk.idproduk,
+                ed: new Date(bodyDetail.tanggaled),
+                nobatch: bodyDetail.nobatch,
+                objectsatuanfk: bodyDetail.satuanterima,
+                jumlah: bodyDetail.jumlahterima,
+                hargasatuankecil: bodyDetail.hargasatuankecil,
+                hargasatuanterima: bodyDetail.hargasatuanterima,
+                subtotal: bodyDetail.subtotalproduk,
+                diskonpersen: bodyDetail.diskonpersen,
+                diskon: bodyDetail.diskonrupiah,
+                ppnpersen: bodyDetail.ppnpersenproduk,
+                ppn: bodyDetail.ppnrupiahproduk,
+                total: bodyDetail.totalproduk,
+                jumlahkonversi: bodyDetail.konversisatuan
+            }, {
+                transaction: transaction
+            }) 
             return {
-                prevValue: prev?.toJSON() || null,
+                prevValue: prevsVal || null,
                 updatedValue
             }
         })

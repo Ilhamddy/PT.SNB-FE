@@ -72,6 +72,8 @@ FROM t_orderbarang tor
     LEFT JOIN m_unit mut ON mut.id = tor.objectunittujuanfk
     LEFT JOIN m_jenisorderbarang mjob ON mjob.id = tor.objectjenisorderbarangfk
     LEFT JOIN t_kirimbarang tkb ON tkb.objectorderbarangfk = tor.norec
+ORDER BY
+    tor.tglinput DESC
 `
 
 /**
@@ -145,8 +147,8 @@ SELECT
     tkbd.jumlah AS jumlah,
     tkbd.objectsatuanfk AS satuan,
     ms.satuan AS namasatuan
-FROM t_orderbarang tor
-    LEFT JOIN t_kirimbarang tkb ON tkb.objectorderbarangfk = tor.norec
+FROM t_kirimbarang tkb
+    LEFT JOIN t_orderbarang tor ON tkb.objectorderbarangfk = tor.norec
     LEFT JOIN t_kirimbarangdetail tkbd ON tkbd.objectdistribusibarangfk = tkb.norec
     LEFT JOIN m_produk mp ON mp.id = tkbd.objectprodukfk
     LEFT JOIN t_orderbarangdetail tod ON tod.norec = tkbd.objectorderbarangdetailfk
@@ -155,7 +157,7 @@ FROM t_orderbarang tor
     AND ts.objectunitfk = tkb.objectunittujuanfk
     AND ts.nobatch = tkbd.nobatch
     LEFT JOIN m_satuan ms ON ms.id = tkbd.objectsatuanfk
-WHERE tor.norec = $1
+WHERE tkb.objectorderbarangfk = $1
 `
 
 export {
