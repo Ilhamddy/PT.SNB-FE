@@ -33,7 +33,9 @@ import {
     UPSERT_KAMAR_ERROR,
     GET_MAP_ROLE_PERMISSIONS, GET_MAP_ROLE_PERMISSIONS_SUCCESS, GET_MAP_ROLE_PERMISSIONS_ERROR,
     UPSERT_ROLE_PERMISSIONS, UPSERT_ROLE_PERMISSIONS_SUCCESS, UPSERT_ROLE_PERMISSIONS_ERROR,
-    UPSERT_MENU_MODUL,UPSERT_MENU_MODUL_SUCCESS,UPSERT_MENU_MODUL_ERROR
+    UPSERT_MENU_MODUL,UPSERT_MENU_MODUL_SUCCESS,UPSERT_MENU_MODUL_ERROR,
+    GET_MAP_CHILD,GET_MAP_CHILD_SUCCESS,GET_MAP_CHILD_ERROR,
+    UPSERT_MAP_CHILD,UPSERT_MAP_CHILD_SUCCESS,UPSERT_MAP_CHILD_ERROR
 } from "./actionType";
 
 
@@ -295,5 +297,40 @@ export const upsertMenuModulSuccess = (data) => ({
 
 export const upsertMenuModulError = (error) => ({
     type: UPSERT_MENU_MODUL_ERROR,
+    payload: error,
+});
+
+export const getMapChild = (queries) => ({
+    type: GET_MAP_CHILD,
+    payload: {
+        queries,
+    },
+});
+
+export const getMapChildSuccess = (data) => ({
+    type: GET_MAP_CHILD_SUCCESS,
+    payload: data,
+});
+
+export const getMapChildError = (error) => ({
+    type: GET_MAP_CHILD_ERROR,
+    payload: error,
+});
+
+export const upsertMapChild = (data, callback) => ({
+    type: UPSERT_MAP_CHILD,
+    payload: {
+        data,
+        callback
+    },
+});
+
+export const upsertMapChildSuccess = (data) => ({
+    type: UPSERT_MAP_CHILD_SUCCESS,
+    payload: data,
+});
+
+export const upsertMapChildError = (error) => ({
+    type: UPSERT_MAP_CHILD_ERROR,
     payload: error,
 });

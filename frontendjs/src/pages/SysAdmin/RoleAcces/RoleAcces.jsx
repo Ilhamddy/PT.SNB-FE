@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import withRouter from "../../../Components/Common/withRouter"
 import { useDispatch, useSelector } from "react-redux";
 import { ToastContainer, toast } from "react-toastify";
@@ -11,20 +11,23 @@ import DataTable from "react-data-table-component";
 import LoadingTable from "../../../Components/Table/LoadingTable";
 import {
   getComboSysadmin, upsertRoles, getMapRolePermissions, upsertRolePermissions,
-  upsertMenuModul
+  upsertMenuModul, getMapChild, upsertMapChild
 } from '../../../store/sysadmin/action'
 import { onChangeStrNbr } from "../../../utils/format";
+import CustomSelect from "../../Select/Select";
 
 const RoleAcces = () => {
   document.title = "Role Acces";
   const dispatch = useDispatch();
   const { dataCombo,
     loadingCombo, dataMapPermissions, loadingMapPermissions,
-    newData, success, loading } = useSelector((state) => ({
+    newData, success, loading, dataMapChild, loadingMapChild } = useSelector((state) => ({
       dataCombo: state.Sysadmin.getComboSysadmin.data || [],
       loadingCombo: state.Sysadmin.getComboSysadmin.loading,
       dataMapPermissions: state.Sysadmin.getMapRolePermissions.data || [],
       loadingMapPermissions: state.Sysadmin.getMapRolePermissions.loading,
+      dataMapChild: state.Sysadmin.getMapChild.data || [],
+      loadingMapChild: state.Sysadmin.getMapChild.loading,
       newData: state.Sysadmin.upsertRolePermissions.newData,
       success: state.Sysadmin.upsertRolePermissions.success,
       loading: state.Sysadmin.upsertRolePermissions.loading,
@@ -83,19 +86,27 @@ const RoleAcces = () => {
     enableReinitialize: true,
     initialValues: {
       idChild: '',
-
+      idMenu: '',
+      Menu: '',
+      nameLink: '',
+      nourutChild: '',
+      namaChild: '',
     },
     validationSchema: Yup.object({
-      // namaMenu: Yup.string().required("Nama Menu wajib diisi"),
-      // namaIcon: Yup.string().required("Nama Icon wajib diisi"),
-      // nourut: Yup.string().required("nourut wajib diisi"),
+      nameLink: Yup.string().required("Link wajib diisi"),
+      nourutChild: Yup.string().required("No Urut Child wajib diisi"),
+      namaChild: Yup.string().required("Nama Child wajib diisi"),
     }),
-    onSubmit: (values) => {
+    onSubmit: (values, { resetForm }) => {
+      if (values.idMenu === '') {
+        toast.error("Menu Belum Dipilih", { autoClose: 3000 });
+        return
+      }
       dispatch(
-        // upsertMenuModul(values, () => {
-        //   vSetValidationMenu.resetForm()
-        //   dispatch(getMapRolePermissions({ idmodul: selected.idRole }))
-        // })
+        upsertMapChild(values, () => {
+          dispatch(getMapChild({ idMenu: values.idMenu }))
+          resetForm()
+        })
       )
     }
   })
@@ -236,6 +247,28 @@ const RoleAcces = () => {
     //   ),
     // },
   ];
+  const columnsMapChild = [
+    {
+      name: <span className='font-weight-bold fs-13'>No Urut</span>,
+      selector: row => row.nourut,
+      sortable: true,
+      width: "100px"
+    },
+    {
+      name: <span className='font-weight-bold fs-13'>Nama</span>,
+      selector: row => row.reportdisplay,
+      sortable: true,
+      width: "100px"
+    },
+    {
+      name: <span className='font-weight-bold fs-13'>Link</span>,
+      selector: row => row.link,
+      sortable: true,
+      // selector: row => (<button className="btn btn-sm btn-soft-info" onClick={() => handleClick(dataTtv)}>{row.noregistrasi}</button>),
+      // width: "250px",
+      wrap: true,
+    },
+  ];
   const handleRole = (characterEntered) => {
     if (characterEntered.length > 3) {
       dispatch(getComboSysadmin({
@@ -280,9 +313,24 @@ const RoleAcces = () => {
     vSetValidationMenu.setFieldValue('namaMenu', e.reportdisplay)
     vSetValidationMenu.setFieldValue('namaIcon', e.icon)
     vSetValidationMenu.setFieldValue('nourut', e.nourut)
+    vSetValidationChild.setFieldValue('idMenu', e.id)
+    vSetValidationChild.setFieldValue('Menu', e.reportdisplay)
+    dispatch(getMapChild({ idMenu: e.id }))
   }
   const handleBatalMenu = (e) => {
     vSetValidationMenu.resetForm()
+    vSetValidationChild.resetForm()
+  }
+
+  const handleBatalChild = (e) => {
+    vSetValidationChild.resetForm()
+  }
+  const handleClickRowChild = (e) => {
+    vSetValidationChild.setFieldValue('idChild', e.id)
+    vSetValidationChild.setFieldValue('nourutChild', e.nourut)
+    vSetValidationChild.setFieldValue('namaChild', e.reportdisplay)
+    vSetValidationChild.setFieldValue('nameLink', e.objectlinkmenufk)
+    vSetValidationChild.setFieldValue('idMenu', e.objekmenumodulaplikasiid)
   }
   return (
     <React.Fragment>
@@ -556,19 +604,115 @@ const RoleAcces = () => {
                     className="gy-4"
                     action="#">
                     <Row className="gy-2">
+                      <Col lg={3}>
+                        <div className="mt-2">
+                          <Label style={{ color: "black" }} htmlFor="unitlast" className="form-label">Menu :</Label>
+                        </div>
+                      </Col>
+                      <Col lg={9}>
+                        <div className="mt-2">
+                          <Label style={{ color: "black" }} htmlFor="unitlast" className="form-label">{vSetValidationChild.values.Menu ? vSetValidationChild.values.Menu : '-'}</Label>
+                        </div>
+                      </Col>
+                      <Col lg={4}>
+                        <div className="mt-2">
+                          <Label style={{ color: "black" }} htmlFor="unitlast" className="form-label">Nama</Label>
+                        </div>
+                      </Col>
+                      <Col lg={8}>
+                        <Input
+                          id="namaChild"
+                          name="namaChild"
+                          type="text"
+                          value={vSetValidationChild.values.namaChild}
+                          onChange={(e) => {
+                            vSetValidationChild.setFieldValue('namaChild', e.target.value)
+                          }}
+                          invalid={vSetValidationChild.touched?.namaChild &&
+                            !!vSetValidationChild.errors?.namaChild}
+                        />
+                        {vSetValidationChild.touched?.namaChild
+                          && !!vSetValidationChild.errors.namaChild && (
+                            <FormFeedback type="invalid">
+                              <div>{vSetValidationChild.errors.namaChild}</div>
+                            </FormFeedback>
+                          )}
+                      </Col>
+                      <Col lg={4}>
+                        <div className="mt-2">
+                          <Label style={{ color: "black" }} htmlFor="unitlast" className="form-label">No Urut</Label>
+                        </div>
+                      </Col>
+                      <Col lg={8}>
+                        <Input
+                          id="nourutChild"
+                          name="nourutChild"
+                          type="text"
+                          value={vSetValidationChild.values.nourutChild}
+                          onChange={(e) => {
+                            const newVal = onChangeStrNbr(
+                              e.target.value,
+                              vSetValidationChild.values.nourutChild
+                            )
+                            vSetValidationChild.setFieldValue('nourutChild', newVal)
+                          }}
+                          invalid={vSetValidationChild.touched?.nourutChild &&
+                            !!vSetValidationChild.errors?.nourutChild}
+                        />
+                        {vSetValidationChild.touched?.nourutChild
+                          && !!vSetValidationChild.errors.nourutChild && (
+                            <FormFeedback type="invalid">
+                              <div>{vSetValidationChild.errors.nourutChild}</div>
+                            </FormFeedback>
+                          )}
+                      </Col>
+                      <Col lg={4}>
+                        <div className="mt-2">
+                          <Label style={{ color: "black" }} htmlFor="unitlast" className="form-label">Link</Label>
+                        </div>
+                      </Col>
+                      <Col lg={8}>
+                        <CustomSelect
+                          isClearEmpty
+                          id="nameLink"
+                          name="nameLink"
+                          options={dataCombo.link}
+                          onChange={(e) => {
+                            vSetValidationChild.setFieldValue('nameLink', e?.value || '')
+                          }}
+                          value={vSetValidationChild.values.nameLink}
+                          className={`input row-header ${!!vSetValidationChild?.errors.nameLink ? 'is-invalid' : ''
+                            }`}
+                        />
+                        {vSetValidationChild.touched.nameLink &&
+                          !!vSetValidationChild.errors.nameLink && (
+                            <FormFeedback type="invalid">
+                              <div>{vSetValidationChild.errors.nameLink}</div>
+                            </FormFeedback>
+                          )}
+                      </Col>
+                      <Col lg={12} className="mr-3 me-3 mt-2">
+                        <div className="d-flex flex-wrap justify-content-end gap-2">
+                          <Button
 
+                            type="submit" color="success" style={{ width: '30%' }}>Simpan</Button>
+                          <Button type="button" color="danger" style={{ width: '30%' }}
+                            onClick={() => { handleBatalChild() }}
+                          >Batal</Button>
+                        </div>
+                      </Col>
                       <Col lg={12}>
                         <div id="table-gridjs">
                           <DataTable
                             fixedHeader
                             fixedHeaderScrollHeight="330px"
-                            columns={columnsMap}
+                            columns={columnsMapChild}
                             pagination
-                            data={dataMapPermissions}
-                            progressPending={loadingMapPermissions}
+                            data={dataMapChild}
+                            progressPending={loadingMapChild}
                             customStyles={tableCustomStyles}
                             progressComponent={<LoadingTable />}
-                            onRowClicked={(row) => handleClickRowMenu(row)}
+                            onRowClicked={(row) => handleClickRowChild(row)}
                             pointerOnHover
                             highlightOnHover
                           />

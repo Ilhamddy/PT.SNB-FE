@@ -15,7 +15,9 @@ import {
     UPSERT_KAMAR,
     GET_MAP_ROLE_PERMISSIONS,
     UPSERT_ROLE_PERMISSIONS,
-    UPSERT_MENU_MODUL
+    UPSERT_MENU_MODUL,
+    GET_MAP_CHILD,
+    UPSERT_MAP_CHILD
  } from "./actionType";
 import { 
     getTempatTidurSuccess,
@@ -42,7 +44,9 @@ import {
     upsertKamarError,
     getMapRolePermissionsSuccess,getMapRolePermissionsError,
     upsertRolePermissionsSuccess,upsertRolePermissionsError,
-    upsertMenuModulSuccess,upsertMenuModulError
+    upsertMenuModulSuccess,upsertMenuModulError,
+    getMapChildSuccess, getMapChildError,
+    upsertMapChildSuccess, upsertMapChildError
 } from "./action";
 import { toast } from 'react-toastify';
 
@@ -201,6 +205,28 @@ function* onupsertMenuModul({payload: {data, callback}}) {
     }
 }
 
+function* ongetMapChild({payload: {queries}}) {
+    try{
+        const response = yield call(serviceSysadmin.getMapChild, queries);
+        yield put(getMapChildSuccess(response.data));
+    } catch (error) {
+        yield put(getMapChildError(error));
+    }
+}
+
+function* onupsertMapChild({payload: {data, callback}}) {
+    try{
+        console.log('masuukkk')
+        const response = yield call(serviceSysadmin.upsertMapChild, data);
+        yield put(upsertMapChildSuccess(response.data));
+        toast.success(response.msg || "Sukses");
+        callback && callback(response);
+    } catch (error) {
+        yield put(upsertMapChildError(error));
+        toast.error(error.msg || "Gagal");
+    }
+}
+
 export default function* SysadminSaga() {
     yield all([
         takeEvery(GET_TEMPAT_TIDUR, onGetTempatTidur),
@@ -217,6 +243,8 @@ export default function* SysadminSaga() {
         takeEvery(UPSERT_KAMAR, onUpsertKamar),
         takeEvery(GET_MAP_ROLE_PERMISSIONS, ongetMapRolePermissions),
         takeEvery(UPSERT_ROLE_PERMISSIONS,onupsertRolePermissions),
-        takeEvery(UPSERT_MENU_MODUL,onupsertMenuModul)
+        takeEvery(UPSERT_MENU_MODUL,onupsertMenuModul),
+        takeEvery(GET_MAP_CHILD,ongetMapChild),
+        takeEvery(UPSERT_MAP_CHILD,onupsertMapChild)
     ]);
 }

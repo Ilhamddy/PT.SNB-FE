@@ -10,7 +10,8 @@ import {
     qRoles,
     statusBed,
     qChekMapPermissions,
-    qListChild
+    qListChild,
+    qComboLink
 } from "../../../queries/sysadmin/sysadmin.queries";
 import db from "../../../models";
 import { getDateStartEnd } from "../../../utils/dateutils";
@@ -436,9 +437,12 @@ const getComboSysadmin = async (req, res) => {
 
         const result1 = await pool.query(qRoles, [req.query.cari || ''])
         const result2 = await pool.query(qPermissions)
+        const result3 = await pool.query(qComboLink)
+
         const tempres = {
             role: result1.rows,
-            permissions: result2.rows
+            permissions: result2.rows,
+            link:result3.rows
         };
         res.status(200).send({
             msg: 'Success',
@@ -640,6 +644,57 @@ const getListChildMenu = async (req, res) => {
     }
 }
 
+const saveMapChild = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const { setRole } = await db.sequelize.transaction(async (transaction) => {
+            let setRole = ''
+            if(req.body.idChild!==''){
+                setRole = await db.s_childmenumodulaplikasi.update({
+                    namaexternal: req.body.namaChild,
+                    reportdisplay: req.body.namaChild,
+                    nourut:req.body.nourutChild,
+                    icon:req.body.namaIcon,
+                    objectlinkmenufk:req.body.nameLink
+                }, {
+                    where: {
+                        id: req.body.idChild
+                    },
+                    transaction: transaction
+                });
+            }else{
+                setRole = await db.s_childmenumodulaplikasi.create({
+                    statusenabled:true,
+                    namaexternal: req.body.namaChild,
+                    reportdisplay: req.body.namaChild,
+                    objekmenumodulaplikasiid:req.body.idMenu,
+                    nourut:req.body.nourutChild,
+                    objectlinkmenufk:req.body.nameLink
+                }, { transaction });
+            }
+            return { setRole }
+        });
+        
+        const tempres = {
+        
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: setRole,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export default {
     getTempatTidur,
     getUnitTempatTidur,
@@ -656,5 +711,6 @@ export default {
     getMapRolePermissions,
     saveRolePermissions,
     saveMenuModul,
-    getListChildMenu
+    getListChildMenu,
+    saveMapChild
 }

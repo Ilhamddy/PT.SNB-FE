@@ -163,9 +163,11 @@ const qPermissions =`select row_number() OVER (ORDER BY p.id) AS no,p.id,p.name,
 const qChekMapPermissions =`SELECT roleid, permissionid, statusenabled
 FROM public.role_permissions where roleid=$1 and permissionid=$2`
 
-const qListChild =`select sc.reportdisplay,sc.nourut from s_childmenumodulaplikasi sc
+const qListChild =`select sc.id,sc.reportdisplay,sc.nourut,sl.reportdisplay as link,sc.objectlinkmenufk,sc.objekmenumodulaplikasiid from s_childmenumodulaplikasi sc
 join s_linkmenu sl on sl.id=sc.objectlinkmenufk
 where sc.objekmenumodulaplikasiid=$1`
+
+const qComboLink =`select sl.id as value,sl.reportdisplay as label from s_linkmenu sl`
 
 export {
 	qGetTempatTidur,
@@ -177,5 +179,6 @@ export {
 	qMapRolePermissions,
 	qPermissions,
 	qChekMapPermissions,
-	qListChild
+	qListChild,
+	qComboLink
 }
