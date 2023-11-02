@@ -57,18 +57,14 @@ const DistribusiOrderList = () => {
             >
               <i className="ri-apps-2-line"></i>
             </DropdownToggle>
-            {!row.tglkirim ? (
-              <DropdownMenu className="dropdown-menu-end">
-                <Link to={`/farmasi/gudang/distribusi-kirim/${row.norecorder}`}>
-                  <DropdownItem>
-                    <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
-                    Kirim Order
-                  </DropdownItem>
-                </Link>
-              </DropdownMenu>
-            ) : (
-              <></>
-            )}
+            <DropdownMenu className="dropdown-menu-end">
+              <Link to={`/farmasi/gudang/distribusi-kirim/${row.norecorder}`}>
+                <DropdownItem>
+                  <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
+                  {!row.tglkirim ? 'Kirim Order' : 'Lihat Detail'}
+                </DropdownItem>
+              </Link>
+            </DropdownMenu>
           </UncontrolledDropdown>
         </div>
       ),
@@ -86,7 +82,7 @@ const DistribusiOrderList = () => {
       name: <span className="font-weight-bold fs-13">No Kirim</span>,
       sortable: true,
       selector: (row) => row.nokirim || '-',
-      width: '100px',
+      width: '150px',
     },
     {
       name: <span className="font-weight-bold fs-13">Tanggal Order</span>,
@@ -152,8 +148,7 @@ const DistribusiOrderList = () => {
               fixedHeader
               columns={columnsProduk}
               pagination
-              paginationPerPage={5}
-              paginationRowsPerPageOptions={[5]}
+              paginationPerPage={10}
               data={listOrder}
               progressPending={false}
               customStyles={tableCustomStyles}
