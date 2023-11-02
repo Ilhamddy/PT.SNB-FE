@@ -51,13 +51,16 @@ export const dateTimeLocal = (date) => {
  */
 export const dateLocal = (date) => {
     try{
-        return new Date(date)
+        if(date){
+            return new Date(date)
             .toLocaleDateString("id-ID", 
                 { 
                     year: 'numeric', 
                     month: 'numeric', 
                     day: 'numeric' 
             }) 
+        }
+        return "-"
     }catch(e){
         return "-"
     }
