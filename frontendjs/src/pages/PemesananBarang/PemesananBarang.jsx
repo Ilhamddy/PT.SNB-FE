@@ -45,6 +45,7 @@ const PemesananBarang = ({ isLogistik }) => {
         total: '',
       },
       detail: [],
+      islogistik: isLogistik,
     },
     validationSchema: Yup.object({
       penerimaan: Yup.object().shape({

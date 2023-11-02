@@ -28,7 +28,7 @@ const SettingProduk = () => {
         <div className="page-content page-setting-produk">
             <ToastContainer closeButton={false} />
             <Container fluid>
-                <BreadCrumb title="Pembayaran" pageTitle="Pembayaran" />
+                <BreadCrumb title="Master Produk" pageTitle="Gudang" />
                     <Card >
                         <div className="card-header align-items-center d-flex">
                             <div className="flex-shrink-0 ms-2">

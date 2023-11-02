@@ -5,7 +5,7 @@ import {Props as StateManagerProps} from 'react-select';
 /**
  * @typedef {object} Props
  * @property {string} className
- * @property {boolean} [isClearEmpty] if value is === '' then clearValue
+ * @property {boolean} [isClearEmpty] if value is === "" then clearValue
  */
 
 /**

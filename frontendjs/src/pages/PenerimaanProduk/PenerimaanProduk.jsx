@@ -74,12 +74,14 @@ export const PenerimaanContext = createContext({
   ppn: null,
   subtotal: null,
   diskon: null,
+  isLogistik: null,
 })
 
 const PenerimaanProduk = ({ isLogistik }) => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const { norecpenerimaan, norecpesan } = useParams()
+  const isPesan = !!norecpesan
 
   const [dateNow] = useState(() => new Date().toISOString())
 
@@ -113,6 +115,7 @@ const PenerimaanProduk = ({ isLogistik }) => {
         total: '',
       },
       detail: [],
+      islogistik: isLogistik,
     },
     validationSchema: Yup.object({
       penerimaan: Yup.object().shape({
@@ -318,7 +321,10 @@ const PenerimaanProduk = ({ isLogistik }) => {
     <div className="page-content page-penerimaan-barang">
       <ToastContainer closeButton={false} />
       <Container fluid>
-        <BreadCrumb title="Penerimaan Produk" pageTitle="Gudang" />
+        <BreadCrumb
+          title={isLogistik ? 'Penerimaan Logistik' : 'Penerimaan Produk'}
+          pageTitle="Gudang"
+        />
         <Form
           onSubmit={(e) => {
             e.preventDefault()
@@ -343,18 +349,18 @@ const PenerimaanProduk = ({ isLogistik }) => {
               refSatuanTerima: refSatuanTerima,
               detailPemesanan: detailPemesanan,
               detailPemesananPenerimaan: detailPemesananPenerimaan,
-              norecpesan: norecpesan,
               validation: validation,
               total: total,
               ppn: ppn,
               subtotal: subtotal,
               diskon: diskon,
+              isLogistik: isLogistik,
             }}
           >
             <InputUmumTerima />
-            {(!!norecpesan ||
+            {(isPesan ||
               (detailPemesananPenerimaan.length > 0 &&
-                !norecpesan &&
+                !isPesan &&
                 !norecpenerimaan)) && <ListPesan />}
             <InputProdukDetail />
             <ListDetail />

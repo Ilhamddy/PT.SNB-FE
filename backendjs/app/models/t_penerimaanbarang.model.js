@@ -56,6 +56,9 @@ export default (sequelize, Sequelize) => {
         objectpemesananbarangfk: {
             type: Sequelize.CHAR(32),
         },
+        islogistik: {
+            type: Sequelize.BOOLEAN,
+        },
     }, {
         tableName: "t_penerimaanbarang", // relation "user" does not exist
         createdAt: false,
