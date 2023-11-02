@@ -101,4 +101,9 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getListChildMenu
     )
+    app.post(
+        "/api/transaksi/sysadmin/upsert-menu-child",
+        [authJwt.verifyToken],
+        controller.saveMapChild
+    )
 }

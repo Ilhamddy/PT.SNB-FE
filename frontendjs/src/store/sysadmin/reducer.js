@@ -39,7 +39,9 @@ import {
     GET_MAP_ROLE_PERMISSIONS_SUCCESS,
     GET_MAP_ROLE_PERMISSIONS_ERROR,
     UPSERT_ROLE_PERMISSIONS, UPSERT_ROLE_PERMISSIONS_SUCCESS, UPSERT_ROLE_PERMISSIONS_ERROR,
-    UPSERT_MENU_MODUL, UPSERT_MENU_MODUL_ERROR,UPSERT_MENU_MODUL_SUCCESS
+    UPSERT_MENU_MODUL, UPSERT_MENU_MODUL_ERROR,UPSERT_MENU_MODUL_SUCCESS,
+    GET_MAP_CHILD,GET_MAP_CHILD_SUCCESS,GET_MAP_CHILD_ERROR,
+    UPSERT_MAP_CHILD, UPSERT_MAP_CHILD_SUCCESS, UPSERT_MAP_CHILD_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -114,6 +116,16 @@ const INIT_STATE = {
         error: null,
     },
     upsertMenuModul: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    getMapChild: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    upsertMapChild:{
         data: [],
         loading: false,
         error: null,
@@ -611,6 +623,72 @@ const Sysadmin = (state = INIT_STATE, action) => {
                 ...state,
                 upsertMenuModul: {
                     ...state.upsertMenuModul,
+                    loading: true,
+                    error: action.payload,
+                }
+            }
+        }
+
+        case GET_MAP_CHILD: {
+            return {
+                ...state,
+                getMapChild: {
+                    ...state.getMapChild,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case GET_MAP_CHILD_SUCCESS: {
+            return {
+                ...state,
+                getMapChild: {
+                    ...state.getMapChild,
+                    loading: false,
+                    data: action.payload,
+                }
+            }
+        }
+
+        case GET_MAP_CHILD_ERROR: {
+            return {
+                ...state,
+                getMapChild: {
+                    ...state.getMapChild,
+                    loading: false,
+                    error: action.payload,
+                }
+            }
+        }
+
+        case UPSERT_MAP_CHILD: {
+            return {
+                ...state,
+                upsertMapChild: {
+                    ...state.upsertMapChild,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case UPSERT_MAP_CHILD_SUCCESS: {
+            return {
+                ...state,
+                upsertMapChild: {
+                    ...state.upsertMapChild,
+                    loading: false,
+                    data: action.payload,
+                }
+            }
+        }
+
+        case UPSERT_MAP_CHILD_ERROR: {
+            return {
+                ...state,
+                upsertMapChild: {
+                    ...state.upsertMapChild,
                     loading: true,
                     error: action.payload,
                 }
