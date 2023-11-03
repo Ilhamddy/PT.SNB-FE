@@ -74,8 +74,10 @@ const DistribusiOrder = () => {
             unittujuan: Yup.string().required("Unit Tujuan harus diisi"),
             keterangan: Yup.string().required("Keterangan Kirim harus diisi"),
         }),
-        onSubmit: (values) => {
-            dispatch(createOrUpdateOrderbarang(values))
+        onSubmit: (values, {resetForm}) => {
+            dispatch(createOrUpdateOrderbarang(values, () => {
+                resetForm()
+            }))
         }
     })
 
@@ -376,8 +378,9 @@ const DistribusiOrder = () => {
                         options={jenisorderbarang}
                         value={vOrder.values?.jenisorder}
                         onChange={(val) => {
-                            vOrder.setFieldValue("jenisorder", val?.value)
+                            vOrder.setFieldValue("jenisorder", val?.value || "")
                         }}
+                        isClearEmpty
                         className={`input 
                             ${vOrder.errors?.jenisorder 
                                 ? "is-invalid" 
@@ -408,8 +411,9 @@ const DistribusiOrder = () => {
                         options={unit}
                         value={vOrder.values?.unitorder}
                         onChange={(val) => {
-                            vOrder.setFieldValue("unitorder", val.value)
+                            vOrder.setFieldValue("unitorder", val?.value || "")
                         }}
+                        isClearEmpty
                         className={`input 
                             ${vOrder.errors?.unitorder 
                                 ? "is-invalid" 
@@ -439,10 +443,11 @@ const DistribusiOrder = () => {
                         name="unittujuan"
                         options={unit}
                         onChange={(val) => {
-                            vOrder.setFieldValue("unittujuan", val.value)
-                            dispatch(getStokBatch({ idunit: val.value }))
+                            vOrder.setFieldValue("unittujuan", val?.value || "")
+                            dispatch(getStokBatch({ idunit: val?.value || "" }))
                         }}
                         value={vOrder.values?.unittujuan}
+                        isClearEmpty
                         className={`input 
                             ${vOrder.errors?.unittujuan 
                                 ? "is-invalid" 

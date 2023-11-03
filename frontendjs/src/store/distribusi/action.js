@@ -14,6 +14,9 @@ import {
     CREATE_OR_UPDATE_KIRIM_BARANG,
     CREATE_OR_UPDATE_KIRIM_BARANG_SUCCESS,
     CREATE_OR_UPDATE_KIRIM_BARANG_ERROR,
+    VERIFY_KIRIM,
+    VERIFY_KIRIM_SUCCESS,
+    VERIFY_KIRIM_ERROR
 } from "./actionType"
 
 
@@ -32,9 +35,9 @@ export const getStokBatchError = (error) => ({
     payload: error
 })
 
-export const createOrUpdateOrderbarang = (body) => ({
+export const createOrUpdateOrderbarang = (body, callback) => ({
     type: CREATE_OR_UPDATE_ORDER_BARANG,
-    payload: {body: body}
+    payload: {body: body, callback: callback}
 })
 
 export const createOrUpdateOrderbarangSuccess = (data) => ({
@@ -77,9 +80,9 @@ export const getOrderStokBatchError = (error) => ({
     payload: error
 })
 
-export const createOrUpdateKirimBarang = (body) => ({
+export const createOrUpdateKirimBarang = (body, callback) => ({
     type: CREATE_OR_UPDATE_KIRIM_BARANG,
-    payload: {body: body}
+    payload: {body: body, callback: callback}
 })
 
 export const createOrUpdateKirimBarangSuccess = (data) => ({
@@ -89,5 +92,23 @@ export const createOrUpdateKirimBarangSuccess = (data) => ({
 
 export const createOrUpdateKirimBarangError = (error) => ({
     type: CREATE_OR_UPDATE_KIRIM_BARANG_ERROR,
+    payload: error
+})
+
+export const verifyKirim = (data, callback) => ({
+    type: VERIFY_KIRIM,
+    payload: {
+        data: data, 
+        callback: callback
+    }
+})
+
+export const verifyKirimSuccess = (data) => ({
+    type: VERIFY_KIRIM_SUCCESS,
+    payload: data
+})
+
+export const verifyKirimError = (error) => ({
+    type: VERIFY_KIRIM_ERROR,
     payload: error
 })

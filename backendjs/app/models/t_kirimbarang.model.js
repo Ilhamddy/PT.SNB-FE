@@ -39,6 +39,15 @@ export default (sequelize, Sequelize) => {
         },
         objectpegawaifk: {
             type: Sequelize.INTEGER,
+        },
+        isverif: {
+            type: Sequelize.BOOLEAN
+        },
+        tglverif: {
+            type: Sequelize.DATE
+        },
+        objectpegawaifk: {
+            type: Sequelize.INTEGER
         }
     }, {
         tableName: "t_kirimbarang", 

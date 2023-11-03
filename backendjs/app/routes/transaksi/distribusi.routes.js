@@ -47,5 +47,11 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.createOrUpdateKirimBarang
     )
+
+    app.post(
+        "/api/transaksi/gudang/distribusi/verify-kirim",
+        [authJwt.verifyToken],
+        controller.verifyKirim
+    )
         
 }

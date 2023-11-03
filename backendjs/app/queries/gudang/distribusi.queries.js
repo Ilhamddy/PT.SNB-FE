@@ -53,10 +53,6 @@ WHERE mk.statusenabled = true AND mk.id = $1
 
 const qGetOrder = `
 SELECT
-    tkb.norec AS noreckirim,
-    tkb.tglinput AS tglkirim,
-    tkb.nopengiriman AS nokirim,
-    tkb.keterangan AS keterangankirim,
     tor.norec AS norecorder,
     tor.tglinput AS tglorder,
     tor.objectjenisorderbarangfk AS jenisorder,
@@ -72,8 +68,36 @@ FROM t_orderbarang tor
     LEFT JOIN m_unit mut ON mut.id = tor.objectunittujuanfk
     LEFT JOIN m_jenisorderbarang mjob ON mjob.id = tor.objectjenisorderbarangfk
     LEFT JOIN t_kirimbarang tkb ON tkb.objectorderbarangfk = tor.norec
+WHERE tkb IS NULL
 ORDER BY
-    tor.tglinput DESC
+    tor.tglinput DESC 
+`
+
+const qGetKirim = `
+SELECT
+    tkb.norec AS noreckirim,
+    tkb.tglinput AS tglkirim,
+    tkb.nopengiriman AS nokirim,
+    tkb.keterangan AS keterangankirim,
+    tor.norec AS norecorder,
+    tor.tglinput AS tglorder,
+    tkb.objectjenisorderbarangfk AS jenisorder,
+    mjob.reportdisplay AS namajenisorder,
+    tkb.objectunitpengirimfk AS unitorder,
+    mua.namaunit AS namaunitasal,
+    tkb.objectunittujuanfk AS unittujuan,
+    mut.namaunit AS namaunittujuan,
+    tor.noorder AS noorder,
+    tor.keterangan AS keterangan,
+    tkb.keterangan AS keterangankirim,
+    tkb.isverif AS isverif
+FROM t_kirimbarang tkb
+    LEFT JOIN m_unit mua ON mua.id = tkb.objectunitpengirimfk
+    LEFT JOIN m_unit mut ON mut.id = tkb.objectunittujuanfk
+    LEFT JOIN m_jenisorderbarang mjob ON mjob.id = tkb.objectjenisorderbarangfk
+    LEFT JOIN t_orderbarang tor ON tkb.objectorderbarangfk = tor.norec
+ORDER BY
+    tkb.tglinput DESC
 `
 
 /**
@@ -135,7 +159,13 @@ WHERE
 
 const qGetKirimStok = `
 SELECT
-    tkbd.norec AS noreckirim,
+    tkb.norec AS noreckirim,
+    tkb.tglinput AS tglkirim,
+    tkb.nopengiriman AS nokirim,
+    tkb.keterangan AS keterangankirim,
+    tkb.objectjenisorderbarangfk AS jenisorder,
+    tkb.objectunitpengirimfk AS unittujuan,
+    tkb.objectunittujuanfk AS unitasal,
     tkbd.objectprodukfk AS value,
     tkbd.objectorderbarangdetailfk AS norecorderdetail,
     tkbd.objectprodukfk AS produkid,
@@ -146,18 +176,18 @@ SELECT
     tkbd.qty AS qtykirim,
     tkbd.jumlah AS jumlah,
     tkbd.objectsatuanfk AS satuan,
-    ms.satuan AS namasatuan
+    ms.satuan AS namasatuan,
+    tkb.isverif AS isverif
 FROM t_kirimbarang tkb
     LEFT JOIN t_orderbarang tor ON tkb.objectorderbarangfk = tor.norec
     LEFT JOIN t_kirimbarangdetail tkbd ON tkbd.objectdistribusibarangfk = tkb.norec
     LEFT JOIN m_produk mp ON mp.id = tkbd.objectprodukfk
     LEFT JOIN t_orderbarangdetail tod ON tod.norec = tkbd.objectorderbarangdetailfk
-    --- minta qty pada saat ngirim
     LEFT JOIN t_stokunit ts ON ts.objectprodukfk = tkbd.objectprodukfk 
     AND ts.objectunitfk = tkb.objectunittujuanfk
     AND ts.nobatch = tkbd.nobatch
     LEFT JOIN m_satuan ms ON ms.id = tkbd.objectsatuanfk
-WHERE tkb.objectorderbarangfk = $1
+WHERE (tkb.objectorderbarangfk IS NOT NULL AND tkb.objectorderbarangfk = $1) OR ($1 = '' AND tkb.norec = $2)
 `
 
 export {
@@ -165,5 +195,6 @@ export {
     qKemasanFromId,
     qGetOrder,
     qGetOrderStok,
-    qGetKirimStok
+    qGetKirimStok,
+    qGetKirim
 }

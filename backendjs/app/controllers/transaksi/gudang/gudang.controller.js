@@ -1370,76 +1370,34 @@ const hCreateOrUpdateStokUnitPenerimaan  = async (
                 const {
                     nobatch
                 } = updatedValue
-                let stokBatch = await t_stokunit.findOne({
-                    where: {
-                        kodebatch: generateKodeBatch(
-                            nobatch, 
-                            updatedValue.objectprodukfk,
-                            createdOrUpdatedPenerimaan.objectunitfk
-                        )
-                    },
-                    lock: transaction.LOCK.UPDATE,
-                })
-                let createdOrUpdated = null
-                const stokBatchVal = stokBatch?.toJSON() || null
+
                 let changedQty = 0
-                let prevStok = null
-                // if batch found, create new batch
-                if(!stokBatchVal){
-                    const qty = updatedValue.jumlah || 0
-                    const konversi = updatedValue.jumlahkonversi || 0
-                    changedQty = qty * konversi
-                    const persenPpn = (updatedValue.ppnpersen || 0) / 100
-                    const hargaKecil = (updatedValue.hargasatuankecil || 0)
-                    const harga = (hargaKecil + (persenPpn * hargaKecil))
-                    const hargaDiskon = (updatedValue.total || 0) / changedQty
-                    createdOrUpdated = await t_stokunit.create({
-                        norec: uuid.v4().substring(0, 32),
-                        kdprofile: 0,
-                        statusenabled: true,
-                        objectunitfk: createdOrUpdatedPenerimaan.objectunitfk,
-                        objectasalprodukfk: createdOrUpdatedPenerimaan.objectasalprodukfk,
-                        objectprodukfk: updatedValue.objectprodukfk,
-                        nobatch: nobatch,
-                        ed: updatedValue.ed,
-                        persendiskon: updatedValue.diskonpersen,
-                        hargadiskon: hargaDiskon,
-                        harga: harga,
-                        qty: changedQty,
-                        objectpenerimaanbarangdetailfk: norecpenerimaan,
-                        tglterima: createdOrUpdatedPenerimaan.tglterima,
-                        tglinput: new Date(),
-                        tglupdate: new Date(),
-                        kodebatch: generateKodeBatch(
-                            nobatch, 
-                            updatedValue.objectprodukfk,
-                            createdOrUpdatedPenerimaan.objectunitfk
-                        )
-                    }, {
-                        transaction: transaction
-                    })
-                }else{
-                    // if batch found, use old batch
-                    prevStok = stokBatchVal
-                    const jmlPaket = updatedValue.jumlah || 0
-                    const jmlPaketPrev = prevValue?.jumlah || 0
-                    const konversi = updatedValue.jumlahkonversi || 0
-                    const konversiPrev = prevValue?.jumlahkonversi || 0
-                    changedQty = (jmlPaket * konversi - jmlPaketPrev * konversiPrev)
-                    const qty = stokBatchVal.qty + changedQty
-                    
-                    let updated = await stokBatch.update({
-                        qty: qty,
-                        objectpenerimaanbarangdetailfk: norecpenerimaan,
-                        tglterima: createdOrUpdatedPenerimaan.tglterima,
-                        tglupdate: new Date(),
-                    }, {
-                        returning: true,
-                        transaction: transaction
-                    })
-                    updated = updated?.toJSON() || null
-                    createdOrUpdated = updated
-                }
+                const persenPpn = (updatedValue.ppnpersen || 0) / 100
+                const hargaKecil = (updatedValue.hargasatuankecil || 0)
+                const harga = (hargaKecil + (persenPpn * hargaKecil))
+                const jmlPaket = updatedValue.jumlah || 0
+                const jmlPaketPrev = prevValue?.jumlah || 0
+                const konversi = updatedValue.jumlahkonversi || 0
+                const konversiPrev = prevValue?.jumlahkonversi || 0
+                changedQty = (jmlPaket * konversi - jmlPaketPrev * konversiPrev)
+                const hargaDiskon = (updatedValue.total || 0) / changedQty
+                const {
+                    stokBarangAwalVal: prevStok, 
+                    stokBarangAkhirVal: createdOrUpdated
+                } = await hUpsertStok(req, res, transaction, {
+                    qtyDiff: changedQty,
+                    nobatch: nobatch,
+                    objectprodukfk: updatedValue.objectprodukfk,
+                    objectunitfk: createdOrUpdatedPenerimaan.objectunitfk,
+                    ed: updatedValue.ed,
+                    persendiskon: updatedValue.diskonpersen,
+                    hargadiskon: hargaDiskon,
+                    harga: harga,
+                    objectpenerimaanbarangdetailfk: norecpenerimaan,
+                    tglterima: createdOrUpdatedPenerimaan.tglterima,
+                    objectasalprodukfk: createdOrUpdatedPenerimaan.objectasalprodukfk,
+                })
+
                 return {createdOrUpdated, prevStok, changedQty}
             }
         )
@@ -1498,6 +1456,109 @@ const hCreateKartuStokPenerimaan = async (
     )
 
     return {createdKartuStokPenerimaan}
+}
+
+export const hUpsertStok = async (
+    req,
+    res,
+    transaction,
+    {
+        // wajib, untuk create dan update
+        qtyDiff,
+        nobatch,
+        objectprodukfk,
+        objectunitfk,
+        // optional, hanya untuk create
+        ed,
+        persendiskon,
+        hargadiskon,
+        harga,
+        objectpenerimaanbarangdetailfk,
+        tglterima,
+        objectasalprodukfk,
+    }
+) => {
+    if(
+        (!qtyDiff && qtyDiff !== 0) 
+        || !nobatch 
+        || !objectprodukfk 
+        || !objectunitfk 
+    ){
+        throw new Error("Salah satu param kosong")
+    }
+    const stokBarang = await t_stokunit.findOne({
+        where: {
+            kodebatch: generateKodeBatch(
+                nobatch,
+                objectprodukfk,  
+                objectunitfk
+            ),
+        },
+        lock: transaction.LOCK.UPDATE,
+        transaction: transaction
+    })
+    let stokBarangAwalVal = stokBarang?.toJSON() || null   
+    let stokBarangAkhirVal
+
+    if(!stokBarang){
+        if(qtyDiff < 0){
+            throw new Error("Stok baru tidak boleh kurang dari nol")
+        }
+        if(!ed 
+            || (!persendiskon && persendiskon !== 0) 
+            || (!hargadiskon && hargadiskon !== 0) 
+            || (!harga && harga !== 0) 
+            || !objectpenerimaanbarangdetailfk 
+            || !tglterima
+            || !objectasalprodukfk 
+        ){
+            throw new Error("Salah satu param kosong")
+        }
+        stokBarangAkhirVal = await t_stokunit.create({
+            norec: uuid.v4().substring(0, 32),
+            kdprofile: 0,
+            statusenabled: true,
+            objectunitfk: objectunitfk,
+            objectasalprodukfk: objectasalprodukfk,
+            objectprodukfk: objectprodukfk,
+            nobatch: nobatch,
+            ed: ed,
+            persendiskon: persendiskon,
+            hargadiskon: hargadiskon,
+            harga: harga,
+            qty: qtyDiff,
+            objectpenerimaanbarangdetailfk: objectpenerimaanbarangdetailfk,
+            tglterima: tglterima,
+            tglinput: new Date(),
+            tglupdate: new Date(),
+            kodebatch: generateKodeBatch(
+                nobatch,
+                objectprodukfk,
+                objectunitfk
+            )
+        }, {
+            transaction: transaction
+        })
+        stokBarangAkhirVal = stokBarangAkhirVal.toJSON()
+        stokBarangAwalVal = stokBarangAkhirVal
+    }else{
+        const qty = stokBarang.qty + qtyDiff
+        if(qty < 0){
+            throw new Error("Stok tidak cukup")
+        }
+        let updated = await stokBarang.update({
+            qty: qty,
+            tglupdate: new Date(),
+        }, {
+            transaction: transaction,
+        })
+        stokBarangAkhirVal = updated?.toJSON() || null
+    }
+    return {
+        stokBarangAwalVal,
+        stokBarangAkhirVal,
+        isNew: !stokBarang
+    }
 }
 
 /**

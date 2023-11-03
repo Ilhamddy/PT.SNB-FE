@@ -11,7 +11,9 @@ import {
     getOrderStokBatchSuccess,
     getOrderStokBatchError,
     createOrUpdateKirimBarangSuccess,
-    createOrUpdateKirimBarangError
+    createOrUpdateKirimBarangError,
+    verifyKirimSuccess,
+    verifyKirimError
 } from "./action";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -20,7 +22,8 @@ import {
     CREATE_OR_UPDATE_ORDER_BARANG,
     GET_ORDER_BARANG,
     GET_ORDER_STOK_BATCH,
-    CREATE_OR_UPDATE_KIRIM_BARANG
+    CREATE_OR_UPDATE_KIRIM_BARANG,
+    VERIFY_KIRIM
 } from "./actionType";
 
 const serviceDistribusi = new ServiceDistribusi();
@@ -35,11 +38,12 @@ function* onGetStokBatch({payload: { queries }}) {
     }
 }
 
-function* onCreateOrUpdateOrderbarang({payload: { body }}) {
+function* onCreateOrUpdateOrderbarang({payload: { body, callback }}) {
     try {
         let response = yield call(serviceDistribusi.createOrUpdateOrderbarang, body);
         yield put(createOrUpdateOrderbarangSuccess(response.data));
         toast.success(response.msg,  { autoClose: 3000 });
+        callback && callback()
     }catch(error){
         console.error(error);
         yield put(createOrUpdateOrderbarangError(error));
@@ -67,11 +71,24 @@ function* onGetOrderStokBatch({payload: { queries }}) {
     }
 }
 
-function* onCreateOrUpdateKirimBarang({payload: { body }}) {
+function* onVerifyKirim({payload: {data, callback}}) {
+    try {
+        let response = yield call(serviceDistribusi.verifyKirim, data);
+        yield put(verifyKirimSuccess(response.data));
+        callback && callback()
+        toast.success(response.msg || "Sukses")
+    } catch (error) {
+        yield put(verifyKirimError(error));
+        toast.error(error.msg || "Error")
+    }
+}
+
+function* onCreateOrUpdateKirimBarang({payload: { body, callback }}) {
     try {
         let response = yield call(serviceDistribusi.createOrUpdateKirimBarang, body);
         yield put(createOrUpdateKirimBarangSuccess(response.data));
         toast.success(response.msg,  { autoClose: 3000 });
+        callback && callback()
     }catch(error){
         yield put(createOrUpdateKirimBarangError(error));
         console.error(error?.response?.data?.msg);
@@ -100,13 +117,18 @@ export function* watchCreateOrUpdateKirimBarang(){
     yield takeEvery(CREATE_OR_UPDATE_KIRIM_BARANG, onCreateOrUpdateKirimBarang);
 }
 
+export function* watchVerifyKirim(){
+    yield takeEvery(VERIFY_KIRIM, onVerifyKirim)
+}
+
 function* registrasiSaga() {
     yield all([
         fork(watchGetStokBatch),
         fork(watchCreateOrUpdateOrderbarang),
         fork(watchGetOrderBarang),
         fork(watchGetOrderStokBatch),
-        fork(watchCreateOrUpdateKirimBarang)
+        fork(watchCreateOrUpdateKirimBarang),
+        fork(watchVerifyKirim)
     ]);
 }
 
