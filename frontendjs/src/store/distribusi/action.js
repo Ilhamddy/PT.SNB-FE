@@ -35,9 +35,9 @@ export const getStokBatchError = (error) => ({
     payload: error
 })
 
-export const createOrUpdateOrderbarang = (body) => ({
+export const createOrUpdateOrderbarang = (body, callback) => ({
     type: CREATE_OR_UPDATE_ORDER_BARANG,
-    payload: {body: body}
+    payload: {body: body, callback: callback}
 })
 
 export const createOrUpdateOrderbarangSuccess = (data) => ({

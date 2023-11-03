@@ -159,7 +159,6 @@ const getOrderBarang = async (req, res) => {
         const order = (await pool.query(qGetOrder, []));
         const kirim = (await pool.query(qGetKirim, []));
 
-        if(order.rows.length === 0) throw new Error("order not found")
         let tempres = {
             order: order.rows,
             kirim: kirim.rows

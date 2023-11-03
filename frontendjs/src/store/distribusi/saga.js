@@ -38,11 +38,12 @@ function* onGetStokBatch({payload: { queries }}) {
     }
 }
 
-function* onCreateOrUpdateOrderbarang({payload: { body }}) {
+function* onCreateOrUpdateOrderbarang({payload: { body, callback }}) {
     try {
         let response = yield call(serviceDistribusi.createOrUpdateOrderbarang, body);
         yield put(createOrUpdateOrderbarangSuccess(response.data));
         toast.success(response.msg,  { autoClose: 3000 });
+        callback && callback()
     }catch(error){
         console.error(error);
         yield put(createOrUpdateOrderbarangError(error));
