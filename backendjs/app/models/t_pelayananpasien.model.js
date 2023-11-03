@@ -57,6 +57,9 @@ export default (sequelize, Sequelize) => {
         },
         objectverifresepfk: {
             type: Sequelize.CHAR(32),
+        },
+        objectverifremunerasifk:{
+            type: Sequelize.CHAR(32)
         }
     }, {
         tableName: "t_pelayananpasien", // relation "user" does not exist

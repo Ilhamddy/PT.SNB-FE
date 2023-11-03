@@ -22,7 +22,9 @@ import {
     laporanPendapatanKasirGetError,
     getPiutangAfterDateSuccess,
     getPiutangAfterDateError,
-    getDaftarVerifikasiRemunerasiSuccess,getDaftarVerifikasiRemunerasiError
+    getDaftarVerifikasiRemunerasiSuccess,getDaftarVerifikasiRemunerasiError,
+    upsertVerifikasiRemunerasiSuccess,upsertVerifikasiRemunerasiError,
+    getDaftarSudahVerifikasiRemunerasiSuccess, getDaftarSudahVerifikasiRemunerasiError
 } from "./action";
 
 import {
@@ -37,7 +39,8 @@ import {
     PAYMENT_PIUTANG_PASIEN_GET,
     LAPORAN_PENDAPATAN_KASIR_GET,
     GET_PIUTANG_AFTER_DATE,
-    GET_DAFTAR_VERIFIKASI_REMUNERASI
+    GET_DAFTAR_VERIFIKASI_REMUNERASI,
+    UPSERT_VERIFIKASI_REMUNERASI,GET_DAFTAR_SUDAH_VERIFIKASI_REMUNERASI
 } from "./actionType";
 
 import ServicePayment from "../../services/service-payment";
@@ -169,6 +172,33 @@ function* ongetDaftarVerifikasiRemunerasi({payload: {queries}}) {
     }
 }
 
+function* onupsertVerifikasiRemunerasi({ payload: { body, callback } }) {
+    try {
+        const response = yield call(servicePayment.upsertVerifikasiRemunerasi, body);
+        yield put(upsertVerifikasiRemunerasiSuccess(response.data || null));
+        if (response.code === 200) {
+            toast.success(response.msg, { autoClose: 3000 });
+        } else {
+            toast.error(response.msg, { autoClose: 3000 });
+        }
+        callback && callback();
+        // console.log(callback)
+        callback && callback();
+    } catch (error) {
+        yield put(upsertVerifikasiRemunerasiError(error));
+        toast.error("Gagal Simpan ", { autoClose: 3000 });
+    }
+}
+
+function* ongetDaftarSudahVerifikasiRemunerasi({payload: {queries}}) {
+    try{
+        const response = yield call(servicePayment.getDaftarSudahVerifikasiRemunerasi, queries);
+        yield put(getDaftarSudahVerifikasiRemunerasiSuccess(response.data));
+    } catch (error) {
+        yield put(getDaftarSudahVerifikasiRemunerasiError(error));
+    }
+}
+
 export function* watchGetPelayananFromAntrean() {
     yield takeEvery(PELAYANAN_FROM_DP_GET, onGetPelayananFromAntrean);
 }
@@ -217,6 +247,14 @@ export function* watchgetDaftarVerifikasiRemunerasi() {
     yield takeEvery(GET_DAFTAR_VERIFIKASI_REMUNERASI, ongetDaftarVerifikasiRemunerasi);
 }
 
+export function* watchupsertVerifikasiRemunerasi() {
+    yield takeEvery(UPSERT_VERIFIKASI_REMUNERASI, onupsertVerifikasiRemunerasi);
+}
+
+export function* watchgetDaftarSudahVerifikasiRemunerasi() {
+    yield takeEvery(GET_DAFTAR_SUDAH_VERIFIKASI_REMUNERASI, ongetDaftarSudahVerifikasiRemunerasi);
+}
+
 export default function* masterSaga() {
     yield all([
         fork(watchGetPelayananFromAntrean),
@@ -230,6 +268,8 @@ export default function* masterSaga() {
         fork(watchGetPaymentForPiutang),
         fork(watchonGetLaporanPendapatanKasir),
         fork(watchGetPiutangAfterDate),
-        fork(watchgetDaftarVerifikasiRemunerasi)
+        fork(watchgetDaftarVerifikasiRemunerasi),
+        fork(watchupsertVerifikasiRemunerasi),
+        fork(watchgetDaftarSudahVerifikasiRemunerasi)
     ]);
 }

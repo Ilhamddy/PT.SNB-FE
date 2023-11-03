@@ -41,7 +41,9 @@ import {
     GET_PIUTANG_AFTER_DATE,
     GET_PIUTANG_AFTER_DATE_SUCCESS,
     GET_PIUTANG_AFTER_DATE_ERROR,
-    GET_DAFTAR_VERIFIKASI_REMUNERASI, GET_DAFTAR_VERIFIKASI_REMUNERASI_SUCCESS, GET_DAFTAR_VERIFIKASI_REMUNERASI_ERROR
+    GET_DAFTAR_VERIFIKASI_REMUNERASI, GET_DAFTAR_VERIFIKASI_REMUNERASI_SUCCESS, GET_DAFTAR_VERIFIKASI_REMUNERASI_ERROR,
+    UPSERT_VERIFIKASI_REMUNERASI,UPSERT_VERIFIKASI_REMUNERASI_SUCCESS,UPSERT_VERIFIKASI_REMUNERASI_ERROR,UPSERT_VERIFIKASI_REMUNERASI_RESET,
+    GET_DAFTAR_SUDAH_VERIFIKASI_REMUNERASI,GET_DAFTAR_SUDAH_VERIFIKASI_REMUNERASI_ERROR,GET_DAFTAR_SUDAH_VERIFIKASI_REMUNERASI_SUCCESS
 } from "./actionType";
 
 export const pelayananFromDpGet = (norecap) => {
@@ -348,5 +350,46 @@ export const getDaftarVerifikasiRemunerasiSuccess = (data) => ({
 
 export const getDaftarVerifikasiRemunerasiError = (error) => ({
     type: GET_DAFTAR_VERIFIKASI_REMUNERASI_ERROR,
+    payload: error,
+});
+
+export const upsertVerifikasiRemunerasi = (body, callback) => ({
+    type: UPSERT_VERIFIKASI_REMUNERASI,
+    payload: {
+        body: body,
+        callback: callback
+    }
+});
+
+export const upsertVerifikasiRemunerasiSuccess = (data) => ({
+    type: UPSERT_VERIFIKASI_REMUNERASI_SUCCESS,
+    payload: data
+});
+
+export const upsertVerifikasiRemunerasiError = (error) => ({
+    type: UPSERT_VERIFIKASI_REMUNERASI_ERROR,
+    payload: error
+});
+
+export const upsertVerifikasiRemunerasiReset = () => {
+    return {
+        type: UPSERT_VERIFIKASI_REMUNERASI_RESET,
+    }
+}
+
+export const getDaftarSudahVerifikasiRemunerasi = (queries) => ({
+    type: GET_DAFTAR_SUDAH_VERIFIKASI_REMUNERASI,
+    payload: {
+        queries,
+    },
+});
+
+export const getDaftarSudahVerifikasiRemunerasiSuccess = (data) => ({
+    type: GET_DAFTAR_SUDAH_VERIFIKASI_REMUNERASI_SUCCESS,
+    payload: data,
+});
+
+export const getDaftarSudahVerifikasiRemunerasiError = (error) => ({
+    type: GET_DAFTAR_SUDAH_VERIFIKASI_REMUNERASI_ERROR,
     payload: error,
 });

@@ -42,7 +42,9 @@ import {
     GET_PIUTANG_AFTER_DATE,
     GET_PIUTANG_AFTER_DATE_SUCCESS,
     GET_PIUTANG_AFTER_DATE_ERROR,
-    GET_DAFTAR_VERIFIKASI_REMUNERASI, GET_DAFTAR_VERIFIKASI_REMUNERASI_SUCCESS, GET_DAFTAR_VERIFIKASI_REMUNERASI_ERROR
+    GET_DAFTAR_VERIFIKASI_REMUNERASI, GET_DAFTAR_VERIFIKASI_REMUNERASI_SUCCESS, GET_DAFTAR_VERIFIKASI_REMUNERASI_ERROR,
+    UPSERT_VERIFIKASI_REMUNERASI,UPSERT_VERIFIKASI_REMUNERASI_SUCCESS,UPSERT_VERIFIKASI_REMUNERASI_ERROR,UPSERT_VERIFIKASI_REMUNERASI_RESET,
+    GET_DAFTAR_SUDAH_VERIFIKASI_REMUNERASI,GET_DAFTAR_SUDAH_VERIFIKASI_REMUNERASI_SUCCESS,GET_DAFTAR_SUDAH_VERIFIKASI_REMUNERASI_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -117,7 +119,19 @@ const INIT_STATE = {
         loading: false,
         success: false,
         error: null,
-    }
+    },
+    updateResetPassword:{
+        newData: null,
+        loading: false,
+        error: null,
+        success: false
+    },
+    getDaftarSudahVerifikasiRemunerasi: {
+        data: [],
+        loading: false,
+        success: false,
+        error: null,
+    },
 }
 
 const payment = (state = INIT_STATE, action) => {
@@ -618,6 +632,87 @@ const payment = (state = INIT_STATE, action) => {
                 }
             }
         }
+
+        case UPSERT_VERIFIKASI_REMUNERASI: {
+            return {
+                ...state,
+                upsertVerifikasiRemunerasi: {
+                    ...state.upsertVerifikasiRemunerasi,
+                    data: [],
+                    loading: true,
+                    error: null,
+                },
+            };
+        }
+
+        case UPSERT_VERIFIKASI_REMUNERASI_SUCCESS: {
+            return {
+                ...state,
+                upsertVerifikasiRemunerasi: {
+                    ...state.upsertVerifikasiRemunerasi,
+                    loading: false,
+                    data: action.payload,
+                    success: true,
+                },
+            };
+        }
+
+        case UPSERT_VERIFIKASI_REMUNERASI_ERROR: {
+            return {
+                ...state,
+                upsertVerifikasiRemunerasi: {
+                    ...state.upsertVerifikasiRemunerasi,
+                    loading: false,
+                    error: action.payload,
+                },
+            };
+        }
+        
+        case UPSERT_VERIFIKASI_REMUNERASI_RESET:
+            return {
+                ...state,
+                upsertVerifikasiRemunerasi: {
+                    ...state.upsertVerifikasiRemunerasi,
+                    data: [],
+                    success: false,
+                    loading: false,
+                    error: null,
+                },
+            };
+
+        case GET_DAFTAR_SUDAH_VERIFIKASI_REMUNERASI: {
+            return {
+                ...state,
+                getDaftarSudahVerifikasiRemunerasi: {
+                    ...state.getDaftarSudahVerifikasiRemunerasi,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case GET_DAFTAR_SUDAH_VERIFIKASI_REMUNERASI_SUCCESS: {
+            return {
+                ...state,
+                getDaftarSudahVerifikasiRemunerasi: {
+                    ...state.getDaftarSudahVerifikasiRemunerasi,
+                    loading: false,
+                    data: action.payload,
+                }
+            }
+        }
+
+        case GET_DAFTAR_SUDAH_VERIFIKASI_REMUNERASI_ERROR: {
+            return {
+                ...state,
+                getDaftarSudahVerifikasiRemunerasi: {
+                    ...state.getDaftarSudahVerifikasiRemunerasi,
+                    loading: false,
+                    error: action.payload,
+                }
+            }
+        }
+
 
         default:
             return { ...state };
