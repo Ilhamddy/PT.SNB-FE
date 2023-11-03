@@ -3,7 +3,7 @@ import withRouter from "../../../Components/Common/withRouter"
 import { ToastContainer } from "react-toastify";
 import UiContent from "../../../Components/Common/UiContent";
 import { useDispatch, useSelector } from "react-redux";
-import { Button, Card, CardBody, Col, Container, Form, FormFeedback, Label, Modal, ModalBody, Row } from "reactstrap";
+import { Button, Card, CardBody, CardHeader, Col, Container, Form, FormFeedback, Label, Modal, ModalBody, Row } from "reactstrap";
 import BreadCrumb from "../../../Components/Common/BreadCrumb";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -139,7 +139,7 @@ const VerifikasiRemunerasi = () => {
     <React.Fragment>
       <ToastContainer closeButton={false} />
       <ModalVerifikasi
-      isVerifikasiOpen={isVerifikasiOpen}
+        isVerifikasiOpen={isVerifikasiOpen}
         toggle={() => setisVerifikasiOpen(!isVerifikasiOpen)}
         selectedPasien={selectedPasien}
       />
@@ -328,10 +328,94 @@ const VerifikasiRemunerasi = () => {
 
 const ModalVerifikasi = ({ isVerifikasiOpen, toggle, selectedPasien }) => {
   const dispatch = useDispatch();
+
+  const vSetValidationModal = useFormik({
+    enableReinitialize: true,
+    initialValues: {
+      norecdp: selectedPasien?.norecdp ?? '',
+    },
+    validationSchema: Yup.object({
+    }),
+    onSubmit: (values, { resetForm }) => {
+      // console.log(values);
+
+    }
+  })
+  const columns = [
+    {
+      name: <span className='font-weight-bold fs-13'>No Urut</span>,
+      selector: row => row.nourut,
+      sortable: true,
+      width: "100px"
+    },
+    {
+      name: <span className='font-weight-bold fs-13'>Nama</span>,
+      selector: row => row.reportdisplay,
+      sortable: true,
+      width: "100px"
+    },
+    {
+      name: <span className='font-weight-bold fs-13'>Link</span>,
+      selector: row => row.link,
+      sortable: true,
+      // selector: row => (<button className="btn btn-sm btn-soft-info" onClick={() => handleClick(dataTtv)}>{row.noregistrasi}</button>),
+      // width: "250px",
+      wrap: true,
+    },
+  ];
+  const tableCustomStyles = {
+    headRow: {
+      style: {
+        color: '#ffffff',
+        backgroundColor: '#e67e22',
+      },
+    },
+    rows: {
+      style: {
+        color: "black",
+        backgroundColor: "#f1f2f6"
+      },
+    }
+  }
   return (
     <Modal isOpen={isVerifikasiOpen} toggle={toggle} centered={true} size="xl">
       <ModalBody>
+        <Form
+          onSubmit={(e) => {
+            e.preventDefault();
+            vSetValidationModal.handleSubmit();
+            return false;
+          }}
+          className="gy-4"
+          action="#">
+          <Card>
+            <CardHeader className="align-items-center" style={{ backgroundColor: "#e67e22" }}>
+              <h4 className="mb-0" style={{ color: 'black', textAlign: 'center' }}>Verifikasi Remunerasi</h4>
+            </CardHeader>
+            <CardBody>
+              <Row className="gy-3">
 
+                <Col lg={12}>
+                  <div id="table-gridjs">
+                    <DataTable
+                      fixedHeader
+                      fixedHeaderScrollHeight="330px"
+                      columns={columns}
+                      pagination
+                      data={[]}
+                      // progressPending={loadingMapChild}
+                      customStyles={tableCustomStyles}
+                      progressComponent={<LoadingTable />}
+                      // onRowClicked={(row) => handleClickRowChild(row)}
+                      pointerOnHover
+                      highlightOnHover
+                    />
+                  </div>
+                </Col>
+              </Row>
+            </CardBody>
+          </Card>
+        </Form>
       </ModalBody>
     </Modal>
   )

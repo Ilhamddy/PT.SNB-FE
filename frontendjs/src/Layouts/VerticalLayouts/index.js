@@ -162,7 +162,7 @@ const VerticalLayout = (props) => {
                                         <Link
                                             onClick={() => handleClick(item)}
                                             className="nav-link menu-link"
-                                            to={item.link ? item.link : "/#"}
+                                            // to={item.link ? item.link : "/#"}
                                             data-bs-toggle="collapse"
                                         >
                                             <i className={item.icon}></i> <span data-key="t-apps">{props.t(item.label)}</span>

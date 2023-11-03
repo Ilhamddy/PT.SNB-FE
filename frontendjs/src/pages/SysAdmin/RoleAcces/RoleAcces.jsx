@@ -17,7 +17,7 @@ import { onChangeStrNbr } from "../../../utils/format";
 import CustomSelect from "../../Select/Select";
 
 const RoleAcces = () => {
-  document.title = "Role Acces";
+  document.title = "Map Modul To Menu";
   const dispatch = useDispatch();
   const { dataCombo,
     loadingCombo, dataMapPermissions, loadingMapPermissions,
@@ -338,7 +338,7 @@ const RoleAcces = () => {
       <UiContent />
       <div className="page-content">
         <Container fluid>
-          <BreadCrumb title="Role Acces" pageTitle="Forms" />
+          <BreadCrumb title="Map Modul To Menu" pageTitle="Forms" />
 
           <Row>
             <Col lg={4}>
