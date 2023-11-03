@@ -183,10 +183,11 @@ export const getOrderStokBatch = async (req, res) => {
     const logger = res.locals.logger
     try{
         const norecorder = req.query.norecorder
-        if(!norecorder) throw new Error("norecorder is required");
+        const noreckirim = req.query.noreckirim
+
 
         let { rows: rowsOrder } = await pool.query(qGetOrderStok, [norecorder])
-        let { rows: rowsKirim } = await pool.query(qGetKirimStok, [norecorder])
+        let { rows: rowsKirim } = await pool.query(qGetKirimStok, [norecorder, noreckirim])
         let dataItemOrders = []
         let sisaQtyOutPerItem = {}
         rowsOrder = [...rowsOrder].sort((a, b) => {
@@ -246,29 +247,22 @@ export const getOrderStokBatch = async (req, res) => {
             itemkirims: rowsKirim
         }
 
-        if(rowsOrder.length === 0) {
-            res.status(200).send({
-                data: tempres,
-                success: true,
-                msg: 'Get Stok Batch Berhasil',
-                code: 200
-            });
-            return
-        }
+        // kalau bukan order, pakai data kirim seadanya
+        const dataOrderOrKirim = rowsOrder[0] ? rowsOrder[0] : rowsKirim[0]
 
         const dataOrder = { 
-            noreckirim: rowsOrder[0].noreckirim,
-            tglkirim: rowsOrder[0].tglkirim,
-            nokirim: rowsOrder[0].nokirim,
-            keterangankirim: rowsOrder[0].keterangankirim,
-            norecorder: rowsOrder[0].norecorder,
-            jenisorder: rowsOrder[0].jenisorder,
-            noorder: rowsOrder[0].noorder,
-            namajenisorder: rowsOrder[0].namajenisorder,
-            unittujuan: rowsOrder[0].unittujuan,
-            unitasal: rowsOrder[0].unitasal,
-            tglorder: rowsOrder[0].tglorder,
-            keterangan: rowsOrder[0].keterangan,
+            noreckirim: dataOrderOrKirim.noreckirim,
+            tglkirim: dataOrderOrKirim.tglkirim,
+            nokirim: dataOrderOrKirim.nokirim,
+            keterangankirim: dataOrderOrKirim.keterangankirim,
+            norecorder: dataOrderOrKirim.norecorder,
+            jenisorder: dataOrderOrKirim.jenisorder,
+            noorder: dataOrderOrKirim.noorder,
+            namajenisorder: dataOrderOrKirim.namajenisorder,
+            unittujuan: dataOrderOrKirim.unittujuan,
+            unitasal: dataOrderOrKirim.unitasal,
+            tglorder: dataOrderOrKirim.tglorder || dataOrderOrKirim,
+            keterangan: dataOrderOrKirim.keterangan,
         }
         tempres.order = dataOrder
 
@@ -348,6 +342,11 @@ const verifyKirim = async (req, res) => {
             if(!kirimBarang){
                 throw new Error("Kirim barang tidak ada")
             }
+            await kirimBarang.update({
+                isverif: true
+            }, {
+                transaction: transaction
+            })
             kirimBarang = kirimBarang.toJSON()
             kirimBarangDetail = kirimBarangDetail.map(det => det.toJSON())
 

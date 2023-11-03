@@ -39,7 +39,7 @@ import { Link, useParams } from 'react-router-dom'
 
 const DistribusiKirim = () => {
   const dispatch = useDispatch()
-  const { norecorder } = useParams()
+  const { norecorder, noreckirim } = useParams()
   const [tglSekarang] = useState(() => new Date().toISOString())
   const isPesanLangsung = !norecorder
 
@@ -266,6 +266,10 @@ const DistribusiKirim = () => {
   ])
 
   useEffect(() => {
+    dispatch(getStokBatch({ idunit: vKirim.values.unitpengirim }))
+  }, [vKirim.values.unitpengirim])
+
+  useEffect(() => {
     const setFF = vKirim.setFieldValue
     let batchInputAsc = []
     const itemOrders = orderStokBatch.itemorders || []
@@ -291,8 +295,13 @@ const DistribusiKirim = () => {
   }, [dispatch])
 
   useEffect(() => {
-    dispatch(getOrderStokBatch({ norecorder: norecorder }))
-  }, [dispatch, norecorder, vKirim.setFieldValue])
+    dispatch(
+      getOrderStokBatch({
+        norecorder: norecorder || '',
+        noreckirim: noreckirim || '',
+      })
+    )
+  }, [dispatch, norecorder, noreckirim, vKirim.setFieldValue])
 
   useEffect(() => {
     const setFF = vKirim.setFieldValue
@@ -458,7 +467,6 @@ const DistribusiKirim = () => {
             isDisabled={!isPesanLangsung}
             onChange={(val) => {
               vKirim.setFieldValue('unitpengirim', val.value)
-              dispatch(getStokBatch({ idunit: val.value }))
             }}
             className={`input ${
               vKirim.errors?.unitpengirim ? 'is-invalid' : ''

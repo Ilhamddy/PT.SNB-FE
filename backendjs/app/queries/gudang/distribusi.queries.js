@@ -158,6 +158,13 @@ WHERE
 
 const qGetKirimStok = `
 SELECT
+    tkb.norec AS noreckirim,
+    tkb.tglinput AS tglkirim,
+    tkb.nopengiriman AS nokirim,
+    tkb.keterangan AS keterangankirim,
+    tkb.objectjenisorderbarangfk AS jenisorder,
+    tkb.objectunitpengirimfk AS unittujuan,
+    tkb.objectunittujuanfk AS unitasal,
     tkbd.norec AS noreckirim,
     tkbd.objectprodukfk AS value,
     tkbd.objectorderbarangdetailfk AS norecorderdetail,
@@ -175,12 +182,11 @@ FROM t_kirimbarang tkb
     LEFT JOIN t_kirimbarangdetail tkbd ON tkbd.objectdistribusibarangfk = tkb.norec
     LEFT JOIN m_produk mp ON mp.id = tkbd.objectprodukfk
     LEFT JOIN t_orderbarangdetail tod ON tod.norec = tkbd.objectorderbarangdetailfk
-    --- minta qty pada saat ngirim
     LEFT JOIN t_stokunit ts ON ts.objectprodukfk = tkbd.objectprodukfk 
     AND ts.objectunitfk = tkb.objectunittujuanfk
     AND ts.nobatch = tkbd.nobatch
     LEFT JOIN m_satuan ms ON ms.id = tkbd.objectsatuanfk
-WHERE tkb.objectorderbarangfk = $1
+WHERE tkb.objectorderbarangfk = $1 OR $1 = '' AND tkb.norec = $2
 `
 
 export {

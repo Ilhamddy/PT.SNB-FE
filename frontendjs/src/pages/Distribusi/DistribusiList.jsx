@@ -91,7 +91,13 @@ const DistribusiOrderList = ({ isUnit }) => {
                   </DropdownItem>
                 </Link>
               ) : (
-                <Link to={`/farmasi/gudang/distribusi-kirim/${row.norecorder}`}>
+                <Link
+                  to={
+                    !row.noreckirim
+                      ? `/farmasi/gudang/distribusi-kirim/${row.norecorder}`
+                      : `/farmasi/gudang/distribusi-kirim-langsung/${row.noreckirim}`
+                  }
+                >
                   <DropdownItem>
                     <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
                     {!row.noreckirim ? 'Kirim Order' : 'Lihat Detail'}
