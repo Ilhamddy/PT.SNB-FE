@@ -89,7 +89,8 @@ SELECT
     mut.namaunit AS namaunittujuan,
     tor.noorder AS noorder,
     tor.keterangan AS keterangan,
-    tkb.keterangan AS keterangankirim
+    tkb.keterangan AS keterangankirim,
+    tkb.isverif AS isverif
 FROM t_kirimbarang tkb
     LEFT JOIN m_unit mua ON mua.id = tkb.objectunitpengirimfk
     LEFT JOIN m_unit mut ON mut.id = tkb.objectunittujuanfk
@@ -165,7 +166,6 @@ SELECT
     tkb.objectjenisorderbarangfk AS jenisorder,
     tkb.objectunitpengirimfk AS unittujuan,
     tkb.objectunittujuanfk AS unitasal,
-    tkbd.norec AS noreckirim,
     tkbd.objectprodukfk AS value,
     tkbd.objectorderbarangdetailfk AS norecorderdetail,
     tkbd.objectprodukfk AS produkid,
@@ -176,7 +176,8 @@ SELECT
     tkbd.qty AS qtykirim,
     tkbd.jumlah AS jumlah,
     tkbd.objectsatuanfk AS satuan,
-    ms.satuan AS namasatuan
+    ms.satuan AS namasatuan,
+    tkb.isverif AS isverif
 FROM t_kirimbarang tkb
     LEFT JOIN t_orderbarang tor ON tkb.objectorderbarangfk = tor.norec
     LEFT JOIN t_kirimbarangdetail tkbd ON tkbd.objectdistribusibarangfk = tkb.norec
@@ -186,7 +187,7 @@ FROM t_kirimbarang tkb
     AND ts.objectunitfk = tkb.objectunittujuanfk
     AND ts.nobatch = tkbd.nobatch
     LEFT JOIN m_satuan ms ON ms.id = tkbd.objectsatuanfk
-WHERE tkb.objectorderbarangfk = $1 OR $1 = '' AND tkb.norec = $2
+WHERE (tkb.objectorderbarangfk IS NOT NULL AND tkb.objectorderbarangfk = $1) OR ($1 = '' AND tkb.norec = $2)
 `
 
 export {

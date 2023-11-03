@@ -32,12 +32,13 @@ import {
   getOrderStokBatch,
   getStokBatch,
   kemasanFromProdukGet,
+  verifyKirim,
 } from '../../store/actions'
 import { APIClient } from '../../helpers/api_helper'
 import { comboDistribusiOrderGet } from '../../store/master/action'
 import { Link, useParams } from 'react-router-dom'
 
-const DistribusiKirim = () => {
+const DistribusiKirim = ({ isVerif }) => {
   const dispatch = useDispatch()
   const { norecorder, noreckirim } = useParams()
   const [tglSekarang] = useState(() => new Date().toISOString())
@@ -73,6 +74,7 @@ const DistribusiKirim = () => {
       jeniskirim: '',
       keteranganorder: '',
       keterangankirim: '',
+      isverif: false,
       /**@type {import("../../../../backendjs/app/queries/gudang/distribusi.queries").ListStokUnit} */
       batchproduk: [],
     },
@@ -85,7 +87,29 @@ const DistribusiKirim = () => {
       keterangankirim: Yup.string().required('Keterangan Kirim harus diisi'),
     }),
     onSubmit: (values) => {
-      dispatch(createOrUpdateKirimBarang(values))
+      if (!isVerif) {
+        dispatch(
+          createOrUpdateKirimBarang(values, () => {
+            dispatch(
+              getOrderStokBatch({
+                norecorder: norecorder || '',
+                noreckirim: noreckirim || '',
+              })
+            )
+          })
+        )
+      } else {
+        dispatch(
+          verifyKirim({ noreckirim: values.noreckirim }, () =>
+            dispatch(
+              getOrderStokBatch({
+                norecorder: norecorder || '',
+                noreckirim: noreckirim || '',
+              })
+            )
+          )
+        )
+      }
     },
   })
 
@@ -266,8 +290,9 @@ const DistribusiKirim = () => {
   ])
 
   useEffect(() => {
-    dispatch(getStokBatch({ idunit: vKirim.values.unitpengirim }))
-  }, [vKirim.values.unitpengirim])
+    vKirim.values.unitpengirim &&
+      dispatch(getStokBatch({ idunit: vKirim.values.unitpengirim }))
+  }, [vKirim.values.unitpengirim, dispatch])
 
   useEffect(() => {
     const setFF = vKirim.setFieldValue
@@ -281,7 +306,7 @@ const DistribusiKirim = () => {
           batchInputAsc.push(newBatch)
         })
       })
-    } else if (itemOrders.length === 0 && itemKirims.length !== 0) {
+    } else if (itemKirims.length !== 0) {
       batchInputAsc = [...itemKirims]
     } else {
       batchInputAsc = []
@@ -306,6 +331,9 @@ const DistribusiKirim = () => {
   useEffect(() => {
     const setFF = vKirim.setFieldValue
     const dataOrder = orderStokBatch?.order
+    console.log(dataOrder)
+    dataOrder?.isverif !== undefined &&
+      setFF('isverif', dataOrder.isverif || '')
     dataOrder?.noreckirim && setFF('noreckirim', dataOrder?.noreckirim || '')
     dataOrder?.tglkirim && setFF('tanggalkirim', dataOrder?.tglkirim || '')
     dataOrder?.nokirim && setFF('nokirim', dataOrder?.nokirim || '')
@@ -885,9 +913,12 @@ const DistribusiKirim = () => {
           color="success"
           placement="top"
           formTarget="form-input-penerimaan"
-          disabled={vKirim.values.noreckirim ? true : false}
+          disabled={
+            (!!vKirim.values.noreckirim && !isVerif) ||
+            (isVerif && !!vKirim.values.isverif)
+          }
         >
-          Simpan
+          {isVerif ? 'Verifikasi' : 'Simpan'}
         </Button>
         <Button type="button" className="btn" color="danger">
           Batal

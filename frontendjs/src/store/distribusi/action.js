@@ -80,9 +80,9 @@ export const getOrderStokBatchError = (error) => ({
     payload: error
 })
 
-export const createOrUpdateKirimBarang = (body) => ({
+export const createOrUpdateKirimBarang = (body, callback) => ({
     type: CREATE_OR_UPDATE_KIRIM_BARANG,
-    payload: {body: body}
+    payload: {body: body, callback: callback}
 })
 
 export const createOrUpdateKirimBarangSuccess = (data) => ({

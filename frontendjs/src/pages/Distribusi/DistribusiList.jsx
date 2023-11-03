@@ -74,33 +74,94 @@ const DistribusiOrderList = ({ isUnit }) => {
               <i className="ri-apps-2-line"></i>
             </DropdownToggle>
             <DropdownMenu className="dropdown-menu-end">
-              {isUnit && row.noreckirim ? (
-                <DropdownItem
-                  onClick={() => {
-                    vVerif.setFieldValue('noreckirim', row.noreckirim)
-                  }}
-                >
+              <Link to={`/farmasi/gudang/distribusi-kirim/${row.norecorder}`}>
+                <DropdownItem>
                   <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
-                  Verifikasi Pengiriman
+                  Lihat Order
                 </DropdownItem>
-              ) : isUnit ? (
-                <Link to={`/farmasi/gudang/distribusi-order/${row.norecorder}`}>
+              </Link>
+            </DropdownMenu>
+          </UncontrolledDropdown>
+        </div>
+      ),
+      sortable: true,
+      width: '70px',
+      wrap: true,
+    },
+    {
+      name: <span className="font-weight-bold fs-13">Tanggal Kirim</span>,
+      sortable: true,
+      selector: (row) => dateLocal(row.tglkirim) || '-',
+      width: '150px',
+    },
+    {
+      name: <span className="font-weight-bold fs-13">No Kirim</span>,
+      sortable: true,
+      selector: (row) => row.nokirim || '-',
+      width: '150px',
+    },
+    {
+      name: <span className="font-weight-bold fs-13">Tanggal Order</span>,
+      sortable: true,
+      selector: (row) => dateLocal(row.tglorder),
+      width: '150px',
+    },
+    {
+      name: <span className="font-weight-bold fs-13">No Order</span>,
+      sortable: true,
+      selector: (row) => row.noorder || '-',
+      width: '130px',
+    },
+    {
+      name: <span className="font-weight-bold fs-13">Unit Membutuhkan</span>,
+      sortable: true,
+      selector: (row) => row.namaunitasal,
+      width: '200px',
+    },
+    {
+      name: <span className="font-weight-bold fs-13">Jenis Kirim</span>,
+      sortable: true,
+      selector: (row) => row.namajenisorder,
+      width: '200px',
+    },
+  ]
+
+  /**
+   * @type {import("react-data-table-component").TableColumn[]}
+   */
+  const columnsKirim = [
+    {
+      name: <span className="font-weight-bold fs-13">Detail</span>,
+      cell: (row) => (
+        <div className="hstack gap-3 flex-wrap">
+          <UncontrolledTooltip placement="top" target="edit-produk">
+            Detail Produk
+          </UncontrolledTooltip>
+          <UncontrolledDropdown className="dropdown d-inline-block">
+            <DropdownToggle
+              className="btn btn-soft-secondary btn-sm"
+              itemType="button"
+              id="edit-produk"
+            >
+              <i className="ri-apps-2-line"></i>
+            </DropdownToggle>
+            <DropdownMenu className="dropdown-menu-end">
+              {isUnit ? (
+                <Link
+                  to={`/farmasi/gudang/distribusi-kirim-verif/${row.noreckirim}`}
+                >
                   <DropdownItem>
                     <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
-                    Lihat Order
+                    {row.isverif ? 'Lihat kiriman' : 'Verifikasi'}
                   </DropdownItem>
                 </Link>
               ) : (
                 <Link
-                  to={
-                    !row.noreckirim
-                      ? `/farmasi/gudang/distribusi-kirim/${row.norecorder}`
-                      : `/farmasi/gudang/distribusi-kirim-langsung/${row.noreckirim}`
-                  }
+                  to={`/farmasi/gudang/distribusi-kirim-langsung/${row.noreckirim}`}
                 >
                   <DropdownItem>
                     <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
-                    {!row.noreckirim ? 'Kirim Order' : 'Lihat Detail'}
+                    {'Lihat Detail'}
                   </DropdownItem>
                 </Link>
               )}
@@ -139,7 +200,7 @@ const DistribusiOrderList = ({ isUnit }) => {
     {
       name: <span className="font-weight-bold fs-13">Unit Membutuhkan</span>,
       sortable: true,
-      selector: (row) => row.namaunitasal,
+      selector: (row) => row.namaunittujuan,
       width: '200px',
     },
     {
@@ -231,7 +292,7 @@ const DistribusiOrderList = ({ isUnit }) => {
               <h3>Pengiriman</h3>
             </Col>
             <Col lg={'auto'} className="d-flex flex-row-reverse">
-              <Link to={'/farmasi/gudang/distribusi-kirim'}>
+              <Link to={'/farmasi/gudang/distribusi-kirim-langsung'}>
                 <Button color={'info'}>Kirim</Button>
               </Link>
             </Col>
@@ -239,7 +300,7 @@ const DistribusiOrderList = ({ isUnit }) => {
           <Row>
             <DataTable
               fixedHeader
-              columns={columnsProduk}
+              columns={columnsKirim}
               pagination
               paginationPerPage={10}
               data={listKirim}

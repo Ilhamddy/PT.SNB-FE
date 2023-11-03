@@ -82,11 +82,12 @@ function* onVerifyKirim({payload: {data, callback}}) {
     }
 }
 
-function* onCreateOrUpdateKirimBarang({payload: { body }}) {
+function* onCreateOrUpdateKirimBarang({payload: { body, callback }}) {
     try {
         let response = yield call(serviceDistribusi.createOrUpdateKirimBarang, body);
         yield put(createOrUpdateKirimBarangSuccess(response.data));
         toast.success(response.msg,  { autoClose: 3000 });
+        callback && callback()
     }catch(error){
         yield put(createOrUpdateKirimBarangError(error));
         console.error(error?.response?.data?.msg);

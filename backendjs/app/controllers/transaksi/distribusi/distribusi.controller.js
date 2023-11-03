@@ -261,8 +261,9 @@ export const getOrderStokBatch = async (req, res) => {
             namajenisorder: dataOrderOrKirim.namajenisorder,
             unittujuan: dataOrderOrKirim.unittujuan,
             unitasal: dataOrderOrKirim.unitasal,
-            tglorder: dataOrderOrKirim.tglorder || dataOrderOrKirim,
+            tglorder: dataOrderOrKirim.tglorder || dataOrderOrKirim.tglkirim,
             keterangan: dataOrderOrKirim.keterangan,
+            isverif: dataOrderOrKirim?.isverif || false
         }
         tempres.order = dataOrder
 
@@ -343,7 +344,9 @@ const verifyKirim = async (req, res) => {
                 throw new Error("Kirim barang tidak ada")
             }
             await kirimBarang.update({
-                isverif: true
+                isverif: true,
+                tglverif: new Date(),
+                objectpegawaiterimafk: req.idPegawai
             }, {
                 transaction: transaction
             })
@@ -472,7 +475,7 @@ const hCreateKirimBarang = async (req, res, transaction) => {
             norec: noreckirim,
             kdprofile: 0,
             statusenabled: true,
-            objectorderbarangfk: body.norecorder,
+            objectorderbarangfk: body.norecorder || null,
             nopengiriman: body.nokirim,
             objectunitpengirimfk: body.unitpengirim,
             objectunittujuanfk: body.unitpenerima,
@@ -488,7 +491,7 @@ const hCreateKirimBarang = async (req, res, transaction) => {
         const [_, updated] = await t_kirimbarang.update({
             kdprofile: 0,
             statusenabled: true,
-            objectorderbarangfk: body.norecorder,
+            objectorderbarangfk: body.norecorder || null,
             nopengiriman: body.nokirim,
             objectunitpengirimfk: body.unitpengirim,
             objectunittujuanfk: body.unitpenerima,
