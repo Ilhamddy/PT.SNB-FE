@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { getOrderBarang } from '../../store/actions'
+import { getOrderBarang, verifyKirim } from '../../store/actions'
 import LoadingTable from '../../Components/Table/LoadingTable'
 import DataTable from 'react-data-table-component'
 import BreadCrumb from '../../Components/Common/BreadCrumb'
@@ -14,6 +14,7 @@ import {
   DropdownItem,
   DropdownMenu,
   DropdownToggle,
+  Modal,
   Row,
   UncontrolledDropdown,
   UncontrolledTooltip,
@@ -26,16 +27,28 @@ import {
   pesananSudahImg,
 } from './imagesementara'
 import { dateLocal } from '../../utils/format'
+import { useFormik } from 'formik'
 
-const DistribusiOrderList = () => {
+const DistribusiOrderList = ({ isUnit }) => {
   const dispatch = useDispatch()
 
-  const { listAll } = useSelector((state) => ({
+  const { listAll, listKirim } = useSelector((state) => ({
     listAll: state.Distribusi.getOrderBarang.data?.order || [],
+    listKirim: state.Distribusi.getOrderBarang.data?.kirim || [],
   }))
 
-  const listOrder = listAll.filter((item) => !item.tglkirim)
-  const listKirim = listAll.filter((item) => !!item.tglkirim)
+  const vVerif = useFormik({
+    initialValues: {
+      noreckirim: '',
+    },
+    onSubmit: (value, { resetForm }) => {
+      dispatch(
+        verifyKirim(value, () => {
+          resetForm()
+        })
+      )
+    },
+  })
 
   useEffect(() => {
     dispatch(getOrderBarang())
@@ -61,12 +74,30 @@ const DistribusiOrderList = () => {
               <i className="ri-apps-2-line"></i>
             </DropdownToggle>
             <DropdownMenu className="dropdown-menu-end">
-              <Link to={`/farmasi/gudang/distribusi-kirim/${row.norecorder}`}>
-                <DropdownItem>
+              {isUnit && row.noreckirim ? (
+                <DropdownItem
+                  onClick={() => {
+                    vVerif.setFieldValue('noreckirim', row.noreckirim)
+                  }}
+                >
                   <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
-                  {!row.tglkirim ? 'Kirim Order' : 'Lihat Detail'}
+                  Verifikasi Pengiriman
                 </DropdownItem>
-              </Link>
+              ) : isUnit ? (
+                <Link to={`/farmasi/gudang/distribusi-order/${row.norecorder}`}>
+                  <DropdownItem>
+                    <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
+                    Lihat Order
+                  </DropdownItem>
+                </Link>
+              ) : (
+                <Link to={`/farmasi/gudang/distribusi-kirim/${row.norecorder}`}>
+                  <DropdownItem>
+                    <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
+                    {!row.noreckirim ? 'Kirim Order' : 'Lihat Detail'}
+                  </DropdownItem>
+                </Link>
+              )}
             </DropdownMenu>
           </UncontrolledDropdown>
         </div>
@@ -96,7 +127,7 @@ const DistribusiOrderList = () => {
     {
       name: <span className="font-weight-bold fs-13">No Order</span>,
       sortable: true,
-      selector: (row) => row.noorder,
+      selector: (row) => row.noorder || '-',
       width: '130px',
     },
     {
@@ -119,6 +150,34 @@ const DistribusiOrderList = () => {
   return (
     <div className="page-content page-penerimaan-barang">
       <ToastContainer closeButton={false} />
+      <Modal
+        toggle={() => {
+          vVerif.resetForm()
+        }}
+        isOpen={!!vVerif.values.noreckirim}
+        centered
+      >
+        <Card className="p-3">
+          <Row className="d-flex justify-content-center mb-3 fs-3">
+            <Col sm="auto">Konfirmasi verifikasi barang</Col>
+          </Row>
+          <Row className="d-flex justify-content-center">
+            <Col lg="auto">
+              <Button color="danger">Batal</Button>
+            </Col>
+            <Col lg="auto">
+              <Button
+                color="success"
+                onClick={() => {
+                  vVerif.handleSubmit()
+                }}
+              >
+                Ya
+              </Button>
+            </Col>
+          </Row>
+        </Card>
+      </Modal>
       <Container fluid>
         <BreadCrumb title="Order Barang" pageTitle="Gudang" />
         <Card className="p-5">
@@ -155,7 +214,7 @@ const DistribusiOrderList = () => {
               columns={columnsProduk}
               pagination
               paginationPerPage={10}
-              data={listOrder}
+              data={listAll}
               progressPending={false}
               customStyles={tableCustomStyles}
               progressComponent={<LoadingTable />}

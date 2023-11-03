@@ -14,6 +14,9 @@ import {
     CREATE_OR_UPDATE_KIRIM_BARANG,
     CREATE_OR_UPDATE_KIRIM_BARANG_SUCCESS,
     CREATE_OR_UPDATE_KIRIM_BARANG_ERROR,
+    VERIFY_KIRIM,
+    VERIFY_KIRIM_SUCCESS,
+    VERIFY_KIRIM_ERROR
   } from "./actionType";
   
 const INIT_STATE = {
@@ -42,6 +45,11 @@ const INIT_STATE = {
         loading: false,
         error: null
     },
+    verifyKirim: {
+        data: [],
+        loading: false,
+        error: null,
+    }
 };
   
 const Distribusi = (state = INIT_STATE, action) => {
@@ -209,6 +217,42 @@ const Distribusi = (state = INIT_STATE, action) => {
                 ...state,
                 createOrUpdateKirimBarang: {
                     ...state.createOrUpdateKirimBarang,
+                    loading: false,
+                    data: [],
+                    error: action.payload
+                }
+            }
+        }
+
+        case VERIFY_KIRIM: {
+            return {
+                ...state,
+                verifyKirim: {
+                    ...state.verifyKirim,
+                    loading: false,
+                    data: [],
+                    error: action.payload
+                }
+            }
+        }
+
+        case VERIFY_KIRIM_SUCCESS: {
+            return {
+                ...state,
+                verifyKirim: {
+                    ...state.verifyKirim,
+                    loading: false,
+                    data: [],
+                    error: action.payload
+                }
+            }
+        }
+
+        case VERIFY_KIRIM_ERROR: {
+            return {
+                ...state,
+                verifyKirim: {
+                    ...state.verifyKirim,
                     loading: false,
                     data: [],
                     error: action.payload
