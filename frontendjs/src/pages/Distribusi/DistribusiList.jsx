@@ -291,11 +291,13 @@ const DistribusiOrderList = ({ isUnit }) => {
             <Col lg="auto">
               <h3>Pengiriman</h3>
             </Col>
-            <Col lg={'auto'} className="d-flex flex-row-reverse">
-              <Link to={'/farmasi/gudang/distribusi-kirim-langsung'}>
-                <Button color={'info'}>Kirim</Button>
-              </Link>
-            </Col>
+            {!isUnit && (
+              <Col lg={'auto'} className="d-flex flex-row-reverse">
+                <Link to={'/farmasi/gudang/distribusi-kirim-langsung'}>
+                  <Button color={'info'}>Kirim</Button>
+                </Link>
+              </Col>
+            )}
           </Row>
           <Row>
             <DataTable
