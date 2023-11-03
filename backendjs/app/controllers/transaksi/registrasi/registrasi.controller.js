@@ -1976,7 +1976,7 @@ const hCreatePasien = async (req, res, transaction, { objBody, nocm }) => {
         namasuamiistri: objBody.namasuamiistri || null,
         namakeluarga: objBody.namakeluargalain || null,
         namaibu: objBody.namaibu || null,
-        objectkaryawanrsfk: req.idPegawai || null,
+        objectkaryawanrsfk: 1,
     }, {
         transaction: transaction
     })
@@ -2034,7 +2034,7 @@ const hUpdatePasien = async (req, res, transaction, {nocm}) => {
         namasuamiistri: objBody.namasuamiistri || null,
         namakeluarga: objBody.namakeluargalain || null,
         namaibu: objBody.namaibu || null,
-        objectkaryawanrsfk: req.idPegawai || null,
+        objectkaryawanrsfk: 1,
     }, {
         transaction: transaction
     })
