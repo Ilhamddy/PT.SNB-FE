@@ -7,7 +7,7 @@ import {
     qGetOrderStok,
     qGetStokUnit, qKemasanFromId
 } from "../../../queries/gudang/distribusi.queries";
-import gudangController, { generateKodeBatch, hCreateKartuStok } from "../gudang/gudang.controller"
+import gudangController, { generateKodeBatch, hCreateKartuStok, hUpsertStok } from "../gudang/gudang.controller"
 import {
     createTransaction
 } from "../../../utils/dbutils";
@@ -473,82 +473,33 @@ const hCreateDetail = async (
     createdOrUpdatedStokUnit = await Promise.all(
         createdKirimDetail.map(
             async (createdKirimDetail) => {
-                const stokPengirim = await t_stokunit.findOne({
-                    where: {
-                        kodebatch: generateKodeBatch(
-                            createdKirimDetail.nobatch,
-                            createdKirimDetail.objectprodukfk,
-                            createdOrUpdatedKirimBarang.objectunitpengirimfk
-                        ),
-                    },
-                    lock: transaction.LOCK.UPDATE,
-                    transaction: transaction
+                const {
+                    stokBarangAwalVal: stokPengirimAwalVal, 
+                    stokBarangAkhirVal: stokPengirimAkhirVal
+                } = await hUpsertStok(req, res, transaction, {
+                    qtyDiff: -createdKirimDetail.qty,
+                    nobatch: createdKirimDetail.nobatch,
+                    objectprodukfk: createdKirimDetail.objectprodukfk,
+                    objectunitfk: createdOrUpdatedKirimBarang.objectunitpengirimfk
                 })
 
-                let stokPengirimAwalVal = stokPengirim?.toJSON() || null
-                
-                const stokTujuanAwal = await t_stokunit.findOne({
-                    where: {
-                        kodebatch: generateKodeBatch(
-                            createdKirimDetail.nobatch,
-                            createdKirimDetail.objectprodukfk,
-                            createdOrUpdatedKirimBarang.objectunittujuanfk
-                        ),
-                    },
-                    lock: transaction.LOCK.UPDATE,
-                    transaction: transaction
-                })
-                const stokTujuanAwalVal = stokTujuanAwal?.toJSON() || null
-                
-                let stokTujuanAkhirVal
-
-                if(!stokTujuanAwal){
-                    stokTujuanAkhirVal = await t_stokunit.create({
-                        norec: uuid.v4().substring(0, 32),
-                        kdprofile: 0,
-                        statusenabled: true,
-                        objectunitfk: createdOrUpdatedKirimBarang.objectunittujuanfk,
-                        objectasalprodukfk: stokPengirimAwalVal.objectasalprodukfk,
-                        objectprodukfk: stokPengirimAwalVal.objectprodukfk,
-                        nobatch: createdKirimDetail.nobatch,
-                        ed: stokPengirimAwalVal.ed,
-                        persendiskon: stokPengirimAwalVal.persendiskon,
-                        hargadiskon: stokPengirimAwalVal.hargadiskon,
-                        harga: stokPengirimAwalVal.harga,
-                        qty: createdKirimDetail.qty,
-                        objectpenerimaanbarangdetailfk: stokPengirimAwalVal.objectpenerimaanbarangdetailfk,
-                        tglterima: createdOrUpdatedKirimBarang.tglinput,
-                        tglinput: new Date(),
-                        tglupdate: new Date(),
-                        kodebatch: generateKodeBatch(
-                            createdKirimDetail.nobatch,
-                            createdKirimDetail.objectprodukfk,
-                            createdOrUpdatedKirimBarang.objectunittujuanfk
-                        )
-                    }, {
-                        transaction: transaction
-                    })
-                }else{
-                    const qty = stokTujuanAwal.qty + createdKirimDetail.qty
-                    if(qty < 0){
-                        throw new Error("Stok tidak cukup")
-                    }
-                    let updated = await stokTujuanAwal.update({
-                        qty: qty
-                    }, {
-                        transaction: transaction,
-                    })
-                    stokTujuanAkhirVal = updated?.toJSON() || null
-                }
-                let stokPengirimUpdated = await stokPengirim.update({
-                    qty: stokPengirimAwalVal.qty - createdKirimDetail.qty
-                }, {
-                    returning: true,
-                    transaction: transaction
+                const {
+                    stokBarangAwalVal: stokTujuanAwalVal, 
+                    stokBarangAkhirVal: stokTujuanAkhirVal
+                } = await hUpsertStok(req, res, transaction, {
+                    qtyDiff: createdKirimDetail.qty,
+                    nobatch: createdKirimDetail.nobatch,
+                    objectprodukfk: createdKirimDetail.objectprodukfk,
+                    objectunitfk: createdOrUpdatedKirimBarang.objectunittujuanfk,
+                    ed: stokPengirimAwalVal.ed,
+                    persendiskon: stokPengirimAwalVal.persendiskon,
+                    hargadiskon: stokPengirimAwalVal.hargadiskon,
+                    harga: stokPengirimAwalVal.harga,
+                    objectpenerimaanbarangdetailfk: stokPengirimAwalVal.objectpenerimaanbarangdetailfk,
+                    tglterima: createdOrUpdatedKirimBarang.tglinput,
+                    objectasalprodukfk: stokPengirimAwalVal.objectasalprodukfk,
                 })
 
-                const stokPengirimAkhirVal = stokPengirimUpdated?.toJSON() || null
-                
                 return {
                     stokPengirimAwalVal,
                     stokPengirimAkhirVal,

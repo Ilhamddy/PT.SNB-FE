@@ -30,9 +30,12 @@ import { dateLocal } from '../../utils/format'
 const DistribusiOrderList = () => {
   const dispatch = useDispatch()
 
-  const { listOrder } = useSelector((state) => ({
-    listOrder: state.Distribusi.getOrderBarang.data?.order || [],
+  const { listAll } = useSelector((state) => ({
+    listAll: state.Distribusi.getOrderBarang.data?.order || [],
   }))
+
+  const listOrder = listAll.filter((item) => !item.tglkirim)
+  const listKirim = listAll.filter((item) => !!item.tglkirim)
 
   useEffect(() => {
     dispatch(getOrderBarang())
@@ -110,8 +113,8 @@ const DistribusiOrderList = () => {
     },
   ]
 
-  const totalBelumTerima = listOrder.filter((item) => !item.tglkirim).length
-  const totalSudahTerima = listOrder.filter((item) => !!item.tglkirim).length
+  const totalBelumTerima = listAll.filter((item) => !item.tglkirim).length
+  const totalSudahTerima = listAll.filter((item) => !!item.tglkirim).length
 
   return (
     <div className="page-content page-penerimaan-barang">
@@ -136,10 +139,13 @@ const DistribusiOrderList = () => {
               image={pesananBatal}
             />
           </Row>
-          <Row className="d-flex flex-row-reverse mb-3">
-            <Col lg={2} className="d-flex flex-row-reverse">
+          <Row className="d-flex justify-content-between mb-3">
+            <Col lg="auto">
+              <h3>Pemesanan</h3>
+            </Col>
+            <Col lg={'auto'} className="d-flex flex-row-reverse">
               <Link to={'/farmasi/gudang/distribusi-order'}>
-                <Button color={'info'}>Tambah</Button>
+                <Button color={'info'}>Pesan</Button>
               </Link>
             </Col>
           </Row>
@@ -150,6 +156,28 @@ const DistribusiOrderList = () => {
               pagination
               paginationPerPage={10}
               data={listOrder}
+              progressPending={false}
+              customStyles={tableCustomStyles}
+              progressComponent={<LoadingTable />}
+            />
+          </Row>
+          <Row className="d-flex justify-content-between mb-3">
+            <Col lg="auto">
+              <h3>Pengiriman</h3>
+            </Col>
+            <Col lg={'auto'} className="d-flex flex-row-reverse">
+              <Link to={'/farmasi/gudang/distribusi-kirim'}>
+                <Button color={'info'}>Kirim</Button>
+              </Link>
+            </Col>
+          </Row>
+          <Row>
+            <DataTable
+              fixedHeader
+              columns={columnsProduk}
+              pagination
+              paginationPerPage={10}
+              data={listKirim}
               progressPending={false}
               customStyles={tableCustomStyles}
               progressComponent={<LoadingTable />}
@@ -170,37 +198,23 @@ const Widget = ({ title, end, image }) => {
             <div>
               <p className="fw-medium text-muted mb-0">{title}</p>
               <h2 className="mt-4 ff-secondary fw-semibold">
-                <span className="counter-value" style={{ fontSize: '5rem' }}>
-                  <CountUp
-                    start={0}
-                    end={end}
-                    decimal={','}
-                    // suffix={item.suffix}
-                    duration={3}
-                  />
+                <span className="counter-value" style={{ fontSize: '2rem' }}>
+                  <CountUp start={0} end={end} decimal={','} duration={3} />
                 </span>
               </h2>
             </div>
             <div>
-              <div className="avatar-xl flex-shrink-0">
+              <div className="avatar-md flex-shrink-0">
                 <span
                   className={'avatar-title rounded-circle fs-4'}
                   style={{ backgroundColor: '#CC845C' }}
                 >
-                  <img src={image} alt="" className="avatar-lg" />
+                  <img src={image} alt="" className="avatar-md" />
                 </span>
               </div>
             </div>
           </div>
         </CardBody>
-        <div className="card-footer" style={{ backgroundColor: '#e67e22' }}>
-          <div className="text-center">
-            <Link to="#" className="link-light" onClick={() => {}}>
-              View
-              <i className="ri-arrow-right-s-line align-middle lh-1"></i>
-            </Link>
-          </div>
-        </div>
       </Card>
     </Col>
   )

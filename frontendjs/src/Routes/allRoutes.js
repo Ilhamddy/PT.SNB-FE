@@ -657,6 +657,7 @@ const authProtectedRoutes = [
   { path: "/farmasi/gudang/distribusi-order", component: <DistribusiOrder /> },
   { path: "/farmasi/gudang/distribusi-order-list", component: <DistribusiOrderList /> },
   { path: "/farmasi/gudang/distribusi-kirim/:norecorder", component: <DistribusiKirim /> },
+  { path: "/farmasi/gudang/distribusi-kirim", component: <DistribusiKirim /> },
 
   //farmasi
   { path: "/farmasi/verif-order-resep", component: <VerifikasiResep /> },
