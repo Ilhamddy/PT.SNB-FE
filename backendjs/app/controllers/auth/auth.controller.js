@@ -77,7 +77,13 @@ const signin = async (req, res) => {
       }
     })
     if (!user) {
-      return res.status(404).send({ message: "User Not found." });
+      // return res.status(404).send({ message: "User Not found." });
+      return res.status(200).send({
+        accessToken: null,
+        message: "User Not found.!",
+        data: "User Not found.!",
+        status: "errors"
+      });
     }
     res.locals.showBodyRes()
 

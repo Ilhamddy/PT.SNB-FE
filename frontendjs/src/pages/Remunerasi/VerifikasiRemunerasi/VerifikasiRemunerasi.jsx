@@ -12,7 +12,7 @@ import KontainerFlatpickr from "../../../Components/KontainerFlatpickr/Kontainer
 import DataTable from "react-data-table-component";
 import LoadingTable from "../../../Components/Table/LoadingTable";
 import {
-  getDaftarVerifikasiRemunerasi
+  getDaftarVerifikasiRemunerasi, listTagihanGet, upsertVerifikasiRemunerasi
 } from '../../../store/actions';
 
 
@@ -55,7 +55,7 @@ const VerifikasiRemunerasi = () => {
     }
   }
   const handleClick = (e) => {
-    console.log(e)
+    setselectedPasien(e)
     setisVerifikasiOpen(true)
   };
   const columns = [
@@ -328,7 +328,11 @@ const VerifikasiRemunerasi = () => {
 
 const ModalVerifikasi = ({ isVerifikasiOpen, toggle, selectedPasien }) => {
   const dispatch = useDispatch();
-
+  const { dataTagihan, loadingTagihan, successTagihan } = useSelector((state) => ({
+    dataTagihan: state.Emr.listTagihanGet.data,
+    loadingTagihan: state.Emr.listTagihanGet.loading,
+    successTagihan: state.Emr.listTagihanGet.success,
+  }));
   const vSetValidationModal = useFormik({
     enableReinitialize: true,
     initialValues: {
@@ -338,28 +342,54 @@ const ModalVerifikasi = ({ isVerifikasiOpen, toggle, selectedPasien }) => {
     }),
     onSubmit: (values, { resetForm }) => {
       // console.log(values);
+      dispatch(
+        upsertVerifikasiRemunerasi(values, () => {
 
+        })
+      )
     }
   })
   const columns = [
     {
-      name: <span className='font-weight-bold fs-13'>No Urut</span>,
-      selector: row => row.nourut,
+      name: <span className='font-weight-bold fs-13'>No</span>,
+      selector: row => row.no,
       sortable: true,
       width: "100px"
     },
     {
-      name: <span className='font-weight-bold fs-13'>Nama</span>,
-      selector: row => row.reportdisplay,
+      name: <span className='font-weight-bold fs-13'>Pelayanan</span>,
+      selector: row => row.namaproduk,
       sortable: true,
       width: "100px"
     },
     {
-      name: <span className='font-weight-bold fs-13'>Link</span>,
-      selector: row => row.link,
+      name: <span className='font-weight-bold fs-13'>Unit</span>,
+      selector: row => row.namaunit,
       sortable: true,
-      // selector: row => (<button className="btn btn-sm btn-soft-info" onClick={() => handleClick(dataTtv)}>{row.noregistrasi}</button>),
-      // width: "250px",
+      wrap: true,
+    },
+    {
+      name: <span className='font-weight-bold fs-13'>Petugas</span>,
+      selector: row => row.petugas,
+      sortable: true,
+      wrap: true,
+    },
+    {
+      name: <span className='font-weight-bold fs-13'>Qty</span>,
+      selector: row => row.qty,
+      sortable: true,
+      wrap: true,
+    },
+    {
+      name: <span className='font-weight-bold fs-13'>Total</span>,
+      selector: row => row.total,
+      sortable: true,
+      wrap: true,
+    },
+    {
+      name: <span className='font-weight-bold fs-13'>Cito</span>,
+      selector: row => row.statuscito,
+      sortable: true,
       wrap: true,
     },
   ];
@@ -377,6 +407,11 @@ const ModalVerifikasi = ({ isVerifikasiOpen, toggle, selectedPasien }) => {
       },
     }
   }
+  useEffect(() => {
+    if (selectedPasien !== null) {
+      dispatch(listTagihanGet(selectedPasien.norecdp));
+    }
+  }, [selectedPasien, dispatch])
   return (
     <Modal isOpen={isVerifikasiOpen} toggle={toggle} centered={true} size="xl">
       <ModalBody>
@@ -394,7 +429,6 @@ const ModalVerifikasi = ({ isVerifikasiOpen, toggle, selectedPasien }) => {
             </CardHeader>
             <CardBody>
               <Row className="gy-3">
-
                 <Col lg={12}>
                   <div id="table-gridjs">
                     <DataTable
@@ -402,14 +436,24 @@ const ModalVerifikasi = ({ isVerifikasiOpen, toggle, selectedPasien }) => {
                       fixedHeaderScrollHeight="330px"
                       columns={columns}
                       pagination
-                      data={[]}
-                      // progressPending={loadingMapChild}
+                      data={dataTagihan}
+                      progressPending={loadingTagihan}
                       customStyles={tableCustomStyles}
                       progressComponent={<LoadingTable />}
                       // onRowClicked={(row) => handleClickRowChild(row)}
                       pointerOnHover
                       highlightOnHover
                     />
+                  </div>
+                </Col>
+                <Col lg={12} className="mr-3 me-3 mt-2">
+                  <div className="d-flex flex-wrap justify-content-end gap-2">
+                    <Button
+
+                      type="submit" color="success" style={{ width: '30%' }}>Simpan</Button>
+                    <Button type="button" color="danger" style={{ width: '30%' }}
+                    // onClick={() => { handleBack() }}
+                    >Batal</Button>
                   </div>
                 </Col>
               </Row>

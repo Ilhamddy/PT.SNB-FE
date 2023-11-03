@@ -81,4 +81,14 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getDaftarVerifikasiRemunerasi
     );
+    app.post(
+        "/api/transaksi/payment/save-verifikasi-remunerasi",
+        [authJwt.verifyToken],
+        controller.saveVerifikasiRemunerasi
+    );
+    app.get(
+        "/api/transaksi/payment/daftar-sudah-verifikasi-remunerasi",
+        [authJwt.verifyToken],
+        controller.getDaftarSudahVerifikasiRemun
+    );
 }

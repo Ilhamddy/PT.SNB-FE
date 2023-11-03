@@ -19,7 +19,7 @@ import { qGetPelayananFromDp,
     qGetCaraBayarFromBB,
     qGetLaporanPendapatanKasir
 } from '../../../queries/payment/payment.queries';
-import { qDaftarVerifikasi } from '../../../queries/remunerasi/remunerasi.queries';
+import { qDaftarVerifikasi,qListSudahVerifikasi,qListTagihan } from '../../../queries/remunerasi/remunerasi.queries';
 import { createTransaction } from "../../../utils/dbutils"
 
 import { Op } from "sequelize";
@@ -533,7 +533,6 @@ const getAllPiutang = async (req, res) => {
     }
 }
 
-
 const getPaymentForPiutang = async (req, res) => {
     const logger = res.locals.logger
     try{
@@ -649,6 +648,89 @@ const getDaftarVerifikasiRemunerasi = async (req, res) => {
     }
 }
 
+const saveVerifikasiRemunerasi = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const result1 = await pool.query(qListTagihan, [req.body.norecdp])
+        if(result1.rowCount===0){
+            res.status(201).send({
+                msg: 'List Pelayanan Tidak Ada / Sudah Diverifikasi',
+                code: 201,
+                data: 'List Pelayanan Tidak Ada / Sudah Diverifikasi',
+                success: false
+            });
+            return
+        }
+        const { verifikasi,updateNorec } = await db.sequelize.transaction(async (transaction) => {
+            let verifikasi = ''
+            let updateNorec = ''
+           
+        
+            const norec = uuid.v4().substring(0, 32);
+            verifikasi = await db.t_verifremunerasi.create({
+                norec:norec,
+                objectpegawaifk: req.idPegawai,
+                tglinput: new Date()
+            }, { transaction });
+          
+            for (let i = 0; i < result1.rows.length; i++) {
+                const element = result1.rows[i];
+                updateNorec = await db.t_pelayananpasien.update({
+                    objectverifremunerasifk: norec,
+                }, {
+                    where: {
+                        norec: element.norec
+                    },
+                    transaction: transaction
+                });
+            }
+            return { verifikasi,updateNorec }
+        });
+        
+        const tempres = {
+            verifikasi:verifikasi,
+            updateNorec:updateNorec
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+const getDaftarSudahVerifikasiRemun = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const result1 = await pool.query(qListSudahVerifikasi)
+        const tempres = {
+        
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: result1.rows,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
 
 export default {
     getPelayananFromDP,
@@ -662,7 +744,9 @@ export default {
     getPaymentForPiutang,
     getLaporanPendapatanKasir,
     getPiutangAfterDate,
-    getDaftarVerifikasiRemunerasi
+    getDaftarVerifikasiRemunerasi,
+    saveVerifikasiRemunerasi,
+    getDaftarSudahVerifikasiRemun
 }
 
 

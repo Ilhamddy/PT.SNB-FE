@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react"
 import withRouter from "../../../Components/Common/withRouter"
 import { ToastContainer } from "react-toastify";
 import UiContent from "../../../Components/Common/UiContent";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Button, Card, CardBody, Col, Container, Form, FormFeedback, Label, Row } from "reactstrap";
 import BreadCrumb from "../../../Components/Common/BreadCrumb";
 import { useFormik } from "formik";
@@ -11,11 +11,17 @@ import CustomSelect from "../../Select/Select";
 import KontainerFlatpickr from "../../../Components/KontainerFlatpickr/KontainerFlatpickr";
 import DataTable from "react-data-table-component";
 import LoadingTable from "../../../Components/Table/LoadingTable";
+import {
+  getDaftarSudahVerifikasiRemunerasi
+} from '../../../store/actions';
 
 const LaporanRemunerasi = () => {
   document.title = "Laporan Remunerasi";
   const dispatch = useDispatch();
-
+  const { dataGrid, loadingGrid } = useSelector((state) => ({
+    dataGrid: state.Payment.getDaftarSudahVerifikasiRemunerasi.data,
+    loadingGrid: state.Payment.getDaftarSudahVerifikasiRemunerasi.loading,
+  }));
   const vSetValidation = useFormik({
     enableReinitialize: true,
     initialValues: {
@@ -26,7 +32,7 @@ const LaporanRemunerasi = () => {
       // tingkatdarurat: Yup.string().required("Tingkat Darurat jawab wajib diisi"),
     }),
     onSubmit: (values) => {
-
+      dispatch(getDaftarSudahVerifikasiRemunerasi());
     }
   })
   const tableCustomStyles = {
@@ -51,14 +57,14 @@ const LaporanRemunerasi = () => {
       width: "50px"
     },
     {
-      name: <span className='font-weight-bold fs-13'>Tgl. Registrasi</span>,
-      selector: row => row.nip,
+      name: <span className='font-weight-bold fs-13'>No. Registrasi</span>,
+      selector: row => row.noregistrasi,
       sortable: true,
       width: "150px"
     },
     {
-      name: <span className='font-weight-bold fs-13'>Tgl. Pulang</span>,
-      selector: row => row.namalengkap,
+      name: <span className='font-weight-bold fs-13'>No. RM</span>,
+      selector: row => row.nocm,
       sortable: true,
       // selector: row => (<button className="btn btn-sm btn-soft-info" onClick={() => handleClick(dataTtv)}>{row.noregistrasi}</button>),
       width: "160px",
@@ -66,22 +72,22 @@ const LaporanRemunerasi = () => {
     },
     {
 
-      name: <span className='font-weight-bold fs-13'>Noregistrasi</span>,
-      selector: row => row.namaunit,
+      name: <span className='font-weight-bold fs-13'>Nama Pasien</span>,
+      selector: row => row.namapasien,
       sortable: true,
       width: "150px"
     },
     {
 
-      name: <span className='font-weight-bold fs-13'>No.RM</span>,
-      selector: row => row.profesi,
+      name: <span className='font-weight-bold fs-13'>Tgl. Tindakan</span>,
+      selector: row => row.tglinput,
       sortable: true,
       width: "100px"
     },
     {
 
-      name: <span className='font-weight-bold fs-13'>Nama Pasien</span>,
-      selector: row => row.statuspegawai,
+      name: <span className='font-weight-bold fs-13'>Tindakan</span>,
+      selector: row => row.namaproduk,
       sortable: true,
       width: "100",
     },
@@ -275,8 +281,8 @@ const LaporanRemunerasi = () => {
                     fixedHeaderScrollHeight="330px"
                     columns={columns}
                     pagination
-                    // data={data}
-                    // progressPending={loading}
+                    data={dataGrid}
+                    progressPending={loadingGrid}
                     customStyles={tableCustomStyles}
                     progressComponent={<LoadingTable />}
                     // onRowClicked={(row) => handleClick(row)}
