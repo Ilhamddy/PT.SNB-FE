@@ -265,6 +265,7 @@ import LaporanPasienKunjungan from "../pages/RekamMedis/Laporan/LaporanPasienKun
 // RL
 import RL3_1 from "../pages/RekamMedis/Laporan/RL3_1/RL3_1";
 import RL3_2 from "../pages/RekamMedis/Laporan/RL3_2/RL3_2";
+import RL3_3 from "../pages/RekamMedis/Laporan/RL3_3/RL3_3";
 // 
 // radiologi
 import DaftarOrderRadiologi from "../pages/Radiologi/DaftarOrderRadiologi/DaftarOrderRadiologi";
@@ -314,7 +315,6 @@ import ListVerifObat from "../pages/ListVerifObat/ListVerifObat";
 import DaftarPasienFarmasi from "../pages/ListDaftarPasien/DaftarPasienFarmasi/DaftarPasienFarmasi";
 import TambahObatFarmasi from "../pages/TambahObatFarmasi/TambahObatFarmasi";
 import MappingLayanan from "../pages/RekamMedis/MappingLayanan/MappingLayanan.jsx";
-import RL3_3 from "../pages/RekamMedis/Laporan/RL3_3/RL3_3";
 import Dashboard from "../pages/Dashboard/Dashboard";
 import Viewer from "../pages/Viewer/Viewer";
 import PemanggilanViewer from "../pages/PemanggilanViewer/PemanggilanViewer";
