@@ -14,19 +14,23 @@ import LoadingTable from "../../../Components/Table/LoadingTable";
 import {
   getDaftarVerifikasiRemunerasi, listTagihanGet, upsertVerifikasiRemunerasi
 } from '../../../store/actions';
-
+import { comboRegistrasiGet } from '../../../store/master/action';
 
 const VerifikasiRemunerasi = () => {
   document.title = "Verifikasi Remunerasi";
   const dispatch = useDispatch();
-  const { dataGrid, loadingGrid } = useSelector((state) => ({
+  const { dataGrid, loadingGrid, data } = useSelector((state) => ({
     dataGrid: state.Payment.getDaftarVerifikasiRemunerasi.data,
     loadingGrid: state.Payment.getDaftarVerifikasiRemunerasi.loading,
+    data: state.Master.comboRegistrasiGet.data || [],
   }));
   const [dateNow] = useState(() => new Date().toISOString())
   const vSetValidation = useFormik({
     enableReinitialize: true,
     initialValues: {
+      instalasi: '',
+      unit: '',
+      penjamin: '',
       tglAwal: '',
       tglAkhir: ''
     },
@@ -37,6 +41,9 @@ const VerifikasiRemunerasi = () => {
       dispatch(getDaftarVerifikasiRemunerasi({
         tglAwal: values.tglAwal || dateNow,
         tglAkhir: values.tglAkhir || dateNow,
+        instalasi: values.instalasi || '',
+        unit: values.unit || '',
+        penjamin: values.penjamin || ''
       }));
     }
   })
@@ -58,6 +65,9 @@ const VerifikasiRemunerasi = () => {
     setselectedPasien(e)
     setisVerifikasiOpen(true)
   };
+  useEffect(() => {
+    dispatch(comboRegistrasiGet());
+  }, [dispatch]);
   const columns = [
     {
       name: <span className='font-weight-bold fs-13'>No</span>,
@@ -169,7 +179,7 @@ const VerifikasiRemunerasi = () => {
                         <CustomSelect
                           id="instalasi"
                           name="instalasi"
-                          options={[]}
+                          options={data.instalasi || []}
                           onChange={(e) => {
                             vSetValidation.setFieldValue('instalasi', e?.value || '')
                           }}
@@ -193,7 +203,7 @@ const VerifikasiRemunerasi = () => {
                         <CustomSelect
                           id="unit"
                           name="unit"
-                          options={[]}
+                          options={data.unit || []}
                           onChange={(e) => {
                             vSetValidation.setFieldValue('unit', e?.value || '')
                           }}
@@ -217,7 +227,7 @@ const VerifikasiRemunerasi = () => {
                         <CustomSelect
                           id="penjamin"
                           name="penjamin"
-                          options={[]}
+                          options={data.rekanan || []}
                           onChange={(e) => {
                             vSetValidation.setFieldValue('penjamin', e?.value || '')
                           }}

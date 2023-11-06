@@ -19,7 +19,7 @@ import { qGetPelayananFromDp,
     qGetCaraBayarFromBB,
     qGetLaporanPendapatanKasir
 } from '../../../queries/payment/payment.queries';
-import { qDaftarVerifikasi,qListSudahVerifikasi,qListTagihan,qCariPetugas } from '../../../queries/remunerasi/remunerasi.queries';
+import { qDaftarVerifikasi,qListSudahVerifikasi,qListTagihan,qCariPetugas, qListKomponenTarif } from '../../../queries/remunerasi/remunerasi.queries';
 import { createTransaction } from "../../../utils/dbutils"
 
 import { Op } from "sequelize";
@@ -627,7 +627,20 @@ const getPiutangAfterDate = async (req, res) => {
 const getDaftarVerifikasiRemunerasi = async (req, res) => {
     const logger = res.locals.logger;
     try{
-        const result1 = await pool.query(qDaftarVerifikasi, [req.query.tglAwal, req.query.tglAkhir])
+        // const result1 = await pool.query(qDaftarVerifikasi, [req.query.tglAwal, req.query.tglAkhir])
+        const instalasi = req.query.instalasi !== '' ? ` and mu.objectinstalasifk='${req.query.instalasi}'` : ' ';
+        const unit = req.query.unit !== '' ? ` and mu.id='${req.query.unit}'` : ' ';
+        const penjamin = req.query.penjamin !== '' ? ` and td.objectpenjaminfk='${req.query.penjamin}'` : ' ';
+        let query = qDaftarVerifikasi + ` and td.tglpulang between '${req.query.tglAwal}' and '${req.query.tglAkhir}' 
+        ${instalasi} ${unit} ${penjamin}
+        group by td.norec,td.noregistrasi,td.tglregistrasi,td.tglpulang,mp.nocm,mp.namapasien,
+        mp2.namarekanan,mp3.namalengkap,tp.total,tp.norec
+        ) as x
+        group by x.norecdp,x.noregistrasi,x.tglregistrasi,x.tglpulang,x.nocm,x.namapasien,
+        x.namarekanan,x.dpjp`
+
+        const result1 = await pool.query(query)
+        
         const tempres = {
         
         };
@@ -711,7 +724,13 @@ const saveVerifikasiRemunerasi = async (req, res) => {
 const getDaftarSudahVerifikasiRemun = async (req, res) => {
     const logger = res.locals.logger;
     try{
-        const result1 = await pool.query(qListSudahVerifikasi)
+        const instalasi = req.query.instalasi !== '' ? ` and mu.objectinstalasifk='${req.query.instalasi}'` : ' ';
+        const unit = req.query.unit !== '' ? ` and mu.id='${req.query.unit}'` : ' ';
+        const penjamin = req.query.penjamin !== '' ? ` and td.objectpenjaminfk='${req.query.penjamin}'` : ' ';
+        let query = qListSudahVerifikasi + ` tp.objectverifremunerasifk is not null and td.tglpulang between '${req.query.tglAwal}' and '${req.query.tglAkhir}' 
+        ${instalasi} ${unit} ${penjamin} and tp.statusenabled = true order by no asc`
+        // console.log(query)
+        const result1 = await pool.query(query)
         for (let i = 0; i < result1.rows.length; ++i) {
             const resultlistPetugas =await pool.query(qCariPetugas,[result1.rows[i].norec])
             let tempPetugas = ''
@@ -722,6 +741,19 @@ const getDaftarSudahVerifikasiRemun = async (req, res) => {
             }
             result1.rows[i].petugas = tempPetugas
             result1.rows[i].jenispelaksana = tempJenisPelaksana
+
+            const resultKomponen =await pool.query(qListKomponenTarif,[result1.rows[i].norec])
+            for (let y = 0; y < resultKomponen.rows.length; y++) {
+                const element = resultKomponen.rows[y];
+                if(element.id===1)
+                    result1.rows[i].komdokdpjp= element.totalkomponen
+                else if(element.id===2)
+                    result1.rows[i].komperawat= element.totalkomponen
+                else if(element.id===3)
+                    result1.rows[i].komdokanastesi= element.totalkomponen
+                else if(element.id===4)
+                    result1.rows[i].komjasars= element.totalkomponen
+            }
         }
         const tempres = {
         
