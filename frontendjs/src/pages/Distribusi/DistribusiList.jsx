@@ -77,7 +77,7 @@ const DistribusiOrderList = ({ isUnit }) => {
               <Link to={`/farmasi/gudang/distribusi-kirim/${row.norecorder}`}>
                 <DropdownItem>
                   <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
-                  Lihat Order
+                  Kirim Barang
                 </DropdownItem>
               </Link>
             </DropdownMenu>
@@ -291,11 +291,13 @@ const DistribusiOrderList = ({ isUnit }) => {
             <Col lg="auto">
               <h3>Pengiriman</h3>
             </Col>
-            <Col lg={'auto'} className="d-flex flex-row-reverse">
-              <Link to={'/farmasi/gudang/distribusi-kirim-langsung'}>
-                <Button color={'info'}>Kirim</Button>
-              </Link>
-            </Col>
+            {!isUnit && (
+              <Col lg={'auto'} className="d-flex flex-row-reverse">
+                <Link to={'/farmasi/gudang/distribusi-kirim-langsung'}>
+                  <Button color={'info'}>Kirim</Button>
+                </Link>
+              </Col>
+            )}
           </Row>
           <Row>
             <DataTable

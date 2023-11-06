@@ -918,7 +918,7 @@ const DistribusiKirim = ({ isVerif }) => {
             (isVerif && !!vKirim.values.isverif)
           }
         >
-          {isVerif ? 'Verifikasi' : 'Simpan'}
+          {isVerif ? 'Verifikasi' : 'Kirim'}
         </Button>
         <Button type="button" className="btn" color="danger">
           Batal
