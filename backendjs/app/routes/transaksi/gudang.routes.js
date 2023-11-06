@@ -109,6 +109,12 @@ export default function (app) {
     )
 
     app.get(
+        "/api/transaksi/gudang/get-combo-stok-unit",
+        [authJwt.verifyToken],
+        controller.getComboStokUnit
+    )
+
+    app.get(
         "/api/transaksi/gudang/get-stok-unit",
         [authJwt.verifyToken],
         controller.getStokUnit

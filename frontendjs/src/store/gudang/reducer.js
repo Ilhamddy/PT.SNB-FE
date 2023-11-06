@@ -74,7 +74,10 @@ import {
     GET_UNIT_USER_ERROR,
     GET_COMBO_KARTU_STOK,
     GET_COMBO_KARTU_STOK_SUCCESS,
-    GET_COMBO_KARTU_STOK_ERROR
+    GET_COMBO_KARTU_STOK_ERROR,
+    GET_COMBO_STOK_UNIT,
+    GET_COMBO_STOK_UNIT_SUCCESS,
+    GET_COMBO_STOK_UNIT_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -199,6 +202,11 @@ const INIT_STATE = {
         error: null,
     },
     getComboKartuStok: {
+        data: [],
+        loading: false,
+        error: null
+    },
+    getComboStokUnit: {
         data: [],
         loading: false,
         error: null
@@ -1111,7 +1119,42 @@ const Registrasi = (state = INIT_STATE, action) => {
                 }
             }
         }
+        
+        case GET_COMBO_STOK_UNIT: {
+            return {
+                ...state,
+                getComboStokUnit: {
+                    ...state.getComboStokUnit,
+                    loading: true,
+                    data: [],
+                    error: null
+                }
+            }
+        }
 
+        case GET_COMBO_STOK_UNIT_SUCCESS: {
+            return {
+                ...state,
+                getComboStokUnit: {
+                    ...state.getComboStokUnit,
+                    loading: false,
+                    data: action.payload.data,
+                    error: null
+                }
+            }
+        }
+
+        case GET_COMBO_STOK_UNIT_ERROR: {
+            return {
+                ...state,
+                getComboStokUnit: {
+                    ...state.getComboStokUnit,
+                    loading: false,
+                    error: action.payload.data
+                }
+            }
+        }
+        
 
 
         default: {

@@ -1,25 +1,44 @@
 import { useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { getOrderBarang, getStokUnitGudang } from "../../store/actions"
+import { getComboStokUnit, getOrderBarang, getStokUnitGudang } from "../../store/actions"
 import LoadingTable from "../../Components/Table/LoadingTable"
 import DataTable from "react-data-table-component"
 import BreadCrumb from "../../Components/Common/BreadCrumb"
 import { ToastContainer } from "react-toastify"
-import { Button, Card, Col, Container, DropdownItem, DropdownMenu, DropdownToggle, Row, UncontrolledDropdown, UncontrolledTooltip } from "reactstrap"
+import { Button, Card, Col, Container, DropdownItem, DropdownMenu, DropdownToggle, FormFeedback, Row, UncontrolledDropdown, UncontrolledTooltip } from "reactstrap"
 import { Link } from "react-router-dom"
+import { useFormik } from "formik"
+import * as Yup from "yup"
+import ColLabelInput from "../../Components/ColLabelInput/ColLabelInput"
+import CustomSelect from "../Select/Select"
 
 
 const StokUnitList = () => {
     const dispatch = useDispatch()
 
     const {
-        stokUnit
+        stokUnit,
+        unitUser
     } = useSelector(state => ({
-        stokUnit: state.Gudang?.getStokUnitGudang?.data?.stokUnit || []
+        stokUnit: state.Gudang?.getStokUnitGudang?.data?.stokUnit || [],
+        unitUser: state.Gudang.getComboStokUnit?.data?.unitUser || []
     }))
+
+    const vFilter = useFormik({
+        initialValues: {
+            unit: '', 
+        },
+        validationSchema: Yup.object({
+            unit: Yup.string().required("Unit wajib diisi")
+        }),
+        onSubmit: (values) => {
+            dispatch(getStokUnitGudang(values))
+        }
+    })
 
     useEffect(() => {
         dispatch(getStokUnitGudang())
+        dispatch(getComboStokUnit())
     }, [dispatch])
 
      /**
@@ -111,9 +130,46 @@ const StokUnitList = () => {
             <Container fluid>
                 <BreadCrumb title="Order Barang" pageTitle="Gudang" />
                 <Card className="p-5">
-
+                    <Row className="mb-3">
+                        <ColLabelInput 
+                            label="Unit"
+                            inputId="unit-filter"
+                            lg={3}
+                        >
+                            <CustomSelect
+                                id="unit"
+                                name="unit"
+                                options={unitUser}
+                                onChange={(e) => {
+                                    vFilter.setFieldValue('unit', e?.value || '')
+                                }}
+                                value={vFilter.values.unit}
+                                className={`input row-header ${
+                                    !!vFilter?.errors.unit ? 'is-invalid' : ''
+                                }`}
+                                />
+                            {vFilter.touched.unit &&
+                                !!vFilter.errors.unit && (
+                                    <FormFeedback type="invalid">
+                                        <div>{vFilter.errors.unit}</div>
+                                    </FormFeedback>
+                                )}
+                        </ColLabelInput>
+                        <ColLabelInput
+                            label=""
+                            inputId="tbl-cari"
+                            lg="auto"
+                        >
+                            <Button onClick={() => {
+                                    vFilter.handleSubmit()
+                                }}
+                                color="info"
+                            >
+                                Cari
+                            </Button>
+                        </ColLabelInput>
+                    </Row>
                     <Row>
-
                         <DataTable 
                             fixedHeader
                             columns={columnsProduk}

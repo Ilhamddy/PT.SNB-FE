@@ -787,7 +787,10 @@ const getKartuStok = async (req, res) => {
 const getStokUnit = async (req, res) => {
     const logger = res.locals.logger
     try{
-        const stokUnit = (await pool.query(qGetStokUnit, [])).rows
+        const unitChosen = req.query.unit
+        const unitUser = await pool.query(unitQueries.qGetUnitUser, [req.userId])
+        const idUnitUser = unitUser.rows.map(unitUser => unitUser.value)
+        const stokUnit = (await pool.query(qGetStokUnit, [idUnitUser, unitChosen || ''])).rows
         const tempres = {
             stokUnit: stokUnit
         }
@@ -805,6 +808,36 @@ const getStokUnit = async (req, res) => {
             success: false,
             msg: 'Get stok unit gagal',
             code: 500
+        });
+    }
+}
+
+const getComboStokUnit = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const unit = (await pool.query(unitQueries.getAll, [])).rows
+        let unitUser = (await pool.query(unitQueries.qGetUnitUser, [req.userId])).rows
+        const gudangFound = unitUser.findIndex(x => x.value === daftarUnit.GUDANG_FARMASI) >= 0
+        if(gudangFound){
+            unitUser = unit    
+        }
+        const tempres = {
+            unit: unit,
+            unitUser: unitUser
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
         });
     }
 }
@@ -1195,6 +1228,7 @@ export default {
     getListPenerimaan,
     getComboKartuStok,
     getKartuStok,
+    getComboStokUnit,
     getStokUnit,
     createOrUpdateStokOpname,
     getStokOpname,

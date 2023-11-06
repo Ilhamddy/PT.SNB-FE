@@ -73,7 +73,10 @@ import {
     GET_UNIT_USER_ERROR,
     GET_COMBO_KARTU_STOK,
     GET_COMBO_KARTU_STOK_SUCCESS,
-    GET_COMBO_KARTU_STOK_ERROR
+    GET_COMBO_KARTU_STOK_ERROR,
+    GET_COMBO_STOK_UNIT,
+    GET_COMBO_STOK_UNIT_SUCCESS,
+    GET_COMBO_STOK_UNIT_ERROR
 } from "./actionType";
 
 
@@ -449,5 +452,20 @@ export const getComboKartuStokSuccess = (data) => ({
 
 export const getComboKartuStokError = (data) => ({
     type: GET_COMBO_KARTU_STOK_ERROR,
+    payload: { data: data }
+})
+
+export const getComboStokUnit = (queries) => ({
+    type: GET_COMBO_STOK_UNIT,
+    payload: { queries: queries }
+})
+
+export const getComboStokUnitSuccess = (data) => ({
+    type: GET_COMBO_STOK_UNIT_SUCCESS,
+    payload: { data: data }
+})
+
+export const getComboStokUnitError = (data) => ({
+    type: GET_COMBO_STOK_UNIT_ERROR,
     payload: { data: data }
 })

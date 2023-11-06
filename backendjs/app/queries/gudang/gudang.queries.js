@@ -225,6 +225,16 @@ FROM t_stokunit tsu
     LEFT JOIN m_unit mu ON mu.id = tsu.objectunitfk
     LEFT JOIN m_satuan ms ON ms.id = mp.objectsatuanstandarfk
     LEFT JOIN m_asalproduk mas ON mas.id = tsu.objectasalprodukfk
+WHERE
+    (
+        tsu.objectunitfk = ANY($1) 
+        OR ${daftarUnit.GUDANG_FARMASI} = ANY($1) --- kalau gudang kasih akses ke semua
+    ) 
+    AND
+    (
+        NULLIF($2, '')::int IS NULL
+        OR NULLIF($2, '')::int = tsu.objectunitfk
+    )
 `
 
 const qGetStokOpname = `
