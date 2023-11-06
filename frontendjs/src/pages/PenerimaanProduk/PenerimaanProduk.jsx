@@ -45,13 +45,16 @@ import NoDataTable from '../../Components/Table/NoDataTable'
 import {
   InputProdukDetail,
   InputUmumTerima,
-  ListDetail,
+  ListAfterRetur,
+  ListBeforRetur,
   ListPesan,
   useCalculatePenerimaan,
   useFillInitialInput,
   useGetData,
   useGetKemasan,
   useSetNorecPenerimaan,
+  InputProdukDetailRetur,
+  ListDetail,
 } from './PenerimaanProdukKomponen'
 
 export const PenerimaanContext = createContext({
@@ -75,9 +78,70 @@ export const PenerimaanContext = createContext({
   subtotal: null,
   diskon: null,
   isLogistik: null,
+  vDetailRetur: null,
+  isRetur: false,
 })
 
-const PenerimaanProduk = ({ isLogistik }) => {
+export const initialDetail = (dateNow) => ({
+  indexDetail: '',
+  norecdetailpenerimaan: '',
+  produk: {
+    idproduk: '',
+    namaproduk: '',
+    satuanjual: '',
+    namasatuanjual: '',
+  },
+  satuanterima: '',
+  namasatuanterima: '',
+  konversisatuan: '',
+  jumlahterima: '',
+  checkedharga: '0',
+  hargasatuankecil: '',
+  hargasatuanterima: '',
+  checkeddiskon: '0',
+  diskonpersen: '',
+  diskonrupiah: '',
+  ppnrupiahproduk: '',
+  ppnpersenproduk: '',
+  tanggaled: dateNow,
+  nobatch: '',
+  subtotalproduk: '',
+  totalproduk: '',
+})
+
+export const initialDetailRetur = (dateNow) => ({
+  ...initialDetail(dateNow),
+  jumlahretur: '',
+  alasanretur: '',
+})
+
+export const validationDetail = {
+  produk: Yup.object().shape({
+    idproduk: Yup.string().required('Produk harus diisi'),
+    satuanjual: Yup.string().required('Satuan jual harus diisi'),
+  }),
+  satuanterima: Yup.string().required('Satuan Terima harus diisi'),
+  konversisatuan: Yup.string().required('Konversi Satuan harus diisi'),
+  jumlahterima: Yup.string().required('Jumlah Terima harus diisi'),
+  hargasatuankecil: Yup.string().when('checkedharga', {
+    is: (val) => val === '0',
+    then: () => Yup.string().required('Harga satuan kecil harus diisi'),
+  }),
+  hargasatuanterima: Yup.string().required('Harga satuan terima harus diisi'),
+  diskonpersen: Yup.string().when('checkeddiskon', {
+    is: (val) => val === '0',
+    then: () => Yup.string().required('Diskon harus diisi'),
+  }),
+  diskonrupiah: Yup.string().required('Diskon harus diisi'),
+  ppnrupiahproduk: Yup.string().required('PPN Rupiah harus diisi'),
+  ppnpersenproduk: Yup.string().required('PPN Persen harus diisi'),
+  tanggaled: Yup.string().required('Tanggal ED harus diisi'),
+  nobatch: Yup.string().required('No Batch harus diisi'),
+  subtotalproduk: Yup.string().required('Subtotal harus diisi'),
+  totalproduk: Yup.string().required('Total harus diisi'),
+}
+
+const PenerimaanProduk = ({ isLogistik, isRetur }) => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const { norecpenerimaan, norecpesan } = useParams()
@@ -115,6 +179,7 @@ const PenerimaanProduk = ({ isLogistik }) => {
         total: '',
       },
       detail: [],
+      retur: [],
       islogistik: isLogistik,
     },
     validationSchema: Yup.object({
@@ -175,59 +240,8 @@ const PenerimaanProduk = ({ isLogistik }) => {
 
   const vDetail = useFormik({
     enableReinitialize: true,
-    initialValues: {
-      indexDetail: '',
-      norecdetailpenerimaan: '',
-      produk: {
-        idproduk: '',
-        namaproduk: '',
-        satuanjual: '',
-        namasatuanjual: '',
-      },
-      satuanterima: '',
-      namasatuanterima: '',
-      konversisatuan: '',
-      jumlahterima: '',
-      checkedharga: '0',
-      hargasatuankecil: '',
-      hargasatuanterima: '',
-      checkeddiskon: '0',
-      diskonpersen: '',
-      diskonrupiah: '',
-      ppnrupiahproduk: '',
-      ppnpersenproduk: '',
-      tanggaled: dateNow,
-      nobatch: '',
-      subtotalproduk: '',
-      totalproduk: '',
-    },
-    validationSchema: Yup.object({
-      produk: Yup.object().shape({
-        idproduk: Yup.string().required('Produk harus diisi'),
-        satuanjual: Yup.string().required('Satuan jual harus diisi'),
-      }),
-      satuanterima: Yup.string().required('Satuan Terima harus diisi'),
-      konversisatuan: Yup.string().required('Konversi Satuan harus diisi'),
-      jumlahterima: Yup.string().required('Jumlah Terima harus diisi'),
-      hargasatuankecil: Yup.string().when('checkedharga', {
-        is: (val) => val === '0',
-        then: () => Yup.string().required('Harga satuan kecil harus diisi'),
-      }),
-      hargasatuanterima: Yup.string().required(
-        'Harga satuan terima harus diisi'
-      ),
-      diskonpersen: Yup.string().when('checkeddiskon', {
-        is: (val) => val === '0',
-        then: () => Yup.string().required('Diskon harus diisi'),
-      }),
-      diskonrupiah: Yup.string().required('Diskon harus diisi'),
-      ppnrupiahproduk: Yup.string().required('PPN Rupiah harus diisi'),
-      ppnpersenproduk: Yup.string().required('PPN Persen harus diisi'),
-      tanggaled: Yup.string().required('Tanggal ED harus diisi'),
-      nobatch: Yup.string().required('No Batch harus diisi'),
-      subtotalproduk: Yup.string().required('Subtotal harus diisi'),
-      totalproduk: Yup.string().required('Total harus diisi'),
-    }),
+    initialValues: initialDetail(dateNow),
+    validationSchema: Yup.object(validationDetail),
     onSubmit: (values, { resetForm }) => {
       const newDetailValues = [...validation.values.detail]
       const newValues = { ...values }
@@ -251,6 +265,44 @@ const PenerimaanProduk = ({ isLogistik }) => {
       }
       resetForm()
       validation.setFieldValue('detail', newDetailValues)
+    },
+  })
+
+  const vDetailRetur = useFormik({
+    initialValues: {
+      ...initialDetailRetur(dateNow),
+    },
+    validationSchema: Yup.object({
+      produk: Yup.object().shape({
+        idproduk: Yup.string().required('Produk harus diisi'),
+        satuanjual: Yup.string().required('Satuan jual harus diisi'),
+      }),
+      jumlahretur: Yup.string().required('Jumlah return harus diisi'),
+      alasanretur: Yup.string().required('Jumlah return harus diisi'),
+    }),
+    onSubmit: (values, { resetForm }) => {
+      const newReturValues = [...validation.values.retur]
+      const newValues = { ...values }
+      const findSameProduk = newReturValues.find(
+        (val) =>
+          val.produk.idproduk === newValues.produk.idproduk &&
+          val.nobatch === newValues.nobatch
+      )
+      const existSameProduk = !!findSameProduk
+      const isEdit = newValues.indexDetail !== ''
+      if (existSameProduk) {
+        toast.error('Produk dengan batch sama sudah ada')
+        return
+      }
+      if (isEdit) {
+        // edit
+        newReturValues[values.indexDetail] = newValues
+      } else {
+        newValues.indexDetail = newReturValues.length
+        newReturValues.push(newValues)
+      }
+      resetForm()
+      validation.setFieldValue('retur', newReturValues)
     },
   })
 
@@ -317,12 +369,22 @@ const PenerimaanProduk = ({ isLogistik }) => {
   useCalculatePenerimaan(vDetail, detail)
   useSetNorecPenerimaan(validation)
 
+  const isShowPesan =
+    isPesan ||
+    (detailPemesananPenerimaan.length > 0 && !isPesan && !norecpenerimaan)
+
   return (
     <div className="page-content page-penerimaan-barang">
       <ToastContainer closeButton={false} />
       <Container fluid>
         <BreadCrumb
-          title={isLogistik ? 'Penerimaan Logistik' : 'Penerimaan Produk'}
+          title={
+            isRetur
+              ? 'Retur barang'
+              : isLogistik
+              ? 'Penerimaan Logistik'
+              : 'Penerimaan Produk'
+          }
           pageTitle="Gudang"
         />
         <Form
@@ -355,15 +417,16 @@ const PenerimaanProduk = ({ isLogistik }) => {
               subtotal: subtotal,
               diskon: diskon,
               isLogistik: isLogistik,
+              vDetailRetur: vDetailRetur,
+              isRetur: isRetur,
             }}
           >
             <InputUmumTerima />
-            {(isPesan ||
-              (detailPemesananPenerimaan.length > 0 &&
-                !isPesan &&
-                !norecpenerimaan)) && <ListPesan />}
-            <InputProdukDetail />
-            <ListDetail />
+            {isRetur && <ListBeforRetur />}
+            {isShowPesan && <ListPesan />}
+            {!isRetur ? <InputProdukDetail /> : <InputProdukDetailRetur />}
+            {!isRetur && <ListDetail />}
+            {isRetur && <ListAfterRetur />}
           </PenerimaanContext.Provider>
         </Form>
       </Container>

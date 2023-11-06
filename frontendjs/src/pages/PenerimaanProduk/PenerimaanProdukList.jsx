@@ -68,12 +68,26 @@ const PenerimaanProdukList = ({ isLogistik }) => {
               <DropdownItem
                 onClick={() =>
                   navigate(
-                    `/farmasi/gudang/penerimaan-produk/${row.norecpenerimaan}`
+                    isLogistik
+                      ? `/logistik/gudang/penerimaan-produk/${row.norecpenerimaan}`
+                      : `/farmasi/gudang/penerimaan-produk/${row.norecpenerimaan}`
                   )
                 }
               >
                 <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
                 Edit
+              </DropdownItem>
+              <DropdownItem
+                onClick={() =>
+                  navigate(
+                    isLogistik
+                      ? `/logistik/gudang/penerimaan-produk-retur/${row.norecpenerimaan}`
+                      : `/farmasi/gudang/penerimaan-produk-retur/${row.norecpenerimaan}`
+                  )
+                }
+              >
+                <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
+                Retur
               </DropdownItem>
             </DropdownMenu>
           </UncontrolledDropdown>
