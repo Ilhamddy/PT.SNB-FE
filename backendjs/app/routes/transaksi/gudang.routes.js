@@ -97,6 +97,12 @@ export default function (app) {
     )
 
     app.get(
+        "/api/transaksi/gudang/get-combo-kartu-stok",
+        [authJwt.verifyToken],
+        controller.getComboKartuStok
+    )
+
+    app.get(
         "/api/transaksi/gudang/get-kartu-stok",
         [authJwt.verifyToken],
         controller.getKartuStok

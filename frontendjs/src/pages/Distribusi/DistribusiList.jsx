@@ -246,7 +246,10 @@ const DistribusiOrderList = ({ isUnit }) => {
         </Card>
       </Modal>
       <Container fluid>
-        <BreadCrumb title="Order Barang" pageTitle="Gudang" />
+        <BreadCrumb
+          title={isUnit ? 'Order Barang Unit' : 'Order Barang Gudang'}
+          pageTitle="Gudang"
+        />
         <Card className="p-5">
           <Row>
             <Widget

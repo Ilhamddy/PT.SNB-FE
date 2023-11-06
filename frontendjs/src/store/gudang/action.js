@@ -70,7 +70,10 @@ import {
     GET_LIST_PEMESANAN_ERROR,
     GET_UNIT_USER,
     GET_UNIT_USER_SUCCESS,
-    GET_UNIT_USER_ERROR
+    GET_UNIT_USER_ERROR,
+    GET_COMBO_KARTU_STOK,
+    GET_COMBO_KARTU_STOK_SUCCESS,
+    GET_COMBO_KARTU_STOK_ERROR
 } from "./actionType";
 
 
@@ -434,3 +437,17 @@ export const getUnitUserError = (data) => ({
     payload: { data: data }
 })
 
+export const getComboKartuStok = (queries) => ({
+    type: GET_COMBO_KARTU_STOK,
+    payload: { queries: queries }
+})
+
+export const getComboKartuStokSuccess = (data) => ({
+    type: GET_COMBO_KARTU_STOK_SUCCESS,
+    payload: { data: data }
+})
+
+export const getComboKartuStokError = (data) => ({
+    type: GET_COMBO_KARTU_STOK_ERROR,
+    payload: { data: data }
+})

@@ -43,7 +43,10 @@ SELECT
     mu.objectinstalasifk AS objectinstalasifk
 FROM m_unit mu
     LEFT JOIN m_mapusertounit mmap ON mmap.objectunitfk = mu.id
-WHERE mu.statusenabled = true AND mmap.objectuserfk = $1
+WHERE mu.statusenabled = true AND (
+    mmap.objectuserfk = $1 
+    OR $1 = ${daftarUnit.GUDANG_FARMASI} --- kalau gudang farmasi beri akses semua
+)
 `
 
 export default {

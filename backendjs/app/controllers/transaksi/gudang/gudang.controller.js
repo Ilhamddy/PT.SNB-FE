@@ -1,7 +1,10 @@
 import pool from "../../../config/dbcon.query";
 import * as uuid from 'uuid'
 import db from "../../../models";
-import { qGetDetailPemesanan, qGetDetailPenerimaan, qGetJenisDetailProdukLainLain, 
+import { 
+    qGetDetailPemesanan, 
+    qGetDetailPenerimaan, 
+    qGetJenisDetailProdukLainLain, 
     qGetKartuStok, 
     qGetKemasan, 
     qGetListPemesanan, 
@@ -21,6 +24,7 @@ import { qGetDetailPemesanan, qGetDetailPenerimaan, qGetJenisDetailProdukLainLai
     qGetStokUnit,
     qGetUnitUser, 
 } from "../../../queries/gudang/gudang.queries";
+import unitQueries, { daftarUnit } from "../../../queries/master/unit/unit.queries"
 import {
     createTransaction
 } from "../../../utils/dbutils";
@@ -720,10 +724,45 @@ const getListPenerimaan = async (req, res) => {
     }
 }
 
+const getComboKartuStok = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const unit = (await pool.query(unitQueries.getAll, [])).rows
+        let unitUser = (await pool.query(unitQueries.qGetUnitUser, [req.userId])).rows
+        const gudangFound = unitUser.findIndex(x => x.value === daftarUnit.GUDANG_FARMASI) >= 0
+        if(gudangFound){
+            unitUser = unit    
+        }
+        const tempres = {
+            unit: unit,
+            unitUser: unitUser
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+
+
 const getKartuStok = async (req, res) => {
     const logger = res.locals.logger
     try{
-        const kartuStok = (await pool.query(qGetKartuStok, [])).rows
+        const unitChosen = req.query.unit
+        const unitUser = await pool.query(unitQueries.qGetUnitUser, [req.userId])
+        const idUnitUser = unitUser.rows.map(unitUser => unitUser.value)
+        const kartuStok = (await pool.query(qGetKartuStok, [idUnitUser, unitChosen || ''])).rows
         const tempres = {
             kartustok: kartuStok
         }
@@ -1154,6 +1193,7 @@ export default {
     getPenerimaan,
     createOrUpdatePenerimaan,
     getListPenerimaan,
+    getComboKartuStok,
     getKartuStok,
     getStokUnit,
     createOrUpdateStokOpname,

@@ -1,3 +1,4 @@
+import { daftarUnit } from "../master/unit/unit.queries"
 
 
 const qGetJenisDetailProdukLainLain = `
@@ -194,6 +195,16 @@ SELECT
 FROM t_kartustok tks
     LEFT JOIN m_produk mp ON mp.id = tks.objectprodukfk
     LEFT JOIN m_unit mu ON mu.id = tks.objectunitfk
+WHERE 
+        (
+            tks.objectunitfk = ANY($1) 
+            OR ${daftarUnit.GUDANG_FARMASI} = ANY($1) --- kalau gudang kasih akses ke semua
+        ) 
+    AND
+        (
+            NULLIF($2, '')::int IS NULL
+            OR NULLIF($2, '')::int = tks.objectunitfk
+        )
 ORDER BY 
     tks.tglinput DESC
 `
