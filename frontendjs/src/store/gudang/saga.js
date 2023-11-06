@@ -47,7 +47,13 @@ import {
     getPemesananSuccess,
     getPemesananError,
     getListPemesananSuccess,
-    getListPemesananError
+    getListPemesananError,
+    getUnitUserSuccess,
+    getUnitUserError,
+    getComboKartuStokSuccess,
+    getComboKartuStokError,
+    getComboStokUnitSuccess,
+    getComboStokUnitError
 } from "./action";
 
 
@@ -76,7 +82,10 @@ import {
     UPDATE_STOK_OPNAME_DETAILS,
     CREATE_OR_UPDATE_PEMESANAN,
     GET_PEMESANAN,
-    GET_LIST_PEMESANAN
+    GET_LIST_PEMESANAN,
+    GET_UNIT_USER,
+    GET_COMBO_KARTU_STOK,
+    GET_COMBO_STOK_UNIT,
 } from "./actionType";
 
 const serviceGudang = new ServiceGudang();
@@ -342,6 +351,34 @@ function* onGetListPemesanan({payload: {queries}}){
     }
 }
 
+function* onGetUnitUser({payload: { queries }}){
+    try{
+        let response = yield call(serviceGudang.getUnitUser, queries);
+        yield put(getUnitUserSuccess(response.data))
+    } catch (error) {
+        yield put(getUnitUserError(error))
+    }
+    
+}
+
+function* onGetComboKartuStok({payload: { queries }}){
+    try{
+        let response = yield call(serviceGudang.getComboKartuStok, queries);
+        yield put(getComboKartuStokSuccess(response.data))
+    } catch (error) {
+        yield put(getComboKartuStokError(error))
+    }
+}
+
+function* onGetComboStokUnit({payload: { queries }}){
+    try{
+        let response = yield call(serviceGudang.getComboStokUnit, queries);
+        yield put(getComboStokUnitSuccess(response.data))
+    } catch (error) {
+        yield put(getComboStokUnitError(error))
+    }
+}
+
 function* gudangSaga() {
     yield all([
         takeEvery(OBAT_GUDANG_SAVE, onSaveObatGudang),
@@ -366,7 +403,10 @@ function* gudangSaga() {
         takeEvery(UPDATE_STOK_OPNAME_DETAILS, onUpdateStokOpnameDetails),
         takeEvery(CREATE_OR_UPDATE_PEMESANAN, onCreateOrUpdatePemesanan),
         takeEvery(GET_PEMESANAN, onGetPemesanan),
-        takeEvery(GET_LIST_PEMESANAN, onGetListPemesanan)
+        takeEvery(GET_LIST_PEMESANAN, onGetListPemesanan),
+        takeEvery(GET_UNIT_USER, onGetUnitUser),
+        takeEvery(GET_COMBO_KARTU_STOK, onGetComboKartuStok),
+        takeEvery(GET_COMBO_STOK_UNIT, onGetComboStokUnit)
     ]);
 }
 

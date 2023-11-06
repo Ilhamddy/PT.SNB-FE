@@ -156,8 +156,9 @@ const createOrUpdateOrderbarang = async (req, res) => {
 const getOrderBarang = async (req, res) => {
     const logger = res.locals.logger
     try {
-        const order = (await pool.query(qGetOrder, []));
-        const kirim = (await pool.query(qGetKirim, []));
+        const isGudang = req.query.isGudang === "true"
+        const order = (await pool.query(qGetOrder, [isGudang ? '' : req.userId]));
+        const kirim = (await pool.query(qGetKirim, [isGudang ? '' : req.userId]));
 
         let tempres = {
             order: order.rows,

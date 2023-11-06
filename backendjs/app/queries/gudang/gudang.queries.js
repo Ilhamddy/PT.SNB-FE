@@ -1,3 +1,4 @@
+import { daftarUnit } from "../master/unit/unit.queries"
 
 
 const qGetJenisDetailProdukLainLain = `
@@ -194,6 +195,16 @@ SELECT
 FROM t_kartustok tks
     LEFT JOIN m_produk mp ON mp.id = tks.objectprodukfk
     LEFT JOIN m_unit mu ON mu.id = tks.objectunitfk
+WHERE 
+        (
+            tks.objectunitfk = ANY($1) 
+            OR ${daftarUnit.GUDANG_FARMASI} = ANY($1) --- kalau gudang kasih akses ke semua
+        ) 
+    AND
+        (
+            NULLIF($2, '')::int IS NULL
+            OR NULLIF($2, '')::int = tks.objectunitfk
+        )
 ORDER BY 
     tks.tglinput DESC
 `
@@ -214,6 +225,16 @@ FROM t_stokunit tsu
     LEFT JOIN m_unit mu ON mu.id = tsu.objectunitfk
     LEFT JOIN m_satuan ms ON ms.id = mp.objectsatuanstandarfk
     LEFT JOIN m_asalproduk mas ON mas.id = tsu.objectasalprodukfk
+WHERE
+    (
+        tsu.objectunitfk = ANY($1) 
+        OR ${daftarUnit.GUDANG_FARMASI} = ANY($1) --- kalau gudang kasih akses ke semua
+    ) 
+    AND
+    (
+        NULLIF($2, '')::int IS NULL
+        OR NULLIF($2, '')::int = tsu.objectunitfk
+    )
 `
 
 const qGetStokOpname = `
@@ -360,6 +381,15 @@ FROM t_pemesananbarangdetail tpbd
 WHERE tpbd.objectpemesananbarangfk = $1
 `
 
+const qGetUnitUser = `
+SELECT
+    mu.namaunit AS namaunit,
+    mu.id AS idunit
+FROM m_mapusertounit mmap
+    LEFT JOIN m_unit mu ON mu.id = mmap.objectunitfk
+WHERE mmap.objectuserfk = $1
+`
+
 
 export {
     qGetJenisDetailProdukLainLain,
@@ -381,5 +411,6 @@ export {
     qGetStokOpnameDetail,
     qGetPemesanan,
     qGetDetailPemesanan,
-    qGetListPemesanan
+    qGetListPemesanan,
+    qGetUnitUser
 }

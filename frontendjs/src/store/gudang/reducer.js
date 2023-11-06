@@ -68,7 +68,16 @@ import {
     GET_PEMESANAN_ERROR,
     GET_LIST_PEMESANAN,
     GET_LIST_PEMESANAN_SUCCESS,
-    GET_LIST_PEMESANAN_ERROR
+    GET_LIST_PEMESANAN_ERROR,
+    GET_UNIT_USER,
+    GET_UNIT_USER_SUCCESS,
+    GET_UNIT_USER_ERROR,
+    GET_COMBO_KARTU_STOK,
+    GET_COMBO_KARTU_STOK_SUCCESS,
+    GET_COMBO_KARTU_STOK_ERROR,
+    GET_COMBO_STOK_UNIT,
+    GET_COMBO_STOK_UNIT_SUCCESS,
+    GET_COMBO_STOK_UNIT_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -186,6 +195,21 @@ const INIT_STATE = {
         data: [],
         loading: false,
         error: null,
+    },
+    getUnitUser: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    getComboKartuStok: {
+        data: [],
+        loading: false,
+        error: null
+    },
+    getComboStokUnit: {
+        data: [],
+        loading: false,
+        error: null
     }
 };
 
@@ -1025,6 +1049,113 @@ const Registrasi = (state = INIT_STATE, action) => {
                 }
             }
         }
+
+        case GET_UNIT_USER: {
+            return {
+                ...state,
+                getUnitUser: {
+                    ...state.getUnitUser,
+                    loading: true,
+                    data: [],
+                    error: null
+                }
+            }
+        }
+
+        case GET_UNIT_USER_SUCCESS: {
+            return {
+                ...state,
+                getUnitUser: {
+                    ...state.getUnitUser,
+                    loading: false,
+                    data: action.payload.data,
+                    error: null
+                }
+            }
+        }
+
+        case GET_UNIT_USER_ERROR: {
+            return {
+                ...state,
+                getUnitUser: {
+                    ...state.getUnitUser,
+                    loading: false,
+                    error: action.payload.data
+                }
+            }
+        }
+
+        case GET_COMBO_KARTU_STOK: {
+            return {
+                ...state,
+                getComboKartuStok: {
+                    ...state.getComboKartuStok,
+                    loading: true,
+                    data: [],
+                    error: null
+                }
+            }
+        }
+
+        case GET_COMBO_KARTU_STOK_SUCCESS: {
+            return {
+                ...state,
+                getComboKartuStok: {
+                    ...state.getComboKartuStok,
+                    loading: false,
+                    data: action.payload.data,
+                    error: null
+                }
+            }
+        }
+
+        case GET_COMBO_KARTU_STOK_ERROR: {
+            return {
+                ...state,
+                getComboKartuStok: {
+                    ...state.getComboKartuStok,
+                    loading: false,
+                    error: action.payload.data
+                }
+            }
+        }
+        
+        case GET_COMBO_STOK_UNIT: {
+            return {
+                ...state,
+                getComboStokUnit: {
+                    ...state.getComboStokUnit,
+                    loading: true,
+                    data: [],
+                    error: null
+                }
+            }
+        }
+
+        case GET_COMBO_STOK_UNIT_SUCCESS: {
+            return {
+                ...state,
+                getComboStokUnit: {
+                    ...state.getComboStokUnit,
+                    loading: false,
+                    data: action.payload.data,
+                    error: null
+                }
+            }
+        }
+
+        case GET_COMBO_STOK_UNIT_ERROR: {
+            return {
+                ...state,
+                getComboStokUnit: {
+                    ...state.getComboStokUnit,
+                    loading: false,
+                    error: action.payload.data
+                }
+            }
+        }
+        
+
 
         default: {
             return { ...state };

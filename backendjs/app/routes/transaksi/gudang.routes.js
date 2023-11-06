@@ -97,9 +97,21 @@ export default function (app) {
     )
 
     app.get(
+        "/api/transaksi/gudang/get-combo-kartu-stok",
+        [authJwt.verifyToken],
+        controller.getComboKartuStok
+    )
+
+    app.get(
         "/api/transaksi/gudang/get-kartu-stok",
         [authJwt.verifyToken],
         controller.getKartuStok
+    )
+
+    app.get(
+        "/api/transaksi/gudang/get-combo-stok-unit",
+        [authJwt.verifyToken],
+        controller.getComboStokUnit
     )
 
     app.get(
@@ -148,5 +160,11 @@ export default function (app) {
         "/api/transaksi/gudang/get-list-pemesanan",
         [authJwt.verifyToken],
         controller.getListPemesanan
+    )
+
+    app.get(
+        "/api/transaksi/gudang/get-unit-user",
+        [authJwt.verifyToken],
+        controller.getUnitUser
     )
 }

@@ -60,8 +60,16 @@ export default class ServiceGudang {
         return await api.get(`/transaksi/gudang/get-list-penerimaan`, queries)
     }
 
+    getComboKartuStok = async (queries) => {
+        return await api.get(`/transaksi/gudang/get-combo-kartu-stok`, queries)
+    }
+
     getKartuStok = async (queries) => {
         return await api.get(`/transaksi/gudang/get-kartu-stok`, queries)
+    }
+    
+    getComboStokUnit = async (queries) => {
+        return await api.get(`/transaksi/gudang/get-combo-stok-unit`, queries)
     }
 
     getStokUnit = async (queries) => {
@@ -94,5 +102,9 @@ export default class ServiceGudang {
 
     getListPemesanan = async (queries) => {
         return await api.get(`/transaksi/gudang/get-list-pemesanan`, queries)
+    }
+    
+    getUnitUser = async(queries) => {
+        return await api.get(`/transaksi/gudang/get-unit-user`, queries)
     }
 }

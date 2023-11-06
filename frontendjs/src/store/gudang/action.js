@@ -67,7 +67,16 @@ import {
     GET_PEMESANAN_ERROR,
     GET_LIST_PEMESANAN,
     GET_LIST_PEMESANAN_SUCCESS,
-    GET_LIST_PEMESANAN_ERROR
+    GET_LIST_PEMESANAN_ERROR,
+    GET_UNIT_USER,
+    GET_UNIT_USER_SUCCESS,
+    GET_UNIT_USER_ERROR,
+    GET_COMBO_KARTU_STOK,
+    GET_COMBO_KARTU_STOK_SUCCESS,
+    GET_COMBO_KARTU_STOK_ERROR,
+    GET_COMBO_STOK_UNIT,
+    GET_COMBO_STOK_UNIT_SUCCESS,
+    GET_COMBO_STOK_UNIT_ERROR
 } from "./actionType";
 
 
@@ -414,4 +423,49 @@ export const getListPemesananSuccess = (data) => ({
 export const getListPemesananError = (data) => ({
     type: GET_LIST_PEMESANAN_ERROR,
     payload: { data: data },
+})
+
+export const getUnitUser = (queries) => ({
+    type: GET_UNIT_USER,
+    payload: { queries: queries }
+})
+
+export const getUnitUserSuccess = (data) => ({
+    type: GET_UNIT_USER_SUCCESS,
+    payload: { data: data }
+})
+
+export const getUnitUserError = (data) => ({
+    type: GET_UNIT_USER_ERROR,
+    payload: { data: data }
+})
+
+export const getComboKartuStok = (queries) => ({
+    type: GET_COMBO_KARTU_STOK,
+    payload: { queries: queries }
+})
+
+export const getComboKartuStokSuccess = (data) => ({
+    type: GET_COMBO_KARTU_STOK_SUCCESS,
+    payload: { data: data }
+})
+
+export const getComboKartuStokError = (data) => ({
+    type: GET_COMBO_KARTU_STOK_ERROR,
+    payload: { data: data }
+})
+
+export const getComboStokUnit = (queries) => ({
+    type: GET_COMBO_STOK_UNIT,
+    payload: { queries: queries }
+})
+
+export const getComboStokUnitSuccess = (data) => ({
+    type: GET_COMBO_STOK_UNIT_SUCCESS,
+    payload: { data: data }
+})
+
+export const getComboStokUnitError = (data) => ({
+    type: GET_COMBO_STOK_UNIT_ERROR,
+    payload: { data: data }
 })
