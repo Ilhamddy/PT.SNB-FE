@@ -8,6 +8,7 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import { pasienSignup } from "./authhelper";
 import { decrypt, encrypt } from "../../utils/encrypt"
+import queriesSDM from '../../queries/sumberDayaManusia/sumberDayaManusia.queries'
 
 const User = db.user;
 const Role = db.role;
@@ -149,6 +150,7 @@ const signin = async (req, res) => {
     }
     const result1 = await pool.query(queries.qMenuModulAplikasi, [user.objectaccesmodulfk]);
     const result3 = await pool.query(queries.qChlidMenuModulAplikasi, [user.objectaccesmodulfk]);
+    const result4 = await pool.query(queriesSDM.qAccesUnit, [user.id]);
     let menuItems = [];
     menuItems.push({ id:'Menu',label: "Menu", isHeader: true,idMenu:0,stateVariables:false});
 
@@ -169,7 +171,7 @@ const signin = async (req, res) => {
     //     permission:resHead
     //   }
     // ];
-    let token = jwt.sign({ id: user.id, sesion: menuItems, idpegawai: user.objectpegawaifk, }, config.secret, {
+    let token = jwt.sign({ id: user.id, sesion: menuItems, idpegawai: user.objectpegawaifk, accesunit:result4.rows}, config.secret, {
       expiresIn: 86400 // 24 hours test
     });
     // logger.infoImmediate("masuk")
