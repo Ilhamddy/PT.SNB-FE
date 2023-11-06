@@ -19,7 +19,7 @@ import { qGetPelayananFromDp,
     qGetCaraBayarFromBB,
     qGetLaporanPendapatanKasir
 } from '../../../queries/payment/payment.queries';
-import { qDaftarVerifikasi,qListSudahVerifikasi,qListTagihan } from '../../../queries/remunerasi/remunerasi.queries';
+import { qDaftarVerifikasi,qListSudahVerifikasi,qListTagihan,qCariPetugas } from '../../../queries/remunerasi/remunerasi.queries';
 import { createTransaction } from "../../../utils/dbutils"
 
 import { Op } from "sequelize";
@@ -712,6 +712,17 @@ const getDaftarSudahVerifikasiRemun = async (req, res) => {
     const logger = res.locals.logger;
     try{
         const result1 = await pool.query(qListSudahVerifikasi)
+        for (let i = 0; i < result1.rows.length; ++i) {
+            const resultlistPetugas =await pool.query(qCariPetugas,[result1.rows[i].norec])
+            let tempPetugas = ''
+            let tempJenisPelaksana = ''
+            for (let x = 0; x < resultlistPetugas.rows.length; ++x) {
+                tempPetugas = tempPetugas + resultlistPetugas.rows[x].namalengkap + ', '
+                tempJenisPelaksana = tempJenisPelaksana + resultlistPetugas.rows[x].reportdisplay + ', '
+            }
+            result1.rows[i].petugas = tempPetugas
+            result1.rows[i].jenispelaksana = tempJenisPelaksana
+        }
         const tempres = {
         
         };

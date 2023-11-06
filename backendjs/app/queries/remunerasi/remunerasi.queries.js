@@ -54,6 +54,7 @@ tp.qty,
 tp.discount,
 tp.jasa,
 '' as petugas,
+'' as jenispelaksana,
 case when tp.iscito=true then '✓' else '✕' end as statuscito,
 tp.total,
 '' as listpetugas,
@@ -74,9 +75,17 @@ where
 tp.objectverifremunerasifk is not null
 and tp.statusenabled = true order by no asc`
 
+const qCariPetugas =`select
+tp.norec,mp.namalengkap,mj.reportdisplay
+from
+t_pelayananpasienpetugas tp
+join m_pegawai mp on mp.id=tp.objectpegawaifk
+join m_jenispelaksana mj on mj.id=tp.objectjenispelaksanafk
+where tp.statusenabled = true and tp.objectpelayananpasienfk=$1`
 
 export {
 	qDaftarVerifikasi,
   qListTagihan,
-  qListSudahVerifikasi
+  qListSudahVerifikasi,
+  qCariPetugas
 }

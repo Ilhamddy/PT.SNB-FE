@@ -16,6 +16,53 @@ const m_pasien = db.m_pasien
 
 const Op = db.Sequelize.Op;
 
+const signUpNew = async (req, res) => {
+  const logger = res.locals.logger;
+  try{
+    const { users,mapUserToUnit } = await db.sequelize.transaction(async (transaction) => {
+      let mapUserToUnit =''
+      const users = await User.create({
+          username: req.body.username,
+          statusenabled: req.body.statusEnabled,
+          password: bcrypt.hashSync(req.body.password, 8),
+          objectpegawaifk: req.body.idpegawai,
+          objectaccesmodulfk:req.body.roles
+          }, { transaction });
+
+      for (let i = 0; i < req.body.accesUnit.length; i++) {
+        const element = req.body.accesUnit[i];
+        mapUserToUnit = await db.m_mapusertounit.create({
+          objectuserfk: users.id,
+          objectunitfk: element.value,
+          tglinput: new Date(),
+          tglupdate: new Date(),
+          objectpegawaifk:req.body.idpegawai
+          }, { transaction });
+      }
+      return { users,mapUserToUnit }
+    });
+    
+    const tempres = {
+      users:users,
+      mapUserToUnit:mapUserToUnit
+    };
+    res.status(200).send({
+      msg: 'User Berhasil Didaftarkan',
+      code: 200,
+      data: tempres,
+      success: true
+    });
+  } catch (error) {
+    logger.error(error);
+    res.status(500).send({
+      msg: error.message,
+      code: 500,
+      data: error,
+      success: false
+    });
+  }
+}
+
 
 const signup = async (req, res) => {
   // const logger = res.locals.logger;
@@ -242,5 +289,6 @@ const signinPasien = async (req, res) => {
 export default {
   signin,
   signup,
-  signinPasien
+  signinPasien,
+  signUpNew
 }

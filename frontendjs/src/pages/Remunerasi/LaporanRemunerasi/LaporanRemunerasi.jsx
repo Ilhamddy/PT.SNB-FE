@@ -93,15 +93,15 @@ const LaporanRemunerasi = () => {
     },
     {
 
-      name: <span className='font-weight-bold fs-13'>Penjamin</span>,
-      selector: row => row.status,
+      name: <span className='font-weight-bold fs-13'>Jenis Pelaksana</span>,
+      selector: row => row.jenispelaksana,
       sortable: true,
       width: "100",
     },
     {
 
-      name: <span className='font-weight-bold fs-13'>DPJP</span>,
-      selector: row => row.status,
+      name: <span className='font-weight-bold fs-13'>Nakes</span>,
+      selector: row => row.petugas,
       sortable: true,
       width: "100",
     },
