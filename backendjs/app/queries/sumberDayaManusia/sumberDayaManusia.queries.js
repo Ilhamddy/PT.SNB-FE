@@ -38,7 +38,7 @@ const qGolonganPtkp =`select id as value,reportdisplay as label from m_golonganp
 const qUnitKerja =`select id as value,reportdisplay as label from m_unitkerja ms`
 const qUserRoleById=`select row_number() OVER (ORDER BY u.id) AS no,u.id,u.username,sm.reportdisplay,sm.id as idmodule,
 case when u.statusenabled=true then 'AKTIF'
-else 'NON AKTIF' end as status from users u 
+else 'NON AKTIF' end as status,'' as listunit from users u 
 join s_modulaplikasi sm on sm.id=u.objectaccesmodulfk where u.objectpegawaifk=$1`
 const qRole = `select sm.id as value,sm.reportdisplay as label from s_modulaplikasi sm
 `
@@ -62,8 +62,11 @@ SELECT
 FROM m_jadwaldokter mj
     LEFT JOIN m_pegawai mp ON mp.id = mj.objectpegawaifk
     LEFT JOIN m_hari mh ON mh.id = mj.objectharifk
-    LEFT JOIN m_unit mu ON mu.id = mj.objectunitfk
-`
+    LEFT JOIN m_unit mu ON mu.id = mj.objectunitfk`
+
+const qAccesUnit =`select mm.objectunitfk as value,mu.namaunit as label from m_mapusertounit mm
+join m_unit mu on mu.id=mm.objectunitfk where mm.objectuserfk=$1 and mm.statusenabled=true`
+
 export default {
     qDaftarPegawai,
     qUnit,
@@ -81,5 +84,5 @@ export default {
     qGolonganPtkp,
     qUnitKerja,
     qUserRoleById,qRole,
-    qJadwalDokter
+    qJadwalDokter,qAccesUnit
 }

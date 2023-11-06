@@ -8,6 +8,7 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import { pasienSignup } from "./authhelper";
 import { decrypt, encrypt } from "../../utils/encrypt"
+import queriesSDM from '../../queries/sumberDayaManusia/sumberDayaManusia.queries'
 
 const User = db.user;
 const Role = db.role;
@@ -15,6 +16,53 @@ const UserPasien = db.users_pasien;
 const m_pasien = db.m_pasien
 
 const Op = db.Sequelize.Op;
+
+const signUpNew = async (req, res) => {
+  const logger = res.locals.logger;
+  try{
+    const { users,mapUserToUnit } = await db.sequelize.transaction(async (transaction) => {
+      let mapUserToUnit =''
+      const users = await User.create({
+          username: req.body.username,
+          statusenabled: req.body.statusEnabled,
+          password: bcrypt.hashSync(req.body.password, 8),
+          objectpegawaifk: req.body.idpegawai,
+          objectaccesmodulfk:req.body.roles
+          }, { transaction });
+
+      for (let i = 0; i < req.body.accesUnit.length; i++) {
+        const element = req.body.accesUnit[i];
+        mapUserToUnit = await db.m_mapusertounit.create({
+          objectuserfk: users.id,
+          objectunitfk: element.value,
+          tglinput: new Date(),
+          tglupdate: new Date(),
+          objectpegawaifk:req.body.idpegawai
+          }, { transaction });
+      }
+      return { users,mapUserToUnit }
+    });
+    
+    const tempres = {
+      users:users,
+      mapUserToUnit:mapUserToUnit
+    };
+    res.status(200).send({
+      msg: 'User Berhasil Didaftarkan',
+      code: 200,
+      data: tempres,
+      success: true
+    });
+  } catch (error) {
+    logger.error(error);
+    res.status(500).send({
+      msg: error.message,
+      code: 500,
+      data: error,
+      success: false
+    });
+  }
+}
 
 
 const signup = async (req, res) => {
@@ -102,6 +150,7 @@ const signin = async (req, res) => {
     }
     const result1 = await pool.query(queries.qMenuModulAplikasi, [user.objectaccesmodulfk]);
     const result3 = await pool.query(queries.qChlidMenuModulAplikasi, [user.objectaccesmodulfk]);
+    const result4 = await pool.query(queriesSDM.qAccesUnit, [user.id]);
     let menuItems = [];
     menuItems.push({ id:'Menu',label: "Menu", isHeader: true,idMenu:0,stateVariables:false});
 
@@ -122,7 +171,7 @@ const signin = async (req, res) => {
     //     permission:resHead
     //   }
     // ];
-    let token = jwt.sign({ id: user.id, sesion: menuItems, idpegawai: user.objectpegawaifk, }, config.secret, {
+    let token = jwt.sign({ id: user.id, sesion: menuItems, idpegawai: user.objectpegawaifk, accesunit:result4.rows}, config.secret, {
       expiresIn: 86400 // 24 hours test
     });
     // logger.infoImmediate("masuk")
@@ -242,5 +291,6 @@ const signinPasien = async (req, res) => {
 export default {
   signin,
   signup,
-  signinPasien
+  signinPasien,
+  signUpNew
 }

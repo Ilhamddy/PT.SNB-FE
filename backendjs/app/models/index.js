@@ -82,6 +82,7 @@ import t_verifremunerasiModel from "./t_verifremunerasi.model.js";
 import s_modulaplikasiModel from "./s_modulaplikasi.model.js";
 import s_menumodulaplikasiModel from "./s_menumodulaplikasi.model.js";
 import s_childmenumodulaplikasiModel from "./s_childmenumodulaplikasi.model.js";
+import m_mapusertounitModel from "./m_mapusertounit.model.js";
 
 const sequelize = new Sequelize(
   config.DB,
@@ -189,6 +190,7 @@ db.m_kamar = m_kamarModel(sequelize, sequelizeInstance);
 db.t_pemesananbarang = t_pemesananbarangModel(sequelize, sequelizeInstance);
 db.t_pemesananbarangdetail = t_pemesananbarangdetailModel(sequelize, sequelizeInstance)
 db.t_verifremunerasi = t_verifremunerasiModel(sequelize, sequelizeInstance)
+db.m_mapusertounit = m_mapusertounitModel(sequelize,sequelizeInstance)
 
 db.role.belongsToMany(db.user, {
   through: "user_roles",
