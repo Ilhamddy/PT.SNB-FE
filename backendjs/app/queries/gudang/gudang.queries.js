@@ -360,6 +360,15 @@ FROM t_pemesananbarangdetail tpbd
 WHERE tpbd.objectpemesananbarangfk = $1
 `
 
+const qGetUnitUser = `
+SELECT
+    mu.namaunit AS namaunit,
+    mu.id AS idunit
+FROM m_mapusertounit mmap
+    LEFT JOIN m_unit mu ON mu.id = mmap.objectunitfk
+WHERE mmap.objectuserfk = $1
+`
+
 
 export {
     qGetJenisDetailProdukLainLain,
@@ -381,5 +390,6 @@ export {
     qGetStokOpnameDetail,
     qGetPemesanan,
     qGetDetailPemesanan,
-    qGetListPemesanan
+    qGetListPemesanan,
+    qGetUnitUser
 }

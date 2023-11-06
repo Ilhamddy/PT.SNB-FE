@@ -67,7 +67,10 @@ import {
     GET_PEMESANAN_ERROR,
     GET_LIST_PEMESANAN,
     GET_LIST_PEMESANAN_SUCCESS,
-    GET_LIST_PEMESANAN_ERROR
+    GET_LIST_PEMESANAN_ERROR,
+    GET_UNIT_USER,
+    GET_UNIT_USER_SUCCESS,
+    GET_UNIT_USER_ERROR
 } from "./actionType";
 
 
@@ -415,3 +418,19 @@ export const getListPemesananError = (data) => ({
     type: GET_LIST_PEMESANAN_ERROR,
     payload: { data: data },
 })
+
+export const getUnitUser = (queries) => ({
+    type: GET_UNIT_USER,
+    payload: { queries: queries }
+})
+
+export const getUnitUserSuccess = (data) => ({
+    type: GET_UNIT_USER_SUCCESS,
+    payload: { data: data }
+})
+
+export const getUnitUserError = (data) => ({
+    type: GET_UNIT_USER_ERROR,
+    payload: { data: data }
+})
+

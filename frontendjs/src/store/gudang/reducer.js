@@ -68,7 +68,10 @@ import {
     GET_PEMESANAN_ERROR,
     GET_LIST_PEMESANAN,
     GET_LIST_PEMESANAN_SUCCESS,
-    GET_LIST_PEMESANAN_ERROR
+    GET_LIST_PEMESANAN_ERROR,
+    GET_UNIT_USER,
+    GET_UNIT_USER_SUCCESS,
+    GET_UNIT_USER_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -183,6 +186,11 @@ const INIT_STATE = {
         error: null,
     },
     getListPemesanan: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    getUnitUser: {
         data: [],
         loading: false,
         error: null,
@@ -1025,6 +1033,43 @@ const Registrasi = (state = INIT_STATE, action) => {
                 }
             }
         }
+
+        case GET_UNIT_USER: {
+            return {
+                ...state,
+                getUnitUser: {
+                    ...state.getUnitUser,
+                    loading: true,
+                    data: [],
+                    error: null
+                }
+            }
+        }
+
+        case GET_UNIT_USER_SUCCESS: {
+            return {
+                ...state,
+                getUnitUser: {
+                    ...state.getUnitUser,
+                    loading: false,
+                    data: action.payload.data,
+                    error: null
+                }
+            }
+        }
+
+        case GET_UNIT_USER_ERROR: {
+            return {
+                ...state,
+                getUnitUser: {
+                    ...state.getUnitUser,
+                    loading: false,
+                    error: action.payload.data
+                }
+            }
+        }
+
+
 
         default: {
             return { ...state };

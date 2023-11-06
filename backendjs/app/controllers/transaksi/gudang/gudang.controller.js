@@ -18,7 +18,8 @@ import { qGetDetailPemesanan, qGetDetailPenerimaan, qGetJenisDetailProdukLainLai
     qGetStokOpname,
     qGetStokOpnameDetail,
     qGetStokOpnameStokUnit,
-    qGetStokUnit, 
+    qGetStokUnit,
+    qGetUnitUser, 
 } from "../../../queries/gudang/gudang.queries";
 import {
     createTransaction
@@ -1113,6 +1114,30 @@ const getListPemesanan = async (req, res) => {
     }
 }
 
+const getUnitUser = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const unitUser = await pool.query(qGetUnitUser, [req.userId])
+        const tempres = {
+            unitUser
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 
 export default {
     createOrUpdateProdukObat,
@@ -1137,7 +1162,8 @@ export default {
     updatedStokOpnameDetails,
     createOrUpdatePemesanan,
     getPemesanan,
-    getListPemesanan
+    getListPemesanan,
+    getUnitUser
 }
 
 const hCreatePesanDetail = async (req, res, transaction, {newPemesanan}) => {

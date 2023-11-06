@@ -4,7 +4,14 @@ export const daftarUnit = {
 }
 
 const getAll =
-    "SELECT id as value, namaunit as label, objectinstalasifk FROM m_unit  where statusenabled = true";
+`
+SELECT 
+    id as value, 
+    namaunit as label, 
+    objectinstalasifk 
+FROM m_unit 
+    WHERE statusenabled = true
+`;
 
 const getRawatInap =
     `SELECT 
@@ -29,9 +36,19 @@ WHERE
     and objectinstalasifk = 1`
             ;
 
+const qGetUnitUser = `
+SELECT 
+    mu.id as value, 
+    mu.namaunit as label, 
+    mu.objectinstalasifk AS objectinstalasifk
+FROM m_unit mu
+    LEFT JOIN m_mapusertounit mmap ON mmap.objectunitfk = mu.id
+WHERE mu.statusenabled = true AND mmap.objectuserfk = $1
+`
 
 export default {
     getAll,
     getRawatInap,
-    getPoliklinik
+    getPoliklinik,
+    qGetUnitUser
 };

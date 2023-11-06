@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { getOrderBarang, verifyKirim } from '../../store/actions'
+import { getOrderBarang, getUnitUser, verifyKirim } from '../../store/actions'
 import LoadingTable from '../../Components/Table/LoadingTable'
 import DataTable from 'react-data-table-component'
 import BreadCrumb from '../../Components/Common/BreadCrumb'
@@ -51,8 +51,8 @@ const DistribusiOrderList = ({ isUnit }) => {
   })
 
   useEffect(() => {
-    dispatch(getOrderBarang())
-  }, [dispatch])
+    dispatch(getOrderBarang({ isGudang: !isUnit }))
+  }, [dispatch, isUnit])
 
   /**
    * @type {import("react-data-table-component").TableColumn[]}
@@ -270,7 +270,11 @@ const DistribusiOrderList = ({ isUnit }) => {
               <h3>Pemesanan</h3>
             </Col>
             <Col lg={'auto'} className="d-flex flex-row-reverse">
-              <Link to={'/farmasi/gudang/distribusi-order'}>
+              <Link
+                to={
+                  '/farmasi/gudang/distribusi-order' + (isUnit ? '-unit' : '')
+                }
+              >
                 <Button color={'info'}>Pesan</Button>
               </Link>
             </Col>

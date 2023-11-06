@@ -149,4 +149,10 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getListPemesanan
     )
+
+    app.get(
+        "/api/transaksi/gudang/get-unit-user",
+        [authJwt.verifyToken],
+        controller.getUnitUser
+    )
 }
