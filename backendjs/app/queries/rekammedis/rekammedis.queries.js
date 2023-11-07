@@ -95,6 +95,18 @@ AND mp2.kodeexternal IN ('1', '2', '3', '4')
 AND tp.statusenabled = true
 GROUP BY ms.reportdisplay`
 
+const qLaporanRL3_14 =`select ms.reportdisplay as spesialis,
+SUM(CASE WHEN td.objectasalrujukanfk  = 1 THEN 1 ELSE 0 END) AS diterima_puskesmas,
+SUM(CASE WHEN td.objectasalrujukanfk  = 2 THEN 1 ELSE 0 END) AS diterima_rs,
+SUM(CASE WHEN td.objectasalrujukanfk in (3,4,5,6,7) THEN 1 ELSE 0 END) AS diterima_faskeslain,
+0 as dikembalikan_kepuskesmas,0 as dikembalikan_kefaskeslain, 0 as dikembalikan_kersasal,
+from t_daftarpasien td 
+join m_pegawai mp on mp.id=td.objectdokterpemeriksafk
+join m_spesialisasi ms on ms.id=mp.objectspesialisasifk
+where td.statusenabled=true and td.tglpulang is not null
+GROUP BY ms.reportdisplay
+order by ms.reportdisplay`
+
 export default {
     qResult,
     qGetDetailFromJenisProduk,
@@ -102,5 +114,6 @@ export default {
     qGetMasterRLFromInduk,
     qLayananFromNoRL: qLayananFromMasterRL,
     qLaporanRL3_3,
-    qLaporanRL3_6
+    qLaporanRL3_6,
+    qLaporanRL3_14
 }
