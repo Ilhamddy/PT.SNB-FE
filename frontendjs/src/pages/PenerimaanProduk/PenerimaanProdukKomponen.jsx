@@ -590,6 +590,7 @@ export const ListBeforRetur = () => {
             <DropdownMenu className="dropdown-menu-end">
               <DropdownItem
                 onClick={() => {
+                  console.log(row)
                   vDetailRetur.setValues({
                     ...initialDetailRetur(dateNow),
                     ...row,

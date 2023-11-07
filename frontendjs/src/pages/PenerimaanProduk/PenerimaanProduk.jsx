@@ -329,13 +329,8 @@ const PenerimaanProduk = ({ isLogistik, isRetur }) => {
         toast.error('Produk dengan batch sama sudah ada')
         return
       }
-      if (isEdit) {
-        // edit
-        newReturValues[values.indexDetail] = newValues
-      } else {
-        newValues.indexDetail = newReturValues.length
-        newReturValues.push(newValues)
-      }
+      newValues.indexDetail = newReturValues.length
+      newReturValues.push(newValues)
       resetForm()
       validation.setFieldValue('retur', newReturValues)
     },
