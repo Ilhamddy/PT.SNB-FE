@@ -1504,7 +1504,7 @@ const hUpsertDetailRetur = async (
             }, {
                 transaction: transaction
             }) 
-            const penerimaanDetail = await db.t_penerimaanbarangdetail.findByPk(norecDetailPenerimaan)
+            const penerimaanDetail = await db.t_penerimaanbarangdetail.findByPk(norecpenerimaan)
             return {
                 prevValue: prevsVal || null,
                 updatedValue: updatedValue.toJSON(),
