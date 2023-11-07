@@ -18,7 +18,7 @@ import {
     GET_LAYANAN_FROM_MASTER_RL,
     DELETE_MAP_RL,
     UPDATE_PRINTED,
-    LAPORAN_RL_3_3_GET
+    LAPORAN_RL_3_3_GET,LAPORAN_RL_3_6_GET
 } from "./actionType";
 
 import {
@@ -45,7 +45,8 @@ import {
     deleteMapRLError,
     updatePrintedSuccess,
     updatePrintedError,
-    getLaporanRl_3_3Success,getLaporanRl_3_3Error
+    getLaporanRl_3_3Success,getLaporanRl_3_3Error,
+    getLaporanRl_3_6Success,getLaporanRl_3_6Error
 } from "./action";
 
 import { toast } from 'react-toastify';
@@ -300,6 +301,18 @@ export function* watchongetLaporanRl_3_3(){
     yield takeEvery(LAPORAN_RL_3_3_GET, ongetLaporanRl_3_3)
 }
 
+function* ongetLaporanRl_3_6({payload: {queries}}) {
+    try{
+        const response = yield call(serviceRekammedis.getLaporanRl_3_6, queries);
+        yield put(getLaporanRl_3_6Success(response.data));
+    } catch (error) {
+        yield put(getLaporanRl_3_6Error(error));
+    }
+}
+
+export function* watchongetLaporanRl_3_6(){
+    yield takeEvery(LAPORAN_RL_3_6_GET, ongetLaporanRl_3_6)
+}
 function* kendaliDokumenSaga() {
     yield all([
         fork(watchonDaftarDokumenRekammedis),
@@ -318,7 +331,8 @@ function* kendaliDokumenSaga() {
         fork(watchonGetLayananFromMasterRL),
         fork(watchonDeleteMapRL),
         fork(watchonPriterUpdated),
-        fork(watchongetLaporanRl_3_3)
+        fork(watchongetLaporanRl_3_3),
+        fork(watchongetLaporanRl_3_6)
     ]);
 }
 

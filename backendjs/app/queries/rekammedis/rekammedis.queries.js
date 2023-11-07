@@ -74,11 +74,33 @@ const qLaporanRL3_3 =`select row_number() OVER (ORDER BY x.reportdisplay) AS no,
     where mm3.id=8 and tp.statusenabled=true and tp.tglinput between $1 and $2
     ) as x group by x.reportdisplay`
 
+const qLaporanRL3_6 =`SELECT row_number() OVER (ORDER BY ms.reportdisplay) AS no,ms.reportdisplay AS spesialis,
+SUM(CASE WHEN mp2.kodeexternal = '1' THEN 1 ELSE 0 END) AS besar_count,
+SUM(CASE WHEN mp2.kodeexternal = '2' THEN 1 ELSE 0 END) AS sedang_count,
+SUM(CASE WHEN mp2.kodeexternal = '3' THEN 1 ELSE 0 END) AS kecil_count,
+SUM(CASE WHEN mp2.kodeexternal = '4' THEN 1 ELSE 0 END) AS khusus_count,
+(SUM(CASE WHEN mp2.kodeexternal = '1' THEN 1 ELSE 0 END) +
+ SUM(CASE WHEN mp2.kodeexternal = '2' THEN 1 ELSE 0 END) +
+ SUM(CASE WHEN mp2.kodeexternal = '3' THEN 1 ELSE 0 END) +
+ SUM(CASE WHEN mp2.kodeexternal = '4' THEN 1 ELSE 0 END)) AS total
+FROM t_pelayananpasien tp
+JOIN t_pelayananpasienpetugas tp2 ON tp2.objectpelayananpasienfk = tp.norec
+JOIN m_pegawai mp ON mp.id = tp2.objectpegawaifk
+JOIN m_spesialisasi ms ON ms.id = mp.objectspesialisasifk
+JOIN m_produk mp2 ON mp2.id = tp.objectprodukfk
+JOIN t_antreanpemeriksaan ta ON ta.norec = tp.objectantreanpemeriksaanfk
+JOIN m_unit mu ON mu.id = ta.objectunitfk
+WHERE mu.objectinstalasifk = 6 and tp.tglinput between $1 and $2
+AND mp2.kodeexternal IN ('1', '2', '3', '4')
+AND tp.statusenabled = true
+GROUP BY ms.reportdisplay`
+
 export default {
     qResult,
     qGetDetailFromJenisProduk,
     qLayananJenis,
     qGetMasterRLFromInduk,
     qLayananFromNoRL: qLayananFromMasterRL,
-    qLaporanRL3_3
+    qLaporanRL3_3,
+    qLaporanRL3_6
 }

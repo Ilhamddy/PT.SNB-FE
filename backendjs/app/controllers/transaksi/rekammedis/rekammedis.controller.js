@@ -688,7 +688,7 @@ const getLaporanRL3_3 = async (req, res) => {
     const logger = res.locals.logger;
     try{
         const result = await pool.query(queries.qLaporanRL3_3,[req.query.start,req.query.end])
-        
+
         const tempres = {
         
         };
@@ -890,6 +890,30 @@ const deleteMapRL = async (req, res) => {
     }
 }
 
+const getLaporanRL3_6 = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const result = await pool.query(queries.qLaporanRL3_6,[req.query.start,req.query.end])
+        
+        const tempres = {
+        
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: result.rows,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).json({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
 
 export default {
     getListDaftarDokumenRekammedis,
@@ -909,5 +933,6 @@ export default {
     getLayananFromMasterRL,
     deleteMapRL,
     updatePrinted,
-    getLaporanRL3_3
+    getLaporanRL3_3,
+    getLaporanRL3_6
 };

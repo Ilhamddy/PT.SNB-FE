@@ -35,8 +35,8 @@ const RL3_3 = () => {
     onSubmit: (values) => {
       console.log(values)
       dispatch(getLaporanRl_3_3({
-        start: values.start,
-        end: values.end
+        start: values.start || dateNow,
+        end: values.end || dateNow
       }));
     },
   })
