@@ -36,6 +36,9 @@ import {
     PENERIMAAN_SAVE_OR_UPDATE,
     PENERIMAAN_SAVE_OR_UPDATE_SUCCESS,
     PENERIMAAN_SAVE_OR_UPDATE_ERROR,
+    UPSERT_RETUR_BARANG,
+    UPSERT_RETUR_BARANG_SUCCESS,
+    UPSERT_RETUR_BARANG_ERROR,
     PENERIMAAN_QUERY_GET,
     PENERIMAAN_QUERY_GET_SUCCESS,
     PENERIMAAN_QUERY_GET_ERROR,
@@ -140,6 +143,11 @@ const INIT_STATE = {
         data: [],
         loading: false,
         error: null,
+    },
+    upsertReturBarang: {
+        data: [],
+        loading: false,
+        error: null
     },
     penerimaanQueryGet: {
         data: [],
@@ -648,6 +656,42 @@ const Registrasi = (state = INIT_STATE, action) => {
                 penerimaanSaveOrUpdate: {
                     ...state.penerimaanSaveOrUpdate,
                     loading: false,
+                    data: [],
+                    error: action.payload.data
+                }
+            }
+        }
+
+        case UPSERT_RETUR_BARANG: {
+            return {
+                ...state,
+                upsertReturBarang: {
+                    ...state.upsertReturBarang,
+                    loading: true,
+                    data: [],
+                    error: null
+                }
+            }
+        }
+
+        case UPSERT_RETUR_BARANG_SUCCESS: {
+            return {
+                ...state,
+                upsertReturBarang: {
+                    ...state.upsertReturBarang,
+                    loading: true,
+                    data: action.payload.data,
+                    error: null
+                }
+            }
+        }
+
+        case UPSERT_RETUR_BARANG_ERROR: {
+            return {
+                ...state,
+                upsertReturBarang: {
+                    ...state.upsertReturBarang,
+                    loading: true,
                     data: [],
                     error: action.payload.data
                 }

@@ -144,6 +144,7 @@ WHERE tpbd.objectpenerimaanbarangfk = $1
 
 const qGetPenerimaanFE = `
 SELECT
+    trb.norec AS norecretur,
     tpb.norec AS norecpenerimaan,
     tpb.no_terima AS nomorterima,
     tpb.tglterima AS tanggalterima,
@@ -162,6 +163,7 @@ SELECT
     '' AS diskonrupiah,
     '' AS total
 FROM t_penerimaanbarang tpb
+    LEFT JOIN t_returbarang trb ON trb.objectpenerimaanbarangfk = tpb.norec
     JOIN m_rekanan mr ON mr.id = tpb.objectrekananfk
     JOIN m_unit mu ON mu.id = tpb.objectunitfk
 `
@@ -381,6 +383,41 @@ FROM t_pemesananbarangdetail tpbd
 WHERE tpbd.objectpemesananbarangfk = $1
 `
 
+const qGetDetailRetur = `
+SELECT
+    trbd.norec AS norecdetailretur,
+    tpbd.norec AS norecdetailpenerimaan,
+    json_build_object(
+        'idproduk', mp.id,
+        'namaproduk', mp.namaproduk,
+        'satuanjual', mp.objectsatuanstandarfk,
+        'namasatuanjual', msp.satuan 
+    )
+    AS produk,
+    msk.id AS satuanterima,
+    msk.satuan AS namasatuanterima,
+    tpbd.jumlah AS jumlahterima,
+    trbd.jumlah AS jumlahretur,
+    tpbd.hargasatuankecil AS hargasatuankecil,
+    tpbd.hargasatuanterima AS hargasatuanterima,
+    tpbd.nobatch AS nobatch,
+    tpbd.ed AS ed,
+    trbd.diskonpersen AS diskonpersen,
+    trbd.diskon AS diskonrupiah,
+    trbd.ppn AS ppnrupiahproduk,
+    trbd.ppnpersen AS ppnpersenproduk,
+    trbd.subtotal AS subtotalproduk,
+    trbd.total AS totalproduk,
+    trbd.alasanretur AS alasanretur
+FROM t_returbarangdetail trbd
+    LEFT JOIN t_penerimaanbarangdetail tpbd ON tpbd.norec = trbd.objectpenerimaanbarangdetailfk
+    JOIN m_produk mp ON mp.id = tpbd.objectprodukfk
+    LEFT JOIN m_satuan ms ON ms.id = tpbd.objectsatuanfk
+    JOIN m_satuan msp ON msp.id = mp.objectsatuanstandarfk
+    JOIN m_satuan msk ON msk.id = tpbd.objectsatuanfk
+WHERE tpbd.objectpenerimaanbarangfk = $1
+`
+
 const qGetUnitUser = `
 SELECT
     mu.namaunit AS namaunit,
@@ -412,5 +449,6 @@ export {
     qGetPemesanan,
     qGetDetailPemesanan,
     qGetListPemesanan,
-    qGetUnitUser
+    qGetUnitUser,
+    qGetDetailRetur
 }

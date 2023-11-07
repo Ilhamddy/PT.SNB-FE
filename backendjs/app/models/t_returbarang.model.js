@@ -4,7 +4,7 @@
  */
 // eslint-disable-next-line max-lines-per-function
 export default (sequelize, Sequelize) => {
-    const t_penerimaanbarang = sequelize.define("t_penerimaanbarang", {
+    const t_returbarang = sequelize.define("t_returbarang", {
         norec: {
             allowNull: false,
             autoIncrement: true,
@@ -36,10 +36,10 @@ export default (sequelize, Sequelize) => {
             type: Sequelize.BOOLEAN
         }
     }, {
-        tableName: "t_penerimaanbarang", // relation "user" does not exist
+        tableName: "t_returbarang", // relation "user" does not exist
         createdAt: false,
         updatedAt: false,
     });
 
-    return t_penerimaanbarang;
+    return t_returbarang;
 };

@@ -39,6 +39,7 @@ import {
   penerimaanSaveOrUpdate,
   penerimaanQueryGet,
   getPemesanan,
+  upsertReturBarang,
 } from '../../store/gudang/action'
 import LoadingTable from '../../Components/Table/LoadingTable'
 import NoDataTable from '../../Components/Table/NoDataTable'
@@ -112,6 +113,7 @@ export const initialDetail = (dateNow) => ({
 
 export const initialDetailRetur = (dateNow) => ({
   ...initialDetail(dateNow),
+  norecdetailretur: '',
   jumlahretur: '',
   alasanretur: '',
 })
@@ -162,6 +164,7 @@ const PenerimaanProduk = ({ isLogistik, isRetur }) => {
   const validation = useFormik({
     enableReinitialize: true,
     initialValues: {
+      norecretur: '',
       norecpenerimaan: '',
       norecpemesanan: '',
       penerimaan: {
@@ -249,12 +252,20 @@ const PenerimaanProduk = ({ isLogistik, isRetur }) => {
         newVal.penerimaan.diskonrupiah
       )
       newVal.penerimaan.ppnrupiah = strToNumber(newVal.penerimaan.ppnrupiah)
-      dispatch(
-        penerimaanSaveOrUpdate(newVal, (newNorec) => {
-          navigate(`/farmasi/gudang/penerimaan-produk/${newNorec}`)
-          dispatch(penerimaanQueryGet({ norecpenerimaan: norecpenerimaan }))
-        })
-      )
+      if (!isRetur) {
+        dispatch(
+          penerimaanSaveOrUpdate(newVal, (newNorec) => {
+            navigate(`/farmasi/gudang/penerimaan-produk/${newNorec}`)
+            dispatch(penerimaanQueryGet({ norecpenerimaan: norecpenerimaan }))
+          })
+        )
+      } else {
+        dispatch(
+          upsertReturBarang(newVal, (newNorec) => {
+            dispatch(penerimaanQueryGet({ norecpenerimaan: norecpenerimaan }))
+          })
+        )
+      }
     },
   })
 
@@ -291,6 +302,7 @@ const PenerimaanProduk = ({ isLogistik, isRetur }) => {
   const vDetailRetur = useFormik({
     initialValues: {
       ...initialDetailRetur(dateNow),
+      norecdetailretur: '',
       jumlahretur: '',
       alasanretur: '',
     },

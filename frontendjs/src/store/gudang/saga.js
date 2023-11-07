@@ -26,6 +26,8 @@ import {
     kemasanFromProdukGetSuccess,
     penerimaanSaveOrUpdateError,
     penerimaanSaveOrUpdateSuccess,
+    upsertReturBarangSuccess,
+    upsertReturBarangError,
     penerimaanQueryGetError,
     penerimaanQueryGetSuccess,
     penerimaanListQueryGetSuccess,
@@ -72,6 +74,7 @@ import {
     PRODUK_EDIT_GET,
     KEMASAN_FROM_PRODUK_GET,
     PENERIMAAN_SAVE_OR_UPDATE,
+    UPSERT_RETUR_BARANG,
     PENERIMAAN_QUERY_GET,
     PENERIMAAN_LIST_QUERY_GET,
     KARTU_STOK_QUERY_GET,
@@ -226,6 +229,20 @@ function* onPenerimaanSaveOrUpdate({payload: {data, callback}}){
         console.error(error);
         yield put(penerimaanSaveOrUpdateError(error));
         toast.error(error?.response?.msg || "Gagal save or update penerimaan", { autoClose: 3000 });
+    }
+}
+
+function* onUpsertReturBarang({payload: {data, callback}}){
+    try {
+        let response = yield call(serviceGudang.upsertReturBarang, data);
+        yield put(upsertReturBarangSuccess(response.data));
+        toast.success(response?.msg || "Sukses", { autoClose: 3000 })
+        callback && 
+            callback(response.data || "");
+    } catch (error) {
+        console.error(error);
+        yield put(upsertReturBarangError(error));
+        toast.error(error?.msg || "Gagal save or update penerimaan", { autoClose: 3000 });
     }
 }
 
@@ -393,6 +410,7 @@ function* gudangSaga() {
         takeEvery(PRODUK_EDIT_GET, onProdukEditGet),
         takeEvery(KEMASAN_FROM_PRODUK_GET, onKemasanFromProdukGet),
         takeEvery(PENERIMAAN_SAVE_OR_UPDATE, onPenerimaanSaveOrUpdate),
+        takeEvery(UPSERT_RETUR_BARANG, onUpsertReturBarang),
         takeEvery(PENERIMAAN_QUERY_GET, onPenerimaanQueryGet),
         takeEvery(PENERIMAAN_LIST_QUERY_GET, onPenerimaanListQueryGet),
         takeEvery(KARTU_STOK_QUERY_GET, onKartuStokQueryGet),

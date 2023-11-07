@@ -84,6 +84,12 @@ export default function (app) {
         controller.createOrUpdatePenerimaan
     )
 
+    app.post(
+        "/api/transaksi/gudang/upsert-retur-barang",
+        [authJwt.verifyToken],
+        controller.upsertReturBarang
+    )
+
     app.get(
         "/api/transaksi/gudang/get-penerimaan",
         [authJwt.verifyToken],

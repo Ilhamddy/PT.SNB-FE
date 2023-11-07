@@ -22,7 +22,8 @@ import {
     qGetStokOpnameDetail,
     qGetStokOpnameStokUnit,
     qGetStokUnit,
-    qGetUnitUser, 
+    qGetUnitUser,
+    qGetDetailRetur 
 } from "../../../queries/gudang/gudang.queries";
 import unitQueries, { daftarUnit } from "../../../queries/master/unit/unit.queries"
 import {
@@ -635,6 +636,69 @@ const createOrUpdatePenerimaan = async (req, res) => {
     }
 }
 
+const upsertReturBarang = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const {
+            upsertedRetur,
+            upsertedDetailRetur,
+            upsertedStokUnitRetur,
+            createdKartuStokPenerimaan
+        } = await db.sequelize.transaction(async (transaction) => {
+            const {upsertedRetur, norecretur, norecpenerimaan, penerimaan}
+            = await hUpsertRetur(req, res, transaction)
+            const {upsertedDetailRetur} 
+            = await hUpsertDetailRetur(req, res, transaction, {
+                norecretur, 
+                norecpenerimaan
+            })
+            const {upsertedStokUnitRetur} 
+            = await hUpsertStokUnitRetur(req, res, transaction, {
+                upsertedDetailRetur, 
+                penerimaan
+            })
+            const {
+                createdKartuStokPenerimaan
+            } = await hCreateKartuStokRetur(
+                req,
+                res,
+                transaction,
+                {
+                    upsertedRetur,
+                    upsertedStokUnitRetur
+                }
+            )
+            return {
+                upsertedRetur,
+                upsertedDetailRetur,
+                upsertedStokUnitRetur,
+                createdKartuStokPenerimaan
+            }
+        });
+        
+        const tempres = {
+            upsertedRetur,
+            upsertedDetailRetur,
+            upsertedStokUnitRetur,
+            createdKartuStokPenerimaan
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 
 const getPenerimaan = async (req, res) => {
     const logger = res.locals.logger
@@ -647,6 +711,8 @@ const getPenerimaan = async (req, res) => {
             (await pool.query(qGetPenerimaan, [norecpenerimaan])).rows[0]
         let detailPemesanan = 
             (await pool.query(qGetDetailPemesanan, [penerimaan.norecpemesanan])).rows
+        let detailRetur = 
+            (await pool.query(qGetDetailRetur, [norecpenerimaan])).rows
 
         detailPenerimaan = detailPenerimaan.map((item) => ({
             ...item,
@@ -661,10 +727,24 @@ const getPenerimaan = async (req, res) => {
             subtotalproduk: item.subtotalproduk.toLocaleString('id-ID', {maximumFractionDigit: 10}),
             totalproduk: item.totalproduk.toLocaleString('id-ID', {maximumFractionDigit: 10}),
         }))
+        detailRetur = detailRetur.map((item) => ({
+            ...item,
+            jumlahretur: item.jumlahretur.toLocaleString('id-ID', {maximumFractionDigit: 10}),
+            jumlahterima: item.jumlahterima.toLocaleString('id-ID', {maximumFractionDigit: 10}),
+            hargasatuankecil: item.hargasatuankecil.toLocaleString('id-ID', {maximumFractionDigit: 10}),
+            hargasatuanterima: item.hargasatuanterima.toLocaleString('id-ID', {maximumFractionDigit: 10}),
+            diskonrupiah: item.diskonrupiah.toLocaleString('id-ID', {maximumFractionDigit: 10}),
+            diskonpersen: item.diskonpersen.toLocaleString('id-ID', {maximumFractionDigit: 10}),
+            ppnrupiahproduk: item.ppnrupiahproduk.toLocaleString('id-ID', {maximumFractionDigit: 10}),
+            ppnpersenproduk: item.ppnpersenproduk.toLocaleString('id-ID', {maximumFractionDigit: 10}),
+            subtotalproduk: item.subtotalproduk.toLocaleString('id-ID', {maximumFractionDigit: 10}),
+            totalproduk: item.totalproduk.toLocaleString('id-ID', {maximumFractionDigit: 10}),
+        }))
         let tempres = {
             detailPenerimaan: detailPenerimaan,
             penerimaan: penerimaan,
-            detailPemesanan: detailPemesanan
+            detailPemesanan: detailPemesanan,
+            detailRetur: detailRetur
         }
         res.status(200).send({
             data: tempres,
@@ -1225,6 +1305,7 @@ export default {
     getKemasanFromProduk,
     getPenerimaan,
     createOrUpdatePenerimaan,
+    upsertReturBarang,
     getListPenerimaan,
     getComboKartuStok,
     getKartuStok,
@@ -1389,6 +1470,183 @@ const hCreateOrUpdatePenerimaan = async (req, res, transaction) => {
     return { createdOrUpdatedPenerimaan, norecpenerimaan }
 }
 
+const hUpsertRetur = async (req, res, transaction) => {
+    let upsertedRetur
+    const bodyPenerimaan = req.body.penerimaan
+    if(!bodyPenerimaan) throw new Error("Body kosong")
+    let norecretur = req.body.norecretur
+    let norecpenerimaan = req.body.norecpenerimaan
+
+    if(!norecretur){
+        norecretur = uuid.v4().substring(0, 32)
+        upsertedRetur = await db.t_returbarang.create({
+            norec: norecretur,
+            kdprofile: 0,
+            statusenabled: true,
+            objectpenerimaanbarangfk: norecpenerimaan,
+            tglretur: new Date(),
+            objectpegawaifk: req.idPegawai,
+            tglinput: new Date(),
+            tglupdate: new Date(),
+            islogistik: bodyPenerimaan.islogistik
+        }, {
+            transaction: transaction
+        })
+        upsertedRetur = upsertedRetur.toJSON()
+    }else{
+        const oldData = await db.t_returbarang.findByPk(norecretur)
+        await oldData.update({
+            kdprofile: 0,
+            statusenabled: true,
+            objectpenerimaanbarangfk: norecpenerimaan,
+            objectpegawaifk: req.idPegawai,
+            tglinput: new Date(),
+            tglupdate: new Date(),
+            islogistik: bodyPenerimaan.islogistik
+        })
+        upsertedRetur = oldData[0]?.toJSON() || null;
+    }
+    let penerimaan = await db.t_penerimaanbarang.findByPk(norecpenerimaan)
+    penerimaan = penerimaan.toJSON()
+    return { upsertedRetur, norecretur, norecpenerimaan, penerimaan }
+}
+
+const hUpsertDetailRetur = async (
+    req, 
+    res, 
+    transaction, 
+    {
+        norecretur,
+        norecpenerimaan
+    }
+) => {
+    const arRetur = req.body.retur
+    let upsertedDetailRetur = []
+    upsertedDetailRetur = await Promise.all(
+        arRetur.map(async (bodyRetur) => {
+            let norecDetailRetur = bodyRetur.norecdetailretur
+            const norecDetailPenerimaan = bodyRetur.norecdetailpenerimaan
+            let updatedValue = null
+            let prevsVal = []
+            if(norecDetailRetur){
+                let prevs = await db.t_returbarangdetail.findByPk(norecDetailRetur,
+                {
+                    lock: transaction.LOCK.UPDATE,
+                    transaction: transaction
+                })
+                prevsVal = prevs?.toJSON() || null
+                await prevs?.destroy({
+                    transaction: transaction
+                })
+            }
+            updatedValue = await db.t_returbarangdetail.create({
+                norec: uuid.v4().substring(0, 32),
+                statusenabled: true,
+                objectreturbarangfk: norecretur,
+                objectpenerimaanbarangdetailfk: norecDetailPenerimaan,
+                jumlah: bodyRetur.jumlahretur,
+                subtotal: bodyRetur.subtotalproduk,
+                diskonpersen: bodyRetur.diskonpersen,
+                diskon: bodyRetur.diskonrupiah,
+                ppnpersen: bodyRetur.ppnpersenproduk,
+                ppn: bodyRetur.ppnrupiahproduk,
+                total: bodyRetur.totalproduk,
+                alasanretur: bodyRetur.alasanretur
+            }, {
+                transaction: transaction
+            }) 
+            const penerimaanDetail = await db.t_penerimaanbarangdetail.findByPk(norecDetailPenerimaan)
+            return {
+                prevValue: prevsVal || null,
+                updatedValue: updatedValue.toJSON(),
+                penerimaanDetail: penerimaanDetail.toJSON()
+            }
+        })
+    )
+    
+    return {
+        upsertedDetailRetur
+    }
+}
+
+const hUpsertStokUnitRetur  = async (
+    req, 
+    res,
+    transaction,
+    {
+        upsertedDetailRetur,
+        penerimaan
+    }
+) => {
+    let upsertedStokUnitRetur = []
+    upsertedStokUnitRetur = await Promise.all(
+        upsertedDetailRetur.map(
+            async ({prevValue, updatedValue, penerimaanDetail}) => {
+                const {
+                    nobatch
+                } = penerimaanDetail
+
+                let changedQty = 0
+                const jmlPaket = updatedValue.jumlah || 0
+                const jmlPaketPrev = prevValue?.jumlah || 0
+                const konversi = penerimaanDetail.jumlahkonversi || 0
+                const konversiPrev = penerimaanDetail?.jumlahkonversi || 0
+                changedQty = (jmlPaketPrev * konversiPrev - jmlPaket * konversi)
+                const {
+                    stokBarangAwalVal: prevStok, 
+                    stokBarangAkhirVal: createdOrUpdated
+                } = await hUpsertStok(req, res, transaction, {
+                    qtyDiff: changedQty,
+                    nobatch: nobatch,
+                    objectprodukfk: penerimaanDetail.objectprodukfk,
+                    objectunitfk: penerimaan.objectunitfk,
+                })
+
+                return {createdOrUpdated, prevStok, changedQty}
+            }
+        )
+    )
+    
+    return {upsertedStokUnitRetur}
+}
+
+const hCreateKartuStokRetur = async (
+    req,
+    res,
+    transaction,
+    {
+        upsertedRetur,
+        upsertedStokUnitRetur
+    }
+) => {
+    
+    let createdKartuStokPenerimaan = await Promise.all(
+        upsertedStokUnitRetur.map(async({
+            createdOrUpdated, 
+            prevStok, 
+            changedQty
+        }) => {
+            const saldoAwal = prevStok?.qty || 0
+            const createdKartuStok = await hCreateKartuStok(
+                req,
+                res,
+                transaction,
+                {
+                    idUnit: upsertedRetur.objectunitfk,
+                    idProduk: createdOrUpdated.objectprodukfk,
+                    saldoAwal: saldoAwal,
+                    saldoAkhir: saldoAwal + changedQty,
+                    tabelTransaksi: "t_penerimaanbarangdetail",
+                    norecTransaksi: upsertedRetur.norec,
+                    noBatch: createdOrUpdated.nobatch
+                }
+            )
+            return createdKartuStok
+        })
+    )
+
+    return {createdKartuStokPenerimaan}
+}
 
 const hCreateOrUpdateDetailPenerimaan = async (
     req, 
@@ -1404,16 +1662,13 @@ const hCreateOrUpdateDetailPenerimaan = async (
         arDetail.map(async (bodyDetail) => {
             let norecDetailPenerimaan = bodyDetail.norecdetailpenerimaan
             let updatedValue = null
-            let prevsVal = []
-            if(!norecDetailPenerimaan){
-                let prevs = await t_penerimaanbarangdetail.findAll({
-                    where: {
-                        objectpenerimaanbarangfk: norecpenerimaan
-                    },
+            let prevsVal = null
+            if(norecDetailPenerimaan){
+                let prevs = await t_penerimaanbarangdetail.findByPk(norecDetailPenerimaan, {
                     lock: transaction.LOCK.UPDATE,
                     transaction: transaction
                 })
-                prevsVal = prevs.map((prev) => prev.toJSON())
+                prevsVal = prevs.toJSON()
                 await Promise.all(
                     prevs.map(async (prev) => {
                         await prev.destroy()
@@ -1443,7 +1698,7 @@ const hCreateOrUpdateDetailPenerimaan = async (
             }) 
             return {
                 prevValue: prevsVal || null,
-                updatedValue
+                updatedValue: updatedValue.toJSON()
             }
         })
     )

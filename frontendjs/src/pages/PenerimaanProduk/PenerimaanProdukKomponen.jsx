@@ -345,8 +345,8 @@ export const ListAfterRetur = () => {
       width: '120px',
     },
     {
-      name: <span className="font-weight-bold fs-13">Qty Penerimaan</span>,
-      selector: (row) => row.jumlahterima,
+      name: <span className="font-weight-bold fs-13">Qty Retur</span>,
+      selector: (row) => row.jumlahretur,
       sortable: true,
       width: '110px',
     },
@@ -1920,6 +1920,16 @@ export const useFillInitialInput = (validation) => {
           })
         )
         setFF('detail', detailPenerimaan || [])
+      }
+      // jika ada retur
+      if (penerimaanQuery.detailPenerimaan) {
+        const detailRetur = penerimaanQuery.detailRetur.map(
+          (values, index) => ({
+            ...values,
+            indexDetail: index,
+          })
+        )
+        setFF('retur', detailRetur || [])
       }
       if (penerimaanQuery.penerimaan) {
         setFF('penerimaan', penerimaanQuery.penerimaan)

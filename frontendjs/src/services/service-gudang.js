@@ -51,6 +51,10 @@ export default class ServiceGudang {
     saveOrEditPenerimaan = async (body) => {
         return await api.create(`/transaksi/gudang/create-or-update-penerimaan`, body)
     }
+
+    upsertReturBarang = async (body) => {
+        return await api.create(`/transaksi/gudang/upsert-retur-barang`, body)
+    } 
     
     getPenerimaan = async (queries) => {
         return await api.get(`/transaksi/gudang/get-penerimaan`, queries)

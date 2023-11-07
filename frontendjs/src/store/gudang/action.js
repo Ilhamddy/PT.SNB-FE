@@ -35,6 +35,9 @@ import {
     PENERIMAAN_SAVE_OR_UPDATE,
     PENERIMAAN_SAVE_OR_UPDATE_SUCCESS,
     PENERIMAAN_SAVE_OR_UPDATE_ERROR,
+    UPSERT_RETUR_BARANG,
+    UPSERT_RETUR_BARANG_SUCCESS,
+    UPSERT_RETUR_BARANG_ERROR,
     PENERIMAAN_QUERY_GET,
     PENERIMAAN_QUERY_GET_SUCCESS,
     PENERIMAAN_QUERY_GET_ERROR,
@@ -257,6 +260,21 @@ export const penerimaanSaveOrUpdateSuccess = (data) => ({
 
 export const penerimaanSaveOrUpdateError = (data) => ({
     type: PENERIMAAN_SAVE_OR_UPDATE_ERROR,
+    payload: { data: data },
+})
+
+export const upsertReturBarang = (data, callback) => ({
+    type: UPSERT_RETUR_BARANG,
+    payload: { data: data, callback: callback },
+})
+
+export const upsertReturBarangSuccess = (data) => ({
+    type: UPSERT_RETUR_BARANG_SUCCESS,
+    payload: { data: data },
+})
+
+export const upsertReturBarangError = (data) => ({
+    type: UPSERT_RETUR_BARANG_ERROR,
     payload: { data: data },
 })
 
