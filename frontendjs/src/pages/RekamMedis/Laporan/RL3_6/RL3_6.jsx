@@ -8,13 +8,16 @@ import * as Yup from 'yup'
 import KontainerFlatpickr from '../../../../Components/KontainerFlatpickr/KontainerFlatpickr';
 import DataTable from 'react-data-table-component'
 import LoadingTable from '../../../../Components/Table/LoadingTable';
+import {
+  getLaporanRl_3_6, kendaliDokumenResetForm
+} from '../../../../store/actions';
 
 const RL3_6 = () => {
   document.title = "Laporan RL3.6";
   const dispatch = useDispatch();
   const { dataGrid, loadingGrid } = useSelector((state) => ({
-    dataGrid: state.KendaliDokumen.getLaporanRl_3_3.data,
-    loadingGrid: state.KendaliDokumen.getLaporanRl_3_3.loading,
+    dataGrid: state.KendaliDokumen.getLaporanRl_3_6.data,
+    loadingGrid: state.KendaliDokumen.getLaporanRl_3_6.loading,
   }));
   const [dateNow] = useState(() => new Date().toISOString())
   const vSetValidation = useFormik({
@@ -28,10 +31,10 @@ const RL3_6 = () => {
     }),
     onSubmit: (values) => {
       console.log(values)
-      // dispatch(getLaporanRl_3_3({
-      //   start: values.start,
-      //   end: values.end
-      // }));
+      dispatch(getLaporanRl_3_6({
+        start: values.start || dateNow,
+        end: values.end || dateNow
+      }));
     },
   })
   const columns = [
@@ -44,42 +47,42 @@ const RL3_6 = () => {
     },
     {
       name: <span className="font-weight-bold fs-13">Spesialisasi</span>,
-      selector: (row) => row.reportdisplay,
+      selector: (row) => row.spesialis,
       sortable: true,
       // width: '60px',
       wrap: true,
     },
     {
       name: <span className="font-weight-bold fs-13">Total</span>,
-      selector: (row) => row.jml,
+      selector: (row) => row.total,
       sortable: true,
       // width: '60px',
       wrap: true,
     },
     {
       name: <span className="font-weight-bold fs-13">Khusus</span>,
-      selector: (row) => row.jml,
+      selector: (row) => row.khusus_count,
       sortable: true,
       // width: '60px',
       wrap: true,
     },
     {
       name: <span className="font-weight-bold fs-13">Besar</span>,
-      selector: (row) => row.jml,
+      selector: (row) => row.besar_count,
       sortable: true,
       // width: '60px',
       wrap: true,
     },
     {
       name: <span className="font-weight-bold fs-13">Sedang</span>,
-      selector: (row) => row.jml,
+      selector: (row) => row.sedang_count,
       sortable: true,
       // width: '60px',
       wrap: true,
     },
     {
       name: <span className="font-weight-bold fs-13">Kecil</span>,
-      selector: (row) => row.jml,
+      selector: (row) => row.kecil_count,
       sortable: true,
       // width: '60px',
       wrap: true,
