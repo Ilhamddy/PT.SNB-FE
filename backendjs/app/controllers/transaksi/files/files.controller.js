@@ -60,7 +60,7 @@ const getLogFile = async (req, res) => {
     try{
         const __dirname = path.resolve(path.dirname(''));
         const folderLog = "./logs"
-        const fileName = createFormattedDateTime()
+        const fileName = createFormattedDate()
         const targetLog = path.join(__dirname, 
             folderLog 
             + fileName 
@@ -106,15 +106,15 @@ const getLogFile = async (req, res) => {
     }
 }
 
-const createFormattedDateTime = () => {
+const createFormattedDate = () => {
     let current_datetime = new Date();
-    let formatted_date_time =
+    let formatted_date =
         current_datetime.getFullYear() +
         "-" +
         (current_datetime.getMonth() + 1) +
         "-" +
         current_datetime.getDate() 
-    return formatted_date_time
+    return formatted_date
 }
 
 export default {
