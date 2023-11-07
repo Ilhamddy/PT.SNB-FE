@@ -242,6 +242,7 @@ const PenerimaanProduk = ({ isLogistik, isRetur }) => {
         newValDetail.ppnpersenproduk = strToNumber(newValDetail.ppnpersenproduk)
         newValDetail.konversisatuan = strToNumber(newValDetail.konversisatuan)
         newValDetail.jumlahterima = strToNumber(newValDetail.jumlahterima)
+        newValDetail.jumlahretur = strToNumber(newValDetail.jumlahretur)
         return newValDetail
       })
 
