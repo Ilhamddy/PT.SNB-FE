@@ -47,7 +47,8 @@ import {
     DELETE_MAP_RL_ERROR,
     UPDATE_PRINTED,
     UPDATE_PRINTED_ERROR,
-    UPDATE_PRINTED_SUCCESS
+    UPDATE_PRINTED_SUCCESS,
+    LAPORAN_RL_3_3_GET,LAPORAN_RL_3_3_GET_SUCCESS,LAPORAN_RL_3_3_GET_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -131,7 +132,12 @@ const INIT_STATE = {
         data: [],
         loading: false,
         error: null
-    }
+    },
+    getLaporanRl_3_3:{
+        data: [],
+        loading: false,
+        error: null,
+    },
 }
 
 const KendaliDokumen = (state = INIT_STATE, action) => {
@@ -165,6 +171,9 @@ const KendaliDokumen = (state = INIT_STATE, action) => {
                 },
                 laporanRL_3_2_Get:{
                     ...INIT_STATE.laporanRL_3_2_Get
+                },
+                getLaporanRl_3_3:{
+                    ...INIT_STATE.getLaporanRl_3_3
                 }
             }
         }
@@ -700,6 +709,39 @@ const KendaliDokumen = (state = INIT_STATE, action) => {
                     ...state.updatePrinted,
                     loading: false,
                     error: action.error,
+                }
+            }
+        }
+
+        case LAPORAN_RL_3_3_GET: {
+            return {
+                ...state,
+                getLaporanRl_3_3: {
+                    ...state.getLaporanRl_3_3,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case LAPORAN_RL_3_3_GET_SUCCESS: {
+            return {
+                ...state,
+                getLaporanRl_3_3: {
+                    ...state.getLaporanRl_3_3,
+                    loading: false,
+                    data: action.payload,
+                }
+            }
+        }
+
+        case LAPORAN_RL_3_3_GET_ERROR: {
+            return {
+                ...state,
+                getLaporanRl_3_3: {
+                    ...state.getLaporanRl_3_3,
+                    loading: false,
+                    error: action.payload,
                 }
             }
         }

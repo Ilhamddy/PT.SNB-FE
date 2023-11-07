@@ -67,4 +67,8 @@ export default class ServiceRekammedis {
     updatePrinted = async (body) => {
         return await api.create(`/transaksi/rekammedis/update-printed`, body);
     }
+
+    getLaporanRl_3_3 = async (queries) => {
+        return await api.get(`/transaksi/rekammedis/get-laporan-rl-3-3`, queries);
+    }
 }
