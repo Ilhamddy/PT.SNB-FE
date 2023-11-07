@@ -3,7 +3,7 @@ import crypto from "crypto"
 dotenv.config()
 
 const IV_LENGTH = process.env.API_IV_LENGTH ? Number(process.env.API_IV_LENGTH) : 16;
-const algorithm = process.env.API_ENC_ALGORITHM ? process.env.API_ENC_ALGORITHM : 'aes-256-cbc';
+const algorithm = process.env.API_ENC_ALGORITHM ? process.env.API_ENC_ALGORITHM : 'aes-256-ctr';
 
 export function encrypt(data, clientSecret) {
     const key = Buffer.concat([Buffer.from(clientSecret), Buffer.alloc(32)], 32)
@@ -14,6 +14,7 @@ export function encrypt(data, clientSecret) {
     let cipher = crypto.createCipheriv(algorithm, key, iv);
     let encrypted = cipher.update(text);
     encrypted = Buffer.concat([encrypted, cipher.final()]);
+    const dec = decrypt(iv.toString('hex') + ':' + encrypted.toString('hex'), clientSecret)
     return {
         dataenc: iv.toString('hex') + ':' + encrypted.toString('hex'), 
         isencrypt: true

@@ -32,7 +32,8 @@ export const createLogger = (logname) => {
         let log = `[${formatted_date_time}] [${logName}] ` + 
         `\n MESSAGE: ${err.message}` + 
         `\n STACK: ${err.stack}` + 
-        `\n NAME: ${err.name}`;
+        `\n NAME: ${err.name}`+
+        `\n SEQUELIZE_VALIDATION: -${err.errors?.map(e => e.message).join('\n-') || ""}`
 
         finalLog = finalLog + log + "\n";
     }
@@ -48,8 +49,7 @@ export const createLogger = (logname) => {
     const fnError = (content) => {
         if(typeof content === "string"){
             fnLog(content, "ERROR")
-        }
-        else if(typeof content === "object"){
+        }else if(typeof content === "object"){
             fnLogErr(content, "ERROR")
         }
     }

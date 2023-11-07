@@ -9,6 +9,8 @@ import { qGetAllVerif, qGetObatFromProduct, qGetPasienFromId } from "../../../qu
 import { generateKodeBatch, hCreateKartuStok } from "../gudang/gudang.controller";
 import fs from 'fs';
 import path from "path";
+import readline from 'readline';
+import Stream from 'stream';
 
 
 const postImage = async (req, res) => {
@@ -51,6 +53,68 @@ const postImage = async (req, res) => {
             success: false
         });
     }
+}
+
+const getLogFile = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const __dirname = path.resolve(path.dirname(''));
+        const folderLog = "./logs"
+        const fileName = createFormattedDate()
+        const targetLog = path.join(__dirname, 
+            folderLog 
+            + fileName 
+            + ".log"
+        )
+        const getLog = (fileName, minLength) => {
+            let inStream = fs.createReadStream(fileName);
+            let outStream = new Stream;
+            return new Promise((resolve, reject)=> {
+                let rl = readline.createInterface(inStream, outStream);
+        
+                let lastLine = '';
+                rl.on('line', function (line) {
+                    if (line.length >= minLength) {
+                        lastLine = line;
+                    }
+                });
+        
+                rl.on('error', reject)
+        
+                rl.on('close', function () {
+                    resolve(lastLine)
+                });
+            })
+        }
+        const tempres = {
+        
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+const createFormattedDate = () => {
+    let current_datetime = new Date();
+    let formatted_date =
+        current_datetime.getFullYear() +
+        "-" +
+        (current_datetime.getMonth() + 1) +
+        "-" +
+        current_datetime.getDate() 
+    return formatted_date
 }
 
 export default {
