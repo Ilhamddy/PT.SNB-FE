@@ -687,6 +687,7 @@ const updatePrinted = async (req, res) => {
 const getLaporanRL3_3 = async (req, res) => {
     const logger = res.locals.logger;
     try{
+        const result = await pool.query(queries.qLaporanRL3_3,[req.query.start,req.query.end])
         
         const tempres = {
         
@@ -694,7 +695,7 @@ const getLaporanRL3_3 = async (req, res) => {
         res.status(200).send({
             msg: 'Success',
             code: 200,
-            data: tempres,
+            data: result.rows,
             success: true
         });
     } catch (error) {
@@ -889,6 +890,7 @@ const deleteMapRL = async (req, res) => {
     }
 }
 
+
 export default {
     getListDaftarDokumenRekammedis,
     getWidgetListDaftarDokumenRekammedis,
@@ -906,5 +908,6 @@ export default {
     getMasterRLFromInduk,
     getLayananFromMasterRL,
     deleteMapRL,
-    updatePrinted
+    updatePrinted,
+    getLaporanRL3_3
 };
