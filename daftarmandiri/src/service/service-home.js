@@ -19,4 +19,8 @@ export default class ServiceMaster {
     getBerita = async (queries) => {
         return await api.get(`/daftarmandiri/berita`, queries);
     }
+
+    getCaptcha = async (queries) => {
+        return await api.get(`/daftarmandiri/get-captcha`, queries)
+    }
 }

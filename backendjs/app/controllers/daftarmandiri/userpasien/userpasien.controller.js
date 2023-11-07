@@ -1,5 +1,5 @@
 import db from "../../../models"
-import { pasienSignup } from "../../auth/authhelper";
+import { hCheckCaptcha, pasienSignup } from "../../auth/authhelper";
 import jwt from "jsonwebtoken";
 import config from "../../../config/auth.config";
 import { encrypt } from "../../../utils/encrypt";
@@ -24,6 +24,11 @@ const upsertPasien = async (req, res) => {
         await db.sequelize.transaction(async (transaction) => {
             const id = req.id
             let dataPasien, userPasien, token = null;
+            const { correct } = hCheckCaptcha(
+                req.body.step3.uuid, 
+                req.body.step3.answer
+            )
+            if(!correct) throw new Error("Captcha salah")
             if(!id){
                 [
                     dataPasien,
@@ -54,10 +59,7 @@ const upsertPasien = async (req, res) => {
             datapasien: dataPasien,
             user: user
         };
-
-        const data = encrypt(tempres, bodyReq.clientSecret || userPasien.clientsecret)
-
-        res.status(200).send(data);
+        res.status(200).send(tempres);
     } catch (error) {
         logger.error(error);
         res.status(500).send({

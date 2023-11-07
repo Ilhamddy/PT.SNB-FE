@@ -8,6 +8,8 @@ import {
     getBeritaHomeError,
     getBeritaQueryError,
     getBeritaQuerySuccess,
+    getCaptchaSuccess,
+    getCaptchaError
 } from "./action";
 import * as uuid from 'uuid'
 
@@ -15,7 +17,8 @@ import {
     GET_JADWAL_DOKTER,
     GET_COMBO_JADWAL,
     GET_BERITA_HOME,
-    GET_BERITA_QUERY
+    GET_BERITA_QUERY,
+    GET_CAPTCHA
 } from "./actionType";
 
 import ServiceHome from "../../service/service-home";
@@ -59,11 +62,21 @@ function* onGetBeritaQuery({payload: {queries}}){
     }
 }
 
+function* onGetCaptcha({payload: {queries}}){
+    try{
+        const response = yield call(serviceHome.getCaptcha, queries);
+        yield put(getCaptchaSuccess(response.data));
+    } catch (error){
+        yield put(getCaptchaError(error));
+    }
+}
+
 export default function* watchLoginUser() {
     yield all([
         takeEvery(GET_JADWAL_DOKTER, onGetJadwalDokter),
         takeEvery(GET_COMBO_JADWAL, onGetComboJadwal),
         takeEvery(GET_BERITA_HOME, onGetBeritaHome),
-        takeEvery(GET_BERITA_QUERY, onGetBeritaQuery)
+        takeEvery(GET_BERITA_QUERY, onGetBeritaQuery),
+        takeEvery(GET_CAPTCHA, onGetCaptcha)
     ])
 }

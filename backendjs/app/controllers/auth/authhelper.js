@@ -1,8 +1,21 @@
 import bcrypt from "bcryptjs"
 import db from "../../models"
 import { Op } from "sequelize"
+import captcha from 'svg-captcha'
 
 const m_pasien = db.m_pasien
+
+
+export const initCaptcha = {
+    uuid: "",
+    answer: "",
+    expired: new Date(),
+}
+  
+export let tempCaptcha = []
+export const setTempCaptcha = (nTempCaptcha) => {
+    tempCaptcha = nTempCaptcha
+}
 
 export const pasienSignup = async (
     req, 
@@ -67,3 +80,16 @@ export const pasienChangeNoIdentitas = async (
     )
     return userPasien
 }
+
+export const hCheckCaptcha = (uuid, answer) => {
+    tempCaptcha = tempCaptcha.filter(f => f.expired > new Date())
+    const captcha = tempCaptcha.find(f => f.uuid === uuid )
+    if(captcha){
+      if(captcha.answer === answer){
+        return {correct: true, code: 200}
+      }
+      return {correct: false, code: 403}
+    } else{
+      return {correct: false, code: 401}
+    }
+  }

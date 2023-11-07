@@ -14,6 +14,7 @@ import {
   signUpUser,
   updatePasien,
 } from '../../store/userpasien/action'
+import { getCaptcha } from '../../store/home/action'
 import { useNavigate } from 'react-router-dom'
 import { useUser } from '../../hooks/user'
 
@@ -21,11 +22,15 @@ const FormPasienBaru = ({ step, setStep }) => {
   const dispatch = useDispatch()
   const user = useUser()
   const isEdit = !!user
-  const { master, desa, allStep } = useSelector((selector) => ({
-    master: selector.Master.getAllMaster?.data?.data || null,
-    desa: selector.Master.getDesaKelurahan?.data?.data || [],
-    allStep: selector.UserPasien.getPasienEdit?.data || null,
-  }))
+  const { master, desa, allStep, image, uuidcaptcha } = useSelector(
+    (selector) => ({
+      master: selector.Master.getAllMaster?.data?.data || null,
+      desa: selector.Master.getDesaKelurahan?.data?.data || [],
+      allStep: selector.UserPasien.getPasienEdit?.data || null,
+      image: selector.Home.getCaptcha?.data?.image || '',
+      uuidcaptcha: selector.Home.getCaptcha?.data?.uuid || '',
+    })
+  )
   const navigate = useNavigate()
   const refNegara = useRef(null)
   const vStep0 = useFormik({
@@ -143,6 +148,8 @@ const FormPasienBaru = ({ step, setStep }) => {
       namaayah: '',
       nobpjs: '',
       nohppasien: '',
+      uuid: '',
+      answer: '',
     },
     validationSchema: Yup.object({
       namaibu: Yup.string().required('Nama Ibu wajib diisi'),
@@ -238,19 +245,29 @@ const FormPasienBaru = ({ step, setStep }) => {
       setV2(allStep.step2)
     }
     if (allStep.step3) {
-      setV3(allStep.step3)
+      setV3({
+        ...vStep3.initialValues,
+        ...allStep.step3,
+        uuid: uuidcaptcha,
+      })
     }
+    setV3({
+      ...vStep3.initialValues,
+      uuid: uuidcaptcha,
+    })
   }, [
     allStep,
     vStep0.setValues,
     vStep1.setValues,
     vStep2.setValues,
     vStep3.setValues,
+    uuidcaptcha,
   ])
 
   useEffect(() => {
     dispatch(getAllMaster())
     dispatch(getPasienEdit())
+    dispatch(getCaptcha())
   }, [dispatch])
 
   const konfirmasi = [
@@ -907,6 +924,26 @@ const FormPasienBaru = ({ step, setStep }) => {
               isError={vStep3.touched.nohppasien && vStep3.errors.nohppasien}
               onChange={(e) => {
                 rgxAllNumber.test(e.target.value) && vStep3.handleChange(e)
+              }}
+              disabled={isEdit}
+            />
+          </InputGroup>
+          <img
+            width={'100%'}
+            height={'fit-content'}
+            src={`data:image/svg+xml;utf8,${encodeURIComponent(image)}`}
+          />
+          <InputGroup label={'Masukkan captcha'}>
+            <InputDM
+              id="answer"
+              name="answer"
+              type="string"
+              className="input-login"
+              value={vStep3.values.answer}
+              errorMsg={vStep3.errors.answer}
+              isError={vStep3.touched.answer && vStep3.errors.answer}
+              onChange={(e) => {
+                vStep3.handleChange(e)
               }}
               disabled={isEdit}
             />

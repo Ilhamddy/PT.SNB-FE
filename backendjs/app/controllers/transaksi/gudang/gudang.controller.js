@@ -1417,58 +1417,7 @@ const hUpsertPesan = async (req, res, transaction) => {
     return newPemesanan
 }
 
-const hCreateOrUpdatePenerimaan = async (req, res, transaction) => {
-    let createdOrUpdatedPenerimaan
-    const bodyPenerimaan = req.body.penerimaan
-    if(!bodyPenerimaan) return null
-    let norecpenerimaan = req.body.norecpenerimaan
-    if(!norecpenerimaan){
-        norecpenerimaan = uuid.v4().substring(0, 32)
-        createdOrUpdatedPenerimaan = await t_penerimaanbarang.create({
-            norec: norecpenerimaan,
-            kdprofile: 0,
-            statusenabled: true,
-            no_terima: bodyPenerimaan.nomorterima || null,
-            no_order: bodyPenerimaan.nomorpo || null,
-            tglorder: new Date(bodyPenerimaan.tanggalterima),
-            tglterima: new Date(bodyPenerimaan.tanggalterima),
-            tgljatuhtempo: new Date(bodyPenerimaan.tanggaljatuhtempo),
-            objectrekananfk: bodyPenerimaan.namasupplier,
-            objectunitfk: bodyPenerimaan.unitpesan,
-            objectasalprodukfk: bodyPenerimaan.sumberdana,
-            keterangan: bodyPenerimaan.keterangan,
-            objectpegawaifk: req.idPegawai,
-            tglinput: new Date(),
-            tglupdate: new Date(),
-            objectpemesananbarangfk: req.body.norecpemesanan,
-            islogistik: req.body.islogistik
-        }, {
-            transaction: transaction
-        })
-    }else{
-        const [_, updated] = await t_penerimaanbarang.update({
-            no_terima: bodyPenerimaan.nomorterima || null,
-            no_order: bodyPenerimaan.nomorpo || null,
-            tglorder: new Date(bodyPenerimaan.tanggalterima),
-            tglterima: new Date(bodyPenerimaan.tanggalterima),
-            tgljatuhtempo: new Date(bodyPenerimaan.tanggaljatuhtempo),
-            objectrekananfk: bodyPenerimaan.namasupplier,
-            objectunitfk: bodyPenerimaan.unitpesan,
-            objectasalprodukfk: bodyPenerimaan.sumberdana,
-            keterangan: bodyPenerimaan.keterangan,
-            objectpegawaifk: req.idPegawai,
-            tglupdate: new Date()
-        }, {
-            where: {
-                norec: norecpenerimaan
-            },
-            returning: true,
-            transaction: transaction
-        })
-        createdOrUpdatedPenerimaan = updated[0]?.toJSON() || null;
-    }
-    return { createdOrUpdatedPenerimaan, norecpenerimaan }
-}
+
 
 const hUpsertRetur = async (req, res, transaction) => {
     let upsertedRetur
@@ -1646,6 +1595,59 @@ const hCreateKartuStokRetur = async (
     )
 
     return {createdKartuStokPenerimaan}
+}
+
+const hCreateOrUpdatePenerimaan = async (req, res, transaction) => {
+    let createdOrUpdatedPenerimaan
+    const bodyPenerimaan = req.body.penerimaan
+    if(!bodyPenerimaan) return null
+    let norecpenerimaan = req.body.norecpenerimaan
+    if(!norecpenerimaan){
+        norecpenerimaan = uuid.v4().substring(0, 32)
+        createdOrUpdatedPenerimaan = await t_penerimaanbarang.create({
+            norec: norecpenerimaan,
+            kdprofile: 0,
+            statusenabled: true,
+            no_terima: bodyPenerimaan.nomorterima || null,
+            no_order: bodyPenerimaan.nomorpo || null,
+            tglorder: new Date(bodyPenerimaan.tanggalterima),
+            tglterima: new Date(bodyPenerimaan.tanggalterima),
+            tgljatuhtempo: new Date(bodyPenerimaan.tanggaljatuhtempo),
+            objectrekananfk: bodyPenerimaan.namasupplier,
+            objectunitfk: bodyPenerimaan.unitpesan,
+            objectasalprodukfk: bodyPenerimaan.sumberdana,
+            keterangan: bodyPenerimaan.keterangan,
+            objectpegawaifk: req.idPegawai,
+            tglinput: new Date(),
+            tglupdate: new Date(),
+            objectpemesananbarangfk: req.body.norecpemesanan,
+            islogistik: req.body.islogistik
+        }, {
+            transaction: transaction
+        })
+    }else{
+        const [_, updated] = await t_penerimaanbarang.update({
+            no_terima: bodyPenerimaan.nomorterima || null,
+            no_order: bodyPenerimaan.nomorpo || null,
+            tglorder: new Date(bodyPenerimaan.tanggalterima),
+            tglterima: new Date(bodyPenerimaan.tanggalterima),
+            tgljatuhtempo: new Date(bodyPenerimaan.tanggaljatuhtempo),
+            objectrekananfk: bodyPenerimaan.namasupplier,
+            objectunitfk: bodyPenerimaan.unitpesan,
+            objectasalprodukfk: bodyPenerimaan.sumberdana,
+            keterangan: bodyPenerimaan.keterangan,
+            objectpegawaifk: req.idPegawai,
+            tglupdate: new Date()
+        }, {
+            where: {
+                norec: norecpenerimaan
+            },
+            returning: true,
+            transaction: transaction
+        })
+        createdOrUpdatedPenerimaan = updated[0]?.toJSON() || null;
+    }
+    return { createdOrUpdatedPenerimaan, norecpenerimaan }
 }
 
 const hCreateOrUpdateDetailPenerimaan = async (

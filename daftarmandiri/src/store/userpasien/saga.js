@@ -105,6 +105,7 @@ function* onSignUpUser({payload: {data, callback}}) {
         callback && callback()
     }catch(error){
         yield put(signUpUserError(error))
+        console.error(error)
         toast.error(error?.response?.msg || "error")
     }
 }

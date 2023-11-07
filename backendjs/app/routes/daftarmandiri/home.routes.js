@@ -47,4 +47,10 @@ export default function(app) {
     [],
     controller.getBerita
   )
+
+  app.get(
+    "/api/daftarmandiri/get-captcha",
+    [],
+    controller.getCaptcha
+  )
 };

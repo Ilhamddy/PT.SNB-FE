@@ -6,7 +6,7 @@ import pool from "../../config/dbcon.query";
 import queries from '../../queries/setting/mapsesions';
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
-import { pasienSignup } from "./authhelper";
+import { pasienSignup, tempCaptcha, initCaptcha } from "./authhelper";
 import { decrypt, encrypt } from "../../utils/encrypt"
 import queriesSDM from '../../queries/sumberDayaManusia/sumberDayaManusia.queries'
 import svgCaptcha from 'svg-captcha'
@@ -19,14 +19,6 @@ const UserPasien = db.users_pasien;
 const m_pasien = db.m_pasien
 
 const Op = db.Sequelize.Op;
-
-const initCaptcha = {
-  uuid: "",
-  answer: "",
-  expired: new Date(),
-}
-
-let tempCaptcha = []
 
 const signUpNew = async (req, res) => {
   const logger = res.locals.logger;
@@ -87,26 +79,7 @@ const signup = async (req, res) => {
     objectaccesmodulfk:req.body.roles
   })
     .then(user => {
-      // if (req.body.roles) {
-      //   Role.findAll({
-      //     where: {
-      //       id: req.body.roles
-      //     }
-      //   }).then(roles => {
-      //     user.setRoles(roles).then(() => {
-      //       // res.send({ message: "User was registered successfully!" });
-      //       res.status(200).send({
-      //         msg: 'User Berhasil Didaftarkan',
-      //         code: 200,
-      //         // data: tempres,
-      //         success: true
-      //       });
-      //     });
-      //   });
-      // } else {
-        // user role = 1
-        // user.setRoles([1]).then(() => {
-          // res.send({ message: "User was registered successfully!" });
+
           res.status(200).send({
             msg: 'User Berhasil Didaftarkan',
             code: 200,
@@ -280,62 +253,10 @@ const signinPasien = async (req, res) => {
   }
 }
 
-const getCaptcha = async (req, res) => {
-  const logger = res.locals.logger;
-  try{
-    tempCaptcha = tempCaptcha.filter(f => f.expired <= new Date())
-    const opt = {
-      width: 150, 
-      height: 100, 
-      fontSize: 20,
-      size: 10
-    }
-    const newCaptcha = svgCaptcha.create(opt)
-    const captchaObj = {
-      ...initCaptcha,
-      uuid: uuid.v4(),
-      answer: newCaptcha.text,
-      expired: new Date(+ new Date() + (2 * 60 * 60 * 3600)),
-    }
-    tempCaptcha.push(captchaObj)
-    const tempres = {
-      image: newCaptcha.data
-    };
-    res.status(200).send({
-      msg: 'Success',
-      code: 200,
-      data: tempres,
-      success: true
-    });
-  } catch (error) {
-    logger.error(error.message);
-    res.status(500).send({
-      msg: error.message,
-      code: 500,
-      data: error,
-      success: false
-    });
-  }
-}
-
-
-const hCheckCaptcha = (uuid, answer) => {
-  tempCaptcha = tempCaptcha.filter(f => f.expired <= new Date())
-  const captcha = tempCaptcha.find(f => f.uuid === uuid )
-  if(captcha){
-    if(captcha.answer === answer){
-      return [true, 401]
-    }
-    return [false, 403]
-  } else{
-    return [false, 403]
-  }
-}
 
 export default {
   signin,
   signup,
   signinPasien,
   signUpNew,
-  getCaptcha
 }
