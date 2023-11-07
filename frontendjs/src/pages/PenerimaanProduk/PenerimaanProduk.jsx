@@ -55,6 +55,7 @@ import {
   useSetNorecPenerimaan,
   InputProdukDetailRetur,
   ListDetail,
+  useCalculateRetur,
 } from './PenerimaanProdukKomponen'
 
 export const PenerimaanContext = createContext({
@@ -180,7 +181,8 @@ const PenerimaanProduk = ({ isLogistik, isRetur }) => {
       },
       detail: [],
       retur: [],
-      islogistik: isLogistik,
+      islogistik: !!isLogistik,
+      isRetur: !!isRetur,
     },
     validationSchema: Yup.object({
       penerimaan: Yup.object().shape({
@@ -204,6 +206,24 @@ const PenerimaanProduk = ({ isLogistik, isRetur }) => {
        */
       const newVal = JSON.parse(JSON.stringify(values))
       newVal.detail = newVal.detail.map((valDetail) => {
+        const newValDetail = { ...valDetail }
+        newValDetail.subtotalproduk = strToNumber(newValDetail.subtotalproduk)
+        newValDetail.totalproduk = strToNumber(newValDetail.totalproduk)
+        newValDetail.diskonrupiah = strToNumber(newValDetail.diskonrupiah)
+        newValDetail.ppnrupiahproduk = strToNumber(newValDetail.ppnrupiahproduk)
+        newValDetail.hargasatuankecil = strToNumber(
+          newValDetail.hargasatuankecil
+        )
+        newValDetail.hargasatuanterima = strToNumber(
+          newValDetail.hargasatuanterima
+        )
+        newValDetail.diskonpersen = strToNumber(newValDetail.diskonpersen)
+        newValDetail.ppnpersenproduk = strToNumber(newValDetail.ppnpersenproduk)
+        newValDetail.konversisatuan = strToNumber(newValDetail.konversisatuan)
+        newValDetail.jumlahterima = strToNumber(newValDetail.jumlahterima)
+        return newValDetail
+      })
+      newVal.retur = newVal.retur.map((valDetail) => {
         const newValDetail = { ...valDetail }
         newValDetail.subtotalproduk = strToNumber(newValDetail.subtotalproduk)
         newValDetail.totalproduk = strToNumber(newValDetail.totalproduk)
@@ -271,14 +291,16 @@ const PenerimaanProduk = ({ isLogistik, isRetur }) => {
   const vDetailRetur = useFormik({
     initialValues: {
       ...initialDetailRetur(dateNow),
+      jumlahretur: '',
+      alasanretur: '',
     },
     validationSchema: Yup.object({
       produk: Yup.object().shape({
         idproduk: Yup.string().required('Produk harus diisi'),
         satuanjual: Yup.string().required('Satuan jual harus diisi'),
       }),
-      jumlahretur: Yup.string().required('Jumlah return harus diisi'),
-      alasanretur: Yup.string().required('Jumlah return harus diisi'),
+      jumlahretur: Yup.string().required('Jumlah retur harus diisi'),
+      alasanretur: Yup.string().required('Alasan retur harus diisi'),
     }),
     onSubmit: (values, { resetForm }) => {
       const newReturValues = [...validation.values.retur]
@@ -338,35 +360,11 @@ const PenerimaanProduk = ({ isLogistik, isRetur }) => {
     handleChangeDetail('jumlahterima', newVal)
   }
 
-  let subtotal = validation.values.detail.reduce(
-    (prev, curr) => prev + strToNumber(curr.subtotalproduk),
-    0
-  )
-  subtotal =
-    'Rp' + subtotal.toLocaleString('id-ID', { maximumFractionDigits: 5 })
-
-  let ppn = validation.values.detail.reduce(
-    (prev, curr) => prev + strToNumber(curr.ppnrupiahproduk),
-    0
-  )
-  ppn = 'Rp' + ppn.toLocaleString('id-ID', { maximumFractionDigits: 5 })
-
-  let diskon = validation.values.detail.reduce(
-    (prev, curr) => prev + strToNumber(curr.diskonrupiah),
-    0
-  )
-  diskon = 'Rp' + diskon.toLocaleString('id-ID', { maximumFractionDigits: 5 })
-
-  let total = validation.values.detail.reduce(
-    (prev, curr) => prev + strToNumber(curr.totalproduk),
-    0
-  )
-  total = 'Rp' + total.toLocaleString('id-ID', { maximumFractionDigits: 5 })
-
   const refSatuanTerima = useGetKemasan(vDetail, detail)
   useGetData(isLogistik)
   useFillInitialInput(validation)
   useCalculatePenerimaan(vDetail, detail)
+  useCalculateRetur(vDetailRetur, validation.values.detail)
   useSetNorecPenerimaan(validation)
 
   const isShowPesan =
@@ -412,21 +410,26 @@ const PenerimaanProduk = ({ isLogistik, isRetur }) => {
               detailPemesanan: detailPemesanan,
               detailPemesananPenerimaan: detailPemesananPenerimaan,
               validation: validation,
-              total: total,
-              ppn: ppn,
-              subtotal: subtotal,
-              diskon: diskon,
               isLogistik: isLogistik,
               vDetailRetur: vDetailRetur,
               isRetur: isRetur,
             }}
           >
-            <InputUmumTerima />
-            {isRetur && <ListBeforRetur />}
-            {isShowPesan && <ListPesan />}
-            {!isRetur ? <InputProdukDetail /> : <InputProdukDetailRetur />}
-            {!isRetur && <ListDetail />}
-            {isRetur && <ListAfterRetur />}
+            {isRetur ? (
+              <>
+                <InputUmumTerima />
+                <ListBeforRetur />
+                <InputProdukDetailRetur />
+                <ListAfterRetur />
+              </>
+            ) : (
+              <>
+                <InputUmumTerima />
+                {isShowPesan && <ListPesan />}
+                <InputProdukDetail />
+                <ListDetail />
+              </>
+            )}
           </PenerimaanContext.Provider>
         </Form>
       </Container>

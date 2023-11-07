@@ -68,10 +68,12 @@ export const ListDetail = () => {
             <DropdownMenu className="dropdown-menu-end">
               <DropdownItem
                 onClick={() => {
-                  console.log(row)
                   vDetail.setValues({
                     ...row,
                   })
+                  validation.values.detail = validation.values.detail.filter(
+                    (ret) => ret.nobatch !== row.nobatch
+                  )
                 }}
               >
                 <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
@@ -320,6 +322,9 @@ export const ListAfterRetur = () => {
                   vDetailRetur.setValues({
                     ...row,
                   })
+                  validation.values.retur = validation.values.retur.filter(
+                    (ret) => ret.nobatch !== row.nobatch
+                  )
                 }}
               >
                 <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
@@ -382,17 +387,35 @@ export const ListAfterRetur = () => {
       width: '100px',
     },
   ]
-  const {
-    vDetailRetur,
-    validation,
-    penerimaanTouched,
-    penerimaanErr,
-    total,
-    ppn,
-    subtotal,
-    diskon,
-  } = useContext(PenerimaanContext)
+  const { vDetailRetur, validation, penerimaanTouched, penerimaanErr } =
+    useContext(PenerimaanContext)
+
   const { norecpenerimaan } = useParams()
+  let subtotal = validation.values.retur.reduce(
+    (prev, curr) => prev + strToNumber(curr.subtotalproduk),
+    0
+  )
+  subtotal =
+    'Rp' + subtotal.toLocaleString('id-ID', { maximumFractionDigits: 5 })
+
+  let ppn = validation.values.retur.reduce(
+    (prev, curr) => prev + strToNumber(curr.ppnrupiahproduk),
+    0
+  )
+  ppn = 'Rp' + ppn.toLocaleString('id-ID', { maximumFractionDigits: 5 })
+
+  let diskon = validation.values.retur.reduce(
+    (prev, curr) => prev + strToNumber(curr.diskonrupiah),
+    0
+  )
+  diskon = 'Rp' + diskon.toLocaleString('id-ID', { maximumFractionDigits: 5 })
+
+  let total = validation.values.retur.reduce(
+    (prev, curr) => prev + strToNumber(curr.totalproduk),
+    0
+  )
+  total = 'Rp' + total.toLocaleString('id-ID', { maximumFractionDigits: 5 })
+
   return (
     <Card className="p-5">
       <Row className="mb-5">
@@ -415,7 +438,7 @@ export const ListAfterRetur = () => {
             placement="top"
             formTarget="form-input-penerimaan"
           >
-            {!!norecpenerimaan ? 'Edit' : 'Simpan'}
+            {'Retur Produk'}
           </Button>
           <Link to="/farmasi/gudang/penerimaan-produk-list">
             <Button type="button" className="btn" color="danger">
@@ -813,6 +836,7 @@ export const InputProdukDetail = () => {
                 satuanjual: e?.valuesatuanstandar || '',
               })
             }}
+            isClearEmpty
             value={detail.produk.idproduk}
             className={`input ${detailErr?.produk ? 'is-invalid' : ''}`}
           />
@@ -1337,8 +1361,12 @@ export const InputProdukDetail = () => {
 }
 
 export const InputProdukDetailRetur = () => {
-  const { vDetailRetur, handleChangeDetail, handleChangeJumlahTerima } =
-    useContext(PenerimaanContext)
+  const {
+    vDetailRetur,
+    handleChangeDetail,
+    handleChangeJumlahTerima,
+    validation,
+  } = useContext(PenerimaanContext)
   const { produk, satuanProduk, kemasanProduk } = useSelector((state) => ({
     produk: state.Master.comboPenerimaanBarangGet?.data?.produk || [],
     satuanProduk:
@@ -1346,7 +1374,7 @@ export const InputProdukDetailRetur = () => {
     kemasanProduk: state.Gudang.kemasanFromProdukGet?.data?.satuan || [],
   }))
   const detail = vDetailRetur.values
-  const detailErr = vDetailRetur.error
+  const detailErr = vDetailRetur.errors
   const detailTouched = vDetailRetur.touched
   const handleChangeJumlahRetur = (e) => {
     let newVal = onChangeStrNbr(e.target.value, vDetailRetur.values.jumlahretur)
@@ -1373,6 +1401,7 @@ export const InputProdukDetailRetur = () => {
             name="produk"
             options={produk}
             isDisabled
+            isClearEmpty
             onChange={(e) => {
               handleChangeDetail('produk', {
                 idproduk: e?.value || '',
@@ -1451,7 +1480,7 @@ export const InputProdukDetailRetur = () => {
             type="text"
             value={detail.jumlahretur}
             onChange={handleChangeJumlahRetur}
-            invalid={detailTouched?.jumlahterima && !!detailErr?.jumlahretur}
+            invalid={detailTouched?.jumlahretur && !!detailErr?.jumlahretur}
           />
           {detailTouched?.jumlahretur && !!detailErr?.jumlahretur && (
             <FormFeedback type="invalid">
@@ -1512,7 +1541,17 @@ export const InputProdukDetailRetur = () => {
           </Button>
         </Col>
         <Col lg="auto">
-          <Button type="button" className="btn" color="danger">
+          <Button
+            type="button"
+            className="btn"
+            color="danger"
+            onClick={() => {
+              vDetailRetur.resetForm()
+              validation.values.retur = validation.values.retur.filter(
+                (ret) => ret.nobatch !== vDetailRetur.values.nobatch
+              )
+            }}
+          >
             Hapus
           </Button>
         </Col>
@@ -2003,6 +2042,68 @@ export const useCalculatePenerimaan = (vDetail, detail) => {
     detail.ppnpersenproduk,
     detail.ppnrupiahproduk,
     vDetail.setFieldValue,
+  ])
+}
+
+// Perhitungan satuan jumlah terima, harga, Diskon, dan ppn
+// saat jumlah, terima, harga sudah diinput akan otomatis menghitung total harga
+export const useCalculateRetur = (vDetailRetur, details) => {
+  const retur = vDetailRetur.values
+  useEffect(() => {
+    const setFF = vDetailRetur.setFieldValue
+    const detail = details.find(
+      (detail) =>
+        detail.produk.idproduk === retur.produk.idproduk &&
+        detail.nobatch === retur.nobatch
+    )
+    if (!detail) return
+
+    const ratio =
+      strToNumber(retur.jumlahretur) / strToNumber(retur.jumlahterima)
+    const newHargaSatuanTerima = strToNumber(detail.hargasatuanterima) * ratio
+    const newSubtotalProduk = strToNumber(detail.subtotalproduk) * ratio
+    const newDiskonRupiah = strToNumber(detail.diskonrupiah) * ratio
+    const newDiskonPersen = detail.diskonpersen
+    const newPPNRupiah = strToNumber(detail.ppnrupiahproduk) * ratio
+    const newPPNPersen = detail.ppnpersenproduk
+    const newTotalProduk = strToNumber(detail.totalproduk) * ratio
+    setFF(
+      'hargasatuanterima',
+      onChangeStrNbr(newHargaSatuanTerima, retur.hargasatuanterima)
+    )
+    setFF(
+      'subtotalproduk',
+      onChangeStrNbr(newSubtotalProduk, retur.subtotalproduk)
+    )
+    setFF('diskonrupiah', onChangeStrNbr(newDiskonRupiah, retur.diskonrupiah))
+    setFF('diskonpersen', onChangeStrNbr(newDiskonPersen, retur.diskonpersen))
+    setFF(
+      'ppnrupiahproduk',
+      onChangeStrNbr(newPPNRupiah, retur.ppnrupiahproduk)
+    )
+    setFF(
+      'ppnpersenproduk',
+      onChangeStrNbr(newPPNPersen, retur.ppnpersenproduk)
+    )
+    setFF('totalproduk', onChangeStrNbr(newTotalProduk, retur.totalproduk))
+  }, [
+    retur.hargasatuankecil,
+    retur.hargasatuanterima,
+    retur.checkedharga,
+    retur.konversisatuan,
+    retur.jumlahretur,
+    retur.jumlahterima,
+    retur.subtotalproduk,
+    retur.diskonrupiah,
+    retur.diskonpersen,
+    retur.totalproduk,
+    retur.checkeddiskon,
+    retur.ppnpersenproduk,
+    retur.ppnrupiahproduk,
+    vDetailRetur.setFieldValue,
+    retur.nobatch,
+    retur.produk.idproduk,
+    details,
   ])
 }
 
