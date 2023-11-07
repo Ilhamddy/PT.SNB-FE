@@ -17,48 +17,24 @@ export default (sequelize, Sequelize) => {
         statusenabled: {
             type: Sequelize.BOOLEAN,
         },
-        no_terima: {
-            type: Sequelize.STRING,
+        objectpenerimaanbarangfk: {
+            type: Sequelize.CHAR(32),
         },
-        no_order: {
-            type: Sequelize.STRING,
-        },
-        tglorder: {
+        tglretur: {
             type: Sequelize.DATE,
-        },
-        tglterima: {
-            type: Sequelize.DATE,
-        },
-        tgljatuhtempo: {
-            type: Sequelize.DATE,
-        },
-        objectrekananfk: {
-            type: Sequelize.INTEGER,
-        },
-        objectunitfk: {
-            type: Sequelize.INTEGER,
-        },
-        objectasalprodukfk: {
-            type: Sequelize.INTEGER,
-        },
-        keterangan: {
-            type: Sequelize.CHAR(100),
         },
         objectpegawaifk: {
             type: Sequelize.INTEGER,
         },
         tglinput: {
-            type: Sequelize.DATE,
+            type: Sequelize.DATE
         },
         tglupdate: {
-            type: Sequelize.DATE,
-        },
-        objectpemesananbarangfk: {
-            type: Sequelize.CHAR(32),
+            type: Sequelize.DATE
         },
         islogistik: {
-            type: Sequelize.BOOLEAN,
-        },
+            type: Sequelize.BOOLEAN
+        }
     }, {
         tableName: "t_penerimaanbarang", // relation "user" does not exist
         createdAt: false,
