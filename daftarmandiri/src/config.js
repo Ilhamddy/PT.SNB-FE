@@ -9,6 +9,6 @@ module.exports = {
     },
     api: {
       API_URL: process.env.REACT_APP_API_URL,
-      IV_LENGTH: Number(process.env.REACT_APP_IV_LENGTH)
+      IV_LENGTH: Number(process.env.REACT_APP_IV_LENGTH || 16)
     }
 };

@@ -86,6 +86,7 @@ export const hCheckCaptcha = (uuid, answer) => {
     const captcha = tempCaptcha.find(f => f.uuid === uuid )
     if(captcha){
       if(captcha.answer === answer){
+        tempCaptcha = tempCaptcha.filter(f => f.uuit !== uuid)
         return {correct: true, code: 200}
       }
       return {correct: false, code: 403}

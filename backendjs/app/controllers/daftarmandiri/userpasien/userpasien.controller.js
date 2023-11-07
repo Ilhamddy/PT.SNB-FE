@@ -59,7 +59,10 @@ const upsertPasien = async (req, res) => {
             datapasien: dataPasien,
             user: user
         };
-        res.status(200).send(tempres);
+
+        const data = encrypt(tempres, bodyReq.clientSecret || userPasien.clientsecret)
+
+        res.status(200).send(data);
     } catch (error) {
         logger.error(error);
         res.status(500).send({
