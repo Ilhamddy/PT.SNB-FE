@@ -34,4 +34,5 @@ export default function(app) {
   )
 
   app.post("/api/auth/signin", controller.signin);
+
 };

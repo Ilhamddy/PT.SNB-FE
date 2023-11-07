@@ -1173,7 +1173,7 @@ const createOrUpdatePemesanan = async (req, res) => {
             success: true
         });
     } catch (error) {
-        logger.error(error);
+        error.errors.map(e => logger.error(e.message)) 
         res.status(500).send({
             msg: error.message,
             code: 500,
@@ -1322,7 +1322,6 @@ export default {
 }
 
 const hCreatePesanDetail = async (req, res, transaction, {newPemesanan}) => {
-    const norec = uuid.v4().substring(0, 32)
     const allDetail = req.body.detail || []
     const norecpesan = req.body.norecpesan 
     let detailPesan = []
@@ -1344,6 +1343,7 @@ const hCreatePesanDetail = async (req, res, transaction, {newPemesanan}) => {
     detailPesan = await Promise.all(
         allDetail.map(
             async (detail) => {
+                const norec = uuid.v4().substring(0, 32)
                 let detailPemesanan = await db.t_pemesananbarangdetail.create({
                     norec: norec,
                     statusenabled: true,

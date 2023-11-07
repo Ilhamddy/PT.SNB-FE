@@ -9,6 +9,9 @@ import bcrypt from "bcryptjs";
 import { pasienSignup } from "./authhelper";
 import { decrypt, encrypt } from "../../utils/encrypt"
 import queriesSDM from '../../queries/sumberDayaManusia/sumberDayaManusia.queries'
+import svgCaptcha from 'svg-captcha'
+import * as uuid from 'uuid'
+
 
 const User = db.user;
 const Role = db.role;
@@ -16,6 +19,14 @@ const UserPasien = db.users_pasien;
 const m_pasien = db.m_pasien
 
 const Op = db.Sequelize.Op;
+
+const initCaptcha = {
+  uuid: "",
+  answer: "",
+  expired: new Date(),
+}
+
+let tempCaptcha = []
 
 const signUpNew = async (req, res) => {
   const logger = res.locals.logger;
@@ -159,30 +170,11 @@ const signin = async (req, res) => {
       menuItems.push({id:element.reportdisplay,icon:element.icon,label:element.reportdisplay,link:'/#',stateVariables:false,subItems:filteredData})
     });
 
-    // const result2 = await pool.query(queries.getSesionsNew, [user.id]);
-    
-    // let resHead = [];
-    // for (let i = 0; i < result2.rows.length; i++) {
-    //   resHead.push(result2.rows[i].premissions.toUpperCase());
-    // }
-    // let resHead2 = [
-    //   {
-    //     name:result2?.rows[0]?.name || '',
-    //     permission:resHead
-    //   }
-    // ];
+
     let token = jwt.sign({ id: user.id, sesion: menuItems, idpegawai: user.objectpegawaifk, accesunit:result4.rows}, config.secret, {
       expiresIn: 86400 // 24 hours test
     });
-    // logger.infoImmediate("masuk")
 
-    // let authorities = [];
-    // const roles = await user.getRoles()
-    // for (let i = 0; i < roles.length; i++) {
-    //   authorities.push("ROLE_" + roles[i].name.toUpperCase());
-    // }
-
-    // logger.infoImmediate("masuk2")
     res.status(200).send({
       id: user.id,
       username: user.username,
@@ -288,9 +280,62 @@ const signinPasien = async (req, res) => {
   }
 }
 
+const getCaptcha = async (req, res) => {
+  const logger = res.locals.logger;
+  try{
+    tempCaptcha = tempCaptcha.filter(f => f.expired <= new Date())
+    const opt = {
+      width: 150, 
+      height: 100, 
+      fontSize: 20,
+      size: 10
+    }
+    const newCaptcha = svgCaptcha.create(opt)
+    const captchaObj = {
+      ...initCaptcha,
+      uuid: uuid.v4(),
+      answer: newCaptcha.text,
+      expired: new Date(+ new Date() + (2 * 60 * 60 * 3600)),
+    }
+    tempCaptcha.push(captchaObj)
+    const tempres = {
+      image: newCaptcha.data
+    };
+    res.status(200).send({
+      msg: 'Success',
+      code: 200,
+      data: tempres,
+      success: true
+    });
+  } catch (error) {
+    logger.error(error.message);
+    res.status(500).send({
+      msg: error.message,
+      code: 500,
+      data: error,
+      success: false
+    });
+  }
+}
+
+
+const hCheckCaptcha = (uuid, answer) => {
+  tempCaptcha = tempCaptcha.filter(f => f.expired <= new Date())
+  const captcha = tempCaptcha.find(f => f.uuid === uuid )
+  if(captcha){
+    if(captcha.answer === answer){
+      return [true, 401]
+    }
+    return [false, 403]
+  } else{
+    return [false, 403]
+  }
+}
+
 export default {
   signin,
   signup,
   signinPasien,
-  signUpNew
+  signUpNew,
+  getCaptcha
 }
