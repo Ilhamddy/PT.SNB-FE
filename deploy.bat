@@ -9,6 +9,7 @@ git merge develop || {
     git checkout develop
     exit /b 1
 }
+
 git pull && {
     git commit -am "Merge branch remote to local"
     git push && {
