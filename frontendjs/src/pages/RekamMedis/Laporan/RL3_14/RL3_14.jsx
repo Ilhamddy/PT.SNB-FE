@@ -9,15 +9,17 @@ import KontainerFlatpickr from '../../../../Components/KontainerFlatpickr/Kontai
 import DataTable from 'react-data-table-component'
 import LoadingTable from '../../../../Components/Table/LoadingTable';
 import {
-  getLaporanRl_3_6, kendaliDokumenResetForm
+  getLaporanRl_3_14, kendaliDokumenResetForm
 } from '../../../../store/actions';
+import { Grid, _ } from 'gridjs-react';
+import * as XLSX from 'xlsx';
 
 const RL3_14 = () => {
   document.title = "Laporan RL3.14";
   const dispatch = useDispatch();
   const { dataGrid, loadingGrid } = useSelector((state) => ({
-    dataGrid: state.KendaliDokumen.getLaporanRl_3_6.data,
-    loadingGrid: state.KendaliDokumen.getLaporanRl_3_6.loading,
+    dataGrid: state.KendaliDokumen.getLaporanRl_3_14.data,
+    loadingGrid: state.KendaliDokumen.getLaporanRl_3_14.loading,
   }));
   const [dateNow] = useState(() => new Date().toISOString())
   const vSetValidation = useFormik({
@@ -26,12 +28,12 @@ const RL3_14 = () => {
       end: '',
     },
     validationSchema: Yup.object({
-      start: Yup.string().required('Tanggal Awal harus diisi'),
-      end: Yup.string().required('Tanggal Akhir harus diisi'),
+      // start: Yup.string().required('Tanggal Awal harus diisi'),
+      // end: Yup.string().required('Tanggal Akhir harus diisi'),
     }),
     onSubmit: (values) => {
       console.log(values)
-      dispatch(getLaporanRl_3_6({
+      dispatch(getLaporanRl_3_14({
         start: values.start || dateNow,
         end: values.end || dateNow
       }));
@@ -39,55 +41,56 @@ const RL3_14 = () => {
   })
   const columns = [
     {
-      name: <span className="font-weight-bold fs-13">No</span>,
-      selector: (row) => row.no,
-      sortable: true,
-      width: '60px',
-      wrap: true,
+      name: 'No',
+      formatter: (cell) => _(<span>{cell}</span>),
+      pageTitle: 'test'
     },
     {
-      name: <span className="font-weight-bold fs-13">Spesialisasi</span>,
-      selector: (row) => row.spesialis,
-      sortable: true,
-      // width: '60px',
-      wrap: true,
+      name: 'spesialis',
+      // formatter: (cell) => _(<a href="/#"> {cell} </a>)
     },
     {
-      name: <span className="font-weight-bold fs-13">Total</span>,
-      selector: (row) => row.total,
-      sortable: true,
-      // width: '60px',
-      wrap: true,
-    },
-    {
-      name: <span className="font-weight-bold fs-13">Khusus</span>,
-      selector: (row) => row.khusus_count,
-      sortable: true,
-      // width: '60px',
-      wrap: true,
-    },
-    {
-      name: <span className="font-weight-bold fs-13">Besar</span>,
-      selector: (row) => row.besar_count,
-      sortable: true,
-      // width: '60px',
-      wrap: true,
-    },
-    {
-      name: <span className="font-weight-bold fs-13">Sedang</span>,
-      selector: (row) => row.sedang_count,
-      sortable: true,
-      // width: '60px',
-      wrap: true,
-    },
-    {
-      name: <span className="font-weight-bold fs-13">Kecil</span>,
-      selector: (row) => row.kecil_count,
-      sortable: true,
-      // width: '60px',
-      wrap: true,
-    },
+      name: 'Rujukan',
+      columns: [{
+        name: 'diterima_puskesmas'
+      }, {
+        name: 'diterima_faskeslain'
+      }, {
+        name: 'diterima_rs'
+      }, {
+        name: 'dikembalikan_kepuskesmas'
+      }, {
+        name: 'dikembalikan_kefaskeslain'
+      }, {
+        name: 'dikembalikan_kersasal'
+      }, {
+        name: 'diterima_faskeslain'
+      }, {
+        name: 'diterima_faskeslain'
+      }]
+    }, {
+      name: 'Di Rujuk',
+      columns: [{
+        name: 'dirujuk_pasienrujukan'
+      }, {
+        name: 'dirujuk_datangsendiri'
+      }, {
+        name: 'dirujuk_diterimakembali'
+      }]
+    }
   ]
+  const handleExport = () => {
+    const formattedData = dataGrid.map(item => Object.values(item));
+    const firstObject = dataGrid[0];
+    const header = Object.keys(firstObject);
+    console.log(header)
+    const sheetData = [header, ...formattedData];
+    const worksheet = XLSX.utils.aoa_to_sheet(sheetData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+
+    XLSX.writeFile(workbook, 'laporan_rl3_14.xlsx');
+  };
   return (
     <React.Fragment>
       <UiContent />
@@ -152,20 +155,33 @@ const RL3_14 = () => {
                   </Button>
                   <UncontrolledTooltip placement="top" target="tooltipTopPencarian" > Pencarian </UncontrolledTooltip>
                 </Col>
-                <Col lg={12}>
+                <Col lg={2}>
+                  <Button type="button" placement="top" id="tooltipTopPencarian" onClick={handleExport}>
+                    Export to Excel
+                  </Button>
+                </Col>
+                <Col lg={12} style={{ marginTop: '4px' }}>
                   <div id="table-gridjs">
-                    <DataTable
-                      fixedHeader
-                      fixedHeaderScrollHeight="330px"
+                    <Grid
+                      data={dataGrid}
                       columns={columns}
-                      pagination
-                      data={dataGrid || []}
-                      progressPending={loadingGrid}
-                      customStyles={tableCustomStyles}
-                      progressComponent={<LoadingTable />}
-                      // onRowClicked={(row) => handleClick(row)}
-                      pointerOnHover
-                      highlightOnHover
+                      sort={true}
+                      fixedHeader={true}
+                      pagination={{ enabled: true, limit: 5, }}
+                      style={{
+                        table: {
+                          border: '1px solid #ccc',
+                        },
+                        th: {
+                          'background-color': 'rgba(230, 126, 34)',
+                          color: '#000',
+                          'border-bottom': '1px solid #ccc',
+                          'text-align': 'center',
+                        },
+                        td: {
+                          'text-align': 'center',
+                        },
+                      }}
                     />
                   </div>
                 </Col>
@@ -191,5 +207,7 @@ const tableCustomStyles = {
     },
   },
 }
+
+
 
 export default RL3_14

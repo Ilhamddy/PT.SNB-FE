@@ -95,15 +95,21 @@ AND mp2.kodeexternal IN ('1', '2', '3', '4')
 AND tp.statusenabled = true
 GROUP BY ms.reportdisplay`
 
-const qLaporanRL3_14 =`select ms.reportdisplay as spesialis,
+const qLaporanRL3_14 =`select row_number() OVER (ORDER BY ms.reportdisplay) AS no,ms.reportdisplay as spesialis,
 SUM(CASE WHEN td.objectasalrujukanfk  = 1 THEN 1 ELSE 0 END) AS diterima_puskesmas,
 SUM(CASE WHEN td.objectasalrujukanfk  = 2 THEN 1 ELSE 0 END) AS diterima_rs,
 SUM(CASE WHEN td.objectasalrujukanfk in (3,4,5,6,7) THEN 1 ELSE 0 END) AS diterima_faskeslain,
 0 as dikembalikan_kepuskesmas,0 as dikembalikan_kefaskeslain, 0 as dikembalikan_kersasal,
+(SUM(case when td.objectstatuspulangfk=3 and td.objectasalrujukanfk in (1,2,3,6) THEN 1 ELSE 0 end)+
+SUM(case when td.objectstatuspulangrifk in (3,4) and td.objectasalrujukanfk in (1,2,3,6) THEN 1 ELSE 0 end)) as dirujuk_pasienrujukan,
+(SUM(case when td.objectstatuspulangfk=5 and td.objectasalrujukanfk in (1,2,3,6) THEN 1 ELSE 0 end)+
+SUM(case when td.objectstatuspulangrifk=5 and td.objectasalrujukanfk in (1,2,3,6) THEN 1 ELSE 0 end)) as dirujuk_datangsendiri,
+(SUM(case when td.objectstatuspulangfk=2 and td.objectasalrujukanfk in (1,2,3,6) THEN 1 ELSE 0 end)+
+SUM(case when td.objectstatuspulangrifk=2 and td.objectasalrujukanfk in (1,2,3,6) THEN 1 ELSE 0 end)) as dirujuk_diterimakembali
 from t_daftarpasien td 
 join m_pegawai mp on mp.id=td.objectdokterpemeriksafk
 join m_spesialisasi ms on ms.id=mp.objectspesialisasifk
-where td.statusenabled=true and td.tglpulang is not null
+where td.statusenabled=true and td.tglpulang between $1 and $2
 GROUP BY ms.reportdisplay
 order by ms.reportdisplay`
 
