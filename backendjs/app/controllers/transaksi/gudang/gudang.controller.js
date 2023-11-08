@@ -23,7 +23,10 @@ import {
     qGetStokOpnameStokUnit,
     qGetStokUnit,
     qGetUnitUser,
-    qGetDetailRetur 
+    qGetDetailRetur, 
+    qGetReturBarang,
+    qGetListRetur,
+    qGetDetailReturFromDetailPenerimaan
 } from "../../../queries/gudang/gudang.queries";
 import unitQueries, { daftarUnit } from "../../../queries/master/unit/unit.queries"
 import {
@@ -711,40 +714,35 @@ const getPenerimaan = async (req, res) => {
             (await pool.query(qGetPenerimaan, [norecpenerimaan])).rows[0]
         let detailPemesanan = 
             (await pool.query(qGetDetailPemesanan, [penerimaan.norecpemesanan])).rows
-        let detailRetur = 
-            (await pool.query(qGetDetailRetur, [norecpenerimaan])).rows
+        
+        detailPenerimaan = await Promise.all(
+            detailPenerimaan.map(
+                async (item) => {
+                    const allRetur = (await pool.query(qGetDetailReturFromDetailPenerimaan, [item.norecdetailpenerimaan])).rows
+                    const jumlahTotalRetur = allRetur.reduce((prev, ret) => prev + ret.jumlahretur, 0)
+                    return ({
+                        ...item,
+                        jumlahterima: item.jumlahterima.toLocaleString('id-ID', {maximumFractionDigit: 10}),
+                        hargasatuankecil: item.hargasatuankecil.toLocaleString('id-ID', {maximumFractionDigit: 10}),
+                        hargasatuanterima: item.hargasatuanterima.toLocaleString('id-ID', {maximumFractionDigit: 10}),
+                        diskonrupiah: item.diskonrupiah.toLocaleString('id-ID', {maximumFractionDigit: 10}),
+                        diskonpersen: item.diskonpersen.toLocaleString('id-ID', {maximumFractionDigit: 10}),
+                        diskonrupiah: item.diskonrupiah.toLocaleString('id-ID', {maximumFractionDigit: 10}), 
+                        ppnrupiahproduk: item.ppnrupiahproduk.toLocaleString('id-ID', {maximumFractionDigit: 10}),
+                        ppnpersenproduk: item.ppnpersenproduk.toLocaleString('id-ID', {maximumFractionDigit: 10}),
+                        subtotalproduk: item.subtotalproduk.toLocaleString('id-ID', {maximumFractionDigit: 10}),
+                        totalproduk: item.totalproduk.toLocaleString('id-ID', {maximumFractionDigit: 10}),
+                        allretur: allRetur,
+                        jumlahtotalretur: jumlahTotalRetur
+                    })
+                }
+            )
+        )
 
-        detailPenerimaan = detailPenerimaan.map((item) => ({
-            ...item,
-            jumlahterima: item.jumlahterima.toLocaleString('id-ID', {maximumFractionDigit: 10}),
-            hargasatuankecil: item.hargasatuankecil.toLocaleString('id-ID', {maximumFractionDigit: 10}),
-            hargasatuanterima: item.hargasatuanterima.toLocaleString('id-ID', {maximumFractionDigit: 10}),
-            diskonrupiah: item.diskonrupiah.toLocaleString('id-ID', {maximumFractionDigit: 10}),
-            diskonpersen: item.diskonpersen.toLocaleString('id-ID', {maximumFractionDigit: 10}),
-            diskonrupiah: item.diskonrupiah.toLocaleString('id-ID', {maximumFractionDigit: 10}), 
-            ppnrupiahproduk: item.ppnrupiahproduk.toLocaleString('id-ID', {maximumFractionDigit: 10}),
-            ppnpersenproduk: item.ppnpersenproduk.toLocaleString('id-ID', {maximumFractionDigit: 10}),
-            subtotalproduk: item.subtotalproduk.toLocaleString('id-ID', {maximumFractionDigit: 10}),
-            totalproduk: item.totalproduk.toLocaleString('id-ID', {maximumFractionDigit: 10}),
-        }))
-        detailRetur = detailRetur.map((item) => ({
-            ...item,
-            jumlahretur: item.jumlahretur.toLocaleString('id-ID', {maximumFractionDigit: 10}),
-            jumlahterima: item.jumlahterima.toLocaleString('id-ID', {maximumFractionDigit: 10}),
-            hargasatuankecil: item.hargasatuankecil.toLocaleString('id-ID', {maximumFractionDigit: 10}),
-            hargasatuanterima: item.hargasatuanterima.toLocaleString('id-ID', {maximumFractionDigit: 10}),
-            diskonrupiah: item.diskonrupiah.toLocaleString('id-ID', {maximumFractionDigit: 10}),
-            diskonpersen: item.diskonpersen.toLocaleString('id-ID', {maximumFractionDigit: 10}),
-            ppnrupiahproduk: item.ppnrupiahproduk.toLocaleString('id-ID', {maximumFractionDigit: 10}),
-            ppnpersenproduk: item.ppnpersenproduk.toLocaleString('id-ID', {maximumFractionDigit: 10}),
-            subtotalproduk: item.subtotalproduk.toLocaleString('id-ID', {maximumFractionDigit: 10}),
-            totalproduk: item.totalproduk.toLocaleString('id-ID', {maximumFractionDigit: 10}),
-        }))
         let tempres = {
             detailPenerimaan: detailPenerimaan,
             penerimaan: penerimaan,
             detailPemesanan: detailPemesanan,
-            detailRetur: detailRetur
         }
         res.status(200).send({
             data: tempres,
@@ -1291,6 +1289,85 @@ const getUnitUser = async (req, res) => {
 }
 
 
+const getListRetur = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        let listRetur = (await pool.query(qGetListRetur)).rows
+        listRetur = await Promise.all(
+            listRetur.map(async (retur) => {
+                const newRetur = { ...retur }
+                const listDetail = 
+                    (await pool.query(
+                        qGetDetailRetur, 
+                        [retur.norecretur]
+                        )).rows
+                newRetur.detailretur = listDetail
+                return newRetur
+            }
+        ))
+        const tempres = {
+            listRetur
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+const getRetur = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const {norecretur} = req.query
+        let detailRetur = 
+        (await pool.query(qGetDetailRetur, [norecretur])).rows
+        const retur = 
+        (await pool.query(qGetReturBarang, [norecretur])).rows[0]
+        detailRetur = detailRetur.map((item) => ({
+            ...item,
+            jumlahretur: item.jumlahretur.toLocaleString('id-ID', {maximumFractionDigit: 10}),
+            jumlahterima: item.jumlahterima.toLocaleString('id-ID', {maximumFractionDigit: 10}),
+            hargasatuankecil: item.hargasatuankecil.toLocaleString('id-ID', {maximumFractionDigit: 10}),
+            hargasatuanterima: item.hargasatuanterima.toLocaleString('id-ID', {maximumFractionDigit: 10}),
+            diskonrupiah: item.diskonrupiah.toLocaleString('id-ID', {maximumFractionDigit: 10}),
+            diskonpersen: item.diskonpersen.toLocaleString('id-ID', {maximumFractionDigit: 10}),
+            ppnrupiahproduk: item.ppnrupiahproduk.toLocaleString('id-ID', {maximumFractionDigit: 10}),
+            ppnpersenproduk: item.ppnpersenproduk.toLocaleString('id-ID', {maximumFractionDigit: 10}),
+            subtotalproduk: item.subtotalproduk.toLocaleString('id-ID', {maximumFractionDigit: 10}),
+            totalproduk: item.totalproduk.toLocaleString('id-ID', {maximumFractionDigit: 10}),
+        }))
+        const tempres = {
+            detailRetur: detailRetur,
+            retur: retur || null
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+
 export default {
     createOrUpdateProdukObat,
     getLainLain,
@@ -1318,7 +1395,10 @@ export default {
     createOrUpdatePemesanan,
     getPemesanan,
     getListPemesanan,
-    getUnitUser
+    getUnitUser,
+    getListRetur,
+    getRetur,
+
 }
 
 const hCreatePesanDetail = async (req, res, transaction, {newPemesanan}) => {
@@ -1437,7 +1517,8 @@ const hUpsertRetur = async (req, res, transaction) => {
             objectpegawaifk: req.idPegawai,
             tglinput: new Date(),
             tglupdate: new Date(),
-            islogistik: bodyPenerimaan.islogistik
+            islogistik: !!bodyPenerimaan.islogistik,
+            noretur: bodyPenerimaan.nomorretur
         }, {
             transaction: transaction
         })

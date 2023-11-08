@@ -79,7 +79,13 @@ import {
     GET_COMBO_KARTU_STOK_ERROR,
     GET_COMBO_STOK_UNIT,
     GET_COMBO_STOK_UNIT_SUCCESS,
-    GET_COMBO_STOK_UNIT_ERROR
+    GET_COMBO_STOK_UNIT_ERROR,
+    GET_LIST_RETUR,
+    GET_LIST_RETUR_ERROR,
+    GET_LIST_RETUR_SUCCESS,
+    GET_RETUR,
+    GET_RETUR_SUCCESS,
+    GET_RETUR_ERROR
 } from "./actionType";
 
 
@@ -485,5 +491,37 @@ export const getComboStokUnitSuccess = (data) => ({
 
 export const getComboStokUnitError = (data) => ({
     type: GET_COMBO_STOK_UNIT_ERROR,
+    payload: { data: data }
+})
+
+export const getListRetur = (queries) => ({
+    type: GET_LIST_RETUR,
+    payload: { queries: queries }
+})
+
+export const getListReturSuccess = (data) => ({
+    type: GET_LIST_RETUR_SUCCESS,
+    payload: { data: data }
+})
+
+export const getListReturError = (data) => ({
+    type: GET_LIST_RETUR_ERROR,
+    payload: { data: data }
+})
+
+export const getRetur = (queries) => ({
+    type: GET_RETUR,
+    payload: { queries: queries }
+})
+
+
+export const getReturSuccess = (data) => ({
+    type: GET_RETUR_SUCCESS,
+    payload: { data: data }
+})
+
+
+export const getReturError = (data) => ({
+    type: GET_RETUR_ERROR,
     payload: { data: data }
 })

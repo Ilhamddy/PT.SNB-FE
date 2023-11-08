@@ -40,6 +40,7 @@ import {
   penerimaanQueryGet,
   getPemesanan,
   upsertReturBarang,
+  getRetur,
 } from '../../store/gudang/action'
 import LoadingTable from '../../Components/Table/LoadingTable'
 import NoDataTable from '../../Components/Table/NoDataTable'
@@ -47,7 +48,7 @@ import {
   InputProdukDetail,
   InputUmumTerima,
   ListAfterRetur,
-  ListBeforRetur,
+  ListBeforeRetur,
   ListPesan,
   useCalculatePenerimaan,
   useFillInitialInput,
@@ -181,6 +182,7 @@ const PenerimaanProduk = ({ isLogistik, isRetur }) => {
         ppnrupiah: '',
         diskonrupiah: '',
         total: '',
+        nomorretur: '',
       },
       detail: [],
       retur: [],
@@ -200,6 +202,9 @@ const PenerimaanProduk = ({ isLogistik, isRetur }) => {
         ),
         sumberdana: Yup.string().required('Sumber Dana harus diisi'),
         keterangan: Yup.string().required('Keterangan harus diisi'),
+        nomorretur: isRetur
+          ? Yup.string().required('Retur harus diisi')
+          : Yup.string(),
       }),
       detail: Yup.array(),
     }),
@@ -262,8 +267,12 @@ const PenerimaanProduk = ({ isLogistik, isRetur }) => {
         )
       } else {
         dispatch(
-          upsertReturBarang(newVal, (newNorec) => {
+          upsertReturBarang(newVal, (data) => {
+            navigate(
+              `/farmasi/gudang/penerimaan-produk-retur/${norecpenerimaan}/${data?.upsertedRetur?.norec}`
+            )
             dispatch(penerimaanQueryGet({ norecpenerimaan: norecpenerimaan }))
+            dispatch(getRetur({ norecretur: data?.upsertedRetur?.norec }))
           })
         )
       }
@@ -303,6 +312,7 @@ const PenerimaanProduk = ({ isLogistik, isRetur }) => {
   const vDetailRetur = useFormik({
     initialValues: {
       ...initialDetailRetur(dateNow),
+      indexRetur: '',
       norecdetailretur: '',
       jumlahretur: '',
       alasanretur: '',
@@ -324,12 +334,18 @@ const PenerimaanProduk = ({ isLogistik, isRetur }) => {
           val.nobatch === newValues.nobatch
       )
       const existSameProduk = !!findSameProduk
+      const isEdit = newValues.indexRetur !== ''
       if (existSameProduk) {
         toast.error('Produk dengan batch sama sudah ada')
         return
       }
-      newValues.indexDetail = newReturValues.length
-      newReturValues.push(newValues)
+      if (isEdit) {
+        // edit
+        newReturValues[values.indexRetur] = newValues
+      } else {
+        newValues.indexRetur = newReturValues.length
+        newReturValues.push(newValues)
+      }
       resetForm()
       validation.setFieldValue('retur', newReturValues)
     },
@@ -425,7 +441,7 @@ const PenerimaanProduk = ({ isLogistik, isRetur }) => {
             {isRetur ? (
               <>
                 <InputUmumTerima />
-                <ListBeforRetur />
+                <ListBeforeRetur />
                 <InputProdukDetailRetur />
                 <ListAfterRetur />
               </>
