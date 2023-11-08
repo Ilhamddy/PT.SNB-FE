@@ -22,4 +22,12 @@ export default function (app) {
         [],
         controller.pullGit
     );
+
+    app.get(
+        "/api/coba/mencoba",
+        [],
+        (req, res) => {
+            res.send("Mencoba berhasil")
+        }
+    )
 }
