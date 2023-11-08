@@ -85,7 +85,10 @@ const getLogFile = async (req, res) => {
             })
         }
         
-        const lineLog = await getLog(targetLog, 40);
+        let lineLog = await getLog(targetLog, 40);
+        lineLog = lineLog.split('\n')
+        lineLog = lineLog.reverse()
+        lineLog = lineLog.join('\n')
         const log = lineLog.length
         const tempres = {
             lineLog
