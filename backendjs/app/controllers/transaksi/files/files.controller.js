@@ -85,7 +85,7 @@ const getLogFile = async (req, res) => {
             })
         }
         
-        let lineLog = await getLog(targetLog, 40);
+        let lineLog = await getLog(targetLog, 150);
         lineLog = lineLog.split('\n')
         lineLog = lineLog.reverse()
         lineLog = lineLog.join('\n')
