@@ -1,14 +1,7 @@
-cd %~dp0
-git checkout develop
-git checkout develop-deploy || {
-    echo Kesalahan checkout
-    exit /b 1
-}
-git merge develop || {
-    echo Kesalahan merge
-    git checkout develop
-    exit /b 1
-}
+cd %~dp0;
+git checkout develop;
+git checkout develop-deploy || {echo Kesalahan checkout3;exit /b 1;}
+git merge develop || {echo Kesalahan merge;git checkout develop;exit /b 1;}
 
 git pull && {
     git commit -am "Merge branch remote to local"
