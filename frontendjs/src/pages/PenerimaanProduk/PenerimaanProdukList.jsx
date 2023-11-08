@@ -258,39 +258,6 @@ const PenerimaanProdukList = ({ isLogistik }) => {
           </Row>
           <Row className="d-flex justify-content-between mb-3">
             <Col lg={'auto'} className="d-flex flex-row-reverse">
-              <h4 className="mb-0">Penerimaan</h4>
-            </Col>
-            <Col lg={'auto'} className="d-flex flex-row-reverse">
-              <Link
-                to={
-                  isLogistik
-                    ? '/logistik/gudang/penerimaan-produk'
-                    : '/farmasi/gudang/penerimaan-produk'
-                }
-              >
-                <Button color={'info'}>Tambah</Button>
-              </Link>
-            </Col>
-          </Row>
-          <Row>
-            <div id="table-gridjs">
-              <DataTable
-                fixedHeader
-                fixedHeaderScrollHeight="700px"
-                columns={columnsPenerimaan}
-                pagination
-                data={penerimaan?.data?.listpenerimaan || []}
-                progressPending={penerimaan?.loading || false}
-                customStyles={tableCustomStyles}
-                expandableRows
-                expandableRowsComponent={ExpandablePenerimaan}
-                progressComponent={<LoadingTable />}
-                noDataComponent={<NoDataTable dataName={'permintaan'} />}
-              />
-            </div>
-          </Row>
-          <Row className="d-flex justify-content-between mb-3">
-            <Col lg={'auto'} className="d-flex flex-row-reverse">
               <h4 className="mb-0">Pemesanan</h4>
             </Col>
             <Col lg={'auto'} className="d-flex flex-row-reverse">
@@ -317,6 +284,39 @@ const PenerimaanProdukList = ({ isLogistik }) => {
                 customStyles={tableCustomStyles}
                 expandableRows
                 expandableRowsComponent={ExpandablePemesanan}
+                progressComponent={<LoadingTable />}
+                noDataComponent={<NoDataTable dataName={'permintaan'} />}
+              />
+            </div>
+          </Row>
+          <Row className="d-flex justify-content-between mb-3">
+            <Col lg={'auto'} className="d-flex flex-row-reverse">
+              <h4 className="mb-0">Penerimaan</h4>
+            </Col>
+            <Col lg={'auto'} className="d-flex flex-row-reverse">
+              <Link
+                to={
+                  isLogistik
+                    ? '/logistik/gudang/penerimaan-produk'
+                    : '/farmasi/gudang/penerimaan-produk'
+                }
+              >
+                <Button color={'info'}>Tambah</Button>
+              </Link>
+            </Col>
+          </Row>
+          <Row>
+            <div id="table-gridjs">
+              <DataTable
+                fixedHeader
+                fixedHeaderScrollHeight="700px"
+                columns={columnsPenerimaan}
+                pagination
+                data={penerimaan?.data?.listpenerimaan || []}
+                progressPending={penerimaan?.loading || false}
+                customStyles={tableCustomStyles}
+                expandableRows
+                expandableRowsComponent={ExpandablePenerimaan}
                 progressComponent={<LoadingTable />}
                 noDataComponent={<NoDataTable dataName={'permintaan'} />}
               />
