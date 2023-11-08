@@ -18,7 +18,8 @@ import {
     GET_LAYANAN_FROM_MASTER_RL,
     DELETE_MAP_RL,
     UPDATE_PRINTED,
-    LAPORAN_RL_3_3_GET,LAPORAN_RL_3_6_GET,LAPORAN_RL_3_14_GET
+    LAPORAN_RL_3_3_GET,LAPORAN_RL_3_6_GET,LAPORAN_RL_3_14_GET,
+    LAPORAN_RL_3_15_GET
 } from "./actionType";
 
 import {
@@ -47,7 +48,8 @@ import {
     updatePrintedError,
     getLaporanRl_3_3Success,getLaporanRl_3_3Error,
     getLaporanRl_3_6Success,getLaporanRl_3_6Error,
-    getLaporanRl_3_14Success,getLaporanRl_3_14Error
+    getLaporanRl_3_14Success,getLaporanRl_3_14Error,
+    getLaporanRl_3_15Success,getLaporanRl_3_15Error
 } from "./action";
 
 import { toast } from 'react-toastify';
@@ -327,6 +329,20 @@ function* ongetLaporanRl_3_14({payload: {queries}}) {
 export function* watchongetLaporanRl_3_14(){
     yield takeEvery(LAPORAN_RL_3_14_GET, ongetLaporanRl_3_14)
 }
+
+function* ongetLaporanRl_3_15({payload: {queries}}) {
+    try{
+        const response = yield call(serviceRekammedis.getLaporanRl_3_15, queries);
+        yield put(getLaporanRl_3_15Success(response.data));
+    } catch (error) {
+        yield put(getLaporanRl_3_15Error(error));
+    }
+}
+
+export function* watchongetLaporanRl_3_15(){
+    yield takeEvery(LAPORAN_RL_3_15_GET, ongetLaporanRl_3_15)
+}
+
 function* kendaliDokumenSaga() {
     yield all([
         fork(watchonDaftarDokumenRekammedis),
@@ -347,7 +363,8 @@ function* kendaliDokumenSaga() {
         fork(watchonPriterUpdated),
         fork(watchongetLaporanRl_3_3),
         fork(watchongetLaporanRl_3_6),
-        fork(watchongetLaporanRl_3_14)
+        fork(watchongetLaporanRl_3_14),
+        fork(watchongetLaporanRl_3_15)
     ]);
 }
 

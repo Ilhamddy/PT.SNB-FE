@@ -113,6 +113,24 @@ where td.statusenabled=true and td.tglpulang between $1 and $2
 GROUP BY ms.reportdisplay
 order by ms.reportdisplay`
 
+const qLaporanRL3_15 =`SELECT row_number() OVER (ORDER BY mr.namarekanan) AS no,mr.namarekanan as cara_bayar,sum(case when mu.objectinstalasifk=2 then 1 else 0 end) as jumlah_pasien_Keluar,
+sum(case when mu.objectinstalasifk=4 then 1 else 0 end) as Laboratorium,
+sum(case when mu.objectinstalasifk=3 then 1 else 0 end) as Radiologi,
+sum(case when mu.objectinstalasifk not in (2,3,4) then 1 else 0 end) as Lain_lain,
+(sum(case when mu.objectinstalasifk=4 then 1 else 0 end)+
+sum(case when mu.objectinstalasifk=3 then 1 else 0 end)+
+sum(case when mu.objectinstalasifk not in (2,3,4) then 1 else 0 end)) as jumlah_pasien_rj
+FROM t_daftarpasien td
+JOIN m_rekanan mr ON td.objectpenjaminfk = mr.id
+join m_unit mu on mu.id=td.objectunitlastfk
+WHERE td.statusenabled = true AND td.tglpulang between  $1 and $2
+GROUP BY mr.namarekanan;`
+
+const qDetailLaporanRL3_5 =`SELECT mr.namarekanan, td.tglregistrasi ,td.tglpulang 
+FROM t_daftarpasien td
+JOIN m_rekanan mr ON td.objectpenjaminfk = mr.id
+WHERE td.statusenabled = true AND td.tglpulang between  $1 and $2`
+
 export default {
     qResult,
     qGetDetailFromJenisProduk,
@@ -121,5 +139,7 @@ export default {
     qLayananFromNoRL: qLayananFromMasterRL,
     qLaporanRL3_3,
     qLaporanRL3_6,
-    qLaporanRL3_14
+    qLaporanRL3_14,
+    qLaporanRL3_15,
+    qDetailLaporanRL3_5
 }
