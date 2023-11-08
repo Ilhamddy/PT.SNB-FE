@@ -39,6 +39,7 @@ import {
   penerimaanSaveOrUpdate,
   penerimaanQueryGet,
   getPemesanan,
+  getRetur,
 } from '../../store/gudang/action'
 import LoadingTable from '../../Components/Table/LoadingTable'
 import NoDataTable from '../../Components/Table/NoDataTable'
@@ -71,9 +72,6 @@ export const ListDetail = () => {
                   vDetail.setValues({
                     ...row,
                   })
-                  validation.values.detail = validation.values.detail.filter(
-                    (ret) => ret.nobatch !== row.nobatch
-                  )
                 }}
               >
                 <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
@@ -99,6 +97,7 @@ export const ListDetail = () => {
       sortable: true,
       width: '110px',
     },
+
     {
       name: <span className="font-weight-bold fs-13">Harga satuan kecil</span>,
       sortable: true,
@@ -297,6 +296,8 @@ export const ListDetail = () => {
 }
 
 export const ListAfterRetur = () => {
+  const { vDetailRetur, validation, penerimaanTouched, penerimaanErr } =
+    useContext(PenerimaanContext)
   /**
    * @type {import("react-data-table-component").TableColumn[]}
    */
@@ -322,9 +323,6 @@ export const ListAfterRetur = () => {
                   vDetailRetur.setValues({
                     ...row,
                   })
-                  validation.values.retur = validation.values.retur.filter(
-                    (ret) => ret.nobatch !== row.nobatch
-                  )
                 }}
               >
                 <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
@@ -387,8 +385,6 @@ export const ListAfterRetur = () => {
       width: '100px',
     },
   ]
-  const { vDetailRetur, validation, penerimaanTouched, penerimaanErr } =
-    useContext(PenerimaanContext)
 
   const { norecpenerimaan } = useParams()
   let subtotal = validation.values.retur.reduce(
@@ -565,7 +561,7 @@ export const ListAfterRetur = () => {
   )
 }
 
-export const ListBeforRetur = () => {
+export const ListBeforeRetur = () => {
   const { vDetailRetur, validation } = useContext(PenerimaanContext)
   const [dateNow] = useState(() => new Date().toISOString())
   /**
@@ -615,7 +611,13 @@ export const ListBeforRetur = () => {
     },
     {
       name: <span className="font-weight-bold fs-13">Qty Penerimaan</span>,
-      selector: (row) => row.jumlahterima,
+      selector: (row) => strToNumber(row.jumlahterima),
+      sortable: true,
+      width: '110px',
+    },
+    {
+      name: <span className="font-weight-bold fs-13">Qty Retur Lain</span>,
+      selector: (row) => row.jumlahtotalretur,
       sortable: true,
       width: '110px',
     },
@@ -731,8 +733,6 @@ export const ListPesan = () => {
       name: <span className="font-weight-bold fs-13">Qty Penerimaan</span>,
       selector: (row) => {
         const qtyPenerimaan = validation.values.detail.reduce((prev, curr) => {
-          console.log('curr', curr)
-          console.log('row', row)
           if (curr.produk.idproduk === row.produk.idproduk) {
             return prev + (curr.jumlahterima ? Number(curr.jumlahterima) : 0)
           }
@@ -1379,9 +1379,10 @@ export const InputProdukDetailRetur = () => {
   const handleChangeJumlahRetur = (e) => {
     let newVal = onChangeStrNbr(e.target.value, vDetailRetur.values.jumlahretur)
     let newJmlRetur = strToNumber(newVal)
-    const jmlTerima = strToNumber(detail.jumlahterima)
+    const jmlTerima =
+      strToNumber(detail.jumlahterima) - strToNumber(detail.jumlahtotalretur)
     if (newJmlRetur > jmlTerima) {
-      newVal = detail.jumlahterima
+      newVal = jmlTerima
     }
     vDetailRetur.setFieldValue('jumlahretur', newVal)
   }
@@ -1449,13 +1450,16 @@ export const InputProdukDetailRetur = () => {
             htmlFor={`jumlahterima`}
             className="form-label mt-2"
           >
-            Jumlah Beli
+            Jumlah Max Retur
           </Label>
           <Input
             id={`jumlahterima`}
             name={`jumlahterima`}
             type="text"
-            value={detail.jumlahterima}
+            value={
+              strToNumber(detail.jumlahterima) -
+              strToNumber(detail.jumlahtotalretur)
+            }
             onChange={handleChangeJumlahTerima}
             disabled
             invalid={detailTouched?.jumlahterima && !!detailErr?.jumlahterima}
@@ -1513,49 +1517,52 @@ export const InputProdukDetailRetur = () => {
           )}
         </Col>
       </Row>
-      <Row className="">
-        <Col lg="auto">
-          <Button
-            type="button"
-            onClick={() => {
-              vDetailRetur.handleSubmit()
-            }}
-            color="success"
-            placement="top"
-            formTarget="form-input-produk-detail"
-            id="tooltipTop"
-          >
-            {!vDetailRetur.values.indexDetail ? 'Tambah' : 'Edit'}
-          </Button>
-        </Col>
-        <Col lg="auto">
-          <Button
-            type="button"
-            className="btn"
-            color="warning"
-            onClick={() => {
-              vDetailRetur.resetForm()
-            }}
-          >
-            Batal
-          </Button>
-        </Col>
-        <Col lg="auto">
-          <Button
-            type="button"
-            className="btn"
-            color="danger"
-            onClick={() => {
-              vDetailRetur.resetForm()
-              validation.values.retur = validation.values.retur.filter(
-                (ret) => ret.nobatch !== vDetailRetur.values.nobatch
-              )
-            }}
-          >
-            Hapus
-          </Button>
-        </Col>
-      </Row>
+      <div className="d-flex justify-content-between mt-3">
+        <div></div>
+        <Row className="">
+          <Col lg="auto">
+            <Button
+              type="button"
+              onClick={() => {
+                vDetailRetur.handleSubmit()
+              }}
+              color="success"
+              placement="top"
+              formTarget="form-input-produk-detail"
+              id="tooltipTop"
+            >
+              {vDetailRetur.values.indexRetur === '' ? 'Tambah' : 'Edit'}
+            </Button>
+          </Col>
+          <Col lg="auto">
+            <Button
+              type="button"
+              className="btn"
+              color="warning"
+              onClick={() => {
+                vDetailRetur.resetForm()
+              }}
+            >
+              Batal
+            </Button>
+          </Col>
+          <Col lg="auto">
+            <Button
+              type="button"
+              className="btn"
+              color="danger"
+              onClick={() => {
+                vDetailRetur.resetForm()
+                validation.values.retur = validation.values.retur.filter(
+                  (ret) => ret.nobatch !== vDetailRetur.values.nobatch
+                )
+              }}
+            >
+              Hapus
+            </Button>
+          </Col>
+        </Row>
+      </div>
     </Card>
   )
 }
@@ -1573,6 +1580,7 @@ export const InputUmumTerima = () => {
     penerimaanTouched,
     penerimaanErr,
     handleChangePenerimaan,
+    isRetur,
   } = useContext(PenerimaanContext)
   return (
     <Card className="p-5">
@@ -1830,6 +1838,38 @@ export const InputUmumTerima = () => {
             </FormFeedback>
           )}
         </Col>
+        {isRetur && (
+          <>
+            <Col lg={1}>
+              <Label
+                style={{ color: 'black' }}
+                htmlFor={`nomorretur`}
+                className="form-label mt-2"
+              >
+                No Retur
+              </Label>
+            </Col>
+            <Col lg={3}>
+              <Input
+                id={`nomorretur`}
+                name={`nomorretur`}
+                type="text"
+                value={penerimaan.nomorretur}
+                onChange={(e) => {
+                  handleChangePenerimaan('nomorretur', e.target.value || '')
+                }}
+                invalid={
+                  penerimaanTouched?.nomorretur && !!penerimaanErr?.nomorretur
+                }
+              />
+              {penerimaanTouched?.nomorretur && !!penerimaanErr?.nomorretur && (
+                <FormFeedback type="invalid">
+                  <div>{penerimaanErr?.nomorretur}</div>
+                </FormFeedback>
+              )}
+            </Col>
+          </>
+        )}
       </Row>
     </Card>
   )
@@ -1883,7 +1923,7 @@ export const useSetNorecPenerimaan = (validation) => {
 }
 
 export const useGetData = (isLogistik) => {
-  const { norecpesan, norecpenerimaan } = useParams()
+  const { norecpesan, norecpenerimaan, norecretur } = useParams()
   const dispatch = useDispatch()
   useEffect(() => {
     dispatch(comboPenerimaanBarangGet({ isLogistik: isLogistik }))
@@ -1893,17 +1933,27 @@ export const useGetData = (isLogistik) => {
   }, [norecpesan, dispatch])
   useEffect(() => {
     norecpenerimaan &&
-      dispatch(penerimaanQueryGet({ norecpenerimaan: norecpenerimaan }))
-  }, [norecpenerimaan, dispatch])
+      dispatch(
+        penerimaanQueryGet({
+          norecpenerimaan: norecpenerimaan,
+          norecretur: norecretur,
+        })
+      )
+  }, [norecpenerimaan, norecretur, dispatch])
+  useEffect(() => {
+    dispatch(getRetur({ norecretur: norecretur }))
+  }, [norecretur, dispatch])
 }
 
 // saat awal, masukkan data2 dari api ke dalam input
 export const useFillInitialInput = (validation) => {
-  const { norecpenerimaan, norecpesan } = useParams()
-  const { penerimaanQuery, pemesanan } = useSelector(
+  const { norecpenerimaan, norecpesan, norecretur } = useParams()
+  const { penerimaanQuery, pemesanan, retur, detailRetur } = useSelector(
     (state) => ({
       penerimaanQuery: state.Gudang.penerimaanQueryGet?.data || null,
       pemesanan: state.Gudang.getPemesanan?.data?.pemesanan || null,
+      retur: state.Gudang.getRetur?.data?.retur || null,
+      detailRetur: state.Gudang.getRetur?.data?.detailRetur || null,
     }),
     shallowEqual
   )
@@ -1922,35 +1972,57 @@ export const useFillInitialInput = (validation) => {
         setFF('detail', detailPenerimaan || [])
       }
       // jika ada retur
-      if (penerimaanQuery.detailPenerimaan) {
-        const detailRetur = penerimaanQuery.detailRetur.map(
-          (values, index) => ({
-            ...values,
-            indexDetail: index,
-          })
-        )
-        setFF('retur', detailRetur || [])
+      if (detailRetur) {
+        let newDetailRetur = detailRetur.map((values, index) => ({
+          ...values,
+          indexRetur: index,
+        }))
+        setFF('retur', newDetailRetur || [])
+      }
+      let newPenerimaan = {
+        ...validation.initialValues.penerimaan,
       }
       if (penerimaanQuery.penerimaan) {
-        setFF('penerimaan', penerimaanQuery.penerimaan)
+        newPenerimaan = {
+          ...newPenerimaan,
+          ...penerimaanQuery.penerimaan,
+          indexRetur: '',
+        }
       }
+      if (retur && norecretur) {
+        newPenerimaan = {
+          ...newPenerimaan,
+          nomorretur: retur.nomorretur || '',
+        }
+      }
+      setFF('penerimaan', newPenerimaan)
     } else {
       // jika kosong atau pemesanan
       if (!isPesan) {
         setFF('detail', [])
         setFF('penerimaan', validation.initialValues.penerimaan)
       }
+      let newPenerimaan = {
+        ...validation.initialValues.penerimaan,
+      }
       if (isPesan && pemesanan) {
-        setFF('penerimaan', {
-          ...validation.initialValues.penerimaan,
+        newPenerimaan = {
+          ...newPenerimaan,
           namasupplier: pemesanan.namasupplier,
           nomorpo: pemesanan.nomorpo,
           tanggalpesan: pemesanan.tanggalpesan,
           unitpesan: pemesanan.unitpesan,
           sumberdana: pemesanan.sumberdana,
           keterangan: pemesanan.keterangan || '',
-        })
+        }
       }
+      if (retur && norecretur) {
+        newPenerimaan = {
+          ...newPenerimaan,
+          nomorretur: retur.nomorretur || '',
+        }
+      }
+      setFF('penerimaan', newPenerimaan)
     }
   }, [
     penerimaanQuery,
@@ -1959,6 +2031,9 @@ export const useFillInitialInput = (validation) => {
     norecpesan,
     validation.initialValues.penerimaan,
     pemesanan,
+    norecretur,
+    detailRetur,
+    retur,
   ])
 }
 

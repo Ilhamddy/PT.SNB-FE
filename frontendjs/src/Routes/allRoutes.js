@@ -643,6 +643,7 @@ const authProtectedRoutes = [
   { path: "/farmasi/gudang/list-produk", component: <ListProduk /> },
   { path: "/farmasi/gudang/penerimaan-produk", component: <PenerimaanProduk /> },
   { path: "/farmasi/gudang/penerimaan-produk-retur/:norecpenerimaan", component: <PenerimaanProduk isRetur />},
+  { path: "/farmasi/gudang/penerimaan-produk-retur/:norecpenerimaan/:norecretur", component: <PenerimaanProduk isRetur />},
   { path: "/farmasi/gudang/penerimaan-produk/:norecpenerimaan", component: <PenerimaanProduk /> },
   { path: "/farmasi/gudang/penerimaan-produk-pemesanan/:norecpesan", component: <PenerimaanProduk /> },
   { path: "/farmasi/gudang/penerimaan-produk-list", component: <PenerimaanProdukList /> },

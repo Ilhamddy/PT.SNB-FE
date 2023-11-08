@@ -34,6 +34,9 @@ export default (sequelize, Sequelize) => {
         },
         islogistik: {
             type: Sequelize.BOOLEAN
+        },
+        noretur: {
+            type: Sequelize.CHAR(40)
         }
     }, {
         tableName: "t_returbarang", // relation "user" does not exist

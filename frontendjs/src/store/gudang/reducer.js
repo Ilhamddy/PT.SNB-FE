@@ -80,7 +80,13 @@ import {
     GET_COMBO_KARTU_STOK_ERROR,
     GET_COMBO_STOK_UNIT,
     GET_COMBO_STOK_UNIT_SUCCESS,
-    GET_COMBO_STOK_UNIT_ERROR
+    GET_COMBO_STOK_UNIT_ERROR,
+    GET_LIST_RETUR,
+    GET_LIST_RETUR_SUCCESS,
+    GET_LIST_RETUR_ERROR,
+    GET_RETUR,
+    GET_RETUR_SUCCESS,
+    GET_RETUR_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -218,10 +224,20 @@ const INIT_STATE = {
         data: [],
         loading: false,
         error: null
+    },
+    getListRetur: {
+        data: [],
+        loading: false,
+        error: null
+    },
+    getRetur: {
+        data: [],
+        loading: false,
+        error: null
     }
 };
 
-const Registrasi = (state = INIT_STATE, action) => {
+const Gudang = (state = INIT_STATE, action) => {
     switch (action.type) {
         case GUDANG_RESET: {
             return {
@@ -1199,6 +1215,76 @@ const Registrasi = (state = INIT_STATE, action) => {
             }
         }
         
+        case GET_LIST_RETUR: {
+            return{
+                ...state,
+                getListRetur: {
+                    ...state.getListRetur,
+                    data: [],
+                    loading: false,
+                }
+            }
+        }
+
+        case GET_LIST_RETUR_SUCCESS: {
+            return{
+                ...state,
+                getListRetur: {
+                    ...state.getListRetur,
+                    data: action.payload.data,
+                    loading: false,
+                    error: null
+                }
+            }
+        }
+
+        case GET_LIST_RETUR_ERROR: {
+            return{
+                ...state,
+                getListRetur: {
+                    ...state.getListRetur,
+                    data: [],
+                    loading: false,
+                    error: action.payload
+                }
+            }
+        }
+
+        case GET_RETUR: {
+            return{
+                ...state,
+                getRetur: {
+                    ...state.getRetur,
+                    data: [],
+                    loading: true,
+                    error: null
+                }
+            }
+        }
+
+        case GET_RETUR_SUCCESS: {
+            return{
+                ...state,
+                getRetur: {
+                    ...state.getRetur,
+                    data: action.payload.data,
+                    loading: false,
+                    error: null
+                }
+            }
+        }
+
+        case GET_RETUR_ERROR: {
+            return{
+                ...state,
+                getRetur: {
+                    ...state.getRetur,
+                    data: [],
+                    loading: false,
+                    error: action.payload.data
+                }
+            }
+        }
 
 
         default: {
@@ -1207,4 +1293,4 @@ const Registrasi = (state = INIT_STATE, action) => {
     }
 };
 
-export default Registrasi;
+export default Gudang;

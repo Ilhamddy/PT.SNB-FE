@@ -27,7 +27,6 @@ const postImage = async (req, res) => {
             + extension
         );
     
-
         await db.sequelize.transaction(async (transaction) => {
             
         });
@@ -86,8 +85,9 @@ const getLogFile = async (req, res) => {
                 });
             })
         }
+        const lineLog = await getLog(targetLog, 60);
         const tempres = {
-        
+            lineLog
         };
         res.status(200).send({
             msg: 'Success',
@@ -118,5 +118,6 @@ const createFormattedDate = () => {
 }
 
 export default {
-    postImage
+    postImage,
+    getLogFile
 }

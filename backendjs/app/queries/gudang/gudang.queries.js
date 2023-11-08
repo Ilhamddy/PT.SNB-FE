@@ -133,6 +133,7 @@ SELECT
     tpbd.ed AS tanggaled,
     tpbd.nobatch AS nobatch,
     tpbd.subtotal AS subtotalproduk,
+    tpbd.jumlahkonversi AS jumlahkonversi,
     tpbd.total AS totalproduk
 FROM t_penerimaanbarangdetail tpbd
     JOIN m_produk mp ON mp.id = tpbd.objectprodukfk
@@ -144,7 +145,6 @@ WHERE tpbd.objectpenerimaanbarangfk = $1
 
 const qGetPenerimaanFE = `
 SELECT
-    trb.norec AS norecretur,
     tpb.norec AS norecpenerimaan,
     tpb.no_terima AS nomorterima,
     tpb.tglterima AS tanggalterima,
@@ -163,7 +163,6 @@ SELECT
     '' AS diskonrupiah,
     '' AS total
 FROM t_penerimaanbarang tpb
-    LEFT JOIN t_returbarang trb ON trb.objectpenerimaanbarangfk = tpb.norec
     JOIN m_rekanan mr ON mr.id = tpb.objectrekananfk
     JOIN m_unit mu ON mu.id = tpb.objectunitfk
 `
@@ -383,8 +382,9 @@ FROM t_pemesananbarangdetail tpbd
 WHERE tpbd.objectpemesananbarangfk = $1
 `
 
-const qGetDetailRetur = `
+const qGetDetailReturObj = `
 SELECT
+    trbd.objectreturbarangfk AS norecretur,
     trbd.norec AS norecdetailretur,
     tpbd.norec AS norecdetailpenerimaan,
     json_build_object(
@@ -415,7 +415,44 @@ FROM t_returbarangdetail trbd
     LEFT JOIN m_satuan ms ON ms.id = tpbd.objectsatuanfk
     JOIN m_satuan msp ON msp.id = mp.objectsatuanstandarfk
     JOIN m_satuan msk ON msk.id = tpbd.objectsatuanfk
-WHERE tpbd.objectpenerimaanbarangfk = $1
+`
+
+const qGetDetailReturFromDetailPenerimaan = qGetDetailReturObj + `
+WHERE $1 = trbd.objectpenerimaanbarangdetailfk
+`
+
+const qGetDetailRetur = qGetDetailReturObj + `
+WHERE trbd.objectreturbarangfk = $1
+`
+
+const qGetReturBarangObj = `
+SELECT
+    trb.norec AS norecretur,
+    trb.noretur AS nomorretur,
+    trb.tglretur AS tanggalretur,
+    tpb.objectrekananfk AS namasupplier,
+    mr.reportdisplay AS namasupplierstr,
+    tpb.norec AS norecpenerimaan,
+    tpb.no_terima AS nomorterima,
+    tpb.no_order AS nomorpo,
+    tpb.tglterima AS tanggalterima,
+    tpb.tglorder AS tanggalpesan,
+    tpb.objectunitfk AS unitpesan,
+    mu.namaunit AS unitpesanstr
+FROM t_returbarang trb
+    LEFT JOIN t_penerimaanbarang tpb ON trb.objectpenerimaanbarangfk = tpb.norec
+    LEFT JOIN m_rekanan mr ON mr.id = tpb.objectrekananfk
+    LEFT JOIN m_unit mu ON mu.id = tpb.objectunitfk
+`
+
+
+const qGetReturBarang = qGetReturBarangObj +  `
+WHERE trb.norec = $1
+`
+
+const qGetListRetur = qGetReturBarangObj + `
+WHERE trb.statusenabled = true
+ORDER BY trb.tglretur DESC
 `
 
 const qGetUnitUser = `
@@ -450,5 +487,8 @@ export {
     qGetDetailPemesanan,
     qGetListPemesanan,
     qGetUnitUser,
-    qGetDetailRetur
+    qGetDetailRetur,
+    qGetReturBarang,
+    qGetListRetur,
+    qGetDetailReturFromDetailPenerimaan
 }

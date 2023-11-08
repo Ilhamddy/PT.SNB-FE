@@ -55,7 +55,11 @@ import {
     getComboKartuStokSuccess,
     getComboKartuStokError,
     getComboStokUnitSuccess,
-    getComboStokUnitError
+    getComboStokUnitError,
+    getListReturSuccess,
+    getListReturError,
+    getReturSuccess,
+    getReturError
 } from "./action";
 
 
@@ -89,6 +93,8 @@ import {
     GET_UNIT_USER,
     GET_COMBO_KARTU_STOK,
     GET_COMBO_STOK_UNIT,
+    GET_LIST_RETUR,
+    GET_RETUR
 } from "./actionType";
 
 const serviceGudang = new ServiceGudang();
@@ -396,6 +402,25 @@ function* onGetComboStokUnit({payload: { queries }}){
     }
 }
 
+function* onGetListRetur({ payload: {queries}}){
+    try{
+        let response = yield call(serviceGudang.getListRetur, queries);
+        yield put(getListReturSuccess(response.data))
+    } catch (error) {
+        yield put(getListReturError(error))
+    }
+}
+
+function* onGetRetur({ payload: {queries}}){
+    try{
+        let response = yield call(serviceGudang.getRetur, queries);
+        yield put(getReturSuccess(response.data))
+    } catch (error) {
+        yield put(getReturError(error))
+    }
+}
+
+
 function* gudangSaga() {
     yield all([
         takeEvery(OBAT_GUDANG_SAVE, onSaveObatGudang),
@@ -424,7 +449,10 @@ function* gudangSaga() {
         takeEvery(GET_LIST_PEMESANAN, onGetListPemesanan),
         takeEvery(GET_UNIT_USER, onGetUnitUser),
         takeEvery(GET_COMBO_KARTU_STOK, onGetComboKartuStok),
-        takeEvery(GET_COMBO_STOK_UNIT, onGetComboStokUnit)
+        takeEvery(GET_COMBO_STOK_UNIT, onGetComboStokUnit),
+        takeEvery(GET_LIST_RETUR, onGetListRetur),
+        takeEvery(GET_RETUR, onGetRetur),
+
     ]);
 }
 

@@ -173,4 +173,16 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getUnitUser
     )
+
+    app.get(
+        "/api/transaksi/gudang/get-list-retur",
+        [authJwt.verifyToken],
+        controller.getListRetur
+    )
+
+    app.get(
+        "/api/transaksi/gudang/get-retur",
+        [authJwt.verifyToken],
+        controller.getRetur
+    )
 }
