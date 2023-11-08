@@ -11,6 +11,7 @@ import fs from 'fs';
 import path from "path";
 import readline from 'readline';
 import Stream from 'stream';
+import backwardStream from 'fs-backwards-stream'
 
 
 const postImage = async (req, res) => {
@@ -58,34 +59,36 @@ const getLogFile = async (req, res) => {
     const logger = res.locals.logger;
     try{
         const __dirname = path.resolve(path.dirname(''));
-        const folderLog = "./logs"
+        const folderLog = "./logs/"
         const fileName = createFormattedDate()
         const targetLog = path.join(__dirname, 
             folderLog 
             + fileName 
             + ".log"
         )
-        const getLog = (fileName, minLength) => {
-            let inStream = fs.createReadStream(fileName);
-            let outStream = new Stream;
-            return new Promise((resolve, reject)=> {
-                let rl = readline.createInterface(inStream, outStream);
-        
-                let lastLine = '';
-                rl.on('line', function (line) {
-                    if (line.length >= minLength) {
-                        lastLine = line;
+        const getLog = (fileName, length) => {
+            return new Promise((res, rej) => {
+                const lineLog = backwardStream(fileName)
+                lineLog.on('error', rej)
+                let string = ''
+                let total = 0
+                lineLog.on('data', (buf) => {
+                    if(total > length){
+                        res(string)
                     }
-                });
-        
-                rl.on('error', reject)
-        
-                rl.on('close', function () {
-                    resolve(lastLine)
-                });
+                    total++
+                    string = buf.toString().replace(/(?:\r\n|\r|\n)/g, '\n') + string
+                })
+                lineLog.on('end', () => {
+                    res(string)
+                })
             })
         }
-        const lineLog = await getLog(targetLog, 60);
+        
+        let lineLog = await getLog(targetLog, 150);
+        lineLog = lineLog.split('\n')
+        lineLog = lineLog.reverse()
+        lineLog = lineLog.join('\n')
         const tempres = {
             lineLog
         };

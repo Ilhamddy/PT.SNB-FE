@@ -348,6 +348,7 @@ import DaftarKamar from "../pages/DaftarKamar/DaftarKamar";
 import RoleAcces from "../pages/SysAdmin/RoleAcces/RoleAcces";
 import ViewerBed from "../pages/ViewerBed/ViewerBed";
 import PemesananBarang from "../pages/PemesananBarang/PemesananBarang";
+import Logger from "../pages/Logger/Logger";
 
 
 
@@ -703,6 +704,7 @@ const authProtectedRoutes = [
   { path: "/sysadmin/daftar-unit", component: <DaftarUnit />},
   { path: "/sysadmin/daftar-kamar", component: <DaftarKamar />},
   { path: "/sysadmin/role-acces", component: <RoleAcces />},
+  { path: "/logger", component: <Logger />}
 ];
 
 const publicRoutes = [
