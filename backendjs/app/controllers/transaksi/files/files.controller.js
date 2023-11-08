@@ -68,17 +68,25 @@ const getLogFile = async (req, res) => {
         )
         const getLog = (fileName, length) => {
             return new Promise((res, rej) => {
-                const lineLog = backwardStream(fileName, {
-                    end: length
-                })
+                const lineLog = backwardStream(fileName)
                 lineLog.on('error', rej)
+                let string = ''
+                let total = 0
                 lineLog.on('data', (buf) => {
-                    res(buf.toString().replace(/(?:\r\n|\r|\n)/g, '\n'))
+                    if(total > length){
+                        res(string)
+                    }
+                    total++
+                    string = buf.toString().replace(/(?:\r\n|\r|\n)/g, '\n') + string
+                })
+                lineLog.on('end', () => {
+                    res(string)
                 })
             })
         }
         
-        const lineLog = await getLog(targetLog, 150);
+        const lineLog = await getLog(targetLog, 10);
+        const log = lineLog.length
         const tempres = {
             lineLog
         };
