@@ -14,6 +14,7 @@ const Logger = () => {
     <div className="page-content page-penerimaan-barang">
       <Button onClick={() => dispatch(getLog())}>Refresh</Button>
       <div>{addLineBreak(log)}</div>
+      Selesai
     </div>
   )
 }
