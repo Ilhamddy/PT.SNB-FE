@@ -85,7 +85,7 @@ const getLogFile = async (req, res) => {
             })
         }
         
-        const lineLog = await getLog(targetLog, 10);
+        const lineLog = await getLog(targetLog, 40);
         const log = lineLog.length
         const tempres = {
             lineLog
