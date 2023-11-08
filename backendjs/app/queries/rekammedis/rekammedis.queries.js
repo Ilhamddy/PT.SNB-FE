@@ -126,7 +126,7 @@ join m_unit mu on mu.id=td.objectunitlastfk
 WHERE td.statusenabled = true AND td.tglpulang between  $1 and $2
 GROUP BY mr.namarekanan;`
 
-const qDetailLaporanRL3_5 =`SELECT mr.namarekanan, td.tglregistrasi ,td.tglpulang 
+const qDetailLaporanRL3_15 =`SELECT mr.namarekanan, td.tglregistrasi ,td.tglpulang 
 FROM t_daftarpasien td
 JOIN m_rekanan mr ON td.objectpenjaminfk = mr.id
 WHERE td.statusenabled = true AND td.tglpulang between  $1 and $2`
@@ -141,5 +141,5 @@ export default {
     qLaporanRL3_6,
     qLaporanRL3_14,
     qLaporanRL3_15,
-    qDetailLaporanRL3_5
+    qDetailLaporanRL3_15
 }
