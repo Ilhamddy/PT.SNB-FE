@@ -384,6 +384,7 @@ WHERE tpbd.objectpemesananbarangfk = $1
 
 const qGetDetailReturObj = `
 SELECT
+    trbd.objectreturbarangfk AS norecretur,
     trbd.norec AS norecdetailretur,
     tpbd.norec AS norecdetailpenerimaan,
     json_build_object(

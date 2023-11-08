@@ -706,7 +706,7 @@ const upsertReturBarang = async (req, res) => {
 const getPenerimaan = async (req, res) => {
     const logger = res.locals.logger
     try{
-        const {norecpenerimaan} = req.query
+        const {norecpenerimaan, norecretur} = req.query
         if(!norecpenerimaan) throw Error("norecpenerimaan tidak boleh kosong")
         let detailPenerimaan = 
             (await pool.query(qGetDetailPenerimaan, [norecpenerimaan])).rows
@@ -718,7 +718,8 @@ const getPenerimaan = async (req, res) => {
         detailPenerimaan = await Promise.all(
             detailPenerimaan.map(
                 async (item) => {
-                    const allRetur = (await pool.query(qGetDetailReturFromDetailPenerimaan, [item.norecdetailpenerimaan])).rows
+                    let allRetur = (await pool.query(qGetDetailReturFromDetailPenerimaan, [item.norecdetailpenerimaan])).rows
+                    allRetur = allRetur.filter(f => f.norecretur !== norecretur)
                     const jumlahTotalRetur = allRetur.reduce((prev, ret) => prev + ret.jumlahretur, 0)
                     return ({
                         ...item,
@@ -1296,6 +1297,7 @@ const getListRetur = async (req, res) => {
         listRetur = await Promise.all(
             listRetur.map(async (retur) => {
                 const newRetur = { ...retur }
+                
                 const listDetail = 
                     (await pool.query(
                         qGetDetailRetur, 
@@ -1333,19 +1335,28 @@ const getRetur = async (req, res) => {
         (await pool.query(qGetDetailRetur, [norecretur])).rows
         const retur = 
         (await pool.query(qGetReturBarang, [norecretur])).rows[0]
-        detailRetur = detailRetur.map((item) => ({
-            ...item,
-            jumlahretur: item.jumlahretur.toLocaleString('id-ID', {maximumFractionDigit: 10}),
-            jumlahterima: item.jumlahterima.toLocaleString('id-ID', {maximumFractionDigit: 10}),
-            hargasatuankecil: item.hargasatuankecil.toLocaleString('id-ID', {maximumFractionDigit: 10}),
-            hargasatuanterima: item.hargasatuanterima.toLocaleString('id-ID', {maximumFractionDigit: 10}),
-            diskonrupiah: item.diskonrupiah.toLocaleString('id-ID', {maximumFractionDigit: 10}),
-            diskonpersen: item.diskonpersen.toLocaleString('id-ID', {maximumFractionDigit: 10}),
-            ppnrupiahproduk: item.ppnrupiahproduk.toLocaleString('id-ID', {maximumFractionDigit: 10}),
-            ppnpersenproduk: item.ppnpersenproduk.toLocaleString('id-ID', {maximumFractionDigit: 10}),
-            subtotalproduk: item.subtotalproduk.toLocaleString('id-ID', {maximumFractionDigit: 10}),
-            totalproduk: item.totalproduk.toLocaleString('id-ID', {maximumFractionDigit: 10}),
-        }))
+        detailRetur = await Promise.all(
+            detailRetur.map( 
+                async (item) => {
+                    let allRetur = (await pool.query(qGetDetailReturFromDetailPenerimaan, [item.norecdetailpenerimaan])).rows
+                    allRetur = allRetur.filter(f => f.norecretur !== norecretur)
+                    const jumlahTotalRetur = allRetur.reduce((prev, ret) => prev + ret.jumlahretur, 0)
+                    return ({
+                    ...item,
+                        jumlahretur: item.jumlahretur.toLocaleString('id-ID', {maximumFractionDigit: 10}),
+                        jumlahterima: item.jumlahterima.toLocaleString('id-ID', {maximumFractionDigit: 10}),
+                        hargasatuankecil: item.hargasatuankecil.toLocaleString('id-ID', {maximumFractionDigit: 10}),
+                        hargasatuanterima: item.hargasatuanterima.toLocaleString('id-ID', {maximumFractionDigit: 10}),
+                        diskonrupiah: item.diskonrupiah.toLocaleString('id-ID', {maximumFractionDigit: 10}),
+                        diskonpersen: item.diskonpersen.toLocaleString('id-ID', {maximumFractionDigit: 10}),
+                        ppnrupiahproduk: item.ppnrupiahproduk.toLocaleString('id-ID', {maximumFractionDigit: 10}),
+                        ppnpersenproduk: item.ppnpersenproduk.toLocaleString('id-ID', {maximumFractionDigit: 10}),
+                        subtotalproduk: item.subtotalproduk.toLocaleString('id-ID', {maximumFractionDigit: 10}),
+                        totalproduk: item.totalproduk.toLocaleString('id-ID', {maximumFractionDigit: 10}),
+                        jumlahtotalretur: jumlahTotalRetur
+                    })
+            })
+        )
         const tempres = {
             detailRetur: detailRetur,
             retur: retur || null

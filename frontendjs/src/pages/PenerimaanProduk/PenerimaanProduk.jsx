@@ -114,6 +114,7 @@ export const initialDetail = (dateNow) => ({
 
 export const initialDetailRetur = (dateNow) => ({
   ...initialDetail(dateNow),
+  indexRetur: '',
   norecdetailretur: '',
   jumlahretur: '',
   alasanretur: '',
@@ -312,10 +313,6 @@ const PenerimaanProduk = ({ isLogistik, isRetur }) => {
   const vDetailRetur = useFormik({
     initialValues: {
       ...initialDetailRetur(dateNow),
-      indexRetur: '',
-      norecdetailretur: '',
-      jumlahretur: '',
-      alasanretur: '',
     },
     validationSchema: Yup.object({
       produk: Yup.object().shape({
@@ -335,14 +332,14 @@ const PenerimaanProduk = ({ isLogistik, isRetur }) => {
       )
       const existSameProduk = !!findSameProduk
       const isEdit = newValues.indexRetur !== ''
-      if (existSameProduk) {
-        toast.error('Produk dengan batch sama sudah ada')
-        return
-      }
       if (isEdit) {
         // edit
         newReturValues[values.indexRetur] = newValues
       } else {
+        if (existSameProduk) {
+          toast.error('Produk dengan batch sama sudah ada')
+          return
+        }
         newValues.indexRetur = newReturValues.length
         newReturValues.push(newValues)
       }

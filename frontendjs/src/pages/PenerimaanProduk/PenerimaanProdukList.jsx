@@ -310,12 +310,6 @@ const PenerimaanProdukList = ({ isLogistik }) => {
       width: '130px',
     },
     {
-      name: <span className="font-weight-bold fs-13">Item Dipesan</span>,
-      sortable: true,
-      selector: (row) => row.detailpenerimaan?.length || 0,
-      width: '100px',
-    },
-    {
       name: <span className="font-weight-bold fs-13">Item Retur</span>,
       sortable: true,
       selector: (row) => row.detailretur?.length || 0,
@@ -657,12 +651,6 @@ const ExpandableRetur = ({ data }) => {
       sortable: true,
       selector: (row) => `Rp${row.totalproduk}`,
       width: '150px',
-    },
-    {
-      name: <span className="font-weight-bold fs-13">E.D</span>,
-      sortable: true,
-      selector: (row) => `${row.tanggaled}`,
-      width: '100px',
     },
     {
       name: <span className="font-weight-bold fs-13">No Batch</span>,

@@ -72,9 +72,6 @@ export const ListDetail = () => {
                   vDetail.setValues({
                     ...row,
                   })
-                  validation.values.detail = validation.values.detail.filter(
-                    (ret) => ret.nobatch !== row.nobatch
-                  )
                 }}
               >
                 <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
@@ -326,9 +323,6 @@ export const ListAfterRetur = () => {
                   vDetailRetur.setValues({
                     ...row,
                   })
-                  validation.values.retur = validation.values.retur.filter(
-                    (ret) => ret.nobatch !== row.nobatch
-                  )
                 }}
               >
                 <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
@@ -622,9 +616,7 @@ export const ListBeforeRetur = () => {
       width: '110px',
     },
     {
-      name: (
-        <span className="font-weight-bold fs-13">Qty Retur sebelumnya</span>
-      ),
+      name: <span className="font-weight-bold fs-13">Qty Retur Lain</span>,
       selector: (row) => row.jumlahtotalretur,
       sortable: true,
       width: '110px',
@@ -1539,7 +1531,7 @@ export const InputProdukDetailRetur = () => {
               formTarget="form-input-produk-detail"
               id="tooltipTop"
             >
-              {!(vDetailRetur.values.indexRetur === '') ? 'Edit' : 'Tambah'}
+              {vDetailRetur.values.indexRetur === '' ? 'Tambah' : 'Edit'}
             </Button>
           </Col>
           <Col lg="auto">
@@ -1941,8 +1933,13 @@ export const useGetData = (isLogistik) => {
   }, [norecpesan, dispatch])
   useEffect(() => {
     norecpenerimaan &&
-      dispatch(penerimaanQueryGet({ norecpenerimaan: norecpenerimaan }))
-  }, [norecpenerimaan, dispatch])
+      dispatch(
+        penerimaanQueryGet({
+          norecpenerimaan: norecpenerimaan,
+          norecretur: norecretur,
+        })
+      )
+  }, [norecpenerimaan, norecretur, dispatch])
   useEffect(() => {
     dispatch(getRetur({ norecretur: norecretur }))
   }, [norecretur, dispatch])
@@ -1989,6 +1986,7 @@ export const useFillInitialInput = (validation) => {
         newPenerimaan = {
           ...newPenerimaan,
           ...penerimaanQuery.penerimaan,
+          indexRetur: '',
         }
       }
       if (retur && norecretur) {
