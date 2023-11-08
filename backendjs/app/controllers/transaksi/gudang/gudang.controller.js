@@ -1543,7 +1543,7 @@ const hUpsertStokUnitRetur  = async (
                 changedQty = (jmlPaketPrev * konversiPrev - jmlPaket * konversi)
                 const {
                     stokBarangAwalVal: prevStok, 
-                    stokBarangAkhirVal: createdOrUpdated
+                    stokBarangAkhirVal: upserted
                 } = await hUpsertStok(req, res, transaction, {
                     qtyDiff: changedQty,
                     nobatch: nobatch,
@@ -1551,7 +1551,7 @@ const hUpsertStokUnitRetur  = async (
                     objectunitfk: penerimaan.objectunitfk,
                 })
 
-                return {createdOrUpdated, prevStok, changedQty}
+                return {upserted, prevStok, changedQty}
             }
         )
     )
@@ -1571,7 +1571,7 @@ const hCreateKartuStokRetur = async (
     
     let createdKartuStokPenerimaan = await Promise.all(
         upsertedStokUnitRetur.map(async({
-            createdOrUpdated, 
+            upserted, 
             prevStok, 
             changedQty
         }) => {
@@ -1581,13 +1581,13 @@ const hCreateKartuStokRetur = async (
                 res,
                 transaction,
                 {
-                    idUnit: upsertedRetur.objectunitfk,
-                    idProduk: createdOrUpdated.objectprodukfk,
+                    idUnit: upserted.objectunitfk,
+                    idProduk: upserted.objectprodukfk,
                     saldoAwal: saldoAwal,
                     saldoAkhir: saldoAwal + changedQty,
-                    tabelTransaksi: "t_penerimaanbarangdetail",
+                    tabelTransaksi: "t_returbarangdetail",
                     norecTransaksi: upsertedRetur.norec,
-                    noBatch: createdOrUpdated.nobatch
+                    noBatch: upserted.nobatch
                 }
             )
             return createdKartuStok

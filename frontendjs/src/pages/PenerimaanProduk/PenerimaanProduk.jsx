@@ -324,7 +324,6 @@ const PenerimaanProduk = ({ isLogistik, isRetur }) => {
           val.nobatch === newValues.nobatch
       )
       const existSameProduk = !!findSameProduk
-      const isEdit = newValues.indexDetail !== ''
       if (existSameProduk) {
         toast.error('Produk dengan batch sama sudah ada')
         return

@@ -26,7 +26,7 @@ import {
 } from './imagesementara'
 import LoadingTable from '../../Components/Table/LoadingTable'
 import NoDataTable from '../../Components/Table/NoDataTable'
-import { dateLocal } from '../../utils/format'
+import { dateLocal, dateTimeLocal } from '../../utils/format'
 
 const PenerimaanProdukList = ({ isLogistik }) => {
   const navigate = useNavigate()
@@ -101,7 +101,7 @@ const PenerimaanProdukList = ({ isLogistik }) => {
       name: <span className="font-weight-bold fs-13">No PO</span>,
       sortable: true,
       selector: (row) => row.nomorpo,
-      width: '120px',
+      width: '140px',
     },
     {
       name: <span className="font-weight-bold fs-13">Tanggal Pemesanan</span>,
@@ -118,8 +118,8 @@ const PenerimaanProdukList = ({ isLogistik }) => {
     {
       name: <span className="font-weight-bold fs-13">Tanggal Terima</span>,
       sortable: true,
-      selector: (row) => row.tanggalterima,
-      width: '100px',
+      selector: (row) => dateLocal(row.tanggalterima),
+      width: '110px',
     },
     {
       name: <span className="font-weight-bold fs-13">Nama supplier</span>,
@@ -199,7 +199,7 @@ const PenerimaanProdukList = ({ isLogistik }) => {
       name: <span className="font-weight-bold fs-13">No PO</span>,
       sortable: true,
       selector: (row) => row.nomorpo,
-      width: '120px',
+      width: '140px',
     },
     {
       name: <span className="font-weight-bold fs-13">Tanggal Pemesanan</span>,
