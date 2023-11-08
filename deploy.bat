@@ -11,7 +11,6 @@ git merge develop || {
 }
 
 git pull && {
-    git commit -am "Merge branch remote to local"
     git push && {
         echo Kesalahan push 1
         git checkout develop
@@ -33,6 +32,6 @@ git pull && {
 }
 
 git checkout develop || {
-    echo Kesalahan checkout
+    echo Kesalahan checkout 1
     exit /b 1
 }
