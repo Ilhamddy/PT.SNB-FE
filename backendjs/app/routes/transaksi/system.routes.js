@@ -17,7 +17,7 @@ export default function (app) {
         controller.pullGit
     );
 
-    app.push(
+    app.post(
         "/api/system/pull-git",
         [],
         controller.pullGit
