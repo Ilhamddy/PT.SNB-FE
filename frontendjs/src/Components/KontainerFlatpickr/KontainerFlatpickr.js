@@ -28,7 +28,7 @@ const KontainerFlatpickr = ({
         >
             <Flatpickr 
                 className="fc-flatpickr form-control"
-                ref={refFp}
+                ref={refFp}                
                 {...rest} />
             <div className="input-group-text img-flatpickr bg-info text-white img-flatpickr"
                 onClick={() => {

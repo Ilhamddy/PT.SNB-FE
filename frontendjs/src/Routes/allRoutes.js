@@ -348,8 +348,7 @@ import RoleAcces from "../pages/SysAdmin/RoleAcces/RoleAcces";
 import ViewerBed from "../pages/ViewerBed/ViewerBed";
 import PemesananBarang from "../pages/PemesananBarang/PemesananBarang";
 import Logger from "../pages/Logger/Logger";
-
-
+import DasborUtama from "../pages/DasborUtama/DasborUtama.jsx";
 
 
 const authProtectedRoutes = [
@@ -702,7 +701,10 @@ const authProtectedRoutes = [
   { path: "/sysadmin/daftar-unit", component: <DaftarUnit />},
   { path: "/sysadmin/daftar-kamar", component: <DaftarKamar />},
   { path: "/sysadmin/role-acces", component: <RoleAcces />},
-  { path: "/logger", component: <Logger />}
+  { path: "/logger", component: <Logger />},
+
+  //dashboard eis
+  { path: "/eis/dashboard/dashboard-utama", component: <DasborUtama />}
 ];
 
 const publicRoutes = [
