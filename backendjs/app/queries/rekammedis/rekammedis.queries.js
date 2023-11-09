@@ -150,6 +150,12 @@ const qLaporanRL3_10 =`select row_number() OVER (ORDER BY x.reportdisplay) AS no
     where mm3.id=15 and tp.statusenabled=true and tp.tglinput between $1 and $2
     ) as x group by x.reportdisplay`
 
+const qLaporanRL5_1 =`select row_number() OVER (ORDER BY x.statuspasien) AS no,x.statuspasien,count(*) as jml from(
+    select case when td.statuspasien is null or td.statuspasien='LAMA' then 'LAMA' else td.statuspasien end as statuspasien
+    from t_daftarpasien td
+    where td.statusenabled=true and td.tglpulang between $1 and $2
+    )as x group by x.statuspasien`
+
 export default {
     qResult,
     qGetDetailFromJenisProduk,
@@ -162,5 +168,6 @@ export default {
     qLaporanRL3_15,
     qDetailLaporanRL3_15,
     qLaporanRL3_11,
-    qLaporanRL3_10
+    qLaporanRL3_10,
+    qLaporanRL5_1
 }
