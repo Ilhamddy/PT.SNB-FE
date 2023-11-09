@@ -156,6 +156,15 @@ const qLaporanRL5_1 =`select row_number() OVER (ORDER BY x.statuspasien) AS no,x
     where td.statusenabled=true and td.tglpulang between $1 and $2
     )as x group by x.statuspasien`
 
+const qLaporanRL5_2=`select row_number() OVER (ORDER BY ms.reportdisplay) AS no,ms.reportdisplay as spesialis,count(*) as jml
+    from t_daftarpasien td
+    join m_unit mu on mu.id=td.objectunitlastfk
+    join m_pegawai mp on mp.id=td.objectdokterpemeriksafk
+    join m_spesialisasi ms on ms.id=mp.objectspesialisasifk
+    where td.statusenabled=true and mu.objectinstalasifk=1 and td.tglpulang between $1 and $2
+    group by  ms.reportdisplay
+    order by ms.reportdisplay`
+
 export default {
     qResult,
     qGetDetailFromJenisProduk,
@@ -169,5 +178,6 @@ export default {
     qDetailLaporanRL3_15,
     qLaporanRL3_11,
     qLaporanRL3_10,
-    qLaporanRL5_1
+    qLaporanRL5_1,
+    qLaporanRL5_2
 }
