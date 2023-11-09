@@ -981,6 +981,56 @@ const getLaporanRL3_15 = async (req, res) => {
     }
 }
 
+const getLaporanRL3_11 = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const result = await pool.query(queries.qLaporanRL3_11,[req.query.start,req.query.end])
+
+        const tempres = {
+        
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: result.rows,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).json({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+const getLaporanRL3_10 = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const result = await pool.query(queries.qLaporanRL3_10,[req.query.start,req.query.end])
+
+        const tempres = {
+        
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: result.rows,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).json({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export default {
     getListDaftarDokumenRekammedis,
     getWidgetListDaftarDokumenRekammedis,
@@ -1002,5 +1052,7 @@ export default {
     getLaporanRL3_3,
     getLaporanRL3_6,
     getLaporanRL3_14,
-    getLaporanRL3_15
+    getLaporanRL3_15,
+    getLaporanRL3_11,
+    getLaporanRL3_10
 };

@@ -19,7 +19,7 @@ import {
     DELETE_MAP_RL,
     UPDATE_PRINTED,
     LAPORAN_RL_3_3_GET,LAPORAN_RL_3_6_GET,LAPORAN_RL_3_14_GET,
-    LAPORAN_RL_3_15_GET
+    LAPORAN_RL_3_15_GET,LAPORAN_RL_3_11_GET,LAPORAN_RL_3_10_GET
 } from "./actionType";
 
 import {
@@ -49,7 +49,9 @@ import {
     getLaporanRl_3_3Success,getLaporanRl_3_3Error,
     getLaporanRl_3_6Success,getLaporanRl_3_6Error,
     getLaporanRl_3_14Success,getLaporanRl_3_14Error,
-    getLaporanRl_3_15Success,getLaporanRl_3_15Error
+    getLaporanRl_3_15Success,getLaporanRl_3_15Error,
+    getLaporanRl_3_11Success,getLaporanRl_3_11Error,
+    getLaporanRl_3_10Success,getLaporanRl_3_10Error
 } from "./action";
 
 import { toast } from 'react-toastify';
@@ -343,6 +345,32 @@ export function* watchongetLaporanRl_3_15(){
     yield takeEvery(LAPORAN_RL_3_15_GET, ongetLaporanRl_3_15)
 }
 
+function* ongetLaporanRl_3_11({payload: {queries}}) {
+    try{
+        const response = yield call(serviceRekammedis.getLaporanRl_3_11, queries);
+        yield put(getLaporanRl_3_11Success(response.data));
+    } catch (error) {
+        yield put(getLaporanRl_3_11Error(error));
+    }
+}
+
+export function* watchongetLaporanRl_3_11(){
+    yield takeEvery(LAPORAN_RL_3_11_GET, ongetLaporanRl_3_11)
+}
+
+function* ongetLaporanRl_3_10({payload: {queries}}) {
+    try{
+        const response = yield call(serviceRekammedis.getLaporanRl_3_10, queries);
+        yield put(getLaporanRl_3_10Success(response.data));
+    } catch (error) {
+        yield put(getLaporanRl_3_10Error(error));
+    }
+}
+
+export function* watchongetLaporanRl_3_10(){
+    yield takeEvery(LAPORAN_RL_3_10_GET, ongetLaporanRl_3_10)
+}
+
 function* kendaliDokumenSaga() {
     yield all([
         fork(watchonDaftarDokumenRekammedis),
@@ -364,7 +392,9 @@ function* kendaliDokumenSaga() {
         fork(watchongetLaporanRl_3_3),
         fork(watchongetLaporanRl_3_6),
         fork(watchongetLaporanRl_3_14),
-        fork(watchongetLaporanRl_3_15)
+        fork(watchongetLaporanRl_3_15),
+        fork(watchongetLaporanRl_3_11),
+        fork(watchongetLaporanRl_3_10)
     ]);
 }
 

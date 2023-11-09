@@ -9,15 +9,15 @@ import KontainerFlatpickr from '../../../../Components/KontainerFlatpickr/Kontai
 import DataTable from 'react-data-table-component'
 import LoadingTable from '../../../../Components/Table/LoadingTable';
 import {
-  getLaporanRl_3_6, kendaliDokumenResetForm
+  getLaporanRl_3_11, kendaliDokumenResetForm
 } from '../../../../store/actions';
 
-const RL3_6 = () => {
-  document.title = "Laporan RL3.6";
+const RL3_11 = () => {
+  document.title = "Laporan RL3.11";
   const dispatch = useDispatch();
   const { dataGrid, loadingGrid } = useSelector((state) => ({
-    dataGrid: state.KendaliDokumen.getLaporanRl_3_6.data,
-    loadingGrid: state.KendaliDokumen.getLaporanRl_3_6.loading,
+    dataGrid: state.KendaliDokumen.getLaporanRl_3_11.data,
+    loadingGrid: state.KendaliDokumen.getLaporanRl_3_11.loading,
   }));
   const [dateNow] = useState(() => new Date().toISOString())
   const vSetValidation = useFormik({
@@ -31,7 +31,7 @@ const RL3_6 = () => {
     }),
     onSubmit: (values) => {
       console.log(values)
-      dispatch(getLaporanRl_3_6({
+      dispatch(getLaporanRl_3_11({
         start: values.start || dateNow,
         end: values.end || dateNow
       }));
@@ -46,43 +46,15 @@ const RL3_6 = () => {
       wrap: true,
     },
     {
-      name: <span className="font-weight-bold fs-13">Spesialisasi</span>,
-      selector: (row) => row.spesialis,
+      name: <span className="font-weight-bold fs-13">Jenis Pelayanan</span>,
+      selector: (row) => row.reportdisplay,
       sortable: true,
       // width: '60px',
       wrap: true,
     },
     {
-      name: <span className="font-weight-bold fs-13">Total</span>,
-      selector: (row) => row.total,
-      sortable: true,
-      // width: '60px',
-      wrap: true,
-    },
-    {
-      name: <span className="font-weight-bold fs-13">Khusus</span>,
-      selector: (row) => row.khusus_count,
-      sortable: true,
-      // width: '60px',
-      wrap: true,
-    },
-    {
-      name: <span className="font-weight-bold fs-13">Besar</span>,
-      selector: (row) => row.besar_count,
-      sortable: true,
-      // width: '60px',
-      wrap: true,
-    },
-    {
-      name: <span className="font-weight-bold fs-13">Sedang</span>,
-      selector: (row) => row.sedang_count,
-      sortable: true,
-      // width: '60px',
-      wrap: true,
-    },
-    {
-      name: <span className="font-weight-bold fs-13">Kecil</span>,
-      selector: (row) => row.kecil_count,
+      name: <span className="font-weight-bold fs-13">Jumlah</span>,
+      selector: (row) => row.jml,
       sortable: true,
       // width: '60px',
       wrap: true,
@@ -93,7 +65,7 @@ const RL3_6 = () => {
       <UiContent />
       <div className="page-content">
         <Container fluid>
-          <BreadCrumb title="Laporan RL3.6" pageTitle="Forms" />
+          <BreadCrumb title="Laporan RL3.11" pageTitle="Forms" />
           <Form
             onSubmit={(e) => {
               e.preventDefault();
@@ -192,4 +164,4 @@ const tableCustomStyles = {
   },
 }
 
-export default RL3_6
+export default RL3_11

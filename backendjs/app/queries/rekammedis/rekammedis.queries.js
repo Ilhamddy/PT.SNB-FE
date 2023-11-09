@@ -134,6 +134,22 @@ JOIN m_rekanan mr ON td.objectpenjaminfk = mr.id
 WHERE td.statusenabled = true AND td.tglpulang between  $1 and $2
 order by mr.namarekanan `
 
+const qLaporanRL3_11 =`select row_number() OVER (ORDER BY x.reportdisplay) AS no,x.reportdisplay,count(x.reportdisplay) as jml from (
+    SELECT mm2.reportdisplay  from m_maprltoproduk mm
+    join m_masterrl mm2 on mm2.id=mm.objectmasterrlfk
+    join m_masterindukrl mm3 on mm3.id=mm2.objectindukrlfk
+    join t_pelayananpasien tp on tp.objectprodukfk=mm.objectprodukfk 
+    where mm3.id=16 and tp.statusenabled=true and tp.tglinput between $1 and $2
+    ) as x group by x.reportdisplay`
+
+const qLaporanRL3_10 =`select row_number() OVER (ORDER BY x.reportdisplay) AS no,x.reportdisplay,count(x.reportdisplay) as jml from (
+    SELECT mm2.reportdisplay  from m_maprltoproduk mm
+    join m_masterrl mm2 on mm2.id=mm.objectmasterrlfk
+    join m_masterindukrl mm3 on mm3.id=mm2.objectindukrlfk
+    join t_pelayananpasien tp on tp.objectprodukfk=mm.objectprodukfk 
+    where mm3.id=15 and tp.statusenabled=true and tp.tglinput between $1 and $2
+    ) as x group by x.reportdisplay`
+
 export default {
     qResult,
     qGetDetailFromJenisProduk,
@@ -144,5 +160,7 @@ export default {
     qLaporanRL3_6,
     qLaporanRL3_14,
     qLaporanRL3_15,
-    qDetailLaporanRL3_15
+    qDetailLaporanRL3_15,
+    qLaporanRL3_11,
+    qLaporanRL3_10
 }

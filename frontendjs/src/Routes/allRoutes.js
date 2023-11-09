@@ -269,6 +269,8 @@ import RL3_3 from "../pages/RekamMedis/Laporan/RL3_3/RL3_3";
 import RL3_6 from "../pages/RekamMedis/Laporan/RL3_6/RL3_6";
 import RL3_14 from "../pages/RekamMedis/Laporan/RL3_14/RL3_14";
 import RL3_15 from "../pages/RekamMedis/Laporan/RL3_15/RL3_15";
+import RL3_11 from "../pages/RekamMedis/Laporan/RL3_11/RL3_11";
+import RL3_10 from "../pages/RekamMedis/Laporan/RL3_10/RL3_10";
 // 
 // radiologi
 import DaftarOrderRadiologi from "../pages/Radiologi/DaftarOrderRadiologi/DaftarOrderRadiologi";
@@ -614,6 +616,8 @@ const authProtectedRoutes = [
   { path: "/cmVrYW1tZWRpcy9tYXBwaW5nLXJs", component: <MappingLayanan />},
   { path: "/rekammedis/laporan-rl/rl3_14", component: <RL3_14/>},
   { path: "/rekammedis/laporan-rl/rl3_15", component: <RL3_15/>},
+  { path: "/rekammedis/laporan-rl/rl3_11", component: <RL3_11/>},
+  { path: "/rekammedis/laporan-rl/rl3_10", component: <RL3_10/>},
 
   // radiologi
   { path: "/radiologi/daftarorderradiologi", component: <DaftarOrderRadiologi /> },
