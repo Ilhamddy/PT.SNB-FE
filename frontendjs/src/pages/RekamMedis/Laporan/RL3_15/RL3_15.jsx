@@ -54,7 +54,7 @@ const RL3_15 = () => {
       columns: [{
         name: 'jumlah_pasien_Keluar'
       }, {
-        name: 'jumlah_pasien_Dirawat'
+        name: 'jumlah_lama_dirawat'
       }]
     }, {
       name: 'jumlah_pasien_rj'

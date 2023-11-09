@@ -944,7 +944,23 @@ const getLaporanRL3_15 = async (req, res) => {
     const logger = res.locals.logger;
     try{
         const result = await pool.query(queries.qLaporanRL3_15,[req.query.start,req.query.end])
-        
+        const resultLos = await pool.query(queries.qDetailLaporanRL3_15,[req.query.start,req.query.end])
+        for (let i = 0; i < result.rows.length; i++) {
+            const element = result.rows[i];
+            for (let x = 0; x < resultLos.rows.length; x++) {
+                const elementx = resultLos.rows[x];
+                if(element.cara_bayar===elementx.namarekanan){
+                    if (elementx.los === '00') {
+                        element.jumlah_lama_dirawat = parseFloat(element.jumlah_lama_dirawat)+1
+                    } else {
+                        if (elementx.los.substr(0, 1) === '-') {
+                            element.jumlah_lama_dirawat =element.jumlah_lama_dirawat+ parseFloat(elementx.los.substring(1))
+                            // resultlist.rows[i].los=resultlist.rows[i].los
+                        }
+                    }
+                }
+            }
+        }
         const tempres = {
         
         };

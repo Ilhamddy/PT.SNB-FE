@@ -119,17 +119,20 @@ sum(case when mu.objectinstalasifk=3 then 1 else 0 end) as Radiologi,
 sum(case when mu.objectinstalasifk not in (2,3,4) then 1 else 0 end) as Lain_lain,
 (sum(case when mu.objectinstalasifk=4 then 1 else 0 end)+
 sum(case when mu.objectinstalasifk=3 then 1 else 0 end)+
-sum(case when mu.objectinstalasifk not in (2,3,4) then 1 else 0 end)) as jumlah_pasien_rj
+sum(case when mu.objectinstalasifk not in (2,3,4) then 1 else 0 end)) as jumlah_pasien_rj,
+0 as jumlah_lama_dirawat
 FROM t_daftarpasien td
 JOIN m_rekanan mr ON td.objectpenjaminfk = mr.id
 join m_unit mu on mu.id=td.objectunitlastfk
 WHERE td.statusenabled = true AND td.tglpulang between  $1 and $2
 GROUP BY mr.namarekanan;`
 
-const qDetailLaporanRL3_15 =`SELECT mr.namarekanan, td.tglregistrasi ,td.tglpulang 
+const qDetailLaporanRL3_15 =`SELECT mr.namarekanan, td.tglregistrasi ,td.tglpulang,
+to_char( td.tglregistrasi, TO_CHAR(age( td.tglregistrasi,  td.tglpulang), 'DD')) AS los
 FROM t_daftarpasien td
 JOIN m_rekanan mr ON td.objectpenjaminfk = mr.id
-WHERE td.statusenabled = true AND td.tglpulang between  $1 and $2`
+WHERE td.statusenabled = true AND td.tglpulang between  $1 and $2
+order by mr.namarekanan `
 
 export default {
     qResult,
