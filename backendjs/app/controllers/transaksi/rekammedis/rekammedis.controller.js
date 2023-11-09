@@ -954,7 +954,7 @@ const getLaporanRL3_15 = async (req, res) => {
                         element.jumlah_lama_dirawat = parseFloat(element.jumlah_lama_dirawat)+1
                     } else {
                         if (elementx.los.substr(0, 1) === '-') {
-                            element.jumlah_lama_dirawat =element.jumlah_lama_dirawat+ parseFloat(elementx.los.substring(1))
+                            element.jumlah_lama_dirawat =element.jumlah_lama_dirawat + parseFloat(elementx.los.substring(1))
                             // resultlist.rows[i].los=resultlist.rows[i].los
                         }
                     }
