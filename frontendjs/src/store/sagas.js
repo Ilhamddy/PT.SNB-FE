@@ -85,6 +85,7 @@ import beritaSaga from "./berita/saga"
 import sumberDayaManusia from "./sumberDayaManusia/saga";
 import SysadminSaga from "./sysadmin/saga";
 import LoggerSaga from "./logger/saga"
+import EisSaga from "./eis/saga"
 
 export default function* rootSaga() {
   yield all([
@@ -133,6 +134,7 @@ export default function* rootSaga() {
     fork(beritaSaga),
     fork(sumberDayaManusia),
     fork(SysadminSaga),
-    fork(LoggerSaga)
+    fork(LoggerSaga),
+    fork(EisSaga)
   ]);
 }

@@ -2,7 +2,7 @@ import pool from "../../../config/dbcon.query";
 import { qGetLoket, qGetLoketSisa, qGetLastPemanggilan, qGetAllLoket, qGetLastPemanggilanLoket, qGetLastPemanggilanAll, qGetAllTerpanggil, panggilStatus, qGetLastPemanggilanViewer, qGetJadwalDokter, qGetLastAntrean, qGetJadwalDokterNorec, qGetKamarTempatTidur, qGetKelasTempatTidur, qGetDaftarOperasi } from "../../../queries/viewer/viewer.queries";
 import db from "../../../models";
 import { getDateStartEnd } from "../../../utils/dateutils";
-import { groupBy, groupCountBy } from "../../../utils/arutils";
+import { groupByDeprecated, groupCountBy } from "../../../utils/arutils";
 import unitQueries from "../../../queries/master/unit/unit.queries";
 import kelasQueries from "../../../queries/master/kelas/kelas.queries";
 import kamarQueries from "../../../queries/master/kamar/kamar.queries";
@@ -316,7 +316,7 @@ const getJadwalDokter = async (req, res) => {
                 const day = (new Date()).getDay();
                 let jadwal = (await pool.query(qGetJadwalDokter, [day])).rows
                 let unit = (await pool.query(unitQueries.getPoliklinik)).rows
-                jadwal = groupBy(
+                jadwal = groupByDeprecated(
                     jadwal, 
                     'idjadwal',
                     'objectpegawaifk', 

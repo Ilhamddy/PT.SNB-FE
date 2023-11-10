@@ -1,7 +1,7 @@
 import db from "../../../models";
 import pool from "../../../config/dbcon.query";
 import { qGetJadwalDokter, qGetBeritaHome, qGetBeritaNorec} from "../../../queries/daftarmandiri/home/home.queries";
-import { groupBy } from "../../../utils/arutils";
+import { groupByDeprecated } from "../../../utils/arutils";
 import hariQueries from "../../../queries/master/hari/hari.queries";
 import unitQueries from "../../../queries/master/unit/unit.queries";
 import { tempCaptcha, initCaptcha, setTempCaptcha } from "../../auth/authhelper";
@@ -46,7 +46,7 @@ const getJadwalDokter = async (req, res) => {
             hariid === "" ? -1 : hariid,
             dokterid === "" ? -1 : dokterid
         ])).rows
-        dokters = groupBy(dokters, "dokterid", "doktername", "spesialisasi", "unitdokter")
+        dokters = groupByDeprecated(dokters, "dokterid", "doktername", "spesialisasi", "unitdokter")
         const tempres = {
             dokter: dokters
         };

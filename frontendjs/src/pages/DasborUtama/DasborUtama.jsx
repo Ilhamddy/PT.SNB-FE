@@ -1,5 +1,13 @@
 import { ToastContainer } from 'react-toastify'
-import { Card, CardBody, Col, Container, FormFeedback, Row } from 'reactstrap'
+import {
+  Button,
+  Card,
+  CardBody,
+  Col,
+  Container,
+  FormFeedback,
+  Row,
+} from 'reactstrap'
 import HorizontalLayout from '../../Layouts/HorizontalLayout'
 import BreadCrumb from '../../Components/Common/BreadCrumb'
 import './DasborUtama.scss'
@@ -7,7 +15,7 @@ import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import KontainerFlatpickr from '../../Components/KontainerFlatpickr/KontainerFlatpickr'
 import CustomSelect from '../Select/Select'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from 'feather-icons-react/build/IconComponents'
 import CountUp from 'react-countup'
 import ReactApexChart from 'react-apexcharts'
@@ -16,9 +24,18 @@ import { dateLocal } from '../../utils/format'
 import DataTable from 'react-data-table-component'
 import LoadingTable from '../../Components/Table/LoadingTable'
 import NoDataTable from '../../Components/Table/NoDataTable'
+import { useDispatch, useSelector } from 'react-redux'
+import {
+  getCountCaraBayar,
+  getPasienIGD,
+  getPasienRJ,
+  getPasienRanap,
+  getPoliklinikTerbanyak,
+} from '../../store/eis/action'
 
 const DashboardUtama = () => {
   const [dateToday] = useState(() => new Date().toISOString())
+  const dispatch = useDispatch()
   const vFilter = useFormik({
     initialValues: {
       tanggal: '',
@@ -26,8 +43,18 @@ const DashboardUtama = () => {
       tanggalselesai: dateToday,
       carabayar: '',
     },
-    onSubmit: (values, { resetForm }) => {},
+    onSubmit: (values, { resetForm }) => {
+      dispatch(getPasienRJ(values))
+      dispatch(getPasienIGD(values))
+      dispatch(getPasienRanap(values))
+      dispatch(getCountCaraBayar(values))
+      dispatch(getPoliklinikTerbanyak(values))
+    },
   })
+
+  useEffect(() => {
+    dispatch(getPasienRJ(vFilter.initialValues))
+  }, [vFilter.initialValues, dispatch])
 
   return (
     <div className="page-content page-dasbor-eis-utama">
@@ -41,6 +68,16 @@ const DashboardUtama = () => {
 
       <Container fluid className="ps-3 pe-3">
         <Row className="mt-3 d-flex flex-row-reverse mb-3">
+          <Col lg={'auto'}>
+            <Button
+              color="info"
+              onClick={() => {
+                vFilter.handleSubmit()
+              }}
+            >
+              Filter
+            </Button>
+          </Col>
           <Col lg={4}>
             <KontainerFlatpickr
               isError={vFilter.touched?.tanggal && !!vFilter.errors?.tanggal}
@@ -54,7 +91,7 @@ const DashboardUtama = () => {
                   newDate?.toISOString() || ''
                 )
                 vFilter.setFieldValue(
-                  'tanggalmulai',
+                  'tanggalselesai',
                   newDate2?.toISOString() || ''
                 )
               }}
@@ -115,22 +152,24 @@ const StackedRJ = () => {
   const dataColors =
     '["--vz-primary", "--vz-success", "--vz-warning", "--vz-danger"]'
   var chartColumnStackedColors = getChartColorsArray(dataColors)
+  const pasienTerdaftar = useSelector(
+    (state) => state.Eis.getPasienRJ.data?.pasienTerdaftar || []
+  )
+  const pasienBatal = useSelector(
+    (state) => state.Eis.getPasienRJ.data?.pasienBatal || []
+  )
+  const isiPasienDaftar = pasienTerdaftar.map((pasien) => pasien.total)
+  const isiPasienBatal = pasienBatal.map((pasien) => pasien.total)
+  const tglPasienDaftar = pasienTerdaftar.map((pasien) => pasien.date)
+
   const series = [
     {
-      name: 'PRODUCT A',
-      data: [44, 55, 41, 67, 22, 43],
+      name: 'Pasien terdaftar',
+      data: isiPasienDaftar,
     },
     {
-      name: 'PRODUCT B',
-      data: [13, 23, 20, 8, 13, 27],
-    },
-    {
-      name: 'PRODUCT C',
-      data: [11, 17, 15, 15, 21, 14],
-    },
-    {
-      name: 'PRODUCT D',
-      data: [21, 7, 25, 13, 22, 8],
+      name: 'Pasien Batal',
+      data: isiPasienBatal,
     },
   ]
 
@@ -164,14 +203,7 @@ const StackedRJ = () => {
     },
     xaxis: {
       type: 'datetime',
-      categories: [
-        '01/01/2011 GMT',
-        '01/02/2011 GMT',
-        '01/03/2011 GMT',
-        '01/04/2011 GMT',
-        '01/05/2011 GMT',
-        '01/06/2011 GMT',
-      ],
+      categories: tglPasienDaftar,
     },
     legend: {
       position: 'right',
@@ -207,22 +239,32 @@ const StackedGD = () => {
   const dataColors =
     '["--vz-primary", "--vz-success", "--vz-warning", "--vz-danger"]'
   var chartColumnStackedColors = getChartColorsArray(dataColors)
+  const pasienTerdaftar = useSelector(
+    (state) => state.Eis.getPasienIGD.data?.pasienTerdaftar || []
+  )
+  const pasienRawat = useSelector(
+    (state) => state.Eis.getPasienIGD.data?.pasienRawat || []
+  )
+  const pasienPulang = useSelector(
+    (state) => state.Eis.getPasienIGD.data?.pasienPulang || []
+  )
+  const isiPasienDaftar = pasienTerdaftar.map((pasien) => pasien.total)
+  const isiPasienRawat = pasienRawat.map((pasien) => pasien.total)
+  const isiPasienPulang = pasienPulang.map((pasien) => pasien.total)
+  const tglPasienDaftar = pasienTerdaftar.map((pasien) => pasien.date)
+
   const series = [
     {
-      name: 'PRODUCT A',
-      data: [44, 55, 41, 67, 22, 43],
+      name: 'Pasien terdaftar',
+      data: isiPasienDaftar,
     },
     {
-      name: 'PRODUCT B',
-      data: [13, 23, 20, 8, 13, 27],
+      name: 'Pasien Rawat',
+      data: isiPasienRawat,
     },
     {
-      name: 'PRODUCT C',
-      data: [11, 17, 15, 15, 21, 14],
-    },
-    {
-      name: 'PRODUCT D',
-      data: [21, 7, 25, 13, 22, 8],
+      name: 'Pasien Pulang',
+      data: isiPasienPulang,
     },
   ]
 
@@ -256,14 +298,7 @@ const StackedGD = () => {
     },
     xaxis: {
       type: 'datetime',
-      categories: [
-        '01/01/2011 GMT',
-        '01/02/2011 GMT',
-        '01/03/2011 GMT',
-        '01/04/2011 GMT',
-        '01/05/2011 GMT',
-        '01/06/2011 GMT',
-      ],
+      categories: tglPasienDaftar,
     },
     legend: {
       position: 'right',
@@ -299,22 +334,32 @@ const StackedRI = () => {
   const dataColors =
     '["--vz-primary", "--vz-success", "--vz-warning", "--vz-danger"]'
   var chartColumnStackedColors = getChartColorsArray(dataColors)
+  const pasienTerdaftar = useSelector(
+    (state) => state.Eis.getPasienRanap.data?.pasienTerdaftar || []
+  )
+  const pasienMeninggal = useSelector(
+    (state) => state.Eis.getPasienRanap.data?.pasienMeninggal || []
+  )
+  const pasienPulang = useSelector(
+    (state) => state.Eis.getPasienRanap.data?.pasienPulang || []
+  )
+  const isiPasienDaftar = pasienTerdaftar.map((pasien) => pasien.total)
+  const isiPasienMeninggal = pasienMeninggal.map((pasien) => pasien.total)
+  const isiPasienPulang = pasienPulang.map((pasien) => pasien.total)
+  const tglPasienDaftar = pasienTerdaftar.map((pasien) => pasien.date)
+
   const series = [
     {
-      name: 'PRODUCT A',
-      data: [44, 55, 41, 67, 22, 43],
+      name: 'Pasien terdaftar',
+      data: isiPasienDaftar,
     },
     {
-      name: 'PRODUCT B',
-      data: [13, 23, 20, 8, 13, 27],
+      name: 'Pasien Meninggal',
+      data: isiPasienMeninggal,
     },
     {
-      name: 'PRODUCT C',
-      data: [11, 17, 15, 15, 21, 14],
-    },
-    {
-      name: 'PRODUCT D',
-      data: [21, 7, 25, 13, 22, 8],
+      name: 'Pasien Pulang',
+      data: isiPasienPulang,
     },
   ]
 
@@ -348,14 +393,7 @@ const StackedRI = () => {
     },
     xaxis: {
       type: 'datetime',
-      categories: [
-        '01/01/2011 GMT',
-        '01/02/2011 GMT',
-        '01/03/2011 GMT',
-        '01/04/2011 GMT',
-        '01/05/2011 GMT',
-        '01/06/2011 GMT',
-      ],
+      categories: tglPasienDaftar,
     },
     legend: {
       position: 'right',
@@ -391,7 +429,12 @@ const CaraBayar = () => {
   const dataColors =
     '["--vz-primary", "--vz-success", "--vz-warning", "--vz-danger", "--vz-info"]'
   var chartPieBasicColors = getChartColorsArray(dataColors)
-  const series = [44, 55, 13]
+  const totalData = useSelector((state) => ({
+    bpjs: state.Eis.getCountCaraBayar.data.bpjs?.count || 0,
+    umum: state.Eis.getCountCaraBayar.data.umum?.count || 0,
+    nonBPJS: state.Eis.getCountCaraBayar.data.nonBPJS?.count || 0,
+  }))
+  const series = [totalData.bpjs, totalData.umum, totalData.nonBPJS]
   var options = {
     chart: {
       height: 300,
@@ -538,9 +581,14 @@ const KunjunganPoliklinik = () => {
   const dataColors =
     '["--vz-primary", "--vz-success", "--vz-warning", "--vz-danger", "--vz-dark", "--vz-info"]'
   let chartColumnDistributedColors = getChartColorsArray(dataColors)
+  const kunjungan = useSelector(
+    (state) => state.Eis.getPoliklinikTerbanyak.data?.kunjungan || []
+  )
+  const kunjunganTotal = kunjungan.map((kunj) => kunj._total)
+  const kunjunganNama = kunjungan.map((kunj) => kunj.namaunit.split(' '))
   const series = [
     {
-      data: [21, 22, 10, 28, 16, 21, 13, 30],
+      data: kunjunganTotal,
     },
   ]
   let options = {
@@ -565,16 +613,7 @@ const KunjunganPoliklinik = () => {
       show: false,
     },
     xaxis: {
-      categories: [
-        ['John', 'Doe'],
-        ['Joe', 'Smith'],
-        ['Jake', 'Williams'],
-        'Amber',
-        ['Peter', 'Brown'],
-        ['Mary', 'Evans'],
-        ['David', 'Wilson'],
-        ['Lily', 'Roberts'],
-      ],
+      categories: kunjunganNama,
       labels: {
         style: {
           colors: [

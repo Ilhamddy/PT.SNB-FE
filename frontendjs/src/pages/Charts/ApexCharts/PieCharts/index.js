@@ -21,8 +21,6 @@ const PieCharts = () => {
                                     </CardBody>
                                 </Card>
                             </Col>
-                           
-
                             <Col xl={6}>
                                 <Card>
                                     <CardHeader>

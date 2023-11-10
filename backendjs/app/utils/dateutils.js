@@ -6,9 +6,9 @@ export const checkValidDate = (d) => {
 }
 
 export const getDateStartEnd = (date) => {
-    let todayStart = date || new Date() // default to today
+    let todayStart = date ? new Date(date) : new Date() // default to today
     todayStart.setHours(0, 0, 0, 0)
-    let todayEnd = new Date()
+    let todayEnd = date ? new Date(date) :  new Date()
     todayEnd.setHours(23, 59, 59, 999)
     return {
         todayStart,

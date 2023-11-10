@@ -1,3 +1,9 @@
+export const daftarRekanan = {
+    BPJSKESEHATAN: 1,
+    UMUMPRIBADI: 3,
+    
+}
+
 const getAll =
     `SELECT id as value, 
     namarekanan as label, 

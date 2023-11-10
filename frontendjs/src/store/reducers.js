@@ -95,6 +95,7 @@ import Berita from "./berita/reducer"
 import sumberDayaManusia from "./sumberDayaManusia/reducer";
 import Sysadmin from "./sysadmin/reducer";
 import Logger from "./logger/reducer"
+import Eis from "./eis/reducer"
 
 const rootReducer = combineReducers({
     // public
@@ -144,7 +145,8 @@ const rootReducer = combineReducers({
     Berita,
     sumberDayaManusia,
     Sysadmin,
-    Logger
+    Logger,
+    Eis
 });
 
 export default rootReducer;
