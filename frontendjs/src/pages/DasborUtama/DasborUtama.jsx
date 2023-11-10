@@ -703,58 +703,42 @@ const SensusPasienRI = () => {
 }
 
 const KetersediaanTT = () => {
+  const tempatTidur = useSelector(
+    (state) => state.Eis.getPasienRanap.data.tempatTidur
+  )
   /**
    * @type {import("react-data-table-component").TableColumn[]}
    */
   const columnsDetail = [
     {
-      name: <span className="font-weight-bold fs-13">Nama produk</span>,
+      name: <span className="font-weight-bold fs-13">Nama Kamar</span>,
       sortable: true,
-      selector: (row) => row.produk.namaproduk,
+      selector: (row) => row.namakamar,
       width: '120px',
     },
     {
-      name: <span className="font-weight-bold fs-13">Qty Penerimaan</span>,
-      selector: (row) => row.jumlahterima,
+      name: <span className="font-weight-bold fs-13">Jumlah Bed</span>,
+      selector: (row) => row.totalbed,
       sortable: true,
       width: '110px',
     },
-
     {
-      name: <span className="font-weight-bold fs-13">Harga satuan kecil</span>,
+      name: <span className="font-weight-bold fs-13">Bed Isi</span>,
+      selector: (row) => row.totalisi,
       sortable: true,
-      selector: (row) => `Rp${row.hargasatuankecil?.toLocaleString('id-ID')}`,
-      width: '100px',
+      width: '110px',
     },
     {
-      name: <span className="font-weight-bold fs-13">Diskon</span>,
+      name: <span className="font-weight-bold fs-13">Bed Siap Pakai</span>,
+      selector: (row) => row.totalkosong,
       sortable: true,
-      selector: (row) => `Rp${row.diskonrupiah}`,
-      width: '150px',
+      width: '110px',
     },
     {
-      name: <span className="font-weight-bold fs-13">PPN</span>,
+      name: <span className="font-weight-bold fs-13">Bed Rusak</span>,
+      selector: (row) => row.totalrusak,
       sortable: true,
-      selector: (row) => `Rp${row.ppnrupiahproduk}`,
-      width: '150px',
-    },
-    {
-      name: <span className="font-weight-bold fs-13">Total</span>,
-      sortable: true,
-      selector: (row) => `Rp${row.totalproduk}`,
-      width: '150px',
-    },
-    {
-      name: <span className="font-weight-bold fs-13">E.D</span>,
-      sortable: true,
-      selector: (row) => dateLocal(row.tanggaled),
-      width: '150px',
-    },
-    {
-      name: <span className="font-weight-bold fs-13">No Batch</span>,
-      sortable: true,
-      selector: (row) => row.nobatch,
-      width: '100px',
+      width: '110px',
     },
   ]
 
@@ -770,7 +754,8 @@ const KetersediaanTT = () => {
           fixedHeader
           columns={columnsDetail}
           pagination
-          data={[]}
+          paginationPerPage={5}
+          data={tempatTidur}
           progressPending={false}
           customStyles={tableCustomStyles}
           progressComponent={<LoadingTable />}

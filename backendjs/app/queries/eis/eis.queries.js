@@ -1,6 +1,7 @@
 import { daftarInstalasi } from "../master/instalasi/instalasi.queries"
 import { daftarRekanan } from "../master/rekanan/rekanan.queries"
 import { daftarStatusPulang } from "../master/statuspulang/statuspulang.queries"
+import { statusBed } from "../sysadmin/sysadmin.queries"
 
 const qGetPasienObj = `
 SELECT
@@ -267,6 +268,42 @@ WHERE
         END
 `
 
+const qGetTempatTidur = `
+SELECT
+	mk.id AS kamarid,
+	mk.reportdisplay AS namakamar,
+	count(
+		CASE 
+			mt.objectstatusbedfk WHEN ${statusBed.ISI} 
+				THEN 1 
+			ELSE null 
+		END
+	)::int as totalisi,
+	count(
+		CASE 
+			mt.objectstatusbedfk WHEN ${statusBed.KOSONG} 
+				THEN 1 
+			ELSE null 
+		END
+	)::int as totalkosong,
+	count(
+		CASE 
+			mt.objectstatusbedfk WHEN ${statusBed.RUSAK} 
+				THEN 1 
+			ELSE null 
+		END
+	)::int as totalrusak,
+	count(mt.objectstatusbedfk)::int as totalbed
+FROM m_tempattidur mt
+	LEFT JOIN m_kamar mk ON mt.objectkamarfk = mk.id
+	LEFT JOIN m_kelas mkel ON mk.objectkelasfk = mkel.id
+	LEFT JOIN m_statusbed msb ON mt.objectstatusbedfk = msb.id
+WHERE mt.statusenabled = true
+GROUP BY
+	mk.id,
+	mk.namakamar
+`
+
 
 
 export {
@@ -279,5 +316,6 @@ export {
     qGetPasienMeninggalRanap,
     qCountCaraBayar,
     qCountNonBPJS,
-    qGetKunjunganPoliklinik
+    qGetKunjunganPoliklinik,
+    qGetTempatTidur
 }

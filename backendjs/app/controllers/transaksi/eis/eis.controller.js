@@ -5,7 +5,7 @@ import db from "../../../models";
 import {
     createTransaction
 } from "../../../utils/dbutils";
-import { qCountCaraBayar, qCountNonBPJS, qGetKunjunganPoliklinik, qGetPasienBatal, qGetPasienMeninggalRanap, qGetPasienPulangIGD, qGetPasienPulangRanap, qGetPasienRawatIGD, qGetPasienTerdaftar, qGetPasienTerdaftarRanap } from "../../../queries/eis/eis.queries";
+import { qCountCaraBayar, qCountNonBPJS, qGetKunjunganPoliklinik, qGetPasienBatal, qGetPasienMeninggalRanap, qGetPasienPulangIGD, qGetPasienPulangRanap, qGetPasienRawatIGD, qGetPasienTerdaftar, qGetPasienTerdaftarRanap, qGetTempatTidur } from "../../../queries/eis/eis.queries";
 import { getDateStartEnd } from "../../../utils/dateutils";
 import { daftarInstalasi } from "../../../queries/master/instalasi/instalasi.queries";
 import { daftarRekanan } from "../../../queries/master/rekanan/rekanan.queries";
@@ -201,12 +201,17 @@ const getPasienRanap = async (req, res) => {
             akhirTanggalSelesai, 
         )
 
+        // TODO: numpang sementara
+        const tempatTidur = await pool.query(qGetTempatTidur)
+
         const tempres = {
             pasienTerdaftar: arrTimesTerdaftar,
             pasienPulang: arrTimesPulang,
             pasienMeninggal: arrTimesMeninggal,
-            kamarTerdaftar: kamarTerdaftar
+            kamarTerdaftar: kamarTerdaftar,
+            tempatTidur: tempatTidur.rows
         };
+
         res.status(200).send({
             msg: 'Success',
             code: 200,
