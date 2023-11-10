@@ -9,15 +9,17 @@ import KontainerFlatpickr from '../../../../Components/KontainerFlatpickr/Kontai
 import DataTable from 'react-data-table-component'
 import LoadingTable from '../../../../Components/Table/LoadingTable';
 import {
-  getLaporanRl_5_2, kendaliDokumenResetForm
+  getLaporanRl_5_3, kendaliDokumenResetForm
 } from '../../../../store/actions';
+import { Grid, _ } from 'gridjs-react';
+import { BaseExample } from '../../../../pages/Tables/GridTables/GridTablesData';
 
 const RL5_3 = () => {
   document.title = "Laporan RL5.3";
   const dispatch = useDispatch();
   const { dataGrid, loadingGrid } = useSelector((state) => ({
-    dataGrid: state.KendaliDokumen.getLaporanRl_5_2.data,
-    loadingGrid: state.KendaliDokumen.getLaporanRl_5_2.loading,
+    dataGrid: state.KendaliDokumen.getLaporanRl_5_3.data,
+    loadingGrid: state.KendaliDokumen.getLaporanRl_5_3.loading,
   }));
   const [dateNow] = useState(() => new Date().toISOString())
   const vSetValidation = useFormik({
@@ -31,7 +33,7 @@ const RL5_3 = () => {
     }),
     onSubmit: (values) => {
       console.log(values)
-      dispatch(getLaporanRl_5_2({
+      dispatch(getLaporanRl_5_3({
         start: values.start || dateNow,
         end: values.end || dateNow
       }));
@@ -39,25 +41,41 @@ const RL5_3 = () => {
   })
   const columns = [
     {
-      name: <span className="font-weight-bold fs-13">No</span>,
-      selector: (row) => row.no,
-      sortable: true,
-      width: '60px',
-      wrap: true,
+      name: 'No',
+      formatter: (cell) => _(<span>{cell}</span>),
+      pageTitle: 'test'
     },
     {
-      name: <span className="font-weight-bold fs-13">Jenis Kegiatan</span>,
-      selector: (row) => row.spesialis,
-      sortable: true,
-      // width: '60px',
-      wrap: true,
+      id: 'kdicdx',
+      name: 'Kode ICD 10'
+      // formatter: (cell) => _(<a href="/#"> {cell} </a>)
     },
     {
-      name: <span className="font-weight-bold fs-13">Jumlah</span>,
-      selector: (row) => row.jml,
-      sortable: true,
-      // width: '60px',
-      wrap: true,
+      id: 'namaicdx',
+      name: 'Deskripsi'
+    },
+    {
+      name: 'Pasien Keluar Hidup Menurut Jenis Kelamin',
+      columns: [{
+        id: 'ph_lk',
+        name: 'LK'
+      }, {
+        id: 'ph_pl',
+        name: 'PR'
+      }]
+    }, {
+      name: 'Pasien Keluar Mati Menurut Jenis Kelamin',
+      columns: [{
+        id: 'pm_lk',
+        name: 'LK'
+      }, {
+        id: 'pm_pl',
+        name: 'PR'
+      }]
+    },
+    {
+      id: 'total',
+      name: 'Total (Hidup & Mati)'
     },
   ]
   return (
@@ -126,19 +144,52 @@ const RL5_3 = () => {
                 </Col>
                 <Col lg={12}>
                   <div id="table-gridjs">
-                    <DataTable
-                      fixedHeader
-                      fixedHeaderScrollHeight="330px"
+                    <Grid
+                      data={dataGrid}
                       columns={columns}
-                      pagination
-                      data={dataGrid || []}
-                      progressPending={loadingGrid}
-                      customStyles={tableCustomStyles}
-                      progressComponent={<LoadingTable />}
-                      // onRowClicked={(row) => handleClick(row)}
-                      pointerOnHover
-                      highlightOnHover
+                      sort={true}
+                      fixedHeader={true}
+                      pagination={{
+                        enabled: true, limit: 10, summary: false
+                      }}
+                      style={{
+                        table: {
+                          border: '1px solid #ccc',
+                        },
+                        th: {
+                          'background-color': 'rgba(230, 126, 34)',
+                          color: '#000',
+                          'border-bottom': '1px solid #ccc',
+                          'text-align': 'center',
+                        },
+                        td: {
+                          'text-align': 'center',
+                        },
+                      }}
                     />
+                    {/* <Grid
+                      data={data}
+                      columns={[{
+                        name: 'ID',
+                        formatter: (cell) => _(<span className="fw-semibold">{cell}</span>)
+                      },
+                        "Name",
+                      {
+                        name: 'Email',
+                        formatter: (cell) => _(<a href="/#"> {cell} </a>)
+                      },
+                        "Position", "Company", "Country",
+                      {
+                        name: 'Actions',
+                        width: '120px',
+                        formatter: (cell) => _(<a href='/#' className='text-reset text-decoration-underline'> Details </a>)
+                      },
+                      ]}
+                      // search={true}
+                      sort={true}
+                    // pagination={{ enabled: true, limit: 5, }}
+                    /> */}
+                    {/* <BaseExample /> */}
                   </div>
                 </Col>
               </Row>
@@ -149,6 +200,7 @@ const RL5_3 = () => {
     </React.Fragment>
   )
 }
+
 const tableCustomStyles = {
   headRow: {
     style: {

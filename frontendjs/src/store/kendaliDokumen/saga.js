@@ -20,7 +20,7 @@ import {
     UPDATE_PRINTED,
     LAPORAN_RL_3_3_GET,LAPORAN_RL_3_6_GET,LAPORAN_RL_3_14_GET,
     LAPORAN_RL_3_15_GET,LAPORAN_RL_3_11_GET,LAPORAN_RL_3_10_GET,
-    LAPORAN_RL_5_1_GET,LAPORAN_RL_5_2_GET
+    LAPORAN_RL_5_1_GET,LAPORAN_RL_5_2_GET, LAPORAN_RL_5_3_GET
 } from "./actionType";
 
 import {
@@ -54,7 +54,8 @@ import {
     getLaporanRl_3_11Success,getLaporanRl_3_11Error,
     getLaporanRl_3_10Success,getLaporanRl_3_10Error,
     getLaporanRl_5_1Success,getLaporanRl_5_1Error,
-    getLaporanRl_5_2Success,getLaporanRl_5_2Error
+    getLaporanRl_5_2Success,getLaporanRl_5_2Error,
+    getLaporanRl_5_3Success,getLaporanRl_5_3Error
 } from "./action";
 
 import { toast } from 'react-toastify';
@@ -400,6 +401,19 @@ export function* watchongetLaporanRl_5_2(){
     yield takeEvery(LAPORAN_RL_5_2_GET, ongetLaporanRl_5_2)
 }
 
+function* ongetLaporanRl_5_3({payload: {queries}}) {
+    try{
+        const response = yield call(serviceRekammedis.getLaporanRl_5_3, queries);
+        yield put(getLaporanRl_5_3Success(response.data));
+    } catch (error) {
+        yield put(getLaporanRl_5_3Error(error));
+    }
+}
+
+export function* watchongetLaporanRl_5_3(){
+    yield takeEvery(LAPORAN_RL_5_3_GET, ongetLaporanRl_5_3)
+}
+
 function* kendaliDokumenSaga() {
     yield all([
         fork(watchonDaftarDokumenRekammedis),
@@ -425,7 +439,8 @@ function* kendaliDokumenSaga() {
         fork(watchongetLaporanRl_3_11),
         fork(watchongetLaporanRl_3_10),
         fork(watchongetLaporanRl_5_1),
-        fork(watchongetLaporanRl_5_2)
+        fork(watchongetLaporanRl_5_2),
+        fork(watchongetLaporanRl_5_3)
     ]);
 }
 

@@ -55,7 +55,8 @@ import {
     LAPORAN_RL_3_11_GET,LAPORAN_RL_3_11_GET_SUCCESS,LAPORAN_RL_3_11_GET_ERROR,
     LAPORAN_RL_3_10_GET,LAPORAN_RL_3_10_GET_SUCCESS,LAPORAN_RL_3_10_GET_ERROR,
     LAPORAN_RL_5_1_GET,LAPORAN_RL_5_1_GET_SUCCESS,LAPORAN_RL_5_1_GET_ERROR,
-    LAPORAN_RL_5_2_GET,LAPORAN_RL_5_2_GET_SUCCESS,LAPORAN_RL_5_2_GET_ERROR
+    LAPORAN_RL_5_2_GET,LAPORAN_RL_5_2_GET_SUCCESS,LAPORAN_RL_5_2_GET_ERROR,
+    LAPORAN_RL_5_3_GET,LAPORAN_RL_5_3_GET_SUCCESS,LAPORAN_RL_5_3_GET_ERROR
 } from "./actionType";
 
 export const kendaliDokumenResetForm = () => ({
@@ -439,5 +440,22 @@ export const getLaporanRl_5_2Success = (data) => ({
 
 export const getLaporanRl_5_2Error = (error) => ({
     type: LAPORAN_RL_5_2_GET_ERROR,
+    payload: error,
+});
+
+export const getLaporanRl_5_3 = (queries) => ({
+    type: LAPORAN_RL_5_3_GET,
+    payload: {
+        queries,
+    },
+});
+
+export const getLaporanRl_5_3Success = (data) => ({
+    type: LAPORAN_RL_5_3_GET_SUCCESS,
+    payload: data,
+});
+
+export const getLaporanRl_5_3Error = (error) => ({
+    type: LAPORAN_RL_5_3_GET_ERROR,
     payload: error,
 });

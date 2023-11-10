@@ -165,6 +165,25 @@ const qLaporanRL5_2=`select row_number() OVER (ORDER BY ms.reportdisplay) AS no,
     group by  ms.reportdisplay
     order by ms.reportdisplay`
 
+const qLaporanRL5_3 =`SELECT row_number() OVER (ORDER BY mi.kdicdx) AS id,mi.kdicdx, mi.namaicdx,
+SUM(CASE WHEN td2.objectcarapulangrifk <> 4 AND mp.objectjeniskelaminfk = 1 THEN 1 ELSE 0 END) AS ph_lk,
+SUM(CASE WHEN td2.objectcarapulangrifk <>4 AND mp.objectjeniskelaminfk = 2 THEN 1 ELSE 0 END) AS ph_pl,
+SUM(CASE WHEN td2.objectcarapulangrifk = 4 AND mp.objectjeniskelaminfk = 1 THEN 1 ELSE 0 END) AS pm_lk,
+SUM(CASE WHEN td2.objectcarapulangrifk = 4 AND mp.objectjeniskelaminfk = 2 THEN 1 ELSE 0 END) AS pm_pl,
+SUM(CASE WHEN td2.objectcarapulangrifk <> 4 AND mp.objectjeniskelaminfk = 1 THEN 1 ELSE 0 END) +
+SUM(CASE WHEN td2.objectcarapulangrifk <>4 AND mp.objectjeniskelaminfk = 2 THEN 1 ELSE 0 END) +
+SUM(CASE WHEN td2.objectcarapulangrifk = 4 AND mp.objectjeniskelaminfk = 1 THEN 1 ELSE 0 END) +
+SUM(CASE WHEN td2.objectcarapulangrifk = 4 AND mp.objectjeniskelaminfk = 2 THEN 1 ELSE 0 END) AS total
+FROM t_antreanpemeriksaan ta
+JOIN t_diagnosapasien td ON td.objectantreanpemeriksaanfk = ta.norec
+JOIN m_icdx mi ON mi.id = td.objecticdxfk
+JOIN t_daftarpasien td2 ON td2.norec = ta.objectdaftarpasienfk AND td2.objectunitlastfk = ta.objectunitfk
+JOIN m_unit mu ON ta.objectunitfk = mu.id
+JOIN m_pasien mp ON mp.id = td2.nocmfk
+WHERE mu.objectinstalasifk = 2 AND td2.statusenabled =true AND td2.tglpulang between $1 and $2
+GROUP BY mi.kdicdx, mi.namaicdx
+order by total desc`
+
 export default {
     qResult,
     qGetDetailFromJenisProduk,
@@ -179,5 +198,6 @@ export default {
     qLaporanRL3_11,
     qLaporanRL3_10,
     qLaporanRL5_1,
-    qLaporanRL5_2
+    qLaporanRL5_2,
+    qLaporanRL5_3
 }
