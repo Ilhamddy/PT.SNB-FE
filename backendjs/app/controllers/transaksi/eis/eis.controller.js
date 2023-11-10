@@ -5,7 +5,7 @@ import db from "../../../models";
 import {
     createTransaction
 } from "../../../utils/dbutils";
-import { qCountCaraBayar, qCountNonBPJS, qGetKunjunganPoliklinik, qGetPasienBatal, qGetPasienMeninggalRanap, qGetPasienPulangIGD, qGetPasienPulangRanap, qGetPasienRawatIGD, qGetPasienTerdaftar } from "../../../queries/eis/eis.queries";
+import { qCountCaraBayar, qCountNonBPJS, qGetKunjunganPoliklinik, qGetPasienBatal, qGetPasienMeninggalRanap, qGetPasienPulangIGD, qGetPasienPulangRanap, qGetPasienRawatIGD, qGetPasienTerdaftar, qGetPasienTerdaftarRanap } from "../../../queries/eis/eis.queries";
 import { getDateStartEnd } from "../../../utils/dateutils";
 import { daftarInstalasi } from "../../../queries/master/instalasi/instalasi.queries";
 import { daftarRekanan } from "../../../queries/master/rekanan/rekanan.queries";
@@ -153,10 +153,9 @@ const getPasienRanap = async (req, res) => {
         = getDateStartEnd(tanggalselesai);
 
         let [pasienTerdaftar, pasienPulang, pasienMeninggal] = await Promise.all([
-            pool.query(qGetPasienTerdaftar, [
+            pool.query(qGetPasienTerdaftarRanap, [
                 awalTanggalMulai || '',
-                akhirTanggalSelesai || '',
-                daftarInstalasi.INSTALASI_RAWAT_INAP
+                akhirTanggalSelesai || ''
             ]),
             pool.query(qGetPasienPulangRanap , [
                 awalTanggalMulai || '',
@@ -170,6 +169,18 @@ const getPasienRanap = async (req, res) => {
         pasienTerdaftar = pasienTerdaftar.rows
         pasienPulang = pasienPulang.rows
         pasienMeninggal = pasienMeninggal.rows
+        let kamarTerdaftar = groupBy(pasienTerdaftar, "idkamar", "namakamar")
+        let kamarPasienPulang = groupBy(pasienPulang, "idkamar", "namakamar")
+        kamarTerdaftar.map((terdaftar) => {
+            const totalPulang = kamarPasienPulang.reduce((prev, pulang) => {
+                if(pulang.idkamar === terdaftar.idkamar){
+                    return prev + pulang._total
+                }
+                return prev
+            }, 0)
+            terdaftar._totalpulang = totalPulang
+        })
+        kamarTerdaftar = kamarTerdaftar.sort((a, b) => b._total - a._total)
 
         const arrTimesTerdaftar = hGroupDateAr(
             pasienTerdaftar, 
@@ -193,7 +204,8 @@ const getPasienRanap = async (req, res) => {
         const tempres = {
             pasienTerdaftar: arrTimesTerdaftar,
             pasienPulang: arrTimesPulang,
-            pasienMeninggal: arrTimesMeninggal
+            pasienMeninggal: arrTimesMeninggal,
+            kamarTerdaftar: kamarTerdaftar
         };
         res.status(200).send({
             msg: 'Success',

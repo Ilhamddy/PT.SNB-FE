@@ -510,7 +510,7 @@ const PasienTotal = () => {
       label: 'Pasien Laboratorium',
       badge: 'ri-arrow-up-circle-line text-success',
       icon: 'ri-trophy-line',
-      counter: '1596.5',
+      counter: '250',
       decimals: 0,
       prefix: '',
       separator: '.',
@@ -652,57 +652,30 @@ const KunjunganPoliklinik = () => {
 }
 
 const SensusPasienRI = () => {
+  const kamarTerdaftar = useSelector(
+    (state) => state.Eis.getPasienRanap.data?.kamarTerdaftar || []
+  )
   /**
    * @type {import("react-data-table-component").TableColumn[]}
    */
   const columnsDetail = [
     {
-      name: <span className="font-weight-bold fs-13">Nama produk</span>,
+      name: <span className="font-weight-bold fs-13">Nama Ruangan</span>,
       sortable: true,
-      selector: (row) => row.produk.namaproduk,
+      selector: (row) => row.namakamar,
       width: '120px',
     },
     {
-      name: <span className="font-weight-bold fs-13">Qty Penerimaan</span>,
-      selector: (row) => row.jumlahterima,
+      name: <span className="font-weight-bold fs-13">Pasien Masuk</span>,
+      selector: (row) => row._total,
       sortable: true,
       width: '110px',
     },
 
     {
-      name: <span className="font-weight-bold fs-13">Harga satuan kecil</span>,
+      name: <span className="font-weight-bold fs-13">Pasien Keluar</span>,
       sortable: true,
-      selector: (row) => `Rp${row.hargasatuankecil?.toLocaleString('id-ID')}`,
-      width: '100px',
-    },
-    {
-      name: <span className="font-weight-bold fs-13">Diskon</span>,
-      sortable: true,
-      selector: (row) => `Rp${row.diskonrupiah}`,
-      width: '150px',
-    },
-    {
-      name: <span className="font-weight-bold fs-13">PPN</span>,
-      sortable: true,
-      selector: (row) => `Rp${row.ppnrupiahproduk}`,
-      width: '150px',
-    },
-    {
-      name: <span className="font-weight-bold fs-13">Total</span>,
-      sortable: true,
-      selector: (row) => `Rp${row.totalproduk}`,
-      width: '150px',
-    },
-    {
-      name: <span className="font-weight-bold fs-13">E.D</span>,
-      sortable: true,
-      selector: (row) => dateLocal(row.tanggaled),
-      width: '150px',
-    },
-    {
-      name: <span className="font-weight-bold fs-13">No Batch</span>,
-      sortable: true,
-      selector: (row) => row.nobatch,
+      selector: (row) => row._totalpulang,
       width: '100px',
     },
   ]
@@ -718,7 +691,8 @@ const SensusPasienRI = () => {
         fixedHeader
         columns={columnsDetail}
         pagination
-        data={[]}
+        paginationPerPage={5}
+        data={kamarTerdaftar}
         progressPending={false}
         customStyles={tableCustomStyles}
         progressComponent={<LoadingTable />}
@@ -850,14 +824,14 @@ const PenyakitTerbesar = () => {
 const tableCustomStyles = {
   headRow: {
     style: {
-      color: '#ffffff',
-      backgroundColor: '#e67e22',
+      color: '#878A99',
+      backgroundColor: '#F3F6F9',
     },
   },
   rows: {
     style: {
       color: 'black',
-      backgroundColor: '#f1f2f6',
+      backgroundColor: '#ffffff',
     },
   },
 }

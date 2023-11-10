@@ -73,10 +73,40 @@ WHERE tdp.statusenabled = true
     AND tdp.objectstatuspulangfk = ${daftarStatusPulang.RAWAT}
 `
 
+const qGetPasienTerdaftarRanap = qGetPasienObj + `,
+    tdp.tglpulang AS tglpulang,
+    mk.reportdisplay AS namakamar,
+    mk.id AS idkamar
+FROM t_antreanpemeriksaan tap 
+    LEFT JOIN m_kamar mk ON mk.id = tap.objectkamarfk
+    LEFT JOIN m_unit mu ON mu.id = tap.objectunitfk
+    LEFT JOIN m_instalasi mi ON mi.id = mu.objectinstalasifk
+    LEFT JOIN t_daftarpasien tdp ON tdp.norec = tap.objectdaftarpasienfk
+    LEFT JOIN m_pasien mp ON mp.id = tdp.nocmfk
+    LEFT JOIN m_rekanan mr ON mr.id = tdp.objectpenjaminfk
+WHERE tdp.statusenabled = true
+    AND 
+        CASE WHEN NULLIF($1, '') IS NULL
+            THEN TRUE
+            ELSE tdp.tglregistrasi >= $1::TIMESTAMP 
+        END
+    AND
+        CASE WHEN NULLIF($2, '') IS NULL
+            THEN TRUE
+            ELSE tdp.tglregistrasi <= $2::TIMESTAMP
+        END
+    AND mi.id = ${daftarInstalasi.INSTALASI_RAWAT_INAP}
+`
+
 const qGetPasienPulangRanap = qGetPasienObj + `,
-    tdp.tglpulang AS tglpulang
-FROM t_daftarpasien tdp
-    LEFT JOIN m_instalasi mi ON mi.id = tdp.objectinstalasifk
+    tdp.tglpulang AS tglpulang,
+    mk.reportdisplay AS namakamar,
+    mk.id AS idkamar
+FROM t_antreanpemeriksaan tap 
+    LEFT JOIN m_kamar mk ON mk.id = tap.objectkamarfk
+    LEFT JOIN m_unit mu ON mu.id = tap.objectunitfk
+    LEFT JOIN m_instalasi mi ON mi.id = mu.objectinstalasifk
+    LEFT JOIN t_daftarpasien tdp ON tdp.norec = tap.objectdaftarpasienfk
     LEFT JOIN m_pasien mp ON mp.id = tdp.nocmfk
     LEFT JOIN m_rekanan mr ON mr.id = tdp.objectpenjaminfk
 WHERE tdp.statusenabled = true
@@ -90,7 +120,7 @@ WHERE tdp.statusenabled = true
             THEN TRUE
             ELSE tdp.tglpulang <= $2::TIMESTAMP
         END
-    AND tdp.objectinstalasifk = ${daftarInstalasi.INSTALASI_RAWAT_INAP}
+    AND mi.id = ${daftarInstalasi.INSTALASI_RAWAT_INAP}
 `
 
 const qGetPasienMeninggalRanap = qGetPasienObj + `,
@@ -241,6 +271,7 @@ WHERE
 
 export {
     qGetPasienTerdaftar,
+    qGetPasienTerdaftarRanap,
     qGetPasienBatal,
     qGetPasienPulangIGD,
     qGetPasienRawatIGD,
