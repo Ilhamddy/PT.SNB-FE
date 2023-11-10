@@ -25,6 +25,7 @@ import {
 import "./RL3_2.scss"
 import * as XLSX from 'xlsx';
 import { Grid, _ } from 'gridjs-react';
+import { BaseExample } from '../../../Tables/GridTables/GridTablesData';
 
 const currentDate = new Date();
 currentDate.setDate(currentDate.getDate());
@@ -291,8 +292,8 @@ const RL3_2 = () => {
                                     </Table>
                                 </div>
                             </div>
-                            {/* <div id="table-gridjs">
-                                <DataTable
+                            <div id="table-gridjs">
+                                {/* <DataTable
                                     fixedHeader
                                     fixedHeaderScrollHeight="700px"
                                     columns={columns}
@@ -301,8 +302,9 @@ const RL3_2 = () => {
                                     progressPending={loading}
                                     progressComponent={<LoadingTable />}
                                     customStyles={tableCustomStyles}
-                                />
-                            </div> */}
+                                /> */}
+                                <BaseExample />
+                            </div>
                         </CardBody>
                     </Card>
                 </Container>

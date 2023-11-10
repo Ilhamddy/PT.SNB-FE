@@ -150,35 +150,36 @@ const RL3_15 = () => {
                     Export to Excel
                   </Button>
                 </Col>
-                <Col lg={12} style={{ marginTop: '4px' }}>
-                  <div id="table-gridjs">
-                    <Grid
-                      data={dataGrid}
-                      columns={columns}
-                      sort={true}
-                      fixedHeader={true}
-                      pagination={{ enabled: true, limit: 5, }}
-                      style={{
-                        table: {
-                          border: '1px solid #ccc',
-                        },
-                        th: {
-                          'background-color': 'rgba(230, 126, 34)',
-                          color: '#000',
-                          'border-bottom': '1px solid #ccc',
-                          'text-align': 'center',
-                        },
-                        td: {
-                          'text-align': 'center',
-                        },
-                      }}
-                    />
-                  </div>
-                </Col>
+                {/* <Col lg={12} style={{ marginTop: '4px' }}>
+                  
+                </Col> */}
               </Row>
             </Card>
           </Form>
         </Container>
+        <div id="table-gridjs">
+          <Grid
+            data={dataGrid}
+            columns={columns}
+            sort={true}
+            fixedHeader={true}
+            pagination={{ enabled: true, limit: 5, }}
+            style={{
+              table: {
+                border: '1px solid #ccc',
+              },
+              th: {
+                'background-color': 'rgba(230, 126, 34)',
+                color: '#000',
+                'border-bottom': '1px solid #ccc',
+                'text-align': 'center',
+              },
+              td: {
+                'text-align': 'center',
+              },
+            }}
+          />
+        </div>
       </div>
     </React.Fragment>
   )

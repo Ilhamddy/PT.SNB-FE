@@ -143,59 +143,37 @@ const RL5_3 = () => {
                   <UncontrolledTooltip placement="top" target="tooltipTopPencarian" > Pencarian </UncontrolledTooltip>
                 </Col>
                 <Col lg={12}>
-                  <div id="table-gridjs">
-                    <Grid
-                      data={dataGrid}
-                      columns={columns}
-                      sort={true}
-                      fixedHeader={true}
-                      pagination={{
-                        enabled: true, limit: 10, summary: false
-                      }}
-                      style={{
-                        table: {
-                          border: '1px solid #ccc',
-                        },
-                        th: {
-                          'background-color': 'rgba(230, 126, 34)',
-                          color: '#000',
-                          'border-bottom': '1px solid #ccc',
-                          'text-align': 'center',
-                        },
-                        td: {
-                          'text-align': 'center',
-                        },
-                      }}
-                    />
-                    {/* <Grid
-                      data={data}
-                      columns={[{
-                        name: 'ID',
-                        formatter: (cell) => _(<span className="fw-semibold">{cell}</span>)
-                      },
-                        "Name",
-                      {
-                        name: 'Email',
-                        formatter: (cell) => _(<a href="/#"> {cell} </a>)
-                      },
-                        "Position", "Company", "Country",
-                      {
-                        name: 'Actions',
-                        width: '120px',
-                        formatter: (cell) => _(<a href='/#' className='text-reset text-decoration-underline'> Details </a>)
-                      },
-                      ]}
-                      // search={true}
-                      sort={true}
-                    // pagination={{ enabled: true, limit: 5, }}
-                    /> */}
-                    {/* <BaseExample /> */}
-                  </div>
+
                 </Col>
               </Row>
             </Card>
           </Form>
         </Container>
+        <div id="table-gridjs">
+          <Grid
+            data={dataGrid}
+            columns={columns}
+            sort={true}
+            fixedHeader={true}
+            pagination={{
+              enabled: true, limit: 10, summary: false
+            }}
+            style={{
+              table: {
+                border: '1px solid #ccc',
+              },
+              th: {
+                'background-color': 'rgba(230, 126, 34)',
+                color: '#000',
+                'border-bottom': '1px solid #ccc',
+                'text-align': 'center',
+              },
+              td: {
+                'text-align': 'center',
+              },
+            }}
+          />
+        </div>
       </div>
     </React.Fragment>
   )
