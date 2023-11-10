@@ -1,7 +1,10 @@
 import pool from "../../../config/dbcon.query";
 import * as uuid from 'uuid'
 import db from "../../../models";
-import { qGetDetailPemesanan, qGetDetailPenerimaan, qGetJenisDetailProdukLainLain, 
+import { 
+    qGetDetailPemesanan, 
+    qGetDetailPenerimaan, 
+    qGetJenisDetailProdukLainLain, 
     qGetKartuStok, 
     qGetKemasan, 
     qGetListPemesanan, 
@@ -18,8 +21,14 @@ import { qGetDetailPemesanan, qGetDetailPenerimaan, qGetJenisDetailProdukLainLai
     qGetStokOpname,
     qGetStokOpnameDetail,
     qGetStokOpnameStokUnit,
-    qGetStokUnit, 
+    qGetStokUnit,
+    qGetUnitUser,
+    qGetDetailRetur, 
+    qGetReturBarang,
+    qGetListRetur,
+    qGetDetailReturFromDetailPenerimaan
 } from "../../../queries/gudang/gudang.queries";
+import unitQueries, { daftarUnit } from "../../../queries/master/unit/unit.queries"
 import {
     createTransaction
 } from "../../../utils/dbutils";
@@ -630,11 +639,74 @@ const createOrUpdatePenerimaan = async (req, res) => {
     }
 }
 
+const upsertReturBarang = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const {
+            upsertedRetur,
+            upsertedDetailRetur,
+            upsertedStokUnitRetur,
+            createdKartuStokPenerimaan
+        } = await db.sequelize.transaction(async (transaction) => {
+            const {upsertedRetur, norecretur, norecpenerimaan, penerimaan}
+            = await hUpsertRetur(req, res, transaction)
+            const {upsertedDetailRetur} 
+            = await hUpsertDetailRetur(req, res, transaction, {
+                norecretur, 
+                norecpenerimaan
+            })
+            const {upsertedStokUnitRetur} 
+            = await hUpsertStokUnitRetur(req, res, transaction, {
+                upsertedDetailRetur, 
+                penerimaan
+            })
+            const {
+                createdKartuStokPenerimaan
+            } = await hCreateKartuStokRetur(
+                req,
+                res,
+                transaction,
+                {
+                    upsertedRetur,
+                    upsertedStokUnitRetur
+                }
+            )
+            return {
+                upsertedRetur,
+                upsertedDetailRetur,
+                upsertedStokUnitRetur,
+                createdKartuStokPenerimaan
+            }
+        });
+        
+        const tempres = {
+            upsertedRetur,
+            upsertedDetailRetur,
+            upsertedStokUnitRetur,
+            createdKartuStokPenerimaan
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 
 const getPenerimaan = async (req, res) => {
     const logger = res.locals.logger
     try{
-        const {norecpenerimaan} = req.query
+        const {norecpenerimaan, norecretur} = req.query
         if(!norecpenerimaan) throw Error("norecpenerimaan tidak boleh kosong")
         let detailPenerimaan = 
             (await pool.query(qGetDetailPenerimaan, [norecpenerimaan])).rows
@@ -642,24 +714,36 @@ const getPenerimaan = async (req, res) => {
             (await pool.query(qGetPenerimaan, [norecpenerimaan])).rows[0]
         let detailPemesanan = 
             (await pool.query(qGetDetailPemesanan, [penerimaan.norecpemesanan])).rows
+        
+        detailPenerimaan = await Promise.all(
+            detailPenerimaan.map(
+                async (item) => {
+                    let allRetur = (await pool.query(qGetDetailReturFromDetailPenerimaan, [item.norecdetailpenerimaan])).rows
+                    allRetur = allRetur.filter(f => f.norecretur !== norecretur)
+                    const jumlahTotalRetur = allRetur.reduce((prev, ret) => prev + ret.jumlahretur, 0)
+                    return ({
+                        ...item,
+                        jumlahterima: item.jumlahterima.toLocaleString('id-ID', {maximumFractionDigit: 10}),
+                        hargasatuankecil: item.hargasatuankecil.toLocaleString('id-ID', {maximumFractionDigit: 10}),
+                        hargasatuanterima: item.hargasatuanterima.toLocaleString('id-ID', {maximumFractionDigit: 10}),
+                        diskonrupiah: item.diskonrupiah.toLocaleString('id-ID', {maximumFractionDigit: 10}),
+                        diskonpersen: item.diskonpersen.toLocaleString('id-ID', {maximumFractionDigit: 10}),
+                        diskonrupiah: item.diskonrupiah.toLocaleString('id-ID', {maximumFractionDigit: 10}), 
+                        ppnrupiahproduk: item.ppnrupiahproduk.toLocaleString('id-ID', {maximumFractionDigit: 10}),
+                        ppnpersenproduk: item.ppnpersenproduk.toLocaleString('id-ID', {maximumFractionDigit: 10}),
+                        subtotalproduk: item.subtotalproduk.toLocaleString('id-ID', {maximumFractionDigit: 10}),
+                        totalproduk: item.totalproduk.toLocaleString('id-ID', {maximumFractionDigit: 10}),
+                        allretur: allRetur,
+                        jumlahtotalretur: jumlahTotalRetur
+                    })
+                }
+            )
+        )
 
-        detailPenerimaan = detailPenerimaan.map((item) => ({
-            ...item,
-            jumlahterima: item.jumlahterima.toLocaleString('id-ID', {maximumFractionDigit: 10}),
-            hargasatuankecil: item.hargasatuankecil.toLocaleString('id-ID', {maximumFractionDigit: 10}),
-            hargasatuanterima: item.hargasatuanterima.toLocaleString('id-ID', {maximumFractionDigit: 10}),
-            diskonrupiah: item.diskonrupiah.toLocaleString('id-ID', {maximumFractionDigit: 10}),
-            diskonpersen: item.diskonpersen.toLocaleString('id-ID', {maximumFractionDigit: 10}),
-            diskonrupiah: item.diskonrupiah.toLocaleString('id-ID', {maximumFractionDigit: 10}), 
-            ppnrupiahproduk: item.ppnrupiahproduk.toLocaleString('id-ID', {maximumFractionDigit: 10}),
-            ppnpersenproduk: item.ppnpersenproduk.toLocaleString('id-ID', {maximumFractionDigit: 10}),
-            subtotalproduk: item.subtotalproduk.toLocaleString('id-ID', {maximumFractionDigit: 10}),
-            totalproduk: item.totalproduk.toLocaleString('id-ID', {maximumFractionDigit: 10}),
-        }))
         let tempres = {
             detailPenerimaan: detailPenerimaan,
             penerimaan: penerimaan,
-            detailPemesanan: detailPemesanan
+            detailPemesanan: detailPemesanan,
         }
         res.status(200).send({
             data: tempres,
@@ -719,10 +803,45 @@ const getListPenerimaan = async (req, res) => {
     }
 }
 
+const getComboKartuStok = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const unit = (await pool.query(unitQueries.getAll, [])).rows
+        let unitUser = (await pool.query(unitQueries.qGetUnitUser, [req.userId])).rows
+        const gudangFound = unitUser.findIndex(x => x.value === daftarUnit.GUDANG_FARMASI) >= 0
+        if(gudangFound){
+            unitUser = unit    
+        }
+        const tempres = {
+            unit: unit,
+            unitUser: unitUser
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+
+
 const getKartuStok = async (req, res) => {
     const logger = res.locals.logger
     try{
-        const kartuStok = (await pool.query(qGetKartuStok, [])).rows
+        const unitChosen = req.query.unit
+        const unitUser = await pool.query(unitQueries.qGetUnitUser, [req.userId])
+        const idUnitUser = unitUser.rows.map(unitUser => unitUser.value)
+        const kartuStok = (await pool.query(qGetKartuStok, [idUnitUser, unitChosen || ''])).rows
         const tempres = {
             kartustok: kartuStok
         }
@@ -747,7 +866,10 @@ const getKartuStok = async (req, res) => {
 const getStokUnit = async (req, res) => {
     const logger = res.locals.logger
     try{
-        const stokUnit = (await pool.query(qGetStokUnit, [])).rows
+        const unitChosen = req.query.unit
+        const unitUser = await pool.query(unitQueries.qGetUnitUser, [req.userId])
+        const idUnitUser = unitUser.rows.map(unitUser => unitUser.value)
+        const stokUnit = (await pool.query(qGetStokUnit, [idUnitUser, unitChosen || ''])).rows
         const tempres = {
             stokUnit: stokUnit
         }
@@ -765,6 +887,36 @@ const getStokUnit = async (req, res) => {
             success: false,
             msg: 'Get stok unit gagal',
             code: 500
+        });
+    }
+}
+
+const getComboStokUnit = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const unit = (await pool.query(unitQueries.getAll, [])).rows
+        let unitUser = (await pool.query(unitQueries.qGetUnitUser, [req.userId])).rows
+        const gudangFound = unitUser.findIndex(x => x.value === daftarUnit.GUDANG_FARMASI) >= 0
+        if(gudangFound){
+            unitUser = unit    
+        }
+        const tempres = {
+            unit: unit,
+            unitUser: unitUser
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
         });
     }
 }
@@ -1020,7 +1172,7 @@ const createOrUpdatePemesanan = async (req, res) => {
             success: true
         });
     } catch (error) {
-        logger.error(error);
+        error.errors.map(e => logger.error(e.message)) 
         res.status(500).send({
             msg: error.message,
             code: 500,
@@ -1113,6 +1265,119 @@ const getListPemesanan = async (req, res) => {
     }
 }
 
+const getUnitUser = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const unitUser = await pool.query(qGetUnitUser, [req.userId])
+        const tempres = {
+            unitUser
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+
+const getListRetur = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        let listRetur = (await pool.query(qGetListRetur)).rows
+        listRetur = await Promise.all(
+            listRetur.map(async (retur) => {
+                const newRetur = { ...retur }
+                
+                const listDetail = 
+                    (await pool.query(
+                        qGetDetailRetur, 
+                        [retur.norecretur]
+                        )).rows
+                newRetur.detailretur = listDetail
+                return newRetur
+            }
+        ))
+        const tempres = {
+            listRetur
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+const getRetur = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const {norecretur} = req.query
+        let detailRetur = 
+        (await pool.query(qGetDetailRetur, [norecretur])).rows
+        const retur = 
+        (await pool.query(qGetReturBarang, [norecretur])).rows[0]
+        detailRetur = await Promise.all(
+            detailRetur.map( 
+                async (item) => {
+                    let allRetur = (await pool.query(qGetDetailReturFromDetailPenerimaan, [item.norecdetailpenerimaan])).rows
+                    allRetur = allRetur.filter(f => f.norecretur !== norecretur)
+                    const jumlahTotalRetur = allRetur.reduce((prev, ret) => prev + ret.jumlahretur, 0)
+                    return ({
+                    ...item,
+                        jumlahretur: item.jumlahretur.toLocaleString('id-ID', {maximumFractionDigit: 10}),
+                        jumlahterima: item.jumlahterima.toLocaleString('id-ID', {maximumFractionDigit: 10}),
+                        hargasatuankecil: item.hargasatuankecil.toLocaleString('id-ID', {maximumFractionDigit: 10}),
+                        hargasatuanterima: item.hargasatuanterima.toLocaleString('id-ID', {maximumFractionDigit: 10}),
+                        diskonrupiah: item.diskonrupiah.toLocaleString('id-ID', {maximumFractionDigit: 10}),
+                        diskonpersen: item.diskonpersen.toLocaleString('id-ID', {maximumFractionDigit: 10}),
+                        ppnrupiahproduk: item.ppnrupiahproduk.toLocaleString('id-ID', {maximumFractionDigit: 10}),
+                        ppnpersenproduk: item.ppnpersenproduk.toLocaleString('id-ID', {maximumFractionDigit: 10}),
+                        subtotalproduk: item.subtotalproduk.toLocaleString('id-ID', {maximumFractionDigit: 10}),
+                        totalproduk: item.totalproduk.toLocaleString('id-ID', {maximumFractionDigit: 10}),
+                        jumlahtotalretur: jumlahTotalRetur
+                    })
+            })
+        )
+        const tempres = {
+            detailRetur: detailRetur,
+            retur: retur || null
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 
 export default {
     createOrUpdateProdukObat,
@@ -1128,8 +1393,11 @@ export default {
     getKemasanFromProduk,
     getPenerimaan,
     createOrUpdatePenerimaan,
+    upsertReturBarang,
     getListPenerimaan,
+    getComboKartuStok,
     getKartuStok,
+    getComboStokUnit,
     getStokUnit,
     createOrUpdateStokOpname,
     getStokOpname,
@@ -1137,11 +1405,14 @@ export default {
     updatedStokOpnameDetails,
     createOrUpdatePemesanan,
     getPemesanan,
-    getListPemesanan
+    getListPemesanan,
+    getUnitUser,
+    getListRetur,
+    getRetur,
+
 }
 
 const hCreatePesanDetail = async (req, res, transaction, {newPemesanan}) => {
-    const norec = uuid.v4().substring(0, 32)
     const allDetail = req.body.detail || []
     const norecpesan = req.body.norecpesan 
     let detailPesan = []
@@ -1163,6 +1434,7 @@ const hCreatePesanDetail = async (req, res, transaction, {newPemesanan}) => {
     detailPesan = await Promise.all(
         allDetail.map(
             async (detail) => {
+                const norec = uuid.v4().substring(0, 32)
                 let detailPemesanan = await db.t_pemesananbarangdetail.create({
                     norec: norec,
                     statusenabled: true,
@@ -1236,6 +1508,187 @@ const hUpsertPesan = async (req, res, transaction) => {
     return newPemesanan
 }
 
+
+
+const hUpsertRetur = async (req, res, transaction) => {
+    let upsertedRetur
+    const bodyPenerimaan = req.body.penerimaan
+    if(!bodyPenerimaan) throw new Error("Body kosong")
+    let norecretur = req.body.norecretur
+    let norecpenerimaan = req.body.norecpenerimaan
+
+    if(!norecretur){
+        norecretur = uuid.v4().substring(0, 32)
+        upsertedRetur = await db.t_returbarang.create({
+            norec: norecretur,
+            kdprofile: 0,
+            statusenabled: true,
+            objectpenerimaanbarangfk: norecpenerimaan,
+            tglretur: new Date(),
+            objectpegawaifk: req.idPegawai,
+            tglinput: new Date(),
+            tglupdate: new Date(),
+            islogistik: !!bodyPenerimaan.islogistik,
+            noretur: bodyPenerimaan.nomorretur
+        }, {
+            transaction: transaction
+        })
+        upsertedRetur = upsertedRetur.toJSON()
+    }else{
+        const oldData = await db.t_returbarang.findByPk(norecretur)
+        await oldData.update({
+            kdprofile: 0,
+            statusenabled: true,
+            objectpenerimaanbarangfk: norecpenerimaan,
+            objectpegawaifk: req.idPegawai,
+            tglinput: new Date(),
+            tglupdate: new Date(),
+            islogistik: bodyPenerimaan.islogistik
+        })
+        upsertedRetur = oldData[0]?.toJSON() || null;
+    }
+    let penerimaan = await db.t_penerimaanbarang.findByPk(norecpenerimaan)
+    penerimaan = penerimaan.toJSON()
+    return { upsertedRetur, norecretur, norecpenerimaan, penerimaan }
+}
+
+const hUpsertDetailRetur = async (
+    req, 
+    res, 
+    transaction, 
+    {
+        norecretur,
+        norecpenerimaan
+    }
+) => {
+    const arRetur = req.body.retur
+    let upsertedDetailRetur = []
+    upsertedDetailRetur = await Promise.all(
+        arRetur.map(async (bodyRetur) => {
+            let norecDetailRetur = bodyRetur.norecdetailretur
+            const norecDetailPenerimaan = bodyRetur.norecdetailpenerimaan
+            let updatedValue = null
+            let prevsVal = []
+            if(norecDetailRetur){
+                let prevs = await db.t_returbarangdetail.findByPk(norecDetailRetur,
+                {
+                    lock: transaction.LOCK.UPDATE,
+                    transaction: transaction
+                })
+                prevsVal = prevs?.toJSON() || null
+                await prevs?.destroy({
+                    transaction: transaction
+                })
+            }
+            updatedValue = await db.t_returbarangdetail.create({
+                norec: uuid.v4().substring(0, 32),
+                statusenabled: true,
+                objectreturbarangfk: norecretur,
+                objectpenerimaanbarangdetailfk: norecDetailPenerimaan,
+                jumlah: bodyRetur.jumlahretur,
+                subtotal: bodyRetur.subtotalproduk,
+                diskonpersen: bodyRetur.diskonpersen,
+                diskon: bodyRetur.diskonrupiah,
+                ppnpersen: bodyRetur.ppnpersenproduk,
+                ppn: bodyRetur.ppnrupiahproduk,
+                total: bodyRetur.totalproduk,
+                alasanretur: bodyRetur.alasanretur
+            }, {
+                transaction: transaction
+            }) 
+            const penerimaanDetail = await db.t_penerimaanbarangdetail.findByPk(norecDetailPenerimaan)
+            return {
+                prevValue: prevsVal || null,
+                updatedValue: updatedValue.toJSON(),
+                penerimaanDetail: penerimaanDetail.toJSON()
+            }
+        })
+    )
+    
+    return {
+        upsertedDetailRetur
+    }
+}
+
+const hUpsertStokUnitRetur  = async (
+    req, 
+    res,
+    transaction,
+    {
+        upsertedDetailRetur,
+        penerimaan
+    }
+) => {
+    let upsertedStokUnitRetur = []
+    upsertedStokUnitRetur = await Promise.all(
+        upsertedDetailRetur.map(
+            async ({prevValue, updatedValue, penerimaanDetail}) => {
+                const {
+                    nobatch
+                } = penerimaanDetail
+
+                let changedQty = 0
+                const jmlPaket = updatedValue.jumlah || 0
+                const jmlPaketPrev = prevValue?.jumlah || 0
+                const konversi = penerimaanDetail.jumlahkonversi || 0
+                const konversiPrev = penerimaanDetail?.jumlahkonversi || 0
+                changedQty = (jmlPaketPrev * konversiPrev - jmlPaket * konversi)
+                const {
+                    stokBarangAwalVal: prevStok, 
+                    stokBarangAkhirVal: upserted
+                } = await hUpsertStok(req, res, transaction, {
+                    qtyDiff: changedQty,
+                    nobatch: nobatch,
+                    objectprodukfk: penerimaanDetail.objectprodukfk,
+                    objectunitfk: penerimaan.objectunitfk,
+                })
+
+                return {upserted, prevStok, changedQty}
+            }
+        )
+    )
+    
+    return {upsertedStokUnitRetur}
+}
+
+const hCreateKartuStokRetur = async (
+    req,
+    res,
+    transaction,
+    {
+        upsertedRetur,
+        upsertedStokUnitRetur
+    }
+) => {
+    
+    let createdKartuStokPenerimaan = await Promise.all(
+        upsertedStokUnitRetur.map(async({
+            upserted, 
+            prevStok, 
+            changedQty
+        }) => {
+            const saldoAwal = prevStok?.qty || 0
+            const createdKartuStok = await hCreateKartuStok(
+                req,
+                res,
+                transaction,
+                {
+                    idUnit: upserted.objectunitfk,
+                    idProduk: upserted.objectprodukfk,
+                    saldoAwal: saldoAwal,
+                    saldoAkhir: saldoAwal + changedQty,
+                    tabelTransaksi: "t_returbarangdetail",
+                    norecTransaksi: upsertedRetur.norec,
+                    noBatch: upserted.nobatch
+                }
+            )
+            return createdKartuStok
+        })
+    )
+
+    return {createdKartuStokPenerimaan}
+}
+
 const hCreateOrUpdatePenerimaan = async (req, res, transaction) => {
     let createdOrUpdatedPenerimaan
     const bodyPenerimaan = req.body.penerimaan
@@ -1289,7 +1742,6 @@ const hCreateOrUpdatePenerimaan = async (req, res, transaction) => {
     return { createdOrUpdatedPenerimaan, norecpenerimaan }
 }
 
-
 const hCreateOrUpdateDetailPenerimaan = async (
     req, 
     res, 
@@ -1304,16 +1756,13 @@ const hCreateOrUpdateDetailPenerimaan = async (
         arDetail.map(async (bodyDetail) => {
             let norecDetailPenerimaan = bodyDetail.norecdetailpenerimaan
             let updatedValue = null
-            let prevsVal = []
-            if(!norecDetailPenerimaan){
-                let prevs = await t_penerimaanbarangdetail.findAll({
-                    where: {
-                        objectpenerimaanbarangfk: norecpenerimaan
-                    },
+            let prevsVal = null
+            if(norecDetailPenerimaan){
+                let prevs = await t_penerimaanbarangdetail.findByPk(norecDetailPenerimaan, {
                     lock: transaction.LOCK.UPDATE,
                     transaction: transaction
                 })
-                prevsVal = prevs.map((prev) => prev.toJSON())
+                prevsVal = prevs.toJSON()
                 await Promise.all(
                     prevs.map(async (prev) => {
                         await prev.destroy()
@@ -1343,7 +1792,7 @@ const hCreateOrUpdateDetailPenerimaan = async (
             }) 
             return {
                 prevValue: prevsVal || null,
-                updatedValue
+                updatedValue: updatedValue.toJSON()
             }
         })
     )

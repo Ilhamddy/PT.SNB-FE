@@ -36,6 +36,9 @@ import {
     PENERIMAAN_SAVE_OR_UPDATE,
     PENERIMAAN_SAVE_OR_UPDATE_SUCCESS,
     PENERIMAAN_SAVE_OR_UPDATE_ERROR,
+    UPSERT_RETUR_BARANG,
+    UPSERT_RETUR_BARANG_SUCCESS,
+    UPSERT_RETUR_BARANG_ERROR,
     PENERIMAAN_QUERY_GET,
     PENERIMAAN_QUERY_GET_SUCCESS,
     PENERIMAAN_QUERY_GET_ERROR,
@@ -68,7 +71,22 @@ import {
     GET_PEMESANAN_ERROR,
     GET_LIST_PEMESANAN,
     GET_LIST_PEMESANAN_SUCCESS,
-    GET_LIST_PEMESANAN_ERROR
+    GET_LIST_PEMESANAN_ERROR,
+    GET_UNIT_USER,
+    GET_UNIT_USER_SUCCESS,
+    GET_UNIT_USER_ERROR,
+    GET_COMBO_KARTU_STOK,
+    GET_COMBO_KARTU_STOK_SUCCESS,
+    GET_COMBO_KARTU_STOK_ERROR,
+    GET_COMBO_STOK_UNIT,
+    GET_COMBO_STOK_UNIT_SUCCESS,
+    GET_COMBO_STOK_UNIT_ERROR,
+    GET_LIST_RETUR,
+    GET_LIST_RETUR_SUCCESS,
+    GET_LIST_RETUR_ERROR,
+    GET_RETUR,
+    GET_RETUR_SUCCESS,
+    GET_RETUR_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -132,6 +150,11 @@ const INIT_STATE = {
         loading: false,
         error: null,
     },
+    upsertReturBarang: {
+        data: [],
+        loading: false,
+        error: null
+    },
     penerimaanQueryGet: {
         data: [],
         loading: false,
@@ -186,10 +209,35 @@ const INIT_STATE = {
         data: [],
         loading: false,
         error: null,
+    },
+    getUnitUser: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    getComboKartuStok: {
+        data: [],
+        loading: false,
+        error: null
+    },
+    getComboStokUnit: {
+        data: [],
+        loading: false,
+        error: null
+    },
+    getListRetur: {
+        data: [],
+        loading: false,
+        error: null
+    },
+    getRetur: {
+        data: [],
+        loading: false,
+        error: null
     }
 };
 
-const Registrasi = (state = INIT_STATE, action) => {
+const Gudang = (state = INIT_STATE, action) => {
     switch (action.type) {
         case GUDANG_RESET: {
             return {
@@ -629,6 +677,42 @@ const Registrasi = (state = INIT_STATE, action) => {
                 }
             }
         }
+
+        case UPSERT_RETUR_BARANG: {
+            return {
+                ...state,
+                upsertReturBarang: {
+                    ...state.upsertReturBarang,
+                    loading: true,
+                    data: [],
+                    error: null
+                }
+            }
+        }
+
+        case UPSERT_RETUR_BARANG_SUCCESS: {
+            return {
+                ...state,
+                upsertReturBarang: {
+                    ...state.upsertReturBarang,
+                    loading: true,
+                    data: action.payload.data,
+                    error: null
+                }
+            }
+        }
+
+        case UPSERT_RETUR_BARANG_ERROR: {
+            return {
+                ...state,
+                upsertReturBarang: {
+                    ...state.upsertReturBarang,
+                    loading: true,
+                    data: [],
+                    error: action.payload.data
+                }
+            }
+        }
         
         case PENERIMAAN_QUERY_GET: {
             return {
@@ -1026,10 +1110,187 @@ const Registrasi = (state = INIT_STATE, action) => {
             }
         }
 
+        case GET_UNIT_USER: {
+            return {
+                ...state,
+                getUnitUser: {
+                    ...state.getUnitUser,
+                    loading: true,
+                    data: [],
+                    error: null
+                }
+            }
+        }
+
+        case GET_UNIT_USER_SUCCESS: {
+            return {
+                ...state,
+                getUnitUser: {
+                    ...state.getUnitUser,
+                    loading: false,
+                    data: action.payload.data,
+                    error: null
+                }
+            }
+        }
+
+        case GET_UNIT_USER_ERROR: {
+            return {
+                ...state,
+                getUnitUser: {
+                    ...state.getUnitUser,
+                    loading: false,
+                    error: action.payload.data
+                }
+            }
+        }
+
+        case GET_COMBO_KARTU_STOK: {
+            return {
+                ...state,
+                getComboKartuStok: {
+                    ...state.getComboKartuStok,
+                    loading: true,
+                    data: [],
+                    error: null
+                }
+            }
+        }
+
+        case GET_COMBO_KARTU_STOK_SUCCESS: {
+            return {
+                ...state,
+                getComboKartuStok: {
+                    ...state.getComboKartuStok,
+                    loading: false,
+                    data: action.payload.data,
+                    error: null
+                }
+            }
+        }
+
+        case GET_COMBO_KARTU_STOK_ERROR: {
+            return {
+                ...state,
+                getComboKartuStok: {
+                    ...state.getComboKartuStok,
+                    loading: false,
+                    error: action.payload.data
+                }
+            }
+        }
+        
+        case GET_COMBO_STOK_UNIT: {
+            return {
+                ...state,
+                getComboStokUnit: {
+                    ...state.getComboStokUnit,
+                    loading: true,
+                    data: [],
+                    error: null
+                }
+            }
+        }
+
+        case GET_COMBO_STOK_UNIT_SUCCESS: {
+            return {
+                ...state,
+                getComboStokUnit: {
+                    ...state.getComboStokUnit,
+                    loading: false,
+                    data: action.payload.data,
+                    error: null
+                }
+            }
+        }
+
+        case GET_COMBO_STOK_UNIT_ERROR: {
+            return {
+                ...state,
+                getComboStokUnit: {
+                    ...state.getComboStokUnit,
+                    loading: false,
+                    error: action.payload.data
+                }
+            }
+        }
+        
+        case GET_LIST_RETUR: {
+            return{
+                ...state,
+                getListRetur: {
+                    ...state.getListRetur,
+                    data: [],
+                    loading: false,
+                }
+            }
+        }
+
+        case GET_LIST_RETUR_SUCCESS: {
+            return{
+                ...state,
+                getListRetur: {
+                    ...state.getListRetur,
+                    data: action.payload.data,
+                    loading: false,
+                    error: null
+                }
+            }
+        }
+
+        case GET_LIST_RETUR_ERROR: {
+            return{
+                ...state,
+                getListRetur: {
+                    ...state.getListRetur,
+                    data: [],
+                    loading: false,
+                    error: action.payload
+                }
+            }
+        }
+
+        case GET_RETUR: {
+            return{
+                ...state,
+                getRetur: {
+                    ...state.getRetur,
+                    data: [],
+                    loading: true,
+                    error: null
+                }
+            }
+        }
+
+        case GET_RETUR_SUCCESS: {
+            return{
+                ...state,
+                getRetur: {
+                    ...state.getRetur,
+                    data: action.payload.data,
+                    loading: false,
+                    error: null
+                }
+            }
+        }
+
+        case GET_RETUR_ERROR: {
+            return{
+                ...state,
+                getRetur: {
+                    ...state.getRetur,
+                    data: [],
+                    loading: false,
+                    error: action.payload.data
+                }
+            }
+        }
+
+
         default: {
             return { ...state };
         }
     }
 };
 
-export default Registrasi;
+export default Gudang;

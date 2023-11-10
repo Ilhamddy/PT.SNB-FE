@@ -16,7 +16,7 @@ export default function(app) {
       verifySignUp.checkDuplicateUsernameOrEmail,
       verifySignUp.checkRolesExisted
     ],
-    controller.signup
+    controller.signUpNew
   );
   app.post(
     "/api/auth/login-user-pasien",
@@ -34,4 +34,5 @@ export default function(app) {
   )
 
   app.post("/api/auth/signin", controller.signin);
+
 };

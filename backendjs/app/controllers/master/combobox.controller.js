@@ -448,11 +448,13 @@ const comboPenerimaanBarang = async (req, res) => {
 
 const comboDistribusiOrder = async (req, res) => {
     try{
-        const unit = await pool.query(queriesUnit.getAll)
+        const unit = await pool.query(queriesUnit.getAll, [])
+        const unitUser = await pool.query(queriesUnit.qGetUnitUser, [req.userId])
         const jenisOrderBarang = await pool.query(jenisorderbarangQueries.getAll)
         let tempres = {
             unit: unit.rows,
-            jenisorderbarang: jenisOrderBarang.rows
+            jenisorderbarang: jenisOrderBarang.rows,
+            unitUser: unitUser.rows
         }
         res.status(200).send({
             data: tempres,

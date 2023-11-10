@@ -6,8 +6,12 @@ import pool from "../../config/dbcon.query";
 import queries from '../../queries/setting/mapsesions';
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
-import { pasienSignup } from "./authhelper";
+import { pasienSignup, tempCaptcha, initCaptcha } from "./authhelper";
 import { decrypt, encrypt } from "../../utils/encrypt"
+import queriesSDM from '../../queries/sumberDayaManusia/sumberDayaManusia.queries'
+import svgCaptcha from 'svg-captcha'
+import * as uuid from 'uuid'
+
 
 const User = db.user;
 const Role = db.role;
@@ -15,6 +19,53 @@ const UserPasien = db.users_pasien;
 const m_pasien = db.m_pasien
 
 const Op = db.Sequelize.Op;
+
+const signUpNew = async (req, res) => {
+  const logger = res.locals.logger;
+  try{
+    const { users,mapUserToUnit } = await db.sequelize.transaction(async (transaction) => {
+      let mapUserToUnit =''
+      const users = await User.create({
+          username: req.body.username,
+          statusenabled: req.body.statusEnabled,
+          password: bcrypt.hashSync(req.body.password, 8),
+          objectpegawaifk: req.body.idpegawai,
+          objectaccesmodulfk:req.body.roles
+          }, { transaction });
+
+      for (let i = 0; i < req.body.accesUnit.length; i++) {
+        const element = req.body.accesUnit[i];
+        mapUserToUnit = await db.m_mapusertounit.create({
+          objectuserfk: users.id,
+          objectunitfk: element.value,
+          tglinput: new Date(),
+          tglupdate: new Date(),
+          objectpegawaifk:req.body.idpegawai
+          }, { transaction });
+      }
+      return { users,mapUserToUnit }
+    });
+    
+    const tempres = {
+      users:users,
+      mapUserToUnit:mapUserToUnit
+    };
+    res.status(200).send({
+      msg: 'User Berhasil Didaftarkan',
+      code: 200,
+      data: tempres,
+      success: true
+    });
+  } catch (error) {
+    logger.error(error);
+    res.status(500).send({
+      msg: error.message,
+      code: 500,
+      data: error,
+      success: false
+    });
+  }
+}
 
 
 const signup = async (req, res) => {
@@ -28,26 +79,7 @@ const signup = async (req, res) => {
     objectaccesmodulfk:req.body.roles
   })
     .then(user => {
-      // if (req.body.roles) {
-      //   Role.findAll({
-      //     where: {
-      //       id: req.body.roles
-      //     }
-      //   }).then(roles => {
-      //     user.setRoles(roles).then(() => {
-      //       // res.send({ message: "User was registered successfully!" });
-      //       res.status(200).send({
-      //         msg: 'User Berhasil Didaftarkan',
-      //         code: 200,
-      //         // data: tempres,
-      //         success: true
-      //       });
-      //     });
-      //   });
-      // } else {
-        // user role = 1
-        // user.setRoles([1]).then(() => {
-          // res.send({ message: "User was registered successfully!" });
+
           res.status(200).send({
             msg: 'User Berhasil Didaftarkan',
             code: 200,
@@ -102,6 +134,7 @@ const signin = async (req, res) => {
     }
     const result1 = await pool.query(queries.qMenuModulAplikasi, [user.objectaccesmodulfk]);
     const result3 = await pool.query(queries.qChlidMenuModulAplikasi, [user.objectaccesmodulfk]);
+    const result4 = await pool.query(queriesSDM.qAccesUnit, [user.id]);
     let menuItems = [];
     menuItems.push({ id:'Menu',label: "Menu", isHeader: true,idMenu:0,stateVariables:false});
 
@@ -110,30 +143,11 @@ const signin = async (req, res) => {
       menuItems.push({id:element.reportdisplay,icon:element.icon,label:element.reportdisplay,link:'/#',stateVariables:false,subItems:filteredData})
     });
 
-    // const result2 = await pool.query(queries.getSesionsNew, [user.id]);
-    
-    // let resHead = [];
-    // for (let i = 0; i < result2.rows.length; i++) {
-    //   resHead.push(result2.rows[i].premissions.toUpperCase());
-    // }
-    // let resHead2 = [
-    //   {
-    //     name:result2?.rows[0]?.name || '',
-    //     permission:resHead
-    //   }
-    // ];
-    let token = jwt.sign({ id: user.id, sesion: menuItems, idpegawai: user.objectpegawaifk, }, config.secret, {
+
+    let token = jwt.sign({ id: user.id, sesion: menuItems, idpegawai: user.objectpegawaifk, accesunit:result4.rows}, config.secret, {
       expiresIn: 86400 // 24 hours test
     });
-    // logger.infoImmediate("masuk")
 
-    // let authorities = [];
-    // const roles = await user.getRoles()
-    // for (let i = 0; i < roles.length; i++) {
-    //   authorities.push("ROLE_" + roles[i].name.toUpperCase());
-    // }
-
-    // logger.infoImmediate("masuk2")
     res.status(200).send({
       id: user.id,
       username: user.username,
@@ -239,8 +253,10 @@ const signinPasien = async (req, res) => {
   }
 }
 
+
 export default {
   signin,
   signup,
-  signinPasien
+  signinPasien,
+  signUpNew,
 }

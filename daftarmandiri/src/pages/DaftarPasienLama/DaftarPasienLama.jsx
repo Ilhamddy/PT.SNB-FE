@@ -148,7 +148,7 @@ const DaftarPasienLama = () => {
         dokterid: vDaftar.values.dokter,
       })
     )
-  }, [vDaftar.values.dokter])
+  }, [vDaftar.values.dokter, dispatch])
 
   const disableJadwal = (date) => {
     const foundDay = dDate.find((item) => {

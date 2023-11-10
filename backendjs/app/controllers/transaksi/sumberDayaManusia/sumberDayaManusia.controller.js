@@ -265,6 +265,11 @@ const getUserRoleById = async (req, res) => {
     const logger = res.locals.logger;
     try {
         const result1 = await pool.query(queries.qUserRoleById, [req.query.idPegawai]);
+        for (let i = 0; i < result1.rows.length; ++i) {
+            const resultlistPetugas =await pool.query(queries.qAccesUnit,[result1.rows[i].id])
+
+            result1.rows[i].listunit = resultlistPetugas.rows
+        }
         const tempres = {
 
         };
@@ -442,8 +447,10 @@ const upsertJadwal = async (req, res) => {
 const updateUserRole = async (req, res) => {
     const logger = res.locals.logger;
     try {
-        const { pegawai } = await db.sequelize.transaction(async (transaction) => {
+        const { pegawai,mapUserToUnit,insertmapUserToUnit } = await db.sequelize.transaction(async (transaction) => {
             let status = true
+            let mapUserToUnit = ''
+            let insertmapUserToUnit=''
             if (req.body.statusEnabled === 2) {
                 status = false
             }
@@ -451,11 +458,29 @@ const updateUserRole = async (req, res) => {
                 objectaccesmodulfk: req.body.roles, statusenabled: status,
             }, {
                 where: {
-                    userid: req.body.idUser,
+                    id: req.body.idUser,
                 },
                 transaction: transaction
             });
-            return { pegawai }
+            mapUserToUnit = await db.m_mapusertounit.update({
+                statusenabled:false
+                },  {
+              where: {
+                objectuserfk: req.body.idUser,
+              },
+              transaction: transaction
+              });
+            for (let i = 0; i < req.body.accesUnit.length; i++) {
+                const element = req.body.accesUnit[i];
+                insertmapUserToUnit = await db.m_mapusertounit.create({
+                    objectuserfk: req.body.idUser,
+                    objectunitfk: element.value,
+                    tglinput: new Date(),
+                    tglupdate: new Date(),
+                    objectpegawaifk:req.body.idpegawai
+                    }, { transaction });
+            }
+            return { pegawai,mapUserToUnit,insertmapUserToUnit }
         });
         const tempres = {
 

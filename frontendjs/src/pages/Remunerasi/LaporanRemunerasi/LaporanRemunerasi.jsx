@@ -14,25 +14,38 @@ import LoadingTable from "../../../Components/Table/LoadingTable";
 import {
   getDaftarSudahVerifikasiRemunerasi
 } from '../../../store/actions';
+import { comboRegistrasiGet } from '../../../store/master/action';
+import * as XLSX from 'xlsx';
 
 const LaporanRemunerasi = () => {
   document.title = "Laporan Remunerasi";
   const dispatch = useDispatch();
-  const { dataGrid, loadingGrid } = useSelector((state) => ({
+  const [dateNow] = useState(() => new Date().toISOString())
+  const { dataGrid, loadingGrid, data } = useSelector((state) => ({
     dataGrid: state.Payment.getDaftarSudahVerifikasiRemunerasi.data,
     loadingGrid: state.Payment.getDaftarSudahVerifikasiRemunerasi.loading,
+    data: state.Master.comboRegistrasiGet.data || [],
   }));
   const vSetValidation = useFormik({
     enableReinitialize: true,
     initialValues: {
-      comboUnit: '',
-      search: ''
+      instalasi: '',
+      unit: '',
+      penjamin: '',
+      tglAwal: '',
+      tglAkhir: ''
     },
     validationSchema: Yup.object({
       // tingkatdarurat: Yup.string().required("Tingkat Darurat jawab wajib diisi"),
     }),
     onSubmit: (values) => {
-      dispatch(getDaftarSudahVerifikasiRemunerasi());
+      dispatch(getDaftarSudahVerifikasiRemunerasi({
+        tglAwal: values.tglAwal || dateNow,
+        tglAkhir: values.tglAkhir || dateNow,
+        instalasi: values.instalasi || '',
+        unit: values.unit || '',
+        penjamin: values.penjamin || ''
+      }));
     }
   })
   const tableCustomStyles = {
@@ -93,26 +106,74 @@ const LaporanRemunerasi = () => {
     },
     {
 
-      name: <span className='font-weight-bold fs-13'>Penjamin</span>,
-      selector: row => row.status,
+      name: <span className='font-weight-bold fs-13'>Jenis Pelaksana</span>,
+      selector: row => row.jenispelaksana,
       sortable: true,
       width: "100",
+    },
+    {
+
+      name: <span className='font-weight-bold fs-13'>Nakes</span>,
+      selector: row => row.petugas,
+      sortable: true,
+      width: "100",
+    },
+    {
+
+      name: <span className='font-weight-bold fs-13'>Total Harga</span>,
+      selector: row => row.total,
+      sortable: true,
+      width: "50",
     },
     {
 
       name: <span className='font-weight-bold fs-13'>DPJP</span>,
-      selector: row => row.status,
+      selector: row => row.dpjp,
       sortable: true,
       width: "100",
     },
     {
 
-      name: <span className='font-weight-bold fs-13'>Total</span>,
-      selector: row => row.status,
+      name: <span className='font-weight-bold fs-13'>J Perawat</span>,
+      selector: row => row.komperawat,
+      sortable: true,
+      width: "100",
+    },
+    {
+
+      name: <span className='font-weight-bold fs-13'>J RS</span>,
+      selector: row => row.komjasars,
+      sortable: true,
+      width: "100",
+    },
+    {
+
+      name: <span className='font-weight-bold fs-13'>J Dok Anastesi</span>,
+      selector: row => row.komdokanastesi,
+      sortable: true,
+      width: "100",
+    },
+    {
+
+      name: <span className='font-weight-bold fs-13'>J DPJP</span>,
+      selector: row => row.komdokdpjp,
       sortable: true,
       width: "100",
     },
   ];
+  useEffect(() => {
+    dispatch(comboRegistrasiGet());
+  }, [dispatch]);
+  const handleExport = () => {
+    const formattedData = dataGrid.map(row => columns.map(col => col.selector(row)));
+    const header = columns.map(col => col.name.props.children);
+    const sheetData = [header, ...formattedData];
+    const worksheet = XLSX.utils.aoa_to_sheet(sheetData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+
+    XLSX.writeFile(workbook, 'laporan_remunerasi.xlsx');
+  };
   return (
     <React.Fragment>
       <ToastContainer closeButton={false} />
@@ -142,7 +203,7 @@ const LaporanRemunerasi = () => {
                         <CustomSelect
                           id="instalasi"
                           name="instalasi"
-                          options={[]}
+                          options={data.instalasi || []}
                           onChange={(e) => {
                             vSetValidation.setFieldValue('instalasi', e?.value || '')
                           }}
@@ -166,7 +227,7 @@ const LaporanRemunerasi = () => {
                         <CustomSelect
                           id="unit"
                           name="unit"
-                          options={[]}
+                          options={data.unit || []}
                           onChange={(e) => {
                             vSetValidation.setFieldValue('unit', e?.value || '')
                           }}
@@ -190,7 +251,7 @@ const LaporanRemunerasi = () => {
                         <CustomSelect
                           id="penjamin"
                           name="penjamin"
-                          options={[]}
+                          options={data.rekanan || []}
                           onChange={(e) => {
                             vSetValidation.setFieldValue('penjamin', e?.value || '')
                           }}
@@ -223,7 +284,7 @@ const LaporanRemunerasi = () => {
                             dateFormat: 'Y-m-d',
                             defaultDate: 'today',
                           }}
-                          value={vSetValidation.values.tglAwal}
+                          value={vSetValidation.values.tglAwal || dateNow}
                           onChange={([newDate]) => {
                             vSetValidation.setFieldValue('tglAwal', newDate.toISOString())
                           }}
@@ -249,7 +310,7 @@ const LaporanRemunerasi = () => {
                             dateFormat: 'Y-m-d',
                             defaultDate: 'today',
                           }}
-                          value={vSetValidation.values.tglAkhir}
+                          value={vSetValidation.values.tglAkhir || dateNow}
                           onChange={([newDate]) => {
                             vSetValidation.setFieldValue('tglAkhir', newDate.toISOString())
                           }}
@@ -275,6 +336,9 @@ const LaporanRemunerasi = () => {
             </Card>
             <Card>
               <CardBody>
+                <Button type="button" placement="top" id="tooltipTopPencarian" onClick={handleExport}>
+                  Export to Excel
+                </Button>
                 <div id="table-gridjs">
                   <DataTable
                     fixedHeader

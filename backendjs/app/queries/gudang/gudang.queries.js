@@ -1,3 +1,4 @@
+import { daftarUnit } from "../master/unit/unit.queries"
 
 
 const qGetJenisDetailProdukLainLain = `
@@ -132,6 +133,7 @@ SELECT
     tpbd.ed AS tanggaled,
     tpbd.nobatch AS nobatch,
     tpbd.subtotal AS subtotalproduk,
+    tpbd.jumlahkonversi AS jumlahkonversi,
     tpbd.total AS totalproduk
 FROM t_penerimaanbarangdetail tpbd
     JOIN m_produk mp ON mp.id = tpbd.objectprodukfk
@@ -194,6 +196,16 @@ SELECT
 FROM t_kartustok tks
     LEFT JOIN m_produk mp ON mp.id = tks.objectprodukfk
     LEFT JOIN m_unit mu ON mu.id = tks.objectunitfk
+WHERE 
+        (
+            tks.objectunitfk = ANY($1) 
+            OR ${daftarUnit.GUDANG_FARMASI} = ANY($1) --- kalau gudang kasih akses ke semua
+        ) 
+    AND
+        (
+            NULLIF($2, '')::int IS NULL
+            OR NULLIF($2, '')::int = tks.objectunitfk
+        )
 ORDER BY 
     tks.tglinput DESC
 `
@@ -214,6 +226,16 @@ FROM t_stokunit tsu
     LEFT JOIN m_unit mu ON mu.id = tsu.objectunitfk
     LEFT JOIN m_satuan ms ON ms.id = mp.objectsatuanstandarfk
     LEFT JOIN m_asalproduk mas ON mas.id = tsu.objectasalprodukfk
+WHERE
+    (
+        tsu.objectunitfk = ANY($1) 
+        OR ${daftarUnit.GUDANG_FARMASI} = ANY($1) --- kalau gudang kasih akses ke semua
+    ) 
+    AND
+    (
+        NULLIF($2, '')::int IS NULL
+        OR NULLIF($2, '')::int = tsu.objectunitfk
+    )
 `
 
 const qGetStokOpname = `
@@ -360,6 +382,88 @@ FROM t_pemesananbarangdetail tpbd
 WHERE tpbd.objectpemesananbarangfk = $1
 `
 
+const qGetDetailReturObj = `
+SELECT
+    trbd.objectreturbarangfk AS norecretur,
+    trbd.norec AS norecdetailretur,
+    tpbd.norec AS norecdetailpenerimaan,
+    json_build_object(
+        'idproduk', mp.id,
+        'namaproduk', mp.namaproduk,
+        'satuanjual', mp.objectsatuanstandarfk,
+        'namasatuanjual', msp.satuan 
+    )
+    AS produk,
+    msk.id AS satuanterima,
+    msk.satuan AS namasatuanterima,
+    tpbd.jumlah AS jumlahterima,
+    trbd.jumlah AS jumlahretur,
+    tpbd.hargasatuankecil AS hargasatuankecil,
+    tpbd.hargasatuanterima AS hargasatuanterima,
+    tpbd.nobatch AS nobatch,
+    tpbd.ed AS ed,
+    trbd.diskonpersen AS diskonpersen,
+    trbd.diskon AS diskonrupiah,
+    trbd.ppn AS ppnrupiahproduk,
+    trbd.ppnpersen AS ppnpersenproduk,
+    trbd.subtotal AS subtotalproduk,
+    trbd.total AS totalproduk,
+    trbd.alasanretur AS alasanretur
+FROM t_returbarangdetail trbd
+    LEFT JOIN t_penerimaanbarangdetail tpbd ON tpbd.norec = trbd.objectpenerimaanbarangdetailfk
+    JOIN m_produk mp ON mp.id = tpbd.objectprodukfk
+    LEFT JOIN m_satuan ms ON ms.id = tpbd.objectsatuanfk
+    JOIN m_satuan msp ON msp.id = mp.objectsatuanstandarfk
+    JOIN m_satuan msk ON msk.id = tpbd.objectsatuanfk
+`
+
+const qGetDetailReturFromDetailPenerimaan = qGetDetailReturObj + `
+WHERE $1 = trbd.objectpenerimaanbarangdetailfk
+`
+
+const qGetDetailRetur = qGetDetailReturObj + `
+WHERE trbd.objectreturbarangfk = $1
+`
+
+const qGetReturBarangObj = `
+SELECT
+    trb.norec AS norecretur,
+    trb.noretur AS nomorretur,
+    trb.tglretur AS tanggalretur,
+    tpb.objectrekananfk AS namasupplier,
+    mr.reportdisplay AS namasupplierstr,
+    tpb.norec AS norecpenerimaan,
+    tpb.no_terima AS nomorterima,
+    tpb.no_order AS nomorpo,
+    tpb.tglterima AS tanggalterima,
+    tpb.tglorder AS tanggalpesan,
+    tpb.objectunitfk AS unitpesan,
+    mu.namaunit AS unitpesanstr
+FROM t_returbarang trb
+    LEFT JOIN t_penerimaanbarang tpb ON trb.objectpenerimaanbarangfk = tpb.norec
+    LEFT JOIN m_rekanan mr ON mr.id = tpb.objectrekananfk
+    LEFT JOIN m_unit mu ON mu.id = tpb.objectunitfk
+`
+
+
+const qGetReturBarang = qGetReturBarangObj +  `
+WHERE trb.norec = $1
+`
+
+const qGetListRetur = qGetReturBarangObj + `
+WHERE trb.statusenabled = true
+ORDER BY trb.tglretur DESC
+`
+
+const qGetUnitUser = `
+SELECT
+    mu.namaunit AS namaunit,
+    mu.id AS idunit
+FROM m_mapusertounit mmap
+    LEFT JOIN m_unit mu ON mu.id = mmap.objectunitfk
+WHERE mmap.objectuserfk = $1
+`
+
 
 export {
     qGetJenisDetailProdukLainLain,
@@ -381,5 +485,10 @@ export {
     qGetStokOpnameDetail,
     qGetPemesanan,
     qGetDetailPemesanan,
-    qGetListPemesanan
+    qGetListPemesanan,
+    qGetUnitUser,
+    qGetDetailRetur,
+    qGetReturBarang,
+    qGetListRetur,
+    qGetDetailReturFromDetailPenerimaan
 }

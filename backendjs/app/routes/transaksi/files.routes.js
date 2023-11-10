@@ -18,4 +18,11 @@ export default function (app) {
         [authJwt.verifyToken, upload.single("file")],
         controller.postImage
     );
+
+    app.get(
+        "/api/files/get-log",
+        [authJwt.verifyToken],
+        controller.getLogFile
+    );
+    
 }

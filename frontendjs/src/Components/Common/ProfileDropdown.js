@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 
 //import images
 import avatar1 from "../../assets/images/users/avatar-1.jpg";
+import userDummy from "../../assets/images/users/user-dummy-img.jpg";
 
 const ProfileDropdown = () => {
 
@@ -16,9 +17,11 @@ const ProfileDropdown = () => {
     useEffect(() => {
         if (localStorage.getItem("authUser")) {
             const obj = JSON.parse(localStorage.getItem("authUser"));
-            setUserName(process.env.REACT_APP_DEFAULTAUTH === "fake" ? obj.username === undefined ? user.first_name ? user.first_name : obj.data.first_name : "Admin" || "Admin" :
-                process.env.REACT_APP_DEFAULTAUTH === "firebase" ? obj.providerData[0].email : "Admin"
-            );
+            console.log(obj)
+            // setUserName(process.env.REACT_APP_DEFAULTAUTH === "fake" ? obj.username === undefined ? user.first_name ? user.first_name : obj.data.first_name : "Admin" || "Admin" :
+            //     process.env.REACT_APP_DEFAULTAUTH === "firebase" ? obj.providerData[0].email : "Admin"
+            // );
+            setUserName(obj.username);
         }
     }, [userName, user]);
 
@@ -29,21 +32,21 @@ const ProfileDropdown = () => {
     };
     return (
         <React.Fragment>
-            <Dropdown isOpen={isProfileDropdown} toggle={toggleProfileDropdown} className="ms-sm-3 header-item topbar-user">
+            <Dropdown isOpen={isProfileDropdown} toggle={toggleProfileDropdown} className="ms-sm-3 header-item topbar-user" style={{backgroundColor:'#e67e22'}}>
                 <DropdownToggle tag="button" type="button" className="btn">
                     <span className="d-flex align-items-center">
-                        <img className="rounded-circle header-profile-user" src={avatar1}
+                        <img className="rounded-circle header-profile-user" src={userDummy}
                             alt="Header Avatar" />
                         <span className="text-start ms-xl-2">
                             <span className="d-none d-xl-inline-block ms-1 fw-medium user-name-text">{userName}</span>
-                            <span className="d-none d-xl-block ms-1 fs-13 text-muted user-name-sub-text">Founder</span>
+                            {/* <span className="d-none d-xl-block ms-1 fs-13 text-muted user-name-sub-text">Founder</span> */}
                         </span>
                     </span>
                 </DropdownToggle>
                 <DropdownMenu className="dropdown-menu-end">
 
                     <h6 className="dropdown-header">Welcome {userName}!</h6>
-                    <DropdownItem href={process.env.PUBLIC_URL + "/profile"}><i className="mdi mdi-account-circle text-muted fs-16 align-middle me-1"></i>
+                    {/* <DropdownItem href={process.env.PUBLIC_URL + "/profile"}><i className="mdi mdi-account-circle text-muted fs-16 align-middle me-1"></i>
                         <span className="align-middle">Profile</span></DropdownItem>
                     <DropdownItem href={process.env.PUBLIC_URL + "/apps-chat"}><i
                         className="mdi mdi-message-text-outline text-muted fs-16 align-middle me-1"></i> <span
@@ -63,7 +66,7 @@ const ProfileDropdown = () => {
                             className="mdi mdi-cog-outline text-muted fs-16 align-middle me-1"></i> <span
                                 className="align-middle">Settings</span></DropdownItem>
                     <DropdownItem href={process.env.PUBLIC_URL + "/auth-lockscreen-basic"}><i
-                        className="mdi mdi-lock text-muted fs-16 align-middle me-1"></i> <span className="align-middle">Lock screen</span></DropdownItem>
+                        className="mdi mdi-lock text-muted fs-16 align-middle me-1"></i> <span className="align-middle">Lock screen</span></DropdownItem> */}
                     <DropdownItem href={process.env.PUBLIC_URL + "/logout"}><i
                         className="mdi mdi-logout text-muted fs-16 align-middle me-1"></i> <span
                             className="align-middle" data-key="t-logout">Logout</span></DropdownItem>

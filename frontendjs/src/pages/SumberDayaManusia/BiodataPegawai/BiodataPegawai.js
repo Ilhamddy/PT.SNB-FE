@@ -164,14 +164,17 @@ const BiodataPegawai = () => {
             roles: '',
             idUser: '',
             idpegawai: '',
-            password: ''
+            password: '',
+            accesUnit:''
         },
         validationSchema: Yup.object({
             statusEnabled: Yup.string().required("Status Enabled wajib diisi"),
             username: Yup.string().required("User Name wajib diisi"),
             roles: Yup.string().required("Role Applikasi wajib diisi"),
+            accesUnit: Yup.array().required("Acces Unit Applikasi wajib diisi"),
         }),
         onSubmit: (values, { resetForm }) => {
+            // console.log(values)
             values.password = values.username + `@123`
             if (values.idpegawai === '') {
                 toast.error("ID Pegawai Tidak Ada, Silahkan Kembali, dan masuk lagi", { autoClose: 3000 });
@@ -433,6 +436,8 @@ const BiodataPegawai = () => {
         vSetValidationUserName.setFieldValue('username', e.username)
         vSetValidationUserName.setFieldValue('roles', e.idrole)
         vSetValidationUserName.setFieldValue('idUser', e.id)
+        console.log(e.listunit)
+        vSetValidationUserName.setFieldValue('accesUnit',e.listunit)
     };
     const handleClickBatal = (e) => {
         setdisabledUsername(false)
@@ -2024,6 +2029,32 @@ const BiodataPegawai = () => {
                                                                         !!vSetValidationUserName.errors.roles && (
                                                                             <FormFeedback type="invalid">
                                                                                 <div>{vSetValidationUserName.errors.roles}</div>
+                                                                            </FormFeedback>
+                                                                        )}
+                                                                </Col>
+                                                                <Col lg={4}>
+                                                                    <div className="mt-2">
+                                                                        <Label style={{ color: "black" }} htmlFor="unitlast" className="form-label">Acces Unit</Label>
+                                                                    </div>
+                                                                </Col>
+                                                                <Col lg={8}>
+                                                                    <CustomSelect
+                                                                        id="accesUnit"
+                                                                        name="accesUnit"
+                                                                        options={dataCombo.unit || []}
+                                                                        onChange={(e) => {
+                                                                            vSetValidationUserName.setFieldValue('accesUnit', e)
+                                                                        }}
+                                                                        value={vSetValidationUserName.values.accesUnit ||[]}
+                                                                        className={`input row-header ${
+                                                                            !!vSetValidationUserName?.errors.accesUnit ? 'is-invalid' : ''
+                                                                        }`}
+                                                                        isMulti
+                                                                        />
+                                                                    {vSetValidationUserName.touched.accesUnit &&
+                                                                        !!vSetValidationUserName.errors.accesUnit && (
+                                                                            <FormFeedback type="invalid">
+                                                                                <div>{vSetValidationUserName.errors.accesUnit}</div>
                                                                             </FormFeedback>
                                                                         )}
                                                                 </Col>

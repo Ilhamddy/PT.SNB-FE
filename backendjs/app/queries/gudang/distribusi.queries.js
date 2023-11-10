@@ -68,9 +68,13 @@ FROM t_orderbarang tor
     LEFT JOIN m_unit mut ON mut.id = tor.objectunittujuanfk
     LEFT JOIN m_jenisorderbarang mjob ON mjob.id = tor.objectjenisorderbarangfk
     LEFT JOIN t_kirimbarang tkb ON tkb.objectorderbarangfk = tor.norec
-WHERE tkb IS NULL
-ORDER BY
-    tor.tglinput DESC 
+    LEFT JOIN m_mapusertounit mmap ON mmap.objectunitfk = mua.id
+WHERE tkb IS NULL 
+    AND (
+        NULLIF($1, '')::int IS NULL 
+        OR mmap.objectuserfk = NULLIF($1, '')::int
+    )
+ORDER BY tor.tglinput DESC 
 `
 
 const qGetKirim = `
@@ -96,6 +100,10 @@ FROM t_kirimbarang tkb
     LEFT JOIN m_unit mut ON mut.id = tkb.objectunittujuanfk
     LEFT JOIN m_jenisorderbarang mjob ON mjob.id = tkb.objectjenisorderbarangfk
     LEFT JOIN t_orderbarang tor ON tkb.objectorderbarangfk = tor.norec
+    LEFT JOIN m_mapusertounit mmap ON mmap.objectunitfk = mut.id
+WHERE 
+    NULLIF($1, '')::int IS NULL 
+    OR mmap.objectuserfk = NULLIF($1, '')::int
 ORDER BY
     tkb.tglinput DESC
 `

@@ -113,4 +113,46 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.updatePrinted
     )
+
+    app.get(
+        "/api/transaksi/rekammedis/get-laporan-rl-3-3",
+        [authJwt.verifyToken],
+        controller.getLaporanRL3_3
+    );
+
+    app.get(
+        "/api/transaksi/rekammedis/get-laporan-rl-3-6",
+        [authJwt.verifyToken],
+        controller.getLaporanRL3_6
+    );
+    app.get(
+        "/api/transaksi/rekammedis/get-laporan-rl-3-14",
+        [authJwt.verifyToken],
+        controller.getLaporanRL3_14
+    );
+    app.get(
+        "/api/transaksi/rekammedis/get-laporan-rl-3-15",
+        [authJwt.verifyToken],
+        controller.getLaporanRL3_15
+    );
+    app.get(
+        "/api/transaksi/rekammedis/get-laporan-rl-3-11",
+        [authJwt.verifyToken],
+        controller.getLaporanRL3_11
+    );
+    app.get(
+        "/api/transaksi/rekammedis/get-laporan-rl-3-10",
+        [authJwt.verifyToken],
+        controller.getLaporanRL3_10
+    );
+    app.get(
+        "/api/transaksi/rekammedis/get-laporan-rl-5-1",
+        [authJwt.verifyToken],
+        controller.getLaporanRL5_1
+    );
+    app.get(
+        "/api/transaksi/rekammedis/get-laporan-rl-5-2",
+        [authJwt.verifyToken],
+        controller.getLaporanRL5_2
+    );
 }

@@ -10,7 +10,10 @@ import {
     GET_BERITA_HOME_ERROR,
     GET_BERITA_QUERY,
     GET_BERITA_QUERY_SUCCESS,
-    GET_BERITA_QUERY_ERROR
+    GET_BERITA_QUERY_ERROR,
+    GET_CAPTCHA,
+    GET_CAPTCHA_SUCCESS,
+    GET_CAPTCHA_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -34,6 +37,11 @@ const INIT_STATE = {
         loading: false,
         error: null,
     },
+    getCaptcha: {
+        data: [],
+        loading: false,
+        error: null
+    }
 }
 
 const login = (state = INIT_STATE, action) => {
@@ -167,6 +175,40 @@ const login = (state = INIT_STATE, action) => {
                     error: action.payload,
                 },
             };
+
+        case GET_CAPTCHA:
+            return {
+                ...state,
+                getCaptcha: {
+                    ...state.getCaptcha,
+                    data: [],
+                    loading: true,
+                    error: null,
+                }
+            }
+
+        case GET_CAPTCHA_SUCCESS:
+            return {
+                ...state,
+                getCaptcha: {
+                    ...state.getCaptcha,
+                    data: action.payload,
+                    loading: true,
+                    error: null,
+                }
+            }
+
+        
+        case GET_CAPTCHA_ERROR:
+            return {
+                ...state,
+                getCaptcha: {
+                    ...state.getCaptcha,
+                    data: [],
+                    loading: true,
+                    error: action.payload,
+                }
+            }
 
         default:
             return { ...state };

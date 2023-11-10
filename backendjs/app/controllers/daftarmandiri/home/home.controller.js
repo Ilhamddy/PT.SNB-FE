@@ -4,6 +4,9 @@ import { qGetJadwalDokter, qGetBeritaHome, qGetBeritaNorec} from "../../../queri
 import { groupBy } from "../../../utils/arutils";
 import hariQueries from "../../../queries/master/hari/hari.queries";
 import unitQueries from "../../../queries/master/unit/unit.queries";
+import { tempCaptcha, initCaptcha, setTempCaptcha } from "../../auth/authhelper";
+import svgCaptcha from "svg-captcha"
+import * as uuid from 'uuid'
 
 const getHomePageUser = async (req, res) => {
     const logger = res.locals.logger;
@@ -143,10 +146,53 @@ const getBerita = async (req, res) => {
     }
 }
 
+const getCaptcha = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        setTempCaptcha([...tempCaptcha].filter(f => f.expired > new Date()))
+        const opt = {
+            width: 300, 
+            height: 200, 
+            fontSize: 50,
+            size: 10,
+            noise: 5
+        }
+        const newCaptcha = svgCaptcha.create(opt)
+        const uuidCaptcha = uuid.v4()
+        const captchaObj = {
+            ...initCaptcha,
+            uuid: uuidCaptcha,
+            answer: newCaptcha.text,
+            expired: new Date(+ new Date() + (2 * 60 * 60 * 3600)),
+        }
+        const newCaptch = [...tempCaptcha, captchaObj]
+        setTempCaptcha(newCaptch)
+        const tempres = {
+            image: newCaptcha.data,
+            uuid: uuidCaptcha
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+        msg: error.message,
+        code: 500,
+        data: error,
+        success: false
+        });
+    }
+}
+
 export default {
     getHomePageUser,
     getJadwalDokter,
     getComboJadwal,
     getBeritaHome,
-    getBerita
+    getBerita,
+    getCaptcha
 }

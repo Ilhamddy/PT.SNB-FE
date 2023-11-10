@@ -2,7 +2,7 @@ import { APIClient } from "../helpers/api_helper";
 
 const api = new APIClient();
 
-export default class ServiceFarmasi {
+export default class ServiceFile {
 
     uploadImage = async (data) => {
         return await api.create(`/files/upload-image`, data, {
@@ -13,5 +13,8 @@ export default class ServiceFarmasi {
             }
         });
     }
-    
+
+    getLog = async (queries) => {
+        return await api.get(`/files/get-log`, queries)
+    }
 }

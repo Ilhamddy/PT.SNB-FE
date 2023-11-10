@@ -35,6 +35,9 @@ import {
     PENERIMAAN_SAVE_OR_UPDATE,
     PENERIMAAN_SAVE_OR_UPDATE_SUCCESS,
     PENERIMAAN_SAVE_OR_UPDATE_ERROR,
+    UPSERT_RETUR_BARANG,
+    UPSERT_RETUR_BARANG_SUCCESS,
+    UPSERT_RETUR_BARANG_ERROR,
     PENERIMAAN_QUERY_GET,
     PENERIMAAN_QUERY_GET_SUCCESS,
     PENERIMAAN_QUERY_GET_ERROR,
@@ -67,7 +70,22 @@ import {
     GET_PEMESANAN_ERROR,
     GET_LIST_PEMESANAN,
     GET_LIST_PEMESANAN_SUCCESS,
-    GET_LIST_PEMESANAN_ERROR
+    GET_LIST_PEMESANAN_ERROR,
+    GET_UNIT_USER,
+    GET_UNIT_USER_SUCCESS,
+    GET_UNIT_USER_ERROR,
+    GET_COMBO_KARTU_STOK,
+    GET_COMBO_KARTU_STOK_SUCCESS,
+    GET_COMBO_KARTU_STOK_ERROR,
+    GET_COMBO_STOK_UNIT,
+    GET_COMBO_STOK_UNIT_SUCCESS,
+    GET_COMBO_STOK_UNIT_ERROR,
+    GET_LIST_RETUR,
+    GET_LIST_RETUR_ERROR,
+    GET_LIST_RETUR_SUCCESS,
+    GET_RETUR,
+    GET_RETUR_SUCCESS,
+    GET_RETUR_ERROR
 } from "./actionType";
 
 
@@ -251,6 +269,21 @@ export const penerimaanSaveOrUpdateError = (data) => ({
     payload: { data: data },
 })
 
+export const upsertReturBarang = (data, callback) => ({
+    type: UPSERT_RETUR_BARANG,
+    payload: { data: data, callback: callback },
+})
+
+export const upsertReturBarangSuccess = (data) => ({
+    type: UPSERT_RETUR_BARANG_SUCCESS,
+    payload: { data: data },
+})
+
+export const upsertReturBarangError = (data) => ({
+    type: UPSERT_RETUR_BARANG_ERROR,
+    payload: { data: data },
+})
+
 export const penerimaanQueryGet = (queries) => ({
     type: PENERIMAAN_QUERY_GET,
     payload: { queries: queries },
@@ -414,4 +447,81 @@ export const getListPemesananSuccess = (data) => ({
 export const getListPemesananError = (data) => ({
     type: GET_LIST_PEMESANAN_ERROR,
     payload: { data: data },
+})
+
+export const getUnitUser = (queries) => ({
+    type: GET_UNIT_USER,
+    payload: { queries: queries }
+})
+
+export const getUnitUserSuccess = (data) => ({
+    type: GET_UNIT_USER_SUCCESS,
+    payload: { data: data }
+})
+
+export const getUnitUserError = (data) => ({
+    type: GET_UNIT_USER_ERROR,
+    payload: { data: data }
+})
+
+export const getComboKartuStok = (queries) => ({
+    type: GET_COMBO_KARTU_STOK,
+    payload: { queries: queries }
+})
+
+export const getComboKartuStokSuccess = (data) => ({
+    type: GET_COMBO_KARTU_STOK_SUCCESS,
+    payload: { data: data }
+})
+
+export const getComboKartuStokError = (data) => ({
+    type: GET_COMBO_KARTU_STOK_ERROR,
+    payload: { data: data }
+})
+
+export const getComboStokUnit = (queries) => ({
+    type: GET_COMBO_STOK_UNIT,
+    payload: { queries: queries }
+})
+
+export const getComboStokUnitSuccess = (data) => ({
+    type: GET_COMBO_STOK_UNIT_SUCCESS,
+    payload: { data: data }
+})
+
+export const getComboStokUnitError = (data) => ({
+    type: GET_COMBO_STOK_UNIT_ERROR,
+    payload: { data: data }
+})
+
+export const getListRetur = (queries) => ({
+    type: GET_LIST_RETUR,
+    payload: { queries: queries }
+})
+
+export const getListReturSuccess = (data) => ({
+    type: GET_LIST_RETUR_SUCCESS,
+    payload: { data: data }
+})
+
+export const getListReturError = (data) => ({
+    type: GET_LIST_RETUR_ERROR,
+    payload: { data: data }
+})
+
+export const getRetur = (queries) => ({
+    type: GET_RETUR,
+    payload: { queries: queries }
+})
+
+
+export const getReturSuccess = (data) => ({
+    type: GET_RETUR_SUCCESS,
+    payload: { data: data }
+})
+
+
+export const getReturError = (data) => ({
+    type: GET_RETUR_ERROR,
+    payload: { data: data }
 })

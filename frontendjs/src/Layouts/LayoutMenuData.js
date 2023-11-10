@@ -687,7 +687,7 @@ const Navdata = () => {
                 {
                     id: "distribusiorder",
                     label: "Distribusi Order",
-                    link: "/farmasi/gudang/distribusi-order-list",
+                    link: "/logistik/gudang/distribusi-order-list",
                     parentId: "gudang",
                     isAllowed: () => {
                         return isAllowedAccess(getUserPermissions(), [

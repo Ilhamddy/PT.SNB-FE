@@ -67,4 +67,29 @@ export default class ServiceRekammedis {
     updatePrinted = async (body) => {
         return await api.create(`/transaksi/rekammedis/update-printed`, body);
     }
+
+    getLaporanRl_3_3 = async (queries) => {
+        return await api.get(`/transaksi/rekammedis/get-laporan-rl-3-3`, queries);
+    }
+    getLaporanRl_3_6 = async (queries) => {
+        return await api.get(`/transaksi/rekammedis/get-laporan-rl-3-6`, queries);
+    }
+    getLaporanRl_3_14 = async (queries) => {
+        return await api.get(`/transaksi/rekammedis/get-laporan-rl-3-14`, queries);
+    }
+    getLaporanRl_3_15 = async (queries) => {
+        return await api.get(`/transaksi/rekammedis/get-laporan-rl-3-15`, queries);
+    }
+    getLaporanRl_3_11 = async (queries) => {
+        return await api.get(`/transaksi/rekammedis/get-laporan-rl-3-11`, queries);
+    }
+    getLaporanRl_3_10 = async (queries) => {
+        return await api.get(`/transaksi/rekammedis/get-laporan-rl-3-10`, queries);
+    }
+    getLaporanRl_5_1 = async (queries) => {
+        return await api.get(`/transaksi/rekammedis/get-laporan-rl-5-1`, queries);
+    }
+    getLaporanRl_5_2 = async (queries) => {
+        return await api.get(`/transaksi/rekammedis/get-laporan-rl-5-2`, queries);
+    }
 }

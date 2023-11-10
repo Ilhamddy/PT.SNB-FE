@@ -26,7 +26,7 @@ import LoadingTable from "../../Components/Table/LoadingTable";
 import NoDataTable from "../../Components/Table/NoDataTable";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useRef, useState } from "react";
-import { createOrUpdateOrderbarang, getStokBatch, kemasanFromProdukGet } from "../../store/actions";
+import { createOrUpdateOrderbarang, getStokBatch, getUnitUser, kemasanFromProdukGet } from "../../store/actions";
 import { APIClient } from "../../helpers/api_helper";
 import { comboDistribusiOrderGet } from "../../store/master/action";
 import { Link } from "react-router-dom";
@@ -34,7 +34,7 @@ import { Link } from "react-router-dom";
 
 
 
-const DistribusiOrder = () => {
+const DistribusiOrder = ({isUnit}) => {
     const dispatch = useDispatch()
     const [tglSekarang] = useState(() => new Date().toISOString())
 
@@ -42,11 +42,13 @@ const DistribusiOrder = () => {
         stokBatch,
         satuan,
         unit,
+        unitUser,
         jenisorderbarang
     } = useSelector(state => ({
         stokBatch: state.Distribusi.getStokBatch?.data || [],
         satuan: state.Gudang.kemasanFromProdukGet || null,
         unit: state.Master.comboDistribusiOrderGet.data?.unit || [],
+        unitUser: state.Master.comboDistribusiOrderGet.data?.unitUser || [],
         jenisorderbarang: state.Master.comboDistribusiOrderGet.data?.jenisorderbarang || [],
     }))
 
@@ -408,7 +410,7 @@ const DistribusiOrder = () => {
                     <CustomSelect
                         id="unitorder"
                         name="unitorder"
-                        options={unit}
+                        options={isUnit ? unitUser : unit}
                         value={vOrder.values?.unitorder}
                         onChange={(val) => {
                             vOrder.setFieldValue("unitorder", val?.value || "")

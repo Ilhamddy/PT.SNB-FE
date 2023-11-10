@@ -66,10 +66,118 @@ WHERE objectindukrlfk = $1
 AND statusenabled = true
 `
 
+const qLaporanRL3_3 =`select row_number() OVER (ORDER BY x.reportdisplay) AS no,x.reportdisplay,count(x.reportdisplay) as jml from (
+    SELECT mm2.reportdisplay  from m_maprltoproduk mm
+    join m_masterrl mm2 on mm2.id=mm.objectmasterrlfk
+    join m_masterindukrl mm3 on mm3.id=mm2.objectindukrlfk
+    join t_pelayananpasien tp on tp.objectprodukfk=mm.objectprodukfk 
+    where mm3.id=8 and tp.statusenabled=true and tp.tglinput between $1 and $2
+    ) as x group by x.reportdisplay`
+
+const qLaporanRL3_6 =`SELECT row_number() OVER (ORDER BY ms.reportdisplay) AS no,ms.reportdisplay AS spesialis,
+SUM(CASE WHEN mp2.kodeexternal = '1' THEN 1 ELSE 0 END) AS besar_count,
+SUM(CASE WHEN mp2.kodeexternal = '2' THEN 1 ELSE 0 END) AS sedang_count,
+SUM(CASE WHEN mp2.kodeexternal = '3' THEN 1 ELSE 0 END) AS kecil_count,
+SUM(CASE WHEN mp2.kodeexternal = '4' THEN 1 ELSE 0 END) AS khusus_count,
+(SUM(CASE WHEN mp2.kodeexternal = '1' THEN 1 ELSE 0 END) +
+ SUM(CASE WHEN mp2.kodeexternal = '2' THEN 1 ELSE 0 END) +
+ SUM(CASE WHEN mp2.kodeexternal = '3' THEN 1 ELSE 0 END) +
+ SUM(CASE WHEN mp2.kodeexternal = '4' THEN 1 ELSE 0 END)) AS total
+FROM t_pelayananpasien tp
+JOIN t_pelayananpasienpetugas tp2 ON tp2.objectpelayananpasienfk = tp.norec
+JOIN m_pegawai mp ON mp.id = tp2.objectpegawaifk
+JOIN m_spesialisasi ms ON ms.id = mp.objectspesialisasifk
+JOIN m_produk mp2 ON mp2.id = tp.objectprodukfk
+JOIN t_antreanpemeriksaan ta ON ta.norec = tp.objectantreanpemeriksaanfk
+JOIN m_unit mu ON mu.id = ta.objectunitfk
+WHERE mu.objectinstalasifk = 6 and tp.tglinput between $1 and $2
+AND mp2.kodeexternal IN ('1', '2', '3', '4')
+AND tp.statusenabled = true
+GROUP BY ms.reportdisplay`
+
+const qLaporanRL3_14 =`select row_number() OVER (ORDER BY ms.reportdisplay) AS no,ms.reportdisplay as spesialis,
+SUM(CASE WHEN td.objectasalrujukanfk  = 1 THEN 1 ELSE 0 END) AS diterima_puskesmas,
+SUM(CASE WHEN td.objectasalrujukanfk  = 2 THEN 1 ELSE 0 END) AS diterima_rs,
+SUM(CASE WHEN td.objectasalrujukanfk in (3,4,5,6,7) THEN 1 ELSE 0 END) AS diterima_faskeslain,
+0 as dikembalikan_kepuskesmas,0 as dikembalikan_kefaskeslain, 0 as dikembalikan_kersasal,
+(SUM(case when td.objectstatuspulangfk=3 and td.objectasalrujukanfk in (1,2,3,6) THEN 1 ELSE 0 end)+
+SUM(case when td.objectstatuspulangrifk in (3,4) and td.objectasalrujukanfk in (1,2,3,6) THEN 1 ELSE 0 end)) as dirujuk_pasienrujukan,
+(SUM(case when td.objectstatuspulangfk=5 and td.objectasalrujukanfk in (1,2,3,6) THEN 1 ELSE 0 end)+
+SUM(case when td.objectstatuspulangrifk=5 and td.objectasalrujukanfk in (1,2,3,6) THEN 1 ELSE 0 end)) as dirujuk_datangsendiri,
+(SUM(case when td.objectstatuspulangfk=2 and td.objectasalrujukanfk in (1,2,3,6) THEN 1 ELSE 0 end)+
+SUM(case when td.objectstatuspulangrifk=2 and td.objectasalrujukanfk in (1,2,3,6) THEN 1 ELSE 0 end)) as dirujuk_diterimakembali
+from t_daftarpasien td 
+join m_pegawai mp on mp.id=td.objectdokterpemeriksafk
+join m_spesialisasi ms on ms.id=mp.objectspesialisasifk
+where td.statusenabled=true and td.tglpulang between $1 and $2
+GROUP BY ms.reportdisplay
+order by ms.reportdisplay`
+
+const qLaporanRL3_15 =`SELECT row_number() OVER (ORDER BY mr.namarekanan) AS no,mr.namarekanan as cara_bayar,sum(case when mu.objectinstalasifk=2 then 1 else 0 end) as jumlah_pasien_Keluar,
+sum(case when mu.objectinstalasifk=4 then 1 else 0 end) as Laboratorium,
+sum(case when mu.objectinstalasifk=3 then 1 else 0 end) as Radiologi,
+sum(case when mu.objectinstalasifk not in (2,3,4) then 1 else 0 end) as Lain_lain,
+(sum(case when mu.objectinstalasifk=4 then 1 else 0 end)+
+sum(case when mu.objectinstalasifk=3 then 1 else 0 end)+
+sum(case when mu.objectinstalasifk not in (2,3,4) then 1 else 0 end)) as jumlah_pasien_rj,
+0 as jumlah_lama_dirawat
+FROM t_daftarpasien td
+JOIN m_rekanan mr ON td.objectpenjaminfk = mr.id
+join m_unit mu on mu.id=td.objectunitlastfk
+WHERE td.statusenabled = true AND td.tglpulang between  $1 and $2
+GROUP BY mr.namarekanan;`
+
+const qDetailLaporanRL3_15 =`SELECT mr.namarekanan, td.tglregistrasi ,td.tglpulang,
+to_char( td.tglregistrasi, TO_CHAR(age( td.tglregistrasi,  td.tglpulang), 'DD')) AS los
+FROM t_daftarpasien td
+JOIN m_rekanan mr ON td.objectpenjaminfk = mr.id
+WHERE td.statusenabled = true AND td.tglpulang between  $1 and $2
+order by mr.namarekanan `
+
+const qLaporanRL3_11 =`select row_number() OVER (ORDER BY x.reportdisplay) AS no,x.reportdisplay,count(x.reportdisplay) as jml from (
+    SELECT mm2.reportdisplay  from m_maprltoproduk mm
+    join m_masterrl mm2 on mm2.id=mm.objectmasterrlfk
+    join m_masterindukrl mm3 on mm3.id=mm2.objectindukrlfk
+    join t_pelayananpasien tp on tp.objectprodukfk=mm.objectprodukfk 
+    where mm3.id=16 and tp.statusenabled=true and tp.tglinput between $1 and $2
+    ) as x group by x.reportdisplay`
+
+const qLaporanRL3_10 =`select row_number() OVER (ORDER BY x.reportdisplay) AS no,x.reportdisplay,count(x.reportdisplay) as jml from (
+    SELECT mm2.reportdisplay  from m_maprltoproduk mm
+    join m_masterrl mm2 on mm2.id=mm.objectmasterrlfk
+    join m_masterindukrl mm3 on mm3.id=mm2.objectindukrlfk
+    join t_pelayananpasien tp on tp.objectprodukfk=mm.objectprodukfk 
+    where mm3.id=15 and tp.statusenabled=true and tp.tglinput between $1 and $2
+    ) as x group by x.reportdisplay`
+
+const qLaporanRL5_1 =`select row_number() OVER (ORDER BY x.statuspasien) AS no,x.statuspasien,count(*) as jml from(
+    select case when td.statuspasien is null or td.statuspasien='LAMA' then 'LAMA' else td.statuspasien end as statuspasien
+    from t_daftarpasien td
+    where td.statusenabled=true and td.tglpulang between $1 and $2
+    )as x group by x.statuspasien`
+
+const qLaporanRL5_2=`select row_number() OVER (ORDER BY ms.reportdisplay) AS no,ms.reportdisplay as spesialis,count(*) as jml
+    from t_daftarpasien td
+    join m_unit mu on mu.id=td.objectunitlastfk
+    join m_pegawai mp on mp.id=td.objectdokterpemeriksafk
+    join m_spesialisasi ms on ms.id=mp.objectspesialisasifk
+    where td.statusenabled=true and mu.objectinstalasifk=1 and td.tglpulang between $1 and $2
+    group by  ms.reportdisplay
+    order by ms.reportdisplay`
+
 export default {
     qResult,
     qGetDetailFromJenisProduk,
     qLayananJenis,
     qGetMasterRLFromInduk,
-    qLayananFromNoRL: qLayananFromMasterRL
+    qLayananFromNoRL: qLayananFromMasterRL,
+    qLaporanRL3_3,
+    qLaporanRL3_6,
+    qLaporanRL3_14,
+    qLaporanRL3_15,
+    qDetailLaporanRL3_15,
+    qLaporanRL3_11,
+    qLaporanRL3_10,
+    qLaporanRL5_1,
+    qLaporanRL5_2
 }

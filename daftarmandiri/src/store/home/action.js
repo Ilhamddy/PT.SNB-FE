@@ -10,8 +10,10 @@ import {
     GET_BERITA_HOME_ERROR,
     GET_BERITA_QUERY,
     GET_BERITA_QUERY_SUCCESS,
-    GET_BERITA_QUERY_ERROR
-
+    GET_BERITA_QUERY_ERROR,
+    GET_CAPTCHA,
+    GET_CAPTCHA_SUCCESS,
+    GET_CAPTCHA_ERROR
 } from "./actionType";
 
 export const getJadwalDokter = (queries) => {
@@ -93,6 +95,27 @@ export const getBeritaQuerySuccess = (data) => {
 export const getBeritaQueryError = (error) => {
     return {
         type: GET_BERITA_QUERY_ERROR,
+        payload: error
+    }
+}
+
+export const getCaptcha = (queries) => {
+    return {
+        type: GET_CAPTCHA,
+        payload: {queries}
+    }
+}
+
+export const getCaptchaSuccess = (data) => {
+    return {
+        type: GET_CAPTCHA_SUCCESS,
+        payload: data
+    }
+}
+
+export const getCaptchaError = (error) => {
+    return {
+        type: GET_CAPTCHA_ERROR,
         payload: error
     }
 }

@@ -17,7 +17,11 @@ import { ToastContainer } from 'react-toastify'
 import { Link, useNavigate } from 'react-router-dom'
 import { shallowEqual, useDispatch, useSelector } from 'react-redux'
 import { useEffect } from 'react'
-import { getListPemesanan, penerimaanListQueryGet } from '../../store/actions'
+import {
+  getListPemesanan,
+  getListRetur,
+  penerimaanListQueryGet,
+} from '../../store/actions'
 import CountUp from 'react-countup'
 import {
   pesananBatal,
@@ -26,16 +30,17 @@ import {
 } from './imagesementara'
 import LoadingTable from '../../Components/Table/LoadingTable'
 import NoDataTable from '../../Components/Table/NoDataTable'
-import { dateLocal } from '../../utils/format'
+import { dateLocal, dateTimeLocal } from '../../utils/format'
 
 const PenerimaanProdukList = ({ isLogistik }) => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
-  const { penerimaan, pemesanan } = useSelector(
+  const { penerimaan, pemesanan, retur } = useSelector(
     (state) => ({
       penerimaan: state.Gudang.penerimaanListQueryGet || [],
       pemesanan: state.Gudang.getListPemesanan.data.listpemesanan || [],
+      retur: state.Gudang.getListRetur || [],
     }),
     shallowEqual
   )
@@ -43,6 +48,7 @@ const PenerimaanProdukList = ({ isLogistik }) => {
   useEffect(() => {
     dispatch(penerimaanListQueryGet({ isLogistik: isLogistik || false }))
     dispatch(getListPemesanan({ isLogistik: isLogistik || false }))
+    dispatch(getListRetur({ isLogistik: isLogistik || false }))
   }, [dispatch, isLogistik])
 
   /**
@@ -68,12 +74,26 @@ const PenerimaanProdukList = ({ isLogistik }) => {
               <DropdownItem
                 onClick={() =>
                   navigate(
-                    `/farmasi/gudang/penerimaan-produk/${row.norecpenerimaan}`
+                    isLogistik
+                      ? `/logistik/gudang/penerimaan-produk/${row.norecpenerimaan}`
+                      : `/farmasi/gudang/penerimaan-produk/${row.norecpenerimaan}`
                   )
                 }
               >
                 <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
                 Edit
+              </DropdownItem>
+              <DropdownItem
+                onClick={() =>
+                  navigate(
+                    isLogistik
+                      ? `/logistik/gudang/penerimaan-produk-retur/${row.norecpenerimaan}`
+                      : `/farmasi/gudang/penerimaan-produk-retur/${row.norecpenerimaan}`
+                  )
+                }
+              >
+                <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
+                Retur
               </DropdownItem>
             </DropdownMenu>
           </UncontrolledDropdown>
@@ -87,7 +107,7 @@ const PenerimaanProdukList = ({ isLogistik }) => {
       name: <span className="font-weight-bold fs-13">No PO</span>,
       sortable: true,
       selector: (row) => row.nomorpo,
-      width: '120px',
+      width: '140px',
     },
     {
       name: <span className="font-weight-bold fs-13">Tanggal Pemesanan</span>,
@@ -104,8 +124,8 @@ const PenerimaanProdukList = ({ isLogistik }) => {
     {
       name: <span className="font-weight-bold fs-13">Tanggal Terima</span>,
       sortable: true,
-      selector: (row) => row.tanggalterima,
-      width: '100px',
+      selector: (row) => dateLocal(row.tanggalterima),
+      width: '110px',
     },
     {
       name: <span className="font-weight-bold fs-13">Nama supplier</span>,
@@ -185,7 +205,7 @@ const PenerimaanProdukList = ({ isLogistik }) => {
       name: <span className="font-weight-bold fs-13">No PO</span>,
       sortable: true,
       selector: (row) => row.nomorpo,
-      width: '120px',
+      width: '140px',
     },
     {
       name: <span className="font-weight-bold fs-13">Tanggal Pemesanan</span>,
@@ -219,6 +239,90 @@ const PenerimaanProdukList = ({ isLogistik }) => {
     },
   ]
 
+  /**
+   * @type {import("react-data-table-component").TableColumn[]}
+   */
+  const columnsRetur = [
+    {
+      name: <span className="font-weight-bold fs-13">Detail</span>,
+      cell: (row) => (
+        <div className="hstack gap-3 flex-wrap">
+          <UncontrolledTooltip placement="top" target="detail-produk">
+            Detail Produk
+          </UncontrolledTooltip>
+          <UncontrolledDropdown className="dropdown d-inline-block">
+            <DropdownToggle
+              className="btn btn-soft-secondary btn-sm"
+              tag="button"
+              id="detail-produk"
+            >
+              <i className="ri-apps-2-line"></i>
+            </DropdownToggle>
+            <DropdownMenu className="dropdown-menu-end">
+              <DropdownItem
+                onClick={() =>
+                  navigate(
+                    isLogistik
+                      ? `/logistik/gudang/penerimaan-produk-retur/${row.norecpenerimaan}/${row.norecretur}`
+                      : `/farmasi/gudang/penerimaan-produk-retur/${row.norecpenerimaan}/${row.norecretur}`
+                  )
+                }
+              >
+                <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
+                Lihat retur
+              </DropdownItem>
+            </DropdownMenu>
+          </UncontrolledDropdown>
+        </div>
+      ),
+      sortable: true,
+      width: '70px',
+      wrap: true,
+    },
+    {
+      name: <span className="font-weight-bold fs-13">No PO</span>,
+      sortable: true,
+      selector: (row) => row.nomorpo,
+      width: '140px',
+    },
+    {
+      name: <span className="font-weight-bold fs-13">Tanggal Pemesanan</span>,
+      sortable: true,
+      selector: (row) => dateLocal(row.tanggalpesan),
+      width: '120px',
+    },
+    {
+      name: <span className="font-weight-bold fs-13">No. Terima</span>,
+      selector: (row) => row.nomorterima,
+      sortable: true,
+      width: '100px',
+    },
+    {
+      name: <span className="font-weight-bold fs-13">No. Retur</span>,
+      sortable: true,
+      selector: (row) => row.nomorretur,
+      width: '110px',
+    },
+    {
+      name: <span className="font-weight-bold fs-13">Nama supplier</span>,
+      sortable: true,
+      selector: (row) => row.namasupplierstr,
+      width: '130px',
+    },
+    {
+      name: <span className="font-weight-bold fs-13">Item Retur</span>,
+      sortable: true,
+      selector: (row) => row.detailretur?.length || 0,
+      width: '100px',
+    },
+    {
+      name: <span className="font-weight-bold fs-13">Unit Retur</span>,
+      sortable: true,
+      selector: (row) => row.unitpesanstr,
+      width: '130px',
+    },
+  ]
+
   return (
     <div className="page-content page-list-penerimaan">
       <ToastContainer closeButton={false} />
@@ -241,6 +345,39 @@ const PenerimaanProdukList = ({ isLogistik }) => {
               end={0}
               image={pesananBatal}
             />
+          </Row>
+          <Row className="d-flex justify-content-between mb-3">
+            <Col lg={'auto'} className="d-flex flex-row-reverse">
+              <h4 className="mb-0">Pemesanan</h4>
+            </Col>
+            <Col lg={'auto'} className="d-flex flex-row-reverse">
+              <Link
+                to={
+                  isLogistik
+                    ? '/logistik/gudang/pemesanan-barang'
+                    : '/farmasi/gudang/pemesanan-barang'
+                }
+              >
+                <Button color={'info'}>Pesan</Button>
+              </Link>
+            </Col>
+          </Row>
+          <Row>
+            <div id="table-gridjs">
+              <DataTable
+                fixedHeader
+                fixedHeaderScrollHeight="700px"
+                columns={columnsPemesanan}
+                pagination
+                data={pemesanan || []}
+                progressPending={penerimaan?.loading || false}
+                customStyles={tableCustomStyles}
+                expandableRows
+                expandableRowsComponent={ExpandablePemesanan}
+                progressComponent={<LoadingTable />}
+                noDataComponent={<NoDataTable dataName={'permintaan'} />}
+              />
+            </div>
           </Row>
           <Row className="d-flex justify-content-between mb-3">
             <Col lg={'auto'} className="d-flex flex-row-reverse">
@@ -277,18 +414,7 @@ const PenerimaanProdukList = ({ isLogistik }) => {
           </Row>
           <Row className="d-flex justify-content-between mb-3">
             <Col lg={'auto'} className="d-flex flex-row-reverse">
-              <h4 className="mb-0">Pemesanan</h4>
-            </Col>
-            <Col lg={'auto'} className="d-flex flex-row-reverse">
-              <Link
-                to={
-                  isLogistik
-                    ? '/logistik/gudang/pemesanan-barang'
-                    : '/farmasi/gudang/pemesanan-barang'
-                }
-              >
-                <Button color={'info'}>Pesan</Button>
-              </Link>
+              <h4 className="mb-0">Retur</h4>
             </Col>
           </Row>
           <Row>
@@ -296,13 +422,13 @@ const PenerimaanProdukList = ({ isLogistik }) => {
               <DataTable
                 fixedHeader
                 fixedHeaderScrollHeight="700px"
-                columns={columnsPemesanan}
+                columns={columnsRetur}
                 pagination
-                data={pemesanan || []}
-                progressPending={penerimaan?.loading || false}
+                data={retur.data?.listRetur || []}
+                progressPending={retur?.loading || false}
                 customStyles={tableCustomStyles}
                 expandableRows
-                expandableRowsComponent={ExpandablePemesanan}
+                expandableRowsComponent={ExpandableRetur}
                 progressComponent={<LoadingTable />}
                 noDataComponent={<NoDataTable dataName={'permintaan'} />}
               />
@@ -482,6 +608,69 @@ const Widget = ({ title, end, image }) => {
         </div>
       </Card>
     </Col>
+  )
+}
+
+const ExpandableRetur = ({ data }) => {
+  /**
+   * @type {import("react-data-table-component").TableColumn[]}
+   */
+  const columnsDetail = [
+    {
+      name: <span className="font-weight-bold fs-13">Nama produk</span>,
+      sortable: true,
+      selector: (row) => row.produk.namaproduk,
+      width: '120px',
+    },
+    {
+      name: <span className="font-weight-bold fs-13">Qty Penerimaan</span>,
+      selector: (row) => row.jumlahterima,
+      sortable: true,
+      width: '100px',
+    },
+    {
+      name: <span className="font-weight-bold fs-13">Harga satuan kecil</span>,
+      sortable: true,
+      selector: (row) => `Rp${row.hargasatuankecil?.toLocaleString('id-ID')}`,
+      width: '100px',
+    },
+    {
+      name: <span className="font-weight-bold fs-13">Diskon</span>,
+      sortable: true,
+      selector: (row) => `Rp${row.diskonrupiah}`,
+      width: '150px',
+    },
+    {
+      name: <span className="font-weight-bold fs-13">PPN</span>,
+      sortable: true,
+      selector: (row) => `Rp${row.ppnrupiahproduk}`,
+      width: '100px',
+    },
+    {
+      name: <span className="font-weight-bold fs-13">Total</span>,
+      sortable: true,
+      selector: (row) => `Rp${row.totalproduk}`,
+      width: '150px',
+    },
+    {
+      name: <span className="font-weight-bold fs-13">No Batch</span>,
+      sortable: true,
+      selector: (row) => row.nobatch,
+      width: '100px',
+    },
+  ]
+  if (data.detailretur.length === 0) {
+    return <></>
+  }
+  return (
+    <DataTable
+      fixedHeader
+      fixedHeaderScrollHeight="700px"
+      columns={columnsDetail}
+      data={data.detailretur || []}
+      progressPending={false}
+      customStyles={subTableCustomStyles}
+    />
   )
 }
 

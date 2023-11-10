@@ -265,6 +265,16 @@ import LaporanPasienKunjungan from "../pages/RekamMedis/Laporan/LaporanPasienKun
 // RL
 import RL3_1 from "../pages/RekamMedis/Laporan/RL3_1/RL3_1";
 import RL3_2 from "../pages/RekamMedis/Laporan/RL3_2/RL3_2";
+import RL3_3 from "../pages/RekamMedis/Laporan/RL3_3/RL3_3";
+import RL3_6 from "../pages/RekamMedis/Laporan/RL3_6/RL3_6";
+import RL3_14 from "../pages/RekamMedis/Laporan/RL3_14/RL3_14";
+import RL3_15 from "../pages/RekamMedis/Laporan/RL3_15/RL3_15";
+import RL3_11 from "../pages/RekamMedis/Laporan/RL3_11/RL3_11";
+import RL3_10 from "../pages/RekamMedis/Laporan/RL3_10/RL3_10";
+
+import RL5_1 from "../pages/RekamMedis/Laporan/RL5_1/RL5_1";
+import RL5_2 from "../pages/RekamMedis/Laporan/RL5_2/RL5_2";
+import RL5_3 from "../pages/RekamMedis/Laporan/RL5_3/RL5_3";
 // 
 // radiologi
 import DaftarOrderRadiologi from "../pages/Radiologi/DaftarOrderRadiologi/DaftarOrderRadiologi";
@@ -314,7 +324,6 @@ import ListVerifObat from "../pages/ListVerifObat/ListVerifObat";
 import DaftarPasienFarmasi from "../pages/ListDaftarPasien/DaftarPasienFarmasi/DaftarPasienFarmasi";
 import TambahObatFarmasi from "../pages/TambahObatFarmasi/TambahObatFarmasi";
 import MappingLayanan from "../pages/RekamMedis/MappingLayanan/MappingLayanan.jsx";
-import RL3_3 from "../pages/RekamMedis/Laporan/RL3_3/RL3_3";
 import Dashboard from "../pages/Dashboard/Dashboard";
 import Viewer from "../pages/Viewer/Viewer";
 import PemanggilanViewer from "../pages/PemanggilanViewer/PemanggilanViewer";
@@ -345,6 +354,8 @@ import DaftarKamar from "../pages/DaftarKamar/DaftarKamar";
 import RoleAcces from "../pages/SysAdmin/RoleAcces/RoleAcces";
 import ViewerBed from "../pages/ViewerBed/ViewerBed";
 import PemesananBarang from "../pages/PemesananBarang/PemesananBarang";
+import Logger from "../pages/Logger/Logger";
+
 
 
 
@@ -605,7 +616,16 @@ const authProtectedRoutes = [
   { path: "/cmVrYW1tZWRpcy9sYXBvcmFuLXJsL3JsMy4x", component: <RL3_1/>},
   { path: "/cmVrYW1tZWRpcy9sYXBvcmFuLXJsL3JsMy4y", component: <RL3_2/>},
   { path: "/cmVrYW1tZWRpcy9sYXBvcmFuLXJsL3JsMy4z", component: <RL3_3 />},
+  { path: "/rekammedis/laporan-rl/rl3_6", component: <RL3_6/>},
   { path: "/cmVrYW1tZWRpcy9tYXBwaW5nLXJs", component: <MappingLayanan />},
+  { path: "/rekammedis/laporan-rl/rl3_14", component: <RL3_14/>},
+  { path: "/rekammedis/laporan-rl/rl3_15", component: <RL3_15/>},
+  { path: "/rekammedis/laporan-rl/rl3_11", component: <RL3_11/>},
+  { path: "/rekammedis/laporan-rl/rl3_10", component: <RL3_10/>},
+
+  { path: "/rekammedis/laporan-rl/rl5_1", component: <RL5_1/>},
+  { path: "/rekammedis/laporan-rl/rl5_2", component: <RL5_2/>},
+  { path: "/rekammedis/laporan-rl/rl5_3", component: <RL5_3/>},
 
   // radiologi
   { path: "/radiologi/daftarorderradiologi", component: <DaftarOrderRadiologi /> },
@@ -636,9 +656,11 @@ const authProtectedRoutes = [
   { path: "/farmasi/gudang/setting-produk/:tabopen/:paramobat", component: <SettingProduk /> },
   { path: "/farmasi/gudang/setting-produk/:tabopen", component: <SettingProduk /> },
   { path: "/farmasi/gudang/list-produk", component: <ListProduk /> },
+  { path: "/farmasi/gudang/penerimaan-produk", component: <PenerimaanProduk /> },
+  { path: "/farmasi/gudang/penerimaan-produk-retur/:norecpenerimaan", component: <PenerimaanProduk isRetur />},
+  { path: "/farmasi/gudang/penerimaan-produk-retur/:norecpenerimaan/:norecretur", component: <PenerimaanProduk isRetur />},
   { path: "/farmasi/gudang/penerimaan-produk/:norecpenerimaan", component: <PenerimaanProduk /> },
   { path: "/farmasi/gudang/penerimaan-produk-pemesanan/:norecpesan", component: <PenerimaanProduk /> },
-  { path: "/farmasi/gudang/penerimaan-produk", component: <PenerimaanProduk /> },
   { path: "/farmasi/gudang/penerimaan-produk-list", component: <PenerimaanProdukList /> },
   { path: "/farmasi/gudang/kartu-stok", component: <KartuStok />},
   { path: "/farmasi/gudang/stok-unit", component: <StokUnitList />},
@@ -655,14 +677,13 @@ const authProtectedRoutes = [
 
   //distribusi 
   { path: "/farmasi/gudang/distribusi-order", component: <DistribusiOrder /> },
-  { path: "/farmasi/gudang/distribusi-order-list", component: <DistribusiOrderList /> },
+  { path: "/farmasi/gudang/distribusi-order-unit", component: <DistribusiOrder isUnit /> },
   { path: "/farmasi/gudang/distribusi-kirim/:norecorder", component: <DistribusiKirim /> },
   { path: "/farmasi/gudang/distribusi-kirim-langsung", component: <DistribusiKirim /> },
   { path: "/farmasi/gudang/distribusi-kirim-langsung/:noreckirim", component: <DistribusiKirim /> },
   { path: "/farmasi/gudang/distribusi-kirim-verif/:noreckirim", component: <DistribusiKirim isVerif /> },
 
-  { path: "/farmasi/gudang/distribusi-order-list", component: <DistribusiOrderList /> },
-
+  { path: "/logistik/gudang/distribusi-order-list", component: <DistribusiOrderList /> },
   { path: "/logistik/gudang/unit-order-list", component: <DistribusiOrderList isUnit/> },
 
   //farmasi
@@ -695,6 +716,7 @@ const authProtectedRoutes = [
   { path: "/sysadmin/daftar-unit", component: <DaftarUnit />},
   { path: "/sysadmin/daftar-kamar", component: <DaftarKamar />},
   { path: "/sysadmin/role-acces", component: <RoleAcces />},
+  { path: "/logger", component: <Logger />}
 ];
 
 const publicRoutes = [

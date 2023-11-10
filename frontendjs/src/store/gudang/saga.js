@@ -26,6 +26,8 @@ import {
     kemasanFromProdukGetSuccess,
     penerimaanSaveOrUpdateError,
     penerimaanSaveOrUpdateSuccess,
+    upsertReturBarangSuccess,
+    upsertReturBarangError,
     penerimaanQueryGetError,
     penerimaanQueryGetSuccess,
     penerimaanListQueryGetSuccess,
@@ -47,7 +49,17 @@ import {
     getPemesananSuccess,
     getPemesananError,
     getListPemesananSuccess,
-    getListPemesananError
+    getListPemesananError,
+    getUnitUserSuccess,
+    getUnitUserError,
+    getComboKartuStokSuccess,
+    getComboKartuStokError,
+    getComboStokUnitSuccess,
+    getComboStokUnitError,
+    getListReturSuccess,
+    getListReturError,
+    getReturSuccess,
+    getReturError
 } from "./action";
 
 
@@ -66,6 +78,7 @@ import {
     PRODUK_EDIT_GET,
     KEMASAN_FROM_PRODUK_GET,
     PENERIMAAN_SAVE_OR_UPDATE,
+    UPSERT_RETUR_BARANG,
     PENERIMAAN_QUERY_GET,
     PENERIMAAN_LIST_QUERY_GET,
     KARTU_STOK_QUERY_GET,
@@ -76,7 +89,12 @@ import {
     UPDATE_STOK_OPNAME_DETAILS,
     CREATE_OR_UPDATE_PEMESANAN,
     GET_PEMESANAN,
-    GET_LIST_PEMESANAN
+    GET_LIST_PEMESANAN,
+    GET_UNIT_USER,
+    GET_COMBO_KARTU_STOK,
+    GET_COMBO_STOK_UNIT,
+    GET_LIST_RETUR,
+    GET_RETUR
 } from "./actionType";
 
 const serviceGudang = new ServiceGudang();
@@ -220,6 +238,20 @@ function* onPenerimaanSaveOrUpdate({payload: {data, callback}}){
     }
 }
 
+function* onUpsertReturBarang({payload: {data, callback}}){
+    try {
+        let response = yield call(serviceGudang.upsertReturBarang, data);
+        yield put(upsertReturBarangSuccess(response.data));
+        toast.success(response?.msg || "Sukses", { autoClose: 3000 })
+        callback && 
+            callback(response.data || "");
+    } catch (error) {
+        console.error(error);
+        yield put(upsertReturBarangError(error));
+        toast.error(error?.msg || "Gagal save or update penerimaan", { autoClose: 3000 });
+    }
+}
+
 function* onPenerimaanQueryGet({payload: {queries}}){
     try {
         let response = yield call(serviceGudang.getPenerimaan, queries);
@@ -342,6 +374,53 @@ function* onGetListPemesanan({payload: {queries}}){
     }
 }
 
+function* onGetUnitUser({payload: { queries }}){
+    try{
+        let response = yield call(serviceGudang.getUnitUser, queries);
+        yield put(getUnitUserSuccess(response.data))
+    } catch (error) {
+        yield put(getUnitUserError(error))
+    }
+    
+}
+
+function* onGetComboKartuStok({payload: { queries }}){
+    try{
+        let response = yield call(serviceGudang.getComboKartuStok, queries);
+        yield put(getComboKartuStokSuccess(response.data))
+    } catch (error) {
+        yield put(getComboKartuStokError(error))
+    }
+}
+
+function* onGetComboStokUnit({payload: { queries }}){
+    try{
+        let response = yield call(serviceGudang.getComboStokUnit, queries);
+        yield put(getComboStokUnitSuccess(response.data))
+    } catch (error) {
+        yield put(getComboStokUnitError(error))
+    }
+}
+
+function* onGetListRetur({ payload: {queries}}){
+    try{
+        let response = yield call(serviceGudang.getListRetur, queries);
+        yield put(getListReturSuccess(response.data))
+    } catch (error) {
+        yield put(getListReturError(error))
+    }
+}
+
+function* onGetRetur({ payload: {queries}}){
+    try{
+        let response = yield call(serviceGudang.getRetur, queries);
+        yield put(getReturSuccess(response.data))
+    } catch (error) {
+        yield put(getReturError(error))
+    }
+}
+
+
 function* gudangSaga() {
     yield all([
         takeEvery(OBAT_GUDANG_SAVE, onSaveObatGudang),
@@ -356,6 +435,7 @@ function* gudangSaga() {
         takeEvery(PRODUK_EDIT_GET, onProdukEditGet),
         takeEvery(KEMASAN_FROM_PRODUK_GET, onKemasanFromProdukGet),
         takeEvery(PENERIMAAN_SAVE_OR_UPDATE, onPenerimaanSaveOrUpdate),
+        takeEvery(UPSERT_RETUR_BARANG, onUpsertReturBarang),
         takeEvery(PENERIMAAN_QUERY_GET, onPenerimaanQueryGet),
         takeEvery(PENERIMAAN_LIST_QUERY_GET, onPenerimaanListQueryGet),
         takeEvery(KARTU_STOK_QUERY_GET, onKartuStokQueryGet),
@@ -366,7 +446,13 @@ function* gudangSaga() {
         takeEvery(UPDATE_STOK_OPNAME_DETAILS, onUpdateStokOpnameDetails),
         takeEvery(CREATE_OR_UPDATE_PEMESANAN, onCreateOrUpdatePemesanan),
         takeEvery(GET_PEMESANAN, onGetPemesanan),
-        takeEvery(GET_LIST_PEMESANAN, onGetListPemesanan)
+        takeEvery(GET_LIST_PEMESANAN, onGetListPemesanan),
+        takeEvery(GET_UNIT_USER, onGetUnitUser),
+        takeEvery(GET_COMBO_KARTU_STOK, onGetComboKartuStok),
+        takeEvery(GET_COMBO_STOK_UNIT, onGetComboStokUnit),
+        takeEvery(GET_LIST_RETUR, onGetListRetur),
+        takeEvery(GET_RETUR, onGetRetur),
+
     ]);
 }
 
