@@ -13,7 +13,16 @@ import {
     GET_COUNT_CARA_BAYAR_ERROR,
     GET_POLIKLINIK_TERBANYAK,
     GET_POLIKLINIK_TERBANYAK_SUCCESS,
-    GET_POLIKLINIK_TERBANYAK_ERROR
+    GET_POLIKLINIK_TERBANYAK_ERROR,
+    GET_COUNT_UNIT,
+    GET_COUNT_UNIT_SUCCESS,
+    GET_COUNT_UNIT_ERROR,
+    GET_STATUS_PEGAWAI,
+    GET_STATUS_PEGAWAI_SUCCESS,
+    GET_STATUS_PEGAWAI_ERROR,
+    GET_JENIS_KELAMIN,
+    GET_JENIS_KELAMIN_SUCCESS,
+    GET_JENIS_KELAMIN_ERROR
 } from "./actionType";
   
 const INIT_STATE = {
@@ -41,7 +50,22 @@ const INIT_STATE = {
         data: [],
         loading: false,
         error: null
-    }
+    },
+    getCountUnit: {
+        data: [],
+        loading: false,
+        error: null
+    },
+    getStatusPegawai: {
+        data: [],
+        loading: false,
+        error: null
+    },
+    getJenisKelamin: {
+        data: [],
+        loading: false,
+        error: null
+    },
 };
   
 const Eis = (state = INIT_STATE, action) => {
@@ -227,6 +251,79 @@ const Eis = (state = INIT_STATE, action) => {
                 }
             }
         }
+
+        case GET_COUNT_UNIT: {
+            return {
+                ...state,
+                getCountUnit: {
+                    ...state.getCountUnit,
+                    loading: true,
+                    data: [],
+                    error: null
+                }
+            }
+        }
+
+        case GET_COUNT_UNIT_SUCCESS: {
+            return {
+                ...state,
+                getCountUnit: {
+                    ...state.getCountUnit,
+                    loading: false,
+                    data: action.payload,
+                    error: null
+                }
+            }
+        }
+
+        case GET_COUNT_UNIT_ERROR: {
+            return {
+                ...state,
+                getCountUnit: {
+                    ...state.getCountUnit,
+                    loading: false,
+                    data: [],
+                    error: action.payload
+                }
+            }
+        }
+
+        case GET_STATUS_PEGAWAI: {
+            return {
+                ...state,
+                getStatusPegawai: {
+                    ...state.getStatusPegawai,
+                    loading: true,
+                    data: [],
+                    error: null
+                }
+            }
+        }
+
+        case GET_STATUS_PEGAWAI_SUCCESS: {
+            return {
+                ...state,
+                getStatusPegawai: {
+                    ...state.getStatusPegawai,
+                    loading: false,
+                    data: action.payload,
+                    error: null
+                }
+            }
+        }
+
+        case GET_STATUS_PEGAWAI_ERROR: {
+            return {
+                ...state,
+                getStatusPegawai: {
+                    ...state.getStatusPegawai,
+                    loading: false,
+                    data: [],
+                    error: action.payload
+                }
+            }
+        }
+
 
         default: {
             return { ...state };

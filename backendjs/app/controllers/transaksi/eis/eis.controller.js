@@ -5,7 +5,7 @@ import db from "../../../models";
 import {
     createTransaction
 } from "../../../utils/dbutils";
-import { qCountCaraBayar, qCountNonBPJS, qGetKunjunganPoliklinik, qGetPasienBatal, qGetPasienMeninggalRanap, qGetPasienPulangIGD, qGetPasienPulangRanap, qGetPasienRawatIGD, qGetPasienTerdaftar, qGetPasienTerdaftarRanap, qGetTempatTidur } from "../../../queries/eis/eis.queries";
+import { qCountCaraBayar, qCountNonBPJS, qGetCountJenisKelamin, qGetCountStatus, qGetCountUnit, qGetKunjunganPoliklinik, qGetPasienBatal, qGetPasienMeninggalRanap, qGetPasienPulangIGD, qGetPasienPulangRanap, qGetPasienRawatIGD, qGetPasienTerdaftar, qGetPasienTerdaftarRanap, qGetTempatTidur } from "../../../queries/eis/eis.queries";
 import { getDateStartEnd } from "../../../utils/dateutils";
 import { daftarInstalasi } from "../../../queries/master/instalasi/instalasi.queries";
 import { daftarRekanan } from "../../../queries/master/rekanan/rekanan.queries";
@@ -320,12 +320,77 @@ const getPoliklinikTerbanyak = async (req, res) => {
     }
 }
 
+const getCountUnit = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const { tanggalmulai, tanggalselesai } = req.query
+        const {
+            todayStart: awalTanggalMulai, 
+        } 
+        = getDateStartEnd(tanggalmulai);
+        const {
+            todayEnd: akhirTanggalSelesai
+        } 
+        = getDateStartEnd(tanggalselesai);
+
+        const countUnit = (await pool
+            .query(qGetCountUnit, []))
+            .rows[0]
+        const tempres = {
+            countUnit: countUnit
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+const getStatusPegawai = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const countJenisKelamin = (await pool.query(qGetCountJenisKelamin)).rows
+        const countStatus = (await pool.query(qGetCountStatus)).rows
+        const tempres = {
+            countStatus: countStatus || [],
+            countJenisKelamin: countJenisKelamin || []
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export default {
     getPasienRJ,
     getPasienIGD,
     getPasienRanap,
     getCountCaraBayar,
-    getPoliklinikTerbanyak
+    getPoliklinikTerbanyak,
+    getCountUnit,
+    getStatusPegawai,
+    
 }
 
 /**

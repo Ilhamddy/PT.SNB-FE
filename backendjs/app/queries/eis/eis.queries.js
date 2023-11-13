@@ -304,6 +304,75 @@ GROUP BY
 	mk.namakamar
 `
 
+const qGetCountUnit = `
+SELECT
+    count(
+        CASE 
+            mu.objectinstalasifk WHEN ${daftarInstalasi.INSTALASI_RAWAT_INAP} 
+                THEN 1 
+            ELSE null 
+        END
+    )::INT as pasienranap,
+    count(
+        CASE 
+            mu.objectinstalasifk WHEN ${daftarInstalasi.INSTALASI_RAWAT_JALAN} 
+                THEN 1 
+            ELSE null 
+        END
+    )::INT as pasienrajal,
+    count(
+        CASE 
+            mu.objectinstalasifk WHEN ${daftarInstalasi.INSTALASI_GAWAT_DARURAT} 
+                THEN 1 
+            ELSE null 
+        END
+    )::INT as pasienigd,
+    count(
+        CASE 
+            mu.objectinstalasifk WHEN ${daftarInstalasi.INSTALASI_LABORATORIUM} 
+                THEN 1 
+            ELSE null 
+        END
+    )::INT as pasienlaboratorium,
+    count(
+        CASE 
+            mu.objectinstalasifk WHEN ${daftarInstalasi.INSTALASI_RADIOLOGI} 
+                THEN 1 
+            ELSE null 
+        END
+    )::INT as pasienradiologi
+FROM t_antreanpemeriksaan tap
+    LEFT JOIN m_unit mu ON mu.id = tap.objectunitfk
+WHERE tap.statusenabled = true
+    AND tap.tglkeluar IS NULL
+`
+
+const qGetCountStatus = `
+SELECT
+    msp.reportdisplay AS label,
+    msp.id AS value,
+    COUNT(mp.id)::INT AS jumlah
+FROM m_statuspegawai msp
+    LEFT JOIN m_pegawai mp ON mp.objectstatuspegawaifk = msp.id
+WHERE msp.statusenabled = true
+GROUP BY
+    msp.reportdisplay,
+    msp.id
+`
+
+const qGetCountJenisKelamin = `
+SELECT
+    mjk.reportdisplay AS label,
+    mjk.id AS value,
+    COUNT(mp.id)::INT AS jumlah
+FROM m_jeniskelamin mjk
+    LEFT JOIN m_pegawai mp ON mp.objectjeniskelaminfk = mjk.id
+WHERE mjk.statusenabled = true
+GROUP BY
+    mjk.reportdisplay,
+    mjk.id
+`
+
 
 
 export {
@@ -317,5 +386,8 @@ export {
     qCountCaraBayar,
     qCountNonBPJS,
     qGetKunjunganPoliklinik,
-    qGetTempatTidur
+    qGetTempatTidur,
+    qGetCountUnit,
+    qGetCountStatus,
+    qGetCountJenisKelamin
 }

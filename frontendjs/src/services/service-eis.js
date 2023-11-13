@@ -22,4 +22,13 @@ export default class ServiceEis{
     getPoliklinikTerbanyak = async (queries) => {
         return await api.get(`/transaksi/eis/get-poliklinik-terbanyak`, queries)
     }
+
+    getCountUnit = async (queries) => {
+        return await api.get(`/transaksi/eis/get-count-unit`, queries)
+    }
+
+    getStatusPegawai = async (queries) => {
+        return await api.get(`/transaksi/eis/get-status-pegawai`, queries)
+    }
+
 }

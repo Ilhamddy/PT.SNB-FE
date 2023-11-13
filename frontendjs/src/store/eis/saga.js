@@ -10,7 +10,11 @@ import {
     getCountCaraBayarSuccess,
     getCountCaraBayarError,
     getPoliklinikTerbanyakSuccess,
-    getPoliklinikTerbanyakError
+    getPoliklinikTerbanyakError,
+    getCountUnitSuccess,
+    getCountUnitError,
+    getStatusPegawaiSuccess,
+    getStatusPegawaiError
 } from "./action";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -19,7 +23,9 @@ import {
     GET_PASIEN_IGD,
     GET_PASIEN_RANAP,
     GET_COUNT_CARA_BAYAR,
-    GET_POLIKLINIK_TERBANYAK
+    GET_POLIKLINIK_TERBANYAK,
+    GET_COUNT_UNIT,
+    GET_STATUS_PEGAWAI
 } from "./actionType";
 import ServiceEis from "../../services/service-eis";
 
@@ -70,13 +76,33 @@ function* onGetPoliklinikTerbanyak({payload: { queries }}) {
     }
 }
 
+function* onGetCountUnit({payload: { queries }}) {
+    try {
+        let response = yield call(serviceEis.getCountUnit, queries);
+        yield put(getCountUnitSuccess(response.data));
+    } catch (error) {
+        yield put(getCountUnitError(error));
+    }
+}
+
+function* onGetStatusPegawai({payload: { queries }}) {
+    try {
+        let response = yield call(serviceEis.getStatusPegawai, queries);
+        yield put(getStatusPegawaiSuccess(response.data));
+    } catch (error) {
+        yield put(getStatusPegawaiError(error));
+    }
+}
+
 function* eisSaga() {
     yield all([
         takeEvery(GET_PASIEN_RJ, onGetStokBatch),
         takeEvery(GET_PASIEN_IGD, onGetPasienIGD),
         takeEvery(GET_PASIEN_RANAP, onGetPasienRanap),
         takeEvery(GET_COUNT_CARA_BAYAR, onGetCountCaraBayar),
-        takeEvery(GET_POLIKLINIK_TERBANYAK, onGetPoliklinikTerbanyak)
+        takeEvery(GET_POLIKLINIK_TERBANYAK, onGetPoliklinikTerbanyak),
+        takeEvery(GET_COUNT_UNIT, onGetCountUnit),
+        takeEvery(GET_STATUS_PEGAWAI, onGetStatusPegawai)
     ]);
 }
 

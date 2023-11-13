@@ -13,7 +13,16 @@ import {
     GET_COUNT_CARA_BAYAR_ERROR,
     GET_POLIKLINIK_TERBANYAK,
     GET_POLIKLINIK_TERBANYAK_SUCCESS,
-    GET_POLIKLINIK_TERBANYAK_ERROR
+    GET_POLIKLINIK_TERBANYAK_ERROR,
+    GET_COUNT_UNIT,
+    GET_COUNT_UNIT_SUCCESS,
+    GET_COUNT_UNIT_ERROR,
+    GET_STATUS_PEGAWAI,
+    GET_STATUS_PEGAWAI_SUCCESS,
+    GET_STATUS_PEGAWAI_ERROR,
+    GET_JENIS_KELAMIN,
+    GET_JENIS_KELAMIN_SUCCESS,
+    GET_JENIS_KELAMIN_ERROR
 } from "./actionType"
 
 
@@ -91,4 +100,36 @@ export const getPoliklinikTerbanyakError = (error) => ({
     type: GET_POLIKLINIK_TERBANYAK_ERROR,
     payload: error
 })
+
+
+export const getCountUnit = (queries) => ({
+    type: GET_COUNT_UNIT,
+    payload: {queries: queries}
+})
+
+export const getCountUnitSuccess = (data) => ({
+    type: GET_COUNT_UNIT_SUCCESS,
+    payload: data
+})
+
+export const getCountUnitError = (error) => ({
+    type: GET_COUNT_UNIT_ERROR,
+    payload: error
+})
+
+export const getStatusPegawai = (queries) => ({
+    type: GET_STATUS_PEGAWAI,
+    payload: {queries: queries}
+})
+
+export const getStatusPegawaiSuccess = (data) => ({
+    type: GET_STATUS_PEGAWAI_SUCCESS,
+    payload: data
+})
+
+export const getStatusPegawaiError = (error) => ({
+    type: GET_STATUS_PEGAWAI_ERROR,
+    payload: error
+})
+
 

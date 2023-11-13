@@ -27,6 +27,7 @@ import NoDataTable from '../../Components/Table/NoDataTable'
 import { useDispatch, useSelector } from 'react-redux'
 import {
   getCountCaraBayar,
+  getCountUnit,
   getPasienIGD,
   getPasienRJ,
   getPasienRanap,
@@ -49,6 +50,7 @@ const DashboardUtama = () => {
       dispatch(getPasienRanap(values))
       dispatch(getCountCaraBayar(values))
       dispatch(getPoliklinikTerbanyak(values))
+      dispatch(getCountUnit(values))
     },
   })
 
@@ -471,13 +473,16 @@ const CaraBayar = () => {
 }
 
 const PasienTotal = () => {
+  const data = useSelector(
+    (state) => state.Eis.getCountUnit.data?.countUnit || null
+  )
   const tileBoxs2 = [
     {
       id: 1,
       label: 'Pasien Rawat Jalan',
       badge: 'ri-arrow-up-circle-line text-success',
       icon: 'ri-space-ship-line',
-      counter: '197',
+      counter: data?.pasienrajal || 0,
       decimals: 0,
       suffix: '',
       separator: '.',
@@ -488,7 +493,7 @@ const PasienTotal = () => {
       label: 'Pasien Rawat Inap',
       badge: 'ri-arrow-up-circle-line text-success',
       icon: 'ri-exchange-dollar-line',
-      counter: '489',
+      counter: data?.pasienranap || 0,
       decimals: 0,
       separator: '.',
       suffix: '',
@@ -499,7 +504,7 @@ const PasienTotal = () => {
       label: 'Pasien Gawat Darurat',
       badge: 'ri-arrow-up-circle-line text-success',
       icon: 'ri-pulse-line',
-      counter: '32',
+      counter: data?.pasienigd || 0,
       separator: '.',
       decimals: 0,
       suffix: '',
@@ -510,7 +515,7 @@ const PasienTotal = () => {
       label: 'Pasien Laboratorium',
       badge: 'ri-arrow-up-circle-line text-success',
       icon: 'ri-trophy-line',
-      counter: '250',
+      counter: data?.pasienlaboratorium || 0,
       decimals: 0,
       prefix: '',
       separator: '.',
@@ -521,7 +526,7 @@ const PasienTotal = () => {
       label: 'Pasien Radiologi',
       badge: 'ri-arrow-up-circle-line text-success',
       icon: 'ri-service-line',
-      counter: '2659',
+      counter: data?.pasienradiologi || 0,
       decimals: 0,
       separator: '.',
       suffix: '',
@@ -821,7 +826,7 @@ const tableCustomStyles = {
   },
 }
 
-const HeaderDashboard = () => {
+export const HeaderDashboard = () => {
   const items = [
     {
       classImg: 'bx bx-home-heart',

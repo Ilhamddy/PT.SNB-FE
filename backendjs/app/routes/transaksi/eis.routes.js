@@ -42,4 +42,17 @@ export default function (app) {
         controller.getPoliklinikTerbanyak
     )
 
+    app.get(
+        "/api/transaksi/eis/get-count-unit",
+        [authJwt.verifyToken],
+        controller.getCountUnit
+    )
+
+    app.get(
+        "/api/transaksi/eis/get-status-pegawai",
+        [authJwt.verifyToken],
+        controller.getStatusPegawai
+    )
+
+
 }

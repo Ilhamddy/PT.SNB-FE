@@ -349,6 +349,7 @@ import ViewerBed from "../pages/ViewerBed/ViewerBed";
 import PemesananBarang from "../pages/PemesananBarang/PemesananBarang";
 import Logger from "../pages/Logger/Logger";
 import DasborUtama from "../pages/DasborUtama/DasborUtama.jsx";
+import DasborPegawai from "../pages/DasborPegawai/DasborPegawai.jsx";
 
 
 const authProtectedRoutes = [
@@ -704,7 +705,9 @@ const authProtectedRoutes = [
   { path: "/logger", component: <Logger />},
 
   //dashboard eis
-  { path: "/eis/dashboard/dashboard-utama", component: <DasborUtama />}
+  { path: "/eis/dasbor/dasbor-utama", component: <DasborUtama />},
+  { path: "/eis/dasbor/dasbor-pegawai", component: <DasborPegawai />},
+
 ];
 
 const publicRoutes = [
