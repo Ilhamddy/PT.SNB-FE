@@ -444,7 +444,7 @@ const NegativeGender = () => {
       },
     },
     title: {
-      text: 'Mauritius population pyramid 2011',
+      // text: '',
       style: {
         fontWeight: 600,
       },
