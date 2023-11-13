@@ -19,7 +19,7 @@ function PagesAwal() {
   };
     return (
         <div className="pages-awal">
-            {/* <h1 style={{ fontSize: '36px', color: '#e67e22', textAlign: 'center' }}>Welcome to the Kiosk App</h1> */}
+            {/* <h1 style={{ fontSize: '36px', color: '#FFCB46', textAlign: 'center' }}>Welcome to the Kiosk App</h1> */}
 
             <Row>
                 <Col lg={12}>

@@ -95,4 +95,7 @@ export default class ServiceRekammedis {
     getLaporanRl_5_3 = async (queries) => {
         return await api.get(`/transaksi/rekammedis/get-laporan-rl-5-3`, queries);
     }
+    getLaporanRl_5_4 = async (queries) => {
+        return await api.get(`/transaksi/rekammedis/get-laporan-rl-5-4`, queries);
+    }
 }

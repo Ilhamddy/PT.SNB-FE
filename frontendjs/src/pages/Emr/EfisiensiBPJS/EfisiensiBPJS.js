@@ -288,7 +288,7 @@ const EfisiensiBPJS = () => {
         headRow: {
             style: {
                 color: '#ffffff',
-                backgroundColor: '#e67e22',
+                backgroundColor: '#FFCB46',
             },
         },
         rows: {
@@ -544,7 +544,7 @@ const EfisiensiBPJS = () => {
                     ))}
                 </Row>
                 <Card>
-                    <CardHeader className="align-items-center" style={{ backgroundColor: "#e67e22" }}>
+                    <CardHeader className="align-items-center" style={{ backgroundColor: "#FFCB46" }}>
                         <h4 className="mb-0" style={{ color: 'black', textAlign: 'center' }}>Penginputan Diagnosa</h4>
                     </CardHeader>
                     <CardBody>
@@ -747,7 +747,7 @@ const EfisiensiBPJS = () => {
                     </CardBody>
                 </Card>
                 <Card>
-                    <CardHeader className="align-items-center" style={{ backgroundColor: "#e67e22" }}>
+                    <CardHeader className="align-items-center" style={{ backgroundColor: "#FFCB46" }}>
                         <h4 className="mb-0" style={{ color: 'black', textAlign: 'center' }}>Penginputan Tindakan</h4>
                     </CardHeader>
                     <CardBody>
@@ -882,7 +882,7 @@ const EfisiensiBPJS = () => {
                     </CardBody>
                 </Card>
                 <Card>
-                    <CardHeader className="align-items-center" style={{ backgroundColor: "#e67e22" }}>
+                    <CardHeader className="align-items-center" style={{ backgroundColor: "#FFCB46" }}>
                         <h4 className="mb-0" style={{ color: 'black', textAlign: 'center' }}>List Tindakan</h4>
                     </CardHeader>
                     <CardBody>

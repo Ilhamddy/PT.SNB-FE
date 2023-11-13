@@ -100,7 +100,7 @@ const DaftarOrderRadiologi = () => {
         headRow: {
             style: {
                 color: '#ffffff',
-                backgroundColor: '#e67e22',
+                backgroundColor: '#FFCB46',
             },
         },
         rows: {
@@ -268,7 +268,7 @@ const DaftarOrderRadiologi = () => {
                                             </div>
                                         </div>
                                     </CardBody>
-                                    <div className="card-footer" style={{ backgroundColor: '#e67e22' }}>
+                                    <div className="card-footer" style={{ backgroundColor: '#FFCB46' }}>
                                         <div className="text-center">
                                             <Link to="#" className="link-light" onClick={() => handleClickCard(item)}>View <i className="ri-arrow-right-s-line align-middle lh-1"></i></Link>
                                         </div>
@@ -297,7 +297,7 @@ const DaftarOrderRadiologi = () => {
                                     <div className="live-preview">
                                         <Row>
                                             <Col>
-                                                <h4 className="card-title mb-0 flex-grow-1 mb-3">Daftar Order Radiologi <span style={{ color: '#e67e22' }}></span></h4>
+                                                <h4 className="card-title mb-0 flex-grow-1 mb-3">Daftar Order Radiologi <span style={{ color: '#FFCB46' }}></span></h4>
                                             </Col>
                                         </Row>
                                     </div>

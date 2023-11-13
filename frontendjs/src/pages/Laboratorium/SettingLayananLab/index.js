@@ -60,7 +60,7 @@ const SettingLayananLab = () => {
                                     <div className="live-preview">
                                         <Row>
                                             <Col>
-                                                <h4 className="card-title mb-0 flex-grow-1 mb-3">Setting Layanan Laboratorium <span style={{ color: '#e67e22' }}> </span></h4>
+                                                <h4 className="card-title mb-0 flex-grow-1 mb-3">Setting Layanan Laboratorium <span style={{ color: '#FFCB46' }}> </span></h4>
                                             </Col>
                                         </Row>
                                     </div>

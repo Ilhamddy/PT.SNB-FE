@@ -182,7 +182,7 @@ const RL3_14 = () => {
                           border: '1px solid #ccc',
                         },
                         th: {
-                          'background-color': 'rgba(230, 126, 34)',
+                          'background-color': 'rgba(255, 203, 70, 1)',
                           color: '#000',
                           'border-bottom': '1px solid #ccc',
                           'text-align': 'center',
@@ -206,7 +206,7 @@ const tableCustomStyles = {
   headRow: {
     style: {
       color: '#ffffff',
-      backgroundColor: '#e67e22',
+      backgroundColor: '#FFCB46',
     },
   },
   rows: {

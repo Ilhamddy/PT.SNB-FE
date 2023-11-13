@@ -9,15 +9,17 @@ import KontainerFlatpickr from '../../../../Components/KontainerFlatpickr/Kontai
 import DataTable from 'react-data-table-component'
 import LoadingTable from '../../../../Components/Table/LoadingTable';
 import {
-  getLaporanRl_3_11, kendaliDokumenResetForm
+  getLaporanRl_5_4, kendaliDokumenResetForm
 } from '../../../../store/actions';
+import { Grid, _ } from 'gridjs-react';
+import { BaseExample } from '../../../../pages/Tables/GridTables/GridTablesData';
 
-const RL3_11 = () => {
-  document.title = "Laporan RL3.11";
+const RL5_4 = () => {
+  document.title = "Laporan RL5.4";
   const dispatch = useDispatch();
   const { dataGrid, loadingGrid } = useSelector((state) => ({
-    dataGrid: state.KendaliDokumen.getLaporanRl_3_11.data,
-    loadingGrid: state.KendaliDokumen.getLaporanRl_3_11.loading,
+    dataGrid: state.KendaliDokumen.getLaporanRl_5_4.data,
+    loadingGrid: state.KendaliDokumen.getLaporanRl_5_4.loading,
   }));
   const [dateNow] = useState(() => new Date().toISOString())
   const vSetValidation = useFormik({
@@ -31,7 +33,7 @@ const RL3_11 = () => {
     }),
     onSubmit: (values) => {
       console.log(values)
-      dispatch(getLaporanRl_3_11({
+      dispatch(getLaporanRl_5_4({
         start: values.start || dateNow,
         end: values.end || dateNow
       }));
@@ -39,25 +41,41 @@ const RL3_11 = () => {
   })
   const columns = [
     {
-      name: <span className="font-weight-bold fs-13">No</span>,
-      selector: (row) => row.no,
-      sortable: true,
-      width: '60px',
-      wrap: true,
+      id: 'id',
+      formatter: (cell) => _(<span>{cell}</span>),
+      name: 'No'
     },
     {
-      name: <span className="font-weight-bold fs-13">Jenis Pelayanan</span>,
-      selector: (row) => row.reportdisplay,
-      sortable: true,
-      // width: '60px',
-      wrap: true,
+      id: 'kdicdx',
+      name: 'Kode ICD 10'
+      // formatter: (cell) => _(<a href="/#"> {cell} </a>)
     },
     {
-      name: <span className="font-weight-bold fs-13">Jumlah</span>,
-      selector: (row) => row.jml,
-      sortable: true,
-      // width: '60px',
-      wrap: true,
+      id: 'namaicdx',
+      name: 'Deskripsi'
+    },
+    {
+      name: 'Pasien Keluar Hidup Menurut Jenis Kelamin',
+      columns: [{
+        id: 'ph_lk',
+        name: 'LK'
+      }, {
+        id: 'ph_pl',
+        name: 'PR'
+      }]
+    }, {
+      name: 'Pasien Keluar Mati Menurut Jenis Kelamin',
+      columns: [{
+        id: 'pm_lk',
+        name: 'LK'
+      }, {
+        id: 'pm_pl',
+        name: 'PR'
+      }]
+    },
+    {
+      id: 'total',
+      name: 'Total (Hidup & Mati)'
     },
   ]
   return (
@@ -65,7 +83,7 @@ const RL3_11 = () => {
       <UiContent />
       <div className="page-content">
         <Container fluid>
-          <BreadCrumb title="Laporan RL3.11" pageTitle="Forms" />
+          <BreadCrumb title="Laporan RL5.4" pageTitle="Forms" />
           <Form
             onSubmit={(e) => {
               e.preventDefault();
@@ -125,30 +143,42 @@ const RL3_11 = () => {
                   <UncontrolledTooltip placement="top" target="tooltipTopPencarian" > Pencarian </UncontrolledTooltip>
                 </Col>
                 <Col lg={12}>
-                  <div id="table-gridjs">
-                    <DataTable
-                      fixedHeader
-                      fixedHeaderScrollHeight="330px"
-                      columns={columns}
-                      pagination
-                      data={dataGrid || []}
-                      progressPending={loadingGrid}
-                      customStyles={tableCustomStyles}
-                      progressComponent={<LoadingTable />}
-                      // onRowClicked={(row) => handleClick(row)}
-                      pointerOnHover
-                      highlightOnHover
-                    />
-                  </div>
+
                 </Col>
               </Row>
             </Card>
           </Form>
         </Container>
+        <div id="table-gridjs">
+          <Grid
+            data={dataGrid}
+            columns={columns}
+            sort={true}
+            fixedHeader={true}
+            pagination={{
+              enabled: true, limit: 10, summary: false
+            }}
+            style={{
+              table: {
+                border: '1px solid #ccc',
+              },
+              th: {
+                'background-color': 'rgb(255,203,70,1)',
+                color: '#000',
+                'border-bottom': '1px solid #ccc',
+                'text-align': 'center',
+              },
+              td: {
+                'text-align': 'center',
+              },
+            }}
+          />
+        </div>
       </div>
     </React.Fragment>
   )
 }
+
 const tableCustomStyles = {
   headRow: {
     style: {
@@ -164,4 +194,4 @@ const tableCustomStyles = {
   },
 }
 
-export default RL3_11
+export default RL5_4

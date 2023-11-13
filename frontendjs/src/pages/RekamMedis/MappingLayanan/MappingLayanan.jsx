@@ -271,9 +271,8 @@ const MappingRL = () => {
                         vMapping.setFieldValue('norl', e?.value || '')
                       }}
                       value={vMapping.values.norl}
-                      className={`input row-header ${
-                        !!vMapping?.errors.norl ? 'is-invalid' : ''
-                      }`}
+                      className={`input row-header ${!!vMapping?.errors.norl ? 'is-invalid' : ''
+                        }`}
                     />
                     {vMapping.touched.norl && !!vMapping.errors.norl && (
                       <FormFeedback type="invalid">
@@ -291,9 +290,8 @@ const MappingRL = () => {
                         vMapping.setFieldValue('norldetail', e?.value || '')
                       }}
                       value={vMapping.values.norldetail}
-                      className={`input row-header ${
-                        !!vMapping?.errors.norldetail ? 'is-invalid' : ''
-                      }`}
+                      className={`input row-header ${!!vMapping?.errors.norldetail ? 'is-invalid' : ''
+                        }`}
                     />
                     {vMapping.touched.norldetail &&
                       !!vMapping.errors.norldetail && (
@@ -340,9 +338,8 @@ const MappingRL = () => {
                           isDisabled={loadingComboMapping}
                           onChange={handleJenisProduk}
                           value={vLayanan.values.jenisproduk}
-                          className={`input row-header-2 ${
-                            !!vLayanan?.errors.jenisproduk ? 'is-invalid' : ''
-                          }`}
+                          className={`input row-header-2 ${!!vLayanan?.errors.jenisproduk ? 'is-invalid' : ''
+                            }`}
                         />
                         {vLayanan.touched.jenisproduk &&
                           !!vLayanan.errors.jenisproduk && (
@@ -375,11 +372,10 @@ const MappingRL = () => {
                             )
                           }}
                           value={vLayanan.values.detailjenisproduk}
-                          className={`input row-header-2 ${
-                            !!vLayanan?.errors.detailjenisproduk
+                          className={`input row-header-2 ${!!vLayanan?.errors.detailjenisproduk
                               ? 'is-invalid'
                               : ''
-                          }`}
+                            }`}
                         />
                         {vLayanan.touched.detailjenisproduk &&
                           !!vLayanan.errors.detailjenisproduk && (
@@ -438,7 +434,7 @@ const tableCustomStyles = {
   headRow: {
     style: {
       color: '#ffffff',
-      backgroundColor: '#e67e22',
+      backgroundColor: '#FFCB46',
     },
   },
   rows: {

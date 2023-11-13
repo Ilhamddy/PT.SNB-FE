@@ -185,7 +185,7 @@ const DaftarOrderOperasi = () => {
                                                 </div>
                                             </div>
                                         </CardBody>
-                                        <div className="card-footer" style={{ backgroundColor: '#e67e22' }}>
+                                        <div className="card-footer" style={{ backgroundColor: '#FFCB46' }}>
                                             <div className="text-center">
                                                 {/* <Link to="#" className="link-light" onClick={() => handleClickCard(item)}>View <i className="ri-arrow-right-s-line align-middle lh-1"></i></Link> */}
                                             </div>
@@ -524,7 +524,7 @@ const ModalVerifikasi = ({ isVerifikasiOpen, toggle, selectedPasien }) => {
                     className="gy-4"
                     action="#">
                     <Card>
-                        <CardHeader className="align-items-center" style={{ backgroundColor: "#e67e22" }}>
+                        <CardHeader className="align-items-center" style={{ backgroundColor: "#FFCB46" }}>
                             <h4 className="mb-0" style={{ color: 'black', textAlign: 'center' }}>Verifikasi Order Operasi</h4>
                         </CardHeader>
                         <CardBody>

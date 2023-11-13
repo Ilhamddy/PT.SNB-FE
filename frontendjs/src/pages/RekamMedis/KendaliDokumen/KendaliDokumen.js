@@ -73,7 +73,7 @@ const KendaliDokumen = () => {
         headRow: {
             style: {
                 color: '#ffffff',
-                backgroundColor: '#e67e22',
+                backgroundColor: '#FFCB46',
             },
         },
         rows: {
@@ -252,7 +252,7 @@ const KendaliDokumen = () => {
                                             </div>
                                         </div>
                                     </CardBody>
-                                    <div className="card-footer" style={{ backgroundColor: '#e67e22' }}>
+                                    <div className="card-footer" style={{ backgroundColor: '#FFCB46' }}>
                                         <div className="text-center">
                                             <Link to="#" className="link-light" onClick={() => handleClickCard(item)}>View <i className="ri-arrow-right-s-line align-middle lh-1"></i></Link>
                                         </div>
@@ -261,7 +261,7 @@ const KendaliDokumen = () => {
                             </Col>
                         ))}
                         <Card>
-                            <CardHeader style={{ backgroundColor: "#e67e22" }}>
+                            <CardHeader style={{ backgroundColor: "#FFCB46" }}>
                                 <h4 className="card-title mb-0" style={{ color: '#ffffff' }}>Dokumen Rekammedis <span style={{ color: 'black' }}>{namaPencarian}</span></h4>
                             </CardHeader>
                             <CardBody>
