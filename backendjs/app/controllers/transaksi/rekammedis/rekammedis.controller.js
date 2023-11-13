@@ -713,87 +713,58 @@ const getLaporanRL3_4 = async (req, res) => {
     const logger = res.locals.logger;
     try{
         const result = await pool.query(queries.qLaporanRL3_4,[req.query.start,req.query.end])
-        const taskWidgets = [
-            {
-                id: 1,
-                no:'1',
-                label: "Persalinan Normal",
-                counter: 0
+        const list = [
+            {id: 1,no:'1',label: "Persalinan Normal",medis_rumahsakit: 0,medis_bidan:0,medis_puskesmas:0,medis_faskeslain:0,medis_hidup:0,medis_mati:0,medis_jml:0,nonrujukan_hidup:0,nonrujukan_mati:0,nonrujukan_jml:0,rujuk:0
             },
-            {
-                id: 2,
-                no:'2',
-                label: "Sectio caesaria",
-                counter: 0
+            {id: 2,no:'2',label: "Sectio Caesaria",medis_rumahsakit: 0,medis_bidan:0,medis_puskesmas:0,medis_faskeslain:0,medis_hidup:0,medis_mati:0,medis_jml:0,nonrujukan_hidup:0,nonrujukan_mati:0,nonrujukan_jml:0,rujuk:0
             },
-            {
-                id: 3,
-                no:'3',
-                label: "Pers dg komplikasi",
-                counter: 0
+            {id: 3,no:'3',label: "Pers dg komplikasi",medis_rumahsakit: 0,medis_bidan:0,medis_puskesmas:0,medis_faskeslain:0,medis_hidup:0,medis_mati:0,medis_jml:0,nonrujukan_hidup:0,nonrujukan_mati:0,nonrujukan_jml:0,rujuk:0
             },
-            {
-                id: 4,
-                no:'3.1',
-                label: "Perd sbl Persalinan",
-                counter: 0
+            {id: 4,no:'3.1',label: "Perd sbl Persalinan",medis_rumahsakit: 0,medis_bidan:0,medis_puskesmas:0,medis_faskeslain:0,medis_hidup:0,medis_mati:0,medis_jml:0,nonrujukan_hidup:0,nonrujukan_mati:0,nonrujukan_jml:0,rujuk:0
             },
-            {
-                id: 5,
-                no:'3.2',
-                label: "Perd sdh Persalinan",
-                counter: 0
+            {id: 5,no:'3.2',label: "Perd sdh Persalinan",medis_rumahsakit: 0,medis_bidan:0,medis_puskesmas:0,medis_faskeslain:0,medis_hidup:0,medis_mati:0,medis_jml:0,nonrujukan_hidup:0,nonrujukan_mati:0,nonrujukan_jml:0,rujuk:0
             },
-            {
-                id: 6,
-                no:'3.3',
-                label: "Pre Eclampsi",
-                counter: 0
+            {id: 6,no:'3.3',label: "Pre Eclampsi", medis_rumahsakit: 0,medis_bidan:0,medis_puskesmas:0,medis_faskeslain:0,medis_hidup:0,medis_mati:0,medis_jml:0,nonrujukan_hidup:0,nonrujukan_mati:0,nonrujukan_jml:0, rujuk:0
             },
-            {
-                id: 7,
-                no:'3.4',
-                label: "Eclampsi",
-                counter: 0
+            {id: 7,no:'3.4',label: "Eclampsi",
+        medis_rumahsakit: 0,medis_bidan:0,medis_puskesmas:0,medis_faskeslain:0, medis_hidup:0,medis_mati:0,medis_jml:0,nonrujukan_hidup:0,nonrujukan_mati:0,nonrujukan_jml:0,rujuk:0
             },
-            {
-                id: 8,
-                no:'3.5',
-                label: "Infeksi",
-                counter: 0
+            {id: 8,no:'3.5',label: "Infeksi",
+         medis_rumahsakit: 0,medis_bidan:0,medis_puskesmas:0,medis_faskeslain:0,medis_hidup:0,medis_mati:0,medis_jml:0,nonrujukan_hidup:0,nonrujukan_mati:0,nonrujukan_jml:0,rujuk:0
             },
-            {
-                id: 9,
-                no:'3.6',
-                label: "Lain - Lain",
-                counter: 0
+            {id: 9,no:'3.6',label: "Lain - Lain",medis_rumahsakit: 0,medis_bidan:0,medis_puskesmas:0,medis_faskeslain:0,medis_hidup:0,medis_mati:0,medis_jml:0,nonrujukan_hidup:0,nonrujukan_mati:0,nonrujukan_jml:0,rujuk:0
             },
-            {
-                id: 10,
-                no:'4',
-                label: "Abortus",
-                counter: 0
+            {id: 10,no:'4',label: "Abortus",
+         medis_rumahsakit: 0,medis_bidan:0,medis_puskesmas:0,medis_faskeslain:0,medis_hidup:0,medis_mati:0,medis_jml:0,nonrujukan_hidup:0,nonrujukan_mati:0,nonrujukan_jml:0,rujuk:0
             },
-            {
-                id: 11,
-                no:'5',
-                label: "Imunisasi - TT1",
-                counter: 0
+            {id: 11,no:'5',label: "Imunisasi - TT1",medis_rumahsakit: 0,medis_bidan:0,medis_puskesmas:0,medis_faskeslain:0,medis_hidup:0,medis_mati:0,medis_jml:0,nonrujukan_hidup:0,nonrujukan_mati:0,nonrujukan_jml:0,rujuk:0
             },
-            {
-                id: 12,
-                no:'',
-                label: "Imunisasi - TT2",
-                counter: 0
+            {id: 12,no:'5.1',label: "Imunisasi - TT2",medis_rumahsakit: 0,medis_bidan:0,medis_puskesmas:0, medis_faskeslain:0,medis_hidup:0,medis_mati:0,medis_jml:0,nonrujukan_hidup:0,nonrujukan_mati:0,nonrujukan_jml:0,rujuk:0
             },
         ]
-        const tempres = {
-        
-        };
+        for (let i = 0; i < result.rows.length; i++) {
+            const element = result.rows[i];
+            for (let y = 0; y < list.length; y++) {
+                const elementy = list[y];
+                if(elementy.label===element.reportdisplay){
+                    elementy.medis_rumahsakit=element.medis_rumahsakit
+                    elementy.medis_bidan=element.medis_bidan
+                    elementy.medis_puskesmas=element.medis_puskesmas
+                    elementy.medis_faskeslain=element.medis_faskeslain
+                    elementy.medis_hidup=element.medis_hidup
+                    elementy.medis_mati=element.medis_mati
+                    elementy.medis_jml=parseFloat(element.medis_hidup)+parseFloat(element.medis_mati)
+                    elementy.nonrujukan_hidup=element.nonrujukan_hidup
+                    elementy.nonrujukan_mati=element.nonrujukan_mati
+                    elementy.nonrujukan_jml=parseFloat(element.nonrujukan_hidup)+parseFloat(element.nonrujukan_mati)
+                    elementy.rujuk=element.rujuk
+                }
+            }
+        }
         res.status(200).send({
             msg: 'Success',
             code: 200,
-            data: result.rows,
+            data: list,
             success: true
         });
     } catch (error) {

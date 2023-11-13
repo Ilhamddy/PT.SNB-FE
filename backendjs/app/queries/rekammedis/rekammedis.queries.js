@@ -74,13 +74,55 @@ const qLaporanRL3_3 =`select row_number() OVER (ORDER BY x.reportdisplay) AS no,
     where mm3.id=8 and tp.statusenabled=true and tp.tglinput between $1 and $2
     ) as x group by x.reportdisplay`
 
-const qLaporanRL3_4 =`select row_number() OVER (ORDER BY x.reportdisplay) AS no,x.reportdisplay,count(x.reportdisplay) as jml from (
-    SELECT mm2.reportdisplay  from m_maprltoproduk mm
-    join m_masterrl mm2 on mm2.id=mm.objectmasterrlfk
-    join m_masterindukrl mm3 on mm3.id=mm2.objectindukrlfk
-    join t_pelayananpasien tp on tp.objectprodukfk=mm.objectprodukfk 
-    where mm3.id=9 and tp.statusenabled=true and tp.tglinput between $1 and $2
-    ) as x group by x.reportdisplay`
+const qLaporanRL3_4 =`SELECT
+mm2.reportdisplay,
+SUM(CASE WHEN td.objectasalrujukanfk = 2 THEN 1 ELSE 0 END) AS medis_rumahsakit,
+SUM(CASE WHEN td.objectasalrujukanfk = 6 THEN 1 ELSE 0 END) AS medis_bidan,
+SUM(CASE WHEN td.objectasalrujukanfk = 1 THEN 1 ELSE 0 END) AS medis_puskesmas,
+SUM(CASE WHEN td.objectasalrujukanfk IN (3, 4, 7) THEN 1 ELSE 0 END) AS medis_faskeslain,
+SUM(CASE WHEN 
+    (mu.objectinstalasifk = 1 OR (mu.objectinstalasifk = 2 AND td.objectstatuspulangrifk <> 8))
+    AND td.objectasalrujukanfk IN (1, 2, 3, 4, 6, 7)
+    AND td.objectstatuspulangfk NOT IN (4, 5)
+THEN 1 ELSE 0 END) AS medis_hidup,
+    SUM(CASE WHEN 
+    (mu.objectinstalasifk = 1 OR (mu.objectinstalasifk = 2 AND td.objectstatuspulangrifk = 8))
+    AND td.objectasalrujukanfk IN (1, 2, 3, 4, 6, 7)
+    AND td.objectstatuspulangfk IN (4, 5)
+THEN 1 ELSE 0 END) AS medis_mati,
+    SUM(CASE WHEN 
+    (mu.objectinstalasifk = 1 OR (mu.objectinstalasifk = 2 AND td.objectstatuspulangrifk <> 8))
+    AND td.objectasalrujukanfk not IN (1, 2, 3, 4, 6, 7)
+    AND td.objectstatuspulangfk NOT IN (4, 5)
+THEN 1 ELSE 0 END) AS nonrujukan_hidup,
+SUM(CASE WHEN 
+    (mu.objectinstalasifk = 1 OR (mu.objectinstalasifk = 2 AND td.objectstatuspulangrifk = 8))
+    AND td.objectasalrujukanfk not IN (1, 2, 3, 4, 6, 7)
+    AND td.objectstatuspulangfk IN (4, 5)
+THEN 1 ELSE 0 END) AS nonrujukan_mati,
+SUM(CASE WHEN 
+    (mu.objectinstalasifk = 1 OR (mu.objectinstalasifk = 2 AND td.objectstatuspulangrifk in (3,4)))
+    AND td.objectstatuspulangfk=3
+THEN 1 ELSE 0 END) AS rujuk
+FROM
+m_maprltoproduk mm
+JOIN m_masterrl mm2 ON
+mm2.id = mm.objectmasterrlfk
+JOIN m_masterindukrl mm3 ON
+mm3.id = mm2.objectindukrlfk
+JOIN t_pelayananpasien tp ON
+tp.objectprodukfk = mm.objectprodukfk
+JOIN t_antreanpemeriksaan ta ON ta.norec = tp.objectantreanpemeriksaanfk
+JOIN t_daftarpasien td ON td.norec = ta.objectdaftarpasienfk
+JOIN m_unit mu ON mu.id = td.objectunitlastfk 
+WHERE
+mm3.id = 9
+AND tp.statusenabled = true
+AND tp.tglinput BETWEEN $1 AND $2
+GROUP BY
+mm2.reportdisplay;
+
+`
 
 const qLaporanRL3_6 =`SELECT row_number() OVER (ORDER BY ms.reportdisplay) AS no,ms.reportdisplay AS spesialis,
 SUM(CASE WHEN mp2.kodeexternal = '1' THEN 1 ELSE 0 END) AS besar_count,
