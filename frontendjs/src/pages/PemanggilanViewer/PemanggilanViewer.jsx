@@ -149,9 +149,8 @@ const PemanggilanViewer = () => {
                     vPemanggilan.setFieldValue('loket', e?.value || '')
                   }}
                   value={vPemanggilan.values.loket}
-                  className={`input row-header ${
-                    !!vPemanggilan?.errors.loket ? 'is-invalid' : ''
-                  }`}
+                  className={`input row-header ${!!vPemanggilan?.errors.loket ? 'is-invalid' : ''
+                    }`}
                 />
                 {vPemanggilan.touched.loket && !!vPemanggilan.errors.loket && (
                   <FormFeedback type="invalid">
@@ -173,9 +172,8 @@ const PemanggilanViewer = () => {
                     vPemanggilan.setFieldValue('jenis', e?.value || '')
                   }}
                   value={vPemanggilan.values.jenis}
-                  className={`input row-header ${
-                    !!vPemanggilan?.errors.jenis ? 'is-invalid' : ''
-                  }`}
+                  className={`input row-header ${!!vPemanggilan?.errors.jenis ? 'is-invalid' : ''
+                    }`}
                 />
                 {vPemanggilan.touched.jenis && !!vPemanggilan.errors.jenis && (
                   <FormFeedback type="invalid">
@@ -218,9 +216,8 @@ const PemanggilanViewer = () => {
                     vPanggilUlang.setFieldValue('norecantrean', e?.value || '')
                   }}
                   value={vPanggilUlang.values.norecantrean}
-                  className={`input row-header ${
-                    !!vPanggilUlang?.errors.norecantrean ? 'is-invalid' : ''
-                  }`}
+                  className={`input row-header ${!!vPanggilUlang?.errors.norecantrean ? 'is-invalid' : ''
+                    }`}
                 />
                 {vPanggilUlang.touched.norecantrean &&
                   !!vPanggilUlang.errors.norecantrean && (
@@ -286,7 +283,7 @@ const tableCustomStyles = {
   headRow: {
     style: {
       color: '#ffffff',
-      backgroundColor: '#e67e22',
+      backgroundColor: '#FFCB46',
     },
   },
   rows: {

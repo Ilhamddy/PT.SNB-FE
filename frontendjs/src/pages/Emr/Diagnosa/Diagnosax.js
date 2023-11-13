@@ -237,7 +237,7 @@ const Diagnosax = () => {
                     <Row>
                         <Col lg={5}>
                             <Card>
-                                <CardHeader style={{ backgroundColor: "#e67e22" }}>
+                                <CardHeader style={{ backgroundColor: "#FFCB46" }}>
                                     <h4 className="card-title mb-0" style={{ color: '#ffffff' }}>ICD 10</h4>
                                 </CardHeader>
                                 <CardBody>
@@ -353,7 +353,7 @@ const Diagnosax = () => {
                         </Col>
                         <Col lg={7}>
                             <Card>
-                                <CardHeader style={{ backgroundColor: "#e67e22" }}>
+                                <CardHeader style={{ backgroundColor: "#FFCB46" }}>
                                     <h4 className="card-title mb-0" style={{ color: '#ffffff' }}>Riwayat ICD 10</h4>
                                 </CardHeader>
                                 <CardBody>

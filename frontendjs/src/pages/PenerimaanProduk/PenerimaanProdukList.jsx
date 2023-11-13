@@ -598,9 +598,9 @@ const Widget = ({ title, end, image }) => {
             </div>
           </div>
         </CardBody>
-        <div className="card-footer" style={{ backgroundColor: '#e67e22' }}>
+        <div className="card-footer" style={{ backgroundColor: '#FFCB46' }}>
           <div className="text-center">
-            <Link to="#" className="link-light" onClick={() => {}}>
+            <Link to="#" className="link-light" onClick={() => { }}>
               View
               <i className="ri-arrow-right-s-line align-middle lh-1"></i>
             </Link>
@@ -678,7 +678,7 @@ const tableCustomStyles = {
   headRow: {
     style: {
       color: '#ffffff',
-      backgroundColor: '#e67e22',
+      backgroundColor: '#FFCB46',
     },
   },
   rows: {

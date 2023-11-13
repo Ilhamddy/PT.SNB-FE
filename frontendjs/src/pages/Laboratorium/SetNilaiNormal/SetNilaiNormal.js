@@ -92,7 +92,7 @@ const SetNilaiNormal = () => {
         headRow: {
             style: {
                 color: '#ffffff',
-                backgroundColor: '#e67e22',
+                backgroundColor: '#FFCB46',
             },
         },
         rows: {
@@ -176,7 +176,7 @@ const SetNilaiNormal = () => {
                                 <div className="live-preview">
                                     <Row>
                                         <Col>
-                                            <h4 className="card-title mb-0 flex-grow-1 mb-3">Set Nilai Normal <span style={{ color: '#e67e22' }}> </span></h4>
+                                            <h4 className="card-title mb-0 flex-grow-1 mb-3">Set Nilai Normal <span style={{ color: '#FFCB46' }}> </span></h4>
                                         </Col>
                                     </Row>
                                 </div>
@@ -228,7 +228,7 @@ const SetNilaiNormal = () => {
                                                     <div className="live-preview">
                                                         <Row>
                                                             <Col>
-                                                                <h4 className="card-title mb-0 flex-grow-1 mb-3">Pemeriksaan : {layanan} <span style={{ color: '#e67e22' }}> </span></h4>
+                                                                <h4 className="card-title mb-0 flex-grow-1 mb-3">Pemeriksaan : {layanan} <span style={{ color: '#FFCB46' }}> </span></h4>
                                                             </Col>
                                                         </Row>
                                                     </div>
@@ -305,7 +305,7 @@ const SetNilaiNormal = () => {
                                                             </Row>
 
                                                             <Table className="table-sm table-borderless mb-0" id="tab_logic">
-                                                                <thead style={{ backgroundColor: '#e67e22' }}>
+                                                                <thead style={{ backgroundColor: '#FFCB46' }}>
                                                                     <tr>
                                                                         <th className="text-center">Detail Kelompok Umur</th>
                                                                         <th className="text-center">Nilai Min</th>
@@ -379,7 +379,7 @@ const SetNilaiNormal = () => {
                                                                 </Label>
                                                             </Col>
                                                             <Table className="table-sm table-borderless mb-0" id="tab_logic">
-                                                                <thead style={{ backgroundColor: '#e67e22' }}>
+                                                                <thead style={{ backgroundColor: '#FFCB46' }}>
                                                                     <tr>
                                                                         <th className="text-center">Detail Kelompok Umur</th>
                                                                         <th className="text-center">Nilai Min</th>

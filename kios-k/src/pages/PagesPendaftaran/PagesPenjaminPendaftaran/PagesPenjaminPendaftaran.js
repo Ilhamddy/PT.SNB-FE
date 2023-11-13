@@ -26,8 +26,8 @@ function PagesPenjaminPendaftaran() {
                     <Row>
                         <Col lg={12}>
                             {/* <img src={logo} alt='Company Logo' /> */}
-                            <h1 style={{ fontSize: '36px', color: '#e67e22', textAlign: 'center' }}>Pendaftaran Mandiri</h1>
-                            <h1 style={{ fontSize: '36px', color: '#e67e22', textAlign: 'center' }}>Silahkan Pilih Penjamin Pasien</h1>
+                            <h1 style={{ fontSize: '36px', color: '#FFCB46', textAlign: 'center' }}>Pendaftaran Mandiri</h1>
+                            <h1 style={{ fontSize: '36px', color: '#FFCB46', textAlign: 'center' }}>Silahkan Pilih Penjamin Pasien</h1>
                         </Col>
                         <Col lg={10} className='mr-2'></Col>
                         <Col lg={2} className='mr-2'>

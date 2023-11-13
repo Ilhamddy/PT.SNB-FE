@@ -23,8 +23,8 @@ function PagesPenjamin() {
                     <Row>
                         <Col lg={12}>
                             {/* <img src={logo} alt='Company Logo' /> */}
-                            <h1 style={{ fontSize: '36px', color: '#e67e22', textAlign: 'center' }}>Pengambilan Nomor Antrean</h1>
-                            <h1 style={{ fontSize: '36px', color: '#e67e22', textAlign: 'center' }}>Silahkan Pilih Penjamin Pasien</h1>
+                            <h1 style={{ fontSize: '36px', color: '#FFCB46', textAlign: 'center' }}>Pengambilan Nomor Antrean</h1>
+                            <h1 style={{ fontSize: '36px', color: '#FFCB46', textAlign: 'center' }}>Silahkan Pilih Penjamin Pasien</h1>
                         </Col>
                         <Col lg={12} className='mr-2'>
                             <div className="d-flex justify-content-end gap-2">

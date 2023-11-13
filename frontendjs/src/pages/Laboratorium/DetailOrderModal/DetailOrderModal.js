@@ -96,7 +96,7 @@ const DetailOrderModal = ({ show, onSimpanClick, onCloseClick,onTolakClick, temp
         headRow: {
             style: {
                 color: '#ffffff',
-                backgroundColor: '#e67e22',
+                backgroundColor: '#FFCB46',
             },
         },
         rows: {
@@ -281,7 +281,7 @@ const DetailOrderModal = ({ show, onSimpanClick, onCloseClick,onTolakClick, temp
                                     </Col>
                                     <Col lg={12} className="gy-2">
                                         <Card>
-                                            <CardHeader style={{ backgroundColor: "#e67e22" }}>
+                                            <CardHeader style={{ backgroundColor: "#FFCB46" }}>
                                                 <h4 className="card-title mb-0" style={{ color: '#ffffff' }}>Daftar Order Tindakan</h4>
                                             </CardHeader>
                                             <CardBody>

@@ -22,7 +22,7 @@
 }
 
 .navbar-header {
-    background-color: #e67e22;//untuk backgrund navbar
+    background-color: #ffcb46; //untuk backgrund navbar
     display: flex;
     -ms-flex-pack: justify;
     justify-content: space-between;
@@ -30,11 +30,11 @@
     margin: 0 auto;
     height: $header-height;
     padding: 0 $grid-gutter-width 0 calc(#{$grid-gutter-width} / 2)
-    /*rtl: 0 0 0 calc(#{$grid-gutter-width} / 2) */
-    ;
+        /*rtl: 0 0 0 calc(#{$grid-gutter-width} / 2) */;
 
     @media (max-width: 767.98px) {
-        padding: 0 calc(#{$grid-gutter-width} / 2) 0 calc(#{$grid-gutter-width} / 2);
+        padding: 0 calc(#{$grid-gutter-width} / 2) 0
+            calc(#{$grid-gutter-width} / 2);
     }
 
     .topbar-head-dropdown {
@@ -198,23 +198,23 @@
 
 // Full Screen
 .fullscreen-enable {
-    [data-toggle="fullscreen"] {
+    [data-toggle='fullscreen'] {
         .bx-fullscreen::before {
-            content: "\eacb";
+            content: '\eacb';
         }
     }
 }
 
 // Dark mode enable
-[data-layout-mode="dark"] {
+[data-layout-mode='dark'] {
     .light-dark-mode {
         .bx-moon::before {
-            content: "\ec34";
+            content: '\ec34';
         }
     }
 }
 
-[data-topbar="dark"] {
+[data-topbar='dark'] {
     #page-topbar {
         background-color: $header-bg-dark;
         border-color: $header-bg-dark;
@@ -242,7 +242,7 @@
         }
 
         .user-name-sub-text {
-            color: $header-item-color-dark  !important;
+            color: $header-item-color-dark !important;
         }
     }
 
@@ -291,8 +291,8 @@
     }
 }
 
-[data-layout="vertical"] {
-    &[data-layout-style="detached"] {
+[data-layout='vertical'] {
+    &[data-layout-style='detached'] {
         @media (min-width: 1024.1px) {
             #page-topbar {
                 left: 0 !important;
@@ -313,7 +313,7 @@
                 margin: 0 auto;
             }
 
-            &:is([data-sidebar-size="sm"], [data-sidebar-size="sm-hover"]) {
+            &:is([data-sidebar-size='sm'], [data-sidebar-size='sm-hover']) {
                 .navbar-brand-box {
                     background-color: transparent !important;
                     position: relative;
@@ -331,7 +331,7 @@
             }
         }
 
-        &[data-topbar="dark"] {
+        &[data-topbar='dark'] {
             .horizontal-logo {
                 .logo-dark {
                     display: none;
@@ -345,7 +345,7 @@
     }
 }
 
-[data-layout="horizontal"] {
+[data-layout='horizontal'] {
     #page-topbar {
         left: 0;
         border-bottom: 1px solid var(--#{$prefix}gray-300);
@@ -363,13 +363,17 @@
         }
 
         @media (max-width: 1024.1px) {
-            padding: calc(45px + #{$grid-gutter-width} * 1.8) calc(#{$grid-gutter-width} / 2) $footer-height calc(#{$grid-gutter-width} / 2);
+            padding: calc(45px + #{$grid-gutter-width} * 1.8)
+                calc(#{$grid-gutter-width} / 2) $footer-height
+                calc(#{$grid-gutter-width} / 2);
         }
 
-        padding: calc(45px + #{$grid-gutter-width}) calc(#{$grid-gutter-width} / 2) $footer-height calc(#{$grid-gutter-width} / 2);
+        padding: calc(45px + #{$grid-gutter-width})
+            calc(#{$grid-gutter-width} / 2) $footer-height
+            calc(#{$grid-gutter-width} / 2);
     }
 
-    &[data-layout-width="boxed"] {
+    &[data-layout-width='boxed'] {
         .page-content {
             @media (min-width: 1024.1px) {
                 min-height: calc(100vh - #{$footer-height + $header-height});
@@ -378,9 +382,8 @@
     }
 }
 
-[data-layout="vertical"] {
-
-    &:is([data-sidebar-size="sm"], [data-sidebar-size="sm-hover"]) {
+[data-layout='vertical'] {
+    &:is([data-sidebar-size='sm'], [data-sidebar-size='sm-hover']) {
         #page-topbar {
             @media (min-width: 768px) {
                 left: $vertical-menu-width-sm;
@@ -388,7 +391,7 @@
         }
     }
 
-    &[data-sidebar-size="md"] {
+    &[data-sidebar-size='md'] {
         #page-topbar {
             @media (min-width: 768px) {
                 left: $vertical-menu-width-md;
@@ -397,10 +400,12 @@
     }
 }
 
-[data-layout="twocolumn"] {
+[data-layout='twocolumn'] {
     #page-topbar {
         @media (min-width: 768px) {
-            left: calc(#{$twocolumn-menu-iconview-width} + #{$twocolumn-menu-width});
+            left: calc(
+                #{$twocolumn-menu-iconview-width} + #{$twocolumn-menu-width}
+            );
         }
     }
 

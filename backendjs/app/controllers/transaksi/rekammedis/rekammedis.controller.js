@@ -940,6 +940,197 @@ const getLaporanRL3_14 = async (req, res) => {
     }
 }
 
+const getLaporanRL3_15 = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const result = await pool.query(queries.qLaporanRL3_15,[req.query.start,req.query.end])
+        const resultLos = await pool.query(queries.qDetailLaporanRL3_15,[req.query.start,req.query.end])
+        for (let i = 0; i < result.rows.length; i++) {
+            const element = result.rows[i];
+            for (let x = 0; x < resultLos.rows.length; x++) {
+                const elementx = resultLos.rows[x];
+                if(element.cara_bayar===elementx.namarekanan){
+                    if (elementx.los === '00') {
+                        element.jumlah_lama_dirawat = parseFloat(element.jumlah_lama_dirawat)+1
+                    } else {
+                        if (elementx.los.substr(0, 1) === '-') {
+                            element.jumlah_lama_dirawat =element.jumlah_lama_dirawat + parseFloat(elementx.los.substring(1))
+                            // resultlist.rows[i].los=resultlist.rows[i].los
+                        }
+                    }
+                }
+            }
+        }
+        const tempres = {
+        
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: result.rows,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).json({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+const getLaporanRL3_11 = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const result = await pool.query(queries.qLaporanRL3_11,[req.query.start,req.query.end])
+
+        const tempres = {
+        
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: result.rows,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).json({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+const getLaporanRL3_10 = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const result = await pool.query(queries.qLaporanRL3_10,[req.query.start,req.query.end])
+
+        const tempres = {
+        
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: result.rows,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).json({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+const getLaporanRL5_1 = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const result = await pool.query(queries.qLaporanRL5_1,[req.query.start,req.query.end])
+
+        const tempres = {
+        
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: result.rows,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).json({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+const getLaporanRL5_2 = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const result = await pool.query(queries.qLaporanRL5_2,[req.query.start,req.query.end])
+
+        const tempres = {
+        
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: result.rows,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).json({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+const getLaporanRL5_3 = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const result = await pool.query(queries.qLaporanRL5_3,[req.query.start,req.query.end])
+
+        const tempres = {
+        
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: result.rows,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).json({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+const getLaporanRL5_4 = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const result = await pool.query(queries.qLaporanRL5_4,[req.query.start,req.query.end])
+
+        const tempres = {
+        
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: result.rows,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).json({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export default {
     getListDaftarDokumenRekammedis,
     getWidgetListDaftarDokumenRekammedis,
@@ -960,5 +1151,12 @@ export default {
     updatePrinted,
     getLaporanRL3_3,
     getLaporanRL3_6,
-    getLaporanRL3_14
+    getLaporanRL3_14,
+    getLaporanRL3_15,
+    getLaporanRL3_11,
+    getLaporanRL3_10,
+    getLaporanRL5_1,
+    getLaporanRL5_2,
+    getLaporanRL5_3,
+    getLaporanRL5_4
 };

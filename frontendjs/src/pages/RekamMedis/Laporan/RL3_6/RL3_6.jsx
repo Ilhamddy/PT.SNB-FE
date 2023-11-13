@@ -26,8 +26,8 @@ const RL3_6 = () => {
       end: '',
     },
     validationSchema: Yup.object({
-      start: Yup.string().required('Tanggal Awal harus diisi'),
-      end: Yup.string().required('Tanggal Akhir harus diisi'),
+      // start: Yup.string().required('Tanggal Awal harus diisi'),
+      // end: Yup.string().required('Tanggal Akhir harus diisi'),
     }),
     onSubmit: (values) => {
       console.log(values)

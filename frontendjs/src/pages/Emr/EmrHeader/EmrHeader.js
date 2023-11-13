@@ -260,7 +260,7 @@ const EmrHeader = () => {
 
 
                 {/* <Col xxl={3} sm={6}>
-                    <Card className="card-animate" style={{ backgroundColor: '#e67e22' }}>
+                    <Card className="card-animate" style={{ backgroundColor: '#FFCB46' }}>
                         <CardBody>
                             <div className="d-flex justify-content-between">
                                 <div className="flex-shrink-0 mt-sm-0 mt-3">
@@ -275,7 +275,7 @@ const EmrHeader = () => {
                     </Card>
                 </Col>
                 <Col xxl={3} sm={6}>
-                    <Card className="card-animate" style={{ backgroundColor: '#e67e22' }}>
+                    <Card className="card-animate" style={{ backgroundColor: '#FFCB46' }}>
                         <CardBody>
                             <div className="d-flex justify-content-between">
                                 <div className="flex-shrink-0 mt-sm-0 mt-3">

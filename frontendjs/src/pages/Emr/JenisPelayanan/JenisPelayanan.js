@@ -83,7 +83,7 @@ const JenisPelayanan = () => {
                     className="gy-4"
                     action="#">
                     <Card>
-                        <CardHeader style={{ backgroundColor: "#e67e22" }}>
+                        <CardHeader style={{ backgroundColor: "#FFCB46" }}>
                             <h4 className="card-title mb-0" style={{ color: '#ffffff' }}>Jenis Pelayanan Pasien</h4>
                         </CardHeader>
                         <CardBody>

@@ -186,9 +186,8 @@ const MasterJadwalDokter = () => {
                   vJadwal.setFieldValue('dokter', e?.value || '')
                 }}
                 value={vJadwal.values.dokter}
-                className={`input row-header ${
-                  !!vJadwal?.errors.dokter ? 'is-invalid' : ''
-                }`}
+                className={`input row-header ${!!vJadwal?.errors.dokter ? 'is-invalid' : ''
+                  }`}
               />
               {vJadwal.touched.dokter && !!vJadwal.errors.dokter && (
                 <FormFeedback type="invalid">
@@ -215,9 +214,8 @@ const MasterJadwalDokter = () => {
                   vJadwal.setFieldValue('ruangrawat', e?.value || '')
                 }}
                 value={vJadwal.values.ruangrawat}
-                className={`input row-header ${
-                  !!vJadwal?.errors.ruangrawat ? 'is-invalid' : ''
-                }`}
+                className={`input row-header ${!!vJadwal?.errors.ruangrawat ? 'is-invalid' : ''
+                  }`}
               />
               {vJadwal.touched.ruangrawat && !!vJadwal.errors.ruangrawat && (
                 <FormFeedback type="invalid">
@@ -271,9 +269,8 @@ const MasterJadwalDokter = () => {
                   vJadwal.setFieldValue('hari', e?.value || '')
                 }}
                 value={vJadwal.values.hari}
-                className={`input row-header ${
-                  !!vJadwal?.errors.hari ? 'is-invalid' : ''
-                }`}
+                className={`input row-header ${!!vJadwal?.errors.hari ? 'is-invalid' : ''
+                  }`}
               />
               {vJadwal.touched.hari && !!vJadwal.errors.hari && (
                 <FormFeedback type="invalid">
@@ -300,9 +297,8 @@ const MasterJadwalDokter = () => {
                   vJadwal.setFieldValue('unit', e?.value || '')
                 }}
                 value={vJadwal.values.unit}
-                className={`input row-header ${
-                  !!vJadwal?.errors.unit ? 'is-invalid' : ''
-                }`}
+                className={`input row-header ${!!vJadwal?.errors.unit ? 'is-invalid' : ''
+                  }`}
               />
               {vJadwal.touched.unit && !!vJadwal.errors.unit && (
                 <FormFeedback type="invalid">
@@ -416,7 +412,7 @@ const tableCustomStyles = {
   headRow: {
     style: {
       color: '#ffffff',
-      backgroundColor: '#e67e22',
+      backgroundColor: '#FFCB46',
     },
   },
   rows: {
