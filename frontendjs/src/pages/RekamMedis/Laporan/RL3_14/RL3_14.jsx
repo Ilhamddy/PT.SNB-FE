@@ -46,36 +46,45 @@ const RL3_14 = () => {
       pageTitle: 'test'
     },
     {
-      name: 'spesialis',
+      id: 'spesialis',
+      name: 'Spesialis'
       // formatter: (cell) => _(<a href="/#"> {cell} </a>)
     },
     {
       name: 'Rujukan',
       columns: [{
-        name: 'diterima_puskesmas'
+        id: 'diterima_puskesmas',
+        name: 'Diterima Puskesmas'
       }, {
-        name: 'diterima_faskeslain'
+        id: 'diterima_faskeslain',
+        name: 'Diterima Faskeslain'
       }, {
-        name: 'diterima_rs'
+        id: 'diterima_rs',
+        name: 'Diterima RS'
       }, {
-        name: 'dikembalikan_kepuskesmas'
+        id: 'dikembalikan_kepuskesmas',
+        name: 'Dikembalikan Ke Puskesmas'
       }, {
-        name: 'dikembalikan_kefaskeslain'
+        id: 'dikembalikan_kefaskeslain',
+        name: 'Dikembalikan Ke Faskes Lain'
       }, {
-        name: 'dikembalikan_kersasal'
+        id: 'dikembalikan_kersasal',
+        name: 'Dikembalikan Ke RS Asal'
       }, {
-        name: 'diterima_faskeslain'
-      }, {
-        name: 'diterima_faskeslain'
+        id: 'diterima_faskeslain',
+        name: 'Diterima Faskes Lain'
       }]
     }, {
       name: 'Di Rujuk',
       columns: [{
-        name: 'dirujuk_pasienrujukan'
+        id: 'dirujuk_pasienrujukan',
+        name: 'Pasien Rujukan'
       }, {
-        name: 'dirujuk_datangsendiri'
+        id: 'dirujuk_datangsendiri',
+        name: 'Datang Sendiri'
       }, {
-        name: 'dirujuk_diterimakembali'
+        id: 'dirujuk_diterimakembali',
+        name: 'Diterima Kembali'
       }]
     }
   ]
@@ -173,7 +182,7 @@ const RL3_14 = () => {
                           border: '1px solid #ccc',
                         },
                         th: {
-                          'background-color': 'rgba(230, 126, 34)',
+                          'background-color': 'rgba(255, 203, 70, 1)',
                           color: '#000',
                           'border-bottom': '1px solid #ccc',
                           'text-align': 'center',
@@ -197,7 +206,7 @@ const tableCustomStyles = {
   headRow: {
     style: {
       color: '#ffffff',
-      backgroundColor: '#e67e22',
+      backgroundColor: '#FFCB46',
     },
   },
   rows: {

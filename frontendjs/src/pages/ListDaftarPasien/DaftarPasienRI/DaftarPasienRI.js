@@ -80,7 +80,7 @@ const DaftarPasienRI = () => {
         headRow: {
             style: {
                 color: '#ffffff',
-                backgroundColor: '#e67e22',
+                backgroundColor: '#FFCB46',
             },
         },
         rows: {
@@ -273,7 +273,7 @@ const DaftarPasienRI = () => {
                                     <div className="live-preview">
                                         <Row>
                                             <Col>
-                                                <h4 className="card-title mb-0 flex-grow-1 mb-3">Daftar Pasien Rawat Inap <span style={{ color: '#e67e22' }}></span></h4>
+                                                <h4 className="card-title mb-0 flex-grow-1 mb-3">Daftar Pasien Rawat Inap <span style={{ color: '#FFCB46' }}></span></h4>
                                             </Col>
                                         </Row>
                                     </div>

@@ -69,7 +69,7 @@ const AddObatFarmasi = () => {
     headRow: {
       style: {
         color: '#ffffff',
-        backgroundColor: '#e67e22',
+        backgroundColor: '#FFCB46',
       },
     },
     rows: {
@@ -254,7 +254,7 @@ const AddObatFarmasi = () => {
                       <Col>
                         <h4 className="card-title mb-0 flex-grow-1 mb-3">
                           Daftar Pasien Registrasi{' '}
-                          <span style={{ color: '#e67e22' }}> </span>
+                          <span style={{ color: '#FFCB46' }}> </span>
                         </h4>
                       </Col>
                     </Row>

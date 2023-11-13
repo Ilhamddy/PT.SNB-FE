@@ -266,8 +266,17 @@ import LaporanPasienKunjungan from "../pages/RekamMedis/Laporan/LaporanPasienKun
 import RL3_1 from "../pages/RekamMedis/Laporan/RL3_1/RL3_1";
 import RL3_2 from "../pages/RekamMedis/Laporan/RL3_2/RL3_2";
 import RL3_3 from "../pages/RekamMedis/Laporan/RL3_3/RL3_3";
+import RL3_4 from "../pages/RekamMedis/Laporan/RL3_4/RL3_4";
 import RL3_6 from "../pages/RekamMedis/Laporan/RL3_6/RL3_6";
 import RL3_14 from "../pages/RekamMedis/Laporan/RL3_14/RL3_14";
+import RL3_15 from "../pages/RekamMedis/Laporan/RL3_15/RL3_15";
+import RL3_11 from "../pages/RekamMedis/Laporan/RL3_11/RL3_11";
+import RL3_10 from "../pages/RekamMedis/Laporan/RL3_10/RL3_10";
+
+import RL5_1 from "../pages/RekamMedis/Laporan/RL5_1/RL5_1";
+import RL5_2 from "../pages/RekamMedis/Laporan/RL5_2/RL5_2";
+import RL5_3 from "../pages/RekamMedis/Laporan/RL5_3/RL5_3";
+import RL5_4 from "../pages/RekamMedis/Laporan/RL5_4/RL5_4";
 // 
 // radiologi
 import DaftarOrderRadiologi from "../pages/Radiologi/DaftarOrderRadiologi/DaftarOrderRadiologi";
@@ -609,9 +618,18 @@ const authProtectedRoutes = [
   { path: "/cmVrYW1tZWRpcy9sYXBvcmFuLXJsL3JsMy4x", component: <RL3_1/>},
   { path: "/cmVrYW1tZWRpcy9sYXBvcmFuLXJsL3JsMy4y", component: <RL3_2/>},
   { path: "/cmVrYW1tZWRpcy9sYXBvcmFuLXJsL3JsMy4z", component: <RL3_3 />},
+  { path: "/rekammedis/laporan-rl/rl3_4", component: <RL3_4 />},
   { path: "/rekammedis/laporan-rl/rl3_6", component: <RL3_6/>},
   { path: "/cmVrYW1tZWRpcy9tYXBwaW5nLXJs", component: <MappingLayanan />},
   { path: "/rekammedis/laporan-rl/rl3_14", component: <RL3_14/>},
+  { path: "/rekammedis/laporan-rl/rl3_15", component: <RL3_15/>},
+  { path: "/rekammedis/laporan-rl/rl3_11", component: <RL3_11/>},
+  { path: "/rekammedis/laporan-rl/rl3_10", component: <RL3_10/>},
+
+  { path: "/rekammedis/laporan-rl/rl5_1", component: <RL5_1/>},
+  { path: "/rekammedis/laporan-rl/rl5_2", component: <RL5_2/>},
+  { path: "/rekammedis/laporan-rl/rl5_3", component: <RL5_3/>},
+  { path: "/rekammedis/laporan-rl/rl5_4", component: <RL5_4/>},
 
   // radiologi
   { path: "/radiologi/daftarorderradiologi", component: <DaftarOrderRadiologi /> },

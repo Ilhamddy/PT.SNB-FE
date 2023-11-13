@@ -134,7 +134,7 @@ const TriageIGD = () => {
                 <Container fluid>
                     <BreadCrumb title="Daftar Pasien Triage" pageTitle="Forms" />
                     <Card>
-                        <CardHeader className="align-items-center" style={{ backgroundColor: "#e67e22" }}>
+                        <CardHeader className="align-items-center" style={{ backgroundColor: "#FFCB46" }}>
                             <h4 className="mb-0" style={{ color: 'black', textAlign: 'center' }}>Pasien Triage IGD</h4>
                         </CardHeader>
                         <CardBody>
@@ -393,7 +393,7 @@ const ModalRegistrasi = ({ isRegistrasiOpen, toggle, selectedPasien }) => {
                     className="gy-4"
                     action="#">
                     <Card>
-                        <CardHeader className="align-items-center" style={{ backgroundColor: "#e67e22" }}>
+                        <CardHeader className="align-items-center" style={{ backgroundColor: "#FFCB46" }}>
                             <h4 className="mb-0" style={{ color: 'black', textAlign: 'center' }}>Pasien Triage IGD</h4>
                         </CardHeader>
                         <Card>

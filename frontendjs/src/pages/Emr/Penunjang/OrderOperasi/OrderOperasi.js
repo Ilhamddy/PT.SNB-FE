@@ -167,7 +167,7 @@ const OrderOperasi = () => {
         headRow: {
             style: {
                 color: '#ffffff',
-                backgroundColor: '#e67e22',
+                backgroundColor: '#FFCB46',
             },
         },
         rows: {
@@ -384,7 +384,7 @@ const OrderOperasi = () => {
                     </Col>
                     <Col lg={12} className="gy-2">
                         <Card>
-                            <CardHeader style={{ backgroundColor: "#e67e22" }}>
+                            <CardHeader style={{ backgroundColor: "#FFCB46" }}>
                                 <h4 className="card-title mb-0" style={{ color: '#ffffff' }}>Riwayat Order Operasi</h4>
                             </CardHeader>
                             <CardBody>

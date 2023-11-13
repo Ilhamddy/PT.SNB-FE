@@ -863,11 +863,10 @@ export const InputProdukDetail = () => {
                 value={detail.produk?.satuanjual}
                 isDisabled
                 className={`input 
-                                  ${
-                                    detailErr?.produk?.satuanjual
-                                      ? 'is-invalid'
-                                      : ''
-                                  }`}
+                                  ${detailErr?.produk?.satuanjual
+                    ? 'is-invalid'
+                    : ''
+                  }`}
               />
               {detailTouched?.produk?.satuanjual &&
                 !!detailErr?.produk?.satuanjual && (
@@ -898,9 +897,8 @@ export const InputProdukDetail = () => {
                   )
                 }}
                 value={detail.satuanterima}
-                className={`input ${
-                  detailErr?.satuanterima ? 'is-invalid' : ''
-                }`}
+                className={`input ${detailErr?.satuanterima ? 'is-invalid' : ''
+                  }`}
                 ref={refSatuanTerima}
               />
               {detailTouched?.satuanterima && !!detailErr?.satuanterima && (
@@ -1661,9 +1659,8 @@ export const InputUmumTerima = () => {
               handleChangePenerimaan('namasupplier', e?.value || '')
             }}
             value={penerimaan.namasupplier}
-            className={`input ${
-              penerimaanErr?.namasupplier ? 'is-invalid' : ''
-            }`}
+            className={`input ${penerimaanErr?.namasupplier ? 'is-invalid' : ''
+              }`}
           />
           {penerimaanTouched?.namasupplier && penerimaanErr?.namasupplier ? (
             <FormFeedback type="invalid">
@@ -2196,7 +2193,7 @@ const tableCustomStyles = {
   headRow: {
     style: {
       color: '#ffffff',
-      backgroundColor: '#e67e22',
+      backgroundColor: '#FFCB46',
     },
   },
   rows: {

@@ -51,7 +51,7 @@ const VerifikasiRemunerasi = () => {
     headRow: {
       style: {
         color: '#ffffff',
-        backgroundColor: '#e67e22',
+        backgroundColor: '#FFCB46',
       },
     },
     rows: {
@@ -407,7 +407,7 @@ const ModalVerifikasi = ({ isVerifikasiOpen, toggle, selectedPasien }) => {
     headRow: {
       style: {
         color: '#ffffff',
-        backgroundColor: '#e67e22',
+        backgroundColor: '#FFCB46',
       },
     },
     rows: {
@@ -434,7 +434,7 @@ const ModalVerifikasi = ({ isVerifikasiOpen, toggle, selectedPasien }) => {
           className="gy-4"
           action="#">
           <Card>
-            <CardHeader className="align-items-center" style={{ backgroundColor: "#e67e22" }}>
+            <CardHeader className="align-items-center" style={{ backgroundColor: "#FFCB46" }}>
               <h4 className="mb-0" style={{ color: 'black', textAlign: 'center' }}>Verifikasi Remunerasi</h4>
             </CardHeader>
             <CardBody>

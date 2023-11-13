@@ -107,7 +107,7 @@ tempruanganpengirim,tempSelected }) => {
                             validation.handleSubmit();
                             return false;
                         }}>
-                        <CardHeader style={{ backgroundColor: "#e67e22", textAlign: 'center' }}>
+                        <CardHeader style={{ backgroundColor: "#FFCB46", textAlign: 'center' }}>
                             <h4 className="card-title mb-0" style={{ color: '#ffffff' }}>Input Expertise Radiologi</h4>
                         </CardHeader>
                         <CardBody>

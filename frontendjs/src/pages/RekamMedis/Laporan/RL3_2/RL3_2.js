@@ -25,6 +25,7 @@ import {
 import "./RL3_2.scss"
 import * as XLSX from 'xlsx';
 import { Grid, _ } from 'gridjs-react';
+import { BaseExample } from '../../../Tables/GridTables/GridTablesData';
 
 const currentDate = new Date();
 currentDate.setDate(currentDate.getDate());
@@ -91,7 +92,7 @@ const RL3_2 = () => {
         headRow: {
             style: {
                 color: '#ffffff',
-                backgroundColor: '#e67e22',
+                backgroundColor: '#FFCB46',
             },
         },
         rows: {
@@ -253,7 +254,7 @@ const RL3_2 = () => {
                             <div className="live-preview">
                                 <div className="table-responsive">
                                     <Table className="table-bordered border-secondary table-nowrap align-top mb-0">
-                                        <thead style={{ backgroundColor: '#e67e22', color: '#ffffff', textAlign: 'center', verticalAlign: 'top' }}>
+                                        <thead style={{ backgroundColor: '#FFCB46', color: '#ffffff', textAlign: 'center', verticalAlign: 'top' }}>
                                             <tr>
                                                 <th rowSpan="2">No</th>
                                                 <th rowSpan="2">Jenis Pelayanan</th>
@@ -291,8 +292,8 @@ const RL3_2 = () => {
                                     </Table>
                                 </div>
                             </div>
-                            {/* <div id="table-gridjs">
-                                <DataTable
+                            <div id="table-gridjs">
+                                {/* <DataTable
                                     fixedHeader
                                     fixedHeaderScrollHeight="700px"
                                     columns={columns}
@@ -301,8 +302,9 @@ const RL3_2 = () => {
                                     progressPending={loading}
                                     progressComponent={<LoadingTable />}
                                     customStyles={tableCustomStyles}
-                                />
-                            </div> */}
+                                /> */}
+                                <BaseExample />
+                            </div>
                         </CardBody>
                     </Card>
                 </Container>
