@@ -713,7 +713,80 @@ const getLaporanRL3_4 = async (req, res) => {
     const logger = res.locals.logger;
     try{
         const result = await pool.query(queries.qLaporanRL3_4,[req.query.start,req.query.end])
-
+        const taskWidgets = [
+            {
+                id: 1,
+                no:'1',
+                label: "Persalinan Normal",
+                counter: 0
+            },
+            {
+                id: 2,
+                no:'2',
+                label: "Sectio caesaria",
+                counter: 0
+            },
+            {
+                id: 3,
+                no:'3',
+                label: "Pers dg komplikasi",
+                counter: 0
+            },
+            {
+                id: 4,
+                no:'3.1',
+                label: "Perd sbl Persalinan",
+                counter: 0
+            },
+            {
+                id: 5,
+                no:'3.2',
+                label: "Perd sdh Persalinan",
+                counter: 0
+            },
+            {
+                id: 6,
+                no:'3.3',
+                label: "Pre Eclampsi",
+                counter: 0
+            },
+            {
+                id: 7,
+                no:'3.4',
+                label: "Eclampsi",
+                counter: 0
+            },
+            {
+                id: 8,
+                no:'3.5',
+                label: "Infeksi",
+                counter: 0
+            },
+            {
+                id: 9,
+                no:'3.6',
+                label: "Lain - Lain",
+                counter: 0
+            },
+            {
+                id: 10,
+                no:'4',
+                label: "Abortus",
+                counter: 0
+            },
+            {
+                id: 11,
+                no:'5',
+                label: "Imunisasi - TT1",
+                counter: 0
+            },
+            {
+                id: 12,
+                no:'',
+                label: "Imunisasi - TT2",
+                counter: 0
+            },
+        ]
         const tempres = {
         
         };

@@ -47,35 +47,43 @@ const RL3_4 = () => {
     },
     {
       id: 'kdicdx',
-      name: 'Kode ICD 10'
+      name: 'Jenis Kegiatan'
       // formatter: (cell) => _(<a href="/#"> {cell} </a>)
     },
     {
-      id: 'namaicdx',
-      name: 'Deskripsi'
-    },
-    {
-      name: 'Pasien Keluar Hidup Menurut Jenis Kelamin',
+      name: 'Rujukan Medis',
       columns: [{
-        id: 'ph_lk',
-        name: 'LK'
+        name: 'Rumah Sakit'
       }, {
-        id: 'ph_pl',
-        name: 'PR'
-      }]
-    }, {
-      name: 'Pasien Keluar Mati Menurut Jenis Kelamin',
-      columns: [{
-        id: 'pm_lk',
-        name: 'LK'
+        name: 'Bidan'
       }, {
-        id: 'pm_pl',
-        name: 'PR'
+        name: 'Puskesmas'
+      }, {
+        name: 'Faskes Lainnya'
+      }, {
+        name: 'Mati'
+      }, {
+        name: 'Jumlah Total'
       }]
     },
     {
-      id: 'total',
-      name: 'Total (Hidup & Mati)'
+      name: 'Rujukan Non Medis',
+      columns: [{
+        name: 'Mati'
+      }, {
+        name: 'Jumlah Total'
+      }]
+    },
+    {
+      name: 'Non Rujukan',
+      columns: [{
+        name: 'Mati'
+      }, {
+        name: 'Jumlah Total'
+      }]
+    },
+    {
+      name: 'Dirujuk',
     },
   ]
   return (
@@ -158,6 +166,7 @@ const RL3_4 = () => {
             pagination={{
               enabled: true, limit: 10, summary: false
             }}
+            resizable={true}
             style={{
               table: {
                 border: '1px solid #ccc',

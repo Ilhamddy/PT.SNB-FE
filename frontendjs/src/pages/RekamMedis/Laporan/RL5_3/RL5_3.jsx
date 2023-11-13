@@ -158,6 +158,7 @@ const RL5_3 = () => {
             pagination={{
               enabled: true, limit: 10, summary: false
             }}
+            resizable={true}
             style={{
               table: {
                 border: '1px solid #ccc',
