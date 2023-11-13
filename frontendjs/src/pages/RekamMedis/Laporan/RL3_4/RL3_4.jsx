@@ -9,7 +9,7 @@ import KontainerFlatpickr from '../../../../Components/KontainerFlatpickr/Kontai
 import DataTable from 'react-data-table-component'
 import LoadingTable from '../../../../Components/Table/LoadingTable';
 import {
-  getLaporanRl_5_4, kendaliDokumenResetForm
+  getLaporanRl_3_4, kendaliDokumenResetForm
 } from '../../../../store/actions';
 import { Grid, _ } from 'gridjs-react';
 import { BaseExample } from '../../../../pages/Tables/GridTables/GridTablesData';
@@ -18,8 +18,8 @@ const RL3_4 = () => {
   document.title = "Laporan RL3.4";
   const dispatch = useDispatch();
   const { dataGrid, loadingGrid } = useSelector((state) => ({
-    dataGrid: state.KendaliDokumen.getLaporanRl_5_4.data,
-    loadingGrid: state.KendaliDokumen.getLaporanRl_5_4.loading,
+    dataGrid: state.KendaliDokumen.getLaporanRl_3_4.data,
+    loadingGrid: state.KendaliDokumen.getLaporanRl_3_4.loading,
   }));
   const [dateNow] = useState(() => new Date().toISOString())
   const vSetValidation = useFormik({
@@ -33,7 +33,7 @@ const RL3_4 = () => {
     }),
     onSubmit: (values) => {
       console.log(values)
-      dispatch(getLaporanRl_5_4({
+      dispatch(getLaporanRl_3_4({
         start: values.start || dateNow,
         end: values.end || dateNow
       }));
@@ -41,41 +41,66 @@ const RL3_4 = () => {
   })
   const columns = [
     {
-      id: 'id',
+      id: 'no',
       formatter: (cell) => _(<span>{cell}</span>),
       name: 'No'
     },
     {
-      id: 'kdicdx',
-      name: 'Kode ICD 10'
+      id: 'label',
+      name: 'Jenis Kegiatan'
       // formatter: (cell) => _(<a href="/#"> {cell} </a>)
     },
     {
-      id: 'namaicdx',
-      name: 'Deskripsi'
+      name: 'Rujukan Medis',
+      columns: [{
+        name: 'Rumah Sakit',
+        id: 'medis_rumahsakit'
+      }, {
+        name: 'Bidan',
+        id: 'medis_bidan'
+      }, {
+        name: 'Puskesmas',
+        id: 'medis_puskesmas'
+      }, {
+        name: 'Faskes Lainnya',
+        id: 'medis_faskeslain'
+      }, {
+        name: 'Hidup',
+        id: 'medis_hidup'
+      }, {
+        name: 'Mati',
+        id: 'medis_mati'
+      }, {
+        name: 'Jumlah Total',
+        id: 'medis_jml'
+      }]
     },
     {
-      name: 'Pasien Keluar Hidup Menurut Jenis Kelamin',
+      name: 'Rujukan Non Medis',
       columns: [{
-        id: 'ph_lk',
-        name: 'LK'
+        name: 'Hidup',
       }, {
-        id: 'ph_pl',
-        name: 'PR'
-      }]
-    }, {
-      name: 'Pasien Keluar Mati Menurut Jenis Kelamin',
-      columns: [{
-        id: 'pm_lk',
-        name: 'LK'
+        name: 'Mati',
       }, {
-        id: 'pm_pl',
-        name: 'PR'
+        name: 'Jumlah Total',
       }]
     },
     {
-      id: 'total',
-      name: 'Total (Hidup & Mati)'
+      name: 'Non Rujukan',
+      columns: [{
+        name: 'Hidup',
+        id: 'nonrujukan_hidup'
+      }, {
+        name: 'Mati',
+        id: 'nonrujukan_mati'
+      }, {
+        name: 'Jumlah Total',
+        id: 'nonrujukan_jml'
+      }]
+    },
+    {
+      name: 'Dirujuk',
+      id: 'rujuk'
     },
   ]
   return (
@@ -156,8 +181,9 @@ const RL3_4 = () => {
             sort={true}
             fixedHeader={true}
             pagination={{
-              enabled: true, limit: 10, summary: false
+              enabled: true, limit: 20, summary: false
             }}
+            resizable={true}
             style={{
               table: {
                 border: '1px solid #ccc',

@@ -49,6 +49,7 @@ import {
     UPDATE_PRINTED_ERROR,
     UPDATE_PRINTED_SUCCESS,
     LAPORAN_RL_3_3_GET,LAPORAN_RL_3_3_GET_SUCCESS,LAPORAN_RL_3_3_GET_ERROR,
+    LAPORAN_RL_3_4_GET,LAPORAN_RL_3_4_GET_SUCCESS,LAPORAN_RL_3_4_GET_ERROR,
     LAPORAN_RL_3_6_GET,LAPORAN_RL_3_6_GET_SUCCESS,LAPORAN_RL_3_6_GET_ERROR,
     LAPORAN_RL_3_14_GET,LAPORAN_RL_3_14_GET_SUCCESS,LAPORAN_RL_3_14_GET_ERROR,
     LAPORAN_RL_3_15_GET,LAPORAN_RL_3_15_GET_SUCCESS,LAPORAN_RL_3_15_GET_ERROR,
@@ -147,6 +148,11 @@ const INIT_STATE = {
         loading: false,
         error: null,
     },
+    getLaporanRl_3_4:{
+        data: [],
+        loading: false,
+        error: null,
+    },
     getLaporanRl_3_6:{
         data: [],
         loading: false,
@@ -228,6 +234,9 @@ const KendaliDokumen = (state = INIT_STATE, action) => {
                 },
                 getLaporanRl_3_3:{
                     ...INIT_STATE.getLaporanRl_3_3
+                },
+                getLaporanRl_3_4:{
+                    ...INIT_STATE.getLaporanRl_3_4
                 },
                 getLaporanRl_3_6:{
                     ...INIT_STATE.getLaporanRl_3_6
@@ -821,6 +830,39 @@ const KendaliDokumen = (state = INIT_STATE, action) => {
                 ...state,
                 getLaporanRl_3_3: {
                     ...state.getLaporanRl_3_3,
+                    loading: false,
+                    error: action.payload,
+                }
+            }
+        }
+
+        case LAPORAN_RL_3_4_GET: {
+            return {
+                ...state,
+                getLaporanRl_3_4: {
+                    ...state.getLaporanRl_3_4,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case LAPORAN_RL_3_4_GET_SUCCESS: {
+            return {
+                ...state,
+                getLaporanRl_3_4: {
+                    ...state.getLaporanRl_3_4,
+                    loading: false,
+                    data: action.payload,
+                }
+            }
+        }
+
+        case LAPORAN_RL_3_4_GET_ERROR: {
+            return {
+                ...state,
+                getLaporanRl_3_4: {
+                    ...state.getLaporanRl_3_4,
                     loading: false,
                     error: action.payload,
                 }
