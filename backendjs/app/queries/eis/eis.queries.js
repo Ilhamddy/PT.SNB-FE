@@ -360,6 +360,45 @@ GROUP BY
     msp.id
 `
 
+const qGetCountPegawai = `
+SELECT
+    COUNT(mp.id)::INT AS jumlah
+FROM m_pegawai mp
+WHERE mp.statusenabled = true
+`
+
+const qGetCountSpesialis = `
+SELECT
+    COUNT(mp.id)::INT AS jumlah
+FROM m_pegawai mp
+WHERE mp.statusenabled = true 
+and mp.objectprofesipegawaifk = 1
+`
+
+const qGetCountDokterUmum = `
+SELECT
+    COUNT(mp.id)::INT AS jumlah
+FROM m_pegawai mp
+WHERE mp.statusenabled = true 
+and mp.objectprofesipegawaifk = 4;
+`
+
+const qGetCountPerawatBidan = `
+SELECT
+    COUNT(mp.id)::INT AS jumlah
+FROM m_pegawai mp
+WHERE mp.statusenabled = true 
+and mp.objectprofesipegawaifk in (2,3); 
+`
+
+const qGetCountPenunjangMedis = `
+SELECT
+    COUNT(mp.id)::INT AS jumlah
+FROM m_pegawai mp
+WHERE mp.statusenabled = true 
+and mp.objectprofesipegawaifk in (13,14,15,16,17);
+`
+
 const qGetCountJenisKelamin = `
 SELECT
     mjk.reportdisplay AS label,
@@ -371,6 +410,92 @@ WHERE mjk.statusenabled = true
 GROUP BY
     mjk.reportdisplay,
     mjk.id
+`
+
+const qGetUsia = `
+SELECT
+    mp.tgllahir AS tgllahir,
+    mjk.reportdisplay AS jeniskelamin
+FROM m_pegawai mp 
+    LEFT JOIN m_jeniskelamin mjk ON mp.objectjeniskelaminfk = mjk.id
+WHERE mp.statusenabled = true
+`
+
+const qGetJabatan = `
+SELECT
+    mj.reportdisplay AS label,
+    mj.id AS value,
+    COUNT(mp.id)::INT AS jumlah
+FROM m_jabatan mj
+    LEFT JOIN m_pegawai mp ON mp.objectjabatanfk = mj.id
+WHERE mj.statusenabled = true
+GROUP BY
+    mj.reportdisplay,
+    mj.id
+`
+
+const qGetCountProfesi = `
+SELECT
+    mprof.reportdisplay AS label,
+    mprof.id AS value,
+    COUNT(mp.id)::INT AS jumlah
+FROM m_profesipegawai mprof
+    LEFT JOIN m_pegawai mp ON mp.objectprofesipegawaifk = mprof.id
+WHERE mprof.statusenabled = true
+GROUP BY
+    mprof.reportdisplay,
+    mprof.id
+`
+
+const qGetCountPendidikanTerakhir = `
+SELECT
+    mpend.reportdisplay AS label,
+    mpend.id AS value,
+    COUNT(mp.id)::INT AS jumlah
+FROM m_pendidikan mpend
+    LEFT JOIN m_pegawai mp ON mp.objectpendidikanterakhirfk = mpend.id
+WHERE mpend.statusenabled = true
+GROUP BY
+    mpend.reportdisplay,
+    mpend.id
+`
+
+const qGetCountSpesialisasi = `
+SELECT
+    ms.reportdisplay AS label,
+    ms.id AS value,
+    COUNT(mp.id)::INT AS jumlah
+FROM m_spesialisasi ms
+    LEFT JOIN m_pegawai mp ON mp.objectspesialisasifk = ms.id
+WHERE ms.statusenabled = true
+GROUP BY
+    ms.reportdisplay,
+    ms.id
+`
+
+const qGetPegawaiPensiun = `
+SELECT
+    mp.namalengkap AS namalengkap,
+    mp.tgllahir AS tgllahir,
+    mu.namaunit AS namaunit,
+    mp.tglpensiun AS tglpensiun
+FROM m_pegawai mp
+    LEFT JOIN m_unit mu ON mu.id = mp.objectunitfk
+WHERE mp.statusenabled = true
+    AND mp.tglpensiun > $1
+`
+
+const qGetPegawaiSIP = `
+SELECT
+    mp.namalengkap AS namalengkap,
+    mprof.reportdisplay AS profesi,
+    mu.namaunit AS namaunit,
+    mp.tglberakhirsip AS tglberakhirsip
+FROM m_pegawai mp
+    LEFT JOIN m_unit mu ON mu.id = mp.objectunitfk
+    LEFT JOIN m_profesipegawai mprof ON mp.objectprofesipegawaifk = mprof.id
+WHERE mp.statusenabled = true
+    AND mp.tglpensiun > $1
 `
 
 
@@ -389,5 +514,17 @@ export {
     qGetTempatTidur,
     qGetCountUnit,
     qGetCountStatus,
-    qGetCountJenisKelamin
+    qGetCountPegawai,
+    qGetCountSpesialis,
+    qGetCountDokterUmum,
+    qGetCountPerawatBidan,
+    qGetCountPenunjangMedis,
+    qGetCountJenisKelamin,
+    qGetUsia,
+    qGetJabatan,
+    qGetCountProfesi,
+    qGetCountPendidikanTerakhir,
+    qGetCountSpesialisasi,
+    qGetPegawaiPensiun,
+    qGetPegawaiSIP
 }

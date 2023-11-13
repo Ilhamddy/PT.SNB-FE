@@ -31,4 +31,7 @@ export default class ServiceEis{
         return await api.get(`/transaksi/eis/get-status-pegawai`, queries)
     }
 
+    getPegawaiPensiun = async (queries) => {
+        return await api.get(`/transaksi/eis/get-pegawai-pensiun`, queries)
+    }
 }

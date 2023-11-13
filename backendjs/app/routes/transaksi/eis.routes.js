@@ -54,5 +54,10 @@ export default function (app) {
         controller.getStatusPegawai
     )
 
+    app.get(
+        "/api/transaksi/eis/get-pegawai-pensiun",
+        [authJwt.verifyToken],
+        controller.getPegawaiPensiun
+    )
 
 }

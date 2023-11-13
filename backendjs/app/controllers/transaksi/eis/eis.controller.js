@@ -5,8 +5,8 @@ import db from "../../../models";
 import {
     createTransaction
 } from "../../../utils/dbutils";
-import { qCountCaraBayar, qCountNonBPJS, qGetCountJenisKelamin, qGetCountStatus, qGetCountUnit, qGetKunjunganPoliklinik, qGetPasienBatal, qGetPasienMeninggalRanap, qGetPasienPulangIGD, qGetPasienPulangRanap, qGetPasienRawatIGD, qGetPasienTerdaftar, qGetPasienTerdaftarRanap, qGetTempatTidur } from "../../../queries/eis/eis.queries";
-import { getDateStartEnd } from "../../../utils/dateutils";
+import { qCountCaraBayar, qCountNonBPJS, qGetCountDokterUmum, qGetCountJenisKelamin, qGetCountPegawai, qGetCountPendidikanTerakhir, qGetCountPenunjangMedis, qGetCountPerawatBidan, qGetCountProfesi, qGetCountSpesialis, qGetCountSpesialisasi, qGetCountStatus, qGetCountUnit, qGetJabatan, qGetKunjunganPoliklinik, qGetPasienBatal, qGetPasienMeninggalRanap, qGetPasienPulangIGD, qGetPasienPulangRanap, qGetPasienRawatIGD, qGetPasienTerdaftar, qGetPasienTerdaftarRanap, qGetPegawaiPensiun, qGetPegawaiSIP, qGetTempatTidur, qGetUsia } from "../../../queries/eis/eis.queries";
+import { getDateStartEnd, getDateStartEndYear } from "../../../utils/dateutils";
 import { daftarInstalasi } from "../../../queries/master/instalasi/instalasi.queries";
 import { daftarRekanan } from "../../../queries/master/rekanan/rekanan.queries";
 import { groupBy } from '../../../utils/arutils'
@@ -359,11 +359,60 @@ const getCountUnit = async (req, res) => {
 const getStatusPegawai = async (req, res) => {
     const logger = res.locals.logger;
     try{
+        const countPegawai = (await pool.query(qGetCountPegawai)).rows[0]
+        const countSpesialis = (await pool.query(qGetCountSpesialis)).rows[0]
+        const countDokterUmum = (await pool.query(qGetCountDokterUmum)).rows[0]
+        const countPerawatBidan = (await pool.query(qGetCountPerawatBidan)).rows[0]
+        const countPenunjangMedis = (await pool.query(qGetCountPenunjangMedis)).rows[0]
         const countJenisKelamin = (await pool.query(qGetCountJenisKelamin)).rows
         const countStatus = (await pool.query(qGetCountStatus)).rows
+        const usiaPegawai = (await pool.query(qGetUsia)).rows
+        const countJabatan = (await pool.query(qGetJabatan)).rows
+        const countProfesi = (await pool.query(qGetCountProfesi)).rows
+        const countPendidikanTerakhir = (await pool.query(qGetCountPendidikanTerakhir)).rows
+        const countSpesialisasi = (await pool.query(qGetCountSpesialisasi)).rows
+        const arUsiaPegawai = hGroupAgeAr(usiaPegawai)
         const tempres = {
+            countPegawai: countPegawai || null,
+            countSpesialis: countSpesialis || null,
+            countDokterUmum: countDokterUmum || null,
+            countPerawatBidan: countPerawatBidan || null,
+            countPenunjangMedis: countPenunjangMedis || null,
             countStatus: countStatus || [],
-            countJenisKelamin: countJenisKelamin || []
+            countJenisKelamin: countJenisKelamin || [],
+            arUsiaPegawai: arUsiaPegawai || [],
+            countJabatan: countJabatan || [],
+            countProfesi: countProfesi || [],
+            countPendidikanTerakhir: countPendidikanTerakhir || [],
+            countSpesialisasi: countSpesialisasi || [],
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+const getPegawaiPensiun = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const { yearStart } = getDateStartEndYear()
+        const pegawaiPensiun = (await pool.query(qGetPegawaiPensiun, [yearStart.toISOString()])).rows
+        const pegawaiSIP = (await pool.query(qGetPegawaiSIP, [yearStart.toISOString()])).rows
+
+        const tempres = {
+            pegawaiPensiun,
+            pegawaiSIP
         };
         res.status(200).send({
             msg: 'Success',
@@ -390,7 +439,7 @@ export default {
     getPoliklinikTerbanyak,
     getCountUnit,
     getStatusPegawai,
-    
+    getPegawaiPensiun
 }
 
 /**
@@ -418,9 +467,9 @@ const hGroupDateAr = (pasiens, tanggalMulai, tanggalSelesai, getDate) => {
 
 const hCreateDateAr = (start, end) => {
     let initialTime = start ? new Date(start) : new Date()
-    ,endTime = end ? new Date(end) : new Date()
-    ,arrTimes = []
-    ,dayMillisec = 24 * 60 * 60 * 1000;
+    let endTime = end ? new Date(end) : new Date()
+    let arrTimes = []
+    let dayMillisec = 24 * 60 * 60 * 1000;
     for (let q = initialTime; q <= endTime; q = new Date(q.getTime() + dayMillisec)) {
         arrTimes.push({
             date: q.toISOString(),
@@ -444,4 +493,84 @@ const hGroupDate = (arrTime, data, getDate) => {
         return [newArrTime, true]
     }
     return [arrTime, false]
+}
+
+/**
+ * 
+ * @param {*} pegawai 
+ * @param {(data) => number} [getAge] 
+ * @param {(data) => string} [getGender] 
+ * @returns 
+ */
+const hGroupAgeAr = (pegawai, getAge, getGender) => {
+    const arrTimes = hCreateAgeAr(0, 95)
+    pegawai.forEach((data) => {
+        for (let i = 0; i < arrTimes.length; i++) {
+            let arrTime = arrTimes[i], isGrouped = false;
+            [arrTime, isGrouped] = hGroupAge(arrTime, data, getAge, getGender)
+            arrTimes[i] = arrTime
+            if(isGrouped){
+                break
+            }
+        }  
+    })
+    return arrTimes
+}
+
+
+const hCreateAgeAr = (start, end) => {
+    let initialAge = start
+    let endAge = end
+    let arrAge = []
+    let ageGap = 10;
+    for (let a = initialAge; a <= endAge; a = (a + ageGap)) {
+        arrAge.push({
+            ageStart: a,
+            ageEnd: a + ageGap,
+            items: [],
+            gender: 'L',
+            total: 0
+        });
+        arrAge.push({
+            ageStart: a,
+            ageEnd: a + ageGap,
+            items: [],
+            gender: 'P',
+            total: 0
+        });
+    }
+    return arrAge
+}
+
+const hGroupAge = (arrAge, data, getAge, getGender) => {
+    const ageStart = arrAge.ageStart
+    const ageEnd = arrAge.ageEnd
+    const age = getAge ? getAge(data) : calculateAge(data.tgllahir)
+    const gender = getGender ? getGender(data) : (data.jeniskelamin || '')
+    const ageSesuai = age >= ageStart && age <= ageEnd
+    const genderSesuai = gender.toUpperCase() === arrAge.gender
+    if(ageSesuai && genderSesuai){
+        const newAr =  [...arrAge.items, data]
+        let newArrTime = {
+            ...arrAge, 
+            total: newAr.length,
+            items: newAr
+        }
+        return [newArrTime, true]
+    }
+    return [arrAge, false]
+}
+
+const calculateAge = (birthDate) => {
+    let newBirthDate = new Date(birthDate);
+    let date = new Date();
+
+    let years = (date.getFullYear() - newBirthDate.getFullYear());
+
+    if (date.getMonth() < newBirthDate.getMonth() || 
+        date.getMonth() == newBirthDate.getMonth() && date.getDate() < newBirthDate.getDate()) {
+        years--;
+    }
+
+    return years;
 }

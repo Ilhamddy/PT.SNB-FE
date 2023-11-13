@@ -47,6 +47,21 @@ export const getDateStartEndMonth = () => {
     }
 }
 
+export const getDateStartEndYear = () => {
+    let yearStart = new Date()
+    yearStart.setMonth(0)
+    yearStart.setDate(1)
+    yearStart.setHours(0, 0, 0, 0)
+    let yearEnd = new Date()
+    yearEnd.setMonth(11);
+    yearEnd.setDate(0);
+    yearEnd.setHours(23, 59, 59, 999);
+    return {
+        yearStart,
+        yearEnd
+    }
+}
+
 export const getTimeOnly = (date) => {
     return (new Date(date)).toTimeString().split(' ')[0]
 }

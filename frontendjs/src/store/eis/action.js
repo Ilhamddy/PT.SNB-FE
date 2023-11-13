@@ -20,9 +20,9 @@ import {
     GET_STATUS_PEGAWAI,
     GET_STATUS_PEGAWAI_SUCCESS,
     GET_STATUS_PEGAWAI_ERROR,
-    GET_JENIS_KELAMIN,
-    GET_JENIS_KELAMIN_SUCCESS,
-    GET_JENIS_KELAMIN_ERROR
+    GET_PEGAWAI_PENSIUN,
+    GET_PEGAWAI_PENSIUN_SUCCESS,
+    GET_PEGAWAI_PENSIUN_ERROR
 } from "./actionType"
 
 
@@ -129,6 +129,22 @@ export const getStatusPegawaiSuccess = (data) => ({
 
 export const getStatusPegawaiError = (error) => ({
     type: GET_STATUS_PEGAWAI_ERROR,
+    payload: error
+})
+
+
+export const getPegawaiPensiun = (queries) => ({
+    type: GET_PEGAWAI_PENSIUN,
+    payload: {queries: queries}
+})
+
+export const getPegawaiPensiunSuccess = (data) => ({
+    type: GET_PEGAWAI_PENSIUN_SUCCESS,
+    payload: data
+})
+
+export const getPegawaiPensiunError = (error) => ({
+    type: GET_PEGAWAI_PENSIUN_ERROR,
     payload: error
 })
 

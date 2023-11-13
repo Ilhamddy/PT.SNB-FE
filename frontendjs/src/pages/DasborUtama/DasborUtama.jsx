@@ -16,7 +16,6 @@ import * as Yup from 'yup'
 import KontainerFlatpickr from '../../Components/KontainerFlatpickr/KontainerFlatpickr'
 import CustomSelect from '../Select/Select'
 import { useEffect, useState } from 'react'
-import { Link } from 'feather-icons-react/build/IconComponents'
 import CountUp from 'react-countup'
 import ReactApexChart from 'react-apexcharts'
 import getChartColorsArray from '../../Components/Common/ChartsDynamicColor'
@@ -33,14 +32,21 @@ import {
   getPasienRanap,
   getPoliklinikTerbanyak,
 } from '../../store/eis/action'
+import { Link } from 'react-router-dom'
 
 const DashboardUtama = () => {
   const [dateToday] = useState(() => new Date().toISOString())
+  const [dateStart] = useState(() => {
+    let d = new Date()
+    d.setMonth(d.getMonth() - 1)
+    return d
+  })
+
   const dispatch = useDispatch()
   const vFilter = useFormik({
     initialValues: {
       tanggal: '',
-      tanggalmulai: dateToday,
+      tanggalmulai: dateStart,
       tanggalselesai: dateToday,
       carabayar: '',
     },
@@ -55,7 +61,13 @@ const DashboardUtama = () => {
   })
 
   useEffect(() => {
-    dispatch(getPasienRJ(vFilter.initialValues))
+    const values = vFilter.initialValues
+    dispatch(getPasienRJ(values))
+    dispatch(getPasienIGD(values))
+    dispatch(getPasienRanap(values))
+    dispatch(getCountCaraBayar(values))
+    dispatch(getPoliklinikTerbanyak(values))
+    dispatch(getCountUnit(values))
   }, [vFilter.initialValues, dispatch])
 
   return (
@@ -831,6 +843,7 @@ export const HeaderDashboard = () => {
     {
       classImg: 'bx bx-home-heart',
       text: 'Dasbor Utama',
+      link: 'dasbor-utama',
     },
     {
       classImg: 'las la-capsules',
@@ -843,15 +856,18 @@ export const HeaderDashboard = () => {
     {
       classImg: 'las la-user-nurse',
       text: 'Dasbor SDM',
+      link: 'dasbor-pegawai',
     },
   ]
   return (
     <ul className="header-dasbor-eis page-title-box">
       {items.map((item, key) => (
-        <li className="isi-header" key={key}>
-          <i className={item.classImg}></i>
-          <p className="text-header">{item.text}</p>
-        </li>
+        <Link key={key} to={`/eis/dasbor/${item.link}`}>
+          <li className="isi-header">
+            <i className={item.classImg}></i>
+            <p className="text-header">{item.text}</p>
+          </li>
+        </Link>
       ))}
     </ul>
   )

@@ -25,16 +25,14 @@ import DataTable from 'react-data-table-component'
 import LoadingTable from '../../Components/Table/LoadingTable'
 import NoDataTable from '../../Components/Table/NoDataTable'
 import { useDispatch, useSelector } from 'react-redux'
-import {
-  getCountCaraBayar,
-  getCountUnit,
-  getPasienIGD,
-  getPasienRJ,
-  getPasienRanap,
-  getPoliklinikTerbanyak,
-  getStatusPegawai,
-} from '../../store/eis/action'
+import React from 'react'
+import { getPegawaiPensiun, getStatusPegawai } from '../../store/eis/action'
 import { HeaderDashboard } from '../DasborUtama/DasborUtama'
+import DokterUmum from './total-dokter-umum.png'
+import Pegawai from './total-pegawai.svg'
+import PenunjangMedis from './total-penunjang-medis.svg'
+import Perawat from './total-perawat.svg'
+import Spesialis from './total-spesialis.svg'
 
 const DasborPegawai = () => {
   const [dateToday] = useState(() => new Date().toISOString())
@@ -51,6 +49,7 @@ const DasborPegawai = () => {
 
   useEffect(() => {
     dispatch(getStatusPegawai())
+    dispatch(getPegawaiPensiun())
   }, [vFilter.initialValues, dispatch])
 
   return (
@@ -62,7 +61,6 @@ const DasborPegawai = () => {
       />
       <ToastContainer closeButton={false} />
       <HeaderDashboard />
-
       <Container fluid className="ps-3 pe-3 mt-3">
         <PegawaiTotal />
         <Row>
@@ -72,6 +70,33 @@ const DasborPegawai = () => {
           <Col lg={2}>
             <JenisKelamin />
           </Col>
+          <Col lg={6}>
+            <NegativeGender />
+          </Col>
+        </Row>
+        <Row>
+          <Col lg={6}>
+            <StrukturalPegawai />
+          </Col>
+          <Col lg={6}>
+            <PendidikanPegawai />
+          </Col>
+        </Row>
+        <Row>
+          <Col lg={12}>
+            <FungsionalPegawai />
+          </Col>
+          <Col lg={12}>
+            <SpesialisasiPegawai />
+          </Col>
+        </Row>
+        <Row>
+          <Col lg={6}>
+            <PegawaiPensiun />
+          </Col>
+          <Col lg={6}>
+            <PegawaiSIP />
+          </Col>
         </Row>
       </Container>
     </div>
@@ -79,16 +104,20 @@ const DasborPegawai = () => {
 }
 
 const PegawaiTotal = () => {
-  const data = useSelector(
-    (state) => state.Eis.getCountUnit.data?.countUnit || null
-  )
+  const {
+    countPegawai,
+    countSpesialis,
+    countDokterUmum,
+    countPerawatBidan,
+    countPenunjangMedis,
+  } = useSelector((state) => state.Eis.getStatusPegawai.data)
   const tileBoxs2 = [
     {
       id: 1,
-      label: 'Pasien Rawat Jalan',
+      label: 'Total Pegawai',
       badge: 'ri-arrow-up-circle-line text-success',
-      icon: 'ri-space-ship-line',
-      counter: data?.pasienrajal || 0,
+      icon: Pegawai,
+      counter: countPegawai?.jumlah || 0,
       decimals: 0,
       suffix: '',
       separator: '.',
@@ -96,10 +125,10 @@ const PegawaiTotal = () => {
     },
     {
       id: 2,
-      label: 'Pasien Rawat Inap',
+      label: 'Dokter Spesialis',
       badge: 'ri-arrow-up-circle-line text-success',
-      icon: 'ri-exchange-dollar-line',
-      counter: data?.pasienranap || 0,
+      icon: Spesialis,
+      counter: countSpesialis?.jumlah || 0,
       decimals: 0,
       separator: '.',
       suffix: '',
@@ -107,10 +136,10 @@ const PegawaiTotal = () => {
     },
     {
       id: 3,
-      label: 'Pasien Gawat Darurat',
+      label: 'Dokter Umum',
       badge: 'ri-arrow-up-circle-line text-success',
-      icon: 'ri-pulse-line',
-      counter: data?.pasienigd || 0,
+      icon: DokterUmum,
+      counter: countDokterUmum?.jumlah || 0,
       separator: '.',
       decimals: 0,
       suffix: '',
@@ -118,10 +147,10 @@ const PegawaiTotal = () => {
     },
     {
       id: 4,
-      label: 'Pasien Laboratorium',
+      label: 'Perawat & Bidan',
       badge: 'ri-arrow-up-circle-line text-success',
-      icon: 'ri-trophy-line',
-      counter: data?.pasienlaboratorium || 0,
+      icon: Perawat,
+      counter: countPerawatBidan?.jumlah || 0,
       decimals: 0,
       prefix: '',
       separator: '.',
@@ -129,10 +158,10 @@ const PegawaiTotal = () => {
     },
     {
       id: 5,
-      label: 'Pasien Radiologi',
+      label: 'Penunjang Medis',
       badge: 'ri-arrow-up-circle-line text-success',
-      icon: 'ri-service-line',
-      counter: data?.pasienradiologi || 0,
+      icon: PenunjangMedis,
+      counter: countPenunjangMedis?.jumlah || 0,
       decimals: 0,
       separator: '.',
       suffix: '',
@@ -159,7 +188,7 @@ const PegawaiTotal = () => {
                     </h5>
                     <div className="d-flex align-items-center">
                       <div className="flex-shrink-0">
-                        <i className={'display-6 text-muted ' + item.icon}></i>
+                        <img className="gbr-widget" alt="" src={item.icon} />
                       </div>
                       <div className="flex-grow-1 ms-3">
                         <h2 className="mb-0">
@@ -211,7 +240,23 @@ const StatusPegawai = () => {
         enabled: false,
       },
     },
-    colors: chartPieBasicColors,
+    colors: [
+      '#038edc',
+      '#51d28c',
+      '#f7cc53',
+      '#f34e4e',
+      '#564ab1',
+      '#5fd0f3',
+      '#DC0303',
+      '#CB03DC',
+      '#655B96',
+      '#DCB903',
+      '#48DC03',
+      '#E67E22',
+      '#FD32B0',
+      '#0340DC',
+      '#8ADC03',
+    ],
   }
   return (
     <Card className="p-3" style={{ height: 500 }}>
@@ -278,6 +323,15 @@ const JenisKelamin = () => {
             '#f34e4e',
             '#564ab1',
             '#5fd0f3',
+            '#DC0303',
+            '#CB03DC',
+            '#655B96',
+            '#DCB903',
+            '#48DC03',
+            '#E67E22',
+            '#FD32B0',
+            '#0340DC',
+            '#8ADC03',
           ],
           fontSize: '12px',
         },
@@ -304,6 +358,576 @@ const JenisKelamin = () => {
       </Row>
     </Card>
   )
+}
+
+const NegativeGender = () => {
+  const dataColors = '["--vz-primary", "--vz-success"]'
+  var chartNegativeBarColors = getChartColorsArray(dataColors)
+
+  let arUsia = useSelector(
+    (state) => state.Eis.getStatusPegawai.data.arUsiaPegawai || []
+  )
+  arUsia = arUsia.reverse()
+
+  const arLaki = [...arUsia].filter((us) => us.gender === 'L')
+  const arPerempuan = [...arUsia].filter((us) => us.gender === 'P')
+
+  const ageLabel = arLaki.map((la) => `${la.ageStart} - ${la.ageEnd}`)
+  const dataLaki = arLaki.map((data) => data.total)
+  const dataPerempuan = arPerempuan.map((data) => -data.total)
+
+  const series = [
+    {
+      name: 'L',
+      data: dataLaki,
+    },
+    {
+      name: 'P',
+      data: dataPerempuan,
+    },
+  ]
+
+  const categories = ageLabel
+
+  const options = {
+    chart: {
+      type: 'bar',
+      height: 360,
+      stacked: !0,
+      toolbar: {
+        show: !1,
+      },
+    },
+    colors: chartNegativeBarColors,
+    plotOptions: {
+      bar: {
+        horizontal: !0,
+        barHeight: '80%',
+      },
+    },
+    dataLabels: {
+      enabled: !1,
+    },
+    stroke: {
+      width: 1,
+      colors: ['#fff'],
+    },
+
+    grid: {
+      xaxis: {
+        lines: {
+          show: !1,
+        },
+      },
+    },
+    yaxis: {
+      min: -5,
+      max: 5,
+      title: {
+        text: 'Age',
+        style: {
+          fontWeight: 600,
+        },
+      },
+    },
+    tooltip: {
+      shared: !1,
+      x: {
+        formatter: function (val) {
+          return val
+        },
+      },
+      y: {
+        formatter: function (val) {
+          return Math.abs(val) + '%'
+        },
+      },
+    },
+    title: {
+      text: 'Mauritius population pyramid 2011',
+      style: {
+        fontWeight: 600,
+      },
+    },
+    xaxis: {
+      categories: categories,
+      title: {
+        text: 'Percent',
+      },
+      labels: {
+        formatter: function (val) {
+          return Math.abs(Math.round(val)) + '%'
+        },
+      },
+    },
+  }
+
+  return (
+    <Card className="p-3" style={{ height: 500 }}>
+      <Row className="mb-5">
+        <Col lg={12}>
+          <h4>Kategori Usia</h4>
+        </Col>
+      </Row>
+      <ReactApexChart
+        dir="ltr"
+        className="apex-charts"
+        options={options}
+        series={series}
+        type="bar"
+        height={350}
+      />
+    </Card>
+  )
+}
+
+const StrukturalPegawai = () => {
+  const dataColors =
+    '["--vz-primary", "--vz-success", "--vz-warning", "--vz-danger", "--vz-info"]'
+  var chartPieBasicColors = getChartColorsArray(dataColors)
+  const countJabatan = useSelector(
+    (state) => state.Eis.getStatusPegawai.data?.countJabatan || []
+  )
+  const labels = countJabatan.map((c) => c.label)
+  const series = countJabatan.map((c) => c.jumlah)
+  var options = {
+    chart: {
+      height: 300,
+      type: 'pie',
+    },
+    labels: labels,
+    legend: {
+      position: 'bottom',
+    },
+    dataLabels: {
+      dropShadow: {
+        enabled: false,
+      },
+    },
+    colors: [
+      '#038edc',
+      '#51d28c',
+      '#f7cc53',
+      '#f34e4e',
+      '#564ab1',
+      '#5fd0f3',
+      '#DC0303',
+      '#CB03DC',
+      '#655B96',
+      '#DCB903',
+      '#48DC03',
+      '#E67E22',
+      '#FD32B0',
+      '#0340DC',
+      '#8ADC03',
+    ],
+  }
+  return (
+    <Card className="p-3" style={{ height: 500 }}>
+      <Row className="mb-5">
+        <Col lg={12}>
+          <h4>Struktural Pegawai</h4>
+        </Col>
+      </Row>
+      <ReactApexChart
+        dir="ltr"
+        className="apex-charts"
+        series={series}
+        options={options}
+        type="pie"
+        height={350}
+      />
+    </Card>
+  )
+}
+
+const PendidikanPegawai = () => {
+  const dataColors =
+    '["--vz-primary", "--vz-success", "--vz-warning", "--vz-danger", "--vz-info"]'
+  var chartPieBasicColors = getChartColorsArray(dataColors)
+  const countPendidikan = useSelector(
+    (state) => state.Eis.getStatusPegawai.data?.countPendidikanTerakhir || []
+  )
+  const labels = countPendidikan.map((c) => c.label)
+  const series = countPendidikan.map((c) => c.jumlah)
+  var options = {
+    chart: {
+      height: 300,
+      type: 'pie',
+    },
+    labels: labels,
+    legend: {
+      position: 'bottom',
+    },
+    dataLabels: {
+      dropShadow: {
+        enabled: false,
+      },
+    },
+    colors: [
+      '#038edc',
+      '#51d28c',
+      '#f7cc53',
+      '#f34e4e',
+      '#564ab1',
+      '#5fd0f3',
+      '#DC0303',
+      '#CB03DC',
+      '#655B96',
+      '#DCB903',
+      '#48DC03',
+      '#E67E22',
+      '#FD32B0',
+      '#0340DC',
+      '#8ADC03',
+    ],
+  }
+  return (
+    <Card className="p-3" style={{ height: 500 }}>
+      <Row className="mb-5">
+        <Col lg={12}>
+          <h4>Pendidikan Pegawai</h4>
+        </Col>
+      </Row>
+      <ReactApexChart
+        dir="ltr"
+        className="apex-charts"
+        series={series}
+        options={options}
+        type="pie"
+        height={350}
+      />
+    </Card>
+  )
+}
+
+const FungsionalPegawai = () => {
+  const dataColors =
+    '["--vz-primary", "--vz-success", "--vz-warning", "--vz-danger", "--vz-dark", "--vz-info"]'
+  let chartColumnDistributedColors = getChartColorsArray(dataColors)
+  const profesi = useSelector(
+    (state) => state.Eis.getStatusPegawai.data?.countProfesi || []
+  )
+  const profesiJumlah = profesi.map((prof) => prof.jumlah)
+  const profesiLabel = profesi.map((prof) => prof.label.split(' '))
+  const series = [
+    {
+      data: profesiJumlah,
+    },
+  ]
+  let options = {
+    chart: {
+      height: 350,
+      type: 'bar',
+      events: {
+        click: function (chart, w, e) {},
+      },
+    },
+    colors: [
+      '#038edc',
+      '#51d28c',
+      '#f7cc53',
+      '#f34e4e',
+      '#564ab1',
+      '#5fd0f3',
+      '#DC0303',
+      '#CB03DC',
+      '#655B96',
+      '#DCB903',
+      '#48DC03',
+      '#E67E22',
+      '#FD32B0',
+      '#0340DC',
+      '#8ADC03',
+    ],
+    plotOptions: {
+      bar: {
+        columnWidth: '45%',
+        distributed: true,
+      },
+    },
+    dataLabels: {
+      enabled: false,
+    },
+    legend: {
+      show: false,
+    },
+    xaxis: {
+      categories: profesiLabel,
+      labels: {
+        style: {
+          colors: [
+            '#038edc',
+            '#51d28c',
+            '#f7cc53',
+            '#f34e4e',
+            '#564ab1',
+            '#5fd0f3',
+            '#DC0303',
+            '#CB03DC',
+            '#655B96',
+            '#DCB903',
+            '#48DC03',
+            '#E67E22',
+            '#FD32B0',
+            '#0340DC',
+            '#8ADC03',
+          ],
+          fontSize: '12px',
+        },
+      },
+    },
+  }
+
+  return (
+    <Card className="p-3" style={{ height: 500 }}>
+      <Row className="mb-3">
+        <Col lg={12}>
+          <h4>Fungsional Pegawai</h4>
+        </Col>
+      </Row>
+      <Row>
+        <ReactApexChart
+          dir="ltr"
+          className="apex-charts"
+          series={series}
+          options={options}
+          type="bar"
+          height={350}
+        />
+      </Row>
+    </Card>
+  )
+}
+
+const SpesialisasiPegawai = () => {
+  const dataColors =
+    '["--vz-primary", "--vz-success", "--vz-warning", "--vz-danger", "--vz-dark", "--vz-info"]'
+  let chartColumnDistributedColors = getChartColorsArray(dataColors)
+  const spesialisasi = useSelector(
+    (state) => state.Eis.getStatusPegawai.data?.countSpesialisasi || []
+  )
+  const spesialisasiJumlah = spesialisasi.map((prof) => prof.jumlah)
+  const spesialisasiLabel = spesialisasi.map((prof) => prof.label)
+  const series = [
+    {
+      data: spesialisasiJumlah,
+    },
+  ]
+  let options = {
+    chart: {
+      height: 350,
+      type: 'bar',
+      events: {
+        click: function (chart, w, e) {},
+      },
+    },
+    colors: [
+      '#038edc',
+      '#51d28c',
+      '#f7cc53',
+      '#f34e4e',
+      '#564ab1',
+      '#5fd0f3',
+      '#DC0303',
+      '#CB03DC',
+      '#655B96',
+      '#DCB903',
+      '#48DC03',
+      '#E67E22',
+      '#FD32B0',
+      '#0340DC',
+      '#8ADC03',
+    ],
+    plotOptions: {
+      bar: {
+        columnWidth: '45%',
+        distributed: true,
+      },
+    },
+    dataLabels: {
+      enabled: false,
+    },
+    legend: {
+      show: false,
+    },
+    xaxis: {
+      categories: spesialisasiLabel,
+      labels: {
+        style: {
+          colors: [
+            '#038edc',
+            '#51d28c',
+            '#f7cc53',
+            '#f34e4e',
+            '#564ab1',
+            '#5fd0f3',
+            '#DC0303',
+            '#CB03DC',
+            '#655B96',
+            '#DCB903',
+            '#48DC03',
+            '#E67E22',
+            '#FD32B0',
+            '#0340DC',
+            '#8ADC03',
+          ],
+          fontSize: '12px',
+        },
+      },
+    },
+  }
+
+  return (
+    <Card className="p-3" style={{ height: 500 }}>
+      <Row className="mb-3">
+        <Col lg={12}>
+          <h4>Spesialisasi Pegawai</h4>
+        </Col>
+      </Row>
+      <Row>
+        <ReactApexChart
+          dir="ltr"
+          className="apex-charts"
+          series={series}
+          options={options}
+          type="bar"
+          height={350}
+        />
+      </Row>
+    </Card>
+  )
+}
+
+const PegawaiPensiun = () => {
+  const pegawaiPensiun = useSelector(
+    (state) => state.Eis.getPegawaiPensiun.data.pegawaiPensiun || []
+  )
+  /**
+   * @type {import("react-data-table-component").TableColumn[]}
+   */
+  const columnsDetail = [
+    {
+      name: <span className="font-weight-bold fs-13">Nama Pegawai</span>,
+      sortable: true,
+      selector: (row) => row.namalengkap,
+      width: '120px',
+    },
+    {
+      name: <span className="font-weight-bold fs-13">Tanggal Lahir</span>,
+      selector: (row) => dateLocal(row.tgllahir),
+      sortable: true,
+      width: '120px',
+    },
+
+    {
+      name: <span className="font-weight-bold fs-13">Unit</span>,
+      sortable: true,
+      selector: (row) => row.namaunit,
+      width: '100px',
+    },
+    {
+      name: <span className="font-weight-bold fs-13">Tanggal Pensiun</span>,
+      sortable: true,
+      selector: (row) => dateLocal(row.tglpensiun),
+      width: '120px',
+    },
+  ]
+
+  return (
+    <Card className="p-3" style={{ height: 500 }}>
+      <Row className="mb-3">
+        <Col lg={12}>
+          <h4>Pegawai Pensiun</h4>
+        </Col>
+      </Row>
+      <DataTable
+        fixedHeader
+        columns={columnsDetail}
+        pagination
+        paginationPerPage={5}
+        data={pegawaiPensiun}
+        progressPending={false}
+        customStyles={tableCustomStyles}
+        progressComponent={<LoadingTable />}
+        noDataComponent={<NoDataTable />}
+      />
+    </Card>
+  )
+}
+
+const PegawaiSIP = () => {
+  const pegawaiPensiun = useSelector(
+    (state) => state.Eis.getPegawaiPensiun.data.pegawaiSIP || []
+  )
+  /**
+   * @type {import("react-data-table-component").TableColumn[]}
+   */
+  const columnsDetail = [
+    {
+      name: <span className="font-weight-bold fs-13">Nama Pegawai</span>,
+      sortable: true,
+      selector: (row) => row.namalengkap,
+      width: '120px',
+    },
+    {
+      name: <span className="font-weight-bold fs-13">Profesi</span>,
+      selector: (row) => row.profesi,
+      sortable: true,
+      width: '120px',
+    },
+
+    {
+      name: <span className="font-weight-bold fs-13">Unit</span>,
+      sortable: true,
+      selector: (row) => row.namaunit,
+      width: '100px',
+    },
+    {
+      name: (
+        <span className="font-weight-bold fs-13">Tanggal Berakhir SIP</span>
+      ),
+      sortable: true,
+      selector: (row) => dateLocal(row.tglberakhirsip),
+      width: '150px',
+    },
+  ]
+
+  return (
+    <Card className="p-3" style={{ height: 500 }}>
+      <Row className="mb-3">
+        <Col lg={12}>
+          <h4>Pegawai Pensiun</h4>
+        </Col>
+      </Row>
+      <DataTable
+        fixedHeader
+        columns={columnsDetail}
+        pagination
+        paginationPerPage={5}
+        data={pegawaiPensiun}
+        progressPending={false}
+        customStyles={tableCustomStyles}
+        progressComponent={<LoadingTable />}
+        noDataComponent={<NoDataTable />}
+      />
+    </Card>
+  )
+}
+
+const tableCustomStyles = {
+  headRow: {
+    style: {
+      color: '#878A99',
+      backgroundColor: '#F3F6F9',
+    },
+  },
+  rows: {
+    style: {
+      color: 'black',
+      backgroundColor: '#ffffff',
+    },
+  },
 }
 
 export default DasborPegawai

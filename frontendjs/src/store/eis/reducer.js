@@ -20,9 +20,9 @@ import {
     GET_STATUS_PEGAWAI,
     GET_STATUS_PEGAWAI_SUCCESS,
     GET_STATUS_PEGAWAI_ERROR,
-    GET_JENIS_KELAMIN,
-    GET_JENIS_KELAMIN_SUCCESS,
-    GET_JENIS_KELAMIN_ERROR
+    GET_PEGAWAI_PENSIUN,
+    GET_PEGAWAI_PENSIUN_SUCCESS,
+    GET_PEGAWAI_PENSIUN_ERROR
 } from "./actionType";
   
 const INIT_STATE = {
@@ -61,11 +61,11 @@ const INIT_STATE = {
         loading: false,
         error: null
     },
-    getJenisKelamin: {
+    getPegawaiPensiun: {
         data: [],
         loading: false,
         error: null
-    },
+    }
 };
   
 const Eis = (state = INIT_STATE, action) => {
@@ -317,6 +317,42 @@ const Eis = (state = INIT_STATE, action) => {
                 ...state,
                 getStatusPegawai: {
                     ...state.getStatusPegawai,
+                    loading: false,
+                    data: [],
+                    error: action.payload
+                }
+            }
+        }
+
+        case GET_PEGAWAI_PENSIUN: {
+            return {
+                ...state,
+                getPegawaiPensiun: {
+                    ...state.getPegawaiPensiun,
+                    loading: true,
+                    data: [],
+                    error: null
+                }
+            }
+        }
+
+        case GET_PEGAWAI_PENSIUN_SUCCESS: {
+            return {
+                ...state,
+                getPegawaiPensiun: {
+                    ...state.getPegawaiPensiun,
+                    loading: false,
+                    data: action.payload,
+                    error: null
+                }
+            }
+        }
+
+        case GET_PEGAWAI_PENSIUN_ERROR: {
+            return {
+                ...state,
+                getPegawaiPensiun: {
+                    ...state.getPegawaiPensiun,
                     loading: false,
                     data: [],
                     error: action.payload
