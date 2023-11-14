@@ -15,7 +15,18 @@ import {
     UPSERT_JADWAL,
     UPSERT_JADWAL_SUCCESS,
     UPSERT_JADWAL_ERROR,
-    UPDATE_RESET_PASSWORD,UPDATE_RESET_PASSWORD_SUCCESS,UPDATE_RESET_PASSWORD_ERROR
+    UPDATE_RESET_PASSWORD,
+    UPDATE_RESET_PASSWORD_SUCCESS,
+    UPDATE_RESET_PASSWORD_ERROR,
+    GET_LIBUR_PEGAWAI,
+    GET_LIBUR_PEGAWAI_SUCCESS,
+    GET_LIBUR_PEGAWAI_ERROR,
+    GET_COMBO_CUTI,
+    GET_COMBO_CUTI_SUCCESS,
+    GET_COMBO_CUTI_ERROR,
+    UPSERT_CUTI,
+    UPSERT_CUTI_SUCCESS,
+    UPSERT_CUTI_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -73,6 +84,21 @@ const INIT_STATE = {
         error: null,
         success: false
     },
+    getLiburPegawai: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    getComboCuti: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    upsertCuti: {
+        data: [],
+        loading: false,
+        error: null,
+    }
 }
 
 const sumberDayaManusia = (state = INIT_STATE, action) => {
@@ -109,6 +135,9 @@ const sumberDayaManusia = (state = INIT_STATE, action) => {
                 },
                 updateResetPassword:{
                     ...INIT_STATE.updateResetPassword
+                },
+                getLiburPegawai: {
+                    ...INIT_STATE.getLiburPegawai
                 }
             }
         }
@@ -446,6 +475,111 @@ const sumberDayaManusia = (state = INIT_STATE, action) => {
                 ...state,
                 updateResetPassword: {
                     ...state.updateResetPassword,
+                    loading: false,
+                    error: action.payload,
+                },
+            };
+        }
+
+        case GET_LIBUR_PEGAWAI: {
+            return {
+                ...state,
+                getLiburPegawai: {
+                    ...state.getLiburPegawai,
+                    data: [],
+                    loading: true,
+                    error: null,
+                },
+            };
+        }
+
+        case GET_LIBUR_PEGAWAI_SUCCESS: {
+            return {
+                ...state,
+                getLiburPegawai: {
+                    ...state.getLiburPegawai,
+                    loading: false,
+                    data: action.payload,
+                    success: true,
+                },
+            };
+        }
+
+        case GET_LIBUR_PEGAWAI_ERROR: {
+            return {
+                ...state,
+                getLiburPegawai: {
+                    ...state.getLiburPegawai,
+                    loading: false,
+                    error: action.payload,
+                },
+            };
+        }
+
+        case GET_COMBO_CUTI: {
+            return {
+                ...state,
+                getComboCuti: {
+                    ...state.getComboCuti,
+                    data: [],
+                    loading: true,
+                    error: null,
+                },
+            };
+        }
+
+        case GET_COMBO_CUTI_SUCCESS: {
+            return {
+                ...state,
+                getComboCuti: {
+                    ...state.getComboCuti,
+                    loading: false,
+                    data: action.payload,
+                    success: true,
+                },
+            };
+        }
+
+        case GET_COMBO_CUTI_ERROR: {
+            return {
+                ...state,
+                getComboCuti: {
+                    ...state.getComboCuti,
+                    loading: false,
+                    error: action.payload,
+                },
+            };
+        }
+
+        case UPSERT_CUTI: {
+            return {
+                ...state,
+                upsertCuti: {
+                    ...state.upsertCuti,
+                    data: [],
+                    loading: true,
+                    error: null,
+                },
+            };
+        }
+
+        case UPSERT_CUTI_SUCCESS: {
+            return {
+                ...state,
+                upsertCuti: {
+                    ...state.upsertCuti,
+                    loading: false,
+                    data: action.payload,
+                    success: true,
+                },
+            };
+        }
+
+        case UPSERT_CUTI_ERROR: {
+            return {
+                ...state,
+                upsertCuti: {
+                    ...state.upsertCuti,
                     loading: false,
                     error: action.payload,
                 },

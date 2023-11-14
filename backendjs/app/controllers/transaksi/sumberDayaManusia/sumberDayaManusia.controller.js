@@ -6,33 +6,11 @@ import unitQueries from '../../../queries/master/unit/unit.queries'
 import pegawaiQueries from '../../../queries/master/pegawai/pegawai.queries'
 import kamarQueries from "../../../queries/master/kamar/kamar.queries";
 import hariQueries from "../../../queries/master/hari/hari.queries";
-import { getTimeOnly } from "../../../utils/dateutils";
+import { createDateAr, getDateStartEndNull, getTimeOnly } from "../../../utils/dateutils";
 import bcrypt from "bcryptjs";
+import sumberDayaManusiaQueries from "../../../queries/sumberDayaManusia/sumberDayaManusia.queries";
+import cutiQueries from "../../../queries/master/cuti/cuti.queries";
 
-const queryPromise2 = (query) => {
-    return new Promise((resolve, reject) => {
-        pool.query(query, (error, results) => {
-            if (error) {
-                return reject(error);
-            }
-            return resolve(results);
-        });
-    });
-};
-
-function formatDate(date) {
-    var d = new Date(date),
-        month = '' + (d.getMonth() + 1),
-        day = '' + d.getDate(),
-        year = d.getFullYear();
-
-    if (month.length < 2)
-        month = '0' + month;
-    if (day.length < 2)
-        day = '0' + day;
-
-    return [year, month, day].join('-');
-}
 
 const getDaftarPegawai = async (req, res) => {
     const logger = res.locals.logger;
@@ -537,6 +515,131 @@ const updateResetPassword = async (req, res) => {
     }
 }
 
+const getLiburPegawai = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const {
+            namadokter,
+            tanggal
+        } = req.query
+        const {todayStart, todayEnd} = getDateStartEndNull(tanggal)
+        let liburPegawai = (await pool.query(
+            sumberDayaManusiaQueries.qGetLiburPegawai, 
+            [
+                todayStart || "", 
+                todayEnd || "",
+                namadokter || ""
+            ]
+        )).rows
+        liburPegawai = liburPegawai.map((libur) => {
+            let newLibur = {...libur}
+            if(!newLibur.namapegawai){
+                newLibur.namapegawai = "(Seluruh Pegawai)"
+                if(!newLibur.idunitlibur){
+                    newLibur.namaunit = "(Seluruh Unit)"
+                }
+            }
+            return newLibur
+        })
+        const tempres = {
+            liburPegawai: liburPegawai
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+const getComboCuti = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const pegawai = (await pool.query(pegawaiQueries.getAllNipUnit)).rows
+        const unit = (await pool.query(unitQueries.getAll)).rows
+        const cuti = (await pool.query(cutiQueries.getAll)).rows
+        const tempres = {
+            pegawai: pegawai, 
+            cuti: cuti,
+            unit: unit
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+const upsertCuti = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const reqBody = req.body
+        const {
+            liburs
+        } = await db.sequelize.transaction(async (transaction) => {
+            const dateAr = createDateAr(reqBody.tgllibur, reqBody.tglliburend)
+            const liburs = await Promise.all(
+                dateAr.map(async (date) => {
+                    const norec = uuid.v4().substring(0, 32)
+                    const libur = await db.t_liburpegawai.create({
+                        norec: norec,
+                        statusenabled: true,
+                        objectpegawaifk: reqBody.namapegawai || null,
+                        tgllibur: date,
+                        objectunitfk: reqBody.unit || null,
+                        objectcutifk: reqBody.jeniscuti,
+                        alasan: reqBody.alasannamalibur,
+                        objectpegawaiinputfk: req.idPegawai
+                    }, {
+                        transaction: transaction
+                    })
+                    return libur.toJSON()
+                })
+            )
+            return {
+                liburs
+            }
+        });
+        
+        const tempres = {
+            liburs
+        };
+        res.status(200).send({
+            msg: 'Sukses update',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export default {
     getDaftarPegawai,
     getComboSDM,
@@ -547,5 +650,8 @@ export default {
     getJadwalDokter,
     upsertJadwal,
     updateUserRole,
-    updateResetPassword
+    updateResetPassword,
+    getLiburPegawai,
+    getComboCuti,
+    upsertCuti
 }

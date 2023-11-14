@@ -37,4 +37,16 @@ export default class ServiceSDM {
     updateResetPassword = async (params) => {
         return await api.create(`/transaksi/sumber-daya-manusia/update-reset-password`, params)
     }
+    
+    getLiburPegawai = async (queries) => {
+        return await api.get(`/transaksi/sumber-daya-manusia/get-libur-pegawai`, queries)
+    }
+
+    getComboCuti = async (queries) => {
+        return await api.get(`/transaksi/sumber-daya-manusia/get-combo-cuti`, queries)
+    }
+
+    upsertCuti = async (data) => {
+        return await api.create(`/transaksi/sumber-daya-manusia/upsert-cuti`, data)
+    }
 }

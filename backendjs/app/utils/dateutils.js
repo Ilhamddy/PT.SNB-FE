@@ -62,6 +62,35 @@ export const getDateStartEndYear = () => {
     }
 }
 
+/**
+ * 
+ * @param {string} start 
+ * @param {string} end 
+ * @param {boolean} [isObj]  
+ * @returns 
+ */
+export const createDateAr = (start, end, isObj) => {
+    if(!start || !end) throw new Error("Date start and end must not empty")
+    let initialTime = start ? new Date(start) : new Date()
+    let endTime = end ? new Date(end) : new Date()
+    let arrTimes = []
+    let dayMillisec = 24 * 60 * 60 * 1000;
+    for (let q = initialTime; q <= endTime; q = new Date(q.getTime() + dayMillisec)) {
+        const {todayStart} = getDateStartEnd(q.toISOString())
+        if(isObj){
+            arrTimes.push({
+                date: todayStart.toISOString(),
+                items: [],
+                total: 0
+            })
+        } else{
+            arrTimes.push(todayStart.toISOString())
+        }
+
+    }
+    return arrTimes
+}
+
 export const getTimeOnly = (date) => {
     return (new Date(date)).toTimeString().split(' ')[0]
 }

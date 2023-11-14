@@ -26,3 +26,24 @@ export const createTransaction = async (db, res) => {
 
     return [transaction, error]
 }
+
+/**
+ * 
+ * @param {string} queryTgl contoh: 'tdp.tglinput'
+ * @param {string} q1 contoh: '$1'
+ * @param {string} q2 contoh: '$2'
+ * @returns 
+ */
+export const dateBetweenEmptyString = (queryTgl, q1, q2) => {
+    return ` 
+        CASE WHEN NULLIF(${q1}, '') IS NULL
+            THEN TRUE
+            ELSE ${queryTgl} >= ${q1}::TIMESTAMP 
+        END
+    AND
+        CASE WHEN NULLIF(${q2}, '') IS NULL
+            THEN TRUE
+            ELSE ${queryTgl} <= ${q2}::TIMESTAMP
+        END
+    `
+}

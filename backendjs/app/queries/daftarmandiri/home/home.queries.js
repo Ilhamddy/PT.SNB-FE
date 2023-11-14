@@ -40,6 +40,24 @@ ORDER BY
     mh.id ASC
 `
 
+const qGetCutiDokter = `
+SELECT
+    mp.namalengkap AS namadokter,
+    tl.tgllibur AS tgllibur,
+    tl.alasan AS alasan
+FROM m_pegawai mp
+    LEFT JOIN t_liburpegawai tl ON (
+        tl.objectunitfk = mp.objectunitfk
+        OR tl.objectpegawaifk = mp.id
+        OR (
+            tl.objectunitfk IS NULL
+            AND tl.objectpegawaifk IS NULL
+        )
+    )
+WHERE
+    mp.id = $1
+`
+
 const qGetBerita = `
 SELECT 
     norec,
@@ -64,5 +82,6 @@ WHERE statusenabled = true AND norec = $1
 export {
     qGetJadwalDokter,
     qGetBeritaHome,
-    qGetBeritaNorec
+    qGetBeritaNorec,
+    qGetCutiDokter
 }

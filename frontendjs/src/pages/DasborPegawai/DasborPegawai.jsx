@@ -55,8 +55,8 @@ const DasborPegawai = () => {
   return (
     <div className="page-content page-dasbor-eis-utama">
       <BreadCrumb
-        title="Dasbor EIS"
-        pageTitle="Dasbor Pegawai"
+        title="Dasbor Pegawai"
+        pageTitle="Dasbor EIS"
         className="bc-dasbor-eis"
       />
       <ToastContainer closeButton={false} />
@@ -464,7 +464,7 @@ const NegativeGender = () => {
 
   return (
     <Card className="p-3" style={{ height: 500 }}>
-      <Row className="mb-5">
+      <Row className="mb-1">
         <Col lg={12}>
           <h4>Kategori Usia</h4>
         </Col>
@@ -897,7 +897,7 @@ const PegawaiSIP = () => {
     <Card className="p-3" style={{ height: 500 }}>
       <Row className="mb-3">
         <Col lg={12}>
-          <h4>Pegawai Pensiun</h4>
+          <h4>Pegawai SIP</h4>
         </Col>
       </Row>
       <DataTable

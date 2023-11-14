@@ -25,6 +25,7 @@ import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import { toast } from 'react-toastify'
 import FlatpickrDM from '../../Components/FlatpickrDM/FlatpickrDM'
+import { getDateStartEndNull } from '../../utils/dateutils'
 
 const DaftarPasienLama = () => {
   const {
@@ -37,6 +38,7 @@ const DaftarPasienLama = () => {
     isNotPasienSementara,
     loadingSubmit,
     dokterDate,
+    jadwalCuti,
   } = useSelector((state) => ({
     poliklinik: state.DaftarPasienLama.getComboDaftar?.data?.poliklinik || [],
     dokter: state.DaftarPasienLama.getComboDaftar?.data?.dokter || [],
@@ -48,9 +50,11 @@ const DaftarPasienLama = () => {
     dokterTerpilih: state.DaftarPasienLama.getDokter?.data?.dokter || [],
     loadingSubmit: state.DaftarPasienLama.savePasienMandiri.loading || false,
     dokterDate: state.DaftarPasienLama.getJadwalDokter?.data?.dokter || [],
+    jadwalCuti: state.DaftarPasienLama.getJadwalDokter?.data?.jadwalCuti || [],
   }))
-  const dDate = dokterDate?.[0]?.values || []
+  const jadwalCutiDate = jadwalCuti.map((jadwal) => jadwal.tgllibur)
 
+  const dDate = dokterDate?.[0]?.values || []
   let { step } = useParams()
   const [searchParams] = useSearchParams()
   step = Number(step)
@@ -160,6 +164,19 @@ const DaftarPasienLama = () => {
     console.log(date)
     let dateNowDate = new Date(dateNow)
     return date <= new Date(dateNowDate - 24 * 60 * 60 * 1000)
+  }
+  const disableCuti = (date) => {
+    for (let i = 0; i < jadwalCutiDate.length; i++) {
+      const dateCuti = jadwalCutiDate[i]
+      let { todayStart: todayCuti } = getDateStartEndNull(dateCuti)
+      let { todayStart: todayDate } = getDateStartEndNull(date.toISOString())
+      todayCuti = todayCuti.toISOString()
+      todayDate = todayDate.toISOString()
+      if (todayCuti === todayDate) {
+        return true
+      }
+    }
+    return false
   }
 
   const kontenLogin = (
@@ -336,13 +353,15 @@ const DaftarPasienLama = () => {
               isDisabled
             />
           </InputGroupDM>
-          <InputGroupDM label="rencana kunjungan">
+          <InputGroupDM label="Rencana Kunjungan">
             <FlatpickrDM
               className="input-daftar"
               name="jadwal"
               placeholder="Pilih Jadwal"
               value={vDaftar.values.jadwal}
-              options={{ disable: [disableJadwal, disableBeforeToday] }}
+              options={{
+                disable: [disableJadwal, disableBeforeToday, disableCuti],
+              }}
               onChange={([newDate]) => {
                 vDaftar.setFieldValue('jadwal', newDate.toISOString() || '')
               }}

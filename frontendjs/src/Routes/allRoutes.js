@@ -359,6 +359,7 @@ import PemesananBarang from "../pages/PemesananBarang/PemesananBarang";
 import Logger from "../pages/Logger/Logger";
 import DasborUtama from "../pages/DasborUtama/DasborUtama.jsx";
 import DasborPegawai from "../pages/DasborPegawai/DasborPegawai.jsx";
+import LiburPegawai from "../pages/LiburPegawai/LiburPegawai.jsx";
 
 
 const authProtectedRoutes = [
@@ -714,6 +715,8 @@ const authProtectedRoutes = [
   { path: "/sumberdayamanusia/biodata-pegawai", component: <BiodataPegawai /> },
   { path: "/sumberdayamanusia/jadwal-dokter", component: <MasterJadwalDokter />},
   { path: "/sumberdayamanusia/biodata-pegawai/:idPegawai", component: <BiodataPegawai /> },
+  { path: "/sumberdayamanusia/libur-pegawai", component: <LiburPegawai /> },
+
 
   // sysadmin
   { path: "/sysadmin/daftar-bed", component: <DaftarBed />},

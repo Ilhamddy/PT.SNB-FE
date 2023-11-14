@@ -1,20 +1,32 @@
 import { SDM_RESET_FORM,
-GET_DAFTAR_PEGAWAI,GET_DAFTAR_PEGAWAI_SUCCESS,GET_DAFTAR_PEGAWAI_ERROR,
-GET_COMBO_SDM,GET_COMBO_SDM_SUCCESS,GET_COMBO_SDM_ERROR,
-SAVE_BIODATA_PEGAWAI,SAVE_BIODATA_PEGAWAI_SUCCESS,SAVE_BIODATA_PEGAWAI_ERROR,
-GET_PEGAWAI_BYID,GET_PEGAWAI_BYID_SUCCESS,GET_PEGAWAI_BYID_ERROR,
-GET_USER_ROLE_BYID_PEGAWAI,GET_USER_ROLE_BYID_PEGAWAI_SUCCESS,GET_USER_ROLE_BYID_PEGAWAI_ERROR,
-SAVE_SIGNUP_USER_ROLE,SAVE_SIGNUP_USER_ROLE_SUCCESS,SAVE_SIGNUP_USER_ROLE_ERROR,
-GET_COMBO_JADWAL,
-GET_COMBO_JADWAL_SUCCESS,
-GET_COMBO_JADWAL_ERROR,
-GET_JADWAL_DOKTER_SDM,
-GET_JADWAL_DOKTER_SDM_SUCCESS,
-GET_JADWAL_DOKTER_SDM_ERROR,
-UPSERT_JADWAL,
-UPSERT_JADWAL_SUCCESS,
-UPSERT_JADWAL_ERROR,
-UPDATE_RESET_PASSWORD,UPDATE_RESET_PASSWORD_SUCCESS,UPDATE_RESET_PASSWORD_ERROR } from "./actionType";
+    GET_DAFTAR_PEGAWAI,GET_DAFTAR_PEGAWAI_SUCCESS,GET_DAFTAR_PEGAWAI_ERROR,
+    GET_COMBO_SDM,GET_COMBO_SDM_SUCCESS,GET_COMBO_SDM_ERROR,
+    SAVE_BIODATA_PEGAWAI,SAVE_BIODATA_PEGAWAI_SUCCESS,SAVE_BIODATA_PEGAWAI_ERROR,
+    GET_PEGAWAI_BYID,GET_PEGAWAI_BYID_SUCCESS,GET_PEGAWAI_BYID_ERROR,
+    GET_USER_ROLE_BYID_PEGAWAI,GET_USER_ROLE_BYID_PEGAWAI_SUCCESS,GET_USER_ROLE_BYID_PEGAWAI_ERROR,
+    SAVE_SIGNUP_USER_ROLE,SAVE_SIGNUP_USER_ROLE_SUCCESS,SAVE_SIGNUP_USER_ROLE_ERROR,
+    GET_COMBO_JADWAL,
+    GET_COMBO_JADWAL_SUCCESS,
+    GET_COMBO_JADWAL_ERROR,
+    GET_JADWAL_DOKTER_SDM,
+    GET_JADWAL_DOKTER_SDM_SUCCESS,
+    GET_JADWAL_DOKTER_SDM_ERROR,
+    UPSERT_JADWAL,
+    UPSERT_JADWAL_SUCCESS,
+    UPSERT_JADWAL_ERROR,
+    UPDATE_RESET_PASSWORD,
+    UPDATE_RESET_PASSWORD_SUCCESS,
+    UPDATE_RESET_PASSWORD_ERROR,
+    GET_LIBUR_PEGAWAI,
+    GET_LIBUR_PEGAWAI_SUCCESS,
+    GET_LIBUR_PEGAWAI_ERROR,
+    GET_COMBO_CUTI,
+    GET_COMBO_CUTI_SUCCESS,
+    GET_COMBO_CUTI_ERROR,
+    UPSERT_CUTI,
+    UPSERT_CUTI_SUCCESS,
+    UPSERT_CUTI_ERROR
+} from "./actionType";
 
 export const sdmResetForm = () => ({
     type: SDM_RESET_FORM,
@@ -178,5 +190,57 @@ export const updateResetPasswordSuccess = (data) => ({
 
 export const updateResetPasswordError = (error) => ({
     type: UPDATE_RESET_PASSWORD_ERROR,
+    payload: error
+});
+
+export const getLiburPegawai = (queries) => ({
+    type: GET_LIBUR_PEGAWAI,
+    payload: {
+        queries: queries,
+    }
+});
+
+export const getLiburPegawaiSuccess = (data) => ({
+    type: GET_LIBUR_PEGAWAI_SUCCESS,
+    payload: data
+});
+
+export const getLiburPegawaiError = (error) => ({
+    type: GET_LIBUR_PEGAWAI_ERROR,
+    payload: error
+});
+
+export const getComboCuti = (queries) => ({
+    type: GET_COMBO_CUTI,
+    payload: {
+        queries: queries,
+    }
+});
+
+export const getComboCutiSuccess = (data) => ({
+    type: GET_COMBO_CUTI_SUCCESS,
+    payload: data
+});
+
+export const getComboCutiError = (error) => ({
+    type: GET_COMBO_CUTI_ERROR,
+    payload: error
+});
+
+export const upsertCuti = (data, callback) => ({
+    type: UPSERT_CUTI,
+    payload: {
+        data: data,
+        callback: callback
+    }
+});
+
+export const upsertCutiSuccess = (data) => ({
+    type: UPSERT_CUTI_SUCCESS,
+    payload: data
+});
+
+export const upsertCutiError = (error) => ({
+    type: UPSERT_CUTI_ERROR,
     payload: error
 });

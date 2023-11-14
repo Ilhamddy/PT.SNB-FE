@@ -11,15 +11,18 @@ import './DokterPage.scss'
 import FlatpickrDM from '../../Components/FlatpickrDM/FlatpickrDM'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
+import { getDateStartEndNull } from '../../utils/dateutils'
 
 const DokterPage = () => {
   const refKontainer = useRef(null)
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const { idDokter } = useParams()
-  const { dokter } = useSelector((state) => ({
+  const { dokter, jadwalCuti } = useSelector((state) => ({
     dokter: state.DaftarPasienLama.getJadwalDokter?.data?.dokter || [],
+    jadwalCuti: state.DaftarPasienLama.getJadwalDokter?.data?.jadwalCuti || [],
   }))
+  const jadwalCutiDate = jadwalCuti.map((jadwal) => jadwal.tgllibur)
 
   const vJadwal = useFormik({
     initialValues: {
@@ -59,6 +62,20 @@ const DokterPage = () => {
   const disableBeforeToday = (date) => {
     return date <= new Date(dateNow - 24 * 60 * 60 * 1000)
   }
+  console.log(jadwalCutiDate)
+  const disableCuti = (date) => {
+    for (let i = 0; i < jadwalCutiDate.length; i++) {
+      const dateCuti = jadwalCutiDate[i]
+      let { todayStart: todayCuti } = getDateStartEndNull(dateCuti)
+      let { todayStart: todayDate } = getDateStartEndNull(date.toISOString())
+      todayCuti = todayCuti.toISOString()
+      todayDate = todayDate.toISOString()
+      if (todayCuti === todayDate) {
+        return true
+      }
+    }
+    return false
+  }
   return (
     <KontainerPage top={'0'} ref={refKontainer} className="dokter-page">
       <BackKomponen text={'Profil Dokter'} refKontainer={refKontainer} />
@@ -76,7 +93,9 @@ const DokterPage = () => {
             name="jadwal"
             placeholder="Pilih Jadwal"
             value={vJadwal.values.jadwal}
-            options={{ disable: [disableJadwal, disableBeforeToday] }}
+            options={{
+              disable: [disableJadwal, disableBeforeToday, disableCuti],
+            }}
             onChange={([newDate]) => {
               vJadwal.setFieldValue('jadwal', newDate.toISOString() || '')
             }}

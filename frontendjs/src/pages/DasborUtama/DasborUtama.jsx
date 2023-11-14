@@ -73,8 +73,8 @@ const DashboardUtama = () => {
   return (
     <div className="page-content page-dasbor-eis-utama">
       <BreadCrumb
-        title="Dasbor EIS"
-        pageTitle="Dasbor Utama"
+        title="Dasbor Utama"
+        pageTitle="Dasbor EIS"
         className="bc-dasbor-eis"
       />
       <ToastContainer closeButton={false} />
@@ -156,7 +156,7 @@ const DashboardUtama = () => {
             <KetersediaanTT />
           </Col>
         </Row>
-        <PenyakitTerbesar />
+        {/* <PenyakitTerbesar /> */}
       </Container>
     </div>
   )
