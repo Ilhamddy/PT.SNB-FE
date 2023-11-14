@@ -22,7 +22,10 @@ import {
     GET_STATUS_PEGAWAI_ERROR,
     GET_PEGAWAI_PENSIUN,
     GET_PEGAWAI_PENSIUN_SUCCESS,
-    GET_PEGAWAI_PENSIUN_ERROR
+    GET_PEGAWAI_PENSIUN_ERROR,
+    GET_DASBOR_FARMASI,
+    GET_DASBOR_FARMASI_SUCCESS,
+    GET_DASBOR_FARMASI_ERROR
 } from "./actionType"
 
 
@@ -145,6 +148,22 @@ export const getPegawaiPensiunSuccess = (data) => ({
 
 export const getPegawaiPensiunError = (error) => ({
     type: GET_PEGAWAI_PENSIUN_ERROR,
+    payload: error
+})
+
+
+export const getDasborFarmasi = (queries) => ({
+    type: GET_DASBOR_FARMASI,
+    payload: {queries: queries}
+})
+
+export const getDasborFarmasiSuccess = (data) => ({
+    type: GET_DASBOR_FARMASI_SUCCESS,
+    payload: data
+})
+
+export const getDasborFarmasiError = (error) => ({
+    type: GET_DASBOR_FARMASI_ERROR,
     payload: error
 })
 

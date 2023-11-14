@@ -34,4 +34,8 @@ export default class ServiceEis{
     getPegawaiPensiun = async (queries) => {
         return await api.get(`/transaksi/eis/get-pegawai-pensiun`, queries)
     }
+
+    getDasborFarmasi = async (queries) => {
+        return await api.get(`/transaksi/eis/get-dasbor-farmasi`, queries)
+    }
 }

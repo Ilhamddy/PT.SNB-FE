@@ -60,4 +60,10 @@ export default function (app) {
         controller.getPegawaiPensiun
     )
 
+    app.get(
+        "/api/transaksi/eis/get-dasbor-farmasi",
+        [authJwt.verifyToken],
+        controller.getDasborFarmasi
+    )
+
 }

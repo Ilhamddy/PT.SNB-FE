@@ -5,7 +5,7 @@ import db from "../../../models";
 import {
     createTransaction
 } from "../../../utils/dbutils";
-import { qCountCaraBayar, qCountNonBPJS, qGetCountDokterUmum, qGetCountJenisKelamin, qGetCountPegawai, qGetCountPendidikanTerakhir, qGetCountPenunjangMedis, qGetCountPerawatBidan, qGetCountProfesi, qGetCountSpesialis, qGetCountSpesialisasi, qGetCountStatus, qGetCountUnit, qGetJabatan, qGetKunjunganPoliklinik, qGetPasienBatal, qGetPasienMeninggalRanap, qGetPasienPulangIGD, qGetPasienPulangRanap, qGetPasienRawatIGD, qGetPasienTerdaftar, qGetPasienTerdaftarRanap, qGetPegawaiPensiun, qGetPegawaiSIP, qGetTempatTidur, qGetUsia } from "../../../queries/eis/eis.queries";
+import { qCountCaraBayar, qCountNonBPJS, qGetCountDokterUmum, qGetCountJenisKelamin, qGetCountPegawai, qGetCountPendidikanTerakhir, qGetCountPenunjangMedis, qGetCountPerawatBidan, qGetCountProfesi, qGetCountSpesialis, qGetCountSpesialisasi, qGetCountStatus, qGetCountUnit, qGetJabatan, qGetKunjunganPoliklinik, qGetPasienBatal, qGetPasienMeninggalRanap, qGetPasienPulangIGD, qGetPasienPulangRanap, qGetPasienRawatIGD, qGetPasienTerdaftar, qGetPasienTerdaftarRanap, qGetPegawaiPensiun, qGetPegawaiSIP, qGetPemesanan, qGetPenerimaan, qGetRetur, qGetTempatTidur, qGetUsia } from "../../../queries/eis/eis.queries";
 import { getDateStartEnd, getDateStartEndYear } from "../../../utils/dateutils";
 import { daftarInstalasi } from "../../../queries/master/instalasi/instalasi.queries";
 import { daftarRekanan } from "../../../queries/master/rekanan/rekanan.queries";
@@ -431,6 +431,41 @@ const getPegawaiPensiun = async (req, res) => {
     }
 }
 
+const getDasborFarmasi = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const pemesanan = (await pool.query(qGetPemesanan)).rows
+        const penerimaan = (await pool.query(qGetPenerimaan)).rows
+        const retur = (await pool.query(qGetRetur)).rows
+
+        const jmlPemesanan = pemesanan.length
+        const jmlPenerimaan = penerimaan.length
+        const jmlRetur = retur.length
+        const tempres = {
+            pemesanan: pemesanan,
+            jmlPemesanan: jmlPemesanan,
+            penerimaan: penerimaan,
+            jmlPenerimaan: jmlPenerimaan,
+            retur: retur,
+            jmlRetur: jmlRetur
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export default {
     getPasienRJ,
     getPasienIGD,
@@ -439,7 +474,8 @@ export default {
     getPoliklinikTerbanyak,
     getCountUnit,
     getStatusPegawai,
-    getPegawaiPensiun
+    getPegawaiPensiun,
+    getDasborFarmasi
 }
 
 /**

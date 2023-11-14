@@ -22,7 +22,10 @@ import {
     GET_STATUS_PEGAWAI_ERROR,
     GET_PEGAWAI_PENSIUN,
     GET_PEGAWAI_PENSIUN_SUCCESS,
-    GET_PEGAWAI_PENSIUN_ERROR
+    GET_PEGAWAI_PENSIUN_ERROR,
+    GET_DASBOR_FARMASI,
+    GET_DASBOR_FARMASI_SUCCESS,
+    GET_DASBOR_FARMASI_ERROR
 } from "./actionType";
   
 const INIT_STATE = {
@@ -62,6 +65,11 @@ const INIT_STATE = {
         error: null
     },
     getPegawaiPensiun: {
+        data: [],
+        loading: false,
+        error: null
+    },
+    getDasborFarmasi: {
         data: [],
         loading: false,
         error: null
@@ -353,6 +361,42 @@ const Eis = (state = INIT_STATE, action) => {
                 ...state,
                 getPegawaiPensiun: {
                     ...state.getPegawaiPensiun,
+                    loading: false,
+                    data: [],
+                    error: action.payload
+                }
+            }
+        }
+
+        case GET_DASBOR_FARMASI: {
+            return {
+                ...state,
+                getDasborFarmasi: {
+                    ...state.getDasborFarmasi,
+                    loading: true,
+                    data: [],
+                    error: null
+                }
+            }
+        }
+
+        case GET_DASBOR_FARMASI_SUCCESS: {
+            return {
+                ...state,
+                getDasborFarmasi: {
+                    ...state.getDasborFarmasi,
+                    loading: false,
+                    data: action.payload,
+                    error: null
+                }
+            }
+        }
+
+        case GET_DASBOR_FARMASI_ERROR: {
+            return {
+                ...state,
+                getDasborFarmasi: {
+                    ...state.getDasborFarmasi,
                     loading: false,
                     data: [],
                     error: action.payload
