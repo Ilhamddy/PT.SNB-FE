@@ -863,10 +863,11 @@ export const InputProdukDetail = () => {
                 value={detail.produk?.satuanjual}
                 isDisabled
                 className={`input 
-                                  ${detailErr?.produk?.satuanjual
-                    ? 'is-invalid'
-                    : ''
-                  }`}
+                                  ${
+                                    detailErr?.produk?.satuanjual
+                                      ? 'is-invalid'
+                                      : ''
+                                  }`}
               />
               {detailTouched?.produk?.satuanjual &&
                 !!detailErr?.produk?.satuanjual && (
@@ -897,8 +898,9 @@ export const InputProdukDetail = () => {
                   )
                 }}
                 value={detail.satuanterima}
-                className={`input ${detailErr?.satuanterima ? 'is-invalid' : ''
-                  }`}
+                className={`input ${
+                  detailErr?.satuanterima ? 'is-invalid' : ''
+                }`}
                 ref={refSatuanTerima}
               />
               {detailTouched?.satuanterima && !!detailErr?.satuanterima && (
@@ -1659,8 +1661,9 @@ export const InputUmumTerima = () => {
               handleChangePenerimaan('namasupplier', e?.value || '')
             }}
             value={penerimaan.namasupplier}
-            className={`input ${penerimaanErr?.namasupplier ? 'is-invalid' : ''
-              }`}
+            className={`input ${
+              penerimaanErr?.namasupplier ? 'is-invalid' : ''
+            }`}
           />
           {penerimaanTouched?.namasupplier && penerimaanErr?.namasupplier ? (
             <FormFeedback type="invalid">
@@ -2036,7 +2039,8 @@ export const useFillInitialInput = (validation) => {
 
 // Perhitungan satuan jumlah terima, harga, Diskon, dan ppn
 // saat jumlah, terima, harga sudah diinput akan otomatis menghitung total harga
-export const useCalculatePenerimaan = (vDetail, detail) => {
+export const useCalculatePenerimaan = (vDetail) => {
+  const detail = vDetail.values
   useEffect(() => {
     const setFF = vDetail.setFieldValue
     const calcualteSatuanTerima = () => {

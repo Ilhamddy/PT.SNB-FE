@@ -60,4 +60,28 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.updateResetPassword
     );
+
+    app.get(
+        "/api/transaksi/sumber-daya-manusia/get-libur-pegawai",
+        [authJwt.verifyToken],
+        controller.getLiburPegawai
+    )
+
+    app.get(
+        "/api/transaksi/sumber-daya-manusia/get-combo-cuti",
+        [authJwt.verifyToken],
+        controller.getComboCuti
+    )
+
+    app.post(
+        "/api/transaksi/sumber-daya-manusia/upsert-cuti",
+        [authJwt.verifyToken],
+        controller.upsertCuti
+    )
+
+    app.post(
+        "/api/transaksi/sumber-daya-manusia/batal-cuti",
+        [authJwt.verifyToken],
+        controller.batalCuti
+    )
 }

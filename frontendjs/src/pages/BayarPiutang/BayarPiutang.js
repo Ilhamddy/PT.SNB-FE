@@ -187,8 +187,7 @@ const BayarPiutang = () => {
             sortable: true,
             width: "160px",
             wrap: true
-        },
-        
+        },  
     ];
 
     useEffect(() => {

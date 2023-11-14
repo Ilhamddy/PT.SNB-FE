@@ -1,3 +1,5 @@
+import { dateBetweenEmptyString } from "../../utils/dbutils";
+
 const qDaftarPegawai = `select row_number() OVER (ORDER BY mp.id) AS no,mp.nip,mp.id,mp.namalengkap,mp.reportdisplay as inisial,
 case when mp.statusenabled=true then 'AKTIF' else 'NON AKTIF' end as status,ms.reportdisplay as statuspegawai,mu.namaunit,
 mp2.reportdisplay as profesi  from m_pegawai mp
@@ -67,6 +69,33 @@ FROM m_jadwaldokter mj
 const qAccesUnit =`select mm.objectunitfk as value,mu.namaunit as label from m_mapusertounit mm
 join m_unit mu on mu.id=mm.objectunitfk where mm.objectuserfk=$1 and mm.statusenabled=true`
 
+const qGetLiburPegawai = `
+SELECT
+    (ROW_NUMBER() OVER (ORDER BY tl.tgllibur DESC))::INT AS no,
+    tl.norec AS norec,
+    tl.objectpegawaifk AS idpegawai,
+    mp.namalengkap AS namapegawai,
+    tl.tgllibur AS tgllibur,
+    tl.objectunitfk AS idunitlibur,
+    mu.namaunit AS namaunitlibur,
+    tl.alasan AS alasan,
+    tl.objectpegawaiinputfk AS idpegawaiinput,
+    mpi.namalengkap AS namapegawaiinput
+FROM t_liburpegawai tl
+    LEFT JOIN m_pegawai mp ON mp.id = tl.objectpegawaifk
+    LEFT JOIN m_unit mu ON mu.id = tl.objectunitfk
+    LEFT JOIN m_pegawai mpi ON mpi.id = tl.objectpegawaiinputfk
+WHERE tl.statusenabled = true
+    AND
+        ${dateBetweenEmptyString("tl.tgllibur", "$1", "$2")}
+    AND ( 
+        mp.namalengkap ILIKE '%' || $3 || '%'
+        OR $3 = ''
+    )
+
+ORDER BY tl.tgllibur DESC
+`
+
 export default {
     qDaftarPegawai,
     qUnit,
@@ -84,5 +113,7 @@ export default {
     qGolonganPtkp,
     qUnitKerja,
     qUserRoleById,qRole,
-    qJadwalDokter,qAccesUnit
+    qJadwalDokter,
+    qAccesUnit,
+    qGetLiburPegawai
 }

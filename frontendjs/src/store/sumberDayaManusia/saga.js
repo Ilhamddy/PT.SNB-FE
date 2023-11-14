@@ -6,7 +6,11 @@ import {
     GET_PEGAWAI_BYID, GET_USER_ROLE_BYID_PEGAWAI, SAVE_SIGNUP_USER_ROLE,
     GET_COMBO_JADWAL,
     GET_JADWAL_DOKTER_SDM,
-    UPSERT_JADWAL,UPDATE_RESET_PASSWORD
+    UPSERT_JADWAL,UPDATE_RESET_PASSWORD,
+    GET_LIBUR_PEGAWAI,
+    GET_COMBO_CUTI,
+    UPSERT_CUTI,
+    BATAL_CUTI
 } from "./actionType";
 
 import {
@@ -22,7 +26,16 @@ import {
     getJadwalDokterSDMError,
     upsertJadwalSuccess,
     upsertJadwalError,
-    updateResetPasswordSuccess, updateResetPasswordError
+    updateResetPasswordSuccess, 
+    updateResetPasswordError,
+    getLiburPegawaiSuccess,
+    getLiburPegawaiError,
+    getComboCutiSuccess,
+    getComboCutiError,
+    upsertCutiSuccess,
+    upsertCutiError,
+    batalCutiSuccess,
+    batalCutiError
 } from "./action";
 
 import { toast } from 'react-toastify';
@@ -189,6 +202,70 @@ export function* watchonupdateResetPassword() {
     yield takeEvery(UPDATE_RESET_PASSWORD, onupdateResetPassword);
 }
 
+function* onGetLiburPegawai({ payload: { queries } }) {
+    try {
+        let response = null;
+        response = yield call(serviceSDM.getLiburPegawai, queries);
+        yield put(getLiburPegawaiSuccess(response.data));
+    } catch (error) {
+        yield put(getLiburPegawaiError(error));
+    }
+}
+
+export function* watchonGetLiburPegawai(){
+    yield takeEvery(GET_LIBUR_PEGAWAI, onGetLiburPegawai)
+}
+
+function* onGetComboCuti({ payload: { queries } }) {
+    try {
+        let response = null;
+        response = yield call(serviceSDM.getComboCuti, queries);
+        yield put(getComboCutiSuccess(response.data));
+    } catch (error) {
+        yield put(getComboCutiError(error));
+    }
+}
+
+export function* watchonGetComboCuti(){
+    yield takeEvery(GET_COMBO_CUTI, onGetComboCuti)
+}
+
+function* onUpsertCuti({ payload: { data, callback } }) {
+    try {
+        let response = null;
+        response = yield call(serviceSDM.upsertCuti, data);
+        yield put(getComboCutiSuccess(response.data));
+        callback && callback()
+        toast.success(response.msg || "Sukses", {autoClose: 3000})
+    } catch (error) {
+        yield put(getComboCutiError(error));
+        toast.success(error.response?.msg || "Error", {autoClose: 3000})
+    }
+}
+
+export function* watchonUpsertCuti(){
+    yield takeEvery(UPSERT_CUTI, onUpsertCuti)
+}
+
+
+function* onBatalCuti({ payload: { data, callback } }) {
+    try {
+        let response = null;
+        response = yield call(serviceSDM.batalCuti, data);
+        yield put(batalCutiSuccess(response.data));
+        callback && callback()
+        toast.success(response.msg || "Sukses", {autoClose: 3000})
+    } catch (error) {
+        yield put(batalCutiError(error));
+        toast.success(error.response?.msg || "Error", {autoClose: 3000})
+    }
+}
+
+export function* wathconBatalCuti(){
+    yield takeEvery(BATAL_CUTI, onBatalCuti)
+}
+
+
 function* sumberDayaManusia() {
     yield all([
         fork(watchongetDaftarPegawai),
@@ -200,7 +277,11 @@ function* sumberDayaManusia() {
         fork(watchonGetComboJadwal),
         fork(watchonGetJadwalDokterSDM),
         fork(watchonUpsertJadwal),
-        fork(watchonupdateResetPassword)
+        fork(watchonupdateResetPassword),
+        fork(watchonGetLiburPegawai),
+        fork(watchonGetComboCuti),
+        fork(watchonUpsertCuti),
+        fork(wathconBatalCuti)
     ]);
 }
 

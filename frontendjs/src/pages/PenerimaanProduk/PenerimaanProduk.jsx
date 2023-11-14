@@ -60,92 +60,6 @@ import {
   useCalculateRetur,
 } from './PenerimaanProdukKomponen'
 
-export const PenerimaanContext = createContext({
-  penerimaan: null,
-  penerimaanTouched: null,
-  penerimaanErr: null,
-  handleChangePenerimaan: null,
-  vDetail: null,
-  detail: null,
-  detailErr: null,
-  detailTouched: null,
-  handleChangeDetail: null,
-  handleChangeJumlahTerima: null,
-  refSatuanTerima: null,
-  detailPemesanan: null,
-  detailPemesananPenerimaan: null,
-  norecpesan: null,
-  validation: null,
-  total: null,
-  ppn: null,
-  subtotal: null,
-  diskon: null,
-  isLogistik: null,
-  vDetailRetur: null,
-  isRetur: false,
-})
-
-export const initialDetail = (dateNow) => ({
-  indexDetail: '',
-  norecdetailpenerimaan: '',
-  produk: {
-    idproduk: '',
-    namaproduk: '',
-    satuanjual: '',
-    namasatuanjual: '',
-  },
-  satuanterima: '',
-  namasatuanterima: '',
-  konversisatuan: '',
-  jumlahterima: '',
-  checkedharga: '0',
-  hargasatuankecil: '',
-  hargasatuanterima: '',
-  checkeddiskon: '0',
-  diskonpersen: '',
-  diskonrupiah: '',
-  ppnrupiahproduk: '',
-  ppnpersenproduk: '',
-  tanggaled: dateNow,
-  nobatch: '',
-  subtotalproduk: '',
-  totalproduk: '',
-})
-
-export const initialDetailRetur = (dateNow) => ({
-  ...initialDetail(dateNow),
-  indexRetur: '',
-  norecdetailretur: '',
-  jumlahretur: '',
-  alasanretur: '',
-})
-
-export const validationDetail = {
-  produk: Yup.object().shape({
-    idproduk: Yup.string().required('Produk harus diisi'),
-    satuanjual: Yup.string().required('Satuan jual harus diisi'),
-  }),
-  satuanterima: Yup.string().required('Satuan Terima harus diisi'),
-  konversisatuan: Yup.string().required('Konversi Satuan harus diisi'),
-  jumlahterima: Yup.string().required('Jumlah Terima harus diisi'),
-  hargasatuankecil: Yup.string().when('checkedharga', {
-    is: (val) => val === '0',
-    then: () => Yup.string().required('Harga satuan kecil harus diisi'),
-  }),
-  hargasatuanterima: Yup.string().required('Harga satuan terima harus diisi'),
-  diskonpersen: Yup.string().when('checkeddiskon', {
-    is: (val) => val === '0',
-    then: () => Yup.string().required('Diskon harus diisi'),
-  }),
-  diskonrupiah: Yup.string().required('Diskon harus diisi'),
-  ppnrupiahproduk: Yup.string().required('PPN Rupiah harus diisi'),
-  ppnpersenproduk: Yup.string().required('PPN Persen harus diisi'),
-  tanggaled: Yup.string().required('Tanggal ED harus diisi'),
-  nobatch: Yup.string().required('No Batch harus diisi'),
-  subtotalproduk: Yup.string().required('Subtotal harus diisi'),
-  totalproduk: Yup.string().required('Total harus diisi'),
-}
-
 const PenerimaanProduk = ({ isLogistik, isRetur }) => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
@@ -165,50 +79,8 @@ const PenerimaanProduk = ({ isLogistik, isRetur }) => {
 
   const validation = useFormik({
     enableReinitialize: true,
-    initialValues: {
-      norecretur: '',
-      norecpenerimaan: '',
-      norecpemesanan: '',
-      penerimaan: {
-        nomorterima: '',
-        tanggalterima: dateNow,
-        namasupplier: '',
-        nomorpo: '',
-        tanggalpesan: dateNow,
-        unitpesan: '',
-        tanggaljatuhtempo: dateNow,
-        sumberdana: '',
-        keterangan: '',
-        subtotal: '',
-        ppnrupiah: '',
-        diskonrupiah: '',
-        total: '',
-        nomorretur: '',
-      },
-      detail: [],
-      retur: [],
-      islogistik: !!isLogistik,
-      isRetur: !!isRetur,
-    },
-    validationSchema: Yup.object({
-      penerimaan: Yup.object().shape({
-        nomorterima: Yup.string().required('No Terima harus diisi'),
-        tanggalterima: Yup.string().required('Tanggal Terima harus diisi'),
-        namasupplier: Yup.string().required('Nama Supplier harus diisi'),
-        nomorpo: Yup.string().required('No PO harus diisi'),
-        tanggalpesan: Yup.string().required('Tanggal Pesan harus diisi'),
-        unitpesan: Yup.string().required('Unit Pesan harus diisi'),
-        tanggaljatuhtempo: Yup.string().required(
-          'Tanggal Jatuh Tempo harus diisi'
-        ),
-        sumberdana: Yup.string().required('Sumber Dana harus diisi'),
-        keterangan: Yup.string().required('Keterangan harus diisi'),
-        nomorretur: isRetur
-          ? Yup.string().required('Retur harus diisi')
-          : Yup.string(),
-      }),
-      detail: Yup.array(),
-    }),
+    initialValues: initialData(dateNow, isLogistik, isRetur),
+    validationSchema: Yup.object(validationData(isRetur)),
     onSubmit: (values) => {
       /**
        * @type {typeof values}
@@ -380,10 +252,11 @@ const PenerimaanProduk = ({ isLogistik, isRetur }) => {
     handleChangeDetail('jumlahterima', newVal)
   }
 
+  // all side effect is here
   const refSatuanTerima = useGetKemasan(vDetail, detail)
   useGetData(isLogistik)
   useFillInitialInput(validation)
-  useCalculatePenerimaan(vDetail, detail)
+  useCalculatePenerimaan(vDetail)
   useCalculateRetur(vDetailRetur, validation.values.detail)
   useSetNorecPenerimaan(validation)
 
@@ -455,6 +328,136 @@ const PenerimaanProduk = ({ isLogistik, isRetur }) => {
       </Container>
     </div>
   )
+}
+
+const initialData = (dateNow, isLogistik, isRetur) => ({
+  norecretur: '',
+  norecpenerimaan: '',
+  norecpemesanan: '',
+  penerimaan: {
+    nomorterima: '',
+    tanggalterima: dateNow,
+    namasupplier: '',
+    nomorpo: '',
+    tanggalpesan: dateNow,
+    unitpesan: '',
+    tanggaljatuhtempo: dateNow,
+    sumberdana: '',
+    keterangan: '',
+    subtotal: '',
+    ppnrupiah: '',
+    diskonrupiah: '',
+    total: '',
+    nomorretur: '',
+  },
+  detail: [],
+  retur: [],
+  islogistik: !!isLogistik,
+  isRetur: !!isRetur,
+})
+
+const validationData = (isRetur) => ({
+  penerimaan: Yup.object().shape({
+    nomorterima: Yup.string().required('No Terima harus diisi'),
+    tanggalterima: Yup.string().required('Tanggal Terima harus diisi'),
+    namasupplier: Yup.string().required('Nama Supplier harus diisi'),
+    nomorpo: Yup.string().required('No PO harus diisi'),
+    tanggalpesan: Yup.string().required('Tanggal Pesan harus diisi'),
+    unitpesan: Yup.string().required('Unit Pesan harus diisi'),
+    tanggaljatuhtempo: Yup.string().required('Tanggal Jatuh Tempo harus diisi'),
+    sumberdana: Yup.string().required('Sumber Dana harus diisi'),
+    keterangan: Yup.string().required('Keterangan harus diisi'),
+    nomorretur: isRetur
+      ? Yup.string().required('Retur harus diisi')
+      : Yup.string(),
+  }),
+  detail: Yup.array(),
+})
+
+export const PenerimaanContext = createContext({
+  penerimaan: null,
+  penerimaanTouched: null,
+  penerimaanErr: null,
+  handleChangePenerimaan: null,
+  vDetail: null,
+  detail: null,
+  detailErr: null,
+  detailTouched: null,
+  handleChangeDetail: null,
+  handleChangeJumlahTerima: null,
+  refSatuanTerima: null,
+  detailPemesanan: null,
+  detailPemesananPenerimaan: null,
+  norecpesan: null,
+  validation: null,
+  total: null,
+  ppn: null,
+  subtotal: null,
+  diskon: null,
+  isLogistik: null,
+  vDetailRetur: null,
+  isRetur: false,
+})
+
+export const initialDetail = (dateNow) => ({
+  indexDetail: '',
+  norecdetailpenerimaan: '',
+  produk: {
+    idproduk: '',
+    namaproduk: '',
+    satuanjual: '',
+    namasatuanjual: '',
+  },
+  satuanterima: '',
+  namasatuanterima: '',
+  konversisatuan: '',
+  jumlahterima: '',
+  checkedharga: '0',
+  hargasatuankecil: '',
+  hargasatuanterima: '',
+  checkeddiskon: '0',
+  diskonpersen: '',
+  diskonrupiah: '',
+  ppnrupiahproduk: '',
+  ppnpersenproduk: '',
+  tanggaled: dateNow,
+  nobatch: '',
+  subtotalproduk: '',
+  totalproduk: '',
+})
+
+export const initialDetailRetur = (dateNow) => ({
+  ...initialDetail(dateNow),
+  indexRetur: '',
+  norecdetailretur: '',
+  jumlahretur: '',
+  alasanretur: '',
+})
+
+export const validationDetail = {
+  produk: Yup.object().shape({
+    idproduk: Yup.string().required('Produk harus diisi'),
+    satuanjual: Yup.string().required('Satuan jual harus diisi'),
+  }),
+  satuanterima: Yup.string().required('Satuan Terima harus diisi'),
+  konversisatuan: Yup.string().required('Konversi Satuan harus diisi'),
+  jumlahterima: Yup.string().required('Jumlah Terima harus diisi'),
+  hargasatuankecil: Yup.string().when('checkedharga', {
+    is: (val) => val === '0',
+    then: () => Yup.string().required('Harga satuan kecil harus diisi'),
+  }),
+  hargasatuanterima: Yup.string().required('Harga satuan terima harus diisi'),
+  diskonpersen: Yup.string().when('checkeddiskon', {
+    is: (val) => val === '0',
+    then: () => Yup.string().required('Diskon harus diisi'),
+  }),
+  diskonrupiah: Yup.string().required('Diskon harus diisi'),
+  ppnrupiahproduk: Yup.string().required('PPN Rupiah harus diisi'),
+  ppnpersenproduk: Yup.string().required('PPN Persen harus diisi'),
+  tanggaled: Yup.string().required('Tanggal ED harus diisi'),
+  nobatch: Yup.string().required('No Batch harus diisi'),
+  subtotalproduk: Yup.string().required('Subtotal harus diisi'),
+  totalproduk: Yup.string().required('Total harus diisi'),
 }
 
 export default PenerimaanProduk
