@@ -47,11 +47,14 @@ SELECT
     tl.alasan AS alasan
 FROM m_pegawai mp
     LEFT JOIN t_liburpegawai tl ON (
-        tl.objectunitfk = mp.objectunitfk
-        OR tl.objectpegawaifk = mp.id
-        OR (
-            tl.objectunitfk IS NULL
-            AND tl.objectpegawaifk IS NULL
+        tl.statusenabled = true
+        AND (
+            tl.objectunitfk = mp.objectunitfk
+            OR tl.objectpegawaifk = mp.id
+            OR (
+                tl.objectunitfk IS NULL
+                AND tl.objectpegawaifk IS NULL
+            )
         )
     )
 WHERE
