@@ -33,6 +33,7 @@ import {
   getPoliklinikTerbanyak,
 } from '../../store/eis/action'
 import { Link } from 'react-router-dom'
+import { colors } from './colors'
 
 const DashboardUtama = () => {
   const [dateToday] = useState(() => new Date().toISOString())
@@ -226,7 +227,7 @@ const StackedRJ = () => {
     fill: {
       opacity: 1,
     },
-    colors: chartColumnStackedColors,
+    colors: colors,
   }
   return (
     <Card className="p-3">
@@ -321,7 +322,7 @@ const StackedGD = () => {
     fill: {
       opacity: 1,
     },
-    colors: chartColumnStackedColors,
+    colors: colors,
   }
   return (
     <Card className="p-3">
@@ -416,7 +417,7 @@ const StackedRI = () => {
     fill: {
       opacity: 1,
     },
-    colors: chartColumnStackedColors,
+    colors: colors,
   }
   return (
     <Card className="p-3">
@@ -463,7 +464,7 @@ const CaraBayar = () => {
         enabled: false,
       },
     },
-    colors: chartPieBasicColors,
+    colors: colors,
   }
   return (
     <Card className="p-3" style={{ height: 500 }}>
@@ -597,7 +598,6 @@ const PasienTotal = () => {
 const KunjunganPoliklinik = () => {
   const dataColors =
     '["--vz-primary", "--vz-success", "--vz-warning", "--vz-danger", "--vz-dark", "--vz-info"]'
-  let chartColumnDistributedColors = getChartColorsArray(dataColors)
   const kunjungan = useSelector(
     (state) => state.Eis.getPoliklinikTerbanyak.data?.kunjungan || []
   )
@@ -616,23 +616,7 @@ const KunjunganPoliklinik = () => {
         click: function (chart, w, e) {},
       },
     },
-    colors: [
-      '#038edc',
-      '#51d28c',
-      '#f7cc53',
-      '#f34e4e',
-      '#564ab1',
-      '#5fd0f3',
-      '#DC0303',
-      '#CB03DC',
-      '#655B96',
-      '#DCB903',
-      '#48DC03',
-      '#E67E22',
-      '#FD32B0',
-      '#0340DC',
-      '#8ADC03',
-    ],
+    colors: colors,
     plotOptions: {
       bar: {
         columnWidth: '45%',
@@ -649,14 +633,7 @@ const KunjunganPoliklinik = () => {
       categories: kunjunganNama,
       labels: {
         style: {
-          colors: [
-            '#038edc',
-            '#51d28c',
-            '#f7cc53',
-            '#f34e4e',
-            '#564ab1',
-            '#5fd0f3',
-          ],
+          colors: colors,
           fontSize: '12px',
         },
       },
@@ -818,7 +795,7 @@ const PenyakitTerbesar = () => {
         enabled: false,
       },
     },
-    colors: chartPieBasicColors,
+    colors: colors,
   }
   return (
     <Card className="p-3" style={{ height: 500 }}>
@@ -864,6 +841,7 @@ export const HeaderDashboard = () => {
     {
       classImg: 'las la-capsules',
       text: 'Dasbor Farmasi',
+      link: 'dasbor-farmasi',
     },
     {
       classImg: 'las la-money-bill',

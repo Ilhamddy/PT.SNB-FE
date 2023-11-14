@@ -361,6 +361,7 @@ import Logger from "../pages/Logger/Logger";
 import DasborUtama from "../pages/DasborUtama/DasborUtama.jsx";
 import DasborPegawai from "../pages/DasborPegawai/DasborPegawai.jsx";
 import LiburPegawai from "../pages/LiburPegawai/LiburPegawai.jsx";
+import DasborFarmasi from "../pages/DasborFarmasi/DasborFarmasi.jsx";
 
 
 const authProtectedRoutes = [
@@ -730,6 +731,7 @@ const authProtectedRoutes = [
   //dashboard eis
   { path: "/eis/dasbor/dasbor-utama", component: <DasborUtama />},
   { path: "/eis/dasbor/dasbor-pegawai", component: <DasborPegawai />},
+  { path: "/eis/dasbor/dasbor-farmasi", component: <DasborFarmasi />},
 
 ];
 
