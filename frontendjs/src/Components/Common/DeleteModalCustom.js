@@ -14,7 +14,7 @@ const DeleteModalCustom = ({ show, onDeleteClick, onCloseClick,msgHDelete,msgBDe
             style={{ width: "100px", height: "100px" }}
           ></lord-icon>
           <div className="mt-4 pt-2 fs-15 mx-4 mx-sm-5">
-            <h4>{msgHDelete}</h4>
+            <h4>{msgHDelete || "Yakin ingin hapus"}</h4>
             <p className="text-muted mx-4 mb-0">
               {msgBDelete}
             </p>
@@ -27,7 +27,7 @@ const DeleteModalCustom = ({ show, onDeleteClick, onCloseClick,msgHDelete,msgBDe
             data-bs-dismiss="modal"
             onClick={onCloseClick}
           >
-            Close
+            Batal
           </button>
           <button
             type="button"
@@ -35,7 +35,7 @@ const DeleteModalCustom = ({ show, onDeleteClick, onCloseClick,msgHDelete,msgBDe
             id="delete-record"
             onClick={onDeleteClick}
           >
-            Yes, Delete It!
+            Hapus
           </button>
         </div>
       </ModalBody>

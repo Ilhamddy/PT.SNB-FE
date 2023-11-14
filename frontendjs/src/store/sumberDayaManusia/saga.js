@@ -9,7 +9,8 @@ import {
     UPSERT_JADWAL,UPDATE_RESET_PASSWORD,
     GET_LIBUR_PEGAWAI,
     GET_COMBO_CUTI,
-    UPSERT_CUTI
+    UPSERT_CUTI,
+    BATAL_CUTI
 } from "./actionType";
 
 import {
@@ -32,7 +33,9 @@ import {
     getComboCutiSuccess,
     getComboCutiError,
     upsertCutiSuccess,
-    upsertCutiError
+    upsertCutiError,
+    batalCutiSuccess,
+    batalCutiError
 } from "./action";
 
 import { toast } from 'react-toastify';
@@ -244,6 +247,25 @@ export function* watchonUpsertCuti(){
     yield takeEvery(UPSERT_CUTI, onUpsertCuti)
 }
 
+
+function* onBatalCuti({ payload: { data, callback } }) {
+    try {
+        let response = null;
+        response = yield call(serviceSDM.batalCuti, data);
+        yield put(batalCutiSuccess(response.data));
+        callback && callback()
+        toast.success(response.msg || "Sukses", {autoClose: 3000})
+    } catch (error) {
+        yield put(batalCutiError(error));
+        toast.success(error.response?.msg || "Error", {autoClose: 3000})
+    }
+}
+
+export function* wathconBatalCuti(){
+    yield takeEvery(BATAL_CUTI, onBatalCuti)
+}
+
+
 function* sumberDayaManusia() {
     yield all([
         fork(watchongetDaftarPegawai),
@@ -258,7 +280,8 @@ function* sumberDayaManusia() {
         fork(watchonupdateResetPassword),
         fork(watchonGetLiburPegawai),
         fork(watchonGetComboCuti),
-        fork(watchonUpsertCuti)
+        fork(watchonUpsertCuti),
+        fork(wathconBatalCuti)
     ]);
 }
 

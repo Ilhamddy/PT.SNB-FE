@@ -49,4 +49,8 @@ export default class ServiceSDM {
     upsertCuti = async (data) => {
         return await api.create(`/transaksi/sumber-daya-manusia/upsert-cuti`, data)
     }
+
+    batalCuti = async (data) => {
+        return await api.create(`/transaksi/sumber-daya-manusia/batal-cuti`, data)
+    }
 }

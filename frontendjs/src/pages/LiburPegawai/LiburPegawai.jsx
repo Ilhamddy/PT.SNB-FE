@@ -16,12 +16,19 @@ import KontainerFlatpickr from '../../Components/KontainerFlatpickr/KontainerFla
 import * as Yup from 'yup'
 import { useDispatch, useSelector } from 'react-redux'
 import { createContext, useContext, useEffect, useState } from 'react'
-import { getComboCuti, getLiburPegawai, upsertCuti } from '../../store/actions'
+import {
+  batalCuti,
+  getComboCuti,
+  getLiburPegawai,
+  upsertCuti,
+} from '../../store/actions'
 import { dateLocal } from '../../utils/format'
 import DataTable from 'react-data-table-component'
 import LoadingTable from '../../Components/Table/LoadingTable'
 import ColLabelInput from '../../Components/ColLabelInput/ColLabelInput'
 import CustomSelect from '../Select/Select'
+import DeleteModal from '../../Components/Common/DeleteModal'
+import DeleteModalCustom from '../../Components/Common/DeleteModalCustom'
 
 const LiburPegawaiContext = createContext({
   cutiType: '',
@@ -29,12 +36,21 @@ const LiburPegawaiContext = createContext({
 })
 
 const LiburPegawai = () => {
+  const dispatch = useDispatch()
   const { liburPegawai, loading } = useSelector((state) => ({
     liburPegawai:
       state.sumberDayaManusia.getLiburPegawai.data?.liburPegawai || [],
     loading: state.sumberDayaManusia.getLiburPegawai.loading,
   }))
   const [cutiType, setCutiType] = useState(type.CLOSE)
+  const vBatal = useFormik({
+    initialValues: {
+      norecbatal: '',
+    },
+    onSubmit: (values) => {
+      dispatch(batalCuti(values, () => dispatch(getLiburPegawai())))
+    },
+  })
 
   const columns = [
     {
@@ -67,13 +83,28 @@ const LiburPegawai = () => {
       name: <span className="font-weight-bold fs-13">Alasan</span>,
       selector: (row) => row.alasan,
       sortable: true,
-      width: '120px',
+      width: '250px',
     },
     {
       name: <span className="font-weight-bold fs-13">Pegawai Input</span>,
       selector: (row) => row.namapegawaiinput,
       sortable: true,
       width: '120px',
+    },
+    {
+      name: <span className="font-weight-bold fs-13">Batal</span>,
+      cell: (row) => (
+        <Button
+          color="danger"
+          onClick={() => {
+            vBatal.setFieldValue('norecbatal', row.norec)
+          }}
+        >
+          Batal Cuti
+        </Button>
+      ),
+      sortable: true,
+      width: '170px',
     },
   ]
 
@@ -83,6 +114,11 @@ const LiburPegawai = () => {
         title="Libur Dokter "
         pageTitle="Master Data"
         className="bc-dasbor-eis"
+      />
+      <DeleteModalCustom
+        show={!!vBatal.values.norecbatal}
+        onDeleteClick={vBatal.handleSubmit}
+        onCloseClick={vBatal.resetForm}
       />
       <ToastContainer closeButton={false} />
       <Container fluid>
@@ -125,7 +161,7 @@ const TombolSetting = () => {
     dispatch(getLiburPegawai(vFilter.initialValues))
   }, [vFilter.initialValues, dispatch])
   return (
-    <Row className="mb-2">
+    <Row className="mb-4">
       <Col lg={6}>
         <Row>
           <Col lg={4}>

@@ -85,11 +85,14 @@ FROM t_liburpegawai tl
     LEFT JOIN m_pegawai mp ON mp.id = tl.objectpegawaifk
     LEFT JOIN m_unit mu ON mu.id = tl.objectunitfk
     LEFT JOIN m_pegawai mpi ON mpi.id = tl.objectpegawaiinputfk
-WHERE ${dateBetweenEmptyString("tl.tgllibur", "$1", "$2")}
+WHERE tl.statusenabled = true
+    AND
+        ${dateBetweenEmptyString("tl.tgllibur", "$1", "$2")}
     AND ( 
         mp.namalengkap ILIKE '%' || $3 || '%'
         OR $3 = ''
     )
+
 ORDER BY tl.tgllibur DESC
 `
 

@@ -26,7 +26,10 @@ import {
     GET_COMBO_CUTI_ERROR,
     UPSERT_CUTI,
     UPSERT_CUTI_SUCCESS,
-    UPSERT_CUTI_ERROR
+    UPSERT_CUTI_ERROR,
+    BATAL_CUTI,
+    BATAL_CUTI_SUCCESS,
+    BATAL_CUTI_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -98,7 +101,12 @@ const INIT_STATE = {
         data: [],
         loading: false,
         error: null,
-    }
+    },
+    batalCuti: {
+        data: [],
+        loading: false,
+        error: null,
+    },
 }
 
 const sumberDayaManusia = (state = INIT_STATE, action) => {
@@ -586,6 +594,40 @@ const sumberDayaManusia = (state = INIT_STATE, action) => {
             };
         }
         
+        case BATAL_CUTI: {
+            return {
+                ...state,
+                batalCuti: {
+                    ...state.batalCuti,
+                    data: [],
+                    loading: true,
+                    error: null,
+                },
+            };
+        }
+
+        case BATAL_CUTI_SUCCESS: {
+            return {
+                ...state,
+                batalCuti: {
+                    ...state.batalCuti,
+                    loading: false,
+                    data: action.payload,
+                    success: true,
+                },
+            };
+        }
+
+        case BATAL_CUTI_ERROR: {
+            return {
+                ...state,
+                batalCuti: {
+                    ...state.batalCuti,
+                    loading: false,
+                    error: action.payload,
+                },
+            };
+        }
 
         default: {
             return { ...state };

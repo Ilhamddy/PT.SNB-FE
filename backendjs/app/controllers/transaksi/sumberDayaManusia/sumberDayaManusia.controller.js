@@ -536,7 +536,7 @@ const getLiburPegawai = async (req, res) => {
             if(!newLibur.namapegawai){
                 newLibur.namapegawai = "(Seluruh Pegawai)"
                 if(!newLibur.idunitlibur){
-                    newLibur.namaunit = "(Seluruh Unit)"
+                    newLibur.namaunitlibur = "(Seluruh Unit)"
                 }
             }
             return newLibur
@@ -640,6 +640,50 @@ const upsertCuti = async (req, res) => {
     }
 }
 
+const batalCuti = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const reqBody = req.body
+        const {
+            libur
+        } = await db.sequelize.transaction(async (transaction) => {
+            const liburModel = await db.t_liburpegawai.findByPk(
+                reqBody.norecbatal, 
+            {
+                transaction: transaction
+            })
+            if(!liburModel) throw new Error("norec tidak ditemukan")
+            await liburModel.update({
+                statusenabled: false
+            }, {
+                transaction: transaction
+            })
+            const libur = liburModel.toJSON()
+            return {
+                libur
+            }
+        });
+        
+        const tempres = {
+            libur: libur
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export default {
     getDaftarPegawai,
     getComboSDM,
@@ -653,5 +697,6 @@ export default {
     updateResetPassword,
     getLiburPegawai,
     getComboCuti,
-    upsertCuti
+    upsertCuti,
+    batalCuti
 }

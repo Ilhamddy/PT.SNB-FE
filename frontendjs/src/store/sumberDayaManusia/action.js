@@ -25,7 +25,10 @@ import { SDM_RESET_FORM,
     GET_COMBO_CUTI_ERROR,
     UPSERT_CUTI,
     UPSERT_CUTI_SUCCESS,
-    UPSERT_CUTI_ERROR
+    UPSERT_CUTI_ERROR,
+    BATAL_CUTI,
+    BATAL_CUTI_SUCCESS,
+    BATAL_CUTI_ERROR
 } from "./actionType";
 
 export const sdmResetForm = () => ({
@@ -242,5 +245,23 @@ export const upsertCutiSuccess = (data) => ({
 
 export const upsertCutiError = (error) => ({
     type: UPSERT_CUTI_ERROR,
+    payload: error
+});
+
+export const batalCuti = (data, callback) => ({
+    type: BATAL_CUTI,
+    payload: {
+        data: data,
+        callback: callback
+    }
+});
+
+export const batalCutiSuccess = (data) => ({
+    type: BATAL_CUTI_SUCCESS,
+    payload: data
+});
+
+export const batalCutiError = (error) => ({
+    type: BATAL_CUTI_ERROR,
     payload: error
 });

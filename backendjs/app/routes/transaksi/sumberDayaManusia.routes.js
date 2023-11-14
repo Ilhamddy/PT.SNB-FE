@@ -78,4 +78,10 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.upsertCuti
     )
+
+    app.post(
+        "/api/transaksi/sumber-daya-manusia/batal-cuti",
+        [authJwt.verifyToken],
+        controller.batalCuti
+    )
 }
