@@ -85,6 +85,7 @@ import s_childmenumodulaplikasiModel from "./s_childmenumodulaplikasi.model.js";
 import m_mapusertounitModel from "./m_mapusertounit.model.js";
 import t_returbarangModel from "./t_returbarang.model.js";
 import t_returbarangdetailModel from "./t_returbarangdetail.model.js";
+import t_bedharianModel from "./t_bedharian.model.js";
 
 const sequelize = new Sequelize(
   config.DB,
@@ -195,6 +196,7 @@ db.t_verifremunerasi = t_verifremunerasiModel(sequelize, sequelizeInstance)
 db.m_mapusertounit = m_mapusertounitModel(sequelize,sequelizeInstance)
 db.t_returbarang = t_returbarangModel(sequelize, sequelizeInstance)
 db.t_returbarangdetail = t_returbarangdetailModel(sequelize, sequelizeInstance)
+db.t_bedharian = t_bedharianModel(sequelize, sequelizeInstance)
 
 db.role.belongsToMany(db.user, {
   through: "user_roles",
