@@ -3,6 +3,7 @@ import * as uuid from 'uuid';
 import queries from '../../../queries/rekammedis/rekammedis.queries';
 import db from "../../../models";
 import { createTransaction } from "../../../utils/dbutils";
+import {qGetUnitTempatTidurScheduler} from '../../../queries/sysadmin/sysadmin.queries'
 
 const m_maprltoproduk = db.m_maprltoproduk
 const t_daftarpasien = db.t_daftarpasien
@@ -531,26 +532,47 @@ async function getLaporanRL3_1(req, res) {
 
 }
 
-async function getSensusManual(req, res) {
-    const logger = res.locals.logger
-    const [transaction, errorTransaction] = await createTransaction(db, res)
-    if(errorTransaction) return
-    try {
+const getSensusManual = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
         let today = new Date();
         let todaystart = formatDate(today) + ' 00:00'
         let todayend = formatDate(today) + ' 23:59'
-
         const queryResult = await pool.query(`select ta.objectkelasfk ,td.norec,ta.norec as norecta,ta.objectunitfk,td.noregistrasi,td.nocmfk,
         ta.objectdokterpemeriksafk  from t_daftarpasien td
         join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk=td.norec and ta.objectunitfk=td.objectunitlastfk 
         where td.tglpulang is null and td.statusenabled =true and ta.statusenabled=true`); // Your SQL query here
 
         const queryResult2 = await pool.query(`select * from t_sensusharian where tglinput between '${todaystart}' and '${todayend}'`);
-        const cmgOptions = await Promise.all(
-            queryResult.rows.map(
-                async (item) => {
-                    if (queryResult2.rows.length === 0) {
-                        const add = await db.t_sensusharian.create({
+
+        const kamars = (await pool.query(qGetUnitTempatTidurScheduler))
+        const queryBedHarian = await pool.query(`select * from t_bedharian where tglinput between '${todaystart}' and '${todayend}'`);
+
+        const { add,addBed } = await db.sequelize.transaction(async (transaction) => {
+            let add = ''
+            let addBed = ''
+            for (let i = 0; i < queryResult.rows.length; i++) {
+                const item = queryResult.rows[i];
+                if (queryResult2.rows.length === 0) {
+                    add = await db.t_sensusharian.create({
+                        norec: uuid.v4().substring(0, 32),
+                        objectantreanpemeriksaanfk: item.norecta,
+                        objectunitfk: item.objectunitfk,
+                        objectdaftarpasienfk: item.norec,
+                        noregistrasi: item.noregistrasi,
+                        objectpasienfk: item.nocmfk,
+                        objectdokterpemeriksafk: item.objectdokterpemeriksafk,
+                        objectkelasfk:item.objectkelasfk,
+                        tglinput: new Date()
+                    }, {
+                        transaction: transaction
+                    });
+                }else{
+                    const foundItems = queryResult2.rows.filter(itemx => itemx.objectantreanpemeriksaanfk === item.norecta);
+                    if (foundItems.length > 0) {
+                        console.log('Items found: sensus harian');
+                    } else {
+                        add = await db.t_sensusharian.create({
                             norec: uuid.v4().substring(0, 32),
                             objectantreanpemeriksaanfk: item.norecta,
                             objectunitfk: item.objectunitfk,
@@ -558,48 +580,80 @@ async function getSensusManual(req, res) {
                             noregistrasi: item.noregistrasi,
                             objectpasienfk: item.nocmfk,
                             objectdokterpemeriksafk: item.objectdokterpemeriksafk,
-                            objectkelasfk: item.objectkelasfk,
+                            objectkelasfk:item.objectkelasfk,
                             tglinput: new Date()
                         }, {
                             transaction: transaction
                         });
-                        return add
-                    } else {
-                        const foundItems = queryResult2.rows.filter(itemx => itemx.objectantreanpemeriksaanfk === item.norecta);
-                        if (foundItems.length > 0) {
-                            console.log('Items found: sensus harian');
-                        } else {
-                            const add = await db.t_sensusharian.create({
-                                norec: uuid.v4().substring(0, 32),
-                                objectantreanpemeriksaanfk: item.norecta,
-                                objectunitfk: item.objectunitfk,
-                                objectdaftarpasienfk: item.norec,
-                                noregistrasi: item.noregistrasi,
-                                objectpasienfk: item.nocmfk,
-                                objectdokterpemeriksafk: item.objectdokterpemeriksafk,
-                                objectkelasfk: item.objectkelasfk,
-                                tglinput: new Date()
-                            }, {
-                                transaction: transaction
-                            });
-                            return add
-                        }
                     }
                 }
-            )
-        )
-        await transaction.commit();
-        res.status(200).send({
-            data: queryResult2.rows.length,
-            status: "success",
-            success: true,
+            }
+            await Promise.all(kamars.rows.map(async (itemx) =>{
+                console.log(itemx.idunit,itemx.totalbed)
+                if(queryBedHarian.rows.length ===0){
+                    addBed = await db.t_bedharian.create({
+                        norec: uuid.v4().substring(0, 32),
+                        objectunitfk: itemx.idunit,
+                        jumlahbed: itemx.totalbed,
+                        jumlahbedrusak: itemx.totalrusak,
+                        tglinput: new Date()
+                    }, {
+                        transaction: transaction
+                    });
+                }else{
+                    await Promise.all(queryBedHarian.rows.map(async(itemy)=>{
+                        if(itemx.idunit===itemy.objectunitfk){
+                            // console.log(itemx.idunit,itemy.objectunitfk,itemx.totalbed)
+                            addBed = await db.t_bedharian.update({
+                                jumlahbed: itemx.totalbed,
+                                jumlahbedrusak:itemx.totalrusak,
+                                tglinput: new Date()
+                            }, {
+                                where: {
+                                    norec: itemy.norec,
+                                },
+                                transaction: transaction
+                            });
+                        }else{
+                            var newArray = queryBedHarian.rows.filter(function (el) {
+                                return el.objectunitfk === itemy.objectunitfk;
+                            });
+                            if(newArray.length===0){
+                                addBed = await db.t_bedharian.create({
+                                    norec: uuid.v4().substring(0, 32),
+                                    objectunitfk: itemx.idunit,
+                                    jumlahbed: itemx.totalbed,
+                                    jumlahbedrusak: itemx.totalrusak,
+                                    tglinput: new Date()
+                                }, {
+                                    transaction: transaction
+                                });
+                            }
+                        }
+                    }))
+                }
+            }))
+            return { add,addBed }
         });
-
+        const tempres = {
+            add:add,
+            addBed:addBed
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: kamars,
+            success: true
+        });
     } catch (error) {
-        logger.error(error)
-        res.status(500).send({ message: error });
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
     }
-
 }
 
 
@@ -1200,6 +1254,65 @@ const getLaporanRL5_4 = async (req, res) => {
     }
 }
 
+const getLaporanRL1_2 = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        let todaystart = formatDate(req.query.start) + ' 00:00'
+        let todayend = formatDate(req.query.end) + ' 23:59'
+        	
+        let tanggal1 = new Date(formatDate(req.query.end)); 
+        let tanggal2 = new Date(formatDate(req.query.start)); 
+        let Difference_In_Time = tanggal1.getTime() - tanggal2.getTime();
+        let Difference_In_Days = (Difference_In_Time / (1000 * 3600 * 24))+1;
+
+        const resultJmlBed = await pool.query(queries.qJumlahBedHarian,[todaystart,todayend])
+        const resultJmlSensus = await pool.query(queries.qJumlahSensusHarian,[todaystart,todayend])
+        const resultJmlLamaRawat = await pool.query(queries.qJumlahLamaRawat,[todaystart,todayend])
+        const resultJmlKeluarHidupMati = await pool.query(queries.qJumlahPasienKeluarHidupMati,[todaystart,todayend])
+        const resultJmlKeluarMatiLebih48 = await pool.query(queries.qJumlahPasienKeluarMatiLebih48,[todaystart,todayend])
+        const resultJmlKeluarMati = await pool.query(queries.qJumlahPasienKeluarMati,[todaystart,todayend])
+
+        let BOR = ((parseFloat(resultJmlSensus.rows[0].jml)/parseFloat(resultJmlBed.rows[0].jml))*100)
+        let ALOS = parseFloat(resultJmlLamaRawat.rows[0].jml)/parseFloat(resultJmlKeluarHidupMati.rows[0].jml)
+        let TOI = ((parseFloat(resultJmlBed.rows[0].jml)*Difference_In_Days)-parseFloat(resultJmlSensus.rows[0].jml))/parseFloat(resultJmlKeluarHidupMati.rows[0].jml)
+        let BTO = parseFloat(resultJmlKeluarHidupMati.rows[0].jml)/parseFloat(resultJmlBed.rows[0].jml)
+        let NDR = (parseFloat(resultJmlKeluarMatiLebih48.rows[0].jml)/parseFloat(resultJmlKeluarHidupMati.rows[0].jml))*1000
+        let GDR = (parseFloat(resultJmlKeluarMati.rows[0].jml)/parseFloat(resultJmlKeluarHidupMati.rows[0].jml))*1000
+
+        const tempres = [{
+            id:1,
+            tahun:2023,
+            bor:BOR.toFixed(2),
+            alos:ALOS.toFixed(2),
+            bto:BTO.toFixed(2),
+            toi:TOI.toFixed(2),
+            ndr:NDR.toFixed(2),
+            gdr:GDR.toFixed(2),
+            jmlbed:parseFloat(resultJmlBed.rows[0].jml),
+            jmlhariperawatan:parseFloat(resultJmlSensus.rows[0].jml),
+            jmllamarawat:parseFloat(resultJmlLamaRawat.rows[0].jml),
+            jmlkeluarhidupmati:parseFloat(resultJmlKeluarHidupMati.rows[0].jml),
+            jmlkeluarmatilebih48:parseFloat(resultJmlKeluarMatiLebih48.rows[0].jml),
+            jmlkeluarmati:parseFloat(resultJmlKeluarMati.rows[0].jml),
+            periode:Difference_In_Days
+        }];
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).json({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export default {
     getListDaftarDokumenRekammedis,
     getWidgetListDaftarDokumenRekammedis,
@@ -1218,6 +1331,7 @@ export default {
     getLayananFromMasterRL,
     deleteMapRL,
     updatePrinted,
+    getLaporanRL1_2,
     getLaporanRL3_3,
     getLaporanRL3_4,
     getLaporanRL3_6,

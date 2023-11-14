@@ -253,6 +253,26 @@ WHERE mu.objectinstalasifk = 1 AND td2.statusenabled =true AND td2.tglpulang bet
 GROUP BY mi.kdicdx, mi.namaicdx
 order by total desc`
 
+const qJumlahBedHarian =`select sum(jumlahbed) as jml from t_bedharian tb  where tglinput between $1 and $2`
+const qJumlahSensusHarian = `select count(norec) as jml from t_sensusharian ts where tglinput between $1 and $2`
+const qJumlahLamaRawat =`select sum(x.hari)as jml from (select tglregistrasi ,tglpulang,noregistrasi,
+case when to_char(tglpulang, 'YYYY-MM-DD')=to_char(tglregistrasi, 'YYYY-MM-DD') then 1 else date_part('DAY', to_char(tglpulang, 'YYYY-MM-DD')::TIMESTAMP- to_char(tglregistrasi, 'YYYY-MM-DD')::TIMESTAMP) end as hari
+from t_daftarpasien td
+join m_unit mu on mu.id=td.objectunitlastfk 
+where tglpulang between $1 and $2 and mu.objectinstalasifk=2 )as x`
+const qJumlahPasienKeluarHidupMati =`select count(norec)as jml
+from t_daftarpasien td
+join m_unit mu on mu.id=td.objectunitlastfk 
+where tglpulang between $1 and $2 and mu.objectinstalasifk=2`
+const qJumlahPasienKeluarMatiLebih48 =`select count(norec)as jml
+from t_daftarpasien td
+join m_unit mu on mu.id=td.objectunitlastfk 
+where tglpulang between $1 and $2 and mu.objectinstalasifk=2 and objectkondisipulangrifk=5`
+const qJumlahPasienKeluarMati =`select count(norec)as jml
+from t_daftarpasien td
+join m_unit mu on mu.id=td.objectunitlastfk 
+where tglpulang between $1 and $2 and mu.objectinstalasifk=2 and objectkondisipulangrifk in (4,5)`
+
 export default {
     qResult,
     qGetDetailFromJenisProduk,
@@ -270,5 +290,11 @@ export default {
     qLaporanRL5_1,
     qLaporanRL5_2,
     qLaporanRL5_3,
-    qLaporanRL5_4
+    qLaporanRL5_4,
+    qJumlahBedHarian,
+    qJumlahSensusHarian,
+    qJumlahLamaRawat,
+    qJumlahPasienKeluarHidupMati,
+    qJumlahPasienKeluarMatiLebih48,
+    qJumlahPasienKeluarMati
 }

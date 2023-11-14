@@ -18,6 +18,7 @@ import {
     GET_LAYANAN_FROM_MASTER_RL,
     DELETE_MAP_RL,
     UPDATE_PRINTED,
+    LAPORAN_RL_1_2_GET,
     LAPORAN_RL_3_3_GET,LAPORAN_RL_3_4_GET,
     LAPORAN_RL_3_6_GET,LAPORAN_RL_3_14_GET,
     LAPORAN_RL_3_15_GET,LAPORAN_RL_3_11_GET,LAPORAN_RL_3_10_GET,
@@ -49,6 +50,7 @@ import {
     deleteMapRLError,
     updatePrintedSuccess,
     updatePrintedError,
+    getLaporanRl_1_2Success,getLaporanRl_1_2Error,
     getLaporanRl_3_3Success,getLaporanRl_3_3Error,
     getLaporanRl_3_4Success,getLaporanRl_3_4Error,
     getLaporanRl_3_6Success,getLaporanRl_3_6Error,
@@ -175,6 +177,18 @@ export function* watchonlistLaporanPasienKunjunganGet() {
     yield takeEvery(LIST_LAPORAN_PASIEN_KUNJUNGAN_GET, onlistLaporanPasienKunjunganGet);
 }
 
+function* onlaporanRL_1_2_Get({ payload: { queries } }) {
+    try {
+        const response = yield call(serviceRekammedis.getLaporanRl_1_2, queries);
+        yield put(getLaporanRl_1_2Success(response.data));
+    } catch (error) {
+        yield put(getLaporanRl_1_2Error(error));
+    }
+}
+
+export function* watchonlaporanRL_1_2_Get() {
+    yield takeEvery(LAPORAN_RL_1_2_GET, onlaporanRL_1_2_Get);
+}
 
 function* onlaporanRL_3_1_Get({ payload: { queries } }) {
     try {
@@ -462,6 +476,7 @@ function* kendaliDokumenSaga() {
         fork(watchonGetLayananFromMasterRL),
         fork(watchonDeleteMapRL),
         fork(watchonPriterUpdated),
+        fork(watchonlaporanRL_1_2_Get),
         fork(watchongetLaporanRl_3_3),
         fork(watchongetLaporanRl_3_4),
         fork(watchongetLaporanRl_3_6),

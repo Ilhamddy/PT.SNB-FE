@@ -79,6 +79,55 @@ GROUP BY
 	mu.namaunit
 `
 
+const qGetUnitTempatTidurScheduler = `
+SELECT
+	mu.id AS idunit,
+	mu.namaunit AS namaunit,
+	count(
+		CASE 
+			mt.objectstatusbedfk WHEN 1 
+				THEN 1 
+			ELSE null 
+		END
+	)::int as totalisi,
+	count(
+		CASE 
+			mt.objectstatusbedfk WHEN 2 
+				THEN 1 
+			ELSE null 
+		END
+	)::int as totalkosong,
+	count(
+		CASE 
+			mt.objectstatusbedfk WHEN 6 
+				THEN 1 
+			ELSE null 
+		END
+	)::int as totalrusak,
+	count(mt.objectstatusbedfk)::int as totalbed
+FROM m_tempattidur mt
+	LEFT JOIN m_kamar mk ON mt.objectkamarfk = mk.id
+	LEFT JOIN m_kelas mkel ON mk.objectkelasfk = mkel.id
+	LEFT JOIN m_unit mu ON mk.objectunitfk = mu.id
+	LEFT JOIN m_statusbed msb ON mt.objectstatusbedfk = msb.id
+WHERE mt.statusenabled = true
+	AND
+		CASE 
+			WHEN (NULLIF(null, '')::int IS NULL)
+			THEN TRUE
+			ELSE mk.objectunitfk = NULLIF(NULL, '')::int
+		END
+	AND
+		CASE 
+			WHEN (NULLIF(NULL, '')::int IS NULL)
+			THEN TRUE
+			ELSE mk.objectkelasfk = NULLIF(NULL, '')::int
+		END
+GROUP BY
+	mu.id,
+	mu.namaunit
+`
+
 const qGetAllUnit = `
 SELECT
 	mu.id AS idunit,
@@ -180,5 +229,6 @@ export {
 	qPermissions,
 	qChekMapPermissions,
 	qListChild,
-	qComboLink
+	qComboLink,
+	qGetUnitTempatTidurScheduler
 }
