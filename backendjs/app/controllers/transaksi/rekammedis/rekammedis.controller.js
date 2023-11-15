@@ -1313,6 +1313,31 @@ const getLaporanRL1_2 = async (req, res) => {
     }
 }
 
+const getLaporanRL1_3 = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const result = await pool.query(queries.qLaporanRL1_3)
+
+        const tempres = {
+        
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: result.rows,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).json({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export default {
     getListDaftarDokumenRekammedis,
     getWidgetListDaftarDokumenRekammedis,
@@ -1343,5 +1368,5 @@ export default {
     getLaporanRL5_2,
     getLaporanRL5_3,
     getLaporanRL5_4,
-    
+    getLaporanRL1_3
 };

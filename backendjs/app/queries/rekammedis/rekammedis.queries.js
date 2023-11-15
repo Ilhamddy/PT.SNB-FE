@@ -273,6 +273,21 @@ from t_daftarpasien td
 join m_unit mu on mu.id=td.objectunitlastfk 
 where tglpulang between $1 and $2 and mu.objectinstalasifk=2 and objectkondisipulangrifk in (4,5)`
 
+const qLaporanRL1_3 =`select row_number() OVER (ORDER BY ms.reportdisplay) AS id,ms.reportdisplay,sum(case when mk.objectkelasfk=1 then 1 else 0 end)as vvip,
+sum(case when mk.objectkelasfk=2 then 1 else 0 end)as vip,
+sum(case when mk.objectkelasfk=3 then 1 else 0 end)as kl1,
+sum(case when mk.objectkelasfk=4 then 1 else 0 end)as kl2,
+sum(case when mk.objectkelasfk=5 then 1 else 0 end)as kl3,
+sum(case when mk.objectkelasfk not in (1,2,3,4,5) then 1 else 0 end)as khusus,
+sum(case when mk.objectkelasfk=1 then 1 else 0 end)+
+sum(case when mk.objectkelasfk=2 then 1 else 0 end)+
+sum(case when mk.objectkelasfk=3 then 1 else 0 end)+
+sum(case when mk.objectkelasfk=4 then 1 else 0 end)+
+sum(case when mk.objectkelasfk=5 then 1 else 0 end)+
+sum(case when mk.objectkelasfk not in (1,2,3,4,5) then 1 else 0 end)as total from m_spesialisasi ms
+join m_kamar mk on mk.objectspesialisfk=ms.id
+group by ms.reportdisplay`
+
 export default {
     qResult,
     qGetDetailFromJenisProduk,
@@ -296,5 +311,6 @@ export default {
     qJumlahLamaRawat,
     qJumlahPasienKeluarHidupMati,
     qJumlahPasienKeluarMatiLebih48,
-    qJumlahPasienKeluarMati
+    qJumlahPasienKeluarMati,
+    qLaporanRL1_3
 }
