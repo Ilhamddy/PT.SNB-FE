@@ -14,7 +14,7 @@ const qGolonganDarah =
 const qEtnis =
     "SELECT id as value, etnis as label FROM m_etnis where statusenabled=true";
 const qPendidikan =
-    "SELECT id as value, pendidikan as label FROM m_pendidikan where statusenabled=true";
+    "SELECT id as value, reportdisplay as label FROM m_pendidikanpegawai mp where statusenabled=true";
 const qPerkawinan =
     "SELECT id as value, statusperkawinan as label FROM m_statusperkawinan";
 const qAgama =
@@ -93,8 +93,7 @@ WHERE tl.statusenabled = true
         OR $3 = ''
     )
 
-ORDER BY tl.tgllibur DESC
-`
+ORDER BY tl.tgllibur DESC`
 
 export default {
     qDaftarPegawai,
@@ -115,5 +114,6 @@ export default {
     qUserRoleById,qRole,
     qJadwalDokter,
     qAccesUnit,
-    qGetLiburPegawai
+    qGetLiburPegawai,
+   
 }

@@ -27,6 +27,7 @@ import * as Yup from 'yup'
 import { onChangeStrNbr } from '../../utils/format'
 
 const DaftarKamar = () => {
+  document.title = "Daftar Kamar";
   const { dataKamar, comboDaftarKamar } = useSelector((state) => ({
     dataKamar: state.Sysadmin.getAllKamar.data?.kamar || [],
     comboDaftarKamar: state.Sysadmin.getComboDaftarKamar?.data || null,

@@ -264,6 +264,8 @@ import LaporanPasienKunjungan from "../pages/RekamMedis/Laporan/LaporanPasienKun
 
 // RL
 import RL1_2 from "../pages/RekamMedis/Laporan/RL1_2/RL1_2";
+import RL1_3 from "../pages/RekamMedis/Laporan/RL1_3/RL1_3";
+import RL2 from "../pages/RekamMedis/Laporan/RL2/RL2";
 import RL3_1 from "../pages/RekamMedis/Laporan/RL3_1/RL3_1";
 import RL3_2 from "../pages/RekamMedis/Laporan/RL3_2/RL3_2";
 import RL3_3 from "../pages/RekamMedis/Laporan/RL3_3/RL3_3";
@@ -619,6 +621,8 @@ const authProtectedRoutes = [
   { path: "/cmVrYW1tZWRpcy9sYXBvcmFuLXBhc2llbi1iYXRhbA==", component: <LaporanPasienBatal/>},
   { path: "/cmVrYW1tZWRpcy9sYXBvcmFuLXBhc2llbi1rdW5qdW5nYW4=", component: <LaporanPasienKunjungan/>},
   { path: "/rekammedis/laporan-rl/rl1_2", component: <RL1_2 />},
+  { path: "/rekammedis/laporan-rl/rl1_3", component: <RL1_3 />},
+  { path: "/rekammedis/laporan-rl/rl2", component: <RL2 />},
   { path: "/cmVrYW1tZWRpcy9sYXBvcmFuLXJsL3JsMy4x", component: <RL3_1/>},
   { path: "/cmVrYW1tZWRpcy9sYXBvcmFuLXJsL3JsMy4y", component: <RL3_2/>},
   { path: "/cmVrYW1tZWRpcy9sYXBvcmFuLXJsL3JsMy4z", component: <RL3_3 />},

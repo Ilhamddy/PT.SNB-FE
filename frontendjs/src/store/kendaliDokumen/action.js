@@ -49,6 +49,7 @@ import {
     UPDATE_PRINTED_SUCCESS,
     UPDATE_PRINTED_ERROR,
     LAPORAN_RL_1_2_GET,LAPORAN_RL_1_2_GET_SUCCESS,LAPORAN_RL_1_2_GET_ERROR,
+    LAPORAN_RL_1_3_GET,LAPORAN_RL_1_3_GET_SUCCESS,LAPORAN_RL_1_3_GET_ERROR,
     LAPORAN_RL_3_3_GET,LAPORAN_RL_3_3_GET_SUCCESS,LAPORAN_RL_3_3_GET_ERROR,
     LAPORAN_RL_3_4_GET,LAPORAN_RL_3_4_GET_SUCCESS,LAPORAN_RL_3_4_GET_ERROR,
     LAPORAN_RL_3_6_GET,LAPORAN_RL_3_6_GET_SUCCESS,LAPORAN_RL_3_6_GET_ERROR,
@@ -324,6 +325,23 @@ export const getLaporanRl_1_2Success = (data) => ({
 
 export const getLaporanRl_1_2Error = (error) => ({
     type: LAPORAN_RL_1_2_GET_ERROR,
+    payload: error,
+});
+
+export const getLaporanRl_1_3 = (queries) => ({
+    type: LAPORAN_RL_1_3_GET,
+    payload: {
+        queries,
+    },
+});
+
+export const getLaporanRl_1_3Success = (data) => ({
+    type: LAPORAN_RL_1_3_GET_SUCCESS,
+    payload: data,
+});
+
+export const getLaporanRl_1_3Error = (error) => ({
+    type: LAPORAN_RL_1_3_GET_ERROR,
     payload: error,
 });
 
