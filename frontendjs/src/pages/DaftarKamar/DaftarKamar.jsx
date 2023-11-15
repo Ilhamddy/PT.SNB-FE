@@ -51,12 +51,14 @@ const DaftarKamar = () => {
       unit: '',
       kelas: '',
       statusenabled: true,
+      jenisPelayanan: ''
     },
     validationSchema: Yup.object({
       namakamar: Yup.string().required('Nama Kamar harus diisi'),
       instalasi: Yup.string().required('Instalasi harus diisi'),
       unit: Yup.string().required('Unit harus diisi'),
       kelas: Yup.string().required('Kelas harus diisi'),
+      jenisPelayanan: Yup.string().required('Jenis Pelayanan harus diisi'),
     }),
     onSubmit: (values) => {
       dispatch(
@@ -79,6 +81,7 @@ const DaftarKamar = () => {
     vTambah.setFieldValue('unit', row.objectunitfk)
     vTambah.setFieldValue('kelas', row.objectkelasfk)
     vTambah.setFieldValue('statusenabled', row.statusenabled)
+    vTambah.setFieldValue('jenisPelayanan', row.objectspesialisfk)
   }
   const columns = [
     {
@@ -259,6 +262,29 @@ const DaftarKamar = () => {
               {vTambah.touched?.namakamar && !!vTambah.errors.namakamar && (
                 <FormFeedback type="invalid">
                   <div>{vTambah.errors.namakamar}</div>
+                </FormFeedback>
+              )}
+            </ColLabelInput>
+            <ColLabelInput
+              className="mb-2"
+              lg={6}
+              label={'Jenis Pelayanan'}
+              inputId={'Jenis Pelayanan'}
+            >
+              <CustomSelect
+                id="jenisPelayanan"
+                name="jenisPelayanan"
+                options={comboDaftarKamar?.spesialisasi || []}
+                onChange={(e) => {
+                  vTambah.setFieldValue('jenisPelayanan', e?.value || '')
+                }}
+                value={vTambah.values.jenisPelayanan}
+                className={`input row-header ${!!vTambah?.errors.jenisPelayanan ? 'is-invalid' : ''
+                  }`}
+              />
+              {vTambah.touched.jenisPelayanan && !!vTambah.errors.jenisPelayanan && (
+                <FormFeedback type="invalid">
+                  <div>{vTambah.errors.jenisPelayanan}</div>
                 </FormFeedback>
               )}
             </ColLabelInput>
