@@ -288,7 +288,8 @@ sum(case when mk.objectkelasfk not in (1,2,3,4,5) then 1 else 0 end)as total fro
 join m_kamar mk on mk.objectspesialisfk=ms.id
 group by ms.reportdisplay`
 
-const qListRL2=`SELECT * FROM m_pendidikanpegawai mp where statusenabled=true
+const qListRL2=`SELECT id,reportdisplay,0 as keadaan_lk,0 as keadaan_pm,0 as kebutuhan_lk,0 as kebutuhan_pm,
+0 as kekurangan_lk,0 as kekurangan_pm,kodeexternal FROM m_pendidikanpegawai mp where statusenabled=true
 order by id`
 
 const qIsiListRL2=`select mp2.reportdisplay,sum(case when mp.objectjeniskelaminfk=1 then 1 else 0 end)as keadaan_lk,

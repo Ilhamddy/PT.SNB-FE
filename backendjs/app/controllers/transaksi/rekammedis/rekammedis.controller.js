@@ -1338,6 +1338,41 @@ const getLaporanRL1_3 = async (req, res) => {
     }
 }
 
+const getLaporanRL2 = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const result = await pool.query(queries.qListRL2)
+        const resultIsi = await pool.query(queries.qIsiListRL2)
+        for (let i = 0; i < result.rows.length; i++) {
+            const element = result.rows[i];
+            for (let y = 0; y < resultIsi.rows.length; y++) {
+                const elementy = resultIsi.rows[y];
+                if(element.reportdisplay===elementy.reportdisplay){
+                    element.keadaan_lk=elementy.keadaan_lk
+                    element.keadaan_pm=elementy.keadaan_pm
+                }
+            }
+        }
+        const tempres = {
+        
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: result.rows,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).json({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export default {
     getListDaftarDokumenRekammedis,
     getWidgetListDaftarDokumenRekammedis,
@@ -1368,5 +1403,6 @@ export default {
     getLaporanRL5_2,
     getLaporanRL5_3,
     getLaporanRL5_4,
-    getLaporanRL1_3
+    getLaporanRL1_3,
+    getLaporanRL2
 };

@@ -12,8 +12,8 @@ import {
 import { Grid, _ } from 'gridjs-react';
 import * as XLSX from 'xlsx';
 
-const RL2 = () => {
-  document.title = "Laporan RL2";
+const RL3_5 = () => {
+  document.title = "Laporan RL3.5";
   const dispatch = useDispatch();
   const { dataGrid, loadingGrid } = useSelector((state) => ({
     dataGrid: state.KendaliDokumen.getLaporanRl_2.data || [],
@@ -105,7 +105,7 @@ const RL2 = () => {
       <UiContent />
       <div className="page-content">
         <Container fluid>
-          <BreadCrumb title="Laporan RL2" pageTitle="Forms" />
+          <BreadCrumb title="Laporan RL3.5" pageTitle="Forms" />
           <Form
             onSubmit={(e) => {
               e.preventDefault();
@@ -218,4 +218,4 @@ const tableCustomStyles = {
   },
 }
 
-export default RL2
+export default RL3_5
