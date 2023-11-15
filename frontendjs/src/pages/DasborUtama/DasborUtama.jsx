@@ -31,9 +31,17 @@ import {
   getPasienRJ,
   getPasienRanap,
   getPoliklinikTerbanyak,
+  setPasienGadar,
+  setPasienRajal,
+  setPasienRanap,
 } from '../../store/eis/action'
 import { Link } from 'react-router-dom'
 import { colors } from './colors'
+import {
+  ModalPasienGaDar,
+  ModalPasienRajal,
+  ModalPasienRanap,
+} from './DasborUtamaModal'
 
 const DashboardUtama = () => {
   const [dateToday] = useState(() => new Date().toISOString())
@@ -49,7 +57,7 @@ const DashboardUtama = () => {
       tanggal: '',
       tanggalmulai: dateStart,
       tanggalselesai: dateToday,
-      carabayar: '',
+      carabayar: CaraBayarValue[0].value,
     },
     onSubmit: (values, { resetForm }) => {
       dispatch(getPasienRJ(values))
@@ -73,6 +81,9 @@ const DashboardUtama = () => {
 
   return (
     <div className="page-content page-dasbor-eis-utama">
+      <ModalPasienRajal />
+      <ModalPasienGaDar />
+      <ModalPasienRanap />
       <BreadCrumb
         title="Dasbor Utama"
         pageTitle="Dasbor EIS"
@@ -80,7 +91,6 @@ const DashboardUtama = () => {
       />
       <ToastContainer closeButton={false} />
       <HeaderDashboard />
-
       <Container fluid className="ps-3 pe-3">
         <Row className="mt-3 d-flex flex-row-reverse mb-3">
           <Col lg={'auto'}>
@@ -121,7 +131,7 @@ const DashboardUtama = () => {
             <CustomSelect
               id="carabayar"
               name="carabayar"
-              options={[]}
+              options={CaraBayarValue}
               onChange={(e) => {
                 vFilter.setFieldValue('carabayar', e?.value || '')
               }}
@@ -164,27 +174,27 @@ const DashboardUtama = () => {
 }
 
 const StackedRJ = () => {
-  const dataColors =
-    '["--vz-primary", "--vz-success", "--vz-warning", "--vz-danger"]'
-  var chartColumnStackedColors = getChartColorsArray(dataColors)
+  const dispatch = useDispatch()
   const pasienTerdaftar = useSelector(
     (state) => state.Eis.getPasienRJ.data?.pasienTerdaftar || []
   )
   const pasienBatal = useSelector(
     (state) => state.Eis.getPasienRJ.data?.pasienBatal || []
   )
-  const isiPasienDaftar = pasienTerdaftar.map((pasien) => pasien.total)
-  const isiPasienBatal = pasienBatal.map((pasien) => pasien.total)
+  const totalPasienDaftar = pasienTerdaftar.map((pasien) => pasien.total)
+  const totalPasienBatal = pasienBatal.map((pasien) => pasien.total)
   const tglPasienDaftar = pasienTerdaftar.map((pasien) => pasien.date)
 
   const series = [
     {
       name: 'Pasien terdaftar',
-      data: isiPasienDaftar,
+      data: totalPasienDaftar,
+      dataComplete: pasienTerdaftar,
     },
     {
       name: 'Pasien Batal',
-      data: isiPasienBatal,
+      data: totalPasienBatal,
+      dataComplete: pasienBatal,
     },
   ]
 
@@ -196,6 +206,15 @@ const StackedRJ = () => {
       },
       zoom: {
         enabled: !0,
+      },
+      events: {
+        dataPointSelection: (event, chartContext, config) => {
+          const sIndex = config.seriesIndex
+          const dIndex = config.dataPointIndex
+          const data = series[sIndex].dataComplete[dIndex]
+          const name = series[sIndex].name
+          data && dispatch(setPasienRajal(name, data))
+        },
       },
     },
     responsive: [
@@ -210,6 +229,7 @@ const StackedRJ = () => {
         },
       },
     ],
+
     plotOptions: {
       bar: {
         horizontal: !1,
@@ -251,6 +271,7 @@ const StackedRJ = () => {
 }
 
 const StackedGD = () => {
+  const dispatch = useDispatch()
   const dataColors =
     '["--vz-primary", "--vz-success", "--vz-warning", "--vz-danger"]'
   var chartColumnStackedColors = getChartColorsArray(dataColors)
@@ -272,14 +293,17 @@ const StackedGD = () => {
     {
       name: 'Pasien terdaftar',
       data: isiPasienDaftar,
+      dataComplete: pasienTerdaftar,
     },
     {
       name: 'Pasien Rawat',
       data: isiPasienRawat,
+      dataComplete: pasienRawat,
     },
     {
       name: 'Pasien Pulang',
       data: isiPasienPulang,
+      dataComplete: pasienPulang,
     },
   ]
 
@@ -291,6 +315,15 @@ const StackedGD = () => {
       },
       zoom: {
         enabled: !0,
+      },
+      events: {
+        dataPointSelection: (event, chartContext, config) => {
+          const sIndex = config.seriesIndex
+          const dIndex = config.dataPointIndex
+          const data = series[sIndex].dataComplete[dIndex]
+          const name = series[sIndex].name
+          data && dispatch(setPasienGadar(name, data))
+        },
       },
     },
     responsive: [
@@ -346,9 +379,7 @@ const StackedGD = () => {
 }
 
 const StackedRI = () => {
-  const dataColors =
-    '["--vz-primary", "--vz-success", "--vz-warning", "--vz-danger"]'
-  var chartColumnStackedColors = getChartColorsArray(dataColors)
+  const dispatch = useDispatch()
   const pasienTerdaftar = useSelector(
     (state) => state.Eis.getPasienRanap.data?.pasienTerdaftar || []
   )
@@ -367,14 +398,17 @@ const StackedRI = () => {
     {
       name: 'Pasien terdaftar',
       data: isiPasienDaftar,
+      dataComplete: pasienTerdaftar,
     },
     {
       name: 'Pasien Meninggal',
       data: isiPasienMeninggal,
+      dataComplete: pasienMeninggal,
     },
     {
       name: 'Pasien Pulang',
       data: isiPasienPulang,
+      dataComplete: pasienPulang,
     },
   ]
 
@@ -386,6 +420,15 @@ const StackedRI = () => {
       },
       zoom: {
         enabled: !0,
+      },
+      events: {
+        dataPointSelection: (event, chartContext, config) => {
+          const sIndex = config.seriesIndex
+          const dIndex = config.dataPointIndex
+          const data = series[sIndex].dataComplete[dIndex]
+          const name = series[sIndex].name
+          data && dispatch(setPasienRanap(name, data))
+        },
       },
     },
     responsive: [
@@ -441,21 +484,40 @@ const StackedRI = () => {
 }
 
 const CaraBayar = () => {
-  const dataColors =
-    '["--vz-primary", "--vz-success", "--vz-warning", "--vz-danger", "--vz-info"]'
-  var chartPieBasicColors = getChartColorsArray(dataColors)
-  const totalData = useSelector((state) => ({
-    bpjs: state.Eis.getCountCaraBayar.data.bpjs?.count || 0,
-    umum: state.Eis.getCountCaraBayar.data.umum?.count || 0,
-    nonBPJS: state.Eis.getCountCaraBayar.data.nonBPJS?.count || 0,
+  const dispatch = useDispatch()
+  const total = useSelector((state) => ({
+    bpjs: state.Eis.getCountCaraBayar.data.bpjs,
+    umum: state.Eis.getCountCaraBayar.data.umum,
+    nonBPJS: state.Eis.getCountCaraBayar.data.nonBPJS || 0,
   }))
-  const series = [totalData.bpjs, totalData.umum, totalData.nonBPJS]
+  const series = [
+    total.bpjs?.count || 0,
+    total.umum?.count || 0,
+    total?.nonBPJS?.count || 0,
+  ]
+  const seriesData = [
+    total.bpjs?.data || [],
+    total.umum?.data || [],
+    total?.nonBPJS?.data || [],
+  ]
+  console.log(total)
+  console.log(seriesData)
+  const labels = ['BPJS Kesehatan', 'Umum', 'Asuransi Lain']
   var options = {
     chart: {
       height: 300,
       type: 'pie',
+      events: {
+        dataPointSelection: (event, chartContext, config) => {
+          const dIndex = config.dataPointIndex
+          console.log(seriesData)
+          const data = seriesData[dIndex]
+          const name = labels[dIndex]
+          data && dispatch(setPasienRanap(name, data))
+        },
+      },
     },
-    labels: ['Umum', 'BPJS Kesehatan', 'Asuransi Lain'],
+    labels: labels,
     legend: {
       position: 'bottom',
     },
@@ -605,9 +667,11 @@ const KunjunganPoliklinik = () => {
   const kunjunganNama = kunjungan.map((kunj) => kunj.namaunit.split(' '))
   const series = [
     {
+      name: 'Total kunjungan',
       data: kunjunganTotal,
     },
   ]
+
   let options = {
     chart: {
       height: 350,
@@ -624,7 +688,7 @@ const KunjunganPoliklinik = () => {
       },
     },
     dataLabels: {
-      enabled: false,
+      enabled: true,
     },
     legend: {
       show: false,
@@ -830,6 +894,25 @@ const tableCustomStyles = {
     },
   },
 }
+
+const CaraBayarValue = [
+  {
+    value: 1,
+    label: 'Semua',
+  },
+  {
+    value: 2,
+    label: 'BPJS',
+  },
+  {
+    value: 3,
+    label: 'Umum',
+  },
+  {
+    value: 4,
+    label: 'Asuransi Lain',
+  },
+]
 
 export const HeaderDashboard = () => {
   const items = [

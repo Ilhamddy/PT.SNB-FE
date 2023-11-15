@@ -25,7 +25,13 @@ import {
     GET_PEGAWAI_PENSIUN_ERROR,
     GET_DASBOR_FARMASI,
     GET_DASBOR_FARMASI_SUCCESS,
-    GET_DASBOR_FARMASI_ERROR
+    GET_DASBOR_FARMASI_ERROR,
+    SET_PASIEN_RAJAL,
+    RESET_PASIEN_RAJAL,
+    SET_PASIEN_GADAR,
+    RESET_PASIEN_GADAR,
+    SET_PASIEN_RANAP,
+    RESET_PASIEN_RANAP
 } from "./actionType";
   
 const INIT_STATE = {
@@ -73,6 +79,20 @@ const INIT_STATE = {
         data: [],
         loading: false,
         error: null
+    },
+    tabelPasien: {
+        pasienRajal: {
+            name: "",
+            data: null,
+        },
+        pasienGadar: {
+            name: "",
+            data: null
+        },
+        pasienRanap: {
+            name: "",
+            data: null
+        }
     }
 };
   
@@ -404,6 +424,65 @@ const Eis = (state = INIT_STATE, action) => {
             }
         }
 
+        case SET_PASIEN_RAJAL: {
+            return {
+                ...state,
+                tabelPasien: {
+                    ...state.tabelPasien,
+                    pasienRajal: action.payload
+                }
+            }
+        }
+
+        case RESET_PASIEN_RAJAL: {
+            return {
+                ...state,
+                tabelPasien: {
+                    ...state.tabelPasien,
+                    pasienRajal: INIT_STATE.tabelPasien.pasienRajal
+                }
+            }
+        }
+
+        case SET_PASIEN_GADAR: {
+            return {
+                ...state,
+                tabelPasien: {
+                    ...state.tabelPasien,
+                    pasienGadar: action.payload
+                }
+            }
+        }
+
+        case RESET_PASIEN_GADAR: {
+            return {
+                ...state,
+                tabelPasien: {
+                    ...state.tabelPasien,
+                    pasienGadar: INIT_STATE.tabelPasien.pasienGadar
+                }
+            }
+        }
+
+        case SET_PASIEN_RANAP: {
+            return {
+                ...state,
+                tabelPasien: {
+                    ...state.tabelPasien,
+                    pasienRanap: action.payload
+                }
+            }
+        }
+
+        case RESET_PASIEN_RANAP: {
+            return {
+                ...state,
+                tabelPasien: {
+                    ...state.tabelPasien,
+                    pasienRanap: INIT_STATE.tabelPasien.pasienRanap
+                }
+            }
+        }
 
         default: {
             return { ...state };
