@@ -5,7 +5,7 @@ import db from "../../../models";
 import {
     createTransaction
 } from "../../../utils/dbutils";
-import { qCountCaraBayar, qCountNonBPJS, qGetCountDokterUmum, qGetCountJenisKelamin, qGetCountPegawai, qGetCountPendidikanTerakhir, qGetCountPenunjangMedis, qGetCountPerawatBidan, qGetCountProfesi, qGetCountSpesialis, qGetCountSpesialisasi, qGetCountStatus, qGetCountUnit, qGetJabatan, qGetKunjunganPoliklinik, qGetPasienBatal, qGetPasienMeninggalRanap, qGetPasienPulangIGD, qGetPasienPulangRanap, qGetPasienRawatIGD, qGetPasienTerdaftar, qGetPasienTerdaftarRanap, qGetPegawaiPensiun, qGetPegawaiSIP, qGetPemesanan, qGetPenerimaan, qGetRetur, qGetTempatTidur, qGetUsia } from "../../../queries/eis/eis.queries";
+import { qCountCaraBayar, qCountNonBPJS, qGetCountDokterUmum, qGetCountJenisKelamin, qGetCountPegawai, qGetCountPendidikanTerakhir, qGetCountPenunjangMedis, qGetCountPerawatBidan, qGetCountProfesi, qGetCountSpesialis, qGetCountSpesialisasi, qGetCountStatus, qGetCountUnit, qGetJabatan, qGetKartuStok, qGetKunjunganPoliklinik, qGetPasienBatal, qGetPasienMeninggalRanap, qGetPasienPulangIGD, qGetPasienPulangRanap, qGetPasienRawatIGD, qGetPasienTerdaftar, qGetPasienTerdaftarRanap, qGetPegawaiPensiun, qGetPegawaiSIP, qGetPemesanan, qGetPenerimaan, qGetProdukTerbanyak, qGetRetur, qGetSepuluhBesarObat, qGetTempatTidur, qGetUsia } from "../../../queries/eis/eis.queries";
 import { getDateStartEnd, getDateStartEndYear } from "../../../utils/dateutils";
 import { daftarInstalasi } from "../../../queries/master/instalasi/instalasi.queries";
 import { daftarRekanan } from "../../../queries/master/rekanan/rekanan.queries";
@@ -437,7 +437,11 @@ const getDasborFarmasi = async (req, res) => {
         const pemesanan = (await pool.query(qGetPemesanan)).rows
         const penerimaan = (await pool.query(qGetPenerimaan)).rows
         const retur = (await pool.query(qGetRetur)).rows
-
+        const kartuStok = (await pool.query(qGetKartuStok)).rows
+        const sepuluhBesarObat = (await pool.query(qGetSepuluhBesarObat))
+            .rows
+            .slice(0, 10)
+        const produkTerbanyak = (await pool.query(qGetProdukTerbanyak)).rows
         const jmlPemesanan = pemesanan.length
         const jmlPenerimaan = penerimaan.length
         const jmlRetur = retur.length
@@ -447,7 +451,10 @@ const getDasborFarmasi = async (req, res) => {
             penerimaan: penerimaan,
             jmlPenerimaan: jmlPenerimaan,
             retur: retur,
-            jmlRetur: jmlRetur
+            jmlRetur: jmlRetur,
+            kartuStok: kartuStok,
+            sepuluhBesarObat: sepuluhBesarObat,
+            produkTerbanyak: produkTerbanyak
         };
         res.status(200).send({
             msg: 'Success',
