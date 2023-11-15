@@ -176,11 +176,14 @@ SELECT
 	mk.objectprodukfk AS objectprodukfk,
 	mk.objectruangperawatankemenkesfk AS objectruangperawatankemenkesfk,
 	mk.tglupdate AS tglupdate,
-	mk.produkfk AS produkfk
+	mk.produkfk AS produkfk,
+	mk.objectspesialisfk,
+	ms.reportdisplay as spesialis
 FROM m_kamar mk
 	LEFT JOIN m_kelas mkel ON mk.objectkelasfk = mkel.id
 	LEFT JOIN m_unit mu ON mk.objectunitfk = mu.id
 	LEFT JOIN m_instalasi mi ON mu.objectinstalasifk = mi.id
+	LEFT JOIN m_spesialisasi ms ON mk.objectspesialisfk = ms.id
 WHERE 
 	true 
 	AND

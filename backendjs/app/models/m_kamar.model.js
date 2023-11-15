@@ -60,7 +60,9 @@ export default (sequelize, Sequelize) => {
         produkfk: {
             type: Sequelize.INTEGER
         },
-
+        objectspesialisfk: {
+            type: Sequelize.INTEGER
+        },
     }, {
         tableName: "m_kamar",
         createdAt: false,

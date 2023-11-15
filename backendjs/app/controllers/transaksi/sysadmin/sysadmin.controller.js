@@ -21,6 +21,7 @@ import kelasQueries from "../../../queries/master/kelas/kelas.queries";
 import kamarQueries from "../../../queries/master/kamar/kamar.queries";
 import instalasiQueries from "../../../queries/master/instalasi/instalasi.queries";
 import statusbedQueries from "../../../queries/master/statusbed/statusbed.queries";
+import spesialisasiQueries from "../../../queries/master/spesialisasi/spesialisasi.queries";
 
 
 
@@ -306,10 +307,12 @@ const getComboDaftarKamar = async (req, res) => {
         const unit = (await pool.query(unitQueries.getRawatInap)).rows;
         const kelas = (await pool.query(kelasQueries.getAll)).rows;
         const instalasi = (await pool.query(instalasiQueries.getAll)).rows;
+        const spesialisasi = (await pool.query(spesialisasiQueries.getAll)).rows;
         const tempres = {
             unit,
             kelas,
-            instalasi
+            instalasi,
+            spesialisasi
         };
         res.status(200).send({
             msg: 'Success',
@@ -379,7 +382,8 @@ const upsertKamar = async (req, res) => {
                     objectkelasfk: reqBody.kelas,
                     objectunitfk: reqBody.unit,
                     namakamar: reqBody.namakamar,
-                    tglupdate: new Date()
+                    tglupdate: new Date(),
+                    objectspesialisfk:reqBody.jenisPelayanan
                 }, {
                     transaction: transaction
                 })
@@ -401,6 +405,7 @@ const upsertKamar = async (req, res) => {
                     objectruangperawatankemenkesfk: null,
                     tglupdate: new Date(),
                     produkfk: null,
+                    objectspesialisfk:reqBody.jenisPelayanan
                 }, {
                     transaction: transaction
                 })

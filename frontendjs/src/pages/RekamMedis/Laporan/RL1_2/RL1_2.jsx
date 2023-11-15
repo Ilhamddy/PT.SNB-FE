@@ -6,13 +6,11 @@ import BreadCrumb from '../../../../Components/Common/BreadCrumb';
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import KontainerFlatpickr from '../../../../Components/KontainerFlatpickr/KontainerFlatpickr';
-import DataTable from 'react-data-table-component'
-import LoadingTable from '../../../../Components/Table/LoadingTable';
 import {
   getLaporanRl_1_2, kendaliDokumenResetForm
 } from '../../../../store/actions';
 import { Grid, _ } from 'gridjs-react';
-import { BaseExample } from '../../../../pages/Tables/GridTables/GridTablesData';
+import * as XLSX from 'xlsx';
 
 const RL1_2 = () => {
   document.title = "Laporan RL1.2";
@@ -111,6 +109,18 @@ const RL1_2 = () => {
       // formatter: (cell) => _(<a href="/#"> {cell} </a>)
     },
   ]
+  const handleExport = () => {
+    const formattedData = dataGrid.map(item => Object.values(item));
+    const firstObject = dataGrid[0];
+    const header = Object.keys(firstObject);
+    console.log(header)
+    const sheetData = [header, ...formattedData];
+    const worksheet = XLSX.utils.aoa_to_sheet(sheetData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+
+    XLSX.writeFile(workbook, 'laporan_rl3_15.xlsx');
+  };
   return (
     <React.Fragment>
       <UiContent />
@@ -175,8 +185,10 @@ const RL1_2 = () => {
                   </Button>
                   <UncontrolledTooltip placement="top" target="tooltipTopPencarian" > Pencarian </UncontrolledTooltip>
                 </Col>
-                <Col lg={12}>
-
+                <Col lg={2}>
+                  <Button type="button" placement="top" id="tooltipTopPencarian" onClick={handleExport}>
+                    Export to Excel
+                  </Button>
                 </Col>
               </Row>
             </Card>
