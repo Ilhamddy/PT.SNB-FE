@@ -41,7 +41,7 @@ const RL2 = () => {
     {
       id: 'id',
       formatter: (cell) => _(<span>{cell}</span>),
-      name: 'No'
+      name: 'NO KODE'
     },
     {
       id: 'reportdisplay',
@@ -50,36 +50,46 @@ const RL2 = () => {
     },
     {
       id: 'total',
-      name: 'Jumlah TT'
+      name: 'KUALIFIKASI PENDIDIKAN'
       // formatter: (cell) => _(<a href="/#"> {cell} </a>)
     },
     {
-      name: 'PERINCIAN TEMPAT TIDUR PER-KELAS',
+      name: 'KEADAAN',
       columns: [
         {
           id: 'vvip',
-          name: 'VVIP'
+          name: 'Laki-laki'
         },
         {
           id: 'vip',
-          name: 'VIP'
+          name: 'Perempuan'
+        },
+      ]
+    },
+    {
+      name: 'KEBUTUHAN',
+      columns: [
+        {
+          id: 'vvip',
+          name: 'Laki-laki'
         },
         {
-          id: 'kl1',
-          name: 'I'
+          id: 'vip',
+          name: 'Perempuan'
+        },
+      ]
+    },
+    {
+      name: 'KEKURANGAN',
+      columns: [
+        {
+          id: 'vvip',
+          name: 'Laki-laki'
         },
         {
-          id: 'kl2',
-          name: 'II'
+          id: 'vip',
+          name: 'Perempuan'
         },
-        {
-          id: 'kl3',
-          name: 'III'
-        },
-        {
-          id: 'khusus',
-          name: 'Kelas Khusus'
-        }
       ]
     },
   ]

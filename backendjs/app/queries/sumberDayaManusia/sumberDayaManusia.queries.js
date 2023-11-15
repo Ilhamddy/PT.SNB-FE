@@ -93,8 +93,7 @@ WHERE tl.statusenabled = true
         OR $3 = ''
     )
 
-ORDER BY tl.tgllibur DESC
-`
+ORDER BY tl.tgllibur DESC`
 
 export default {
     qDaftarPegawai,
@@ -115,5 +114,6 @@ export default {
     qUserRoleById,qRole,
     qJadwalDokter,
     qAccesUnit,
-    qGetLiburPegawai
+    qGetLiburPegawai,
+   
 }

@@ -288,6 +288,14 @@ sum(case when mk.objectkelasfk not in (1,2,3,4,5) then 1 else 0 end)as total fro
 join m_kamar mk on mk.objectspesialisfk=ms.id
 group by ms.reportdisplay`
 
+const qListRL2=`SELECT * FROM m_pendidikanpegawai mp where statusenabled=true
+order by id`
+
+const qIsiListRL2=`select mp2.reportdisplay,sum(case when mp.objectjeniskelaminfk=1 then 1 else 0 end)as keadaan_lk,
+sum(case when mp.objectjeniskelaminfk=2 then 1 else 0 end)as keadaan_pm from m_pegawai mp
+join m_pendidikanpegawai mp2 on mp2.id=mp.objectpendidikanterakhirfk 
+group by mp2.reportdisplay`
+
 export default {
     qResult,
     qGetDetailFromJenisProduk,
@@ -312,5 +320,7 @@ export default {
     qJumlahPasienKeluarHidupMati,
     qJumlahPasienKeluarMatiLebih48,
     qJumlahPasienKeluarMati,
-    qLaporanRL1_3
+    qLaporanRL1_3,
+    qListRL2,
+    qIsiListRL2
 }
