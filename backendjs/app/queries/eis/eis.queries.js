@@ -519,6 +519,63 @@ GROUP BY
 ORDER BY trb.tglretur DESC
 `
 
+const qGetSepuluhBesarObat = `
+SELECT
+    mp.id AS idproduk,
+    mp.namaproduk AS namaproduk,
+    COALESCE(SUM(CEIL(tvr.qty))::INT, 0) AS jumlahpenggunaan
+FROM m_produk mp
+    LEFT JOIN t_verifresep tvr ON (
+        tvr.objectprodukfk = mp.id
+    )
+WHERE mp.isobat = true AND mp.statusenabled = true
+GROUP BY
+    mp.id,
+    mp.namaproduk
+ORDER BY
+    COALESCE(SUM(CEIL(tvr.qty))::INT, 0) DESC
+`
+
+const qGetKartuStok = `
+SELECT
+    tks.norec AS noreckartustok,
+    mp.namaproduk AS namaproduk,
+    tks.tglinput AS tglinput,
+    tks.saldoawal AS saldoawal,
+    tks.masuk AS saldomasuk,
+    tks.keluar AS saldokeluar,
+    tks.saldoakhir AS saldoakhir,
+    mu.namaunit AS namaunit
+FROM t_kartustok tks
+    LEFT JOIN m_produk mp ON mp.id = tks.objectprodukfk
+    LEFT JOIN m_unit mu ON mu.id = tks.objectunitfk
+WHERE tks.statusenabled = true
+ORDER BY tks.tglinput DESC
+LIMIT 120
+`
+
+const qGetProdukTerbanyak = `
+SELECT
+    mp.id AS idproduk,
+    mp.namaproduk AS namaproduk,
+    COALESCE(SUM(CEIL(tsu.qty))::INT, 0) AS jumlahproduk,
+    ms.reportdisplay AS namasatuan
+FROM m_produk mp
+    LEFT JOIN t_stokunit tsu ON mp.id = tsu.objectprodukfk
+    LEFT JOIN m_satuan ms ON ms.id = mp.objectsatuanstandarfk
+WHERE (
+        mp.isobat = true
+        OR mp.isalkes = true
+    ) 
+    AND mp.statusenabled = true
+GROUP BY
+    mp.id,
+    mp.namaproduk,
+    ms.reportdisplay
+ORDER BY
+    COALESCE(SUM(CEIL(tsu.qty))::INT, 0) DESC
+`
+
 
 export {
     qGetPasienTerdaftar,
@@ -549,5 +606,8 @@ export {
     qGetPegawaiSIP,
     qGetPemesanan,
     qGetPenerimaan,
-    qGetRetur
+    qGetRetur,
+    qGetKartuStok,
+    qGetSepuluhBesarObat,
+    qGetProdukTerbanyak
 }

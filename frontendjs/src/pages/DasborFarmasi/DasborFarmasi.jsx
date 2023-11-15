@@ -74,6 +74,17 @@ const DasborFarmasi = () => {
           <Col lg={6}>
             <ReturBarangFarmasi />
           </Col>
+          <Col lg={6}>
+            <PemakaianObat />
+          </Col>
+        </Row>
+        <Row>
+          <Col lg={8}>
+            <KartuStok />
+          </Col>
+          <Col lg={4}>
+            <KetersediaanBarang />
+          </Col>
         </Row>
       </Container>
     </div>
@@ -341,7 +352,7 @@ const ReturBarangFarmasi = () => {
   ]
 
   return (
-    <Card className="p-3">
+    <Card className="p-3" style={{ height: 450 }}>
       <Row className="mb-3">
         <Col lg={12}>
           <h4>Retur barang farmasi</h4>
@@ -362,17 +373,16 @@ const ReturBarangFarmasi = () => {
   )
 }
 
-const KunjunganPoliklinik = () => {
-  const dataColors =
-    '["--vz-primary", "--vz-success", "--vz-warning", "--vz-danger", "--vz-dark", "--vz-info"]'
-  const kunjungan = useSelector(
-    (state) => state.Eis.getPoliklinikTerbanyak.data?.kunjungan || []
+const PemakaianObat = () => {
+  const sepuluhBesar = useSelector(
+    (state) => state.Eis.getDasborFarmasi.data?.sepuluhBesarObat || []
   )
-  const kunjunganTotal = kunjungan.map((kunj) => kunj._total)
-  const kunjunganNama = kunjungan.map((kunj) => kunj.namaunit.split(' '))
+  const sepuluhBesarTotal = sepuluhBesar.map((sep) => sep.jumlahpenggunaan)
+
+  const sepuluhBesarNama = sepuluhBesar.map((sep) => sep.namaproduk.split(' '))
   const series = [
     {
-      data: kunjunganTotal,
+      data: sepuluhBesarTotal,
     },
   ]
   let options = {
@@ -397,7 +407,7 @@ const KunjunganPoliklinik = () => {
       show: false,
     },
     xaxis: {
-      categories: kunjunganNama,
+      categories: sepuluhBesarNama,
       labels: {
         style: {
           colors: colors,
@@ -408,7 +418,7 @@ const KunjunganPoliklinik = () => {
   }
 
   return (
-    <Card className="p-3" style={{ height: 500 }}>
+    <Card className="p-3" style={{ height: 450 }}>
       <Row className="mb-3">
         <Col lg={12}>
           <h4>10 Besar Kunjungan poliklinik</h4>
@@ -424,6 +434,138 @@ const KunjunganPoliklinik = () => {
           height={350}
         />
       </Row>
+    </Card>
+  )
+}
+
+const KartuStok = () => {
+  const returList = useSelector(
+    (state) => state.Eis.getDasborFarmasi.data?.kartuStok || []
+  )
+  /**
+   * @type {import("react-data-table-component").TableColumn[]}
+   */
+  const columnsDetail = [
+    {
+      name: <span className="font-weight-bold fs-13">Tanggal Transaksi</span>,
+      sortable: true,
+      selector: (row) => dateLocal(row.tglinput),
+      width: '100px',
+    },
+    {
+      name: <span className="font-weight-bold fs-13">Nama Unit</span>,
+      selector: (row) => row.namaunit,
+      sortable: true,
+      width: '140px',
+    },
+
+    {
+      name: <span className="font-weight-bold fs-13">Transaksi</span>,
+      sortable: true,
+      selector: (row) => (row.saldomasuk > 0 ? 'Pemasukan' : 'Pengeluaran'),
+      width: '120px',
+    },
+    {
+      name: <span className="font-weight-bold fs-13">Nama Item</span>,
+      sortable: true,
+      selector: (row) => row.namaproduk,
+      width: '120px',
+      wrap: true,
+    },
+    {
+      name: <span className="font-weight-bold fs-13">Saldo Awal</span>,
+      sortable: true,
+      selector: (row) => row.saldoawal,
+      width: '85px',
+    },
+    {
+      name: <span className="font-weight-bold fs-13">Saldo Masuk</span>,
+      sortable: true,
+      selector: (row) => row.saldomasuk,
+      width: '85px',
+    },
+    {
+      name: <span className="font-weight-bold fs-13">Saldo Keluar</span>,
+      sortable: true,
+      selector: (row) => row.saldokeluar,
+      width: '85px',
+    },
+    {
+      name: <span className="font-weight-bold fs-13">Saldo Akhir</span>,
+      sortable: true,
+      selector: (row) => row.saldoakhir,
+      width: '85px',
+    },
+  ]
+
+  return (
+    <Card className="p-3" style={{ height: 450 }}>
+      <Row className="mb-3">
+        <Col lg={12}>
+          <h4>Kartu Stok</h4>
+        </Col>
+      </Row>
+      <DataTable
+        fixedHeader
+        columns={columnsDetail}
+        pagination
+        paginationPerPage={5}
+        data={returList}
+        progressPending={false}
+        customStyles={tableCustomStyles}
+        progressComponent={<LoadingTable />}
+        noDataComponent={<NoDataTable />}
+      />
+    </Card>
+  )
+}
+
+const KetersediaanBarang = () => {
+  const produkList = useSelector(
+    (state) => state.Eis.getDasborFarmasi.data?.produkTerbanyak || []
+  )
+  /**
+   * @type {import("react-data-table-component").TableColumn[]}
+   */
+  const columnsDetail = [
+    {
+      name: <span className="font-weight-bold fs-13">No. Retur</span>,
+      sortable: true,
+      selector: (row) => row.namaproduk,
+      width: '120px',
+    },
+    {
+      name: <span className="font-weight-bold fs-13">Jumlah Stok</span>,
+      selector: (row) => row.jumlahproduk,
+      sortable: true,
+      width: '120px',
+    },
+    {
+      name: <span className="font-weight-bold fs-13">Nama Supplier</span>,
+      sortable: true,
+      selector: (row) => row.namasatuan,
+      width: '120px',
+    },
+  ]
+
+  return (
+    <Card className="p-3" style={{ height: 450 }}>
+      <Row className="mb-3">
+        <Col lg={12}>
+          <h4>Retur barang farmasi</h4>
+        </Col>
+      </Row>
+      <DataTable
+        fixedHeader
+        columns={columnsDetail}
+        pagination
+        paginationPerPage={5}
+        data={produkList}
+        progressPending={false}
+        customStyles={tableCustomStyles}
+        progressComponent={<LoadingTable />}
+        noDataComponent={<NoDataTable />}
+      />
     </Card>
   )
 }
