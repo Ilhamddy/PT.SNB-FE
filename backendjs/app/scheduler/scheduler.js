@@ -31,7 +31,7 @@ function formatDate(date) {
     return [year, month, day].join('-');
 }
 
-const scheduledTask = schedule.scheduleJob('43 * * * *', async function () {
+const scheduledTask = schedule.scheduleJob('40 * * * *', async function () {
     const logger = 'Running scheduled task...';
     console.log('Running scheduled task...');
     try{
@@ -89,7 +89,7 @@ const scheduledTask = schedule.scheduleJob('43 * * * *', async function () {
                 }
             }
             await Promise.all(kamars.rows.map(async (itemx) =>{
-                console.log(itemx.idunit,itemx.totalbed)
+                // console.log(itemx.idunit,itemx.totalbed)
                 if(queryBedHarian.rows.length ===0){
                     addBed = await db.t_bedharian.create({
                         norec: uuid.v4().substring(0, 32),
