@@ -177,7 +177,8 @@ SELECT
 	mk.objectruangperawatankemenkesfk AS objectruangperawatankemenkesfk,
 	mk.tglupdate AS tglupdate,
 	mk.produkfk AS produkfk,
-	mk.objectspesialisfk
+	mk.objectspesialisfk,
+	ms.reportdisplay as spesialis
 FROM m_kamar mk
 	LEFT JOIN m_kelas mkel ON mk.objectkelasfk = mkel.id
 	LEFT JOIN m_unit mu ON mk.objectunitfk = mu.id

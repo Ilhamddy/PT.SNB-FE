@@ -115,6 +115,12 @@ const DaftarKamar = () => {
       width: '150px',
     },
     {
+      name: <span className="font-weight-bold fs-13">Spesialis</span>,
+      selector: (row) => row.spesialis,
+      sortable: true,
+      width: '150px',
+    },
+    {
       name: <span className="font-weight-bold fs-13">Aksi</span>,
       cell: (row) => (
         <Button
