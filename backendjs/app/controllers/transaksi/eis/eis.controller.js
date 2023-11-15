@@ -17,7 +17,7 @@ const Op = db.Sequelize.Op;
 const getPasienRJ = async (req, res) => {
     const logger = res.locals.logger;
     try{
-        const { tanggalmulai, tanggalselesai } = req.query
+        const { tanggalmulai, tanggalselesai, carabayar } = req.query
         const {
             todayStart: awalTanggalMulai, 
         } 
@@ -30,7 +30,8 @@ const getPasienRJ = async (req, res) => {
         const pasienTerdaftar = (await pool.query(qGetPasienTerdaftar, [
             awalTanggalMulai || '',
             akhirTanggalSelesai || '',
-            daftarInstalasi.INSTALASI_RAWAT_JALAN
+            daftarInstalasi.INSTALASI_RAWAT_JALAN,
+            carabayar || ""
         ])).rows
         const pasienBatal = (await pool.query(qGetPasienBatal , [
             awalTanggalMulai || '',
@@ -71,7 +72,7 @@ const getPasienRJ = async (req, res) => {
 const getPasienIGD = async (req, res) => {
     const logger = res.locals.logger;
     try{
-        const { tanggalmulai, tanggalselesai } = req.query
+        const { tanggalmulai, tanggalselesai, carabayar } = req.query
         const {
             todayStart: awalTanggalMulai, 
         } 
@@ -84,18 +85,21 @@ const getPasienIGD = async (req, res) => {
         const pasienTerdaftar = (await pool.query(qGetPasienTerdaftar, [
             awalTanggalMulai || '',
             akhirTanggalSelesai || '',
-            daftarInstalasi.INSTALASI_GAWAT_DARURAT
+            daftarInstalasi.INSTALASI_GAWAT_DARURAT,
+            carabayar || ""
         ])).rows
 
 
         const pasienPulang = (await pool.query(qGetPasienPulangIGD , [
             awalTanggalMulai || '',
-            akhirTanggalSelesai || ''
+            akhirTanggalSelesai || '',
+            carabayar || ''
         ])).rows
 
         const pasienRawat = (await pool.query(qGetPasienRawatIGD , [
             awalTanggalMulai || '',
-            akhirTanggalSelesai || ''
+            akhirTanggalSelesai || '',
+            carabayar || ''
         ])).rows
 
         const arrTimesTerdaftar = hGroupDateAr(
@@ -232,7 +236,7 @@ const getPasienRanap = async (req, res) => {
 const getCountCaraBayar = async (req, res) => {
     const logger = res.locals.logger;
     try{
-        const { tanggalmulai, tanggalselesai } = req.query
+        const { tanggalmulai, tanggalselesai, carabayar } = req.query
         const {
             todayStart: awalTanggalMulai, 
         } 
@@ -244,25 +248,37 @@ const getCountCaraBayar = async (req, res) => {
 
         const [bpjs, umum, nonBPJS] = await Promise.all([
             pool.query(qCountCaraBayar, [
-                awalTanggalMulai,
-                akhirTanggalSelesai,
-                daftarRekanan.BPJSKESEHATAN
+                awalTanggalMulai || '',
+                akhirTanggalSelesai  || '',
+                daftarRekanan.BPJSKESEHATAN,
+                carabayar || ''
             ]), 
             pool.query(qCountCaraBayar, [
-                awalTanggalMulai,
-                akhirTanggalSelesai,
-                daftarRekanan.UMUMPRIBADI
+                awalTanggalMulai || '',
+                akhirTanggalSelesai || '',
+                daftarRekanan.UMUMPRIBADI,
+                carabayar || ''
             ]),
             pool.query(qCountNonBPJS, [
-                awalTanggalMulai,
-                akhirTanggalSelesai
+                awalTanggalMulai || '',
+                akhirTanggalSelesai || '',
+                carabayar || ''
             ]),
         ])
 
         const tempres = {
-            bpjs: bpjs.rows[0] || null,
-            umum: umum.rows[0] || null,
-            nonBPJS: nonBPJS.rows[0] || null
+            bpjs: {
+                data: bpjs.rows,
+                count: bpjs.rows.length
+            },
+            umum: {
+                data: umum.rows,
+                count: umum.rows.length
+            },
+            nonBPJS: {
+                data: nonBPJS.rows,
+                count: nonBPJS.rows.length
+            }
         };
         res.status(200).send({
             msg: 'Success',

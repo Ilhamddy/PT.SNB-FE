@@ -4,6 +4,71 @@ import { daftarRekanan } from "../master/rekanan/rekanan.queries"
 import { daftarStatusPulang } from "../master/statuspulang/statuspulang.queries"
 import { statusBed } from "../sysadmin/sysadmin.queries"
 
+const CARA_BAYAR_VALUE = {
+    SEMUA: 1,
+    BPJS: 2,
+    UMUM: 3,
+    ASURANSI_LAIN: 4
+}
+
+const whereCaraBayar = (q1) =>  `
+(
+        NULLIF(${q1}, '')::INT IS NULL
+    OR
+        NULLIF(${q1}, '')::INT = ${CARA_BAYAR_VALUE.SEMUA}
+    OR
+        (
+            NULLIF(${q1}, '')::INT = ${CARA_BAYAR_VALUE.BPJS}
+            AND
+            (
+                tdp.objectpenjaminfk = ${daftarRekanan.BPJSKESEHATAN}
+                OR tdp.objectpenjamin2fk = ${daftarRekanan.BPJSKESEHATAN}
+                OR tdp.objectpenjamin3fk = ${daftarRekanan.BPJSKESEHATAN}
+            )
+        )
+    OR
+        (
+            NULLIF(${q1}, '')::INT = ${CARA_BAYAR_VALUE.UMUM}
+            AND
+            (
+                tdp.objectpenjaminfk = ${daftarRekanan.UMUMPRIBADI}
+                OR tdp.objectpenjamin2fk = ${daftarRekanan.UMUMPRIBADI}
+                OR tdp.objectpenjamin3fk = ${daftarRekanan.UMUMPRIBADI}
+            )
+        )
+    OR
+        (
+            NULLIF(${q1}, '')::INT = ${CARA_BAYAR_VALUE.ASURANSI_LAIN}
+            AND
+            (
+                (
+                    tdp.objectpenjaminfk != ${daftarRekanan.BPJSKESEHATAN}
+                    AND
+                        tdp.objectpenjaminfk != ${daftarRekanan.UMUMPRIBADI}
+                    AND 
+                        tdp.objectpenjaminfk IS NOT NULL
+                )
+                OR 
+                (
+                    tdp.objectpenjamin2fk != ${daftarRekanan.BPJSKESEHATAN}
+                    AND
+                        tdp.objectpenjamin2fk != ${daftarRekanan.UMUMPRIBADI}
+                    AND 
+                        tdp.objectpenjamin2fk IS NOT NULL
+                )
+                OR 
+                (
+                    tdp.objectpenjamin3fk != ${daftarRekanan.BPJSKESEHATAN}
+                    AND
+                        tdp.objectpenjamin3fk != ${daftarRekanan.UMUMPRIBADI}
+                    AND 
+                        tdp.objectpenjamin3fk IS NOT NULL
+                )
+            )
+        )
+)
+`
+
 const qGetPasienObj = `
 SELECT
     tdp.objectinstalasifk AS instalasi,
@@ -12,33 +77,30 @@ SELECT
     mp.nocm AS nocm,
     tdp.noregistrasi AS noregistrasi,
     mr.namarekanan AS namarekanan,
-    tdp.tglregistrasi AS tglregistrasi
+    tdp.tglregistrasi AS tglregistrasi,
+    mu.namaunit AS namaunit
 `
 
 const qGetPasienTerdaftar = qGetPasienObj + `
-FROM t_daftarpasien tdp
-    LEFT JOIN m_instalasi mi ON mi.id = tdp.objectinstalasifk
+FROM t_antreanpemeriksaan tap
+    LEFT JOIN t_daftarpasien tdp ON tdp.norec = tap.objectdaftarpasienfk
+    LEFT JOIN m_unit mu ON mu.id = tap.objectunitfk
+    LEFT JOIN m_instalasi mi ON mi.id = mu.objectinstalasifk
     LEFT JOIN m_pasien mp ON mp.id = tdp.nocmfk
     LEFT JOIN m_rekanan mr ON mr.id = tdp.objectpenjaminfk
 WHERE tdp.statusenabled = true
-    AND 
-        CASE WHEN NULLIF($1, '') IS NULL
-            THEN TRUE
-            ELSE tdp.tglregistrasi >= $1::TIMESTAMP 
-        END
     AND
-        CASE WHEN NULLIF($2, '') IS NULL
-            THEN TRUE
-            ELSE tdp.tglregistrasi <= $2::TIMESTAMP
-        END
-    AND tdp.objectinstalasifk = $3
+        ${dateBetweenEmptyString("tap.tglmasuk", "$1", "$2")}
+    AND mi.id = $3
+    AND ${whereCaraBayar("$4")}
 `
 
 const qGetPasienPulangIGD = qGetPasienObj + `,
     tap.tglkeluar AS tglpulang
-FROM t_daftarpasien tdp
-    LEFT JOIN t_antreanpemeriksaan tap ON tap.objectdaftarpasienfk = tdp.norec
-    LEFT JOIN m_instalasi mi ON mi.id = tdp.objectinstalasifk
+FROM t_antreanpemeriksaan tap
+    LEFT JOIN t_daftarpasien tdp ON tdp.norec = tap.objectdaftarpasienfk
+    LEFT JOIN m_unit mu ON mu.id = tap.objectunitfk
+    LEFT JOIN m_instalasi mi ON mi.id = mu.objectinstalasifk
     LEFT JOIN m_pasien mp ON mp.id = tdp.nocmfk
     LEFT JOIN m_rekanan mr ON mr.id = tdp.objectpenjaminfk
 WHERE tdp.statusenabled = true
@@ -53,11 +115,14 @@ WHERE tdp.statusenabled = true
             ELSE tap.tglkeluar <= $2::TIMESTAMP
         END
     AND tdp.objectinstalasifk = ${daftarInstalasi.INSTALASI_GAWAT_DARURAT}
+    AND ${whereCaraBayar("$3")}
 `
 
 const qGetPasienRawatIGD = qGetPasienObj + `
-FROM t_daftarpasien tdp
-    LEFT JOIN m_instalasi mi ON mi.id = tdp.objectinstalasifk
+FROM t_antreanpemeriksaan tap
+    LEFT JOIN t_daftarpasien tdp ON tdp.norec = tap.objectdaftarpasienfk
+    LEFT JOIN m_unit mu ON mu.id = tap.objectunitfk
+    LEFT JOIN m_instalasi mi ON mi.id = mu.objectinstalasifk
     LEFT JOIN m_pasien mp ON mp.id = tdp.nocmfk
     LEFT JOIN m_rekanan mr ON mr.id = tdp.objectpenjaminfk
 WHERE tdp.statusenabled = true
@@ -73,6 +138,7 @@ WHERE tdp.statusenabled = true
         END
     AND tdp.objectinstalasifk = ${daftarInstalasi.INSTALASI_GAWAT_DARURAT}
     AND tdp.objectstatuspulangfk = ${daftarStatusPulang.RAWAT}
+    AND ${whereCaraBayar("$3")}
 `
 
 const qGetPasienTerdaftarRanap = qGetPasienObj + `,
@@ -115,6 +181,7 @@ const qGetPasienMeninggalRanap = qGetPasienObj + `,
     tdp.tglpulang AS tglpulang,
     tdp.tglmeninggal AS tglmeninggal
 FROM t_daftarpasien tdp
+    LEFT JOIN m_unit mu ON mu.id = tdp.objectunitlastfk
     LEFT JOIN m_instalasi mi ON mi.id = tdp.objectinstalasifk
     LEFT JOIN m_pasien mp ON mp.id = tdp.nocmfk
     LEFT JOIN m_rekanan mr ON mr.id = tdp.objectpenjaminfk
@@ -147,10 +214,12 @@ WHERE TRUE
     AND tdp.objectinstalasifk = $3
 `
 
-const qCountCaraBayar = `
-SELECT 
-    COUNT(*)::INT AS count
+const qCountCaraBayar = qGetPasienObj + `
 FROM t_daftarpasien tdp
+    LEFT JOIN m_unit mu ON mu.id = tdp.objectunitlastfk
+    LEFT JOIN m_instalasi mi ON mi.id = mu.objectinstalasifk
+    LEFT JOIN m_pasien mp ON mp.id = tdp.nocmfk
+    LEFT JOIN m_rekanan mr ON mr.id = tdp.objectpenjaminfk
 WHERE 
     (
         tdp.objectpenjaminfk = $3
@@ -159,46 +228,44 @@ WHERE
     )
     AND 
         ${dateBetweenEmptyString("tdp.tglregistrasi", "$1", "$2")}
+    AND ${whereCaraBayar("$4")}
 `
 
-const qCountNonBPJS = `
-SELECT 
-    COUNT(*)::INT AS count
+const qCountNonBPJS = qGetPasienObj + `
 FROM t_daftarpasien tdp
+    LEFT JOIN m_unit mu ON mu.id = tdp.objectunitlastfk
+    LEFT JOIN m_instalasi mi ON mi.id = mu.objectinstalasifk
+    LEFT JOIN m_pasien mp ON mp.id = tdp.nocmfk
+    LEFT JOIN m_rekanan mr ON mr.id = tdp.objectpenjaminfk
 WHERE 
     (
         (
-            tdp.objectpenjaminfk != 
-                ANY(ARRAY[
-                    ${daftarRekanan.BPJSKESEHATAN}, 
-                    ${daftarRekanan.UMUMPRIBADI}
-                ])
+            tdp.objectpenjaminfk != ${daftarRekanan.BPJSKESEHATAN}
+            AND
+                tdp.objectpenjaminfk != ${daftarRekanan.UMUMPRIBADI}
             AND 
                 tdp.objectpenjaminfk IS NOT NULL
         )
         OR 
         (
-            tdp.objectpenjamin2fk != 
-                ANY(ARRAY[
-                    ${daftarRekanan.BPJSKESEHATAN}, 
-                    ${daftarRekanan.UMUMPRIBADI}
-                ])
+            tdp.objectpenjamin2fk != ${daftarRekanan.BPJSKESEHATAN}
+            AND
+                tdp.objectpenjamin2fk != ${daftarRekanan.UMUMPRIBADI}
             AND 
-                tdp.objectpenjaminfk IS NOT NULL
+                tdp.objectpenjamin2fk IS NOT NULL
         )
         OR 
         (
-            tdp.objectpenjamin3fk != 
-                ANY(ARRAY[
-                    ${daftarRekanan.BPJSKESEHATAN}, 
-                    ${daftarRekanan.UMUMPRIBADI}
-                ])
+            tdp.objectpenjamin3fk != ${daftarRekanan.BPJSKESEHATAN}
+            AND
+                tdp.objectpenjamin3fk != ${daftarRekanan.UMUMPRIBADI}
             AND 
-                tdp.objectpenjaminfk IS NOT NULL
+                tdp.objectpenjamin3fk IS NOT NULL
         )
     )
     AND 
         ${dateBetweenEmptyString("tdp.tglregistrasi", "$1", "$2")}
+    AND ${whereCaraBayar("$3")}
 `
 
 const qGetKunjunganPoliklinik = qGetPasienObj + `,

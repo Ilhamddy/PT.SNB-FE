@@ -25,7 +25,13 @@ import {
     GET_PEGAWAI_PENSIUN_ERROR,
     GET_DASBOR_FARMASI,
     GET_DASBOR_FARMASI_SUCCESS,
-    GET_DASBOR_FARMASI_ERROR
+    GET_DASBOR_FARMASI_ERROR,
+    SET_PASIEN_RAJAL,
+    RESET_PASIEN_RAJAL,
+    SET_PASIEN_GADAR,
+    RESET_PASIEN_GADAR,
+    SET_PASIEN_RANAP,
+    RESET_PASIEN_RANAP
 } from "./actionType"
 
 
@@ -167,4 +173,38 @@ export const getDasborFarmasiError = (error) => ({
     payload: error
 })
 
+export const setPasienRajal = (name, data) => ({
+    type: SET_PASIEN_RAJAL,
+    payload: {
+        name: name,
+        data: data
+    }
+})
 
+export const resetPasienRajal = () => ({
+    type: RESET_PASIEN_RAJAL,
+})
+
+export const setPasienGadar = (name, data) => ({
+    type: SET_PASIEN_GADAR,
+    payload: {
+        name: name,
+        data: data
+    }
+})
+
+export const resetPasienGadar = () => ({
+    type: RESET_PASIEN_GADAR,
+})
+
+export const setPasienRanap = (name, data) => ({
+    type: SET_PASIEN_RANAP,
+    payload: {
+        name: name,
+        data: data
+    }
+})
+
+export const resetPasienRanap = () => ({
+    type: RESET_PASIEN_RANAP,
+})
