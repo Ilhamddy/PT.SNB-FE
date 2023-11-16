@@ -31,7 +31,10 @@ import {
     SET_PASIEN_GADAR,
     RESET_PASIEN_GADAR,
     SET_PASIEN_RANAP,
-    RESET_PASIEN_RANAP
+    RESET_PASIEN_RANAP,
+    GET_DASBOR_PEMBAYARAN,
+    GET_DASBOR_PEMBAYARAN_SUCCESS,
+    GET_DASBOR_PEMBAYARAN_ERROR
 } from "./actionType";
   
 const INIT_STATE = {
@@ -93,6 +96,11 @@ const INIT_STATE = {
             name: "",
             data: null
         }
+    },
+    getDasborPembayaran: {
+        data: [],
+        loading: false,
+        error: null
     }
 };
   
@@ -480,6 +488,42 @@ const Eis = (state = INIT_STATE, action) => {
                 tabelPasien: {
                     ...state.tabelPasien,
                     pasienRanap: INIT_STATE.tabelPasien.pasienRanap
+                }
+            }
+        }
+
+        case GET_DASBOR_PEMBAYARAN: {
+            return {
+                ...state,
+                getDasborPembayaran: {
+                    ...state.getDasborPembayaran,
+                    loading: true,
+                    data: [],
+                    error: null
+                }
+            }
+        }
+
+        case GET_DASBOR_PEMBAYARAN_SUCCESS: {
+            return {
+                ...state,
+                getDasborPembayaran: {
+                    ...state.getDasborPembayaran,
+                    loading: false,
+                    data: action.payload,
+                    error: null
+                }
+            }
+        }
+
+        case GET_DASBOR_PEMBAYARAN_ERROR: {
+            return {
+                ...state,
+                getDasborPembayaran: {
+                    ...state.getDasborPembayaran,
+                    loading: false,
+                    data: [],
+                    error: action.payload
                 }
             }
         }

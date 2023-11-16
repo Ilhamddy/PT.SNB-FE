@@ -5,7 +5,7 @@ import db from "../../../models";
 import {
     createTransaction
 } from "../../../utils/dbutils";
-import { qCountCaraBayar, qCountNonBPJS, qGetCountDokterUmum, qGetCountJenisKelamin, qGetCountPegawai, qGetCountPendidikanTerakhir, qGetCountPenunjangMedis, qGetCountPerawatBidan, qGetCountProfesi, qGetCountSpesialis, qGetCountSpesialisasi, qGetCountStatus, qGetCountUnit, qGetJabatan, qGetKartuStok, qGetKunjunganPoliklinik, qGetPasienBatal, qGetPasienMeninggalRanap, qGetPasienPulangIGD, qGetPasienPulangRanap, qGetPasienRawatIGD, qGetPasienTerdaftar, qGetPasienTerdaftarRanap, qGetPegawaiPensiun, qGetPegawaiSIP, qGetPemesanan, qGetPenerimaan, qGetProdukTerbanyak, qGetRetur, qGetSepuluhBesarObat, qGetTempatTidur, qGetUsia } from "../../../queries/eis/eis.queries";
+import { qCountCaraBayar, qCountNonBPJS, qGetCountDokterUmum, qGetCountJenisKelamin, qGetCountPegawai, qGetCountPendidikanTerakhir, qGetCountPenunjangMedis, qGetCountPerawatBidan, qGetCountProfesi, qGetCountSpesialis, qGetCountSpesialisasi, qGetCountStatus, qGetCountUnit, qGetJabatan, qGetKartuStok, qGetKunjunganPoliklinik, qGetPasienBatal, qGetPasienMeninggalRanap, qGetPasienPulangIGD, qGetPasienPulangRanap, qGetPasienRawatIGD, qGetPasienTerdaftar, qGetPasienTerdaftarRanap, qGetPegawaiPensiun, qGetPegawaiSIP, qGetPembayaran, qGetPembayaranLain, qGetPembayaranPelayanan, qGetPemesanan, qGetPenerimaan, qGetProdukTerbanyak, qGetRetur, qGetSepuluhBesarObat, qGetTempatTidur, qGetUsia } from "../../../queries/eis/eis.queries";
 import { getDateStartEnd, getDateStartEndYear } from "../../../utils/dateutils";
 import { daftarInstalasi } from "../../../queries/master/instalasi/instalasi.queries";
 import { daftarRekanan } from "../../../queries/master/rekanan/rekanan.queries";
@@ -489,6 +489,49 @@ const getDasborFarmasi = async (req, res) => {
     }
 }
 
+const getDasborPendapatan = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const { tanggalmulai, tanggalselesai, carabayar } = req.query
+        const {
+            todayStart: awalTanggalMulai, 
+        } 
+        = getDateStartEnd(tanggalmulai);
+        const {
+            todayEnd: akhirTanggalSelesai
+        } 
+        = getDateStartEnd(tanggalselesai);
+        const pembayaran = 
+            (await pool.query(qGetPembayaran, [awalTanggalMulai, akhirTanggalSelesai]))
+            .rows
+        const pembayaranPelayanan = 
+            (await pool.query(qGetPembayaranPelayanan, [awalTanggalMulai, akhirTanggalSelesai]))
+            .rows
+        const pembayaranLain = 
+            (await pool.query(qGetPembayaranLain, [awalTanggalMulai, akhirTanggalSelesai]))
+            .rows
+        const tempres = {
+            pembayaran: pembayaran,
+            pembayaranPelayanan: pembayaranPelayanan,
+            pembayaranLain: pembayaranLain
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export default {
     getPasienRJ,
     getPasienIGD,
@@ -498,7 +541,8 @@ export default {
     getCountUnit,
     getStatusPegawai,
     getPegawaiPensiun,
-    getDasborFarmasi
+    getDasborFarmasi,
+    getDasborPendapatan
 }
 
 /**

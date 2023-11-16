@@ -643,6 +643,95 @@ ORDER BY
     COALESCE(SUM(CEIL(tsu.qty))::INT, 0) DESC
 `
 
+const qGetPembayaran = `
+SELECT
+    mi.namainstalasi AS namainstalasi,
+    COALESCE(
+        SUM(
+            CASE WHEN tnpp.norec IS NOT NULL AND tbb.norec IS NOT NULL
+                THEN COALESCE(tpp.total, 0)
+                ELSE 0
+            END
+        ), 
+        0
+    ) AS totalproduk
+FROM m_instalasi mi
+    LEFT JOIN m_produk mp ON mp.objectinstalasifk = mi.id
+    LEFT JOIN t_pelayananpasien tpp ON tpp.objectprodukfk = mp.id
+    LEFT JOIN t_notapelayananpasien tnpp ON tnpp.norec = tpp.objectnotapelayananpasienfk
+    LEFT JOIN t_buktibayarpasien tbb ON (
+        ${dateBetweenEmptyString("tbb.tglinput", "$1", "$2")}
+        AND tbb.objectnotapelayananpasienfk = tnpp.norec
+    )
+WHERE 
+    mi.statusenabled = true
+GROUP BY 
+    mi.namainstalasi
+`
+
+const qGetPembayaranPelayanan = `
+SELECT
+    mi.namainstalasi AS namainstalasi,
+    COALESCE(
+        SUM(
+            CASE WHEN tnpp.norec IS NOT NULL AND tbb.norec IS NOT NULL
+                THEN COALESCE(tpp.total, 0)
+                ELSE 0
+            END
+        ), 
+        0
+    ) AS totalproduk
+FROM m_instalasi mi
+    LEFT JOIN m_produk mp ON (
+        mp.objectinstalasifk = mi.id 
+        AND mp.isobat = false
+        AND mp.isalkes = false
+    )
+    LEFT JOIN t_pelayananpasien tpp ON tpp.objectprodukfk = mp.id
+    LEFT JOIN t_notapelayananpasien tnpp ON tnpp.norec = tpp.objectnotapelayananpasienfk
+    LEFT JOIN t_buktibayarpasien tbb ON (
+        ${dateBetweenEmptyString("tbb.tglinput", "$1", "$2")}
+        AND tbb.objectnotapelayananpasienfk = tnpp.norec
+    )
+WHERE 
+    mi.statusenabled = true
+GROUP BY 
+    mi.namainstalasi
+`
+
+const qGetPembayaranLain = `
+SELECT
+    mi.namainstalasi AS namainstalasi,
+    COALESCE(
+        SUM(
+            CASE WHEN tnpp.norec IS NOT NULL AND tbb.norec IS NOT NULL
+                THEN COALESCE(tpp.total, 0)
+                ELSE 0
+            END
+        ), 
+        0
+    ) AS totalproduk
+FROM m_instalasi mi
+    LEFT JOIN m_produk mp ON (
+        mp.objectinstalasifk = mi.id
+        AND 
+        (
+            mp.isobat = true
+            OR mp.isalkes = true
+        )
+    )
+    LEFT JOIN t_pelayananpasien tpp ON tpp.objectprodukfk = mp.id
+    LEFT JOIN t_notapelayananpasien tnpp ON tnpp.norec = tpp.objectnotapelayananpasienfk
+    LEFT JOIN t_buktibayarpasien tbb ON (
+        ${dateBetweenEmptyString("tbb.tglinput", "$1", "$2")}
+        AND tbb.objectnotapelayananpasienfk = tnpp.norec
+    )
+WHERE 
+    mi.statusenabled = true
+GROUP BY 
+    mi.namainstalasi
+`
+
 
 export {
     qGetPasienTerdaftar,
@@ -676,5 +765,8 @@ export {
     qGetRetur,
     qGetKartuStok,
     qGetSepuluhBesarObat,
-    qGetProdukTerbanyak
+    qGetProdukTerbanyak,
+    qGetPembayaran,
+    qGetPembayaranPelayanan,
+    qGetPembayaranLain
 }

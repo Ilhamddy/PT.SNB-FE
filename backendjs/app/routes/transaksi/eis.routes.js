@@ -66,4 +66,10 @@ export default function (app) {
         controller.getDasborFarmasi
     )
 
+    app.get(
+        "/api/transaksi/eis/get-dasbor-pendapatan",
+        [authJwt.verifyToken],
+        controller.getDasborPendapatan
+    )
+
 }
