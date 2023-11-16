@@ -11,3 +11,5 @@ const DasborPendapatan = () => {
     </Card>
   )
 }
+
+export default DasborPendapatan
