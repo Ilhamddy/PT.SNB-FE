@@ -15,7 +15,7 @@ const DasborPendapatan = () => {
   const dispatch = useDispatch()
   const [dateStart] = useState(() => {
     let d = new Date()
-    d.setMonth(d.getMonth() - 1)
+    d.setMonth(d.getMonth() - 3)
     return d
   })
   const [dateToday] = useState(() => new Date().toISOString())
@@ -102,6 +102,7 @@ const DasborPendapatan = () => {
         <PendapatanKeseluruhan />
         <PendapatanLayanan />
         <PendapatanLain />
+        <StackedInstalasi />
       </Container>
     </div>
   )
@@ -137,6 +138,14 @@ const PendapatanKeseluruhan = () => {
     },
     dataLabels: {
       enabled: true,
+      formatter: (val) => {
+        return val === 0 ? '' : 'Rp' + (val?.toLocaleString('id-ID') || 0)
+      },
+      style: {
+        fontSize: '14px',
+        fontWeight: 'bold',
+        colors: '#000000',
+      },
     },
     legend: {
       show: false,
@@ -147,6 +156,13 @@ const PendapatanKeseluruhan = () => {
         style: {
           colors: colors,
           fontSize: '12px',
+        },
+      },
+    },
+    yaxis: {
+      labels: {
+        formatter: (val) => {
+          return val === 0 ? '' : 'Rp' + (val?.toLocaleString('id-ID') || 0)
         },
       },
     },
@@ -203,6 +219,14 @@ const PendapatanLayanan = () => {
     },
     dataLabels: {
       enabled: true,
+      formatter: (val) => {
+        return val === 0 ? '' : 'Rp' + (val?.toLocaleString('id-ID') || 0)
+      },
+      style: {
+        fontSize: '14px',
+        fontWeight: 'bold',
+        colors: '#000000',
+      },
     },
     legend: {
       show: false,
@@ -213,6 +237,13 @@ const PendapatanLayanan = () => {
         style: {
           colors: colors,
           fontSize: '12px',
+        },
+      },
+    },
+    yaxis: {
+      labels: {
+        formatter: (val) => {
+          return val === 0 ? '' : 'Rp' + (val?.toLocaleString('id-ID') || 0)
         },
       },
     },
@@ -269,6 +300,14 @@ const PendapatanLain = () => {
     },
     dataLabels: {
       enabled: true,
+      formatter: (val) => {
+        return val === 0 ? '' : 'Rp' + (val?.toLocaleString('id-ID') || 0)
+      },
+      style: {
+        fontSize: '14px',
+        fontWeight: 'bold',
+        colors: '#000000',
+      },
     },
     legend: {
       show: false,
@@ -282,6 +321,13 @@ const PendapatanLain = () => {
         },
       },
     },
+    yaxis: {
+      labels: {
+        formatter: (val) => {
+          return val === 0 ? '' : 'Rp' + (val?.toLocaleString('id-ID') || 0)
+        },
+      },
+    },
   }
 
   return (
@@ -289,6 +335,102 @@ const PendapatanLain = () => {
       <Row className="mb-3">
         <Col lg={12}>
           <h4>Pendapatan Non Layanan</h4>
+        </Col>
+      </Row>
+      <Row>
+        <ReactApexChart
+          dir="ltr"
+          className="apex-charts"
+          series={series}
+          options={options}
+          type="bar"
+          height={350}
+        />
+      </Row>
+    </Card>
+  )
+}
+
+const StackedInstalasi = () => {
+  const dispatch = useDispatch()
+  const pembayaranTotal = useSelector(
+    (state) => state.Eis.getDasborPembayaran.data?.bayarWaktu || []
+  )
+  const pasienBatal = useSelector(
+    (state) => state.Eis.getPasienRJ.data?.pasienBatal || []
+  )
+  const totalPasienDaftar = pembayaranTotal.map((pasien) => pasien.total)
+  // const totalPasienBatal = pasienBatal.map((pasien) => pasien.total)
+  const tglSeries =
+    pembayaranTotal?.[0]?.datas.map((pasien) => pasien.date) || []
+
+  const series = pembayaranTotal.map((instalasi) => ({
+    name: instalasi.namainstalasi,
+    data: instalasi.datas.map((data) => {
+      return data.total
+    }),
+    dataComplete: instalasi.datas,
+  }))
+
+  const options = {
+    chart: {
+      stacked: !0,
+      toolbar: {
+        show: !1,
+      },
+      zoom: {
+        enabled: !0,
+      },
+      events: {
+        dataPointSelection: (event, chartContext, config) => {
+          // const sIndex = config.seriesIndex
+          // const dIndex = config.dataPointIndex
+          // const data = series[sIndex].dataComplete[dIndex]
+          // const name = series[sIndex].name
+          // data && dispatch(setPasienRajal(name, data))
+        },
+      },
+    },
+    dataLabels: {
+      enabled: false,
+    },
+    responsive: [
+      {
+        breakpoint: 480,
+        options: {
+          legend: {
+            position: 'bottom',
+            offsetX: -10,
+            offsetY: 0,
+          },
+        },
+      },
+    ],
+    plotOptions: {
+      bar: {
+        horizontal: !1,
+        borderRadius: 10,
+      },
+    },
+    xaxis: {
+      type: 'datetime',
+      categories: tglSeries,
+    },
+
+    legend: {
+      position: 'right',
+      offsetY: 40,
+    },
+    fill: {
+      opacity: 1,
+    },
+    colors: colors,
+  }
+  return (
+    <Card className="p-3">
+      <Row>
+        <Col lg={12}>
+          <h4>Total Pengunjung pasien rawat jalan</h4>
         </Col>
       </Row>
       <Row>

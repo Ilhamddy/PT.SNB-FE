@@ -665,8 +665,12 @@ FROM m_instalasi mi
     )
 WHERE 
     mi.statusenabled = true
-GROUP BY 
-    mi.namainstalasi
+GROUP BY
+    mi.namainstalasi,
+    mi.id
+ORDER BY
+    mi.id
+
 `
 
 const qGetPembayaranPelayanan = `
@@ -695,8 +699,12 @@ FROM m_instalasi mi
     )
 WHERE 
     mi.statusenabled = true
-GROUP BY 
-    mi.namainstalasi
+GROUP BY
+    mi.namainstalasi,
+    mi.id
+ORDER BY
+    mi.id
+
 `
 
 const qGetPembayaranLain = `
@@ -728,8 +736,47 @@ FROM m_instalasi mi
     )
 WHERE 
     mi.statusenabled = true
-GROUP BY 
-    mi.namainstalasi
+GROUP BY
+    mi.namainstalasi,
+    mi.id
+ORDER BY
+    mi.id
+
+`
+
+const qGetPembayaranTime = `
+SELECT
+    mi.namainstalasi AS namainstalasi,
+    json_agg(
+        json_build_object(
+            'total', (
+                CASE WHEN (tnpp.norec IS NOT NULL AND tbb.norec IS NOT NULL)
+                    THEN tpp.total
+                    ELSE 0
+                END
+            ),
+            'tglbayar', tbb.tglinput
+        )
+    ) AS datas
+FROM m_instalasi mi
+    LEFT JOIN m_produk mp ON (
+        mp.objectinstalasifk = mi.id
+    )
+    LEFT JOIN t_pelayananpasien tpp ON tpp.objectprodukfk = mp.id
+    LEFT JOIN t_notapelayananpasien tnpp ON tnpp.norec = tpp.objectnotapelayananpasienfk
+    LEFT JOIN t_buktibayarpasien tbb ON (
+        tbb.objectnotapelayananpasienfk = tnpp.norec
+        AND
+        ${dateBetweenEmptyString("tbb.tglinput", "$1", "$2")}
+    )
+WHERE 
+    mi.statusenabled = true 
+GROUP BY
+    mi.namainstalasi,
+    mi.id
+ORDER BY
+    mi.id
+
 `
 
 
@@ -768,5 +815,6 @@ export {
     qGetProdukTerbanyak,
     qGetPembayaran,
     qGetPembayaranPelayanan,
-    qGetPembayaranLain
+    qGetPembayaranLain,
+    qGetPembayaranTime
 }

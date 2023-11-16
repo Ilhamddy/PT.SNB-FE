@@ -929,6 +929,7 @@ export const HeaderDashboard = () => {
     {
       classImg: 'las la-money-bill',
       text: 'Dasbor Pendapatan',
+      link: 'dasbor-pendapatan',
     },
     {
       classImg: 'las la-user-nurse',

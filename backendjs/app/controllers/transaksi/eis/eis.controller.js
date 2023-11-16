@@ -5,7 +5,7 @@ import db from "../../../models";
 import {
     createTransaction
 } from "../../../utils/dbutils";
-import { qCountCaraBayar, qCountNonBPJS, qGetCountDokterUmum, qGetCountJenisKelamin, qGetCountPegawai, qGetCountPendidikanTerakhir, qGetCountPenunjangMedis, qGetCountPerawatBidan, qGetCountProfesi, qGetCountSpesialis, qGetCountSpesialisasi, qGetCountStatus, qGetCountUnit, qGetJabatan, qGetKartuStok, qGetKunjunganPoliklinik, qGetPasienBatal, qGetPasienMeninggalRanap, qGetPasienPulangIGD, qGetPasienPulangRanap, qGetPasienRawatIGD, qGetPasienTerdaftar, qGetPasienTerdaftarRanap, qGetPegawaiPensiun, qGetPegawaiSIP, qGetPembayaran, qGetPembayaranLain, qGetPembayaranPelayanan, qGetPemesanan, qGetPenerimaan, qGetProdukTerbanyak, qGetRetur, qGetSepuluhBesarObat, qGetTempatTidur, qGetUsia } from "../../../queries/eis/eis.queries";
+import { qCountCaraBayar, qCountNonBPJS, qGetCountDokterUmum, qGetCountJenisKelamin, qGetCountPegawai, qGetCountPendidikanTerakhir, qGetCountPenunjangMedis, qGetCountPerawatBidan, qGetCountProfesi, qGetCountSpesialis, qGetCountSpesialisasi, qGetCountStatus, qGetCountUnit, qGetJabatan, qGetKartuStok, qGetKunjunganPoliklinik, qGetPasienBatal, qGetPasienMeninggalRanap, qGetPasienPulangIGD, qGetPasienPulangRanap, qGetPasienRawatIGD, qGetPasienTerdaftar, qGetPasienTerdaftarRanap, qGetPegawaiPensiun, qGetPegawaiSIP, qGetPembayaran, qGetPembayaranLain, qGetPembayaranPelayanan, qGetPembayaranTime, qGetPemesanan, qGetPenerimaan, qGetProdukTerbanyak, qGetRetur, qGetSepuluhBesarObat, qGetTempatTidur, qGetUsia } from "../../../queries/eis/eis.queries";
 import { getDateStartEnd, getDateStartEndYear } from "../../../utils/dateutils";
 import { daftarInstalasi } from "../../../queries/master/instalasi/instalasi.queries";
 import { daftarRekanan } from "../../../queries/master/rekanan/rekanan.queries";
@@ -501,6 +501,7 @@ const getDasborPendapatan = async (req, res) => {
             todayEnd: akhirTanggalSelesai
         } 
         = getDateStartEnd(tanggalselesai);
+
         const pembayaran = 
             (await pool.query(qGetPembayaran, [awalTanggalMulai, akhirTanggalSelesai]))
             .rows
@@ -510,11 +511,28 @@ const getDasborPendapatan = async (req, res) => {
         const pembayaranLain = 
             (await pool.query(qGetPembayaranLain, [awalTanggalMulai, akhirTanggalSelesai]))
             .rows
+        let pembayaranTime = 
+            (await pool.query(qGetPembayaranTime, [awalTanggalMulai, akhirTanggalSelesai]))
+            .rows
+        pembayaranTime = pembayaranTime.map((p) => {
+            const newP = {...p}
+            const arrTimesData = hGroupDateAr(
+                p.datas, 
+                awalTanggalMulai, 
+                akhirTanggalSelesai,
+                (data) => data.tglbayar,
+                (arData) => arData.reduce((prev, c) => prev + (c.total || 0), 0)
+            )
+            newP.datas = arrTimesData
+            return newP
+        })
         const tempres = {
             pembayaran: pembayaran,
             pembayaranPelayanan: pembayaranPelayanan,
-            pembayaranLain: pembayaranLain
+            pembayaranLain: pembayaranLain,
+            bayarWaktu: pembayaranTime,
         };
+        
         res.status(200).send({
             msg: 'Success',
             code: 200,
@@ -547,18 +565,19 @@ export default {
 
 /**
  * 
- * @param {*} pasiens 
+ * @param {*} datas 
  * @param {*} tanggalMulai 
  * @param {*} tanggalSelesai 
  * @param {(data) => Date} [getDate] 
+ * @param {(arData) => number} [getTotal] 
  * @returns 
  */
-const hGroupDateAr = (pasiens, tanggalMulai, tanggalSelesai, getDate) => {
+const hGroupDateAr = (datas, tanggalMulai, tanggalSelesai, getDate, getTotal) => {
     const arrTimes = hCreateDateAr(tanggalMulai, tanggalSelesai)
-    pasiens.forEach((data) => {
+    datas.forEach((data) => {
         for (let i = 0; i < arrTimes.length; i++) {
             let arrTime = arrTimes[i], isGrouped = false;
-            [arrTime, isGrouped] = hGroupDate(arrTime, data, getDate)
+            [arrTime, isGrouped] = hGroupDate(arrTime, data, getDate, getTotal)
             arrTimes[i] = arrTime
             if(isGrouped){
                 break
@@ -583,14 +602,17 @@ const hCreateDateAr = (start, end) => {
     return arrTimes
 }
 
-const hGroupDate = (arrTime, data, getDate) => {
+const hGroupDate = (arrTime, data, getDate, getTotal) => {
     const {todayStart, todayEnd} = getDateStartEnd(arrTime.date);
     const tglRegistrasi = getDate ? getDate(data) : data.tglregistrasi
+    if(!tglRegistrasi){
+        return [arrTime, false]
+    }
     if(new Date(tglRegistrasi) >= todayStart && new Date(tglRegistrasi) <= todayEnd){
         const newAr =  [...arrTime.items, data]
         let newArrTime = {
             ...arrTime, 
-            total: newAr.length,
+            total: getTotal ? getTotal(newAr) : newAr.length,
             items: newAr
         }
         return [newArrTime, true]
