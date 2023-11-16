@@ -155,6 +155,11 @@ export default function (app) {
         controller.getLaporanRL3_8
     );
     app.get(
+        "/api/transaksi/rekammedis/get-laporan-rl-3-9",
+        [authJwt.verifyToken],
+        controller.getLaporanRL3_9
+    );
+    app.get(
         "/api/transaksi/rekammedis/get-laporan-rl-3-14",
         [authJwt.verifyToken],
         controller.getLaporanRL3_14

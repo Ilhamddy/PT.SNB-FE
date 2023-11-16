@@ -1092,6 +1092,43 @@ const getLaporanRL3_8 = async (req, res) => {
     }
 }
 
+const getLaporanRL3_9 = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        let todaystart = formatDate(req.query.start) + ' 00:00'
+        let todayend = formatDate(req.query.end) + ' 23:59'
+        const result = await pool.query(queries.qLaporanRL3_9,[todaystart,todayend])
+        const resultTask = await pool.query(queries.qTaskLaporanRL3_9)
+        
+        for (let i = 0; i < resultTask.rows.length; i++) {
+            const element = resultTask.rows[i];
+            for (let x = 0; x < result.rows.length; x++) {
+                const elementx = result.rows[x];
+                if(element.reportdisplay===elementx.reportdisplay){
+                    element.jml=elementx.jml
+                }
+            }
+        }
+        const tempres = {
+        
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: resultTask.rows,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).json({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 const getLaporanRL3_14 = async (req, res) => {
     const logger = res.locals.logger;
     try{
@@ -1451,6 +1488,7 @@ export default {
     getLaporanRL3_6,
     getLaporanRL3_7,
     getLaporanRL3_8,
+    getLaporanRL3_9,
     getLaporanRL3_14,
     getLaporanRL3_15,
     getLaporanRL3_11,

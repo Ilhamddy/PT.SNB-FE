@@ -21,7 +21,7 @@ import {
     LAPORAN_RL_1_2_GET,LAPORAN_RL_1_3_GET,LAPORAN_RL_2_GET,
     LAPORAN_RL_3_3_GET,LAPORAN_RL_3_4_GET,
     LAPORAN_RL_3_6_GET,LAPORAN_RL_3_7_GET,LAPORAN_RL_3_8_GET,
-    LAPORAN_RL_3_14_GET,
+    LAPORAN_RL_3_9_GET,LAPORAN_RL_3_14_GET,
     LAPORAN_RL_3_15_GET,LAPORAN_RL_3_11_GET,LAPORAN_RL_3_10_GET,
     LAPORAN_RL_5_1_GET,LAPORAN_RL_5_2_GET, LAPORAN_RL_5_3_GET,
     LAPORAN_RL_5_4_GET
@@ -59,6 +59,7 @@ import {
     getLaporanRl_3_6Success,getLaporanRl_3_6Error,
     getLaporanRl_3_7Success,getLaporanRl_3_7Error,
     getLaporanRl_3_8Success,getLaporanRl_3_8Error,
+    getLaporanRl_3_9Success,getLaporanRl_3_9Error,
     getLaporanRl_3_14Success,getLaporanRl_3_14Error,
     getLaporanRl_3_15Success,getLaporanRl_3_15Error,
     getLaporanRl_3_11Success,getLaporanRl_3_11Error,
@@ -411,6 +412,19 @@ export function* watchongetLaporanRl_3_8(){
     yield takeEvery(LAPORAN_RL_3_8_GET, ongetLaporanRl_3_8)
 }
 
+function* ongetLaporanRl_3_9({payload: {queries}}) {
+    try{
+        const response = yield call(serviceRekammedis.getLaporanRl_3_9, queries);
+        yield put(getLaporanRl_3_9Success(response.data));
+    } catch (error) {
+        yield put(getLaporanRl_3_9Error(error));
+    }
+}
+
+export function* watchongetLaporanRl_3_9(){
+    yield takeEvery(LAPORAN_RL_3_9_GET, ongetLaporanRl_3_9)
+}
+
 function* ongetLaporanRl_3_14({payload: {queries}}) {
     try{
         const response = yield call(serviceRekammedis.getLaporanRl_3_14, queries);
@@ -541,6 +555,7 @@ function* kendaliDokumenSaga() {
         fork(watchongetLaporanRl_3_6),
         fork(watchongetLaporanRl_3_7),
         fork(watchongetLaporanRl_3_8),
+        fork(watchongetLaporanRl_3_9),
         fork(watchongetLaporanRl_3_14),
         fork(watchongetLaporanRl_3_15),
         fork(watchongetLaporanRl_3_11),
