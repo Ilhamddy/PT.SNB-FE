@@ -7,17 +7,17 @@ import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import KontainerFlatpickr from '../../../../Components/KontainerFlatpickr/KontainerFlatpickr';
 import {
-  getLaporanRl_2, kendaliDokumenResetForm
+  getLaporanRl_3_7, kendaliDokumenResetForm
 } from '../../../../store/actions';
 import { Grid, _ } from 'gridjs-react';
 import * as XLSX from 'xlsx';
 
-const RL2 = () => {
-  document.title = "Laporan RL2";
+const RL3_7 = () => {
+  document.title = "Laporan RL3.7";
   const dispatch = useDispatch();
   const { dataGrid, loadingGrid } = useSelector((state) => ({
-    dataGrid: state.KendaliDokumen.getLaporanRl_2.data || [],
-    loadingGrid: state.KendaliDokumen.getLaporanRl_2.loading,
+    dataGrid: state.KendaliDokumen.getLaporanRl_3_7.data || [],
+    loadingGrid: state.KendaliDokumen.getLaporanRl_3_7.loading,
   }));
   const [dateNow] = useState(() => new Date().toISOString())
   const vSetValidation = useFormik({
@@ -31,81 +31,44 @@ const RL2 = () => {
     }),
     onSubmit: (values) => {
       console.log(values)
-      dispatch(getLaporanRl_2({
-        start: dateNow,
-        end: dateNow
+      dispatch(getLaporanRl_3_7({
+        start: values.start || dateNow,
+        end: values.end || dateNow
       }));
     },
   })
   const columns = [
     {
-      id: 'kodeexternal',
+      id: 'no',
       formatter: (cell) => _(<span>{cell}</span>),
-      name: 'NO KODE'
+      name: 'NO'
     },
     {
       id: 'reportdisplay',
-      name: 'KUALIFIKASI PENDIDIKAN'
-      // formatter: (cell) => _(<a href="/#"> {cell} </a>)
+      name: 'JENIS KEGIATAN',
     },
     {
-      name: 'KEADAAN',
-      columns: [
-        {
-          id: 'keadaan_lk',
-          name: 'Laki-laki'
-        },
-        {
-          id: 'keadaan_pm',
-          name: 'Perempuan'
-        },
-      ]
-    },
-    {
-      name: 'KEBUTUHAN',
-      columns: [
-        {
-          id: 'kebutuhan_lk',
-          name: 'Laki-laki'
-        },
-        {
-          id: 'kebutuhan_pm',
-          name: 'Perempuan'
-        },
-      ]
-    },
-    {
-      name: 'KEKURANGAN',
-      columns: [
-        {
-          id: 'kekurangan_lk',
-          name: 'Laki-laki'
-        },
-        {
-          id: 'kekurangan_pm',
-          name: 'Perempuan'
-        },
-      ]
+      id: 'jml',
+      name: 'JUMLAH',
     },
   ]
   const handleExport = () => {
     const formattedData = dataGrid.map(item => Object.values(item));
     const firstObject = dataGrid[0];
     const header = Object.keys(firstObject);
-    console.log(header)
     const sheetData = [header, ...formattedData];
     const worksheet = XLSX.utils.aoa_to_sheet(sheetData);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
 
-    XLSX.writeFile(workbook, 'laporan_rl3_15.xlsx');
+    XLSX.writeFile(workbook, 'laporan_rl3_7.xlsx');
   };
   return (
     <React.Fragment>
       <UiContent />
       <div className="page-content">
         <Container fluid>
-          <BreadCrumb title="Laporan RL2" pageTitle="Forms" />
+          <BreadCrumb title="Laporan RL3.7" pageTitle="Forms" />
           <Form
             onSubmit={(e) => {
               e.preventDefault();
@@ -116,7 +79,7 @@ const RL2 = () => {
             action="#">
             <Card className="p-5">
               <Row>
-                {/* <Col lg={3}>
+                <Col lg={3}>
                   <KontainerFlatpickr
                     isError={vSetValidation.touched?.start &&
                       !!vSetValidation.errors?.start}
@@ -157,7 +120,7 @@ const RL2 = () => {
                         <div>{vSetValidation.errors.end}</div>
                       </FormFeedback>
                     )}
-                </Col> */}
+                </Col>
                 <Col lg={2}>
                   <Button type="submit" placement="top" id="tooltipTopPencarian" >
                     CARI
@@ -218,4 +181,4 @@ const tableCustomStyles = {
   },
 }
 
-export default RL2
+export default RL3_7

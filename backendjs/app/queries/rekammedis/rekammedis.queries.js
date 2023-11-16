@@ -145,6 +145,40 @@ AND mp2.kodeexternal IN ('1', '2', '3', '4')
 AND tp.statusenabled = true
 GROUP BY ms.reportdisplay`
 
+const qLaporanRL3_7 =`select row_number() OVER (ORDER BY x.reportdisplay) AS no,x.reportdisplay,count(x.reportdisplay) as jml from (
+    SELECT mm2.reportdisplay  from m_maprltoproduk mm
+    join m_masterrl mm2 on mm2.id=mm.objectmasterrlfk
+    join m_masterindukrl mm3 on mm3.id=mm2.objectindukrlfk
+    join t_pelayananpasien tp on tp.objectprodukfk=mm.objectprodukfk 
+    where mm3.id=12 and tp.statusenabled=true and tp.tglinput between $1 and $2
+    ) as x group by x.reportdisplay`
+
+const qLaporanRL3_8 =`SELECT mm2.id , mm2.kodeexternal , mm2.reportdisplay ,COALESCE(a.jumlah,0) AS jumlah FROM (
+	SELECT mm.* , count(*) AS jumlah FROM t_pelayananpasien tp 
+	JOIN m_pemeriksaanlab mp ON tp.objectprodukfk = mp.objectprodukfk 
+	JOIN m_masterrl mm ON mp.objectmasterrlfk = mm.id 
+	WHERE date_trunc('day', tp.tglinput) >= $1
+	AND date_trunc('day', tp.tglinput) <= $2 and tp.statusenabled=true
+	GROUP BY mm.id 
+) a
+RIGHT JOIN m_masterrl mm2 ON a.id = mm2.id 
+WHERE mm2.objectindukrlfk = 13
+ORDER BY mm2.urutan`
+
+const qLaporanRL3_9 =`select row_number() OVER (ORDER BY x.reportdisplay) AS no,x.reportdisplay,count(x.reportdisplay) as jml from (
+    SELECT mm2.reportdisplay  from m_maprltoproduk mm
+    join m_masterrl mm2 on mm2.id=mm.objectmasterrlfk
+    join m_masterindukrl mm3 on mm3.id=mm2.objectindukrlfk
+    join t_pelayananpasien tp on tp.objectprodukfk=mm.objectprodukfk 
+    where mm3.id=14 and tp.statusenabled=true and tp.tglinput between $1 and $2
+    ) as x group by x.reportdisplay`
+
+const qTaskLaporanRL3_9 =`select mm2.kodeexternal,mm2.reportdisplay,0 as jml  from m_masterindukrl mm 
+join m_masterrl mm2 on mm2.objectindukrlfk=mm.id
+left join m_maprltoproduk mm3 on mm3.objectmasterrlfk=mm2.id
+where mm.id=14 
+order by mm2.urutan`
+
 const qLaporanRL3_14 =`select row_number() OVER (ORDER BY ms.reportdisplay) AS no,ms.reportdisplay as spesialis,
 SUM(CASE WHEN td.objectasalrujukanfk  = 1 THEN 1 ELSE 0 END) AS diterima_puskesmas,
 SUM(CASE WHEN td.objectasalrujukanfk  = 2 THEN 1 ELSE 0 END) AS diterima_rs,
@@ -288,7 +322,8 @@ sum(case when mk.objectkelasfk not in (1,2,3,4,5) then 1 else 0 end)as total fro
 join m_kamar mk on mk.objectspesialisfk=ms.id
 group by ms.reportdisplay`
 
-const qListRL2=`SELECT * FROM m_pendidikanpegawai mp where statusenabled=true
+const qListRL2=`SELECT id,reportdisplay,0 as keadaan_lk,0 as keadaan_pm,0 as kebutuhan_lk,0 as kebutuhan_pm,
+0 as kekurangan_lk,0 as kekurangan_pm,kodeexternal FROM m_pendidikanpegawai mp where statusenabled=true
 order by id`
 
 const qIsiListRL2=`select mp2.reportdisplay,sum(case when mp.objectjeniskelaminfk=1 then 1 else 0 end)as keadaan_lk,
@@ -305,6 +340,10 @@ export default {
     qLaporanRL3_3,
     qLaporanRL3_4,
     qLaporanRL3_6,
+    qLaporanRL3_7,
+    qLaporanRL3_8,
+    qLaporanRL3_9,
+    qTaskLaporanRL3_9,
     qLaporanRL3_14,
     qLaporanRL3_15,
     qDetailLaporanRL3_15,
