@@ -37,7 +37,7 @@ const DasborPendapatan = () => {
   return (
     <div className="page-content page-dasbor-eis-utama">
       <BreadCrumb
-        title="Dasbor Utama"
+        title="Dasbor Pendapatan"
         pageTitle="Dasbor EIS"
         className="bc-dasbor-eis"
       />
