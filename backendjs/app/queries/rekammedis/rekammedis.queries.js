@@ -153,6 +153,18 @@ const qLaporanRL3_7 =`select row_number() OVER (ORDER BY x.reportdisplay) AS no,
     where mm3.id=12 and tp.statusenabled=true and tp.tglinput between $1 and $2
     ) as x group by x.reportdisplay`
 
+const qLaporanRL3_8 =`SELECT mm2.id , mm2.kodeexternal , mm2.reportdisplay ,COALESCE(a.jumlah,0) AS jumlah FROM (
+	SELECT mm.* , count(*) AS jumlah FROM t_pelayananpasien tp 
+	JOIN m_pemeriksaanlab mp ON tp.objectprodukfk = mp.objectprodukfk 
+	JOIN m_masterrl mm ON mp.objectmasterrlfk = mm.id 
+	WHERE date_trunc('day', tp.tglinput) >= $1
+	AND date_trunc('day', tp.tglinput) <= $2 and tp.statusenabled=true
+	GROUP BY mm.id 
+) a
+RIGHT JOIN m_masterrl mm2 ON a.id = mm2.id 
+WHERE mm2.objectindukrlfk = 13
+ORDER BY mm2.urutan`
+
 const qLaporanRL3_14 =`select row_number() OVER (ORDER BY ms.reportdisplay) AS no,ms.reportdisplay as spesialis,
 SUM(CASE WHEN td.objectasalrujukanfk  = 1 THEN 1 ELSE 0 END) AS diterima_puskesmas,
 SUM(CASE WHEN td.objectasalrujukanfk  = 2 THEN 1 ELSE 0 END) AS diterima_rs,
@@ -315,6 +327,7 @@ export default {
     qLaporanRL3_4,
     qLaporanRL3_6,
     qLaporanRL3_7,
+    qLaporanRL3_8,
     qLaporanRL3_14,
     qLaporanRL3_15,
     qDetailLaporanRL3_15,

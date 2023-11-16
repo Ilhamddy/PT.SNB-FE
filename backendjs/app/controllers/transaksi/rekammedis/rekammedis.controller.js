@@ -1065,6 +1065,33 @@ const getLaporanRL3_7 = async (req, res) => {
     }
 }
 
+const getLaporanRL3_8 = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        let todaystart = formatDate(req.query.start) + ' 00:00'
+        let todayend = formatDate(req.query.end) + ' 23:59'
+        const result = await pool.query(queries.qLaporanRL3_8,[todaystart,todayend])
+        
+        const tempres = {
+        
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: result.rows,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).json({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 const getLaporanRL3_14 = async (req, res) => {
     const logger = res.locals.logger;
     try{
@@ -1423,6 +1450,7 @@ export default {
     getLaporanRL3_4,
     getLaporanRL3_6,
     getLaporanRL3_7,
+    getLaporanRL3_8,
     getLaporanRL3_14,
     getLaporanRL3_15,
     getLaporanRL3_11,
