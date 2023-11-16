@@ -31,7 +31,10 @@ import {
     SET_PASIEN_GADAR,
     RESET_PASIEN_GADAR,
     SET_PASIEN_RANAP,
-    RESET_PASIEN_RANAP
+    RESET_PASIEN_RANAP,
+    GET_DASBOR_PEMBAYARAN,
+    GET_DASBOR_PEMBAYARAN_SUCCESS,
+    GET_DASBOR_PEMBAYARAN_ERROR
 } from "./actionType"
 
 
@@ -207,4 +210,19 @@ export const setPasienRanap = (name, data) => ({
 
 export const resetPasienRanap = () => ({
     type: RESET_PASIEN_RANAP,
+})
+
+export const getDasborPembayaran = (queries) => ({
+    type: GET_DASBOR_PEMBAYARAN,
+    payload: {queries: queries}
+})
+
+export const getDasborPembayaranSuccess = (data) => ({
+    type: GET_DASBOR_PEMBAYARAN_SUCCESS,
+    payload: data
+})
+
+export const getDasborPembayaranError = (error) => ({
+    type: GET_DASBOR_PEMBAYARAN_ERROR,
+    payload: error
 })

@@ -48,7 +48,7 @@ const DashboardUtama = () => {
   const [dateStart] = useState(() => {
     let d = new Date()
     d.setMonth(d.getMonth() - 1)
-    return d
+    return d.toISOString()
   })
 
   const dispatch = useDispatch()
@@ -660,8 +660,6 @@ const PasienTotal = () => {
 }
 
 const KunjunganPoliklinik = () => {
-  const dataColors =
-    '["--vz-primary", "--vz-success", "--vz-warning", "--vz-danger", "--vz-dark", "--vz-info"]'
   const kunjungan = useSelector(
     (state) => state.Eis.getPoliklinikTerbanyak.data?.kunjungan || []
   )
@@ -897,7 +895,7 @@ const tableCustomStyles = {
   },
 }
 
-const CaraBayarValue = [
+export const CaraBayarValue = [
   {
     value: 1,
     label: 'Semua',
@@ -931,6 +929,7 @@ export const HeaderDashboard = () => {
     {
       classImg: 'las la-money-bill',
       text: 'Dasbor Pendapatan',
+      link: 'dasbor-pendapatan',
     },
     {
       classImg: 'las la-user-nurse',

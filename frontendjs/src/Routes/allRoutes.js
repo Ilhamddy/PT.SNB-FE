@@ -369,6 +369,7 @@ import DasborUtama from "../pages/DasborUtama/DasborUtama.jsx";
 import DasborPegawai from "../pages/DasborPegawai/DasborPegawai.jsx";
 import LiburPegawai from "../pages/LiburPegawai/LiburPegawai.jsx";
 import DasborFarmasi from "../pages/DasborFarmasi/DasborFarmasi.jsx";
+import DasborPendapatan from "../pages/DasborPendapatan/DasborPendapatan.jsx";
 
 
 const authProtectedRoutes = [
@@ -704,6 +705,7 @@ const authProtectedRoutes = [
   { path: "/farmasi/gudang/distribusi-kirim-langsung", component: <DistribusiKirim /> },
   { path: "/farmasi/gudang/distribusi-kirim-langsung/:noreckirim", component: <DistribusiKirim /> },
   { path: "/farmasi/gudang/distribusi-kirim-verif/:noreckirim", component: <DistribusiKirim isVerif /> },
+  
 
   { path: "/logistik/gudang/distribusi-order-list", component: <DistribusiOrderList /> },
   { path: "/logistik/gudang/unit-order-list", component: <DistribusiOrderList isUnit/> },
@@ -746,6 +748,7 @@ const authProtectedRoutes = [
   { path: "/eis/dasbor/dasbor-utama", component: <DasborUtama />},
   { path: "/eis/dasbor/dasbor-pegawai", component: <DasborPegawai />},
   { path: "/eis/dasbor/dasbor-farmasi", component: <DasborFarmasi />},
+  { path: "/eis/dasbor/dasbor-pendapatan", component: <DasborPendapatan />},
 
 ];
 
