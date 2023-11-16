@@ -48,7 +48,7 @@ const DashboardUtama = () => {
   const [dateStart] = useState(() => {
     let d = new Date()
     d.setMonth(d.getMonth() - 1)
-    return d
+    return d.toISOString()
   })
 
   const dispatch = useDispatch()

@@ -16,7 +16,7 @@ const DasborPendapatan = () => {
   const [dateStart] = useState(() => {
     let d = new Date()
     d.setMonth(d.getMonth() - 3)
-    return d
+    return d.toISOString()
   })
   const [dateToday] = useState(() => new Date().toISOString())
 
