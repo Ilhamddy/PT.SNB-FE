@@ -32,7 +32,7 @@ function formatDate(date) {
 }
 
 const scheduledTask = schedule.scheduleJob('40 * * * *', async function () {
-    const logger = 'Running scheduled task...';
+    // const logger = res.locals.logger;
     console.log('Running scheduled task...');
     try{
         let today = new Date();
@@ -137,7 +137,7 @@ const scheduledTask = schedule.scheduleJob('40 * * * *', async function () {
         });
         // console.log(kamars.rows)
     } catch (error) {
-        logger.error(error);
+        // logger.error(error);
         console.error('Error executing query:', error);
     }
 });

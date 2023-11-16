@@ -421,7 +421,7 @@ const PemakaianObat = () => {
     <Card className="p-3" style={{ height: 450 }}>
       <Row className="mb-3">
         <Col lg={12}>
-          <h4>10 Besar Kunjungan poliklinik</h4>
+          <h4>10 Obat terbanyak</h4>
         </Col>
       </Row>
       <Row>

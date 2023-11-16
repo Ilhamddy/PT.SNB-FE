@@ -23,7 +23,7 @@ import { dateLocal } from '../../utils/format'
 import DataTable from 'react-data-table-component'
 import LoadingTable from '../../Components/Table/LoadingTable'
 import NoDataTable from '../../Components/Table/NoDataTable'
-import { useDispatch, useSelector } from 'react-redux'
+import { shallowEqual, useDispatch, useSelector } from 'react-redux'
 import {
   getCountCaraBayar,
   getCountUnit,
@@ -485,32 +485,34 @@ const StackedRI = () => {
 
 const CaraBayar = () => {
   const dispatch = useDispatch()
-  const total = useSelector((state) => ({
-    bpjs: state.Eis.getCountCaraBayar.data.bpjs,
-    umum: state.Eis.getCountCaraBayar.data.umum,
-    nonBPJS: state.Eis.getCountCaraBayar.data.nonBPJS || 0,
-  }))
+  const total = useSelector(
+    (state) => ({
+      bpjs: state.Eis.getCountCaraBayar.data.bpjs,
+      umum: state.Eis.getCountCaraBayar.data.umum,
+      nonBPJS: state.Eis.getCountCaraBayar.data.nonBPJS,
+    }),
+    shallowEqual
+  )
   const series = [
     total.bpjs?.count || 0,
     total.umum?.count || 0,
     total?.nonBPJS?.count || 0,
   ]
-  const seriesData = [
-    total.bpjs?.data || [],
-    total.umum?.data || [],
-    total?.nonBPJS?.data || [],
-  ]
-  console.log(total)
-  console.log(seriesData)
   const labels = ['BPJS Kesehatan', 'Umum', 'Asuransi Lain']
-  var options = {
+  let options = {
     chart: {
       height: 300,
       type: 'pie',
       events: {
         dataPointSelection: (event, chartContext, config) => {
           const dIndex = config.dataPointIndex
+          const seriesData = [
+            total.bpjs?.data || [],
+            total.umum?.data || [],
+            total?.nonBPJS?.data || [],
+          ]
           console.log(seriesData)
+          console.log(total)
           const data = seriesData[dIndex]
           const name = labels[dIndex]
           data && dispatch(setPasienRanap(name, data))
