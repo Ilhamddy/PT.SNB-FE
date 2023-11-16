@@ -99,10 +99,10 @@ const DasborPendapatan = () => {
             )}
           </Col> */}
         </Row>
+        <StackedInstalasi />
         <PendapatanKeseluruhan />
         <PendapatanLayanan />
         <PendapatanLain />
-        <StackedInstalasi />
       </Container>
     </div>
   )
@@ -430,7 +430,7 @@ const StackedInstalasi = () => {
     <Card className="p-3">
       <Row>
         <Col lg={12}>
-          <h4>Total Pengunjung pasien rawat jalan</h4>
+          <h4>Timeline Pendapatan</h4>
         </Col>
       </Row>
       <Row>
