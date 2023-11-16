@@ -424,6 +424,13 @@ const StackedInstalasi = () => {
     fill: {
       opacity: 1,
     },
+    yaxis: {
+      labels: {
+        formatter: (val) => {
+          return val === 0 ? '' : 'Rp' + (val?.toLocaleString('id-ID') || 0)
+        },
+      },
+    },
     colors: colors,
   }
   return (
