@@ -61,6 +61,42 @@ const DasborFarmasi = () => {
       <ToastContainer closeButton={false} />
       <HeaderDashboard />
       <Container fluid className="ps-3 pe-3 mt-3">
+        <Row className="mt-3 d-flex flex-row-reverse mb-3">
+          <Col lg={'auto'}>
+            <Button
+              color="info"
+              onClick={() => {
+                vFilter.handleSubmit()
+              }}
+            >
+              Filter
+            </Button>
+          </Col>
+          <Col lg={4}>
+            <KontainerFlatpickr
+              isError={vFilter.touched?.tanggal && !!vFilter.errors?.tanggal}
+              id="tanggal"
+              options={{
+                mode: 'range',
+              }}
+              onChange={([newDate, newDate2]) => {
+                vFilter.setFieldValue(
+                  'tanggalmulai',
+                  newDate?.toISOString() || ''
+                )
+                vFilter.setFieldValue(
+                  'tanggalselesai',
+                  newDate2?.toISOString() || ''
+                )
+              }}
+            />
+            {vFilter.touched?.tanggal && !!vFilter.errors.tanggal && (
+              <FormFeedback type="invalid">
+                <div>{vFilter.errors.tanggal}</div>
+              </FormFeedback>
+            )}
+          </Col>
+        </Row>
         <TotalPemesanan />
         <Row>
           <Col lg={6}>
@@ -104,7 +140,7 @@ const TotalPemesanan = () => {
     {
       id: 1,
       label: 'Total Pemesanan',
-      badge: 'ri-arrow-up-circle-line text-success',
+      badge: 'ri-more-2-fill',
       icon: Pemesanan,
       counter: jmlPemesanan,
       decimals: 0,
@@ -115,7 +151,7 @@ const TotalPemesanan = () => {
     {
       id: 2,
       label: 'Total Penerimaan',
-      badge: 'ri-arrow-up-circle-line text-success',
+      badge: 'ri-more-2-fill',
       icon: Penerimaan,
       counter: jmlPenerimaan,
       decimals: 0,
@@ -126,7 +162,7 @@ const TotalPemesanan = () => {
     {
       id: 3,
       label: 'Total Retur',
-      badge: 'ri-arrow-up-circle-line text-success',
+      badge: 'ri-more-2-fill',
       icon: Retur,
       counter: jmlRetur,
       separator: '.',
