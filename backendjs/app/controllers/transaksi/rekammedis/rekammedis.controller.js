@@ -1464,6 +1464,64 @@ const getLaporanRL2 = async (req, res) => {
     }
 }
 
+const getLaporanRL4 = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        let todaystart = formatDate(req.query.start) + ' 00:00'
+        let todayend = formatDate(req.query.end) + ' 23:59'
+        const result = await pool.query(queries.qListRL4A,[todaystart,todayend])
+        const resultTask = await pool.query(queries.qTaskListRL4A)
+        
+        for (let i = 0; i < resultTask.rows.length; i++) {
+            const element = resultTask.rows[i];
+            for (let x = 0; x < result.rows.length; x++) {
+                const elementx = result.rows[x];
+                if(element.no_dtd===elementx.no_dtd){
+                    element.l_1=elementx.l_1
+                    element.p_1=elementx.p_1
+                    element.l_2=elementx.l_2
+                    element.p_2=elementx.p_2
+                    element.l_3=elementx.l_3
+                    element.p_3=elementx.p_3
+                    element.l_4=elementx.l_4
+                    element.p_4=elementx.p_4
+                    element.l_5=elementx.l_5
+                    element.p_5=elementx.p_5
+                    element.l_6=elementx.l_6
+                    element.p_6=elementx.p_6
+                    element.l_7=elementx.l_7
+                    element.p_7=elementx.p_7
+                    element.l_8=elementx.l_8
+                    element.p_8=elementx.p_8
+                    element.l_9=elementx.l_9
+                    element.p_9=elementx.p_9
+                    element.phpm_lk=elementx.phpm_lk
+                    element.phpm_pl=elementx.phpm_pl
+                    element.ph_total=elementx.ph_total
+                    element.pm_total=elementx.pm_total
+                }
+            }
+        }
+        const tempres = {
+        
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: resultTask.rows,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).json({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export default {
     getListDaftarDokumenRekammedis,
     getWidgetListDaftarDokumenRekammedis,
@@ -1498,5 +1556,6 @@ export default {
     getLaporanRL5_3,
     getLaporanRL5_4,
     getLaporanRL1_3,
-    getLaporanRL2
+    getLaporanRL2,
+    getLaporanRL4
 };

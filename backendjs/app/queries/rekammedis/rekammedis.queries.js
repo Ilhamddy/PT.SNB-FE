@@ -331,6 +331,63 @@ sum(case when mp.objectjeniskelaminfk=2 then 1 else 0 end)as keadaan_pm from m_p
 join m_pendidikanpegawai mp2 on mp2.id=mp.objectpendidikanterakhirfk 
 group by mp2.reportdisplay`
 
+const qTaskListRL4A =`select row_number() OVER (ORDER BY no_dtd) AS no,no_dtd,no_terperinci,sebabpenyakit,
+0 as l_1,0 as p_1,
+0 as l_2,0 as p_2,
+0 as l_3,0 as p_3,
+0 as l_4,0 as p_4,
+0 as l_5,0 as p_5,
+0 as l_6,0 as p_6,
+0 as l_7,0 as p_7,
+0 as l_8,0 as p_8,
+0 as l_9,0 as p_9,
+0 as phpm_lk,0 as phpm_pl,
+0 as ph_total,0 as pm_total
+from m_morbiditas mm
+where statusenabled=true`
+
+const qListRL4A = `
+select x.no_dtd,
+sum(case when x.jeniskelamin=1 and hari<=6 then 1 else 0 end)as l_1,
+sum(case when x.jeniskelamin=2 and hari<=6 then 1 else 0 end)as p_1,
+sum(case when x.jeniskelamin=1 and hari>6 and hari<28 then 1 else 0 end)as l_2,
+sum(case when x.jeniskelamin=2 and hari>6 and hari<28 then 1 else 0 end)as p_2,
+sum(case when x.jeniskelamin=1 and hari>28 and hari<365 then 1 else 0 end)as l_3,
+sum(case when x.jeniskelamin=2 and hari>28 and hari<365 then 1 else 0 end)as p_3,
+sum(case when x.jeniskelamin=1 and hari>365 and hari<1825 then 1 else 0 end)as l_4,
+sum(case when x.jeniskelamin=2 and hari>365 and hari<1825 then 1 else 0 end)as p_4,
+sum(case when x.jeniskelamin=1 and hari>1825 and hari<5475 then 1 else 0 end)as l_5,
+sum(case when x.jeniskelamin=2 and hari>1825 and hari<5475 then 1 else 0 end)as p_5,
+sum(case when x.jeniskelamin=1 and hari>5475 and hari<9125 then 1 else 0 end)as l_6,
+sum(case when x.jeniskelamin=2 and hari>5475 and hari<9125 then 1 else 0 end)as p_6,
+sum(case when x.jeniskelamin=1 and hari>9125 and hari<16425 then 1 else 0 end)as l_7,
+sum(case when x.jeniskelamin=2 and hari>9125 and hari<16425 then 1 else 0 end)as p_7,
+sum(case when x.jeniskelamin=1 and hari>16425 and hari<23725 then 1 else 0 end)as l_8,
+sum(case when x.jeniskelamin=2 and hari>16425 and hari<23725 then 1 else 0 end)as p_8,
+sum(case when x.jeniskelamin=1 and hari>23725 then 1 else 0 end)as l_9,
+sum(case when x.jeniskelamin=2 and hari>23725 then 1 else 0 end)as p_9,
+SUM(CASE WHEN x.objectcarapulangrifk <> 4 AND x.jeniskelamin = 1 THEN 1 ELSE 0 END)+
+SUM(CASE WHEN x.objectcarapulangrifk = 4 AND x.jeniskelamin = 1 THEN 1 ELSE 0 END) AS phpm_lk,
+SUM(CASE WHEN x.objectcarapulangrifk <>4 AND x.jeniskelamin = 2 THEN 1 ELSE 0 END)+
+SUM(CASE WHEN x.objectcarapulangrifk = 4 AND x.jeniskelamin = 2 THEN 1 ELSE 0 end)AS phpm_pl,
+SUM(CASE WHEN x.objectcarapulangrifk <> 4 AND x.jeniskelamin = 1 THEN 1 ELSE 0 END) +
+SUM(CASE WHEN x.objectcarapulangrifk <>4 AND x.jeniskelamin = 2 THEN 1 ELSE 0 END) AS ph_total,
+SUM(CASE WHEN x.objectcarapulangrifk = 4 AND x.jeniskelamin = 1 THEN 1 ELSE 0 END) +
+SUM(CASE WHEN x.objectcarapulangrifk = 4 AND x.jeniskelamin = 2 THEN 1 ELSE 0 END) AS pm_total
+from (
+select td.norec,mm.no_dtd,case when mp.objectjeniskelaminfk is null then 1 else mp.objectjeniskelaminfk end as jeniskelamin,case when to_char(td.tglpulang, 'YYYY-MM-DD')=to_char(mp.tgllahir, 'YYYY-MM-DD') then 1 else date_part('DAY', to_char(td.tglpulang, 'YYYY-MM-DD')::TIMESTAMP- to_char(mp.tgllahir, 'YYYY-MM-DD')::TIMESTAMP) end as hari,
+td.objectcarapulangrifk from t_daftarpasien td
+join m_unit mu on mu.id=td.objectunitlastfk
+join m_pasien mp on mp.id=td.nocmfk
+join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk=td.norec and td.objectunitlastfk=ta.objectunitfk
+join t_diagnosapasien td2 on td2.objectantreanpemeriksaanfk=ta.norec
+join m_icdx mi on mi.id=td2.objecticdxfk
+join m_morbiditas mm on mm.id=mi.objectmorbiditasfk
+where mu.objectinstalasifk=2 and td.statusenabled=true and td2.objecttipediagnosafk=1
+and td.tglpulang between $1 and $2 and td.objectcarapulangrifk is not null
+group by td.norec,mm.no_dtd,mp.objectjeniskelaminfk,mp.tgllahir
+) as x group by x.no_dtd`
+
 export default {
     qResult,
     qGetDetailFromJenisProduk,
@@ -361,5 +418,7 @@ export default {
     qJumlahPasienKeluarMati,
     qLaporanRL1_3,
     qListRL2,
-    qIsiListRL2
+    qIsiListRL2,
+    qTaskListRL4A,
+    qListRL4A
 }
