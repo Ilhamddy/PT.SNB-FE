@@ -131,9 +131,7 @@ const PegawaiTotal = () => {
       separator: '.',
       prefix: '',
       onClick: () =>
-        dispatch(
-          setStatusPegawai('Total Pegawai', countPegawai?.pegawai || [])
-        ),
+        dispatch(setStatusPegawai('Pegawai', countPegawai?.pegawai || [])),
     },
     {
       id: 2,
@@ -147,7 +145,7 @@ const PegawaiTotal = () => {
       prefix: '',
       onClick: () =>
         dispatch(
-          setStatusPegawai('Total Spesialis', countSpesialis?.pegawai || [])
+          setStatusPegawai('Dokter Spesialis', countSpesialis?.pegawai || [])
         ),
     },
     {
@@ -162,7 +160,7 @@ const PegawaiTotal = () => {
       prefix: '',
       onClick: () =>
         dispatch(
-          setStatusPegawai('Total Spesialis', countDokterUmum?.pegawai || [])
+          setStatusPegawai('Dokter Umum', countDokterUmum?.pegawai || [])
         ),
     },
     {
@@ -177,7 +175,7 @@ const PegawaiTotal = () => {
       suffix: '',
       onClick: () =>
         dispatch(
-          setStatusPegawai('Total Spesialis', countPerawatBidan?.pegawai || [])
+          setStatusPegawai('Perawat & Bidan', countPerawatBidan?.pegawai || [])
         ),
     },
     {
@@ -193,7 +191,7 @@ const PegawaiTotal = () => {
       onClick: () =>
         dispatch(
           setStatusPegawai(
-            'Total Spesialis',
+            'Penunjang Medis',
             countPenunjangMedis?.pegawai || []
           )
         ),
@@ -718,7 +716,7 @@ const FungsionalPegawai = () => {
       },
     },
     dataLabels: {
-      enabled: false,
+      enabled: true,
     },
     legend: {
       show: false,
@@ -825,7 +823,7 @@ const SpesialisasiPegawai = () => {
       },
     },
     dataLabels: {
-      enabled: false,
+      enabled: true,
     },
     legend: {
       show: false,
