@@ -94,6 +94,7 @@ COALESCE(
             'tglregistrasi', tdp.tglregistrasi,
             'namaunit', mu.namaunit
         )
+        ORDER BY tdp.tglregistrasi DESC
     )
     FILTER (WHERE mi.id = ${instalasi})
     , '[]'

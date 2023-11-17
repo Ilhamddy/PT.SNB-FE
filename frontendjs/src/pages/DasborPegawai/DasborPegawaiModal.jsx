@@ -68,7 +68,7 @@ export const ModalStatusPegawai = () => {
       isOpen={!!statusPegawai}
       toggle={() => dispatch(resetStatusPegawai())}
       centered={true}
-      size="xl"
+      size="lg"
     >
       <h4 className="p-3">{dataName}</h4>
       <DataTable
