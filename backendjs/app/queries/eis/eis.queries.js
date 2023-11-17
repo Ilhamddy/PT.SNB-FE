@@ -510,6 +510,7 @@ FROM m_jeniskelamin mjk
     LEFT JOIN m_unit mu ON mp.objectunitfk = mu.id
     LEFT JOIN m_spesialisasi ms ON mp.objectspesialisasifk = ms.id
 WHERE mjk.statusenabled = true
+    AND mp.statusenabled = true
 GROUP BY
     mjk.reportdisplay,
     mjk.id
