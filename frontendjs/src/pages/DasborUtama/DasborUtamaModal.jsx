@@ -1,14 +1,86 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { Card, Modal } from 'reactstrap'
 import {
+  resetPasienBayar,
   resetPasienGadar,
+  resetPasienPoliklinik,
   resetPasienRajal,
   resetPasienRanap,
+  resetWidgetUtama,
 } from '../../store/eis/action'
 import DataTable from 'react-data-table-component'
 import NoDataTable from '../../Components/Table/NoDataTable'
 import LoadingTable from '../../Components/Table/LoadingTable'
 import { dateLocal } from '../../utils/format'
+
+export const ModalWidgetUtama = () => {
+  const dispatch = useDispatch()
+  const pasien = useSelector((state) => state.Eis.tabelPasien.widgetutama.data)
+  const dataName = useSelector(
+    (state) => state.Eis.tabelPasien.widgetutama.name || ''
+  )
+  /**
+   * @type {import("react-data-table-component").TableColumn[]}
+   */
+  const columnsDetail = [
+    {
+      name: <span className="font-weight-bold fs-13">Poliklinik</span>,
+      sortable: true,
+      selector: (row) => row.namaunit,
+      width: '120px',
+    },
+    {
+      name: <span className="font-weight-bold fs-13">Nama Pasien</span>,
+      selector: (row) => row.namapasien,
+      sortable: true,
+      width: '110px',
+    },
+
+    {
+      name: <span className="font-weight-bold fs-13">No RM</span>,
+      sortable: true,
+      selector: (row) => row.nocm,
+      width: '100px',
+    },
+    {
+      name: <span className="font-weight-bold fs-13">No Registrasi</span>,
+      sortable: true,
+      selector: (row) => row.noregistrasi,
+      width: '100px',
+    },
+    {
+      name: <span className="font-weight-bold fs-13">Penjamin</span>,
+      sortable: true,
+      selector: (row) => row.namarekanan,
+      width: '150px',
+    },
+    {
+      name: <span className="font-weight-bold fs-13">Tanggal Registrasi</span>,
+      sortable: true,
+      selector: (row) => dateLocal(row.tglregistrasi),
+      width: '150px',
+    },
+  ]
+  return (
+    <Modal
+      isOpen={!!pasien}
+      toggle={() => dispatch(resetWidgetUtama())}
+      centered={true}
+      size="xl"
+    >
+      <h4 className="p-3">{dataName}</h4>
+      <DataTable
+        columns={columnsDetail}
+        pagination
+        data={pasien || []}
+        progressPending={false}
+        customStyles={tableCustomStyles}
+        progressComponent={<LoadingTable />}
+        noDataComponent={<NoDataTable dataName={dataName} />}
+      />
+    </Modal>
+  )
+}
 
 export const ModalPasienRajal = () => {
   const dispatch = useDispatch()
@@ -225,11 +297,11 @@ export const ModalPasienRanap = () => {
 
 export const ModalPasienCaraBayar = () => {
   const dispatch = useDispatch()
-  const pasienRanap = useSelector(
-    (state) => state.Eis.tabelPasien.pasienRanap.data
+  const pasienBayar = useSelector(
+    (state) => state.Eis.tabelPasien.pasienBayar.data
   )
   const dataName = useSelector(
-    (state) => state.Eis.tabelPasien.pasienRanap.name || ''
+    (state) => state.Eis.tabelPasien.pasienBayar.name || ''
   )
   /**
    * @type {import("react-data-table-component").TableColumn[]}
@@ -275,16 +347,16 @@ export const ModalPasienCaraBayar = () => {
   ]
   return (
     <Modal
-      isOpen={!!pasienRanap}
-      toggle={() => dispatch(resetPasienRanap())}
+      isOpen={!!pasienBayar}
+      toggle={() => dispatch(resetPasienBayar())}
       centered={true}
       size="xl"
     >
-      <h4 className="p-3">List {dataName} Rawat Inap</h4>
+      <h4 className="p-3">List Cara Bayar {dataName}</h4>
       <DataTable
         columns={columnsDetail}
         pagination
-        data={pasienRanap?.items || []}
+        data={pasienBayar || []}
         progressPending={false}
         customStyles={tableCustomStyles}
         progressComponent={<LoadingTable />}
@@ -294,6 +366,76 @@ export const ModalPasienCaraBayar = () => {
   )
 }
 
+export const ModalPoliklinik = () => {
+  const dispatch = useDispatch()
+  const pasienPoliklinik = useSelector(
+    (state) => state.Eis.tabelPasien.pasienPoliklinik.data
+  )
+  const dataName = useSelector(
+    (state) => state.Eis.tabelPasien.pasienPoliklinik.name || ''
+  )
+  /**
+   * @type {import("react-data-table-component").TableColumn[]}
+   */
+  const columnsDetail = [
+    {
+      name: <span className="font-weight-bold fs-13">Poliklinik</span>,
+      sortable: true,
+      selector: (row) => row.namaunit,
+      width: '120px',
+    },
+    {
+      name: <span className="font-weight-bold fs-13">Nama Pasien</span>,
+      selector: (row) => row.namapasien,
+      sortable: true,
+      width: '110px',
+    },
+
+    {
+      name: <span className="font-weight-bold fs-13">No RM</span>,
+      sortable: true,
+      selector: (row) => row.nocm,
+      width: '100px',
+    },
+    {
+      name: <span className="font-weight-bold fs-13">No Registrasi</span>,
+      sortable: true,
+      selector: (row) => row.noregistrasi,
+      width: '100px',
+    },
+    {
+      name: <span className="font-weight-bold fs-13">Penjamin</span>,
+      sortable: true,
+      selector: (row) => row.namarekanan,
+      width: '150px',
+    },
+    {
+      name: <span className="font-weight-bold fs-13">Tanggal Registrasi</span>,
+      sortable: true,
+      selector: (row) => dateLocal(row.tglregistrasi),
+      width: '150px',
+    },
+  ]
+  return (
+    <Modal
+      isOpen={!!pasienPoliklinik}
+      toggle={() => dispatch(resetPasienPoliklinik())}
+      centered={true}
+      size="xl"
+    >
+      <h4 className="p-3">List Cara Bayar {dataName}</h4>
+      <DataTable
+        columns={columnsDetail}
+        pagination
+        data={pasienPoliklinik || []}
+        progressPending={false}
+        customStyles={tableCustomStyles}
+        progressComponent={<LoadingTable />}
+        noDataComponent={<NoDataTable dataName={'gawat darurat'} />}
+      />
+    </Modal>
+  )
+}
 const tableCustomStyles = {
   headRow: {
     style: {

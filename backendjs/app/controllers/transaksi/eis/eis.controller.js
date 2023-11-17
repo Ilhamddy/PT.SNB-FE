@@ -380,8 +380,8 @@ const getStatusPegawai = async (req, res) => {
         const countDokterUmum = (await pool.query(qGetCountDokterUmum)).rows[0]
         const countPerawatBidan = (await pool.query(qGetCountPerawatBidan)).rows[0]
         const countPenunjangMedis = (await pool.query(qGetCountPenunjangMedis)).rows[0]
-        const countJenisKelamin = (await pool.query(qGetCountJenisKelamin)).rows
         const countStatus = (await pool.query(qGetCountStatus)).rows
+        const countJenisKelamin = (await pool.query(qGetCountJenisKelamin)).rows
         const usiaPegawai = (await pool.query(qGetUsia)).rows
         const countJabatan = (await pool.query(qGetJabatan)).rows
         const countProfesi = (await pool.query(qGetCountProfesi)).rows
@@ -521,7 +521,7 @@ const getDasborPendapatan = async (req, res) => {
                 awalTanggalMulai, 
                 akhirTanggalSelesai,
                 (data) => data.tglbayar,
-                (arData) => arData.reduce((prev, c) => prev + (c.total || 0), 0)
+                (arData) => arData.reduce((prev, c) => prev + (c.totalbayar || 0), 0)
             )
             newP.datas = arrTimesData
             return newP

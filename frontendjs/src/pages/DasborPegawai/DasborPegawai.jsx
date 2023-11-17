@@ -26,13 +26,19 @@ import LoadingTable from '../../Components/Table/LoadingTable'
 import NoDataTable from '../../Components/Table/NoDataTable'
 import { useDispatch, useSelector } from 'react-redux'
 import React from 'react'
-import { getPegawaiPensiun, getStatusPegawai } from '../../store/eis/action'
+import {
+  getPegawaiPensiun,
+  getStatusPegawai,
+  setStatusPegawai,
+} from '../../store/eis/action'
 import { HeaderDashboard } from '../DasborUtama/DasborUtama'
 import DokterUmum from './total-dokter-umum.png'
 import Pegawai from './total-pegawai.svg'
 import PenunjangMedis from './total-penunjang-medis.svg'
 import Perawat from './total-perawat.svg'
 import Spesialis from './total-spesialis.svg'
+import { ModalStatusPegawai } from './DasborPegawaiModal'
+import { colors } from '../DasborUtama/colors'
 
 const DasborPegawai = () => {
   const [dateToday] = useState(() => new Date().toISOString())
@@ -61,6 +67,7 @@ const DasborPegawai = () => {
       />
       <ToastContainer closeButton={false} />
       <HeaderDashboard />
+      <ModalStatusPegawai />
       <Container fluid className="ps-3 pe-3 mt-3">
         <PegawaiTotal />
         <Row>
@@ -104,6 +111,7 @@ const DasborPegawai = () => {
 }
 
 const PegawaiTotal = () => {
+  const dispatch = useDispatch()
   const {
     countPegawai,
     countSpesialis,
@@ -115,57 +123,80 @@ const PegawaiTotal = () => {
     {
       id: 1,
       label: 'Total Pegawai',
-      badge: 'ri-arrow-up-circle-line text-success',
+      badge: 'ri-more-2-fill',
       icon: Pegawai,
       counter: countPegawai?.jumlah || 0,
       decimals: 0,
       suffix: '',
       separator: '.',
       prefix: '',
+      onClick: () =>
+        dispatch(
+          setStatusPegawai('Total Pegawai', countPegawai?.pegawai || [])
+        ),
     },
     {
       id: 2,
       label: 'Dokter Spesialis',
-      badge: 'ri-arrow-up-circle-line text-success',
+      badge: 'ri-more-2-fill',
       icon: Spesialis,
       counter: countSpesialis?.jumlah || 0,
       decimals: 0,
       separator: '.',
       suffix: '',
       prefix: '',
+      onClick: () =>
+        dispatch(
+          setStatusPegawai('Total Spesialis', countSpesialis?.pegawai || [])
+        ),
     },
     {
       id: 3,
       label: 'Dokter Umum',
-      badge: 'ri-arrow-up-circle-line text-success',
+      badge: 'ri-more-2-fill',
       icon: DokterUmum,
       counter: countDokterUmum?.jumlah || 0,
       separator: '.',
       decimals: 0,
       suffix: '',
       prefix: '',
+      onClick: () =>
+        dispatch(
+          setStatusPegawai('Total Spesialis', countDokterUmum?.pegawai || [])
+        ),
     },
     {
       id: 4,
       label: 'Perawat & Bidan',
-      badge: 'ri-arrow-up-circle-line text-success',
+      badge: 'ri-more-2-fill',
       icon: Perawat,
       counter: countPerawatBidan?.jumlah || 0,
       decimals: 0,
       prefix: '',
       separator: '.',
       suffix: '',
+      onClick: () =>
+        dispatch(
+          setStatusPegawai('Total Spesialis', countPerawatBidan?.pegawai || [])
+        ),
     },
     {
       id: 5,
       label: 'Penunjang Medis',
-      badge: 'ri-arrow-up-circle-line text-success',
+      badge: 'ri-more-2-fill',
       icon: PenunjangMedis,
       counter: countPenunjangMedis?.jumlah || 0,
       decimals: 0,
       separator: '.',
       suffix: '',
       prefix: '',
+      onClick: () =>
+        dispatch(
+          setStatusPegawai(
+            'Total Spesialis',
+            countPenunjangMedis?.pegawai || []
+          )
+        ),
     },
   ]
   return (
@@ -178,6 +209,9 @@ const PegawaiTotal = () => {
                 <Col
                   className={item.id === 4 ? 'col-lg' : 'col-lg border-end'}
                   key={key}
+                  onClick={() => {
+                    item.onClick && item.onClick()
+                  }}
                 >
                   <div className="mt-3 mt-md-0 py-4 px-3">
                     <h5 className="text-muted text-uppercase fs-13">
@@ -218,18 +252,26 @@ const PegawaiTotal = () => {
 }
 
 const StatusPegawai = () => {
-  const dataColors =
-    '["--vz-primary", "--vz-success", "--vz-warning", "--vz-danger", "--vz-info"]'
-  var chartPieBasicColors = getChartColorsArray(dataColors)
+  const dispatch = useDispatch()
   const countStatus = useSelector(
     (state) => state.Eis.getStatusPegawai.data?.countStatus || []
   )
   const labels = countStatus.map((c) => c.label)
   const series = countStatus.map((c) => c.jumlah)
-  var options = {
+  const seriesStatus = countStatus.map((c) => c.pegawai)
+
+  const options = {
     chart: {
       height: 300,
       type: 'pie',
+      events: {
+        dataPointSelection: (event, chartContext, config) => {
+          const dIndex = config.dataPointIndex
+          const data = seriesStatus[dIndex]
+          const name = 'Status Pegawai ' + labels[dIndex]
+          data && dispatch(setStatusPegawai(name, data))
+        },
+      },
     },
     labels: labels,
     legend: {
@@ -278,17 +320,18 @@ const StatusPegawai = () => {
 }
 
 const JenisKelamin = () => {
-  const dataColors =
-    '["--vz-primary", "--vz-success", "--vz-warning", "--vz-danger", "--vz-dark", "--vz-info"]'
-  let chartColumnDistributedColors = getChartColorsArray(dataColors)
+  const dispatch = useDispatch()
   const jenisKelamin = useSelector(
     (state) => state.Eis.getStatusPegawai.data?.countJenisKelamin || []
   )
   const jenisKelaminTotal = jenisKelamin.map((jen) => jen.jumlah)
   const jenisKelaminNama = jenisKelamin.map((jen) => jen.label)
+  const jenisKelaminData = jenisKelamin.map((jen) => jen.pegawai || [])
   const series = [
     {
+      name: 'Total Pegawai',
       data: jenisKelaminTotal,
+      dataComplete: jenisKelaminData,
     },
   ]
   let options = {
@@ -296,10 +339,16 @@ const JenisKelamin = () => {
       height: 350,
       type: 'bar',
       events: {
-        click: function (chart, w, e) {},
+        dataPointSelection: (event, chartContext, config) => {
+          const sIndex = config.seriesIndex
+          const dIndex = config.dataPointIndex
+          const data = series[sIndex].dataComplete[dIndex]
+          const name = 'Jenis Kelamin ' + jenisKelaminNama[dIndex]
+          data && dispatch(setStatusPegawai(name, data))
+        },
       },
     },
-    colors: chartColumnDistributedColors,
+    colors: colors,
     plotOptions: {
       bar: {
         columnWidth: '45%',
@@ -482,18 +531,25 @@ const NegativeGender = () => {
 }
 
 const StrukturalPegawai = () => {
-  const dataColors =
-    '["--vz-primary", "--vz-success", "--vz-warning", "--vz-danger", "--vz-info"]'
-  var chartPieBasicColors = getChartColorsArray(dataColors)
+  const dispatch = useDispatch()
   const countJabatan = useSelector(
     (state) => state.Eis.getStatusPegawai.data?.countJabatan || []
   )
   const labels = countJabatan.map((c) => c.label)
   const series = countJabatan.map((c) => c.jumlah)
-  var options = {
+  const pegawai = countJabatan.map((c) => c.pegawai)
+  let options = {
     chart: {
       height: 300,
       type: 'pie',
+      events: {
+        dataPointSelection: (event, chartContext, config) => {
+          const dIndex = config.dataPointIndex
+          const data = pegawai[dIndex]
+          const name = 'Status Pegawai ' + labels[dIndex]
+          data && dispatch(setStatusPegawai(name, data))
+        },
+      },
     },
     labels: labels,
     legend: {
@@ -542,18 +598,26 @@ const StrukturalPegawai = () => {
 }
 
 const PendidikanPegawai = () => {
-  const dataColors =
-    '["--vz-primary", "--vz-success", "--vz-warning", "--vz-danger", "--vz-info"]'
-  var chartPieBasicColors = getChartColorsArray(dataColors)
+  const dispatch = useDispatch()
   const countPendidikan = useSelector(
     (state) => state.Eis.getStatusPegawai.data?.countPendidikanTerakhir || []
   )
   const labels = countPendidikan.map((c) => c.label)
   const series = countPendidikan.map((c) => c.jumlah)
-  var options = {
+  const pegawai = countPendidikan.map((c) => c.pegawai)
+
+  let options = {
     chart: {
       height: 300,
       type: 'pie',
+      events: {
+        dataPointSelection: (event, chartContext, config) => {
+          const dIndex = config.dataPointIndex
+          const data = pegawai[dIndex]
+          const name = 'Pendidikan Pegawai ' + labels[dIndex]
+          data && dispatch(setStatusPegawai(name, data))
+        },
+      },
     },
     labels: labels,
     legend: {
@@ -602,17 +666,18 @@ const PendidikanPegawai = () => {
 }
 
 const FungsionalPegawai = () => {
-  const dataColors =
-    '["--vz-primary", "--vz-success", "--vz-warning", "--vz-danger", "--vz-dark", "--vz-info"]'
-  let chartColumnDistributedColors = getChartColorsArray(dataColors)
+  const dispatch = useDispatch()
   const profesi = useSelector(
     (state) => state.Eis.getStatusPegawai.data?.countProfesi || []
   )
   const profesiJumlah = profesi.map((prof) => prof.jumlah)
   const profesiLabel = profesi.map((prof) => prof.label.split(' '))
+  const pegawai = profesi.map((prof) => prof.pegawai)
   const series = [
     {
+      name: 'Total Pegawai',
       data: profesiJumlah,
+      dataComplete: pegawai,
     },
   ]
   let options = {
@@ -620,7 +685,13 @@ const FungsionalPegawai = () => {
       height: 350,
       type: 'bar',
       events: {
-        click: function (chart, w, e) {},
+        dataPointSelection: (event, chartContext, config) => {
+          const sIndex = config.seriesIndex
+          const dIndex = config.dataPointIndex
+          const data = series[sIndex].dataComplete[dIndex]
+          const name = 'Profesi Pegawai ' + profesiLabel[dIndex]
+          data && dispatch(setStatusPegawai(name, data))
+        },
       },
     },
     colors: [
@@ -701,17 +772,19 @@ const FungsionalPegawai = () => {
 }
 
 const SpesialisasiPegawai = () => {
-  const dataColors =
-    '["--vz-primary", "--vz-success", "--vz-warning", "--vz-danger", "--vz-dark", "--vz-info"]'
-  let chartColumnDistributedColors = getChartColorsArray(dataColors)
+  const dispatch = useDispatch()
   const spesialisasi = useSelector(
     (state) => state.Eis.getStatusPegawai.data?.countSpesialisasi || []
   )
   const spesialisasiJumlah = spesialisasi.map((prof) => prof.jumlah)
   const spesialisasiLabel = spesialisasi.map((prof) => prof.label)
+  const pegawai = spesialisasi.map((prof) => prof.pegawai)
+
   const series = [
     {
+      name: 'Total Pegawai',
       data: spesialisasiJumlah,
+      dataComplete: pegawai,
     },
   ]
   let options = {
@@ -719,7 +792,13 @@ const SpesialisasiPegawai = () => {
       height: 350,
       type: 'bar',
       events: {
-        click: function (chart, w, e) {},
+        dataPointSelection: (event, chartContext, config) => {
+          const sIndex = config.seriesIndex
+          const dIndex = config.dataPointIndex
+          const data = series[sIndex].dataComplete[dIndex]
+          const name = 'Profesi Pegawai ' + spesialisasiLabel[dIndex]
+          data && dispatch(setStatusPegawai(name, data))
+        },
       },
     },
     colors: [

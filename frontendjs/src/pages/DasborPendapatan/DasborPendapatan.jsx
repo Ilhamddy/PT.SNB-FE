@@ -7,9 +7,14 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useFormik } from 'formik'
 import { useEffect, useState } from 'react'
 import BreadCrumb from '../../Components/Common/BreadCrumb'
-import { getDasborPembayaran } from '../../store/eis/action'
+import {
+  getDasborPembayaran,
+  setPasienBayar,
+  setPembayaran,
+} from '../../store/eis/action'
 import ReactApexChart from 'react-apexcharts'
 import { colors } from '../DasborUtama/colors'
+import { ModalPembayaran } from './DasborPendapatanModal'
 
 const DasborPendapatan = () => {
   const dispatch = useDispatch()
@@ -43,6 +48,7 @@ const DasborPendapatan = () => {
       />
       <ToastContainer closeButton={false} />
       <HeaderDashboard />
+      <ModalPembayaran />
       <Container fluid className="ps-3 pe-3">
         <Row className="mt-3 d-flex flex-row-reverse mb-3">
           <Col lg={'auto'}>
@@ -79,25 +85,6 @@ const DasborPendapatan = () => {
               </FormFeedback>
             )}
           </Col>
-          {/* <Col lg={2}>
-            <CustomSelect
-              id="carabayar"
-              name="carabayar"
-              options={CaraBayarValue}
-              onChange={(e) => {
-                vFilter.setFieldValue('carabayar', e?.value || '')
-              }}
-              value={vFilter.values.carabayar}
-              className={`input row-header ${
-                !!vFilter?.errors.carabayar ? 'is-invalid' : ''
-              }`}
-            />
-            {vFilter.touched.carabayar && !!vFilter.errors.carabayar && (
-              <FormFeedback type="invalid">
-                <div>{vFilter.errors.carabayar}</div>
-              </FormFeedback>
-            )}
-          </Col> */}
         </Row>
         <StackedInstalasi />
         <PendapatanKeseluruhan />
@@ -109,15 +96,18 @@ const DasborPendapatan = () => {
 }
 
 const PendapatanKeseluruhan = () => {
+  const dispatch = useDispatch()
   const kunjungan = useSelector(
     (state) => state.Eis.getDasborPembayaran.data?.pembayaran || []
   )
   const bayarTotal = kunjungan.map((kunj) => kunj.totalproduk)
   const pembayaranNama = kunjungan.map((kunj) => kunj.namainstalasi.split(' '))
+  const bayar = kunjungan.map((kunj) => kunj.bayar)
   const series = [
     {
       name: 'Total pembayaran',
       data: bayarTotal,
+      dataComplete: bayar,
     },
   ]
 
@@ -126,7 +116,14 @@ const PendapatanKeseluruhan = () => {
       height: 350,
       type: 'bar',
       events: {
-        click: function (chart, w, e) {},
+        dataPointSelection: (event, chartContext, config) => {
+          const sIndex = config.seriesIndex
+          const dIndex = config.dataPointIndex
+          const data = series[sIndex].dataComplete[dIndex]
+          const name =
+            'Seluruh Pembayaran ' + (pembayaranNama[dIndex]?.join(' ') || '')
+          data && dispatch(setPembayaran(name, data))
+        },
       },
     },
     colors: colors,
@@ -190,15 +187,18 @@ const PendapatanKeseluruhan = () => {
 }
 
 const PendapatanLayanan = () => {
+  const dispatch = useDispatch()
   const kunjungan = useSelector(
     (state) => state.Eis.getDasborPembayaran.data?.pembayaranPelayanan || []
   )
   const bayarTotal = kunjungan.map((kunj) => kunj.totalproduk)
   const pembayaranNama = kunjungan.map((kunj) => kunj.namainstalasi.split(' '))
+  const bayar = kunjungan.map((kunj) => kunj.bayar)
   const series = [
     {
       name: 'Total pembayaran',
       data: bayarTotal,
+      dataComplete: bayar,
     },
   ]
 
@@ -207,7 +207,14 @@ const PendapatanLayanan = () => {
       height: 350,
       type: 'bar',
       events: {
-        click: function (chart, w, e) {},
+        dataPointSelection: (event, chartContext, config) => {
+          const sIndex = config.seriesIndex
+          const dIndex = config.dataPointIndex
+          const data = series[sIndex].dataComplete[dIndex]
+          const name =
+            'Seluruh Pembayaran ' + (pembayaranNama[dIndex]?.join(' ') || '')
+          data && dispatch(setPembayaran(name, data))
+        },
       },
     },
     colors: colors,
@@ -271,15 +278,18 @@ const PendapatanLayanan = () => {
 }
 
 const PendapatanLain = () => {
+  const dispatch = useDispatch()
   const kunjungan = useSelector(
     (state) => state.Eis.getDasborPembayaran.data?.pembayaranLain || []
   )
   const bayarTotal = kunjungan.map((kunj) => kunj.totalproduk)
   const pembayaranNama = kunjungan.map((kunj) => kunj.namainstalasi.split(' '))
+  const bayar = kunjungan.map((kunj) => kunj.bayar)
   const series = [
     {
       name: 'Total pembayaran',
       data: bayarTotal,
+      dataComplete: bayar,
     },
   ]
 
@@ -288,7 +298,15 @@ const PendapatanLain = () => {
       height: 350,
       type: 'bar',
       events: {
-        click: function (chart, w, e) {},
+        dataPointSelection: (event, chartContext, config) => {
+          const sIndex = config.seriesIndex
+          const dIndex = config.dataPointIndex
+          const data = series[sIndex].dataComplete[dIndex]
+          const name =
+            'Seluruh Pembayaran ' + (pembayaranNama[dIndex]?.join(' ') || '')
+          console.log(data)
+          data && dispatch(setPembayaran(name, data))
+        },
       },
     },
     colors: colors,
@@ -359,7 +377,7 @@ const StackedInstalasi = () => {
   const pasienBatal = useSelector(
     (state) => state.Eis.getPasienRJ.data?.pasienBatal || []
   )
-  const totalPasienDaftar = pembayaranTotal.map((pasien) => pasien.total)
+  const totalPasienDaftar = pembayaranTotal.map((pasien) => pasien.totalbayar)
   // const totalPasienBatal = pasienBatal.map((pasien) => pasien.total)
   const tglSeries =
     pembayaranTotal?.[0]?.datas.map((pasien) => pasien.date) || []
@@ -383,11 +401,11 @@ const StackedInstalasi = () => {
       },
       events: {
         dataPointSelection: (event, chartContext, config) => {
-          // const sIndex = config.seriesIndex
-          // const dIndex = config.dataPointIndex
-          // const data = series[sIndex].dataComplete[dIndex]
-          // const name = series[sIndex].name
-          // data && dispatch(setPasienRajal(name, data))
+          const sIndex = config.seriesIndex
+          const dIndex = config.dataPointIndex
+          const data = series[sIndex].dataComplete[dIndex]?.items
+          const name = 'Seluruh Pembayaran ' + series[sIndex]?.name
+          data && dispatch(setPembayaran(name, data))
         },
       },
     },

@@ -31,16 +31,22 @@ import {
   getPasienRJ,
   getPasienRanap,
   getPoliklinikTerbanyak,
+  setPasienBayar,
   setPasienGadar,
+  setPasienPoliklinik,
   setPasienRajal,
   setPasienRanap,
+  setWidgetUtama,
 } from '../../store/eis/action'
 import { Link } from 'react-router-dom'
 import { colors } from './colors'
 import {
+  ModalPasienCaraBayar,
   ModalPasienGaDar,
   ModalPasienRajal,
   ModalPasienRanap,
+  ModalPoliklinik,
+  ModalWidgetUtama,
 } from './DasborUtamaModal'
 
 const DashboardUtama = () => {
@@ -81,9 +87,12 @@ const DashboardUtama = () => {
 
   return (
     <div className="page-content page-dasbor-eis-utama">
+      <ModalWidgetUtama />
       <ModalPasienRajal />
       <ModalPasienGaDar />
       <ModalPasienRanap />
+      <ModalPasienCaraBayar />
+      <ModalPoliklinik />
       <BreadCrumb
         title="Dasbor Utama"
         pageTitle="Dasbor EIS"
@@ -485,41 +494,37 @@ const StackedRI = () => {
 
 const CaraBayar = () => {
   const dispatch = useDispatch()
-  const total = useSelector(
-    (state) => ({
-      bpjs: state.Eis.getCountCaraBayar.data.bpjs,
-      umum: state.Eis.getCountCaraBayar.data.umum,
-      nonBPJS: state.Eis.getCountCaraBayar.data.nonBPJS,
-    }),
-    shallowEqual
+  const bpjs = useSelector((state) => state.Eis.getCountCaraBayar.data.bpjs)
+  const umum = useSelector((state) => state.Eis.getCountCaraBayar.data.umum)
+  const nonBPJS = useSelector(
+    (state) => state.Eis.getCountCaraBayar.data.nonBPJS
   )
-  const series = [
-    total.bpjs?.count || 0,
-    total.umum?.count || 0,
-    total?.nonBPJS?.count || 0,
+  const seriesData = [
+    [...(bpjs?.data || [])],
+    [...(umum?.data || [])],
+    [...(nonBPJS?.data || [])],
   ]
-  const labels = ['BPJS Kesehatan', 'Umum', 'Asuransi Lain']
-  let options = {
+  const series = [bpjs?.count || 0, umum?.count || 0, nonBPJS?.count || 0]
+  // ntah kenapa label harus dinamis, kalo tidak dataPointSelection tidak bisa
+  // makanya kalo bpjs gak ada jadi labelnya kosong saja,
+  // sepertinya dataPointSelection baru akan terupdate kalo labels baru terupdate
+  // contoh label berubah dari [] ke ['bpjs kesehatan', 'umum']
+  const labels = bpjs ? ['BPJS Kesehatan', 'Umum', 'Asuransi Lain'] : []
+  const onClick = (event, chartContext, config) => {
+    const dIndex = config.dataPointIndex
+    const data = seriesData[dIndex]
+    const name = labels[dIndex]
+    data && dispatch(setPasienBayar(name, data))
+  }
+  const options = {
     chart: {
       height: 300,
       type: 'pie',
       events: {
-        dataPointSelection: (event, chartContext, config) => {
-          const dIndex = config.dataPointIndex
-          const seriesData = [
-            total.bpjs?.data || [],
-            total.umum?.data || [],
-            total?.nonBPJS?.data || [],
-          ]
-          console.log(seriesData)
-          console.log(total)
-          const data = seriesData[dIndex]
-          const name = labels[dIndex]
-          data && dispatch(setPasienRanap(name, data))
-        },
+        dataPointSelection: onClick,
       },
     },
-    labels: labels,
+    labels: [...labels],
     legend: {
       position: 'bottom',
     },
@@ -541,7 +546,7 @@ const CaraBayar = () => {
         dir="ltr"
         className="apex-charts"
         series={series}
-        options={options}
+        options={{ ...options }}
         type="pie"
         height={350}
       />
@@ -550,6 +555,7 @@ const CaraBayar = () => {
 }
 
 const PasienTotal = () => {
+  const dispatch = useDispatch()
   const data = useSelector(
     (state) => state.Eis.getCountUnit.data?.countUnit || null
   )
@@ -557,57 +563,81 @@ const PasienTotal = () => {
     {
       id: 1,
       label: 'Pasien Rawat Jalan',
-      badge: 'ri-arrow-up-circle-line text-success',
+      badge: 'ri-more-2-fill',
       icon: 'ri-space-ship-line',
       counter: data?.pasienrajal || 0,
       decimals: 0,
       suffix: '',
       separator: '.',
       prefix: '',
+      onClick: () =>
+        dispatch(
+          setWidgetUtama('Pasien Rawat Jalan', data?.isipasienrajal || [])
+        ),
     },
     {
       id: 2,
       label: 'Pasien Rawat Inap',
-      badge: 'ri-arrow-up-circle-line text-success',
+      badge: 'ri-more-2-fill',
       icon: 'ri-exchange-dollar-line',
       counter: data?.pasienranap || 0,
       decimals: 0,
       separator: '.',
       suffix: '',
       prefix: '',
+      onClick: () =>
+        dispatch(
+          setWidgetUtama('Pasien Rawat Inap', data?.isipasienranap || [])
+        ),
     },
     {
       id: 3,
       label: 'Pasien Gawat Darurat',
-      badge: 'ri-arrow-up-circle-line text-success',
+      badge: 'ri-more-2-fill',
       icon: 'ri-pulse-line',
       counter: data?.pasienigd || 0,
       separator: '.',
       decimals: 0,
       suffix: '',
       prefix: '',
+      onClick: () =>
+        dispatch(setWidgetUtama('Pasien Rawat IGD', data?.isipasienigd || [])),
     },
     {
       id: 4,
       label: 'Pasien Laboratorium',
-      badge: 'ri-arrow-up-circle-line text-success',
+      badge: 'ri-more-2-fill',
       icon: 'ri-trophy-line',
       counter: data?.pasienlaboratorium || 0,
       decimals: 0,
       prefix: '',
       separator: '.',
       suffix: '',
+      onClick: () =>
+        dispatch(
+          setWidgetUtama(
+            'Pasien Rawat Jalan',
+            data?.isipasienlaboratorium || []
+          )
+        ),
     },
     {
       id: 5,
       label: 'Pasien Radiologi',
-      badge: 'ri-arrow-up-circle-line text-success',
+      badge: 'ri-more-2-fill',
       icon: 'ri-service-line',
       counter: data?.pasienradiologi || 0,
       decimals: 0,
       separator: '.',
       suffix: '',
       prefix: '',
+      onClick: () =>
+        dispatch(
+          setWidgetUtama(
+            'Pasien Rawat Radiologi',
+            data?.isipasienradiologi || []
+          )
+        ),
     },
   ]
   return (
@@ -620,6 +650,9 @@ const PasienTotal = () => {
                 <Col
                   className={item.id === 4 ? 'col-lg' : 'col-lg border-end'}
                   key={key}
+                  onClick={() => {
+                    item.onClick && item.onClick()
+                  }}
                 >
                   <div className="mt-3 mt-md-0 py-4 px-3">
                     <h5 className="text-muted text-uppercase fs-13">
@@ -660,15 +693,18 @@ const PasienTotal = () => {
 }
 
 const KunjunganPoliklinik = () => {
+  const dispatch = useDispatch()
   const kunjungan = useSelector(
     (state) => state.Eis.getPoliklinikTerbanyak.data?.kunjungan || []
   )
   const kunjunganTotal = kunjungan.map((kunj) => kunj._total)
   const kunjunganNama = kunjungan.map((kunj) => kunj.namaunit.split(' '))
+  const kunjunganData = kunjungan.map((kunj) => kunj._values)
   const series = [
     {
       name: 'Total kunjungan',
       data: kunjunganTotal,
+      dataComplete: kunjunganData,
     },
   ]
 
@@ -677,7 +713,12 @@ const KunjunganPoliklinik = () => {
       height: 350,
       type: 'bar',
       events: {
-        click: function (chart, w, e) {},
+        dataPointSelection: (event, chartContext, config) => {
+          const sIndex = config.seriesIndex
+          const data = series[sIndex].dataComplete[0]
+          const name = series[sIndex].name
+          data && dispatch(setPasienPoliklinik(name, data))
+        },
       },
     },
     colors: colors,

@@ -81,6 +81,25 @@ SELECT
     mu.namaunit AS namaunit
 `
 
+const jsonAggPasienObj = (instalasi) => `
+COALESCE(
+    JSON_AGG(
+        JSON_BUILD_OBJECT(
+            'instalasi', tdp.objectinstalasifk,
+            'namainstalasi', mi.namainstalasi,
+            'namapasien', mp.namapasien,
+            'nocm', mp.nocm,
+            'noregistrasi', tdp.noregistrasi,
+            'namarekanan', mr.namarekanan,
+            'tglregistrasi', tdp.tglregistrasi,
+            'namaunit', mu.namaunit
+        )
+    )
+    FILTER (WHERE mi.id = ${instalasi})
+    , '[]'
+)
+`
+
 const qGetPasienTerdaftar = qGetPasienObj + `
 FROM t_antreanpemeriksaan tap
     LEFT JOIN t_daftarpasien tdp ON tdp.norec = tap.objectdaftarpasienfk
@@ -328,6 +347,9 @@ SELECT
             ELSE null 
         END
     )::INT as pasienranap,
+    ${
+        jsonAggPasienObj(daftarInstalasi.INSTALASI_RAWAT_INAP)
+    } AS isipasienranap,
     count(
         CASE 
             mu.objectinstalasifk WHEN ${daftarInstalasi.INSTALASI_RAWAT_JALAN} 
@@ -335,6 +357,9 @@ SELECT
             ELSE null 
         END
     )::INT as pasienrajal,
+    ${
+        jsonAggPasienObj(daftarInstalasi.INSTALASI_RAWAT_JALAN)
+    } AS isipasienrajal,
     count(
         CASE 
             mu.objectinstalasifk WHEN ${daftarInstalasi.INSTALASI_GAWAT_DARURAT} 
@@ -342,6 +367,9 @@ SELECT
             ELSE null 
         END
     )::INT as pasienigd,
+    ${
+        jsonAggPasienObj(daftarInstalasi.INSTALASI_GAWAT_DARURAT)
+    } AS isipasienigd,
     count(
         CASE 
             mu.objectinstalasifk WHEN ${daftarInstalasi.INSTALASI_LABORATORIUM} 
@@ -349,26 +377,55 @@ SELECT
             ELSE null 
         END
     )::INT as pasienlaboratorium,
+    ${
+        jsonAggPasienObj(daftarInstalasi.INSTALASI_LABORATORIUM)
+    } AS isipasienlaboratorium,
     count(
         CASE 
             mu.objectinstalasifk WHEN ${daftarInstalasi.INSTALASI_RADIOLOGI} 
                 THEN 1 
             ELSE null 
         END
-    )::INT as pasienradiologi
+    )::INT as pasienradiologi,
+    ${
+        jsonAggPasienObj(daftarInstalasi.INSTALASI_RADIOLOGI)
+    } AS isipasienradiologi
 FROM t_antreanpemeriksaan tap
     LEFT JOIN m_unit mu ON mu.id = tap.objectunitfk
+    LEFT JOIN t_daftarpasien tdp ON tdp.norec = tap.objectdaftarpasienfk
+    LEFT JOIN m_instalasi mi ON mi.id = tdp.objectinstalasifk
+    LEFT JOIN m_pasien mp ON mp.id = tdp.nocmfk
+    LEFT JOIN m_rekanan mr ON mr.id = tdp.objectpenjaminfk
 WHERE tap.statusenabled = true
     AND tap.tglkeluar IS NULL
+`
+
+const buildObjectPegawai = `
+JSON_AGG(
+    JSON_BUILD_OBJECT(
+        'namapegawai', mp.namalengkap,
+        'nip', mp.nip,
+        'namajabatan', mj.namajabatan,
+        'namaprofesi', mprof.profesipegawai,
+        'namaunit', mu.namaunit,
+        'namaspesialisasi', ms.reportdisplay
+    )
+    ORDER BY mp.tglmasuk DESC
+) AS pegawai
 `
 
 const qGetCountStatus = `
 SELECT
     msp.reportdisplay AS label,
     msp.id AS value,
-    COUNT(mp.id)::INT AS jumlah
+    COUNT(mp.id)::INT AS jumlah,
+    ${buildObjectPegawai}
 FROM m_statuspegawai msp
     LEFT JOIN m_pegawai mp ON mp.objectstatuspegawaifk = msp.id
+    LEFT JOIN m_jabatan mj ON mp.objectjabatanfk = mj.id
+    LEFT JOIN m_profesipegawai mprof ON mp.objectprofesipegawaifk = mprof.id
+    LEFT JOIN m_unit mu ON mp.objectunitfk = mu.id
+    LEFT JOIN m_spesialisasi ms ON mp.objectspesialisasifk = ms.id
 WHERE msp.statusenabled = true
 GROUP BY
     msp.reportdisplay,
@@ -377,39 +434,64 @@ GROUP BY
 
 const qGetCountPegawai = `
 SELECT
-    COUNT(mp.id)::INT AS jumlah
+    COUNT(mp.id)::INT AS jumlah,
+    ${buildObjectPegawai}
 FROM m_pegawai mp
+    LEFT JOIN m_jabatan mj ON mp.objectjabatanfk = mj.id
+    LEFT JOIN m_profesipegawai mprof ON mp.objectprofesipegawaifk = mprof.id
+    LEFT JOIN m_unit mu ON mp.objectunitfk = mu.id
+    LEFT JOIN m_spesialisasi ms ON mp.objectspesialisasifk = ms.id
 WHERE mp.statusenabled = true
 `
 
 const qGetCountSpesialis = `
 SELECT
-    COUNT(mp.id)::INT AS jumlah
+    COUNT(mp.id)::INT AS jumlah,
+    ${buildObjectPegawai}
 FROM m_pegawai mp
+    LEFT JOIN m_jabatan mj ON mp.objectjabatanfk = mj.id
+    LEFT JOIN m_profesipegawai mprof ON mp.objectprofesipegawaifk = mprof.id
+    LEFT JOIN m_unit mu ON mp.objectunitfk = mu.id
+    LEFT JOIN m_spesialisasi ms ON mp.objectspesialisasifk = ms.id
 WHERE mp.statusenabled = true 
 and mp.objectprofesipegawaifk = 1
 `
 
 const qGetCountDokterUmum = `
 SELECT
-    COUNT(mp.id)::INT AS jumlah
+    COUNT(mp.id)::INT AS jumlah,
+    ${buildObjectPegawai}
 FROM m_pegawai mp
+    LEFT JOIN m_jabatan mj ON mp.objectjabatanfk = mj.id
+    LEFT JOIN m_profesipegawai mprof ON mp.objectprofesipegawaifk = mprof.id
+    LEFT JOIN m_unit mu ON mp.objectunitfk = mu.id
+    LEFT JOIN m_spesialisasi ms ON mp.objectspesialisasifk = ms.id
 WHERE mp.statusenabled = true 
 and mp.objectprofesipegawaifk = 4;
 `
 
 const qGetCountPerawatBidan = `
 SELECT
-    COUNT(mp.id)::INT AS jumlah
+    COUNT(mp.id)::INT AS jumlah,
+    ${buildObjectPegawai}
 FROM m_pegawai mp
+    LEFT JOIN m_jabatan mj ON mp.objectjabatanfk = mj.id
+    LEFT JOIN m_profesipegawai mprof ON mp.objectprofesipegawaifk = mprof.id
+    LEFT JOIN m_unit mu ON mp.objectunitfk = mu.id
+    LEFT JOIN m_spesialisasi ms ON mp.objectspesialisasifk = ms.id
 WHERE mp.statusenabled = true 
 and mp.objectprofesipegawaifk in (2,3); 
 `
 
 const qGetCountPenunjangMedis = `
 SELECT
-    COUNT(mp.id)::INT AS jumlah
+    COUNT(mp.id)::INT AS jumlah,
+    ${buildObjectPegawai}
 FROM m_pegawai mp
+    LEFT JOIN m_jabatan mj ON mp.objectjabatanfk = mj.id
+    LEFT JOIN m_profesipegawai mprof ON mp.objectprofesipegawaifk = mprof.id
+    LEFT JOIN m_unit mu ON mp.objectunitfk = mu.id
+    LEFT JOIN m_spesialisasi ms ON mp.objectspesialisasifk = ms.id
 WHERE mp.statusenabled = true 
 and mp.objectprofesipegawaifk in (13,14,15,16,17);
 `
@@ -418,9 +500,14 @@ const qGetCountJenisKelamin = `
 SELECT
     mjk.reportdisplay AS label,
     mjk.id AS value,
-    COUNT(mp.id)::INT AS jumlah
+    COUNT(mp.id)::INT AS jumlah,
+    ${buildObjectPegawai}
 FROM m_jeniskelamin mjk
     LEFT JOIN m_pegawai mp ON mp.objectjeniskelaminfk = mjk.id
+    LEFT JOIN m_jabatan mj ON mp.objectjabatanfk = mj.id
+    LEFT JOIN m_profesipegawai mprof ON mp.objectprofesipegawaifk = mprof.id
+    LEFT JOIN m_unit mu ON mp.objectunitfk = mu.id
+    LEFT JOIN m_spesialisasi ms ON mp.objectspesialisasifk = ms.id
 WHERE mjk.statusenabled = true
 GROUP BY
     mjk.reportdisplay,
@@ -440,9 +527,13 @@ const qGetJabatan = `
 SELECT
     mj.reportdisplay AS label,
     mj.id AS value,
-    COUNT(mp.id)::INT AS jumlah
+    COUNT(mp.id)::INT AS jumlah,
+    ${buildObjectPegawai}
 FROM m_jabatan mj
     LEFT JOIN m_pegawai mp ON mp.objectjabatanfk = mj.id
+    LEFT JOIN m_profesipegawai mprof ON mp.objectprofesipegawaifk = mprof.id
+    LEFT JOIN m_unit mu ON mp.objectunitfk = mu.id
+    LEFT JOIN m_spesialisasi ms ON mp.objectspesialisasifk = ms.id
 WHERE mj.statusenabled = true
 GROUP BY
     mj.reportdisplay,
@@ -453,9 +544,13 @@ const qGetCountProfesi = `
 SELECT
     mprof.reportdisplay AS label,
     mprof.id AS value,
-    COUNT(mp.id)::INT AS jumlah
+    COUNT(mp.id)::INT AS jumlah,
+    ${buildObjectPegawai}
 FROM m_profesipegawai mprof
     LEFT JOIN m_pegawai mp ON mp.objectprofesipegawaifk = mprof.id
+    LEFT JOIN m_jabatan mj ON mp.objectjabatanfk = mj.id
+    LEFT JOIN m_unit mu ON mp.objectunitfk = mu.id
+    LEFT JOIN m_spesialisasi ms ON mp.objectspesialisasifk = ms.id
 WHERE mprof.statusenabled = true
 GROUP BY
     mprof.reportdisplay,
@@ -466,9 +561,14 @@ const qGetCountPendidikanTerakhir = `
 SELECT
     mpend.reportdisplay AS label,
     mpend.id AS value,
-    COUNT(mp.id)::INT AS jumlah
+    COUNT(mp.id)::INT AS jumlah,
+    ${buildObjectPegawai}
 FROM m_pendidikan mpend
     LEFT JOIN m_pegawai mp ON mp.objectpendidikanterakhirfk = mpend.id
+    LEFT JOIN m_jabatan mj ON mp.objectjabatanfk = mj.id
+    LEFT JOIN m_profesipegawai mprof ON mp.objectprofesipegawaifk = mprof.id
+    LEFT JOIN m_unit mu ON mp.objectunitfk = mu.id
+    LEFT JOIN m_spesialisasi ms ON mp.objectspesialisasifk = ms.id
 WHERE mpend.statusenabled = true
 GROUP BY
     mpend.reportdisplay,
@@ -479,9 +579,13 @@ const qGetCountSpesialisasi = `
 SELECT
     ms.reportdisplay AS label,
     ms.id AS value,
-    COUNT(mp.id)::INT AS jumlah
+    COUNT(mp.id)::INT AS jumlah,
+    ${buildObjectPegawai}
 FROM m_spesialisasi ms
     LEFT JOIN m_pegawai mp ON mp.objectspesialisasifk = ms.id
+    LEFT JOIN m_jabatan mj ON mp.objectjabatanfk = mj.id
+    LEFT JOIN m_unit mu ON mp.objectunitfk = mu.id
+    LEFT JOIN m_profesipegawai mprof ON mp.objectprofesipegawaifk = mprof.id
 WHERE ms.statusenabled = true
 GROUP BY
     ms.reportdisplay,
@@ -643,6 +747,24 @@ ORDER BY
     COALESCE(SUM(CEIL(tsu.qty))::INT, 0) DESC
 `
 
+const aggBayar = `
+COALESCE(
+    JSON_AGG
+    (
+        JSON_BUILD_OBJECT
+        (
+            'nobukti', tbb.no_bukti,
+            'totalbayar', tbb.totalbayar,
+            'tglbayar', tbb.tglinput,
+            'namapegawai', mpeg.namalengkap
+        )
+        ORDER BY tbb.tglinput DESC
+    ) 
+    FILTER (WHERE tnpp.norec IS NOT NULL AND tbb.norec IS NOT NULL)
+    , '[]'
+) AS bayar
+`
+
 const qGetPembayaran = `
 SELECT
     mi.namainstalasi AS namainstalasi,
@@ -654,7 +776,8 @@ SELECT
             END
         ), 
         0
-    ) AS totalproduk
+    ) AS totalproduk,
+    ${aggBayar}
 FROM m_instalasi mi
     LEFT JOIN m_produk mp ON mp.objectinstalasifk = mi.id
     LEFT JOIN t_pelayananpasien tpp ON tpp.objectprodukfk = mp.id
@@ -663,6 +786,7 @@ FROM m_instalasi mi
         ${dateBetweenEmptyString("tbb.tglinput", "$1", "$2")}
         AND tbb.objectnotapelayananpasienfk = tnpp.norec
     )
+    LEFT JOIN m_pegawai mpeg ON tbb.objectpegawaifk = mpeg.id
 WHERE 
     mi.statusenabled = true
 GROUP BY
@@ -684,7 +808,8 @@ SELECT
             END
         ), 
         0
-    ) AS totalproduk
+    ) AS totalproduk,
+    ${aggBayar}
 FROM m_instalasi mi
     LEFT JOIN m_produk mp ON (
         mp.objectinstalasifk = mi.id 
@@ -697,6 +822,7 @@ FROM m_instalasi mi
         ${dateBetweenEmptyString("tbb.tglinput", "$1", "$2")}
         AND tbb.objectnotapelayananpasienfk = tnpp.norec
     )
+    LEFT JOIN m_pegawai mpeg ON tbb.objectpegawaifk = mpeg.id
 WHERE 
     mi.statusenabled = true
 GROUP BY
@@ -718,7 +844,8 @@ SELECT
             END
         ), 
         0
-    ) AS totalproduk
+    ) AS totalproduk,
+    ${aggBayar}
 FROM m_instalasi mi
     LEFT JOIN m_produk mp ON (
         mp.objectinstalasifk = mi.id
@@ -734,6 +861,7 @@ FROM m_instalasi mi
         ${dateBetweenEmptyString("tbb.tglinput", "$1", "$2")}
         AND tbb.objectnotapelayananpasienfk = tnpp.norec
     )
+    LEFT JOIN m_pegawai mpeg ON tbb.objectpegawaifk = mpeg.id
 WHERE 
     mi.statusenabled = true
 GROUP BY
@@ -749,13 +877,15 @@ SELECT
     mi.namainstalasi AS namainstalasi,
     json_agg(
         json_build_object(
-            'total', (
+            'nobukti', tbb.no_bukti,
+            'totalbayar', (
                 CASE WHEN (tnpp.norec IS NOT NULL AND tbb.norec IS NOT NULL)
                     THEN tpp.total
                     ELSE 0
                 END
             ),
-            'tglbayar', tbb.tglinput
+            'tglbayar', tbb.tglinput,
+            'namapegawai', mpeg.namalengkap
         )
     ) AS datas
 FROM m_instalasi mi
@@ -769,6 +899,7 @@ FROM m_instalasi mi
         AND
         ${dateBetweenEmptyString("tbb.tglinput", "$1", "$2")}
     )
+    LEFT JOIN m_pegawai mpeg ON tbb.objectpegawaifk = mpeg.id
 WHERE 
     mi.statusenabled = true 
 GROUP BY

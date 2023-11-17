@@ -26,15 +26,25 @@ import {
     GET_DASBOR_FARMASI,
     GET_DASBOR_FARMASI_SUCCESS,
     GET_DASBOR_FARMASI_ERROR,
+    GET_DASBOR_PEMBAYARAN,
+    GET_DASBOR_PEMBAYARAN_SUCCESS,
+    GET_DASBOR_PEMBAYARAN_ERROR,
+    SET_WIDGET_UTAMA,
+    RESET_WIDGET_UTAMA,
     SET_PASIEN_RAJAL,
     RESET_PASIEN_RAJAL,
     SET_PASIEN_GADAR,
     RESET_PASIEN_GADAR,
     SET_PASIEN_RANAP,
     RESET_PASIEN_RANAP,
-    GET_DASBOR_PEMBAYARAN,
-    GET_DASBOR_PEMBAYARAN_SUCCESS,
-    GET_DASBOR_PEMBAYARAN_ERROR
+    SET_PASIEN_BAYAR,
+    RESET_PASIEN_BAYAR,
+    SET_PASIEN_POLIKLINIK,
+    RESET_PASIEN_POLIKLINIK,
+    SET_STATUS_PEGAWAI,
+    RESET_STATUS_PEGAWAI,
+    SET_PEMBAYARAN,
+    RESET_PEMBAYARAN,
 } from "./actionType"
 
 
@@ -176,6 +186,22 @@ export const getDasborFarmasiError = (error) => ({
     payload: error
 })
 
+export const getDasborPembayaran = (queries) => ({
+    type: GET_DASBOR_PEMBAYARAN,
+    payload: {queries: queries}
+})
+
+export const getDasborPembayaranSuccess = (data) => ({
+    type: GET_DASBOR_PEMBAYARAN_SUCCESS,
+    payload: data
+})
+
+export const getDasborPembayaranError = (error) => ({
+    type: GET_DASBOR_PEMBAYARAN_ERROR,
+    payload: error
+})
+
+
 export const setPasienRajal = (name, data) => ({
     type: SET_PASIEN_RAJAL,
     payload: {
@@ -212,17 +238,64 @@ export const resetPasienRanap = () => ({
     type: RESET_PASIEN_RANAP,
 })
 
-export const getDasborPembayaran = (queries) => ({
-    type: GET_DASBOR_PEMBAYARAN,
-    payload: {queries: queries}
+export const setWidgetUtama = (name, data) => ({
+    type: SET_WIDGET_UTAMA,
+    payload: {
+        name: name,
+        data: data
+    }
 })
 
-export const getDasborPembayaranSuccess = (data) => ({
-    type: GET_DASBOR_PEMBAYARAN_SUCCESS,
-    payload: data
+export const resetWidgetUtama = () => ({
+    type: RESET_WIDGET_UTAMA,
 })
 
-export const getDasborPembayaranError = (error) => ({
-    type: GET_DASBOR_PEMBAYARAN_ERROR,
-    payload: error
+export const setPasienBayar = (name, data) => ({
+    type: SET_PASIEN_BAYAR,
+    payload: {
+        name: name,
+        data: data
+    }
+})
+
+export const resetPasienBayar = () => ({
+    type: RESET_PASIEN_BAYAR,
+})
+
+export const setPasienPoliklinik = (name, data) => ({
+    type: SET_PASIEN_POLIKLINIK,
+    payload: {
+        name: name,
+        data: data
+    }
+})
+
+export const resetPasienPoliklinik = () => ({
+    type: RESET_PASIEN_POLIKLINIK,
+})
+
+
+export const setStatusPegawai = (name, data) => ({
+    type: SET_STATUS_PEGAWAI,
+    payload: {
+        name: name,
+        data: data
+    }
+})
+
+export const resetStatusPegawai = () => ({
+    type: RESET_STATUS_PEGAWAI,
+})
+
+
+export const setPembayaran = (name, data) => ({
+    type: SET_PEMBAYARAN,
+    payload: {
+        name: name,
+        data: data
+    }
+})
+
+export const resetPembayaran = () => ({
+    type: RESET_PEMBAYARAN,
 })

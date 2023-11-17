@@ -26,15 +26,25 @@ import {
     GET_DASBOR_FARMASI,
     GET_DASBOR_FARMASI_SUCCESS,
     GET_DASBOR_FARMASI_ERROR,
+    GET_DASBOR_PEMBAYARAN,
+    GET_DASBOR_PEMBAYARAN_SUCCESS,
+    GET_DASBOR_PEMBAYARAN_ERROR,
     SET_PASIEN_RAJAL,
     RESET_PASIEN_RAJAL,
     SET_PASIEN_GADAR,
     RESET_PASIEN_GADAR,
     SET_PASIEN_RANAP,
     RESET_PASIEN_RANAP,
-    GET_DASBOR_PEMBAYARAN,
-    GET_DASBOR_PEMBAYARAN_SUCCESS,
-    GET_DASBOR_PEMBAYARAN_ERROR
+    SET_WIDGET_UTAMA,
+    RESET_WIDGET_UTAMA,
+    SET_PASIEN_BAYAR,
+    RESET_PASIEN_BAYAR,
+    SET_PASIEN_POLIKLINIK,
+    RESET_PASIEN_POLIKLINIK,
+    SET_STATUS_PEGAWAI,
+    RESET_STATUS_PEGAWAI,
+    SET_PEMBAYARAN,
+    RESET_PEMBAYARAN
 } from "./actionType";
   
 const INIT_STATE = {
@@ -84,6 +94,10 @@ const INIT_STATE = {
         error: null
     },
     tabelPasien: {
+        widgetutama: {
+            name: "",
+            data: null,
+        },
         pasienRajal: {
             name: "",
             data: null,
@@ -93,6 +107,22 @@ const INIT_STATE = {
             data: null
         },
         pasienRanap: {
+            name: "",
+            data: null
+        },
+        pasienBayar: {
+            name: "",
+            data: null
+        },
+        pasienPoliklinik: {
+            name: "",
+            data: null
+        },
+        statusPegawai: {
+            name: "",
+            data: null
+        },
+        pembayaran: {
             name: "",
             data: null
         }
@@ -432,6 +462,62 @@ const Eis = (state = INIT_STATE, action) => {
             }
         }
 
+        case GET_DASBOR_PEMBAYARAN: {
+            return {
+                ...state,
+                getDasborPembayaran: {
+                    ...state.getDasborPembayaran,
+                    loading: true,
+                    data: [],
+                    error: null
+                }
+            }
+        }
+
+        case GET_DASBOR_PEMBAYARAN_SUCCESS: {
+            return {
+                ...state,
+                getDasborPembayaran: {
+                    ...state.getDasborPembayaran,
+                    loading: false,
+                    data: action.payload,
+                    error: null
+                }
+            }
+        }
+
+        case GET_DASBOR_PEMBAYARAN_ERROR: {
+            return {
+                ...state,
+                getDasborPembayaran: {
+                    ...state.getDasborPembayaran,
+                    loading: false,
+                    data: [],
+                    error: action.payload
+                }
+            }
+        }
+
+        case SET_WIDGET_UTAMA: {
+            return {
+                ...state,
+                tabelPasien: {
+                    ...state.tabelPasien,
+                    widgetutama: action.payload
+                }
+            }
+        }
+
+        case RESET_WIDGET_UTAMA: {
+            return {
+                ...state,
+                tabelPasien: {
+                    ...state.tabelPasien,
+                    widgetutama: INIT_STATE.tabelPasien.widgetutama
+                }
+            }
+        }
+
         case SET_PASIEN_RAJAL: {
             return {
                 ...state,
@@ -492,38 +578,82 @@ const Eis = (state = INIT_STATE, action) => {
             }
         }
 
-        case GET_DASBOR_PEMBAYARAN: {
+        case SET_PASIEN_BAYAR: {
             return {
                 ...state,
-                getDasborPembayaran: {
-                    ...state.getDasborPembayaran,
-                    loading: true,
-                    data: [],
-                    error: null
+                tabelPasien: {
+                    ...state.tabelPasien,
+                    pasienBayar: action.payload
                 }
             }
         }
 
-        case GET_DASBOR_PEMBAYARAN_SUCCESS: {
+        case RESET_PASIEN_BAYAR: {
             return {
                 ...state,
-                getDasborPembayaran: {
-                    ...state.getDasborPembayaran,
-                    loading: false,
-                    data: action.payload,
-                    error: null
+                tabelPasien: {
+                    ...state.tabelPasien,
+                    pasienBayar: INIT_STATE.tabelPasien.pasienBayar
                 }
             }
         }
 
-        case GET_DASBOR_PEMBAYARAN_ERROR: {
+        case SET_PASIEN_POLIKLINIK: {
             return {
                 ...state,
-                getDasborPembayaran: {
-                    ...state.getDasborPembayaran,
-                    loading: false,
-                    data: [],
-                    error: action.payload
+                tabelPasien: {
+                    ...state.tabelPasien,
+                    pasienPoliklinik: action.payload
+                }
+            }
+        }
+
+        case RESET_PASIEN_POLIKLINIK: {
+            return {
+                ...state,
+                tabelPasien: {
+                    ...state.tabelPasien,
+                    pasienPoliklinik: INIT_STATE.tabelPasien.pasienPoliklinik
+                }
+            }
+        }
+
+        case SET_STATUS_PEGAWAI: {
+            return {
+                ...state,
+                tabelPasien: {
+                    ...state.tabelPasien,
+                    statusPegawai: action.payload
+                }
+            }
+        }
+
+        case RESET_STATUS_PEGAWAI: {
+            return {
+                ...state,
+                tabelPasien: {
+                    ...state.tabelPasien,
+                    statusPegawai: INIT_STATE.tabelPasien.statusPegawai
+                }
+            }
+        }
+
+        case SET_PEMBAYARAN: {
+            return {
+                ...state,
+                tabelPasien: {
+                    ...state.tabelPasien,
+                    pembayaran: action.payload
+                }
+            }
+        }
+
+        case RESET_PEMBAYARAN: {
+            return {
+                ...state,
+                tabelPasien: {
+                    ...state.tabelPasien,
+                    pembayaran: INIT_STATE.tabelPasien.pembayaran
                 }
             }
         }
