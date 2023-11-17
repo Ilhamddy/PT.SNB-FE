@@ -473,7 +473,7 @@ const NegativeGender = () => {
       min: -5,
       max: 5,
       title: {
-        text: 'Age',
+        text: 'Umur',
         style: {
           fontWeight: 600,
         },
