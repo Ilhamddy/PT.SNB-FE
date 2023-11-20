@@ -22,9 +22,14 @@ import {
     laporanPendapatanKasirGetError,
     getPiutangAfterDateSuccess,
     getPiutangAfterDateError,
-    getDaftarVerifikasiRemunerasiSuccess,getDaftarVerifikasiRemunerasiError,
-    upsertVerifikasiRemunerasiSuccess,upsertVerifikasiRemunerasiError,
-    getDaftarSudahVerifikasiRemunerasiSuccess, getDaftarSudahVerifikasiRemunerasiError
+    getDaftarVerifikasiRemunerasiSuccess,
+    getDaftarVerifikasiRemunerasiError,
+    upsertVerifikasiRemunerasiSuccess,
+    upsertVerifikasiRemunerasiError,
+    getDaftarSudahVerifikasiRemunerasiSuccess, 
+    getDaftarSudahVerifikasiRemunerasiError,
+    getMasterTarifLayananSuccess,
+    getMasterTarifLayananError
 } from "./action";
 
 import {
@@ -40,7 +45,9 @@ import {
     LAPORAN_PENDAPATAN_KASIR_GET,
     GET_PIUTANG_AFTER_DATE,
     GET_DAFTAR_VERIFIKASI_REMUNERASI,
-    UPSERT_VERIFIKASI_REMUNERASI,GET_DAFTAR_SUDAH_VERIFIKASI_REMUNERASI
+    UPSERT_VERIFIKASI_REMUNERASI,
+    GET_DAFTAR_SUDAH_VERIFIKASI_REMUNERASI,
+    GET_MASTER_TARIF_LAYANAN
 } from "./actionType";
 
 import ServicePayment from "../../services/service-payment";
@@ -199,6 +206,15 @@ function* ongetDaftarSudahVerifikasiRemunerasi({payload: {queries}}) {
     }
 }
 
+function* ongetMasterTarifLayanan({payload: {queries}}) {
+    try{
+        const response = yield call(servicePayment.getMasterTarifLayanan, queries);
+        yield put(getMasterTarifLayananSuccess(response.data));
+    } catch (error) {
+        yield put(getMasterTarifLayananError(error));
+    }
+}
+
 export function* watchGetPelayananFromAntrean() {
     yield takeEvery(PELAYANAN_FROM_DP_GET, onGetPelayananFromAntrean);
 }
@@ -255,6 +271,10 @@ export function* watchgetDaftarSudahVerifikasiRemunerasi() {
     yield takeEvery(GET_DAFTAR_SUDAH_VERIFIKASI_REMUNERASI, ongetDaftarSudahVerifikasiRemunerasi);
 }
 
+export function* watchgetMasterTarifLayanan() {
+    yield takeEvery(GET_MASTER_TARIF_LAYANAN, ongetMasterTarifLayanan);
+}
+
 export default function* masterSaga() {
     yield all([
         fork(watchGetPelayananFromAntrean),
@@ -270,6 +290,7 @@ export default function* masterSaga() {
         fork(watchGetPiutangAfterDate),
         fork(watchgetDaftarVerifikasiRemunerasi),
         fork(watchupsertVerifikasiRemunerasi),
-        fork(watchgetDaftarSudahVerifikasiRemunerasi)
+        fork(watchgetDaftarSudahVerifikasiRemunerasi),
+        fork(watchgetMasterTarifLayanan)
     ]);
 }

@@ -297,7 +297,7 @@ import DaftarPasienPulang from "../pages/DaftarPasienPulang/DaftarPasienPulang";
 import DaftarOrderLaboratorium from "../pages/Laboratorium/DaftarOrderLaboratorium/DaftarOrderLaboratorium";
 import DaftarPasienLaboratorium from "../pages/Laboratorium/DaftarPasienLaboratorium/DaftarPasienLaboratorium";
 import TransaksiPelayanLaboratorium from "../pages/Laboratorium/TransaksiPelayanLaboratorium/TransaksiPelayanLaboratorium";
-import MasterDataLayanan from "../pages/Laboratorium/MasterDataLayanan/MasterDataLayanan";
+import MasterDataLayananLaboratorium from "../pages/Laboratorium/MasterDataLayanan/MasterDataLayananLaboratorium.js";
 import MasterNilaiNormal from "../pages/Laboratorium/MasterNilaiNormal/MasterNilaiNormal";
 import SettingLayananLab from "../pages/Laboratorium/SettingLayananLab";
 import Satuan from "../pages/Laboratorium/SettingLayananLab/Satuan";
@@ -371,6 +371,7 @@ import DasborPegawai from "../pages/DasborPegawai/DasborPegawai.jsx";
 import LiburPegawai from "../pages/LiburPegawai/LiburPegawai.jsx";
 import DasborFarmasi from "../pages/DasborFarmasi/DasborFarmasi.jsx";
 import DasborPendapatan from "../pages/DasborPendapatan/DasborPendapatan.jsx";
+import MasterDataLayanan from "../pages/MasterDataLayanan/MasterDataLayanan.jsx";
 
 import Index from "../pages/Emr/AsesmenBayiBaruLahir/index.jsx"
 
@@ -663,7 +664,7 @@ const authProtectedRoutes = [
   { path: "/laboratorium/daftarorderlaboratorium", component: <DaftarOrderLaboratorium /> },
   { path: "/laboratorium/daftarpasienlaboratorium", component: <DaftarPasienLaboratorium /> },
   { path: "/dHJhbnNha3NpLXBlbGF5YW5hbi1sYWJvcmF0b3JpdW0=/:norecdp/:norecap", component: <TransaksiPelayanLaboratorium /> },
-  { path: "/laboratorium/masterlayananlab", component: <MasterDataLayanan/>},
+  { path: "/laboratorium/masterlayananlab", component: <MasterDataLayananLaboratorium/>},
   { path: "/laboratorium/masternilainormal/:idproduk/:layanan/:kodeexternal/:detailjenis", component:<MasterNilaiNormal/>},
   { path: "/laboratorium/seeting-layanan-lab", component:<SettingLayananLab/>},
   { path: "/laboratorium/setnilainormal/:idproduk/:layanan/:kodeexternal/:detailjenis", component:<SetNilaiNormal/>},
@@ -676,6 +677,8 @@ const authProtectedRoutes = [
   { path: "/payment/laporan-pendapatan", component: <LaporanPendapatan /> },
   { path: "/payment/laporan-remunerasi", component: <LaporanRemunerasi /> },
   { path: "/payment/verifikasi-remunerasi", component: <VerifikasiRemunerasi /> },
+  { path: "/payment/master-data-layanan", component: <MasterDataLayanan />},
+
   // casemix
   { path: "/casemix/klaiminacbg", component: <KlaimInacbg /> },
 

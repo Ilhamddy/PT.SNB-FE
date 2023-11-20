@@ -24,7 +24,7 @@ import {
 } from '../../../store/actions';
 import LoadingTable from '../../../Components/Table/LoadingTable';
 
-const MasterDataLayanan = () => {
+const MasterDataLayananLaboratorium = () => {
     document.title = "Master Data Layanan Laboratorium";
     const dispatch = useDispatch();
     const history = useNavigate();
@@ -216,4 +216,4 @@ const MasterDataLayanan = () => {
     )
 }
 
-export default withRouter(MasterDataLayanan)
+export default withRouter(MasterDataLayananLaboratorium)
