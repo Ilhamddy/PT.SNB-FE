@@ -619,7 +619,7 @@ WHERE mp.statusenabled = true
     AND mp.tglpensiun > $1
 `
 
-const qGetPemesanan = `
+const   qGetPemesanan = `
 SELECT
     tpb.norec AS norecorder,
     tpb.no_order AS noorder,
@@ -649,7 +649,7 @@ SELECT
     tpb.tglorder AS tglorder,
     tpb.tglterima AS tglterima,
     mr.namarekanan AS namasupplier,
-    COUNT(tpbd.norec)::INT AS totalpesan,
+    COUNT(tpbd.norec)::INT AS totalterima,
     mu.namaunit AS namaunit
 FROM t_penerimaanbarang tpb
     LEFT JOIN m_unit mu ON mu.id = tpb.objectunitfk
@@ -673,7 +673,7 @@ SELECT
     trb.tglretur AS tglretur,
     tpb.tglterima AS tglterima,
     mr.namarekanan AS namasupplier,
-    COUNT(trbd.norec)::INT AS totalpesan,
+    COUNT(trbd.norec)::INT AS totalretur,
     mu.namaunit AS namaunit
 FROM t_returbarang trb
     LEFT JOIN t_penerimaanbarang tpb ON tpb.norec = trb.objectpenerimaanbarangfk

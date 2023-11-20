@@ -44,7 +44,13 @@ import {
     SET_STATUS_PEGAWAI,
     RESET_STATUS_PEGAWAI,
     SET_PEMBAYARAN,
-    RESET_PEMBAYARAN
+    RESET_PEMBAYARAN,
+    SET_PEMESANAN,
+    RESET_PEMESANAN,
+    SET_PENERIMAAN,
+    RESET_PENERIMAAN,
+    SET_RETUR,
+    RESET_RETUR
 } from "./actionType";
   
 const INIT_STATE = {
@@ -125,7 +131,19 @@ const INIT_STATE = {
         pembayaran: {
             name: "",
             data: null
-        }
+        },
+        pemesanan: {
+            name: "",
+            data: null
+        },
+        penerimaan: {
+            name: "",
+            data: null
+        },
+        retur: {
+            name: "",
+            data: null
+        },
     },
     getDasborPembayaran: {
         data: [],
@@ -654,6 +672,66 @@ const Eis = (state = INIT_STATE, action) => {
                 tabelPasien: {
                     ...state.tabelPasien,
                     pembayaran: INIT_STATE.tabelPasien.pembayaran
+                }
+            }
+        }
+
+        case SET_PEMESANAN: {
+            return {
+                ...state,
+                tabelPasien: {
+                    ...state.tabelPasien,
+                    pemesanan: action.payload
+                }
+            }
+        }
+
+        case RESET_PEMESANAN: {
+            return {
+                ...state,
+                tabelPasien: {
+                    ...state.tabelPasien,
+                    pemesanan: INIT_STATE.tabelPasien.pemesanan
+                }
+            }
+        }
+
+        case SET_PENERIMAAN: {
+            return {
+                ...state,
+                tabelPasien: {
+                    ...state.tabelPasien,
+                    penerimaan: action.payload
+                }
+            }
+        }
+
+        case RESET_PENERIMAAN: {
+            return {
+                ...state,
+                tabelPasien: {
+                    ...state.tabelPasien,
+                    penerimaan: INIT_STATE.tabelPasien.penerimaan
+                }
+            }
+        }
+
+        case SET_RETUR: {
+            return {
+                ...state,
+                tabelPasien: {
+                    ...state.tabelPasien,
+                    retur: action.payload
+                }
+            }
+        }
+
+        case RESET_RETUR: {
+            return {
+                ...state,
+                tabelPasien: {
+                    ...state.tabelPasien,
+                    retur: INIT_STATE.tabelPasien.retur
                 }
             }
         }

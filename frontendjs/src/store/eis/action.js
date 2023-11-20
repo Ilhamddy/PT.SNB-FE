@@ -45,6 +45,12 @@ import {
     RESET_STATUS_PEGAWAI,
     SET_PEMBAYARAN,
     RESET_PEMBAYARAN,
+    SET_PEMESANAN,
+    RESET_PEMESANAN,
+    SET_PENERIMAAN,
+    RESET_PENERIMAAN,
+    SET_RETUR,
+    RESET_RETUR
 } from "./actionType"
 
 
@@ -299,3 +305,41 @@ export const setPembayaran = (name, data) => ({
 export const resetPembayaran = () => ({
     type: RESET_PEMBAYARAN,
 })
+
+
+export const setPemesanan = (name, data) => ({
+    type: SET_PEMESANAN,
+    payload: {
+        name: name,
+        data: data
+    }
+})
+
+export const resetPemesanan = () => ({
+    type: RESET_PEMESANAN,
+})
+
+export const setPenerimaan = (name, data) => ({
+    type: SET_PENERIMAAN,
+    payload: {
+        name: name,
+        data: data
+    }
+})
+
+export const resetPenerimaan = () => ({
+    type: RESET_PENERIMAAN,
+})
+
+export const setRetur = (name, data) => ({
+    type: SET_RETUR,
+    payload: {
+        name: name,
+        data: data
+    }
+})
+
+export const resetRetur = () => ({
+    type: RESET_RETUR,
+})
+

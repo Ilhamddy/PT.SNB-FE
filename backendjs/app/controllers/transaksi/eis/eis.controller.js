@@ -450,10 +450,41 @@ const getPegawaiPensiun = async (req, res) => {
 const getDasborFarmasi = async (req, res) => {
     const logger = res.locals.logger;
     try{
+        const { tanggalmulai, tanggalselesai } = req.query
+        const {
+            todayStart: awalTanggalMulai, 
+        } 
+        = getDateStartEnd(tanggalmulai);
+        const {
+            todayEnd: akhirTanggalSelesai
+        } 
+        = getDateStartEnd(tanggalselesai);
+
         const pemesanan = (await pool.query(qGetPemesanan)).rows
         const penerimaan = (await pool.query(qGetPenerimaan)).rows
         const retur = (await pool.query(qGetRetur)).rows
         const kartuStok = (await pool.query(qGetKartuStok)).rows
+        const arrTimesPemesanan = hGroupDateAr(
+            pemesanan, 
+            awalTanggalMulai, 
+            akhirTanggalSelesai,
+            (data) => data.tglorder,
+            (arData) => arData.reduce((prev, c) => prev + (c.totalpesan || 0), 0)
+        )
+        const arrTimesPenerimaan = hGroupDateAr(
+            penerimaan, 
+            awalTanggalMulai, 
+            akhirTanggalSelesai,
+            (data) => data.tglterima,
+            (arData) => arData.reduce((prev, c) => prev + (c.totalterima || 0), 0)
+        )
+        const arrTimesRetur = hGroupDateAr(
+            retur, 
+            awalTanggalMulai, 
+            akhirTanggalSelesai,
+            (data) => data.tglretur,
+            (arData) => arData.reduce((prev, c) => prev + (c.totalretur || 0), 0)
+        )
         const sepuluhBesarObat = (await pool.query(qGetSepuluhBesarObat))
             .rows
             .slice(0, 10)
@@ -463,10 +494,13 @@ const getDasborFarmasi = async (req, res) => {
         const jmlRetur = retur.length
         const tempres = {
             pemesanan: pemesanan,
+            arTimePemesanan: arrTimesPemesanan,
             jmlPemesanan: jmlPemesanan,
             penerimaan: penerimaan,
+            arTimesPenerimaan: arrTimesPenerimaan,
             jmlPenerimaan: jmlPenerimaan,
             retur: retur,
+            arTimesRetur: arrTimesRetur,
             jmlRetur: jmlRetur,
             kartuStok: kartuStok,
             sepuluhBesarObat: sepuluhBesarObat,
