@@ -17,7 +17,8 @@ import { qGetPelayananFromDp,
     qGetDepositFromNota,
     qGetBuktiBayarFromNota,
     qGetCaraBayarFromBB,
-    qGetLaporanPendapatanKasir
+    qGetLaporanPendapatanKasir,
+    qGetMasterLayanan
 } from '../../../queries/payment/payment.queries';
 import { qDaftarVerifikasi,qListSudahVerifikasi,qListTagihan,qCariPetugas, qListKomponenTarif } from '../../../queries/remunerasi/remunerasi.queries';
 import { createTransaction } from "../../../utils/dbutils"
@@ -775,6 +776,38 @@ const getDaftarSudahVerifikasiRemun = async (req, res) => {
     }
 }
 
+const getMasterTarifLayanan = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const {
+            aktif,
+            namaproduk,
+        } = req.query
+        const layanan = 
+            (await pool.query(qGetMasterLayanan, [
+                aktif || "", 
+                namaproduk || ""
+            ])).rows
+        const tempres = {
+            layanan: layanan
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export default {
     getPelayananFromDP,
     createNotaVerif,
@@ -789,7 +822,8 @@ export default {
     getPiutangAfterDate,
     getDaftarVerifikasiRemunerasi,
     saveVerifikasiRemunerasi,
-    getDaftarSudahVerifikasiRemun
+    getDaftarSudahVerifikasiRemun,
+    getMasterTarifLayanan
 }
 
 

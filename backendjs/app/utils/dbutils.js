@@ -1,3 +1,4 @@
+import { statusEnabled } from "../queries/master/globalvariables/globalvariables.queries";
 
 /**
  * 
@@ -46,4 +47,30 @@ export const dateBetweenEmptyString = (queryTgl, q1, q2) => {
             ELSE ${queryTgl} <= ${q2}::TIMESTAMP
         END
     `
+}
+
+
+/**
+ * 
+ * @param {string} queryTgl contoh: 'mp.statusenabled'
+ * @param {string} q1 contoh: '$1'
+ * @returns 
+ */
+export const checkStatusEnabled = (queryStatusEnabled, q1) => {
+    return `
+(
+        ${q1} = '${statusEnabled.ALL}'
+    OR
+        ${q1} = ''
+    OR 
+    (
+        ${q1} = '${statusEnabled.TRUE}'
+        AND ${queryStatusEnabled} = true
+    )
+    OR 
+    (
+        ${q1} = '${statusEnabled.FALSE}'
+        AND ${queryStatusEnabled} = false
+    )
+)`
 }
