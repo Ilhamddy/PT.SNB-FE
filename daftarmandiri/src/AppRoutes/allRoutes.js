@@ -13,6 +13,7 @@ import PenjaminPage from "../pages/PenjaminPage/PenjaminPage";
 import BeritaPage from "../pages/BeritaPage/BeritaPage";
 import AntreanOnlinePage from "../pages/AntreanOnlinePage/AntreanOnlinePage"; 
 import DetailPendaftaran from "../pages/DetailPendaftaran/DetailPendaftaran";
+import TempatTidurPage from "../pages/TempatTidurPage/TempatTidurPage";
 
 const publicRoutes = [
     { path: "/login/:page", component: <Login /> },
@@ -20,6 +21,7 @@ const publicRoutes = [
     { path: "/jadwal-dokter", component: <JadwalDokter />},
     { path: "/dokter/:idDokter", component: <DokterPage />},
     { path: "/berita/:norecberita", component: <BeritaPage />},
+    { path: "/bed", component: <TempatTidurPage />},
 ]
 
 const protectedRoutes = [

@@ -26,33 +26,53 @@ import LoadingTable from '../../Components/Table/LoadingTable'
 import NoDataTable from '../../Components/Table/NoDataTable'
 import { shallowEqual, useDispatch, useSelector } from 'react-redux'
 import React from 'react'
-import { getDasborFarmasi, getStatusPegawai } from '../../store/eis/action'
+import {
+  getDasborFarmasi,
+  getStatusPegawai,
+  setPemesanan,
+  setPenerimaan,
+  setRetur,
+} from '../../store/eis/action'
 import { HeaderDashboard } from '../DasborUtama/DasborUtama'
 import Pemesanan from './pemesanan.svg'
 import Penerimaan from './penerimaan.svg'
 import Retur from './retur.svg'
 import { colors } from '../DasborUtama/colors'
+import {
+  ModalPemesanan,
+  ModalPenerimaan,
+  ModalRetur,
+} from './DasborFarmasiModal'
 
 const DasborFarmasi = () => {
+  const [dateStart] = useState(() => {
+    let d = new Date()
+    d.setMonth(d.getMonth() - 3)
+    return d.toISOString()
+  })
   const [dateToday] = useState(() => new Date().toISOString())
   const dispatch = useDispatch()
   const vFilter = useFormik({
     initialValues: {
       tanggal: '',
-      tanggalmulai: dateToday,
+      tanggalmulai: dateStart,
       tanggalselesai: dateToday,
       carabayar: '',
     },
-    onSubmit: (values, { resetForm }) => {},
+    onSubmit: (values, { resetForm }) => {
+      dispatch(getDasborFarmasi(values))
+    },
   })
 
   useEffect(() => {
-    dispatch(getStatusPegawai())
-    dispatch(getDasborFarmasi())
+    dispatch(getDasborFarmasi(vFilter.initialValues))
   }, [vFilter.initialValues, dispatch])
 
   return (
     <div className="page-content page-dasbor-eis-utama">
+      <ModalPemesanan />
+      <ModalPenerimaan />
+      <ModalRetur />
       <BreadCrumb
         title="Dasbor Pegawai"
         pageTitle="Dasbor EIS"
@@ -108,7 +128,7 @@ const DasborFarmasi = () => {
         </Row>
         <Row>
           <Col lg={6}>
-            <ReturBarangFarmasi />
+            <ReturBarang />
           </Col>
           <Col lg={6}>
             <PemakaianObat />
@@ -128,6 +148,7 @@ const DasborFarmasi = () => {
 }
 
 const TotalPemesanan = () => {
+  const dispatch = useDispatch()
   const { jmlPemesanan, jmlPenerimaan, jmlRetur } = useSelector(
     (state) => ({
       jmlPemesanan: state.Eis.getDasborFarmasi.data.jmlPemesanan || 0,
@@ -136,6 +157,16 @@ const TotalPemesanan = () => {
     }),
     shallowEqual
   )
+  const pemesanan = useSelector(
+    (state) => state.Eis.getDasborFarmasi.data?.pemesanan
+  )
+  const penerimaan = useSelector(
+    (state) => state.Eis.getDasborFarmasi.data?.penerimaan
+  )
+  const retur = useSelector(
+    (state) => state.Eis.getDasborFarmasi.data?.retur || []
+  )
+
   const tileBoxs2 = [
     {
       id: 1,
@@ -147,6 +178,8 @@ const TotalPemesanan = () => {
       suffix: '',
       separator: '.',
       prefix: '',
+      onClick: () =>
+        pemesanan && dispatch(setPemesanan('Total Pemesanan', pemesanan)),
     },
     {
       id: 2,
@@ -158,6 +191,8 @@ const TotalPemesanan = () => {
       separator: '.',
       suffix: '',
       prefix: '',
+      onClick: () =>
+        penerimaan && dispatch(setPenerimaan('Total Penerimaan', penerimaan)),
     },
     {
       id: 3,
@@ -169,6 +204,7 @@ const TotalPemesanan = () => {
       decimals: 0,
       suffix: '',
       prefix: '',
+      onClick: () => retur && dispatch(setRetur('Total Retur', retur)),
     },
   ]
   return (
@@ -181,6 +217,7 @@ const TotalPemesanan = () => {
                 <Col
                   className={item.id === 4 ? 'col-lg' : 'col-lg border-end'}
                   key={key}
+                  onClick={() => item.onClick && item.onClick()}
                 >
                   <div className="mt-3 mt-md-0 py-4 px-3">
                     <h5 className="text-muted text-uppercase fs-13">
@@ -221,127 +258,301 @@ const TotalPemesanan = () => {
 }
 
 const PemesananBarang = () => {
-  const pemesananList = useSelector(
-    (state) => state.Eis.getDasborFarmasi.data?.pemesanan || []
+  const dispatch = useDispatch()
+  const pemesanan = useSelector(
+    (state) => state.Eis.getDasborFarmasi.data?.arTimePemesanan || []
   )
-  /**
-   * @type {import("react-data-table-component").TableColumn[]}
-   */
-  const columnsDetail = [
-    {
-      name: <span className="font-weight-bold fs-13">No. PO</span>,
-      sortable: true,
-      selector: (row) => row.noorder,
-      width: '120px',
-    },
-    {
-      name: <span className="font-weight-bold fs-13">Tanggal Pemesanan</span>,
-      selector: (row) => dateLocal(row.tglorder),
-      sortable: true,
-      width: '120px',
-    },
 
+  const tglSeries = pemesanan.map((pesan) => pesan.date) || []
+
+  const series = [
     {
-      name: <span className="font-weight-bold fs-13">Nama Supplier</span>,
-      sortable: true,
-      selector: (row) => row.namasupplier,
-      width: '120px',
-    },
-    {
-      name: <span className="font-weight-bold fs-13">Item Dipesan</span>,
-      sortable: true,
-      selector: (row) => row.totalpesan,
-      width: '60px',
-    },
-    {
-      name: <span className="font-weight-bold fs-13">Unit Pemesan</span>,
-      sortable: true,
-      selector: (row) => row.namaunit,
-      width: '140px',
+      name: 'Jumlah Item Pemesanan',
+      data: pemesanan.map((data) => {
+        return data.total
+      }),
+      dataComplete: pemesanan,
     },
   ]
 
+  const options = {
+    chart: {
+      stacked: !0,
+      toolbar: {
+        show: !1,
+      },
+      zoom: {
+        enabled: !0,
+      },
+      events: {
+        dataPointSelection: (event, chartContext, config) => {
+          const sIndex = config.seriesIndex
+          const dIndex = config.dataPointIndex
+          const data = series[sIndex].dataComplete[dIndex]?.items
+          const name = 'Seluruh Pemesanan'
+          data && dispatch(setPemesanan(name, data))
+        },
+      },
+    },
+    dataLabels: {
+      enabled: false,
+    },
+    responsive: [
+      {
+        breakpoint: 480,
+        options: {
+          legend: {
+            position: 'bottom',
+            offsetX: -10,
+            offsetY: 0,
+          },
+        },
+      },
+    ],
+    plotOptions: {
+      bar: {
+        horizontal: !1,
+        borderRadius: 10,
+      },
+    },
+    xaxis: {
+      type: 'datetime',
+      categories: tglSeries,
+    },
+
+    legend: {
+      position: 'right',
+      offsetY: 40,
+    },
+    fill: {
+      opacity: 1,
+    },
+    yaxis: {
+      labels: {
+        formatter: (val) => {
+          return val
+        },
+      },
+    },
+    colors: colors,
+  }
   return (
     <Card className="p-3">
-      <Row className="mb-3">
+      <Row>
         <Col lg={12}>
-          <h4>Pemesanan Barang Farmasi</h4>
+          <h4>Timeline Pemesanan</h4>
         </Col>
       </Row>
-      <DataTable
-        fixedHeader
-        columns={columnsDetail}
-        pagination
-        paginationPerPage={5}
-        data={pemesananList}
-        progressPending={false}
-        customStyles={tableCustomStyles}
-        progressComponent={<LoadingTable />}
-        noDataComponent={<NoDataTable />}
-      />
+      <Row>
+        <ReactApexChart
+          dir="ltr"
+          className="apex-charts"
+          series={series}
+          options={options}
+          type="bar"
+          height={350}
+        />
+      </Row>
     </Card>
   )
 }
 
 const PenerimaanBarang = () => {
-  const penerimaanList = useSelector(
-    (state) => state.Eis.getDasborFarmasi.data?.penerimaan || []
+  const dispatch = useDispatch()
+  const penerimaan = useSelector(
+    (state) => state.Eis.getDasborFarmasi.data?.arTimesPenerimaan || []
   )
-  /**
-   * @type {import("react-data-table-component").TableColumn[]}
-   */
-  const columnsDetail = [
-    {
-      name: <span className="font-weight-bold fs-13">No. Terima</span>,
-      sortable: true,
-      selector: (row) => row.noterima,
-      width: '120px',
-    },
-    {
-      name: <span className="font-weight-bold fs-13">Tanggal Pemesanan</span>,
-      selector: (row) => dateLocal(row.tglterima),
-      sortable: true,
-      width: '120px',
-    },
 
+  const tglSeries = penerimaan.map((terima) => terima.date) || []
+
+  const series = [
     {
-      name: <span className="font-weight-bold fs-13">Nama Supplier</span>,
-      sortable: true,
-      selector: (row) => row.namasupplier,
-      width: '120px',
-    },
-    {
-      name: <span className="font-weight-bold fs-13">Item Dipesan</span>,
-      sortable: true,
-      selector: (row) => row.totalpesan,
-      width: '60px',
-    },
-    {
-      name: <span className="font-weight-bold fs-13">Unit Pemesan</span>,
-      sortable: true,
-      selector: (row) => row.namaunit,
-      width: '140px',
+      name: 'Jumlah Penerimaan',
+      data: penerimaan.map((data) => {
+        return data.total
+      }),
+      dataComplete: penerimaan,
     },
   ]
 
+  const options = {
+    chart: {
+      stacked: !0,
+      toolbar: {
+        show: !1,
+      },
+      zoom: {
+        enabled: !0,
+      },
+      events: {
+        dataPointSelection: (event, chartContext, config) => {
+          const sIndex = config.seriesIndex
+          const dIndex = config.dataPointIndex
+          const data = series[sIndex].dataComplete[dIndex]?.items
+          const name = 'Seluruh Penerimaan'
+          data && dispatch(setPenerimaan(name, data))
+        },
+      },
+    },
+    dataLabels: {
+      enabled: false,
+    },
+    responsive: [
+      {
+        breakpoint: 480,
+        options: {
+          legend: {
+            position: 'bottom',
+            offsetX: -10,
+            offsetY: 0,
+          },
+        },
+      },
+    ],
+    plotOptions: {
+      bar: {
+        horizontal: !1,
+        borderRadius: 10,
+      },
+    },
+    xaxis: {
+      type: 'datetime',
+      categories: tglSeries,
+    },
+
+    legend: {
+      position: 'right',
+      offsetY: 40,
+    },
+    fill: {
+      opacity: 1,
+    },
+    yaxis: {
+      labels: {
+        formatter: (val) => {
+          return val
+        },
+      },
+    },
+    colors: colors,
+  }
   return (
     <Card className="p-3">
-      <Row className="mb-3">
+      <Row>
         <Col lg={12}>
-          <h4>Pemesanan Barang Farmasi</h4>
+          <h4>Timeline Penerimaan</h4>
         </Col>
       </Row>
-      <DataTable
-        fixedHeader
-        columns={columnsDetail}
-        pagination
-        paginationPerPage={5}
-        data={penerimaanList}
-        progressPending={false}
-        customStyles={tableCustomStyles}
-        progressComponent={<LoadingTable />}
-        noDataComponent={<NoDataTable />}
-      />
+      <Row>
+        <ReactApexChart
+          dir="ltr"
+          className="apex-charts"
+          series={series}
+          options={options}
+          type="bar"
+          height={350}
+        />
+      </Row>
+    </Card>
+  )
+}
+
+const ReturBarang = () => {
+  const dispatch = useDispatch()
+  const retur = useSelector(
+    (state) => state.Eis.getDasborFarmasi.data?.arTimesRetur || []
+  )
+
+  const tglSeries = retur.map((terima) => terima.date) || []
+
+  const series = [
+    {
+      name: 'Jumlah Retur',
+      data: retur.map((data) => {
+        return data.total
+      }),
+      dataComplete: retur,
+    },
+  ]
+
+  const options = {
+    chart: {
+      stacked: !0,
+      toolbar: {
+        show: !1,
+      },
+      zoom: {
+        enabled: !0,
+      },
+      events: {
+        dataPointSelection: (event, chartContext, config) => {
+          const sIndex = config.seriesIndex
+          const dIndex = config.dataPointIndex
+          const data = series[sIndex].dataComplete[dIndex]?.items
+          const name = 'Seluruh Retur'
+          data && dispatch(setRetur(name, data))
+        },
+      },
+    },
+    dataLabels: {
+      enabled: false,
+    },
+    responsive: [
+      {
+        breakpoint: 480,
+        options: {
+          legend: {
+            position: 'bottom',
+            offsetX: -10,
+            offsetY: 0,
+          },
+        },
+      },
+    ],
+    plotOptions: {
+      bar: {
+        horizontal: !1,
+        borderRadius: 10,
+      },
+    },
+    xaxis: {
+      type: 'datetime',
+      categories: tglSeries,
+    },
+
+    legend: {
+      position: 'right',
+      offsetY: 40,
+    },
+    fill: {
+      opacity: 1,
+    },
+    yaxis: {
+      labels: {
+        formatter: (val) => {
+          return val
+        },
+      },
+    },
+    colors: colors,
+  }
+  return (
+    <Card className="p-3" style={{ height: 450 }}>
+      <Row>
+        <Col lg={12}>
+          <h4>Timeline Retur Barang</h4>
+        </Col>
+      </Row>
+      <Row>
+        <ReactApexChart
+          dir="ltr"
+          className="apex-charts"
+          series={series}
+          options={options}
+          type="bar"
+          height={350}
+        />
+      </Row>
     </Card>
   )
 }
@@ -418,6 +629,7 @@ const PemakaianObat = () => {
   const sepuluhBesarNama = sepuluhBesar.map((sep) => sep.namaproduk.split(' '))
   const series = [
     {
+      name: 'Total Stok Obat',
       data: sepuluhBesarTotal,
     },
   ]

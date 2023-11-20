@@ -1,3 +1,4 @@
+import { statusBed } from "../../sysadmin/sysadmin.queries"
 
 
 const qGetJadwalDokter = `
@@ -82,9 +83,70 @@ const qGetBeritaNorec = qGetBerita + `
 WHERE statusenabled = true AND norec = $1
 `
 
+const qGetKelasTempatTidur = `
+SELECT
+	mkel.id AS kelasid,
+	mkel.namakelas AS namakelas,
+	count(
+		CASE 
+			mt.objectstatusbedfk WHEN ${statusBed.ISI} 
+				THEN 1 
+			ELSE null 
+		END
+	)::int as totalisi,
+	count(
+		CASE 
+			mt.objectstatusbedfk WHEN ${statusBed.KOSONG} 
+				THEN 1 
+			ELSE null 
+		END
+	)::int as totalkosong,
+	count(
+		CASE 
+			mt.objectstatusbedfk WHEN ${statusBed.RUSAK} 
+				THEN 1 
+			ELSE null 
+		END
+	)::int as totalrusak,
+	count(mt.objectstatusbedfk)::int as totalbed,
+	json_agg(
+		json_build_object(
+			'id', mt.id,
+			'namatt', mt.reportdisplay,
+			'kelas', mkel.namakelas,
+			'kelasid', mkel.id,
+			'nobed', mt.nomorbed,
+			'status', mt.objectstatusbedfk,
+			'namastatus', msb.statusbed
+		)
+		ORDER BY mkel.namakelas ASC, mt.nomorbed ASC
+	) AS tempattidur
+FROM m_tempattidur mt
+	LEFT JOIN m_kamar mk ON mt.objectkamarfk = mk.id
+	LEFT JOIN m_kelas mkel ON mk.objectkelasfk = mkel.id
+	LEFT JOIN m_statusbed msb ON mt.objectstatusbedfk = msb.id
+WHERE mt.statusenabled = true
+	AND
+		CASE 
+			WHEN (NULLIF($1, '')::int IS NULL)
+			THEN TRUE
+			ELSE mk.objectunitfk = NULLIF($1, '')::int
+		END
+	AND
+		CASE 
+			WHEN (NULLIF($2, '')::int IS NULL)
+			THEN TRUE
+			ELSE mk.objectkelasfk = NULLIF($2, '')::int
+		END
+GROUP BY
+	mkel.id,
+	mkel.namakelas
+`
+
 export {
     qGetJadwalDokter,
     qGetBeritaHome,
     qGetBeritaNorec,
-    qGetCutiDokter
+    qGetCutiDokter,
+    qGetKelasTempatTidur
 }
