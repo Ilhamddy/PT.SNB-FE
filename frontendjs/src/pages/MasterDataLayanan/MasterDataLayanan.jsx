@@ -38,9 +38,11 @@ const MasterDataLayanan = () => {
   useEffect(() => {
     dispatch(getMasterTarifLayanan(vFilter.initialValues))
   }, [vFilter.initialValues, dispatch])
-  const { layanan, loading } = useSelector((state) => ({
+  const { layanan, loading, valueStatusEnabled } = useSelector((state) => ({
     layanan: state.Payment.getMasterTarifLayanan.data.layanan || [],
     loading: state.Payment.getMasterTarifLayanan.loading || false,
+    valueStatusEnabled:
+      state.Payment.getMasterTarifLayanan.data?.combo?.statusenabled || [],
   }))
 
   /**
@@ -153,7 +155,7 @@ const MasterDataLayanan = () => {
                   <CustomSelect
                     id="aktif"
                     name="aktif"
-                    options={[]}
+                    options={valueStatusEnabled}
                     onChange={(e) => {
                       vFilter.setFieldValue('aktif', e?.value || '')
                     }}
