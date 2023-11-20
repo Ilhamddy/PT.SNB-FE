@@ -22,6 +22,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { getMasterTarifLayanan } from '../../store/payment/action'
 import DataTable from 'react-data-table-component'
 import LoadingTable from '../../Components/Table/LoadingTable'
+import { useEffect } from 'react'
 
 const MasterDataLayanan = () => {
   const dispatch = useDispatch()
@@ -34,6 +35,9 @@ const MasterDataLayanan = () => {
       dispatch(getMasterTarifLayanan(values))
     },
   })
+  useEffect(() => {
+    dispatch(getMasterTarifLayanan(vFilter.initialValues))
+  }, [vFilter.initialValues, dispatch])
   const { layanan, loading } = useSelector((state) => ({
     layanan: state.Payment.getMasterTarifLayanan.data.layanan || [],
     loading: state.Payment.getMasterTarifLayanan.loading || false,
