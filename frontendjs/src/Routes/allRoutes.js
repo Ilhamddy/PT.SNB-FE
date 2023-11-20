@@ -276,6 +276,7 @@ import RL3_7 from "../pages/RekamMedis/Laporan/RL3_7/RL3_7";
 import RL3_8 from "../pages/RekamMedis/Laporan/RL3_8/RL3_8";
 import RL3_9 from "../pages/RekamMedis/Laporan/RL3_9/RL3_9";
 import RL4_A from "../pages/RekamMedis/Laporan/RL4_A/RL4_A.jsx";
+import RL4_B from "../pages/RekamMedis/Laporan/RL4_B/RL4_B.jsx";
 import RL3_14 from "../pages/RekamMedis/Laporan/RL3_14/RL3_14";
 import RL3_15 from "../pages/RekamMedis/Laporan/RL3_15/RL3_15";
 import RL3_11 from "../pages/RekamMedis/Laporan/RL3_11/RL3_11";
@@ -639,6 +640,7 @@ const authProtectedRoutes = [
   { path: "/rekammedis/laporan-rl/rl3_8", component: <RL3_8/>},
   { path: "/rekammedis/laporan-rl/rl3_9", component: <RL3_9/>},
   { path: "/rekammedis/laporan-rl/rl4_A", component: <RL4_A/>},
+  { path: "/rekammedis/laporan-rl/rl4_B", component: <RL4_B/>},
   { path: "/cmVrYW1tZWRpcy9tYXBwaW5nLXJs", component: <MappingLayanan />},
   { path: "/rekammedis/laporan-rl/rl3_14", component: <RL3_14/>},
   { path: "/rekammedis/laporan-rl/rl3_15", component: <RL3_15/>},

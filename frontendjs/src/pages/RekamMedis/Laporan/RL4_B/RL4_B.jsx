@@ -7,17 +7,17 @@ import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import KontainerFlatpickr from '../../../../Components/KontainerFlatpickr/KontainerFlatpickr';
 import {
-  getLaporanRl_4, kendaliDokumenResetForm
+  getLaporanRl_4_B, kendaliDokumenResetForm
 } from '../../../../store/actions';
 import { Grid, _ } from 'gridjs-react';
 import * as XLSX from 'xlsx';
 
-const RL4_A = () => {
-  document.title = "Laporan RL4.A";
+const RL4_B = () => {
+  document.title = "Laporan RL4.B";
   const dispatch = useDispatch();
   const { dataGrid, loadingGrid } = useSelector((state) => ({
-    dataGrid: state.KendaliDokumen.getLaporanRl_4.data || [],
-    loadingGrid: state.KendaliDokumen.getLaporanRl_4.loading,
+    dataGrid: state.KendaliDokumen.getLaporanRl_4_B.data || [],
+    loadingGrid: state.KendaliDokumen.getLaporanRl_4_B.loading,
   }));
   const [dateNow] = useState(() => new Date().toISOString())
   const vSetValidation = useFormik({
@@ -32,7 +32,7 @@ const RL4_A = () => {
     }),
     onSubmit: (values) => {
       // console.log(values)
-      dispatch(getLaporanRl_4({
+      dispatch(getLaporanRl_4_B({
         start: values.start || dateNow,
         end: values.end || dateNow,
         iskecelakaan: values.formCheckCito,
@@ -162,14 +162,14 @@ const RL4_A = () => {
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
 
-    XLSX.writeFile(workbook, 'laporan_rl4_A.xlsx');
+    XLSX.writeFile(workbook, 'laporan_rl4_B.xlsx');
   };
   return (
     <React.Fragment>
       <UiContent />
       <div className="page-content">
         <Container fluid>
-          <BreadCrumb title="Laporan RL4_A Rawat Inap" pageTitle="Forms" />
+          <BreadCrumb title="Laporan RL4_B Rawat Jalan" pageTitle="Forms" />
           <Form
             onSubmit={(e) => {
               e.preventDefault();
@@ -292,4 +292,4 @@ const tableCustomStyles = {
   },
 }
 
-export default RL4_A
+export default RL4_B
