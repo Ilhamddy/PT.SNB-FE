@@ -11,7 +11,7 @@ const TempatTidurPage = () => {
   const kelas = useSelector((state) => state.Home.getAllBed.data?.kelas || [])
   useEffect(() => {
     dispatch(getAllBed())
-  }, [])
+  }, [dispatch])
   return (
     <KontainerPage ref={refKontainer} top="0px" className="tempat-tidur-page">
       <BackKomponen text="Tempat Tidur" refKontainer={refKontainer} />
