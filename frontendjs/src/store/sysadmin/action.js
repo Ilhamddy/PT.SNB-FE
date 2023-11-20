@@ -35,7 +35,8 @@ import {
     UPSERT_ROLE_PERMISSIONS, UPSERT_ROLE_PERMISSIONS_SUCCESS, UPSERT_ROLE_PERMISSIONS_ERROR,
     UPSERT_MENU_MODUL,UPSERT_MENU_MODUL_SUCCESS,UPSERT_MENU_MODUL_ERROR,
     GET_MAP_CHILD,GET_MAP_CHILD_SUCCESS,GET_MAP_CHILD_ERROR,
-    UPSERT_MAP_CHILD,UPSERT_MAP_CHILD_SUCCESS,UPSERT_MAP_CHILD_ERROR
+    UPSERT_MAP_CHILD,UPSERT_MAP_CHILD_SUCCESS,UPSERT_MAP_CHILD_ERROR,
+    GET_SIDE_BAR,GET_SIDE_BAR_SUCCESS,GET_SIDE_BAR_ERROR
 } from "./actionType";
 
 
@@ -332,5 +333,23 @@ export const upsertMapChildSuccess = (data) => ({
 
 export const upsertMapChildError = (error) => ({
     type: UPSERT_MAP_CHILD_ERROR,
+    payload: error,
+});
+
+export const getSideBar = (data, callback) => ({
+    type: GET_SIDE_BAR,
+    payload: {
+        data,
+        callback
+    },
+});
+
+export const getSideBarSuccess = (data) => ({
+    type: GET_SIDE_BAR_SUCCESS,
+    payload: data,
+});
+
+export const getSideBarError = (error) => ({
+    type: GET_SIDE_BAR_ERROR,
     payload: error,
 });

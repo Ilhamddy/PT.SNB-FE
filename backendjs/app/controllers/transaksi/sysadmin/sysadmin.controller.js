@@ -22,6 +22,7 @@ import kamarQueries from "../../../queries/master/kamar/kamar.queries";
 import instalasiQueries from "../../../queries/master/instalasi/instalasi.queries";
 import statusbedQueries from "../../../queries/master/statusbed/statusbed.queries";
 import spesialisasiQueries from "../../../queries/master/spesialisasi/spesialisasi.queries";
+import queries from '../../../queries/setting/mapsesions';
 
 
 
@@ -700,6 +701,36 @@ const saveMapChild = async (req, res) => {
     }
 }
 
+const getSideBar = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const result1 = await pool.query(queries.qMenuModulAplikasi, [req.body.modul]);
+        const result3 = await pool.query(queries.qChlidMenuModulAplikasi, [req.body.modul]);   
+        let menuItems = [];
+        menuItems.push({ id:'Menu',label: "Menu", isHeader: true,idMenu:0,stateVariables:false});
+
+        result1.rows.forEach(element => {
+        let filteredData = result3.rows.filter(item => item.idmenu === element.id);
+            menuItems.push({id:element.reportdisplay,icon:element.icon,label:element.reportdisplay,link:'/#',stateVariables:false,subItems:filteredData})
+        });
+
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: menuItems,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export default {
     getTempatTidur,
     getUnitTempatTidur,
@@ -717,5 +748,6 @@ export default {
     saveRolePermissions,
     saveMenuModul,
     getListChildMenu,
-    saveMapChild
+    saveMapChild,
+    getSideBar
 }

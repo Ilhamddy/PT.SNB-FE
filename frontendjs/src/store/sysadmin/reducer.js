@@ -41,7 +41,8 @@ import {
     UPSERT_ROLE_PERMISSIONS, UPSERT_ROLE_PERMISSIONS_SUCCESS, UPSERT_ROLE_PERMISSIONS_ERROR,
     UPSERT_MENU_MODUL, UPSERT_MENU_MODUL_ERROR,UPSERT_MENU_MODUL_SUCCESS,
     GET_MAP_CHILD,GET_MAP_CHILD_SUCCESS,GET_MAP_CHILD_ERROR,
-    UPSERT_MAP_CHILD, UPSERT_MAP_CHILD_SUCCESS, UPSERT_MAP_CHILD_ERROR
+    UPSERT_MAP_CHILD, UPSERT_MAP_CHILD_SUCCESS, UPSERT_MAP_CHILD_ERROR,
+    GET_SIDE_BAR,GET_SIDE_BAR_SUCCESS,GET_SIDE_BAR_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -126,6 +127,11 @@ const INIT_STATE = {
         error: null,
     },
     upsertMapChild:{
+        data: [],
+        loading: false,
+        error: null,
+    },
+    getSideBar:{
         data: [],
         loading: false,
         error: null,
@@ -689,6 +695,39 @@ const Sysadmin = (state = INIT_STATE, action) => {
                 ...state,
                 upsertMapChild: {
                     ...state.upsertMapChild,
+                    loading: true,
+                    error: action.payload,
+                }
+            }
+        }
+
+        case GET_SIDE_BAR: {
+            return {
+                ...state,
+                getSideBar: {
+                    ...state.getSideBar,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case GET_SIDE_BAR_SUCCESS: {
+            return {
+                ...state,
+                getSideBar: {
+                    ...state.getSideBar,
+                    loading: false,
+                    data: action.payload,
+                }
+            }
+        }
+
+        case GET_SIDE_BAR_ERROR: {
+            return {
+                ...state,
+                getSideBar: {
+                    ...state.getSideBar,
                     loading: true,
                     error: action.payload,
                 }

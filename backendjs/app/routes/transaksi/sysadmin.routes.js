@@ -106,4 +106,9 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.saveMapChild
     )
+    app.post(
+        "/api/transaksi/sysadmin/get-side-bar",
+        [authJwt.verifyToken],
+        controller.getSideBar
+    )
 }

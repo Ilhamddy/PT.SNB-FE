@@ -17,7 +17,8 @@ import {
     UPSERT_ROLE_PERMISSIONS,
     UPSERT_MENU_MODUL,
     GET_MAP_CHILD,
-    UPSERT_MAP_CHILD
+    UPSERT_MAP_CHILD,
+    GET_SIDE_BAR
  } from "./actionType";
 import { 
     getTempatTidurSuccess,
@@ -46,7 +47,8 @@ import {
     upsertRolePermissionsSuccess,upsertRolePermissionsError,
     upsertMenuModulSuccess,upsertMenuModulError,
     getMapChildSuccess, getMapChildError,
-    upsertMapChildSuccess, upsertMapChildError
+    upsertMapChildSuccess, upsertMapChildError,
+    getSideBarSuccess,getSideBarError
 } from "./action";
 import { toast } from 'react-toastify';
 
@@ -216,7 +218,6 @@ function* ongetMapChild({payload: {queries}}) {
 
 function* onupsertMapChild({payload: {data, callback}}) {
     try{
-        console.log('masuukkk')
         const response = yield call(serviceSysadmin.upsertMapChild, data);
         yield put(upsertMapChildSuccess(response.data));
         toast.success(response.msg || "Sukses");
@@ -224,6 +225,18 @@ function* onupsertMapChild({payload: {data, callback}}) {
     } catch (error) {
         yield put(upsertMapChildError(error));
         toast.error(error.msg || "Gagal");
+    }
+}
+
+function* ongetSideBar({payload: {data, callback}}) {
+    try{
+        const response = yield call(serviceSysadmin.getSideBar, data);
+        yield put(getSideBarSuccess(response.data));
+        // toast.success(response.msg || "Sukses");
+        callback && callback(response);
+    } catch (error) {
+        yield put(getSideBarError(error));
+        // toast.error(error.msg || "Gagal");
     }
 }
 
@@ -245,6 +258,7 @@ export default function* SysadminSaga() {
         takeEvery(UPSERT_ROLE_PERMISSIONS,onupsertRolePermissions),
         takeEvery(UPSERT_MENU_MODUL,onupsertMenuModul),
         takeEvery(GET_MAP_CHILD,ongetMapChild),
-        takeEvery(UPSERT_MAP_CHILD,onupsertMapChild)
+        takeEvery(UPSERT_MAP_CHILD,onupsertMapChild),
+        takeEvery(GET_SIDE_BAR,ongetSideBar)
     ]);
 }
