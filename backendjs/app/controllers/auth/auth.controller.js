@@ -144,7 +144,7 @@ const signin = async (req, res) => {
     });
 
 
-    let token = jwt.sign({ id: user.id, sesion: menuItems, idpegawai: user.objectpegawaifk, accesunit:result4.rows}, config.secret, {
+    let token = jwt.sign({ id: user.id, idpegawai: user.objectpegawaifk, accesunit:result4.rows,modul:user.objectaccesmodulfk}, config.secret, {
       expiresIn: 86400 // 24 hours test
     });
 
@@ -156,7 +156,7 @@ const signin = async (req, res) => {
       accessToken: token,
       status: "success",
       success: true,
-      // sesion: menuItems
+      sesion: menuItems
     });
   } catch (e) {
     logger.error(e);

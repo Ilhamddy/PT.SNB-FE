@@ -63,4 +63,7 @@ export default class ServiceTempatTidur {
     upsertMapChild = async (body) => {
         return await api.create("/transaksi/sysadmin/upsert-menu-child", body)
     }
+    getSideBar = async (body) => {
+        return await api.create("/transaksi/sysadmin/get-side-bar", body)
+    }
 }
