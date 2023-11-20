@@ -14,7 +14,10 @@ const TempatTidurPage = () => {
   }, [dispatch])
   return (
     <KontainerPage ref={refKontainer} top="0px" className="tempat-tidur-page">
-      <BackKomponen text="Tempat Tidur" refKontainer={refKontainer} />
+      <BackKomponen
+        text="Ketersediaan Tempat Tidur"
+        refKontainer={refKontainer}
+      />
       <div className="legend-tempat-tidur">
         <div className="isi-legend">
           <div className="legend-jumlah legend" />
