@@ -23,6 +23,7 @@ import OrderLaboratorium from '../Penunjang/Laboratorium/OrderLaboratorium/Order
 import OrderResep from '../Penunjang/OrderResep/OrderResep';
 import OrderOperasi from '../Penunjang/OrderOperasi/OrderOperasi';
 import EfisiensiBPJS from '../EfisiensiBPJS/EfisiensiBPJS';
+import AsesmenBayiBaruLahir from '../AsesmenBayiBaruLahir';
 
 const EmrBody = () => {
     const { norecdp, norecap, tab } = useParams();
@@ -156,6 +157,10 @@ const EmrBody = () => {
         {
             id: 1,
             label: "Order Operasi",
+        },
+        {
+            id: 2,
+            label: "Asesmen Bayi Baru Lahir",
         },
     ];
 
@@ -363,7 +368,14 @@ const EmrBody = () => {
                                     <TabPane tabId="1" id="operasi-1">
                                         <Card>
                                             <CardBody>
-                                            <OrderOperasi />  
+                                                <OrderOperasi />  
+                                            </CardBody>
+                                        </Card>                                     
+                                    </TabPane>
+                                    <TabPane tabId="2" id="operasi-1">
+                                        <Card>
+                                            <CardBody>
+                                                <AsesmenBayiBaruLahir />  
                                             </CardBody>
                                         </Card>                                     
                                     </TabPane>

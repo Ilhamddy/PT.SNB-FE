@@ -372,6 +372,8 @@ import LiburPegawai from "../pages/LiburPegawai/LiburPegawai.jsx";
 import DasborFarmasi from "../pages/DasborFarmasi/DasborFarmasi.jsx";
 import DasborPendapatan from "../pages/DasborPendapatan/DasborPendapatan.jsx";
 
+import Index from "../pages/Emr/AsesmenBayiBaruLahir/index.jsx"
+
 
 const authProtectedRoutes = [
   { path: "/dashboard-analytics", component: <DashboardAnalytics /> },
