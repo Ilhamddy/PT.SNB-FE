@@ -1,0 +1,87 @@
+.tempat-tidur-page {
+    .legend-tempat-tidur {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        align-items: center;
+
+        .isi-legend {
+            width: calc(50% - 10px);
+            display: flex;
+            flex-direction: row;
+            height: 60px;
+            align-items: center;
+            background-color: #e8d58f;
+            border-radius: 10px;
+            overflow: hidden;
+
+            .legend {
+                width: 60px;
+                height: 100%;
+                margin-right: 10px;
+                border-radius: 10px;
+            }
+
+            .legend-jumlah {
+                background-color: #d7b53c;
+            }
+            .legend-tersedia {
+                background-color: #bb940a;
+            }
+            &:last-child {
+                margin-left: 20px;
+            }
+
+            .teks-legend {
+                margin: 0;
+                font-size: 15px;
+                font-weight: 700;
+                color: #564405;
+            }
+        }
+    }
+
+    .tempat-tidur {
+        margin-top: 10px;
+        display: flex;
+        flex-direction: column;
+        background-color: #e8d58f;
+        border-radius: 10px;
+        overflow: hidden;
+        color: #564405;
+
+        .isi-kelas {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 20px;
+            font-weight: 800;
+        }
+
+        .isi-data {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            width: 100%;
+            font-size: 50px;
+            font-weight: 800;
+
+            .kontainer-bed {
+                width: 50%;
+                height: 90px;
+                justify-content: center;
+                align-items: center;
+                display: flex;
+                .data-bed {
+                    margin: 0;
+                    text-align: center;
+                }
+            }
+            .jumlah-bed {
+                background-color: #d7b53c;
+            }
+            .bed-tersedia {
+                background-color: #bb940a;
+            }
+        }
+    }
+}

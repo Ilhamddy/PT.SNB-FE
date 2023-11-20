@@ -13,7 +13,10 @@ import {
     GET_BERITA_QUERY_ERROR,
     GET_CAPTCHA,
     GET_CAPTCHA_SUCCESS,
-    GET_CAPTCHA_ERROR
+    GET_CAPTCHA_ERROR,
+    GET_ALL_BED,
+    GET_ALL_BED_SUCCESS,
+    GET_ALL_BED_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -38,6 +41,11 @@ const INIT_STATE = {
         error: null,
     },
     getCaptcha: {
+        data: [],
+        loading: false,
+        error: null
+    },
+    getAllBed: {
         data: [],
         loading: false,
         error: null
@@ -204,6 +212,40 @@ const login = (state = INIT_STATE, action) => {
                 ...state,
                 getCaptcha: {
                     ...state.getCaptcha,
+                    data: [],
+                    loading: true,
+                    error: action.payload,
+                }
+            }
+
+        case GET_ALL_BED:
+            return {
+                ...state,
+                getAllBed: {
+                    ...state.getAllBed,
+                    data: [],
+                    loading: true,
+                    error: null,
+                }
+            }
+
+        case GET_ALL_BED_SUCCESS:
+            return {
+                ...state,
+                getAllBed: {
+                    ...state.getAllBed,
+                    data: action.payload,
+                    loading: true,
+                    error: null,
+                }
+            }
+
+        
+        case GET_ALL_BED_ERROR:
+            return {
+                ...state,
+                getAllBed: {
+                    ...state.getAllBed,
                     data: [],
                     loading: true,
                     error: action.payload,

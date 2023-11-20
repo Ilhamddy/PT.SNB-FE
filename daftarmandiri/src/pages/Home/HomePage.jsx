@@ -56,6 +56,11 @@ const HomePage = () => {
       navigate('/jadwal-dokter')
     })
   }
+  const handleToTempatTidur = () => {
+    refKontainer.current?.handleToNextPage(() => {
+      navigate('/bed')
+    })
+  }
   const handleToRiwayat = () => {
     refKontainer.current?.handleToNextPage(() => {
       navigate('/riwayat-daftar')
@@ -188,6 +193,11 @@ const HomePage = () => {
               gbr={RiwayatPendaftaranImg}
               text={'Riwayat Pendaftaran'}
               onClick={() => handleToRiwayat()}
+            />
+            <IsiKontenHeader
+              gbr={RiwayatPendaftaranImg}
+              text={'Tempat Tidur'}
+              onClick={() => handleToTempatTidur()}
             />
           </div>
         </div>

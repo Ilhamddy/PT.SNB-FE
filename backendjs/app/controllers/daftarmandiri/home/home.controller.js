@@ -1,6 +1,6 @@
 import db from "../../../models";
 import pool from "../../../config/dbcon.query";
-import { qGetJadwalDokter, qGetBeritaHome, qGetBeritaNorec, qGetCutiDokter} from "../../../queries/daftarmandiri/home/home.queries";
+import { qGetJadwalDokter, qGetBeritaHome, qGetBeritaNorec, qGetCutiDokter, qGetKelasTempatTidur} from "../../../queries/daftarmandiri/home/home.queries";
 import { groupByDeprecated } from "../../../utils/arutils";
 import hariQueries from "../../../queries/master/hari/hari.queries";
 import unitQueries from "../../../queries/master/unit/unit.queries";
@@ -193,11 +193,36 @@ const getCaptcha = async (req, res) => {
     }
 }
 
+const getAllBed = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const kelas = await pool.query(qGetKelasTempatTidur, ['', ''])
+        const tempres = {
+            kelas: kelas.rows
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export default {
     getHomePageUser,
     getJadwalDokter,
     getComboJadwal,
     getBeritaHome,
     getBerita,
-    getCaptcha
+    getCaptcha,
+    getAllBed
 }

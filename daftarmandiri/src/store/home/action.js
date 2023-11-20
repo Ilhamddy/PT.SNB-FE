@@ -13,7 +13,10 @@ import {
     GET_BERITA_QUERY_ERROR,
     GET_CAPTCHA,
     GET_CAPTCHA_SUCCESS,
-    GET_CAPTCHA_ERROR
+    GET_CAPTCHA_ERROR,
+    GET_ALL_BED,
+    GET_ALL_BED_SUCCESS,
+    GET_ALL_BED_ERROR
 } from "./actionType";
 
 export const getJadwalDokter = (queries) => {
@@ -116,6 +119,27 @@ export const getCaptchaSuccess = (data) => {
 export const getCaptchaError = (error) => {
     return {
         type: GET_CAPTCHA_ERROR,
+        payload: error
+    }
+}
+
+export const getAllBed = (queries) => {
+    return {
+        type: GET_ALL_BED,
+        payload: {queries}
+    }
+}
+
+export const getAllBedSuccess = (data) => {
+    return {
+        type: GET_ALL_BED_SUCCESS,
+        payload: data
+    }
+}
+
+export const getAllBedError = (error) => {
+    return {
+        type: GET_ALL_BED_ERROR,
         payload: error
     }
 }

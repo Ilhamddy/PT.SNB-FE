@@ -53,4 +53,10 @@ export default function(app) {
     [],
     controller.getCaptcha
   )
+
+  app.get(
+    "/api/daftarmandiri/get-all-bed",
+    [],
+    controller.getAllBed
+)
 };
