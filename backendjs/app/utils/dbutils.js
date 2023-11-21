@@ -77,8 +77,7 @@ export const checkStatusEnabled = (queryStatusEnabled, q1) => {
 
 /**
  * 
- * @param {string} queryTgl contoh: 'mp.statusenabled'
- * @param {string} q1 contoh: '$1'
+ * @param {string} queryStatusEnabled contoh: 'mp.statusenabled'
  * @returns 
  */
 export const getStatusEnabled = (queryStatusEnabled) => {
@@ -90,3 +89,35 @@ export const getStatusEnabled = (queryStatusEnabled) => {
     END
 )`
 }
+
+/**
+ * 
+ * @param {string} queryInt contoh: 'mu.objectinstalasifk'
+ * @param {string} q1 contoh: '$1'
+ * @returns 
+ */
+export const emptyInt = (queryInt, q1) => {
+    return ` 
+        CASE WHEN NULLIF(${q1}, '')::INT IS NULL
+            THEN TRUE
+            ELSE ${queryInt} = NULLIF(${q1}, '')::INT 
+        END
+    `
+}
+
+/**
+ * 
+ * @param {string} querySearch contoh: 'mp.namaproduk'
+ * @param {string} q1 contoh: '$1'
+ * @returns 
+ */
+export const emptyIlike = (querySearch, q1) => {
+    return ` 
+    (
+        ${q1} = '' 
+        OR 
+        ${querySearch} ILIKE '%' || ${q1} || '%'
+    )
+    `
+}
+

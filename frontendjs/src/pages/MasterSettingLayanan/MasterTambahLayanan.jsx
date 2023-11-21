@@ -31,7 +31,11 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import classnames from 'classnames'
 import ColLabelInput from '../../Components/ColLabelInput/ColLabelInput'
 import * as Yup from 'yup'
-import { getLayanan, upsertLayanan } from '../../store/masterdatalayanan/action'
+import {
+  getComboTambahLayanan,
+  getLayanan,
+  upsertLayanan,
+} from '../../store/masterdatalayanan/action'
 
 const MasterTambahLayanan = ({ tabId }) => {
   const { tabopen, id } = useParams()
@@ -107,6 +111,10 @@ const MasterTambahLayanan = ({ tabId }) => {
   useEffect(() => {
     id && dispatch(getLayanan({ idlayanan: id }))
   }, [dispatch, id])
+
+  useEffect(() => {
+    dispatch(getComboTambahLayanan({}))
+  }, [dispatch])
 
   useEffect(() => {
     const setV = vTambahLayanan.setValues

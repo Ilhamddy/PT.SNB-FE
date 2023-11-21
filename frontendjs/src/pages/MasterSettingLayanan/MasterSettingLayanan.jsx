@@ -15,6 +15,7 @@ import {
   getComboTambahLayanan,
   getLayanan,
 } from '../../store/masterdatalayanan/action'
+import MapRuangPelayanan from './MapRuangPelayanan'
 
 const linkSettingProduk = '/master/setting-layanan'
 
@@ -22,10 +23,6 @@ const MasterSettingLayanan = () => {
   const { tabopen, id } = useParams()
   const navigate = useNavigate()
   const dispatch = useDispatch()
-
-  useEffect(() => {
-    dispatch(getComboTambahLayanan({}))
-  }, [dispatch])
 
   return (
     <div className="page-content page-data-layanan">
@@ -82,6 +79,7 @@ const MasterSettingLayanan = () => {
           </div>
           <TabContent activeTab={tabopen} className="text-muted">
             <MasterTambahLayanan tabId={'tambah'} />
+            <MapRuangPelayanan tabId={'map-ruang-pelayanan'} />
           </TabContent>
         </Card>
       </Container>
