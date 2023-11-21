@@ -752,6 +752,7 @@ const authProtectedRoutes = [
   { path: "/logger", component: <Logger />},
   { path: "/master/data-layanan", component: <MasterDataLayanan />},
   { path: "/master/setting-layanan/:tabopen", component: <MasterSettingLayanan />},
+  { path: "/master/setting-layanan/:tabopen/:id", component: <MasterSettingLayanan />},
 
 
   //dashboard eis

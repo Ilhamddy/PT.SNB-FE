@@ -6,17 +6,34 @@ export const statusEnabled = {
     FALSE: "FALSE"
 }
 
-export const valueStatusEnabled = [
-    {
-        label: "Semua",
-        value: statusEnabled.ALL
-    },
-    {
-        label: "Aktif",
-        value: statusEnabled.TRUE
-    },
-    {
-        label: "Tidak Aktif",
-        value: statusEnabled.FALSE
-    },
-]
+/**
+ * 
+ * @param {boolean} [semua] 
+ * @returns 
+ */
+export const valueStatusEnabled = (semua) => semua ? 
+    [
+        {
+            label: "Semua",
+            value: statusEnabled.ALL
+        },
+        {
+            label: "Aktif",
+            value: statusEnabled.TRUE
+        },
+        {
+            label: "Tidak Aktif",
+            value: statusEnabled.FALSE
+        },
+    ] : [
+        {
+            label: "Aktif",
+            value: statusEnabled.TRUE
+        },
+        {
+            label: "Tidak Aktif",
+            value: statusEnabled.FALSE
+        },
+    ]
+
+

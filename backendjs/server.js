@@ -35,6 +35,7 @@ import sumberDayaManusiaRoutes from "./app/routes/transaksi/sumberDayaManusia.ro
 import sysadminRoutes from "./app/routes/transaksi/sysadmin.routes";
 import systemRoutes from "./app/routes/transaksi/system.routes";
 import eisRoutes from "./app/routes/transaksi/eis.routes.js";
+import layananRoutes from "./app/routes/master/layanan.routes.js";
 
 dotenv.config()
 
@@ -95,6 +96,7 @@ sumberDayaManusiaRoutes(app);
 sysadminRoutes(app);
 systemRoutes(app);
 eisRoutes(app);
+layananRoutes(app);
 // set port, listen for requests
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {

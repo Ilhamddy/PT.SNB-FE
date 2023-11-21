@@ -785,7 +785,7 @@ const getMasterTarifLayanan = async (req, res) => {
             namaproduk,
         } = req.query
         const combo = {
-            statusenabled: valueStatusEnabled
+            statusenabled: valueStatusEnabled(true)
         }
         const layanan = 
             (await pool.query(qGetMasterLayanan, [
