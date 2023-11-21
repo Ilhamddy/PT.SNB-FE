@@ -23,10 +23,11 @@ import { getMasterTarifLayanan } from '../../store/payment/action'
 import DataTable from 'react-data-table-component'
 import LoadingTable from '../../Components/Table/LoadingTable'
 import { useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 const MasterDataLayanan = () => {
   const dispatch = useDispatch()
+  const navigate = useNavigate()
   const vFilter = useFormik({
     initialValues: {
       aktif: '',
@@ -66,10 +67,12 @@ const MasterDataLayanan = () => {
               <i className="ri-apps-2-line"></i>
             </DropdownToggle>
             <DropdownMenu className="dropdown-menu-end">
-              <DropdownItem onClick={() => {}}>
-                <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
-                Edit
-              </DropdownItem>
+              <Link to={`/master/setting-layanan/tambah/${row.idproduk}`}>
+                <DropdownItem>
+                  <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
+                  Edit
+                </DropdownItem>
+              </Link>
               <DropdownItem onClick={() => {}}>
                 <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
                 Set Variabel BPJS
