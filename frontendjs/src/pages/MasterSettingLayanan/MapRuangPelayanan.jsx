@@ -246,6 +246,9 @@ const IsiLayanan = ({ valuesFilter, unitTerpilih }) => {
       dispatch(getLayananMapping(values))
     },
   })
+  jenisProduk = [...jenisProduk].filter(
+    (jenis) => jenis.valueinstalasi === vFilterLayanan.values.instalasi
+  )
   detailJenisProduk = [...detailJenisProduk].filter(
     (detail) => detail.valuejenisproduk === vFilterLayanan.values.jenisproduk
   )
