@@ -373,6 +373,8 @@ import DasborFarmasi from "../pages/DasborFarmasi/DasborFarmasi.jsx";
 import DasborPendapatan from "../pages/DasborPendapatan/DasborPendapatan.jsx";
 import MasterDataLayanan from "../pages/MasterDataLayanan/MasterDataLayanan.jsx";
 
+import Index from "../pages/Emr/AsesmenBayiBaruLahir/index.jsx"
+
 
 const authProtectedRoutes = [
   { path: "/dashboard-analytics", component: <DashboardAnalytics /> },
