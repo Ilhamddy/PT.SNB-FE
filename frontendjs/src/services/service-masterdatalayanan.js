@@ -10,4 +10,8 @@ export default class ServiceMaster {
     upsertLayanan = async (data) => {
         return await api.create("/master/layanan/upsert-layanan", data)
     }
+
+    getLayanan = async (queries) => {
+        return await api.get("/master/layanan/get-layanan", queries)
+    }
 }

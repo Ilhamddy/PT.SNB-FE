@@ -31,12 +31,16 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import classnames from 'classnames'
 import ColLabelInput from '../../Components/ColLabelInput/ColLabelInput'
 import * as Yup from 'yup'
-import { upsertLayanan } from '../../store/masterdatalayanan/action'
+import { getLayanan, upsertLayanan } from '../../store/masterdatalayanan/action'
 
 const MasterTambahLayanan = ({ tabId }) => {
+  const { tabopen, id } = useParams()
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  const {
+  const layanan = useSelector(
+    (state) => state.MasterDataLayanan.getLayanan.data.layanan || null
+  )
+  let {
     jenisProduk,
     detailJenisProduk,
     variabelBPJS,
@@ -96,6 +100,32 @@ const MasterTambahLayanan = ({ tabId }) => {
       )
     },
   })
+  detailJenisProduk = detailJenisProduk.filter(
+    (detail) => detail.valuejenisproduk === vTambahLayanan.values.jenisproduk
+  )
+
+  useEffect(() => {
+    id && dispatch(getLayanan({ idlayanan: id }))
+  }, [dispatch, id])
+
+  useEffect(() => {
+    const setV = vTambahLayanan.setValues
+    const resetV = vTambahLayanan.resetForm
+    if (layanan) {
+      setV({
+        ...vTambahLayanan.initialValues,
+        ...layanan,
+      })
+    } else {
+      resetV()
+    }
+  }, [
+    layanan,
+    vTambahLayanan.setValues,
+    vTambahLayanan.resetForm,
+    vTambahLayanan.initialValues,
+  ])
+
   return (
     <TabPane className="p-4" tabId={tabId} id="home2">
       <Row className="mb-3">
@@ -183,6 +213,7 @@ const MasterTambahLayanan = ({ tabId }) => {
                     e?.value || ''
                   )
                 }}
+                isDisabled={!vTambahLayanan.values.jenisproduk}
                 value={vTambahLayanan.values.detailjenisproduk}
                 className={`input row-header ${
                   !!vTambahLayanan?.errors.detailjenisproduk ? 'is-invalid' : ''

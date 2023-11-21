@@ -4,7 +4,10 @@ import {
     GET_COMBO_TAMBAH_LAYANAN_ERROR,
     UPSERT_LAYANAN,
     UPSERT_LAYANAN_SUCCESS,
-    UPSERT_LAYANAN_ERROR
+    UPSERT_LAYANAN_ERROR,
+    GET_LAYANAN,
+    GET_LAYANAN_SUCCESS,
+    GET_LAYANAN_ERROR
 } from "./actionType";
 
 
@@ -40,5 +43,22 @@ export const upsertLayananSuccess = (data) => ({
 
 export const upsertLayananError = (error) => ({
     type: UPSERT_LAYANAN_ERROR,
+    payload: error
+});
+
+export const getLayanan = (queries) => ({
+    type: GET_LAYANAN,
+    payload: {
+        queries
+    },
+});
+
+export const getLayananSuccess = (data) => ({
+    type: GET_LAYANAN_SUCCESS,
+    payload: data,
+});
+
+export const getLayananError = (error) => ({
+    type: GET_LAYANAN_ERROR,
     payload: error
 });

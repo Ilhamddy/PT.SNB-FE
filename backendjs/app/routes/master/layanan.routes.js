@@ -23,4 +23,10 @@ export default function (app) {
         controller.upsertLayanan
     )
 
+    app.get(
+        "/api/master/layanan/get-layanan",
+        [authJwt.verifyToken],
+        controller.getLayanan
+    )
+
 }

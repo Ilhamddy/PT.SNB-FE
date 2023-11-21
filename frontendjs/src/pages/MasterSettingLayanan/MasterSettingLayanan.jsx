@@ -11,14 +11,18 @@ import { useEffect } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import classnames from 'classnames'
 import MasterTambahLayanan from './MasterTambahLayanan'
-import { getComboTambahLayanan } from '../../store/masterdatalayanan/action'
+import {
+  getComboTambahLayanan,
+  getLayanan,
+} from '../../store/masterdatalayanan/action'
 
 const linkSettingProduk = '/master/setting-layanan'
 
 const MasterSettingLayanan = () => {
-  const { tabopen } = useParams()
+  const { tabopen, id } = useParams()
   const navigate = useNavigate()
   const dispatch = useDispatch()
+
   useEffect(() => {
     dispatch(getComboTambahLayanan({}))
   }, [dispatch])

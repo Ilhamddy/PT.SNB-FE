@@ -1,11 +1,13 @@
 const getAll =
     `
-    SELECT 
-    id AS value, 
-    detailjenisproduk AS label
-        FROM 
-        m_detailjenisproduk mdjp
-            WHERE statusenabled = true`;
+SELECT 
+    mdjp.id AS value, 
+    mdjp.detailjenisproduk AS label,
+    mdjp.objectjenisprodukfk AS valuejenisproduk,
+    mjp.jenisproduk AS labeljenisproduk
+FROM m_detailjenisproduk mdjp
+    LEFT JOIN m_jenisproduk mjp ON mjp.id = mdjp.objectjenisprodukfk
+WHERE mdjp.statusenabled = true`;
 
 export default {
     getAll

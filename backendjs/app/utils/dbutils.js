@@ -74,3 +74,19 @@ export const checkStatusEnabled = (queryStatusEnabled, q1) => {
     )
 )`
 }
+
+/**
+ * 
+ * @param {string} queryTgl contoh: 'mp.statusenabled'
+ * @param {string} q1 contoh: '$1'
+ * @returns 
+ */
+export const getStatusEnabled = (queryStatusEnabled) => {
+    return `
+(
+    CASE WHEN ${queryStatusEnabled} = TRUE
+        THEN '${statusEnabled.TRUE}'
+        ELSE '${statusEnabled.FALSE}'
+    END
+)`
+}

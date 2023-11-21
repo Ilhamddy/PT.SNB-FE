@@ -5,7 +5,7 @@ import db from "../../../models";
 import {
     createTransaction
 } from "../../../utils/dbutils";
-import { qGetAllVerif, qGetObatFromProduct, qGetPasienFromId } from "../../../queries/farmasi/farmasi.queries";
+import { qGetLayanan } from "../../../queries/master/layanan/layanan.queries";
 import jenisprodukQueries from "../../../queries/mastertable/jenisproduk/jenisproduk.queries";
 import detailjenisprodukQueries from "../../../queries/mastertable/detailjenisproduk/detailjenisproduk.queries";
 import variabelbpjsQueries from "../../../queries/mastertable/variabelbpjs/variabelbpjs.queries";
@@ -146,7 +146,34 @@ const upsertLayanan = async (req, res) => {
     }
 }
 
+const getLayanan = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const { idlayanan } = req.query
+        const layanan = (await pool.query(qGetLayanan, [idlayanan])).rows
+        if(!layanan[0]) throw new Error("Layanan tidak ditemukan")
+        const tempres = {
+            layanan: layanan[0]
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export default {
     getComboTambahLayanan,
-    upsertLayanan
+    upsertLayanan,
+    getLayanan
 }

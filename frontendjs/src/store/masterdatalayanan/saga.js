@@ -3,14 +3,17 @@ import ServiceMDL from "../../services/service-masterdatalayanan.js";
 
 import {
     GET_COMBO_TAMBAH_LAYANAN,
-    UPSERT_LAYANAN
+    UPSERT_LAYANAN,
+    GET_LAYANAN
 } from "./actionType";
 
 import {
     getComboTambahLayananSuccess,
     getComboTambahLayananError,
     upsertLayananSuccess,
-    upsertLayananError
+    upsertLayananError,
+    getLayananSuccess,
+    getLayananError
 } from "./action";
 
 import { toast } from 'react-toastify';
@@ -42,11 +45,21 @@ function* onUpsertLayanan({ payload: { data, callback } }) {
     }
 }
 
+function* onGetLayanan({ payload: { queries } }) {
+    try {
+        let response = null;
+        response = yield call(serviceMDL.getLayanan, queries);
+        yield put(getLayananSuccess(response.data));
+    } catch (error) {
+        yield put(getLayananError(error));
+    }
+}
 
 function* MasterDataLayananSaga() {
     yield all([
         takeEvery(GET_COMBO_TAMBAH_LAYANAN, ongetComboTambahLayanan),
         takeEvery(UPSERT_LAYANAN, onUpsertLayanan),
+        takeEvery(GET_LAYANAN, onGetLayanan)
 
     ]);
 }

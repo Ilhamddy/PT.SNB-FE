@@ -4,7 +4,10 @@ import {
     GET_COMBO_TAMBAH_LAYANAN_ERROR,
     UPSERT_LAYANAN,
     UPSERT_LAYANAN_SUCCESS,
-    UPSERT_LAYANAN_ERROR
+    UPSERT_LAYANAN_ERROR,
+    GET_LAYANAN,
+    GET_LAYANAN_SUCCESS,
+    GET_LAYANAN_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -17,6 +20,11 @@ const INIT_STATE = {
         data: [],
         loading: false,
         error: null,
+    },
+    getLayanan: {
+        data: [],
+        loading: false,
+        error: null
     }
 }
 
@@ -82,6 +90,41 @@ const MasterDataLayanan = (state = INIT_STATE, action) => {
                 ...state,
                 upsertLayanan: {
                     ...state.upsertLayanan,
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case GET_LAYANAN: {
+            return {
+                ...state,
+                getLayanan: {
+                    ...state.getLayanan,
+                    data: [],
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case GET_LAYANAN_SUCCESS: {
+            return {
+                ...state,
+                getLayanan: {
+                    ...state.getLayanan,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case GET_LAYANAN_ERROR: {
+            return {
+                ...state,
+                getLayanan: {
+                    ...state.getLayanan,
+                    data: [],
                     loading: false,
                     error: action.error,
                 }
