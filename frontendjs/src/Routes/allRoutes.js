@@ -675,7 +675,6 @@ const authProtectedRoutes = [
   { path: "/payment/laporan-pendapatan", component: <LaporanPendapatan /> },
   { path: "/payment/laporan-remunerasi", component: <LaporanRemunerasi /> },
   { path: "/payment/verifikasi-remunerasi", component: <VerifikasiRemunerasi /> },
-  { path: "/payment/master-data-layanan", component: <MasterDataLayanan />},
 
   // casemix
   { path: "/casemix/klaiminacbg", component: <KlaimInacbg /> },
@@ -748,6 +747,7 @@ const authProtectedRoutes = [
   { path: "/sysadmin/daftar-kamar", component: <DaftarKamar />},
   { path: "/sysadmin/role-acces", component: <RoleAcces />},
   { path: "/logger", component: <Logger />},
+  { path: "/master/data-layanan", component: <MasterDataLayanan />},
 
   //dashboard eis
   { path: "/eis/dasbor/dasbor-utama", component: <DasborUtama />},

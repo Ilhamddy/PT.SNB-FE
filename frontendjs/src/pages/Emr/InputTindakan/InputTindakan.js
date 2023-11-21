@@ -42,9 +42,7 @@ const InputTindakan = () => {
 
     const handleTindakan = characterEntered => {
         if (characterEntered.length > 3) {
-            // useEffect(() => {
             dispatch(comboTindakanGet(validation.values.objectkelasfk + '&objectunitfk=' + validation.values.unitlast + '&namaproduk=' + characterEntered));
-            // }, [dispatch]);
         }
     };
     const hargaRef = useRef(0);

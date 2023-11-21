@@ -90,6 +90,11 @@ FROM m_produk mp
     LEFT JOIN m_variabelbpjs mv ON mv.id = mp.objectvariabelbpjsfk
     LEFT JOIN m_detailjenisproduk mdjp ON mdjp.id = mp.objectdetailjenisprodukfk
     LEFT JOIN m_golonganobat mgo ON mgo.id = mp.objectgolonganobatfk
+WHERE
+    mp.isobat = TRUE 
+    OR mp.isbmhp = TRUE
+    OR mp.isalkes = TRUE
+    OR mp.islogistik = TRUE
 `
 
 const qGetProdukEdit = `
