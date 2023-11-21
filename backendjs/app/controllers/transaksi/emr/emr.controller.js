@@ -1218,6 +1218,57 @@ const getComboTriageIgd = async (req, res) => {
     }
 }
 
+const upsertAssesmenBayiLahir = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const bodyReq = req.body
+        const { emrPasien,asesmenbayilahir } = await db.sequelize.transaction(async (transaction) => {
+            let emrPasien =''
+            let asesmenbayilahir =''
+            
+            if(bodyReq.norecemrpasien===''){
+                let norec = uuid.v4().substring(0, 32)
+                let norecassesmen = uuid.v4().substring(0, 32)
+                // emrPasien = await db.t_emrpasien.create({
+                //     norec: norec,
+                //     statusenabled: true,
+                //     label: bodyReq.label,
+                //     idlabel: bodyReq.idlabel,
+                //     objectantreanpemeriksaanfk: bodyReq.norecap,
+                //     objectpegawaifk: req.userId,
+                //     tglisi: new Date()
+                // }, { transaction });
+                // asesmenbayilahir = await db.t_asesmenbayilahir.create({
+                //     norec: norecassesmen,
+                //     objectemrfk: norec,
+                // }, { transaction });
+            }
+            
+            return {
+                emrPasien,asesmenbayilahir
+            }
+        });
+        
+        const tempres = {
+        
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: req.body,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export const initValueResep = {
     norecap: "",
     norecresep: "",
@@ -1414,7 +1465,8 @@ export default {
     getHistoriJenisPelayananPasien,
     saveTriageIgd,
     getComboTriageIgd,
-    getHistoriTriagiByNorec
+    getHistoriTriagiByNorec,
+    upsertAssesmenBayiLahir
 };
 
 
