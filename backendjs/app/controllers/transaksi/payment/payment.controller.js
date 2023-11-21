@@ -25,7 +25,7 @@ import { createTransaction } from "../../../utils/dbutils"
 
 import { Op } from "sequelize";
 import { checkValidDate } from '../../../utils/dateutils';
-import { statusEnabled, valueStatusEnabled } from '../../../queries/master/globalvariables/globalvariables.queries';
+import { statusEnabled, valueStatusEnabled } from '../../../queries/mastertable/globalvariables/globalvariables.queries';
 
 const t_notapelayananpasien = db.t_notapelayananpasien
 const t_pelayananpasien = db.t_pelayananpasien

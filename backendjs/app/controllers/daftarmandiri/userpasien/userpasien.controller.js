@@ -8,7 +8,7 @@ import pool from "../../../config/dbcon.query";
 import { getDateStartEnd, getDateStartEndMonth } from "../../../utils/dateutils";
 import userpasienQueries from "../../../queries/daftarmandiri/userpasien/userpasien.queries";
 import bcrypt from "bcryptjs"
-import rekananQueries from "../../../queries/master/rekanan/rekanan.queries";
+import rekananQueries from "../../../queries/mastertable/rekanan/rekanan.queries";
 import * as uuid from "uuid";
 
 

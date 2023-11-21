@@ -2,14 +2,14 @@ import pool from "../../../config/dbcon.query";
 import * as uuid from 'uuid'
 import db from "../../../models";
 import queries from '../../../queries/sumberDayaManusia/sumberDayaManusia.queries';
-import unitQueries from '../../../queries/master/unit/unit.queries'
-import pegawaiQueries from '../../../queries/master/pegawai/pegawai.queries'
-import kamarQueries from "../../../queries/master/kamar/kamar.queries";
-import hariQueries from "../../../queries/master/hari/hari.queries";
+import unitQueries from '../../../queries/mastertable/unit/unit.queries'
+import pegawaiQueries from '../../../queries/mastertable/pegawai/pegawai.queries'
+import kamarQueries from "../../../queries/mastertable/kamar/kamar.queries";
+import hariQueries from "../../../queries/mastertable/hari/hari.queries";
 import { createDateAr, getDateStartEndNull, getTimeOnly } from "../../../utils/dateutils";
 import bcrypt from "bcryptjs";
 import sumberDayaManusiaQueries from "../../../queries/sumberDayaManusia/sumberDayaManusia.queries";
-import cutiQueries from "../../../queries/master/cuti/cuti.queries";
+import cutiQueries from "../../../queries/mastertable/cuti/cuti.queries";
 
 
 const getDaftarPegawai = async (req, res) => {

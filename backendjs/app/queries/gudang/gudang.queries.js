@@ -1,4 +1,4 @@
-import { daftarUnit } from "../master/unit/unit.queries"
+import { daftarUnit } from "../mastertable/unit/unit.queries"
 
 
 const qGetJenisDetailProdukLainLain = `

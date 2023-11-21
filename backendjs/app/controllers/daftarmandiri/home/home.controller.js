@@ -2,8 +2,8 @@ import db from "../../../models";
 import pool from "../../../config/dbcon.query";
 import { qGetJadwalDokter, qGetBeritaHome, qGetBeritaNorec, qGetCutiDokter, qGetKelasTempatTidur} from "../../../queries/daftarmandiri/home/home.queries";
 import { groupByDeprecated } from "../../../utils/arutils";
-import hariQueries from "../../../queries/master/hari/hari.queries";
-import unitQueries from "../../../queries/master/unit/unit.queries";
+import hariQueries from "../../../queries/mastertable/hari/hari.queries";
+import unitQueries from "../../../queries/mastertable/unit/unit.queries";
 import { tempCaptcha, initCaptcha, setTempCaptcha } from "../../auth/authhelper";
 import svgCaptcha from "svg-captcha"
 import * as uuid from 'uuid'

@@ -1,4 +1,4 @@
-import { statusEnabled } from "../queries/master/globalvariables/globalvariables.queries";
+import { statusEnabled } from "../queries/mastertable/globalvariables/globalvariables.queries";
 
 /**
  * 

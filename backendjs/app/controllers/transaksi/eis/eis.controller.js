@@ -7,8 +7,8 @@ import {
 } from "../../../utils/dbutils";
 import { qCountCaraBayar, qCountNonBPJS, qGetCountDokterUmum, qGetCountJenisKelamin, qGetCountPegawai, qGetCountPendidikanTerakhir, qGetCountPenunjangMedis, qGetCountPerawatBidan, qGetCountProfesi, qGetCountSpesialis, qGetCountSpesialisasi, qGetCountStatus, qGetCountUnit, qGetJabatan, qGetKartuStok, qGetKunjunganPoliklinik, qGetPasienBatal, qGetPasienMeninggalRanap, qGetPasienPulangIGD, qGetPasienPulangRanap, qGetPasienRawatIGD, qGetPasienTerdaftar, qGetPasienTerdaftarRanap, qGetPegawaiPensiun, qGetPegawaiSIP, qGetPembayaran, qGetPembayaranLain, qGetPembayaranPelayanan, qGetPembayaranTime, qGetPemesanan, qGetPenerimaan, qGetProdukTerbanyak, qGetRetur, qGetSepuluhBesarObat, qGetTempatTidur, qGetUsia } from "../../../queries/eis/eis.queries";
 import { getDateStartEnd, getDateStartEndYear } from "../../../utils/dateutils";
-import { daftarInstalasi } from "../../../queries/master/instalasi/instalasi.queries";
-import { daftarRekanan } from "../../../queries/master/rekanan/rekanan.queries";
+import { daftarInstalasi } from "../../../queries/mastertable/instalasi/instalasi.queries";
+import { daftarRekanan } from "../../../queries/mastertable/rekanan/rekanan.queries";
 import { groupBy } from '../../../utils/arutils'
 
 const Op = db.Sequelize.Op;

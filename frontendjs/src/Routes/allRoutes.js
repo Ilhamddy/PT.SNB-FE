@@ -374,6 +374,7 @@ import DasborPendapatan from "../pages/DasborPendapatan/DasborPendapatan.jsx";
 import MasterDataLayanan from "../pages/MasterDataLayanan/MasterDataLayanan.jsx";
 
 import Index from "../pages/Emr/AsesmenBayiBaruLahir/index.jsx"
+import MasterSettingLayanan from "../pages/MasterSettingLayanan/MasterSettingLayanan.jsx";
 
 
 const authProtectedRoutes = [
@@ -750,6 +751,8 @@ const authProtectedRoutes = [
   { path: "/sysadmin/role-acces", component: <RoleAcces />},
   { path: "/logger", component: <Logger />},
   { path: "/master/data-layanan", component: <MasterDataLayanan />},
+  { path: "/master/setting-layanan/:tabopen", component: <MasterSettingLayanan />},
+
 
   //dashboard eis
   { path: "/eis/dasbor/dasbor-utama", component: <DasborUtama />},

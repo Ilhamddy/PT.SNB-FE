@@ -1,7 +1,7 @@
 import { dateBetweenEmptyString } from "../../utils/dbutils"
-import { daftarInstalasi } from "../master/instalasi/instalasi.queries"
-import { daftarRekanan } from "../master/rekanan/rekanan.queries"
-import { daftarStatusPulang } from "../master/statuspulang/statuspulang.queries"
+import { daftarInstalasi } from "../mastertable/instalasi/instalasi.queries"
+import { daftarRekanan } from "../mastertable/rekanan/rekanan.queries"
+import { daftarStatusPulang } from "../mastertable/statuspulang/statuspulang.queries"
 import { statusBed } from "../sysadmin/sysadmin.queries"
 
 const CARA_BAYAR_VALUE = {

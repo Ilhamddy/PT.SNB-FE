@@ -23,6 +23,7 @@ import { getMasterTarifLayanan } from '../../store/payment/action'
 import DataTable from 'react-data-table-component'
 import LoadingTable from '../../Components/Table/LoadingTable'
 import { useEffect } from 'react'
+import { Link } from 'react-router-dom'
 
 const MasterDataLayanan = () => {
   const dispatch = useDispatch()
@@ -140,14 +141,16 @@ const MasterDataLayanan = () => {
     },
   ]
   return (
-    <div className="page-content page-penerimaan-barang">
+    <div className="page-content page-data-layanan">
       <ToastContainer closeButton={false} />
+      <BreadCrumb title="Master Data Layanan" pageTitle="Master" />
       <Container fluid>
-        <BreadCrumb title="Master Data Layanan" pageTitle="Payment" />
         <Card className="p-3">
           <Row className="d-flex justify-content-between">
             <Col lg="auto">
-              <Button color="info">Setting Layanan</Button>
+              <Link to="/master/setting-layanan/tambah">
+                <Button color="info">Setting Layanan</Button>
+              </Link>
             </Col>
             <Col lg={7}>
               <Row>

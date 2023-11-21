@@ -3,10 +3,10 @@ import { qGetLoket, qGetLoketSisa, qGetLastPemanggilan, qGetAllLoket, qGetLastPe
 import db from "../../../models";
 import { getDateStartEnd } from "../../../utils/dateutils";
 import { groupByDeprecated, groupCountBy } from "../../../utils/arutils";
-import unitQueries from "../../../queries/master/unit/unit.queries";
-import kelasQueries from "../../../queries/master/kelas/kelas.queries";
-import kamarQueries from "../../../queries/master/kamar/kamar.queries";
-import statusbedQueries from "../../../queries/master/statusbed/statusbed.queries";
+import unitQueries from "../../../queries/mastertable/unit/unit.queries";
+import kelasQueries from "../../../queries/mastertable/kelas/kelas.queries";
+import kamarQueries from "../../../queries/mastertable/kamar/kamar.queries";
+import statusbedQueries from "../../../queries/mastertable/statusbed/statusbed.queries";
 import { statusBed } from "../../../queries/sysadmin/sysadmin.queries";
 
 const t_antreanloket = db.t_antreanloket
