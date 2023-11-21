@@ -7,7 +7,19 @@ import {
     UPSERT_LAYANAN_ERROR,
     GET_LAYANAN,
     GET_LAYANAN_SUCCESS,
-    GET_LAYANAN_ERROR
+    GET_LAYANAN_ERROR,
+    GET_COMBO_MAP_RUANG_PELAYANAN,
+    GET_COMBO_MAP_RUANG_PELAYANAN_SUCCESS,
+    GET_COMBO_MAP_RUANG_PELAYANAN_ERROR,
+    GET_MAP_UNIT_TO_PRODUK,
+    GET_MAP_UNIT_TO_PRODUK_SUCCESS,
+    GET_MAP_UNIT_TO_PRODUK_ERROR,
+    GET_LAYANAN_MAPPING,
+    GET_LAYANAN_MAPPING_SUCCESS,
+    GET_LAYANAN_MAPPING_ERROR,
+    SAVE_OR_DELETE_MAPPING,
+    SAVE_OR_DELETE_MAPPING_SUCCESS,
+    SAVE_OR_DELETE_MAPPING_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -22,6 +34,26 @@ const INIT_STATE = {
         error: null,
     },
     getLayanan: {
+        data: [],
+        loading: false,
+        error: null
+    },
+    getComboMapRuangPelayanan: {
+        data: [],
+        loading: false,
+        error: null
+    },
+    getMapUnitToProduk: {
+        data: [],
+        loading: false,
+        error: null
+    },
+    getLayananMapping: {
+        data: [],
+        loading: false,
+        error: null
+    },
+    saveOrDeleteMapping: {
         data: [],
         loading: false,
         error: null
@@ -124,6 +156,146 @@ const MasterDataLayanan = (state = INIT_STATE, action) => {
                 ...state,
                 getLayanan: {
                     ...state.getLayanan,
+                    data: [],
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case GET_COMBO_MAP_RUANG_PELAYANAN: {
+            return {
+                ...state,
+                getComboMapRuangPelayanan: {
+                    ...state.getComboMapRuangPelayanan,
+                    data: [],
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case GET_COMBO_MAP_RUANG_PELAYANAN_SUCCESS: {
+            return {
+                ...state,
+                getComboMapRuangPelayanan: {
+                    ...state.getComboMapRuangPelayanan,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case GET_COMBO_MAP_RUANG_PELAYANAN_ERROR: {
+            return {
+                ...state,
+                getComboMapRuangPelayanan: {
+                    ...state.getComboMapRuangPelayanan,
+                    data: [],
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case GET_MAP_UNIT_TO_PRODUK: {
+            return {
+                ...state,
+                getMapUnitToProduk: {
+                    ...state.getMapUnitToProduk,
+                    data: [],
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case GET_MAP_UNIT_TO_PRODUK_SUCCESS: {
+            return {
+                ...state,
+                getMapUnitToProduk: {
+                    ...state.getMapUnitToProduk,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case GET_MAP_UNIT_TO_PRODUK_ERROR: {
+            return {
+                ...state,
+                getMapUnitToProduk: {
+                    ...state.getMapUnitToProduk,
+                    data: [],
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case GET_LAYANAN_MAPPING: {
+            return {
+                ...state,
+                getLayananMapping: {
+                    ...state.getLayananMapping,
+                    data: [],
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case GET_LAYANAN_MAPPING_SUCCESS: {
+            return {
+                ...state,
+                getLayananMapping: {
+                    ...state.getLayananMapping,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case GET_LAYANAN_MAPPING_ERROR: {
+            return {
+                ...state,
+                getLayananMapping: {
+                    ...state.getLayananMapping,
+                    data: [],
+                    loading: false,
+                    error: action.error,
+                }
+            }
+        }
+
+        case SAVE_OR_DELETE_MAPPING: {
+            return {
+                ...state,
+                saveOrDeleteMapping: {
+                    ...state.saveOrDeleteMapping,
+                    data: [],
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case SAVE_OR_DELETE_MAPPING_SUCCESS: {
+            return {
+                ...state,
+                saveOrDeleteMapping: {
+                    ...state.saveOrDeleteMapping,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case SAVE_OR_DELETE_MAPPING_ERROR: {
+            return {
+                ...state,
+                saveOrDeleteMapping: {
+                    ...state.saveOrDeleteMapping,
                     data: [],
                     loading: false,
                     error: action.error,

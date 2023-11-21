@@ -29,4 +29,27 @@ export default function (app) {
         controller.getLayanan
     )
 
+    app.get(
+        "/api/master/layanan/get-combo-map-ruang-pelayanan",
+        [authJwt.verifyToken],
+        controller.getComboMapRuangPelayanan
+    )
+
+    app.get(
+        "/api/master/layanan/get-map-unit-to-produk",
+        [authJwt.verifyToken],
+        controller.getMapUnitToProduk
+    )
+
+    app.get(
+        "/api/master/layanan/get-layanan-mapping",
+        [authJwt.verifyToken],
+        controller.getLayananMapping
+    )
+
+    app.post(
+        "/api/master/layanan/save-or-delete-mapping",
+        [authJwt.verifyToken],
+        controller.saveOrDeleteMapping
+    )
 }

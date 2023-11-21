@@ -2,7 +2,8 @@ const getAll =
     `
 SELECT 
     id as value, 
-    jenisproduk as label
+    jenisproduk AS label,
+    objectinstalasifk AS valueinstalasi
 FROM m_jenisproduk
 WHERE statusenabled = true`;
 

@@ -5,13 +5,14 @@ import db from "../../../models";
 import {
     createTransaction
 } from "../../../utils/dbutils";
-import { qGetLayanan } from "../../../queries/master/layanan/layanan.queries";
+import { qGetLayanan, qGetLayananMapping, qGetMapUnitToProduk } from "../../../queries/master/layanan/layanan.queries";
 import jenisprodukQueries from "../../../queries/mastertable/jenisproduk/jenisproduk.queries";
 import detailjenisprodukQueries from "../../../queries/mastertable/detailjenisproduk/detailjenisproduk.queries";
 import variabelbpjsQueries from "../../../queries/mastertable/variabelbpjs/variabelbpjs.queries";
 import instalasiQueries from "../../../queries/mastertable/instalasi/instalasi.queries";
 import jenisoperasiQueries from "../../../queries/mastertable/jenisoperasi/jenisoperasi.queries";
 import { statusEnabled, valueStatusEnabled } from "../../../queries/mastertable/globalvariables/globalvariables.queries";
+import unitQueries from "../../../queries/mastertable/unit/unit.queries"
 
 const getComboTambahLayanan = async (req, res) => {
     const logger = res.locals.logger;
@@ -172,8 +173,152 @@ const getLayanan = async (req, res) => {
     }
 }
 
+const getComboMapRuangPelayanan = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const instalasi = (await pool.query(instalasiQueries.getAll)).rows
+        const unit = (await pool.query(unitQueries.getAll)).rows
+        const jenisProduk = (await pool.query(jenisprodukQueries.getAll)).rows
+        const detailJenisProduk = (await pool.query(detailjenisprodukQueries.getAll)).rows
+        const tempres = {
+            instalasi: instalasi,
+            unit: unit,
+            jenisProduk: jenisProduk,
+            detailJenisProduk: detailJenisProduk
+        };
+        res.status(200).send({
+            msg: 'Sukses',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+const getMapUnitToProduk = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const { unit } = req.query
+        const mapping = (await pool.query(qGetMapUnitToProduk, [unit])).rows
+        const tempres = {
+            mapping: mapping
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+const getLayananMapping = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const {
+            instalasi,
+            jenisproduk,
+            detailjenisproduk,
+            namalayanan,
+        } = req.query
+        const layanan = (await pool.query(qGetLayananMapping, [
+            instalasi || '', 
+            jenisproduk || '',
+            detailjenisproduk || '',
+            namalayanan || ''
+        ])).rows
+        const tempres = {
+            layanan: layanan
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+const saveOrDeleteMapping = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const { idproduk, idunit, idmapping } = req.body
+        const { createdOrDeleted } 
+        = await db.sequelize.transaction(async (transaction) => {
+            let createdOrDeleted = null
+            if(idmapping){
+                const mapModel = await db.m_mapunittoproduk.findByPk(idmapping, {
+                    transaction: transaction
+                })
+                createdOrDeleted = mapModel.toJSON()
+                await mapModel.destroy({
+                    transaction: transaction
+                })
+            }else{
+                const created = await db.m_mapunittoproduk.create({
+                    kdprofile: 0,
+                    objectprodukfk: idproduk,
+                    objectunitfk: idunit,
+                }, {
+                    transaction: transaction
+                })
+                createdOrDeleted = created.toJSON()
+            }
+            return {
+                createdOrDeleted: createdOrDeleted
+            }
+        });
+        
+        const tempres = {
+            createdOrDeleted: createdOrDeleted
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export default {
     getComboTambahLayanan,
     upsertLayanan,
-    getLayanan
+    getLayanan,
+    getComboMapRuangPelayanan,
+    getMapUnitToProduk,
+    getLayananMapping,
+    saveOrDeleteMapping
 }
