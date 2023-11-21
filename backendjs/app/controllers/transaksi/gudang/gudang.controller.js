@@ -28,7 +28,7 @@ import {
     qGetListRetur,
     qGetDetailReturFromDetailPenerimaan
 } from "../../../queries/gudang/gudang.queries";
-import unitQueries, { daftarUnit } from "../../../queries/master/unit/unit.queries"
+import unitQueries, { daftarUnit } from "../../../queries/mastertable/unit/unit.queries"
 import {
     createTransaction
 } from "../../../utils/dbutils";

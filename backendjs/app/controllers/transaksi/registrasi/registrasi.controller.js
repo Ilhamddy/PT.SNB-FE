@@ -1,7 +1,7 @@
 import pool from "../../../config/dbcon.query";
 import * as uuid from 'uuid'
 import queries from '../../../queries/transaksi/registrasi.queries';
-import queriesUnit, { daftarUnit } from '../../../queries/master/unit/unit.queries';
+import queriesUnit, { daftarUnit } from '../../../queries/mastertable/unit/unit.queries';
 
 import db from "../../../models";
 import { createTransaction } from "../../../utils/dbutils";

@@ -234,11 +234,11 @@ function* onUpsertCuti({ payload: { data, callback } }) {
     try {
         let response = null;
         response = yield call(serviceSDM.upsertCuti, data);
-        yield put(getComboCutiSuccess(response.data));
+        yield put(upsertCutiSuccess(response.data));
         callback && callback()
         toast.success(response.msg || "Sukses", {autoClose: 3000})
     } catch (error) {
-        yield put(getComboCutiError(error));
+        yield put(upsertCutiError(error));
         toast.success(error.response?.msg || "Error", {autoClose: 3000})
     }
 }

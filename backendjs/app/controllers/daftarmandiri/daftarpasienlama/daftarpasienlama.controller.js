@@ -3,9 +3,9 @@ import * as uuid from 'uuid';
 import pool from "../../../config/dbcon.query";
 import { qGetDokter } from "../../../queries/daftarmandiri/daftarpasienlama/daftarpasienlama.queries";
 import { groupBy } from "../../../utils/arutils";
-import unitQueries from "../../../queries/master/unit/unit.queries";
-import pegawaiQueries from "../../../queries/master/pegawai/pegawai.queries";
-import rekananQueries from "../../../queries/master/rekanan/rekanan.queries";
+import unitQueries from "../../../queries/mastertable/unit/unit.queries";
+import pegawaiQueries from "../../../queries/mastertable/pegawai/pegawai.queries";
+import rekananQueries from "../../../queries/mastertable/rekanan/rekanan.queries";
 import { qGetDaftarPasienLama } from "../../../queries/daftarmandiri/daftarpasienlama/daftarpasienlama.queries";
 import queriesRegistrasi from '../../../queries/transaksi/registrasi.queries';
 

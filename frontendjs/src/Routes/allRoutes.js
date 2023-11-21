@@ -374,6 +374,7 @@ import DasborPendapatan from "../pages/DasborPendapatan/DasborPendapatan.jsx";
 import MasterDataLayanan from "../pages/MasterDataLayanan/MasterDataLayanan.jsx";
 
 import Index from "../pages/Emr/AsesmenBayiBaruLahir/index.jsx"
+import MasterSettingLayanan from "../pages/MasterSettingLayanan/MasterSettingLayanan.jsx";
 
 
 const authProtectedRoutes = [
@@ -677,7 +678,6 @@ const authProtectedRoutes = [
   { path: "/payment/laporan-pendapatan", component: <LaporanPendapatan /> },
   { path: "/payment/laporan-remunerasi", component: <LaporanRemunerasi /> },
   { path: "/payment/verifikasi-remunerasi", component: <VerifikasiRemunerasi /> },
-  { path: "/payment/master-data-layanan", component: <MasterDataLayanan />},
 
   // casemix
   { path: "/casemix/klaiminacbg", component: <KlaimInacbg /> },
@@ -750,6 +750,10 @@ const authProtectedRoutes = [
   { path: "/sysadmin/daftar-kamar", component: <DaftarKamar />},
   { path: "/sysadmin/role-acces", component: <RoleAcces />},
   { path: "/logger", component: <Logger />},
+  { path: "/master/data-layanan", component: <MasterDataLayanan />},
+  { path: "/master/setting-layanan/:tabopen", component: <MasterSettingLayanan />},
+  { path: "/master/setting-layanan/:tabopen/:id", component: <MasterSettingLayanan />},
+
 
   //dashboard eis
   { path: "/eis/dasbor/dasbor-utama", component: <DasborUtama />},

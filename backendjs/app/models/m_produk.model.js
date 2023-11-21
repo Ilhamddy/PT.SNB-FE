@@ -5,6 +5,12 @@
 // eslint-disable-next-line max-lines-per-function
 export default (sequelize, Sequelize) => {
     const m_produk = sequelize.define("m_produk", {
+        id: {
+            allowNull: false,
+            autoIncrement: true,
+            primaryKey: true,
+            type: Sequelize.INTEGER
+        },
         kdprofile: {
             type: Sequelize.INTEGER,
         },
@@ -107,6 +113,9 @@ export default (sequelize, Sequelize) => {
         },
         objectpegawaiupdatefk: {
             type: Sequelize.INTEGER,
+        },
+        barcode: {
+            type: Sequelize.CHAR(40)
         },
         islogistik: {
             type: Sequelize.BOOLEAN,

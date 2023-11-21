@@ -96,6 +96,7 @@ import sumberDayaManusia from "./sumberDayaManusia/reducer";
 import Sysadmin from "./sysadmin/reducer";
 import Logger from "./logger/reducer"
 import Eis from "./eis/reducer"
+import MasterDataLayanan from "./masterdatalayanan/reducer";
 
 const rootReducer = combineReducers({
     // public
@@ -146,7 +147,8 @@ const rootReducer = combineReducers({
     sumberDayaManusia,
     Sysadmin,
     Logger,
-    Eis
+    Eis,
+    MasterDataLayanan
 });
 
 export default rootReducer;

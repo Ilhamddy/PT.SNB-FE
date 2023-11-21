@@ -1,5 +1,5 @@
 import pool from "../../../config/dbcon.query";
-import queries from '../../../queries/master/agama/agama.queries.js';
+import queries from '../../../queries/mastertable/agama/agama.queries.js';
 
 const allSelect = (req, res) => {
     

@@ -1,5 +1,5 @@
 import { checkStatusEnabled } from "../../utils/dbutils"
-import { statusEnabled } from "../master/globalvariables/globalvariables.queries"
+import { statusEnabled } from "../mastertable/globalvariables/globalvariables.queries"
 
 
 const qGetPelayananFromDp =
@@ -402,12 +402,19 @@ FROM m_produk mp
 WHERE
     ${checkStatusEnabled("mp.statusenabled", "$1")}
     AND 
-    (   
+    (
         $2 = ''
         OR
         mp.namaproduk ILIKE '%' || $2 || '%'
     )
-    
+    AND
+        mp.isobat != TRUE
+    AND
+        mp.isalkes != TRUE
+    AND
+        mp.isbmhp != TRUE
+    AND
+        mp.islogistik != TRUE
 `
 
 

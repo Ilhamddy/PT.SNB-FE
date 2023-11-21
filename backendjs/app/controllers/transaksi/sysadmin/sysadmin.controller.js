@@ -16,12 +16,12 @@ import {
 import db from "../../../models";
 import { getDateStartEnd } from "../../../utils/dateutils";
 import { groupBy } from "../../../utils/arutils";
-import unitQueries from "../../../queries/master/unit/unit.queries";
-import kelasQueries from "../../../queries/master/kelas/kelas.queries";
-import kamarQueries from "../../../queries/master/kamar/kamar.queries";
-import instalasiQueries from "../../../queries/master/instalasi/instalasi.queries";
-import statusbedQueries from "../../../queries/master/statusbed/statusbed.queries";
-import spesialisasiQueries from "../../../queries/master/spesialisasi/spesialisasi.queries";
+import unitQueries from "../../../queries/mastertable/unit/unit.queries";
+import kelasQueries from "../../../queries/mastertable/kelas/kelas.queries";
+import kamarQueries from "../../../queries/mastertable/kamar/kamar.queries";
+import instalasiQueries from "../../../queries/mastertable/instalasi/instalasi.queries";
+import statusbedQueries from "../../../queries/mastertable/statusbed/statusbed.queries";
+import spesialisasiQueries from "../../../queries/mastertable/spesialisasi/spesialisasi.queries";
 import queries from '../../../queries/setting/mapsesions';
 
 

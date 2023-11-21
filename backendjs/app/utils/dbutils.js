@@ -1,4 +1,4 @@
-import { statusEnabled } from "../queries/master/globalvariables/globalvariables.queries";
+import { statusEnabled } from "../queries/mastertable/globalvariables/globalvariables.queries";
 
 /**
  * 
@@ -72,5 +72,21 @@ export const checkStatusEnabled = (queryStatusEnabled, q1) => {
         ${q1} = '${statusEnabled.FALSE}'
         AND ${queryStatusEnabled} = false
     )
+)`
+}
+
+/**
+ * 
+ * @param {string} queryTgl contoh: 'mp.statusenabled'
+ * @param {string} q1 contoh: '$1'
+ * @returns 
+ */
+export const getStatusEnabled = (queryStatusEnabled) => {
+    return `
+(
+    CASE WHEN ${queryStatusEnabled} = TRUE
+        THEN '${statusEnabled.TRUE}'
+        ELSE '${statusEnabled.FALSE}'
+    END
 )`
 }

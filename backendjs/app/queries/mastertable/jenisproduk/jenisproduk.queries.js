@@ -2,7 +2,7 @@ const getAll =
     `
 SELECT 
     id as value, 
-    jenisproduk as label 
+    jenisproduk as label
 FROM m_jenisproduk
 WHERE statusenabled = true`;
 
