@@ -88,6 +88,7 @@ import t_returbarangdetailModel from "./t_returbarangdetail.model.js";
 import t_bedharianModel from "./t_bedharian.model.js";
 import t_liburpegawaiModel from "./t_liburpegawai.model.js";
 import m_mapunittoprodukModel from "./m_mapunittoproduk.model.js"
+import t_asesmenbayilahirModel from "./t_asesmenbayilahir.model.js";
 
 const sequelize = new Sequelize(
   config.DB,
@@ -201,6 +202,7 @@ db.t_returbarangdetail = t_returbarangdetailModel(sequelize, sequelizeInstance)
 db.t_bedharian = t_bedharianModel(sequelize, sequelizeInstance)
 db.t_liburpegawai = t_liburpegawaiModel(sequelize, sequelizeInstance)
 db.m_mapunittoproduk = m_mapunittoprodukModel(sequelize, sequelizeInstance)
+db.t_asesmenbayilahir = t_asesmenbayilahirModel(sequelize, sequelizeInstance)
 
 db.role.belongsToMany(db.user, {
   through: "user_roles",
