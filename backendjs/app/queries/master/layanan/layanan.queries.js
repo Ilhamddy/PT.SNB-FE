@@ -66,8 +66,36 @@ WHERE mp.statusenabled = TRUE
 ORDER BY mp.id ASC
 `
 
+const qGetJenisProduk = `
+SELECT
+    mjp.id AS idjenisproduk,
+    mjp.jenisproduk AS namajenisproduk,
+    mjp.objectinstalasifk AS instalasi,
+    ${getStatusEnabled("mjp.statusenabled")} AS statusenabledval,
+    mjp.statusenabled AS statusenabled
+FROM m_jenisproduk mjp
+ORDER BY mjp.id ASC
+`
+
+
+const qGetDetailJenisProduk = `
+SELECT
+    mjp.id AS idjenisproduk,
+    mjp.jenisproduk AS namajenisproduk,
+    mjp.objectinstalasifk AS instalasi,
+    mdjp.id AS iddetailjenisproduk,
+    mdjp.detailjenisproduk AS namadetailjenisproduk,
+    ${getStatusEnabled("mdjp.statusenabled")} AS statusenabledval,
+    mdjp.statusenabled AS statusenabled
+FROM m_detailjenisproduk mdjp
+    LEFT JOIN m_jenisproduk mjp ON mdjp.objectjenisprodukfk = mjp.id
+ORDER BY mdjp.id ASC
+`
+
 export {
     qGetLayanan,
     qGetMapUnitToProduk,
-    qGetLayananMapping
+    qGetLayananMapping,
+    qGetJenisProduk,
+    qGetDetailJenisProduk
 }

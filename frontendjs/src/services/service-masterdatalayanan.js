@@ -30,4 +30,16 @@ export default class ServiceMaster {
     saveOrDeleteMapping = async (data) => {
         return await api.create("/master/layanan/save-or-delete-mapping", data)
     }
+    
+    getLainLain = async (queries) => {
+        return await api.get(`/master/layanan/get-lain-lain`, queries)
+    }
+    
+    upsertJenisProduk = async (data) => {
+        return await api.create(`/master/layanan/upsert-jenis-produk`, data)
+    }
+
+    upsertDetailJenisProduk = async (data) => {
+        return await api.create(`/master/layanan/upsert-detail-jenis-produk`, data)
+    }
 }

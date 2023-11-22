@@ -52,4 +52,22 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.saveOrDeleteMapping
     )
+
+    app.get(
+        "/api/master/layanan/get-lain-lain",
+        [authJwt.verifyToken],
+        controller.getLainLain
+    )
+
+    app.post(
+        "/api/master/layanan/upsert-jenis-produk",
+        [authJwt.verifyToken],
+        controller.upsertJenisProduk
+    )
+
+    app.post(
+        "/api/master/layanan/upsert-detail-jenis-produk",
+        [authJwt.verifyToken],
+        controller.upsertDetailJenisProduk
+    )
 }

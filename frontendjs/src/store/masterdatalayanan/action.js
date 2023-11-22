@@ -19,7 +19,16 @@ import {
     GET_LAYANAN_MAPPING_ERROR,
     SAVE_OR_DELETE_MAPPING,
     SAVE_OR_DELETE_MAPPING_SUCCESS,
-    SAVE_OR_DELETE_MAPPING_ERROR
+    SAVE_OR_DELETE_MAPPING_ERROR,
+    GET_LAIN_LAIN,
+    GET_LAIN_LAIN_SUCCESS,
+    GET_LAIN_LAIN_ERROR,
+    UPSERT_JENIS_PRODUK,
+    UPSERT_JENIS_PRODUK_SUCCESS,
+    UPSERT_JENIS_PRODUK_ERROR,
+    UPSERT_DETAIL_JENIS_PRODUK,
+    UPSERT_DETAIL_JENIS_PRODUK_SUCCESS,
+    UPSERT_DETAIL_JENIS_PRODUK_ERROR
 } from "./actionType";
 
 
@@ -145,5 +154,58 @@ export const saveOrDeleteMappingSuccess = (data) => ({
 
 export const saveOrDeleteMappingError = (error) => ({
     type: SAVE_OR_DELETE_MAPPING_ERROR,
+    payload: error
+});
+
+export const getLainLain = (queries) => ({
+    type: GET_LAIN_LAIN,
+    payload: {
+        queries
+    },
+});
+
+export const getLainLainSuccess = (data) => ({
+    type: GET_LAIN_LAIN_SUCCESS,
+    payload: data,
+});
+
+export const getLainLainError = (error) => ({
+    type: GET_LAIN_LAIN_ERROR,
+    payload: error
+});
+
+export const upsertJenisProduk = (data, callback) => ({
+    type: UPSERT_JENIS_PRODUK,
+    payload: {
+        data: data,
+        callback: callback
+    },
+});
+
+export const upsertJenisProdukSuccess = (data) => ({
+    type: UPSERT_JENIS_PRODUK_SUCCESS,
+    payload: data,
+});
+
+export const upsertJenisProdukError = (error) => ({
+    type: UPSERT_JENIS_PRODUK_ERROR,
+    payload: error
+});
+
+export const upsertDetailJenisProduk = (data, callback) => ({
+    type: UPSERT_DETAIL_JENIS_PRODUK,
+    payload: {
+        data: data,
+        callback: callback
+    },
+});
+
+export const upsertDetailJenisProdukSuccess = (data) => ({
+    type: UPSERT_DETAIL_JENIS_PRODUK_SUCCESS,
+    payload: data,
+});
+
+export const upsertDetailJenisProdukError = (error) => ({
+    type: UPSERT_DETAIL_JENIS_PRODUK_ERROR,
     payload: error
 });

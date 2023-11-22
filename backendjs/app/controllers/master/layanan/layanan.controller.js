@@ -5,7 +5,7 @@ import db from "../../../models";
 import {
     createTransaction
 } from "../../../utils/dbutils";
-import { qGetLayanan, qGetLayananMapping, qGetMapUnitToProduk } from "../../../queries/master/layanan/layanan.queries";
+import { qGetDetailJenisProduk, qGetJenisProduk, qGetLayanan, qGetLayananMapping, qGetMapUnitToProduk } from "../../../queries/master/layanan/layanan.queries";
 import jenisprodukQueries from "../../../queries/mastertable/jenisproduk/jenisproduk.queries";
 import detailjenisprodukQueries from "../../../queries/mastertable/detailjenisproduk/detailjenisproduk.queries";
 import variabelbpjsQueries from "../../../queries/mastertable/variabelbpjs/variabelbpjs.queries";
@@ -313,6 +313,176 @@ const saveOrDeleteMapping = async (req, res) => {
     }
 }
 
+const getLainLain = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const jenisProduk = (await pool.query(qGetJenisProduk)).rows
+        const comboJenisProduk = jenisProduk.map((data) => ({
+            value: data.idjenisproduk,
+            label: data.namajenisproduk,
+            instalasi: data.instalasi
+        }))
+        const detailJenisProduk = (await pool.query(qGetDetailJenisProduk)).rows
+        const instalasi = (await pool.query(instalasiQueries.getAll)).rows
+        const statusEnabled = valueStatusEnabled()
+        const tempres = {
+            jenisProduk: jenisProduk,
+            detailJenisProduk: detailJenisProduk,
+            statusEnabled: statusEnabled,
+            instalasi: instalasi,
+            comboJenisProduk: comboJenisProduk
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+const upsertJenisProduk = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const reqBody = req.body
+        const {
+            createdOrUpdated
+        } = await db.sequelize.transaction(async (transaction) => {
+            let createdOrUpdated = null
+            if(reqBody.id) {
+                const jenisProdukModel = await db.m_jenisproduk.findByPk(reqBody.id, {
+                    transaction: transaction
+                })
+                if(!jenisProdukModel) throw new Error("Jenis Produk tidak ada ")
+                await jenisProdukModel.update({
+                    namaexternal: reqBody.namajenisproduk,
+                    reportdisplay:reqBody.namajenisproduk,
+                    jenisproduk: reqBody.namajenisproduk,
+                    statusEnabled: reqBody.statusenabled === statusEnabled.TRUE
+                }, {
+                    transaction: transaction
+                })
+                createdOrUpdated = jenisProdukModel.toJSON()
+            } else {
+                const createdModel = await db.m_jenisproduk.create({
+                    kdprofile: 0,
+                    statusenabled: reqBody.statusenabled === statusEnabled.TRUE,
+                    kodeexternal: null,
+                    namaexternal: reqBody.namajenisproduk,
+                    reportdisplay: reqBody.namajenisproduk,
+                    objectinstalasifk: reqBody.instalasi,
+                    objectjenisprodukheadfk: null,
+                    objectkelompokprodukfk: null,
+                    jenisproduk: reqBody.namajenisproduk,
+                    umurasset: null,
+                    objectpenerimaankasirfk: null,
+                })
+                createdOrUpdated = createdModel.toJSON()
+            }
+            return {
+                createdOrUpdated: createdOrUpdated
+            }
+        });
+        
+        const tempres = {
+            createdOrUpdated
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+const upsertDetailJenisProduk = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const reqBody = req.body
+        const {
+            upserted
+        } = await db.sequelize.transaction(async (transaction) => {
+            let upserted = null
+            if(reqBody.id){
+                const detailModel = await db.m_detailjenisproduk
+                    .findByPk(reqBody.id, {
+                        transaction: transaction
+                    })
+                if(!detailModel) throw new Error("Detail tidak ditemukan")
+                await detailModel.update({
+                    namaexternal: reqBody.namadetailjenisproduk,
+                    reportdisplay: reqBody.namadetailjenisproduk,
+                    objectinstalasifk: reqBody.instalasi,
+                    objectjenisprodukfk: reqBody.jenisproduk,
+                    detailjenisproduk: reqBody.namadetailjenisproduk,
+                    tglupdate: new Date(),
+                    objectpegawaiupdatefk: req.idPegawai
+                }, {
+                    transaction: transaction
+                })
+                upserted = detailModel.toJSON()
+            } else {
+                const created = await db.m_detailjenisproduk.create({
+                    kdprofile: 0,
+                    statusenabled: reqBody.statusenabled === statusEnabled.TRUE,
+                    kodeexternal: null,
+                    namaexternal: reqBody.namadetailjenisproduk,
+                    reportdisplay: reqBody.namadetailjenisproduk,
+                    objectinstalasifk: reqBody.instalasi,
+                    objectjenisprodukfk: reqBody.jenisproduk,
+                    detailjenisproduk: reqBody.namadetailjenisproduk,
+                    persenhargacito: null,
+                    tglinput: new Date(),
+                    tglupdate: new Date(),
+                    objectpegawaiinputfk: req.idPegawai,
+                    objectpegawaiupdatefk: req.idPegawai
+                }, {
+                    transaction: transaction
+                })
+                upserted = created.toJSON()
+            }
+            return {
+                upserted
+            }
+        });
+        
+        const tempres = {
+            upserted: upserted
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export default {
     getComboTambahLayanan,
     upsertLayanan,
@@ -320,5 +490,8 @@ export default {
     getComboMapRuangPelayanan,
     getMapUnitToProduk,
     getLayananMapping,
-    saveOrDeleteMapping
+    saveOrDeleteMapping,
+    getLainLain,
+    upsertJenisProduk,
+    upsertDetailJenisProduk
 }

@@ -8,7 +8,10 @@ import {
     GET_COMBO_MAP_RUANG_PELAYANAN,
     GET_MAP_UNIT_TO_PRODUK,
     GET_LAYANAN_MAPPING,
-    SAVE_OR_DELETE_MAPPING
+    SAVE_OR_DELETE_MAPPING,
+    GET_LAIN_LAIN,
+    UPSERT_JENIS_PRODUK,
+    UPSERT_DETAIL_JENIS_PRODUK
 } from "./actionType";
 
 import {
@@ -25,7 +28,13 @@ import {
     getLayananMappingSuccess,
     getLayananMappingError,
     saveOrDeleteMappingSuccess,
-    saveOrDeleteMappingError
+    saveOrDeleteMappingError,
+    getLainLainSuccess,
+    getLainLainError,
+    upsertJenisProdukSuccess,
+    upsertJenisProdukError,
+    upsertDetailJenisProdukSuccess,
+    upsertDetailJenisProdukError
 } from "./action";
 
 import { toast } from 'react-toastify';
@@ -113,6 +122,42 @@ function* onSaveOrDeleteMapping({ payload: { data, callback } }) {
 }
 
 
+function* onGetLainLain({ payload: { queries }}) {
+    try {
+        let response = null;
+        response = yield call(serviceMDL.getLainLain, queries);
+        yield put(getLainLainSuccess(response.data));
+    } catch (error) {
+        yield put(getLainLainError(error));
+    }
+}
+
+function* onUpsertJenisProduk({ payload: { data, callback } }) {
+    try {
+        let response = null;
+        response = yield call(serviceMDL.upsertJenisProduk, data);
+        yield put(upsertJenisProdukSuccess(response.data));
+        toast.success(response.data.msg || "Sukses")
+        callback && callback(response.data)
+    } catch (error) {
+        yield put(upsertJenisProdukError(error));
+        toast.error(error.response?.data?.msg || "Error")
+    }
+}
+
+function* onUpsertDetailJenisProduk({ payload: { data, callback } }) {
+    try {
+        let response = null;
+        response = yield call(serviceMDL.upsertDetailJenisProduk, data);
+        yield put(upsertDetailJenisProdukSuccess(response.data));
+        toast.success(response.data.msg || "Sukses")
+        callback && callback(response.data)
+    } catch (error) {
+        yield put(upsertDetailJenisProdukError(error));
+        toast.error(error.response?.data?.msg || "Error")
+    }
+}
+
 function* MasterDataLayananSaga() {
     yield all([
         takeEvery(GET_COMBO_TAMBAH_LAYANAN, ongetComboTambahLayanan),
@@ -121,7 +166,10 @@ function* MasterDataLayananSaga() {
         takeEvery(GET_COMBO_MAP_RUANG_PELAYANAN, onGetComboMapRuangPelayanan),
         takeEvery(GET_MAP_UNIT_TO_PRODUK, onGetMapUnitToProduk),
         takeEvery(GET_LAYANAN_MAPPING, onGetLayananMapping),
-        takeEvery(SAVE_OR_DELETE_MAPPING, onSaveOrDeleteMapping)
+        takeEvery(SAVE_OR_DELETE_MAPPING, onSaveOrDeleteMapping),
+        takeEvery(GET_LAIN_LAIN, onGetLainLain),
+        takeEvery(UPSERT_JENIS_PRODUK, onUpsertJenisProduk),
+        takeEvery(UPSERT_DETAIL_JENIS_PRODUK, onUpsertDetailJenisProduk)
     ]);
 }
 
