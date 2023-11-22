@@ -52,9 +52,6 @@ import {
     GET_DAFTAR_SUDAH_VERIFIKASI_REMUNERASI,
     GET_DAFTAR_SUDAH_VERIFIKASI_REMUNERASI_SUCCESS,
     GET_DAFTAR_SUDAH_VERIFIKASI_REMUNERASI_ERROR,
-    GET_MASTER_TARIF_LAYANAN,
-    GET_MASTER_TARIF_LAYANAN_SUCCESS,
-    GET_MASTER_TARIF_LAYANAN_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -142,11 +139,7 @@ const INIT_STATE = {
         success: false,
         error: null,
     },
-    getMasterTarifLayanan: {
-        data: [],
-        loading: false,
-        error: null,
-    }
+
 }
 
 const payment = (state = INIT_STATE, action) => {
@@ -728,39 +721,7 @@ const payment = (state = INIT_STATE, action) => {
             }
         }
 
-        case GET_MASTER_TARIF_LAYANAN: {
-            return {
-                ...state,
-                getMasterTarifLayanan: {
-                    ...state.getMasterTarifLayanan,
-                    loading: true,
-                    error: null,
-                }
-            }
-        }
-
-        case GET_MASTER_TARIF_LAYANAN_SUCCESS: {
-            return {
-                ...state,
-                getMasterTarifLayanan: {
-                    ...state.getMasterTarifLayanan,
-                    loading: false,
-                    data: action.payload,
-                }
-            }
-        }
-
-        case GET_MASTER_TARIF_LAYANAN_ERROR: {
-            return {
-                ...state,
-                getMasterTarifLayanan: {
-                    ...state.getMasterTarifLayanan,
-                    loading: false,
-                    error: action.payload,
-                }
-            }
-        }
-
+        
 
         default:
             return { ...state };

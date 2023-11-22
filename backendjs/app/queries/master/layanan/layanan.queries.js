@@ -1,4 +1,4 @@
-import { emptyIlike, emptyInt, getStatusEnabled } from "../../../utils/dbutils"
+import { checkStatusEnabled, emptyIlike, emptyInt, getStatusEnabled } from "../../../utils/dbutils"
 
 
 const qGetLayanan = `
@@ -92,10 +92,49 @@ FROM m_detailjenisproduk mdjp
 ORDER BY mdjp.id ASC
 `
 
+const qGetMasterLayanan = `
+SELECT
+    mp.id AS idproduk,
+    COALESCE(mp.kodeexternal, '') AS kodeexternal,
+    mp.statusenabled AS statusenabled,
+    mp.namaproduk AS namaproduk,
+    mdjp.id AS detailjenisproduk,
+    mdjp.detailjenisproduk AS namadetailjenisproduk,
+    mjp.id AS jenisproduk,
+    mjp.jenisproduk AS namajenisproduk,
+    mi.id AS instalasi,
+    mi.namainstalasi AS namainstalasi,
+    mvb.id AS variabelbpjs,
+    mvb.reportdisplay AS namavariabelbpjs
+FROM m_produk mp
+    LEFT JOIN m_detailjenisproduk mdjp ON mp.objectdetailjenisprodukfk = mdjp.id
+    LEFT JOIN m_jenisproduk mjp ON mdjp.objectjenisprodukfk = mjp.id
+    LEFT JOIN m_instalasi mi ON mp.objectinstalasifk = mi.id
+    LEFT JOIN m_variabelbpjs mvb ON mp.objectvariabelbpjsfk = mvb.id
+WHERE
+    ${checkStatusEnabled("mp.statusenabled", "$1")}
+    AND 
+    (
+        $2 = ''
+        OR
+        mp.namaproduk ILIKE '%' || $2 || '%'
+    )
+    AND
+        mp.isobat != TRUE
+    AND
+        mp.isalkes != TRUE
+    AND
+        mp.isbmhp != TRUE
+    AND
+        mp.islogistik != TRUE
+ORDER BY mp.id
+`
+
 export {
     qGetLayanan,
     qGetMapUnitToProduk,
     qGetLayananMapping,
     qGetJenisProduk,
-    qGetDetailJenisProduk
+    qGetDetailJenisProduk,
+    qGetMasterLayanan
 }

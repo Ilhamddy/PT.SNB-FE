@@ -28,7 +28,13 @@ import {
     UPSERT_JENIS_PRODUK_ERROR,
     UPSERT_DETAIL_JENIS_PRODUK,
     UPSERT_DETAIL_JENIS_PRODUK_SUCCESS,
-    UPSERT_DETAIL_JENIS_PRODUK_ERROR
+    UPSERT_DETAIL_JENIS_PRODUK_ERROR,
+    GET_MASTER_TARIF_LAYANAN,
+    GET_MASTER_TARIF_LAYANAN_SUCCESS,
+    GET_MASTER_TARIF_LAYANAN_ERROR,
+    SET_VARIABEL_BPJS,
+    SET_VARIABEL_BPJS_SUCCESS,
+    SET_VARIABEL_BPJS_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -78,6 +84,16 @@ const INIT_STATE = {
         error: null
     },
     upsertDetailJenisProduk: {
+        data: [],
+        loading: false,
+        error: null
+    },
+    getMasterTarifLayanan: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    setVariabelBPJS: {
         data: [],
         loading: false,
         error: null
@@ -431,6 +447,75 @@ const MasterDataLayanan = (state = INIT_STATE, action) => {
                 }
             }
         }
+
+        case GET_MASTER_TARIF_LAYANAN: {
+            return {
+                ...state,
+                getMasterTarifLayanan: {
+                    ...state.getMasterTarifLayanan,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case GET_MASTER_TARIF_LAYANAN_SUCCESS: {
+            return {
+                ...state,
+                getMasterTarifLayanan: {
+                    ...state.getMasterTarifLayanan,
+                    loading: false,
+                    data: action.payload,
+                }
+            }
+        }
+
+        case GET_MASTER_TARIF_LAYANAN_ERROR: {
+            return {
+                ...state,
+                getMasterTarifLayanan: {
+                    ...state.getMasterTarifLayanan,
+                    loading: false,
+                    error: action.payload,
+                }
+            }
+        }
+
+        case SET_VARIABEL_BPJS: {
+            return {
+                ...state,
+                setVariabelBPJS: {
+                    ...state.setVariabelBPJS,
+                    data: [],
+                    loading: true,
+                    error: action.payload,
+                }
+            }
+        }
+
+        case SET_VARIABEL_BPJS_SUCCESS: {
+            return {
+                ...state,
+                setVariabelBPJS: {
+                    ...state.setVariabelBPJS,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case SET_VARIABEL_BPJS_ERROR: {
+            return {
+                ...state,
+                setVariabelBPJS: {
+                    ...state.setVariabelBPJS,
+                    data: [],
+                    loading: false,
+                    error: action.payload,
+                }
+            }
+        }
+
 
         default: {
             return { ...state };

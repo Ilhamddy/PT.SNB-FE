@@ -42,4 +42,12 @@ export default class ServiceMaster {
     upsertDetailJenisProduk = async (data) => {
         return await api.create(`/master/layanan/upsert-detail-jenis-produk`, data)
     }
+
+    getMasterTarifLayanan = async (queries) => {
+        return await api.get(`/master/layanan/get-master-tarif-layanan`, queries)
+    }
+    
+    setVariabelBPJS = async (data) => {
+        return await api.create(`/master/layanan/set-variabel-bpjs`, data)
+    }
 }

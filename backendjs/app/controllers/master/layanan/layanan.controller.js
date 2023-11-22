@@ -5,7 +5,7 @@ import db from "../../../models";
 import {
     createTransaction
 } from "../../../utils/dbutils";
-import { qGetDetailJenisProduk, qGetJenisProduk, qGetLayanan, qGetLayananMapping, qGetMapUnitToProduk } from "../../../queries/master/layanan/layanan.queries";
+import { qGetDetailJenisProduk, qGetJenisProduk, qGetLayanan, qGetLayananMapping, qGetMapUnitToProduk, qGetMasterLayanan } from "../../../queries/master/layanan/layanan.queries";
 import jenisprodukQueries from "../../../queries/mastertable/jenisproduk/jenisproduk.queries";
 import detailjenisprodukQueries from "../../../queries/mastertable/detailjenisproduk/detailjenisproduk.queries";
 import variabelbpjsQueries from "../../../queries/mastertable/variabelbpjs/variabelbpjs.queries";
@@ -483,6 +483,87 @@ const upsertDetailJenisProduk = async (req, res) => {
     }
 }
 
+const getMasterTarifLayanan = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const {
+            aktif,
+            namaproduk,
+        } = req.query
+        const variabelBPJS = (await pool.query(variabelbpjsQueries.getAll)).rows
+        const combo = {
+            statusenabled: valueStatusEnabled(true),
+            variabelBPJS: variabelBPJS
+        }
+        const layanan = 
+            (await pool.query(qGetMasterLayanan, [
+                aktif || "", 
+                namaproduk || ""
+            ])).rows
+        const tempres = {
+            layanan: layanan,
+            combo: combo    
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+const setVariabelBPJS = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const reqBody = req.body
+        const {updatedProduk}
+        = await db.sequelize.transaction(async (transaction) => {
+            if (!reqBody.idproduk) throw new Error("Id Produk kosong")
+            const produkModel 
+                = await db.m_produk.findByPk(reqBody.idproduk, {
+                    transaction: transaction
+                })
+            await produkModel.update({
+                objectvariabelbpjsfk: reqBody.variabelbpjs
+            }, {
+                transaction: transaction
+            })
+            if (!produkModel) throw new Error("Tidak ada produk")
+            const updatedProduk = produkModel.toJSON();
+            return {
+                updatedProduk: updatedProduk
+            }
+        });
+        
+        const tempres = {
+            updatedProduk: updatedProduk
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export default {
     getComboTambahLayanan,
     upsertLayanan,
@@ -493,5 +574,7 @@ export default {
     saveOrDeleteMapping,
     getLainLain,
     upsertJenisProduk,
-    upsertDetailJenisProduk
+    upsertDetailJenisProduk,
+    getMasterTarifLayanan,
+    setVariabelBPJS
 }

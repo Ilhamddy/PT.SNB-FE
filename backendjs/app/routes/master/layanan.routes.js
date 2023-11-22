@@ -70,4 +70,16 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.upsertDetailJenisProduk
     )
+
+    app.get(
+        "/api/master/layanan/get-master-tarif-layanan",
+        [authJwt.verifyToken],
+        controller.getMasterTarifLayanan
+    )
+
+    app.post(
+        "/api/master/layanan/set-variabel-bpjs",
+        [authJwt.verifyToken],
+        controller.setVariabelBPJS
+    )
 }

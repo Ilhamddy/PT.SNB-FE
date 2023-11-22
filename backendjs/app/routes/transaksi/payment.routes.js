@@ -92,9 +92,5 @@ export default function (app) {
         controller.getDaftarSudahVerifikasiRemun
     );
 
-    app.get(
-        "/api/transaksi/payment/get-master-tarif-layanan",
-        [authJwt.verifyToken],
-        controller.getMasterTarifLayanan
-    )
+
 }

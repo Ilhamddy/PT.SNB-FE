@@ -11,7 +11,9 @@ import {
     SAVE_OR_DELETE_MAPPING,
     GET_LAIN_LAIN,
     UPSERT_JENIS_PRODUK,
-    UPSERT_DETAIL_JENIS_PRODUK
+    UPSERT_DETAIL_JENIS_PRODUK,
+    GET_MASTER_TARIF_LAYANAN,
+    SET_VARIABEL_BPJS
 } from "./actionType";
 
 import {
@@ -34,7 +36,11 @@ import {
     upsertJenisProdukSuccess,
     upsertJenisProdukError,
     upsertDetailJenisProdukSuccess,
-    upsertDetailJenisProdukError
+    upsertDetailJenisProdukError,
+    getMasterTarifLayananSuccess,
+    getMasterTarifLayananError,
+    setVariabelBPJSSuccess,
+    setVariabelBPJSError
 } from "./action";
 
 import { toast } from 'react-toastify';
@@ -158,6 +164,29 @@ function* onUpsertDetailJenisProduk({ payload: { data, callback } }) {
     }
 }
 
+function* ongetMasterTarifLayanan({payload: {queries}}) {
+    try{
+        const response = yield call(serviceMDL.getMasterTarifLayanan, queries);
+        yield put(getMasterTarifLayananSuccess(response.data));
+    } catch (error) {
+        yield put(getMasterTarifLayananError(error));
+    }
+}
+
+function* onSetVariabelBPJS({ payload: { data, callback } }) {
+    try {
+        let response = null;
+        response = yield call(serviceMDL.setVariabelBPJS, data);
+        yield put(setVariabelBPJSSuccess(response.data));
+        toast.success(response.data.msg || "Sukses")
+        callback && callback(response.data)
+    } catch (error) {
+        yield put(setVariabelBPJSError(error));
+        toast.error(error.response?.data?.msg || "Error")
+    }
+}
+
+
 function* MasterDataLayananSaga() {
     yield all([
         takeEvery(GET_COMBO_TAMBAH_LAYANAN, ongetComboTambahLayanan),
@@ -169,7 +198,10 @@ function* MasterDataLayananSaga() {
         takeEvery(SAVE_OR_DELETE_MAPPING, onSaveOrDeleteMapping),
         takeEvery(GET_LAIN_LAIN, onGetLainLain),
         takeEvery(UPSERT_JENIS_PRODUK, onUpsertJenisProduk),
-        takeEvery(UPSERT_DETAIL_JENIS_PRODUK, onUpsertDetailJenisProduk)
+        takeEvery(UPSERT_DETAIL_JENIS_PRODUK, onUpsertDetailJenisProduk),
+        takeEvery(GET_MASTER_TARIF_LAYANAN, ongetMasterTarifLayanan),
+        takeEvery(SET_VARIABEL_BPJS, onSetVariabelBPJS),
+
     ]);
 }
 

@@ -28,7 +28,13 @@ import {
     UPSERT_JENIS_PRODUK_ERROR,
     UPSERT_DETAIL_JENIS_PRODUK,
     UPSERT_DETAIL_JENIS_PRODUK_SUCCESS,
-    UPSERT_DETAIL_JENIS_PRODUK_ERROR
+    UPSERT_DETAIL_JENIS_PRODUK_ERROR,
+    GET_MASTER_TARIF_LAYANAN,
+    GET_MASTER_TARIF_LAYANAN_SUCCESS,
+    GET_MASTER_TARIF_LAYANAN_ERROR,
+    SET_VARIABEL_BPJS,
+    SET_VARIABEL_BPJS_SUCCESS,
+    SET_VARIABEL_BPJS_ERROR
 } from "./actionType";
 
 
@@ -207,5 +213,40 @@ export const upsertDetailJenisProdukSuccess = (data) => ({
 
 export const upsertDetailJenisProdukError = (error) => ({
     type: UPSERT_DETAIL_JENIS_PRODUK_ERROR,
+    payload: error
+});
+
+export const getMasterTarifLayanan = (queries) => ({
+    type: GET_MASTER_TARIF_LAYANAN,
+    payload: {
+        queries,
+    },
+});
+
+export const getMasterTarifLayananSuccess = (data) => ({
+    type: GET_MASTER_TARIF_LAYANAN_SUCCESS,
+    payload: data,
+});
+
+export const getMasterTarifLayananError = (error) => ({
+    type: GET_MASTER_TARIF_LAYANAN_ERROR,
+    payload: error,
+});
+
+export const setVariabelBPJS = (data, callback) => ({
+    type: SET_VARIABEL_BPJS,
+    payload: {
+        data: data,
+        callback: callback
+    },
+});
+
+export const setVariabelBPJSSuccess = (data) => ({
+    type: SET_VARIABEL_BPJS_SUCCESS,
+    payload: data,
+});
+
+export const setVariabelBPJSError = (error) => ({
+    type: SET_VARIABEL_BPJS_ERROR,
     payload: error
 });
