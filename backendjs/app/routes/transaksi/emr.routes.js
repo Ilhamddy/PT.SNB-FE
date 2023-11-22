@@ -164,4 +164,9 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getHistoriTriagiByNorec
     );
+    app.post(
+        "/api/transaksi/emr/upsert-assesmen-bayi-lahir",
+        [authJwt.verifyToken],
+        controller.upsertAssesmenBayiLahir
+    );
 }

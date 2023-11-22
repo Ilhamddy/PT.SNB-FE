@@ -169,4 +169,7 @@ export default class ServiceEmr {
     comboAllTindakan = async (queries) => {
         return await api.get(`/transaksi/tindakan/all-list-produk`, queries);
     }
+    saveEmrPasien = async (body) => {
+        return await api.create("/transaksi/emr/upsert-assesmen-bayi-lahir", body)
+    }
 }

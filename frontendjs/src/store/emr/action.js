@@ -121,7 +121,8 @@ import {
     UPDATE_ESTIMASI_KLAIM,
     UPDATE_ESTIMASI_KLAIM_SUCCESS,
     UPDATE_ESTIMASI_KLAIM_ERROR,
-    COMBO_ALL_TINDAKAN_GET,COMBO_ALL_TINDAKAN_GET_SUCCESS,COMBO_ALL_TINDAKAN_GET_ERROR
+    COMBO_ALL_TINDAKAN_GET,COMBO_ALL_TINDAKAN_GET_SUCCESS,COMBO_ALL_TINDAKAN_GET_ERROR,
+    SAVE_EMR_PASIEN,SAVE_EMR_PASIEN_SUCCESS,SAVE_EMR_PASIEN_ERROR
 } from "./actionType";
 
 export const emrResetForm = () => ({
@@ -776,4 +777,23 @@ export const comboAllTindakanSuccess = (data) => ({
 export const comboAllTindakanError = (error) => ({
     type: COMBO_ALL_TINDAKAN_GET_ERROR,
     payload: error,
+});
+
+
+export const saveEmrPasien = (body, callback) => ({
+    type: SAVE_EMR_PASIEN,
+    payload: {
+        body: body,
+        callback: callback
+    }
+});
+
+export const saveEmrPasienSuccess = (data) => ({
+    type: SAVE_EMR_PASIEN_SUCCESS,
+    payload: data
+});
+
+export const saveEmrPasienError = (error) => ({
+    type: SAVE_EMR_PASIEN_ERROR,
+    payload: error
 });

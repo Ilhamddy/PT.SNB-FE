@@ -23,7 +23,8 @@ import {
     GET_HISTORI_ORDER_OPERASI,
     SAVE_PELAYANAN_PASIEN_TEMP, GET_LIST_PELAYANAN_PASIEN_TEMP,
     DELETE_PELAYANAN_PASIEN_TEMP, GET_WIDGET_EFISIENSI_KLAIM,
-    UPDATE_ESTIMASI_KLAIM, COMBO_ALL_TINDAKAN_GET
+    UPDATE_ESTIMASI_KLAIM, COMBO_ALL_TINDAKAN_GET,
+    SAVE_EMR_PASIEN, SAVE_EMR_PASIEN_SUCCESS, SAVE_EMR_PASIEN_ERROR
 } from "./actionType";
 
 import {
@@ -66,7 +67,8 @@ import {
     deletePelayananPasienTempSuccess, deletePelayananPasienTempError,
     getWidgetEfisiensiKlaimSuccess, getWidgetEfisiensiKlaimError,
     updateEstimasiKlaimSuccess, updateEstimasiKlaimError,
-    comboAllTindakanSuccess, comboAllTindakanError
+    comboAllTindakanSuccess, comboAllTindakanError,
+    saveEmrPasienSuccess, saveEmrPasienError
 } from "./action";
 
 import { toast } from 'react-toastify';
@@ -819,6 +821,22 @@ export function* watchcomboAllTindakan() {
     yield takeEvery(COMBO_ALL_TINDAKAN_GET, oncomboAllTindakan);
 }
 
+function* onsaveEmrPasien({payload: {data, callback}}) {
+    try{
+        const response = yield call(serviceEmr.saveEmrPasien, data);
+        yield put(saveEmrPasienSuccess(response.data));
+        toast.success(response.msg || "Sukses");
+        callback && callback(response);
+    } catch (error) {
+        yield put(saveEmrPasienError(error));
+        toast.error(error.msg || "Gagal");
+    }
+}
+
+export function* watchonsaveEmrPasien() {
+    yield takeEvery(SAVE_EMR_PASIEN, onsaveEmrPasien);
+}
+
 function* emrSaga() {
     yield all([
         fork(watchGetEmrHeader),
@@ -861,7 +879,8 @@ function* emrSaga() {
         fork(watchondeletePelayananPasienTemp),
         fork(watchgetWidgetEfisiensiKlaim),
         fork(watchonupdateEstimasiKlaim),
-        fork(watchcomboAllTindakan)
+        fork(watchcomboAllTindakan),
+        fork(watchonsaveEmrPasien)
     ]);
 }
 

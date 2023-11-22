@@ -120,7 +120,8 @@ import {
     UPDATE_ESTIMASI_KLAIM,
     UPDATE_ESTIMASI_KLAIM_SUCCESS,
     UPDATE_ESTIMASI_KLAIM_ERROR,
-    COMBO_ALL_TINDAKAN_GET, COMBO_ALL_TINDAKAN_GET_SUCCESS, COMBO_ALL_TINDAKAN_GET_ERROR
+    COMBO_ALL_TINDAKAN_GET, COMBO_ALL_TINDAKAN_GET_SUCCESS, COMBO_ALL_TINDAKAN_GET_ERROR,
+    SAVE_EMR_PASIEN,SAVE_EMR_PASIEN_SUCCESS,SAVE_EMR_PASIEN_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -345,6 +346,11 @@ const INIT_STATE = {
         loading: false,
         error: null,
     },
+    saveEmrPasien:{
+        data: [],
+        loading: false,
+        error: null,
+    },
 };
 
 const Emr = (state = INIT_STATE, action) => {
@@ -462,6 +468,9 @@ const Emr = (state = INIT_STATE, action) => {
                 },
                 comboAllTindakan:{
                     ...INIT_STATE.comboAllTindakan
+                },
+                saveEmrPasien:{
+                    ...INIT_STATE.saveEmrPasien
                 }
             }
         }
@@ -1847,6 +1856,41 @@ const Emr = (state = INIT_STATE, action) => {
                     error: action.error,
                 }
             }
+        }
+
+        case SAVE_EMR_PASIEN: {
+            return {
+                ...state,
+                saveEmrPasien: {
+                    ...state.saveEmrPasien,
+                    data: [],
+                    loading: true,
+                    error: null,
+                },
+            };
+        }
+
+        case SAVE_EMR_PASIEN_SUCCESS: {
+            return {
+                ...state,
+                saveEmrPasien: {
+                    ...state.saveEmrPasien,
+                    loading: false,
+                    data: action.payload,
+                    success: true,
+                },
+            };
+        }
+
+        case SAVE_EMR_PASIEN_ERROR: {
+            return {
+                ...state,
+                saveEmrPasien: {
+                    ...state.saveEmrPasien,
+                    loading: false,
+                    error: action.payload,
+                },
+            };
         }
 
 
