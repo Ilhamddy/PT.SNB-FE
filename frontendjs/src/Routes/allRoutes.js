@@ -375,6 +375,8 @@ import MasterDataLayanan from "../pages/MasterDataLayanan/MasterDataLayanan.jsx"
 
 import Index from "../pages/Emr/AsesmenBayiBaruLahir/index.jsx"
 import MasterSettingLayanan from "../pages/MasterSettingLayanan/MasterSettingLayanan.jsx";
+import MasterTarifTindakan from "../pages/MasterTarifTindakan/MasterTarifTindakan.jsx";
+import MasterTarifTindakanTambah from "../pages/MasterTarifTindakanTambah/MasterTarifTindakanTambah.jsx";
 
 
 const authProtectedRoutes = [
@@ -751,6 +753,8 @@ const authProtectedRoutes = [
   { path: "/sysadmin/role-acces", component: <RoleAcces />},
   { path: "/logger", component: <Logger />},
   { path: "/master/data-layanan", component: <MasterDataLayanan />},
+  { path: "/master/tarif-tindakan", component: <MasterTarifTindakan />},
+  { path: "/master/tarif-tindakan/tambah", component: <MasterTarifTindakanTambah />},
   { path: "/master/setting-layanan/:tabopen", component: <MasterSettingLayanan />},
   { path: "/master/setting-layanan/:tabopen/:id", component: <MasterSettingLayanan />},
 
