@@ -8,6 +8,8 @@ import CustomSelect from '../../Select/Select';
 import Skala from '../../../Components/Skala/Skala';
 import { saveEmrPasien, emrResetForm, getAsesmenBayiLahirByNorec, getComboAsesmenBayiLahir } from "../../../store/actions";
 import { useParams } from 'react-router-dom';
+import DataTable from 'react-data-table-component';
+import LoadingTable from '../../../Components/Table/LoadingTable';
 
 const AsesmenBayiBaruLahir = () => {
   // document.title = "Asesmen Bayi Baru Lahir";
@@ -123,7 +125,7 @@ const AsesmenBayiBaruLahir = () => {
       values.total1Menit = values.a1MenitScore + values.p1MenitScore + values.g1MenitScore + values.ac1MenitScore + values.r1MenitScore
       dispatch(
         saveEmrPasien(values, () => {
-          // vSetValidation.resetForm()
+          dispatch(getAsesmenBayiLahirByNorec({ norecap: norecap }));
         })
       )
     },
@@ -249,6 +251,42 @@ const AsesmenBayiBaruLahir = () => {
     { label: 'Ya', value: 1 },
     { label: 'Tidak', value: 2 },
   ]
+  const columns = [
+    {
+      name: <span className='font-weight-bold fs-13'>No</span>,
+      selector: row => row.no,
+      sortable: true,
+      width: "50px"
+    },
+    {
+      name: <span className='font-weight-bold fs-13'>ID</span>,
+      selector: row => row.id,
+      sortable: true,
+      width: "50px"
+    },
+    {
+      name: <span className='font-weight-bold fs-13'>Nama Modul</span>,
+      selector: row => row.name,
+      sortable: true,
+      // selector: row => (<button className="btn btn-sm btn-soft-info" onClick={() => handleClick(dataTtv)}>{row.noregistrasi}</button>),
+      // width: "250px",
+      wrap: true,
+    },
+  ];
+  const tableCustomStyles = {
+    headRow: {
+      style: {
+        color: '#ffffff',
+        backgroundColor: '#FFCB46',
+      },
+    },
+    rows: {
+      style: {
+        color: "black",
+        backgroundColor: "#f1f2f6"
+      },
+    }
+  }
   return (
     <React.Fragment>
       <Form
@@ -259,6 +297,30 @@ const AsesmenBayiBaruLahir = () => {
         }}
         className="gy-4"
         action="#">
+        <Card>
+          <CardHeader style={{ backgroundColor: "#FFCB46" }}>
+            <h4 className="card-title mb-0" style={{ color: '#ffffff' }}>Riwayat Asesmen</h4>
+          </CardHeader>
+          <CardBody>
+            <Col lg={12}>
+              <div id="table-gridjs">
+                <DataTable
+                  fixedHeader
+                  fixedHeaderScrollHeight="330px"
+                  columns={columns}
+                  pagination
+                  data={[]}
+                  // progressPending={loadingCombo}
+                  customStyles={tableCustomStyles}
+                  progressComponent={<LoadingTable />}
+                  // onRowClicked={(row) => handleClick(row)}
+                  pointerOnHover
+                  highlightOnHover
+                />
+              </div>
+            </Col>
+          </CardBody>
+        </Card>
         <Card>
           <CardHeader style={{ backgroundColor: "#FFCB46" }}>
             <h4 className="card-title mb-0" style={{ color: '#ffffff' }}>ALLOANAMNESA</h4>
