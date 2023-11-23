@@ -129,6 +129,8 @@ const AsesmenBayiBaruLahir = () => {
         values.jamLahir = dateNow
 
       values.total1Menit = values.a1MenitScore + values.p1MenitScore + values.g1MenitScore + values.ac1MenitScore + values.r1MenitScore
+      values.total5Menit = values.a5MenitScore + values.p5MenitScore + values.g5MenitScore + values.ac5MenitScore + values.r5MenitScore
+      values.total10Menit = values.a10MenitScore + values.p10MenitScore + values.g10MenitScore + values.ac10MenitScore + values.r10MenitScore
       dispatch(
         saveEmrPasien(values, () => {
           dispatch(getAsesmenBayiLahirByNorec({ norecap: norecap }));
@@ -206,9 +208,35 @@ const AsesmenBayiBaruLahir = () => {
       setFF('r1MenitScore', dataAsesmen[0]?.r1score)
       setFF('r5MenitScore', dataAsesmen[0]?.r5score)
       setFF('r10MenitScore', dataAsesmen[0]?.r10score)
-      // setFF('total1Menit', dataAsesmen[0]?.total1)
-      // setFF('total5Menit', dataAsesmen[0]?.total5)
-      // setFF('total10Menit', dataAsesmen[0]?.total10)
+      if (dataAsesmen[0]?.durasitpiece === '0') {
+        setFF('piece', 2)
+        setstatePiece(true)
+      } else {
+        setFF('piece', 1)
+        setstatePiece(false)
+      }
+      if (dataAsesmen[0]?.durasio2 === '0') {
+        setFF('sungkup', 2)
+        setstateSungkup(true)
+      } else {
+        setFF('sungkup', 1)
+        setstateSungkup(false)
+      }
+      if (dataAsesmen[0]?.durasipompa === '0') {
+        setFF('pompa', 2)
+        setstatePompa(true)
+      } else {
+        setFF('pompa', 1)
+        setstatePompa(false)
+      }
+      if (dataAsesmen[0]?.durasiintubatic === '0') {
+        console.log('masuk')
+        setFF('intubatic', 2)
+        setstateIntubatic(true)
+      } else {
+        setFF('intubatic', 1)
+        setstateIntubatic(false)
+      }
       setFF('pieceDurasi', dataAsesmen[0]?.durasitpiece)
       setFF('sungkupDurasi', dataAsesmen[0]?.durasio2)
       setFF('pompaDurasi', dataAsesmen[0]?.durasipompa)
@@ -375,9 +403,34 @@ const AsesmenBayiBaruLahir = () => {
     setFF('r1MenitScore', e.r1score)
     setFF('r5MenitScore', e.r5score)
     setFF('r10MenitScore', e.r10score)
-    // setFF('total1Menit', e.total1)
-    // setFF('total5Menit', e.total5)
-    // setFF('total10Menit', e.total10)
+    if (e.durasitpiece === '0') {
+      setFF('piece', 2)
+      setstatePiece(true)
+    } else {
+      setFF('piece', 1)
+      setstatePiece(false)
+    }
+    if (e.durasio2 === '0') {
+      setFF('sungkup', 2)
+      setstateSungkup(true)
+    } else {
+      setFF('sungkup', 1)
+      setstateSungkup(false)
+    }
+    if (e.durasipompa === '0') {
+      setFF('pompa', 2)
+      setstatePompa(true)
+    } else {
+      setFF('pompa', 1)
+      setstatePompa(false)
+    }
+    if (e.durasiintubatic === '0') {
+      setFF('intubatic', 2)
+      setstateIntubatic(true)
+    } else {
+      setFF('intubatic', 1)
+      setstateIntubatic(false)
+    }
     setFF('pieceDurasi', e.durasitpiece)
     setFF('sungkupDurasi', e.durasio2)
     setFF('pompaDurasi', e.durasipompa)
@@ -1044,7 +1097,7 @@ const AsesmenBayiBaruLahir = () => {
                     options={dataCombo.apgarA}
                     onChange={(e) => {
                       vSetValidation.setFieldValue('a5Menit', e?.value || '')
-                      vSetValidation.setFieldValue('a5MenitScore', e?.score || '')
+                      vSetValidation.setFieldValue('a5MenitScore', e?.score)
                     }}
                     value={vSetValidation.values.a5Menit}
                     className={`input row-header ${!!vSetValidation?.errors.a5Menit ? 'is-invalid' : ''
@@ -1069,7 +1122,7 @@ const AsesmenBayiBaruLahir = () => {
                     options={dataCombo.apgarA}
                     onChange={(e) => {
                       vSetValidation.setFieldValue('a10Menit', e?.value || '')
-                      vSetValidation.setFieldValue('a10MenitScore', e?.score || '')
+                      vSetValidation.setFieldValue('a10MenitScore', e?.score)
                     }}
                     value={vSetValidation.values.a10Menit}
                     className={`input row-header ${!!vSetValidation?.errors.a10Menit ? 'is-invalid' : ''
@@ -1103,7 +1156,7 @@ const AsesmenBayiBaruLahir = () => {
                     options={dataCombo.apgarP}
                     onChange={(e) => {
                       vSetValidation.setFieldValue('p1Menit', e?.value || '')
-                      vSetValidation.setFieldValue('p1MenitScore', e?.score || '')
+                      vSetValidation.setFieldValue('p1MenitScore', e?.score)
                     }}
                     value={vSetValidation.values.p1Menit}
                     className={`input row-header ${!!vSetValidation?.errors.p1Menit ? 'is-invalid' : ''
@@ -1128,7 +1181,7 @@ const AsesmenBayiBaruLahir = () => {
                     options={dataCombo.apgarP}
                     onChange={(e) => {
                       vSetValidation.setFieldValue('p5Menit', e?.value || '')
-                      vSetValidation.setFieldValue('p5MenitScore', e?.score || '')
+                      vSetValidation.setFieldValue('p5MenitScore', e?.score)
                     }}
                     value={vSetValidation.values.p5Menit}
                     className={`input row-header ${!!vSetValidation?.errors.p5Menit ? 'is-invalid' : ''
@@ -1153,7 +1206,7 @@ const AsesmenBayiBaruLahir = () => {
                     options={dataCombo.apgarP}
                     onChange={(e) => {
                       vSetValidation.setFieldValue('p10Menit', e?.value || '')
-                      vSetValidation.setFieldValue('p10MenitScore', e?.score || '')
+                      vSetValidation.setFieldValue('p10MenitScore', e?.score)
                     }}
                     value={vSetValidation.values.p10Menit}
                     className={`input row-header ${!!vSetValidation?.errors.p10Menit ? 'is-invalid' : ''
@@ -1187,7 +1240,7 @@ const AsesmenBayiBaruLahir = () => {
                     options={dataCombo.apgarG}
                     onChange={(e) => {
                       vSetValidation.setFieldValue('g1Menit', e?.value || '')
-                      vSetValidation.setFieldValue('g1MenitScore', e?.score || '')
+                      vSetValidation.setFieldValue('g1MenitScore', e?.score)
                     }}
                     value={vSetValidation.values.g1Menit}
                     className={`input row-header ${!!vSetValidation?.errors.g1Menit ? 'is-invalid' : ''
@@ -1212,7 +1265,7 @@ const AsesmenBayiBaruLahir = () => {
                     options={dataCombo.apgarG}
                     onChange={(e) => {
                       vSetValidation.setFieldValue('g5Menit', e?.value || '')
-                      vSetValidation.setFieldValue('g5MenitScore', e?.score || '')
+                      vSetValidation.setFieldValue('g5MenitScore', e?.score)
                     }}
                     value={vSetValidation.values.g5Menit}
                     className={`input row-header ${!!vSetValidation?.errors.g5Menit ? 'is-invalid' : ''
@@ -1237,7 +1290,7 @@ const AsesmenBayiBaruLahir = () => {
                     options={dataCombo.apgarG}
                     onChange={(e) => {
                       vSetValidation.setFieldValue('g10Menit', e?.value || '')
-                      vSetValidation.setFieldValue('g10MenitScore', e?.score || '')
+                      vSetValidation.setFieldValue('g10MenitScore', e?.score)
                     }}
                     value={vSetValidation.values.g10Menit}
                     className={`input row-header ${!!vSetValidation?.errors.g10Menit ? 'is-invalid' : ''
@@ -1271,7 +1324,7 @@ const AsesmenBayiBaruLahir = () => {
                     options={dataCombo.apgarC}
                     onChange={(e) => {
                       vSetValidation.setFieldValue('ac1Menit', e?.value || '')
-                      vSetValidation.setFieldValue('ac1MenitScore', e?.score || '')
+                      vSetValidation.setFieldValue('ac1MenitScore', e?.score)
                     }}
                     value={vSetValidation.values.ac1Menit}
                     className={`input row-header ${!!vSetValidation?.errors.ac1Menit ? 'is-invalid' : ''
@@ -1296,7 +1349,7 @@ const AsesmenBayiBaruLahir = () => {
                     options={dataCombo.apgarC}
                     onChange={(e) => {
                       vSetValidation.setFieldValue('ac5Menit', e?.value || '')
-                      vSetValidation.setFieldValue('ac5MenitScore', e?.score || '')
+                      vSetValidation.setFieldValue('ac5MenitScore', e?.score)
                     }}
                     value={vSetValidation.values.ac5Menit}
                     className={`input row-header ${!!vSetValidation?.errors.ac5Menit ? 'is-invalid' : ''
@@ -1321,7 +1374,7 @@ const AsesmenBayiBaruLahir = () => {
                     options={dataCombo.apgarC}
                     onChange={(e) => {
                       vSetValidation.setFieldValue('ac10Menit', e?.value || '')
-                      vSetValidation.setFieldValue('ac10MenitScore', e?.score || '')
+                      vSetValidation.setFieldValue('ac10MenitScore', e?.score)
                     }}
                     value={vSetValidation.values.ac10Menit}
                     className={`input row-header ${!!vSetValidation?.errors.ac10Menit ? 'is-invalid' : ''
@@ -1355,7 +1408,7 @@ const AsesmenBayiBaruLahir = () => {
                     options={dataCombo.apgarR}
                     onChange={(e) => {
                       vSetValidation.setFieldValue('r1Menit', e?.value || '')
-                      vSetValidation.setFieldValue('r1MenitScore', e?.score || '')
+                      vSetValidation.setFieldValue('r1MenitScore', e?.score)
                     }}
                     value={vSetValidation.values.r1Menit}
                     className={`input row-header ${!!vSetValidation?.errors.r1Menit ? 'is-invalid' : ''
@@ -1380,7 +1433,7 @@ const AsesmenBayiBaruLahir = () => {
                     options={dataCombo.apgarR}
                     onChange={(e) => {
                       vSetValidation.setFieldValue('r5Menit', e?.value || '')
-                      vSetValidation.setFieldValue('r5MenitScore', e?.score || '')
+                      vSetValidation.setFieldValue('r5MenitScore', e?.score)
                     }}
                     value={vSetValidation.values.r5Menit}
                     className={`input row-header ${!!vSetValidation?.errors.r5Menit ? 'is-invalid' : ''
@@ -1405,7 +1458,7 @@ const AsesmenBayiBaruLahir = () => {
                     options={dataCombo.apgarR}
                     onChange={(e) => {
                       vSetValidation.setFieldValue('r10Menit', e?.value || '')
-                      vSetValidation.setFieldValue('r10MenitScore', e?.score || '')
+                      vSetValidation.setFieldValue('r10MenitScore', e?.score)
                     }}
                     value={vSetValidation.values.r10Menit}
                     className={`input row-header ${!!vSetValidation?.errors.r10Menit ? 'is-invalid' : ''
@@ -2122,7 +2175,7 @@ const AsesmenBayiBaruLahir = () => {
                   }}
                   invalid={vSetValidation.touched?.pemeriksaanLaboratorium &&
                     !!vSetValidation.errors?.pemeriksaanLaboratorium}
-                  placeholder='Isi diagnosa kerja'
+                  placeholder='Isi pemeriksaan Laboratorium'
                 />
                 {vSetValidation.touched?.pemeriksaanLaboratorium
                   && !!vSetValidation.errors.pemeriksaanLaboratorium && (
@@ -2190,7 +2243,7 @@ const AsesmenBayiBaruLahir = () => {
                   }}
                   invalid={vSetValidation.touched?.pentalakaksanaan &&
                     !!vSetValidation.errors?.pentalakaksanaan}
-                  placeholder='Isi pentalakaksanaan'
+                  placeholder='Isi penatalaksanaan'
                 />
                 {vSetValidation.touched?.pentalakaksanaan
                   && !!vSetValidation.errors.pentalakaksanaan && (
