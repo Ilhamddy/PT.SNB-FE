@@ -66,16 +66,16 @@ export default (sequelize, Sequelize) => {
             type:Sequelize.INTEGER
         },
         berat:{
-            type:Sequelize.INTEGER
+            type:Sequelize.STRING
         },
         panjang:{
-            type:Sequelize.FLOAT
+            type:Sequelize.STRING
         },
         lingkardada:{
-            type:Sequelize.FLOAT
+            type:Sequelize.STRING
         },
         lingkarkepala:{
-            type:Sequelize.FLOAT
+            type:Sequelize.STRING
         },
         lahirmeninggal:{
             type:Sequelize.STRING
@@ -138,16 +138,16 @@ export default (sequelize, Sequelize) => {
             type:Sequelize.INTEGER
         },
         durasitpiece:{
-            type:Sequelize.FLOAT
+            type:Sequelize.STRING
         },
         durasio2:{
-            type:Sequelize.FLOAT
+            type:Sequelize.STRING
         },
         durasipompa:{
-            type:Sequelize.FLOAT
+            type:Sequelize.STRING
         },
         durasiintubatic:{
-            type:Sequelize.FLOAT
+            type:Sequelize.STRING
         },
         kulit:{
             type:Sequelize.STRING
