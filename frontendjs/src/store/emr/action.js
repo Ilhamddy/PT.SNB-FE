@@ -122,7 +122,10 @@ import {
     UPDATE_ESTIMASI_KLAIM_SUCCESS,
     UPDATE_ESTIMASI_KLAIM_ERROR,
     COMBO_ALL_TINDAKAN_GET,COMBO_ALL_TINDAKAN_GET_SUCCESS,COMBO_ALL_TINDAKAN_GET_ERROR,
-    SAVE_EMR_PASIEN,SAVE_EMR_PASIEN_SUCCESS,SAVE_EMR_PASIEN_ERROR
+    SAVE_EMR_PASIEN,SAVE_EMR_PASIEN_SUCCESS,SAVE_EMR_PASIEN_ERROR,
+    GET_ASESMENBAYILAHIR_BYNOREC,GET_ASESMENBAYILAHIR_BYNOREC_SUCCESS,GET_ASESMENBAYILAHIR_BYNOREC_ERROR,
+    GET_COMBO_ASESMENBAYILAHIR,GET_COMBO_ASESMENBAYILAHIR_SUCCESS,GET_COMBO_ASESMENBAYILAHIR_ERROR,
+    GET_HISTORY_ASESMENBAYILAHIR,GET_HISTORY_ASESMENBAYILAHIR_SUCCESS,GET_HISTORY_ASESMENBAYILAHIR_ERROR
 } from "./actionType";
 
 export const emrResetForm = () => ({
@@ -796,4 +799,58 @@ export const saveEmrPasienSuccess = (data) => ({
 export const saveEmrPasienError = (error) => ({
     type: SAVE_EMR_PASIEN_ERROR,
     payload: error
+});
+
+export const getAsesmenBayiLahirByNorec = (data, callback) => ({
+    type: GET_ASESMENBAYILAHIR_BYNOREC,
+    payload: {
+        data,
+        callback
+    },
+});
+
+export const getAsesmenBayiLahirByNorecSuccess = (data) => ({
+    type: GET_ASESMENBAYILAHIR_BYNOREC_SUCCESS,
+    payload: data,
+});
+
+export const getAsesmenBayiLahirByNorecError = (error) => ({
+    type: GET_ASESMENBAYILAHIR_BYNOREC_ERROR,
+    payload: error,
+});
+
+export const getComboAsesmenBayiLahir = (data, callback) => ({
+    type: GET_COMBO_ASESMENBAYILAHIR,
+    payload: {
+        data,
+        callback
+    },
+});
+
+export const getComboAsesmenBayiLahirSuccess = (data) => ({
+    type: GET_COMBO_ASESMENBAYILAHIR_SUCCESS,
+    payload: data,
+});
+
+export const getComboAsesmenBayiLahirError = (error) => ({
+    type: GET_COMBO_ASESMENBAYILAHIR_ERROR,
+    payload: error,
+});
+
+export const getHistoryAsesmenBayiLahir = (data, callback) => ({
+    type: GET_HISTORY_ASESMENBAYILAHIR,
+    payload: {
+        data,
+        callback
+    },
+});
+
+export const getHistoryAsesmenBayiLahirSuccess = (data) => ({
+    type: GET_HISTORY_ASESMENBAYILAHIR_SUCCESS,
+    payload: data,
+});
+
+export const getHistoryAsesmenBayiLahirError = (error) => ({
+    type: GET_HISTORY_ASESMENBAYILAHIR_ERROR,
+    payload: error,
 });

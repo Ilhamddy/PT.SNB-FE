@@ -33,7 +33,7 @@ function formatDate(date) {
 async function getDetailJenisProdukLab(req, res) {
     const logger = res.locals.logger
     try {
-        res.locals.showBodyRes()
+        // res.locals.showBodyRes()
         const resultlist = await pool.query(`select id as value, detailjenisproduk as label,'' as detail  from m_detailjenisproduk md 
         where md.objectjenisprodukfk = 1 and md.statusenabled=true
         `);

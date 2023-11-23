@@ -172,4 +172,13 @@ export default class ServiceEmr {
     saveEmrPasien = async (body) => {
         return await api.create("/transaksi/emr/upsert-assesmen-bayi-lahir", body)
     }
+    getAsesmenBayiLahirByNorec = async (body) => {
+        return await api.get("/transaksi/emr/get-asesmenbayilahir-bynorec", body)
+    }
+    getComboAsesmenBayiLahir = async (body) => {
+        return await api.get("/transaksi/emr/get-combo-asesmenbayilahir", body)
+    }
+    getHistoryAsesmenBayiLahir = async (body) => {
+        return await api.get("/transaksi/emr/get-history-asesmenbayilahir", body)
+    }
 }

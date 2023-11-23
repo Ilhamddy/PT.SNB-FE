@@ -26,7 +26,7 @@ export default (sequelize, Sequelize) => {
         gravida:{
             type: Sequelize.INTEGER
         },
-        portus:{
+        partus:{
             type: Sequelize.INTEGER
         },
         abortus:{
@@ -51,7 +51,7 @@ export default (sequelize, Sequelize) => {
             type:Sequelize.DATE
         },
         lamapersalinan:{
-            type:Sequelize.FLOAT
+            type:Sequelize.STRING
         },
         macampersalinan:{
             type:Sequelize.INTEGER
@@ -78,7 +78,7 @@ export default (sequelize, Sequelize) => {
             type:Sequelize.FLOAT
         },
         lahirmeninggal:{
-            type:Sequelize.INTEGER
+            type:Sequelize.STRING
         },
         objectstatuspulangrifk:{
             type:Sequelize.INTEGER

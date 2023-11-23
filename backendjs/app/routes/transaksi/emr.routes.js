@@ -169,4 +169,19 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.upsertAssesmenBayiLahir
     );
+    app.get(
+        "/api/transaksi/emr/get-asesmenbayilahir-bynorec",
+        [authJwt.verifyToken],
+        controller.getAsesmenBayiLahirByNorec
+    );
+    app.get(
+        "/api/transaksi/emr/get-combo-asesmenbayilahir",
+        [authJwt.verifyToken],
+        controller.getComboAsesmenBayiLahir
+    );
+    app.get(
+        "/api/transaksi/emr/get-history-asesmenbayilahir",
+        [authJwt.verifyToken],
+        controller.getHistoryAsesmenBayiLahir
+    );
 }
