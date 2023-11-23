@@ -23,4 +23,16 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getComboTarifTindakan
     );
+
+    app.post(
+        "/api/master/tariftindakan/upsert-tarif-tindakan",
+        [authJwt.verifyToken],
+        controller.upsertTarifTindakan
+    )
+
+    app.get(
+        "/api/master/tariftindakan/get-total-tarif",
+        [authJwt.verifyToken],
+        controller.getTotalTarif
+    )
 }

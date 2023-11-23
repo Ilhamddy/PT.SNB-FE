@@ -755,6 +755,7 @@ const authProtectedRoutes = [
   { path: "/master/data-layanan", component: <MasterDataLayanan />},
   { path: "/master/tarif-tindakan", component: <MasterTarifTindakan />},
   { path: "/master/tarif-tindakan/tambah", component: <MasterTarifTindakanTambah />},
+  { path: "/master/tarif-tindakan/tambah/:idtotal", component: <MasterTarifTindakanTambah />},
   { path: "/master/setting-layanan/:tabopen", component: <MasterSettingLayanan />},
   { path: "/master/setting-layanan/:tabopen/:id", component: <MasterSettingLayanan />},
 

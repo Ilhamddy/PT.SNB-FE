@@ -313,8 +313,8 @@ const MasterDataLayanan = () => {
         </Card>
       </Modal>
       <ToastContainer closeButton={false} />
-      <BreadCrumb title="Master Data Layanan" pageTitle="Master" />
       <Container fluid>
+        <BreadCrumb title="Master Data Layanan" pageTitle="Master" />
         <Card className="p-3">
           <Row className="d-flex justify-content-between">
             <Col lg="auto">

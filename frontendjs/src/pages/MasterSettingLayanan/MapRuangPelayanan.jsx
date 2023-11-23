@@ -186,6 +186,9 @@ const MapRuangPelayanan = ({ tabId }) => {
           noDataComponent={<NoDataTable dataName={'Mapping'} />}
         />
       </Row>
+      <Label className="mt-5 mb-3" style={{ color: '#000000' }}>
+        Pencarian Layanan
+      </Label>
       <IsiLayanan
         valuesFilter={vFilter.values}
         unitTerpilih={vFilter.values.unit}
@@ -304,7 +307,7 @@ const IsiLayanan = ({ valuesFilter, unitTerpilih }) => {
     },
   ]
   return (
-    <Row className="mt-5">
+    <Row>
       <Col
         lg={5}
         style={{ backgroundColor: '#f1f2f6' }}

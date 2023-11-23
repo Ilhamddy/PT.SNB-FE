@@ -11,4 +11,12 @@ export default class ServiceMTT {
     getComboTarifTindakan = async (queries) => {
         return await api.get("/master/tariftindakan/get-combo-tarif-tindakan", queries)
     }
+
+    upsertTarifTindakan = async (data) => {
+        return await api.create("/master/tariftindakan/upsert-tarif-tindakan", data)
+    }
+
+    getTotalTarif = async (data) => {
+        return await api.get("/master/tariftindakan/get-total-tarif", data)
+    }
 }

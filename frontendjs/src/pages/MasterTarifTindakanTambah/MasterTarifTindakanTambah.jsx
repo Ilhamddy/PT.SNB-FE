@@ -27,35 +27,53 @@ import {
 import DataTable from 'react-data-table-component'
 import LoadingTable from '../../Components/Table/LoadingTable'
 import { useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import * as Yup from 'yup'
 import ColLabelInput from '../../Components/ColLabelInput/ColLabelInput'
 import KontainerFlatpickr from '../../Components/KontainerFlatpickr/KontainerFlatpickr'
 import { onChangeStrNbr, strToNumber } from '../../utils/format'
-import { getComboTarifTindakan } from '../../store/mastertariftindakan/action'
+import {
+  getComboTarifTindakan,
+  getTotalTarif,
+  upsertTarifTindakan,
+} from '../../store/mastertariftindakan/action'
 import { toast } from 'react-toastify'
+import LoadingLaman from '../../Components/Common/LoadingLaman'
 
 const MasterTarifTindakanTambah = () => {
+  const { idtotal } = useParams()
   const dispatch = useDispatch()
-  const { komponenProduk, suratKeputusan, asalProduk, produk, kelas } =
-    useSelector((state) => ({
-      komponenProduk:
-        state.MasterTarifTindakan.getComboTarifTindakan.data?.komponenProduk ||
-        [],
-      suratKeputusan:
-        state.MasterTarifTindakan.getComboTarifTindakan.data?.suratKeputusan,
-      asalProduk:
-        state.MasterTarifTindakan.getComboTarifTindakan.data?.asalProduk,
-      produk: state.MasterTarifTindakan.getComboTarifTindakan.data?.produk,
-      kelas: state.MasterTarifTindakan.getComboTarifTindakan.data?.kelas,
-    }))
+  const {
+    komponenProduk,
+    suratKeputusan,
+    asalProduk,
+    produk,
+    kelas,
+    totalTarif,
+    loading,
+  } = useSelector((state) => ({
+    komponenProduk:
+      state.MasterTarifTindakan.getComboTarifTindakan.data?.komponenProduk ||
+      [],
+    suratKeputusan:
+      state.MasterTarifTindakan.getComboTarifTindakan.data?.suratKeputusan,
+    asalProduk:
+      state.MasterTarifTindakan.getComboTarifTindakan.data?.asalProduk,
+    produk: state.MasterTarifTindakan.getComboTarifTindakan.data?.produk,
+    kelas: state.MasterTarifTindakan.getComboTarifTindakan.data?.kelas,
+    totalTarif:
+      state.MasterTarifTindakan.getTotalTarif.data?.totalTarif || null,
+    loading:
+      state.MasterTarifTindakan.getTotalTarif.loading ||
+      state.MasterTarifTindakan.getComboTarifTindakan.loading,
+  }))
+  const navigate = useNavigate()
   const vTarifTindakan = useFormik({
     initialValues: {
       id: '',
       suratkeputusan: '',
       tglawal: '',
       tglakhir: '',
-      asalproduk: '',
       namatindakan: '',
       kelas: '',
       namatarif: '',
@@ -65,7 +83,6 @@ const MasterTarifTindakanTambah = () => {
     },
     validationSchema: Yup.object({
       suratkeputusan: Yup.string().required('Surat keputusan wajib diisi'),
-      asalproduk: Yup.string().required('Asal produk wajib diisi'),
       namatindakan: Yup.string().required('Nama tindakan wajib diisi'),
       kelas: Yup.string().required('Kelas wajib diisi'),
       namatarif: Yup.string().required('Nama tarif wajib diisi'),
@@ -73,8 +90,11 @@ const MasterTarifTindakanTambah = () => {
       komponenharga: Yup.array().min(1, 'Minimal 1').required('required'),
     }),
     onSubmit: (values) => {
-      toast.success('Sukses')
-      console.log(values)
+      dispatch(
+        upsertTarifTindakan(values, () => {
+          navigate('/master/tarif-tindakan')
+        })
+      )
     },
   })
   const vKomponen = useFormik({
@@ -88,7 +108,6 @@ const MasterTarifTindakanTambah = () => {
       harga: Yup.string().required('Harga wajib diisi'),
     }),
     onSubmit: (values) => {
-      console.log(values)
       const total = [...vTarifTindakan.values.komponenharga, values].reduce(
         (prev, cur) => prev + strToNumber(cur.harga),
         0
@@ -96,7 +115,10 @@ const MasterTarifTindakanTambah = () => {
       vTarifTindakan.setFieldValue('totalharga', total)
       vTarifTindakan.setFieldValue('komponenharga', [
         ...vTarifTindakan.values.komponenharga,
-        values,
+        {
+          ...values,
+          harga: strToNumber(values.harga),
+        },
       ])
     },
   })
@@ -107,7 +129,7 @@ const MasterTarifTindakanTambah = () => {
     {
       name: <span className="font-weight-bold fs-13">No</span>,
       sortable: true,
-      selector: (row, index) => index,
+      selector: (row, index) => index + 1,
       width: '80px',
     },
     {
@@ -119,14 +141,51 @@ const MasterTarifTindakanTambah = () => {
     {
       name: <span className="font-weight-bold fs-13">Harga</span>,
       sortable: true,
-      selector: (row) => row.harga,
+      selector: (row) => 'Rp' + row.harga?.toLocaleString('id-ID'),
       width: '200px',
+    },
+    {
+      name: <span className="font-weight-bold fs-13">Hapus</span>,
+      sortable: true,
+      selector: (row, index) => (
+        <Button
+          color="danger"
+          onClick={() => {
+            const newAr = [...vTarifTindakan.values.komponenharga]
+            newAr.splice(index, 1)
+            const total = newAr.reduce(
+              (prev, cur) => prev + strToNumber(cur.harga),
+              0
+            )
+            vTarifTindakan.setFieldValue('totalharga', total)
+            vTarifTindakan.setFieldValue('komponenharga', newAr)
+          }}
+        >
+          Hapus
+        </Button>
+      ),
+      width: '150px',
     },
   ]
 
   useEffect(() => {
+    const setV = vTarifTindakan.setValues
+    if (totalTarif) {
+      setV({ ...vTarifTindakan.initialValues, ...totalTarif })
+    } else {
+      setV({ ...vTarifTindakan.initialValues })
+    }
+  }, [totalTarif, vTarifTindakan.setValues, vTarifTindakan.initialValues])
+  useEffect(() => {
     dispatch(getComboTarifTindakan({}))
   }, [dispatch])
+  useEffect(() => {
+    dispatch(getTotalTarif({ idtotal: idtotal }))
+  }, [idtotal, dispatch])
+
+  if (loading) {
+    return <LoadingLaman />
+  }
   return (
     <div className="page-content page-tarif-tindakan">
       <ToastContainer closeButton={false} />
@@ -212,7 +271,7 @@ const MasterTarifTindakanTambah = () => {
                   </FormFeedback>
                 )}
             </ColLabelInput>
-            <ColLabelInput className="mb-3" label="Asal Produk" lg={4}>
+            {/* <ColLabelInput className="mb-3" label="Asal Produk" lg={4}>
               <CustomSelect
                 id="asalproduk"
                 name="asalproduk"
@@ -231,7 +290,7 @@ const MasterTarifTindakanTambah = () => {
                     <div>{vTarifTindakan.errors.asalproduk}</div>
                   </FormFeedback>
                 )}
-            </ColLabelInput>
+            </ColLabelInput> */}
             <ColLabelInput className="mb-3" label="Nama Tindakan" lg={4}>
               <CustomSelect
                 id="namatindakan"
@@ -340,12 +399,14 @@ const MasterTarifTindakanTambah = () => {
                   </FormFeedback>
                 )}
             </ColLabelInput>
+          </Row>
+          <Row>
             <Col lg={'auto'}>
               <Button
                 color="success"
                 onClick={() => vTarifTindakan.handleSubmit()}
               >
-                Tambah
+                Simpan
               </Button>
             </Col>
           </Row>

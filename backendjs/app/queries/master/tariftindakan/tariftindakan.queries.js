@@ -8,6 +8,7 @@ SELECT
     mp.namaproduk AS namaproduk,
     mdjp.id AS iddetailjenisproduk,
     mdjp.detailjenisproduk AS namadetailjenisproduk,
+    mthp.kodeexternal AS kodeexternal,
     mjp.id AS idjenisproduk,
     mjp.jenisproduk AS namajenisproduk,
     mthp.totalharga AS totalharga,
@@ -40,7 +41,45 @@ FROM m_suratkeputusan msk
 WHERE statusenabled = TRUE
 `
 
+
+const qGetTotalTarifTindakan = `
+SELECT
+    mthp.id AS id,
+    mthp.objectsuratkeputusanfk AS suratkeputusan,
+    msk.tglberlakuawal AS tglawal,
+    msk.tglberlakuakhir AS tglakhir,
+    mthp.objectprodukfk AS namatindakan,
+    mthp.objectkelasfk AS kelas,
+    mthp.reportdisplay AS namatarif,
+    mthp.kodeexternal AS kodetarif,
+    mthp.totalharga AS totalharga,
+    JSON_AGG(
+        JSON_BUILD_OBJECT(
+            'komponenharga', mhppk.objectkomponenprodukfk,
+            'namakomponenharga', mkp.reportdisplay,
+            'harga', mhppk.harga
+        )
+    ) AS komponenharga
+FROM m_totalhargaprodukbykelas mthp
+    LEFT JOIN m_hargaprodukperkomponen mhppk ON mhppk.objecttotalhargaprodukbykelasfk = mthp.id
+    LEFT JOIN m_komponenproduk mkp ON mhppk.objectkomponenprodukfk = mkp.id
+    LEFT JOIN m_suratkeputusan msk ON msk.id = mthp.objectsuratkeputusanfk
+WHERE mthp.id = $1
+GROUP BY 
+    mthp.id,
+    mthp.objectsuratkeputusanfk,
+    msk.tglberlakuawal,
+    msk.tglberlakuakhir,
+    mthp.objectprodukfk,
+    mthp.objectkelasfk,
+    mthp.reportdisplay,
+    mthp.kodeexternal,
+    mthp.totalharga
+    
+`
+
 export {
     qGetTotalHargaProduk,
-    qGetSuratKeputusan
+    qGetSuratKeputusan,
+    qGetTotalTarifTindakan
 }
