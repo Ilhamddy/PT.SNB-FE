@@ -3,14 +3,20 @@ import SericeMTT from "../../services/service-mastertariftindakan.js";
 
 import {
     GET_TOTAL_HARGA_PRODUK,
-    GET_COMBO_TARIF_TINDAKAN
+    GET_COMBO_TARIF_TINDAKAN,
+    UPSERT_TARIF_TINDAKAN,
+    GET_TOTAL_TARIF
 } from "./actionType";
 
 import {
     getTotalHargaProdukSuccess,
     getTotalHargaProdukError,
     getComboTarifTindakanSuccess,
-    getComboTarifTindakanError
+    getComboTarifTindakanError,
+    upsertTarifTindakanSuccess,
+    upsertTarifTindakanError,
+    getTotalTarifSuccess,
+    getTotalTarifError
 } from "./action";
 
 import { toast } from 'react-toastify';
@@ -39,27 +45,38 @@ function* onGetComboTarifTindakan({ payload: { queries } }) {
     }
 }
 
-// function* onUpsertLayanan({ payload: { data, callback } }) {
-//     try {
-//         let response = null;
-//         response = yield call(serviceMTT.upsertLayanan, data);
-//         yield put(upsertLayananSuccess(response.data));
-//         toast.success(response.data.msg || "Sukses")
-//         callback && callback(response.data)
-//     } catch (error) {
-//         yield put(upsertLayananError(error));
-//         toast.error(error.response?.data?.msg || "Error")
+function* onUpsertTarifTindakan({ payload: { data, callback } }) {
+    try {
+        let response = null;
+        response = yield call(serviceMTT.upsertTarifTindakan, data);
+        yield put(upsertTarifTindakanSuccess(response.data));
+        toast.success(response.data.msg || "Sukses")
+        callback && callback(response.data)
+    } catch (error) {
+        yield put(upsertTarifTindakanError(error));
+        toast.error(error.response?.data?.msg || "Error")
 
-//     }
-// }
+    }
+}
 
+
+function* onGetTotalTarif({ payload: { queries } }) {
+    try {
+        let response = null;
+        response = yield call(serviceMTT.getTotalTarif, queries);
+        yield put(getTotalTarifSuccess(response.data));
+    } catch (error) {
+        yield put(getTotalTarifError(error));
+    }
+}
 
 
 function* MasterDataLayananSaga() {
     yield all([
         takeEvery(GET_TOTAL_HARGA_PRODUK, onGetTotalHargaProduk),
         takeEvery(GET_COMBO_TARIF_TINDAKAN, onGetComboTarifTindakan),
-        
+        takeEvery(UPSERT_TARIF_TINDAKAN, onUpsertTarifTindakan),
+        takeEvery(GET_TOTAL_TARIF, onGetTotalTarif)
     ]);
 }
 

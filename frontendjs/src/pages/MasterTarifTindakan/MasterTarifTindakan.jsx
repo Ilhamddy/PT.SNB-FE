@@ -113,12 +113,11 @@ const MasterTarifTindakan = () => {
     {
       name: <span className="font-weight-bold fs-13">Aktifkan</span>,
       sortable: true,
-      cell: (row) =>
-        row.statusenabled ? (
-          <Button color="danger">Nonaktifkan</Button>
-        ) : (
-          <Button color="success">Aktifkan</Button>
-        ),
+      cell: (row) => (
+        <Link to={`/master/tarif-tindakan/tambah/${row.idtotalhargaproduk}`}>
+          <Button color="info">Edit</Button>
+        </Link>
+      ),
       width: '150px',
       wrap: true,
     },

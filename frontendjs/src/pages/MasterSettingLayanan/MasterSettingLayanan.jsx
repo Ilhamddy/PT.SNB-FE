@@ -72,7 +72,7 @@ const MasterSettingLayanan = () => {
                       navigate(linkSettingProduk + '/lain-lain')
                     }}
                   >
-                    Lain-lain
+                    Master Data
                   </NavLink>
                 </NavItem>
               </Nav>
