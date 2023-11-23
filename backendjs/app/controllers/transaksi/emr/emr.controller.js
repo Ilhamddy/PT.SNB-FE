@@ -1,7 +1,10 @@
 import pool from "../../../config/dbcon.query";
 import * as uuid from 'uuid'
 import queries from '../../../queries/transaksi/registrasi.queries';
-import { qGetObatFromUnit, qGetOrderResepFromDP, qGetOrderVerifResepFromDP } from "../../../queries/emr/emr.queries";
+import { qGetObatFromUnit, qGetOrderResepFromDP, qGetOrderVerifResepFromDP,
+qAsesmenBayiLahirByNorec,qComboApgar,qComboSebabKematian,qComboApgarScore } from "../../../queries/emr/emr.queries";
+import hubunganKeluargaQueries from "../../../queries/mastertable/hubunganKeluarga/hubunganKeluarga.queries";
+import jenisKelaminQueries from "../../../queries/mastertable/jenisKelamin/jenisKelamin.queries";
 import db from "../../../models";
 import {
     createTransaction
@@ -1229,19 +1232,98 @@ const upsertAssesmenBayiLahir = async (req, res) => {
             if(bodyReq.norecemrpasien===''){
                 let norec = uuid.v4().substring(0, 32)
                 let norecassesmen = uuid.v4().substring(0, 32)
-                // emrPasien = await db.t_emrpasien.create({
-                //     norec: norec,
-                //     statusenabled: true,
-                //     label: bodyReq.label,
-                //     idlabel: bodyReq.idlabel,
-                //     objectantreanpemeriksaanfk: bodyReq.norecap,
-                //     objectpegawaifk: req.userId,
-                //     tglisi: new Date()
-                // }, { transaction });
-                // asesmenbayilahir = await db.t_asesmenbayilahir.create({
-                //     norec: norecassesmen,
-                //     objectemrfk: norec,
-                // }, { transaction });
+                emrPasien = await db.t_emrpasien.create({
+                    norec: norec,
+                    statusenabled: true,
+                    label: bodyReq.label,
+                    idlabel: bodyReq.idlabel,
+                    objectantreanpemeriksaanfk: bodyReq.norecap,
+                    objectpegawaifk: req.userId,
+                    tglisi: new Date()
+                }, { transaction });
+                asesmenbayilahir = await db.t_asesmenbayilahir.create({
+                    norec: norecassesmen,
+                    objectemrfk: norec,
+                    responden: bodyReq.responden,
+                    objecthubungankeluargafk: bodyReq.hubungan || null,
+                    anamnesa: bodyReq.anamnesaBayi || null,
+                    gravida: bodyReq.skalaGravida || null,
+                    partus: bodyReq.skalaPartus || null,
+                    abortus: bodyReq.skalaAbortus || null,
+                    keadaanibu: bodyReq.keadanIbuSelamaHamil || null,
+                    tempatpersalinan: bodyReq.tempatPersalinan || null,
+                    penolong: bodyReq.penolong || null,
+                    ketubanpecah: bodyReq.ketubanPecah || null,
+                    airketuban: bodyReq.airKetuban || null,
+                    lahir: bodyReq.jamLahir || null,
+                    lamapersalinan: bodyReq.jamPersalinan || null,
+                    macampersalinan: bodyReq.macamPersalinan || null,
+                    indikasi: bodyReq.indikasi || null,
+                    objectjeniskelaminfk: bodyReq.jenisKelamin || null,
+                    keadaan: bodyReq.keadaan || null,
+                    berat: bodyReq.beratBadanBayi || null,
+                    panjang: bodyReq.panjangBadan || null,
+                    lingkardada: bodyReq.lingkarDada || null,
+                    lingkarkepala: bodyReq.lingkarKepala || null,
+                    lahirmeninggal: bodyReq.menitMeninggal || null,
+                    objectstatuspulangrifk: bodyReq.sebabKematianBayi || null,
+                    a1: bodyReq.a1Menit || null,
+                    a5: bodyReq.a5Menit || null,
+                    a10: bodyReq.a10Menit || null,
+                    p1: bodyReq.p1Menit || null,
+                    p5: bodyReq.p5Menit || null,
+                    p10: bodyReq.p10Menit || null,
+                    g1: bodyReq.g1Menit || null,
+                    g5: bodyReq.g5Menit || null,
+                    g10: bodyReq.g10Menit || null,
+                    c1: bodyReq.ac1Menit || null,
+                    c5: bodyReq.ac5Menit || null,
+                    c10: bodyReq.ac10Menit || null,
+                    r1: bodyReq.r1Menit || null,
+                    r5: bodyReq.r5Menit || null,
+                    r10: bodyReq.r10Menit || null,
+                    total1: bodyReq.total1Menit || null,
+                    total5: bodyReq.total5Menit || null,
+                    total10: bodyReq.total10Menit || null,
+                    durasitpiece: bodyReq.pieceDurasi || null,
+                    durasio2: bodyReq.sungkupDurasi || null,
+                    durasipompa: bodyReq.pompaDurasi || null,
+                    durasiintubatic: bodyReq.intubaticDurasi || null,
+                    kulit: bodyReq.kulit || null,
+                    tht: bodyReq.tht || null,
+                    mulut: bodyReq.mulut || null,
+                    leher: bodyReq.leher || null,
+                    dada: bodyReq.dada || null,
+                    paru: bodyReq.paru || null,
+                    jantung: bodyReq.jantung || null,
+                    abdomen: bodyReq.abdomen || null,
+                    genitalia: bodyReq.genitalia || null,
+                    anus: bodyReq.anus || null,
+                    extremitasatas: bodyReq.extremitasAtas || null,
+                    extremitasbawah: bodyReq.extremitasBawah || null,
+                    reflexhisap: bodyReq.reflekHisap || null,
+                    pengeluaranairkeruh: bodyReq.pengeluaranAirKeruh || null,
+                    pengeluaranmokeneum: bodyReq.pengeluaranMekoneum || null,
+                    pemeriksaanlab: bodyReq.pemeriksaanLaboratorium || null,
+                    diagnosakerja: bodyReq.diagnosaKerja || null,
+                    penatalaksanaan: bodyReq.pentalakaksanaan || null,
+                }, { transaction });
+            }else{
+                asesmenbayilahir = await db.t_asesmenbayilahir.update({responden: bodyReq.responden,objecthubungankeluargafk: bodyReq.hubungan || null,anamnesa: bodyReq.anamnesaBayi || null,gravida: bodyReq.skalaGravida || null,
+                    partus: bodyReq.skalaPartus || null,abortus: bodyReq.skalaAbortus || null,keadaanibu: bodyReq.keadanIbuSelamaHamil || null,
+                    tempatpersalinan: bodyReq.tempatPersalinan || null,penolong: bodyReq.penolong || null,ketubanpecah: bodyReq.ketubanPecah || null,
+                    airketuban: bodyReq.airKetuban || null,lahir: bodyReq.jamLahir || null,lamapersalinan: bodyReq.jamPersalinan || null,macampersalinan: bodyReq.macamPersalinan || null,
+                    indikasi: bodyReq.indikasi || null,objectjeniskelaminfk: bodyReq.jenisKelamin || null,keadaan: bodyReq.keadaan || null,berat: bodyReq.beratBadanBayi || null,panjang: bodyReq.panjangBadan || null,
+                    lingkardada: bodyReq.lingkarDada || null,lingkarkepala: bodyReq.lingkarKepala || null,lahirmeninggal: bodyReq.menitMeninggal || null,
+                    objectstatuspulangrifk: bodyReq.sebabKematianBayi || null,a1: bodyReq.a1Menit || null,a5: bodyReq.a5Menit || null,a10: bodyReq.a10Menit || null,
+                    p1: bodyReq.p1Menit || null,p5: bodyReq.p5Menit || null,p10: bodyReq.p10Menit || null,g1: bodyReq.g1Menit || null,g5: bodyReq.g5Menit || null,
+                    g10: bodyReq.g10Menit || null,c1: bodyReq.ac1Menit || null,c5: bodyReq.ac5Menit || null,c10: bodyReq.ac10Menit || null,r1: bodyReq.r1Menit || null,r5: bodyReq.r5Menit || null,r10: bodyReq.r10Menit || null,total1: bodyReq.total1Menit || null,total5: bodyReq.total5Menit || null,total10: bodyReq.total10Menit || null,durasitpiece: bodyReq.pieceDurasi || null,durasio2: bodyReq.sungkupDurasi || null,durasipompa: bodyReq.pompaDurasi || null,durasiintubatic: bodyReq.intubaticDurasi || null,kulit: bodyReq.kulit || null,tht: bodyReq.tht || null,mulut: bodyReq.mulut || null,leher: bodyReq.leher || null,dada: bodyReq.dada || null,paru: bodyReq.paru || null,jantung: bodyReq.jantung || null,abdomen: bodyReq.abdomen || null,genitalia: bodyReq.genitalia || null,anus: bodyReq.anus || null,extremitasatas: bodyReq.extremitasAtas || null,extremitasbawah: bodyReq.extremitasBawah || null,reflexhisap: bodyReq.reflekHisap || null,pengeluaranairkeruh: bodyReq.pengeluaranAirKeruh || null,pengeluaranmokeneum: bodyReq.pengeluaranMekoneum || null,pemeriksaanlab: bodyReq.pemeriksaanLaboratorium || null,diagnosakerja: bodyReq.diagnosaKerja || null,penatalaksanaan: bodyReq.pentalakaksanaan || null,
+                }, {
+                    where: {
+                        norec: bodyReq.norecemrpasien
+                    },
+                    transaction: transaction
+                });
             }
             
             return {
@@ -1250,12 +1332,34 @@ const upsertAssesmenBayiLahir = async (req, res) => {
         });
         
         const tempres = {
-        
+            emrPasien,asesmenbayilahir
         };
         res.status(200).send({
             msg: 'Success',
             code: 200,
-            data: req.body,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+const getAsesmenBayiLahirByNorec = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const result1 = await pool.query(qAsesmenBayiLahirByNorec,[req.query.norecap])
+
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: result1.rows,
             success: true
         });
     } catch (error) {
@@ -1437,6 +1541,51 @@ const getHistoriTriagiByNorec = async (req, res) => {
     }
 }
 
+const getComboAsesmenBayiLahir = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const result1 = await pool.query(hubunganKeluargaQueries.getAll)
+        const result2 = await pool.query(jenisKelaminQueries.getAll)
+        const result3 = await pool.query(qComboApgarScore,['MacamPersalinan'])
+        const result4 = await pool.query(qComboApgarScore,['KeadaanBayi'])
+        const result5 = await pool.query(qComboSebabKematian)
+        const result6 = await pool.query(qComboApgar,['a'])
+        const result7 = await pool.query(qComboApgar,['p'])
+        const result8 = await pool.query(qComboApgar,['g'])
+        const result9 = await pool.query(qComboApgar,['c'])
+        const result10 = await pool.query(qComboApgar,['r'])
+        const result11 = await pool.query(qComboApgarScore,['AirKetuban'])
+
+        const tempres = {
+            hubungan :  result1.rows,
+            jeniskelamin :result2.rows,
+            macampersalinan:result3.rows,
+            keadaanbayi:result4.rows,
+            sebabkematianbayi:result5.rows,
+            apgarA:result6.rows,
+            apgarP:result7.rows,
+            apgarG:result8.rows,
+            apgarC:result9.rows,
+            apgarR:result10.rows,
+            ketuban:result11.rows
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 
 export default {
     saveEmrPasienTtv,
@@ -1466,7 +1615,9 @@ export default {
     saveTriageIgd,
     getComboTriageIgd,
     getHistoriTriagiByNorec,
-    upsertAssesmenBayiLahir
+    upsertAssesmenBayiLahir,
+    getAsesmenBayiLahirByNorec,
+    getComboAsesmenBayiLahir
 };
 
 

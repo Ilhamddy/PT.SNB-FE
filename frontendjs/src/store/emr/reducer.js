@@ -121,7 +121,9 @@ import {
     UPDATE_ESTIMASI_KLAIM_SUCCESS,
     UPDATE_ESTIMASI_KLAIM_ERROR,
     COMBO_ALL_TINDAKAN_GET, COMBO_ALL_TINDAKAN_GET_SUCCESS, COMBO_ALL_TINDAKAN_GET_ERROR,
-    SAVE_EMR_PASIEN,SAVE_EMR_PASIEN_SUCCESS,SAVE_EMR_PASIEN_ERROR
+    SAVE_EMR_PASIEN,SAVE_EMR_PASIEN_SUCCESS,SAVE_EMR_PASIEN_ERROR,
+    GET_ASESMENBAYILAHIR_BYNOREC_SUCCESS,GET_ASESMENBAYILAHIR_BYNOREC_ERROR, GET_ASESMENBAYILAHIR_BYNOREC,
+    GET_COMBO_ASESMENBAYILAHIR,GET_COMBO_ASESMENBAYILAHIR_SUCCESS,GET_COMBO_ASESMENBAYILAHIR_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -351,6 +353,16 @@ const INIT_STATE = {
         loading: false,
         error: null,
     },
+    getAsesmenBayiLahirByNorec:{
+        data: [],
+        loading: false,
+        error: null,
+    },
+    getComboAsesmenBayiLahir:{
+        data: [],
+        loading: false,
+        error: null,
+    }
 };
 
 const Emr = (state = INIT_STATE, action) => {
@@ -471,6 +483,12 @@ const Emr = (state = INIT_STATE, action) => {
                 },
                 saveEmrPasien:{
                     ...INIT_STATE.saveEmrPasien
+                },
+                getAsesmenBayiLahirByNorec:{
+                    ...INIT_STATE.getAsesmenBayiLahirByNorec
+                },
+                getComboAsesmenBayiLahir:{
+                    ...INIT_STATE.getComboAsesmenBayiLahir
                 }
             }
         }
@@ -1891,6 +1909,72 @@ const Emr = (state = INIT_STATE, action) => {
                     error: action.payload,
                 },
             };
+        }
+
+        case GET_ASESMENBAYILAHIR_BYNOREC: {
+            return {
+                ...state,
+                getAsesmenBayiLahirByNorec: {
+                    ...state.getAsesmenBayiLahirByNorec,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case GET_ASESMENBAYILAHIR_BYNOREC_SUCCESS: {
+            return {
+                ...state,
+                getAsesmenBayiLahirByNorec: {
+                    ...state.getAsesmenBayiLahirByNorec,
+                    loading: false,
+                    data: action.payload,
+                }
+            }
+        }
+
+        case GET_ASESMENBAYILAHIR_BYNOREC_ERROR: {
+            return {
+                ...state,
+                getAsesmenBayiLahirByNorec: {
+                    ...state.getAsesmenBayiLahirByNorec,
+                    loading: true,
+                    error: action.payload,
+                }
+            }
+        }
+
+        case GET_COMBO_ASESMENBAYILAHIR: {
+            return {
+                ...state,
+                getComboAsesmenBayiLahir: {
+                    ...state.getComboAsesmenBayiLahir,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case GET_COMBO_ASESMENBAYILAHIR_SUCCESS: {
+            return {
+                ...state,
+                getComboAsesmenBayiLahir: {
+                    ...state.getComboAsesmenBayiLahir,
+                    loading: false,
+                    data: action.payload,
+                }
+            }
+        }
+
+        case GET_COMBO_ASESMENBAYILAHIR_ERROR: {
+            return {
+                ...state,
+                getComboAsesmenBayiLahir: {
+                    ...state.getComboAsesmenBayiLahir,
+                    loading: true,
+                    error: action.payload,
+                }
+            }
         }
 
 

@@ -223,13 +223,113 @@ WHERE tap.norec = $1
     AND tap.statusenabled = true
 ORDER BY tap.tglmasuk
 `
+const qAsesmenBayiLahirByNorec =`select ta.norec,ta.responden,
+ta.objecthubungankeluargafk,
+ta.anamnesa,
+ta.gravida,
+ta.partus,
+ta.abortus,
+ta.keadaanibu,
+ta.tempatpersalinan,
+ta.penolong,
+ta.ketubanpecah,
+ta.airketuban,
+ta.lahir,
+ta.lamapersalinan,
+ta.macampersalinan,
+ta.indikasi,
+ta.objectjeniskelaminfk,
+ta.keadaan,
+ta.berat,
+ta.panjang,
+ta.lingkardada,
+ta.lingkarkepala,
+ta.lahirmeninggal,
+ta.objectstatuspulangrifk,
+ta.a1,
+ta.a5,
+ta.a10,
+ta.p1,
+ta.p5,
+ta.p10,
+ta.g1,
+ta.g5,
+ta.g10,
+ta.c1,
+ta.c5,
+ta.c10,
+ta.r1,
+ta.r5,
+ta.r10,
+ta.total1,
+ta.total5,
+ta.total10,
+ta.durasitpiece,
+ta.durasio2,
+ta.durasipompa,
+ta.durasiintubatic,
+ta.kulit,
+ta.tht,
+ta.mulut,
+ta.leher,
+ta.dada,
+ta.paru,
+ta.jantung,
+ta.abdomen,
+ta.genitalia,
+ta.anus,
+ta.extremitasatas,
+ta.extremitasbawah,
+ta.reflexhisap,
+ta.pengeluaranairkeruh,
+ta.pengeluaranmokeneum,
+ta.pemeriksaanlab,
+ta.diagnosakerja,
+ta.penatalaksanaan,
+case when ta.a1 is null then 0 else ma.score end as a1score,
+case when ta.a5 is null then 0 else ma5.score end as a5score,
+case when ta.a10 is null then 0 else ma10.score end as a10score,
+case when ta.p1 is null then 0 else mp.score end as p1score,
+case when ta.p5 is null then 0 else mp5.score end as p5score,
+case when ta.p10 is null then 0 else mp10.score end as p10score,
+case when ta.g1 is null then 0 else mg.score end as g1score,
+case when ta.g5 is null then 0 else mg5.score end as g5score,
+case when ta.g10 is null then 0 else mg10.score end as g10score,
+case when ta.c1 is null then 0 else mc.score end as c1score,
+case when ta.c5 is null then 0 else mc5.score end as c5score,
+case when ta.c10 is null then 0 else mc10.score end as c10score,
+case when ta.r1 is null then 0 else mr.score end as r1score,
+case when ta.r5 is null then 0 else mr5.score end as r5score,
+case when ta.r10 is null then 0 else mr10.score end as r10score from t_emrpasien te
+join t_asesmenbayilahir ta on ta.objectemrfk=te.norec
+left join m_apgarscore ma on ma.id=ta.a1
+left join m_apgarscore ma5 on ma5.id=ta.a5
+left join m_apgarscore ma10 on ma10.id=ta.a10
+left join m_apgarscore mp on mp.id=ta.p1
+left join m_apgarscore mp5 on mp5.id=ta.p5
+left join m_apgarscore mp10 on mp10.id=ta.p10
+left join m_apgarscore mg on mg.id=ta.g1
+left join m_apgarscore mg5 on mg5.id=ta.g5
+left join m_apgarscore mg10 on mg10.id=ta.g10
+left join m_apgarscore mc on mc.id=ta.c1
+left join m_apgarscore mc5 on mc5.id=ta.c5
+left join m_apgarscore mc10 on mc10.id=ta.c10
+left join m_apgarscore mr on mr.id=ta.r1
+left join m_apgarscore mr5 on mr5.id=ta.r5
+left join m_apgarscore mr10 on mr10.id=ta.r10 where te.objectantreanpemeriksaanfk=$1
+and te.idlabel=4`
 
-
-
+const qComboApgar =`select id as value, reportdisplay||' ('||score||')' as label,score from m_apgarscore where namaexternal=$1`
+const qComboApgarScore =`select id as value, reportdisplay as label from m_apgarscore where namaexternal=$1`
+const qComboSebabKematian =`select id as value, reportdisplay as label from m_statuspulangri where kodeexternal='rl_3.5'`
 
 export {
     qGetObatFromUnit,
     qGetOrderResepFromDP,
     qGetOrderVerifResepFromDP,
-    qGetAntreanFromNorec as qGetAntreanFromDP
+    qGetAntreanFromNorec as qGetAntreanFromDP,
+    qAsesmenBayiLahirByNorec,
+    qComboApgar,
+    qComboSebabKematian,
+    qComboApgarScore
 }

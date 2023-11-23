@@ -24,7 +24,8 @@ import {
     SAVE_PELAYANAN_PASIEN_TEMP, GET_LIST_PELAYANAN_PASIEN_TEMP,
     DELETE_PELAYANAN_PASIEN_TEMP, GET_WIDGET_EFISIENSI_KLAIM,
     UPDATE_ESTIMASI_KLAIM, COMBO_ALL_TINDAKAN_GET,
-    SAVE_EMR_PASIEN, SAVE_EMR_PASIEN_SUCCESS, SAVE_EMR_PASIEN_ERROR
+    SAVE_EMR_PASIEN,
+    GET_ASESMENBAYILAHIR_BYNOREC, GET_COMBO_ASESMENBAYILAHIR
 } from "./actionType";
 
 import {
@@ -68,7 +69,9 @@ import {
     getWidgetEfisiensiKlaimSuccess, getWidgetEfisiensiKlaimError,
     updateEstimasiKlaimSuccess, updateEstimasiKlaimError,
     comboAllTindakanSuccess, comboAllTindakanError,
-    saveEmrPasienSuccess, saveEmrPasienError
+    saveEmrPasienSuccess, saveEmrPasienError,
+    getAsesmenBayiLahirByNorecSuccess, getAsesmenBayiLahirByNorecError,
+    getComboAsesmenBayiLahirSuccess, getComboAsesmenBayiLahirError
 } from "./action";
 
 import { toast } from 'react-toastify';
@@ -821,9 +824,9 @@ export function* watchcomboAllTindakan() {
     yield takeEvery(COMBO_ALL_TINDAKAN_GET, oncomboAllTindakan);
 }
 
-function* onsaveEmrPasien({payload: {data, callback}}) {
+function* onsaveEmrPasien({payload: {body, callback}}) {
     try{
-        const response = yield call(serviceEmr.saveEmrPasien, data);
+        const response = yield call(serviceEmr.saveEmrPasien, body);
         yield put(saveEmrPasienSuccess(response.data));
         toast.success(response.msg || "Sukses");
         callback && callback(response);
@@ -835,6 +838,39 @@ function* onsaveEmrPasien({payload: {data, callback}}) {
 
 export function* watchonsaveEmrPasien() {
     yield takeEvery(SAVE_EMR_PASIEN, onsaveEmrPasien);
+}
+
+
+function* ongetAsesmenBayiLahirByNorec({payload: {data, callback}}) {
+    try{
+        const response = yield call(serviceEmr.getAsesmenBayiLahirByNorec, data);
+        yield put(getAsesmenBayiLahirByNorecSuccess(response.data));
+        // toast.success(response.msg || "Sukses");
+        callback && callback(response);
+    } catch (error) {
+        yield put(getAsesmenBayiLahirByNorecError(error));
+        // toast.error(error.msg || "Gagal");
+    }
+}
+
+export function* watchongetAsesmenBayiLahirByNorec() {
+    yield takeEvery(GET_ASESMENBAYILAHIR_BYNOREC, ongetAsesmenBayiLahirByNorec);
+}
+
+function* ongetComboAsesmenBayiLahir({payload: {data, callback}}) {
+    try{
+        const response = yield call(serviceEmr.getComboAsesmenBayiLahir, data);
+        yield put(getComboAsesmenBayiLahirSuccess(response.data));
+        // toast.success(response.msg || "Sukses");
+        callback && callback(response);
+    } catch (error) {
+        yield put(getComboAsesmenBayiLahirError(error));
+        // toast.error(error.msg || "Gagal");
+    }
+}
+
+export function* watchongetComboAsesmenBayiLahir() {
+    yield takeEvery(GET_COMBO_ASESMENBAYILAHIR, ongetComboAsesmenBayiLahir);
 }
 
 function* emrSaga() {
@@ -880,7 +916,9 @@ function* emrSaga() {
         fork(watchgetWidgetEfisiensiKlaim),
         fork(watchonupdateEstimasiKlaim),
         fork(watchcomboAllTindakan),
-        fork(watchonsaveEmrPasien)
+        fork(watchonsaveEmrPasien),
+        fork(watchongetAsesmenBayiLahirByNorec),
+        fork(watchongetComboAsesmenBayiLahir)
     ]);
 }
 

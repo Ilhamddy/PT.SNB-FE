@@ -6,15 +6,24 @@ import * as Yup from 'yup'
 import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/KontainerFlatpickr';
 import CustomSelect from '../../Select/Select';
 import Skala from '../../../Components/Skala/Skala';
-import { saveEmrPasien, emrResetForm } from "../../../store/actions";
+import { saveEmrPasien, emrResetForm, getAsesmenBayiLahirByNorec, getComboAsesmenBayiLahir } from "../../../store/actions";
+import { useParams } from 'react-router-dom';
 
 const AsesmenBayiBaruLahir = () => {
-  document.title = "Asesmen Bayi Baru Lahir";
+  // document.title = "Asesmen Bayi Baru Lahir";
   const dispatch = useDispatch();
-
+  const { norecdp, norecap } = useParams();
+  const { dataAsesmen, loadingAsesmen, successAsesmen, dataCombo } = useSelector((state) => ({
+    dataAsesmen: state.Emr.getAsesmenBayiLahirByNorec.data,
+    loadingAsesmen: state.Emr.getAsesmenBayiLahirByNorec.loading,
+    successAsesmen: state.Emr.getAsesmenBayiLahirByNorec.success,
+    dataCombo: state.Emr.getComboAsesmenBayiLahir.data,
+  }));
   const [dateNow] = useState(() => new Date().toISOString())
   const vSetValidation = useFormik({
     initialValues: {
+      norecap: norecap,
+      norecemrpasien: '',
       responden: '',
       hubungan: '',
       anamnesaBayi: '',
@@ -53,9 +62,24 @@ const AsesmenBayiBaruLahir = () => {
       r1Menit: '',
       r5Menit: '',
       r10Menit: '',
-      total1Menit: '',
-      total5Menit: '',
-      total10Menit: '',
+      a1MenitScore: 0,
+      a5MenitScore: 0,
+      a10MenitScore: 0,
+      p1MenitScore: 0,
+      p5MenitScore: 0,
+      p10MenitScore: 0,
+      g1MenitScore: 0,
+      g5MenitScore: 0,
+      g10MenitScore: 0,
+      ac1MenitScore: 0,
+      ac5MenitScore: 0,
+      ac10MenitScore: 0,
+      r1MenitScore: 0,
+      r5MenitScore: 0,
+      r10MenitScore: 0,
+      total1Menit: 0,
+      total5Menit: 0,
+      total10Menit: 0,
       piece: '',
       pieceDurasi: '',
       sungkup: '',
@@ -76,12 +100,14 @@ const AsesmenBayiBaruLahir = () => {
       anus: '',
       extremitasAtas: '',
       extremitasBawah: '',
-      reflekHidup: '',
+      reflekHisap: '',
       pengeluaranAirKeruh: '',
       pengeluaranMekoneum: '',
       pemeriksaanLaboratorium: '',
       diagnosaKerja: '',
       pentalakaksanaan: '',
+      idlabel: 4,
+      label: 'ASESMENBAYILAHIR',
     },
     validationSchema: Yup.object({
       // start: Yup.string().required('Tanggal Awal harus diisi'),
@@ -89,9 +115,15 @@ const AsesmenBayiBaruLahir = () => {
     }),
     onSubmit: (values) => {
       console.log(values)
+      if (values.ketubanPecah === null)
+        values.ketubanPecah = dateNow
+      if (values.jamLahir === null)
+        values.jamLahir = dateNow
+
+      values.total1Menit = values.a1MenitScore + values.p1MenitScore + values.g1MenitScore + values.ac1MenitScore + values.r1MenitScore
       dispatch(
         saveEmrPasien(values, () => {
-          vSetValidation.resetForm()
+          // vSetValidation.resetForm()
         })
       )
     },
@@ -101,21 +133,122 @@ const AsesmenBayiBaruLahir = () => {
       dispatch(emrResetForm());
     }
   }, [dispatch])
+  useEffect(() => {
+    if (norecap) {
+      dispatch(getAsesmenBayiLahirByNorec({ norecap: norecap }));
+      dispatch(getComboAsesmenBayiLahir());
+    }
+  }, [norecap, dispatch])
+  useEffect(() => {
+    const setFF = vSetValidation.setFieldValue
+    if (dataAsesmen) {
+      setFF('norecemrpasien', dataAsesmen[0]?.norec)
+      setFF('responden', dataAsesmen[0]?.responden)
+      setFF('hubungan', dataAsesmen[0]?.objecthubungankeluargafk)
+      setFF('anamnesaBayi', dataAsesmen[0]?.anamnesa)
+      setFF('skalaGravida', dataAsesmen[0]?.gravida)
+      setFF('skalaPartus', dataAsesmen[0]?.partus)
+      setFF('skalaAbortus', dataAsesmen[0]?.abortus)
+      setFF('keadanIbuSelamaHamil', dataAsesmen[0]?.keadaanibu)
+      setFF('tempatPersalinan', dataAsesmen[0]?.tempatpersalinan)
+      setFF('penolong', dataAsesmen[0]?.penolong)
+      setFF('ketubanPecah', dataAsesmen[0]?.ketubanpecah)
+      setFF('airKetuban', dataAsesmen[0]?.airketuban)
+      setFF('jamLahir', dataAsesmen[0]?.lahir)
+      setFF('jamPersalinan', dataAsesmen[0]?.lamapersalinan)
+      setFF('macamPersalinan', dataAsesmen[0]?.macampersalinan)
+      setFF('indikasi', dataAsesmen[0]?.indikasi)
+      setFF('jenisKelamin', dataAsesmen[0]?.objectjeniskelaminfk)
+      setFF('keadaan', dataAsesmen[0]?.keadaan)
+      setFF('beratBadanBayi', dataAsesmen[0]?.berat)
+      setFF('panjangBadan', dataAsesmen[0]?.panjang)
+      setFF('lingkarDada', dataAsesmen[0]?.lingkardada)
+      setFF('lingkarKepala', dataAsesmen[0]?.lingkarkepala)
+      setFF('menitMeninggal', dataAsesmen[0]?.lahirmeninggal)
+      setFF('sebabKematianBayi', dataAsesmen[0]?.objectstatuspulangrifk)
+      setFF('a1Menit', dataAsesmen[0]?.a1)
+      setFF('a5Menit', dataAsesmen[0]?.a5)
+      setFF('a10Menit', dataAsesmen[0]?.a10)
+      setFF('a1MenitScore', dataAsesmen[0]?.a1score)
+      setFF('a5MenitScore', dataAsesmen[0]?.a5score)
+      setFF('a10MenitScore', dataAsesmen[0]?.a10score)
+      setFF('p1Menit', dataAsesmen[0]?.p1)
+      setFF('p5Menit', dataAsesmen[0]?.p5)
+      setFF('p10Menit', dataAsesmen[0]?.p10)
+      setFF('p1MenitScore', dataAsesmen[0]?.p1score)
+      setFF('p5MenitScore', dataAsesmen[0]?.p5score)
+      setFF('p10MenitScore', dataAsesmen[0]?.p10score)
+      setFF('g1Menit', dataAsesmen[0]?.g1)
+      setFF('g5Menit', dataAsesmen[0]?.g5)
+      setFF('g10Menit', dataAsesmen[0]?.g10)
+      setFF('g1MenitScore', dataAsesmen[0]?.g1score)
+      setFF('g5MenitScore', dataAsesmen[0]?.g5score)
+      setFF('g10MenitScore', dataAsesmen[0]?.g10score)
+      setFF('ac1Menit', dataAsesmen[0]?.c1)
+      setFF('ac5Menit', dataAsesmen[0]?.c5)
+      setFF('ac10Menit', dataAsesmen[0]?.c10)
+      setFF('ac1MenitScore', dataAsesmen[0]?.c1score)
+      setFF('ac5MenitScore', dataAsesmen[0]?.c5score)
+      setFF('ac10MenitScore', dataAsesmen[0]?.c10score)
+      setFF('r1Menit', dataAsesmen[0]?.r1)
+      setFF('r5Menit', dataAsesmen[0]?.r5)
+      setFF('r10Menit', dataAsesmen[0]?.r10)
+      setFF('r1MenitScore', dataAsesmen[0]?.r1score)
+      setFF('r5MenitScore', dataAsesmen[0]?.r5score)
+      setFF('r10MenitScore', dataAsesmen[0]?.r10score)
+      // setFF('total1Menit', dataAsesmen[0]?.total1)
+      // setFF('total5Menit', dataAsesmen[0]?.total5)
+      // setFF('total10Menit', dataAsesmen[0]?.total10)
+      setFF('pieceDurasi', dataAsesmen[0]?.durasitpiece)
+      setFF('sungkupDurasi', dataAsesmen[0]?.durasio2)
+      setFF('pompaDurasi', dataAsesmen[0]?.durasipompa)
+      setFF('intubaticDurasi', dataAsesmen[0]?.durasiintubatic)
+      setFF('kulit', dataAsesmen[0]?.kulit)
+      setFF('tht', dataAsesmen[0]?.tht)
+      setFF('mulut', dataAsesmen[0]?.mulut)
+      setFF('leher', dataAsesmen[0]?.leher)
+      setFF('dada', dataAsesmen[0]?.dada)
+      setFF('paru', dataAsesmen[0]?.paru)
+      setFF('jantung', dataAsesmen[0]?.jantung)
+      setFF('abdomen', dataAsesmen[0]?.abdomen)
+      setFF('genitalia', dataAsesmen[0]?.genitalia)
+      setFF('anus', dataAsesmen[0]?.anus)
+      setFF('extremitasAtas', dataAsesmen[0]?.extremitasatas)
+      setFF('extremitasBawah', dataAsesmen[0]?.extremitasbawah)
+      setFF('reflekHisap', dataAsesmen[0]?.reflexhisap)
+      setFF('pengeluaranAirKeruh', dataAsesmen[0]?.pengeluaranairkeruh)
+      setFF('pengeluaranMekoneum', dataAsesmen[0]?.pengeluaranmokeneum)
+      setFF('pemeriksaanLaboratorium', dataAsesmen[0]?.pemeriksaanlab)
+      setFF('diagnosaKerja', dataAsesmen[0]?.diagnosakerja)
+      setFF('pentalakaksanaan', dataAsesmen[0]?.penatalaksanaan)
+      setSkalaGravida(dataAsesmen[0]?.gravida)
+      setSkalaPartus(dataAsesmen[0]?.partus)
+      setSkalaAbortus(dataAsesmen[0]?.abortus)
+    }
+  }, [dataAsesmen, vSetValidation.setFieldValue])
   const [skalaGravida, setSkalaGravida] = useState(0)
   const onClickSkalaGravida = (q) => {
     setSkalaGravida(q)
-    // vSetValidation.setFieldValue('skalanyeri', q)
+    vSetValidation.setFieldValue('skalaGravida', q)
   }
   const [skalaPartus, setSkalaPartus] = useState(0)
   const onClickSkalaPartus = (q) => {
     setSkalaPartus(q)
-    // vSetValidation.setFieldValue('skalanyeri', q)
+    vSetValidation.setFieldValue('skalaPartus', q)
   }
   const [skalaAbortus, setSkalaAbortus] = useState(0)
   const onClickSkalaAbortus = (q) => {
     setSkalaAbortus(q)
-    // vSetValidation.setFieldValue('skalanyeri', q)
+    vSetValidation.setFieldValue('skalaAbortus', q)
   }
+  const [statePiece, setstatePiece] = useState(true)
+  const [stateSungkup, setstateSungkup] = useState(true)
+  const [statePompa, setstatePompa] = useState(true)
+  const [stateIntubatic, setstateIntubatic] = useState(true)
+  const dataYaTidak = [
+    { label: 'Ya', value: 1 },
+    { label: 'Tidak', value: 2 },
+  ]
   return (
     <React.Fragment>
       <Form
@@ -165,7 +298,7 @@ const AsesmenBayiBaruLahir = () => {
                 <CustomSelect
                   id="hubungan"
                   name="hubungan"
-                  options={[]}
+                  options={dataCombo.hubungan}
                   onChange={(e) => {
                     vSetValidation.setFieldValue('hubungan', e?.value || '')
                   }}
@@ -331,10 +464,12 @@ const AsesmenBayiBaruLahir = () => {
                     !!vSetValidation.errors?.ketubanPecah}
                   id="ketubanPecah"
                   options={{
-                    dateFormat: 'Y-m-d',
+                    dateFormat: 'Y-m-d H:i',
                     defaultDate: 'today',
+                    enableTime: true,
+                    time_24hr: true
                   }}
-                  value={vSetValidation.values.ketubanPecah}
+                  value={vSetValidation.values.ketubanPecah || dateNow}
                   onChange={([newDate]) => {
                     vSetValidation.setFieldValue('ketubanPecah', newDate.toISOString())
                   }}
@@ -354,7 +489,7 @@ const AsesmenBayiBaruLahir = () => {
                 <CustomSelect
                   id="airKetuban"
                   name="airKetuban"
-                  options={[]}
+                  options={dataCombo.ketuban}
                   onChange={(e) => {
                     vSetValidation.setFieldValue('airKetuban', e?.value || '')
                   }}
@@ -379,10 +514,12 @@ const AsesmenBayiBaruLahir = () => {
                     !!vSetValidation.errors?.jamLahir}
                   id="jamLahir"
                   options={{
-                    dateFormat: 'Y-m-d',
+                    dateFormat: 'Y-m-d H:i',
                     defaultDate: 'today',
+                    enableTime: true,
+                    time_24hr: true
                   }}
-                  value={vSetValidation.values.jamLahir}
+                  value={vSetValidation.values.jamLahir || dateNow}
                   onChange={([newDate]) => {
                     vSetValidation.setFieldValue('jamLahir', newDate.toISOString())
                   }}
@@ -396,23 +533,20 @@ const AsesmenBayiBaruLahir = () => {
                   )}
               </Col>
               <Col lg={2}><div className="mt-2">
-                <Label style={{ color: "black" }} htmlFor="unitlast" className="form-label">Jam Persalinan(Jam)</Label>
+                <Label style={{ color: "black" }} htmlFor="unitlast" className="form-label">Lama Persalinan(Jam)</Label>
               </div>
               </Col>
               <Col lg={4}>
-                <KontainerFlatpickr
-                  isError={vSetValidation.touched?.jamPersalinan &&
-                    !!vSetValidation.errors?.jamPersalinan}
+                <Input
                   id="jamPersalinan"
-                  options={{
-                    dateFormat: 'Y-m-d',
-                    defaultDate: 'today',
-                  }}
+                  name="jamPersalinan"
+                  type="text"
                   value={vSetValidation.values.jamPersalinan}
-                  onChange={([newDate]) => {
-                    vSetValidation.setFieldValue('jamPersalinan', newDate.toISOString())
+                  onChange={(e) => {
+                    vSetValidation.setFieldValue('jamPersalinan', e.target.value)
                   }}
-                  placeholder='Isi berapa lama persalinan ibu'
+                  invalid={vSetValidation.touched?.jamPersalinan &&
+                    !!vSetValidation.errors?.jamPersalinan}
                 />
                 {vSetValidation.touched?.jamPersalinan
                   && !!vSetValidation.errors.jamPersalinan && (
@@ -429,7 +563,7 @@ const AsesmenBayiBaruLahir = () => {
                 <CustomSelect
                   id="macamPersalinan"
                   name="macamPersalinan"
-                  options={[]}
+                  options={dataCombo.macampersalinan}
                   onChange={(e) => {
                     vSetValidation.setFieldValue('macamPersalinan', e?.value || '')
                   }}
@@ -486,7 +620,7 @@ const AsesmenBayiBaruLahir = () => {
                   <CustomSelect
                     id="jenisKelamin"
                     name="jenisKelamin"
-                    options={[]}
+                    options={dataCombo.jeniskelamin}
                     onChange={(e) => {
                       vSetValidation.setFieldValue('jenisKelamin', e?.value || '')
                     }}
@@ -510,7 +644,7 @@ const AsesmenBayiBaruLahir = () => {
                   <CustomSelect
                     id="keadaan"
                     name="keadaan"
-                    options={[]}
+                    options={dataCombo.keadaanbayi}
                     onChange={(e) => {
                       vSetValidation.setFieldValue('keadaan', e?.value || '')
                     }}
@@ -668,7 +802,7 @@ const AsesmenBayiBaruLahir = () => {
                   <CustomSelect
                     id="sebabKematianBayi"
                     name="sebabKematianBayi"
-                    options={[]}
+                    options={dataCombo.sebabkematianbayi}
                     onChange={(e) => {
                       vSetValidation.setFieldValue('sebabKematianBayi', e?.value || '')
                     }}
@@ -701,9 +835,11 @@ const AsesmenBayiBaruLahir = () => {
                   <CustomSelect
                     id="a1Menit"
                     name="a1Menit"
-                    options={[]}
+                    options={dataCombo.apgarA}
                     onChange={(e) => {
                       vSetValidation.setFieldValue('a1Menit', e?.value || '')
+                      vSetValidation.setFieldValue('a1MenitScore', e?.score)
+                      // onChange1MenitScore(e?.score)
                     }}
                     value={vSetValidation.values.a1Menit}
                     className={`input row-header ${!!vSetValidation?.errors.a1Menit ? 'is-invalid' : ''
@@ -725,9 +861,10 @@ const AsesmenBayiBaruLahir = () => {
                   <CustomSelect
                     id="a5Menit"
                     name="a5Menit"
-                    options={[]}
+                    options={dataCombo.apgarA}
                     onChange={(e) => {
                       vSetValidation.setFieldValue('a5Menit', e?.value || '')
+                      vSetValidation.setFieldValue('a5MenitScore', e?.score || '')
                     }}
                     value={vSetValidation.values.a5Menit}
                     className={`input row-header ${!!vSetValidation?.errors.a5Menit ? 'is-invalid' : ''
@@ -749,9 +886,10 @@ const AsesmenBayiBaruLahir = () => {
                   <CustomSelect
                     id="a10Menit"
                     name="a10Menit"
-                    options={[]}
+                    options={dataCombo.apgarA}
                     onChange={(e) => {
                       vSetValidation.setFieldValue('a10Menit', e?.value || '')
+                      vSetValidation.setFieldValue('a10MenitScore', e?.score || '')
                     }}
                     value={vSetValidation.values.a10Menit}
                     className={`input row-header ${!!vSetValidation?.errors.a10Menit ? 'is-invalid' : ''
@@ -782,9 +920,10 @@ const AsesmenBayiBaruLahir = () => {
                   <CustomSelect
                     id="p1Menit"
                     name="p1Menit"
-                    options={[]}
+                    options={dataCombo.apgarP}
                     onChange={(e) => {
                       vSetValidation.setFieldValue('p1Menit', e?.value || '')
+                      vSetValidation.setFieldValue('p1MenitScore', e?.score || '')
                     }}
                     value={vSetValidation.values.p1Menit}
                     className={`input row-header ${!!vSetValidation?.errors.p1Menit ? 'is-invalid' : ''
@@ -806,9 +945,10 @@ const AsesmenBayiBaruLahir = () => {
                   <CustomSelect
                     id="p5Menit"
                     name="p5Menit"
-                    options={[]}
+                    options={dataCombo.apgarP}
                     onChange={(e) => {
                       vSetValidation.setFieldValue('p5Menit', e?.value || '')
+                      vSetValidation.setFieldValue('p5MenitScore', e?.score || '')
                     }}
                     value={vSetValidation.values.p5Menit}
                     className={`input row-header ${!!vSetValidation?.errors.p5Menit ? 'is-invalid' : ''
@@ -830,9 +970,10 @@ const AsesmenBayiBaruLahir = () => {
                   <CustomSelect
                     id="p10Menit"
                     name="p10Menit"
-                    options={[]}
+                    options={dataCombo.apgarP}
                     onChange={(e) => {
                       vSetValidation.setFieldValue('p10Menit', e?.value || '')
+                      vSetValidation.setFieldValue('p10MenitScore', e?.score || '')
                     }}
                     value={vSetValidation.values.p10Menit}
                     className={`input row-header ${!!vSetValidation?.errors.p10Menit ? 'is-invalid' : ''
@@ -863,9 +1004,10 @@ const AsesmenBayiBaruLahir = () => {
                   <CustomSelect
                     id="g1Menit"
                     name="g1Menit"
-                    options={[]}
+                    options={dataCombo.apgarG}
                     onChange={(e) => {
                       vSetValidation.setFieldValue('g1Menit', e?.value || '')
+                      vSetValidation.setFieldValue('g1MenitScore', e?.score || '')
                     }}
                     value={vSetValidation.values.g1Menit}
                     className={`input row-header ${!!vSetValidation?.errors.g1Menit ? 'is-invalid' : ''
@@ -887,9 +1029,10 @@ const AsesmenBayiBaruLahir = () => {
                   <CustomSelect
                     id="g5Menit"
                     name="g5Menit"
-                    options={[]}
+                    options={dataCombo.apgarG}
                     onChange={(e) => {
                       vSetValidation.setFieldValue('g5Menit', e?.value || '')
+                      vSetValidation.setFieldValue('g5MenitScore', e?.score || '')
                     }}
                     value={vSetValidation.values.g5Menit}
                     className={`input row-header ${!!vSetValidation?.errors.g5Menit ? 'is-invalid' : ''
@@ -911,9 +1054,10 @@ const AsesmenBayiBaruLahir = () => {
                   <CustomSelect
                     id="g10Menit"
                     name="g10Menit"
-                    options={[]}
+                    options={dataCombo.apgarG}
                     onChange={(e) => {
                       vSetValidation.setFieldValue('g10Menit', e?.value || '')
+                      vSetValidation.setFieldValue('g10MenitScore', e?.score || '')
                     }}
                     value={vSetValidation.values.g10Menit}
                     className={`input row-header ${!!vSetValidation?.errors.g10Menit ? 'is-invalid' : ''
@@ -944,9 +1088,10 @@ const AsesmenBayiBaruLahir = () => {
                   <CustomSelect
                     id="ac1Menit"
                     name="ac1Menit"
-                    options={[]}
+                    options={dataCombo.apgarC}
                     onChange={(e) => {
                       vSetValidation.setFieldValue('ac1Menit', e?.value || '')
+                      vSetValidation.setFieldValue('ac1MenitScore', e?.score || '')
                     }}
                     value={vSetValidation.values.ac1Menit}
                     className={`input row-header ${!!vSetValidation?.errors.ac1Menit ? 'is-invalid' : ''
@@ -968,9 +1113,10 @@ const AsesmenBayiBaruLahir = () => {
                   <CustomSelect
                     id="ac5Menit"
                     name="ac5Menit"
-                    options={[]}
+                    options={dataCombo.apgarC}
                     onChange={(e) => {
                       vSetValidation.setFieldValue('ac5Menit', e?.value || '')
+                      vSetValidation.setFieldValue('ac5MenitScore', e?.score || '')
                     }}
                     value={vSetValidation.values.ac5Menit}
                     className={`input row-header ${!!vSetValidation?.errors.ac5Menit ? 'is-invalid' : ''
@@ -992,9 +1138,10 @@ const AsesmenBayiBaruLahir = () => {
                   <CustomSelect
                     id="ac10Menit"
                     name="ac10Menit"
-                    options={[]}
+                    options={dataCombo.apgarC}
                     onChange={(e) => {
                       vSetValidation.setFieldValue('ac10Menit', e?.value || '')
+                      vSetValidation.setFieldValue('ac10MenitScore', e?.score || '')
                     }}
                     value={vSetValidation.values.ac10Menit}
                     className={`input row-header ${!!vSetValidation?.errors.ac10Menit ? 'is-invalid' : ''
@@ -1025,9 +1172,10 @@ const AsesmenBayiBaruLahir = () => {
                   <CustomSelect
                     id="r1Menit"
                     name="r1Menit"
-                    options={[]}
+                    options={dataCombo.apgarR}
                     onChange={(e) => {
                       vSetValidation.setFieldValue('r1Menit', e?.value || '')
+                      vSetValidation.setFieldValue('r1MenitScore', e?.score || '')
                     }}
                     value={vSetValidation.values.r1Menit}
                     className={`input row-header ${!!vSetValidation?.errors.r1Menit ? 'is-invalid' : ''
@@ -1049,9 +1197,10 @@ const AsesmenBayiBaruLahir = () => {
                   <CustomSelect
                     id="r5Menit"
                     name="r5Menit"
-                    options={[]}
+                    options={dataCombo.apgarR}
                     onChange={(e) => {
                       vSetValidation.setFieldValue('r5Menit', e?.value || '')
+                      vSetValidation.setFieldValue('r5MenitScore', e?.score || '')
                     }}
                     value={vSetValidation.values.r5Menit}
                     className={`input row-header ${!!vSetValidation?.errors.r5Menit ? 'is-invalid' : ''
@@ -1073,9 +1222,10 @@ const AsesmenBayiBaruLahir = () => {
                   <CustomSelect
                     id="r10Menit"
                     name="r10Menit"
-                    options={[]}
+                    options={dataCombo.apgarR}
                     onChange={(e) => {
                       vSetValidation.setFieldValue('r10Menit', e?.value || '')
+                      vSetValidation.setFieldValue('r10MenitScore', e?.score || '')
                     }}
                     value={vSetValidation.values.r10Menit}
                     className={`input row-header ${!!vSetValidation?.errors.r10Menit ? 'is-invalid' : ''
@@ -1103,20 +1253,20 @@ const AsesmenBayiBaruLahir = () => {
                   </div>
                 </Col>
                 <Col lg={2}>
-                  <CustomSelect
+                  <Input
                     id="total1Menit"
                     name="total1Menit"
-                    options={[]}
+                    type="text"
+                    value={vSetValidation.values.a1MenitScore + vSetValidation.values.p1MenitScore + vSetValidation.values.g1MenitScore + vSetValidation.values.ac1MenitScore + vSetValidation.values.r1MenitScore}
                     onChange={(e) => {
-                      vSetValidation.setFieldValue('total1Menit', e?.value || '')
+                      vSetValidation.setFieldValue('total1Menit', e.target.value)
                     }}
-                    value={vSetValidation.values.total1Menit}
-                    className={`input row-header ${!!vSetValidation?.errors.total1Menit ? 'is-invalid' : ''
-                      }`}
-                    isDisabled
+                    invalid={vSetValidation.touched?.total1Menit &&
+                      !!vSetValidation.errors?.total1Menit}
+                    disabled
                   />
-                  {vSetValidation.touched.total1Menit &&
-                    !!vSetValidation.errors.total1Menit && (
+                  {vSetValidation.touched?.total1Menit
+                    && !!vSetValidation.errors.total1Menit && (
                       <FormFeedback type="invalid">
                         <div>{vSetValidation.errors.total1Menit}</div>
                       </FormFeedback>
@@ -1128,20 +1278,20 @@ const AsesmenBayiBaruLahir = () => {
                   </div>
                 </Col>
                 <Col lg={2}>
-                  <CustomSelect
+                  <Input
                     id="total5Menit"
                     name="total5Menit"
-                    options={[]}
+                    type="text"
+                    value={vSetValidation.values.a5MenitScore + vSetValidation.values.p5MenitScore + vSetValidation.values.g5MenitScore + vSetValidation.values.ac5MenitScore + vSetValidation.values.r5MenitScore}
                     onChange={(e) => {
-                      vSetValidation.setFieldValue('total5Menit', e?.value || '')
+                      vSetValidation.setFieldValue('total5Menit', e.target.value)
                     }}
-                    value={vSetValidation.values.total5Menit}
-                    className={`input row-header ${!!vSetValidation?.errors.total5Menit ? 'is-invalid' : ''
-                      }`}
-                    isDisabled
+                    invalid={vSetValidation.touched?.total5Menit &&
+                      !!vSetValidation.errors?.total5Menit}
+                    disabled
                   />
-                  {vSetValidation.touched.total5Menit &&
-                    !!vSetValidation.errors.total5Menit && (
+                  {vSetValidation.touched?.total5Menit
+                    && !!vSetValidation.errors.total5Menit && (
                       <FormFeedback type="invalid">
                         <div>{vSetValidation.errors.total5Menit}</div>
                       </FormFeedback>
@@ -1153,20 +1303,20 @@ const AsesmenBayiBaruLahir = () => {
                   </div>
                 </Col>
                 <Col lg={2}>
-                  <CustomSelect
+                  <Input
                     id="total10Menit"
                     name="total10Menit"
-                    options={[]}
+                    type="text"
+                    value={vSetValidation.values.a10MenitScore + vSetValidation.values.p10MenitScore + vSetValidation.values.g10MenitScore + vSetValidation.values.ac10MenitScore + vSetValidation.values.r10MenitScore}
                     onChange={(e) => {
-                      vSetValidation.setFieldValue('total10Menit', e?.value || '')
+                      vSetValidation.setFieldValue('total10Menit', e.target.value)
                     }}
-                    value={vSetValidation.values.total10Menit}
-                    className={`input row-header ${!!vSetValidation?.errors.total10Menit ? 'is-invalid' : ''
-                      }`}
-                    isDisabled
+                    invalid={vSetValidation.touched?.total10Menit &&
+                      !!vSetValidation.errors?.total10Menit}
+                    disabled
                   />
-                  {vSetValidation.touched.total10Menit &&
-                    !!vSetValidation.errors.total10Menit && (
+                  {vSetValidation.touched?.total10Menit
+                    && !!vSetValidation.errors.total10Menit && (
                       <FormFeedback type="invalid">
                         <div>{vSetValidation.errors.total10Menit}</div>
                       </FormFeedback>
@@ -1190,9 +1340,14 @@ const AsesmenBayiBaruLahir = () => {
                   <CustomSelect
                     id="piece"
                     name="piece"
-                    options={[]}
+                    options={dataYaTidak}
                     onChange={(e) => {
                       vSetValidation.setFieldValue('piece', e?.value || '')
+                      if (e?.value === 2) {
+                        setstatePiece(true)
+                      } else {
+                        setstatePiece(false)
+                      }
                     }}
                     value={vSetValidation.values.piece}
                     className={`input row-header ${!!vSetValidation?.errors.piece ? 'is-invalid' : ''
@@ -1211,19 +1366,20 @@ const AsesmenBayiBaruLahir = () => {
                   </div>
                 </Col>
                 <Col lg={4}>
-                  <CustomSelect
+                  <Input
                     id="pieceDurasi"
                     name="pieceDurasi"
-                    options={[]}
-                    onChange={(e) => {
-                      vSetValidation.setFieldValue('pieceDurasi', e?.value || '')
-                    }}
+                    type="text"
                     value={vSetValidation.values.pieceDurasi}
-                    className={`input row-header ${!!vSetValidation?.errors.pieceDurasi ? 'is-invalid' : ''
-                      }`}
+                    onChange={(e) => {
+                      vSetValidation.setFieldValue('pieceDurasi', e.target.value)
+                    }}
+                    invalid={vSetValidation.touched?.pieceDurasi &&
+                      !!vSetValidation.errors?.pieceDurasi}
+                    disabled={statePiece}
                   />
-                  {vSetValidation.touched.pieceDurasi &&
-                    !!vSetValidation.errors.pieceDurasi && (
+                  {vSetValidation.touched?.pieceDurasi
+                    && !!vSetValidation.errors.pieceDurasi && (
                       <FormFeedback type="invalid">
                         <div>{vSetValidation.errors.pieceDurasi}</div>
                       </FormFeedback>
@@ -1238,9 +1394,14 @@ const AsesmenBayiBaruLahir = () => {
                   <CustomSelect
                     id="sungkup"
                     name="sungkup"
-                    options={[]}
+                    options={dataYaTidak}
                     onChange={(e) => {
                       vSetValidation.setFieldValue('sungkup', e?.value || '')
+                      if (e?.value === 2) {
+                        setstateSungkup(true)
+                      } else {
+                        setstateSungkup(false)
+                      }
                     }}
                     value={vSetValidation.values.sungkup}
                     className={`input row-header ${!!vSetValidation?.errors.sungkup ? 'is-invalid' : ''
@@ -1259,19 +1420,20 @@ const AsesmenBayiBaruLahir = () => {
                   </div>
                 </Col>
                 <Col lg={4}>
-                  <CustomSelect
+                  <Input
                     id="sungkupDurasi"
                     name="sungkupDurasi"
-                    options={[]}
-                    onChange={(e) => {
-                      vSetValidation.setFieldValue('sungkupDurasi', e?.value || '')
-                    }}
+                    type="text"
                     value={vSetValidation.values.sungkupDurasi}
-                    className={`input row-header ${!!vSetValidation?.errors.sungkupDurasi ? 'is-invalid' : ''
-                      }`}
+                    onChange={(e) => {
+                      vSetValidation.setFieldValue('sungkupDurasi', e.target.value)
+                    }}
+                    invalid={vSetValidation.touched?.sungkupDurasi &&
+                      !!vSetValidation.errors?.sungkupDurasi}
+                    disabled={stateSungkup}
                   />
-                  {vSetValidation.touched.sungkupDurasi &&
-                    !!vSetValidation.errors.sungkupDurasi && (
+                  {vSetValidation.touched?.sungkupDurasi
+                    && !!vSetValidation.errors.sungkupDurasi && (
                       <FormFeedback type="invalid">
                         <div>{vSetValidation.errors.sungkupDurasi}</div>
                       </FormFeedback>
@@ -1286,9 +1448,14 @@ const AsesmenBayiBaruLahir = () => {
                   <CustomSelect
                     id="pompa"
                     name="pompa"
-                    options={[]}
+                    options={dataYaTidak}
                     onChange={(e) => {
                       vSetValidation.setFieldValue('pompa', e?.value || '')
+                      if (e?.value === 2) {
+                        setstatePompa(true)
+                      } else {
+                        setstatePompa(false)
+                      }
                     }}
                     value={vSetValidation.values.pompa}
                     className={`input row-header ${!!vSetValidation?.errors.pompa ? 'is-invalid' : ''
@@ -1307,19 +1474,20 @@ const AsesmenBayiBaruLahir = () => {
                   </div>
                 </Col>
                 <Col lg={4}>
-                  <CustomSelect
+                  <Input
                     id="pompaDurasi"
                     name="pompaDurasi"
-                    options={[]}
-                    onChange={(e) => {
-                      vSetValidation.setFieldValue('pompaDurasi', e?.value || '')
-                    }}
+                    type="text"
                     value={vSetValidation.values.pompaDurasi}
-                    className={`input row-header ${!!vSetValidation?.errors.pompaDurasi ? 'is-invalid' : ''
-                      }`}
+                    onChange={(e) => {
+                      vSetValidation.setFieldValue('pompaDurasi', e.target.value)
+                    }}
+                    invalid={vSetValidation.touched?.pompaDurasi &&
+                      !!vSetValidation.errors?.pompaDurasi}
+                    disabled={statePompa}
                   />
-                  {vSetValidation.touched.pompaDurasi &&
-                    !!vSetValidation.errors.pompaDurasi && (
+                  {vSetValidation.touched?.pompaDurasi
+                    && !!vSetValidation.errors.pompaDurasi && (
                       <FormFeedback type="invalid">
                         <div>{vSetValidation.errors.pompaDurasi}</div>
                       </FormFeedback>
@@ -1334,9 +1502,14 @@ const AsesmenBayiBaruLahir = () => {
                   <CustomSelect
                     id="intubatic"
                     name="intubatic"
-                    options={[]}
+                    options={dataYaTidak}
                     onChange={(e) => {
                       vSetValidation.setFieldValue('intubatic', e?.value || '')
+                      if (e?.value === 2) {
+                        setstateIntubatic(true)
+                      } else {
+                        setstateIntubatic(false)
+                      }
                     }}
                     value={vSetValidation.values.intubatic}
                     className={`input row-header ${!!vSetValidation?.errors.intubatic ? 'is-invalid' : ''
@@ -1355,19 +1528,20 @@ const AsesmenBayiBaruLahir = () => {
                   </div>
                 </Col>
                 <Col lg={4}>
-                  <CustomSelect
+                  <Input
                     id="intubaticDurasi"
                     name="intubaticDurasi"
-                    options={[]}
-                    onChange={(e) => {
-                      vSetValidation.setFieldValue('intubaticDurasi', e?.value || '')
-                    }}
+                    type="text"
                     value={vSetValidation.values.intubaticDurasi}
-                    className={`input row-header ${!!vSetValidation?.errors.intubaticDurasi ? 'is-invalid' : ''
-                      }`}
+                    onChange={(e) => {
+                      vSetValidation.setFieldValue('intubaticDurasi', e.target.value)
+                    }}
+                    invalid={vSetValidation.touched?.intubaticDurasi &&
+                      !!vSetValidation.errors?.intubaticDurasi}
+                    disabled={stateIntubatic}
                   />
-                  {vSetValidation.touched.intubaticDurasi &&
-                    !!vSetValidation.errors.intubaticDurasi && (
+                  {vSetValidation.touched?.intubaticDurasi
+                    && !!vSetValidation.errors.intubaticDurasi && (
                       <FormFeedback type="invalid">
                         <div>{vSetValidation.errors.intubaticDurasi}</div>
                       </FormFeedback>
@@ -1673,25 +1847,25 @@ const AsesmenBayiBaruLahir = () => {
               </Col>
               <Col lg={2}>
                 <div className="mt-2">
-                  <Label style={{ color: "black" }} htmlFor="unitlast" className="form-label">Refleks Hidup</Label>
+                  <Label style={{ color: "black" }} htmlFor="unitlast" className="form-label">Refleks Hisap</Label>
                 </div>
               </Col>
               <Col lg={2}>
                 <Input
-                  id="reflekHidup"
-                  name="reflekHidup"
+                  id="reflekHisap"
+                  name="reflekHisap"
                   type="textarea"
-                  value={vSetValidation.values.reflekHidup}
+                  value={vSetValidation.values.reflekHisap}
                   onChange={(e) => {
-                    vSetValidation.setFieldValue('reflekHidup', e.target.value)
+                    vSetValidation.setFieldValue('reflekHisap', e.target.value)
                   }}
-                  invalid={vSetValidation.touched?.reflekHidup &&
-                    !!vSetValidation.errors?.reflekHidup}
+                  invalid={vSetValidation.touched?.reflekHisap &&
+                    !!vSetValidation.errors?.reflekHisap}
                 />
-                {vSetValidation.touched?.reflekHidup
-                  && !!vSetValidation.errors.reflekHidup && (
+                {vSetValidation.touched?.reflekHisap
+                  && !!vSetValidation.errors.reflekHisap && (
                     <FormFeedback type="invalid">
-                      <div>{vSetValidation.errors.reflekHidup}</div>
+                      <div>{vSetValidation.errors.reflekHisap}</div>
                     </FormFeedback>
                   )}
               </Col>
