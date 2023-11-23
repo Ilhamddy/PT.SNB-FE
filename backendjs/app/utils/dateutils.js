@@ -5,6 +5,30 @@ export const checkValidDate = (d) => {
     return dObj instanceof Date && !Number.isNaN(dObj.getTime())
 }
 
+export const getDateStart = (date) => {
+    let todayStart = date ? new Date(date) : new Date() // default to today
+    todayStart.setHours(0, 0, 0, 0)
+    return todayStart
+}
+
+export const getDateEnd = (date) => {
+    let todayEnd = date ? new Date(date) : new Date() // default to today
+    todayEnd.setHours(23, 59, 59, 999)
+    return todayEnd
+}
+
+export const getDateStartNull = (date) => {
+    let todayStart = date ? new Date(date) : new Date() // default to today
+    todayStart.setHours(0, 0, 0, 0)
+    return todayStart
+}
+
+export const getDateEndNull = (date) => {
+    let todayEnd = date ? new Date(date) : new Date() // default to today
+    todayEnd.setHours(23, 59, 59, 999)
+    return todayEnd
+}
+
 export const getDateStartEnd = (date) => {
     let todayStart = date ? new Date(date) : new Date() // default to today
     todayStart.setHours(0, 0, 0, 0)

@@ -26,12 +26,14 @@ import {
     qGetDetailRetur, 
     qGetReturBarang,
     qGetListRetur,
-    qGetDetailReturFromDetailPenerimaan
+    qGetDetailReturFromDetailPenerimaan,
+    qGetLaporanPengadaan
 } from "../../../queries/gudang/gudang.queries";
 import unitQueries, { daftarUnit } from "../../../queries/mastertable/unit/unit.queries"
 import {
     createTransaction
 } from "../../../utils/dbutils";
+import { getDateEndNull, getDateStartNull } from "../../../utils/dateutils";
 const m_produk = db.m_produk;
 const m_detailjenisproduk = db.m_detailjenisproduk;
 const m_sediaan = db.m_sediaan
@@ -1378,6 +1380,47 @@ const getRetur = async (req, res) => {
     }
 }
 
+const getLaporanPengadaan = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const {
+            instalasi,
+            unit,
+            tglpengadaanstart,
+            tglpengadaanend,
+            asalproduk,
+            supplier
+        } = req.query
+        const start = getDateStartNull(tglpengadaanstart)
+        const end = getDateEndNull(tglpengadaanend)
+        const pengadaan = (await pool.query(qGetLaporanPengadaan, [
+            unit || '',
+            start || '',
+            end || '', 
+            asalproduk || '',
+            supplier || ''
+        ])).rows
+        const tempres = {
+            pengadaan: pengadaan
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+
 
 export default {
     createOrUpdateProdukObat,
@@ -1409,6 +1452,7 @@ export default {
     getUnitUser,
     getListRetur,
     getRetur,
+    getLaporanPengadaan
 
 }
 

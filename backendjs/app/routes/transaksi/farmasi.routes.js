@@ -69,4 +69,10 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.createAntreanFarmasi
     )
+
+    app.get(
+        "/api/transaksi/farmasi/get-combo-laporan-pengadaan",
+        [authJwt.verifyToken],
+        controller.getComboLaporanPengadaan
+    )
 }

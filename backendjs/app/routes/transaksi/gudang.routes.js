@@ -185,4 +185,10 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getRetur
     )
+
+    app.get(
+        "/api/transaksi/gudang/get-laporan-pengadaan",
+        [authJwt.verifyToken],
+        controller.getLaporanPengadaan
+    )
 }
