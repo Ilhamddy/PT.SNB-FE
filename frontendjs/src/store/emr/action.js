@@ -124,7 +124,8 @@ import {
     COMBO_ALL_TINDAKAN_GET,COMBO_ALL_TINDAKAN_GET_SUCCESS,COMBO_ALL_TINDAKAN_GET_ERROR,
     SAVE_EMR_PASIEN,SAVE_EMR_PASIEN_SUCCESS,SAVE_EMR_PASIEN_ERROR,
     GET_ASESMENBAYILAHIR_BYNOREC,GET_ASESMENBAYILAHIR_BYNOREC_SUCCESS,GET_ASESMENBAYILAHIR_BYNOREC_ERROR,
-    GET_COMBO_ASESMENBAYILAHIR,GET_COMBO_ASESMENBAYILAHIR_SUCCESS,GET_COMBO_ASESMENBAYILAHIR_ERROR
+    GET_COMBO_ASESMENBAYILAHIR,GET_COMBO_ASESMENBAYILAHIR_SUCCESS,GET_COMBO_ASESMENBAYILAHIR_ERROR,
+    GET_HISTORY_ASESMENBAYILAHIR,GET_HISTORY_ASESMENBAYILAHIR_SUCCESS,GET_HISTORY_ASESMENBAYILAHIR_ERROR
 } from "./actionType";
 
 export const emrResetForm = () => ({
@@ -833,5 +834,23 @@ export const getComboAsesmenBayiLahirSuccess = (data) => ({
 
 export const getComboAsesmenBayiLahirError = (error) => ({
     type: GET_COMBO_ASESMENBAYILAHIR_ERROR,
+    payload: error,
+});
+
+export const getHistoryAsesmenBayiLahir = (data, callback) => ({
+    type: GET_HISTORY_ASESMENBAYILAHIR,
+    payload: {
+        data,
+        callback
+    },
+});
+
+export const getHistoryAsesmenBayiLahirSuccess = (data) => ({
+    type: GET_HISTORY_ASESMENBAYILAHIR_SUCCESS,
+    payload: data,
+});
+
+export const getHistoryAsesmenBayiLahirError = (error) => ({
+    type: GET_HISTORY_ASESMENBAYILAHIR_ERROR,
     payload: error,
 });

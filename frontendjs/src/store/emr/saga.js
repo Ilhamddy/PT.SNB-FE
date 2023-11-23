@@ -25,7 +25,8 @@ import {
     DELETE_PELAYANAN_PASIEN_TEMP, GET_WIDGET_EFISIENSI_KLAIM,
     UPDATE_ESTIMASI_KLAIM, COMBO_ALL_TINDAKAN_GET,
     SAVE_EMR_PASIEN,
-    GET_ASESMENBAYILAHIR_BYNOREC, GET_COMBO_ASESMENBAYILAHIR
+    GET_ASESMENBAYILAHIR_BYNOREC, GET_COMBO_ASESMENBAYILAHIR,
+    GET_HISTORY_ASESMENBAYILAHIR
 } from "./actionType";
 
 import {
@@ -71,7 +72,8 @@ import {
     comboAllTindakanSuccess, comboAllTindakanError,
     saveEmrPasienSuccess, saveEmrPasienError,
     getAsesmenBayiLahirByNorecSuccess, getAsesmenBayiLahirByNorecError,
-    getComboAsesmenBayiLahirSuccess, getComboAsesmenBayiLahirError
+    getComboAsesmenBayiLahirSuccess, getComboAsesmenBayiLahirError,
+    getHistoryAsesmenBayiLahirSuccess, getHistoryAsesmenBayiLahirError
 } from "./action";
 
 import { toast } from 'react-toastify';
@@ -873,6 +875,22 @@ export function* watchongetComboAsesmenBayiLahir() {
     yield takeEvery(GET_COMBO_ASESMENBAYILAHIR, ongetComboAsesmenBayiLahir);
 }
 
+function* ongetHistoryAsesmenBayiLahir({payload: {data, callback}}) {
+    try{
+        const response = yield call(serviceEmr.getHistoryAsesmenBayiLahir, data);
+        yield put(getHistoryAsesmenBayiLahirSuccess(response.data));
+        // toast.success(response.msg || "Sukses");
+        callback && callback(response);
+    } catch (error) {
+        yield put(getHistoryAsesmenBayiLahirError(error));
+        // toast.error(error.msg || "Gagal");
+    }
+}
+
+export function* watchongetHistoryAsesmenBayiLahir() {
+    yield takeEvery(GET_HISTORY_ASESMENBAYILAHIR, ongetHistoryAsesmenBayiLahir);
+}
+
 function* emrSaga() {
     yield all([
         fork(watchGetEmrHeader),
@@ -918,7 +936,8 @@ function* emrSaga() {
         fork(watchcomboAllTindakan),
         fork(watchonsaveEmrPasien),
         fork(watchongetAsesmenBayiLahirByNorec),
-        fork(watchongetComboAsesmenBayiLahir)
+        fork(watchongetComboAsesmenBayiLahir),
+        fork(watchongetHistoryAsesmenBayiLahir)
     ]);
 }
 

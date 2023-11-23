@@ -178,4 +178,7 @@ export default class ServiceEmr {
     getComboAsesmenBayiLahir = async (body) => {
         return await api.get("/transaksi/emr/get-combo-asesmenbayilahir", body)
     }
+    getHistoryAsesmenBayiLahir = async (body) => {
+        return await api.get("/transaksi/emr/get-history-asesmenbayilahir", body)
+    }
 }

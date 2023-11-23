@@ -179,4 +179,9 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getComboAsesmenBayiLahir
     );
+    app.get(
+        "/api/transaksi/emr/get-history-asesmenbayilahir",
+        [authJwt.verifyToken],
+        controller.getHistoryAsesmenBayiLahir
+    );
 }

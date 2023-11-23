@@ -6,7 +6,10 @@ import * as Yup from 'yup'
 import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/KontainerFlatpickr';
 import CustomSelect from '../../Select/Select';
 import Skala from '../../../Components/Skala/Skala';
-import { saveEmrPasien, emrResetForm, getAsesmenBayiLahirByNorec, getComboAsesmenBayiLahir } from "../../../store/actions";
+import {
+  saveEmrPasien, emrResetForm, getAsesmenBayiLahirByNorec, getComboAsesmenBayiLahir,
+  getHistoryAsesmenBayiLahir
+} from "../../../store/actions";
 import { useParams } from 'react-router-dom';
 import DataTable from 'react-data-table-component';
 import LoadingTable from '../../../Components/Table/LoadingTable';
@@ -15,12 +18,15 @@ const AsesmenBayiBaruLahir = () => {
   // document.title = "Asesmen Bayi Baru Lahir";
   const dispatch = useDispatch();
   const { norecdp, norecap } = useParams();
-  const { dataAsesmen, loadingAsesmen, successAsesmen, dataCombo } = useSelector((state) => ({
-    dataAsesmen: state.Emr.getAsesmenBayiLahirByNorec.data,
-    loadingAsesmen: state.Emr.getAsesmenBayiLahirByNorec.loading,
-    successAsesmen: state.Emr.getAsesmenBayiLahirByNorec.success,
-    dataCombo: state.Emr.getComboAsesmenBayiLahir.data,
-  }));
+  const { dataAsesmen, loadingAsesmen, successAsesmen, dataCombo,
+    dataHistoryAsesmen, loadingHistoryAsesmen } = useSelector((state) => ({
+      dataAsesmen: state.Emr.getAsesmenBayiLahirByNorec.data,
+      loadingAsesmen: state.Emr.getAsesmenBayiLahirByNorec.loading,
+      successAsesmen: state.Emr.getAsesmenBayiLahirByNorec.success,
+      dataCombo: state.Emr.getComboAsesmenBayiLahir.data,
+      dataHistoryAsesmen: state.Emr.getHistoryAsesmenBayiLahir.data,
+      loadingHistoryAsesmen: state.Emr.getHistoryAsesmenBayiLahir.loading,
+    }));
   const [dateNow] = useState(() => new Date().toISOString())
   const vSetValidation = useFormik({
     initialValues: {
@@ -126,6 +132,7 @@ const AsesmenBayiBaruLahir = () => {
       dispatch(
         saveEmrPasien(values, () => {
           dispatch(getAsesmenBayiLahirByNorec({ norecap: norecap }));
+          dispatch(getHistoryAsesmenBayiLahir({ norecdp: norecdp }));
         })
       )
     },
@@ -139,8 +146,9 @@ const AsesmenBayiBaruLahir = () => {
     if (norecap) {
       dispatch(getAsesmenBayiLahirByNorec({ norecap: norecap }));
       dispatch(getComboAsesmenBayiLahir());
+      dispatch(getHistoryAsesmenBayiLahir({ norecdp: norecdp }));
     }
-  }, [norecap, dispatch])
+  }, [norecap, norecdp, dispatch])
   useEffect(() => {
     const setFF = vSetValidation.setFieldValue
     if (dataAsesmen) {
@@ -253,20 +261,44 @@ const AsesmenBayiBaruLahir = () => {
   ]
   const columns = [
     {
-      name: <span className='font-weight-bold fs-13'>No</span>,
-      selector: row => row.no,
+      name: <span className='font-weight-bold fs-13'>No. Registrasi</span>,
+      selector: row => row.noregistrasi,
       sortable: true,
-      width: "50px"
+      // width: "50px"
     },
     {
-      name: <span className='font-weight-bold fs-13'>ID</span>,
-      selector: row => row.id,
+      name: <span className='font-weight-bold fs-13'>Tgl Input</span>,
+      selector: row => row.tglisi,
       sortable: true,
-      width: "50px"
+      // width: "50px"
     },
     {
-      name: <span className='font-weight-bold fs-13'>Nama Modul</span>,
-      selector: row => row.name,
+      name: <span className='font-weight-bold fs-13'>Tgl Registrasi</span>,
+      selector: row => row.tglregistrasi,
+      sortable: true,
+      // selector: row => (<button className="btn btn-sm btn-soft-info" onClick={() => handleClick(dataTtv)}>{row.noregistrasi}</button>),
+      // width: "250px",
+      wrap: true,
+    },
+    {
+      name: <span className='font-weight-bold fs-13'>Responden</span>,
+      selector: row => row.responden,
+      sortable: true,
+      // selector: row => (<button className="btn btn-sm btn-soft-info" onClick={() => handleClick(dataTtv)}>{row.noregistrasi}</button>),
+      // width: "250px",
+      wrap: true,
+    },
+    {
+      name: <span className='font-weight-bold fs-13'>Anamnesa</span>,
+      selector: row => row.anamnesa,
+      sortable: true,
+      // selector: row => (<button className="btn btn-sm btn-soft-info" onClick={() => handleClick(dataTtv)}>{row.noregistrasi}</button>),
+      // width: "250px",
+      wrap: true,
+    },
+    {
+      name: <span className='font-weight-bold fs-13'>Keadaan Ibu Selama Hamil</span>,
+      selector: row => row.keadaanibu,
       sortable: true,
       // selector: row => (<button className="btn btn-sm btn-soft-info" onClick={() => handleClick(dataTtv)}>{row.noregistrasi}</button>),
       // width: "250px",
@@ -287,6 +319,92 @@ const AsesmenBayiBaruLahir = () => {
       },
     }
   }
+  const handleClick = (e) => {
+    const setFF = vSetValidation.setFieldValue
+    setFF('norecemrpasien', e.norec)
+    setFF('responden', e.responden)
+    setFF('hubungan', e.objecthubungankeluargafk)
+    setFF('anamnesaBayi', e.anamnesa)
+    setFF('skalaGravida', e.gravida)
+    setFF('skalaPartus', e.partus)
+    setFF('skalaAbortus', e.abortus)
+    setFF('keadanIbuSelamaHamil', e.keadaanibu)
+    setFF('tempatPersalinan', e.tempatpersalinan)
+    setFF('penolong', e.penolong)
+    setFF('ketubanPecah', e.ketubanpecah)
+    setFF('airKetuban', e.airketuban)
+    setFF('jamLahir', e.lahir)
+    setFF('jamPersalinan', e.lamapersalinan)
+    setFF('macamPersalinan', e.macampersalinan)
+    setFF('indikasi', e.indikasi)
+    setFF('jenisKelamin', e.objectjeniskelaminfk)
+    setFF('keadaan', e.keadaan)
+    setFF('beratBadanBayi', e.berat)
+    setFF('panjangBadan', e.panjang)
+    setFF('lingkarDada', e.lingkardada)
+    setFF('lingkarKepala', e.lingkarkepala)
+    setFF('menitMeninggal', e.lahirmeninggal)
+    setFF('sebabKematianBayi', e.objectstatuspulangrifk)
+    setFF('a1Menit', e.a1)
+    setFF('a5Menit', e.a5)
+    setFF('a10Menit', e.a10)
+    setFF('a1MenitScore', e.a1score)
+    setFF('a5MenitScore', e.a5score)
+    setFF('a10MenitScore', e.a10score)
+    setFF('p1Menit', e.p1)
+    setFF('p5Menit', e.p5)
+    setFF('p10Menit', e.p10)
+    setFF('p1MenitScore', e.p1score)
+    setFF('p5MenitScore', e.p5score)
+    setFF('p10MenitScore', e.p10score)
+    setFF('g1Menit', e.g1)
+    setFF('g5Menit', e.g5)
+    setFF('g10Menit', e.g10)
+    setFF('g1MenitScore', e.g1score)
+    setFF('g5MenitScore', e.g5score)
+    setFF('g10MenitScore', e.g10score)
+    setFF('ac1Menit', e.c1)
+    setFF('ac5Menit', e.c5)
+    setFF('ac10Menit', e.c10)
+    setFF('ac1MenitScore', e.c1score)
+    setFF('ac5MenitScore', e.c5score)
+    setFF('ac10MenitScore', e.c10score)
+    setFF('r1Menit', e.r1)
+    setFF('r5Menit', e.r5)
+    setFF('r10Menit', e.r10)
+    setFF('r1MenitScore', e.r1score)
+    setFF('r5MenitScore', e.r5score)
+    setFF('r10MenitScore', e.r10score)
+    // setFF('total1Menit', e.total1)
+    // setFF('total5Menit', e.total5)
+    // setFF('total10Menit', e.total10)
+    setFF('pieceDurasi', e.durasitpiece)
+    setFF('sungkupDurasi', e.durasio2)
+    setFF('pompaDurasi', e.durasipompa)
+    setFF('intubaticDurasi', e.durasiintubatic)
+    setFF('kulit', e.kulit)
+    setFF('tht', e.tht)
+    setFF('mulut', e.mulut)
+    setFF('leher', e.leher)
+    setFF('dada', e.dada)
+    setFF('paru', e.paru)
+    setFF('jantung', e.jantung)
+    setFF('abdomen', e.abdomen)
+    setFF('genitalia', e.genitalia)
+    setFF('anus', e.anus)
+    setFF('extremitasAtas', e.extremitasatas)
+    setFF('extremitasBawah', e.extremitasbawah)
+    setFF('reflekHisap', e.reflexhisap)
+    setFF('pengeluaranAirKeruh', e.pengeluaranairkeruh)
+    setFF('pengeluaranMekoneum', e.pengeluaranmokeneum)
+    setFF('pemeriksaanLaboratorium', e.pemeriksaanlab)
+    setFF('diagnosaKerja', e.diagnosakerja)
+    setFF('pentalakaksanaan', e.penatalaksanaan)
+    setSkalaGravida(e.gravida)
+    setSkalaPartus(e.partus)
+    setSkalaAbortus(e.abortus)
+    // console.log(e)
+  };
   return (
     <React.Fragment>
       <Form
@@ -309,11 +427,11 @@ const AsesmenBayiBaruLahir = () => {
                   fixedHeaderScrollHeight="330px"
                   columns={columns}
                   pagination
-                  data={[]}
-                  // progressPending={loadingCombo}
+                  data={dataHistoryAsesmen}
+                  progressPending={loadingHistoryAsesmen}
                   customStyles={tableCustomStyles}
                   progressComponent={<LoadingTable />}
-                  // onRowClicked={(row) => handleClick(row)}
+                  onRowClicked={(row) => handleClick(row)}
                   pointerOnHover
                   highlightOnHover
                 />

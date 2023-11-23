@@ -123,7 +123,8 @@ import {
     COMBO_ALL_TINDAKAN_GET, COMBO_ALL_TINDAKAN_GET_SUCCESS, COMBO_ALL_TINDAKAN_GET_ERROR,
     SAVE_EMR_PASIEN,SAVE_EMR_PASIEN_SUCCESS,SAVE_EMR_PASIEN_ERROR,
     GET_ASESMENBAYILAHIR_BYNOREC_SUCCESS,GET_ASESMENBAYILAHIR_BYNOREC_ERROR, GET_ASESMENBAYILAHIR_BYNOREC,
-    GET_COMBO_ASESMENBAYILAHIR,GET_COMBO_ASESMENBAYILAHIR_SUCCESS,GET_COMBO_ASESMENBAYILAHIR_ERROR
+    GET_COMBO_ASESMENBAYILAHIR,GET_COMBO_ASESMENBAYILAHIR_SUCCESS,GET_COMBO_ASESMENBAYILAHIR_ERROR,
+    GET_HISTORY_ASESMENBAYILAHIR, GET_HISTORY_ASESMENBAYILAHIR_SUCCESS,GET_HISTORY_ASESMENBAYILAHIR_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -362,7 +363,12 @@ const INIT_STATE = {
         data: [],
         loading: false,
         error: null,
-    }
+    },
+    getHistoryAsesmenBayiLahir:{
+        data: [],
+        loading: false,
+        error: null,
+    },
 };
 
 const Emr = (state = INIT_STATE, action) => {
@@ -489,6 +495,9 @@ const Emr = (state = INIT_STATE, action) => {
                 },
                 getComboAsesmenBayiLahir:{
                     ...INIT_STATE.getComboAsesmenBayiLahir
+                },
+                getHistoryAsesmenBayiLahir:{
+                    ...INIT_STATE.getHistoryAsesmenBayiLahir
                 }
             }
         }
@@ -1971,6 +1980,39 @@ const Emr = (state = INIT_STATE, action) => {
                 ...state,
                 getComboAsesmenBayiLahir: {
                     ...state.getComboAsesmenBayiLahir,
+                    loading: true,
+                    error: action.payload,
+                }
+            }
+        }
+
+        case GET_HISTORY_ASESMENBAYILAHIR: {
+            return {
+                ...state,
+                getHistoryAsesmenBayiLahir: {
+                    ...state.getHistoryAsesmenBayiLahir,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case GET_HISTORY_ASESMENBAYILAHIR_SUCCESS: {
+            return {
+                ...state,
+                getHistoryAsesmenBayiLahir: {
+                    ...state.getHistoryAsesmenBayiLahir,
+                    loading: false,
+                    data: action.payload,
+                }
+            }
+        }
+
+        case GET_HISTORY_ASESMENBAYILAHIR_ERROR: {
+            return {
+                ...state,
+                getHistoryAsesmenBayiLahir: {
+                    ...state.getHistoryAsesmenBayiLahir,
                     loading: true,
                     error: action.payload,
                 }

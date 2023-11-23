@@ -2,7 +2,8 @@ import pool from "../../../config/dbcon.query";
 import * as uuid from 'uuid'
 import queries from '../../../queries/transaksi/registrasi.queries';
 import { qGetObatFromUnit, qGetOrderResepFromDP, qGetOrderVerifResepFromDP,
-qAsesmenBayiLahirByNorec,qComboApgar,qComboSebabKematian,qComboApgarScore } from "../../../queries/emr/emr.queries";
+qAsesmenBayiLahirByNorec,qComboApgar,qComboSebabKematian,qComboApgarScore,
+qHistoryAsesmenBayiLahir } from "../../../queries/emr/emr.queries";
 import hubunganKeluargaQueries from "../../../queries/mastertable/hubunganKeluarga/hubunganKeluarga.queries";
 import jenisKelaminQueries from "../../../queries/mastertable/jenisKelamin/jenisKelamin.queries";
 import db from "../../../models";
@@ -1373,6 +1374,36 @@ const getAsesmenBayiLahirByNorec = async (req, res) => {
     }
 }
 
+const getHistoryAsesmenBayiLahir = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const resultNocmfk = await queryPromise2(`SELECT nocmfk
+            FROM t_daftarpasien where norec='${req.query.norecdp}'
+        `);
+        if (resultNocmfk.rowCount === 0) {
+            res.status(500).send({ message: 'Data Tidak Ada' });
+            return
+        }
+        let nocmfk = resultNocmfk.rows[0].nocmfk
+        const result1 = await pool.query(qHistoryAsesmenBayiLahir,[nocmfk])
+
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: result1.rows,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export const initValueResep = {
     norecap: "",
     norecresep: "",
@@ -1617,7 +1648,8 @@ export default {
     getHistoriTriagiByNorec,
     upsertAssesmenBayiLahir,
     getAsesmenBayiLahirByNorec,
-    getComboAsesmenBayiLahir
+    getComboAsesmenBayiLahir,
+    getHistoryAsesmenBayiLahir
 };
 
 
