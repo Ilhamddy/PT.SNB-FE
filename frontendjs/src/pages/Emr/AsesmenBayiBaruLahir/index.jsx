@@ -2243,7 +2243,7 @@ const AsesmenBayiBaruLahir = () => {
                   }}
                   invalid={vSetValidation.touched?.pentalakaksanaan &&
                     !!vSetValidation.errors?.pentalakaksanaan}
-                  placeholder='Isi pentalakaksanaan'
+                  placeholder='Isi penatalaksanaan'
                 />
                 {vSetValidation.touched?.pentalakaksanaan
                   && !!vSetValidation.errors.pentalakaksanaan && (
