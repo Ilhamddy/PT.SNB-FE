@@ -7,7 +7,7 @@ import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import KontainerFlatpickr from '../../../../Components/KontainerFlatpickr/KontainerFlatpickr';
 import {
-  getLaporanRl_2, kendaliDokumenResetForm
+  getLaporanRl_3_5, kendaliDokumenResetForm
 } from '../../../../store/actions';
 import { Grid, _ } from 'gridjs-react';
 import * as XLSX from 'xlsx';
@@ -16,8 +16,8 @@ const RL3_5 = () => {
   document.title = "Laporan RL3.5";
   const dispatch = useDispatch();
   const { dataGrid, loadingGrid } = useSelector((state) => ({
-    dataGrid: state.KendaliDokumen.getLaporanRl_2.data || [],
-    loadingGrid: state.KendaliDokumen.getLaporanRl_2.loading,
+    dataGrid: state.KendaliDokumen.getLaporanRl_3_5.data || [],
+    loadingGrid: state.KendaliDokumen.getLaporanRl_3_5.loading,
   }));
   const [dateNow] = useState(() => new Date().toISOString())
   const vSetValidation = useFormik({
@@ -31,7 +31,7 @@ const RL3_5 = () => {
     }),
     onSubmit: (values) => {
       console.log(values)
-      dispatch(getLaporanRl_2({
+      dispatch(getLaporanRl_3_5({
         start: dateNow,
         end: dateNow
       }));
@@ -39,53 +39,72 @@ const RL3_5 = () => {
   })
   const columns = [
     {
-      id: 'kodeexternal',
+      id: 'no',
       formatter: (cell) => _(<span>{cell}</span>),
-      name: 'NO KODE'
+      name: 'NO'
     },
     {
-      id: 'reportdisplay',
-      name: 'KUALIFIKASI PENDIDIKAN'
+      id: 'label',
+      name: 'JENIS KEGIATAN'
       // formatter: (cell) => _(<a href="/#"> {cell} </a>)
     },
     {
-      name: 'KEADAAN',
+      name: 'RUJUKAN MEDIS',
       columns: [
         {
           id: 'keadaan_lk',
-          name: 'Laki-laki'
+          name: 'RUMAH SAKIT'
         },
         {
           id: 'keadaan_pm',
-          name: 'Perempuan'
+          name: 'BIDAN'
+        },
+        {
+          id: 'keadaan_pm',
+          name: 'PUSKESMAS'
+        },
+        {
+          id: 'keadaan_pm',
+          name: 'FASKES LAINNYA'
+        },
+        {
+          id: 'keadaan_pm',
+          name: 'Mati'
+        },
+        {
+          id: 'keadaan_pm',
+          name: 'Jumlah Total'
         },
       ]
     },
     {
-      name: 'KEBUTUHAN',
+      name: 'RUJUKAN NON MEDIS',
       columns: [
         {
           id: 'kebutuhan_lk',
-          name: 'Laki-laki'
+          name: 'Mati'
         },
         {
           id: 'kebutuhan_pm',
-          name: 'Perempuan'
+          name: 'Jumlah TOtal'
         },
       ]
     },
     {
-      name: 'KEKURANGAN',
+      name: 'NON RUJUKAN',
       columns: [
         {
           id: 'kekurangan_lk',
-          name: 'Laki-laki'
+          name: 'Mati'
         },
         {
           id: 'kekurangan_pm',
-          name: 'Perempuan'
+          name: 'Jumlah Total'
         },
       ]
+    },
+    {
+      name: 'DIRUJUK',
     },
   ]
   const handleExport = () => {
