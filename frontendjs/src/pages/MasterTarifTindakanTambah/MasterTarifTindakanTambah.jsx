@@ -144,6 +144,28 @@ const MasterTarifTindakanTambah = () => {
       selector: (row) => 'Rp' + row.harga?.toLocaleString('id-ID'),
       width: '200px',
     },
+    {
+      name: <span className="font-weight-bold fs-13">Hapus</span>,
+      sortable: true,
+      selector: (row, index) => (
+        <Button
+          color="danger"
+          onClick={() => {
+            const newAr = [...vTarifTindakan.values.komponenharga]
+            newAr.splice(index, 1)
+            const total = newAr.reduce(
+              (prev, cur) => prev + strToNumber(cur.harga),
+              0
+            )
+            vTarifTindakan.setFieldValue('totalharga', total)
+            vTarifTindakan.setFieldValue('komponenharga', newAr)
+          }}
+        >
+          Hapus
+        </Button>
+      ),
+      width: '150px',
+    },
   ]
 
   useEffect(() => {
