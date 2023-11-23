@@ -1229,8 +1229,7 @@ const upsertAssesmenBayiLahir = async (req, res) => {
         const { emrPasien,asesmenbayilahir } = await db.sequelize.transaction(async (transaction) => {
             let emrPasien =''
             let asesmenbayilahir =''
-            
-            if(bodyReq.norecemrpasien===''){
+            if(bodyReq.norecemrpasien==='' || bodyReq.norecemrpasien===undefined){
                 let norec = uuid.v4().substring(0, 32)
                 let norecassesmen = uuid.v4().substring(0, 32)
                 emrPasien = await db.t_emrpasien.create({
