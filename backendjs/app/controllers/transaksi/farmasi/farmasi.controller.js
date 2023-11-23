@@ -8,7 +8,11 @@ import {
 import { hProcessOrderResep } from "../emr/emr.controller";
 import { qGetAllVerif, qGetObatFromProduct, qGetPasienFromId } from "../../../queries/farmasi/farmasi.queries";
 import { generateKodeBatch, hCreateKartuStok } from "../gudang/gudang.controller";
-import { daftarUnit } from "../../../queries/mastertable/unit/unit.queries";
+import unitQueries, { daftarUnit } from "../../../queries/mastertable/unit/unit.queries";
+import { getDateEnd, getDateEndNull, getDateStart, getDateStartNull } from "../../../utils/dateutils";
+import instalasiQueries from "../../../queries/mastertable/instalasi/instalasi.queries";
+import rekananQueries from "../../../queries/mastertable/rekanan/rekanan.queries";
+import asalprodukQueries from "../../../queries/mastertable/asalproduk/asalproduk.queries";
 
 const t_verifresep = db.t_verifresep
 const t_pelayananpasien = db.t_pelayananpasien
@@ -278,7 +282,7 @@ const getPasienFromNoCm = async (req, res) => {
     try{
         const {nocm} = req.query
         let dataAllPasien = await pool.query(qGetPasienFromId, [
-            `%${nocm}%`,
+            `${nocm}`,
         ])
         const tempres = {
             datapasien: dataAllPasien.rows
@@ -655,6 +659,37 @@ const createAntreanFarmasi = async (req, res) => {
     }
 }
 
+
+const getComboLaporanPengadaan = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const instalasi = (await pool.query(instalasiQueries.getAll)).rows
+        const unit = (await pool.query(unitQueries.getAll)).rows
+        const asalProduk = (await pool.query(asalprodukQueries.getAll)).rows
+        const supplier = (await pool.query(rekananQueries.getAll)).rows
+        const tempres = {
+            instalasi: instalasi,
+            unit: unit,
+            asalProduk: asalProduk,
+            supplier: supplier
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export default {
     getOrderResepQuery,
     getOrderResepFromNorec,
@@ -665,7 +700,8 @@ export default {
     createOrUpdateRetur,
     getAntreanFromDP,
     createOrUpdateOrderPlusVerif: upsertOrderPlusVerif,
-    createAntreanFarmasi
+    createAntreanFarmasi,
+    getComboLaporanPengadaan,
 }
 
 const hCreateAntreanPemeriksaan = async(

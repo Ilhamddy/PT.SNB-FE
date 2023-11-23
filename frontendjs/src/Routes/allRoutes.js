@@ -377,6 +377,7 @@ import Index from "../pages/Emr/AsesmenBayiBaruLahir/index.jsx"
 import MasterSettingLayanan from "../pages/MasterSettingLayanan/MasterSettingLayanan.jsx";
 import MasterTarifTindakan from "../pages/MasterTarifTindakan/MasterTarifTindakan.jsx";
 import MasterTarifTindakanTambah from "../pages/MasterTarifTindakanTambah/MasterTarifTindakanTambah.jsx";
+import LaporanPengadaan from "../pages/LaporanPengadaan/LaporanPengadaan.jsx";
 
 
 const authProtectedRoutes = [
@@ -700,6 +701,7 @@ const authProtectedRoutes = [
   { path: "/farmasi/gudang/stok-opname/:tabopen/:norecstokopname", component: <StokOpname />},
   { path: "/farmasi/gudang/pemesanan-barang", component: <PemesananBarang />},
   { path: "/farmasi/gudang/pemesanan-barang/:norecpesan", component: <PemesananBarang />},
+  { path: "/logistik/gudang/laporan-pengadaan", component: <LaporanPengadaan />},
 
   // gudang logistik
   { path: "/logistik/gudang/penerimaan-produk", component: <PenerimaanProduk isLogistik />},

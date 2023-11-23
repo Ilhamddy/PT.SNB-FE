@@ -53,7 +53,6 @@ SELECT
 FROM m_produk mp
     LEFT JOIN m_detailjenisproduk mdjp ON mp.objectdetailjenisprodukfk = mdjp.id
     LEFT JOIN m_jenisproduk mjp ON mjp.id = mdjp.objectjenisprodukfk
-    
 WHERE mp.statusenabled = TRUE
     AND
         ${emptyInt("mp.objectinstalasifk", "$1")}
@@ -114,11 +113,7 @@ FROM m_produk mp
 WHERE
     ${checkStatusEnabled("mp.statusenabled", "$1")}
     AND 
-    (
-        $2 = ''
-        OR
-        mp.namaproduk ILIKE '%' || $2 || '%'
-    )
+        ${emptyIlike("mp.namaproduk", "$2")}
     AND
         mp.isobat != TRUE
     AND

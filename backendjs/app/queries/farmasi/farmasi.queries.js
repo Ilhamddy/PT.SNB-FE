@@ -1,3 +1,4 @@
+import { dateBetweenEmptyString, emptyIlike, emptyInt } from "../../utils/dbutils"
 
 const qGetObatFromProduct = `
 SELECT
@@ -16,7 +17,7 @@ SELECT
         )
         ORDER BY tsu.tglinput
     ) AS batchstokunit,
-    sum(tsu.qty) AS totalstok
+    COALESCE(sum(tsu.qty), 0) AS totalstok
 FROM t_stokunit tsu
     LEFT JOIN m_produk mp ON mp.id = tsu.objectprodukfk
     LEFT JOIN m_satuan ms ON ms.id = mp.objectsatuanstandarfk
@@ -130,7 +131,8 @@ SELECT
     mpas.alamatdomisili AS alamat,
     mpas.tgllahir AS tanggallahir
 FROM m_pasien AS mpas
-WHERE CAST(mpas.id AS text) ILIKE $1
+WHERE 
+    ${emptyIlike("CAST(mpas.id AS text)", "$1")}
 LIMIT 10
 `
 
@@ -161,9 +163,11 @@ WHERE tvr.statusenabled = true
     AND tdp.norec = $1
 `
 
+
+
 export {
     qGetObatFromProduct,
     qGetPenjualanBebasFromNorec,
     qGetPasienFromId,
-    qGetAllVerif
+    qGetAllVerif,
 }

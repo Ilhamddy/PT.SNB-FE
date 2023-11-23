@@ -28,7 +28,10 @@ import {
     CREATE_OR_UPDATE_ORDER_PLUS_VERIF_ERROR,
     CREATE_ANTREAN_FARMASI,
     CREATE_ANTREAN_FARMASI_SUCCESS,
-    CREATE_ANTREAN_FARMASI_ERROR
+    CREATE_ANTREAN_FARMASI_ERROR,
+    GET_COMBO_LAPORAN_PENGADAAN,
+    GET_COMBO_LAPORAN_PENGADAAN_SUCCESS,
+    GET_COMBO_LAPORAN_PENGADAAN_ERROR
 } from "./actionType";
 
 
@@ -204,5 +207,22 @@ export const createAntreanFarmasiSuccess = (data) => ({
 
 export const createAntreanFarmasiError = (error) => ({
     type: CREATE_ANTREAN_FARMASI_ERROR,
+    payload: error
+});
+
+export const getComboLaporanPengadaan = (queries) => ({
+    type: GET_COMBO_LAPORAN_PENGADAAN,
+    payload: {
+        queries: queries
+    }
+});
+
+export const getComboLaporanPengadaanSuccess = (data) => ({
+    type: GET_COMBO_LAPORAN_PENGADAAN_SUCCESS,
+    payload: data
+});
+
+export const getComboLaporanPengadaanError = (error) => ({
+    type: GET_COMBO_LAPORAN_PENGADAAN_ERROR,
     payload: error
 });

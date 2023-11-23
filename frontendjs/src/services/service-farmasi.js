@@ -43,5 +43,8 @@ export default class ServiceFarmasi {
     createAntreanFarmasi = async (body) => {
         return await api.create(`/transaksi/farmasi/create-antrean-farmasi`, body)
     }
-    
+
+    getComboLaporanPengadaan = async (queries) => {
+        return await api.get(`/transaksi/farmasi/get-combo-laporan-pengadaan`, queries)
+    }
 }

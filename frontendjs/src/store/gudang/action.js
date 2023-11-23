@@ -85,7 +85,10 @@ import {
     GET_LIST_RETUR_SUCCESS,
     GET_RETUR,
     GET_RETUR_SUCCESS,
-    GET_RETUR_ERROR
+    GET_RETUR_ERROR,
+    GET_LAPORAN_PENGADAAN,
+    GET_LAPORAN_PENGADAAN_SUCCESS,
+    GET_LAPORAN_PENGADAAN_ERROR
 } from "./actionType";
 
 
@@ -524,4 +527,21 @@ export const getReturSuccess = (data) => ({
 export const getReturError = (data) => ({
     type: GET_RETUR_ERROR,
     payload: { data: data }
+})
+
+export const getLaporanPengadaan = (queries) => ({
+    type: GET_LAPORAN_PENGADAAN,
+    payload: { queries: queries }
+})
+
+
+export const getLaporanPengadaanSuccess = (data) => ({
+    type: GET_LAPORAN_PENGADAAN_SUCCESS,
+    payload: data
+})
+
+
+export const getLaporanPengadaanError = (error) => ({
+    type: GET_LAPORAN_PENGADAAN_ERROR,
+    payload: error
 })

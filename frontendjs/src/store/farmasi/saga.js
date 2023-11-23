@@ -21,7 +21,9 @@ import {
     createOrUpdateOrderPlusVerifSuccess,
     createOrUpdateOrderPlusVerifError,
     createAntreanFarmasiSuccess,
-    createAntreanFarmasiError
+    createAntreanFarmasiError,
+    getComboLaporanPengadaanSuccess,
+    getComboLaporanPengadaanError
 } from "./action";
 
 import {
@@ -34,7 +36,8 @@ import {
     CREATE_OR_UPDATE_RETUR,
     GET_ANTREAN_FROM_DP,
     CREATE_OR_UPDATE_ORDER_PLUS_VERIF,
-    CREATE_ANTREAN_FARMASI
+    CREATE_ANTREAN_FARMASI,
+    GET_COMBO_LAPORAN_PENGADAAN
 } from "./actionType";
 
 import {
@@ -152,6 +155,16 @@ function* onCreateAntreanFarmasi({ payload: { body, callback } }) {
     }
 }
 
+
+function* onGetComboLaporanPengadaan({ payload: { queries } }) {
+    try {
+        const response = yield call(serviceFarmasi.getComboLaporanPengadaan, queries);
+        yield put(getComboLaporanPengadaanSuccess(response.data));
+    } catch (error) {
+        yield put(getComboLaporanPengadaanError(error));
+    }
+}
+
 export function* watchGetOrderResepQuery() {
     yield takeEvery(GET_ORDER_RESEP_QUERY, onGetOrderResepQuery);
 }
@@ -192,6 +205,10 @@ export function* watchCreateAntreanFarmasi(){
     yield takeEvery(CREATE_ANTREAN_FARMASI, onCreateAntreanFarmasi);
 }
 
+export function* watchGetComboLaporanPengadaan(){
+    yield takeEvery(GET_COMBO_LAPORAN_PENGADAAN, onGetComboLaporanPengadaan);
+}
+
 function* farmasiSaga() {
     yield all([
         fork(watchGetOrderResepQuery),
@@ -203,7 +220,8 @@ function* farmasiSaga() {
         fork(watchCreateOrUpdateRetur),
         fork(watchGetAntreanFromDP),
         fork(watchCreateOrUpdateOrderPlusVerif),
-        fork(watchCreateAntreanFarmasi)
+        fork(watchCreateAntreanFarmasi),
+        fork(watchGetComboLaporanPengadaan)
     ]);
 }
 

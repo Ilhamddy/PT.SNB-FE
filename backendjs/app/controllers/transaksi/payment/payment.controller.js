@@ -567,7 +567,10 @@ const getPaymentForPiutang = async (req, res) => {
 const getLaporanPendapatanKasir = async (req, res) => {
     const logger = res.locals.logger
     try{
-        let Laporan = await pool.query(qGetLaporanPendapatanKasir, [req.query.start,req.query.end, `%${req.query.search}%`])
+        let Laporan = await pool.query(qGetLaporanPendapatanKasir, [
+            req.query.start,
+            req.query.end, 
+            `%${req.query.search}%`])
         let tempres = {
             laporan: Laporan.rows || []
         }
@@ -628,6 +631,7 @@ const getPiutangAfterDate = async (req, res) => {
 const getDaftarVerifikasiRemunerasi = async (req, res) => {
     const logger = res.locals.logger;
     try{
+        //TODO:sini
         // const result1 = await pool.query(qDaftarVerifikasi, [req.query.tglAwal, req.query.tglAkhir])
         const instalasi = req.query.instalasi !== '' ? ` and mu.objectinstalasifk='${req.query.instalasi}'` : ' ';
         const unit = req.query.unit !== '' ? ` and mu.id='${req.query.unit}'` : ' ';

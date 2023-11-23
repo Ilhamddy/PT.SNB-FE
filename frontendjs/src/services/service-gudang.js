@@ -119,4 +119,8 @@ export default class ServiceGudang {
     getRetur = async (queries) => {
         return await api.get(`/transaksi/gudang/get-retur`, queries)
     }
+
+    getLaporanPengadaan = async (queries) => {
+        return await api.get(`/transaksi/gudang/get-laporan-pengadaan`, queries)
+    }
 }

@@ -261,6 +261,7 @@ const ModalCuti = ({ ...rest }) => {
     unit: state.sumberDayaManusia.getComboCuti.data.unit || [],
   }))
   const { cutiType } = useContext(LiburPegawaiContext)
+  const [dateNow] = useState(() => new Date().toISOString())
   const vCuti = useFormik({
     enableReinitialize: true,
     initialValues: {
@@ -268,8 +269,8 @@ const ModalCuti = ({ ...rest }) => {
       namapegawai: '',
       nip: '',
       unit: '',
-      tgllibur: '',
-      tglliburend: '',
+      tgllibur: dateNow,
+      tglliburend: dateNow,
       jeniscuti: '',
       alasannamalibur: '',
     },
@@ -362,7 +363,6 @@ const ModalCuti = ({ ...rest }) => {
                   id="tgllibur"
                   options={{
                     dateFormat: 'Y-m-d',
-                    defaultDate: 'today',
                     mode: 'range',
                   }}
                   value={[vCuti.values.tgllibur, vCuti.values.tglliburend]}

@@ -1,20 +1,11 @@
 import { ToastContainer } from 'react-toastify'
 import { Card, Container, Nav, NavItem, NavLink, TabContent } from 'reactstrap'
 import BreadCrumb from '../../Components/Common/BreadCrumb'
-import { useFormik } from 'formik'
-import CustomSelect from '../Select/Select'
-import { useDispatch, useSelector } from 'react-redux'
-import { getMasterTarifLayanan } from '../../store/payment/action'
-import DataTable from 'react-data-table-component'
-import LoadingTable from '../../Components/Table/LoadingTable'
-import { useEffect } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import { useNavigate, useParams } from 'react-router-dom'
 import classnames from 'classnames'
 import MasterTambahLayanan from './MasterTambahLayanan'
-import {
-  getComboTambahLayanan,
-  getLayanan,
-} from '../../store/masterdatalayanan/action'
+
 import MapRuangPelayanan from './MapRuangPelayanan'
 import LainLainPelayanan from './LainLainPelayanan'
 

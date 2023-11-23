@@ -59,7 +59,9 @@ import {
     getListReturSuccess,
     getListReturError,
     getReturSuccess,
-    getReturError
+    getReturError,
+    getLaporanPengadaanSuccess,
+    getLaporanPengadaanError
 } from "./action";
 
 
@@ -94,7 +96,8 @@ import {
     GET_COMBO_KARTU_STOK,
     GET_COMBO_STOK_UNIT,
     GET_LIST_RETUR,
-    GET_RETUR
+    GET_RETUR,
+    GET_LAPORAN_PENGADAAN
 } from "./actionType";
 
 const serviceGudang = new ServiceGudang();
@@ -420,6 +423,15 @@ function* onGetRetur({ payload: {queries}}){
     }
 }
 
+function* onGetLaporanPengadaan({ payload: {queries}}){
+    try{
+        let response = yield call(serviceGudang.getLaporanPengadaan, queries);
+        yield put(getLaporanPengadaanSuccess(response.data))
+    } catch (error) {
+        yield put(getLaporanPengadaanError(error))
+    }
+}
+
 
 function* gudangSaga() {
     yield all([
@@ -452,6 +464,7 @@ function* gudangSaga() {
         takeEvery(GET_COMBO_STOK_UNIT, onGetComboStokUnit),
         takeEvery(GET_LIST_RETUR, onGetListRetur),
         takeEvery(GET_RETUR, onGetRetur),
+        takeEvery(GET_LAPORAN_PENGADAAN, onGetLaporanPengadaan)
 
     ]);
 }

@@ -28,7 +28,10 @@ import {
     CREATE_OR_UPDATE_ORDER_PLUS_VERIF_ERROR,
     CREATE_ANTREAN_FARMASI,
     CREATE_ANTREAN_FARMASI_SUCCESS,
-    CREATE_ANTREAN_FARMASI_ERROR
+    CREATE_ANTREAN_FARMASI_ERROR,
+    GET_COMBO_LAPORAN_PENGADAAN,
+    GET_COMBO_LAPORAN_PENGADAAN_SUCCESS,
+    GET_COMBO_LAPORAN_PENGADAAN_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -73,6 +76,11 @@ const INIT_STATE = {
         error: null,
     },
     createAntreanFarmasi: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    getComboLaporanPengadaan: {
         data: [],
         loading: false,
         error: null,
@@ -413,6 +421,40 @@ const Farmasi = (state = INIT_STATE, action) => {
                 ...state,
                 createAntreanFarmasi: {
                     ...state.createAntreanFarmasi,
+                    loading: false,
+                    error: action.payload,
+                },
+            };
+        }
+
+        case GET_COMBO_LAPORAN_PENGADAAN: {
+            return {
+                ...state,
+                getComboLaporanPengadaan: {
+                    ...state.getComboLaporanPengadaan,
+                    data: [],
+                    loading: true,
+                    error: null,
+                },
+            };
+        }
+
+        case GET_COMBO_LAPORAN_PENGADAAN_SUCCESS: {
+            return {
+                ...state,
+                getComboLaporanPengadaan: {
+                    ...state.getComboLaporanPengadaan,
+                    loading: false,
+                    data: action.payload,
+                },
+            };
+        }
+
+        case GET_COMBO_LAPORAN_PENGADAAN_ERROR: {
+            return {
+                ...state,
+                getComboLaporanPengadaan: {
+                    ...state.getComboLaporanPengadaan,
                     loading: false,
                     error: action.payload,
                 },
