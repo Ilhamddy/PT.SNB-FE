@@ -38,6 +38,7 @@ import {
   upsertTarifTindakan,
 } from '../../store/mastertariftindakan/action'
 import { toast } from 'react-toastify'
+import LoadingLaman from '../../Components/Common/LoadingLaman'
 
 const MasterTarifTindakanTambah = () => {
   const { idtotal } = useParams()
@@ -49,6 +50,7 @@ const MasterTarifTindakanTambah = () => {
     produk,
     kelas,
     totalTarif,
+    loading,
   } = useSelector((state) => ({
     komponenProduk:
       state.MasterTarifTindakan.getComboTarifTindakan.data?.komponenProduk ||
@@ -61,6 +63,9 @@ const MasterTarifTindakanTambah = () => {
     kelas: state.MasterTarifTindakan.getComboTarifTindakan.data?.kelas,
     totalTarif:
       state.MasterTarifTindakan.getTotalTarif.data?.totalTarif || null,
+    loading:
+      state.MasterTarifTindakan.getTotalTarif.loading ||
+      state.MasterTarifTindakan.getComboTarifTindakan.loading,
   }))
   const navigate = useNavigate()
   const vTarifTindakan = useFormik({
@@ -155,6 +160,10 @@ const MasterTarifTindakanTambah = () => {
   useEffect(() => {
     dispatch(getTotalTarif({ idtotal: idtotal }))
   }, [idtotal, dispatch])
+
+  if (loading) {
+    return <LoadingLaman />
+  }
   return (
     <div className="page-content page-tarif-tindakan">
       <ToastContainer closeButton={false} />

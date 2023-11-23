@@ -64,7 +64,7 @@ const MasterTarifTindakan = () => {
       width: '80px',
     },
     {
-      name: <span className="font-weight-bold fs-13">Kode Layanan</span>,
+      name: <span className="font-weight-bold fs-13">Kode Tindakan</span>,
       sortable: true,
       selector: (row) => row.kodeexternal,
       width: '100px',

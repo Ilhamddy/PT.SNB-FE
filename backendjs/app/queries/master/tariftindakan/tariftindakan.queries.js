@@ -8,6 +8,7 @@ SELECT
     mp.namaproduk AS namaproduk,
     mdjp.id AS iddetailjenisproduk,
     mdjp.detailjenisproduk AS namadetailjenisproduk,
+    mthp.kodeexternal AS kodeexternal,
     mjp.id AS idjenisproduk,
     mjp.jenisproduk AS namajenisproduk,
     mthp.totalharga AS totalharga,
