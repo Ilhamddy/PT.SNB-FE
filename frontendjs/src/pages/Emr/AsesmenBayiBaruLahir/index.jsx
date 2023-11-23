@@ -215,21 +215,22 @@ const AsesmenBayiBaruLahir = () => {
         setFF('piece', 1)
         setstatePiece(false)
       }
-      if (dataAsesmen[0]?.sungkupDurasi === '0') {
+      if (dataAsesmen[0]?.durasio2 === '0') {
         setFF('sungkup', 2)
         setstateSungkup(true)
       } else {
         setFF('sungkup', 1)
         setstateSungkup(false)
       }
-      if (dataAsesmen[0]?.pompaDurasi === '0') {
+      if (dataAsesmen[0]?.durasipompa === '0') {
         setFF('pompa', 2)
         setstatePompa(true)
       } else {
         setFF('pompa', 1)
         setstatePompa(false)
       }
-      if (dataAsesmen[0]?.intubaticDurasi === '0') {
+      if (dataAsesmen[0]?.durasiintubatic === '0') {
+        console.log('masuk')
         setFF('intubatic', 2)
         setstateIntubatic(true)
       } else {
@@ -402,28 +403,28 @@ const AsesmenBayiBaruLahir = () => {
     setFF('r1MenitScore', e.r1score)
     setFF('r5MenitScore', e.r5score)
     setFF('r10MenitScore', e.r10score)
-    if (e.durasitpiece === 0) {
+    if (e.durasitpiece === '0') {
       setFF('piece', 2)
       setstatePiece(true)
     } else {
       setFF('piece', 1)
       setstatePiece(false)
     }
-    if (e.sungkupDurasi === 0) {
+    if (e.durasio2 === '0') {
       setFF('sungkup', 2)
       setstateSungkup(true)
     } else {
       setFF('sungkup', 1)
       setstateSungkup(false)
     }
-    if (e.pompaDurasi === 0) {
+    if (e.durasipompa === '0') {
       setFF('pompa', 2)
       setstatePompa(true)
     } else {
       setFF('pompa', 1)
       setstatePompa(false)
     }
-    if (e.intubaticDurasi === 0) {
+    if (e.durasiintubatic === '0') {
       setFF('intubatic', 2)
       setstateIntubatic(true)
     } else {
