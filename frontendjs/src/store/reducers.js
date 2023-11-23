@@ -97,6 +97,7 @@ import Sysadmin from "./sysadmin/reducer";
 import Logger from "./logger/reducer"
 import Eis from "./eis/reducer"
 import MasterDataLayanan from "./masterdatalayanan/reducer";
+import MasterTarifTindakan from "./mastertariftindakan/reducer";
 
 const rootReducer = combineReducers({
     // public
@@ -148,7 +149,8 @@ const rootReducer = combineReducers({
     Sysadmin,
     Logger,
     Eis,
-    MasterDataLayanan
+    MasterDataLayanan,
+    MasterTarifTindakan
 });
 
 export default rootReducer;

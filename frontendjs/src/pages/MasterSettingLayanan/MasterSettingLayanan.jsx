@@ -16,6 +16,7 @@ import {
   getLayanan,
 } from '../../store/masterdatalayanan/action'
 import MapRuangPelayanan from './MapRuangPelayanan'
+import LainLainPelayanan from './LainLainPelayanan'
 
 const linkSettingProduk = '/master/setting-layanan'
 
@@ -80,6 +81,7 @@ const MasterSettingLayanan = () => {
           <TabContent activeTab={tabopen} className="text-muted">
             <MasterTambahLayanan tabId={'tambah'} />
             <MapRuangPelayanan tabId={'map-ruang-pelayanan'} />
+            <LainLainPelayanan tabId={'lain-lain'} />
           </TabContent>
         </Card>
       </Container>

@@ -19,7 +19,22 @@ import {
     GET_LAYANAN_MAPPING_ERROR,
     SAVE_OR_DELETE_MAPPING,
     SAVE_OR_DELETE_MAPPING_SUCCESS,
-    SAVE_OR_DELETE_MAPPING_ERROR
+    SAVE_OR_DELETE_MAPPING_ERROR,
+    GET_LAIN_LAIN,
+    GET_LAIN_LAIN_ERROR,
+    GET_LAIN_LAIN_SUCCESS,
+    UPSERT_JENIS_PRODUK,
+    UPSERT_JENIS_PRODUK_SUCCESS,
+    UPSERT_JENIS_PRODUK_ERROR,
+    UPSERT_DETAIL_JENIS_PRODUK,
+    UPSERT_DETAIL_JENIS_PRODUK_SUCCESS,
+    UPSERT_DETAIL_JENIS_PRODUK_ERROR,
+    GET_MASTER_TARIF_LAYANAN,
+    GET_MASTER_TARIF_LAYANAN_SUCCESS,
+    GET_MASTER_TARIF_LAYANAN_ERROR,
+    SET_VARIABEL_BPJS,
+    SET_VARIABEL_BPJS_SUCCESS,
+    SET_VARIABEL_BPJS_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -57,6 +72,31 @@ const INIT_STATE = {
         data: [],
         loading: false,
         error: null
+    },
+    getLainLain: {
+        data: [],
+        loading: false,
+        error: null
+    },
+    upsertJenisProduk: {
+        data: [],
+        loading: false,
+        error: null
+    },
+    upsertDetailJenisProduk: {
+        data: [],
+        loading: false,
+        error: null
+    },
+    getMasterTarifLayanan: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    setVariabelBPJS: {
+        data: [],
+        loading: false,
+        error: null
     }
 }
 
@@ -90,7 +130,7 @@ const MasterDataLayanan = (state = INIT_STATE, action) => {
                 getComboTambahLayanan: {
                     ...state.getComboTambahLayanan,
                     loading: false,
-                    error: action.error,
+                    error: action.payload,
                 }
             }
         }
@@ -123,7 +163,7 @@ const MasterDataLayanan = (state = INIT_STATE, action) => {
                 upsertLayanan: {
                     ...state.upsertLayanan,
                     loading: false,
-                    error: action.error,
+                    error: action.payload,
                 }
             }
         }
@@ -158,7 +198,7 @@ const MasterDataLayanan = (state = INIT_STATE, action) => {
                     ...state.getLayanan,
                     data: [],
                     loading: false,
-                    error: action.error,
+                    error: action.payload,
                 }
             }
         }
@@ -193,7 +233,7 @@ const MasterDataLayanan = (state = INIT_STATE, action) => {
                     ...state.getComboMapRuangPelayanan,
                     data: [],
                     loading: false,
-                    error: action.error,
+                    error: action.payload,
                 }
             }
         }
@@ -228,7 +268,7 @@ const MasterDataLayanan = (state = INIT_STATE, action) => {
                     ...state.getMapUnitToProduk,
                     data: [],
                     loading: false,
-                    error: action.error,
+                    error: action.payload,
                 }
             }
         }
@@ -263,7 +303,7 @@ const MasterDataLayanan = (state = INIT_STATE, action) => {
                     ...state.getLayananMapping,
                     data: [],
                     loading: false,
-                    error: action.error,
+                    error: action.payload,
                 }
             }
         }
@@ -298,10 +338,184 @@ const MasterDataLayanan = (state = INIT_STATE, action) => {
                     ...state.saveOrDeleteMapping,
                     data: [],
                     loading: false,
-                    error: action.error,
+                    error: action.payload,
                 }
             }
         }
+
+        case GET_LAIN_LAIN: {
+            return {
+                ...state,
+                getLainLain: {
+                    ...state.getLainLain,
+                    data: [],
+                    loading: true,
+                    error: action.payload,
+                }
+            }
+        }
+
+        case GET_LAIN_LAIN_SUCCESS: {
+            return {
+                ...state,
+                getLainLain: {
+                    ...state.getLainLain,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case GET_LAIN_LAIN_ERROR: {
+            return {
+                ...state,
+                getLainLain: {
+                    ...state.getLainLain,
+                    data: [],
+                    loading: false,
+                    error: action.payload,
+                }
+            }
+        }
+
+        case UPSERT_JENIS_PRODUK: {
+            return {
+                ...state,
+                upsertJenisProduk: {
+                    ...state.upsertJenisProduk,
+                    data: [],
+                    loading: true,
+                    error: action.payload,
+                }
+            }
+        }
+
+        case UPSERT_JENIS_PRODUK_SUCCESS: {
+            return {
+                ...state,
+                upsertJenisProduk: {
+                    ...state.upsertJenisProduk,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case UPSERT_JENIS_PRODUK_ERROR: {
+            return {
+                ...state,
+                upsertJenisProduk: {
+                    ...state.upsertJenisProduk,
+                    data: [],
+                    loading: false,
+                    error: action.payload,
+                }
+            }
+        }
+
+        case UPSERT_DETAIL_JENIS_PRODUK: {
+            return {
+                ...state,
+                upsertDetailJenisProduk: {
+                    ...state.upsertDetailJenisProduk,
+                    data: [],
+                    loading: true,
+                    error: action.payload,
+                }
+            }
+        }
+
+        case UPSERT_DETAIL_JENIS_PRODUK_SUCCESS: {
+            return {
+                ...state,
+                upsertDetailJenisProduk: {
+                    ...state.upsertDetailJenisProduk,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case UPSERT_DETAIL_JENIS_PRODUK_ERROR: {
+            return {
+                ...state,
+                upsertDetailJenisProduk: {
+                    ...state.upsertDetailJenisProduk,
+                    data: [],
+                    loading: false,
+                    error: action.payload,
+                }
+            }
+        }
+
+        case GET_MASTER_TARIF_LAYANAN: {
+            return {
+                ...state,
+                getMasterTarifLayanan: {
+                    ...state.getMasterTarifLayanan,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case GET_MASTER_TARIF_LAYANAN_SUCCESS: {
+            return {
+                ...state,
+                getMasterTarifLayanan: {
+                    ...state.getMasterTarifLayanan,
+                    loading: false,
+                    data: action.payload,
+                }
+            }
+        }
+
+        case GET_MASTER_TARIF_LAYANAN_ERROR: {
+            return {
+                ...state,
+                getMasterTarifLayanan: {
+                    ...state.getMasterTarifLayanan,
+                    loading: false,
+                    error: action.payload,
+                }
+            }
+        }
+
+        case SET_VARIABEL_BPJS: {
+            return {
+                ...state,
+                setVariabelBPJS: {
+                    ...state.setVariabelBPJS,
+                    data: [],
+                    loading: true,
+                    error: action.payload,
+                }
+            }
+        }
+
+        case SET_VARIABEL_BPJS_SUCCESS: {
+            return {
+                ...state,
+                setVariabelBPJS: {
+                    ...state.setVariabelBPJS,
+                    data: action.payload,
+                    loading: false,
+                }
+            }
+        }
+
+        case SET_VARIABEL_BPJS_ERROR: {
+            return {
+                ...state,
+                setVariabelBPJS: {
+                    ...state.setVariabelBPJS,
+                    data: [],
+                    loading: false,
+                    error: action.payload,
+                }
+            }
+        }
+
 
         default: {
             return { ...state };

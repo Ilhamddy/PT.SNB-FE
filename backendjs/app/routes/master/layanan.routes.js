@@ -52,4 +52,34 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.saveOrDeleteMapping
     )
+
+    app.get(
+        "/api/master/layanan/get-lain-lain",
+        [authJwt.verifyToken],
+        controller.getLainLain
+    )
+
+    app.post(
+        "/api/master/layanan/upsert-jenis-produk",
+        [authJwt.verifyToken],
+        controller.upsertJenisProduk
+    )
+
+    app.post(
+        "/api/master/layanan/upsert-detail-jenis-produk",
+        [authJwt.verifyToken],
+        controller.upsertDetailJenisProduk
+    )
+
+    app.get(
+        "/api/master/layanan/get-master-tarif-layanan",
+        [authJwt.verifyToken],
+        controller.getMasterTarifLayanan
+    )
+
+    app.post(
+        "/api/master/layanan/set-variabel-bpjs",
+        [authJwt.verifyToken],
+        controller.setVariabelBPJS
+    )
 }

@@ -36,6 +36,7 @@ import sysadminRoutes from "./app/routes/transaksi/sysadmin.routes";
 import systemRoutes from "./app/routes/transaksi/system.routes";
 import eisRoutes from "./app/routes/transaksi/eis.routes.js";
 import layananRoutes from "./app/routes/master/layanan.routes.js";
+import tariftindakanRoutes from "./app/routes/master/tariftindakan.routes.js";
 
 dotenv.config()
 
@@ -97,6 +98,7 @@ sysadminRoutes(app);
 systemRoutes(app);
 eisRoutes(app);
 layananRoutes(app);
+tariftindakanRoutes(app)
 // set port, listen for requests
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {

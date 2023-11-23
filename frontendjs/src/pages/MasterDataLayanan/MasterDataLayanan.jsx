@@ -14,16 +14,22 @@ import {
   FormFeedback,
   Button,
   UncontrolledTooltip,
+  Modal,
 } from 'reactstrap'
 import BreadCrumb from '../../Components/Common/BreadCrumb'
 import { useFormik } from 'formik'
 import CustomSelect from '../Select/Select'
 import { useDispatch, useSelector } from 'react-redux'
-import { getMasterTarifLayanan } from '../../store/payment/action'
+import {
+  getMasterTarifLayanan,
+  setVariabelBPJS,
+} from '../../store/masterdatalayanan/action'
 import DataTable from 'react-data-table-component'
 import LoadingTable from '../../Components/Table/LoadingTable'
 import { useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import * as Yup from 'yup'
+import ColLabelInput from '../../Components/ColLabelInput/ColLabelInput'
 
 const MasterDataLayanan = () => {
   const dispatch = useDispatch()
@@ -37,15 +43,53 @@ const MasterDataLayanan = () => {
       dispatch(getMasterTarifLayanan(values))
     },
   })
+
+  const vVariabelBPJS = useFormik({
+    initialValues: {
+      idproduk: '',
+      jenisproduk: '',
+      detailjenisproduk: '',
+      namalayanan: '',
+      variabelbpjs: '',
+    },
+    validationSchema: Yup.object({
+      variabelbpjs: Yup.string().required('Variabel BPJS harus diisi'),
+    }),
+    onSubmit: (values, { resetForm }) => {
+      dispatch(
+        setVariabelBPJS(values, () => {
+          dispatch(getMasterTarifLayanan(vFilter.values))
+          resetForm()
+        })
+      )
+    },
+  })
   useEffect(() => {
     dispatch(getMasterTarifLayanan(vFilter.initialValues))
   }, [vFilter.initialValues, dispatch])
-  const { layanan, loading, valueStatusEnabled } = useSelector((state) => ({
-    layanan: state.Payment.getMasterTarifLayanan.data.layanan || [],
-    loading: state.Payment.getMasterTarifLayanan.loading || false,
-    valueStatusEnabled:
-      state.Payment.getMasterTarifLayanan.data?.combo?.statusenabled || [],
-  }))
+  const { layanan, loading, valueStatusEnabled, variabelBPJS } = useSelector(
+    (state) => ({
+      layanan: state.MasterDataLayanan.getMasterTarifLayanan.data.layanan || [],
+      loading: state.MasterDataLayanan.getMasterTarifLayanan.loading || false,
+      valueStatusEnabled:
+        state.MasterDataLayanan.getMasterTarifLayanan.data?.combo
+          ?.statusenabled || [],
+      variabelBPJS:
+        state.MasterDataLayanan.getMasterTarifLayanan.data?.combo
+          ?.variabelBPJS || [],
+    })
+  )
+
+  const handlePilihVariabel = (row) => {
+    vVariabelBPJS.setValues({
+      ...vVariabelBPJS.initialValues,
+      idproduk: row.idproduk,
+      jenisproduk: row.namajenisproduk,
+      detailjenisproduk: row.namadetailjenisproduk,
+      namalayanan: row.namaproduk,
+      variabelbpjs: row.variabelbpjs,
+    })
+  }
 
   /**
    * @type {import("react-data-table-component").TableColumn[]}
@@ -73,7 +117,7 @@ const MasterDataLayanan = () => {
                   Edit
                 </DropdownItem>
               </Link>
-              <DropdownItem onClick={() => {}}>
+              <DropdownItem onClick={() => handlePilihVariabel(row)}>
                 <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
                 Set Variabel BPJS
               </DropdownItem>
@@ -145,6 +189,129 @@ const MasterDataLayanan = () => {
   ]
   return (
     <div className="page-content page-data-layanan">
+      <Modal
+        isOpen={!!vVariabelBPJS.values.idproduk}
+        toggle={() => vVariabelBPJS.resetForm()}
+        centered
+      >
+        <Card className="p-3">
+          <Row>
+            <ColLabelInput className="mb-3" label={'Jenis Produk'} lg={12}>
+              <Input
+                id="jenisproduk"
+                name="jenisproduk"
+                type="text"
+                disabled
+                value={vVariabelBPJS.values.jenisproduk}
+                onChange={(e) => {
+                  vVariabelBPJS.setFieldValue('jenisproduk', e.target.value)
+                }}
+                invalid={
+                  vVariabelBPJS.touched?.jenisproduk &&
+                  !!vVariabelBPJS.errors?.jenisproduk
+                }
+              />
+              {vVariabelBPJS.touched?.jenisproduk &&
+                !!vVariabelBPJS.errors.jenisproduk && (
+                  <FormFeedback type="invalid">
+                    <div>{vVariabelBPJS.errors.jenisproduk}</div>
+                  </FormFeedback>
+                )}
+            </ColLabelInput>
+            <ColLabelInput
+              className="mb-3"
+              label={'Detail Jenis Produk'}
+              lg={12}
+            >
+              <Input
+                id="detailjenisproduk"
+                name="detailjenisproduk"
+                type="text"
+                disabled
+                value={vVariabelBPJS.values.detailjenisproduk}
+                onChange={(e) => {
+                  vVariabelBPJS.setFieldValue(
+                    'detailjenisproduk',
+                    e.target.value
+                  )
+                }}
+                invalid={
+                  vVariabelBPJS.touched?.detailjenisproduk &&
+                  !!vVariabelBPJS.errors?.detailjenisproduk
+                }
+              />
+              {vVariabelBPJS.touched?.detailjenisproduk &&
+                !!vVariabelBPJS.errors.detailjenisproduk && (
+                  <FormFeedback type="invalid">
+                    <div>{vVariabelBPJS.errors.detailjenisproduk}</div>
+                  </FormFeedback>
+                )}
+            </ColLabelInput>
+            <ColLabelInput className="mb-3" label={'Nama Layanan'} lg={12}>
+              <Input
+                id="namalayanan"
+                name="namalayanan"
+                type="text"
+                disabled
+                value={vVariabelBPJS.values.namalayanan}
+                onChange={(e) => {
+                  vVariabelBPJS.setFieldValue('namalayanan', e.target.value)
+                }}
+                invalid={
+                  vVariabelBPJS.touched?.namalayanan &&
+                  !!vVariabelBPJS.errors?.namalayanan
+                }
+              />
+              {vVariabelBPJS.touched?.namalayanan &&
+                !!vVariabelBPJS.errors.namalayanan && (
+                  <FormFeedback type="invalid">
+                    <div>{vVariabelBPJS.errors.namalayanan}</div>
+                  </FormFeedback>
+                )}
+            </ColLabelInput>
+            <ColLabelInput className="mb-3" label={'Variabel BPJS'} lg={12}>
+              <CustomSelect
+                id="variabelbpjs"
+                name="variabelbpjs"
+                options={variabelBPJS}
+                onChange={(e) => {
+                  vVariabelBPJS.setFieldValue('variabelbpjs', e?.value || '')
+                }}
+                value={vVariabelBPJS.values.variabelbpjs}
+                isClearEmpty
+                className={`input row-header ${
+                  !!vVariabelBPJS?.errors.variabelbpjs ? 'is-invalid' : ''
+                }`}
+              />
+              {vVariabelBPJS.touched.variabelbpjs &&
+                !!vVariabelBPJS.errors.variabelbpjs && (
+                  <FormFeedback type="invalid">
+                    <div>{vVariabelBPJS.errors.variabelbpjs}</div>
+                  </FormFeedback>
+                )}
+            </ColLabelInput>
+          </Row>
+          <Row>
+            <Col className="d-flex justify-content-center">
+              <Button
+                color="success"
+                type="button"
+                onClick={() => vVariabelBPJS.handleSubmit()}
+              >
+                Simpan
+              </Button>
+              <Button
+                color="danger"
+                type="button"
+                className="ms-3"
+                onClick={() => vVariabelBPJS.resetForm()}
+              >
+                Batal
+              </Button>
+            </Col>
+          </Row>
+        </Card>
+      </Modal>
       <ToastContainer closeButton={false} />
       <BreadCrumb title="Master Data Layanan" pageTitle="Master" />
       <Container fluid>

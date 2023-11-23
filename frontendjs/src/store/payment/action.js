@@ -51,9 +51,6 @@ import {
     GET_DAFTAR_SUDAH_VERIFIKASI_REMUNERASI,
     GET_DAFTAR_SUDAH_VERIFIKASI_REMUNERASI_ERROR,
     GET_DAFTAR_SUDAH_VERIFIKASI_REMUNERASI_SUCCESS,
-    GET_MASTER_TARIF_LAYANAN,
-    GET_MASTER_TARIF_LAYANAN_SUCCESS,
-    GET_MASTER_TARIF_LAYANAN_ERROR
 } from "./actionType";
 
 export const pelayananFromDpGet = (norecap) => {
@@ -404,19 +401,3 @@ export const getDaftarSudahVerifikasiRemunerasiError = (error) => ({
     payload: error,
 });
 
-export const getMasterTarifLayanan = (queries) => ({
-    type: GET_MASTER_TARIF_LAYANAN,
-    payload: {
-        queries,
-    },
-});
-
-export const getMasterTarifLayananSuccess = (data) => ({
-    type: GET_MASTER_TARIF_LAYANAN_SUCCESS,
-    payload: data,
-});
-
-export const getMasterTarifLayananError = (error) => ({
-    type: GET_MASTER_TARIF_LAYANAN_ERROR,
-    payload: error,
-});
