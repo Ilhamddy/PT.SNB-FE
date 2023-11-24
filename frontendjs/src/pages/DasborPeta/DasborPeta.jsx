@@ -29,6 +29,7 @@ import { provinsi } from './provinsi'
 import { polygon, point } from '@turf/turf'
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon'
 import { geoContains } from 'd3-geo'
+import { useRef, useState } from 'react'
 
 const pasien = {
   nama: 'Bekasi',
@@ -83,10 +84,47 @@ const createClusterCustomIcon = function (cluster) {
   })
 }
 
+const initialWilayah = {
+  wilayah: '',
+  densitas: '',
+}
+
 const DasborPeta = () => {
   const newContoh = { ...contoh }
   newContoh.features = [...newContoh.features]
   provinsi.features.forEach((prov) => newContoh.features.push(prov))
+  const [wilayah, setWilayah] = useState(initialWilayah)
+  const refJSON = useRef(null)
+  function resetHighlight(e) {
+    // setWilayah(initialWilayah)
+    refJSON.current.resetStyle(e.target)
+  }
+  function highlightFeature(e, feature) {
+    let layer = e.target
+
+    layer.setStyle({
+      weight: 5,
+      color: '#666',
+      dashArray: '',
+      fillOpacity: 0.7,
+    })
+
+    // setWilayah({
+    //   ...initialWilayah,
+    //   wilayah: feature.properties?.name || feature.properties?.propinsi,
+    //   densitas: feature.properties.density,
+    // })
+
+    layer.bringToFront()
+  }
+
+  function onEachFeature(feature, layer) {
+    layer.on({
+      mouseover: (e) => highlightFeature(e, feature),
+      mouseout: resetHighlight,
+      // click: zoomToFeature,
+    })
+  }
   newContoh.features = newContoh.features.map((data) => {
     const newData = { ...data }
     newData.properties.density = 0
@@ -157,7 +195,13 @@ const DasborPeta = () => {
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               />
-              <GeoJSON style={style} key="1" data={newContoh} />
+              <GeoJSON
+                ref={refJSON}
+                onEachFeature={onEachFeature}
+                style={style}
+                key="1"
+                data={newContoh}
+              />
             </MapContainer>
           </Row>
         </Card>
