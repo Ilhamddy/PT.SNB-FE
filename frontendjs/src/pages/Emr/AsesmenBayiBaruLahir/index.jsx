@@ -901,7 +901,7 @@ const AsesmenBayiBaruLahir = () => {
                   <Input
                     id="beratBadanBayi"
                     name="beratBadanBayi"
-                    type="text"
+                    type="number"
                     value={vSetValidation.values.beratBadanBayi}
                     onChange={(e) => {
                       vSetValidation.setFieldValue('beratBadanBayi', e.target.value)

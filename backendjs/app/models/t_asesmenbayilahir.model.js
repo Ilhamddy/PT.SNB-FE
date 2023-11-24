@@ -66,7 +66,7 @@ export default (sequelize, Sequelize) => {
             type:Sequelize.INTEGER
         },
         berat:{
-            type:Sequelize.STRING
+            type:Sequelize.FLOAT
         },
         panjang:{
             type:Sequelize.STRING
