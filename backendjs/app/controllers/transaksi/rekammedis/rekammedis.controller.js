@@ -835,61 +835,62 @@ const getLaporanRL3_4 = async (req, res) => {
 const getLaporanRL3_5 = async (req, res) => {
     const logger = res.locals.logger;
     try{
-        // const result = await pool.query(queries.qLaporanRL3_4,[req.query.start,req.query.end])
+        const result = await pool.query(queries.qLaporanRL3_5,[req.query.start,req.query.end])
         const list = [
-            {id: 1,no:'1',label: "Bayi Lahir Hidup",medis_rumahsakit: 0,medis_bidan:0,medis_puskesmas:0,medis_faskeslain:0,medis_hidup:0,medis_mati:0,medis_jml:0,nonrujukan_hidup:0,nonrujukan_mati:0,nonrujukan_jml:0,rujuk:0
+            {id: 1,no:'1',label: "Bayi Lahir Hidup",medis_rumahsakit: '',medis_bidan:'',medis_puskesmas:'',medis_faskeslain:'',medis_hidup:'',medis_mati:'',medis_jml:'',nonmedis_mati:'',nonmedis_jml:'',nonrujukan_hidup:'',nonrujukan_mati:'',nonrujukan_jml:'',rujuk:''
             },
-            {id: 2,no:'1.1',label: " ≥ 2500 gram",medis_rumahsakit: 0,medis_bidan:0,medis_puskesmas:0,medis_faskeslain:0,medis_hidup:0,medis_mati:0,medis_jml:0,nonrujukan_hidup:0,nonrujukan_mati:0,nonrujukan_jml:0,rujuk:0
+            {id: 2,no:'1.1',label: "≥ 2500 gram",medis_rumahsakit: 0,medis_bidan:0,medis_puskesmas:0,medis_faskeslain:0,medis_hidup:0,medis_mati:0,medis_jml:0,nonmedis_mati:0,nonmedis_jml:0,nonrujukan_hidup:0,nonrujukan_mati:0,nonrujukan_jml:0,rujuk:0
             },
-            {id: 3,no:'1.2',label: "<2500 gram",medis_rumahsakit: 0,medis_bidan:0,medis_puskesmas:0,medis_faskeslain:0,medis_hidup:0,medis_mati:0,medis_jml:0,nonrujukan_hidup:0,nonrujukan_mati:0,nonrujukan_jml:0,rujuk:0
+            {id: 3,no:'1.2',label: "< 2500 gram",medis_rumahsakit: 0,medis_bidan:0,medis_puskesmas:0,medis_faskeslain:0,medis_hidup:0,medis_mati:0,medis_jml:0,nonmedis_mati:0,nonmedis_jml:0,nonrujukan_hidup:0,nonrujukan_mati:0,nonrujukan_jml:0,rujuk:0
             },
-            {id: 4,no:'2',label: "Kematian Perinatal",medis_rumahsakit: 0,medis_bidan:0,medis_puskesmas:0,medis_faskeslain:0,medis_hidup:0,medis_mati:0,medis_jml:0,nonrujukan_hidup:0,nonrujukan_mati:0,nonrujukan_jml:0,rujuk:0
+            {id: 4,no:'2',label: "Kematian Perinatal",medis_rumahsakit: '',medis_bidan:'',medis_puskesmas:'',medis_faskeslain:'',medis_hidup:'',medis_mati:'',medis_jml:'',nonmedis_mati:'',nonmedis_jml:'',nonrujukan_hidup:'',nonrujukan_mati:'',nonrujukan_jml:'',rujuk:''
             },
-            {id: 5,no:'2.1',label: "Kelahiran Mati",medis_rumahsakit: 0,medis_bidan:0,medis_puskesmas:0,medis_faskeslain:0,medis_hidup:0,medis_mati:0,medis_jml:0,nonrujukan_hidup:0,nonrujukan_mati:0,nonrujukan_jml:0,rujuk:0
+            {id: 5,no:'2.1',label: "Kelahiran Mati",medis_rumahsakit: 0,medis_bidan:0,medis_puskesmas:0,medis_faskeslain:0,medis_hidup:0,medis_mati:0,medis_jml:0,nonmedis_mati:0,nonmedis_jml:0,nonrujukan_hidup:0,nonrujukan_mati:0,nonrujukan_jml:0,rujuk:0
             },
-            {id: 6,no:'2.2',label: "Mati Neonatal < 7 Hari", medis_rumahsakit: 0,medis_bidan:0,medis_puskesmas:0,medis_faskeslain:0,medis_hidup:0,medis_mati:0,medis_jml:0,nonrujukan_hidup:0,nonrujukan_mati:0,nonrujukan_jml:0, rujuk:0
+            {id: 6,no:'2.2',label: "Mati Neonatal < 7 Hari", medis_rumahsakit: 0,medis_bidan:0,medis_puskesmas:0,medis_faskeslain:0,medis_hidup:0,medis_mati:0,medis_jml:0,nonmedis_mati:0,nonmedis_jml:0,nonrujukan_hidup:0,nonrujukan_mati:0,nonrujukan_jml:0, rujuk:0
             },
-            {id: 7,no:'3',label: "Sebab Kematian Perinatal",
-        medis_rumahsakit: 0,medis_bidan:0,medis_puskesmas:0,medis_faskeslain:0, medis_hidup:0,medis_mati:0,medis_jml:0,nonrujukan_hidup:0,nonrujukan_mati:0,nonrujukan_jml:0,rujuk:0
+            {id: 7,no:'3',label: "Sebab Kematian Perinatal",medis_rumahsakit: '',medis_bidan:'',medis_puskesmas:'',medis_faskeslain:'', medis_hidup:'',medis_mati:'',medis_jml:'',nonmedis_mati:'',nonmedis_jml:'',nonrujukan_hidup:'',nonrujukan_mati:'',nonrujukan_jml:'',rujuk:''
             },
             {id: 8,no:'3.1',label: "Asphyxia",
-         medis_rumahsakit: 0,medis_bidan:0,medis_puskesmas:0,medis_faskeslain:0,medis_hidup:0,medis_mati:0,medis_jml:0,nonrujukan_hidup:0,nonrujukan_mati:0,nonrujukan_jml:0,rujuk:0
+         medis_rumahsakit: 0,medis_bidan:0,medis_puskesmas:0,medis_faskeslain:0,medis_hidup:0,medis_mati:0,medis_jml:0,nonmedis_mati:0,nonmedis_jml:0,nonrujukan_hidup:0,nonrujukan_mati:0,nonrujukan_jml:0,rujuk:0
             },
-            {id: 9,no:'3.2',label: "Trauma Kelahiran",medis_rumahsakit: 0,medis_bidan:0,medis_puskesmas:0,medis_faskeslain:0,medis_hidup:0,medis_mati:0,medis_jml:0,nonrujukan_hidup:0,nonrujukan_mati:0,nonrujukan_jml:0,rujuk:0
+            {id: 9,no:'3.2',label: "Trauma Kelahiran",medis_rumahsakit: 0,medis_bidan:0,medis_puskesmas:0,medis_faskeslain:0,medis_hidup:0,medis_mati:0,medis_jml:0,nonmedis_mati:0,nonmedis_jml:0,nonrujukan_hidup:0,nonrujukan_mati:0,nonrujukan_jml:0,rujuk:0
             },
             {id: 10,no:'3.3',label: "BBLR",
-         medis_rumahsakit: 0,medis_bidan:0,medis_puskesmas:0,medis_faskeslain:0,medis_hidup:0,medis_mati:0,medis_jml:0,nonrujukan_hidup:0,nonrujukan_mati:0,nonrujukan_jml:0,rujuk:0
+         medis_rumahsakit: 0,medis_bidan:0,medis_puskesmas:0,medis_faskeslain:0,medis_hidup:0,medis_mati:0,medis_jml:0,nonmedis_mati:0,nonmedis_jml:0,nonrujukan_hidup:0,nonrujukan_mati:0,nonrujukan_jml:0,rujuk:0
             },
-            {id: 11,no:'3.4',label: "Tetanus Neonatorum",medis_rumahsakit: 0,medis_bidan:0,medis_puskesmas:0,medis_faskeslain:0,medis_hidup:0,medis_mati:0,medis_jml:0,nonrujukan_hidup:0,nonrujukan_mati:0,nonrujukan_jml:0,rujuk:0
+            {id: 11,no:'3.4',label: "Tetanus Neonatorum",medis_rumahsakit: 0,medis_bidan:0,medis_puskesmas:0,medis_faskeslain:0,medis_hidup:0,medis_mati:0,medis_jml:0,nonmedis_mati:0,nonmedis_jml:0,nonrujukan_hidup:0,nonrujukan_mati:0,nonrujukan_jml:0,rujuk:0
             },
-            {id: 12,no:'3.5',label: "Kelainan Congenital",medis_rumahsakit: 0,medis_bidan:0,medis_puskesmas:0, medis_faskeslain:0,medis_hidup:0,medis_mati:0,medis_jml:0,nonrujukan_hidup:0,nonrujukan_mati:0,nonrujukan_jml:0,rujuk:0
+            {id: 12,no:'3.5',label: "Kelainan Congenital",medis_rumahsakit: 0,medis_bidan:0,medis_puskesmas:0, medis_faskeslain:0,medis_hidup:0,medis_mati:0,medis_jml:0,nonmedis_mati:0,nonmedis_jml:0,nonrujukan_hidup:0,nonrujukan_mati:0,nonrujukan_jml:0,rujuk:0
             },
-            {id: 12,no:'3.6',label: "ISPA",medis_rumahsakit: 0,medis_bidan:0,medis_puskesmas:0, medis_faskeslain:0,medis_hidup:0,medis_mati:0,medis_jml:0,nonrujukan_hidup:0,nonrujukan_mati:0,nonrujukan_jml:0,rujuk:0
+            {id: 12,no:'3.6',label: "ISPA",medis_rumahsakit: 0,medis_bidan:0,medis_puskesmas:0, medis_faskeslain:0,medis_hidup:0,medis_mati:0,medis_jml:0,nonmedis_mati:0,nonmedis_jml:0,nonrujukan_hidup:0,nonrujukan_mati:0,nonrujukan_jml:0,rujuk:0
             },
-            {id: 12,no:'3.7',label: "DIARE",medis_rumahsakit: 0,medis_bidan:0,medis_puskesmas:0, medis_faskeslain:0,medis_hidup:0,medis_mati:0,medis_jml:0,nonrujukan_hidup:0,nonrujukan_mati:0,nonrujukan_jml:0,rujuk:0
+            {id: 12,no:'3.7',label: "DIARE",medis_rumahsakit: 0,medis_bidan:0,medis_puskesmas:0, medis_faskeslain:0,medis_hidup:0,medis_mati:0,medis_jml:0,nonmedis_mati:0,nonmedis_jml:0,nonrujukan_hidup:0,nonrujukan_mati:0,nonrujukan_jml:0,rujuk:0
             },
-            {id: 12,no:'3.8',label: "Lain-Lain",medis_rumahsakit: 0,medis_bidan:0,medis_puskesmas:0, medis_faskeslain:0,medis_hidup:0,medis_mati:0,medis_jml:0,nonrujukan_hidup:0,nonrujukan_mati:0,nonrujukan_jml:0,rujuk:0
+            {id: 12,no:'3.8',label: "Lain-Lain",medis_rumahsakit: 0,medis_bidan:0,medis_puskesmas:0, medis_faskeslain:0,medis_hidup:0,medis_mati:0,medis_jml:0,nonmedis_mati:0,nonmedis_jml:0,nonrujukan_hidup:0,nonrujukan_mati:0,nonrujukan_jml:0,rujuk:0
             },
         ]
-        // for (let i = 0; i < result.rows.length; i++) {
-        //     const element = result.rows[i];
-        //     for (let y = 0; y < list.length; y++) {
-        //         const elementy = list[y];
-        //         if(elementy.label===element.reportdisplay){
-        //             elementy.medis_rumahsakit=element.medis_rumahsakit
-        //             elementy.medis_bidan=element.medis_bidan
-        //             elementy.medis_puskesmas=element.medis_puskesmas
-        //             elementy.medis_faskeslain=element.medis_faskeslain
-        //             elementy.medis_hidup=element.medis_hidup
-        //             elementy.medis_mati=element.medis_mati
-        //             elementy.medis_jml=parseFloat(element.medis_hidup)+parseFloat(element.medis_mati)
-        //             elementy.nonrujukan_hidup=element.nonrujukan_hidup
-        //             elementy.nonrujukan_mati=element.nonrujukan_mati
-        //             elementy.nonrujukan_jml=parseFloat(element.nonrujukan_hidup)+parseFloat(element.nonrujukan_mati)
-        //             elementy.rujuk=element.rujuk
-        //         }
-        //     }
-        // }
+        for (let i = 0; i < result.rows.length; i++) {
+            const element = result.rows[i];
+            for (let y = 0; y < list.length; y++) {
+                const elementy = list[y];
+                if(elementy.label===element.reportdisplay){
+                    elementy.medis_rumahsakit=element.medis_rumahsakit
+                    elementy.medis_bidan=element.medis_bidan
+                    elementy.medis_puskesmas=element.medis_puskesmas
+                    elementy.medis_faskeslain=element.medis_faskeslain
+                    elementy.medis_hidup=element.medis_hidup
+                    elementy.medis_mati=element.medis_mati
+                    elementy.medis_jml=parseFloat(element.medis_hidup)+parseFloat(element.medis_mati)
+                    elementy.nonmedis_mati=element.nonmedis_mati
+                    elementy.nonmedis_jml=parseFloat(element.nonmedis_mati)+parseFloat(element.nonmedis_hidup)
+                    elementy.nonrujukan_hidup=element.nonrujukan_hidup
+                    elementy.nonrujukan_mati=element.nonrujukan_mati
+                    elementy.nonrujukan_jml=parseFloat(element.nonrujukan_hidup)+parseFloat(element.nonrujukan_mati)
+                    elementy.rujuk=element.rujuk
+                }
+            }
+        }
         res.status(200).send({
             msg: 'Success',
             code: 200,

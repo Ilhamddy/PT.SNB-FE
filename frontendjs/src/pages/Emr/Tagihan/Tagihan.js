@@ -171,7 +171,9 @@ const Tagihan = ({ show }) => {
         <React.Fragment>
             <Row className="gy-4 page-tagihan" >
                 <Card>
-                    <CardHeader style={{ backgroundColor: "#B57602" }}>
+                    <CardHeader style={{ backgroundColor: "#B57602",
+            borderTopLeftRadius: '24px', borderTopRightRadius: '24px',
+            padding: '10px 15px' }}>
                         <h4 className="card-title mb-0" style={{ color: '#ffffff' }}>Rincian Tagihan</h4>
                     </CardHeader>
                     <div className='nav-isi-tagihan'>

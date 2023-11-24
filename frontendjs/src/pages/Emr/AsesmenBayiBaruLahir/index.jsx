@@ -469,7 +469,11 @@ const AsesmenBayiBaruLahir = () => {
         className="gy-4"
         action="#">
         <Card>
-          <CardHeader style={{ backgroundColor: "#FFCB46" }}>
+          <CardHeader style={{
+            backgroundColor: "#FFCB46",
+            borderTopLeftRadius: '24px', borderTopRightRadius: '24px',
+            padding: '10px 15px'
+          }}>
             <h4 className="card-title mb-0" style={{ color: '#ffffff' }}>Riwayat Asesmen</h4>
           </CardHeader>
           <CardBody>
@@ -493,7 +497,11 @@ const AsesmenBayiBaruLahir = () => {
           </CardBody>
         </Card>
         <Card>
-          <CardHeader style={{ backgroundColor: "#FFCB46" }}>
+          <CardHeader style={{
+            backgroundColor: "#FFCB46",
+            borderTopLeftRadius: '24px', borderTopRightRadius: '24px',
+            padding: '10px 15px'
+          }}>
             <h4 className="card-title mb-0" style={{ color: '#ffffff' }}>ALLOANAMNESA</h4>
           </CardHeader>
           <CardBody>
@@ -571,7 +579,11 @@ const AsesmenBayiBaruLahir = () => {
           </CardBody>
         </Card>
         <Card>
-          <CardHeader style={{ backgroundColor: "#FFCB46" }}>
+          <CardHeader style={{
+            backgroundColor: "#FFCB46",
+            borderTopLeftRadius: '24px', borderTopRightRadius: '24px',
+            padding: '10px 15px'
+          }}>
             <h4 className="card-title mb-0" style={{ color: '#ffffff' }}>Riwayat Kelahiran</h4>
           </CardHeader>
           <CardBody>
@@ -838,7 +850,11 @@ const AsesmenBayiBaruLahir = () => {
           </CardBody>
         </Card>
         <Card>
-          <CardHeader style={{ backgroundColor: "#FFCB46" }}>
+          <CardHeader style={{
+            backgroundColor: "#FFCB46",
+            borderTopLeftRadius: '24px', borderTopRightRadius: '24px',
+            padding: '10px 15px'
+          }}>
             <h4 className="card-title mb-0" style={{ color: '#ffffff' }}>Keadaan Umum Bayi</h4>
           </CardHeader>
           <CardBody>
@@ -901,7 +917,7 @@ const AsesmenBayiBaruLahir = () => {
                   <Input
                     id="beratBadanBayi"
                     name="beratBadanBayi"
-                    type="text"
+                    type="number"
                     value={vSetValidation.values.beratBadanBayi}
                     onChange={(e) => {
                       vSetValidation.setFieldValue('beratBadanBayi', e.target.value)
@@ -1785,7 +1801,11 @@ const AsesmenBayiBaruLahir = () => {
           </CardBody>
         </Card>
         <Card>
-          <CardHeader style={{ backgroundColor: "#FFCB46" }}>
+          <CardHeader style={{
+            backgroundColor: "#FFCB46",
+            borderTopLeftRadius: '24px', borderTopRightRadius: '24px',
+            padding: '10px 15px'
+          }}>
             <h4 className="card-title mb-0" style={{ color: '#ffffff' }}>Pemeriksaan Fisik</h4>
           </CardHeader>
           <CardBody>
@@ -2154,7 +2174,11 @@ const AsesmenBayiBaruLahir = () => {
           </CardBody>
         </Card>
         <Card>
-          <CardHeader style={{ backgroundColor: "#FFCB46" }}>
+          <CardHeader style={{
+            backgroundColor: "#FFCB46",
+            borderTopLeftRadius: '24px', borderTopRightRadius: '24px',
+            padding: '10px 15px'
+          }}>
             <h4 className="card-title mb-0" style={{ color: '#ffffff' }}>Pemeriksaan Laboratorium</h4>
           </CardHeader>
           <CardBody>
@@ -2188,7 +2212,11 @@ const AsesmenBayiBaruLahir = () => {
           </CardBody>
         </Card>
         <Card>
-          <CardHeader style={{ backgroundColor: "#FFCB46" }}>
+          <CardHeader style={{
+            backgroundColor: "#FFCB46",
+            borderTopLeftRadius: '24px', borderTopRightRadius: '24px',
+            padding: '10px 15px'
+          }}>
             <h4 className="card-title mb-0" style={{ color: '#ffffff' }}>Diagnosa Kerja</h4>
           </CardHeader>
           <CardBody>
@@ -2222,7 +2250,11 @@ const AsesmenBayiBaruLahir = () => {
           </CardBody>
         </Card>
         <Card>
-          <CardHeader style={{ backgroundColor: "#FFCB46" }}>
+          <CardHeader style={{
+            backgroundColor: "#FFCB46",
+            borderTopLeftRadius: '24px', borderTopRightRadius: '24px',
+            padding: '10px 15px'
+          }}>
             <h4 className="card-title mb-0" style={{ color: '#ffffff' }}>Penatalaksanaan</h4>
           </CardHeader>
           <CardBody>

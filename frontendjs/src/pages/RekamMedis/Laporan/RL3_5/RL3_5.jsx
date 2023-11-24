@@ -32,8 +32,8 @@ const RL3_5 = () => {
     onSubmit: (values) => {
       console.log(values)
       dispatch(getLaporanRl_3_5({
-        start: dateNow,
-        end: dateNow
+        start: values.start || dateNow,
+        end: values.end || dateNow
       }));
     },
   })
@@ -52,27 +52,27 @@ const RL3_5 = () => {
       name: 'RUJUKAN MEDIS',
       columns: [
         {
-          id: 'keadaan_lk',
+          id: 'medis_rumahsakit',
           name: 'RUMAH SAKIT'
         },
         {
-          id: 'keadaan_pm',
+          id: 'medis_bidan',
           name: 'BIDAN'
         },
         {
-          id: 'keadaan_pm',
+          id: 'medis_puskesmas',
           name: 'PUSKESMAS'
         },
         {
-          id: 'keadaan_pm',
+          id: 'medis_faskeslain',
           name: 'FASKES LAINNYA'
         },
         {
-          id: 'keadaan_pm',
+          id: 'medis_mati',
           name: 'Mati'
         },
         {
-          id: 'keadaan_pm',
+          id: 'medis_jml',
           name: 'Jumlah Total'
         },
       ]
@@ -81,11 +81,11 @@ const RL3_5 = () => {
       name: 'RUJUKAN NON MEDIS',
       columns: [
         {
-          id: 'kebutuhan_lk',
+          id: 'nonmedis_mati',
           name: 'Mati'
         },
         {
-          id: 'kebutuhan_pm',
+          id: 'nonmedis_jml',
           name: 'Jumlah TOtal'
         },
       ]
@@ -94,17 +94,18 @@ const RL3_5 = () => {
       name: 'NON RUJUKAN',
       columns: [
         {
-          id: 'kekurangan_lk',
+          id: 'nonrujukan_mati',
           name: 'Mati'
         },
         {
-          id: 'kekurangan_pm',
+          id: 'nonrujukan_jml',
           name: 'Jumlah Total'
         },
       ]
     },
     {
       name: 'DIRUJUK',
+      id: 'rujuk'
     },
   ]
   const handleExport = () => {
@@ -135,7 +136,7 @@ const RL3_5 = () => {
             action="#">
             <Card className="p-5">
               <Row>
-                {/* <Col lg={3}>
+                <Col lg={3}>
                   <KontainerFlatpickr
                     isError={vSetValidation.touched?.start &&
                       !!vSetValidation.errors?.start}
@@ -176,7 +177,7 @@ const RL3_5 = () => {
                         <div>{vSetValidation.errors.end}</div>
                       </FormFeedback>
                     )}
-                </Col> */}
+                </Col>
                 <Col lg={2}>
                   <Button type="submit" placement="top" id="tooltipTopPencarian" >
                     CARI
@@ -199,7 +200,7 @@ const RL3_5 = () => {
             sort={true}
             fixedHeader={true}
             pagination={{
-              enabled: true, limit: 10, summary: false
+              enabled: true, limit: 20, summary: false
             }}
             style={{
               table: {
@@ -210,6 +211,7 @@ const RL3_5 = () => {
                 color: '#000',
                 'border-bottom': '1px solid #ccc',
                 'text-align': 'center',
+
               },
               td: {
                 'text-align': 'center',

@@ -384,7 +384,8 @@ const OrderOperasi = () => {
                     </Col>
                     <Col lg={12} className="gy-2">
                         <Card>
-                            <CardHeader style={{ backgroundColor: "#FFCB46" }}>
+                            <CardHeader style={{ backgroundColor: "#FFCB46",
+                        borderTopLeftRadius:'24px',borderTopRightRadius:'24px' }}>
                                 <h4 className="card-title mb-0" style={{ color: '#ffffff' }}>Riwayat Order Operasi</h4>
                             </CardHeader>
                             <CardBody>

@@ -1238,7 +1238,7 @@ const upsertAssesmenBayiLahir = async (req, res) => {
                     label: bodyReq.label,
                     idlabel: bodyReq.idlabel,
                     objectantreanpemeriksaanfk: bodyReq.norecap,
-                    objectpegawaifk: req.userId,
+                    objectpegawaifk: req.idPegawai,
                     tglisi: new Date()
                 }, { transaction });
                 asesmenbayilahir = await db.t_asesmenbayilahir.create({

@@ -281,7 +281,9 @@ const DetailOrderModal = ({ show, onSimpanClick, onCloseClick,onTolakClick, temp
                                     </Col>
                                     <Col lg={12} className="gy-2">
                                         <Card>
-                                            <CardHeader style={{ backgroundColor: "#FFCB46" }}>
+                                            <CardHeader style={{ backgroundColor: "#FFCB46",
+            borderTopLeftRadius: '24px', borderTopRightRadius: '24px',
+            padding: '10px 15px' }}>
                                                 <h4 className="card-title mb-0" style={{ color: '#ffffff' }}>Daftar Order Tindakan</h4>
                                             </CardHeader>
                                             <CardBody>

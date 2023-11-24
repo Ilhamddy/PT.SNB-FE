@@ -261,7 +261,9 @@ const KendaliDokumen = () => {
                             </Col>
                         ))}
                         <Card>
-                            <CardHeader style={{ backgroundColor: "#FFCB46" }}>
+                            <CardHeader style={{ backgroundColor: "#FFCB46",
+                                borderTopLeftRadius: '24px', borderTopRightRadius: '24px',
+                                padding: '10px 15px'}}>
                                 <h4 className="card-title mb-0" style={{ color: '#ffffff' }}>Dokumen Rekammedis <span style={{ color: 'black' }}>{namaPencarian}</span></h4>
                             </CardHeader>
                             <CardBody>
