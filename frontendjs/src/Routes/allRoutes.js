@@ -379,6 +379,7 @@ import MasterTarifTindakan from "../pages/MasterTarifTindakan/MasterTarifTindaka
 import MasterTarifTindakanTambah from "../pages/MasterTarifTindakanTambah/MasterTarifTindakanTambah.jsx";
 import LaporanPengadaan from "../pages/LaporanPengadaan/LaporanPengadaan.jsx";
 import LaporanPenerimaan from "../pages/LaporanPenerimaan/LaporanPenerimaan.jsx";
+import DasborPeta from "../pages/DasborPeta/DasborPeta.jsx";
 
 
 
@@ -771,6 +772,8 @@ const authProtectedRoutes = [
   { path: "/eis/dasbor/dasbor-pegawai", component: <DasborPegawai />},
   { path: "/eis/dasbor/dasbor-farmasi", component: <DasborFarmasi />},
   { path: "/eis/dasbor/dasbor-pendapatan", component: <DasborPendapatan />},
+  { path: "/eis/dasbor/dasbor-peta", component: <DasborPeta />},
+
 
 ];
 

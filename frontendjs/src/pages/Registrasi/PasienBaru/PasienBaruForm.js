@@ -37,6 +37,7 @@ const PasienBaru = () => {
     const dispatch = useDispatch();
     const {idpasien,norectriage} = useParams();
     const [searchParams] = useSearchParams()
+    const norecdp = searchParams.get("norecdp")
     const navigate = useNavigate()
 
     const refAgama = useRef(null);
@@ -302,10 +303,10 @@ const PasienBaru = () => {
             setV({
                 ...validation.initialValues,
                 ...pasienFormQueries, 
-                norecdp: searchParams.get("norecdp") || ''
+                norecdp: norecdp || ''
             })
         }
-    }, [pasienFormQueries, validation.setValues, validation.initialValues, searchParams.get("norecdp")])
+    }, [pasienFormQueries, validation.setValues, validation.initialValues, norecdp])
 
 
     const handleChangeKebangsaan = (selected) => {
