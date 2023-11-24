@@ -378,6 +378,9 @@ import MasterSettingLayanan from "../pages/MasterSettingLayanan/MasterSettingLay
 import MasterTarifTindakan from "../pages/MasterTarifTindakan/MasterTarifTindakan.jsx";
 import MasterTarifTindakanTambah from "../pages/MasterTarifTindakanTambah/MasterTarifTindakanTambah.jsx";
 import LaporanPengadaan from "../pages/LaporanPengadaan/LaporanPengadaan.jsx";
+import LaporanPenerimaan from "../pages/LaporanPenerimaan/LaporanPenerimaan.jsx";
+import DasborPeta from "../pages/DasborPeta/DasborPeta.jsx";
+
 
 
 const authProtectedRoutes = [
@@ -702,6 +705,8 @@ const authProtectedRoutes = [
   { path: "/farmasi/gudang/pemesanan-barang", component: <PemesananBarang />},
   { path: "/farmasi/gudang/pemesanan-barang/:norecpesan", component: <PemesananBarang />},
   { path: "/logistik/gudang/laporan-pengadaan", component: <LaporanPengadaan />},
+  { path: "/logistik/gudang/laporan-penerimaan", component: <LaporanPenerimaan />},
+
 
   // gudang logistik
   { path: "/logistik/gudang/penerimaan-produk", component: <PenerimaanProduk isLogistik />},
@@ -767,6 +772,8 @@ const authProtectedRoutes = [
   { path: "/eis/dasbor/dasbor-pegawai", component: <DasborPegawai />},
   { path: "/eis/dasbor/dasbor-farmasi", component: <DasborFarmasi />},
   { path: "/eis/dasbor/dasbor-pendapatan", component: <DasborPendapatan />},
+  { path: "/eis/dasbor/dasbor-peta", component: <DasborPeta />},
+
 
 ];
 

@@ -27,7 +27,8 @@ import {
     qGetReturBarang,
     qGetListRetur,
     qGetDetailReturFromDetailPenerimaan,
-    qGetLaporanPengadaan
+    qGetLaporanPengadaan,
+    qGetLaporanPenerimaan
 } from "../../../queries/gudang/gudang.queries";
 import unitQueries, { daftarUnit } from "../../../queries/mastertable/unit/unit.queries"
 import {
@@ -1420,6 +1421,46 @@ const getLaporanPengadaan = async (req, res) => {
     }
 }
 
+const getLaporanPenerimaan = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const {
+            instalasi,
+            unit,
+            tglpengadaanstart,
+            tglpengadaanend,
+            asalproduk,
+            supplier
+        } = req.query
+        const start = getDateStartNull(tglpengadaanstart)
+        const end = getDateEndNull(tglpengadaanend)
+        const penerimaan = (await pool.query(qGetLaporanPenerimaan, [
+            unit || '',
+            start || '',
+            end || '', 
+            asalproduk || '',
+            supplier || ''
+        ])).rows
+        const tempres = {
+            penerimaan: penerimaan
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 
 
 export default {
@@ -1452,8 +1493,8 @@ export default {
     getUnitUser,
     getListRetur,
     getRetur,
-    getLaporanPengadaan
-
+    getLaporanPengadaan,
+    getLaporanPenerimaan
 }
 
 const hCreatePesanDetail = async (req, res, transaction, {newPemesanan}) => {
