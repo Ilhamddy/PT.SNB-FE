@@ -550,7 +550,9 @@ const RegistrasiPasien = (props) => {
                             ) : null} */}
                             {/* <BuktiPendaftaran isOpen={modal} toggle={toggle} centered /> */}
                             <Card>
-                                <CardHeader style={{ backgroundColor: "#dfe4ea" }}>
+                                <CardHeader style={{ backgroundColor: "#dfe4ea",
+            borderTopLeftRadius: '24px', borderTopRightRadius: '24px',
+            padding: '10px 15px' }}>
                                     <h4 className="card-title mb-0">Registrasi</h4>
                                 </CardHeader>
                                 <CardBody>

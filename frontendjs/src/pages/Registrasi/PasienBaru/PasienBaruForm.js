@@ -322,7 +322,9 @@ const PasienBaru = () => {
 
     const DataDiri = (
         <Card style={{ backgroundColor: "#f1f2f6" }}>
-            <CardHeader style={{ backgroundColor: "#dfe4ea" }}>
+            <CardHeader style={{ backgroundColor: "#dfe4ea",
+            borderTopLeftRadius: '24px', borderTopRightRadius: '24px',
+            padding: '10px 15px' }}>
                 <h4 className="card-title mb-0">Data Diri Pasien</h4>
             </CardHeader>
             <CardBody>
@@ -641,7 +643,9 @@ const PasienBaru = () => {
 
     const InfoTambahan = (
         <Card style={{ backgroundColor: "#f1f2f6" }}>
-            <CardHeader style={{ backgroundColor: "#dfe4ea" }}>
+            <CardHeader style={{ backgroundColor: "#dfe4ea",
+            borderTopLeftRadius: '24px', borderTopRightRadius: '24px',
+            padding: '10px 15px' }}>
                 <h4 className="card-title mb-0">Data Diri Pasien</h4>
             </CardHeader>
             <CardBody>
@@ -922,7 +926,9 @@ const PasienBaru = () => {
 
     const AlamatKTP = (
         <Card style={{ backgroundColor: "#f1f2f6" }}>
-            <CardHeader style={{ backgroundColor: "#dfe4ea" }}>
+            <CardHeader style={{ backgroundColor: "#dfe4ea",
+            borderTopLeftRadius: '24px', borderTopRightRadius: '24px',
+            padding: '10px 15px' }}>
                 <h4 className="card-title mb-0">Alamat KTP</h4>
             </CardHeader>
             <CardBody>
@@ -1124,7 +1130,9 @@ const PasienBaru = () => {
 
     const AlamatDomisili = (
         <Card style={{ backgroundColor: "#f1f2f6" }}>
-            <CardHeader style={{ backgroundColor: "#dfe4ea" }}>
+            <CardHeader style={{ backgroundColor: "#dfe4ea",
+            borderTopLeftRadius: '24px', borderTopRightRadius: '24px',
+            padding: '10px 15px' }}>
                 <h4 className="card-title mb-0">Alamat Domisili</h4>
             </CardHeader>
             <CardBody>
