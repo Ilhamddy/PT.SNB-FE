@@ -89,7 +89,10 @@ import {
     GET_RETUR_ERROR,
     GET_LAPORAN_PENGADAAN,
     GET_LAPORAN_PENGADAAN_SUCCESS,
-    GET_LAPORAN_PENGADAAN_ERROR
+    GET_LAPORAN_PENGADAAN_ERROR,
+    GET_LAPORAN_PENERIMAAN,
+    GET_LAPORAN_PENERIMAAN_SUCCESS,
+    GET_LAPORAN_PENERIMAAN_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -239,6 +242,11 @@ const INIT_STATE = {
         error: null
     },
     getLaporanPengadaan: {
+        data: [],
+        loading: false,
+        error: null
+    },
+    getLaporanPenerimaan: {
         data: [],
         loading: false,
         error: null
@@ -1323,6 +1331,42 @@ const Gudang = (state = INIT_STATE, action) => {
                 ...state,
                 getLaporanPengadaan: {
                     ...state.getLaporanPengadaan,
+                    data: [],
+                    loading: false,
+                    error: action.payload
+                }
+            }
+        }
+
+        case GET_LAPORAN_PENERIMAAN: {
+            return{
+                ...state,
+                getLaporanPenerimaan: {
+                    ...state.getLaporanPenerimaan,
+                    data: [],
+                    loading: true,
+                    error: null
+                }
+            }
+        }
+
+        case GET_LAPORAN_PENERIMAAN_SUCCESS: {
+            return{
+                ...state,
+                getLaporanPenerimaan: {
+                    ...state.getLaporanPenerimaan,
+                    data: action.payload,
+                    loading: false,
+                    error: null
+                }
+            }
+        }
+
+        case GET_LAPORAN_PENERIMAAN_ERROR: {
+            return{
+                ...state,
+                getLaporanPenerimaan: {
+                    ...state.getLaporanPenerimaan,
                     data: [],
                     loading: false,
                     error: action.payload

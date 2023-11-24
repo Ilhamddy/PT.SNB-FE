@@ -378,6 +378,8 @@ import MasterSettingLayanan from "../pages/MasterSettingLayanan/MasterSettingLay
 import MasterTarifTindakan from "../pages/MasterTarifTindakan/MasterTarifTindakan.jsx";
 import MasterTarifTindakanTambah from "../pages/MasterTarifTindakanTambah/MasterTarifTindakanTambah.jsx";
 import LaporanPengadaan from "../pages/LaporanPengadaan/LaporanPengadaan.jsx";
+import LaporanPenerimaan from "../pages/LaporanPenerimaan/LaporanPenerimaan.jsx";
+
 
 
 const authProtectedRoutes = [
@@ -702,6 +704,8 @@ const authProtectedRoutes = [
   { path: "/farmasi/gudang/pemesanan-barang", component: <PemesananBarang />},
   { path: "/farmasi/gudang/pemesanan-barang/:norecpesan", component: <PemesananBarang />},
   { path: "/logistik/gudang/laporan-pengadaan", component: <LaporanPengadaan />},
+  { path: "/logistik/gudang/laporan-penerimaan", component: <LaporanPenerimaan />},
+
 
   // gudang logistik
   { path: "/logistik/gudang/penerimaan-produk", component: <PenerimaanProduk isLogistik />},

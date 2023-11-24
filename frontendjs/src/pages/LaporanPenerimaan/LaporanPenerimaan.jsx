@@ -40,20 +40,21 @@ import {
 import { toast } from 'react-toastify'
 import {
   getComboLaporanPengadaan,
+  getLaporanPenerimaan,
   getLaporanPengadaan,
 } from '../../store/actions'
 import * as XLSX from 'xlsx'
 
-const LaporanPengadaan = () => {
+const LaporanPenerimaan = () => {
   const dispatch = useDispatch()
   let { instalasi, unit, asalProduk, supplier } = useSelector(
     (state) => state.Farmasi.getComboLaporanPengadaan.data
   )
   const dataPengadaan = useSelector(
-    (state) => state.Gudang.getLaporanPengadaan.data?.pengadaan || []
+    (state) => state.Gudang.getLaporanPenerimaan.data?.penerimaan || []
   )
   const loadingPengadaan = useSelector(
-    (state) => state.Gudang.getLaporanPengadaan.loading || false
+    (state) => state.Gudang.getLaporanPenerimaan.loading || false
   )
   const [dateNow] = useState(() => new Date().toISOString())
   const vFilter = useFormik({
@@ -66,7 +67,7 @@ const LaporanPengadaan = () => {
       supplier: '',
     },
     onSubmit: (values) => {
-      dispatch(getLaporanPengadaan(values))
+      dispatch(getLaporanPenerimaan(values))
     },
   })
   unit = (unit || []).filter(
@@ -87,7 +88,7 @@ const LaporanPengadaan = () => {
     const workbook = XLSX.utils.book_new()
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1')
 
-    XLSX.writeFile(workbook, 'laporan_pengadaan.xlsx')
+    XLSX.writeFile(workbook, 'laporan_penerimaan.xlsx')
   }
 
   const columns = [
@@ -99,8 +100,8 @@ const LaporanPengadaan = () => {
       wrap: true,
     },
     {
-      name: <span className="font-weight-bold fs-13">Tanggal Pesan</span>,
-      selector: (row) => dateLocal(row.tglorder),
+      name: <span className="font-weight-bold fs-13">Tanggal Terima</span>,
+      selector: (row) => dateLocal(row.tglterima),
       sortable: true,
       width: '120px',
       wrap: true,
@@ -301,4 +302,4 @@ const tableCustomStyles = {
   },
 }
 
-export default LaporanPengadaan
+export default LaporanPenerimaan

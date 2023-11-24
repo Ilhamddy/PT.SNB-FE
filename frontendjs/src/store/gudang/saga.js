@@ -61,7 +61,9 @@ import {
     getReturSuccess,
     getReturError,
     getLaporanPengadaanSuccess,
-    getLaporanPengadaanError
+    getLaporanPengadaanError,
+    getLaporanPenerimaanSuccess,
+    getLaporanPenerimaanError
 } from "./action";
 
 
@@ -97,7 +99,8 @@ import {
     GET_COMBO_STOK_UNIT,
     GET_LIST_RETUR,
     GET_RETUR,
-    GET_LAPORAN_PENGADAAN
+    GET_LAPORAN_PENGADAAN,
+    GET_LAPORAN_PENERIMAAN
 } from "./actionType";
 
 const serviceGudang = new ServiceGudang();
@@ -432,6 +435,15 @@ function* onGetLaporanPengadaan({ payload: {queries}}){
     }
 }
 
+function* onGetLaporanPenerimaan({ payload: {queries}}){
+    try{
+        let response = yield call(serviceGudang.getLaporanPenerimaan, queries);
+        yield put(getLaporanPenerimaanSuccess(response.data))
+    } catch (error) {
+        yield put(getLaporanPenerimaanError(error))
+    }
+}
+
 
 function* gudangSaga() {
     yield all([
@@ -464,7 +476,8 @@ function* gudangSaga() {
         takeEvery(GET_COMBO_STOK_UNIT, onGetComboStokUnit),
         takeEvery(GET_LIST_RETUR, onGetListRetur),
         takeEvery(GET_RETUR, onGetRetur),
-        takeEvery(GET_LAPORAN_PENGADAAN, onGetLaporanPengadaan)
+        takeEvery(GET_LAPORAN_PENGADAAN, onGetLaporanPengadaan),
+        takeEvery(GET_LAPORAN_PENERIMAAN, onGetLaporanPenerimaan)
 
     ]);
 }

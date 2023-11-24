@@ -516,6 +516,52 @@ GROUP BY
     mu.reportdisplay
 `
 
+const qGetLaporanPenerimaan = `
+SELECT
+    row_number() OVER (ORDER BY tpb.norec) AS no,
+    tpb.norec AS norec,
+    tpb.tglterima AS tglterima,
+    tpb.objectpegawaifk AS idpegawai,
+    mp.namalengkap AS namapegawai,
+    tpb.objectasalprodukfk AS idasalproduk,
+    tpb.objectrekananfk AS idrekanan,
+    mr.namarekanan AS namarekanan,
+    map.asalproduk AS namaasalproduk,
+    tpb.objectunitfk AS idunit,
+    mu.reportdisplay AS namaunit,
+    COALESCE(
+        SUM(tpbd.jumlah), 0
+    ) AS jumlahitem,
+    COALESCE(
+        SUM(tpbd.total), 0
+    ) AS total
+FROM t_penerimaanbarang tpb
+    LEFT JOIN m_pegawai mp ON mp.id = tpb.objectpegawaifk
+    LEFT JOIN m_asalproduk map ON map.id = tpb.objectasalprodukfk
+    LEFT JOIN m_unit mu ON mu.id = tpb.objectunitfk
+    LEFT JOIN m_rekanan mr ON mr.id = tpb.objectrekananfk
+    LEFT JOIN t_penerimaanbarangdetail tpbd ON tpb.norec = tpbd.objectpenerimaanbarangfk
+WHERE ${emptyInt("tpb.objectunitfk", "$1")}
+    AND
+        ${dateBetweenEmptyString("tpb.tglterima", "$2", "$3")}
+    AND
+        ${emptyInt("tpb.objectasalprodukfk", "$4")}
+    AND
+        ${emptyInt("tpb.objectrekananfk", "$5")}
+GROUP BY
+    tpb.norec,
+    tpb.norec,
+    tpb.tglterima,
+    tpb.objectpegawaifk,
+    mp.namalengkap,
+    tpb.objectasalprodukfk,
+    tpb.objectrekananfk,
+    mr.namarekanan,
+    map.asalproduk,
+    tpb.objectunitfk,
+    mu.reportdisplay
+`
+
 
 export {
     qGetJenisDetailProdukLainLain,
@@ -543,5 +589,6 @@ export {
     qGetReturBarang,
     qGetListRetur,
     qGetDetailReturFromDetailPenerimaan,
-    qGetLaporanPengadaan
+    qGetLaporanPengadaan,
+    qGetLaporanPenerimaan
 }
