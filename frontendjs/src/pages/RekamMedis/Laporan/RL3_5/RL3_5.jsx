@@ -210,6 +210,7 @@ const RL3_5 = () => {
                 color: '#000',
                 'border-bottom': '1px solid #ccc',
                 'text-align': 'center',
+
               },
               td: {
                 'text-align': 'center',

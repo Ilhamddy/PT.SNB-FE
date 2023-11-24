@@ -120,9 +120,49 @@ mm3.id = 9
 AND tp.statusenabled = true
 AND tp.tglinput BETWEEN $1 AND $2
 GROUP BY
-mm2.reportdisplay;
-
+mm2.reportdisplay
 `
+
+const qLaporanRL3_5 = `select
+td.noregistrasi,
+SUM(case when td.objectasalrujukanfk = 2 then 1 else 0 end) as medis_rumahsakit,
+SUM(CASE WHEN td.objectasalrujukanfk = 6 THEN 1 ELSE 0 END) AS medis_bidan,
+SUM(CASE WHEN td.objectasalrujukanfk = 1 THEN 1 ELSE 0 END) AS medis_puskesmas,
+SUM(CASE WHEN td.objectasalrujukanfk IN (3, 4, 7) THEN 1 ELSE 0 END) AS medis_faskeslain,
+SUM(CASE WHEN 
+(ta.keadaan = 24)
+AND td.objectasalrujukanfk IN (1, 2, 3, 4, 6, 7)
+THEN 1 ELSE 0 END) AS medis_mati,
+SUM(CASE WHEN 
+(ta.keadaan = 23)
+AND td.objectasalrujukanfk IN (1, 2, 3, 4, 6, 7)
+THEN 1 ELSE 0 END) AS medis_hidup,
+SUM(CASE WHEN 
+(ta.keadaan = 24)
+AND td.objectasalrujukanfk not IN (1, 2, 3, 4, 6, 7)
+THEN 1 ELSE 0 END) AS nonmedis_mati,
+SUM(CASE WHEN 
+(ta.keadaan = 23)
+AND td.objectasalrujukanfk not IN (1, 2, 3, 4, 6, 7)
+THEN 1 ELSE 0 END) AS nonmedis_hidup,
+SUM(CASE WHEN 
+(mu.objectinstalasifk = 1 OR (mu.objectinstalasifk = 2 AND td.objectstatuspulangrifk in (3,4)))
+AND td.objectstatuspulangfk=3
+THEN 1 ELSE 0 END) AS rujuk
+from
+t_emrpasien te
+join t_asesmenbayilahir ta on
+ta.objectemrfk = te.norec
+join t_antreanpemeriksaan ta2 on
+ta2.norec = te.objectantreanpemeriksaanfk
+join t_daftarpasien td on
+td.norec = ta2.objectdaftarpasienfk
+JOIN m_unit mu ON mu.id = td.objectunitlastfk
+where
+td.tglpulang between $1 and $2
+and te.idlabel = 4
+GROUP BY
+td.noregistrasi`
 
 const qLaporanRL3_6 =`SELECT row_number() OVER (ORDER BY ms.reportdisplay) AS no,ms.reportdisplay AS spesialis,
 SUM(CASE WHEN mp2.kodeexternal = '1' THEN 1 ELSE 0 END) AS besar_count,
@@ -438,6 +478,7 @@ export default {
     qLayananFromNoRL: qLayananFromMasterRL,
     qLaporanRL3_3,
     qLaporanRL3_4,
+    qLaporanRL3_5,
     qLaporanRL3_6,
     qLaporanRL3_7,
     qLaporanRL3_8,

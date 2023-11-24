@@ -835,7 +835,7 @@ const getLaporanRL3_4 = async (req, res) => {
 const getLaporanRL3_5 = async (req, res) => {
     const logger = res.locals.logger;
     try{
-        // const result = await pool.query(queries.qLaporanRL3_4,[req.query.start,req.query.end])
+        const result = await pool.query(queries.qLaporanRL3_5,[req.query.start,req.query.end])
         const list = [
             {id: 1,no:'1',label: "Bayi Lahir Hidup",medis_rumahsakit: 0,medis_bidan:0,medis_puskesmas:0,medis_faskeslain:0,medis_hidup:0,medis_mati:0,medis_jml:0,nonrujukan_hidup:0,nonrujukan_mati:0,nonrujukan_jml:0,rujuk:0
             },
@@ -871,25 +871,25 @@ const getLaporanRL3_5 = async (req, res) => {
             {id: 12,no:'3.8',label: "Lain-Lain",medis_rumahsakit: 0,medis_bidan:0,medis_puskesmas:0, medis_faskeslain:0,medis_hidup:0,medis_mati:0,medis_jml:0,nonrujukan_hidup:0,nonrujukan_mati:0,nonrujukan_jml:0,rujuk:0
             },
         ]
-        // for (let i = 0; i < result.rows.length; i++) {
-        //     const element = result.rows[i];
-        //     for (let y = 0; y < list.length; y++) {
-        //         const elementy = list[y];
-        //         if(elementy.label===element.reportdisplay){
-        //             elementy.medis_rumahsakit=element.medis_rumahsakit
-        //             elementy.medis_bidan=element.medis_bidan
-        //             elementy.medis_puskesmas=element.medis_puskesmas
-        //             elementy.medis_faskeslain=element.medis_faskeslain
-        //             elementy.medis_hidup=element.medis_hidup
-        //             elementy.medis_mati=element.medis_mati
-        //             elementy.medis_jml=parseFloat(element.medis_hidup)+parseFloat(element.medis_mati)
-        //             elementy.nonrujukan_hidup=element.nonrujukan_hidup
-        //             elementy.nonrujukan_mati=element.nonrujukan_mati
-        //             elementy.nonrujukan_jml=parseFloat(element.nonrujukan_hidup)+parseFloat(element.nonrujukan_mati)
-        //             elementy.rujuk=element.rujuk
-        //         }
-        //     }
-        // }
+        for (let i = 0; i < result.rows.length; i++) {
+            const element = result.rows[i];
+            for (let y = 0; y < list.length; y++) {
+                const elementy = list[y];
+                if(elementy.label===element.reportdisplay){
+                    elementy.medis_rumahsakit=element.medis_rumahsakit
+                    elementy.medis_bidan=element.medis_bidan
+                    elementy.medis_puskesmas=element.medis_puskesmas
+                    elementy.medis_faskeslain=element.medis_faskeslain
+                    elementy.medis_hidup=element.medis_hidup
+                    elementy.medis_mati=element.medis_mati
+                    elementy.medis_jml=parseFloat(element.medis_hidup)+parseFloat(element.medis_mati)
+                    elementy.nonrujukan_hidup=element.nonrujukan_hidup
+                    elementy.nonrujukan_mati=element.nonrujukan_mati
+                    elementy.nonrujukan_jml=parseFloat(element.nonrujukan_hidup)+parseFloat(element.nonrujukan_mati)
+                    elementy.rujuk=element.rujuk
+                }
+            }
+        }
         res.status(200).send({
             msg: 'Success',
             code: 200,
