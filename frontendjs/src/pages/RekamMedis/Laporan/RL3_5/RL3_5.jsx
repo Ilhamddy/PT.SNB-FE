@@ -200,7 +200,7 @@ const RL3_5 = () => {
             sort={true}
             fixedHeader={true}
             pagination={{
-              enabled: true, limit: 10, summary: false
+              enabled: true, limit: 20, summary: false
             }}
             style={{
               table: {
