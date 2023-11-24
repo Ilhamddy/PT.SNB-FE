@@ -269,7 +269,9 @@ const DaftarPasienRI = () => {
                         </Col>
                         <Col lg={9}>
                             <Card>
-                                <CardHeader className="align-items-center d-flex">
+                                <CardHeader style={{ backgroundColor: "#FFCB46",
+            borderTopLeftRadius: '24px', borderTopRightRadius: '24px',
+            padding: '10px 15px' }}>
                                     <div className="live-preview">
                                         <Row>
                                             <Col>
