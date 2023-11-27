@@ -44,8 +44,8 @@ when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))>
 when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))>23724 and mp.objectjeniskelaminfk=2 then 'nenek' else 'baby' end as profile,
     mp.id,
     mp.nocm ,mp.namapasien ,mp.noidentitas ,mp.nobpjs,
-    mp.nohp,to_char(mp.tgllahir,'yyyy-MM-dd') as tgllahir, mp.alamatrmh,'#FFFFFF' as color ,
-    mj.jeniskelamin,mg.golongandarah,mp.alamatdomisili,mp.notelepon,mp.namaibu,mp2.pendidikan,
+    mp.nohp,to_char(mp.tgllahir,'yyyy-MM-dd') as tgllahir, mp.alamatrmh  || ' / ' || mp.rtktp || ' / '||mp.rwktp  as alamatrmh,'#FFFFFF' as color ,
+    mj.jeniskelamin,mg.golongandarah,mp.alamatdomisili || ' / ' || mp.rtdomisili || ' / '||mp.rwdomisili as alamatdomisili,mp.notelepon,mp.namaibu,mp2.pendidikan,
     mp3.pekerjaan,ma.agama,ms.statusperkawinan,mp.namasuamiistri 
 from m_pasien mp
 left join m_jeniskelamin mj on mj.id=mp.objectjeniskelaminfk

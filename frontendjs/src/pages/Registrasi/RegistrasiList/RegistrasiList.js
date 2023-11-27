@@ -140,7 +140,7 @@ const RegistrasiList = () => {
             width: "160px"
         },
         {
-            name: <span className='font-weight-bold fs-13'>Alamat</span>,
+            name: <span className='font-weight-bold fs-13'>Alamat KTP</span>,
             selector: row => row.alamatrmh,
             sortable: false,
             width: "150px",
