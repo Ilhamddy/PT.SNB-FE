@@ -44,8 +44,10 @@ when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))>
 when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))>23724 and mp.objectjeniskelaminfk=2 then 'nenek' else 'baby' end as profile,
     mp.id,
     mp.nocm ,mp.namapasien ,mp.noidentitas ,mp.nobpjs,
-    mp.nohp,to_char(mp.tgllahir,'yyyy-MM-dd') as tgllahir, mp.alamatrmh  || ' / ' || mp.rtktp || ' / '||mp.rwktp  as alamatrmh,'#FFFFFF' as color ,
-    mj.jeniskelamin,mg.golongandarah,mp.alamatdomisili || ' / ' || mp.rtdomisili || ' / '||mp.rwdomisili as alamatdomisili,mp.notelepon,mp.namaibu,mp2.pendidikan,
+    mp.nohp,to_char(mp.tgllahir,'yyyy-MM-dd') as tgllahir,mp.alamatrmh  || ' / ' || mp.rtktp || ' / '||mp.rwktp || ' - ' || md.namadesakelurahan || ' - ' || 
+    mk.namakecamatan || ' - ' || mk2.namakabupaten  as alamatrmh,'#FFFFFF' as color ,
+    mj.jeniskelamin,mg.golongandarah,mp.alamatdomisili || ' / ' || mp.rtdomisili || ' / '||mp.rwdomisili  || ' - ' || md2.namadesakelurahan 
+    || ' - ' || mk3.namakecamatan || ' - ' || mk4.namakabupaten  as alamatdomisili,mp.notelepon,mp.namaibu,mp2.pendidikan,
     mp3.pekerjaan,ma.agama,ms.statusperkawinan,mp.namasuamiistri 
 from m_pasien mp
 left join m_jeniskelamin mj on mj.id=mp.objectjeniskelaminfk
@@ -53,7 +55,13 @@ left join m_golongandarah mg on mg.id=mp.objectgolongandarahfk
 left join m_pendidikan mp2 on mp2.id=mp.objectpendidikanfk
 left join m_pekerjaan mp3 on mp3.id=mp.objectpekerjaanfk
 left join m_agama ma on ma.id=mp.objectagamafk
-left join m_statusperkawinan ms on ms.id=mp.objectstatusperkawinanfk `;
+left join m_statusperkawinan ms on ms.id=mp.objectstatusperkawinanfk
+left join m_desakelurahan md on md.id=mp.objectdesakelurahanktpfk
+left join m_kecamatan mk on mk.id=md.objectkecamatanfk
+left join m_kabupaten mk2 on mk2.id=md.objectkabupatenfk
+left join m_desakelurahan md2 on md2.id=mp.objectdesakelurahandomisilifk 
+left join m_kecamatan mk3  on mk3.id=md2.objectkecamatanfk
+left join m_kabupaten mk4  on mk4.id=md2.objectkabupatenfk `;
 
 const getDaftarPasienRawatJalan = `select td.norec as norecdp,
     ta.norec as norecta,

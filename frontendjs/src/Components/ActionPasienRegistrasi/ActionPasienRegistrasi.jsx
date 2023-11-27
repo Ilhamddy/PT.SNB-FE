@@ -175,7 +175,10 @@ const ActionPasienRegistrasi = ({ profil = initProfil, buttonAction }) => {
                             <td className="text-muted">Nama Ibu : {profil?.namaibu}</td>
                           </tr>
                           <tr className='border-bottom'>
-                            <td className="text-muted">{profil?.pendidikan} / {profil?.namasuamiistri}</td>
+                            <td className="text-muted">{profil?.pendidikan} / {profil?.pekerjaan}</td>
+                          </tr>
+                          <tr className='border-bottom'>
+                            <td className="text-muted">{profil?.statusperkawinan} / {profil?.namasuamiistri}</td>
                           </tr>
                           <tr className='border-bottom'>
                             <td className="text-muted">{profil?.agama}</td>
