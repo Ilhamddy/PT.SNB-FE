@@ -443,7 +443,7 @@ const RegistrasiPasien = (props) => {
                     <Col lg={3}>
                         <Card>
                             <CardBody>
-                                <h5 className="card-title mb-5">Profile Pasien</h5>
+                                {/* <h5 className="card-title mb-5">Profile Pasien</h5> */}
                                 <div className="text-center">
                                     <img src={userDummy}
                                         className="rounded-circle avatar-xl img-thumbnail user-profile-image"
@@ -550,9 +550,9 @@ const RegistrasiPasien = (props) => {
                             ) : null} */}
                             {/* <BuktiPendaftaran isOpen={modal} toggle={toggle} centered /> */}
                             <Card>
-                                <CardHeader style={{ backgroundColor: "#dfe4ea",
-            borderTopLeftRadius: '24px', borderTopRightRadius: '24px',
-            padding: '10px 15px' }}>
+                                <CardHeader style={{ backgroundColor: "#FFCB46",
+                                borderTopLeftRadius: '24px', borderTopRightRadius: '24px',
+                                padding: '10px 15px' }}>
                                     <h4 className="card-title mb-0">Registrasi</h4>
                                 </CardHeader>
                                 <CardBody>

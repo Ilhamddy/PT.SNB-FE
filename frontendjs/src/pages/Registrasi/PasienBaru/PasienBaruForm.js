@@ -646,7 +646,7 @@ const PasienBaru = () => {
             <CardHeader style={{ backgroundColor: "#dfe4ea",
             borderTopLeftRadius: '24px', borderTopRightRadius: '24px',
             padding: '10px 15px' }}>
-                <h4 className="card-title mb-0">Data Diri Pasien</h4>
+                <h4 className="card-title mb-0">Informasi Tambahan</h4>
             </CardHeader>
             <CardBody>
                 <Row className="gy-4">
@@ -1347,7 +1347,7 @@ const PasienBaru = () => {
         <div className="page-content">
             <ToastContainer closeButton={false} />
             <Container fluid>
-                <BreadCrumb title="Registrasi Pasien" pageTitle="Registrasi Pasien" />
+                <BreadCrumb title="Registrasi Pasien Baru" pageTitle="Registrasi Pasien Baru" />
                 <Card>
                     <Row>
                         <Col xxl={12}>
