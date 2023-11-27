@@ -116,20 +116,22 @@ const RegistrasiList = () => {
             name: <span className='font-weight-bold fs-13'>Nama Pasien</span>,
             selector: row => row.namapasien,
             sortable: true,
-            width: "150px"
-
+            width: "150px",
+            wrap: true,
         },
         {
             name: <span className='font-weight-bold fs-13'>No. Identitas</span>,
             selector: row => row.noidentitas,
             sortable: true,
-            width: "150px"
+            width: "180px",
+            wrap: true,
         },
         {
             name: <span className='font-weight-bold fs-13'>No. BPJS</span>,
             selector: row => row.nobpjs,
             sortable: true,
-            width: "150px"
+            width: "180px",
+            wrap: true,
         },
         {
             name: <span className='font-weight-bold fs-13'>Tgl. Lahir</span>,
@@ -141,7 +143,8 @@ const RegistrasiList = () => {
             name: <span className='font-weight-bold fs-13'>Alamat</span>,
             selector: row => row.alamatrmh,
             sortable: false,
-            width: "150px"
+            width: "150px",
+            wrap: true,
         },
     ];
 
