@@ -1788,6 +1788,30 @@ const getComboVerifikasi = async (req, res) => {
     }
 }
 
+const getHistoryRegistrasi = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const result1 = await pool.query(queries.qHistoryRegistrasi,[req.query.nocmfk])
+        const tempres = {
+        
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: result1.rows,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export default {
     allSelect,
     addPost,
@@ -1819,7 +1843,8 @@ export default {
     getWidgetPasienTriage,
     getDaftarPasienTriage,
     getPasienOnline,
-    getComboVerifikasi
+    getComboVerifikasi,
+    getHistoryRegistrasi
 };
 
 const hUpdateRegistrasiPulang = async (req, res, transaction) => {

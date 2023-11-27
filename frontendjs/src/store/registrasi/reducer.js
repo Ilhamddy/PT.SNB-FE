@@ -36,7 +36,8 @@ import {
     SAVE_BATAL_REGISTRASI_ERROR,
     SAVE_REGISTRASI_MUTASI,
     SAVE_REGISTRASI_MUTASI_SUCCESS,
-    SAVE_REGISTRASI_MUTASI_ERROR
+    SAVE_REGISTRASI_MUTASI_ERROR,
+    GET_HISTORY_REGISTRASI,GET_HISTORY_REGISTRASI_SUCCESS,GET_HISTORY_REGISTRASI_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -99,6 +100,11 @@ const INIT_STATE = {
         loading: false,
         error: null,
         success: false
+    },
+    getHistoryRegistrasi:{
+        data: [],
+        loading: false,
+        error: null,
     }
 };
 
@@ -118,6 +124,9 @@ const Registrasi = (state = INIT_STATE, action) => {
                 },
                 saveRegistrasiMutasi:{
                     ...INIT_STATE.saveRegistrasiMutasi
+                },
+                getHistoryRegistrasi:{
+                    ...INIT_STATE.getHistoryRegistrasi
                 }
             }
         }
@@ -534,6 +543,39 @@ const Registrasi = (state = INIT_STATE, action) => {
                     ...state.saveRegistrasiMutasi,
                     loading: false,
                     error: action.error,
+                }
+            }
+        }
+
+        case GET_HISTORY_REGISTRASI: {
+            return {
+                ...state,
+                getHistoryRegistrasi: {
+                    ...state.getHistoryRegistrasi,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case GET_HISTORY_REGISTRASI_SUCCESS: {
+            return {
+                ...state,
+                getHistoryRegistrasi: {
+                    ...state.getHistoryRegistrasi,
+                    loading: false,
+                    data: action.payload,
+                }
+            }
+        }
+
+        case GET_HISTORY_REGISTRASI_ERROR: {
+            return {
+                ...state,
+                getHistoryRegistrasi: {
+                    ...state.getHistoryRegistrasi,
+                    loading: true,
+                    error: action.payload,
                 }
             }
         }

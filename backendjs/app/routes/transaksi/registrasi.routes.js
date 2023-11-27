@@ -184,4 +184,9 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getComboVerifikasi
     )
+    app.get(
+        "/api/transaksi/registrasi/get-history-registrasi",
+        [authJwt.verifyToken],
+        controller.getHistoryRegistrasi
+    )
 };

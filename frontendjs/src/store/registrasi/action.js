@@ -39,7 +39,8 @@ import {
     SAVE_BATAL_REGISTRASI_ERROR,
     SAVE_REGISTRASI_MUTASI,
     SAVE_REGISTRASI_MUTASI_SUCCESS,
-    SAVE_REGISTRASI_MUTASI_ERROR
+    SAVE_REGISTRASI_MUTASI_ERROR,
+    GET_HISTORY_REGISTRASI,GET_HISTORY_REGISTRASI_SUCCESS,GET_HISTORY_REGISTRASI_ERROR
 } from "./actionType";
 
 export const registrasiResetForm = () => ({
@@ -242,5 +243,23 @@ export const saveRegistrasiMutasiSuccess = (data, history) => ({
 
 export const saveRegistrasiMutasiError = (error) => ({
     type: SAVE_REGISTRASI_MUTASI_ERROR,
+    payload: error,
+});
+
+export const getHistoryRegistrasi = (data, callback) => ({
+    type: GET_HISTORY_REGISTRASI,
+    payload: {
+        data,
+        callback
+    },
+});
+
+export const getHistoryRegistrasiSuccess = (data) => ({
+    type: GET_HISTORY_REGISTRASI_SUCCESS,
+    payload: data,
+});
+
+export const getHistoryRegistrasiError = (error) => ({
+    type: GET_HISTORY_REGISTRASI_ERROR,
     payload: error,
 });

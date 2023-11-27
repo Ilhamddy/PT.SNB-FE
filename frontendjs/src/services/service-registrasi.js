@@ -135,4 +135,7 @@ export default class ServiceRegistrasi {
     getDaftarPasienOnline = async (queries) => {
         return await api.get(`/transaksi/registrasi/daftar-pasien-online`, queries)
     }
+    getHistoryRegistrasi = async (queries) => {
+        return await api.get(`/transaksi/registrasi/get-history-registrasi`, queries);
+    }
 }

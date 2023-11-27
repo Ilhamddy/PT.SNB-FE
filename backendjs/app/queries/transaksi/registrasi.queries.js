@@ -35,9 +35,25 @@ const getPasienByNoregistrasi = `
 //     " to_char(tgllahir,'yyyy-MM-dd')tgllahir, alamatrmh  from m_pasien ";
 const getAllByOr = `
 select 
-    id,
-    nocm ,namapasien ,noidentitas ,nobpjs ,nohp,to_char(tgllahir,'yyyy-MM-dd')tgllahir, alamatrmh,'#FFFFFF' as color  
-from m_pasien`;
+case when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<1825 then 'baby'
+when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<6569 and mp.objectjeniskelaminfk=1 then 'anaklaki'
+when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<6569 and mp.objectjeniskelaminfk=2 then 'anakperempuan'
+when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<23724 and mp.objectjeniskelaminfk=1 then 'dewasalaki'
+when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<23724 and mp.objectjeniskelaminfk=2 then 'dewasaperempuan'
+when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))>23724 and mp.objectjeniskelaminfk=1 then 'kakek'
+when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))>23724 and mp.objectjeniskelaminfk=2 then 'nenek' else 'baby' end as profile,
+    mp.id,
+    mp.nocm ,mp.namapasien ,mp.noidentitas ,mp.nobpjs,
+    mp.nohp,to_char(mp.tgllahir,'yyyy-MM-dd') as tgllahir, mp.alamatrmh,'#FFFFFF' as color ,
+    mj.jeniskelamin,mg.golongandarah,mp.alamatdomisili,mp.notelepon,mp.namaibu,mp2.pendidikan,
+    mp3.pekerjaan,ma.agama,ms.statusperkawinan,mp.namasuamiistri 
+from m_pasien mp
+left join m_jeniskelamin mj on mj.id=mp.objectjeniskelaminfk
+left join m_golongandarah mg on mg.id=mp.objectgolongandarahfk
+left join m_pendidikan mp2 on mp2.id=mp.objectpendidikanfk
+left join m_pekerjaan mp3 on mp3.id=mp.objectpekerjaanfk
+left join m_agama ma on ma.id=mp.objectagamafk
+left join m_statusperkawinan ms on ms.id=mp.objectstatusperkawinanfk `;
 
 const getDaftarPasienRawatJalan = `select td.norec as norecdp,
     ta.norec as norecta,
@@ -311,12 +327,27 @@ SELECT
     mp.nohp,
     td.objectpenjaminfk,
     td.noregistrasi AS noregistrasi,
-    td.norec AS norecdp
+    td.norec AS norecdp,
+    case when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<1825 then 'baby'
+when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<6569 and mp.objectjeniskelaminfk=1 then 'anaklaki'
+when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<6569 and mp.objectjeniskelaminfk=2 then 'anakperempuan'
+when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<23724 and mp.objectjeniskelaminfk=1 then 'dewasalaki'
+when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<23724 and mp.objectjeniskelaminfk=2 then 'dewasaperempuan'
+when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))>23724 and mp.objectjeniskelaminfk=1 then 'kakek'
+when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))>23724 and mp.objectjeniskelaminfk=2 then 'nenek' else 'baby' end as profile,
+mj.jeniskelamin,mg.golongandarah,mp.alamatdomisili,mp.notelepon,mp.namaibu,mp2.pendidikan,
+    mp3.pekerjaan,ma.agama,ms.statusperkawinan,mp.namasuamiistri
 FROM t_registrasionline tro
     LEFT JOIN t_daftarpasien td ON td.norec = tro.objectdaftarpasienfk
     LEFT JOIN m_pasien mp ON mp.id = td.nocmfk
     LEFT JOIN m_unit mu ON mu.id = td.objectunitlastfk
     LEFT JOIN m_rekanan mr ON mr.id = td.objectpenjaminfk
+    left join m_jeniskelamin mj on mj.id=mp.objectjeniskelaminfk
+    left join m_golongandarah mg on mg.id=mp.objectgolongandarahfk
+    left join m_pendidikan mp2 on mp2.id=mp.objectpendidikanfk
+    left join m_pekerjaan mp3 on mp3.id=mp.objectpekerjaanfk
+    left join m_agama ma on ma.id=mp.objectagamafk
+    left join m_statusperkawinan ms on ms.id=mp.objectstatusperkawinanfk
 WHERE 
     tro.statusenabled = true
     --- find by nocmtemp or namapasien, if empty string, find all
@@ -371,6 +402,56 @@ group by tp.total,td.nominalklaim`
 const qBiayaTambahan = `select sum(total) as total from t_pelayananpasientemp tp 
 where objectdaftarpasienfk=$1`
 
+const qHistoryRegistrasi = `select
+ta.norec as norecta,
+td.norec,
+td.noregistrasi,
+to_char(td.tglregistrasi,
+'dd Month YYYY HH:mm') as tglregistrasi,
+to_char(td.tglregistrasi,
+    'YYYY-MM-DD') as tglregistrasi2,
+to_char(td.tglregistrasi,
+        'YYYY-MM-DD HH:mm') as tglregistrasi3,
+to_char(td.tglpulang,
+'dd Month YYYY HH:mm') as tglpulang,
+to_char(td.tglpulang,
+    'YYYY-MM-DD') as tglpulang2,
+to_char(td.tglpulang,
+        'YYYY-MM-DD HH:mm') as tglpulang3,
+to_char(td.tglregistrasi,
+'YYYY-MM-DD HH:mm') || ' - ' || to_char(td.tglpulang,
+        'YYYY-MM-DD HH:mm') as displaytgl,
+mp.nocm,
+mp.namapasien,
+case when mu.objectinstalasifk=2 then 'RI' else 'RJ' end as tipe,
+case when td.objectpenjaminfk=1 then 'JKN' else mr.namarekanan  end as jaminan1,
+case when td.objectpenjamin2fk=1 then 'JKN' when td.objectpenjamin2fk is null then '' else 'LAIN-LAIN' end as jaminan2,
+tk.no_sep,tk.no_kartu,to_char( mp.tgllahir, TO_CHAR(age( mp.tgllahir,  now( )), 'YY Tahun mm Bulan DD Hari')) AS umur,
+mp.tgllahir,mc.caramasuk,to_char( td.tglregistrasi, TO_CHAR(age( td.tglregistrasi,  td.tglpulang), 'DD')) AS los,
+case when td.objectcarapulangrifk is null then '1' else mcp.kodeexternal end as kodecarapulang,
+case when td.objectcarapulangrifk is null then 'Atas persetujuan dokter' else mcp.reportdisplay end as labelcarapulang,
+mpeg.namalengkap as dpjp, mj.kodeexternal as gender,mc.caramasuk as kodecaramasuk,
+case when mu.objectinstalasifk=2 then '1' when mu.objectinstalasifk=7 then '3' else '2' end as jenis_rawat,
+mk.kelas_bpjs,td.status_grouping,td.cbg_code,td.cbg_description,td.cbg_tarif,td.cbg_mdc_number,
+td.cbg_mdc_description,td.cbg_drg_code,td.cbg_drg_description,td.add_payment_amt,mu.namaunit
+from
+t_daftarpasien td
+join m_pasien mp on mp.id=td.nocmfk
+join m_unit mu on mu.id=td.objectunitlastfk
+left join m_rekanan mr on mr.id=td.objectpenjaminfk
+left join m_rekanan mr2 on mr2.id=td.objectpenjamin2fk
+left join t_kepesertaanasuransi tk on  tk.objectdaftarpasienfk=td.norec
+left join m_caramasuk mc on mc.id=td.objectcaramasukfk
+left join m_carapulangri mcp on mcp.id=td.objectcarapulangrifk
+left join m_pegawai mpeg on mpeg.id=td.objectdokterpemeriksafk
+left join m_jeniskelamin mj on mj.id=mp.objectjeniskelaminfk
+join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk=td.norec
+and td.objectunitlastfk=ta.objectunitfk 
+left join m_kelas mk on mk.id=tk.objectkelasfk
+where mp.id =$1 and mp.statusenabled=true
+order by td.tglregistrasi desc
+limit 5`
+
 export default {
     getAll,
     addPost,
@@ -398,5 +479,6 @@ export default {
     qGetPasienOnline,
     qListPelayananPasienTemp,
     qListTotalKlaim,
-    qBiayaTambahan
+    qBiayaTambahan,
+    qHistoryRegistrasi
 };

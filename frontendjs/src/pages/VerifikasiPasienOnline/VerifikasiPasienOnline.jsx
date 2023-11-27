@@ -38,6 +38,16 @@ const VerifikasiPasienOnline = () => {
     alamat: null,
     search: null,
     idcmfk: null,
+    jeniskelamin: null,
+    golongandarah: null,
+    alamatdomisili: null,
+    namaibu: null,
+    pendidikan: null,
+    pekerjaan: null,
+    agama: null,
+    statusperkawinan: null,
+    namasuamiistri: null,
+    profile: null
   })
 
   const vQueries = useFormik({
@@ -68,6 +78,16 @@ const VerifikasiPasienOnline = () => {
       search: null,
       idcmfk: data.nocmfk,
       norecdp: data.norecdp,
+      jeniskelamin: data.jeniskelamin,
+      golongandarah: data.golongandarah,
+      alamatdomisili: data.alamatdomisili,
+      namaibu: data.namaibu,
+      pendidikan: data.pendidikan,
+      pekerjaan: data.pekerjaan,
+      agama: data.agama,
+      statusperkawinan: data.statusperkawinan,
+      namasuamiistri: data.namasuamiistri,
+      profile: data.profile,
     })
   }
 
@@ -183,9 +203,8 @@ const VerifikasiPasienOnline = () => {
                     name="jenispasien"
                     options={jenisPasien}
                     value={vQueries.values.jenispasien || ''}
-                    className={`input ${
-                      vQueries.errors.jenispasien ? 'is-invalid' : ''
-                    }`}
+                    className={`input ${vQueries.errors.jenispasien ? 'is-invalid' : ''
+                      }`}
                     onChange={(value) =>
                       vQueries.setFieldValue('jenispasien', value?.value || '')
                     }
@@ -210,9 +229,8 @@ const VerifikasiPasienOnline = () => {
                     name="unit"
                     options={unit}
                     value={vQueries.values.unit || ''}
-                    className={`input ${
-                      vQueries.errors.unit ? 'is-invalid' : ''
-                    }`}
+                    className={`input ${vQueries.errors.unit ? 'is-invalid' : ''
+                      }`}
                     onChange={(value) =>
                       vQueries.setFieldValue('unit', value?.value || '')
                     }

@@ -16,12 +16,22 @@ import {
   Table,
 } from 'reactstrap'
 import userDummy from '../../assets/images/users/user-dummy-img.jpg'
+import pria from "../../assets/images/svg/pria.svg"
+import baby from "../../assets/images/svg/baby.svg"
+import anaklaki from "../../assets/images/svg/anaklaki.svg"
+import kakek from "../../assets/images/svg/kakek.svg"
+import nenek from "../../assets/images/svg/nenek.svg"
+import anakperempuan from "../../assets/images/svg/anakperempuan.svg"
+import dewasaperempuan from "../../assets/images/svg/dewasaperempuan.svg"
 import classnames from 'classnames'
-import { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { ToastContainer, toast } from 'react-toastify'
 import { useNavigate } from 'react-router-dom'
+import { getHistoryRegistrasi } from '../../store/actions';
+import { useDispatch, useSelector } from 'react-redux'
 
 const initProfil = {
+  profile: null,
   namaPasien: null,
   noIdentitas: null,
   norm: null,
@@ -29,9 +39,24 @@ const initProfil = {
   alamat: null,
   search: null,
   idcmfk: null,
+  jeniskelamin: null,
+  golongandarah: null,
+  alamatdomisili: null,
+  namaibu: null,
+  pendidikan: null,
+  pekerjaan: null,
+  agama: null,
+  statusperkawinan: null,
+  namasuamiistri: null
 }
 
 const ActionPasienRegistrasi = ({ profil = initProfil, buttonAction }) => {
+  const dispatch = useDispatch();
+  const { data, loading, error } = useSelector((state) => ({
+    data: state.Registrasi.getHistoryRegistrasi.data,
+    loading: state.Registrasi.getHistoryRegistrasi.loading,
+    error: state.Registrasi.getHistoryRegistrasi.error,
+  }));
   const [pillsTab, setPillsTab] = useState('1')
   const navigate = useNavigate()
   const pillsToggle = (tab) => {
@@ -54,19 +79,44 @@ const ActionPasienRegistrasi = ({ profil = initProfil, buttonAction }) => {
     }
   }
 
+  useEffect(() => {
+    if (profil.idcmfk !== null) {
+      dispatch(getHistoryRegistrasi({ nocmfk: profil.idcmfk }));
+    }
+  }, [profil.idcmfk, dispatch]);
+
   return (
     <Row>
       <Col>
         <Card>
           <CardBody>
             <div className="text-center mt-3">
-              <img
+              {/* <img
                 src={userDummy}
                 className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image"
                 alt="user-profile"
-              />
+              /> */}
+              {profil?.profile === 'baby' ? (
+                <img src={baby} alt="" className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image" />
+              ) : profil?.profile === 'dewasalaki' ? (
+                <img src={pria} alt="" className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image" />
+              ) : profil?.profile === 'anaklaki' ? (
+                <img src={anaklaki} alt="" className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image" />
+              ) : profil?.profile === 'anakperempuan' ? (
+                <img src={anakperempuan} alt="" className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image" />
+              ) : profil?.profile === 'dewasaperempuan' ? (
+                <img src={dewasaperempuan} alt="" className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image" />
+              ) : profil?.profile === 'kakek' ? (
+                <img src={kakek} alt="" className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image" />
+              ) : profil?.profile === 'nenek' ? (
+                <img src={nenek} alt="" className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image" />
+              ) : (
+                // Render when none of the conditions are met
+                <p>No profile image available</p>
+              )}
               <h5 className="fs-17 mb-1">{profil?.namaPasien}</h5>
-              <p className="text-muted mb-0">{profil?.noIdentitas}</p>
+              <p className="text-muted mb-0">{profil?.jeniskelamin}</p>
+              <p className="text-muted mb-0">{profil?.golongandarah}</p>
             </div>
           </CardBody>
         </Card>
@@ -115,23 +165,20 @@ const ActionPasienRegistrasi = ({ profil = initProfil, buttonAction }) => {
                     <div className="table-responsive">
                       <Table className="table-borderless mb-0">
                         <tbody>
-                          <tr>
-                            <th className="ps-0" scope="row">
-                              NoRM :
-                            </th>
-                            <td className="text-muted">{profil?.norm}</td>
+                          <tr className='border-bottom'>
+                            <td className="text-muted">{profil?.alamatdomisili}</td>
                           </tr>
-                          <tr>
-                            <th className="ps-0" scope="row">
-                              No Hp :
-                            </th>
+                          <tr className='border-bottom'>
                             <td className="text-muted">{profil?.nohp}</td>
                           </tr>
-                          <tr>
-                            <th className="ps-0" scope="row">
-                              Alamat :
-                            </th>
-                            <td className="text-muted">{profil?.alamat}</td>
+                          <tr className='border-bottom'>
+                            <td className="text-muted">Nama Ibu : {profil?.namaibu}</td>
+                          </tr>
+                          <tr className='border-bottom'>
+                            <td className="text-muted">{profil?.pendidikan} / {profil?.namasuamiistri}</td>
+                          </tr>
+                          <tr className='border-bottom'>
+                            <td className="text-muted">{profil?.agama}</td>
                           </tr>
                         </tbody>
                       </Table>
@@ -141,25 +188,25 @@ const ActionPasienRegistrasi = ({ profil = initProfil, buttonAction }) => {
               </TabPane>
 
               <TabPane tabId="2" id="profile-1">
-                <div className="d-flex">
-                  <div className="flex-shrink-0">
-                    <i className="ri-checkbox-circle-fill text-success"></i>
-                  </div>
-                  <div className="flex-grow-1 ms-2">
-                    In some designs, you might adjust your tracking to create a
-                    certain artistic effect. It can also help you fix fonts that
-                    are poorly spaced to begin with.
-                  </div>
-                </div>
-                <div className="d-flex mt-2">
-                  <div className="flex-shrink-0">
-                    <i className="ri-checkbox-circle-fill text-success"></i>
-                  </div>
-                  <div className="flex-grow-1 ms-2">
-                    A wonderful serenity has taken possession of my entire soul,
-                    like these sweet mornings of spring which I enjoy with my
-                    whole heart.
-                  </div>
+                <div style={{ overflowY: 'auto', maxHeight: '400px' }}>
+                  {(data || []).map((item, key) => (
+                    <React.Fragment key={key}>
+                      <Card className="product card-animate" style={{ backgroundColor: '#16B3AC' }}>
+                        <CardBody>
+                          <Row className="gy-3">
+                            <h6 className="card-title mb-0"><span className="badge align-middle fs-12" style={{ color: "black" }}>{item.displaytgl}</span></h6>
+                            <div className="col-sm">
+                              <div className="text-lg-start">
+                                <p className="mb-0" style={{ color: 'white' }} >{item.noregistrasi} ({item.jaminan1})</p>
+                                <p className="mb-0" style={{ color: 'white' }}>{item.namaunit}</p>
+                                <p className="mb-0" style={{ color: 'white' }}>{item.dpjp}</p>
+                              </div>
+                            </div>
+                          </Row>
+                        </CardBody>
+                      </Card>
+                    </React.Fragment>
+                  ))}
                 </div>
               </TabPane>
               <TabPane tabId="3" id="messages-1">

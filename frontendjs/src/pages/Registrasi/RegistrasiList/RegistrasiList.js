@@ -37,6 +37,7 @@ const RegistrasiList = () => {
 
     // Profil
     const [profil, setProfil] = useState({
+        profile: null,
         namaPasien: null,
         noIdentitas: null,
         norm: null,
@@ -44,18 +45,37 @@ const RegistrasiList = () => {
         alamat: null,
         search: null,
         idcmfk: null,
+        jeniskelamin:null,
+        golongandarah:null,
+        alamatdomisili:null,
+        namaibu:null,
+        pendidikan:null,
+        pekerjaan:null,
+        agama:null,
+        statusperkawinan:null,
+        namasuamiistri:null
     })
     const [search, setSearch] = useState('')
     const [statusNotif, setstatusNotif] = useState(false);
 
     const handleClick = (e) => {
         setProfil({
+            profile: e.profile,
             namaPasien: e.namapasien,
             noIdentitas: e.noidentitas,
             norm: e.nocm,
-            nohp: e.nohp,
+            nohp: e.nohp + ' / ' + e.notelepon,
             alamat: e.alamatrmh,
-            idcmfk: e.id
+            idcmfk: e.id,
+            jeniskelamin:e.jeniskelamin,
+            golongandarah:e.golongandarah,
+            alamatdomisili:e.alamatdomisili,
+            namaibu:e.namaibu,
+            pendidikan:e.pendidikan,
+            pekerjaan:e.pekerjaan,
+            agama:e.agama,
+            statusperkawinan:e.statusperkawinan,
+            namasuamiistri:e.namasuamiistri
         })
     };
 
@@ -179,7 +199,11 @@ const RegistrasiList = () => {
                         </Col>
                         <Col lg={9}>
                             <Card>
-
+                            <CardHeader style={{ backgroundColor: "#FFCB46",
+                                borderTopLeftRadius: '24px', borderTopRightRadius: '24px',
+                                padding: '10px 15px' }}>
+                                    <h4 className="card-title mb-0" style={{ color: '#ffffff' }}>Daftar Pasien Lama</h4>
+                                </CardHeader>
                                 <CardBody>
                                     <div id="table-gridjs">
                                         <Col className="col-sm mb-3">

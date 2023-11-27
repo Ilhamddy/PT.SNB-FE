@@ -56,6 +56,7 @@ const InputTindakan = () => {
     const handleUnitLast = (selected) => {
         validation.setFieldValue('unitlast', selected.value)
         validation.setFieldValue('objectkelasfk', selected.objectkelasfk)
+        dispatch(comboTindakanGet(selected.objectkelasfk + '&objectunitfk=' + selected.value + '&namaproduk='));
     };
     const handleClickKurang = (e) => {
         if (e === 2) {
