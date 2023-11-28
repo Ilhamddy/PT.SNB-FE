@@ -172,7 +172,7 @@ const Cppt = () => {
                     action="#">
 
                     <Row className='text-dark'>
-                        <Col xxl={6} sm={6}>
+                        <Col xxl={12} sm={12}>
                             <Row>
                                 <Col sm={12}>
                                     <div>
@@ -197,7 +197,32 @@ const Cppt = () => {
                                 </Col>
                             </Row>
                         </Col>
-                        <Col xxl={6} sm={6}>
+                        <Col xxl={12} sm={12}>
+                            <Row className='mt-5'>
+                                <Col lg={12} sm={12}>
+                                    <div >
+                                        <Label style={{ color: "black" }} htmlFor="objective" className="form-label fw-semibold">Objective</Label>
+                                    </div>
+                                    <CKEditor
+                                        editor={ClassicEditor}
+                                        config={{
+                                            toolbar: {
+                                                items: ['undo', "redo", "bold", "italic", 'link', 'bulletedList']
+                                            }
+                                        }}
+                                        data={validation.values.objective || ""}
+                                        onChange={(event, editor) => {
+                                            const data = editor.getData();
+                                            validation.setFieldValue('objective', data)
+                                        }}
+                                    />
+                                    {validation.touched.objective && validation.errors.objective ? (
+                                        <FormFeedback type="invalid"><div>{validation.errors.objective}</div></FormFeedback>
+                                    ) : null}
+                                </Col>
+                            </Row>
+                        </Col>
+                        <Col xxl={12} sm={12}>
                             <Row>
                                 <Col lg={12} sm={12}>
                                     <div>
@@ -225,11 +250,11 @@ const Cppt = () => {
                                 </Col>
                             </Row>
                         </Col>
-                        <Col xxl={6} sm={6}>
+                        <Col xxl={12} sm={12}>
                             <Row className='mt-5'>
                                 <Col lg={12} sm={12}>
                                     <div >
-                                        <Label style={{ color: "black" }} htmlFor="objective" className="form-label fw-semibold">Objective</Label>
+                                        <Label style={{ color: "black" }} htmlFor="plan" className="form-label fw-semibold">Plan</Label>
                                     </div>
                                     <CKEditor
                                         editor={ClassicEditor}
@@ -238,39 +263,14 @@ const Cppt = () => {
                                                 items: ['undo', "redo", "bold", "italic", 'link', 'bulletedList']
                                             }
                                         }}
-                                        data={validation.values.objective || ""}
+                                        data={validation.values.plan || ""}
                                         onChange={(event, editor) => {
                                             const data = editor.getData();
-                                            validation.setFieldValue('objective', data)
+                                            validation.setFieldValue('plan', data)
                                         }}
                                     />
-                                    {validation.touched.objective && validation.errors.objective ? (
-                                        <FormFeedback type="invalid"><div>{validation.errors.objective}</div></FormFeedback>
-                                    ) : null}
-                                </Col>
-                            </Row>
-                        </Col>
-                        <Col xxl={6} sm={6}>
-                            <Row className='mt-5'>
-                                <Col lg={12} sm={12}>
-                                    <div >
-                                        <Label style={{ color: "black" }} htmlFor="subjective" className="form-label fw-semibold">Subjective</Label>
-                                    </div>
-                                    <CKEditor
-                                        editor={ClassicEditor}
-                                        config={{
-                                            toolbar: {
-                                                items: ['undo', "redo", "bold", "italic", 'link', 'bulletedList']
-                                            }
-                                        }}
-                                        data={validation.values.subjective || ""}
-                                        onChange={(event, editor) => {
-                                            const data = editor.getData();
-                                            validation.setFieldValue('subjective', data)
-                                        }}
-                                    />
-                                    {validation.touched.subjective && validation.errors.subjective ? (
-                                        <FormFeedback type="invalid"><div>{validation.errors.subjective}</div></FormFeedback>
+                                    {validation.touched.plan && validation.errors.plan ? (
+                                        <FormFeedback type="invalid"><div>{validation.errors.plan}</div></FormFeedback>
                                     ) : null}
                                 </Col>
                             </Row>

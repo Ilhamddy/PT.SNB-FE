@@ -15,6 +15,13 @@ import BreadCrumb from '../../../Components/Common/BreadCrumb';
 import Flatpickr from "react-flatpickr";
 //import images
 import userDummy from "../../../assets/images/users/user-dummy-img.jpg";
+import pria from "../../../assets/images/svg/pria.svg"
+import baby from "../../../assets/images/svg/baby.svg"
+import anaklaki from "../../../assets/images/svg/anaklaki.svg"
+import kakek from "../../../assets/images/svg/kakek.svg"
+import nenek from "../../../assets/images/svg/nenek.svg"
+import anakperempuan from "../../../assets/images/svg/anakperempuan.svg"
+import dewasaperempuan from "../../../assets/images/svg/dewasaperempuan.svg"
 
 import CustomSelect from '../../Select/Select'
 import { useFormik, yupToFormErrors } from "formik";
@@ -49,7 +56,7 @@ const RegistrasiPasien = (props) => {
 	const [isPrintOpen, setIsPrintOpen] = useState(false);
     const [dataKamar, setdataKamar] = useState([]);
 
-
+    const [dataKelas, setdataKelas] = useState([]);
     const [dataUnit, setdataUnit] = useState([]);
     const [dataTT, setdataTT] = useState([]);
     const refPrint = useRef(null)
@@ -178,8 +185,16 @@ const RegistrasiPasien = (props) => {
             const unitLastFk = dtRuangNorec?.objectunitlastfk || ""
             validation.setFieldValue('unittujuan', unitLastFk);
             setdataUnit(newArray);
+            let newArrayKelas = data.kelasmap.filter(function (item) {
+                if (item.valueunit === unitLastFk)
+                    return true;
+                return false;
+            });
+            setdataKelas(newArrayKelas)
+
             const idKelas = dtRuangNorec?.objectkelasfk || ""
             validation.setFieldValue('kelas', idKelas || undefined);
+            
             let newArrayKamar = data?.kamar?.filter(function (item) {
                 if (item.objectkelasfk === idKelas && item.objectunitfk === unitLastFk)
                     return true;
@@ -240,6 +255,12 @@ const RegistrasiPasien = (props) => {
         validation.setFieldValue('tempattidur', "")
         setdataKamar([])
         setdataTT([])
+        var newArray = data.kelasmap.filter(function (item) {
+            if (item.valueunit === selected.value)
+                return true;
+            return false;
+        });
+        setdataKelas(newArray)
     }
     
     const handleChangeKelas = (selected) => {
@@ -445,9 +466,27 @@ const RegistrasiPasien = (props) => {
                             <CardBody>
                                 {/* <h5 className="card-title mb-5">Profile Pasien</h5> */}
                                 <div className="text-center">
-                                    <img src={userDummy}
+                                    {/* <img src={userDummy}
                                         className="rounded-circle avatar-xl img-thumbnail user-profile-image"
-                                        alt="user-profile" />
+                                        alt="user-profile" /> */}
+                                        {dataPas?.profile === 'baby' ? (
+                                            <img src={baby} alt="" className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image" />
+                                        ) : dataPas?.profile === 'dewasalaki' ? (
+                                            <img src={pria} alt="" className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image" />
+                                        ) : dataPas?.profile === 'anaklaki' ? (
+                                            <img src={anaklaki} alt="" className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image" />
+                                        ) : dataPas?.profile === 'anakperempuan' ? (
+                                            <img src={anakperempuan} alt="" className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image" />
+                                        ) : dataPas?.profile === 'dewasaperempuan' ? (
+                                            <img src={dewasaperempuan} alt="" className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image" />
+                                        ) : dataPas?.profile === 'kakek' ? (
+                                            <img src={kakek} alt="" className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image" />
+                                        ) : dataPas?.profile === 'nenek' ? (
+                                            <img src={nenek} alt="" className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image" />
+                                        ) : (
+                                            // Render when none of the conditions are met
+                                            <p>No profile image available</p>
+                                        )}
                                     <Input style={{ border: 'none', textAlign: 'center' }}
                                         id="namapasien"
                                         name="namapasien"
@@ -636,7 +675,7 @@ const RegistrasiPasien = (props) => {
                                                                         <CustomSelect
                                                                             id="kelas"
                                                                             name="kelas"
-                                                                            options={data.kelas}
+                                                                            options={dataKelas}
                                                                             value={validation.values.kelas || ""}
                                                                             className={`input ${validation.errors.kelas ? "is-invalid" : ""}`}
                                                                             // onChange={value => validation.setFieldValue('kelas', value.value)}

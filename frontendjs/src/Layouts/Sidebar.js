@@ -2,9 +2,9 @@ import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import SimpleBar from "simplebar-react";
 //import logo
-import logoSm from "../assets/images/sn.png";
-import logoDark from "../assets/images/snb.png";
-import logoLight from "../assets/images/snbtransparent.png";
+import logoSm from "../assets/images/logo_snb2.png";
+import logoDark from "../assets/images/logo_snb.png";
+import logoLight from "../assets/images/logo_snb.png";
 
 //Import Components
 import VerticalLayout from "./VerticalLayouts";

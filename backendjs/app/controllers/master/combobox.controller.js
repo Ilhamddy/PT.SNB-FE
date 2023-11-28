@@ -196,90 +196,60 @@ const getKecamatan = (req, res) => {
         });
     }
 }
-const comboRegistrasi = (req, res) => {
-    try {
-        pool.query(quriesInstalasi.getAll, (error, result) => {
-            if (error) return;
-            pool.query(queriesUnit.getAll, (error, result2) => {
-                if (error) return;
-                pool.query(quriesAsalRujukan.getAll, (error, result3) => {
-                    if (error) return;
-                    pool.query(quriesJenisPenjamin.getAll, (error, result4) => {
-                        if (error) return;
-                        pool.query(queriesRekanan.getAll, (error, result5) => {
-                            if (error) return;
-                            pool.query(queriesHubunganKeluarga.getAll, (error, result6) => {
-                                if (error) return;
-                                pool.query(queriesPegawai.getAllDokter, (error, result7) => {
-                                    if (error) return;
-                                    pool.query(queriesKelas.getAll, (error, result8) => {
-                                        if (error) return;
-                                        pool.query(queriesKamar.getAll, (error, result9) => {
-                                            if (error) return;
-                                            pool.query(queriesTempatTidur.getAll, (error, result10) => {
-                                                if (error) return;
-                                                pool.query(`select id as value,reportdisplay as label from m_statuspulang`, (error, result11) => {
-                                                    if (error) return;
-                                                    pool.query(`select id as value,caramasuk as label from m_caramasuk`, (error, result12) => {
-                                                        if (error) return;
-                                                        pool.query(`select mu.namaunit,mk2.namakelas,count(mt.id) from m_unit mu 
-                                                        join m_kamar mk on mk.objectunitfk=mu.id 
-                                                        join m_kelas mk2 on mk2.id=mk.objectkelasfk
-                                                        join m_tempattidur mt on mt.objectkamarfk=mk.id
-                                                        where mt.objectstatusbedfk =2 and mt.statusenabled =true
-                                                        group  by mu.namaunit,mk2.namakelas`, (error, result13) => {
-                                                            if (error) return;
-                                                            let tempres = {
-                                                                instalasi: result.rows, 
-                                                                unit: result2.rows, 
-                                                                asalrujukan: result3.rows,
-                                                                jenispenjamin: result4.rows, 
-                                                                rekanan: result5.rows, 
-                                                                hubungankeluarga: result6.rows,
-                                                                pegawai: result7.rows, 
-                                                                kelas: result8.rows, 
-                                                                kamar: result9.rows,
-                                                                tempattidur: result10.rows,
-                                                                statuspulang: result11.rows,
-                                                                caramasuk:result12.rows,
-                                                                gridtempattidur:result13.rows
-                                                            }
-                                                            res.status(200).send({
-                                                                data: tempres,
-                                                                status: "success",
-                                                                success: true,
-                                                            });
-                
-                                                        })
-            
-                                                    })
+
+
+const comboRegistrasi = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const result = await pool.query(quriesInstalasi.getAll)
+        const result2 = await pool.query(queriesUnit.getAll)
+        const result3 = await pool.query(quriesAsalRujukan.getAll)
+        const result4 = await pool.query(quriesJenisPenjamin.getAll)
+        const result5 = await pool.query(queriesRekanan.getAll)
+        const result6 = await pool.query(queriesHubunganKeluarga.getAll)
+        const result7 = await pool.query(queriesPegawai.getAllDokter)
+        const result8 = await pool.query(queriesKelas.getAll)
+        const result9 = await pool.query(queriesKamar.getAll)
+        const result10 = await pool.query(queriesTempatTidur.getAll)
+        const result11 = await pool.query('select id as value,reportdisplay as label from m_statuspulang')
+        const result12 = await pool.query('select id as value,caramasuk as label from m_caramasuk')
+        const result13 = await pool.query(`select mu.namaunit,mk2.namakelas,count(mt.id) from m_unit mu 
+        join m_kamar mk on mk.objectunitfk=mu.id 
+        join m_kelas mk2 on mk2.id=mk.objectkelasfk
+        join m_tempattidur mt on mt.objectkamarfk=mk.id
+        where mt.objectstatusbedfk =2 and mt.statusenabled =true
+        group  by mu.namaunit,mk2.namakelas`)
+        const result14 = await pool.query(queriesKelas.getKelasMap)
         
-                                                })
-    
-                                            })
-
-                                        })
-
-                                    })
-
-                                })
-
-                            })
-
-                        })
-
-                    })
-
-                })
-
-            })
-
-        })
-    } catch (error) {
+        const tempres = {
+            instalasi: result.rows, 
+            unit: result2.rows, 
+            asalrujukan: result3.rows,
+            jenispenjamin: result4.rows, 
+            rekanan: result5.rows, 
+            hubungankeluarga: result6.rows,
+            pegawai: result7.rows, 
+            kelas: result8.rows, 
+            kamar: result9.rows,
+            tempattidur: result10.rows,
+            statuspulang: result11.rows,
+            caramasuk:result12.rows,
+            gridtempattidur:result13.rows,
+            kelasmap:result14.rows
+        };
         res.status(200).send({
-            data: [],
-            status: "error",
-            success: true,
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
         });
     }
 }
