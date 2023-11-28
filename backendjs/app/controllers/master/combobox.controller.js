@@ -207,7 +207,7 @@ const comboRegistrasi = async (req, res) => {
         const result4 = await pool.query(quriesJenisPenjamin.getAll)
         const result5 = await pool.query(queriesRekanan.getAll)
         const result6 = await pool.query(queriesHubunganKeluarga.getAll)
-        const result7 = await pool.query(queriesPegawai.getAll)
+        const result7 = await pool.query(queriesPegawai.getAllDokter)
         const result8 = await pool.query(queriesKelas.getAll)
         const result9 = await pool.query(queriesKamar.getAll)
         const result10 = await pool.query(queriesTempatTidur.getAll)
@@ -283,7 +283,7 @@ const comboPulang = async (req, res) => {
         const kondisiPulangRI = await pool.query(queriesKondisiPulangRI.getAll, []);
         const caraPulangRI = await pool.query(queriesCaraPulangRI.getAll, []);
         const hubKeluarga = await pool.query(queriesHubunganKeluarga.getAll, []);
-        const pegawai = await pool.query(queriesPegawai.getAll, []);
+        const pegawai = await pool.query(queriesPegawai.getAllDokter, []);
         const kelas = await pool.query(queriesKelas.getAll, []);
         const kamar = await pool.query(queriesKamar.getAll, []);
         const tempattidur = await pool.query(queriesTempatTidur.getAll, []);
@@ -466,7 +466,7 @@ const comboStokOpname = async (req, res) => {
 
 const comboResep = async (req, res) => {
     try{
-        const pegawai = await pool.query(queriesPegawai.getAll)
+        const pegawai = await pool.query(queriesPegawai.getAllDokter)
         const unit = await pool.query(queriesUnit.getAll)
         const signa = await pool.query(queriesSigna.getAll)
         const keteranganResep = await pool.query(queriesKeteranganResep.getAll)
@@ -496,7 +496,7 @@ const comboResep = async (req, res) => {
 
 const comboVerifResep = async (req, res) => {
     try{
-        const pegawai = await pool.query(queriesPegawai.getAll)
+        const pegawai = await pool.query(queriesPegawai.getAllDokter)
         const unit = await pool.query(queriesUnit.getAll)
         const signa = await pool.query(queriesSigna.getAll)
         const keteranganResep = await pool.query(queriesKeteranganResep.getAll)
@@ -528,7 +528,7 @@ const comboVerifResep = async (req, res) => {
 
 const comboPenjualanBebas = async (req, res) => {
     try{
-        const pegawai = await pool.query(queriesPegawai.getAll)
+        const pegawai = await pool.query(queriesPegawai.getAllDokter)
         const jenisResep = await pool.query(queriesJenisResep.getAll)
         const unit = await pool.query(queriesUnit.getAll)
         const signa = await pool.query(queriesSigna.getAll)

@@ -52,6 +52,15 @@ import {
     GET_DAFTAR_SUDAH_VERIFIKASI_REMUNERASI,
     GET_DAFTAR_SUDAH_VERIFIKASI_REMUNERASI_SUCCESS,
     GET_DAFTAR_SUDAH_VERIFIKASI_REMUNERASI_ERROR,
+    GET_COMBO_SETOR,
+    GET_COMBO_SETOR_SUCCESS,
+    GET_COMBO_SETOR_ERROR,
+    GET_PEMBAYARAN_SETOR,
+    GET_PEMBAYARAN_SETOR_SUCCESS,
+    GET_PEMBAYARAN_SETOR_ERROR,
+    UPSERT_SETORAN,
+    UPSERT_SETORAN_SUCCESS,
+    UPSERT_SETORAN_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -139,7 +148,21 @@ const INIT_STATE = {
         success: false,
         error: null,
     },
-
+    getComboSetor: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    getPembayaranSetor: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    upsertSetoran: {
+        data: [],
+        loading: false,
+        error: null,
+    }
 }
 
 const payment = (state = INIT_STATE, action) => {
@@ -715,6 +738,106 @@ const payment = (state = INIT_STATE, action) => {
                 ...state,
                 getDaftarSudahVerifikasiRemunerasi: {
                     ...state.getDaftarSudahVerifikasiRemunerasi,
+                    loading: false,
+                    error: action.payload,
+                }
+            }
+        }
+
+        case GET_COMBO_SETOR: {
+            return {
+                ...state,
+                getComboSetor: {
+                    ...state.getComboSetor,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case GET_COMBO_SETOR_SUCCESS: {
+            return {
+                ...state,
+                getComboSetor: {
+                    ...state.getComboSetor,
+                    loading: false,
+                    data: action.payload,
+                }
+            }
+        }
+
+        case GET_COMBO_SETOR_ERROR: {
+            return {
+                ...state,
+                getComboSetor: {
+                    ...state.getComboSetor,
+                    loading: false,
+                    error: action.payload,
+                }
+            }
+        }
+
+        
+        case GET_PEMBAYARAN_SETOR: {
+            return {
+                ...state,
+                getPembayaranSetor: {
+                    ...state.getPembayaranSetor,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case GET_PEMBAYARAN_SETOR_SUCCESS: {
+            return {
+                ...state,
+                getPembayaranSetor: {
+                    ...state.getPembayaranSetor,
+                    loading: false,
+                    data: action.payload,
+                }
+            }
+        }
+
+        case GET_PEMBAYARAN_SETOR_ERROR: {
+            return {
+                ...state,
+                getPembayaranSetor: {
+                    ...state.getPembayaranSetor,
+                    loading: false,
+                    error: action.payload,
+                }
+            }
+        }
+
+        case UPSERT_SETORAN: {
+            return {
+                ...state,
+                upsertSetoran: {
+                    ...state.upsertSetoran,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case UPSERT_SETORAN_SUCCESS: {
+            return {
+                ...state,
+                upsertSetoran: {
+                    ...state.upsertSetoran,
+                    loading: false,
+                    data: action.payload,
+                }
+            }
+        }
+
+        case UPSERT_SETORAN_ERROR: {
+            return {
+                ...state,
+                upsertSetoran: {
+                    ...state.upsertSetoran,
                     loading: false,
                     error: action.payload,
                 }

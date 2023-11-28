@@ -1,4 +1,4 @@
-import { checkStatusEnabled } from "../../utils/dbutils"
+import { checkStatusEnabled, dateBetweenEmptyString } from "../../utils/dbutils"
 import { statusEnabled } from "../mastertable/globalvariables/globalvariables.queries"
 
 
@@ -387,14 +387,69 @@ const qGetBuktiBayarNorec =
         WHERE tbb.norec = $1
     `
 const qGetLaporanPendapatanKasir =
-    `select row_number() OVER (ORDER BY tb.norec) AS no,tb.totalbayar,tb.objectpegawaifk,mp.namalengkap,
-    to_char(tb.tglinput,'dd Month YYYY') as tglbayar, mj.reportdisplay as jenispembayaran,
-    td.noregistrasi,tb.no_bukti from t_buktibayarpasien tb 
+    `
+SELECT 
+    row_number() OVER (ORDER BY tb.norec) AS no,tb.totalbayar,
+    tb.objectpegawaifk,
+    mp.namalengkap,
+    to_char(tb.tglinput,'dd Month YYYY') as tglbayar, 
+    mj.reportdisplay as jenispembayaran,
+    td.noregistrasi,
+    tb.no_bukti 
+from t_buktibayarpasien tb 
     join m_pegawai mp on mp.id=tb.objectpegawaifk 
     join m_jenispembayaran mj on mj.id=tb.objectjenispembayaranfk
     join t_daftarpasien td on td.norec=tb.objectdaftarpasienfk 
-    where tb.statusenabled=true and tb.tglinput between $1 and $2 and mp.namalengkap ilike $3
+where 
+    tb.statusenabled=true and tb.tglinput between $1 and $2 and mp.namalengkap ilike $3
     `
+
+const qGetPembayaran = `
+SELECT
+    tcb.norec AS noreccarabayar,
+    tbb.norec AS norecbuktibayar,
+    tdp.noregistrasi AS noregistrasi,
+    tdp.tglregistrasi AS tglregistrasi,
+    tbb.no_bukti AS no_bukti,
+    mp.nocm AS nocm,
+    mp.namapasien AS namapasien,
+    mu.namaunit AS namaunit,
+    mi.namainstalasi AS namainstalasi,
+    COALESCE(mr.namarekanan, 'Umum/Pribadi') AS namarekanan,
+    tdp.tglpulang AS tglpulang,
+    tcb.totalbayar AS totalbayar,
+    COALESCE(mjnt.nontunai, mmb.metodebayar) AS metodebayar
+FROM t_buktibayarpasien tbb
+    LEFT JOIN t_daftarpasien tdp ON tbb.objectdaftarpasienfk = tdp.norec
+    LEFT JOIN t_carabayar tcb ON tcb.objectbuktibayarpasienfk = tbb.norec
+    LEFT JOIN t_piutangpasien tpp ON tbb.objectpiutangpasienfk = tpp.norec
+    LEFT JOIN m_rekanan mr ON tpp.objectpenjaminfk = mr.id
+    LEFT JOIN m_unit mu ON tdp.objectunitlastfk = mu.id
+    LEFT JOIN m_instalasi mi ON mu.objectinstalasifk = mi.id
+    LEFT JOIN m_metodebayar mmb ON tcb.objectmetodebayarfk = mmb.id
+    LEFT JOIN m_jenisnontunai mjnt ON tcb.objectjenisnontunaifk = mjnt.id
+    LEFT JOIN m_pasien mp ON tdp.nocmfk = mp.id
+WHERE
+    ${dateBetweenEmptyString("tbb.tglinput", "$1", "$2")}
+    AND
+    tbb.objectpegawaifk = $3
+`
+
+const  qGetSetor = `
+SELECT
+    tsk.norec AS norecsetoran,
+    tsk.tglsetor AS tanggalshift,
+    tsk.objectpegawaifk AS kasir,
+    tsk.objectshiftfk AS jadwalshift,
+    msk.reportdisplay AS jadwalshiftname,
+    tsk.jumlahsetor AS totalsetor
+FROM t_setorankasir tsk
+    LEFT JOIN m_shiftkasir msk ON msk.id = tsk.objectshiftfk
+WHERE
+    ${dateBetweenEmptyString("tsk.tglsetor", "$1", "$2")}
+    AND
+    tsk.objectpegawaifk = $3
+`
 
 
 export {
@@ -416,4 +471,6 @@ export {
     qGetCaraBayarFromBB,
     qGetBuktiBayarNorec,
     qGetLaporanPendapatanKasir,
+    qGetPembayaran,
+    qGetSetor
 }

@@ -92,5 +92,22 @@ export default function (app) {
         controller.getDaftarSudahVerifikasiRemun
     );
 
+    app.get(
+        "/api/transaksi/payment/get-combo-setor",
+        [authJwt.verifyToken],
+        controller.getComboSetor
+    )
+
+    app.get(
+        "/api/transaksi/payment/get-pembayaran-setor",
+        [authJwt.verifyToken],
+        controller.getPembayaranSetor
+    )
+
+    app.post(
+        "/api/transaksi/payment/upsert-setoran",
+        [authJwt.verifyToken],
+        controller.upsertSetoran
+    )
 
 }

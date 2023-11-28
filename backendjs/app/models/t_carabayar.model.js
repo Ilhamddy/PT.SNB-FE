@@ -37,7 +37,10 @@ export default (sequelize, Sequelize) => {
         },
         approvalcode: {
             type: Sequelize.STRING
-        }        
+        },
+        objectsetorankasirdetailfk: {
+            type: Sequelize.STRING
+        }
     }, {
         tableName: "t_carabayar", // relation "user" does not exist
         createdAt: false,
