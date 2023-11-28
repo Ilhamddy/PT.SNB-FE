@@ -98,7 +98,14 @@ SELECT
     bb.totalbayar as totalbayar,
     bb.totaltagihan as totaltagihan,
 	td.tglpulang AS tglpulang,
-    count(tp)::int as jmlpiutangbayar
+    count(tp)::int as jmlpiutangbayar,
+    case when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<1825 then 'baby'
+    when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<6569 and mp.objectjeniskelaminfk=1 then 'anaklaki'
+    when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<6569 and mp.objectjeniskelaminfk=2 then 'anakperempuan'
+    when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<23724 and mp.objectjeniskelaminfk=1 then 'dewasalaki'
+    when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<23724 and mp.objectjeniskelaminfk=2 then 'dewasaperempuan'
+    when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))>23724 and mp.objectjeniskelaminfk=1 then 'kakek'
+    when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))>23724 and mp.objectjeniskelaminfk=2 then 'nenek' else 'baby' end as profile
 FROM t_notapelayananpasien tn
     LEFT JOIN t_daftarpasien td ON tn.objectdaftarpasienfk=td.norec
     LEFT JOIN m_pasien mp ON td.nocmfk=mp.id
@@ -116,7 +123,9 @@ GROUP BY
     td.norec,
     mp.namapasien,
     mr.namaexternal,
-    bb.norec
+    bb.norec,
+    mp.tgllahir,
+    mp.objectjeniskelaminfk
 ORDER BY tn.tglinput DESC
 
 `
@@ -225,7 +234,14 @@ SELECT
     tn.norec AS norecnota,
     bb.norec AS norecbukti,
     tp.tglupdate AS tglupdate,
-    mp.noidentitas AS noidentitas
+    mp.noidentitas AS noidentitas,
+    case when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<1825 then 'baby'
+    when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<6569 and mp.objectjeniskelaminfk=1 then 'anaklaki'
+    when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<6569 and mp.objectjeniskelaminfk=2 then 'anakperempuan'
+    when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<23724 and mp.objectjeniskelaminfk=1 then 'dewasalaki'
+    when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<23724 and mp.objectjeniskelaminfk=2 then 'dewasaperempuan'
+    when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))>23724 and mp.objectjeniskelaminfk=1 then 'kakek'
+    when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))>23724 and mp.objectjeniskelaminfk=2 then 'nenek' else 'baby' end as profile
 FROM t_piutangpasien tp
     LEFT JOIN t_daftarpasien td ON tp.objectdaftarpasienfk=td.norec
     LEFT JOIN m_pasien mp ON td.nocmfk=mp.id
