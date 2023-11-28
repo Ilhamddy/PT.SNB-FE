@@ -25,9 +25,10 @@ import NoDataTable from '../../Components/Table/NoDataTable'
 import DataTable from 'react-data-table-component'
 import * as Yup from 'yup'
 import { onChangeStrNbr } from '../../utils/format'
+import { tableCustomStyles } from '../../Components/Table/tableCustomStyles'
 
 const DaftarKamar = () => {
-  document.title = "Daftar Kamar";
+  document.title = 'Daftar Kamar'
   const { dataKamar, comboDaftarKamar } = useSelector((state) => ({
     dataKamar: state.Sysadmin.getAllKamar.data?.kamar || [],
     comboDaftarKamar: state.Sysadmin.getComboDaftarKamar?.data || null,
@@ -52,7 +53,7 @@ const DaftarKamar = () => {
       unit: '',
       kelas: '',
       statusenabled: true,
-      jenisPelayanan: ''
+      jenisPelayanan: '',
     },
     validationSchema: Yup.object({
       namakamar: Yup.string().required('Nama Kamar harus diisi'),
@@ -193,8 +194,9 @@ const DaftarKamar = () => {
                 }}
                 isDisabled
                 value={vTambah.values.instalasi}
-                className={`input row-header ${!!vTambah?.errors.instalasi ? 'is-invalid' : ''
-                  }`}
+                className={`input row-header ${
+                  !!vTambah?.errors.instalasi ? 'is-invalid' : ''
+                }`}
               />
               {vTambah.touched.instalasi && !!vTambah.errors.instalasi && (
                 <FormFeedback type="invalid">
@@ -216,8 +218,9 @@ const DaftarKamar = () => {
                   vTambah.setFieldValue('unit', e?.value || '')
                 }}
                 value={vTambah.values.unit}
-                className={`input row-header ${!!vTambah?.errors.unit ? 'is-invalid' : ''
-                  }`}
+                className={`input row-header ${
+                  !!vTambah?.errors.unit ? 'is-invalid' : ''
+                }`}
               />
               {vTambah.touched.unit && !!vTambah.errors.unit && (
                 <FormFeedback type="invalid">
@@ -239,8 +242,9 @@ const DaftarKamar = () => {
                   vTambah.setFieldValue('kelas', e?.value || '')
                 }}
                 value={vTambah.values.kelas}
-                className={`input row-header ${!!vTambah?.errors.kelas ? 'is-invalid' : ''
-                  }`}
+                className={`input row-header ${
+                  !!vTambah?.errors.kelas ? 'is-invalid' : ''
+                }`}
               />
               {vTambah.touched.kelas && !!vTambah.errors.kelas && (
                 <FormFeedback type="invalid">
@@ -286,14 +290,16 @@ const DaftarKamar = () => {
                   vTambah.setFieldValue('jenisPelayanan', e?.value || '')
                 }}
                 value={vTambah.values.jenisPelayanan}
-                className={`input row-header ${!!vTambah?.errors.jenisPelayanan ? 'is-invalid' : ''
-                  }`}
+                className={`input row-header ${
+                  !!vTambah?.errors.jenisPelayanan ? 'is-invalid' : ''
+                }`}
               />
-              {vTambah.touched.jenisPelayanan && !!vTambah.errors.jenisPelayanan && (
-                <FormFeedback type="invalid">
-                  <div>{vTambah.errors.jenisPelayanan}</div>
-                </FormFeedback>
-              )}
+              {vTambah.touched.jenisPelayanan &&
+                !!vTambah.errors.jenisPelayanan && (
+                  <FormFeedback type="invalid">
+                    <div>{vTambah.errors.jenisPelayanan}</div>
+                  </FormFeedback>
+                )}
             </ColLabelInput>
             {vTambah.values.idkamar && (
               <ColLabelInput
@@ -313,8 +319,9 @@ const DaftarKamar = () => {
                     vTambah.setFieldValue('statusenabled', e?.value || '')
                   }}
                   value={vTambah.values.statusenabled}
-                  className={`input row-header ${!!vTambah?.errors.statusenabled ? 'is-invalid' : ''
-                    }`}
+                  className={`input row-header ${
+                    !!vTambah?.errors.statusenabled ? 'is-invalid' : ''
+                  }`}
                 />
                 {vTambah.touched.statusenabled &&
                   !!vTambah.errors.statusenabled && (
@@ -363,8 +370,9 @@ const DaftarKamar = () => {
                   vFilter.setFieldValue('kelas', e?.value || '')
                 }}
                 value={vFilter.values.kelas}
-                className={`input row-header ${!!vFilter?.errors.kelas ? 'is-invalid' : ''
-                  }`}
+                className={`input row-header ${
+                  !!vFilter?.errors.kelas ? 'is-invalid' : ''
+                }`}
               />
               {vFilter.touched.kelas && !!vFilter.errors.kelas && (
                 <FormFeedback type="invalid">
@@ -381,8 +389,9 @@ const DaftarKamar = () => {
                   vFilter.setFieldValue('unit', e?.value || '')
                 }}
                 value={vFilter.values.unit}
-                className={`input row-header ${!!vFilter?.errors.unit ? 'is-invalid' : ''
-                  }`}
+                className={`input row-header ${
+                  !!vFilter?.errors.unit ? 'is-invalid' : ''
+                }`}
               />
               {vFilter.touched.unit && !!vFilter.errors.unit && (
                 <FormFeedback type="invalid">
@@ -449,21 +458,6 @@ const DaftarKamar = () => {
       </Container>
     </div>
   )
-}
-
-const tableCustomStyles = {
-  headRow: {
-    style: {
-      color: '#ffffff',
-      backgroundColor: '#FFCB46',
-    },
-  },
-  rows: {
-    style: {
-      color: 'black',
-      backgroundColor: '#f1f2f6',
-    },
-  },
 }
 
 export default DaftarKamar

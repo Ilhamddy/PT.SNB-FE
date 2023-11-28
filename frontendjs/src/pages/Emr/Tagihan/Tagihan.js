@@ -26,6 +26,7 @@ import SimpleBar from 'simplebar-react';
 import "./Tagihan.scss";
 import LoadingTable from '../../../Components/Table/LoadingTable';
 import { dateTimeLocal } from '../../../utils/format';
+import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles';
 
 const Tagihan = ({ show }) => {
     const { norecdp, norecap } = useParams();
@@ -50,20 +51,7 @@ const Tagihan = ({ show }) => {
 
     const refPrintBilling = useRef(null);
 
-    const tableCustomStyles = {
-        headRow: {
-            style: {
-                color: '#ffffff',
-                backgroundColor: '#FFCB46',
-            },
-        },
-        rows: {
-            style: {
-                color: "black",
-                backgroundColor: "#f1f2f6"
-            },
-        }
-    }
+    
 
     const columns = [
         {

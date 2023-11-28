@@ -44,6 +44,7 @@ import {
   getLaporanPengadaan,
 } from '../../store/actions'
 import * as XLSX from 'xlsx'
+import { tableCustomStyles } from '../../Components/Table/tableCustomStyles'
 
 const LaporanPenerimaan = () => {
   const dispatch = useDispatch()
@@ -285,21 +286,6 @@ const LaporanPenerimaan = () => {
       </Container>
     </div>
   )
-}
-
-const tableCustomStyles = {
-  headRow: {
-    style: {
-      color: '#ffffff',
-      backgroundColor: '#FFCB46',
-    },
-  },
-  rows: {
-    style: {
-      color: 'black',
-      backgroundColor: '#f1f2f6',
-    },
-  },
 }
 
 export default LaporanPenerimaan

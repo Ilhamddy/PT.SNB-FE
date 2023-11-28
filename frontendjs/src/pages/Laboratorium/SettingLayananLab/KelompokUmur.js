@@ -38,21 +38,7 @@ const KelompokUmur = () => {
 
     }));
 
-    const tableCustomStyles = {
-        headRow: {
-            style: {
-                color: '#ffffff',
-                backgroundColor: '#FFCB46',
-            },
-        },
-        rows: {
-            style: {
-                color: "black",
-                backgroundColor: "#f1f2f6"
-            },
 
-        }
-    }
 
     const columns = [
 

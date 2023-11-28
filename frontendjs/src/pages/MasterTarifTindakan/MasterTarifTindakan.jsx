@@ -31,6 +31,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import * as Yup from 'yup'
 import ColLabelInput from '../../Components/ColLabelInput/ColLabelInput'
 import { getTotalHargaProduk } from '../../store/mastertariftindakan/action'
+import { tableCustomStyles } from '../../Components/Table/tableCustomStyles'
 
 const MasterTarifTindakan = () => {
   const dispatch = useDispatch()
@@ -197,7 +198,7 @@ const MasterTarifTindakan = () => {
               columns={columnsDetail}
               pagination
               data={totalHargaProduk}
-              progressPending={loading}
+              progressPending={tableCustomStyles}
               customStyles={tableCustomStyles}
               progressComponent={<LoadingTable />}
             />
@@ -206,21 +207,6 @@ const MasterTarifTindakan = () => {
       </Container>
     </div>
   )
-}
-
-const tableCustomStyles = {
-  headRow: {
-    style: {
-      color: '#ffffff',
-      backgroundColor: '#FFCB46',
-    },
-  },
-  rows: {
-    style: {
-      color: 'black',
-      backgroundColor: '#f1f2f6',
-    },
-  },
 }
 
 export default MasterTarifTindakan

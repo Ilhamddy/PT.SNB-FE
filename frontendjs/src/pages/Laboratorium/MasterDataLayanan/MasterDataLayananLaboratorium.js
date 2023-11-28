@@ -23,6 +23,7 @@ import {
     masterPelayananLaboratoriumGet
 } from '../../../store/actions';
 import LoadingTable from '../../../Components/Table/LoadingTable';
+import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles';
 
 const MasterDataLayananLaboratorium = () => {
     document.title = "Master Data Layanan Laboratorium";
@@ -37,21 +38,7 @@ const MasterDataLayananLaboratorium = () => {
     const [dateStart, setdateStart] = useState(`${current.getFullYear()}-${current.getMonth() + 1}-${current.getDate()}`);
     const [dateEnd, setdateEnd] = useState(`${current.getFullYear()}-${current.getMonth() + 1}-${current.getDate()}`);
     const [search, setSearch] = useState('')
-    const tableCustomStyles = {
-        headRow: {
-            style: {
-                color: '#ffffff',
-                backgroundColor: '#FFCB46',
-            },
-        },
-        rows: {
-            style: {
-                color: "black",
-                backgroundColor: "#f1f2f6"
-            },
-
-        }
-    }
+    
     const onClickDetail = (product, id) => {
 
     };

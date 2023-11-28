@@ -19,6 +19,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import LoadingTable from '../../../Components/Table/LoadingTable';
 import { dateLocal } from '../../../utils/format';
 import ActionPasienRegistrasi from '../../../Components/ActionPasienRegistrasi/ActionPasienRegistrasi';
+import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles';
 
 const RegistrasiList = () => {
     const dispatch = useDispatch();
@@ -88,21 +89,6 @@ const RegistrasiList = () => {
 
     document.title = "Pasien Lama";
 
-    const tableCustomStyles = {
-        headRow: {
-            style: {
-                color: '#ffffff',
-                backgroundColor: '#FFCB46',
-            },
-        },
-        rows: {
-            style: {
-                color: "black",
-                backgroundColor: "#f1f2f6"
-            },
-
-        }
-    }
 
     const columns = [
         {

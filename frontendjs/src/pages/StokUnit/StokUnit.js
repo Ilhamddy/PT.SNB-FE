@@ -11,6 +11,7 @@ import { useFormik } from "formik"
 import * as Yup from "yup"
 import ColLabelInput from "../../Components/ColLabelInput/ColLabelInput"
 import CustomSelect from "../Select/Select"
+import { tableCustomStyles } from "../../Components/Table/tableCustomStyles"
 
 
 const StokUnitList = () => {
@@ -189,19 +190,6 @@ const StokUnitList = () => {
     )
 }
 
-const tableCustomStyles = {
-    headRow: {
-        style: {
-            color: '#ffffff',
-            backgroundColor: '#FFCB46',
-        },
-    },
-    rows: {
-        style: {
-            color: "black",
-            backgroundColor: "#f1f2f6"
-        },
-    }
-}
+
 
 export default StokUnitList

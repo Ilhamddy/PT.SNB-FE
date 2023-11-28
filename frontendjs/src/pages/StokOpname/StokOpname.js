@@ -42,6 +42,7 @@ import DataTable from "react-data-table-component";
 import LoadingTable from "../../Components/Table/LoadingTable";
 import { dateLocal, dateTimeLocal, onChangeStrNbr, strToNumber } from "../../utils/format";
 import * as Yup from "yup";
+import { tableCustomStyles } from "../../Components/Table/tableCustomStyles";
 
 
 const linkStokOpname = "/farmasi/gudang/stok-opname"
@@ -704,20 +705,7 @@ const ModalMenu = ({ isMenuOpen, toggle }) => {
     )
 }
 
-const tableCustomStyles = {
-    headRow: {
-        style: {
-            color: '#ffffff',
-            backgroundColor: '#FFCB46',
-        },
-    },
-    rows: {
-        style: {
-            color: "black",
-            backgroundColor: "#f1f2f6"
-        },
-    }
-}
+
 
 const subTableCustomStyles = {
     headRow: {

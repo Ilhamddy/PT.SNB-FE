@@ -40,6 +40,7 @@ import "./DaftarPasienRJ.scss"
 import LoadingTable from '../../../Components/Table/LoadingTable';
 import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/KontainerFlatpickr';
 import { dateTimeLocal } from '../../../utils/format';
+import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles';
 
 const DaftarPasienRJ = () => {
     document.title = "Daftar Pasien Rawat Jalan";
@@ -79,21 +80,7 @@ const DaftarPasienRJ = () => {
         dispatch(comboRegistrasiGet());
     }, [dispatch]);
 
-    const tableCustomStyles = {
-        headRow: {
-            style: {
-                color: '#878A99',
-                backgroundColor: '#F3F6F9',
-            },
-        },
-        rows: {
-            style: {
-                color: 'black',
-                backgroundColor: '#ffffff',
-            },
 
-        }
-    }
     const clickCheckBox = (e) => {
         let tempValue = {
             idpencarian: 4,

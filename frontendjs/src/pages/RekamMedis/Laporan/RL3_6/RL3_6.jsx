@@ -1,24 +1,35 @@
 import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux';
-import UiContent from '../../../../Components/Common/UiContent';
-import { Button, Card, Col, Container, Form, FormFeedback, Row, UncontrolledTooltip } from 'reactstrap';
-import BreadCrumb from '../../../../Components/Common/BreadCrumb';
+import { useDispatch, useSelector } from 'react-redux'
+import UiContent from '../../../../Components/Common/UiContent'
+import {
+  Button,
+  Card,
+  Col,
+  Container,
+  Form,
+  FormFeedback,
+  Row,
+  UncontrolledTooltip,
+} from 'reactstrap'
+import BreadCrumb from '../../../../Components/Common/BreadCrumb'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
-import KontainerFlatpickr from '../../../../Components/KontainerFlatpickr/KontainerFlatpickr';
+import KontainerFlatpickr from '../../../../Components/KontainerFlatpickr/KontainerFlatpickr'
 import DataTable from 'react-data-table-component'
-import LoadingTable from '../../../../Components/Table/LoadingTable';
+import LoadingTable from '../../../../Components/Table/LoadingTable'
 import {
-  getLaporanRl_3_6, kendaliDokumenResetForm
-} from '../../../../store/actions';
+  getLaporanRl_3_6,
+  kendaliDokumenResetForm,
+} from '../../../../store/actions'
+import { tableCustomStyles } from '../../../../Components/Table/tableCustomStyles'
 
 const RL3_6 = () => {
-  document.title = "Laporan RL3.6";
-  const dispatch = useDispatch();
+  document.title = 'Laporan RL3.6'
+  const dispatch = useDispatch()
   const { dataGrid, loadingGrid } = useSelector((state) => ({
     dataGrid: state.KendaliDokumen.getLaporanRl_3_6.data,
     loadingGrid: state.KendaliDokumen.getLaporanRl_3_6.loading,
-  }));
+  }))
   const [dateNow] = useState(() => new Date().toISOString())
   const vSetValidation = useFormik({
     initialValues: {
@@ -31,10 +42,12 @@ const RL3_6 = () => {
     }),
     onSubmit: (values) => {
       console.log(values)
-      dispatch(getLaporanRl_3_6({
-        start: values.start || dateNow,
-        end: values.end || dateNow
-      }));
+      dispatch(
+        getLaporanRl_3_6({
+          start: values.start || dateNow,
+          end: values.end || dateNow,
+        })
+      )
     },
   })
   const columns = [
@@ -96,18 +109,21 @@ const RL3_6 = () => {
           <BreadCrumb title="Laporan RL3.6" pageTitle="Forms" />
           <Form
             onSubmit={(e) => {
-              e.preventDefault();
-              vSetValidation.handleSubmit();
-              return false;
+              e.preventDefault()
+              vSetValidation.handleSubmit()
+              return false
             }}
             className="gy-4"
-            action="#">
+            action="#"
+          >
             <Card className="p-5">
               <Row>
                 <Col lg={3}>
                   <KontainerFlatpickr
-                    isError={vSetValidation.touched?.start &&
-                      !!vSetValidation.errors?.start}
+                    isError={
+                      vSetValidation.touched?.start &&
+                      !!vSetValidation.errors?.start
+                    }
                     id="start"
                     options={{
                       dateFormat: 'Y-m-d',
@@ -115,11 +131,14 @@ const RL3_6 = () => {
                     }}
                     value={vSetValidation.values.start || dateNow}
                     onChange={([newDate]) => {
-                      vSetValidation.setFieldValue('start', newDate.toISOString())
+                      vSetValidation.setFieldValue(
+                        'start',
+                        newDate.toISOString()
+                      )
                     }}
                   />
-                  {vSetValidation.touched?.start
-                    && !!vSetValidation.errors.start && (
+                  {vSetValidation.touched?.start &&
+                    !!vSetValidation.errors.start && (
                       <FormFeedback type="invalid">
                         <div>{vSetValidation.errors.start}</div>
                       </FormFeedback>
@@ -127,8 +146,10 @@ const RL3_6 = () => {
                 </Col>
                 <Col sm={3}>
                   <KontainerFlatpickr
-                    isError={vSetValidation.touched?.end &&
-                      !!vSetValidation.errors?.end}
+                    isError={
+                      vSetValidation.touched?.end &&
+                      !!vSetValidation.errors?.end
+                    }
                     id="end"
                     options={{
                       dateFormat: 'Y-m-d',
@@ -139,18 +160,28 @@ const RL3_6 = () => {
                       vSetValidation.setFieldValue('end', newDate.toISOString())
                     }}
                   />
-                  {vSetValidation.touched?.end
-                    && !!vSetValidation.errors.end && (
+                  {vSetValidation.touched?.end &&
+                    !!vSetValidation.errors.end && (
                       <FormFeedback type="invalid">
                         <div>{vSetValidation.errors.end}</div>
                       </FormFeedback>
                     )}
                 </Col>
                 <Col lg={2}>
-                  <Button type="submit" placement="top" id="tooltipTopPencarian" >
+                  <Button
+                    type="submit"
+                    placement="top"
+                    id="tooltipTopPencarian"
+                  >
                     CARI
                   </Button>
-                  <UncontrolledTooltip placement="top" target="tooltipTopPencarian" > Pencarian </UncontrolledTooltip>
+                  <UncontrolledTooltip
+                    placement="top"
+                    target="tooltipTopPencarian"
+                  >
+                    {' '}
+                    Pencarian{' '}
+                  </UncontrolledTooltip>
                 </Col>
                 <Col lg={12}>
                   <div id="table-gridjs">
@@ -176,20 +207,6 @@ const RL3_6 = () => {
       </div>
     </React.Fragment>
   )
-}
-const tableCustomStyles = {
-  headRow: {
-    style: {
-      color: '#ffffff',
-      backgroundColor: '#FFCB46',
-    },
-  },
-  rows: {
-    style: {
-      color: 'black',
-      backgroundColor: '#f1f2f6',
-    },
-  },
 }
 
 export default RL3_6

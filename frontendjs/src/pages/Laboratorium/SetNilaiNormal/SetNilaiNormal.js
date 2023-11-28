@@ -24,6 +24,7 @@ import {
     saveSetMasterNilaiNormalLab
 } from '../../../store/actions';
 import LoadingTable from '../../../Components/Table/LoadingTable';
+import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles';
 
 const SetNilaiNormal = () => {
     const { idproduk, layanan, kodeexternal, detailjenis } = useParams();
@@ -88,21 +89,7 @@ const SetNilaiNormal = () => {
             width: "150px"
         },
     ];
-    const tableCustomStyles = {
-        headRow: {
-            style: {
-                color: '#ffffff',
-                backgroundColor: '#FFCB46',
-            },
-        },
-        rows: {
-            style: {
-                color: "black",
-                backgroundColor: "#f1f2f6"
-            },
-
-        }
-    }
+    
     useEffect(() => {
         dispatch(listSetNilaiNormalGet(idproduk));
     }, [idproduk, dispatch])

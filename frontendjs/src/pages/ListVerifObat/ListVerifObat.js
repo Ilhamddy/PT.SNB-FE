@@ -13,6 +13,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { getComboReturObat } from "../../store/master/action";
 import { onChangeStrNbr, strToNumber } from "../../utils/format";
 import * as Yup from "yup";
+import { tableCustomStyles } from "../../Components/Table/tableCustomStyles";
 
 const initialRetur = {
     norecverif: "",
@@ -481,19 +482,6 @@ const ModalRetur = ({dataModal, onRetur, ...rest}) => {
     )
 }
 
-const tableCustomStyles = {
-    headRow: {
-        style: {
-            color: '#ffffff',
-            backgroundColor: '#FFCB46',
-        },
-    },
-    rows: {
-        style: {
-            color: "black",
-            backgroundColor: "#f1f2f6"
-        },
-    }
-}
+
 
 export default ListVerifObat

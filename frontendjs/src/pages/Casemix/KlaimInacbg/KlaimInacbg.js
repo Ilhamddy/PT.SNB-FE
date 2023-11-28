@@ -31,6 +31,7 @@ import {
 import { BasicTable } from '../../Tables/DataTables/datatableCom';
 import DeleteModalCustom from '../../../Components/Common/DeleteModalCustom';
 import LoadingTable from '../../../Components/Table/LoadingTable';
+import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles';
 
 const dateAwalStart = (new Date(new Date() - 1000 * 60 * 60 * 24 * 3)).toISOString();
 const dateAwalEnd = (new Date()).toISOString()
@@ -203,21 +204,7 @@ const KlaimInacbg = () => {
         setstateTglLahir(e.tgllahir)
         dispatch(listDaftarPasienGet(e.id))
     }
-    const tableCustomStyles = {
-        headRow: {
-            style: {
-                color: '#ffffff',
-                backgroundColor: '#FFCB46',
-            },
-        },
-        rows: {
-            style: {
-                color: "black",
-                backgroundColor: "#f1f2f6"
-            },
-
-        }
-    }
+    
     const handleClick = (e) => {
         setstateHasilGrouping(false)
         setstateListNoregistrasi(false)

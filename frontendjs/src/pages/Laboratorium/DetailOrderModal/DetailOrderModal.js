@@ -16,6 +16,7 @@ import {
     deleteDetailOrderPelayanan,laboratoriumResetForm
 } from "../../../store/actions";
 import LoadingTable from "../../../Components/Table/LoadingTable";
+import { tableCustomStyles } from "../../../Components/Table/tableCustomStyles";
 
 const DetailOrderModal = ({ show, onSimpanClick, onCloseClick,onTolakClick, tempNorec }) => {
     const dispatch = useDispatch();
@@ -92,21 +93,7 @@ const DetailOrderModal = ({ show, onSimpanClick, onCloseClick,onTolakClick, temp
     const hargaRef = useRef(0);
     const countRef = useRef(1);
    
-    const tableCustomStyles = {
-        headRow: {
-            style: {
-                color: '#ffffff',
-                backgroundColor: '#FFCB46',
-            },
-        },
-        rows: {
-            style: {
-                color: "black",
-                backgroundColor: "#f1f2f6"
-            },
-
-        }
-    }
+    
     const [tempSelected, settempSelected] = useState("");
     const handleClick = (e)=>{
         settempSelected(e)

@@ -48,6 +48,7 @@ import {
   ModalPoliklinik,
   ModalWidgetUtama,
 } from './DasborUtamaModal'
+import { tableCustomStyles } from '../../Components/Table/tableCustomStyles'
 
 const DashboardUtama = () => {
   const [dateToday] = useState(() => new Date().toISOString())
@@ -919,21 +920,6 @@ const PenyakitTerbesar = () => {
       />
     </Card>
   )
-}
-
-const tableCustomStyles = {
-  headRow: {
-    style: {
-      color: '#878A99',
-      backgroundColor: '#F3F6F9',
-    },
-  },
-  rows: {
-    style: {
-      color: 'black',
-      backgroundColor: '#ffffff',
-    },
-  },
 }
 
 export const CaraBayarValue = [

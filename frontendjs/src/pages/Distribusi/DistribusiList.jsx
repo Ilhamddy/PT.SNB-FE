@@ -28,6 +28,7 @@ import {
 } from './imagesementara'
 import { dateLocal } from '../../utils/format'
 import { useFormik } from 'formik'
+import { tableCustomStyles } from '../../Components/Table/tableCustomStyles'
 
 const DistribusiOrderList = ({ isUnit }) => {
   const dispatch = useDispatch()
@@ -353,21 +354,6 @@ const Widget = ({ title, end, image }) => {
       </Card>
     </Col>
   )
-}
-
-const tableCustomStyles = {
-  headRow: {
-    style: {
-      color: '#ffffff',
-      backgroundColor: '#FFCB46',
-    },
-  },
-  rows: {
-    style: {
-      color: 'black',
-      backgroundColor: '#f1f2f6',
-    },
-  },
 }
 
 export default DistribusiOrderList

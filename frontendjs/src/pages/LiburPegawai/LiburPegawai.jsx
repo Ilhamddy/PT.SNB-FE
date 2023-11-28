@@ -29,6 +29,7 @@ import ColLabelInput from '../../Components/ColLabelInput/ColLabelInput'
 import CustomSelect from '../Select/Select'
 import DeleteModal from '../../Components/Common/DeleteModal'
 import DeleteModalCustom from '../../Components/Common/DeleteModalCustom'
+import { tableCustomStyles } from '../../Components/Table/tableCustomStyles'
 
 const LiburPegawaiContext = createContext({
   cutiType: '',
@@ -629,21 +630,6 @@ const type = {
   CUTI: 'CUTI',
   UNIT: 'UNIT',
   CUTI_BERSAMA: 'CUTI_BERSAMA',
-}
-
-const tableCustomStyles = {
-  headRow: {
-    style: {
-      color: '#ffffff',
-      backgroundColor: '#FFCB46',
-    },
-  },
-  rows: {
-    style: {
-      color: 'black',
-      backgroundColor: '#f1f2f6',
-    },
-  },
 }
 
 export default LiburPegawai

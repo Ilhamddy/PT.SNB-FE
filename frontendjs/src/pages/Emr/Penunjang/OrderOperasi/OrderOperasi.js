@@ -13,6 +13,7 @@ import KontainerFlatpickr from '../../../../Components/KontainerFlatpickr/Kontai
 import DataTable from 'react-data-table-component';
 import LoadingTable from '../../../../Components/Table/LoadingTable';
 import { dateTimeLocal } from '../../../../utils/format';
+import { tableCustomStyles } from '../../../../Components/Table/tableCustomStyles';
 
 const OrderOperasi = () => {
     const dispatch = useDispatch();
@@ -163,21 +164,6 @@ const OrderOperasi = () => {
             // width: "250px",
         },
     ];
-    const tableCustomStyles = {
-        headRow: {
-            style: {
-                color: '#ffffff',
-                backgroundColor: '#FFCB46',
-            },
-        },
-        rows: {
-            style: {
-                color: "black",
-                backgroundColor: "#f1f2f6"
-            },
-
-        }
-    }
 
     return (
         <React.Fragment>

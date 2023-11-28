@@ -24,6 +24,7 @@ import {
     comboLaporanRekammedisGet, kendaliDokumenResetForm, listPasienMutasiGet
 } from '../../../store/actions';
 import "./DaftarPasienMutasi.scss"
+import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles';
 
 
 const DaftarPasienMutasi = () => {
@@ -78,21 +79,7 @@ const DaftarPasienMutasi = () => {
     const handleClickCari = () => {
         dispatch(listPasienMutasiGet(`${search}&start=${validation.values.tglstart}&end=${validation.values.tglend}&instalasi=${validation.values.departemen}&unit=${validation.values.unit}&rekanan=${validation.values.rekanan}&pegawai=${validation.values.pegawai}`));
     }
-    const tableCustomStyles = {
-        headRow: {
-            style: {
-                color: '#ffffff',
-                backgroundColor: '#FFCB46',
-            },
-        },
-        rows: {
-            style: {
-                color: "black",
-                backgroundColor: "#f1f2f6"
-            },
-
-        }
-    }
+   
     const handleToRegistrasi = async (e) => {
         history(`/registrasi/mutasi-pasien/${e.nocmfk}/${e.norec}`);
     }

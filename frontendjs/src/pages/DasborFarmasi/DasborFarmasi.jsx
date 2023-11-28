@@ -43,6 +43,7 @@ import {
   ModalPenerimaan,
   ModalRetur,
 } from './DasborFarmasiModal'
+import { tableCustomStyles } from '../../Components/Table/tableCustomStyles'
 
 const DasborFarmasi = () => {
   const [dateStart] = useState(() => {
@@ -816,21 +817,6 @@ const KetersediaanBarang = () => {
       />
     </Card>
   )
-}
-
-const tableCustomStyles = {
-  headRow: {
-    style: {
-      color: '#878A99',
-      backgroundColor: '#F3F6F9',
-    },
-  },
-  rows: {
-    style: {
-      color: 'black',
-      backgroundColor: '#ffffff',
-    },
-  },
 }
 
 export default DasborFarmasi

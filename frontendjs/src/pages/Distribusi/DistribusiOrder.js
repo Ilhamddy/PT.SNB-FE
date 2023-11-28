@@ -30,6 +30,7 @@ import { createOrUpdateOrderbarang, getStokBatch, getUnitUser, kemasanFromProduk
 import { APIClient } from "../../helpers/api_helper";
 import { comboDistribusiOrderGet } from "../../store/master/action";
 import { Link } from "react-router-dom";
+import { tableCustomStyles } from "../../Components/Table/tableCustomStyles";
 
 
 
@@ -770,20 +771,7 @@ const DistribusiOrder = ({isUnit}) => {
     )
 }
 
-const tableCustomStyles = {
-    headRow: {
-        style: {
-            color: '#ffffff',
-            backgroundColor: '#FFCB46',
-        },
-    },
-    rows: {
-        style: {
-            color: "black",
-            backgroundColor: "#f1f2f6"
-        },
-    }
-}
+
 
 
 export default DistribusiOrder

@@ -24,6 +24,7 @@ import {
 } from '../../../../store/actions';
 import "./LaporanPasienBatal.scss"
 import * as XLSX from 'xlsx';
+import { tableCustomStyles } from '../../../../Components/Table/tableCustomStyles';
 
 const currentDate = new Date();
 currentDate.setDate(currentDate.getDate());
@@ -82,21 +83,7 @@ const LaporanPasienBatal = () => {
     const handleClickCari = () => {
         dispatch(listLaporanPasienBatalGet(`${search}&start=${validation.values.tglstart}&end=${validation.values.tglend}&instalasi=${validation.values.departemen}&unit=${validation.values.unit}&rekanan=${validation.values.rekanan}&pegawai=${validation.values.pegawai}`));
     }
-    const tableCustomStyles = {
-        headRow: {
-            style: {
-                color: '#ffffff',
-                backgroundColor: '#FFCB46',
-            },
-        },
-        rows: {
-            style: {
-                color: "black",
-                backgroundColor: "#f1f2f6"
-            },
-
-        }
-    }
+    
     const columns = [
         {
             name: <span className='font-weight-bold fs-13'>No. RM</span>,

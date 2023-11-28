@@ -20,6 +20,7 @@ import {
 import InputTindakan from '../../Emr/InputTindakan/InputTindakan';
 import ExpertiseRadiologiModal from '../../../Components/Common/ExpertiseRadiologiModal/ExpertiseRadiologiModal';
 import LoadingTable from '../../../Components/Table/LoadingTable';
+import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles';
 
 const TransaksiPelayananRadiologi = () => {
     const { norecdp, norecap } = useParams();
@@ -42,21 +43,7 @@ const TransaksiPelayananRadiologi = () => {
         dispatch(listComboRadiologiGet(''))
         dispatch(emrHeaderGet(norecap + `&norecdp=${norecdp}`))
     }, [norecap,norecdp, dispatch]);
-    const tableCustomStyles = {
-        headRow: {
-            style: {
-                color: '#ffffff',
-                backgroundColor: '#FFCB46',
-            },
-        },
-        rows: {
-            style: {
-                color: "black",
-                backgroundColor: "#f1f2f6"
-            },
-
-        }
-    }
+    
     
     const columns = [
         {

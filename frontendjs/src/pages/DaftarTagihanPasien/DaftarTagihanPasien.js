@@ -24,6 +24,7 @@ import kakek from "../../assets/images/svg/kakek.svg"
 import nenek from "../../assets/images/svg/nenek.svg"
 import anakperempuan from "../../assets/images/svg/anakperempuan.svg"
 import dewasaperempuan from "../../assets/images/svg/dewasaperempuan.svg"
+import { tableCustomStyles } from "../../Components/Table/tableCustomStyles";
 
 
 const DaftarTagihanPasien = () => {
@@ -314,19 +315,6 @@ const DaftarTagihanPasien = () => {
     )
 }
 
-const tableCustomStyles = {
-    headRow: {
-        style: {
-            color: '#ffffff',
-            backgroundColor: '#FFCB46',
-        },
-    },
-    rows: {
-        style: {
-            color: "black",
-            backgroundColor: "#f1f2f6"
-        },
-    }
-}
+
 
 export default DaftarTagihanPasien;

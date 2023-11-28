@@ -18,6 +18,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import DataTable from "react-data-table-component";
 import LoadingTable from "../../../Components/Table/LoadingTable";
+import { tableCustomStyles } from "../../../Components/Table/tableCustomStyles";
 
 const BiodataPegawai = () => {
     document.title = "Biodata Pegawai";
@@ -384,20 +385,7 @@ const BiodataPegawai = () => {
             vSetValidationAlamat.setFieldValue('rwDomisili', "")
         }
     }
-    const tableCustomStyles = {
-        headRow: {
-            style: {
-                color: '#ffffff',
-                backgroundColor: '#FFCB46',
-            },
-        },
-        rows: {
-            style: {
-                color: "black",
-                backgroundColor: "#f1f2f6"
-            },
-        }
-    }
+    
     const columns = [
         {
             name: <span className='font-weight-bold fs-13'>No</span>,

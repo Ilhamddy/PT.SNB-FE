@@ -38,6 +38,7 @@ import StatusPulangModal from '../../../Components/Common/StatusPulangModal';
 import CustomSelect from '../../Select/Select';
 import "./DaftarPasienIGD.scss"
 import LoadingTable from '../../../Components/Table/LoadingTable';
+import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles';
 
 const DaftarPasienIGD = () => {
     document.title = "Daftar Pasien Rawat Darurat";
@@ -84,21 +85,7 @@ const DaftarPasienIGD = () => {
             // }, [dispatch]);
         }
     }
-    const tableCustomStyles = {
-        headRow: {
-            style: {
-                color: '#ffffff',
-                backgroundColor: '#FFCB46',
-            },
-        },
-        rows: {
-            style: {
-                color: "black",
-                backgroundColor: "#f1f2f6"
-            },
-
-        }
-    }
+    
     const handleToPengkajian = async (data) => {
         history(`/emr-pasien/${data.norecdp}/${data.norecta}/rawat-jalan`)
        

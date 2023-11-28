@@ -15,6 +15,7 @@ import {
     sdmResetForm, getDaftarPegawai,getComboSDM
 } from "../../../store/actions";
 import userDummy from '../../../assets/images/users/user-dummy-img.jpg'
+import { tableCustomStyles } from "../../../Components/Table/tableCustomStyles";
 
 const DaftarPegawai = () => {
     document.title = "Daftar Pegawai";
@@ -53,20 +54,7 @@ const DaftarPegawai = () => {
         }));
         dispatch(getComboSDM())
     }, [dispatch])
-    const tableCustomStyles = {
-        headRow: {
-            style: {
-                color: '#ffffff',
-                backgroundColor: '#FFCB46',
-            },
-        },
-        rows: {
-            style: {
-                color: "black",
-                backgroundColor: "#f1f2f6"
-            },
-        }
-    }
+    
     const handleClickEdit = (e) => {
         navigate(`/sumberdayamanusia/biodata-pegawai/${e.id}`)
     };

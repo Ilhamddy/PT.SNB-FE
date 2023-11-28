@@ -25,6 +25,7 @@ import {
 } from '../../../store/actions';
 import LoadingTable from '../../../Components/Table/LoadingTable';
 import KontainerFlatpickr from "../../../Components/KontainerFlatpickr/KontainerFlatpickr"
+import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles';
 
 const KendaliDokumen = () => {
     document.title = "Daftar Dokumen Rekammedis";
@@ -69,20 +70,7 @@ const KendaliDokumen = () => {
     const clickPrint = (e) => {
         dispatch(updatePrinted({ norecdp:  e.norecdp}))
     }
-    const tableCustomStyles = {
-        headRow: {
-            style: {
-                color: '#878A99',
-                backgroundColor: '#F3F6F9',
-            },
-        },
-        rows: {
-            style: {
-                color: "black",
-                backgroundColor: "#ffffff"
-            },
-        }
-    }
+    
     const columns = [
         {
             name: <span className='font-weight-bold fs-13'>#</span>,

@@ -45,6 +45,7 @@ import LoadingTable from '../../Components/Table/LoadingTable'
 import NoDataTable from '../../Components/Table/NoDataTable'
 import { PenerimaanContext } from './PenerimaanProduk'
 import { initialDetailRetur } from './PenerimaanProduk'
+import { tableCustomStyles } from '../../Components/Table/tableCustomStyles'
 
 export const ListDetail = () => {
   /**
@@ -2191,19 +2192,4 @@ export const useCalculateRetur = (vDetailRetur, details) => {
     retur.produk.idproduk,
     details,
   ])
-}
-
-const tableCustomStyles = {
-  headRow: {
-    style: {
-      color: '#ffffff',
-      backgroundColor: '#FFCB46',
-    },
-  },
-  rows: {
-    style: {
-      color: 'black',
-      backgroundColor: '#f1f2f6',
-    },
-  },
 }

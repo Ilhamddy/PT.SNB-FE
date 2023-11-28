@@ -26,6 +26,7 @@ import { useFormik } from "formik"
 import * as Yup from "yup"
 import ColLabelInput from "../../Components/ColLabelInput/ColLabelInput"
 import CustomSelect from "../../pages/Select/Select"
+import { tableCustomStyles } from "../../Components/Table/tableCustomStyles";
 
 const KartuStok = () => {
     const navigate = useNavigate();
@@ -188,20 +189,7 @@ const KartuStok = () => {
     )
 }
 
-const tableCustomStyles = {
-    headRow: {
-        style: {
-            color: '#ffffff',
-            backgroundColor: '#FFCB46',
-        },
-    },
-    rows: {
-        style: {
-            color: "black",
-            backgroundColor: "#f1f2f6"
-        },
-    }
-}
+
 
 
 export default KartuStok;

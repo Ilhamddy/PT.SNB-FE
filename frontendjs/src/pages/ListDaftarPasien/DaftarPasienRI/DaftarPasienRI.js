@@ -33,6 +33,7 @@ import StatusPulangRIModal from '../../../Components/Common/StatusPulangRIModal'
 import DepositModal from '../../../Components/Common/DepositModal/DepositModal';
 import "./DaftarPasienRI.scss"
 import LoadingTable from '../../../Components/Table/LoadingTable';
+import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles';
 
 const DaftarPasienRI = () => {
     document.title = "Daftar Pasien Rawat Inap";
@@ -83,20 +84,6 @@ const DaftarPasienRI = () => {
     const handleClickCari = () => {
         // dispatch(daftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}`));
         // dispatch(widgetdaftarPasienRJGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}`));
-    }
-    const tableCustomStyles = {
-        headRow: {
-            style: {
-                color: '#878A99',
-                backgroundColor: '#F3F6F9',
-            },
-        },
-        rows: {
-            style: {
-                color: "black",
-                backgroundColor: "#ffffff"
-            },
-        }
     }
 
     const columns = [

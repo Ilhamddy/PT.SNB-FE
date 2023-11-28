@@ -24,6 +24,7 @@ import CustomSelect from "../Select/Select";
 import "./DaftarPasienPulang.scss"
 import { useNavigate } from "react-router-dom";
 import LoadingTable from "../../Components/Table/LoadingTable";
+import { tableCustomStyles } from "../../Components/Table/tableCustomStyles";
 
 
 const DaftarPasienPulang = () => {
@@ -289,19 +290,6 @@ const DaftarPasienPulang = () => {
     )
 }
 
-const tableCustomStyles = {
-    headRow: {
-        style: {
-            color: '#ffffff',
-            backgroundColor: '#FFCB46',
-        },
-    },
-    rows: {
-        style: {
-            color: "black",
-            backgroundColor: "#f1f2f6"
-        },
-    }
-}
+
 
 export default DaftarPasienPulang;

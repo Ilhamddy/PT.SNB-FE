@@ -24,6 +24,7 @@ import {
 } from "../../../store/actions";
 import DeleteModalCustom from '../../../Components/Common/DeleteModalCustom';
 import LoadingTable from '../../../Components/Table/LoadingTable';
+import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles';
 
 const Diagnosaix = () => {
     const { norecdp, norecap } = useParams();
@@ -111,21 +112,7 @@ const Diagnosaix = () => {
             // }, [dispatch]);
         }
     };
-    const tableCustomStyles = {
-        headRow: {
-            style: {
-                color: '#ffffff',
-                backgroundColor: '#B57602',
-            },
-        },
-        rows: {
-            style: {
-                color: "black",
-                backgroundColor: "#f1f2f6"
-            },
-
-        }
-    }
+    
     const columns = [
         {
             name: <span className='font-weight-bold fs-13'>Detail</span>,

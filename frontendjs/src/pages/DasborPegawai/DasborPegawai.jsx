@@ -39,6 +39,7 @@ import Perawat from './total-perawat.svg'
 import Spesialis from './total-spesialis.svg'
 import { ModalStatusPegawai } from './DasborPegawaiModal'
 import { colors } from '../DasborUtama/colors'
+import { tableCustomStyles } from '../../Components/Table/tableCustomStyles'
 
 const DasborPegawai = () => {
   const [dateToday] = useState(() => new Date().toISOString())
@@ -990,21 +991,6 @@ const PegawaiSIP = () => {
       />
     </Card>
   )
-}
-
-const tableCustomStyles = {
-  headRow: {
-    style: {
-      color: '#878A99',
-      backgroundColor: '#F3F6F9',
-    },
-  },
-  rows: {
-    style: {
-      color: 'black',
-      backgroundColor: '#ffffff',
-    },
-  },
 }
 
 export default DasborPegawai

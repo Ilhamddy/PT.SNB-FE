@@ -46,6 +46,7 @@ import NoDataTable from '../../Components/Table/NoDataTable'
 import { dateLocal } from '../../utils/format'
 import { toast } from 'react-toastify'
 import DeleteModalCustom from '../../Components/Common/DeleteModalCustom'
+import { tableCustomStyles } from '../../Components/Table/tableCustomStyles'
 
 const LainLainPelayanan = ({ tabId }) => {
   const dispatch = useDispatch()
@@ -415,21 +416,6 @@ const LainLainPelayanan = ({ tabId }) => {
       </Row>
     </TabPane>
   )
-}
-
-const tableCustomStyles = {
-  headRow: {
-    style: {
-      color: '#ffffff',
-      backgroundColor: '#FFCB46',
-    },
-  },
-  rows: {
-    style: {
-      color: 'black',
-      backgroundColor: '#f1f2f6',
-    },
-  },
 }
 
 export default LainLainPelayanan

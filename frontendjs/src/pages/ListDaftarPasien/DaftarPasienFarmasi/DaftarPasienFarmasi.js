@@ -22,6 +22,7 @@ import CustomSelect from '../../Select/Select';
 import "./DaftarPasienFarmasi.scss"
 import LoadingTable from '../../../Components/Table/LoadingTable';
 import BatalRegistrasi from '../../../Components/Common/BatalRegistrasi';
+import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles';
 const DaftarPasienFarmasi = () => {
 
 
@@ -50,21 +51,7 @@ const DaftarPasienFarmasi = () => {
     const [dateStart, setdateStart] = useState(current.toISOString());
     const [dateEnd, setdateEnd] = useState(current.toISOString());
     const [search, setSearch] = useState('')
-    const tableCustomStyles = {
-        headRow: {
-            style: {
-                color: '#ffffff',
-                backgroundColor: '#FFCB46',
-            },
-        },
-        rows: {
-            style: {
-                color: "black",
-                backgroundColor: "#f1f2f6"
-            },
-
-        }
-    }
+    
     const handleBeginOnChangeStart = (newBeginValue) => {
         var dateString = new Date(newBeginValue.getTime() - (newBeginValue.getTimezoneOffset() * 60000))
             .toISOString()

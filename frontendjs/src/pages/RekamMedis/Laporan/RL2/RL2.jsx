@@ -1,24 +1,34 @@
 import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux';
-import UiContent from '../../../../Components/Common/UiContent';
-import { Button, Card, Col, Container, Form, FormFeedback, Row, UncontrolledTooltip } from 'reactstrap';
-import BreadCrumb from '../../../../Components/Common/BreadCrumb';
+import { useDispatch, useSelector } from 'react-redux'
+import UiContent from '../../../../Components/Common/UiContent'
+import {
+  Button,
+  Card,
+  Col,
+  Container,
+  Form,
+  FormFeedback,
+  Row,
+  UncontrolledTooltip,
+} from 'reactstrap'
+import BreadCrumb from '../../../../Components/Common/BreadCrumb'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
-import KontainerFlatpickr from '../../../../Components/KontainerFlatpickr/KontainerFlatpickr';
+import KontainerFlatpickr from '../../../../Components/KontainerFlatpickr/KontainerFlatpickr'
 import {
-  getLaporanRl_2, kendaliDokumenResetForm
-} from '../../../../store/actions';
-import { Grid, _ } from 'gridjs-react';
-import * as XLSX from 'xlsx';
+  getLaporanRl_2,
+  kendaliDokumenResetForm,
+} from '../../../../store/actions'
+import { Grid, _ } from 'gridjs-react'
+import * as XLSX from 'xlsx'
 
 const RL2 = () => {
-  document.title = "Laporan RL2";
-  const dispatch = useDispatch();
+  document.title = 'Laporan RL2'
+  const dispatch = useDispatch()
   const { dataGrid, loadingGrid } = useSelector((state) => ({
     dataGrid: state.KendaliDokumen.getLaporanRl_2.data || [],
     loadingGrid: state.KendaliDokumen.getLaporanRl_2.loading,
-  }));
+  }))
   const [dateNow] = useState(() => new Date().toISOString())
   const vSetValidation = useFormik({
     initialValues: {
@@ -31,21 +41,23 @@ const RL2 = () => {
     }),
     onSubmit: (values) => {
       console.log(values)
-      dispatch(getLaporanRl_2({
-        start: dateNow,
-        end: dateNow
-      }));
+      dispatch(
+        getLaporanRl_2({
+          start: dateNow,
+          end: dateNow,
+        })
+      )
     },
   })
   const columns = [
     {
       id: 'kodeexternal',
       formatter: (cell) => _(<span>{cell}</span>),
-      name: 'NO KODE'
+      name: 'NO KODE',
     },
     {
       id: 'reportdisplay',
-      name: 'KUALIFIKASI PENDIDIKAN'
+      name: 'KUALIFIKASI PENDIDIKAN',
       // formatter: (cell) => _(<a href="/#"> {cell} </a>)
     },
     {
@@ -53,53 +65,53 @@ const RL2 = () => {
       columns: [
         {
           id: 'keadaan_lk',
-          name: 'Laki-laki'
+          name: 'Laki-laki',
         },
         {
           id: 'keadaan_pm',
-          name: 'Perempuan'
+          name: 'Perempuan',
         },
-      ]
+      ],
     },
     {
       name: 'KEBUTUHAN',
       columns: [
         {
           id: 'kebutuhan_lk',
-          name: 'Laki-laki'
+          name: 'Laki-laki',
         },
         {
           id: 'kebutuhan_pm',
-          name: 'Perempuan'
+          name: 'Perempuan',
         },
-      ]
+      ],
     },
     {
       name: 'KEKURANGAN',
       columns: [
         {
           id: 'kekurangan_lk',
-          name: 'Laki-laki'
+          name: 'Laki-laki',
         },
         {
           id: 'kekurangan_pm',
-          name: 'Perempuan'
+          name: 'Perempuan',
         },
-      ]
+      ],
     },
   ]
   const handleExport = () => {
-    const formattedData = dataGrid.map(item => Object.values(item));
-    const firstObject = dataGrid[0];
-    const header = Object.keys(firstObject);
+    const formattedData = dataGrid.map((item) => Object.values(item))
+    const firstObject = dataGrid[0]
+    const header = Object.keys(firstObject)
     console.log(header)
-    const sheetData = [header, ...formattedData];
-    const worksheet = XLSX.utils.aoa_to_sheet(sheetData);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+    const sheetData = [header, ...formattedData]
+    const worksheet = XLSX.utils.aoa_to_sheet(sheetData)
+    const workbook = XLSX.utils.book_new()
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1')
 
-    XLSX.writeFile(workbook, 'laporan_rl3_15.xlsx');
-  };
+    XLSX.writeFile(workbook, 'laporan_rl3_15.xlsx')
+  }
   return (
     <React.Fragment>
       <UiContent />
@@ -108,12 +120,13 @@ const RL2 = () => {
           <BreadCrumb title="Laporan RL2" pageTitle="Forms" />
           <Form
             onSubmit={(e) => {
-              e.preventDefault();
-              vSetValidation.handleSubmit();
-              return false;
+              e.preventDefault()
+              vSetValidation.handleSubmit()
+              return false
             }}
             className="gy-4"
-            action="#">
+            action="#"
+          >
             <Card className="p-5">
               <Row>
                 {/* <Col lg={3}>
@@ -159,13 +172,28 @@ const RL2 = () => {
                     )}
                 </Col> */}
                 <Col lg={2}>
-                  <Button type="submit" placement="top" id="tooltipTopPencarian" >
+                  <Button
+                    type="submit"
+                    placement="top"
+                    id="tooltipTopPencarian"
+                  >
                     CARI
                   </Button>
-                  <UncontrolledTooltip placement="top" target="tooltipTopPencarian" > Pencarian </UncontrolledTooltip>
+                  <UncontrolledTooltip
+                    placement="top"
+                    target="tooltipTopPencarian"
+                  >
+                    {' '}
+                    Pencarian{' '}
+                  </UncontrolledTooltip>
                 </Col>
                 <Col lg={2}>
-                  <Button type="button" placement="top" id="tooltipTopPencarian" onClick={handleExport}>
+                  <Button
+                    type="button"
+                    placement="top"
+                    id="tooltipTopPencarian"
+                    onClick={handleExport}
+                  >
                     Export to Excel
                   </Button>
                 </Col>
@@ -180,7 +208,9 @@ const RL2 = () => {
             sort={true}
             fixedHeader={true}
             pagination={{
-              enabled: true, limit: 10, summary: false
+              enabled: true,
+              limit: 10,
+              summary: false,
             }}
             style={{
               table: {
@@ -201,21 +231,6 @@ const RL2 = () => {
       </div>
     </React.Fragment>
   )
-}
-
-const tableCustomStyles = {
-  headRow: {
-    style: {
-      color: '#ffffff',
-      backgroundColor: '#FFCB46',
-    },
-  },
-  rows: {
-    style: {
-      color: 'black',
-      backgroundColor: '#f1f2f6',
-    },
-  },
 }
 
 export default RL2

@@ -30,6 +30,7 @@ import { useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import * as Yup from 'yup'
 import ColLabelInput from '../../Components/ColLabelInput/ColLabelInput'
+import { tableCustomStyles } from '../../Components/Table/tableCustomStyles'
 
 const MasterDataLayanan = () => {
   const dispatch = useDispatch()
@@ -396,21 +397,6 @@ const MasterDataLayanan = () => {
       </Container>
     </div>
   )
-}
-
-const tableCustomStyles = {
-  headRow: {
-    style: {
-      color: '#ffffff',
-      backgroundColor: '#FFCB46',
-    },
-  },
-  rows: {
-    style: {
-      color: 'black',
-      backgroundColor: '#f1f2f6',
-    },
-  },
 }
 
 export default MasterDataLayanan

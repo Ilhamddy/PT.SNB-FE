@@ -37,6 +37,7 @@ import {
 import { APIClient } from '../../helpers/api_helper'
 import { comboDistribusiOrderGet } from '../../store/master/action'
 import { Link, useParams } from 'react-router-dom'
+import { tableCustomStyles } from '../../Components/Table/tableCustomStyles'
 
 const DistribusiKirim = ({ isVerif }) => {
   const dispatch = useDispatch()
@@ -496,8 +497,9 @@ const DistribusiKirim = ({ isVerif }) => {
             onChange={(val) => {
               vKirim.setFieldValue('unitpengirim', val.value)
             }}
-            className={`input ${vKirim.errors?.unitpengirim ? 'is-invalid' : ''
-              }`}
+            className={`input ${
+              vKirim.errors?.unitpengirim ? 'is-invalid' : ''
+            }`}
           />
           {vKirim.touched?.unitpengirim && !!vKirim.errors?.unitpengirim && (
             <FormFeedback type="invalid">
@@ -579,8 +581,9 @@ const DistribusiKirim = ({ isVerif }) => {
             onChange={(val) => {
               vKirim.setFieldValue('unitpenerima', val.value)
             }}
-            className={`input ${vKirim.errors?.unitpenerima ? 'is-invalid' : ''
-              }`}
+            className={`input ${
+              vKirim.errors?.unitpenerima ? 'is-invalid' : ''
+            }`}
           />
           {vKirim.touched?.unitpenerima && !!vKirim.errors?.unitpenerima && (
             <FormFeedback type="invalid">
@@ -795,8 +798,9 @@ const DistribusiKirim = ({ isVerif }) => {
                 val?.nilaikonversi || 0
               )
             }}
-            className={`input mb-2 ${vProduk.errors?.satuan ? 'is-invalid' : ''
-              }`}
+            className={`input mb-2 ${
+              vProduk.errors?.satuan ? 'is-invalid' : ''
+            }`}
           />
           {vProduk.touched?.satuan && !!vProduk.errors?.satuan && (
             <FormFeedback type="invalid">
@@ -945,21 +949,6 @@ const DistribusiKirim = ({ isVerif }) => {
       </Container>
     </div>
   )
-}
-
-const tableCustomStyles = {
-  headRow: {
-    style: {
-      color: '#ffffff',
-      backgroundColor: '#FFCB46',
-    },
-  },
-  rows: {
-    style: {
-      color: 'black',
-      backgroundColor: '#f1f2f6',
-    },
-  },
 }
 
 export default DistribusiKirim

@@ -21,6 +21,7 @@ import { emrSave, emrResetForm, emrGet } from "../../../store/actions";
 import LoadingTable from '../../../Components/Table/LoadingTable';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles';
 
 
 const Cppt = () => {
@@ -313,19 +314,4 @@ const Cppt = () => {
     )
 }
 
-const tableCustomStyles = {
-    headRow: {
-        style: {
-            color: '#ffffff',
-            backgroundColor: '#B57602',
-        },
-    },
-    rows: {
-        style: {
-            color: "black",
-            backgroundColor: "#f1f2f6"
-        },
-
-    }
-}
 export default (Cppt)

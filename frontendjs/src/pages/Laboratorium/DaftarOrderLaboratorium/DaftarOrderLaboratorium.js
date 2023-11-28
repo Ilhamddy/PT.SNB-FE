@@ -34,6 +34,7 @@ import {
 import DetailOrderModal from '../../Laboratorium/DetailOrderModal/DetailOrderModal';
 import DeleteModalCustom from '../../../Components/Common/DeleteModalCustom';
 import LoadingTable from '../../../Components/Table/LoadingTable';
+import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles';
 
 const DaftarOrderLaboratorium = () => {
     document.title = "Daftar Order Laboratorium"
@@ -190,21 +191,7 @@ const DaftarOrderLaboratorium = () => {
         dispatch(listdaftarOrderLaboratoriumGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}`));
         dispatch(widgetdaftarOrderLaboratoriumGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=${idPencarian}`));
     }
-    const tableCustomStyles = {
-        headRow: {
-            style: {
-                color: '#ffffff',
-                backgroundColor: '#FFCB46',
-            },
-        },
-        rows: {
-            style: {
-                color: "black",
-                backgroundColor: "#f1f2f6"
-            },
-
-        }
-    }
+    
     const handleTolak = () => {
         // if (product) {
         setdetailModal(false);

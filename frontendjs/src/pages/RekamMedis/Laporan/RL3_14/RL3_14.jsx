@@ -1,26 +1,36 @@
 import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux';
-import UiContent from '../../../../Components/Common/UiContent';
-import { Button, Card, Col, Container, Form, FormFeedback, Row, UncontrolledTooltip } from 'reactstrap';
-import BreadCrumb from '../../../../Components/Common/BreadCrumb';
+import { useDispatch, useSelector } from 'react-redux'
+import UiContent from '../../../../Components/Common/UiContent'
+import {
+  Button,
+  Card,
+  Col,
+  Container,
+  Form,
+  FormFeedback,
+  Row,
+  UncontrolledTooltip,
+} from 'reactstrap'
+import BreadCrumb from '../../../../Components/Common/BreadCrumb'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
-import KontainerFlatpickr from '../../../../Components/KontainerFlatpickr/KontainerFlatpickr';
+import KontainerFlatpickr from '../../../../Components/KontainerFlatpickr/KontainerFlatpickr'
 import DataTable from 'react-data-table-component'
-import LoadingTable from '../../../../Components/Table/LoadingTable';
+import LoadingTable from '../../../../Components/Table/LoadingTable'
 import {
-  getLaporanRl_3_14, kendaliDokumenResetForm
-} from '../../../../store/actions';
-import { Grid, _ } from 'gridjs-react';
-import * as XLSX from 'xlsx';
+  getLaporanRl_3_14,
+  kendaliDokumenResetForm,
+} from '../../../../store/actions'
+import { Grid, _ } from 'gridjs-react'
+import * as XLSX from 'xlsx'
 
 const RL3_14 = () => {
-  document.title = "Laporan RL3.14";
-  const dispatch = useDispatch();
+  document.title = 'Laporan RL3.14'
+  const dispatch = useDispatch()
   const { dataGrid, loadingGrid } = useSelector((state) => ({
     dataGrid: state.KendaliDokumen.getLaporanRl_3_14.data,
     loadingGrid: state.KendaliDokumen.getLaporanRl_3_14.loading,
-  }));
+  }))
   const [dateNow] = useState(() => new Date().toISOString())
   const vSetValidation = useFormik({
     initialValues: {
@@ -33,73 +43,88 @@ const RL3_14 = () => {
     }),
     onSubmit: (values) => {
       console.log(values)
-      dispatch(getLaporanRl_3_14({
-        start: values.start || dateNow,
-        end: values.end || dateNow
-      }));
+      dispatch(
+        getLaporanRl_3_14({
+          start: values.start || dateNow,
+          end: values.end || dateNow,
+        })
+      )
     },
   })
   const columns = [
     {
       name: 'No',
       formatter: (cell) => _(<span>{cell}</span>),
-      pageTitle: 'test'
+      pageTitle: 'test',
     },
     {
       id: 'spesialis',
-      name: 'Spesialis'
+      name: 'Spesialis',
       // formatter: (cell) => _(<a href="/#"> {cell} </a>)
     },
     {
       name: 'Rujukan',
-      columns: [{
-        id: 'diterima_puskesmas',
-        name: 'Diterima Puskesmas'
-      }, {
-        id: 'diterima_faskeslain',
-        name: 'Diterima Faskeslain'
-      }, {
-        id: 'diterima_rs',
-        name: 'Diterima RS'
-      }, {
-        id: 'dikembalikan_kepuskesmas',
-        name: 'Dikembalikan Ke Puskesmas'
-      }, {
-        id: 'dikembalikan_kefaskeslain',
-        name: 'Dikembalikan Ke Faskes Lain'
-      }, {
-        id: 'dikembalikan_kersasal',
-        name: 'Dikembalikan Ke RS Asal'
-      }, {
-        id: 'diterima_faskeslain',
-        name: 'Diterima Faskes Lain'
-      }]
-    }, {
+      columns: [
+        {
+          id: 'diterima_puskesmas',
+          name: 'Diterima Puskesmas',
+        },
+        {
+          id: 'diterima_faskeslain',
+          name: 'Diterima Faskeslain',
+        },
+        {
+          id: 'diterima_rs',
+          name: 'Diterima RS',
+        },
+        {
+          id: 'dikembalikan_kepuskesmas',
+          name: 'Dikembalikan Ke Puskesmas',
+        },
+        {
+          id: 'dikembalikan_kefaskeslain',
+          name: 'Dikembalikan Ke Faskes Lain',
+        },
+        {
+          id: 'dikembalikan_kersasal',
+          name: 'Dikembalikan Ke RS Asal',
+        },
+        {
+          id: 'diterima_faskeslain',
+          name: 'Diterima Faskes Lain',
+        },
+      ],
+    },
+    {
       name: 'Di Rujuk',
-      columns: [{
-        id: 'dirujuk_pasienrujukan',
-        name: 'Pasien Rujukan'
-      }, {
-        id: 'dirujuk_datangsendiri',
-        name: 'Datang Sendiri'
-      }, {
-        id: 'dirujuk_diterimakembali',
-        name: 'Diterima Kembali'
-      }]
-    }
+      columns: [
+        {
+          id: 'dirujuk_pasienrujukan',
+          name: 'Pasien Rujukan',
+        },
+        {
+          id: 'dirujuk_datangsendiri',
+          name: 'Datang Sendiri',
+        },
+        {
+          id: 'dirujuk_diterimakembali',
+          name: 'Diterima Kembali',
+        },
+      ],
+    },
   ]
   const handleExport = () => {
-    const formattedData = dataGrid.map(item => Object.values(item));
-    const firstObject = dataGrid[0];
-    const header = Object.keys(firstObject);
+    const formattedData = dataGrid.map((item) => Object.values(item))
+    const firstObject = dataGrid[0]
+    const header = Object.keys(firstObject)
     console.log(header)
-    const sheetData = [header, ...formattedData];
-    const worksheet = XLSX.utils.aoa_to_sheet(sheetData);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+    const sheetData = [header, ...formattedData]
+    const worksheet = XLSX.utils.aoa_to_sheet(sheetData)
+    const workbook = XLSX.utils.book_new()
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1')
 
-    XLSX.writeFile(workbook, 'laporan_rl3_14.xlsx');
-  };
+    XLSX.writeFile(workbook, 'laporan_rl3_14.xlsx')
+  }
   return (
     <React.Fragment>
       <UiContent />
@@ -108,18 +133,21 @@ const RL3_14 = () => {
           <BreadCrumb title="Laporan RL3.14" pageTitle="Forms" />
           <Form
             onSubmit={(e) => {
-              e.preventDefault();
-              vSetValidation.handleSubmit();
-              return false;
+              e.preventDefault()
+              vSetValidation.handleSubmit()
+              return false
             }}
             className="gy-4"
-            action="#">
+            action="#"
+          >
             <Card className="p-5">
               <Row>
                 <Col lg={3}>
                   <KontainerFlatpickr
-                    isError={vSetValidation.touched?.start &&
-                      !!vSetValidation.errors?.start}
+                    isError={
+                      vSetValidation.touched?.start &&
+                      !!vSetValidation.errors?.start
+                    }
                     id="start"
                     options={{
                       dateFormat: 'Y-m-d',
@@ -127,11 +155,14 @@ const RL3_14 = () => {
                     }}
                     value={vSetValidation.values.start || dateNow}
                     onChange={([newDate]) => {
-                      vSetValidation.setFieldValue('start', newDate.toISOString())
+                      vSetValidation.setFieldValue(
+                        'start',
+                        newDate.toISOString()
+                      )
                     }}
                   />
-                  {vSetValidation.touched?.start
-                    && !!vSetValidation.errors.start && (
+                  {vSetValidation.touched?.start &&
+                    !!vSetValidation.errors.start && (
                       <FormFeedback type="invalid">
                         <div>{vSetValidation.errors.start}</div>
                       </FormFeedback>
@@ -139,8 +170,10 @@ const RL3_14 = () => {
                 </Col>
                 <Col sm={3}>
                   <KontainerFlatpickr
-                    isError={vSetValidation.touched?.end &&
-                      !!vSetValidation.errors?.end}
+                    isError={
+                      vSetValidation.touched?.end &&
+                      !!vSetValidation.errors?.end
+                    }
                     id="end"
                     options={{
                       dateFormat: 'Y-m-d',
@@ -151,21 +184,36 @@ const RL3_14 = () => {
                       vSetValidation.setFieldValue('end', newDate.toISOString())
                     }}
                   />
-                  {vSetValidation.touched?.end
-                    && !!vSetValidation.errors.end && (
+                  {vSetValidation.touched?.end &&
+                    !!vSetValidation.errors.end && (
                       <FormFeedback type="invalid">
                         <div>{vSetValidation.errors.end}</div>
                       </FormFeedback>
                     )}
                 </Col>
                 <Col lg={2}>
-                  <Button type="submit" placement="top" id="tooltipTopPencarian" >
+                  <Button
+                    type="submit"
+                    placement="top"
+                    id="tooltipTopPencarian"
+                  >
                     CARI
                   </Button>
-                  <UncontrolledTooltip placement="top" target="tooltipTopPencarian" > Pencarian </UncontrolledTooltip>
+                  <UncontrolledTooltip
+                    placement="top"
+                    target="tooltipTopPencarian"
+                  >
+                    {' '}
+                    Pencarian{' '}
+                  </UncontrolledTooltip>
                 </Col>
                 <Col lg={2}>
-                  <Button type="button" placement="top" id="tooltipTopPencarian" onClick={handleExport}>
+                  <Button
+                    type="button"
+                    placement="top"
+                    id="tooltipTopPencarian"
+                    onClick={handleExport}
+                  >
                     Export to Excel
                   </Button>
                 </Col>
@@ -176,7 +224,7 @@ const RL3_14 = () => {
                       columns={columns}
                       sort={true}
                       fixedHeader={true}
-                      pagination={{ enabled: true, limit: 5, }}
+                      pagination={{ enabled: true, limit: 5 }}
                       style={{
                         table: {
                           border: '1px solid #ccc',
@@ -202,21 +250,5 @@ const RL3_14 = () => {
     </React.Fragment>
   )
 }
-const tableCustomStyles = {
-  headRow: {
-    style: {
-      color: '#ffffff',
-      backgroundColor: '#FFCB46',
-    },
-  },
-  rows: {
-    style: {
-      color: 'black',
-      backgroundColor: '#f1f2f6',
-    },
-  },
-}
-
-
 
 export default RL3_14

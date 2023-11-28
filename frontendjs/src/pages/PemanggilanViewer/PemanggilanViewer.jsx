@@ -18,6 +18,7 @@ import {
 import { useRef } from 'react'
 import { ToastContainer } from 'react-toastify'
 import SkalaNyeri from '../../Components/SkalaNyeri/SkalaNyeri'
+import { tableCustomStyles } from '../../Components/Table/tableCustomStyles'
 
 const PemanggilanViewer = () => {
   const {
@@ -149,8 +150,9 @@ const PemanggilanViewer = () => {
                     vPemanggilan.setFieldValue('loket', e?.value || '')
                   }}
                   value={vPemanggilan.values.loket}
-                  className={`input row-header ${!!vPemanggilan?.errors.loket ? 'is-invalid' : ''
-                    }`}
+                  className={`input row-header ${
+                    !!vPemanggilan?.errors.loket ? 'is-invalid' : ''
+                  }`}
                 />
                 {vPemanggilan.touched.loket && !!vPemanggilan.errors.loket && (
                   <FormFeedback type="invalid">
@@ -172,8 +174,9 @@ const PemanggilanViewer = () => {
                     vPemanggilan.setFieldValue('jenis', e?.value || '')
                   }}
                   value={vPemanggilan.values.jenis}
-                  className={`input row-header ${!!vPemanggilan?.errors.jenis ? 'is-invalid' : ''
-                    }`}
+                  className={`input row-header ${
+                    !!vPemanggilan?.errors.jenis ? 'is-invalid' : ''
+                  }`}
                 />
                 {vPemanggilan.touched.jenis && !!vPemanggilan.errors.jenis && (
                   <FormFeedback type="invalid">
@@ -216,8 +219,9 @@ const PemanggilanViewer = () => {
                     vPanggilUlang.setFieldValue('norecantrean', e?.value || '')
                   }}
                   value={vPanggilUlang.values.norecantrean}
-                  className={`input row-header ${!!vPanggilUlang?.errors.norecantrean ? 'is-invalid' : ''
-                    }`}
+                  className={`input row-header ${
+                    !!vPanggilUlang?.errors.norecantrean ? 'is-invalid' : ''
+                  }`}
                 />
                 {vPanggilUlang.touched.norecantrean &&
                   !!vPanggilUlang.errors.norecantrean && (
@@ -277,21 +281,6 @@ const PemanggilanViewer = () => {
       </div>
     </div>
   )
-}
-
-const tableCustomStyles = {
-  headRow: {
-    style: {
-      color: '#ffffff',
-      backgroundColor: '#FFCB46',
-    },
-  },
-  rows: {
-    style: {
-      color: 'black',
-      backgroundColor: '#f1f2f6',
-    },
-  },
 }
 
 export default PemanggilanViewer

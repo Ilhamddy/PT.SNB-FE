@@ -22,6 +22,7 @@ import KontainerFlatpickr from "../../../Components/KontainerFlatpickr/Kontainer
 import { dateTimeLocal } from '../../../utils/format';
 import LoadingTable from "../../../Components/Table/LoadingTable";
 import { toast } from "react-toastify";
+import { tableCustomStyles } from "../../../Components/Table/tableCustomStyles";
 
 const EfisiensiBPJS = () => {
     const { norecdp, norecap } = useParams();
@@ -284,20 +285,7 @@ const EfisiensiBPJS = () => {
             // }, [dispatch]);
         }
     };
-    const tableCustomStyles = {
-        headRow: {
-            style: {
-                color: '#ffffff',
-                backgroundColor: '#FFCB46',
-            },
-        },
-        rows: {
-            style: {
-                color: "black",
-                backgroundColor: "#f1f2f6"
-            },
-        }
-    }
+
     const columns = [
         {
             name: <span className='font-weight-bold fs-13'>Detail</span>,

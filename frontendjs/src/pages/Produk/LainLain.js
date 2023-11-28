@@ -27,6 +27,7 @@ import DataTable from "react-data-table-component";
 import { KonversiProduk } from "./KonversiProduk";
 import { Link } from "react-router-dom";
 import LoadingTable from "../../Components/Table/LoadingTable";
+import { tableCustomStyles } from "../../Components/Table/tableCustomStyles";
 
 
 const LainLain = ({tabId}) => {
@@ -689,19 +690,6 @@ const LainLain = ({tabId}) => {
     )
 }
 
-const tableCustomStyles = {
-    headRow: {
-        style: {
-            color: '#ffffff',
-            backgroundColor: '#FFCB46',
-        },
-    },
-    rows: {
-        style: {
-            color: "black",
-            backgroundColor: "#f1f2f6"
-        },
-    }
-}
+
 
 export default LainLain

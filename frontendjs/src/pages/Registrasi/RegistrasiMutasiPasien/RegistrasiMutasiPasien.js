@@ -25,6 +25,7 @@ import classnames from "classnames";
 import { comboRegistrasiGet } from '../../../store/master/action';
 import { registrasiNoregistrasiResetForm, registrasiGet, saveRegistrasiMutasi, registrasiResetForm, registrasiRuanganNorecGet, registrasiGetReset, registrasiRuanganNorecGetReset } from "../../../store/actions";
 import "./RegistrasiMutasiPasien.scss"
+import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles';
 
 const RegistrasiMutasiPasien = (props) => {
     const { id, norec } = useParams();
@@ -246,21 +247,7 @@ const RegistrasiMutasiPasien = (props) => {
         setdataKamar([])
         setdataTT([])
     }
-    const tableCustomStyles = {
-        headRow: {
-            style: {
-                color: '#ffffff',
-                backgroundColor: '#FFCB46',
-            },
-        },
-        rows: {
-            style: {
-                color: "black",
-                backgroundColor: "#f1f2f6"
-            },
-
-        }
-    }
+    
     const columns = [
         {
             name: <span className='font-weight-bold fs-13'>Unit</span>,

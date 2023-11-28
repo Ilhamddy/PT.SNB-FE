@@ -31,6 +31,7 @@ import {
 import LoadingTable from '../../Components/Table/LoadingTable'
 import NoDataTable from '../../Components/Table/NoDataTable'
 import { dateLocal, dateTimeLocal } from '../../utils/format'
+import { tableCustomStyles } from '../../Components/Table/tableCustomStyles'
 
 const PenerimaanProdukList = ({ isLogistik }) => {
   const navigate = useNavigate()
@@ -600,7 +601,7 @@ const Widget = ({ title, end, image }) => {
         </CardBody>
         <div className="card-footer" style={{ backgroundColor: '#FFCB46' }}>
           <div className="text-center">
-            <Link to="#" className="link-light" onClick={() => { }}>
+            <Link to="#" className="link-light" onClick={() => {}}>
               View
               <i className="ri-arrow-right-s-line align-middle lh-1"></i>
             </Link>
@@ -672,21 +673,6 @@ const ExpandableRetur = ({ data }) => {
       customStyles={subTableCustomStyles}
     />
   )
-}
-
-const tableCustomStyles = {
-  headRow: {
-    style: {
-      color: '#ffffff',
-      backgroundColor: '#FFCB46',
-    },
-  },
-  rows: {
-    style: {
-      color: 'black',
-      backgroundColor: '#f1f2f6',
-    },
-  },
 }
 
 const subTableCustomStyles = {

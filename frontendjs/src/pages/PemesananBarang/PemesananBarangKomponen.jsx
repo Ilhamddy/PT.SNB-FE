@@ -26,6 +26,7 @@ import { kemasanFromProdukGet, getPemesanan } from '../../store/gudang/action'
 import LoadingTable from '../../Components/Table/LoadingTable'
 import NoDataTable from '../../Components/Table/NoDataTable'
 import { PemesananContext } from './PemesananBarang'
+import { tableCustomStyles } from '../../Components/Table/tableCustomStyles'
 
 export const InputProdukDetail = () => {
   const {
@@ -95,8 +96,9 @@ export const InputProdukDetail = () => {
                 value={detail.produk?.satuanjual}
                 isDisabled
                 isClearEmpty
-                className={`input ${detailErr?.produk?.satuanjual ? 'is-invalid' : ''
-                  }`}
+                className={`input ${
+                  detailErr?.produk?.satuanjual ? 'is-invalid' : ''
+                }`}
               />
               {detailTouched?.produk?.satuanjual &&
                 !!detailErr?.produk?.satuanjual && (
@@ -128,8 +130,9 @@ export const InputProdukDetail = () => {
                   )
                 }}
                 value={detail.satuanterima}
-                className={`input ${detailErr?.satuanterima ? 'is-invalid' : ''
-                  }`}
+                className={`input ${
+                  detailErr?.satuanterima ? 'is-invalid' : ''
+                }`}
                 ref={refSatuanTerima}
               />
               {detailTouched?.satuanterima && !!detailErr?.satuanterima && (
@@ -623,8 +626,9 @@ export const InputUmumPesan = () => {
               handleChangePenerimaan('namasupplier', e?.value || '')
             }}
             value={penerimaan.namasupplier}
-            className={`input ${penerimaanErr?.namasupplier ? 'is-invalid' : ''
-              }`}
+            className={`input ${
+              penerimaanErr?.namasupplier ? 'is-invalid' : ''
+            }`}
           />
           {penerimaanTouched?.namasupplier && !!penerimaanErr?.namasupplier && (
             <FormFeedback type="invalid">
@@ -1135,19 +1139,4 @@ export const useCalculatePemesanan = (vDetail, detail) => {
     detail.ppnrupiahproduk,
     vDetail.setFieldValue,
   ])
-}
-
-const tableCustomStyles = {
-  headRow: {
-    style: {
-      color: '#ffffff',
-      backgroundColor: '#FFCB46',
-    },
-  },
-  rows: {
-    style: {
-      color: 'black',
-      backgroundColor: '#f1f2f6',
-    },
-  },
 }

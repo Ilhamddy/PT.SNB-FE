@@ -30,6 +30,7 @@ import kakek from "../../../assets/images/svg/kakek.svg"
 import nenek from "../../../assets/images/svg/nenek.svg"
 import anakperempuan from "../../../assets/images/svg/anakperempuan.svg"
 import dewasaperempuan from "../../../assets/images/svg/dewasaperempuan.svg"
+import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles';
 
 const DaftarPasienLaboratorium = () => {
     document.title = "Daftar Order Laboratorium";
@@ -81,21 +82,7 @@ const DaftarPasienLaboratorium = () => {
             dispatch(daftarPasienLaboratorium(`${search}&start=${dateStart}&end=${dateEnd}`));
         }
     }
-    const tableCustomStyles = {
-        headRow: {
-            style: {
-                color: '#ffffff',
-                backgroundColor: '#FFCB46',
-            },
-        },
-        rows: {
-            style: {
-                color: "black",
-                backgroundColor: "#f1f2f6"
-            },
-
-        }
-    }
+    
     const [userChosen, setUserChosen] = useState({
         nama: "",
         id: "",

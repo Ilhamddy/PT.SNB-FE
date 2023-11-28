@@ -22,6 +22,7 @@ import PrintTemplate from '../../Print/PrintTemplate/PrintTemplate';
 import PrintHasilLaboratorium from '../../Print/PrintHasilLaboratorium/PrintHasilLaboratorium';
 import CetakLabModal from '../../../Components/Common/CetakLabModal';
 import InputTindakan from '../../Emr/InputTindakan/InputTindakan';
+import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles';
 
 const TransaksiPelayanLaboratorium = () => {
     const { norecdp, norecap } = useParams();
@@ -65,21 +66,7 @@ const TransaksiPelayanLaboratorium = () => {
     useEffect(() => {
         dispatch(listPelayananLaboratoriumGet(norecdp));
     }, [norecdp, dispatch]);
-    const tableCustomStyles = {
-        headRow: {
-            style: {
-                color: '#ffffff',
-                backgroundColor: '#FFCB46',
-            },
-        },
-        rows: {
-            style: {
-                color: "black",
-                backgroundColor: "#f1f2f6"
-            },
-
-        }
-    }
+    
     const [listPelayananChecked, setListPelayananChecked] = useState([])
     const handleChecked = (checked, norec) => {
         const newListPC = [...listPelayananChecked]

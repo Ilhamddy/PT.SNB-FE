@@ -13,6 +13,7 @@ import DataTable from 'react-data-table-component'
 import NoDataTable from '../../Components/Table/NoDataTable'
 import LoadingTable from '../../Components/Table/LoadingTable'
 import { dateLocal, dateTimeLocal } from '../../utils/format'
+import { tableCustomStyles } from '../../Components/Table/tableCustomStyles'
 
 export const ModalPembayaran = () => {
   const dispatch = useDispatch()
@@ -72,19 +73,4 @@ export const ModalPembayaran = () => {
       />
     </Modal>
   )
-}
-
-const tableCustomStyles = {
-  headRow: {
-    style: {
-      color: '#878A99',
-      backgroundColor: '#F3F6F9',
-    },
-  },
-  rows: {
-    style: {
-      color: 'black',
-      backgroundColor: '#ffffff',
-    },
-  },
 }

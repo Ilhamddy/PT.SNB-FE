@@ -25,6 +25,7 @@ import {
 import LoadingTable from '../../../../../Components/Table/LoadingTable';
 import { dateTimeLocal } from '../../../../../utils/format';
 import KontainerFlatpicr from "../../../../../Components/KontainerFlatpickr/KontainerFlatpickr";
+import { tableCustomStyles } from '../../../../../Components/Table/tableCustomStyles';
 
 const OrderRadiologi = () => {
     const { norecdp, norecap } = useParams();
@@ -163,21 +164,6 @@ const OrderRadiologi = () => {
             dispatch(daftarOrderRadiologiGet(norecdp))
         }
     }, [newData,norecdp, dispatch])
-    const tableCustomStyles = {
-        headRow: {
-            style: {
-                color: '#ffffff',
-                backgroundColor: '#FFCB46',
-            },
-        },
-        rows: {
-            style: {
-                color: "black",
-                backgroundColor: "#f1f2f6"
-            },
-
-        }
-    }
     const columns = [
         {
             name: <span className='font-weight-bold fs-13'>Pemeriksaan</span>,

@@ -20,6 +20,7 @@ import DataTable from 'react-data-table-component';
 import { rgxWithSlash } from '../../../utils/regexcommon';
 import LoadingTable from '../../../Components/Table/LoadingTable';
 import NoDataTable from '../../../Components/Table/NoDataTable';
+import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles';
 
 const TandaVital = () => {
     const { norecdp, norecap } = useParams();
@@ -126,21 +127,7 @@ const TandaVital = () => {
             resetForm({ values: '' })
         }
     })
-    const tableCustomStyles = {
-        headRow: {
-            style: {
-                color: '#ffffff',
-                backgroundColor: '#B57602',
-            },
-        },
-        rows: {
-            style: {
-                color: "black",
-                backgroundColor: "#f1f2f6"
-            },
-
-        }
-    }
+   
     const columns = [
 
         {

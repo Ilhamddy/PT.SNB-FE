@@ -25,6 +25,7 @@ import {
 import "./LaporanPendapatan.scss"
 import * as XLSX from 'xlsx';
 import { Grid, _ } from 'gridjs-react';
+import { tableCustomStyles } from '../../../../Components/Table/tableCustomStyles';
 
 const LaporanPendapatan = () => {
     document.title = "Laporan RL3.1";
@@ -69,21 +70,7 @@ const LaporanPendapatan = () => {
         // console.log(`${search}&start=${validation.values.tglstart}&end=${validation.values.tglend}`)
         dispatch(laporanPendapatanKasirGet(`${search}&start=${validation.values.tglstart}&end=${validation.values.tglend}`));
     }
-    const tableCustomStyles = {
-        headRow: {
-            style: {
-                color: '#ffffff',
-                backgroundColor: '#FFCB46',
-            },
-        },
-        rows: {
-            style: {
-                color: "black",
-                backgroundColor: "#f1f2f6"
-            },
-
-        }
-    }
+    
     const columns = [
         {
             name: <span className='font-weight-bold fs-13'>No</span>,

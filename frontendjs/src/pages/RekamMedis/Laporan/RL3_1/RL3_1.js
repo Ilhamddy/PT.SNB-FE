@@ -95,21 +95,7 @@ const RL3_1 = () => {
             pegawai: validation.values.pegawai
         }));
     }
-    const tableCustomStyles = {
-        headRow: {
-            style: {
-                color: '#ffffff',
-                backgroundColor: '#FFCB46',
-            },
-        },
-        rows: {
-            style: {
-                color: "black",
-                backgroundColor: "#f1f2f6"
-            },
-
-        }
-    }
+    
     const columns = [
         {
             name: <span className='font-weight-bold fs-13'>No</span>,

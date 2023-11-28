@@ -32,6 +32,7 @@ import { rgxAllNumber, rgxAllPeriods, rgxValidNumber } from "../../utils/regexco
 import PrintTemplate from "../Print/PrintTemplate/PrintTemplate";
 import "./Bayar.scss"
 import LoadingTable from "../../Components/Table/LoadingTable";
+import { tableCustomStyles } from "../../Components/Table/tableCustomStyles";
 
 
 
@@ -778,19 +779,5 @@ const Bayar = () => {
     )
 }
 
-const tableCustomStyles = {
-    headRow: {
-        style: {
-            color: '#ffffff',
-            backgroundColor: '#FFCB46',
-        },
-    },
-    rows: {
-        style: {
-            color: "black",
-            backgroundColor: "#f1f2f6"
-        },
-    }
-}
 
 export default Bayar;

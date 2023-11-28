@@ -22,6 +22,7 @@ import { useDispatch, useSelector } from "react-redux";
 import DataTable from "react-data-table-component";
 import { produkMasterGet } from "../../store/actions";
 import LoadingTable from "../../Components/Table/LoadingTable";
+import { tableCustomStyles } from "../../Components/Table/tableCustomStyles";
 
 
 
@@ -190,19 +191,6 @@ const ListProduk = () => {
 }
 
 
-const tableCustomStyles = {
-    headRow: {
-        style: {
-            color: '#ffffff',
-            backgroundColor: '#FFCB46',
-        },
-    },
-    rows: {
-        style: {
-            color: "black",
-            backgroundColor: "#f1f2f6"
-        },
-    }
-}
+
 
 export default ListProduk;

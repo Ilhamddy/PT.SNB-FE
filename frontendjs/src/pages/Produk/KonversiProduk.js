@@ -23,6 +23,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { rgxAllPeriods, rgxValidNumber } from "../../utils/regexcommon.js";
 import { onChangeStrNbr, strToNumber } from "../../utils/format";
 import LoadingTable from "../../Components/Table/LoadingTable";
+import { tableCustomStyles } from "../../Components/Table/tableCustomStyles.js";
 
 const KonversiProduk = ({tabId}) => {
     const {paramobat} = useParams();
@@ -401,19 +402,6 @@ const KonversiProduk = ({tabId}) => {
     )
 }
 
-const tableCustomStyles = {
-    headRow: {
-        style: {
-            color: '#ffffff',
-            backgroundColor: '#FFCB46',
-        },
-    },
-    rows: {
-        style: {
-            color: "black",
-            backgroundColor: "#f1f2f6"
-        },
-    }
-}
+
 
 export { KonversiProduk }

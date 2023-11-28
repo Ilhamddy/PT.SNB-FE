@@ -26,6 +26,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import React from "react";
 import { rgxAllPeriods } from "../../utils/regexcommon";
 import LoadingTable from "../../Components/Table/LoadingTable";
+import { tableCustomStyles } from "../../Components/Table/tableCustomStyles";
 
 //TODO: ganti masukkan ke dalam komponen
 const dateAwalStart = (new Date(new Date() - 1000 * 60 * 60 * 24 * 3)).toISOString();
@@ -494,19 +495,6 @@ const VerifikasiPelayanan = () => {
     )
 }
 
-const tableCustomStyles = {
-    headRow: {
-        style: {
-            color: '#ffffff',
-            backgroundColor: '#FFCB46',
-        },
-    },
-    rows: {
-        style: {
-            color: "black",
-            backgroundColor: "#f1f2f6"
-        },
-    }
-}
+
 
 export default VerifikasiPelayanan;

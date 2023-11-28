@@ -1,24 +1,34 @@
 import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux';
-import UiContent from '../../../../Components/Common/UiContent';
-import { Button, Card, Col, Container, Form, FormFeedback, Row, UncontrolledTooltip } from 'reactstrap';
-import BreadCrumb from '../../../../Components/Common/BreadCrumb';
+import { useDispatch, useSelector } from 'react-redux'
+import UiContent from '../../../../Components/Common/UiContent'
+import {
+  Button,
+  Card,
+  Col,
+  Container,
+  Form,
+  FormFeedback,
+  Row,
+  UncontrolledTooltip,
+} from 'reactstrap'
+import BreadCrumb from '../../../../Components/Common/BreadCrumb'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
-import KontainerFlatpickr from '../../../../Components/KontainerFlatpickr/KontainerFlatpickr';
+import KontainerFlatpickr from '../../../../Components/KontainerFlatpickr/KontainerFlatpickr'
 import {
-  getLaporanRl_1_3, kendaliDokumenResetForm
-} from '../../../../store/actions';
-import { Grid, _ } from 'gridjs-react';
-import * as XLSX from 'xlsx';
+  getLaporanRl_1_3,
+  kendaliDokumenResetForm,
+} from '../../../../store/actions'
+import { Grid, _ } from 'gridjs-react'
+import * as XLSX from 'xlsx'
 
 const RL1_3 = () => {
-  document.title = "Laporan RL1.3";
-  const dispatch = useDispatch();
+  document.title = 'Laporan RL1.3'
+  const dispatch = useDispatch()
   const { dataGrid, loadingGrid } = useSelector((state) => ({
     dataGrid: state.KendaliDokumen.getLaporanRl_1_3.data || [],
     loadingGrid: state.KendaliDokumen.getLaporanRl_1_3.loading,
-  }));
+  }))
   const [dateNow] = useState(() => new Date().toISOString())
   const vSetValidation = useFormik({
     initialValues: {
@@ -31,26 +41,28 @@ const RL1_3 = () => {
     }),
     onSubmit: (values) => {
       console.log(values)
-      dispatch(getLaporanRl_1_3({
-        start: values.start || dateNow,
-        end: values.end || dateNow
-      }));
+      dispatch(
+        getLaporanRl_1_3({
+          start: values.start || dateNow,
+          end: values.end || dateNow,
+        })
+      )
     },
   })
   const columns = [
     {
       id: 'id',
       formatter: (cell) => _(<span>{cell}</span>),
-      name: 'No'
+      name: 'No',
     },
     {
       id: 'reportdisplay',
-      name: 'Jenis Pelayanan'
+      name: 'Jenis Pelayanan',
       // formatter: (cell) => _(<a href="/#"> {cell} </a>)
     },
     {
       id: 'total',
-      name: 'Jumlah TT'
+      name: 'Jumlah TT',
       // formatter: (cell) => _(<a href="/#"> {cell} </a>)
     },
     {
@@ -58,43 +70,43 @@ const RL1_3 = () => {
       columns: [
         {
           id: 'vvip',
-          name: 'VVIP'
+          name: 'VVIP',
         },
         {
           id: 'vip',
-          name: 'VIP'
+          name: 'VIP',
         },
         {
           id: 'kl1',
-          name: 'I'
+          name: 'I',
         },
         {
           id: 'kl2',
-          name: 'II'
+          name: 'II',
         },
         {
           id: 'kl3',
-          name: 'III'
+          name: 'III',
         },
         {
           id: 'khusus',
-          name: 'Kelas Khusus'
-        }
-      ]
+          name: 'Kelas Khusus',
+        },
+      ],
     },
   ]
   const handleExport = () => {
-    const formattedData = dataGrid.map(item => Object.values(item));
-    const firstObject = dataGrid[0];
-    const header = Object.keys(firstObject);
+    const formattedData = dataGrid.map((item) => Object.values(item))
+    const firstObject = dataGrid[0]
+    const header = Object.keys(firstObject)
     console.log(header)
-    const sheetData = [header, ...formattedData];
-    const worksheet = XLSX.utils.aoa_to_sheet(sheetData);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+    const sheetData = [header, ...formattedData]
+    const worksheet = XLSX.utils.aoa_to_sheet(sheetData)
+    const workbook = XLSX.utils.book_new()
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1')
 
-    XLSX.writeFile(workbook, 'laporan_rl3_15.xlsx');
-  };
+    XLSX.writeFile(workbook, 'laporan_rl3_15.xlsx')
+  }
   return (
     <React.Fragment>
       <UiContent />
@@ -103,18 +115,21 @@ const RL1_3 = () => {
           <BreadCrumb title="Laporan RL1.3" pageTitle="Forms" />
           <Form
             onSubmit={(e) => {
-              e.preventDefault();
-              vSetValidation.handleSubmit();
-              return false;
+              e.preventDefault()
+              vSetValidation.handleSubmit()
+              return false
             }}
             className="gy-4"
-            action="#">
+            action="#"
+          >
             <Card className="p-5">
               <Row>
                 <Col lg={3}>
                   <KontainerFlatpickr
-                    isError={vSetValidation.touched?.start &&
-                      !!vSetValidation.errors?.start}
+                    isError={
+                      vSetValidation.touched?.start &&
+                      !!vSetValidation.errors?.start
+                    }
                     id="start"
                     options={{
                       dateFormat: 'Y-m-d',
@@ -122,11 +137,14 @@ const RL1_3 = () => {
                     }}
                     value={vSetValidation.values.start || dateNow}
                     onChange={([newDate]) => {
-                      vSetValidation.setFieldValue('start', newDate.toISOString())
+                      vSetValidation.setFieldValue(
+                        'start',
+                        newDate.toISOString()
+                      )
                     }}
                   />
-                  {vSetValidation.touched?.start
-                    && !!vSetValidation.errors.start && (
+                  {vSetValidation.touched?.start &&
+                    !!vSetValidation.errors.start && (
                       <FormFeedback type="invalid">
                         <div>{vSetValidation.errors.start}</div>
                       </FormFeedback>
@@ -134,8 +152,10 @@ const RL1_3 = () => {
                 </Col>
                 <Col sm={3}>
                   <KontainerFlatpickr
-                    isError={vSetValidation.touched?.end &&
-                      !!vSetValidation.errors?.end}
+                    isError={
+                      vSetValidation.touched?.end &&
+                      !!vSetValidation.errors?.end
+                    }
                     id="end"
                     options={{
                       dateFormat: 'Y-m-d',
@@ -146,21 +166,36 @@ const RL1_3 = () => {
                       vSetValidation.setFieldValue('end', newDate.toISOString())
                     }}
                   />
-                  {vSetValidation.touched?.end
-                    && !!vSetValidation.errors.end && (
+                  {vSetValidation.touched?.end &&
+                    !!vSetValidation.errors.end && (
                       <FormFeedback type="invalid">
                         <div>{vSetValidation.errors.end}</div>
                       </FormFeedback>
                     )}
                 </Col>
                 <Col lg={2}>
-                  <Button type="submit" placement="top" id="tooltipTopPencarian" >
+                  <Button
+                    type="submit"
+                    placement="top"
+                    id="tooltipTopPencarian"
+                  >
                     CARI
                   </Button>
-                  <UncontrolledTooltip placement="top" target="tooltipTopPencarian" > Pencarian </UncontrolledTooltip>
+                  <UncontrolledTooltip
+                    placement="top"
+                    target="tooltipTopPencarian"
+                  >
+                    {' '}
+                    Pencarian{' '}
+                  </UncontrolledTooltip>
                 </Col>
                 <Col lg={2}>
-                  <Button type="button" placement="top" id="tooltipTopPencarian" onClick={handleExport}>
+                  <Button
+                    type="button"
+                    placement="top"
+                    id="tooltipTopPencarian"
+                    onClick={handleExport}
+                  >
                     Export to Excel
                   </Button>
                 </Col>
@@ -175,7 +210,9 @@ const RL1_3 = () => {
             sort={true}
             fixedHeader={true}
             pagination={{
-              enabled: true, limit: 10, summary: false
+              enabled: true,
+              limit: 10,
+              summary: false,
             }}
             style={{
               table: {
@@ -196,21 +233,6 @@ const RL1_3 = () => {
       </div>
     </React.Fragment>
   )
-}
-
-const tableCustomStyles = {
-  headRow: {
-    style: {
-      color: '#ffffff',
-      backgroundColor: '#FFCB46',
-    },
-  },
-  rows: {
-    style: {
-      color: 'black',
-      backgroundColor: '#f1f2f6',
-    },
-  },
 }
 
 export default RL1_3

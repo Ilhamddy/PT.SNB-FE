@@ -43,13 +43,14 @@ import './AddObatFarmasi.scss'
 import LoadingTable from '../../Components/Table/LoadingTable'
 import BatalRegistrasi from '../../Components/Common/BatalRegistrasi'
 import KontainerFlatpickr from '../../Components/KontainerFlatpickr/KontainerFlatpickr'
-import pria from "../../assets/images/svg/pria.svg"
-import baby from "../../assets/images/svg/baby.svg"
-import anaklaki from "../../assets/images/svg/anaklaki.svg"
-import kakek from "../../assets/images/svg/kakek.svg"
-import nenek from "../../assets/images/svg/nenek.svg"
-import anakperempuan from "../../assets/images/svg/anakperempuan.svg"
-import dewasaperempuan from "../../assets/images/svg/dewasaperempuan.svg"
+import pria from '../../assets/images/svg/pria.svg'
+import baby from '../../assets/images/svg/baby.svg'
+import anaklaki from '../../assets/images/svg/anaklaki.svg'
+import kakek from '../../assets/images/svg/kakek.svg'
+import nenek from '../../assets/images/svg/nenek.svg'
+import anakperempuan from '../../assets/images/svg/anakperempuan.svg'
+import dewasaperempuan from '../../assets/images/svg/dewasaperempuan.svg'
+import { tableCustomStyles } from '../../Components/Table/tableCustomStyles'
 
 const AddObatFarmasi = () => {
   document.title = 'Daftar Pasien Rawat Jalan'
@@ -64,7 +65,7 @@ const AddObatFarmasi = () => {
   const [userChosen, setUserChosen] = useState({
     nama: '',
     id: '',
-    profile: ''
+    profile: '',
   })
   const current = new Date()
   const [dateStart, setdateStart] = useState(
@@ -74,20 +75,6 @@ const AddObatFarmasi = () => {
     `${current.getFullYear()}-${current.getMonth() + 1}-${current.getDate()}`
   )
   const [search, setSearch] = useState('')
-  const tableCustomStyles = {
-    headRow: {
-      style: {
-        color: '#ffffff',
-        backgroundColor: '#FFCB46',
-      },
-    },
-    rows: {
-      style: {
-        color: 'black',
-        backgroundColor: '#f1f2f6',
-      },
-    },
-  }
   const handleBeginOnChangeStart = (newBeginValue) => {
     var dateString = new Date(
       newBeginValue.getTime() - newBeginValue.getTimezoneOffset() * 60000
@@ -128,7 +115,7 @@ const AddObatFarmasi = () => {
     setUserChosen({
       nama: row.namapasien,
       id: row.noidentitas,
-      profile: row.profile
+      profile: row.profile,
     })
   }
   const [tempNorecDp, settempNorecDp] = useState('')
@@ -245,19 +232,47 @@ const AddObatFarmasi = () => {
                 <CardBody>
                   <div className="text-center">
                     {userChosen?.profile === 'baby' ? (
-                      <img src={baby} alt="" className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image" />
+                      <img
+                        src={baby}
+                        alt=""
+                        className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image"
+                      />
                     ) : userChosen?.profile === 'dewasalaki' ? (
-                      <img src={pria} alt="" className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image" />
+                      <img
+                        src={pria}
+                        alt=""
+                        className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image"
+                      />
                     ) : userChosen?.profile === 'anaklaki' ? (
-                      <img src={anaklaki} alt="" className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image" />
+                      <img
+                        src={anaklaki}
+                        alt=""
+                        className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image"
+                      />
                     ) : userChosen?.profile === 'anakperempuan' ? (
-                      <img src={anakperempuan} alt="" className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image" />
+                      <img
+                        src={anakperempuan}
+                        alt=""
+                        className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image"
+                      />
                     ) : userChosen?.profile === 'dewasaperempuan' ? (
-                      <img src={dewasaperempuan} alt="" className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image" />
+                      <img
+                        src={dewasaperempuan}
+                        alt=""
+                        className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image"
+                      />
                     ) : userChosen?.profile === 'kakek' ? (
-                      <img src={kakek} alt="" className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image" />
+                      <img
+                        src={kakek}
+                        alt=""
+                        className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image"
+                      />
                     ) : userChosen?.profile === 'nenek' ? (
-                      <img src={nenek} alt="" className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image" />
+                      <img
+                        src={nenek}
+                        alt=""
+                        className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image"
+                      />
                     ) : (
                       // Render when none of the conditions are met
                       <p>No profile image available</p>

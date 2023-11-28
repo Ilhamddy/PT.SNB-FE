@@ -39,6 +39,7 @@ import {
 } from '../../store/mastertariftindakan/action'
 import { toast } from 'react-toastify'
 import LoadingLaman from '../../Components/Common/LoadingLaman'
+import { tableCustomStyles } from '../../Components/Table/tableCustomStyles'
 
 const MasterTarifTindakanTambah = () => {
   const { idtotal } = useParams()
@@ -487,21 +488,6 @@ const MasterTarifTindakanTambah = () => {
       </Container>
     </div>
   )
-}
-
-const tableCustomStyles = {
-  headRow: {
-    style: {
-      color: '#ffffff',
-      backgroundColor: '#FFCB46',
-    },
-  },
-  rows: {
-    style: {
-      color: 'black',
-      backgroundColor: '#f1f2f6',
-    },
-  },
 }
 
 export default MasterTarifTindakanTambah

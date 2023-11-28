@@ -26,6 +26,7 @@ import {
 import ListGroupCollapse from '../../../../../Components/Common/ListGroupCollapse';
 import LoadingTable from '../../../../../Components/Table/LoadingTable';
 import { dateTimeLocal } from '../../../../../utils/format';
+import { tableCustomStyles } from '../../../../../Components/Table/tableCustomStyles';
 
 const OrderLaboratorium = () => {
     const { norecdp, norecap } = useParams();
@@ -83,21 +84,7 @@ const OrderLaboratorium = () => {
     };
     const [temp, setTemp] = useState([]);
     const [col1, setcol1] = useState(false);
-    const tableCustomStyles = {
-        headRow: {
-            style: {
-                color: '#ffffff',
-                backgroundColor: '#FFCB46',
-            },
-        },
-        rows: {
-            style: {
-                color: "black",
-                backgroundColor: "#f1f2f6"
-            },
 
-        }
-    }
     const columns = [
         {
             name: <span className='font-weight-bold fs-13'>Pemeriksaan</span>,

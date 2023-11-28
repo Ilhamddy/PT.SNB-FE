@@ -23,6 +23,7 @@ import {
 } from '../../../store/actions';
 import usePageState from "../../../utils/usePageState";
 import LoadingTable from '../../../Components/Table/LoadingTable';
+import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles';
 const DetailKelompokUmur = () => {
     const dispatch = useDispatch();
     const history = useNavigate();
@@ -91,22 +92,7 @@ const DetailKelompokUmur = () => {
     };
 
     // console.log(validation.errors)
-    const tableCustomStyles = {
-        headRow: {
-            style: {
-                color: '#ffffff',
-                backgroundColor: '#FFCB46',
-            },
-        },
-        rows: {
-            style: {
-                color: "black",
-                backgroundColor: "#f1f2f6"
-            },
-
-        }
-    }
-
+    
     const columns = [
 
         {

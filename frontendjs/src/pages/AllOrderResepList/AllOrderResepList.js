@@ -8,6 +8,7 @@ import { ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { getOrderResepQuery } from "../../store/farmasi/action";
+import { tableCustomStyles } from "../../Components/Table/tableCustomStyles";
 
 
 const AllOrderResepList = () => {
@@ -220,20 +221,6 @@ const ExpandableRiwayatObat = ({ data }) => {
     )
 }
 
-const tableCustomStyles = {
-    headRow: {
-        style: {
-            color: '#ffffff',
-            backgroundColor: '#FFCB46',
-        },
-    },
-    rows: {
-        style: {
-            color: "black",
-            backgroundColor: "#f1f2f6"
-        },
-    }
-}
 
 const subTableCustomStyles = {
     headRow: {

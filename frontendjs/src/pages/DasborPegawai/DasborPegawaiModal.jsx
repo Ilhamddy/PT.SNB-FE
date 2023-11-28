@@ -12,6 +12,7 @@ import DataTable from 'react-data-table-component'
 import NoDataTable from '../../Components/Table/NoDataTable'
 import LoadingTable from '../../Components/Table/LoadingTable'
 import { dateLocal } from '../../utils/format'
+import { tableCustomStyles } from '../../Components/Table/tableCustomStyles'
 
 export const ModalStatusPegawai = () => {
   const dispatch = useDispatch()
@@ -82,19 +83,4 @@ export const ModalStatusPegawai = () => {
       />
     </Modal>
   )
-}
-
-const tableCustomStyles = {
-  headRow: {
-    style: {
-      color: '#878A99',
-      backgroundColor: '#F3F6F9',
-    },
-  },
-  rows: {
-    style: {
-      color: 'black',
-      backgroundColor: '#ffffff',
-    },
-  },
 }

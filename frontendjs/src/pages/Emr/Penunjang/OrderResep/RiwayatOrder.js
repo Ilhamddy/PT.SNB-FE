@@ -4,6 +4,7 @@ import NoDataTable from "../../../../Components/Table/NoDataTable"
 import DataTable from 'react-data-table-component';
 import { useSelector } from "react-redux";
 import { dateTimeLocal } from "../../../../utils/format";
+import { tableCustomStyles } from "../../../../Components/Table/tableCustomStyles";
 
 
 const RiwayatOrder = () => {
@@ -221,22 +222,6 @@ const ExpandableRiwayatObat = ({ data }) => {
             noDataComponent={<NoDataTable dataName={"data obat"}/>}
         />
     )
-}
-
-const tableCustomStyles = {
-    headRow: {
-        style: {
-            color: '#ffffff',
-            backgroundColor: '#FFCB46',
-        },
-        
-    },
-    rows: {
-        style: {
-            color: "black",
-            backgroundColor: "#f1f2f6"
-        },
-    }
 }
 
 const subTableCustomStyles = {

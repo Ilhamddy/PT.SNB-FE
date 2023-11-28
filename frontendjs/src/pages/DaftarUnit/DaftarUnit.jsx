@@ -23,6 +23,7 @@ import {
 } from '../../store/sysadmin/action'
 import CustomSelect from '../Select/Select'
 import * as Yup from 'yup'
+import { tableCustomStyles } from '../../Components/Table/tableCustomStyles'
 
 const DaftarUnit = () => {
   const dispatch = useDispatch()
@@ -165,8 +166,9 @@ const DaftarUnit = () => {
                 vEditUnit.setFieldValue('instalasi', e?.value || '')
               }}
               value={vEditUnit.values.instalasi}
-              className={`input row-header ${!!vEditUnit?.errors.instalasi ? 'is-invalid' : ''
-                }`}
+              className={`input row-header ${
+                !!vEditUnit?.errors.instalasi ? 'is-invalid' : ''
+              }`}
             />
             {vEditUnit.touched.instalasi && !!vEditUnit.errors.instalasi && (
               <FormFeedback type="invalid">
@@ -187,8 +189,9 @@ const DaftarUnit = () => {
                   vEditUnit.setFieldValue('statusenabled', e.value)
                 }}
                 value={vEditUnit.values.statusenabled}
-                className={`input row-header ${!!vEditUnit?.errors.statusenabled ? 'is-invalid' : ''
-                  }`}
+                className={`input row-header ${
+                  !!vEditUnit?.errors.statusenabled ? 'is-invalid' : ''
+                }`}
               />
               {vEditUnit.touched.statusenabled &&
                 !!vEditUnit.errors.statusenabled && (
@@ -230,8 +233,9 @@ const DaftarUnit = () => {
                   vCari.setFieldValue('instalasi', e?.value || '')
                 }}
                 value={vCari.values.instalasi}
-                className={`input row-header ${!!vCari?.errors.instalasi ? 'is-invalid' : ''
-                  }`}
+                className={`input row-header ${
+                  !!vCari?.errors.instalasi ? 'is-invalid' : ''
+                }`}
               />
               {vCari.touched.instalasi && !!vCari.errors.instalasi && (
                 <FormFeedback type="invalid">
@@ -276,21 +280,6 @@ const DaftarUnit = () => {
       </Container>
     </div>
   )
-}
-
-const tableCustomStyles = {
-  headRow: {
-    style: {
-      color: '#ffffff',
-      backgroundColor: '#FFCB46',
-    },
-  },
-  rows: {
-    style: {
-      color: 'black',
-      backgroundColor: '#f1f2f6',
-    },
-  },
 }
 
 export default DaftarUnit

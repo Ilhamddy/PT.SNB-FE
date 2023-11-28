@@ -1,7 +1,16 @@
 import React, { useEffect, useState } from 'react'
 import { ToastContainer } from 'react-toastify'
 import UiContent from '../../../../Components/Common/UiContent'
-import { Button, Card, Col, Container, Form, FormFeedback, Row, UncontrolledTooltip } from 'reactstrap'
+import {
+  Button,
+  Card,
+  Col,
+  Container,
+  Form,
+  FormFeedback,
+  Row,
+  UncontrolledTooltip,
+} from 'reactstrap'
 import BreadCrumb from '../../../../Components/Common/BreadCrumb'
 import Flatpickr from 'react-flatpickr'
 import { useFormik } from 'formik'
@@ -11,18 +20,20 @@ import LoadingTable from '../../../../Components/Table/LoadingTable'
 import * as Yup from 'yup'
 import KontainerFlatpickr from '../../../../Components/KontainerFlatpickr/KontainerFlatpickr'
 import {
-  getLaporanRl_3_3, kendaliDokumenResetForm
-} from '../../../../store/actions';
+  getLaporanRl_3_3,
+  kendaliDokumenResetForm,
+} from '../../../../store/actions'
 import { useDispatch, useSelector } from 'react-redux'
+import { tableCustomStyles } from '../../../../Components/Table/tableCustomStyles'
 
 const RL3_3 = () => {
-  document.title = "Laporan RL3.3";
-  const dispatch = useDispatch();
+  document.title = 'Laporan RL3.3'
+  const dispatch = useDispatch()
   const [dateNow] = useState(() => new Date().toISOString())
   const { dataGrid, loadingGrid } = useSelector((state) => ({
     dataGrid: state.KendaliDokumen.getLaporanRl_3_3.data,
     loadingGrid: state.KendaliDokumen.getLaporanRl_3_3.loading,
-  }));
+  }))
   const vRL3_3 = useFormik({
     initialValues: {
       start: '',
@@ -34,15 +45,17 @@ const RL3_3 = () => {
     }),
     onSubmit: (values) => {
       console.log(values)
-      dispatch(getLaporanRl_3_3({
-        start: values.start || dateNow,
-        end: values.end || dateNow
-      }));
+      dispatch(
+        getLaporanRl_3_3({
+          start: values.start || dateNow,
+          end: values.end || dateNow,
+        })
+      )
     },
   })
   useEffect(() => {
     return () => {
-      dispatch(kendaliDokumenResetForm());
+      dispatch(kendaliDokumenResetForm())
     }
   }, [dispatch])
   /**
@@ -81,18 +94,18 @@ const RL3_3 = () => {
           <BreadCrumb title="Laporan RL3.3" pageTitle="Forms" />
           <Form
             onSubmit={(e) => {
-              e.preventDefault();
-              vRL3_3.handleSubmit();
-              return false;
+              e.preventDefault()
+              vRL3_3.handleSubmit()
+              return false
             }}
             className="gy-4"
-            action="#">
+            action="#"
+          >
             <Card className="p-5">
               <Row>
                 <Col lg={3}>
                   <KontainerFlatpickr
-                    isError={vRL3_3.touched?.start &&
-                      !!vRL3_3.errors?.start}
+                    isError={vRL3_3.touched?.start && !!vRL3_3.errors?.start}
                     id="start"
                     options={{
                       dateFormat: 'Y-m-d',
@@ -103,17 +116,15 @@ const RL3_3 = () => {
                       vRL3_3.setFieldValue('start', newDate.toISOString())
                     }}
                   />
-                  {vRL3_3.touched?.start
-                    && !!vRL3_3.errors.start && (
-                      <FormFeedback type="invalid">
-                        <div>{vRL3_3.errors.start}</div>
-                      </FormFeedback>
-                    )}
+                  {vRL3_3.touched?.start && !!vRL3_3.errors.start && (
+                    <FormFeedback type="invalid">
+                      <div>{vRL3_3.errors.start}</div>
+                    </FormFeedback>
+                  )}
                 </Col>
                 <Col sm={3}>
                   <KontainerFlatpickr
-                    isError={vRL3_3.touched?.end &&
-                      !!vRL3_3.errors?.end}
+                    isError={vRL3_3.touched?.end && !!vRL3_3.errors?.end}
                     id="end"
                     options={{
                       dateFormat: 'Y-m-d',
@@ -124,18 +135,27 @@ const RL3_3 = () => {
                       vRL3_3.setFieldValue('end', newDate.toISOString())
                     }}
                   />
-                  {vRL3_3.touched?.end
-                    && !!vRL3_3.errors.end && (
-                      <FormFeedback type="invalid">
-                        <div>{vRL3_3.errors.end}</div>
-                      </FormFeedback>
-                    )}
+                  {vRL3_3.touched?.end && !!vRL3_3.errors.end && (
+                    <FormFeedback type="invalid">
+                      <div>{vRL3_3.errors.end}</div>
+                    </FormFeedback>
+                  )}
                 </Col>
                 <Col lg={2}>
-                  <Button type="submit" placement="top" id="tooltipTopPencarian" >
+                  <Button
+                    type="submit"
+                    placement="top"
+                    id="tooltipTopPencarian"
+                  >
                     CARI
                   </Button>
-                  <UncontrolledTooltip placement="top" target="tooltipTopPencarian" > Pencarian </UncontrolledTooltip>
+                  <UncontrolledTooltip
+                    placement="top"
+                    target="tooltipTopPencarian"
+                  >
+                    {' '}
+                    Pencarian{' '}
+                  </UncontrolledTooltip>
                 </Col>
               </Row>
               <Row className="mt-3">
@@ -163,21 +183,6 @@ const RL3_3 = () => {
       </div>
     </React.Fragment>
   )
-}
-
-const tableCustomStyles = {
-  headRow: {
-    style: {
-      color: '#ffffff',
-      backgroundColor: '#FFCB46',
-    },
-  },
-  rows: {
-    style: {
-      color: 'black',
-      backgroundColor: '#f1f2f6',
-    },
-  },
 }
 
 export default RL3_3
