@@ -1185,18 +1185,30 @@ const hUpsertSetoranDetail = async (
                 det.values.map(async (val) => {
                     const all = await Promise.all(
                         val.map(async (val) => {
+                            const cb = await db.t_carabayar.findByPk(
+                                val.noreccarabayar, {
+                                    transaction: transaction
+                                }
+                            )
                             const bb = await db.t_buktibayarpasien.findByPk(
                                 val.norecbuktibayar,
                                 {
                                     transaction: transaction
                                 }
                             )
+                            if(!cb) throw new Error("Tidak ada Cara Bayar " + val.noreccarabayar)
                             if(!bb) throw new Error("Tidak ada Bukti Bayar " + val.norecbuktibayar)
-                            await bb.update({
+                            await cb.update({
                                 objectsetorankasirdetailfk: norecDetail
                             }, {
                                 transaction: transaction
                             })
+                            await bb.update({
+                                objectsetorankasirfk: norecsetoran
+                            }, {
+                                transaction: transaction
+                            })
+
                             return bb.toJSON()
                         })
                     )

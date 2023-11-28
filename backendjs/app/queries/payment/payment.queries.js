@@ -390,6 +390,7 @@ where
 
 const qGetPembayaran = `
 SELECT
+    tcb.norec AS noreccarabayar,
     tbb.norec AS norecbuktibayar,
     tdp.noregistrasi AS noregistrasi,
     tdp.tglregistrasi AS tglregistrasi,
@@ -400,7 +401,7 @@ SELECT
     mi.namainstalasi AS namainstalasi,
     COALESCE(mr.namarekanan, 'Umum/Pribadi') AS namarekanan,
     tdp.tglpulang AS tglpulang,
-    tbb.totalbayar AS totalbayar,
+    tcb.totalbayar AS totalbayar,
     COALESCE(mjnt.nontunai, mmb.metodebayar) AS metodebayar
 FROM t_buktibayarpasien tbb
     LEFT JOIN t_daftarpasien tdp ON tbb.objectdaftarpasienfk = tdp.norec

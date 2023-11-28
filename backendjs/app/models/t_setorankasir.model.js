@@ -31,7 +31,7 @@ export default (sequelize, Sequelize) => {
         },
         tglsetor: {
             type: Sequelize.DATE
-        }
+        },
     }, {
         tableName: "t_setorankasir",
         createdAt: false,

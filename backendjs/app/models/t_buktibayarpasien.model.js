@@ -72,7 +72,7 @@ export default (sequelize, Sequelize) => {
         objectjenispembayaranfk:{
             type:Sequelize.INTEGER
         },
-        objectsetorankasirdetailfk: {
+        objectsetorankasirfk: {
             type :Sequelize.CHAR(32)
         },
         objectdepositpasienfk: {

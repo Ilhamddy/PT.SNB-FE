@@ -145,7 +145,7 @@ const SetorKasir = () => {
     {
       name: <span className="font-weight-bold fs-13">Total Bayar</span>,
       sortable: true,
-      selector: (row) => row.totalbayar,
+      selector: (row) => row.totalbayar?.toLocaleString('id-ID'),
       width: '100px',
     },
   ]
