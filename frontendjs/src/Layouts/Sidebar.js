@@ -3,8 +3,8 @@ import { Link } from "react-router-dom";
 import SimpleBar from "simplebar-react";
 //import logo
 import logoSm from "../assets/images/logo_snb2.png";
-import logoDark from "../assets/images/logo_snb.png";
-import logoLight from "../assets/images/logo_snb.png";
+import logoDark from "../assets/images/health-techs-bg-hitam.svg";
+import logoLight from "../assets/images/health-techs-bg-hitam.svg";
 
 //Import Components
 import VerticalLayout from "./VerticalLayouts";

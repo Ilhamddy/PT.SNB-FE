@@ -18,6 +18,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { buktiBayarCancel, daftarPiutangPasienGet, daftarTagihanPasienGet, getPiutangAfterDate, getPiutangAfterDateSuccess, verifNotaCancel } from "../../store/payment/action";
 import LoadingTable from "../../Components/Table/LoadingTable";
 import ServicePayment from "../../services/service-payment";
+import KontainerFlatpickr from "../../Components/KontainerFlatpickr/KontainerFlatpickr";
+
 import pria from "../../assets/images/svg/pria.svg"
 import baby from "../../assets/images/svg/baby.svg"
 import anaklaki from "../../assets/images/svg/anaklaki.svg"
@@ -267,37 +269,31 @@ const DaftarPiutangPasien = () => {
                                 </Form>
                                 <Row className="row-header mb-2">
                                     <Col sm={3}>
-                                        <div className="input-group">
-                                            <Flatpickr
-                                                className="form-control border-0 fs-5 dash-filter-picker shadow"
-                                                options={{
-                                                    // mode: "range",
-                                                    dateFormat: "Y-m-d",
-                                                    defaultDate: "today"
-                                                }}
-                                                value={dateStart}
-                                                onChange={([dateStart]) => {
-                                                    setDateStart((new Date(dateStart)).toISOString());
-                                                }}
-                                            />
-                                        </div>
+                                        <KontainerFlatpickr
+                                            options={{
+                                                // mode: "range",
+                                                dateFormat: "Y-m-d",
+                                                defaultDate: "today"
+                                            }}
+                                            value={dateStart}
+                                            onChange={([dateStart]) => {
+                                                setDateStart((new Date(dateStart)).toISOString());
+                                            }}
+                                        />
                                     </Col>
-                                    <Col sm={1}><h4 className="mt-2">s/d</h4></Col>
+                                    <Col sm={1}><h4 className="mt-1">s/d</h4></Col>
                                     <Col sm={3}>
-                                        <div className="input-group">
-                                            <Flatpickr
-                                                className="form-control border-0 fs-5 dash-filter-picker shadow"
-                                                options={{
-                                                    // mode: "range",
-                                                    dateFormat: "Y-m-d",
-                                                    defaultDate: "today"
-                                                }}
-                                                value={dateEnd}
-                                                onChange={([dateEnd]) => {
-                                                    setDateEnd((new Date(dateEnd)).toISOString());
-                                                }}
-                                            />
-                                        </div>
+                                        <KontainerFlatpickr
+                                            options={{
+                                                // mode: "range",
+                                                dateFormat: "Y-m-d",
+                                                defaultDate: "today"
+                                            }}
+                                            value={dateEnd}
+                                            onChange={([dateEnd]) => {
+                                                setDateEnd((new Date(dateEnd)).toISOString());
+                                            }}
+                                        />
                                     </Col>
                                     {/* <Col lg={2}>
                                         <CustomSelect
@@ -321,7 +317,12 @@ const DaftarPiutangPasien = () => {
                                     </Col> */}
                                     
                                     <Col lg={1}>
-                                        <Button type="button" className="rounded-pill" placement="top" id="tooltipTopPencarian" onClick={handleClickCari}>
+                                        <Button 
+                                            type="button"   
+                                            placement="top" 
+                                            id="tooltipTopPencarian"
+                                            onClick={handleClickCari}
+                                            color="info">
                                             CARI
                                         </Button>
                                         <UncontrolledTooltip placement="top" target="tooltipTopPencarian" > Pencarian </UncontrolledTooltip>
