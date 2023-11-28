@@ -65,4 +65,8 @@ export default class ServicePayment {
         return await api.get(`/transaksi/payment/get-pembayaran-setor`, queries)
     }
 
+    upsertSetoran = async (data) => {
+        return await api.create(`/transaksi/payment/upsert-setoran`, data)
+    }
+
 }

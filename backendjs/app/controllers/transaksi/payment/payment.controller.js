@@ -853,6 +853,101 @@ const getPembayaranSetor = async (req, res) => {
     }
 }
 
+const upsertSetoran = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const reqBody = {
+            tanggalshift: '',
+            kasir: '',
+            jadwalshift: '',
+            jadwalshiftname: '',
+            totalsetor: 0,
+            detail: [{
+                norec: '',
+                total: '',
+                metodebayar: '',
+                jenisnontunai: '',
+                values: [],
+                label: '',
+              }],
+        }
+        const {upsertedDetail, upsertedSetoran} 
+        = await db.sequelize.transaction(async (transaction) => {
+            const norecsetoran = uuid.v4().substring(0, 32)
+            let created = await db.t_setorankasir.create({
+                norec: norecsetoran,
+                kdprofile: 0,
+                statusenabled: true,
+                objectpegawaifk: req.idPegawai,
+                objectshiftk: reqBody.jadwalshift,
+                tglinput: reqBody.tanggalshift,
+                jumlahsetor: reqBody.totalsetor
+            }, {
+                transaction: transaction
+            })
+            const details = await Promise.all(
+                reqBody.detail.map(async (det) => {
+                    const norecDetail = uuid.v4().substring(0, 32)
+                    const createdDetail = await db.t_setorankasirdetail.create({
+                        norec: norecDetail,
+                        objectsetorankasirfk: norecsetoran,
+                        objectjenisnontunai: det.jenisnontunai,
+                        total: det.total,
+                        objectmetodebayarfk: det.metodebayar
+                    }, {
+                        transaction: transaction
+                    })
+                    const updatedBuktiBayar = await Promise.all(
+                        det.values.map(async (val) => {
+                            const bb = await db.t_buktibayarpasien.findByPk(
+                                val.norecbuktibayar,
+                                {
+                                    transaction: transaction
+                                }
+                            )
+                            if(!bb) throw new Error("Tidak ada Bukti Bayar " + val.norecbuktibayar)
+                            await bb.update({
+                                objectsetorankasirdetailfk: norecDetail
+                            }, {
+                                transaction: transaction
+                            })
+                            return bb.toJSON()
+                        })
+                    )
+                    createdDetail._updatedBuktiBayar = updatedBuktiBayar
+                    return {
+                        createdDetail: createdDetail
+                    }
+                })
+            )
+            created = created.toJSON()
+            return {
+                upsertedSetoran: created,
+                upsertedDetail: details
+            }
+        });
+        
+        const tempres = {
+            upsertedDetail: upsertedDetail, 
+            upsertedSetoran: upsertedSetoran
+        };
+        res.status(200).send({
+            msg: 'Sukses',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message || 'Gagal',
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export default {
     getPelayananFromDP,
     createNotaVerif,
@@ -869,7 +964,8 @@ export default {
     saveVerifikasiRemunerasi,
     getDaftarSudahVerifikasiRemun,
     getComboSetor,
-    getPembayaranSetor
+    getPembayaranSetor,
+    upsertSetoran
 }
 
 

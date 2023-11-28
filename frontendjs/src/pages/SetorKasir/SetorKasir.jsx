@@ -32,6 +32,7 @@ const initialDetail = {
   total: '',
   metodebayar: '',
   jenisnontunai: '',
+  values: [],
   label: '',
 }
 
@@ -172,6 +173,7 @@ const SetorKasir = () => {
       totalBayar = bb._values.reduce((prev, valuesBB) => {
         return prev + valuesBB.totalbayar
       }, 0)
+      newDetail[iMetode].values.push(bb._values)
       newDetail[iMetode].total = totalBayar
     })
     const totalSetor = newDetail.reduce((prev, detail) => {

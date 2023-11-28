@@ -92,6 +92,8 @@ import t_asesmenbayilahirModel from "./t_asesmenbayilahir.model.js";
 import m_jenisprodukModel from "./m_jenisproduk.model.js";
 import m_totalhargaprodukbykelasModel from "./m_totalhargaprodukbykelas.model.js";
 import m_hargaprodukperkomponenModel from "./m_hargaprodukperkomponen.model.js";
+import t_setorankasirModel from "./t_setorankasir.model.js";
+import t_setorankasirdetailModel from "./t_setorankasirdetail.model.js";
 
 
 const sequelize = new Sequelize(
@@ -210,6 +212,9 @@ db.t_asesmenbayilahir = t_asesmenbayilahirModel(sequelize, sequelizeInstance)
 db.m_jenisproduk = m_jenisprodukModel(sequelize, sequelizeInstance)
 db.m_totalhargaprodukbykelas = m_totalhargaprodukbykelasModel(sequelize, sequelizeInstance)
 db.m_hargaprodukperkomponen = m_hargaprodukperkomponenModel.init(sequelize, sequelizeInstance)
+db.t_setorankasir = t_setorankasirModel(sequelize, sequelizeInstance)
+db.t_setorankasirdetail = t_setorankasirdetailModel(sequelize, sequelizeInstance)
+
 
 db.role.belongsToMany(db.user, {
   through: "user_roles",

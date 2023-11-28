@@ -104,4 +104,10 @@ export default function (app) {
         controller.getPembayaranSetor
     )
 
+    app.post(
+        "/api/transaksi/payment/upsert-setoran",
+        [authJwt.verifyToken],
+        controller.upsertSetoran
+    )
+
 }
