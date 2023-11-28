@@ -557,7 +557,7 @@ const RegistrasiPasien = (props) => {
                                         <Card>
                                             <CardBody>
                                                 <div className="live-preview">
-                                                    <div className="d-flex flex-wrap gap-2">
+                                                    <div className="d-flex flex-column gap-2">
                                                         <Button color="info" className="btn-animation" data-text="Registrasi" onClick={() => {handleRegistrasi()}}><span>Registrasi</span></Button>
                                                         <Button color="info" className="btn-animation" data-text="Bukti Pendaftaran" onClick={() => handlePrintBukti()}> <span>Bukti Pendaftaran</span> </Button>
                                                     </div>
