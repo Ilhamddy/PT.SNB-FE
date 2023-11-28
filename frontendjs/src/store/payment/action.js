@@ -51,6 +51,12 @@ import {
     GET_DAFTAR_SUDAH_VERIFIKASI_REMUNERASI,
     GET_DAFTAR_SUDAH_VERIFIKASI_REMUNERASI_ERROR,
     GET_DAFTAR_SUDAH_VERIFIKASI_REMUNERASI_SUCCESS,
+    GET_COMBO_SETOR,
+    GET_COMBO_SETOR_SUCCESS,
+    GET_COMBO_SETOR_ERROR,
+    GET_PEMBAYARAN_SETOR,
+    GET_PEMBAYARAN_SETOR_SUCCESS,
+    GET_PEMBAYARAN_SETOR_ERROR
 } from "./actionType";
 
 export const pelayananFromDpGet = (norecap) => {
@@ -398,6 +404,43 @@ export const getDaftarSudahVerifikasiRemunerasiSuccess = (data) => ({
 
 export const getDaftarSudahVerifikasiRemunerasiError = (error) => ({
     type: GET_DAFTAR_SUDAH_VERIFIKASI_REMUNERASI_ERROR,
+    payload: error,
+});
+
+
+export const getComboSetor = (queries) => ({
+    type: GET_COMBO_SETOR,
+    payload: {
+        queries,
+    },
+});
+
+export const getComboSetorSuccess = (data) => ({
+    type: GET_COMBO_SETOR_SUCCESS,
+    payload: data,
+});
+
+export const getComboSetorError = (error) => ({
+    type: GET_COMBO_SETOR_ERROR,
+    payload: error,
+});
+
+
+
+export const getPembayaranSetor = (queries) => ({
+    type: GET_PEMBAYARAN_SETOR,
+    payload: {
+        queries,
+    },
+});
+
+export const getPembayaranSetorSuccess = (data) => ({
+    type: GET_PEMBAYARAN_SETOR_SUCCESS,
+    payload: data,
+});
+
+export const getPembayaranSetorError = (error) => ({
+    type: GET_PEMBAYARAN_SETOR_ERROR,
     payload: error,
 });
 

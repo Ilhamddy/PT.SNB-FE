@@ -57,5 +57,12 @@ export default class ServicePayment {
         return await api.get(`/transaksi/payment/daftar-sudah-verifikasi-remunerasi`, queries)
     }
 
+    getComboSetor = async (queries) => {
+        return await api.get(`/transaksi/payment/get-combo-setor`, queries)
+    }
+
+    getPembayaranSetor = async (queries) => {
+        return await api.get(`/transaksi/payment/get-pembayaran-setor`, queries)
+    }
 
 }

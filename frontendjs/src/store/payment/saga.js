@@ -28,6 +28,10 @@ import {
     upsertVerifikasiRemunerasiError,
     getDaftarSudahVerifikasiRemunerasiSuccess, 
     getDaftarSudahVerifikasiRemunerasiError,
+    getComboSetorSuccess,
+    getComboSetorError,
+    getPembayaranSetorSuccess,
+    getPembayaranSetorError
 } from "./action";
 
 import {
@@ -45,6 +49,8 @@ import {
     GET_DAFTAR_VERIFIKASI_REMUNERASI,
     UPSERT_VERIFIKASI_REMUNERASI,
     GET_DAFTAR_SUDAH_VERIFIKASI_REMUNERASI,
+    GET_COMBO_SETOR,
+    GET_PEMBAYARAN_SETOR
 } from "./actionType";
 
 import ServicePayment from "../../services/service-payment";
@@ -203,6 +209,24 @@ function* ongetDaftarSudahVerifikasiRemunerasi({payload: {queries}}) {
     }
 }
 
+function* onGetComboSetor({payload: {queries}}) {
+    try{
+        const response = yield call(servicePayment.getComboSetor, queries);
+        yield put(getComboSetorSuccess(response.data));
+    } catch (error) {
+        yield put(getComboSetorError(error));
+    }
+}
+
+function* onGetPembayaranSetor({payload: {queries}}) {
+    try{
+        const response = yield call(servicePayment.getPembayaranSetor, queries);
+        yield put(getPembayaranSetorSuccess(response.data));
+    } catch (error) {
+        yield put(getPembayaranSetorError(error));
+    }
+}
+
 
 export function* watchGetPelayananFromAntrean() {
     yield takeEvery(PELAYANAN_FROM_DP_GET, onGetPelayananFromAntrean);
@@ -260,6 +284,15 @@ export function* watchgetDaftarSudahVerifikasiRemunerasi() {
     yield takeEvery(GET_DAFTAR_SUDAH_VERIFIKASI_REMUNERASI, ongetDaftarSudahVerifikasiRemunerasi);
 }
 
+export function* watchGetComboSetor() {
+    yield takeEvery(GET_COMBO_SETOR, onGetComboSetor);
+}
+
+
+export function* watchGetPembayaranSetor() {
+    yield takeEvery(GET_PEMBAYARAN_SETOR, onGetPembayaranSetor);
+}
+
 export default function* masterSaga() {
     yield all([
         fork(watchGetPelayananFromAntrean),
@@ -276,5 +309,7 @@ export default function* masterSaga() {
         fork(watchgetDaftarVerifikasiRemunerasi),
         fork(watchupsertVerifikasiRemunerasi),
         fork(watchgetDaftarSudahVerifikasiRemunerasi),
+        fork(watchGetComboSetor),
+        fork(watchGetPembayaranSetor)
     ]);
 }

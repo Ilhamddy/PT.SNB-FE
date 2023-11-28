@@ -18,13 +18,20 @@ import { qGetPelayananFromDp,
     qGetBuktiBayarFromNota,
     qGetCaraBayarFromBB,
     qGetLaporanPendapatanKasir,
+    qGetLaporan,
 } from '../../../queries/payment/payment.queries';
 import { qDaftarVerifikasi,qListSudahVerifikasi,qListTagihan,qCariPetugas, qListKomponenTarif } from '../../../queries/remunerasi/remunerasi.queries';
 import { createTransaction } from "../../../utils/dbutils"
 
 import { Op } from "sequelize";
-import { checkValidDate } from '../../../utils/dateutils';
+import { checkValidDate, getDateStartEnd } from '../../../utils/dateutils';
 import { statusEnabled, valueStatusEnabled } from '../../../queries/mastertable/globalvariables/globalvariables.queries';
+import jenispembayaranQueries from '../../../queries/mastertable/jenispembayaran/jenispembayaran.queries';
+import jenisNonTunaiQueries from '../../../queries/mastertable/jenisNonTunai/jenisNonTunai.queries';
+import pegawaiQueries from '../../../queries/mastertable/pegawai/pegawai.queries';
+import metodebayarQueries from '../../../queries/mastertable/metodebayar/metodebayar.queries';
+import { groupBy } from '../../../utils/arutils';
+import shiftkasirQueries from '../../../queries/mastertable/shiftkasir/shiftkasir.queries';
 
 const t_notapelayananpasien = db.t_notapelayananpasien
 const t_pelayananpasien = db.t_pelayananpasien
@@ -780,7 +787,71 @@ const getDaftarSudahVerifikasiRemun = async (req, res) => {
     }
 }
 
+const getComboSetor = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const metodeBayar = (await pool.query(metodebayarQueries.getAll)).rows
+        const jenisNonTunai = (await pool.query(jenisNonTunaiQueries.getAll)).rows
+        const pegawai = (await pool.query(pegawaiQueries.getAll)).rows
+        const shiftKasir = (await pool.query(shiftkasirQueries.getAll)).rows
+        const pegawaiInput = pegawai.find(peg => peg.value === req.idPegawai)
+        const tempres = {
+            metodeBayar,
+            jenisNonTunai,
+            pegawai,
+            shiftKasir,
+            idpegawai: req.idPegawai,
+            pegawaiInput: pegawaiInput
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
 
+const getPembayaranSetor = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const { tanggalshift } = req.query
+        if(!tanggalshift) throw new Error("tglshift kosong")
+        const {todayStart, todayEnd} = getDateStartEnd(tanggalshift)
+        let buktiBayar = (await pool.query(
+            qGetLaporan, [
+                todayStart, 
+                todayEnd, 
+                req.idPegawai
+            ])).rows
+        buktiBayar = groupBy(buktiBayar, "metodebayar")
+        const tempres = {
+            buktiBayar
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
 
 export default {
     getPelayananFromDP,
@@ -797,6 +868,8 @@ export default {
     getDaftarVerifikasiRemunerasi,
     saveVerifikasiRemunerasi,
     getDaftarSudahVerifikasiRemun,
+    getComboSetor,
+    getPembayaranSetor
 }
 
 
@@ -874,7 +947,6 @@ const hCreateBayar = async ( req, transaction) => {
 
     const createdCaraBayar = await Promise.all(
         objectBody.payment.map(async (payment) => {
-            const norecCaraBayar = uuid.v4().substring(0, 32);
             const createdCaraBayar = await t_carabayar.create({
                 norec: uuid.v4().substring(0, 32),
                 statusenabled: true,
@@ -889,20 +961,7 @@ const hCreateBayar = async ( req, transaction) => {
             }, {
                 transaction: transaction
             })
-            createdCaraBayar.objectmetodebayarfk 
-                = (await pool.query(`
-                SELECT metodebayar 
-                FROM m_metodebayar 
-                    WHERE id = $1`, [createdCaraBayar.objectmetodebayarfk])).rows[0].metodebayar
-            if(createdCaraBayar.objectjenisnontunaifk){
-                createdCaraBayar.objectjenisnontunaifk 
-                    = (await pool.query(`
-                    SELECT nontunai
-                    FROM m_jenisnontunai 
-                    WHERE id = $1`, [createdCaraBayar.objectjenisnontunaifk]))
-                    .rows[0]
-                    .nontunai
-            }
+            
             return createdCaraBayar
         }
     ))

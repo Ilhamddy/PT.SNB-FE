@@ -52,6 +52,12 @@ import {
     GET_DAFTAR_SUDAH_VERIFIKASI_REMUNERASI,
     GET_DAFTAR_SUDAH_VERIFIKASI_REMUNERASI_SUCCESS,
     GET_DAFTAR_SUDAH_VERIFIKASI_REMUNERASI_ERROR,
+    GET_COMBO_SETOR,
+    GET_COMBO_SETOR_SUCCESS,
+    GET_COMBO_SETOR_ERROR,
+    GET_PEMBAYARAN_SETOR,
+    GET_PEMBAYARAN_SETOR_SUCCESS,
+    GET_PEMBAYARAN_SETOR_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -139,7 +145,16 @@ const INIT_STATE = {
         success: false,
         error: null,
     },
-
+    getComboSetor: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    getPembayaranSetor: {
+        data: [],
+        loading: false,
+        error: null,
+    }
 }
 
 const payment = (state = INIT_STATE, action) => {
@@ -715,6 +730,73 @@ const payment = (state = INIT_STATE, action) => {
                 ...state,
                 getDaftarSudahVerifikasiRemunerasi: {
                     ...state.getDaftarSudahVerifikasiRemunerasi,
+                    loading: false,
+                    error: action.payload,
+                }
+            }
+        }
+
+        case GET_COMBO_SETOR: {
+            return {
+                ...state,
+                getComboSetor: {
+                    ...state.getComboSetor,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case GET_COMBO_SETOR_SUCCESS: {
+            return {
+                ...state,
+                getComboSetor: {
+                    ...state.getComboSetor,
+                    loading: false,
+                    data: action.payload,
+                }
+            }
+        }
+
+        case GET_COMBO_SETOR_ERROR: {
+            return {
+                ...state,
+                getComboSetor: {
+                    ...state.getComboSetor,
+                    loading: false,
+                    error: action.payload,
+                }
+            }
+        }
+
+        
+        case GET_PEMBAYARAN_SETOR: {
+            return {
+                ...state,
+                getPembayaranSetor: {
+                    ...state.getPembayaranSetor,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case GET_PEMBAYARAN_SETOR_SUCCESS: {
+            return {
+                ...state,
+                getPembayaranSetor: {
+                    ...state.getPembayaranSetor,
+                    loading: false,
+                    data: action.payload,
+                }
+            }
+        }
+
+        case GET_PEMBAYARAN_SETOR_ERROR: {
+            return {
+                ...state,
+                getPembayaranSetor: {
+                    ...state.getPembayaranSetor,
                     loading: false,
                     error: action.payload,
                 }

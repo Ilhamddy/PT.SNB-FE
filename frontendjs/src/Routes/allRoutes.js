@@ -380,6 +380,7 @@ import MasterTarifTindakanTambah from "../pages/MasterTarifTindakanTambah/Master
 import LaporanPengadaan from "../pages/LaporanPengadaan/LaporanPengadaan.jsx";
 import LaporanPenerimaan from "../pages/LaporanPenerimaan/LaporanPenerimaan.jsx";
 import DasborPeta from "../pages/DasborPeta/DasborPeta.jsx";
+import SetorKasir from "../pages/SetorKasir/SetorKasir.jsx";
 
 
 
@@ -684,6 +685,7 @@ const authProtectedRoutes = [
   { path: "/payment/laporan-pendapatan", component: <LaporanPendapatan /> },
   { path: "/payment/laporan-remunerasi", component: <LaporanRemunerasi /> },
   { path: "/payment/verifikasi-remunerasi", component: <VerifikasiRemunerasi /> },
+  { path: "/payment/setor-kasir", component: <SetorKasir />},
 
   // casemix
   { path: "/casemix/klaiminacbg", component: <KlaimInacbg /> },
