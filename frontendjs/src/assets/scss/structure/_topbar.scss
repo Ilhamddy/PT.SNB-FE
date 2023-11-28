@@ -29,8 +29,7 @@
     align-items: center;
     margin: 0 auto;
     height: $header-height;
-    padding: 0 $grid-gutter-width 0 calc(#{$grid-gutter-width} / 2)
-        /*rtl: 0 0 0 calc(#{$grid-gutter-width} / 2) */;
+    padding: 0 $grid-gutter-width 0 calc(#{$grid-gutter-width} / 2);
 
     @media (max-width: 767.98px) {
         padding: 0 calc(#{$grid-gutter-width} / 2) 0

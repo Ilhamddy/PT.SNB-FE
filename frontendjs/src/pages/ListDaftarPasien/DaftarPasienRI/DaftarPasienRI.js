@@ -87,14 +87,14 @@ const DaftarPasienRI = () => {
     const tableCustomStyles = {
         headRow: {
             style: {
-                color: '#ffffff',
-                backgroundColor: '#FFCB46',
+                color: '#878A99',
+                backgroundColor: '#F3F6F9',
             },
         },
         rows: {
             style: {
                 color: "black",
-                backgroundColor: "#f1f2f6"
+                backgroundColor: "#ffffff"
             },
         }
     }
@@ -329,7 +329,7 @@ const DaftarPasienRI = () => {
                                                 {/* </div> */}
                                             </Col>
                                             <Col lg={3}>
-                                                <Button type="button" className="rounded-pill" placement="top" id="tooltipTopPencarian" onClick={handleClickCari}>
+                                                <Button type="button" color='info' placement="top" id="tooltipTopPencarian" onClick={handleClickCari}>
                                                     CARI
                                                 </Button>
                                                 <UncontrolledTooltip placement="top" target="tooltipTopPencarian" > Pencarian </UncontrolledTooltip>
