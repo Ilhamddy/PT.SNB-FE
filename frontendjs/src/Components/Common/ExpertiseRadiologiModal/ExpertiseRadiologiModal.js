@@ -110,7 +110,7 @@ tempruanganpengirim,tempSelected }) => {
                         <CardHeader style={{ backgroundColor: "#FFCB46", textAlign: 'center',
             borderTopLeftRadius: '24px', borderTopRightRadius: '24px',
             padding: '10px 15px' }}>
-                            <h4 className="card-title mb-0" style={{ color: '#ffffff' }}>Input Expertise Radiologi</h4>
+                            <h4 className="card-title mb-0" style={{ color: 'black' }}>Input Expertise Radiologi</h4>
                         </CardHeader>
                         <CardBody>
                             <Row>

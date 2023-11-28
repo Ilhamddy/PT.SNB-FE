@@ -474,7 +474,7 @@ const AsesmenBayiBaruLahir = () => {
             borderTopLeftRadius: '24px', borderTopRightRadius: '24px',
             padding: '10px 15px'
           }}>
-            <h4 className="card-title mb-0" style={{ color: '#ffffff' }}>Riwayat Asesmen</h4>
+            <h4 className="card-title mb-0" style={{ color: 'black' }}>Riwayat Asesmen</h4>
           </CardHeader>
           <CardBody>
             <Col lg={12}>
@@ -502,7 +502,7 @@ const AsesmenBayiBaruLahir = () => {
             borderTopLeftRadius: '24px', borderTopRightRadius: '24px',
             padding: '10px 15px'
           }}>
-            <h4 className="card-title mb-0" style={{ color: '#ffffff' }}>ALLOANAMNESA</h4>
+            <h4 className="card-title mb-0" style={{ color: 'black' }}>ALLOANAMNESA</h4>
           </CardHeader>
           <CardBody>
             <Row className='gy-2'>
@@ -584,7 +584,7 @@ const AsesmenBayiBaruLahir = () => {
             borderTopLeftRadius: '24px', borderTopRightRadius: '24px',
             padding: '10px 15px'
           }}>
-            <h4 className="card-title mb-0" style={{ color: '#ffffff' }}>Riwayat Kelahiran</h4>
+            <h4 className="card-title mb-0" style={{ color: 'black' }}>Riwayat Kelahiran</h4>
           </CardHeader>
           <CardBody>
             <Row className='gy-2'>
@@ -855,7 +855,7 @@ const AsesmenBayiBaruLahir = () => {
             borderTopLeftRadius: '24px', borderTopRightRadius: '24px',
             padding: '10px 15px'
           }}>
-            <h4 className="card-title mb-0" style={{ color: '#ffffff' }}>Keadaan Umum Bayi</h4>
+            <h4 className="card-title mb-0" style={{ color: 'black' }}>Keadaan Umum Bayi</h4>
           </CardHeader>
           <CardBody>
             <div className='border-bottom'>
@@ -1806,7 +1806,7 @@ const AsesmenBayiBaruLahir = () => {
             borderTopLeftRadius: '24px', borderTopRightRadius: '24px',
             padding: '10px 15px'
           }}>
-            <h4 className="card-title mb-0" style={{ color: '#ffffff' }}>Pemeriksaan Fisik</h4>
+            <h4 className="card-title mb-0" style={{ color: 'black' }}>Pemeriksaan Fisik</h4>
           </CardHeader>
           <CardBody>
             <Row className='gy-2'>
@@ -2179,7 +2179,7 @@ const AsesmenBayiBaruLahir = () => {
             borderTopLeftRadius: '24px', borderTopRightRadius: '24px',
             padding: '10px 15px'
           }}>
-            <h4 className="card-title mb-0" style={{ color: '#ffffff' }}>Pemeriksaan Laboratorium</h4>
+            <h4 className="card-title mb-0" style={{ color: 'black' }}>Pemeriksaan Laboratorium</h4>
           </CardHeader>
           <CardBody>
             <Row className='gy-2'>
@@ -2217,7 +2217,7 @@ const AsesmenBayiBaruLahir = () => {
             borderTopLeftRadius: '24px', borderTopRightRadius: '24px',
             padding: '10px 15px'
           }}>
-            <h4 className="card-title mb-0" style={{ color: '#ffffff' }}>Diagnosa Kerja</h4>
+            <h4 className="card-title mb-0" style={{ color: 'black' }}>Diagnosa Kerja</h4>
           </CardHeader>
           <CardBody>
             <Row className='gy-2'>
@@ -2255,7 +2255,7 @@ const AsesmenBayiBaruLahir = () => {
             borderTopLeftRadius: '24px', borderTopRightRadius: '24px',
             padding: '10px 15px'
           }}>
-            <h4 className="card-title mb-0" style={{ color: '#ffffff' }}>Penatalaksanaan</h4>
+            <h4 className="card-title mb-0" style={{ color: 'black' }}>Penatalaksanaan</h4>
           </CardHeader>
           <CardBody>
             <Row className='gy-2'>
