@@ -309,7 +309,7 @@ const VerifikasiPelayanan = () => {
             <ToastContainer closeButton={false} />
             <Container fluid>
                 <BreadCrumb title="Verifikasi Tagihan" pageTitle="Verifikasi Tagihan" />
-                <Card className="p-2">
+                <Card className="p-4">
                     <Form onSubmit={(e) => {
                             e.preventDefault();
                             validation.handleSubmit();
@@ -473,7 +473,7 @@ const VerifikasiPelayanan = () => {
                             
                             <Row className="row-header mb-2">
                                 <div className="d-flex gap-2 justify-content-center mt-4 mb-2">
-                                    <Button type="submit" color="info" placement="top" id="tooltipTop" >
+                                    <Button type="submit" color="success" placement="top" id="tooltipTop" >
                                         SIMPAN
                                     </Button>
                                     <button
