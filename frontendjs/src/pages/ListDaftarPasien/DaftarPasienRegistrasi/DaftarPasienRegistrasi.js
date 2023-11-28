@@ -15,13 +15,20 @@ import Flatpickr from "react-flatpickr";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import CountUp from "react-countup";
-import userDummy from "../../../assets/images/users/user-dummy-img.jpg";
 import { daftarPasienResetForm, daftarPasienRegistrasiGet, widgetdaftarPasienRegistrasiGet } from '../../../store/actions';
 import { comboRegistrasiGet } from '../../../store/master/action';
 import CustomSelect from '../../Select/Select';
 import "./DaftarPasienRegistrasi.scss"
 import LoadingTable from '../../../Components/Table/LoadingTable';
 import BatalRegistrasi from '../../../Components/Common/BatalRegistrasi';
+import pria from "../../../assets/images/svg/pria.svg"
+import baby from "../../../assets/images/svg/baby.svg"
+import anaklaki from "../../../assets/images/svg/anaklaki.svg"
+import kakek from "../../../assets/images/svg/kakek.svg"
+import nenek from "../../../assets/images/svg/nenek.svg"
+import anakperempuan from "../../../assets/images/svg/anakperempuan.svg"
+import dewasaperempuan from "../../../assets/images/svg/dewasaperempuan.svg"
+
 const DaftarPasienRegistrasi = () => {
     document.title = "Daftar Pasien Rawat Jalan";
     const dispatch = useDispatch();
@@ -36,6 +43,7 @@ const DaftarPasienRegistrasi = () => {
     const [userChosen, setUserChosen] = useState({
         nama: "",
         id: "",
+        profile:''
     })
     const current = new Date();
     const [dateStart, setdateStart] = useState(`${current.getFullYear()}-${current.getMonth() + 1}-${current.getDate()}`);
@@ -89,7 +97,8 @@ const DaftarPasienRegistrasi = () => {
     const handleClickRM = (row) => {
         setUserChosen({
             nama: row.namapasien,
-            id: row.noidentitas
+            id: row.noidentitas,
+            profile:row.profile
         })
     };
     const [tempNorecDp, settempNorecDp] = useState('');
@@ -226,9 +235,24 @@ const DaftarPasienRegistrasi = () => {
                                 <CardBody>
                                     <h5 className="card-title mb-5">Profile Pasien</h5>
                                     <div className="text-center">
-                                        <img src={userDummy}
-                                            className="rounded-circle avatar-xl img-thumbnail user-profile-image"
-                                            alt="user-profile" />
+                                    {userChosen?.profile === 'baby' ? (
+                                            <img src={baby} alt="" className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image" />
+                                        ) : userChosen?.profile === 'dewasalaki' ? (
+                                            <img src={pria} alt="" className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image" />
+                                        ) : userChosen?.profile === 'anaklaki' ? (
+                                            <img src={anaklaki} alt="" className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image" />
+                                        ) : userChosen?.profile === 'anakperempuan' ? (
+                                            <img src={anakperempuan} alt="" className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image" />
+                                        ) : userChosen?.profile === 'dewasaperempuan' ? (
+                                            <img src={dewasaperempuan} alt="" className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image" />
+                                        ) : userChosen?.profile === 'kakek' ? (
+                                            <img src={kakek} alt="" className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image" />
+                                        ) : userChosen?.profile === 'nenek' ? (
+                                            <img src={nenek} alt="" className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image" />
+                                        ) : (
+                                            // Render when none of the conditions are met
+                                            <p>No profile image available</p>
+                                        )}
                                         <h5 className="fs-17 mb-1">{userChosen.nama}</h5>
                                         <p className="text-muted mb-0">{userChosen.id}</p>
                                     </div>

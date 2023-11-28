@@ -43,6 +43,14 @@ import './AddObatFarmasi.scss'
 import LoadingTable from '../../Components/Table/LoadingTable'
 import BatalRegistrasi from '../../Components/Common/BatalRegistrasi'
 import KontainerFlatpickr from '../../Components/KontainerFlatpickr/KontainerFlatpickr'
+import pria from "../../assets/images/svg/pria.svg"
+import baby from "../../assets/images/svg/baby.svg"
+import anaklaki from "../../assets/images/svg/anaklaki.svg"
+import kakek from "../../assets/images/svg/kakek.svg"
+import nenek from "../../assets/images/svg/nenek.svg"
+import anakperempuan from "../../assets/images/svg/anakperempuan.svg"
+import dewasaperempuan from "../../assets/images/svg/dewasaperempuan.svg"
+
 const AddObatFarmasi = () => {
   document.title = 'Daftar Pasien Rawat Jalan'
   const dispatch = useDispatch()
@@ -56,6 +64,7 @@ const AddObatFarmasi = () => {
   const [userChosen, setUserChosen] = useState({
     nama: '',
     id: '',
+    profile: ''
   })
   const current = new Date()
   const [dateStart, setdateStart] = useState(
@@ -119,6 +128,7 @@ const AddObatFarmasi = () => {
     setUserChosen({
       nama: row.namapasien,
       id: row.noidentitas,
+      profile: row.profile
     })
   }
   const [tempNorecDp, settempNorecDp] = useState('')
@@ -228,18 +238,30 @@ const AddObatFarmasi = () => {
       <UiContent />
       <div className="page-content daftar-pasien-registrasi">
         <Container fluid>
-          <BreadCrumb title="Daftar Pasien Registrasi" pageTitle="Forms" />
+          <BreadCrumb title="Daftar Pasien Farmasi" pageTitle="Forms" />
           <Row>
             <Col lg={3}>
               <Card>
                 <CardBody>
-                  <h5 className="card-title mb-5">Profile Pasien</h5>
                   <div className="text-center">
-                    <img
-                      src={userDummy}
-                      className="rounded-circle avatar-xl img-thumbnail user-profile-image"
-                      alt="user-profile"
-                    />
+                    {userChosen?.profile === 'baby' ? (
+                      <img src={baby} alt="" className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image" />
+                    ) : userChosen?.profile === 'dewasalaki' ? (
+                      <img src={pria} alt="" className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image" />
+                    ) : userChosen?.profile === 'anaklaki' ? (
+                      <img src={anaklaki} alt="" className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image" />
+                    ) : userChosen?.profile === 'anakperempuan' ? (
+                      <img src={anakperempuan} alt="" className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image" />
+                    ) : userChosen?.profile === 'dewasaperempuan' ? (
+                      <img src={dewasaperempuan} alt="" className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image" />
+                    ) : userChosen?.profile === 'kakek' ? (
+                      <img src={kakek} alt="" className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image" />
+                    ) : userChosen?.profile === 'nenek' ? (
+                      <img src={nenek} alt="" className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image" />
+                    ) : (
+                      // Render when none of the conditions are met
+                      <p>No profile image available</p>
+                    )}
                     <h5 className="fs-17 mb-1">{userChosen.nama}</h5>
                     <p className="text-muted mb-0">{userChosen.id}</p>
                   </div>
@@ -253,7 +275,7 @@ const AddObatFarmasi = () => {
                     <Row>
                       <Col>
                         <h4 className="card-title mb-0 flex-grow-1 mb-3">
-                          Daftar Pasien Registrasi{' '}
+                          Daftar Pasien Farmasi{' '}
                           <span style={{ color: '#FFCB46' }}> </span>
                         </h4>
                       </Col>

@@ -20,8 +20,13 @@ import BreadCrumb from '../../../Components/Common/BreadCrumb';
 import DataTable from 'react-data-table-component';
 import CountUp from "react-countup";
 import userDummy from "../../../assets/images/users/user-dummy-img.jpg";
-// import DetailOrderModal from '../DetailOrderModal/DetailOrderModal';
-// import DeleteModalCustom from '../../../Components/Common/DeleteModalCustom';
+import pria from "../../../assets/images/svg/pria.svg"
+import baby from "../../../assets/images/svg/baby.svg"
+import anaklaki from "../../../assets/images/svg/anaklaki.svg"
+import kakek from "../../../assets/images/svg/kakek.svg"
+import nenek from "../../../assets/images/svg/nenek.svg"
+import anakperempuan from "../../../assets/images/svg/anakperempuan.svg"
+import dewasaperempuan from "../../../assets/images/svg/dewasaperempuan.svg"
 import {
     widgetdaftarOrderLaboratoriumGet, laboratoriumResetForm, listdaftarOrderLaboratoriumGet,
     deleteOrderPelayanan
@@ -82,6 +87,17 @@ const DaftarOrderLaboratorium = () => {
             dispatch(listdaftarOrderLaboratoriumGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=3`));
             dispatch(widgetdaftarOrderLaboratoriumGet(`${search}&start=${dateStart}&end=${dateEnd}&taskid=3`));
         }
+    };
+    const [userChosen, setUserChosen] = useState({
+        nama: "",
+        id: "",
+        profile:''
+    })
+    const handleClick = (e) => {
+        setUserChosen({
+            profile: e.profile,
+            nama: e.namapasien
+        })
     };
     const columns = [
         {
@@ -276,13 +292,27 @@ const DaftarOrderLaboratorium = () => {
                         <Col lg={3}>
                             <Card>
                                 <CardBody>
-                                    <h5 className="card-title mb-5">Profile Pasien</h5>
+                                    {/* <h5 className="card-title mb-5">Profile Pasien</h5> */}
                                     <div className="text-center">
-                                        <img src={userDummy}
-                                            className="rounded-circle avatar-xl img-thumbnail user-profile-image"
-                                            alt="user-profile" />
-                                        <h5 className="fs-17 mb-1">Testing</h5>
-                                        <p className="text-muted mb-0">Testing</p>
+                                    {userChosen?.profile === 'baby' ? (
+                                            <img src={baby} alt="" className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image" />
+                                        ) : userChosen?.profile === 'dewasalaki' ? (
+                                            <img src={pria} alt="" className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image" />
+                                        ) : userChosen?.profile === 'anaklaki' ? (
+                                            <img src={anaklaki} alt="" className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image" />
+                                        ) : userChosen?.profile === 'anakperempuan' ? (
+                                            <img src={anakperempuan} alt="" className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image" />
+                                        ) : userChosen?.profile === 'dewasaperempuan' ? (
+                                            <img src={dewasaperempuan} alt="" className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image" />
+                                        ) : userChosen?.profile === 'kakek' ? (
+                                            <img src={kakek} alt="" className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image" />
+                                        ) : userChosen?.profile === 'nenek' ? (
+                                            <img src={nenek} alt="" className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image" />
+                                        ) : (
+                                            // Render when none of the conditions are met
+                                            <p>No profile image available</p>
+                                        )}
+                                   <h5 className="fs-17 mb-1">{userChosen.nama}</h5>
                                     </div>
                                 </CardBody>
                             </Card>
@@ -373,6 +403,9 @@ const DaftarOrderLaboratorium = () => {
                                             data={data}
                                             progressPending={loading}
                                             customStyles={tableCustomStyles}
+                                            onRowClicked={(row) => handleClick(row)}
+                                            pointerOnHover
+                                            highlightOnHover
                                             progressComponent={<LoadingTable />}
                                         />
                                     </div>

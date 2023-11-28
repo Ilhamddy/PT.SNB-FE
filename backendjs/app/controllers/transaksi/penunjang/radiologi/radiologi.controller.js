@@ -255,12 +255,20 @@ async function getDaftarListHistoryOrder(req, res) {
         }
         const resultlist = await queryPromise2(`select td.noregistrasi,to2.nomororder,to2.norec,
         mp.namalengkap, mu.namaunit,to2.keterangan,to_char(to2.tglinput,'yyyy-MM-dd HH:mm') as tglinput,
-        ms.statusverif,to2.objectstatusveriffk  from t_daftarpasien td 
+        ms.statusverif,to2.objectstatusveriffk,mps.namapasien,
+        case when (current_date - to_date(to_char(mps.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<1825 then 'baby'
+        when (current_date - to_date(to_char(mps.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<6569 and mps.objectjeniskelaminfk=1 then 'anaklaki'
+        when (current_date - to_date(to_char(mps.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<6569 and mps.objectjeniskelaminfk=2 then 'anakperempuan'
+        when (current_date - to_date(to_char(mps.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<23724 and mps.objectjeniskelaminfk=1 then 'dewasalaki'
+        when (current_date - to_date(to_char(mps.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<23724 and mps.objectjeniskelaminfk=2 then 'dewasaperempuan'
+        when (current_date - to_date(to_char(mps.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))>23724 and mps.objectjeniskelaminfk=1 then 'kakek'
+        when (current_date - to_date(to_char(mps.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))>23724 and mps.objectjeniskelaminfk=2 then 'nenek' else 'baby' end as profile from t_daftarpasien td 
         join t_antreanpemeriksaan ta on td.norec =ta.objectdaftarpasienfk
         join t_orderpelayanan to2 on to2.objectantreanpemeriksaanfk=ta.norec
         join m_pegawai mp on mp.id=to2.objectpegawaifk 
         join m_unit mu ON mu.id=ta.objectunitfk 
         join m_statusverif ms on ms.id=to2.objectstatusveriffk
+        join m_pasien mps on mps.id=td.nocmfk
         where  td.noregistrasi ilike '%${req.query.noregistrasi}%' and to2.objectjenisorderfk=2 ${tglregistrasi}
         `);
 
@@ -561,7 +569,14 @@ async function getDaftarPasienRadiologi(req, res) {
         to_char(td.tglregistrasi,'yyyy-MM-dd') as tglregistrasi,mu.namaunit,
         mp2.reportdisplay || '-' ||ta.noantrian as noantrian,mp2.namalengkap as namadokter,
         trm.objectstatuskendalirmfk as objectstatuskendalirmfkap, 
-        trm.norec as norectrm,to_char(td.tglpulang,'yyyy-MM-dd') as tglpulang from t_daftarpasien td 
+        trm.norec as norectrm,to_char(td.tglpulang,'yyyy-MM-dd') as tglpulang,
+        case when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<1825 then 'baby'
+        when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<6569 and mp.objectjeniskelaminfk=1 then 'anaklaki'
+        when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<6569 and mp.objectjeniskelaminfk=2 then 'anakperempuan'
+        when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<23724 and mp.objectjeniskelaminfk=1 then 'dewasalaki'
+        when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<23724 and mp.objectjeniskelaminfk=2 then 'dewasaperempuan'
+        when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))>23724 and mp.objectjeniskelaminfk=1 then 'kakek'
+        when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))>23724 and mp.objectjeniskelaminfk=2 then 'nenek' else 'baby' end as profile from t_daftarpasien td 
         join m_pasien mp on mp.id=td.nocmfk 
         join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk =td.norec
         join m_unit mu on mu.id=ta.objectunitfk 

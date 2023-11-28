@@ -10,6 +10,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import BreadCrumb from '../../../Components/Common/BreadCrumb';
 import CountUp from "react-countup";
 import pria from "../../../assets/images/svg/pria.svg";
+import baby from "../../../assets/images/svg/baby.svg"
+import anaklaki from "../../../assets/images/svg/anaklaki.svg"
+import kakek from "../../../assets/images/svg/kakek.svg"
+import nenek from "../../../assets/images/svg/nenek.svg"
+import anakperempuan from "../../../assets/images/svg/anakperempuan.svg"
+import dewasaperempuan from "../../../assets/images/svg/dewasaperempuan.svg"
+
 import { useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as Yup from "yup";
@@ -179,7 +186,24 @@ const TriageIGD = () => {
                                                 <span className={"avatar-title rounded-circle fs-4 bg-soft-info"}>
                                                     <h2 className="ff-secondary fw-semibold">
                                                         <span className="counter-value" style={{ fontSize: "1.5rem" }}>
+                                                        {selectedPasien?.profile === 'baby' ? (
+                                                            <img src={baby} alt="" className="img-fluid rounded-circle" />
+                                                        ) : selectedPasien?.profile === 'dewasalaki' ? (
                                                             <img src={pria} alt="" className="img-fluid rounded-circle" />
+                                                        ) : selectedPasien?.profile === 'anaklaki' ? (
+                                                            <img src={anaklaki} alt="" className="img-fluid rounded-circle" />
+                                                        ) : selectedPasien?.profile === 'anakperempuan' ? (
+                                                            <img src={anakperempuan} alt="" className="img-fluid rounded-circle" />
+                                                        ) : selectedPasien?.profile === 'dewasaperempuan' ? (
+                                                            <img src={dewasaperempuan} alt="" className="img-fluid rounded-circle" />
+                                                        ) : selectedPasien?.profile === 'kakek' ? (
+                                                            <img src={kakek} alt="" className="img-fluid rounded-circle" />
+                                                        ) : selectedPasien?.profile === 'nenek' ? (
+                                                            <img src={nenek} alt="" className="img-fluid rounded-circle" />
+                                                        ) : (
+                                                            // Render when none of the conditions are met
+                                                            <p>No profile image available</p>
+                                                        )}
                                                         </span>
                                                     </h2>
                                                 </span>

@@ -144,6 +144,24 @@ const DaftarPasienOperasi = () => {
                                                 <h2 className="ff-secondary fw-semibold">
                                                     <span className="counter-value" style={{ fontSize: "1.5rem" }}>
                                                         {/* <img src={pria} alt="" className="img-fluid rounded-circle" /> */}
+                                                        {selectedPasien?.profile === 'baby' ? (
+                                                            <img src={baby} alt="" className="img-fluid rounded-circle" />
+                                                        ) : selectedPasien?.profile === 'dewasalaki' ? (
+                                                            <img src={pria} alt="" className="img-fluid rounded-circle" />
+                                                        ) : selectedPasien?.profile === 'anaklaki' ? (
+                                                            <img src={anaklaki} alt="" className="img-fluid rounded-circle" />
+                                                        ) : selectedPasien?.profile === 'anakperempuan' ? (
+                                                            <img src={anakperempuan} alt="" className="img-fluid rounded-circle" />
+                                                        ) : selectedPasien?.profile === 'dewasaperempuan' ? (
+                                                            <img src={dewasaperempuan} alt="" className="img-fluid rounded-circle" />
+                                                        ) : selectedPasien?.profile === 'kakek' ? (
+                                                            <img src={kakek} alt="" className="img-fluid rounded-circle" />
+                                                        ) : selectedPasien?.profile === 'nenek' ? (
+                                                            <img src={nenek} alt="" className="img-fluid rounded-circle" />
+                                                        ) : (
+                                                            // Render when none of the conditions are met
+                                                            <p>No profile image available</p>
+                                                        )}
                                                     </span>
                                                 </h2>
                                             </span>
