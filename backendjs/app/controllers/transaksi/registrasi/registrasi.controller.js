@@ -145,7 +145,7 @@ const getPasienById = (req, res) => {
                         tempres = {
                             id: result.rows[i].id, nocm: result.rows[i].nocm, namapasien: result.rows[i].namapasien,
                             noidentitas: result.rows[i].noidentitas, nobpjs: result.rows[i].nobpjs, nohp: result.rows[i].nohp,
-                            tgllahir: result.rows[i].tgllahir, statuspasien: statuspasien
+                            tgllahir: result.rows[i].tgllahir, statuspasien: statuspasien,profile: result.rows[i].profile
                         }
 
                     }

@@ -12,7 +12,16 @@ const updateRunning_number = "update running_number set new_number = $1 where id
 
 const updatePasienById = "update m_pasien set namapasien=$1,noidentitas=$2 ,nobpjs=$3 ,nohp=$4 where id = $5";
 
-const getPasienById = "select id,nocm ,namapasien ,noidentitas ,nobpjs ,nohp, to_char(tgllahir,'yyyy-MM-dd')as tgllahir, tgldaftar  from m_pasien where id = $1";
+const getPasienById = `select id,nocm ,namapasien ,noidentitas ,nobpjs ,nohp, to_char(tgllahir,'yyyy-MM-dd')as tgllahir,
+tgldaftar,
+case when (current_date - to_date(to_char(tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<1825 then 'baby'
+when (current_date - to_date(to_char(tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<6569 and objectjeniskelaminfk=1 then 'anaklaki'
+when (current_date - to_date(to_char(tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<6569 and objectjeniskelaminfk=2 then 'anakperempuan'
+when (current_date - to_date(to_char(tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<23724 and objectjeniskelaminfk=1 then 'dewasalaki'
+when (current_date - to_date(to_char(tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<23724 and objectjeniskelaminfk=2 then 'dewasaperempuan'
+when (current_date - to_date(to_char(tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))>23724 and objectjeniskelaminfk=1 then 'kakek'
+when (current_date - to_date(to_char(tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))>23724 and objectjeniskelaminfk=2 then 'nenek' else 'baby' end as profile
+ from m_pasien where id = $1`;
 
 const getPasienByNoregistrasi = `
     select 
