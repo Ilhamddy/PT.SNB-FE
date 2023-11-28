@@ -14,7 +14,7 @@ export default (sequelize, Sequelize) => {
         objectsetorankasirfk: {
             type: Sequelize.CHAR(32)
         },
-        objectjenisnontunai: {
+        objectjenisnontunaifk: {
             type: Sequelize.INTEGER
         },
         total: {

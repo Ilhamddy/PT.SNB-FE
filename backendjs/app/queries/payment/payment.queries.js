@@ -388,7 +388,7 @@ where
     tb.statusenabled=true and tb.tglinput between $1 and $2 and mp.namalengkap ilike $3
     `
 
-const qGetLaporan = `
+const qGetPembayaran = `
 SELECT
     tbb.norec AS norecbuktibayar,
     tdp.noregistrasi AS noregistrasi,
@@ -418,6 +418,22 @@ WHERE
     tbb.objectpegawaifk = $3
 `
 
+const  qGetSetor = `
+SELECT
+    tsk.norec AS norecsetoran,
+    tsk.tglsetor AS tanggalshift,
+    tsk.objectpegawaifk AS kasir,
+    tsk.objectshiftfk AS jadwalshift,
+    msk.reportdisplay AS jadwalshiftname,
+    tsk.jumlahsetor AS totalsetor
+FROM t_setorankasir tsk
+    LEFT JOIN m_shiftkasir msk ON msk.id = tsk.objectshiftfk
+WHERE
+    ${dateBetweenEmptyString("tsk.tglsetor", "$1", "$2")}
+    AND
+    tsk.objectpegawaifk = $3
+`
+
 
 export {
     qGetPelayananFromDp,
@@ -438,5 +454,6 @@ export {
     qGetCaraBayarFromBB,
     qGetBuktiBayarNorec,
     qGetLaporanPendapatanKasir,
-    qGetLaporan
+    qGetPembayaran,
+    qGetSetor
 }

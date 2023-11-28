@@ -18,7 +18,8 @@ import { qGetPelayananFromDp,
     qGetBuktiBayarFromNota,
     qGetCaraBayarFromBB,
     qGetLaporanPendapatanKasir,
-    qGetLaporan,
+    qGetPembayaran,
+    qGetSetor,
 } from '../../../queries/payment/payment.queries';
 import { qDaftarVerifikasi,qListSudahVerifikasi,qListTagihan,qCariPetugas, qListKomponenTarif } from '../../../queries/remunerasi/remunerasi.queries';
 import { createTransaction } from "../../../utils/dbutils"
@@ -826,15 +827,21 @@ const getPembayaranSetor = async (req, res) => {
         const { tanggalshift } = req.query
         if(!tanggalshift) throw new Error("tglshift kosong")
         const {todayStart, todayEnd} = getDateStartEnd(tanggalshift)
+        const setor = (await pool.query(qGetSetor, [
+            todayStart, 
+            todayEnd, 
+            req.idPegawai
+        ])).rows
         let buktiBayar = (await pool.query(
-            qGetLaporan, [
+            qGetPembayaran, [
                 todayStart, 
                 todayEnd, 
                 req.idPegawai
             ])).rows
         buktiBayar = groupBy(buktiBayar, "metodebayar")
         const tempres = {
-            buktiBayar
+            buktiBayar: buktiBayar,
+            setor: setor[0] || null
         };
         res.status(200).send({
             msg: 'Success',
@@ -856,77 +863,25 @@ const getPembayaranSetor = async (req, res) => {
 const upsertSetoran = async (req, res) => {
     const logger = res.locals.logger;
     try{
-        const reqBody = {
-            tanggalshift: '',
-            kasir: '',
-            jadwalshift: '',
-            jadwalshiftname: '',
-            totalsetor: 0,
-            detail: [{
-                norec: '',
-                total: '',
-                metodebayar: '',
-                jenisnontunai: '',
-                values: [],
-                label: '',
-              }],
-        }
         const {upsertedDetail, upsertedSetoran} 
         = await db.sequelize.transaction(async (transaction) => {
-            const norecsetoran = uuid.v4().substring(0, 32)
-            let created = await db.t_setorankasir.create({
-                norec: norecsetoran,
-                kdprofile: 0,
-                statusenabled: true,
-                objectpegawaifk: req.idPegawai,
-                objectshiftk: reqBody.jadwalshift,
-                tglinput: reqBody.tanggalshift,
-                jumlahsetor: reqBody.totalsetor
-            }, {
-                transaction: transaction
-            })
-            const details = await Promise.all(
-                reqBody.detail.map(async (det) => {
-                    const norecDetail = uuid.v4().substring(0, 32)
-                    const createdDetail = await db.t_setorankasirdetail.create({
-                        norec: norecDetail,
-                        objectsetorankasirfk: norecsetoran,
-                        objectjenisnontunai: det.jenisnontunai,
-                        total: det.total,
-                        objectmetodebayarfk: det.metodebayar
-                    }, {
-                        transaction: transaction
-                    })
-                    const updatedBuktiBayar = await Promise.all(
-                        det.values.map(async (val) => {
-                            const bb = await db.t_buktibayarpasien.findByPk(
-                                val.norecbuktibayar,
-                                {
-                                    transaction: transaction
-                                }
-                            )
-                            if(!bb) throw new Error("Tidak ada Bukti Bayar " + val.norecbuktibayar)
-                            await bb.update({
-                                objectsetorankasirdetailfk: norecDetail
-                            }, {
-                                transaction: transaction
-                            })
-                            return bb.toJSON()
-                        })
-                    )
-                    createdDetail._updatedBuktiBayar = updatedBuktiBayar
-                    return {
-                        createdDetail: createdDetail
-                    }
+            const {
+                upsertedSetoran, 
+                norecsetoran
+            } = await hUpsertSetoran(req, res, transaction)
+            const details = await hUpsertSetoranDetail(
+                req, 
+                res, 
+                transaction, 
+                {
+                    norecsetoran: norecsetoran
                 })
-            )
-            created = created.toJSON()
             return {
-                upsertedSetoran: created,
+                upsertedSetoran: upsertedSetoran,
                 upsertedDetail: details
             }
         });
-        
+
         const tempres = {
             upsertedDetail: upsertedDetail, 
             upsertedSetoran: upsertedSetoran
@@ -1164,4 +1119,96 @@ const hChangeYangDibayar = async (
         piutang = updatedPiutang
     }
     return {nota, piutang}
+}
+
+const hUpsertSetoran = async  (req, res, transaction) => {
+    const reqBody = req.body
+    let upsertedSetoran
+    let norecsetoran = uuid.v4().substring(0, 32)
+
+    if(!reqBody.norecsetoran){
+        let created = await db.t_setorankasir.create({
+            norec: norecsetoran,
+            kdprofile: 0,
+            statusenabled: true,
+            objectpegawaifk: req.idPegawai,
+            objectshiftfk: reqBody.jadwalshift,
+            tglinput: new Date(),
+            jumlahsetor: reqBody.totalsetor,
+            tglsetor: new Date(reqBody.tanggalshift)
+        }, {
+            transaction: transaction
+        })
+        upsertedSetoran = created.toJSON()
+    } else{
+        const updatedModel = await db.t_setorankasir.findByPk(reqBody.norecsetoran)
+        if(!updatedModel) throw new Error("Tidak ditemukan setoran kasir: " + reqBody.norecsetoran)
+        await updatedModel.update({
+            norec: norecsetoran,
+            kdprofile: 0,
+            statusenabled: true,
+            objectpegawaifk: req.idPegawai,
+            objectshiftfk: reqBody.jadwalshift,
+            jumlahsetor: reqBody.totalsetor,
+            tglsetor: new Date(reqBody.tanggalshift)
+        }, {
+            transaction: transaction
+        })
+        norecsetoran = reqBody.norecsetoran
+        upsertedSetoran = updatedModel.toJSON()
+    }
+    return {upsertedSetoran, norecsetoran}
+}
+
+const hUpsertSetoranDetail = async (
+    req, 
+    res, 
+    transaction, 
+    {
+        norecsetoran
+    }
+) => {
+    const reqBody = req.body
+    const details = await Promise.all(
+        reqBody.detail.map(async (det) => {
+            const norecDetail = uuid.v4().substring(0, 32)
+            let createdDetail = await db.t_setorankasirdetail.create({
+                norec: norecDetail,
+                objectsetorankasirfk: norecsetoran,
+                objectjenisnontunaifk: det.jenisnontunai,
+                total: det.total,
+                objectmetodebayarfk: det.metodebayar || null
+            }, {
+                transaction: transaction
+            })
+            const updatedBuktiBayar = await Promise.all(
+                det.values.map(async (val) => {
+                    const all = await Promise.all(
+                        val.map(async (val) => {
+                            const bb = await db.t_buktibayarpasien.findByPk(
+                                val.norecbuktibayar,
+                                {
+                                    transaction: transaction
+                                }
+                            )
+                            if(!bb) throw new Error("Tidak ada Bukti Bayar " + val.norecbuktibayar)
+                            await bb.update({
+                                objectsetorankasirdetailfk: norecDetail
+                            }, {
+                                transaction: transaction
+                            })
+                            return bb.toJSON()
+                        })
+                    )
+                    return all
+                })
+            )
+            createdDetail = createdDetail.toJSON()
+            createdDetail._updatedBuktiBayar = updatedBuktiBayar
+            return {
+                createdDetail: createdDetail
+            }
+        })
+    )
+    return details
 }

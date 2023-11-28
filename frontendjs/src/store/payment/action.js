@@ -56,7 +56,10 @@ import {
     GET_COMBO_SETOR_ERROR,
     GET_PEMBAYARAN_SETOR,
     GET_PEMBAYARAN_SETOR_SUCCESS,
-    GET_PEMBAYARAN_SETOR_ERROR
+    GET_PEMBAYARAN_SETOR_ERROR,
+    UPSERT_SETORAN,
+    UPSERT_SETORAN_SUCCESS,
+    UPSERT_SETORAN_ERROR
 } from "./actionType";
 
 export const pelayananFromDpGet = (norecap) => {
@@ -441,6 +444,24 @@ export const getPembayaranSetorSuccess = (data) => ({
 
 export const getPembayaranSetorError = (error) => ({
     type: GET_PEMBAYARAN_SETOR_ERROR,
+    payload: error,
+});
+
+export const upsertSetoran = (data, callback) => ({
+    type: UPSERT_SETORAN,
+    payload: {
+        data: data,
+        callback: callback,
+    },
+});
+
+export const upsertSetoranSuccess = (data) => ({
+    type: UPSERT_SETORAN_SUCCESS,
+    payload: data,
+});
+
+export const upsertSetoranError = (error) => ({
+    type: UPSERT_SETORAN_ERROR,
     payload: error,
 });
 

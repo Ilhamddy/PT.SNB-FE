@@ -1,4 +1,4 @@
-import { ToastContainer } from 'react-toastify'
+import { ToastContainer, toast } from 'react-toastify'
 import React from 'react'
 import {
   Container,
@@ -17,7 +17,11 @@ import { useEffect, useState } from 'react'
 import KontainerFlatpickr from '../../Components/KontainerFlatpickr/KontainerFlatpickr'
 import CustomSelect from '../Select/Select'
 import { useDispatch, useSelector } from 'react-redux'
-import { getComboSetor, getPembayaranSetor } from '../../store/payment/action'
+import {
+  getComboSetor,
+  getPembayaranSetor,
+  upsertSetoran,
+} from '../../store/payment/action'
 import {
   dateLocal,
   dateTimeLocal,
@@ -26,6 +30,8 @@ import {
 } from '../../utils/format'
 import DataTable from 'react-data-table-component'
 import LoadingTable from '../../Components/Table/LoadingTable'
+import * as Yup from 'yup'
+import LoadingLaman from '../../Components/Common/LoadingLaman'
 
 const initialDetail = {
   norec: '',
@@ -44,6 +50,7 @@ const SetorKasir = () => {
     jenisNonTunai,
     shiftKasir,
     buktiBayar,
+    setoranBefore,
     loadingBB,
     pegawai,
     pegawaiInput,
@@ -53,11 +60,13 @@ const SetorKasir = () => {
     shiftKasir: state.Payment.getComboSetor.data.shiftKasir || [],
     pegawai: state.Payment.getComboSetor.data.pegawai || [],
     buktiBayar: state.Payment.getPembayaranSetor.data.buktiBayar || [],
+    setoranBefore: state.Payment.getPembayaranSetor.data.setor || null,
     loadingBB: state.Payment.getPembayaranSetor.loading || false,
     pegawaiInput: state.Payment.getComboSetor.data.pegawaiInput || [],
   }))
   const vSetor = useFormik({
     initialValues: {
+      norecsetoran: '',
       tanggalshift: dateNow,
       kasir: '',
       jadwalshift: '',
@@ -65,7 +74,13 @@ const SetorKasir = () => {
       totalsetor: 0,
       detail: [],
     },
-    onSubmit: (values) => {},
+    validationSchema: Yup.object({
+      jadwalshift: Yup.string().required('Jadwal shift harus diisi'),
+      detail: Yup.array().min(1, 'Minimal 1'),
+    }),
+    onSubmit: (values) => {
+      dispatch(upsertSetoran(values, () => {}))
+    },
   })
 
   /**
@@ -136,12 +151,6 @@ const SetorKasir = () => {
   ]
 
   useEffect(() => {
-    const setFF = vSetor.setFieldValue
-    if (pegawaiInput) {
-      setFF('kasir', pegawaiInput.value)
-    }
-  }, [pegawaiInput, vSetor.setFieldValue])
-  useEffect(() => {
     const newDetail = []
     const setFF = vSetor.setFieldValue
     metodeBayar.forEach((data) => {
@@ -149,8 +158,9 @@ const SetorKasir = () => {
         newDetail.push({
           ...initialDetail,
           total: 0,
-          metodeBayar: data.value,
+          metodebayar: data.value,
           jenisnontunai: null,
+          values: [],
           label: data.label,
         })
       }
@@ -159,8 +169,9 @@ const SetorKasir = () => {
       newDetail.push({
         ...initialDetail,
         total: 0,
-        metodeBayar: 2,
+        metodebayar: 2,
         jenisnontunai: data.value,
+        values: [],
         label: data.label,
       })
     })
@@ -181,7 +192,28 @@ const SetorKasir = () => {
     }, 0)
     setFF('detail', newDetail)
     setFF('totalsetor', totalSetor)
-  }, [metodeBayar, buktiBayar, jenisNonTunai, vSetor.setFieldValue])
+    if (setoranBefore) {
+      setFF('norecsetoran', setoranBefore.norecsetoran)
+      setFF('kasir', setoranBefore.kasir)
+      setFF('jadwalshift', setoranBefore.jadwalshift)
+      setFF('jadwalshiftname', setoranBefore.jadwalshiftname)
+    } else {
+      setFF('norecsetoran', '')
+      setFF('kasir', '')
+      setFF('jadwalshift', '')
+      setFF('jadwalshiftname', '')
+      if (pegawaiInput) {
+        setFF('kasir', pegawaiInput.value)
+      }
+    }
+  }, [
+    metodeBayar,
+    setoranBefore,
+    buktiBayar,
+    jenisNonTunai,
+    pegawaiInput,
+    vSetor.setFieldValue,
+  ])
   useEffect(() => {
     dispatch(getComboSetor({}))
   }, [dispatch])
@@ -241,6 +273,7 @@ const SetorKasir = () => {
                 id="jadwalshift"
                 name="jadwalshift"
                 options={shiftKasir}
+                isDisabled={!!vSetor.values.norecsetoran}
                 onChange={(e) => {
                   vSetor.setFieldValue('jadwalshift', e?.value || '')
                   vSetor.setFieldValue('jadwalshiftname', e?.label || '')
@@ -284,7 +317,19 @@ const SetorKasir = () => {
           </Row>
           <Row className="d-flex justify-content-center">
             <Col className="me-3" lg={'auto'}>
-              <Button color="success">Simpan</Button>
+              <Button
+                color="success"
+                type="button"
+                disabled={!!vSetor.values.norecsetoran}
+                onClick={() => {
+                  if (vSetor.errors.detail) {
+                    toast.error(vSetor.errors.detail)
+                  }
+                  vSetor.handleSubmit()
+                }}
+              >
+                Simpan
+              </Button>
             </Col>
             <Col lg={'auto'} color="success">
               <Button color="danger">Batal</Button>
@@ -297,6 +342,7 @@ const SetorKasir = () => {
             {pegawaiInput.label} sebesar{' '}
             <b>Rp{vSetor.values.totalsetor?.toLocaleString('id-ID')}</b>
           </p>
+          {loadingBB && <LoadingLaman />}
           <Row className="mt-3">
             {buktiBayar.map((bb, index) => (
               <React.Fragment key={index}>

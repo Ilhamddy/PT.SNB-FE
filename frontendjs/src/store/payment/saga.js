@@ -31,7 +31,9 @@ import {
     getComboSetorSuccess,
     getComboSetorError,
     getPembayaranSetorSuccess,
-    getPembayaranSetorError
+    getPembayaranSetorError,
+    upsertSetoranSuccess,
+    upsertSetoranError
 } from "./action";
 
 import {
@@ -50,7 +52,8 @@ import {
     UPSERT_VERIFIKASI_REMUNERASI,
     GET_DAFTAR_SUDAH_VERIFIKASI_REMUNERASI,
     GET_COMBO_SETOR,
-    GET_PEMBAYARAN_SETOR
+    GET_PEMBAYARAN_SETOR,
+    UPSERT_SETORAN
 } from "./actionType";
 
 import ServicePayment from "../../services/service-payment";
@@ -227,6 +230,18 @@ function* onGetPembayaranSetor({payload: {queries}}) {
     }
 }
 
+function* onUpsertSetoran({payload: {data, callback}}) {
+    try{
+        const response = yield call(servicePayment.upsertSetoran, data);
+        callback && callback()
+        toast.success(response.data?.msg || "Sukses")
+        yield put(upsertSetoranSuccess(response.data));
+    } catch (error) {
+        yield put(upsertSetoranError(error));
+        toast.error(error.response?.data?.msg || "Error")
+    }
+}
+
 
 export function* watchGetPelayananFromAntrean() {
     yield takeEvery(PELAYANAN_FROM_DP_GET, onGetPelayananFromAntrean);
@@ -293,6 +308,10 @@ export function* watchGetPembayaranSetor() {
     yield takeEvery(GET_PEMBAYARAN_SETOR, onGetPembayaranSetor);
 }
 
+export function* watchUpsertSetoran() {
+    yield takeEvery(UPSERT_SETORAN, onUpsertSetoran);
+}
+
 export default function* masterSaga() {
     yield all([
         fork(watchGetPelayananFromAntrean),
@@ -310,6 +329,7 @@ export default function* masterSaga() {
         fork(watchupsertVerifikasiRemunerasi),
         fork(watchgetDaftarSudahVerifikasiRemunerasi),
         fork(watchGetComboSetor),
-        fork(watchGetPembayaranSetor)
+        fork(watchGetPembayaranSetor),
+        fork(watchUpsertSetoran)
     ]);
 }

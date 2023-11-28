@@ -20,7 +20,7 @@ export default (sequelize, Sequelize) => {
         objectpegawaifk: {
             type: Sequelize.INTEGER,
         },
-        objectshiftk: {
+        objectshiftfk: {
             type: Sequelize.INTEGER,
         },
         tglinput: {
@@ -28,6 +28,9 @@ export default (sequelize, Sequelize) => {
         },
         jumlahsetor: {
             type: Sequelize.REAL,
+        },
+        tglsetor: {
+            type: Sequelize.DATE
         }
     }, {
         tableName: "t_setorankasir",
