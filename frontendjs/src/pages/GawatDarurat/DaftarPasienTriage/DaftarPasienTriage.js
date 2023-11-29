@@ -142,7 +142,7 @@ const TriageIGD = () => {
                 <Container fluid>
                     <BreadCrumb title="Daftar Pasien Triage" pageTitle="Forms" />
                     <Card>
-                        <CardHeader className="align-items-center" style={{ backgroundColor: "#FFCB46" }}>
+                        <CardHeader className="card-header-snb">
                             <h4 className="mb-0" style={{ color: 'black', textAlign: 'center' }}>Pasien Triage IGD</h4>
                         </CardHeader>
                         <CardBody>

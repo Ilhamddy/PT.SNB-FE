@@ -27,8 +27,10 @@ async function getListDaftarDokumenRekammedis(req, res) {
     try {
         let tglregistrasi = ""
         if (req.query.start !== undefined) {
-            tglregistrasi = ` and dp.tglregistrasi between '${req.query.start}'
-         and '${req.query.end} 23:59' `;
+            let todaystart = formatDate(req.query.start) + ' 00:00'
+            let todayend = formatDate(req.query.end) + ' 23:59'
+            tglregistrasi = ` and dp.tglregistrasi between '${todaystart}'
+         and '${todayend}' `;
         } else {
             // console.log('massuukk')
             let today = new Date();
@@ -63,7 +65,8 @@ async function getListDaftarDokumenRekammedis(req, res) {
             'YYYY-MM-DD') as tglregistrasi,
         mj.jeniskelamin,mr.namarekanan,
         case when mp.objectstatuskendalirmfk is null and trm.objectstatuskendalirmfk is null 
-        then 'RAK' when mp.objectstatuskendalirmfk is not null then mrm.statuskendali else mrs.statuskendali end as statusdokumen
+        then 'RAK' when mp.objectstatuskendalirmfk is not null then mrm.statuskendali else mrs.statuskendali end as statusdokumen,
+        dp.caradaftar,dp.catatan
         from t_daftarpasien dp
         join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk=dp.norec
         and ta.objectunitfk =dp.objectunitlastfk 

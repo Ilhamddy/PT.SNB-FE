@@ -152,7 +152,20 @@ const KendaliDokumen = () => {
             sortable: true,
             // width: "150px"
         },
+        {
 
+            name: <span className='font-weight-bold fs-13'>Cara Daftar</span>,
+            selector: row => row.caradaftar,
+            sortable: true,
+            // width: "150px"
+        },
+        {
+
+            name: <span className='font-weight-bold fs-13'>Catatan</span>,
+            selector: row => row.catatan,
+            sortable: true,
+            // width: "150px"
+        },
     ];
     const current = new Date();
     const [dateStart, setdateStart] = useState(`${current.getFullYear()}-${current.getMonth() + 1}-${current.getDate()}`);
