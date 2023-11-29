@@ -194,7 +194,7 @@ const DaftarPasienRegistrasi = () => {
                                             <div>
                                                 <p className="fw-medium text-muted mb-0">Total Pasien {item.label}</p>
                                                 <h2 className="mt-4 ff-secondary fw-semibold">
-                                                    <span className="counter-value" style={{ fontSize: "5rem" }}>
+                                                    <span className="counter-value" style={{ fontSize: "1.5rem" }}>
                                                         <CountUp
                                                             start={0}
                                                             end={item.counter}
@@ -206,10 +206,10 @@ const DaftarPasienRegistrasi = () => {
 
                                             </div>
                                             <div>
-                                                <div className="avatar-xl flex-shrink-0">
+                                                <div className="avatar-md flex-shrink-0">
                                                     <span className={"avatar-title rounded-circle fs-4 bg-soft-" + item.iconClass + " text-" + item.iconClass}>
                                                         <img src={item.icon}
-                                                            alt="" className="avatar-lg" />
+                                                            alt="" className="avatar-md" />
                                                     </span>
                                                 </div>
                                             </div>
@@ -310,15 +310,6 @@ const DaftarPasienRegistrasi = () => {
                                         </Row>
                                     </div>
                                     <div id="table-gridjs">
-                                        {/* <Col className="col-sm">
-                                            <div className="d-flex justify-content-sm-end">
-                                                <div className="search-box ms-2">
-                                                    <input type="text" className="form-control search"
-                                                        placeholder="Search..." />
-                                                    <i className="ri-search-line search-icon"></i>
-                                                </div>
-                                            </div>
-                                        </Col> */}
                                         <DataTable
                                             fixedHeader
                                             fixedHeaderScrollHeight="700px"

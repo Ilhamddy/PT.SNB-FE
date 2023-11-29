@@ -574,8 +574,8 @@ const Widget = ({ title, end, image }) => {
         <CardBody>
           <div className="d-flex justify-content-between">
             <div>
-              <p className="fw-medium text-muted mb-0">{title}</p>
-              <h2 className="mt-4 ff-secondary fw-semibold">
+              <p className="fw-medium text-muted mb-0">Total Pasien {title}</p>
+              <h2 className="mt-3 ff-secondary fw-semibold">
                 <span className="counter-value" style={{ fontSize: '1.5rem' }}>
                   <CountUp
                     start={0}
