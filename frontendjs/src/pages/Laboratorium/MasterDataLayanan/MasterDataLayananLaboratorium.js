@@ -158,13 +158,13 @@ const MasterDataLayananLaboratorium = () => {
                                                         </div>
                                                     </Col>
                                                     <Col lg={1}>
-                                                        <Button type="button" className="rounded-pill" placement="top" id="tooltipTopPencarian" onClick={handleClickCari}>
+                                                        <Button type="button" color='info' placement="top" id="tooltipTopPencarian" onClick={handleClickCari}>
                                                             CARI
                                                         </Button>
                                                         <UncontrolledTooltip placement="top" target="tooltipTopPencarian" > Pencarian </UncontrolledTooltip>
                                                     </Col>
                                                     <Col lg={3}>
-                                                        <Button type="button" color='success' className="rounded-pill" placement="top" onClick={handleClickToSetting}>
+                                                        <Button type="button" color='success' placement="top" onClick={handleClickToSetting}>
                                                             Setting Layanan
                                                         </Button>
                                                     </Col>

@@ -400,9 +400,7 @@ const OrderRadiologi = () => {
                         </Col>
                         <Col lg={8} className="gy-2">
                             <Card>
-                                <CardHeader style={{ backgroundColor: "#FFCB46",
-            borderTopLeftRadius: '24px', borderTopRightRadius: '24px',
-            padding: '10px 15px' }}>
+                                <CardHeader className="card-header-snb ">
                                     <h4 className="card-title mb-0" style={{ color: 'black' }}>Daftar Order Tindakan</h4>
                                 </CardHeader>
                                 <CardBody>
@@ -452,9 +450,7 @@ const OrderRadiologi = () => {
                         </Col>
                         <Col lg={12} className="gy-2">
                             <Card>
-                                <CardHeader style={{ backgroundColor: "#FFCB46",
-            borderTopLeftRadius: '24px', borderTopRightRadius: '24px',
-            padding: '10px 15px' }}>
+                                <CardHeader className="card-header-snb ">
                                     <h4 className="card-title mb-0" style={{ color: 'black' }}>Riwayat Order Tindakan</h4>
                                 </CardHeader>
                                 <CardBody>
@@ -474,9 +470,7 @@ const OrderRadiologi = () => {
                         </Col>
                         <Col lg={12} className="gy-2">
                             <Card>
-                                <CardHeader style={{ backgroundColor: "#FFCB46",
-            borderTopLeftRadius: '24px', borderTopRightRadius: '24px',
-            padding: '10px 15px' }}>
+                                <CardHeader className="card-header-snb ">
                                     <h4 className="card-title mb-0" style={{ color: 'black' }}>Hasil Radiologi</h4>
                                 </CardHeader>
                                 <CardBody>

@@ -10,6 +10,7 @@ import { useFormik } from "formik";
 import Flatpickr from "react-flatpickr";
 import * as Yup from "yup";
 import { saveBatalRegistrasi } from "../../store/actions";
+import KontainerFlatpickr from "../KontainerFlatpickr/KontainerFlatpickr";
 
 
 
@@ -58,24 +59,20 @@ const BatalRegistrasi = ({ show, onSimpanClick,
                                 <Row>
                                     <Col md={4} className="mt-2"><Label htmlFor="unittujuan" className="form-label">Tanggal Batal</Label></Col>
                                     <Col md={8} className="mb-2">
-                                        <div className="input-group">
-                                            <Flatpickr
-                                                id="tglbatal"
-                                                className="form-control border-0 fs-5 dash-filter-picker shadow"
-                                                options={{
-                                                    enableTime: true,
-                                                    // mode: "range",
-                                                    dateFormat: "Y-m-d",
-                                                    defaultDate: "today"
-                                                }}
-                                                value={validation.values.tglbatal}
-                                                onChange={([newDate]) => {
-                                                    validation.setFieldValue("tglbatal", newDate.toISOString());
-                                                }}
-                                                disabled
-                                            />
-                                            <div className="input-group-text bg-secondary border-secondary text-white"><i className="ri-calendar-2-line"></i></div>
-                                        </div>
+                                        <KontainerFlatpickr
+                                            id="tglbatal"
+                                            options={{
+                                                enableTime: true,
+                                                // mode: "range",
+                                                dateFormat: "Y-m-d",
+                                                defaultDate: "today"
+                                            }}
+                                            value={validation.values.tglbatal}
+                                            onChange={([newDate]) => {
+                                                validation.setFieldValue("tglbatal", newDate.toISOString());
+                                            }}
+                                            disabled
+                                        />
                                     </Col>
                                     <Col md={4} className="mt-2"><Label htmlFor="pembatal" className="form-label">Pembatal</Label></Col>
                                     <Col md={8} className="mb-2">

@@ -55,6 +55,13 @@
     border-bottom-left-radius: 0 !important;
 }
 
+.card-header-snb {
+    background-color: #ffcb46;
+    border-top-left-radius: 15px !important;
+    border-top-right-radius: 15px !important;
+    padding: 10px 15px;
+}
+
 @page {
     size: auto;
     size: A3;

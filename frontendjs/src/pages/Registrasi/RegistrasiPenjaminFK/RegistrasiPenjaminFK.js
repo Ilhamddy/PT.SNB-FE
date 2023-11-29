@@ -20,6 +20,7 @@ import { comboAsuransiGet, comboRegistrasiGet, kabupatenGetBpjs, kecamatanGetBpj
 import "./RegistrasiPenjaminFK.scss";
 import { onChangeStrNbr, strToNumber } from "../../../utils/format";
 import { rgxAllNumber, rgxAllPeriods, rgxNbrEmpty } from "../../../utils/regexcommon";
+import KontainerFlatpickr from "../../../Components/KontainerFlatpickr/KontainerFlatpickr";
 
 const RegistrasiPenjaminFK = () => {
     const { id, norec } = useParams();
@@ -489,8 +490,7 @@ const RegistrasiPenjaminFK = () => {
                             </Col>
                             <Col xxl={6} md={6}>
                                 <div>
-                                    <Flatpickr
-                                        // value={validation.values.tglregistrasi || ""}
+                                    <KontainerFlatpickr
                                         className="form-control"
                                         id="tanggalsep"
                                         options={{
@@ -615,9 +615,7 @@ const RegistrasiPenjaminFK = () => {
                             </Col>
                             <Col xxl={6} md={6}>
                                 <div>
-                                    <Flatpickr
-                                        // value={validation.values.tglregistrasi || ""}
-                                        className="form-control"
+                                    <KontainerFlatpickr
                                         id="tanggalrujukan"
                                         options={{
                                             dateFormat: "Y-m-d",
@@ -961,7 +959,7 @@ const RegistrasiPenjaminFK = () => {
                                 </Col>
                                 <Col xxl={6} md={6}>
                                     <div>
-                                        <Flatpickr
+                                        <KontainerFlatpickr
                                             className="form-control"
                                             options={{
                                                 dateFormat: "Y-m-d",
@@ -1045,7 +1043,7 @@ const RegistrasiPenjaminFK = () => {
                                 </Col>
                                 <Col xxl={6} md={6}>
                                     <div>
-                                        <Flatpickr
+                                        <KontainerFlatpickr
                                             className="form-control"
                                             options={{
                                                 dateFormat: "Y-m-d",
@@ -1203,9 +1201,6 @@ const RegistrasiPenjaminFK = () => {
     const BodyBPJSRujukan = (
         <>
             {PilihRujukan}
-            {/* <Col lg={12} style={{ textAlign: 'left' }} className="ms-2">
-                <Button color="info" className="rounded-pill" >Pilih Rujukan</Button>
-            </Col> */}
             {DetailBPJS}
             
             {validation.values.statuskecelakaan !== "" && validation.values.statuskecelakaan === 2
@@ -1382,9 +1377,7 @@ const RegistrasiPenjaminFK = () => {
                             action="#">
 
                             <Card>
-                                <CardHeader style={{ backgroundColor: "#dfe4ea",
-            borderTopLeftRadius: '24px', borderTopRightRadius: '24px',
-            padding: '10px 15px' }}>
+                                <CardHeader className="card-header-snb ">
                                     <h4 className="card-title mb-0">Registrasi</h4>
                                 </CardHeader>
                                 <div className="card-header align-items-center d-flex">

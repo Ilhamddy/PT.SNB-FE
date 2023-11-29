@@ -47,6 +47,7 @@ import {
   updateEvent as onUpdateEvent,
   resetCalendar,
 } from "../../store/actions";
+import KontainerFlatpickr from "../../Components/KontainerFlatpickr/KontainerFlatpickr";
 
 const Calender = () => {
   document.title = "Calendar | Velzon - React Admin & Dashboard Template";
@@ -624,29 +625,19 @@ const Calender = () => {
                       <Col xs={12}>
                         <div className="mb-3">
                           <Label>Event Date</Label>
-                          <div
-                            className={
-                              !!isEdit ? "input-group d-none" : "input-group"
-                            }
-                          >
-                            <Flatpickr
-                              className="form-control"
-                              id="event-start-date"
-                              name="defaultDate"
-                              placeholder="Select Date"
-                              value={validation.values.defaultDate || ""}
-                              options={{
-                                mode: "range",
-                                dateFormat: "Y-m-d",
-                              }}
-                              onChange={(date) => {
-                                setSelectedNewDay(date);
-                              }}
-                            />
-                            <span className="input-group-text">
-                              <i className="ri-calendar-event-line"></i>
-                            </span>
-                          </div>
+                          <KontainerFlatpickr
+                            id="event-start-date"
+                            name="defaultDate"
+                            placeholder="Select Date"
+                            value={validation.values.defaultDate || ""}
+                            options={{
+                              mode: "range",
+                              dateFormat: "Y-m-d",
+                            }}
+                            onChange={(date) => {
+                              setSelectedNewDay(date);
+                            }}
+                          />
                         </div>
                       </Col>
                       <Col xs={12}>

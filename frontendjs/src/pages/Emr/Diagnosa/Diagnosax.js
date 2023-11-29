@@ -224,9 +224,7 @@ const Diagnosax = () => {
                     <Row>
                         <Col lg={5}>
                             <Card>
-                                <CardHeader style={{ backgroundColor: "#FFCB46",
-            borderTopLeftRadius: '24px', borderTopRightRadius: '24px',
-            padding: '10px 15px' }}>
+                                <CardHeader className="card-header-snb ">
                                     <h4 className="card-title mb-0" style={{ color: 'black' }}>ICD 10</h4>
                                 </CardHeader>
                                 <CardBody>
@@ -342,9 +340,7 @@ const Diagnosax = () => {
                         </Col>
                         <Col lg={7}>
                             <Card>
-                                <CardHeader style={{ backgroundColor: "#FFCB46",
-            borderTopLeftRadius: '24px', borderTopRightRadius: '24px',
-            padding: '10px 15px' }}>
+                                <CardHeader className="card-header-snb ">   
                                     <h4 className="card-title mb-0" style={{ color: 'black' }}>Riwayat ICD 10</h4>
                                 </CardHeader>
                                 <CardBody>

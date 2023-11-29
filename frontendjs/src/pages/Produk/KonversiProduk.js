@@ -207,7 +207,6 @@ const KonversiProduk = ({tabId}) => {
                         <Button 
                             type="button"
                             color="info" 
-                            className="rounded-pill" 
                             placement="top" 
                             onClick={() => {
                                 dispatch(konversiProdukQueryGet({ qsearch: refQSearch.current }))

@@ -43,6 +43,7 @@ import LoadingTable from "../../Components/Table/LoadingTable";
 import { dateLocal, dateTimeLocal, onChangeStrNbr, strToNumber } from "../../utils/format";
 import * as Yup from "yup";
 import { tableCustomStyles } from "../../Components/Table/tableCustomStyles";
+import KontainerFlatpickr from "../../Components/KontainerFlatpickr/KontainerFlatpickr";
 
 
 const linkStokOpname = "/farmasi/gudang/stok-opname"
@@ -578,7 +579,7 @@ const ModalMenu = ({ isMenuOpen, toggle }) => {
                             </Label>
                         </Col>
                         <Col lg={6}>
-                            <Flatpickr
+                            <KontainerFlatpickr
                                 // value={penerimaan.tglregistrasi || ""}
                                 className="form-control"
                                 id="tanggalawal"
@@ -602,9 +603,8 @@ const ModalMenu = ({ isMenuOpen, toggle }) => {
                             </Label>
                         </Col>
                         <Col lg={6}>
-                            <Flatpickr
+                            <KontainerFlatpickr
                                 // value={penerimaan.tglregistrasi || ""}
-                                className="form-control"
                                 id="tanggalakhir"
                                 options={{
                                     dateFormat: "Y-m-d",

@@ -35,6 +35,7 @@ import DetailOrderModal from '../../Laboratorium/DetailOrderModal/DetailOrderMod
 import DeleteModalCustom from '../../../Components/Common/DeleteModalCustom';
 import LoadingTable from '../../../Components/Table/LoadingTable';
 import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles';
+import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/KontainerFlatpickr';
 
 const DaftarOrderLaboratorium = () => {
     document.title = "Daftar Order Laboratorium"
@@ -319,39 +320,31 @@ const DaftarOrderLaboratorium = () => {
                                     <div className='mb-2'>
                                         <Row>
                                             <Col sm={4}>
-                                                <div className="input-group">
-                                                    <Flatpickr
-                                                        className="form-control border-0 fs-5 dash-filter-picker shadow"
-                                                        options={{
-                                                            // mode: "range",
-                                                            dateFormat: "Y-m-d",
-                                                            defaultDate: "today"
-                                                        }}
-                                                        value={dateStart}
-                                                        onChange={([dateStart]) => {
-                                                            handleBeginOnChangeStart(dateStart);
-                                                        }}
-                                                    />
-                                                    <div className="input-group-text bg-secondary border-secondary text-white"><i className="ri-calendar-2-line"></i></div>
-                                                </div>
+                                                <KontainerFlatpickr
+                                                    options={{
+                                                        // mode: "range",
+                                                        dateFormat: "Y-m-d",
+                                                        defaultDate: "today"
+                                                    }}
+                                                    value={dateStart}
+                                                    onChange={([dateStart]) => {
+                                                        handleBeginOnChangeStart(dateStart);
+                                                    }}
+                                                />
                                             </Col>
                                             <Col lg={1}><h4>s/d</h4></Col>
                                             <Col sm={4}>
-                                                <div className="input-group">
-                                                    <Flatpickr
-                                                        className="form-control border-0 fs-5 dash-filter-picker shadow"
-                                                        options={{
-                                                            // mode: "range",
-                                                            dateFormat: "Y-m-d",
-                                                            defaultDate: "today"
-                                                        }}
-                                                        value={dateEnd}
-                                                        onChange={([dateEnd]) => {
-                                                            handleBeginOnChangeEnd(dateEnd);
-                                                        }}
-                                                    />
-                                                    <div className="input-group-text bg-secondary border-secondary text-white"><i className="ri-calendar-2-line"></i></div>
-                                                </div>
+                                                <KontainerFlatpickr
+                                                    options={{
+                                                        // mode: "range",
+                                                        dateFormat: "Y-m-d",
+                                                        defaultDate: "today"
+                                                    }}
+                                                    value={dateEnd}
+                                                    onChange={([dateEnd]) => {
+                                                        handleBeginOnChangeEnd(dateEnd);
+                                                    }}
+                                                />
                                             </Col>
                                             <Col lg={2}>
                                                 <div className="d-flex justify-content-sm-end">
@@ -364,7 +357,7 @@ const DaftarOrderLaboratorium = () => {
                                                 </div>
                                             </Col>
                                             <Col lg={1}>
-                                                <Button type="button" className="rounded-pill" placement="top" id="tooltipTopPencarian" onClick={handleClickCari}>
+                                                <Button type="button" color='info'  placement="top" id="tooltipTopPencarian" onClick={handleClickCari}>
                                                     CARI
                                                 </Button>
                                                 <UncontrolledTooltip placement="top" target="tooltipTopPencarian" > Pencarian </UncontrolledTooltip>

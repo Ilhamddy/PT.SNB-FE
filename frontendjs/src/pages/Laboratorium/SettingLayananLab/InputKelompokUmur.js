@@ -160,13 +160,13 @@ const InputKelompokUmur = () => {
                     </Col>
                     <Col lg={6}></Col>
                     <Col lg={3}>
-                        <Button type="submit" color='success' style={{ textAlign: 'right' }} className="rounded-pill" placement="top">
+                        <Button type="submit" color='success' style={{ textAlign: 'right' }} placement="top">
                             Tambah
                         </Button>
 
                     </Col>
                     <Col lg={3}>
-                    <Button type="button" color='danger' className="rounded-pill" placement="top" onClick={handleBack}>
+                    <Button type="button" color='info' placement="top" onClick={handleBack}>
                                                             Back
                                                         </Button>
 

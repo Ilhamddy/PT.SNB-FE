@@ -38,6 +38,7 @@ import { APIClient } from '../../helpers/api_helper'
 import { comboDistribusiOrderGet } from '../../store/master/action'
 import { Link, useParams } from 'react-router-dom'
 import { tableCustomStyles } from '../../Components/Table/tableCustomStyles'
+import KontainerFlatpickr from '../../Components/KontainerFlatpickr/KontainerFlatpickr'
 
 const DistribusiKirim = ({ isVerif }) => {
   const dispatch = useDispatch()
@@ -436,9 +437,8 @@ const DistribusiKirim = ({ isVerif }) => {
           </Label>
         </Col>
         <Col xl={3} lg={4} className="mb-2">
-          <Flatpickr
+          <KontainerFlatpickr
             // value={penerimaan.tglregistrasi || ""}
-            className="form-control"
             id="tanggalkirim"
             options={{
               dateFormat: 'Y-m-d',
@@ -517,9 +517,11 @@ const DistribusiKirim = ({ isVerif }) => {
           </Label>
         </Col>
         <Col xl={3} lg={4} className="mb-2">
-          <Flatpickr
-            // value={penerimaan.tglregistrasi || ""}
-            className="form-control"
+          <KontainerFlatpickr
+            isError={
+              vKirim.touched?.tanggalpermintaan &&
+              !!vKirim.touched?.tanggalpermintaan
+            }
             id="tanggalpermintaan"
             options={{
               dateFormat: 'Y-m-d',

@@ -25,6 +25,7 @@ import {
 import "./LaporanPasienBatal.scss"
 import * as XLSX from 'xlsx';
 import { tableCustomStyles } from '../../../../Components/Table/tableCustomStyles';
+import KontainerFlatpickr from '../../../../Components/KontainerFlatpickr/KontainerFlatpickr';
 
 const currentDate = new Date();
 currentDate.setDate(currentDate.getDate());
@@ -186,9 +187,8 @@ const LaporanPasienBatal = () => {
                                 <Row>
                                     <Col sm={3}>
                                         <div className="input-group">
-                                            <Flatpickr
+                                            <KontainerFlatpickr
                                                 id="tglstart"
-                                                className="form-control border-0 fs-5 dash-filter-picker shadow"
                                                 options={{
                                                     enableTime: true,
                                                     // mode: "range",
@@ -206,9 +206,8 @@ const LaporanPasienBatal = () => {
                                     <Col lg={1}><h4>s/d</h4></Col>
                                     <Col sm={3}>
                                         <div className="input-group">
-                                            <Flatpickr
+                                            <KontainerFlatpickr
                                                 id="tglend"
-                                                className="form-control border-0 fs-5 dash-filter-picker shadow"
                                                 options={{
                                                     enableTime: true,
                                                     // mode: "range",

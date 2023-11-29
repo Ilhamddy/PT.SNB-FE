@@ -26,6 +26,7 @@ import { comboRegistrasiGet } from '../../../store/master/action';
 import { registrasiNoregistrasiResetForm, registrasiGet, saveRegistrasiMutasi, registrasiResetForm, registrasiRuanganNorecGet, registrasiGetReset, registrasiRuanganNorecGetReset } from "../../../store/actions";
 import "./RegistrasiMutasiPasien.scss"
 import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles';
+import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/KontainerFlatpickr';
 
 const RegistrasiMutasiPasien = (props) => {
     const { id, norec } = useParams();
@@ -392,9 +393,7 @@ const RegistrasiMutasiPasien = (props) => {
                             ) : null} */}
                             {/* <BuktiPendaftaran isOpen={modal} toggle={toggle} centered /> */}
                             <Card>
-                                <CardHeader style={{ backgroundColor: "#dfe4ea",
-            borderTopLeftRadius: '24px', borderTopRightRadius: '24px',
-            padding: '10px 15px' }}>
+                                <CardHeader className="card-header-snb ">
                                     <h4 className="card-title mb-0">Registrasi</h4>
                                 </CardHeader>
                                 <CardBody>
@@ -410,10 +409,7 @@ const RegistrasiMutasiPasien = (props) => {
                                                         </Col>
                                                         <Col xxl={6} md={6}>
                                                             <div>
-                                                                <Flatpickr
-                                                                    // value={validation.values.tglregistrasi || ""}
-
-                                                                    className="form-control"
+                                                                <KontainerFlatpickr
                                                                     options={{
                                                                         enableTime: true,
                                                                         dateFormat: "Y-m-d H:i"

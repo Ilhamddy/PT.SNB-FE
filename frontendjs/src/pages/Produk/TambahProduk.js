@@ -283,7 +283,6 @@ const TambahProduk = ({tabId}) => {
                             <Col lg={1}>
                                 <Button type="button" 
                                 color="info" 
-                                className="rounded-pill" 
                                 placement="top" 
                                 onClick={() => 
                                         navigate(linkSettingProduk + "/lain-lain")
@@ -354,7 +353,6 @@ const TambahProduk = ({tabId}) => {
                             <Col lg={1}>
                                 <Button type="button" 
                                 color="info" 
-                                className="rounded-pill" 
                                 placement="top" 
                                 onClick={() => 
                                     navigate(linkSettingProduk + "/lain-lain")}
@@ -424,7 +422,6 @@ const TambahProduk = ({tabId}) => {
                             <Col lg={1}>
                                 <Button type="button" 
                                 color="info" 
-                                className="rounded-pill" 
                                 placement="top" 
                                 onClick={() => navigate(linkSettingProduk + "/lain-lain")}>
                                     +

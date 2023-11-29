@@ -267,18 +267,18 @@ const DetailKelompokUmur = () => {
                             {sSettingLayLab.idkelumur ? (
                                 <>
                                     <Col lg={2}>
-                                        <Button type="submit" style={{ backgroundColor: '#192a56', textAlign: 'right' }} className="rounded-pill" placement="top">
+                                        <Button type="submit" style={{ backgroundColor: '#192a56', textAlign: 'right' }} color='info' placement="top">
                                             Simpan
                                         </Button>
                                     </Col>
                                     <Col lg={2}>
-                                        <Button type="button" color='danger' style={{ textAlign: 'right' }} className="rounded-pill" placement="top"
+                                        <Button type="button" color='danger' style={{ textAlign: 'right' }} placement="top"
                                             onClick={() => handleClickReset()}>
                                             Batal
                                         </Button>
                                     </Col>
                                     <Col lg={2}>
-                                        <Button type="button" color='danger' style={{ textAlign: 'right' }} className="rounded-pill" placement="top"
+                                        <Button type="button" color='danger' style={{ textAlign: 'right' }} placement="top"
                                             onClick={() => handleClickHapus()}>
                                             Hapus
                                         </Button>
