@@ -141,6 +141,7 @@ const RL5_2 = () => {
                 </Col>
                 <Col lg={2}>
                   <Button
+                    color="info"
                     type="submit"
                     placement="top"
                     id="tooltipTopPencarian"

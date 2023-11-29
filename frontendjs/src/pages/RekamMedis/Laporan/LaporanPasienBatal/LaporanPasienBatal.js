@@ -186,41 +186,35 @@ const LaporanPasienBatal = () => {
                             <div className='mb-2 row-header'>
                                 <Row>
                                     <Col sm={3}>
-                                        <div className="input-group">
-                                            <KontainerFlatpickr
-                                                id="tglstart"
-                                                options={{
-                                                    enableTime: true,
-                                                    // mode: "range",
-                                                    dateFormat: "Y-m-d",
-                                                    defaultDate: "today"
-                                                }}
-                                                value={validation.values.tglstart}
-                                                onChange={([newDate]) => {
-                                                    validation.setFieldValue("tglstart", newDate.toISOString());
-                                                }}
-                                            />
-                                            <div className="input-group-text bg-secondary border-secondary text-white"><i className="ri-calendar-2-line"></i></div>
-                                        </div>
+                                        <KontainerFlatpickr
+                                            id="tglstart"
+                                            options={{
+                                                enableTime: true,
+                                                // mode: "range",
+                                                dateFormat: "Y-m-d",
+                                                defaultDate: "today"
+                                            }}
+                                            value={validation.values.tglstart}
+                                            onChange={([newDate]) => {
+                                                validation.setFieldValue("tglstart", newDate.toISOString());
+                                            }}
+                                        />
                                     </Col>
                                     <Col lg={1}><h4>s/d</h4></Col>
                                     <Col sm={3}>
-                                        <div className="input-group">
-                                            <KontainerFlatpickr
-                                                id="tglend"
-                                                options={{
-                                                    enableTime: true,
-                                                    // mode: "range",
-                                                    dateFormat: "Y-m-d",
-                                                    defaultDate: "today"
-                                                }}
-                                                value={validation.values.tglend}
-                                                onChange={([newDate]) => {
-                                                    validation.setFieldValue("tglend", newDate.toISOString());
-                                                }}
-                                            />
-                                            <div className="input-group-text bg-secondary border-secondary text-white"><i className="ri-calendar-2-line"></i></div>
-                                        </div>
+                                        <KontainerFlatpickr
+                                            id="tglend"
+                                            options={{
+                                                enableTime: true,
+                                                // mode: "range",
+                                                dateFormat: "Y-m-d",
+                                                defaultDate: "today"
+                                            }}
+                                            value={validation.values.tglend}
+                                            onChange={([newDate]) => {
+                                                validation.setFieldValue("tglend", newDate.toISOString());
+                                            }}
+                                        />
                                     </Col>
                                     <Col lg={3}>
                                         <div className="d-flex justify-content-sm-end">
@@ -233,7 +227,7 @@ const LaporanPasienBatal = () => {
                                         </div>
                                     </Col>
                                     <Col lg={2}>
-                                        <Button type="button" placement="top" id="tooltipTopPencarian" onClick={handleClickCari}>
+                                        <Button color='info' type="button" placement="top" id="tooltipTopPencarian" onClick={handleClickCari}>
                                             CARI
                                         </Button>
                                         <UncontrolledTooltip placement="top" target="tooltipTopPencarian" > Pencarian </UncontrolledTooltip>
@@ -340,7 +334,7 @@ const LaporanPasienBatal = () => {
                                     </Col>
                                 </Row>
                             </div>
-                            <Button type="button" placement="top" id="tooltipTopPencarian" onClick={handleExport}>
+                            <Button color='info' type="button" placement="top" id="tooltipTopPencarian" onClick={handleExport}>
                                 Export to Excel
                             </Button>
                             <div id="table-gridjs">

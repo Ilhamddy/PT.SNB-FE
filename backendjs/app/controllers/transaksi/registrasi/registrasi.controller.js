@@ -248,7 +248,7 @@ const savePasien = async (req, res) => {
                     nocm
                 })
         }
-        transaction.commit();
+        await transaction.commit();
         res.status(200).send({
             data: result,
             status: "success",
@@ -278,7 +278,7 @@ function formatDate(date) {
     return [year, month, day].join('-');
 }
 
-// sementara aja nanti refactor TODO:
+// sementara eslint-disable aja nanti refactor TODO:
 // eslint-disable-next-line max-lines-per-function
 async function saveRegistrasiPasien(req, res) {
     const logger = res.locals.logger

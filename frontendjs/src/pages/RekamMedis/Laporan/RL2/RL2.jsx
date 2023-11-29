@@ -129,50 +129,9 @@ const RL2 = () => {
           >
             <Card className="p-5">
               <Row>
-                {/* <Col lg={3}>
-                  <KontainerFlatpickr
-                    isError={vSetValidation.touched?.start &&
-                      !!vSetValidation.errors?.start}
-                    id="start"
-                    options={{
-                      dateFormat: 'Y-m-d',
-                      defaultDate: 'today',
-                    }}
-                    value={vSetValidation.values.start || dateNow}
-                    onChange={([newDate]) => {
-                      vSetValidation.setFieldValue('start', newDate.toISOString())
-                    }}
-                  />
-                  {vSetValidation.touched?.start
-                    && !!vSetValidation.errors.start && (
-                      <FormFeedback type="invalid">
-                        <div>{vSetValidation.errors.start}</div>
-                      </FormFeedback>
-                    )}
-                </Col>
-                <Col sm={3}>
-                  <KontainerFlatpickr
-                    isError={vSetValidation.touched?.end &&
-                      !!vSetValidation.errors?.end}
-                    id="end"
-                    options={{
-                      dateFormat: 'Y-m-d',
-                      defaultDate: 'today',
-                    }}
-                    value={vSetValidation.values.end || dateNow}
-                    onChange={([newDate]) => {
-                      vSetValidation.setFieldValue('end', newDate.toISOString())
-                    }}
-                  />
-                  {vSetValidation.touched?.end
-                    && !!vSetValidation.errors.end && (
-                      <FormFeedback type="invalid">
-                        <div>{vSetValidation.errors.end}</div>
-                      </FormFeedback>
-                    )}
-                </Col> */}
                 <Col lg={2}>
                   <Button
+                    color="info"
                     type="submit"
                     placement="top"
                     id="tooltipTopPencarian"
@@ -189,6 +148,7 @@ const RL2 = () => {
                 </Col>
                 <Col lg={2}>
                   <Button
+                    color="info"
                     type="button"
                     placement="top"
                     id="tooltipTopPencarian"

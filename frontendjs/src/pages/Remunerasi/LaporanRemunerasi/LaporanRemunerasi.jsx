@@ -384,6 +384,7 @@ const LaporanRemunerasi = () => {
             <Card>
               <CardBody>
                 <Button
+                  color="info"
                   type="button"
                   placement="top"
                   id="tooltipTopPencarian"
