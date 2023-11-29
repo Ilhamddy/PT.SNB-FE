@@ -203,7 +203,7 @@ const Diagnosaix = () => {
                                 <CardHeader style={{ backgroundColor: "#FFCB46",
             borderTopLeftRadius: '24px', borderTopRightRadius: '24px',
             padding: '10px 15px' }}>
-                                    <h4 className="card-title mb-0" style={{ color: '#ffffff' }}>ICD 9</h4>
+                                    <h4 className="card-title mb-0" style={{ color: 'black' }}>ICD 9</h4>
                                 </CardHeader>
                                 <CardBody>
                                     <Row className="gy-2">
@@ -299,7 +299,7 @@ const Diagnosaix = () => {
                                 <CardHeader style={{ backgroundColor: "#FFCB46",
             borderTopLeftRadius: '24px', borderTopRightRadius: '24px',
             padding: '10px 15px' }}>
-                                    <h4 className="card-title mb-0" style={{ color: '#ffffff' }}>Riwayat ICD 9</h4>
+                                    <h4 className="card-title mb-0" style={{ color: 'black' }}>Riwayat ICD 9</h4>
                                 </CardHeader>
                                 <CardBody>
                                     <div id="table-gridjs">

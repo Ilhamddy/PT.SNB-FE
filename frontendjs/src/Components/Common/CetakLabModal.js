@@ -103,7 +103,7 @@ const CetakLabModal = ({ show, norecdp, norecap, onCloseClick,tempNorecPel }) =>
                                     <CardHeader style={{ backgroundColor: "#B57602",
             borderTopLeftRadius: '24px', borderTopRightRadius: '24px',
             padding: '10px 15px' }}>
-                                        <h4 className="card-title mb-0" style={{ color: '#ffffff' }}>Cetak Hasil Laboratorium</h4>
+                                        <h4 className="card-title mb-0" style={{ color: 'black' }}>Cetak Hasil Laboratorium</h4>
                                     </CardHeader>
                                     <CardBody>
 

@@ -191,7 +191,7 @@ const RegistrasiList = () => {
                             <CardHeader style={{ backgroundColor: "#FFCB46",
                                 borderTopLeftRadius: '24px', borderTopRightRadius: '24px',
                                 padding: '10px 15px' }}>
-                                    <h4 className="card-title mb-0" style={{ color: '#ffffff' }}>Daftar Pasien Lama</h4>
+                                    <h4 className="card-title mb-0" style={{ color: 'black' }}>Daftar Pasien Lama</h4>
                                 </CardHeader>
                                 <CardBody>
                                     <div id="table-gridjs">
