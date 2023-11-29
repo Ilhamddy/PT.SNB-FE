@@ -106,6 +106,7 @@ const savePasienMandiri = async (req, res) => {
             todayEnd.setHours(23, 59, 59, 999)
             let resultCountNoantrianDokter = await pool.query(queriesRegistrasi.qNoAntrian, [dokter, todayStart, todayEnd]);
             let noantrian = parseFloat(resultCountNoantrianDokter.rows[0].count) + 1
+            const noreservasi = await hCreateNores(jadwal)
             const noregistrasi = await hCreateNoreg(jadwal)
             const pasien = (await pool.query(qGetDaftarPasienLama, [req.id])).rows[0]
             let statuspasien = 'LAMA'
@@ -141,7 +142,7 @@ const savePasienMandiri = async (req, res) => {
                 kdprofile: 0,
                 statusenabled: true,
                 nocmfk: daftarPasien.nocmfk,
-                noreservasi: "R" + noregistrasi,
+                noreservasi: "R" + noreservasi,
                 objectunitfk: poliklinik,
                 objectdokterfk: dokter,
                 tglrencana: new Date(jadwal),
@@ -241,6 +242,31 @@ export const hCreateNoreg = async (date) => {
         todayDate = '0' + todayDate;
     let query = `select count(norec) from t_daftarpasien
     where tglregistrasi between $1 and $2`
+    let resultCount = await pool.query(query, [todayStart, todayEnd]);
+    let noregistrasi = parseFloat(resultCount.rows[0].count) + 1
+    for (let x = resultCount.rows[0].count.toString().length; x < 4; x++) {
+        if (noregistrasi.toString().length !== 4)
+            noregistrasi = '0' + noregistrasi;
+    }
+    noregistrasi = 
+        today.getFullYear() + todayMonth.toString() + todayDate.toString() + noregistrasi
+    return noregistrasi
+}
+
+export const hCreateNores = async (date) => {
+    let today = new Date(date);
+    let todayStart = new Date(date);
+    todayStart.setHours(0, 0, 0, 0)
+    let todayEnd = new Date(date);
+    todayEnd.setHours(23, 59, 59, 999)
+    let todayMonth = '' + (today.getMonth() + 1)
+    if (todayMonth.length < 2)
+        todayMonth = '0' + todayMonth;
+    let todayDate = '' + (today.getDate())
+    if (todayDate.length < 2)
+        todayDate = '0' + todayDate;
+    let query = `select count(norec) from t_registrasionline
+    where tglrencana between $1 and $2`
     let resultCount = await pool.query(query, [todayStart, todayEnd]);
     let noregistrasi = parseFloat(resultCount.rows[0].count) + 1
     for (let x = resultCount.rows[0].count.toString().length; x < 4; x++) {
