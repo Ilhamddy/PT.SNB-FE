@@ -133,6 +133,7 @@ const savePasienMandiri = async (req, res) => {
                 objectpjpasienfk: null,
                 objectcaramasukfk: null,
                 statusenabled: true,
+                caradaftar: 'RO'
             }, { transaction });
             const norecRegistrasi = uuid.v4().substring(0, 32);
             const regisOnline = await db.t_registrasionline.create({

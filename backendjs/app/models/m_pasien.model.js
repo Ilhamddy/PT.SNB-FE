@@ -140,7 +140,7 @@ export default (sequelize, Sequelize) => {
         nocm: {
             type: Sequelize.STRING,
         },
-        objectstatuskendalirmfk: {
+        objectstatuskendalirmfk: { // ini adalah untuk penanda jika pasien tidak daftar, tetapi dokumennya di pinjam
             type: Sequelize.INTEGER,
         },
         nocmtemp: {

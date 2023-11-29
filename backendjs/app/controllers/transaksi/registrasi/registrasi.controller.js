@@ -385,7 +385,8 @@ async function saveRegistrasiPasien(req, res) {
                 objectpjpasienfk: req.body.penanggungjawab,
                 objectcaramasukfk: req.body.caramasuk,
                 statusenabled: true,
-                statuspasien: req.body.statuspasien
+                statuspasien: req.body.statuspasien,
+                caradaftar: 'LOKET'
             }, { transaction });
             daftarPasien = daftarPasien.toJSON()
         }

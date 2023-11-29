@@ -121,7 +121,8 @@ const saveRegistrasiPasienKiosk = async (req, res) => {
                 objectpenjaminfk: objectpenjaminfk,
                 objectcaramasukfk: req.body.caramasuk,
                 statusenabled: true,
-                statuspasien: req.body.statuspasien
+                statuspasien: req.body.statuspasien,
+                caradaftar: 'KIOSK'
             }, { transaction });
 
             let norecAP = uuid.v4().substring(0, 32)
