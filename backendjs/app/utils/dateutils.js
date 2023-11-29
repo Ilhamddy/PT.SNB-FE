@@ -35,6 +35,11 @@ export const getDateEndNull = (date) => {
     return todayEnd
 }
 
+/**
+ * 
+ * @param {string | Date | null } [date] 
+ * @returns 
+ */
 export const getDateStartEnd = (date) => {
     let todayStart = date ? new Date(date) : new Date() // default to today
     todayStart.setHours(0, 0, 0, 0)

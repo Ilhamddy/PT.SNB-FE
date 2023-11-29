@@ -268,12 +268,12 @@ export const hCreateNores = async (date) => {
     let query = `select count(norec) from t_registrasionline
     where tglrencana between $1 and $2`
     let resultCount = await pool.query(query, [todayStart, todayEnd]);
-    let noregistrasi = parseFloat(resultCount.rows[0].count) + 1
+    let noreservasi = parseFloat(resultCount.rows[0].count) + 1
     for (let x = resultCount.rows[0].count.toString().length; x < 4; x++) {
-        if (noregistrasi.toString().length !== 4)
-            noregistrasi = '0' + noregistrasi;
+        if (noreservasi.toString().length !== 4)
+            noreservasi = '0' + noreservasi;
     }
-    noregistrasi = 
-        today.getFullYear() + todayMonth.toString() + todayDate.toString() + noregistrasi
-    return noregistrasi
+    noreservasi = 
+        today.getFullYear() + todayMonth.toString() + todayDate.toString() + noreservasi
+    return noreservasi
 }

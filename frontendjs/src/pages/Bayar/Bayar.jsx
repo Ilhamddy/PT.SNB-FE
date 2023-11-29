@@ -260,7 +260,7 @@ const Bayar = () => {
     0
   )
   let totalTagihan = listPelayanan.reduce(
-    (prev, pel) => prev + (pel.no_bukti ? 0 : pel.total || 0),
+    (prev, pel) => prev + (pel.total || 0),
     0
   )
   const nominalklaim = kepesertaan.reduce(
@@ -409,10 +409,24 @@ const Bayar = () => {
     }
   }, [dispatch])
 
+  useEffect(() => {
+    const payment = initPayment(dateNow)
+    const setFF = validation.setFieldValue
+    if (bayarBefore) {
+      const caraBayarBefore = bayarBefore.carabayar.map((caraBayar) => ({
+        ...initPayment(dateNow),
+        ...caraBayar,
+      }))
+      setFF('payment', caraBayarBefore)
+    } else {
+      setFF('payment', [payment])
+    }
+  }, [dateNow, bayarBefore, validation.setFieldValue])
+
   return (
     <div className="page-content page-bayar">
       <Container fluid>
-        <BreadCrumb title="Setting Produk" pageTitle="Setting Produk" />
+        <BreadCrumb title="Bayar Pelayanan" pageTitle="Payment" />
         <Form
           onSubmit={(e) => {
             e.preventDefault()
@@ -442,6 +456,7 @@ const Bayar = () => {
                             id={`metodebayar${indexPayment}`}
                             name={`metodebayar${indexPayment}`}
                             options={comboboxpayment?.metodeBayar || []}
+                            isDisabled={!!buktiBayar}
                             onChange={(e) =>
                               changePayment(
                                 'metodebayar',
@@ -482,6 +497,7 @@ const Bayar = () => {
                                   (data, key) => (
                                     <div className="d-flex flex-row" key={key}>
                                       <Input
+                                        disabled={!!buktiBayar}
                                         className="form-check-input"
                                         type="radio"
                                         id={`radio-payment-${key}-${indexPayment}`}
@@ -525,6 +541,7 @@ const Bayar = () => {
                           </Label>
                           <div>
                             <Input
+                              disabled={!!buktiBayar}
                               id={`approvalcode${indexPayment}`}
                               name={`approvalcode${indexPayment}`}
                               type="text"
@@ -593,6 +610,7 @@ const Bayar = () => {
                       </Row>
                       <div>
                         <Input
+                          disabled={!!buktiBayar}
                           id={`nominalbayar${indexPayment}}`}
                           name={`nominalbayar${indexPayment}`}
                           type="string"
@@ -634,6 +652,7 @@ const Bayar = () => {
                           </Label>
                           <div>
                             <CustomSelect
+                              isDisabled={!!buktiBayar}
                               id={`rekeningrs${indexPayment}}`}
                               name={`rekeningrs${indexPayment}`}
                               options={filterRekeningRs(
@@ -716,6 +735,7 @@ const Bayar = () => {
                       type="text"
                       onChange={validation.handleChange}
                       value={validation.values.pjpasien || ''}
+                      disabled={!!buktiBayar}
                       invalid={
                         validation.touched.pjpasien &&
                         !!validation.errors.pjpasien
@@ -739,6 +759,7 @@ const Bayar = () => {
                   </Label>
                   <div>
                     <Input
+                      disabled={!!buktiBayar}
                       id={`keterangan`}
                       name={`keterangan`}
                       type="text"
@@ -867,7 +888,7 @@ const Bayar = () => {
                     {!buktiBayar && (
                       <Button
                         type="submit"
-                        color="info"
+                        color="success"
                         placement="top"
                         id="tooltipTop"
                       >

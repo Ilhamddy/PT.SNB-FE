@@ -106,10 +106,11 @@ function* onGetBuktiBayarCreate({payload: {body, callback}}) {
     try {
         const response = yield call(servicePayment.createBuktiBayar, body);
         yield put(buktiBayarCreateSuccess(response.data));
-        toast.success(response.msg, { autoClose: 3000 });
+        toast.success(response?.data?.msg || "Sukses", { autoClose: 3000 });
         callback && callback();
     } catch (error) {
         console.error(error)
+        toast.error(error.response?.data?.msg || "Eror")
         yield put(buktiBayarCreateError(error));
     }
 }

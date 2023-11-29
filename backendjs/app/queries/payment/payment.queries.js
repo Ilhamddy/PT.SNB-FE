@@ -346,19 +346,82 @@ const qGetDepositFromNota =
             ORDER BY dpst.tglinput DESC
     `
 
+
 const qGetBuktiBayarFromNota =
     `
 SELECT
-    tbb.*,
-    td.noregistrasi AS noregistrasi,
-    td.nocmfk AS nocmfk,
-    td.tglregistrasi AS tglregistrasi,
-    mp.namapasien AS namapasien
+    tbb.norec,
+    tbb.kdprofile,
+    tbb.statusenabled,
+    tbb.objectdaftarpasienfk,
+    tbb.totaltagihan,
+    tbb.deposit,
+    tbb.totalbayar,
+    tbb.no_bukti,
+    tbb.objectpegawaifk,
+    tbb.objectnotapelayananpasienfk,
+    tbb.objectmetodebayarfk,
+    tbb.objectjenisnontunaifk,
+    tbb.objectrekeningrsfk,
+    tbb.pjpasien,
+    tbb.diskon,
+    tbb.klaim,
+    tbb.objectpiutangpasienfk,
+    tbb.keterangan,
+    tbb.tglinput,
+    tbb.tglbatal,
+    tbb.objectjenispembayaranfk,
+    tbb.objectsetorankasirfk,
+    tbb.objectdepositpasienfk,
+    tdp.noregistrasi AS noregistrasi,
+    tdp.nocmfk AS nocmfk,
+    tdp.tglregistrasi AS tglregistrasi,
+    mp.namapasien AS namapasien,
+    JSON_AGG(
+        JSON_BUILD_OBJECT
+        (
+            'metodebayar', tcb.objectmetodebayarfk,
+            'nontunai', tcb.objectjenisnontunaifk,
+            'pjpasien', tcb.pjpasien,
+            'approvalcode', tcb.approvalcode,
+            'nominalbayar', tcb.totalbayar,
+            'rekeningrs', tcb.objectrekeningrsfk
+        )
+    ) AS carabayar
 FROM t_buktibayarpasien tbb
-    LEFT JOIN t_daftarpasien td ON td.norec = tbb.objectdaftarpasienfk
-    LEFT JOIN m_pasien mp ON mp.id = td.nocmfk
-WHERE objectnotapelayananpasienfk = $1
+    LEFT JOIN t_daftarpasien tdp ON tdp.norec = tbb.objectdaftarpasienfk
+    LEFT JOIN m_pasien mp ON mp.id = tdp.nocmfk
+    LEFT JOIN t_carabayar tcb ON tcb.objectbuktibayarpasienfk = tbb.norec
+WHERE tbb.objectnotapelayananpasienfk = $1
     AND tbb.statusenabled = true
+GROUP BY
+    tbb.norec,
+    tbb.kdprofile,
+    tbb.statusenabled,
+    tbb.objectdaftarpasienfk,
+    tbb.totaltagihan,
+    tbb.deposit,
+    tbb.totalbayar,
+    tbb.no_bukti,
+    tbb.objectpegawaifk,
+    tbb.objectnotapelayananpasienfk,
+    tbb.objectmetodebayarfk,
+    tbb.objectjenisnontunaifk,
+    tbb.objectrekeningrsfk,
+    tbb.pjpasien,
+    tbb.diskon,
+    tbb.klaim,
+    tbb.objectpiutangpasienfk,
+    tbb.keterangan,
+    tbb.tglinput,
+    tbb.tglbatal,
+    tbb.objectjenispembayaranfk,
+    tbb.objectsetorankasirfk,
+    tbb.objectdepositpasienfk,
+    tdp.noregistrasi,
+    tdp.nocmfk,
+    tdp.tglregistrasi,
+    mp.namapasien
     `
 
 const qGetCaraBayarFromBB =
