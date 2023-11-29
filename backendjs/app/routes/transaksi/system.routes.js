@@ -30,4 +30,10 @@ export default function (app) {
             res.send("Mencoba berhasil")
         }
     )
+
+    app.get(
+        "/api/system/kill",
+        [],
+        controller.crashEndpoint
+    )
 }

@@ -85,7 +85,8 @@ export const hCheckCaptcha = (uuid, answer) => {
     tempCaptcha = tempCaptcha.filter(f => f.expired > new Date())
     const captcha = tempCaptcha.find(f => f.uuid === uuid )
     if(captcha){
-      if(captcha.answer === answer){
+      const lowerCase = answer.toLowerCase()
+      if(captcha.answer === lowerCase){
         tempCaptcha = tempCaptcha.filter(f => f.uuit !== uuid)
         return {correct: true, code: 200}
       }
