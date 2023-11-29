@@ -228,7 +228,7 @@ const DaftarPasienMutasi = () => {
                                         </div>
                                     </Col>
                                     <Col lg={2}>
-                                        <Button type="button" placement="top" id="tooltipTopPencarian" onClick={handleClickCari}>
+                                        <Button color='info' type="button" placement="top" id="tooltipTopPencarian" onClick={handleClickCari}>
                                             CARI
                                         </Button>
                                         <UncontrolledTooltip placement="top" target="tooltipTopPencarian" > Pencarian </UncontrolledTooltip>
