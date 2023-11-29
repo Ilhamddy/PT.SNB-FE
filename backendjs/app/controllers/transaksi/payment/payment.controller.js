@@ -137,13 +137,29 @@ const createNotaVerif = async (req, res) => {
         const body = req.body
         const totalTagihan = body.total
         const norecppdone = body.norecppdone
+        const {todayStart, todayEnd} = getDateStartEnd()
+        let { count } = await t_notapelayananpasien.findAndCountAll({
+            where: {
+                tglinput: {
+                    [db.Sequelize.Op.between]: [todayStart, todayEnd]
+                }
+            },
+            transaction: transaction
+        })
+        count = count + 1
+        let nonota = ("0000" + count).slice(-4)
+        let tanggal = ("00" + todayStart.getDate()).slice(-2)
+        let bulan = ("00" + todayStart.getMonth()).slice(-2)
+        let tahun = ("" + todayStart.getFullYear()).slice(-4)
+        nonota = `V${tahun}${bulan}${tanggal}${nonota}`
+
         const addedNota = await t_notapelayananpasien.create({
             norec: norecnota,
             kdprofile: 0,
             statusenabled: true,
             objectdaftarpasienfk: body.objectdaftarpasienfk,
             total: totalTagihan,
-            no_nota: body.no_nota,
+            no_nota: nonota,
             objectpegawaifk: req.idPegawai,
             tglinput: new Date(),
             keterangan: body.keterangan
@@ -983,7 +999,7 @@ const hCreateBayar = async ( req, transaction) => {
         return total + payment.nominalbayar
     }, 0);
     const { todayStart, todayEnd } = getDateStartEnd()
-    const { count } = await t_buktibayarpasien.findAndCountAll({
+    let { count } = await t_buktibayarpasien.findAndCountAll({
         where: {
             tglinput: {
                 [db.Sequelize.Op.between]: [todayStart, todayEnd]
@@ -991,6 +1007,7 @@ const hCreateBayar = async ( req, transaction) => {
         },
         transaction: transaction
     })
+    count = count + 1
     let nobb = ("0000" + count).slice(-4)
     let tanggal = ("00" + todayStart.getDate()).slice(-2)
     let bulan = ("00" + todayStart.getMonth()).slice(-2)

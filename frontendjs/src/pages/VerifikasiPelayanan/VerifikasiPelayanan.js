@@ -29,16 +29,14 @@ import LoadingTable from "../../Components/Table/LoadingTable";
 import { tableCustomStyles } from "../../Components/Table/tableCustomStyles";
 
 //TODO: ganti masukkan ke dalam komponen
-const dateAwalStart = (new Date(new Date() - 1000 * 60 * 60 * 24 * 3)).toISOString();
-const dateAwalEnd =  (new Date().toISOString())
 const date = new Date()
 
 
 const VerifikasiPelayanan = () => {
     const { norecdp } = useParams();
 
-    const [dateStart, setDateStart] = useState(dateAwalStart);
-    const [dateEnd, setDateEnd] = useState(dateAwalEnd);
+    const [dateStart] = useState(() => new Date().toISOString())
+    const [dateEnd] = useState(() => new Date().toISOString())
     const [search, setSearch] = useState("");
     const [instalasi, setInstalasi] = useState("");
     const dispatch = useDispatch();

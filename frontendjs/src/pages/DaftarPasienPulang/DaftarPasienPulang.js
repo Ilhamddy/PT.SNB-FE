@@ -60,10 +60,6 @@ const DaftarPasienPulang = () => {
     });
 
     useEffect(() => {
-        dispatch(daftarPasienPulangGet({
-            dateStart: dateStart,
-            dateEnd: dateEnd
-        }))
         dispatch(comboAsuransiGet());
         dispatch(comboRegistrasiGet());
     }, [dispatch,dateStart,dateEnd])
