@@ -106,6 +106,7 @@ const KendaliDokumen = () => {
             selector: row => row.tglregistrasi,
             sortable: true,
             // width: "50px"
+            wrap: true,
         },
         {
 
@@ -113,23 +114,27 @@ const KendaliDokumen = () => {
             selector: row => row.noregistrasi,
             sortable: true,
             // width: "150px"
+            wrap: true,
         },
         {
             name: <span className='font-weight-bold fs-13'>No. RM</span>,
             selector: row => row.nocm,
             sortable: true,
+            wrap: true,
         },
         {
             name: <span className='font-weight-bold fs-13'>Nama Pasien</span>,
             selector: row => row.namapasien,
             sortable: true,
             // width: "250px",
+            wrap: true,
         },
         {
             name: <span className='font-weight-bold fs-13'>Jenis Kelamin</span>,
             selector: row => row.jeniskelamin,
             sortable: true,
             // width: "250px",
+            wrap: true,
         },
         {
 
@@ -137,6 +142,7 @@ const KendaliDokumen = () => {
             selector: row => row.namaunit,
             sortable: true,
             // width: "150px"
+            wrap: true,
         },
         {
 
@@ -144,6 +150,7 @@ const KendaliDokumen = () => {
             selector: row => row.namarekanan,
             sortable: true,
             // width: "150px"
+            wrap: true,
         },
         {
 
@@ -151,6 +158,7 @@ const KendaliDokumen = () => {
             selector: row => row.statusdokumen,
             sortable: true,
             // width: "150px"
+            wrap: true,
         },
         {
 
@@ -158,6 +166,7 @@ const KendaliDokumen = () => {
             selector: row => row.caradaftar,
             sortable: true,
             // width: "150px"
+            wrap: true,
         },
         {
 
@@ -165,6 +174,15 @@ const KendaliDokumen = () => {
             selector: row => row.catatan,
             sortable: true,
             // width: "150px"
+            wrap: true,
+        },
+        {
+
+            name: <span className='font-weight-bold fs-13'>Waktu Dokumen</span>,
+            selector: row => row.respontime,
+            sortable: true,
+            // width: "150px"
+            wrap: true,
         },
     ];
     const current = new Date();

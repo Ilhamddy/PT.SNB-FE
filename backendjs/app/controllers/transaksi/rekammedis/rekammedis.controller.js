@@ -56,13 +56,12 @@ async function getListDaftarDokumenRekammedis(req, res) {
             taskid = ` and trm.objectstatuskendalirmfk is null`;
         }
 
-        const resultlistantreanpemeriksaan = await pool.query(`select dp.noregistrasi,mu.namaunit,ta.norec as norecap,
+        const resultlistantreanpemeriksaan = await pool.query(`select to_char( dp.tglregistrasi, TO_CHAR(age( dp.tglregistrasi,  now( )), 'mm Bulan DD'))||' Hari '||to_char( dp.tglregistrasi, TO_CHAR(age( dp.tglregistrasi,  now( )), 'HHmiss')) AS respontime,
+        TO_CHAR(dp.tglregistrasi, 'YYYY-MM-DD HH:mi:ss') AS tglregistrasi,dp.noregistrasi,mu.namaunit,ta.norec as norecap,
         mp.namapasien,mp.nocm,mp.objectstatuskendalirmfk as objectstatuskendalirmfkmp,
         trm.objectstatuskendalirmfk as objectstatuskendalirmfkap,
         dp.norec as norecdp,
         dp.objectunitlastfk, trm.norec as norectrm,
-        to_char(dp.tglregistrasi,
-            'YYYY-MM-DD') as tglregistrasi,
         mj.jeniskelamin,mr.namarekanan,
         case when mp.objectstatuskendalirmfk is null and trm.objectstatuskendalirmfk is null 
         then 'RAK' when mp.objectstatuskendalirmfk is not null then mrm.statuskendali else mrs.statuskendali end as statusdokumen,
@@ -81,6 +80,10 @@ async function getListDaftarDokumenRekammedis(req, res) {
         AND dp.noregistrasi IS NOT NULL --- jika null maka masih belum teregistrasi
         `);
 
+        resultlistantreanpemeriksaan.rows.forEach(element => {
+            element.respontime = element.respontime.substring(0, 17) + ' ' + element.respontime.substring(18);
+            element.respontime = element.respontime.replace(/-/g, ':');
+        });
         let tempres = resultlistantreanpemeriksaan.rows
 
         res.status(200).send({
