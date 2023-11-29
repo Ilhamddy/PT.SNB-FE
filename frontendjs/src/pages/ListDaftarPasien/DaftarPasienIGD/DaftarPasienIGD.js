@@ -230,10 +230,10 @@ const DaftarPasienIGD = () => {
                         </Col>
                         <Col lg={9}>
                             <Card>
-                            <CardHeader style={{ backgroundColor: "#FFCB46",
-                                borderTopLeftRadius: '24px', borderTopRightRadius: '24px',
-                                padding: '10px 15px' }}>
-                                    <h4 className="card-title mb-0" style={{ color: 'black' }}>Daftar Pasien IGD</h4>
+                                <CardHeader style={{ backgroundColor: "#FFCB46",
+                                    borderTopLeftRadius: '24px', borderTopRightRadius: '24px',
+                                    padding: '10px 15px' }}>
+                                        <h4 className="card-title mb-0" style={{ color: 'black' }}>Daftar Pasien IGD</h4>
                                 </CardHeader>
                                 <CardBody>
                                     <div className='mb-2'>
