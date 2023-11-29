@@ -308,14 +308,10 @@ const DaftarOrderRadiologi = () => {
                         </Col>
                         <Col lg={9}>
                             <Card>
-                                <CardHeader className="align-items-center d-flex">
-                                    <div className="live-preview">
-                                        <Row>
-                                            <Col>
-                                                <h4 className="card-title mb-0 flex-grow-1 mb-3">Daftar Order Radiologi <span style={{ color: '#FFCB46' }}></span></h4>
-                                            </Col>
-                                        </Row>
-                                    </div>
+                            <CardHeader style={{ backgroundColor: "#FFCB46",
+                                borderTopLeftRadius: '24px', borderTopRightRadius: '24px',
+                                padding: '10px 15px' }}>
+                                    <h4 className="card-title mb-0" style={{ color: 'black' }}>Daftar Order Radiologi</h4>
                                 </CardHeader>
                                 <CardBody>
                                     <div className='mb-2'>
