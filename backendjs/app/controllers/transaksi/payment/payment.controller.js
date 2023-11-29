@@ -86,6 +86,17 @@ const getPelayananFromVerif = async (req, res) => {
         const deposit = await pool.query(qGetDepositFromNota, [norecnota])
         let buktiBayar = await pool.query(qGetBuktiBayarFromNota, [norecnota])
         buktiBayar = buktiBayar.rows[0] || null
+        if(buktiBayar?.carabayar){
+            // masukkan nilai empty string karena di query susah
+            const newCaraBayars = [...buktiBayar.carabayar].map(caraBayar => {
+                const newCaraBayar = {...caraBayar}
+                Object.keys(newCaraBayar).forEach(function(key) {
+                    newCaraBayar[key] = newCaraBayar[key] || ""
+                });
+                return newCaraBayar
+            })
+            buktiBayar.carabayar = newCaraBayars
+        }
         if(buktiBayar){
             buktiBayar.createdCaraBayar 
                 = ((await pool.query(qGetCaraBayarFromBB, [buktiBayar.norec])).rows)
@@ -971,6 +982,21 @@ const hCreateBayar = async ( req, transaction) => {
     const totalPayment = objectBody.payment.reduce((total, payment) => {
         return total + payment.nominalbayar
     }, 0);
+    const { todayStart, todayEnd } = getDateStartEnd()
+    const { count } = await t_buktibayarpasien.findAndCountAll({
+        where: {
+            tglinput: {
+                [db.Sequelize.Op.between]: [todayStart, todayEnd]
+            }
+        },
+        transaction: transaction
+    })
+    let nobb = ("0000" + count).slice(-4)
+    let tanggal = ("00" + todayStart.getDate()).slice(-2)
+    let bulan = ("00" + todayStart.getMonth()).slice(-2)
+    let tahun = ("" + todayStart.getFullYear()).slice(-4)
+    nobb = `B${tahun}${bulan}${tanggal}${nobb}`
+
     await t_buktibayarpasien.create({
         norec: norecbukti,
         kdprofile: 0,
@@ -979,7 +1005,7 @@ const hCreateBayar = async ( req, transaction) => {
         totaltagihan: objectBody.totaltagihan,
         deposit: objectBody.deposit,
         totalbayar: totalPayment,
-        no_bukti: objectBody.nobukti,
+        no_bukti: nobb,
         objectpegawaifk: req.idPegawai,
         objectnotapelayananpasienfk: objectBody.norecnota || null,
         objectmetodebayarfk: null,

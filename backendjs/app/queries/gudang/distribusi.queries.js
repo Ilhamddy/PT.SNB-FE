@@ -191,9 +191,11 @@ FROM t_kirimbarang tkb
     LEFT JOIN t_kirimbarangdetail tkbd ON tkbd.objectdistribusibarangfk = tkb.norec
     LEFT JOIN m_produk mp ON mp.id = tkbd.objectprodukfk
     LEFT JOIN t_orderbarangdetail tod ON tod.norec = tkbd.objectorderbarangdetailfk
-    LEFT JOIN t_stokunit ts ON ts.objectprodukfk = tkbd.objectprodukfk 
-    AND ts.objectunitfk = tkb.objectunittujuanfk
-    AND ts.nobatch = tkbd.nobatch
+    LEFT JOIN t_stokunit ts ON (
+        ts.objectprodukfk = tkbd.objectprodukfk 
+        AND ts.objectunitfk = tkb.objectunitpengirimfk
+        AND ts.nobatch = tkbd.nobatch
+    )
     LEFT JOIN m_satuan ms ON ms.id = tkbd.objectsatuanfk
 WHERE (tkb.objectorderbarangfk IS NOT NULL AND tkb.objectorderbarangfk = $1) OR ($1 = '' AND tkb.norec = $2)
 `
