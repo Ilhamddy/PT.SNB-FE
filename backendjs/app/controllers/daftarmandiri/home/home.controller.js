@@ -167,7 +167,7 @@ const getCaptcha = async (req, res) => {
         const captchaObj = {
             ...initCaptcha,
             uuid: uuidCaptcha,
-            answer: newCaptcha.text,
+            answer: newCaptcha.text.toLowerCase(),
             expired: new Date(+ new Date() + (2 * 60 * 60 * 3600)),
         }
         const newCaptch = [...tempCaptcha, captchaObj]
