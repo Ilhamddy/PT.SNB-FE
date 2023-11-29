@@ -30,6 +30,11 @@ const pullGit = async (req, res) => {
     }
 }
 
+const crashEndpoint = async (req, res) => {
+    throw new Error("Crash Endpoint")
+}
+
 export default {
-    pullGit
+    pullGit,
+    crashEndpoint
 }
