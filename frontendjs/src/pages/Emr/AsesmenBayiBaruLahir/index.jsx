@@ -494,17 +494,8 @@ const AsesmenBayiBaruLahir = () => {
         action="#"
       >
         <Card>
-          <CardHeader
-            style={{
-              backgroundColor: '#FFCB46',
-              borderTopLeftRadius: '24px',
-              borderTopRightRadius: '24px',
-              padding: '10px 15px',
-            }}
-          >
-            <h4 className="card-title mb-0" style={{ color: '#ffffff' }}>
-              Riwayat Asesmen
-            </h4>
+          <CardHeader className="card-header-snb">
+            <h4 className="card-title mb-0">Riwayat Asesmen</h4>
           </CardHeader>
           <CardBody>
             <Col lg={12}>
@@ -527,17 +518,8 @@ const AsesmenBayiBaruLahir = () => {
           </CardBody>
         </Card>
         <Card>
-          <CardHeader
-            style={{
-              backgroundColor: '#FFCB46',
-              borderTopLeftRadius: '24px',
-              borderTopRightRadius: '24px',
-              padding: '10px 15px',
-            }}
-          >
-            <h4 className="card-title mb-0" style={{ color: '#ffffff' }}>
-              ALLOANAMNESA
-            </h4>
+          <CardHeader className="card-header-snb">
+            <h4 className="card-title mb-0">ALLOANAMNESA</h4>
           </CardHeader>
           <CardBody>
             <Row className="gy-2">
@@ -632,17 +614,8 @@ const AsesmenBayiBaruLahir = () => {
           </CardBody>
         </Card>
         <Card>
-          <CardHeader
-            style={{
-              backgroundColor: '#FFCB46',
-              borderTopLeftRadius: '24px',
-              borderTopRightRadius: '24px',
-              padding: '10px 15px',
-            }}
-          >
-            <h4 className="card-title mb-0" style={{ color: '#ffffff' }}>
-              Riwayat Kelahiran
-            </h4>
+          <CardHeader className="card-header-snb">
+            <h4 className="card-title mb-0">Riwayat Kelahiran</h4>
           </CardHeader>
           <CardBody>
             <Row className="gy-2">
@@ -1040,17 +1013,8 @@ const AsesmenBayiBaruLahir = () => {
           </CardBody>
         </Card>
         <Card>
-          <CardHeader
-            style={{
-              backgroundColor: '#FFCB46',
-              borderTopLeftRadius: '24px',
-              borderTopRightRadius: '24px',
-              padding: '10px 15px',
-            }}
-          >
-            <h4 className="card-title mb-0" style={{ color: '#ffffff' }}>
-              Keadaan Umum Bayi
-            </h4>
+          <CardHeader className="card-header-snb">
+            <h4 className="card-title mb-0">Keadaan Umum Bayi</h4>
           </CardHeader>
           <CardBody>
             <div className="border-bottom">
@@ -2356,17 +2320,8 @@ const AsesmenBayiBaruLahir = () => {
           </CardBody>
         </Card>
         <Card>
-          <CardHeader
-            style={{
-              backgroundColor: '#FFCB46',
-              borderTopLeftRadius: '24px',
-              borderTopRightRadius: '24px',
-              padding: '10px 15px',
-            }}
-          >
-            <h4 className="card-title mb-0" style={{ color: '#ffffff' }}>
-              Pemeriksaan Fisik
-            </h4>
+          <CardHeader className="card-header-snb">
+            <h4 className="card-title mb-0">Pemeriksaan Fisik</h4>
           </CardHeader>
           <CardBody>
             <Row className="gy-2">
@@ -2864,17 +2819,8 @@ const AsesmenBayiBaruLahir = () => {
           </CardBody>
         </Card>
         <Card>
-          <CardHeader
-            style={{
-              backgroundColor: '#FFCB46',
-              borderTopLeftRadius: '24px',
-              borderTopRightRadius: '24px',
-              padding: '10px 15px',
-            }}
-          >
-            <h4 className="card-title mb-0" style={{ color: '#ffffff' }}>
-              Pemeriksaan Laboratorium
-            </h4>
+          <CardHeader className="card-header-snb">
+            <h4 className="card-title mb-0">Pemeriksaan Laboratorium</h4>
           </CardHeader>
           <CardBody>
             <Row className="gy-2">
@@ -2918,17 +2864,8 @@ const AsesmenBayiBaruLahir = () => {
           </CardBody>
         </Card>
         <Card>
-          <CardHeader
-            style={{
-              backgroundColor: '#FFCB46',
-              borderTopLeftRadius: '24px',
-              borderTopRightRadius: '24px',
-              padding: '10px 15px',
-            }}
-          >
-            <h4 className="card-title mb-0" style={{ color: '#ffffff' }}>
-              Diagnosa Kerja
-            </h4>
+          <CardHeader className="card-header-snb">
+            <h4 className="card-title mb-0">Diagnosa Kerja</h4>
           </CardHeader>
           <CardBody>
             <Row className="gy-2">
@@ -2972,17 +2909,8 @@ const AsesmenBayiBaruLahir = () => {
           </CardBody>
         </Card>
         <Card>
-          <CardHeader
-            style={{
-              backgroundColor: '#FFCB46',
-              borderTopLeftRadius: '24px',
-              borderTopRightRadius: '24px',
-              padding: '10px 15px',
-            }}
-          >
-            <h4 className="card-title mb-0" style={{ color: '#ffffff' }}>
-              Penatalaksanaan
-            </h4>
+          <CardHeader className="card-header-snb">
+            <h4 className="card-title mb-0">Penatalaksanaan</h4>
           </CardHeader>
           <CardBody>
             <Row className="gy-2">

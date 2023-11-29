@@ -32,6 +32,7 @@ import { BasicTable } from '../../Tables/DataTables/datatableCom';
 import DeleteModalCustom from '../../../Components/Common/DeleteModalCustom';
 import LoadingTable from '../../../Components/Table/LoadingTable';
 import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles';
+import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/KontainerFlatpickr';
 
 const dateAwalStart = (new Date(new Date() - 1000 * 60 * 60 * 24 * 3)).toISOString();
 const dateAwalEnd = (new Date()).toISOString()
@@ -1314,8 +1315,7 @@ const KlaimInacbg = () => {
                                                                     />
                                                                 </Col>
                                                                 <Col lg={3} className="mb-2">
-                                                                    <Flatpickr
-                                                                        className="form-control border-0 fs-5 dash-filter-picker shadow"
+                                                                    <KontainerFlatpickr
                                                                         options={{
                                                                             // mode: "range",
                                                                             dateFormat: "Y-m-d",
@@ -1329,8 +1329,7 @@ const KlaimInacbg = () => {
                                                                 </Col>
                                                                 <Col lg={1} className="mt-2"><span>s/d</span></Col>
                                                                 <Col lg={3} className="mb-2">
-                                                                    <Flatpickr
-                                                                        className="form-control border-0 fs-5 dash-filter-picker shadow"
+                                                                    <KontainerFlatpickr
                                                                         options={{
                                                                             // mode: "range",
                                                                             dateFormat: "Y-m-d",
@@ -1344,7 +1343,7 @@ const KlaimInacbg = () => {
                                                                 </Col>
                                                                 <hr />
                                                                 <Col lg={12} style={{ textAlign: 'right' }}>
-                                                                    <Button type="button" color="info" className="rounded-pill" placement="top" >
+                                                                    <Button type="button" color="info" placement="top" >
                                                                         Cari
                                                                     </Button>
                                                                 </Col>
@@ -2145,7 +2144,7 @@ const KlaimInacbg = () => {
                                         </div> */}
                                         {stateTombolGrouping ? (
                                             <Col xxl={12} sm={12}>
-                                                <Button type="button" style={{ backgroundColor: '#192a56' }} className="rounded-pill" placement="top" onClick={handleClickGrouping}>
+                                                <Button type="button" color='info' placement="top" onClick={handleClickGrouping}>
                                                     GROUPING
                                                 </Button>
                                             </Col>
@@ -2340,19 +2339,19 @@ const KlaimInacbg = () => {
                                                 ) : null}
                                                 {stateTombolGrouping ? (
                                                     <Col xxl={12} sm={12}>
-                                                        <Button type="button" style={{ backgroundColor: '#192a56' }} className="rounded-pill" placement="top" onClick={handleClickFinal}>
+                                                        <Button type="button" style={{ backgroundColor: '#192a56' }} color='info' placement="top" onClick={handleClickFinal}>
                                                             Final Klaim
                                                         </Button>
                                                     </Col>
                                                 ) :
                                                     <Row className="row g-2">
                                                         <Col lg={3} sm={3}>
-                                                            <Button type="button" color='danger' className="rounded-pill" placement="top" onClick={handleClickEditKlaim}>
+                                                            <Button type="button" color='danger' placement="top" onClick={handleClickEditKlaim}>
                                                                 Edit Klaim
                                                             </Button>
                                                         </Col>
                                                         <Col lg={3} sm={3}>
-                                                            <Button type="button" style={{ backgroundColor: '#192a56' }} className="rounded-pill" placement="top" onClick={handleClickPrintFinal}>
+                                                            <Button type="button" style={{ backgroundColor: '#192a56' }} color='info' placement="top" onClick={handleClickPrintFinal}>
                                                                 Print Klaim
                                                             </Button>
                                                         </Col>

@@ -16,6 +16,7 @@ import { ToastContainer } from "react-toastify";
 import { createOrUpdateVerifResep, getOrderResepFromNorec } from "../../store/farmasi/action";
 import Flatpickr from "react-flatpickr";
 import { useHandleChangeResep, useHandleChangeAllResep, useColumnsResep, useColumnsResepRacikan } from "../PenjualanObatBebas/PenjualanObatBebas";
+import KontainerFlatpickr from "../../Components/KontainerFlatpickr/KontainerFlatpickr";
 
 export const initValueResep = {
     norecverif: "",
@@ -322,11 +323,9 @@ const VerifikasiResep = () => {
                             </Label>
                         </Col>
                         <Col lg={4}>
-                            <Flatpickr
-                                className={
-                                    `form-control input ` + 
-                                    `${!!vResep?.errors.tanggalorder ? "is-invalid" : ""}`
-                                }
+                            <KontainerFlatpickr
+                                isError={vResep.touched?.tanggalorder 
+                                    && !!vResep.errors?.tanggalorder}
                                 id="tanggalorder"
                                 options={{
                                     dateFormat: "Y-m-d H:i",

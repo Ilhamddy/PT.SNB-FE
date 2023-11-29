@@ -16,6 +16,7 @@ import PrintTemplate from "../../pages/Print/PrintTemplate/PrintTemplate";
 import {
     daftarPasienNorecGet,listCetakHasiilLabGet
 } from "../../store/actions";
+import KontainerFlatpickr from "../KontainerFlatpickr/KontainerFlatpickr";
 
 const CetakLabModal = ({ show, norecdp, norecap, onCloseClick,tempNorecPel }) => {
     const dispatch = useDispatch();
@@ -100,9 +101,7 @@ const CetakLabModal = ({ show, norecdp, norecap, onCloseClick,tempNorecPel }) =>
                                 className="gy-4"
                                 action="#">
                                 <Card>
-                                    <CardHeader style={{ backgroundColor: "#B57602",
-            borderTopLeftRadius: '24px', borderTopRightRadius: '24px',
-            padding: '10px 15px' }}>
+                                    <CardHeader className="card-header-snb">
                                         <h4 className="card-title mb-0" style={{ color: 'black' }}>Cetak Hasil Laboratorium</h4>
                                     </CardHeader>
                                     <CardBody>
@@ -176,85 +175,74 @@ const CetakLabModal = ({ show, norecdp, norecap, onCloseClick,tempNorecPel }) =>
                                                 <div className="mt-2">
                                                     <Label style={{ color: "black" }} htmlFor="tipediagnosa" className="form-label">Tanggal Pelayanan</Label>
                                                 </div>
-                                                <div>
-                                                    <Flatpickr
-                                                        id="tgllayanan"
-                                                        className="form-control border-0 fs-5 dash-filter-picker shadow"
-                                                        options={{
-                                                            enableTime: true,
-                                                            // mode: "range",
-                                                            dateFormat: "Y-m-d H:i",
-                                                            defaultDate: "today"
-                                                        }}
-                                                        value={validation.values.tgllayanan}
-                                                        onChange={([newDate]) => {
-                                                            validation.setFieldValue("tgllayanan", newDate.toISOString());
-                                                        }}
-                                                    />
-                                                </div>
+                                                <KontainerFlatpickr
+                                                    id="tgllayanan"
+                                                    options={{
+                                                        enableTime: true,
+                                                        // mode: "range",
+                                                        dateFormat: "Y-m-d H:i",
+                                                        defaultDate: "today"
+                                                    }}
+                                                    value={validation.values.tgllayanan}
+                                                    onChange={([newDate]) => {
+                                                        validation.setFieldValue("tgllayanan", newDate.toISOString());
+                                                    }}
+                                                />
                                             </Col>
                                             <Col lg={6}>
                                                 <div className="mt-2">
                                                     <Label style={{ color: "black" }} htmlFor="tipediagnosa" className="form-label">Tanggal Keluar Hasil</Label>
                                                 </div>
-                                                <div>
-                                                    <Flatpickr
-                                                        id="tglhasil"
-                                                        className="form-control border-0 fs-5 dash-filter-picker shadow"
-                                                        options={{
-                                                            enableTime: true,
-                                                            // mode: "range",
-                                                            dateFormat: "Y-m-d H:i",
-                                                            defaultDate: "today"
-                                                        }}
-                                                        value={validation.values.tglhasil}
-                                                        onChange={([newDate]) => {
-                                                            validation.setFieldValue("tglhasil", newDate.toISOString());
-                                                        }}
-                                                    />
-                                                </div>
+                                                <KontainerFlatpickr
+                                                    id="tglhasil"
+                                                    options={{
+                                                        enableTime: true,
+                                                        // mode: "range",
+                                                        dateFormat: "Y-m-d H:i",
+                                                        defaultDate: "today"
+                                                    }}
+                                                    value={validation.values.tglhasil}
+                                                    onChange={([newDate]) => {
+                                                        validation.setFieldValue("tglhasil", newDate.toISOString());
+                                                    }}
+                                                />
                                             </Col>
                                             <Col lg={6}>
                                                 <div className="mt-2">
                                                     <Label style={{ color: "black" }} htmlFor="tipediagnosa" className="form-label">Tanggal Cetak</Label>
                                                 </div>
-                                                <div>
-                                                    <Flatpickr
-                                                        id="tglcetak"
-                                                        className="form-control border-0 fs-5 dash-filter-picker shadow"
-                                                        options={{
-                                                            enableTime: true,
-                                                            // mode: "range",
-                                                            dateFormat: "Y-m-d H:i",
-                                                            defaultDate: "today"
-                                                        }}
-                                                        value={validation.values.tglcetak}
-                                                        onChange={([newDate]) => {
-                                                            validation.setFieldValue("tglcetak", newDate.toISOString());
-                                                        }}
-                                                    />
-                                                </div>
+                                                <KontainerFlatpickr
+                                                    id="tglcetak"
+                                                    options={{
+                                                        enableTime: true,
+                                                        // mode: "range",
+                                                        dateFormat: "Y-m-d H:i",
+                                                        defaultDate: "today"
+                                                    }}
+                                                    value={validation.values.tglcetak}
+                                                    onChange={([newDate]) => {
+                                                        validation.setFieldValue("tglcetak", newDate.toISOString());
+                                                    }}
+                                                />
                                             </Col>
                                             <Col lg={6}>
                                                 <div className="mt-2">
                                                     <Label style={{ color: "black" }} htmlFor="tipediagnosa" className="form-label">Tanggal Pengambilan Sample</Label>
                                                 </div>
-                                                <div>
-                                                    <Flatpickr
-                                                        id="tglpengambilansample"
-                                                        className="form-control border-0 fs-5 dash-filter-picker shadow"
-                                                        options={{
-                                                            enableTime: true,
-                                                            // mode: "range",
-                                                            dateFormat: "Y-m-d H:i",
-                                                            defaultDate: "today"
-                                                        }}
-                                                        value={validation.values.tglpengambilansample}
-                                                        onChange={([newDate]) => {
-                                                            validation.setFieldValue("tglpengambilansample", newDate.toISOString());
-                                                        }}
-                                                    />
-                                                </div>
+                                                <KontainerFlatpickr
+                                                    id="tglpengambilansample"
+                                                    className="form-control border-0 fs-5 dash-filter-picker shadow"
+                                                    options={{
+                                                        enableTime: true,
+                                                        // mode: "range",
+                                                        dateFormat: "Y-m-d H:i",
+                                                        defaultDate: "today"
+                                                    }}
+                                                    value={validation.values.tglpengambilansample}
+                                                    onChange={([newDate]) => {
+                                                        validation.setFieldValue("tglpengambilansample", newDate.toISOString());
+                                                    }}
+                                                />
                                             </Col>
                                             <div className="d-flex gap-2 justify-content-center mt-4 mb-2">
                                                 <Button type="submit" color="info" placement="top" id="tooltipTop" >

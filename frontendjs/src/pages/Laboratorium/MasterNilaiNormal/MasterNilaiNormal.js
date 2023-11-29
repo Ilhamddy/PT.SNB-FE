@@ -290,14 +290,14 @@ const MasterNilaiNormal = () => {
                                                                 </td> */}
                                                                 <td>
                                                                     {row.statusDisable ? (
-                                                                        <Button type="button" style={{ backgroundColor: 'green' }} className="rounded-pill" placement="top"
+                                                                        <Button type="button" style={{ backgroundColor: 'green' }} color='info' placement="top"
                                                                             onClick={(e) => handleAddRow(row.id, row.level, row.urutan, row.lastUrutan)}>
                                                                             Tambah Sub
                                                                         </Button>
                                                                     ) :
                                                                         <>
                                                                             {row.level < 3 ? (
-                                                                                <Button type="button" style={{ backgroundColor: 'green' }} className="rounded-pill" placement="top"
+                                                                                <Button type="button" style={{ backgroundColor: 'green' }} color='info' placement="top"
                                                                                     onClick={(e) => handleAddRow(row.id, row.level, row.urutan, row.lastUrutan)}>
                                                                                     Tambah Sub
                                                                                 </Button>
@@ -310,8 +310,8 @@ const MasterNilaiNormal = () => {
                                                                 </td>
                                                                 {row.id > 1 && row.lastTombol ? (
                                                                     <td>
-                                                                        <Button type="button" style={{ backgroundColor: 'red' }} className="rounded-pill" placement="top"
-                                                                            onClick={() => handleDeleteRow(row.id, row.objectInduk)}>
+                                                                        <Button type="button" style={{ backgroundColor: 'red' }} color='info' placement="top"
+                                                                            onClick={() => handleDeleteRow(row.id, row.objectinduk)}>
                                                                             Hapus
                                                                         </Button>
                                                                     </td>
@@ -322,12 +322,12 @@ const MasterNilaiNormal = () => {
                                                 </Table>
                                             </Col>
                                             <Col>
-                                                <Button type="button" className="rounded-pill" placement="top" id="tooltipTopPencarian"
+                                                <Button type="button" color='info' placement="top" id="tooltipTopPencarian"
                                                     onClick={handleClickSimpan}
                                                 >
                                                     Simpan
                                                 </Button>
-                                                <Button type="button" color='danger' className="rounded-pill" placement="top" onClick={handleBack}>
+                                                <Button type="button" color='danger' placement="top" onClick={handleBack}>
                                                     Back
                                                 </Button>
 

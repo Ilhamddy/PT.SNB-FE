@@ -432,7 +432,7 @@ const SetNilaiNormal = () => {
                                                         </Col>
                                                         {stateButtonSimpan?(
                                                         <Col lg={2}>
-                                                            <Button type="submit" style={{ backgroundColor: '#192a56', textAlign: 'right' }} className="rounded-pill" placement="top">
+                                                            <Button type="submit" style={{ backgroundColor: '#192a56', textAlign: 'right' }} color="info" placement="top">
                                                                 Simpan
                                                             </Button>
                                                         </Col>

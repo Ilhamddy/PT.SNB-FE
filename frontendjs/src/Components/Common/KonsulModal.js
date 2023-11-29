@@ -98,11 +98,6 @@ const KonsulModal = ({ show, onSimpanClick,
                                             <FormFeedback type="invalid"><div>{validation.errors.doktertujuan}</div></FormFeedback>
                                         ) : null}
                                     </Col>
-                                    {/* <Col xxl={12} sm={12}>
-                                        <Button type="submit" color="info" className="rounded-pill" placement="top" id="tooltipTop">
-                                            SIMPAN
-                                        </Button>
-                                    </Col> */}
                                     <div className="d-flex gap-2 justify-content-center mt-4 mb-2">
                                         <button
                                             type="button"
@@ -112,7 +107,7 @@ const KonsulModal = ({ show, onSimpanClick,
                                         >
                                             Tutup
                                         </button>
-                                        <Button type="submit" color="info" className="rounded-pill" placement="top" id="tooltipTop" >
+                                        <Button type="submit" color="info" placement="top" id="tooltipTop" >
                                             SIMPAN
                                         </Button>
                                     </div>

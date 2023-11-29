@@ -35,6 +35,7 @@ import nenek from "../../../assets/images/svg/nenek.svg"
 import anakperempuan from "../../../assets/images/svg/anakperempuan.svg"
 import dewasaperempuan from "../../../assets/images/svg/dewasaperempuan.svg"
 import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles';
+import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/KontainerFlatpickr';
 
 const DaftarOrderRadiologi = () => {
     document.title = "Daftar Order Radiologi";
@@ -242,9 +243,9 @@ const DaftarOrderRadiologi = () => {
                                     <CardBody>
                                         <div className="d-flex justify-content-between">
                                             <div>
-                                                <p className="fw-medium text-muted mb-0">Total Order {item.label}</p>
+                                                <p className="fw-medium text-muted mb-0">Total Pasien {item.label}</p>
                                                 <h2 className="mt-4 ff-secondary fw-semibold">
-                                                    <span className="counter-value" style={{ fontSize: "5rem" }}>
+                                                    <span className="counter-value" style={{ fontSize: "1.5rem" }}>
                                                         <CountUp
                                                             start={0}
                                                             end={item.counter}
@@ -254,22 +255,18 @@ const DaftarOrderRadiologi = () => {
                                                         />
                                                     </span>
                                                 </h2>
-                                                {/* <p className="mb-0 text-muted"><span className={"badge bg-light mb-0 text-" + item.badgeClass}>
-                                                    <i className={"align-middle " + item.badge}></i> {item.percentage}
-                                                </span> vs. previous month</p> */}
                                             </div>
                                             <div>
-                                                <div className="avatar-xl flex-shrink-0">
+                                                <div className="avatar-md flex-shrink-0">
                                                     <span className={"avatar-title rounded-circle fs-4 bg-soft-" + item.iconClass + " text-" + item.iconClass}>
-                                                        {/* <i className={item.icon}></i> */}
                                                         <img src={item.icon}
-                                                            alt="" className="avatar-lg" />
+                                                            alt="" className="avatar-md" />
                                                     </span>
                                                 </div>
                                             </div>
                                         </div>
                                     </CardBody>
-                                    <div className="card-footer" style={{ backgroundColor: '#FFCB46' }}>
+                                    <div className="card-footer p-2" style={{ backgroundColor: '#FFCB46' }}>
                                         <div className="text-center">
                                             <Link to="#" className="link-light" onClick={() => handleClickCard(item)}>View <i className="ri-arrow-right-s-line align-middle lh-1"></i></Link>
                                         </div>
@@ -316,39 +313,31 @@ const DaftarOrderRadiologi = () => {
                                     <div className='mb-2'>
                                         <Row>
                                             <Col sm={4}>
-                                                <div className="input-group">
-                                                    <Flatpickr
-                                                        className="form-control border-0 fs-5 dash-filter-picker shadow"
-                                                        options={{
-                                                            // mode: "range",
-                                                            dateFormat: "Y-m-d",
-                                                            defaultDate: "today"
-                                                        }}
-                                                        value={dateStart}
-                                                        onChange={([dateStart]) => {
-                                                            handleBeginOnChangeStart(dateStart);
-                                                        }}
-                                                    />
-                                                    <div className="input-group-text bg-secondary border-secondary text-white"><i className="ri-calendar-2-line"></i></div>
-                                                </div>
+                                                <KontainerFlatpickr
+                                                    options={{
+                                                        // mode: "range",
+                                                        dateFormat: "Y-m-d",
+                                                        defaultDate: "today"
+                                                    }}
+                                                    value={dateStart}
+                                                    onChange={([dateStart]) => {
+                                                        handleBeginOnChangeStart(dateStart);
+                                                    }}
+                                                />
                                             </Col>
                                             <Col lg={1}><h4>s/d</h4></Col>
                                             <Col sm={4}>
-                                                <div className="input-group">
-                                                    <Flatpickr
-                                                        className="form-control border-0 fs-5 dash-filter-picker shadow"
-                                                        options={{
-                                                            // mode: "range",
-                                                            dateFormat: "Y-m-d",
-                                                            defaultDate: "today"
-                                                        }}
-                                                        value={dateEnd}
-                                                        onChange={([dateEnd]) => {
-                                                            handleBeginOnChangeEnd(dateEnd);
-                                                        }}
-                                                    />
-                                                    <div className="input-group-text bg-secondary border-secondary text-white"><i className="ri-calendar-2-line"></i></div>
-                                                </div>
+                                                <KontainerFlatpickr
+                                                    options={{
+                                                        // mode: "range",
+                                                        dateFormat: "Y-m-d",
+                                                        defaultDate: "today"
+                                                    }}
+                                                    value={dateEnd}
+                                                    onChange={([dateEnd]) => {
+                                                        handleBeginOnChangeEnd(dateEnd);
+                                                    }}
+                                                />
                                             </Col>
                                             <Col lg={2}>
                                                 <div className="d-flex justify-content-sm-end">
@@ -361,7 +350,7 @@ const DaftarOrderRadiologi = () => {
                                                 </div>
                                             </Col>
                                             <Col lg={1}>
-                                                <Button type="button" className="rounded-pill" placement="top" id="tooltipTopPencarian" onClick={handleClickCari}>
+                                                <Button type="button" color='info' placement="top" id="tooltipTopPencarian" onClick={handleClickCari}>
                                                     CARI
                                                 </Button>
                                                 <UncontrolledTooltip placement="top" target="tooltipTopPencarian" > Pencarian </UncontrolledTooltip>

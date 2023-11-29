@@ -25,6 +25,7 @@ import nenek from "../../assets/images/svg/nenek.svg"
 import anakperempuan from "../../assets/images/svg/anakperempuan.svg"
 import dewasaperempuan from "../../assets/images/svg/dewasaperempuan.svg"
 import { tableCustomStyles } from "../../Components/Table/tableCustomStyles";
+import KontainerFlatpickr from "../../Components/KontainerFlatpickr/KontainerFlatpickr";
 
 
 const DaftarTagihanPasien = () => {
@@ -256,40 +257,34 @@ const DaftarTagihanPasien = () => {
                             <CardBody>
                                 <Row className="row-header mb-2 ">
                                     <Col sm={3}>
-                                        <div className="input-group">
-                                            <Flatpickr
-                                                className="form-control border-0 fs-5 dash-filter-picker shadow"
-                                                options={{
-                                                    // mode: "range",
-                                                    dateFormat: "Y-m-d",
-                                                    defaultDate: "today"
-                                                }}
-                                                value={dateStart}
-                                                onChange={([dateStart]) => {
-                                                    setDateStart((new Date(dateStart - dateStart.getTimezoneOffset() * 60000)).toISOString());
-                                                }}
-                                            />
-                                        </div>
+                                        <KontainerFlatpickr
+                                            options={{
+                                                // mode: "range",
+                                                dateFormat: "Y-m-d",
+                                                defaultDate: "today"
+                                            }}
+                                            value={dateStart}
+                                            onChange={([dateStart]) => {
+                                                setDateStart((new Date(dateStart - dateStart.getTimezoneOffset() * 60000)).toISOString());
+                                            }}
+                                        />
                                     </Col>
                                     <Col sm={1}><h4 className="mt-2">s/d</h4></Col>
                                     <Col sm={3}>
-                                        <div className="input-group">
-                                            <Flatpickr
-                                                className="form-control border-0 fs-5 dash-filter-picker shadow"
-                                                options={{
-                                                    // mode: "range",
-                                                    dateFormat: "Y-m-d",
-                                                    defaultDate: "today"
-                                                }}
-                                                value={dateEnd}
-                                                onChange={([dateEnd]) => {
-                                                    setDateEnd((new Date(dateEnd - dateEnd.getTimezoneOffset() * 60000)).toISOString());
-                                                }}
-                                            />
-                                        </div>
+                                        <KontainerFlatpickr
+                                            options={{
+                                                // mode: "range",
+                                                dateFormat: "Y-m-d",
+                                                defaultDate: "today"
+                                            }}
+                                            value={dateEnd}
+                                            onChange={([dateEnd]) => {
+                                                setDateEnd((new Date(dateEnd - dateEnd.getTimezoneOffset() * 60000)).toISOString());
+                                            }}
+                                        />
                                     </Col>
                                     <Col lg={1}>
-                                        <Button type="button" className="rounded-pill" placement="top" id="tooltipTopPencarian" onClick={handleClickCari}>
+                                        <Button type="button" color='info' placement="top" id="tooltipTopPencarian" onClick={handleClickCari}>
                                             CARI
                                         </Button>
                                         <UncontrolledTooltip placement="top" target="tooltipTopPencarian" > Pencarian </UncontrolledTooltip>

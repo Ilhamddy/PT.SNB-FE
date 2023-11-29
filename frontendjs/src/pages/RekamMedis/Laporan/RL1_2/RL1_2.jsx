@@ -201,6 +201,7 @@ const RL1_2 = () => {
                 </Col>
                 <Col lg={2}>
                   <Button
+                    color="info"
                     type="submit"
                     placement="top"
                     id="tooltipTopPencarian"
@@ -217,6 +218,7 @@ const RL1_2 = () => {
                 </Col>
                 <Col lg={2}>
                   <Button
+                    color="info"
                     type="button"
                     placement="top"
                     id="tooltipTopPencarian"

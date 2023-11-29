@@ -39,6 +39,7 @@ import PrintTemplate from '../../Print/PrintTemplate/PrintTemplate';
 import PrintRekap from '../../Print/PrintRekap/PrintRekap';
 import PrintBukti from '../../Print/PrintBukti/PrintBukti';
 import CustomCheckbox from '../../../Components/CustomCheckbox/CustomCheckbox';
+import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/KontainerFlatpickr';
 
 
 const RegistrasiPasien = (props) => {
@@ -589,9 +590,7 @@ const RegistrasiPasien = (props) => {
                             ) : null} */}
                             {/* <BuktiPendaftaran isOpen={modal} toggle={toggle} centered /> */}
                             <Card>
-                                <CardHeader style={{ backgroundColor: "#FFCB46",
-                                borderTopLeftRadius: '24px', borderTopRightRadius: '24px',
-                                padding: '10px 15px' }}>
+                                <CardHeader className="card-header-snb ">
                                     <h4 className="card-title mb-0">Registrasi</h4>
                                 </CardHeader>
                                 <CardBody>
@@ -607,10 +606,7 @@ const RegistrasiPasien = (props) => {
                                                         </Col>
                                                         <Col xxl={6} md={6}>
                                                             <div>
-                                                                <Flatpickr
-                                                                    // value={validation.values.tglregistrasi || ""}
-
-                                                                    className="form-control"
+                                                                <KontainerFlatpickr
                                                                     options={{
                                                                         enableTime: true,
                                                                         dateFormat: "Y-m-d H:i"

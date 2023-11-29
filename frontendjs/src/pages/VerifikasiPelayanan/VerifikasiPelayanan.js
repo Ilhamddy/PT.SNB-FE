@@ -356,7 +356,7 @@ const VerifikasiPelayanan = () => {
                                     </Col>
                                     
                                     <Col lg={1}>
-                                        <Button type="button" className="rounded-pill" placement="top" id="tooltipTopPencarian" onClick={handleClickCari}>
+                                        <Button type="button" color="info" placement="top" id="tooltipTopPencarian" onClick={handleClickCari}>
                                             CARI
                                         </Button>
                                         <UncontrolledTooltip placement="top" target="tooltipTopPencarian" > Pencarian </UncontrolledTooltip>

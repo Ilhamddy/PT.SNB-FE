@@ -25,6 +25,7 @@ import {
 import "./RL3_1.scss"
 import * as XLSX from 'xlsx';
 import { Grid, _ } from 'gridjs-react';
+import KontainerFlatpickr from '../../../../Components/KontainerFlatpickr/KontainerFlatpickr';
 
 const currentDate = new Date();
 currentDate.setDate(currentDate.getDate());
@@ -233,43 +234,35 @@ const RL3_1 = () => {
                             <div className='mb-2 row-header'>
                                 <Row>
                                     <Col sm={3}>
-                                        <div className="input-group">
-                                            <Flatpickr
-                                                id="tglstart"
-                                                className="form-control border-0 fs-5 dash-filter-picker shadow"
-                                                options={{
-                                                    enableTime: true,
-                                                    // mode: "range",
-                                                    dateFormat: "Y-m-d",
-                                                    defaultDate: "today"
-                                                }}
-                                                value={validation.values.tglstart}
-                                                onChange={([newDate]) => {
-                                                    validation.setFieldValue("tglstart", newDate.toISOString());
-                                                }}
-                                            />
-                                            <div className="input-group-text bg-secondary border-secondary text-white"><i className="ri-calendar-2-line"></i></div>
-                                        </div>
+                                        <KontainerFlatpickr
+                                            id="tglstart"
+                                            options={{
+                                                enableTime: true,
+                                                // mode: "range",
+                                                dateFormat: "Y-m-d",
+                                                defaultDate: "today"
+                                            }}
+                                            value={validation.values.tglstart}
+                                            onChange={([newDate]) => {
+                                                validation.setFieldValue("tglstart", newDate.toISOString());
+                                            }}
+                                        />
                                     </Col>
                                     <Col lg={1}><h4>s/d</h4></Col>
                                     <Col sm={3}>
-                                        <div className="input-group">
-                                            <Flatpickr
-                                                id="tglend"
-                                                className="form-control border-0 fs-5 dash-filter-picker shadow"
-                                                options={{
-                                                    enableTime: true,
-                                                    // mode: "range",
-                                                    dateFormat: "Y-m-d",
-                                                    defaultDate: "today"
-                                                }}
-                                                value={validation.values.tglend}
-                                                onChange={([newDate]) => {
-                                                    validation.setFieldValue("tglend", newDate.toISOString());
-                                                }}
-                                            />
-                                            <div className="input-group-text bg-secondary border-secondary text-white"><i className="ri-calendar-2-line"></i></div>
-                                        </div>
+                                        <KontainerFlatpickr
+                                            id="tglend"
+                                            options={{
+                                                enableTime: true,
+                                                // mode: "range",
+                                                dateFormat: "Y-m-d",
+                                                defaultDate: "today"
+                                            }}
+                                            value={validation.values.tglend}
+                                            onChange={([newDate]) => {
+                                                validation.setFieldValue("tglend", newDate.toISOString());
+                                            }}
+                                        />
                                     </Col>
                                     <Col lg={3}>
                                         <div className="d-flex justify-content-sm-end">
@@ -282,14 +275,14 @@ const RL3_1 = () => {
                                         </div>
                                     </Col>
                                     <Col lg={2}>
-                                        <Button type="button" placement="top" id="tooltipTopPencarian" onClick={handleClickCari}>
+                                        <Button color='info' type="button" placement="top" id="tooltipTopPencarian" onClick={handleClickCari}>
                                             CARI
                                         </Button>
                                         <UncontrolledTooltip placement="top" target="tooltipTopPencarian" > Pencarian </UncontrolledTooltip>
                                     </Col>
                                 </Row>
                             </div>
-                            <Button type="button" placement="top" id="tooltipTopPencarian" onClick={handleExport}>
+                            <Button color='info' type="button" placement="top" id="tooltipTopPencarian" onClick={handleExport}>
                                 Export to Excel
                             </Button>
 

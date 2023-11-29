@@ -46,6 +46,7 @@ import NoDataTable from '../../Components/Table/NoDataTable'
 import { PenerimaanContext } from './PenerimaanProduk'
 import { initialDetailRetur } from './PenerimaanProduk'
 import { tableCustomStyles } from '../../Components/Table/tableCustomStyles'
+import KontainerFlatpickr from '../../Components/KontainerFlatpickr/KontainerFlatpickr'
 
 export const ListDetail = () => {
   /**
@@ -1225,8 +1226,8 @@ export const InputProdukDetail = () => {
               >
                 E.D
               </Label>
-              <Flatpickr
-                className="form-control"
+              <KontainerFlatpickr
+                isError={detailTouched?.tanggaled && !!detailErr?.tanggaled}
                 id="tanggaled"
                 options={{
                   dateFormat: 'Y-m-d',
@@ -1625,9 +1626,10 @@ export const InputUmumTerima = () => {
           </Label>
         </Col>
         <Col lg={3}>
-          <Flatpickr
-            // value={penerimaan.tglregistrasi || ""}
-            className="form-control"
+          <KontainerFlatpickr
+            isError={
+              penerimaanTouched?.tanggalterima && !!penerimaanErr?.tanggalterima
+            }
             id="tanggalterima"
             options={{
               dateFormat: 'Y-m-d',
@@ -1710,9 +1712,10 @@ export const InputUmumTerima = () => {
           </Label>
         </Col>
         <Col lg={3}>
-          <Flatpickr
-            // value={penerimaan.tglregistrasi || ""}
-            className="form-control"
+          <KontainerFlatpickr
+            isError={
+              penerimaanTouched?.tanggalpesan && !!penerimaanErr?.tanggalpesan
+            }
             id="tanggalpesan"
             options={{
               dateFormat: 'Y-m-d',
@@ -1766,9 +1769,11 @@ export const InputUmumTerima = () => {
           </Label>
         </Col>
         <Col lg={3}>
-          <Flatpickr
-            // value={penerimaan.tglregistrasi || ""}
-            className="form-control"
+          <KontainerFlatpickr
+            isError={
+              penerimaanTouched?.tanggaljatuhtempo &&
+              !!penerimaanErr?.tanggaljatuhtempo
+            }
             id="tanggaljatuhtempo"
             options={{
               dateFormat: 'Y-m-d',

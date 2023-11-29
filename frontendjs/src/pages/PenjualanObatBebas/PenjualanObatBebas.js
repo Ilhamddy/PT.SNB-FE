@@ -16,6 +16,7 @@ import { ToastContainer } from "react-toastify";
 import { createOrUpdatePenjualanBebas, createOrUpdateVerifResep, getOrderResepFromNorec, getPasienFromNoCm } from "../../store/farmasi/action";
 import Flatpickr from "react-flatpickr";
 import { rgxNbrEmpty } from "../../utils/regexcommon";
+import KontainerFlatpickr from "../../Components/KontainerFlatpickr/KontainerFlatpickr";
 
 export const initValueResep = {
     norecdetail: "",
@@ -357,12 +358,10 @@ const PenjualanObatBebas = () => {
                                             Tanggal Lahir
                                         </Label>
                                     </div>
-                                    <Flatpickr
-                                        className={
-                                            `form-control input ` + 
-                                            `${vResep.touched.tanggallahir &&
-                                            !!vResep?.errors.tanggallahir ? "is-invalid" : ""}`
-                                        }
+                                    <KontainerFlatpickr
+                                        isError={
+                                            vResep.touched.tanggallahir &&
+                                            !!vResep?.errors.tanggallahir}
                                         id="tanggallahir"
                                         options={{
                                             dateFormat: "Y-m-d",
@@ -457,13 +456,9 @@ const PenjualanObatBebas = () => {
                                             Tanggal Resep
                                         </Label>
                                     </div>
-                                    <Flatpickr
-                                        className={
-                                            `form-control input ` + 
-                                            `${vResep.touched.tanggalresep &&
-                                                !!vResep?.errors.tanggalresep
-                                                ? "is-invalid" : ""}`
-                                        }
+                                    <KontainerFlatpickr
+                                        isError={vResep.touched.tanggalresep &&
+                                                !!vResep?.errors.tanggalresep}
                                         id="tanggallahir"
                                         options={{
                                             dateFormat: "Y-m-d",

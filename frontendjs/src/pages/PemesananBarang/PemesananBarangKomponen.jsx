@@ -27,6 +27,7 @@ import LoadingTable from '../../Components/Table/LoadingTable'
 import NoDataTable from '../../Components/Table/NoDataTable'
 import { PemesananContext } from './PemesananBarang'
 import { tableCustomStyles } from '../../Components/Table/tableCustomStyles'
+import KontainerFlatpickr from '../../Components/KontainerFlatpickr/KontainerFlatpickr'
 
 export const InputProdukDetail = () => {
   const {
@@ -590,9 +591,10 @@ export const InputUmumPesan = () => {
           </Label>
         </Col>
         <Col lg={3}>
-          <Flatpickr
-            // value={penerimaan.tglregistrasi || ""}
-            className="form-control"
+          <KontainerFlatpickr
+            isError={
+              penerimaanTouched?.tanggalpesan && !!penerimaanErr?.tanggalpesan
+            }
             id="tanggalpesan"
             options={{
               dateFormat: 'Y-m-d',
@@ -648,9 +650,11 @@ export const InputUmumPesan = () => {
           </Label>
         </Col>
         <Col lg={3}>
-          <Flatpickr
-            // value={penerimaan.tglregistrasi || ""}
-            className="form-control"
+          <KontainerFlatpickr
+            isError={
+              penerimaanTouched?.tanggaljatuhtempo &&
+              !!penerimaanErr?.tanggaljatuhtempo
+            }
             id="tanggaljatuhtempo"
             options={{
               dateFormat: 'Y-m-d',

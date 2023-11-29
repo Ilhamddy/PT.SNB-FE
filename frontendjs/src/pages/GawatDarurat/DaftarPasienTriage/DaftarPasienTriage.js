@@ -24,6 +24,7 @@ import CustomSelect from '../../Select/Select';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Flatpickr from "react-flatpickr";
+import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/KontainerFlatpickr';
 
 const TriageIGD = () => {
     document.title = "Daftar Pasien Triage";
@@ -458,23 +459,19 @@ const ModalRegistrasi = ({ isRegistrasiOpen, toggle, selectedPasien }) => {
                                         />
                                     </Col>
                                     <Col lg={4}>
-                                        <div className="input-group">
-                                            <Flatpickr
-                                                id="tglend"
-                                                className="form-control border-0 fs-5 dash-filter-picker shadow"
-                                                options={{
-                                                    enableTime: true,
-                                                    // mode: "range",
-                                                    dateFormat: "Y-m-d",
-                                                    defaultDate: "today"
-                                                }}
-                                                value={vSetValidationModal.values.tglend}
-                                                onChange={([newDate]) => {
-                                                    vSetValidationModal.setFieldValue("tglend", newDate.toISOString());
-                                                }}
-                                            />
-                                            <div className="input-group-text bg-secondary border-secondary text-white"><i className="ri-calendar-2-line"></i></div>
-                                        </div>
+                                        <KontainerFlatpickr
+                                            id="tglend"
+                                            options={{
+                                                enableTime: true,
+                                                // mode: "range",
+                                                dateFormat: "Y-m-d",
+                                                defaultDate: "today"
+                                            }}
+                                            value={vSetValidationModal.values.tglend}
+                                            onChange={([newDate]) => {
+                                                vSetValidationModal.setFieldValue("tglend", newDate.toISOString());
+                                            }}
+                                        />
                                     </Col>
                                     <div style={{ overflowY: 'auto', maxHeight: '400px' }}>
                                         {(data || []).map((item, key) => (

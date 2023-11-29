@@ -31,6 +31,7 @@ import { APIClient } from "../../helpers/api_helper";
 import { comboDistribusiOrderGet } from "../../store/master/action";
 import { Link } from "react-router-dom";
 import { tableCustomStyles } from "../../Components/Table/tableCustomStyles";
+import KontainerFlatpickr from "../../Components/KontainerFlatpickr/KontainerFlatpickr";
 
 
 
@@ -316,8 +317,9 @@ const DistribusiOrder = ({isUnit}) => {
                     </Label>
                 </Col>
                 <Col xl={3} lg={4} className="mb-2">
-                    <Flatpickr
-                        // value={penerimaan.tglregistrasi || ""}
+                    <KontainerFlatpickr
+                        isError={vOrder.touched?.tanggalorder 
+                            && !!vOrder.touched?.tanggalorder}
                         className="form-control"
                         id="tanggalorder"
                         options={{

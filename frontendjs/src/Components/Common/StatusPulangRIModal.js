@@ -16,6 +16,7 @@ import {
 } from "../../store/actions";
 import { comboPulangGet } from "../../store/master/action";
 import { useNavigate } from "react-router-dom";
+import KontainerFlatpickr from "../KontainerFlatpickr/KontainerFlatpickr";
 
 
 const StatusPulangRIModal = ({ norecdp, norecAP, toggle }) => {
@@ -395,23 +396,19 @@ const StatusPulangRIModal = ({ norecdp, norecAP, toggle }) => {
                 </div>
             </Col>
             <Col lg={6} md={6} className="mb-2">
-                <div className="input-group">
-                    <Flatpickr
-                        id="tanggalpulang"
-                        className="form-control border-0 fs-5 dash-filter-picker shadow"
-                        options={{
-                            enableTime: true,
-                            // mode: "range",
-                            dateFormat: "Y-m-d H:i",
-                            defaultDate: "today"
-                        }}
-                        value={validation.values.tanggalpulang}
-                        onChange={([newDate]) => {
-                            validation.setFieldValue("tanggalpulang", newDate.toISOString());
-                        }}
-                    />
-                    <div className="input-group-text bg-secondary border-secondary text-white"><i className="ri-calendar-2-line"></i></div>
-                </div>
+                <KontainerFlatpickr
+                    id="tanggalpulang"
+                    options={{
+                        enableTime: true,
+                        // mode: "range",
+                        dateFormat: "Y-m-d H:i",
+                        defaultDate: "today"
+                    }}
+                    value={validation.values.tanggalpulang}
+                    onChange={([newDate]) => {
+                        validation.setFieldValue("tanggalpulang", newDate.toISOString());
+                    }}
+                />
             </Col>
             <Col lg={4} md={4} className="mb-2">
                 <div className="mt-2">
@@ -515,8 +512,7 @@ const StatusPulangRIModal = ({ norecdp, norecAP, toggle }) => {
             </Col>
             <Col md={8} className="mb-2">
                 <div className="input-group">
-                    <Flatpickr
-                        className="form-control border-0 fs-5 dash-filter-picker shadow"
+                    <KontainerFlatpickr
                         options={{
                             //  enableTime: true,
                             // mode: "range",
@@ -625,23 +621,19 @@ const StatusPulangRIModal = ({ norecdp, norecAP, toggle }) => {
                                                         </div>
                                                     </Col>
                                                     <Col lg={6} md={6} className="mb-2">
-                                                        <div className="input-group">
-                                                            <Flatpickr
-                                                                className="form-control border-0 fs-5 dash-filter-picker shadow"
-                                                                options={{
-                                                                    //  enableTime: true,
-                                                                    // mode: "range",
-                                                                    dateFormat: "Y-m-d H:i",
-                                                                    defaultDate: "today"
-                                                                }}
-                                                                id={"tanggalmeninggal"}
-                                                                value={dateStart}
-                                                                onChange={([newDate]) => {
-                                                                    handleBeginOnChangeTglInput("tanggalmeninggal", newDate);
-                                                                }}
-                                                            />
-                                                            <div className="input-group-text bg-secondary border-secondary text-white"><i className="ri-calendar-2-line"></i></div>
-                                                        </div>
+                                                        <KontainerFlatpickr
+                                                            options={{
+                                                                //  enableTime: true,
+                                                                // mode: "range",
+                                                                dateFormat: "Y-m-d H:i",
+                                                                defaultDate: "today"
+                                                            }}
+                                                            id={"tanggalmeninggal"}
+                                                            value={dateStart}
+                                                            onChange={([newDate]) => {
+                                                                handleBeginOnChangeTglInput("tanggalmeninggal", newDate);
+                                                            }}
+                                                        />
                                                         {validation.touched.tanggalmeninggal && validation.errors.tanggalmeninggal ? (
                                                             <FormFeedback type="invalid"><div>{validation.errors.tanggalmeninggal}</div></FormFeedback>
                                                         ) : null}

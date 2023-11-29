@@ -39,6 +39,7 @@ import CustomSelect from '../../Select/Select';
 import "./DaftarPasienIGD.scss"
 import LoadingTable from '../../../Components/Table/LoadingTable';
 import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles';
+import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/KontainerFlatpickr';
 
 const DaftarPasienIGD = () => {
     document.title = "Daftar Pasien Rawat Darurat";
@@ -230,10 +231,8 @@ const DaftarPasienIGD = () => {
                         </Col>
                         <Col lg={9}>
                             <Card>
-                                <CardHeader style={{ backgroundColor: "#FFCB46",
-                                    borderTopLeftRadius: '24px', borderTopRightRadius: '24px',
-                                    padding: '10px 15px' }}>
-                                        <h4 className="card-title mb-0" style={{ color: 'black' }}>Daftar Pasien IGD</h4>
+                                <CardHeader className="card-header-snb ">
+                                    <h4 className="card-title mb-0" style={{ color: 'black' }}>Daftar Pasien IGD</h4>
                                 </CardHeader>
                                 <CardBody>
                                     <div className='mb-2'>
@@ -241,39 +240,31 @@ const DaftarPasienIGD = () => {
                                             <Col lg={12}>
                                                 <Row>
                                                     <Col sm={4}>
-                                                        <div className="input-group">
-                                                            <Flatpickr
-                                                                className="form-control border-0 fs-5 dash-filter-picker shadow"
-                                                                options={{
-                                                                    // mode: "range",
-                                                                    dateFormat: "Y-m-d",
-                                                                    defaultDate: "today"
-                                                                }}
-                                                                value={dateStart}
-                                                                onChange={([dateStart]) => {
-                                                                    handleBeginOnChangeStart(dateStart);
-                                                                }}
-                                                            />
-                                                            <div className="input-group-text bg-secondary border-secondary text-white"><i className="ri-calendar-2-line"></i></div>
-                                                        </div>
+                                                        <KontainerFlatpickr
+                                                            options={{
+                                                                // mode: "range",
+                                                                dateFormat: "Y-m-d",
+                                                                defaultDate: "today"
+                                                            }}
+                                                            value={dateStart}
+                                                            onChange={([dateStart]) => {
+                                                                handleBeginOnChangeStart(dateStart);
+                                                            }}
+                                                        />
                                                     </Col>
                                                     <Col lg={1}><h4 className='mt-2'>s/d</h4></Col>
                                                     <Col sm={4}>
-                                                        <div className="input-group">
-                                                            <Flatpickr
-                                                                className="form-control border-0 fs-5 dash-filter-picker shadow"
-                                                                options={{
-                                                                    // mode: "range",
-                                                                    dateFormat: "Y-m-d",
-                                                                    defaultDate: "today"
-                                                                }}
-                                                                value={dateEnd}
-                                                                onChange={([dateEnd]) => {
-                                                                    handleBeginOnChangeEnd(dateEnd);
-                                                                }}
-                                                            />
-                                                            <div className="input-group-text bg-secondary border-secondary text-white"><i className="ri-calendar-2-line"></i></div>
-                                                        </div>
+                                                        <KontainerFlatpickr
+                                                            options={{
+                                                                // mode: "range",
+                                                                dateFormat: "Y-m-d",
+                                                                defaultDate: "today"
+                                                            }}
+                                                            value={dateEnd}
+                                                            onChange={([dateEnd]) => {
+                                                                handleBeginOnChangeEnd(dateEnd);
+                                                            }}
+                                                        />
                                                     </Col>
                                                     <Col lg={2}>
                                                         <div className="d-flex justify-content-sm-end">
@@ -286,7 +277,7 @@ const DaftarPasienIGD = () => {
                                                         </div>
                                                     </Col>
                                                     <Col lg={1}>
-                                                        <Button type="button" className="rounded-pill" placement="top" id="tooltipTopPencarian" onClick={handleClickCari}>
+                                                        <Button type="button" color='info' placement="top" id="tooltipTopPencarian" onClick={handleClickCari}>
                                                             CARI
                                                         </Button>
                                                         <UncontrolledTooltip placement="top" target="tooltipTopPencarian" > Pencarian </UncontrolledTooltip>

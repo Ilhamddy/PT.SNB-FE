@@ -31,6 +31,7 @@ import { registrasiSave, registrasiResetForm, registrasiGet, pasienFormQueriesGe
 import CustomSelect from '../../Select/Select'
 import { rgxAllNumber, rgxNbrEmpty } from '../../../utils/regexcommon';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/KontainerFlatpickr';
 
 const PasienBaru = () => {
     document.title = "Profile Pasien Baru";
@@ -322,9 +323,7 @@ const PasienBaru = () => {
 
     const DataDiri = (
         <Card style={{ backgroundColor: "#f1f2f6" }}>
-            <CardHeader style={{ backgroundColor: "#dfe4ea",
-            borderTopLeftRadius: '24px', borderTopRightRadius: '24px',
-            padding: '10px 15px' }}>
+            <CardHeader className="card-header-snb ">
                 <h4 className="card-title mb-0">Data Diri Pasien</h4>
             </CardHeader>
             <CardBody>
@@ -454,8 +453,7 @@ const PasienBaru = () => {
                     </Col>
                     <Col md={8}>
                         <div>
-                            <Flatpickr
-                                className="form-control"
+                            <KontainerFlatpickr
                                 options={{
                                     dateFormat: "Y-m-d",
                                     defaultDate: "today",
@@ -643,9 +641,7 @@ const PasienBaru = () => {
 
     const InfoTambahan = (
         <Card style={{ backgroundColor: "#f1f2f6" }}>
-            <CardHeader style={{ backgroundColor: "#dfe4ea",
-            borderTopLeftRadius: '24px', borderTopRightRadius: '24px',
-            padding: '10px 15px' }}>
+            <CardHeader className="card-header-snb ">
                 <h4 className="card-title mb-0">Informasi Tambahan</h4>
             </CardHeader>
             <CardBody>
@@ -926,9 +922,7 @@ const PasienBaru = () => {
 
     const AlamatKTP = (
         <Card style={{ backgroundColor: "#f1f2f6" }}>
-            <CardHeader style={{ backgroundColor: "#dfe4ea",
-            borderTopLeftRadius: '24px', borderTopRightRadius: '24px',
-            padding: '10px 15px' }}>
+            <CardHeader className="card-header-snb ">
                 <h4 className="card-title mb-0">Alamat KTP</h4>
             </CardHeader>
             <CardBody>
@@ -1130,9 +1124,7 @@ const PasienBaru = () => {
 
     const AlamatDomisili = (
         <Card style={{ backgroundColor: "#f1f2f6" }}>
-            <CardHeader style={{ backgroundColor: "#dfe4ea",
-            borderTopLeftRadius: '24px', borderTopRightRadius: '24px',
-            padding: '10px 15px' }}>
+            <CardHeader className="card-header-snb ">
                 <h4 className="card-title mb-0">Alamat Domisili</h4>
             </CardHeader>
             <CardBody>

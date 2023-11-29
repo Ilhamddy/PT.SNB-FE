@@ -13,6 +13,7 @@ import {
 import PropTypes from "prop-types";
 import PrintTemplate from "../../../pages/Print/PrintTemplate/PrintTemplate";
 import PrintExpertiseRadiologi from "../../../pages/Print/PrintExpertiseRadiologi/PrintExpertiseRadiologi";
+import KontainerFlatpickr from "../../KontainerFlatpickr/KontainerFlatpickr";
 
 const ExpertiseRadiologiModal = ({ show,dataReg, onCloseClick, norecPelayanan, dataCombo,tempdokterpengirim,
 tempruanganpengirim,tempSelected }) => {
@@ -107,9 +108,7 @@ tempruanganpengirim,tempSelected }) => {
                             validation.handleSubmit();
                             return false;
                         }}>
-                        <CardHeader style={{ backgroundColor: "#FFCB46", textAlign: 'center',
-            borderTopLeftRadius: '24px', borderTopRightRadius: '24px',
-            padding: '10px 15px' }}>
+                        <CardHeader className="card-header-snb ">
                             <h4 className="card-title mb-0" style={{ color: 'black' }}>Input Expertise Radiologi</h4>
                         </CardHeader>
                         <CardBody>
@@ -172,22 +171,19 @@ tempruanganpengirim,tempSelected }) => {
                                                 </div>
                                             </Col>
                                             <Col lg={12}>
-                                                <div>
-                                                    <Flatpickr
-                                                        id="tgllayanan"
-                                                        className="form-control border-0 fs-5 dash-filter-picker shadow"
-                                                        options={{
-                                                            enableTime: true,
-                                                            // mode: "range",
-                                                            dateFormat: "Y-m-d H:i",
-                                                            defaultDate: "today"
-                                                        }}
-                                                        value={validation.values.tgllayanan}
-                                                        onChange={([newDate]) => {
-                                                            validation.setFieldValue("tgllayanan", newDate.toISOString());
-                                                        }}
-                                                    />
-                                                </div>
+                                                <KontainerFlatpickr
+                                                    id="tgllayanan"
+                                                    options={{
+                                                        enableTime: true,
+                                                        // mode: "range",
+                                                        dateFormat: "Y-m-d H:i",
+                                                        defaultDate: "today"
+                                                    }}
+                                                    value={validation.values.tgllayanan}
+                                                    onChange={([newDate]) => {
+                                                        validation.setFieldValue("tgllayanan", newDate.toISOString());
+                                                    }}
+                                                />
                                             </Col>
                                             <Col lg={12}>
                                                 <div className="mt-2">
@@ -195,22 +191,19 @@ tempruanganpengirim,tempSelected }) => {
                                                 </div>
                                             </Col>
                                             <Col lg={12}>
-                                                <div>
-                                                    <Flatpickr
-                                                        id="tglcetak"
-                                                        className="form-control border-0 fs-5 dash-filter-picker shadow"
-                                                        options={{
-                                                            enableTime: true,
-                                                            // mode: "range",
-                                                            dateFormat: "Y-m-d H:i",
-                                                            defaultDate: "today"
-                                                        }}
-                                                        value={validation.values.tglcetak}
-                                                        onChange={([newDate]) => {
-                                                            validation.setFieldValue("tglcetak", newDate.toISOString());
-                                                        }}
-                                                    />
-                                                </div>
+                                                <KontainerFlatpickr
+                                                    id="tglcetak"
+                                                    options={{
+                                                        enableTime: true,
+                                                        // mode: "range",
+                                                        dateFormat: "Y-m-d H:i",
+                                                        defaultDate: "today"
+                                                    }}
+                                                    value={validation.values.tglcetak}
+                                                    onChange={([newDate]) => {
+                                                        validation.setFieldValue("tglcetak", newDate.toISOString());
+                                                    }}
+                                                />
                                             </Col>
                                             <Col lg={12}>
                                                 <div className="mt-2">

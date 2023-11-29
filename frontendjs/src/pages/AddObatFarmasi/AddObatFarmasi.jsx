@@ -345,7 +345,6 @@ const AddObatFarmasi = () => {
                           <Col lg={1}>
                             <Button
                               type="button"
-                              className="rounded-pill"
                               placement="top"
                               id="tooltipTopPencarian"
                               onClick={handleClickCari}

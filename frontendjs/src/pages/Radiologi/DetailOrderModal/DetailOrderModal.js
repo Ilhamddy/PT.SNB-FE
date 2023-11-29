@@ -16,6 +16,7 @@ import {
     deleteDetailOrderPelayanan,radiologiResetForm
 } from "../../../store/actions";
 import { tableCustomStyles } from "../../../Components/Table/tableCustomStyles";
+import KontainerFlatpickr from "../../../Components/KontainerFlatpickr/KontainerFlatpickr";
 
 
 const DetailOrderModal = ({ show, onSimpanClick, onCloseClick,onTolakClick, tempNorec }) => {
@@ -263,22 +264,18 @@ const DetailOrderModal = ({ show, onSimpanClick, onCloseClick,onTolakClick, temp
                                                 </div>
                                             </Col>
                                             <Col lg={6} md={6}>
-                                                <div className="input-group">
-                                                    <Flatpickr
-                                                        className="form-control border-0 fs-5 dash-filter-picker shadow"
-                                                        options={{
-                                                            //  enableTime: true,
-                                                            // mode: "range",
-                                                            dateFormat: "Y-m-d H:i",
-                                                            defaultDate: "today"
-                                                        }}
-                                                        value={dateStart}
-                                                        onChange={([newDate]) => {
-                                                            handleBeginOnChangeTglInput(newDate);
-                                                        }}
-                                                    />
-                                                    <div className="input-group-text bg-secondary border-secondary text-white"><i className="ri-calendar-2-line"></i></div>
-                                                </div>
+                                                <KontainerFlatpickr
+                                                    options={{
+                                                        //  enableTime: true,
+                                                        // mode: "range",
+                                                        dateFormat: "Y-m-d H:i",
+                                                        defaultDate: "today"
+                                                    }}
+                                                    value={dateStart}
+                                                    onChange={([newDate]) => {
+                                                        handleBeginOnChangeTglInput(newDate);
+                                                    }}
+                                                />
                                             </Col>
                                             <Col lg={2} md={2}>
                                                 <div className="form-check ms-2">
@@ -290,10 +287,10 @@ const DetailOrderModal = ({ show, onSimpanClick, onCloseClick,onTolakClick, temp
                                             </Col>
                                             <Col lg={12}>
                                                 <div className="d-flex flex-wrap gap-2 justify-content-md-start">
-                                                    <Button type="submit" color="info" className="rounded-pill" placement="top">
+                                                    <Button type="submit" color="info" placement="top">
                                                         Edit
                                                     </Button>
-                                                    <Button type="button" color="danger" className="rounded-pill" placement="top" >
+                                                    <Button type="button" color="danger" placement="top" >
                                                         BATAL
                                                     </Button>
                                                 </div>
@@ -302,9 +299,7 @@ const DetailOrderModal = ({ show, onSimpanClick, onCloseClick,onTolakClick, temp
                                     </Col>
                                     <Col lg={12} className="gy-2">
                                         <Card>
-                                            <CardHeader style={{ backgroundColor: "#FFCB46",
-            borderTopLeftRadius: '24px', borderTopRightRadius: '24px',
-            padding: '10px 15px' }}>
+                                            <CardHeader className="card-header-snb ">
                                                 <h4 className="card-title mb-0" style={{ color: 'black' }}>Daftar Order Tindakan</h4>
                                             </CardHeader>
                                             <CardBody>
