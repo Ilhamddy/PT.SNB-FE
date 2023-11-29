@@ -11,7 +11,7 @@ const pullGit = async (req, res) => {
             logger.info('stdout:', stdout);
             logger.error('stderr:', stderr);
         }
-        lsExample();
+        await lsExample();
 
         res.status(200).send({
             msg: 'Success',
