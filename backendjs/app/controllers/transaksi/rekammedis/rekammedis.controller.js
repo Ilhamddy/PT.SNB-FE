@@ -55,16 +55,25 @@ async function getListDaftarDokumenRekammedis(req, res) {
         }
 
         const resultlistantreanpemeriksaan = await pool.query(`select dp.noregistrasi,mu.namaunit,ta.norec as norecap,
-        mp.namapasien,mp.nocm, mrm.statuskendali,mp.objectstatuskendalirmfk as objectstatuskendalirmfkmp,
+        mp.namapasien,mp.nocm,mp.objectstatuskendalirmfk as objectstatuskendalirmfkmp,
         trm.objectstatuskendalirmfk as objectstatuskendalirmfkap,
         dp.norec as norecdp,
-        dp.objectunitlastfk, trm.norec as norectrm from t_daftarpasien dp
+        dp.objectunitlastfk, trm.norec as norectrm,
+        to_char(dp.tglregistrasi,
+            'YYYY-MM-DD') as tglregistrasi,
+        mj.jeniskelamin,mr.namarekanan,
+        case when mp.objectstatuskendalirmfk is null and trm.objectstatuskendalirmfk is null 
+        then 'RAK' when mp.objectstatuskendalirmfk is not null then mrm.statuskendali else mrs.statuskendali end as statusdokumen
+        from t_daftarpasien dp
         join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk=dp.norec
         and ta.objectunitfk =dp.objectunitlastfk 
         join m_unit mu on mu.id=dp.objectunitlastfk
         join m_pasien mp on mp.id=dp.nocmfk
         left join m_rm_statuskendali mrm on mrm.id=mp.objectstatuskendalirmfk
         left join t_rm_lokasidokumen trm on trm.objectantreanpemeriksaanfk=ta.norec
+        left join m_jeniskelamin mj on mj.id=mp.objectjeniskelaminfk
+        left join m_rekanan mr on mr.id=dp.objectpenjaminfk
+        left join m_rm_statuskendali mrs on mrs.id=trm.objectstatuskendalirmfk
         where dp.noregistrasi ilike '%${req.query.noregistrasi}%' ${tglregistrasi} ${taskid} 
         AND dp.noregistrasi IS NOT NULL --- jika null maka masih belum teregistrasi
         `);

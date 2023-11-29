@@ -101,24 +101,11 @@ const KendaliDokumen = () => {
             },
             width: "70px"
         },
-        // {
-        //     name: <span className='font-weight-bold fs-13'>No</span>,
-        //     selector: row => row.no,
-        //     sortable: true,
-        //     width: "50px"
-        // },
         {
-            name: <span className='font-weight-bold fs-13'>No. RM</span>,
-            selector: row => row.nocm,
+            name: <span className='font-weight-bold fs-13'>Tgl. Registrasi</span>,
+            selector: row => row.tglregistrasi,
             sortable: true,
-            // selector: row => (<button className="btn btn-sm btn-soft-info" onClick={() => handleClick(dataTtv)}>{row.noregistrasi}</button>),
-            // width: "140px",
-            // cell: (data) => {
-            //     return (
-            //         // <Link to={`/registrasi/pasien/${data.id}`}>Details</Link>
-            //         <button type='button' className="btn btn-sm btn-soft-info" onClick={() => handleClick(data)}>{data.noregistrasi}</button>
-            //     );
-            // },
+            // width: "50px"
         },
         {
 
@@ -128,23 +115,40 @@ const KendaliDokumen = () => {
             // width: "150px"
         },
         {
-
-            name: <span className='font-weight-bold fs-13'>Unit Tujuan</span>,
-            selector: row => row.namaunit,
+            name: <span className='font-weight-bold fs-13'>No. RM</span>,
+            selector: row => row.nocm,
             sortable: true,
-            // width: "150px"
         },
         {
-
             name: <span className='font-weight-bold fs-13'>Nama Pasien</span>,
             selector: row => row.namapasien,
             sortable: true,
             // width: "250px",
         },
         {
+            name: <span className='font-weight-bold fs-13'>Jenis Kelamin</span>,
+            selector: row => row.jeniskelamin,
+            sortable: true,
+            // width: "250px",
+        },
+        {
 
-            name: <span className='font-weight-bold fs-13'>statuskendali</span>,
-            selector: row => row.statuskendali,
+            name: <span className='font-weight-bold fs-13'>Unit Daftar</span>,
+            selector: row => row.namaunit,
+            sortable: true,
+            // width: "150px"
+        },
+        {
+
+            name: <span className='font-weight-bold fs-13'>Jenis Pasien</span>,
+            selector: row => row.namarekanan,
+            sortable: true,
+            // width: "150px"
+        },
+        {
+
+            name: <span className='font-weight-bold fs-13'>Lokasi Dokumen</span>,
+            selector: row => row.statusdokumen,
             sortable: true,
             // width: "150px"
         },

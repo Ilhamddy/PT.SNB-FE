@@ -193,6 +193,9 @@ export default (sequelize, Sequelize) => {
         },
         nominalklaim: {
             type: Sequelize.FLOAT
+        },
+        caradaftar: {
+            type: Sequelize.STRING
         }
     }, {
         tableName: "t_daftarpasien", // relation "user" does not exist
