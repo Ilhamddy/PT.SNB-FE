@@ -875,7 +875,6 @@ GROUP BY
     mi.id
 ORDER BY
     mi.id
-
 `
 
 const qGetPembayaranTime = `
@@ -913,7 +912,28 @@ GROUP BY
     mi.id
 ORDER BY
     mi.id
+`
 
+const qGetAddressPoint = `
+SELECT
+    mkab.namakabupaten AS namakabupaten,
+    COALESCE(mkab.latitude, 0) AS lat,
+    COALESCE(mkab.longitude, 0) AS long,
+    0 AS intensity,
+    COUNT(tdp.norec)::INT AS totalpasien
+FROM m_kabupaten mkab
+    LEFT JOIN m_kecamatan mkec ON mkec.objectkabupatenfk = mkab.id
+    LEFT JOIN m_desakelurahan mdes ON mdes.objectkecamatanfk = mkec.id
+    LEFT JOIN m_pasien mp ON mp.objectdesakelurahandomisilifk = mdes.id
+    LEFT JOIN t_daftarpasien tdp ON (
+        tdp.nocmfk = mp.id 
+        AND ${dateBetweenEmptyString("tdp.tglregistrasi", "$1", "$2")}
+    )
+WHERE mkab.statusenabled = TRUE
+GROUP BY
+    mkab.namakabupaten,
+    mkab.latitude,
+    mkab.longitude
 `
 
 
@@ -953,5 +973,6 @@ export {
     qGetPembayaran,
     qGetPembayaranPelayanan,
     qGetPembayaranLain,
-    qGetPembayaranTime
+    qGetPembayaranTime,
+    qGetAddressPoint
 }

@@ -2074,7 +2074,8 @@ export const hUpsertStok = async (
             transaction: transaction
         })
         stokBarangAkhirVal = stokBarangAkhirVal.toJSON()
-        stokBarangAwalVal = stokBarangAkhirVal
+        stokBarangAwalVal = {...stokBarangAkhirVal}
+        stokBarangAwalVal.qty = 0
     }else{
         const qty = stokBarang.qty + qtyDiff
         if(qty < 0){

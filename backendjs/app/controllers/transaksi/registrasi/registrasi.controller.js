@@ -4,11 +4,11 @@ import queries from '../../../queries/transaksi/registrasi.queries';
 import queriesUnit, { daftarUnit } from '../../../queries/mastertable/unit/unit.queries';
 
 import db from "../../../models";
-import { createTransaction } from "../../../utils/dbutils";
+import { createTransaction, dateBetweenEmptyString, emptyIlike } from "../../../utils/dbutils";
 import bcrypt from "bcryptjs";
 import { pasienSignup } from "../../auth/authhelper";
 import { belumDiperiksa, iconPenunjang, iconRI, iconRJ, sedangDiperiksa, selesaiDiperiksa, siapPakai, totalTempatRusak, totalTempatTerisi } from "./icon";
-import { getDateStartEnd, getDateStartEndNull } from "../../../utils/dateutils";
+import { getDateEndNull, getDateStartEnd, getDateStartEndNull, getDateStartNull } from "../../../utils/dateutils";
 import { hCreateNoreg } from "../../daftarmandiri/daftarpasienlama/daftarpasienlama.controller";
 
 const m_pasien = db.m_pasien
@@ -796,27 +796,19 @@ const getPasienNoregistrasi = async (req, res) => {
 const getDaftarPasienRegistrasi = async (req, res) => {
     const logger = res.locals.logger
     try {
-        const noregistrasi = req.query.noregistrasi;
-        let tglregistrasi = ""
-        if (req.query.start !== undefined) {
-            tglregistrasi = ` and td.tglregistrasi between '${req.query.start}'
-             and '${req.query.end} 23:59' `;
-        } else {
-            let today = new Date();
-            let todayMonth = '' + (today.getMonth() + 1)
-            if (todayMonth.length < 2)
-                todayMonth = '0' + todayMonth;
-            let todaystart = formatDate(today)
-            let todayend = formatDate(today) + ' 23:59'
-            tglregistrasi = ` and td.tglregistrasi between '${todaystart}'
-            and '${todayend}' `;
-        }
+        const {noregistrasi, start, end} = req.query;
+        const startDate = getDateStartNull(start)
+        const endDate = getDateEndNull(end)
         let query = queries.getDaftarPasienRegistrasi(`
             WHERE td.statusenabled=true 
-            AND td.noregistrasi ilike '%${noregistrasi}%'
-            ${tglregistrasi}
+            AND (
+                ${emptyIlike("td.noregistrasi", "$1")}
+                OR 
+                ${emptyIlike("mp.namapasien", "$1")}
+            )
+            AND ${dateBetweenEmptyString("td.tglregistrasi", "$2", "$3")}
         `)
-        const result = await pool.query(query)
+        const result = await pool.query(query, [noregistrasi, startDate || "", endDate || ""])
         res.status(200).send({
             data: result.rows,
             status: "success",

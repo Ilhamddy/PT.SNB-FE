@@ -320,7 +320,6 @@ const DistribusiOrder = ({isUnit}) => {
                     <KontainerFlatpickr
                         isError={vOrder.touched?.tanggalorder 
                             && !!vOrder.touched?.tanggalorder}
-                        className="form-control"
                         id="tanggalorder"
                         options={{
                             dateFormat: "Y-m-d",
@@ -514,6 +513,7 @@ const DistribusiOrder = ({isUnit}) => {
                         name="produk"
                         options={newStokBatch}
                         value={vProduk.values?.produk || ""}
+                        isDisabled={!vOrder.values.unittujuan}
                         onChange={(e) => {
                             vProduk.resetForm();
                             refSatuan.current.clearValue();
@@ -608,6 +608,7 @@ const DistribusiOrder = ({isUnit}) => {
                             vProduk.setFieldValue("namasatuan", val?.label || "")
                             handleJmlSatuanChange(vProduk.values.jumlah, val?.nilaikonversi || 0)
                         }}
+                        isDisabled={!vProduk.values.namaproduk}
                         className={`input mb-2 ` + 
                             `${vProduk.errors?.satuan 
                                 ? "is-invalid" 
@@ -733,7 +734,7 @@ const DistribusiOrder = ({isUnit}) => {
                 className="d-flex justify-content-around align-items-end mt-5">
                 <Button 
                     type="submit" 
-                    color="info" 
+                    color="success" 
                     placement="top" 
                     formTarget="form-input-penerimaan"
                     >

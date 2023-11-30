@@ -72,4 +72,10 @@ export default function (app) {
         controller.getDasborPendapatan
     )
 
+    app.get(
+        "/api/transaksi/eis/get-dasbor-peta",
+        [authJwt.verifyToken],
+        controller.getDasborPeta
+    )
+    
 }
