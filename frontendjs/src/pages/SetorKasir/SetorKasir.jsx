@@ -80,7 +80,7 @@ const SetorKasir = () => {
       detail: Yup.array().min(1, 'Minimal 1'),
     }),
     onSubmit: (values) => {
-      dispatch(upsertSetoran(values, () => {}))
+      dispatch(upsertSetoran(values, () => { }))
     },
   })
 
@@ -95,7 +95,7 @@ const SetorKasir = () => {
       width: '120px',
     },
     {
-      name: <span className="font-weight-bold fs-13">No Registrasi</span>,
+      name: <span className="font-weight-bold fs-13">No. Registrasi</span>,
       sortable: true,
       selector: (row) => row.noregistrasi,
       width: '150px',
@@ -259,9 +259,8 @@ const SetorKasir = () => {
                 }}
                 isDisabled
                 value={vSetor.values.kasir}
-                className={`input row-header ${
-                  !!vSetor?.errors.kasir ? 'is-invalid' : ''
-                }`}
+                className={`input row-header ${!!vSetor?.errors.kasir ? 'is-invalid' : ''
+                  }`}
               />
               {vSetor.touched.kasir && !!vSetor.errors.kasir && (
                 <FormFeedback type="invalid">
@@ -280,9 +279,8 @@ const SetorKasir = () => {
                   vSetor.setFieldValue('jadwalshiftname', e?.label || '')
                 }}
                 value={vSetor.values.jadwalshift}
-                className={`input row-header ${
-                  !!vSetor?.errors.jadwalshift ? 'is-invalid' : ''
-                }`}
+                className={`input row-header ${!!vSetor?.errors.jadwalshift ? 'is-invalid' : ''
+                  }`}
               />
               {vSetor.touched.jadwalshift && !!vSetor.errors.jadwalshift && (
                 <FormFeedback type="invalid">

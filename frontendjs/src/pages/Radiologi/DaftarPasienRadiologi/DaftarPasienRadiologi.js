@@ -102,7 +102,7 @@ const DaftarPasienRadiologi = () => {
             width: "80px"
         },
         {
-            name: <span className='font-weight-bold fs-13'>Noregistrasi</span>,
+            name: <span className='font-weight-bold fs-13'>No. Registrasi</span>,
             selector: row => row.noregistrasi,
             sortable: true,
             width: "130px"

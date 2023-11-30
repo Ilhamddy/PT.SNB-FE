@@ -194,7 +194,7 @@ const OrderRadiologi = () => {
     ];
     const columnsRiwayat = [
         {
-            name: <span className='font-weight-bold fs-13'>No. registrasi</span>,
+            name: <span className='font-weight-bold fs-13'>No. Registrasi</span>,
             selector: row => row.noregistrasi,
             sortable: true,
             width: "130px"

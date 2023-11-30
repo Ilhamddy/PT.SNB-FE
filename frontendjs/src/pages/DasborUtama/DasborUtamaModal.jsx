@@ -44,7 +44,7 @@ export const ModalWidgetUtama = () => {
       width: '150px',
     },
     {
-      name: <span className="font-weight-bold fs-13">No Registrasi</span>,
+      name: <span className="font-weight-bold fs-13">No. Registrasi</span>,
       sortable: true,
       selector: (row) => row.noregistrasi,
       width: '150px',
@@ -115,7 +115,7 @@ export const ModalPasienRajal = () => {
       width: '150px',
     },
     {
-      name: <span className="font-weight-bold fs-13">No Registrasi</span>,
+      name: <span className="font-weight-bold fs-13">No. Registrasi</span>,
       sortable: true,
       selector: (row) => row.noregistrasi,
       width: '150px',
@@ -186,7 +186,7 @@ export const ModalPasienGaDar = () => {
       width: '150px',
     },
     {
-      name: <span className="font-weight-bold fs-13">No Registrasi</span>,
+      name: <span className="font-weight-bold fs-13">No. Registrasi</span>,
       sortable: true,
       selector: (row) => row.noregistrasi,
       width: '150px',
@@ -257,7 +257,7 @@ export const ModalPasienRanap = () => {
       width: '150px',
     },
     {
-      name: <span className="font-weight-bold fs-13">No Registrasi</span>,
+      name: <span className="font-weight-bold fs-13">No. Registrasi</span>,
       sortable: true,
       selector: (row) => row.noregistrasi,
       width: '150px',
@@ -328,7 +328,7 @@ export const ModalPasienCaraBayar = () => {
       width: '150px',
     },
     {
-      name: <span className="font-weight-bold fs-13">No Registrasi</span>,
+      name: <span className="font-weight-bold fs-13">No. Registrasi</span>,
       sortable: true,
       selector: (row) => row.noregistrasi,
       width: '150px',
@@ -399,7 +399,7 @@ export const ModalPoliklinik = () => {
       width: '150px',
     },
     {
-      name: <span className="font-weight-bold fs-13">No Registrasi</span>,
+      name: <span className="font-weight-bold fs-13">No. Registrasi</span>,
       sortable: true,
       selector: (row) => row.noregistrasi,
       width: '150px',
