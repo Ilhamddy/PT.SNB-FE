@@ -47,21 +47,19 @@ const DaftarPasienRegistrasi = () => {
         id: "",
         profile:''
     })
-    const current = new Date();
-    const [dateStart, setdateStart] = useState(`${current.getFullYear()}-${current.getMonth() + 1}-${current.getDate()}`);
-    const [dateEnd, setdateEnd] = useState(`${current.getFullYear()}-${current.getMonth() + 1}-${current.getDate()}`);
+    const [dateNow] = useState(() => new Date())
+    const [dateStart, setdateStart] = useState(() => new Date().toISOString())
+    const [dateEnd, setdateEnd] = useState(`${dateNow.getFullYear()}-${dateNow.getMonth() + 1}-${dateNow.getDate()}`);
     const [search, setSearch] = useState('')
     
     const handleBeginOnChangeStart = (newBeginValue) => {
-        var dateString = new Date(newBeginValue.getTime() - (newBeginValue.getTimezoneOffset() * 60000))
+        var dateString = new Date(newBeginValue)
             .toISOString()
-            .split("T")[0];
         setdateStart(dateString)
     }
     const handleBeginOnChangeEnd = (newBeginValue) => {
-        var dateString = new Date(newBeginValue.getTime() - (newBeginValue.getTimezoneOffset() * 60000))
+        var dateString = new Date(newBeginValue)
             .toISOString()
-            .split("T")[0];
         setdateEnd(dateString)
     }
     const handleClickCari = () => {
@@ -74,9 +72,8 @@ const DaftarPasienRegistrasi = () => {
     }
     useEffect(() => {
         dispatch(widgetdaftarPasienRegistrasiGet(''))
-        dispatch(daftarPasienRegistrasiGet(''));
-
-    }, [dispatch]);
+        dispatch(daftarPasienRegistrasiGet(`${""}&start=${dateNow.toISOString()}&end=${dateNow.toISOString()}`));
+    }, [dispatch, dateNow]);
     useEffect(() => {
         return () => {
             dispatch(daftarPasienResetForm());
@@ -270,7 +267,7 @@ const DaftarPasienRegistrasi = () => {
                                                             }}
                                                         />
                                                     </Col>
-                                                    <Col lg={1}><h4>s/d</h4></Col>
+                                                    <Col lg={1} className='mt-2'><h4>s/d</h4></Col>
                                                     <Col sm={4}>
                                                         <KontainerFlatpickr
                                                             options={{
