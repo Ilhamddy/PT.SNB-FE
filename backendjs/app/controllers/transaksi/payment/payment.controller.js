@@ -579,7 +579,7 @@ const getPaymentForPiutang = async (req, res) => {
         const buktibayar = await pool.query(qDaftarTagihanPasienFronNota, [norecnota])
         let tempres = {
             piutang: piutang,
-            buktibayar: buktibayar.rows || []
+            buktibayar: buktibayar.rows[0] || []
         }
         res.status(200).send({
             data: tempres,

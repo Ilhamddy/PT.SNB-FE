@@ -287,24 +287,23 @@ const qTagihanGetFromDP =
 
 const qGetPaymentForPiutang =
     `
-    SELECT
+SELECT
     tp.totalpiutang AS totalpiutang,
     tnp.norec AS norecnota,
     tnp.total AS totalnota,
     bb.totalbayar AS totalbayar,
     bb.klaim AS klaim
-        FROM t_piutangpasien tp
-        LEFT JOIN t_notapelayananpasien tnp ON tnp.norec = tp.objectnotapelayananpasienfk
-        LEFT JOIN t_buktibayarpasien bb ON bb.objectnotapelayananpasienfk = tnp.norec AND bb.statusenabled = true
-            WHERE tp.norec = $1
-            AND tp.totalbayar = 0
-            AND tp.statusenabled = true
-                GROUP BY tp.norec, tnp.norec, bb.totalbayar, bb.klaim, bb.no_bukti
+FROM t_piutangpasien tp
+    LEFT JOIN t_notapelayananpasien tnp ON tnp.norec = tp.objectnotapelayananpasienfk
+    LEFT JOIN t_buktibayarpasien bb ON bb.objectnotapelayananpasienfk = tnp.norec AND bb.statusenabled = true
+WHERE tp.norec = $1
+    AND tp.statusenabled = true
+GROUP BY tp.norec, tnp.norec, bb.totalbayar, bb.klaim, bb.no_bukti
     `
 
 const qDaftarTagihanPasienFronNota =
     `
-    SELECT 
+SELECT 
 	tn.total AS total, 
     tn.norec AS norecnota,
 	tn.no_nota AS nonota, 
@@ -319,16 +318,46 @@ const qDaftarTagihanPasienFronNota =
     bb.norec as norecbukti,
     bb.totalbayar as totalbayar,
     bb.totaltagihan as totaltagihan,
-	td.tglpulang AS tglpulang
-		FROM t_notapelayananpasien tn
-		LEFT JOIN t_daftarpasien td ON tn.objectdaftarpasienfk=td.norec
-	    LEFT JOIN m_pasien mp ON td.nocmfk=mp.id
-		LEFT JOIN m_rekanan mr ON td.objectpenjaminfk=mr.id
-        LEFT JOIN t_buktibayarpasien bb 
-        ON bb.objectnotapelayananpasienfk = tn.norec 
-        AND bb.statusenabled = true 
-            WHERE tn.statusenabled=true 
-            AND tn.norec = $1
+	td.tglpulang AS tglpulang,
+    JSON_AGG(
+        JSON_BUILD_OBJECT
+        (
+            'metodebayar', tcb.objectmetodebayarfk,
+            'nontunai', tcb.objectjenisnontunaifk,
+            'pjpasien', tcb.pjpasien,
+            'approvalcode', tcb.approvalcode,
+            'nominalbayar', tcb.totalbayar,
+            'rekeningrs', tcb.objectrekeningrsfk
+        )
+    ) AS carabayar
+FROM t_notapelayananpasien tn
+    LEFT JOIN t_daftarpasien td ON tn.objectdaftarpasienfk=td.norec
+    LEFT JOIN m_pasien mp ON td.nocmfk=mp.id
+    LEFT JOIN m_rekanan mr ON td.objectpenjaminfk=mr.id
+    LEFT JOIN t_buktibayarpasien bb ON (
+        bb.objectnotapelayananpasienfk = tn.norec 
+        AND 
+        bb.statusenabled = true 
+    )
+    LEFT JOIN t_carabayar tcb ON tcb.objectbuktibayarpasienfk = bb.norec
+WHERE tn.statusenabled=true 
+    AND tn.norec = $1
+GROUP BY
+    tn.total, 
+    tn.norec,
+    tn.no_nota, 
+    td.nocmfk,
+    td.tglregistrasi,
+    td.noregistrasi,
+    td.norec,
+    mp.namapasien,
+    mr.namaexternal,
+    bb.no_bukti,
+    bb.statusenabled,
+    bb.norec,
+    bb.totalbayar,
+    bb.totaltagihan,
+    td.tglpulang
     `
 
 const qGetDepositFromNota =
