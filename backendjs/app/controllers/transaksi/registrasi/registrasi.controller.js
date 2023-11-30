@@ -801,7 +801,11 @@ const getDaftarPasienRegistrasi = async (req, res) => {
         const endDate = getDateEndNull(end)
         let query = queries.getDaftarPasienRegistrasi(`
             WHERE td.statusenabled=true 
-            AND ${emptyIlike("td.noregistrasi", "$1")}
+            AND (
+                ${emptyIlike("td.noregistrasi", "$1")}
+                OR 
+                ${emptyIlike("mp.namapasien", "$1")}
+            )
             AND ${dateBetweenEmptyString("td.tglregistrasi", "$2", "$3")}
         `)
         const result = await pool.query(query, [noregistrasi, startDate || "", endDate || ""])

@@ -53,13 +53,11 @@ const DaftarPasienRegistrasi = () => {
     const [search, setSearch] = useState('')
     
     const handleBeginOnChangeStart = (newBeginValue) => {
-        var dateString = new Date(newBeginValue)
-            .toISOString()
+        let dateString = newBeginValue?.toISOString() || ""
         setdateStart(dateString)
     }
     const handleBeginOnChangeEnd = (newBeginValue) => {
-        var dateString = new Date(newBeginValue)
-            .toISOString()
+        let dateString = newBeginValue?.toISOString() || ""
         setdateEnd(dateString)
     }
     const handleClickCari = () => {
@@ -257,17 +255,18 @@ const DaftarPasienRegistrasi = () => {
                                                     <Col sm={4}>
                                                         <KontainerFlatpickr
                                                             options={{
-                                                                // mode: "range",
+                                                                mode: "range",
                                                                 dateFormat: "Y-m-d",
                                                                 defaultDate: "today"
                                                             }}
-                                                            value={dateStart}
-                                                            onChange={([dateStart]) => {
+                                                            value={[dateStart, dateEnd]}
+                                                            onChange={([dateStart, dateEnd]) => {
                                                                 handleBeginOnChangeStart(dateStart);
+                                                                handleBeginOnChangeEnd(dateEnd);
                                                             }}
                                                         />
                                                     </Col>
-                                                    <Col lg={1} className='mt-2'><h4>s/d</h4></Col>
+                                                    {/* <Col lg={1} className='mt-2'><h4>s/d</h4></Col>
                                                     <Col sm={4}>
                                                         <KontainerFlatpickr
                                                             options={{
@@ -280,12 +279,12 @@ const DaftarPasienRegistrasi = () => {
                                                                 handleBeginOnChangeEnd(dateEnd);
                                                             }}
                                                         />
-                                                    </Col>
-                                                    <Col lg={2}>
+                                                    </Col> */}
+                                                    <Col lg={"auto"}>
                                                         <div className="d-flex justify-content-sm-end">
                                                             <div className="search-box ms-2">
                                                                 <input type="text" className="form-control search"
-                                                                    placeholder="Search..." onChange={event => setSearch(event.target.value)}
+                                                                    placeholder="No RM/Nama pasien..." onChange={event => setSearch(event.target.value)}
                                                                     onKeyDown={handleFilter} />
                                                                 <i className="ri-search-line search-icon"></i>
                                                             </div>
