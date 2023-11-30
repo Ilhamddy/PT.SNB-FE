@@ -83,7 +83,7 @@ const KartuStok = () => {
         {
             name: <span className='font-weight-bold fs-13'>Transaksi</span>,
             sortable: true,
-            selector: row => row.tabeltransaksi === "t_penerimaanbarangdetail" ? "Penerimaan" : "Pengeluaran",
+            selector: row => row.masuk > 0  ? "Penerimaan" : "Pengeluaran",
             width: "140px"
         },
         {

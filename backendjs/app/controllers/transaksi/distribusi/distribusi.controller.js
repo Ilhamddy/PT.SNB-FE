@@ -597,7 +597,6 @@ const hCreateKartuStokKirim = async (
                 let saldoAwalTujuan
                 if(!stokTujuanAwalVal){
                     saldoAwalTujuan = 0
-
                 }else{
                     saldoAwalTujuan = stokTujuanAwalVal.qty
                 }
