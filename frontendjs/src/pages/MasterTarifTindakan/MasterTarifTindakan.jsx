@@ -15,6 +15,7 @@ import {
   Button,
   UncontrolledTooltip,
   Modal,
+  CardHeader,
 } from 'reactstrap'
 import BreadCrumb from '../../Components/Common/BreadCrumb'
 import { useFormik } from 'formik'
@@ -128,81 +129,85 @@ const MasterTarifTindakan = () => {
       <ToastContainer closeButton={false} />
       <Container fluid>
         <BreadCrumb title="Tarif Tindakan" pageTitle="Master" />
-        <Card className="p-3">
-          <Row>
-            <Col lg={8}>
-              <Row>
-                <ColLabelInput label="Nama/Kode Tindakan" lg={4}>
-                  <Input
-                    id="namakode"
-                    name="namakode"
-                    type="text"
-                    value={vFilter.values.namakode}
-                    onChange={(e) => {
-                      vFilter.setFieldValue('namakode', e.target.value)
-                    }}
-                    invalid={
-                      vFilter.touched?.namakode && !!vFilter.errors?.namakode
-                    }
-                  />
-                  {vFilter.touched?.namakode && !!vFilter.errors.namakode && (
-                    <FormFeedback type="invalid">
-                      <div>{vFilter.errors.namakode}</div>
-                    </FormFeedback>
-                  )}
+        <Card>
+          <CardHeader className='card-header-snb'>
+            <h4 className="card-title mb-0" style={{ color: 'black' }}>Tarif Tindakan</h4>
+          </CardHeader>
+          <CardBody>
+            <Row>
+              <Col lg={8}>
+                <Row>
+                  <ColLabelInput label="Nama/Kode Tindakan" lg={4}>
+                    <Input
+                      id="namakode"
+                      name="namakode"
+                      type="text"
+                      value={vFilter.values.namakode}
+                      onChange={(e) => {
+                        vFilter.setFieldValue('namakode', e.target.value)
+                      }}
+                      invalid={
+                        vFilter.touched?.namakode && !!vFilter.errors?.namakode
+                      }
+                    />
+                    {vFilter.touched?.namakode && !!vFilter.errors.namakode && (
+                      <FormFeedback type="invalid">
+                        <div>{vFilter.errors.namakode}</div>
+                      </FormFeedback>
+                    )}
+                  </ColLabelInput>
+                  <ColLabelInput label="Kelas" lg={4}>
+                    <CustomSelect
+                      id="kelas"
+                      name="kelas"
+                      options={[]}
+                      onChange={(e) => {
+                        vFilter.setFieldValue('kelas', e?.value || '')
+                      }}
+                      value={vFilter.values.kelas}
+                      className={`input row-header ${!!vFilter?.errors.kelas ? 'is-invalid' : ''
+                        }`}
+                    />
+                    {vFilter.touched.kelas && !!vFilter.errors.kelas && (
+                      <FormFeedback type="invalid">
+                        <div>{vFilter.errors.kelas}</div>
+                      </FormFeedback>
+                    )}
+                  </ColLabelInput>
+                  <ColLabelInput label={''} lg="auto">
+                    <Button
+                      color="info"
+                      onClick={() => {
+                        vFilter.handleSubmit()
+                      }}
+                    >
+                      Cari
+                    </Button>
+                  </ColLabelInput>
+                </Row>
+              </Col>
+              <Col className="d-flex flex-row-reverse">
+                <ColLabelInput label="" lg={'auto'}>
+                  <Link to={'/master/tarif-tindakan/tambah'}>
+                    <Button color="info">Tambah</Button>
+                  </Link>
                 </ColLabelInput>
-                <ColLabelInput label="Kelas" lg={4}>
-                  <CustomSelect
-                    id="kelas"
-                    name="kelas"
-                    options={[]}
-                    onChange={(e) => {
-                      vFilter.setFieldValue('kelas', e?.value || '')
-                    }}
-                    value={vFilter.values.kelas}
-                    className={`input row-header ${
-                      !!vFilter?.errors.kelas ? 'is-invalid' : ''
-                    }`}
-                  />
-                  {vFilter.touched.kelas && !!vFilter.errors.kelas && (
-                    <FormFeedback type="invalid">
-                      <div>{vFilter.errors.kelas}</div>
-                    </FormFeedback>
-                  )}
-                </ColLabelInput>
-                <ColLabelInput label={''} lg="auto">
-                  <Button
-                    color="info"
-                    onClick={() => {
-                      vFilter.handleSubmit()
-                    }}
-                  >
-                    Cari
-                  </Button>
-                </ColLabelInput>
-              </Row>
-            </Col>
-            <Col className="d-flex flex-row-reverse">
-              <ColLabelInput label="" lg={'auto'}>
-                <Link to={'/master/tarif-tindakan/tambah'}>
-                  <Button color="info">Tambah</Button>
-                </Link>
-              </ColLabelInput>
-            </Col>
-          </Row>
-          <Row>
-            <DataTable
-              className="mt-3"
-              fixedHeader
-              fixedHeaderScrollHeight="700px"
-              columns={columnsDetail}
-              pagination
-              data={totalHargaProduk}
-              progressPending={tableCustomStyles}
-              customStyles={tableCustomStyles}
-              progressComponent={<LoadingTable />}
-            />
-          </Row>
+              </Col>
+            </Row>
+            <Row>
+              <DataTable
+                className="mt-3"
+                fixedHeader
+                fixedHeaderScrollHeight="700px"
+                columns={columnsDetail}
+                pagination
+                data={totalHargaProduk}
+                progressPending={loading}
+                customStyles={tableCustomStyles}
+                progressComponent={<LoadingTable />}
+              />
+            </Row>
+          </CardBody>
         </Card>
       </Container>
     </div>

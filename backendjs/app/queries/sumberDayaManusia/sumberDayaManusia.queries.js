@@ -2,7 +2,15 @@ import { dateBetweenEmptyString } from "../../utils/dbutils";
 
 const qDaftarPegawai = `select row_number() OVER (ORDER BY mp.id) AS no,mp.nip,mp.id,mp.namalengkap,mp.reportdisplay as inisial,
 case when mp.statusenabled=true then 'AKTIF' else 'NON AKTIF' end as status,ms.reportdisplay as statuspegawai,mu.namaunit,
-mp2.reportdisplay as profesi  from m_pegawai mp
+mp2.reportdisplay as profesi,
+case when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<1825 then 'baby'
+when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<6569 and mp.objectjeniskelaminfk=1 then 'anaklaki'
+when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<6569 and mp.objectjeniskelaminfk=2 then 'anakperempuan'
+when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<23724 and mp.objectjeniskelaminfk=1 then 'dewasalaki'
+when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<23724 and mp.objectjeniskelaminfk=2 then 'dewasaperempuan'
+when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))>23724 and mp.objectjeniskelaminfk=1 then 'kakek'
+when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))>23724 and mp.objectjeniskelaminfk=2 then 'nenek' else 'baby' end as profile
+from m_pegawai mp
 left join m_unit mu on mu.id=mp.objectunitfk 
 left join m_statuspegawai ms on ms.id=mp.objectstatuspegawaifk
 left join m_profesipegawai mp2 on mp2.id=mp.objectprofesipegawaifk`

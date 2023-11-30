@@ -14,7 +14,15 @@ import LoadingTable from "../../../Components/Table/LoadingTable";
 import {
     sdmResetForm, getDaftarPegawai,getComboSDM
 } from "../../../store/actions";
-import userDummy from '../../../assets/images/users/user-dummy-img.jpg'
+
+import pria from "../../../assets/images/svg/pria.svg"
+import baby from "../../../assets/images/svg/baby.svg"
+import anaklaki from "../../../assets/images/svg/anaklaki.svg"
+import kakek from "../../../assets/images/svg/kakek.svg"
+import nenek from "../../../assets/images/svg/nenek.svg"
+import anakperempuan from "../../../assets/images/svg/anakperempuan.svg"
+import dewasaperempuan from "../../../assets/images/svg/dewasaperempuan.svg"
+
 import { tableCustomStyles } from "../../../Components/Table/tableCustomStyles";
 
 const DaftarPegawai = () => {
@@ -133,13 +141,13 @@ const DaftarPegawai = () => {
     const [profil, setProfil] = useState({
         namalengkap: null,
         nip: null,
-
+        profile: null,
     })
     const handleClick = (e) => {
         setProfil({
             namalengkap: e.namalengkap,
             nip: e.nip,
-
+            profile: e.profile,
         })
     };
     const handleClickTambah = (e)=>{
@@ -158,11 +166,24 @@ const DaftarPegawai = () => {
                                 <CardBody className="p-4 text-center">
                                     <div className="text-center mt-3">
                                         <h2 className="ff-secondary fw-semibold">
-                                            <img
-                                                src={userDummy}
-                                                className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image"
-                                                alt="user-profile"
-                                            />
+                                        {profil?.profile === 'baby' ? (
+                                            <img src={baby} alt="" className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image" />
+                                        ) : profil?.profile === 'dewasalaki' ? (
+                                            <img src={pria} alt="" className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image" />
+                                        ) : profil?.profile === 'anaklaki' ? (
+                                            <img src={anaklaki} alt="" className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image" />
+                                        ) : profil?.profile === 'anakperempuan' ? (
+                                            <img src={anakperempuan} alt="" className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image" />
+                                        ) : profil?.profile === 'dewasaperempuan' ? (
+                                            <img src={dewasaperempuan} alt="" className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image" />
+                                        ) : profil?.profile === 'kakek' ? (
+                                            <img src={kakek} alt="" className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image" />
+                                        ) : profil?.profile === 'nenek' ? (
+                                            <img src={nenek} alt="" className="rounded-circle mb-3 avatar-xl img-thumbnail user-profile-image" />
+                                        ) : (
+                                            // Render when none of the conditions are met
+                                            <p>No profile image available</p>
+                                        )}
                                         </h2>
                                     </div>
                                     <h5 className="card-title mb-1">{profil && profil.namalengkap ? profil.namalengkap : '-'}</h5>

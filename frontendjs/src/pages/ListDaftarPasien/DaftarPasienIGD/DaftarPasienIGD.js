@@ -224,7 +224,7 @@ const DaftarPasienIGD = () => {
                                             <p>No profile image available</p>
                                         )}
                                         <h5 className="fs-17 mb-1">{userChosen.nama}</h5>
-                                        <p className="text-muted mb-0">{userChosen.id}</p>
+                                        {/* <p className="text-muted mb-0">{userChosen.id}</p> */}
                                     </div>
                                 </CardBody>
                             </Card>

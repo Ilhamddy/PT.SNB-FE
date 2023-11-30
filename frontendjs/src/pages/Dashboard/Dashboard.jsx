@@ -4,6 +4,7 @@ import './Dashboard.scss'
 import React from 'react'
 
 const Dashboard = () => {
+  document.title = "SIMRS - SNB";
   return (
     <React.Fragment>
       <div className="page-content page-dashboard">
