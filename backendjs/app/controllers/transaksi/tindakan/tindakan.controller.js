@@ -199,7 +199,7 @@ async function getListTagihan(req, res) {
     try {
         const resultlist = await queryPromise2(`select row_number() OVER (ORDER BY tp.norec) AS no,
             mu.namaunit,
-            to_char(tp.tglinput,'yyyy-MM-dd HH:mm') as tglinput,
+            to_char(tp.tglinput,'yyyy-MM-dd HH24:MI') as tglinput,
             mp.namaproduk,
             tp.norec,
             tp.harga,

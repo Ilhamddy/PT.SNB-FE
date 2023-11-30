@@ -105,7 +105,7 @@ const InvoiceList = () => {
     } else {
       meridiem = "AM";
     }
-    const updateTime = moment(getTime, 'hh:mm').format('hh:mm') + " " + meridiem;
+    const updateTime = moment(getTime, 'HH24:MI').format('HH24:MI') + " " + meridiem;
     return updateTime;
   };
 

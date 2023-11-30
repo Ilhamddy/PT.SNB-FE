@@ -716,7 +716,7 @@ const Category = ({ dataColors }) => {
             type: 'category',
             labels: {
                 formatter: function (val) {
-                    return moment(val).format('MMM DD HH:mm')
+                    return moment(val).format('MMM DD HH24:MI')
                 }
             }
         },

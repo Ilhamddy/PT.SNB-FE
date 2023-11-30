@@ -181,7 +181,7 @@ async function getListHistoryOrder(req, res) {
     try {
 
         const resultlist = await queryPromise2(`select td.noregistrasi,to2.nomororder,to2.norec,
-        mp.namalengkap, mu.namaunit,to2.keterangan,to_char(to2.tglinput,'yyyy-MM-dd HH:mm') as tglinput  from t_daftarpasien td 
+        mp.namalengkap, mu.namaunit,to2.keterangan,to_char(to2.tglinput,'yyyy-MM-dd HH24:MI') as tglinput  from t_daftarpasien td 
         join t_antreanpemeriksaan ta on td.norec =ta.objectdaftarpasienfk
         join t_orderpelayanan to2 on to2.objectantreanpemeriksaanfk=ta.norec
         join m_pegawai mp on mp.id=to2.objectpegawaifk 
@@ -235,7 +235,7 @@ async function getWidgetListDaftarOrderLaboratorium(req, res) {
             mp.namalengkap, 
             mu.namaunit,
             to2.keterangan,
-            to_char(to2.tglinput,'yyyy-MM-dd HH:mm') as tglinput,
+            to_char(to2.tglinput,'yyyy-MM-dd HH24:MI') as tglinput,
             ms.statusverif,to2.objectstatusveriffk  from t_daftarpasien td 
             join t_antreanpemeriksaan ta on td.norec =ta.objectdaftarpasienfk
             join t_orderpelayanan to2 on to2.objectantreanpemeriksaanfk=ta.norec
@@ -332,7 +332,7 @@ async function getDaftarListHistoryOrder(req, res) {
         and '${todayend}' `;
         }
         const resultlist = await queryPromise2(`select td.noregistrasi,to2.nomororder,to2.norec,
-        mp.namalengkap, mu.namaunit,to2.keterangan,to_char(to2.tglinput,'yyyy-MM-dd HH:mm') as tglinput,
+        mp.namalengkap, mu.namaunit,to2.keterangan,to_char(to2.tglinput,'yyyy-MM-dd HH24:MI') as tglinput,
         ms.statusverif,to2.objectstatusveriffk,mps.namapasien,
         case when (current_date - to_date(to_char(mps.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<1825 then 'baby'
         when (current_date - to_date(to_char(mps.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<6569 and mps.objectjeniskelaminfk=1 then 'anaklaki'
@@ -368,9 +368,9 @@ async function getListOrderByNorecOrder(req, res) {
     const logger = res.locals.logger
     try {
         const resultlist = await queryPromise2(`select td.noregistrasi,to2.nomororder,td2.norec,
-        mp.namalengkap, mu.namaunit,to2.keterangan,to_char(to2.tglinput,'yyyy-MM-dd HH:mm') as tglinput,
+        mp.namalengkap, mu.namaunit,to2.keterangan,to_char(to2.tglinput,'yyyy-MM-dd HH24:MI') as tglinput,
         mp2.namaproduk,td2.harga ,td2.iscito, td2.qty, td2.qty*td2.harga as total,
-        to_char(td2.tglperjanjian,'yyyy-MM-dd HH:mm') as tglperjanjian,
+        to_char(td2.tglperjanjian,'yyyy-MM-dd HH24:MI') as tglperjanjian,
         mpeg.namalengkap as pegawaiverif, mkr.namakamar from t_daftarpasien td 
         join t_antreanpemeriksaan ta on td.norec =ta.objectdaftarpasienfk
         join t_orderpelayanan to2 on to2.objectantreanpemeriksaanfk=ta.norec
@@ -440,9 +440,9 @@ async function saveUserVerifikasi(req, res) {
     try {
         const resultlist = await queryPromise2(`select td.norec as norectd,td2.objectprodukfk,to2.objectunitasalfk,
         td.noregistrasi,to2.nomororder,td2.norec,
-        mp.namalengkap, mu.namaunit,to2.keterangan,to_char(to2.tglinput,'yyyy-MM-dd HH:mm') as tglinput,
+        mp.namalengkap, mu.namaunit,to2.keterangan,to_char(to2.tglinput,'yyyy-MM-dd HH24:MI') as tglinput,
         mp2.namaproduk,td2.harga ,td2.iscito, td2.qty, td2.qty*td2.harga as total,
-        to_char(td2.tglperjanjian,'yyyy-MM-dd HH:mm') as tglperjanjian,
+        to_char(td2.tglperjanjian,'yyyy-MM-dd HH24:MI') as tglperjanjian,
         mpeg.namalengkap as pegawaiverif, mkr.namakamar from t_daftarpasien td 
         join t_antreanpemeriksaan ta on td.norec =ta.objectdaftarpasienfk
         join t_orderpelayanan to2 on to2.objectantreanpemeriksaanfk=ta.norec
@@ -608,7 +608,7 @@ async function getTransaksiPelayananLaboratoriumByNorecDp(req, res) {
 
         const resultlist = await queryPromise2(`select row_number() OVER (ORDER BY tp.norec) AS no,
         mu.namaunit,
-        to_char(tp.tglinput,'yyyy-MM-dd HH:mm') as tglinput,
+        to_char(tp.tglinput,'yyyy-MM-dd HH24:MI') as tglinput,
         mp.namaproduk,
         tp.norec,
         tp.harga,

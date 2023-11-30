@@ -153,7 +153,6 @@ const DaftarOrderOperasi = () => {
             <div className="page-content">
                 <Container fluid>
                     <BreadCrumb title="Daftar Order Operasi" pageTitle="Forms" />
-                    <Card>
                         <Row>
                             {datawidget.map((item, key) => (
                                 <Col xxl={4} sm={6} key={key}>
@@ -163,23 +162,22 @@ const DaftarOrderOperasi = () => {
                                                 <div>
                                                     <p className="fw-medium text-muted mb-0">Total Order {item.label}</p>
                                                     <h2 className="mt-4 ff-secondary fw-semibold">
-                                                        <span className="counter-value" style={{ fontSize: "5rem" }}>
+                                                        <span className="counter-value" style={{ fontSize: "1.5rem" }}>
                                                             <CountUp
                                                                 start={0}
                                                                 end={item.counter}
                                                                 decimal={item.decimals}
-                                                                // suffix={item.suffix}
                                                                 duration={3}
                                                             />
                                                         </span>
                                                     </h2>
                                                 </div>
                                                 <div>
-                                                    <div className="avatar-xl flex-shrink-0">
+                                                    <div className="avatar-md flex-shrink-0">
                                                         <span className={"avatar-title rounded-circle fs-4 bg-soft-" + item.iconClass + " text-" + item.iconClass}>
                                                             {/* <i className={item.icon}></i> */}
                                                             <img src={item.icon}
-                                                                alt="" className="avatar-lg" />
+                                                                alt="" className="avatar-md" />
                                                         </span>
                                                     </div>
                                                 </div>
@@ -480,7 +478,6 @@ const DaftarOrderOperasi = () => {
                                 </Card>
                             </Col>
                         </Row>
-                    </Card>
                 </Container>
             </div>
         </React.Fragment>

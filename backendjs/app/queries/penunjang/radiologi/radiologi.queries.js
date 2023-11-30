@@ -8,13 +8,13 @@ td2.norec,
 mp.namalengkap, 
 mu.namaunit,
 to2.keterangan,
-to_char(to2.tglinput,'yyyy-MM-dd HH:mm') as tglinput,
+to_char(to2.tglinput,'yyyy-MM-dd HH24:MI') as tglinput,
 mp2.namaproduk,
 td2.harga ,
 td2.iscito, 
 td2.qty, 
 td2.qty*td2.harga as total,
-to_char(td2.tglperjanjian,'yyyy-MM-dd HH:mm') as tglperjanjian,
+to_char(td2.tglperjanjian,'yyyy-MM-dd HH24:MI') as tglperjanjian,
 mpeg.namalengkap as pegawaiverif, mkr.namakamar from t_daftarpasien td 
 join t_antreanpemeriksaan ta on td.norec =ta.objectdaftarpasienfk
 join t_orderpelayanan to2 on to2.objectantreanpemeriksaanfk=ta.norec

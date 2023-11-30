@@ -24,7 +24,7 @@ import { useEffect, useState } from "react"
 /**
  * mengubah format date menjadi waktu tanggal string
  * @param {string | Date} date 
- * @returns {string} format hasil "dd/mm/yyyy hh:mm"
+ * @returns {string} format hasil "dd/mm/yyyy HH24:MI"
  */
 export const dateTimeLocal = (date) => {
     try{
@@ -69,7 +69,7 @@ export const dateLocal = (date) => {
 /**
  * mengubah format date menjadi time string
  * @param {string | Date} date
- * @returns {string} format hasil "hh:mm:ss"
+ * @returns {string} format hasil "HH24:MI:ss"
  */
 
 export const timeLocal = (date) => {

@@ -323,7 +323,7 @@ const qComboApgar =`select id as value, reportdisplay||' ('||score||')' as label
 const qComboApgarScore =`select id as value, reportdisplay as label from m_apgarscore where namaexternal=$1`
 const qComboSebabKematian =`select id as value, reportdisplay as label from m_statuspulangri where kodeexternal='rl_3.5'`
 
-const qHistoryAsesmenBayiLahir = `select td.noregistrasi,to_char(te.tglisi, 'YYYY-MM-DD HH:mm')as tglisi,
+const qHistoryAsesmenBayiLahir = `select td.noregistrasi,to_char(te.tglisi, 'YYYY-MM-DD HH24:MI')as tglisi,
 to_char(td.tglregistrasi, 'YYYY-MM-DD')as tglregistrasi,ta.norec,ta.responden,
 ta.objecthubungankeluargafk,
 ta.anamnesa,

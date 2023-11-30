@@ -43,7 +43,7 @@ when x.days>23724  and x.objectjeniskelaminfk=1 then 'kakek'
 when x.days>23724  and x.objectjeniskelaminfk=2 then 'nenek' else 'baby' end as profile,
 x.tgllahir,x.objectjeniskelaminfk from(
 select td.norec as norecdp,to2.objectkamarfk,to2.catatanverif,to2.objectjenisoperasifk,to2.objectdokteroperatorfk,to2.tglrencana as tglrencanax,to2.iscito,mj3.jenispenjamin,mk.namakelas,mp3.namalengkap as pengorder,to2.catatanorder,mj2.jeniskelamin,to2.objectunitasalfk,case when to2.objectjenisoperasifk=1 then '#FFB2B2' when to2.objectjenisoperasifk=2 then '#FFE0B2'
-when to2.objectjenisoperasifk=3 then '#B8FFB2' else '#5AEBFF' end as colorjenisoperasi,mj.reportdisplay as jenisoperasi,mp.namapasien,td.noregistrasi,mp.nocm,to2.norec,to2.tglinput,to_char(to2.tglinput,'dd Month YYYY hh:ii') as tglinputx,to_char(to2.tglrencana,'dd Month YYYY hh:ii') as tglrencana,
+when to2.objectjenisoperasifk=3 then '#B8FFB2' else '#5AEBFF' end as colorjenisoperasi,mj.reportdisplay as jenisoperasi,mp.namapasien,td.noregistrasi,mp.nocm,to2.norec,to2.tglinput,to_char(to2.tglinput,'dd Month YYYY HH24:MI') as tglinputx,to_char(to2.tglrencana,'dd Month YYYY HH24:MI') as tglrencana,
 mu.namaunit,to2.namaoperasi,mi.kodeexternal,
 mp2.namalengkap,ms.reportdisplay as statusoperasi,to2.objectstatusoperasifk,
 (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY')) AS days,
@@ -80,7 +80,7 @@ when x.days>23724  and x.objectjeniskelaminfk=1 then 'kakek'
 when x.days>23724  and x.objectjeniskelaminfk=2 then 'nenek' else 'baby' end as profile,
 x.tgllahir,x.objectjeniskelaminfk from(
 select to2.objectantreanpemeriksaanoperasifk as norecta,td.norec as norecdp,to2.objectkamarfk,to2.catatanverif,to2.objectjenisoperasifk,to2.objectdokteroperatorfk,to2.tglrencana as tglrencanax,to2.iscito,mj3.jenispenjamin,mk.namakelas,mp3.namalengkap as pengorder,to2.catatanorder,mj2.jeniskelamin,to2.objectunitasalfk,case when to2.objectjenisoperasifk=1 then '#FFB2B2' when to2.objectjenisoperasifk=2 then '#FFE0B2'
-when to2.objectjenisoperasifk=3 then '#B8FFB2' else '#5AEBFF' end as colorjenisoperasi,mj.reportdisplay as jenisoperasi,mp.namapasien,td.noregistrasi,mp.nocm,to2.norec,to2.tglinput,to_char(to2.tglinput,'dd Month YYYY hh:ii') as tglinputx,to_char(to2.tglrencana,'dd Month YYYY hh:ii') as tglrencana,
+when to2.objectjenisoperasifk=3 then '#B8FFB2' else '#5AEBFF' end as colorjenisoperasi,mj.reportdisplay as jenisoperasi,mp.namapasien,td.noregistrasi,mp.nocm,to2.norec,to2.tglinput,to_char(to2.tglinput,'dd Month YYYY HH24:MI') as tglinputx,to_char(to2.tglrencana,'dd Month YYYY HH24:MI') as tglrencana,
 mu.namaunit,to2.namaoperasi,mi.kodeexternal,
 mp2.namalengkap,ms.reportdisplay as statusoperasi,to2.objectstatusoperasifk,
 (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY')) AS days,
