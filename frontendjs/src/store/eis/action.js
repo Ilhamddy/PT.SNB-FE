@@ -50,7 +50,9 @@ import {
     SET_PENERIMAAN,
     RESET_PENERIMAAN,
     SET_RETUR,
-    RESET_RETUR
+    RESET_RETUR,
+    SET_JUMLAH_OBAT,
+    RESET_JUMLAH_OBAT
 } from "./actionType"
 
 
@@ -341,5 +343,16 @@ export const setRetur = (name, data) => ({
 
 export const resetRetur = () => ({
     type: RESET_RETUR,
+})
+
+export const setJumlahObat = (jumlah) => ({
+    type: SET_JUMLAH_OBAT,
+    payload: {
+        jumlah: jumlah
+    }
+})
+
+export const resetJumlahObat = () => ({
+    type: RESET_JUMLAH_OBAT,
 })
 

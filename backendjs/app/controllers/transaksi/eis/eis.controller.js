@@ -491,7 +491,6 @@ const getDasborFarmasi = async (req, res) => {
         )
         const sepuluhBesarObat = (await pool.query(qGetSepuluhBesarObat))
             .rows
-            .slice(0, 10)
         const produkTerbanyak = (await pool.query(qGetProdukTerbanyak)).rows
         const jmlPemesanan = pemesanan.length
         const jmlPenerimaan = penerimaan.length
