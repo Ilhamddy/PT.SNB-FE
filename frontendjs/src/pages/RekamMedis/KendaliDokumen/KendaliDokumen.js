@@ -110,7 +110,7 @@ const KendaliDokumen = () => {
         },
         {
 
-            name: <span className='font-weight-bold fs-13'>Noregistrasi</span>,
+            name: <span className='font-weight-bold fs-13'>No. Registrasi</span>,
             selector: row => row.noregistrasi,
             sortable: true,
             // width: "150px"
@@ -178,7 +178,7 @@ const KendaliDokumen = () => {
         },
         {
 
-            name: <span className='font-weight-bold fs-13'>Waktu Dokumen</span>,
+            name: <span className='font-weight-bold fs-13'>Waktu Dokumen (Bulan/Hari Jam:Menit:Detik)</span>,
             selector: row => row.respontime,
             sortable: true,
             // width: "150px"
