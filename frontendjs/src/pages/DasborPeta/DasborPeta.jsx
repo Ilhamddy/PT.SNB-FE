@@ -278,7 +278,7 @@ const DasborPeta = () => {
             </MapContainer>
           </Row>
         </Card>
-        <Card className="p-3">
+        {/* <Card className="p-3">
           <Row className="mb-3">
             <Col lg={12}>
               <h4>Peta Heatmap</h4>
@@ -304,7 +304,7 @@ const DasborPeta = () => {
               />
             </MapContainer>
           </Row>
-        </Card>
+        </Card> */}
         <Card className="p-3">
           <Row className="mb-3">
             <Col lg={12}>
