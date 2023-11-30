@@ -5,7 +5,7 @@ import db from "../../../models";
 import {
     createTransaction
 } from "../../../utils/dbutils";
-import { qCountCaraBayar, qCountNonBPJS, qGetCountDokterUmum, qGetCountJenisKelamin, qGetCountPegawai, qGetCountPendidikanTerakhir, qGetCountPenunjangMedis, qGetCountPerawatBidan, qGetCountProfesi, qGetCountSpesialis, qGetCountSpesialisasi, qGetCountStatus, qGetCountUnit, qGetJabatan, qGetKartuStok, qGetKunjunganPoliklinik, qGetPasienBatal, qGetPasienMeninggalRanap, qGetPasienPulangIGD, qGetPasienPulangRanap, qGetPasienRawatIGD, qGetPasienTerdaftar, qGetPasienTerdaftarRanap, qGetPegawaiPensiun, qGetPegawaiSIP, qGetPembayaran, qGetPembayaranLain, qGetPembayaranPelayanan, qGetPembayaranTime, qGetPemesanan, qGetPenerimaan, qGetProdukTerbanyak, qGetRetur, qGetSepuluhBesarObat, qGetTempatTidur, qGetUsia } from "../../../queries/eis/eis.queries";
+import { qCountCaraBayar, qCountNonBPJS, qGetAddressPoint, qGetCountDokterUmum, qGetCountJenisKelamin, qGetCountPegawai, qGetCountPendidikanTerakhir, qGetCountPenunjangMedis, qGetCountPerawatBidan, qGetCountProfesi, qGetCountSpesialis, qGetCountSpesialisasi, qGetCountStatus, qGetCountUnit, qGetJabatan, qGetKartuStok, qGetKunjunganPoliklinik, qGetPasienBatal, qGetPasienMeninggalRanap, qGetPasienPulangIGD, qGetPasienPulangRanap, qGetPasienRawatIGD, qGetPasienTerdaftar, qGetPasienTerdaftarRanap, qGetPegawaiPensiun, qGetPegawaiSIP, qGetPembayaran, qGetPembayaranLain, qGetPembayaranPelayanan, qGetPembayaranTime, qGetPemesanan, qGetPenerimaan, qGetProdukTerbanyak, qGetRetur, qGetSepuluhBesarObat, qGetTempatTidur, qGetUsia } from "../../../queries/eis/eis.queries";
 import { getDateStartEnd, getDateStartEndYear } from "../../../utils/dateutils";
 import { daftarInstalasi } from "../../../queries/mastertable/instalasi/instalasi.queries";
 import { daftarRekanan } from "../../../queries/mastertable/rekanan/rekanan.queries";
@@ -587,6 +587,49 @@ const getDasborPendapatan = async (req, res) => {
     }
 }
 
+
+const getDasborPeta = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const {
+            tanggalmulai,
+            tanggalselesai
+        } = req.query
+        const { todayStart } = getDateStartEnd(tanggalmulai)
+        const { todayEnd } = getDateStartEnd(tanggalselesai)
+
+        let addressPoints = (await pool.query(qGetAddressPoint, [todayStart, todayEnd])).rows
+        const max = getMax(addressPoints, "totalpasien")
+        addressPoints = addressPoints.map((addressPoint) => {
+            const newAddressPoint = { ...addressPoint }
+            newAddressPoint.intensity = newAddressPoint.totalpasien / max
+            if(newAddressPoint.intensity > 0 ){
+                console.log(newAddressPoint.intensity)
+            }
+            return newAddressPoint
+        })
+
+
+        const tempres = {
+            addressPoints
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export default {
     getPasienRJ,
     getPasienIGD,
@@ -597,7 +640,8 @@ export default {
     getStatusPegawai,
     getPegawaiPensiun,
     getDasborFarmasi,
-    getDasborPendapatan
+    getDasborPendapatan,
+    getDasborPeta
 }
 
 /**
@@ -735,4 +779,13 @@ const calculateAge = (birthDate) => {
     }
 
     return years;
+}
+
+function getMax(arr, prop) {
+    var max;
+    for (var i=0 ; i<arr.length ; i++) {
+        if (max == null || parseInt(arr[i][prop]) > parseInt(max[prop]))
+            max = arr[i];
+    }
+    return max[prop];
 }

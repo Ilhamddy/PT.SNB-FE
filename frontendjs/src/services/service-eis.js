@@ -42,4 +42,8 @@ export default class ServiceEis{
     getDasborPembayaran = async (queries) => {
         return await api.get(`/transaksi/eis/get-dasbor-pendapatan`, queries)
     }
+
+    getDasborPeta = async (queries) => {
+        return await api.get(`/transaksi/eis/get-dasbor-peta`, queries)
+    }
 }

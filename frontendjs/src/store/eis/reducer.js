@@ -52,7 +52,10 @@ import {
     SET_RETUR,
     RESET_RETUR,
     SET_JUMLAH_OBAT,
-    RESET_JUMLAH_OBAT
+    RESET_JUMLAH_OBAT,
+    GET_DASBOR_PETA,
+    GET_DASBOR_PETA_SUCCESS,
+    GET_DASBOR_PETA_ERROR
 } from "./actionType";
   
 const INIT_STATE = {
@@ -97,6 +100,11 @@ const INIT_STATE = {
         error: null
     },
     getDasborFarmasi: {
+        data: [],
+        loading: false,
+        error: null
+    },
+    getDasborPeta: {
         data: [],
         loading: false,
         error: null
@@ -514,6 +522,42 @@ const Eis = (state = INIT_STATE, action) => {
                 ...state,
                 getDasborPembayaran: {
                     ...state.getDasborPembayaran,
+                    loading: false,
+                    data: [],
+                    error: action.payload
+                }
+            }
+        }
+
+        case GET_DASBOR_PETA: {
+            return {
+                ...state,
+                getDasborPeta: {
+                    ...state.getDasborPeta,
+                    loading: true,
+                    data: [],
+                    error: null
+                }
+            }
+        }
+
+        case GET_DASBOR_PETA_SUCCESS: {
+            return {
+                ...state,
+                getDasborPeta: {
+                    ...state.getDasborPeta,
+                    loading: false,
+                    data: action.payload,
+                    error: null
+                }
+            }
+        }
+
+        case GET_DASBOR_PETA_ERROR: {
+            return {
+                ...state,
+                getDasborPeta: {
+                    ...state.getDasborPeta,
                     loading: false,
                     data: [],
                     error: action.payload

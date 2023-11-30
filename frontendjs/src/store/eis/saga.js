@@ -20,7 +20,9 @@ import {
     getDasborFarmasiSuccess,
     getDasborFarmasiError,
     getDasborPembayaranSuccess,
-    getDasborPembayaranError
+    getDasborPembayaranError,
+    getDasborPetaSuccess,
+    getDasborPetaError
 } from "./action";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -34,7 +36,8 @@ import {
     GET_STATUS_PEGAWAI,
     GET_PEGAWAI_PENSIUN,
     GET_DASBOR_FARMASI,
-    GET_DASBOR_PEMBAYARAN
+    GET_DASBOR_PEMBAYARAN,
+    GET_DASBOR_PETA
 } from "./actionType";
 import ServiceEis from "../../services/service-eis";
 
@@ -132,6 +135,15 @@ function* onGetDasborPembayaran({payload: { queries }}) {
     }
 }
 
+function* onGetDasborPeta({payload: { queries }}) {
+    try {
+        let response = yield call(serviceEis.getDasborPeta, queries);
+        yield put(getDasborPetaSuccess(response.data));
+    } catch (error) {
+        yield put(getDasborPetaError(error));
+    }
+}
+
 
 function* eisSaga() {
     yield all([
@@ -144,7 +156,9 @@ function* eisSaga() {
         takeEvery(GET_STATUS_PEGAWAI, onGetStatusPegawai),
         takeEvery(GET_PEGAWAI_PENSIUN, onGetPegawaiPensiun),
         takeEvery(GET_DASBOR_FARMASI, onGetDasborFarmasi),
-        takeEvery(GET_DASBOR_PEMBAYARAN, onGetDasborPembayaran)
+        takeEvery(GET_DASBOR_PEMBAYARAN, onGetDasborPembayaran),
+        takeEvery(GET_DASBOR_PETA, onGetDasborPeta),
+
     ]);
 }
 

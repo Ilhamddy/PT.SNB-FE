@@ -52,7 +52,10 @@ import {
     SET_RETUR,
     RESET_RETUR,
     SET_JUMLAH_OBAT,
-    RESET_JUMLAH_OBAT
+    RESET_JUMLAH_OBAT,
+    GET_DASBOR_PETA,
+    GET_DASBOR_PETA_SUCCESS,
+    GET_DASBOR_PETA_ERROR,
 } from "./actionType"
 
 
@@ -209,6 +212,20 @@ export const getDasborPembayaranError = (error) => ({
     payload: error
 })
 
+export const getDasborPeta = (queries) => ({
+    type: GET_DASBOR_PETA,
+    payload: {queries: queries}
+})
+
+export const getDasborPetaSuccess = (data) => ({
+    type: GET_DASBOR_PETA_SUCCESS,
+    payload: data
+})
+
+export const getDasborPetaError = (error) => ({
+    type: GET_DASBOR_PETA_ERROR,
+    payload: error
+})
 
 export const setPasienRajal = (name, data) => ({
     type: SET_PASIEN_RAJAL,
