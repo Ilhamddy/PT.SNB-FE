@@ -73,7 +73,6 @@ const createControlLayer = () => {
     return this._div
   }
   controlInstance.update = function (props) {
-    console.log(props)
     this._div.innerHTML = props
       ? '<h4>Total Pasien</h4>' +
         ('<b>' +
@@ -230,6 +229,10 @@ const DasborPeta = () => {
               options={{
                 mode: 'range',
               }}
+              value={[
+                vFilter.values.tanggalmulai,
+                vFilter.values.tanggalselesai,
+              ]}
               onChange={([newDate, newDate2]) => {
                 vFilter.setFieldValue(
                   'tanggalmulai',
