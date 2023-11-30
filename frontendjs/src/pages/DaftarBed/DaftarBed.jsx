@@ -9,6 +9,7 @@ import {
   FormFeedback,
   Modal,
   Input,
+  CardHeader,
 } from 'reactstrap'
 import BreadCrumb from '../../Components/Common/BreadCrumb'
 import CountUp from 'react-countup'
@@ -217,9 +218,8 @@ const DaftarBed = () => {
                   vTempatTidur.setFieldValue('kamar', e?.value || '')
                 }}
                 value={vTempatTidur.values.kamar}
-                className={`input row-header ${
-                  !!vTempatTidur?.errors.kamar ? 'is-invalid' : ''
-                }`}
+                className={`input row-header ${!!vTempatTidur?.errors.kamar ? 'is-invalid' : ''
+                  }`}
                 isDisabled
               />
               {vTempatTidur.touched.kamar && !!vTempatTidur.errors.kamar && (
@@ -242,9 +242,8 @@ const DaftarBed = () => {
                   vTempatTidur.setFieldValue('kelas', e?.value || '')
                 }}
                 value={vTempatTidur.values.kelas}
-                className={`input row-header ${
-                  !!vTempatTidur?.errors.kelas ? 'is-invalid' : ''
-                }`}
+                className={`input row-header ${!!vTempatTidur?.errors.kelas ? 'is-invalid' : ''
+                  }`}
                 isDisabled
               />
               {vTempatTidur.touched.kelas && !!vTempatTidur.errors.kelas && (
@@ -292,9 +291,8 @@ const DaftarBed = () => {
                   vTempatTidur.setFieldValue('status', e?.value || '')
                 }}
                 value={vTempatTidur.values.status}
-                className={`input row-header ${
-                  !!vTempatTidur?.errors.status ? 'is-invalid' : ''
-                }`}
+                className={`input row-header ${!!vTempatTidur?.errors.status ? 'is-invalid' : ''
+                  }`}
               />
               {vTempatTidur.touched.status && !!vTempatTidur.errors.status && (
                 <FormFeedback type="invalid">
@@ -372,7 +370,7 @@ const DaftarBed = () => {
                   style={{ backgroundColor: '#FFCB46' }}
                 >
                   <div className="text-center">
-                    <Link to="#" className="link-light" onClick={() => {}}>
+                    <Link to="#" className="link-light" onClick={() => { }}>
                       View{' '}
                       <i className="ri-arrow-right-s-line align-middle lh-1"></i>
                     </Link>
@@ -382,75 +380,78 @@ const DaftarBed = () => {
             </Col>
           ))}
         </Row>
-        <Card className="p-5">
-          <Row>
-            <ColLabelInput lg={3} label={'Unit'} inputId={'unit'}>
-              <CustomSelect
-                id="unit"
-                name="unit"
-                options={unit}
-                onChange={(e) => {
-                  vFilter.setFieldValue('unit', e?.value || '')
-                }}
-                value={vFilter.values.unit}
-                className={`input row-header ${
-                  !!vFilter?.errors.unit ? 'is-invalid' : ''
-                }`}
-              />
-              {vFilter.touched.unit && !!vFilter.errors.unit && (
-                <FormFeedback type="invalid">
-                  <div>{vFilter.errors.unit}</div>
-                </FormFeedback>
-              )}
-            </ColLabelInput>
-            <ColLabelInput lg={3} label={'Kelas'} inputId={'kelas'}>
-              <CustomSelect
-                id="kelas"
-                name="kelas"
-                options={kelas}
-                onChange={(e) => {
-                  vFilter.setFieldValue('kelas', e?.value || '')
-                }}
-                value={vFilter.values.kelas}
-                className={`input row-header ${
-                  !!vFilter?.errors.kelas ? 'is-invalid' : ''
-                }`}
-              />
-              {vFilter.touched.kelas && !!vFilter.errors.kelas && (
-                <FormFeedback type="invalid">
-                  <div>{vFilter.errors.kelas}</div>
-                </FormFeedback>
-              )}
-            </ColLabelInput>
-            <ColLabelInput lg={'auto'} label={''} inputId={'btn-cari'}>
-              <Button color="info" onClick={() => vFilter.handleSubmit()}>
-                Cari
-              </Button>
-            </ColLabelInput>
-          </Row>
-          <Row>
-            <DataTable
-              className="mt-4"
-              columns={columns}
-              pagination
-              data={unitBed}
-              expandableRows
-              expandableRowsComponent={({ data }) => (
-                <DataTable
-                  columns={columnsBed}
-                  data={data.tempattidur}
-                  progressPending={false}
-                  customStyles={subTableCustomStyles}
-                  progressComponent={<LoadingTable />}
-                  noDataComponent={<NoDataTable dataName={'kamar'} />}
+        <Card>
+          <CardHeader className='card-header-snb'>
+            <h4 className="card-title mb-0" style={{ color: 'black' }}>Daftar Kasur</h4>
+          </CardHeader>
+          <CardBody>
+            <Row>
+              <ColLabelInput lg={3} label={'Unit'} inputId={'unit'}>
+                <CustomSelect
+                  id="unit"
+                  name="unit"
+                  options={unit}
+                  onChange={(e) => {
+                    vFilter.setFieldValue('unit', e?.value || '')
+                  }}
+                  value={vFilter.values.unit}
+                  className={`input row-header ${!!vFilter?.errors.unit ? 'is-invalid' : ''
+                    }`}
                 />
-              )}
-              progressPending={false}
-              customStyles={tableCustomStyles}
-              progressComponent={<LoadingTable />}
-              noDataComponent={<NoDataTable dataName={'kamar'} />}
-            />
-          </Row>
+                {vFilter.touched.unit && !!vFilter.errors.unit && (
+                  <FormFeedback type="invalid">
+                    <div>{vFilter.errors.unit}</div>
+                  </FormFeedback>
+                )}
+              </ColLabelInput>
+              <ColLabelInput lg={3} label={'Kelas'} inputId={'kelas'}>
+                <CustomSelect
+                  id="kelas"
+                  name="kelas"
+                  options={kelas}
+                  onChange={(e) => {
+                    vFilter.setFieldValue('kelas', e?.value || '')
+                  }}
+                  value={vFilter.values.kelas}
+                  className={`input row-header ${!!vFilter?.errors.kelas ? 'is-invalid' : ''
+                    }`}
+                />
+                {vFilter.touched.kelas && !!vFilter.errors.kelas && (
+                  <FormFeedback type="invalid">
+                    <div>{vFilter.errors.kelas}</div>
+                  </FormFeedback>
+                )}
+              </ColLabelInput>
+              <ColLabelInput lg={'auto'} label={''} inputId={'btn-cari'}>
+                <Button color="info" onClick={() => vFilter.handleSubmit()}>
+                  Cari
+                </Button>
+              </ColLabelInput>
+            </Row>
+            <Row>
+              <DataTable
+                className="mt-4"
+                columns={columns}
+                pagination
+                data={unitBed}
+                expandableRows
+                expandableRowsComponent={({ data }) => (
+                  <DataTable
+                    columns={columnsBed}
+                    data={data.tempattidur}
+                    progressPending={false}
+                    customStyles={subTableCustomStyles}
+                    progressComponent={<LoadingTable />}
+                    noDataComponent={<NoDataTable dataName={'kamar'} />}
+                  />
+                )}
+                progressPending={false}
+                customStyles={tableCustomStyles}
+                progressComponent={<LoadingTable />}
+                noDataComponent={<NoDataTable dataName={'kamar'} />}
+              />
+            </Row>
+          </CardBody>
         </Card>
       </Container>
     </div>

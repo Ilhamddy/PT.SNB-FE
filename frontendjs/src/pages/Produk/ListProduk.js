@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Button, 
     Card, 
     CardBody, 
+    CardHeader, 
     Col, 
     Container, 
     DropdownItem, 
@@ -138,7 +139,11 @@ const ListProduk = () => {
             <ToastContainer closeButton={false} />
             <Container fluid>
                 <BreadCrumb title="List produk" pageTitle="List Produk" />
-                    <Card className="p-5">
+                    <Card>
+                        <CardHeader className='card-header-snb'>
+                            <h4 className="card-title mb-0" style={{ color: 'black' }}>List Produk</h4>
+                        </CardHeader>
+                        <CardBody>
                         <Row className="justify-content-between mb-5">
                             <Col>
                                 <Link to="/farmasi/gudang/setting-produk/tambah">
@@ -184,6 +189,7 @@ const ListProduk = () => {
 
                             />
                         </Row>
+                        </CardBody>
                     </Card>
             </Container>
         </div>

@@ -15,6 +15,7 @@ import {
   Button,
   UncontrolledTooltip,
   Modal,
+  CardHeader,
 } from 'reactstrap'
 import BreadCrumb from '../../Components/Common/BreadCrumb'
 import { useFormik } from 'formik'
@@ -280,9 +281,8 @@ const MasterDataLayanan = () => {
                 }}
                 value={vVariabelBPJS.values.variabelbpjs}
                 isClearEmpty
-                className={`input row-header ${
-                  !!vVariabelBPJS?.errors.variabelbpjs ? 'is-invalid' : ''
-                }`}
+                className={`input row-header ${!!vVariabelBPJS?.errors.variabelbpjs ? 'is-invalid' : ''
+                  }`}
               />
               {vVariabelBPJS.touched.variabelbpjs &&
                 !!vVariabelBPJS.errors.variabelbpjs && (
@@ -316,83 +316,87 @@ const MasterDataLayanan = () => {
       <ToastContainer closeButton={false} />
       <Container fluid>
         <BreadCrumb title="Master Data Layanan" pageTitle="Master" />
-        <Card className="p-3">
-          <Row className="d-flex justify-content-between">
-            <Col lg="auto">
-              <Link to="/master/setting-layanan/tambah">
-                <Button color="info">Setting Layanan</Button>
-              </Link>
-            </Col>
-            <Col lg={7}>
-              <Row>
-                <Col lg={5}>
-                  <CustomSelect
-                    id="aktif"
-                    name="aktif"
-                    options={valueStatusEnabled}
-                    onChange={(e) => {
-                      vFilter.setFieldValue('aktif', e?.value || '')
-                    }}
-                    value={vFilter.values.aktif}
-                    className={`input row-header ${
-                      !!vFilter?.errors.aktif ? 'is-invalid' : ''
-                    }`}
-                  />
-                  {vFilter.touched.aktif && !!vFilter.errors.aktif && (
-                    <FormFeedback type="invalid">
-                      <div>{vFilter.errors.aktif}</div>
-                    </FormFeedback>
-                  )}
-                </Col>
-                <Col lg={5}>
-                  <Input
-                    id="namaproduk"
-                    name="namaproduk"
-                    type="text"
-                    value={vFilter.values.namaproduk}
-                    placeholder="Nama Produk"
-                    onChange={(e) => {
-                      vFilter.setFieldValue('namaproduk', e.target.value)
-                    }}
-                    invalid={
-                      vFilter.touched?.namaproduk &&
-                      !!vFilter.errors?.namaproduk
-                    }
-                  />
-                  {vFilter.touched?.namaproduk &&
-                    !!vFilter.errors.namaproduk && (
+        <Card>
+          <CardHeader className='card-header-snb'>
+            <h4 className="card-title mb-0" style={{ color: 'black' }}>MASTER DATA LAYANAN</h4>
+          </CardHeader>
+          <CardBody>
+            <Row className="d-flex justify-content-between">
+              <Col lg="auto">
+                <Link to="/master/setting-layanan/tambah">
+                  <Button color="info">Setting Layanan</Button>
+                </Link>
+              </Col>
+              <Col lg={7}>
+                <Row>
+                  <Col lg={5}>
+                    <CustomSelect
+                      id="aktif"
+                      name="aktif"
+                      options={valueStatusEnabled}
+                      onChange={(e) => {
+                        vFilter.setFieldValue('aktif', e?.value || '')
+                      }}
+                      value={vFilter.values.aktif}
+                      className={`input row-header ${!!vFilter?.errors.aktif ? 'is-invalid' : ''
+                        }`}
+                    />
+                    {vFilter.touched.aktif && !!vFilter.errors.aktif && (
                       <FormFeedback type="invalid">
-                        <div>{vFilter.errors.namaproduk}</div>
+                        <div>{vFilter.errors.aktif}</div>
                       </FormFeedback>
                     )}
-                </Col>
-                <Col>
-                  <Button
-                    color="info"
-                    type="button"
-                    onClick={() => {
-                      vFilter.handleSubmit()
-                    }}
-                  >
-                    Cari
-                  </Button>
-                </Col>
-              </Row>
-            </Col>
-          </Row>
-          <Row>
-            <DataTable
-              className="mt-3"
-              fixedHeader
-              fixedHeaderScrollHeight="700px"
-              columns={columnsDetail}
-              pagination
-              data={layanan}
-              progressPending={loading}
-              customStyles={tableCustomStyles}
-              progressComponent={<LoadingTable />}
-            />
-          </Row>
+                  </Col>
+                  <Col lg={5}>
+                    <Input
+                      id="namaproduk"
+                      name="namaproduk"
+                      type="text"
+                      value={vFilter.values.namaproduk}
+                      placeholder="Nama Produk"
+                      onChange={(e) => {
+                        vFilter.setFieldValue('namaproduk', e.target.value)
+                      }}
+                      invalid={
+                        vFilter.touched?.namaproduk &&
+                        !!vFilter.errors?.namaproduk
+                      }
+                    />
+                    {vFilter.touched?.namaproduk &&
+                      !!vFilter.errors.namaproduk && (
+                        <FormFeedback type="invalid">
+                          <div>{vFilter.errors.namaproduk}</div>
+                        </FormFeedback>
+                      )}
+                  </Col>
+                  <Col>
+                    <Button
+                      color="info"
+                      type="button"
+                      onClick={() => {
+                        vFilter.handleSubmit()
+                      }}
+                    >
+                      Cari
+                    </Button>
+                  </Col>
+                </Row>
+              </Col>
+            </Row>
+            <Row>
+              <DataTable
+                className="mt-3"
+                fixedHeader
+                fixedHeaderScrollHeight="700px"
+                columns={columnsDetail}
+                pagination
+                data={layanan}
+                progressPending={loading}
+                customStyles={tableCustomStyles}
+                progressComponent={<LoadingTable />}
+              />
+            </Row>
+          </CardBody>
         </Card>
       </Container>
     </div>

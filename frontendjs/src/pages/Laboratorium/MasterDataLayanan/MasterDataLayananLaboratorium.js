@@ -132,14 +132,8 @@ const MasterDataLayananLaboratorium = () => {
                     <Row>
                         <Col lg={12}>
                             <Card>
-                                <CardHeader className="align-items-center d-flex">
-                                    <div className="live-preview">
-                                        <Row>
-                                            <Col>
-                                                <h4 className="card-title mb-0 flex-grow-1 mb-3">Master Data Layanan Laboratorium <span style={{ color: '#FFCB46' }}> </span></h4>
-                                            </Col>
-                                        </Row>
-                                    </div>
+                                <CardHeader className='card-header-snb'>
+                                    <h4 className="card-title mb-0" style={{ color: 'black' }}>Master Data Layanan Laboratorium</h4>
                                 </CardHeader>
                                 <CardBody>
                                     <div className='mb-2'>
