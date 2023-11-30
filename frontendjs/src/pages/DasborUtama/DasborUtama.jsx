@@ -963,6 +963,11 @@ export const HeaderDashboard = () => {
       text: 'Dasbor SDM',
       link: 'dasbor-pegawai',
     },
+    {
+      classImg: 'las la-user-nurse',
+      text: 'Dasbor Peta',
+      link: 'dasbor-peta',
+    },
   ]
   return (
     <ul className="header-dasbor-eis page-title-box">
