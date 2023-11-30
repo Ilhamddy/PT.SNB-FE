@@ -202,7 +202,7 @@ const MasterTarifTindakan = () => {
                 columns={columnsDetail}
                 pagination
                 data={totalHargaProduk}
-                progressPending={tableCustomStyles}
+                progressPending={loading}
                 customStyles={tableCustomStyles}
                 progressComponent={<LoadingTable />}
               />
