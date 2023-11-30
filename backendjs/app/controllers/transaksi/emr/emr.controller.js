@@ -1549,7 +1549,7 @@ const getHistoriTriagiByNorec = async (req, res) => {
     const logger = res.locals.logger;
     try {
         const result = await queryPromise2(`select tp.norec,tp.namapasien,tp.umur,tp.keluhan,tp.namapj,tp.nohp,to_char(tp.tglinput,
-            'dd Month YYYY hh:ii') as tglinput, tp.riwayatpenyakit,tp.riwayatobat,tp.skalanyeri,
+            'dd Month YYYY HH24:MI') as tglinput, tp.riwayatpenyakit,tp.riwayatobat,tp.skalanyeri,
             tp.airway,tp.breathing,tp.circulation,tp.disability,tp.kondisimental,tp.objectdaruratigdfk,
             tp.rencanaterapi from t_pasienigd tp  where tp.norec='${req.query.norec}'
             `);

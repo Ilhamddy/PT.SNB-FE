@@ -364,7 +364,7 @@ async function getListLaporanPasienBatal(req, res) {
         console.log(start, end, search, instalasi, unit, rekanan, pegawai)
 
         // const result = await pool.query(queries.qResult, [start,end,search]) //,instalasi,unit,rekanan,pegawai
-        const result = await pool.query(`select tb.norec,tb.alasanbatal,to_char(tb.tglbatal,'dd Month YYYY HH:MM') as tglbatal,td.noregistrasi,td.norec,td.nocmfk,
+        const result = await pool.query(`select tb.norec,tb.alasanbatal,to_char(tb.tglbatal,'dd Month YYYY HH24:MI') as tglbatal,td.noregistrasi,td.norec,td.nocmfk,
         to_char(td.tglregistrasi,'dd Month YYYY') as tglregistrasi,to_char(td.tglpulang,'dd Month YYYY') as tglpulang,mp.namapasien,
         mi.namainstalasi,mu.namaunit,mp.nocm,mr.namarekanan,mp2.namalengkap,
         mp3.namalengkap as pegawaipembatal from t_batalpasien tb 

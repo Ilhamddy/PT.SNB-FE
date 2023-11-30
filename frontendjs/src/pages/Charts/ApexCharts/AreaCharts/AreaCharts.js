@@ -94,7 +94,7 @@ const SplineAreaChart = ({dataColors}) => {
         },
         tooltip: {
             x: {
-                format: 'dd/MM/yy HH:mm'
+                format: 'dd/MM/yy HH24:MI'
             },
         },
     };

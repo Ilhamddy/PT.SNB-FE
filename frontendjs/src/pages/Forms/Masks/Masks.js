@@ -123,7 +123,7 @@ const Masks = () => {
                           <div className="mb-3">
                             <label htmlFor="cleave-time" className="form-label">Time</label>
                             <Cleave
-                              placeholder="hh:mm:ss"
+                              placeholder="HH24:MI:ss"
                               options={{
                                 time: true,
                                 timePattern: ['h', 'm', 's']
@@ -140,7 +140,7 @@ const Masks = () => {
                           <div className="mb-3">
                             <label htmlFor="cleave-time-format" className="form-label">Time Formatting</label>
                             <Cleave
-                              placeholder="hh:mm"
+                              placeholder="HH24:MI"
                               options={{
                                 time: true,
                                 timePattern: ['h', 'm']

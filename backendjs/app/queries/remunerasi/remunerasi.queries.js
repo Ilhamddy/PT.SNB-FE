@@ -15,7 +15,7 @@ and ta.statusenabled=true `
 
 const qListTagihan =`select row_number() OVER (ORDER BY tp.norec) AS no,
 mu.namaunit,
-to_char(tp.tglinput,'yyyy-MM-dd HH:mm') as tglinput,
+to_char(tp.tglinput,'yyyy-MM-dd HH24:MI') as tglinput,
 mp.namaproduk,
 tp.norec,
 tp.harga,
@@ -42,7 +42,7 @@ and tp.statusenabled = true order by tp.tglinput asc`
 
 const qListSudahVerifikasi= `select row_number() OVER (ORDER BY tp.norec) AS no,
 mu.namaunit,
-to_char(tp.tglinput,'yyyy-MM-dd HH:mm') as tglinput,
+to_char(tp.tglinput,'yyyy-MM-dd HH24:MI') as tglinput,
 mp.namaproduk,
 tp.norec,
 tp.harga,
