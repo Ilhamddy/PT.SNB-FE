@@ -7,6 +7,10 @@ import {
   Container,
   FormFeedback,
   Row,
+  UncontrolledDropdown,
+  DropdownToggle,
+  DropdownMenu,
+  DropdownItem,
 } from 'reactstrap'
 import HorizontalLayout from '../../Layouts/HorizontalLayout'
 import BreadCrumb from '../../Components/Common/BreadCrumb'
@@ -29,6 +33,7 @@ import React from 'react'
 import {
   getDasborFarmasi,
   getStatusPegawai,
+  setJumlahObat,
   setPemesanan,
   setPenerimaan,
   setRetur,
@@ -39,6 +44,7 @@ import Penerimaan from './penerimaan.svg'
 import Retur from './retur.svg'
 import { colors } from '../DasborUtama/colors'
 import {
+  ModalJumlahObat,
   ModalPemesanan,
   ModalPenerimaan,
   ModalRetur,
@@ -74,6 +80,7 @@ const DasborFarmasi = () => {
       <ModalPemesanan />
       <ModalPenerimaan />
       <ModalRetur />
+      <ModalJumlahObat />
       <BreadCrumb
         title="Dasbor Pegawai"
         pageTitle="Dasbor EIS"
@@ -621,13 +628,22 @@ const ReturBarangFarmasi = () => {
   )
 }
 
-const PemakaianObat = () => {
+export const PemakaianObat = ({ isPopup }) => {
+  const dispatch = useDispatch()
   const sepuluhBesar = useSelector(
     (state) => state.Eis.getDasborFarmasi.data?.sepuluhBesarObat || []
   )
-  const sepuluhBesarTotal = sepuluhBesar.map((sep) => sep.jumlahpenggunaan)
+  const jumlahObat = useSelector(
+    (state) => state.Eis.tabelPasien.jumlahObat.jumlah
+  )
+  const sepuluhBesarTotal = sepuluhBesar
+    .map((sep) => sep.jumlahpenggunaan)
+    .slice(0, isPopup ? jumlahObat - 1 : 10)
+  const maksTeks = !isPopup ? 2 : jumlahObat > 20 ? 1 : 2
+  const sepuluhBesarNama = sepuluhBesar
+    .map((sep) => sep.namaproduk.split(' ').slice(0, maksTeks))
+    .slice(0, isPopup ? jumlahObat - 1 : 10)
 
-  const sepuluhBesarNama = sepuluhBesar.map((sep) => sep.namaproduk.split(' '))
   const series = [
     {
       name: 'Total Stok Obat',
@@ -662,16 +678,45 @@ const PemakaianObat = () => {
           colors: colors,
           fontSize: '12px',
         },
+        rotate: -90,
       },
     },
   }
 
+  const optionObat = [10, 20, 30]
+
   return (
     <Card className="p-3" style={{ height: 450 }}>
-      <Row className="mb-3">
-        <Col lg={12}>
-          <h4>10 Obat terbanyak</h4>
+      <Row className="mb-3 d-flex justify-content-between">
+        <Col lg="auto">
+          <h4>{jumlahObat} Obat terbanyak</h4>
         </Col>
+        {!isPopup && (
+          <Col lg="auto">
+            <UncontrolledDropdown className="card-header-dropdown">
+              <DropdownToggle
+                className="text-reset dropdown-btn"
+                tag="a"
+                role="button"
+              >
+                <span className="text-muted">
+                  {jumlahObat} Obat{' '}
+                  <i className="mdi mdi-chevron-down ms-1"></i>
+                </span>
+              </DropdownToggle>
+              <DropdownMenu className="dropdown-menu-end">
+                {optionObat.map((val, index) => (
+                  <DropdownItem
+                    key={index}
+                    onClick={() => dispatch(setJumlahObat(val))}
+                  >
+                    {val} Obat
+                  </DropdownItem>
+                ))}
+              </DropdownMenu>
+            </UncontrolledDropdown>
+          </Col>
+        )}
       </Row>
       <Row>
         <ReactApexChart

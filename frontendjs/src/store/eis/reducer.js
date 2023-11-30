@@ -50,7 +50,9 @@ import {
     SET_PENERIMAAN,
     RESET_PENERIMAAN,
     SET_RETUR,
-    RESET_RETUR
+    RESET_RETUR,
+    SET_JUMLAH_OBAT,
+    RESET_JUMLAH_OBAT
 } from "./actionType";
   
 const INIT_STATE = {
@@ -144,6 +146,9 @@ const INIT_STATE = {
             name: "",
             data: null
         },
+        jumlahObat: {
+            jumlah: 10
+        }
     },
     getDasborPembayaran: {
         data: [],
@@ -732,6 +737,26 @@ const Eis = (state = INIT_STATE, action) => {
                 tabelPasien: {
                     ...state.tabelPasien,
                     retur: INIT_STATE.tabelPasien.retur
+                }
+            }
+        }
+
+        case SET_JUMLAH_OBAT: {
+            return {
+                ...state,
+                tabelPasien: {
+                    ...state.tabelPasien,
+                    jumlahObat: action.payload
+                }
+            }
+        }
+
+        case RESET_JUMLAH_OBAT: {
+            return {
+                ...state,
+                tabelPasien: {
+                    ...state.tabelPasien,
+                    jumlahObat: INIT_STATE.tabelPasien.jumlahObat
                 }
             }
         }
