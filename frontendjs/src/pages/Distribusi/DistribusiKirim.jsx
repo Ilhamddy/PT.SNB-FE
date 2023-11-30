@@ -332,23 +332,27 @@ const DistribusiKirim = ({ isVerif }) => {
 
   useEffect(() => {
     const setFF = vKirim.setFieldValue
+    const resetV = vKirim.resetForm
     const dataOrder = orderStokBatch?.order
-    console.log(dataOrder)
     dataOrder?.isverif !== undefined &&
       setFF('isverif', dataOrder.isverif || '')
-    dataOrder?.noreckirim && setFF('noreckirim', dataOrder?.noreckirim || '')
-    dataOrder?.tglkirim && setFF('tanggalkirim', dataOrder?.tglkirim || '')
-    dataOrder?.nokirim && setFF('nokirim', dataOrder?.nokirim || '')
-    dataOrder?.keterangankirim &&
-      setFF('keterangankirim', dataOrder?.keterangankirim || '')
-    setFF('unitpengirim', dataOrder?.unittujuan || '')
-    setFF('unitpenerima', dataOrder?.unitasal || '')
-    setFF('tanggalpermintaan', dataOrder?.tglorder || '')
-    setFF('noorder', dataOrder?.noorder || '')
-    setFF('keteranganorder', dataOrder?.keterangan || '')
-    setFF('norecorder', dataOrder?.norecorder || '')
-    setFF('jeniskirim', dataOrder?.jenisorder || '')
-  }, [orderStokBatch, vKirim.setFieldValue])
+    if (dataOrder) {
+      dataOrder?.noreckirim && setFF('noreckirim', dataOrder?.noreckirim || '')
+      dataOrder?.tglkirim && setFF('tanggalkirim', dataOrder?.tglkirim || '')
+      dataOrder?.nokirim && setFF('nokirim', dataOrder?.nokirim || '')
+      dataOrder?.keterangankirim &&
+        setFF('keterangankirim', dataOrder?.keterangankirim || '')
+      setFF('unitpengirim', dataOrder?.unittujuan || '')
+      setFF('unitpenerima', dataOrder?.unitasal || '')
+      setFF('tanggalpermintaan', dataOrder?.tglorder || '')
+      setFF('noorder', dataOrder?.noorder || '')
+      setFF('keteranganorder', dataOrder?.keterangan || '')
+      setFF('norecorder', dataOrder?.norecorder || '')
+      setFF('jeniskirim', dataOrder?.jenisorder || '')
+    } else {
+      resetV()
+    }
+  }, [orderStokBatch, vKirim.setFieldValue, vKirim.resetForm])
 
   /**
    * @type {import("react-data-table-component").TableColumn<typeof vKirim.values.batchproduk[0]>[]}
@@ -702,6 +706,7 @@ const DistribusiKirim = ({ isVerif }) => {
               vProduk.setFieldValue('namaproduk', e?.label || '')
               vProduk.setFieldValue('batch', e?.batchproduk || [])
             }}
+            isDisabled={!vKirim.values.unitpengirim}
             className={`input mb-2
                             ${vProduk.errors?.produk ? 'is-invalid' : ''}`}
             ref={refProduk}
@@ -800,6 +805,7 @@ const DistribusiKirim = ({ isVerif }) => {
                 val?.nilaikonversi || 0
               )
             }}
+            isDisabled={!vProduk.values.namaproduk}
             className={`input mb-2 ${
               vProduk.errors?.satuan ? 'is-invalid' : ''
             }`}
