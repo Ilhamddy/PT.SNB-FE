@@ -162,11 +162,11 @@ const DashboardUtama = () => {
         <StackedGD />
         <StackedRI />
         <Row>
-          <Col lg={6}>
-            <CaraBayar />
-          </Col>
-          <Col lg={6}>
+          <Col lg={12}>
             <KunjunganPoliklinik />
+          </Col>
+          <Col lg={12}>
+            <CaraBayar />
           </Col>
         </Row>
         <Row>
@@ -750,7 +750,7 @@ const KunjunganPoliklinik = () => {
     <Card className="p-3" style={{ height: 500 }}>
       <Row className="mb-3">
         <Col lg={12}>
-          <h4>10 Besar Kunjungan poliklinik</h4>
+          <h4>Kunjungan poliklinik</h4>
         </Col>
       </Row>
       <Row>

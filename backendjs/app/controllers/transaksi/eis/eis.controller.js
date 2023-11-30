@@ -315,6 +315,10 @@ const getPoliklinikTerbanyak = async (req, res) => {
             akhirTanggalSelesai
         ])
         let kunjunganGrouped = groupBy(kunjungan.rows, "idunit", "namaunit")
+        kunjunganGrouped = kunjunganGrouped.map((group) => {
+            group._total = group._values.reduce((prev, v) => prev + (v.norectap ? 1 : 0), 0)
+            return group
+        })
         kunjunganGrouped = kunjunganGrouped.sort((a, b) => b._total - a._total)
         const tempres = {
             kunjungan: kunjunganGrouped

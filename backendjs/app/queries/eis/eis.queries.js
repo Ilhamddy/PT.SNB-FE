@@ -290,17 +290,21 @@ WHERE
 
 const qGetKunjunganPoliklinik = qGetPasienObj + `,
     mu.namaunit,
-    mu.id AS idunit
+    mu.id AS idunit,
+    tap.norec AS norectap
 FROM m_unit mu
-    LEFT JOIN t_antreanpemeriksaan tap ON tap.objectunitfk = mu.id
+    LEFT JOIN t_antreanpemeriksaan tap ON (
+        tap.objectunitfk = mu.id
+        AND
+        ${dateBetweenEmptyString("tap.tglmasuk", "$1", "$2")}
+    )
     LEFT JOIN t_daftarpasien tdp ON tdp.norec = tap.objectdaftarpasienfk
     LEFT JOIN m_instalasi mi ON mi.id = tdp.objectinstalasifk
     LEFT JOIN m_pasien mp ON mp.id = tdp.nocmfk
     LEFT JOIN m_rekanan mr ON mr.id = tdp.objectpenjaminfk
 WHERE
     mu.objectinstalasifk = ${daftarInstalasi.INSTALASI_RAWAT_JALAN}
-    AND
-    ${dateBetweenEmptyString("tdp.tglregistrasi", "$1", "$2")}
+    
 `
 
 const qGetTempatTidur = `

@@ -1,7 +1,7 @@
 import { useFormik } from 'formik'
 import userDummy from '../../assets/images/users/user-dummy-img.jpg'
 import { ToastContainer } from 'react-toastify'
-import { useEffect, useReducer, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   Card,
   CardBody,
@@ -52,45 +52,29 @@ import {
   pelayananFromVerifGet,
   pelayananFromVerifGetReset,
   buktiBayarCreate,
-  buktiBayarCreateReset,
+  paymentPiutangPasienGet,
+  paymentPiutangPasienGetReset,
 } from '../../store/payment/action'
 import CustomSelect from '../Select/Select'
-import './Bayar.scss'
+import './BayarPiutang.scss'
 import { useNavigate, useParams } from 'react-router-dom'
 import {
   rgxAllNumber,
   rgxAllPeriods,
   rgxValidNumber,
 } from '../../utils/regexcommon'
-import PrintTemplate from '../Print/PrintTemplate/PrintTemplate'
-import './Bayar.scss'
-import LoadingTable from '../../Components/Table/LoadingTable'
-import { tableCustomStyles } from '../../Components/Table/tableCustomStyles'
 
-const initPayment = (dateNow) => ({
-  metodebayar: '',
-  nontunai: '',
-  pjpasien: '',
-  approvalcode: '',
-  nominalbayar: '',
-  tglbayar: dateNow,
-  rekeningrs: '',
-})
-
-const Bayar = () => {
-  const { norecnota } = useParams()
-  const [isDeposit, setIsDeposit] = useState(false)
-
+const BayarPiutang = () => {
+  const { norecpiutang, norecnota } = useParams()
   let {
     dataPasienPlg,
     comboboxReg,
     listPelayanan,
+    paymentPiutangPasien,
+    norecdp,
     comboboxpayment,
     nota,
     kepesertaan,
-    createdBuktiBayar,
-    deposit,
-    bayarBefore,
   } = useSelector((state) => ({
     dataPasienPlg: state.DaftarPasien.daftarPasienPulangGet.data || [],
     comboboxReg: state.Master.comboRegistrasiGet.data || {},
@@ -98,44 +82,43 @@ const Bayar = () => {
     comboboxpayment: state.Master.comboPaymentGet.data,
     nota: state.Payment.pelayananFromVerifGet.data?.nota || [],
     kepesertaan: state.Payment.pelayananFromVerifGet.data?.kepesertaan || [],
-    deposit: state.Payment.pelayananFromVerifGet.data?.deposit || [],
-    bayarBefore: state.Payment.pelayananFromVerifGet.data?.buktiBayar || null,
-    createdBuktiBayar: state.Payment.buktiBayarCreate.data || null,
+    paymentPiutangPasien: state.Payment.paymentPiutangPasienGet.data || null,
   }))
 
-  const buktiBayar =
-    bayarBefore || (Array.isArray(createdBuktiBayar) ? null : createdBuktiBayar)
-
-  const refPrintTransaksi = useRef(null)
-
-  const handlePrintBukti = () => {
-    refPrintTransaksi.current.handlePrint()
-  }
-  const [dateNow] = useState(() => new Date().toISOString())
+  const [dateStart] = useState(() => new Date().toISOString())
   const [dateEnd] = useState(() => new Date().toISOString())
+
   const validation = useFormik({
     enableReinitialize: true,
     initialValues: {
-      objectjenispembayaranfk: 1,
+      objectjenispembayaranfk: 2,
       totaltagihan: '',
       diskon: 0,
       // non wajib
       deposit: 0,
-      nobukti: `B${dateNow.slice(2, 4)}${
-        dateNow.slice(5, 7) + 1
-      }${dateNow.slice(8, 10)}${dateNow.slice(11, 13)}${dateNow.slice(
+      nobukti: `B${dateStart.slice(2, 4)}${
+        dateStart.slice(5, 7) + 1
+      }${dateStart.slice(8, 10)}${dateStart.slice(11, 13)}${dateStart.slice(
         14,
         16
-      )}${dateNow.slice(17, 19)}`,
+      )}${dateStart.slice(17, 19)}`,
       pegawai: '',
+      norecpiutang: '',
       norecnota: '',
       klaim: '',
       norecdp: '',
       pjpasien: '',
       keterangan: '',
+      nodeposit: '',
       payment: [
         {
-          ...initPayment(dateNow),
+          metodebayar: '',
+          nontunai: '',
+          pjpasien: '',
+          approvalcode: '',
+          nominalbayar: '',
+          tglbayar: dateStart,
+          rekeningrs: '',
         },
       ],
     },
@@ -164,10 +147,9 @@ const Bayar = () => {
       pjpasien: Yup.string().required('Diterima Dari harus diisi'),
       // non wajib
       deposit: Yup.string().required('Deposit harus diisi'),
+      keterangan: Yup.string().required('Keterangan wajib diisi'),
       nobukti: Yup.string().required('No Bukti harus diisi'),
-      keterangan: Yup.string().required('Keterangan bayar wajib diisi'),
       pegawai: Yup.string().required('Pegawai harus diisi'),
-      norecnota: Yup.string().required('No Rekam Medis harus diisi'),
       klaim: Yup.string().required('Klaim harus diisi'),
       norecdp: Yup.string().required('No DP harus diisi'),
     }),
@@ -178,12 +160,7 @@ const Bayar = () => {
         newPayment.nominalbayar = strToNumber(newPayment.nominalbayar)
         return newPayment
       })
-      dispatch(
-        buktiBayarCreate(valuesSent, () => {
-          norecnota && dispatch(pelayananFromVerifGet(norecnota))
-          handlePrintBukti()
-        })
-      )
+      dispatch(buktiBayarCreate(valuesSent, () => {}))
     },
   })
 
@@ -192,6 +169,20 @@ const Bayar = () => {
     let newPayment = { ...newPayments[index] }
     newPayment[fieldname] = newvalue
     newPayments[index] = newPayment
+    validation.setFieldValue('payment', newPayments)
+  }
+
+  const addPayment = () => {
+    let newPayments = [...validation.values.payment]
+    newPayments.push({
+      metodebayar: '',
+      nontunai: '',
+      pjpasien: '',
+      nominalbayar: '',
+      tglbayar: dateStart,
+      rekeningrs: '',
+      approvalcode: '',
+    })
     validation.setFieldValue('payment', newPayments)
   }
 
@@ -211,20 +202,6 @@ const Bayar = () => {
     changePayment('nominalbayar', index, newNominal)
   }
 
-  const addPayment = () => {
-    let newPayments = [...validation.values.payment]
-    newPayments.push({
-      metodebayar: '',
-      nontunai: '',
-      pjpasien: '',
-      nominalbayar: '',
-      tglbayar: dateNow,
-      rekeningrs: '',
-      approvalcode: '',
-    })
-    validation.setFieldValue('payment', newPayments)
-  }
-
   const deleteLastPayment = () => {
     let newPayments = [...validation.values.payment]
     newPayments.pop()
@@ -236,118 +213,31 @@ const Bayar = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
-  const filterRekeningRs = (rekeningRs, nontunaiV) => {
-    return rekeningRs?.filter((rekening) => rekening.objectbankfk === nontunaiV)
+  const handleFilter = () => {
+    dispatch(daftarPasienPulangGet(dateStart, dateEnd))
   }
-
-  const diskon = listPelayanan.reduce(
-    (prev, pel) => prev + (pel.discount || 0),
-    0
-  )
-  let totalTagihan = listPelayanan.reduce(
-    (prev, pel) => prev + (pel.total || 0),
-    0
-  )
-  const nominalklaim = kepesertaan.reduce(
-    (prev, pel) => prev + (pel.nominalklaim || 0),
-    0
-  )
-  const grandTotal =
-    totalTagihan -
-    validation.values.diskon -
-    validation.values.klaim -
-    validation.values.deposit
-  let totalDeposit = deposit.reduce((prev, pel) => prev + (pel.nominal || 0), 0)
-  let payment =
-    validation.values.payment?.reduce(
-      (prev, pel) => prev + (strToNumber(pel.nominalbayar) || 0),
-      0
-    ) || 0
-  let sisaGrandTotal = grandTotal - payment
+  const handleClickCari = () => {
+    dispatch(
+      daftarPasienPulangGet({ dateStart, dateEnd, instalasi, unit: '', search })
+    )
+  }
+  let totalTagihan =
+    (paymentPiutangPasien?.piutang?.totalnota || 0) -
+    (paymentPiutangPasien?.klaim || 0)
+  let grandTotal = paymentPiutangPasien?.piutang?.totalpiutang || 0
+  let klaim = paymentPiutangPasien?.klaim || 0
+  let totalSudahBayar = paymentPiutangPasien.buktibayar?.totalbayar || 0
+  let totalBayar = validation.values.payment.reduce((total, payment) => {
+    return total + strToNumber(payment.nominalbayar)
+  }, 0)
+  const totalFinal = grandTotal - totalBayar
 
   const columns = [
     {
       name: <span className="font-weight-bold fs-13">Tgl Pelayanan</span>,
-      selector: (row) => dateTimeLocal(new Date(row.tglinput)),
+      selector: (row) => dateTimeLocal(new Date(row.tglbayar)),
       sortable: true,
       width: '160px',
-      wrap: true,
-    },
-    {
-      name: <span className="font-weight-bold fs-13">Layanan</span>,
-      // selector: row => row.noregistrasi,
-      sortable: true,
-      selector: (row) => row.namaproduk,
-      width: '120px',
-    },
-    {
-      name: <span className="font-weight-bold fs-13">Petugas</span>,
-      selector: (row) => row.namapegawai,
-      sortable: true,
-      width: '120px',
-    },
-    {
-      name: <span className="font-weight-bold fs-13">Unit</span>,
-      selector: (row) => row.namaunit,
-      sortable: true,
-      width: '120px',
-    },
-    {
-      name: <span className="font-weight-bold fs-13">Kelas</span>,
-      selector: (row) => row.namakelas,
-      sortable: true,
-      width: '110px',
-    },
-    {
-      name: <span className="font-weight-bold fs-13">Harga</span>,
-      selector: (row) => row.harga,
-      sortable: true,
-      width: '110px',
-    },
-    {
-      name: <span className="font-weight-bold fs-13">Qty</span>,
-      selector: (row) => row.qty,
-      sortable: true,
-      width: '20px',
-      wrap: true,
-    },
-    {
-      name: <span className="font-weight-bold fs-13">Diskon</span>,
-      selector: (row) => row.discount || 0,
-      sortable: true,
-      width: '70px',
-      wrap: true,
-    },
-    {
-      name: <span className="font-weight-bold fs-13">Jasa</span>,
-      selector: (row) => row.jasa || 0,
-      sortable: true,
-      width: '70px',
-      wrap: true,
-    },
-    {
-      name: <span className="font-weight-bold fs-13">C</span>,
-      selector: (row) => `${row.iscito ? 'v' : 'x'}`,
-      sortable: true,
-      width: '40px',
-      wrap: true,
-    },
-    {
-      name: <span className="font-weight-bold fs-13">Total</span>,
-      selector: (row) => row.total,
-      sortable: true,
-      width: '140px',
-      wrap: true,
-    },
-    {
-      name: <span className="font-weight-bold fs-13">No Verif/NBB</span>,
-      selector: (row) =>
-        `${
-          (row.no_nota ? `${row.no_nota}/\n` : ``) +
-          (row.no_bukti ? `${row.no_bukti}` : ``)
-        }`,
-      sortable: true,
-      width: '140px',
       wrap: true,
     },
   ]
@@ -359,59 +249,37 @@ const Bayar = () => {
   useEffect(() => {
     const setFF = validation.setFieldValue
     grandTotal && setFF('totaltagihan', grandTotal)
-    diskon && setFF('diskon', diskon)
-    setFF('klaim', nominalklaim || 0)
-    isDeposit ? setFF('deposit', totalDeposit || 0) : setFF('deposit', 0)
-  }, [
-    dispatch,
-    validation.setFieldValue,
-    grandTotal,
-    diskon,
-    nominalklaim,
-    totalDeposit,
-    isDeposit,
-  ])
+    setFF('diskon', 0)
+    setFF('klaim', 0)
+  }, [dispatch, validation.setFieldValue, grandTotal])
 
   useEffect(() => {
     const setFF = validation.setFieldValue
     nota.namapasien && setFF('pjpasien', nota.namapasien)
     nota.idpegawai && setFF('pegawai', nota.idpegawai)
     nota.norecdp && setFF('norecdp', nota.norecdp)
-  }, [nota, validation.setFieldValue]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [nota, validation.setFieldValue])
 
   useEffect(() => {
     const setFF = validation.setFieldValue
+    norecpiutang && setFF('norecpiutang', norecpiutang)
+    norecpiutang && dispatch(paymentPiutangPasienGet(norecpiutang))
     norecnota && setFF('norecnota', norecnota)
     norecnota && dispatch(pelayananFromVerifGet(norecnota))
     return () => {
-      dispatch(pelayananFromVerifGetReset())
+      dispatch(paymentPiutangPasienGetReset())
     }
-  }, [dispatch, norecnota, validation.setFieldValue])
+  }, [dispatch, norecpiutang, validation.setFieldValue, norecnota])
 
-  useEffect(() => {
-    return () => {
-      dispatch(buktiBayarCreateReset())
-    }
-  }, [dispatch])
-
-  useEffect(() => {
-    const payment = initPayment(dateNow)
-    const setFF = validation.setFieldValue
-    if (bayarBefore) {
-      const caraBayarBefore = bayarBefore.carabayar.map((caraBayar) => ({
-        ...initPayment(dateNow),
-        ...caraBayar,
-      }))
-      setFF('payment', caraBayarBefore)
-    } else {
-      setFF('payment', [payment])
-    }
-  }, [dateNow, bayarBefore, validation.setFieldValue])
+  const filterRekeningRs = (rekeningRs, nontunaiV) => {
+    return rekeningRs?.filter((rekening) => rekening.objectbankfk === nontunaiV)
+  }
 
   return (
-    <div className="page-content page-bayar">
+    <div className="page-content page-bayar-piutang">
+      <ToastContainer closeButton={false} />
       <Container fluid>
-        <BreadCrumb title="Bayar Pelayanan" pageTitle="Payment" />
+        <BreadCrumb title="Pembayaran" pageTitle="Pembayaran" />
         <Form
           onSubmit={(e) => {
             e.preventDefault()
@@ -425,46 +293,40 @@ const Bayar = () => {
           <Row>
             <Col lg={7}>
               <Card className="p-3">
-                {validation.values.payment.map((itemPayment, indexPayment) => (
-                  <Row key={indexPayment} className="mb-5">
+                {validation.values.payment.map((itemPayment, iPayment) => (
+                  <Row key={iPayment} className="mb-5">
                     <Row className="mb-2">
                       <Col lg={6}>
                         <Label
                           style={{ color: 'black' }}
-                          htmlFor={`metodebayar${indexPayment}`}
+                          htmlFor={`metodebayar${iPayment}`}
                           className="form-label"
                         >
-                          Metode Pembayaran {indexPayment + 1}
+                          Metode Pembayaran {iPayment + 1}
                         </Label>
                         <div>
                           <CustomSelect
-                            id={`metodebayar${indexPayment}`}
-                            name={`metodebayar${indexPayment}`}
+                            id={`metodebayar${iPayment}`}
+                            name={`metodebayar${iPayment}`}
                             options={comboboxpayment?.metodeBayar || []}
-                            isDisabled={!!buktiBayar}
                             onChange={(e) =>
-                              changePayment(
-                                'metodebayar',
-                                indexPayment,
-                                e.value
-                              )
+                              changePayment('metodebayar', iPayment, e.value)
                             }
                             value={itemPayment.metodebayar || ''}
                             className={`input ${
-                              validation.errors.payment?.[indexPayment]
-                                ?.metodebayar
+                              validation.errors.payment?.[iPayment]?.metodebayar
                                 ? 'is-invalid'
                                 : ''
                             }`}
                           />
-                          {validation.touched.payment?.[indexPayment]
+                          {validation.touched.payment?.[iPayment]
                             ?.metodebayar &&
-                            validation.errors.payment?.[indexPayment]
+                            validation.errors.payment?.[iPayment]
                               ?.metodebayar && (
                               <FormFeedback type="invalid">
                                 <div>
                                   {
-                                    validation.errors.payment?.[indexPayment]
+                                    validation.errors.payment?.[iPayment]
                                       ?.metodebayar
                                   }
                                 </div>
@@ -482,10 +344,9 @@ const Bayar = () => {
                                   (data, key) => (
                                     <div className="d-flex flex-row" key={key}>
                                       <Input
-                                        disabled={!!buktiBayar}
                                         className="form-check-input"
                                         type="radio"
-                                        id={`radio-payment-${key}-${indexPayment}`}
+                                        id={`radio-payment-${key}-${iPayment}`}
                                         checked={
                                           itemPayment.nontunai === data.value
                                         }
@@ -493,14 +354,14 @@ const Bayar = () => {
                                         onClick={(e) => {
                                           changePayment(
                                             'nontunai',
-                                            indexPayment,
+                                            iPayment,
                                             data.value
                                           )
                                         }}
                                       />
                                       <Label
                                         className="form-check-label ms-2"
-                                        htmlFor={`radio-payment-${key}-${indexPayment}`}
+                                        htmlFor={`radio-payment-${key}-${iPayment}`}
                                         style={{ color: 'black' }}
                                       >
                                         {data.label}
@@ -519,41 +380,41 @@ const Bayar = () => {
                         <>
                           <Label
                             style={{ color: 'black' }}
-                            htmlFor={`approvalcode${indexPayment}`}
+                            htmlFor={`approvalcode${iPayment}`}
                             className="form-label"
                           >
                             Reference Code
                           </Label>
                           <div>
                             <Input
-                              disabled={!!buktiBayar}
-                              id={`approvalcode${indexPayment}`}
-                              name={`approvalcode${indexPayment}`}
-                              type="text"
+                              id={`approvalcode${iPayment}`}
+                              name={`approvalcode${iPayment}`}
+                              type="string"
+                              placeholder="Masukkan reference code"
                               value={itemPayment.approvalcode || ''}
                               onChange={(e) => {
                                 rgxAllNumber.test(e.target.value) &&
                                   changePayment(
                                     'approvalcode',
-                                    indexPayment,
+                                    iPayment,
                                     e.target.value
                                   )
                               }}
                               invalid={
-                                validation.touched.payment?.[indexPayment]
+                                validation.touched.payment?.[iPayment]
                                   ?.approvalcode &&
-                                !!validation.errors.payment?.[indexPayment]
+                                !!validation.errors.payment?.[iPayment]
                                   ?.approvalcode
                               }
                             />
-                            {validation.touched.payment?.[indexPayment]
+                            {validation.touched.payment?.[iPayment]
                               ?.approvalcode &&
-                            validation.errors.payment?.[indexPayment]
+                            validation.errors.payment?.[iPayment]
                               ?.approvalcode ? (
                               <FormFeedback type="invalid">
                                 <div>
                                   {
-                                    validation.errors.payment?.[indexPayment]
+                                    validation.errors.payment?.[iPayment]
                                       ?.approvalcode
                                   }
                                 </div>
@@ -562,64 +423,37 @@ const Bayar = () => {
                           </div>
                         </>
                       )}
-                      <Row>
-                        <Col lg={7}>
-                          <Label
-                            style={{ color: 'black' }}
-                            htmlFor={`keterangan${indexPayment}`}
-                            className="form-label mt-2"
-                          >
-                            Nominal bayar
-                          </Label>
-                        </Col>
-                        {indexPayment === 0 && totalDeposit > 0 && (
-                          <Col lg={5} className="d-flex flex-row-reverse">
-                            <Input
-                              className="form-check-input ms-3    "
-                              type="checkbox"
-                              id={`formcheck-deposit`}
-                              checked={isDeposit}
-                              onChange={(e) => {
-                                setIsDeposit(!isDeposit)
-                              }}
-                            />
-                            <Label
-                              style={{ color: 'black' }}
-                              htmlFor={`formcheck-deposit`}
-                              className="form-check-label"
-                            >
-                              Gunakan Deposit
-                            </Label>
-                          </Col>
-                        )}
-                      </Row>
+                      <Label
+                        style={{ color: 'black' }}
+                        htmlFor={`nominalbayar${iPayment}`}
+                        className="form-label mt-2"
+                      >
+                        Nominal bayar
+                      </Label>
                       <div>
                         <Input
-                          disabled={!!buktiBayar}
-                          id={`nominalbayar${indexPayment}}`}
-                          name={`nominalbayar${indexPayment}`}
+                          id={`nominalbayar${iPayment}`}
+                          name={`nominalbayar${iPayment}`}
                           type="string"
                           placeholder="Masukkan nominal bayar"
-                          className="form-control mb-2"
+                          className="form-control"
                           onChange={(e) =>
-                            handleChangeNominal(e, indexPayment, itemPayment)
+                            handleChangeNominal(e, iPayment, itemPayment)
                           }
                           invalid={
-                            validation.touched.payment?.[indexPayment]
+                            validation.touched.payment?.[iPayment]
                               ?.nominalbayar &&
-                            !!validation.errors.payment?.[indexPayment]
+                            !!validation.errors.payment?.[iPayment]
                               ?.nominalbayar
                           }
                           value={itemPayment.nominalbayar || ''}
                         />
-                        {validation.touched.payment?.[indexPayment]
-                          ?.nominalbayar &&
-                        validation.errors.payment?.[indexPayment]
-                          ?.nominalbayar ? (
+                        {validation.touched.payment?.[iPayment]?.nominalbayar &&
+                        validation.errors.payment?.[iPayment]?.nominalbayar ? (
                           <FormFeedback type="invalid">
                             <div>
                               {
-                                validation.errors.payment?.[indexPayment]
+                                validation.errors.payment?.[iPayment]
                                   ?.nominalbayar
                               }
                             </div>
@@ -630,42 +464,37 @@ const Bayar = () => {
                         <>
                           <Label
                             style={{ color: 'black' }}
-                            htmlFor={`rekeningrs${indexPayment}`}
+                            htmlFor="keterangan"
                             className="form-label"
                           >
                             Rekening RS
                           </Label>
                           <div>
                             <CustomSelect
-                              isDisabled={!!buktiBayar}
-                              id={`rekeningrs${indexPayment}}`}
-                              name={`rekeningrs${indexPayment}`}
+                              id={`rekeningrs${iPayment}}`}
+                              name={`rekeningrs${iPayment}`}
                               options={filterRekeningRs(
                                 comboboxpayment?.rekeningRs || [],
                                 itemPayment.nontunai
                               )}
                               onChange={(e) => {
-                                changePayment(
-                                  'rekeningrs',
-                                  indexPayment,
-                                  e.value
-                                )
+                                changePayment('rekeningrs', iPayment, e.value)
                               }}
                               className={`input mt-2 ${
-                                validation.errors.payment?.[indexPayment]
+                                validation.errors.payment?.[iPayment]
                                   ?.rekeningrs
                                   ? 'is-invalid'
                                   : ''
                               }`}
                             />
-                            {validation.touched.payment?.[indexPayment]
+                            {validation.touched.payment?.[iPayment]
                               ?.rekeningrs &&
-                            validation.errors.payment?.[indexPayment]
+                            validation.errors.payment?.[iPayment]
                               ?.rekeningrs ? (
                               <FormFeedback type="invalid">
                                 <div>
                                   {
-                                    validation.errors.payment?.[indexPayment]
+                                    validation.errors.payment?.[iPayment]
                                       ?.rekeningrs
                                   }
                                 </div>
@@ -675,7 +504,7 @@ const Bayar = () => {
                         </>
                       )}
                     </Row>
-                    {indexPayment === validation.values.payment.length - 1 && (
+                    {iPayment === validation.values.payment.length - 1 && (
                       <div className="d-flex flex-column align-items-center">
                         <Row>
                           <Col lg={5}>
@@ -718,13 +547,12 @@ const Bayar = () => {
                       id={`pjpasien`}
                       name={`pjpasien`}
                       type="text"
-                      onChange={validation.handleChange}
                       value={validation.values.pjpasien || ''}
-                      disabled={!!buktiBayar}
                       invalid={
                         validation.touched.pjpasien &&
                         !!validation.errors.pjpasien
                       }
+                      onChange={validation.handleChange}
                     />
                     {validation.touched.pjpasien &&
                     validation.errors.pjpasien ? (
@@ -744,7 +572,6 @@ const Bayar = () => {
                   </Label>
                   <div>
                     <Input
-                      disabled={!!buktiBayar}
                       id={`keterangan`}
                       name={`keterangan`}
                       type="text"
@@ -767,56 +594,38 @@ const Bayar = () => {
             </Col>
             <Col lg={5}>
               <Card className="p-3">
-                {totalDeposit > 0 && (
-                  <Row>
-                    <Label style={{ color: 'red' }} className="form-label">
-                      *Pasien Ini memiliki deposit sebanyak Rp
-                      {totalDeposit?.toLocaleString('id-ID') || 0}
-                    </Label>
-                  </Row>
-                )}
                 <Label style={{ color: 'black' }} className="form-label">
                   Detail Pembayaran
                 </Label>
                 <table className="table-bayar ">
                   <tbody>
                     <tr>
-                      <td>Total</td>
+                      <td>Total Tagihan</td>
                       <td>Rp{totalTagihan?.toLocaleString('id-ID') || ''}</td>
                     </tr>
                     <tr>
-                      <td>Diskon</td>
-                      <td>Rp{diskon}</td>
+                      <td>Klaim asuransi</td>
+                      <td>Rp{klaim?.toLocaleString('id-ID') || ''}</td>
                     </tr>
                     <tr>
-                      <td>Klaim Asuransi</td>
-                      <td>Rp{nominalklaim?.toLocaleString('id-ID')}</td>
-                    </tr>
-                    {isDeposit && (
-                      <tr>
-                        <td>Deposit</td>
-                        <td>
-                          Rp{validation.values.deposit?.toLocaleString('id-ID')}
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                  <tbody className="total-tagihan">
-                    <tr>
-                      <td>Total Tagihan</td>
-                      <td>Rp{grandTotal?.toLocaleString('id-ID')}</td>
+                      <td>Total sudah bayar</td>
+                      <td>
+                        Rp{totalSudahBayar?.toLocaleString('id-ID') || ''}
+                      </td>
                     </tr>
                   </tbody>
                   <tbody className="total-tagihan">
                     <tr>
-                      <td>Pembayaran</td>
-                      <td>Rp{payment?.toLocaleString('id-ID')}</td>
+                      <td>Total Piutang</td>
+                      <td>Rp{grandTotal?.toLocaleString('id-ID') || ''}</td>
                     </tr>
-                  </tbody>
-                  <tbody className="total-tagihan">
                     <tr>
-                      <td>Sisa tagihan</td>
-                      <td>Rp{sisaGrandTotal?.toLocaleString('id-ID')}</td>
+                      <td>Total Bayar</td>
+                      <td>Rp{totalBayar?.toLocaleString('id-ID') || ''}</td>
+                    </tr>
+                    <tr>
+                      <td>Sisa piutang</td>
+                      <td>Rp{totalFinal?.toLocaleString('id-ID')}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -826,23 +635,21 @@ const Bayar = () => {
           <Row>
             <Col lg={13}>
               <Card className="p-3">
-                <Row>
-                  <Label style={{ color: 'black' }} className="form-label">
-                    Detail Verifikasi
-                  </Label>
-                </Row>
-                <Row>
-                  <DataTable
-                    fixedHeader
-                    fixedHeaderScrollHeight="700px"
-                    columns={columns}
-                    pagination
-                    data={listPelayanan || []}
-                    progressPending={false}
-                    customStyles={tableCustomStyles}
-                    progressComponent={<LoadingTable />}
-                  />
-                </Row>
+                {/* <Row>
+                                        <Label style={{ color: "black" }} className="form-label">
+                                            Riwayat Pembayaran
+                                        </Label>
+                                    </Row>
+                                    <Row>
+                                        <DataTable
+                                            fixedHeader
+                                            columns={columns}
+                                            pagination
+                                            data={[]}
+                                            progressPending={false}
+                                            customStyles={tableCustomStyles}
+                                        />
+                                    </Row> */}
                 <Row>
                   <Col lg={2}>
                     <Label
@@ -864,33 +671,25 @@ const Bayar = () => {
                       onChange={validation.handleChange}
                       onBlur={validation.handleBlur}
                       value={nota?.keterangan || ''}
-                      invalid={false}
                     />
+                    {validation.touched.keterangan &&
+                    validation.errors.keterangan ? (
+                      <FormFeedback type="invalid">
+                        <div>{validation.errors.keterangan}</div>
+                      </FormFeedback>
+                    ) : null}
                   </Col>
                 </Row>
                 <Row>
                   <div className="d-flex gap-2 justify-content-center mt-4 mb-2">
-                    {!buktiBayar && (
-                      <Button
-                        type="submit"
-                        color="success"
-                        placement="top"
-                        id="tooltipTop"
-                      >
-                        SIMPAN
-                      </Button>
-                    )}
-                    {!!buktiBayar && (
-                      <Button
-                        type="button"
-                        onClick={() => handlePrintBukti()}
-                        color="info"
-                        placement="top"
-                        id="tooltipTop"
-                      >
-                        PRINT
-                      </Button>
-                    )}
+                    <Button
+                      type="submit"
+                      color="success"
+                      placement="top"
+                      id="tooltipTop"
+                    >
+                      SIMPAN
+                    </Button>
                     <button
                       type="button"
                       className="btn w-sm btn-danger"
@@ -905,68 +704,8 @@ const Bayar = () => {
           </Row>
         </Form>
       </Container>
-      <PrintTemplate
-        ContentPrint={
-          <div className="template-bukti-bayar-print">
-            <h2 className="judul-template">
-              Bukti Pembayaran pasien Rumah Sakit Solusi Nusantara Berdikari
-            </h2>
-            <table>
-              <tr>
-                <td>Nama Pasien</td>
-                <td>: {buktiBayar?.namapasien}</td>
-              </tr>
-              <tr>
-                <td>Tgl Pendaftaran</td>
-                <td>: {buktiBayar?.tglregistrasi}</td>
-              </tr>
-              <tr>
-                <td>No. Rekam Medis</td>
-                <td>: {buktiBayar?.nocmfk}</td>
-              </tr>
-              <tr>
-                <td>No Registrasi</td>
-                <td>: {buktiBayar?.namapasien}</td>
-              </tr>
-              <tr>
-                <td>Sudah diterima dari</td>
-                <td>: {buktiBayar?.pjpasien}</td>
-              </tr>
-              {buktiBayar?.createdCaraBayar?.map((caraBayar, index) => (
-                <tr key={index}>
-                  <td>Metode bayar {index + 1}</td>
-                  <td>
-                    :{' '}
-                    {`${
-                      caraBayar.objectmetodebayarfk === 'Tunai' ? 'Tunai' : ''
-                    }` +
-                      ` ${
-                        caraBayar.objectjenisnontunaifk
-                          ? `${caraBayar.objectjenisnontunaifk}`
-                          : ``
-                      }` +
-                      ` Rp${caraBayar.totalbayar.toLocaleString('id-ID')}`}
-                  </td>
-                </tr>
-              ))}
-              <tr>
-                <td>Total Bayar</td>
-                <td>: {buktiBayar?.totalbayar}</td>
-              </tr>
-              <tr>
-                <td>Untuk Pembayaran</td>
-                <td>: {buktiBayar?.keterangan}</td>
-              </tr>
-            </table>
-          </div>
-        }
-        testing={false}
-        ref={refPrintTransaksi}
-        orientation="landscape"
-        format={[210, 120]}
-      />
     </div>
   )
 }
 
-export default Bayar
+export default BayarPiutang
