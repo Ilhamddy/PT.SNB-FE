@@ -78,7 +78,7 @@ const LiburPegawai = () => {
       name: <span className="font-weight-bold fs-13">Nama Unit</span>,
       selector: (row) => row.namaunitlibur,
       sortable: true,
-      width: '120px',
+      width: '200px',
     },
     {
       name: <span className="font-weight-bold fs-13">Alasan</span>,
@@ -328,9 +328,8 @@ const ModalCuti = ({ ...rest }) => {
                     vCuti.setFieldValue('unit', e?.unit || '')
                   }}
                   value={vCuti.values.namapegawai}
-                  className={`input row-header ${
-                    !!vCuti?.errors.namapegawai ? 'is-invalid' : ''
-                  }`}
+                  className={`input row-header ${!!vCuti?.errors.namapegawai ? 'is-invalid' : ''
+                    }`}
                 />
                 {vCuti.touched.namapegawai && !!vCuti.errors.namapegawai && (
                   <FormFeedback type="invalid">
@@ -393,9 +392,8 @@ const ModalCuti = ({ ...rest }) => {
                     vCuti.setFieldValue('jeniscuti', e?.value || '')
                   }}
                   value={vCuti.values.jeniscuti}
-                  className={`input row-header ${
-                    !!vCuti?.errors.jeniscuti ? 'is-invalid' : ''
-                  }`}
+                  className={`input row-header ${!!vCuti?.errors.jeniscuti ? 'is-invalid' : ''
+                    }`}
                 />
                 {vCuti.touched.jeniscuti && !!vCuti.errors.jeniscuti && (
                   <FormFeedback type="invalid">
@@ -440,9 +438,8 @@ const ModalCuti = ({ ...rest }) => {
                     vCuti.setFieldValue('unit', e?.value || '')
                   }}
                   value={vCuti.values.unit}
-                  className={`input row-header ${
-                    !!vCuti?.errors.unit ? 'is-invalid' : ''
-                  }`}
+                  className={`input row-header ${!!vCuti?.errors.unit ? 'is-invalid' : ''
+                    }`}
                 />
                 {vCuti.touched.unit && !!vCuti.errors.unit && (
                   <FormFeedback type="invalid">
@@ -488,9 +485,8 @@ const ModalCuti = ({ ...rest }) => {
                     vCuti.setFieldValue('jeniscuti', e?.value || '')
                   }}
                   value={vCuti.values.jeniscuti}
-                  className={`input row-header ${
-                    !!vCuti?.errors.jeniscuti ? 'is-invalid' : ''
-                  }`}
+                  className={`input row-header ${!!vCuti?.errors.jeniscuti ? 'is-invalid' : ''
+                    }`}
                 />
                 {vCuti.touched.jeniscuti && !!vCuti.errors.jeniscuti && (
                   <FormFeedback type="invalid">
@@ -560,9 +556,8 @@ const ModalCuti = ({ ...rest }) => {
                     vCuti.setFieldValue('jeniscuti', e?.value || '')
                   }}
                   value={vCuti.values.jeniscuti}
-                  className={`input row-header ${
-                    !!vCuti?.errors.jeniscuti ? 'is-invalid' : ''
-                  }`}
+                  className={`input row-header ${!!vCuti?.errors.jeniscuti ? 'is-invalid' : ''
+                    }`}
                 />
                 {vCuti.touched.jeniscuti && !!vCuti.errors.jeniscuti && (
                   <FormFeedback type="invalid">
