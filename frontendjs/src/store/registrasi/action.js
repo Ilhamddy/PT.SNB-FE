@@ -40,7 +40,8 @@ import {
     SAVE_REGISTRASI_MUTASI,
     SAVE_REGISTRASI_MUTASI_SUCCESS,
     SAVE_REGISTRASI_MUTASI_ERROR,
-    GET_HISTORY_REGISTRASI,GET_HISTORY_REGISTRASI_SUCCESS,GET_HISTORY_REGISTRASI_ERROR
+    GET_HISTORY_REGISTRASI,GET_HISTORY_REGISTRASI_SUCCESS,GET_HISTORY_REGISTRASI_ERROR,
+    SAVE_MERGE_NOREGISTRASI,SAVE_MERGE_NOREGISTRASI_SUCCESS,SAVE_MERGE_NOREGISTRASI_ERROR
 } from "./actionType";
 
 export const registrasiResetForm = () => ({
@@ -262,4 +263,22 @@ export const getHistoryRegistrasiSuccess = (data) => ({
 export const getHistoryRegistrasiError = (error) => ({
     type: GET_HISTORY_REGISTRASI_ERROR,
     payload: error,
+});
+
+export const saveMergeNoRegistrasi = (data, callback) => ({
+    type: SAVE_MERGE_NOREGISTRASI,
+    payload: {
+        data: data,
+        callback: callback
+    }
+});
+
+export const saveMergeNoRegistrasiSuccess = (data) => ({
+    type: SAVE_MERGE_NOREGISTRASI_SUCCESS,
+    payload: data
+});
+
+export const saveMergeNoRegistrasiError = (error) => ({
+    type: SAVE_MERGE_NOREGISTRASI_ERROR,
+    payload: error
 });

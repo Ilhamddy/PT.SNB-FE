@@ -189,4 +189,9 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getHistoryRegistrasi
     )
+    app.post(
+        "/api/transaksi/registrasi/save-merge-noregistrasi",
+        [authJwt.verifyToken],
+        controller.saveMergeNoRegistrasi
+    );
 };

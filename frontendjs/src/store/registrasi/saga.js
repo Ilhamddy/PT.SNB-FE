@@ -14,7 +14,8 @@ import {
     PASIEN_FORM_QUERIES_GET,
     SAVE_BATAL_REGISTRASI,
     SAVE_REGISTRASI_MUTASI,
-    GET_HISTORY_REGISTRASI
+    GET_HISTORY_REGISTRASI,
+    SAVE_MERGE_NOREGISTRASI
 } from "./actionType";
 import {
     registrasiGetError,
@@ -40,7 +41,8 @@ import {
     saveBatalRegistrasiSuccess,
     saveBatalRegistrasiError,
     saveRegistrasiMutasiSuccess, saveRegistrasiMutasiError,
-    getHistoryRegistrasiSuccess, getHistoryRegistrasiError
+    getHistoryRegistrasiSuccess, getHistoryRegistrasiError,
+    saveMergeNoRegistrasiSuccess, saveMergeNoRegistrasiError
 } from "./action";
 
 import { toast } from 'react-toastify';
@@ -216,6 +218,20 @@ function* ongetHistoryRegistrasi({payload: {data, callback}}) {
     }
 }
 
+function* onsaveMergeNoRegistrasi({ payload: { data, callback } }) {
+    try {
+        let response = null;
+        response = yield call(serviceRegistrasi.saveMergeNoRegistrasi, data);
+        yield put(saveMergeNoRegistrasiSuccess(response.data));
+        callback && callback()
+        toast.success(response.msg || "Sukses", {autoClose: 3000})
+    } catch (error) {
+        yield put(saveMergeNoRegistrasiError(error));
+        toast.success(error.response?.msg || "Error", {autoClose: 3000})
+    }
+}
+
+
 export function* watchSaveRegistrasi() {
     yield takeEvery(REGISTRASI_SAVE, onSaveRegistrasi);
 }
@@ -266,6 +282,9 @@ export function* watchonsaveRegistrasiMutasi() {
 export function* watchongetHistoryRegistrasi() {
     yield takeEvery(GET_HISTORY_REGISTRASI, ongetHistoryRegistrasi);
 }
+export function* wathconsaveMergeNoRegistrasi(){
+    yield takeEvery(SAVE_MERGE_NOREGISTRASI, onsaveMergeNoRegistrasi)
+}
 
 function* registrasiSaga() {
     yield all([
@@ -281,7 +300,8 @@ function* registrasiSaga() {
         fork(watchGetPasienFormQueries),
         fork(watchsaveBatalRegistrasi),
         fork(watchonsaveRegistrasiMutasi),
-        fork(watchongetHistoryRegistrasi)
+        fork(watchongetHistoryRegistrasi),
+        fork(wathconsaveMergeNoRegistrasi)
     ]);
 }
 

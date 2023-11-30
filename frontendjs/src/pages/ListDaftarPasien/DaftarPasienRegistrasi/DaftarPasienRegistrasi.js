@@ -30,6 +30,7 @@ import anakperempuan from "../../../assets/images/svg/anakperempuan.svg"
 import dewasaperempuan from "../../../assets/images/svg/dewasaperempuan.svg"
 import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles';
 import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/KontainerFlatpickr';
+import MergeNoRegistrasi from '../../../Components/Common/MergeNoRegistrasi';
 
 const DaftarPasienRegistrasi = () => {
     document.title = "Daftar Pasien Rawat Jalan";
@@ -91,6 +92,7 @@ const DaftarPasienRegistrasi = () => {
     };
     const [tempNorecDp, settempNorecDp] = useState('');
     const [batalModal, setbatalModal] = useState(false);
+    const [mergeModal, setmergeModal] = useState(false);
     const handleToCancel = async (norecdp) => {
         settempNorecDp(norecdp)
         setbatalModal(true)
@@ -98,6 +100,10 @@ const DaftarPasienRegistrasi = () => {
     const handleToCloseBatalModal = async () => {
         setbatalModal(false)
         handleClickCari()
+    }
+    const handleToMergeNoregistrasi = async (norecdp) => {
+        settempNorecDp(norecdp)
+        setmergeModal(true)
     }
     const columns = [
         {
@@ -113,6 +119,7 @@ const DaftarPasienRegistrasi = () => {
                             </DropdownToggle>
                             <DropdownMenu className="dropdown-menu-end">
                                 <DropdownItem onClick={() => handleToCancel(row.norecdp)}><i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>Batal Registrasi</DropdownItem>
+                                <DropdownItem onClick={() => handleToMergeNoregistrasi(row.noregistrasi)}><i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>Merge No. Registrasi</DropdownItem>
                             </DropdownMenu>
                         </UncontrolledDropdown>
                     </div>
@@ -179,6 +186,11 @@ const DaftarPasienRegistrasi = () => {
                 show={batalModal}
                 onSimpanClick={() => setbatalModal(false)}
                 onCloseClick={() => handleToCloseBatalModal()}
+                tempNorecDp={tempNorecDp} />
+            <MergeNoRegistrasi
+                show={mergeModal}
+                onSimpanClick={() => setmergeModal(false)}
+                onCloseClick={() => setmergeModal(false)}
                 tempNorecDp={tempNorecDp} />
             <UiContent />
             <div className="page-content daftar-pasien-registrasi">
