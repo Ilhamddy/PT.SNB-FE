@@ -169,7 +169,10 @@ const BayarPiutang = () => {
       dispatch(
         buktiBayarCreate(valuesSent, (data) => {
           navigate(
-            `/payment/bayar-piutang/${norecpiutang}/${norecnota}/${data.norec}`
+            `/payment/bayar-piutang/${norecpiutang}/${norecnota}/${data.buktiBayar.norec}`,
+            {
+              replace: true,
+            }
           )
         })
       )
