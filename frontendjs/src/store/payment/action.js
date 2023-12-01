@@ -139,10 +139,10 @@ export const daftarTagihanPasienGetReset = () => {
     }
 }
 
-export const pelayananFromVerifGet = (norecnota) => {
+export const pelayananFromVerifGet = (queries) => {
     return {
         type: PELAYANAN_FROM_VERIF_GET,
-        payload: { norecnota }
+        payload: { queries }
     }
 }
 
@@ -274,10 +274,10 @@ export const daftarPiutangPasienGetReset = () => {
     }
 }
 
-export const paymentPiutangPasienGet = (norecpiutang) => {
+export const paymentPiutangPasienGet = (queries) => {
     return {
         type: PAYMENT_PIUTANG_PASIEN_GET,
-        payload: { norecpiutang }
+        payload: { queries }
     }
 }
 
