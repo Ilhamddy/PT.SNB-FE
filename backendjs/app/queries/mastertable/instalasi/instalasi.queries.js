@@ -10,7 +10,8 @@ const getAll =
     `
 SELECT 
     id as value, 
-    namainstalasi as label 
+    namainstalasi as label,
+    ihs_id
 FROM m_instalasi 
 WHERE statusenabled = true`;
 

@@ -98,6 +98,7 @@ import Logger from "./logger/reducer"
 import Eis from "./eis/reducer"
 import MasterDataLayanan from "./masterdatalayanan/reducer";
 import MasterTarifTindakan from "./mastertariftindakan/reducer";
+import SatuSehat from "./satuSehat/reducer";
 
 const rootReducer = combineReducers({
     // public
@@ -150,7 +151,8 @@ const rootReducer = combineReducers({
     Logger,
     Eis,
     MasterDataLayanan,
-    MasterTarifTindakan
+    MasterTarifTindakan,
+    SatuSehat
 });
 
 export default rootReducer;
