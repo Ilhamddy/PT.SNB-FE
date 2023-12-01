@@ -47,8 +47,8 @@ const DaftarOrderOperasi = () => {
         onSubmit: (values) => {
             console.log(values);
             dispatch(getDaftarOrderOperasi({
-                dateStart: vSetValidation.values.dateStart,
-                dateEnd: vSetValidation.values.dateEnd,
+                dateStart: vSetValidation.values.dateStart || dateNow,
+                dateEnd: vSetValidation.values.dateEnd || dateNow,
                 unitOrder: vSetValidation.values.unitOrder,
                 search: vSetValidation.values.search,
                 status:''

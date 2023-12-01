@@ -183,7 +183,10 @@ const getDaftarOrderOperasi = async (req, res) => {
         if (req.query.status === '2') {
             statusOperasi = ` and x.objectstatusoperasifk in (2,3,4)`
         }
-        let query = queries.qDaftarOrderOperasi + ` where x.tglinput between '${req.query.dateStart}' and '${req.query.dateEnd}' ${unit} and x.namapasien ilike '%${search}%' ${statusOperasi}`
+        let todaystart = formatDate(req.query.dateStart) + ' 00:00'
+        let todayend = formatDate(req.query.dateEnd) + ' 23:59'
+
+        let query = queries.qDaftarOrderOperasi + ` where x.tglinput between '${todaystart}' and '${todayend}' ${unit} and x.namapasien ilike '%${search}%' ${statusOperasi}`
         const resultlist = await pool.query(query);
         res.status(200).send({
             msg: 'Success',
