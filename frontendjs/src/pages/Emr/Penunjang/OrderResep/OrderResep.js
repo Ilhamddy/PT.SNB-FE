@@ -13,6 +13,7 @@ import * as Yup from "yup"
 import { useParams, useSearchParams} from "react-router-dom"
 import RiwayatOrder from "./RiwayatOrder";
 import { useColumnsResep, useColumnsResepRacikan, useHandleChangeAllResep, useHandleChangeResep } from "../../../PenjualanObatBebas/PenjualanObatBebas";
+import DeleteModalCustom from "../../../../Components/Common/DeleteModalCustom";
 
 export const initValueResep = {
     norecap: "",
@@ -45,6 +46,7 @@ const initValueRacikan = {
 
 const OrderResep = () => {
     const dispatch = useDispatch()
+    const [unittujuanTemp, setunittujuanTemp] = useState("")
 
     const {norecap, norecdp} = useParams()
     const [searchParams, setSearchParams] = useSearchParams()
@@ -233,7 +235,9 @@ const OrderResep = () => {
         signa,
         keteranganResep,
         resepRef,
-        handleChangeAllResep
+        handleChangeAllResep,
+        !vResep.values.unittujuan
+
     )
 
     const columnsResepRacikan = useColumnsResepRacikan(
@@ -245,12 +249,27 @@ const OrderResep = () => {
         handleChangeRacikan,
         handleTambahRacikan,
         handleHapusRacikan,
+        !vResep.values.unittujuan
     )
     
     const resepNonRacikan = vResep.values.resep.filter((val) => val.racikan.length === 0)
     const resepRacikan = vResep.values.resep.filter((val) => val.racikan.length > 0)
     return (
         <div  className="p-5">
+            <DeleteModalCustom
+                show={!!unittujuanTemp}
+                onDeleteClick={() => {
+                    vResep.setFieldValue("unittujuan", unittujuanTemp)
+                    vResep.setFieldValue("resep", [{
+                        ...initValueResep
+                    }])
+                    setunittujuanTemp("")
+                }}
+                onCloseClick={() => setunittujuanTemp("")}
+                msgHDelete='Apa Anda Yakin ?'
+                msgBDelete='Dengan mengganti unit, racikan akan terhapus'
+                buttonHapus="Ganti"
+            />
             <Row>
                 <Col lg={2}>
                     <Label 
@@ -296,7 +315,11 @@ const OrderResep = () => {
                         name="unittujuan"
                         options={unit}
                         onChange={(e) => {
-                            vResep.setFieldValue("unittujuan", e?.value || "")
+                            if(!vResep.values.unittujuan){
+                                vResep.setFieldValue("unittujuan", e?.value || "")
+                            } else{
+                                setunittujuanTemp(e?.value || "")
+                            }
                         }}
                         value={vResep.values.unittujuan}
                         className={`input ${!!vResep?.errors.unittujuan ? "is-invalid" : ""}`}

@@ -1045,7 +1045,8 @@ export const useColumnsResep = (
     signa,
     keteranganResep,
     resepRef,
-    handleChangeAllResep
+    handleChangeAllResep,
+    disableObat = false
 ) => [
     {
         name: <span className='font-weight-bold fs-13'>R/</span>,
@@ -1070,6 +1071,7 @@ export const useColumnsResep = (
                             options={obatList}
                             onChange={(e) => handleChangeObatResep(e, row)}
                             value={row.obat}
+                            isDisabled={disableObat}
                             className={`input ${touchedResep?.obat 
                                 && !!errorsResep?.obat
                                 ? "is-invalid" : ""}`}
@@ -1136,6 +1138,7 @@ export const useColumnsResep = (
                         type="text"
                         value={val} 
                         onBlur={handleBlur}
+                        disabled={!row.obat && !row.sediaan}
                         onChange={(e) => handleQtyObatResep(
                             e, 
                             row, 
@@ -1314,6 +1317,7 @@ export const useColumnsResepRacikan = (
     handleChangeRacikan,
     handleTambahRacikan,
     handleHapusRacikan,
+    disableObat = false
 ) => [
     {
         name: <span className='font-weight-bold fs-13'>R/</span>,
@@ -1337,13 +1341,14 @@ export const useColumnsResepRacikan = (
                         id="obat"
                         name="obat"
                         options={obatList}
+                        isDisabled={disableObat}
                         onChange={(e) => handleChangeObatRacikan(
                             e, 
                             row, 
                             rowUtama
                         )}
                         value={row.obat}
-                        className={`input ${!!errorsResep?.obat
+                        className={`input row-header ${!!errorsResep?.obat
                             ? "is-invalid" : ""}`}
                         />
                     {touchedResep?.obat
