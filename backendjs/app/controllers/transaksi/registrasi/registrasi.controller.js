@@ -1812,6 +1812,33 @@ const getHistoryRegistrasi = async (req, res) => {
     }
 }
 
+const saveMergeNoRegistrasi = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        // await db.sequelize.transaction(async (transaction) => {
+            
+        // });
+        
+        const tempres = {
+        
+        };
+        res.status(200).send({
+            msg: 'Sukses',
+            code: 200,
+            data: req.body,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message || 'Gagal',
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export default {
     allSelect,
     addPost,
@@ -1844,7 +1871,8 @@ export default {
     getDaftarPasienTriage,
     getPasienOnline,
     getComboVerifikasi,
-    getHistoryRegistrasi
+    getHistoryRegistrasi,
+    saveMergeNoRegistrasi
 };
 
 const hUpdateRegistrasiPulang = async (req, res, transaction) => {

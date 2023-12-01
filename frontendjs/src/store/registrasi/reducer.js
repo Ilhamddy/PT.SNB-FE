@@ -37,7 +37,8 @@ import {
     SAVE_REGISTRASI_MUTASI,
     SAVE_REGISTRASI_MUTASI_SUCCESS,
     SAVE_REGISTRASI_MUTASI_ERROR,
-    GET_HISTORY_REGISTRASI,GET_HISTORY_REGISTRASI_SUCCESS,GET_HISTORY_REGISTRASI_ERROR
+    GET_HISTORY_REGISTRASI,GET_HISTORY_REGISTRASI_SUCCESS,GET_HISTORY_REGISTRASI_ERROR,
+    SAVE_MERGE_NOREGISTRASI,SAVE_MERGE_NOREGISTRASI_ERROR,SAVE_MERGE_NOREGISTRASI_SUCCESS
 } from "./actionType";
 
 const INIT_STATE = {
@@ -105,7 +106,12 @@ const INIT_STATE = {
         data: [],
         loading: false,
         error: null,
-    }
+    },
+    saveMergeNoRegistrasi: {
+        data: [],
+        loading: false,
+        error: null,
+    },
 };
 
 const Registrasi = (state = INIT_STATE, action) => {
@@ -127,6 +133,9 @@ const Registrasi = (state = INIT_STATE, action) => {
                 },
                 getHistoryRegistrasi:{
                     ...INIT_STATE.getHistoryRegistrasi
+                },
+                saveMergeNoRegistrasi:{
+                    ...INIT_STATE.saveMergeNoRegistrasi
                 }
             }
         }
@@ -578,6 +587,41 @@ const Registrasi = (state = INIT_STATE, action) => {
                     error: action.payload,
                 }
             }
+        }
+
+        case SAVE_MERGE_NOREGISTRASI: {
+            return {
+                ...state,
+                saveMergeNoRegistrasi: {
+                    ...state.saveMergeNoRegistrasi,
+                    data: [],
+                    loading: true,
+                    error: null,
+                },
+            };
+        }
+
+        case SAVE_MERGE_NOREGISTRASI_SUCCESS: {
+            return {
+                ...state,
+                saveMergeNoRegistrasi: {
+                    ...state.saveMergeNoRegistrasi,
+                    loading: false,
+                    data: action.payload,
+                    success: true,
+                },
+            };
+        }
+
+        case SAVE_MERGE_NOREGISTRASI_ERROR: {
+            return {
+                ...state,
+                saveMergeNoRegistrasi: {
+                    ...state.saveMergeNoRegistrasi,
+                    loading: false,
+                    error: action.payload,
+                },
+            };
         }
 
         default: {

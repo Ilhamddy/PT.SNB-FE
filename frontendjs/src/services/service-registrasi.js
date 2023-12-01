@@ -138,4 +138,7 @@ export default class ServiceRegistrasi {
     getHistoryRegistrasi = async (queries) => {
         return await api.get(`/transaksi/registrasi/get-history-registrasi`, queries);
     }
+    saveMergeNoRegistrasi = async (data) => {
+        return await api.create(`/transaksi/registrasi/save-merge-noregistrasi`, data)
+    }
 }
