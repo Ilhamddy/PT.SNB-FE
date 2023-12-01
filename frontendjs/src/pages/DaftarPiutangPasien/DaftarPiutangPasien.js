@@ -75,7 +75,7 @@ const DaftarPiutangPasien = () => {
     }
     const handleToBayar = async (norecpiutang, norecnota) => {
         norecpiutang
-            && navigate(`/payment/bayar/piutang/${norecpiutang}/${norecnota}`)    
+            && navigate(`/payment/bayar-piutang/${norecpiutang}/${norecnota}`)    
     }
     const handleCancelBayar = (row) => {
         row.norecnota && row.norecbukti &&
@@ -115,29 +115,39 @@ const DaftarPiutangPasien = () => {
                                         Bayar
                                     </DropdownItem>
                                 }
-                                {row.norecbukti && <DropdownItem 
-                                        onClick={async () => {
-                                            try{
-                                                const servicePayment = new ServicePayment();
-                                                const response = await servicePayment.getPiutangAfterDate({
-                                                    norecnota: row.norecnota,
-                                                    tglterakhir: row.tglupdate
-                                                })
-                                                
-                                                if((response.data || []).length <= 1){
-                                                    dispatch(getPiutangAfterDateSuccess([]))
-                                                    setPiutangDelete(row)
-                                                }else{
-                                                    dispatch(getPiutangAfterDateSuccess(response.data))
-                                                    setPiutangDelete(row)
-                                                }
-                                            }catch(e){
-                                                console.error(e);
-                                            }
-                                        }}>
-                                        <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
-                                        Batal Bayar
-                                    </DropdownItem>}
+                                {row.norecbukti && 
+                                    <>
+                                        <DropdownItem 
+                                                onClick={async () => {
+                                                    try{
+                                                        const servicePayment = new ServicePayment();
+                                                        const response = await servicePayment.getPiutangAfterDate({
+                                                            norecnota: row.norecnota,
+                                                            tglterakhir: row.tglupdate
+                                                        })
+                                                        
+                                                        if((response.data || []).length <= 1){
+                                                            dispatch(getPiutangAfterDateSuccess([]))
+                                                            setPiutangDelete(row)
+                                                        }else{
+                                                            dispatch(getPiutangAfterDateSuccess(response.data))
+                                                            setPiutangDelete(row)
+                                                        }
+                                                    }catch(e){
+                                                        console.error(e);
+                                                    }
+                                                }}>
+                                                <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
+                                                Batal Bayar
+                                            </DropdownItem>
+                                            <DropdownItem onClick={() => 
+                                                navigate(`/payment/bayar-piutang/${row.norecpiutang}/${row.norecnota}/${row.norecbukti}`)   }>
+                                                <i className="ri-mail-send-fill align-bottom me-2 text-muted">
+                                                </i>
+                                                Lihat Pembayaran
+                                            </DropdownItem>
+                                        </>
+                                    }
                             </DropdownMenu>
                         </UncontrolledDropdown>
                     </div>

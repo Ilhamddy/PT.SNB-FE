@@ -30,7 +30,7 @@ export default function (app) {
     );
 
     app.get(
-        "/api/transaksi/payment/pelayanan-from-verif/:norecnota",
+        "/api/transaksi/payment/pelayanan-from-verif",
         [authJwt.verifyToken],
         controller.getPelayananFromVerif
     );
@@ -60,7 +60,7 @@ export default function (app) {
     );
 
     app.get(
-        "/api/transaksi/payment/get-payment-piutang-pasien/:norecpiutang",
+        "/api/transaksi/payment/get-payment-piutang-pasien",
         [authJwt.verifyToken],
         controller.getPaymentForPiutang
     );

@@ -64,8 +64,18 @@ import {
   rgxValidNumber,
 } from '../../utils/regexcommon'
 
+const initPayment = (dateNow) => ({
+  metodebayar: '',
+  nontunai: '',
+  pjpasien: '',
+  approvalcode: '',
+  nominalbayar: '',
+  tglbayar: dateNow,
+  rekeningrs: '',
+})
+
 const BayarPiutang = () => {
-  const { norecpiutang, norecnota } = useParams()
+  const { norecpiutang, norecnota, norecbayar } = useParams()
   let {
     dataPasienPlg,
     comboboxReg,
@@ -75,6 +85,7 @@ const BayarPiutang = () => {
     comboboxpayment,
     nota,
     kepesertaan,
+    bayarBefore,
   } = useSelector((state) => ({
     dataPasienPlg: state.DaftarPasien.daftarPasienPulangGet.data || [],
     comboboxReg: state.Master.comboRegistrasiGet.data || {},
@@ -83,6 +94,7 @@ const BayarPiutang = () => {
     nota: state.Payment.pelayananFromVerifGet.data?.nota || [],
     kepesertaan: state.Payment.pelayananFromVerifGet.data?.kepesertaan || [],
     paymentPiutangPasien: state.Payment.paymentPiutangPasienGet.data || null,
+    bayarBefore: state.Payment.paymentPiutangPasienGet.data?.buktiBayar || null,
   }))
 
   const [dateStart] = useState(() => new Date().toISOString())
@@ -112,13 +124,7 @@ const BayarPiutang = () => {
       nodeposit: '',
       payment: [
         {
-          metodebayar: '',
-          nontunai: '',
-          pjpasien: '',
-          approvalcode: '',
-          nominalbayar: '',
-          tglbayar: dateStart,
-          rekeningrs: '',
+          ...initPayment(dateStart),
         },
       ],
     },
@@ -160,7 +166,16 @@ const BayarPiutang = () => {
         newPayment.nominalbayar = strToNumber(newPayment.nominalbayar)
         return newPayment
       })
-      dispatch(buktiBayarCreate(valuesSent, () => {}))
+      dispatch(
+        buktiBayarCreate(valuesSent, (data) => {
+          navigate(
+            `/payment/bayar-piutang/${norecpiutang}/${norecnota}/${data.buktiBayar.norec}`,
+            {
+              replace: true,
+            }
+          )
+        })
+      )
     },
   })
 
@@ -226,7 +241,11 @@ const BayarPiutang = () => {
     (paymentPiutangPasien?.klaim || 0)
   let grandTotal = paymentPiutangPasien?.piutang?.totalpiutang || 0
   let klaim = paymentPiutangPasien?.klaim || 0
-  let totalSudahBayar = paymentPiutangPasien.buktibayar?.totalbayar || 0
+  let buktiBayar = paymentPiutangPasien?.buktibayarsebelum || []
+  let totalSudahBayar = buktiBayar.reduce(
+    (prev, bb) => prev + (bb.totalbayar || 0),
+    0
+  )
   let totalBayar = validation.values.payment.reduce((total, payment) => {
     return total + strToNumber(payment.nominalbayar)
   }, 0)
@@ -263,13 +282,33 @@ const BayarPiutang = () => {
   useEffect(() => {
     const setFF = validation.setFieldValue
     norecpiutang && setFF('norecpiutang', norecpiutang)
-    norecpiutang && dispatch(paymentPiutangPasienGet(norecpiutang))
+    norecpiutang &&
+      dispatch(
+        paymentPiutangPasienGet({
+          norecpiutang: norecpiutang,
+          norecbayar: norecbayar || '',
+        })
+      )
     norecnota && setFF('norecnota', norecnota)
-    norecnota && dispatch(pelayananFromVerifGet(norecnota))
+    norecnota && dispatch(pelayananFromVerifGet({ norecnota: norecnota }))
     return () => {
       dispatch(paymentPiutangPasienGetReset())
     }
-  }, [dispatch, norecpiutang, validation.setFieldValue, norecnota])
+  }, [dispatch, norecpiutang, norecbayar, validation.setFieldValue, norecnota])
+
+  useEffect(() => {
+    const payment = initPayment(dateStart)
+    const setFF = validation.setFieldValue
+    if (bayarBefore) {
+      const caraBayarBefore = bayarBefore.carabayar.map((caraBayar) => ({
+        ...initPayment(dateStart),
+        ...caraBayar,
+      }))
+      setFF('payment', caraBayarBefore)
+    } else {
+      setFF('payment', [payment])
+    }
+  }, [dateStart, bayarBefore, validation.setFieldValue])
 
   const filterRekeningRs = (rekeningRs, nontunaiV) => {
     return rekeningRs?.filter((rekening) => rekening.objectbankfk === nontunaiV)
@@ -312,6 +351,7 @@ const BayarPiutang = () => {
                             onChange={(e) =>
                               changePayment('metodebayar', iPayment, e.value)
                             }
+                            isDisabled={!!bayarBefore}
                             value={itemPayment.metodebayar || ''}
                             className={`input ${
                               validation.errors.payment?.[iPayment]?.metodebayar
@@ -350,6 +390,7 @@ const BayarPiutang = () => {
                                         checked={
                                           itemPayment.nontunai === data.value
                                         }
+                                        disabled={!!bayarBefore}
                                         readOnly
                                         onClick={(e) => {
                                           changePayment(
@@ -391,6 +432,7 @@ const BayarPiutang = () => {
                               name={`approvalcode${iPayment}`}
                               type="string"
                               placeholder="Masukkan reference code"
+                              disabled={!!bayarBefore}
                               value={itemPayment.approvalcode || ''}
                               onChange={(e) => {
                                 rgxAllNumber.test(e.target.value) &&
@@ -437,6 +479,7 @@ const BayarPiutang = () => {
                           type="string"
                           placeholder="Masukkan nominal bayar"
                           className="form-control"
+                          disabled={!!bayarBefore}
                           onChange={(e) =>
                             handleChangeNominal(e, iPayment, itemPayment)
                           }
@@ -473,6 +516,7 @@ const BayarPiutang = () => {
                             <CustomSelect
                               id={`rekeningrs${iPayment}}`}
                               name={`rekeningrs${iPayment}`}
+                              isDisabled={!!bayarBefore}
                               options={filterRekeningRs(
                                 comboboxpayment?.rekeningRs || [],
                                 itemPayment.nontunai
@@ -513,6 +557,7 @@ const BayarPiutang = () => {
                               color="info"
                               placement="top"
                               onClick={() => addPayment()}
+                              disabled={!!bayarBefore}
                             >
                               +
                             </Button>
@@ -553,6 +598,7 @@ const BayarPiutang = () => {
                         !!validation.errors.pjpasien
                       }
                       onChange={validation.handleChange}
+                      disabled={!!bayarBefore}
                     />
                     {validation.touched.pjpasien &&
                     validation.errors.pjpasien ? (
@@ -581,6 +627,7 @@ const BayarPiutang = () => {
                         validation.touched.keterangan &&
                         !!validation.errors.keterangan
                       }
+                      disabled={!!bayarBefore}
                     />
                     {validation.touched.keterangan &&
                     validation.errors.keterangan ? (
@@ -687,6 +734,7 @@ const BayarPiutang = () => {
                       color="success"
                       placement="top"
                       id="tooltipTop"
+                      disabled={!!bayarBefore}
                     >
                       SIMPAN
                     </Button>

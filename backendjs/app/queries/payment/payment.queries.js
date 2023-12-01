@@ -1,4 +1,4 @@
-import { checkStatusEnabled, dateBetweenEmptyString } from "../../utils/dbutils"
+import { checkStatusEnabled, dateBetweenEmptyString, dateEmptyString, emptyInt } from "../../utils/dbutils"
 import { statusEnabled } from "../mastertable/globalvariables/globalvariables.queries"
 
 
@@ -151,7 +151,11 @@ FROM t_pelayananpasien tpp
     LEFT JOIN t_daftarpasien dp ON dp.norec = ap.objectdaftarpasienfk
     LEFT JOIN t_buktibayarpasien tbp ON tbp.objectnotapelayananpasienfk = tpp.objectnotapelayananpasienfk
 AND tbp.statusenabled = true
-    WHERE tpp.objectnotapelayananpasienfk=$1 AND npp.statusenabled=true
+WHERE 
+    tpp.objectnotapelayananpasienfk = $1
+    AND npp.statusenabled=true
+
+
     `
 
 const qGetVerif = `
@@ -301,7 +305,7 @@ WHERE tp.norec = $1
 GROUP BY tp.norec, tnp.norec, bb.totalbayar, bb.klaim, bb.no_bukti
     `
 
-const qDaftarTagihanPasienFronNota =
+const qDaftarTagihanPasienFromNota =
     `
 SELECT 
 	tn.total AS total, 
@@ -341,7 +345,10 @@ FROM t_notapelayananpasien tn
     )
     LEFT JOIN t_carabayar tcb ON tcb.objectbuktibayarpasienfk = bb.norec
 WHERE tn.statusenabled=true 
-    AND tn.norec = $1
+    AND 
+        tn.norec = $1
+    AND
+        ${dateEmptyString("bb.tglinput", "<", "$2")}
 GROUP BY
     tn.total, 
     tn.norec,
@@ -376,7 +383,7 @@ const qGetDepositFromNota =
     `
 
 
-const qGetBuktiBayarFromNota =
+const qGetBuktiBayarFromNorec =
     `
 SELECT
     tbb.norec,
@@ -421,7 +428,7 @@ FROM t_buktibayarpasien tbb
     LEFT JOIN t_daftarpasien tdp ON tdp.norec = tbb.objectdaftarpasienfk
     LEFT JOIN m_pasien mp ON mp.id = tdp.nocmfk
     LEFT JOIN t_carabayar tcb ON tcb.objectbuktibayarpasienfk = tbb.norec
-WHERE tbb.objectnotapelayananpasienfk = $1
+WHERE tbb.norec = $1
     AND tbb.statusenabled = true
 GROUP BY
     tbb.norec,
@@ -557,9 +564,9 @@ export {
     qGetPiutangPasien,
     qTagihanGetFromDP,
     qGetPaymentForPiutang,
-    qDaftarTagihanPasienFronNota,
+    qDaftarTagihanPasienFromNota,
     qGetDepositFromNota,
-    qGetBuktiBayarFromNota,
+    qGetBuktiBayarFromNorec,
     qGetCaraBayarFromBB,
     qGetBuktiBayarNorec,
     qGetLaporanPendapatanKasir,

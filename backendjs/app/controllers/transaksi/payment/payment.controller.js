@@ -13,9 +13,9 @@ import { qGetPelayananFromDp,
     qGetPiutangPasien,
     qTagihanGetFromDP,
     qGetPaymentForPiutang,
-    qDaftarTagihanPasienFronNota,
+    qDaftarTagihanPasienFromNota,
     qGetDepositFromNota,
-    qGetBuktiBayarFromNota,
+    qGetBuktiBayarFromNorec,
     qGetCaraBayarFromBB,
     qGetLaporanPendapatanKasir,
     qGetPembayaran,
@@ -79,12 +79,14 @@ const getPelayananFromDP = async (req, res) => {
 const getPelayananFromVerif = async (req, res) => {
     const logger = res.locals.logger
     try{
-        const norecnota = req.params.norecnota
+        const norecnota = req.query.norecnota
+        const norecbayar = req.query.norecbayar
+
         const pelayanan = await pool.query(qGetPelayananFromVerif, [norecnota])
         const verif = await pool.query(qGetVerif, [norecnota])
         const kepesertaan = await pool.query(qGetKepesertaanFromNota, [norecnota])
         const deposit = await pool.query(qGetDepositFromNota, [norecnota])
-        let buktiBayar = await pool.query(qGetBuktiBayarFromNota, [norecnota])
+        let buktiBayar = await pool.query(qGetBuktiBayarFromNorec, [norecbayar])
         buktiBayar = buktiBayar.rows[0] || null
         if(buktiBayar?.carabayar){
             // masukkan nilai empty string karena di query susah
@@ -96,8 +98,6 @@ const getPelayananFromVerif = async (req, res) => {
                 return newCaraBayar
             })
             buktiBayar.carabayar = newCaraBayars
-        }
-        if(buktiBayar){
             buktiBayar.createdCaraBayar 
                 = ((await pool.query(qGetCaraBayarFromBB, [buktiBayar.norec])).rows)
         }
@@ -272,12 +272,18 @@ const createBuktiBayar = async (req, res) => {
             })
 
         if(sisa > 0){
+            let piutangSebelum = null
+            if(objectBody.norecpiutang){
+                piutangSebelum = await t_piutangpasien.findByPk(objectBody.norecpiutang)
+                if(!piutangSebelum) throw new Error("Piutang tidak ada norec: ", objectBody.norecpiutang)
+                piutangSebelum = piutangSebelum.toJSON()
+            }
             const norecpiutangnew = uuid.v4().substring(0, 32);
             const addedPiutang = await  t_piutangpasien.create({
                 norec: norecpiutangnew,
                 statusenabled: true,
                 objectdaftarpasienfk: objectBody.norecdp,
-                objectpenjaminfk: 3,
+                objectpenjaminfk: piutangSebelum?.objectpenjaminfk || 3,
                 objectnotapelayananpasienfk: objectBody.norecnota,
                 totalpiutang: sisa,
                 totalbayar: 0,
@@ -572,14 +578,37 @@ const getAllPiutang = async (req, res) => {
 const getPaymentForPiutang = async (req, res) => {
     const logger = res.locals.logger
     try{
-        const norecpiutang = req.params.norecpiutang;
+        const norecpiutang = req.query.norecpiutang;
+        const norecbayar = req.query.norecbayar;
         let piutang = await pool.query(qGetPaymentForPiutang, [norecpiutang])
         piutang = piutang.rows[0] || null
-        const norecnota = piutang.norecnota 
-        const buktibayar = await pool.query(qDaftarTagihanPasienFronNota, [norecnota])
+        const norecnota = piutang.norecnota
+        let buktiBayar = await pool.query(qGetBuktiBayarFromNorec, [norecbayar])
+        buktiBayar = buktiBayar.rows[0] || null
+
+        const buktiBayarSebelumnya = await pool.query(qDaftarTagihanPasienFromNota, [
+            norecnota,
+            buktiBayar?.tglinput || ""
+        ])
+
+        if(buktiBayar?.carabayar){
+            // masukkan nilai empty string karena di query susah
+            const newCaraBayars = [...buktiBayar.carabayar].map(caraBayar => {
+                const newCaraBayar = {...caraBayar}
+                Object.keys(newCaraBayar).forEach(function(key) {
+                    newCaraBayar[key] = newCaraBayar[key] || ""
+                });
+                return newCaraBayar
+            })
+            buktiBayar.carabayar = newCaraBayars
+            buktiBayar.createdCaraBayar 
+                = ((await pool.query(qGetCaraBayarFromBB, [buktiBayar.norec])).rows)
+        }
+
         let tempres = {
             piutang: piutang,
-            buktibayar: buktibayar.rows[0] || []
+            buktibayarsebelum: buktiBayarSebelumnya.rows || [],
+            buktiBayar: buktiBayar
         }
         res.status(200).send({
             data: tempres,
@@ -1014,7 +1043,7 @@ const hCreateBayar = async ( req, transaction) => {
     let tahun = ("" + todayStart.getFullYear()).slice(-4)
     nobb = `B${tahun}${bulan}${tanggal}${nobb}`
 
-    await t_buktibayarpasien.create({
+    let createdBuktiBayar = await t_buktibayarpasien.create({
         norec: norecbukti,
         kdprofile: 0,
         statusenabled: true,
@@ -1060,7 +1089,7 @@ const hCreateBayar = async ( req, transaction) => {
         }
     ))
 
-    const createdBuktiBayar = await pool.query(qGetDepositFromNota, [objectBody.norecnota])
+    createdBuktiBayar = createdBuktiBayar.toJSON()
     createdBuktiBayar.createdCaraBayar = createdCaraBayar
 
     return {

@@ -126,11 +126,21 @@ const DaftarTagihanPasien = () => {
                                         Batal Verif
                                     </DropdownItem>
                                 }
-                                {row.norecbukti && <DropdownItem 
-                                        onClick={() => handleCancelBayar(row)}>
-                                        <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
-                                        Batal Bayar
-                                    </DropdownItem>}
+                                {row.norecbukti && 
+                                (
+                                    <>
+                                        <DropdownItem 
+                                            onClick={() => handleCancelBayar(row)}>
+                                            <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
+                                            Batal Bayar
+                                        </DropdownItem>
+                                        <DropdownItem 
+                                            onClick={() => navigate(`/payment/bayar/${row.norecnota}/${row.norecbukti}`) }>
+                                            <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
+                                            Lihat Pembayaran
+                                        </DropdownItem>
+                                    </>
+                                )}
 
                             </DropdownMenu>
                         </UncontrolledDropdown>

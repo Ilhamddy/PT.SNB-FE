@@ -92,9 +92,9 @@ function* onGetDaftarTagihanPasien( {payload: {body}}) {
     }
 }
 
-function* onGetPelayananFromVerif( {payload: {norecnota}}) {
+function* onGetPelayananFromVerif( {payload: {queries}}) {
     try {
-        const response = yield call(servicePayment.getPelayananFromVerif, norecnota);
+        const response = yield call(servicePayment.getPelayananFromVerif, queries);
         yield put(pelayananFromVerifGetSuccess(response.data));
     } catch (error) {
         console.error(error)
@@ -107,7 +107,7 @@ function* onGetBuktiBayarCreate({payload: {body, callback}}) {
         const response = yield call(servicePayment.createBuktiBayar, body);
         yield put(buktiBayarCreateSuccess(response.data));
         toast.success(response?.data?.msg || "Sukses", { autoClose: 3000 });
-        callback && callback();
+        callback && callback(response.data);
     } catch (error) {
         console.error(error)
         toast.error(error.response?.data?.msg || "Eror")
@@ -150,9 +150,9 @@ function* onGetDaftarPiutangPasien({payload: {location}}) {
     }
 }
 
-function* onGetPaymentForPiutang({payload: {norecpiutang}}) {
+function* onGetPaymentForPiutang({payload: {queries}}) {
     try {
-        const response = yield call(servicePayment.getPaymentForPiutang, norecpiutang);
+        const response = yield call(servicePayment.getPaymentForPiutang, queries);
         yield put(paymentPiutangPasienGetSuccess(response.data));
     } catch (error) {
         yield put(paymentPiutangPasienGetError(error));

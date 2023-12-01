@@ -16,8 +16,8 @@ export default class ServicePayment {
         return await api.get(`/transaksi/payment/get-daftar-tagihan-pasien`);
     }
 
-    getPelayananFromVerif = async (norecnota) => {
-        return await api.get(`/transaksi/payment/pelayanan-from-verif/${norecnota}`);
+    getPelayananFromVerif = async (queries) => {
+        return await api.get(`/transaksi/payment/pelayanan-from-verif`, queries);
     }
 
     createBuktiBayar = async (body) => {
@@ -36,8 +36,8 @@ export default class ServicePayment {
         return await api.get(`/transaksi/payment/get-daftar-piutang-pasien/${location}`);
     }
 
-    getPaymentForPiutang = async (norecpiutang) => {
-        return await api.get(`/transaksi/payment/get-payment-piutang-pasien/${norecpiutang}`);
+    getPaymentForPiutang = async (queries) => {
+        return await api.get(`/transaksi/payment/get-payment-piutang-pasien`, queries);
     }
     getLaporanPendapatanKasir = async (param) => {
         return await api.get(`/transaksi/payment/get-laporan-pendapatan-kasir?&search=${param}`);

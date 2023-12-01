@@ -76,6 +76,23 @@ export const dateBetweenEmptyString = (queryTgl, q1, q2) => {
 
 /**
  * 
+ * @param {string} queryTgl contoh: 'tdp.tglinput'
+ * @param {string} operator contoh: '>='
+ * @param {string} q1 contoh: '$1'
+ * @returns 
+ */
+export const dateEmptyString = (queryTgl, operator, q1) => {
+    return ` 
+        CASE WHEN NULLIF(${q1}, '') IS NULL
+            THEN TRUE
+            ELSE ${queryTgl} ${operator} ${q1}::TIMESTAMP 
+        END
+    `
+}
+
+
+/**
+ * 
  * @param {string} queryStatusEnabled contoh: 'mp.statusenabled'
  * @returns 
  */

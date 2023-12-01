@@ -78,7 +78,8 @@ const initPayment = (dateNow) => ({
 })
 
 const Bayar = () => {
-  const { norecnota } = useParams()
+  let { norecnota, norecbayar } = useParams()
+  norecbayar = norecbayar || ''
   const [isDeposit, setIsDeposit] = useState(false)
 
   let {
@@ -179,8 +180,10 @@ const Bayar = () => {
         return newPayment
       })
       dispatch(
-        buktiBayarCreate(valuesSent, () => {
-          norecnota && dispatch(pelayananFromVerifGet(norecnota))
+        buktiBayarCreate(valuesSent, (data) => {
+          navigate(`/payment/bayar/${norecnota}/${data.buktiBayar.norec}`, {
+            replace: true,
+          })
           handlePrintBukti()
         })
       )
@@ -381,12 +384,14 @@ const Bayar = () => {
 
   useEffect(() => {
     const setFF = validation.setFieldValue
-    norecnota && setFF('norecnota', norecnota)
-    norecnota && dispatch(pelayananFromVerifGet(norecnota))
+    setFF('norecnota', norecnota)
+    dispatch(
+      pelayananFromVerifGet({ norecnota: norecnota, norecbayar: norecbayar })
+    )
     return () => {
       dispatch(pelayananFromVerifGetReset())
     }
-  }, [dispatch, norecnota, validation.setFieldValue])
+  }, [dispatch, norecnota, validation.setFieldValue, norecbayar])
 
   useEffect(() => {
     return () => {
@@ -412,6 +417,7 @@ const Bayar = () => {
     <div className="page-content page-bayar">
       <Container fluid>
         <BreadCrumb title="Bayar Pelayanan" pageTitle="Payment" />
+        <ToastContainer closeButton={false} />
         <Form
           onSubmit={(e) => {
             e.preventDefault()
