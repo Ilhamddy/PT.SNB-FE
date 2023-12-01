@@ -272,12 +272,18 @@ const createBuktiBayar = async (req, res) => {
             })
 
         if(sisa > 0){
+            let piutangSebelum = null
+            if(objectBody.norecpiutang){
+                piutangSebelum = await t_piutangpasien.findByPk(objectBody.norecpiutang)
+                if(!piutangSebelum) throw new Error("Piutang tidak ada norec: ", objectBody.norecpiutang)
+                piutangSebelum = piutangSebelum.toJSON()
+            }
             const norecpiutangnew = uuid.v4().substring(0, 32);
             const addedPiutang = await  t_piutangpasien.create({
                 norec: norecpiutangnew,
                 statusenabled: true,
                 objectdaftarpasienfk: objectBody.norecdp,
-                objectpenjaminfk: 3,
+                objectpenjaminfk: piutangSebelum?.objectpenjaminfk || 3,
                 objectnotapelayananpasienfk: objectBody.norecnota,
                 totalpiutang: sisa,
                 totalbayar: 0,
