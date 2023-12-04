@@ -222,15 +222,18 @@ export const groupArray = (array, size) => {
  * @returns 
  */
 export const calculateRounding = (harga, roundingTotal = 0, operation = "up") => {
+    if(typeof harga !== "number"){
+        throw new Error("Harga harus number")
+    }
     let rounder = 10 ** roundingTotal
     const hargaString = harga.toString()
-    const rounderString = rounder.toString()
-    if(hargaString.length < rounderString.length){
-        throw new Error("Rounder lebih besar dari harga")
+    if(hargaString.length < roundingTotal && harga !== 0){
+        rounder = 10 ** (hargaString.length - 1)
     }
     let hargaRounded = harga / rounder
     hargaRounded = operation === "up" ? Math.ceil(hargaRounded) : Math.floor(hargaRounded)
     hargaRounded = hargaRounded * rounder
     const difference = Math.abs(harga - hargaRounded)
+    console.log(hargaRounded)
     return [hargaRounded, difference]
 }
