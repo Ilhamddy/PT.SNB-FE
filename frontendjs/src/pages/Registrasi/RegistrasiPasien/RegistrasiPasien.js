@@ -866,7 +866,7 @@ const RegistrasiPasien = (props) => {
                                         <Col lg={12} style={{ textAlign: 'right' }}>
                                             {!successReg &&
                                                 (!norec || !dtRuangNorec || (dtRuangNorec && !dtRuangNorec?.noregistrasi)) 
-                                                && <Button type="submit" color="info" disabled={loadingSave}> {dtRuangNorec && !dtRuangNorec?.noregistrasi ? `Verifikasi` : `SIMPAN`} </Button>}
+                                                && <Button type="submit" color="success" disabled={loadingSave}> {dtRuangNorec && !dtRuangNorec?.noregistrasi ? `Verifikasi` : `SIMPAN`} </Button>}
                                         </Col>
                                         {/* contoh pakai checkbox */}
                                         {/* <CustomCheckbox 

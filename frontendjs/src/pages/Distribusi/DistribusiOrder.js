@@ -704,7 +704,7 @@ const DistribusiOrder = ({isUnit}) => {
                 <Col lg={2} className="d-flex flex-row-reverse">
                     <Button 
                         type="button" 
-                        color="info"
+                        color="success"
                         onClick={() => {
                             console.log("errors", vProduk.errors)
                             vProduk.handleSubmit()

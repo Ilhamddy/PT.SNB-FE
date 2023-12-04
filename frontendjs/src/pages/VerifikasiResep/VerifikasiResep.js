@@ -549,12 +549,12 @@ const VerifikasiResep = () => {
                         </table>
                         <Row style={{justifyContent: "space-evenly"}}>
                             <Col md={2}>
-                                <Button color="info"
+                                <Button color="success"
                                     disabled={vResep.values.noresep}
                                     onClick={() => {
                                         vResep.handleSubmit();
                                     }}>
-                                    Simpan
+                                    Verifikasi
                                 </Button>
                             </Col>
                             <Col md={2}>
