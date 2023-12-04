@@ -30,7 +30,6 @@ WHERE (td.isprinted IS null OR td.isprinted != true)
 	AND (mu.objectinstalasifk = 1 OR mu.objectinstalasifk = 7)
 	AND td.noregistrasi IS NOT NULL --- belum terdaftar
 ORDER BY td.tglregistrasi ASC
-
 `
 
 module.exports = {

@@ -96,21 +96,21 @@ const hPrintAll = async (datas, device) => {
                 .size(1, 1)
                 .tableCustom(
                     [
-                        { text: "No Rekammedis", align: "LEFT", width: 0.5, style: "B" },
+                        { text: "No. Rekam Medis", align: "LEFT", width: 0.5, style: "B" },
                         { text: data.nocm || data.nocmtemp, align: "RIGHT", width: 0.5 },
                     ],
                     { encoding: "cp857", size: [1, 1] }, // Optional
                 )
                 .tableCustom(
                     [
-                        { text: "Nama", align: "LEFT", width: 0.5, style: "B" },
+                        { text: "Nama Pasien", align: "LEFT", width: 0.5, style: "B" },
                         { text: data.namapasien, align: "RIGHT", width: 0.5 },
                     ],
                     { encoding: "cp857", size: [1, 1] }, // Optional
                 )
                 .tableCustom(
                     [
-                        { text: "No Registrasi", align: "LEFT", width: 0.5, style: "B" },
+                        { text: "No. Registrasi", align: "LEFT", width: 0.5, style: "B" },
                         { text: data.noregistrasi, align: "RIGHT", width: 0.5 },
                     ],
                     { encoding: "cp857", size: [1, 1] }, // Optional
