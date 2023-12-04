@@ -8,11 +8,12 @@ import { onChangeStrNbr, strToNumber } from "../../../../utils/format";
 import { useEffect, useRef, useState } from "react";
 import { getComboResep } from "../../../../store/master/action";
 import { useDispatch, useSelector } from "react-redux";
-import { createOrUpdateResepOrder, getObatFromUnit, getOrderResepFromDp } from "../../../../store/emr/action";
+import { createOrUpdateResepOrder, getAntreanPemeriksaanObat, getObatFromUnit, getOrderResepFromDp } from "../../../../store/emr/action";
 import * as Yup from "yup"
 import { useParams, useSearchParams} from "react-router-dom"
 import RiwayatOrder from "./RiwayatOrder";
 import { useColumnsResep, useColumnsResepRacikan, useHandleChangeAllResep, useHandleChangeResep } from "../../../PenjualanObatBebas/PenjualanObatBebas";
+import DeleteModalCustom from "../../../../Components/Common/DeleteModalCustom";
 
 export const initValueResep = {
     norecap: "",
@@ -45,6 +46,7 @@ const initValueRacikan = {
 
 const OrderResep = () => {
     const dispatch = useDispatch()
+    const [unittujuanTemp, setunittujuanTemp] = useState("")
 
     const {norecap, norecdp} = useParams()
     const [searchParams, setSearchParams] = useSearchParams()
@@ -58,7 +60,8 @@ const OrderResep = () => {
         obatList,
         sediaanList,
         orderNorec,
-        orderDp
+        orderDp,
+        antreanPemeriksaan
     } = useSelector((state) => ({
         pegawai: state.Master?.getComboResep?.data?.pegawai || [],
         unit: state.Master?.getComboResep?.data?.unit || [],
@@ -67,7 +70,8 @@ const OrderResep = () => {
         obatList: state?.Emr?.getObatFromUnit?.data?.obat || [],
         sediaanList: state?.Master?.getComboResep?.data?.sediaan || [],
         orderNorec: state?.Emr?.getOrderResepFromDP?.data?.ordernorec || null,
-        orderDp: state?.Emr?.getOrderResepFromDP?.data?.order || null
+        orderDp: state?.Emr?.getOrderResepFromDP?.data?.order || null,
+        antreanPemeriksaan: state?.Emr?.getAntreanPemeriksaanObat?.data?.antreanPemeriksaan || null
     }))
 
     const vResep = useFormik({
@@ -192,12 +196,14 @@ const OrderResep = () => {
         if(!norecresep){
             resetV();
             setFF("norecap", norecap)
-            setFF("unitasal", unitasal || "")
             resepRef.current = [
                 {
                     ...initValueResep
                 }
             ]
+        }
+        if(antreanPemeriksaan){
+            setFF("unitasal", antreanPemeriksaan.unitantrean || "")
         }
 
         if(orderNorecGot){
@@ -205,13 +211,16 @@ const OrderResep = () => {
             resepRef.current = orderNorecGot.resep
         }
 
-    }, [orderNorec, 
+    }, [
+        orderNorec, 
         norecresep, 
         vResep.setValues, 
         vResep.resetForm, 
         vResep.setFieldValue, 
         norecap, 
-        orderDp])
+        orderDp,
+        antreanPemeriksaan
+    ])
 
     useEffect(() => {
         dispatch(getOrderResepFromDp({
@@ -220,7 +229,9 @@ const OrderResep = () => {
         }))
     }, [dispatch, norecdp, norecresep])
 
-
+    useEffect(() => {
+        dispatch(getAntreanPemeriksaanObat({norecap: norecap}))
+    }, [dispatch, norecap])
 
     const columnsResep = useColumnsResep(
         vResep,
@@ -233,7 +244,9 @@ const OrderResep = () => {
         signa,
         keteranganResep,
         resepRef,
-        handleChangeAllResep
+        handleChangeAllResep,
+        !vResep.values.unittujuan
+
     )
 
     const columnsResepRacikan = useColumnsResepRacikan(
@@ -245,12 +258,27 @@ const OrderResep = () => {
         handleChangeRacikan,
         handleTambahRacikan,
         handleHapusRacikan,
+        !vResep.values.unittujuan
     )
     
     const resepNonRacikan = vResep.values.resep.filter((val) => val.racikan.length === 0)
     const resepRacikan = vResep.values.resep.filter((val) => val.racikan.length > 0)
     return (
         <div  className="p-5">
+            <DeleteModalCustom
+                show={!!unittujuanTemp}
+                onDeleteClick={() => {
+                    vResep.setFieldValue("unittujuan", unittujuanTemp)
+                    vResep.setFieldValue("resep", [{
+                        ...initValueResep
+                    }])
+                    setunittujuanTemp("")
+                }}
+                onCloseClick={() => setunittujuanTemp("")}
+                msgHDelete='Apa Anda Yakin ?'
+                msgBDelete='Dengan mengganti unit, racikan akan terhapus'
+                buttonHapus="Ganti"
+            />
             <Row>
                 <Col lg={2}>
                     <Label 
@@ -296,7 +324,11 @@ const OrderResep = () => {
                         name="unittujuan"
                         options={unit}
                         onChange={(e) => {
-                            vResep.setFieldValue("unittujuan", e?.value || "")
+                            if(!vResep.values.unittujuan){
+                                vResep.setFieldValue("unittujuan", e?.value || "")
+                            } else{
+                                setunittujuanTemp(e?.value || "")
+                            }
                         }}
                         value={vResep.values.unittujuan}
                         className={`input ${!!vResep?.errors.unittujuan ? "is-invalid" : ""}`}

@@ -1,3 +1,4 @@
+import { dateBetweenEmptyString } from "../../utils/dbutils"
 
 const qGetObatFromUnit = `
 SELECT
@@ -37,7 +38,7 @@ GROUP BY
     msd.sediaan
 `
 
-const qGetOrderResepFromDP = `
+const qGetOrderResep = `
 SELECT
     tor.norec AS norecorder,
     mpeg.id AS dokter,
@@ -77,9 +78,9 @@ SELECT
         )
         ORDER BY tord.kode_r ASC, tord.kode_r_tambahan ASC
     ) AS resep
-FROM t_daftarpasien tdp
-    LEFT JOIN t_antreanpemeriksaan tap ON tdp.norec = tap.objectdaftarpasienfk
-    LEFT JOIN t_orderresep tor ON tor.objectantreanpemeriksaanfk = tap.norec
+FROM t_orderresep tor
+    LEFT JOIN t_antreanpemeriksaan tap ON tor.objectantreanpemeriksaanfk = tap.norec
+    LEFT JOIN t_daftarpasien tdp ON tdp.norec = tap.objectdaftarpasienfk    
     LEFT JOIN t_orderresepdetail tord ON tord.objectorderresepfk = tor.norec
     LEFT JOIN m_pegawai mpeg ON mpeg.id = tor.objectpegawaifk
     LEFT JOIN m_unit mu ON mu.id = tor.objectdepotujuanfk
@@ -104,6 +105,9 @@ CROSS JOIN LATERAL (
         AND tsu.qty > 0
         AND tsu.objectunitfk = tor.objectdepotujuanfk
     ) s
+`
+
+const qGetOrderResepFromDP = qGetOrderResep + `
 WHERE CASE 
     WHEN $1 = 'all' THEN tor.statusenabled = true
     WHEN $1 = 'norecresep' THEN tor.norec = $2
@@ -117,6 +121,23 @@ GROUP BY
     mu.namaunit,
     tdp.objectunitlastfk,
     tdp.objectpenjaminfk
+ORDER BY
+    tor.tglinput DESC
+`
+
+const qGetAllOrderResepFromDate = qGetOrderResep + `
+WHERE tor.statusenabled = true AND
+    ${dateBetweenEmptyString("tor.tglinput", "$1", "$2")}
+GROUP BY
+    tor.norec,
+    mpeg.id,
+    mpeg.namalengkap,
+    mu.id,
+    mu.namaunit,
+    tdp.objectunitlastfk,
+    tdp.objectpenjaminfk
+ORDER BY
+    tor.tglinput DESC
 `
 
 const qGetOrderVerifResepFromDP = `
@@ -422,6 +443,15 @@ join t_antreanpemeriksaan ta2 on ta2.norec=te.objectantreanpemeriksaanfk
 join t_daftarpasien td on td.norec=ta2.objectdaftarpasienfk  where td.nocmfk=$1
 and te.idlabel=4`
 
+const qGetAntreanPemeriksaanObat = `
+SELECT
+    tap.objectunitfk AS unitantrean,
+    tap.tglregistrasi AS tglregistrasi,
+    tap.tglmasuk AS tglmasuk
+FROM t_antreanpemeriksaan tap
+WHERE tap.norec = $1
+`
+
 export {
     qGetObatFromUnit,
     qGetOrderResepFromDP,
@@ -431,5 +461,7 @@ export {
     qComboApgar,
     qComboSebabKematian,
     qComboApgarScore,
-    qHistoryAsesmenBayiLahir
+    qHistoryAsesmenBayiLahir,
+    qGetAntreanPemeriksaanObat,
+    qGetAllOrderResepFromDate
 }

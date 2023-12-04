@@ -202,7 +202,7 @@ const DaftarPasienRadiologi = () => {
                                                 }}
                                             />
                                         </Col>
-                                        <Col lg={1}><h4>s/d</h4></Col>
+                                        <Col lg={1} className='mt-2'><h4>s/d</h4></Col>
                                         <Col sm={4}>
                                             <KontainerFlatpickr
                                                 options={{

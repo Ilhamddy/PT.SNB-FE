@@ -1,6 +1,6 @@
 import pool from "../../../config/dbcon.query";
 import * as uuid from 'uuid'
-import { qGetAntreanFromDP, qGetObatFromUnit, qGetOrderResepFromDP, qGetOrderVerifResepFromDP } from "../../../queries/emr/emr.queries";
+import { qGetAllOrderResepFromDate, qGetAntreanFromDP, qGetObatFromUnit, qGetOrderResepFromDP, qGetOrderVerifResepFromDP } from "../../../queries/emr/emr.queries";
 import db from "../../../models";
 import {
     createTransaction
@@ -29,10 +29,12 @@ const Op = db.Sequelize.Op;
 const getOrderResepQuery = async (req, res) => {
     const logger = res.locals.logger
     try{
-        let dataAllOrders = await pool.query(qGetOrderResepFromDP, [
-            'all',
-            null,
-            null
+        let { tglmulai, tglakhir } = req.query
+        tglmulai = getDateStartNull(tglmulai);
+        tglakhir = getDateEndNull(tglakhir) 
+        let dataAllOrders = await pool.query(qGetAllOrderResepFromDate, [
+            tglmulai || '',
+            tglakhir || ''
         ])
         dataAllOrders = hProcessOrderResep(dataAllOrders?.rows || null)
         const tempres = {

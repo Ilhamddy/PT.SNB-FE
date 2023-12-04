@@ -3,7 +3,8 @@ import * as uuid from 'uuid'
 import queries from '../../../queries/transaksi/registrasi.queries';
 import { qGetObatFromUnit, qGetOrderResepFromDP, qGetOrderVerifResepFromDP,
 qAsesmenBayiLahirByNorec,qComboApgar,qComboSebabKematian,qComboApgarScore,
-qHistoryAsesmenBayiLahir } from "../../../queries/emr/emr.queries";
+qHistoryAsesmenBayiLahir, 
+qGetAntreanPemeriksaanObat} from "../../../queries/emr/emr.queries";
 import hubunganKeluargaQueries from "../../../queries/mastertable/hubunganKeluarga/hubunganKeluarga.queries";
 import jenisKelaminQueries from "../../../queries/mastertable/jenisKelamin/jenisKelamin.queries";
 import db from "../../../models";
@@ -1429,7 +1430,7 @@ export const initValueResep = {
 const getOrderResepFromDP = async (req, res) => {
     const logger = res.locals.logger
     try {
-        const { norecdp, norecresep } = req.query
+        const { norecdp, norecresep, norecap } = req.query
 
         let dataOrders = await pool.query(qGetOrderResepFromDP, [
             'norecdp',
@@ -1446,6 +1447,7 @@ const getOrderResepFromDP = async (req, res) => {
             null,
             norecdp
         ]))
+
         dataOrders = dataOrders.rows
         dataOrders = hProcessOrderResep(dataOrders)
         dataOrderNorec = hProcessOrderResep(dataOrderNorec)
@@ -1471,6 +1473,37 @@ const getOrderResepFromDP = async (req, res) => {
         })
     }
 }
+
+const getAntreanPemeriksaanObat = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const { norecap } = req.query
+        const antreanPemeriksaan = (await pool.query(qGetAntreanPemeriksaanObat, [
+            norecap
+        ])).rows[0]
+        if(!antreanPemeriksaan){
+            throw new Error("Antrean pemeriksaan tidak ada")
+        }
+        const tempres = {
+            antreanPemeriksaan: antreanPemeriksaan
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 
 async function saveEmrJenisPelayanan(req, res) {
     const logger = res.locals.logger
@@ -1648,7 +1681,8 @@ export default {
     upsertAssesmenBayiLahir,
     getAsesmenBayiLahirByNorec,
     getComboAsesmenBayiLahir,
-    getHistoryAsesmenBayiLahir
+    getHistoryAsesmenBayiLahir,
+    getAntreanPemeriksaanObat
 };
 
 

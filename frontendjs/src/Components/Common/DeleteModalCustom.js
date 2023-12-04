@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import React from "react";
 import { Modal, ModalBody } from "reactstrap";
 
-const DeleteModalCustom = ({ show, onDeleteClick, onCloseClick,msgHDelete,msgBDelete }) => {
+const DeleteModalCustom = ({ show, onDeleteClick, onCloseClick,msgHDelete,msgBDelete, buttonHapus }) => {
   return (
     <Modal isOpen={show} toggle={onCloseClick} centered={true}>
       <ModalBody className="py-3 px-5">
@@ -35,7 +35,7 @@ const DeleteModalCustom = ({ show, onDeleteClick, onCloseClick,msgHDelete,msgBDe
             id="delete-record"
             onClick={onDeleteClick}
           >
-            Hapus
+            {buttonHapus || "Hapus"}
           </button>
         </div>
       </ModalBody>

@@ -47,7 +47,6 @@ const CustomSelect = React.forwardRef(({
     return(
         <Select 
             className={className}
-            {...rest}
             value={defaultValue(options,value)}
             onChange={value => onChange(value)}
             options={options}
@@ -63,6 +62,7 @@ const CustomSelect = React.forwardRef(({
                     primary: '#ECB349',
                 },
             })}
+            {...rest}
         />
     )
 })

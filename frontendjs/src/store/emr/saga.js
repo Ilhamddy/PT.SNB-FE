@@ -26,7 +26,8 @@ import {
     UPDATE_ESTIMASI_KLAIM, COMBO_ALL_TINDAKAN_GET,
     SAVE_EMR_PASIEN,
     GET_ASESMENBAYILAHIR_BYNOREC, GET_COMBO_ASESMENBAYILAHIR,
-    GET_HISTORY_ASESMENBAYILAHIR
+    GET_HISTORY_ASESMENBAYILAHIR,
+    GET_ANTREAN_PEMERIKSAAN_OBAT,
 } from "./actionType";
 
 import {
@@ -73,7 +74,9 @@ import {
     saveEmrPasienSuccess, saveEmrPasienError,
     getAsesmenBayiLahirByNorecSuccess, getAsesmenBayiLahirByNorecError,
     getComboAsesmenBayiLahirSuccess, getComboAsesmenBayiLahirError,
-    getHistoryAsesmenBayiLahirSuccess, getHistoryAsesmenBayiLahirError
+    getHistoryAsesmenBayiLahirSuccess, getHistoryAsesmenBayiLahirError,
+    getAntreanPemeriksaanObatSuccess,
+    getAntreanPemeriksaanObatError
 } from "./action";
 
 import { toast } from 'react-toastify';
@@ -891,6 +894,19 @@ export function* watchongetHistoryAsesmenBayiLahir() {
     yield takeEvery(GET_HISTORY_ASESMENBAYILAHIR, ongetHistoryAsesmenBayiLahir);
 }
 
+function* onGetAntreanPemeriksaanObat({payload: {queries}}) {
+    try{
+        const response = yield call(serviceEmr.getAntreanPemeriksaanObat, queries);
+        yield put(getAntreanPemeriksaanObatSuccess(response.data));
+    } catch (error) {
+        yield put(getAntreanPemeriksaanObatError(error));
+    }
+}
+
+export function* watchOnGetAntreanPemeriksaanObat() {
+    yield takeEvery(GET_ANTREAN_PEMERIKSAAN_OBAT, onGetAntreanPemeriksaanObat);
+}
+
 function* emrSaga() {
     yield all([
         fork(watchGetEmrHeader),
@@ -937,7 +953,8 @@ function* emrSaga() {
         fork(watchonsaveEmrPasien),
         fork(watchongetAsesmenBayiLahirByNorec),
         fork(watchongetComboAsesmenBayiLahir),
-        fork(watchongetHistoryAsesmenBayiLahir)
+        fork(watchongetHistoryAsesmenBayiLahir),
+        fork(watchOnGetAntreanPemeriksaanObat)
     ]);
 }
 

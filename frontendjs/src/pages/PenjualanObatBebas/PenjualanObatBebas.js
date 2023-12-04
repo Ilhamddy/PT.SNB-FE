@@ -4,7 +4,7 @@ import { useFormik } from "formik"
 import DataTable from 'react-data-table-component';
 import LoadingTable from "../../Components/Table/LoadingTable";
 import NoDataTable from "../../Components/Table/NoDataTable";
-import { onChangeStrNbr, strToNumber } from "../../utils/format";
+import { calculateRounding, onChangeStrNbr, strToNumber } from "../../utils/format";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { getComboPenjualanBebas, getComboResep, getComboVerifResep } from "../../store/master/action";
 import { useDispatch, useSelector } from "react-redux";
@@ -281,7 +281,7 @@ const PenjualanObatBebas = () => {
         <div className="page-content page-verifikasi-resep">
             <ToastContainer closeButton={false} />
             <Container fluid>
-                <BreadCrumb title="Verifikasi Resep" pageTitle="Farmasi" />
+                <BreadCrumb title="Penjualan Obat Bebas" pageTitle="Farmasi" />
                 <Card className="p-5">
                     <Row>
                         <Col lg={5}>
@@ -796,6 +796,8 @@ const PenjualanObatBebas = () => {
 }
 
 export const useHandleChangeResep = (resepRef, vResep) => {
+    // untuk sekarang dirounding menjadi 100 rupiah
+    const roundingTotal = 0
     const handleChangeResep = useCallback((newVal, field, row, isSet) => {
         const newReseps = [...resepRef.current]
         const newResep = {...newReseps[row.koder - 1]}
@@ -817,11 +819,12 @@ export const useHandleChangeResep = (resepRef, vResep) => {
         handleChangeResep(e?.totalstok || "", "stok", row, true);
         const harga = e?.batchstokunit?.[0]?.harga || 0
         const nobatch = e?.batchstokunit?.[0]?.nobatch || ""
+        // hitung harga
         let totalHarga = 
-            ((harga) * 1.25 * (row.qty || 0)) || ""
-        totalHarga = Math.ceil(totalHarga)
+            ((harga) * 1.25 * (row.qty || 0)) || 0
+        const [roundedHarga, difference] = calculateRounding(totalHarga, roundingTotal)
         handleChangeResep(
-            totalHarga, 
+            roundedHarga, 
             "total", 
             row, 
             true
@@ -865,10 +868,10 @@ export const useHandleChangeResep = (resepRef, vResep) => {
             row.harga * 
             (strToNumber(newVal) || 0)
             * 1.25
-        ) || ""
-        totalHarga = Math.ceil(totalHarga)
+        ) || 0
+        const [roundedHarga, difference] = calculateRounding(totalHarga, roundingTotal)
         handleChangeResep(
-            totalHarga, 
+            roundedHarga, 
             "total", 
             row
         )
@@ -881,12 +884,12 @@ export const useHandleChangeResep = (resepRef, vResep) => {
             qtyPembulatan = Number(qtyPembulatan.toFixed(6))
             let totalHargaRacikan = (
                 valRacikan.harga * 1.25 * (strToNumber(qtyBulat))
-            ) || ""
-            totalHargaRacikan = Math.ceil(totalHargaRacikan)
+            ) || 0
+            const [roundedHarga, difference] = calculateRounding(totalHargaRacikan, roundingTotal)
             handleChangeRacikan(qtyBulat, "qtypembulatan", row, valRacikan)
             handleChangeRacikan(qtyPembulatan, qtyBulat, row, valRacikan)
             handleChangeRacikan(
-                totalHargaRacikan, 
+                roundedHarga, 
                 "total", 
                 row, 
                 valRacikan
@@ -912,10 +915,10 @@ export const useHandleChangeResep = (resepRef, vResep) => {
         handleChangeRacikan(qtyBulat, "qtypembulatan", rowUtama, row)
         let totalHarga = (
             row.harga * 1.25 * (strToNumber(qtyBulat))
-        ) || ""
-        totalHarga = Math.ceil(totalHarga)
+        ) || 0
+        const [roundedHarga, difference] = calculateRounding(totalHarga, roundingTotal)
         handleChangeRacikan(
-            totalHarga, 
+            roundedHarga, 
             "total", 
             rowUtama,
             row
@@ -934,7 +937,8 @@ export const useHandleChangeResep = (resepRef, vResep) => {
         let qtyTotal = strToNumber(rowUtama.qty || 0) * strToNumber(row.qtyracikan || 0)
         qtyTotal = Math.ceil(qtyTotal)
         const totalHarga = 
-            Math.ceil(((harga) * 1.25 * qtyTotal)) || ""
+            ((harga) * 1.25 * qtyTotal)
+        const [roundedHarga, difference] = calculateRounding(totalHarga, roundingTotal)
         handleChangeRacikan(
             qtyTotal,
             "qty",
@@ -943,7 +947,7 @@ export const useHandleChangeResep = (resepRef, vResep) => {
             true
         )
         handleChangeRacikan(
-            totalHarga, 
+            roundedHarga, 
             "total", 
             rowUtama,
             row, 
@@ -1045,7 +1049,8 @@ export const useColumnsResep = (
     signa,
     keteranganResep,
     resepRef,
-    handleChangeAllResep
+    handleChangeAllResep,
+    disableObat = false
 ) => [
     {
         name: <span className='font-weight-bold fs-13'>R/</span>,
@@ -1070,6 +1075,7 @@ export const useColumnsResep = (
                             options={obatList}
                             onChange={(e) => handleChangeObatResep(e, row)}
                             value={row.obat}
+                            isDisabled={disableObat}
                             className={`input ${touchedResep?.obat 
                                 && !!errorsResep?.obat
                                 ? "is-invalid" : ""}`}
@@ -1136,6 +1142,7 @@ export const useColumnsResep = (
                         type="text"
                         value={val} 
                         onBlur={handleBlur}
+                        disabled={!row.obat && !row.sediaan}
                         onChange={(e) => handleQtyObatResep(
                             e, 
                             row, 
@@ -1314,6 +1321,7 @@ export const useColumnsResepRacikan = (
     handleChangeRacikan,
     handleTambahRacikan,
     handleHapusRacikan,
+    disableObat = false
 ) => [
     {
         name: <span className='font-weight-bold fs-13'>R/</span>,
@@ -1337,13 +1345,14 @@ export const useColumnsResepRacikan = (
                         id="obat"
                         name="obat"
                         options={obatList}
+                        isDisabled={disableObat}
                         onChange={(e) => handleChangeObatRacikan(
                             e, 
                             row, 
                             rowUtama
                         )}
                         value={row.obat}
-                        className={`input ${!!errorsResep?.obat
+                        className={`input row-header ${!!errorsResep?.obat
                             ? "is-invalid" : ""}`}
                         />
                     {touchedResep?.obat

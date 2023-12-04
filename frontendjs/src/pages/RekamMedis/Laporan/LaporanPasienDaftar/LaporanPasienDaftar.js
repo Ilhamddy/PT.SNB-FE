@@ -200,7 +200,7 @@ const LaporanPasienDaftar = () => {
                                         />
                                         
                                     </Col>
-                                    <Col lg={1}><h4>s/d</h4></Col>
+                                    <Col lg={1}><h4 className='mt-2'>s/d</h4></Col>
                                     <Col sm={3}>
                                         <KontainerFlatpickr
                                             id="tglend"

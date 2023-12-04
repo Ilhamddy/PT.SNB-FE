@@ -32,7 +32,12 @@ import CustomSelect from '../Select/Select'
 import { shallowEqual, useDispatch, useSelector } from 'react-redux'
 import DataTable from 'react-data-table-component'
 import Flatpickr from 'react-flatpickr'
-import { dateLocal, onChangeStrNbr, strToNumber } from '../../utils/format'
+import {
+  calculateRounding,
+  dateLocal,
+  onChangeStrNbr,
+  strToNumber,
+} from '../../utils/format'
 import { comboPenerimaanBarangGet } from '../../store/master/action'
 import {
   kemasanFromProdukGet,
@@ -2089,10 +2094,14 @@ export const useCalculatePenerimaan = (vDetail) => {
       if (detail.checkeddiskon === '0') {
         const diskonPersen = detail.diskonpersen
         newValDiskon = (strToNumber(diskonPersen) * newValSubtotal) / 100
+        // gunakan jika rounded
+        // const [hargaRounded] = calculateRounding()
+        // newValDiskon = hargaRounded
         const newValDiskonStr = onChangeStrNbr(
           newValDiskon,
           detail.diskonpersen
         )
+
         setFF('diskonrupiah', newValDiskonStr)
       } else {
         newValDiskon = strToNumber(detail.diskonrupiah)

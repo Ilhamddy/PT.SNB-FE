@@ -28,6 +28,7 @@ import { useEffect, useState } from "react"
  */
 export const dateTimeLocal = (date) => {
     try{
+        if(!date) return "-"
         return new Date(date)
             .toLocaleDateString("id-ID", 
                 { year: 'numeric', 
@@ -212,5 +213,28 @@ export const groupArray = (array, size) => {
       result.push(subarray)
     }
     return result
-  }
-  
+}
+
+/**
+ * 
+ * @param {number} harga 
+ * @param {number} [roundingTotal] total digit yang dirounding, contoh 5352,532 , kalau 2 menjadi 5300, kalau 0 menjadi 5352, kalau -1 menjadi 5352,5
+ * @param {"up" | "down"} [operation] round up or down
+ * @returns 
+ */
+export const calculateRounding = (harga, roundingTotal = 0, operation = "up") => {
+    if(typeof harga !== "number"){
+        throw new Error("Harga harus number")
+    }
+    let rounder = 10 ** roundingTotal
+    const hargaString = harga.toString()
+    if(hargaString.length < roundingTotal && harga !== 0){
+        rounder = 10 ** (hargaString.length - 1)
+    }
+    let hargaRounded = harga / rounder
+    hargaRounded = operation === "up" ? Math.ceil(hargaRounded) : Math.floor(hargaRounded)
+    hargaRounded = hargaRounded * rounder
+    const difference = Math.abs(harga - hargaRounded)
+    console.log(hargaRounded)
+    return [hargaRounded, difference]
+}
