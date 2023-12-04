@@ -90,7 +90,7 @@ const RiwayatOrder = () => {
                 progressComponent={<LoadingTable />}
                 noDataComponent={<NoDataTable dataName={"order"}/>}
             />
-            <h5>
+            <h5 className="mt-4">
                 Riwayat Obat Diterima pasien
             </h5>
             <DataTable

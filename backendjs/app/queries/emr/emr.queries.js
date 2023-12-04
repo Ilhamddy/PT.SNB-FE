@@ -77,9 +77,9 @@ SELECT
         )
         ORDER BY tord.kode_r ASC, tord.kode_r_tambahan ASC
     ) AS resep
-FROM t_daftarpasien tdp
-    LEFT JOIN t_antreanpemeriksaan tap ON tdp.norec = tap.objectdaftarpasienfk
-    LEFT JOIN t_orderresep tor ON tor.objectantreanpemeriksaanfk = tap.norec
+FROM t_orderresep tor
+    LEFT JOIN t_antreanpemeriksaan tap ON tor.objectantreanpemeriksaanfk = tap.norec
+    LEFT JOIN t_daftarpasien tdp ON tdp.norec = tap.objectdaftarpasienfk    
     LEFT JOIN t_orderresepdetail tord ON tord.objectorderresepfk = tor.norec
     LEFT JOIN m_pegawai mpeg ON mpeg.id = tor.objectpegawaifk
     LEFT JOIN m_unit mu ON mu.id = tor.objectdepotujuanfk
