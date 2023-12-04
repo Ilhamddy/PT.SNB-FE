@@ -108,7 +108,7 @@ const KonversiProduk = ({tabId}) => {
             name: <span className='font-weight-bold fs-13'>ID</span>,
             selector: row => row.id,
             sortable: true,
-            width: "50px",
+            width: "100px",
             wrap: true
         },
         {
@@ -135,7 +135,8 @@ const KonversiProduk = ({tabId}) => {
                         Edit {row.namaproduk}
                     </UncontrolledTooltip>
                 </div>),
-            width: "120px"
+            width: "160px",
+            wrap: true
         },
         {
             name: <span className='font-weight-bold fs-13'>Satuan Jual</span>,

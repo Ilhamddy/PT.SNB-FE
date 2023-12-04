@@ -247,9 +247,9 @@ const KendaliDokumen = () => {
                                     <CardBody>
                                         <div className="d-flex justify-content-between">
                                             <div>
-                                                <p className="fw-medium text-muted mb-0">Total Dokumen {item.label}</p>
+                                                <p className="fw-medium text-muted mb-0">Total Pasien {item.label}</p>
                                                 <h2 className="mt-4 ff-secondary fw-semibold">
-                                                    <span className="counter-value" style={{ fontSize: "5rem" }}>
+                                                    <span className="counter-value" style={{ fontSize: "1.5rem" }}>
                                                         <CountUp
                                                             start={0}
                                                             end={item.counter}
@@ -264,17 +264,17 @@ const KendaliDokumen = () => {
                                                 </span> vs. previous month</p> */}
                                             </div>
                                             <div>
-                                                <div className="avatar-xl flex-shrink-0">
+                                                <div className="avatar-md flex-shrink-0">
                                                     <span className={"avatar-title rounded-circle fs-4 bg-soft-" + item.iconClass + " text-" + item.iconClass}>
                                                         {/* <i className={item.icon}></i> */}
                                                         <img src={item.icon}
-                                                            alt="" className="avatar-lg" />
+                                                            alt="" className="avatar-md" />
                                                     </span>
                                                 </div>
                                             </div>
                                         </div>
                                     </CardBody>
-                                    <div className="card-footer" style={{ backgroundColor: '#FFCB46' }}>
+                                    <div className="card-footer p-2" style={{ backgroundColor: '#FFCB46' }}>
                                         <div className="text-center">
                                             <Link to="#" className="link-light" onClick={() => handleClickCard(item)}>View <i className="ri-arrow-right-s-line align-middle lh-1"></i></Link>
                                         </div>
