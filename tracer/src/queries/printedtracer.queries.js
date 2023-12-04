@@ -17,8 +17,8 @@ SELECT
 	mr.namaexternal AS penjamin,
 	mr2.namaexternal AS penjamin2,
 	mr3.namaexternal AS penjamin3
-FROM t_antreanpemeriksaan ta 
-	LEFT JOIN t_daftarpasien td ON ta.objectdaftarpasienfk = td.norec 
+FROM t_daftarpasien td
+	LEFT JOIN t_antreanpemeriksaan ta ON ta.objectdaftarpasienfk = td.norec 
 	LEFT JOIN m_pasien mp ON td.nocmfk = mp.id 
 	LEFT JOIN m_unit mu ON ta.objectunitfk  = mu.id 
 	LEFT JOIN m_pegawai mp2 ON td.objectdokterpemeriksafk = mp2.id 
