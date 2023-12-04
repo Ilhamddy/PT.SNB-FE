@@ -3,13 +3,13 @@ import React, { useEffect, useRef, useState } from 'react'
 import withRouter from '../../../Components/Common/withRouter'
 import { ToastContainer } from 'react-toastify'
 import UiContent from '../../../Components/Common/UiContent'
-import { Card, CardBody, CardHeader, Col, Container } from 'reactstrap'
+import { Button, Card, CardBody, CardHeader, Col, Container } from 'reactstrap'
 import BreadCrumb from '../../../Components/Common/BreadCrumb'
 import DataTable from 'react-data-table-component'
 import LoadingTable from '../../../Components/Table/LoadingTable'
 import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles'
 import {
-  getListInstalasi
+  getListInstalasi, upsertOrganizationInstalasi
 } from '../../../store/satuSehat/action'
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -50,7 +50,25 @@ const Organization = () => {
       // width: "250px",
       // wrap: true,
     },
+    {
+      name: "Action",
+      sortable: true,
+      selector: row => (<button className="btn btn-sm btn-soft-info" onClick={() => handleClickUpdate(row)}>Update</button>),
+    },
   ]
+  const handleClickUpdate = (row) => {
+    let values = {
+      id: row.value,
+      label: row.label
+    }
+    dispatch(
+      upsertOrganizationInstalasi(values, () => {
+        dispatch(
+          getListInstalasi()
+        )
+      })
+    )
+  };
   return (
     <React.Fragment>
       <ToastContainer closeButton={false} />

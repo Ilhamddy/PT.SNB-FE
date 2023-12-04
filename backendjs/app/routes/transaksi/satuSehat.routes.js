@@ -14,4 +14,9 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getListInstalasi
     );
+    app.post(
+        "/api/transaksi/satu-sehat/update-organization",
+        [authJwt.verifyToken],
+        controller.updateOrganizationInstalasi
+    )
 }

@@ -13,7 +13,7 @@ SELECT
     namainstalasi as label,
     ihs_id
 FROM m_instalasi 
-WHERE statusenabled = true`;
+WHERE statusenabled = true order by id asc`;
 
 export default {
     getAll
