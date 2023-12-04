@@ -884,12 +884,12 @@ export const useHandleChangeResep = (resepRef, vResep) => {
             qtyPembulatan = Number(qtyPembulatan.toFixed(6))
             let totalHargaRacikan = (
                 valRacikan.harga * 1.25 * (strToNumber(qtyBulat))
-            ) || ""
-            totalHargaRacikan = Math.ceil(totalHargaRacikan)
+            ) || 0
+            const [roundedHarga, difference] = calculateRounding(totalHargaRacikan, roundingTotal)
             handleChangeRacikan(qtyBulat, "qtypembulatan", row, valRacikan)
             handleChangeRacikan(qtyPembulatan, qtyBulat, row, valRacikan)
             handleChangeRacikan(
-                totalHargaRacikan, 
+                roundedHarga, 
                 "total", 
                 row, 
                 valRacikan
