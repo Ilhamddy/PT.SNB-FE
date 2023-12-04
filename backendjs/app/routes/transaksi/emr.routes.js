@@ -184,4 +184,10 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getHistoryAsesmenBayiLahir
     );
+
+    app.get(
+        "/api/transaksi/emr/get-antrean-pemeriksaan-obat",
+        [authJwt.verifyToken],
+        controller.getAntreanPemeriksaanObat
+    );
 }

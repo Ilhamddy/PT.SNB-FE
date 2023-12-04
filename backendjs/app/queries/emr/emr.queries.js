@@ -422,6 +422,15 @@ join t_antreanpemeriksaan ta2 on ta2.norec=te.objectantreanpemeriksaanfk
 join t_daftarpasien td on td.norec=ta2.objectdaftarpasienfk  where td.nocmfk=$1
 and te.idlabel=4`
 
+const qGetAntreanPemeriksaanObat = `
+SELECT
+    tap.objectunitfk AS unitantrean,
+    tap.tglregistrasi AS tglregistrasi,
+    tap.tglmasuk AS tglmasuk
+FROM t_antreanpemeriksaan tap
+WHERE tap.norec = $1
+`
+
 export {
     qGetObatFromUnit,
     qGetOrderResepFromDP,
@@ -431,5 +440,6 @@ export {
     qComboApgar,
     qComboSebabKematian,
     qComboApgarScore,
-    qHistoryAsesmenBayiLahir
+    qHistoryAsesmenBayiLahir,
+    qGetAntreanPemeriksaanObat
 }

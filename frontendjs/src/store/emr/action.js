@@ -125,7 +125,10 @@ import {
     SAVE_EMR_PASIEN,SAVE_EMR_PASIEN_SUCCESS,SAVE_EMR_PASIEN_ERROR,
     GET_ASESMENBAYILAHIR_BYNOREC,GET_ASESMENBAYILAHIR_BYNOREC_SUCCESS,GET_ASESMENBAYILAHIR_BYNOREC_ERROR,
     GET_COMBO_ASESMENBAYILAHIR,GET_COMBO_ASESMENBAYILAHIR_SUCCESS,GET_COMBO_ASESMENBAYILAHIR_ERROR,
-    GET_HISTORY_ASESMENBAYILAHIR,GET_HISTORY_ASESMENBAYILAHIR_SUCCESS,GET_HISTORY_ASESMENBAYILAHIR_ERROR
+    GET_HISTORY_ASESMENBAYILAHIR,GET_HISTORY_ASESMENBAYILAHIR_SUCCESS,GET_HISTORY_ASESMENBAYILAHIR_ERROR,
+    GET_ANTREAN_PEMERIKSAAN_OBAT,
+    GET_ANTREAN_PEMERIKSAAN_OBAT_SUCCESS,
+    GET_ANTREAN_PEMERIKSAAN_OBAT_ERROR
 } from "./actionType";
 
 export const emrResetForm = () => ({
@@ -852,5 +855,22 @@ export const getHistoryAsesmenBayiLahirSuccess = (data) => ({
 
 export const getHistoryAsesmenBayiLahirError = (error) => ({
     type: GET_HISTORY_ASESMENBAYILAHIR_ERROR,
+    payload: error,
+});
+
+export const getAntreanPemeriksaanObat = (queries) => ({
+    type: GET_ANTREAN_PEMERIKSAAN_OBAT,
+    payload: {
+        queries,
+    },
+});
+
+export const getAntreanPemeriksaanObatSuccess = (data) => ({
+    type: GET_ANTREAN_PEMERIKSAAN_OBAT_SUCCESS,
+    payload: data,
+});
+
+export const getAntreanPemeriksaanObatError = (error) => ({
+    type: GET_ANTREAN_PEMERIKSAAN_OBAT_ERROR,
     payload: error,
 });

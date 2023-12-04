@@ -8,7 +8,7 @@ import { onChangeStrNbr, strToNumber } from "../../../../utils/format";
 import { useEffect, useRef, useState } from "react";
 import { getComboResep } from "../../../../store/master/action";
 import { useDispatch, useSelector } from "react-redux";
-import { createOrUpdateResepOrder, getObatFromUnit, getOrderResepFromDp } from "../../../../store/emr/action";
+import { createOrUpdateResepOrder, getAntreanPemeriksaanObat, getObatFromUnit, getOrderResepFromDp } from "../../../../store/emr/action";
 import * as Yup from "yup"
 import { useParams, useSearchParams} from "react-router-dom"
 import RiwayatOrder from "./RiwayatOrder";
@@ -60,7 +60,8 @@ const OrderResep = () => {
         obatList,
         sediaanList,
         orderNorec,
-        orderDp
+        orderDp,
+        antreanPemeriksaan
     } = useSelector((state) => ({
         pegawai: state.Master?.getComboResep?.data?.pegawai || [],
         unit: state.Master?.getComboResep?.data?.unit || [],
@@ -69,7 +70,8 @@ const OrderResep = () => {
         obatList: state?.Emr?.getObatFromUnit?.data?.obat || [],
         sediaanList: state?.Master?.getComboResep?.data?.sediaan || [],
         orderNorec: state?.Emr?.getOrderResepFromDP?.data?.ordernorec || null,
-        orderDp: state?.Emr?.getOrderResepFromDP?.data?.order || null
+        orderDp: state?.Emr?.getOrderResepFromDP?.data?.order || null,
+        antreanPemeriksaan: state?.Emr?.getAntreanPemeriksaanObat?.data?.antreanPemeriksaan || null
     }))
 
     const vResep = useFormik({
@@ -194,12 +196,14 @@ const OrderResep = () => {
         if(!norecresep){
             resetV();
             setFF("norecap", norecap)
-            setFF("unitasal", unitasal || "")
             resepRef.current = [
                 {
                     ...initValueResep
                 }
             ]
+        }
+        if(antreanPemeriksaan){
+            setFF("unitasal", antreanPemeriksaan.unitantrean || "")
         }
 
         if(orderNorecGot){
@@ -207,13 +211,16 @@ const OrderResep = () => {
             resepRef.current = orderNorecGot.resep
         }
 
-    }, [orderNorec, 
+    }, [
+        orderNorec, 
         norecresep, 
         vResep.setValues, 
         vResep.resetForm, 
         vResep.setFieldValue, 
         norecap, 
-        orderDp])
+        orderDp,
+        antreanPemeriksaan
+    ])
 
     useEffect(() => {
         dispatch(getOrderResepFromDp({
@@ -222,7 +229,9 @@ const OrderResep = () => {
         }))
     }, [dispatch, norecdp, norecresep])
 
-
+    useEffect(() => {
+        dispatch(getAntreanPemeriksaanObat({norecap: norecap}))
+    }, [dispatch, norecap])
 
     const columnsResep = useColumnsResep(
         vResep,

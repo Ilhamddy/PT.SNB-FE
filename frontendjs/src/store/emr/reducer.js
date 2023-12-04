@@ -124,7 +124,10 @@ import {
     SAVE_EMR_PASIEN,SAVE_EMR_PASIEN_SUCCESS,SAVE_EMR_PASIEN_ERROR,
     GET_ASESMENBAYILAHIR_BYNOREC_SUCCESS,GET_ASESMENBAYILAHIR_BYNOREC_ERROR, GET_ASESMENBAYILAHIR_BYNOREC,
     GET_COMBO_ASESMENBAYILAHIR,GET_COMBO_ASESMENBAYILAHIR_SUCCESS,GET_COMBO_ASESMENBAYILAHIR_ERROR,
-    GET_HISTORY_ASESMENBAYILAHIR, GET_HISTORY_ASESMENBAYILAHIR_SUCCESS,GET_HISTORY_ASESMENBAYILAHIR_ERROR
+    GET_HISTORY_ASESMENBAYILAHIR, GET_HISTORY_ASESMENBAYILAHIR_SUCCESS,GET_HISTORY_ASESMENBAYILAHIR_ERROR,
+    GET_ANTREAN_PEMERIKSAAN_OBAT,
+    GET_ANTREAN_PEMERIKSAAN_OBAT_SUCCESS,
+    GET_ANTREAN_PEMERIKSAAN_OBAT_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -365,6 +368,11 @@ const INIT_STATE = {
         error: null,
     },
     getHistoryAsesmenBayiLahir:{
+        data: [],
+        loading: false,
+        error: null,
+    },
+    getAntreanPemeriksaanObat:{
         data: [],
         loading: false,
         error: null,
@@ -2013,6 +2021,39 @@ const Emr = (state = INIT_STATE, action) => {
                 ...state,
                 getHistoryAsesmenBayiLahir: {
                     ...state.getHistoryAsesmenBayiLahir,
+                    loading: true,
+                    error: action.payload,
+                }
+            }
+        }
+
+        case GET_ANTREAN_PEMERIKSAAN_OBAT: {
+            return {
+                ...state,
+                getAntreanPemeriksaanObat: {
+                    ...state.getAntreanPemeriksaanObat,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case GET_ANTREAN_PEMERIKSAAN_OBAT_SUCCESS: {
+            return {
+                ...state,
+                getAntreanPemeriksaanObat: {
+                    ...state.getAntreanPemeriksaanObat,
+                    loading: false,
+                    data: action.payload,
+                }
+            }
+        }
+
+        case GET_ANTREAN_PEMERIKSAAN_OBAT_ERROR: {
+            return {
+                ...state,
+                getAntreanPemeriksaanObat: {
+                    ...state.getAntreanPemeriksaanObat,
                     loading: true,
                     error: action.payload,
                 }

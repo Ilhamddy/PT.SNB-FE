@@ -181,4 +181,7 @@ export default class ServiceEmr {
     getHistoryAsesmenBayiLahir = async (body) => {
         return await api.get("/transaksi/emr/get-history-asesmenbayilahir", body)
     }
+    getAntreanPemeriksaanObat = async (queries) => {
+        return await api.get("/transaksi/emr/get-antrean-pemeriksaan-obat", queries)
+    }
 }
