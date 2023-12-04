@@ -381,6 +381,8 @@ import LaporanPengadaan from "../pages/LaporanPengadaan/LaporanPengadaan.jsx";
 import LaporanPenerimaan from "../pages/LaporanPenerimaan/LaporanPenerimaan.jsx";
 import DasborPeta from "../pages/DasborPeta/DasborPeta.jsx";
 import SetorKasir from "../pages/SetorKasir/SetorKasir.jsx";
+import Organization from "../pages/SatuSehat/Organization/Organization.jsx";
+import Location from "../pages/SatuSehat/Location/Location.jsx";
 
 
 
@@ -769,6 +771,10 @@ const authProtectedRoutes = [
   { path: "/master/tarif-tindakan/tambah/:idtotal", component: <MasterTarifTindakanTambah />},
   { path: "/master/setting-layanan/:tabopen", component: <MasterSettingLayanan />},
   { path: "/master/setting-layanan/:tabopen/:id", component: <MasterSettingLayanan />},
+
+  // satu sehat
+  { path: "/satusehat/organization", component: <Organization />},
+  { path: "/satusehat/location", component: <Location />},
 
 
   //dashboard eis
