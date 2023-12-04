@@ -218,8 +218,9 @@ const DaftarBed = () => {
                   vTempatTidur.setFieldValue('kamar', e?.value || '')
                 }}
                 value={vTempatTidur.values.kamar}
-                className={`input row-header ${!!vTempatTidur?.errors.kamar ? 'is-invalid' : ''
-                  }`}
+                className={`input row-header ${
+                  !!vTempatTidur?.errors.kamar ? 'is-invalid' : ''
+                }`}
                 isDisabled
               />
               {vTempatTidur.touched.kamar && !!vTempatTidur.errors.kamar && (
@@ -242,8 +243,9 @@ const DaftarBed = () => {
                   vTempatTidur.setFieldValue('kelas', e?.value || '')
                 }}
                 value={vTempatTidur.values.kelas}
-                className={`input row-header ${!!vTempatTidur?.errors.kelas ? 'is-invalid' : ''
-                  }`}
+                className={`input row-header ${
+                  !!vTempatTidur?.errors.kelas ? 'is-invalid' : ''
+                }`}
                 isDisabled
               />
               {vTempatTidur.touched.kelas && !!vTempatTidur.errors.kelas && (
@@ -291,8 +293,9 @@ const DaftarBed = () => {
                   vTempatTidur.setFieldValue('status', e?.value || '')
                 }}
                 value={vTempatTidur.values.status}
-                className={`input row-header ${!!vTempatTidur?.errors.status ? 'is-invalid' : ''
-                  }`}
+                className={`input row-header ${
+                  !!vTempatTidur?.errors.status ? 'is-invalid' : ''
+                }`}
               />
               {vTempatTidur.touched.status && !!vTempatTidur.errors.status && (
                 <FormFeedback type="invalid">
@@ -326,7 +329,7 @@ const DaftarBed = () => {
         </Card>
       </Modal>
       <Container fluid>
-        <BreadCrumb title="Daftar Kasur" pageTitle="Kasur" />
+        <BreadCrumb title="Daftar Bed" pageTitle="Kasur" />
         <Row>
           {datawidget.map((item, key) => (
             <Col lg={4} sm={12} key={key}>
@@ -370,7 +373,7 @@ const DaftarBed = () => {
                   style={{ backgroundColor: '#FFCB46' }}
                 >
                   <div className="text-center">
-                    <Link to="#" className="link-light" onClick={() => { }}>
+                    <Link to="#" className="link-light" onClick={() => {}}>
                       View{' '}
                       <i className="ri-arrow-right-s-line align-middle lh-1"></i>
                     </Link>
@@ -381,8 +384,10 @@ const DaftarBed = () => {
           ))}
         </Row>
         <Card>
-          <CardHeader className='card-header-snb'>
-            <h4 className="card-title mb-0" style={{ color: 'black' }}>Daftar Kasur</h4>
+          <CardHeader className="card-header-snb">
+            <h4 className="card-title mb-0" style={{ color: 'black' }}>
+              Daftar Kasur
+            </h4>
           </CardHeader>
           <CardBody>
             <Row>
@@ -395,8 +400,9 @@ const DaftarBed = () => {
                     vFilter.setFieldValue('unit', e?.value || '')
                   }}
                   value={vFilter.values.unit}
-                  className={`input row-header ${!!vFilter?.errors.unit ? 'is-invalid' : ''
-                    }`}
+                  className={`input row-header ${
+                    !!vFilter?.errors.unit ? 'is-invalid' : ''
+                  }`}
                 />
                 {vFilter.touched.unit && !!vFilter.errors.unit && (
                   <FormFeedback type="invalid">
@@ -413,8 +419,9 @@ const DaftarBed = () => {
                     vFilter.setFieldValue('kelas', e?.value || '')
                   }}
                   value={vFilter.values.kelas}
-                  className={`input row-header ${!!vFilter?.errors.kelas ? 'is-invalid' : ''
-                    }`}
+                  className={`input row-header ${
+                    !!vFilter?.errors.kelas ? 'is-invalid' : ''
+                  }`}
                 />
                 {vFilter.touched.kelas && !!vFilter.errors.kelas && (
                   <FormFeedback type="invalid">

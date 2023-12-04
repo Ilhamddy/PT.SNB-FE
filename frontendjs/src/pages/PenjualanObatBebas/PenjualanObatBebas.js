@@ -281,7 +281,7 @@ const PenjualanObatBebas = () => {
         <div className="page-content page-verifikasi-resep">
             <ToastContainer closeButton={false} />
             <Container fluid>
-                <BreadCrumb title="Verifikasi Resep" pageTitle="Farmasi" />
+                <BreadCrumb title="Penjualan Obat Bebas" pageTitle="Farmasi" />
                 <Card className="p-5">
                     <Row>
                         <Col lg={5}>

@@ -27,7 +27,7 @@ FROM t_daftarpasien td
 	LEFT JOIN m_rekanan mr3 ON td.objectpenjamin3fk = mr3.id
 WHERE (td.isprinted IS null OR td.isprinted != true) 
 	AND td.tglregistrasi BETWEEN $1 AND $2
-	AND (td.objectinstalasifk = 1 OR td.objectinstalasifk = 7)
+	AND (mu.objectinstalasifk = 1 OR mu.objectinstalasifk = 7)
 	AND td.noregistrasi IS NOT NULL --- belum terdaftar
 ORDER BY td.tglregistrasi ASC
 
