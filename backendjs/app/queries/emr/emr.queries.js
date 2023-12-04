@@ -1,3 +1,4 @@
+import { dateBetweenEmptyString } from "../../utils/dbutils"
 
 const qGetObatFromUnit = `
 SELECT
@@ -37,7 +38,7 @@ GROUP BY
     msd.sediaan
 `
 
-const qGetOrderResepFromDP = `
+const qGetOrderResep = `
 SELECT
     tor.norec AS norecorder,
     mpeg.id AS dokter,
@@ -104,6 +105,9 @@ CROSS JOIN LATERAL (
         AND tsu.qty > 0
         AND tsu.objectunitfk = tor.objectdepotujuanfk
     ) s
+`
+
+const qGetOrderResepFromDP = qGetOrderResep + `
 WHERE CASE 
     WHEN $1 = 'all' THEN tor.statusenabled = true
     WHEN $1 = 'norecresep' THEN tor.norec = $2
@@ -117,6 +121,23 @@ GROUP BY
     mu.namaunit,
     tdp.objectunitlastfk,
     tdp.objectpenjaminfk
+ORDER BY
+    tor.tglinput DESC
+`
+
+const qGetAllOrderResepFromDate = qGetOrderResep + `
+WHERE tor.statusenabled = true AND
+    ${dateBetweenEmptyString("tor.tglinput", "$1", "$2")}
+GROUP BY
+    tor.norec,
+    mpeg.id,
+    mpeg.namalengkap,
+    mu.id,
+    mu.namaunit,
+    tdp.objectunitlastfk,
+    tdp.objectpenjaminfk
+ORDER BY
+    tor.tglinput DESC
 `
 
 const qGetOrderVerifResepFromDP = `
@@ -441,5 +462,6 @@ export {
     qComboSebabKematian,
     qComboApgarScore,
     qHistoryAsesmenBayiLahir,
-    qGetAntreanPemeriksaanObat
+    qGetAntreanPemeriksaanObat,
+    qGetAllOrderResepFromDate
 }

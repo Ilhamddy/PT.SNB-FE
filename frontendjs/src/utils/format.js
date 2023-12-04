@@ -28,6 +28,7 @@ import { useEffect, useState } from "react"
  */
 export const dateTimeLocal = (date) => {
     try{
+        if(!date) return "-"
         return new Date(date)
             .toLocaleDateString("id-ID", 
                 { year: 'numeric', 
