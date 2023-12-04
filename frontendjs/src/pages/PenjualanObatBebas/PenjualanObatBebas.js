@@ -4,7 +4,7 @@ import { useFormik } from "formik"
 import DataTable from 'react-data-table-component';
 import LoadingTable from "../../Components/Table/LoadingTable";
 import NoDataTable from "../../Components/Table/NoDataTable";
-import { onChangeStrNbr, strToNumber } from "../../utils/format";
+import { calculateRounding, onChangeStrNbr, strToNumber } from "../../utils/format";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { getComboPenjualanBebas, getComboResep, getComboVerifResep } from "../../store/master/action";
 import { useDispatch, useSelector } from "react-redux";
@@ -817,11 +817,12 @@ export const useHandleChangeResep = (resepRef, vResep) => {
         handleChangeResep(e?.totalstok || "", "stok", row, true);
         const harga = e?.batchstokunit?.[0]?.harga || 0
         const nobatch = e?.batchstokunit?.[0]?.nobatch || ""
+        // hitung harga
         let totalHarga = 
             ((harga) * 1.25 * (row.qty || 0)) || ""
-        totalHarga = Math.ceil(totalHarga)
+        const [roundedHarga, difference] = calculateRounding(totalHarga) // siapa tau difference digunakan
         handleChangeResep(
-            totalHarga, 
+            roundedHarga, 
             "total", 
             row, 
             true
@@ -1187,6 +1188,7 @@ export const useColumnsResep = (
             const initValue = row.racikan.length > 0 ? 
                 totalRacikan : row.total
             const [val, setVal] = useState(initValue)
+            console.log(val)
             return (
                 <div>
                     <Input 

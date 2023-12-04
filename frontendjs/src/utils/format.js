@@ -212,5 +212,25 @@ export const groupArray = (array, size) => {
       result.push(subarray)
     }
     return result
-  }
-  
+}
+
+/**
+ * 
+ * @param {number} harga 
+ * @param {number} [roundingTotal] total digit yang dirounding, contoh 5352,532 , kalau 2 menjadi 5300, kalau 0 menjadi 5352, kalau -1 menjadi 5352,5
+ * @param {"up" | "down"} [operation] round up or down
+ * @returns 
+ */
+export const calculateRounding = (harga, roundingTotal = 0, operation = "up") => {
+    let rounder = 10 ** roundingTotal
+    const hargaString = harga.toString()
+    const rounderString = rounder.toString()
+    if(hargaString.length < rounderString.length){
+        throw new Error("Rounder lebih besar dari harga")
+    }
+    let hargaRounded = harga / rounder
+    hargaRounded = operation === "up" ? Math.ceil(hargaRounded) : Math.floor(hargaRounded)
+    hargaRounded = hargaRounded * rounder
+    const difference = Math.abs(harga - hargaRounded)
+    return [hargaRounded, difference]
+}
