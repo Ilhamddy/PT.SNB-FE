@@ -797,7 +797,7 @@ const PenjualanObatBebas = () => {
 
 export const useHandleChangeResep = (resepRef, vResep) => {
     // untuk sekarang dirounding menjadi 100 rupiah
-    const roundingTotal = 2
+    const roundingTotal = 0
     const handleChangeResep = useCallback((newVal, field, row, isSet) => {
         const newReseps = [...resepRef.current]
         const newResep = {...newReseps[row.koder - 1]}
