@@ -30,8 +30,8 @@ const getOrderResepQuery = async (req, res) => {
     const logger = res.locals.logger
     try{
         let { tglmulai, tglakhir } = req.query
-        tglmulai = getDateStart(tglmulai);
-        tglakhir = getDateEnd(tglakhir) 
+        tglmulai = getDateStartNull(tglmulai);
+        tglakhir = getDateEndNull(tglakhir) 
         let dataAllOrders = await pool.query(qGetAllOrderResepFromDate, [
             tglmulai || '',
             tglakhir || ''

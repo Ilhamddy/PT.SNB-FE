@@ -68,27 +68,17 @@ const AddObatFarmasi = () => {
     profile: '',
   })
   const current = new Date()
-  const [dateStart, setdateStart] = useState(
-    `${current.getFullYear()}-${current.getMonth() + 1}-${current.getDate()}`
-  )
-  const [dateEnd, setdateEnd] = useState(
-    `${current.getFullYear()}-${current.getMonth() + 1}-${current.getDate()}`
-  )
+  const [dateNow] = useState(() => new Date().toISOString())
+  const [dateStart, setdateStart] = useState(() => new Date().toISOString())
+  const [dateEnd, setdateEnd] = useState(() => new Date().toISOString())
+
   const [search, setSearch] = useState('')
   const handleBeginOnChangeStart = (newBeginValue) => {
-    var dateString = new Date(
-      newBeginValue.getTime() - newBeginValue.getTimezoneOffset() * 60000
-    )
-      .toISOString()
-      .split('T')[0]
+    let dateString = newBeginValue.toISOString()
     setdateStart(dateString)
   }
   const handleBeginOnChangeEnd = (newBeginValue) => {
-    var dateString = new Date(
-      newBeginValue.getTime() - newBeginValue.getTimezoneOffset() * 60000
-    )
-      .toISOString()
-      .split('T')[0]
+    let dateString = newBeginValue.toISOString()
     setdateEnd(dateString)
   }
   const handleClickCari = () => {
@@ -104,8 +94,8 @@ const AddObatFarmasi = () => {
     }
   }
   useEffect(() => {
-    dispatch(daftarPasienRegistrasiGet(''))
-  }, [dispatch])
+    dispatch(daftarPasienRegistrasiGet(`${''}&start=${dateNow}&end=${dateNow}`))
+  }, [dispatch, dateNow])
   useEffect(() => {
     return () => {
       dispatch(daftarPasienResetForm())
@@ -285,12 +275,17 @@ const AddObatFarmasi = () => {
             </Col>
             <Col lg={9}>
               <Card>
-                <CardHeader style={{
-                  backgroundColor: "#FFCB46",
-                  borderTopLeftRadius: '24px', borderTopRightRadius: '24px',
-                  padding: '10px 15px'
-                }}>
-                  <h4 className="card-title mb-0" style={{ color: 'black' }}>Daftar Pasien Farmasi</h4>
+                <CardHeader
+                  style={{
+                    backgroundColor: '#FFCB46',
+                    borderTopLeftRadius: '24px',
+                    borderTopRightRadius: '24px',
+                    padding: '10px 15px',
+                  }}
+                >
+                  <h4 className="card-title mb-0" style={{ color: 'black' }}>
+                    Daftar Pasien Farmasi
+                  </h4>
                 </CardHeader>
                 <CardBody>
                   <div className="mb-2">
