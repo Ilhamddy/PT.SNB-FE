@@ -385,8 +385,6 @@ import Organization from "../pages/SatuSehat/Organization/Organization.jsx";
 import Location from "../pages/SatuSehat/Location/Location.jsx";
 import Practitioner from "../pages/SatuSehat/Practitioner/Practitioner.jsx";
 
-
-
 const authProtectedRoutes = [
   { path: "/dashboard-analytics", component: <DashboardAnalytics /> },
   { path: "/dashboard-crm", component: <DashboardCrm /> },
