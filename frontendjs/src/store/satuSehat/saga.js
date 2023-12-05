@@ -3,11 +3,12 @@ import ServiceSatuSehat from "../../services/service-satusehat";
 import { 
     GET_LIST_INSTALASI,
     UPSERT_MAP_CHILD,
-    UPSERT_ORGANIZATION_INSTALASI
+    UPSERT_ORGANIZATION_INSTALASI, GET_LIST_UNIT
  } from "./actionType";
  import { 
     getListInstalasiSuccess,getListInstalasiError,
-    upsertOrganizationInstalasiSuccess,upsertOrganizationInstalasiError
+    upsertOrganizationInstalasiSuccess,upsertOrganizationInstalasiError,
+    getListUnitSuccess, getListUnitError
 } from "./action";
 import { toast } from 'react-toastify';
 
@@ -19,6 +20,15 @@ function* ongetListInstalasi({payload: {queries}}) {
         yield put(getListInstalasiSuccess(response.data));
     } catch (error) {
         yield put(getListInstalasiError(error));
+    }
+}
+
+function* ongetListUnit({payload: {queries}}) {
+    try{
+        const response = yield call(serviceSatuSehat.getListUnit, queries);
+        yield put(getListUnitSuccess(response.data));
+    } catch (error) {
+        yield put(getListUnitError(error));
     }
 }
 
@@ -37,6 +47,7 @@ function* onupsertOrganizationInstalasi({payload: {data, callback}}) {
 export default function* satuSehatSaga() {
     yield all([
         takeEvery(GET_LIST_INSTALASI, ongetListInstalasi),
-        takeEvery(UPSERT_ORGANIZATION_INSTALASI,onupsertOrganizationInstalasi)
+        takeEvery(UPSERT_ORGANIZATION_INSTALASI,onupsertOrganizationInstalasi),
+        takeEvery(GET_LIST_UNIT,ongetListUnit)
     ]);
 }

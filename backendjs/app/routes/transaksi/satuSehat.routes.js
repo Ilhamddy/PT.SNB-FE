@@ -19,4 +19,9 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.updateOrganizationInstalasi
     )
+    app.get(
+        "/api/transaksi/satu-sehat/get-list-unit",
+        [authJwt.verifyToken],
+        controller.getListUnit
+    );
 }
