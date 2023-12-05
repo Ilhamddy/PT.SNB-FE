@@ -466,6 +466,49 @@ const updatePractitionerPegawai = async (req, res) => {
         });
     }
 };
+const updateIhsPatient = async (req, res) => {
+    const logger = res.locals.logger;
+    try {
+        let msg ='Data Pasien Tidak Ada'
+        console.log(req.body)
+        const response = await postGetSatuSehat('GET', '/Patient?identifier=https://fhir.kemkes.go.id/id/nik|'+req.body.noidentitas,'');
+        const { setInstalasi } = await db.sequelize.transaction(async (transaction) => {
+            let setInstalasi = ''
+            if(response.total>0){
+                msg ='Sukses'
+                setInstalasi = await db.m_pasien.update({
+                    ihs_id: response.entry[0].resource.id,
+                }, {
+                    where: {
+                        id: req.body.id
+                    },
+                    transaction: transaction
+                });
+            }
+            return { setInstalasi }
+        });
+
+        const tempres = {
+            pasien:setInstalasi,
+            response:response
+        };
+
+        res.status(200).send({
+            msg: msg,
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(400).send({
+            msg: error.message || 'Gagal',
+            code: 400,
+            data: error,
+            success: false,
+        });
+    }
+};
 
 export default {
     getListInstalasi,
@@ -474,5 +517,6 @@ export default {
     getListUnit,
     updateLocationUnit,
     getListDokter,
-    updatePractitionerPegawai
+    updatePractitionerPegawai,
+    updateIhsPatient
 }

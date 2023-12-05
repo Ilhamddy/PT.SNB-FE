@@ -1,10 +1,10 @@
-import { call, put, takeEvery, all, fork } from "redux-saga/effects";
+import { call, put, takeEvery, all, fork, take } from "redux-saga/effects";
 import ServiceSatuSehat from "../../services/service-satusehat";
 import { 
     GET_LIST_INSTALASI,
     UPSERT_MAP_CHILD,
     UPSERT_ORGANIZATION_INSTALASI, GET_LIST_UNIT,UPSERT_LOCATION_UNIT,
-    GET_LIST_PRACTITIONER,UPSERT_PRACTITIONER
+    GET_LIST_PRACTITIONER,UPSERT_PRACTITIONER, UPSERT_PATIENT
  } from "./actionType";
  import { 
     getListInstalasiSuccess,getListInstalasiError,
@@ -12,7 +12,8 @@ import {
     getListUnitSuccess, getListUnitError,
     upsertLocationUnitSuccess,upsertLocationUnitError,
     getListPractitionerSuccess,getListPractitionerError,
-    upsertPractitionerSuccess,upsertPractitionerError
+    upsertPractitionerSuccess,upsertPractitionerError,
+    upsertPatientSuccess, upsertPatientError
 } from "./action";
 import { toast } from 'react-toastify';
 
@@ -82,6 +83,18 @@ function* onupsertPractitioner({payload: {data, callback}}) {
     }
 }
 
+function* onupsertPatient({payload: {data, callback}}) {
+    try{
+        const response = yield call(serviceSatuSehat.upsertPatient, data);
+        yield put(upsertPatientSuccess(response.data));
+        toast.success(response.msg || "Sukses");
+        callback && callback(response);
+    } catch (error) {
+        yield put(upsertPatientError(error));
+        toast.error(error.msg || "Gagal");
+    }
+}
+
 export default function* satuSehatSaga() {
     yield all([
         takeEvery(GET_LIST_INSTALASI, ongetListInstalasi),
@@ -89,6 +102,7 @@ export default function* satuSehatSaga() {
         takeEvery(GET_LIST_UNIT,ongetListUnit),
         takeEvery(UPSERT_LOCATION_UNIT,onupsertLocationUnit),
         takeEvery(GET_LIST_PRACTITIONER,ongetListPractitioner),
-        takeEvery(UPSERT_PRACTITIONER,onupsertPractitioner)
+        takeEvery(UPSERT_PRACTITIONER,onupsertPractitioner),
+        takeEvery(UPSERT_PATIENT,onupsertPatient)
     ]);
 }

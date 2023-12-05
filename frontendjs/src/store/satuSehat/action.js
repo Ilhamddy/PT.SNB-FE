@@ -4,7 +4,8 @@ import {
     GET_LIST_UNIT,GET_LIST_UNIT_SUCCESS,GET_LIST_UNIT_ERROR,
     UPSERT_LOCATION_UNIT,UPSERT_LOCATION_UNIT_SUCCESS,UPSERT_LOCATION_UNIT_ERROR,
     GET_LIST_PRACTITIONER,GET_LIST_PRACTITIONER_SUCCESS,GET_LIST_PRACTITIONER_ERROR,
-    UPSERT_PRACTITIONER,UPSERT_PRACTITIONER_SUCCESS,UPSERT_PRACTITIONER_ERROR
+    UPSERT_PRACTITIONER,UPSERT_PRACTITIONER_SUCCESS,UPSERT_PRACTITIONER_ERROR,
+    UPSERT_PATIENT,UPSERT_PATIENT_SUCCESS,UPSERT_PATIENT_ERROR
 } from "./actionType";
 
 export const getListInstalasi = (queries) => ({
@@ -109,5 +110,23 @@ export const upsertPractitionerSuccess = (data) => ({
 
 export const upsertPractitionerError = (error) => ({
     type: UPSERT_PRACTITIONER_ERROR,
+    payload: error,
+});
+
+export const upsertPatient = (data, callback) => ({
+    type: UPSERT_PATIENT,
+    payload: {
+        data,
+        callback
+    },
+});
+
+export const upsertPatientSuccess = (data) => ({
+    type: UPSERT_PATIENT_SUCCESS,
+    payload: data,
+});
+
+export const upsertPatientError = (error) => ({
+    type: UPSERT_PATIENT_ERROR,
     payload: error,
 });
