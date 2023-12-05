@@ -9,6 +9,7 @@ SELECT
     mp.namaproduk AS namaproduk,
     mp.isobat AS isobat,
     mk.namakelas AS namakelas,
+    mu.namaunit AS namaunit,
     dp.norec AS norec_dp,
     npp.no_nota AS no_nota,
     tpp.norec AS norec,
@@ -23,6 +24,7 @@ FROM t_daftarpasien td
     RIGHT JOIN t_antreanpemeriksaan tap ON tap.objectdaftarpasienfk = td.norec
     RIGHT JOIN t_pelayananpasien tpp ON tpp.objectantreanpemeriksaanfk = tap.norec 
     AND tpp.statusenabled = true
+    LEFT JOIN m_unit mu ON tap.objectunitfk = mu.id
     LEFT JOIN t_notapelayananpasien npp ON npp.norec = tpp.objectnotapelayananpasienfk 
     AND npp.statusenabled = true
     LEFT JOIN m_pegawai peg ON peg.id = tpp.objectpegawaifk 
@@ -39,7 +41,8 @@ GROUP BY
     mp.isobat, 
     mk.namakelas, 
     dp.norec, 
-    npp.no_nota
+    npp.no_nota,
+    mu.namaunit
     `
 
 const qDm = `
