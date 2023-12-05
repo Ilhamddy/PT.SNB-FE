@@ -142,16 +142,33 @@ export const ListDetail = () => {
       width: '100px',
     },
   ]
-  const {
-    vDetail,
-    validation,
-    penerimaanTouched,
-    penerimaanErr,
-    total,
-    ppn,
-    subtotal,
-    diskon,
-  } = useContext(PenerimaanContext)
+  const { vDetail, validation, penerimaanTouched, penerimaanErr } =
+    useContext(PenerimaanContext)
+  let subtotal = validation.values.detail.reduce(
+    (prev, curr) => prev + strToNumber(curr.subtotalproduk),
+    0
+  )
+  subtotal =
+    'Rp' + subtotal.toLocaleString('id-ID', { maximumFractionDigits: 5 })
+
+  let ppn = validation.values.detail.reduce(
+    (prev, curr) => prev + strToNumber(curr.ppnrupiahproduk),
+    0
+  )
+  ppn = 'Rp' + ppn.toLocaleString('id-ID', { maximumFractionDigits: 5 })
+
+  let diskon = validation.values.detail.reduce(
+    (prev, curr) => prev + strToNumber(curr.diskonrupiah),
+    0
+  )
+  diskon = 'Rp' + diskon.toLocaleString('id-ID', { maximumFractionDigits: 5 })
+
+  let total = validation.values.detail.reduce(
+    (prev, curr) => prev + strToNumber(curr.totalproduk),
+    0
+  )
+  total = 'Rp' + total.toLocaleString('id-ID', { maximumFractionDigits: 5 })
+
   const { norecpenerimaan } = useParams()
   return (
     <Card className="p-5">
