@@ -1,24 +1,34 @@
-import PropTypes from "prop-types";
-import React, { useState } from "react";
+import PropTypes from 'prop-types'
+import React, { useState } from 'react'
 import {
-  Modal, ModalBody, Col, Label, Input, Row, Form,
-  Button, FormFeedback, CardBody, Card
-} from "reactstrap";
-import CustomSelect from "../../pages/Select/Select";
-import { useSelector, useDispatch } from "react-redux";
-import { useFormik } from "formik";
-import Flatpickr from "react-flatpickr";
-import * as Yup from "yup";
-import { saveMergeNoRegistrasi } from "../../store/actions";
-import KontainerFlatpickr from "../KontainerFlatpickr/KontainerFlatpickr";
+  Modal,
+  ModalBody,
+  Col,
+  Label,
+  Input,
+  Row,
+  Form,
+  Button,
+  FormFeedback,
+  CardBody,
+  Card,
+} from 'reactstrap'
+import CustomSelect from '../../pages/Select/Select'
+import { useSelector, useDispatch } from 'react-redux'
+import { useFormik } from 'formik'
+import Flatpickr from 'react-flatpickr'
+import * as Yup from 'yup'
+import { saveMergeNoRegistrasi } from '../../store/actions'
+import KontainerFlatpickr from '../KontainerFlatpickr/KontainerFlatpickr'
 
-
-
-const MergeNoRegistrasi = ({ show, onSimpanClick,
+const MergeNoRegistrasi = ({
+  show,
+  onSimpanClick,
   onCloseClick,
-  tempNorecDp }) => {
-  const dispatch = useDispatch();
-  const [dateStart, setdateStart] = useState(() => (new Date()).toISOString());
+  tempNorecDp,
+}) => {
+  const dispatch = useDispatch()
+  const [dateStart, setdateStart] = useState(() => new Date().toISOString())
   const validation = useFormik({
     enableReinitialize: true,
     initialValues: {
@@ -26,20 +36,18 @@ const MergeNoRegistrasi = ({ show, onSimpanClick,
       tglbatal: dateStart,
       alasan: '',
       noregistrasiTujuan: '',
-      password: ''
+      password: '',
     },
     validationSchema: Yup.object({
-      alasan: Yup.string().required("Alasan wajib diisi"),
-      noregistrasiTujuan: Yup.string().required("No. Registrasi Tujuan wajib diisi"),
-      password: Yup.string().required("Password wajib diisi"),
+      alasan: Yup.string().required('Alasan wajib diisi'),
+      noregistrasiTujuan: Yup.string().required(
+        'No. Registrasi Tujuan wajib diisi'
+      ),
+      password: Yup.string().required('Password wajib diisi'),
     }),
     onSubmit: (values, { resetForm }) => {
-      dispatch(
-        saveMergeNoRegistrasi(values, () => {
-
-        })
-      )
-    }
+      dispatch(saveMergeNoRegistrasi(values, () => {}))
+    },
   })
   console.log(validation.errors)
   return (
@@ -50,14 +58,19 @@ const MergeNoRegistrasi = ({ show, onSimpanClick,
             <div>
               <Form
                 onSubmit={(e) => {
-                  e.preventDefault();
-                  validation.handleSubmit();
-                  return false;
+                  e.preventDefault()
+                  validation.handleSubmit()
+                  return false
                 }}
                 className="gy-4"
-                action="#">
+                action="#"
+              >
                 <Row>
-                  <Col md={4} className="mt-2"><Label htmlFor="unittujuan" className="form-label">No. Registrasi Salah</Label></Col>
+                  <Col md={4} className="mt-0">
+                    <Label htmlFor="unittujuan" className="form-label">
+                      No. Registrasi Salah
+                    </Label>
+                  </Col>
                   <Col md={8} className="mb-2">
                     <Input
                       id="noregistrasiAwal"
@@ -65,20 +78,29 @@ const MergeNoRegistrasi = ({ show, onSimpanClick,
                       type="text"
                       value={tempNorecDp}
                       onChange={(e) => {
-                        validation.setFieldValue('noregistrasiAwal', e.target.value)
+                        validation.setFieldValue(
+                          'noregistrasiAwal',
+                          e.target.value
+                        )
                       }}
-                      invalid={validation.touched?.noregistrasiAwal &&
-                        !!validation.errors?.noregistrasiAwal}
+                      invalid={
+                        validation.touched?.noregistrasiAwal &&
+                        !!validation.errors?.noregistrasiAwal
+                      }
                       disabled
                     />
-                    {validation.touched?.noregistrasiAwal
-                      && !!validation.errors.noregistrasiAwal && (
+                    {validation.touched?.noregistrasiAwal &&
+                      !!validation.errors.noregistrasiAwal && (
                         <FormFeedback type="invalid">
                           <div>{validation.errors.noregistrasiAwal}</div>
                         </FormFeedback>
                       )}
                   </Col>
-                  <Col md={4} className="mt-2"><Label htmlFor="pembatal" className="form-label">No. Registrasi Tujuan</Label></Col>
+                  <Col md={4} className="mt-2">
+                    <Label htmlFor="pembatal" className="form-label">
+                      No. Registrasi Tujuan
+                    </Label>
+                  </Col>
                   <Col md={8} className="mb-2">
                     <Input
                       id="noregistrasiTujuan"
@@ -86,21 +108,29 @@ const MergeNoRegistrasi = ({ show, onSimpanClick,
                       type="text"
                       value={validation.values.noregistrasiTujuan}
                       onChange={(e) => {
-                        validation.setFieldValue('noregistrasiTujuan', e.target.value)
+                        validation.setFieldValue(
+                          'noregistrasiTujuan',
+                          e.target.value
+                        )
                       }}
-                      invalid={validation.touched?.noregistrasiTujuan &&
-                        !!validation.errors?.noregistrasiTujuan}
-
+                      invalid={
+                        validation.touched?.noregistrasiTujuan &&
+                        !!validation.errors?.noregistrasiTujuan
+                      }
                       placeholder="Masukan No. Registrasi Tujuan"
                     />
-                    {validation.touched?.noregistrasiTujuan
-                      && !!validation.errors.noregistrasiTujuan && (
+                    {validation.touched?.noregistrasiTujuan &&
+                      !!validation.errors.noregistrasiTujuan && (
                         <FormFeedback type="invalid">
                           <div>{validation.errors.noregistrasiTujuan}</div>
                         </FormFeedback>
                       )}
                   </Col>
-                  <Col md={4} className="mt-2"><Label htmlFor="pembatal" className="form-label">Alasan</Label></Col>
+                  <Col md={4} className="mt-2">
+                    <Label htmlFor="pembatal" className="form-label">
+                      Alasan
+                    </Label>
+                  </Col>
                   <Col md={8} className="mb-2">
                     <Input
                       id="alasan"
@@ -109,16 +139,24 @@ const MergeNoRegistrasi = ({ show, onSimpanClick,
                       placeholder="alasan"
                       onChange={validation.handleChange}
                       onBlur={validation.handleBlur}
-                      value={validation.values.alasan || ""}
+                      value={validation.values.alasan || ''}
                       invalid={
-                        validation.touched.alasan && validation.errors.alasan ? true : false
+                        validation.touched.alasan && validation.errors.alasan
+                          ? true
+                          : false
                       }
                     />
                     {validation.touched.alasan && validation.errors.alasan ? (
-                      <FormFeedback type="invalid"><div>{validation.errors.alasan}</div></FormFeedback>
+                      <FormFeedback type="invalid">
+                        <div>{validation.errors.alasan}</div>
+                      </FormFeedback>
                     ) : null}
                   </Col>
-                  <Col md={4} className="mt-2"><Label htmlFor="pembatal" className="form-label">Password</Label></Col>
+                  <Col md={4} className="mt-2">
+                    <Label htmlFor="pembatal" className="form-label">
+                      Password
+                    </Label>
+                  </Col>
                   <Col md={8} className="mt-2">
                     <Input
                       id="password"
@@ -128,11 +166,13 @@ const MergeNoRegistrasi = ({ show, onSimpanClick,
                       onChange={(e) => {
                         validation.setFieldValue('password', e.target.value)
                       }}
-                      invalid={validation.touched?.password &&
-                        !!validation.errors?.password}
+                      invalid={
+                        validation.touched?.password &&
+                        !!validation.errors?.password
+                      }
                     />
-                    {validation.touched?.password
-                      && !!validation.errors.password && (
+                    {validation.touched?.password &&
+                      !!validation.errors.password && (
                         <FormFeedback type="invalid">
                           <div>{validation.errors.password}</div>
                         </FormFeedback>
@@ -147,7 +187,12 @@ const MergeNoRegistrasi = ({ show, onSimpanClick,
                     >
                       Tutup
                     </button>
-                    <Button type="submit" color="info" placement="top" id="tooltipTop" >
+                    <Button
+                      type="submit"
+                      color="info"
+                      placement="top"
+                      id="tooltipTop"
+                    >
                       SIMPAN
                     </Button>
                   </div>
@@ -165,6 +210,6 @@ MergeNoRegistrasi.propTypes = {
   onCloseClick: PropTypes.func,
   onSimpanClick: PropTypes.func,
   show: PropTypes.any,
-};
+}
 
 export default MergeNoRegistrasi
