@@ -505,6 +505,27 @@ where mp.id =$1 and mp.statusenabled=true
 order by td.tglregistrasi desc
 limit 5`
 
+const qGetNoregistrasi = `
+SELECT
+    tdp.noregistrasi AS label,
+    tdp.norec AS value
+FROM t_daftarpasien tdp
+WHERE 
+    tdp.nocmfk = $1
+    AND
+    tdp.norec != $2
+`
+
+const qGetPasienRegistrasi = `
+SELECT
+    tdp.nocmfk AS nocmfk
+FROM t_daftarpasien tdp
+WHERE tdp.norec = $1
+LIMIT 1
+`
+
+
+
 export default {
     getAll,
     addPost,
@@ -533,5 +554,7 @@ export default {
     qListPelayananPasienTemp,
     qListTotalKlaim,
     qBiayaTambahan,
-    qHistoryRegistrasi
+    qHistoryRegistrasi,
+    qGetNoregistrasi,
+    qGetPasienRegistrasi
 };

@@ -1820,9 +1820,16 @@ const getHistoryRegistrasi = async (req, res) => {
 const saveMergeNoRegistrasi = async (req, res) => {
     const logger = res.locals.logger;
     try{
-        // await db.sequelize.transaction(async (transaction) => {
+        const {
+            noregistrasiAwal,
+            tglbatal,
+            alasan,
+            noregistrasitujuan,
+            password,
+        } = req.body
+        await db.sequelize.transaction(async (transaction) => {
             
-        // });
+        });
         
         const tempres = {
         
@@ -1837,6 +1844,33 @@ const saveMergeNoRegistrasi = async (req, res) => {
         logger.error(error);
         res.status(500).send({
             msg: error.message || 'Gagal',
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+const getNoRegistrasiPasien = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const norecdp = req.query.norecdp
+        const pasien = await pool.query(queries.qGetPasienRegistrasi, [req.query]).rows[0]
+        if(!pasien) throw new Error("Pasien tidak ada")
+
+        const tempres = {
+        
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
             code: 500,
             data: error,
             success: false

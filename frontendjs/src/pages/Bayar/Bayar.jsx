@@ -167,7 +167,6 @@ const Bayar = () => {
       deposit: Yup.string().required('Deposit harus diisi'),
       nobukti: Yup.string().required('No Bukti harus diisi'),
       keterangan: Yup.string().required('Keterangan bayar wajib diisi'),
-      pegawai: Yup.string().required('Pegawai harus diisi'),
       norecnota: Yup.string().required('No Rekam Medis harus diisi'),
       klaim: Yup.string().required('Klaim harus diisi'),
       norecdp: Yup.string().required('No DP harus diisi'),

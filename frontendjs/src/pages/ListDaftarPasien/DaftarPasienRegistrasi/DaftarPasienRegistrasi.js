@@ -87,7 +87,6 @@ const DaftarPasienRegistrasi = () => {
     };
     const [tempNorecDp, settempNorecDp] = useState('');
     const [batalModal, setbatalModal] = useState(false);
-    const [mergeModal, setmergeModal] = useState(false);
     const handleToCancel = async (norecdp) => {
         settempNorecDp(norecdp)
         setbatalModal(true)
@@ -98,7 +97,6 @@ const DaftarPasienRegistrasi = () => {
     }
     const handleToMergeNoregistrasi = async (norecdp) => {
         settempNorecDp(norecdp)
-        setmergeModal(true)
     }
     const columns = [
         {
@@ -183,9 +181,8 @@ const DaftarPasienRegistrasi = () => {
                 onCloseClick={() => handleToCloseBatalModal()}
                 tempNorecDp={tempNorecDp} />
             <MergeNoRegistrasi
-                show={mergeModal}
-                onSimpanClick={() => setmergeModal(false)}
-                onCloseClick={() => setmergeModal(false)}
+                show={!!tempNorecDp}
+                onCloseClick={() => settempNorecDp('')}
                 tempNorecDp={tempNorecDp} />
             <UiContent />
             <div className="page-content daftar-pasien-registrasi">

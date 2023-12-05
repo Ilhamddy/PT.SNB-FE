@@ -21,21 +21,16 @@ import * as Yup from 'yup'
 import { saveMergeNoRegistrasi } from '../../store/actions'
 import KontainerFlatpickr from '../KontainerFlatpickr/KontainerFlatpickr'
 
-const MergeNoRegistrasi = ({
-  show,
-  onSimpanClick,
-  onCloseClick,
-  tempNorecDp,
-}) => {
+const MergeNoRegistrasi = ({ show, onCloseClick, tempNorecDp }) => {
   const dispatch = useDispatch()
   const [dateStart, setdateStart] = useState(() => new Date().toISOString())
   const validation = useFormik({
     enableReinitialize: true,
     initialValues: {
-      noregistrasiAwal: tempNorecDp,
+      norecdp: tempNorecDp,
       tglbatal: dateStart,
       alasan: '',
-      noregistrasiTujuan: '',
+      noregistrasitujuan: '',
       password: '',
     },
     validationSchema: Yup.object({
@@ -49,7 +44,6 @@ const MergeNoRegistrasi = ({
       dispatch(saveMergeNoRegistrasi(values, () => {}))
     },
   })
-  console.log(validation.errors)
   return (
     <Modal isOpen={show} toggle={onCloseClick} centered={true}>
       <ModalBody className="py-3 px-5">
@@ -102,27 +96,22 @@ const MergeNoRegistrasi = ({
                     </Label>
                   </Col>
                   <Col md={8} className="mb-2">
-                    <Input
-                      id="noregistrasiTujuan"
-                      name="noregistrasiTujuan"
-                      type="text"
-                      value={validation.values.noregistrasiTujuan}
+                    <CustomSelect
+                      id="norecdp"
+                      name="norecdp"
+                      options={[]}
                       onChange={(e) => {
-                        validation.setFieldValue(
-                          'noregistrasiTujuan',
-                          e.target.value
-                        )
+                        validation.setFieldValue('norecdp', e?.value || '')
                       }}
-                      invalid={
-                        validation.touched?.noregistrasiTujuan &&
-                        !!validation.errors?.noregistrasiTujuan
-                      }
-                      placeholder="Masukan No. Registrasi Tujuan"
+                      value={validation.values.norecdp}
+                      className={`input row-header ${
+                        !!validation?.errors.norecdp ? 'is-invalid' : ''
+                      }`}
                     />
-                    {validation.touched?.noregistrasiTujuan &&
-                      !!validation.errors.noregistrasiTujuan && (
+                    {validation.touched.norecdp &&
+                      !!validation.errors.norecdp && (
                         <FormFeedback type="invalid">
-                          <div>{validation.errors.noregistrasiTujuan}</div>
+                          <div>{validation.errors.norecdp}</div>
                         </FormFeedback>
                       )}
                   </Col>
@@ -189,7 +178,7 @@ const MergeNoRegistrasi = ({
                     </button>
                     <Button
                       type="submit"
-                      color="info"
+                      color="success"
                       placement="top"
                       id="tooltipTop"
                     >
