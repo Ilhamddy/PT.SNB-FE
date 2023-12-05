@@ -1,6 +1,7 @@
 import pool from "../../../config/dbcon.query";
 import db from "../../../models";
 import instalasiQueries from "../../../queries/mastertable/instalasi/instalasi.queries";
+import unitQueries from "../../../queries/mastertable/unit/unit.queries";
 import profileQueries from "../../../queries/mastertable/profile/profile.queries";
 import axios from "axios";
 
@@ -22,6 +23,28 @@ const getListInstalasi = async (req, res) => {
             msg: 'Success',
             code: 200,
             data: instalasi.rows,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+const getListUnit = async (req, res) => {
+    const logger = res.locals.logger;
+    try {
+        const unit = await pool.query(unitQueries.getAllUnitIhs)
+       
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: unit.rows,
             success: true
         });
     } catch (error) {
@@ -255,5 +278,6 @@ const getOrganizationInstalasi = async (req, res) => {
 export default {
     getListInstalasi,
     updateOrganizationInstalasi,
-    getOrganizationInstalasi
+    getOrganizationInstalasi,
+    getListUnit
 }

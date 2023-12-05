@@ -1,6 +1,7 @@
 import {
     GET_LIST_INSTALASI,GET_LIST_INSTALASI_SUCCESS,GET_LIST_INSTALASI_ERROR,
-    UPSERT_ORGANIZATION_INSTALASI,UPSERT_ORGANIZATION_INSTALASI_SUCCESS,UPSERT_ORGANIZATION_INSTALASI_ERROR
+    UPSERT_ORGANIZATION_INSTALASI,UPSERT_ORGANIZATION_INSTALASI_SUCCESS,UPSERT_ORGANIZATION_INSTALASI_ERROR,
+    GET_LIST_UNIT,GET_LIST_UNIT_SUCCESS,GET_LIST_UNIT_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -10,6 +11,11 @@ const INIT_STATE = {
         error: null,
     },
     upsertOrganizationInstalasi:{
+        data: [],
+        loading: false,
+        error: null,
+    },
+    getListUnit:{
         data: [],
         loading: false,
         error: null,
@@ -79,6 +85,39 @@ const SatuSehat = (state = INIT_STATE, action) => {
                 upsertOrganizationInstalasi: {
                     ...state.upsertOrganizationInstalasi,
                     loading: true,
+                    error: action.payload,
+                }
+            }
+        }
+
+        case GET_LIST_UNIT: {
+            return {
+                ...state,
+                getListUnit: {
+                    ...state.getListUnit,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case GET_LIST_UNIT_SUCCESS: {
+            return {
+                ...state,
+                getListUnit: {
+                    ...state.getListUnit,
+                    loading: false,
+                    data: action.payload,
+                }
+            }
+        }
+
+        case GET_LIST_UNIT_ERROR: {
+            return {
+                ...state,
+                getListUnit: {
+                    ...state.getListUnit,
+                    loading: false,
                     error: action.payload,
                 }
             }
