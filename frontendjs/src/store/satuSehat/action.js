@@ -1,7 +1,8 @@
 import {
     GET_LIST_INSTALASI,GET_LIST_INSTALASI_SUCCESS,GET_LIST_INSTALASI_ERROR,
     UPSERT_ORGANIZATION_INSTALASI,UPSERT_ORGANIZATION_INSTALASI_SUCCESS,UPSERT_ORGANIZATION_INSTALASI_ERROR,
-    GET_LIST_UNIT,GET_LIST_UNIT_SUCCESS,GET_LIST_UNIT_ERROR
+    GET_LIST_UNIT,GET_LIST_UNIT_SUCCESS,GET_LIST_UNIT_ERROR,
+    UPSERT_LOCATION_UNIT,UPSERT_LOCATION_UNIT_SUCCESS,UPSERT_LOCATION_UNIT_ERROR
 } from "./actionType";
 
 export const getListInstalasi = (queries) => ({
@@ -53,5 +54,23 @@ export const getListUnitSuccess = (data) => ({
 
 export const getListUnitError = (error) => ({
     type: GET_LIST_UNIT_ERROR,
+    payload: error,
+});
+
+export const upsertLocationUnit = (data, callback) => ({
+    type: UPSERT_LOCATION_UNIT,
+    payload: {
+        data,
+        callback
+    },
+});
+
+export const upsertLocationUnitSuccess = (data) => ({
+    type: UPSERT_LOCATION_UNIT_SUCCESS,
+    payload: data,
+});
+
+export const upsertLocationUnitError = (error) => ({
+    type: UPSERT_LOCATION_UNIT_ERROR,
     payload: error,
 });

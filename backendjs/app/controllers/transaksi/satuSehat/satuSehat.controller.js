@@ -249,7 +249,6 @@ const updateOrganizationInstalasi = async (req, res) => {
     }
 };
 
-
 const getOrganizationInstalasi = async (req, res) => {
     const logger = res.locals.logger;
     try{
@@ -275,9 +274,136 @@ const getOrganizationInstalasi = async (req, res) => {
     }
 }
 
+const updateLocationUnit = async (req, res) => {
+    const logger = res.locals.logger;
+    try {
+        const profile = await pool.query(profileQueries.getAll);
+
+        const locationObject = {
+            resourceType: "Location",
+            identifier: [{
+                    system: "http://sys-ids.kemkes.go.id/location/"+profile.rows[0].ihs_id,
+                    value: String(req.body.id)
+                }
+            ],
+            status: "active",
+            name: req.body.label,
+            description: req.body.description,
+            mode: "instance",
+            telecom: [{
+                    system: "phone",
+                    value: profile.rows[0].fixedphone,
+                    use: "work"
+                },{
+                    system: "fax",
+                    value: "2329",
+                    use: "work"
+                },{
+                    system: "email",
+                    value: profile.rows[0].alamatemail
+                },{
+                    system: "url",
+                    value: profile.rows[0].website,
+                    use: "work"
+                }
+            ],
+            address: {
+                use: "work",
+                line: [
+                    profile.rows[0].alamatlengkap
+                ],
+                city: "Jakarta",
+                postalCode: profile.rows[0].kodepos,
+                country: "ID",
+                extension: [
+                    {
+                        url: "https://fhir.kemkes.go.id/r4/StructureDefinition/administrativeCode",
+                        extension: [
+                            {
+                                url: 'province',
+                                valueCode: profile.rows[0].kodeprovinsi
+                            },{
+                                url: 'city',
+                                valueCode: profile.rows[0].kodekabupaten
+                            },{
+                                url: 'district',
+                                valueCode: profile.rows[0].kodekecamatan
+                            },{
+                                url: 'village',
+                                valueCode: profile.rows[0].kodedesa
+                            },{
+                                url: "rt",
+                                valueCode: profile.rows[0].rt
+                            },{
+                                url: "rw",
+                                valueCode: profile.rows[0].rw
+                            }
+                        ]
+                    }
+                ]
+            },
+            physicalType: {
+                coding: [
+                    {
+                        system: "http://terminology.hl7.org/CodeSystem/location-physical-type",
+                        code: "ro",
+                        display: "Room"
+                    }
+                ]
+            },
+            position: {
+                longitude: parseFloat(profile.rows[0].longitude),
+                latitude: parseFloat(profile.rows[0].latitude),
+                altitude: parseFloat(profile.rows[0].altitude)
+            },
+            managingOrganization: {
+                reference: 'Organization/' + req.body.ihs_instalasi
+            }
+        };
+        
+        
+        const response = await postGetSatuSehat('POST', '/Location', locationObject);
+        const { setInstalasi } = await db.sequelize.transaction(async (transaction) => {
+            let setInstalasi = ''
+                setInstalasi = await db.m_unit.update({
+                    ihs_id: response.id,
+                    
+                }, {
+                    where: {
+                        id: req.body.id
+                    },
+                    transaction: transaction
+                });
+            
+            return { setInstalasi }
+        });
+
+        const tempres = {
+            unit:setInstalasi,
+            response:response
+        };
+
+        res.status(200).send({
+            msg: 'Sukses',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(400).send({
+            msg: error.message || 'Gagal',
+            code: 400,
+            data: error,
+            success: false,
+        });
+    }
+};
+
 export default {
     getListInstalasi,
     updateOrganizationInstalasi,
     getOrganizationInstalasi,
-    getListUnit
+    getListUnit,
+    updateLocationUnit
 }
