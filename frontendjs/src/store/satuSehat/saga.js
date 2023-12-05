@@ -3,12 +3,13 @@ import ServiceSatuSehat from "../../services/service-satusehat";
 import { 
     GET_LIST_INSTALASI,
     UPSERT_MAP_CHILD,
-    UPSERT_ORGANIZATION_INSTALASI, GET_LIST_UNIT
+    UPSERT_ORGANIZATION_INSTALASI, GET_LIST_UNIT,UPSERT_LOCATION_UNIT
  } from "./actionType";
  import { 
     getListInstalasiSuccess,getListInstalasiError,
     upsertOrganizationInstalasiSuccess,upsertOrganizationInstalasiError,
-    getListUnitSuccess, getListUnitError
+    getListUnitSuccess, getListUnitError,
+    upsertLocationUnitSuccess,upsertLocationUnitError
 } from "./action";
 import { toast } from 'react-toastify';
 
@@ -44,10 +45,23 @@ function* onupsertOrganizationInstalasi({payload: {data, callback}}) {
     }
 }
 
+function* onupsertLocationUnit({payload: {data, callback}}) {
+    try{
+        const response = yield call(serviceSatuSehat.upsertLocationUnit, data);
+        yield put(upsertLocationUnitSuccess(response.data));
+        toast.success(response.msg || "Sukses");
+        callback && callback(response);
+    } catch (error) {
+        yield put(upsertLocationUnitError(error));
+        toast.error(error.msg || "Gagal");
+    }
+}
+
 export default function* satuSehatSaga() {
     yield all([
         takeEvery(GET_LIST_INSTALASI, ongetListInstalasi),
         takeEvery(UPSERT_ORGANIZATION_INSTALASI,onupsertOrganizationInstalasi),
-        takeEvery(GET_LIST_UNIT,ongetListUnit)
+        takeEvery(GET_LIST_UNIT,ongetListUnit),
+        takeEvery(UPSERT_LOCATION_UNIT,onupsertLocationUnit)
     ]);
 }

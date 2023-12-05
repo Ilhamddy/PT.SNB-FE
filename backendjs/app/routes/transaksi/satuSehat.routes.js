@@ -24,4 +24,9 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getListUnit
     );
+    app.post(
+        "/api/transaksi/satu-sehat/update-location-unit",
+        [authJwt.verifyToken],
+        controller.updateLocationUnit
+    )
 }

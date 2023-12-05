@@ -33,6 +33,9 @@ export default (sequelize, Sequelize) => {
         namaunit:{
             type: Sequelize.INTEGER
         },
+        ihs_id:{
+            type: Sequelize.STRING
+        }
     }, {
         tableName: "m_unit",
         createdAt: false,

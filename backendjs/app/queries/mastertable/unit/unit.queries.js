@@ -52,12 +52,14 @@ WHERE mu.statusenabled = true AND (
 const getAllUnitIhs =
 `SELECT 
 mu.id as value, 
-mu.namaunit as label, 
+mu.namaunit as label,
+mu.namaunit || ', ' || mi.namainstalasi as description, 
 mu.objectinstalasifk,
-mi.ihs_id as ihs_instalasi
+mi.ihs_id as ihs_instalasi,
+mu.ihs_id
 FROM m_unit mu
 left join m_instalasi mi on mi.id=mu.objectinstalasifk 
-WHERE mu.statusenabled = true`;
+WHERE mu.statusenabled = true order by mu.id asc`;
 
 export default {
     getAll,
