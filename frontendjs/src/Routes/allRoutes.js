@@ -383,8 +383,7 @@ import DasborPeta from "../pages/DasborPeta/DasborPeta.jsx";
 import SetorKasir from "../pages/SetorKasir/SetorKasir.jsx";
 import Organization from "../pages/SatuSehat/Organization/Organization.jsx";
 import Location from "../pages/SatuSehat/Location/Location.jsx";
-
-
+import Practitioner from "../pages/SatuSehat/Practitioner/Practitioner.jsx";
 
 const authProtectedRoutes = [
   { path: "/dashboard-analytics", component: <DashboardAnalytics /> },
@@ -775,6 +774,7 @@ const authProtectedRoutes = [
   // satu sehat
   { path: "/satusehat/organization", component: <Organization />},
   { path: "/satusehat/location", component: <Location />},
+  { path: "/satusehat/practitioner", component: <Practitioner />},
 
 
   //dashboard eis

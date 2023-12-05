@@ -29,4 +29,14 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.updateLocationUnit
     )
+    app.get(
+        "/api/transaksi/satu-sehat/get-list-dokter",
+        [authJwt.verifyToken],
+        controller.getListDokter
+    );
+    app.post(
+        "/api/transaksi/satu-sehat/update-practitioner-pegawai",
+        [authJwt.verifyToken],
+        controller.updatePractitionerPegawai
+    )
 }

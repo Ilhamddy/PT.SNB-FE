@@ -2,7 +2,9 @@ import {
     GET_LIST_INSTALASI,GET_LIST_INSTALASI_SUCCESS,GET_LIST_INSTALASI_ERROR,
     UPSERT_ORGANIZATION_INSTALASI,UPSERT_ORGANIZATION_INSTALASI_SUCCESS,UPSERT_ORGANIZATION_INSTALASI_ERROR,
     GET_LIST_UNIT,GET_LIST_UNIT_SUCCESS,GET_LIST_UNIT_ERROR,
-    UPSERT_LOCATION_UNIT,UPSERT_LOCATION_UNIT_SUCCESS,UPSERT_LOCATION_UNIT_ERROR
+    UPSERT_LOCATION_UNIT,UPSERT_LOCATION_UNIT_SUCCESS,UPSERT_LOCATION_UNIT_ERROR,
+    GET_LIST_PRACTITIONER, GET_LIST_PRACTITIONER_SUCCESS,GET_LIST_PRACTITIONER_ERROR,
+    UPSERT_PRACTITIONER,UPSERT_PRACTITIONER_ERROR,UPSERT_PRACTITIONER_SUCCESS
 } from "./actionType";
 
 const INIT_STATE = {
@@ -22,6 +24,16 @@ const INIT_STATE = {
         error: null,
     },
     upsertLocationUnit:{
+        data: [],
+        loading: false,
+        error: null,
+    },
+    getListPractitioner:{
+        data: [],
+        loading: false,
+        error: null,
+    },
+    upsertPractitioner:{
         data: [],
         loading: false,
         error: null,
@@ -156,6 +168,72 @@ const SatuSehat = (state = INIT_STATE, action) => {
                 ...state,
                 upsertLocationUnit: {
                     ...state.upsertLocationUnit,
+                    loading: true,
+                    error: action.payload,
+                }
+            }
+        }
+
+        case GET_LIST_PRACTITIONER: {
+            return {
+                ...state,
+                getListPractitioner: {
+                    ...state.getListPractitioner,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case GET_LIST_PRACTITIONER_SUCCESS: {
+            return {
+                ...state,
+                getListPractitioner: {
+                    ...state.getListPractitioner,
+                    loading: false,
+                    data: action.payload,
+                }
+            }
+        }
+
+        case GET_LIST_PRACTITIONER_ERROR: {
+            return {
+                ...state,
+                getListPractitioner: {
+                    ...state.getListPractitioner,
+                    loading: false,
+                    error: action.payload,
+                }
+            }
+        }
+
+        case UPSERT_PRACTITIONER: {
+            return {
+                ...state,
+                upsertPractitioner: {
+                    ...state.upsertPractitioner,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case UPSERT_PRACTITIONER_SUCCESS: {
+            return {
+                ...state,
+                upsertPractitioner: {
+                    ...state.upsertPractitioner,
+                    loading: false,
+                    data: action.payload,
+                }
+            }
+        }
+
+        case UPSERT_PRACTITIONER_ERROR: {
+            return {
+                ...state,
+                upsertPractitioner: {
+                    ...state.upsertPractitioner,
                     loading: true,
                     error: action.payload,
                 }
