@@ -4,7 +4,7 @@ import queries from '../../../queries/transaksi/registrasi.queries';
 import queriesUnit, { daftarUnit } from '../../../queries/mastertable/unit/unit.queries';
 
 import db from "../../../models";
-import { createTransaction, dateBetweenEmptyString, emptyIlike } from "../../../utils/dbutils";
+import { createTransaction, dateBetweenEmptyString, dateEmptyString, emptyIlike, emptyInt } from "../../../utils/dbutils";
 import bcrypt from "bcryptjs";
 import { pasienSignup } from "../../auth/authhelper";
 import { belumDiperiksa, iconPenunjang, iconRI, iconRJ, sedangDiperiksa, selesaiDiperiksa, siapPakai, totalTempatRusak, totalTempatTerisi } from "./icon";
@@ -599,8 +599,8 @@ const getRegistrasiPasienNorec = async (req, res) => {
 const getDaftarPasienFilter = async (req, res) => {
     const logger = res.locals.logger
     try {
-        let filterTglLast = (new Date(req.query.dateEnd)).toISOString();
-        let filterTglStart = (new Date(req.query.dateStart)).toISOString();
+        let filterTglLast = getDateEndNull(req.query.dateEnd);
+        let filterTglStart = getDateStartNull(req.query.dateStart);
         let filterInstalasi = req.query.instalasi;
         const daftarpasien = await pool
             .query(`SELECT td.norec AS norecdp,
@@ -630,16 +630,21 @@ const getDaftarPasienFilter = async (req, res) => {
                 left join m_pasien mps on mps.id = td.nocmfk
                 left join m_unit mu on mu.id = td.objectunitlastfk
                 left join m_rekanan mrk on mrk.id = td.objectpenjaminfk
-                    WHERE 
-                    td.tglpulang IS NOT null
-                    ${(filterTglStart && filterTglLast) ?
-                    `AND td.tglpulang BETWEEN '${filterTglStart}' AND '${filterTglLast}'` : ''}
-                    ${filterInstalasi ? `AND td.objectinstalasifk = ${filterInstalasi}` : ''}
-                    ORDER BY td.tglpulang DESC
+            WHERE 
+                td.tglpulang IS NOT null
+                AND
+                ${dateBetweenEmptyString("td.tglpulang", "$1", "$2")}
+                AND
+                ${emptyInt("td.objectinstalasifk", "$3")}
+            ORDER BY td.tglpulang DESC
                     LIMIT 25
             `,
+            [
+                filterTglStart || "",
+                filterTglLast || "",
+                filterInstalasi || ""
+            ]
             )
-
 
         if (daftarpasien.rows.length === 0) {
             res.status(200).send({
