@@ -1927,7 +1927,7 @@ const hCreateOrUpdateStokUnitPenerimaan  = async (
                     persendiskon: updatedValue.diskonpersen,
                     hargadiskon: hargaDiskon,
                     harga: harga,
-                    objectpenerimaanbarangdetailfk: norecpenerimaan,
+                    objectpenerimaanbarangdetailfk: (prevValue || updatedValue).norec,
                     tglterima: createdOrUpdatedPenerimaan.tglterima,
                     objectasalprodukfk: createdOrUpdatedPenerimaan.objectasalprodukfk,
                 })
