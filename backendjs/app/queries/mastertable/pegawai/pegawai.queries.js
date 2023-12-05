@@ -47,11 +47,13 @@ SELECT
     id as value, 
     namalengkap as label, 
     reportdisplay,
-    nip
+    nip,
+    noidentitas,
+    ihs_id
 FROM 
     m_pegawai 
 WHERE objectprofesipegawaifk=1
-AND statusenabled = true
+AND statusenabled = true order by id asc
 `
 
 

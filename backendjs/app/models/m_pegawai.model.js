@@ -212,6 +212,9 @@ export default (sequelize, Sequelize) => {
         },
         objectunitkerjafk:{
             type:Sequelize.INTEGER
+        },
+        ihs_id:{
+            type: Sequelize.STRING
         }
     }, {
         tableName: "m_pegawai", // relation "user" does not exist

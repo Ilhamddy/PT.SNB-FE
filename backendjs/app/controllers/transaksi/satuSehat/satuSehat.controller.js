@@ -3,6 +3,7 @@ import db from "../../../models";
 import instalasiQueries from "../../../queries/mastertable/instalasi/instalasi.queries";
 import unitQueries from "../../../queries/mastertable/unit/unit.queries";
 import profileQueries from "../../../queries/mastertable/profile/profile.queries";
+import pegawaiQueries from "../../../queries/mastertable/pegawai/pegawai.queries";
 import axios from "axios";
 
 async function setEnvironmments () {
@@ -400,10 +401,78 @@ const updateLocationUnit = async (req, res) => {
     }
 };
 
+const getListDokter = async (req, res) => {
+    const logger = res.locals.logger;
+    try {
+        const unit = await pool.query(pegawaiQueries.getDokterNip)
+       
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: unit.rows,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+const updatePractitionerPegawai = async (req, res) => {
+    const logger = res.locals.logger;
+    try {
+        let msg ='Data Dokter Tidak Ada'
+        const response = await postGetSatuSehat('GET', '/Practitioner?identifier=https://fhir.kemkes.go.id/id/nik|'+req.body.noidentitas,'');
+        const { setInstalasi } = await db.sequelize.transaction(async (transaction) => {
+            let setInstalasi = ''
+            if(response.total>0){
+                msg ='Sukses'
+                setInstalasi = await db.m_pegawai.update({
+                    ihs_id: response.entry[0].resource.id,
+                    
+                }, {
+                    where: {
+                        id: req.body.id
+                    },
+                    transaction: transaction
+                });
+            }
+            return { setInstalasi }
+        });
+
+        const tempres = {
+            pegawai:setInstalasi,
+            response:response
+        };
+
+        res.status(200).send({
+            msg: msg,
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(400).send({
+            msg: error.message || 'Gagal',
+            code: 400,
+            data: error,
+            success: false,
+        });
+    }
+};
+
 export default {
     getListInstalasi,
     updateOrganizationInstalasi,
     getOrganizationInstalasi,
     getListUnit,
-    updateLocationUnit
+    updateLocationUnit,
+    getListDokter,
+    updatePractitionerPegawai
 }

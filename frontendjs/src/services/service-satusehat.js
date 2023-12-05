@@ -15,4 +15,10 @@ export default class ServiceSatuSehat {
     upsertLocationUnit = async (body) => {
         return await api.create("/transaksi/satu-sehat/update-location-unit", body)
     }
+    getListPractitioner = async (queries) => {
+        return await api.get("/transaksi/satu-sehat/get-list-dokter", queries)
+    }
+    upsertPractitioner = async (body) => {
+        return await api.create("/transaksi/satu-sehat/update-practitioner-pegawai", body)
+    }
 }

@@ -2,7 +2,9 @@ import {
     GET_LIST_INSTALASI,GET_LIST_INSTALASI_SUCCESS,GET_LIST_INSTALASI_ERROR,
     UPSERT_ORGANIZATION_INSTALASI,UPSERT_ORGANIZATION_INSTALASI_SUCCESS,UPSERT_ORGANIZATION_INSTALASI_ERROR,
     GET_LIST_UNIT,GET_LIST_UNIT_SUCCESS,GET_LIST_UNIT_ERROR,
-    UPSERT_LOCATION_UNIT,UPSERT_LOCATION_UNIT_SUCCESS,UPSERT_LOCATION_UNIT_ERROR
+    UPSERT_LOCATION_UNIT,UPSERT_LOCATION_UNIT_SUCCESS,UPSERT_LOCATION_UNIT_ERROR,
+    GET_LIST_PRACTITIONER,GET_LIST_PRACTITIONER_SUCCESS,GET_LIST_PRACTITIONER_ERROR,
+    UPSERT_PRACTITIONER,UPSERT_PRACTITIONER_SUCCESS,UPSERT_PRACTITIONER_ERROR
 } from "./actionType";
 
 export const getListInstalasi = (queries) => ({
@@ -72,5 +74,40 @@ export const upsertLocationUnitSuccess = (data) => ({
 
 export const upsertLocationUnitError = (error) => ({
     type: UPSERT_LOCATION_UNIT_ERROR,
+    payload: error,
+});
+
+export const getListPractitioner = (queries) => ({
+    type: GET_LIST_PRACTITIONER,
+    payload: {
+        queries,
+    },
+});
+
+export const getListPractitionerSuccess = (data) => ({
+    type: GET_LIST_PRACTITIONER_SUCCESS,
+    payload: data,
+});
+
+export const getListPractitionerError = (error) => ({
+    type: GET_LIST_PRACTITIONER_ERROR,
+    payload: error,
+});
+
+export const upsertPractitioner = (data, callback) => ({
+    type: UPSERT_PRACTITIONER,
+    payload: {
+        data,
+        callback
+    },
+});
+
+export const upsertPractitionerSuccess = (data) => ({
+    type: UPSERT_PRACTITIONER_SUCCESS,
+    payload: data,
+});
+
+export const upsertPractitionerError = (error) => ({
+    type: UPSERT_PRACTITIONER_ERROR,
     payload: error,
 });
