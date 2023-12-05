@@ -864,6 +864,7 @@ export const useHandleChangeResep = (resepRef, vResep) => {
         }
         setVal(newVal)
         handleChangeResep(newVal, "qty", row)
+        handleChangeResep(newVal, "qtypembulatan", row)
         let totalHarga = (
             row.harga * 
             (strToNumber(newVal) || 0)
