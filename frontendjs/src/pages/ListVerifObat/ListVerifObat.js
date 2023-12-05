@@ -467,7 +467,7 @@ const ModalRetur = ({dataModal, onRetur, ...rest}) => {
                     <Button 
                         onClick={() => vRetur.handleSubmit()}
                         type="submit" 
-                        color="info" placement="top" id="tooltipTop" >
+                        color="success" placement="top" id="tooltipTop" >
                         Simpan
                     </Button>
                     <Button

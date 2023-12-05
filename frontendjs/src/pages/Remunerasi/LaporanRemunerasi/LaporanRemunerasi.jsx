@@ -292,7 +292,7 @@ const LaporanRemunerasi = () => {
                   <Col lg={6}>
                     <Row className="gy-2">
                       <Col lg={3}>
-                        <div className="mt-2">
+                        <div className="mt-0">
                           <Label
                             style={{ color: 'black' }}
                             htmlFor="unitlast"

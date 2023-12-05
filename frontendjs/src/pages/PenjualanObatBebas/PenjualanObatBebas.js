@@ -774,7 +774,7 @@ const PenjualanObatBebas = () => {
                         </table>
                         <Row style={{justifyContent: "space-evenly"}}>
                             <Col md={2}>
-                                <Button color="info"
+                                <Button color="success"
                                     disabled={false}
                                     onClick={() => {
                                         vResep.handleSubmit();
