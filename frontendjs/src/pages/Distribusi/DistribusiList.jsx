@@ -42,6 +42,17 @@ import ColLabelInput from '../../Components/ColLabelInput/ColLabelInput'
 
 const DistribusiOrderList = ({ isUnit, isLogistik }) => {
   const dispatch = useDispatch()
+  // teks taruh sini biar langsung tahu bedanya antara 4 page
+  const linkDistribusi = isLogistik ? 'logistik' : 'farmasi'
+  const judulPemesanan = isUnit
+    ? 'Pemesanan Ke Gudang dan Apotek'
+    : 'Pemesanan dari Unit'
+  const judulPengiriman = isUnit
+    ? 'Pemesanan Ke Gudang dan Apotek'
+    : 'Pemesanan dari Unit'
+  const judulBreadCrumb = isUnit
+    ? 'Order Barang Ke Gudang Dan Apotek'
+    : 'Order Barang dari Unit'
 
   const { listAll, listKirim } = useSelector((state) => ({
     listAll: state.Distribusi.getOrderBarang.data?.order || [],
@@ -95,9 +106,7 @@ const DistribusiOrderList = ({ isUnit, isLogistik }) => {
             <DropdownMenu className="dropdown-menu-end">
               {isUnit && (
                 <Link
-                  to={`/${
-                    isLogistik ? 'logistik' : 'farmasi'
-                  }/gudang/distribusi-order/${row.norecorder}`}
+                  to={`/${linkDistribusi}/gudang/distribusi-order/${row.norecorder}`}
                 >
                   <DropdownItem>
                     <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
@@ -107,9 +116,7 @@ const DistribusiOrderList = ({ isUnit, isLogistik }) => {
               )}
               {!isUnit && (
                 <Link
-                  to={`/${
-                    isLogistik ? 'logistik' : 'farmasi'
-                  }/gudang/distribusi-kirim/${row.norecorder}`}
+                  to={`/${linkDistribusi}/gudang/distribusi-kirim/${row.norecorder}`}
                 >
                   <DropdownItem>
                     <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
@@ -195,7 +202,7 @@ const DistribusiOrderList = ({ isUnit, isLogistik }) => {
             <DropdownMenu className="dropdown-menu-end">
               {isUnit ? (
                 <Link
-                  to={`/farmasi/gudang/distribusi-kirim-verif/${row.noreckirim}`}
+                  to={`/${linkDistribusi}/gudang/distribusi-kirim-verif/${row.noreckirim}`}
                 >
                   <DropdownItem>
                     <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
@@ -204,7 +211,7 @@ const DistribusiOrderList = ({ isUnit, isLogistik }) => {
                 </Link>
               ) : (
                 <Link
-                  to={`/farmasi/gudang/distribusi-kirim-langsung/${row.noreckirim}`}
+                  to={`/${linkDistribusi}/gudang/distribusi-kirim-langsung/${row.noreckirim}`}
                 >
                   <DropdownItem>
                     <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
@@ -296,14 +303,7 @@ const DistribusiOrderList = ({ isUnit, isLogistik }) => {
         </ColLabelInput>
       </DeleteModalCustom>
       <Container fluid>
-        <BreadCrumb
-          title={
-            isUnit
-              ? 'Order Barang Ke Gudang Dan Apotek'
-              : 'Order Barang dari Unit'
-          }
-          pageTitle="Gudang"
-        />
+        <BreadCrumb title={judulBreadCrumb} pageTitle="Gudang" />
         <Card className="p-5">
           <Row>
             <Widget
@@ -324,18 +324,13 @@ const DistribusiOrderList = ({ isUnit, isLogistik }) => {
           </Row>
           <Row className="d-flex justify-content-between mb-3">
             <Col lg="auto">
-              <h3>
-                {isUnit
-                  ? 'Pemesanan Ke Gudang dan Apotek'
-                  : 'Pemesanan dari Unit'}
-              </h3>
+              <h3>{judulPemesanan}</h3>
             </Col>
             <Col lg={'auto'} className="d-flex flex-row-reverse">
               <Link
                 to={
-                  `/${
-                    isLogistik ? 'logistik' : 'farmasi'
-                  }/gudang/distribusi-order` + (isUnit ? '-unit' : '')
+                  `/${linkDistribusi}/gudang/distribusi-order` +
+                  (isUnit ? '-unit' : '')
                 }
               >
                 <Button color={'info'}>Pesan</Button>
@@ -356,18 +351,12 @@ const DistribusiOrderList = ({ isUnit, isLogistik }) => {
           </Row>
           <Row className="d-flex justify-content-between mb-3">
             <Col lg="auto">
-              <h3>
-                {isUnit
-                  ? 'Pengiriman dari Gudang dan Apotek'
-                  : 'Pengiriman ke Unit'}
-              </h3>
+              <h3>{judulPengiriman}</h3>
             </Col>
             {!isUnit && (
               <Col lg={'auto'} className="d-flex flex-row-reverse">
                 <Link
-                  to={`/${
-                    isLogistik ? 'logistik' : 'farmasi'
-                  }/gudang/distribusi-kirim-langsung`}
+                  to={`/${linkDistribusi}/gudang/distribusi-kirim-langsung`}
                 >
                   <Button color={'info'}>Kirim</Button>
                 </Link>
