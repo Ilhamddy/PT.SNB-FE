@@ -105,13 +105,18 @@ const createOrUpdateOrderbarang = async (req, res) => {
                 tglinput: new Date(body.tanggalorder),
                 objectpegawaifk: req.idPegawai,
                 objectstatusveriffk: 1,
-                islogistik: body.islogistik
+                islogistik: body.islogistik,
+                istolak: false,
             }, {
                 transaction: transaction
             })
         }else{
             norecorder = body.norecorder
-            const [_, updated] = await t_orderbarang.update({
+            const orderBarang = await t_orderbarang.findByPk(norecorder, {
+                transaction: transaction
+            })
+            if(!orderBarang) throw new Error("Barang tidak ditemukan")
+            await orderBarang.update({
                 noorder: body.noorder,
                 objectunitasalfk: body.unitorder || null,
                 objectunittujuanfk: body.unittujuan || null,
@@ -120,18 +125,16 @@ const createOrUpdateOrderbarang = async (req, res) => {
                 tglinput: new Date(body.tanggalorder),
                 objectpegawaifk: req.idPegawai,
                 objectstatusveriffk: 1,
-                islogistik: body.islogistik
+                islogistik: body.islogistik,
+                istolak: false,
+                alasantolak: null
             }, {
-                where: {
-                    norec: body.norecorder
-                },
-                returning: true,
                 transaction: transaction
             })
-            createdOrUpdatedPenerimaan = updated[0]?.toJSON() || null;
+            createdOrUpdatedPenerimaan = orderBarang.toJSON() ;
         }
 
-        const createdDetail = await hCreateOrderDetail(req, res, transaction, {norecorder})
+        const createdDetail = await hUpsertOrderDetail(req, res, transaction, {norecorder})
         await transaction.commit();
         const tempres = {
             createdOrUpdatedPenerimaan,
@@ -519,9 +522,15 @@ export default {
     tolakKirim
 }
 
-const hCreateOrderDetail = async (req, res, transaction, {norecorder}) => {
+const hUpsertOrderDetail = async (req, res, transaction, {norecorder}) => {
     const produks = req.body.isiproduk
     // const { body } = req
+    await t_orderbarangdetail.destroy({
+        where: {
+            objectorderbarangfk: norecorder
+        },
+        transaction: transaction
+    })
     const created = await Promise.all(
         produks.map(async(batch) => {
             const created = await t_orderbarangdetail.create({

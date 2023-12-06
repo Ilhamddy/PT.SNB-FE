@@ -39,7 +39,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { tableCustomStyles } from '../../Components/Table/tableCustomStyles'
 import KontainerFlatpickr from '../../Components/KontainerFlatpickr/KontainerFlatpickr'
 
-const DistribusiOrder = ({ isUnit, isLogistik = false }) => {
+const DistribusiOrder = ({ isUnit, isLogistik = false, isEdit = false }) => {
   const dispatch = useDispatch()
   const [tglSekarang] = useState(() => new Date().toISOString())
   const { norecorder } = useParams()
@@ -262,9 +262,17 @@ const DistribusiOrder = ({ isUnit, isLogistik = false }) => {
     dispatch(comboDistribusiOrderGet())
   }, [dispatch])
 
+  useEffect(() => {
+    dispatch(
+      getStokBatch({
+        idunit: vOrder.values.unittujuan || '',
+        islogistik: isLogistik,
+      })
+    )
+  }, [vOrder.values.unittujuan, isLogistik, dispatch])
+
   const handleEditColumn = async (row) => {
     const api = new APIClient()
-
     vProduk.setFieldValue('produk', row.value)
     vProduk.setFieldValue('namaproduk', row.label)
     vProduk.setFieldValue('satuan', row.satuan)
@@ -288,7 +296,7 @@ const DistribusiOrder = ({ isUnit, isLogistik = false }) => {
       return batch.value === row.value
     })
     // lalu maasukkan batchnya didapatkan dari stokBatch
-    vProduk.setFieldValue('batch', newIsiProduk?.isiproduk || [])
+    vProduk.setFieldValue('batch', newIsiProduk?.batchproduk || [])
     const otherProduk = vOrder.values.isiproduk.filter((batch) => {
       return batch.value !== row.value
     })
@@ -370,6 +378,8 @@ const DistribusiOrder = ({ isUnit, isLogistik = false }) => {
     },
   ]
 
+  const isChange = (!!norecorder && !isEdit) || (!norecorder && !!isEdit)
+
   const OrderBarang = (
     <Card className="p-5">
       <Row className="mb-2">
@@ -392,7 +402,7 @@ const DistribusiOrder = ({ isUnit, isLogistik = false }) => {
               dateFormat: 'Y-m-d',
               defaultDate: 'today',
             }}
-            disabled={!!norecorder}
+            disabled={isChange}
             onChange={([newDate]) => {
               vOrder.setFieldValue('tanggalorder', newDate.toISOString())
             }}
@@ -418,7 +428,7 @@ const DistribusiOrder = ({ isUnit, isLogistik = false }) => {
             name={`noorder`}
             type="text"
             value={vOrder.values.noorder}
-            disabled={!!norecorder}
+            disabled={isChange}
             onChange={vOrder.handleChange}
             invalid={vOrder.touched?.noorder && !!vOrder?.errors?.noorder}
           />
@@ -443,7 +453,7 @@ const DistribusiOrder = ({ isUnit, isLogistik = false }) => {
             name="jenisorder"
             options={jenisorderbarang}
             value={vOrder.values?.jenisorder}
-            isDisabled={!!norecorder}
+            isDisabled={isChange}
             onChange={(val) => {
               vOrder.setFieldValue('jenisorder', val?.value || '')
             }}
@@ -472,7 +482,7 @@ const DistribusiOrder = ({ isUnit, isLogistik = false }) => {
             name="unitorder"
             options={isUnit ? unitUser : unit}
             value={vOrder.values?.unitorder}
-            isDisabled={!!norecorder}
+            isDisabled={isChange}
             onChange={(val) => {
               vOrder.setFieldValue('unitorder', val?.value || '')
             }}
@@ -500,15 +510,9 @@ const DistribusiOrder = ({ isUnit, isLogistik = false }) => {
             id="unittujuan"
             name="unittujuan"
             options={unit}
-            isDisabled={!!norecorder}
+            isDisabled={isChange}
             onChange={(val) => {
               vOrder.setFieldValue('unittujuan', val?.value || '')
-              dispatch(
-                getStokBatch({
-                  idunit: val?.value || '',
-                  islogistik: isLogistik,
-                })
-              )
             }}
             value={vOrder.values?.unittujuan}
             isClearEmpty
@@ -535,7 +539,7 @@ const DistribusiOrder = ({ isUnit, isLogistik = false }) => {
             id={`keterangan`}
             name={`keterangan`}
             type="text"
-            disabled={!!norecorder}
+            disabled={isChange}
             value={vOrder.values.keterangan}
             onChange={vOrder.handleChange}
             invalid={vOrder.touched?.keterangan && !!vOrder?.errors?.keterangan}
@@ -741,7 +745,7 @@ const DistribusiOrder = ({ isUnit, isLogistik = false }) => {
               console.log('errors', vProduk.errors)
               vProduk.handleSubmit()
             }}
-            disabled={!!norecorder}
+            disabled={isChange}
           >
             Tambah
           </Button>
@@ -771,9 +775,9 @@ const DistribusiOrder = ({ isUnit, isLogistik = false }) => {
           color="success"
           placement="top"
           formTarget="form-input-penerimaan"
-          disabled={!!norecorder}
+          disabled={isChange}
         >
-          Simpan
+          {isEdit ? 'Edit' : 'Simpan'}
         </Button>
         <Button type="button" className="btn" color="danger">
           Batal

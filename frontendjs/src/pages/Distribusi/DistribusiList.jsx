@@ -49,8 +49,8 @@ const DistribusiOrderList = ({ isUnit, isLogistik }) => {
     ? 'Pemesanan Ke Gudang dan Apotek'
     : 'Pemesanan dari Unit'
   const judulPengiriman = isUnit
-    ? 'Pemesanan Ke Gudang dan Apotek'
-    : 'Pemesanan dari Unit'
+    ? 'Pengiriman dari Gudang dan Apotek'
+    : 'Pengiriman ke Unit'
   const judulBreadCrumb = isUnit
     ? 'Order Barang Ke Gudang Dan Apotek'
     : 'Order Barang dari Unit'
@@ -126,6 +126,16 @@ const DistribusiOrderList = ({ isUnit, isLogistik }) => {
             </DropdownToggle>
             <DropdownMenu className="dropdown-menu-end">
               {isUnit && (
+                <Link
+                  to={`/${linkDistribusi}/gudang/distribusi-order-edit/${row.norecorder}`}
+                >
+                  <DropdownItem>
+                    <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
+                    Edit Order
+                  </DropdownItem>
+                </Link>
+              )}
+              {(isUnit || (!isUnit && row.istolak)) && (
                 <Link
                   to={`/${linkDistribusi}/gudang/distribusi-order/${row.norecorder}`}
                 >
@@ -313,7 +323,9 @@ const DistribusiOrderList = ({ isUnit, isLogistik }) => {
   ]
 
   const totalBelumTerima = listAll.filter((item) => !item.tglkirim).length
-  const totalSudahTerima = listAll.filter((item) => !!item.tglkirim).length
+  const totalSudahTerima = listKirim.filter((item) => !!item.tglkirim).length
+  const totalDitolak = listKirim.filter((item) => !!item.istolak).length
+  const totalDitolakPesan = listAll.filter((item) => !!item.istolak).length
 
   return (
     <div className="page-content page-penerimaan-barang">
@@ -395,8 +407,12 @@ const DistribusiOrderList = ({ isUnit, isLogistik }) => {
               image={pesananDiterimaImg}
             />
             <Widget
-              title={'Total pemesanan yang Dibatalkan'}
-              end={0}
+              title={
+                isUnit
+                  ? 'Total pengiriman yang Ditolak'
+                  : 'Total pemesanan yang Ditolak'
+              }
+              end={isUnit ? totalDitolak : totalDitolakPesan}
               image={pesananBatal}
             />
           </Row>

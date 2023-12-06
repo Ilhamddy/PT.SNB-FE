@@ -721,6 +721,7 @@ const authProtectedRoutes = [
 
   // distribusi logistik
   { path: "/logistik/gudang/distribusi-order", component: <DistribusiOrder isLogistik/> },
+  { path: "/logistik/gudang/distribusi-order-edit", component: <DistribusiOrder isLogistik isEdit/> },
   { path: "/logistik/gudang/distribusi-order/:norecorder", component: <DistribusiOrder isLogistik/> },
   { path: "/logistik/gudang/distribusi-order-unit", component: <DistribusiOrder isUnit isLogistik/> },
   { path: "/logistik/gudang/distribusi-kirim/:norecorder", component: <DistribusiKirim isLogistik/> },
@@ -733,7 +734,8 @@ const authProtectedRoutes = [
 
   // distribusi 
   { path: "/farmasi/gudang/distribusi-order", component: <DistribusiOrder /> },
-  { path: "/farmasi/gudang/distribusi-order/:norecorder", component: <DistribusiOrder isLogistik/> },
+  { path: "/farmasi/gudang/distribusi-order-edit/:norecorder", component: <DistribusiOrder isEdit/> },
+  { path: "/farmasi/gudang/distribusi-order/:norecorder", component: <DistribusiOrder/> },
   { path: "/farmasi/gudang/distribusi-order-unit", component: <DistribusiOrder isUnit /> },
   { path: "/farmasi/gudang/distribusi-kirim/:norecorder", component: <DistribusiKirim /> },
   { path: "/farmasi/gudang/distribusi-kirim-langsung", component: <DistribusiKirim /> },
