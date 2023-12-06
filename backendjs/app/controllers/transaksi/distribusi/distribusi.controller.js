@@ -22,8 +22,9 @@ const t_stokunit = db.t_stokunit
 export const getStokBatch = async (req, res) => {
     const logger = res.locals.logger
     try{
-        const { idunit } = req.query
-        const { rows } = await pool.query(qGetStokUnit, [idunit])
+        let { idunit, islogistik } = req.query
+        islogistik = islogistik === "true"
+        const { rows } = await pool.query(qGetStokUnit, [idunit, islogistik])
         let datas = []
         // kelompokkan sesuai produk
         rows.forEach((stok) => {
@@ -104,12 +105,18 @@ const createOrUpdateOrderbarang = async (req, res) => {
                 tglinput: new Date(body.tanggalorder),
                 objectpegawaifk: req.idPegawai,
                 objectstatusveriffk: 1,
+                islogistik: body.islogistik,
+                istolak: false,
             }, {
                 transaction: transaction
             })
         }else{
             norecorder = body.norecorder
-            const [_, updated] = await t_orderbarang.update({
+            const orderBarang = await t_orderbarang.findByPk(norecorder, {
+                transaction: transaction
+            })
+            if(!orderBarang) throw new Error("Barang tidak ditemukan")
+            await orderBarang.update({
                 noorder: body.noorder,
                 objectunitasalfk: body.unitorder || null,
                 objectunittujuanfk: body.unittujuan || null,
@@ -118,17 +125,16 @@ const createOrUpdateOrderbarang = async (req, res) => {
                 tglinput: new Date(body.tanggalorder),
                 objectpegawaifk: req.idPegawai,
                 objectstatusveriffk: 1,
+                islogistik: body.islogistik,
+                istolak: false,
+                alasantolak: null
             }, {
-                where: {
-                    norec: body.norecorder
-                },
-                returning: true,
                 transaction: transaction
             })
-            createdOrUpdatedPenerimaan = updated[0]?.toJSON() || null;
+            createdOrUpdatedPenerimaan = orderBarang.toJSON() ;
         }
 
-        const createdDetail = await hCreateOrderDetail(req, res, transaction, {norecorder})
+        const createdDetail = await hUpsertOrderDetail(req, res, transaction, {norecorder})
         await transaction.commit();
         const tempres = {
             createdOrUpdatedPenerimaan,
@@ -157,8 +163,10 @@ const getOrderBarang = async (req, res) => {
     const logger = res.locals.logger
     try {
         const isGudang = req.query.isGudang === "true"
-        const order = (await pool.query(qGetOrder, [isGudang ? '' : req.userId]));
-        const kirim = (await pool.query(qGetKirim, [isGudang ? '' : req.userId]));
+        const isLogistik = req.query.isLogistik === "true"
+
+        const order = (await pool.query(qGetOrder, [isGudang ? '' : req.userId, isLogistik]));
+        const kirim = (await pool.query(qGetKirim, [isGudang ? '' : req.userId, isLogistik]));
 
         let tempres = {
             order: order.rows,
@@ -292,10 +300,10 @@ const createOrUpdateKirimBarang = async (req, res) => {
     if(errorTransaction) return
     try {
         const { createdOrUpdatedKirimBarang, noreckirim} =
-            await hCreateKirimBarang(req, res, transaction)
+            await hUpsertKirimBarang(req, res, transaction)
 
         const {createdKirimDetail} = 
-            await hCreateKirimDetail(
+            await hUpsertKirimDetail(
                 req, 
                 res, 
                 transaction, 
@@ -401,6 +409,107 @@ const verifyKirim = async (req, res) => {
     }
 }
 
+const tolakOrder = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const {
+            norecorder,
+            alasantolak
+        } = req.body
+        const {
+            orderBefore,
+            orderAfter
+        } = await db.sequelize.transaction(async (transaction) => {
+            const order = await db.t_orderbarang.findByPk(norecorder, {
+                transaction: transaction
+            });
+            if(!order) throw new Error(`Order tidak ditemukan ${norecorder}`)
+            const orderBefore = order.toJSON()
+            await order.update({
+                istolak: true,
+                alasantolak: alasantolak
+            }, {
+                transaction: transaction
+            })
+            const orderAfter = order.toJSON()
+            return {
+                orderBefore,
+                orderAfter
+            }
+        });
+        
+        const tempres = {
+            orderBefore: orderBefore,
+            orderAfter: orderAfter
+        };
+        res.status(200).send({
+            msg: 'Sukses',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message || 'Gagal',
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+const tolakKirim = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const {
+            noreckirim,
+            alasantolak
+        } = req.body
+        const {
+            kirimBefore,
+            kirimAfter
+        } = await db.sequelize.transaction(async (transaction) => {
+            const kirim = await db.t_kirimbarang.findByPk(noreckirim, {
+                transaction: transaction
+            });
+            if(!kirim) throw new Error(`Kiriman tidak ditemukan ${noreckirim}`)
+            const kirimBefore = kirim.toJSON()
+            await kirim.update({
+                istolak: true,
+                alasantolak: alasantolak
+            }, {
+                transaction: transaction
+            })
+            const kirimAfter = kirim.toJSON()
+            return {
+                kirimBefore,
+                kirimAfter
+            }
+        });
+        
+        const tempres = {
+            kirimBefore,
+            kirimAfter
+        };
+
+        res.status(200).send({
+            msg: 'Sukses',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message || 'Gagal',
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export default {
     getStokBatch,
     getKemasanById,
@@ -408,12 +517,20 @@ export default {
     getOrderBarang,
     getOrderStokBatch,
     createOrUpdateKirimBarang,
-    verifyKirim
+    verifyKirim,
+    tolakOrder,
+    tolakKirim
 }
 
-const hCreateOrderDetail = async (req, res, transaction, {norecorder}) => {
+const hUpsertOrderDetail = async (req, res, transaction, {norecorder}) => {
     const produks = req.body.isiproduk
     // const { body } = req
+    await t_orderbarangdetail.destroy({
+        where: {
+            objectorderbarangfk: norecorder
+        },
+        transaction: transaction
+    })
     const created = await Promise.all(
         produks.map(async(batch) => {
             const created = await t_orderbarangdetail.create({
@@ -435,11 +552,17 @@ const hCreateOrderDetail = async (req, res, transaction, {norecorder}) => {
     return created
 }
 
-const hCreateKirimDetail = async (req, res, transaction, {noreckirim}) => {
+const hUpsertKirimDetail = async (req, res, transaction, {noreckirim}) => {
     /**
      * @type {import("../../../queries/gudang/distribusi.queries").ListStokUnit}
      */
     const batches = req.body.batchproduk
+    await t_kirimbarangdetail.destroy({
+        where: {
+            objectdistribusibarangfk: noreckirim
+        },
+        transaction: transaction
+    })
     const createdKirimDetail = await Promise.all(
         batches.map(async(batch) => {
             const norec = uuid.v4().substring(0, 32)
@@ -458,14 +581,14 @@ const hCreateKirimDetail = async (req, res, transaction, {noreckirim}) => {
                 transaction: transaction
             })
             
-            return createdKirimDetail
+            return createdKirimDetail.toJSON()
         })
     )
 
     return {createdKirimDetail}
 }
 
-const hCreateKirimBarang = async (req, res, transaction) => {
+const hUpsertKirimBarang = async (req, res, transaction) => {
     let body = req.body
     let createdOrUpdatedKirimBarang
     let noreckirim
@@ -482,7 +605,10 @@ const hCreateKirimBarang = async (req, res, transaction) => {
             objectjenisorderbarangfk: body.jeniskirim,
             keterangan: body.keterangankirim,
             tglinput: new Date(body.tanggalkirim),
-            objectpegawaifk: req.idPegawai
+            objectpegawaifk: req.idPegawai,
+            islogistik: body.islogistik,
+            istolak: false,
+            alasantolak: null
         }, {
             transaction: transaction
         })
@@ -498,7 +624,10 @@ const hCreateKirimBarang = async (req, res, transaction) => {
             objectjenisorderbarangfk: body.jeniskirim,
             keterangan: body.keterangankirim,
             tglinput: new Date(body.tanggalkirim),
-            objectpegawaifk: req.idPegawai
+            objectpegawaifk: req.idPegawai,
+            islogistik: body.islogistik,
+            istolak: false,
+            alasantolak: null
         }, {
             where: {
                 norec: body.noreckirim

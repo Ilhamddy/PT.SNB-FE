@@ -1821,13 +1821,27 @@ const saveMergeNoRegistrasi = async (req, res) => {
     const logger = res.locals.logger;
     try{
         const {
-            noregistrasiAwal,
+            norecdp,
             tglbatal,
             alasan,
-            noregistrasitujuan,
+            norectujuan,
             password,
         } = req.body
+
+
         await db.sequelize.transaction(async (transaction) => {
+            let user = await db.user.findByPk(req.userId, {
+                transaction: transaction
+            })
+            if(!user) throw new Error("User not found")
+            user = user.toJSON()
+            let passwordIsValid = bcrypt.compareSync(
+                password,
+                user.password
+            );
+            if(!passwordIsValid){
+                throw new Error("Wrong password")
+            }
             
         });
         
@@ -1855,11 +1869,19 @@ const getNoRegistrasiPasien = async (req, res) => {
     const logger = res.locals.logger;
     try{
         const norecdp = req.query.norecdp
-        const pasien = await pool.query(queries.qGetPasienRegistrasi, [req.query]).rows[0]
+        if(!norecdp) throw new Error("Norec dp kosong")
+        const pasien = (await pool.query(queries.qGetPasienRegistrasi, [norecdp])).rows[0]
         if(!pasien) throw new Error("Pasien tidak ada")
+        const noregistrasi = (await pool
+            .query(queries.qGetNoregistrasi, 
+                [
+                    pasien.nocmfk, 
+                    norecdp
+                ])).rows
 
         const tempres = {
-        
+            pasien: pasien,
+            noregistrasi: noregistrasi
         };
         res.status(200).send({
             msg: 'Success',
@@ -1911,7 +1933,8 @@ export default {
     getPasienOnline,
     getComboVerifikasi,
     getHistoryRegistrasi,
-    saveMergeNoRegistrasi
+    saveMergeNoRegistrasi,
+    getNoRegistrasiPasien
 };
 
 const hUpdateRegistrasiPulang = async (req, res, transaction) => {

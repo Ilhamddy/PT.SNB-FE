@@ -1,6 +1,12 @@
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { getOrderBarang, getUnitUser, verifyKirim } from '../../store/actions'
+import {
+  getOrderBarang,
+  getUnitUser,
+  tolakKirim,
+  tolakOrder,
+  verifyKirim,
+} from '../../store/actions'
 import LoadingTable from '../../Components/Table/LoadingTable'
 import DataTable from 'react-data-table-component'
 import BreadCrumb from '../../Components/Common/BreadCrumb'
@@ -18,8 +24,10 @@ import {
   Row,
   UncontrolledDropdown,
   UncontrolledTooltip,
+  Input,
+  FormFeedback,
 } from 'reactstrap'
-import { Link } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import CountUp from 'react-countup'
 import {
   pesananBatal,
@@ -29,22 +37,64 @@ import {
 import { dateLocal } from '../../utils/format'
 import { useFormik } from 'formik'
 import { tableCustomStyles } from '../../Components/Table/tableCustomStyles'
+import * as Yup from 'yup'
+import DeleteModalCustom from '../../Components/Common/DeleteModalCustom'
+import ColLabelInput from '../../Components/ColLabelInput/ColLabelInput'
 
-const DistribusiOrderList = ({ isUnit }) => {
+const DistribusiOrderList = ({ isUnit, isLogistik }) => {
   const dispatch = useDispatch()
+  // teks taruh sini biar langsung tahu bedanya antara 4 page
+  const linkDistribusi = isLogistik ? 'logistik' : 'farmasi'
+  const judulPemesanan = isUnit
+    ? 'Pemesanan Ke Gudang dan Apotek'
+    : 'Pemesanan dari Unit'
+  const judulPengiriman = isUnit
+    ? 'Pengiriman dari Gudang dan Apotek'
+    : 'Pengiriman ke Unit'
+  const judulBreadCrumb = isUnit
+    ? 'Order Barang Ke Gudang Dan Apotek'
+    : 'Order Barang dari Unit'
 
   const { listAll, listKirim } = useSelector((state) => ({
     listAll: state.Distribusi.getOrderBarang.data?.order || [],
     listKirim: state.Distribusi.getOrderBarang.data?.kirim || [],
+    orderStokBatch: state.Distribusi.getOrderStokBatch.data || null,
   }))
 
-  const vVerif = useFormik({
+  const vTolakPesanan = useFormik({
     initialValues: {
-      noreckirim: '',
+      norecorder: '',
+      alasantolak: '',
     },
+    validationSchema: Yup.object({
+      alasantolak: Yup.string().required('Alasan tolak perlu diisi'),
+    }),
     onSubmit: (value, { resetForm }) => {
       dispatch(
-        verifyKirim(value, () => {
+        tolakOrder(value, () => {
+          dispatch(
+            getOrderBarang({ isGudang: !isUnit, isLogistik: !!isLogistik })
+          )
+          resetForm()
+        })
+      )
+    },
+  })
+
+  const vTolakKirim = useFormik({
+    initialValues: {
+      noreckirim: '',
+      alasantolak: '',
+    },
+    validationSchema: Yup.object({
+      alasantolak: Yup.string().required('Alasan tolak perlu diisi'),
+    }),
+    onSubmit: (value, { resetForm }) => {
+      dispatch(
+        tolakKirim(value, () => {
+          dispatch(
+            getOrderBarang({ isGudang: !isUnit, isLogistik: !!isLogistik })
+          )
           resetForm()
         })
       )
@@ -52,8 +102,8 @@ const DistribusiOrderList = ({ isUnit }) => {
   })
 
   useEffect(() => {
-    dispatch(getOrderBarang({ isGudang: !isUnit }))
-  }, [dispatch, isUnit])
+    dispatch(getOrderBarang({ isGudang: !isUnit, isLogistik: !!isLogistik }))
+  }, [dispatch, isUnit, isLogistik])
 
   /**
    * @type {import("react-data-table-component").TableColumn[]}
@@ -75,12 +125,46 @@ const DistribusiOrderList = ({ isUnit }) => {
               <i className="ri-apps-2-line"></i>
             </DropdownToggle>
             <DropdownMenu className="dropdown-menu-end">
-              <Link to={`/farmasi/gudang/distribusi-kirim/${row.norecorder}`}>
-                <DropdownItem>
+              {isUnit && (
+                <Link
+                  to={`/${linkDistribusi}/gudang/distribusi-order-edit/${row.norecorder}`}
+                >
+                  <DropdownItem>
+                    <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
+                    Edit Order
+                  </DropdownItem>
+                </Link>
+              )}
+              {(isUnit || (!isUnit && row.istolak)) && (
+                <Link
+                  to={`/${linkDistribusi}/gudang/distribusi-order/${row.norecorder}`}
+                >
+                  <DropdownItem>
+                    <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
+                    Lihat Order
+                  </DropdownItem>
+                </Link>
+              )}
+              {!isUnit && (
+                <Link
+                  to={`/${linkDistribusi}/gudang/distribusi-kirim/${row.norecorder}`}
+                >
+                  <DropdownItem>
+                    <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
+                    Kirim Barang
+                  </DropdownItem>
+                </Link>
+              )}
+              {!isUnit && !row.istolak && (
+                <DropdownItem
+                  onClick={() =>
+                    vTolakPesanan.setFieldValue('norecorder', row.norecorder)
+                  }
+                >
                   <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
-                  Kirim Barang
+                  Tolak Pesanan
                 </DropdownItem>
-              </Link>
+              )}
             </DropdownMenu>
           </UncontrolledDropdown>
         </div>
@@ -88,18 +172,6 @@ const DistribusiOrderList = ({ isUnit }) => {
       sortable: true,
       width: '70px',
       wrap: true,
-    },
-    {
-      name: <span className="font-weight-bold fs-13">Tanggal Kirim</span>,
-      sortable: true,
-      selector: (row) => dateLocal(row.tglkirim) || '-',
-      width: '150px',
-    },
-    {
-      name: <span className="font-weight-bold fs-13">No Kirim</span>,
-      sortable: true,
-      selector: (row) => row.nokirim || '-',
-      width: '150px',
     },
     {
       name: <span className="font-weight-bold fs-13">Tanggal Order</span>,
@@ -123,7 +195,19 @@ const DistribusiOrderList = ({ isUnit }) => {
       name: <span className="font-weight-bold fs-13">Jenis Kirim</span>,
       sortable: true,
       selector: (row) => row.namajenisorder,
-      width: '200px',
+      width: '150px',
+    },
+    {
+      name: <span className="font-weight-bold fs-13">Status</span>,
+      sortable: true,
+      selector: (row) => (row.istolak ? 'Ditolak' : 'Belum dikirim'),
+      width: '150px',
+    },
+    {
+      name: <span className="font-weight-bold fs-13">Alasan Tolak</span>,
+      sortable: true,
+      selector: (row) => row.alasantolak || '-',
+      width: '150px',
     },
   ]
 
@@ -147,22 +231,45 @@ const DistribusiOrderList = ({ isUnit }) => {
               <i className="ri-apps-2-line"></i>
             </DropdownToggle>
             <DropdownMenu className="dropdown-menu-end">
-              {isUnit ? (
+              {isUnit && (
                 <Link
-                  to={`/farmasi/gudang/distribusi-kirim-verif/${row.noreckirim}`}
+                  to={`/${linkDistribusi}/gudang/distribusi-kirim-verif/${row.noreckirim}`}
                 >
                   <DropdownItem>
                     <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
-                    {row.isverif ? 'Lihat kiriman' : 'Verifikasi'}
+                    {row.isverif || row.istolak
+                      ? 'Lihat kiriman'
+                      : 'Verifikasi'}
                   </DropdownItem>
                 </Link>
-              ) : (
+              )}
+              {!isUnit && (
                 <Link
-                  to={`/farmasi/gudang/distribusi-kirim-langsung/${row.noreckirim}`}
+                  to={`/${linkDistribusi}/gudang/distribusi-kirim-langsung/${row.noreckirim}`}
                 >
                   <DropdownItem>
                     <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
                     {'Lihat Detail'}
+                  </DropdownItem>
+                </Link>
+              )}
+              {isUnit && !row.isverif && !row.istolak && (
+                <DropdownItem
+                  onClick={() => {
+                    vTolakKirim.setFieldValue('noreckirim', row.noreckirim)
+                  }}
+                >
+                  <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
+                  Tolak Kiriman
+                </DropdownItem>
+              )}
+              {!isUnit && !row.isverif && (
+                <Link
+                  to={`/${linkDistribusi}/gudang/distribusi-kirim-edit/${row.noreckirim}`}
+                >
+                  <DropdownItem>
+                    <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
+                    Edit Pengiriman
                   </DropdownItem>
                 </Link>
               )}
@@ -202,55 +309,101 @@ const DistribusiOrderList = ({ isUnit }) => {
       name: <span className="font-weight-bold fs-13">Unit Membutuhkan</span>,
       sortable: true,
       selector: (row) => row.namaunittujuan,
-      width: '200px',
+      width: '150px',
     },
     {
       name: <span className="font-weight-bold fs-13">Jenis Kirim</span>,
       sortable: true,
       selector: (row) => row.namajenisorder,
-      width: '200px',
+      width: '120px',
+    },
+    {
+      name: <span className="font-weight-bold fs-13">Status</span>,
+      sortable: true,
+      selector: (row) =>
+        row.isverif ? 'Sudah verif' : row.istolak ? 'Ditolak' : 'Belum verif',
+      width: '120px',
+    },
+    {
+      name: <span className="font-weight-bold fs-13">Alasan Tolak</span>,
+      sortable: true,
+      selector: (row) => row.alasantolak || '-',
+      width: '150px',
     },
   ]
 
   const totalBelumTerima = listAll.filter((item) => !item.tglkirim).length
-  const totalSudahTerima = listAll.filter((item) => !!item.tglkirim).length
+  const totalSudahTerima = listKirim.filter((item) => !!item.tglkirim).length
+  const totalDitolak = listKirim.filter((item) => !!item.istolak).length
+  const totalDitolakPesan = listAll.filter((item) => !!item.istolak).length
 
   return (
     <div className="page-content page-penerimaan-barang">
       <ToastContainer closeButton={false} />
-      <Modal
-        toggle={() => {
-          vVerif.resetForm()
+      <DeleteModalCustom
+        show={!!vTolakPesanan.values.norecorder}
+        onDeleteClick={() => {
+          vTolakPesanan.handleSubmit()
         }}
-        isOpen={!!vVerif.values.noreckirim}
-        centered
+        showMessage={false}
+        onCloseClick={() => vTolakPesanan.resetForm()}
+        buttonHapus="Tolak"
       >
-        <Card className="p-3">
-          <Row className="d-flex justify-content-center mb-3 fs-3">
-            <Col sm="auto">Konfirmasi verifikasi barang</Col>
-          </Row>
-          <Row className="d-flex justify-content-center">
-            <Col lg="auto">
-              <Button color="danger">Batal</Button>
-            </Col>
-            <Col lg="auto">
-              <Button
-                color="success"
-                onClick={() => {
-                  vVerif.handleSubmit()
-                }}
-              >
-                Ya
-              </Button>
-            </Col>
-          </Row>
-        </Card>
-      </Modal>
+        <ColLabelInput label={'alasan tolak'}>
+          <Input
+            id="alasantolak"
+            name="alasantolak"
+            type="text"
+            value={vTolakPesanan.values.alasantolak}
+            onChange={(e) => {
+              vTolakPesanan.setFieldValue('alasantolak', e.target.value)
+            }}
+            invalid={
+              vTolakPesanan.touched?.alasantolak &&
+              !!vTolakPesanan.errors?.alasantolak
+            }
+          />
+          {vTolakPesanan.touched?.alasantolak &&
+            !!vTolakPesanan.errors.alasantolak && (
+              <FormFeedback type="invalid">
+                <div>{vTolakPesanan.errors.alasantolak}</div>
+              </FormFeedback>
+            )}
+        </ColLabelInput>
+      </DeleteModalCustom>
+      <DeleteModalCustom
+        show={!!vTolakKirim.values.noreckirim}
+        onDeleteClick={() => {
+          vTolakKirim.handleSubmit()
+        }}
+        showMessage={false}
+        onCloseClick={() => vTolakKirim.resetForm()}
+        buttonHapus="Tolak"
+      >
+        <ColLabelInput label={'alasan tolak'}>
+          <Input
+            id="alasantolak"
+            name="alasantolak"
+            type="text"
+            value={vTolakKirim.values.alasantolak}
+            onChange={(e) => {
+              vTolakKirim.setFieldValue('alasantolak', e.target.value)
+            }}
+            invalid={
+              vTolakKirim.touched?.alasantolak &&
+              !!vTolakKirim.errors?.alasantolak
+            }
+          />
+          {vTolakKirim.touched?.alasantolak &&
+            !!vTolakKirim.errors.alasantolak && (
+              <FormFeedback type="invalid">
+                <div>{vTolakKirim.errors.alasantolak}</div>
+              </FormFeedback>
+            )}
+        </ColLabelInput>
+      </DeleteModalCustom>
       <Container fluid>
-        <BreadCrumb
-          title={isUnit ? 'Order Barang Unit' : 'Order Barang Gudang'}
-          pageTitle="Gudang"
-        />
+        <BreadCrumb title={judulBreadCrumb} pageTitle="Gudang" />
         <Card className="p-5">
           <Row>
             <Widget
@@ -264,19 +417,25 @@ const DistribusiOrderList = ({ isUnit }) => {
               image={pesananDiterimaImg}
             />
             <Widget
-              title={'Total pemesanan yang Dibatalkan'}
-              end={0}
+              title={
+                isUnit
+                  ? 'Total pengiriman yang Ditolak'
+                  : 'Total pemesanan yang Ditolak'
+              }
+              end={isUnit ? totalDitolak : totalDitolakPesan}
               image={pesananBatal}
             />
           </Row>
           <Row className="d-flex justify-content-between mb-3">
             <Col lg="auto">
-              <h3>Pemesanan</h3>
+              <h3>{judulPemesanan}</h3>
             </Col>
             <Col lg={'auto'} className="d-flex flex-row-reverse">
               <Link
                 to={
-                  '/farmasi/gudang/distribusi-order' + (isUnit ? '-unit' : '')
+                  isUnit
+                    ? `/${linkDistribusi}/gudang/distribusi-order`
+                    : `/${linkDistribusi}/gudang/distribusi-order-unit`
                 }
               >
                 <Button color={'info'}>Pesan</Button>
@@ -297,11 +456,13 @@ const DistribusiOrderList = ({ isUnit }) => {
           </Row>
           <Row className="d-flex justify-content-between mb-3">
             <Col lg="auto">
-              <h3>Pengiriman</h3>
+              <h3>{judulPengiriman}</h3>
             </Col>
             {!isUnit && (
               <Col lg={'auto'} className="d-flex flex-row-reverse">
-                <Link to={'/farmasi/gudang/distribusi-kirim-langsung'}>
+                <Link
+                  to={`/${linkDistribusi}/gudang/distribusi-kirim-langsung`}
+                >
                   <Button color={'info'}>Kirim</Button>
                 </Link>
               </Col>

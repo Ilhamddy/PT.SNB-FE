@@ -48,7 +48,16 @@ export default (sequelize, Sequelize) => {
         },
         objectpegawaifk: {
             type: Sequelize.INTEGER
-        }
+        },
+        islogistik: {
+            type: Sequelize.BOOLEAN
+        },
+        istolak: {
+            type: Sequelize.BOOLEAN
+        },
+        alasantolak: {
+            type: Sequelize.CHAR(50)
+        },
     }, {
         tableName: "t_kirimbarang", 
         createdAt: false,

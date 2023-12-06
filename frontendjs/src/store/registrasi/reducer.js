@@ -38,7 +38,10 @@ import {
     SAVE_REGISTRASI_MUTASI_SUCCESS,
     SAVE_REGISTRASI_MUTASI_ERROR,
     GET_HISTORY_REGISTRASI,GET_HISTORY_REGISTRASI_SUCCESS,GET_HISTORY_REGISTRASI_ERROR,
-    SAVE_MERGE_NOREGISTRASI,SAVE_MERGE_NOREGISTRASI_ERROR,SAVE_MERGE_NOREGISTRASI_SUCCESS
+    SAVE_MERGE_NOREGISTRASI,SAVE_MERGE_NOREGISTRASI_ERROR,SAVE_MERGE_NOREGISTRASI_SUCCESS,
+    GET_NO_REGISTRASI_PASIEN,
+    GET_NO_REGISTRASI_PASIEN_SUCCESS,
+    GET_NO_REGISTRASI_PASIEN_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -112,6 +115,11 @@ const INIT_STATE = {
         loading: false,
         error: null,
     },
+    getNoRegistrasiPasien: {
+        data: [],
+        loading: false,
+        error: null,
+    }
 };
 
 const Registrasi = (state = INIT_STATE, action) => {
@@ -618,6 +626,41 @@ const Registrasi = (state = INIT_STATE, action) => {
                 ...state,
                 saveMergeNoRegistrasi: {
                     ...state.saveMergeNoRegistrasi,
+                    loading: false,
+                    error: action.payload,
+                },
+            };
+        }
+
+        case GET_NO_REGISTRASI_PASIEN: {
+            return {
+                ...state,
+                getNoRegistrasiPasien: {
+                    ...state.getNoRegistrasiPasien,
+                    data: [],
+                    loading: true,
+                    error: null,
+                },
+            };
+        }
+
+        case GET_NO_REGISTRASI_PASIEN_SUCCESS: {
+            return {
+                ...state,
+                getNoRegistrasiPasien: {
+                    ...state.getNoRegistrasiPasien,
+                    loading: false,
+                    data: action.payload,
+                    success: true,
+                },
+            };
+        }
+
+        case GET_NO_REGISTRASI_PASIEN_ERROR: {
+            return {
+                ...state,
+                getNoRegistrasiPasien: {
+                    ...state.getNoRegistrasiPasien,
                     loading: false,
                     error: action.payload,
                 },

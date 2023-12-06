@@ -24,98 +24,77 @@ import { onChangeStrNbr, strToNumber } from '../../utils/format'
 import DataTable from 'react-data-table-component'
 import LoadingTable from '../../Components/Table/LoadingTable'
 import NoDataTable from '../../Components/Table/NoDataTable'
-import { batch, shallowEqual, useDispatch, useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useEffect, useRef, useState } from 'react'
 import {
-  createOrUpdateKirimBarang,
   createOrUpdateOrderbarang,
   getOrderStokBatch,
   getStokBatch,
+  getUnitUser,
   kemasanFromProdukGet,
-  verifyKirim,
 } from '../../store/actions'
 import { APIClient } from '../../helpers/api_helper'
 import { comboDistribusiOrderGet } from '../../store/master/action'
-import { Link, useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import { tableCustomStyles } from '../../Components/Table/tableCustomStyles'
 import KontainerFlatpickr from '../../Components/KontainerFlatpickr/KontainerFlatpickr'
 
-const DistribusiKirim = ({ isVerif, isLogistik = false, isEdit = false }) => {
+const DistribusiOrder = ({ isUnit, isLogistik = false, isEdit = false }) => {
   const dispatch = useDispatch()
-  const { norecorder, noreckirim } = useParams()
   const [tglSekarang] = useState(() => new Date().toISOString())
-  const isPesanLangsung = !norecorder
+  const { norecorder } = useParams()
   const navigate = useNavigate()
 
-  let { stokBatch, orderStokBatch, satuan, unit, jenisorderbarang } =
-    useSelector(
-      (state) => ({
-        stokBatch: state.Distribusi.getStokBatch?.data || [],
-        orderStokBatch: state.Distribusi.getOrderStokBatch.data || null,
-        satuan: state.Gudang.kemasanFromProdukGet || null,
-        unit: state.Master.comboDistribusiOrderGet.data?.unit || [],
-        jenisorderbarang:
-          state.Master.comboDistribusiOrderGet.data?.jenisorderbarang || [],
-      }),
-      shallowEqual
-    )
+  let { stokBatch, satuan, unit, unitUser, jenisorderbarang, orderStokBatch } =
+    useSelector((state) => ({
+      stokBatch: state.Distribusi.getStokBatch?.data || [],
+      satuan: state.Gudang.kemasanFromProdukGet || null,
+      unit: state.Master.comboDistribusiOrderGet.data?.unit || [],
+      unitUser: state.Master.comboDistribusiOrderGet.data?.unitUser || [],
+      jenisorderbarang:
+        state.Master.comboDistribusiOrderGet.data?.jenisorderbarang || [],
+      orderStokBatch: state.Distribusi.getOrderStokBatch.data || null,
+    }))
 
   const refSatuan = useRef(null)
   const refProduk = useRef(null)
 
-  const vKirim = useFormik({
+  const vOrder = useFormik({
     enableReinitialize: true,
     initialValues: {
-      noreckirim: '',
       norecorder: '',
-      tanggalkirim: tglSekarang,
-      nokirim: '',
-      unitpengirim: '',
-      unitpenerima: '',
-      tanggalpermintaan: tglSekarang,
+      tanggalorder: tglSekarang,
       noorder: '',
-      jeniskirim: '',
-      keteranganorder: '',
-      keterangankirim: '',
-      isverif: false,
-      /**@type {import("../../../../backendjs/app/queries/gudang/distribusi.queries").ListStokUnit} */
-      batchproduk: [],
+      jenisorder: '',
+      unitorder: '',
+      unittujuan: '',
+      keterangan: '',
+      /**@type {import("../../../../backendjs/app/queries/gudang/distribusi.queries").ListOrderStokUnit} */
+      isiproduk: [],
       islogistik: !!isLogistik,
     },
     validationSchema: Yup.object({
-      tanggalkirim: Yup.string().required('Tanggal Order harus diisi'),
-      nokirim: Yup.string().required('No Order harus diisi'),
-      unitpengirim: Yup.string().required('Unit Pengirim harus diisi'),
-      unitpenerima: Yup.string().required('Unit Penerima harus diisi'),
-      jeniskirim: Yup.string().required('Jenis Kirim harus diisi'),
-      keterangankirim: Yup.string().required('Keterangan Kirim harus diisi'),
+      tanggalorder: Yup.string().required('Tanggal Order harus diisi'),
+      noorder: Yup.string().required('No Order harus diisi'),
+      jenisorder: Yup.string().required('Jenis Order harus diisi'),
+      unitorder: Yup.string().required('Unit Order harus diisi'),
+      unittujuan: Yup.string().required('Unit Tujuan harus diisi'),
+      keterangan: Yup.string().required('Keterangan Order harus diisi'),
     }),
-    onSubmit: (values) => {
-      if (!isVerif) {
-        dispatch(
-          createOrUpdateKirimBarang(values, () => {
-            dispatch(
-              getOrderStokBatch({
-                norecorder: norecorder || '',
-                noreckirim: noreckirim || '',
-              })
-            )
-            navigate(`/farmasi/gudang/distribusi-order-list`)
-          })
-        )
-      } else {
-        dispatch(
-          verifyKirim({ noreckirim: values.noreckirim }, () => {
-            dispatch(
-              getOrderStokBatch({
-                norecorder: norecorder || '',
-                noreckirim: noreckirim || '',
-              })
-            )
-            navigate(`/farmasi/gudang/distribusi-order-list`)
-          })
-        )
-      }
+    onSubmit: (values, { resetForm }) => {
+      dispatch(
+        createOrUpdateOrderbarang(values, (response) => {
+          resetForm()
+          // navigate(
+          //   `/${isLogistik ? 'logistik' : 'farmasi'}/gudang/distribusi-order/${
+          //     response.data.createdOrUpdatedPenerimaan.norec
+          //   }`
+          // )
+          navigate(
+            `/${isLogistik ? 'logistik' : 'farmasi'}/gudang/unit-order-list`
+          )
+        })
+      )
     },
   })
 
@@ -128,7 +107,7 @@ const DistribusiKirim = ({ isVerif, isLogistik = false, isEdit = false }) => {
       namasatuan: '',
       konversi: '',
       jumlah: '0',
-      /**@type {typeof vKirim.values.batchproduk} */
+      /**@type {typeof vOrder.values.isiproduk} */
       batch: [],
     },
     validationSchema: Yup.object({
@@ -142,172 +121,36 @@ const DistribusiKirim = ({ isVerif, isLogistik = false, isEdit = false }) => {
     onSubmit: (values, { resetForm }) => {
       // prioritaskan batch yang pertama kalin masuk
       // kurangkan jumlahKonversi setiap ada qyout
-      const batchProduk = vKirim.values.batchproduk.filter(
+      const isiProduk = vOrder.values.isiproduk.filter(
         (batch) => batch.produkid === values.produk
       )
-      const jmlBefore = batchProduk.reduce((a, b) => a + b.qtykirim, 0)
+      let batchInputAsc = [...values.batch].sort((a, b) => {
+        return new Date(a.tglinput) - new Date(b.tglinput)
+      })
+      const jmlBefore = isiProduk.reduce((a, b) => a + b.qtyout, 0)
+      const jmlStok = batchInputAsc.reduce((a, b) => a + b.qty, 0)
       let jumlahKonversi =
         strToNumber(values.jumlah) * strToNumber(values.konversi)
       jumlahKonversi = jmlBefore + jumlahKonversi
 
-      let batchInputAsc = [...values.batch].sort((a, b) => {
-        return new Date(a.tglinput) - new Date(b.tglinput)
-      })
-      batchInputAsc = batchInputAsc.map((batch) => {
-        const newBatch = { ...batch }
-        newBatch.satuan = values.satuan
-        newBatch.namasatuan = values.namasatuan
-        newBatch.produkid = values.produk
-        const maxQtyTerkirim =
-          newBatch.qtyout > newBatch.qty || isPesanLangsung
-            ? newBatch.qty
-            : newBatch.qtyout
-        if (jumlahKonversi >= maxQtyTerkirim) {
-          newBatch.qtykirim = maxQtyTerkirim
-          // jumlah hanya untuk pelengkap di db, operasi perhitungan harus menggunakan
-          // qty dan konversisatuan
-          newBatch.jumlah = maxQtyTerkirim / strToNumber(values.konversi)
-          jumlahKonversi -= maxQtyTerkirim
-        } else {
-          newBatch.qtykirim = jumlahKonversi
-          jumlahKonversi = 0
-        }
-        return newBatch
-      })
-      batchInputAsc = batchInputAsc.filter((batch) => batch.qtykirim > 0)
-      const newBatchKirim = [...vKirim.values.batchproduk, ...batchInputAsc]
-      vKirim.setFieldValue('batchproduk', newBatchKirim)
+      if (!batchInputAsc[0]) {
+        console.error('batchInputAsc[0] is undefined')
+        return
+      }
+      let firstBatchInputAsc = { ...batchInputAsc[0] }
+      firstBatchInputAsc.namasatuan = values.namasatuan
+      firstBatchInputAsc.satuan = values.satuan
+      firstBatchInputAsc.qty = jmlStok
+      firstBatchInputAsc.qtyout = jumlahKonversi
+      const newBatchKirim = [...vOrder.values.isiproduk, firstBatchInputAsc]
+      vOrder.setFieldValue('isiproduk', newBatchKirim)
       resetForm()
       refProduk.current?.clearValue()
     },
   })
 
-  let jumlahStokProduk = vProduk.values.batch.reduce((total, batch) => {
-    return total + batch.qty
-  }, 0)
-
-  let jumlahKirim = vKirim.values.batchproduk.reduce((total, batch) => {
-    const out = batch.produkid === vProduk.values.produk ? batch.qtykirim : 0
-    return total + out
-  }, 0)
-
-  let jumlahOrder = vProduk.values.batch[0]?.qtyout || 0
-
-  jumlahStokProduk = jumlahStokProduk - jumlahKirim
-
-  const handleJmlSatuanChange = (jmlInput, konversi) => {
-    let jumlahKonversi = strToNumber(jmlInput) * strToNumber(konversi)
-    let jumlah = strToNumber(jmlInput)
-    let maxValue =
-      jumlahStokProduk < jumlahOrder || isPesanLangsung
-        ? jumlahStokProduk
-        : jumlahOrder
-    if (jumlahKonversi > maxValue) {
-      jumlah = Math.floor(maxValue / konversi)
-    }
-    const jmlStr = onChangeStrNbr(jumlah, vProduk.values.jumlah)
-    vProduk.setFieldValue('jumlah', jmlStr)
-  }
-
-  const jumlahTotal =
-    strToNumber(vProduk.values.jumlah) * strToNumber(vProduk.values.konversi)
-
-  const newStokBatch = (orderStokBatch.itemorders || []).filter((batch) => {
-    const batchProduk = vKirim.values.batchproduk.find((batchOrder) => {
-      return batchOrder.value === batch.value
-    })
-    const produkNotFound = !batchProduk
-    return produkNotFound
-  })
-
-  const handleEditColumn = async (row) => {
-    const api = new APIClient()
-
-    vProduk.setFieldValue('produk', row.value)
-
-    vProduk.setFieldValue('namaproduk', row.label)
-    vProduk.setFieldValue('satuan', row.satuan)
-    vProduk.setFieldValue('namasatuan', row.namasatuan)
-    const kemasan = await api.get(
-      '/transaksi/gudang/distribusi/get-kemasan-by-id',
-      { idkemasan: row.satuan }
-    )
-    const konversi = kemasan.data.kemasan.nilaikonversi
-    vProduk.setFieldValue('konversi', konversi)
-    // hitung jumlahnya dahulu
-    const allProduk = vKirim.values.batchproduk.filter((batch) => {
-      return batch.value === row.value
-    })
-    const jmlAllProduk = allProduk.reduce((total, batch) => {
-      return total + batch.qtykirim / konversi
-    }, 0)
-
-    vProduk.setFieldValue('jumlah', jmlAllProduk)
-    const newIsiProduk = stokBatch.find((batch) => {
-      return batch.value === row.value
-    })
-    // lalu maasukkan batchnya didapatkan dari stokBatch
-    vProduk.setFieldValue('batch', newIsiProduk?.batchproduk || [])
-    const otherProduk = vKirim.values.batchproduk.filter((batch) => {
-      return batch.value !== row.value
-    })
-    vKirim.setFieldValue('batchproduk', [...otherProduk])
-  }
-
-  const handleHapusProduk = (row) => {
-    const otherProduk = vKirim.values.batchproduk.filter((batch) => {
-      return batch.value !== row.value
-    })
-    vKirim.setFieldValue('batchproduk', [...otherProduk])
-  }
-
   useEffect(() => {
-    // inisialisasi data order
-    const setFF = vProduk.setFieldValue
-    const onGetSatuanSuccess = (data) => {
-      // reset value jika ada array satuan baru dari produk baru
-      if (Array.isArray(data) && data.length === 0) {
-        refSatuan.current?.clearValue()
-        return
-      }
-      const newData = [...data.satuan]
-      const dataSatuan = newData.find(
-        (val) => val.value === vProduk.values.satuan
-      )
-      if (!dataSatuan) {
-        refSatuan.current?.clearValue()
-        return
-      }
-      setFF('satuanterima', dataSatuan?.value || '')
-      setFF('namasatuanterima', dataSatuan?.label || '')
-      setFF('konversisatuan', dataSatuan?.nilaikonversi || '')
-    }
-    vProduk.values.produk &&
-      dispatch(
-        kemasanFromProdukGet(
-          { idproduk: vProduk.values.produk },
-          onGetSatuanSuccess
-        )
-      )
-  }, [
-    dispatch,
-    vProduk.values.produk,
-    vProduk.setFieldValue,
-    vProduk.values.satuan,
-  ])
-
-  useEffect(() => {
-    vKirim.values.unitpengirim &&
-      dispatch(
-        getStokBatch({
-          idunit: vKirim.values.unitpengirim,
-          islogistik: isLogistik,
-        })
-      )
-  }, [vKirim.values.unitpengirim, dispatch, isLogistik])
-
-  useEffect(() => {
-    const setFF = vKirim.setFieldValue
+    const setFF = vOrder.setFieldValue
     let batchInputAsc = []
     const itemOrders = orderStokBatch.itemorders || []
     const itemKirims = orderStokBatch.itemkirims || []
@@ -324,8 +167,99 @@ const DistribusiKirim = ({ isVerif, isLogistik = false, isEdit = false }) => {
       batchInputAsc = []
     }
     batchInputAsc = batchInputAsc.filter((batch) => batch.qtykirim > 0)
-    setFF('batchproduk', batchInputAsc)
-  }, [orderStokBatch, vKirim.setFieldValue])
+    setFF('isiproduk', batchInputAsc)
+  }, [orderStokBatch, vOrder.setFieldValue])
+
+  useEffect(() => {
+    const setFF = vOrder.setFieldValue
+    const resetV = vOrder.resetForm
+    const dataOrder = orderStokBatch?.order
+    if (dataOrder) {
+      setFF('norecorder', dataOrder?.norecorder || '')
+      setFF('unittujuan', dataOrder?.unittujuan || '')
+      setFF('unitorder', dataOrder?.unitasal || '')
+      setFF('tanggalorder', dataOrder?.tglorder || '')
+      setFF('noorder', dataOrder?.noorder || '')
+      setFF('keterangan', dataOrder?.keterangan || '')
+      setFF('jenisorder', dataOrder?.jenisorder || '')
+    } else {
+      resetV()
+    }
+  }, [orderStokBatch, vOrder.setFieldValue, vOrder.resetForm])
+
+  useEffect(() => {
+    dispatch(
+      getOrderStokBatch({
+        norecorder: norecorder || '',
+        noreckirim: '',
+      })
+    )
+  }, [dispatch, norecorder, isEdit])
+
+  useEffect(() => {
+    const setFF = vProduk.setFieldValue
+    const onGetSatuanSuccess = (data) => {
+      // reset value jika ada array satuan baru
+      if (Array.isArray(data) && data.length === 0) {
+        refSatuan.current?.clearValue()
+        return
+      }
+      const newData = [...data.satuan]
+      const dataSatuan = newData.find(
+        (val) => val.value === vProduk.values.satuan
+      )
+      if (!dataSatuan) {
+        refSatuan.current?.clearValue()
+        return
+      }
+      setFF('satuan', dataSatuan?.value || '')
+      setFF('namasatuan', dataSatuan?.label || '')
+      setFF('konversisatuan', dataSatuan?.nilaikonversi || '')
+    }
+    vProduk.values.produk &&
+      dispatch(
+        kemasanFromProdukGet(
+          { idproduk: vProduk.values.produk },
+          onGetSatuanSuccess
+        )
+      )
+  }, [
+    dispatch,
+    vProduk.values.produk,
+    vProduk.setFieldValue,
+    vProduk.values.satuan,
+  ])
+
+  let jumlahStokProduk = vProduk.values.batch.reduce((total, batch) => {
+    return total + batch.qty
+  }, 0)
+
+  let jumlahOut = vOrder.values.isiproduk.reduce((total, batch) => {
+    const out = batch.produkid === vProduk.values.produk ? batch.qtyout : 0
+    return total + out
+  }, 0)
+
+  jumlahStokProduk = jumlahStokProduk - jumlahOut
+
+  const handleJmlSatuanChange = (jmlInput, konversi) => {
+    let jumlahKonversi = strToNumber(jmlInput) * strToNumber(konversi)
+    let jumlah = strToNumber(jmlInput)
+    if (jumlahKonversi > jumlahStokProduk) {
+      jumlah = Math.floor(jumlahStokProduk / konversi)
+    }
+    const jmlStr = onChangeStrNbr(jumlah, vProduk.values.jumlah)
+    vProduk.setFieldValue('jumlah', jmlStr)
+  }
+
+  const jumlahTotal =
+    strToNumber(vProduk.values.jumlah) * strToNumber(vProduk.values.konversi)
+  const newStokBatch = stokBatch.filter((batch) => {
+    const isiProduk = vOrder.values.isiproduk.find((batchOrder) => {
+      return batchOrder.value === batch.value
+    })
+    const produkNotFound = !isiProduk
+    return produkNotFound
+  })
 
   useEffect(() => {
     dispatch(comboDistribusiOrderGet())
@@ -333,41 +267,56 @@ const DistribusiKirim = ({ isVerif, isLogistik = false, isEdit = false }) => {
 
   useEffect(() => {
     dispatch(
-      getOrderStokBatch({
-        norecorder: norecorder || '',
-        noreckirim: noreckirim || '',
+      getStokBatch({
+        idunit: vOrder.values.unittujuan || '',
+        islogistik: isLogistik,
       })
     )
-  }, [dispatch, norecorder, noreckirim, vKirim.setFieldValue])
+  }, [vOrder.values.unittujuan, isLogistik, dispatch])
 
-  useEffect(() => {
-    const setFF = vKirim.setFieldValue
-    const resetV = vKirim.resetForm
-    const dataOrder = orderStokBatch?.order
-    dataOrder?.isverif !== undefined &&
-      setFF('isverif', dataOrder.isverif || '')
-    if (dataOrder) {
-      dataOrder?.noreckirim && setFF('noreckirim', dataOrder?.noreckirim || '')
-      dataOrder?.tglkirim && setFF('tanggalkirim', dataOrder?.tglkirim || '')
-      dataOrder?.nokirim && setFF('nokirim', dataOrder?.nokirim || '')
-      dataOrder?.keterangankirim &&
-        setFF('keterangankirim', dataOrder?.keterangankirim || '')
-      setFF('unitpengirim', dataOrder?.unittujuan || '')
-      setFF('unitpenerima', dataOrder?.unitasal || '')
-      setFF('tanggalpermintaan', dataOrder?.tglorder || '')
-      setFF('noorder', dataOrder?.noorder || '')
-      setFF('keteranganorder', dataOrder?.keterangan || '')
-      setFF('norecorder', dataOrder?.norecorder || '')
-      setFF('jeniskirim', dataOrder?.jenisorder || '')
-    } else {
-      resetV()
-    }
-  }, [orderStokBatch, vKirim.setFieldValue, vKirim.resetForm])
+  const handleEditColumn = async (row) => {
+    const api = new APIClient()
+    vProduk.setFieldValue('produk', row.value)
+    vProduk.setFieldValue('namaproduk', row.label)
+    vProduk.setFieldValue('satuan', row.satuan)
+    vProduk.setFieldValue('namasatuan', row.namasatuan)
+    const kemasan = await api.get(
+      '/transaksi/gudang/distribusi/get-kemasan-by-id',
+      { idkemasan: row.satuan }
+    )
+    const konversi = kemasan.data.kemasan.nilaikonversi
+    vProduk.setFieldValue('konversi', konversi)
+    // hitung jumlahnya dahulu
+    let produk = vOrder.values.isiproduk.find((batch) => {
+      return batch.value === row.value
+    })
+    if (!produk) return console.error('produk is undefined')
+    produk = { ...produk }
+    const jmlAllProduk = produk.qtyout / konversi
+
+    vProduk.setFieldValue('jumlah', jmlAllProduk)
+    const newIsiProduk = stokBatch.find((batch) => {
+      return batch.value === row.value
+    })
+    // lalu maasukkan batchnya didapatkan dari stokBatch
+    vProduk.setFieldValue('batch', newIsiProduk?.batchproduk || [])
+    const otherProduk = vOrder.values.isiproduk.filter((batch) => {
+      return batch.value !== row.value
+    })
+    vOrder.setFieldValue('isiproduk', [...otherProduk])
+  }
+
+  const handleHapusProduk = (row) => {
+    const otherProduk = vOrder.values.isiproduk.filter((batch) => {
+      return batch.value !== row.value
+    })
+    vOrder.setFieldValue('isiproduk', [...otherProduk])
+  }
 
   /**
-   * @type {import("react-data-table-component").TableColumn<typeof vKirim.values.batchproduk[0]>[]}
+   * @type {import("react-data-table-component").TableColumn<typeof vOrder.values.isiproduk[0]>[]}
    */
-  const columnsKirim = [
+  const columnsProduk = [
     {
       name: <span className="font-weight-bold fs-13">Detail</span>,
       cell: (row) => (
@@ -403,14 +352,8 @@ const DistribusiKirim = ({ isVerif, isLogistik = false, isEdit = false }) => {
     {
       name: <span className="font-weight-bold fs-13">Id Produk</span>,
       sortable: true,
-      selector: (row) => row.produkid,
+      selector: (row) => row.value,
       width: '100px',
-    },
-    {
-      name: <span className="font-weight-bold fs-13">No Batch</span>,
-      sortable: true,
-      selector: (row) => row.nobatch,
-      width: '150px',
     },
     {
       name: <span className="font-weight-bold fs-13">Nama produk</span>,
@@ -433,16 +376,12 @@ const DistribusiKirim = ({ isVerif, isLogistik = false, isEdit = false }) => {
     {
       name: <span className="font-weight-bold fs-13">Jumlah</span>,
       sortable: true,
-      selector: (row) => `${row.qtykirim}`,
+      selector: (row) => `${row.qtyout}`,
       width: '100px',
     },
   ]
 
-  const isDisableEdit =
-    !isVerif && ((!!noreckirim && !isEdit) || (!noreckirim && !!isEdit))
-  const isDisableVerif = isVerif && !!vKirim.values.isverif
-  const isDisable = isDisableEdit || isDisableVerif
-  const tblSubmit = isEdit ? 'Edit' : isVerif ? 'Verifikasi' : 'Kirim'
+  const isDisable = (!!norecorder && !isEdit) || (!norecorder && !!isEdit)
 
   const OrderBarang = (
     <Card className="p-5">
@@ -450,251 +389,169 @@ const DistribusiKirim = ({ isVerif, isLogistik = false, isEdit = false }) => {
         <Col xl={1} lg={2}>
           <Label
             style={{ color: 'black' }}
-            htmlFor={`tanggalkirim`}
-            className="form-label"
-          >
-            Tanggal Kirim
-          </Label>
-        </Col>
-        <Col xl={3} lg={4} className="mb-2">
-          <KontainerFlatpickr
-            // value={penerimaan.tglregistrasi || ""}
-            id="tanggalkirim"
-            options={{
-              dateFormat: 'Y-m-d',
-              defaultDate: 'today',
-            }}
-            onChange={([newDate]) => {
-              vKirim.setFieldValue('tanggalkirim', newDate.toISOString())
-            }}
-          />
-          {vKirim.touched?.tanggalkirim && !!vKirim.touched?.tanggalkirim && (
-            <FormFeedback type="invalid">
-              <div>{vKirim.touched?.tanggalkirim}</div>
-            </FormFeedback>
-          )}
-        </Col>
-        <Col xl={1} lg={2}>
-          <Label
-            style={{ color: 'black' }}
-            htmlFor={`nokirim`}
+            htmlFor={`tanggalorder`}
             className="form-label mt-2"
           >
-            No Kirim
-          </Label>
-        </Col>
-        <Col xl={3} lg={4} className="mb-2">
-          <Input
-            id={`nokirim`}
-            name={`nokirim`}
-            type="text"
-            value={vKirim.values.nokirim}
-            onChange={vKirim.handleChange}
-            invalid={vKirim.touched?.nokirim && !!vKirim?.errors?.nokirim}
-          />
-          {vKirim.touched?.nokirim && !!vKirim.errors?.nokirim && (
-            <FormFeedback type="invalid">
-              <div>{vKirim.errors?.nokirim}</div>
-            </FormFeedback>
-          )}
-        </Col>
-        <Col xl={1} lg={2}>
-          <Label
-            style={{ color: 'black' }}
-            htmlFor={`unitpengirim`}
-            className="form-label"
-          >
-            Unit Pengirim
-          </Label>
-        </Col>
-        <Col xl={3} lg={4} className="mb-2">
-          <CustomSelect
-            id="unitpengirim"
-            name="unitpengirim"
-            options={unit}
-            value={vKirim.values?.unitpengirim}
-            isDisabled={!isPesanLangsung || isDisable}
-            onChange={(val) => {
-              vKirim.setFieldValue('unitpengirim', val.value)
-            }}
-            className={`input ${
-              vKirim.errors?.unitpengirim ? 'is-invalid' : ''
-            }`}
-          />
-          {vKirim.touched?.unitpengirim && !!vKirim.errors?.unitpengirim && (
-            <FormFeedback type="invalid">
-              <div>{vKirim.errors?.unitpengirim}</div>
-            </FormFeedback>
-          )}
-        </Col>
-        <Col xl={1} lg={2}>
-          <Label
-            style={{ color: 'black' }}
-            htmlFor={`tanggalpermintaan`}
-            className="form-label"
-          >
-            Tanggal Permintaan
+            Tgl order
           </Label>
         </Col>
         <Col xl={3} lg={4} className="mb-2">
           <KontainerFlatpickr
             isError={
-              vKirim.touched?.tanggalpermintaan &&
-              !!vKirim.touched?.tanggalpermintaan
+              vOrder.touched?.tanggalorder && !!vOrder.touched?.tanggalorder
             }
-            id="tanggalpermintaan"
+            id="tanggalorder"
             options={{
               dateFormat: 'Y-m-d',
               defaultDate: 'today',
             }}
-            disabled={!isPesanLangsung || isDisable}
-            value={vKirim.values.tanggalpermintaan}
+            disabled={isDisable}
             onChange={([newDate]) => {
-              vKirim.setFieldValue('tanggalpermintaan', newDate.toISOString())
+              vOrder.setFieldValue('tanggalorder', newDate.toISOString())
             }}
           />
-          {vKirim.touched?.tanggalpermintaan &&
-            !!vKirim.touched?.tanggalpermintaan && (
-              <FormFeedback type="invalid">
-                <div>{vKirim.touched?.tanggalpermintaan}</div>
-              </FormFeedback>
-            )}
-        </Col>
-        {!isPesanLangsung && (
-          <>
-            <Col xl={1} lg={2}>
-              <Label
-                style={{ color: 'black' }}
-                htmlFor={`noorder`}
-                className="form-label mt-2"
-              >
-                No Order
-              </Label>
-            </Col>
-            <Col xl={3} lg={4} className="mb-2">
-              <Input
-                id={`noorder`}
-                name={`noorder`}
-                type="text"
-                disabled
-                value={vKirim.values.noorder}
-                onChange={vKirim.handleChange}
-                invalid={vKirim.touched?.noorder && !!vKirim?.errors?.noorder}
-              />
-            </Col>
-          </>
-        )}
-        <Col xl={1} lg={2}>
-          <Label
-            style={{ color: 'black' }}
-            htmlFor={`unitpenerima`}
-            className="form-label"
-          >
-            Unit Penerima
-          </Label>
-        </Col>
-        <Col xl={3} lg={4} className="mb-2">
-          <CustomSelect
-            id="unitpenerima"
-            name="unitpenerima"
-            options={unit}
-            isDisabled={!isPesanLangsung || isDisable}
-            value={vKirim.values?.unitpenerima}
-            onChange={(val) => {
-              vKirim.setFieldValue('unitpenerima', val.value)
-            }}
-            className={`input ${
-              vKirim.errors?.unitpenerima ? 'is-invalid' : ''
-            }`}
-          />
-          {vKirim.touched?.unitpenerima && !!vKirim.errors?.unitpenerima && (
+          {vOrder.touched?.tanggalorder && !!vOrder.touched?.tanggalorder && (
             <FormFeedback type="invalid">
-              <div>{vKirim.errors?.unitpenerima}</div>
+              <div>{vOrder.touched?.tanggalorder}</div>
             </FormFeedback>
           )}
         </Col>
         <Col xl={1} lg={2}>
           <Label
             style={{ color: 'black' }}
-            htmlFor={`jeniskirim`}
+            htmlFor={`noorder`}
             className="form-label mt-2"
           >
-            Jenis Kirim
-          </Label>
-        </Col>
-        <Col xl={3} lg={4} className="mb-2">
-          <CustomSelect
-            id="jeniskirim"
-            name="jeniskirim"
-            options={jenisorderbarang}
-            value={vKirim.values?.jeniskirim}
-            onChange={(val) => {
-              vKirim.setFieldValue('jeniskirim', val.value)
-            }}
-            isDisabled={!isPesanLangsung || isDisable}
-            className={`input ${vKirim.errors?.jeniskirim ? 'is-invalid' : ''}`}
-          />
-          {vKirim.touched?.jeniskirim && !!vKirim.errors?.jeniskirim && (
-            <FormFeedback type="invalid">
-              <div>{vKirim.errors?.jeniskirim}</div>
-            </FormFeedback>
-          )}
-        </Col>
-        {!isPesanLangsung && (
-          <>
-            <Col xl={1} lg={2}>
-              <Label
-                style={{ color: 'black' }}
-                htmlFor={`keteranganorder`}
-                className="form-label"
-              >
-                Keterangan Order
-              </Label>
-            </Col>
-            <Col xl={3} lg={4} className="mb-2">
-              <Input
-                id={`keteranganorder`}
-                name={`keteranganorder`}
-                type="text"
-                disabled
-                value={vKirim.values.keteranganorder}
-                onChange={vKirim.handleChange}
-                invalid={
-                  vKirim.touched?.keteranganorder &&
-                  !!vKirim?.errors?.keteranganorder
-                }
-              />
-            </Col>
-          </>
-        )}
-        <Col xl={1} lg={2}>
-          <Label
-            style={{ color: 'black' }}
-            htmlFor={`keterangankirim`}
-            className="form-label "
-          >
-            Keterangan kirim
+            No Order
           </Label>
         </Col>
         <Col xl={3} lg={4} className="mb-2">
           <Input
-            id={`keterangankirim`}
-            name={`keterangankirim`}
+            id={`noorder`}
+            name={`noorder`}
             type="text"
-            value={vKirim.values.keterangankirim}
-            onChange={vKirim.handleChange}
+            value={vOrder.values.noorder}
             disabled={isDisable}
-            invalid={
-              vKirim.touched?.keterangankirim &&
-              !!vKirim?.errors?.keterangankirim
-            }
+            onChange={vOrder.handleChange}
+            invalid={vOrder.touched?.noorder && !!vOrder?.errors?.noorder}
           />
-          {vKirim.touched?.keterangankirim &&
-            !!vKirim.errors?.keterangankirim && (
-              <FormFeedback type="invalid">
-                <div>{vKirim.errors?.keterangankirim}</div>
-              </FormFeedback>
-            )}
+          {vOrder.touched?.noorder && !!vOrder.errors?.noorder && (
+            <FormFeedback type="invalid">
+              <div>{vOrder.errors?.noorder}</div>
+            </FormFeedback>
+          )}
+        </Col>
+        <Col xl={1} lg={2}>
+          <Label
+            style={{ color: 'black' }}
+            htmlFor={`jenisorder`}
+            className="form-label mt-2"
+          >
+            Jenis Order
+          </Label>
+        </Col>
+        <Col xl={3} lg={4} className="mb-2">
+          <CustomSelect
+            id="jenisorder"
+            name="jenisorder"
+            options={jenisorderbarang}
+            value={vOrder.values?.jenisorder}
+            isDisabled={isDisable}
+            onChange={(val) => {
+              vOrder.setFieldValue('jenisorder', val?.value || '')
+            }}
+            isClearEmpty
+            className={`input 
+                            ${vOrder.errors?.jenisorder ? 'is-invalid' : ''}`}
+          />
+          {vOrder.touched?.jenisorder && !!vOrder.errors?.jenisorder && (
+            <FormFeedback type="invalid">
+              <div>{vOrder.errors?.jenisorder}</div>
+            </FormFeedback>
+          )}
+        </Col>
+        <Col xl={1} lg={2}>
+          <Label
+            style={{ color: 'black' }}
+            htmlFor={`unitorder`}
+            className="form-label mt-2"
+          >
+            Unit Order
+          </Label>
+        </Col>
+        <Col xl={3} lg={4} className="mb-2">
+          <CustomSelect
+            id="unitorder"
+            name="unitorder"
+            options={isUnit ? unitUser : unit}
+            value={vOrder.values?.unitorder}
+            isDisabled={isDisable}
+            onChange={(val) => {
+              vOrder.setFieldValue('unitorder', val?.value || '')
+            }}
+            isClearEmpty
+            className={`input 
+                            ${vOrder.errors?.unitorder ? 'is-invalid' : ''}`}
+          />
+          {vOrder.touched?.unitorder && !!vOrder.errors?.unitorder && (
+            <FormFeedback type="invalid">
+              <div>{vOrder.errors?.unitorder}</div>
+            </FormFeedback>
+          )}
+        </Col>
+        <Col xl={1} lg={2}>
+          <Label
+            style={{ color: 'black' }}
+            htmlFor={`unittujuan`}
+            className="form-label mt-2"
+          >
+            Unit Tujuan
+          </Label>
+        </Col>
+        <Col xl={3} lg={4} className="mb-2">
+          <CustomSelect
+            id="unittujuan"
+            name="unittujuan"
+            options={unit}
+            isDisabled={isDisable}
+            onChange={(val) => {
+              vOrder.setFieldValue('unittujuan', val?.value || '')
+            }}
+            value={vOrder.values?.unittujuan}
+            isClearEmpty
+            className={`input 
+                            ${vOrder.errors?.unittujuan ? 'is-invalid' : ''}`}
+          />
+          {vOrder.touched?.unittujuan && !!vOrder.errors?.unittujuan && (
+            <FormFeedback type="invalid">
+              <div>{vOrder.errors?.unittujuan}</div>
+            </FormFeedback>
+          )}
+        </Col>
+        <Col xl={1} lg={2}>
+          <Label
+            style={{ color: 'black' }}
+            htmlFor={`keterangan`}
+            className="form-label"
+          >
+            Keterangan Order
+          </Label>
+        </Col>
+        <Col xl={3} lg={4} className="mb-2">
+          <Input
+            id={`keterangan`}
+            name={`keterangan`}
+            type="text"
+            disabled={isDisable}
+            value={vOrder.values.keterangan}
+            onChange={vOrder.handleChange}
+            invalid={vOrder.touched?.keterangan && !!vOrder?.errors?.keterangan}
+          />
+          {vOrder.touched?.keterangan && !!vOrder.touched?.keterangan && (
+            <FormFeedback type="invalid">
+              <div>{vOrder.errors?.keterangan}</div>
+            </FormFeedback>
+          )}
         </Col>
       </Row>
     </Card>
@@ -714,8 +571,9 @@ const DistribusiKirim = ({ isVerif, isLogistik = false, isEdit = false }) => {
           <CustomSelect
             id="produk"
             name="produk"
-            options={isPesanLangsung || isDisable ? stokBatch : newStokBatch}
+            options={newStokBatch}
             value={vProduk.values?.produk || ''}
+            isDisabled={!vOrder.values.unittujuan}
             onChange={(e) => {
               vProduk.resetForm()
               refSatuan.current.clearValue()
@@ -723,7 +581,6 @@ const DistribusiKirim = ({ isVerif, isLogistik = false, isEdit = false }) => {
               vProduk.setFieldValue('namaproduk', e?.label || '')
               vProduk.setFieldValue('batch', e?.batchproduk || [])
             }}
-            isDisabled={!vKirim.values.unitpengirim}
             className={`input mb-2
                             ${vProduk.errors?.produk ? 'is-invalid' : ''}`}
             ref={refProduk}
@@ -757,25 +614,6 @@ const DistribusiKirim = ({ isVerif, isLogistik = false, isEdit = false }) => {
             </FormFeedback>
           )}
         </Col>
-        {!isPesanLangsung && (
-          <Col xl={2} lg={3}>
-            <Label
-              style={{ color: 'black' }}
-              htmlFor={`jumlahorder`}
-              className="form-label mb-1"
-            >
-              Jumlah Order
-            </Label>
-            <Input
-              className="mb-2"
-              id={`jumlahorder`}
-              name={`stok`}
-              type="text"
-              disabled
-              value={jumlahOrder}
-            />
-          </Col>
-        )}
         <Col xl={2} lg={3}>
           <Label
             style={{ color: 'black' }}
@@ -885,7 +723,7 @@ const DistribusiKirim = ({ isVerif, isLogistik = false, isEdit = false }) => {
             htmlFor={`jumlahtotal`}
             className="form-label mb-1"
           >
-            Jumlah Total
+            Jumlah
           </Label>
           <Input
             id={`jumlahtotal`}
@@ -910,6 +748,7 @@ const DistribusiKirim = ({ isVerif, isLogistik = false, isEdit = false }) => {
               console.log('errors', vProduk.errors)
               vProduk.handleSubmit()
             }}
+            disabled={isDisable}
           >
             Tambah
           </Button>
@@ -922,9 +761,9 @@ const DistribusiKirim = ({ isVerif, isLogistik = false, isEdit = false }) => {
     <Card className="p-5">
       <DataTable
         fixedHeader
-        columns={columnsKirim}
+        columns={columnsProduk}
         pagination
-        data={vKirim.values.batchproduk || []}
+        data={vOrder.values.isiproduk || []}
         progressPending={false}
         customStyles={tableCustomStyles}
         progressComponent={<LoadingTable />}
@@ -941,7 +780,7 @@ const DistribusiKirim = ({ isVerif, isLogistik = false, isEdit = false }) => {
           formTarget="form-input-penerimaan"
           disabled={isDisable}
         >
-          {tblSubmit}
+          {isEdit ? 'Edit' : 'Simpan'}
         </Button>
         <Button type="button" className="btn" color="danger">
           Batal
@@ -954,11 +793,12 @@ const DistribusiKirim = ({ isVerif, isLogistik = false, isEdit = false }) => {
     <div className="page-content page-penerimaan-barang">
       <ToastContainer closeButton={false} />
       <Container fluid>
-        <BreadCrumb title="Kirim Barang" pageTitle="Gudang" />
+        <BreadCrumb title="Order Barang" pageTitle="Gudang" />
         <Form
           onSubmit={(e) => {
             e.preventDefault()
-            vKirim.handleSubmit()
+            console.log(vOrder.errors)
+            vOrder.handleSubmit()
             return false
           }}
           className="gy-4"
@@ -973,4 +813,4 @@ const DistribusiKirim = ({ isVerif, isLogistik = false, isEdit = false }) => {
   )
 }
 
-export default DistribusiKirim
+export default DistribusiOrder

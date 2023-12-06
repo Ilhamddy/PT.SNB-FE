@@ -2,11 +2,11 @@ import PropTypes from "prop-types";
 import React from "react";
 import { Modal, ModalBody } from "reactstrap";
 
-const DeleteModalCustom = ({ show, onDeleteClick, onCloseClick,msgHDelete,msgBDelete, buttonHapus }) => {
+const DeleteModalCustom = ({ show, onDeleteClick, onCloseClick,msgHDelete,msgBDelete, buttonHapus, children, showMessage = true }) => {
   return (
     <Modal isOpen={show} toggle={onCloseClick} centered={true}>
       <ModalBody className="py-3 px-5">
-        <div className="mt-2 text-center">
+        {showMessage && <div className="mt-2 text-center">
           <lord-icon
             src="https://cdn.lordicon.com/gsqxdxog.json"
             trigger="loop"
@@ -19,7 +19,12 @@ const DeleteModalCustom = ({ show, onDeleteClick, onCloseClick,msgHDelete,msgBDe
               {msgBDelete}
             </p>
           </div>
-        </div>
+        </div>}
+        {
+          <div className="w-100">
+            {children}
+          </div>
+        }
         <div className="d-flex gap-2 justify-content-center mt-4 mb-2">
           <button
             type="button"

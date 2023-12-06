@@ -194,4 +194,10 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.saveMergeNoRegistrasi
     );
+
+    app.get(
+        "/api/transaksi/registrasi/get-no-registrasi-pasien",
+        [authJwt.verifyToken],
+        controller.getNoRegistrasiPasien
+    )
 };

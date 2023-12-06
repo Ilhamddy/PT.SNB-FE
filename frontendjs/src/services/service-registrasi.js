@@ -141,4 +141,8 @@ export default class ServiceRegistrasi {
     saveMergeNoRegistrasi = async (data) => {
         return await api.create(`/transaksi/registrasi/save-merge-noregistrasi`, data)
     }
+    getNoRegistrasiPasien = async (queries) => {
+        return await api.get(`/transaksi/registrasi/get-no-registrasi-pasien`, queries)
+    }
+    
 }

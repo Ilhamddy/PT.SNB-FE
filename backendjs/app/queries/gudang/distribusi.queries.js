@@ -26,12 +26,12 @@ SELECT
     0 AS jumlah,
     null AS satuan,
     '' AS namasatuan
-FROM
-    t_stokunit ts
+FROM t_stokunit ts
     INNER JOIN m_produk mp ON mp.id = ts.objectprodukfk
 WHERE
     ts.statusenabled = true
     AND ts.objectunitfk = $1
+    AND mp.islogistik = $2
 `
 
 const qKemasanFromId = `
@@ -52,7 +52,7 @@ WHERE mk.statusenabled = true AND mk.id = $1
 `
 
 const qGetOrder = `
-SELECT
+SELECT DISTINCT
     tor.norec AS norecorder,
     tor.tglinput AS tglorder,
     tor.objectjenisorderbarangfk AS jenisorder,
@@ -62,7 +62,9 @@ SELECT
     tor.objectunittujuanfk AS unittujuan,
     mut.namaunit AS namaunittujuan,
     tor.noorder AS noorder,
-    tor.keterangan
+    tor.keterangan,
+    COALESCE(tor.istolak, FALSE) AS istolak,
+    tor.alasantolak AS alasantolak
 FROM t_orderbarang tor
     LEFT JOIN m_unit mua ON mua.id = tor.objectunitasalfk
     LEFT JOIN m_unit mut ON mut.id = tor.objectunittujuanfk
@@ -74,11 +76,13 @@ WHERE tkb IS NULL
         NULLIF($1, '')::int IS NULL 
         OR mmap.objectuserfk = NULLIF($1, '')::int
     )
+    AND
+    $2 = tor.islogistik
 ORDER BY tor.tglinput DESC 
 `
 
 const qGetKirim = `
-SELECT
+SELECT DISTINCT
     tkb.norec AS noreckirim,
     tkb.tglinput AS tglkirim,
     tkb.nopengiriman AS nokirim,
@@ -94,7 +98,9 @@ SELECT
     tor.noorder AS noorder,
     tor.keterangan AS keterangan,
     tkb.keterangan AS keterangankirim,
-    tkb.isverif AS isverif
+    tkb.isverif AS isverif,
+    COALESCE(tkb.istolak, FALSE) AS istolak,
+    tkb.alasantolak AS alasantolak
 FROM t_kirimbarang tkb
     LEFT JOIN m_unit mua ON mua.id = tkb.objectunitpengirimfk
     LEFT JOIN m_unit mut ON mut.id = tkb.objectunittujuanfk
@@ -102,8 +108,12 @@ FROM t_kirimbarang tkb
     LEFT JOIN t_orderbarang tor ON tkb.objectorderbarangfk = tor.norec
     LEFT JOIN m_mapusertounit mmap ON mmap.objectunitfk = mut.id
 WHERE 
-    NULLIF($1, '')::int IS NULL 
-    OR mmap.objectuserfk = NULLIF($1, '')::int
+    (
+        NULLIF($1, '')::int IS NULL 
+        OR mmap.objectuserfk = NULLIF($1, '')::int
+    )
+    AND
+    $2 = tkb.islogistik
 ORDER BY
     tkb.tglinput DESC
 `

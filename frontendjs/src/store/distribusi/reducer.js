@@ -16,7 +16,13 @@ import {
     CREATE_OR_UPDATE_KIRIM_BARANG_ERROR,
     VERIFY_KIRIM,
     VERIFY_KIRIM_SUCCESS,
-    VERIFY_KIRIM_ERROR
+    VERIFY_KIRIM_ERROR,
+    TOLAK_ORDER,
+    TOLAK_ORDER_SUCCESS,
+    TOLAK_ORDER_ERROR,
+    TOLAK_KIRIM,
+    TOLAK_KIRIM_SUCCESS,
+    TOLAK_KIRIM_ERROR
   } from "./actionType";
   
 const INIT_STATE = {
@@ -49,7 +55,17 @@ const INIT_STATE = {
         data: [],
         loading: false,
         error: null,
-    }
+    },
+    tolakOrder: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    tolakKirim: {
+        data: [],
+        loading: false,
+        error: null,
+    },
 };
   
 const Distribusi = (state = INIT_STATE, action) => {
@@ -253,6 +269,78 @@ const Distribusi = (state = INIT_STATE, action) => {
                 ...state,
                 verifyKirim: {
                     ...state.verifyKirim,
+                    loading: false,
+                    data: [],
+                    error: action.payload
+                }
+            }
+        }
+
+        case TOLAK_ORDER: {
+            return {
+                ...state,
+                tolakOrder: {
+                    ...state.tolakOrder,
+                    loading: false,
+                    data: [],
+                    error: action.payload
+                }
+            }
+        }
+
+        case TOLAK_ORDER_SUCCESS: {
+            return {
+                ...state,
+                tolakOrder: {
+                    ...state.tolakOrder,
+                    loading: false,
+                    data: [],
+                    error: action.payload
+                }
+            }
+        }
+
+        case TOLAK_ORDER_ERROR: {
+            return {
+                ...state,
+                tolakOrder: {
+                    ...state.tolakOrder,
+                    loading: false,
+                    data: [],
+                    error: action.payload
+                }
+            }
+        }
+
+        case TOLAK_KIRIM: {
+            return {
+                ...state,
+                tolakKirim: {
+                    ...state.tolakKirim,
+                    loading: false,
+                    data: [],
+                    error: action.payload
+                }
+            }
+        }
+
+        case TOLAK_KIRIM_SUCCESS: {
+            return {
+                ...state,
+                tolakKirim: {
+                    ...state.tolakKirim,
+                    loading: false,
+                    data: [],
+                    error: action.payload
+                }
+            }
+        }
+
+        case TOLAK_KIRIM_ERROR: {
+            return {
+                ...state,
+                tolakKirim: {
+                    ...state.tolakKirim,
                     loading: false,
                     data: [],
                     error: action.payload
