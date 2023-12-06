@@ -41,12 +41,17 @@ export default (sequelize, Sequelize) => {
         },
         islogistik: {
             type: Sequelize.BOOLEAN
+        },
+        istolak: {
+            type: Sequelize.BOOLEAN
+        },
+        alasantolak: {
+            type: Sequelize.CHAR(50)
         }
     }, {
         tableName: "t_orderbarang", 
         createdAt: false,
         updatedAt: false,
     })
-    console.log(t_orderbarang.tableName)
     return t_orderbarang;
 }

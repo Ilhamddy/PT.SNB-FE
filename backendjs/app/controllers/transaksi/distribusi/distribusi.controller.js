@@ -406,6 +406,107 @@ const verifyKirim = async (req, res) => {
     }
 }
 
+const tolakOrder = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const {
+            norecorder,
+            alasantolak
+        } = req.body
+        const {
+            orderBefore,
+            orderAfter
+        } = await db.sequelize.transaction(async (transaction) => {
+            const order = await db.t_orderbarang.findByPk(norecorder, {
+                transaction: transaction
+            });
+            if(!order) throw new Error(`Order tidak ditemukan ${norecorder}`)
+            const orderBefore = order.toJSON()
+            await order.update({
+                istolak: true,
+                alasantolak: alasantolak
+            }, {
+                transaction: transaction
+            })
+            const orderAfter = order.toJSON()
+            return {
+                orderBefore,
+                orderAfter
+            }
+        });
+        
+        const tempres = {
+            orderBefore: orderBefore,
+            orderAfter: orderAfter
+        };
+        res.status(200).send({
+            msg: 'Sukses',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message || 'Gagal',
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+const tolakKirim = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const {
+            noreckirim,
+            alasantolak
+        } = req.body
+        const {
+            kirimBefore,
+            kirimAfter
+        } = await db.sequelize.transaction(async (transaction) => {
+            const kirim = await db.t_kirimbarang.findByPk(noreckirim, {
+                transaction: transaction
+            });
+            if(!kirim) throw new Error(`Order tidak ditemukan ${noreckirim}`)
+            const kirimBefore = kirim.toJSON()
+            await kirim.update({
+                istolak: true,
+                alasantolak: alasantolak
+            }, {
+                transaction: transaction
+            })
+            const kirimAfter = kirim.toJSON()
+            return {
+                kirimBefore,
+                kirimAfter
+            }
+        });
+        
+        const tempres = {
+            kirimBefore,
+            kirimAfter
+        };
+
+        res.status(200).send({
+            msg: 'Sukses',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message || 'Gagal',
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export default {
     getStokBatch,
     getKemasanById,
@@ -413,7 +514,9 @@ export default {
     getOrderBarang,
     getOrderStokBatch,
     createOrUpdateKirimBarang,
-    verifyKirim
+    verifyKirim,
+    tolakOrder,
+    tolakKirim
 }
 
 const hCreateOrderDetail = async (req, res, transaction, {norecorder}) => {
@@ -488,7 +591,9 @@ const hCreateKirimBarang = async (req, res, transaction) => {
             keterangan: body.keterangankirim,
             tglinput: new Date(body.tanggalkirim),
             objectpegawaifk: req.idPegawai,
-            islogistik: body.islogistik
+            islogistik: body.islogistik,
+            istolak: false,
+            alasantolak: null
         }, {
             transaction: transaction
         })

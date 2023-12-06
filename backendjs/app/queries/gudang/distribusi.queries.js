@@ -62,7 +62,9 @@ SELECT DISTINCT
     tor.objectunittujuanfk AS unittujuan,
     mut.namaunit AS namaunittujuan,
     tor.noorder AS noorder,
-    tor.keterangan
+    tor.keterangan,
+    COALESCE(tor.istolak, FALSE) AS istolak,
+    tor.alasantolak AS alasantolak
 FROM t_orderbarang tor
     LEFT JOIN m_unit mua ON mua.id = tor.objectunitasalfk
     LEFT JOIN m_unit mut ON mut.id = tor.objectunittujuanfk
@@ -96,7 +98,9 @@ SELECT DISTINCT
     tor.noorder AS noorder,
     tor.keterangan AS keterangan,
     tkb.keterangan AS keterangankirim,
-    tkb.isverif AS isverif
+    tkb.isverif AS isverif,
+    COALESCE(tkb.istolak, FALSE) AS istolak,
+    tkb.alasantolak AS alasantolak
 FROM t_kirimbarang tkb
     LEFT JOIN m_unit mua ON mua.id = tkb.objectunitpengirimfk
     LEFT JOIN m_unit mut ON mut.id = tkb.objectunittujuanfk

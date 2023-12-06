@@ -16,7 +16,13 @@ import {
     CREATE_OR_UPDATE_KIRIM_BARANG_ERROR,
     VERIFY_KIRIM,
     VERIFY_KIRIM_SUCCESS,
-    VERIFY_KIRIM_ERROR
+    VERIFY_KIRIM_ERROR,
+    TOLAK_ORDER,
+    TOLAK_ORDER_SUCCESS,
+    TOLAK_ORDER_ERROR,
+    TOLAK_KIRIM,
+    TOLAK_KIRIM_SUCCESS,
+    TOLAK_KIRIM_ERROR
 } from "./actionType"
 
 
@@ -110,5 +116,41 @@ export const verifyKirimSuccess = (data) => ({
 
 export const verifyKirimError = (error) => ({
     type: VERIFY_KIRIM_ERROR,
+    payload: error
+})
+
+export const tolakOrder = (data, callback) => ({
+    type: TOLAK_ORDER,
+    payload: {
+        data: data, 
+        callback: callback
+    }
+})
+
+export const tolakOrderSuccess = (data) => ({
+    type: TOLAK_ORDER_SUCCESS,
+    payload: data
+})
+
+export const tolakOrderError = (error) => ({
+    type: TOLAK_ORDER_ERROR,
+    payload: error
+})
+
+export const tolakKirim = (data, callback) => ({
+    type: TOLAK_KIRIM,
+    payload: {
+        data: data, 
+        callback: callback
+    }
+})
+
+export const tolakKirimSuccess = (data) => ({
+    type: TOLAK_KIRIM_SUCCESS,
+    payload: data
+})
+
+export const tolakKirimError = (error) => ({
+    type: TOLAK_KIRIM_ERROR,
     payload: error
 })

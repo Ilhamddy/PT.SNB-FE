@@ -13,7 +13,11 @@ import {
     createOrUpdateKirimBarangSuccess,
     createOrUpdateKirimBarangError,
     verifyKirimSuccess,
-    verifyKirimError
+    verifyKirimError,
+    tolakOrderSuccess,
+    tolakOrderError,
+    tolakKirimSuccess,
+    tolakKirimError
 } from "./action";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -23,7 +27,9 @@ import {
     GET_ORDER_BARANG,
     GET_ORDER_STOK_BATCH,
     CREATE_OR_UPDATE_KIRIM_BARANG,
-    VERIFY_KIRIM
+    VERIFY_KIRIM,
+    TOLAK_ORDER,
+    TOLAK_KIRIM
 } from "./actionType";
 
 const serviceDistribusi = new ServiceDistribusi();
@@ -43,7 +49,7 @@ function* onCreateOrUpdateOrderbarang({payload: { body, callback }}) {
         let response = yield call(serviceDistribusi.createOrUpdateOrderbarang, body);
         yield put(createOrUpdateOrderbarangSuccess(response.data));
         toast.success(response.msg,  { autoClose: 3000 });
-        callback && callback()
+        callback && callback(response)
     }catch(error){
         console.error(error);
         yield put(createOrUpdateOrderbarangError(error));
@@ -87,11 +93,34 @@ function* onCreateOrUpdateKirimBarang({payload: { body, callback }}) {
     try {
         let response = yield call(serviceDistribusi.createOrUpdateKirimBarang, body);
         yield put(createOrUpdateKirimBarangSuccess(response.data));
-        toast.success(response.msg,  { autoClose: 3000 });
+        toast.success(response?.msg || "Sukses Verifikasi",  { autoClose: 3000 });
         callback && callback()
     }catch(error){
         yield put(createOrUpdateKirimBarangError(error));
-        console.error(error?.response?.data?.msg);
+        toast.error(error?.response?.data?.msg || "Error");
+    }
+}
+
+function* onTolakOrder({payload: {data, callback}}) {
+    try {
+        let response = yield call(serviceDistribusi.tolakOrder, data);
+        yield put(tolakOrderSuccess(response.data));
+        callback && callback()
+        toast.success(response?.msg || "Sukses")
+    } catch (error) {
+        yield put(tolakOrderError(error));
+        toast.error(error?.response?.msg || "Error")
+    }
+}
+
+function* onTolakKirim({payload: { body, callback }}) {
+    try {
+        let response = yield call(serviceDistribusi.tolakKirim, body);
+        yield put(tolakKirimSuccess(response.data));
+        toast.success(response.data?.msg || "Sukses",  { autoClose: 3000 });
+        callback && callback()
+    }catch(error){
+        yield put(tolakKirimError(error));
         toast.error(error?.response?.data?.msg || "Error");
     }
 }
@@ -121,6 +150,14 @@ export function* watchVerifyKirim(){
     yield takeEvery(VERIFY_KIRIM, onVerifyKirim)
 }
 
+export function* watchTolakOrder(){
+    yield takeEvery(TOLAK_ORDER, onTolakOrder)
+}
+
+export function* watchTolakKirim(){
+    yield takeEvery(TOLAK_KIRIM, onTolakKirim)
+}
+
 function* registrasiSaga() {
     yield all([
         fork(watchGetStokBatch),
@@ -128,7 +165,9 @@ function* registrasiSaga() {
         fork(watchGetOrderBarang),
         fork(watchGetOrderStokBatch),
         fork(watchCreateOrUpdateKirimBarang),
-        fork(watchVerifyKirim)
+        fork(watchVerifyKirim),
+        fork(watchTolakOrder),
+        fork(watchTolakKirim)
     ]);
 }
 

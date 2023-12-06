@@ -53,5 +53,17 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.verifyKirim
     )
+
+    app.post(
+        "/api/transaksi/gudang/distribusi/tolak-order",
+        [authJwt.verifyToken],
+        controller.tolakOrder
+    )
+
+    app.post(
+        "/api/transaksi/gudang/distribusi/tolak-kirim",
+        [authJwt.verifyToken],
+        controller.tolakKirim
+    )
         
 }

@@ -26,4 +26,12 @@ export default class ServiceDistribusi{
     verifyKirim = async (data) => {
         return await api.create(`/transaksi/gudang/distribusi/verify-kirim`, data)
     }
+
+    tolakOrder = async (data) => {
+        return await api.create(`/transaksi/gudang/distribusi/tolak-order`, data)
+    }
+
+    tolakKirim = async (data) => {
+        return await api.create(`/transaksi/gudang/distribusi/tolak-kirim`, data)
+    }
 }

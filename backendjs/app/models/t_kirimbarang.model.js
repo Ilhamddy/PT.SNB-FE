@@ -51,6 +51,12 @@ export default (sequelize, Sequelize) => {
         },
         islogistik: {
             type: Sequelize.BOOLEAN
+        },
+        istolak: {
+            type: Sequelize.BOOLEAN
+        },
+        alasantolak: {
+            type: Sequelize.CHAR(50)
         }
     }, {
         tableName: "t_kirimbarang", 
