@@ -227,7 +227,9 @@ const DistribusiOrderList = ({ isUnit, isLogistik }) => {
                 >
                   <DropdownItem>
                     <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
-                    {row.isverif ? 'Lihat kiriman' : 'Verifikasi'}
+                    {row.isverif || row.istolak
+                      ? 'Lihat kiriman'
+                      : 'Verifikasi'}
                   </DropdownItem>
                 </Link>
               )}
@@ -241,7 +243,7 @@ const DistribusiOrderList = ({ isUnit, isLogistik }) => {
                   </DropdownItem>
                 </Link>
               )}
-              {isUnit && !row.isverif && (
+              {isUnit && !row.isverif && !row.istolak && (
                 <DropdownItem
                   onClick={() => {
                     vTolakKirim.setFieldValue('noreckirim', row.noreckirim)
