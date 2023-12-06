@@ -470,7 +470,7 @@ const tolakKirim = async (req, res) => {
             const kirim = await db.t_kirimbarang.findByPk(noreckirim, {
                 transaction: transaction
             });
-            if(!kirim) throw new Error(`Order tidak ditemukan ${noreckirim}`)
+            if(!kirim) throw new Error(`Kiriman tidak ditemukan ${noreckirim}`)
             const kirimBefore = kirim.toJSON()
             await kirim.update({
                 istolak: true,

@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import {
   getOrderBarang,
   getUnitUser,
+  tolakKirim,
   tolakOrder,
   verifyKirim,
 } from '../../store/actions'
@@ -71,6 +72,26 @@ const DistribusiOrderList = ({ isUnit, isLogistik }) => {
     onSubmit: (value, { resetForm }) => {
       dispatch(
         tolakOrder(value, () => {
+          dispatch(
+            getOrderBarang({ isGudang: !isUnit, isLogistik: !!isLogistik })
+          )
+          resetForm()
+        })
+      )
+    },
+  })
+
+  const vTolakKirim = useFormik({
+    initialValues: {
+      noreckirim: '',
+      alasantolak: '',
+    },
+    validationSchema: Yup.object({
+      alasantolak: Yup.string().required('Alasan tolak perlu diisi'),
+    }),
+    onSubmit: (value, { resetForm }) => {
+      dispatch(
+        tolakKirim(value, () => {
           dispatch(
             getOrderBarang({ isGudang: !isUnit, isLogistik: !!isLogistik })
           )
@@ -200,7 +221,7 @@ const DistribusiOrderList = ({ isUnit, isLogistik }) => {
               <i className="ri-apps-2-line"></i>
             </DropdownToggle>
             <DropdownMenu className="dropdown-menu-end">
-              {isUnit ? (
+              {isUnit && (
                 <Link
                   to={`/${linkDistribusi}/gudang/distribusi-kirim-verif/${row.noreckirim}`}
                 >
@@ -209,7 +230,8 @@ const DistribusiOrderList = ({ isUnit, isLogistik }) => {
                     {row.isverif ? 'Lihat kiriman' : 'Verifikasi'}
                   </DropdownItem>
                 </Link>
-              ) : (
+              )}
+              {!isUnit && (
                 <Link
                   to={`/${linkDistribusi}/gudang/distribusi-kirim-langsung/${row.noreckirim}`}
                 >
@@ -218,6 +240,16 @@ const DistribusiOrderList = ({ isUnit, isLogistik }) => {
                     {'Lihat Detail'}
                   </DropdownItem>
                 </Link>
+              )}
+              {isUnit && !row.isverif && (
+                <DropdownItem
+                  onClick={() => {
+                    vTolakKirim.setFieldValue('noreckirim', row.noreckirim)
+                  }}
+                >
+                  <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
+                  Tolak Kiriman
+                </DropdownItem>
               )}
             </DropdownMenu>
           </UncontrolledDropdown>
@@ -255,13 +287,26 @@ const DistribusiOrderList = ({ isUnit, isLogistik }) => {
       name: <span className="font-weight-bold fs-13">Unit Membutuhkan</span>,
       sortable: true,
       selector: (row) => row.namaunittujuan,
-      width: '200px',
+      width: '150px',
     },
     {
       name: <span className="font-weight-bold fs-13">Jenis Kirim</span>,
       sortable: true,
       selector: (row) => row.namajenisorder,
-      width: '200px',
+      width: '120px',
+    },
+    {
+      name: <span className="font-weight-bold fs-13">Status</span>,
+      sortable: true,
+      selector: (row) =>
+        row.isverif ? 'Sudah verif' : row.istolak ? 'Ditolak' : 'Belum verif',
+      width: '120px',
+    },
+    {
+      name: <span className="font-weight-bold fs-13">Alasan Tolak</span>,
+      sortable: true,
+      selector: (row) => row.alasantolak || '-',
+      width: '150px',
     },
   ]
 
@@ -298,6 +343,37 @@ const DistribusiOrderList = ({ isUnit, isLogistik }) => {
             !!vTolakPesanan.errors.alasantolak && (
               <FormFeedback type="invalid">
                 <div>{vTolakPesanan.errors.alasantolak}</div>
+              </FormFeedback>
+            )}
+        </ColLabelInput>
+      </DeleteModalCustom>
+      <DeleteModalCustom
+        show={!!vTolakKirim.values.noreckirim}
+        onDeleteClick={() => {
+          vTolakKirim.handleSubmit()
+        }}
+        showMessage={false}
+        onCloseClick={() => vTolakKirim.resetForm()}
+        buttonHapus="Tolak"
+      >
+        <ColLabelInput label={'alasan tolak'}>
+          <Input
+            id="alasantolak"
+            name="alasantolak"
+            type="text"
+            value={vTolakKirim.values.alasantolak}
+            onChange={(e) => {
+              vTolakKirim.setFieldValue('alasantolak', e.target.value)
+            }}
+            invalid={
+              vTolakKirim.touched?.alasantolak &&
+              !!vTolakKirim.errors?.alasantolak
+            }
+          />
+          {vTolakKirim.touched?.alasantolak &&
+            !!vTolakKirim.errors.alasantolak && (
+              <FormFeedback type="invalid">
+                <div>{vTolakKirim.errors.alasantolak}</div>
               </FormFeedback>
             )}
         </ColLabelInput>

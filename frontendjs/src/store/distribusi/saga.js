@@ -113,9 +113,9 @@ function* onTolakOrder({payload: {data, callback}}) {
     }
 }
 
-function* onTolakKirim({payload: { body, callback }}) {
+function* onTolakKirim({payload: { data, callback }}) {
     try {
-        let response = yield call(serviceDistribusi.tolakKirim, body);
+        let response = yield call(serviceDistribusi.tolakKirim, data);
         yield put(tolakKirimSuccess(response.data));
         toast.success(response.data?.msg || "Sukses",  { autoClose: 3000 });
         callback && callback()
