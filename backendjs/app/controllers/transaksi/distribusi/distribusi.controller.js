@@ -22,8 +22,9 @@ const t_stokunit = db.t_stokunit
 export const getStokBatch = async (req, res) => {
     const logger = res.locals.logger
     try{
-        const { idunit } = req.query
-        const { rows } = await pool.query(qGetStokUnit, [idunit])
+        let { idunit, islogistik } = req.query
+        islogistik = islogistik === "true"
+        const { rows } = await pool.query(qGetStokUnit, [idunit, islogistik])
         let datas = []
         // kelompokkan sesuai produk
         rows.forEach((stok) => {
@@ -104,6 +105,7 @@ const createOrUpdateOrderbarang = async (req, res) => {
                 tglinput: new Date(body.tanggalorder),
                 objectpegawaifk: req.idPegawai,
                 objectstatusveriffk: 1,
+                islogistik: body.islogistik
             }, {
                 transaction: transaction
             })
@@ -118,6 +120,7 @@ const createOrUpdateOrderbarang = async (req, res) => {
                 tglinput: new Date(body.tanggalorder),
                 objectpegawaifk: req.idPegawai,
                 objectstatusveriffk: 1,
+                islogistik: body.islogistik
             }, {
                 where: {
                     norec: body.norecorder
@@ -157,8 +160,10 @@ const getOrderBarang = async (req, res) => {
     const logger = res.locals.logger
     try {
         const isGudang = req.query.isGudang === "true"
-        const order = (await pool.query(qGetOrder, [isGudang ? '' : req.userId]));
-        const kirim = (await pool.query(qGetKirim, [isGudang ? '' : req.userId]));
+        const isLogistik = req.query.isLogistik === "true"
+
+        const order = (await pool.query(qGetOrder, [isGudang ? '' : req.userId, isLogistik]));
+        const kirim = (await pool.query(qGetKirim, [isGudang ? '' : req.userId, isLogistik]));
 
         let tempres = {
             order: order.rows,
@@ -482,7 +487,8 @@ const hCreateKirimBarang = async (req, res, transaction) => {
             objectjenisorderbarangfk: body.jeniskirim,
             keterangan: body.keterangankirim,
             tglinput: new Date(body.tanggalkirim),
-            objectpegawaifk: req.idPegawai
+            objectpegawaifk: req.idPegawai,
+            islogistik: body.islogistik
         }, {
             transaction: transaction
         })
@@ -498,7 +504,8 @@ const hCreateKirimBarang = async (req, res, transaction) => {
             objectjenisorderbarangfk: body.jeniskirim,
             keterangan: body.keterangankirim,
             tglinput: new Date(body.tanggalkirim),
-            objectpegawaifk: req.idPegawai
+            objectpegawaifk: req.idPegawai,
+            islogistik: body.islogistik
         }, {
             where: {
                 norec: body.noreckirim

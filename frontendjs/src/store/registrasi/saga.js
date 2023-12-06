@@ -15,7 +15,8 @@ import {
     SAVE_BATAL_REGISTRASI,
     SAVE_REGISTRASI_MUTASI,
     GET_HISTORY_REGISTRASI,
-    SAVE_MERGE_NOREGISTRASI
+    SAVE_MERGE_NOREGISTRASI,
+    GET_NO_REGISTRASI_PASIEN
 } from "./actionType";
 import {
     registrasiGetError,
@@ -42,7 +43,7 @@ import {
     saveBatalRegistrasiError,
     saveRegistrasiMutasiSuccess, saveRegistrasiMutasiError,
     getHistoryRegistrasiSuccess, getHistoryRegistrasiError,
-    saveMergeNoRegistrasiSuccess, saveMergeNoRegistrasiError
+    saveMergeNoRegistrasiSuccess, saveMergeNoRegistrasiError, getNoRegistrasiPasienSuccess, getNoRegistrasiPasienError
 } from "./action";
 
 import { toast } from 'react-toastify';
@@ -231,6 +232,17 @@ function* onsaveMergeNoRegistrasi({ payload: { data, callback } }) {
     }
 }
 
+function* onGetNoRegistrasi({ payload: { queries } }) {
+    try {
+        let response = null;
+        response = yield call(serviceRegistrasi.getNoRegistrasiPasien, queries);
+        yield put(getNoRegistrasiPasienSuccess(response.data));
+    } catch (error) {
+        yield put(getNoRegistrasiPasienError(error));
+    }
+}
+
+
 
 export function* watchSaveRegistrasi() {
     yield takeEvery(REGISTRASI_SAVE, onSaveRegistrasi);
@@ -285,6 +297,9 @@ export function* watchongetHistoryRegistrasi() {
 export function* wathconsaveMergeNoRegistrasi(){
     yield takeEvery(SAVE_MERGE_NOREGISTRASI, onsaveMergeNoRegistrasi)
 }
+export function* watchGetNoRegistrasi(){
+    yield takeEvery(GET_NO_REGISTRASI_PASIEN, onGetNoRegistrasi)
+}
 
 function* registrasiSaga() {
     yield all([
@@ -301,7 +316,8 @@ function* registrasiSaga() {
         fork(watchsaveBatalRegistrasi),
         fork(watchonsaveRegistrasiMutasi),
         fork(watchongetHistoryRegistrasi),
-        fork(wathconsaveMergeNoRegistrasi)
+        fork(wathconsaveMergeNoRegistrasi),
+        fork(watchGetNoRegistrasi)
     ]);
 }
 

@@ -36,7 +36,7 @@ import KontainerFlatpickr from "../../Components/KontainerFlatpickr/KontainerFla
 
 
 
-const DistribusiOrder = ({isUnit}) => {
+const DistribusiOrder = ({isUnit, isLogistik = false}) => {
     const dispatch = useDispatch()
     const [tglSekarang] = useState(() => new Date().toISOString())
 
@@ -69,6 +69,7 @@ const DistribusiOrder = ({isUnit}) => {
             keterangan: "",
             /**@type {import("../../../../backendjs/app/queries/gudang/distribusi.queries").ListOrderStokUnit} */
             isiproduk: [],
+            islogistik: !!isLogistik
         },
         validationSchema: Yup.object({
             tanggalorder: Yup.string().required("Tanggal Order harus diisi"),
@@ -76,7 +77,7 @@ const DistribusiOrder = ({isUnit}) => {
             jenisorder: Yup.string().required("Jenis Order harus diisi"),
             unitorder: Yup.string().required("Unit Order harus diisi"),
             unittujuan: Yup.string().required("Unit Tujuan harus diisi"),
-            keterangan: Yup.string().required("Keterangan Kirim harus diisi"),
+            keterangan: Yup.string().required("Keterangan Order harus diisi"),
         }),
         onSubmit: (values, {resetForm}) => {
             dispatch(createOrUpdateOrderbarang(values, () => {
@@ -448,7 +449,7 @@ const DistribusiOrder = ({isUnit}) => {
                         options={unit}
                         onChange={(val) => {
                             vOrder.setFieldValue("unittujuan", val?.value || "")
-                            dispatch(getStokBatch({ idunit: val?.value || "" }))
+                            dispatch(getStokBatch({ idunit: val?.value || "", islogistik: isLogistik }))
                         }}
                         value={vOrder.values?.unittujuan}
                         isClearEmpty
@@ -472,7 +473,7 @@ const DistribusiOrder = ({isUnit}) => {
                         style={{ color: "black" }} 
                         htmlFor={`keterangan`}
                         className="form-label">
-                        Keterangan Kirim
+                        Keterangan Order
                     </Label>
                 </Col>
                 <Col xl={3} lg={4} className="mb-2">

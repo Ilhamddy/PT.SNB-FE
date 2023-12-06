@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   Modal,
   ModalBody,
@@ -18,11 +18,17 @@ import { useSelector, useDispatch } from 'react-redux'
 import { useFormik } from 'formik'
 import Flatpickr from 'react-flatpickr'
 import * as Yup from 'yup'
-import { saveMergeNoRegistrasi } from '../../store/actions'
+import {
+  getNoRegistrasiPasien,
+  saveMergeNoRegistrasi,
+} from '../../store/actions'
 import KontainerFlatpickr from '../KontainerFlatpickr/KontainerFlatpickr'
 
 const MergeNoRegistrasi = ({ show, onCloseClick, tempNorecDp }) => {
   const dispatch = useDispatch()
+  const noregistrasi = useSelector(
+    (state) => state.Registrasi.getNoRegistrasi?.data?.noregistrasi
+  )
   const [dateStart, setdateStart] = useState(() => new Date().toISOString())
   const validation = useFormik({
     enableReinitialize: true,
@@ -30,7 +36,7 @@ const MergeNoRegistrasi = ({ show, onCloseClick, tempNorecDp }) => {
       norecdp: tempNorecDp,
       tglbatal: dateStart,
       alasan: '',
-      noregistrasitujuan: '',
+      norectujuan: '',
       password: '',
     },
     validationSchema: Yup.object({
@@ -44,6 +50,9 @@ const MergeNoRegistrasi = ({ show, onCloseClick, tempNorecDp }) => {
       dispatch(saveMergeNoRegistrasi(values, () => {}))
     },
   })
+  useEffect(() => {
+    dispatch(getNoRegistrasiPasien({ norecdp: tempNorecDp }))
+  }, [tempNorecDp, dispatch])
   return (
     <Modal isOpen={show} toggle={onCloseClick} centered={true}>
       <ModalBody className="py-3 px-5">
@@ -97,19 +106,19 @@ const MergeNoRegistrasi = ({ show, onCloseClick, tempNorecDp }) => {
                   </Col>
                   <Col md={8} className="mb-2">
                     <CustomSelect
-                      id="norecdp"
-                      name="norecdp"
-                      options={[]}
+                      id="norectujuan"
+                      name="norectujuan"
+                      options={noregistrasi}
                       onChange={(e) => {
-                        validation.setFieldValue('norecdp', e?.value || '')
+                        validation.setFieldValue('norectujuan', e?.value || '')
                       }}
-                      value={validation.values.norecdp}
+                      value={validation.values.norectujuan}
                       className={`input row-header ${
-                        !!validation?.errors.norecdp ? 'is-invalid' : ''
+                        !!validation?.errors.norectujuan ? 'is-invalid' : ''
                       }`}
                     />
-                    {validation.touched.norecdp &&
-                      !!validation.errors.norecdp && (
+                    {validation.touched.norectujuan &&
+                      !!validation.errors.norectujuan && (
                         <FormFeedback type="invalid">
                           <div>{validation.errors.norecdp}</div>
                         </FormFeedback>

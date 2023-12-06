@@ -38,6 +38,9 @@ export default (sequelize, Sequelize) => {
         },
         objectstatusveriffk: {
             type: Sequelize.INTEGER,
+        },
+        islogistik: {
+            type: Sequelize.BOOLEAN
         }
     }, {
         tableName: "t_orderbarang", 

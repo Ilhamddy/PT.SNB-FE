@@ -719,7 +719,18 @@ const authProtectedRoutes = [
   { path: "/logistik/gudang/pemesanan-barang", component: <PemesananBarang isLogistik />},
   { path: "/logistik/gudang/penerimaan-produk-list", component: <PenerimaanProdukList isLogistik /> },
 
-  //distribusi 
+  // distribusi logistik
+  { path: "/logistik/gudang/distribusi-order", component: <DistribusiOrder isLogistik/> },
+  { path: "/logistik/gudang/distribusi-order-unit", component: <DistribusiOrder isUnit isLogistik/> },
+  { path: "/logistik/gudang/distribusi-kirim/:norecorder", component: <DistribusiKirim isLogistik/> },
+  { path: "/logistik/gudang/distribusi-kirim-langsung", component: <DistribusiKirim isLogistik/> },
+  { path: "/logistik/gudang/distribusi-kirim-langsung/:noreckirim", component: <DistribusiKirim isLogistik/> },
+  { path: "/logistik/gudang/distribusi-kirim-verif/:noreckirim", component: <DistribusiKirim isVerif isLogistik/> },
+
+  { path: "/logistik/gudang/distribusi-order-list", component: <DistribusiOrderList isLogistik /> },
+  { path: "/logistik/gudang/unit-order-list", component: <DistribusiOrderList isUnit isLogistik/> },
+
+  // distribusi 
   { path: "/farmasi/gudang/distribusi-order", component: <DistribusiOrder /> },
   { path: "/farmasi/gudang/distribusi-order-unit", component: <DistribusiOrder isUnit /> },
   { path: "/farmasi/gudang/distribusi-kirim/:norecorder", component: <DistribusiKirim /> },
@@ -727,9 +738,8 @@ const authProtectedRoutes = [
   { path: "/farmasi/gudang/distribusi-kirim-langsung/:noreckirim", component: <DistribusiKirim /> },
   { path: "/farmasi/gudang/distribusi-kirim-verif/:noreckirim", component: <DistribusiKirim isVerif /> },
   
-
-  { path: "/logistik/gudang/distribusi-order-list", component: <DistribusiOrderList /> },
-  { path: "/logistik/gudang/unit-order-list", component: <DistribusiOrderList isUnit/> },
+  { path: "/farmasi/gudang/distribusi-order-list", component: <DistribusiOrderList /> },
+  { path: "/farmasi/gudang/unit-order-list", component: <DistribusiOrderList isUnit/> },
 
   //farmasi
   { path: "/farmasi/verif-order-resep", component: <VerifikasiResep /> },

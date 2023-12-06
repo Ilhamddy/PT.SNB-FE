@@ -30,7 +30,7 @@ import { dateLocal } from '../../utils/format'
 import { useFormik } from 'formik'
 import { tableCustomStyles } from '../../Components/Table/tableCustomStyles'
 
-const DistribusiOrderList = ({ isUnit }) => {
+const DistribusiOrderList = ({ isUnit, isLogistik }) => {
   const dispatch = useDispatch()
 
   const { listAll, listKirim } = useSelector((state) => ({
@@ -52,8 +52,8 @@ const DistribusiOrderList = ({ isUnit }) => {
   })
 
   useEffect(() => {
-    dispatch(getOrderBarang({ isGudang: !isUnit }))
-  }, [dispatch, isUnit])
+    dispatch(getOrderBarang({ isGudang: !isUnit, isLogistik: !!isLogistik }))
+  }, [dispatch, isUnit, isLogistik])
 
   /**
    * @type {import("react-data-table-component").TableColumn[]}
@@ -75,7 +75,11 @@ const DistribusiOrderList = ({ isUnit }) => {
               <i className="ri-apps-2-line"></i>
             </DropdownToggle>
             <DropdownMenu className="dropdown-menu-end">
-              <Link to={`/farmasi/gudang/distribusi-kirim/${row.norecorder}`}>
+              <Link
+                to={`/${
+                  isLogistik ? 'logistik' : 'farmasi'
+                }/gudang/distribusi-kirim/${row.norecorder}`}
+              >
                 <DropdownItem>
                   <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
                   Kirim Barang
@@ -276,7 +280,9 @@ const DistribusiOrderList = ({ isUnit }) => {
             <Col lg={'auto'} className="d-flex flex-row-reverse">
               <Link
                 to={
-                  '/farmasi/gudang/distribusi-order' + (isUnit ? '-unit' : '')
+                  `/${
+                    isLogistik ? 'logistik' : 'farmasi'
+                  }/gudang/distribusi-order` + (isUnit ? '-unit' : '')
                 }
               >
                 <Button color={'info'}>Pesan</Button>
@@ -301,7 +307,11 @@ const DistribusiOrderList = ({ isUnit }) => {
             </Col>
             {!isUnit && (
               <Col lg={'auto'} className="d-flex flex-row-reverse">
-                <Link to={'/farmasi/gudang/distribusi-kirim-langsung'}>
+                <Link
+                  to={`/${
+                    isLogistik ? 'logistik' : 'farmasi'
+                  }/gudang/distribusi-kirim-langsung`}
+                >
                   <Button color={'info'}>Kirim</Button>
                 </Link>
               </Col>

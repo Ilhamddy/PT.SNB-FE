@@ -40,7 +40,7 @@ import { Link, useParams } from 'react-router-dom'
 import { tableCustomStyles } from '../../Components/Table/tableCustomStyles'
 import KontainerFlatpickr from '../../Components/KontainerFlatpickr/KontainerFlatpickr'
 
-const DistribusiKirim = ({ isVerif }) => {
+const DistribusiKirim = ({ isVerif, isLogistik = false }) => {
   const dispatch = useDispatch()
   const { norecorder, noreckirim } = useParams()
   const [tglSekarang] = useState(() => new Date().toISOString())
@@ -79,6 +79,7 @@ const DistribusiKirim = ({ isVerif }) => {
       isverif: false,
       /**@type {import("../../../../backendjs/app/queries/gudang/distribusi.queries").ListStokUnit} */
       batchproduk: [],
+      islogistik: !!isLogistik,
     },
     validationSchema: Yup.object({
       tanggalkirim: Yup.string().required('Tanggal Order harus diisi'),
@@ -293,8 +294,13 @@ const DistribusiKirim = ({ isVerif }) => {
 
   useEffect(() => {
     vKirim.values.unitpengirim &&
-      dispatch(getStokBatch({ idunit: vKirim.values.unitpengirim }))
-  }, [vKirim.values.unitpengirim, dispatch])
+      dispatch(
+        getStokBatch({
+          idunit: vKirim.values.unitpengirim,
+          islogistik: isLogistik,
+        })
+      )
+  }, [vKirim.values.unitpengirim, dispatch, isLogistik])
 
   useEffect(() => {
     const setFF = vKirim.setFieldValue
