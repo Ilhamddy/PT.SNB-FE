@@ -252,7 +252,11 @@ const DistribusiOrderList = ({ isUnit, isLogistik }) => {
       </Modal>
       <Container fluid>
         <BreadCrumb
-          title={isUnit ? 'Order Barang Unit' : 'Order Barang Gudang'}
+          title={
+            isUnit
+              ? 'Order Barang Ke Gudang Dan Apotek'
+              : 'Order Barang dari Unit'
+          }
           pageTitle="Gudang"
         />
         <Card className="p-5">
@@ -275,7 +279,11 @@ const DistribusiOrderList = ({ isUnit, isLogistik }) => {
           </Row>
           <Row className="d-flex justify-content-between mb-3">
             <Col lg="auto">
-              <h3>Pemesanan</h3>
+              <h3>
+                {isUnit
+                  ? 'Pemesanan Ke Gudang dan Apotek'
+                  : 'Pemesanan dari Unit'}
+              </h3>
             </Col>
             <Col lg={'auto'} className="d-flex flex-row-reverse">
               <Link
@@ -303,7 +311,11 @@ const DistribusiOrderList = ({ isUnit, isLogistik }) => {
           </Row>
           <Row className="d-flex justify-content-between mb-3">
             <Col lg="auto">
-              <h3>Pengiriman</h3>
+              <h3>
+                {isUnit
+                  ? 'Pengiriman dari Gudang dan Apotek'
+                  : 'Pengiriman ke Unit'}
+              </h3>
             </Col>
             {!isUnit && (
               <Col lg={'auto'} className="d-flex flex-row-reverse">
