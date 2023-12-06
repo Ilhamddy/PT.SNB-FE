@@ -24,4 +24,7 @@ export default class ServiceSatuSehat {
     upsertPatient = async (body) => {
         return await api.create("/transaksi/satu-sehat/update-ihs-patient", body)
     }
+    upsertEncounter = async (body) => {
+        return await api.create("/transaksi/satu-sehat/upsert-encounter", body)
+    }
 }

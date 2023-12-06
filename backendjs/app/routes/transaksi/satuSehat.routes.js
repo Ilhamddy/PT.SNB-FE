@@ -44,4 +44,9 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.updateIhsPatient
     )
+    app.post(
+        "/api/transaksi/satu-sehat/upsert-encounter",
+        [authJwt.verifyToken],
+        controller.upsertEncounter
+    )
 }
