@@ -113,7 +113,7 @@ WHERE
         OR mmap.objectuserfk = NULLIF($1, '')::int
     )
     AND
-    $2 = tor.islogistik
+    $2 = tkb.islogistik
 ORDER BY
     tkb.tglinput DESC
 `

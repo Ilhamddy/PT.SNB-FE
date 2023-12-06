@@ -85,10 +85,13 @@ const DistribusiOrder = ({ isUnit, isLogistik = false, isEdit = false }) => {
       dispatch(
         createOrUpdateOrderbarang(values, (response) => {
           resetForm()
+          // navigate(
+          //   `/${isLogistik ? 'logistik' : 'farmasi'}/gudang/distribusi-order/${
+          //     response.data.createdOrUpdatedPenerimaan.norec
+          //   }`
+          // )
           navigate(
-            `/${isLogistik ? 'logistik' : 'farmasi'}/gudang/distribusi-order/${
-              response.data.createdOrUpdatedPenerimaan.norec
-            }`
+            `/${isLogistik ? 'logistik' : 'farmasi'}/gudang/unit-order-list`
           )
         })
       )
@@ -191,7 +194,7 @@ const DistribusiOrder = ({ isUnit, isLogistik = false, isEdit = false }) => {
         noreckirim: '',
       })
     )
-  }, [dispatch, norecorder])
+  }, [dispatch, norecorder, isEdit])
 
   useEffect(() => {
     const setFF = vProduk.setFieldValue
@@ -378,7 +381,7 @@ const DistribusiOrder = ({ isUnit, isLogistik = false, isEdit = false }) => {
     },
   ]
 
-  const isChange = (!!norecorder && !isEdit) || (!norecorder && !!isEdit)
+  const isDisable = (!!norecorder && !isEdit) || (!norecorder && !!isEdit)
 
   const OrderBarang = (
     <Card className="p-5">
@@ -402,7 +405,7 @@ const DistribusiOrder = ({ isUnit, isLogistik = false, isEdit = false }) => {
               dateFormat: 'Y-m-d',
               defaultDate: 'today',
             }}
-            disabled={isChange}
+            disabled={isDisable}
             onChange={([newDate]) => {
               vOrder.setFieldValue('tanggalorder', newDate.toISOString())
             }}
@@ -428,7 +431,7 @@ const DistribusiOrder = ({ isUnit, isLogistik = false, isEdit = false }) => {
             name={`noorder`}
             type="text"
             value={vOrder.values.noorder}
-            disabled={isChange}
+            disabled={isDisable}
             onChange={vOrder.handleChange}
             invalid={vOrder.touched?.noorder && !!vOrder?.errors?.noorder}
           />
@@ -453,7 +456,7 @@ const DistribusiOrder = ({ isUnit, isLogistik = false, isEdit = false }) => {
             name="jenisorder"
             options={jenisorderbarang}
             value={vOrder.values?.jenisorder}
-            isDisabled={isChange}
+            isDisabled={isDisable}
             onChange={(val) => {
               vOrder.setFieldValue('jenisorder', val?.value || '')
             }}
@@ -482,7 +485,7 @@ const DistribusiOrder = ({ isUnit, isLogistik = false, isEdit = false }) => {
             name="unitorder"
             options={isUnit ? unitUser : unit}
             value={vOrder.values?.unitorder}
-            isDisabled={isChange}
+            isDisabled={isDisable}
             onChange={(val) => {
               vOrder.setFieldValue('unitorder', val?.value || '')
             }}
@@ -510,7 +513,7 @@ const DistribusiOrder = ({ isUnit, isLogistik = false, isEdit = false }) => {
             id="unittujuan"
             name="unittujuan"
             options={unit}
-            isDisabled={isChange}
+            isDisabled={isDisable}
             onChange={(val) => {
               vOrder.setFieldValue('unittujuan', val?.value || '')
             }}
@@ -539,7 +542,7 @@ const DistribusiOrder = ({ isUnit, isLogistik = false, isEdit = false }) => {
             id={`keterangan`}
             name={`keterangan`}
             type="text"
-            disabled={isChange}
+            disabled={isDisable}
             value={vOrder.values.keterangan}
             onChange={vOrder.handleChange}
             invalid={vOrder.touched?.keterangan && !!vOrder?.errors?.keterangan}
@@ -745,7 +748,7 @@ const DistribusiOrder = ({ isUnit, isLogistik = false, isEdit = false }) => {
               console.log('errors', vProduk.errors)
               vProduk.handleSubmit()
             }}
-            disabled={isChange}
+            disabled={isDisable}
           >
             Tambah
           </Button>
@@ -775,7 +778,7 @@ const DistribusiOrder = ({ isUnit, isLogistik = false, isEdit = false }) => {
           color="success"
           placement="top"
           formTarget="form-input-penerimaan"
-          disabled={isChange}
+          disabled={isDisable}
         >
           {isEdit ? 'Edit' : 'Simpan'}
         </Button>

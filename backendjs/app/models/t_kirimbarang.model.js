@@ -57,7 +57,7 @@ export default (sequelize, Sequelize) => {
         },
         alasantolak: {
             type: Sequelize.CHAR(50)
-        }
+        },
     }, {
         tableName: "t_kirimbarang", 
         createdAt: false,

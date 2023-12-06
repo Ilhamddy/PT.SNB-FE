@@ -263,6 +263,16 @@ const DistribusiOrderList = ({ isUnit, isLogistik }) => {
                   Tolak Kiriman
                 </DropdownItem>
               )}
+              {!isUnit && !row.isverif && (
+                <Link
+                  to={`/${linkDistribusi}/gudang/distribusi-kirim-edit/${row.noreckirim}`}
+                >
+                  <DropdownItem>
+                    <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
+                    Edit Pengiriman
+                  </DropdownItem>
+                </Link>
+              )}
             </DropdownMenu>
           </UncontrolledDropdown>
         </div>

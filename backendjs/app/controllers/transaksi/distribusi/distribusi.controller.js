@@ -300,10 +300,10 @@ const createOrUpdateKirimBarang = async (req, res) => {
     if(errorTransaction) return
     try {
         const { createdOrUpdatedKirimBarang, noreckirim} =
-            await hCreateKirimBarang(req, res, transaction)
+            await hUpsertKirimBarang(req, res, transaction)
 
         const {createdKirimDetail} = 
-            await hCreateKirimDetail(
+            await hUpsertKirimDetail(
                 req, 
                 res, 
                 transaction, 
@@ -552,11 +552,17 @@ const hUpsertOrderDetail = async (req, res, transaction, {norecorder}) => {
     return created
 }
 
-const hCreateKirimDetail = async (req, res, transaction, {noreckirim}) => {
+const hUpsertKirimDetail = async (req, res, transaction, {noreckirim}) => {
     /**
      * @type {import("../../../queries/gudang/distribusi.queries").ListStokUnit}
      */
     const batches = req.body.batchproduk
+    await t_kirimbarangdetail.destroy({
+        where: {
+            objectdistribusibarangfk: noreckirim
+        },
+        transaction: transaction
+    })
     const createdKirimDetail = await Promise.all(
         batches.map(async(batch) => {
             const norec = uuid.v4().substring(0, 32)
@@ -575,14 +581,14 @@ const hCreateKirimDetail = async (req, res, transaction, {noreckirim}) => {
                 transaction: transaction
             })
             
-            return createdKirimDetail
+            return createdKirimDetail.toJSON()
         })
     )
 
     return {createdKirimDetail}
 }
 
-const hCreateKirimBarang = async (req, res, transaction) => {
+const hUpsertKirimBarang = async (req, res, transaction) => {
     let body = req.body
     let createdOrUpdatedKirimBarang
     let noreckirim
@@ -619,7 +625,9 @@ const hCreateKirimBarang = async (req, res, transaction) => {
             keterangan: body.keterangankirim,
             tglinput: new Date(body.tanggalkirim),
             objectpegawaifk: req.idPegawai,
-            islogistik: body.islogistik
+            islogistik: body.islogistik,
+            istolak: false,
+            alasantolak: null
         }, {
             where: {
                 norec: body.noreckirim

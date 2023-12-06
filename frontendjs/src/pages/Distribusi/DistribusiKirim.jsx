@@ -36,15 +36,16 @@ import {
 } from '../../store/actions'
 import { APIClient } from '../../helpers/api_helper'
 import { comboDistribusiOrderGet } from '../../store/master/action'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useParams, useNavigate } from 'react-router-dom'
 import { tableCustomStyles } from '../../Components/Table/tableCustomStyles'
 import KontainerFlatpickr from '../../Components/KontainerFlatpickr/KontainerFlatpickr'
 
-const DistribusiKirim = ({ isVerif, isLogistik = false }) => {
+const DistribusiKirim = ({ isVerif, isLogistik = false, isEdit = false }) => {
   const dispatch = useDispatch()
   const { norecorder, noreckirim } = useParams()
   const [tglSekarang] = useState(() => new Date().toISOString())
   const isPesanLangsung = !norecorder
+  const navigate = useNavigate()
 
   let { stokBatch, orderStokBatch, satuan, unit, jenisorderbarang } =
     useSelector(
@@ -99,18 +100,20 @@ const DistribusiKirim = ({ isVerif, isLogistik = false }) => {
                 noreckirim: noreckirim || '',
               })
             )
+            navigate(`/farmasi/gudang/distribusi-order-list`)
           })
         )
       } else {
         dispatch(
-          verifyKirim({ noreckirim: values.noreckirim }, () =>
+          verifyKirim({ noreckirim: values.noreckirim }, () => {
             dispatch(
               getOrderStokBatch({
                 norecorder: norecorder || '',
                 noreckirim: noreckirim || '',
               })
             )
-          )
+            navigate(`/farmasi/gudang/distribusi-order-list`)
+          })
         )
       }
     },
@@ -154,6 +157,7 @@ const DistribusiKirim = ({ isVerif, isLogistik = false }) => {
         const newBatch = { ...batch }
         newBatch.satuan = values.satuan
         newBatch.namasatuan = values.namasatuan
+        newBatch.produkid = values.produk
         const maxQtyTerkirim =
           newBatch.qtyout > newBatch.qty || isPesanLangsung
             ? newBatch.qty
@@ -220,6 +224,7 @@ const DistribusiKirim = ({ isVerif, isLogistik = false }) => {
     const api = new APIClient()
 
     vProduk.setFieldValue('produk', row.value)
+
     vProduk.setFieldValue('namaproduk', row.label)
     vProduk.setFieldValue('satuan', row.satuan)
     vProduk.setFieldValue('namasatuan', row.namasatuan)
@@ -238,12 +243,11 @@ const DistribusiKirim = ({ isVerif, isLogistik = false }) => {
     }, 0)
 
     vProduk.setFieldValue('jumlah', jmlAllProduk)
-    const itemOrders = orderStokBatch.itemorders || []
-    const newBatch = itemOrders.find((batch) => {
+    const newIsiProduk = stokBatch.find((batch) => {
       return batch.value === row.value
     })
     // lalu maasukkan batchnya didapatkan dari stokBatch
-    vProduk.setFieldValue('batch', newBatch?.batchproduk || [])
+    vProduk.setFieldValue('batch', newIsiProduk?.batchproduk || [])
     const otherProduk = vKirim.values.batchproduk.filter((batch) => {
       return batch.value !== row.value
     })
@@ -434,6 +438,12 @@ const DistribusiKirim = ({ isVerif, isLogistik = false }) => {
     },
   ]
 
+  const isDisableEdit =
+    !isVerif && ((!!noreckirim && !isEdit) || (!noreckirim && !!isEdit))
+  const isDisableVerif = isVerif && !!vKirim.values.isverif
+  const isDisable = isDisableEdit || isDisableVerif
+  const tblSubmit = isEdit ? 'Edit' : isVerif ? 'Verifikasi' : 'Kirim'
+
   const OrderBarang = (
     <Card className="p-5">
       <Row className="mb-2">
@@ -503,7 +513,7 @@ const DistribusiKirim = ({ isVerif, isLogistik = false }) => {
             name="unitpengirim"
             options={unit}
             value={vKirim.values?.unitpengirim}
-            isDisabled={!isPesanLangsung}
+            isDisabled={!isPesanLangsung || isDisable}
             onChange={(val) => {
               vKirim.setFieldValue('unitpengirim', val.value)
             }}
@@ -537,7 +547,7 @@ const DistribusiKirim = ({ isVerif, isLogistik = false }) => {
               dateFormat: 'Y-m-d',
               defaultDate: 'today',
             }}
-            disabled={!isPesanLangsung}
+            disabled={!isPesanLangsung || isDisable}
             value={vKirim.values.tanggalpermintaan}
             onChange={([newDate]) => {
               vKirim.setFieldValue('tanggalpermintaan', newDate.toISOString())
@@ -588,7 +598,7 @@ const DistribusiKirim = ({ isVerif, isLogistik = false }) => {
             id="unitpenerima"
             name="unitpenerima"
             options={unit}
-            isDisabled={!isPesanLangsung}
+            isDisabled={!isPesanLangsung || isDisable}
             value={vKirim.values?.unitpenerima}
             onChange={(val) => {
               vKirim.setFieldValue('unitpenerima', val.value)
@@ -621,7 +631,7 @@ const DistribusiKirim = ({ isVerif, isLogistik = false }) => {
             onChange={(val) => {
               vKirim.setFieldValue('jeniskirim', val.value)
             }}
-            isDisabled={!isPesanLangsung}
+            isDisabled={!isPesanLangsung || isDisable}
             className={`input ${vKirim.errors?.jeniskirim ? 'is-invalid' : ''}`}
           />
           {vKirim.touched?.jeniskirim && !!vKirim.errors?.jeniskirim && (
@@ -673,6 +683,7 @@ const DistribusiKirim = ({ isVerif, isLogistik = false }) => {
             type="text"
             value={vKirim.values.keterangankirim}
             onChange={vKirim.handleChange}
+            disabled={isDisable}
             invalid={
               vKirim.touched?.keterangankirim &&
               !!vKirim?.errors?.keterangankirim
@@ -703,7 +714,7 @@ const DistribusiKirim = ({ isVerif, isLogistik = false }) => {
           <CustomSelect
             id="produk"
             name="produk"
-            options={isPesanLangsung ? stokBatch : newStokBatch}
+            options={isPesanLangsung || isDisable ? stokBatch : newStokBatch}
             value={vProduk.values?.produk || ''}
             onChange={(e) => {
               vProduk.resetForm()
@@ -928,12 +939,9 @@ const DistribusiKirim = ({ isVerif, isLogistik = false }) => {
           color="success"
           placement="top"
           formTarget="form-input-penerimaan"
-          disabled={
-            (!!vKirim.values.noreckirim && !isVerif) ||
-            (isVerif && !!vKirim.values.isverif)
-          }
+          disabled={isDisable}
         >
-          {isVerif ? 'Verifikasi' : 'Kirim'}
+          {tblSubmit}
         </Button>
         <Button type="button" className="btn" color="danger">
           Batal
