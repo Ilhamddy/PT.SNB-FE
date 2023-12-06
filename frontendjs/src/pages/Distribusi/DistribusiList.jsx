@@ -329,8 +329,9 @@ const DistribusiOrderList = ({ isUnit, isLogistik }) => {
             <Col lg={'auto'} className="d-flex flex-row-reverse">
               <Link
                 to={
-                  `/${linkDistribusi}/gudang/distribusi-order` +
-                  (isUnit ? '-unit' : '')
+                  isUnit
+                    ? `/${linkDistribusi}/gudang/distribusi-order`
+                    : `/${linkDistribusi}/gudang/distribusi-order-unit`
                 }
               >
                 <Button color={'info'}>Pesan</Button>
