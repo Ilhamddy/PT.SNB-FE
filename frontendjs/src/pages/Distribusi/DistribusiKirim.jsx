@@ -32,6 +32,8 @@ import {
   getOrderStokBatch,
   getStokBatch,
   kemasanFromProdukGet,
+  tolakKirim,
+  tolakOrder,
   verifyKirim,
 } from '../../store/actions'
 import { APIClient } from '../../helpers/api_helper'
@@ -39,12 +41,14 @@ import { comboDistribusiOrderGet } from '../../store/master/action'
 import { Link, useParams, useNavigate } from 'react-router-dom'
 import { tableCustomStyles } from '../../Components/Table/tableCustomStyles'
 import KontainerFlatpickr from '../../Components/KontainerFlatpickr/KontainerFlatpickr'
+import DeleteModalCustom from '../../Components/Common/DeleteModalCustom'
+import ColLabelInput from '../../Components/ColLabelInput/ColLabelInput'
 
 const DistribusiKirim = ({ isVerif, isLogistik = false, isEdit = false }) => {
-  const dispatch = useDispatch()
   const { norecorder, noreckirim } = useParams()
-  const [tglSekarang] = useState(() => new Date().toISOString())
   const isPesanLangsung = !norecorder
+  const dispatch = useDispatch()
+  const [tglSekarang] = useState(() => new Date().toISOString())
   const navigate = useNavigate()
 
   let { stokBatch, orderStokBatch, satuan, unit, jenisorderbarang } =
@@ -116,6 +120,48 @@ const DistribusiKirim = ({ isVerif, isLogistik = false, isEdit = false }) => {
           })
         )
       }
+    },
+  })
+
+  const vTolakPesanan = useFormik({
+    initialValues: {
+      norecorder: '',
+      alasantolak: '',
+    },
+    validationSchema: Yup.object({
+      alasantolak: Yup.string().required('Alasan tolak perlu diisi'),
+    }),
+    onSubmit: (value, { resetForm }) => {
+      dispatch(
+        tolakOrder(value, () => {
+          // dispatch(
+          //   getOrderBarang({ isGudang: !isUnit, isLogistik: !!isLogistik })
+          // )
+          navigate(`/farmasi/gudang/distribusi-order-list`)
+          resetForm()
+        })
+      )
+    },
+  })
+
+  const vTolakKirim = useFormik({
+    initialValues: {
+      noreckirim: '',
+      alasantolak: '',
+    },
+    validationSchema: Yup.object({
+      alasantolak: Yup.string().required('Alasan tolak perlu diisi'),
+    }),
+    onSubmit: (value, { resetForm }) => {
+      dispatch(
+        tolakKirim(value, () => {
+          // dispatch(
+          //   getOrderBarang({ isGudang: !isUnit, isLogistik: !!isLogistik })
+          // )
+          navigate(`/farmasi/gudang/distribusi-order-list`)
+          resetForm()
+        })
+      )
     },
   })
 
@@ -259,6 +305,18 @@ const DistribusiKirim = ({ isVerif, isLogistik = false, isEdit = false }) => {
       return batch.value !== row.value
     })
     vKirim.setFieldValue('batchproduk', [...otherProduk])
+  }
+
+  const isKirimGudang = !isPesanLangsung && !noreckirim // bukan pesan langsung dan gak ada norec kirim
+  const isVerifUnit = isVerif && !vKirim.values.isverif // proses verif tapi belum terverif
+  const handleBatal = () => {
+    if (isKirimGudang) {
+      vTolakPesanan.setFieldValue('norecorder', norecorder)
+    } else if (isVerifUnit) {
+      vTolakKirim.setFieldValue('noreckirim', noreckirim)
+    } else {
+      navigate(`/farmasi/gudang/distribusi-order-list`)
+    }
   }
 
   useEffect(() => {
@@ -943,16 +1001,89 @@ const DistribusiKirim = ({ isVerif, isLogistik = false, isEdit = false }) => {
         >
           {tblSubmit}
         </Button>
-        <Button type="button" className="btn" color="danger">
-          Batal
+        <Button
+          type="button"
+          className="btn"
+          color="danger"
+          onClick={() => handleBatal()}
+        >
+          {isKirimGudang || isVerifUnit ? 'Tolak' : 'Batal'}
         </Button>
       </Col>
     </Card>
   )
 
+  const Modal = (
+    <>
+      <DeleteModalCustom
+        show={!!vTolakPesanan.values.norecorder}
+        onDeleteClick={() => {
+          vTolakPesanan.handleSubmit()
+        }}
+        showMessage={false}
+        onCloseClick={() => vTolakPesanan.resetForm()}
+        buttonHapus="Tolak"
+      >
+        <ColLabelInput label={'alasan tolak'}>
+          <Input
+            id="alasantolak"
+            name="alasantolak"
+            type="text"
+            value={vTolakPesanan.values.alasantolak}
+            onChange={(e) => {
+              vTolakPesanan.setFieldValue('alasantolak', e.target.value)
+            }}
+            invalid={
+              vTolakPesanan.touched?.alasantolak &&
+              !!vTolakPesanan.errors?.alasantolak
+            }
+          />
+          {vTolakPesanan.touched?.alasantolak &&
+            !!vTolakPesanan.errors.alasantolak && (
+              <FormFeedback type="invalid">
+                <div>{vTolakPesanan.errors.alasantolak}</div>
+              </FormFeedback>
+            )}
+        </ColLabelInput>
+      </DeleteModalCustom>
+      <DeleteModalCustom
+        show={!!vTolakKirim.values.noreckirim}
+        onDeleteClick={() => {
+          vTolakKirim.handleSubmit()
+        }}
+        showMessage={false}
+        onCloseClick={() => vTolakKirim.resetForm()}
+        buttonHapus="Tolak"
+      >
+        <ColLabelInput label={'alasan tolak'}>
+          <Input
+            id="alasantolak"
+            name="alasantolak"
+            type="text"
+            value={vTolakKirim.values.alasantolak}
+            onChange={(e) => {
+              vTolakKirim.setFieldValue('alasantolak', e.target.value)
+            }}
+            invalid={
+              vTolakKirim.touched?.alasantolak &&
+              !!vTolakKirim.errors?.alasantolak
+            }
+          />
+          {vTolakKirim.touched?.alasantolak &&
+            !!vTolakKirim.errors.alasantolak && (
+              <FormFeedback type="invalid">
+                <div>{vTolakKirim.errors.alasantolak}</div>
+              </FormFeedback>
+            )}
+        </ColLabelInput>
+      </DeleteModalCustom>
+    </>
+  )
+
   return (
     <div className="page-content page-penerimaan-barang">
       <ToastContainer closeButton={false} />
+      {Modal}
       <Container fluid>
         <BreadCrumb title="Kirim Barang" pageTitle="Gudang" />
         <Form

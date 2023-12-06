@@ -72,9 +72,9 @@ const DistribusiOrderList = ({ isUnit, isLogistik }) => {
     onSubmit: (value, { resetForm }) => {
       dispatch(
         tolakOrder(value, () => {
-          dispatch(
-            getOrderBarang({ isGudang: !isUnit, isLogistik: !!isLogistik })
-          )
+          // dispatch(
+          //   getOrderBarang({ isGudang: !isUnit, isLogistik: !!isLogistik })
+          // )
           resetForm()
         })
       )
@@ -92,9 +92,9 @@ const DistribusiOrderList = ({ isUnit, isLogistik }) => {
     onSubmit: (value, { resetForm }) => {
       dispatch(
         tolakKirim(value, () => {
-          dispatch(
-            getOrderBarang({ isGudang: !isUnit, isLogistik: !!isLogistik })
-          )
+          // dispatch(
+          //   getOrderBarang({ isGudang: !isUnit, isLogistik: !!isLogistik })
+          // )
           resetForm()
         })
       )
@@ -155,7 +155,7 @@ const DistribusiOrderList = ({ isUnit, isLogistik }) => {
                   </DropdownItem>
                 </Link>
               )}
-              {!isUnit && !row.istolak && (
+              {/* {!isUnit && !row.istolak && (
                 <DropdownItem
                   onClick={() =>
                     vTolakPesanan.setFieldValue('norecorder', row.norecorder)
@@ -164,7 +164,7 @@ const DistribusiOrderList = ({ isUnit, isLogistik }) => {
                   <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
                   Tolak Pesanan
                 </DropdownItem>
-              )}
+              )} */}
             </DropdownMenu>
           </UncontrolledDropdown>
         </div>
@@ -253,7 +253,7 @@ const DistribusiOrderList = ({ isUnit, isLogistik }) => {
                   </DropdownItem>
                 </Link>
               )}
-              {isUnit && !row.isverif && !row.istolak && (
+              {/* {isUnit && !row.isverif && !row.istolak && (
                 <DropdownItem
                   onClick={() => {
                     vTolakKirim.setFieldValue('noreckirim', row.noreckirim)
@@ -262,7 +262,7 @@ const DistribusiOrderList = ({ isUnit, isLogistik }) => {
                   <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
                   Tolak Kiriman
                 </DropdownItem>
-              )}
+              )} */}
               {!isUnit && !row.isverif && (
                 <Link
                   to={`/${linkDistribusi}/gudang/distribusi-kirim-edit/${row.noreckirim}`}
