@@ -4,7 +4,7 @@ import {
     NavLink, TabContent, TabPane, Button, Label, Input, Table
 } from 'reactstrap';
 import { useSelector, useDispatch } from "react-redux";
-import { registrasiGetList, registrasiGetListByOr } from '../../../store/actions';
+import { registrasiGetList, registrasiGetListByOr,upsertPatient } from '../../../store/actions';
 import BreadCrumb from '../../../Components/Common/BreadCrumb';
 import PreviewCardHeaderNew from '../../../Components/Common/PreviewCardHeaderNew';
 import UiContent from '../../../Components/Common/UiContent';
@@ -54,7 +54,8 @@ const RegistrasiList = () => {
         pekerjaan:null,
         agama:null,
         statusperkawinan:null,
-        namasuamiistri:null
+        namasuamiistri:null,
+        ihs_id:null
     })
     const [search, setSearch] = useState('')
     const [statusNotif, setstatusNotif] = useState(false);
@@ -76,7 +77,8 @@ const RegistrasiList = () => {
             pekerjaan:e.pekerjaan,
             agama:e.agama,
             statusperkawinan:e.statusperkawinan,
-            namasuamiistri:e.namasuamiistri
+            namasuamiistri:e.namasuamiistri,
+            ihs_id:e.ihs_id
         })
     };
 
@@ -138,6 +140,16 @@ const RegistrasiList = () => {
         {
             name: 'Registrasi',
             onClick: (profil) => {
+                let values = {
+                    id: profil?.idcmfk,
+                    noidentitas: profil?.noIdentitas
+                }
+                if(profil?.ihs_id===null && profil?.noIdentitas!==null){
+                  dispatch(
+                    upsertPatient(values, () => {
+                    })
+                  )
+                }
                 navigate(`/registrasi/pasien-ruangan/${profil?.idcmfk}`)
             },
         },

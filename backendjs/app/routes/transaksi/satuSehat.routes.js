@@ -39,4 +39,9 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.updatePractitionerPegawai
     )
+    app.post(
+        "/api/transaksi/satu-sehat/update-ihs-patient",
+        [authJwt.verifyToken],
+        controller.updateIhsPatient
+    )
 }

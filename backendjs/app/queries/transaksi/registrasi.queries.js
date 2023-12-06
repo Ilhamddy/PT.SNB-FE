@@ -57,7 +57,7 @@ when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))>
     mk.namakecamatan || ' - ' || mk2.namakabupaten  as alamatrmh,'#FFFFFF' as color ,
     mj.jeniskelamin,mg.golongandarah,mp.alamatdomisili || ' / ' || mp.rtdomisili || ' / '||mp.rwdomisili  || ' - ' || md2.namadesakelurahan 
     || ' - ' || mk3.namakecamatan || ' - ' || mk4.namakabupaten  as alamatdomisili,mp.notelepon,mp.namaibu,mp2.pendidikan,
-    mp3.pekerjaan,ma.agama,ms.statusperkawinan,mp.namasuamiistri 
+    mp3.pekerjaan,ma.agama,ms.statusperkawinan,mp.namasuamiistri,mp.ihs_id
 from m_pasien mp
 left join m_jeniskelamin mj on mj.id=mp.objectjeniskelaminfk
 left join m_golongandarah mg on mg.id=mp.objectgolongandarahfk

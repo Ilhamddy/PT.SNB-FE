@@ -146,6 +146,9 @@ export default (sequelize, Sequelize) => {
         nocmtemp: {
             type: Sequelize.STRING,
         },
+        ihs_id:{
+            type: Sequelize.STRING
+        }
     }, {
         tableName: "m_pasien", // relation "user" does not exist
         createdAt: false,
