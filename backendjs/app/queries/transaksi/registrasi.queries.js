@@ -57,7 +57,9 @@ when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))>
     mk.namakecamatan || ' - ' || mk2.namakabupaten  as alamatrmh,'#FFFFFF' as color ,
     mj.jeniskelamin,mg.golongandarah,mp.alamatdomisili || ' / ' || mp.rtdomisili || ' / '||mp.rwdomisili  || ' - ' || md2.namadesakelurahan 
     || ' - ' || mk3.namakecamatan || ' - ' || mk4.namakabupaten  as alamatdomisili,mp.notelepon,mp.namaibu,mp2.pendidikan,
-    mp3.pekerjaan,ma.agama,ms.statusperkawinan,mp.namasuamiistri,mp.ihs_id
+    mp3.pekerjaan,ma.agama,ms.statusperkawinan,mp.namasuamiistri,mp.ihs_id, ms.ihs_code, ms.ihs_display,mj.namaexternal as ihs_jeniskelamin,
+    mk2.namakabupaten,md.kodepos,md.kodeexternal as kodedesa,mk.kodeexternal as kodekecamatan,mk2.kodeexternal as kodekabupaten,
+	mpv.kodeexternal as kodeprovinsi,mp.rtktp,mp.rwktp
 from m_pasien mp
 left join m_jeniskelamin mj on mj.id=mp.objectjeniskelaminfk
 left join m_golongandarah mg on mg.id=mp.objectgolongandarahfk
@@ -70,7 +72,8 @@ left join m_kecamatan mk on mk.id=md.objectkecamatanfk
 left join m_kabupaten mk2 on mk2.id=md.objectkabupatenfk
 left join m_desakelurahan md2 on md2.id=mp.objectdesakelurahandomisilifk 
 left join m_kecamatan mk3  on mk3.id=md2.objectkecamatanfk
-left join m_kabupaten mk4  on mk4.id=md2.objectkabupatenfk `;
+left join m_kabupaten mk4  on mk4.id=md2.objectkabupatenfk
+left join m_provinsi mpv on mpv.id=md.objectprovinsifk `;
 
 const getDaftarPasienRawatJalan = `select td.norec as norecdp,
     ta.norec as norecta,
@@ -90,7 +93,8 @@ const getDaftarPasienRawatJalan = `select td.norec as norecdp,
     when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<23724 and mp.objectjeniskelaminfk=1 then 'dewasalaki'
     when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<23724 and mp.objectjeniskelaminfk=2 then 'dewasaperempuan'
     when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))>23724 and mp.objectjeniskelaminfk=1 then 'kakek'
-    when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))>23724 and mp.objectjeniskelaminfk=2 then 'nenek' else 'baby' end as profile
+    when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))>23724 and mp.objectjeniskelaminfk=2 then 'nenek' else 'baby' end as profile,
+    mp.ihs_id,td.ihs_id as ihs_id_daftarpasien
     FROM t_daftarpasien td 
     join m_pasien mp on mp.id=td.nocmfk 
     join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk =td.norec

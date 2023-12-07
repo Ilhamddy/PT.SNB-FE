@@ -21,7 +21,7 @@ import DataTable from 'react-data-table-component';
 import CountUp from "react-countup";
 import {
     daftarDokumenRekammedisGet, widgetdaftarDokumenRekammedisGet,
-    saveDokumenRekammedis,kendaliDokumenResetForm, updatePrinted
+    saveDokumenRekammedis,kendaliDokumenResetForm, updatePrinted,upsertPatient
 } from '../../../store/actions';
 import LoadingTable from '../../../Components/Table/LoadingTable';
 import KontainerFlatpickr from "../../../Components/KontainerFlatpickr/KontainerFlatpickr"
@@ -64,6 +64,31 @@ const KendaliDokumen = () => {
             toast.error('Dokumen Sudah Kembali', { autoClose: 3000 });
         } else {
             dispatch(saveDokumenRekammedis(tempValue));
+            let values = {
+                id: e?.nocmfk,
+                noidentitas: e?.noidentitas,
+                ihs_code: e?.ihs_code,
+                ihs_display: e?.ihs_display,
+                namapasien: e?.namapasien,
+                nohppasien: e?.nohp,
+                ihs_jeniskelamin:e?.ihs_jeniskelamin,
+                tgllahir:e?.tgllahir,
+                alamat:e?.alamatrmh,
+                namakabupaten:e?.namakabupaten,
+                kodepos:e?.kodepos,
+                kodedesa:e?.kodedesa,
+                kodekecamatan:e?.kodekecamatan,
+                kodekabupaten:e?.kodekabupaten,
+                kodeprovinsi:e?.kodeprovinsi,
+                rtktp:e?.rtktp,
+                rwktp:e?.rwktp
+            }
+            if(e?.ihs_id===null && e?.noIdentitas!==null){
+              dispatch(
+                upsertPatient(values, () => {
+                })
+              )
+            }
         }
     };
 

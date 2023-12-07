@@ -55,7 +55,19 @@ const RegistrasiList = () => {
         agama:null,
         statusperkawinan:null,
         namasuamiistri:null,
-        ihs_id:null
+        ihs_id:null,
+        ihs_code:null,
+        ihs_display:null,
+        ihs_jeniskelamin:null,
+        tgllahir:null,
+        namakabupaten:null,
+        kodepos:null,
+        kodedesa:null,
+        kodekecamatan:null,
+        kodekabupaten:null,
+        kodeprovinsi:null,
+        rtktp:null,
+        rwktp:null
     })
     const [search, setSearch] = useState('')
     const [statusNotif, setstatusNotif] = useState(false);
@@ -78,7 +90,20 @@ const RegistrasiList = () => {
             agama:e.agama,
             statusperkawinan:e.statusperkawinan,
             namasuamiistri:e.namasuamiistri,
-            ihs_id:e.ihs_id
+            ihs_id:e.ihs_id,
+            ihs_code:e.ihs_code,
+            ihs_display:e.ihs_display,
+            nohppasien: e.nohp,
+            ihs_jeniskelamin:e.ihs_jeniskelamin,
+            tgllahir:e.tgllahir,
+            namakabupaten:e.namakabupaten,
+            kodepos:e.kodepos,
+            kodedesa:e.kodedesa,
+            kodekecamatan:e.kodekecamatan,
+            kodekabupaten:e.kodekabupaten,
+            kodeprovinsi:e.kodeprovinsi,
+            rtktp:e.rtktp,
+            rwktp:e.rwktp
         })
     };
 
@@ -142,7 +167,22 @@ const RegistrasiList = () => {
             onClick: (profil) => {
                 let values = {
                     id: profil?.idcmfk,
-                    noidentitas: profil?.noIdentitas
+                    noidentitas: profil?.noIdentitas,
+                    ihs_code: profil?.ihs_code,
+                    ihs_display: profil?.ihs_display,
+                    namapasien: profil?.namaPasien,
+                    nohppasien: profil?.nohppasien,
+                    ihs_jeniskelamin:profil?.ihs_jeniskelamin,
+                    tgllahir:profil?.tgllahir,
+                    alamat:profil?.alamat,
+                    namakabupaten:profil?.namakabupaten,
+                    kodepos:profil?.kodepos,
+                    kodedesa:profil?.kodedesa,
+                    kodekecamatan:profil?.kodekecamatan,
+                    kodekabupaten:profil?.kodekabupaten,
+                    kodeprovinsi:profil?.kodeprovinsi,
+                    rtktp:profil?.rtktp,
+                    rwktp:profil?.rwktp
                 }
                 if(profil?.ihs_id===null && profil?.noIdentitas!==null){
                   dispatch(

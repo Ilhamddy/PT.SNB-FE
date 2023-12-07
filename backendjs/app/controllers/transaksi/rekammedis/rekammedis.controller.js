@@ -65,7 +65,10 @@ async function getListDaftarDokumenRekammedis(req, res) {
         mj.jeniskelamin,mr.namarekanan,
         case when mp.objectstatuskendalirmfk is null and trm.objectstatuskendalirmfk is null 
         then 'RAK' when mp.objectstatuskendalirmfk is not null then mrm.statuskendali else mrs.statuskendali end as statusdokumen,
-        dp.caradaftar,dp.catatan
+        dp.caradaftar,dp.catatan,to_char(mp.tgllahir,'yyyy-MM-dd') as tgllahir,mp.alamatrmh  || ' / ' || mp.rtktp || ' / '||mp.rwktp || ' - ' || md.namadesakelurahan || ' - ' || 
+        mk.namakecamatan || ' - ' || mk2.namakabupaten  as alamatrmh,mp.ihs_id, ms.ihs_code, ms.ihs_display,mj.namaexternal as ihs_jeniskelamin,
+        mk2.namakabupaten,md.kodepos,md.kodeexternal as kodedesa,mk.kodeexternal as kodekecamatan,mk2.kodeexternal as kodekabupaten,
+        mpv.kodeexternal as kodeprovinsi,mp.rtktp,mp.rwktp,dp.nocmfk,mp.noidentitas,mp.nohp
         from t_daftarpasien dp
         join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk=dp.norec
         and ta.objectunitfk =dp.objectunitlastfk 
@@ -76,6 +79,11 @@ async function getListDaftarDokumenRekammedis(req, res) {
         left join m_jeniskelamin mj on mj.id=mp.objectjeniskelaminfk
         left join m_rekanan mr on mr.id=dp.objectpenjaminfk
         left join m_rm_statuskendali mrs on mrs.id=trm.objectstatuskendalirmfk
+        left join m_statusperkawinan ms on ms.id=mp.objectstatusperkawinanfk
+        left join m_desakelurahan md on md.id=mp.objectdesakelurahanktpfk
+        left join m_kecamatan mk on mk.id=md.objectkecamatanfk
+        left join m_kabupaten mk2 on mk2.id=md.objectkabupatenfk
+        left join m_provinsi mpv on mpv.id=md.objectprovinsifk
         where dp.noregistrasi ilike '%${req.query.noregistrasi}%' ${tglregistrasi} ${taskid} 
         AND dp.noregistrasi IS NOT NULL --- jika null maka masih belum teregistrasi
         `);

@@ -20,7 +20,7 @@ import CountUp from "react-countup";
 
 import {
     daftarPasienRJGet, widgetdaftarPasienRJGet, updateTaskId,
-    saveDokumenRekammedis, kendaliDokumenResetForm
+    saveDokumenRekammedis, kendaliDokumenResetForm,upsertEncounter
 } from '../../../store/actions';
 
 //import images
@@ -84,12 +84,14 @@ const DaftarPasienRJ = () => {
     const clickCheckBox = (e) => {
         let tempValue = {
             idpencarian: 4,
-            norectrm: e.norectrm
+            norectrm: e.norectrm,
+            ihs_id:e.ihs_id,
+            ihs_id_daftarpasien:e.ihs_id_daftarpasien
         }
         // console.log(tempValue)
 
-        dispatch(saveDokumenRekammedis(tempValue));
-
+        // dispatch(saveDokumenRekammedis(tempValue)); ini di komen dulu untuk kebutuhan satu sehat 
+        dispatch(upsertEncounter(tempValue))
 
     };
     const columns = [
