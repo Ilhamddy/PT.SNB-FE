@@ -20,7 +20,7 @@ import CustomSelect from '../../Select/Select';
 
 import {
     emrDiagnosaxSave, emrResetForm, emrComboGet, emrDiagnosaxGet, emrListDiagnosaxGet,
-    deleteDiagnosax
+    deleteDiagnosax,upsertCondition
 } from "../../../store/actions";
 import DeleteModalCustom from '../../../Components/Common/DeleteModalCustom';
 import LoadingTable from '../../../Components/Table/LoadingTable';
@@ -78,14 +78,20 @@ const Diagnosax = () => {
     const validation = useFormik({
         enableReinitialize: true,
         initialValues: {
+            norecdp: norecdp,
             norecap: editData?.norecap ?? norecap,
             norec: editData?.norec ?? '',
             tipediagnosa: editData?.tipediagnosa ?? '',
             kodediagnosa: editData?.kodediagnosa ?? '',
             kasuspenyakit: editData?.kasuspenyakit ?? '',
             keteranganicd10: editData?.keteranganicd10 ?? '',
+            namakodediagnosa: editData?.namakodediagnosa ?? '',
+            codekodediagnosa: editData?.codekodediagnosa ?? '',
             idlabel: 3,
             label: 'DIAGNOSA',
+            ihs_diagnosa:'',
+            codestatus:'',
+            displaystatus:''
         },
         validationSchema: Yup.object({
             tipediagnosa: Yup.string().required("Tipe Diagnosa Belum Diisi"),
@@ -93,8 +99,9 @@ const Diagnosax = () => {
             kasuspenyakit: Yup.string().required("Kasus Penyakit Belum Diisi")
         }),
         onSubmit: (values, { resetForm }) => {
-            dispatch(emrDiagnosaxSave(values, ''));
-            resetForm({ values: '' })
+            dispatch(emrDiagnosaxSave(values, ()=>{
+                resetForm()
+            }));
         }
     })
     const onClickDelete = (product) => {
@@ -106,6 +113,21 @@ const Diagnosax = () => {
         if (product) {
             dispatch(deleteDiagnosax(product.norec));
             setDeleteModal(false);
+            let values ={
+                codestatus:'inactive',
+                displaystatus:'Inactive',
+                ihs_diagnosa:product.ihs_diagnosa,
+                codekodediagnosa:product.kodediagnosa,
+                namakodediagnosa:product.label,
+                norecdp:product.norecdp
+            }
+            if(product.ihs_diagnosa!==null){
+                dispatch(
+                    upsertCondition(values, () => {
+                        // resetForm()
+                    })
+                  )
+            }
         }
     };
 
@@ -247,7 +269,8 @@ const Diagnosax = () => {
                                                         refKasusPenyakit.current?.clearValue();
                                                         validation.setFieldValue('tipediagnosa', value?.value || "")
                                                     }}
-                                                    ref={refTipeDiagnosa}
+                                                    // ref={refTipeDiagnosa}
+                                                    isClearEmpty
                                                 />
                                                 {validation.touched.tipediagnosa && validation.errors.tipediagnosa ? (
                                                     <FormFeedback type="invalid"><div>{validation.errors.tipediagnosa}</div></FormFeedback>
@@ -267,9 +290,14 @@ const Diagnosax = () => {
                                                     options={dataDiagnosa}
                                                     value={validation.values.kodediagnosa || ""}
                                                     className={`input ${validation.errors.kodediagnosa ? "is-invalid" : ""}`}
-                                                    onChange={value => validation.setFieldValue('kodediagnosa', value?.value || "")}
+                                                    onChange={value => {
+                                                        validation.setFieldValue('kodediagnosa', value?.value || "")
+                                                        validation.setFieldValue('namakodediagnosa', value?.label || "")
+                                                        validation.setFieldValue('codekodediagnosa', value?.kodeexternal || "")
+                                                    }}
                                                     onInputChange={handleDiagnosa}
-                                                    ref={refKodeDiagnosa}
+                                                    // ref={refKodeDiagnosa}
+                                                    isClearEmpty
                                                 />
                                                 {validation.touched.kodediagnosa && validation.errors.kodediagnosa ? (
                                                     <FormFeedback type="invalid"><div>{validation.errors.kodediagnosa}</div></FormFeedback>
@@ -290,7 +318,8 @@ const Diagnosax = () => {
                                                     value={validation.values.kasuspenyakit || ""}
                                                     className={`input ${validation.errors.kasuspenyakit ? "is-invalid" : ""}`}
                                                     onChange={value => validation.setFieldValue('kasuspenyakit', value?.value || "")}
-                                                    ref={refKasusPenyakit}
+                                                    // ref={refKasusPenyakit}
+                                                    isClearEmpty
                                                 />
                                                 {validation.touched.kasuspenyakit && validation.errors.kasuspenyakit ? (
                                                     <FormFeedback type="invalid"><div>{validation.errors.kasuspenyakit}</div></FormFeedback>

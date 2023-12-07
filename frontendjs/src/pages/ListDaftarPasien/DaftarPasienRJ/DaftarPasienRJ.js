@@ -86,11 +86,19 @@ const DaftarPasienRJ = () => {
             idpencarian: 4,
             norectrm: e.norectrm,
             ihs_id:e.ihs_id,
-            ihs_id_daftarpasien:e.ihs_id_daftarpasien
+            ihs_id_daftarpasien:e.ihs_id_daftarpasien,
+            ihs_dpjp:e.ihs_dpjp,
+            noregistrasi:e.noregistrasi,
+            namapasien:e.namapasien,
+            namadokter:e.namadokter,
+            tglregistrasi_ihs:e.tglregistrasi_ihs,
+            tglpulang_ihs:e.tglpulang_ihs,
+            ihs_unit:e.ihs_unit,
+            namaunit:e.namaunit
         }
         // console.log(tempValue)
 
-        // dispatch(saveDokumenRekammedis(tempValue)); ini di komen dulu untuk kebutuhan satu sehat 
+        dispatch(saveDokumenRekammedis(tempValue));
         dispatch(upsertEncounter(tempValue))
 
     };

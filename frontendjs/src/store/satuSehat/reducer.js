@@ -6,7 +6,8 @@ import {
     GET_LIST_PRACTITIONER, GET_LIST_PRACTITIONER_SUCCESS,GET_LIST_PRACTITIONER_ERROR,
     UPSERT_PRACTITIONER,UPSERT_PRACTITIONER_ERROR,UPSERT_PRACTITIONER_SUCCESS,
     UPSERT_PATIENT,UPSERT_PATIENT_SUCCESS,UPSERT_PATIENT_ERROR,
-    UPSERT_ENCOUNTER,UPSERT_ENCOUNTER_SUCCESS,UPSERT_ENCOUNTER_ERROR
+    UPSERT_ENCOUNTER,UPSERT_ENCOUNTER_SUCCESS,UPSERT_ENCOUNTER_ERROR,
+    UPSERT_CONDITION,UPSERT_CONDITION_SUCCESS,UPSERT_CONDITION_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -46,6 +47,11 @@ const INIT_STATE = {
         error: null,
     },
     upsertEncounter:{
+        data: [],
+        loading: false,
+        error: null,
+    },
+    upsertCondition:{
         data: [],
         loading: false,
         error: null,
@@ -312,6 +318,39 @@ const SatuSehat = (state = INIT_STATE, action) => {
                 ...state,
                 upsertEncounter: {
                     ...state.upsertEncounter,
+                    loading: true,
+                    error: action.payload,
+                }
+            }
+        }
+
+        case UPSERT_CONDITION: {
+            return {
+                ...state,
+                upsertCondition: {
+                    ...state.upsertCondition,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case UPSERT_CONDITION_SUCCESS: {
+            return {
+                ...state,
+                upsertCondition: {
+                    ...state.upsertCondition,
+                    loading: false,
+                    data: action.payload,
+                }
+            }
+        }
+
+        case UPSERT_CONDITION_ERROR: {
+            return {
+                ...state,
+                upsertCondition: {
+                    ...state.upsertCondition,
                     loading: true,
                     error: action.payload,
                 }

@@ -49,4 +49,9 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.upsertEncounter
     )
+    app.post(
+        "/api/transaksi/satu-sehat/upsert-condition",
+        [authJwt.verifyToken],
+        controller.upsertCondition
+    )
 }

@@ -4,6 +4,7 @@ import instalasiQueries from "../../../queries/mastertable/instalasi/instalasi.q
 import unitQueries from "../../../queries/mastertable/unit/unit.queries";
 import profileQueries from "../../../queries/mastertable/profile/profile.queries";
 import pegawaiQueries from "../../../queries/mastertable/pegawai/pegawai.queries";
+import satuSehatQueries from "../../../queries/satuSehat/satuSehat.queries";
 import axios from "axios";
 
 async function setEnvironmments () {
@@ -111,6 +112,8 @@ const postGetSatuSehat = async (method, url, body) => {
             response = await apiClient.get('', data);
         } else if (method === 'POST') {
             response = await apiClient.post('',body);
+        } else if (method === 'PUT') {
+            response = await apiClient.put('',body);
         } else {
             // Handle other HTTP methods if needed
             return {
@@ -123,9 +126,9 @@ const postGetSatuSehat = async (method, url, body) => {
     } catch (error) {
         // throw error;
         let resp ={
-            code:error.response.status,
-            message:error.response.statusText,
-            data:error.response.data
+            code:error?.response?.status,
+            message:error?.response?.statusText,
+            data:error?.response?.data
         }
         throw resp;
     }
@@ -620,14 +623,15 @@ async function temppatientObject(reqTemp) {
                 return patientObject
 }
 
-async function tempEncounter(reqTemp) {
+async function tempEncounterTerimaDokumenRJ(reqTemp) {
     const profile = await pool.query(profileQueries.getAll);
+    const currentDate = new Date();
     const encounterData = {
         resourceType: "Encounter",
         identifier: [
             {
                 system: "http://sys-ids.kemkes.go.id/encounter/"+profile.rows[0].ihs_id,
-                value: "P20240010"
+                value: reqTemp.noregistrasi
             }
         ],
         status: "arrived",
@@ -637,8 +641,8 @@ async function tempEncounter(reqTemp) {
             display: "ambulatory"
         },
         subject: {
-            reference: "Patient/100000030009",
-            display: "Budi Santoso"
+            reference: "Patient/"+reqTemp.ihs_id,
+            display: reqTemp.namapasien
         },
         participant: [
             {
@@ -654,19 +658,19 @@ async function tempEncounter(reqTemp) {
                     }
                 ],
                 individual: {
-                    reference: "Practitioner/N10000001",
-                    display: "Dokter Bronsig"
+                    reference: "Practitioner/"+reqTemp.ihs_dpjp,
+                    display: reqTemp.namadokter
                 }
             }
         ],
         period: {
-            start: "2022-11-14T01:00:00+00:00"
+            start: reqTemp.tglregistrasi_ihs
         },
         location: [
             {
                 location: {
-                    reference: "Location/ef011065-38c9-46f8-9c35-d1fe68966a3e",
-                    display: "Ruang 1A, Poliklinik Rawat Jalan"
+                    reference: "Location/"+reqTemp.ihs_unit,
+                    display: reqTemp.namaunit
                 },
                 extension: [
                     {
@@ -693,12 +697,19 @@ async function tempEncounter(reqTemp) {
             {
                 status: "arrived",
                 period: {
-                    start: "2022-11-14T01:00:00+00:00"
+                    start: reqTemp.tglregistrasi_ihs,
+                    end:currentDate
+                }
+            },
+            {
+                status: "in-progress",
+                period: {
+                    start: currentDate
                 }
             }
         ],
         serviceProvider: {
-            reference: "Organization/10000004"
+            reference: "Organization/"+profile.rows[0].ihs_id
         }
     };
     
@@ -708,13 +719,184 @@ async function tempEncounter(reqTemp) {
 const upsertEncounter = async (req, res) => {
     const logger = res.locals.logger;
     try{
-        const encounter = await tempEncounter(req.body)
-        // await db.sequelize.transaction(async (transaction) => {
-            
-        // });
+        const encounter = await tempEncounterTerimaDokumenRJ(req.body)
+        let response = await postGetSatuSehat('POST', '/Encounter',encounter);
+        let msg ='Sukses'
+        
+        const { setInstalasi } = await db.sequelize.transaction(async (transaction) => {
+            let setInstalasi = ''
+            if(response.resourceType==='Encounter'){
+                setInstalasi = await db.t_daftarpasien.update({
+                    ihs_id: response.id,
+                }, {
+                    where: {
+                        noregistrasi: req.body.noregistrasi
+                    },
+                    transaction: transaction
+                });
+            }
+            return { setInstalasi }
+        });
         
         const tempres = {
-            encounter:encounter
+            encounter:response,
+            daftarpsien:setInstalasi,
+            dataencounter:encounter
+        };
+        res.status(200).send({
+            msg: 'Sukses',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message || 'Gagal',
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+async function tempConditionPrimary(reqTemp) {
+    const profile = await pool.query(profileQueries.getAll);
+    const currentDate = new Date();
+    let conditionData = {
+        resourceType: "Condition",
+        clinicalStatus: {
+            coding: [
+                {
+                    system: "http://terminology.hl7.org/CodeSystem/condition-clinical",
+                    code: reqTemp.codestatus,
+                    display: reqTemp.displaystatus
+                }
+            ]
+        },
+        category: [
+            {
+                coding: [
+                    {
+                        system: "http://terminology.hl7.org/CodeSystem/condition-category",
+                        code: "encounter-diagnosis",
+                        display: "Encounter Diagnosis"
+                    }
+                ]
+            }
+        ],
+        code: {
+            coding: [
+                {
+                    system: "http://hl7.org/fhir/sid/icd-10",
+                    code: reqTemp.codekodediagnosa,
+                    display: reqTemp.namakodediagnosa
+                }
+            ]
+        },
+        subject: {
+            reference: "Patient/"+reqTemp.ihs_pasien,
+            display: reqTemp.namapasien
+        },
+        encounter: {
+            reference: "Encounter/"+reqTemp.ihs_dp
+        },
+        onsetDateTime: currentDate,
+        recordedDate: currentDate
+    };
+    if(reqTemp.codestatus!=='active'){
+        conditionData = {
+            resourceType: "Condition",
+            id: reqTemp.ihs_diagnosa,
+            clinicalStatus: {
+                coding: [
+                    {
+                        system: "http://terminology.hl7.org/CodeSystem/condition-clinical",
+                        code: reqTemp.codestatus,
+                        display: reqTemp.displaystatus
+                    }
+                ]
+            },
+            category: [
+                {
+                    coding: [
+                        {
+                            system: "http://terminology.hl7.org/CodeSystem/condition-category",
+                            code: "encounter-diagnosis",
+                            display: "Encounter Diagnosis"
+                        }
+                    ]
+                }
+            ],
+            code: {
+                coding: [
+                    {
+                        system: "http://hl7.org/fhir/sid/icd-10",
+                        code: reqTemp.codekodediagnosa,
+                        display: reqTemp.namakodediagnosa
+                    }
+                ]
+            },
+            subject: {
+                reference: "Patient/"+reqTemp.ihs_pasien,
+                display: reqTemp.namapasien
+            },
+            encounter: {
+                reference: "Encounter/"+reqTemp.ihs_dp
+            }
+        };
+    }
+                return conditionData
+}
+
+const upsertCondition = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const profilePasien = await pool.query(satuSehatQueries.qGetDataPasienByNorecDp,[req.body.norecdp]);
+        
+        let temp ={
+            codestatus:req.body.codestatus,
+            displaystatus:req.body.displaystatus,
+            ihs_diagnosa:req.body.ihs_diagnosa,
+            codekodediagnosa:req.body.codekodediagnosa,
+            namakodediagnosa:req.body.namakodediagnosa,
+            ihs_dp:profilePasien.rows[0].ihs_dp,
+            ihs_pasien:profilePasien.rows[0].ihs_pasien,
+            namapasien:profilePasien.rows[0].namapasien
+        }
+        const condition = await tempConditionPrimary(temp)
+        let url ='/Condition'
+        let method = 'POST'
+        if(req.body.ihs_diagnosa!==''){
+            url ='/Condition/'+req.body.ihs_diagnosa
+            method='PUT'
+        }
+        let response = await postGetSatuSehat(method, url,condition);
+        
+        const { setInstalasi } = await db.sequelize.transaction(async (transaction) => {
+            let setInstalasi = ''
+            if(req.body.codestatus==='active'){
+                if(response.resourceType==='Condition'){
+                    setInstalasi = await db.t_diagnosapasien.update({
+                        ihs_id: response.id,
+                    }, {
+                        where: {
+                            norec: req.body.norec
+                        },
+                        transaction: transaction
+                    });
+                }
+            }
+            return { setInstalasi }
+        });
+        
+        const tempres = {
+            condition:response,
+            diagnosapasien:setInstalasi,
+            // profilePasien:profilePasien.rows,
+            datacondition:condition,
+            // url:url,
+            // method:method
         };
         res.status(200).send({
             msg: 'Sukses',
@@ -742,5 +924,6 @@ export default {
     getListDokter,
     updatePractitionerPegawai,
     updateIhsPatient,
-    upsertEncounter
+    upsertEncounter,
+    upsertCondition
 }

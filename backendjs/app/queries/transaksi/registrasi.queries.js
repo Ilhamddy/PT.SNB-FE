@@ -94,7 +94,8 @@ const getDaftarPasienRawatJalan = `select td.norec as norecdp,
     when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))<23724 and mp.objectjeniskelaminfk=2 then 'dewasaperempuan'
     when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))>23724 and mp.objectjeniskelaminfk=1 then 'kakek'
     when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))>23724 and mp.objectjeniskelaminfk=2 then 'nenek' else 'baby' end as profile,
-    mp.ihs_id,td.ihs_id as ihs_id_daftarpasien
+    mp.ihs_id,td.ihs_id as ihs_id_daftarpasien,mp2.ihs_id as ihs_dpjp,td.tglregistrasi as tglregistrasi_ihs,td.tglpulang as tglpulang_ihs,
+    mu.ihs_id as ihs_unit
     FROM t_daftarpasien td 
     join m_pasien mp on mp.id=td.nocmfk 
     join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk =td.norec
