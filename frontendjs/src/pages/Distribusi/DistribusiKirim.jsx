@@ -50,6 +50,7 @@ const DistribusiKirim = ({ isVerif, isLogistik = false, isEdit = false }) => {
   const dispatch = useDispatch()
   const [tglSekarang] = useState(() => new Date().toISOString())
   const navigate = useNavigate()
+  const linkDistribusi = isLogistik ? 'logistik' : 'farmasi'
 
   let { stokBatch, orderStokBatch, satuan, unit, jenisorderbarang } =
     useSelector(
@@ -137,7 +138,7 @@ const DistribusiKirim = ({ isVerif, isLogistik = false, isEdit = false }) => {
           // dispatch(
           //   getOrderBarang({ isGudang: !isUnit, isLogistik: !!isLogistik })
           // )
-          navigate(`/farmasi/gudang/distribusi-order-list`)
+          navigate(`/${linkDistribusi}/gudang/distribusi-order-list`)
           resetForm()
         })
       )
@@ -158,7 +159,7 @@ const DistribusiKirim = ({ isVerif, isLogistik = false, isEdit = false }) => {
           // dispatch(
           //   getOrderBarang({ isGudang: !isUnit, isLogistik: !!isLogistik })
           // )
-          navigate(`/farmasi/gudang/distribusi-order-list`)
+          navigate(`/${linkDistribusi}/gudang/unit-order-list`)
           resetForm()
         })
       )
@@ -314,8 +315,10 @@ const DistribusiKirim = ({ isVerif, isLogistik = false, isEdit = false }) => {
       vTolakPesanan.setFieldValue('norecorder', norecorder)
     } else if (isVerifUnit) {
       vTolakKirim.setFieldValue('noreckirim', noreckirim)
+    } else if (isVerif) {
+      navigate(`/${linkDistribusi}/gudang/unit-order-list`)
     } else {
-      navigate(`/farmasi/gudang/distribusi-order-list`)
+      navigate(`/${linkDistribusi}/gudang/distribusi-order-list`)
     }
   }
 
