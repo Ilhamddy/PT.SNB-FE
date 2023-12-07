@@ -90,7 +90,7 @@ const DaftarPasienRJ = () => {
         }
         // console.log(tempValue)
 
-        // dispatch(saveDokumenRekammedis(tempValue)); ini di komen dulu untuk kebutuhan satu sehat
+        // dispatch(saveDokumenRekammedis(tempValue)); ini di komen dulu untuk kebutuhan satu sehat 
         dispatch(upsertEncounter(tempValue))
 
     };
