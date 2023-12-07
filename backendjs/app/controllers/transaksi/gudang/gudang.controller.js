@@ -1992,6 +1992,7 @@ const hCreateKartuStokPenerimaan = async (
     return {createdKartuStokPenerimaan}
 }
 
+// stok unit harus satu pintu
 export const hUpsertStok = async (
     req,
     res,
