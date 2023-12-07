@@ -52,7 +52,7 @@ WHERE mk.statusenabled = true AND mk.id = $1
 `
 
 const qGetOrder = `
-SELECT DISTINCT
+SELECT
     tor.norec AS norecorder,
     tor.tglinput AS tglorder,
     tor.objectjenisorderbarangfk AS jenisorder,
@@ -64,13 +64,24 @@ SELECT DISTINCT
     tor.noorder AS noorder,
     tor.keterangan,
     COALESCE(tor.istolak, FALSE) AS istolak,
-    tor.alasantolak AS alasantolak
+    tor.alasantolak AS alasantolak,
+    JSON_AGG(
+        JSON_BUILD_OBJECT(
+            'norecdetail', tobd.norec,
+            'namaproduk', mp.namaproduk,
+            'qty', tobd.qty,
+            'namasatuan', ms.satuan
+        )
+    ) AS orderdetail
 FROM t_orderbarang tor
     LEFT JOIN m_unit mua ON mua.id = tor.objectunitasalfk
     LEFT JOIN m_unit mut ON mut.id = tor.objectunittujuanfk
     LEFT JOIN m_jenisorderbarang mjob ON mjob.id = tor.objectjenisorderbarangfk
     LEFT JOIN t_kirimbarang tkb ON tkb.objectorderbarangfk = tor.norec
     LEFT JOIN m_mapusertounit mmap ON mmap.objectunitfk = mua.id
+    LEFT JOIN t_orderbarangdetail tobd ON tobd.objectorderbarangfk = tor.norec
+    LEFT JOIN m_produk mp ON tobd.objectprodukfk = mp.id
+    LEFT JOIN m_satuan ms ON ms.id = tobd.objectsatuanfk
 WHERE tkb IS NULL 
     AND (
         NULLIF($1, '')::int IS NULL 
@@ -78,11 +89,24 @@ WHERE tkb IS NULL
     )
     AND
     $2 = tor.islogistik
+GROUP BY
+    tor.norec,
+    tor.tglinput,
+    tor.objectjenisorderbarangfk,
+    mjob.reportdisplay,
+    objectunitasalfk,
+    mua.namaunit,
+    tor.objectunittujuanfk,
+    mut.namaunit,
+    tor.noorder,
+    tor.keterangan,
+    tor.istolak,
+    tor.alasantolak
 ORDER BY tor.tglinput DESC 
 `
 
 const qGetKirim = `
-SELECT DISTINCT
+SELECT
     tkb.norec AS noreckirim,
     tkb.tglinput AS tglkirim,
     tkb.nopengiriman AS nokirim,
@@ -100,13 +124,25 @@ SELECT DISTINCT
     tkb.keterangan AS keterangankirim,
     tkb.isverif AS isverif,
     COALESCE(tkb.istolak, FALSE) AS istolak,
-    tkb.alasantolak AS alasantolak
+    tkb.alasantolak AS alasantolak,
+    JSON_AGG(
+        JSON_BUILD_OBJECT(
+            'norecdetail', tkbd.norec,
+            'namaproduk', mp.namaproduk,
+            'qty', tkbd.qty,
+            'nobatch', tkbd.nobatch,
+            'namasatuan', ms.satuan
+        )
+    ) AS kirimdetail
 FROM t_kirimbarang tkb
     LEFT JOIN m_unit mua ON mua.id = tkb.objectunitpengirimfk
     LEFT JOIN m_unit mut ON mut.id = tkb.objectunittujuanfk
     LEFT JOIN m_jenisorderbarang mjob ON mjob.id = tkb.objectjenisorderbarangfk
     LEFT JOIN t_orderbarang tor ON tkb.objectorderbarangfk = tor.norec
     LEFT JOIN m_mapusertounit mmap ON mmap.objectunitfk = mut.id
+    LEFT JOIN t_kirimbarangdetail tkbd ON tkbd.objectdistribusibarangfk = tkb.norec
+    LEFT JOIN m_produk mp ON tkbd.objectprodukfk = mp.id
+    LEFT JOIN m_satuan ms ON tkbd.objectsatuanfk = ms.id
 WHERE 
     (
         NULLIF($1, '')::int IS NULL 
@@ -114,8 +150,28 @@ WHERE
     )
     AND
     $2 = tkb.islogistik
+GROUP BY
+    tkb.norec,
+    tkb.tglinput,
+    tkb.nopengiriman,
+    tkb.keterangan,
+    tor.norec,
+    tor.tglinput,
+    tkb.objectjenisorderbarangfk,
+    mjob.reportdisplay,
+    tkb.objectunitpengirimfk,
+    mua.namaunit,
+    tkb.objectunittujuanfk,
+    mut.namaunit,
+    tor.noorder,
+    tor.keterangan,
+    tkb.keterangan,
+    tkb.isverif,
+    tkb.istolak,
+    tkb.alasantolak
 ORDER BY
     tkb.tglinput DESC
+
 `
 
 /**

@@ -540,7 +540,7 @@ const hUpsertOrderDetail = async (req, res, transaction, {norecorder}) => {
                 objectorderbarangfk: norecorder,
                 objectprodukfk: batch.value,
                 qty: batch.qtyout,
-                jumlah: 0,
+                jumlah: batch.jumlah,
                 objectsatuanfk: batch.satuan
             }, {
                 transaction: transaction

@@ -217,6 +217,7 @@ const DistribusiKirim = ({ isVerif, isLogistik = false, isEdit = false }) => {
           jumlahKonversi -= maxQtyTerkirim
         } else {
           newBatch.qtykirim = jumlahKonversi
+          newBatch.jumlah = jumlahKonversi / strToNumber(values.konversi)
           jumlahKonversi = 0
         }
         return newBatch
