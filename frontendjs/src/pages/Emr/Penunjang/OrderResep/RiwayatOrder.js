@@ -20,10 +20,12 @@ const RiwayatOrder = () => {
     const norecresep = searchParams.get("norecresep")
     const {
         listOrder,
-        listVerif
+        listVerif,
+        loadingGetAllResep
     } = useSelector(state => ({
         listOrder: state.Emr.getOrderResepFromDP.data?.order || [],
-        listVerif: state.Emr.getOrderResepFromDP.data?.veriforder || []
+        listVerif: state.Emr.getOrderResepFromDP.data?.veriforder || [],
+        loadingGetAllResep: state.Emr.getOrderResepFromDP.loading || false,
     }))
 
     const vDeleteResep = useFormik({
@@ -156,7 +158,7 @@ const RiwayatOrder = () => {
                     columns={columnsOrder}
                     pagination
                     data={listOrder || []}
-                    progressPending={false}
+                    progressPending={loadingGetAllResep}
                     customStyles={tableCustomStyles}
                     expandableRows
                     expandableRowsComponent={ExpandableRiwayat}
@@ -172,7 +174,7 @@ const RiwayatOrder = () => {
                     columns={columnsVerif}
                     pagination
                     data={listVerif || []}
-                    progressPending={false}
+                    progressPending={loadingGetAllResep}
                     customStyles={tableCustomStyles}
                     expandableRows
                     expandableRowsComponent={ExpandableRiwayat}

@@ -44,7 +44,7 @@ export const initValueResep = {
 const TambahObatFarmasi = () => {
     const dispatch = useDispatch()
     const navigate = useNavigate()
-    const {norecap} = useParams()
+    const {norecap, norecresep} = useParams()
 
     const {
         pegawai,
@@ -53,6 +53,7 @@ const TambahObatFarmasi = () => {
         signa,
         obatList,
         sediaanList,
+        obatResep
     } = useSelector((state) => ({
         pegawai: state?.Master?.getComboPenjualanBebas?.data?.pegawai || [],
         unit: state.Master?.getComboPenjualanBebas?.data?.unit || [],
@@ -60,6 +61,7 @@ const TambahObatFarmasi = () => {
         signa: state.Master?.getComboPenjualanBebas?.data?.signa || [],
         obatList: state?.Emr?.getObatFromUnit?.data?.obat || [],
         sediaanList: state?.Master?.getComboPenjualanBebas?.data?.sediaan || [],
+        obatResep: state.Farmasi.getOrderResepFromNorec.data?.ordernorec || null
     }))
 
     const [dateNow] = useState(() => new Date().toISOString())
@@ -157,20 +159,6 @@ const TambahObatFarmasi = () => {
         vResep.setFieldValue("resep", resepRef.current)
     }
 
-    useEffect(() => {
-        dispatch(getComboPenjualanBebas())
-    }, [dispatch])
-
-    useEffect(() => {
-        vResep.values.unittujuan &&
-            dispatch(getObatFromUnit({idunit: vResep.values.unittujuan}))
-    }, [dispatch, vResep.values.unittujuan])
-
-    useEffect(() => {
-        const setFF = vResep.setFieldValue
-        setFF("norecap", norecap || "")
-    }, [norecap, vResep.setFieldValue])
-
 
     const columnsResep = useColumnsResep(
         vResep,
@@ -196,6 +184,35 @@ const TambahObatFarmasi = () => {
         handleTambahRacikan,
         handleHapusRacikan,
     )
+
+    useEffect(() => {
+        dispatch(getComboPenjualanBebas())
+    }, [dispatch])
+
+    useEffect(() => {
+        vResep.values.unittujuan &&
+            dispatch(getObatFromUnit({idunit: vResep.values.unittujuan}))
+    }, [dispatch, vResep.values.unittujuan])
+
+    useEffect(() => {
+        const setFF = vResep.setFieldValue
+        setFF("norecap", norecap || "")
+    }, [norecap, vResep.setFieldValue])
+
+    useEffect(() => {
+        norecresep 
+            && dispatch(getOrderResepFromNorec({norec: norecresep}))
+    }, [norecresep])
+
+    useEffect(() => {
+        const setV = vResep.setValues
+        const resetV = vResep.resetForm
+        if(obatResep){
+            setV(obatResep)
+        }else{
+            resetV()
+        }
+    }, [obatResep, vResep.setValues, vResep.resetForm])
     
     const resepNonRacikan = vResep.values.resep.filter((val) => val.racikan.length === 0)
     const resepRacikan = vResep.values.resep.filter((val) => val.racikan.length > 0)

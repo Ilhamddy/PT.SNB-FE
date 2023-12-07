@@ -553,7 +553,11 @@ const upsertOrderPlusVerif = async (req, res) => {
             })
             createdOrUpdated = created.toJSON()
         }else{
-            const [_, updated] = await t_orderresep.update({
+            const updated = await t_orderresep.findByPk(norecorderresep, {
+                transaction: transaction
+            })
+            if(!updated) throw new Error(`Tidak ada order dengan norec: ${norecorderresep}`)
+            await updated.update({
                 norec: norecorderresep,
                 kdprofile: 0,
                 statusenabled: true,
@@ -563,13 +567,9 @@ const upsertOrderPlusVerif = async (req, res) => {
                 objectunitasalfk: body.unittujuan,
                 objectdepotujuanfk: body.unittujuan
             }, {
-                where: {
-                    norec: norecorderresep
-                },
-                transaction: transaction,
-                returning: true,
+                transaction: transaction
             })
-            createdOrUpdated = updated[0].toJSON();
+            createdOrUpdated = updated.toJSON();
         }
         const {createdOrUpdatedDetailOrder} =
         await hCreateOrUpdateDetailVerif(
@@ -765,29 +765,23 @@ const hCreateOrUpdateDetailVerif = async (
                     item.racikan.map(async (subItem) => {
                         let norecresepsub = subItem.norecverif
                         let createdOrUpdatedVerif
-                        if(!norecresepsub){
-                            norecresepsub = uuid.v4().substring(0, 32);
-                            const {created} = await hCreateVerif(
-                                req,
-                                res,
-                                transaction,
-                                {
-                                    norecorderresep: norecorder, 
-                                    item: item, 
-                                    subItem: subItem,
-                                } 
-                            )
-                            createdOrUpdatedVerif = created
-                        }else{
-                            const {updated} = await hUpdateVerif(
-                                norecorder,
-                                norecresepsub,
-                                item,
-                                subItem,
-                                transaction
-                            )
-                            createdOrUpdatedVerif = updated;
-                        }
+                        const {deleted} = await hDeleteVerif(
+                            norecorder,
+                            transaction
+                        )
+                        norecresepsub = uuid.v4().substring(0, 32);
+                        const {created} = await hCreateVerif(
+                            req,
+                            res,
+                            transaction,
+                            {
+                                norecorderresep: norecorder, 
+                                item: item, 
+                                subItem: subItem,
+                            } 
+                        )
+                        createdOrUpdatedVerif = created
+
                         await hCreatePelayanan(
                             req,
                             res,
@@ -805,29 +799,22 @@ const hCreateOrUpdateDetailVerif = async (
             // jika bukan racikan, maka tidak perlu subitem
             let norecverif = item.norecverif
             let createdOrUpdatedVerif
-            if(!norecverif){
-                norecverif = uuid.v4().substring(0, 32);
-                const {created} = await hCreateVerif(
-                    req,
-                    res,
-                    transaction,
-                    {
-                        norecorderresep: norecorder, 
-                        item: item, 
-                        subItem: null,
-                    } 
-                )
-                createdOrUpdatedVerif = created
-            }else{
-                const {updated} = await hUpdateVerif(
-                    norecorder,
-                    norecverif,
-                    item,
-                    null,
-                    transaction
-                )
-                createdOrUpdatedVerif = updated
-            }
+            const {deleted} = await hDeleteVerif(
+                norecorder,
+                transaction
+            )
+            norecverif = uuid.v4().substring(0, 32);
+            const { created } = await hCreateVerif(
+                req,
+                res,
+                transaction,
+                {
+                    norecorderresep: norecorder, 
+                    item: item, 
+                    subItem: null,
+                } 
+            )
+            createdOrUpdatedVerif = created
             await hCreatePelayanan(
                 req,
                 res,
@@ -949,42 +936,26 @@ const hCreateVerif = async (
     return {created, norecresep: created.norec, changedStok}
 }
 
-const hUpdateVerif = async (
+const hDeleteVerif = async (
     norecorderresep, 
-    norecverif, 
-    item, 
-    subItem, 
     transaction
 ) => {
-    // jika bukan subitem, maka yang digunakan adalah item
-    let itemUsed = subItem || item
-    let [_, updated] = await t_verifresep.update({
-        kdprofile: 0,
-        statusenabled: true,
-        reportdisplay: itemUsed.namaobat,
-        objectorderresepfk: norecorderresep,
-        kode_r: itemUsed.koder,
-        objectprodukfk: itemUsed.obat,
-        qty: itemUsed.qty || 0,
-        objectsediaanfk: itemUsed.sediaan,
-        harga: itemUsed.harga || 0,
-        total: itemUsed.total ||0,
-        objectsignafk: itemUsed.signa,
-        objectketeranganresepfk: itemUsed.keterangan,
-        qtyracikan: itemUsed.qtyracikan,
-        qtypembulatan: itemUsed.qtypembulatan,
-        // harus koder dari subitem
-        kode_r_tambahan: subItem?.koder || null,
-        qtyjumlahracikan: itemUsed.qtyjumlahracikan,
-    }, {
+    let deleted = await t_verifresep.findAll({
         where: {
-            norec: norecverif
+            objectorderresepfk: norecorderresep
         },
-        transaction: transaction,
-        returning: true 
+        transaction: transaction
     })
-    updated = updated[0].toJSON();
-    return {updated, norecresep: norecverif}
+    deleted = await Promise.all(
+        deleted.map((del) => {
+            const delVal = del.toJSON()
+            //TODO: nanti update stok disini
+            del.destroy()
+            return delVal
+        })
+    )
+
+    return {deleted}
 }
 
 const hCreateOrUpdateDetailBebas = async (
@@ -1163,15 +1134,22 @@ const hUpdateDetailBebas = async (
     return {updated, norecresep: norecverif}
 }
 
-// substract stock produk (bukan nobatch)
-const hSubstractStokProduct = async (
+/**
+ * change stock produk seluruh batch, tergantung prioritas
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} transaction 
+ * @param {*} param3 
+ * @returns 
+ */
+export const hSubstractStokProduct = async (
     req, 
     res, 
     transaction, 
     {
         productId,
         idUnit,
-        stokChange: qtySubstract,
+        stokChange: qtyChange,
         tabelTransaksi = "t_verifresep",
     }
 ) => {
@@ -1180,10 +1158,10 @@ const hSubstractStokProduct = async (
     if(!produkBatch){
         throw new Error("produk tidak ditemukan")
     }
-    if(qtySubstract > 0 && produkBatch.totalstok < qtySubstract){
+    if(qtyChange > 0 && produkBatch.totalstok < qtyChange){
         throw new Error("stok tidak cukup")
     }
-    let stokChangeUpdate = qtySubstract
+    let stokChangeUpdate = qtyChange
     let batchStokUnit = produkBatch.batchstokunit
     const batchStokUnitChanged = batchStokUnit.map((stokUnit) => {
         let newStokUnit = {...stokUnit}

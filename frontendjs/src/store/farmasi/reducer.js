@@ -41,7 +41,7 @@ const INIT_STATE = {
         error: null,
     },
     getOrderResepFromNorec: {
-        data: [],
+        data: null,
         loading: false,
         error: null,
     },
@@ -127,6 +127,7 @@ const Farmasi = (state = INIT_STATE, action) => {
                 ...state,
                 getOrderResepFromNorec: {
                     ...state.getOrderResepFromNorec,
+                    data: null,
                     loading: true,
                     error: null,
                 },
@@ -149,6 +150,7 @@ const Farmasi = (state = INIT_STATE, action) => {
                 ...state,
                 getOrderResepFromNorec: {
                     ...state.getOrderResepFromNorec,
+                    data: null,
                     loading: false,
                     error: action.payload,
                 },

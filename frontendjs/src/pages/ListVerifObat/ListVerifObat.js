@@ -30,6 +30,7 @@ const initialRetur = {
 const ListVerifObat = () => {
     const dispatch = useDispatch()
     const {norecdp} = useParams();
+    const navigate = useNavigate()
 
     const {dataVerif} = useSelector(state => ({
         dataVerif: state.Farmasi.getAllVerifResep?.data?.dataverif || []
@@ -79,6 +80,13 @@ const ListVerifObat = () => {
                                     <i className="ri-mail-send-fill align-bottom me-2 text-muted">
                                     </i>
                                     Retur Obat
+                                </DropdownItem>
+                                <DropdownItem onClick={() => {
+                                    navigate(`/farmasi/tambah-obat-farmasi/${row.norecap}/${row.norecresep}`)
+                                }}>
+                                    <i className="ri-mail-send-fill align-bottom me-2 text-muted">
+                                    </i>
+                                    Edit Resep
                                 </DropdownItem>
                             </DropdownMenu>
                         </UncontrolledDropdown>

@@ -754,6 +754,7 @@ const authProtectedRoutes = [
   { path: "/farmasi/penjualan-obat-bebas", component: <PenjualanObatBebas /> },
   { path: "/farmasi/list-verif-obat/:norecdp", component: <ListVerifObat />},
   { path: "/farmasi/tambah-obat-farmasi/:norecap", component: <TambahObatFarmasi />},
+  { path: "/farmasi/tambah-obat-farmasi/:norecap/:norecresep", component: <TambahObatFarmasi />},
   { path: "/farmasi/add-obat-farmasi", component: <AddObatFarmasi />},
 
   // Gawat Darurat
