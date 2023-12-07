@@ -128,7 +128,10 @@ import {
     GET_HISTORY_ASESMENBAYILAHIR,GET_HISTORY_ASESMENBAYILAHIR_SUCCESS,GET_HISTORY_ASESMENBAYILAHIR_ERROR,
     GET_ANTREAN_PEMERIKSAAN_OBAT,
     GET_ANTREAN_PEMERIKSAAN_OBAT_SUCCESS,
-    GET_ANTREAN_PEMERIKSAAN_OBAT_ERROR
+    GET_ANTREAN_PEMERIKSAAN_OBAT_ERROR,
+    DELETE_ORDER_RESEP,
+    DELETE_ORDER_RESEP_SUCCESS,
+    DELETE_ORDER_RESEP_ERROR
 } from "./actionType";
 
 export const emrResetForm = () => ({
@@ -872,5 +875,23 @@ export const getAntreanPemeriksaanObatSuccess = (data) => ({
 
 export const getAntreanPemeriksaanObatError = (error) => ({
     type: GET_ANTREAN_PEMERIKSAAN_OBAT_ERROR,
+    payload: error,
+});
+
+export const deleteOrderResep = (data, callback) => ({
+    type: DELETE_ORDER_RESEP,
+    payload: {
+        data,
+        callback
+    },
+});
+
+export const deleteOrderResepSuccess = (data) => ({
+    type: DELETE_ORDER_RESEP_SUCCESS,
+    payload: data,
+});
+
+export const deleteOrderResepError = (error) => ({
+    type: DELETE_ORDER_RESEP_ERROR,
     payload: error,
 });

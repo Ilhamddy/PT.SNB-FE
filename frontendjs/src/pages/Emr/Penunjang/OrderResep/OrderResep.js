@@ -47,6 +47,7 @@ const initValueRacikan = {
 const OrderResep = () => {
     const dispatch = useDispatch()
     const [unittujuanTemp, setunittujuanTemp] = useState("")
+    const [deleteModal, setDeleteModal] = useState(false)
 
     const {norecap, norecdp} = useParams()
     const [searchParams, setSearchParams] = useSearchParams()
@@ -110,7 +111,7 @@ const OrderResep = () => {
                 })
             )
         }),
-        onSubmit: (value) => {
+        onSubmit: (value, {resetForm}) => {
             const newVal = {...value}
             newVal.resep = newVal.resep.map((valResep) => {
                 const newValResep = {...valResep}
@@ -133,8 +134,16 @@ const OrderResep = () => {
                 return newValResep
             }) 
             dispatch(createOrUpdateResepOrder(newVal, (data) => {
-                searchParams.set("norecresep", data?.orderresep.norec)
-                setSearchParams(searchParams)
+                resetForm()
+                if (searchParams.has('norecresep')) {
+                    searchParams.delete('norecresep');
+                    setSearchParams(searchParams);
+                } else{
+                    dispatch(getOrderResepFromDp({
+                        norecdp: norecdp, 
+                        norecresep: norecresep
+                    }))
+                }
             }))
         }
     })
@@ -279,6 +288,21 @@ const OrderResep = () => {
                 msgBDelete='Dengan mengganti unit, racikan akan terhapus'
                 buttonHapus="Ganti"
             />
+            <DeleteModalCustom
+                show={deleteModal}
+                onDeleteClick={() => {
+                    vResep.resetForm()
+                    setDeleteModal(false)
+                    if (searchParams.has('norecresep')) {
+                        searchParams.delete('norecresep');
+                        setSearchParams(searchParams);
+                    }
+                }}
+                onCloseClick={() => setDeleteModal(false)}
+                msgHDelete='Apa Anda Yakin ?'
+                msgBDelete={`Yakin ingin hapus ${norecresep ? "edit" : ""} resep`}
+                buttonHapus="Hapus"
+            />
             <Row>
                 <Col lg={2}>
                     <Label 
@@ -299,6 +323,7 @@ const OrderResep = () => {
                         }}
                         value={vResep.values.dokter}
                         className={`input ${!!vResep?.errors.dokter ? "is-invalid" : ""}`}
+                        isClearEmpty
                         />
                     {vResep.touched.dokter 
                         && !!vResep.errors.dokter ? (
@@ -332,6 +357,7 @@ const OrderResep = () => {
                         }}
                         value={vResep.values.unittujuan}
                         className={`input ${!!vResep?.errors.unittujuan ? "is-invalid" : ""}`}
+                        isClearEmpty
                         />
                     {vResep.touched.unittujuan 
                         && !!vResep.errors.unittujuan && (
@@ -460,13 +486,12 @@ const OrderResep = () => {
                 <Row >
                     <Col md={12} className="d-flex justify-content-center gap-3">
                         <Button color="success"
-                            disabled={!!orderNorec}
                             onClick={() => {
                                 vResep.handleSubmit();
                             }}>
-                            Simpan
+                            {!!orderNorec ? "Edit" : "Simpan"}
                         </Button>
-                        <Button color="danger">
+                        <Button color="danger" onClick={() => setDeleteModal(true)}>
                             Batal
                         </Button>
                     </Col>

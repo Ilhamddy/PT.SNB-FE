@@ -27,13 +27,13 @@ import KontainerFlatpickr from '../KontainerFlatpickr/KontainerFlatpickr'
 const MergeNoRegistrasi = ({ show, onCloseClick, tempNorecDp }) => {
   const dispatch = useDispatch()
   const noregistrasi = useSelector(
-    (state) => state.Registrasi.getNoRegistrasi?.data?.noregistrasi
+    (state) => state.Registrasi.getNoRegistrasiPasien?.data?.noregistrasi
   )
   const [dateStart, setdateStart] = useState(() => new Date().toISOString())
   const validation = useFormik({
     enableReinitialize: true,
     initialValues: {
-      norecdp: tempNorecDp,
+      norecdp: tempNorecDp.norec,
       tglbatal: dateStart,
       alasan: '',
       norectujuan: '',
@@ -41,18 +41,20 @@ const MergeNoRegistrasi = ({ show, onCloseClick, tempNorecDp }) => {
     },
     validationSchema: Yup.object({
       alasan: Yup.string().required('Alasan wajib diisi'),
-      noregistrasiTujuan: Yup.string().required(
-        'No. Registrasi Tujuan wajib diisi'
-      ),
+      norectujuan: Yup.string().required('No. Registrasi Tujuan wajib diisi'),
       password: Yup.string().required('Password wajib diisi'),
     }),
     onSubmit: (values, { resetForm }) => {
-      dispatch(saveMergeNoRegistrasi(values, () => {}))
+      dispatch(
+        saveMergeNoRegistrasi(values, () => {
+          onCloseClick()
+        })
+      )
     },
   })
   useEffect(() => {
-    dispatch(getNoRegistrasiPasien({ norecdp: tempNorecDp }))
-  }, [tempNorecDp, dispatch])
+    dispatch(getNoRegistrasiPasien({ norecdp: tempNorecDp.norec }))
+  }, [tempNorecDp.norec, dispatch])
   return (
     <Modal isOpen={show} toggle={onCloseClick} centered={true}>
       <ModalBody className="py-3 px-5">
@@ -62,6 +64,7 @@ const MergeNoRegistrasi = ({ show, onCloseClick, tempNorecDp }) => {
               <Form
                 onSubmit={(e) => {
                   e.preventDefault()
+                  console.log(validation.errors)
                   validation.handleSubmit()
                   return false
                 }}
@@ -79,13 +82,7 @@ const MergeNoRegistrasi = ({ show, onCloseClick, tempNorecDp }) => {
                       id="noregistrasiAwal"
                       name="noregistrasiAwal"
                       type="text"
-                      value={tempNorecDp}
-                      onChange={(e) => {
-                        validation.setFieldValue(
-                          'noregistrasiAwal',
-                          e.target.value
-                        )
-                      }}
+                      value={tempNorecDp.noregistrasi}
                       invalid={
                         validation.touched?.noregistrasiAwal &&
                         !!validation.errors?.noregistrasiAwal

@@ -1164,7 +1164,7 @@ export const useColumnsResep = (
                 </div>
             )
         },
-        width: "17%"
+        width: "10%"
     },
     {
         name: <span className='font-weight-bold fs-13'>Sediaan</span>,
@@ -1257,7 +1257,7 @@ export const useColumnsResep = (
                 </div>
             )
         },
-        width: "10%"
+        width: "17%"
     },
     {
         name: <span className='font-weight-bold fs-13'>Keterangan</span>,
@@ -1422,13 +1422,11 @@ export const useColumnsResepRacikan = (
     },
     {
         name: <span className='font-weight-bold fs-13'>Qty</span>,
-        Cell: ({rowUtama}) => <p>/1 racikan</p>,
+        Cell: ({row}) => <>
+            <p className="mb-0">/1 racikan</p>
+            <p className="mb-0">{row.qty} {row.namasatuan}</p>
+        </>,
         width: "10%"
-    },
-    {
-        name: <span className='font-weight-bold fs-13'>Qty</span>,
-        Cell: ({row, rowUtama}) => <p>{row.qty} {row.namasatuan}</p>,
-        width: "7%"    
     },
     {
         name: <span className='font-weight-bold fs-13'>Sediaan</span>,
@@ -1482,7 +1480,7 @@ export const useColumnsResepRacikan = (
     {
         name: <span className='font-weight-bold fs-13'>Signa</span>,
         Cell: ({row}) => <div></div>,
-        width: "20%"
+        width: "27%"
     },
     {
         name: <span className='font-weight-bold fs-13'>Tambah</span>,

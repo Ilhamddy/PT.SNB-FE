@@ -1828,8 +1828,8 @@ const saveMergeNoRegistrasi = async (req, res) => {
             password,
         } = req.body
 
-
-        await db.sequelize.transaction(async (transaction) => {
+        const {updated} 
+        = await db.sequelize.transaction(async (transaction) => {
             let user = await db.user.findByPk(req.userId, {
                 transaction: transaction
             })
@@ -1842,16 +1842,58 @@ const saveMergeNoRegistrasi = async (req, res) => {
             if(!passwordIsValid){
                 throw new Error("Wrong password")
             }
-            
+            const dpTujuan = await db.t_daftarpasien.findByPk(norectujuan, {
+                transaction: transaction
+            })
+            let dpTujuanVal = dpTujuan.toJSON()
+            const dpAsal = await db.t_daftarpasien.findByPk(norecdp, {
+                transaction: transaction
+            })
+            let dpAsalVal = dpTujuan.toJSON()
+
+            if(dpTujuanVal.nocmfk !== dpAsalVal.nocmfk){
+                throw new Error("nocmfk tidak sama")
+            }
+            const norecmerge = uuid.v4().substring(0, 32)
+            await db.t_mergedaftarpasien.create({
+                norec: norecmerge,
+                objectdaftarpasienasalfk: norecdp,
+                objectdaftarpasientujuanfk: norectujuan,
+                objectpegawaifk: req.userId,
+                alasan: alasan,
+                tglinput: tglbatal
+            }, {
+                transaction: transaction
+            })
+
+            await dpAsal.update({
+                statusenabled: false
+            }, {
+                transaction: transaction
+            })
+
+            const [_, updated] = await db.t_antreanpemeriksaan.update({
+                objectdaftarpasienfk: norectujuan
+            }, {
+                where: {
+                    objectdaftarpasienfk: norecdp
+                },
+                transaction: transaction,
+                returning: true
+            })
+
+            return {
+                updated
+            }
         });
         
         const tempres = {
-        
+            updated
         };
         res.status(200).send({
             msg: 'Sukses',
             code: 200,
-            data: req.body,
+            data: tempres,
             success: true
         });
     } catch (error) {

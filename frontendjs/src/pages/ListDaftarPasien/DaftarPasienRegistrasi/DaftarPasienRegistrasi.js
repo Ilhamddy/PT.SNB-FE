@@ -86,6 +86,11 @@ const DaftarPasienRegistrasi = () => {
         })
     };
     const [tempNorecDp, settempNorecDp] = useState('');
+    const [tempNorecDpMerge, settempNorecDpMerge] = useState({
+        norec: '',
+        noregistrasi: '',
+    });
+
     const [batalModal, setbatalModal] = useState(false);
     const handleToCancel = async (norecdp) => {
         settempNorecDp(norecdp)
@@ -95,8 +100,11 @@ const DaftarPasienRegistrasi = () => {
         setbatalModal(false)
         handleClickCari()
     }
-    const handleToMergeNoregistrasi = async (norecdp) => {
-        settempNorecDp(norecdp)
+    const handleToMergeNoregistrasi = async (row) => {
+        settempNorecDpMerge({
+            norec: row.norecdp,
+            noregistrasi: row.noregistrasi
+        })
     }
     const columns = [
         {
@@ -112,7 +120,7 @@ const DaftarPasienRegistrasi = () => {
                             </DropdownToggle>
                             <DropdownMenu className="dropdown-menu-end">
                                 <DropdownItem onClick={() => handleToCancel(row.norecdp)}><i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>Batal Registrasi</DropdownItem>
-                                <DropdownItem onClick={() => handleToMergeNoregistrasi(row.norecdp)}><i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>Merge No. Registrasi</DropdownItem>
+                                <DropdownItem onClick={() => handleToMergeNoregistrasi(row)}><i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>Merge No. Registrasi</DropdownItem>
                             </DropdownMenu>
                         </UncontrolledDropdown>
                     </div>
@@ -131,12 +139,6 @@ const DaftarPasienRegistrasi = () => {
             // selector: row => row.noregistrasi,
             sortable: true,
             selector: row => (<button className="btn btn-sm btn-soft-info" onClick={() => handleClickRM(row)}>{row.noregistrasi}</button>),
-            // cell: (data) => {
-            //     return (
-            //         // <Link to={`/registrasi/pasien/${data.id}`}>Details</Link>
-            //         <button className="btn btn-sm btn-soft-info" onClick={() => handleClick(data)}>View</button>
-            //     );
-            // },
             width: "130px"
         },
         {
@@ -181,9 +183,12 @@ const DaftarPasienRegistrasi = () => {
                 onCloseClick={() => handleToCloseBatalModal()}
                 tempNorecDp={tempNorecDp} />
             <MergeNoRegistrasi
-                show={!!tempNorecDp}
-                onCloseClick={() => settempNorecDp('')}
-                tempNorecDp={tempNorecDp} />
+                show={!!tempNorecDpMerge.norec}
+                onCloseClick={() => settempNorecDpMerge({
+                    norec: '',
+                    noregistrasi: ''
+                })}
+                tempNorecDp={tempNorecDpMerge} />
             <UiContent />
             <div className="page-content daftar-pasien-registrasi">
                 <Container fluid>

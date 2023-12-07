@@ -109,9 +109,12 @@ CROSS JOIN LATERAL (
 
 const qGetOrderResepFromDP = qGetOrderResep + `
 WHERE CASE 
-    WHEN $1 = 'all' THEN tor.statusenabled = true
-    WHEN $1 = 'norecresep' THEN tor.norec = $2
-    ELSE tdp.norec = $3
+    WHEN $1 = 'all' 
+        THEN tor.statusenabled = true
+    WHEN $1 = 'norecresep' 
+        THEN tor.norec = $2
+    ELSE 
+        tdp.norec = $3 AND tor.statusenabled = true
 END
 GROUP BY
     tor.norec,
