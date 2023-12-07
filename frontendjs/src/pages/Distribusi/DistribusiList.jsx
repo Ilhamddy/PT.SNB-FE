@@ -151,7 +151,7 @@ const DistribusiOrderList = ({ isUnit, isLogistik }) => {
                 >
                   <DropdownItem>
                     <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
-                    Kirim/Tolak Barang
+                    Kirim/Tolak Pesanan
                   </DropdownItem>
                 </Link>
               )}

@@ -105,7 +105,7 @@ const DistribusiKirim = ({ isVerif, isLogistik = false, isEdit = false }) => {
                 noreckirim: noreckirim || '',
               })
             )
-            navigate(`/farmasi/gudang/distribusi-order-list`)
+            navigate(`/${linkDistribusi}/gudang/distribusi-order-list`)
           })
         )
       } else {
@@ -117,7 +117,7 @@ const DistribusiKirim = ({ isVerif, isLogistik = false, isEdit = false }) => {
                 noreckirim: noreckirim || '',
               })
             )
-            navigate(`/farmasi/gudang/distribusi-order-list`)
+            navigate(`/${linkDistribusi}/gudang/distribusi-order-list`)
           })
         )
       }

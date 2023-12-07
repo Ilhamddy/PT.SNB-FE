@@ -66,7 +66,7 @@ SELECT
     COALESCE(tor.istolak, FALSE) AS istolak,
     tor.alasantolak AS alasantolak,
     JSON_AGG(
-        JSON_BUILD_OBJECT(
+        DISTINCT JSONB_BUILD_OBJECT(
             'norecdetail', tobd.norec,
             'namaproduk', mp.namaproduk,
             'qty', tobd.qty,
@@ -126,7 +126,7 @@ SELECT
     COALESCE(tkb.istolak, FALSE) AS istolak,
     tkb.alasantolak AS alasantolak,
     JSON_AGG(
-        JSON_BUILD_OBJECT(
+        DISTINCT JSONB_BUILD_OBJECT(
             'norecdetail', tkbd.norec,
             'namaproduk', mp.namaproduk,
             'qty', tkbd.qty,
