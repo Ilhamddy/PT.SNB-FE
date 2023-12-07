@@ -518,6 +518,10 @@ WHERE
     tdp.nocmfk = $1
     AND
     tdp.norec != $2
+    AND
+    tdp.statusenabled = TRUE
+ORDER BY
+    tdp.tglregistrasi DESC
 `
 
 const qGetPasienRegistrasi = `
