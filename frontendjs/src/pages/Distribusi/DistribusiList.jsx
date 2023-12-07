@@ -151,7 +151,7 @@ const DistribusiOrderList = ({ isUnit, isLogistik }) => {
                 >
                   <DropdownItem>
                     <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
-                    Kirim Barang
+                    Kirim/Tolak Barang
                   </DropdownItem>
                 </Link>
               )}
@@ -239,7 +239,7 @@ const DistribusiOrderList = ({ isUnit, isLogistik }) => {
                     <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
                     {row.isverif || row.istolak
                       ? 'Lihat kiriman'
-                      : 'Verifikasi'}
+                      : 'Verifikasi/Tolak'}
                   </DropdownItem>
                 </Link>
               )}
