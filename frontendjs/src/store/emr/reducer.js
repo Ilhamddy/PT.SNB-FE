@@ -127,7 +127,10 @@ import {
     GET_HISTORY_ASESMENBAYILAHIR, GET_HISTORY_ASESMENBAYILAHIR_SUCCESS,GET_HISTORY_ASESMENBAYILAHIR_ERROR,
     GET_ANTREAN_PEMERIKSAAN_OBAT,
     GET_ANTREAN_PEMERIKSAAN_OBAT_SUCCESS,
-    GET_ANTREAN_PEMERIKSAAN_OBAT_ERROR
+    GET_ANTREAN_PEMERIKSAAN_OBAT_ERROR,
+    DELETE_ORDER_RESEP,
+    DELETE_ORDER_RESEP_SUCCESS,
+    DELETE_ORDER_RESEP_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -377,6 +380,11 @@ const INIT_STATE = {
         loading: false,
         error: null,
     },
+    deleteOrderResep: { 
+        data: [],
+        loading: false,
+        error: null,
+    }
 };
 
 const Emr = (state = INIT_STATE, action) => {
@@ -2058,6 +2066,41 @@ const Emr = (state = INIT_STATE, action) => {
                     error: action.payload,
                 }
             }
+        }
+
+        case DELETE_ORDER_RESEP: {
+            return {
+                ...state,
+                deleteOrderResep: {
+                    ...state.deleteOrderResep,
+                    data: [],
+                    loading: true,
+                    error: null,
+                },
+            };
+        }
+
+        case DELETE_ORDER_RESEP_SUCCESS: {
+            return {
+                ...state,
+                deleteOrderResep: {
+                    ...state.deleteOrderResep,
+                    loading: false,
+                    data: action.payload,
+                    success: true,
+                },
+            };
+        }
+
+        case DELETE_ORDER_RESEP_ERROR: {
+            return {
+                ...state,
+                deleteOrderResep: {
+                    ...state.deleteOrderResep,
+                    loading: false,
+                    error: action.payload,
+                },
+            };
         }
 
 

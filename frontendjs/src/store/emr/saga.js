@@ -28,6 +28,7 @@ import {
     GET_ASESMENBAYILAHIR_BYNOREC, GET_COMBO_ASESMENBAYILAHIR,
     GET_HISTORY_ASESMENBAYILAHIR,
     GET_ANTREAN_PEMERIKSAAN_OBAT,
+    DELETE_ORDER_RESEP
 } from "./actionType";
 
 import {
@@ -76,7 +77,9 @@ import {
     getComboAsesmenBayiLahirSuccess, getComboAsesmenBayiLahirError,
     getHistoryAsesmenBayiLahirSuccess, getHistoryAsesmenBayiLahirError,
     getAntreanPemeriksaanObatSuccess,
-    getAntreanPemeriksaanObatError
+    getAntreanPemeriksaanObatError,
+    deleteOrderResepSuccess,
+    deleteOrderResepError
 } from "./action";
 
 import { toast } from 'react-toastify';
@@ -914,6 +917,22 @@ export function* watchOnGetAntreanPemeriksaanObat() {
     yield takeEvery(GET_ANTREAN_PEMERIKSAAN_OBAT, onGetAntreanPemeriksaanObat);
 }
 
+function* onDeleteOrderResep({payload: {data, callback}}) {
+    try{
+        const response = yield call(serviceEmr.deleteOrderResep, data);
+        yield put(deleteOrderResepSuccess(response.data));
+        toast.success(response.msg || "Sukses");
+        callback && callback(response);
+    } catch (error) {
+        yield put(deleteOrderResepError(error));
+        toast.error(error?.response?.msg || "Gagal");
+    }
+}
+
+export function* watchDeleteOrderResep() {
+    yield takeEvery(DELETE_ORDER_RESEP, onDeleteOrderResep);
+}
+
 function* emrSaga() {
     yield all([
         fork(watchGetEmrHeader),
@@ -961,7 +980,8 @@ function* emrSaga() {
         fork(watchongetAsesmenBayiLahirByNorec),
         fork(watchongetComboAsesmenBayiLahir),
         fork(watchongetHistoryAsesmenBayiLahir),
-        fork(watchOnGetAntreanPemeriksaanObat)
+        fork(watchOnGetAntreanPemeriksaanObat),
+        fork(watchDeleteOrderResep)
     ]);
 }
 

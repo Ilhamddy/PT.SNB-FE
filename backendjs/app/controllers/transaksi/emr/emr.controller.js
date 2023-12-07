@@ -1024,7 +1024,7 @@ const createOrUpdateEmrResepDokter = async (req, res) => {
     if (errorTransaction) return
     try {
         const body = req.body
-        let norecorderresep = req.body.norecorderresep
+        let norecorderresep = req.body.norecorder
         let createdOrUpdated = null
         if (!norecorderresep) {
             norecorderresep = uuid.v4().substring(0, 32)
@@ -1062,7 +1062,13 @@ const createOrUpdateEmrResepDokter = async (req, res) => {
             })
             createdOrUpdated = created.toJSON()
         } else {
-            const [_, updated] = await t_orderresep.update({
+            const orderResepBefore = await t_orderresep.findByPk(norecorderresep, {
+                transaction: transaction
+            })
+            if(!orderResepBefore){
+                throw new Error(`Order resep tidak ada ada: ${norecorderresep}`)
+            }
+            const updated = await orderResepBefore.update({
                 norec: norecorderresep,
                 kdprofile: 0,
                 statusenabled: true,
@@ -1072,13 +1078,9 @@ const createOrUpdateEmrResepDokter = async (req, res) => {
                 objectunitasalfk: body.unittujuan,
                 objectdepotujuanfk: body.unittujuan
             }, {
-                where: {
-                    norec: norecorderresep
-                },
-                transaction: transaction,
-                returning: true,
+                transaction: transaction
             })
-            createdOrUpdated = updated[0].toJSON();
+            createdOrUpdated = updated.toJSON();
         }
         const { createdOrUpdatedDetailOrder } =
             await hCreateOrUpdateDetailOrder(
@@ -1109,6 +1111,50 @@ const createOrUpdateEmrResepDokter = async (req, res) => {
             status: "error",
             msg: "gagal create or update resep",
             success: false,
+        });
+    }
+}
+
+const deleteOrderResep = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const norecresep = req.body.norecresep
+        if(typeof norecresep !== "string") throw new Error("norecresep salah")
+        const {deleted} 
+        = await db.sequelize.transaction(async (transaction) => {
+            const resep = await db.t_orderresep.findByPk(norecresep, {
+                transaction: transaction
+            })
+            if(!resep){
+                throw new Error(`Resep tidak ditemukan: ${norecresep}`)
+            }
+            await resep.update({
+                statusenabled: false,
+            }, {
+                transaction: transaction
+            })
+            const deleted = resep.toJSON()
+            return {
+                deleted
+            }
+        });
+        
+        const tempres = {
+            deleted: deleted
+        };
+        res.status(200).send({
+            msg: 'Sukses Hapus order',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message || 'Gagal',
+            code: 500,
+            data: error,
+            success: false
         });
     }
 }
@@ -1685,7 +1731,8 @@ export default {
     getAsesmenBayiLahirByNorec,
     getComboAsesmenBayiLahir,
     getHistoryAsesmenBayiLahir,
-    getAntreanPemeriksaanObat
+    getAntreanPemeriksaanObat,
+    deleteOrderResep
 };
 
 
@@ -1707,25 +1754,19 @@ const hCreateOrUpdateDetailOrder = async (
                     item.racikan.map(async (subItem) => {
                         let norecresepsub = subItem.norecresep
                         let createdOrUpdated
-                        if (!norecresepsub) {
-                            norecresepsub = uuid.v4().substring(0, 32);
-                            const { created } = await hCreateResep(
-                                norecorderresep,
-                                item,
-                                subItem,
-                                transaction
-                            )
-                            createdOrUpdated = created
-                        } else {
-                            const { updated } = await hUpdateResep(
-                                norecorderresep,
-                                norecresepsub,
-                                item,
-                                subItem,
-                                transaction
-                            )
-                            createdOrUpdated = updated;
-                        }
+                        const { deleted } = await hDeleteResep(
+                            norecorderresep,
+                            transaction
+                        )
+
+                        norecresepsub = uuid.v4().substring(0, 32);
+                        const { created } = await hCreateResep(
+                            norecorderresep,
+                            item,
+                            subItem,
+                            transaction
+                        )
+                        createdOrUpdated = created
                         return createdOrUpdated
                     })
                 )
@@ -1734,25 +1775,18 @@ const hCreateOrUpdateDetailOrder = async (
             // jika bukan racikan, maka tidak perlu subitem
             let norecresep = item.norecresep
             let createdOrUpdatedObat
-            if (!norecresep) {
-                norecresep = uuid.v4().substring(0, 32);
-                const { created } = await hCreateResep(
-                    norecorderresep,
-                    item,
-                    null,
-                    transaction
-                )
-                createdOrUpdatedObat = created
-            } else {
-                const { updated } = await hUpdateResep(
-                    norecorderresep,
-                    norecresep,
-                    item,
-                    null,
-                    transaction
-                )
-                createdOrUpdatedObat = updated
-            }
+            const { deleted } = await hDeleteResep(
+                norecorderresep,
+                transaction
+            )
+            norecresep = uuid.v4().substring(0, 32);
+            const { created } = await hCreateResep(
+                norecorderresep,
+                item,
+                null,
+                transaction
+            )
+            createdOrUpdatedObat = created
             return createdOrUpdatedObat
         })
     )
@@ -1799,45 +1833,19 @@ const hCreateResep = async (
     return { created, norecresep: created.norec }
 }
 
-const hUpdateResep = async (
+const hDeleteResep = async (
     norecorderresep,
-    norecresep,
-    item,
-    subItem,
     transaction
 ) => {
-    // jika bukan subitem, maka yang digunakan adalah item
-    let itemUsed = subItem || item
-    let [_, updated] = await t_orderresepdetail.update({
-        kdprofile: 0,
-        statusenabled: true,
-        kodeexternal: "",
-        namaexternal: itemUsed.namaobat,
-        reportdisplay: itemUsed.namaobat,
-        objectorderresepfk: norecorderresep,
-        kode_r: itemUsed.koder,
-        objectprodukfk: itemUsed.obat,
-        qty: itemUsed.qty || 0,
-        objectsediaanfk: itemUsed.sediaan,
-        harga: itemUsed.harga || 0,
-        total: itemUsed.total || 0,
-        objectsignafk: itemUsed.signa,
-        objectketeranganresepfk: itemUsed.keterangan,
-        qtyracikan: itemUsed.qtyracikan,
-        qtypembulatan: itemUsed.qtypembulatan,
-        // harus koder dari subitem
-        kode_r_tambahan: subItem?.koder || null,
-        qtyjumlahracikan: itemUsed.qtyjumlahracikan,
-        nobatch: itemUsed.nobatch
-    }, {
+
+    let deleted = await t_orderresepdetail.destroy({
         where: {
-            norec: norecresep
+            objectorderresepfk: norecorderresep
         },
         transaction: transaction,
         returning: true
     })
-    updated = updated[0].toJSON();
-    return { updated, norecresep: norecresep }
+    return { deleted }
 }
 
 export const hProcessOrderResep = (dataOrders) => {

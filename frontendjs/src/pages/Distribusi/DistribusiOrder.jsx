@@ -137,11 +137,16 @@ const DistribusiOrder = ({ isUnit, isLogistik = false, isEdit = false }) => {
         console.error('batchInputAsc[0] is undefined')
         return
       }
+
       let firstBatchInputAsc = { ...batchInputAsc[0] }
       firstBatchInputAsc.namasatuan = values.namasatuan
       firstBatchInputAsc.satuan = values.satuan
       firstBatchInputAsc.qty = jmlStok
       firstBatchInputAsc.qtyout = jumlahKonversi
+      // jumlah hanya untuk pelengkap di db, operasi perhitungan harus menggunakan
+      // qty dan konversisatuan
+      firstBatchInputAsc.jumlah = jumlahKonversi / strToNumber(values.konversi)
+
       const newBatchKirim = [...vOrder.values.isiproduk, firstBatchInputAsc]
       vOrder.setFieldValue('isiproduk', newBatchKirim)
       resetForm()
@@ -723,7 +728,7 @@ const DistribusiOrder = ({ isUnit, isLogistik = false, isEdit = false }) => {
             htmlFor={`jumlahtotal`}
             className="form-label mb-1"
           >
-            Jumlah
+            Jumlah Total
           </Label>
           <Input
             id={`jumlahtotal`}

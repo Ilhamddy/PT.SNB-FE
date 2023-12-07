@@ -190,4 +190,10 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getAntreanPemeriksaanObat
     );
+
+    app.post(
+        "/api/transaksi/emr/delete-order-resep",
+        [authJwt.verifyToken],
+        controller.deleteOrderResep
+    )
 }

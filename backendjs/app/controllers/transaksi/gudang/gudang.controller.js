@@ -1992,6 +1992,7 @@ const hCreateKartuStokPenerimaan = async (
     return {createdKartuStokPenerimaan}
 }
 
+// stok unit harus satu pintu
 export const hUpsertStok = async (
     req,
     res,
@@ -2038,16 +2039,13 @@ export const hUpsertStok = async (
         if(qtyDiff < 0){
             throw new Error("Stok baru tidak boleh kurang dari nol")
         }
-        if(!ed 
-            || (!persendiskon && persendiskon !== 0) 
-            || (!hargadiskon && hargadiskon !== 0) 
-            || (!harga && harga !== 0) 
-            || !objectpenerimaanbarangdetailfk 
-            || !tglterima
-            || !objectasalprodukfk 
-        ){
-            throw new Error("Salah satu param kosong")
-        }
+        if(!ed) throw new Error("Ed kosong")
+        if(!persendiskon && persendiskon !== 0) throw new Error("PersenDiskon kosong")
+        if(!hargadiskon && hargadiskon !== 0) throw new Error("Harga diskon kosong")
+        if(!harga && harga !== 0) throw new Error("Harga diskon kosong")
+        if(!objectpenerimaanbarangdetailfk) throw new Error("Penerimaan barang detail kosong")
+        if(!tglterima) throw new Error("Tanggal terima kosong")
+        if(!objectasalprodukfk) throw new Error("Asal Produk kosong")
         stokBarangAkhirVal = await t_stokunit.create({
             norec: uuid.v4().substring(0, 32),
             kdprofile: 0,

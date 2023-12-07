@@ -1,13 +1,23 @@
-import { Row } from "reactstrap"
+import { Row, UncontrolledDropdown, UncontrolledTooltip, DropdownToggle, DropdownMenu, DropdownItem, } from "reactstrap"
 import LoadingTable from "../../../../Components/Table/LoadingTable"
 import NoDataTable from "../../../../Components/Table/NoDataTable"
 import DataTable from 'react-data-table-component';
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { dateTimeLocal } from "../../../../utils/format";
 import { tableCustomStyles } from "../../../../Components/Table/tableCustomStyles";
+import { Link, useSearchParams, useParams } from "react-router-dom";
+import { useFormik } from "formik";
+import { deleteOrder, deleteOrderResep, getOrderResepFromDp } from "../../../../store/actions";
+import DeleteModalCustom from "../../../../Components/Common/DeleteModalCustom";
+
 
 
 const RiwayatOrder = () => {
+    
+    const {norecdp} = useParams()
+    const dispatch = useDispatch()
+    const [searchParams, setSearchParams] = useSearchParams()
+    const norecresep = searchParams.get("norecresep")
     const {
         listOrder,
         listVerif
@@ -16,10 +26,62 @@ const RiwayatOrder = () => {
         listVerif: state.Emr.getOrderResepFromDP.data?.veriforder || []
     }))
 
+    const vDeleteResep = useFormik({
+        initialValues: {
+            norecresep: ""
+        }, 
+        onSubmit: (values) => {
+            dispatch(
+                deleteOrderResep(values, () => {
+                    vDeleteResep.resetForm()
+                    dispatch(getOrderResepFromDp({
+                        norecdp: norecdp, 
+                        norecresep: norecresep
+                    }))
+                })
+            )
+        }
+    })
+
+
+    const handleToNorec = (row) => {
+        searchParams.set("norecresep", row.norecorder)
+        setSearchParams(searchParams)
+    }
+
     /**
      * @type {import("react-data-table-component").TableColumn[]}
      */
     const columnsOrder = [
+        {
+            name: <span className='font-weight-bold fs-13'>Detail</span>,
+            cell: row => <div className="hstack gap-3 flex-wrap">
+            <UncontrolledTooltip placement="top" target="edit-produk">
+              Detail Produk
+            </UncontrolledTooltip>
+            <UncontrolledDropdown className="dropdown d-inline-block">
+                <DropdownToggle
+                    className="btn btn-soft-secondary btn-sm"
+                    itemType="button"
+                    id="edit-produk"
+                >
+                    <i className="ri-apps-2-line"></i>
+                </DropdownToggle>
+                <DropdownMenu className="dropdown-menu-end">
+                    <DropdownItem onClick={() => handleToNorec(row)}>
+                        <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
+                        Edit Order
+                    </DropdownItem>
+                    <DropdownItem onClick={() => vDeleteResep.setFieldValue("norecresep", row.norecorder)}>
+                        <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
+                        Hapus Order
+                    </DropdownItem>
+                </DropdownMenu>
+
+            </UncontrolledDropdown>
+          </div>,
+            width: "150px"
+        },
         {
             name: <span className='font-weight-bold fs-13'>No Order</span>,
             sortable: true,
@@ -73,40 +135,52 @@ const RiwayatOrder = () => {
     ];
 
     return(
-        <Row className="mt-5">
-            <h5>
-                Riwayat Order
-            </h5>
-            <DataTable
-                fixedHeader
-                fixedHeaderScrollHeight="700px"
-                columns={columnsOrder}
-                pagination
-                data={listOrder || []}
-                progressPending={false}
-                customStyles={tableCustomStyles}
-                expandableRows
-                expandableRowsComponent={ExpandableRiwayat}
-                progressComponent={<LoadingTable />}
-                noDataComponent={<NoDataTable dataName={"order"}/>}
+        <>
+            <DeleteModalCustom
+                show={!!vDeleteResep.values.norecresep}
+                onDeleteClick={() => {
+                    vDeleteResep.handleSubmit()
+                }}
+                onCloseClick={() => vDeleteResep.resetForm()}
+                msgHDelete='Apa Anda Yakin ?'
+                msgBDelete={`Yakin ingin hapus resep ini`}
+                buttonHapus="Hapus"
             />
-            <h5 className="mt-4">
-                Riwayat Obat Diterima pasien
-            </h5>
-            <DataTable
-                fixedHeader
-                fixedHeaderScrollHeight="700px"
-                columns={columnsVerif}
-                pagination
-                data={listVerif || []}
-                progressPending={false}
-                customStyles={tableCustomStyles}
-                expandableRows
-                expandableRowsComponent={ExpandableRiwayat}
-                progressComponent={<LoadingTable />}
-                noDataComponent={<NoDataTable dataName={"obat diterima pasien"}/>}
-            />
-        </Row>
+            <Row className="mt-5">
+                <h5>
+                    Riwayat Order
+                </h5>
+                <DataTable
+                    fixedHeader
+                    fixedHeaderScrollHeight="700px"
+                    columns={columnsOrder}
+                    pagination
+                    data={listOrder || []}
+                    progressPending={false}
+                    customStyles={tableCustomStyles}
+                    expandableRows
+                    expandableRowsComponent={ExpandableRiwayat}
+                    progressComponent={<LoadingTable />}
+                    noDataComponent={<NoDataTable dataName={"order"}/>}
+                />
+                <h5 className="mt-4">
+                    Riwayat Obat Diterima pasien
+                </h5>
+                <DataTable
+                    fixedHeader
+                    fixedHeaderScrollHeight="700px"
+                    columns={columnsVerif}
+                    pagination
+                    data={listVerif || []}
+                    progressPending={false}
+                    customStyles={tableCustomStyles}
+                    expandableRows
+                    expandableRowsComponent={ExpandableRiwayat}
+                    progressComponent={<LoadingTable />}
+                    noDataComponent={<NoDataTable dataName={"obat diterima pasien"}/>}
+                />
+            </Row>
+        </>
     )
 }
 

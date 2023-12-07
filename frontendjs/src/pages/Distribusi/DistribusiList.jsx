@@ -151,7 +151,7 @@ const DistribusiOrderList = ({ isUnit, isLogistik }) => {
                 >
                   <DropdownItem>
                     <i className="ri-mail-send-fill align-bottom me-2 text-muted"></i>
-                    Kirim/Tolak Barang
+                    Kirim/Tolak Pesanan
                   </DropdownItem>
                 </Link>
               )}
@@ -315,7 +315,7 @@ const DistribusiOrderList = ({ isUnit, isLogistik }) => {
       name: <span className="font-weight-bold fs-13">Jenis Kirim</span>,
       sortable: true,
       selector: (row) => row.namajenisorder,
-      width: '120px',
+      width: '100px',
     },
     {
       name: <span className="font-weight-bold fs-13">Status</span>,
@@ -450,6 +450,8 @@ const DistribusiOrderList = ({ isUnit, isLogistik }) => {
               paginationPerPage={10}
               data={listAll}
               progressPending={false}
+              expandableRows
+              expandableRowsComponent={ExpandableOrder}
               customStyles={tableCustomStyles}
               progressComponent={<LoadingTable />}
             />
@@ -474,6 +476,8 @@ const DistribusiOrderList = ({ isUnit, isLogistik }) => {
               columns={columnsKirim}
               pagination
               paginationPerPage={10}
+              expandableRows
+              expandableRowsComponent={ExpandableKirim}
               data={listKirim}
               progressPending={false}
               customStyles={tableCustomStyles}
@@ -484,6 +488,106 @@ const DistribusiOrderList = ({ isUnit, isLogistik }) => {
       </Container>
     </div>
   )
+}
+
+const ExpandableOrder = ({ data }) => {
+  /**
+   * @type {import("react-data-table-component").TableColumn[]}
+   */
+  const columnsDetail = [
+    {
+      name: <span className="font-weight-bold fs-13">Nama produk</span>,
+      sortable: true,
+      selector: (row) => row.namaproduk,
+      width: '200px',
+    },
+    {
+      name: <span className="font-weight-bold fs-13">Jumlah Total</span>,
+      selector: (row) => row.qty,
+      sortable: true,
+      width: '200px',
+    },
+    {
+      name: <span className="font-weight-bold fs-13">Nama Satuan </span>,
+      sortable: true,
+      selector: (row) => `${row.namasatuan}`,
+      width: '200px',
+    },
+  ]
+  if (data.orderdetail.length === 0) {
+    return <></>
+  }
+  return (
+    <DataTable
+      fixedHeader
+      fixedHeaderScrollHeight="700px"
+      columns={columnsDetail}
+      data={data.orderdetail || []}
+      progressPending={false}
+      customStyles={subTableCustomStyles}
+    />
+  )
+}
+
+const ExpandableKirim = ({ data }) => {
+  /**
+   * @type {import("react-data-table-component").TableColumn[]}
+   */
+  const columnsDetail = [
+    {
+      name: <span className="font-weight-bold fs-13">Nama produk</span>,
+      sortable: true,
+      selector: (row) => row.namaproduk,
+      width: '200px',
+    },
+    {
+      name: <span className="font-weight-bold fs-13">Jumlah Total</span>,
+      selector: (row) => row.qty,
+      sortable: true,
+      width: '200px',
+    },
+    {
+      name: <span className="font-weight-bold fs-13">No Batch</span>,
+      selector: (row) => row.nobatch,
+      sortable: true,
+      width: '200px',
+    },
+    {
+      name: <span className="font-weight-bold fs-13">Nama Satuan </span>,
+      sortable: true,
+      selector: (row) => `${row.namasatuan}`,
+      width: '200px',
+    },
+  ]
+  if (data.kirimdetail.length === 0) {
+    return <></>
+  }
+  return (
+    <DataTable
+      fixedHeader
+      fixedHeaderScrollHeight="700px"
+      columns={columnsDetail}
+      data={data.kirimdetail || []}
+      progressPending={false}
+      customStyles={subTableCustomStyles}
+    />
+  )
+}
+
+const subTableCustomStyles = {
+  headRow: {
+    style: {
+      color: '#ffffff',
+      backgroundColor: '#ECB349',
+    },
+  },
+  rows: {
+    style: {
+      color: 'black',
+      backgroundColor: '#f1f2f6',
+      borderBottom: '1px solid #919191',
+    },
+  },
 }
 
 const Widget = ({ title, end, image }) => {

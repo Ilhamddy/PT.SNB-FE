@@ -599,13 +599,6 @@ const Widget = ({ title, end, image }) => {
             </div>
           </div>
         </CardBody>
-        <div className="card-footer p-2" style={{ backgroundColor: '#FFCB46' }}>
-          <div className="text-center">
-            <Link to="#" className="link-light" onClick={() => { }}>
-              View <i className="ri-arrow-right-s-line align-middle lh-1"></i>
-            </Link>
-          </div>
-        </div>
       </Card>
     </Col>
   )
