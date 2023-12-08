@@ -915,6 +915,129 @@ const upsertCondition = async (req, res) => {
     }
 }
 
+async function tempEncounterPulang(reqTemp) {
+    const profile = await pool.query(profileQueries.getAll);
+    const currentDate = new Date();
+    const encounterData = {
+        resourceType: "Encounter",
+        identifier: [
+            {
+                system: "http://sys-ids.kemkes.go.id/encounter/"+profile.rows[0].ihs_id,
+                value: reqTemp.noregistrasi
+            }
+        ],
+        status: "finished",
+        class: {
+            system: "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            code: "AMB",
+            display: "ambulatory"
+        },
+        subject: {
+            reference: "Patient/"+reqTemp.ihs_id,
+            display: reqTemp.namapasien
+        },
+        participant: [
+            {
+                type: [
+                    {
+                        coding: [
+                            {
+                                system: "http://terminology.hl7.org/CodeSystem/v3-ParticipationType",
+                                code: "ATND",
+                                display: "attender"
+                            }
+                        ]
+                    }
+                ],
+                individual: {
+                    reference: "Practitioner/"+reqTemp.ihs_dpjp,
+                    display: reqTemp.namadokter
+                }
+            }
+        ],
+        period: {
+            start: reqTemp.tglregistrasi_ihs,
+            end: reqTemp.tglregistrasi_ihs
+        },
+        location: [
+            {
+                location: {
+                    reference: "Location/"+reqTemp.ihs_unit,
+                    display: reqTemp.namaunit
+                },
+                extension: [
+                    {
+                        url: "https://fhir.kemkes.go.id/r4/StructureDefinition/ServiceClass",
+                        extension: [
+                            {
+                                url: "value",
+                                valueCodeableConcept: {
+                                    coding: [
+                                        {
+                                            system: "http://terminology.kemkes.go.id/CodeSystem/locationServiceClass-Outpatient",
+                                            code: "reguler",
+                                            display: "Kelas Reguler"
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        statusHistory: [
+            {
+                status: "arrived",
+                period: {
+                    start: reqTemp.tglregistrasi_ihs,
+                    end:currentDate
+                }
+            },
+            {
+                status: "in-progress",
+                period: {
+                    start: currentDate
+                }
+            }
+        ],
+        serviceProvider: {
+            reference: "Organization/"+profile.rows[0].ihs_id
+        }
+    };
+    
+                return encounterData
+}
+
+const upsertEncounterPulang = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const profilePasien = await pool.query(satuSehatQueries.qGetDataPasienByNorecDp,[req.body.norec]);
+        const encounter = await tempEncounterPulang(req.body)
+        // await db.sequelize.transaction(async (transaction) => {
+            
+        // });
+        
+        const tempres = {
+            body:req.body
+        };
+        res.status(200).send({
+            msg: 'Sukses',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message || 'Gagal',
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export default {
     getListInstalasi,
     updateOrganizationInstalasi,
@@ -925,5 +1048,6 @@ export default {
     updatePractitionerPegawai,
     updateIhsPatient,
     upsertEncounter,
-    upsertCondition
+    upsertCondition,
+    upsertEncounterPulang
 }

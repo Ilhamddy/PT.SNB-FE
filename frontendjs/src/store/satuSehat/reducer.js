@@ -7,7 +7,8 @@ import {
     UPSERT_PRACTITIONER,UPSERT_PRACTITIONER_ERROR,UPSERT_PRACTITIONER_SUCCESS,
     UPSERT_PATIENT,UPSERT_PATIENT_SUCCESS,UPSERT_PATIENT_ERROR,
     UPSERT_ENCOUNTER,UPSERT_ENCOUNTER_SUCCESS,UPSERT_ENCOUNTER_ERROR,
-    UPSERT_CONDITION,UPSERT_CONDITION_SUCCESS,UPSERT_CONDITION_ERROR
+    UPSERT_CONDITION,UPSERT_CONDITION_SUCCESS,UPSERT_CONDITION_ERROR,
+    UPSERT_ENCOUNTER_PULANG,UPSERT_ENCOUNTER_PULANG_ERROR,UPSERT_ENCOUNTER_PULANG_SUCCESS
 } from "./actionType";
 
 const INIT_STATE = {
@@ -52,6 +53,11 @@ const INIT_STATE = {
         error: null,
     },
     upsertCondition:{
+        data: [],
+        loading: false,
+        error: null,
+    },
+    upsertEncounterPulang:{
         data: [],
         loading: false,
         error: null,
@@ -351,6 +357,39 @@ const SatuSehat = (state = INIT_STATE, action) => {
                 ...state,
                 upsertCondition: {
                     ...state.upsertCondition,
+                    loading: true,
+                    error: action.payload,
+                }
+            }
+        }
+
+        case UPSERT_ENCOUNTER_PULANG: {
+            return {
+                ...state,
+                upsertEncounterPulang: {
+                    ...state.upsertEncounterPulang,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case UPSERT_ENCOUNTER_PULANG_SUCCESS: {
+            return {
+                ...state,
+                upsertEncounterPulang: {
+                    ...state.upsertEncounterPulang,
+                    loading: false,
+                    data: action.payload,
+                }
+            }
+        }
+
+        case UPSERT_ENCOUNTER_PULANG_ERROR: {
+            return {
+                ...state,
+                upsertEncounterPulang: {
+                    ...state.upsertEncounterPulang,
                     loading: true,
                     error: action.payload,
                 }

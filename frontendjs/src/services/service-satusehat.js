@@ -30,4 +30,7 @@ export default class ServiceSatuSehat {
     upsertCondition = async (body) => {
         return await api.create("/transaksi/satu-sehat/upsert-condition", body)
     }
+    upsertEncounterPulang = async (body) => {
+        return await api.create("/transaksi/satu-sehat/upsert-encounter-pulang", body)
+    }
 }

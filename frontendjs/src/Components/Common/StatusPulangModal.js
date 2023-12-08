@@ -8,7 +8,7 @@ import CustomSelect from "../../pages/Select/Select";
 import { useSelector, useDispatch } from "react-redux";
 import { useFormik, yupToFormErrors } from "formik";
 import * as Yup from "yup";
-import { updateStatusPulangRJ } from "../../store/actions";
+import { updateStatusPulangRJ, upsertEncounterPulang } from "../../store/actions";
 
 const StatusPulangModal = ({ show, onSimpanClick, onCloseClick, tempNorecDp,tempNorecAp, dataStatusPulang }) => {
     const dispatch = useDispatch();
@@ -30,7 +30,11 @@ const StatusPulangModal = ({ show, onSimpanClick, onCloseClick, tempNorecDp,temp
         onSubmit: (values, { resetForm }) => {
             // console.log(validation.errors)
             dispatch(updateStatusPulangRJ(values, ''));
-            
+            dispatch(
+                upsertEncounterPulang(values, () => {
+                    // resetForm()
+                })
+              )
             resetForm({ values: '' })
         }
     })

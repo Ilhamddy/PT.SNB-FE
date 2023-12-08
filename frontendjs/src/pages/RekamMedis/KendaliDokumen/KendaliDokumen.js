@@ -83,7 +83,7 @@ const KendaliDokumen = () => {
                 rtktp:e?.rtktp,
                 rwktp:e?.rwktp
             }
-            if(e?.ihs_id===null && e?.noIdentitas!==null){
+            if(e?.ihs_id===null && e?.noIdentitas!==null && e?.objectstatuskendalirmfkap===null){
               dispatch(
                 upsertPatient(values, () => {
                 })

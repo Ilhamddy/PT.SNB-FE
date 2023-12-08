@@ -5,7 +5,7 @@ import {
     UPSERT_MAP_CHILD,
     UPSERT_ORGANIZATION_INSTALASI, GET_LIST_UNIT,UPSERT_LOCATION_UNIT,
     GET_LIST_PRACTITIONER,UPSERT_PRACTITIONER, UPSERT_PATIENT,UPSERT_ENCOUNTER,
-    UPSERT_CONDITION
+    UPSERT_CONDITION,UPSERT_ENCOUNTER_PULANG
  } from "./actionType";
  import { 
     getListInstalasiSuccess,getListInstalasiError,
@@ -16,7 +16,8 @@ import {
     upsertPractitionerSuccess,upsertPractitionerError,
     upsertPatientSuccess, upsertPatientError,
     upsertEncounterSuccess,upsertEncounterError,
-    upsertConditionSuccess,upsertConditionError
+    upsertConditionSuccess,upsertConditionError,
+    upsertEncounterPulangSuccess, upsertEncounterPulangError
 } from "./action";
 import { toast } from 'react-toastify';
 
@@ -122,6 +123,19 @@ function* onupsertCondition({payload: {data, callback}}) {
     }
 }
 
+
+function* onupsertEncounterPulang({payload: {data, callback}}) {
+    try{
+        const response = yield call(serviceSatuSehat.upsertEncounterPulang, data);
+        yield put(upsertEncounterPulangSuccess(response.data));
+        toast.success(response.msg || "Sukses");
+        callback && callback(response);
+    } catch (error) {
+        yield put(upsertEncounterPulangError(error));
+        toast.error(error.msg || "Gagal");
+    }
+}
+
 export default function* satuSehatSaga() {
     yield all([
         takeEvery(GET_LIST_INSTALASI, ongetListInstalasi),
@@ -132,6 +146,7 @@ export default function* satuSehatSaga() {
         takeEvery(UPSERT_PRACTITIONER,onupsertPractitioner),
         takeEvery(UPSERT_PATIENT,onupsertPatient),
         takeEvery(UPSERT_ENCOUNTER,onupsertEncounter),
-        takeEvery(UPSERT_CONDITION,onupsertCondition)
+        takeEvery(UPSERT_CONDITION,onupsertCondition),
+        takeEvery(UPSERT_ENCOUNTER_PULANG,onupsertEncounterPulang)
     ]);
 }
