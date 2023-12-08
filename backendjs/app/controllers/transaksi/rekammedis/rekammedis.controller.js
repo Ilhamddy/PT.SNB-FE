@@ -224,7 +224,8 @@ async function saveDokumenRekammedis(req, res) {
                 norec: norec,
                 objectantreanpemeriksaanfk: req.body.norecap,
                 objectunitfk: req.body.objectunittujuan,
-                objectstatuskendalirmfk: 1
+                objectstatuskendalirmfk: 1,
+                tgldikirim:new Date()
             }, { transaction });
             transaction && await transaction.commit();
             res.status(200).send({
@@ -236,7 +237,8 @@ async function saveDokumenRekammedis(req, res) {
             });
         } else if (req.body.idpencarian === 2) {
             const t_rm_lokasidokumen = await db.t_rm_lokasidokumen.update({
-                objectstatuskendalirmfk: 5
+                objectstatuskendalirmfk: 5,
+                tglkembali:new Date()
             }, {
                 where: {
                     norec: req.body.norectrm
@@ -253,7 +255,8 @@ async function saveDokumenRekammedis(req, res) {
         } else if (req.body.idpencarian === 4) {
             // ini untuk dokumen diterima di poliklinik
             const t_rm_lokasidokumen = await db.t_rm_lokasidokumen.update({
-                objectstatuskendalirmfk: 2
+                objectstatuskendalirmfk: 2,
+                tglditerimapoli:new Date()
             }, {
                 where: {
                     norec: req.body.norectrm

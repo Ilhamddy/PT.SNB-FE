@@ -917,6 +917,153 @@ const upsertCondition = async (req, res) => {
 
 async function tempEncounterPulang(reqTemp) {
     const profile = await pool.query(profileQueries.getAll);
+    const diagnosa = await pool.query(satuSehatQueries.qListDiagnosa,[reqTemp.norecdp]);
+    let tempDiagnosis = diagnosa.rows.map((element) => {
+        if (element.ihs_diagnosa !== null) {
+            return {
+                condition: {
+                    reference: "Condition/" + element.ihs_diagnosa,
+                    display: element.label
+                },
+                use: {
+                    coding: [
+                        {
+                            system: "http://terminology.hl7.org/CodeSystem/diagnosis-role",
+                            code: "DD",
+                            display: "Discharge diagnosis"
+                        }
+                    ]
+                },
+                rank: parseFloat(element.no)
+            };
+        }
+        return null; // or handle the case where ihs_diagnosa is null
+    }).filter(Boolean);
+    
+    const currentDate = new Date();
+    const diagnosis = tempDiagnosis;    
+    const encounterData = {
+        resourceType: "Encounter",
+        id: reqTemp.ihs_dp,
+        identifier: [{
+                system: "http://sys-ids.kemkes.go.id/encounter/"+profile.rows[0].ihs_id,
+                value: reqTemp.noregistrasi
+            }],
+        status: "finished",
+        class: {
+            system: "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            code: "AMB",
+            display: "ambulatory"},
+        subject: {
+            reference: "Patient/"+reqTemp.ihs_id,
+            display: reqTemp.namapasien},
+        participant: [{
+                type: [{
+                        coding: [{
+                                system: "http://terminology.hl7.org/CodeSystem/v3-ParticipationType",
+                                code: "ATND",
+                                display: "attender"}
+                        ]}
+                ],
+                individual: {
+                    reference: "Practitioner/"+reqTemp.ihs_dpjp,
+                    display: reqTemp.namadokter}
+            }],
+        period: {
+            start: reqTemp.tglregistrasi_ihs,
+            end: reqTemp.tglpulang},
+        location: [{
+                location: {
+                    reference: "Location/"+reqTemp.ihs_unit,
+                    display: reqTemp.namaunit},
+                extension: [{
+                        url: "https://fhir.kemkes.go.id/r4/StructureDefinition/ServiceClass",
+                        extension: [{
+                                url: "value",
+                                valueCodeableConcept: {
+                                    coding: [{
+                                            system: "http://terminology.kemkes.go.id/CodeSystem/locationServiceClass-Outpatient",
+                                            code: "reguler",
+                                            display: "Kelas Reguler"}
+                                    ]}
+                            }]
+                    }]}
+        ],
+        statusHistory: [{
+                status: "arrived",
+                period: {
+                    start: reqTemp.tglregistrasi_ihs,
+                    end:reqTemp.tglditerimapoli
+                }
+            },{
+                status: "in-progress",
+                period: {
+                    start: reqTemp.tglditerimapoli,
+                    end: reqTemp.tglpulang
+                }
+            },{
+                status: "finished",
+                period: {
+                    start: reqTemp.tglpulang,
+                    end: reqTemp.tglpulang
+                }
+            }
+        ],
+        serviceProvider: {
+            reference: "Organization/"+profile.rows[0].ihs_id
+        },
+        diagnosis
+    };
+    
+                return encounterData
+}
+
+const upsertEncounterPulang = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const profilePasien = await pool.query(satuSehatQueries.qGetDataPasienByNorecDpTrm,[req.body.norec]);
+        let temp ={
+            ihs_dp:profilePasien.rows[0].ihs_dp,
+            ihs_id:profilePasien.rows[0].ihs_pasien,
+            namapasien:profilePasien.rows[0].namapasien,
+            noregistrasi:profilePasien.rows[0].noregistrasi,
+            tglpulang:profilePasien.rows[0].tglpulang,
+            ihs_unit:profilePasien.rows[0].ihs_unit,
+            tglditerimapoli:profilePasien.rows[0].tglditerimapoli,
+            ihs_dpjp:profilePasien.rows[0].ihs_dpjp,
+            namadokter:profilePasien.rows[0].namadokter,
+            tglregistrasi_ihs:profilePasien.rows[0].tglregistrasi_ihs,
+            norecdp:req.body.norec
+        }
+        const encounter = await tempEncounterPulang(temp)
+        let response = await postGetSatuSehat('PUT', '/Encounter/'+profilePasien.rows[0].ihs_dp,encounter);
+        // await db.sequelize.transaction(async (transaction) => {
+            
+        // });
+        
+        const tempres = {
+            encounter:encounter,
+            response:response
+        };
+        res.status(200).send({
+            msg: 'Sukses',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message || 'Gagal',
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+async function tempEncounterIGD(reqTemp) {
+    const profile = await pool.query(profileQueries.getAll);
     const currentDate = new Date();
     const encounterData = {
         resourceType: "Encounter",
@@ -926,11 +1073,11 @@ async function tempEncounterPulang(reqTemp) {
                 value: reqTemp.noregistrasi
             }
         ],
-        status: "finished",
+        status: "arrived",
         class: {
             system: "http://terminology.hl7.org/CodeSystem/v3-ActCode",
-            code: "AMB",
-            display: "ambulatory"
+            code: "EMER",
+            display: "emergency"
         },
         subject: {
             reference: "Patient/"+reqTemp.ihs_id,
@@ -956,8 +1103,7 @@ async function tempEncounterPulang(reqTemp) {
             }
         ],
         period: {
-            start: reqTemp.tglregistrasi_ihs,
-            end: reqTemp.tglregistrasi_ihs
+            start: reqTemp.tglregistrasi_ihs
         },
         location: [
             {
@@ -980,7 +1126,19 @@ async function tempEncounterPulang(reqTemp) {
                                         }
                                     ]
                                 }
-                            }
+                            },
+                            {
+                                url: "upgradeClassIndicator",
+                                valueCodeableConcept: {
+                                  coding: [
+                                    {
+                                      system: "http://terminology.kemkes.go.id/CodeSystem/locationUpgradeClass",
+                                      code: "kelas-tetap",
+                                      display: "Kelas Tetap Perawatan"
+                                    }
+                                  ]
+                                }
+                              }
                         ]
                     }
                 ]
@@ -1007,35 +1165,6 @@ async function tempEncounterPulang(reqTemp) {
     };
     
                 return encounterData
-}
-
-const upsertEncounterPulang = async (req, res) => {
-    const logger = res.locals.logger;
-    try{
-        const profilePasien = await pool.query(satuSehatQueries.qGetDataPasienByNorecDp,[req.body.norec]);
-        const encounter = await tempEncounterPulang(req.body)
-        // await db.sequelize.transaction(async (transaction) => {
-            
-        // });
-        
-        const tempres = {
-            body:req.body
-        };
-        res.status(200).send({
-            msg: 'Sukses',
-            code: 200,
-            data: tempres,
-            success: true
-        });
-    } catch (error) {
-        logger.error(error);
-        res.status(500).send({
-            msg: error.message || 'Gagal',
-            code: 500,
-            data: error,
-            success: false
-        });
-    }
 }
 
 export default {
