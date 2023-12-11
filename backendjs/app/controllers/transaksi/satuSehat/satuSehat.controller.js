@@ -802,6 +802,7 @@ const upsertEncounter = async (req, res) => {
             ihs_dpjp,
             namadokter,
             tglregistrasi_ihs,
+            objectinstalasifk
         } = profilePasien.rows[0];
 
         const temp = {
@@ -827,7 +828,19 @@ const upsertEncounter = async (req, res) => {
         const isInProgress = ihs_dp !== null && req.body.status === 'in-progress';
 
         if (isArrived) {
-            encounter = await tempEncounterDaftar(temp);
+            if(objectinstalasifk===7){
+                encounter = await tempEncounterIGD(temp);
+            }else if(objectinstalasifk===1){
+                encounter = await tempEncounterDaftar(temp);
+            }else{
+                res.status(500).send({
+                    msg: 'Instalasi '+objectinstalasifk+' Belum Terkirim' || 'Gagal',
+                    code: 500,
+                    data: 'Instalasi '+objectinstalasifk+' Belum Terkirim',
+                    success: false,
+                });
+                return
+            }
         } else if (isInProgress) {
             encounter = await tempEncounterTerimaDokumenRJ(temp);
             url = `/Encounter/${ihs_dp}`;
@@ -859,7 +872,7 @@ const upsertEncounter = async (req, res) => {
 
         const tempres = {
             encounter: response,
-            // daftarpsien: setInstalasi,
+            daftarpsien: setInstalasi,
             // dataencounter: encounter,
         };
 
@@ -1270,13 +1283,13 @@ async function tempEncounterIGD(reqTemp) {
                 status: "arrived",
                 period: {
                     start: reqTemp.tglregistrasi_ihs,
-                    end:currentDate
+                    end:reqTemp.tglpulang
                 }
             },
             {
                 status: "in-progress",
                 period: {
-                    start: currentDate
+                    start: reqTemp.tglpulang
                 }
             }
         ],
