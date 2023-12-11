@@ -34,12 +34,6 @@ const Login = () => {
       : state.UserPasien.loginUser?.data,
   }))
 
-  useEffect(() => {
-    if (user) {
-      navigate('/')
-    }
-  }, [user])
-
   const isPasienLama = page === 'pasien-lama'
   const isPasienBaru = page === 'pasien-baru'
   const isSelesai = page === 'selesai'
@@ -54,6 +48,12 @@ const Login = () => {
       navigate('/')
     })
   }
+
+  useEffect(() => {
+    if (user && !isSelesai) {
+      navigate('/')
+    }
+  }, [user])
   return (
     <div className="page-login">
       <KontainerPage
