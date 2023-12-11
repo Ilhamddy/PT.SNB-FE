@@ -550,7 +550,7 @@ const FormPasienBaru = ({ step, setStep }) => {
                   errorMsg={vStep1.errors.rt}
                   isError={vStep1.touched.rt && vStep1.errors.rt}
                   onChange={(e) => {
-                    vStep1.handleChange(e)
+                    rgxAllNumber.test(e.target.value) && vStep1.handleChange(e)
                   }}
                   disabled={isEdit}
                 />
@@ -567,7 +567,7 @@ const FormPasienBaru = ({ step, setStep }) => {
                   errorMsg={vStep1.errors.rw}
                   isError={vStep1.touched.rw && vStep1.errors.rw}
                   onChange={(e) => {
-                    vStep1.handleChange(e)
+                    rgxAllNumber.test(e.target.value) && vStep1.handleChange(e)
                   }}
                   disabled={isEdit}
                 />

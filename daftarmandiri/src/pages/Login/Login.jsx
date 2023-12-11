@@ -151,11 +151,11 @@ const FormPasienLama = ({ setDone, handleToHome }) => {
           }}
         />
       </InputGroup>
-      <InputGroup label={'NIK'}>
+      <InputGroup label={'Password'}>
         <InputDM
-          id="noidentitas"
-          name="noidentitas"
-          type="string"
+          id="password"
+          name="password"
+          type="password"
           className="input-login"
           value={vLogin.values.password}
           errorMsg={vLogin.errors.password}

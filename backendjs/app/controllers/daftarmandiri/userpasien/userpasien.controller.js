@@ -561,6 +561,7 @@ const verifUserEmail = async (req, res) => {
             })
             if(!userPasien) throw new Error("User pasien tidak ada")
             userPasien = userPasien.toJSON()
+            if(!userPasien.verifcode) throw new Error("Anda belum mengirim email")
             let passwordIsValid = bcrypt.compareSync(
                 verifcode,
                 userPasien.verifcode
