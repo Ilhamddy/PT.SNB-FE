@@ -154,7 +154,7 @@ async function getListTtv(req, res) {
         to_char(dp.tglregistrasi,'yyyy-MM-dd') as tglregistrasi,tt.norec, tt.objectemrfk, tt.tinggibadan,
         tt.beratbadan, tt.suhu,tt.e, tt.m, tt.v, tt.nadi, tt.alergi, tt.tekanandarah, tt.spo2, 
         tt.pernapasan,tt.keadaanumum, tt.objectpegawaifk, tt.isedit, tt.objectttvfk, tt.tglisi,
-        mu.namaunit,mr.reportdisplay as namagcs
+        mu.namaunit,mr.reportdisplay as namagcs,tt.ihs_nadi
                 FROM t_daftarpasien dp 
         join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk=dp.norec
         join t_emrpasien te on te.objectantreanpemeriksaanfk=ta.norec 
@@ -323,7 +323,8 @@ async function editEmrPasienTtv(req, res) {
             objectttvfk: req.body.norec,
             objectgcsfk: idgcs,
             tglisi: new Date(),
-            objectpegawaifk: req.idPegawai
+            objectpegawaifk: req.idPegawai,
+            ihs_nadi:req.body.ihs_nadi
         }, { transaction });
 
         const ttvupdate = await db.t_ttv.update({

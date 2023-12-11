@@ -59,4 +59,9 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.upsertEncounterPulang
     )
+    app.post(
+        "/api/transaksi/satu-sehat/upsert-observation",
+        [authJwt.verifyToken],
+        controller.upsertObservation
+    )
 }
