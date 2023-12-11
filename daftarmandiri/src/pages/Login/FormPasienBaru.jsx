@@ -11,6 +11,7 @@ import SelectDM from '../../Components/SelectDM/SelectDM'
 import FlatpickrDM from '../../Components/FlatpickrDM/FlatpickrDM'
 import {
   getPasienEdit,
+  getVerifUser,
   signUpUser,
   updatePasien,
 } from '../../store/userpasien/action'
@@ -148,8 +149,10 @@ const FormPasienBaru = ({ step, setStep }) => {
       namaayah: '',
       nobpjs: '',
       nohppasien: '',
+      email: '',
       uuid: '',
       answer: '',
+      password: '',
     },
     validationSchema: Yup.object({
       namaibu: Yup.string().required('Nama Ibu wajib diisi'),
@@ -160,9 +163,15 @@ const FormPasienBaru = ({ step, setStep }) => {
         .min(10, 'No HP Pasien minimal 10 digit')
         .max(13, 'No HP Pasien maksimal 13 digit')
         .matches(rgxAllNumber, 'No HP Pasien harus angka'),
+      email: Yup.string()
+        .required('Email harus diisi')
+        .email('Format email salah'),
+      password: Yup.string()
+        .required('No password provided.')
+        .min(8, 'Password Terlalu pendek - Minimal 8 karakter.')
+        .matches(/\d+/, 'Password minimal 1 angka.'),
     }),
     onSubmit: (values, { resetForm }) => {
-      console.log('masuk')
       const finalVal = {
         step0: vStep0.values,
         step1: vStep1.values,
@@ -173,7 +182,7 @@ const FormPasienBaru = ({ step, setStep }) => {
       if (!isEdit) {
         dispatch(
           signUpUser(finalVal, () => {
-            navigate('/login/selesai')
+            navigate('/akun/verif-email')
           })
         )
       } else {
@@ -261,6 +270,7 @@ const FormPasienBaru = ({ step, setStep }) => {
     vStep1.setValues,
     vStep2.setValues,
     vStep3.setValues,
+    vStep3.initialValues,
     uuidcaptcha,
   ])
 
@@ -274,7 +284,6 @@ const FormPasienBaru = ({ step, setStep }) => {
     { label: 'Ya', value: 0 },
     { label: 'Tidak', value: 1 },
   ]
-  console.log(vStep0.values.kewarganegaraan)
   return (
     <div className="kontainer-konten pasien-baru-konten">
       {step === 0 && (
@@ -541,7 +550,7 @@ const FormPasienBaru = ({ step, setStep }) => {
                   errorMsg={vStep1.errors.rt}
                   isError={vStep1.touched.rt && vStep1.errors.rt}
                   onChange={(e) => {
-                    vStep1.handleChange(e)
+                    rgxAllNumber.test(e.target.value) && vStep1.handleChange(e)
                   }}
                   disabled={isEdit}
                 />
@@ -558,7 +567,7 @@ const FormPasienBaru = ({ step, setStep }) => {
                   errorMsg={vStep1.errors.rw}
                   isError={vStep1.touched.rw && vStep1.errors.rw}
                   onChange={(e) => {
-                    vStep1.handleChange(e)
+                    rgxAllNumber.test(e.target.value) && vStep1.handleChange(e)
                   }}
                   disabled={isEdit}
                 />
@@ -928,10 +937,41 @@ const FormPasienBaru = ({ step, setStep }) => {
               disabled={isEdit}
             />
           </InputGroup>
+          <InputGroup label={'E-Mail'}>
+            <InputDM
+              id="email"
+              name="email"
+              type="string"
+              className="input-login"
+              value={vStep3.values.email}
+              errorMsg={vStep3.errors.email}
+              isError={vStep3.touched.email && vStep3.errors.email}
+              onChange={(e) => {
+                vStep3.handleChange(e)
+              }}
+              disabled={isEdit}
+            />
+          </InputGroup>
+          <InputGroup label={'Password'}>
+            <InputDM
+              id="password"
+              name="password"
+              type="password"
+              className="input-login"
+              value={vStep3.values.password}
+              errorMsg={vStep3.errors.password}
+              isError={vStep3.touched.password && vStep3.errors.password}
+              onChange={(e) => {
+                vStep3.handleChange(e)
+              }}
+              disabled={isEdit}
+            />
+          </InputGroup>
           <img
             width={'100%'}
             height={'fit-content'}
             src={`data:image/svg+xml;utf8,${encodeURIComponent(image)}`}
+            alt="Captcha"
           />
           <InputGroup label={'Masukkan captcha'}>
             <InputDM
@@ -950,7 +990,6 @@ const FormPasienBaru = ({ step, setStep }) => {
           </InputGroup>
         </>
       )}
-
       <div className="kontainer-btn-lama">
         <ButtonDM
           className="btn-lama"
@@ -969,7 +1008,7 @@ const FormPasienBaru = ({ step, setStep }) => {
         >
           Kembali
         </ButtonDM>
-        {step < 3 ? (
+        {step < 3 && (
           <ButtonDM
             className="btn-lama"
             type="button"
@@ -979,8 +1018,6 @@ const FormPasienBaru = ({ step, setStep }) => {
               } else if (step === 1) {
                 vStep1.handleSubmit()
               } else if (step === 2) {
-                console.error(vStep2.errors)
-                console.error(vStep2.touched)
                 vStep2.handleSubmit()
               }
               window.scrollTo({
@@ -992,7 +1029,8 @@ const FormPasienBaru = ({ step, setStep }) => {
           >
             Selanjutnya
           </ButtonDM>
-        ) : (
+        )}
+        {step === 3 && (
           <ButtonDM
             className="btn-lama"
             type="button"

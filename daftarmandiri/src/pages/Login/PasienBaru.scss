@@ -1,4 +1,7 @@
 .pasien-baru-konten {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
     .input-split {
         display: flex;
         flex-direction: row;
@@ -17,6 +20,10 @@
         .btn-lama {
             width: calc(50% - 10px);
         }
+    }
+
+    .btn-verif {
+        margin-bottom: 25px;
     }
 
     .input-group-pasien-baru {

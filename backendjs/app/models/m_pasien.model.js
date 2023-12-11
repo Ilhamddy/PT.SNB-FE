@@ -148,6 +148,13 @@ export default (sequelize, Sequelize) => {
         },
         ihs_id:{
             type: Sequelize.STRING
+        },
+        email: {
+            type: Sequelize.STRING
+        },
+        isverifemail: {
+            type: Sequelize.BOOLEAN
+
         }
     }, {
         tableName: "m_pasien", // relation "user" does not exist

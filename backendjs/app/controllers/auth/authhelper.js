@@ -23,7 +23,7 @@ export const pasienSignup = async (
     transaction, 
     {
         norm: nocm,
-        noidentitas
+        password
     }) => {
     const userSignup = await m_pasien.findOne({
         where: {
@@ -36,14 +36,15 @@ export const pasienSignup = async (
         transaction: transaction
 
     })
+    if(!password) throw new Error("Password kosong")
     if(!userSignup) return null
-    const password = bcrypt.hashSync(noidentitas, 8)
+    const passwordHash = bcrypt.hashSync(password, 8)
     const userPasien = await db.users_pasien.create({
             norm: nocm,
-            password: password,
+            password: passwordHash,
             createdAt: new Date(),
             updatedAt: new Date(),
-            lastAccessed: null
+            lastAccessed: new Date(),
         },
         {
             transaction: transaction
@@ -66,13 +67,14 @@ export const pasienChangeNoIdentitas = async (
         }
     })
     if(!userSignup) return null
-    const password = bcrypt.hashSync(noidentitas, norm.toString())
+    if(!noidentitas) throw new Error("No Identitas kosong")
+    const passwordHash = bcrypt.hashSync(noidentitas, norm.toString())
     const userPasien = await db.users_pasien.create({
             norm: norm,
-            password: password,
+            password: passwordHash,
             createdAt: new Date(),
             updatedAt: new Date(),
-            lastAccessed: null
+            lastAccessed: new Date()
         },
         {
             transaction: transaction

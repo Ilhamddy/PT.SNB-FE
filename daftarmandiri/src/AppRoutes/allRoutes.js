@@ -14,6 +14,7 @@ import BeritaPage from "../pages/BeritaPage/BeritaPage";
 import AntreanOnlinePage from "../pages/AntreanOnlinePage/AntreanOnlinePage"; 
 import DetailPendaftaran from "../pages/DetailPendaftaran/DetailPendaftaran";
 import TempatTidurPage from "../pages/TempatTidurPage/TempatTidurPage";
+import VerifikasiEmail from "../pages/Login/VerifikasiEmail";
 
 const publicRoutes = [
     { path: "/login/:page", component: <Login /> },
@@ -32,6 +33,8 @@ const protectedRoutes = [
     { path: "/akun/penjamin", component: <PenjaminPage />},
     { path: "/akun/antrean-online", component: <AntreanOnlinePage />},
     { path: "/akun/detail-pendaftaran/:norec", component: <DetailPendaftaran />},
+    { path: "/akun/verif-email", component: <VerifikasiEmail />},
+
 ]
 
 export { publicRoutes, protectedRoutes };

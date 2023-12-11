@@ -169,7 +169,7 @@ const signinPasien = async (req, res) => {
   const logger = res.locals.logger;
   try {
     res.locals.showBodyRes()
-    const { nocm, noidentitas, clientSecret } = req.body;
+    const { nocm, password, clientSecret } = req.body;
     await db.sequelize.transaction(async (transaction) => {
       let user = await UserPasien.findOne({
         where: {
@@ -180,7 +180,7 @@ const signinPasien = async (req, res) => {
         // sign up dulu kalau datanya sudah ada di m_pasien
         user = await pasienSignup(req, res, transaction, {
           norm: nocm,
-          noidentitas: noidentitas
+          password: password
         })
       }
       if (!user) {
@@ -205,7 +205,7 @@ const signinPasien = async (req, res) => {
       })
       user = user.toJSON()
       let passwordIsValid = bcrypt.compareSync(
-        noidentitas,
+        password,
         user.password
       );
       if (passwordIsValid) {
@@ -252,6 +252,8 @@ const signinPasien = async (req, res) => {
     });
   }
 }
+
+
 
 
 export default {

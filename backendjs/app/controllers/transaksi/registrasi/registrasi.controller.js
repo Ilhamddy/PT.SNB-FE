@@ -236,7 +236,7 @@ const savePasien = async (req, res) => {
                 transaction,
                 {
                     norm: result.nocm,
-                    noidentitas: result.noidentitas
+                    password: result.noidentitas
                 })
             userPasien = userPasien?.toJSON() || null
         } else {

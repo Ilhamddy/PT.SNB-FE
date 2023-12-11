@@ -68,11 +68,11 @@ function* onSavePasienMandiri({payload: {data, callback}}) {
     try{
         const response = yield call(serviceDaftar.savePasienMandiri, data);
         yield put(savePasienMandiriSuccess(response.data));
-        toast.success(response.data.msg || "Sukses menyimpan data pasien mandiri")
+        toast.success(response.msg || "Sukses menyimpan data pasien mandiri")
         callback && callback()
     } catch (error) {
         yield put(savePasienMandiriError(error));
-        toast.error(error.msg || "Gagal menyimpan data pasien mandiri")
+        toast.error(error.response?.msg || "Gagal menyimpan data pasien mandiri")
     }
 }
 

@@ -38,7 +38,13 @@ import {
     GET_ANTREAN_PEMERIKSAAN_ERROR,
     GET_REGISTRASI_NOREC,
     GET_REGISTRASI_NOREC_SUCCESS,
-    GET_REGISTRASI_NOREC_ERROR
+    GET_REGISTRASI_NOREC_ERROR,
+    VERIF_USER_EMAIL,
+    VERIF_USER_EMAIL_SUCCESS,
+    VERIF_USER_EMAIL_ERROR,
+    GET_VERIF_USER,
+    GET_VERIF_USER_SUCCESS,
+    GET_VERIF_USER_ERROR
 } from "./actionType";
 
 export const loginUser = (data, callback) => {
@@ -321,6 +327,48 @@ export const getRegistrasiNorecSuccess = (data) => {
 export const getRegistrasiNorecError = (error) => {
     return {
         type: GET_REGISTRASI_NOREC_ERROR,
+        payload: error
+    }
+}
+
+export const verifUserEmail = (data, callback) => {
+    return {
+        type: VERIF_USER_EMAIL,
+        payload: {data, callback}
+    }
+}
+
+export const verifUserEmailSuccess = (data) => {
+    return {
+        type: VERIF_USER_EMAIL_SUCCESS,
+        payload: data
+    }
+}
+
+export const verifUserEmailError = (error) => {
+    return {
+        type: VERIF_USER_EMAIL_ERROR,
+        payload: error
+    }
+}
+
+export const getVerifUser = (queries, callback) => {
+    return {
+        type: GET_VERIF_USER,
+        payload: {queries, callback}
+    }
+}
+
+export const getVerifUserSuccess = (data) => {
+    return {
+        type: GET_VERIF_USER_SUCCESS,
+        payload: data
+    }
+}
+
+export const getVerifUserError = (error) => {
+    return {
+        type: GET_VERIF_USER_ERROR,
         payload: error
     }
 }

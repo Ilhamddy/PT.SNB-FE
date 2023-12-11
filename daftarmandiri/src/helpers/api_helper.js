@@ -39,7 +39,11 @@ axios.interceptors.response.use(
       default:
         message = error.message || error;
     }
-    error.message = message;
+    if(error.response?.data?.isencrypt){
+      const newResponse = decrypt(error.response.data.dataenc).data
+      error.response.data = newResponse
+    }
+    console.log(error.response)
     return Promise.reject(error);
   }
 );

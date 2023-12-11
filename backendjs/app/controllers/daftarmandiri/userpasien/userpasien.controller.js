@@ -10,6 +10,7 @@ import userpasienQueries from "../../../queries/daftarmandiri/userpasien/userpas
 import bcrypt from "bcryptjs"
 import rekananQueries from "../../../queries/mastertable/rekanan/rekanan.queries";
 import * as uuid from "uuid";
+import * as nodemailer from "nodemailer"
 
 
 const m_pasien = db.m_pasien
@@ -29,6 +30,14 @@ const upsertPasien = async (req, res) => {
                 req.body.step3.answer
             )
             if(!correct) throw new Error("Captcha salah")
+            const email = bodyReq.step3.email.toLowerCase()
+            const pasienEmail = await db.m_pasien.findOne({
+                where: {
+                    email: email
+                },
+                transaction: transaction
+            })
+            if(pasienEmail) throw new Error("Email sudah digunakan")
             if(!id){
                 [
                     dataPasien,
@@ -470,6 +479,133 @@ const getRegistrasiNorec = async (req, res) => {
     }
 }
 
+const getVerifUser = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const {
+            tglcode,
+            tglexpired,
+            email,
+            isAlreadyVerified
+        } = await db.sequelize.transaction(async (transaction) => {
+            const idPasien = req.id
+            const userPasien = await db.users_pasien.findByPk(idPasien, {
+                transaction: transaction
+            })
+            const pasien = await db.m_pasien.findByPk(userPasien.objectpasienfk, {
+                transaction: transaction
+            })
+
+            if(!pasien){
+                throw new Error("Pasien tidak ditemukan")
+            }
+            if(!pasien?.email){
+                throw new Error("Pasien belum mendaftarkan email")
+            }
+            const dateToday = new Date()
+            const dateExpired = new Date();
+            dateExpired.setTime(dateExpired.getTime() + 5 * 60 * 1000)
+            let randomNumber = Math.floor(Math.random() * 1000000);
+            let randomString = randomNumber.toString().padStart(6, "0");
+            const isAlreadyVerified = !!pasien.isverifemail
+            if(!isAlreadyVerified){
+                await userPasien.update({
+                    tglcode: dateToday,
+                    tglexpired: dateExpired,
+                    verifcode: bcrypt.hashSync(randomString, 8),
+                })
+                await hSendEmail(pasien.email, randomString)
+            }
+
+            return {
+                tglcode: dateToday,
+                tglexpired: dateExpired,
+                email: pasien.email,
+                isAlreadyVerified: isAlreadyVerified
+            }
+        });
+        
+        const tempres = {
+            tglcode,
+            tglexpired,
+            pesanKirim: `E-mail sudah dikirim ke ${email}, Jika tidak ada mohon cek spam`,
+            isAlreadyVerified
+        };
+        res.status(200).send({
+            msg: 'Sukses',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message || 'Gagal',
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+const verifUserEmail = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const {
+            pasien
+        } = await db.sequelize.transaction(async (transaction) => {
+            const verifcode = req.body.verifcode
+            const idPasien = req.id
+            let userPasien = await db.users_pasien.findByPk(idPasien, {
+                transaction: transaction
+            })
+            if(!userPasien) throw new Error("User pasien tidak ada")
+            userPasien = userPasien.toJSON()
+            if(!userPasien.verifcode) throw new Error("Anda belum mengirim email")
+            let passwordIsValid = bcrypt.compareSync(
+                verifcode,
+                userPasien.verifcode
+            );
+            if(!passwordIsValid) throw new Error("Kode verifikasi salah");
+            let isExpired = userPasien.tglexpired < new Date()
+            if(isExpired) throw new Error("Kode sudah expired, kirim kembali")
+            let pasien = await db.m_pasien.findByPk(userPasien.objectpasienfk, {
+                transaction: transaction
+            })
+            if(!pasien) throw new Error("Pasien tidak ditemukan")
+            await pasien.update({
+                isverifemail: true
+            }, {
+                transaction: transaction
+            })
+            pasien = pasien.toJSON()
+            return {
+                pasien
+            }
+
+        });
+        
+        const tempres = {
+            status: "User sudah terverifikasi",
+            pasien: pasien
+        };
+        res.status(200).send({
+            msg: 'Sukses',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message || 'Gagal',
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export default {
     upsertPasien,
     getRiwayatReservasi,
@@ -480,7 +616,9 @@ export default {
     upsertPenjamin,
     getPenjaminPasien,
     getAntreanPemeriksaan,
-    getRegistrasiNorec
+    getRegistrasiNorec,
+    getVerifUser: getVerifUser,
+    verifUserEmail: verifUserEmail
 }
 
 const hCreatePasien = async (req, res, transaction) => {
@@ -532,6 +670,7 @@ const hCreatePasien = async (req, res, transaction) => {
         nocm: null,
         objectstatuskendalirmfk: null,
         nocmtemp: nocmSementara,
+        email: bodyReq.step3.email,
     }, {
         transaction: transaction
     })
@@ -542,10 +681,11 @@ const hCreatePasien = async (req, res, transaction) => {
         transaction, 
         { 
             norm: dataPasien.nocmtemp, 
-            noidentitas: dataPasien.noidentitas
+            password: bodyReq.step3.password
         })
     await userPasien.update({
-        clientsecret: bodyReq.clientSecret
+        clientsecret: bodyReq.clientSecret,
+        objectpasienfk: dataPasien.id
     }, {
         transaction: transaction
     })
@@ -666,4 +806,24 @@ const hCreateCMSementara = async () => {
     let tahun = monthStart.getFullYear().toString().slice(-2)
     nocmSementara = "HT" + tahun + bulan + nocmSementara
     return nocmSementara
+}
+
+const hSendEmail = async (email, verifcode) => {
+    let transporter = nodemailer.createTransport({
+        service: 'Gmail',
+        auth: {
+            user: 'snberdikarinoreply@gmail.com',
+            pass: 'heztcjllcnyiivol'
+        }
+    })
+      
+    let mailOptions = {
+        from: 'snberdikarinoreply@gmail.com',
+        to: email,
+        subject: 'Kode Verifikasi SNBerdikari',
+        text: `Berikut merupakan kode verifikasi anda ${verifcode}`
+    };
+
+    const info = await transporter.sendMail(mailOptions);
+    return info
 }
