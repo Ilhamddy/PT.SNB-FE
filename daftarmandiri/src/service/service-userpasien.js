@@ -51,4 +51,12 @@ export default class ServiceAuth {
     getRegistrasiNorec = async (queries) => {
         return await api.get(`/daftarmandiri/user-pasien/get-registrasi-norec`, queries)
     }
+
+    getVerifUser = async (queries) => {
+        return await api.get(`/daftarmandiri/user-pasien/get-verif-user`, queries)
+    }
+
+    verifUserEmail = async (data) => {
+        return await api.create(`/daftarmandiri/user-pasien/verif-user-email`, data)
+    }
 }

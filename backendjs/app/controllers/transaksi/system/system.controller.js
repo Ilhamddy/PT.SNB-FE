@@ -39,21 +39,20 @@ const sendMail = async (req, res) => {
     const logger = res.locals.logger;
     try{
         let transporter = nodemailer.createTransport({
-            service: 'postfix',
-            host: '103.149.177.11',
-            secure: false,
-            port: 25,
-            auth: { user: 'snberdikarinoreply@gmail.com', pass: 'heztcjllcnyiivol' },
-            tls: { rejectUnauthorized: false }
-        });
+            service: 'Gmail',
+            auth: {
+                user: 'snberdikarinoreply@gmail.com',
+                pass: 'heztcjllcnyiivol'
+            }
+        })
           
         let mailOptions = {
             from: 'snberdikarinoreply@gmail.com',
             to: 'disky.jetmiko@gmail.com',
             subject: 'nodemailer test',
-            text: 'hope it got there'
+            text: 'Berikut merupakan '
         };
-          
+
         transporter.sendMail(mailOptions, (error, info) => {
             if (error) {
                 res.status(500).send({
@@ -63,6 +62,12 @@ const sendMail = async (req, res) => {
                     success: false
                 });
             } else {
+                const date = new Date()
+                date.setTime(date.getTime() + (4*60*1000));
+                let tempres = {
+                    nextMail: date,
+                    transporterInfo: info
+                }
                 res.status(200).send({
                     msg: 'Success',
                     code: 200,

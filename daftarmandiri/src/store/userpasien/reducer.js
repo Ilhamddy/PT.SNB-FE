@@ -35,7 +35,13 @@ import {
     GET_ANTREAN_PEMERIKSAAN_ERROR,
     GET_REGISTRASI_NOREC,
     GET_REGISTRASI_NOREC_SUCCESS,
-    GET_REGISTRASI_NOREC_ERROR
+    GET_REGISTRASI_NOREC_ERROR,
+    VERIF_USER_EMAIL,
+    VERIF_USER_EMAIL_SUCCESS,
+    VERIF_USER_EMAIL_ERROR,
+    GET_VERIF_USER,
+    GET_VERIF_USER_SUCCESS,
+    GET_VERIF_USER_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -99,7 +105,17 @@ const INIT_STATE = {
         data: [],
         loading: false,
         error: null
-    }
+    },
+    verifUserEmail: {
+        data: null,
+        loading: false,
+        error: null
+    },
+    getVerifUser: {
+        data: null,
+        loading: false,
+        error: null
+    },
 }
 
 const login = (state = INIT_STATE, action) => {
@@ -503,6 +519,73 @@ const login = (state = INIT_STATE, action) => {
                 ...state,
                 getRegistrasiNorec: {
                     ...state.getRegistrasiNorec,
+                    data: [],
+                    loading: false,
+                    error: action.payload,
+                },
+            };
+
+        case VERIF_USER_EMAIL: 
+            return {
+                ...state,
+                verifUserEmail: {
+                    ...state.verifUserEmail,
+                    data: null,
+                    loading: true,
+                    error: null,
+                },
+            };
+            
+        case VERIF_USER_EMAIL_SUCCESS:
+            return {
+                ...state,
+                verifUserEmail: {
+                    ...state.verifUserEmail,
+                    data: action.payload,
+                    loading: false,
+                },
+                getVerifUser: {
+                    ...INIT_STATE.getVerifUser,
+                }
+            };
+
+        case VERIF_USER_EMAIL_ERROR:
+            return {
+                ...state,
+                verifUserEmail: {
+                    ...state.verifUserEmail,
+                    loading: false,
+                    error: action.payload,
+                },
+            };
+
+        case GET_VERIF_USER: 
+            return {
+                ...state,
+                getVerifUser: {
+                    ...state.getVerifUser,
+                    data: null,
+                    loading: true,
+                    error: null,
+                },
+            };
+            
+        case GET_VERIF_USER_SUCCESS:
+            return {
+                ...state,
+                getVerifUser: {
+                    ...state.getVerifUser,
+                    data: action.payload,
+                    loading: false,
+                    error: null,
+                },
+            };
+
+        case GET_VERIF_USER_ERROR:
+            return {
+                ...state,
+                getVerifUser: {
+                    ...state.getVerifUser,
                     data: [],
                     loading: false,
                     error: action.payload,

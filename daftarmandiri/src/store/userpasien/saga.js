@@ -25,7 +25,12 @@ import {
     getAntreanPemeriksaanSuccess,
     getAntreanPemeriksaanError,
     getRegistrasiNorecSuccess,
-    getRegistrasiNorecError
+    getRegistrasiNorecError,
+    verifUserEmailSuccess,
+    verifUserEmailError,
+    getVerifUser,
+    getVerifUserSuccess,
+    getVerifUserError
 } from "./action";
 import * as uuid from 'uuid'
 
@@ -43,7 +48,10 @@ import {
     UPSERT_PENJAMIN,
     GET_PENJAMIN_PASIEN,
     GET_ANTREAN_PEMERIKSAAN,
-    GET_REGISTRASI_NOREC
+    GET_REGISTRASI_NOREC,
+    VERIF_USER,
+    GET_VERIF_USER,
+    VERIF_USER_EMAIL
 } from "./actionType";
 
 import ServiceUserPasien from "../../service/service-userpasien";
@@ -101,6 +109,7 @@ function* onSignUpUser({payload: {data, callback}}) {
         const response = yield call(serviceUserPasien.signUpUser, newData);
         console.log(response)
         yield put(signUpUserSuccess(response.user));
+        setAuthorization(response.user?.accessToken)
         localStorage.setItem("authUserMandiri", JSON.stringify(response.user || null));
         callback && callback()
     }catch(error){
@@ -218,6 +227,34 @@ function* onGetRegistrasiNorec({payload: {queries}}){
     }
 }
 
+function* onGetVerifUser({payload: {queries, callback}}){
+    try{
+        const response = yield call(serviceUserPasien.getVerifUser, queries);
+        yield put(getVerifUserSuccess(response.data)); 
+        callback && callback(response.data)
+        !response.data.isAlreadyVerified && 
+            toast.success("Kode Verifikasi sudah dikirim ke E-Mail Anda")
+    }catch(error){
+        console.error(error)
+        yield put(getVerifUserError(error))
+    }
+}
+
+
+function* onVerifUserEmail({payload: {data, callback}}){
+    try{
+        const response = yield call(serviceUserPasien.verifUserEmail, data);
+        yield put(verifUserEmailSuccess(response.data)); 
+        toast.success(response.msg || "Sukses update")
+        callback && callback()
+    }catch(error){
+        console.error(error)
+        yield put(verifUserEmailError(error))
+        toast.error(error?.response?.data?.msg || "error")
+    }
+}
+
+
 export default function* watchLoginUser() {
     yield all([
         takeEvery(LOGIN_USER, onLoginUser),
@@ -233,6 +270,8 @@ export default function* watchLoginUser() {
         takeEvery(UPSERT_PENJAMIN, onUpsertPenjamin),
         takeEvery(GET_PENJAMIN_PASIEN, onGetPenjaminPasien),
         takeEvery(GET_ANTREAN_PEMERIKSAAN, onGetAntreanPemeriksaan),
-        takeEvery(GET_REGISTRASI_NOREC, onGetRegistrasiNorec)
+        takeEvery(GET_REGISTRASI_NOREC, onGetRegistrasiNorec),
+        takeEvery(GET_VERIF_USER, onGetVerifUser),
+        takeEvery(VERIF_USER_EMAIL, onVerifUserEmail)
     ])
 }

@@ -28,8 +28,17 @@ const Login = () => {
     'Pengisian Alamat Domisili',
     'Pengisian Data Tambahan',
   ]
+  let { user } = useSelector((state) => ({
+    user: Array.isArray(state.UserPasien.loginUser?.data)
+      ? null
+      : state.UserPasien.loginUser?.data,
+  }))
 
-  useEffect(() => {}, [])
+  useEffect(() => {
+    if (user) {
+      navigate('/')
+    }
+  }, [user])
 
   const isPasienLama = page === 'pasien-lama'
   const isPasienBaru = page === 'pasien-baru'
@@ -110,11 +119,11 @@ const FormPasienLama = ({ setDone, handleToHome }) => {
   const vLogin = useFormik({
     initialValues: {
       nocm: '',
-      noidentitas: '',
+      password: '',
     },
     validationSchema: Yup.object({
       nocm: Yup.string().required('No RM/NIK harus diisi'),
-      noidentitas: Yup.string().required('Tanggal Lahir harus diisi'),
+      password: Yup.string().required('Password harus diisi'),
     }),
     onSubmit: (values, { resetForm }) => {
       dispatch(
@@ -148,9 +157,9 @@ const FormPasienLama = ({ setDone, handleToHome }) => {
           name="noidentitas"
           type="string"
           className="input-login"
-          value={vLogin.values.noidentitas}
-          errorMsg={vLogin.errors.noidentitas}
-          isError={vLogin.touched.noidentitas && vLogin.errors.noidentitas}
+          value={vLogin.values.password}
+          errorMsg={vLogin.errors.password}
+          isError={vLogin.touched.password && vLogin.errors.password}
           onChange={vLogin.handleChange}
         />
       </InputGroup>
