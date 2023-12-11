@@ -36,4 +36,10 @@ export default function (app) {
         [],
         controller.crashEndpoint
     )
+
+    app.get(
+        "/api/system/send-mail",
+        [],
+        controller.sendMail
+    )
 }
