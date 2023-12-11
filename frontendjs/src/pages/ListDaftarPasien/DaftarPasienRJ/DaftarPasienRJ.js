@@ -94,7 +94,9 @@ const DaftarPasienRJ = () => {
             tglregistrasi_ihs:e.tglregistrasi_ihs,
             tglpulang_ihs:e.tglpulang_ihs,
             ihs_unit:e.ihs_unit,
-            namaunit:e.namaunit
+            namaunit:e.namaunit,
+            status:'in-progress',
+            norec:e.norecdp
         }
         // console.log(tempValue)
 
