@@ -53,7 +53,7 @@ const Login = () => {
     if (user && !isSelesai) {
       navigate('/')
     }
-  }, [user])
+  }, [user, isSelesai, navigate])
   return (
     <div className="page-login">
       <KontainerPage
