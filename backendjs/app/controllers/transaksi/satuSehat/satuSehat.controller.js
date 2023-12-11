@@ -628,6 +628,102 @@ async function tempEncounterTerimaDokumenRJ(reqTemp) {
     const currentDate = new Date();
     const encounterData = {
         resourceType: "Encounter",
+        id: reqTemp.ihs_dp,
+        identifier: [
+            {
+                system: "http://sys-ids.kemkes.go.id/encounter/"+profile.rows[0].ihs_id,
+                value: reqTemp.noregistrasi
+            }
+        ],
+        status: "in-progress",
+        class: {
+            system: "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            code: "AMB",
+            display: "ambulatory"
+        },
+        subject: {
+            reference: "Patient/"+reqTemp.ihs_id,
+            display: reqTemp.namapasien
+        },
+        participant: [
+            {
+                type: [
+                    {
+                        coding: [
+                            {
+                                system: "http://terminology.hl7.org/CodeSystem/v3-ParticipationType",
+                                code: "ATND",
+                                display: "attender"
+                            }
+                        ]
+                    }
+                ],
+                individual: {
+                    reference: "Practitioner/"+reqTemp.ihs_dpjp,
+                    display: reqTemp.namadokter
+                }
+            }
+        ],
+        period: {
+            start: reqTemp.tglregistrasi_ihs,
+            end: reqTemp.tglpulang
+        },
+        location: [
+            {
+                location: {
+                    reference: "Location/"+reqTemp.ihs_unit,
+                    display: reqTemp.namaunit
+                },
+                extension: [
+                    {
+                        url: "https://fhir.kemkes.go.id/r4/StructureDefinition/ServiceClass",
+                        extension: [
+                            {
+                                url: "value",
+                                valueCodeableConcept: {
+                                    coding: [
+                                        {
+                                            system: "http://terminology.kemkes.go.id/CodeSystem/locationServiceClass-Outpatient",
+                                            code: "reguler",
+                                            display: "Kelas Reguler"
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        statusHistory: [
+            {
+                status: "arrived",
+                period: {
+                    start: reqTemp.tglregistrasi_ihs,
+                    end:reqTemp.tglditerimapoli
+                }
+            },
+            {
+                status: "in-progress",
+                period: {
+                    start: reqTemp.tglditerimapoli,
+                    end:reqTemp.tglditerimapoli
+                }
+            }
+        ],
+        serviceProvider: {
+            reference: "Organization/"+profile.rows[0].ihs_id
+        }
+    };
+    
+                return encounterData
+}
+
+async function tempEncounterDaftar(reqTemp) {
+    const profile = await pool.query(profileQueries.getAll);
+    const currentDate = new Date();
+    const encounterData = {
+        resourceType: "Encounter",
         identifier: [
             {
                 system: "http://sys-ids.kemkes.go.id/encounter/"+profile.rows[0].ihs_id,
@@ -671,26 +767,7 @@ async function tempEncounterTerimaDokumenRJ(reqTemp) {
                 location: {
                     reference: "Location/"+reqTemp.ihs_unit,
                     display: reqTemp.namaunit
-                },
-                extension: [
-                    {
-                        url: "https://fhir.kemkes.go.id/r4/StructureDefinition/ServiceClass",
-                        extension: [
-                            {
-                                url: "value",
-                                valueCodeableConcept: {
-                                    coding: [
-                                        {
-                                            system: "http://terminology.kemkes.go.id/CodeSystem/locationServiceClass-Outpatient",
-                                            code: "reguler",
-                                            display: "Kelas Reguler"
-                                        }
-                                    ]
-                                }
-                            }
-                        ]
-                    }
-                ]
+                }
             }
         ],
         statusHistory: [
@@ -698,13 +775,6 @@ async function tempEncounterTerimaDokumenRJ(reqTemp) {
                 status: "arrived",
                 period: {
                     start: reqTemp.tglregistrasi_ihs,
-                    end:currentDate
-                }
-            },
-            {
-                status: "in-progress",
-                period: {
-                    start: currentDate
                 }
             }
         ],
@@ -718,36 +788,86 @@ async function tempEncounterTerimaDokumenRJ(reqTemp) {
 
 const upsertEncounter = async (req, res) => {
     const logger = res.locals.logger;
-    try{
-        const encounter = await tempEncounterTerimaDokumenRJ(req.body)
-        let response = await postGetSatuSehat('POST', '/Encounter',encounter);
-        let msg ='Sukses'
-        
-        const { setInstalasi } = await db.sequelize.transaction(async (transaction) => {
-            let setInstalasi = ''
-            if(response.resourceType==='Encounter'){
-                setInstalasi = await db.t_daftarpasien.update({
-                    ihs_id: response.id,
-                }, {
-                    where: {
-                        noregistrasi: req.body.noregistrasi
-                    },
-                    transaction: transaction
-                });
-            }
-            return { setInstalasi }
-        });
-        
-        const tempres = {
-            encounter:response,
-            daftarpsien:setInstalasi,
-            dataencounter:encounter
+    try {
+        const profilePasien = await pool.query(satuSehatQueries.qGetDataPasienByNorecDpTrm, [req.body.norec]);
+
+        const {
+            ihs_dp,
+            ihs_pasien,
+            namapasien,
+            noregistrasi,
+            tglpulang,
+            ihs_unit,
+            tglditerimapoli,
+            ihs_dpjp,
+            namadokter,
+            tglregistrasi_ihs,
+        } = profilePasien.rows[0];
+
+        const temp = {
+            ihs_dp,
+            ihs_id: ihs_pasien,
+            namapasien,
+            noregistrasi,
+            tglpulang,
+            ihs_unit,
+            tglditerimapoli,
+            ihs_dpjp,
+            namadokter,
+            tglregistrasi_ihs,
+            norecdp: req.body.norec,
+            tglditerimapoli:tglditerimapoli
         };
+
+        let encounter = '';
+        let url = '/Encounter';
+        let method = 'POST';
+
+        const isArrived = ihs_dp === null && req.body.status === 'arrived';
+        const isInProgress = ihs_dp !== null && req.body.status === 'in-progress';
+
+        if (isArrived) {
+            encounter = await tempEncounterDaftar(temp);
+        } else if (isInProgress) {
+            encounter = await tempEncounterTerimaDokumenRJ(temp);
+            url = `/Encounter/${ihs_dp}`;
+            method = 'PUT';
+        }
+
+        const response = await postGetSatuSehat(method, url, encounter);
+        let msg = 'Sukses';
+
+        const { setInstalasi } = await db.sequelize.transaction(async (transaction) => {
+            let setInstalasiResult = '';
+
+            if (response.resourceType === 'Encounter' && ihs_dp === null) {
+                setInstalasiResult = await db.t_daftarpasien.update(
+                    {
+                        ihs_id: response.id,
+                    },
+                    {
+                        where: {
+                            norec: req.body.norec,
+                        },
+                        transaction,
+                    }
+                );
+            }
+
+            return { setInstalasi: setInstalasiResult };
+        });
+
+        const tempres = {
+            encounter: response,
+            // daftarpsien: setInstalasi,
+            // dataencounter: encounter,
+        };
+
         res.status(200).send({
             msg: 'Sukses',
             code: 200,
             data: tempres,
-            success: true
+            success: true,
         });
     } catch (error) {
         logger.error(error);
@@ -755,10 +875,11 @@ const upsertEncounter = async (req, res) => {
             msg: error.message || 'Gagal',
             code: 500,
             data: error,
-            success: false
+            success: false,
         });
     }
-}
+};
+
 
 async function tempConditionPrimary(reqTemp) {
     const profile = await pool.query(profileQueries.getAll);
@@ -801,8 +922,8 @@ async function tempConditionPrimary(reqTemp) {
         encounter: {
             reference: "Encounter/"+reqTemp.ihs_dp
         },
-        onsetDateTime: currentDate,
-        recordedDate: currentDate
+        // onsetDateTime: currentDate,
+        // recordedDate: currentDate
     };
     if(reqTemp.codestatus!=='active'){
         conditionData = {
@@ -1012,7 +1133,7 @@ async function tempEncounterPulang(reqTemp) {
         serviceProvider: {
             reference: "Organization/"+profile.rows[0].ihs_id
         },
-        diagnosis
+        // diagnosis
     };
     
                 return encounterData

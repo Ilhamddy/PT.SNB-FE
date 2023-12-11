@@ -71,6 +71,7 @@ const Diagnosax = () => {
     useEffect(() => {
         if (newData !== null) {
             dispatch(emrListDiagnosaxGet(norecdp));
+            console.log(newData)
         } else if (newDataDelete === true) {
             dispatch(emrListDiagnosaxGet(norecdp));
         }
@@ -100,8 +101,9 @@ const Diagnosax = () => {
         }),
         onSubmit: (values, { resetForm }) => {
             dispatch(emrDiagnosaxSave(values, ()=>{
-                resetForm()
+                // resetForm()
             }));
+            resetForm()
         }
     })
     const onClickDelete = (product) => {
@@ -269,7 +271,6 @@ const Diagnosax = () => {
                                                         refKasusPenyakit.current?.clearValue();
                                                         validation.setFieldValue('tipediagnosa', value?.value || "")
                                                     }}
-                                                    // ref={refTipeDiagnosa}
                                                     isClearEmpty
                                                 />
                                                 {validation.touched.tipediagnosa && validation.errors.tipediagnosa ? (

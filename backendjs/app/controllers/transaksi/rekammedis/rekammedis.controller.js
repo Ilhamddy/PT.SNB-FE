@@ -84,7 +84,7 @@ async function getListDaftarDokumenRekammedis(req, res) {
         left join m_kecamatan mk on mk.id=md.objectkecamatanfk
         left join m_kabupaten mk2 on mk2.id=md.objectkabupatenfk
         left join m_provinsi mpv on mpv.id=md.objectprovinsifk
-        where dp.noregistrasi ilike '%${req.query.noregistrasi}%' ${tglregistrasi} ${taskid} 
+        where dp.statusenabled = true and dp.noregistrasi ilike '%${req.query.noregistrasi}%' ${tglregistrasi} ${taskid} 
         AND dp.noregistrasi IS NOT NULL --- jika null maka masih belum teregistrasi
         `);
 
@@ -142,7 +142,7 @@ async function getWidgetListDaftarDokumenRekammedis(req, res) {
         join m_pasien mp on mp.id=dp.nocmfk
         left join m_rm_statuskendali mrm on mrm.id=mp.objectstatuskendalirmfk
         left join t_rm_lokasidokumen trm on trm.objectantreanpemeriksaanfk=ta.norec
-        where dp.noregistrasi ilike '%${req.query.noregistrasi}%' ${tglregistrasi}
+        where dp.statusenabled = true and dp.noregistrasi ilike '%${req.query.noregistrasi}%' ${tglregistrasi}
         `);
 
         let tempres = resultlistantreanpemeriksaan.rows
