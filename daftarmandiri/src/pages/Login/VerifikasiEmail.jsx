@@ -19,6 +19,9 @@ const VerifikasiEmail = ({ handleToHome }) => {
   const pesanKirim = useSelector(
     (state) => state.UserPasien.getVerifUser.data?.pesanKirim || ''
   )
+  const loading = useSelector(
+    (state) => state.UserPasien.getVerifUser.loading || false
+  )
   const vVerif = useFormik({
     initialValues: {
       verifcode: '',
@@ -71,6 +74,7 @@ const VerifikasiEmail = ({ handleToHome }) => {
               handleKirimVerifUser()
             }}
             buttonType="secondary"
+            disabled={loading}
           >
             Kirim Kode
           </ButtonDM>
