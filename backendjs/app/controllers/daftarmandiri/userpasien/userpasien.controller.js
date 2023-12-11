@@ -528,7 +528,7 @@ const getVerifUser = async (req, res) => {
         const tempres = {
             tglcode,
             tglexpired,
-            pesanKirim: `E-mail sudah dikirim ke ${email}`,
+            pesanKirim: `E-mail sudah dikirim ke ${email}, Jika tidak ada mohon cek spam`,
             isAlreadyVerified
         };
         res.status(200).send({
