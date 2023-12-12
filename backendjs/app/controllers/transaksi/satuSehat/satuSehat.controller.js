@@ -1346,7 +1346,7 @@ async function tempObservationNadi(reqTemp) {
         effectiveDateTime: reqTemp.datenow,
         issued: reqTemp.datenow,
         valueQuantity: {
-            value: reqTemp.nadi,
+            value: reqTemp.nilai,
             unit: "beats/minute",
             system: "http://unitsofmeasure.org",
             code: "/min"
@@ -1356,78 +1356,339 @@ async function tempObservationNadi(reqTemp) {
                 return observationData
 }
 
+async function tempObservationPernafasan(reqTemp) {
+    const profile = await pool.query(profileQueries.getAll);
+    const currentDate = new Date();
+    let tempIdNadi=''
+    if(reqTemp.ihs_pernafasan!==null){
+        tempIdNadi = {'id':reqTemp.ihs_pernafasan}
+    }
+    const observationData = {
+        resourceType: "Observation",
+        status: "final",
+        category: [
+            {
+                coding: [
+                    {
+                        system: "http://terminology.hl7.org/CodeSystem/observation-category",
+                        code: "vital-signs",
+                        display: "Vital Signs"
+                    }
+                ]
+            }
+        ],
+        code: {
+            coding: [
+                {
+                    system: "http://loinc.org",
+                    code: "9279-1",
+                    display: "Respiratory rate"
+                }
+            ]
+        },
+        subject: {
+            reference: "Patient/"+reqTemp.ihs_id,
+        },
+        performer: [
+            {
+                reference: "Practitioner/"+reqTemp.ihs_dpjp,
+            }
+        ],
+        encounter: {
+            reference: "Encounter/"+reqTemp.ihs_dp,
+            display: "Pemeriksaan Fisik Pernafasan "+reqTemp.namapasien
+        },
+        effectiveDateTime: reqTemp.datenow,
+        issued: reqTemp.datenow,
+        valueQuantity: {
+            value: reqTemp.nilai,
+            unit: "beats/minute",
+            system: "http://unitsofmeasure.org",
+            code: "/min"
+        },
+        ...tempIdNadi
+    };
+                return observationData
+}
+
+async function tempObservationSuhu(reqTemp) {
+    const profile = await pool.query(profileQueries.getAll);
+    const currentDate = new Date();
+    let tempIdNadi=''
+    if(reqTemp.ihs_suhu!==null){
+        tempIdNadi = {'id':reqTemp.ihs_suhu}
+    }
+    const observationData = {
+        resourceType: "Observation",
+        status: "final",
+        category: [
+            {
+                coding: [
+                    {
+                        system: "http://terminology.hl7.org/CodeSystem/observation-category",
+                        code: "vital-signs",
+                        display: "Vital Signs"
+                    }
+                ]
+            }
+        ],
+        code: {
+            coding: [
+                {
+                    system: "http://loinc.org",
+                    code: "8310-5",
+                    display: "Body temperature"
+                }
+            ]
+        },
+        subject: {
+            reference: "Patient/"+reqTemp.ihs_id,
+        },
+        performer: [
+            {
+                reference: "Practitioner/"+reqTemp.ihs_dpjp,
+            }
+        ],
+        encounter: {
+            reference: "Encounter/"+reqTemp.ihs_dp,
+            display: "Pemeriksaan Fisik Suhu "+reqTemp.namapasien
+        },
+        effectiveDateTime: reqTemp.datenow,
+        issued: reqTemp.datenow,
+        valueQuantity: {
+            value: reqTemp.nilai,
+            unit: "C",
+            system: "http://unitsofmeasure.org",
+            code: "Cel"
+        },
+        ...tempIdNadi
+    };
+                return observationData
+}
+
+async function tempObservationSistole(reqTemp) {
+    const profile = await pool.query(profileQueries.getAll);
+    const currentDate = new Date();
+    let tempIdNadi=''
+    if(reqTemp.ihs_sistole!==null){
+        tempIdNadi = {'id':reqTemp.ihs_sistole}
+    }
+    const observationData = {
+        resourceType: "Observation",
+        status: "final",
+        category: [
+            {
+                coding: [
+                    {
+                        system: "http://terminology.hl7.org/CodeSystem/observation-category",
+                        code: "vital-signs",
+                        display: "Vital Signs"
+                    }
+                ]
+            }
+        ],
+        code: {
+            coding: [
+                {
+                    system: "http://loinc.org",
+                    code: "8480-6",
+                    display: "Systolic blood pressure"
+                }
+            ]
+        },
+        subject: {
+            reference: "Patient/"+reqTemp.ihs_id,
+        },
+        performer: [
+            {
+                reference: "Practitioner/"+reqTemp.ihs_dpjp,
+            }
+        ],
+        encounter: {
+            reference: "Encounter/"+reqTemp.ihs_dp,
+            display: "Pemeriksaan Fisik Sistolik "+reqTemp.namapasien
+        },
+        effectiveDateTime: reqTemp.datenow,
+        issued: reqTemp.datenow,
+        bodySite: {
+            coding: [
+                {
+                    system: "http://snomed.info/sct",
+                    code: "368209003",
+                    display: "Right arm"
+                }
+            ]
+        },
+        valueQuantity: {
+            value: reqTemp.nilai,
+            unit: "mm[Hg]",
+            system: "http://unitsofmeasure.org",
+            code: "mm[Hg]"
+        },
+        ...tempIdNadi
+    };
+                return observationData
+}
+
+async function tempObservationDiastole(reqTemp) {
+    const profile = await pool.query(profileQueries.getAll);
+    const currentDate = new Date();
+    let tempIdNadi=''
+    if(reqTemp.ihs_diastole!==null){
+        tempIdNadi = {'id':reqTemp.ihs_diastole}
+    }
+    const observationData = {
+        resourceType: "Observation",
+        status: "final",
+        category: [
+            {
+                coding: [
+                    {
+                        system: "http://terminology.hl7.org/CodeSystem/observation-category",
+                        code: "vital-signs",
+                        display: "Vital Signs"
+                    }
+                ]
+            }
+        ],
+        code: {
+            coding: [
+                {
+                    system: "http://loinc.org",
+                    code: "8462-4",
+                    display: "Diastolic blood pressure"
+                }
+            ]
+        },
+        subject: {
+            reference: "Patient/"+reqTemp.ihs_id,
+        },
+        performer: [
+            {
+                reference: "Practitioner/"+reqTemp.ihs_dpjp,
+            }
+        ],
+        encounter: {
+            reference: "Encounter/"+reqTemp.ihs_dp,
+            display: "Pemeriksaan Fisik Diastolik "+reqTemp.namapasien
+        },
+        effectiveDateTime: reqTemp.datenow,
+        issued: reqTemp.datenow,
+        bodySite: {
+            coding: [
+                {
+                    system: "http://snomed.info/sct",
+                    code: "368209003",
+                    display: "Right arm"
+                }
+            ]
+        },
+        valueQuantity: {
+            value: reqTemp.nilai,
+            unit: "mm[Hg]",
+            system: "http://unitsofmeasure.org",
+            code: "mm[Hg]"
+        },
+        ...tempIdNadi
+    };
+                return observationData
+}
+
 const upsertObservation = async (req, res) => {
     const logger = res.locals.logger;
-    try{
-        const currentDate = new Date();
+    try {
         const profilePasien = await pool.query(satuSehatQueries.qGetDataPasienByNorecDpTrm, [req.body.norecdp]);
-
-        const {
-            ihs_dp,
-            ihs_pasien,
-            namapasien,
-            noregistrasi,
-            tglpulang,
-            ihs_unit,
-            tglditerimapoli,
-            ihs_dpjp,
-            namadokter,
-            tglregistrasi_ihs,
-            objectinstalasifk
-        } = profilePasien.rows[0];
-
+        const dataTTV = await pool.query(satuSehatQueries.qDataTTVByNorec, [req.body.norec]);
+        const resdataTTV = dataTTV.rows[0];
+        const patientData = profilePasien.rows[0];
         const temp = {
-            ihs_dp,
-            ihs_id: ihs_pasien,
-            namapasien,
-            noregistrasi,
-            tglpulang,
-            ihs_unit,
-            tglditerimapoli,
-            ihs_dpjp,
-            namadokter,
-            tglregistrasi_ihs,
-            norecdp: req.body.norec,
-            tglditerimapoli:tglditerimapoli,
-            datenow:currentDate,
-            nadi:req.body.nadi,
-            ihs_nadi:req.body.ihs_nadi
+            ihs_dp: patientData.ihs_dp,
+            ihs_id: patientData.ihs_pasien,
+            namapasien: patientData.namapasien,
+            noregistrasi: patientData.noregistrasi,
+            tglpulang: patientData.tglpulang,
+            ihs_unit: patientData.ihs_unit,
+            tglditerimapoli: patientData.tglditerimapoli,
+            ihs_dpjp: patientData.ihs_dpjp,
+            namadokter: patientData.namadokter,
+            tglregistrasi_ihs: patientData.tglregistrasi_ihs,
+            norecdp: req.body.norecdp,
+            tglditerimapoli: patientData.tglditerimapoli,
+            datenow: patientData.datenow,
+            nilai: parseFloat(req.body.nilai),
+            ihs_nadi: req.body.ihs_nadi,
+            ihs_pernafasan: req.body.ihs_pernafasan,
+            ihs_suhu: req.body.ihs_suhu,
+            ihs_sistole:req.body.ihs_sistole,
+            ihs_diastole:req.body.ihs_diastole,
+            codenadi:resdataTTV.codenadi,
+            displaynadi:resdataTTV.displaynadi,
+            teksnadi:resdataTTV.teksnadi,
         };
-        let observation=''
+
         let url = '/Observation';
         let method = 'POST';
-        if(req.body.status==='nadi'){
-            if(req.body.ihs_nadi!==null){
-                url = '/Observation/'+req.body.ihs_nadi;
+        let observation = '';
+
+        if (req.body.status === 'nadi') {
+            if(req.body.ihs_nadi !== null){
+                url = `/Observation/${req.body.ihs_nadi}`;
                 method = 'PUT';
             }
-            observation = await tempObservationNadi(temp)
+            observation = await tempObservationNadi(temp);
+        } else if (req.body.status === 'pernafasan') {
+            if(req.body.ihs_pernafasan !== null){
+                url = `/Observation/${req.body.ihs_pernafasan}`;
+                method = 'PUT';
+            }
+            observation = await tempObservationPernafasan(temp);
+        } else if (req.body.status === 'suhu') {
+            if(req.body.ihs_suhu !== null){
+                url = `/Observation/${req.body.ihs_suhu}`;
+                method = 'PUT';
+            }
+            observation = await tempObservationSuhu(temp);
+        } else if (req.body.status === 'sistole') {
+            if(req.body.ihs_sistole !== null){
+                url = `/Observation/${req.body.ihs_sistole}`;
+                method = 'PUT';
+            }
+            observation = await tempObservationSistole(temp);
+        } else if (req.body.status === 'diastole') {
+            if(req.body.ihs_diastole !== null){
+                url = `/Observation/${req.body.ihs_diastole}`;
+                method = 'PUT';
+            }
+            observation = await tempObservationDiastole(temp);
         }
-        let response = await postGetSatuSehat(method, url,observation);
-        const { setInstalasi } = await db.sequelize.transaction(async (transaction) => {
-            let setInstalasi = ''
-                if(response.resourceType==='Observation'){
-                    setInstalasi = await db.t_ttv.update({
-                        ihs_nadi: response.id,
-                    }, {
-                        where: {
-                            norec: req.body.norec
-                        },
-                        transaction: transaction
-                    });
+
+        let response = await postGetSatuSehat(method, url, observation);
+
+        const setInstalasi = await db.sequelize.transaction(async (transaction) => {
+            let setInstalasi = '';
+
+            if (response.resourceType === 'Observation') {
+                if (req.body.status === 'nadi') {
+                    setInstalasi = await db.t_ttv.update({ ihs_nadi: response.id,status_ihs_nadi:true }, { where: { norec: req.body.norec }, transaction });
+                } else if (req.body.status === 'pernafasan') {
+                    setInstalasi = await db.t_ttv.update({ ihs_pernapasan: response.id,status_ihs_pernapasan:true }, { where: { norec: req.body.norec }, transaction });
+                } else if (req.body.status === 'suhu') {
+                    setInstalasi = await db.t_ttv.update({ ihs_suhu: response.id,status_ihs_suhu:true }, { where: { norec: req.body.norec }, transaction });
+                } else if (req.body.status === 'sistole') {
+                    setInstalasi = await db.t_ttv.update({ ihs_sistole: response.id,status_ihs_sistole:true }, { where: { norec: req.body.norec }, transaction });
+                } else if (req.body.status === 'diastole') {
+                    setInstalasi = await db.t_ttv.update({ ihs_diastole: response.id,status_ihs_diastole:true }, { where: { norec: req.body.norec }, transaction });
                 }
-            return { setInstalasi }
+            }
+
+            return setInstalasi;
         });
-        
-        const tempres = {
-            observation:observation,
-            instalasi:setInstalasi
-        };
+
         res.status(200).send({
             msg: 'Sukses',
             code: 200,
-            data: tempres,
-            success: true
+            data: { observation, instalasi: setInstalasi },
+            success: true,
         });
     } catch (error) {
         logger.error(error);
@@ -1435,10 +1696,11 @@ const upsertObservation = async (req, res) => {
             msg: error.message || 'Gagal',
             code: 500,
             data: error,
-            success: false
+            success: false,
         });
     }
-}
+};
+
 
 export default {
     getListInstalasi,

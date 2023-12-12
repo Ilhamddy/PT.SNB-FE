@@ -454,6 +454,11 @@ SELECT
 FROM t_antreanpemeriksaan tap
 WHERE tap.norec = $1
 `
+const qGetNilaiNormalTtv = `SELECT id, jenisttv, umurmin, umurmax, nilaimin, nilaimax, nilaikritisbawah, nilaikritisatas
+FROM public.m_nilainormalttv
+`
+const qGetTtvByNorec=`SELECT norec, objectemrfk, tinggibadan, beratbadan, suhu, e, m, v, nadi, alergi, tekanandarah, spo2, pernapasan, keadaanumum, objectpegawaifk, isedit, objectttvfk, tglisi, statusenabled, objectgcsfk, sistole, diastole, ihs_suhu, ihs_nadi, ihs_sistole, ihs_diastole, ihs_pernapasan, status_ihs_nadi, status_ihs_pernapasan, status_ihs_suhu, status_ihs_sistole, status_ihs_diastole
+FROM public.t_ttv where norec=$1`
 
 export {
     qGetObatFromUnit,
@@ -466,5 +471,7 @@ export {
     qComboApgarScore,
     qHistoryAsesmenBayiLahir,
     qGetAntreanPemeriksaanObat,
-    qGetAllOrderResepFromDate
+    qGetAllOrderResepFromDate,
+    qGetNilaiNormalTtv,
+    qGetTtvByNorec
 }
