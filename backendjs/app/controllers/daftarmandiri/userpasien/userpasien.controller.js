@@ -990,8 +990,8 @@ const hSendResetEmail = async (email, resetcode, norm) => {
         subject: 'Reset Password anda',
         text: `Berikut merupakan reset password anda http://dev.snberdikari.co.id:3000/reset-password?k=${resetcode}`,
         html: `<p>Berikut merupakan link untuk reset password anda</p>
-            <p><a href='http://dev.snberdikari.co.id:3003/reset-password?k=${resetcode}'>http://dev.snberdikari.co.id:3003/reset-password?k=${resetcode}</a></p>
             <p>No RM anda adalah: ${norm}</p>
+            <p><a href='http://dev.snberdikari.co.id:3003/reset-password?k=${resetcode}'>http://dev.snberdikari.co.id:3003/reset-password?k=${resetcode}</a></p>
         `
     };
 
