@@ -59,4 +59,16 @@ export default class ServiceAuth {
     verifUserEmail = async (data) => {
         return await api.create(`/daftarmandiri/user-pasien/verif-user-email`, data)
     }
+
+    sendResetPassword = async (data) => {
+        return await api.create(`/daftarmandiri/user-pasien/send-reset-password`, data, false)
+    }
+
+    getResetPassword = async (queries) => {
+        return await api.get(`/daftarmandiri/user-pasien/get-reset-password`, queries)
+    }
+    
+    resetPassword = async (data) => {
+        return await api.create(`/daftarmandiri/user-pasien/reset-password`, data, false)
+    }
 }

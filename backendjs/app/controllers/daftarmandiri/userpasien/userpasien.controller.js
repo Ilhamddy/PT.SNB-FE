@@ -608,6 +608,151 @@ const verifUserEmail = async (req, res) => {
     }
 }
 
+const sendResetPassword = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const {tglexpired} 
+        = await db.sequelize.transaction(async (transaction) => {
+            const { correct } = hCheckCaptcha(
+                req.body.uuidcaptcha, 
+                req.body.answer
+            )
+            if(!correct) throw new Error("Captcha yang dimasukkan salah")
+            const pasienModel = await db.m_pasien.findOne({
+                where: {
+                    email: req.body.email,
+                },
+                transaction: transaction
+            })
+
+            const userPasienModel = await db.users_pasien.findOne({
+                where: {
+                    objectpasienfk: pasienModel.id
+                },
+                transaction: transaction
+            })
+            if(!pasienModel || !userPasienModel){
+                return {
+                    tglexpired: tglexpired
+                }
+            }
+            const norecReset = uuid.v4().substring(0, 32)
+            const dateToday = new Date()
+            const dateExpired = new Date();
+            dateExpired.setTime(dateExpired.getTime() + 5 * 60 * 1000)
+            await userPasienModel.update({
+                resetemail: norecReset,
+                tglexpiredreset: dateExpired,
+                tglcodereset: dateToday
+            }, {
+                transaction: transaction
+            })
+            await hSendResetEmail(pasienModel.email, norecReset)
+            return {
+                tglexpired: dateExpired
+            }
+        });
+        
+        const tempres = {
+            tglexpired: tglexpired
+        };
+        res.status(200).send({
+            msg: 'Sukses, Jika E-Mail anda benar maka akan masuk inbox/spam',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message || 'Gagal',
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+const getResetPassword = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const resetemailid = req.query.resetemailid
+        const resetEmail = (await pool.query(userpasienQueries.qGetResetEmail, [resetemailid])).rows[0]
+        if(!resetEmail) throw new Error("Tidak ada kode reset")
+        if(new Date(resetEmail.tglexpiredreset) < new Date()){
+            throw new Error("Link reset email sudah kadaluwarsa")
+        }
+        const tempres = {
+            tglexpiredreset: resetEmail.tglexpiredreset
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+const resetPassword = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const updated = 
+        await db.sequelize.transaction(async (transaction) => {
+            const resetemailid = req.body.resetemailid
+            const userModel = await db.users_pasien.findOne({
+                where: {
+                    resetemail: resetemailid
+                },
+                transaction: transaction
+            })
+            if(!userModel) throw new Error("Tidak ada kode reset")
+
+            if(new Date(userModel.tglexpiredreset) < new Date()){
+                throw new Error("Link reset email sudah kadaluwarsa")
+            }
+            const newPassword = bcrypt.hashSync(req.body.password, 8)
+            await userModel.update({
+                password: newPassword,
+                resetemail: null,
+                tglexpiredreset: null,
+                tglcodereset: null
+            }, {
+                transaction: transaction
+            })
+
+            return {
+                updated: new Date()
+            }
+        })
+        const tempres = {
+            updated: updated
+        };
+        res.status(200).send({
+            msg: 'Sukses ganti password',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export default {
     upsertPasien,
     getRiwayatReservasi,
@@ -620,7 +765,10 @@ export default {
     getAntreanPemeriksaan,
     getRegistrasiNorec,
     getVerifUser: getVerifUser,
-    verifUserEmail: verifUserEmail
+    verifUserEmail: verifUserEmail,
+    sendResetPassword,
+    getResetPassword,
+    resetPassword
 }
 
 const hCreatePasien = async (req, res, transaction) => {
@@ -777,10 +925,6 @@ const hUpdatePasien = async (req, res, transaction) => {
         transaction: transaction
     })
     dataPasien = dataPasien.toJSON();
-    const newPassword = bcrypt.hashSync(dataPasien.noidentitas, 8)
-    userPasien = await userPasien.update({
-        password: newPassword
-    })
     userPasien = userPasien.toJSON();
     return [
         dataPasien,
@@ -825,6 +969,29 @@ const hSendEmail = async (email, verifcode) => {
         to: email,
         subject: 'Kode Verifikasi SNBerdikari',
         text: `Berikut merupakan kode verifikasi anda ${verifcode}`
+    };
+
+    const info = await transporter.sendMail(mailOptions);
+    return info
+}
+
+const hSendResetEmail = async (email, resetcode) => {
+    let transporter = nodemailer.createTransport({
+        service: 'Gmail',
+        auth: {
+            user: 'snberdikarinoreply@gmail.com',
+            pass: 'heztcjllcnyiivol'
+        }
+    })
+      
+    let mailOptions = {
+        from: 'snberdikarinoreply@gmail.com',
+        to: email,
+        subject: 'Reset Password anda',
+        text: `Berikut merupakan reset password anda http://dev.snberdikari.co.id:3000/reset-password?k=${resetcode}`,
+        html: `<p>Berikut merupakan link untuk reset password anda</p>
+            <p><a href='http://dev.snberdikari.co.id:3003/reset-password?k=${resetcode}'>http://dev.snberdikari.co.id:3003/reset-password?k=${resetcode}</a></p>
+        `
     };
 
     const info = await transporter.sendMail(mailOptions);

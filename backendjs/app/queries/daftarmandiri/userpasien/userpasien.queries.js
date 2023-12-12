@@ -189,6 +189,14 @@ ORDER BY tap.tgldipanggildokter DESC
 LIMIT 1
 `
 
+const qGetResetEmail = `
+SELECT
+    up.tglexpiredreset AS tglexpiredreset,
+    up.objectpasienfk AS idpasien
+FROM users_pasien up
+WHERE up.resetemail = $1
+`
+
 export default {
     qGetRiwayatRegistrasi,
     qGetPasienEdit,
@@ -196,5 +204,6 @@ export default {
     qGetAllPasienFromUser,
     qGetPenjaminPasien,
     qGetAntreanPasien,
-    qGetAntreanTerakhir
+    qGetAntreanTerakhir,
+    qGetResetEmail
 }
