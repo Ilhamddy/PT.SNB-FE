@@ -647,7 +647,7 @@ const sendResetPassword = async (req, res) => {
             }, {
                 transaction: transaction
             })
-            await hSendResetEmail(pasienModel.email, norecReset)
+            await hSendResetEmail(pasienModel.email, norecReset, pasienModel.nocm || pasienModel.nocmtemp)
             return {
                 tglexpired: dateExpired
             }
@@ -955,7 +955,7 @@ const hCreateCMSementara = async () => {
     return nocmSementara
 }
 
-const hSendEmail = async (email, verifcode) => {
+const hSendEmail = async (email, verifcode, norm) => {
     let transporter = nodemailer.createTransport({
         service: 'Gmail',
         auth: {
@@ -975,7 +975,7 @@ const hSendEmail = async (email, verifcode) => {
     return info
 }
 
-const hSendResetEmail = async (email, resetcode) => {
+const hSendResetEmail = async (email, resetcode, norm) => {
     let transporter = nodemailer.createTransport({
         service: 'Gmail',
         auth: {
@@ -991,6 +991,7 @@ const hSendResetEmail = async (email, resetcode) => {
         text: `Berikut merupakan reset password anda http://dev.snberdikari.co.id:3000/reset-password?k=${resetcode}`,
         html: `<p>Berikut merupakan link untuk reset password anda</p>
             <p><a href='http://dev.snberdikari.co.id:3003/reset-password?k=${resetcode}'>http://dev.snberdikari.co.id:3003/reset-password?k=${resetcode}</a></p>
+            <p>No RM anda adalah: ${norm}</p>
         `
     };
 
