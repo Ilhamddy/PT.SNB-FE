@@ -38,7 +38,7 @@ const Login = () => {
   const isPasienBaru = page === 'pasien-baru'
   const isSelesai = page === 'selesai'
   const stlHeader = !isPasienBaru ? { opacity: '0' } : { opacity: '1' }
-  const topBody = isPasienLama ? '50%' : '120px'
+  const topBody = isPasienLama ? '35%' : '120px'
   const stlKontainerBg = isPasienLama
     ? { left: '8px' }
     : { left: 'calc(50% + 8px)' }
