@@ -54,7 +54,7 @@ const ResetPasswordPage = () => {
     } else {
       navigate('/')
     }
-  }, [k, vResetPassword.setFieldValue])
+  }, [k, vResetPassword.setFieldValue, dispatch, navigate])
   return (
     <div className="page-reset-password">
       <KontainerPage top={0} ref={refKontainer}>
