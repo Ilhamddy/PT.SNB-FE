@@ -7,9 +7,15 @@ SELECT
     mp.nocm AS nocm,
     mp.nocmtemp AS nocmtemp,
     mp.namapasien AS namapasien,
-    mp.tgldaftar AS tgldaftar
+    mp.tgldaftar AS tgldaftar,
+    mp.email AS email
 FROM users_pasien up
-    LEFT JOIN m_pasien mp ON (mp.nocm = up.norm OR mp.nocmtemp = up.norm)
+    LEFT JOIN m_pasien mp 
+        ON (
+            mp.nocm = up.norm 
+            OR mp.nocmtemp = up.norm
+            OR mp.id = up.objectpasienfk
+        )
 WHERE up.id = $1
 `
 
@@ -27,8 +33,26 @@ WHERE mp.statusenabled = true
     AND mp.id = $1
 `
 
+const qGetPenjamin = `
+SELECT
+    mr.id AS idpenjamin,
+    mr.namarekanan AS namapenjamin
+FROM m_rekanan mr
+WHERE mr.id = $1
+`
+
+const qGetPoliklinik = `
+SELECT
+    mu.id AS idunit,
+    mu.namaunit AS namaunit
+FROM m_unit mu
+WHERE mu.id = $1
+`
+
 
 export {
     qGetDokter,
-    qGetDaftarPasienLama
+    qGetDaftarPasienLama,
+    qGetPenjamin,
+    qGetPoliklinik
 }

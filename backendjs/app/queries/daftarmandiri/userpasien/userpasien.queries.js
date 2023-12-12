@@ -112,9 +112,15 @@ SELECT
     mp.nocm AS nocm,
     mp.nocmtemp AS nocmtemp,
     mp.nohp AS nohp,
-    mp.nobpjs AS nobpjs
+    mp.nobpjs AS nobpjs,
+    mp.isverifemail AS isverifemail,
+    mp.email AS email
 FROM users_pasien up
-    LEFT JOIN m_pasien mp ON (up.norm = mp.nocm OR up.norm = mp.nocmtemp)
+    LEFT JOIN m_pasien mp ON (
+        up.norm = mp.nocm 
+        OR up.norm = mp.nocmtemp
+        OR up.objectpasienfk = mp.id
+    )
 WHERE up.id = $1
 `
 

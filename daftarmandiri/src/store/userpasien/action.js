@@ -201,10 +201,10 @@ export const updatePasienError = (error) => {
     }
 }
 
-export const getPasienAkun = (queries) => {
+export const getPasienAkun = (queries, callback) => {
     return {
         type: GET_PASIEN_AKUN,
-        payload: {queries}
+        payload: {queries, callback}
     }
 }
 

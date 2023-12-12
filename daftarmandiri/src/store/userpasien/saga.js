@@ -164,10 +164,11 @@ function* onUpdatePasien({payload: {data, callback}}){
     }
 }
 
-function* onGetPasienAkun({payload: {queries}}){
+function* onGetPasienAkun({payload: {queries, callback}}){
     try{
         const response = yield call(serviceUserPasien.getPasienAkun, queries);
         yield put(getPasienAkunSuccess(response.data)); 
+        callback && callback(response.data)
     }catch(error){
         console.error(error)
         yield put(getPasienAkunError(error))

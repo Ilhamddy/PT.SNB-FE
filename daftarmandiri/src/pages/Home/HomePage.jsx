@@ -123,6 +123,9 @@ const HomePage = () => {
     vHome.setFieldValue('unitlabel', unitOpt[chosenAr]?.label)
     vHome.handleSubmit()
   }
+  const date = new Date()
+  const monthName = new Intl.DateTimeFormat('id-ID', { month: 'long' }).format
+  const bulan = monthName(date)
   return (
     <KontainerPage
       top={'410px'}
@@ -210,7 +213,10 @@ const HomePage = () => {
           </div>
           <div className="poliklinik-terpilih" onClick={handleToJadwal}>
             <p className="judul-poliklinik">{vHome.values.unitlabel}</p>
-            <p className="jadwal-poliklinik">Senin, 10 Oktober 2023</p>
+            <p className="jadwal-poliklinik">
+              {hari[date.getDay()]}, {date.getDate()} {bulan}{' '}
+              {date.getFullYear()}
+            </p>
           </div>
           <div className="navigasi" onClick={() => handlePickUnit('next')}>
             <img src={arrowKananImg} alt="navigasi" />
@@ -225,6 +231,8 @@ const HomePage = () => {
     </KontainerPage>
   )
 }
+
+const hari = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu']
 
 const IsiKontenHeader = ({ gbr, text, ...rest }) => {
   return (

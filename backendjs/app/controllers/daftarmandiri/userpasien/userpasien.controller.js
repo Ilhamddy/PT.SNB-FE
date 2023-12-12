@@ -60,6 +60,7 @@ const upsertPasien = async (req, res) => {
         const user = {
             id: userPasien?.id,
             username: userPasien?.norm || null,
+            isverifemail: userPasien?.isverifemail || false,
             accessToken: token,
             namapasien: dataPasien?.namapasien || null
         }
@@ -531,6 +532,7 @@ const getVerifUser = async (req, res) => {
             pesanKirim: `E-mail sudah dikirim ke ${email}, Jika tidak ada mohon cek spam`,
             isAlreadyVerified
         };
+
         res.status(200).send({
             msg: 'Sukses',
             code: 200,
@@ -724,6 +726,7 @@ const hUpdatePasien = async (req, res, transaction) => {
                 }]
         },
     })
+    
     let dataPasien = await pasienUpdate.update({
         kdprofile: 0,
         statusenabled: true,
@@ -827,3 +830,4 @@ const hSendEmail = async (email, verifcode) => {
     const info = await transporter.sendMail(mailOptions);
     return info
 }
+

@@ -4,7 +4,7 @@ import dokterImg from './dokter.png'
 import KontainerPage from '../../Components/KontainerPage/KontainerPage'
 import { useDispatch, useSelector } from 'react-redux'
 import { BackKomponen } from '../../Components/BackKomponen/BackKomponen'
-import { getJadwalDokterDaftar } from '../../store/actions'
+import { getJadwalDokterDaftar, getPasienAkun } from '../../store/actions'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import ButtonDM from '../../Components/ButtonDM/ButtonDM'
 import './DokterPage.scss'
@@ -12,15 +12,18 @@ import FlatpickrDM from '../../Components/FlatpickrDM/FlatpickrDM'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import { getDateStartEndNull } from '../../utils/dateutils'
+import { toast } from 'react-toastify'
 
 const DokterPage = () => {
   const refKontainer = useRef(null)
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const { idDokter } = useParams()
-  const { dokter, jadwalCuti } = useSelector((state) => ({
+  const { dokter, jadwalCuti, email, isverifemail } = useSelector((state) => ({
     dokter: state.DaftarPasienLama.getJadwalDokter?.data?.dokter || [],
     jadwalCuti: state.DaftarPasienLama.getJadwalDokter?.data?.jadwalCuti || [],
+    email: state.UserPasien.getPasienAkun.data.pasienAkun?.email,
+    isverifemail: state.UserPasien.getPasienAkun.data.pasienAkun?.isverifemail,
   }))
   const jadwalCutiDate = jadwalCuti.map((jadwal) => jadwal.tgllibur)
 
@@ -33,16 +36,23 @@ const DokterPage = () => {
     }),
     onSubmit: (values) => {
       refKontainer.current.handleToNextPage(() => {
-        navigate(
-          `/daftar/pasien-lama/0?jadwal=${encodeURIComponent(
-            values.jadwal
-          )}&iddokter=${idDokter}`
-        )
+        if (email && isverifemail) {
+          navigate(
+            `/daftar/pasien-lama/0?jadwal=${encodeURIComponent(
+              values.jadwal
+            )}&iddokter=${idDokter}`
+          )
+        } else if (email) {
+          navigate(`/akun/verif-email`)
+        } else {
+          toast.error('Belum ada E-Mail')
+        }
       })
     },
   })
   const dokterDate = dokter?.[0]?.values || []
   const [dateNow] = useState(() => new Date())
+
   useEffect(() => {
     dispatch(
       getJadwalDokterDaftar({
@@ -53,6 +63,10 @@ const DokterPage = () => {
     )
   }, [dispatch, dateNow, idDokter])
 
+  useEffect(() => {
+    dispatch(getPasienAkun())
+  }, [dispatch])
+
   const disableJadwal = (date) => {
     const foundDay = dokterDate.find((item) => {
       return item.hariid === date.getDay()
@@ -62,7 +76,7 @@ const DokterPage = () => {
   const disableBeforeToday = (date) => {
     return date <= new Date(dateNow - 24 * 60 * 60 * 1000)
   }
-  console.log(jadwalCutiDate)
+
   const disableCuti = (date) => {
     for (let i = 0; i < jadwalCutiDate.length; i++) {
       const dateCuti = jadwalCutiDate[i]
