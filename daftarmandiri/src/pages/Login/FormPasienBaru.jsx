@@ -167,7 +167,7 @@ const FormPasienBaru = ({ step, setStep }) => {
         .required('Email harus diisi')
         .email('Format email salah'),
       password: Yup.string()
-        .required('No password provided.')
+        .required('Password harus diisi.')
         .min(8, 'Password Terlalu pendek - Minimal 8 karakter.')
         .matches(/\d+/, 'Password minimal 1 angka.'),
     }),

@@ -52,7 +52,7 @@ const RiwayatPendaftaran = () => {
   return (
     <KontainerPage top={'0'} ref={refKontainer} className="riwayat-pendaftaran">
       <div className="page-riwayat-pendaftaran">
-        <BackKomponen refKontainer={refKontainer} text="Pilih Jadwal" />
+        <BackKomponen refKontainer={refKontainer} text="Pilih Jadwal" toHome />
         <Modal
           isOpen={vBatal.values.norec !== ''}
           toggle={() => {

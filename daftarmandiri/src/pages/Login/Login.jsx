@@ -9,7 +9,7 @@ import * as Yup from 'yup'
 import { rgxAllNumber } from '../../utils/regexcommon'
 import { useDispatch, useSelector } from 'react-redux'
 import { loginUser } from '../../store/userpasien/action'
-import { useNavigate, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import PasienBaruSelesai from './PasienBaruSelesai'
 import KontainerPage from '../../Components/KontainerPage/KontainerPage'
 
@@ -38,7 +38,7 @@ const Login = () => {
   const isPasienBaru = page === 'pasien-baru'
   const isSelesai = page === 'selesai'
   const stlHeader = !isPasienBaru ? { opacity: '0' } : { opacity: '1' }
-  const topBody = isPasienLama ? '50%' : '120px'
+  const topBody = isPasienLama ? '35%' : '120px'
   const stlKontainerBg = isPasienLama
     ? { left: '8px' }
     : { left: 'calc(50% + 8px)' }
@@ -163,6 +163,10 @@ const FormPasienLama = ({ setDone, handleToHome }) => {
           onChange={vLogin.handleChange}
         />
       </InputGroup>
+      <Link className="lupa-password" to="/lupa-password">
+        Lupa password
+      </Link>
+
       <ButtonDM
         type="button"
         className="btn-login"

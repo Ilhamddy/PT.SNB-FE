@@ -42,6 +42,15 @@ export default (sequelize, Sequelize) => {
         objectpasienfk: {
             type: Sequelize.INTEGER
         },
+        resetemail: {
+            type: Sequelize.CHAR(32)
+        },
+        tglcodereset: {
+            type: Sequelize.TIME
+        },
+        tglexpiredreset: {
+            type: Sequelize.TIME
+        },
     }, {
         tableName: "users_pasien", // relation "user" does not exist
         createdAt: false,

@@ -154,8 +154,7 @@ export default (sequelize, Sequelize) => {
         },
         isverifemail: {
             type: Sequelize.BOOLEAN
-
-        }
+        },
     }, {
         tableName: "m_pasien", // relation "user" does not exist
         createdAt: false,

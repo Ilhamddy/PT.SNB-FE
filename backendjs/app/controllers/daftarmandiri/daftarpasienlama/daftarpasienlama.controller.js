@@ -1,14 +1,15 @@
 import db from "../../../models";
 import * as uuid from 'uuid';
 import pool from "../../../config/dbcon.query";
-import { qGetDokter } from "../../../queries/daftarmandiri/daftarpasienlama/daftarpasienlama.queries";
+import { qGetDokter, qGetPenjamin, qGetPoliklinik } from "../../../queries/daftarmandiri/daftarpasienlama/daftarpasienlama.queries";
 import { groupBy } from "../../../utils/arutils";
 import unitQueries from "../../../queries/mastertable/unit/unit.queries";
 import pegawaiQueries from "../../../queries/mastertable/pegawai/pegawai.queries";
 import rekananQueries from "../../../queries/mastertable/rekanan/rekanan.queries";
 import { qGetDaftarPasienLama } from "../../../queries/daftarmandiri/daftarpasienlama/daftarpasienlama.queries";
 import queriesRegistrasi from '../../../queries/transaksi/registrasi.queries';
-
+import * as nodemailer from "nodemailer"
+import { dateLocal } from "../../../utils/dateutils";
 
 
 const getPasienLama = async (req, res) => {
@@ -70,7 +71,6 @@ const getDokter = async (req, res) => {
     const logger = res.locals.logger;
     try{
         const iddokter = req.query.iddokter
-        console.log(iddokter)
         const dokter = (await pool.query(qGetDokter, [iddokter])).rows?.[0]
         const tempres = {
             dokter: dokter || null
@@ -99,20 +99,22 @@ const savePasienMandiri = async (req, res) => {
             const {dokter, penjamin, nocmfk, poliklinik, jenispenjamin, jadwal} = req.body
             let norecDP = uuid.v4().substring(0, 32)
             let objectpenjaminfk = penjamin || null
-
+            const pasien = (await pool.query(qGetDaftarPasienLama, [req.id])).rows[0]
+            if(!pasien) throw new Error("Pasien tidak ditemukan")
             let todayStart = new Date();
             todayStart.setHours(0, 0, 0, 0)
             let todayEnd = new Date();
             todayEnd.setHours(23, 59, 59, 999)
             let resultCountNoantrianDokter = await pool.query(queriesRegistrasi.qNoAntrian, [dokter, todayStart, todayEnd]);
+            const dataDokter = (await pool.query(qGetDokter, [dokter])).rows?.[0]
+            const dataPenjamin = (await pool.query(qGetPenjamin, [objectpenjaminfk])).rows?.[0]
+            const dataPoliklinik = (await pool.query(qGetPoliklinik, [poliklinik])).rows?.[0]
+
             let noantrian = parseFloat(resultCountNoantrianDokter.rows[0].count) + 1
             const noreservasi = await hCreateNores(jadwal)
             const noregistrasi = await hCreateNoreg(jadwal)
-            const pasien = (await pool.query(qGetDaftarPasienLama, [req.id])).rows[0]
-            let statuspasien = 'LAMA'
-            if(pasien?.tgldaftar > todayStart && pasien?.tgldaftar < todayEnd){
-                statuspasien = 'BARU'
-            }
+
+            let statuspasien = pasien.nocm ? "BARU" : "LAMA"
 
             const daftarPasien = await db.t_daftarpasien.create({
                 norec: norecDP,
@@ -172,6 +174,17 @@ const savePasienMandiri = async (req, res) => {
                     transaction: transaction
                 });
             }
+            await hSendEmailDaftar(
+                pasien.email, 
+                pasien.namapasien, 
+                pasien.nocm || pasien.nocmtemp,
+                noreservasi,
+                !pasien.nocm ? null : noregistrasi,
+                dataDokter.namadokter,
+                jadwal,
+                dataPenjamin?.namapenjamin || "",
+                dataPoliklinik?.namaunit || ""
+            )
 
             return { daftarPasien, antreanPemeriksaan }
         });
@@ -277,3 +290,163 @@ export const hCreateNores = async (date) => {
         today.getFullYear() + todayMonth.toString() + todayDate.toString() + noreservasi
     return noreservasi
 }
+
+// disable karena hanya string
+// eslint-disable-next-line max-lines-per-function
+const hSendEmailDaftar = async (email, nama, norm, noreservasi, noregistrasi, dokter, jadwal, namapenjamin, namaunit) => {
+    let transporter = nodemailer.createTransport({
+        service: 'Gmail',
+        auth: {
+            user: 'snberdikarinoreply@gmail.com',
+            pass: 'heztcjllcnyiivol'
+        }
+    })
+
+    const tNoRegistrasi = !noregistrasi ? ``: 
+    `
+        <tr>
+            <td scope="row">
+                <div dir="ltr">
+                    No Registrasi
+                </div>
+            </td>
+            <td>
+                <div id="basic-rater" dir="ltr">
+                    : ${noreservasi}
+                </div>
+            </td>
+        </tr>
+    `
+    const tPenjamin = !namapenjamin ? ``: 
+    `
+        <tr>
+            <td scope="row">
+                <div dir="ltr">
+                    Penjamin
+                </div>
+            </td>
+            <td>
+                <div id="basic-rater" dir="ltr">
+                    : ${namapenjamin}
+                </div>
+            </td>
+        </tr>
+    `
+
+
+    let mailOptions = {
+        from: 'snberdikarinoreply@gmail.com',
+        to: email,
+        subject: 'Pendaftaran anda di Rumah Sakit SNB',
+        text: `Terima kasih telah mendaftar ke SNB`,
+        html: `<p>Terima kasih telah mendaftar ke SNB, berikut merupakan data anda</p>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div dir="ltr">
+                                        Nama Pengguna
+                                    </div>
+                                </td>
+                                <td>
+                                    <div dir="ltr">
+                                        : ${nama}
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td scope="row">
+                                    <div dir="ltr">
+                                        No RM
+                                    </div>
+                                </td>
+                                <td>
+                                    <div id="basic-rater" dir="ltr">
+                                        : ${norm}
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td scope="row">
+                                    <div dir="ltr">
+                                        E-Mail
+                                    </div>
+                                </td>
+                                <td>
+                                    <div id="basic-rater" dir="ltr">
+                                        : ${email}
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td scope="row">
+                                    <div dir="ltr">
+                                        No Reservasi
+                                    </div>
+                                </td>
+                                <td>
+                                    <div id="basic-rater" dir="ltr">
+                                        : ${noreservasi}
+                                    </div>
+                                </td>
+                            </tr>
+                            ${tNoRegistrasi}
+                            <tr>
+                                <td scope="row">
+                                    <div dir="ltr">
+                                        Poliklinik
+                                    </div>
+                                </td>
+                                <td>
+                                    <div id="basic-rater" dir="ltr">
+                                        : ${namaunit}
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td scope="row">
+                                    <div dir="ltr">
+                                        Dokter
+                                    </div>
+                                </td>
+                                <td>
+                                    <div id="basic-rater" dir="ltr">
+                                        : ${dokter}
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td scope="row">
+                                    <div dir="ltr">
+                                        Tanggal Janji
+                                    </div>
+                                </td>
+                                <td>
+                                    <div id="basic-rater" dir="ltr">
+                                        : ${dateLocal(jadwal)}
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td scope="row">
+                                    <div dir="ltr">
+                                        Tanggal Daftar
+                                    </div>
+                                </td>
+                                <td>
+                                    <div id="basic-rater" dir="ltr">
+                                        : ${dateLocal(new Date())}
+                                    </div>
+                                </td>
+                            </tr>
+                            ${tPenjamin}
+                        </tbody>
+                    </table>
+                <p> Anda dapat menunjukkan data anda ke loket untuk verifikasi data anda</p>
+        `
+    };
+
+    const info = await transporter.sendMail(mailOptions);
+    return info
+}
+
