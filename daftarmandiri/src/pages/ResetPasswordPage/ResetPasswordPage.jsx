@@ -58,7 +58,7 @@ const ResetPasswordPage = () => {
   return (
     <div className="page-reset-password">
       <KontainerPage top={0} ref={refKontainer}>
-        <InputGroupDM label={'Password'}>
+        <InputGroupDM label={'Password Baru'}>
           <InputDM
             id="password"
             name="password"
