@@ -8,7 +8,8 @@ import {
     UPSERT_PATIENT,UPSERT_PATIENT_SUCCESS,UPSERT_PATIENT_ERROR,
     UPSERT_ENCOUNTER,UPSERT_ENCOUNTER_SUCCESS,UPSERT_ENCOUNTER_ERROR,
     UPSERT_CONDITION,UPSERT_CONDITION_SUCCESS,UPSERT_CONDITION_ERROR,
-    UPSERT_ENCOUNTER_PULANG,UPSERT_ENCOUNTER_PULANG_SUCCESS,UPSERT_ENCOUNTER_PULANG_ERROR
+    UPSERT_ENCOUNTER_PULANG,UPSERT_ENCOUNTER_PULANG_SUCCESS,UPSERT_ENCOUNTER_PULANG_ERROR,
+    UPSERT_OBSERVATION,UPSERT_OBSERVATION_SUCCESS,UPSERT_OBSERVATION_ERROR
 } from "./actionType";
 
 export const getListInstalasi = (queries) => ({
@@ -185,5 +186,23 @@ export const upsertEncounterPulangSuccess = (data) => ({
 
 export const upsertEncounterPulangError = (error) => ({
     type: UPSERT_ENCOUNTER_PULANG_ERROR,
+    payload: error,
+});
+
+export const upsertObservation = (data, callback) => ({
+    type: UPSERT_OBSERVATION,
+    payload: {
+        data,
+        callback
+    },
+});
+
+export const upsertObservationSuccess = (data) => ({
+    type: UPSERT_OBSERVATION_SUCCESS,
+    payload: data,
+});
+
+export const upsertObservationError = (error) => ({
+    type: UPSERT_OBSERVATION_ERROR,
     payload: error,
 });

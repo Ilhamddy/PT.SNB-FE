@@ -1146,7 +1146,7 @@ async function tempEncounterPulang(reqTemp) {
         serviceProvider: {
             reference: "Organization/"+profile.rows[0].ihs_id
         },
-        // diagnosis
+        diagnosis
     };
     
                 return encounterData
@@ -1301,6 +1301,145 @@ async function tempEncounterIGD(reqTemp) {
                 return encounterData
 }
 
+async function tempObservationNadi(reqTemp) {
+    const profile = await pool.query(profileQueries.getAll);
+    const currentDate = new Date();
+    let tempIdNadi=''
+    if(reqTemp.ihs_nadi!==null){
+        tempIdNadi = {'id':reqTemp.ihs_nadi}
+    }
+    const observationData = {
+        resourceType: "Observation",
+        status: "final",
+        category: [
+            {
+                coding: [
+                    {
+                        system: "http://terminology.hl7.org/CodeSystem/observation-category",
+                        code: "vital-signs",
+                        display: "Vital Signs"
+                    }
+                ]
+            }
+        ],
+        code: {
+            coding: [
+                {
+                    system: "http://loinc.org",
+                    code: "8867-4",
+                    display: "Heart rate"
+                }
+            ]
+        },
+        subject: {
+            reference: "Patient/"+reqTemp.ihs_id,
+        },
+        performer: [
+            {
+                reference: "Practitioner/"+reqTemp.ihs_dpjp,
+            }
+        ],
+        encounter: {
+            reference: "Encounter/"+reqTemp.ihs_dp,
+            display: "Pemeriksaan Fisik Nadi "+reqTemp.namapasien
+        },
+        effectiveDateTime: reqTemp.datenow,
+        issued: reqTemp.datenow,
+        valueQuantity: {
+            value: reqTemp.nadi,
+            unit: "beats/minute",
+            system: "http://unitsofmeasure.org",
+            code: "/min"
+        },
+        ...tempIdNadi
+    };
+                return observationData
+}
+
+const upsertObservation = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const currentDate = new Date();
+        const profilePasien = await pool.query(satuSehatQueries.qGetDataPasienByNorecDpTrm, [req.body.norecdp]);
+
+        const {
+            ihs_dp,
+            ihs_pasien,
+            namapasien,
+            noregistrasi,
+            tglpulang,
+            ihs_unit,
+            tglditerimapoli,
+            ihs_dpjp,
+            namadokter,
+            tglregistrasi_ihs,
+            objectinstalasifk
+        } = profilePasien.rows[0];
+
+        const temp = {
+            ihs_dp,
+            ihs_id: ihs_pasien,
+            namapasien,
+            noregistrasi,
+            tglpulang,
+            ihs_unit,
+            tglditerimapoli,
+            ihs_dpjp,
+            namadokter,
+            tglregistrasi_ihs,
+            norecdp: req.body.norec,
+            tglditerimapoli:tglditerimapoli,
+            datenow:currentDate,
+            nadi:req.body.nadi,
+            ihs_nadi:req.body.ihs_nadi
+        };
+        let observation=''
+        let url = '/Observation';
+        let method = 'POST';
+        if(req.body.status==='nadi'){
+            if(req.body.ihs_nadi!==null){
+                url = '/Observation/'+req.body.ihs_nadi;
+                method = 'PUT';
+            }
+            observation = await tempObservationNadi(temp)
+        }
+        let response = await postGetSatuSehat(method, url,observation);
+        const { setInstalasi } = await db.sequelize.transaction(async (transaction) => {
+            let setInstalasi = ''
+                if(response.resourceType==='Observation'){
+                    setInstalasi = await db.t_ttv.update({
+                        ihs_nadi: response.id,
+                    }, {
+                        where: {
+                            norec: req.body.norec
+                        },
+                        transaction: transaction
+                    });
+                }
+            return { setInstalasi }
+        });
+        
+        const tempres = {
+            observation:observation,
+            instalasi:setInstalasi
+        };
+        res.status(200).send({
+            msg: 'Sukses',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message || 'Gagal',
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export default {
     getListInstalasi,
     updateOrganizationInstalasi,
@@ -1312,5 +1451,6 @@ export default {
     updateIhsPatient,
     upsertEncounter,
     upsertCondition,
-    upsertEncounterPulang
+    upsertEncounterPulang,
+    upsertObservation
 }

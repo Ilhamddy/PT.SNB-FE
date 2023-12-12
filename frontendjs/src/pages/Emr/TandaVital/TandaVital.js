@@ -5,15 +5,10 @@ import {
     FormFeedback, Form, DropdownItem, DropdownMenu, DropdownToggle, UncontrolledDropdown,
     UncontrolledTooltip
 } from 'reactstrap';
-import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useSelector, useDispatch } from "react-redux";
-import BreadCrumb from '../../../Components/Common/BreadCrumb';
-import UiContent from '../../../Components/Common/UiContent';
-import { Link, useNavigate } from "react-router-dom";
-import { emrTtvSave, emrResetForm, emrTtvGet, resetRegisterFlag } from "../../../store/actions";
+import { emrTtvSave, emrResetForm, emrTtvGet, resetRegisterFlag,upsertObservation } from "../../../store/actions";
 import { useParams } from "react-router-dom";
-import classnames from "classnames";
 import { useFormik, yupToFormErrors } from "formik";
 import * as Yup from "yup";
 import DataTable from 'react-data-table-component';
@@ -42,8 +37,16 @@ const TandaVital = () => {
     }, [dispatch])
 
     useEffect(() => {
-        if (newData !== null && norecdp) {
+        if (newData?.data?.ttv?.norec !== null && norecdp) {
             dispatch(emrTtvGet(norecdp));
+            let tempValue={
+                norec:newData?.data?.ttv?.norec,
+                nadi:newData?.data?.ttv?.nadi,
+                norecdp:norecdp,
+                status:'nadi',
+                ihs_nadi:newData?.data?.ttv?.ihs_nadi
+            }
+            dispatch(upsertObservation(tempValue));
         }
     }, [newData, norecdp, dispatch])
 
@@ -53,6 +56,7 @@ const TandaVital = () => {
         enableReinitialize: true,
         initialValues: {
             norecap: editData?.norecap ?? norecap,
+            norecdp: editData?.norecdp ?? norecdp,
             norec: editData?.norec ?? '',
             objectemrfk: editData?.objectemrfk ?? '',
             tinggibadan: editData?.tinggibadan ?? '',
@@ -69,7 +73,8 @@ const TandaVital = () => {
             keadaanumum: editData?.keadaanumum ?? '',
             idlabel: 1,
             label: 'TTV',
-            idgcs: editData?.idgcs ?? ''
+            idgcs: editData?.idgcs ?? '',
+            ihs_nadi:editData?.ihs_nadi ?? null
         },
         validationSchema: Yup.object({
             tinggibadan: Yup.string().required("Tinggi Badan wajib diisi"),
@@ -96,30 +101,6 @@ const TandaVital = () => {
                     return schema
                 }
             }),
-            // gcsm: Yup.string().when("gcsv", (gcsv, schema) => {
-            //     if (validation.values.gcsm === '' || validation.values.gcsm === null) {
-            //         return schema
-            //             .required("M wajib diisi")
-            //     } else {
-            //         let tempgcse = validation.values.gcse === '' || validation.values.gcse === null ? 0 : validation.values.gcse
-            //         let tempgcsm = validation.values.gcsm === '' || validation.values.gcsm === null ? 0 : validation.values.gcsm
-            //         let tempgcsv = validation.values.gcsv === '' || validation.values.gcsv === null ? 0 : validation.values.gcsv
-            //         setRate(tempgcse + tempgcsm + tempgcsv)
-            //         return schema
-            //     }
-            // }),
-            // gcsv: Yup.string().when("keadaanumum", (keadaanumum, schema) => {
-            //     if (validation.values.gcsv === '' || validation.values.gcsv === null) {
-            //         return schema
-            //             .required("V wajib diisi")
-            //     } else {
-            //         let tempgcse = validation.values.gcse === '' || validation.values.gcse === null ? 0 : validation.values.gcse
-            //         let tempgcsm = validation.values.gcsm === '' || validation.values.gcsm === null ? 0 : validation.values.gcsm
-            //         let tempgcsv = validation.values.gcsv === '' || validation.values.gcsv === null ? 0 : validation.values.gcsv
-            //         setRate(tempgcse + tempgcsm + tempgcsv)
-            //         return schema
-            //     }
-            // }),
         }),
         onSubmit: (values, { resetForm }) => {
             // console.log(validation.errors)
@@ -252,6 +233,7 @@ const TandaVital = () => {
         validation.setFieldValue('keadaanumum', e.keadaanumum)
         validation.setFieldValue('norec', e.norec)
         validation.setFieldValue('objectemrfk', e.objectemrfk)
+        validation.setFieldValue('ihs_nadi', e.ihs_nadi)
         console.log(e)
     };
     const handleClickReset = (e) => {
@@ -269,6 +251,7 @@ const TandaVital = () => {
         validation.setFieldValue('keadaanumum', '')
         validation.setFieldValue('norec', '')
         validation.setFieldValue('objectemrfk', '')
+        validation.setFieldValue('ihs_nadi', null)
     };
 
 
