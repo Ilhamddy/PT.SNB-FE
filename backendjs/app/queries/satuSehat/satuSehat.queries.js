@@ -50,7 +50,10 @@ case when tt.status_ihs_sistole=true then 'btn-soft-info' else 'btn-soft-danger'
 end as status_sistole,
 case when tt.status_ihs_diastole=true then 'btn-soft-info' else 'btn-soft-danger'
 end as status_diastole,tt.ihs_sistole,tt.ihs_diastole,mh.code as codenadi,mh.display as displaynadi,mh.teks as teksnadi,
-mh2.code as codepernapasan,mh2.display as displaypernapasan,mh2.teks as tekspernapasan
+mh2.code as codepernapasan,mh2.display as displaypernapasan,mh2.teks as tekspernapasan,
+mh3.code as codesuhu,mh3.display as displaysuhu,mh3.teks as tekssuhu,
+mh4.code as codesistol,mh4.display as displaysistol,mh4.teks as tekssistol,
+mh5.code as codediastol,mh5.display as displaydiastol,mh5.teks as teksdiastol
         FROM t_daftarpasien dp 
 join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk=dp.norec
 join t_emrpasien te on te.objectantreanpemeriksaanfk=ta.norec 
@@ -58,6 +61,9 @@ join t_ttv tt on tt.objectemrfk =te.norec
 join m_unit mu on mu.id=ta.objectunitfk
 join m_hasilnilaittv mh on mh.id=tt.objecthasilnadifk
 join m_hasilnilaittv mh2 on mh2.id=tt.objecthasilpernapasanfk
+join m_hasilnilaittv mh3 on mh3.id=tt.objecthasilsuhufk
+join m_hasilnilaittv mh4 on mh4.id=tt.objecthasilsistolfk
+join m_hasilnilaittv mh5 on mh5.id=tt.objecthasildiastolfk
 left join m_range mr on mr.id=tt.objectgcsfk where tt.norec=$1 and tt.statusenabled=true`
 
 export default{

@@ -7,6 +7,12 @@ import pegawaiQueries from "../../../queries/mastertable/pegawai/pegawai.queries
 import satuSehatQueries from "../../../queries/satuSehat/satuSehat.queries";
 import axios from "axios";
 
+async function getCurrentDateAsync() {
+    const currentDate = new Date();
+    const utcDateString = currentDate.toLocaleString('en-US', { timeZone: 'UTC' });
+    return new Date(utcDateString);
+  }
+
 async function setEnvironmments () {
 
     const client_id ='quwmeeFAjLOf9PY3sKlobJDgRGjdlW3izk4oOldYElj0gAox';
@@ -1351,6 +1357,18 @@ async function tempObservationNadi(reqTemp) {
             system: "http://unitsofmeasure.org",
             code: "/min"
         },
+        interpretation: [
+            {
+                coding: [
+                    {
+                        system: "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
+                        code: reqTemp.codenadi,
+                        display: reqTemp.displaynadi
+                    }
+                ],
+                text: reqTemp.teksnadi
+            }
+        ],
         ...tempIdNadi
     };
                 return observationData
@@ -1406,6 +1424,18 @@ async function tempObservationPernafasan(reqTemp) {
             system: "http://unitsofmeasure.org",
             code: "/min"
         },
+        interpretation: [
+            {
+                coding: [
+                    {
+                        system: "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
+                        code: reqTemp.codepernapasan,
+                        display: reqTemp.displaypernapasan
+                    }
+                ],
+                text: reqTemp.tekspernapasan
+            }
+        ],
         ...tempIdNadi
     };
                 return observationData
@@ -1461,6 +1491,18 @@ async function tempObservationSuhu(reqTemp) {
             system: "http://unitsofmeasure.org",
             code: "Cel"
         },
+        interpretation: [
+            {
+                coding: [
+                    {
+                        system: "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
+                        code: reqTemp.codesuhu,
+                        display: reqTemp.displaysuhu
+                    }
+                ],
+                text: reqTemp.tekssuhu
+            }
+        ],
         ...tempIdNadi
     };
                 return observationData
@@ -1525,6 +1567,18 @@ async function tempObservationSistole(reqTemp) {
             system: "http://unitsofmeasure.org",
             code: "mm[Hg]"
         },
+        interpretation: [
+            {
+                coding: [
+                    {
+                        system: "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
+                        code: reqTemp.codesistol,
+                        display: reqTemp.displaysistol
+                    }
+                ],
+                text: reqTemp.tekssistol
+            }
+        ],
         ...tempIdNadi
     };
                 return observationData
@@ -1589,6 +1643,18 @@ async function tempObservationDiastole(reqTemp) {
             system: "http://unitsofmeasure.org",
             code: "mm[Hg]"
         },
+        interpretation: [
+            {
+                coding: [
+                    {
+                        system: "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
+                        code: reqTemp.codediastol,
+                        display: reqTemp.displaydiastol
+                    }
+                ],
+                text: reqTemp.teksdiastol
+            }
+        ],
         ...tempIdNadi
     };
                 return observationData
@@ -1597,10 +1663,11 @@ async function tempObservationDiastole(reqTemp) {
 const upsertObservation = async (req, res) => {
     const logger = res.locals.logger;
     try {
+        const currentDate = await getCurrentDateAsync();
         const profilePasien = await pool.query(satuSehatQueries.qGetDataPasienByNorecDpTrm, [req.body.norecdp]);
         const dataTTV = await pool.query(satuSehatQueries.qDataTTVByNorec, [req.body.norec]);
-        const resdataTTV = dataTTV.rows[0];
-        const patientData = profilePasien.rows[0];
+        const resdataTTV = await dataTTV.rows[0];
+        const patientData =await profilePasien.rows[0];
         const temp = {
             ihs_dp: patientData.ihs_dp,
             ihs_id: patientData.ihs_pasien,
@@ -1614,7 +1681,7 @@ const upsertObservation = async (req, res) => {
             tglregistrasi_ihs: patientData.tglregistrasi_ihs,
             norecdp: req.body.norecdp,
             tglditerimapoli: patientData.tglditerimapoli,
-            datenow: patientData.datenow,
+            datenow: currentDate,//patientData.datenow,
             nilai: parseFloat(req.body.nilai),
             ihs_nadi: req.body.ihs_nadi,
             ihs_pernafasan: req.body.ihs_pernafasan,
@@ -1624,6 +1691,18 @@ const upsertObservation = async (req, res) => {
             codenadi:resdataTTV.codenadi,
             displaynadi:resdataTTV.displaynadi,
             teksnadi:resdataTTV.teksnadi,
+            codepernapasan:resdataTTV.codepernapasan,
+            displaypernapasan:resdataTTV.displaypernapasan,
+            tekspernapasan:resdataTTV.tekspernapasan,
+            codesuhu:resdataTTV.codesuhu,
+            displaysuhu:resdataTTV.displaysuhu,
+            tekssuhu:resdataTTV.tekssuhu,
+            codesistol:resdataTTV.codesistol,
+            displaysistol:resdataTTV.displaysistol,
+            tekssistol:resdataTTV.tekssistol,
+            codediastol:resdataTTV.codediastol,
+            displaydiastol:resdataTTV.displaydiastol,
+            teksdiastol:resdataTTV.teksdiastol,
         };
 
         let url = '/Observation';
@@ -1661,7 +1740,13 @@ const upsertObservation = async (req, res) => {
             }
             observation = await tempObservationDiastole(temp);
         }
-
+        // res.status(200).send({
+        //     msg: 'Sukses',
+        //     code: 200,
+        //     data: { observation },
+        //     success: true,
+        // });
+        // return
         let response = await postGetSatuSehat(method, url, observation);
 
         const setInstalasi = await db.sequelize.transaction(async (transaction) => {
