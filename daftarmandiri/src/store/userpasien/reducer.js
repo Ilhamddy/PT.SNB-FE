@@ -35,7 +35,22 @@ import {
     GET_ANTREAN_PEMERIKSAAN_ERROR,
     GET_REGISTRASI_NOREC,
     GET_REGISTRASI_NOREC_SUCCESS,
-    GET_REGISTRASI_NOREC_ERROR
+    GET_REGISTRASI_NOREC_ERROR,
+    VERIF_USER_EMAIL,
+    VERIF_USER_EMAIL_SUCCESS,
+    VERIF_USER_EMAIL_ERROR,
+    GET_VERIF_USER,
+    GET_VERIF_USER_SUCCESS,
+    GET_VERIF_USER_ERROR,
+    SEND_RESET_PASSWORD,
+    SEND_RESET_PASSWORD_SUCCESS,
+    SEND_RESET_PASSWORD_ERROR,
+    GET_RESET_PASSWORD,
+    GET_RESET_PASSWORD_SUCCESS,
+    GET_RESET_PASSWORD_ERROR,
+    RESET_PASSWORD,
+    RESET_PASSWORD_SUCCESS,
+    RESET_PASSWORD_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -97,6 +112,31 @@ const INIT_STATE = {
     },
     getRegistrasiNorec: {
         data: [],
+        loading: false,
+        error: null
+    },
+    verifUserEmail: {
+        data: null,
+        loading: false,
+        error: null
+    },
+    getVerifUser: {
+        data: null,
+        loading: false,
+        error: null
+    },
+    sendResetPassword: {
+        data: null,
+        loading: false,
+        error: null
+    },
+    getResetPassword: {
+        data: null,
+        loading: false,
+        error: null
+    },
+    resetPassword: {
+        data: null,
         loading: false,
         error: null
     }
@@ -508,6 +548,172 @@ const login = (state = INIT_STATE, action) => {
                     error: action.payload,
                 },
             };
+
+        case VERIF_USER_EMAIL: 
+            return {
+                ...state,
+                verifUserEmail: {
+                    ...state.verifUserEmail,
+                    data: null,
+                    loading: true,
+                    error: null,
+                },
+            };
+            
+        case VERIF_USER_EMAIL_SUCCESS:
+            return {
+                ...state,
+                verifUserEmail: {
+                    ...state.verifUserEmail,
+                    data: action.payload,
+                    loading: false,
+                },
+                getVerifUser: {
+                    ...INIT_STATE.getVerifUser,
+                }
+            };
+
+        case VERIF_USER_EMAIL_ERROR:
+            return {
+                ...state,
+                verifUserEmail: {
+                    ...state.verifUserEmail,
+                    loading: false,
+                    error: action.payload,
+                },
+            };
+
+        case GET_VERIF_USER: 
+            return {
+                ...state,
+                getVerifUser: {
+                    ...state.getVerifUser,
+                    data: null,
+                    loading: true,
+                    error: null,
+                },
+            };
+            
+        case GET_VERIF_USER_SUCCESS:
+            return {
+                ...state,
+                getVerifUser: {
+                    ...state.getVerifUser,
+                    data: action.payload,
+                    loading: false,
+                    error: null,
+                },
+            };
+
+        case GET_VERIF_USER_ERROR:
+            return {
+                ...state,
+                getVerifUser: {
+                    ...state.getVerifUser,
+                    loading: false,
+                    error: action.payload,
+                },
+            };
+
+        case SEND_RESET_PASSWORD: 
+            return {
+                ...state,
+                sendResetPassword: {
+                    ...state.sendResetPassword,
+                    data: null,
+                    loading: true,
+                    error: null,
+                },
+            };
+            
+        case SEND_RESET_PASSWORD_SUCCESS:
+            return {
+                ...state,
+                sendResetPassword: {
+                    ...state.sendResetPassword,
+                    data: action.payload,
+                    loading: false,
+                    error: null,
+                },
+            };
+
+        case SEND_RESET_PASSWORD_ERROR:
+            return {
+                ...state,
+                sendResetPassword: {
+                    ...state.sendResetPassword,
+                    data: null,
+                    loading: false,
+                    error: action.payload,
+                },
+            };
+
+        case GET_RESET_PASSWORD: 
+            return {
+                ...state,
+                sendResetPassword: {
+                    ...state.sendResetPassword,
+                    data: null,
+                    loading: true,
+                    error: null,
+                },
+            };
+            
+        case GET_RESET_PASSWORD_SUCCESS:
+            return {
+                ...state,
+                sendResetPassword: {
+                    ...state.sendResetPassword,
+                    data: action.payload,
+                    loading: false,
+                    error: null,
+                },
+            };
+
+        case GET_RESET_PASSWORD_ERROR:
+            return {
+                ...state,
+                sendResetPassword: {
+                    ...state.sendResetPassword,
+                    data: null,
+                    loading: false,
+                    error: action.payload,
+                },
+            };
+
+        case RESET_PASSWORD: 
+            return {
+                ...state,
+                resetPassword: {
+                    ...state.resetPassword,
+                    data: null,
+                    loading: true,
+                    error: null,
+                },
+            };
+            
+        case RESET_PASSWORD_SUCCESS:
+            return {
+                ...state,
+                resetPassword: {
+                    ...state.resetPassword,
+                    data: action.payload,
+                    loading: false,
+                    error: null,
+                },
+            };
+
+        case RESET_PASSWORD_ERROR:
+            return {
+                ...state,
+                resetPassword: {
+                    ...state.resetPassword,
+                    data: null,
+                    loading: false,
+                    error: action.payload,
+                },
+            };
+
 
         default:
             return { ...state };

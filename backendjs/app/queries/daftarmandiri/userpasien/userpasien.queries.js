@@ -112,9 +112,15 @@ SELECT
     mp.nocm AS nocm,
     mp.nocmtemp AS nocmtemp,
     mp.nohp AS nohp,
-    mp.nobpjs AS nobpjs
+    mp.nobpjs AS nobpjs,
+    mp.isverifemail AS isverifemail,
+    mp.email AS email
 FROM users_pasien up
-    LEFT JOIN m_pasien mp ON (up.norm = mp.nocm OR up.norm = mp.nocmtemp)
+    LEFT JOIN m_pasien mp ON (
+        up.norm = mp.nocm 
+        OR up.norm = mp.nocmtemp
+        OR up.objectpasienfk = mp.id
+    )
 WHERE up.id = $1
 `
 
@@ -183,6 +189,14 @@ ORDER BY tap.tgldipanggildokter DESC
 LIMIT 1
 `
 
+const qGetResetEmail = `
+SELECT
+    up.tglexpiredreset AS tglexpiredreset,
+    up.objectpasienfk AS idpasien
+FROM users_pasien up
+WHERE up.resetemail = $1
+`
+
 export default {
     qGetRiwayatRegistrasi,
     qGetPasienEdit,
@@ -190,5 +204,6 @@ export default {
     qGetAllPasienFromUser,
     qGetPenjaminPasien,
     qGetAntreanPasien,
-    qGetAntreanTerakhir
+    qGetAntreanTerakhir,
+    qGetResetEmail
 }

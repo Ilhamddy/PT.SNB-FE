@@ -4,6 +4,7 @@ import instalasiQueries from "../../../queries/mastertable/instalasi/instalasi.q
 import unitQueries from "../../../queries/mastertable/unit/unit.queries";
 import profileQueries from "../../../queries/mastertable/profile/profile.queries";
 import pegawaiQueries from "../../../queries/mastertable/pegawai/pegawai.queries";
+import satuSehatQueries from "../../../queries/satuSehat/satuSehat.queries";
 import axios from "axios";
 
 async function setEnvironmments () {
@@ -111,6 +112,8 @@ const postGetSatuSehat = async (method, url, body) => {
             response = await apiClient.get('', data);
         } else if (method === 'POST') {
             response = await apiClient.post('',body);
+        } else if (method === 'PUT') {
+            response = await apiClient.put('',body);
         } else {
             // Handle other HTTP methods if needed
             return {
@@ -123,9 +126,9 @@ const postGetSatuSehat = async (method, url, body) => {
     } catch (error) {
         // throw error;
         let resp ={
-            code:error.response.status,
-            message:error.response.statusText,
-            data:error.response.data
+            code:error?.response?.status,
+            message:error?.response?.statusText,
+            data:error?.response?.data
         }
         throw resp;
     }
@@ -620,25 +623,27 @@ async function temppatientObject(reqTemp) {
                 return patientObject
 }
 
-async function tempEncounter(reqTemp) {
+async function tempEncounterTerimaDokumenRJ(reqTemp) {
     const profile = await pool.query(profileQueries.getAll);
+    const currentDate = new Date();
     const encounterData = {
         resourceType: "Encounter",
+        id: reqTemp.ihs_dp,
         identifier: [
             {
                 system: "http://sys-ids.kemkes.go.id/encounter/"+profile.rows[0].ihs_id,
-                value: "P20240010"
+                value: reqTemp.noregistrasi
             }
         ],
-        status: "arrived",
+        status: "in-progress",
         class: {
             system: "http://terminology.hl7.org/CodeSystem/v3-ActCode",
             code: "AMB",
             display: "ambulatory"
         },
         subject: {
-            reference: "Patient/100000030009",
-            display: "Budi Santoso"
+            reference: "Patient/"+reqTemp.ihs_id,
+            display: reqTemp.namapasien
         },
         participant: [
             {
@@ -654,19 +659,20 @@ async function tempEncounter(reqTemp) {
                     }
                 ],
                 individual: {
-                    reference: "Practitioner/N10000001",
-                    display: "Dokter Bronsig"
+                    reference: "Practitioner/"+reqTemp.ihs_dpjp,
+                    display: reqTemp.namadokter
                 }
             }
         ],
         period: {
-            start: "2022-11-14T01:00:00+00:00"
+            start: reqTemp.tglregistrasi_ihs,
+            end: reqTemp.tglpulang
         },
         location: [
             {
                 location: {
-                    reference: "Location/ef011065-38c9-46f8-9c35-d1fe68966a3e",
-                    display: "Ruang 1A, Poliklinik Rawat Jalan"
+                    reference: "Location/"+reqTemp.ihs_unit,
+                    display: reqTemp.namaunit
                 },
                 extension: [
                     {
@@ -693,12 +699,87 @@ async function tempEncounter(reqTemp) {
             {
                 status: "arrived",
                 period: {
-                    start: "2022-11-14T01:00:00+00:00"
+                    start: reqTemp.tglregistrasi_ihs,
+                    end:reqTemp.tglditerimapoli
+                }
+            },
+            {
+                status: "in-progress",
+                period: {
+                    start: reqTemp.tglditerimapoli,
+                    end:reqTemp.tglditerimapoli
                 }
             }
         ],
         serviceProvider: {
-            reference: "Organization/10000004"
+            reference: "Organization/"+profile.rows[0].ihs_id
+        }
+    };
+    
+                return encounterData
+}
+
+async function tempEncounterDaftar(reqTemp) {
+    const profile = await pool.query(profileQueries.getAll);
+    const currentDate = new Date();
+    const encounterData = {
+        resourceType: "Encounter",
+        identifier: [
+            {
+                system: "http://sys-ids.kemkes.go.id/encounter/"+profile.rows[0].ihs_id,
+                value: reqTemp.noregistrasi
+            }
+        ],
+        status: "arrived",
+        class: {
+            system: "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            code: "AMB",
+            display: "ambulatory"
+        },
+        subject: {
+            reference: "Patient/"+reqTemp.ihs_id,
+            display: reqTemp.namapasien
+        },
+        participant: [
+            {
+                type: [
+                    {
+                        coding: [
+                            {
+                                system: "http://terminology.hl7.org/CodeSystem/v3-ParticipationType",
+                                code: "ATND",
+                                display: "attender"
+                            }
+                        ]
+                    }
+                ],
+                individual: {
+                    reference: "Practitioner/"+reqTemp.ihs_dpjp,
+                    display: reqTemp.namadokter
+                }
+            }
+        ],
+        period: {
+            start: reqTemp.tglregistrasi_ihs
+        },
+        location: [
+            {
+                location: {
+                    reference: "Location/"+reqTemp.ihs_unit,
+                    display: reqTemp.namaunit
+                }
+            }
+        ],
+        statusHistory: [
+            {
+                status: "arrived",
+                period: {
+                    start: reqTemp.tglregistrasi_ihs,
+                }
+            }
+        ],
+        serviceProvider: {
+            reference: "Organization/"+profile.rows[0].ihs_id
         }
     };
     
@@ -707,14 +788,640 @@ async function tempEncounter(reqTemp) {
 
 const upsertEncounter = async (req, res) => {
     const logger = res.locals.logger;
+    try {
+        const profilePasien = await pool.query(satuSehatQueries.qGetDataPasienByNorecDpTrm, [req.body.norec]);
+
+        const {
+            ihs_dp,
+            ihs_pasien,
+            namapasien,
+            noregistrasi,
+            tglpulang,
+            ihs_unit,
+            tglditerimapoli,
+            ihs_dpjp,
+            namadokter,
+            tglregistrasi_ihs,
+            objectinstalasifk
+        } = profilePasien.rows[0];
+
+        const temp = {
+            ihs_dp,
+            ihs_id: ihs_pasien,
+            namapasien,
+            noregistrasi,
+            tglpulang,
+            ihs_unit,
+            tglditerimapoli,
+            ihs_dpjp,
+            namadokter,
+            tglregistrasi_ihs,
+            norecdp: req.body.norec,
+            tglditerimapoli:tglditerimapoli
+        };
+
+        let encounter = '';
+        let url = '/Encounter';
+        let method = 'POST';
+
+        const isArrived = ihs_dp === null && req.body.status === 'arrived';
+        const isInProgress = ihs_dp !== null && req.body.status === 'in-progress';
+
+        if (isArrived) {
+            if(objectinstalasifk===7){
+                encounter = await tempEncounterIGD(temp);
+            }else if(objectinstalasifk===1){
+                encounter = await tempEncounterDaftar(temp);
+            }else{
+                res.status(500).send({
+                    msg: 'Instalasi '+objectinstalasifk+' Belum Terkirim' || 'Gagal',
+                    code: 500,
+                    data: 'Instalasi '+objectinstalasifk+' Belum Terkirim',
+                    success: false,
+                });
+                return
+            }
+        } else if (isInProgress) {
+            encounter = await tempEncounterTerimaDokumenRJ(temp);
+            url = `/Encounter/${ihs_dp}`;
+            method = 'PUT';
+        }
+
+        const response = await postGetSatuSehat(method, url, encounter);
+        let msg = 'Sukses';
+
+        const { setInstalasi } = await db.sequelize.transaction(async (transaction) => {
+            let setInstalasiResult = '';
+
+            if (response.resourceType === 'Encounter' && ihs_dp === null) {
+                setInstalasiResult = await db.t_daftarpasien.update(
+                    {
+                        ihs_id: response.id,
+                    },
+                    {
+                        where: {
+                            norec: req.body.norec,
+                        },
+                        transaction,
+                    }
+                );
+            }
+
+            return { setInstalasi: setInstalasiResult };
+        });
+
+        const tempres = {
+            encounter: response,
+            daftarpsien: setInstalasi,
+            // dataencounter: encounter,
+        };
+
+        res.status(200).send({
+            msg: 'Sukses',
+            code: 200,
+            data: tempres,
+            success: true,
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message || 'Gagal',
+            code: 500,
+            data: error,
+            success: false,
+        });
+    }
+};
+
+
+async function tempConditionPrimary(reqTemp) {
+    const profile = await pool.query(profileQueries.getAll);
+    const currentDate = new Date();
+    let conditionData = {
+        resourceType: "Condition",
+        clinicalStatus: {
+            coding: [
+                {
+                    system: "http://terminology.hl7.org/CodeSystem/condition-clinical",
+                    code: reqTemp.codestatus,
+                    display: reqTemp.displaystatus
+                }
+            ]
+        },
+        category: [
+            {
+                coding: [
+                    {
+                        system: "http://terminology.hl7.org/CodeSystem/condition-category",
+                        code: "encounter-diagnosis",
+                        display: "Encounter Diagnosis"
+                    }
+                ]
+            }
+        ],
+        code: {
+            coding: [
+                {
+                    system: "http://hl7.org/fhir/sid/icd-10",
+                    code: reqTemp.codekodediagnosa,
+                    display: reqTemp.namakodediagnosa
+                }
+            ]
+        },
+        subject: {
+            reference: "Patient/"+reqTemp.ihs_pasien,
+            display: reqTemp.namapasien
+        },
+        encounter: {
+            reference: "Encounter/"+reqTemp.ihs_dp
+        },
+        // onsetDateTime: currentDate,
+        // recordedDate: currentDate
+    };
+    if(reqTemp.codestatus!=='active'){
+        conditionData = {
+            resourceType: "Condition",
+            id: reqTemp.ihs_diagnosa,
+            clinicalStatus: {
+                coding: [
+                    {
+                        system: "http://terminology.hl7.org/CodeSystem/condition-clinical",
+                        code: reqTemp.codestatus,
+                        display: reqTemp.displaystatus
+                    }
+                ]
+            },
+            category: [
+                {
+                    coding: [
+                        {
+                            system: "http://terminology.hl7.org/CodeSystem/condition-category",
+                            code: "encounter-diagnosis",
+                            display: "Encounter Diagnosis"
+                        }
+                    ]
+                }
+            ],
+            code: {
+                coding: [
+                    {
+                        system: "http://hl7.org/fhir/sid/icd-10",
+                        code: reqTemp.codekodediagnosa,
+                        display: reqTemp.namakodediagnosa
+                    }
+                ]
+            },
+            subject: {
+                reference: "Patient/"+reqTemp.ihs_pasien,
+                display: reqTemp.namapasien
+            },
+            encounter: {
+                reference: "Encounter/"+reqTemp.ihs_dp
+            }
+        };
+    }
+                return conditionData
+}
+
+const upsertCondition = async (req, res) => {
+    const logger = res.locals.logger;
     try{
-        const encounter = await tempEncounter(req.body)
+        const profilePasien = await pool.query(satuSehatQueries.qGetDataPasienByNorecDp,[req.body.norecdp]);
+        
+        let temp ={
+            codestatus:req.body.codestatus,
+            displaystatus:req.body.displaystatus,
+            ihs_diagnosa:req.body.ihs_diagnosa,
+            codekodediagnosa:req.body.codekodediagnosa,
+            namakodediagnosa:req.body.namakodediagnosa,
+            ihs_dp:profilePasien.rows[0].ihs_dp,
+            ihs_pasien:profilePasien.rows[0].ihs_pasien,
+            namapasien:profilePasien.rows[0].namapasien
+        }
+        const condition = await tempConditionPrimary(temp)
+        let url ='/Condition'
+        let method = 'POST'
+        if(req.body.ihs_diagnosa!==''){
+            url ='/Condition/'+req.body.ihs_diagnosa
+            method='PUT'
+        }
+        let response = await postGetSatuSehat(method, url,condition);
+        
+        const { setInstalasi } = await db.sequelize.transaction(async (transaction) => {
+            let setInstalasi = ''
+            if(req.body.codestatus==='active'){
+                if(response.resourceType==='Condition'){
+                    setInstalasi = await db.t_diagnosapasien.update({
+                        ihs_id: response.id,
+                    }, {
+                        where: {
+                            norec: req.body.norec
+                        },
+                        transaction: transaction
+                    });
+                }
+            }
+            return { setInstalasi }
+        });
+        
+        const tempres = {
+            condition:response,
+            diagnosapasien:setInstalasi,
+            // profilePasien:profilePasien.rows,
+            datacondition:condition,
+            // url:url,
+            // method:method
+        };
+        res.status(200).send({
+            msg: 'Sukses',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message || 'Gagal',
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+async function tempEncounterPulang(reqTemp) {
+    const profile = await pool.query(profileQueries.getAll);
+    const diagnosa = await pool.query(satuSehatQueries.qListDiagnosa,[reqTemp.norecdp]);
+    let tempDiagnosis = diagnosa.rows.map((element) => {
+        if (element.ihs_diagnosa !== null) {
+            return {
+                condition: {
+                    reference: "Condition/" + element.ihs_diagnosa,
+                    display: element.label
+                },
+                use: {
+                    coding: [
+                        {
+                            system: "http://terminology.hl7.org/CodeSystem/diagnosis-role",
+                            code: "DD",
+                            display: "Discharge diagnosis"
+                        }
+                    ]
+                },
+                rank: parseFloat(element.no)
+            };
+        }
+        return null; // or handle the case where ihs_diagnosa is null
+    }).filter(Boolean);
+    
+    const currentDate = new Date();
+    const diagnosis = tempDiagnosis;    
+    const encounterData = {
+        resourceType: "Encounter",
+        id: reqTemp.ihs_dp,
+        identifier: [{
+                system: "http://sys-ids.kemkes.go.id/encounter/"+profile.rows[0].ihs_id,
+                value: reqTemp.noregistrasi
+            }],
+        status: "finished",
+        class: {
+            system: "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            code: "AMB",
+            display: "ambulatory"},
+        subject: {
+            reference: "Patient/"+reqTemp.ihs_id,
+            display: reqTemp.namapasien},
+        participant: [{
+                type: [{
+                        coding: [{
+                                system: "http://terminology.hl7.org/CodeSystem/v3-ParticipationType",
+                                code: "ATND",
+                                display: "attender"}
+                        ]}
+                ],
+                individual: {
+                    reference: "Practitioner/"+reqTemp.ihs_dpjp,
+                    display: reqTemp.namadokter}
+            }],
+        period: {
+            start: reqTemp.tglregistrasi_ihs,
+            end: reqTemp.tglpulang},
+        location: [{
+                location: {
+                    reference: "Location/"+reqTemp.ihs_unit,
+                    display: reqTemp.namaunit},
+                extension: [{
+                        url: "https://fhir.kemkes.go.id/r4/StructureDefinition/ServiceClass",
+                        extension: [{
+                                url: "value",
+                                valueCodeableConcept: {
+                                    coding: [{
+                                            system: "http://terminology.kemkes.go.id/CodeSystem/locationServiceClass-Outpatient",
+                                            code: "reguler",
+                                            display: "Kelas Reguler"}
+                                    ]}
+                            }]
+                    }]}
+        ],
+        statusHistory: [{
+                status: "arrived",
+                period: {
+                    start: reqTemp.tglregistrasi_ihs,
+                    end:reqTemp.tglditerimapoli
+                }
+            },{
+                status: "in-progress",
+                period: {
+                    start: reqTemp.tglditerimapoli,
+                    end: reqTemp.tglpulang
+                }
+            },{
+                status: "finished",
+                period: {
+                    start: reqTemp.tglpulang,
+                    end: reqTemp.tglpulang
+                }
+            }
+        ],
+        serviceProvider: {
+            reference: "Organization/"+profile.rows[0].ihs_id
+        },
+        diagnosis
+    };
+    
+                return encounterData
+}
+
+const upsertEncounterPulang = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const profilePasien = await pool.query(satuSehatQueries.qGetDataPasienByNorecDpTrm,[req.body.norec]);
+        let temp ={
+            ihs_dp:profilePasien.rows[0].ihs_dp,
+            ihs_id:profilePasien.rows[0].ihs_pasien,
+            namapasien:profilePasien.rows[0].namapasien,
+            noregistrasi:profilePasien.rows[0].noregistrasi,
+            tglpulang:profilePasien.rows[0].tglpulang,
+            ihs_unit:profilePasien.rows[0].ihs_unit,
+            tglditerimapoli:profilePasien.rows[0].tglditerimapoli,
+            ihs_dpjp:profilePasien.rows[0].ihs_dpjp,
+            namadokter:profilePasien.rows[0].namadokter,
+            tglregistrasi_ihs:profilePasien.rows[0].tglregistrasi_ihs,
+            norecdp:req.body.norec
+        }
+        const encounter = await tempEncounterPulang(temp)
+        let response = await postGetSatuSehat('PUT', '/Encounter/'+profilePasien.rows[0].ihs_dp,encounter);
         // await db.sequelize.transaction(async (transaction) => {
             
         // });
         
         const tempres = {
-            encounter:encounter
+            encounter:encounter,
+            response:response
+        };
+        res.status(200).send({
+            msg: 'Sukses',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message || 'Gagal',
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+async function tempEncounterIGD(reqTemp) {
+    const profile = await pool.query(profileQueries.getAll);
+    const currentDate = new Date();
+    const encounterData = {
+        resourceType: "Encounter",
+        identifier: [
+            {
+                system: "http://sys-ids.kemkes.go.id/encounter/"+profile.rows[0].ihs_id,
+                value: reqTemp.noregistrasi
+            }
+        ],
+        status: "arrived",
+        class: {
+            system: "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            code: "EMER",
+            display: "emergency"
+        },
+        subject: {
+            reference: "Patient/"+reqTemp.ihs_id,
+            display: reqTemp.namapasien
+        },
+        participant: [
+            {
+                type: [
+                    {
+                        coding: [
+                            {
+                                system: "http://terminology.hl7.org/CodeSystem/v3-ParticipationType",
+                                code: "ATND",
+                                display: "attender"
+                            }
+                        ]
+                    }
+                ],
+                individual: {
+                    reference: "Practitioner/"+reqTemp.ihs_dpjp,
+                    display: reqTemp.namadokter
+                }
+            }
+        ],
+        period: {
+            start: reqTemp.tglregistrasi_ihs
+        },
+        location: [
+            {
+                location: {
+                    reference: "Location/"+reqTemp.ihs_unit,
+                    display: reqTemp.namaunit
+                },
+                extension: [
+                    {
+                        url: "https://fhir.kemkes.go.id/r4/StructureDefinition/ServiceClass",
+                        extension: [
+                            {
+                                url: "value",
+                                valueCodeableConcept: {
+                                    coding: [
+                                        {
+                                            system: "http://terminology.kemkes.go.id/CodeSystem/locationServiceClass-Outpatient",
+                                            code: "reguler",
+                                            display: "Kelas Reguler"
+                                        }
+                                    ]
+                                }
+                            },
+                            {
+                                url: "upgradeClassIndicator",
+                                valueCodeableConcept: {
+                                  coding: [
+                                    {
+                                      system: "http://terminology.kemkes.go.id/CodeSystem/locationUpgradeClass",
+                                      code: "kelas-tetap",
+                                      display: "Kelas Tetap Perawatan"
+                                    }
+                                  ]
+                                }
+                              }
+                        ]
+                    }
+                ]
+            }
+        ],
+        statusHistory: [
+            {
+                status: "arrived",
+                period: {
+                    start: reqTemp.tglregistrasi_ihs,
+                    end:reqTemp.tglpulang
+                }
+            },
+            {
+                status: "in-progress",
+                period: {
+                    start: reqTemp.tglpulang
+                }
+            }
+        ],
+        serviceProvider: {
+            reference: "Organization/"+profile.rows[0].ihs_id
+        }
+    };
+    
+                return encounterData
+}
+
+async function tempObservationNadi(reqTemp) {
+    const profile = await pool.query(profileQueries.getAll);
+    const currentDate = new Date();
+    let tempIdNadi=''
+    if(reqTemp.ihs_nadi!==null){
+        tempIdNadi = {'id':reqTemp.ihs_nadi}
+    }
+    const observationData = {
+        resourceType: "Observation",
+        status: "final",
+        category: [
+            {
+                coding: [
+                    {
+                        system: "http://terminology.hl7.org/CodeSystem/observation-category",
+                        code: "vital-signs",
+                        display: "Vital Signs"
+                    }
+                ]
+            }
+        ],
+        code: {
+            coding: [
+                {
+                    system: "http://loinc.org",
+                    code: "8867-4",
+                    display: "Heart rate"
+                }
+            ]
+        },
+        subject: {
+            reference: "Patient/"+reqTemp.ihs_id,
+        },
+        performer: [
+            {
+                reference: "Practitioner/"+reqTemp.ihs_dpjp,
+            }
+        ],
+        encounter: {
+            reference: "Encounter/"+reqTemp.ihs_dp,
+            display: "Pemeriksaan Fisik Nadi "+reqTemp.namapasien
+        },
+        effectiveDateTime: reqTemp.datenow,
+        issued: reqTemp.datenow,
+        valueQuantity: {
+            value: reqTemp.nadi,
+            unit: "beats/minute",
+            system: "http://unitsofmeasure.org",
+            code: "/min"
+        },
+        ...tempIdNadi
+    };
+                return observationData
+}
+
+const upsertObservation = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const currentDate = new Date();
+        const profilePasien = await pool.query(satuSehatQueries.qGetDataPasienByNorecDpTrm, [req.body.norecdp]);
+
+        const {
+            ihs_dp,
+            ihs_pasien,
+            namapasien,
+            noregistrasi,
+            tglpulang,
+            ihs_unit,
+            tglditerimapoli,
+            ihs_dpjp,
+            namadokter,
+            tglregistrasi_ihs,
+            objectinstalasifk
+        } = profilePasien.rows[0];
+
+        const temp = {
+            ihs_dp,
+            ihs_id: ihs_pasien,
+            namapasien,
+            noregistrasi,
+            tglpulang,
+            ihs_unit,
+            tglditerimapoli,
+            ihs_dpjp,
+            namadokter,
+            tglregistrasi_ihs,
+            norecdp: req.body.norec,
+            tglditerimapoli:tglditerimapoli,
+            datenow:currentDate,
+            nadi:req.body.nadi,
+            ihs_nadi:req.body.ihs_nadi
+        };
+        let observation=''
+        let url = '/Observation';
+        let method = 'POST';
+        if(req.body.status==='nadi'){
+            if(req.body.ihs_nadi!==null){
+                url = '/Observation/'+req.body.ihs_nadi;
+                method = 'PUT';
+            }
+            observation = await tempObservationNadi(temp)
+        }
+        let response = await postGetSatuSehat(method, url,observation);
+        const { setInstalasi } = await db.sequelize.transaction(async (transaction) => {
+            let setInstalasi = ''
+                if(response.resourceType==='Observation'){
+                    setInstalasi = await db.t_ttv.update({
+                        ihs_nadi: response.id,
+                    }, {
+                        where: {
+                            norec: req.body.norec
+                        },
+                        transaction: transaction
+                    });
+                }
+            return { setInstalasi }
+        });
+        
+        const tempres = {
+            observation:observation,
+            instalasi:setInstalasi
         };
         res.status(200).send({
             msg: 'Sukses',
@@ -742,5 +1449,8 @@ export default {
     getListDokter,
     updatePractitionerPegawai,
     updateIhsPatient,
-    upsertEncounter
+    upsertEncounter,
+    upsertCondition,
+    upsertEncounterPulang,
+    upsertObservation
 }

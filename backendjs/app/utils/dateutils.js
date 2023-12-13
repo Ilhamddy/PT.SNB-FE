@@ -129,3 +129,25 @@ export const createDateAr = (start, end, isObj) => {
 export const getTimeOnly = (date) => {
     return (new Date(date)).toTimeString().split(' ')[0]
 }
+
+/**
+ * mengubah format date menjadi tanggal string
+ * @param {string | Date} date 
+ * @returns {string} format hasil "dd/mm/yyyy"
+ */
+export const dateLocal = (date) => {
+    try{
+        if(date){
+            return new Date(date)
+            .toLocaleDateString("id-ID", 
+                { 
+                    year: 'numeric', 
+                    month: 'numeric', 
+                    day: 'numeric' 
+            }) 
+        }
+        return "-"
+    }catch(e){
+        return "-"
+    }
+}

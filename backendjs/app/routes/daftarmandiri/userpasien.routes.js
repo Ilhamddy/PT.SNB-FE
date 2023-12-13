@@ -65,4 +65,29 @@ export default function(app) {
     [authJwt.verifyTokenUser, encryptMandiri],
     controller.getRegistrasiNorec
   )
+  app.get(
+    "/api/daftarmandiri/user-pasien/get-verif-user",
+    [authJwt.verifyTokenUser, encryptMandiri],
+    controller.getVerifUser
+  )
+  app.post(
+    "/api/daftarmandiri/user-pasien/verif-user-email",
+    [authJwt.verifyTokenUser, encryptMandiri],
+    controller.verifUserEmail
+  )
+  app.post(
+    "/api/daftarmandiri/user-pasien/send-reset-password",
+    [],
+    controller.sendResetPassword
+  )
+  app.get(
+    "/api/daftarmandiri/user-pasien/get-reset-password",
+    [],
+    controller.getResetPassword
+  )
+  app.post(
+    "/api/daftarmandiri/user-pasien/reset-password",
+    [],
+    controller.resetPassword
+  )
 };

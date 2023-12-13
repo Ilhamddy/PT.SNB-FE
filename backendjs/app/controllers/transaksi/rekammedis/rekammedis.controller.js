@@ -84,7 +84,7 @@ async function getListDaftarDokumenRekammedis(req, res) {
         left join m_kecamatan mk on mk.id=md.objectkecamatanfk
         left join m_kabupaten mk2 on mk2.id=md.objectkabupatenfk
         left join m_provinsi mpv on mpv.id=md.objectprovinsifk
-        where dp.noregistrasi ilike '%${req.query.noregistrasi}%' ${tglregistrasi} ${taskid} 
+        where dp.statusenabled = true and dp.noregistrasi ilike '%${req.query.noregistrasi}%' ${tglregistrasi} ${taskid} 
         AND dp.noregistrasi IS NOT NULL --- jika null maka masih belum teregistrasi
         `);
 
@@ -142,7 +142,7 @@ async function getWidgetListDaftarDokumenRekammedis(req, res) {
         join m_pasien mp on mp.id=dp.nocmfk
         left join m_rm_statuskendali mrm on mrm.id=mp.objectstatuskendalirmfk
         left join t_rm_lokasidokumen trm on trm.objectantreanpemeriksaanfk=ta.norec
-        where dp.noregistrasi ilike '%${req.query.noregistrasi}%' ${tglregistrasi}
+        where dp.statusenabled = true and dp.noregistrasi ilike '%${req.query.noregistrasi}%' ${tglregistrasi}
         `);
 
         let tempres = resultlistantreanpemeriksaan.rows
@@ -224,7 +224,8 @@ async function saveDokumenRekammedis(req, res) {
                 norec: norec,
                 objectantreanpemeriksaanfk: req.body.norecap,
                 objectunitfk: req.body.objectunittujuan,
-                objectstatuskendalirmfk: 1
+                objectstatuskendalirmfk: 1,
+                tgldikirim:new Date()
             }, { transaction });
             transaction && await transaction.commit();
             res.status(200).send({
@@ -236,7 +237,8 @@ async function saveDokumenRekammedis(req, res) {
             });
         } else if (req.body.idpencarian === 2) {
             const t_rm_lokasidokumen = await db.t_rm_lokasidokumen.update({
-                objectstatuskendalirmfk: 5
+                objectstatuskendalirmfk: 5,
+                tglkembali:new Date()
             }, {
                 where: {
                     norec: req.body.norectrm
@@ -253,7 +255,8 @@ async function saveDokumenRekammedis(req, res) {
         } else if (req.body.idpencarian === 4) {
             // ini untuk dokumen diterima di poliklinik
             const t_rm_lokasidokumen = await db.t_rm_lokasidokumen.update({
-                objectstatuskendalirmfk: 2
+                objectstatuskendalirmfk: 2,
+                tglditerimapoli:new Date()
             }, {
                 where: {
                     norec: req.body.norectrm

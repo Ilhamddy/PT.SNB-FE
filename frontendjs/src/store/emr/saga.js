@@ -84,8 +84,10 @@ import {
 
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import ServiceSatuSehat from "../../services/service-satusehat";
 
 const serviceEmr = new ServiceEmr();
+const serviceSatuSehat = new ServiceSatuSehat();
 
 function* onGetEmrHeader({ payload: { param } }) {
     try {
@@ -250,6 +252,11 @@ function* onSaveEmrDiagnosax({ payload: { data, history } }) {
         yield put(emrDiagnosaxSaveSuccess(response.data));
         if (response.code === 200) {
             toast.success(response.msg, { autoClose: 3000 });
+            data.norec = response.data.diagnosapasien.norec
+            data.ihs_diagnosa=''
+            data.codestatus='active'
+            data.displaystatus='Active'
+            const responsesatusehat = yield call(serviceSatuSehat.upsertCondition, data);
         } else {
             toast.error(response.msg, { autoClose: 3000 });
         }

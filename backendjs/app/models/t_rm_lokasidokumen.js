@@ -23,7 +23,28 @@ export default (sequelize, Sequelize) => {
         },
         objectstatuskendalirmfk:{
             type: Sequelize.INTEGER
-        }
+        },
+        tglinput:{
+            type: Sequelize.DATE
+        },
+        tgldikirim:{
+            type: Sequelize.DATE
+        },
+        tglditerimapoli:{
+            type: Sequelize.DATE
+        },
+        tgldikirimkonsul:{
+            type: Sequelize.DATE
+        },
+        tglranap:{
+            type: Sequelize.DATE
+        },
+        tglkembali:{
+            type: Sequelize.DATE
+        },
+        tglpinjam:{
+            type: Sequelize.DATE
+        },
     }, {
         tableName: "t_rm_lokasidokumen", // relation "user" does not exist
         createdAt: false,

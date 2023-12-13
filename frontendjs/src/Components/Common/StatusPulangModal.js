@@ -8,7 +8,7 @@ import CustomSelect from "../../pages/Select/Select";
 import { useSelector, useDispatch } from "react-redux";
 import { useFormik, yupToFormErrors } from "formik";
 import * as Yup from "yup";
-import { updateStatusPulangRJ } from "../../store/actions";
+import { updateStatusPulangRJ, upsertEncounterPulang } from "../../store/actions";
 
 const StatusPulangModal = ({ show, onSimpanClick, onCloseClick, tempNorecDp,tempNorecAp, dataStatusPulang }) => {
     const dispatch = useDispatch();
@@ -30,8 +30,12 @@ const StatusPulangModal = ({ show, onSimpanClick, onCloseClick, tempNorecDp,temp
         onSubmit: (values, { resetForm }) => {
             // console.log(validation.errors)
             dispatch(updateStatusPulangRJ(values, ''));
-            
-            resetForm({ values: '' })
+            dispatch(
+                upsertEncounterPulang(values, () => {
+                    // resetForm()
+                })
+              )
+            resetForm()
         }
     })
     return(
@@ -59,20 +63,23 @@ const StatusPulangModal = ({ show, onSimpanClick, onCloseClick, tempNorecDp,temp
                                 <Row>
                                     <Col md={4} className="mb-2"><Label htmlFor="statuspulang" className="form-label">Status Pulang</Label></Col>
                                     <Col md={8} className="mb-2">
-                                        <CustomSelect
+                                         <CustomSelect
                                             id="statuspulang"
                                             name="statuspulang"
                                             options={dataStatusPulang}
-                                            value={validation.values.statuspulang || ""}
-                                            className={`input ${validation.errors.statuspulang ? "is-invalid" : ""}`}
-                                            onChange={value => validation.setFieldValue('statuspulang', value.value)}
-                                            invalid={
-                                                validation.touched.statuspulang && validation.errors.statuspulang ? true : false
-                                            }
+                                            value={validation.values?.statuspulang}
+                                            onChange={(val) => {
+                                            validation.setFieldValue('statuspulang', val?.value || '')
+                                            }}
+                                            isClearEmpty
+                                            className={`input 
+                                                            ${validation.errors?.statuspulang ? 'is-invalid' : ''}`}
                                         />
-                                        {validation.touched.statuspulang && validation.errors.statuspulang ? (
-                                            <FormFeedback type="invalid"><div>{validation.errors.statuspulang}</div></FormFeedback>
-                                        ) : null}
+                                        {validation.touched?.statuspulang && !!validation.errors?.statuspulang && (
+                                            <FormFeedback type="invalid">
+                                            <div>{validation.errors?.statuspulang}</div>
+                                            </FormFeedback>
+                                        )}
                                     </Col>
                                     <div className="d-flex gap-2 justify-content-center mt-4 mb-2">
                                         <button

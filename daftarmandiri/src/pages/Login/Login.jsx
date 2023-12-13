@@ -9,7 +9,7 @@ import * as Yup from 'yup'
 import { rgxAllNumber } from '../../utils/regexcommon'
 import { useDispatch, useSelector } from 'react-redux'
 import { loginUser } from '../../store/userpasien/action'
-import { useNavigate, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import PasienBaruSelesai from './PasienBaruSelesai'
 import KontainerPage from '../../Components/KontainerPage/KontainerPage'
 
@@ -28,14 +28,17 @@ const Login = () => {
     'Pengisian Alamat Domisili',
     'Pengisian Data Tambahan',
   ]
-
-  useEffect(() => {}, [])
+  let { user } = useSelector((state) => ({
+    user: Array.isArray(state.UserPasien.loginUser?.data)
+      ? null
+      : state.UserPasien.loginUser?.data,
+  }))
 
   const isPasienLama = page === 'pasien-lama'
   const isPasienBaru = page === 'pasien-baru'
   const isSelesai = page === 'selesai'
   const stlHeader = !isPasienBaru ? { opacity: '0' } : { opacity: '1' }
-  const topBody = isPasienLama ? '50%' : '120px'
+  const topBody = isPasienLama ? '35%' : '120px'
   const stlKontainerBg = isPasienLama
     ? { left: '8px' }
     : { left: 'calc(50% + 8px)' }
@@ -45,6 +48,12 @@ const Login = () => {
       navigate('/')
     })
   }
+
+  useEffect(() => {
+    if (user && !isSelesai) {
+      navigate('/')
+    }
+  }, [user, isSelesai, navigate])
   return (
     <div className="page-login">
       <KontainerPage
@@ -110,11 +119,11 @@ const FormPasienLama = ({ setDone, handleToHome }) => {
   const vLogin = useFormik({
     initialValues: {
       nocm: '',
-      noidentitas: '',
+      password: '',
     },
     validationSchema: Yup.object({
       nocm: Yup.string().required('No RM/NIK harus diisi'),
-      noidentitas: Yup.string().required('Tanggal Lahir harus diisi'),
+      password: Yup.string().required('Password harus diisi'),
     }),
     onSubmit: (values, { resetForm }) => {
       dispatch(
@@ -142,18 +151,22 @@ const FormPasienLama = ({ setDone, handleToHome }) => {
           }}
         />
       </InputGroup>
-      <InputGroup label={'NIK'}>
+      <InputGroup label={'Password'}>
         <InputDM
-          id="noidentitas"
-          name="noidentitas"
-          type="string"
+          id="password"
+          name="password"
+          type="password"
           className="input-login"
-          value={vLogin.values.noidentitas}
-          errorMsg={vLogin.errors.noidentitas}
-          isError={vLogin.touched.noidentitas && vLogin.errors.noidentitas}
+          value={vLogin.values.password}
+          errorMsg={vLogin.errors.password}
+          isError={vLogin.touched.password && vLogin.errors.password}
           onChange={vLogin.handleChange}
         />
       </InputGroup>
+      <Link className="lupa-password" to="/lupa-password">
+        Lupa password
+      </Link>
+
       <ButtonDM
         type="button"
         className="btn-login"

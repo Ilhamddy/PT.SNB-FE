@@ -27,4 +27,13 @@ export default class ServiceSatuSehat {
     upsertEncounter = async (body) => {
         return await api.create("/transaksi/satu-sehat/upsert-encounter", body)
     }
+    upsertCondition = async (body) => {
+        return await api.create("/transaksi/satu-sehat/upsert-condition", body)
+    }
+    upsertEncounterPulang = async (body) => {
+        return await api.create("/transaksi/satu-sehat/upsert-encounter-pulang", body)
+    }
+    upsertObservation = async (body) => {
+        return await api.create("/transaksi/satu-sehat/upsert-observation", body)
+    }
 }

@@ -1,0 +1,14 @@
+.verifikasi-email {
+    .kontainer-btn-verif {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        width: 100%;
+        justify-content: space-between;
+        margin-top: 15px;
+
+        .btn-lama {
+            width: calc(50% - 10px);
+        }
+    }
+}

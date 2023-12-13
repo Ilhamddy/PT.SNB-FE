@@ -36,6 +36,9 @@ export default (sequelize, Sequelize) => {
         tglinput:{
             type: 'TIMESTAMP'
         },
+        ihs_id:{
+            type: Sequelize.STRING
+        }
     }, {
         tableName: "t_diagnosapasien", // relation "user" does not exist
         createdAt: false,

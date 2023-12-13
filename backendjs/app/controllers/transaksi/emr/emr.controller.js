@@ -154,7 +154,7 @@ async function getListTtv(req, res) {
         to_char(dp.tglregistrasi,'yyyy-MM-dd') as tglregistrasi,tt.norec, tt.objectemrfk, tt.tinggibadan,
         tt.beratbadan, tt.suhu,tt.e, tt.m, tt.v, tt.nadi, tt.alergi, tt.tekanandarah, tt.spo2, 
         tt.pernapasan,tt.keadaanumum, tt.objectpegawaifk, tt.isedit, tt.objectttvfk, tt.tglisi,
-        mu.namaunit,mr.reportdisplay as namagcs
+        mu.namaunit,mr.reportdisplay as namagcs,tt.ihs_nadi
                 FROM t_daftarpasien dp 
         join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk=dp.norec
         join t_emrpasien te on te.objectantreanpemeriksaanfk=ta.norec 
@@ -323,7 +323,8 @@ async function editEmrPasienTtv(req, res) {
             objectttvfk: req.body.norec,
             objectgcsfk: idgcs,
             tglisi: new Date(),
-            objectpegawaifk: req.idPegawai
+            objectpegawaifk: req.idPegawai,
+            ihs_nadi:req.body.ihs_nadi
         }, { transaction });
 
         const ttvupdate = await db.t_ttv.update({
@@ -507,7 +508,8 @@ async function editEmrPasienCppt(req, res) {
 async function getListDiagnosa10(req, res) {
     const logger = res.locals.logger
     try {
-        const result = await queryPromise2(`SELECT id as value,kodeexternal || ' - '|| reportdisplay as label
+        const result = await queryPromise2(`SELECT id as value,kodeexternal || ' - '|| reportdisplay as label,
+        kodeexternal
             FROM m_icdx where reportdisplay ilike '%${req.query.namadiagnosa}%' 
             or kodeexternal ilike '%${req.query.namadiagnosa}%' limit 10
         `);
@@ -645,14 +647,16 @@ async function getListDiagnosaPasien(req, res) {
         const resultList = await queryPromise2(`SELECT row_number() OVER (ORDER BY td.norec) AS no,dp.noregistrasi,
         to_char(dp.tglregistrasi,'yyyy-MM-dd') as tglregistrasi,td.norec, mi.kodeexternal ||' - '|| mi.reportdisplay as label,
         mi.id as value, td.keterangan,td.objecttipediagnosafk,mt.reportdisplay as tipediagnosa,
-        td.objectjeniskasusfk, jk.reportdisplay as jeniskasus, mu.namaunit, mi.kodeexternal as kodediagnosa
-                FROM t_daftarpasien dp 
+        td.objectjeniskasusfk, jk.reportdisplay as jeniskasus, mu.namaunit, mi.kodeexternal as kodediagnosa,
+        dp.ihs_id as ihs_dp,td.ihs_id as ihs_diagnosa, mp.namapasien,mp.ihs_id as ihs_pasien,dp.norec as norecdp
+        FROM t_daftarpasien dp 
         join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk=dp.norec
         join t_diagnosapasien td  on td.objectantreanpemeriksaanfk =ta.norec
         join m_unit mu on mu.id=ta.objectunitfk
         join m_tipediagnosa mt on mt.id=td.objecttipediagnosafk
         join m_jeniskasus jk on jk.id=td.objectjeniskasusfk
-        join m_icdx mi on mi.id=td.objecticdxfk where dp.nocmfk='${nocmfk}' and td.statusenabled=true
+        join m_icdx mi on mi.id=td.objecticdxfk
+        join m_pasien mp on mp.id=dp.nocmfk where dp.nocmfk='${nocmfk}' and td.statusenabled=true
         `);
         res.status(200).send({
             data: resultList.rows,

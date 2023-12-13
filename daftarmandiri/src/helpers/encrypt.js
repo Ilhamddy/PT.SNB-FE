@@ -28,8 +28,6 @@ export function decrypt(text) {
         throw new Error("No key provided");
     }
     try{
-        console.log(text)
-        console.log(secret)
         const key = Buffer.concat([Buffer.from(secret), Buffer.alloc(32)], 32)
         let textParts = text.split(':');
         let iv = Buffer.from(textParts.shift(), 'hex');
@@ -38,7 +36,6 @@ export function decrypt(text) {
         let decrypted = decipher.update(encryptedText);
         decrypted = Buffer.concat([decrypted, decipher.final()]);
         const decryptedText = decrypted.toString();
-        console.log(decryptedText)
         return {
             data: (JSON.parse(decryptedText)).dataenc,
             isencrypt: true

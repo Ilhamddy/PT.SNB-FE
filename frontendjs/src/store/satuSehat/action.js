@@ -6,7 +6,10 @@ import {
     GET_LIST_PRACTITIONER,GET_LIST_PRACTITIONER_SUCCESS,GET_LIST_PRACTITIONER_ERROR,
     UPSERT_PRACTITIONER,UPSERT_PRACTITIONER_SUCCESS,UPSERT_PRACTITIONER_ERROR,
     UPSERT_PATIENT,UPSERT_PATIENT_SUCCESS,UPSERT_PATIENT_ERROR,
-    UPSERT_ENCOUNTER,UPSERT_ENCOUNTER_SUCCESS,UPSERT_ENCOUNTER_ERROR
+    UPSERT_ENCOUNTER,UPSERT_ENCOUNTER_SUCCESS,UPSERT_ENCOUNTER_ERROR,
+    UPSERT_CONDITION,UPSERT_CONDITION_SUCCESS,UPSERT_CONDITION_ERROR,
+    UPSERT_ENCOUNTER_PULANG,UPSERT_ENCOUNTER_PULANG_SUCCESS,UPSERT_ENCOUNTER_PULANG_ERROR,
+    UPSERT_OBSERVATION,UPSERT_OBSERVATION_SUCCESS,UPSERT_OBSERVATION_ERROR
 } from "./actionType";
 
 export const getListInstalasi = (queries) => ({
@@ -147,5 +150,59 @@ export const upsertEncounterSuccess = (data) => ({
 
 export const upsertEncounterError = (error) => ({
     type: UPSERT_ENCOUNTER_ERROR,
+    payload: error,
+});
+
+export const upsertCondition = (data, callback) => ({
+    type: UPSERT_CONDITION,
+    payload: {
+        data,
+        callback
+    },
+});
+
+export const upsertConditionSuccess = (data) => ({
+    type: UPSERT_CONDITION_SUCCESS,
+    payload: data,
+});
+
+export const upsertConditionError = (error) => ({
+    type: UPSERT_CONDITION_ERROR,
+    payload: error,
+});
+
+export const upsertEncounterPulang = (data, callback) => ({
+    type: UPSERT_ENCOUNTER_PULANG,
+    payload: {
+        data,
+        callback
+    },
+});
+
+export const upsertEncounterPulangSuccess = (data) => ({
+    type: UPSERT_ENCOUNTER_PULANG_SUCCESS,
+    payload: data,
+});
+
+export const upsertEncounterPulangError = (error) => ({
+    type: UPSERT_ENCOUNTER_PULANG_ERROR,
+    payload: error,
+});
+
+export const upsertObservation = (data, callback) => ({
+    type: UPSERT_OBSERVATION,
+    payload: {
+        data,
+        callback
+    },
+});
+
+export const upsertObservationSuccess = (data) => ({
+    type: UPSERT_OBSERVATION_SUCCESS,
+    payload: data,
+});
+
+export const upsertObservationError = (error) => ({
+    type: UPSERT_OBSERVATION_ERROR,
     payload: error,
 });

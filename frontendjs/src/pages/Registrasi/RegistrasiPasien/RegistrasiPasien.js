@@ -30,7 +30,8 @@ import { useSelector, useDispatch } from "react-redux";
 import classnames from "classnames";
 
 import { comboRegistrasiGet } from '../../../store/master/action';
-import { registrasiNoregistrasiResetForm, registrasiGet, registrasiSaveRuangan, registrasiNoBPJSGet, registrasiRuanganNorecGet, registrasiSaveRuanganReset, registrasiGetReset, registrasiRuanganNorecGetReset } from "../../../store/actions";
+import { registrasiNoregistrasiResetForm, registrasiGet, registrasiSaveRuangan, registrasiNoBPJSGet, registrasiRuanganNorecGet, registrasiSaveRuanganReset, registrasiGetReset, registrasiRuanganNorecGetReset,
+    upsertEncounter } from "../../../store/actions";
 import BuktiPendaftaran from '../../Print/BuktiPendaftaran';
 
 import BuktiPendaftaran2 from '../../Print/BuktiPendaftaran2';
@@ -367,11 +368,21 @@ const RegistrasiPasien = (props) => {
         const isIgd = validation.values.tujkunjungan === 7;
         const isCheckAsuransi = isRawatInap || isRawatJalan || isIgd;
         if(successReg && isAsuransi && newData?.data?.daftarPasien?.norec && isCheckAsuransi){
+            let tempValue = {
+                norec:newData.data.daftarPasien.norec,
+                status:'arrived'
+            }
+            dispatch(upsertEncounter(tempValue))
             navigate(`/registrasi/input-penjamin/${id}/${newData.data.daftarPasien.norec}`);
         }else if(successReg && !dtRuangNorec){
             setpillsTab("3");
             newData?.data?.daftarPasien?.norec
                 && dispatch(registrasiRuanganNorecGet(newData?.data?.daftarPasien?.norec));
+                let tempValue = {
+                    norec:newData?.data?.daftarPasien?.norec,
+                    status:'arrived'
+                }
+                dispatch(upsertEncounter(tempValue))
         }
 	}, [successReg, id, navigate,
         newData, validation.values, dispatch, dtRuangNorec]);

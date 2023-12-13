@@ -38,7 +38,22 @@ import {
     GET_ANTREAN_PEMERIKSAAN_ERROR,
     GET_REGISTRASI_NOREC,
     GET_REGISTRASI_NOREC_SUCCESS,
-    GET_REGISTRASI_NOREC_ERROR
+    GET_REGISTRASI_NOREC_ERROR,
+    VERIF_USER_EMAIL,
+    VERIF_USER_EMAIL_SUCCESS,
+    VERIF_USER_EMAIL_ERROR,
+    GET_VERIF_USER,
+    GET_VERIF_USER_SUCCESS,
+    GET_VERIF_USER_ERROR,
+    SEND_RESET_PASSWORD,
+    SEND_RESET_PASSWORD_SUCCESS,
+    SEND_RESET_PASSWORD_ERROR,
+    GET_RESET_PASSWORD,
+    GET_RESET_PASSWORD_SUCCESS,
+    GET_RESET_PASSWORD_ERROR,
+    RESET_PASSWORD,
+    RESET_PASSWORD_SUCCESS,
+    RESET_PASSWORD_ERROR
 } from "./actionType";
 
 export const loginUser = (data, callback) => {
@@ -195,10 +210,10 @@ export const updatePasienError = (error) => {
     }
 }
 
-export const getPasienAkun = (queries) => {
+export const getPasienAkun = (queries, callback) => {
     return {
         type: GET_PASIEN_AKUN,
-        payload: {queries}
+        payload: {queries, callback}
     }
 }
 
@@ -321,6 +336,111 @@ export const getRegistrasiNorecSuccess = (data) => {
 export const getRegistrasiNorecError = (error) => {
     return {
         type: GET_REGISTRASI_NOREC_ERROR,
+        payload: error
+    }
+}
+
+export const verifUserEmail = (data, callback) => {
+    return {
+        type: VERIF_USER_EMAIL,
+        payload: {data, callback}
+    }
+}
+
+export const verifUserEmailSuccess = (data) => {
+    return {
+        type: VERIF_USER_EMAIL_SUCCESS,
+        payload: data
+    }
+}
+
+export const verifUserEmailError = (error) => {
+    return {
+        type: VERIF_USER_EMAIL_ERROR,
+        payload: error
+    }
+}
+
+export const getVerifUser = (queries, callback) => {
+    return {
+        type: GET_VERIF_USER,
+        payload: {queries, callback}
+    }
+}
+
+export const getVerifUserSuccess = (data) => {
+    return {
+        type: GET_VERIF_USER_SUCCESS,
+        payload: data
+    }
+}
+
+export const getVerifUserError = (error) => {
+    return {
+        type: GET_VERIF_USER_ERROR,
+        payload: error
+    }
+}
+
+export const sendResetPassword = (data, callback) => {
+    return {
+        type: SEND_RESET_PASSWORD,
+        payload: {data, callback}
+    }
+}
+
+export const sendResetPasswordSuccess = (data) => {
+    return {
+        type: SEND_RESET_PASSWORD_SUCCESS,
+        payload: data
+    }
+}
+
+export const sendResetPasswordError = (error) => {
+    return {
+        type: SEND_RESET_PASSWORD_ERROR,
+        payload: error
+    }
+}
+
+export const getResetPassword = (queries, callbackerror) => {
+    return {
+        type: GET_RESET_PASSWORD,
+        payload: {queries, callbackerror}
+    }
+}
+
+export const getResetPasswordSuccess = (data) => {
+    return {
+        type: GET_RESET_PASSWORD_SUCCESS,
+        payload: data
+    }
+}
+
+export const getResetPasswordError = (error) => {
+    return {
+        type: GET_RESET_PASSWORD_ERROR,
+        payload: error
+    }
+}
+
+export const resetPassword = (data, callback) => {
+    return {
+        type: RESET_PASSWORD,
+        payload: {data, callback}
+    }
+}
+
+export const resetPasswordSuccess = (data) => {
+    return {
+        type: RESET_PASSWORD_SUCCESS,
+        payload: data
+    }
+}
+
+export const resetPasswordError = (error) => {
+    return {
+        type: RESET_PASSWORD_ERROR,
         payload: error
     }
 }

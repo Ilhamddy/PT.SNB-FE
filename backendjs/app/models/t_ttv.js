@@ -69,6 +69,27 @@ export default (sequelize, Sequelize) => {
         tglisi:{
             type: 'TIMESTAMP'
         },
+        sistole:{
+            type: Sequelize.INTEGER
+        },
+        diastole:{
+            type: Sequelize.INTEGER
+        },
+        ihs_suhu:{
+            type: Sequelize.STRING
+        },
+        ihs_nadi:{
+            type: Sequelize.STRING
+        },
+        ihs_sistole:{
+            type: Sequelize.STRING
+        },
+        ihs_diastole:{
+            type: Sequelize.STRING
+        },
+        ihs_pernapasan:{
+            type: Sequelize.STRING
+        }
     }, {
         tableName: "t_ttv", // relation "user" does not exist
         createdAt: false,

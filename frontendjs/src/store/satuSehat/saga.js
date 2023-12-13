@@ -4,7 +4,8 @@ import {
     GET_LIST_INSTALASI,
     UPSERT_MAP_CHILD,
     UPSERT_ORGANIZATION_INSTALASI, GET_LIST_UNIT,UPSERT_LOCATION_UNIT,
-    GET_LIST_PRACTITIONER,UPSERT_PRACTITIONER, UPSERT_PATIENT,UPSERT_ENCOUNTER
+    GET_LIST_PRACTITIONER,UPSERT_PRACTITIONER, UPSERT_PATIENT,UPSERT_ENCOUNTER,
+    UPSERT_CONDITION,UPSERT_ENCOUNTER_PULANG,UPSERT_OBSERVATION
  } from "./actionType";
  import { 
     getListInstalasiSuccess,getListInstalasiError,
@@ -14,7 +15,10 @@ import {
     getListPractitionerSuccess,getListPractitionerError,
     upsertPractitionerSuccess,upsertPractitionerError,
     upsertPatientSuccess, upsertPatientError,
-    upsertEncounterSuccess,upsertEncounterError
+    upsertEncounterSuccess,upsertEncounterError,
+    upsertConditionSuccess,upsertConditionError,
+    upsertEncounterPulangSuccess, upsertEncounterPulangError,
+    upsertObservationSuccess,upsertObservationError
 } from "./action";
 import { toast } from 'react-toastify';
 
@@ -108,6 +112,43 @@ function* onupsertEncounter({payload: {data, callback}}) {
     }
 }
 
+function* onupsertCondition({payload: {data, callback}}) {
+    try{
+        const response = yield call(serviceSatuSehat.upsertCondition, data);
+        yield put(upsertConditionSuccess(response.data));
+        toast.success(response.msg || "Sukses");
+        callback && callback(response);
+    } catch (error) {
+        yield put(upsertConditionError(error));
+        toast.error(error.msg || "Gagal");
+    }
+}
+
+
+function* onupsertEncounterPulang({payload: {data, callback}}) {
+    try{
+        const response = yield call(serviceSatuSehat.upsertEncounterPulang, data);
+        yield put(upsertEncounterPulangSuccess(response.data));
+        toast.success(response.msg || "Sukses");
+        callback && callback(response);
+    } catch (error) {
+        yield put(upsertEncounterPulangError(error));
+        toast.error(error.msg || "Gagal");
+    }
+}
+
+function* onupsertObservation({payload: {data, callback}}) {
+    try{
+        const response = yield call(serviceSatuSehat.upsertObservation, data);
+        yield put(upsertObservationSuccess(response.data));
+        toast.success(response.msg || "Sukses");
+        callback && callback(response);
+    } catch (error) {
+        yield put(upsertObservationError(error));
+        toast.error(error.msg || "Gagal");
+    }
+}
+
 export default function* satuSehatSaga() {
     yield all([
         takeEvery(GET_LIST_INSTALASI, ongetListInstalasi),
@@ -117,6 +158,9 @@ export default function* satuSehatSaga() {
         takeEvery(GET_LIST_PRACTITIONER,ongetListPractitioner),
         takeEvery(UPSERT_PRACTITIONER,onupsertPractitioner),
         takeEvery(UPSERT_PATIENT,onupsertPatient),
-        takeEvery(UPSERT_ENCOUNTER,onupsertEncounter)
+        takeEvery(UPSERT_ENCOUNTER,onupsertEncounter),
+        takeEvery(UPSERT_CONDITION,onupsertCondition),
+        takeEvery(UPSERT_ENCOUNTER_PULANG,onupsertEncounterPulang),
+        takeEvery(UPSERT_OBSERVATION,onupsertObservation)
     ]);
 }
