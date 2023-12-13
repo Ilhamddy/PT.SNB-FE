@@ -5,6 +5,8 @@ import unitQueries from "../../../queries/mastertable/unit/unit.queries";
 import profileQueries from "../../../queries/mastertable/profile/profile.queries";
 import pegawaiQueries from "../../../queries/mastertable/pegawai/pegawai.queries";
 import satuSehatQueries from "../../../queries/satuSehat/satuSehat.queries";
+import kamarQueries from "../../../queries/mastertable/kamar/kamar.queries";
+import tempattidurQueries from "../../../queries/mastertable/tempattidur/tempattidur.queries";
 import axios from "axios";
 
 async function getCurrentDateAsync() {
@@ -265,7 +267,12 @@ const updateLocationUnit = async (req, res) => {
     const logger = res.locals.logger;
     try {
         const profile = await pool.query(profileQueries.getAll);
-
+        let code = 'ro'
+        let display ='Room'
+        if(req.body.objectinstalasifk===2){
+            code = 'wa'
+            display ='Ward'
+        }
         const locationObject = {
             resourceType: "Location",
             identifier: [{
@@ -333,8 +340,8 @@ const updateLocationUnit = async (req, res) => {
                 coding: [
                     {
                         system: "http://terminology.hl7.org/CodeSystem/location-physical-type",
-                        code: "ro",
-                        display: "Room"
+                        code: code,
+                        display: display
                     }
                 ]
             },
@@ -1786,6 +1793,290 @@ const upsertObservation = async (req, res) => {
     }
 };
 
+const getListKamar = async (req, res) => {
+    const logger = res.locals.logger;
+    try {
+        const unit = await pool.query(kamarQueries.qGetKamarIhs)
+       
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: unit.rows,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+const updateLocationKamar = async (req, res) => {
+    const logger = res.locals.logger;
+    try {
+        const profile = await pool.query(profileQueries.getAll);
+        let code = 'ro'
+        let display ='Room'
+      
+        const locationObject = {
+            resourceType: "Location",
+            identifier: [{
+                    system: "http://sys-ids.kemkes.go.id/location/"+profile.rows[0].ihs_id,
+                    value: String(req.body.id)
+                }
+            ],
+            status: "active",
+            name: req.body.label,
+            description: req.body.description,
+            mode: "instance",
+            telecom: [{
+                    system: "phone",
+                    value: profile.rows[0].fixedphone,
+                    use: "work"
+                },{
+                    system: "fax",
+                    value: "2329",
+                    use: "work"
+                },{
+                    system: "email",
+                    value: profile.rows[0].alamatemail
+                },{
+                    system: "url",
+                    value: profile.rows[0].website,
+                    use: "work"
+                }
+            ],
+            type: [
+                {
+                    coding: [
+                        {
+                            system: "http://terminology.kemkes.go.id/CodeSystem/location-type",
+                            code: "RT0016",
+                            display: "Ruang Rawat Inap"
+                        }
+                    ]
+                }
+            ],
+            physicalType: {
+                coding: [
+                    {
+                        system: "http://terminology.hl7.org/CodeSystem/location-physical-type",
+                        code: code,
+                        display: display
+                    }
+                ]
+            },
+            position: {
+                longitude: parseFloat(profile.rows[0].longitude),
+                latitude: parseFloat(profile.rows[0].latitude),
+                altitude: parseFloat(profile.rows[0].altitude)
+            },
+            managingOrganization: {
+                reference: 'Organization/' + req.body.ihs_instalasi
+            },
+            extension: [
+                {
+                    url: "https://fhir.kemkes.go.id/r4/StructureDefinition/LocationServiceClass",
+                    valueCodeableConcept: {
+                        coding: [
+                            {
+                                system: "http://terminology.kemkes.go.id/CodeSystem/locationServiceClass-Inpatient",
+                                code: req.body.codekelas,
+                                display: req.body.displaykelas
+                            }
+                        ]
+                    }
+                }
+            ],
+            partOf: {
+                reference: "Location/"+req.body.ihs_unit,
+                display: req.body.namaunit
+             }
+        };
+        
+        
+        const response = await postGetSatuSehat('POST', '/Location', locationObject);
+        const { setInstalasi } = await db.sequelize.transaction(async (transaction) => {
+            let setInstalasi = ''
+                setInstalasi = await db.m_kamar.update({
+                    ihs_id: response.id,
+                }, {
+                    where: {
+                        id: req.body.id
+                    },
+                    transaction: transaction
+                });
+            
+            return { setInstalasi }
+        });
+
+        const tempres = {
+            unit:setInstalasi,
+            response:response
+        };
+
+        res.status(200).send({
+            msg: 'Sukses',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(400).send({
+            msg: error.message || 'Gagal',
+            code: 400,
+            data: error,
+            success: false,
+        });
+    }
+};
+
+const getListTempatTidur = async (req, res) => {
+    const logger = res.locals.logger;
+    try {
+        const unit = await pool.query(tempattidurQueries.qGetTempatTidurIHS)
+       
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: unit.rows,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+const upsertLocationTempatTidur = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const profile = await pool.query(profileQueries.getAll);
+        let code = 'ro'
+        let display ='Room'
+      
+        const locationObject = {
+            resourceType: "Location",
+            identifier: [{
+                    system: "http://sys-ids.kemkes.go.id/location/"+profile.rows[0].ihs_id,
+                    value: String(req.body.id)
+                }
+            ],
+            status: "active",
+            name: req.body.label,
+            description: req.body.description,
+            mode: "instance",
+            telecom: [{
+                    system: "phone",
+                    value: profile.rows[0].fixedphone,
+                    use: "work"
+                },{
+                    system: "fax",
+                    value: "2329",
+                    use: "work"
+                },{
+                    system: "email",
+                    value: profile.rows[0].alamatemail
+                },{
+                    system: "url",
+                    value: profile.rows[0].website,
+                    use: "work"
+                }
+            ],
+            type: [
+                {
+                    coding: [
+                        {
+                            system: "http://terminology.kemkes.go.id/CodeSystem/location-type",
+                            code: "RT0004",
+                            display: "Tempat Tidur"
+                        }
+                    ]
+                }
+            ],
+            physicalType: {
+                coding: [
+                    {
+                        system: "http://terminology.hl7.org/CodeSystem/location-physical-type",
+                        code: code,
+                        display: display
+                    }
+                ]
+            },
+            position: {
+                longitude: parseFloat(profile.rows[0].longitude),
+                latitude: parseFloat(profile.rows[0].latitude),
+                altitude: parseFloat(profile.rows[0].altitude)
+            },
+            managingOrganization: {
+                reference: 'Organization/' + req.body.ihs_instalasi
+            },
+            extension: [
+                {
+                    url: "https://fhir.kemkes.go.id/r4/StructureDefinition/LocationServiceClass",
+                    valueCodeableConcept: {
+                        coding: [
+                            {
+                                system: "http://terminology.kemkes.go.id/CodeSystem/locationServiceClass-Inpatient",
+                                code: req.body.codekelas,
+                                display: req.body.displaykelas
+                            }
+                        ]
+                    }
+                }
+            ],
+            partOf: {
+                reference: "Location/"+req.body.ihs_unit,
+                display: req.body.namaunit
+             }
+        };
+        
+        
+        // const response = await postGetSatuSehat('POST', '/Location', locationObject);
+        // const { setInstalasi } = await db.sequelize.transaction(async (transaction) => {
+        //     let setInstalasi = ''
+        //         setInstalasi = await db.m_kamar.update({
+        //             ihs_id: response.id,
+        //         }, {
+        //             where: {
+        //                 id: req.body.id
+        //             },
+        //             transaction: transaction
+        //         });
+            
+        //     return { setInstalasi }
+        // });
+
+        const tempres = {
+            // unit:setInstalasi,
+            // response:response
+        };
+        res.status(200).send({
+            msg: 'Sukses',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message || 'Gagal',
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
 
 export default {
     getListInstalasi,
@@ -1799,5 +2090,9 @@ export default {
     upsertEncounter,
     upsertCondition,
     upsertEncounterPulang,
-    upsertObservation
+    upsertObservation,
+    getListKamar,
+    updateLocationKamar,
+    getListTempatTidur,
+    upsertLocationTempatTidur
 }
