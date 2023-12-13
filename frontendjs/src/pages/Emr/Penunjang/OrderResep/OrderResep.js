@@ -494,7 +494,7 @@ const OrderResep = () => {
                             onClick={() => {
                                 vResep.handleSubmit();
                             }}>
-                            {loadingSubmit || loadingGetAllResep && (
+                            {(loadingSubmit || loadingGetAllResep) && (
                                 <Spinner size="sm" className="me-2">
                                 {' '}
                                 Menyimpan...{' '}

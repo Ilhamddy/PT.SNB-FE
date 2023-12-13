@@ -157,6 +157,8 @@ SELECT
     tor.tglinput AS tanggalorder,
     tor.no_resep AS noresep,
     tor.tglverif AS tanggalverif,
+    COALESCE(tor.tglinput, tor.tglverif) AS tanggalresep,
+    tor.objectpegawaifk AS penulisresep,
     tdp.objectpenjaminfk AS penjamin,
     JSON_AGG(
         JSON_BUILD_OBJECT(

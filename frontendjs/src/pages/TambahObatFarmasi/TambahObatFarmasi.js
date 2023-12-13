@@ -41,6 +41,20 @@ export const initValueResep = {
     racikan: []
 }
 
+const initialResep = (dateNow, norecap) => ({
+    norecorder: "",
+    norecap: norecap,
+    tanggalresep: dateNow,
+    unittujuan: "",
+    penulisresep: "",
+    noresep: "",
+    resep: [
+        {
+            ...initValueResep
+        }
+    ],
+})
+
 const TambahObatFarmasi = () => {
     const dispatch = useDispatch()
     const navigate = useNavigate()
@@ -68,19 +82,7 @@ const TambahObatFarmasi = () => {
 
     const vResep = useFormik({
         enableReinitialize: true,
-        initialValues: {
-            norecorder: "",
-            norecap: norecap,
-            tanggalresep: dateNow,
-            unittujuan: "",
-            penulisresep: "",
-            noresep: "",
-            resep: [
-                {
-                    ...initValueResep
-                }
-            ],
-        },
+        initialValues: initialResep(dateNow, norecap),
         validationSchema: Yup.object({
             penulisresep: Yup.string().required("Penulis resep harus diisi"),
             unittujuan: Yup.string().required("Depo tujuan harus diisi"),
@@ -200,19 +202,23 @@ const TambahObatFarmasi = () => {
     }, [norecap, vResep.setFieldValue])
 
     useEffect(() => {
-        norecresep 
-            && dispatch(getOrderResepFromNorec({norec: norecresep}))
-    }, [norecresep])
+        dispatch(getOrderResepFromNorec({norec: norecresep}))
+    }, [norecresep, dispatch])
 
     useEffect(() => {
         const setV = vResep.setValues
         const resetV = vResep.resetForm
         if(obatResep){
-            setV(obatResep)
+            const newResep = {
+                ...initialResep(dateNow, norecap),
+                ...obatResep, 
+            }
+            setV(newResep)
+            resepRef.current = newResep.resep
         }else{
             resetV()
         }
-    }, [obatResep, vResep.setValues, vResep.resetForm])
+    }, [obatResep, dateNow, norecap, vResep.setValues, vResep.resetForm])
     
     const resepNonRacikan = vResep.values.resep.filter((val) => val.racikan.length === 0)
     const resepRacikan = vResep.values.resep.filter((val) => val.racikan.length > 0)
@@ -460,11 +466,10 @@ const TambahObatFarmasi = () => {
                         <Row style={{justifyContent: "space-evenly"}}>
                             <Col md={2}>
                                 <Button color="success"
-                                    disabled={vResep.values.noresep}
                                     onClick={() => {
                                         vResep.handleSubmit();
                                     }}>
-                                    Simpan
+                                    {vResep.values.noresep ? "Edit" : "Simpan"}
                                 </Button>
                             </Col>
                             <Col md={2}>
