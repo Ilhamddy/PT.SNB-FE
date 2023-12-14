@@ -222,7 +222,7 @@ const DaftarPasienRI = () => {
                                     <CardBody>
                                         <div className="d-flex justify-content-between">
                                             <div>
-                                                <p className="fw-medium text-muted mb-0">Total Pasien {item.label}</p>
+                                                <p className="fw-medium text-muted mb-0">Total Bed {item.label}</p>
                                                 <h2 className="mt-4 ff-secondary fw-semibold">
                                                     <span className="counter-value" style={{ fontSize: "1.5rem" }}>
                                                         <CountUp

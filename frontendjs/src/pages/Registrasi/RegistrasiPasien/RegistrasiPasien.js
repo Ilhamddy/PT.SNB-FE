@@ -370,7 +370,8 @@ const RegistrasiPasien = (props) => {
         if(successReg && isAsuransi && newData?.data?.daftarPasien?.norec && isCheckAsuransi){
             let tempValue = {
                 norec:newData.data.daftarPasien.norec,
-                status:'arrived'
+                status:'arrived',
+                statusMutasi:false
             }
             dispatch(upsertEncounter(tempValue))
             navigate(`/registrasi/input-penjamin/${id}/${newData.data.daftarPasien.norec}`);
@@ -380,7 +381,8 @@ const RegistrasiPasien = (props) => {
                 && dispatch(registrasiRuanganNorecGet(newData?.data?.daftarPasien?.norec));
                 let tempValue = {
                     norec:newData?.data?.daftarPasien?.norec,
-                    status:'arrived'
+                    status:'arrived',
+                    statusMutasi:false
                 }
                 dispatch(upsertEncounter(tempValue))
         }

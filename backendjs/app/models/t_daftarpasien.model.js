@@ -199,6 +199,9 @@ export default (sequelize, Sequelize) => {
         },
         ihs_id:{
             type: Sequelize.STRING
+        },
+        ihs_reference:{
+            type: Sequelize.STRING
         }
     }, {
         tableName: "t_daftarpasien", // relation "user" does not exist

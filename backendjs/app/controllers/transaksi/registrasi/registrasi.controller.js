@@ -1431,8 +1431,8 @@ async function saveBatalRegistrasi(req, res) {
 async function getListPasienMutasi(req, res) {
     const logger = res.locals.logger
     try {
-        let start = (new Date(req.query.start)).toISOString();
-        let end = (new Date(req.query.end)).toISOString();
+        let start = formatDate(req.query.start) + ' 00:00'
+        let end = formatDate(req.query.end) + ' 23:59'
         let search = `%${req.query.search}%`
         let instalasi = req.query.instalasi !== '' ? ` and td.objectinstalasifk = '${req.query.instalasi}'` : '';
         let unit = req.query.unit !== '' ? ` and td.objectunitlastfk = '${req.query.unit}'` : '';

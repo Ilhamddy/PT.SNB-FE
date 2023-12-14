@@ -799,6 +799,219 @@ async function tempEncounterDaftar(reqTemp) {
                 return encounterData
 }
 
+async function tempEncounterDaftarRI(reqTemp) {
+    const profile = await pool.query(profileQueries.getAll);
+    const currentDate = new Date();
+    let tempBaseOn=''
+    // if(reqTemp.ihs_nadi!==null){
+    //     tempBaseOn = {basedOn: [
+    //         {
+    //             reference: "ServiceRequest/1e1a260d-538f-4172-ad68-0aa5f8ccfc4a"
+    //         }
+    //     ]}
+    // }
+    const encounterData = {
+        resourceType: "Encounter",
+        identifier: [
+            {
+                system: "http://sys-ids.kemkes.go.id/encounter/"+profile.rows[0].ihs_id,
+                value: reqTemp.noregistrasi
+            }
+        ],
+        status: "in-progress",
+        class: {
+            system: "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            code: "IMP",
+            display: "inpatient encounter"
+        },
+        subject: {
+            reference: "Patient/"+reqTemp.ihs_id,
+            display: reqTemp.namapasien
+        },
+        participant: [
+            {
+                type: [
+                    {
+                        coding: [
+                            {
+                                system: "http://terminology.hl7.org/CodeSystem/v3-ParticipationType",
+                                code: "ATND",
+                                display: "attender"
+                            }
+                        ]
+                    }
+                ],
+                individual: {
+                    reference: "Practitioner/"+reqTemp.ihs_dpjp,
+                    display: reqTemp.namadokter
+                }
+            }
+        ],
+        period: {
+            start: reqTemp.tglregistrasi_ihs
+        },
+        location: [
+            {
+                location: {
+                    reference: "Location/"+reqTemp.ihs_tempattidur,
+                    display: reqTemp.description
+                },
+                extension: [
+                    {
+                        url: "https://fhir.kemkes.go.id/r4/StructureDefinition/ServiceClass",
+                        extension: [
+                            {
+                                url: "value",
+                                valueCodeableConcept: {
+                                    coding: [
+                                        {
+                                            system: "http://terminology.kemkes.go.id/CodeSystem/locationServiceClass-Inpatient",
+                                            code: reqTemp.kelas_bpjs,
+                                            display: reqTemp.namakelas
+                                        }
+                                    ]
+                                }
+                            },
+                            {
+                                url: "upgradeClassIndicator",
+                                valueCodeableConcept: {
+                                    coding: [
+                                        {
+                                            system: "http://terminology.kemkes.go.id/CodeSystem/locationUpgradeClass",
+                                            code: "kelas-tetap",
+                                            display: "Kelas Tetap Perawatan"
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        statusHistory: [
+            {
+                status: "in-progress",
+                period: {
+                    start: reqTemp.tglregistrasi_ihs,
+                }
+            }
+        ],
+        serviceProvider: {
+            reference: "Organization/"+profile.rows[0].ihs_id
+        },
+        ...tempBaseOn
+    };
+    
+                return encounterData
+}
+
+async function tempEncounterDaftarRIMutasi(reqTemp) {
+    const profile = await pool.query(profileQueries.getAll);
+    const currentDate = new Date();
+    let tempBaseOn=''
+  
+    const encounterData = {
+        resourceType: "Encounter",
+        identifier: [
+            {
+                system: "http://sys-ids.kemkes.go.id/encounter/"+profile.rows[0].ihs_id,
+                value: reqTemp.noregistrasi
+            }
+        ],
+        status: "in-progress",
+        class: {
+            system: "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            code: "IMP",
+            display: "inpatient encounter"
+        },
+        subject: {
+            reference: "Patient/"+reqTemp.ihs_id,
+            display: reqTemp.namapasien
+        },
+        participant: [
+            {
+                type: [
+                    {
+                        coding: [
+                            {
+                                system: "http://terminology.hl7.org/CodeSystem/v3-ParticipationType",
+                                code: "ATND",
+                                display: "attender"
+                            }
+                        ]
+                    }
+                ],
+                individual: {
+                    reference: "Practitioner/"+reqTemp.ihs_dpjp,
+                    display: reqTemp.namadokter
+                }
+            }
+        ],
+        period: {
+            start: reqTemp.tglregistrasi_ihs
+        },
+        location: [
+            {
+                location: {
+                    reference: "Location/"+reqTemp.ihs_tempattidur,
+                    display: reqTemp.description
+                },
+                extension: [
+                    {
+                        url: "https://fhir.kemkes.go.id/r4/StructureDefinition/ServiceClass",
+                        extension: [
+                            {
+                                url: "value",
+                                valueCodeableConcept: {
+                                    coding: [
+                                        {
+                                            system: "http://terminology.kemkes.go.id/CodeSystem/locationServiceClass-Inpatient",
+                                            code: reqTemp.kelas_bpjs,
+                                            display: reqTemp.namakelas
+                                        }
+                                    ]
+                                }
+                            },
+                            {
+                                url: "upgradeClassIndicator",
+                                valueCodeableConcept: {
+                                    coding: [
+                                        {
+                                            system: "http://terminology.kemkes.go.id/CodeSystem/locationUpgradeClass",
+                                            code: "kelas-tetap",
+                                            display: "Kelas Tetap Perawatan"
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        statusHistory: [
+            {
+                status: "in-progress",
+                period: {
+                    start: reqTemp.tglregistrasi_ihs,
+                }
+            }
+        ],
+        serviceProvider: {
+            reference: "Organization/"+profile.rows[0].ihs_id
+        }
+        // ,basedOn: [
+        //             {
+        //                 reference: "ServiceRequest/"+reqTemp.ihs_dp
+        //             }
+        //         ]
+    };
+    
+                return encounterData
+}
+
+
 const upsertEncounter = async (req, res) => {
     const logger = res.locals.logger;
     try {
@@ -815,7 +1028,12 @@ const upsertEncounter = async (req, res) => {
             ihs_dpjp,
             namadokter,
             tglregistrasi_ihs,
-            objectinstalasifk
+            objectinstalasifk,
+            ihs_tempattidur,
+            description,
+            namakelas,
+            kelas_bpjs,
+            ihs_reference
         } = profilePasien.rows[0];
 
         const temp = {
@@ -830,21 +1048,35 @@ const upsertEncounter = async (req, res) => {
             namadokter,
             tglregistrasi_ihs,
             norecdp: req.body.norec,
-            tglditerimapoli:tglditerimapoli
+            tglditerimapoli:tglditerimapoli,
+            ihs_tempattidur:ihs_tempattidur,
+            description:description,
+            namakelas:namakelas,
+            kelas_bpjs:kelas_bpjs,
+            ihs_reference:ihs_reference
         };
 
         let encounter = '';
         let url = '/Encounter';
         let method = 'POST';
 
-        const isArrived = ihs_dp === null && req.body.status === 'arrived';
+        let isArrived = ihs_dp === null && req.body.status === 'arrived';
         const isInProgress = ihs_dp !== null && req.body.status === 'in-progress';
-
+        if(objectinstalasifk===2){
+            isArrived=true
+        }
         if (isArrived) {
             if(objectinstalasifk===7){
                 encounter = await tempEncounterIGD(temp);
             }else if(objectinstalasifk===1){
                 encounter = await tempEncounterDaftar(temp);
+            }else if(objectinstalasifk===2){
+                if(req.body.statusMutasi===false){
+                    encounter = await tempEncounterDaftarRI(temp);
+                }else{
+                    encounter = await tempEncounterDaftarRIMutasi(temp);
+                    
+                }
             }else{
                 res.status(500).send({
                     msg: 'Instalasi '+objectinstalasifk+' Belum Terkirim' || 'Gagal',
@@ -865,23 +1097,24 @@ const upsertEncounter = async (req, res) => {
 
         const { setInstalasi } = await db.sequelize.transaction(async (transaction) => {
             let setInstalasiResult = '';
-
+          
             if (response.resourceType === 'Encounter' && ihs_dp === null) {
-                setInstalasiResult = await db.t_daftarpasien.update(
-                    {
-                        ihs_id: response.id,
-                    },
-                    {
-                        where: {
-                            norec: req.body.norec,
-                        },
-                        transaction,
-                    }
-                );
+              if (req.body.statusMutasi === true) {
+                setInstalasiResult = await db.t_daftarpasien.update({ ihs_id: response.id,ihs_reference: ihs_reference}, {
+                    where: { norec: req.body.norec },
+                    transaction,
+                  });
+              }else{
+                setInstalasiResult = await db.t_daftarpasien.update({ ihs_id: response.id }, {
+                    where: { norec: req.body.norec },
+                    transaction,
+                  });
+              }
             }
-
+          
             return { setInstalasi: setInstalasiResult };
-        });
+          });
+          
 
         const tempres = {
             encounter: response,
@@ -905,7 +1138,6 @@ const upsertEncounter = async (req, res) => {
         });
     }
 };
-
 
 async function tempConditionPrimary(reqTemp) {
     const profile = await pool.query(profileQueries.getAll);
@@ -2042,24 +2274,24 @@ const upsertLocationTempatTidur = async (req, res) => {
         };
         
         
-        // const response = await postGetSatuSehat('POST', '/Location', locationObject);
-        // const { setInstalasi } = await db.sequelize.transaction(async (transaction) => {
-        //     let setInstalasi = ''
-        //         setInstalasi = await db.m_kamar.update({
-        //             ihs_id: response.id,
-        //         }, {
-        //             where: {
-        //                 id: req.body.id
-        //             },
-        //             transaction: transaction
-        //         });
+        const response = await postGetSatuSehat('POST', '/Location', locationObject);
+        const { setInstalasi } = await db.sequelize.transaction(async (transaction) => {
+            let setInstalasi = ''
+                setInstalasi = await db.m_tempattidur.update({
+                    ihs_id: response.id,
+                }, {
+                    where: {
+                        id: req.body.id
+                    },
+                    transaction: transaction
+                });
             
-        //     return { setInstalasi }
-        // });
+            return { setInstalasi }
+        });
 
         const tempres = {
-            // unit:setInstalasi,
-            // response:response
+            tempattidur:setInstalasi,
+            response:response
         };
         res.status(200).send({
             msg: 'Sukses',

@@ -14,13 +14,19 @@ trm.tglditerimapoli end as tglditerimapoli,
 mu.ihs_id as ihs_unit,dp.tglpulang,mp2.ihs_id as ihs_dpjp,mp2.namalengkap as namadokter,mu.objectinstalasifk,
 to_char( mp.tgllahir, TO_CHAR(age( mp.tgllahir,  now( )), 'YY')) AS tahun,
 to_char( mp.tgllahir, TO_CHAR(age( mp.tgllahir,  now( )), 'mm')) AS bulan,
-to_char( mp.tgllahir, TO_CHAR(age( mp.tgllahir,  now( )), 'DD')) AS hari
+to_char( mp.tgllahir, TO_CHAR(age( mp.tgllahir,  now( )), 'DD')) AS hari,
+'Bed '||mt.reportdisplay  ||' Kamar '||mk.namakamar ||', '||mi.namainstalasi ||', '||mk2.namakelas as description,
+mt.ihs_id as ihs_tempattidur,mk2.namakelas,mk2.kelas_bpjs,dp.ihs_reference
         FROM t_daftarpasien dp 
-join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk=dp.norec
+join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk=dp.norec and ta.objectunitfk=dp.objectunitlastfk
 join m_unit mu on mu.id=ta.objectunitfk
 join m_pasien mp on mp.id=dp.nocmfk
 left join t_rm_lokasidokumen trm on trm.objectantreanpemeriksaanfk=ta.norec 
 left join m_pegawai mp2 on mp2.id=ta.objectdokterpemeriksafk
+left join m_kamar mk on mk.id=ta.objectkamarfk
+left join m_tempattidur mt on mt.id=ta.nobed 
+join m_instalasi mi on mi.id=mu.objectinstalasifk
+left join m_kelas mk2 on mk2.id=mk.objectkelasfk
 where dp.norec=$1`
 
 const qListDiagnosa = `SELECT row_number() OVER (ORDER BY td.norec) AS no,dp.noregistrasi,
