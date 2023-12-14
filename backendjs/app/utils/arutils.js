@@ -16,17 +16,20 @@
  * const hasil = [{
  * class: "A", 
  * name: "a", 
- * values: [
+ * _total: 2
+ * _values: [
  *  {id: 1, name: "a", class: "A"}, 
  *  {id: 2, name: "b", class: "A"}]
  * },
  * {
  * class: "B",
  * name: "c",
- * values: [
+ * _total: 2
+ * _values: [
  *  {id: 3, name: "c", class: "B"},
  *  {id: 4, name: "d", class: "B"}]
- * }
+ * },
+
  * 
  * @param {any[]} ar array yang ingin digrupkan
  * @param {string | (item: object) => string} key key yang ingin digrupkan

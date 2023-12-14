@@ -38,8 +38,8 @@ export default function (app) {
     )
 
     app.get(
-        "/api/system/send-mail",
+        "/api/system/send-whatsapp",
         [],
-        controller.sendMail
+        controller.sendWhatsapp
     )
 }
