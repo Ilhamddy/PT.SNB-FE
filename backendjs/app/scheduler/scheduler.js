@@ -147,8 +147,11 @@ const scheduledTask = schedule.scheduleJob('40 * * * *', async function () {
     }
 });
 
+/**
+ * TODO: kasih dokumentasi
+ */
 let timesKirimWA = [
-    {hour: 16, minute: 32}, 
+    {hour: 6, minute: 0}, 
 ];
 timesKirimWA.forEach(function(time) {
     let j = schedule.scheduleJob(time, async function() {
