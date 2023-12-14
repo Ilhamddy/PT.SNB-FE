@@ -64,4 +64,24 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.upsertObservation
     )
+    app.get(
+        "/api/transaksi/satu-sehat/get-list-kamar",
+        [authJwt.verifyToken],
+        controller.getListKamar
+    );
+    app.post(
+        "/api/transaksi/satu-sehat/upsert-location-kamar",
+        [authJwt.verifyToken],
+        controller.updateLocationKamar
+    )
+    app.get(
+        "/api/transaksi/satu-sehat/get-list-tempattidur",
+        [authJwt.verifyToken],
+        controller.getListTempatTidur
+    );
+    app.post(
+        "/api/transaksi/satu-sehat/upsert-location-tempattidur",
+        [authJwt.verifyToken],
+        controller.upsertLocationTempatTidur
+    )
 }

@@ -63,6 +63,9 @@ export default (sequelize, Sequelize) => {
         objectspesialisfk: {
             type: Sequelize.INTEGER
         },
+        ihs_id:{
+            type: Sequelize.STRING
+        }
     }, {
         tableName: "m_kamar",
         createdAt: false,

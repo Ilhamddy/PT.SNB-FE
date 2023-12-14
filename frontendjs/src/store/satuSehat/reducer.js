@@ -9,7 +9,11 @@ import {
     UPSERT_ENCOUNTER,UPSERT_ENCOUNTER_SUCCESS,UPSERT_ENCOUNTER_ERROR,
     UPSERT_CONDITION,UPSERT_CONDITION_SUCCESS,UPSERT_CONDITION_ERROR,
     UPSERT_ENCOUNTER_PULANG,UPSERT_ENCOUNTER_PULANG_ERROR,UPSERT_ENCOUNTER_PULANG_SUCCESS,
-    UPSERT_OBSERVATION,UPSERT_OBSERVATION_SUCCESS,UPSERT_OBSERVATION_ERROR
+    UPSERT_OBSERVATION,UPSERT_OBSERVATION_SUCCESS,UPSERT_OBSERVATION_ERROR,
+    GET_LIST_KAMAR,GET_LIST_KAMAR_SUCCESS,GET_LIST_KAMAR_ERROR,
+    UPSERT_LOCATION_KAMAR,UPSERT_LOCATION_KAMAR_SUCCESS,UPSERT_LOCATION_KAMAR_ERROR,
+    GET_LIST_TEMPATTIDUR,GET_LIST_TEMPATTIDUR_SUCCESS,GET_LIST_TEMPATTIDUR_ERROR,
+    UPSERT_LOCATION_TEMPATTIDUR,UPSERT_LOCATION_TEMPATTIDUR_SUCCESS,UPSERT_LOCATION_TEMPATTIDUR_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -64,6 +68,26 @@ const INIT_STATE = {
         error: null,
     },
     upsertObservation:{
+        data: [],
+        loading: false,
+        error: null,
+    },
+    getListKamar:{
+        data: [],
+        loading: false,
+        error: null,
+    },
+    upsertLocationKamar:{
+        data: [],
+        loading: false,
+        error: null,
+    },
+    getListTempatTidur:{
+        data: [],
+        loading: false,
+        error: null,
+    },
+    upsertLocationTempatTidur:{
         data: [],
         loading: false,
         error: null,
@@ -429,6 +453,138 @@ const SatuSehat = (state = INIT_STATE, action) => {
                 ...state,
                 upsertObservation: {
                     ...state.upsertObservation,
+                    loading: true,
+                    error: action.payload,
+                }
+            }
+        }
+
+        case GET_LIST_KAMAR: {
+            return {
+                ...state,
+                getListKamar: {
+                    ...state.getListKamar,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case GET_LIST_KAMAR_SUCCESS: {
+            return {
+                ...state,
+                getListKamar: {
+                    ...state.getListKamar,
+                    loading: false,
+                    data: action.payload,
+                }
+            }
+        }
+
+        case GET_LIST_KAMAR_ERROR: {
+            return {
+                ...state,
+                getListKamar: {
+                    ...state.getListKamar,
+                    loading: false,
+                    error: action.payload,
+                }
+            }
+        }
+
+        case UPSERT_LOCATION_KAMAR: {
+            return {
+                ...state,
+                upsertLocationKamar: {
+                    ...state.upsertLocationKamar,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case UPSERT_LOCATION_KAMAR_SUCCESS: {
+            return {
+                ...state,
+                upsertLocationKamar: {
+                    ...state.upsertLocationKamar,
+                    loading: false,
+                    data: action.payload,
+                }
+            }
+        }
+
+        case UPSERT_LOCATION_KAMAR_ERROR: {
+            return {
+                ...state,
+                upsertLocationKamar: {
+                    ...state.upsertLocationKamar,
+                    loading: true,
+                    error: action.payload,
+                }
+            }
+        }
+
+        case GET_LIST_TEMPATTIDUR: {
+            return {
+                ...state,
+                getListTempatTidur: {
+                    ...state.getListTempatTidur,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case GET_LIST_TEMPATTIDUR_SUCCESS: {
+            return {
+                ...state,
+                getListTempatTidur: {
+                    ...state.getListTempatTidur,
+                    loading: false,
+                    data: action.payload,
+                }
+            }
+        }
+
+        case GET_LIST_TEMPATTIDUR_ERROR: {
+            return {
+                ...state,
+                getListTempatTidur: {
+                    ...state.getListTempatTidur,
+                    loading: false,
+                    error: action.payload,
+                }
+            }
+        }
+
+        case UPSERT_LOCATION_TEMPATTIDUR: {
+            return {
+                ...state,
+                upsertLocationTempatTidur: {
+                    ...state.upsertLocationTempatTidur,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case UPSERT_LOCATION_TEMPATTIDUR_SUCCESS: {
+            return {
+                ...state,
+                upsertLocationTempatTidur: {
+                    ...state.upsertLocationTempatTidur,
+                    loading: false,
+                    data: action.payload,
+                }
+            }
+        }
+
+        case UPSERT_LOCATION_TEMPATTIDUR_ERROR: {
+            return {
+                ...state,
+                upsertLocationTempatTidur: {
+                    ...state.upsertLocationTempatTidur,
                     loading: true,
                     error: action.payload,
                 }

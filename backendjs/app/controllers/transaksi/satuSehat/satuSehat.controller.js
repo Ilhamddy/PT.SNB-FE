@@ -5,7 +5,15 @@ import unitQueries from "../../../queries/mastertable/unit/unit.queries";
 import profileQueries from "../../../queries/mastertable/profile/profile.queries";
 import pegawaiQueries from "../../../queries/mastertable/pegawai/pegawai.queries";
 import satuSehatQueries from "../../../queries/satuSehat/satuSehat.queries";
+import kamarQueries from "../../../queries/mastertable/kamar/kamar.queries";
+import tempattidurQueries from "../../../queries/mastertable/tempattidur/tempattidur.queries";
 import axios from "axios";
+
+async function getCurrentDateAsync() {
+    const currentDate = new Date();
+    const utcDateString = currentDate.toLocaleString('en-US', { timeZone: 'UTC' });
+    return new Date(utcDateString);
+  }
 
 async function setEnvironmments () {
 
@@ -259,7 +267,12 @@ const updateLocationUnit = async (req, res) => {
     const logger = res.locals.logger;
     try {
         const profile = await pool.query(profileQueries.getAll);
-
+        let code = 'ro'
+        let display ='Room'
+        if(req.body.objectinstalasifk===2){
+            code = 'wa'
+            display ='Ward'
+        }
         const locationObject = {
             resourceType: "Location",
             identifier: [{
@@ -327,8 +340,8 @@ const updateLocationUnit = async (req, res) => {
                 coding: [
                     {
                         system: "http://terminology.hl7.org/CodeSystem/location-physical-type",
-                        code: "ro",
-                        display: "Room"
+                        code: code,
+                        display: display
                     }
                 ]
             },
@@ -786,6 +799,219 @@ async function tempEncounterDaftar(reqTemp) {
                 return encounterData
 }
 
+async function tempEncounterDaftarRI(reqTemp) {
+    const profile = await pool.query(profileQueries.getAll);
+    const currentDate = new Date();
+    let tempBaseOn=''
+    // if(reqTemp.ihs_nadi!==null){
+    //     tempBaseOn = {basedOn: [
+    //         {
+    //             reference: "ServiceRequest/1e1a260d-538f-4172-ad68-0aa5f8ccfc4a"
+    //         }
+    //     ]}
+    // }
+    const encounterData = {
+        resourceType: "Encounter",
+        identifier: [
+            {
+                system: "http://sys-ids.kemkes.go.id/encounter/"+profile.rows[0].ihs_id,
+                value: reqTemp.noregistrasi
+            }
+        ],
+        status: "in-progress",
+        class: {
+            system: "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            code: "IMP",
+            display: "inpatient encounter"
+        },
+        subject: {
+            reference: "Patient/"+reqTemp.ihs_id,
+            display: reqTemp.namapasien
+        },
+        participant: [
+            {
+                type: [
+                    {
+                        coding: [
+                            {
+                                system: "http://terminology.hl7.org/CodeSystem/v3-ParticipationType",
+                                code: "ATND",
+                                display: "attender"
+                            }
+                        ]
+                    }
+                ],
+                individual: {
+                    reference: "Practitioner/"+reqTemp.ihs_dpjp,
+                    display: reqTemp.namadokter
+                }
+            }
+        ],
+        period: {
+            start: reqTemp.tglregistrasi_ihs
+        },
+        location: [
+            {
+                location: {
+                    reference: "Location/"+reqTemp.ihs_tempattidur,
+                    display: reqTemp.description
+                },
+                extension: [
+                    {
+                        url: "https://fhir.kemkes.go.id/r4/StructureDefinition/ServiceClass",
+                        extension: [
+                            {
+                                url: "value",
+                                valueCodeableConcept: {
+                                    coding: [
+                                        {
+                                            system: "http://terminology.kemkes.go.id/CodeSystem/locationServiceClass-Inpatient",
+                                            code: reqTemp.kelas_bpjs,
+                                            display: reqTemp.namakelas
+                                        }
+                                    ]
+                                }
+                            },
+                            {
+                                url: "upgradeClassIndicator",
+                                valueCodeableConcept: {
+                                    coding: [
+                                        {
+                                            system: "http://terminology.kemkes.go.id/CodeSystem/locationUpgradeClass",
+                                            code: "kelas-tetap",
+                                            display: "Kelas Tetap Perawatan"
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        statusHistory: [
+            {
+                status: "in-progress",
+                period: {
+                    start: reqTemp.tglregistrasi_ihs,
+                }
+            }
+        ],
+        serviceProvider: {
+            reference: "Organization/"+profile.rows[0].ihs_id
+        },
+        ...tempBaseOn
+    };
+    
+                return encounterData
+}
+
+async function tempEncounterDaftarRIMutasi(reqTemp) {
+    const profile = await pool.query(profileQueries.getAll);
+    const currentDate = new Date();
+    let tempBaseOn=''
+  
+    const encounterData = {
+        resourceType: "Encounter",
+        identifier: [
+            {
+                system: "http://sys-ids.kemkes.go.id/encounter/"+profile.rows[0].ihs_id,
+                value: reqTemp.noregistrasi
+            }
+        ],
+        status: "in-progress",
+        class: {
+            system: "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            code: "IMP",
+            display: "inpatient encounter"
+        },
+        subject: {
+            reference: "Patient/"+reqTemp.ihs_id,
+            display: reqTemp.namapasien
+        },
+        participant: [
+            {
+                type: [
+                    {
+                        coding: [
+                            {
+                                system: "http://terminology.hl7.org/CodeSystem/v3-ParticipationType",
+                                code: "ATND",
+                                display: "attender"
+                            }
+                        ]
+                    }
+                ],
+                individual: {
+                    reference: "Practitioner/"+reqTemp.ihs_dpjp,
+                    display: reqTemp.namadokter
+                }
+            }
+        ],
+        period: {
+            start: reqTemp.tglregistrasi_ihs
+        },
+        location: [
+            {
+                location: {
+                    reference: "Location/"+reqTemp.ihs_tempattidur,
+                    display: reqTemp.description
+                },
+                extension: [
+                    {
+                        url: "https://fhir.kemkes.go.id/r4/StructureDefinition/ServiceClass",
+                        extension: [
+                            {
+                                url: "value",
+                                valueCodeableConcept: {
+                                    coding: [
+                                        {
+                                            system: "http://terminology.kemkes.go.id/CodeSystem/locationServiceClass-Inpatient",
+                                            code: reqTemp.kelas_bpjs,
+                                            display: reqTemp.namakelas
+                                        }
+                                    ]
+                                }
+                            },
+                            {
+                                url: "upgradeClassIndicator",
+                                valueCodeableConcept: {
+                                    coding: [
+                                        {
+                                            system: "http://terminology.kemkes.go.id/CodeSystem/locationUpgradeClass",
+                                            code: "kelas-tetap",
+                                            display: "Kelas Tetap Perawatan"
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        statusHistory: [
+            {
+                status: "in-progress",
+                period: {
+                    start: reqTemp.tglregistrasi_ihs,
+                }
+            }
+        ],
+        serviceProvider: {
+            reference: "Organization/"+profile.rows[0].ihs_id
+        }
+        // ,basedOn: [
+        //             {
+        //                 reference: "ServiceRequest/"+reqTemp.ihs_dp
+        //             }
+        //         ]
+    };
+    
+                return encounterData
+}
+
+
 const upsertEncounter = async (req, res) => {
     const logger = res.locals.logger;
     try {
@@ -802,7 +1028,12 @@ const upsertEncounter = async (req, res) => {
             ihs_dpjp,
             namadokter,
             tglregistrasi_ihs,
-            objectinstalasifk
+            objectinstalasifk,
+            ihs_tempattidur,
+            description,
+            namakelas,
+            kelas_bpjs,
+            ihs_reference
         } = profilePasien.rows[0];
 
         const temp = {
@@ -817,21 +1048,35 @@ const upsertEncounter = async (req, res) => {
             namadokter,
             tglregistrasi_ihs,
             norecdp: req.body.norec,
-            tglditerimapoli:tglditerimapoli
+            tglditerimapoli:tglditerimapoli,
+            ihs_tempattidur:ihs_tempattidur,
+            description:description,
+            namakelas:namakelas,
+            kelas_bpjs:kelas_bpjs,
+            ihs_reference:ihs_reference
         };
 
         let encounter = '';
         let url = '/Encounter';
         let method = 'POST';
 
-        const isArrived = ihs_dp === null && req.body.status === 'arrived';
+        let isArrived = ihs_dp === null && req.body.status === 'arrived';
         const isInProgress = ihs_dp !== null && req.body.status === 'in-progress';
-
+        if(objectinstalasifk===2){
+            isArrived=true
+        }
         if (isArrived) {
             if(objectinstalasifk===7){
                 encounter = await tempEncounterIGD(temp);
             }else if(objectinstalasifk===1){
                 encounter = await tempEncounterDaftar(temp);
+            }else if(objectinstalasifk===2){
+                if(req.body.statusMutasi===false){
+                    encounter = await tempEncounterDaftarRI(temp);
+                }else{
+                    encounter = await tempEncounterDaftarRIMutasi(temp);
+                    
+                }
             }else{
                 res.status(500).send({
                     msg: 'Instalasi '+objectinstalasifk+' Belum Terkirim' || 'Gagal',
@@ -852,23 +1097,24 @@ const upsertEncounter = async (req, res) => {
 
         const { setInstalasi } = await db.sequelize.transaction(async (transaction) => {
             let setInstalasiResult = '';
-
+          
             if (response.resourceType === 'Encounter' && ihs_dp === null) {
-                setInstalasiResult = await db.t_daftarpasien.update(
-                    {
-                        ihs_id: response.id,
-                    },
-                    {
-                        where: {
-                            norec: req.body.norec,
-                        },
-                        transaction,
-                    }
-                );
+              if (req.body.statusMutasi === true) {
+                setInstalasiResult = await db.t_daftarpasien.update({ ihs_id: response.id,ihs_reference: ihs_reference}, {
+                    where: { norec: req.body.norec },
+                    transaction,
+                  });
+              }else{
+                setInstalasiResult = await db.t_daftarpasien.update({ ihs_id: response.id }, {
+                    where: { norec: req.body.norec },
+                    transaction,
+                  });
+              }
             }
-
+          
             return { setInstalasi: setInstalasiResult };
-        });
+          });
+          
 
         const tempres = {
             encounter: response,
@@ -892,7 +1138,6 @@ const upsertEncounter = async (req, res) => {
         });
     }
 };
-
 
 async function tempConditionPrimary(reqTemp) {
     const profile = await pool.query(profileQueries.getAll);
@@ -1346,11 +1591,309 @@ async function tempObservationNadi(reqTemp) {
         effectiveDateTime: reqTemp.datenow,
         issued: reqTemp.datenow,
         valueQuantity: {
-            value: reqTemp.nadi,
+            value: reqTemp.nilai,
             unit: "beats/minute",
             system: "http://unitsofmeasure.org",
             code: "/min"
         },
+        interpretation: [
+            {
+                coding: [
+                    {
+                        system: "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
+                        code: reqTemp.codenadi,
+                        display: reqTemp.displaynadi
+                    }
+                ],
+                text: reqTemp.teksnadi
+            }
+        ],
+        ...tempIdNadi
+    };
+                return observationData
+}
+
+async function tempObservationPernafasan(reqTemp) {
+    const profile = await pool.query(profileQueries.getAll);
+    const currentDate = new Date();
+    let tempIdNadi=''
+    if(reqTemp.ihs_pernafasan!==null){
+        tempIdNadi = {'id':reqTemp.ihs_pernafasan}
+    }
+    const observationData = {
+        resourceType: "Observation",
+        status: "final",
+        category: [
+            {
+                coding: [
+                    {
+                        system: "http://terminology.hl7.org/CodeSystem/observation-category",
+                        code: "vital-signs",
+                        display: "Vital Signs"
+                    }
+                ]
+            }
+        ],
+        code: {
+            coding: [
+                {
+                    system: "http://loinc.org",
+                    code: "9279-1",
+                    display: "Respiratory rate"
+                }
+            ]
+        },
+        subject: {
+            reference: "Patient/"+reqTemp.ihs_id,
+        },
+        performer: [
+            {
+                reference: "Practitioner/"+reqTemp.ihs_dpjp,
+            }
+        ],
+        encounter: {
+            reference: "Encounter/"+reqTemp.ihs_dp,
+            display: "Pemeriksaan Fisik Pernafasan "+reqTemp.namapasien
+        },
+        effectiveDateTime: reqTemp.datenow,
+        issued: reqTemp.datenow,
+        valueQuantity: {
+            value: reqTemp.nilai,
+            unit: "beats/minute",
+            system: "http://unitsofmeasure.org",
+            code: "/min"
+        },
+        interpretation: [
+            {
+                coding: [
+                    {
+                        system: "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
+                        code: reqTemp.codepernapasan,
+                        display: reqTemp.displaypernapasan
+                    }
+                ],
+                text: reqTemp.tekspernapasan
+            }
+        ],
+        ...tempIdNadi
+    };
+                return observationData
+}
+
+async function tempObservationSuhu(reqTemp) {
+    const profile = await pool.query(profileQueries.getAll);
+    const currentDate = new Date();
+    let tempIdNadi=''
+    if(reqTemp.ihs_suhu!==null){
+        tempIdNadi = {'id':reqTemp.ihs_suhu}
+    }
+    const observationData = {
+        resourceType: "Observation",
+        status: "final",
+        category: [
+            {
+                coding: [
+                    {
+                        system: "http://terminology.hl7.org/CodeSystem/observation-category",
+                        code: "vital-signs",
+                        display: "Vital Signs"
+                    }
+                ]
+            }
+        ],
+        code: {
+            coding: [
+                {
+                    system: "http://loinc.org",
+                    code: "8310-5",
+                    display: "Body temperature"
+                }
+            ]
+        },
+        subject: {
+            reference: "Patient/"+reqTemp.ihs_id,
+        },
+        performer: [
+            {
+                reference: "Practitioner/"+reqTemp.ihs_dpjp,
+            }
+        ],
+        encounter: {
+            reference: "Encounter/"+reqTemp.ihs_dp,
+            display: "Pemeriksaan Fisik Suhu "+reqTemp.namapasien
+        },
+        effectiveDateTime: reqTemp.datenow,
+        issued: reqTemp.datenow,
+        valueQuantity: {
+            value: reqTemp.nilai,
+            unit: "C",
+            system: "http://unitsofmeasure.org",
+            code: "Cel"
+        },
+        interpretation: [
+            {
+                coding: [
+                    {
+                        system: "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
+                        code: reqTemp.codesuhu,
+                        display: reqTemp.displaysuhu
+                    }
+                ],
+                text: reqTemp.tekssuhu
+            }
+        ],
+        ...tempIdNadi
+    };
+                return observationData
+}
+
+async function tempObservationSistole(reqTemp) {
+    const profile = await pool.query(profileQueries.getAll);
+    const currentDate = new Date();
+    let tempIdNadi=''
+    if(reqTemp.ihs_sistole!==null){
+        tempIdNadi = {'id':reqTemp.ihs_sistole}
+    }
+    const observationData = {
+        resourceType: "Observation",
+        status: "final",
+        category: [
+            {
+                coding: [
+                    {
+                        system: "http://terminology.hl7.org/CodeSystem/observation-category",
+                        code: "vital-signs",
+                        display: "Vital Signs"
+                    }
+                ]
+            }
+        ],
+        code: {
+            coding: [
+                {
+                    system: "http://loinc.org",
+                    code: "8480-6",
+                    display: "Systolic blood pressure"
+                }
+            ]
+        },
+        subject: {
+            reference: "Patient/"+reqTemp.ihs_id,
+        },
+        performer: [
+            {
+                reference: "Practitioner/"+reqTemp.ihs_dpjp,
+            }
+        ],
+        encounter: {
+            reference: "Encounter/"+reqTemp.ihs_dp,
+            display: "Pemeriksaan Fisik Sistolik "+reqTemp.namapasien
+        },
+        effectiveDateTime: reqTemp.datenow,
+        issued: reqTemp.datenow,
+        bodySite: {
+            coding: [
+                {
+                    system: "http://snomed.info/sct",
+                    code: "368209003",
+                    display: "Right arm"
+                }
+            ]
+        },
+        valueQuantity: {
+            value: reqTemp.nilai,
+            unit: "mm[Hg]",
+            system: "http://unitsofmeasure.org",
+            code: "mm[Hg]"
+        },
+        interpretation: [
+            {
+                coding: [
+                    {
+                        system: "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
+                        code: reqTemp.codesistol,
+                        display: reqTemp.displaysistol
+                    }
+                ],
+                text: reqTemp.tekssistol
+            }
+        ],
+        ...tempIdNadi
+    };
+                return observationData
+}
+
+async function tempObservationDiastole(reqTemp) {
+    const profile = await pool.query(profileQueries.getAll);
+    const currentDate = new Date();
+    let tempIdNadi=''
+    if(reqTemp.ihs_diastole!==null){
+        tempIdNadi = {'id':reqTemp.ihs_diastole}
+    }
+    const observationData = {
+        resourceType: "Observation",
+        status: "final",
+        category: [
+            {
+                coding: [
+                    {
+                        system: "http://terminology.hl7.org/CodeSystem/observation-category",
+                        code: "vital-signs",
+                        display: "Vital Signs"
+                    }
+                ]
+            }
+        ],
+        code: {
+            coding: [
+                {
+                    system: "http://loinc.org",
+                    code: "8462-4",
+                    display: "Diastolic blood pressure"
+                }
+            ]
+        },
+        subject: {
+            reference: "Patient/"+reqTemp.ihs_id,
+        },
+        performer: [
+            {
+                reference: "Practitioner/"+reqTemp.ihs_dpjp,
+            }
+        ],
+        encounter: {
+            reference: "Encounter/"+reqTemp.ihs_dp,
+            display: "Pemeriksaan Fisik Diastolik "+reqTemp.namapasien
+        },
+        effectiveDateTime: reqTemp.datenow,
+        issued: reqTemp.datenow,
+        bodySite: {
+            coding: [
+                {
+                    system: "http://snomed.info/sct",
+                    code: "368209003",
+                    display: "Right arm"
+                }
+            ]
+        },
+        valueQuantity: {
+            value: reqTemp.nilai,
+            unit: "mm[Hg]",
+            system: "http://unitsofmeasure.org",
+            code: "mm[Hg]"
+        },
+        interpretation: [
+            {
+                coding: [
+                    {
+                        system: "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
+                        code: reqTemp.codediastol,
+                        display: reqTemp.displaydiastol
+                    }
+                ],
+                text: reqTemp.teksdiastol
+            }
+        ],
         ...tempIdNadi
     };
                 return observationData
@@ -1358,70 +1901,397 @@ async function tempObservationNadi(reqTemp) {
 
 const upsertObservation = async (req, res) => {
     const logger = res.locals.logger;
-    try{
-        const currentDate = new Date();
+    try {
+        const currentDate = await getCurrentDateAsync();
         const profilePasien = await pool.query(satuSehatQueries.qGetDataPasienByNorecDpTrm, [req.body.norecdp]);
-
-        const {
-            ihs_dp,
-            ihs_pasien,
-            namapasien,
-            noregistrasi,
-            tglpulang,
-            ihs_unit,
-            tglditerimapoli,
-            ihs_dpjp,
-            namadokter,
-            tglregistrasi_ihs,
-            objectinstalasifk
-        } = profilePasien.rows[0];
-
+        const dataTTV = await pool.query(satuSehatQueries.qDataTTVByNorec, [req.body.norec]);
+        const resdataTTV = await dataTTV.rows[0];
+        const patientData =await profilePasien.rows[0];
         const temp = {
-            ihs_dp,
-            ihs_id: ihs_pasien,
-            namapasien,
-            noregistrasi,
-            tglpulang,
-            ihs_unit,
-            tglditerimapoli,
-            ihs_dpjp,
-            namadokter,
-            tglregistrasi_ihs,
-            norecdp: req.body.norec,
-            tglditerimapoli:tglditerimapoli,
-            datenow:currentDate,
-            nadi:req.body.nadi,
-            ihs_nadi:req.body.ihs_nadi
+            ihs_dp: patientData.ihs_dp,
+            ihs_id: patientData.ihs_pasien,
+            namapasien: patientData.namapasien,
+            noregistrasi: patientData.noregistrasi,
+            tglpulang: patientData.tglpulang,
+            ihs_unit: patientData.ihs_unit,
+            tglditerimapoli: patientData.tglditerimapoli,
+            ihs_dpjp: patientData.ihs_dpjp,
+            namadokter: patientData.namadokter,
+            tglregistrasi_ihs: patientData.tglregistrasi_ihs,
+            norecdp: req.body.norecdp,
+            tglditerimapoli: patientData.tglditerimapoli,
+            datenow: currentDate,//patientData.datenow,
+            nilai: parseFloat(req.body.nilai),
+            ihs_nadi: req.body.ihs_nadi,
+            ihs_pernafasan: req.body.ihs_pernafasan,
+            ihs_suhu: req.body.ihs_suhu,
+            ihs_sistole:req.body.ihs_sistole,
+            ihs_diastole:req.body.ihs_diastole,
+            codenadi:resdataTTV.codenadi,
+            displaynadi:resdataTTV.displaynadi,
+            teksnadi:resdataTTV.teksnadi,
+            codepernapasan:resdataTTV.codepernapasan,
+            displaypernapasan:resdataTTV.displaypernapasan,
+            tekspernapasan:resdataTTV.tekspernapasan,
+            codesuhu:resdataTTV.codesuhu,
+            displaysuhu:resdataTTV.displaysuhu,
+            tekssuhu:resdataTTV.tekssuhu,
+            codesistol:resdataTTV.codesistol,
+            displaysistol:resdataTTV.displaysistol,
+            tekssistol:resdataTTV.tekssistol,
+            codediastol:resdataTTV.codediastol,
+            displaydiastol:resdataTTV.displaydiastol,
+            teksdiastol:resdataTTV.teksdiastol,
         };
-        let observation=''
+
         let url = '/Observation';
         let method = 'POST';
-        if(req.body.status==='nadi'){
-            if(req.body.ihs_nadi!==null){
-                url = '/Observation/'+req.body.ihs_nadi;
+        let observation = '';
+
+        if (req.body.status === 'nadi') {
+            if(req.body.ihs_nadi !== null){
+                url = `/Observation/${req.body.ihs_nadi}`;
                 method = 'PUT';
             }
-            observation = await tempObservationNadi(temp)
+            observation = await tempObservationNadi(temp);
+        } else if (req.body.status === 'pernafasan') {
+            if(req.body.ihs_pernafasan !== null){
+                url = `/Observation/${req.body.ihs_pernafasan}`;
+                method = 'PUT';
+            }
+            observation = await tempObservationPernafasan(temp);
+        } else if (req.body.status === 'suhu') {
+            if(req.body.ihs_suhu !== null){
+                url = `/Observation/${req.body.ihs_suhu}`;
+                method = 'PUT';
+            }
+            observation = await tempObservationSuhu(temp);
+        } else if (req.body.status === 'sistole') {
+            if(req.body.ihs_sistole !== null){
+                url = `/Observation/${req.body.ihs_sistole}`;
+                method = 'PUT';
+            }
+            observation = await tempObservationSistole(temp);
+        } else if (req.body.status === 'diastole') {
+            if(req.body.ihs_diastole !== null){
+                url = `/Observation/${req.body.ihs_diastole}`;
+                method = 'PUT';
+            }
+            observation = await tempObservationDiastole(temp);
         }
-        let response = await postGetSatuSehat(method, url,observation);
+        // res.status(200).send({
+        //     msg: 'Sukses',
+        //     code: 200,
+        //     data: { observation },
+        //     success: true,
+        // });
+        // return
+        let response = await postGetSatuSehat(method, url, observation);
+
+        const setInstalasi = await db.sequelize.transaction(async (transaction) => {
+            let setInstalasi = '';
+
+            if (response.resourceType === 'Observation') {
+                if (req.body.status === 'nadi') {
+                    setInstalasi = await db.t_ttv.update({ ihs_nadi: response.id,status_ihs_nadi:true }, { where: { norec: req.body.norec }, transaction });
+                } else if (req.body.status === 'pernafasan') {
+                    setInstalasi = await db.t_ttv.update({ ihs_pernapasan: response.id,status_ihs_pernapasan:true }, { where: { norec: req.body.norec }, transaction });
+                } else if (req.body.status === 'suhu') {
+                    setInstalasi = await db.t_ttv.update({ ihs_suhu: response.id,status_ihs_suhu:true }, { where: { norec: req.body.norec }, transaction });
+                } else if (req.body.status === 'sistole') {
+                    setInstalasi = await db.t_ttv.update({ ihs_sistole: response.id,status_ihs_sistole:true }, { where: { norec: req.body.norec }, transaction });
+                } else if (req.body.status === 'diastole') {
+                    setInstalasi = await db.t_ttv.update({ ihs_diastole: response.id,status_ihs_diastole:true }, { where: { norec: req.body.norec }, transaction });
+                }
+            }
+
+            return setInstalasi;
+        });
+
+        res.status(200).send({
+            msg: 'Sukses',
+            code: 200,
+            data: { observation, instalasi: setInstalasi },
+            success: true,
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message || 'Gagal',
+            code: 500,
+            data: error,
+            success: false,
+        });
+    }
+};
+
+const getListKamar = async (req, res) => {
+    const logger = res.locals.logger;
+    try {
+        const unit = await pool.query(kamarQueries.qGetKamarIhs)
+       
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: unit.rows,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+const updateLocationKamar = async (req, res) => {
+    const logger = res.locals.logger;
+    try {
+        const profile = await pool.query(profileQueries.getAll);
+        let code = 'ro'
+        let display ='Room'
+      
+        const locationObject = {
+            resourceType: "Location",
+            identifier: [{
+                    system: "http://sys-ids.kemkes.go.id/location/"+profile.rows[0].ihs_id,
+                    value: String(req.body.id)
+                }
+            ],
+            status: "active",
+            name: req.body.label,
+            description: req.body.description,
+            mode: "instance",
+            telecom: [{
+                    system: "phone",
+                    value: profile.rows[0].fixedphone,
+                    use: "work"
+                },{
+                    system: "fax",
+                    value: "2329",
+                    use: "work"
+                },{
+                    system: "email",
+                    value: profile.rows[0].alamatemail
+                },{
+                    system: "url",
+                    value: profile.rows[0].website,
+                    use: "work"
+                }
+            ],
+            type: [
+                {
+                    coding: [
+                        {
+                            system: "http://terminology.kemkes.go.id/CodeSystem/location-type",
+                            code: "RT0016",
+                            display: "Ruang Rawat Inap"
+                        }
+                    ]
+                }
+            ],
+            physicalType: {
+                coding: [
+                    {
+                        system: "http://terminology.hl7.org/CodeSystem/location-physical-type",
+                        code: code,
+                        display: display
+                    }
+                ]
+            },
+            position: {
+                longitude: parseFloat(profile.rows[0].longitude),
+                latitude: parseFloat(profile.rows[0].latitude),
+                altitude: parseFloat(profile.rows[0].altitude)
+            },
+            managingOrganization: {
+                reference: 'Organization/' + req.body.ihs_instalasi
+            },
+            extension: [
+                {
+                    url: "https://fhir.kemkes.go.id/r4/StructureDefinition/LocationServiceClass",
+                    valueCodeableConcept: {
+                        coding: [
+                            {
+                                system: "http://terminology.kemkes.go.id/CodeSystem/locationServiceClass-Inpatient",
+                                code: req.body.codekelas,
+                                display: req.body.displaykelas
+                            }
+                        ]
+                    }
+                }
+            ],
+            partOf: {
+                reference: "Location/"+req.body.ihs_unit,
+                display: req.body.namaunit
+             }
+        };
+        
+        
+        const response = await postGetSatuSehat('POST', '/Location', locationObject);
         const { setInstalasi } = await db.sequelize.transaction(async (transaction) => {
             let setInstalasi = ''
-                if(response.resourceType==='Observation'){
-                    setInstalasi = await db.t_ttv.update({
-                        ihs_nadi: response.id,
-                    }, {
-                        where: {
-                            norec: req.body.norec
-                        },
-                        transaction: transaction
-                    });
-                }
+                setInstalasi = await db.m_kamar.update({
+                    ihs_id: response.id,
+                }, {
+                    where: {
+                        id: req.body.id
+                    },
+                    transaction: transaction
+                });
+            
             return { setInstalasi }
         });
-        
+
         const tempres = {
-            observation:observation,
-            instalasi:setInstalasi
+            unit:setInstalasi,
+            response:response
+        };
+
+        res.status(200).send({
+            msg: 'Sukses',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(400).send({
+            msg: error.message || 'Gagal',
+            code: 400,
+            data: error,
+            success: false,
+        });
+    }
+};
+
+const getListTempatTidur = async (req, res) => {
+    const logger = res.locals.logger;
+    try {
+        const unit = await pool.query(tempattidurQueries.qGetTempatTidurIHS)
+       
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: unit.rows,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+const upsertLocationTempatTidur = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const profile = await pool.query(profileQueries.getAll);
+        let code = 'ro'
+        let display ='Room'
+      
+        const locationObject = {
+            resourceType: "Location",
+            identifier: [{
+                    system: "http://sys-ids.kemkes.go.id/location/"+profile.rows[0].ihs_id,
+                    value: String(req.body.id)
+                }
+            ],
+            status: "active",
+            name: req.body.label,
+            description: req.body.description,
+            mode: "instance",
+            telecom: [{
+                    system: "phone",
+                    value: profile.rows[0].fixedphone,
+                    use: "work"
+                },{
+                    system: "fax",
+                    value: "2329",
+                    use: "work"
+                },{
+                    system: "email",
+                    value: profile.rows[0].alamatemail
+                },{
+                    system: "url",
+                    value: profile.rows[0].website,
+                    use: "work"
+                }
+            ],
+            type: [
+                {
+                    coding: [
+                        {
+                            system: "http://terminology.kemkes.go.id/CodeSystem/location-type",
+                            code: "RT0004",
+                            display: "Tempat Tidur"
+                        }
+                    ]
+                }
+            ],
+            physicalType: {
+                coding: [
+                    {
+                        system: "http://terminology.hl7.org/CodeSystem/location-physical-type",
+                        code: code,
+                        display: display
+                    }
+                ]
+            },
+            position: {
+                longitude: parseFloat(profile.rows[0].longitude),
+                latitude: parseFloat(profile.rows[0].latitude),
+                altitude: parseFloat(profile.rows[0].altitude)
+            },
+            managingOrganization: {
+                reference: 'Organization/' + req.body.ihs_instalasi
+            },
+            extension: [
+                {
+                    url: "https://fhir.kemkes.go.id/r4/StructureDefinition/LocationServiceClass",
+                    valueCodeableConcept: {
+                        coding: [
+                            {
+                                system: "http://terminology.kemkes.go.id/CodeSystem/locationServiceClass-Inpatient",
+                                code: req.body.codekelas,
+                                display: req.body.displaykelas
+                            }
+                        ]
+                    }
+                }
+            ],
+            partOf: {
+                reference: "Location/"+req.body.ihs_unit,
+                display: req.body.namaunit
+             }
+        };
+        
+        
+        const response = await postGetSatuSehat('POST', '/Location', locationObject);
+        const { setInstalasi } = await db.sequelize.transaction(async (transaction) => {
+            let setInstalasi = ''
+                setInstalasi = await db.m_tempattidur.update({
+                    ihs_id: response.id,
+                }, {
+                    where: {
+                        id: req.body.id
+                    },
+                    transaction: transaction
+                });
+            
+            return { setInstalasi }
+        });
+
+        const tempres = {
+            tempattidur:setInstalasi,
+            response:response
         };
         res.status(200).send({
             msg: 'Sukses',
@@ -1452,5 +2322,9 @@ export default {
     upsertEncounter,
     upsertCondition,
     upsertEncounterPulang,
-    upsertObservation
+    upsertObservation,
+    getListKamar,
+    updateLocationKamar,
+    getListTempatTidur,
+    upsertLocationTempatTidur
 }

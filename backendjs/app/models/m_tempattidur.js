@@ -36,6 +36,9 @@ export default (sequelize, Sequelize) => {
         idkelassirs: {
             type: Sequelize.INTEGER
         },
+        ihs_id:{
+            type: Sequelize.STRING
+        }
     }, {
         tableName: "m_tempattidur", // relation "user" does not exist
         createdAt: false,

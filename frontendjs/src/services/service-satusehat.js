@@ -36,4 +36,16 @@ export default class ServiceSatuSehat {
     upsertObservation = async (body) => {
         return await api.create("/transaksi/satu-sehat/upsert-observation", body)
     }
+    getListKamar = async (queries) => {
+        return await api.get("/transaksi/satu-sehat/get-list-kamar", queries)
+    }
+    upsertLocationKamar = async (body) => {
+        return await api.create("/transaksi/satu-sehat/upsert-location-kamar", body)
+    }
+    getListTempatTidur = async (queries) => {
+        return await api.get("/transaksi/satu-sehat/get-list-tempattidur", queries)
+    }
+    upsertLocationTempatTidur = async (body) => {
+        return await api.create("/transaksi/satu-sehat/upsert-location-tempattidur", body)
+    }
 }

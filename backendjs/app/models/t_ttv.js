@@ -89,6 +89,36 @@ export default (sequelize, Sequelize) => {
         },
         ihs_pernapasan:{
             type: Sequelize.STRING
+        },
+        status_ihs_pernapasan: {
+            type: Sequelize.BOOLEAN
+        },
+        status_ihs_suhu: {
+            type: Sequelize.BOOLEAN
+        },
+        status_ihs_nadi: {
+            type: Sequelize.BOOLEAN
+        },
+        status_ihs_sistole:{
+            type: Sequelize.BOOLEAN
+        },
+        status_ihs_diastole:{
+            type: Sequelize.BOOLEAN
+        },
+        objecthasilnadifk:{
+            type:Sequelize.INTEGER
+        },
+        objecthasilpernapasanfk:{
+            type:Sequelize.INTEGER
+        },
+        objecthasilsuhufk:{
+            type:Sequelize.INTEGER
+        },
+        objecthasilsistolfk:{
+            type:Sequelize.INTEGER
+        },
+        objecthasildiastolfk:{
+            type:Sequelize.INTEGER
         }
     }, {
         tableName: "t_ttv", // relation "user" does not exist

@@ -9,7 +9,11 @@ import {
     UPSERT_ENCOUNTER,UPSERT_ENCOUNTER_SUCCESS,UPSERT_ENCOUNTER_ERROR,
     UPSERT_CONDITION,UPSERT_CONDITION_SUCCESS,UPSERT_CONDITION_ERROR,
     UPSERT_ENCOUNTER_PULANG,UPSERT_ENCOUNTER_PULANG_SUCCESS,UPSERT_ENCOUNTER_PULANG_ERROR,
-    UPSERT_OBSERVATION,UPSERT_OBSERVATION_SUCCESS,UPSERT_OBSERVATION_ERROR
+    UPSERT_OBSERVATION,UPSERT_OBSERVATION_SUCCESS,UPSERT_OBSERVATION_ERROR,
+    GET_LIST_KAMAR,GET_LIST_KAMAR_SUCCESS,GET_LIST_KAMAR_ERROR,
+    UPSERT_LOCATION_KAMAR,UPSERT_LOCATION_KAMAR_SUCCESS,UPSERT_LOCATION_KAMAR_ERROR,
+    GET_LIST_TEMPATTIDUR,GET_LIST_TEMPATTIDUR_SUCCESS,GET_LIST_TEMPATTIDUR_ERROR,
+    UPSERT_LOCATION_TEMPATTIDUR,UPSERT_LOCATION_TEMPATTIDUR_SUCCESS,UPSERT_LOCATION_TEMPATTIDUR_ERROR
 } from "./actionType";
 
 export const getListInstalasi = (queries) => ({
@@ -204,5 +208,75 @@ export const upsertObservationSuccess = (data) => ({
 
 export const upsertObservationError = (error) => ({
     type: UPSERT_OBSERVATION_ERROR,
+    payload: error,
+});
+
+export const getListKamar = (queries) => ({
+    type: GET_LIST_KAMAR,
+    payload: {
+        queries,
+    },
+});
+
+export const getListKamarSuccess = (data) => ({
+    type: GET_LIST_KAMAR_SUCCESS,
+    payload: data,
+});
+
+export const getListKamarError = (error) => ({
+    type: GET_LIST_KAMAR_ERROR,
+    payload: error,
+});
+
+export const upsertLocationKamar = (data, callback) => ({
+    type: UPSERT_LOCATION_KAMAR,
+    payload: {
+        data,
+        callback
+    },
+});
+
+export const upsertLocationKamarSuccess = (data) => ({
+    type: UPSERT_LOCATION_KAMAR_SUCCESS,
+    payload: data,
+});
+
+export const upsertLocationKamarError = (error) => ({
+    type: UPSERT_LOCATION_KAMAR_ERROR,
+    payload: error,
+});
+
+export const getListTempatTidur = (queries) => ({
+    type: GET_LIST_TEMPATTIDUR,
+    payload: {
+        queries,
+    },
+});
+
+export const getListTempatTidurSuccess = (data) => ({
+    type: GET_LIST_TEMPATTIDUR_SUCCESS,
+    payload: data,
+});
+
+export const getListTempatTidurError = (error) => ({
+    type: GET_LIST_TEMPATTIDUR_ERROR,
+    payload: error,
+});
+
+export const upsertLocationTempatTidur = (data, callback) => ({
+    type: UPSERT_LOCATION_TEMPATTIDUR,
+    payload: {
+        data,
+        callback
+    },
+});
+
+export const upsertLocationTempatTidurSuccess = (data) => ({
+    type: UPSERT_LOCATION_TEMPATTIDUR_SUCCESS,
+    payload: data,
+});
+
+export const upsertLocationTempatTidurError = (error) => ({
+    type: UPSERT_LOCATION_TEMPATTIDUR_ERROR,
     payload: error,
 });

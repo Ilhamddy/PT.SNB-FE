@@ -4,13 +4,14 @@ import queries from '../../../queries/transaksi/registrasi.queries';
 import { qGetObatFromUnit, qGetOrderResepFromDP, qGetOrderVerifResepFromDP,
 qAsesmenBayiLahirByNorec,qComboApgar,qComboSebabKematian,qComboApgarScore,
 qHistoryAsesmenBayiLahir, 
-qGetAntreanPemeriksaanObat} from "../../../queries/emr/emr.queries";
+qGetAntreanPemeriksaanObat,qGetNilaiNormalTtv,qGetTtvByNorec} from "../../../queries/emr/emr.queries";
 import hubunganKeluargaQueries from "../../../queries/mastertable/hubunganKeluarga/hubunganKeluarga.queries";
 import jenisKelaminQueries from "../../../queries/mastertable/jenisKelamin/jenisKelamin.queries";
 import db from "../../../models";
 import {
     createTransaction
 } from "../../../utils/dbutils";
+import satuSehatQueries from "../../../queries/satuSehat/satuSehat.queries";
 
 const t_emrpasien = db.t_emrpasien
 const t_ttv = db.t_ttv
@@ -56,85 +57,78 @@ const queryPromise2 = (query) => {
     });
 };
 
-async function saveEmrPasienTtv(req, res) {
-    // res.status(500).send({ message: req.userId });
-    // return
-    const logger = res.locals.logger
-    const [transaction, errorTransaction] = await createTransaction(db, res)
-    if (errorTransaction) return
-    try {
+const saveEmrPasienTtv = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
         const resultEmrPasien = await queryPromise1(req.body.norecap, req.body.idlabel);
-        let rate = req.body.gcse + req.body.gcsm + req.body.gcsv
-        let idgcs = null
-        if (rate <= 3) {
-            idgcs = 33
-        } else if (rate === 4) {
-            idgcs = 32
-        } else if (rate >= 5 && rate <= 6) {
-            idgcs = 31
-        } else if (rate >= 7 && rate <= 9) {
-            idgcs = 30
-        } else if (rate >= 10 && rate <= 11) {
-            idgcs = 29
-        } else if (rate >= 12 && rate <= 13) {
-            idgcs = 28
-        } else if (rate >= 14 && rate <= 15) {
-            idgcs = 27
-        }
+        const rate = req.body.gcse + req.body.gcsm + req.body.gcsv;
+        const { codeNadi } =await evaluateNadi(req.body.norecdp, req.body.nadi);
+        const { codePernapasan} =await evaluatePernapasan(req.body.norecdp, req.body.pernapasan);
+        const { codeSuhu} =await evaluateSuhu(req.body.norecdp, req.body.suhu);
+        const { codeSistol} =await evaluateSistol(req.body.norecdp, req.body.sistole);
+        const { codeDiastol} =await evaluateDiastol(req.body.norecdp, req.body.diastole);
+        const idgcs = await getGcsId(rate);
         let norec = uuid.v4().substring(0, 32)
-
-        if (resultEmrPasien.rowCount != 0) {
-            norec = resultEmrPasien.rows[0].norec
-        } else {
-            const emrPasien = await db.t_emrpasien.create({
-                norec: norec,
+        const {emrPasien,ttv}=await db.sequelize.transaction(async (transaction) => {
+            let emrPasien
+            if (resultEmrPasien.rowCount != 0) {
+                norec = resultEmrPasien.rows[0].norec
+            } else {
+                emrPasien = await db.t_emrpasien.create({
+                    norec: norec,
+                    statusenabled: true,
+                    label: req.body.label,
+                    idlabel: req.body.idlabel,
+                    objectantreanpemeriksaanfk: req.body.norecap,
+                    objectpegawaifk: req.userId,
+                    tglisi: new Date()
+                }, { transaction });
+            }
+            let norecttv = uuid.v4().substring(0, 32)
+            let ttv = await db.t_ttv.create({
+                norec: norecttv,
                 statusenabled: true,
-                label: req.body.label,
-                idlabel: req.body.idlabel,
-                objectantreanpemeriksaanfk: req.body.norecap,
-                objectpegawaifk: req.userId,
-                tglisi: new Date()
+                objectemrfk: norec,
+                tinggibadan: req.body.tinggibadan,
+                beratbadan: req.body.beratbadan,
+                suhu: req.body.suhu,
+                e: req.body.gcse,
+                m: req.body.gcsm,
+                v: req.body.gcsv,
+                nadi: req.body.nadi,
+                alergi: req.body.alergi,
+                spo2: req.body.spo2,
+                pernapasan: req.body.pernapasan,
+                keadaanumum: req.body.keadaanumum,
+                tekanandarah: req.body.tekanandarah,
+                tglisi: new Date(),
+                objectgcsfk: idgcs,
+                objectpegawaifk: req.idPegawai,
+                sistole:req.body.sistole,
+                diastole:req.body.diastole,
+                objecthasilnadifk:codeNadi,
+                objecthasilpernapasanfk:codePernapasan,
+                objecthasilsuhufk:codeSuhu,
+                objecthasilsistolfk:codeSistol,
+                objecthasildiastolfk:codeDiastol
             }, { transaction });
-        }
-        let norecttv = uuid.v4().substring(0, 32)
-        const ttv = await db.t_ttv.create({
-            norec: norecttv,
-            statusenabled: true,
-            objectemrfk: norec,
-            tinggibadan: req.body.tinggibadan,
-            beratbadan: req.body.beratbadan,
-            suhu: req.body.suhu,
-            e: req.body.gcse,
-            m: req.body.gcsm,
-            v: req.body.gcsv,
-            nadi: req.body.nadi,
-            alergi: req.body.alergi,
-            spo2: req.body.spo2,
-            pernapasan: req.body.pernapasan,
-            keadaanumum: req.body.keadaanumum,
-            tekanandarah: req.body.tekanandarah,
-            tglisi: new Date(),
-            objectgcsfk: idgcs,
-            objectpegawaifk: req.idPegawai
-        }, { transaction });
-
-        await transaction.commit();
-        let tempres = { ttv: ttv }
+            return {emrPasien,ttv}
+        });
+        
+        const tempres = { ttv: ttv }
         res.status(200).send({
+            msg: 'Sukses',
+            code: 200,
             data: tempres,
-            status: "success",
-            success: true,
-            msg: 'Simpan Data Tanda Vital Berhasil',
-            code: 200
+            success: true
         });
     } catch (error) {
-        logger.error(error)
-        transaction && await transaction.rollback();
-        res.status(201).send({
-            status: "false",
-            success: false,
-            msg: 'Simpan Data Tanda Vital Gagal',
-            code: 201
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message || 'Gagal',
+            code: 500,
+            data: error,
+            success: false
         });
     }
 }
@@ -154,12 +148,22 @@ async function getListTtv(req, res) {
         to_char(dp.tglregistrasi,'yyyy-MM-dd') as tglregistrasi,tt.norec, tt.objectemrfk, tt.tinggibadan,
         tt.beratbadan, tt.suhu,tt.e, tt.m, tt.v, tt.nadi, tt.alergi, tt.tekanandarah, tt.spo2, 
         tt.pernapasan,tt.keadaanumum, tt.objectpegawaifk, tt.isedit, tt.objectttvfk, tt.tglisi,
-        mu.namaunit,mr.reportdisplay as namagcs,tt.ihs_nadi
+        mu.namaunit,mr.reportdisplay as namagcs,tt.ihs_nadi,tt.ihs_pernapasan,case when tt.status_ihs_nadi=true then 'btn-soft-info' else 'btn-soft-danger'
+        end as status_nadi,case when tt.status_ihs_pernapasan=true then 'btn-soft-info' else 'btn-soft-danger'
+        end as status_pernafasan,case when tt.status_ihs_suhu=true then 'btn-soft-info' else 'btn-soft-danger'
+        end as status_suhu,tt.ihs_suhu,tt.sistole || '/'||tt.diastole as sistolediastole,tt.sistole,tt.diastole,
+        case when tt.status_ihs_sistole=true then 'btn-soft-info' else 'btn-soft-danger'
+        end as status_sistole,
+        case when tt.status_ihs_diastole=true then 'btn-soft-info' else 'btn-soft-danger'
+        end as status_diastole,tt.ihs_sistole,tt.ihs_diastole,mh.code as codenadi,mh.display as displaynadi,mh.teks as teksnadi,
+        mh2.code as codepernapasan,mh2.display as displaypernapasan,mh2.teks as tekspernapasan
                 FROM t_daftarpasien dp 
         join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk=dp.norec
         join t_emrpasien te on te.objectantreanpemeriksaanfk=ta.norec 
         join t_ttv tt on tt.objectemrfk =te.norec
         join m_unit mu on mu.id=ta.objectunitfk
+        join m_hasilnilaittv mh on mh.id=tt.objecthasilnadifk
+        join m_hasilnilaittv mh2 on mh2.id=tt.objecthasilpernapasanfk
         left join m_range mr on mr.id=tt.objectgcsfk where dp.nocmfk='${nocmfk}' and tt.statusenabled=true
         `);
         res.status(200).send({
@@ -279,85 +283,403 @@ async function getHeaderEmr(req, res) {
 
 }
 
-async function editEmrPasienTtv(req, res) {
-    const logger = res.locals.logger
-    const [transaction, errorTransaction] = await createTransaction(db, res)
-    if (errorTransaction) return
-    try {
-        let rate = req.body.gcse + req.body.gcsm + req.body.gcsv
-        let idgcs = null
-        if (rate <= 3) {
-            idgcs = 33
-        } else if (rate === 4) {
-            idgcs = 32
-        } else if (rate >= 5 && rate <= 6) {
-            idgcs = 31
-        } else if (rate >= 7 && rate <= 9) {
-            idgcs = 30
-        } else if (rate >= 10 && rate <= 11) {
-            idgcs = 29
-        } else if (rate >= 12 && rate <= 13) {
-            idgcs = 28
-        } else if (rate >= 14 && rate <= 15) {
-            idgcs = 27
-        }
-
-        let norecttv = uuid.v4().substring(0, 32)
-        const ttv = await db.t_ttv.create({
-            norec: norecttv,
-            statusenabled: true,
-            objectemrfk: req.body.objectemrfk,
-            tinggibadan: req.body.tinggibadan,
-            beratbadan: req.body.beratbadan,
-            suhu: req.body.suhu,
-            e: req.body.gcse,
-            m: req.body.gcsm,
-            v: req.body.gcsv,
-            nadi: req.body.nadi,
-            alergi: req.body.alergi,
-            spo2: req.body.spo2,
-            pernapasan: req.body.pernapasan,
-            keadaanumum: req.body.keadaanumum,
-            tekanandarah: req.body.tekanandarah,
-            isedit: true,
-            objectttvfk: req.body.norec,
-            objectgcsfk: idgcs,
-            tglisi: new Date(),
-            objectpegawaifk: req.idPegawai,
-            ihs_nadi:req.body.ihs_nadi
-        }, { transaction });
-
-        const ttvupdate = await db.t_ttv.update({
-            statusenabled: false,
-            // tglisi: new Date()
-        }, {
-            transaction: transaction,
-            where: {
-                norec: req.body.norec
+const editEmrPasienTtv = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const rate = req.body.gcse + req.body.gcsm + req.body.gcsv;
+        const idgcs = await getGcsId(rate);
+        const cekTTV = await pool.query(qGetTtvByNorec, [req.body.norec]);
+        let status_ihs_nadi=true
+        let status_ihs_pernapasan=true
+        let status_ihs_suhu=true
+        let status_ihs_sistole=true
+        let status_ihs_diastole=true
+        const propertiesToCheck = ['nadi', 'pernapasan', 'suhu', 'sistole', 'diastole'];
+        propertiesToCheck.forEach(property => {
+            if (cekTTV.rows.some(element => parseFloat(element[property]) !== parseFloat(req.body[property]))) {
+                switch (property) {
+                    case 'nadi':
+                        status_ihs_nadi = false;
+                        break;
+                    case 'pernapasan':
+                        status_ihs_pernapasan = false;
+                        break;
+                    case 'suhu':
+                        status_ihs_suhu = false;
+                        break;
+                    case 'sistole':
+                        status_ihs_sistole = false;
+                        break;
+                    case 'diastole':
+                        status_ihs_diastole = false;
+                        break;
+                    default:
+                        break;
+                }
             }
         });
 
+        const { codeNadi } =await evaluateNadi(req.body.norecdp, req.body.nadi);
+        const { codePernapasan} =await evaluatePernapasan(req.body.norecdp, req.body.pernapasan);
+        const { codeSuhu} =await evaluateSuhu(req.body.norecdp, req.body.suhu);
+        const { codeSistol} =await evaluateSistol(req.body.norecdp, req.body.sistole);
+        const { codeDiastol} =await evaluateDiastol(req.body.norecdp, req.body.diastole);
 
-
-        await transaction.commit();
-        let tempres = { ttv: ttv }
+        const {ttvupdate}=await db.sequelize.transaction(async (transaction) => {
+            const ttvupdate = await db.t_ttv.update({
+                tinggibadan: req.body.tinggibadan,
+                beratbadan: req.body.beratbadan,
+                suhu: req.body.suhu,
+                e: req.body.gcse,
+                m: req.body.gcsm,
+                v: req.body.gcsv,
+                nadi: req.body.nadi,
+                alergi: req.body.alergi,
+                spo2: req.body.spo2,
+                pernapasan: req.body.pernapasan,
+                keadaanumum: req.body.keadaanumum,
+                tekanandarah: req.body.tekanandarah,
+                isedit: true,
+                objectttvfk: req.body.norec,
+                objectgcsfk: idgcs,
+                tglisi: new Date(),
+                sistole:req.body.sistole,
+                diastole:req.body.diastole,
+                objectpegawaifk: req.idPegawai,
+                status_ihs_nadi:status_ihs_nadi,
+                status_ihs_pernapasan:status_ihs_pernapasan,
+                status_ihs_suhu:status_ihs_suhu,
+                status_ihs_sistole:status_ihs_sistole,
+                status_ihs_diastole:status_ihs_diastole,
+                objecthasilnadifk:codeNadi,
+                objecthasilpernapasanfk:codePernapasan,
+                objecthasilsuhufk:codeSuhu,
+                objecthasilsistolfk:codeSistol,
+                objecthasildiastolfk:codeDiastol
+            }, {
+                where: {
+                    norec: req.body.norec
+                },
+                transaction: transaction
+            });
+            return {ttvupdate}
+        });
+        
+        const tempres = {
+        ttv:ttvupdate
+        };
         res.status(200).send({
+            msg: 'Sukses',
+            code: 200,
             data: tempres,
-            status: "success",
-            success: true,
-            msg: 'Edit Data Tanda Vital Berhasil',
-            code: 200
+            success: true
         });
     } catch (error) {
         logger.error(error);
-        transaction && await transaction.rollback();
-        res.status(201).send({
-            status: error,
-            success: false,
-            msg: 'Edit Data Tanda Vital Gagal',
-            code: 201
+        res.status(500).send({
+            msg: error.message || 'Gagal',
+            code: 500,
+            data: error,
+            success: false
         });
     }
+}
+
+async function getGcsId(rate) {
+    if (rate <= 3) return 33;
+    if (rate === 4) return 32;
+    if (rate >= 5 && rate <= 6) return 31;
+    if (rate >= 7 && rate <= 9) return 30;
+    if (rate >= 10 && rate <= 11) return 29;
+    if (rate >= 12 && rate <= 13) return 28;
+    if (rate >= 14 && rate <= 15) return 27;
+}
+
+async function evaluateNadi(norecdp, nadi) {
+    const profilePasien = await pool.query(satuSehatQueries.qGetDataPasienByNorecDpTrm, [norecdp]);
+    const nilaiNormalTTV = await pool.query(qGetNilaiNormalTtv);
+    let codeNadi = 1;
+    profilePasien.rows = profilePasien.rows.map(element => ({
+        ...element,
+        tahun: parseFloat(element.tahun.replace(/-/g, '')),
+        bulan: parseFloat(element.bulan.replace(/-/g, '')),
+        hari: parseFloat(element.hari.replace(/-/g, '')),
+    }));
+    if(profilePasien.rows[0].tahun<1){
+        if(profilePasien.rows[0].bulan<1){
+            let filteredDataNadi = nilaiNormalTTV.rows.filter(item => item.jenisttv === 'nadi'&& item.id === 1);
+            if(parseFloat(nadi)<parseFloat(filteredDataNadi[0].nilaimin)){
+                codeNadi=2
+            }else if(parseFloat(nadi)>parseFloat(filteredDataNadi[0].nilaimax)){
+                codeNadi=3
+            }
+        }else if(profilePasien.rows[0].bulan<5){
+            let filteredDataNadi = nilaiNormalTTV.rows.filter(item => item.jenisttv === 'nadi'&& item.id === 3);
+            if(parseFloat(nadi)<parseFloat(filteredDataNadi[0].nilaimin)){
+                codeNadi=2
+            }else if(parseFloat(nadi)>parseFloat(filteredDataNadi[0].nilaimax)){
+                codeNadi=3
+            }
+        }else{
+            let filteredDataNadi = nilaiNormalTTV.rows.filter(item => item.jenisttv === 'nadi'&& item.id === 2);
+            if(parseFloat(nadi)<parseFloat(filteredDataNadi[0].nilaimin)){
+                codeNadi=2
+            }else if(parseFloat(nadi)>parseFloat(filteredDataNadi[0].nilaimax)){
+                codeNadi=3
+            }
+        }
+    }else if(profilePasien.rows[0].tahun<3){
+        let filteredDataNadi = nilaiNormalTTV.rows.filter(item => item.jenisttv === 'nadi'&& item.id === 4);
+            if(parseFloat(nadi)<parseFloat(filteredDataNadi[0].nilaimin)){
+                codeNadi=2
+            }else if(parseFloat(nadi)>parseFloat(filteredDataNadi[0].nilaimax)){
+                codeNadi=3
+            }
+    }else if(profilePasien.rows[0].tahun<6){
+        let filteredDataNadi = nilaiNormalTTV.rows.filter(item => item.jenisttv === 'nadi'&& item.id === 5);
+            if(parseFloat(nadi)<parseFloat(filteredDataNadi[0].nilaimin)){
+                codeNadi=2
+            }else if(parseFloat(nadi)>parseFloat(filteredDataNadi[0].nilaimax)){
+                codeNadi=3
+            }
+    }else if(profilePasien.rows[0].tahun<10){
+        let filteredDataNadi = nilaiNormalTTV.rows.filter(item => item.jenisttv === 'nadi'&& item.id === 6);
+            if(parseFloat(nadi)<parseFloat(filteredDataNadi[0].nilaimin)){
+                codeNadi=2
+            }else if(parseFloat(nadi)>parseFloat(filteredDataNadi[0].nilaimax)){
+                codeNadi=3
+            }
+    }else if(profilePasien.rows[0].tahun<15){
+        let filteredDataNadi = nilaiNormalTTV.rows.filter(item => item.jenisttv === 'nadi'&& item.id === 7);
+            if(parseFloat(nadi)<parseFloat(filteredDataNadi[0].nilaimin)){
+                codeNadi=2
+            }else if(parseFloat(nadi)>parseFloat(filteredDataNadi[0].nilaimax)){
+                codeNadi=3
+            }
+    }else{
+        let filteredDataNadi = nilaiNormalTTV.rows.filter(item => item.jenisttv === 'nadi'&& item.id === 8);
+            if(parseFloat(nadi)<parseFloat(filteredDataNadi[0].nilaimin)){
+                codeNadi=2
+            }else if(parseFloat(nadi)>parseFloat(filteredDataNadi[0].nilaimax)){
+                codeNadi=3
+            }
+    }
+
+    return { codeNadi};
+}
+
+async function evaluatePernapasan(norecdp, pernapasan) {
+    const profilePasien = await pool.query(satuSehatQueries.qGetDataPasienByNorecDpTrm, [norecdp]);
+    const nilaiNormalTTV = await pool.query(qGetNilaiNormalTtv);
+    let codePernapasan = 1;
+    profilePasien.rows = profilePasien.rows.map(element => ({
+        ...element,
+        tahun: parseFloat(element.tahun.replace(/-/g, '')),
+        bulan: parseFloat(element.bulan.replace(/-/g, '')),
+        hari: parseFloat(element.hari.replace(/-/g, '')),
+    }));
+    if(profilePasien.rows[0].tahun<1){
+        let filteredDataNadi = nilaiNormalTTV.rows.filter(item => item.jenisttv === 'pernapasan'&& item.id === 9);
+        if(parseFloat(pernapasan)<parseFloat(filteredDataNadi[0].nilaimin)){
+            codePernapasan=2
+        }else if(parseFloat(pernapasan)>parseFloat(filteredDataNadi[0].nilaimax)){
+            codePernapasan=3
+        }
+    }else if(profilePasien.rows[0].tahun<3){
+        let filteredDataNadi = nilaiNormalTTV.rows.filter(item => item.jenisttv === 'pernapasan'&& item.id === 10);
+        if(parseFloat(pernapasan)<parseFloat(filteredDataNadi[0].nilaimin)){
+            codePernapasan=2
+        }else if(parseFloat(pernapasan)>parseFloat(filteredDataNadi[0].nilaimax)){
+            codePernapasan=3
+        }
+    }else if(profilePasien.rows[0].tahun<6){
+        let filteredDataNadi = nilaiNormalTTV.rows.filter(item => item.jenisttv === 'pernapasan'&& item.id === 11);
+        if(parseFloat(pernapasan)<parseFloat(filteredDataNadi[0].nilaimin)){
+            codePernapasan=2
+        }else if(parseFloat(pernapasan)>parseFloat(filteredDataNadi[0].nilaimax)){
+            codePernapasan=3
+        }
+    }else if(profilePasien.rows[0].tahun<12){
+        let filteredDataNadi = nilaiNormalTTV.rows.filter(item => item.jenisttv === 'pernapasan'&& item.id === 12);
+        if(parseFloat(pernapasan)<parseFloat(filteredDataNadi[0].nilaimin)){
+            codePernapasan=2
+        }else if(parseFloat(pernapasan)>parseFloat(filteredDataNadi[0].nilaimax)){
+            codePernapasan=3
+        }
+    }else if(profilePasien.rows[0].tahun<18){
+        let filteredDataNadi = nilaiNormalTTV.rows.filter(item => item.jenisttv === 'pernapasan'&& item.id === 13);
+        if(parseFloat(pernapasan)<parseFloat(filteredDataNadi[0].nilaimin)){
+            codePernapasan=2
+        }else if(parseFloat(pernapasan)>parseFloat(filteredDataNadi[0].nilaimax)){
+            codePernapasan=3
+        }
+    }else if(profilePasien.rows[0].tahun<65){
+        let filteredDataNadi = nilaiNormalTTV.rows.filter(item => item.jenisttv === 'pernapasan'&& item.id === 14);
+        if(parseFloat(pernapasan)<parseFloat(filteredDataNadi[0].nilaimin)){
+            codePernapasan=2
+        }else if(parseFloat(pernapasan)>parseFloat(filteredDataNadi[0].nilaimax)){
+            codePernapasan=3
+        }
+    }else{
+        let filteredDataNadi = nilaiNormalTTV.rows.filter(item => item.jenisttv === 'pernapasan'&& item.id === 15);
+        if(parseFloat(pernapasan)<parseFloat(filteredDataNadi[0].nilaimin)){
+            codePernapasan=2
+        }else if(parseFloat(pernapasan)>parseFloat(filteredDataNadi[0].nilaimax)){
+            codePernapasan=3
+        }
+    }
+
+    return { codePernapasan };
+}
+
+async function evaluateSuhu(norecdp, pernapasan) {
+    const profilePasien = await pool.query(satuSehatQueries.qGetDataPasienByNorecDpTrm, [norecdp]);
+    const nilaiNormalTTV = await pool.query(qGetNilaiNormalTtv);
+    let codeSuhu = 1;
+    profilePasien.rows = profilePasien.rows.map(element => ({
+        ...element,
+        tahun: parseFloat(element.tahun.replace(/-/g, '')),
+        bulan: parseFloat(element.bulan.replace(/-/g, '')),
+        hari: parseFloat(element.hari.replace(/-/g, '')),
+    }));
+    if(profilePasien.rows[0].tahun<5){
+        let filteredDataNadi = nilaiNormalTTV.rows.filter(item => item.jenisttv === 'suhu'&& item.id === 28);
+        if(parseFloat(pernapasan)<parseFloat(filteredDataNadi[0].nilaimin)){
+            codeSuhu=2
+        }else if(parseFloat(pernapasan)>parseFloat(filteredDataNadi[0].nilaimax)){
+            codeSuhu=3
+        }
+    }else if(profilePasien.rows[0].tahun<15){
+        let filteredDataNadi = nilaiNormalTTV.rows.filter(item => item.jenisttv === 'suhu'&& item.id === 29);
+        if(parseFloat(pernapasan)<parseFloat(filteredDataNadi[0].nilaimin)){
+            codeSuhu=2
+        }else if(parseFloat(pernapasan)>parseFloat(filteredDataNadi[0].nilaimax)){
+            codeSuhu=3
+        }
+    }else{
+        let filteredDataNadi = nilaiNormalTTV.rows.filter(item => item.jenisttv === 'suhu'&& item.id === 30);
+        if(parseFloat(pernapasan)<parseFloat(filteredDataNadi[0].nilaimin)){
+            codeSuhu=2
+        }else if(parseFloat(pernapasan)>parseFloat(filteredDataNadi[0].nilaimax)){
+            codeSuhu=3
+        }
+    }
+
+    return { codeSuhu };
+}
+
+async function evaluateSistol(norecdp, pernapasan) {
+    const profilePasien = await pool.query(satuSehatQueries.qGetDataPasienByNorecDpTrm, [norecdp]);
+    const nilaiNormalTTV = await pool.query(qGetNilaiNormalTtv);
+    let codeSistol = 1;
+    profilePasien.rows = profilePasien.rows.map(element => ({
+        ...element,
+        tahun: parseFloat(element.tahun.replace(/-/g, '')),
+        bulan: parseFloat(element.bulan.replace(/-/g, '')),
+        hari: parseFloat(element.hari.replace(/-/g, '')),
+    }));
+    if(profilePasien.rows[0].tahun<3){
+        let filteredDataNadi = nilaiNormalTTV.rows.filter(item => item.jenisttv === 'sistol'&& item.id === 16);
+        if(parseFloat(pernapasan)<parseFloat(filteredDataNadi[0].nilaimin)){
+            codeSistol=2
+        }else if(parseFloat(pernapasan)>parseFloat(filteredDataNadi[0].nilaimax)){
+            codeSistol=3
+        }
+    }else if(profilePasien.rows[0].tahun<5){
+        let filteredDataNadi = nilaiNormalTTV.rows.filter(item => item.jenisttv === 'sistol'&& item.id === 17);
+        if(parseFloat(pernapasan)<parseFloat(filteredDataNadi[0].nilaimin)){
+            codeSistol=2
+        }else if(parseFloat(pernapasan)>parseFloat(filteredDataNadi[0].nilaimax)){
+            codeSistol=3
+        }
+    }else if(profilePasien.rows[0].tahun<13){
+        let filteredDataNadi = nilaiNormalTTV.rows.filter(item => item.jenisttv === 'sistol'&& item.id === 18);
+        if(parseFloat(pernapasan)<parseFloat(filteredDataNadi[0].nilaimin)){
+            codeSistol=2
+        }else if(parseFloat(pernapasan)>parseFloat(filteredDataNadi[0].nilaimax)){
+            codeSistol=3
+        }
+    }else if(profilePasien.rows[0].tahun<18){
+        let filteredDataNadi = nilaiNormalTTV.rows.filter(item => item.jenisttv === 'sistol'&& item.id === 19);
+        if(parseFloat(pernapasan)<parseFloat(filteredDataNadi[0].nilaimin)){
+            codeSistol=2
+        }else if(parseFloat(pernapasan)>parseFloat(filteredDataNadi[0].nilaimax)){
+            codeSistol=3
+        }
+    }else if(profilePasien.rows[0].tahun<65){
+        let filteredDataNadi = nilaiNormalTTV.rows.filter(item => item.jenisttv === 'sistol'&& item.id === 20);
+        if(parseFloat(pernapasan)<parseFloat(filteredDataNadi[0].nilaimin)){
+            codeSistol=2
+        }else if(parseFloat(pernapasan)>parseFloat(filteredDataNadi[0].nilaimax)){
+            codeSistol=3
+        }
+    }else{
+        let filteredDataNadi = nilaiNormalTTV.rows.filter(item => item.jenisttv === 'sistol'&& item.id === 21);
+        if(parseFloat(pernapasan)<parseFloat(filteredDataNadi[0].nilaimin)){
+            codeSistol=2
+        }else if(parseFloat(pernapasan)>parseFloat(filteredDataNadi[0].nilaimax)){
+            codeSistol=3
+        }
+    }
+
+    return { codeSistol };
+}
+
+async function evaluateDiastol(norecdp, pernapasan) {
+    const profilePasien = await pool.query(satuSehatQueries.qGetDataPasienByNorecDpTrm, [norecdp]);
+    const nilaiNormalTTV = await pool.query(qGetNilaiNormalTtv);
+    let codeDiastol = 1;
+    profilePasien.rows = profilePasien.rows.map(element => ({
+        ...element,
+        tahun: parseFloat(element.tahun.replace(/-/g, '')),
+        bulan: parseFloat(element.bulan.replace(/-/g, '')),
+        hari: parseFloat(element.hari.replace(/-/g, '')),
+    }));
+    if(profilePasien.rows[0].tahun<3){
+        let filteredDataNadi = nilaiNormalTTV.rows.filter(item => item.jenisttv === 'diastol'&& item.id === 22);
+        if(parseFloat(pernapasan)<parseFloat(filteredDataNadi[0].nilaimin)){
+            codeDiastol=2
+        }else if(parseFloat(pernapasan)>parseFloat(filteredDataNadi[0].nilaimax)){
+            codeDiastol=3
+        }
+    }else if(profilePasien.rows[0].tahun<5){
+        let filteredDataNadi = nilaiNormalTTV.rows.filter(item => item.jenisttv === 'diastol'&& item.id === 23);
+        if(parseFloat(pernapasan)<parseFloat(filteredDataNadi[0].nilaimin)){
+            codeDiastol=2
+        }else if(parseFloat(pernapasan)>parseFloat(filteredDataNadi[0].nilaimax)){
+            codeDiastol=3
+        }
+    }else if(profilePasien.rows[0].tahun<13){
+        let filteredDataNadi = nilaiNormalTTV.rows.filter(item => item.jenisttv === 'sistol'&& item.id === 24);
+        if(parseFloat(pernapasan)<parseFloat(filteredDataNadi[0].nilaimin)){
+            codeDiastol=2
+        }else if(parseFloat(pernapasan)>parseFloat(filteredDataNadi[0].nilaimax)){
+            codeDiastol=3
+        }
+    }else if(profilePasien.rows[0].tahun<18){
+        let filteredDataNadi = nilaiNormalTTV.rows.filter(item => item.jenisttv === 'sistol'&& item.id === 25);
+        if(parseFloat(pernapasan)<parseFloat(filteredDataNadi[0].nilaimin)){
+            codeDiastol=2
+        }else if(parseFloat(pernapasan)>parseFloat(filteredDataNadi[0].nilaimax)){
+            codeDiastol=3
+        }
+    }else if(profilePasien.rows[0].tahun<65){
+        let filteredDataNadi = nilaiNormalTTV.rows.filter(item => item.jenisttv === 'sistol'&& item.id === 26);
+        if(parseFloat(pernapasan)<parseFloat(filteredDataNadi[0].nilaimin)){
+            codeDiastol=2
+        }else if(parseFloat(pernapasan)>parseFloat(filteredDataNadi[0].nilaimax)){
+            codeDiastol=3
+        }
+    }else{
+        let filteredDataNadi = nilaiNormalTTV.rows.filter(item => item.jenisttv === 'sistol'&& item.id === 27);
+        if(parseFloat(pernapasan)<parseFloat(filteredDataNadi[0].nilaimin)){
+            codeDiastol=2
+        }else if(parseFloat(pernapasan)>parseFloat(filteredDataNadi[0].nilaimax)){
+            codeDiastol=3
+        }
+    }
+
+    return { codeDiastol };
 }
 
 async function saveEmrPasienCppt(req, res) {

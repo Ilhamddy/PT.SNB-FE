@@ -5,7 +5,9 @@ import {
     UPSERT_MAP_CHILD,
     UPSERT_ORGANIZATION_INSTALASI, GET_LIST_UNIT,UPSERT_LOCATION_UNIT,
     GET_LIST_PRACTITIONER,UPSERT_PRACTITIONER, UPSERT_PATIENT,UPSERT_ENCOUNTER,
-    UPSERT_CONDITION,UPSERT_ENCOUNTER_PULANG,UPSERT_OBSERVATION
+    UPSERT_CONDITION,UPSERT_ENCOUNTER_PULANG,UPSERT_OBSERVATION,
+    GET_LIST_KAMAR,UPSERT_LOCATION_KAMAR,GET_LIST_TEMPATTIDUR,
+    UPSERT_LOCATION_TEMPATTIDUR
  } from "./actionType";
  import { 
     getListInstalasiSuccess,getListInstalasiError,
@@ -18,7 +20,11 @@ import {
     upsertEncounterSuccess,upsertEncounterError,
     upsertConditionSuccess,upsertConditionError,
     upsertEncounterPulangSuccess, upsertEncounterPulangError,
-    upsertObservationSuccess,upsertObservationError
+    upsertObservationSuccess,upsertObservationError,
+    getListKamarSuccess, getListKamarError,
+    upsertLocationKamarSuccess,upsertLocationKamarError,
+    getListTempatTidurSuccess,getListTempatTidurError,
+    upsertLocationTempatTidurSuccess,upsertLocationTempatTidurError
 } from "./action";
 import { toast } from 'react-toastify';
 
@@ -149,6 +155,48 @@ function* onupsertObservation({payload: {data, callback}}) {
     }
 }
 
+function* ongetListKamar({payload: {queries}}) {
+    try{
+        const response = yield call(serviceSatuSehat.getListKamar, queries);
+        yield put(getListKamarSuccess(response.data));
+    } catch (error) {
+        yield put(getListKamarError(error));
+    }
+}
+
+function* onupsertLocationKamar({payload: {data, callback}}) {
+    try{
+        const response = yield call(serviceSatuSehat.upsertLocationKamar, data);
+        yield put(upsertLocationKamarSuccess(response.data));
+        toast.success(response.msg || "Sukses");
+        callback && callback(response);
+    } catch (error) { 
+        yield put(upsertLocationKamarError(error));
+        toast.error(error.msg || "Gagal");
+    }
+}
+
+function* ongetListTempatTidur({payload: {queries}}) {
+    try{
+        const response = yield call(serviceSatuSehat.getListTempatTidur, queries);
+        yield put(getListTempatTidurSuccess(response.data));
+    } catch (error) {
+        yield put(getListTempatTidurError(error));
+    }
+}
+
+function* onupsertLocationTempatTidur({payload: {data, callback}}) {
+    try{
+        const response = yield call(serviceSatuSehat.upsertLocationTempatTidur, data);
+        yield put(upsertLocationTempatTidurSuccess(response.data));
+        toast.success(response.msg || "Sukses");
+        callback && callback(response);
+    } catch (error) { 
+        yield put(upsertLocationTempatTidurError(error));
+        toast.error(error.msg || "Gagal");
+    }
+}
+
 export default function* satuSehatSaga() {
     yield all([
         takeEvery(GET_LIST_INSTALASI, ongetListInstalasi),
@@ -161,6 +209,10 @@ export default function* satuSehatSaga() {
         takeEvery(UPSERT_ENCOUNTER,onupsertEncounter),
         takeEvery(UPSERT_CONDITION,onupsertCondition),
         takeEvery(UPSERT_ENCOUNTER_PULANG,onupsertEncounterPulang),
-        takeEvery(UPSERT_OBSERVATION,onupsertObservation)
+        takeEvery(UPSERT_OBSERVATION,onupsertObservation),
+        takeEvery(GET_LIST_KAMAR,ongetListKamar),
+        takeEvery(UPSERT_LOCATION_KAMAR,onupsertLocationKamar),
+        takeEvery(GET_LIST_TEMPATTIDUR,ongetListTempatTidur),
+        takeEvery(UPSERT_LOCATION_TEMPATTIDUR,onupsertLocationTempatTidur)
     ]);
 }
