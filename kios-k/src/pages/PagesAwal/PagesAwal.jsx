@@ -6,6 +6,7 @@ import logo from '../../assets/svg/snb.svg'
 import antrean from '../../assets/svg/pengambilan-antrean.svg'
 import daftar from '../../assets/svg/pendaftaran-mandiri.svg'
 import CardKiosk from '../../components/CardKiosk/CardKiosk'
+import HeaderKiosk from '../../components/HeaderKiosk/HeaderKiosk'
 
 function PagesAwal() {
   const navigate = useNavigate()
@@ -21,6 +22,7 @@ function PagesAwal() {
     <Container fluid>
       <div className="pages-awal">
         <Row>
+          <HeaderKiosk />
           <Col lg={12}>
             <img src={logo} alt="Company Logo" />
           </Col>
