@@ -582,7 +582,11 @@ function Step1({ handleNextStep, onStepsChange }) {
                   </button>
                 </div>
               </Col>
-              <Col lg={12} style={{ textAlign: 'right' }} className="mr-3 me-3">
+              <Col
+                lg={12}
+                style={{ textAlign: 'right' }}
+                className="mr-3 me-3 mt-4"
+              >
                 <Button type="submit" color="success">
                   Selanjutnya
                 </Button>
