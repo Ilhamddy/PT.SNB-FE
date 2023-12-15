@@ -210,7 +210,7 @@ No. Registrasi	: ${pasien.noregistrasi}
 ICD 10		: ${texticdx}
 ICD 9		: ${texticdix}
 Total Pelayanan	: Rp${pasien.totalbiaya?.toLocaleString("id-ID") || "0"}
-Estimasi Klaim	: Rp${pasien.estimasiklaim?.toLocaleString("id-ID") || "0"}
+Estimasi Klaim	: Rp${pasien.estimasiklaim?.toLocaleString("id-ID") || "0"}
     `
                         })
     
