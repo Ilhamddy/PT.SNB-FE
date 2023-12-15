@@ -19,7 +19,6 @@ import {
   faStarHalfStroke,
   faPrint,
   faDeleteLeft,
-  faArrowLeftLong,
   faStepBackward,
   faHomeUser,
 } from '@fortawesome/free-solid-svg-icons'
