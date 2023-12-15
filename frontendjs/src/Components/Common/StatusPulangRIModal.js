@@ -12,7 +12,8 @@ import * as Yup from "yup";
 import Flatpickr from "react-flatpickr";
 import {
     listOrderByNorecGet,listKamarRadiologiGet,updateTglRencanaRadiologi,saveVerifikasiRadiologi,
-    deleteDetailOrderPelayanan,radiologiResetForm, daftarPasienRIPulangSave, listFaskesGet, daftarPasienNorecGet, antreanPasienNorecGet
+    deleteDetailOrderPelayanan,radiologiResetForm, daftarPasienRIPulangSave, listFaskesGet, daftarPasienNorecGet, antreanPasienNorecGet,
+    upsertEncounterPulang
 } from "../../store/actions";
 import { comboPulangGet } from "../../store/master/action";
 import { useNavigate } from "react-router-dom";
@@ -129,6 +130,11 @@ const StatusPulangRIModal = ({ norecdp, norecAP, toggle }) => {
         onSubmit: (values, { resetForm }) => {
             console.log(values)
             dispatch(daftarPasienRIPulangSave(values, () => {
+                dispatch(
+                    upsertEncounterPulang(values, () => {
+                        // resetForm()
+                    })
+                  )
                 toggle();
                 navigate("/listdaftarpasien/daftar-pasien-pulang");
             }));

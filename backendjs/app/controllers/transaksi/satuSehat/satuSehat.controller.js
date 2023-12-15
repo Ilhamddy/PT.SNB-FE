@@ -1412,9 +1412,22 @@ const upsertEncounterPulang = async (req, res) => {
             ihs_dpjp:profilePasien.rows[0].ihs_dpjp,
             namadokter:profilePasien.rows[0].namadokter,
             tglregistrasi_ihs:profilePasien.rows[0].tglregistrasi_ihs,
-            norecdp:req.body.norec
+            objectinstalasifk:profilePasien.rows[0].objectinstalasifk,
+            ihs_codepulangri:profilePasien.rows[0].ihs_codepulangri,
+            ihs_displaypulangri:profilePasien.rows[0].ihs_displaypulangri,
+            ihs_definition:profilePasien.rows[0].ihs_displaypulangri,
+            ihs_tempattidur:profilePasien.rows[0].ihs_tempattidur,
+            description:profilePasien.rows[0].description,
+            namakelas:profilePasien.rows[0].namakelas,
+            kelas_bpjs:profilePasien.rows[0].kelas_bpjs,
+            norecdp:req.body.norec,
         }
-        const encounter = await tempEncounterPulang(temp)
+        let encounter=''
+        if(temp.objectinstalasifk===2){
+            encounter = await tempEncounterPulangRI(temp)
+        }else{
+            encounter = await tempEncounterPulang(temp)            
+        }
         let response = await postGetSatuSehat('PUT', '/Encounter/'+profilePasien.rows[0].ihs_dp,encounter);
         // await db.sequelize.transaction(async (transaction) => {
             
@@ -1439,6 +1452,129 @@ const upsertEncounterPulang = async (req, res) => {
             success: false
         });
     }
+}
+
+async function tempEncounterPulangRI(reqTemp) {
+    const profile = await pool.query(profileQueries.getAll);
+    const diagnosa = await pool.query(satuSehatQueries.qListDiagnosa,[reqTemp.norecdp]);
+    let tempDiagnosis = diagnosa.rows.map((element) => {
+        if (element.ihs_diagnosa !== null) {
+            return {
+                condition: {
+                    reference: "Condition/" + element.ihs_diagnosa,
+                    display: element.label
+                },
+                use: {
+                    coding: [
+                        {
+                            system: "http://terminology.hl7.org/CodeSystem/diagnosis-role",
+                            code: "DD",
+                            display: "Discharge diagnosis"
+                        }
+                    ]
+                },
+                rank: parseFloat(element.no)
+            };
+        }
+        return null; // or handle the case where ihs_diagnosa is null
+    }).filter(Boolean);
+    
+    const currentDate = new Date();
+    const diagnosis = tempDiagnosis;    
+    const encounterData = {
+        resourceType: "Encounter",
+        id: reqTemp.ihs_dp,
+        identifier: [{
+                system: "http://sys-ids.kemkes.go.id/encounter/"+profile.rows[0].ihs_id,
+                value: reqTemp.noregistrasi
+            }],
+        status: "finished",
+        class: {
+            system: "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+            code: "IMP",
+            display: "inpatient encounter"},
+        subject: {
+            reference: "Patient/"+reqTemp.ihs_id,
+            display: reqTemp.namapasien},
+        participant: [{
+                type: [{
+                        coding: [{
+                                system: "http://terminology.hl7.org/CodeSystem/v3-ParticipationType",
+                                code: "ATND",
+                                display: "attender"}
+                        ]}
+                ],
+                individual: {
+                    reference: "Practitioner/"+reqTemp.ihs_dpjp,
+                    display: reqTemp.namadokter}
+            }],
+        period: {
+            start: reqTemp.tglregistrasi_ihs,
+            end: reqTemp.tglpulang},
+        location: [{
+                location: {
+                    reference: "Location/"+reqTemp.ihs_tempattidur,
+                    display: reqTemp.description},
+                    period: {
+                        start: reqTemp.tglregistrasi_ihs,
+                        end: reqTemp.tglpulang},
+                extension: [{
+                        url: "https://fhir.kemkes.go.id/r4/StructureDefinition/ServiceClass",
+                        extension: [{
+                                url: "value",
+                                valueCodeableConcept: {
+                                    coding: [{
+                                            system: "http://terminology.kemkes.go.id/CodeSystem/locationServiceClass-Outpatient",
+                                            code: "reguler",
+                                            display: "Kelas Reguler"}
+                                    ]}
+                            },{
+                                url: "upgradeClassIndicator",
+                                valueCodeableConcept: {
+                                    coding: [
+                                        {
+                                            system: "http://terminology.kemkes.go.id/CodeSystem/locationUpgradeClass",
+                                            code: "kelas-tetap",
+                                            display: "Kelas Tetap Perawatan"
+                                        }
+                                    ]
+                                }
+                            }]
+                    }]}
+        ],
+        statusHistory: [{
+                status: "in-progress",
+                period: {
+                    start: reqTemp.tglregistrasi_ihs,
+                    end: reqTemp.tglpulang
+                }
+            },{
+                status: "finished",
+                period: {
+                    start: reqTemp.tglregistrasi_ihs,
+                    end: reqTemp.tglpulang
+                }
+            }
+        ],
+        hospitalization: {
+            dischargeDisposition: {
+                coding: [
+                    {
+                        system: "http://terminology.hl7.org/CodeSystem/discharge-disposition",
+                        code: reqTemp.ihs_codepulangri,
+                        display: reqTemp.ihs_displaypulangri
+                    }
+                ],
+                text: reqTemp.ihs_definition
+            }
+        },
+        serviceProvider: {
+            reference: "Organization/"+profile.rows[0].ihs_id
+        },
+        diagnosis
+    };
+    
+                return encounterData
 }
 
 async function tempEncounterIGD(reqTemp) {
@@ -1899,6 +2035,64 @@ async function tempObservationDiastole(reqTemp) {
                 return observationData
 }
 
+async function tempObservationKesadaran(reqTemp) {
+    const profile = await pool.query(profileQueries.getAll);
+    const currentDate = new Date();
+    let tempIdNadi=''
+    if(reqTemp.ihs_diastole!==null){
+        tempIdNadi = {'id':reqTemp.ihs_diastole}
+    }
+    const observationData = {
+        resourceType: "Observation",
+        status: "final",
+        category: [
+            {
+                coding: [
+                    {
+                        system: "http://terminology.hl7.org/CodeSystem/observation-category",
+                        code: "exam",
+                        display: "Exam"
+                    }
+                ]
+            }
+        ],
+        code: {
+            coding: [
+                {
+                    system: "http://loinc.org",
+                    code: "67775-7",
+                    display: "Level of responsiveness"
+                }
+            ]
+        },
+        subject: {
+            reference: "Patient/"+reqTemp.ihs_id,
+        },
+        performer: [
+            {
+                reference: "Practitioner/"+reqTemp.ihs_dpjp,
+            }
+        ],
+        encounter: {
+            reference: "Encounter/"+reqTemp.ihs_dp,
+            display: "Pemeriksaan Kesadaran "+reqTemp.namapasien
+        },
+        effectiveDateTime: reqTemp.datenow,
+        issued: reqTemp.datenow,
+        bodySite: {
+            coding: [
+                {
+                    system: "http://snomed.info/sct",
+                    code: "248234008",
+                    display: "Mentally alert"
+                }
+            ]
+        },
+        ...tempIdNadi
+    };
+                return observationData
+}
+
 const upsertObservation = async (req, res) => {
     const logger = res.locals.logger;
     try {
@@ -2309,6 +2503,8 @@ const upsertLocationTempatTidur = async (req, res) => {
         });
     }
 }
+
+
 
 export default {
     getListInstalasi,
