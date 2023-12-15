@@ -8,6 +8,7 @@ import asurasni from '../../../assets/svg/asuransi.svg'
 import umum from '../../../assets/svg/umum.svg'
 import bpjs from '../../../assets/svg/bpjs-kesehatan.svg'
 import CardKiosk from '../../../components/CardKiosk/CardKiosk';
+import HeaderKiosk from '../../../components/HeaderKiosk/HeaderKiosk';
 function PagesPenjamin() {
     const navigate = useNavigate();
     const handleHome = () => {
@@ -21,10 +22,11 @@ function PagesPenjamin() {
             <Container fluid>
                 <div className="pages-awal">
                     <Row>
-                        <Col lg={12}>
+                        <HeaderKiosk />
+                        <Col lg={12} className='kontainer-judul'>
                             {/* <img src={logo} alt='Company Logo' /> */}
-                            <h1 style={{ fontSize: '36px', color: '#FFCB46', textAlign: 'center' }}>Pengambilan Nomor Antrean</h1>
-                            <h1 style={{ fontSize: '36px', color: '#FFCB46', textAlign: 'center' }}>Silahkan Pilih Penjamin Pasien</h1>
+                            <h1 className='teks-judul'>Pengambilan Nomor Antrean</h1>
+                            <h1 className='teks-judul'>Silahkan Pilih Penjamin Pasien</h1>
                         </Col>
                         <Col lg={12} className='mr-2'>
                             <div className="d-flex justify-content-end gap-2">
@@ -41,7 +43,7 @@ function PagesPenjamin() {
                                 <CardKiosk onClick={() => handleCardClick('A')}>
                                     <CardBody>
                                         <div className="mx-auto avatar-md mb-3">
-                                            <img src={umum} alt="" className="img-fluid" />
+                                            <img src={umum} alt="" className="gbr-btn-pasien-pilihan" />
                                         </div>
                                     </CardBody>
                                     <div className="text-center" style={{ borderTop: '1px solid', fontFamily: 'sans-serif', fontSize: '36px' }}>
@@ -55,7 +57,7 @@ function PagesPenjamin() {
                                 <CardKiosk onClick={() => handleCardClick('B')}>
                                     <CardBody>
                                         <div className="mx-auto avatar-md mb-3">
-                                            <img src={asurasni} alt="" className="img-fluid" />
+                                            <img src={asurasni} alt="" className="gbr-btn-pasien-pilihan" />
                                         </div>
                                     </CardBody>
                                     <div className="text-center" style={{ borderTop: '1px solid', fontFamily: 'sans-serif', fontSize: '36px' }}>
@@ -69,7 +71,7 @@ function PagesPenjamin() {
                                 <CardKiosk onClick={() => handleCardClick('C')}>
                                     <CardBody>
                                         <div className="mx-auto avatar-md mb-3">
-                                            <img src={bpjs} alt="" className="img-fluid" />
+                                            <img src={bpjs} alt="" className="gbr-btn-pasien-pilihan" />
                                         </div>
                                     </CardBody>
                                     <div className="text-center" style={{ borderTop: '1px solid', fontFamily: 'sans-serif', fontSize: '36px' }}>

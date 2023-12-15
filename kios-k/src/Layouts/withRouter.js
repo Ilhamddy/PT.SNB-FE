@@ -12,11 +12,6 @@ function withRouter(Component) {
         let navigate = useNavigate();
         let params = useParams();
         return (
-            // <Component
-            //     {...props}
-            //     router={{ location, navigate, params }}
-            // />
-
             <SwitchTransition>
                 <CSSTransition
                     key={location.key}

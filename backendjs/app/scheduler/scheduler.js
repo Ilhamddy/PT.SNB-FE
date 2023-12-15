@@ -67,7 +67,7 @@ const scheduledTask = schedule.scheduleJob('40 * * * *', async function () {
                         noregistrasi: item.noregistrasi,
                         objectpasienfk: item.nocmfk,
                         objectdokterpemeriksafk: item.objectdokterpemeriksafk,
-                        objectkelasfk:item.objectkelasfk,
+                        objectkelasfk: item.objectkelasfk,
                         tglinput: new Date()
                     }, {
                         transaction: transaction
@@ -147,8 +147,11 @@ const scheduledTask = schedule.scheduleJob('40 * * * *', async function () {
     }
 });
 
+/**
+ * TODO: kasih dokumentasi
+ */
 let timesKirimWA = [
-    {hour: 16, minute: 32}, 
+    {hour: 6, minute: 0}, 
 ];
 timesKirimWA.forEach(function(time) {
     let j = schedule.scheduleJob(time, async function() {
@@ -207,7 +210,7 @@ No. Registrasi	: ${pasien.noregistrasi}
 ICD 10		: ${texticdx}
 ICD 9		: ${texticdix}
 Total Pelayanan	: Rp${pasien.totalbiaya?.toLocaleString("id-ID") || "0"}
-Estimasi Klaim	: Rp${pasien.estimasiklaim?.toLocaleString("id-ID") || "0"}
+Estimasi Klaim	: Rp${pasien.estimasiklaim?.toLocaleString("id-ID") || "0"}
     `
                         })
     
