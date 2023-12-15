@@ -67,7 +67,7 @@ const scheduledTask = schedule.scheduleJob('40 * * * *', async function () {
                         noregistrasi: item.noregistrasi,
                         objectpasienfk: item.nocmfk,
                         objectdokterpemeriksafk: item.objectdokterpemeriksafk,
-                        objectkelasfk:item.objectkelasfk,
+                        objectkelasfk: item.objectkelasfk,
                         tglinput: new Date()
                     }, {
                         transaction: transaction

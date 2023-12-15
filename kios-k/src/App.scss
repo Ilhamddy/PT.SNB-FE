@@ -1,149 +1,159 @@
 /* App.scss */
 body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  /* height: 100vh; */
-  background-image: url(assets/images/background.jpg);
-  background-size: cover;
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    /* height: 100vh; */
+    background-image: url(assets/images/background.jpg);
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
 }
 
 .pages-awal {
-  text-align: center;
+    text-align: center;
 }
 
 .kiosk-button {
-  padding: 10px 20px;
-  font-size: 18px;
-  background-color: #007acc;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  margin: 10px;
-  &:hover{
-    background-color: #005eaa;
-  }
-  @media (max-width: 768px) {
-    font-size: 16px;
-    padding: 8px 16px;
-  }
+    padding: 10px 20px;
+    font-size: 18px;
+    background-color: #007acc;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 10px;
+    &:hover {
+        background-color: #005eaa;
+    }
+    @media (max-width: 768px) {
+        font-size: 16px;
+        padding: 8px 16px;
+    }
 }
 
 /* Updated styles for responsive design */
 
-
 .confirmation-page {
-  text-align: center;
-  background-color: white;
-  padding: 20px;
-  border-radius: 5px;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
 }
 
 .confirmation-page h2 {
-  color: #007acc;
+    color: #007acc;
 }
 
 /* Updated styles for responsive design */
 @media (max-width: 768px) {
-  .confirmation-page {
-    padding: 10px;
-  }
+    .confirmation-page {
+        padding: 10px;
+    }
 }
 
 /* Base card styles */
 .custom-card {
-  width: 100%; /* Card takes full width of the parent container */
-  max-width: 400px; /* Optional: Set a maximum width */
-  margin: 0 auto; /* Center the card horizontally */
+    width: 100%; /* Card takes full width of the parent container */
+    max-width: 400px; /* Optional: Set a maximum width */
+    margin: 0 auto; /* Center the card horizontally */
 
-  /* Add additional styling like padding, border, box-shadow, etc. */
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  background-color: rgba(247, 239, 232, 1);
+    /* Add additional styling like padding, border, box-shadow, etc. */
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: rgba(247, 239, 232, 1);
 }
 
 .card-custom-background {
-  background-color: rgba(247, 239, 232, 1) !important;
+    background-color: rgba(247, 239, 232, 1) !important;
 }
 
 /* Responsive styling */
 @media (max-width: 768px) {
-  .custom-card {
-    /* Adjust card styles for smaller screens */
-    padding: 10px;
-  }
+    .custom-card {
+        /* Adjust card styles for smaller screens */
+        padding: 10px;
+    }
 }
-
 
 /* keypad.css */
 /* keypad.css */
 
 /* Keypad container */
 .keypad {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-  max-width: 500px;
-  margin: 0 auto;
-  background-color: #f0f0f0;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  padding: 10px;
-  
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    max-width: 500px;
+    margin: 0 auto;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
 }
 
 /* Numeric buttons */
 .keypad button {
-  width: 100%;
-  padding: 10px;
-  font-size: 1.5rem;
-  background-color: #fff;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  cursor: pointer;
+    width: 100%;
+    padding: 10px;
+    font-size: 1.5rem;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
 }
 
 /* Clear and delete buttons */
 .keypad button.clear {
-  background-color: #ff6347; /* Red color for clear button */
-  color: #fff;
+    background-color: #ff6347; /* Red color for clear button */
+    color: #fff;
 }
 
 .keypad button.delete {
-  background-color: #6c757d; /* Gray color for delete button */
-  color: #fff;
+    background-color: #6c757d; /* Gray color for delete button */
+    color: #fff;
 }
 
 .keypad button.cari {
-  background-color: #7084c7; /* Red color for clear button */
-  color: #fff;
+    background-color: #7084c7; /* Red color for clear button */
+    color: #fff;
 }
 
 /* Equals button */
 .keypad button.equals {
-  grid-column: span 3; /* Span three columns for equals button */
-  background-color: #007bff; /* Blue color for equals button */
-  color: #fff;
+    grid-column: span 3; /* Span three columns for equals button */
+    background-color: #007bff; /* Blue color for equals button */
+    color: #fff;
 }
 
 /* Display area */
 .display {
-  grid-column: span 3;
-  padding: 10px;
-  text-align: right;
-  background-color: #fff;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  font-size: 1.5rem;
+    grid-column: span 3;
+    padding: 10px;
+    text-align: right;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1.5rem;
+}
+
+.gbr-btn-pasien-pilihan {
+    height: 220px;
+}
+
+.kontainer-judul {
+    margin-top: 25px;
+    .teks-judul {
+        font-size: 36px;
+        color: '#000000';
+        text-align: 'center';
+    }
 }

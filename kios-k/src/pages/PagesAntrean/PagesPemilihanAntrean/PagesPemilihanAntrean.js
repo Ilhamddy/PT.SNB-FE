@@ -12,6 +12,8 @@ import baru from '../../../assets/svg/pasien-baru.svg'
 import kasir from '../../../assets/svg/antrean-kasir.svg'
 import CardKiosk from '../../../components/CardKiosk/CardKiosk';
 import { saveAntreanPasienKiosk } from '../../../store/action';
+import "./PagesPemilihanAntrean.scss"
+import HeaderKiosk from '../../../components/HeaderKiosk/HeaderKiosk';
 
 function PagesPemilihanAntrean() {
     const dispatch = useDispatch();
@@ -29,9 +31,9 @@ function PagesPemilihanAntrean() {
     const handleKasir = () => {
         MySwal.fire({
             customClass: {
-                confirmButton: 'btn btn-success',
-                cancelButton: 'btn btn-danger'
-            },
+                confirmButton: 'btn btn-success me-2',
+                cancelButton: 'btn btn-danger',
+              },
             buttonsStyling: false,
             title: 'Anda Akan Mencetak Bukti Pendaftaran..?',
             text: `Silahkan Pilih Tombol Dibawah!`,
@@ -72,10 +74,11 @@ function PagesPemilihanAntrean() {
             <Container fluid>
                 <div className="pages-awal">
                     <Row>
-                        <Col lg={12}>
+                        <HeaderKiosk />
+                        <Col lg={12} className='kontainer-judul'>
                             {/* <img src={logo} alt='Company Logo' /> */}
-                            <h1 style={{ fontSize: '36px', color: '#FFCB46', textAlign: 'center' }}>Pengambilan Nomor Antrean</h1>
-                            <h1 style={{ fontSize: '36px', color: '#FFCB46', textAlign: 'center' }}>Silahkan Pilih Jenis Antrean Yang Dituju</h1>
+                            <h1 className='teks-judul'>Pengambilan Nomor Antrean</h1>
+                            <h1 className='teks-judul'>Silahkan Pilih Jenis Antrean Yang Dituju</h1>
                         </Col>
                         <Col lg={12} className='mr-2'>
                             <div className="d-flex justify-content-end gap-2">
@@ -92,7 +95,7 @@ function PagesPemilihanAntrean() {
                                 <CardKiosk onClick={handlePasienBaru}>
                                     <CardBody>
                                         <div className="mx-auto avatar-md mb-3">
-                                            <img src={baru} alt="" className="img-fluid rounded-circle" />
+                                            <img src={baru} alt="" className="gbr-btn-pasien-pilihan rounded-circle" />
                                         </div>
                                     </CardBody>
                                     <div className="text-center" style={{ borderTop: '1px solid', fontFamily: 'sans-serif', fontSize: '36px' }}>
@@ -106,7 +109,7 @@ function PagesPemilihanAntrean() {
                                 <CardKiosk onClick={handlePasienLama}>
                                     <CardBody>
                                         <div className="mx-auto avatar-md mb-3">
-                                            <img src={lama} alt="" className="img-fluid rounded-circle" />
+                                            <img src={lama} alt="" className="gbr-btn-pasien-pilihan rounded-circle" />
                                         </div>
                                     </CardBody>
                                     <div className="text-center" style={{ borderTop: '1px solid', fontFamily: 'sans-serif', fontSize: '36px' }}>
@@ -120,7 +123,7 @@ function PagesPemilihanAntrean() {
                                 <CardKiosk onClick={handleKasir}>
                                     <CardBody>
                                         <div className="mx-auto avatar-md mb-3">
-                                            <img src={kasir} alt="" className="img-fluid rounded-circle" />
+                                            <img src={kasir} alt="" className="gbr-btn-pasien-pilihan rounded-circle" />
                                         </div>
                                     </CardBody>
                                     <div className="text-center" style={{ borderTop: '1px solid', fontFamily: 'sans-serif', fontSize: '36px' }}>
