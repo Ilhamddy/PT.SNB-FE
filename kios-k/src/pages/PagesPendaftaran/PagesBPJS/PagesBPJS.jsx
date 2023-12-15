@@ -575,7 +575,7 @@ function Step1({ handleNextStep, onStepsChange }) {
                   </button>
                   <button
                     type="button"
-                    className="cari"
+                    className="cari d-flex align-items-center justify-content-center"
                     onClick={handleCariButtonClick}
                   >
                     <img width={25} height={25} alt="" src={IkonEnter} />
