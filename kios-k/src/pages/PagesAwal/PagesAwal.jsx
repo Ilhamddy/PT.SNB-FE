@@ -23,10 +23,7 @@ function PagesAwal() {
       <div className="pages-awal">
         <Row>
           <HeaderKiosk />
-          <Col lg={12}>
-            <img src={logo} alt="Company Logo" />
-          </Col>
-          <Col lg={6}>
+          <Col lg={6} className="mt-5">
             <div className="d-flex justify-content-center">
               <CardKiosk onClick={handleCardClickAntrean}>
                 <CardBody>
@@ -51,7 +48,7 @@ function PagesAwal() {
               </CardKiosk>
             </div>
           </Col>
-          <Col lg={6}>
+          <Col lg={6} className="mt-5">
             <div className="d-flex justify-content-center">
               <CardKiosk onClick={handleCardClickAPM}>
                 <CardBody>
