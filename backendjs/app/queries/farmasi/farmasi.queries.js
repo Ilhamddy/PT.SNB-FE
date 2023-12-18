@@ -139,6 +139,8 @@ LIMIT 10
 const qGetAllVerif = `
 SELECT 
     row_number() OVER () AS no,
+    tap.norec AS norecap,
+    tor.norec AS norecresep,
     tvr.norec AS norecverif,
     tvr.kode_r AS koder,
     tvr.kode_r_tambahan AS kodertambahan,
