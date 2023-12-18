@@ -20,7 +20,7 @@ import CustomSelect from '../../Select/Select';
 
 import {
     emrDiagnosaixSave, emrResetForm, emrDiagnosaixGet,
-    emrListDiagnosaixGet, deleteDiagnosaix,comboNamaPelaksanaGet
+    emrListDiagnosaixGet, deleteDiagnosaix,comboNamaPelaksanaGet, upsertProcedure
 } from "../../../store/actions";
 import DeleteModalCustom from '../../../Components/Common/DeleteModalCustom';
 import LoadingTable from '../../../Components/Table/LoadingTable';
@@ -68,6 +68,7 @@ const Diagnosaix = () => {
     const validation = useFormik({
         enableReinitialize: true,
         initialValues: {
+            norecdp: norecdp,
             norecap: editData?.norecap ?? norecap,
             norec: editData?.norec ?? '',
             kodediagnosa9: editData?.kodediagnosa9 ?? '',
@@ -75,7 +76,13 @@ const Diagnosaix = () => {
             idlabel: 3,
             label: 'DIAGNOSA',
             jumlahtindakan: editData?.jumlahtindakan ?? '',
-            dokterPelaksana: editData?.dokterPelaksana ?? ''
+            dokterPelaksana: editData?.dokterPelaksana ?? '',
+            ihs_diagnosa:'',
+            codestatus:'',
+            displaystatus:'',
+            ihs_dokter:'',
+            namakodediagnosa: editData?.namakodediagnosa ?? '',
+            codekodediagnosa: editData?.codekodediagnosa ?? '',
         },
         validationSchema: Yup.object({
             kodediagnosa9: Yup.string().required("Diagnosa Belum Diisi"),
@@ -85,7 +92,8 @@ const Diagnosaix = () => {
         onSubmit: (values, { resetForm }) => {
             console.log(values)
             dispatch(emrDiagnosaixSave(values, ''));
-            resetForm({ values: '' })
+            resetForm({ values: '' }) 
+            // dispatch(upsertProcedure(values, ''));
         }
     })
 
@@ -97,12 +105,6 @@ const Diagnosaix = () => {
         setDeleteModal(true);
     };
 
-    const handleDeleteOrder = () => {
-        if (product) {
-            dispatch(deleteDiagnosaix(product.norec));
-            setDeleteModal(false);
-        }
-    };
     const handleClickReset = (e) => {
         validation.setFieldValue('kodediagnosa9', '')
         validation.setFieldValue('keteranganicd9', '')
@@ -182,6 +184,30 @@ const Diagnosaix = () => {
             sortable: true
         },
     ];
+    const handleDeleteOrder = () => {
+        if (product) {
+            dispatch(deleteDiagnosaix(product.norec));
+            setDeleteModal(false);
+            let values ={
+                codestatus:'inactive',
+                displaystatus:'Inactive',
+                ihs_diagnosa:product.ihs_diagnosa,
+                codekodediagnosa:product.kodediagnosa,
+                namakodediagnosa:product.label,
+                norecdp:product.norecdp,
+                keteranganicd9:product.keterangan,
+                ihs_dokter:product.ihs_dokter
+            }
+            console.log(values)
+            if(product.ihs_diagnosa!==null){
+                dispatch(
+                    upsertProcedure(values, () => {
+                        // resetForm()
+                    })
+                  )
+            }
+        }
+    };
     return (
         <React.Fragment>
             <DeleteModalCustom
@@ -222,7 +248,11 @@ const Diagnosaix = () => {
                                                     options={dataDiagnosa}
                                                     value={validation.values.kodediagnosa9 || ""}
                                                     className={`input ${validation.errors.kodediagnosa9 ? "is-invalid" : ""}`}
-                                                    onChange={value => validation.setFieldValue('kodediagnosa9', value?.value || "")}
+                                                    onChange={value => {
+                                                        validation.setFieldValue('kodediagnosa9', value?.value || "")
+                                                        validation.setFieldValue('namakodediagnosa', value?.label || "")
+                                                        validation.setFieldValue('codekodediagnosa', value?.kodeexternal || "")
+                                                    }}
                                                     onInputChange={handleDiagnosa}
                                                     ref={refTipeDiagnosa}
                                                 />
@@ -295,6 +325,7 @@ const Diagnosaix = () => {
                                                 options={dataNamaPelaksana}
                                                 onChange={(e) => {
                                                     validation.setFieldValue('dokterPelaksana', e?.value || '')
+                                                    validation.setFieldValue('ihs_dokter', e?.ihs_id || '')
                                                 }}
                                                 value={validation.values.dokterPelaksana}
                                                 className={`input row-header ${

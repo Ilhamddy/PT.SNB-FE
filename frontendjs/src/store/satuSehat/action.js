@@ -13,7 +13,8 @@ import {
     GET_LIST_KAMAR,GET_LIST_KAMAR_SUCCESS,GET_LIST_KAMAR_ERROR,
     UPSERT_LOCATION_KAMAR,UPSERT_LOCATION_KAMAR_SUCCESS,UPSERT_LOCATION_KAMAR_ERROR,
     GET_LIST_TEMPATTIDUR,GET_LIST_TEMPATTIDUR_SUCCESS,GET_LIST_TEMPATTIDUR_ERROR,
-    UPSERT_LOCATION_TEMPATTIDUR,UPSERT_LOCATION_TEMPATTIDUR_SUCCESS,UPSERT_LOCATION_TEMPATTIDUR_ERROR
+    UPSERT_LOCATION_TEMPATTIDUR,UPSERT_LOCATION_TEMPATTIDUR_SUCCESS,UPSERT_LOCATION_TEMPATTIDUR_ERROR,
+    UPSERT_PROCEDURE,UPSERT_PROCEDURE_SUCCESS,UPSERT_PROCEDURE_ERROR
 } from "./actionType";
 
 export const getListInstalasi = (queries) => ({
@@ -278,5 +279,23 @@ export const upsertLocationTempatTidurSuccess = (data) => ({
 
 export const upsertLocationTempatTidurError = (error) => ({
     type: UPSERT_LOCATION_TEMPATTIDUR_ERROR,
+    payload: error,
+});
+
+export const upsertProcedure = (data, callback) => ({
+    type: UPSERT_PROCEDURE,
+    payload: {
+        data,
+        callback
+    },
+});
+
+export const upsertProcedureSuccess = (data) => ({
+    type: UPSERT_PROCEDURE_SUCCESS,
+    payload: data,
+});
+
+export const upsertProcedureError = (error) => ({
+    type: UPSERT_PROCEDURE_ERROR,
     payload: error,
 });

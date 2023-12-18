@@ -48,4 +48,7 @@ export default class ServiceSatuSehat {
     upsertLocationTempatTidur = async (body) => {
         return await api.create("/transaksi/satu-sehat/upsert-location-tempattidur", body)
     }
+    upsertProcedure = async (body) => {
+        return await api.create("/transaksi/satu-sehat/upsert-procedure", body)
+    }
 }

@@ -84,4 +84,9 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.upsertLocationTempatTidur
     )
+    app.post(
+        "/api/transaksi/satu-sehat/upsert-procedure",
+        [authJwt.verifyToken],
+        controller.upsertProcedure
+    )
 }

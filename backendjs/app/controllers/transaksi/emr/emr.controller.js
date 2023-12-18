@@ -861,7 +861,7 @@ async function getListDiagnosa10(req, res) {
 async function getListDiagnosa9(req, res) {
     const logger = res.locals.logger
     try {
-        const result = await queryPromise2(`SELECT id as value,kodeexternal || ' - '||reportdisplay as label
+        const result = await queryPromise2(`SELECT id as value,kodeexternal || ' - '||reportdisplay as label,kodeexternal
             FROM m_icdix where reportdisplay ilike '%${req.query.namadiagnosa}%' or kodeexternal ilike '%${req.query.namadiagnosa}%' limit 10
         `);
         if (result.rowCount === 0) {
@@ -1008,12 +1008,15 @@ async function getListDiagnosaIxPasien(req, res) {
         const resultList = await queryPromise2(`SELECT row_number() OVER (ORDER BY td.norec) AS no,dp.noregistrasi,
         to_char(dp.tglregistrasi,'yyyy-MM-dd') as tglregistrasi,td.norec,mu.namaunit,
         mi.kodeexternal ||' - '|| mi.reportdisplay as label,
-        mi.id as value, td.keterangan, td.qty
+        mi.id as value, td.keterangan, td.qty,dp.ihs_id as ihs_dp,td.ihs_id as ihs_diagnosa, mp.namapasien,mp.ihs_id as ihs_pasien,dp.norec as norecdp,
+        mi.kodeexternal as kodediagnosa,mp2.ihs_id as ihs_dokter
                 FROM t_daftarpasien dp 
         join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk=dp.norec
         join t_diagnosatindakan td  on td.objectantreanpemeriksaanfk =ta.norec
         join m_unit mu on mu.id=ta.objectunitfk
-        join m_icdix mi on mi.id=td.objecticdixfk where dp.nocmfk='${nocmfk}' and td.statusenabled=true
+        join m_icdix mi on mi.id=td.objecticdixfk
+        join m_pasien mp on mp.id=dp.nocmfk
+        join m_pegawai mp2 on mp2.id=td.objectpegawaifk where dp.nocmfk='${nocmfk}' and td.statusenabled=true
         `);
         res.status(200).send({
             data: resultList.rows,
@@ -1041,7 +1044,8 @@ async function saveEmrPasienDiagnosaix(req, res) {
             keterangan: req.body.keteranganicd9,
             tglinput: new Date(),
             objectpegawaifk: req.idPegawai,
-            qty: req.body.jumlahtindakan
+            qty: req.body.jumlahtindakan,
+            objectdokterfk:req.body.dokterPelaksana
         }, { transaction });
 
         await transaction.commit();
