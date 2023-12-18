@@ -2,7 +2,6 @@ import React from 'react'
 import '../../App.scss' // Import your CSS file for styling
 import { useNavigate } from 'react-router-dom'
 import { Row, Col, CardBody, Container } from 'reactstrap'
-import logo from '../../assets/svg/snb.svg'
 import antrean from '../../assets/svg/pengambilan-antrean.svg'
 import daftar from '../../assets/svg/pendaftaran-mandiri.svg'
 import CardKiosk from '../../components/CardKiosk/CardKiosk'
