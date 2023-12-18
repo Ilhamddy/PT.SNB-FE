@@ -119,6 +119,12 @@ export default (sequelize, Sequelize) => {
         },
         objecthasildiastolfk:{
             type:Sequelize.INTEGER
+        },
+        ihs_kesadaran:{
+            type:Sequelize.INTEGER
+        },
+        status_ihs_kesadaran:{
+            type: Sequelize.BOOLEAN
         }
     }, {
         tableName: "t_ttv", // relation "user" does not exist
