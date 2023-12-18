@@ -216,8 +216,13 @@ const TandaVital = () => {
         {
 
             name: <span className='font-weight-bold fs-13'>GCS(EMV)</span>,
-            selector: row => row.namagcs,
-            sortable: true
+            // selector: row => row.namagcs,
+            sortable: true,
+            selector: (data) => {
+                return (
+                    <button type='button' className={"btn btn-sm "+data.status_kesadaran} onClick={() => handleClickKesadaran(data)}>{data.namagcs}</button>
+                );
+            },
         },
         {
 
@@ -293,6 +298,18 @@ const TandaVital = () => {
             norecdp:norecdp,
             status:'nadi',
             ihs_nadi:e.ihs_nadi
+        }
+        dispatch(upsertObservation(tempValue,()=>{
+            dispatch(emrTtvGet(norecdp));
+        }));
+    }
+    const handleClickKesadaran = (e)=>{
+        let tempValue={
+            norec:e.norec,
+            nilai:e.nadi,
+            norecdp:norecdp,
+            status:'kesadaran',
+            ihs_kesadaran:e.ihs_kesadaran
         }
         dispatch(upsertObservation(tempValue,()=>{
             dispatch(emrTtvGet(norecdp));

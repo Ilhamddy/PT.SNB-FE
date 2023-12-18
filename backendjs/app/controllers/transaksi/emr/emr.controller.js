@@ -156,7 +156,9 @@ async function getListTtv(req, res) {
         end as status_sistole,
         case when tt.status_ihs_diastole=true then 'btn-soft-info' else 'btn-soft-danger'
         end as status_diastole,tt.ihs_sistole,tt.ihs_diastole,mh.code as codenadi,mh.display as displaynadi,mh.teks as teksnadi,
-        mh2.code as codepernapasan,mh2.display as displaypernapasan,mh2.teks as tekspernapasan
+        mh2.code as codepernapasan,mh2.display as displaypernapasan,mh2.teks as tekspernapasan,
+        case when tt.status_ihs_kesadaran=true then 'btn-soft-info' else 'btn-soft-danger'
+        end as status_kesadaran,tt.status_ihs_kesadaran,tt.ihs_kesadaran
                 FROM t_daftarpasien dp 
         join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk=dp.norec
         join t_emrpasien te on te.objectantreanpemeriksaanfk=ta.norec 

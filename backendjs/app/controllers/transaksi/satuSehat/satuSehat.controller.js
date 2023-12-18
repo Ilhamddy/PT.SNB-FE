@@ -2039,8 +2039,8 @@ async function tempObservationKesadaran(reqTemp) {
     const profile = await pool.query(profileQueries.getAll);
     const currentDate = new Date();
     let tempIdNadi=''
-    if(reqTemp.ihs_diastole!==null){
-        tempIdNadi = {'id':reqTemp.ihs_diastole}
+    if(reqTemp.ihs_kesadaran!==null){
+        tempIdNadi = {'id':reqTemp.ihs_kesadaran}
     }
     const observationData = {
         resourceType: "Observation",
@@ -2083,8 +2083,8 @@ async function tempObservationKesadaran(reqTemp) {
             coding: [
                 {
                     system: "http://snomed.info/sct",
-                    code: "248234008",
-                    display: "Mentally alert"
+                    code: reqTemp.ihs_observationcodecoding,
+                    display: reqTemp.ihs_observationcodecodingdisplay
                 }
             ]
         },
@@ -2136,6 +2136,9 @@ const upsertObservation = async (req, res) => {
             codediastol:resdataTTV.codediastol,
             displaydiastol:resdataTTV.displaydiastol,
             teksdiastol:resdataTTV.teksdiastol,
+            ihs_observationcodecoding:resdataTTV.ihs_observationcodecoding,
+            ihs_observationcodecodingdisplay:resdataTTV.ihs_observationcodecodingdisplay,
+            ihs_kesadaran:resdataTTV.ihs_kesadaran
         };
 
         let url = '/Observation';
@@ -2172,19 +2175,17 @@ const upsertObservation = async (req, res) => {
                 method = 'PUT';
             }
             observation = await tempObservationDiastole(temp);
+        } else if (req.body.status === 'kesadaran') {
+            if(req.body.ihs_kesadaran !== null){
+                url = `/Observation/${req.body.ihs_kesadaran}`;
+                method = 'PUT';
+            }
+            observation = await tempObservationKesadaran(temp);
         }
-        // res.status(200).send({
-        //     msg: 'Sukses',
-        //     code: 200,
-        //     data: { observation },
-        //     success: true,
-        // });
-        // return
         let response = await postGetSatuSehat(method, url, observation);
 
         const setInstalasi = await db.sequelize.transaction(async (transaction) => {
             let setInstalasi = '';
-
             if (response.resourceType === 'Observation') {
                 if (req.body.status === 'nadi') {
                     setInstalasi = await db.t_ttv.update({ ihs_nadi: response.id,status_ihs_nadi:true }, { where: { norec: req.body.norec }, transaction });
@@ -2196,9 +2197,10 @@ const upsertObservation = async (req, res) => {
                     setInstalasi = await db.t_ttv.update({ ihs_sistole: response.id,status_ihs_sistole:true }, { where: { norec: req.body.norec }, transaction });
                 } else if (req.body.status === 'diastole') {
                     setInstalasi = await db.t_ttv.update({ ihs_diastole: response.id,status_ihs_diastole:true }, { where: { norec: req.body.norec }, transaction });
+                } else if (req.body.status === 'kesadaran') {
+                    setInstalasi = await db.t_ttv.update({ ihs_kesadaran: response.id,status_ihs_kesadaran:true }, { where: { norec: req.body.norec }, transaction });
                 }
             }
-
             return setInstalasi;
         });
 
@@ -2504,7 +2506,189 @@ const upsertLocationTempatTidur = async (req, res) => {
     }
 }
 
+async function tempProcedure(reqTemp) {
+    const profile = await pool.query(profileQueries.getAll);
+    const currentDate = new Date();
+    let procedureData = {
+        resourceType: "Procedure",
+        status: "completed",
+        category: {
+            coding: [
+                {
+                    system: "http://snomed.info/sct",
+                    code: "103693007",
+                    display: "Diagnostic procedure"
+                }
+            ],
+            text: "Diagnostic procedure"
+        },
+        code: {
+            coding: [
+                {
+                    system: "http://hl7.org/fhir/sid/icd-9-cm",
+                    code: reqTemp.codestatus,
+                    display: reqTemp.displaystatus
+                }
+            ]
+        },
+        subject: {
+            reference: "Patient/"+reqTemp.ihs_pasien,
+            display: reqTemp.namapasien
+        },
+        encounter: {
+            reference: "Encounter/"+reqTemp.ihs_dp,
+            display: "Tindakan Rontgen Dada Budi Santoso pada Selasa tanggal 14 Juni 2022"
+        },
+        performedPeriod: {
+            start: "2022-06-14T13:31:00+01:00",
+            end: "2022-06-14T14:27:00+01:00"
+        },
+        performer: [
+            {
+                actor: {
+                    reference: "Practitioner/N10000001",
+                    display: "Dokter Bronsig"
+                }
+            }
+        ],
+        reasonCode: [
+            {
+                coding: [
+                    {
+                        system: "http://hl7.org/fhir/sid/icd-10",
+                        code: "A15.0",
+                        display: "Tuberculosis of lung, confirmed by sputum microscopy with or without culture"
+                    }
+                ]
+            }
+        ],
+        bodySite: [
+            {
+                coding: [
+                    {
+                        system: "http://snomed.info/sct",
+                        code: "302551006",
+                        display: "Entire Thorax"
+                    }
+                ]
+            }
+        ],
+        note: [
+            {
+                text: "Rontgen thorax melihat perluasan infiltrat dan kavitas."
+            }
+        ]
+    };    
+    if(reqTemp.codestatus!=='active'){
+        procedureData = {
+            resourceType: "Condition",
+            id: reqTemp.ihs_diagnosa,
+            clinicalStatus: {
+                coding: [
+                    {
+                        system: "http://terminology.hl7.org/CodeSystem/condition-clinical",
+                        code: reqTemp.codestatus,
+                        display: reqTemp.displaystatus
+                    }
+                ]
+            },
+            category: [
+                {
+                    coding: [
+                        {
+                            system: "http://terminology.hl7.org/CodeSystem/condition-category",
+                            code: "encounter-diagnosis",
+                            display: "Encounter Diagnosis"
+                        }
+                    ]
+                }
+            ],
+            code: {
+                coding: [
+                    {
+                        system: "http://hl7.org/fhir/sid/icd-10",
+                        code: reqTemp.codekodediagnosa,
+                        display: reqTemp.namakodediagnosa
+                    }
+                ]
+            },
+            subject: {
+                reference: "Patient/"+reqTemp.ihs_pasien,
+                display: reqTemp.namapasien
+            },
+            encounter: {
+                reference: "Encounter/"+reqTemp.ihs_dp
+            }
+        };
+    }
+                return procedureData
+}
 
+const upsertProcedure = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const profilePasien = await pool.query(satuSehatQueries.qGetDataPasienByNorecDp,[req.body.norecdp]);
+        
+        let temp ={
+            codestatus:req.body.codestatus,
+            displaystatus:req.body.displaystatus,
+            ihs_diagnosa:req.body.ihs_diagnosa,
+            codekodediagnosa:req.body.codekodediagnosa,
+            namakodediagnosa:req.body.namakodediagnosa,
+            ihs_dp:profilePasien.rows[0].ihs_dp,
+            ihs_pasien:profilePasien.rows[0].ihs_pasien,
+            namapasien:profilePasien.rows[0].namapasien
+        }
+        const condition = await tempConditionPrimary(temp)
+        let url ='/Condition'
+        let method = 'POST'
+        if(req.body.ihs_diagnosa!==''){
+            url ='/Condition/'+req.body.ihs_diagnosa
+            method='PUT'
+        }
+        let response = await postGetSatuSehat(method, url,condition);
+        
+        const { setInstalasi } = await db.sequelize.transaction(async (transaction) => {
+            let setInstalasi = ''
+            if(req.body.codestatus==='active'){
+                if(response.resourceType==='Condition'){
+                    setInstalasi = await db.t_diagnosapasien.update({
+                        ihs_id: response.id,
+                    }, {
+                        where: {
+                            norec: req.body.norec
+                        },
+                        transaction: transaction
+                    });
+                }
+            }
+            return { setInstalasi }
+        });
+        
+        const tempres = {
+            condition:response,
+            diagnosapasien:setInstalasi,
+            // profilePasien:profilePasien.rows,
+            datacondition:condition,
+            // url:url,
+            // method:method
+        };
+        res.status(200).send({
+            msg: 'Sukses',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message || 'Gagal',
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
 
 export default {
     getListInstalasi,

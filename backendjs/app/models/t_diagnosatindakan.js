@@ -33,6 +33,12 @@ export default (sequelize, Sequelize) => {
         qty:{
             type: Sequelize.INTEGER
         },
+        ihs_id:{
+            type: Sequelize.STRING
+        },
+        objectdokterfk:{
+            type: Sequelize.INTEGER
+        },
     }, {
         tableName: "t_diagnosatindakan", // relation "user" does not exist
         createdAt: false,

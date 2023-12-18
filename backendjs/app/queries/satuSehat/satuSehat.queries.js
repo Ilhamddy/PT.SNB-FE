@@ -60,7 +60,8 @@ end as status_diastole,tt.ihs_sistole,tt.ihs_diastole,mh.code as codenadi,mh.dis
 mh2.code as codepernapasan,mh2.display as displaypernapasan,mh2.teks as tekspernapasan,
 mh3.code as codesuhu,mh3.display as displaysuhu,mh3.teks as tekssuhu,
 mh4.code as codesistol,mh4.display as displaysistol,mh4.teks as tekssistol,
-mh5.code as codediastol,mh5.display as displaydiastol,mh5.teks as teksdiastol
+mh5.code as codediastol,mh5.display as displaydiastol,mh5.teks as teksdiastol,
+mr.ihs_code as ihs_observationcodecoding,mr.ihs_observationcodecodingdisplay,tt.ihs_kesadaran
         FROM t_daftarpasien dp 
 join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk=dp.norec
 join t_emrpasien te on te.objectantreanpemeriksaanfk=ta.norec 

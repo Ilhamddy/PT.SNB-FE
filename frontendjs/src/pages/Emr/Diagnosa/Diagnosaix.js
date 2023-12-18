@@ -20,7 +20,7 @@ import CustomSelect from '../../Select/Select';
 
 import {
     emrDiagnosaixSave, emrResetForm, emrDiagnosaixGet,
-    emrListDiagnosaixGet, deleteDiagnosaix
+    emrListDiagnosaixGet, deleteDiagnosaix,comboNamaPelaksanaGet
 } from "../../../store/actions";
 import DeleteModalCustom from '../../../Components/Common/DeleteModalCustom';
 import LoadingTable from '../../../Components/Table/LoadingTable';
@@ -32,7 +32,7 @@ const Diagnosaix = () => {
     const refTipeDiagnosa = useRef(null);
     const { editData, newData, loading, error, success, dataCombo, loadingCombo, successCombo, dataDiagnosa,
         loadingDiagnosa, successDiagnosa, dataRiwayat, loadingRiwayat, successRiwayat,
-        newDataDelete } = useSelector((state) => ({
+        newDataDelete,dataNamaPelaksana } = useSelector((state) => ({
             newData: state.Emr.emrDiagnosaixSave.newData,
             success: state.Emr.emrDiagnosaixSave.success,
             loading: state.Emr.emrDiagnosaixSave.loading,
@@ -43,6 +43,7 @@ const Diagnosaix = () => {
             loadingRiwayat: state.Emr.emrListDiagnosaixGet.loading,
             successRiwayat: state.Emr.emrListDiagnosaixGet.success,
             newDataDelete: state.Emr.deleteDiagnosaix.newData,
+            dataNamaPelaksana: state.Emr.comboNamaPelaksanaGet.data,
         }));
 
     useEffect(() => {
@@ -54,6 +55,7 @@ const Diagnosaix = () => {
         if (norecdp) {
             dispatch(emrDiagnosaixGet('', 'diagnosa9'));
             dispatch(emrListDiagnosaixGet(norecdp))
+            dispatch(comboNamaPelaksanaGet(''));
         }
     }, [norecdp, dispatch])
     useEffect(() => {
@@ -72,11 +74,13 @@ const Diagnosaix = () => {
             keteranganicd9: editData?.keteranganicd9 ?? '',
             idlabel: 3,
             label: 'DIAGNOSA',
-            jumlahtindakan: editData?.jumlahtindakan ?? ''
+            jumlahtindakan: editData?.jumlahtindakan ?? '',
+            dokterPelaksana: editData?.dokterPelaksana ?? ''
         },
         validationSchema: Yup.object({
             kodediagnosa9: Yup.string().required("Diagnosa Belum Diisi"),
-            jumlahtindakan: Yup.string().required("Jumlah Tindakan Belum Diisi")
+            jumlahtindakan: Yup.string().required("Jumlah Tindakan Belum Diisi"),
+            dokterPelaksana:Yup.string().required("Dokter Pelaksana Belum Diisi"),
         }),
         onSubmit: (values, { resetForm }) => {
             console.log(values)
@@ -278,6 +282,34 @@ const Diagnosaix = () => {
                                                 ) : null}
                                             </div>
                                         </Col>
+
+                                        <Col xxl={4} md={4}>
+                                            <div className="mt-2">
+                                                <Label style={{ color: "black" }} htmlFor="keteranganicd9" className="form-label">Dokter Pelaksana</Label>
+                                            </div>
+                                        </Col>
+                                        <Col xxl={8} md={8}>
+                                            <CustomSelect
+                                                id="dokterPelaksana"
+                                                name="dokterPelaksana"
+                                                options={dataNamaPelaksana}
+                                                onChange={(e) => {
+                                                    validation.setFieldValue('dokterPelaksana', e?.value || '')
+                                                }}
+                                                value={validation.values.dokterPelaksana}
+                                                className={`input row-header ${
+                                                    !!validation?.errors.dokterPelaksana ? 'is-invalid' : ''
+                                                }`}
+                                                isClearEmpty
+                                                />
+                                            {validation.touched.dokterPelaksana &&
+                                                !!validation.errors.dokterPelaksana && (
+                                                    <FormFeedback type="invalid">
+                                                        <div>{validation.errors.dokterPelaksana}</div>
+                                                    </FormFeedback>
+                                                )}
+                                        </Col>
+
                                         <Col xxl={12} sm={12}>
                                             <div className="d-flex flex-wrap gap-2">
                                                 <Button type="submit" color="success" placement="top">
