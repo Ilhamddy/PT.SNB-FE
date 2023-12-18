@@ -2507,8 +2507,6 @@ const upsertLocationTempatTidur = async (req, res) => {
 }
 
 async function tempProcedure(reqTemp) {
-    const profile = await pool.query(profileQueries.getAll);
-    const currentDate = new Date();
     let procedureData = {
         resourceType: "Procedure",
         status: "completed",
@@ -2523,11 +2521,10 @@ async function tempProcedure(reqTemp) {
             text: "Diagnostic procedure"
         },
         code: {
-            coding: [
-                {
+            coding: [{
                     system: "http://hl7.org/fhir/sid/icd-9-cm",
-                    code: reqTemp.codestatus,
-                    display: reqTemp.displaystatus
+                    code: reqTemp.codekodediagnosa,
+                    display: reqTemp.namakodediagnosa
                 }
             ]
         },
@@ -2537,76 +2534,64 @@ async function tempProcedure(reqTemp) {
         },
         encounter: {
             reference: "Encounter/"+reqTemp.ihs_dp,
-            display: "Tindakan Rontgen Dada Budi Santoso pada Selasa tanggal 14 Juni 2022"
+            display: "Tindakan Pasien "+reqTemp.namapasien
         },
         performedPeriod: {
-            start: "2022-06-14T13:31:00+01:00",
-            end: "2022-06-14T14:27:00+01:00"
+            start: reqTemp.datenow,
+            end: reqTemp.datenow
         },
-        performer: [
-            {
+        performer: [{
                 actor: {
-                    reference: "Practitioner/N10000001",
-                    display: "Dokter Bronsig"
+                    reference: "Practitioner/"+reqTemp.ihs_dokter
                 }
             }
         ],
-        reasonCode: [
-            {
+        reasonCode: [{
                 coding: [
                     {
                         system: "http://hl7.org/fhir/sid/icd-10",
-                        code: "A15.0",
-                        display: "Tuberculosis of lung, confirmed by sputum microscopy with or without culture"
+                        code: reqTemp.diagnosa10,
+                        display: reqTemp.labeldiagnosa10
                     }
                 ]
             }
         ],
-        bodySite: [
-            {
-                coding: [
-                    {
-                        system: "http://snomed.info/sct",
-                        code: "302551006",
-                        display: "Entire Thorax"
-                    }
-                ]
-            }
-        ],
+        // bodySite: [
+        //     {
+        //         coding: [
+        //             {
+        //                 system: "http://snomed.info/sct",
+        //                 code: "302551006",
+        //                 display: "Entire Thorax"
+        //             }
+        //         ]
+        //     }
+        // ],
         note: [
             {
-                text: "Rontgen thorax melihat perluasan infiltrat dan kavitas."
+                text: reqTemp.keteranganicd9
             }
         ]
     };    
     if(reqTemp.codestatus!=='active'){
         procedureData = {
-            resourceType: "Condition",
+            resourceType: "Procedure",
             id: reqTemp.ihs_diagnosa,
-            clinicalStatus: {
+            status: "inactive",
+            category: {
                 coding: [
                     {
-                        system: "http://terminology.hl7.org/CodeSystem/condition-clinical",
-                        code: reqTemp.codestatus,
-                        display: reqTemp.displaystatus
+                        system: "http://snomed.info/sct",
+                        code: "103693007",
+                        display: "Diagnostic procedure"
                     }
-                ]
+                ],
+                text: "Diagnostic procedure"
             },
-            category: [
-                {
-                    coding: [
-                        {
-                            system: "http://terminology.hl7.org/CodeSystem/condition-category",
-                            code: "encounter-diagnosis",
-                            display: "Encounter Diagnosis"
-                        }
-                    ]
-                }
-            ],
             code: {
                 coding: [
                     {
-                        system: "http://hl7.org/fhir/sid/icd-10",
+                        system: "http://hl7.org/fhir/sid/icd-9-cm",
                         code: reqTemp.codekodediagnosa,
                         display: reqTemp.namakodediagnosa
                     }
@@ -2617,9 +2602,37 @@ async function tempProcedure(reqTemp) {
                 display: reqTemp.namapasien
             },
             encounter: {
-                reference: "Encounter/"+reqTemp.ihs_dp
-            }
-        };
+                reference: "Encounter/"+reqTemp.ihs_dp,
+                display: "Tindakan Pasien "+reqTemp.namapasien
+            },
+            performedPeriod: {
+                start: reqTemp.datenow,
+                end: reqTemp.datenow
+            },
+            performer: [
+                {
+                    actor: {
+                        reference: "Practitioner/"+reqTemp.ihs_dokter
+                    }
+                }
+            ],
+            reasonCode: [
+                {
+                    coding: [
+                        {
+                            system: "http://hl7.org/fhir/sid/icd-10",
+                            code: reqTemp.diagnosa10,
+                            display: reqTemp.labeldiagnosa10
+                        }
+                    ]
+                }
+            ],
+            note: [
+                {
+                    text: reqTemp.keteranganicd9
+                }
+            ]
+        }; 
     }
                 return procedureData
 }
@@ -2627,23 +2640,30 @@ async function tempProcedure(reqTemp) {
 const upsertProcedure = async (req, res) => {
     const logger = res.locals.logger;
     try{
+        const currentDate = await getCurrentDateAsync();
         const profilePasien = await pool.query(satuSehatQueries.qGetDataPasienByNorecDp,[req.body.norecdp]);
-        
+        const diagnosa10 = await pool.query(satuSehatQueries.qDiagnosaPrimary,[req.body.norecdp]);
+
         let temp ={
             codestatus:req.body.codestatus,
             displaystatus:req.body.displaystatus,
             ihs_diagnosa:req.body.ihs_diagnosa,
             codekodediagnosa:req.body.codekodediagnosa,
             namakodediagnosa:req.body.namakodediagnosa,
+            ihs_dokter:req.body.ihs_dokter,
+            keteranganicd9:req.body.keteranganicd9,
             ihs_dp:profilePasien.rows[0].ihs_dp,
             ihs_pasien:profilePasien.rows[0].ihs_pasien,
-            namapasien:profilePasien.rows[0].namapasien
+            namapasien:profilePasien.rows[0].namapasien,
+            diagnosa10:diagnosa10.rows[0].kodediagnosa,
+            labeldiagnosa10:diagnosa10.rows[0].label,
+            datenow: currentDate,
         }
-        const condition = await tempConditionPrimary(temp)
-        let url ='/Condition'
+        const condition = await tempProcedure(temp)
+        let url ='/Procedure'
         let method = 'POST'
         if(req.body.ihs_diagnosa!==''){
-            url ='/Condition/'+req.body.ihs_diagnosa
+            url ='/Procedure/'+req.body.ihs_diagnosa
             method='PUT'
         }
         let response = await postGetSatuSehat(method, url,condition);
@@ -2651,8 +2671,8 @@ const upsertProcedure = async (req, res) => {
         const { setInstalasi } = await db.sequelize.transaction(async (transaction) => {
             let setInstalasi = ''
             if(req.body.codestatus==='active'){
-                if(response.resourceType==='Condition'){
-                    setInstalasi = await db.t_diagnosapasien.update({
+                if(response.resourceType==='Procedure'){
+                    setInstalasi = await db.t_diagnosatindakan.update({
                         ihs_id: response.id,
                     }, {
                         where: {
@@ -2668,10 +2688,7 @@ const upsertProcedure = async (req, res) => {
         const tempres = {
             condition:response,
             diagnosapasien:setInstalasi,
-            // profilePasien:profilePasien.rows,
-            datacondition:condition,
-            // url:url,
-            // method:method
+            datacondition:condition
         };
         res.status(200).send({
             msg: 'Sukses',
@@ -2706,5 +2723,6 @@ export default {
     getListKamar,
     updateLocationKamar,
     getListTempatTidur,
-    upsertLocationTempatTidur
+    upsertLocationTempatTidur,
+    upsertProcedure
 }

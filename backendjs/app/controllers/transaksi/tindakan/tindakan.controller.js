@@ -90,7 +90,7 @@ async function getListJenisPelaksana(req, res) {
 async function getListNamaPelaksana(req, res) {
     const logger = res.locals.logger
     try {
-        const resultlistantreanpemeriksaan = await queryPromise2(`select id as value, namalengkap as label from m_pegawai mp
+        const resultlistantreanpemeriksaan = await queryPromise2(`select id as value, namalengkap as label,ihs_id from m_pegawai mp
         where statusenabled=true`);
 
         let tempres = resultlistantreanpemeriksaan.rows
