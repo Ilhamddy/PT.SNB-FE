@@ -1089,7 +1089,7 @@ const hCreateDetailBebas = async (
             stokChange: (qtyPembulatan || qty) 
         }
     )
-    const created = Promise.all(
+    const created = await Promise.all(
         batchStokUnitChanged.map(
             async (batchstokunit) => {
                 let created = await t_penjualanbebasdetail.create({
