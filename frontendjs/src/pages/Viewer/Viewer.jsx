@@ -8,6 +8,8 @@ import { ToastContainer, toast } from 'react-toastify'
 import 'react-responsive-carousel/lib/styles/carousel.min.css'
 import { Carousel } from 'react-responsive-carousel'
 import { useState } from 'react'
+import LogoPuskesmas from './logo-puskesmas.png'
+import LogoHealthTechs from './gbr-healthtechs.svg'
 
 const Viewer = () => {
   const dispatch = useDispatch()
@@ -96,7 +98,10 @@ const Viewer = () => {
     <div className="viewer-aplikasi">
       <ToastContainer />
       <div className="header-viewer">
-        <img className="gbr-header" src={logoSNB} alt="gbr snb" />
+        <div className="kontainer-gambar-header">
+          <img className="gbr-header" src={LogoHealthTechs} alt="gbr snb" />
+          <img className="gbr-header" src={LogoPuskesmas} alt="gbr snb" />
+        </div>
         <div className="kontainer-waktu">
           <p className="jam-berjalan">{waktu}</p>
           <p className="tgl-berjalan">{tanggal}</p>

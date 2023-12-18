@@ -125,14 +125,14 @@ GROUP BY
 const qGetPasienFromId = `
 SELECT
     mpas.id AS value,
-    mpas.id || ' - ' || mpas.namapasien AS label,
+    mpas.nocm || ' - ' || mpas.namapasien AS label,
     mpas.namapasien AS namapasien,
     mpas.notelepon AS notelepon,
     mpas.alamatdomisili AS alamat,
     mpas.tgllahir AS tanggallahir
 FROM m_pasien AS mpas
 WHERE 
-    ${emptyIlike("CAST(mpas.id AS text)", "$1")}
+    ${emptyIlike("CAST(mpas.nocm AS text)", "$1")}
 LIMIT 10
 `
 

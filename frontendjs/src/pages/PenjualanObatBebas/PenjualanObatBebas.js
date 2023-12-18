@@ -217,23 +217,6 @@ const PenjualanObatBebas = () => {
         const setV = vResep.setValues
         const resetV = vResep.resetForm
         let orderNorecGot = null
-        // if(!Array.isArray(orderNorec) && orderNorec){
-        //     orderNorecGot = orderNorec
-        // }
-        // if(!norecjualbebas){
-        //     resetV();
-        //     resepRef.current = [
-        //         {
-        //             ...initValueResep
-        //         }
-        //     ]
-        // }
-
-        // if(orderNorecGot){
-        //     setV(orderNorec)
-        //     resepRef.current = orderNorecGot.resep
-        // }
-
     }, [
         orderNorec, 
         norecjualbebas, 
@@ -307,7 +290,7 @@ const PenjualanObatBebas = () => {
                                             vResep.setFieldValue("tanggallahir", e?.tanggallahir || "")
                                         }}
                                         onInputChange={(val) => {
-                                            dispatch(getPasienFromNoCm({nocm: val || ""}))
+                                            val && dispatch(getPasienFromNoCm({nocm: val}))
                                         }}
                                         value={vResep.values.norm}
                                         className={`input ${!!vResep?.errors.norm ? "is-invalid" : ""}`}
