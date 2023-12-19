@@ -47,4 +47,12 @@ export default class ServiceFarmasi {
     getComboLaporanPengadaan = async (queries) => {
         return await api.get(`/transaksi/farmasi/get-combo-laporan-pengadaan`, queries)
     }
+    
+    getPenjualanBebas = async (queries) => {
+        return await api.get(`/transaksi/farmasi/get-penjualan-bebas`, queries)
+    }
+    
+    getPenjualanBebasFromNorec = async (queries) => {
+        return await api.get(`/transaksi/farmasi/get-penjualan-bebas-from-norec`, queries)
+    }
 }

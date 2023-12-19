@@ -10,10 +10,10 @@ import { getComboPenjualanBebas, getComboResep, getComboVerifResep } from "../..
 import { useDispatch, useSelector } from "react-redux";
 import { getObatFromUnit } from "../../store/emr/action";
 import * as Yup from "yup"
-import { useParams, useSearchParams} from "react-router-dom"
+import { Link, useParams, useNavigate} from "react-router-dom"
 import BreadCrumb from "../../Components/Common/BreadCrumb";
 import { ToastContainer } from "react-toastify";
-import { createOrUpdatePenjualanBebas, createOrUpdateVerifResep, getOrderResepFromNorec, getPasienFromNoCm } from "../../store/farmasi/action";
+import { createOrUpdatePenjualanBebas, createOrUpdateVerifResep, getOrderResepFromNorec, getPasienFromNoCm, getPenjualanBebasFromNorec } from "../../store/farmasi/action";
 import Flatpickr from "react-flatpickr";
 import { rgxNbrEmpty } from "../../utils/regexcommon";
 import KontainerFlatpickr from "../../Components/KontainerFlatpickr/KontainerFlatpickr";
@@ -50,8 +50,11 @@ const initValueRacikan = {
 const PenjualanObatBebas = () => {
     const dispatch = useDispatch()
 
+    const navigate = useNavigate()
+    const penjualanBebasFromNorec = useSelector(
+        state => state.Farmasi.getPenjualanBebasFromNorec.data?.dataPenjualanBebas || null
+    )
     const {norecjualbebas} = useParams()
-    const [searchParams, setSearchParams] = useSearchParams()
     const [today] = useState(() => new Date().toISOString())
     const {
         unit,
@@ -162,9 +165,7 @@ const PenjualanObatBebas = () => {
                 return newValResep
             }) 
             dispatch(createOrUpdatePenjualanBebas(newVal, (data) => {
-                resetForm();
-                // TODO:
-                // dispatch(getOrderResepFromNorec({norec: norecjualbebas}))
+                navigate("/farmasi/penjualan-obat-bebas-list")
             }))
         }
     })
@@ -225,11 +226,21 @@ const PenjualanObatBebas = () => {
     ])
 
     useEffect(() => {
-        const setFF = vResep.setFieldValue
-        // TODO:
-        // dispatch(getOrderResepFromNorec({norec: norecjualbebas}))
-        setFF("norecjualbebas", norecjualbebas)
-    }, [dispatch, norecjualbebas, vResep.setFieldValue])
+        dispatch(getPenjualanBebasFromNorec({norecjualbebas: norecjualbebas}))
+
+    }, [dispatch, norecjualbebas])
+
+
+    useEffect(() => {
+        const setV = vResep.setValues
+        setV({
+            ...vResep.initialValues,
+            ...penjualanBebasFromNorec
+        })
+        if(penjualanBebasFromNorec?.resep){
+            resepRef.current = penjualanBebasFromNorec.resep
+        }
+    }, [penjualanBebasFromNorec, vResep.setValues, vResep.initialValues])
 
 
 
@@ -762,13 +773,15 @@ const PenjualanObatBebas = () => {
                                     onClick={() => {
                                         vResep.handleSubmit();
                                     }}>
-                                    Simpan
+                                    {vResep.values.norecjualbebas ? "Edit" : "Simpan"}
                                 </Button>
                             </Col>
                             <Col md={2}>
-                                <Button color="danger">
-                                    Batal
-                                </Button>
+                                <Link to="/farmasi/penjualan-obat-bebas-list">
+                                    <Button color="danger">
+                                        Batal
+                                    </Button>
+                                </Link>
                             </Col>
                         </Row>
                     </Row>

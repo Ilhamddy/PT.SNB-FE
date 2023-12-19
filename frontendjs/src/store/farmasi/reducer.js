@@ -1,3 +1,4 @@
+import { getPenjualanBebas } from "./action";
 import {
     GET_ORDER_RESEP_QUERY,
     GET_ORDER_RESEP_QUERY_ERROR,
@@ -31,7 +32,13 @@ import {
     CREATE_ANTREAN_FARMASI_ERROR,
     GET_COMBO_LAPORAN_PENGADAAN,
     GET_COMBO_LAPORAN_PENGADAAN_SUCCESS,
-    GET_COMBO_LAPORAN_PENGADAAN_ERROR
+    GET_COMBO_LAPORAN_PENGADAAN_ERROR,
+    GET_PENJUALAN_BEBAS,
+    GET_PENJUALAN_BEBAS_SUCCESS,
+    GET_PENJUALAN_BEBAS_ERROR,
+    GET_PENJUALAN_BEBAS_FROM_NOREC,
+    GET_PENJUALAN_BEBAS_FROM_NOREC_SUCCESS,
+    GET_PENJUALAN_BEBAS_FROM_NOREC_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -84,7 +91,17 @@ const INIT_STATE = {
         data: [],
         loading: false,
         error: null,
-    }
+    },
+    getPenjualanBebas: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    getPenjualanBebasFromNorec: {
+        data: null,
+        loading: false,
+        error: null,
+    },
 };
 
 const Farmasi = (state = INIT_STATE, action) => {
@@ -457,6 +474,74 @@ const Farmasi = (state = INIT_STATE, action) => {
                 ...state,
                 getComboLaporanPengadaan: {
                     ...state.getComboLaporanPengadaan,
+                    loading: false,
+                    error: action.payload,
+                },
+            };
+        }
+
+        case GET_PENJUALAN_BEBAS: {
+            return {
+                ...state,
+                getPenjualanBebas: {
+                    ...state.getPenjualanBebas,
+                    data: [],
+                    loading: true,
+                    error: null,
+                },
+            };
+        }
+
+        case GET_PENJUALAN_BEBAS_SUCCESS: {
+            return {
+                ...state,
+                getPenjualanBebas: {
+                    ...state.getPenjualanBebas,
+                    loading: false,
+                    data: action.payload,
+                },
+            };
+        }
+
+        case GET_PENJUALAN_BEBAS_ERROR: {
+            return {
+                ...state,
+                getPenjualanBebas: {
+                    ...state.getPenjualanBebas,
+                    loading: false,
+                    error: action.payload,
+                },
+            };
+        }
+
+        case GET_PENJUALAN_BEBAS_FROM_NOREC: {
+            return {
+                ...state,
+                getPenjualanBebasFromNorec: {
+                    ...state.getPenjualanBebasFromNorec,
+                    data: null,
+                    loading: true,
+                    error: null,
+                },
+            };
+        }
+
+        case GET_PENJUALAN_BEBAS_FROM_NOREC_SUCCESS: {
+            return {
+                ...state,
+                getPenjualanBebasFromNorec: {
+                    ...state.getPenjualanBebasFromNorec,
+                    loading: false,
+                    data: action.payload,
+                },
+            };
+        }
+
+        case GET_PENJUALAN_BEBAS_FROM_NOREC_ERROR: {
+            return {
+                ...state,
+                getPenjualanBebasFromNorec: {
+                    ...state.getPenjualanBebasFromNorec,
                     loading: false,
                     error: action.payload,
                 },

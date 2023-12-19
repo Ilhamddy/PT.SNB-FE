@@ -35,22 +35,23 @@ GROUP BY
     msd.sediaan 
 `
 
-const qGetPenjualanBebasFromNorec = `
+const qPenjualanObatBebas = `
 SELECT
     tpb.norec AS norecjualbebas,
+    tpb.objectpasienfk AS norm,
     tpb.namapasien AS namapasien,
     tpb.tgllahir AS tanggallahir,
     tpb.notelepon AS notelepon,
     tpb.alamat AS alamat,
     tpb.tglresep AS tanggalresep,
     tpb.objectjenisresepfk AS jenis,
+    tpb.namapenulis AS namapenulis,
     mjr.reportdisplay AS namajenis,
     mu.id AS unittujuan,
     mu.namaunit AS namaunittujuan,
     tpb.no_resep AS noresep,
     mu.id AS unittujuan,
     mu.namaunit AS namaunittujuan,
-    tpb.no_resep AS noresep,
     tpb.namapenulis AS penulisresep,
     mpeg.id AS petugasapotek,
     mpeg.namalengkap AS namapetugasapotek,
@@ -58,40 +59,40 @@ SELECT
     tpb.tglinput AS tanggalorder,
     json_agg(
         json_build_object(
-            'norecresep', tpbd.norec,
-            'obat', tpbd.objectprodukfk,
+            'norecresep', tvr.norec,
+            'obat', tvr.objectprodukfk,
             'namaobat', mp.namaproduk,
             'satuanobat', ms.id,
             'namasatuan', ms.satuan,
-            'koder', tpbd.kode_r,
-            'qty', tpbd.qty,
-            'qtyracikan', tpbd.qtyracikan,
-            'qtypembulatan', tpbd.qtypembulatan,
-            'qtyjumlahracikan', tpbd.qtyjumlahracikan,
-            'sediaan', tpbd.objectsediaanfk,
+            'koder', tvr.kode_r,
+            'qty', tvr.qty,
+            'qtyracikan', tvr.qtyracikan,
+            'qtypembulatan', tvr.qtypembulatan,
+            'qtyjumlahracikan', tvr.qtyjumlahracikan,
+            'sediaan', tvr.objectsediaanfk,
             'namasediaan', msed.sediaan,
-            'harga', tpbd.harga,
-            'total', tpbd.total,
-            'signa', tpbd.objectsignafk,
+            'harga', tvr.harga,
+            'total', tvr.total,
+            'signa', tvr.objectsignafk,
             'namasigna', msig.reportdisplay,
-            'keterangan', tpbd.objectketeranganresepfk,
+            'keterangan', tvr.objectketeranganresepfk,
             'namaketerangan', mket.reportdisplay,
-            'kodertambahan', tpbd.kode_r_tambahan,
+            'kodertambahan', tvr.kode_r_tambahan,
             'stok', s.stok,
             'batch', s.batch
         )
-        ORDER BY tpbd.kode_r ASC, tpbd.kode_r_tambahan ASC
+        ORDER BY tvr.kode_r ASC, tvr.kode_r_tambahan ASC
     ) AS resep
 FROM t_penjualanbebas tpb
     LEFT JOIN m_jenisresep mjr ON mjr.id = tpb.objectjenisresepfk
-    LEFT JOIN t_penjualanbebasdetail tpbd ON tpbd.objectpenjualanbebasfk = tpb.norec
+    LEFT JOIN t_verifresep tvr ON tvr.objectpenjualanbebasfk = tpb.norec
     LEFT JOIN m_pegawai mpeg ON mpeg.id = tpb.objectpegawaifk
     LEFT JOIN m_unit mu ON mu.id = tpb.objectunitfk
-    LEFT JOIN m_produk mp ON mp.id = tpbd.objectprodukfk
+    LEFT JOIN m_produk mp ON mp.id = tvr.objectprodukfk
     LEFT JOIN m_satuan ms ON ms.id = mp.objectsatuanstandarfk
     LEFT JOIN m_sediaan msed ON msed.id = mp.objectsediaanfk
-    LEFT JOIN m_keteranganresep mket ON mket.id = tpbd.objectketeranganresepfk
-    LEFT JOIN m_signa msig ON msig.id = tpbd.objectsignafk
+    LEFT JOIN m_keteranganresep mket ON mket.id = tvr.objectketeranganresepfk
+    LEFT JOIN m_signa msig ON msig.id = tvr.objectsignafk
 CROSS JOIN LATERAL (
     SELECT 
         json_agg(
@@ -104,15 +105,25 @@ CROSS JOIN LATERAL (
         ) AS batch,
         sum(tsu.qty) AS stok
         FROM t_stokunit tsu
-    WHERE tsu.objectprodukfk = tpbd.objectprodukfk
+    WHERE tsu.objectprodukfk = tvr.objectprodukfk
         AND tsu.qty > 0
         AND tsu.objectunitfk = tpb.objectunitfk
     ) s
-WHERE CASE 
-    WHEN $1 = 'all' THEN tpb.statusenabled = true
-    WHEN $1 = 'norecjualbebas' THEN tpb.norec = $2
-END
-    AND tpb.no_resep IS NOT NULL
+`
+
+const qGetPenjualanBebasAll = qPenjualanObatBebas + `
+WHERE ${dateBetweenEmptyString("tpb.tglinput", "$1", "$2")}
+GROUP BY
+    tpb.norec,
+    mpeg.id,
+    mpeg.namalengkap,
+    mu.id,
+    mu.namaunit,
+    mjr.reportdisplay
+`
+
+const qGetPenjualanBebasFromNorec = qPenjualanObatBebas + `
+WHERE tpb.norec = $1
 GROUP BY
     tpb.norec,
     mpeg.id,
@@ -172,4 +183,5 @@ export {
     qGetPenjualanBebasFromNorec,
     qGetPasienFromId,
     qGetAllVerif,
+    qGetPenjualanBebasAll
 }

@@ -60,6 +60,10 @@ export default (sequelize, Sequelize) => {
         },
         nobatch: {
             type: Sequelize.STRING,
+        },
+        objectpenjualanbebasfk: {
+            type: Sequelize.CHAR(32),
+            allowNull: true
         }
     }, {
         tableName: "t_verifresep",

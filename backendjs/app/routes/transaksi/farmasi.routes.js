@@ -75,4 +75,17 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getComboLaporanPengadaan
     )
+
+    app.get(
+        "/api/transaksi/farmasi/get-penjualan-bebas",
+        [authJwt.verifyToken],
+        controller.getPenjualanBebas
+    )
+
+    app.get(
+        "/api/transaksi/farmasi/get-penjualan-bebas-from-norec",
+        [authJwt.verifyToken],
+        controller.getPenjualanBebasFromNorec
+    )
+
 }

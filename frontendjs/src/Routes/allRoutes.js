@@ -384,6 +384,7 @@ import SetorKasir from "../pages/SetorKasir/SetorKasir.jsx";
 import Organization from "../pages/SatuSehat/Organization/Organization.jsx";
 import Location from "../pages/SatuSehat/Location/Location.jsx";
 import Practitioner from "../pages/SatuSehat/Practitioner/Practitioner.jsx";
+import PenjualanObatBebasList from "../pages/PenjualanObatBebas/PenjualanObatBebasList.jsx";
 
 const authProtectedRoutes = [
   { path: "/dashboard-analytics", component: <DashboardAnalytics /> },
@@ -752,6 +753,10 @@ const authProtectedRoutes = [
   { path: "/farmasi/verif-order-resep/:norecorder", component: <VerifikasiResep /> },
   { path: "/farmasi/order-list", component: <AllOrderResepList /> },
   { path: "/farmasi/penjualan-obat-bebas", component: <PenjualanObatBebas /> },
+  { path: "/farmasi/penjualan-obat-bebas/:norecjualbebas", component: <PenjualanObatBebas /> },
+
+  { path: "/farmasi/penjualan-obat-bebas-list", component: <PenjualanObatBebasList /> },
+
   { path: "/farmasi/list-verif-obat/:norecdp", component: <ListVerifObat />},
   { path: "/farmasi/tambah-obat-farmasi/:norecap", component: <TambahObatFarmasi />},
   { path: "/farmasi/tambah-obat-farmasi/:norecap/:norecresep", component: <TambahObatFarmasi />},

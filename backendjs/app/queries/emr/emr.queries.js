@@ -231,6 +231,7 @@ GROUP BY
     tdp.objectpenjaminfk
 `
 
+
 const qGetAntreanFromNorec = `
 SELECT
     row_number() OVER (ORDER BY tap.tglmasuk) AS no,

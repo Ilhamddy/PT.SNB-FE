@@ -31,7 +31,13 @@ import {
     CREATE_ANTREAN_FARMASI_ERROR,
     GET_COMBO_LAPORAN_PENGADAAN,
     GET_COMBO_LAPORAN_PENGADAAN_SUCCESS,
-    GET_COMBO_LAPORAN_PENGADAAN_ERROR
+    GET_COMBO_LAPORAN_PENGADAAN_ERROR,
+    GET_PENJUALAN_BEBAS,
+    GET_PENJUALAN_BEBAS_SUCCESS,
+    GET_PENJUALAN_BEBAS_ERROR,
+    GET_PENJUALAN_BEBAS_FROM_NOREC,
+    GET_PENJUALAN_BEBAS_FROM_NOREC_SUCCESS,
+    GET_PENJUALAN_BEBAS_FROM_NOREC_ERROR
 } from "./actionType";
 
 
@@ -224,5 +230,39 @@ export const getComboLaporanPengadaanSuccess = (data) => ({
 
 export const getComboLaporanPengadaanError = (error) => ({
     type: GET_COMBO_LAPORAN_PENGADAAN_ERROR,
+    payload: error
+});
+
+export const getPenjualanBebas = (queries) => ({
+    type: GET_PENJUALAN_BEBAS,
+    payload: {
+        queries: queries
+    }
+});
+
+export const getPenjualanBebasSuccess = (data) => ({
+    type: GET_PENJUALAN_BEBAS_SUCCESS,
+    payload: data
+});
+
+export const getPenjualanBebasError = (error) => ({
+    type: GET_PENJUALAN_BEBAS_ERROR,
+    payload: error
+});
+
+export const getPenjualanBebasFromNorec = (queries) => ({
+    type: GET_PENJUALAN_BEBAS_FROM_NOREC,
+    payload: {
+        queries: queries
+    }
+});
+
+export const getPenjualanBebasFromNorecSuccess = (data) => ({
+    type: GET_PENJUALAN_BEBAS_FROM_NOREC_SUCCESS,
+    payload: data
+});
+
+export const getPenjualanBebasFromNorecError = (error) => ({
+    type: GET_PENJUALAN_BEBAS_FROM_NOREC_ERROR,
     payload: error
 });

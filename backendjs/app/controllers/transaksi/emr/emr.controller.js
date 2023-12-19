@@ -12,6 +12,7 @@ import {
     createTransaction
 } from "../../../utils/dbutils";
 import satuSehatQueries from "../../../queries/satuSehat/satuSehat.queries";
+import { hProcessOrderResep } from "../farmasi/farmasi.controller";
 
 const t_emrpasien = db.t_emrpasien
 const t_ttv = db.t_ttv
@@ -1782,28 +1783,6 @@ const getHistoryAsesmenBayiLahir = async (req, res) => {
     }
 }
 
-export const initValueResep = {
-    norecap: "",
-    norecresep: "",
-    obat: "",
-    namaobat: "",
-    satuanobat: "",
-    namasatuan: "",
-    koder: 1,
-    qty: "",
-    qtyracikan: "",
-    qtypembulatan: "",
-    qtyjumlahracikan: "",
-    sediaan: "",
-    namasediaan: "",
-    harga: "",
-    total: "",
-    signa: "",
-    keterangan: "",
-    namaketerangan: "",
-    nobatch: "",
-    racikan: []
-}
 
 const getOrderResepFromDP = async (req, res) => {
     const logger = res.locals.logger
@@ -2177,41 +2156,3 @@ const hDeleteResep = async (
     return { deleted }
 }
 
-export const hProcessOrderResep = (dataOrders) => {
-    if (dataOrders === null) return []
-    let newDataOrders = dataOrders.map((order) => {
-        let newOrder = { ...order }
-        const newOrdersResep = []
-
-        newOrder.resep.map((resep) => {
-            const newResep = { ...resep }
-            if (newResep.kodertambahan) {
-                const findResep = newOrdersResep.find((findItem) => {
-                    return findItem.koder === newResep.koder
-                })
-                if (!findResep) {
-                    const valueResepNew = { ...initValueResep }
-                    valueResepNew.qty = newResep.qtyjumlahracikan
-                    valueResepNew.sediaan = newResep.sediaan
-                    valueResepNew.namasediaan = newResep.namasediaan
-                    valueResepNew.signa = newResep.signa
-                    valueResepNew.keterangan = newResep.keterangan
-                    valueResepNew.namaketerangan = newResep.namaketerangan
-                    valueResepNew.koder = newResep.koder
-                    newResep.koder = newResep.kodertambahan
-                    valueResepNew.racikan = [newResep]
-                    newOrdersResep.push(valueResepNew)
-                } else {
-                    newResep.koder = newResep.kodertambahan
-                    findResep.racikan = [...findResep.racikan, newResep]
-                }
-            } else {
-                newResep.racikan = []
-                newOrdersResep.push(newResep)
-            }
-        })
-        newOrder.resep = newOrdersResep
-        return newOrder
-    })
-    return newDataOrders
-}
