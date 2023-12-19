@@ -465,6 +465,9 @@ FROM public.m_nilainormalttv
 const qGetTtvByNorec=`SELECT norec, objectemrfk, tinggibadan, beratbadan, suhu, e, m, v, nadi, alergi, tekanandarah, spo2, pernapasan, keadaanumum, objectpegawaifk, isedit, objectttvfk, tglisi, statusenabled, objectgcsfk, sistole, diastole, ihs_suhu, ihs_nadi, ihs_sistole, ihs_diastole, ihs_pernapasan, status_ihs_nadi, status_ihs_pernapasan, status_ihs_suhu, status_ihs_sistole, status_ihs_diastole
 FROM public.t_ttv where norec=$1`
 
+const qGetSumberData=`SELECT id as value,nama as label
+FROM m_sumberdata`
+
 export {
     qGetObatFromUnit,
     qGetOrderResepFromDP,
@@ -478,5 +481,6 @@ export {
     qGetAntreanPemeriksaanObat,
     qGetAllOrderResepFromDate,
     qGetNilaiNormalTtv,
-    qGetTtvByNorec
+    qGetTtvByNorec,
+    qGetSumberData
 }

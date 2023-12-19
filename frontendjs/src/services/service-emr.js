@@ -187,4 +187,7 @@ export default class ServiceEmr {
     deleteOrderResep = async (body) => {
         return await api.create(`/transaksi/emr/delete-order-resep`, body)
     }
+    getComboAsesmenAwalKeperawatan = async (queries) => {
+        return await api.get("/transaksi/emr/get-combo-asesmen-awal-keperawatan", queries)
+    }
 }

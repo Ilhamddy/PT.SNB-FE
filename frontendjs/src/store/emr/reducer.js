@@ -130,7 +130,8 @@ import {
     GET_ANTREAN_PEMERIKSAAN_OBAT_ERROR,
     DELETE_ORDER_RESEP,
     DELETE_ORDER_RESEP_SUCCESS,
-    DELETE_ORDER_RESEP_ERROR
+    DELETE_ORDER_RESEP_ERROR,
+    GET_COMBO_ASESMENAWALKEPERAWATAN,GET_COMBO_ASESMENAWALKEPERAWATAN_SUCCESS,GET_COMBO_ASESMENAWALKEPERAWATAN_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -384,6 +385,11 @@ const INIT_STATE = {
         data: [],
         loading: false,
         error: null,
+    },
+    getComboAsesmenAwalKeperawatan: { 
+        data: [],
+        loading: false,
+        error: null,
     }
 };
 
@@ -514,6 +520,9 @@ const Emr = (state = INIT_STATE, action) => {
                 },
                 getHistoryAsesmenBayiLahir:{
                     ...INIT_STATE.getHistoryAsesmenBayiLahir
+                },
+                getComboAsesmenAwalKeperawatan:{
+                    ...INIT_STATE.getComboAsesmenAwalKeperawatan
                 }
             }
         }
@@ -2101,6 +2110,39 @@ const Emr = (state = INIT_STATE, action) => {
                     error: action.payload,
                 },
             };
+        }
+
+        case GET_COMBO_ASESMENAWALKEPERAWATAN: {
+            return {
+                ...state,
+                getComboAsesmenAwalKeperawatan: {
+                    ...state.getComboAsesmenAwalKeperawatan,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case GET_COMBO_ASESMENAWALKEPERAWATAN_SUCCESS: {
+            return {
+                ...state,
+                getComboAsesmenAwalKeperawatan: {
+                    ...state.getComboAsesmenAwalKeperawatan,
+                    loading: false,
+                    data: action.payload,
+                }
+            }
+        }
+
+        case GET_COMBO_ASESMENAWALKEPERAWATAN_ERROR: {
+            return {
+                ...state,
+                getComboAsesmenAwalKeperawatan: {
+                    ...state.getComboAsesmenAwalKeperawatan,
+                    loading: true,
+                    error: action.payload,
+                }
+            }
         }
 
 

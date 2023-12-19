@@ -41,7 +41,14 @@ import LoadingTable from '../../../Components/Table/LoadingTable';
 import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/KontainerFlatpickr';
 import { dateTimeLocal } from '../../../utils/format';
 import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles';
-
+import macImg from "../../../assets/images/mac-img.png";
+import AOS from 'aos';
+import 'aos/dist/aos.css';
+AOS.init({
+    easing: 'ease-out-back',
+    duration: 3000,
+    anchorPlacement: 'top-bottom', 
+});
 const DaftarPasienRJ = () => {
     document.title = "Daftar Pasien Rawat Jalan";
     const dispatch = useDispatch();
@@ -363,8 +370,10 @@ const DaftarPasienRJ = () => {
                 <Container fluid>
                     <BreadCrumb title="Daftar Pasien Rawat Jalan" pageTitle="Forms" />
                     <Row>
+                    
                         {datawidget.map((item, key) => (
                             <Col xxl={4} sm={6} key={key}>
+                                <div data-aos="fade-up">
                                 <Card className="card-animate">
                                     <CardBody>
                                         <div className="d-flex justify-content-between">
@@ -397,9 +406,12 @@ const DaftarPasienRJ = () => {
                                         </div>
                                     </div>
                                 </Card>
+                                </div>
                             </Col>
                         ))}
+                                                           
                         <Col lg={3}>
+                        <div data-aos="fade-up">
                             <Card>
                                 <CardBody>
                                     <div className="text-center">
@@ -426,8 +438,10 @@ const DaftarPasienRJ = () => {
                                     </div>
                                 </CardBody>
                             </Card>
+                        </div>
                         </Col>
                         <Col lg={9}>
+                        <div data-aos="fade-up">
                             <Card>
                                 <CardHeader className="card-header-snb ">
                                     <h4 className="card-title mb-0" style={{ color: 'black' }}>Daftar Pasien Rawat Jalan <span style={{ color: '#FFFFFF' }}>{namaPencarian}</span></h4>
@@ -530,6 +544,7 @@ const DaftarPasienRJ = () => {
                                 </CardBody>
 
                             </Card>
+                        </div>
                         </Col>
                         {/* <Col xl={9}>
                             <Card>

@@ -131,7 +131,8 @@ import {
     GET_ANTREAN_PEMERIKSAAN_OBAT_ERROR,
     DELETE_ORDER_RESEP,
     DELETE_ORDER_RESEP_SUCCESS,
-    DELETE_ORDER_RESEP_ERROR
+    DELETE_ORDER_RESEP_ERROR,
+    GET_COMBO_ASESMENAWALKEPERAWATAN,GET_COMBO_ASESMENAWALKEPERAWATAN_SUCCESS,GET_COMBO_ASESMENAWALKEPERAWATAN_ERROR
 } from "./actionType";
 
 export const emrResetForm = () => ({
@@ -893,5 +894,22 @@ export const deleteOrderResepSuccess = (data) => ({
 
 export const deleteOrderResepError = (error) => ({
     type: DELETE_ORDER_RESEP_ERROR,
+    payload: error,
+});
+
+export const getComboAsesmenAwalKeperawatan = (queries) => ({
+    type: GET_COMBO_ASESMENAWALKEPERAWATAN,
+    payload: {
+        queries,
+    },
+});
+
+export const getComboAsesmenAwalKeperawatanSuccess = (data) => ({
+    type: GET_COMBO_ASESMENAWALKEPERAWATAN_SUCCESS,
+    payload: data,
+});
+
+export const getComboAsesmenAwalKeperawatanError = (error) => ({
+    type: GET_COMBO_ASESMENAWALKEPERAWATAN_ERROR,
     payload: error,
 });
