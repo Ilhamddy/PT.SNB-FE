@@ -196,4 +196,9 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.deleteOrderResep
     )
+    app.get(
+        "/api/transaksi/emr/get-combo-asesmen-awal-keperawatan",
+        [authJwt.verifyToken],
+        controller.getComboAsesmenAwalKeperawatan
+    );
 }

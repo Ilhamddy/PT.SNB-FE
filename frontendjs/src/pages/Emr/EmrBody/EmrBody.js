@@ -24,6 +24,7 @@ import OrderResep from '../Penunjang/OrderResep/OrderResep';
 import OrderOperasi from '../Penunjang/OrderOperasi/OrderOperasi';
 import EfisiensiBPJS from '../EfisiensiBPJS/EfisiensiBPJS';
 import AsesmenBayiBaruLahir from '../AsesmenBayiBaruLahir';
+import PengkajianAwalKeperawatanRJ from '../PengkajianAwalKeperawatanRJ/PengkajianAwalKeperawatanRJ';
 
 const EmrBody = () => {
     const { norecdp, norecap, tab } = useParams();
@@ -110,6 +111,10 @@ const EmrBody = () => {
             id: 3,
             label: "Diagnosa",
         },
+        {
+            id: 4,
+            label: "Pengkajian Awal Keperawatan",
+        },
     ];
     const taskRI = [
         {
@@ -170,7 +175,6 @@ const EmrBody = () => {
             dispatch(emrTtvGet(norecdp));
         }
     }, [norecdp, dispatch])
-
 
     return (
         <React.Fragment>
@@ -237,6 +241,15 @@ const EmrBody = () => {
                                             <Card>
                                                 <CardBody>
                                                     <Diagnosa />
+                                                </CardBody>
+                                            </Card>
+                                        </TabPane>
+                                    </TabContent>
+                                    <TabContent activeTab={pillsTabRj} className="text-muted">
+                                        <TabPane tabId="4" id="pengkajianawalkeperawatan-3">
+                                            <Card>
+                                                <CardBody>
+                                                    <PengkajianAwalKeperawatanRJ/>
                                                 </CardBody>
                                             </Card>
                                         </TabPane>

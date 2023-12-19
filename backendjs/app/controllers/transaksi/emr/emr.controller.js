@@ -4,7 +4,7 @@ import queries from '../../../queries/transaksi/registrasi.queries';
 import { qGetObatFromUnit, qGetOrderResepFromDP, qGetOrderVerifResepFromDP,
 qAsesmenBayiLahirByNorec,qComboApgar,qComboSebabKematian,qComboApgarScore,
 qHistoryAsesmenBayiLahir, 
-qGetAntreanPemeriksaanObat,qGetNilaiNormalTtv,qGetTtvByNorec} from "../../../queries/emr/emr.queries";
+qGetAntreanPemeriksaanObat,qGetNilaiNormalTtv,qGetTtvByNorec,qGetSumberData} from "../../../queries/emr/emr.queries";
 import hubunganKeluargaQueries from "../../../queries/mastertable/hubunganKeluarga/hubunganKeluarga.queries";
 import jenisKelaminQueries from "../../../queries/mastertable/jenisKelamin/jenisKelamin.queries";
 import db from "../../../models";
@@ -2027,6 +2027,29 @@ const getComboAsesmenBayiLahir = async (req, res) => {
     }
 }
 
+const getComboAsesmenAwalKeperawatan = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const result1 = await pool.query(qGetSumberData)
+        const tempres = {
+            sumberdata:result1.rows
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
 
 export default {
     saveEmrPasienTtv,
@@ -2061,7 +2084,8 @@ export default {
     getComboAsesmenBayiLahir,
     getHistoryAsesmenBayiLahir,
     getAntreanPemeriksaanObat,
-    deleteOrderResep
+    deleteOrderResep,
+    getComboAsesmenAwalKeperawatan
 };
 
 
