@@ -109,6 +109,7 @@ CROSS JOIN LATERAL (
 
 const qGetOrderResepFromDP = qGetOrderResep + `
 WHERE CASE 
+    -- $1: 'norecresep', 'norecdp', 'all'
     WHEN $1 = 'all' 
         THEN tor.statusenabled = true
     WHEN $1 = 'norecresep' 
@@ -156,9 +157,11 @@ SELECT
     tor.tglinput AS tanggalorder,
     tor.no_resep AS noresep,
     tor.tglverif AS tanggalverif,
+    COALESCE(tor.tglinput, tor.tglverif) AS tanggalresep,
+    tor.objectpegawaifk AS penulisresep,
     tdp.objectpenjaminfk AS penjamin,
-    json_agg(
-        json_build_object(
+    JSON_AGG(
+        JSON_BUILD_OBJECT(
             'norecap', tap.norec,
             'norecresep', tv.norec,
             'obat', tv.objectprodukfk,
@@ -212,7 +215,8 @@ CROSS JOIN LATERAL (
         AND tsu.objectunitfk = tor.objectdepotujuanfk
     ) s
 WHERE CASE 
-    WHEN $1 = 'all' THEN tor.statusenabled = true
+    -- $1: 'norecresep', 'norecdp', 'all'
+    WHEN $1 = 'all' THEN tor.statusenabled = true 
     WHEN $1 = 'norecresep' THEN tor.norec = $2
     ELSE tdp.norec = $3
 END

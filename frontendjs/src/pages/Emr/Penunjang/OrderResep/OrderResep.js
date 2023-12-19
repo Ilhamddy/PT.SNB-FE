@@ -1,8 +1,7 @@
-import { Button, Col, FormFeedback, Input, Label, Row } from "reactstrap"
+import { Button, Col, FormFeedback, Input, Label, Row, Spinner } from "reactstrap"
 import CustomSelect from "../../../Select/Select"
 import { useFormik } from "formik"
 import DataTable from 'react-data-table-component';
-import LoadingTable from "../../../../Components/Table/LoadingTable";
 import NoDataTable from "../../../../Components/Table/NoDataTable";
 import { onChangeStrNbr, strToNumber } from "../../../../utils/format";
 import { useEffect, useRef, useState } from "react";
@@ -14,6 +13,7 @@ import { useParams, useSearchParams} from "react-router-dom"
 import RiwayatOrder from "./RiwayatOrder";
 import { useColumnsResep, useColumnsResepRacikan, useHandleChangeAllResep, useHandleChangeResep } from "../../../PenjualanObatBebas/PenjualanObatBebas";
 import DeleteModalCustom from "../../../../Components/Common/DeleteModalCustom";
+import LoadingLaman from "../../../../Components/Common/LoadingLaman";
 
 export const initValueResep = {
     norecap: "",
@@ -62,7 +62,9 @@ const OrderResep = () => {
         sediaanList,
         orderNorec,
         orderDp,
-        antreanPemeriksaan
+        antreanPemeriksaan,
+        loadingSubmit,
+        loadingGetAllResep
     } = useSelector((state) => ({
         pegawai: state.Master?.getComboResep?.data?.pegawai || [],
         unit: state.Master?.getComboResep?.data?.unit || [],
@@ -72,7 +74,9 @@ const OrderResep = () => {
         sediaanList: state?.Master?.getComboResep?.data?.sediaan || [],
         orderNorec: state?.Emr?.getOrderResepFromDP?.data?.ordernorec || null,
         orderDp: state?.Emr?.getOrderResepFromDP?.data?.order || null,
-        antreanPemeriksaan: state?.Emr?.getAntreanPemeriksaanObat?.data?.antreanPemeriksaan || null
+        antreanPemeriksaan: state?.Emr?.getAntreanPemeriksaanObat?.data?.antreanPemeriksaan || null,
+        loadingSubmit: state.Emr.createOrUpdateResepOrder.loading || false,
+        loadingGetAllResep: state.Emr.getOrderResepFromDP.loading || false,
     }))
 
     const vResep = useFormik({
@@ -486,9 +490,16 @@ const OrderResep = () => {
                 <Row >
                     <Col md={12} className="d-flex justify-content-center gap-3">
                         <Button color="success"
+                            disabled={loadingSubmit || loadingGetAllResep}
                             onClick={() => {
                                 vResep.handleSubmit();
                             }}>
+                            {(loadingSubmit || loadingGetAllResep) && (
+                                <Spinner size="sm" className="me-2">
+                                {' '}
+                                Menyimpan...{' '}
+                                </Spinner>
+                            )}
                             {!!orderNorec ? "Edit" : "Simpan"}
                         </Button>
                         <Button color="danger" onClick={() => setDeleteModal(true)}>
