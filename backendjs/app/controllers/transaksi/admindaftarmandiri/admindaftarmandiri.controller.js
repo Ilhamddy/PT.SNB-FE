@@ -4,7 +4,6 @@ import db from "../../../models";
 import {
     createTransaction
 } from "../../../utils/dbutils";
-import { hProcessOrderResep } from "../emr/emr.controller";
 import admindaftarmandiriQueries from "../../../queries/admindaftarmandiri/admindaftarmandiri.queries";
 import { generateKodeBatch, hCreateKartuStok } from "../gudang/gudang.controller";
 import fs from 'fs';

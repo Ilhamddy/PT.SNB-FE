@@ -2,8 +2,9 @@ import pool from "../../../config/dbcon.query";
 import * as uuid from 'uuid';
 import queries from '../../../queries/rekammedis/rekammedis.queries';
 import db from "../../../models";
-import { createTransaction } from "../../../utils/dbutils";
+import { createTransaction, dateBetweenEmptyString, dateEmptyString } from "../../../utils/dbutils";
 import {qGetUnitTempatTidurScheduler} from '../../../queries/sysadmin/sysadmin.queries'
+import { getDateEndNull, getDateStartNull } from "../../../utils/dateutils";
 
 const m_maprltoproduk = db.m_maprltoproduk
 const t_daftarpasien = db.t_daftarpasien
@@ -443,26 +444,21 @@ async function getListLaporanPasienKunjungan(req, res) {
 async function getLaporanRL3_1(req, res) {
     const logger = res.locals.logger
     try {
-        let start = (new Date(req.query.start)).toISOString();
-        let end = (new Date(req.query.end)).toISOString();
-        end = formatDate(end) + ' 23:59'
-        let search = `%${req.query.search}%`
-        let instalasi = req.query.instalasi !== '' ? ` and mu.objectinstalasifk = '${req.query.instalasi}'` : '';
-        let unit = req.query.unit !== '' ? ` and ta.objectunitfk = '${req.query.unit}'` : '';
-        let rekanan = req.query.rekanan !== '' ? ` and td.objectpenjaminfk = '${req.query.rekanan}'` : '';
-        let pegawai = req.query.pegawai !== '' ? ` and td.objectpegawaifk = '${req.query.pegawai}'` : '';
-// console.log(start.toLocaleDateString())
-        // const result = await pool.query(queries.qResult, [start,end,search]) //,instalasi,unit,rekanan,pegawai
-        const result = await pool.query(`select mp.objectspesialisasifk,ms.reportdisplay as jenis_spesialisasi,
+        let start = getDateStartNull(req.query.start)
+        let end = getDateEndNull(req.query.end)
+        const result = await pool.query(`
+        select mp.objectspesialisasifk,ms.reportdisplay as jenis_spesialisasi,
         to_char(td.tglregistrasi,'dd-MM-YYYY') as tglregistrasi,to_char(td.tglpulang,'dd-MM-YYYY') as tglpulang,
         td.objectcarapulangrifk,td.objectkondisipulangrifk,
         EXTRACT(DAY FROM AGE(to_char(td.tglpulang,'YYYY-MM-dd')::DATE, to_char(td.tglregistrasi,'YYYY-MM-dd')::DATE)) AS days_difference
         from t_daftarpasien td 
         join m_pegawai mp on mp.id=td.objectdokterpemeriksafk
         join m_spesialisasi ms on ms.id=mp.objectspesialisasifk
-        where td.objectinstalasifk=2 and td.tglpulang between '${start}' and '${end}' and td.statusenabled=true 
+        where td.objectinstalasifk=2 
+        AND ${dateBetweenEmptyString("td.tglpulang", "$1", "$2")} 
+        AND td.statusenabled=true 
         and td.tglpulang is not null
-        `);
+        `, [start || "", end || ""]);
 
         let data10 = [];
         result.rows.forEach(element => {
@@ -521,9 +517,12 @@ async function getLaporanRL3_1(req, res) {
             const result = await pool.query(`select count(ts.objectdokterpemeriksafk) as jml,ts.objectkelasfk from t_sensusharian ts 
                 join m_pegawai mp on mp.id=ts.objectdokterpemeriksafk
                 join m_spesialisasi ms on ms.id=mp.objectspesialisasifk
-                where ts.tglinput between '${start}' and '${end}' and mp.objectspesialisasifk='${data10[i].objectspesialisasifk}'
+                where ${dateBetweenEmptyString("ts.tglinput", "$1", "$2")} and mp.objectspesialisasifk='${data10[i].objectspesialisasifk}'
                 group by ts.objectkelasfk`
-            );
+            , [
+                start || "",
+                end || ""
+            ]);
             let jmlhariperawatan = 0
             result.rows.forEach(element => {
                 jmlhariperawatan = parseFloat(jmlhariperawatan)+parseFloat(element.jml)
@@ -615,7 +614,6 @@ const getSensusManual = async (req, res) => {
                 }
             }
             await Promise.all(kamars.rows.map(async (itemx) =>{
-                console.log(itemx.idunit,itemx.totalbed)
                 if(queryBedHarian.rows.length ===0){
                     addBed = await db.t_bedharian.create({
                         norec: uuid.v4().substring(0, 32),
@@ -858,44 +856,284 @@ const getLaporanRL3_4 = async (req, res) => {
     }
 }
 
+const list3_5 = [
+    {
+      id: 1,
+      no: '1',
+      label: 'Bayi Lahir Hidup',
+      medis_rumahsakit: '',
+      medis_bidan: '',
+      medis_puskesmas: '',
+      medis_faskeslain: '',
+      medis_hidup: '',
+      medis_mati: '',
+      medis_jml: '',
+      nonmedis_mati: '',
+      nonmedis_jml: '',
+      nonrujukan_hidup: '',
+      nonrujukan_mati: '',
+      nonrujukan_jml: '',
+      rujuk: '',
+    },
+    {
+      id: 2,
+      no: '1.1',
+      label: '≥ 2500 gram',
+      medis_rumahsakit: 0,
+      medis_bidan: 0,
+      medis_puskesmas: 0,
+      medis_faskeslain: 0,
+      medis_hidup: 0,
+      medis_mati: 0,
+      medis_jml: 0,
+      nonmedis_mati: 0,
+      nonmedis_jml: 0,
+      nonrujukan_hidup: 0,
+      nonrujukan_mati: 0,
+      nonrujukan_jml: 0,
+      rujuk: 0,
+    },
+    {
+      id: 3,
+      no: '1.2',
+      label: '< 2500 gram',
+      medis_rumahsakit: 0,
+      medis_bidan: 0,
+      medis_puskesmas: 0,
+      medis_faskeslain: 0,
+      medis_hidup: 0,
+      medis_mati: 0,
+      medis_jml: 0,
+      nonmedis_mati: 0,
+      nonmedis_jml: 0,
+      nonrujukan_hidup: 0,
+      nonrujukan_mati: 0,
+      nonrujukan_jml: 0,
+      rujuk: 0,
+    },
+    {
+      id: 4,
+      no: '2',
+      label: 'Kematian Perinatal',
+      medis_rumahsakit: '',
+      medis_bidan: '',
+      medis_puskesmas: '',
+      medis_faskeslain: '',
+      medis_hidup: '',
+      medis_mati: '',
+      medis_jml: '',
+      nonmedis_mati: '',
+      nonmedis_jml: '',
+      nonrujukan_hidup: '',
+      nonrujukan_mati: '',
+      nonrujukan_jml: '',
+      rujuk: '',
+    },
+    {
+      id: 5,
+      no: '2.1',
+      label: 'Kelahiran Mati',
+      medis_rumahsakit: 0,
+      medis_bidan: 0,
+      medis_puskesmas: 0,
+      medis_faskeslain: 0,
+      medis_hidup: 0,
+      medis_mati: 0,
+      medis_jml: 0,
+      nonmedis_mati: 0,
+      nonmedis_jml: 0,
+      nonrujukan_hidup: 0,
+      nonrujukan_mati: 0,
+      nonrujukan_jml: 0,
+      rujuk: 0,
+    },
+    {
+      id: 6,
+      no: '2.2',
+      label: 'Mati Neonatal < 7 Hari',
+      medis_rumahsakit: 0,
+      medis_bidan: 0,
+      medis_puskesmas: 0,
+      medis_faskeslain: 0,
+      medis_hidup: 0,
+      medis_mati: 0,
+      medis_jml: 0,
+      nonmedis_mati: 0,
+      nonmedis_jml: 0,
+      nonrujukan_hidup: 0,
+      nonrujukan_mati: 0,
+      nonrujukan_jml: 0,
+      rujuk: 0,
+    },
+    {
+      id: 7,
+      no: '3',
+      label: 'Sebab Kematian Perinatal',
+      medis_rumahsakit: '',
+      medis_bidan: '',
+      medis_puskesmas: '',
+      medis_faskeslain: '',
+      medis_hidup: '',
+      medis_mati: '',
+      medis_jml: '',
+      nonmedis_mati: '',
+      nonmedis_jml: '',
+      nonrujukan_hidup: '',
+      nonrujukan_mati: '',
+      nonrujukan_jml: '',
+      rujuk: '',
+    },
+    {
+      id: 8,
+      no: '3.1',
+      label: 'Asphyxia',
+      medis_rumahsakit: 0,
+      medis_bidan: 0,
+      medis_puskesmas: 0,
+      medis_faskeslain: 0,
+      medis_hidup: 0,
+      medis_mati: 0,
+      medis_jml: 0,
+      nonmedis_mati: 0,
+      nonmedis_jml: 0,
+      nonrujukan_hidup: 0,
+      nonrujukan_mati: 0,
+      nonrujukan_jml: 0,
+      rujuk: 0,
+    },
+    {
+      id: 9,
+      no: '3.2',
+      label: 'Trauma Kelahiran',
+      medis_rumahsakit: 0,
+      medis_bidan: 0,
+      medis_puskesmas: 0,
+      medis_faskeslain: 0,
+      medis_hidup: 0,
+      medis_mati: 0,
+      medis_jml: 0,
+      nonmedis_mati: 0,
+      nonmedis_jml: 0,
+      nonrujukan_hidup: 0,
+      nonrujukan_mati: 0,
+      nonrujukan_jml: 0,
+      rujuk: 0,
+    },
+    {
+      id: 10,
+      no: '3.3',
+      label: 'BBLR',
+      medis_rumahsakit: 0,
+      medis_bidan: 0,
+      medis_puskesmas: 0,
+      medis_faskeslain: 0,
+      medis_hidup: 0,
+      medis_mati: 0,
+      medis_jml: 0,
+      nonmedis_mati: 0,
+      nonmedis_jml: 0,
+      nonrujukan_hidup: 0,
+      nonrujukan_mati: 0,
+      nonrujukan_jml: 0,
+      rujuk: 0,
+    },
+    {
+      id: 11,
+      no: '3.4',
+      label: 'Tetanus Neonatorum',
+      medis_rumahsakit: 0,
+      medis_bidan: 0,
+      medis_puskesmas: 0,
+      medis_faskeslain: 0,
+      medis_hidup: 0,
+      medis_mati: 0,
+      medis_jml: 0,
+      nonmedis_mati: 0,
+      nonmedis_jml: 0,
+      nonrujukan_hidup: 0,
+      nonrujukan_mati: 0,
+      nonrujukan_jml: 0,
+      rujuk: 0,
+    },
+    {
+      id: 12,
+      no: '3.5',
+      label: 'Kelainan Congenital',
+      medis_rumahsakit: 0,
+      medis_bidan: 0,
+      medis_puskesmas: 0,
+      medis_faskeslain: 0,
+      medis_hidup: 0,
+      medis_mati: 0,
+      medis_jml: 0,
+      nonmedis_mati: 0,
+      nonmedis_jml: 0,
+      nonrujukan_hidup: 0,
+      nonrujukan_mati: 0,
+      nonrujukan_jml: 0,
+      rujuk: 0,
+    },
+    {
+      id: 12,
+      no: '3.6',
+      label: 'ISPA',
+      medis_rumahsakit: 0,
+      medis_bidan: 0,
+      medis_puskesmas: 0,
+      medis_faskeslain: 0,
+      medis_hidup: 0,
+      medis_mati: 0,
+      medis_jml: 0,
+      nonmedis_mati: 0,
+      nonmedis_jml: 0,
+      nonrujukan_hidup: 0,
+      nonrujukan_mati: 0,
+      nonrujukan_jml: 0,
+      rujuk: 0,
+    },
+    {
+      id: 12,
+      no: '3.7',
+      label: 'DIARE',
+      medis_rumahsakit: 0,
+      medis_bidan: 0,
+      medis_puskesmas: 0,
+      medis_faskeslain: 0,
+      medis_hidup: 0,
+      medis_mati: 0,
+      medis_jml: 0,
+      nonmedis_mati: 0,
+      nonmedis_jml: 0,
+      nonrujukan_hidup: 0,
+      nonrujukan_mati: 0,
+      nonrujukan_jml: 0,
+      rujuk: 0,
+    },
+    {
+      id: 12,
+      no: '3.8',
+      label: 'Lain-Lain',
+      medis_rumahsakit: 0,
+      medis_bidan: 0,
+      medis_puskesmas: 0,
+      medis_faskeslain: 0,
+      medis_hidup: 0,
+      medis_mati: 0,
+      medis_jml: 0,
+      nonmedis_mati: 0,
+      nonmedis_jml: 0,
+      nonrujukan_hidup: 0,
+      nonrujukan_mati: 0,
+      nonrujukan_jml: 0,
+      rujuk: 0,
+    },
+  ]
+
 const getLaporanRL3_5 = async (req, res) => {
     const logger = res.locals.logger;
     try{
         const result = await pool.query(queries.qLaporanRL3_5,[req.query.start,req.query.end])
-        const list = [
-            {id: 1,no:'1',label: "Bayi Lahir Hidup",medis_rumahsakit: '',medis_bidan:'',medis_puskesmas:'',medis_faskeslain:'',medis_hidup:'',medis_mati:'',medis_jml:'',nonmedis_mati:'',nonmedis_jml:'',nonrujukan_hidup:'',nonrujukan_mati:'',nonrujukan_jml:'',rujuk:''
-            },
-            {id: 2,no:'1.1',label: "≥ 2500 gram",medis_rumahsakit: 0,medis_bidan:0,medis_puskesmas:0,medis_faskeslain:0,medis_hidup:0,medis_mati:0,medis_jml:0,nonmedis_mati:0,nonmedis_jml:0,nonrujukan_hidup:0,nonrujukan_mati:0,nonrujukan_jml:0,rujuk:0
-            },
-            {id: 3,no:'1.2',label: "< 2500 gram",medis_rumahsakit: 0,medis_bidan:0,medis_puskesmas:0,medis_faskeslain:0,medis_hidup:0,medis_mati:0,medis_jml:0,nonmedis_mati:0,nonmedis_jml:0,nonrujukan_hidup:0,nonrujukan_mati:0,nonrujukan_jml:0,rujuk:0
-            },
-            {id: 4,no:'2',label: "Kematian Perinatal",medis_rumahsakit: '',medis_bidan:'',medis_puskesmas:'',medis_faskeslain:'',medis_hidup:'',medis_mati:'',medis_jml:'',nonmedis_mati:'',nonmedis_jml:'',nonrujukan_hidup:'',nonrujukan_mati:'',nonrujukan_jml:'',rujuk:''
-            },
-            {id: 5,no:'2.1',label: "Kelahiran Mati",medis_rumahsakit: 0,medis_bidan:0,medis_puskesmas:0,medis_faskeslain:0,medis_hidup:0,medis_mati:0,medis_jml:0,nonmedis_mati:0,nonmedis_jml:0,nonrujukan_hidup:0,nonrujukan_mati:0,nonrujukan_jml:0,rujuk:0
-            },
-            {id: 6,no:'2.2',label: "Mati Neonatal < 7 Hari", medis_rumahsakit: 0,medis_bidan:0,medis_puskesmas:0,medis_faskeslain:0,medis_hidup:0,medis_mati:0,medis_jml:0,nonmedis_mati:0,nonmedis_jml:0,nonrujukan_hidup:0,nonrujukan_mati:0,nonrujukan_jml:0, rujuk:0
-            },
-            {id: 7,no:'3',label: "Sebab Kematian Perinatal",medis_rumahsakit: '',medis_bidan:'',medis_puskesmas:'',medis_faskeslain:'', medis_hidup:'',medis_mati:'',medis_jml:'',nonmedis_mati:'',nonmedis_jml:'',nonrujukan_hidup:'',nonrujukan_mati:'',nonrujukan_jml:'',rujuk:''
-            },
-            {id: 8,no:'3.1',label: "Asphyxia",
-         medis_rumahsakit: 0,medis_bidan:0,medis_puskesmas:0,medis_faskeslain:0,medis_hidup:0,medis_mati:0,medis_jml:0,nonmedis_mati:0,nonmedis_jml:0,nonrujukan_hidup:0,nonrujukan_mati:0,nonrujukan_jml:0,rujuk:0
-            },
-            {id: 9,no:'3.2',label: "Trauma Kelahiran",medis_rumahsakit: 0,medis_bidan:0,medis_puskesmas:0,medis_faskeslain:0,medis_hidup:0,medis_mati:0,medis_jml:0,nonmedis_mati:0,nonmedis_jml:0,nonrujukan_hidup:0,nonrujukan_mati:0,nonrujukan_jml:0,rujuk:0
-            },
-            {id: 10,no:'3.3',label: "BBLR",
-         medis_rumahsakit: 0,medis_bidan:0,medis_puskesmas:0,medis_faskeslain:0,medis_hidup:0,medis_mati:0,medis_jml:0,nonmedis_mati:0,nonmedis_jml:0,nonrujukan_hidup:0,nonrujukan_mati:0,nonrujukan_jml:0,rujuk:0
-            },
-            {id: 11,no:'3.4',label: "Tetanus Neonatorum",medis_rumahsakit: 0,medis_bidan:0,medis_puskesmas:0,medis_faskeslain:0,medis_hidup:0,medis_mati:0,medis_jml:0,nonmedis_mati:0,nonmedis_jml:0,nonrujukan_hidup:0,nonrujukan_mati:0,nonrujukan_jml:0,rujuk:0
-            },
-            {id: 12,no:'3.5',label: "Kelainan Congenital",medis_rumahsakit: 0,medis_bidan:0,medis_puskesmas:0, medis_faskeslain:0,medis_hidup:0,medis_mati:0,medis_jml:0,nonmedis_mati:0,nonmedis_jml:0,nonrujukan_hidup:0,nonrujukan_mati:0,nonrujukan_jml:0,rujuk:0
-            },
-            {id: 12,no:'3.6',label: "ISPA",medis_rumahsakit: 0,medis_bidan:0,medis_puskesmas:0, medis_faskeslain:0,medis_hidup:0,medis_mati:0,medis_jml:0,nonmedis_mati:0,nonmedis_jml:0,nonrujukan_hidup:0,nonrujukan_mati:0,nonrujukan_jml:0,rujuk:0
-            },
-            {id: 12,no:'3.7',label: "DIARE",medis_rumahsakit: 0,medis_bidan:0,medis_puskesmas:0, medis_faskeslain:0,medis_hidup:0,medis_mati:0,medis_jml:0,nonmedis_mati:0,nonmedis_jml:0,nonrujukan_hidup:0,nonrujukan_mati:0,nonrujukan_jml:0,rujuk:0
-            },
-            {id: 12,no:'3.8',label: "Lain-Lain",medis_rumahsakit: 0,medis_bidan:0,medis_puskesmas:0, medis_faskeslain:0,medis_hidup:0,medis_mati:0,medis_jml:0,nonmedis_mati:0,nonmedis_jml:0,nonrujukan_hidup:0,nonrujukan_mati:0,nonrujukan_jml:0,rujuk:0
-            },
-        ]
+        const list = [...list3_5]
         for (let i = 0; i < result.rows.length; i++) {
             const element = result.rows[i];
             for (let y = 0; y < list.length; y++) {
@@ -1291,6 +1529,72 @@ const getLaporanRL3_15 = async (req, res) => {
         res.status(500).json({
             msg: error.message,
             code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+const getLaporanRL3_13 = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const obat = (await pool.query(queries.qLaporanRL3_13, [])).rows
+        const initJumlah = {
+            jumlahItemObat: 0,
+            jumlahItemObatTersedia: 0,
+            jumlahItemObatTersediaFormularium: 0
+        }
+        const rowLaporan = [
+            {
+                ...initJumlah,
+                label: "Obat Generik",
+                jumlahItemObat: [...obat].filter(obat => obat.generik === 1).length,
+                jumlahItemObatTersedia: [...obat].filter(obat => 
+                    obat.generik === 1 && obat.qty > 0
+                ).length,
+                jumlahItemObatTersediaFormularium: [...obat].filter(obat => 
+                    obat.generik === 1 && obat.qty > 0 && obat.isfornas
+                ).length
+            },
+            {
+                ...initJumlah,
+                label: "Obat Non Generik Formularium",
+                jumlahItemObat: [...obat].filter(obat => obat.generik !== 1 && obat.isfornas).length,
+                jumlahItemObatTersedia: [...obat].filter(obat => 
+                    obat.generik !== 1 && obat.qty > 0 && obat.isfornas
+                ).length,
+                jumlahItemObatTersediaFormularium: [...obat].filter(obat => 
+                    obat.generik !== 1 && obat.qty > 0 && obat.isfornas
+                ).length
+            },
+            {
+                ...initJumlah,
+                label: "Obat Non Generik Non Formularium",
+                jumlahItemObat: [...obat].filter(obat => 
+                    obat.generik !== 1 && !obat.isfornas
+                ).length,
+                jumlahItemObatTersedia: [...obat].filter(obat => 
+                    obat.generik !== 1 && obat.qty > 0 && !obat.isfornas
+                ).length,
+                jumlahItemObatTersediaFormularium: [...obat].filter(obat => 
+                    obat.generik !== 1 && obat.qty > 0 && !obat.isfornas
+                ).length
+            },
+        ]
+        const tempres = {
+            rowLaporan: rowLaporan
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(error.httpcode || 500).send({
+            msg: error.message,
+            code: error.httpcode || 500,
             data: error,
             success: false
         });
@@ -1721,6 +2025,7 @@ export default {
     getLaporanRL3_8,
     getLaporanRL3_9,
     getLaporanRL3_14,
+    getLaporanRL3_13,
     getLaporanRL3_15,
     getLaporanRL3_11,
     getLaporanRL3_10,

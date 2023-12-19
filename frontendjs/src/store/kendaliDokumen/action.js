@@ -59,6 +59,7 @@ import {
     LAPORAN_RL_3_8_GET,LAPORAN_RL_3_8_GET_SUCCESS,LAPORAN_RL_3_8_GET_ERROR,
     LAPORAN_RL_3_9_GET,LAPORAN_RL_3_9_GET_SUCCESS,LAPORAN_RL_3_9_GET_ERROR,
     LAPORAN_RL_3_14_GET,LAPORAN_RL_3_14_GET_SUCCESS,LAPORAN_RL_3_14_GET_ERROR,
+    LAPORAN_RL_3_13_GET,LAPORAN_RL_3_13_GET_SUCCESS,LAPORAN_RL_3_13_GET_ERROR,
     LAPORAN_RL_3_15_GET,LAPORAN_RL_3_15_GET_SUCCESS,LAPORAN_RL_3_15_GET_ERROR,
     LAPORAN_RL_3_11_GET,LAPORAN_RL_3_11_GET_SUCCESS,LAPORAN_RL_3_11_GET_ERROR,
     LAPORAN_RL_3_10_GET,LAPORAN_RL_3_10_GET_SUCCESS,LAPORAN_RL_3_10_GET_ERROR,
@@ -485,6 +486,23 @@ export const getLaporanRl_3_9Success = (data) => ({
 
 export const getLaporanRl_3_9Error = (error) => ({
     type: LAPORAN_RL_3_9_GET_ERROR,
+    payload: error,
+});
+
+export const getLaporanRl_3_13 = (queries) => ({
+    type: LAPORAN_RL_3_13_GET,
+    payload: {
+        queries,
+    },
+});
+
+export const getLaporanRl_3_13Success = (data) => ({
+    type: LAPORAN_RL_3_13_GET_SUCCESS,
+    payload: data,
+});
+
+export const getLaporanRl_3_13Error = (error) => ({
+    type: LAPORAN_RL_3_13_GET_ERROR,
     payload: error,
 });
 

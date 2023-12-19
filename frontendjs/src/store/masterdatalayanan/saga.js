@@ -147,7 +147,7 @@ function* onUpsertJenisProduk({ payload: { data, callback } }) {
         callback && callback(response.data)
     } catch (error) {
         yield put(upsertJenisProdukError(error));
-        toast.error(error.response?.data?.msg || "Error")
+        toast.error(error.response?.data?.msg || error?.message || "Error")
     }
 }
 

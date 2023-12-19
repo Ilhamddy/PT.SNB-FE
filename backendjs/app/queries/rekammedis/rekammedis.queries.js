@@ -403,6 +403,26 @@ join m_unit mu on mu.id=td.objectunitlastfk
 WHERE td.statusenabled = true AND td.tglpulang between  $1 and $2
 GROUP BY mr.namarekanan;`
 
+const qLaporanRL3_13 = `
+SELECT
+    mp.id AS idobat,
+    mp.objectgenerikfk AS generik,
+    mp.isfornas AS isfornas,
+    mp.isforrs AS isfornrs,
+    COALESCE(
+        SUM(tsu.qty), 0
+    ) AS qty
+FROM m_produk mp
+    LEFT JOIN t_stokunit tsu ON tsu.objectprodukfk = mp.id
+WHERE
+    mp.isobat = TRUE
+GROUP BY
+    mp.id,
+    mp.objectgenerikfk,
+    mp.isfornas,
+    mp.isforrs
+`
+
 const qDetailLaporanRL3_15 =`SELECT mr.namarekanan, td.tglregistrasi ,td.tglpulang,
 to_char( td.tglregistrasi, TO_CHAR(age( td.tglregistrasi,  td.tglpulang), 'DD')) AS los
 FROM t_daftarpasien td
@@ -636,6 +656,7 @@ export default {
     qLaporanRL3_8,
     qLaporanRL3_9,
     qTaskLaporanRL3_9,
+    qLaporanRL3_13,
     qLaporanRL3_14,
     qLaporanRL3_15,
     qDetailLaporanRL3_15,

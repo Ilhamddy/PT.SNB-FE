@@ -23,7 +23,11 @@ import {
     createAntreanFarmasiSuccess,
     createAntreanFarmasiError,
     getComboLaporanPengadaanSuccess,
-    getComboLaporanPengadaanError
+    getComboLaporanPengadaanError,
+    getPenjualanBebasSuccess,
+    getPenjualanBebasError,
+    getPenjualanBebasFromNorecSuccess,
+    getPenjualanBebasFromNorecError
 } from "./action";
 
 import {
@@ -37,7 +41,9 @@ import {
     GET_ANTREAN_FROM_DP,
     CREATE_OR_UPDATE_ORDER_PLUS_VERIF,
     CREATE_ANTREAN_FARMASI,
-    GET_COMBO_LAPORAN_PENGADAAN
+    GET_COMBO_LAPORAN_PENGADAAN,
+    GET_PENJUALAN_BEBAS,
+    GET_PENJUALAN_BEBAS_FROM_NOREC
 } from "./actionType";
 
 import {
@@ -165,6 +171,24 @@ function* onGetComboLaporanPengadaan({ payload: { queries } }) {
     }
 }
 
+function* onGetPenjualanBebas({ payload: { queries } }) {
+    try {
+        const response = yield call(serviceFarmasi.getPenjualanBebas, queries);
+        yield put(getPenjualanBebasSuccess(response.data));
+    } catch (error) {
+        yield put(getPenjualanBebasError(error));
+    }
+}
+
+function* onGetPenjualanBebasFromNorec({ payload: { queries } }) {
+    try {
+        const response = yield call(serviceFarmasi.getPenjualanBebasFromNorec, queries);
+        yield put(getPenjualanBebasFromNorecSuccess(response.data));
+    } catch (error) {
+        yield put(getPenjualanBebasFromNorecError(error));
+    }
+}
+
 export function* watchGetOrderResepQuery() {
     yield takeEvery(GET_ORDER_RESEP_QUERY, onGetOrderResepQuery);
 }
@@ -209,6 +233,15 @@ export function* watchGetComboLaporanPengadaan(){
     yield takeEvery(GET_COMBO_LAPORAN_PENGADAAN, onGetComboLaporanPengadaan);
 }
 
+export function* watchGetPenjualanBebas(){
+    yield takeEvery(GET_PENJUALAN_BEBAS, onGetPenjualanBebas);
+}
+
+export function* watchGetPenjualanBebasFromNorec(){
+    yield takeEvery(GET_PENJUALAN_BEBAS_FROM_NOREC, onGetPenjualanBebasFromNorec);
+}
+
+
 function* farmasiSaga() {
     yield all([
         fork(watchGetOrderResepQuery),
@@ -221,7 +254,9 @@ function* farmasiSaga() {
         fork(watchGetAntreanFromDP),
         fork(watchCreateOrUpdateOrderPlusVerif),
         fork(watchCreateAntreanFarmasi),
-        fork(watchGetComboLaporanPengadaan)
+        fork(watchGetComboLaporanPengadaan),
+        fork(watchGetPenjualanBebas),
+        fork(watchGetPenjualanBebasFromNorec)
     ]);
 }
 

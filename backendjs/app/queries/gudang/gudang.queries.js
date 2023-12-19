@@ -1,4 +1,4 @@
-import { dateBetweenEmptyString, emptyInt } from "../../utils/dbutils"
+import { dateBetweenEmptyString, emptyIlike, emptyInt } from "../../utils/dbutils"
 import { daftarUnit } from "../mastertable/unit/unit.queries"
 
 
@@ -92,10 +92,12 @@ FROM m_produk mp
     LEFT JOIN m_detailjenisproduk mdjp ON mdjp.id = mp.objectdetailjenisprodukfk
     LEFT JOIN m_golonganobat mgo ON mgo.id = mp.objectgolonganobatfk
 WHERE
-    mp.isobat = TRUE 
-    OR mp.isbmhp = TRUE
-    OR mp.isalkes = TRUE
-    OR mp.islogistik = TRUE
+    (
+        mp.isobat = TRUE 
+        OR mp.isbmhp = TRUE
+        OR mp.isalkes = TRUE
+        OR mp.islogistik = TRUE
+    ) AND ${emptyIlike("mp.namaproduk", "$1")}
 `
 
 const qGetProdukEdit = `

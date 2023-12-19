@@ -60,7 +60,7 @@ export default (sequelize, Sequelize) => {
         },
         objectverifremunerasifk:{
             type: Sequelize.CHAR(32)
-        }
+        },
     }, {
         tableName: "t_pelayananpasien", // relation "user" does not exist
         createdAt: false,

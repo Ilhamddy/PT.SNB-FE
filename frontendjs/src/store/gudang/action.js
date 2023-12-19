@@ -96,9 +96,9 @@ import {
 
 
 
-export const obatGudangSave = (data,) => ({
+export const obatGudangSave = (data, callback) => ({
     type: OBAT_GUDANG_SAVE,
-    payload: { data: data },
+    payload: { data: data, callback: callback },
 });
 
 export const obatGudangSaveSuccess = (data) => ({

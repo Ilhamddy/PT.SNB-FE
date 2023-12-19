@@ -4,7 +4,6 @@ import db from "../../../models";
 import {
     createTransaction
 } from "../../../utils/dbutils";
-import { hProcessOrderResep } from "../emr/emr.controller";
 import { qGetAllVerif, qGetObatFromProduct, qGetPasienFromId } from "../../../queries/farmasi/farmasi.queries";
 import { generateKodeBatch, hCreateKartuStok } from "../gudang/gudang.controller";
 import fs from 'fs';

@@ -5,14 +5,14 @@ import db from "../../../models";
 import {
     createTransaction
 } from "../../../utils/dbutils";
-import { hProcessOrderResep } from "../emr/emr.controller";
-import { qGetAllVerif, qGetObatFromProduct, qGetPasienFromId } from "../../../queries/farmasi/farmasi.queries";
+import { qGetAllVerif, qGetObatFromProduct, qGetPasienFromId, qGetPenjualanBebasAll, qGetPenjualanBebasFromNorec } from "../../../queries/farmasi/farmasi.queries";
 import { generateKodeBatch, hCreateKartuStok, hUpsertStok } from "../gudang/gudang.controller";
 import unitQueries, { daftarUnit } from "../../../queries/mastertable/unit/unit.queries";
 import { getDateEnd, getDateEndNull, getDateStart, getDateStartNull } from "../../../utils/dateutils";
 import instalasiQueries from "../../../queries/mastertable/instalasi/instalasi.queries";
 import rekananQueries from "../../../queries/mastertable/rekanan/rekanan.queries";
 import asalprodukQueries from "../../../queries/mastertable/asalproduk/asalproduk.queries";
+import { BadRequestError, NotFoundError } from "../../../utils/errors";
 
 const t_verifresep = db.t_verifresep
 const t_pelayananpasien = db.t_pelayananpasien
@@ -193,7 +193,8 @@ const createOrUpdatePenjualanBebas = async (req, res) => {
     if(errorTransaction) return
     try{
         const body = req.body
-        let [createdOrUpdated, norec] = [null, req.body.norecjualbebas || null]
+        let createdOrUpdated = null
+        let norec = req.body.norecjualbebas || null
         const tglResep = body.tanggalresep ? new Date(body.tanggalresep) : null
         if(!norec){
             norec = uuid.v4().substring(0, 32);
@@ -220,7 +221,11 @@ const createOrUpdatePenjualanBebas = async (req, res) => {
             })
             createdOrUpdated = created.toJSON();
         }else{
-            const [_, updated] = await t_penjualanbebas.update({
+            const penjualanSebelum = await t_penjualanbebas.findByPk(norec, {
+                transaction: transaction
+            })
+            if(!penjualanSebelum) throw new NotFoundError("Penjualan sebelum tidak ditemukan")
+            await penjualanSebelum.update({
                 kdprofile: 0,
                 statusenabled: true,
                 reportdisplay: body.namapasien,
@@ -237,21 +242,18 @@ const createOrUpdatePenjualanBebas = async (req, res) => {
                 catatan: body.catatan,
                 tglinput: new Date()
             }, {
-                where: {
-                    norec: norec
-                },
-                returning: true,
                 transaction: transaction
             })
-            createdOrUpdated = updated[0].toJSON();
+            createdOrUpdated = penjualanSebelum.toJSON();
         }
         const {createdOrUpdatedDetailBebas} =
-        await hCreateOrUpdateDetailBebas(
+        await hCreateOrUpdateDetailVerif(
             req,
             res,
             transaction,
             {
-                norecpenjualanbebas: norec
+                norecpenjualanbebas: norec,
+                resep: req.body.resep
             }
         )
         await transaction.commit()
@@ -692,6 +694,69 @@ const getComboLaporanPengadaan = async (req, res) => {
     }
 }
 
+const getPenjualanBebas = async (req, res) => {
+    const logger = res.locals.logger
+    try{
+        let { tglmulai, tglakhir } = req.query
+        tglmulai = getDateStartNull(tglmulai);
+        tglakhir = getDateEndNull(tglakhir) 
+        let dataAllOrders = await pool.query(qGetPenjualanBebasAll, [
+            tglmulai || '',
+            tglakhir || ''
+        ])
+        dataAllOrders = hProcessOrderResep(dataAllOrders?.rows || null)
+        const tempres = {
+            dataPenjualanBebas: dataAllOrders
+        }
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+            msg: "sukses get resep from dp"
+        });
+    }catch(error){
+        logger.error(error)
+        res.status(500).send({
+            data: error,
+            status: "error",
+            success: false,
+            msg: "gagal get all resep query"
+        })
+    }
+}
+
+const getPenjualanBebasFromNorec = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        let { norecjualbebas } = req.query
+        if(!norecjualbebas) {
+            throw new BadRequestError("Norec penjualan bebas")
+        }
+        let dataAllOrders = await pool.query(qGetPenjualanBebasFromNorec, [norecjualbebas])
+        if(dataAllOrders.rows.length === 0) throw new Error(NotFoundError("Data Penjualan Tidak ditemukan"))
+        dataAllOrders = hProcessOrderResep(dataAllOrders?.rows || null)
+        const tempres = {
+            dataPenjualanBebas: dataAllOrders[0]
+        }
+        res.status(200).send({
+            data: tempres,
+            status: "success",
+            success: true,
+            msg: "sukses get resep from dp"
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(error.httpcode || 500).send({
+            msg: error.message,
+            code: error.httpcode || 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+
+
 export default {
     getOrderResepQuery,
     getOrderResepFromNorec,
@@ -704,6 +769,8 @@ export default {
     createOrUpdateOrderPlusVerif: upsertOrderPlusVerif,
     createAntreanFarmasi,
     getComboLaporanPengadaan,
+    getPenjualanBebas,
+    getPenjualanBebasFromNorec
 }
 
 const hCreateAntreanPemeriksaan = async(
@@ -746,16 +813,31 @@ const hCreateAntreanPemeriksaan = async(
     return {newAP}
 }
 
+/**
+ * digunakan di beberapa tempat: saat verifikasi order resep, saat resep langsung, dan penjualan obat bebas
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} transaction 
+ * @param {{
+ *  norecorderresep: string | undefined,
+ *  norecpenjualanbebas: string | undefined,
+ *  resep: any[],
+ *  newnorecap: string | undefined
+ * }} param3
+ * @returns 
+ */
 const hCreateOrUpdateDetailVerif = async (
     req, 
     res, 
     transaction,
     {
         norecorder,
+        norecpenjualanbebas,
         resep,
         newnorecap
     }
 ) => {
+    if(!norecorder && !norecpenjualanbebas) throw new Error("Salah satu norec harus diisi")
     let createdOrUpdatedDetailOrder = await Promise.all(
         resep.map(async (item) => {
             if(item.racikan.length > 0){
@@ -769,6 +851,7 @@ const hCreateOrUpdateDetailVerif = async (
                             req,
                             res,
                             norecorder,
+                            norecpenjualanbebas,
                             transaction
                         )
                         norecresepsub = uuid.v4().substring(0, 32);
@@ -779,12 +862,13 @@ const hCreateOrUpdateDetailVerif = async (
                             {
                                 norecorderresep: norecorder, 
                                 item: item, 
+                                norecpenjualanbebas: norecpenjualanbebas,
                                 subItem: subItem,
                             } 
                         )
                         createdOrUpdatedVerif = created
 
-                        await hCreatePelayanan(
+                        newnorecap && await hCreatePelayanan(
                             req,
                             res,
                             transaction,
@@ -805,6 +889,7 @@ const hCreateOrUpdateDetailVerif = async (
                 req,
                 res,
                 norecorder,
+                norecpenjualanbebas,
                 transaction
             )
             norecverif = uuid.v4().substring(0, 32);
@@ -814,12 +899,13 @@ const hCreateOrUpdateDetailVerif = async (
                 transaction,
                 {
                     norecorderresep: norecorder, 
+                    norecpenjualanbebas: norecpenjualanbebas,
                     item: item, 
                     subItem: null,
                 } 
             )
             createdOrUpdatedVerif = created
-            await hCreatePelayanan(
+            newnorecap && await hCreatePelayanan(
                 req,
                 res,
                 transaction,
@@ -846,7 +932,6 @@ const hCreatePelayanan = async (
     }
 
 ) => {
-
     const createdPelayanan = await Promise.all(
         verifUsed.map(
             async (verifUsed) => {
@@ -879,16 +964,19 @@ const hCreatePelayanan = async (
     return {createdPelayanan}
 }
 
+
 const hCreateVerif = async (
     req,
     res,
     transaction,
     {
         norecorderresep, 
+        norecpenjualanbebas,
         item, 
         subItem,
     } 
 ) => {
+    if(!norecorderresep && !norecpenjualanbebas) throw new Error("Salah satu Norec harus diisi")
     let itemUsed = subItem || item
     const qtyPembulatan = itemUsed.qtypembulatan
     const qty = itemUsed.qty
@@ -911,7 +999,7 @@ const hCreateVerif = async (
                     kdprofile: 0,
                     statusenabled: true,
                     reportdisplay: itemUsed.namaobat,
-                    objectorderresepfk: norecorderresep,
+                    objectorderresepfk: norecorderresep || null,
                     kode_r: item.koder,
                     objectprodukfk: itemUsed.obat,
                     qty: batchstokunit.qtyChange || 0,
@@ -926,6 +1014,7 @@ const hCreateVerif = async (
                     // harus koder dari subitem
                     kode_r_tambahan: subItem?.koder || null,
                     nobatch: batchstokunit.nobatch,
+                    objectpenjualanbebasfk: norecpenjualanbebas || null
                 }, {
                     transaction: transaction
                 })
@@ -943,14 +1032,26 @@ const hDeleteVerif = async (
     req,
     res,
     norecorderresep, 
+    norecpenjualanbebas,
     transaction
 ) => {
-    let deleted = await t_verifresep.findAll({
-        where: {
-            objectorderresepfk: norecorderresep
-        },
-        transaction: transaction
-    })
+    if(!norecorderresep && !norecpenjualanbebas) throw new Error("Harus ada salah satu norec")
+    let deleted
+    if(norecorderresep){
+        await t_verifresep.findAll({
+            where: {
+                objectorderresepfk: norecorderresep
+            },
+            transaction: transaction
+        })
+    } else{
+        deleted = await t_verifresep.findAll({
+            where: {
+                objectpenjualanbebasfk: norecpenjualanbebas
+            },
+            transaction: transaction
+        })
+    }
     deleted = await Promise.all(
         deleted.map(
             async (del) => {
@@ -994,172 +1095,6 @@ const hDeleteVerif = async (
 
     return {deleted}
 }
-
-const hCreateOrUpdateDetailBebas = async (
-    req, 
-    res, 
-    transaction,
-    {
-        norecpenjualanbebas,
-    }
-) => {
-    const resep = req.body.resep
-    let createdOrUpdatedDetailBebas = await Promise.all(
-        resep.map(async (item) => {
-            if(item.racikan.length > 0){
-                // untuk racikan, maka masukkan sub item
-                let createdOrUpdatedVerifs = []
-                createdOrUpdatedVerifs = await Promise.all(
-                    item.racikan.map(async (subItem) => {
-                        let norecresepsub = subItem.norecdetail
-                        
-                        norecresepsub = uuid.v4().substring(0, 32);
-                        const { deleted } = await hDeleteDetailBebas(
-                            req, 
-                            norecpenjualanbebas, 
-                            transaction
-                        )
-                        const {created} = await hCreateDetailBebas(
-                            req,
-                            res,
-                            transaction,
-                            {
-                                norecpenjualanbebas: norecpenjualanbebas, 
-                                item: item, 
-                                subItem: subItem,
-                            } 
-                        )
-                        const createdOrUpdatedBebas = created
-                    
-                        return createdOrUpdatedBebas
-                    })
-                )
-                return createdOrUpdatedVerifs
-            }
-            // jika bukan racikan, maka tidak perlu subitem
-            let norecdetail = item.norecdetail
-            let createdOrUpdatedBebas
-            norecdetail = uuid.v4().substring(0, 32);
-            const { deleted } = await hDeleteDetailBebas(
-                req, 
-                res,
-                norecpenjualanbebas, 
-                transaction
-            )
-            const {created} = await hCreateDetailBebas(
-                req,
-                res,
-                transaction,
-                {
-                    norecpenjualanbebas: norecpenjualanbebas, 
-                    item: item, 
-                    subItem: null,
-                } 
-            )
-            createdOrUpdatedBebas = created
-            return createdOrUpdatedBebas
-        })
-    )
-    createdOrUpdatedDetailBebas 
-        = createdOrUpdatedDetailBebas.flat(1)
-    return {createdOrUpdatedDetailBebas}
-}
-
-const hCreateDetailBebas = async (
-    req,
-    res,
-    transaction,
-    {
-        norecpenjualanbebas, 
-        item, 
-        subItem,
-    } 
-) => {
-    // jika bukan subitem, maka yang digunakan adalah item
-    let itemUsed = subItem || item
-    const qtyPembulatan = itemUsed.qtypembulatan
-    const qty = itemUsed.qty
-    const {changedStok, batchStokUnitChanged} = await hSubstractStokProduct(
-        req, 
-        res, 
-        transaction, 
-        {
-            idUnit: req.body.unittujuan,
-            productId: itemUsed.obat, 
-            stokChange: (qtyPembulatan || qty) 
-        }
-    )
-    const created = await Promise.all(
-        batchStokUnitChanged.map(
-            async (batchstokunit) => {
-                let created = await t_penjualanbebasdetail.create({
-                    norec: uuid.v4().substring(0, 32),
-                    kdprofile: 0,
-                    statusenabled: true,
-                    reportdisplay: itemUsed.namaobat,
-                    objectpenjualanbebasfk: norecpenjualanbebas,
-                    kode_r: item.koder,
-                    objectprodukfk: itemUsed.obat,
-                    qty: batchstokunit.qtyChange || 0,
-                    objectsediaanfk: item.sediaan,
-                    harga: batchstokunit.harga || 0,
-                    total: batchstokunit.harga * (batchstokunit.qtyChange || 0),
-                    objectsignafk: item.signa,
-                    objectketeranganresepfk: item.keterangan,
-                    qtyracikan: itemUsed.qtyracikan,
-                    qtypembulatan: itemUsed.qtypembulatan,
-                    qtyjumlahracikan: item.qty || 0,
-                    // harus koder dari subitem
-                    kode_r_tambahan: subItem?.koder || null,
-                    nobatch: batchstokunit.nobatch,
-                }, {
-                    transaction: transaction
-                })
-                created = created.toJSON()
-                return created
-            }
-        )
-    )
-    return {created, norecresep: created.norec, changedStok}
-}
-
-const hDeleteDetailBebas = async (
-    req,
-    res,
-    norecpenjualanbebas, 
-    transaction
-) => {
-    let deleted = await t_penjualanbebasdetail.findAll({
-        where: {
-            objectpenjualanbebasfk: norecpenjualanbebas
-        },
-        transaction: transaction
-    })
-    deleted = await Promise.all(
-        deleted.map(
-            async (del) => {
-                const delVal = del.toJSON()
-                const qtyPembulatan = del.qtypembulatan
-                const qty = del.qty
-                const {changedStok, batchStokUnitChanged} = await hSubstractStokProduct(
-                    req, 
-                    res, 
-                    transaction, 
-                    {
-                        idUnit: req.body.unittujuan,
-                        productId: del.objectprodukfk, 
-                        stokChange: - (qtyPembulatan || qty) 
-                    }
-                )
-                del.destroy()
-                return delVal
-            }
-        )
-    )
-
-    return {deleted}
-}
-
 
 /**
  * change stock produk seluruh batch, tergantung prioritas
@@ -1315,4 +1250,67 @@ const hAddStock = async (
         noBatch: nobatch
     })
     return {stok: stokAkhirVal, kartuStok: kartuStok}
+}
+
+export const initValueResep = {
+    norecap: "",
+    norecresep: "",
+    obat: "",
+    namaobat: "",
+    satuanobat: "",
+    namasatuan: "",
+    koder: 1,
+    qty: "",
+    qtyracikan: "",
+    qtypembulatan: "",
+    qtyjumlahracikan: "",
+    sediaan: "",
+    namasediaan: "",
+    harga: "",
+    total: "",
+    signa: "",
+    keterangan: "",
+    namaketerangan: "",
+    nobatch: "",
+    racikan: []
+}
+
+
+export const hProcessOrderResep = (dataOrders) => {
+    if (dataOrders === null) return []
+    let newDataOrders = dataOrders.map((order) => {
+        let newOrder = { ...order }
+        const newOrdersResep = []
+
+        newOrder.resep.map((resep) => {
+            const newResep = { ...resep }
+            if (newResep.kodertambahan) {
+                const findResep = newOrdersResep.find((findItem) => {
+                    return findItem.koder === newResep.koder
+                })
+                if (!findResep) {
+                    const valueResepNew = { ...initValueResep }
+                    valueResepNew.qty = newResep.qtyjumlahracikan
+                    valueResepNew.sediaan = newResep.sediaan
+                    valueResepNew.namasediaan = newResep.namasediaan
+                    valueResepNew.signa = newResep.signa
+                    valueResepNew.keterangan = newResep.keterangan
+                    valueResepNew.namaketerangan = newResep.namaketerangan
+                    valueResepNew.koder = newResep.koder
+                    newResep.koder = newResep.kodertambahan
+                    valueResepNew.racikan = [newResep]
+                    newOrdersResep.push(valueResepNew)
+                } else {
+                    newResep.koder = newResep.kodertambahan
+                    findResep.racikan = [...findResep.racikan, newResep]
+                }
+            } else {
+                newResep.racikan = []
+                newOrdersResep.push(newResep)
+            }
+        })
+        newOrder.resep = newOrdersResep
+        return newOrder
+    })
+    return newDataOrders
 }

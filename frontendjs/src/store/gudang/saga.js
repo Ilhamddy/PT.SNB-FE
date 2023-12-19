@@ -105,10 +105,11 @@ import {
 
 const serviceGudang = new ServiceGudang();
 
-function* onSaveObatGudang({payload: { data }}) {
+function* onSaveObatGudang({payload: { data, callback }}) {
     try {
         let response = yield call(serviceGudang.saveObatGudang, data);
         yield put(obatGudangSaveSuccess(response.data));
+        callback && callback()
         toast.success(response.msg, { autoClose: 3000 });
     } catch (error) {
         console.error(error);

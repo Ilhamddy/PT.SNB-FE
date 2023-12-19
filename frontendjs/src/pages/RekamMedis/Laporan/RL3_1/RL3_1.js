@@ -237,7 +237,7 @@ const RL3_1 = () => {
                                         <KontainerFlatpickr
                                             id="tglstart"
                                             options={{
-                                                enableTime: true,
+                                                // enableTime: true,
                                                 // mode: "range",
                                                 dateFormat: "Y-m-d",
                                                 defaultDate: "today"
@@ -253,7 +253,7 @@ const RL3_1 = () => {
                                         <KontainerFlatpickr
                                             id="tglend"
                                             options={{
-                                                enableTime: true,
+                                                // enableTime: true,
                                                 // mode: "range",
                                                 dateFormat: "Y-m-d",
                                                 defaultDate: "today"

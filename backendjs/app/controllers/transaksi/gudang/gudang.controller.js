@@ -35,6 +35,7 @@ import {
     createTransaction
 } from "../../../utils/dbutils";
 import { getDateEndNull, getDateStartNull } from "../../../utils/dateutils";
+import { NotFoundError } from "../../../utils/errors";
 const m_produk = db.m_produk;
 const m_detailjenisproduk = db.m_detailjenisproduk;
 const m_sediaan = db.m_sediaan
@@ -69,6 +70,7 @@ const createOrUpdateProdukObat = async (req, res) => {
                 namaproduk: objectBody.namaproduk,
                 nilainormal: null,
                 objectsatuanstandarfk: objectBody.satuanjual || null,
+                objectgenerikfk: objectBody.statusgenerik || null,
                 objectsediaanfk: objectBody.sediaan || null,
                 keterangan: "" || null,
                 objectvariabelbpjsfk: objectBody.variabelbpjs || null,
@@ -81,12 +83,17 @@ const createOrUpdateProdukObat = async (req, res) => {
                 tglinput: new Date(),
                 tglupdate: new Date(),
                 objectpegawaiinputfk: req.idPegawai,
-                objectpegawaiupdatefk: req.idPegawai
+                objectpegawaiupdatefk: req.idPegawai,
+                barcode: objectBody.barcode,
             }, { 
                 transaction: transaction 
             });
         }else{
-            createdProduk = await m_produk.update({
+            const updatedModel = await m_produk.findByPk(objectBody.idproduk, {
+                transaction: transaction
+            })
+            if(!updatedModel) throw new NotFoundError("Updated tidak ditemukan")
+            await updatedModel.update({
                 statusenabled: true,
                 namaexternal: objectBody.namaproduk,
                 reportdisplay: objectBody.namaproduk,
@@ -96,6 +103,7 @@ const createOrUpdateProdukObat = async (req, res) => {
                 namaproduk: objectBody.namaproduk,
                 nilainormal: null,
                 objectsatuanstandarfk: objectBody.satuanjual || null,
+                objectgenerikfk: objectBody.statusgenerik || null,
                 objectsediaanfk: objectBody.sediaan || null,
                 keterangan: "" || null,
                 objectvariabelbpjsfk: objectBody.variabelbpjs || null,
@@ -107,11 +115,9 @@ const createOrUpdateProdukObat = async (req, res) => {
                 isalkes: objectBody.tipeproduk === 3,
                 tglupdate: new Date(),
                 objectpegawaiupdatefk: req.idPegawai,
-                islogistik: objectBody.tipeproduk === 4
+                islogistik: objectBody.tipeproduk === 4,
+                barcode: objectBody.barcode,
             }, {
-                where: {
-                    id: objectBody.idproduk
-                },
                 transaction: transaction
             })
         }
@@ -130,11 +136,11 @@ const createOrUpdateProdukObat = async (req, res) => {
     }catch(error){
         logger.error(error)
         await transaction.rollback();
-        res.status(500).send({
+        res.status(error.httpcode || 500).send({
             data: error,
             success: false,
             msg: 'Create Nota Produk Obat Gagal',
-            code: 500
+            code: error.httpcode || 500
         });
     }
 }
@@ -489,7 +495,8 @@ const createOrUpdateKemasan = async (req, res) => {
 const getProdukMaster = async (req, res) => {
     const logger = res.locals.logger
     try{
-        let produk = (await pool.query(qGetProdukMaster, [])).rows
+        const { namaproduk } = req.query
+        let produk = (await pool.query(qGetProdukMaster, [namaproduk || ""])).rows
         produk = produk.sort((a, b) => a.id - b.id)
         const tempres = {
             produk: produk
