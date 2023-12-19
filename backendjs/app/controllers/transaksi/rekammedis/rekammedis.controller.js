@@ -2,8 +2,9 @@ import pool from "../../../config/dbcon.query";
 import * as uuid from 'uuid';
 import queries from '../../../queries/rekammedis/rekammedis.queries';
 import db from "../../../models";
-import { createTransaction } from "../../../utils/dbutils";
+import { createTransaction, dateBetweenEmptyString, dateEmptyString } from "../../../utils/dbutils";
 import {qGetUnitTempatTidurScheduler} from '../../../queries/sysadmin/sysadmin.queries'
+import { getDateEndNull, getDateStartNull } from "../../../utils/dateutils";
 
 const m_maprltoproduk = db.m_maprltoproduk
 const t_daftarpasien = db.t_daftarpasien
@@ -443,26 +444,21 @@ async function getListLaporanPasienKunjungan(req, res) {
 async function getLaporanRL3_1(req, res) {
     const logger = res.locals.logger
     try {
-        let start = (new Date(req.query.start)).toISOString();
-        let end = (new Date(req.query.end)).toISOString();
-        end = formatDate(end) + ' 23:59'
-        let search = `%${req.query.search}%`
-        let instalasi = req.query.instalasi !== '' ? ` and mu.objectinstalasifk = '${req.query.instalasi}'` : '';
-        let unit = req.query.unit !== '' ? ` and ta.objectunitfk = '${req.query.unit}'` : '';
-        let rekanan = req.query.rekanan !== '' ? ` and td.objectpenjaminfk = '${req.query.rekanan}'` : '';
-        let pegawai = req.query.pegawai !== '' ? ` and td.objectpegawaifk = '${req.query.pegawai}'` : '';
-// console.log(start.toLocaleDateString())
-        // const result = await pool.query(queries.qResult, [start,end,search]) //,instalasi,unit,rekanan,pegawai
-        const result = await pool.query(`select mp.objectspesialisasifk,ms.reportdisplay as jenis_spesialisasi,
+        let start = getDateStartNull(req.query.start)
+        let end = getDateEndNull(req.query.end)
+        const result = await pool.query(`
+        select mp.objectspesialisasifk,ms.reportdisplay as jenis_spesialisasi,
         to_char(td.tglregistrasi,'dd-MM-YYYY') as tglregistrasi,to_char(td.tglpulang,'dd-MM-YYYY') as tglpulang,
         td.objectcarapulangrifk,td.objectkondisipulangrifk,
         EXTRACT(DAY FROM AGE(to_char(td.tglpulang,'YYYY-MM-dd')::DATE, to_char(td.tglregistrasi,'YYYY-MM-dd')::DATE)) AS days_difference
         from t_daftarpasien td 
         join m_pegawai mp on mp.id=td.objectdokterpemeriksafk
         join m_spesialisasi ms on ms.id=mp.objectspesialisasifk
-        where td.objectinstalasifk=2 and td.tglpulang between '${start}' and '${end}' and td.statusenabled=true 
+        where td.objectinstalasifk=2 
+        AND ${dateBetweenEmptyString("td.tglpulang", "$1", "$2")} 
+        AND td.statusenabled=true 
         and td.tglpulang is not null
-        `);
+        `, [start || "", end || ""]);
 
         let data10 = [];
         result.rows.forEach(element => {
@@ -521,9 +517,12 @@ async function getLaporanRL3_1(req, res) {
             const result = await pool.query(`select count(ts.objectdokterpemeriksafk) as jml,ts.objectkelasfk from t_sensusharian ts 
                 join m_pegawai mp on mp.id=ts.objectdokterpemeriksafk
                 join m_spesialisasi ms on ms.id=mp.objectspesialisasifk
-                where ts.tglinput between '${start}' and '${end}' and mp.objectspesialisasifk='${data10[i].objectspesialisasifk}'
+                where ${dateBetweenEmptyString("ts.tglinput", "$1", "$2")} and mp.objectspesialisasifk='${data10[i].objectspesialisasifk}'
                 group by ts.objectkelasfk`
-            );
+            , [
+                start || "",
+                end || ""
+            ]);
             let jmlhariperawatan = 0
             result.rows.forEach(element => {
                 jmlhariperawatan = parseFloat(jmlhariperawatan)+parseFloat(element.jml)
