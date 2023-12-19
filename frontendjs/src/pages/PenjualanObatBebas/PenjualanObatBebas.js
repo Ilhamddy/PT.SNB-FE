@@ -766,8 +766,8 @@ const PenjualanObatBebas = () => {
                                 )}
                             </tbody>
                         </table>
-                        <Row style={{justifyContent: "space-evenly"}}>
-                            <Col md={2}>
+                        <Row className="d-flex justify-content-center">
+                            <Col md="auto">
                                 <Button color="success"
                                     disabled={false}
                                     onClick={() => {
@@ -776,7 +776,7 @@ const PenjualanObatBebas = () => {
                                     {vResep.values.norecjualbebas ? "Edit" : "Simpan"}
                                 </Button>
                             </Col>
-                            <Col md={2}>
+                            <Col md="auto">
                                 <Link to="/farmasi/penjualan-obat-bebas-list">
                                     <Button color="danger">
                                         Batal
