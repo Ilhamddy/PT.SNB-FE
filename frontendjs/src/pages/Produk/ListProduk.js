@@ -44,7 +44,7 @@ const ListProduk = () => {
             active: false
         },
         onSubmit: (values) => {
-
+            dispatch(produkMasterGet(values))
         }
     })
     
@@ -168,7 +168,12 @@ const ListProduk = () => {
                                             />
                                     </Col>
                                     <Col>
-                                        <Button type="button" color="info" placement="top" id="tooltipTop" >
+                                        <Button 
+                                            type="button" 
+                                            color="info" 
+                                            placement="top" 
+                                            id="tooltipTop" 
+                                            onClick={() => vFilter.handleSubmit()}>
                                             Cari
                                         </Button>
                                     </Col>

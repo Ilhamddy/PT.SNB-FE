@@ -46,6 +46,7 @@ import queriesMasterIndukRL from "../../queries/mastertable/masterindukrl/master
 import queriesMasterRL from "../../queries/mastertable/masterrl/masterrl.queries.js";
 import queriesLoket from "../../queries/mastertable/loket/loket.queries.js";
 import queriesJenisAntrean from "../../queries/mastertable/jenisloket/m_jenisantrean.queries.js";
+import generikQueries from "../../queries/mastertable/generik/generik.queries.js";
 
 const selectComboBox = (req, res) => {
     try {
@@ -353,6 +354,8 @@ const comboSettingProduk = async (req, res) => {
         const satuan = await pool.query(queriesSatuan.getAll, []);
         const jenisSatuan = await pool.query(queriesJenisSatuan.getAll, []);
         const satuanProduk = await pool.query(queriesSatuan.getSatuanProduk, []);
+        const generik = await pool.query(generikQueries.getAll, []);
+
 
         let tempres = {
             sediaan: sediaan.rows,
@@ -362,7 +365,8 @@ const comboSettingProduk = async (req, res) => {
             satuan: satuan.rows,
             jenisproduk: jenisProduk.rows,
             jenissatuan: jenisSatuan.rows,
-            satuanproduk: satuanProduk.rows
+            satuanproduk: satuanProduk.rows,
+            generik: generik.rows
         }
         res.status(200).send({
             data: tempres,
