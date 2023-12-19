@@ -136,11 +136,11 @@ const createOrUpdateProdukObat = async (req, res) => {
     }catch(error){
         logger.error(error)
         await transaction.rollback();
-        res.status(error.code || 500).send({
+        res.status(error.httpcode || 500).send({
             data: error,
             success: false,
             msg: 'Create Nota Produk Obat Gagal',
-            code: error.code || 500
+            code: error.httpcode || 500
         });
     }
 }

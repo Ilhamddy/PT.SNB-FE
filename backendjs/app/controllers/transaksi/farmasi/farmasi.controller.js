@@ -746,9 +746,9 @@ const getPenjualanBebasFromNorec = async (req, res) => {
         });
     } catch (error) {
         logger.error(error);
-        res.status(error.code || 500).send({
+        res.status(error.httpcode || 500).send({
             msg: error.message,
-            code: error.code || 500,
+            code: error.httpcode || 500,
             data: error,
             success: false
         });

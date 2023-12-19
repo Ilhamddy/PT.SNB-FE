@@ -385,6 +385,7 @@ import Organization from "../pages/SatuSehat/Organization/Organization.jsx";
 import Location from "../pages/SatuSehat/Location/Location.jsx";
 import Practitioner from "../pages/SatuSehat/Practitioner/Practitioner.jsx";
 import PenjualanObatBebasList from "../pages/PenjualanObatBebas/PenjualanObatBebasList.jsx";
+import RL3_13 from "../pages/RekamMedis/Laporan/RL3_13/RL3_13.jsx";
 
 const authProtectedRoutes = [
   { path: "/dashboard-analytics", component: <DashboardAnalytics /> },
@@ -657,6 +658,9 @@ const authProtectedRoutes = [
   { path: "/cmVrYW1tZWRpcy9tYXBwaW5nLXJs", component: <MappingLayanan />},
   { path: "/rekammedis/laporan-rl/rl3_14", component: <RL3_14/>},
   { path: "/rekammedis/laporan-rl/rl3_15", component: <RL3_15/>},
+  { path: "/rekammedis/laporan-rl/rl3_13", component: <RL3_13/>},
+  
+
   { path: "/rekammedis/laporan-rl/rl3_11", component: <RL3_11/>},
   { path: "/rekammedis/laporan-rl/rl3_10", component: <RL3_10/>},
 

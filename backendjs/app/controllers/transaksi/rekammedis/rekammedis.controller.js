@@ -1535,12 +1535,54 @@ const getLaporanRL3_15 = async (req, res) => {
     }
 }
 
-const getLaporan3_12 = async (req, res) => {
+const getLaporanRL3_13 = async (req, res) => {
     const logger = res.locals.logger;
     try{
-        
+        const obat = (await pool.query(queries.qLaporanRL3_13, [])).rows
+        const initJumlah = {
+            jumlahItemObat: 0,
+            jumlahItemObatTersedia: 0,
+            jumlahItemObatTersediaFormularium: 0
+        }
+        const rowLaporan = [
+            {
+                ...initJumlah,
+                label: "Obat Generik",
+                jumlahItemObat: [...obat].filter(obat => obat.generik === 1).length,
+                jumlahItemObatTersedia: [...obat].filter(obat => 
+                    obat.generik === 1 && obat.qty > 0
+                ).length,
+                jumlahItemObatTersediaFormularium: [...obat].filter(obat => 
+                    obat.generik === 1 && obat.qty > 0 && obat.isfornas
+                ).length
+            },
+            {
+                ...initJumlah,
+                label: "Obat Non Generik Formularium",
+                jumlahItemObat: [...obat].filter(obat => obat.generik !== 1 && obat.isfornas).length,
+                jumlahItemObatTersedia: [...obat].filter(obat => 
+                    obat.generik !== 1 && obat.qty > 0 && obat.isfornas
+                ).length,
+                jumlahItemObatTersediaFormularium: [...obat].filter(obat => 
+                    obat.generik !== 1 && obat.qty > 0 && obat.isfornas
+                ).length
+            },
+            {
+                ...initJumlah,
+                label: "Obat Non Generik Non Formularium",
+                jumlahItemObat: [...obat].filter(obat => 
+                    obat.generik !== 1 && !obat.isfornas
+                ).length,
+                jumlahItemObatTersedia: [...obat].filter(obat => 
+                    obat.generik !== 1 && obat.qty > 0 && !obat.isfornas
+                ).length,
+                jumlahItemObatTersediaFormularium: [...obat].filter(obat => 
+                    obat.generik !== 1 && obat.qty > 0 && !obat.isfornas
+                ).length
+            },
+        ]
         const tempres = {
-        
+            rowLaporan: rowLaporan
         };
         res.status(200).send({
             msg: 'Success',
@@ -1550,9 +1592,9 @@ const getLaporan3_12 = async (req, res) => {
         });
     } catch (error) {
         logger.error(error);
-        res.status(error.code || 500).send({
+        res.status(error.httpcode || 500).send({
             msg: error.message,
-            code: error.code || 500,
+            code: error.httpcode || 500,
             data: error,
             success: false
         });
@@ -1983,6 +2025,7 @@ export default {
     getLaporanRL3_8,
     getLaporanRL3_9,
     getLaporanRL3_14,
+    getLaporanRL3_13,
     getLaporanRL3_15,
     getLaporanRL3_11,
     getLaporanRL3_10,

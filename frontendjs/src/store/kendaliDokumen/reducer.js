@@ -58,6 +58,7 @@ import {
     LAPORAN_RL_3_7_GET,LAPORAN_RL_3_7_GET_SUCCESS,LAPORAN_RL_3_7_GET_ERROR,
     LAPORAN_RL_3_8_GET,LAPORAN_RL_3_8_GET_SUCCESS,LAPORAN_RL_3_8_GET_ERROR,
     LAPORAN_RL_3_9_GET,LAPORAN_RL_3_9_GET_SUCCESS,LAPORAN_RL_3_9_GET_ERROR,
+    LAPORAN_RL_3_13_GET,LAPORAN_RL_3_13_GET_SUCCESS,LAPORAN_RL_3_13_GET_ERROR,
     LAPORAN_RL_3_14_GET,LAPORAN_RL_3_14_GET_SUCCESS,LAPORAN_RL_3_14_GET_ERROR,
     LAPORAN_RL_3_15_GET,LAPORAN_RL_3_15_GET_SUCCESS,LAPORAN_RL_3_15_GET_ERROR,
     LAPORAN_RL_3_11_GET,LAPORAN_RL_3_11_GET_SUCCESS,LAPORAN_RL_3_11_GET_ERROR,
@@ -203,6 +204,11 @@ const INIT_STATE = {
         error: null,
     },
     getLaporanRl_3_14:{
+        data: [],
+        loading: false,
+        error: null,
+    },
+    getLaporanRl_3_13:{
         data: [],
         loading: false,
         error: null,
@@ -1241,6 +1247,39 @@ const KendaliDokumen = (state = INIT_STATE, action) => {
                 ...state,
                 getLaporanRl_3_14: {
                     ...state.getLaporanRl_3_14,
+                    loading: false,
+                    error: action.payload,
+                }
+            }
+        }
+
+        case LAPORAN_RL_3_13_GET: {
+            return {
+                ...state,
+                getLaporanRl_3_13: {
+                    ...state.getLaporanRl_3_13,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case LAPORAN_RL_3_13_GET_SUCCESS: {
+            return {
+                ...state,
+                getLaporanRl_3_13: {
+                    ...state.getLaporanRl_3_13,
+                    loading: false,
+                    data: action.payload,
+                }
+            }
+        }
+
+        case LAPORAN_RL_3_13_GET_ERROR: {
+            return {
+                ...state,
+                getLaporanRl_3_13: {
+                    ...state.getLaporanRl_3_13,
                     loading: false,
                     error: action.payload,
                 }
