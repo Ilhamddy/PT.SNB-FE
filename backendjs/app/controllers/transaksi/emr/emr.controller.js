@@ -4,7 +4,8 @@ import queries from '../../../queries/transaksi/registrasi.queries';
 import { qGetObatFromUnit, qGetOrderResepFromDP, qGetOrderVerifResepFromDP,
 qAsesmenBayiLahirByNorec,qComboApgar,qComboSebabKematian,qComboApgarScore,
 qHistoryAsesmenBayiLahir, 
-qGetAntreanPemeriksaanObat,qGetNilaiNormalTtv,qGetTtvByNorec,qGetSumberData} from "../../../queries/emr/emr.queries";
+qGetAntreanPemeriksaanObat,qGetNilaiNormalTtv,qGetTtvByNorec,qGetSumberData,qGetListKeluhanUtama,
+qGetStatusPsikologis} from "../../../queries/emr/emr.queries";
 import hubunganKeluargaQueries from "../../../queries/mastertable/hubunganKeluarga/hubunganKeluarga.queries";
 import jenisKelaminQueries from "../../../queries/mastertable/jenisKelamin/jenisKelamin.queries";
 import db from "../../../models";
@@ -2031,8 +2032,12 @@ const getComboAsesmenAwalKeperawatan = async (req, res) => {
     const logger = res.locals.logger;
     try{
         const result1 = await pool.query(qGetSumberData)
+        const result2 = await pool.query(qGetListKeluhanUtama)
+        const result3 = await pool.query(qGetStatusPsikologis)
         const tempres = {
-            sumberdata:result1.rows
+            sumberdata:result1.rows,
+            keluhanutama:result2.rows,
+            statuspsikologis:result3.rows
         };
         res.status(200).send({
             msg: 'Success',
