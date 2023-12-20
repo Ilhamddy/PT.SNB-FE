@@ -10,6 +10,7 @@ import { createDateAr, getDateStartEndNull, getTimeOnly } from "../../../utils/d
 import bcrypt from "bcryptjs";
 import sumberDayaManusiaQueries from "../../../queries/sumberDayaManusia/sumberDayaManusia.queries";
 import cutiQueries from "../../../queries/mastertable/cuti/cuti.queries";
+import { BadRequestError, NotFoundError } from "../../../utils/errors";
 
 
 const getDaftarPegawai = async (req, res) => {
@@ -684,6 +685,74 @@ const batalCuti = async (req, res) => {
     }
 }
 
+const getPegawaiInput = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        let pegawai = (await pool.query(queries.qGetPegawai, [req.userId])).rows[0]
+        if(!pegawai) throw new NotFoundError(`User id ${req.userId} tidak ada`)
+        const tempres = {
+            pegawai: pegawai
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(error.httpcode || 500).send({
+            msg: error.message,
+            code: error.httpcode || 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+const updatePassword = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        await db.sequelize.transaction(async (transaction) => {
+            const user = await db.user.findByPk(req.userId, {
+                transaction: transaction
+            })
+            if(!user) throw new Error("User tidak ditemukan")
+            let passwordIsValid = bcrypt.compareSync(
+                req.body.passwordlama,
+                user.password
+            );
+            if(!passwordIsValid){
+                throw new BadRequestError("Password salah")
+            }
+            const newPassword = bcrypt.hashSync(req.body.passwordbaru, 8)
+            await user.update({
+                password: newPassword
+            }, {
+                transaction: transaction
+            })
+        });
+        
+        const tempres = {
+
+        };
+        res.status(200).send({
+            msg: 'Sukses reset password',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message || 'Gagal',
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export default {
     getDaftarPegawai,
     getComboSDM,
@@ -698,5 +767,7 @@ export default {
     getLiburPegawai,
     getComboCuti,
     upsertCuti,
-    batalCuti
+    batalCuti,
+    getPegawaiInput,
+    updatePassword
 }

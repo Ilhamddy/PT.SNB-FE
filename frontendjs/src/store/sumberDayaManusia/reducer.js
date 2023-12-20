@@ -29,7 +29,13 @@ import {
     UPSERT_CUTI_ERROR,
     BATAL_CUTI,
     BATAL_CUTI_SUCCESS,
-    BATAL_CUTI_ERROR
+    BATAL_CUTI_ERROR,
+    GET_PEGAWAI_INPUT,
+    GET_PEGAWAI_INPUT_SUCCESS,
+    GET_PEGAWAI_INPUT_ERROR,
+    UPDATE_PASSWORD,
+    UPDATE_PASSWORD_SUCCESS,
+    UPDATE_PASSWORD_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -107,6 +113,16 @@ const INIT_STATE = {
         loading: false,
         error: null,
     },
+    getPegawaiInput: {
+        data: [],
+        loading: false,
+        error: null,
+    },
+    updatePassword: {
+        data: [],
+        loading: false,
+        error: null,
+    },
 }
 
 const sumberDayaManusia = (state = INIT_STATE, action) => {
@@ -146,6 +162,9 @@ const sumberDayaManusia = (state = INIT_STATE, action) => {
                 },
                 getLiburPegawai: {
                     ...INIT_STATE.getLiburPegawai
+                },
+                getPegawaiInput: {
+                    ...INIT_STATE.getPegawaiInput
                 }
             }
         }
@@ -623,6 +642,76 @@ const sumberDayaManusia = (state = INIT_STATE, action) => {
                 ...state,
                 batalCuti: {
                     ...state.batalCuti,
+                    loading: false,
+                    error: action.payload,
+                },
+            };
+        }
+
+        case GET_PEGAWAI_INPUT: {
+            return {
+                ...state,
+                getPegawaiInput: {
+                    ...state.getPegawaiInput,
+                    data: [],
+                    loading: true,
+                    error: null,
+                },
+            };
+        }
+
+        case GET_PEGAWAI_INPUT_SUCCESS: {
+            return {
+                ...state,
+                getPegawaiInput: {
+                    ...state.getPegawaiInput,
+                    loading: false,
+                    data: action.payload,
+                    success: true,
+                },
+            };
+        }
+
+        case GET_PEGAWAI_INPUT_ERROR: {
+            return {
+                ...state,
+                getPegawaiInput: {
+                    ...state.getPegawaiInput,
+                    loading: false,
+                    error: action.payload,
+                },
+            };
+        }
+
+        case UPDATE_PASSWORD: {
+            return {
+                ...state,
+                updatePassword: {
+                    ...state.updatePassword,
+                    data: [],
+                    loading: true,
+                    error: null,
+                },
+            };
+        }
+
+        case UPDATE_PASSWORD_SUCCESS: {
+            return {
+                ...state,
+                updatePassword: {
+                    ...state.updatePassword,
+                    loading: false,
+                    data: action.payload,
+                    success: true,
+                },
+            };
+        }
+
+        case UPDATE_PASSWORD_ERROR: {
+            return {
+                ...state,
+                updatePassword: {
+                    ...state.updatePassword,
                     loading: false,
                     error: action.payload,
                 },

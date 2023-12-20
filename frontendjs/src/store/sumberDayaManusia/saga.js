@@ -10,7 +10,9 @@ import {
     GET_LIBUR_PEGAWAI,
     GET_COMBO_CUTI,
     UPSERT_CUTI,
-    BATAL_CUTI
+    BATAL_CUTI,
+    GET_PEGAWAI_INPUT,
+    UPDATE_PASSWORD
 } from "./actionType";
 
 import {
@@ -35,7 +37,11 @@ import {
     upsertCutiSuccess,
     upsertCutiError,
     batalCutiSuccess,
-    batalCutiError
+    batalCutiError,
+    getPegawaiInputSuccess,
+    getPegawaiInputError,
+    updatePasswordSuccess,
+    updatePasswordError
 } from "./action";
 
 import { toast } from 'react-toastify';
@@ -265,6 +271,38 @@ export function* wathconBatalCuti(){
     yield takeEvery(BATAL_CUTI, onBatalCuti)
 }
 
+function* onGetPegawaiInput({ payload: { queries } }) {
+    try {
+        let response = null;
+        response = yield call(serviceSDM.getPegawaiInput, queries);
+        yield put(getPegawaiInputSuccess(response.data));
+    } catch (error) {
+        yield put(getPegawaiInputError(error));
+    }
+}
+
+export function* watchonGetPegawaiInput(){
+    yield takeEvery(GET_PEGAWAI_INPUT, onGetPegawaiInput)
+}
+
+
+function* onUpdatePassword({ payload: { data, callback } }) {
+    try {
+        let response = null;
+        response = yield call(serviceSDM.updatePassword, data);
+        yield put(updatePasswordSuccess(response.data));
+        callback && callback()
+        toast.success(response?.data?.msg || "Sukses", {autoClose: 3000})
+    } catch (error) {
+        yield put(updatePasswordError(error));
+        toast.success(error.response?.data?.msg || "Error", {autoClose: 3000})
+    }
+}
+
+export function* watchonUpdatePassword(){
+    yield takeEvery(UPDATE_PASSWORD, onUpdatePassword)
+}
+
 
 function* sumberDayaManusia() {
     yield all([
@@ -281,7 +319,9 @@ function* sumberDayaManusia() {
         fork(watchonGetLiburPegawai),
         fork(watchonGetComboCuti),
         fork(watchonUpsertCuti),
-        fork(wathconBatalCuti)
+        fork(wathconBatalCuti),
+        fork(watchonGetPegawaiInput),
+        fork(watchonUpdatePassword)
     ]);
 }
 

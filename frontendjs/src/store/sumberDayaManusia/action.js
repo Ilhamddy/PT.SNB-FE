@@ -28,7 +28,13 @@ import { SDM_RESET_FORM,
     UPSERT_CUTI_ERROR,
     BATAL_CUTI,
     BATAL_CUTI_SUCCESS,
-    BATAL_CUTI_ERROR
+    BATAL_CUTI_ERROR,
+    GET_PEGAWAI_INPUT,
+    GET_PEGAWAI_INPUT_SUCCESS,
+    GET_PEGAWAI_INPUT_ERROR,
+    UPDATE_PASSWORD,
+    UPDATE_PASSWORD_SUCCESS,
+    UPDATE_PASSWORD_ERROR
 } from "./actionType";
 
 export const sdmResetForm = () => ({
@@ -263,5 +269,40 @@ export const batalCutiSuccess = (data) => ({
 
 export const batalCutiError = (error) => ({
     type: BATAL_CUTI_ERROR,
+    payload: error
+});
+
+export const getPegawaiInput = (queries) => ({
+    type: GET_PEGAWAI_INPUT,
+    payload: {
+        queries: queries,
+    }
+});
+
+export const getPegawaiInputSuccess = (data) => ({
+    type: GET_PEGAWAI_INPUT_SUCCESS,
+    payload: data
+});
+
+export const getPegawaiInputError = (error) => ({
+    type: GET_PEGAWAI_INPUT_ERROR,
+    payload: error
+});
+
+export const updatePassword = (data, callback) => ({
+    type: UPDATE_PASSWORD,
+    payload: {
+        data: data,
+        callback: callback
+    }
+});
+
+export const updatePasswordSuccess = (data) => ({
+    type: UPDATE_PASSWORD_SUCCESS,
+    payload: data
+});
+
+export const updatePasswordError = (error) => ({
+    type: UPDATE_PASSWORD_ERROR,
     payload: error
 });

@@ -84,4 +84,16 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.batalCuti
     )
+
+    app.get(
+        "/api/transaksi/sumber-daya-manusia/get-pegawai-input",
+        [authJwt.verifyToken],
+        controller.getPegawaiInput
+    )
+
+    app.post(
+        "/api/transaksi/sumber-daya-manusia/update-password",
+        [authJwt.verifyToken],
+        controller.updatePassword
+    )
 }
