@@ -190,4 +190,7 @@ export default class ServiceEmr {
     getComboAsesmenAwalKeperawatan = async (queries) => {
         return await api.get("/transaksi/emr/get-combo-asesmen-awal-keperawatan", queries)
     }
+    upsertAsesmenAwalKeperawatan = async (body) => {
+        return await api.create("/transaksi/emr/upsert-pengkajian-awal-keperawatan", body)
+    }
 }

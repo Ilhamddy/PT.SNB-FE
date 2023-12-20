@@ -201,4 +201,9 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.getComboAsesmenAwalKeperawatan
     );
+    app.post(
+        "/api/transaksi/emr/upsert-pengkajian-awal-keperawatan",
+        [authJwt.verifyToken],
+        controller.upsertPengkajianAwalKeperawatan
+    )
 }

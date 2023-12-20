@@ -29,7 +29,8 @@ import {
     GET_HISTORY_ASESMENBAYILAHIR,
     GET_ANTREAN_PEMERIKSAAN_OBAT,
     DELETE_ORDER_RESEP,
-    GET_COMBO_ASESMENAWALKEPERAWATAN
+    GET_COMBO_ASESMENAWALKEPERAWATAN,
+    UPSERT_ASESMENAWALKEPERAWATAN
 } from "./actionType";
 
 import {
@@ -81,7 +82,8 @@ import {
     getAntreanPemeriksaanObatError,
     deleteOrderResepSuccess,
     deleteOrderResepError,
-    getComboAsesmenAwalKeperawatanSuccess,getComboAsesmenAwalKeperawatanError
+    getComboAsesmenAwalKeperawatanSuccess,getComboAsesmenAwalKeperawatanError,
+    upsertAsesmenAwalKeperawatanSuccess,upsertAsesmenAwalKeperawatanError
 } from "./action";
 
 import { toast } from 'react-toastify';
@@ -954,6 +956,22 @@ export function* watchOngetComboAsesmenAwalKeperawatan() {
     yield takeEvery(GET_COMBO_ASESMENAWALKEPERAWATAN, ongetComboAsesmenAwalKeperawatan);
 }
 
+function* onupsertAsesmenAwalKeperawatan({payload: {data, callback}}) {
+    try{
+        const response = yield call(serviceEmr.upsertAsesmenAwalKeperawatan, data);
+        yield put(upsertAsesmenAwalKeperawatanSuccess(response.data));
+        toast.success(response.msg || "Sukses");
+        callback && callback(response);
+    } catch (error) {
+        yield put(upsertAsesmenAwalKeperawatanError(error));
+        toast.error(error.msg || "Gagal");
+    }
+}
+
+export function* watchonupsertAsesmenAwalKeperawatan() {
+    yield takeEvery(UPSERT_ASESMENAWALKEPERAWATAN, onupsertAsesmenAwalKeperawatan);
+}
+
 function* emrSaga() {
     yield all([
         fork(watchGetEmrHeader),
@@ -1003,7 +1021,8 @@ function* emrSaga() {
         fork(watchongetHistoryAsesmenBayiLahir),
         fork(watchOnGetAntreanPemeriksaanObat),
         fork(watchDeleteOrderResep),
-        fork(watchOngetComboAsesmenAwalKeperawatan)
+        fork(watchOngetComboAsesmenAwalKeperawatan),
+        fork(watchonupsertAsesmenAwalKeperawatan)
     ]);
 }
 

@@ -5,7 +5,7 @@ import { qGetObatFromUnit, qGetOrderResepFromDP, qGetOrderVerifResepFromDP,
 qAsesmenBayiLahirByNorec,qComboApgar,qComboSebabKematian,qComboApgarScore,
 qHistoryAsesmenBayiLahir, 
 qGetAntreanPemeriksaanObat,qGetNilaiNormalTtv,qGetTtvByNorec,qGetSumberData,qGetListKeluhanUtama,
-qGetStatusPsikologis} from "../../../queries/emr/emr.queries";
+qGetStatusPsikologis,qGetListAlergi} from "../../../queries/emr/emr.queries";
 import hubunganKeluargaQueries from "../../../queries/mastertable/hubunganKeluarga/hubunganKeluarga.queries";
 import jenisKelaminQueries from "../../../queries/mastertable/jenisKelamin/jenisKelamin.queries";
 import db from "../../../models";
@@ -1607,21 +1607,26 @@ const upsertAssesmenBayiLahir = async (req, res) => {
     const logger = res.locals.logger;
     try{
         const bodyReq = req.body
+        const resultEmrPasien = await queryPromise1(req.body.norecap, req.body.idlabel);
         const { emrPasien,asesmenbayilahir } = await db.sequelize.transaction(async (transaction) => {
             let emrPasien 
             let asesmenbayilahir 
             if(bodyReq.norecemrpasien==='' || bodyReq.norecemrpasien===undefined){
                 let norec = uuid.v4().substring(0, 32)
                 let norecassesmen = uuid.v4().substring(0, 32)
-                emrPasien = await db.t_emrpasien.create({
-                    norec: norec,
-                    statusenabled: true,
-                    label: bodyReq.label,
-                    idlabel: bodyReq.idlabel,
-                    objectantreanpemeriksaanfk: bodyReq.norecap,
-                    objectpegawaifk: req.idPegawai,
-                    tglisi: new Date()
-                }, { transaction });
+                if (resultEmrPasien.rowCount != 0) {
+                    norec = resultEmrPasien.rows[0].norec
+                } else {
+                    emrPasien = await db.t_emrpasien.create({
+                        norec: norec,
+                        statusenabled: true,
+                        label: bodyReq.label,
+                        idlabel: bodyReq.idlabel,
+                        objectantreanpemeriksaanfk: bodyReq.norecap,
+                        objectpegawaifk: req.idPegawai,
+                        tglisi: new Date()
+                    }, { transaction });
+                }
                 asesmenbayilahir = await db.t_asesmenbayilahir.create({
                     norec: norecassesmen,
                     objectemrfk: norec,
@@ -1716,18 +1721,12 @@ const upsertAssesmenBayiLahir = async (req, res) => {
             emrPasien,asesmenbayilahir
         };
         res.status(200).send({
-            msg: 'Success',
-            code: 200,
-            data: tempres,
-            success: true
+            msg: 'Success',code: 200,data: tempres,success: true
         });
     } catch (error) {
         logger.error(error);
         res.status(500).send({
-            msg: error.message,
-            code: 500,
-            data: error,
-            success: false
+            msg: error.message,code: 500,data: error,success: false
         });
     }
 }
@@ -2013,10 +2012,12 @@ const getComboAsesmenAwalKeperawatan = async (req, res) => {
         const result1 = await pool.query(qGetSumberData)
         const result2 = await pool.query(qGetListKeluhanUtama)
         const result3 = await pool.query(qGetStatusPsikologis)
+        const result4 = await pool.query(qGetListAlergi)
         const tempres = {
             sumberdata:result1.rows,
             keluhanutama:result2.rows,
-            statuspsikologis:result3.rows
+            statuspsikologis:result3.rows,
+            alergi:result4.rows
         };
         res.status(200).send({
             msg: 'Success',
@@ -2028,6 +2029,87 @@ const getComboAsesmenAwalKeperawatan = async (req, res) => {
         logger.error(error);
         res.status(500).send({
             msg: error.message,
+            code: 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
+const upsertPengkajianAwalKeperawatan = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const resultEmrPasien = await queryPromise1(req.body.norecap, req.body.idlabel);
+        let norec = uuid.v4().substring(0, 32)
+        const {emrPasien,ttv}=await db.sequelize.transaction(async (transaction) => {
+            let emrPasien
+            if (req.body.sumberdata === '') req.body.sumberdata = 1;
+            if (resultEmrPasien.rowCount != 0) {
+                norec = resultEmrPasien.rows[0].norec
+            } else {
+                emrPasien = await db.t_emrpasien.create({
+                    norec: norec,
+                    statusenabled: true,
+                    label: req.body.label,
+                    idlabel: req.body.idlabel,
+                    objectantreanpemeriksaanfk: req.body.norecap,
+                    objectpegawaifk: req.userId,
+                    tglisi: new Date()
+                }, { transaction });
+            }
+            let norecttv = uuid.v4().substring(0, 32)
+            let tempPsikologis = {
+                tegang: 0,
+                cemas: 0,
+                takut: 0,
+                marah: 0,
+                sedih: 0,
+                depresi: 0,
+                agresif: 0,
+                melukaids: 0,
+                melukaiol: 0,
+                tenang: 0
+            };
+            
+            req.body.psikologis.forEach(element => {
+                if(element===1){tempPsikologis.tegang=1}
+                else if(element===2){tempPsikologis.cemas=2}
+                else if(element===3){tempPsikologis.takut=3}
+                else if(element===4){tempPsikologis.marah=4}
+                else if(element===5){tempPsikologis.sedih=5}
+                else if(element===6){tempPsikologis.depresi=6}
+                else if(element===7){tempPsikologis.agresif=7}
+                else if(element===8){tempPsikologis.melukaids=8}
+                else if(element===9){tempPsikologis.melukaiol=9}
+                else if(element===10){tempPsikologis.tenang=10}
+            });
+            let ttv = await db.t_pengkajianawalkeperawatan.create({
+                norec: norecttv,
+                objectemrfk: norec,
+                objectsumberdatafk: req.body.sumberdata,
+                keluhanutama: req.body.keluhanUtamaText,
+                objectterminologikeluhanfk: !req.body.keluhanUtama ? null : req.body.keluhanUtama,
+                objectstatuspsikologisfk: !tempPsikologis ? null : tempPsikologis,
+                objectterminologialergifk: !req.body.alergi ? null : req.body.alergi,
+                tglinput: req.body.tanggalPemeriksaan,
+            }, { transaction });
+            return {emrPasien,ttv}
+        });
+        
+        const tempres = {
+            emrpasien:emrPasien,
+            pengkajian:ttv
+        };
+        res.status(200).send({
+            msg: 'Sukses',
+            code: 200,
+            data: tempres,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(500).send({
+            msg: error.message || 'Gagal',
             code: 500,
             data: error,
             success: false
@@ -2069,7 +2151,8 @@ export default {
     getHistoryAsesmenBayiLahir,
     getAntreanPemeriksaanObat,
     deleteOrderResep,
-    getComboAsesmenAwalKeperawatan
+    getComboAsesmenAwalKeperawatan,
+    upsertPengkajianAwalKeperawatan
 };
 
 
