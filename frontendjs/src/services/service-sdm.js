@@ -53,4 +53,12 @@ export default class ServiceSDM {
     batalCuti = async (data) => {
         return await api.create(`/transaksi/sumber-daya-manusia/batal-cuti`, data)
     }
+
+    getPegawaiInput = async (queries) => {
+        return await api.get(`/transaksi/sumber-daya-manusia/get-pegawai-input`, queries)
+    }
+
+    updatePassword = async (data) => {
+        return await api.create(`/transaksi/sumber-daya-manusia/update-password`, data)
+    }
 }

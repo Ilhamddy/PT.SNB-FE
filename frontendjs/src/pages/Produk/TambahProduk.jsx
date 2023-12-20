@@ -30,6 +30,7 @@ import DataTable from 'react-data-table-component'
 import { KonversiProduk } from './KonversiProduk'
 import LainLain from './LainLain'
 import { rgxAllNumber } from '../../utils/regexcommon'
+import BtnSpinner from '../../Components/Common/BtnSpinner'
 
 const linkSettingProduk = '/farmasi/gudang/setting-produk'
 
@@ -37,10 +38,13 @@ const TambahProduk = ({ tabId }) => {
   const dispatch = useDispatch()
   const { paramobat } = useParams()
 
-  const { comboSettingProduk, produkEditData } = useSelector((state) => ({
-    comboSettingProduk: state.Master.comboSettingProdukGet.data,
-    produkEditData: state.Gudang.produkEditGet,
-  }))
+  const { comboSettingProduk, loadingEdit, produkEditData } = useSelector(
+    (state) => ({
+      comboSettingProduk: state.Master.comboSettingProdukGet.data,
+      produkEditData: state.Gudang.produkEditGet,
+      loadingEdit: state.Gudang.obatGudangSave.loading || false,
+    })
+  )
 
   const navigate = useNavigate()
   const validation = useFormik({
@@ -52,6 +56,7 @@ const TambahProduk = ({ tabId }) => {
       deskripsikandungan: '',
       kekuatan: '',
       barcode: '',
+      idihs: '',
       statusgenerik: '',
       sediaan: '',
       golonganobat: '',
@@ -131,6 +136,7 @@ const TambahProduk = ({ tabId }) => {
     setFF('isrs', produk.isforrs)
     setFF('barcode', produk.barcode || '')
     setFF('statusgenerik', produk.objectgenerikfk || '')
+    setFF('idihs', produk.ihs_id || '')
   }, [produkEditData.data, comboSettingProduk, validation.setFieldValue])
 
   useEffect(() => {
@@ -465,6 +471,35 @@ const TambahProduk = ({ tabId }) => {
               <Col lg={5}>
                 <Label
                   style={{ color: 'black' }}
+                  htmlFor={`idihs`}
+                  className="form-label mt-2"
+                >
+                  id IHS
+                </Label>
+              </Col>
+              <Col lg={7}>
+                <Input
+                  id={`idihs`}
+                  type="text"
+                  onChange={(e) => {
+                    validation.setFieldValue('idihs', e.target.value)
+                  }}
+                  value={validation.values.idihs}
+                  invalid={
+                    validation.touched.idihs && !!validation.errors.idihs
+                  }
+                />
+                {validation.touched.idihs && validation.errors.idihs ? (
+                  <FormFeedback type="invalid">
+                    <div>{validation.errors.idihs}</div>
+                  </FormFeedback>
+                ) : null}
+              </Col>
+            </Row>
+            <Row className="mb-2">
+              <Col lg={5}>
+                <Label
+                  style={{ color: 'black' }}
                   htmlFor={`variabelbpjs`}
                   className="form-label mt-2"
                 >
@@ -583,14 +618,15 @@ const TambahProduk = ({ tabId }) => {
         </Row>
         <Row>
           <div className="d-flex gap-2 justify-content-center mt-4 mb-2">
-            <Button
+            <BtnSpinner
+              loading={loadingEdit}
               type="submit"
               color="success"
               placement="top"
               id="tooltipTop"
             >
               {validation.values.idproduk ? 'Edit' : 'Tambah'}
-            </Button>
+            </BtnSpinner>
           </div>
         </Row>
       </Form>

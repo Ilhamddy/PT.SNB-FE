@@ -120,6 +120,9 @@ export default (sequelize, Sequelize) => {
         islogistik: {
             type: Sequelize.BOOLEAN,
         },
+        ihs_id: {
+            type: Sequelize.CHAR(15)
+        }
     }, {
         tableName: "m_produk", // relation "user" does not exist
         createdAt: false,

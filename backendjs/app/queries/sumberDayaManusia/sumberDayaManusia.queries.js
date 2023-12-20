@@ -100,8 +100,17 @@ WHERE tl.statusenabled = true
         mp.namalengkap ILIKE '%' || $3 || '%'
         OR $3 = ''
     )
-
 ORDER BY tl.tgllibur DESC`
+
+const qGetPegawai = `
+SELECT
+    mpeg.namaexternal AS namapegawai,
+    usr.username AS username
+FROM users usr
+    LEFT JOIN m_pegawai mpeg ON usr.objectpegawaifk = mpeg.id
+WHERE
+    usr.id = $1
+`
 
 export default {
     qDaftarPegawai,
@@ -123,5 +132,6 @@ export default {
     qJadwalDokter,
     qAccesUnit,
     qGetLiburPegawai,
+    qGetPegawai
    
 }
