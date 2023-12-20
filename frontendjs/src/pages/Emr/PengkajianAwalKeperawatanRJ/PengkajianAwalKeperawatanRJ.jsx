@@ -8,8 +8,22 @@ import LoadingTable from '../../../Components/Table/LoadingTable';
 import { tableCustomStyles } from '../../../Components/Table/tableCustomStyles';
 import KontainerFlatpickr from '../../../Components/KontainerFlatpickr/KontainerFlatpickr';
 import CustomSelect from '../../Select/Select';
+import {
+  getComboAsesmenAwalKeperawatan
+} from "../../../store/actions";
+import { useDispatch, useSelector } from 'react-redux';
+
 const PengkajianAwalKeperawatanRJ = () => {
   const { norecdp, norecap } = useParams();
+  const dispatch = useDispatch();
+  const { dataCombo, loadingCombo, successCombo } = useSelector((state) => ({
+    dataCombo: state.Emr.getComboAsesmenAwalKeperawatan.data || [],
+    loadingCombo: state.Emr.getComboAsesmenAwalKeperawatan.loading,
+    successCombo: state.Emr.getComboAsesmenAwalKeperawatan.success
+  }));
+  useEffect(() => {
+    dispatch(getComboAsesmenAwalKeperawatan());
+  }, [dispatch])
   const [dateNow] = useState(() => new Date().toISOString())
   const validation = useFormik({
     enableReinitialize: true,
@@ -17,12 +31,10 @@ const PengkajianAwalKeperawatanRJ = () => {
       norecdp: norecdp,
       norecap: norecap,
       norec: '',
-      tipediagnosa: '',
+      sumberdata: '',
     },
     validationSchema: Yup.object({
-      tipediagnosa: Yup.string().required("Tipe Diagnosa Belum Diisi"),
-      kodediagnosa: Yup.string().required("Kode Diagnosa Belum Diisi"),
-      kasuspenyakit: Yup.string().required("Kasus Penyakit Belum Diisi")
+      sumberdata: Yup.string().required("Tipe Diagnosa Belum Diisi"),
     }),
     onSubmit: (values, { resetForm }) => {
       // dispatch(emrDiagnosaxSave(values, ()=>{
@@ -31,8 +43,37 @@ const PengkajianAwalKeperawatanRJ = () => {
       // resetForm()
     }
   })
-  const changePayment = (fieldname, index, newvalue) => {
-    console.log(fieldname, index, newvalue)
+  const [dataSumberData, setdataSumberData] = useState([]);
+  useEffect(() => {
+    if (dataCombo?.sumberdata) {
+      setdataSumberData(dataCombo?.sumberdata);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dataCombo, validation.setFieldValue,])
+
+  const changeSumberData = (newvalue) => {
+    let newArrayBed = dataCombo?.sumberdata
+    newArrayBed.forEach(element => {
+      if (element.value === newvalue) {
+        element.cheked = true
+      } else {
+        element.cheked = false
+      }
+    });
+    setdataSumberData(newArrayBed);
+    validation.setFieldValue('sumberdata', newvalue);
+  }
+  const changePsikologis = (newvalue) => {
+    // let newArrayBed = dataCombo?.sumberdata
+    // newArrayBed.forEach(element => {
+    //   if (element.value === newvalue) {
+    //     element.cheked = true
+    //   } else {
+    //     element.cheked = false
+    //   }
+    // });
+    // setdataSumberData(newArrayBed);
+    // validation.setFieldValue('sumberdata', newvalue);
   }
   return (
     <React.Fragment>
@@ -48,10 +89,10 @@ const PengkajianAwalKeperawatanRJ = () => {
                   <DataTable
                     fixedHeader
                     fixedHeaderScrollHeight="330px"
-                    columns={[]}
+                    // columns={dataCombo?.sumberdata || []}
                     pagination
-                    // data={dataRiwayat}
-                    // progressPending={loadingRiwayat}
+                    // data={dataCombo}
+                    // progressPending={loadingCombo}
                     customStyles={tableCustomStyles}
                     progressComponent={<LoadingTable />}
                   />
@@ -112,26 +153,28 @@ const PengkajianAwalKeperawatanRJ = () => {
                       </div>
                     </Col>
                     <Col lg={9}>
-                      <div className="d-flex flex-column">
-                        {([]).map((data, key) =>
-                          <div className="d-flex flex-row" key={key}>
-                            <Input
-                              className="form-check-input"
-                              type="radio"
-                              id={`radio-payment-${key}`}
-                              checked={data.value}
-                              readOnly
-                              onClick={e => {
-                                changePayment('nontunai', data.value)
-                              }} />
-                            <Label className="form-check-label ms-2"
-                              htmlFor={`radio-payment-${key}`}
-                              style={{ color: "black" }} >
-                              {data.label}
-                            </Label>
-                          </div>
+                      <Row>
+                        {(dataSumberData || []).map((data, key) =>
+                          <Col lg={4} key={key}>
+                            <div className="d-flex flex-row" key={key}>
+                              <Input
+                                className="form-check-input"
+                                type="radio"
+                                id={`radio-payment-${key}`}
+                                checked={data.cheked}
+                                readOnly
+                                onClick={e => {
+                                  changeSumberData(data.value)
+                                }} />
+                              <Label className="form-check-label ms-2"
+                                htmlFor={`radio-payment-${key}`}
+                                style={{ color: "black" }} >
+                                {data.label}
+                              </Label>
+                            </div>
+                          </Col>
                         )}
-                      </div>
+                      </Row>
                     </Col>
                     <Col lg={3}>
                       <div className="mt-2">
@@ -142,7 +185,7 @@ const PengkajianAwalKeperawatanRJ = () => {
                       <CustomSelect
                         id="keluhanUtama"
                         name="keluhanUtama"
-                        options={[]}
+                        options={dataCombo?.keluhanutama || []}
                         onChange={(e) => {
                           validation.setFieldValue('keluhanUtama', e?.value || '')
                         }}
@@ -175,6 +218,39 @@ const PengkajianAwalKeperawatanRJ = () => {
                             <div>{validation.errors.keluhanUtamaText}</div>
                           </FormFeedback>
                         )}
+                    </Col>
+                    <Col lg={12}>
+                      <div className="mt-2">
+                        <Label htmlFor="tipediagnosa" className="form-label text-dark">Status Psikologis</Label>
+                      </div>
+                    </Col>
+                    <Col lg={12}>
+                      <Row>
+                        {(dataCombo.statuspsikologis || []).map((data, key) =>
+                          <Col lg={3} key={key}>
+                            <div className="d-flex flex-row" key={key}>
+                              <Input
+                                className="form-check-input"
+                                type="checkbox"
+                                id={`checkbox-payment-${key}`}
+                                readOnly
+                                onClick={e => {
+                                  changePsikologis(data.value)
+                                }} />
+                              <Label className="form-check-label ms-2"
+                                htmlFor={`checkbox-payment-${key}`}
+                                style={{ color: "black" }} >
+                                {data.label}
+                              </Label>
+                            </div>
+                          </Col>
+                        )}
+                      </Row>
+                    </Col>
+                    <Col lg={3}>
+                      <div className="mt-2">
+                        <Label htmlFor="tipediagnosa" className="form-label text-dark">Alergi</Label>
+                      </div>
                     </Col>
                   </Row>
                 </Form>
