@@ -315,16 +315,10 @@ const PasienBaru = () => {
     dispatch(pasienFormQueriesGet({ idpasien: idpasien }))
   }, [idpasien, dispatch, validation.setFieldValue])
 
-  // useEffect(() => {
-  //     const setFF = validation.setFieldValue
-  //     setFF("norectriage", norectriage)
-
-  //     console.log(norectriage)
-  // }, [norectriage, validation.setFieldValue])
-
   useEffect(() => {
     const setV = validation.setValues
     if (pasienFormQueries) {
+      // saat ngeget disamakan agar langsung dimasukkan seperti ini
       setV({
         ...validation.initialValues,
         ...pasienFormQueries,
