@@ -85,6 +85,7 @@ const createOrUpdateProdukObat = async (req, res) => {
                 objectpegawaiinputfk: req.idPegawai,
                 objectpegawaiupdatefk: req.idPegawai,
                 barcode: objectBody.barcode,
+                ihs_id: objectBody.idihs
             }, { 
                 transaction: transaction 
             });
@@ -117,6 +118,7 @@ const createOrUpdateProdukObat = async (req, res) => {
                 objectpegawaiupdatefk: req.idPegawai,
                 islogistik: objectBody.tipeproduk === 4,
                 barcode: objectBody.barcode,
+                ihs_id: objectBody.idihs
             }, {
                 transaction: transaction
             })
