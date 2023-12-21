@@ -475,7 +475,31 @@ mt.nama as label from m_statuspsikologis mt`
 
 const qGetListAlergi = `select mt.display as label,mt.id as value,
 mt.code,mt.display from m_terminologi mt where objecttipeterminologifk=1`
-
+const qGetListPengkajianAwalKeperawatan=`SELECT tp.keluhanutama,tp.norec,dp.noregistrasi,mt.display as displaykeluhan,mt.code as codekeluhan,
+mt2.display as displayalergi,mt2.code as codealergi,mu.namaunit,to_char(tp.tglinput,
+            'dd Month YYYY HH24:MI') as tglinput,tp.tglinput as tglinput_ihs,
+            case when tp.status_ihs_keluhan=true then 'btn-soft-info' else 'btn-soft-danger'
+        end as status_keluhan,
+        case when tp.status_ihs_alergi=true then 'btn-soft-info' else 'btn-soft-danger'
+        end as status_alergi,tp.ihs_keluhan,tp.ihs_alergi 
+FROM t_daftarpasien dp 
+join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk=dp.norec
+join t_emrpasien te on te.objectantreanpemeriksaanfk=ta.norec 
+join t_pengkajianawalkeperawatan tp on tp.objectemrfk=te.norec 
+join m_unit mu on mu.id=ta.objectunitfk
+LEFT JOIN m_statuspsikologis ms1 ON ms1.id = (tp.objectstatuspsikologisfk->>'tegang')::integer
+LEFT JOIN m_statuspsikologis ms2 ON ms2.id = (tp.objectstatuspsikologisfk->>'cemas')::integer
+LEFT JOIN m_statuspsikologis ms3 ON ms3.id = (tp.objectstatuspsikologisfk->>'takut')::integer
+LEFT JOIN m_statuspsikologis ms4 ON ms4.id = (tp.objectstatuspsikologisfk->>'marah')::integer
+LEFT JOIN m_statuspsikologis ms5 ON ms5.id = (tp.objectstatuspsikologisfk->>'sedih')::integer
+LEFT JOIN m_statuspsikologis ms6 ON ms6.id = (tp.objectstatuspsikologisfk->>'depresi')::integer
+LEFT JOIN m_statuspsikologis ms7 ON ms7.id = (tp.objectstatuspsikologisfk->>'agresif')::integer
+LEFT JOIN m_statuspsikologis ms8 ON ms8.id = (tp.objectstatuspsikologisfk->>'melukaids')::integer
+LEFT JOIN m_statuspsikologis ms9 ON ms9.id = (tp.objectstatuspsikologisfk->>'melukaiol')::integer
+LEFT JOIN m_statuspsikologis ms10 ON ms10.id = (tp.objectstatuspsikologisfk->>'tenang')::integer
+left join m_terminologi mt on mt.id=tp.objectterminologikeluhanfk 
+left join m_terminologi mt2 on mt2.id=tp.objectterminologialergifk
+where dp.nocmfk=$1`
 export {
     qGetObatFromUnit,
     qGetOrderResepFromDP,
@@ -493,5 +517,6 @@ export {
     qGetSumberData,
     qGetListKeluhanUtama,
     qGetStatusPsikologis,
-    qGetListAlergi
+    qGetListAlergi,
+    qGetListPengkajianAwalKeperawatan
 }

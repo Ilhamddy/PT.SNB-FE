@@ -14,7 +14,8 @@ import {
     UPSERT_LOCATION_KAMAR,UPSERT_LOCATION_KAMAR_SUCCESS,UPSERT_LOCATION_KAMAR_ERROR,
     GET_LIST_TEMPATTIDUR,GET_LIST_TEMPATTIDUR_SUCCESS,GET_LIST_TEMPATTIDUR_ERROR,
     UPSERT_LOCATION_TEMPATTIDUR,UPSERT_LOCATION_TEMPATTIDUR_SUCCESS,UPSERT_LOCATION_TEMPATTIDUR_ERROR,
-    UPSERT_PROCEDURE,UPSERT_PROCEDURE_SUCCESS,UPSERT_PROCEDURE_ERROR
+    UPSERT_PROCEDURE,UPSERT_PROCEDURE_SUCCESS,UPSERT_PROCEDURE_ERROR,
+    UPSERT_ALERGI,UPSERT_ALERGI_SUCCESS,UPSERT_ALERGI_ERROR
 } from "./actionType";
 
 const INIT_STATE = {
@@ -94,6 +95,11 @@ const INIT_STATE = {
         error: null,
     },
     upsertProcedure:{
+        data: [],
+        loading: false,
+        error: null,
+    },
+    upsertAlergi:{
         data: [],
         loading: false,
         error: null,
@@ -624,6 +630,39 @@ const SatuSehat = (state = INIT_STATE, action) => {
                 ...state,
                 upsertProcedure: {
                     ...state.upsertProcedure,
+                    loading: true,
+                    error: action.payload,
+                }
+            }
+        }
+
+        case UPSERT_ALERGI: {
+            return {
+                ...state,
+                upsertAlergi: {
+                    ...state.upsertAlergi,
+                    loading: true,
+                    error: null,
+                }
+            }
+        }
+
+        case UPSERT_ALERGI_SUCCESS: {
+            return {
+                ...state,
+                upsertAlergi: {
+                    ...state.upsertAlergi,
+                    loading: false,
+                    data: action.payload,
+                }
+            }
+        }
+
+        case UPSERT_ALERGI_ERROR: {
+            return {
+                ...state,
+                upsertAlergi: {
+                    ...state.upsertAlergi,
                     loading: true,
                     error: action.payload,
                 }

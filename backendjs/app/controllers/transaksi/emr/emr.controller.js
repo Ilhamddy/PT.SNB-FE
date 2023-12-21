@@ -5,7 +5,7 @@ import { qGetObatFromUnit, qGetOrderResepFromDP, qGetOrderVerifResepFromDP,
 qAsesmenBayiLahirByNorec,qComboApgar,qComboSebabKematian,qComboApgarScore,
 qHistoryAsesmenBayiLahir, 
 qGetAntreanPemeriksaanObat,qGetNilaiNormalTtv,qGetTtvByNorec,qGetSumberData,qGetListKeluhanUtama,
-qGetStatusPsikologis,qGetListAlergi} from "../../../queries/emr/emr.queries";
+qGetStatusPsikologis,qGetListAlergi,qGetListPengkajianAwalKeperawatan} from "../../../queries/emr/emr.queries";
 import hubunganKeluargaQueries from "../../../queries/mastertable/hubunganKeluarga/hubunganKeluarga.queries";
 import jenisKelaminQueries from "../../../queries/mastertable/jenisKelamin/jenisKelamin.queries";
 import db from "../../../models";
@@ -2117,6 +2117,38 @@ const upsertPengkajianAwalKeperawatan = async (req, res) => {
     }
 }
 
+const getListPengkajianAwalKeperawatan = async (req, res) => {
+    const logger = res.locals.logger;
+    try{
+        const resultNocmfk = await queryPromise2(`SELECT nocmfk
+        FROM t_daftarpasien where norec='${req.query.norecdp}'
+    `);
+    if (resultNocmfk.rowCount === 0) {
+        res.status(500).send({ message: 'Data Tidak Ada' });
+        return
+    }
+    let nocmfk = resultNocmfk.rows[0].nocmfk
+    const result = await pool.query(qGetListPengkajianAwalKeperawatan,[nocmfk])
+        const tempres = {
+        
+        };
+        res.status(200).send({
+            msg: 'Success',
+            code: 200,
+            data: result.rows,
+            success: true
+        });
+    } catch (error) {
+        logger.error(error);
+        res.status(error.httpcode || 500).send({
+            msg: error.message,
+            code: error.httpcode || 500,
+            data: error,
+            success: false
+        });
+    }
+}
+
 export default {
     saveEmrPasienTtv,
     getListTtv,
@@ -2152,7 +2184,8 @@ export default {
     getAntreanPemeriksaanObat,
     deleteOrderResep,
     getComboAsesmenAwalKeperawatan,
-    upsertPengkajianAwalKeperawatan
+    upsertPengkajianAwalKeperawatan,
+    getListPengkajianAwalKeperawatan
 };
 
 

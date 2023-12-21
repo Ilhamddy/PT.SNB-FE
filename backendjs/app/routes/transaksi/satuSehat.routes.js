@@ -89,4 +89,14 @@ export default function (app) {
         [authJwt.verifyToken],
         controller.upsertProcedure
     )
+    app.post(
+        "/api/transaksi/satu-sehat/upsert-condition-v2",
+        [authJwt.verifyToken],
+        controller.upsertConditionV2
+    )
+    app.post(
+        "/api/transaksi/satu-sehat/upsert-alergi",
+        [authJwt.verifyToken],
+        controller.upsertAllergyIntolerance
+    )
 }

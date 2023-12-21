@@ -38,6 +38,12 @@ export default (sequelize, Sequelize) => {
         tglinput:{
             type:Sequelize.DATE
         },
+        status_ihs_keluhan:{
+            type: Sequelize.BOOLEAN
+        },
+        status_ihs_alergi:{
+            type: Sequelize.BOOLEAN
+        }
     }, {
         tableName: "t_pengkajianawalkeperawatan",
         createdAt: false,

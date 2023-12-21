@@ -7,7 +7,7 @@ import {
     GET_LIST_PRACTITIONER,UPSERT_PRACTITIONER, UPSERT_PATIENT,UPSERT_ENCOUNTER,
     UPSERT_CONDITION,UPSERT_ENCOUNTER_PULANG,UPSERT_OBSERVATION,
     GET_LIST_KAMAR,UPSERT_LOCATION_KAMAR,GET_LIST_TEMPATTIDUR,
-    UPSERT_LOCATION_TEMPATTIDUR,UPSERT_PROCEDURE
+    UPSERT_LOCATION_TEMPATTIDUR,UPSERT_PROCEDURE,UPSERT_ALERGI
  } from "./actionType";
  import { 
     getListInstalasiSuccess,getListInstalasiError,
@@ -25,7 +25,8 @@ import {
     upsertLocationKamarSuccess,upsertLocationKamarError,
     getListTempatTidurSuccess,getListTempatTidurError,
     upsertLocationTempatTidurSuccess,upsertLocationTempatTidurError,
-    upsertProcedureSuccess,upsertProcedureError
+    upsertProcedureSuccess,upsertProcedureError,
+    upsertAlergiSuccess,upsertAlergiError
 } from "./action";
 import { toast } from 'react-toastify';
 
@@ -121,7 +122,12 @@ function* onupsertEncounter({payload: {data, callback}}) {
 
 function* onupsertCondition({payload: {data, callback}}) {
     try{
-        const response = yield call(serviceSatuSehat.upsertCondition, data);
+        let response = null;
+        if(data.status==='diagnosa'){
+            response = yield call(serviceSatuSehat.upsertCondition, data);
+        }else if(data.status==='keluhanutama'){
+            response = yield call(serviceSatuSehat.upsertConditionV2, data);
+        }
         yield put(upsertConditionSuccess(response.data));
         toast.success(response.msg || "Sukses");
         callback && callback(response);
@@ -210,6 +216,18 @@ function* onupsertProcedure({payload: {data, callback}}) {
     }
 }
 
+function* onupsertAlergi({payload: {data, callback}}) {
+    try{
+        const response = yield call(serviceSatuSehat.upsertAlergi, data);
+        yield put(upsertAlergiSuccess(response.data));
+        toast.success(response.msg || "Sukses");
+        callback && callback(response);
+    } catch (error) {
+        yield put(upsertAlergiError(error));
+        toast.error(error.msg || "Gagal");
+    }
+}
+
 export default function* satuSehatSaga() {
     yield all([
         takeEvery(GET_LIST_INSTALASI, ongetListInstalasi),
@@ -227,6 +245,7 @@ export default function* satuSehatSaga() {
         takeEvery(UPSERT_LOCATION_KAMAR,onupsertLocationKamar),
         takeEvery(GET_LIST_TEMPATTIDUR,ongetListTempatTidur),
         takeEvery(UPSERT_LOCATION_TEMPATTIDUR,onupsertLocationTempatTidur),
-        takeEvery(UPSERT_PROCEDURE,onupsertProcedure)
+        takeEvery(UPSERT_PROCEDURE,onupsertProcedure),
+        takeEvery(UPSERT_ALERGI,onupsertAlergi)
     ]);
 }

@@ -14,7 +14,8 @@ import {
     UPSERT_LOCATION_KAMAR,UPSERT_LOCATION_KAMAR_SUCCESS,UPSERT_LOCATION_KAMAR_ERROR,
     GET_LIST_TEMPATTIDUR,GET_LIST_TEMPATTIDUR_SUCCESS,GET_LIST_TEMPATTIDUR_ERROR,
     UPSERT_LOCATION_TEMPATTIDUR,UPSERT_LOCATION_TEMPATTIDUR_SUCCESS,UPSERT_LOCATION_TEMPATTIDUR_ERROR,
-    UPSERT_PROCEDURE,UPSERT_PROCEDURE_SUCCESS,UPSERT_PROCEDURE_ERROR
+    UPSERT_PROCEDURE,UPSERT_PROCEDURE_SUCCESS,UPSERT_PROCEDURE_ERROR,
+    UPSERT_ALERGI,UPSERT_ALERGI_SUCCESS,UPSERT_ALERGI_ERROR
 } from "./actionType";
 
 export const getListInstalasi = (queries) => ({
@@ -297,5 +298,23 @@ export const upsertProcedureSuccess = (data) => ({
 
 export const upsertProcedureError = (error) => ({
     type: UPSERT_PROCEDURE_ERROR,
+    payload: error,
+});
+
+export const upsertAlergi = (data, callback) => ({
+    type: UPSERT_ALERGI,
+    payload: {
+        data,
+        callback
+    },
+});
+
+export const upsertAlergiSuccess = (data) => ({
+    type: UPSERT_ALERGI_SUCCESS,
+    payload: data,
+});
+
+export const upsertAlergiError = (error) => ({
+    type: UPSERT_ALERGI_ERROR,
     payload: error,
 });
