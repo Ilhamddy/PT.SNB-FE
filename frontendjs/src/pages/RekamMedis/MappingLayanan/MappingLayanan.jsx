@@ -257,7 +257,7 @@ const MappingRL = () => {
       <UiContent />
       <div className="page-content mapping-layanan">
         <Container fluid>
-          <BreadCrumb title="Laporan RL3.2" pageTitle="Forms" />
+          <BreadCrumb title="Mapping RL 3.2" pageTitle="Forms" />
           <Card className="p-3">
             <CardBody>
               <Card className="p-2">

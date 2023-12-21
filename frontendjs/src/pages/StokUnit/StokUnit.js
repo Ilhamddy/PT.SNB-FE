@@ -128,7 +128,7 @@ const StokUnitList = () => {
     return (
         <div className="page-content page-penerimaan-barang">
             <Container fluid>
-                <BreadCrumb title="Order Barang" pageTitle="Gudang" />
+                <BreadCrumb title="Stok Unit" pageTitle="Gudang" />
                 <Card className="p-5">
                     <Row className="mb-3">
                         <ColLabelInput 

@@ -32,6 +32,7 @@ import LoadingTable from '../../Components/Table/LoadingTable'
 import NoDataTable from '../../Components/Table/NoDataTable'
 import { dateLocal, dateTimeLocal } from '../../utils/format'
 import { tableCustomStyles } from '../../Components/Table/tableCustomStyles'
+import BreadCrumb from '../../Components/Common/BreadCrumb'
 
 const PenerimaanProdukList = ({ isLogistik }) => {
   const navigate = useNavigate()
@@ -320,9 +321,9 @@ const PenerimaanProdukList = ({ isLogistik }) => {
   ]
 
   return (
-    <div className="page-content page-list-penerimaan">
+    <div className="page-content">
       <Container fluid>
-        <Breadcrumb title="List produk" pageTitle="List Produk" />
+        <BreadCrumb title="List produk" pageTitle="Gudang" />
         <Card className="p-5">
           <Row>
             <Widget
