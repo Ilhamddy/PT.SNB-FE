@@ -208,7 +208,7 @@ const DetailOrderModal = ({ show, onSimpanClick, onCloseClick,onTolakClick, temp
                                 <Row>
                                     <Col lg={5}>
                                         <Row>
-                                            <Col md={4} className="mb-2"><Label htmlFor="namatindakan" className="form-label">Nama Tindakan</Label></Col>
+                                            <Col md={4} className="mt-2"><Label htmlFor="namatindakan" className="form-label">Nama Tindakan</Label></Col>
                                             <Col md={8} className="mb-2">
                                                 <Input
                                                     id="namatindakan"
@@ -247,7 +247,7 @@ const DetailOrderModal = ({ show, onSimpanClick, onCloseClick,onTolakClick, temp
                                                     }}
                                                 />
                                             </Col>
-                                            <Col lg={12}>
+                                            <Col lg={12} className="mt-3 mb-4">
                                                 <div className="d-flex flex-wrap gap-2 justify-content-md-start">
                                                     <Button type="submit" color="info" placement="top">
                                                         Edit
@@ -289,7 +289,7 @@ const DetailOrderModal = ({ show, onSimpanClick, onCloseClick,onTolakClick, temp
                                             Tutup
                                         </button>
 
-                                        <Button type="button" color="info" placement="top" id="tooltipTop"
+                                        <Button type="button" color="success" placement="top" id="tooltipTop"
                                         onClick={() => onClickSimpan()} >
                                             SIMPAN
                                         </Button>

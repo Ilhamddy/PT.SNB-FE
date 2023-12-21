@@ -952,7 +952,6 @@ const Gudang = (state = INIT_STATE, action) => {
                 getStokOpnameDetail: {
                     ...state.getStokOpnameDetail,
                     loading: true,
-                    data: [],
                     error: null
                 }
             }

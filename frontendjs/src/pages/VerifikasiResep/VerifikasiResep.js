@@ -546,8 +546,8 @@ const VerifikasiResep = () => {
                                 )}
                             </tbody>
                         </table>
-                        <Row style={{justifyContent: "space-evenly"}}>
-                            <Col md={2}>
+                        <Row className="d-flex justify-content-center">
+                            <Col md="auto">
                                 <Button color="success"
                                     disabled={vResep.values.noresep}
                                     onClick={() => {
@@ -556,7 +556,7 @@ const VerifikasiResep = () => {
                                     Verifikasi
                                 </Button>
                             </Col>
-                            <Col md={2}>
+                            <Col md="auto" >
                                 <Button color="danger">
                                     Batal
                                 </Button>

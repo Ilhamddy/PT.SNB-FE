@@ -62,7 +62,7 @@ const StokUnitList = () => {
                             id="menu-stok-unit">
                             <i className="ri-apps-2-line"></i>
                         </DropdownToggle>
-                        <DropdownMenu className="dropdown-menu-end">
+                        {/* <DropdownMenu className="dropdown-menu-end">
                             <Link to={`/farmasi/gudang/stock-opname/${row.norecstokunit}`}>
                                 <DropdownItem onClick={() => {
                                     }}>
@@ -71,7 +71,7 @@ const StokUnitList = () => {
                                     Adjustment stok
                                 </DropdownItem>
                             </Link>
-                        </DropdownMenu>
+                        </DropdownMenu> */}
                     </UncontrolledDropdown>
                 </div>)
                 ,

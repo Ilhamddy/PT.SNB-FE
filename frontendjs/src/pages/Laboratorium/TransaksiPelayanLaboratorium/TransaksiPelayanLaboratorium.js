@@ -289,7 +289,7 @@ const TransaksiPelayanLaboratorium = () => {
                                             <Card>
                                                 <CardBody>
                                                     <Col lg={3} style={{ textAlign: 'left' }}>
-                                                        <Button type="button" style={{ backgroundColor: '#192a56', textAlign: 'right' }} placement="top"
+                                                        <Button type="button" color='info' placement="top"
                                                             onClick={handlePrint}
                                                         >
                                                             Cetak

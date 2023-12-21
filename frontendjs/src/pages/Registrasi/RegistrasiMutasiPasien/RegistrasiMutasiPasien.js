@@ -690,8 +690,8 @@ const RegistrasiMutasiPasien = (props) => {
                                             </Card>
                                         </Col>
                                         <Col lg={12} style={{ textAlign: 'right' }} >
-                                            {!successReg && <Button type="submit"  color="info" disabled={loadingSave}> SIMPAN </Button>}
-                                            <Button type="button" color="warning" className="btn-animation" data-text="Batal" onClick={() => handleBack()}> <span>Batal</span> </Button>
+                                            {!successReg && <Button type="submit"  color="success" disabled={loadingSave}> SIMPAN </Button>}
+                                            <Button type="button" color="danger" className="btn-animation ms-2" data-text="Batal" onClick={() => handleBack()}> <span>Batal</span> </Button>
                                         </Col>
                                         {/* contoh pakai checkbox */}
                                         {/* <CustomCheckbox 

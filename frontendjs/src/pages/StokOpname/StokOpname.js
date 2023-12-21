@@ -439,7 +439,10 @@ const EditStokOpname = () => {
                         paginationPerPage={10}
                         paginationRowsPerPageOptions={[10]}
                         data={vStokOpnameDetail.values.stokopnamedetails || []}
-                        progressPending={stokOpnameDetail?.loading}
+                        progressPending={
+                            false
+                            // stokOpnameDetail?.loading
+                        }
                         customStyles={tableCustomStyles}
                         progressComponent={<LoadingTable />}
                     />
@@ -450,7 +453,7 @@ const EditStokOpname = () => {
                     className="d-flex justify-content-around align-items-end mt-5">
                     <Button 
                         type="button" 
-                        color="info" 
+                        color="success" 
                         placement="top" 
                         formTarget="form-input-penerimaan"
                         disabled={statusSelesai}

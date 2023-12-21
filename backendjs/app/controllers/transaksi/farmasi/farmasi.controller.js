@@ -1037,7 +1037,7 @@ const hDeleteVerif = async (
     if(!norecorderresep && !norecpenjualanbebas) throw new Error("Harus ada salah satu norec")
     let deleted
     if(norecorderresep){
-        await t_verifresep.findAll({
+        deleted = await t_verifresep.findAll({
             where: {
                 objectorderresepfk: norecorderresep
             },

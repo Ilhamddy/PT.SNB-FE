@@ -16,7 +16,7 @@ export default (sequelize, Sequelize) => {
             defaultValue: true
         },
         reportdisplay:{
-            type:Sequelize.STRING
+            type: Sequelize.STRING(150)
         },
         objectantreanpemeriksaanfk:{
             type: Sequelize.CHAR(32)
