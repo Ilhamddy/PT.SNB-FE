@@ -155,7 +155,12 @@ SELECT
     when (current_date - to_date(to_char(mp.tgllahir, 'DD-MM-YYYY'), 'DD-MM-YYYY'))>23724 and mp.objectjeniskelaminfk=2 then 'nenek' else 'baby' end as profile
 FROM t_daftarpasien td 
     join m_pasien mp on mp.id=td.nocmfk 
-    join t_antreanpemeriksaan ta on ta.objectdaftarpasienfk =td.norec and td.objectunitlastfk=ta.objectunitfk
+    join t_antreanpemeriksaan ta ON 
+        (
+            ta.objectdaftarpasienfk =td.norec AND 
+            ta.statusenabled = TRUE AND
+            td.objectunitlastfk=ta.objectunitfk
+        )
     join m_unit mu on mu.id=ta.objectunitfk 
     join m_pegawai mp2 on mp2.id=ta.objectdokterpemeriksafk
     join m_instalasi mi on mi.id=mu.objectinstalasifk
